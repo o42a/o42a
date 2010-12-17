@@ -1,0 +1,127 @@
+/*
+    Compiler Tests
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.compiler.test.inheritance;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.artifact.Accessor;
+import org.o42a.core.artifact.object.Derivation;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.field.Field;
+
+
+public class PropagationTest extends CompilerTestCase {
+
+	private Obj a;
+	private Obj b;
+
+	@Test
+	public void overrideAncestor() {
+		compile(
+				"A := void(Foo := 1; bar := foo);",
+				"b := &a(Foo = 3)");
+
+		final Obj aFoo = getField(this.a, "foo").getArtifact().toObject();
+		final Obj bFoo = getField(this.b, "foo").getArtifact().toObject();
+
+		assertTrue(bFoo.derivedFrom(aFoo, Derivation.MEMBER_OVERRIDE));
+
+		final Obj aBar = getField(this.a, "bar").getArtifact().toObject();
+		final Obj bBar = getField(this.b, "bar").getArtifact().toObject();
+
+		assertThat(definiteValue(bBar, Long.class), is(3L));
+		assertTrue(bBar.derivedFrom(aBar, Derivation.MEMBER_OVERRIDE));
+		assertTrue(bBar.derivedFrom(aFoo));
+		assertFalse(bBar.derivedFrom(aFoo, Derivation.INHERITANCE));
+		assertFalse(bBar.derivedFrom(aFoo, Derivation.PROPAGATION));
+		assertTrue(bBar.getAncestor().getType().derivedFrom(
+				aFoo,
+				Derivation.MEMBER_OVERRIDE));
+		assertThat(bBar.inherits(bFoo), is(true));
+
+		final Field<?> aFooScope =
+			getField(aFoo, "_scope", Accessor.INHERITANT);
+		final Field<?> bFooScope =
+			getField(bFoo, "_scope", Accessor.INHERITANT);
+
+		assertThat(
+				aFooScope.getArtifact(),
+				is((Object) this.a));
+		assertThat(
+				bFooScope.getArtifact(),
+				is((Object) this.b));
+	}
+
+	@Test
+	public void propagateField() {
+		compile(
+				"A := void(Foo := void(Bar := 1));",
+				"b := &a(Foo = *(Bar = 2))");
+
+		final Obj aFoo = getField(this.a, "foo").getArtifact().toObject();
+		final Obj bFoo = getField(this.b, "foo").getArtifact().toObject();
+
+		assertTrue(
+				bFoo.derivedFrom(aFoo, Derivation.MEMBER_OVERRIDE));
+
+		final Obj aBar = getField(aFoo, "bar").getArtifact().toObject();
+		final Obj bBar = getField(bFoo, "bar").getArtifact().toObject();
+
+		assertTrue(bBar.derivedFrom(aBar, Derivation.MEMBER_OVERRIDE));
+	}
+
+	@Test
+	public void upgradeAncestor() {
+		compile(
+				"Foo := 1;",
+				"bar := &foo(=2);",
+				"a := void(Foo := &$foo(=3));",
+				"b := &a(Foo = &bar())");
+
+		final Obj foo = getField("foo").getArtifact().toObject();
+		final Obj bar = getField("bar").getArtifact().toObject();
+		final Obj aFoo = getField(this.a, "foo").getArtifact().toObject();
+		final Obj bFoo = getField(this.b, "foo").getArtifact().toObject();
+
+		assertTrue(aFoo.inherits(foo));
+		assertFalse(aFoo.inherits(bar));
+		assertTrue(bFoo.inherits(bar));
+		assertTrue(bFoo.derivedFrom(aFoo));
+
+		assertThat(definiteValue(foo, Long.class), is(1L));
+		assertThat(definiteValue(bar, Long.class), is(2L));
+		assertThat(definiteValue(aFoo, Long.class), is(3L));
+		assertThat(definiteValue(bFoo, Long.class), is(3L));
+	}
+
+	@Override
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
+		this.a = getField("a").getArtifact().toObject();
+		this.b = getField("b").getArtifact().toObject();
+	}
+
+
+}

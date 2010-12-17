@@ -1,0 +1,182 @@
+/*
+    Compiler JNI Bindings to LLVM
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+#include "jni_function.h"
+
+#include "o42a/llvm/BackendModule.h"
+#include "o42a/llvm/debug.h"
+#include "o42a/llvm/util.h"
+
+#include "llvm/Function.h"
+#include "llvm/Module.h"
+#include "llvm/Analysis/Verifier.h"
+#include "llvm/Support/IRBuilder.h"
+
+using namespace llvm;
+
+
+jlong Java_org_o42a_backend_llvm_code_LLVMSignatureWriter_createSignature(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr,
+		jstring name,
+		jlong returnTypePtr,
+		jlongArray paramPtrs) {
+
+	Module *module = from_ptr<Module>(modulePtr);
+	jStringRef signatureName(env, name);
+	const Type *returnType = from_ptr<const Type>(returnTypePtr);
+	jArray<jlongArray, jlong> paramArray(env, paramPtrs);
+	const size_t numParams = paramArray.length();
+	std::vector<const Type*> params(numParams);
+
+	OTRACE("createSignature: " << signatureName << "\n");
+
+	for (size_t i = 0; i < numParams; ++i) {
+		params[i] = from_ptr<const Type>(paramArray[i]);
+	}
+
+	FunctionType *result = FunctionType::get(returnType, params, false);
+
+	module->addTypeName(signatureName, result);
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}
+
+jlong Java_org_o42a_backend_llvm_code_LLVMFunction_externFunction(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr,
+		jstring name,
+		jlong typePtr) {
+
+	Module *module = from_ptr<Module>(modulePtr);
+	jStringRef funcName(env, name);
+	FunctionType *type = from_ptr<FunctionType>(typePtr);
+
+	OTRACE("externFunction: " << funcName << "(" << *type << ")\n");
+
+	Constant *function = module->getOrInsertFunction(funcName, type);
+
+	ODUMP(function);
+
+	return to_ptr(function);
+}
+
+jlong Java_org_o42a_backend_llvm_code_LLVMFunction_createFunction(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr,
+		jstring name,
+		jlong typePtr,
+		jboolean exported) {
+
+	Module *module = from_ptr<Module>(modulePtr);
+	jStringRef funcName(env, name);
+	FunctionType *type = from_ptr<FunctionType>(typePtr);
+	GlobalValue::LinkageTypes linkageType =
+			exported
+			? GlobalValue::ExternalLinkage : GlobalValue::InternalLinkage;
+
+	OTRACE("createFunction: " << funcName << "(" << *type << ")\n");
+
+	Function *function = Function::Create(
+			type,
+			linkageType,
+			Twine(funcName.data()),
+			module);
+
+	function->setDoesNotThrow(true);
+
+	ODUMP(function);
+
+	return to_ptr(function);
+}
+
+jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMFunction_arg(
+		JNIEnv *env,
+		jclass cls,
+		jlong functionPtr,
+		jint index) {
+
+	Function *function = from_ptr<Function>(functionPtr);
+	Value *value;
+
+	OTRACE("arg: " << function->getName() << "#" << index << "\n");
+
+	if (!index) {
+		value = &*function->arg_begin();
+	} else {
+
+		Function::arg_iterator args = function->arg_begin();
+
+		for (int i = 0; i < index; ++i) {
+			++args;
+		}
+
+		value = &*args;
+	}
+
+	ODUMP(value);
+
+	return to_ptr(value);
+}
+
+jboolean Java_org_o42a_backend_llvm_code_LLVMFunction_validate(
+		JNIEnv *env,
+		jclass cls,
+		jlong functionPtr) {
+
+	Function *function = from_ptr<Function>(functionPtr);
+	o42a::BackendModule *module =
+			static_cast<o42a::BackendModule*>(function->getParent());
+
+	return module->validateFunction(function) ? JNI_TRUE : JNI_FALSE;
+}
+
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFunc_call(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jlong functionPtr,
+		jlongArray argPtrs) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	IRBuilder<> builder(block);
+	Value *callee = from_ptr<Value>(functionPtr);
+	jArray<jlongArray, jlong> argArray(env, argPtrs);
+	const size_t numArgs = argArray.length();
+	std::vector<Value*> args(numArgs);
+
+	OCODE(
+			block,
+			"call " << callee->getName() << "(" << *callee->getType() << ")\n");
+
+	for (size_t i = 0; i < numArgs; ++i) {
+		args[i] = from_ptr<Value>(argArray[i]);
+	}
+
+	Value *result = builder.CreateCall(callee, args.begin(), args.end());
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}

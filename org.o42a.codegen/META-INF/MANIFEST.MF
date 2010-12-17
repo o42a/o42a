@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: o42a Code Generation API
+Bundle-SymbolicName: org.o42a.codegen
+Bundle-Version: 0.1.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.o42a.codegen,
+ org.o42a.codegen.code,
+ org.o42a.codegen.code.backend,
+ org.o42a.codegen.code.op,
+ org.o42a.codegen.data,
+ org.o42a.codegen.data.backend,
+ org.o42a.codegen.debug
+Require-Bundle: org.o42a.util;bundle-version="0.1.0"

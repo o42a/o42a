@@ -1,0 +1,79 @@
+/*
+    Compiler Core
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.core.artifact.intrinsic;
+
+import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.member.MemberId.memberName;
+
+import org.o42a.core.Container;
+import org.o42a.core.artifact.Directive;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.ValueType;
+
+
+public abstract class IntrinsicDirective
+		extends IntrinsicObject
+		implements Directive {
+
+	public IntrinsicDirective(FieldDeclaration declarator) {
+		super(declarator);
+	}
+
+	public IntrinsicDirective(Container enclosingContainer, String name) {
+		super(
+				FieldDeclaration.fieldDeclaration(
+						enclosingContainer,
+						declarativeDistributor(enclosingContainer),
+						memberName(name))
+				.prototype());
+	}
+
+	@Override
+	public final Directive toDirective() {
+		return this;
+	}
+
+
+	@Override
+	public <S extends Statements<S>> void assign(
+			Block<S> block,
+			Ref directive) {
+		apply(block, directive);
+	}
+
+	@Override
+	protected Ascendants createAscendants() {
+		return new Ascendants(getScope()).setAncestor(
+				ValueType.VOID.typeRef(
+						this,
+						getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
+		return Definitions.emptyDefinitions(this, getScope());
+	}
+
+}

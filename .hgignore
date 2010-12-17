@@ -1,0 +1,19 @@
+syntax: glob
+*/bin
+*/.settings
+**/*.s
+**/*.o
+**/*.so
+
+syntax: regexp
+^target$
+
+syntax: regexp
+^build/org\.o42a\.backend\.llvm\.jni\.mk$
+syntax: regexp
+^build/org\.o42a\.rt\.mk$
+syntax: regexp
+^build/o42a\.properties$
+
+syntax: regexp
+^org\.o42a\.helloworld/hello_world$

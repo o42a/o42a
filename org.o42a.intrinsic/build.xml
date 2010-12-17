@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Intrinsics Build Script
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<project name="org.o42a.intrinsic" default="package">
+
+	<filelist id="project.deps" dir="..">
+		<file name="org.o42a.lib.console"/>
+	</filelist>
+
+	<property
+		name="compile.deps"
+		value="org.o42a.util,org.o42a.ast,org.o42a.codegen,org.o42a.core"/>
+
+	<import file="../build/common.build.xml" />
+
+	<target name="copy-resources">
+		<copy todir="${output..}" taskname="${ant.project.name}">
+			<fileset dir="o42a"/>
+		</copy>
+	</target>
+
+</project>

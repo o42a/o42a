@@ -1,0 +1,80 @@
+/*
+    Intrinsics
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/*
+  Unary operator interface.
+  Returns a reference to result.
+*/
+Unary operator :=> void.
+
+/*
+  Binary operator interface.
+  Applies operator to object and parameter.
+  Returns a reference to result.
+*/
+Binary operator :=> void (
+  /* A second parameter to binary operator. */
+  Right operand :=< `void
+).
+
+
+/* Adapter to implement an unary plus ('+') operator. */
+Plus :=> * & unary operator.
+
+/* Adapter to implement an unary minus ('-') operator. */
+Minus :=> * & unary operator.
+
+/* Adapter to implement an addition ('+') operator. */
+Add :=> * & binary operator.
+
+/* Adapter to implement a subtraction ('-') operator. */
+Subtract :=> * & binary operator.
+
+/* Adapter to implement a multiplication ('*') operator. */
+Multiply :=> * & binary operator.
+
+/* Adapter to implement a division ('/') operator. */
+Divide :=> * & binary operator.
+
+/*
+  Adapter to implement an 'equals' ('==') operator.
+
+  It should return true if object equals to parameter.
+
+  A 'not equals' ('<>') operator will be also implemented as a negation to this
+  one.
+*/
+Equals :=> void(
+  /* An object reference to compare object with. */
+  To :=< `void
+).
+
+/*
+  Adapter to implements a comparison ('>', '<', '>=' and '<=') operators.
+  Compares object to parameter.
+
+  Returns:
+    - negative value if object is less than parameter;
+    - positive value if object is greater than parameter;
+    - zero if object and parameter equals.
+*/
+Compare :=> integer(
+  /* An object reference to compare object with. */
+  With :=< `void
+).

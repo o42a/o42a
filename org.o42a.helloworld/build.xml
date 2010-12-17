@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    "Hello, World!" Build Script
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<project name="org.o42a.helloworld" default="package">
+
+	<filelist id="project.deps" dir=".."/>
+
+	<import file="../build/common.build.xml"/>
+
+	<target name="package-deps">
+		<subant target="package" inheritall="false" inheritrefs="false">
+			<filelist dir=".." files="org.o42a.cl"/>
+		</subant>
+	</target>
+
+	<target name="compile" depends="package-deps">
+		<java
+			jar="../target/org.o42a.cl-${project.version}.jar"
+			fork="true"
+			failonerror="true"
+			taskname="o42a">
+			<jvmarg line="-Djava.library.path=../target"/>
+			<arg line="-ohello_world.s"/>
+			<arg line="--debug=on"/>
+			<arg line="hello_world.o42a"/>
+			<assertions>
+				<enable package="org.o42a"/>
+			</assertions>
+		</java>
+	</target>
+
+	<target name="package" depends="compile">
+		<exec
+			executable="${gcc.command}"
+			searchpath="true"
+			taskname="gcc"
+			failonerror="true">
+			<arg line="-lm"/>
+			<arg line="-Xlinker -rpath=${root.dir}/target"/>
+			<arg line="-Xlinker --no-undefined"/>
+			<arg line="-L${root.dir}/target -lo42a"/>
+			<arg line="-o hello_world"/>
+			<arg line="hello_world.s"/>
+		</exec>
+	</target>
+
+	<target name="exec" depends="package">
+		<exec
+			executable="hello_world"
+			searchpath="false"
+			resolveexecutable="true"
+			taskname="hello_world"
+			failonerror="true">
+			<env key="LD_LIBRARY_PATH" path="../target"/>
+		</exec>
+	</target>
+
+	<target name="clean">
+		<delete file="hello_world.s"/>
+		<delete file="hello_world"/>
+	</target>
+
+</project>
