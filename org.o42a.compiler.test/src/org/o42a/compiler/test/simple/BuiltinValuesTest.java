@@ -1,0 +1,73 @@
+/*
+    Compiler Tests
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.compiler.test.simple;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.value.ValueType;
+
+
+public class BuiltinValuesTest extends CompilerTestCase {
+
+	@Test
+	public void voidValue() {
+		compile("Void value := void");
+
+		final Obj field = getField("void_value").getArtifact().materialize();
+
+		assertEquals(ValueType.VOID, field.getValueType());
+	}
+
+	@Test
+	public void longValue() {
+		compile("Integer value := 12345678900");
+
+		final Obj field = getField("integer_value").getArtifact().materialize();
+
+		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertThat(definiteValue(field, Long.class), is(12345678900L));
+	}
+
+	@Test
+	public void floatValue() {
+		compile("Float value := '1234567890.25'");
+
+		final Obj field = getField("float_value").getArtifact().materialize();
+
+		assertEquals(ValueType.FLOAT, field.getValueType());
+		assertThat(definiteValue(field, Double.class), is(1234567890.25d));
+	}
+
+	@Test
+	public void stringValue() {
+		compile("String value := \"abc\"");
+
+		final Obj field = getField("string_value").getArtifact().materialize();
+
+		assertEquals(ValueType.STRING, field.getValueType());
+		assertEquals("abc", definiteValue(field));
+	}
+
+}

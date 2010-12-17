@@ -1,0 +1,83 @@
+/*
+    Abstract Syntax Tree
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.ast;
+
+import java.io.Serializable;
+
+import org.o42a.util.Source;
+
+
+public class FixedPosition extends Position implements Serializable {
+
+	private static final long serialVersionUID = -2604409717873524345L;
+
+	private final Source source;
+	private final int line;
+	private final int column;
+	private final long offset;
+
+	public FixedPosition(Source source) {
+		this.source = source;
+		this.line = 1;
+		this.column = 0;
+		this.offset = 0;
+	}
+
+	public FixedPosition(Source source, int line, int column, long offset) {
+		this.source = source;
+		this.line = line;
+		this.column = column;
+		this.offset = offset;
+	}
+
+	FixedPosition(Position position) {
+		this(
+				position.source(),
+				position.line(),
+				position.column(),
+				position.offset());
+	}
+
+	@Override
+	public Source source() {
+		return this.source;
+	}
+
+	@Override
+	public int line() {
+		return this.line;
+	}
+
+	@Override
+	public int column() {
+		return this.column;
+	}
+
+	@Override
+	public long offset() {
+		return this.offset;
+	}
+
+	@Override
+	public FixedPosition fix() {
+		return this;
+	}
+
+}

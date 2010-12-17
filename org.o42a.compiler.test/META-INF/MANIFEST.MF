@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: o42 Compiler Tests
+Bundle-SymbolicName: org.o42a.compiler.test;singleton:=true
+Bundle-Version: 0.1.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.5.0",
+ org.o42a.compiler;bundle-version="0.1.0",
+ org.o42a.intrinsic;bundle-version="0.1.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.o42a.compiler.test

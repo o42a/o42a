@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Reusable Build Script
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<project name="org.o42a.build.common">
+
+	<dirname file="${ant.file.org.o42a.build.common}" property="build.dir"/>
+	<property name="root.dir" location="${build.dir}/.."/>
+	<property name="target.dir" location="${root.dir}/target"/>
+
+	<property file="build.properties"/>
+	<property file="${build.dir}/o42a.properties" />
+	<property file="${build.dir}/o42a.default.properties"/>
+
+	<property 
+		name="jar.file"
+		value="${target.dir}/${ant.project.name}-${project.version}.jar"/>
+
+	<property name="compile.deps" value=""/>
+	<property name="compile.classpath" value=""/>
+
+	<pathconvert property="source.path">
+		<path>
+			<filelist dir="." files="${source..}"/>
+		</path>
+		<regexpmapper from="${basedir}/(.*)$$" to="\1" handledirsep="true"/>
+	</pathconvert>
+
+	<pathconvert property="project.deps.classpath">
+		<path>
+			<filelist refid="project.deps"/>
+		</path>
+		<globmapper from="*" to="*/bin" handledirsep="true"/>
+	</pathconvert>
+
+	<pathconvert property="compile.deps.classpath">
+		<path>
+			<filelist dir="${root.dir}" files="${compile.deps}"/>
+		</path>
+		<regexpmapper
+			from="${root.dir}/(.*)$$"
+			to="../\1/bin" handledirsep="true"/>
+	</pathconvert>
+
+	<property 
+		name="project.classpath"
+		value="${project.deps.classpath}:${compile.deps.classpath}:${compile.classpath}"/>
+
+	<pathconvert property="package.includes" pathsep=",">
+		<path>
+			<filelist dir="." files="${bin.includes}"/>
+		</path>
+		<regexpmapper from="${basedir}/(.*)$$" to="\1/**" handledirsep="true"/>
+	</pathconvert>
+	
+	<condition property="project.has_deps" value="${project.deps.classpath}">
+		<not>
+			<equals arg1="${project.deps.classpath}" arg2=""/>
+		</not>
+	</condition>
+
+	<target name="compile-deps" if="project.has_deps">
+		<echo
+			taskname="${ant.project.name}"
+			message="Compiling dependencies: ${project.has_deps}"/>
+		<subant 
+			target="compile"
+			inheritall="false"
+			inheritrefs="false"
+			taskname="${ant.project.name}">
+			<filelist refid="project.deps"/>
+		</subant>
+	</target>
+
+	<target name="copy-resources">
+	</target>
+
+	<target name="compile" depends="compile-deps">
+		<mkdir taskname="${ant.project.name}" dir="${output..}"/>
+		<javac
+			srcdir="${source.path}" 
+			destdir="${output..}"
+			debug="${compile.debug}"
+			debuglevel="${compile.debuglevel}"
+			encoding="UTF-8"
+			taskname="${ant.project.name}"
+			includeantruntime="false"
+			classpath="${project.classpath}">
+		</javac>
+		<antcall target="copy-resources"/>
+	</target>
+
+	<target name="package" depends="compile">
+		<mkdir taskname="${ant.project.name}" dir="${target.dir}"/>
+		<jar 
+			destfile="${jar.file}" 
+			manifest="META-INF/MANIFEST.MF"
+			encoding="UTF-8"
+			taskname="${ant.project.name}">
+			<fileset dir="${output..}"/>
+			<fileset 
+				id="package.resources" 
+				dir="."
+				includes="${package.includes}"/>
+		</jar>
+	</target>
+
+	<target name="clean">
+		<delete taskname="${ant.project.name}" file="${jar.file}"/>
+		<delete taskname="${ant.project.name}" dir="${output..}"/>
+	</target>
+
+</project>

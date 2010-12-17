@@ -1,0 +1,5 @@
+Use namespace 'Console'.
+
+@Main := *{
+  Print "Hello, World!" nl.
+}.

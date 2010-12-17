@@ -1,0 +1,157 @@
+#    Compiler JNI Bindings to LLVM Build Script
+#    Copyright (C) 2010 Ruslan Lopatin
+#
+#    This file is part of o42a.
+#
+#    o42a is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    o42a is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# See org.o42a.backend.llvm.jni.default.mk for customization options.
+#
+
+headersdir = include/o42a/llvm
+srcdir = src
+java_classes_dir = ../org.o42a.backend.llvm/bin
+java_package_dir = $(java_classes_dir)/org/o42a/backend/llvm
+java_package = org.o42a.backend.llvm
+build_dir = ../build
+default_mk = $(build_dir)/org.o42a.backend.llvm.jni.default.mk
+common_mk = $(build_dir)/org.o42a.backend.llvm.jni.mk
+target_dir = ../target
+so_lib = $(target_dir)/$(so_name)
+
+common_deps = $(headersdir)/*.h
+
+.PHONY : all clean javah clean_javah
+.DEFAULT_GOAL : all
+
+include $(default_mk)
+-include $(common_mk)
+
+includes += -I include
+CXXFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused
+CXXFLAGS := $(CXXFLAGS) $(shell llvm-config --cxxflags) $(debug_cxxflags) $(includes)
+LDFLAGS := $(LDFLAGS) $(java_ldflags) $(shell llvm-config --ldflags)
+
+# Make all.
+all : $(so_lib)
+
+
+# Build common settings file if absent.
+$(common_mk) :
+	@echo "# Put customized settings here." > $(common_mk)
+
+
+# Clean all generated files but JNI headers.
+clean :
+	rm -f $(so_lib)
+	rm -f $(srcdir)/*.o
+
+
+# Generate all JNI headers.
+javah : $(srcdir)/jni_module.h
+javah : $(srcdir)/jni_id.h
+javah : $(srcdir)/jni_data.h
+javah : $(srcdir)/jni_function.h
+javah : $(srcdir)/jni_int.h
+javah : $(srcdir)/jni_fp.h
+javah : $(srcdir)/jni_ptr.h
+javah : $(srcdir)/jni_code.h
+
+
+# Clean generated JNI headers.
+clean-javah :
+	rm -f $(srcdir)/jni_*.h
+
+
+# Build shared library.
+$(so_lib) : $(srcdir)/debug.o
+$(so_lib) : $(srcdir)/BackendModule.o
+$(so_lib) : $(srcdir)/jni_module.o
+$(so_lib) : $(srcdir)/jni_id.o
+$(so_lib) : $(srcdir)/jni_data.o
+$(so_lib) : $(srcdir)/jni_function.o
+$(so_lib) : $(srcdir)/jni_int.o
+$(so_lib) : $(srcdir)/jni_fp.o
+$(so_lib) : $(srcdir)/jni_ptr.o
+$(so_lib) : $(srcdir)/jni_code.o
+$(so_lib) :
+	mkdir -p $(target_dir)
+	$(CXX) $(LDFLAGS) -Xlinker --no-undefined -shared -o $@ $+ \
+	$(shell llvm-config --libdir)/libLLVM-$(shell llvm-config --version).so
+
+
+# Compile commons.
+$(srcdir)/debug.o : $(headersdir)/debug.h
+$(srcdir)/debug.o : $(srcdir)/debug.cc
+	$(call compile)
+
+$(srcdir)/BackendModule.o : $(headersdir)/debug.h
+$(srcdir)/BackendModule.o : $(headersdir)/BackendModule.h
+$(srcdir)/BackendModule.o : $(srcdir)/BackendModule.cc
+	$(call compile)
+
+
+# Generate individual JNI headers.
+$(srcdir)/jni_module.h : $(java_package_dir)/data/LLVMModule.class
+	$(call make_javah)
+
+$(srcdir)/jni_id.h : $(java_package_dir)/data/LLVMId.class
+	$(call make_javah)
+
+$(srcdir)/jni_data.h : $(java_package_dir)/data/LLVMDataAllocator.class
+$(srcdir)/jni_data.h : $(java_package_dir)/data/LLVMDataWriter.class
+$(srcdir)/jni_data.h :
+	$(call make_javah)
+
+$(srcdir)/jni_function.h : $(java_package_dir)/code/LLVMSignatureWriter.class
+$(srcdir)/jni_function.h : $(java_package_dir)/code/LLVMFunction.class
+$(srcdir)/jni_function.h : $(java_package_dir)/code/op/LLVMFunc.class
+$(srcdir)/jni_function.h :
+	$(call make_javah)
+
+$(srcdir)/jni_int.h : $(java_package_dir)/code/op/LLVMIntOp.class
+	$(call make_javah)
+
+$(srcdir)/jni_fp.h : $(java_package_dir)/code/op/LLVMFp64op.class
+	$(call make_javah)
+
+$(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/LLVMPtrOp.class
+$(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/LLVMRelOp.class
+$(srcdir)/jni_ptr.h :
+	$(call make_javah)
+
+
+$(srcdir)/jni_code.h : $(java_package_dir)/code/LLVMCode.class
+$(srcdir)/jni_code.h :
+	$(call make_javah)
+
+
+# Implicit rule for JNI bindings compilation.
+$(srcdir)/jni_*.o : $(common_deps)
+$(srcdir)/jni_%.o : $(srcdir)/jni_%.cc $(srcdir)/jni_%.h
+	$(call compile)
+
+
+# JNI header generation routine.
+define make_javah
+	@rm -f $@
+	$(javah) -classpath $(java_classes_dir) -o $@ \
+		$(subst /,.,$(patsubst $(java_classes_dir)/%.class,%,$+))
+endef
+
+# C++ compiler invocation routine.
+define compile
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
+endef

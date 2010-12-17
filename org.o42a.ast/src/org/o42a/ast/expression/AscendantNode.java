@@ -1,0 +1,74 @@
+/*
+    Abstract Syntax Tree
+    Copyright (C) 2010 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.ast.expression;
+
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.NodeVisitor;
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.atom.SignType;
+import org.o42a.ast.ref.RefNode;
+
+
+public class AscendantNode extends AbstractNode {
+
+	private final SignNode<AscendantType> separator;
+	private final RefNode sample;
+
+	public AscendantNode(SignNode<AscendantType> separator, RefNode sample) {
+		super(separator, sample);
+		this.separator = separator;
+		this.sample = sample;
+	}
+
+	public SignNode<AscendantType> getSeparator() {
+		return this.separator;
+	}
+
+	public RefNode getAscendant() {
+		return this.sample;
+	}
+
+	@Override
+	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
+		return visitor.visitSample(this, p);
+	}
+
+	@Override
+	public void printContent(StringBuilder out) {
+		if (this.separator != null) {
+			this.separator.printContent(out);
+		}
+		if (this.sample != null) {
+			this.sample.printContent(out);
+		}
+	}
+
+	public enum AscendantType implements SignType {
+
+		SAMPLE() {
+			@Override
+			public String getSign() {
+				return "&";
+			}
+		}
+
+	}
+
+}
