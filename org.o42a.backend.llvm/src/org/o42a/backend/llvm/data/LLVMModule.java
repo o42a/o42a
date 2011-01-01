@@ -27,7 +27,7 @@ import org.o42a.codegen.data.Type;
 public final class LLVMModule {
 
 	static {
-		System.loadLibrary("o42a_llvm");
+		System.loadLibrary("o42ac_llvm");
 	}
 
 	private final LLVMGenerator generator;

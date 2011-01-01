@@ -26,7 +26,7 @@
 
 using namespace llvm;
 
-namespace o42a {
+namespace o42ac {
 
 static cl::list<std::string> DebugMode(
 		"o42a-debug",

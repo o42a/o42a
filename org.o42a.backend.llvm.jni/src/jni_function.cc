@@ -146,8 +146,8 @@ jboolean Java_org_o42a_backend_llvm_code_LLVMFunction_validate(
 		jlong functionPtr) {
 
 	Function *function = from_ptr<Function>(functionPtr);
-	o42a::BackendModule *module =
-			static_cast<o42a::BackendModule*>(function->getParent());
+	o42ac::BackendModule *module =
+			static_cast<o42ac::BackendModule*>(function->getParent());
 
 	return module->validateFunction(function) ? JNI_TRUE : JNI_FALSE;
 }

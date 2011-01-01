@@ -56,7 +56,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(
 	initCommandLine(env, commandLine);
 
 	jStringRef moduleId(env, id);
-	o42a::BackendModule *module = o42a::BackendModule::createBackend(moduleId);
+	o42ac::BackendModule *module = o42ac::BackendModule::createBackend(moduleId);
 
 	return to_ptr(module);
 }
@@ -66,7 +66,7 @@ jboolean Java_org_o42a_backend_llvm_data_LLVMModule_write(
 		jclass cls,
 		jlong modulePtr) {
 
-	o42a::BackendModule &module = *from_ptr<o42a::BackendModule>(modulePtr);
+	o42ac::BackendModule &module = *from_ptr<o42ac::BackendModule>(modulePtr);
 
 	return module.writeCode() ? JNI_TRUE : JNI_FALSE;
 }
@@ -75,7 +75,7 @@ void Java_org_o42a_backend_llvm_data_LLVMModule_destroyModule(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr) {
-	from_ptr<o42a::BackendModule>(modulePtr)->destroyBackend();
+	from_ptr<o42ac::BackendModule>(modulePtr)->destroyBackend();
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_voidType(
