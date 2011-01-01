@@ -260,7 +260,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateRelPtr(
 }
 
 static inline jint typeLayout(
-		const o42a::BackendModule *module,
+		const o42ac::BackendModule *module,
 		const Type *type) {
 
 	const TargetData &targetData = module->getTargetData();
@@ -274,8 +274,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_int32layout(
 		jclass cls,
 		jlong modulePtr) {
 
-	const o42a::BackendModule *module =
-			from_ptr<o42a::BackendModule>(modulePtr);
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
 	return typeLayout(module, Type::getInt32Ty(module->getContext()));
 }
@@ -285,8 +285,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_int64layout(
 		jclass cls,
 		jlong modulePtr) {
 
-	const o42a::BackendModule *module =
-			from_ptr<o42a::BackendModule>(modulePtr);
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
 	return typeLayout(module, Type::getInt64Ty(module->getContext()));
 }
@@ -296,8 +296,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp64layout(
 		jclass cls,
 		jlong modulePtr) {
 
-	const o42a::BackendModule *module =
-			from_ptr<o42a::BackendModule>(modulePtr);
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
 	return typeLayout(module, Type::getDoubleTy(module->getContext()));
 }
@@ -307,8 +307,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_ptrLayout(
 		jclass cls,
 		jlong modulePtr) {
 
-	const o42a::BackendModule *module =
-			from_ptr<o42a::BackendModule>(modulePtr);
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
 	return typeLayout(module, Type::getInt8PtrTy(module->getContext()));
 }
@@ -318,8 +318,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_relPtrLayout(
 		jclass cls,
 		jlong modulePtr) {
 
-	const o42a::BackendModule *module =
-			from_ptr<o42a::BackendModule>(modulePtr);
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
 	return typeLayout(module, Type::getInt32Ty(module->getContext()));
 }
@@ -330,8 +330,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_structLayout(
 		jlong modulePtr,
 		jlong typePtr) {
 
-	const o42a::BackendModule *module =
-			from_ptr<o42a::BackendModule>(modulePtr);
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 	const Type *type = from_ptr<Type>(typePtr);
 
 	return typeLayout(module, type);

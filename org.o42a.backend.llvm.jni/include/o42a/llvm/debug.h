@@ -39,7 +39,7 @@
 
 #define ODEBUG_WITH_TYPE(TYPE, X) \
 	do { \
-		if (::o42a::debugEnabled(TYPE)) { X; } \
+		if (::o42ac::debugEnabled(TYPE)) { X; } \
 	} while (0)
 #define ODEBUG(X) ODEBUG_WITH_TYPE("debug", llvm::errs() << X)
 #define OTRACE(X) ODEBUG_WITH_TYPE("trace", llvm::errs() << "trace: " << X)
@@ -52,7 +52,7 @@
 		llvm::errs() << "[" << (BLOCK)->getName() << "] " << X)
 
 
-namespace o42a {
+namespace o42ac {
 
 bool debugEnabled(const char*);
 

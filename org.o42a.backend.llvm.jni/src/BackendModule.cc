@@ -1,6 +1,6 @@
 /*
     Compiler JNI Bindings to LLVM
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -43,7 +43,7 @@
 using namespace llvm;
 
 
-namespace o42a {
+namespace o42ac {
 
 static cl::opt<std::string> OutputFilename(
 		"o",

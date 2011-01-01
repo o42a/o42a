@@ -33,7 +33,7 @@ class TargetData;
 
 }
 
-namespace o42a {
+namespace o42ac {
 
 class BackendModule : public Module {
 

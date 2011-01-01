@@ -14,7 +14,7 @@ includes += -I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux
 java_ldflags = -L $(JAVA_HOME)/jre/lib/amd64 -ljava
 
 # Shared library name.
-so_name = libo42a_llvm.so
+so_name = libo42ac_llvm.so
 
 # Space-separated LLVM component names to pass to LLVM-config.
 # Invoke `llvm-config --components` to see all possible values.
