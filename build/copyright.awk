@@ -1,7 +1,7 @@
 function print_copyright() {
     print "/*"
     print "    " (progname ? progname : "o42a Programming Language")
-    print "    Copyright (C) 2010 Ruslan Lopatin"
+    print "    Copyright (C) 2011 Ruslan Lopatin"
     print ""
     print "    This file is part of o42a."
     print ""
