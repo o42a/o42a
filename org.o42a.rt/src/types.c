@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -92,7 +92,7 @@ o42a_layout_t o42a_layout_both(
 
 o42a_layout_t _o42a_layout(const uint8_t alignment, const size_t size) {
 
-	uint8_t ashift;
+	uint8_t ashift = 0;
 	const int diff = ((int) alignment) - 4;
 
 	if (diff <= 0) {

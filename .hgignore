@@ -17,3 +17,5 @@ syntax: regexp
 
 syntax: regexp
 ^org\.o42a\.helloworld/hello_world$
+syntax: regexp
+^org\.o42a\.helloworld/debug_hello_world$

@@ -1,5 +1,5 @@
 #    Run-Time Library Build Script
-#    Copyright (C) 2010 Ruslan Lopatin
+#    Copyright (C) 2010,2011 Ruslan Lopatin
 #
 #    This file is part of o42a.
 #
@@ -28,7 +28,11 @@ build_dir = ../build
 default_mk = $(build_dir)/org.o42a.rt.default.mk
 common_mk = $(build_dir)/org.o42a.rt.mk
 target_dir = ../target
-so_lib = $(target_dir)/$(so_name)
+release_so_lib = $(target_dir)/$(so_name)
+debug_so_lib = $(target_dir)/$(subst .,_debug.,$(so_name))
+
+release_flags = $(release_cppflags) $(release_cflags)
+debug_flags = $(debug_cppflags) $(debug_cflags)
 
 common_deps = $(headersdir)/types.h
 common_deps = $(headersdir)/debug.h
@@ -48,8 +52,20 @@ include $(default_mk)
 includes += -I include
 CFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused $(includes)
 
+objects = $(srcdir)/debug.o
+objects += $(srcdir)/types.o
+objects += $(srcdir)/string.o
+objects += $(srcdir)/values.o
+objects += $(srcdir)/object.o
+objects += $(srcdir)/fld/link.o
+objects += $(srcdir)/fld/obj.o
+objects += $(srcdir)/fld/scope.o
+objects += $(srcdir)/fld/var.o
+objects += $(srcdir)/fields.o
+objects += $(srcdir)/lib/io.o
+
 # Make all.
-all : $(so_lib)
+all : $(release_so_lib) $(debug_so_lib)
 
 
 # Build common settings file if absent.
@@ -59,72 +75,74 @@ $(common_mk) :
 
 # Clean all generated files.
 clean :
-	rm -f $(so_lib)
+	rm -f $(release_so_lib)
+	rm -f $(debug_so_lib)
 	rm -f $(srcdir)/*.o
 	rm -f $(srcdir)/fld/*.o
 	rm -f $(srcdir)/lib/*.o
 
 
 # Build shared library.
-$(so_lib) : $(srcdir)/debug.o
-$(so_lib) : $(srcdir)/types.o
-$(so_lib) : $(srcdir)/string.o
-$(so_lib) : $(srcdir)/values.o
-$(so_lib) : $(srcdir)/object.o
-$(so_lib) : $(srcdir)/fld/link.o
-$(so_lib) : $(srcdir)/fld/obj.o
-$(so_lib) : $(srcdir)/fld/scope.o
-$(so_lib) : $(srcdir)/fld/var.o
-$(so_lib) : $(srcdir)/fields.o
-$(so_lib) : $(srcdir)/lib/io.o
-$(so_lib) :
+$(release_so_lib) : $(subst .o,.rel.o,$(objects))
+$(release_so_lib) :
 	mkdir -p $(target_dir)
 	$(LD) $(LDFLAGS) -shared -o $@ $+
 
+# Build debug shared library.
+$(debug_so_lib) : $(subst .o,.dbg.o,$(objects))
+$(debug_so_lib) :
+	mkdir -p $(target_dir)
+	$(LD) $(LDFLAGS) -shared -o $@ $+
+
+
 # Compile individual files.
-$(srcdir)/types.o : $(headersdir)/types.h
-$(srcdir)/debug.o : $(srcdir)/debug.c
+$(srcdir)/debug.*.o : $(headersdir)/types.h
+$(srcdir)/debug.%.o : $(srcdir)/debug.c
 	$(call compile)
 
-$(srcdir)/types.o : $(headersdir)/types.h
-$(srcdir)/types.o : $(srcdir)/types.c
+$(srcdir)/types.*.o : $(headersdir)/types.h
+$(srcdir)/types.%.o : $(srcdir)/types.c
 	$(call compile)
 
-$(srcdir)/string.o : $(common_deps)
-$(srcdir)/string.o : $(headersdir)/string.h
-$(srcdir)/string.o : $(srcdir)/string.c
+$(srcdir)/string.*.o : $(common_deps)
+$(srcdir)/string.*.o : $(headersdir)/string.h
+$(srcdir)/string.%.o : $(srcdir)/string.c
 	$(call compile)
 
-$(srcdir)/object.o : $(common_deps)
-$(srcdir)/object.o : $(headersdir)/field.h
-$(srcdir)/object.o : $(headersdir)/object.h
-$(srcdir)/object.o : $(srcdir)/object.c
+$(srcdir)/object.*.o : $(common_deps)
+$(srcdir)/object.*.o : $(headersdir)/field.h
+$(srcdir)/object.*.o : $(headersdir)/object.h
+$(srcdir)/object.%.o : $(srcdir)/object.c
 	$(call compile)
 
-$(srcdir)/values.o : $(common_deps)
-$(srcdir)/values.o : $(headersdir)/object.h
-$(srcdir)/values.o : $(headersdir)/values.h
-$(srcdir)/values.o : $(srcdir)/values.c
+$(srcdir)/values.*.o : $(common_deps)
+$(srcdir)/values.*.o : $(headersdir)/object.h
+$(srcdir)/values.*.o : $(headersdir)/values.h
+$(srcdir)/values.%.o : $(srcdir)/values.c
 	$(call compile)
 
-$(srcdir)/fields.o : $(fld_deps)
-$(srcdir)/fields.o : $(headersdir)/fld/*.h
-$(srcdir)/fields.o : $(srcdir)/fields.c
+$(srcdir)/fields.*.o : $(fld_deps)
+$(srcdir)/fields.*.o : $(headersdir)/fld/*.h
+$(srcdir)/fields.%.o : $(srcdir)/fields.c
 	$(call compile)
 
 # Implicit rule for field type descriptor compilation.
 $(srcdir)/fld/*.o : $(fld_deps)
-$(srcdir)/fld/%.o : $(srcdir)/fld/%.c $(headersdir)/fld/%.h
+$(srcdir)/fld/%.dbg.o : $(srcdir)/fld/%.c $(headersdir)/fld/%.h
+	$(call compile)
+$(srcdir)/fld/%.rel.o : $(srcdir)/fld/%.c $(headersdir)/fld/%.h
 	$(call compile)
 
 # Built-in modules compilation.
-$(srcdir)/lib/io.o : $(common_deps)
-$(srcdir)/lib/io.o : $(headersdir)/string.h
-$(srcdir)/lib/io.o : $(headersdir)/lib/io.h
-$(srcdir)/lib/io.o : $(srcdir)/lib/io.c
+$(srcdir)/lib/io.*.o : $(common_deps)
+$(srcdir)/lib/io.*.o : $(headersdir)/string.h
+$(srcdir)/lib/io.*.o : $(headersdir)/lib/io.h
+$(srcdir)/lib/io.%.o : $(srcdir)/lib/io.c
 	$(call compile)
 
 # C compiler invocation routine.
 define compile
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) \
+		$(if $(findstring .dbg.,$@),$(debug_flags),$(release_flags)) \
+		-o $@ $<
 endef

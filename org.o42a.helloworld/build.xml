@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     "Hello, World!" Build Script
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -32,34 +32,31 @@
 	</target>
 
 	<target name="compile" depends="package-deps">
-		<java
-			jar="../target/org.o42a.cl-${project.version}.jar"
-			fork="true"
-			failonerror="true"
-			taskname="o42a">
-			<jvmarg line="-Djava.library.path=../target"/>
-			<arg line="-ohello_world.s"/>
-			<arg line="--debug=on"/>
-			<arg line="hello_world.o42a"/>
-			<assertions>
-				<enable package="org.o42a"/>
-			</assertions>
-		</java>
+		<antcall target="_compile" inheritall="true" inheritrefs="true">
+			<param name="_compile.debug" value="off"/>
+			<param name="_compile.name" value="hello_world"/>
+		</antcall>
+	</target>
+	
+	<target name="compile-debug" depends="package-deps">
+		<antcall target="_compile" inheritall="true" inheritrefs="true">
+			<param name="_compile.name" value="debug_hello_world"/>
+			<param name="_compile.debug" value="on"/>
+		</antcall>
 	</target>
 
 	<target name="package" depends="compile">
-		<exec
-			executable="${gcc.command}"
-			searchpath="true"
-			taskname="gcc"
-			failonerror="true">
-			<arg line="-lm"/>
-			<arg line="-Xlinker -rpath=${root.dir}/target"/>
-			<arg line="-Xlinker --no-undefined"/>
-			<arg line="-L${root.dir}/target -lo42a"/>
-			<arg line="-o hello_world"/>
-			<arg line="hello_world.s"/>
-		</exec>
+		<antcall target="_package" inheritall="true" inheritrefs="true">
+			<param name="_compile.name" value="hello_world"/>
+			<param name="_compile.lib" value="o42a"/>
+		</antcall>
+	</target>
+
+	<target name="package-debug" depends="compile-debug">
+		<antcall target="_package" inheritall="true" inheritrefs="true">
+			<param name="_compile.name" value="debug_hello_world"/>
+			<param name="_compile.lib" value="o42a_debug"/>
+		</antcall>
 	</target>
 
 	<target name="exec" depends="package">
@@ -72,10 +69,54 @@
 			<env key="LD_LIBRARY_PATH" path="../target"/>
 		</exec>
 	</target>
+	
+	<target name="debug" depends="package-debug">
+		<exec
+			executable="debug_hello_world"
+			searchpath="false"
+			resolveexecutable="true"
+			taskname="debug_hello_world"
+			failonerror="true">
+			<env key="LD_LIBRARY_PATH" path="../target"/>
+		</exec>
+	</target>
 
 	<target name="clean">
 		<delete file="hello_world.s"/>
 		<delete file="hello_world"/>
+		<delete file="debug_hello_world.s"/>
+		<delete file="debug_hello_world"/>
+	</target>
+
+	<target name="_compile">
+		<java
+			jar="../target/org.o42a.cl-${project.version}.jar"
+			fork="true"
+			failonerror="true"
+			taskname="o42a">
+			<jvmarg line="-Djava.library.path=../target"/>
+			<arg line="-o${_compile.name}.s"/>
+			<arg line="--debug=${_compile.debug}"/>
+			<arg line="hello_world.o42a"/>
+			<assertions>
+				<enable package="org.o42a"/>
+			</assertions>
+		</java>
+	</target>
+
+	<target name="_package" depends="compile">
+		<exec
+			executable="${gcc.command}"
+			searchpath="true"
+			taskname="gcc"
+			failonerror="true">
+			<arg line="-lm"/>
+			<arg line="-Xlinker -rpath=${root.dir}/target"/>
+			<arg line="-Xlinker --no-undefined"/>
+			<arg line="-L${root.dir}/target -l${_compile.lib}"/>
+			<arg line="-o ${_compile.name}"/>
+			<arg line="${_compile.name}.s"/>
+		</exec>
 	</target>
 
 </project>

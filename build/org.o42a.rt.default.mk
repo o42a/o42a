@@ -8,3 +8,15 @@ includes = -I /usr/include
 
 # Shared library name.
 so_name = libo42a.so
+
+# Release preprocessor flags.
+release_cppflags = -DNDEBUG
+
+# Debug preprocessor flags.
+debug_cppflags = -UNDEBUG
+
+# Release C compiler flags.
+release_cflags = -O2
+
+# Debug C compiler flags.
+debug_cflags = -O0
