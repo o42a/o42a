@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -32,6 +32,9 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.St;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
 public final class ClauseBuilder extends ClauseBuilderBase {
@@ -69,6 +72,36 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	@Override
 	public final Node getNode() {
 		return this.declaration.getNode();
+	}
+
+	@Override
+	public Loggable getLoggable() {
+
+		final Node node = getNode();
+
+		return node != null ? node : this;
+	}
+
+	@Override
+	public Object getLoggableData() {
+		return this;
+	}
+
+	@Override
+	public LogInfo getPreviousLogInfo() {
+		return this.declaration.getPreviousLogInfo();
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+
+		final Node node = getNode();
+
+		if (node != null) {
+			return node.accept(visitor, p);
+		}
+
+		return visitor.visitData(this, p);
 	}
 
 	@Override

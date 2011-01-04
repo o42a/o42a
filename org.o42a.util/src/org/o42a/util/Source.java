@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,14 +23,36 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 
+import org.o42a.util.log.*;
 
-public abstract class Source implements Serializable {
 
-	private static final long serialVersionUID = 2860681520783416977L;
+public abstract class Source implements LoggableData, Serializable {
+
+	private static final long serialVersionUID = 3171151871670167770L;
 
 	public abstract String getName();
 
 	public abstract Reader open() throws IOException;
+
+	@Override
+	public Loggable getLoggable() {
+		return this;
+	}
+
+	@Override
+	public LogInfo getPreviousLogInfo() {
+		return null;
+	}
+
+	@Override
+	public Object getLoggableData() {
+		return this;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+		return visitor.visitData(this, p);
+	}
 
 	@Override
 	public String toString() {

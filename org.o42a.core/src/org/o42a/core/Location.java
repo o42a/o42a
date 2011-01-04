@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,6 +20,9 @@
 package org.o42a.core;
 
 import org.o42a.ast.Node;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
 public class Location implements LocationSpec {
@@ -47,8 +50,38 @@ public class Location implements LocationSpec {
 	}
 
 	@Override
+	public Loggable getLoggable() {
+
+		final Node node = getNode();
+
+		return node != null ? node : this;
+	}
+
+	@Override
 	public Node getNode() {
 		return this.node;
+	}
+
+	@Override
+	public Object getLoggableData() {
+		return this;
+	}
+
+	@Override
+	public LogInfo getPreviousLogInfo() {
+		return null;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+
+		final Node node = getNode();
+
+		if (node != null) {
+			return node.accept(visitor, p);
+		}
+
+		return visitor.visitData(this, p);
 	}
 
 	public final CompilerLogger getLogger() {

@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,9 +20,11 @@
 package org.o42a.ast;
 
 import org.o42a.util.Source;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
 
 
-public abstract class Position {
+public abstract class Position implements LogInfo {
 
 	public abstract Source source();
 
@@ -34,6 +36,11 @@ public abstract class Position {
 
 	public FixedPosition fix() {
 		return new FixedPosition(this);
+	}
+
+	@Override
+	public Loggable getLoggable() {
+		return fix();
 	}
 
 	@Override

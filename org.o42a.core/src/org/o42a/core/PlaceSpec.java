@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -18,7 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.o42a.core;
-
 
 
 public interface PlaceSpec extends ScopeSpec {

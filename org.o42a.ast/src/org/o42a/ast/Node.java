@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,12 +22,15 @@ package org.o42a.ast;
 import java.util.Collection;
 
 import org.o42a.ast.atom.CommentNode;
+import org.o42a.util.log.LoggableRange;
 
 
-public interface Node extends NodeInfo {
+public interface Node extends NodeInfo, LoggableRange {
 
+	@Override
 	FixedPosition getStart();
 
+	@Override
 	FixedPosition getEnd();
 
 	CommentNode[] getComments();

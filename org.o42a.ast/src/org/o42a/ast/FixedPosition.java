@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,9 +22,11 @@ package org.o42a.ast;
 import java.io.Serializable;
 
 import org.o42a.util.Source;
+import org.o42a.util.log.*;
 
 
-public class FixedPosition extends Position implements Serializable {
+public class FixedPosition extends Position
+		implements LoggablePosition, Serializable {
 
 	private static final long serialVersionUID = -2604409717873524345L;
 
@@ -56,6 +58,16 @@ public class FixedPosition extends Position implements Serializable {
 	}
 
 	@Override
+	public LogInfo getPreviousLogInfo() {
+		return null;
+	}
+
+	@Override
+	public Loggable getLoggable() {
+		return this;
+	}
+
+	@Override
 	public Source source() {
 		return this.source;
 	}
@@ -78,6 +90,11 @@ public class FixedPosition extends Position implements Serializable {
 	@Override
 	public FixedPosition fix() {
 		return this;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+		return visitor.visitPosition(this, p);
 	}
 
 }

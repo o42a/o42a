@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,12 +19,9 @@
 */
 package org.o42a.core;
 
-import org.o42a.ast.Node;
 import org.o42a.ast.NodeInfo;
 import org.o42a.core.member.Visibility;
-import org.o42a.util.log.LogRecord;
-import org.o42a.util.log.Logger;
-import org.o42a.util.log.Severity;
+import org.o42a.util.log.*;
 
 
 public class CompilerLogger implements Logger {
@@ -644,29 +641,14 @@ public class CompilerLogger implements Logger {
 			Severity severity,
 			String code,
 			String defaultMessage,
-			NodeInfo location,
+			LogInfo location,
 			Object... args) {
-
-		final Object loc;
-		final Node node = location.getNode();
-
-		if (node != null) {
-
-			final StringBuilder out = new StringBuilder();
-
-			node.printRange(out);
-
-			loc = out;
-		} else {
-			loc = location;
-		}
-
 		log(new LogRecord(
 				getSource(),
 				severity,
 				"compiler." + code,
 				defaultMessage,
-				loc,
+				location.getLoggable(),
 				args));
 	}
 

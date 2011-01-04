@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,6 +23,9 @@ import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.ref.Ref;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
 public class ArrayTypeRef implements ScopeSpec {
@@ -83,6 +86,36 @@ public class ArrayTypeRef implements ScopeSpec {
 
 	public final boolean isValid() {
 		return this.dimension > 0;
+	}
+
+	@Override
+	public Loggable getLoggable() {
+
+		final Node node = getNode();
+
+		return node != null ? node : this;
+	}
+
+	@Override
+	public Object getLoggableData() {
+		return this;
+	}
+
+	@Override
+	public LogInfo getPreviousLogInfo() {
+		return null;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+
+		final Node node = getNode();
+
+		if (node != null) {
+			return node.accept(visitor, p);
+		}
+
+		return visitor.visitData(this, p);
 	}
 
 	public final ArrayTypeRef toScope(Scope scope) {
