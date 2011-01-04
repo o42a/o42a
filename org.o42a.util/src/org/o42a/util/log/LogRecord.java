@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,18 +24,22 @@ import java.util.Formattable;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
 
+import org.o42a.util.Source;
+
 
 public class LogRecord implements Formattable, Serializable {
 
-	private static final long serialVersionUID = 572665045518100529L;
+	private static final long serialVersionUID = 4342439372674659502L;
 
 	private static final Object[] NO_ARGS = new Object[0];
+	private static final LoggableFormatter LOGGABLE_FORMATTER =
+		new LoggableFormatter();
 
 	private final Severity severity;
 	private final Object source;
 	private final String code;
 	private final String message;
-	private final Object location;
+	private final Loggable loggable;
 	private final Object[] args;
 
 	public LogRecord(
@@ -43,13 +47,13 @@ public class LogRecord implements Formattable, Serializable {
 			Severity severity,
 			String code,
 			String message,
-			Object location,
+			Loggable loggable,
 			Object... args) {
 		this.severity = severity;
 		this.source = source;
 		this.code = code != null ? code : severity.toString();
 		this.message = message != null ? message : severity.toString();
-		this.location = location;
+		this.loggable = loggable;
 		this.args = args != null ? args : NO_ARGS;
 	}
 
@@ -65,8 +69,8 @@ public class LogRecord implements Formattable, Serializable {
 		return this.code;
 	}
 
-	public Object getLocation() {
-		return this.location;
+	public Loggable getLoggable() {
+		return this.loggable;
 	}
 
 	public String getMessage() {
@@ -93,12 +97,15 @@ public class LogRecord implements Formattable, Serializable {
 
 		formatter.format(getMessage(), getArgs());
 
-		final Object location = getLocation();
+		final Loggable loggable = getLoggable();
 
-		if (location != null) {
-			formatter.format(" at %s", location);
+		if (loggable == null) {
+			return;
 		}
-
+		if (loggable instanceof Formattable) {
+			formatter.format(" at %s", loggable);
+		}
+		format(formatter, loggable);
 	}
 
 	@Override
@@ -110,6 +117,74 @@ public class LogRecord implements Formattable, Serializable {
 		formatter.format("%s", this);
 
 		return out.toString();
+	}
+
+	private static void format(Formatter formatter, Loggable loggable) {
+		loggable.accept(LOGGABLE_FORMATTER, formatter);
+	}
+
+	public static void formatPosition(
+			StringBuilder out,
+			LoggablePosition position,
+			boolean withFile) {
+		if (withFile) {
+
+			final Source source = position.source();
+
+			if (source != null) {
+				out.append(source.getName()).append(':');
+			}
+		}
+
+		out.append(position.line()).append(',').append(position.column());
+		out.append('(').append(position.offset()).append(')');
+	}
+
+	private static final class LoggableFormatter
+			implements LoggableVisitor<Void, Formatter> {
+
+		@Override
+		public Void visitPosition(LoggablePosition position, Formatter p) {
+
+			final StringBuilder out = new StringBuilder();
+
+			formatPosition(out, position, true);
+			p.format(" at %s", out);
+
+			return null;
+		}
+
+		@Override
+		public Void visitRange(LoggableRange range, Formatter p) {
+
+			final StringBuilder out = new StringBuilder();
+			final LoggablePosition start = range.getStart();
+			final LoggablePosition end = range.getEnd();
+			final Source src1 = start.source();
+			final Source src2 = end.source();
+			final boolean withSource;
+
+			if (src1 == null) {
+				withSource = src2 != null;
+			} else {
+				withSource = !src1.equals(src2);
+			}
+
+			formatPosition(out, start, true);
+			out.append("..");
+			formatPosition(out, end, withSource);
+
+			p.format(" at %s", out);
+
+			return null;
+		}
+
+		@Override
+		public Void visitData(LoggableData data, Formatter p) {
+			p.format(" at %s", data.getLoggableData());
+			return null;
+		}
+
 	}
 
 }

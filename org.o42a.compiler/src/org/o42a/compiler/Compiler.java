@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -175,8 +175,8 @@ public class Compiler implements BlockCompiler {
 				worker.close();
 			} catch (IOException e) {
 				worker.getParserLogger().ioError(
-						worker != null ? worker.position().fix() : source,
-							e.getLocalizedMessage());
+						worker != null ? worker.position() : source,
+						e.getLocalizedMessage());
 			}
 		}
 	}

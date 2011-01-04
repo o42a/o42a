@@ -1,6 +1,6 @@
 /*
-    Abstract Syntax Tree
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Utilities
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,13 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast;
-
-import org.o42a.util.log.LoggableData;
+package org.o42a.util.log;
 
 
-public interface NodeInfo extends LoggableData {
+public interface LoggableVisitor<R, P> {
 
-	Node getNode();
+	R visitPosition(LoggablePosition position, P p);
+
+	R visitRange(LoggableRange range, P p);
+
+	R visitData(LoggableData data, P p);
 
 }

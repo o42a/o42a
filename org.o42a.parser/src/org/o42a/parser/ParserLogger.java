@@ -1,6 +1,6 @@
 /*
     Parser
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,17 +19,12 @@
 */
 package org.o42a.parser;
 
-import org.o42a.ast.Node;
-import org.o42a.ast.NodeInfo;
-import org.o42a.ast.Position;
-import org.o42a.util.log.LogRecord;
-import org.o42a.util.log.Logger;
-import org.o42a.util.log.Severity;
+import org.o42a.util.log.*;
 
 
 public abstract class ParserLogger implements Logger {
 
-	public void cantAccept(Object location, int acceptingBut, int charsLeft) {
+	public void cantAccept(LogInfo location, int acceptingBut, int charsLeft) {
 		warning(
 				"cant_accept",
 				"Can not accept all but %d"
@@ -40,56 +35,56 @@ public abstract class ParserLogger implements Logger {
 				charsLeft);
 	}
 
-	public void emptyAlternative(Object location) {
+	public void emptyAlternative(LogInfo location) {
 		warning("empty_alternative", "Empty alternative", location);
 	}
 
-	public void emptyOpposite(Object location) {
+	public void emptyOpposite(LogInfo location) {
 		error("empty_opposite", "Opposite is empty", location);
 	}
 
-	public void emptyStatement(Object location) {
+	public void emptyStatement(LogInfo location) {
 		warning("empty_statement", "Empty statement", location);
 	}
 
-	public void eof(Object location) {
+	public void eof(LogInfo location) {
 		fatal("eof", "Unexpected end of file", location);
 	}
 
-	public void invalidDefinition(Object location) {
+	public void invalidDefinition(LogInfo location) {
 		fatal("invalid_definition", "Invalid definition", location);
 	}
 
-	public void invalidEllipsisTarget(Object location) {
+	public void invalidEllipsisTarget(LogInfo location) {
 		error(
 				"invalid_ellipsis_target",
 				"Invalid target: expected either block name or nothing",
 				location);
 	}
 
-	public void invalidParameter(Object location) {
+	public void invalidParameter(LogInfo location) {
 		fatal("invalid_parameter", "Not a valid parameter name", location);
 	}
 
-	public void ioError(Object location, String message) {
+	public void ioError(LogInfo location, String message) {
 		fatal("io_error", "I/O error: %s", location, message);
 	}
 
-	public void missingClause(Object location) {
+	public void missingClause(LogInfo location) {
 		error(
 				"missing_clause",
 				"Clause reference is missing",
 				location);
 	}
 
-	public void missingDeclaredIn(Object location) {
+	public void missingDeclaredIn(LogInfo location) {
 		error(
 				"missing_declared_in",
 				"Declaration reference is missing",
 				location);
 	}
 
-	public void missingOperand(Object location, String operator) {
+	public void missingOperand(LogInfo location, String operator) {
 		error(
 				"missing_operand",
 				"Operand of operator '%s' is missing",
@@ -97,7 +92,7 @@ public abstract class ParserLogger implements Logger {
 				operator);
 	}
 
-	public void missingRightOperand(Object location, String operator) {
+	public void missingRightOperand(LogInfo location, String operator) {
 		error(
 				"missing_right_operand",
 				"Right operand of operator '%s' is missing",
@@ -105,34 +100,34 @@ public abstract class ParserLogger implements Logger {
 				operator);
 	}
 
-	public void missingSample(Object location) {
+	public void missingSample(LogInfo location) {
 		error("missing_sample", "Sample reference is missing", location);
 	}
 
-	public void missingType(Object location) {
+	public void missingType(LogInfo location) {
 		error("missing_type", "Type is missing", location);
 	}
 
-	public void missingValue(Object location) {
+	public void missingValue(LogInfo location) {
 		error("missing_value", "Value is missing", location);
 	}
 
-	public void notAccepted(Object location) {
+	public void notAccepted(LogInfo location) {
 		warning(
 				"not_accepted",
 				"Result produced, but no characters accepted",
 				location);
 	}
 
-	public void notClosed(Object location, String brace) {
+	public void notClosed(LogInfo location, String brace) {
 		error("not_closed", "'%s' not closed", location, brace);
 	}
 
-	public void oppositeToEmpty(Object location) {
+	public void oppositeToEmpty(LogInfo location) {
 		warning("opposite_to_empty", "Opposite to empty sentence", location);
 	}
 
-	public void unrecognizedEscapeSequence(Object location, String sequence) {
+	public void unrecognizedEscapeSequence(LogInfo location, String sequence) {
 		error(
 				"unrecognized_escape_sequence",
 				"Unrecognized escape sequence: %s",
@@ -140,18 +135,18 @@ public abstract class ParserLogger implements Logger {
 				sequence);
 	}
 
-	public void unrecognizedSentence(Object location) {
+	public void unrecognizedSentence(LogInfo location) {
 		fatal("unrecognized_sentence", "Unrecognized sentence", location);
 	}
 
-	public void unterminatedStringLiteral(Object location) {
+	public void unterminatedStringLiteral(LogInfo location) {
 		error(
 				"unterminated_string_literal",
 				"Unterminated string literal",
 				location);
 	}
 
-	public void unterminatedUnicodeEscapeSequence(Object location) {
+	public void unterminatedUnicodeEscapeSequence(LogInfo location) {
 		error(
 				"unterminated_unicode_escape_sequence",
 				"Unterminated unicode escape sequence",
@@ -170,7 +165,7 @@ public abstract class ParserLogger implements Logger {
 	private final void fatal(
 			String code,
 			String defaultMessage,
-			Object location,
+			LogInfo location,
 			Object... args) {
 		log(Severity.FATAL, code, defaultMessage, location, args);
 	}
@@ -178,7 +173,7 @@ public abstract class ParserLogger implements Logger {
 	private final void error(
 			String code,
 			String defaultMessage,
-			Object location,
+			LogInfo location,
 			Object... args) {
 		log(Severity.ERROR, code, defaultMessage, location, args);
 	}
@@ -186,7 +181,7 @@ public abstract class ParserLogger implements Logger {
 	private final void warning(
 			String code,
 			String defaultMessage,
-			Object location,
+			LogInfo location,
 			Object... args) {
 		log(Severity.WARNING, code, defaultMessage, location, args);
 	}
@@ -195,37 +190,14 @@ public abstract class ParserLogger implements Logger {
 			Severity severity,
 			String code,
 			String defaultMessage,
-			Object location,
+			LogInfo location,
 			Object... args) {
-		if (location instanceof Position) {
-
-			final StringBuilder out = new StringBuilder();
-			final Position position = (Position) location;
-
-			position.print(out, true);
-
-			location = out;
-		} else if (location instanceof NodeInfo) {
-
-			final NodeInfo nodeInfo = (NodeInfo) location;
-			final Node node = nodeInfo.getNode();
-
-			if (node != null) {
-
-				final StringBuilder out = new StringBuilder();
-
-				node.printRange(out);
-
-				location = out;
-			}
-		}
-
 		log(new LogRecord(
 				getSource(),
 				severity,
 				"parser." + code,
 				defaultMessage,
-				location,
+				location.getLoggable(),
 				args));
 	}
 

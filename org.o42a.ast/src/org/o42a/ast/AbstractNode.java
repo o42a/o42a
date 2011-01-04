@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,6 +23,9 @@ import java.util.Collection;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.util.Source;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
 public abstract class AbstractNode implements Node {
@@ -95,6 +98,26 @@ public abstract class AbstractNode implements Node {
 	@Override
 	public CommentNode[] getComments() {
 		return this.comments;
+	}
+
+	@Override
+	public Loggable getLoggable() {
+		return this;
+	}
+
+	@Override
+	public LogInfo getPreviousLogInfo() {
+		return null;
+	}
+
+	@Override
+	public final Object getLoggableData() {
+		return this;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+		return visitor.visitRange(this, p);
 	}
 
 	@Override

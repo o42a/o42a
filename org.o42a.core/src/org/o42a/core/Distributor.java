@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,6 +22,9 @@ package org.o42a.core;
 import static org.o42a.core.ScopePlace.scopePlace;
 
 import org.o42a.ast.Node;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
 public abstract class Distributor implements PlaceSpec {
@@ -38,6 +41,36 @@ public abstract class Distributor implements PlaceSpec {
 	@Override
 	public final Node getNode() {
 		return getScope().getNode();
+	}
+
+	@Override
+	public Object getLoggableData() {
+		return this;
+	}
+
+	@Override
+	public LogInfo getPreviousLogInfo() {
+		return null;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+
+		final Node node = getNode();
+
+		if (node != null) {
+			return node.accept(visitor, p);
+		}
+
+		return visitor.visitData(this, p);
+	}
+
+	@Override
+	public Loggable getLoggable() {
+
+		final Node node = getNode();
+
+		return node != null ? node : this;
 	}
 
 	public final CompilerLogger getLogger() {

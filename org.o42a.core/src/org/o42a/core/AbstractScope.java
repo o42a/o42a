@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,6 +21,7 @@ package org.o42a.core;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
+import org.o42a.ast.Node;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
@@ -28,6 +29,9 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldScope;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
 public abstract class AbstractScope extends FieldScope implements Scope {
@@ -186,6 +190,36 @@ public abstract class AbstractScope extends FieldScope implements Scope {
 		final Obj object = container.toObject();
 
 		return object != null && object.isRuntime();
+	}
+
+	@Override
+	public Loggable getLoggable() {
+
+		final Node node = getNode();
+
+		return node != null ? node : this;
+	}
+
+	@Override
+	public Object getLoggableData() {
+		return this;
+	}
+
+	@Override
+	public LogInfo getPreviousLogInfo() {
+		return null;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+
+		final Node node = getNode();
+
+		if (node != null) {
+			return node.accept(visitor, p);
+		}
+
+		return visitor.visitData(this, p);
 	}
 
 	@Override
