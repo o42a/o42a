@@ -31,6 +31,8 @@ import org.o42a.core.ref.common.AdapterLookup;
 
 public class UnaryOperatorLookup extends AdapterLookup {
 
+	private final UnaryNode node;
+
 	private static StaticTypeRef adapterType(
 			CompilerContext context,
 			UnaryNode node) {
@@ -52,11 +54,11 @@ public class UnaryOperatorLookup extends AdapterLookup {
 				new Location(operand.getContext(), node),
 				operand,
 				adapterType(operand.getContext(), node));
+		this.node = node;
 	}
 
-	@Override
 	public UnaryNode getNode() {
-		return (UnaryNode) super.getNode();
+		return this.node;
 	}
 
 	@Override

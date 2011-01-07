@@ -25,7 +25,6 @@ import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
 import java.util.List;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -38,6 +37,7 @@ import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.util.Place.Trace;
+import org.o42a.util.log.Loggable;
 
 
 public final class DeclarativeBlock extends Block<Declaratives> {
@@ -215,10 +215,10 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
-		final Node node = getNode();
+		final Loggable loggable = getLoggable();
 
-		if (node != null) {
-			node.printContent(out);
+		if (loggable != null) {
+			loggable.printContent(out);
 			if (out.length() < 2 || out.charAt(0) != '(') {
 				out.insert(0, '(').append(')');
 			}

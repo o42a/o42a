@@ -43,6 +43,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 
 public final class BinaryOp extends NewObjectEx {
 
+	private final BinaryNode node;
 	private BinaryOperatorLookup operator;
 
 	public BinaryOp(
@@ -50,15 +51,16 @@ public final class BinaryOp extends NewObjectEx {
 			BinaryNode node,
 			Distributor distributor) {
 		super(new Location(context, node), distributor);
+		this.node = node;
 	}
 
-	private BinaryOp(LocationSpec location, Distributor distributor) {
-		super(location, distributor);
+	private BinaryOp(BinaryOp prototype, Distributor distributor) {
+		super(prototype, distributor);
+		this.node = prototype.node;
 	}
 
-	@Override
 	public BinaryNode getNode() {
-		return (BinaryNode) super.getNode();
+		return this.node;
 	}
 
 	@Override

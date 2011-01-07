@@ -23,8 +23,6 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.IRUtil.canonicalName;
 import static org.o42a.core.ir.IRUtil.encodeName;
 
-import org.o42a.ast.EmptyNode;
-import org.o42a.ast.FixedPosition;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.PlainObject;
@@ -45,9 +43,7 @@ public class Module extends PlainObject {
 
 	public Module(CompilerContext context, String moduleName) {
 		super(new ModuleScope(
-				new Location(
-						context,
-						new EmptyNode(new FixedPosition(context.getSource()))),
+				new Location(context, context.getSource()),
 				moduleName));
 		this.moduleName = moduleName;
 		this.fieldRegistry = new ObjectMemberRegistry(this);

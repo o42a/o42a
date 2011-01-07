@@ -19,7 +19,8 @@
 */
 package org.o42a.core;
 
-import org.o42a.ast.Node;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
 
 
 public class Scoped extends Location implements ScopeSpec {
@@ -63,8 +64,8 @@ public class Scoped extends Location implements ScopeSpec {
 		this.scope = scope;
 	}
 
-	public Scoped(CompilerContext context, Node node, Scope scope) {
-		super(context, node);
+	public Scoped(CompilerContext context, LogInfo location, Scope scope) {
+		super(context, location);
 		this.scope = scope;
 	}
 
@@ -106,11 +107,11 @@ public class Scoped extends Location implements ScopeSpec {
 		out.append(getClass().getSimpleName()).append('[');
 		out.append(getScope()).append('@').append(getContext());
 
-		final Node node = getNode();
+		final Loggable loggable = getLoggable();
 
-		if (node != null) {
+		if (loggable != null) {
 			out.append("]:[");
-			node.printContent(out);
+			loggable.printContent(out);
 		}
 		out.append(']');
 

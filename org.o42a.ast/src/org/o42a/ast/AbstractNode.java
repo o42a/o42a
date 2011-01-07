@@ -81,11 +81,6 @@ public abstract class AbstractNode implements Node {
 	}
 
 	@Override
-	public final Node getNode() {
-		return this;
-	}
-
-	@Override
 	public FixedPosition getStart() {
 		return this.start;
 	}
@@ -108,11 +103,6 @@ public abstract class AbstractNode implements Node {
 	@Override
 	public LogInfo getPreviousLogInfo() {
 		return null;
-	}
-
-	@Override
-	public final Object getLoggableData() {
-		return this;
 	}
 
 	@Override

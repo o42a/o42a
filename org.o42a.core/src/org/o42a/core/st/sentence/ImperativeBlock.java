@@ -24,7 +24,6 @@ import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.ast.Node;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
@@ -45,6 +44,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
+import org.o42a.util.log.Loggable;
 
 
 public final class ImperativeBlock extends Block<Imperatives> {
@@ -280,10 +280,10 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
-		final Node node = getNode();
+		final Loggable loggable = getLoggable();
 
-		if (node != null) {
-			node.printContent(out);
+		if (loggable != null) {
+			loggable.printContent(out);
 			if (out.length() < 2 || out.charAt(0) != '{') {
 				out.insert(0, '{').append('}');
 			}

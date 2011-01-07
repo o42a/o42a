@@ -23,12 +23,16 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 
-import org.o42a.util.log.*;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableData;
 
 
-public abstract class Source implements LoggableData, Serializable {
+public abstract class Source implements LogInfo, Serializable {
 
-	private static final long serialVersionUID = 3171151871670167770L;
+	private static final long serialVersionUID = -1944519057349719722L;
+
+	private final LoggableData loggableData = new LoggableData(this);
 
 	public abstract String getName();
 
@@ -36,22 +40,7 @@ public abstract class Source implements LoggableData, Serializable {
 
 	@Override
 	public Loggable getLoggable() {
-		return this;
-	}
-
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
-	}
-
-	@Override
-	public Object getLoggableData() {
-		return this;
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-		return visitor.visitData(this, p);
+		return this.loggableData;
 	}
 
 	@Override

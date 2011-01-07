@@ -24,7 +24,6 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 
 import java.util.Collection;
 
-import org.o42a.ast.Node;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
@@ -43,6 +42,7 @@ import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class LocalScope
@@ -74,13 +74,13 @@ public abstract class LocalScope
 	}
 
 	private final CompilerContext context;
-	private final Node node;
+	private final Loggable loggable;
 	private final Obj owner;
 	private final Path ownerScopePath;
 
 	LocalScope(LocationSpec location, Obj owner) {
 		this.context = location.getContext();
-		this.node = location.getNode();
+		this.loggable = location.getLoggable();
 		this.owner = owner;
 		this.ownerScopePath = new OwnerPathFragment().toPath();
 	}
@@ -91,8 +91,8 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Node getNode() {
-		return this.node;
+	public final Loggable getLoggable() {
+		return this.loggable;
 	}
 
 	@Override

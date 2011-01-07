@@ -25,8 +25,6 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.o42a.ast.EmptyNode;
-import org.o42a.ast.FixedPosition;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
@@ -70,9 +68,7 @@ public class Root extends Obj {
 				base,
 				"root.o42a",
 				DECLARATION_LOGGER);
-		final Location location = new Location(
-				context,
-				new EmptyNode(new FixedPosition(context.getSource())));
+		final Location location = new Location(context, context.getSource());
 
 		return new Root(location, topScope);
 	}

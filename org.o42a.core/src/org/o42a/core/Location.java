@@ -19,29 +19,29 @@
 */
 package org.o42a.core;
 
-import org.o42a.ast.Node;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableVisitor;
+import org.o42a.util.log.LoggableData;
 
 
 public class Location implements LocationSpec {
 
 	private final CompilerContext context;
-	private final Node node;
+	private final Loggable loggable;
 
 	public Location(LocationSpec location) {
 		assert location != null :
 			"Location not specified";
 		this.context = location.getContext();
-		this.node = location.getNode();
+		this.loggable = location.getLoggable();
 	}
 
-	public Location(CompilerContext context, Node node) {
+	public Location(CompilerContext context, LogInfo logInfo) {
 		assert context != null :
 			"Compiler context not specified";
 		this.context = context;
-		this.node = node;
+		this.loggable =
+			logInfo != null ? logInfo.getLoggable() : new LoggableData(this);
 	}
 
 	@Override
@@ -51,37 +51,7 @@ public class Location implements LocationSpec {
 
 	@Override
 	public Loggable getLoggable() {
-
-		final Node node = getNode();
-
-		return node != null ? node : this;
-	}
-
-	@Override
-	public Node getNode() {
-		return this.node;
-	}
-
-	@Override
-	public Object getLoggableData() {
-		return this;
-	}
-
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-
-		final Node node = getNode();
-
-		if (node != null) {
-			return node.accept(visitor, p);
-		}
-
-		return visitor.visitData(this, p);
+		return this.loggable;
 	}
 
 	public final CompilerLogger getLogger() {
@@ -96,11 +66,11 @@ public class Location implements LocationSpec {
 		out.append(getClass().getSimpleName()).append('[');
 		out.append(this.context);
 
-		final Node node = getNode();
+		final Loggable loggable = getLoggable();
 
-		if (node != null) {
+		if (loggable != null) {
 			out.append("]:");
-			node.printContent(out);
+			loggable.printContent(out);
 		} else {
 			out.append(']');
 		}

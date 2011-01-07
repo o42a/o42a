@@ -22,7 +22,6 @@
 <project name="org.o42a.core" default="package">
 
 	<filelist id="project.deps" dir="..">
-		<file name="org.o42a.ast"/>
 		<file name="org.o42a.codegen"/>
 	</filelist>
 

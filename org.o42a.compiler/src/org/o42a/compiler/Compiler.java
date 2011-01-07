@@ -45,7 +45,9 @@ import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.Source;
+import org.o42a.util.log.LoggablePosition;
 import org.o42a.util.log.Logger;
+import org.o42a.util.log.Logs;
 
 
 public class Compiler implements BlockCompiler {
@@ -161,8 +163,21 @@ public class Compiler implements BlockCompiler {
 
 		final ParserWorker worker;
 
-		if (location != null && location.getNode() != null) {
-			worker = new ParserWorker(source, location.getNode().getStart());
+		if (location != null) {
+
+			final LoggablePosition start = Logs.start(location);
+
+			if (start != null) {
+				worker = new ParserWorker(
+						source,
+						new FixedPosition(
+								start.source(),
+								start.line(),
+								start.column(),
+								start.offset()));
+			} else {
+				worker = new ParserWorker(source);
+			}
 		} else {
 			worker = new ParserWorker(source);
 		}

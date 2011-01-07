@@ -22,11 +22,11 @@ package org.o42a.core.artifact.array;
 import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeObject;
 import static org.o42a.core.ref.Ref.voidRef;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.util.log.LogInfo;
 
 
 public final class ArrayInitializer extends Placed {
@@ -39,13 +39,13 @@ public final class ArrayInitializer extends Placed {
 
 	public static ArrayInitializer arrayInitializer(
 			CompilerContext context,
-			Node node,
+			LogInfo location,
 			Distributor distributor,
 			TypeRef itemType,
 			FieldDefinition[] items) {
 		return new ArrayInitializer(
 				context,
-				node,
+				location,
 				distributor,
 				itemType,
 				items);
@@ -64,11 +64,11 @@ public final class ArrayInitializer extends Placed {
 
 	private ArrayInitializer(
 			CompilerContext context,
-			Node node,
+			LogInfo location,
 			Distributor distributor,
 			TypeRef itemType,
 			FieldDefinition[] items) {
-		super(context, node, distributor);
+		super(context, location, distributor);
 		this.itemType = itemType;
 		this.items = items;
 	}

@@ -25,7 +25,7 @@ import org.o42a.ast.atom.CommentNode;
 import org.o42a.util.log.LoggableRange;
 
 
-public interface Node extends NodeInfo, LoggableRange {
+public interface Node extends LoggableRange {
 
 	@Override
 	FixedPosition getStart();
@@ -49,6 +49,7 @@ public interface Node extends NodeInfo, LoggableRange {
 
 	String printContent();
 
+	@Override
 	void printContent(StringBuilder out);
 
 }

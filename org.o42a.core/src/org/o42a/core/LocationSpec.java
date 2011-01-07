@@ -19,10 +19,10 @@
 */
 package org.o42a.core;
 
-import org.o42a.ast.NodeInfo;
+import org.o42a.util.log.LogInfo;
 
 
-public interface LocationSpec extends NodeInfo {
+public interface LocationSpec extends LogInfo {
 
 	CompilerContext getContext();
 

@@ -211,7 +211,7 @@ public class Interpreter {
 		for (AlternativeNode alt : node.getDisjunction()) {
 
 			final Statements<?> alternative = sentence.alternative(
-					new Location(statementVisitor.getContext(), alt.getNode()),
+					new Location(statementVisitor.getContext(), alt),
 					alt.isOpposite());
 
 			for (SerialNode stat : alt.getConjunction()) {

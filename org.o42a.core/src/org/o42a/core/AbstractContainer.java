@@ -21,12 +21,12 @@ package org.o42a.core;
 
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
-import org.o42a.ast.Node;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.log.LogInfo;
 
 
 public abstract class AbstractContainer extends Location implements Container {
@@ -101,8 +101,8 @@ public abstract class AbstractContainer extends Location implements Container {
 		return parent.getContainer();
 	}
 
-	public AbstractContainer(CompilerContext context, Node node) {
-		super(context, node);
+	public AbstractContainer(CompilerContext context, LogInfo location) {
+		super(context, location);
 	}
 
 	public AbstractContainer(LocationSpec location) {

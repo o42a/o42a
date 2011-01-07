@@ -19,12 +19,9 @@
 */
 package org.o42a.core.st.action;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableVisitor;
 
 
 public abstract class Action implements ScopeSpec {
@@ -48,38 +45,8 @@ public abstract class Action implements ScopeSpec {
 	public abstract <P, T> T accept(ActionVisitor<P, T> visitor, P p);
 
 	@Override
-	public final Node getNode() {
-		return this.statement.getNode();
-	}
-
-	@Override
 	public Loggable getLoggable() {
-
-		final Node node = getNode();
-
-		return node != null ? node : this;
-	}
-
-	@Override
-	public Object getLoggableData() {
-		return this;
-	}
-
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return this.statement.getPreviousLogInfo();
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-
-		final Node node = getNode();
-
-		if (node != null) {
-			return node.accept(visitor, p);
-		}
-
-		return visitor.visitData(this, p);
+		return this.statement.getLoggable();
 	}
 
 	@Override

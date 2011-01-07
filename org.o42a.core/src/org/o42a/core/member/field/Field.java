@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -30,6 +29,7 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Field<A extends Artifact<A>> extends AbstractScope {
@@ -67,8 +67,8 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	@Override
-	public final Node getNode() {
-		return this.member.getNode();
+	public final Loggable getLoggable() {
+		return this.member.getLoggable();
 	}
 
 	@Override

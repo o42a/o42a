@@ -19,13 +19,10 @@
 */
 package org.o42a.core.artifact.array;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.ref.Ref;
-import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableVisitor;
 
 
 public class ArrayTypeRef implements ScopeSpec {
@@ -62,11 +59,6 @@ public class ArrayTypeRef implements ScopeSpec {
 	}
 
 	@Override
-	public final Node getNode() {
-		return this.itemTypeRef.getNode();
-	}
-
-	@Override
 	public final CompilerContext getContext() {
 		return this.itemTypeRef.getContext();
 	}
@@ -90,32 +82,7 @@ public class ArrayTypeRef implements ScopeSpec {
 
 	@Override
 	public Loggable getLoggable() {
-
-		final Node node = getNode();
-
-		return node != null ? node : this;
-	}
-
-	@Override
-	public Object getLoggableData() {
-		return this;
-	}
-
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-
-		final Node node = getNode();
-
-		if (node != null) {
-			return node.accept(visitor, p);
-		}
-
-		return visitor.visitData(this, p);
+		return this.itemTypeRef.getLoggable();
 	}
 
 	public final ArrayTypeRef toScope(Scope scope) {

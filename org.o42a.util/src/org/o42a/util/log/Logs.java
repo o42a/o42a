@@ -20,42 +20,37 @@
 package org.o42a.util.log;
 
 
-public class LoggableData implements Loggable {
+public final class Logs {
 
-	private final Object loggableData;
+	private static final StartVisitor START_VISITOR = new StartVisitor();
 
-	public LoggableData(Object loggableData) {
-		this.loggableData = loggableData;
+	public static LoggablePosition start(LogInfo loggable) {
+		return loggable.getLoggable().accept(START_VISITOR, null);
 	}
 
-	public final Object getLoggableData() {
-		return this.loggableData;
+	private Logs() {
 	}
 
-	@Override
-	public Loggable getLoggable() {
-		return this;
-	}
+	private static final class StartVisitor
+			implements LoggableVisitor<LoggablePosition, Void> {
 
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
-	}
+		@Override
+		public LoggablePosition visitPosition(
+				LoggablePosition position,
+				Void p) {
+			return position;
+		}
 
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-		return visitor.visitData(this, p);
-	}
+		@Override
+		public LoggablePosition visitRange(LoggableRange range, Void p) {
+			return range.getStart();
+		}
 
-	@Override
-	public void printContent(StringBuilder out) {
-		out.append(this.loggableData);
-	}
+		@Override
+		public LoggablePosition visitData(LoggableData data, Void p) {
+			return null;
+		}
 
-	@Override
-	public String toString() {
-		return this.loggableData != null
-		? this.loggableData.toString() : "null";
 	}
 
 }

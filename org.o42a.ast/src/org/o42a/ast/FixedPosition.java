@@ -28,7 +28,7 @@ import org.o42a.util.log.*;
 public class FixedPosition extends Position
 		implements LoggablePosition, Serializable {
 
-	private static final long serialVersionUID = -2604409717873524345L;
+	private static final long serialVersionUID = 2797703397923244242L;
 
 	private final Source source;
 	private final int line;
@@ -95,6 +95,11 @@ public class FixedPosition extends Position
 	@Override
 	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
 		return visitor.visitPosition(this, p);
+	}
+
+	@Override
+	public void printContent(StringBuilder out) {
+		print(out, true);
 	}
 
 }

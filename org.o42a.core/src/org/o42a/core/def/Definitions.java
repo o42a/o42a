@@ -26,7 +26,6 @@ import static org.o42a.core.ref.Cond.disjunction;
 
 import java.util.Collection;
 
-import org.o42a.ast.NodeInfo;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
@@ -35,6 +34,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Cond;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.log.LogInfo;
 
 
 public class Definitions extends Scoped {
@@ -707,7 +707,7 @@ public class Definitions extends Scoped {
 	}
 
 	private ValueType<?> compatibleType(
-			NodeInfo refinement,
+			LogInfo refinement,
 			ValueType<?> valueType) {
 		if (valueType == null) {
 			return getValueType();

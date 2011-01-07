@@ -19,7 +19,7 @@
 */
 package org.o42a.core;
 
-import org.o42a.ast.Node;
+import org.o42a.util.log.LogInfo;
 
 
 public class Placed extends Scoped implements PlaceSpec {
@@ -47,8 +47,11 @@ public class Placed extends Scoped implements PlaceSpec {
 		}
 	}
 
-	public Placed(CompilerContext context, Node node, Distributor distributor) {
-		super(context, node, distributor.getScope());
+	public Placed(
+			CompilerContext context,
+			LogInfo location,
+			Distributor distributor) {
+		super(context, location, distributor.getScope());
 		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
 		if (this.container != null) {

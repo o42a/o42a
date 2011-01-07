@@ -25,7 +25,6 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 import static org.o42a.core.ref.path.Path.absolutePath;
 
-import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -45,6 +44,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.log.LogInfo;
 
 
 class EqualsResult extends PlainObject {
@@ -81,7 +81,7 @@ class EqualsResult extends PlainObject {
 		final DeclarativeBlock block =
 			new DeclarativeBlock(this, this, fieldRegistry);
 
-		new ResultBuilder(getContext(), getNode()).buildBlock(block);
+		new ResultBuilder(getContext(), this).buildBlock(block);
 
 		fieldRegistry.registerMembers(members);
 	}
@@ -113,8 +113,8 @@ class EqualsResult extends PlainObject {
 
 	private final class ResultBuilder extends BlockBuilder {
 
-		public ResultBuilder(CompilerContext context, Node node) {
-			super(context, node);
+		public ResultBuilder(CompilerContext context, LogInfo logInfo) {
+			super(context, logInfo);
 		}
 
 		@Override
