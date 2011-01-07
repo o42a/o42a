@@ -7,14 +7,15 @@
 green=$'\033[0;32m'
 blue=$'\033[1;34m'
 white=$'\033[1;37m'
-
+dirname=`dirname $0`
 
 assign_copyright() {
     dir="$1"
     name="$2"
     pattern="$3"
     echo "${blue}***${white} Processing ${green}${dir}${white}"
-    find "../$dir" -name "$pattern" -exec ./copyright_file.sh \{\} "$name" \;
+    find "${dirname}/../$dir" -name "$pattern" \
+	-exec sh "${dirname}/copyright_file.sh" \{\} "$name" \;
 }
 
 assign_copyright org.o42a.ast/src "Abstract Syntax Tree" "*.java"
