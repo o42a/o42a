@@ -19,11 +19,8 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
-import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableVisitor;
 
 
 public abstract class Rescopable implements ScopeSpec {
@@ -42,8 +39,8 @@ public abstract class Rescopable implements ScopeSpec {
 	}
 
 	@Override
-	public final Node getNode() {
-		return this.scoped.getNode();
+	public final Loggable getLoggable() {
+		return this.scoped.getLoggable();
 	}
 
 	@Override
@@ -53,36 +50,6 @@ public abstract class Rescopable implements ScopeSpec {
 
 	public final Rescoper getRescoper() {
 		return this.rescoper;
-	}
-
-	@Override
-	public Loggable getLoggable() {
-
-		final Node node = getNode();
-
-		return node != null ? node : this;
-	}
-
-	@Override
-	public Object getLoggableData() {
-		return this;
-	}
-
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-
-		final Node node = getNode();
-
-		if (node != null) {
-			return node.accept(visitor, p);
-		}
-
-		return visitor.visitData(this, p);
 	}
 
 	public Rescopable rescope(Rescoper rescoper) {

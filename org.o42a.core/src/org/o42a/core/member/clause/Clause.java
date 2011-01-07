@@ -21,7 +21,6 @@ package org.o42a.core.member.clause;
 
 import java.util.HashMap;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -29,9 +28,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableVisitor;
 
 
 public abstract class Clause implements PlaceSpec {
@@ -125,38 +122,8 @@ public abstract class Clause implements PlaceSpec {
 	}
 
 	@Override
-	public final Node getNode() {
-		return this.member.getNode();
-	}
-
-	@Override
 	public Loggable getLoggable() {
-
-		final Node node = getNode();
-
-		return node != null ? node : this;
-	}
-
-	@Override
-	public Object getLoggableData() {
-		return this;
-	}
-
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return this.member.getPreviousLogInfo();
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-
-		final Node node = getNode();
-
-		if (node != null) {
-			return node.accept(visitor, p);
-		}
-
-		return visitor.visitData(this, p);
+		return this.member.getLoggable();
 	}
 
 	@Override

@@ -21,7 +21,6 @@ package org.o42a.core.artifact;
 
 import static org.o42a.core.artifact.Access.artifactAccess;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
@@ -31,6 +30,7 @@ import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
@@ -204,11 +204,11 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		out.append(getClass().getSimpleName()).append('[');
 		out.append(getContext());
 
-		final Node node = getNode();
+		final Loggable loggable = getLoggable();
 
-		if (node != null) {
+		if (loggable != null) {
 			out.append("]:[");
-			node.printContent(out);
+			loggable.printContent(out);
 		}
 		out.append(']');
 

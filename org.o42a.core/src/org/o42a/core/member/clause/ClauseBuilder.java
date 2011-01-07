@@ -23,7 +23,6 @@ import static org.o42a.core.member.clause.DeclaredGroupClause.declaredGroupClaus
 import static org.o42a.core.member.clause.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.MemberRegistry;
@@ -32,9 +31,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.St;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableVisitor;
 
 
 public final class ClauseBuilder extends ClauseBuilderBase {
@@ -70,38 +67,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	}
 
 	@Override
-	public final Node getNode() {
-		return this.declaration.getNode();
-	}
-
-	@Override
 	public Loggable getLoggable() {
-
-		final Node node = getNode();
-
-		return node != null ? node : this;
-	}
-
-	@Override
-	public Object getLoggableData() {
-		return this;
-	}
-
-	@Override
-	public LogInfo getPreviousLogInfo() {
-		return this.declaration.getPreviousLogInfo();
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-
-		final Node node = getNode();
-
-		if (node != null) {
-			return node.accept(visitor, p);
-		}
-
-		return visitor.visitData(this, p);
+		return this.declaration.getLoggable();
 	}
 
 	@Override

@@ -19,18 +19,18 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.ast.Node;
 import org.o42a.core.*;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class ObjectScope extends AbstractScope {
 
 	private final CompilerContext context;
-	private final Node node;
+	private final Loggable loggable;
 	private final Container enclosingContainer;
 	private final ScopePlace place;
 	private Path enclosingScopePath;
@@ -40,7 +40,7 @@ public abstract class ObjectScope extends AbstractScope {
 
 	protected ObjectScope(LocationSpec location, Distributor enclosing) {
 		this.context = location.getContext();
-		this.node = location.getNode();
+		this.loggable = location.getLoggable();
 		this.enclosingContainer = enclosing.getContainer();
 		this.place = enclosing.getPlace();
 	}
@@ -51,8 +51,8 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	@Override
-	public final Node getNode() {
-		return this.node;
+	public Loggable getLoggable() {
+		return this.loggable;
 	}
 
 	@Override

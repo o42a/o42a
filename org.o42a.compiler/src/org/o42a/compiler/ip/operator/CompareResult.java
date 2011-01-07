@@ -26,7 +26,6 @@ import static org.o42a.core.ref.path.Path.absolutePath;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
 
-import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
@@ -42,6 +41,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.log.LogInfo;
 
 
 abstract class CompareResult extends Result {
@@ -71,7 +71,7 @@ abstract class CompareResult extends Result {
 		final DeclarativeBlock block =
 			new DeclarativeBlock(this, this, memberRegistry);
 
-		new ResultBuilder(getContext(), getNode()).buildBlock(block);
+		new ResultBuilder(getContext(), this).buildBlock(block);
 
 		memberRegistry.registerMembers(members);
 	}
@@ -202,8 +202,8 @@ abstract class CompareResult extends Result {
 
 	private final class ResultBuilder extends BlockBuilder {
 
-		public ResultBuilder(CompilerContext context, Node node) {
-			super(context, node);
+		public ResultBuilder(CompilerContext context, LogInfo logInfo) {
+			super(context, logInfo);
 		}
 
 		@Override

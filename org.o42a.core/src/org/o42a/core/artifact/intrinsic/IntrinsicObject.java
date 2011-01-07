@@ -133,7 +133,7 @@ public abstract class IntrinsicObject extends PlainObject {
 
 		final BlockBuilder compiled = context.compileBlock();
 		final DeclarativeBlock definition = new DeclarativeBlock(
-				new Location(context, compiled.getNode()),
+				new Location(context, compiled),
 				new DefinitionDistributor(this),
 				getFieldRegistry());
 

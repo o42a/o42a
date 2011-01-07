@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.ast.Node;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Ex extends Ref {
@@ -57,14 +57,14 @@ public abstract class Ex extends Ref {
 			return resolved.toString();
 		}
 
-		final Node node = getNode();
+		final Loggable loggable = getLoggable();
 
-		if (node != null) {
+		if (loggable != null) {
 
 			final StringBuilder out = new StringBuilder();
 
 			out.append('[');
-			node.printContent(out);
+			loggable.printContent(out);
 			out.append("]?");
 
 			return out.toString();

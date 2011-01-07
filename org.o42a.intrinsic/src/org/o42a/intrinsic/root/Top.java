@@ -21,7 +21,6 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.ScopePlace.TOP_PLACE;
 
-import org.o42a.ast.Node;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
@@ -38,10 +37,13 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableData;
 
 
 public final class Top extends AbstractScope implements Container {
 
+	private final LoggableData loggableData = new LoggableData(this);
 	private final CompilerContext context;
 	private IR ir;
 
@@ -55,8 +57,8 @@ public final class Top extends AbstractScope implements Container {
 	}
 
 	@Override
-	public Node getNode() {
-		return null;
+	public Loggable getLoggable() {
+		return this.loggableData;
 	}
 
 	@Override

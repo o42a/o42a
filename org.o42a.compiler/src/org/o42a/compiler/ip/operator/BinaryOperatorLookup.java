@@ -32,6 +32,8 @@ import org.o42a.core.ref.common.AdapterLookup;
 
 final class BinaryOperatorLookup extends AdapterLookup {
 
+	private final BinaryNode node;
+
 	private static StaticTypeRef adapterType(
 			CompilerContext context,
 			BinaryOperator operator) {
@@ -83,11 +85,11 @@ final class BinaryOperatorLookup extends AdapterLookup {
 				operand,
 				adapterType(operand.getContext(), node.getOperator()),
 				secondAdapterType(operand.getContext(), node.getOperator()));
+		this.node = node;
 	}
 
-	@Override
 	public BinaryNode getNode() {
-		return (BinaryNode) super.getNode();
+		return this.node;
 	}
 
 	@Override

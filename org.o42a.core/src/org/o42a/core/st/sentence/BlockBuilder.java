@@ -19,10 +19,10 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.ast.Node;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Location;
 import org.o42a.core.LocationSpec;
+import org.o42a.util.log.LogInfo;
 
 
 public abstract class BlockBuilder extends Location {
@@ -31,8 +31,8 @@ public abstract class BlockBuilder extends Location {
 		return new EmptyBlock(location);
 	}
 
-	public BlockBuilder(CompilerContext context, Node node) {
-		super(context, node);
+	public BlockBuilder(CompilerContext context, LogInfo logInfo) {
+		super(context, logInfo);
 	}
 
 	public BlockBuilder(LocationSpec location) {

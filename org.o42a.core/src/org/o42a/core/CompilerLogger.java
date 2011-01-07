@@ -19,7 +19,6 @@
 */
 package org.o42a.core;
 
-import org.o42a.ast.NodeInfo;
 import org.o42a.core.member.Visibility;
 import org.o42a.util.log.*;
 
@@ -34,7 +33,7 @@ public class CompilerLogger implements Logger {
 		this.source = source;
 	}
 
-	public void abstractNotOverridden(NodeInfo locaion, String fieldName) {
+	public void abstractNotOverridden(LogInfo locaion, String fieldName) {
 		error(
 				"abstract_not_overridden",
 				"Abstract field '%s' not overridden",
@@ -42,11 +41,11 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void abstractValue(NodeInfo location) {
+	public void abstractValue(LogInfo location) {
 		error("abstract_value", "Abstract value access", location);
 	}
 
-	public void ambiguousClause(NodeInfo location, String clauseName) {
+	public void ambiguousClause(LogInfo location, String clauseName) {
 		error(
 				"ambiguous_clause",
 				"Clause '%s' declaration is ambiguous",
@@ -54,7 +53,7 @@ public class CompilerLogger implements Logger {
 				clauseName);
 	}
 
-	public void ambiguousField(NodeInfo location, String fieldName) {
+	public void ambiguousField(LogInfo location, String fieldName) {
 		error(
 				"ambiguousField",
 				"Field '%s' declaration is ambiguous",
@@ -62,15 +61,15 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void ambiguousValue(NodeInfo location) {
+	public void ambiguousValue(LogInfo location) {
 		error("ambiguous_value", "Ambiguous value declaration", location);
 	}
 
-	public void arithmeticError(NodeInfo location, String message) {
+	public void arithmeticError(LogInfo location, String message) {
 		error("arithmetic_error", "Arithmetic error: %s", location, message);
 	}
 
-	public void cantDeclareOverridden(NodeInfo location, String fieldName) {
+	public void cantDeclareOverridden(LogInfo location, String fieldName) {
 		error(
 				"cant_declare_overridden",
 				"Can not declare already overridden field '%s'",
@@ -78,11 +77,11 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void cantInherit(NodeInfo location, Object target) {
+	public void cantInherit(LogInfo location, Object target) {
 		error("cant_inherit", "%s can not be inherited", location, target);
 	}
 
-	public void cantOverrideDeclared(NodeInfo location, String fieldName) {
+	public void cantOverrideDeclared(LogInfo location, String fieldName) {
 		error(
 				"cant_override_declared",
 				"Can not override already declared field '%s'",
@@ -90,7 +89,7 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void cantOverrideUnknown(NodeInfo location, String fieldName) {
+	public void cantOverrideUnknown(LogInfo location, String fieldName) {
 		error(
 				"cant_override_unknown",
 				"Can not override unknown field '%s'",
@@ -98,7 +97,7 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void dublicateBlockName(NodeInfo location, String blockName) {
+	public void dublicateBlockName(LogInfo location, String blockName) {
 		error(
 				"duplicate_block_name",
 				"Block '%s' already declared",
@@ -106,15 +105,15 @@ public class CompilerLogger implements Logger {
 				blockName);
 	}
 
-	public void expectedClauseName(NodeInfo location) {
+	public void expectedClauseName(LogInfo location) {
 		error("expected_clause_name", "Clause name expected here", location);
 	}
 
-	public void expectedDeclaration(NodeInfo location) {
+	public void expectedDeclaration(LogInfo location) {
 		error("expected_declaration", "Declaration expected here", location);
 	}
 
-	public void forbiddenAccess(NodeInfo location, Object target) {
+	public void forbiddenAccess(LogInfo location, Object target) {
 		error(
 				"forbidden_access",
 				"Access to %s is forbidden",
@@ -122,57 +121,57 @@ public class CompilerLogger implements Logger {
 				target);
 	}
 
-	public void illegalVisibility(NodeInfo location) {
+	public void illegalVisibility(LogInfo location) {
 		error(
 				"illegal_visibility",
 				"Illegal field visibility qualifier",
 				location);
 	}
 
-	public void ignored(NodeInfo location) {
+	public void ignored(LogInfo location) {
 		warning("ignored", "Statement ignored", location);
 	}
 
-	public void incompatible(NodeInfo location, Object type) {
+	public void incompatible(LogInfo location, Object type) {
 		error("incompatible", "Not compatible with %s", location, type);
 	}
 
-	public void indefiniteValue(NodeInfo location) {
+	public void indefiniteValue(LogInfo location) {
 		error("indefinite_value", "Indefinite value access", location);
 	}
 
-	public void invalidArtifact(NodeInfo location) {
+	public void invalidArtifact(LogInfo location) {
 		error("invalid_artifact", "Artifact is not valid", location);
 	}
 
-	public void invalidClause(NodeInfo location) {
+	public void invalidClause(LogInfo location) {
 		error("invalid_clause", "Invalid clause", location);
 	}
 
-	public void invalidClauseContent(NodeInfo location) {
+	public void invalidClauseContent(LogInfo location) {
 		error("invalid_clause_content", "Invalid clause content", location);
 	}
 
-	public void invalidClauseReused(NodeInfo location) {
+	public void invalidClauseReused(LogInfo location) {
 		error(
 				"invalid_clause_reused",
 				"Attempt to reuse inaccessible clause",
 				location);
 	}
 
-	public void invalidDeclaration(NodeInfo location) {
+	public void invalidDeclaration(LogInfo location) {
 		error("invalid_declaration", "Invalid declaration", location);
 	}
 
-	public void invalidDefinition(NodeInfo location) {
+	public void invalidDefinition(LogInfo location) {
 		error("invalid_definition", "Not a valid member definition", location);
 	}
 
-	public void invalidExpression(NodeInfo location) {
+	public void invalidExpression(LogInfo location) {
 		error("invalid_expression", "Not a valid expression", location);
 	}
 
-	public void invalidInteger(NodeInfo location, String reason) {
+	public void invalidInteger(LogInfo location, String reason) {
 		error(
 				"invalid_integer",
 				"Invalid integer literal %s ",
@@ -180,116 +179,116 @@ public class CompilerLogger implements Logger {
 				reason);
 	}
 
-	public void invalidOverridden(NodeInfo location) {
+	public void invalidOverridden(LogInfo location) {
 		error("invalid_overridden", "Only field can be overridden", location);
 	}
 
-	public void invalidPhrasePrefix(NodeInfo location) {
+	public void invalidPhrasePrefix(LogInfo location) {
 		error("invalid_phrase_prefix", "Invalid phrase prefix", location);
 	}
 
-	public void invalidReference(NodeInfo location) {
+	public void invalidReference(LogInfo location) {
 		error("invalid_reference", "Not a valid reference", location);
 	}
 
-	public void invalidStatement(NodeInfo location) {
+	public void invalidStatement(LogInfo location) {
 		error("invalid_statement", "Not a valid statement", location);
 	}
 
-	public void invalidType(NodeInfo location) {
+	public void invalidType(LogInfo location) {
 		error("invalid_type", "Not a valid type reference", location);
 	}
 
-	public void noClauseTarget(NodeInfo location) {
+	public void noClauseTarget(LogInfo location) {
 		error("no_clause_target", "Clause has no target", location);
 	}
 
-	public void noDefinition(LocationSpec location) {
+	public void noDefinition(LogInfo location) {
 		error("no_definition", "Definition is missing", location);
 	}
 
-	public void noModuleNoObject(NodeInfo location) {
+	public void noModuleNoObject(LogInfo location) {
 		error(
 				"no_module_no_object",
 				"Either module or object should be specified",
 				location);
 	}
 
-	public void noName(NodeInfo location) {
+	public void noName(LogInfo location) {
 		error("no_name", "Name not specified", location);
 	}
 
-	public void notAbstract(NodeInfo location) {
+	public void notAbstract(LogInfo location) {
 		error("not_abstract", "Abstract declaration expected", location);
 	}
 
-	public void notAdapter(NodeInfo location) {
+	public void notAdapter(LogInfo location) {
 		error("not_adapter", "Adapter declaration expected", location);
 	}
 
-	public void notArray(NodeInfo location) {
+	public void notArray(LogInfo location) {
 		error("not_array", "Not array", location);
 	}
 
-	public void notArrayItemInitializer(NodeInfo location) {
+	public void notArrayItemInitializer(LogInfo location) {
 		error(
 				"not_array_item_initializer",
 				"Array item initializer expected",
 				location);
 	}
 
-	public void notClause(NodeInfo location) {
+	public void notClause(LogInfo location) {
 		error("not_clause", "Not clause", location);
 	}
 
-	public void notClauseDeclaration(NodeInfo location) {
+	public void notClauseDeclaration(LogInfo location) {
 		error("not_clause_declaration", "Not a clause declaration", location);
 	}
 
-	public void notDerivedFrom(NodeInfo location, Object ascendant) {
+	public void notDerivedFrom(LogInfo location, Object ascendant) {
 		error("not_deried_from", "Not derived from %s", location, ascendant);
 	}
 
-	public void notFieldDeclaration(NodeInfo location) {
+	public void notFieldDeclaration(LogInfo location) {
 		error("not_field_declaration", "Not a field declaration", location);
 	}
 
-	public void notFloat(NodeInfo location, String literal) {
+	public void notFloat(LogInfo location, String literal) {
 		error("not_float", "Not a floating point value: %s", location, literal);
 	}
 
-	public void notInteger(NodeInfo location, String literal) {
+	public void notInteger(LogInfo location, String literal) {
 		error("not_integer", "Not an integer: %s", location, literal);
 	}
 
-	public void notPath(NodeInfo location) {
+	public void notPath(LogInfo location) {
 		error("not_path", "Not a path", location);
 	}
 
-	public void notPrototype(NodeInfo location) {
+	public void notPrototype(LogInfo location) {
 		error("not_prototype", "Prototype declaration expected", location);
 	}
 
-	public void notReproducible(NodeInfo location) {
+	public void notReproducible(LogInfo location) {
 		error("not_reproducible", "Not reproducible", location);
 	}
 
-	public void notObject(NodeInfo location, Object target) {
+	public void notObject(LogInfo location, Object target) {
 		error("not_object", "%s is not an object", location, target);
 	}
 
-	public void notObjectDeclaration(NodeInfo location) {
+	public void notObjectDeclaration(LogInfo location) {
 		error(
 				"not_object_declaration",
 				"Object declaration expected",
 				location);
 	}
 
-	public void notTypeRef(NodeInfo location) {
+	public void notTypeRef(LogInfo location) {
 		error("not_type_ref", "Not a valid type reference", location);
 	}
 
-	public void prohibitedAbstract(NodeInfo location, String fieldName) {
+	public void prohibitedAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_abstract",
 				"Field '%s' can no be declared abstract, because "
@@ -298,14 +297,14 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void prohibitedClauseDeclaration(NodeInfo location) {
+	public void prohibitedClauseDeclaration(LogInfo location) {
 		error(
 				"prohibited_clause_declaration",
 				"Clause declarations prohibited here",
 				location);
 	}
 
-	public void prohibitedConditionalDeclaration(NodeInfo location) {
+	public void prohibitedConditionalDeclaration(LogInfo location) {
 		error(
 				"prohibited_conditional_declaration",
 				"Only object field can be declared"
@@ -313,28 +312,28 @@ public class CompilerLogger implements Logger {
 				location);
 	}
 
-	public void prohibitedDeclaration(NodeInfo location) {
+	public void prohibitedDeclaration(LogInfo location) {
 		error(
 				"prohibited_declaration",
 				"Declarations prohibited here",
 				location);
 	}
 
-	public void prohibitedDeclaredIn(NodeInfo location) {
+	public void prohibitedDeclaredIn(LogInfo location) {
 		error(
 				"prohibited_declared_in",
 				"Field scope declaration is prohibited here",
 				location);
 	}
 
-	public void prohibitedDeclarativeEllipsis(NodeInfo location) {
+	public void prohibitedDeclarativeEllipsis(LogInfo location) {
 		error(
 				"prohibited_declarative_ellipsis",
 				"Ellipsis is only allowed within imperative block",
 				location);
 	}
 
-	public void prohibitedDirective(NodeInfo location, String directiveName) {
+	public void prohibitedDirective(LogInfo location, String directiveName) {
 		error(
 				"prohibited_directive",
 				"Directive '%s' is prohibited here",
@@ -342,28 +341,28 @@ public class CompilerLogger implements Logger {
 				directiveName);
 	}
 
-	public void prohibitedIssueEllipsis(NodeInfo location) {
+	public void prohibitedIssueEllipsis(LogInfo location) {
 		error(
 				"prohibited_issue_ellipsis",
 				"Ellipsis is prohibited within issue",
 				location);
 	}
 
-	public void prohibitedLinkType(NodeInfo location) {
+	public void prohibitedLinkType(LogInfo location) {
 		error(
 				"prohibited_link_type",
 				"Link type is not expected here",
 				location);
 	}
 
-	public void prohibitedLocal(LocationSpec location) {
+	public void prohibitedLocal(LogInfo location) {
 		error(
 				"prohibited_local",
 				"Local scope declaration is prohibited here",
 				location);
 	}
 
-	public void prohibitedLocalAbstract(NodeInfo location, String fieldName) {
+	public void prohibitedLocalAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_local_abstract",
 				"Local field '%s' can no be abstract",
@@ -371,11 +370,11 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void prohibitedLocalAdapter(NodeInfo location) {
+	public void prohibitedLocalAdapter(LogInfo location) {
 		error("prohibited_local_adapter", "Adapter can not be local", location);
 	}
 
-	public void prohibitedLocalVisibility(NodeInfo location, String fieldName) {
+	public void prohibitedLocalVisibility(LogInfo location, String fieldName) {
 		error(
 				"prohibited_local_visibility",
 				"Local field '%s' can not have visibility",
@@ -383,21 +382,21 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void prohibitedOverriderClause(LocationSpec location) {
+	public void prohibitedOverriderClause(LogInfo location) {
 		error(
 				"prohibited_overrider_clause",
 				"Overrider clause is prohibited here",
 				location);
 	}
 
-	public void prohibitedPhraseName(NodeInfo location) {
+	public void prohibitedPhraseName(LogInfo location) {
 		error(
 				"prohibited_phrase_name",
 				"Name can not follow another name or phrase prefix",
 				location);
 	}
 
-	public void prohibitedPrivateAbstract(NodeInfo location, String fieldName) {
+	public void prohibitedPrivateAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_private_abstract",
 				"Private field '%s' can not be abstract",
@@ -405,14 +404,14 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void prohibitedPrototype(NodeInfo location) {
+	public void prohibitedPrototype(LogInfo location) {
 		error(
 				"prohibited_prototype",
 				"Field can not be declared as prototype",
 				location);
 	}
 
-	public void prohibitedRuntimeSample(NodeInfo location) {
+	public void prohibitedRuntimeSample(LogInfo location) {
 		error(
 				"prohibited_runtime_sample",
 				"Sample should be resolvable at compile time."
@@ -420,25 +419,25 @@ public class CompilerLogger implements Logger {
 				location);
 	}
 
-	public void prohibitedSampleAtRuntime(NodeInfo location) {
+	public void prohibitedSampleAtRuntime(LogInfo location) {
 		error(
 				"prohibited_sample_at_runtime",
 				"Run-time object can not have samples",
 				location);
 	}
 
-	public void prohibitedSamples(NodeInfo location) {
+	public void prohibitedSamples(LogInfo location) {
 		error("prohibited_samples", "Samples are prohibited here", location);
 	}
 
-	public void prohibitedVariableType(NodeInfo location) {
+	public void prohibitedVariableType(LogInfo location) {
 		error(
 				"prohibited_variable_type",
 				"Variable type is not expected here",
 				location);
 	}
 
-	public void recursiveResolution(NodeInfo location, Object resolvable) {
+	public void recursiveResolution(LogInfo location, Object resolvable) {
 		error(
 				"recursive_resolution",
 				"Infinite recursion when resolving %s",
@@ -446,16 +445,16 @@ public class CompilerLogger implements Logger {
 				resolvable);
 	}
 
-	public void requiredInitializer(NodeInfo location) {
+	public void requiredInitializer(LogInfo location) {
 		error("required_initializer", "Initializer required here", location);
 	}
 
-	public void requiredLinkTarget(NodeInfo location) {
+	public void requiredLinkTarget(LogInfo location) {
 		error("required_link_target", "Link target is required here", location);
 	}
 
 	public void unavailableSource(
-			NodeInfo location,
+			LogInfo location,
 			String sourceName,
 			String reason) {
 		error(
@@ -466,25 +465,28 @@ public class CompilerLogger implements Logger {
 				reason);
 	}
 
-	public void unexpectedAbstract(NodeInfo location) {
+	public void unexpectedAbstract(LogInfo location) {
 		error(
 				"unexpected_abstract",
 				"Unexpected abstract declaration",
 				location);
 	}
 
-	public void unexpectedAbsolutePath(NodeInfo location) {
+	public void unexpectedAbsolutePath(LogInfo location) {
 		error(
 				"unexpected_absolute_path",
 				"Relative path expected here",
 				location);
 	}
 
-	public void unexpectedAdapter(NodeInfo location) {
+	public void unexpectedAdapter(LogInfo location) {
 		error("unexpected_adapter", "Unexpected adapter declaration", location);
 	}
 
-	public void unexpectedAncestor(NodeInfo location, Object actual, Object expected) {
+	public void unexpectedAncestor(
+			LogInfo location,
+			Object actual,
+			Object expected) {
 		error(
 				"unexpected_ancestor",
 				"Wrong ancestor: %s, but expected: %s",
@@ -494,7 +496,7 @@ public class CompilerLogger implements Logger {
 	}
 
 	public void unexpectedArrayDimension(
-			NodeInfo location,
+			LogInfo location,
 			int actual,
 			int expected) {
 		error(
@@ -505,7 +507,7 @@ public class CompilerLogger implements Logger {
 				expected);
 	}
 
-	public void unexpectedPrototype(NodeInfo location) {
+	public void unexpectedPrototype(LogInfo location) {
 		error(
 				"unexpected_prototype",
 				"Unexpected prototype declaration",
@@ -513,7 +515,7 @@ public class CompilerLogger implements Logger {
 	}
 
 	public void unexpectedType(
-			NodeInfo location,
+			LogInfo location,
 			Object actual,
 			Object expected) {
 		error(
@@ -525,7 +527,7 @@ public class CompilerLogger implements Logger {
 	}
 
 	public void unexpectedVisibility(
-			NodeInfo location,
+			LogInfo location,
 			String fieldName,
 			Visibility actual,
 			Visibility expected) {
@@ -538,11 +540,11 @@ public class CompilerLogger implements Logger {
 				expected);
 	}
 
-	public void unresolved(NodeInfo location, Object target) {
+	public void unresolved(LogInfo location, Object target) {
 		error("unresolved", "'%s' can not be resolved", location, target);
 	}
 
-	public void unresolvedModule(NodeInfo location, String moduleId) {
+	public void unresolvedModule(LogInfo location, String moduleId) {
 		error(
 				"unresolved_module",
 				"Module <%s> can not be resolved",
@@ -550,7 +552,7 @@ public class CompilerLogger implements Logger {
 				moduleId);
 	}
 
-	public void unresolvedParent(NodeInfo location, String fieldName) {
+	public void unresolvedParent(LogInfo location, String fieldName) {
 		error(
 				"unresolved_parent",
 				"Enclosing field '%s' can be found",
@@ -558,11 +560,11 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void unresolvedScope(NodeInfo location, String scope) {
+	public void unresolvedScope(LogInfo location, String scope) {
 		error("unresolved_scope", "Unresolved scope: %s", location, scope);
 	}
 
-	public void unresolvedValue(NodeInfo location, Object valuable) {
+	public void unresolvedValue(LogInfo location, Object valuable) {
 		error(
 				"unresolved_value",
 				"Value of '%s' can not be resolved",
@@ -571,7 +573,7 @@ public class CompilerLogger implements Logger {
 	}
 
 	public void unsupportedBinaryOperator(
-			NodeInfo location,
+			LogInfo location,
 			String operator,
 			Object adapterType) {
 		error(
@@ -584,7 +586,7 @@ public class CompilerLogger implements Logger {
 	}
 
 	public void unsupportedRightOperand(
-			NodeInfo location,
+			LogInfo location,
 			Object operandType,
 			String operator) {
 		error(
@@ -596,7 +598,7 @@ public class CompilerLogger implements Logger {
 	}
 
 	public void unsupportedUnaryOperator(
-			NodeInfo location,
+			LogInfo location,
 			String operator,
 			Object adapterType) {
 		error(
@@ -624,7 +626,7 @@ public class CompilerLogger implements Logger {
 	private final void error(
 			String code,
 			String defaultMessage,
-			NodeInfo location,
+			LogInfo location,
 			Object... args) {
 		log(Severity.ERROR, code, defaultMessage, location, args);
 	}
@@ -632,7 +634,7 @@ public class CompilerLogger implements Logger {
 	private final void warning(
 			String code,
 			String defaultMessage,
-			NodeInfo location,
+			LogInfo location,
 			Object... args) {
 		log(Severity.WARNING, code, defaultMessage, location, args);
 	}

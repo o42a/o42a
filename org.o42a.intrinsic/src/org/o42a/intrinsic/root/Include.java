@@ -70,7 +70,7 @@ public final class Include extends IntrinsicDirective {
 			return;
 		}
 
-		final Location location = new Location(context, directive.getNode());
+		final Location location = new Location(context, directive);
 		final S statements = sentence.alternative(location);
 		final Block<S> destination = statements.parentheses(
 				location,

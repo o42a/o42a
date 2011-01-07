@@ -34,16 +34,18 @@ import org.o42a.core.ref.common.Wrap;
 
 public class UnaryOp extends Wrap {
 
+	private final UnaryNode node;
+
 	public UnaryOp(
 			CompilerContext context,
 			UnaryNode node,
 			Distributor distributor) {
 		super(new Location(context, node), distributor);
+		this.node = node;
 	}
 
-	@Override
 	public UnaryNode getNode() {
-		return (UnaryNode) super.getNode();
+		return this.node;
 	}
 
 	@Override

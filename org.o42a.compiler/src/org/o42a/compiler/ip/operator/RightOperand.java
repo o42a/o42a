@@ -35,13 +35,15 @@ import org.o42a.core.st.sentence.Statements;
 
 class RightOperand extends BlockBuilder {
 
+	private final ExpressionNode node;
+
 	RightOperand(CompilerContext context, ExpressionNode node) {
 		super(context, node);
+		this.node = node;
 	}
 
-	@Override
 	public ExpressionNode getNode() {
-		return (ExpressionNode) super.getNode();
+		return this.node;
 	}
 
 	@Override
