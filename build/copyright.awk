@@ -1,7 +1,7 @@
 function print_copyright() {
     print "/*"
     print "    " (progname ? progname : "o42a Programming Language")
-    print "    Copyright (C) 2011 Ruslan Lopatin"
+    print "    Copyright (C)", year, author
     print ""
     print "    This file is part of o42a."
     print ""
@@ -25,6 +25,8 @@ BEGIN {
     buffer = ""
     skip = 0
     comment = 0
+    year = "2011"
+    author = "Ruslan Lopatin"
 }
 
 skip {
@@ -47,7 +49,11 @@ skip {
 
 comment && /^[ \t]*Copyright/ {
     printf "%s", buffer
-    print
+    if ($3 ~ year) {
+	print
+    } else {
+	print "    Copyright (C)", $3 "," year, author 
+    }
     comment = 0
     buffer = ""
     skip = 1
