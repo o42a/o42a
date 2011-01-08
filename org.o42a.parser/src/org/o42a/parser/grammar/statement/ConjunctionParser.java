@@ -31,9 +31,7 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.sentence.SerialNode.Separator;
 import org.o42a.ast.statement.EllipsisNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.parser.Grammar;
-import org.o42a.parser.Parser;
-import org.o42a.parser.ParserContext;
+import org.o42a.parser.*;
 
 
 public class ConjunctionParser implements Parser<SerialNode[]> {
@@ -47,6 +45,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 	@Override
 	public SerialNode[] parse(ParserContext context) {
 
+		final Expectations expectations = context.expect(',');
 		final ArrayList<SerialNode> statements = new ArrayList<SerialNode>();
 		SignNode<Separator> separator = null;
 
@@ -54,7 +53,8 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 
 			final CommentNode[] comments = context.skipComments();
 			final FixedPosition statementStart = context.current().fix();
-			final StatementNode stat = context.parse(this.grammar.statement());
+			final StatementNode stat =
+				expectations.parse(this.grammar.statement());
 			final SerialNode statement;
 
 			if (stat != null || separator != null) {

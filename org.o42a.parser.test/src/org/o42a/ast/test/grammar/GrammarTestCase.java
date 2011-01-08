@@ -20,12 +20,14 @@
 package org.o42a.ast.test.grammar;
 
 import static org.junit.Assert.*;
-import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.LinkedList;
 
+import org.junit.After;
+import org.junit.Before;
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ClauseNode;
@@ -38,11 +40,11 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.Source;
+import org.o42a.util.log.LogRecord;
+import org.o42a.util.log.Logger;
 
 
 public class GrammarTestCase {
-
-	protected ParserWorker worker;
 
 	public static <T> T to(Class<? extends T> type, Object value) {
 		assertNotNull("Value is null", value);
@@ -71,6 +73,16 @@ public class GrammarTestCase {
 	public static <T extends StatementNode> T singleStatement(
 			Class<? extends T> type,
 			BlockNode<?> block) {
+		return singleStatement(type, singleSentence(block));
+	}
+
+	public static <T extends StatementNode> T singleStatement(
+			Class<? extends T> type,
+			SentenceNode sentence) {
+		return statement(type, sentence, 0, 1);
+	}
+
+	public static SentenceNode singleSentence(BlockNode<?> block) {
 
 		final SentenceNode[] sentences = block.getContent();
 
@@ -79,13 +91,15 @@ public class GrammarTestCase {
 				1,
 				sentences.length);
 
-		return singleStatement(type, sentences[0]);
+		return sentences[0];
 	}
 
-	public static <T extends StatementNode> T singleStatement(
+	public static <T extends StatementNode> T statement(
 			Class<? extends T> type,
-			SentenceNode sentence) {
-		return statement(type, sentence, 0, 1);
+			BlockNode<?> block,
+			int index,
+			int length) {
+		return statement(type, singleSentence(block), index, length);
 	}
 
 	public static <T extends StatementNode> T statement(
@@ -134,9 +148,28 @@ public class GrammarTestCase {
 		return to(type, clauses[index]);
 	}
 
+	private final LinkedList<String> expectedErrors = new LinkedList<String>();
+	protected ParserWorker worker;
+
+	public void expectError(String code) {
+		this.expectedErrors.addLast("parser." + code);
+	}
+
+	@Before
+	public void clearExpectations() {
+		this.expectedErrors.clear();
+	}
+
+	@After
+	public void ensureErrorsLogged() {
+		assertTrue(
+				"Errors expected, but not logged: " + this.expectedErrors,
+				this.expectedErrors.isEmpty());
+	}
+
 	public <T> T parse(Parser<T> parser, String text) {
 		this.worker = new ParserWorker(new Src(text));
-		this.worker.setLogger(DECLARATION_LOGGER);
+		this.worker.setLogger(new TestLogger());
 		return this.worker.parse(parser);
 	}
 
@@ -158,6 +191,27 @@ public class GrammarTestCase {
 		@Override
 		public Reader open() throws IOException {
 			return new StringReader(this.text);
+		}
+
+	}
+
+	private final class TestLogger implements Logger {
+
+		@Override
+		public void log(LogRecord record) {
+
+			final String code = record.getCode();
+			final String expected =
+				GrammarTestCase.this.expectedErrors.poll();
+
+			if (expected == null) {
+				fail("Error occurred: " + record);
+			}
+
+			assertEquals(
+					"Unexpected error occurred: " + record,
+					expected,
+					code);
 		}
 
 	}

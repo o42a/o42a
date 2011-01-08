@@ -127,6 +127,10 @@ public abstract class ParserLogger implements Logger {
 		warning("opposite_to_empty", "Opposite to empty sentence", location);
 	}
 
+	public void syntaxError(LogInfo location) {
+		error("syntax_error", "Syntax error", location);
+	}
+
 	public void unrecognizedEscapeSequence(LogInfo location, String sequence) {
 		error(
 				"unrecognized_escape_sequence",

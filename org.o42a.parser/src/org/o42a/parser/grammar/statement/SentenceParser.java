@@ -43,7 +43,7 @@ public class SentenceParser implements Parser<SentenceNode> {
 	public SentenceNode parse(ParserContext context) {
 
 		final AlternativeNode[] disjunction =
-			context.parse(this.grammar.disjunction());
+			context.expect(MARK).parse(this.grammar.disjunction());
 
 		if (disjunction == null) {
 			return null;
@@ -52,9 +52,7 @@ public class SentenceParser implements Parser<SentenceNode> {
 		final SignNode<SentenceType> mark = context.parse(MARK);
 		final SentenceNode sentence = new SentenceNode(disjunction, mark);
 
-		sentence.addComments(context.acceptComments());
-
-		return sentence;
+		return context.acceptComments(sentence);
 	}
 
 	private static final class MarkParser

@@ -26,6 +26,10 @@ public class EmptyNode extends AbstractNode {
 		super(start, start);
 	}
 
+	public EmptyNode(Position start, Position end) {
+		super(start, end);
+	}
+
 	@Override
 	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
 		return visitor.visitEmpty(this, p);

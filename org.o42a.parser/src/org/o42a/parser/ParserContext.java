@@ -127,6 +127,10 @@ public abstract class ParserContext {
 		return getExpectations().expect(expectedChar);
 	}
 
+	public final Expectations expect(String expectedString) {
+		return getExpectations().expect(expectedString);
+	}
+
 	public final boolean asExpected() {
 		return getExpectations().asExpected(this);
 	}

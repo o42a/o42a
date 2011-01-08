@@ -21,6 +21,8 @@ package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.*;
 
+import org.o42a.ast.EmptyNode;
+import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -40,6 +42,49 @@ public class StatementParser implements Parser<StatementNode> {
 
 	@Override
 	public StatementNode parse(ParserContext context) {
+
+		ExpressionNode expression;
+		FixedPosition firstUnexpected = null;
+
+		for (;;) {
+
+			final FixedPosition start = context.current().fix();
+			final StatementNode statement = parseStatement(context);
+
+			if (statement != null) {
+				logUnexpected(context, firstUnexpected, start);
+				return statement;
+			}
+			if (context.isEOF()) {
+				if (firstUnexpected != null) {
+					logUnexpected(context, firstUnexpected, start);
+				} else {
+					context.getLogger().eof(start);
+				}
+				return null;
+			}
+
+			expression = context.parse(this.grammar.expression());
+			if (expression != null) {
+				logUnexpected(context, firstUnexpected, start);
+				return startWithExpression(context, expression);
+			}
+			if (context.asExpected()) {
+				logUnexpected(context, firstUnexpected, start);
+				return null;
+			}
+			if (firstUnexpected == null) {
+				firstUnexpected = start;
+			}
+			context.acceptAll();
+			if (context.acceptComments() != null) {
+				logUnexpected(context, firstUnexpected, start);
+				firstUnexpected = null;
+			}
+		}
+	}
+
+	private StatementNode parseStatement(ParserContext context) {
 		switch (context.next()) {
 		case '=':
 			return context.parse(this.grammar.selfAssignment());
@@ -59,13 +104,12 @@ public class StatementParser implements Parser<StatementNode> {
 		case '<':
 			return context.parse(this.grammar.clauseDeclarator());
 		}
+		return null;
+	}
 
-		final ExpressionNode expression =
-			context.parse(this.grammar.expression());
-
-		if (expression == null) {
-			return null;
-		}
+	private StatementNode startWithExpression(
+			ParserContext context,
+			ExpressionNode expression) {
 		if (this.grammar == IMPERATIVE && context.next() == '=') {
 
 			final AssignmentNode assignment =
@@ -123,6 +167,17 @@ public class StatementParser implements Parser<StatementNode> {
 		}
 
 		return namedBlock;
+	}
+
+	private static void logUnexpected(
+			ParserContext context,
+			FixedPosition firstUnexpected,
+			FixedPosition current) {
+		if (firstUnexpected == null) {
+			return;
+		}
+		context.getLogger().syntaxError(
+				new EmptyNode(firstUnexpected, current));
 	}
 
 }

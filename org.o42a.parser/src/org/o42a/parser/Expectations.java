@@ -19,6 +19,8 @@
 */
 package org.o42a.parser;
 
+import java.util.Arrays;
+
 import org.o42a.util.ArrayUtil;
 
 
@@ -54,12 +56,24 @@ public class Expectations {
 		return expect(new CharParser(expectedChar));
 	}
 
+	public final Expectations expect(String expectedString) {
+		if (expectedString.length() == 1) {
+			return expect(expectedString.charAt(0));
+		}
+		return expect(new StringParser(expectedString));
+	}
+
 	public final <T> T parse(Parser<T> parser) {
 		return this.context.parse(parser, this);
 	}
 
 	public final <T> T push(Parser<T> parser) {
 		return this.context.push(parser, this);
+	}
+
+	@Override
+	public String toString() {
+		return "Expectations" + Arrays.toString(this.expectations);
 	}
 
 	boolean asExpected(ParserContext context) {
