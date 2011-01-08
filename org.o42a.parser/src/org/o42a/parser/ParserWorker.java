@@ -106,7 +106,7 @@ public class ParserWorker {
 		Pos(Source source) {
 			this.source = source;
 			this.line = 1;
-			this.column = 0;
+			this.column = 1;
 			this.offset = 0;
 		}
 
@@ -158,11 +158,11 @@ public class ParserWorker {
 			this.offset++;
 			if (c == '\r') {
 				this.line++;
-				this.column = 0;
+				this.column = 1;
 			} else if (c == '\n') {
 				if (this.lastChar != '\r') {
 					this.line++;
-					this.column = 0;
+					this.column = 1;
 				}
 			} else {
 				this.column++;

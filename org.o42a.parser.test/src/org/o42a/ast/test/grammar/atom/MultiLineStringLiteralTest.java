@@ -22,6 +22,7 @@ package org.o42a.ast.test.grammar.atom;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.o42a.ast.Position;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.parser.Grammar;
@@ -102,7 +103,7 @@ public class MultiLineStringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse(
 			"\\'abc\n"
-			+"def'\\");
+			+ "def'\\");
 
 		assertEquals("abc\ndef", string.getText());
 	}
@@ -112,7 +113,7 @@ public class MultiLineStringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse(
 				"\\'   \n"
-				+"abc'\\");
+				+ "abc'\\");
 
 		assertEquals("abc", string.getText());
 	}
@@ -122,7 +123,7 @@ public class MultiLineStringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse(
 				"\\'abc\n"
-				+"   '\\");
+				+ "   '\\");
 
 		assertEquals("abc", string.getText());
 	}
@@ -132,7 +133,7 @@ public class MultiLineStringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse(
 				"\\'abc  \n"
-				+"def'\\");
+				+ "def'\\");
 
 		assertEquals("abc\ndef", string.getText());
 	}
@@ -142,9 +143,15 @@ public class MultiLineStringLiteralTest extends GrammarTestCase {
 
 		final StringNode string = parse(
 				"\\'abc  \n"
-				+"def  '\\");
+				+ "def  '\\");
 
 		assertEquals("abc\ndef  ", string.getText());
+
+		final Position position = this.worker.position();
+
+		assertEquals(15, position.offset());
+		assertEquals(2, position.line());
+		assertEquals(8, position.column());
 	}
 
 	@Test
@@ -154,9 +161,9 @@ public class MultiLineStringLiteralTest extends GrammarTestCase {
 				"\\'  \n"
 				+ " abc  \n"
 				+ " ' def  \n"
-				+"   '\\");
+				+ "   '\\");
 
-			assertEquals(" abc\n ' def", string.getText());
+		assertEquals(" abc\n ' def", string.getText());
 	}
 
 	@Test
