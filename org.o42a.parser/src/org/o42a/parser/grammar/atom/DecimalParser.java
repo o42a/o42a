@@ -19,25 +19,29 @@
 */
 package org.o42a.parser.grammar.atom;
 
+import static java.lang.Character.isSpaceChar;
+import static java.lang.Character.isWhitespace;
 import static org.o42a.parser.Grammar.isDigit;
 
+import org.o42a.ast.EmptyNode;
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public class DecimalLiteralParser implements Parser<DecimalNode> {
+public class DecimalParser implements Parser<DecimalNode> {
 
-	public static final DecimalLiteralParser DECIMAL_LITERAL =
-		new DecimalLiteralParser();
+	public static final DecimalParser DECIMAL = new DecimalParser();
 
-	private DecimalLiteralParser() {
+	private DecimalParser() {
 	}
 
 	@Override
 	public DecimalNode parse(ParserContext context) {
 
+		FixedPosition spaceStart = null;
+		boolean wrongSpace = false;
 		FixedPosition start = null;
 		StringBuilder number = null;
 
@@ -49,8 +53,26 @@ public class DecimalLiteralParser implements Parser<DecimalNode> {
 				if (number == null) {
 					start = context.current().fix();
 					number = new StringBuilder();
+				} else {
+					if (wrongSpace) {
+						context.getLogger().invalidSpaceInNumber(
+								new EmptyNode(spaceStart, context.current()));
+						wrongSpace = false;
+					}
+					spaceStart = null;
 				}
 				number.append((char) c);
+				continue;
+			}
+			if (isWhitespace(c)) {
+				if (spaceStart == null) {
+					spaceStart = context.current().fix();
+					if (!isSpaceChar(c)) {
+						wrongSpace = true;
+					}
+				} else {
+					wrongSpace = true;
+				}
 				continue;
 			}
 			if (number == null) {
