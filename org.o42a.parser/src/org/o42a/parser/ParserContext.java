@@ -32,9 +32,13 @@ import org.o42a.ast.atom.CommentNode;
 
 public abstract class ParserContext {
 
-	public abstract <T> T parse(Parser<T> parser);
+	public final <T> T parse(Parser<T> parser) {
+		return parse(parser, getExpectations());
+	}
 
-	public abstract <T> T push(Parser<T> parser);
+	public final <T> T push(Parser<T> parser) {
+		return push(parser, getExpectations());
+	}
 
 	public final void acceptAll() {
 		acceptBut(0);
@@ -108,6 +112,28 @@ public abstract class ParserContext {
 	public abstract ParserLogger getLogger();
 
 	public abstract boolean hasErrors();
+
+	public abstract Expectations getExpectations();
+
+	public final Expectations expectNothing() {
+		return new Expectations(this);
+	}
+
+	public final Expectations expect(Parser<?> expectation) {
+		return getExpectations().expect(expectation);
+	}
+
+	public final Expectations expect(char expectedChar) {
+		return getExpectations().expect(expectedChar);
+	}
+
+	public final boolean asExpected() {
+		return getExpectations().asExpected(this);
+	}
+
+	protected abstract <T> T parse(Parser<T> parser, Expectations expectations);
+
+	protected abstract <T> T push(Parser<T> parser, Expectations expectations);
 
 	private List<CommentNode> parseComments() {
 		if (isEOF()) {
