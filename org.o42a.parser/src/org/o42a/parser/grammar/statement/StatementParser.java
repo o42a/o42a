@@ -43,7 +43,6 @@ public class StatementParser implements Parser<StatementNode> {
 	@Override
 	public StatementNode parse(ParserContext context) {
 
-		ExpressionNode expression;
 		FixedPosition firstUnexpected = null;
 
 		for (;;) {
@@ -64,7 +63,9 @@ public class StatementParser implements Parser<StatementNode> {
 				return null;
 			}
 
-			expression = context.parse(this.grammar.expression());
+			final ExpressionNode expression =
+				context.parse(this.grammar.expression());
+
 			if (expression != null) {
 				logUnexpected(context, firstUnexpected, start);
 				return startWithExpression(context, expression);
