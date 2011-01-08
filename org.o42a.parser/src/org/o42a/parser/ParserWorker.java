@@ -175,16 +175,33 @@ public class ParserWorker {
 	private final class Context extends ParserContext {
 
 		private final Parser<?> parser;
-		private final Pos firstUnaccepted;
 		private final Pos current;
+		private final Pos firstUnaccepted;
+		private final Expectations expectations;
 		private final Log log;
 		private int hasErrors;
 		private byte pending;
 
-		Context(Parser<?> parser, Pos current, Pos firstUnaccepted) {
+		Context(
+				Parser<?> parser,
+				Pos current,
+				Pos firstUnaccepted) {
 			this.parser = parser;
 			this.current = current.clone();
 			this.firstUnaccepted = firstUnaccepted;
+			this.expectations = expectNothing();
+			this.log = new Log(this);
+		}
+
+		Context(
+				Parser<?> parser,
+				Pos current,
+				Pos firstUnaccepted,
+				Expectations expectations) {
+			this.parser = parser;
+			this.current = current.clone();
+			this.firstUnaccepted = firstUnaccepted;
+			this.expectations = expectations.setContext(this);
 			this.log = new Log(this);
 		}
 
@@ -315,16 +332,6 @@ public class ParserWorker {
 		}
 
 		@Override
-		public <T> T parse(Parser<T> parser) {
-			return parse(parser, this.firstUnaccepted);
-		}
-
-		@Override
-		public <T> T push(Parser<T> parser) {
-			return parse(parser, this.firstUnaccepted.clone());
-		}
-
-		@Override
 		public ParserLogger getLogger() {
 			return this.log;
 		}
@@ -334,18 +341,39 @@ public class ParserWorker {
 			return this.hasErrors > 0;
 		}
 
+		@Override
+		public Expectations getExpectations() {
+			return this.expectations;
+		}
+
+		@Override
+		protected <T> T parse(Parser<T> parser, Expectations expectations) {
+			return parse(parser, expectations, this.firstUnaccepted);
+		}
+
+		@Override
+		protected <T> T push(Parser<T> parser, Expectations expectations) {
+			return parse(parser, expectations, this.firstUnaccepted.clone());
+		}
+
 		private boolean isFailed() {
 			return this.hasErrors > 1;
 		}
 
-		private <T> T parse(Parser<T> parser, Pos firstUnaccepted) {
+		private <T> T parse(
+				Parser<T> parser,
+				Expectations expectations,
+				Pos firstUnaccepted) {
 			if (isEOF()) {
 				return null;
 			}
 
 			final long start = firstUnaccepted.offset;
-			final Context context =
-				new Context(parser, this.current, firstUnaccepted);
+			final Context context = new Context(
+					parser,
+					this.current,
+					firstUnaccepted,
+					expectations);
 			final T result;
 			final long accepted;
 
