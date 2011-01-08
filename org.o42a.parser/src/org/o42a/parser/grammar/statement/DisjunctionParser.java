@@ -27,9 +27,7 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.AlternativeNode.Separator;
 import org.o42a.ast.sentence.SerialNode;
-import org.o42a.parser.Grammar;
-import org.o42a.parser.Parser;
-import org.o42a.parser.ParserContext;
+import org.o42a.parser.*;
 
 
 public class DisjunctionParser implements Parser<AlternativeNode[]> {
@@ -43,6 +41,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 	@Override
 	public AlternativeNode[] parse(ParserContext context) {
 
+		final Expectations expectations = context.expect(';').expect('|');
 		final ArrayList<AlternativeNode> alternatives =
 			new ArrayList<AlternativeNode>();
 		SignNode<Separator> separatorSign = null;
@@ -52,7 +51,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 			final CommentNode[] comments = context.skipComments();
 			final FixedPosition conjunctionStart = context.current().fix();
 			final SerialNode[] conjunction =
-				context.parse(this.grammar.conjunction());
+				expectations.parse(this.grammar.conjunction());
 			final AlternativeNode alternative;
 
 			if (conjunction != null) {

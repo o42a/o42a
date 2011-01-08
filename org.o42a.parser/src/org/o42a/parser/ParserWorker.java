@@ -424,7 +424,7 @@ public class ParserWorker {
 			final int ordinal = record.getSeverity().ordinal();
 
 			if (ordinal >= Severity.ERROR.ordinal()) {
-				if (ordinal >= Severity.FATAL.ordinal()) {
+				if (ordinal <= Severity.FATAL.ordinal()) {
 					this.context.hasErrors = 2;
 				} else {
 					this.context.hasErrors = 1;

@@ -20,26 +20,28 @@
 package org.o42a.parser;
 
 
-final class CharParser implements Parser<Character> {
+final class StringParser implements Parser<String> {
 
-	private final char expectedChar;
+	private final String expectedString;
 
-	CharParser(char expectedChar) {
-		this.expectedChar = expectedChar;
+	StringParser(String expectedString) {
+		this.expectedString = expectedString;
 	}
 
 	@Override
-	public Character parse(ParserContext context) {
-		if (context.next() != this.expectedChar) {
-			return null;
+	public String parse(ParserContext context) {
+		for (int i = 0, len = this.expectedString.length(); i < len ; ++i) {
+			if (context.next() != this.expectedString.charAt(i)) {
+				return null;
+			}
 		}
 		context.acceptAll();
-		return this.expectedChar;
+		return this.expectedString;
 	}
 
 	@Override
 	public String toString() {
-		return "CharParser[" + this.expectedChar + "]";
+		return "StringParser[" + this.expectedString + ']';
 	}
 
 }

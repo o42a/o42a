@@ -42,7 +42,8 @@ public class ContentParser implements Parser<SentenceNode[]> {
 
 		for (;;) {
 
-			final SentenceNode sentence = context.parse(this.grammar.sentence());
+			final SentenceNode sentence =
+				context.parse(this.grammar.sentence());
 
 			if (sentence == null) {
 				break;
