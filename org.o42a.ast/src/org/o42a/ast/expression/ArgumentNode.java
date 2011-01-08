@@ -62,9 +62,6 @@ public class ArgumentNode extends AbstractNode {
 	public void printContent(StringBuilder out) {
 		if (this.separator != null) {
 			this.separator.printContent(out);
-		} else if (this.value == null) {
-			out.append("_");
-			return;
 		}
 		if (this.value != null) {
 			this.value.printContent(out);

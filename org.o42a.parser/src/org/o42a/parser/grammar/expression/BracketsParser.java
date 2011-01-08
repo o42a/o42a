@@ -24,14 +24,13 @@ import static org.o42a.ast.expression.BracketsNode.Bracket.OPENING_BRACKET;
 
 import java.util.ArrayList;
 
+import org.o42a.ast.EmptyNode;
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.ArgumentNode.Separator;
 import org.o42a.ast.expression.BracketsNode.Bracket;
-import org.o42a.parser.Grammar;
-import org.o42a.parser.Parser;
-import org.o42a.parser.ParserContext;
+import org.o42a.parser.*;
 
 
 public class BracketsParser implements Parser<BracketsNode> {
@@ -42,57 +41,37 @@ public class BracketsParser implements Parser<BracketsNode> {
 		this.elementParser = grammar.expression();
 	}
 
-	public BracketsParser(Parser<ExpressionNode> elementParser) {
-		this.elementParser = elementParser;
-	}
-
 	@Override
 	public BracketsNode parse(ParserContext context) {
 		if (context.next() != '[') {
 			return null;
 		}
 
-		final FixedPosition start = context.current().fix();
-
-		context.skip();
-
-		final SignNode<Bracket> opening =
-			new SignNode<Bracket>(start, context.current(), OPENING_BRACKET);
-
-		context.skipComments(opening);
-
-		int c = context.next();
-
-		if (c == ']') {
-
-			final FixedPosition closingStart = context.current().fix();
-
-			context.acceptAll();
-
-			final SignNode<Bracket> closing = new SignNode<Bracket>(
-					closingStart,
-					context.current(),
-					CLOSING_BRACKET);
-
-			return context.acceptComments(
-					new BracketsNode(opening, new ArgumentNode[0], closing));
-		}
-
+		final SignNode<Bracket> opening = opening(context);
 		final ArrayList<ArgumentNode> arguments = new ArrayList<ArgumentNode>();
 		SignNode<Bracket> closing = null;
 		SignNode<Separator> separator = null;
 
+		final Expectations expectations =
+			context.expectNothing().expect(',').expect(']');
+
 		for (;;) {
 
-			final ExpressionNode value = context.parse(this.elementParser);
+			final ArgumentNode argument = expectations.parse(
+					new ArgumentParser(separator, this.elementParser));
 
-			arguments.add(new ArgumentNode(separator, value));
+			if (argument != null) {
+				arguments.add(argument);
+				if (separator != null) {
+					arguments.add(new ArgumentNode(separator.getEnd()));
+				}
+			}
 
-			c = context.next();
+			final int c = context.next();
+
 			if (c == ']') {
 
-				final FixedPosition closingStart =
-					context.current().fix();
+				final FixedPosition closingStart = context.current().fix();
 
 				context.acceptAll();
 
@@ -106,6 +85,9 @@ public class BracketsParser implements Parser<BracketsNode> {
 				context.getLogger().notClosed(opening, "[");
 				context.acceptButLast();
 				break;
+			}
+			if (argument == null && separator == null) {
+				arguments.add(new ArgumentNode(opening.getEnd()));
 			}
 
 			final FixedPosition separatorStart = context.current().fix();
@@ -122,6 +104,82 @@ public class BracketsParser implements Parser<BracketsNode> {
 					opening,
 					arguments.toArray(new ArgumentNode[arguments.size()]),
 					closing));
+	}
+
+	private SignNode<Bracket> opening(ParserContext context) {
+
+		final FixedPosition start = context.current().fix();
+
+		context.skip();
+
+		final SignNode<Bracket> opening =
+			new SignNode<Bracket>(start, context.current(), OPENING_BRACKET);
+
+		context.skipComments(opening);
+
+		return opening;
+	}
+
+	private static void logUnexpected(
+			ParserContext context,
+			FixedPosition firstUnexpected,
+			FixedPosition current) {
+		if (firstUnexpected == null) {
+			return;
+		}
+		context.getLogger().syntaxError(
+				new EmptyNode(firstUnexpected, current));
+	}
+
+	private static final class ArgumentParser implements Parser<ArgumentNode> {
+
+		private final SignNode<Separator> separator;
+		private final Parser<ExpressionNode> elementParser;
+
+		ArgumentParser(
+				SignNode<Separator> separator,
+				Parser<ExpressionNode> elementParser) {
+			this.separator = separator;
+			this.elementParser = elementParser;
+		}
+
+		@Override
+		public ArgumentNode parse(ParserContext context) {
+
+			FixedPosition firstUnexpected = null;
+
+			for (;;) {
+
+				final FixedPosition start = context.current().fix();
+				final ExpressionNode value = context.parse(this.elementParser);
+
+				if (value != null) {
+					logUnexpected(context, firstUnexpected, start);
+					return new ArgumentNode(this.separator, value);
+				}
+				if (context.isEOF()) {
+					if (firstUnexpected != null) {
+						logUnexpected(context, firstUnexpected, start);
+					} else {
+						context.getLogger().eof(start);
+					}
+					return null;
+				}
+				if (context.asExpected()) {
+					logUnexpected(context, firstUnexpected, start);
+					return null;
+				}
+				if (firstUnexpected == null) {
+					firstUnexpected = start;
+				}
+				context.acceptAll();
+				if (context.acceptComments() != null) {
+					logUnexpected(context, firstUnexpected, start);
+					firstUnexpected = null;
+				}
+			}
+		}
+
 	}
 
 }
