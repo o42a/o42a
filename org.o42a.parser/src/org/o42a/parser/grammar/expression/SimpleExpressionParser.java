@@ -106,7 +106,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			return context.parse(text());
 		default:
 			if (Grammar.isDigit(c)) {
-				return context.parse(decimalLiteral());
+				return context.parse(decimal());
 			}
 
 			final RefNode ref = context.parse(ref());

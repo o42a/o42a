@@ -62,8 +62,11 @@ public abstract class ParserLogger implements Logger {
 				location);
 	}
 
-	public void invalidParameter(LogInfo location) {
-		fatal("invalid_parameter", "Not a valid parameter name", location);
+	public void invalidSpaceInNumber(LogInfo location) {
+		error(
+				"invalid_space_in_number",
+				"Only a single space character allowed in number",
+				location);
 	}
 
 	public void ioError(LogInfo location, String message) {

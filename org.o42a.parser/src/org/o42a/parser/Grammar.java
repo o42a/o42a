@@ -53,8 +53,8 @@ public class Grammar {
 		return StringLiteralParser.STRING_LITERAL;
 	}
 
-	public static Parser<DecimalNode> decimalLiteral() {
-		return DecimalLiteralParser.DECIMAL_LITERAL;
+	public static Parser<DecimalNode> decimal() {
+		return DecimalParser.DECIMAL;
 	}
 
 	public static Parser<ScopeRefNode> scopeRef() {
