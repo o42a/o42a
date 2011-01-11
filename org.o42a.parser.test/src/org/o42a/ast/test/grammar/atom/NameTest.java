@@ -22,23 +22,14 @@ package org.o42a.ast.test.grammar.atom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.o42a.parser.Grammar.name;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Grammar;
-import org.o42a.parser.Parser;
 
 
 public class NameTest extends GrammarTestCase {
-
-	private Parser<NameNode> parser;
-
-	@Before
-	public void setup() {
-		this.parser = Grammar.name();
-	}
 
 	@Test
 	public void simpleName() {
@@ -116,9 +107,32 @@ public class NameTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void whitespaceAfterHyphen() {
+	public void whitespaceAfterHyphenMinus() {
 
 		final NameNode name = parse("a- b");
+
+		assertNotNull(name);
+		assertRange(0, 4, name);
+		assertEquals("a-b", name.getName());
+		assertEquals(4, this.worker.position().offset());
+	}
+
+	@Test
+	public void whitespaceAfterHyphen() {
+
+		final NameNode name = parse("a\u2010 b");
+
+		assertNotNull(name);
+		assertRange(0, 4, name);
+		assertEquals("a-b", name.getName());
+		assertEquals(4, this.worker.position().offset());
+	}
+
+	@Test
+	public void whitespaceAfterNonBreakingHyphen() {
+		expectError("discouraging_whitespace");
+
+		final NameNode name = parse("a\u2011 b");
 
 		assertNotNull(name);
 		assertRange(0, 4, name);
@@ -146,7 +160,7 @@ public class NameTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void hyphenAfterWhitespace() {
+	public void hyphenMinusAfterWhitespace() {
 
 		final NameNode name = parse("a -");
 
@@ -154,6 +168,24 @@ public class NameTest extends GrammarTestCase {
 		assertRange(0, 1, name);
 		assertEquals("a", name.getName());
 		assertEquals(1, this.worker.position().offset());
+	}
+
+	@Test
+	public void hyphenAfterWhitespace() {
+		expectError("discouraging_whitespace");
+
+		final NameNode name = parse("a \u2010 b");
+
+		assertEquals("a-b", name.getName());
+	}
+
+	@Test
+	public void nonBreakingHyphenAfterWhitespace() {
+		expectError("discouraging_whitespace");
+
+		final NameNode name = parse("a \u2011b");
+
+		assertEquals("a-b", name.getName());
 	}
 
 	@Test
@@ -167,8 +199,43 @@ public class NameTest extends GrammarTestCase {
 		assertEquals(1, this.worker.position().offset());
 	}
 
+	@Test
+	public void softHyphen() {
+
+		final NameNode name = parse("after\u00ADwards");
+
+		assertEquals("afterwards", name.getName());
+	}
+
+	@Test
+	public void softHyphenAfterSoftHyphen() {
+		expectError("discouraging_soft_hyphen");
+
+		final NameNode name = parse("after\u00AD\u00ADwards");
+
+		assertEquals("afterwards", name.getName());
+	}
+
+	@Test
+	public void startFromSoftHyphen() {
+		expectError("discouraging_soft_hyphen");
+
+		final NameNode name = parse("\u00ADabc");
+
+		assertEquals("abc", name.getName());
+	}
+
+	@Test
+	public void endWithSoftHyphen() {
+		expectError("discouraging_soft_hyphen");
+
+		final NameNode name = parse("abc\u00AD");
+
+		assertEquals("abc", name.getName());
+	}
+
 	private NameNode parse(String text) {
-		return parse(this.parser, text);
+		return parse(name(), text);
 	}
 
 }

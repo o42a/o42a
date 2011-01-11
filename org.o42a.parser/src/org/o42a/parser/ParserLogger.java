@@ -35,6 +35,20 @@ public abstract class ParserLogger implements Logger {
 				charsLeft);
 	}
 
+	public void discouragingSoftHyphen(LogInfo location) {
+		warning(
+				"discouraging_soft_hyphen",
+				"Discouraging soft hyphen",
+				location);
+	}
+
+	public void discouragingWhitespace(LogInfo location) {
+		warning(
+				"discouraging_whitespace",
+				"Discouraging whitespace",
+				location);
+	}
+
 	public void emptyAlternative(LogInfo location) {
 		warning("empty_alternative", "Empty alternative", location);
 	}
@@ -63,7 +77,7 @@ public abstract class ParserLogger implements Logger {
 	}
 
 	public void invalidSpaceInNumber(LogInfo location) {
-		error(
+		warning(
 				"invalid_space_in_number",
 				"Only a single space character allowed in number",
 				location);

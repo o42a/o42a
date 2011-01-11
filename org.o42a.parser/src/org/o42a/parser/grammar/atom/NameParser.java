@@ -24,6 +24,7 @@ import static java.lang.Character.isWhitespace;
 import static org.o42a.parser.Grammar.isDigit;
 import static org.o42a.parser.grammar.atom.WhitespaceParser.WHITESPACE;
 
+import org.o42a.ast.EmptyNode;
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.parser.Parser;
@@ -37,6 +38,10 @@ public class NameParser implements Parser<NameNode> {
 	private static final WordParser WORD = new WordParser();
 	private static final NumberParser NUMBER = new NumberParser();
 
+	private static final int HYPHEN = 0x2010;
+	private static final int NON_BREAKING_HYPHEN = 0x2011;
+	private static final int SOFT_HYPHEN = 0x00AD;
+
 	private NameParser() {
 	}
 
@@ -46,38 +51,49 @@ public class NameParser implements Parser<NameNode> {
 
 		final FixedPosition start = context.current().fix();
 		final StringBuilder name = new StringBuilder();
-		boolean separator = false;
-		boolean hyphen = false;
+		FixedPosition whitespace = null;
+		int hyphen = 0;
 
 		for (;;) {
 
 			final int c = context.next();
 
 			if (isWhitespace(c)) {
-				separator = true;
+				if (whitespace == null) {
+					whitespace = context.current().fix();
+				}
 				context.push(WHITESPACE);
+				if (hyphen == NON_BREAKING_HYPHEN) {
+					context.getLogger().discouragingWhitespace(
+							new EmptyNode(whitespace, context.current()));
+				}
 				continue;
 			}
 
 			final int len = name.length();
 
-			if (c == '-') {
+			if (c == '-' || c == HYPHEN || c == NON_BREAKING_HYPHEN) {
 				if (len == 0) {
 					return null; // hyphen can not be first
 				}
-				if (separator) {
-					break; // word separator precedes hyphen
-				}
-				if (hyphen) {
+				if (hyphen != 0) {
 					break; // two subsequent hyphens
 				}
-				hyphen = true;
+				if (whitespace != null) {
+					// whitespace precedes hyphen
+					if (c == '-') {
+						break;
+					}
+					context.getLogger().discouragingWhitespace(
+							new EmptyNode(whitespace, context.current()));
+				}
+				hyphen = c;
 				continue;
 			}
 			if (c < 0) {
 				break;
 			}
-			separator = false;
+			whitespace = null;
 
 			final WordParser parser;
 
@@ -86,7 +102,7 @@ public class NameParser implements Parser<NameNode> {
 					return null;// first symbol can not be a digit
 				}
 				parser = NUMBER;
-			} else if (isLetter(c)) {
+			} else if (isLetter(c) || c == SOFT_HYPHEN) {
 				parser = WORD;
 			} else {
 				break;
@@ -97,17 +113,10 @@ public class NameParser implements Parser<NameNode> {
 			if (word == null) {
 				break;
 			}
-
-			final int lastChar = context.lastChar();
-
-			if (lastChar == '_') {
-				break;// next name started
-			}
-
 			if (len != 0) {
-				if (hyphen) {
+				if (hyphen != 0) {
 					name.append('-');
-					hyphen = false;
+					hyphen = 0;
 				} else if (isDigit(name.charAt(name.length() - 1))) {
 					if (parser == NUMBER) {
 						// separate numbers by underscope
@@ -122,7 +131,7 @@ public class NameParser implements Parser<NameNode> {
 			}
 			context.acceptAll();
 			name.append(word);
-			if (lastChar < 0) {
+			if (context.isEOF()) {
 				break;
 			}
 		}
@@ -142,6 +151,7 @@ public class NameParser implements Parser<NameNode> {
 		@Override
 		public CharSequence parse(ParserContext context) {
 
+			FixedPosition softHyphen = null;
 			final StringBuilder word = new StringBuilder();
 
 			for (;;) {
@@ -149,8 +159,28 @@ public class NameParser implements Parser<NameNode> {
 				final int c = context.next();
 
 				if (isNamePart(c)) {
+					if (softHyphen != null) {
+						if (word.length() == 0) {
+							context.getLogger().discouragingSoftHyphen(
+									softHyphen);
+						}
+						softHyphen = null;
+					}
 					word.append(Character.toLowerCase((char) c));
 					continue;
+				}
+				if (c == SOFT_HYPHEN) {
+					if (softHyphen != null) {
+						context.getLogger().discouragingSoftHyphen(softHyphen);
+					}
+					softHyphen = context.current().fix();
+					continue;
+				}
+				if (word.length() == 0) {
+					return null;
+				}
+				if (softHyphen != null) {
+					context.getLogger().discouragingSoftHyphen(softHyphen);
 				}
 				context.acceptButLast();
 
