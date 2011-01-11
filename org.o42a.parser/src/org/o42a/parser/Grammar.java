@@ -34,6 +34,11 @@ import org.o42a.parser.grammar.statement.*;
 
 public class Grammar {
 
+	public static final int HYPHEN = 0x2010;
+	public static final int NON_BREAKING_HYPHEN = 0x2011;
+	public static final int SOFT_HYPHEN = 0x00AD;
+	public static final int MINUS = 0x2212;
+
 	public static final Grammar DECLARATIVE = new DeclarativeGrammar();
 	public static final Grammar IMPERATIVE = new ImperativeGrammar();
 

@@ -39,8 +39,13 @@ public class BinaryExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void minus() {
+	public void hyphenMinus() {
 		assertOperator(BinaryOperator.SUBTRACT, "-");
+	}
+
+	@Test
+	public void minus() {
+		assertOperator(BinaryOperator.SUBTRACT, "\u2212");
 	}
 
 	@Test

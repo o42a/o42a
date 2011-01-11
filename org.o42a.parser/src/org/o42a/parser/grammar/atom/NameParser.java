@@ -21,7 +21,7 @@ package org.o42a.parser.grammar.atom;
 
 import static java.lang.Character.isLetter;
 import static java.lang.Character.isWhitespace;
-import static org.o42a.parser.Grammar.isDigit;
+import static org.o42a.parser.Grammar.*;
 import static org.o42a.parser.grammar.atom.WhitespaceParser.WHITESPACE;
 
 import org.o42a.ast.EmptyNode;
@@ -37,10 +37,6 @@ public class NameParser implements Parser<NameNode> {
 
 	private static final WordParser WORD = new WordParser();
 	private static final NumberParser NUMBER = new NumberParser();
-
-	private static final int HYPHEN = 0x2010;
-	private static final int NON_BREAKING_HYPHEN = 0x2011;
-	private static final int SOFT_HYPHEN = 0x00AD;
 
 	private NameParser() {
 	}

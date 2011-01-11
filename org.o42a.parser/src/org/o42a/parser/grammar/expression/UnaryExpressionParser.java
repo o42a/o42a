@@ -49,6 +49,7 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 			context.acceptAll();
 			break;
 		case '-':
+		case Grammar.MINUS:
 			operator = UnaryOperator.MINUS;
 			context.acceptAll();
 			break;

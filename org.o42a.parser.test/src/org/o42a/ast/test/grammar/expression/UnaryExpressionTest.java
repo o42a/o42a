@@ -53,9 +53,21 @@ public class UnaryExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void minus() {
+	public void hyphenMinus() {
 
 		final UnaryNode result = parse("-foo");
+
+		assertNotNull(result);
+		assertEquals(UnaryOperator.MINUS, result.getOperator());
+		assertName("foo", result.getOperand());
+		assertRange(0, 4, result);
+		assertRange(0, 1, result.getSign());
+	}
+
+	@Test
+	public void minus() {
+
+		final UnaryNode result = parse("\u2212foo");
 
 		assertNotNull(result);
 		assertEquals(UnaryOperator.MINUS, result.getOperator());
