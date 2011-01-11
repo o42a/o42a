@@ -93,6 +93,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	public void unaryExpression() {
 		to(UnaryNode.class, parse("+foo"));
 		to(UnaryNode.class, parse("-foo"));
+		to(UnaryNode.class, parse("\u2212 foo"));
 	}
 
 	@Test

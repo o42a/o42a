@@ -72,7 +72,7 @@ public class ExpressionTest extends GrammarTestCase {
 	public void ascendantsAsRigntOperand() {
 
 		final BinaryNode result =
-			to(BinaryNode.class, parse("foo + bar & baz"));
+			to(BinaryNode.class, parse("foo \u2212 bar & baz"));
 
 		assertName("foo", result.getLeftOperand());
 

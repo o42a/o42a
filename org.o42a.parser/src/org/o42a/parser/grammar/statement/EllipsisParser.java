@@ -19,6 +19,7 @@
 */
 package org.o42a.parser.grammar.statement;
 
+import static org.o42a.parser.Grammar.HORIZONTAL_ELLIPSIS;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
 import org.o42a.ast.FixedPosition;
@@ -43,13 +44,18 @@ public class EllipsisParser implements Parser<EllipsisNode> {
 
 		final FixedPosition start = context.current().fix();
 
-		if (context.next() != '.') {
-			return null;
-		}
-		if (context.next() != '.') {
-			return null;
-		}
-		if (context.next() != '.') {
+		switch (context.next()) {
+		case HORIZONTAL_ELLIPSIS:
+			break;
+		case '.':
+			if (context.next() != '.') {
+				return null;
+			}
+			if (context.next() != '.') {
+				return null;
+			}
+			break;
+		default:
 			return null;
 		}
 

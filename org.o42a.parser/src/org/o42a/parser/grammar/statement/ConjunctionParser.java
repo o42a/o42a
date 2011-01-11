@@ -19,6 +19,7 @@
 */
 package org.o42a.parser.grammar.statement;
 
+import static org.o42a.parser.Grammar.HORIZONTAL_ELLIPSIS;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 import static org.o42a.parser.Grammar.ellipsis;
 
@@ -45,7 +46,15 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 	@Override
 	public SerialNode[] parse(ParserContext context) {
 
-		final Expectations expectations = context.expect(',');
+		final Expectations expectations;
+
+		if (this.grammar == IMPERATIVE) {
+			expectations =
+				context.expect(',').expect((char) HORIZONTAL_ELLIPSIS);
+		} else {
+			expectations = context.expect(',');
+		}
+
 		final ArrayList<SerialNode> statements = new ArrayList<SerialNode>();
 		SignNode<Separator> separator = null;
 
@@ -69,7 +78,8 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 			final int c = context.next();
 
 			if (c != ',') {
-				if (c == '.' && this.grammar == IMPERATIVE) {
+				if (this.grammar == IMPERATIVE
+						&& (c == '.' || c == HORIZONTAL_ELLIPSIS)) {
 
 					final EllipsisNode ellipsis = context.push(ellipsis());
 
