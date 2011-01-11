@@ -91,6 +91,7 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 
 			switch (context.next()) {
 			case '-':
+			case Grammar.MINUS:
 				operator = BinaryOperator.SUBTRACT;
 				context.acceptAll();
 				break;

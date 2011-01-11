@@ -95,6 +95,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		switch (c) {
 		case '+':
 		case '-':
+		case Grammar.MINUS:
 			return context.parse(this.grammar.unaryExpression());
 		case '(':
 			return context.parse(this.grammar.parentheses());
