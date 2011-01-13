@@ -48,8 +48,8 @@ public class Path {
 
 	public static final Path SELF_PATH = new Path(new PathFragment[0]);
 
-	private static final SimplePathWalker SIMPLE_WALKER =
-		new SimplePathWalker();
+	private static final DummyPathWalker DUMMY_WALKER =
+		new DummyPathWalker();
 
 	public static AbsolutePath absolutePath(
 			CompilerContext context,
@@ -101,14 +101,14 @@ public class Path {
 	public final Artifact<?> resolveArtifact(
 			LocationSpec location,
 			Scope start) {
-		return walkToArtifact(location, start, SIMPLE_WALKER);
+		return walkToArtifact(location, start, DUMMY_WALKER);
 	}
 
 	public final Artifact<?> resolveArtifact(
 			LocationSpec location,
 			Scope scope,
 			Ref start) {
-		return walkToArtifact(location, scope, start, SIMPLE_WALKER);
+		return walkToArtifact(location, scope, start, DUMMY_WALKER);
 	}
 
 	public Artifact<?> walkToArtifact(
@@ -144,14 +144,14 @@ public class Path {
 	}
 
 	public final Container resolve(LocationSpec location, Scope start) {
-		return walk(location, start, SIMPLE_WALKER);
+		return walk(location, start, DUMMY_WALKER);
 	}
 
 	public final Container resolve(
 			LocationSpec location,
 			Scope scope,
 			Ref start) {
-		return walk(location, scope, start, SIMPLE_WALKER);
+		return walk(location, scope, start, DUMMY_WALKER);
 	}
 
 	public Container walk(
