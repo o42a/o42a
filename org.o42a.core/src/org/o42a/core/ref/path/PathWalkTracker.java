@@ -27,7 +27,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 
 
-
 final class PathWalkTracker implements PathWalker {
 
 	private final PathWalker walker;

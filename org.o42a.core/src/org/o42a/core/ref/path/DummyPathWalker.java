@@ -27,7 +27,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 
 
-public class SimplePathWalker implements PathWalker {
+public class DummyPathWalker implements PathWalker {
 
 	@Override
 	public boolean root(Path path, Scope start) {
