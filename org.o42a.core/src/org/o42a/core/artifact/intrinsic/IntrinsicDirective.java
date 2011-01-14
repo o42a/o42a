@@ -27,9 +27,6 @@ import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueType;
 
 
@@ -53,14 +50,6 @@ public abstract class IntrinsicDirective
 	@Override
 	public final Directive toDirective() {
 		return this;
-	}
-
-
-	@Override
-	public <S extends Statements<S>> void assign(
-			Block<S> block,
-			Ref directive) {
-		apply(block, directive);
 	}
 
 	@Override

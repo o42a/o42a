@@ -32,8 +32,4 @@ public interface Directive {
 			Block<S> block,
 			Ref directive);
 
-	<S extends Statements<S>> void assign(
-			Block<S> block,
-			Ref directive);
-
 }

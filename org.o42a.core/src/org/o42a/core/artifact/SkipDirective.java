@@ -33,12 +33,6 @@ final class SkipDirective implements Directive {
 	}
 
 	@Override
-	public <S extends Statements<S>> void assign(
-			Block<S> block,
-			Ref directive) {
-	}
-
-	@Override
 	public String toString() {
 		return "SKIP";
 	}
