@@ -262,6 +262,9 @@ public abstract class Ref extends RefBase {
 
 	@Override
 	public Instruction toInstruction(Scope scope, boolean assignment) {
+		if (assignment) {
+			return null;
+		}
 
 		final Directive directive = resolve(scope).toDirective();
 
@@ -269,7 +272,7 @@ public abstract class Ref extends RefBase {
 			return null;
 		}
 
-		return new ApplyDirective(directive, assignment);
+		return new ApplyDirective(directive);
 	}
 
 	public Ref and(Cond condition) {
@@ -327,20 +330,14 @@ public abstract class Ref extends RefBase {
 	private final class ApplyDirective implements Instruction {
 
 		private final Directive directive;
-		private final boolean assignment;
 
-		private ApplyDirective(Directive directive, boolean assignment) {
+		private ApplyDirective(Directive directive) {
 			this.directive = directive;
-			this.assignment = assignment;
 		}
 
 		@Override
 		public <S extends Statements<S>> void execute(Block<S> block) {
-			if (this.assignment) {
-				this.directive.assign(block, Ref.this);
-			} else {
-				this.directive.apply(block, Ref.this);
-			}
+			this.directive.apply(block, Ref.this);
 		}
 
 		@Override
