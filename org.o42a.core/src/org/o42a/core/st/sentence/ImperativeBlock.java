@@ -35,9 +35,7 @@ import org.o42a.core.member.field.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Cond;
-import org.o42a.core.st.DefinitionTarget;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.St;
+import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -215,6 +213,11 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		return this.valueType = result;
+	}
+
+	@Override
+	public Conditions setConditions(Conditions conditions) {
+		return new BlockConditions(conditions, this);
 	}
 
 	@Override
@@ -493,6 +496,39 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		REPEAT,
 		PULL,
 		DONE
+
+	}
+
+	private static final class BlockConditions extends Conditions {
+
+		private final Conditions conditions;
+		private final ImperativeBlock block;
+		private Cond condition;
+
+		BlockConditions(Conditions conditions, ImperativeBlock block) {
+			this.conditions = conditions;
+			this.block = block;
+		}
+
+		@Override
+		public Cond getPrerequisite() {
+			return this.conditions.getPrerequisite();
+		}
+
+		@Override
+		public Cond getCondition() {
+			if (this.condition != null) {
+				return this.condition;
+			}
+			return this.condition = this.conditions.getCondition().and(
+					localDef(this.block, this.block.getScope())
+					.fullCondition());
+		}
+
+		@Override
+		public String toString() {
+			return this.condition + ", " + this.block;
+		}
 
 	}
 

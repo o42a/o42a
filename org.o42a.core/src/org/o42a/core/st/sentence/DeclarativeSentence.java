@@ -31,10 +31,14 @@ import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Cond;
+import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
 
 
 public abstract class DeclarativeSentence extends Sentence<Declaratives> {
+
+	private InitialConditions initialConditions;
+	private SentenceConditions conditions;
 
 	DeclarativeSentence(
 			LocationSpec location,
@@ -173,6 +177,20 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return result;
 	}
 
+	Conditions getInitialConditions() {
+		if (this.initialConditions != null) {
+			return this.initialConditions;
+		}
+		return this.initialConditions = new InitialConditions(this);
+	}
+
+	Conditions getConditions() {
+		if (this.conditions != null) {
+			return this.conditions;
+		}
+		return this.conditions = new SentenceConditions(this);
+	}
+
 	private Cond opposition(
 			DefinitionTarget target,
 			int oppositionStart,
@@ -238,6 +256,105 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			final Definitions definitions = super.define(target);
 
 			return definitions != null ? definitions.claim() : null;
+		}
+
+	}
+
+	private static final class InitialConditions extends Conditions {
+
+		private final DeclarativeSentence sentence;
+		private Cond prerequisite;
+
+		InitialConditions(DeclarativeSentence sentence) {
+			this.sentence = sentence;
+		}
+
+		@Override
+		public Cond getPrerequisite() {
+			if (this.prerequisite != null) {
+				return this.prerequisite;
+			}
+
+			final Conditions initial =
+				this.sentence.getBlock().getInitialConditions();
+			final DeclarativeSentence prerequisite =
+				this.sentence.getPrerequisite();
+
+			if (prerequisite == null) {
+				return this.prerequisite = initial.getPrerequisite();
+			}
+
+			return this.prerequisite = initial.getPrerequisite().and(
+					prerequisite.getConditions().fullCondition());
+		}
+
+		@Override
+		public Cond getCondition() {
+			return this.sentence.getBlock()
+			.getInitialConditions().getCondition();
+		}
+
+		@Override
+		public String toString() {
+
+			final DeclarativeSentence prerequisite =
+				this.sentence.getPrerequisite();
+
+			if (prerequisite != null) {
+				return prerequisite + "? " + this.sentence;
+			}
+
+			return this.sentence.toString();
+		}
+
+	}
+
+	private static final class SentenceConditions extends Conditions {
+
+		private final DeclarativeSentence sentence;
+		private Cond condition;
+
+		SentenceConditions(DeclarativeSentence sentence) {
+			this.sentence = sentence;
+		}
+
+		@Override
+		public Cond getPrerequisite() {
+			return this.sentence.getInitialConditions().getPrerequisite();
+		}
+
+		@Override
+		public Cond getCondition() {
+			if (this.condition != null) {
+				return this.condition;
+			}
+
+			final List<Declaratives> alternatives =
+				this.sentence.getAlternatives();
+			final int size = alternatives.size();
+
+			if (size <= 0) {
+				if (size == 0) {
+					return this.condition =
+						this.sentence.getInitialConditions().getCondition();
+				}
+				return this.condition =
+					alternatives.get(0).getConditions().fullCondition();
+			}
+
+			final Cond[] vars = new Cond[size];
+
+			for (int i = 0; i < size; ++i) {
+				vars[i] = alternatives.get(i).getConditions().fullCondition();
+			}
+
+			return this.condition =
+				disjunction(this.sentence, this.sentence.getScope(), vars);
+		}
+
+		@Override
+		public String toString() {
+			return "(" + this.sentence + ")?";
 		}
 
 	}

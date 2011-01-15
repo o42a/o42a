@@ -68,6 +68,11 @@ final class RefCondition extends St {
 	}
 
 	@Override
+	public Conditions setConditions(Conditions conditions) {
+		return this.ref.setConditions(conditions);
+	}
+
+	@Override
 	public Cond condition(Scope scope) {
 		return this.ref.condition(scope);
 	}

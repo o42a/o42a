@@ -65,6 +65,11 @@ final class EllipsisSt extends St {
 	}
 
 	@Override
+	public Conditions setConditions(Conditions conditions) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Cond condition(Scope scope) {
 		return null;
 	}

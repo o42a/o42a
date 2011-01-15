@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.def.Definitions.postConditionDefinitions;
+import static org.o42a.core.ref.Cond.disjunction;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
 import java.util.List;
@@ -33,9 +34,11 @@ import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Cond;
+import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
 
@@ -53,6 +56,8 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 				enclosing,
 				sentenceFactory);
 	}
+
+	private BlockConditions conditions;
 
 	public DeclarativeBlock(
 			LocationSpec location,
@@ -115,6 +120,13 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	@Override
 	public List<DeclarativeSentence> getSentences() {
 		return (List<DeclarativeSentence>) super.getSentences();
+	}
+
+	@Override
+	public Conditions setConditions(Conditions conditions) {
+		assert this.conditions == null :
+			"Conditions already set for " + this;
+		return this.conditions = new BlockConditions(conditions, this);
 	}
 
 	@Override
@@ -237,6 +249,92 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	@Override
 	final Trace getTrace() {
 		return null;
+	}
+
+	final Conditions getInitialConditions() {
+		if (this.conditions != null) {
+			return this.conditions.conditions;
+		}
+
+		final Conditions initial = Conditions.newConditions(this, getScope());
+
+		this.conditions = new BlockConditions(initial, this);
+
+		return initial;
+	}
+
+	private static final class BlockConditions extends Conditions {
+
+		private final Conditions conditions;
+		private final DeclarativeBlock block;
+		private Cond condition;
+
+		BlockConditions(Conditions conditions, DeclarativeBlock block) {
+			this.conditions = conditions;
+			this.block = block;
+		}
+
+		@Override
+		public Cond getPrerequisite() {
+			return this.conditions.getPrerequisite();
+		}
+
+		@Override
+		public Cond getCondition() {
+			if (this.condition != null) {
+				return this.condition;
+			}
+
+			final List<DeclarativeSentence> sentences =
+				this.block.getSentences();
+			final int size = sentences.size();
+
+			if (size <= 0) {
+				return this.condition = this.conditions.getCondition();
+			}
+
+			Cond req = null;
+			final Cond[] vars = new Cond[size];
+			int varIdx = 0;
+
+			for (DeclarativeSentence sentence : sentences) {
+
+				final Cond fullCondition =
+					sentence.getConditions().fullCondition();
+
+				if (sentence.getPrerequisite() != null) {
+					vars[varIdx++] = fullCondition;
+				} else if (req == null) {
+					req = fullCondition;
+				} else {
+					req = req.and(fullCondition);
+				}
+			}
+
+			if (varIdx == 0) {
+				if (req == null) {
+					return this.condition = this.conditions.getCondition();
+				}
+				return this.condition = req;
+			}
+
+			final Cond disjunction = disjunction(
+					this.block,
+					this.block.getScope(),
+					ArrayUtil.clip(vars, varIdx));
+
+			if (req == null) {
+				return this.condition = disjunction;
+			}
+
+			return this.condition = req.and(disjunction);
+		}
+
+		@Override
+		public String toString() {
+			return "BlockConditions[" + this.block + ']';
+		}
+
 	}
 
 }
