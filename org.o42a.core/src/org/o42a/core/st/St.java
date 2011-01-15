@@ -45,6 +45,8 @@ public abstract class St extends Placed {
 
 	public abstract ValueType<?> getValueType();
 
+	public abstract Conditions setConditions(Conditions conditions);
+
 	public abstract Cond condition(Scope scope);
 
 	public abstract Definitions define(DefinitionTarget target);

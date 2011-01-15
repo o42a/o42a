@@ -59,6 +59,11 @@ final class BracesWithinDeclaratives extends St {
 	}
 
 	@Override
+	public Conditions setConditions(Conditions conditions) {
+		return this.block.setConditions(conditions);
+	}
+
+	@Override
 	public Cond condition(Scope scope) {
 		return this.block.condition(scope);
 	}

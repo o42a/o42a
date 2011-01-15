@@ -29,11 +29,15 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Cond;
+import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.St;
 
 
 public class Declaratives extends Statements<Declaratives> {
+
+	private DeclarativeConditions conditions;
+	private Conditions lastConditions;
 
 	Declaratives(
 			LocationSpec location,
@@ -67,6 +71,15 @@ public class Declaratives extends Statements<Declaratives> {
 	@Override
 	public void ellipsis(LocationSpec location, String name) {
 		getLogger().prohibitedDeclarativeEllipsis(location);
+	}
+
+	@Override
+	public void statement(St statement) {
+		if (statement == null) {
+			return;
+		}
+		super.statement(statement);
+		this.lastConditions = statement.setConditions(lastConditions());
 	}
 
 	@Override
@@ -161,6 +174,20 @@ public class Declaratives extends Statements<Declaratives> {
 				condition);
 	}
 
+	Conditions getConditions() {
+		if (this.conditions != null) {
+			return this.conditions;
+		}
+		return this.conditions = new DeclarativeConditions();
+	}
+
+	private Conditions lastConditions() {
+		if (this.lastConditions != null) {
+			return this.lastConditions;
+		}
+		return this.lastConditions = getSentence().getInitialConditions();
+	}
+
 	private Cond statementsCondition(Scope scope, int length) {
 
 		final List<St> statements = getStatements();
@@ -171,6 +198,28 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 
 		return condition;
+	}
+
+	private final class DeclarativeConditions extends Conditions {
+
+		@Override
+		public Cond getPrerequisite() {
+			return lastConditions().getPrerequisite();
+		}
+
+		@Override
+		public Cond getCondition() {
+			return lastConditions().getCondition();
+		}
+
+		@Override
+		public String toString() {
+			if (Declaratives.this.lastConditions != null) {
+				return Declaratives.this.lastConditions.toString();
+			}
+			return Declaratives.this + "?";
+		}
+
 	}
 
 }

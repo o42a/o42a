@@ -54,6 +54,11 @@ final class ClauseVariant extends St {
 	}
 
 	@Override
+	public Conditions setConditions(Conditions conditions) {
+		return conditions.notCondition(this);
+	}
+
+	@Override
 	public Cond condition(Scope scope) {
 		return null;
 	}

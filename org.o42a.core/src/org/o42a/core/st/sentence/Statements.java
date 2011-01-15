@@ -234,7 +234,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return new NextDistributor(trace.next());
 	}
 
-	public final void statement(St statement) {
+	public void statement(St statement) {
 		if (statement == null) {
 			return;
 		}

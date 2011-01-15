@@ -245,6 +245,10 @@ public class CompilerLogger implements Logger {
 		error("not_clause_declaration", "Not a clause declaration", location);
 	}
 
+	public void notCondition(LocationSpec location) {
+		error("not_condition", "Not a condition", location);
+	}
+
 	public void notDerivedFrom(LogInfo location, Object ascendant) {
 		error("not_deried_from", "Not derived from %s", location, ascendant);
 	}

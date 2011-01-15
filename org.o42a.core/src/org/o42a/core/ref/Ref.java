@@ -81,6 +81,7 @@ public abstract class Ref extends RefBase {
 		return new RuntimeRef(location, distributor);
 	}
 
+	private ConditionsWrap conditions;
 	private Cond condition;
 	private RefOp op;
 
@@ -126,6 +127,13 @@ public abstract class Ref extends RefBase {
 	@Override
 	public StatementKind getKind() {
 		return StatementKind.VALUE;
+	}
+
+	@Override
+	public Conditions setConditions(Conditions conditions) {
+		assert this.conditions == null :
+			"Conditions already assigned for: " + conditions;
+		return this.conditions = new ConditionsWrap(conditions);
 	}
 
 	@Override
@@ -327,6 +335,78 @@ public abstract class Ref extends RefBase {
 		return clone;
 	}
 
+	private final class ConditionsWrap extends Conditions {
+
+		private final Conditions conditions;
+		private Conditions wrapped;
+
+		ConditionsWrap(Conditions conditions) {
+			this.conditions = conditions;
+		}
+
+		@Override
+		public Cond getPrerequisite() {
+			return getWrapped().getPrerequisite();
+		}
+
+		@Override
+		public Cond getCondition() {
+			return getWrapped().getCondition();
+		}
+
+		@Override
+		public String toString() {
+			if (this.wrapped != null) {
+				return this.wrapped.toString();
+			}
+			return this.conditions + ", " + Ref.this;
+		}
+
+		private Conditions getWrapped() {
+			if (this.wrapped != null) {
+				return this.wrapped;
+			}
+			return this.wrapped = new RefConditions(this.conditions);
+		}
+
+		private void setWrapped(Conditions wrapped) {
+			assert this.wrapped == null :
+				"Conditions already built for " + Ref.this;
+			this.wrapped = wrapped;
+		}
+
+	}
+
+	private final class RefConditions extends Conditions {
+
+		private final Conditions conditions;
+		private Cond condition;
+
+		RefConditions(Conditions conditions) {
+			this.conditions = conditions;
+		}
+
+		@Override
+		public Cond getPrerequisite() {
+			return this.conditions.getPrerequisite();
+		}
+
+		@Override
+		public Cond getCondition() {
+			if (this.condition != null) {
+				return this.condition;
+			}
+			return this.condition =
+				this.conditions.getCondition().and(Ref.this.getCondition());
+		}
+
+		@Override
+		public String toString() {
+			return this.conditions + ", " + Ref.this;
+		}
+
+	}
+
 	private final class ApplyDirective implements Instruction {
 
 		private final Directive directive;
@@ -337,6 +417,8 @@ public abstract class Ref extends RefBase {
 
 		@Override
 		public <S extends Statements<S>> void execute(Block<S> block) {
+			Ref.this.conditions.setWrapped(
+					block.setConditions(Ref.this.conditions.conditions));
 			this.directive.apply(block, Ref.this);
 		}
 
