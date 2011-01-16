@@ -32,7 +32,7 @@ import org.o42a.core.st.sentence.Declaratives;
 
 public abstract class DefinedObject extends PlainObject {
 
-	private ObjectMemberRegistry fieldRegistry;
+	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private boolean definitionBuilt;
 
@@ -61,13 +61,13 @@ public abstract class DefinedObject extends PlainObject {
 	}
 
 	public ObjectMemberRegistry getMemberRegistry() {
-		if (this.fieldRegistry == null) {
-			this.fieldRegistry = createFieldRegistry();
+		if (this.memberRegistry == null) {
+			this.memberRegistry = createMemberRegistry();
 		}
-		return this.fieldRegistry;
+		return this.memberRegistry;
 	}
 
-	protected ObjectMemberRegistry createFieldRegistry() {
+	protected ObjectMemberRegistry createMemberRegistry() {
 		return new ObjectMemberRegistry(this);
 	}
 

@@ -22,14 +22,12 @@ package org.o42a.core.st.sentence;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
-import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
@@ -67,11 +65,6 @@ final class EllipsisSt extends St {
 	@Override
 	public Conditions setConditions(Conditions conditions) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Cond condition(Scope scope) {
-		return null;
 	}
 
 	@Override

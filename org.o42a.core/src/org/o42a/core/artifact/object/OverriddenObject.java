@@ -51,15 +51,14 @@ final class OverriddenObject extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		this.decl.getFieldRegistry().registerMembers(members);
+		this.decl.getMemberRegistry().registerMembers(members);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.decl.getEnclosing().define(new DefinitionTarget(
-					getScope(),
-					getAncestor().getType().getValueType(),
-					this.decl.getField().getKey()));
+		return this.decl.define(new DefinitionTarget(
+				getScope(),
+				getAncestor().getType().getValueType()));
 	}
 
 }

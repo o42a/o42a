@@ -20,12 +20,10 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.core.LocationSpec;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.*;
@@ -54,11 +52,6 @@ final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
 	}
 
 	@Override
-	protected Cond condition(Scope scope) {
-		return getContent().condition(scope);
-	}
-
-	@Override
 	protected Definitions define(DefinitionTarget target) {
 		return getContent().define(target);
 	}
@@ -71,32 +64,28 @@ final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
 	private void buildContent() {
 
 		final FieldVariant<Obj> variant = getVariant();
-		final MemberRegistry fieldRegistry;
+		final MemberRegistry memberRegistry;
 		final StaticTypeRef ascendant =
 			getVariant().getDefinition().getAscendants().getAscendant();
 
 		if (ascendant == null) {
-			fieldRegistry = getFieldDecl().getFieldRegistry();
+			memberRegistry = getFieldDecl().getMemberRegistry();
 		} else if (ascendant.getType().derivedFrom(getField().getArtifact())) {
-			fieldRegistry = getFieldDecl().getFieldRegistry();
+			memberRegistry = getFieldDecl().getMemberRegistry();
 		} else {
-			fieldRegistry = new ScopedRegistry(
-					getFieldDecl().getFieldRegistry(),
+			memberRegistry = new ScopedRegistry(
+					getFieldDecl().getMemberRegistry(),
 					ascendant);
 		}
 
-		final Statements<?> enclosing = variant.getEnclosing();
 		final FieldDefinition definition = variant.getDefinition();
 
-		if (enclosing == null) {
-			this.content = getFieldDecl().getDefinitionBlock();
-		} else {
-			this.content = new DeclarativeBlock(
-					definition,
-					getField(),
-					enclosing,
-					fieldRegistry);
-		}
+		this.content = new DeclarativeBlock(
+				definition,
+				getField(),
+				null,
+				memberRegistry);
+		this.content.setConditions(getVariant().getInitialConditions());
 
 		final BlockBuilder declarations = definition.getDeclarations();
 

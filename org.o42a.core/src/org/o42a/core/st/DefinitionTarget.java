@@ -20,7 +20,6 @@
 package org.o42a.core.st;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.value.ValueType;
 
 
@@ -28,23 +27,15 @@ public class DefinitionTarget {
 
 	private final Scope scope;
 	private final ValueType<?> expectedType;
-	private final MemberKey memberKey;
 
 	public DefinitionTarget(Scope scope) {
-		this(scope, null, null);
+		this.scope = scope;
+		this.expectedType = null;
 	}
 
 	public DefinitionTarget(Scope scope, ValueType<?> expectedType) {
-		this(scope, expectedType, null);
-	}
-
-	public DefinitionTarget(
-			Scope scope,
-			ValueType<?> expectedType,
-			MemberKey memberKey) {
 		this.scope = scope;
 		this.expectedType = expectedType;
-		this.memberKey = memberKey;
 	}
 
 	public final Scope getScope() {
@@ -53,14 +44,6 @@ public class DefinitionTarget {
 
 	public final ValueType<?> getExpectedType() {
 		return this.expectedType;
-	}
-
-	public final MemberKey getMemberKey() {
-		return this.memberKey;
-	}
-
-	public final boolean isField() {
-		return this.memberKey != null;
 	}
 
 	public final boolean isTypeExpected() {
@@ -72,12 +55,11 @@ public class DefinitionTarget {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append("StatementScope[");
-		out.append(this.scope);
-		out.append(']');
-		if (this.memberKey != null) {
-			out.append(":").append(this.memberKey);
+		out.append("DefinitionTarget[");
+		if (this.expectedType != null) {
+			out.append(this.expectedType);
 		}
+		out.append(']');
 
 		return out.toString();
 	}

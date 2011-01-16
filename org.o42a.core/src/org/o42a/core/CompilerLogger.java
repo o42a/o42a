@@ -109,8 +109,8 @@ public class CompilerLogger implements Logger {
 		error("expected_clause_name", "Clause name expected here", location);
 	}
 
-	public void expectedDeclaration(LogInfo location) {
-		error("expected_declaration", "Declaration expected here", location);
+	public void expectedDefinition(LogInfo location) {
+		error("expected_definition", "Definition expected here", location);
 	}
 
 	public void forbiddenAccess(LogInfo location, Object target) {
@@ -334,6 +334,13 @@ public class CompilerLogger implements Logger {
 		error(
 				"prohibited_declarative_ellipsis",
 				"Ellipsis is only allowed within imperative block",
+				location);
+	}
+
+	public void prohibitedDefinition(LogInfo location) {
+		error(
+				"prohibited_definition",
+				"Definition is prohibited here",
 				location);
 	}
 

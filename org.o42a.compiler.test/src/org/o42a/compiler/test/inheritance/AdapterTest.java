@@ -37,7 +37,7 @@ public class AdapterTest extends CompilerTestCase {
 	@Test
 	public void adapter() {
 		compile(
-				"Adapter :=> void(Foo := 1),",
+				"Adapter :=> void(Foo := 1);",
 				"a := void(@Adapter := adapter)");
 
 		final Ref adapter = this.a.self().adapt(

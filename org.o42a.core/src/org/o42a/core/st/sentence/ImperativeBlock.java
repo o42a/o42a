@@ -106,6 +106,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final boolean topLevel;
 	private final Trace trace;
 	private ValueType<?> valueType;
+	private Conditions initialConditions;
 
 	public ImperativeBlock(
 			LocationSpec location,
@@ -217,17 +218,16 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	@Override
 	public Conditions setConditions(Conditions conditions) {
+		assert this.initialConditions == null :
+			"Conditions already set for " + this;
+		this.initialConditions = conditions;
 		return new BlockConditions(conditions, this);
 	}
 
 	@Override
-	public Cond condition(Scope scope) {
-		return localDef(this, scope).fullCondition();
-	}
-
-	@Override
 	public Definitions define(DefinitionTarget target) {
-		return localDef(this, target.getScope()).toDefinitions();
+		return this.initialConditions.apply(
+				localDef(this, target.getScope())).toDefinitions();
 	}
 
 	@Override
@@ -503,7 +503,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 		private final Conditions conditions;
 		private final ImperativeBlock block;
-		private Cond condition;
 
 		BlockConditions(Conditions conditions, ImperativeBlock block) {
 			this.conditions = conditions;
@@ -511,23 +510,19 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		@Override
-		public Cond getPrerequisite() {
-			return this.conditions.getPrerequisite();
+		public Cond prerequisite(Scope scope) {
+			return this.conditions.prerequisite(scope);
 		}
 
 		@Override
-		public Cond getCondition() {
-			if (this.condition != null) {
-				return this.condition;
-			}
-			return this.condition = this.conditions.getCondition().and(
-					localDef(this.block, this.block.getScope())
-					.fullCondition());
+		public Cond condition(Scope scope) {
+			return this.conditions.condition(scope).and(
+					localDef(this.block, scope).fullCondition());
 		}
 
 		@Override
 		public String toString() {
-			return this.condition + ", " + this.block;
+			return this.conditions + ", " + this.block;
 		}
 
 	}

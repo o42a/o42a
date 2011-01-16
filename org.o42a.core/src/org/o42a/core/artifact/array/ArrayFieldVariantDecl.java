@@ -19,13 +19,9 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.ref.Cond.trueCondition;
-
-import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldVariant;
 import org.o42a.core.member.field.FieldVariantDecl;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.DefinitionTarget;
 
 
@@ -42,16 +38,9 @@ final class ArrayFieldVariantDecl extends FieldVariantDecl<Array> {
 	}
 
 	@Override
-	protected Cond condition(Scope scope) {
-		// TODO array initializer logical value
-		return trueCondition(getVariant(), scope);
-	}
-
-	@Override
 	protected Definitions define(DefinitionTarget scope) {
 		throw new UnsupportedOperationException(
 				"An attempt to define array: " + this);
 	}
-
 
 }

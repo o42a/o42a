@@ -19,12 +19,15 @@
 */
 package org.o42a.core.artifact.common;
 
+import static org.o42a.core.st.Conditions.emptyConditions;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -54,7 +57,12 @@ public abstract class Result extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return self().define(new DefinitionTarget(getScope()));
+
+		final Ref self = self();
+
+		self.setConditions(emptyConditions(this));
+
+		return self.define(new DefinitionTarget(getScope()));
 	}
 
 	@Override

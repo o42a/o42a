@@ -29,7 +29,6 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -61,11 +60,6 @@ final class BracesWithinDeclaratives extends St {
 	@Override
 	public Conditions setConditions(Conditions conditions) {
 		return this.block.setConditions(conditions);
-	}
-
-	@Override
-	public Cond condition(Scope scope) {
-		return this.block.condition(scope);
 	}
 
 	@Override

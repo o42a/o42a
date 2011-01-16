@@ -66,7 +66,7 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 
 	@Override
 	protected FieldVariantDecl<Array> variantDecl(FieldVariant<Array> variant) {
-		if (variant.getEnclosing().getSentence().isConditional()) {
+		if (!variant.getInitialConditions().isEmpty(getField())) {
 			getLogger().prohibitedConditionalDeclaration(variant);
 			invalid();
 		}
