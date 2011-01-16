@@ -26,7 +26,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.st.sentence.Statements;
 
 
 public class DeclaredField<A extends Artifact<A>> extends Field<A> {
@@ -125,7 +124,6 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 	}
 
 	public FieldVariant<A> variant(
-			Statements<?> enclosing,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		if (!declaration.validateVariantDeclaration(this)) {
@@ -134,7 +132,6 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 
 		final FieldVariant<A> variant = new FieldVariant<A>(
 				this,
-				enclosing,
 				declaration,
 				definition);
 

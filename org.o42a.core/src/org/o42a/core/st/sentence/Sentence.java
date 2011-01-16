@@ -80,12 +80,12 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 
 			if (kind.hasDefinition()) {
 				if (result.isCondition()) {
-					getLogger().prohibitedDeclaration(alt);
+					getLogger().prohibitedDefinition(alt);
 					continue;
 				}
 			} else if (kind.isCondition()) {
 				if (result.hasDefinition()) {
-					getLogger().expectedDeclaration(alt);
+					getLogger().expectedDefinition(alt);
 					continue;
 				}
 			}

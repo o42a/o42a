@@ -19,12 +19,10 @@
 */
 package org.o42a.core.member.clause;
 
-import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
@@ -56,11 +54,6 @@ final class ClauseVariant extends St {
 	@Override
 	public Conditions setConditions(Conditions conditions) {
 		return conditions.notCondition(this);
-	}
-
-	@Override
-	public Cond condition(Scope scope) {
-		return null;
 	}
 
 	@Override

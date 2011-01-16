@@ -19,19 +19,15 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 
@@ -40,28 +36,22 @@ public class FieldVariant<A extends Artifact<A>> extends St {
 
 	private DeclaredField<A> field;
 	private final FieldDeclaration declaration;
-	private final Statements<?> enclosing;
 	private final FieldDefinition definition;
 	private FieldVariantDecl<A> decl;
+	private Conditions initialConditions;
 
 	protected FieldVariant(
 			DeclaredField<A> field,
-			Statements<?> enclosing,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		super(declaration, definition.distribute());
 		this.field = field;
-		this.enclosing = enclosing;
 		this.declaration = declaration;
 		this.definition = definition;
 	}
 
 	public DeclaredField<A> getField() {
 		return this.field;
-	}
-
-	public final Statements<?> getEnclosing() {
-		return this.enclosing;
 	}
 
 	public final FieldDeclaration getDeclaration() {
@@ -82,31 +72,21 @@ public class FieldVariant<A extends Artifact<A>> extends St {
 		return ValueType.VOID;
 	}
 
+	public final Conditions getInitialConditions() {
+		return this.initialConditions;
+	}
+
 	@Override
 	public Conditions setConditions(Conditions conditions) {
+		assert this.initialConditions == null :
+			"Conditions already set for " + this;
+		this.initialConditions = conditions;
 		return conditions.notCondition(this);
 	}
 
 	@Override
-	public Cond condition(Scope scope) {
-		return getDecl().condition(scope);
-	}
-
-	@Override
 	public Definitions define(DefinitionTarget target) {
-		if (!target.isField()) {
-			return null;
-		}
-
-		final MemberKey key = getField().getKey();
-
-		if (!target.getMemberKey().equals(key)) {
-			return null;
-		}
-
-		return getDecl().define(new DefinitionTarget(
-				target.getScope(),
-				target.getExpectedType()));
+		return null;
 	}
 
 	@Override

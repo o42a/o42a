@@ -19,13 +19,12 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.core.artifact.common.DefinedObject;
+import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.st.DefinitionTarget;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-class DeclaredCall extends DefinedObject {
+class DeclaredCall extends PlainObject {
 
 	private final Ascendants explicitAscendants;
 	private final ObjectFieldDecl decl;
@@ -47,21 +46,16 @@ class DeclaredCall extends DefinedObject {
 	}
 
 	@Override
-	protected ObjectMemberRegistry createFieldRegistry() {
-		return this.decl.getFieldRegistry();
-	}
-
-	@Override
-	protected void buildDefinition(DeclarativeBlock definition) {
+	protected void declareMembers(ObjectMembers members) {
 		getExplicitDefinitions();
+		this.decl.getMemberRegistry().registerMembers(members);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.decl.getEnclosing().define(new DefinitionTarget(
-					getScope(),
-					getAncestor().getType().getValueType(),
-					this.decl.getField().getKey()));
+		return this.decl.define(new DefinitionTarget(
+				getScope(),
+				getAncestor().getType().getValueType()));
 	}
 
 }

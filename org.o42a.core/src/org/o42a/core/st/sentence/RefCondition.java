@@ -27,7 +27,6 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -70,11 +69,6 @@ final class RefCondition extends St {
 	@Override
 	public Conditions setConditions(Conditions conditions) {
 		return this.ref.setConditions(conditions);
-	}
-
-	@Override
-	public Cond condition(Scope scope) {
-		return this.ref.condition(scope);
 	}
 
 	@Override

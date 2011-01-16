@@ -21,15 +21,12 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.postConditionDefinitions;
 import static org.o42a.core.ref.Cond.disjunction;
-import static org.o42a.core.ref.Cond.trueCondition;
 
 import java.util.List;
 
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
-import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Cond;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
@@ -62,119 +59,30 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return (DeclarativeSentence) super.getPrerequisite();
 	}
 
-	protected Cond condition(Scope scope) {
-		if (!getKind().hasCondition()) {
-			return null;
-		}
-
-		final List<Declaratives> alternatives = getAlternatives();
-		final Cond condition;
-
-		if (alternatives.isEmpty()) {
-			condition = trueCondition(this, scope);
-		} else {
-
-			final Cond[] disjunction = new Cond[alternatives.size()];
-			int idx = 0;
-
-			for (Declaratives alt : alternatives) {
-
-				Cond cond = alt.condition(scope);
-
-				if (cond != null) {
-					disjunction[idx++] = cond;
-				}
-			}
-			condition = disjunction(this, scope, disjunction);
-		}
-
-		final DeclarativeSentence prerequisite = getPrerequisite();
-
-		if (prerequisite == null) {
-			return condition;
-		}
-
-		final Cond prereq = prerequisite.condition(scope);
-
-		if (isIssue()) {
-			return condition.and(prereq);
-		}
-
-		return condition.and(prereq).or(prereq.negate());
-	}
-
 	protected Definitions define(DefinitionTarget target) {
 		if (!getKind().hasCondition()) {
 			return null;
 		}
 		if (!getKind().hasDefinition()) {
-			if (target.isField()) {
-				return null;
-			}
 
-			final Cond condition = condition(target.getScope());
+			final Cond fullCondition =
+				getConditions().fullCondition(target.getScope());
 
 			return postConditionDefinitions(
-					condition,
+					fullCondition,
 					target.getScope(),
-					condition);
+					fullCondition);
 		}
-
-		final DeclarativeSentence prerequisite = getPrerequisite();
-		final CondDef prereq;
-
-		if (prerequisite == null) {
-			prereq = null;
-		} else {
-			prereq = prerequisite.condition(target.getScope()).toCondDef();
-		}
-
-		int oppositionStart = 0;
-		int resultIdx = 0;
-		Definitions result = null;
-		final List<Declaratives> alternatives = getAlternatives();
-
-		for (int i = 0, s = alternatives.size(); i < s; ++i) {
-
-			final Declaratives alt = alternatives.get(i);
-
-			if (result == null) {
-				if (oppositionStart < 0 || !alt.isOpposite()) {
-					oppositionStart = i;
-				}
-			}
+		for (Declaratives alt : getAlternatives()) {
 
 			final Definitions definitions = alt.define(target);
 
-			if (definitions == null) {
-				continue;
-			}
-			if (result == null) {
-				result = definitions.addPrerequisite(prereq);
-				resultIdx = i;
-				continue;
-			}
-
-			final MemberKey memberKey = target.getMemberKey();
-
-			if (memberKey != null) {
-				getLogger().ambiguousField(definitions, memberKey.toString());
-			} else {
-				getLogger().ambiguousValue(definitions);
+			if (definitions != null) {
+				return definitions;
 			}
 		}
-		if (result == null) {
-			return null;
-		}
-		if (oppositionStart < resultIdx) {
 
-			final Cond opposition =
-				opposition(target, oppositionStart, resultIdx);
-
-			result = result.and(opposition.negate());
-		}
-
-		return result;
+		return null;
 	}
 
 	Conditions getInitialConditions() {
@@ -189,25 +97,6 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			return this.conditions;
 		}
 		return this.conditions = new SentenceConditions(this);
-	}
-
-	private Cond opposition(
-			DefinitionTarget target,
-			int oppositionStart,
-			int resultIdx) {
-
-		final List<Declaratives> alternatives = getAlternatives();
-		Cond opposition = null;
-
-		for (int i = oppositionStart; i < resultIdx; ++i) {
-
-			final Cond condition =
-				alternatives.get(i).condition(target.getScope());
-
-			opposition = Cond.or(opposition, condition);
-		}
-
-		return opposition;
 	}
 
 	static final class Proposition extends DeclarativeSentence {
@@ -255,7 +144,11 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 			final Definitions definitions = super.define(target);
 
-			return definitions != null ? definitions.claim() : null;
+			if (definitions == null) {
+				return null;
+			}
+
+			return definitions.claim();
 		}
 
 	}
@@ -263,17 +156,13 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	private static final class InitialConditions extends Conditions {
 
 		private final DeclarativeSentence sentence;
-		private Cond prerequisite;
 
 		InitialConditions(DeclarativeSentence sentence) {
 			this.sentence = sentence;
 		}
 
 		@Override
-		public Cond getPrerequisite() {
-			if (this.prerequisite != null) {
-				return this.prerequisite;
-			}
+		public Cond prerequisite(Scope scope) {
 
 			final Conditions initial =
 				this.sentence.getBlock().getInitialConditions();
@@ -281,17 +170,17 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				this.sentence.getPrerequisite();
 
 			if (prerequisite == null) {
-				return this.prerequisite = initial.getPrerequisite();
+				return initial.prerequisite(scope);
 			}
 
-			return this.prerequisite = initial.getPrerequisite().and(
-					prerequisite.getConditions().fullCondition());
+			return initial.prerequisite(scope).and(
+					prerequisite.getConditions().fullCondition(scope));
 		}
 
 		@Override
-		public Cond getCondition() {
+		public Cond condition(Scope scope) {
 			return this.sentence.getBlock()
-			.getInitialConditions().getCondition();
+			.getInitialConditions().condition(scope);
 		}
 
 		@Override
@@ -312,44 +201,39 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	private static final class SentenceConditions extends Conditions {
 
 		private final DeclarativeSentence sentence;
-		private Cond condition;
 
 		SentenceConditions(DeclarativeSentence sentence) {
 			this.sentence = sentence;
 		}
 
 		@Override
-		public Cond getPrerequisite() {
-			return this.sentence.getInitialConditions().getPrerequisite();
+		public Cond prerequisite(Scope scope) {
+			return this.sentence.getInitialConditions().prerequisite(scope);
 		}
 
 		@Override
-		public Cond getCondition() {
-			if (this.condition != null) {
-				return this.condition;
-			}
+		public Cond condition(Scope scope) {
 
 			final List<Declaratives> alternatives =
 				this.sentence.getAlternatives();
 			final int size = alternatives.size();
 
-			if (size <= 0) {
+			if (size <= 1) {
 				if (size == 0) {
-					return this.condition =
-						this.sentence.getInitialConditions().getCondition();
+					return this.sentence.getInitialConditions()
+					.condition(scope);
 				}
-				return this.condition =
-					alternatives.get(0).getConditions().fullCondition();
+				return alternatives.get(0).getConditions().fullCondition(scope);
 			}
 
 			final Cond[] vars = new Cond[size];
 
 			for (int i = 0; i < size; ++i) {
-				vars[i] = alternatives.get(i).getConditions().fullCondition();
+				vars[i] =
+					alternatives.get(i).getConditions().fullCondition(scope);
 			}
 
-			return this.condition =
-				disjunction(this.sentence, this.sentence.getScope(), vars);
+			return disjunction(this.sentence, this.sentence.getScope(), vars);
 		}
 
 		@Override

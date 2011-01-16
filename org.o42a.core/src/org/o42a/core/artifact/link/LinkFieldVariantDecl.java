@@ -19,11 +19,9 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldVariant;
 import org.o42a.core.member.field.FieldVariantDecl;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.DefinitionTarget;
 
 
@@ -33,14 +31,6 @@ final class LinkFieldVariantDecl extends FieldVariantDecl<Link> {
 			LinkFieldDecl fieldDecl,
 			FieldVariant<Link> variant) {
 		super(fieldDecl, variant);
-	}
-
-	@Override
-	protected Cond condition(Scope scope) {
-
-		final TargetRef ref = getField().getArtifact().getTargetRef();
-
-		return ref.rescope(scope).fullCondition();
 	}
 
 	@Override

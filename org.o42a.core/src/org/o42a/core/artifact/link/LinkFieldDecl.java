@@ -63,7 +63,7 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 
 	@Override
 	protected FieldVariantDecl<Link> variantDecl(FieldVariant<Link> variant) {
-		if (variant.getEnclosing().getSentence().isConditional()) {
+		if (!variant.getInitialConditions().isEmpty(getField())) {
 			getLogger().prohibitedConditionalDeclaration(variant);
 		}
 		return new LinkFieldVariantDecl(this, variant);

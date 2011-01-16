@@ -29,9 +29,7 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.*;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.def.RefBase;
-import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -137,28 +135,22 @@ public abstract class Ref extends RefBase {
 	}
 
 	@Override
-	public Cond condition(Scope scope) {
-		return rescope(scope).getCondition();
-	}
-
-	@Override
 	public Definitions define(DefinitionTarget target) {
-		if (target.isField()) {
-			return null;
-		}
 
-		final Ref ref = rescope(target.getScope());
 		final ValueType<?> expectedType = target.getExpectedType();
+		final Def def;
 
 		if (expectedType != null) {
-			return ref.adapt(
+			def = adapt(
 					this,
 					expectedType.typeRef(
 							this,
-							ref.getScope())).toDef().toDefinitions();
+							getScope())).toDef();
+		} else {
+			def = toDef();
 		}
 
-		return ref.toDef().toDefinitions();
+		return getInitialConditions().apply(def).toDefinitions();
 	}
 
 	public abstract Resolution resolve(Scope scope);
@@ -335,6 +327,10 @@ public abstract class Ref extends RefBase {
 		return clone;
 	}
 
+	private Conditions getInitialConditions() {
+		return this.conditions.conditions;
+	}
+
 	private final class ConditionsWrap extends Conditions {
 
 		private final Conditions conditions;
@@ -345,13 +341,13 @@ public abstract class Ref extends RefBase {
 		}
 
 		@Override
-		public Cond getPrerequisite() {
-			return getWrapped().getPrerequisite();
+		public Cond prerequisite(Scope scope) {
+			return getWrapped().prerequisite(scope);
 		}
 
 		@Override
-		public Cond getCondition() {
-			return getWrapped().getCondition();
+		public Cond condition(Scope scope) {
+			return getWrapped().condition(scope);
 		}
 
 		@Override
@@ -380,24 +376,20 @@ public abstract class Ref extends RefBase {
 	private final class RefConditions extends Conditions {
 
 		private final Conditions conditions;
-		private Cond condition;
 
 		RefConditions(Conditions conditions) {
 			this.conditions = conditions;
 		}
 
 		@Override
-		public Cond getPrerequisite() {
-			return this.conditions.getPrerequisite();
+		public Cond prerequisite(Scope scope) {
+			return this.conditions.prerequisite(scope);
 		}
 
 		@Override
-		public Cond getCondition() {
-			if (this.condition != null) {
-				return this.condition;
-			}
-			return this.condition =
-				this.conditions.getCondition().and(Ref.this.getCondition());
+		public Cond condition(Scope scope) {
+			return this.conditions.condition(scope).and(
+					Ref.this.rescope(scope).getCondition());
 		}
 
 		@Override
@@ -418,7 +410,7 @@ public abstract class Ref extends RefBase {
 		@Override
 		public <S extends Statements<S>> void execute(Block<S> block) {
 			Ref.this.conditions.setWrapped(
-					block.setConditions(Ref.this.conditions.conditions));
+					block.setConditions(getInitialConditions()));
 			this.directive.apply(block, Ref.this);
 		}
 

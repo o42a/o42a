@@ -57,10 +57,7 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.decl.getEnclosing().define(new DefinitionTarget(
-					getScope(),
-					null,
-					this.decl.getField().getKey()));
+		return this.decl.define(new DefinitionTarget(getScope()));
 	}
 
 	private Ascendants createAscendants(ValueType<?> valueType) {

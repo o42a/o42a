@@ -19,10 +19,8 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.DefinitionTarget;
 
 
@@ -52,8 +50,6 @@ public abstract class FieldVariantDecl<A extends Artifact<A>> {
 	public String toString() {
 		return this.variant.toString();
 	}
-
-	protected abstract Cond condition(Scope scope);
 
 	protected abstract Definitions define(DefinitionTarget scope);
 

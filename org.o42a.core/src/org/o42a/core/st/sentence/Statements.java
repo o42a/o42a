@@ -100,7 +100,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				}
 			} else {
 				if (lastCondition != null) {
-					getLogger().expectedDeclaration(lastCondition);
+					getLogger().expectedDefinition(lastCondition);
 					return this.kind = StatementKind.CONDITION;
 				}
 				if (kind.hasValue()) {
@@ -148,7 +148,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 
 		final FieldVariant<?> fieldVariant =
-			field.variant(this, declaration, definition);
+			field.variant(declaration, definition);
 
 		statement(fieldVariant);
 
@@ -234,7 +234,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return new NextDistributor(trace.next());
 	}
 
-	public void statement(St statement) {
+	public final void statement(St statement) {
 		if (statement == null) {
 			return;
 		}
@@ -242,6 +242,10 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	}
 
 	protected abstract void braces(ImperativeBlock braces);
+
+	protected void addStatement(St statement) {
+		this.statements.add(statement);
+	}
 
 	final Trace getTrace() {
 		return getSentence().getBlock().getTrace();
@@ -313,7 +317,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private void statement(int index, St statement) {
 		if (index < 0) {
-			this.statements.add(statement);
+			addStatement(statement);
 		} else {
 			this.statements.set(index, statement);
 		}

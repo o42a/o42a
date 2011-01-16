@@ -24,7 +24,6 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
 
@@ -46,8 +45,6 @@ public abstract class St extends Placed {
 	public abstract ValueType<?> getValueType();
 
 	public abstract Conditions setConditions(Conditions conditions);
-
-	public abstract Cond condition(Scope scope);
 
 	public abstract Definitions define(DefinitionTarget target);
 

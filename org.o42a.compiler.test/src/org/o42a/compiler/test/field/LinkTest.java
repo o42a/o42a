@@ -62,7 +62,7 @@ public class LinkTest extends CompilerTestCase {
 	@Test
 	public void linkToRef() {
 		compile(
-				"A := void(Foo := 1, bar := `foo),",
+				"A := void(Foo := 1; bar := `foo);",
 				"b := a(Foo = 2).");
 
 		final Obj a = getField("a").getArtifact().toObject();
@@ -84,7 +84,7 @@ public class LinkTest extends CompilerTestCase {
 	@Test
 	public void staticLink() {
 		compile(
-				"A := void(Foo := 1, bar := `&foo),",
+				"A := void(Foo := 1; bar := `&foo);",
 				"b := a(Foo = 2).");
 
 		final Obj a = getField("a").getArtifact().toObject();

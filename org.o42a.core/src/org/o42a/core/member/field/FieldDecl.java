@@ -21,6 +21,8 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.CompilerLogger;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.st.DefinitionTarget;
 
 
 public abstract class FieldDecl<A extends Artifact<A>> {
@@ -33,6 +35,27 @@ public abstract class FieldDecl<A extends Artifact<A>> {
 
 	public DeclaredField<A> getField() {
 		return this.field;
+	}
+
+	public Definitions define(DefinitionTarget target) {
+
+		Definitions result = null;
+
+		for (FieldVariant<A> variant : getField().getVariants()) {
+
+			final Definitions definition = variant.getDecl().define(target);
+
+			if (definition == null) {
+				continue;
+			}
+			if (result == null) {
+				result = definition;
+			} else {
+				result = result.refine(definition);
+			}
+		}
+
+		return result;
 	}
 
 	@Override

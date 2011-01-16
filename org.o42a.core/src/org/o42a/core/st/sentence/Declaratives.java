@@ -27,7 +27,6 @@ import org.o42a.core.Container;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Cond;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
@@ -74,15 +73,6 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	@Override
-	public void statement(St statement) {
-		if (statement == null) {
-			return;
-		}
-		super.statement(statement);
-		this.lastConditions = statement.setConditions(lastConditions());
-	}
-
-	@Override
 	protected void braces(ImperativeBlock braces) {
 		statement(new BracesWithinDeclaratives(
 				braces,
@@ -90,30 +80,23 @@ public class Declaratives extends Statements<Declaratives> {
 				braces));
 	}
 
-	protected Cond condition(Scope scope) {
-		if (!getKind().hasCondition()) {
-			return null;
-		}
-
-		Cond condition = null;
-
-		for (St statement : getStatements()) {
-			condition = Cond.and(condition, statement.condition(scope));
-		}
-
-		return condition;
+	@Override
+	protected void addStatement(St statement) {
+		super.addStatement(statement);
+		this.lastConditions = statement.setConditions(lastConditions());
 	}
 
 	protected Definitions define(DefinitionTarget target) {
 		if (!getKind().hasCondition()) {
 			return null;
 		}
-		if (!getKind().hasDefinition()) {
-			if (target.isField()) {
+		if (!getKind().hasValue()) {
+			if (getKind().hasDefinition()) {
 				return null;
 			}
 
-			final Cond condition = condition(target.getScope());
+			final Cond condition =
+				lastConditions().fullCondition(target.getScope());
 
 			return postConditionDefinitions(
 					condition,
@@ -125,7 +108,6 @@ public class Declaratives extends Statements<Declaratives> {
 		final int size = statements.size();
 
 		Definitions result = null;
-		int definitionIdx = 0;
 
 		for (int i = 0; i < size; ++i) {
 
@@ -136,42 +118,16 @@ public class Declaratives extends Statements<Declaratives> {
 				continue;
 			}
 			if (result == null) {
-				definitionIdx = i;
 				result = definition;
 				continue;
 			}
-
-			final MemberKey memberKey = target.getMemberKey();
-
-			if (memberKey != null) {
-				getLogger().ambiguousField(definition, memberKey.toString());
-			} else {
-				getLogger().ambiguousValue(definition);
-			}
+			getLogger().ambiguousValue(definition);
 		}
 
-		final Cond condition =
-			statementsCondition(target.getScope(), definitionIdx);
+		assert result != null :
+			"Result is missing";
 
-		if (result != null) {
-			// have result - return it
-			if (condition == null) {
-				return result;
-			}
-			return result.and(condition);
-		}
-		if (condition == null) {
-			return null;
-		}
-		if (target.isField()) {
-			// no field declaration present
-			return null;
-		}
-
-		return postConditionDefinitions(
-				Declaratives.this,
-				target.getScope(),
-				condition);
+		return result;
 	}
 
 	Conditions getConditions() {
@@ -188,28 +144,16 @@ public class Declaratives extends Statements<Declaratives> {
 		return this.lastConditions = getSentence().getInitialConditions();
 	}
 
-	private Cond statementsCondition(Scope scope, int length) {
-
-		final List<St> statements = getStatements();
-		Cond condition = null;
-
-		for (int i = 0; i < length; ++i) {
-			condition = Cond.and(condition, statements.get(i).condition(scope));
-		}
-
-		return condition;
-	}
-
 	private final class DeclarativeConditions extends Conditions {
 
 		@Override
-		public Cond getPrerequisite() {
-			return lastConditions().getPrerequisite();
+		public Cond prerequisite(Scope scope) {
+			return lastConditions().prerequisite(scope);
 		}
 
 		@Override
-		public Cond getCondition() {
-			return lastConditions().getCondition();
+		public Cond condition(Scope scope) {
+			return lastConditions().condition(scope);
 		}
 
 		@Override

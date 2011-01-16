@@ -19,13 +19,9 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.def.Definitions.postConditionDefinitions;
-import static org.o42a.core.def.Definitions.requirementDefinitions;
-
 import org.o42a.core.LocationSpec;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.MemberRegistry;
-import org.o42a.core.ref.Cond;
 import org.o42a.core.st.DefinitionTarget;
 
 
@@ -69,13 +65,13 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 		@Override
 		protected Definitions define(DefinitionTarget target) {
 
-			final Cond condition = condition(target.getScope());
+			final Definitions definitions = super.define(target);
 
-			if (condition == null) {
+			if (definitions == null) {
 				return null;
 			}
 
-			return requirementDefinitions(this, target.getScope(), condition);
+			return definitions.claim();
 		}
 
 	}
@@ -87,18 +83,6 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 				DeclarativeBlock block,
 				DeclarativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
-		}
-
-		@Override
-		protected Definitions define(DefinitionTarget target) {
-
-			final Cond condition = condition(target.getScope());
-
-			if (condition == null) {
-				return null;
-			}
-
-			return postConditionDefinitions(this, target.getScope(), condition);
 		}
 
 	}
