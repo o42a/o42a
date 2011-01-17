@@ -19,7 +19,7 @@
 */
 #include "jni_fp.h"
 
-#include "o42a/llvm/util.h"
+#include "o42ac/llvm/util.h"
 
 #include "llvm/BasicBlock.h"
 #include "llvm/Value.h"

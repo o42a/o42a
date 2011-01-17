@@ -21,4 +21,4 @@ so_name = libo42ac_llvm.so
 llvm_components = all
 
 # Uncomment this to disable debug
-#debug_cxxflags = -D O42A_NDEBUG
+#debug_cxxflags = -D O42AC_NDEBUG

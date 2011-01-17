@@ -19,11 +19,11 @@
 */
 #include "llvm/Support/raw_ostream.h"
 
-#ifndef O42A_DEBUG_H
-#define O42A_DEBUG_H
+#ifndef O42AC_LLVM_DEBUG_H
+#define O42AC_LLVM_DEBUG_H
 
 
-#ifdef O42A_NDEBUG
+#ifdef O42AC_NDEBUG
 
 
 #define ODEBUG_WITH_TYPE(TYPE, X) do { } while (0)
@@ -58,6 +58,6 @@ bool debugEnabled(const char*);
 
 }
 
-#endif /* O42A_NDEBUG */
+#endif /* O42AC_NDEBUG */
 
-#endif /* O4A_DEBUG_H */
+#endif /* O42AC_LLVM_DEBUG_H */

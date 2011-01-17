@@ -20,7 +20,7 @@
 # See org.o42a.backend.llvm.jni.default.mk for customization options.
 #
 
-headersdir = include/o42a/llvm
+headersdir = include/o42ac/llvm
 srcdir = src
 java_classes_dir = ../org.o42a.backend.llvm/bin
 java_package_dir = $(java_classes_dir)/org/o42a/backend/llvm

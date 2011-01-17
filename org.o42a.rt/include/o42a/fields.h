@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_RT_FIELDS_H
-#define O42A_RT_FIELDS_H
+#ifndef O42A_FIELDS_H
+#define O42A_FIELDS_H
 
 #include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"

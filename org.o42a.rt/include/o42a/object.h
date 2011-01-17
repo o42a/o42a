@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_RT_OBJECT_H
-#define O42A_RT_OBJECT_H
+#ifndef O42A_OBJECT_H
+#define O42A_OBJECT_H
 
 #include "o42a/types.h"
 

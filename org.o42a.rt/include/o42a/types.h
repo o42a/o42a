@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_RT_TYPES_H
-#define O42A_RT_TYPES_H
+#ifndef O42A_TYPES_H
+#define O42A_TYPES_H
 
 #include <stddef.h>
 #include <stdint.h>
