@@ -25,7 +25,7 @@
 #include <wchar.h>
 
 
-void o42a_print_str(const o42a_val_t *const val) {
+void o42a_io_print_str(const o42a_val_t *const val) {
 	O42A_ENTER;
 
 	const size_t len = val->length;

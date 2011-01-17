@@ -19,9 +19,9 @@
 */
 #include "jni_function.h"
 
-#include "o42a/llvm/BackendModule.h"
-#include "o42a/llvm/debug.h"
-#include "o42a/llvm/util.h"
+#include "o42ac/llvm/BackendModule.h"
+#include "o42ac/llvm/debug.h"
+#include "o42ac/llvm/util.h"
 
 #include "llvm/Function.h"
 #include "llvm/Module.h"

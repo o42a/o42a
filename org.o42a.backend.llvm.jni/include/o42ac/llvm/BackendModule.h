@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_BACKEND_MODULE_H
-#define O42A_BACKEND_MODULE_H
+#ifndef O42AC_LLVM_BACKEND_MODULE_H
+#define O42AC_LLVM_BACKEND_MODULE_H
 
 #include "llvm/Module.h"
 
@@ -58,6 +58,6 @@ public:
 
 };
 
-} /* o42a */
+} /* o42ac */
 
 #endif

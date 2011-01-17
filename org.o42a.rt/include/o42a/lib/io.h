@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_RT_LIB_IO_H
-#define O42A_RT_LIB_IO_H
+#ifndef O42A_LIB_IO_H
+#define O42A_LIB_IO_H
 
 #include "o42a/string.h"
 
@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 
-void o42a_print_str(const o42a_val_t*);
+void o42a_io_print_str(const o42a_val_t*);
 
 
 #ifdef __cplusplus

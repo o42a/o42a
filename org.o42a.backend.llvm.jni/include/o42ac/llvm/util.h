@@ -20,8 +20,8 @@
 #include <jni.h>
 #include "llvm/ADT/StringRef.h"
 
-#ifndef O42A_UTIL_H
-#define O42A_UTIL_H
+#ifndef O42AC_LLVM_UTIL_H
+#define O42AC_LLVM_UTIL_H
 
 using namespace llvm;
 

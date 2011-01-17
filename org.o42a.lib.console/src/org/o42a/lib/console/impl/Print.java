@@ -87,7 +87,7 @@ public class Print extends IntrinsicObject {
 				host.field(code, cantPrint.head(), textKey)
 				.materialize(code, cantPrint.head());
 			final PrintFunc printFunc = getGenerator().externalFunction(
-					"o42a_print_str",
+					"o42a_io_print_str",
 					printSignature(getGenerator())).op(code);
 			final ValOp value =
 				code.allocate(getGenerator().valType()).storeUnknown(code);
