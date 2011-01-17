@@ -57,6 +57,10 @@ public class Module extends PlainObject {
 		return ((ModuleScope) getScope()).moduleId;
 	}
 
+	public <C> C capablility(Class<? extends C> capabilityType) {
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		return getScope().toString();

@@ -17,8 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core;
+package org.o42a.core.artifact.intrinsic;
 
+import org.o42a.core.Container;
+import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 
@@ -43,8 +45,8 @@ public interface Intrinsics {
 
 	Obj getString();
 
-	Obj getModule(String moduleId);
+	Module getModule(String moduleId);
 
-	Obj getMainModule();
+	Module getMainModule();
 
 }
