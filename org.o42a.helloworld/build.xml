@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="org.o42a.helloworld" default="package">
+<project name="org.o42a.helloworld" default="compile">
 
 	<filelist id="project.deps" dir=".."/>
 
@@ -33,8 +33,9 @@
 
 	<target name="compile" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
-			<param name="_compile.debug" value="off"/>
 			<param name="_compile.name" value="hello_world"/>
+			<param name="_compile.debug" value="off"/>
+			<param name="_compile.lib" value="o42a"/>
 		</antcall>
 	</target>
 	
@@ -42,24 +43,13 @@
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
 			<param name="_compile.name" value="debug_hello_world"/>
 			<param name="_compile.debug" value="on"/>
-		</antcall>
-	</target>
-
-	<target name="package" depends="compile">
-		<antcall target="_package" inheritall="true" inheritrefs="true">
-			<param name="_compile.name" value="hello_world"/>
-			<param name="_compile.lib" value="o42a"/>
-		</antcall>
-	</target>
-
-	<target name="package-debug" depends="compile-debug">
-		<antcall target="_package" inheritall="true" inheritrefs="true">
-			<param name="_compile.name" value="debug_hello_world"/>
 			<param name="_compile.lib" value="o42a_debug"/>
 		</antcall>
 	</target>
 
-	<target name="exec" depends="package">
+	<target name="package" depends="compile"/>
+
+	<target name="exec" depends="compile">
 		<exec
 			executable="hello_world"
 			searchpath="false"
@@ -70,7 +60,7 @@
 		</exec>
 	</target>
 	
-	<target name="debug" depends="package-debug">
+	<target name="debug" depends="compile-debug">
 		<exec
 			executable="debug_hello_world"
 			searchpath="false"
@@ -82,40 +72,29 @@
 	</target>
 
 	<target name="clean">
-		<delete file="hello_world.s"/>
 		<delete file="hello_world"/>
-		<delete file="debug_hello_world.s"/>
 		<delete file="debug_hello_world"/>
 	</target>
 
 	<target name="_compile">
-		<java
-			jar="../target/org.o42a.cl-${project.version}.jar"
-			fork="true"
-			failonerror="true"
-			taskname="o42a">
-			<jvmarg line="-Djava.library.path=../target"/>
-			<arg line="-o${_compile.name}.s"/>
+		<exec
+			executable="${root.dir}/o42ac"
+			searchpath="false"
+			taskname="o42ac"
+			failonerror="true">
 			<arg line="--debug=${_compile.debug}"/>
 			<arg line="hello_world.o42a"/>
-			<assertions>
-				<enable package="org.o42a"/>
-			</assertions>
-		</java>
-	</target>
-
-	<target name="_package" depends="compile">
-		<exec
-			executable="${gcc.command}"
-			searchpath="true"
-			taskname="gcc"
-			failonerror="true">
+			
+			<arg line="--vmargs"/>
+			<arg line="-Djava.library.path=${root.dir}/target"/>
+			<arg line="-ea:org.o42a..."/>
+			
+			<arg line="--"/>
 			<arg line="-lm"/>
 			<arg line="-Xlinker -rpath=${root.dir}/target"/>
 			<arg line="-Xlinker --no-undefined"/>
 			<arg line="-L${root.dir}/target -l${_compile.lib}"/>
 			<arg line="-o ${_compile.name}"/>
-			<arg line="${_compile.name}.s"/>
 		</exec>
 	</target>
 
