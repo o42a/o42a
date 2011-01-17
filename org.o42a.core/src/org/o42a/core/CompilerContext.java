@@ -21,6 +21,7 @@ package org.o42a.core;
 
 import java.net.URL;
 
+import org.o42a.core.artifact.intrinsic.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.util.Source;

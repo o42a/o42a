@@ -26,6 +26,7 @@ import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import java.util.HashMap;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.intrinsic.Intrinsics;
 import org.o42a.core.artifact.intrinsic.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
@@ -115,7 +116,7 @@ public class CompilerIntrinsics implements Intrinsics {
 	}
 
 	@Override
-	public Obj getModule(String moduleId) {
+	public Module getModule(String moduleId) {
 
 		final ModuleUse module = this.modules.get(canonicalName(moduleId));
 
@@ -127,20 +128,12 @@ public class CompilerIntrinsics implements Intrinsics {
 	}
 
 	@Override
-	public Obj getMainModule() {
+	public Module getMainModule() {
 		return this.mainModule.use();
-	}
-
-	public void addModule(String moduleId, Obj module) {
-		registerModule(canonicalName(moduleId), module);
 	}
 
 	public void addModule(Module module) {
 		registerModule(module.getModuleId(), module);
-	}
-
-	public void setMainModule(String moduleId, Obj module) {
-		this.mainModule = registerModule(canonicalName(moduleId), module);
 	}
 
 	public void setMainModule(Module module) {
@@ -154,7 +147,7 @@ public class CompilerIntrinsics implements Intrinsics {
 		}
 	}
 
-	private ModuleUse registerModule(String moduleId, Obj module) {
+	private ModuleUse registerModule(String moduleId, Module module) {
 
 		final ModuleUse use = new ModuleUse(module);
 
@@ -165,10 +158,10 @@ public class CompilerIntrinsics implements Intrinsics {
 
 	private static final class ModuleUse {
 
-		private final Obj module;
+		private final Module module;
 		private boolean used;
 
-		ModuleUse(Obj module) {
+		ModuleUse(Module module) {
 			assert module != null :
 				"Module not specified";
 			this.module = module;
@@ -178,7 +171,7 @@ public class CompilerIntrinsics implements Intrinsics {
 			return this.used;
 		}
 
-		public Obj use() {
+		public Module use() {
 			this.used = true;
 			return this.module;
 		}
