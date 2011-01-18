@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Reusable Build Script
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,13 +21,9 @@
 
 <project name="org.o42a.build.common">
 
-	<dirname file="${ant.file.org.o42a.build.common}" property="build.dir"/>
-	<property name="root.dir" location="${build.dir}/.."/>
-	<property name="target.dir" location="${root.dir}/target"/>
-
 	<property file="build.properties"/>
-	<property file="${build.dir}/o42a.properties" />
-	<property file="${build.dir}/o42a.default.properties"/>
+
+	<import file="build.setup.xml"/>
 
 	<property 
 		name="jar.file"

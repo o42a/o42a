@@ -21,9 +21,7 @@
 
 <project name="org.o42a.helloworld" default="compile">
 
-	<filelist id="project.deps" dir=".."/>
-
-	<import file="../build/common.build.xml"/>
+	<import file="../build/build.setup.xml"/>
 
 	<target name="package-deps">
 		<subant target="package" inheritall="false" inheritrefs="false">
@@ -46,8 +44,6 @@
 			<param name="_compile.lib" value="o42a_debug"/>
 		</antcall>
 	</target>
-
-	<target name="package" depends="compile"/>
 
 	<target name="exec" depends="compile">
 		<exec
