@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "o42a/lib/io.h"
+#ifndef O42A_ERROR_H
+#define O42A_ERROR_H
 
-#include "o42a/debug.h"
-#include "o42a/string.h"
-
-#include <stdio.h>
-#include <wchar.h>
+#include "o42a/types.h"
 
 
-void o42a_io_print_str(const o42a_val_t *const val) {
-	O42A_ENTER;
+void o42a_error_print_str(const o42a_val_t *);
 
-	const size_t len = val->length;
+void o42a_error_print(const wchar_t *);
 
-	if (!len) {
-		O42A_RETURN;
-	}
+void o42a_error_printf(const wchar_t *, ...);
 
-	const size_t step = o42a_val_alignment(val);
-	const size_t mask = o42a_str_wchar_mask(val);
-	const void *const str = o42a_val_data(val);
 
-	for (size_t i = 0; i < len; i += step) {
-		putwc(*((wchar_t*) (str + i)) & mask, stdout);
-	}
+void o42a_error_start();
 
-	O42A_RETURN;
-}
+void o42a_error_append_str(const o42a_val_t *);
+
+void o42a_error_append(const wchar_t *);
+
+void o42a_error_appendf(const wchar_t *, ...);
+
+void o42a_error_end();
+
+
+#endif /* O42A_ERROR_H */

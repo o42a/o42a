@@ -20,7 +20,7 @@
 #ifndef O42A_LIB_IO_H
 #define O42A_LIB_IO_H
 
-#include "o42a/string.h"
+#include "o42a/types.h"
 
 
 #ifdef __cplusplus

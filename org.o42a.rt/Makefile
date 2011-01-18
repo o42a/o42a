@@ -55,6 +55,7 @@ CFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused $(includes)
 objects = $(srcdir)/debug.o
 objects += $(srcdir)/types.o
 objects += $(srcdir)/string.o
+objects += $(srcdir)/error.o
 objects += $(srcdir)/values.o
 objects += $(srcdir)/object.o
 objects += $(srcdir)/fld/link.o
@@ -107,6 +108,12 @@ $(srcdir)/types.%.o : $(srcdir)/types.c
 $(srcdir)/string.*.o : $(common_deps)
 $(srcdir)/string.*.o : $(headersdir)/string.h
 $(srcdir)/string.%.o : $(srcdir)/string.c
+	$(call compile)
+
+$(srcdir)/error.*.o : $(common_deps)
+$(srcdir)/error.*.o : $(headersdir)/string.h
+$(srcdir)/error.*.o : $(headersdir)/error.h
+$(srcdir)/error.%.o : $(srcdir)/error.c
 	$(call compile)
 
 $(srcdir)/object.*.o : $(common_deps)
