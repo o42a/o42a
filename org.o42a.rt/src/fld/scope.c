@@ -30,7 +30,7 @@ void o42a_fld_scope_propagate(o42a_ctable_t *const ctable) {
 
 	if (ctable->flags & O42A_CTR_FIELD_PROPAGATION) {
 		// Update the scope only when propagating field.
-		O42A_DEBUG(L"Field propagation\n");
+		O42A_DEBUG("Field propagation\n");
 		if (ctable->to.body->flags & O42A_OBODY_PROPAGATED) {
 			// Update only the scope of body propagated from field
 			// or the one of main body.
@@ -40,17 +40,17 @@ void o42a_fld_scope_propagate(o42a_ctable_t *const ctable) {
 
 			to->scope = o42a_data_object(&owner_type->data);
 
-			o42a_debug_mem_name(L"Updated scope: ", to->scope);
+			o42a_debug_mem_name("Updated scope: ", to->scope);
 
 			O42A_RETURN;
 		}
 	} else {
-		O42A_DEBUG(L"New object instantiation\n");
+		O42A_DEBUG("New object instantiation\n");
 	}
 
 	to->scope = ctable->from.fld->scope;
 
-	o42a_debug_mem_name(L"Leave the scope unchanged: ", to->scope);
+	o42a_debug_mem_name("Leave the scope unchanged: ", to->scope);
 
 	O42A_RETURN;
 }

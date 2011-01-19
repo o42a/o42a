@@ -31,13 +31,6 @@
 using namespace llvm;
 
 
-jbyte Java_org_o42a_backend_llvm_data_LLVMDataAllocator_wideCharSize(
-		JNIEnv *env,
-		jclass cls,
-		jlong modulePtr) {
-	return sizeof(wchar_t);
-}
-
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 		JNIEnv *env,
 		jclass cls,

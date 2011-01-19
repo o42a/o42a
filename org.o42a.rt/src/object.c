@@ -130,23 +130,23 @@ o42a_obody_t *o42a_cast(
 
 	if (type->data.flags & O42A_OBJ_VOID) {
 		// any body can be void
-		o42a_debug_mem_name(L"Cast to void: ", object);
+		o42a_debug_mem_name("Cast to void: ", object);
 		O42A_RETURN object;
 	}
 	if (object->methods->object_type == type) {
 		// body of the necessary type
-		o42a_debug_mem_name(L"Cast not required: ", object);
-		o42a_debug_mem_name(L"     to: ", type);
+		o42a_debug_mem_name("Cast not required: ", object);
+		o42a_debug_mem_name("     to: ", type);
 		O42A_RETURN object;
 	}
 
-	o42a_debug_mem_name(L"Cast of: ", object);
-	o42a_debug_mem_name(L"     to: ", type);
+	o42a_debug_mem_name("Cast of: ", object);
+	o42a_debug_mem_name("     to: ", type);
 
 	o42a_obody_t *const result =
 			body_of_type(&o42a_object_type(object)->data, type);
 
-	o42a_debug_mem_name(L"Cast result: ", result);
+	o42a_debug_mem_name("Cast result: ", result);
 
 	O42A_RETURN result;
 }
@@ -189,8 +189,8 @@ static void derive_object_body(
 	const o42a_obody_t *const from_body = ctable->from.body;
 	o42a_obody_t *const to_body = ctable->to.body;
 
-	O42A_DEBUG(L"Derive body %lx -> %lx\n", (long) from_body, (long) to_body);
-	o42a_debug_mem_name(L"Body type: ", ctable->body_type);
+	O42A_DEBUG("Derive body %lx -> %lx\n", (long) from_body, (long) to_body);
+	o42a_debug_mem_name("Body type: ", ctable->body_type);
 
 	// fill header
 	to_body->object_type =
@@ -229,8 +229,8 @@ static void derive_object_body(
 
 		O42A_DEBUG(
 				kind == DK_INHERIT
-				? L"Inherit field %lx -> %lx\n"
-				: L"Propagate field %lx -> %lx\n",
+				? "Inherit field %lx -> %lx\n"
+				: "Propagate field %lx -> %lx\n",
 				(long) ctable->from.fld,
 				(long) ctable->to.fld);
 		o42a_dbg_dump_mem(field, 1000);
@@ -238,12 +238,12 @@ static void derive_object_body(
 	}
 
 	O42A_DEBUG(
-			kind == DK_MAIN ? L"Main body (%lx)" : (
+			kind == DK_MAIN ? "Main body (%lx)" : (
 					kind == DK_INHERIT
-					? L"Inherited body (%lx)" : (
+					? "Inherited body (%lx)" : (
 							kind == DK_COPY
-							? L"Copied body (%lx)"
-							: L"Propagated body (%lx)")),
+							? "Copied body (%lx)"
+							: "Propagated body (%lx)")),
 			(long) to_body);
 	o42a_dbg_dump_field(
 			to_body,
@@ -376,7 +376,7 @@ static o42a_rotype_t *propagate_object(
 	derive_ancestor_bodies(&ctable, DK_COPY);
 	copy_samples(&atype->data, samples, mem);
 
-	O42A_DEBUG(L"Object data: (%lx)", (long) otype);
+	O42A_DEBUG("Object data: (%lx)", (long) otype);
 	o42a_dbg_dump_field(
 			data,
 			o42a_dbg_subfield(
@@ -425,7 +425,7 @@ static inline size_t fill_sample_data(
 		++old_sample;
 	}
 
-	O42A_DEBUG(L"Number of samples: %zi\n", num_samples);
+	O42A_DEBUG("Number of samples: %zi\n", num_samples);
 
 	O42A_RETURN num_samples;
 }
@@ -465,11 +465,11 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	o42a_otype_t *atype = NULL;
 
 	if (ctr->ancestor_f) {
-		o42a_debug_func_name(L"Ancestor function: ", ctr->ancestor_f);
-		o42a_debug_mem_name(L"Ancestor scope: ", ctr->scope_type);
+		o42a_debug_func_name("Ancestor function: ", ctr->ancestor_f);
+		o42a_debug_mem_name("Ancestor scope: ", ctr->scope_type);
 		ancestor = (*ctr->ancestor_f)
 				(o42a_data_object(&ctr->scope_type->data));
-		o42a_debug_mem_name(L"Ancestor: ", ancestor);
+		o42a_debug_mem_name("Ancestor: ", ancestor);
 		if (ancestor) {
 			atype = o42a_object_type(ancestor);
 			if (atype->data.flags & O42A_OBJ_VOID) {
@@ -500,7 +500,7 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	if (!adata) {
 		// Sample has no ancestor.
 		// Propagate sample.
-		o42a_debug_mem_name(L"No ancestor of ", stype);
+		o42a_debug_mem_name("No ancestor of ", stype);
 
 		o42a_rotype_t *const result =
 				propagate_object(ctr, stype, &stype->data, sstype, 0);
@@ -514,7 +514,7 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	if (consuming_ascendant) {
 		// Ancestor has a body of the same type as object.
 		// Propagate ancestor.
-		o42a_debug_mem_name(L"Sample consumed by ", consuming_ascendant);
+		o42a_debug_mem_name("Sample consumed by ", consuming_ascendant);
 
 		o42a_rotype_t *const result =
 				propagate_object(ctr, atype, adata, sstype, 1);
@@ -627,7 +627,7 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	ctable.body_type = sstype;
 	derive_object_body(&ctable, ancestor_body, DK_MAIN);
 
-	O42A_DEBUG(L"Object data: (%lx)", (long) otype);
+	O42A_DEBUG("Object data: (%lx)", (long) otype);
 	o42a_dbg_dump_field(
 			data,
 			o42a_dbg_subfield(

@@ -23,22 +23,30 @@
 #include "o42a/types.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void o42a_error_print_str(const o42a_val_t *);
 
-void o42a_error_print(const wchar_t *);
+void o42a_error_print(const char *);
 
-void o42a_error_printf(const wchar_t *, ...);
+void o42a_error_printf(const char *, ...);
 
 
 void o42a_error_start();
 
 void o42a_error_append_str(const o42a_val_t *);
 
-void o42a_error_append(const wchar_t *);
+void o42a_error_append(const char *);
 
-void o42a_error_appendf(const wchar_t *, ...);
+void o42a_error_appendf(const char *, ...);
 
 void o42a_error_end();
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* O42A_ERROR_H */
