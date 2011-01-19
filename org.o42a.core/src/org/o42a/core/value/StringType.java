@@ -20,6 +20,7 @@
 package org.o42a.core.value;
 
 import static org.o42a.codegen.data.DataLayout.alignmentShift;
+import static org.o42a.codegen.data.Globals.UNICODE_CHAR_SIZE;
 import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.op.Val.EXTERNAL_FLAG;
 
@@ -59,14 +60,13 @@ final class StringType extends ValueType<String> {
 			return cachedVal;
 		}
 
-		final byte wcharSize = generator.getGenerator().getWideCharSize();
 		final byte[] bytes = generator.getGenerator().stringToBinary(value);
 
 		final Val val;
 
 		if (bytes.length <= 8) {
 			val = new Val(
-					CONDITION_FLAG | (alignmentShift(wcharSize) << 8),
+					CONDITION_FLAG | (alignmentShift(UNICODE_CHAR_SIZE) << 8),
 					bytes.length,
 					bytesToLong(bytes));
 		} else {
@@ -76,7 +76,7 @@ final class StringType extends ValueType<String> {
 
 			val = new Val(
 					CONDITION_FLAG | EXTERNAL_FLAG
-					| (alignmentShift(wcharSize) << 8),
+					| (alignmentShift(UNICODE_CHAR_SIZE) << 8),
 					bytes.length,
 					binary);
 		}

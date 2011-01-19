@@ -22,12 +22,10 @@
 #include "o42a/debug.h"
 #include "o42a/string.h"
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <wchar.h>
+#include "unicode/ustdio.h"
 
 
-void o42a_error_print_str(const o42a_val_t *message) {
+void o42a_error_print_str(const o42a_val_t *const message) {
 	O42A_ENTER;
 
 	o42a_error_start();
@@ -37,24 +35,26 @@ void o42a_error_print_str(const o42a_val_t *message) {
 	O42A_RETURN;
 }
 
-void o42a_error_print(const wchar_t *message) {
+void o42a_error_print(const char *const message) {
 	O42A_ENTER;
 
 	o42a_error_start();
-	fputws(message, stderr);
+	fputs(message, stderr);
 	o42a_error_end();
 
 	O42A_RETURN;
 }
 
-void o42a_error_printf(const wchar_t *format, ...) {
+void o42a_error_printf(const char *const format, ...) {
 	O42A_ENTER;
 
 	va_list args;
 
 	va_start(args, format);
 	o42a_error_start();
-	vfwprintf(stderr, format, args);
+
+	vfprintf(stderr, format, args);
+
 	va_end(args);
 	o42a_error_end();
 
@@ -65,12 +65,12 @@ void o42a_error_printf(const wchar_t *format, ...) {
 inline void o42a_error_start() {
 	O42A_ENTER;
 
-	fputws(L"[ERROR] ", stderr);
+	fputs("[E] ", stderr);
 
 	O42A_RETURN;
 }
 
-void o42a_error_append_str(const o42a_val_t *message) {
+void o42a_error_append_str(const o42a_val_t *const message) {
 	O42A_ENTER;
 
 	const size_t len = message->length;
@@ -80,31 +80,35 @@ void o42a_error_append_str(const o42a_val_t *message) {
 	}
 
 	const size_t step = o42a_val_alignment(message);
-	const size_t mask = o42a_str_wchar_mask(message);
+	const UChar32 cmask = o42a_str_cmask(message);
 	const void *const str = o42a_val_data(message);
 
+	UFILE *const uerr = u_finit(stdout, NULL, NULL);
+
 	for (size_t i = 0; i < len; i += step) {
-		putwc(*((wchar_t*) (str + i)) & mask, stderr);
+		u_fputc(*((UChar32*) (str + i)) & cmask, uerr);
 	}
 
+	u_fclose(uerr);
+
 	O42A_RETURN;
 }
 
-inline void o42a_error_append(const wchar_t *message) {
+inline void o42a_error_append(const char *const message) {
 	O42A_ENTER;
 
-	fputws(message, stderr);
+	fputs(message, stderr);
 
 	O42A_RETURN;
 }
 
-void o42a_error_appendf(const wchar_t *format, ...) {
+void o42a_error_appendf(const char *const format, ...) {
 	O42A_ENTER;
 
 	va_list args;
 
 	va_start(args, format);
-	vfwprintf(stderr, format, args);
+	vfprintf(stderr, format, args);
 	va_end(args);
 
 	O42A_RETURN;
@@ -113,7 +117,7 @@ void o42a_error_appendf(const wchar_t *format, ...) {
 inline void o42a_error_end() {
 	O42A_ENTER;
 
-	fputwc(L'\n', stderr);
+	fputc('\n', stderr);
 
 	O42A_RETURN;
 }

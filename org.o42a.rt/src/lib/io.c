@@ -22,8 +22,7 @@
 #include "o42a/debug.h"
 #include "o42a/string.h"
 
-#include <stdio.h>
-#include <wchar.h>
+#include "unicode/ustdio.h"
 
 
 void o42a_io_print_str(const o42a_val_t *const val) {
@@ -36,12 +35,16 @@ void o42a_io_print_str(const o42a_val_t *const val) {
 	}
 
 	const size_t step = o42a_val_alignment(val);
-	const size_t mask = o42a_str_wchar_mask(val);
+	const UChar32 cmask = o42a_str_cmask(val);
 	const void *const str = o42a_val_data(val);
 
+	UFILE *const uout = u_finit(stdout, NULL, NULL);
+
 	for (size_t i = 0; i < len; i += step) {
-		putwc(*((wchar_t*) (str + i)) & mask, stdout);
+		u_fputc(*((UChar32*) (str + i)) & cmask, uout);
 	}
+
+	u_fclose(uout);
 
 	O42A_RETURN;
 }

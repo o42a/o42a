@@ -29,11 +29,9 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Globals extends Functions {
 
-	private final DataChain globals = new DataChain();
+	public static final byte UNICODE_CHAR_SIZE = 4;
 
-	public byte getWideCharSize() {
-		return dataAllocator().getWideCharSize();
-	}
+	private final DataChain globals = new DataChain();
 
 	public final Ptr<AnyOp> addBinary(String id, byte[] data) {
 		return new Ptr<AnyOp>(
@@ -71,7 +69,6 @@ public abstract class Globals extends Functions {
 			return 0;
 		}
 
-		final byte wcharSize = getWideCharSize();
 		int b = 0;
 		int i = 0;
 
@@ -84,12 +81,12 @@ public abstract class Globals extends Functions {
 
 			bytes[b] = (byte) c;
 			bytes[b + 1] = (byte) ((c & 0xFF00) >>> 8);
-			if (charCount > 1 && wcharSize > 2) {
+			if (charCount > 1 && UNICODE_CHAR_SIZE > 2) {
 				bytes[b + 2] = (byte) ((c & 0xFF0000) >>> 16);
 				bytes[b + 3] = (byte) ((c & 0xFF000000) >>> 24);
 			}
 
-			b += wcharSize;
+			b += UNICODE_CHAR_SIZE;
 		} while (i < length);
 
 		return b;
@@ -97,7 +94,7 @@ public abstract class Globals extends Functions {
 
 	public byte[] stringToBinary(String string) {
 
-		final int size = string.length() * getWideCharSize();
+		final int size = string.length() * UNICODE_CHAR_SIZE;
 		final byte[] bytes = new byte[size];
 		final int written = stringToBinary(string, bytes);
 

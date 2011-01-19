@@ -20,7 +20,13 @@
 # See org.o42a.rt.default.mk for customization options.
 #
 
-CFLAGS += -fPIC -std=c99
+CFLAGS += $(shell icu-config --cflags-dynamic)
+CFLAGS += -std=c99
+
+CPPGLAGS += $(shell icu-config --cppflags-dynamic)
+
+LDFLAGS += $(shell icu-config --ldflags)
+LDFLAGS += $(shell icu-config --ldflags-icuio)
 
 headersdir = include/o42a
 srcdir = src
@@ -35,7 +41,8 @@ release_flags = $(release_cppflags) $(release_cflags)
 debug_flags = $(debug_cppflags) $(debug_cflags)
 
 common_deps = $(headersdir)/types.h
-common_deps = $(headersdir)/debug.h
+common_deps += $(headersdir)/error.h
+common_deps += $(headersdir)/debug.h
 
 fld_deps = $(common_deps)
 fld_deps += $(headersdir)/object.h
@@ -98,6 +105,7 @@ $(debug_so_lib) :
 
 # Compile individual files.
 $(srcdir)/debug.*.o : $(headersdir)/types.h
+$(srcdir)/debug.*.o : $(headersdir)/debug.h
 $(srcdir)/debug.%.o : $(srcdir)/debug.c
 	$(call compile)
 
@@ -112,7 +120,6 @@ $(srcdir)/string.%.o : $(srcdir)/string.c
 
 $(srcdir)/error.*.o : $(common_deps)
 $(srcdir)/error.*.o : $(headersdir)/string.h
-$(srcdir)/error.*.o : $(headersdir)/error.h
 $(srcdir)/error.%.o : $(srcdir)/error.c
 	$(call compile)
 

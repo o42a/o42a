@@ -44,11 +44,6 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public byte getWideCharSize() {
-		return wideCharSize(getModulePtr());
-	}
-
-	@Override
 	public DataAllocation<AnyOp> addBinary(
 			String id,
 			byte[] data,
@@ -321,8 +316,6 @@ public class LLVMDataAllocator implements DataAllocator {
 	private static long typePtr(DataAllocation<?> allocation) {
 		return ((ContainerAllocation<?>) allocation).getTypePtr();
 	}
-
-	private static native byte wideCharSize(long modulePtr);
 
 	private static native long binaryConstant(
 			long modulePtr,

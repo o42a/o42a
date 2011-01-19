@@ -29,8 +29,6 @@ import org.o42a.codegen.data.Type;
 
 public interface DataAllocator {
 
-	byte getWideCharSize();
-
 	DataAllocation<AnyOp> addBinary(String id, byte[] data, int start, int end);
 
 	<O extends PtrOp> DataAllocation<O> begin(Type<O> type);

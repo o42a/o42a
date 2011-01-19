@@ -26,37 +26,16 @@ inline size_t o42a_str_len(const o42a_val_t *const val) {
 	return val->length >> o42a_val_ashift(val);
 }
 
-inline wchar_t o42a_str_wchar_mask(const o42a_val_t *const val) {
+inline UChar32 o42a_str_cmask(const o42a_val_t *const val) {
 
 	const size_t char_size = o42a_val_alignment(val);
 	size_t mask;
 
-	if (sizeof (wchar_t) <= char_size) {
-		// wchar_t size is less than char size - truncate silently
+	if (sizeof (UChar32) <= char_size) {
+		// UChar32 size is less than char size - truncate silently
 		return -1; // all ones
 	}
 
-	// wchar_t size is greater or equal to char size
-	// build wchar mask
+	// UChar32 size is greater or equal to char size. Builc char mask.
 	return ~(-1 << (char_size << 3));
-}
-
-void o42a_str_get(wchar_t *const dest, const o42a_val_t *const val) {
-	O42A_ENTER;
-
-	const size_t len = o42a_str_len(val);
-
-	if (!len) {
-		return;
-	}
-
-	const size_t step = o42a_val_alignment(val);
-	const size_t mask = o42a_str_wchar_mask(val);
-	const void *const src = o42a_val_data(val);
-
-	for (size_t s = 0, d = 0; d < len; s += step, ++d) {
-		dest[d] = *((wchar_t*) (src + s)) & mask;
-	}
-
-	O42A_RETURN;
 }

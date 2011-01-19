@@ -9,14 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
- * Method:    wideCharSize
- * Signature: (J)B
- */
-JNIEXPORT jbyte JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_wideCharSize
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    binaryConstant
  * Signature: (JLjava/lang/String;[BII)J
  */

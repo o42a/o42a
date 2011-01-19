@@ -86,7 +86,6 @@
 			<arg line="-ea:org.o42a..."/>
 			
 			<arg line="--"/>
-			<arg line="-lm"/>
 			<arg line="-Xlinker -rpath=${root.dir}/target"/>
 			<arg line="-Xlinker --no-undefined"/>
 			<arg line="-L${root.dir}/target -l${_compile.lib}"/>

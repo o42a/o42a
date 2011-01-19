@@ -52,7 +52,6 @@
 #include "o42a/types.h"
 
 #include <stdio.h>
-#include <wchar.h>
 
 
 #define O42A_ENTER \
@@ -62,8 +61,8 @@
 #define O42A_RETURN o42a_dbg_exit(); return
 
 #define O42A_DEBUG(format, args...) \
-	fwprintf(stderr, L"[%s] ", o42a_dbg_stack()->name); \
-	fwprintf(stderr, format, ## args)
+	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name); \
+	fprintf(stderr, format, ## args)
 
 
 typedef const struct o42a_dbg_func o42a_dbg_func_t;
@@ -118,35 +117,35 @@ extern "C" {
 
 int32_t o42a_dbg_exec_main(int32_t(*)(int32_t, char**), int32_t, char**);
 
-void o42a_debug(const wchar_t*);
+void o42a_debug(const char *);
 
-void o42a_debug_mem_name(const wchar_t*, const void*);
+void o42a_debug_mem_name(const char *, const void *);
 
-void o42a_debug_func_name(const wchar_t*, const void*);
+void o42a_debug_func_name(const char *, const void *);
 
-void o42a_dbg_dump_mem(const void*, uint32_t);
+void o42a_dbg_dump_mem(const void *, uint32_t);
 
-void o42a_dbg_dump_field(const void*, o42a_dbg_field_t*, uint32_t);
+void o42a_dbg_dump_field(const void *, o42a_dbg_field_t *, uint32_t);
 
-void o42a_dbg_dump_struct(const void*, o42a_dbg_struct_t*, uint32_t);
+void o42a_dbg_dump_struct(const void *, o42a_dbg_struct_t *, uint32_t);
 
-const o42a_dbg_func_t *o42a_dbg_func(const void*);
+const o42a_dbg_func_t *o42a_dbg_func(const void *);
 
-const o42a_dbg_global_t *o42a_dbg_mem(const void*, o42a_dbg_field_t**);
+const o42a_dbg_global_t *o42a_dbg_mem(const void *, o42a_dbg_field_t **);
 
-const o42a_dbg_field_t *o42a_dbg_field(const void*);
+const o42a_dbg_field_t *o42a_dbg_field(const void *);
 
-const o42a_dbg_field_t *o42a_dbg_subfield(o42a_dbg_field_t*, ...);
+const o42a_dbg_field_t *o42a_dbg_subfield(o42a_dbg_field_t *, ...);
 
-void o42a_dbg_enter(struct o42a_dbg_stack_frame*);
+void o42a_dbg_enter(struct o42a_dbg_stack_frame *);
 
 void o42a_dbg_exit();
 
-o42a_dbg_stack_frame_t* o42a_dbg_stack();
+o42a_dbg_stack_frame_t *o42a_dbg_stack();
 
-void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t*);
+void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *);
 
-void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t*);
+void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *);
 
 
 #ifdef __cplusplus

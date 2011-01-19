@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.data.Globals.UNICODE_CHAR_SIZE;
 import static org.o42a.codegen.debug.DebugFunc.DEBUG_SIGNATURE;
 import static org.o42a.codegen.debug.DumpFunc.DUMP_SIGNATURE;
 import static org.o42a.codegen.debug.DumpNameFunc.DUMP_NAME_SIGNATURE;
@@ -164,8 +165,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	private Ptr<AnyOp> binaryMessage(String message) {
 
-		final byte wcharSize = generator().getWideCharSize();
-		final int size = (message.length() + 1) * wcharSize;
+		final int size = (message.length() + 1) * UNICODE_CHAR_SIZE;
 		final byte[] bytes = new byte[size];
 		final int written = generator().stringToBinary(message, bytes);
 
@@ -173,7 +173,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				"DEBUG_" + (debugSeq++),
 				bytes,
 				0,
-				written + wcharSize /* zero-termination */);
+				written + UNICODE_CHAR_SIZE /* zero-termination */);
 	}
 
 	protected final Generator generator() {
