@@ -19,7 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.data.Globals.UNICODE_CHAR_SIZE;
+import static org.o42a.codegen.data.StringCodec.bytesPerChar;
+import static org.o42a.codegen.data.StringCodec.stringToBinary;
 import static org.o42a.codegen.debug.DebugFunc.DEBUG_SIGNATURE;
 import static org.o42a.codegen.debug.DumpFunc.DUMP_SIGNATURE;
 import static org.o42a.codegen.debug.DumpNameFunc.DUMP_NAME_SIGNATURE;
@@ -29,6 +30,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -165,15 +167,13 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	private Ptr<AnyOp> binaryMessage(String message) {
 
-		final int size = (message.length() + 1) * UNICODE_CHAR_SIZE;
+		final DataAlignment bytesPerChar = bytesPerChar(message);
+		final int size = (message.length() + 1) * bytesPerChar.getBytes();
 		final byte[] bytes = new byte[size];
-		final int written = generator().stringToBinary(message, bytes);
 
-		return generator().addBinary(
-				"DEBUG_" + (debugSeq++),
-				bytes,
-				0,
-				written + UNICODE_CHAR_SIZE /* zero-termination */);
+		stringToBinary(message, bytes, bytesPerChar);
+
+		return generator().addBinary("DEBUG_" + (debugSeq++), bytes);
 	}
 
 	protected final Generator generator() {

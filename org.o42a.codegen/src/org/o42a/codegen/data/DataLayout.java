@@ -25,48 +25,18 @@ public final class DataLayout {
 	private static final int ALIGNMENT_MASK = 0xE0000000;
 	private static final int SIZE_MASK = 0x1FFFFFFF;
 
-	public static byte alignmentShift(short alignment) {
-
-		byte shift;
-		final int diff = alignment - 4;
-
-		if (diff <= 0) {
-			if (diff == 0) {
-				shift = 2;
-			} else if (alignment == 2) {
-				shift = 1;
-			} else {
-				throw new IllegalStateException(
-						"Wrong alignment: " + alignment);
-			}
-		} else {
-			switch (alignment) {
-			case 8: shift = 3; break;
-			case 16: shift = 4; break;
-			case 32: shift = 5; break;
-			case 64: shift = 6; break;
-			case 128: shift = 7; break;
-			default:
-				throw new IllegalStateException(
-						"Wrong alignment: " + alignment);
-			}
-		}
-
-		return shift;
-	}
-
 	private final int layout;
 
-	public DataLayout(int size, short alignment) {
-		this.layout = size | (alignmentShift(alignment) << 29);
+	public DataLayout(int size, DataAlignment alignment) {
+		this.layout = size | (alignment.getShift() << 29);
 	}
 
 	public DataLayout(int binaryForm) {
 		this.layout = binaryForm;
 	}
 
-	public final short getAlignment() {
-		return (short) (1 << getAlignmentShift());
+	public final DataAlignment getAlignment() {
+		return DataAlignment.alignmentByShift(getAlignmentShift());
 	}
 
 	public final int getSize() {
