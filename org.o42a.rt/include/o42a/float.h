@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "o42a/string.h"
+#ifndef O42A_FLOAT_H
+#define O42A_FLOAT_H
 
-#include "o42a/debug.h"
+#include "o42a/types.h"
 
 
-inline size_t o42a_str_len(const o42a_val_t *const val) {
-	return val->length >> o42a_val_ashift(val);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+void o42a_float_by_str(o42a_val_t *, const o42a_val_t *);
+
+int o42a_float_error(o42a_val_t *);
+
+
+#ifdef __cplusplus
 }
+#endif
 
-inline UChar32 o42a_str_cmask(const o42a_val_t *const val) {
-
-	const size_t char_size = o42a_val_alignment(val);
-	size_t mask;
-
-	if (sizeof (UChar32) <= char_size) {
-		// UChar32 size is less than char size. Truncate silently.
-		return -1; // all ones
-	}
-
-	// UChar32 size is greater or equal to char size. Build char mask.
-	return ~(-1 << (char_size << 3));
-}
+#endif /* O42A_INTEGER_H */

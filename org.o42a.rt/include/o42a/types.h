@@ -159,14 +159,25 @@ typedef struct o42a_val {
 	/**
 	 * Contains plain value.
 	 *
-	 * The value type should be known to the user:
-	 * - int64_t - for integer;
-	 * - double  - for float;
-	 * - pointer - for string.
+	 * The value type should be known to the user.
 	 *
 	 * This is only meaningful when value condition is true.
 	 */
-	int64_t value;
+	union {
+
+		/** 32-bit integer value. */
+		int32_t v_int32;
+
+		/** Integer value. */
+		int64_t v_integer;
+
+		/** Floating point value. */
+		double v_float;
+
+		/** Pointer to externally stored value, e.g. to string. */
+		void *v_ptr;
+
+	} value;
 
 } o42a_val_t;
 
