@@ -63,6 +63,8 @@ objects = $(srcdir)/debug.o
 objects += $(srcdir)/types.o
 objects += $(srcdir)/string.o
 objects += $(srcdir)/error.o
+objects += $(srcdir)/integer.o
+objects += $(srcdir)/float.o
 objects += $(srcdir)/values.o
 objects += $(srcdir)/object.o
 objects += $(srcdir)/fld/link.o
@@ -121,6 +123,18 @@ $(srcdir)/string.%.o : $(srcdir)/string.c
 $(srcdir)/error.*.o : $(common_deps)
 $(srcdir)/error.*.o : $(headersdir)/string.h
 $(srcdir)/error.%.o : $(srcdir)/error.c
+	$(call compile)
+
+$(srcdir)/integer.*.o : $(common_deps)
+$(srcdir)/integer.*.o : $(headersdir)/string.h
+$(srcdir)/integer.*.o : $(headersdir)/integer.h
+$(srcdir)/integer.%.o : $(srcdir)/integer.c
+	$(call compile)
+
+$(srcdir)/float.*.o : $(common_deps)
+$(srcdir)/float.*.o : $(headersdir)/string.h
+$(srcdir)/float.*.o : $(headersdir)/float.h
+$(srcdir)/float.%.o : $(srcdir)/float.c
 	$(call compile)
 
 $(srcdir)/object.*.o : $(common_deps)

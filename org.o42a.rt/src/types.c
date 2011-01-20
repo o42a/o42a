@@ -125,7 +125,7 @@ inline size_t o42a_val_alignment(const o42a_val_t *const val) {
 
 inline void *o42a_val_data(const o42a_val_t *const val) {
 	if (val->flags & O42A_VAL_EXTERNAL) {
-		return (void*) val->value;
+		return val->value.v_ptr;
 	}
 	return (void*) &val->value;
 }
