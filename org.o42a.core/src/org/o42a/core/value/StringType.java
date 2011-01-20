@@ -19,8 +19,8 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.codegen.data.DataLayout.alignmentShift;
-import static org.o42a.codegen.data.Globals.UNICODE_CHAR_SIZE;
+import static org.o42a.codegen.data.StringCodec.bytesPerChar;
+import static org.o42a.codegen.data.StringCodec.stringToBinary;
 import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.op.Val.EXTERNAL_FLAG;
 
@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.artifact.intrinsic.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
@@ -60,13 +61,16 @@ final class StringType extends ValueType<String> {
 			return cachedVal;
 		}
 
-		final byte[] bytes = generator.getGenerator().stringToBinary(value);
+		final DataAlignment bytesPerChar = bytesPerChar(value);
+		final byte[] bytes = new byte[bytesPerChar.getBytes() * value.length()];
+
+		stringToBinary(value, bytes, bytesPerChar);
 
 		final Val val;
 
 		if (bytes.length <= 8) {
 			val = new Val(
-					CONDITION_FLAG | (alignmentShift(UNICODE_CHAR_SIZE) << 8),
+					CONDITION_FLAG | (bytesPerChar.getShift() << 8),
 					bytes.length,
 					bytesToLong(bytes));
 		} else {
@@ -76,7 +80,7 @@ final class StringType extends ValueType<String> {
 
 			val = new Val(
 					CONDITION_FLAG | EXTERNAL_FLAG
-					| (alignmentShift(UNICODE_CHAR_SIZE) << 8),
+					| (bytesPerChar.getShift() << 8),
 					bytes.length,
 					binary);
 		}

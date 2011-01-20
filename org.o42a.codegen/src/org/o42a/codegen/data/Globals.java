@@ -29,8 +29,6 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Globals extends Functions {
 
-	public static final byte UNICODE_CHAR_SIZE = 4;
-
 	private final DataChain globals = new DataChain();
 
 	public final Ptr<AnyOp> addBinary(String id, byte[] data) {
@@ -60,54 +58,6 @@ public abstract class Globals extends Functions {
 	public abstract DataAllocator dataAllocator();
 
 	public abstract DataWriter dataWriter();
-
-	public int stringToBinary(String string, byte[] bytes) {
-
-		final int length = string.length();
-
-		if (length == 0) {
-			return 0;
-		}
-
-		int b = 0;
-		int i = 0;
-
-		do {
-
-			final int c = string.codePointAt(i);
-			final int charCount = Character.charCount(c);
-
-			i += charCount;
-
-			bytes[b] = (byte) c;
-			bytes[b + 1] = (byte) ((c & 0xFF00) >>> 8);
-			if (charCount > 1 && UNICODE_CHAR_SIZE > 2) {
-				bytes[b + 2] = (byte) ((c & 0xFF0000) >>> 16);
-				bytes[b + 3] = (byte) ((c & 0xFF000000) >>> 24);
-			}
-
-			b += UNICODE_CHAR_SIZE;
-		} while (i < length);
-
-		return b;
-	}
-
-	public byte[] stringToBinary(String string) {
-
-		final int size = string.length() * UNICODE_CHAR_SIZE;
-		final byte[] bytes = new byte[size];
-		final int written = stringToBinary(string, bytes);
-
-		if (written == size) {
-			return bytes;
-		}
-
-		final byte[] result = new byte[written];
-
-		System.arraycopy(bytes, 0, result, 0, written);
-
-		return result;
-	}
 
 	@Override
 	protected void writeData() {
