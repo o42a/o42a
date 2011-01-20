@@ -19,7 +19,6 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import static java.lang.Character.isSpaceChar;
 import static java.lang.Character.isWhitespace;
 import static org.o42a.parser.Grammar.isDigit;
 
@@ -67,7 +66,7 @@ public class DecimalParser implements Parser<DecimalNode> {
 			if (isWhitespace(c)) {
 				if (spaceStart == null) {
 					spaceStart = context.current().fix();
-					if (!isSpaceChar(c)) {
+					if (Character.getType(c) != Character.SPACE_SEPARATOR) {
 						wrongSpace = true;
 					}
 				} else {
