@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.intrinsic;
+package org.o42a.core.artifact.common;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.IRUtil.canonicalName;
@@ -25,7 +25,6 @@ import static org.o42a.core.ir.IRUtil.encodeName;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.*;

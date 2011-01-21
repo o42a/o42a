@@ -1,0 +1,279 @@
+/*
+    Intrinsics
+    Copyright (C) 2011 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.intrinsic.numeric;
+
+import org.o42a.codegen.code.Code;
+import org.o42a.core.LocationSpec;
+import org.o42a.core.ir.IRGenerator;
+import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.value.ValueType;
+
+
+final strictfp class FloatByString extends ByString<Double> {
+
+	private static final int PLUS_SIGN = 0x002b;
+	private static final int COMMA = 0x002c;
+	private static final int HYPHEN_MINUS = 0x002d;
+	private static final int PERIOD = 0x002e;
+	private static final int CAPITAL_E = 0x0045;
+	private static final int SMALL_E = 0x0065;
+	private static final int MINUS_SIGN = 0x2212;
+
+	private static final byte PARSE_SIGN = 0;
+	private static final byte PARSE_INT_MANTISSA = 1;
+	private static final byte PARSE_FRAC_MATISSA = 2;
+	private static final byte PARSE_EXPONENT_SIGN = 3;
+	private static final byte PARSE_EXPONENT = 4;
+
+	FloatByString(FloatObject owner) {
+		super(owner, ValueType.FLOAT);
+	}
+
+	@Override
+	protected Double byString(LocationSpec location, String input) {
+
+		final int len = input.length();
+
+		if (len == 0) {
+			getLogger().error(
+					"empty_input",
+					location,
+					"Empty string can not be converted to float");
+			return null;
+		}
+
+		double int_mantissa = 0.0;
+		double frac_mantissa = 0.0;
+		int frac_mantissa_len = 0;
+		double exponent = 0.0;
+
+		byte stage = PARSE_SIGN;
+		boolean space = false;
+		boolean negative = false;
+		double value = 0.0;
+		int i = 0;
+
+		do {
+
+			final int c = input.codePointAt(i);
+
+			switch (c) {
+			case HYPHEN_MINUS:
+			case MINUS_SIGN:
+				if (stage != PARSE_SIGN && stage != PARSE_EXPONENT_SIGN) {
+					break;
+				}
+				negative = true;
+				++stage;
+				continue;
+			case PLUS_SIGN:
+				if (stage != PARSE_SIGN && stage != PARSE_EXPONENT_SIGN) {
+					break;
+				}
+				++stage;
+				continue;
+			case COMMA:
+			case PERIOD:
+				if (stage > PARSE_INT_MANTISSA) {
+					break;
+				}
+				if (space) {
+					getLogger().error(
+							"invalid_input",
+							location,
+							"Unexpected space in number at position %d",
+							i);
+					return null;
+				}
+				int_mantissa = negative ? -value : value;
+				space = false;
+				value = 0.0;
+				stage = PARSE_FRAC_MATISSA;
+				continue;
+			case CAPITAL_E:
+			case SMALL_E:
+				if (stage >= PARSE_EXPONENT) {
+					break;
+				}
+				if (space) {
+					getLogger().error(
+							"invalid_input",
+							location,
+							"Unexpected space in number at position %d",
+							i);
+					return null;
+				}
+				if (stage == PARSE_FRAC_MATISSA) {
+					frac_mantissa = negative ? -value : value;
+				} else {
+					int_mantissa = negative ? -value : value;
+				}
+				space = false;
+				value = 0.0;
+				negative = false;
+				stage = PARSE_EXPONENT_SIGN;
+				continue;
+			default:
+				if (Character.getType(c) == Character.SPACE_SEPARATOR) {
+					if (space) {
+						getLogger().error(
+								"invalid_input",
+								location,
+								"Two subsequent spaces in number"
+								+ " at position %d",
+								i);
+						return null;
+					}
+					if (stage == PARSE_SIGN
+							|| stage == PARSE_EXPONENT_SIGN
+							|| (stage == PARSE_FRAC_MATISSA
+									&& frac_mantissa_len == 0)) {
+						getLogger().error(
+								"invalid_input",
+								location,
+								"Unexpected space in number at position %d",
+								i);
+						return null;
+					}
+					space = true;
+					continue;
+				}
+			}
+
+			final int digit = Character.digit(c, 10);
+
+			if (digit < 0) {
+				getLogger().error(
+						"invalid_input",
+						location,
+						"Illegal character in number at position %d",
+						i);
+				return null;
+			}
+
+			value = value * 10.0 + digit;
+			if (hasError(location, value)) {
+				return null;
+			}
+			if (stage == PARSE_FRAC_MATISSA) {
+				++frac_mantissa_len;
+			}
+
+			space = false;
+			i += Character.charCount(c);
+		} while (i < len);
+
+		if (space) {
+			getLogger().error(
+					"invalid_input",
+					location,
+					"Unexpected space after number at position %d",
+					len - 1);
+			return null;
+		}
+
+		switch (stage) {
+		case PARSE_INT_MANTISSA:
+			int_mantissa = negative ? -value : value;
+			break;
+		case PARSE_FRAC_MATISSA:
+			frac_mantissa = negative ? -value : value;
+			break;
+		case PARSE_EXPONENT:
+			exponent = negative ? -value : value;
+			break;
+		default:
+			getLogger().error(
+					"empty_input",
+					location,
+					"Unexpected end of floating-point number input");
+			return null;
+		}
+
+		double res;
+
+		if (frac_mantissa_len == 0) {
+			res = int_mantissa;
+		} else {
+
+			final double pow = Math.pow(10.0, -frac_mantissa_len);
+
+			if (hasError(location, pow)) {
+				return null;
+			}
+			res = frac_mantissa * pow + int_mantissa;
+			if (hasError(location, res)) {
+				return null;
+			}
+		}
+		if (stage == PARSE_EXPONENT) {
+
+			final double pow = Math.pow(10.0, exponent);
+
+			if (hasError(location, pow)) {
+				return null;
+			}
+			res = res * pow;
+			if (hasError(location, res)) {
+				return null;
+			}
+		}
+
+		return res;
+	}
+
+	@Override
+	protected void parse(
+			IRGenerator generator,
+			Code code,
+			ValOp result,
+			ValOp input) {
+
+		final ParseFunc parseFunc =
+			generator.externalFunction(
+					"o42a_float_by_str",
+					ParseFunc.signature(generator)).op(code);
+
+		parseFunc.parse(code, result, input);
+	}
+
+	private boolean hasError(LocationSpec location, double x) {
+		if (Double.isNaN(x)) {
+			getLogger().error("nan", location, "Not a number");
+			return true;
+		}
+		if (Double.isInfinite(x)) {
+			getLogger().error(
+					"float_overflow",
+					location,
+					"Floating point number overflow");
+			return true;
+		}
+		if (Math.abs(x) < Double.MIN_NORMAL) {
+			getLogger().error(
+					"float_underflow",
+					location,
+					"Floating point number underflow");
+			return true;
+		}
+		return false;
+	}
+
+}

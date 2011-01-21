@@ -17,16 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.operator;
+package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.ref.path.Path.absolutePath;
 
 import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.root.FloatObject;
+import org.o42a.intrinsic.operator.BinaryOpObj;
 
 
 public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
@@ -45,8 +45,8 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	}
 
 	@Override
-	protected MemberKey rightOperandKey() {
-		return getRightOperandKey(getContext());
+	protected PathBuilder getRightOperand() {
+		return RIGHT_OPERAND;
 	}
 
 	@Override

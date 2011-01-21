@@ -17,11 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.intrinsic;
+package org.o42a.core.artifact.common;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
@@ -42,8 +41,8 @@ public abstract class IntrinsicObject extends PlainObject {
 		((IntrinsicField) getScope()).init(this);
 	}
 
-	public IntrinsicObject(FieldDeclaration declarator) {
-		super(new IntrinsicField(declarator));
+	public IntrinsicObject(FieldDeclaration declaration) {
+		super(new IntrinsicField(declaration));
 		((IntrinsicField) getScope()).init(this);
 	}
 
@@ -142,8 +141,8 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	private static final class IntrinsicField extends ObjectField {
 
-		IntrinsicField(FieldDeclaration declarator) {
-			super(declarator);
+		IntrinsicField(FieldDeclaration declaration) {
+			super(declaration);
 		}
 
 		IntrinsicField(Container enclosingContainer, String name) {

@@ -23,7 +23,7 @@ import static org.o42a.core.def.Def.falseDef;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.intrinsic.IntrinsicObject;
+import org.o42a.core.artifact.common.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.value.Value;

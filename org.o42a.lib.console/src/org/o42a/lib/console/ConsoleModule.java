@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.core.CompilerContext;
-import org.o42a.core.artifact.intrinsic.Module;
+import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.IRGenerator;

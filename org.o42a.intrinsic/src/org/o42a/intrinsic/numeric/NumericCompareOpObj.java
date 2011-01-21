@@ -17,40 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.operator;
+package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.ref.path.Path.absolutePath;
+import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
 
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.intrinsic.IntrinsicObject;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.path.AbsolutePath;
+import org.o42a.core.artifact.common.IntrinsicObject;
+import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.root.FloatObject;
-import org.o42a.intrinsic.root.IntegerObject;
+import org.o42a.intrinsic.operator.BinaryOpObj;
 
 
 public abstract class NumericCompareOpObj<L extends Number>
 		extends BinaryOpObj<Long, L> {
 
-	private static MemberKey compareWithKey;
-
-	public static MemberKey getCompareWithKey(CompilerContext context) {
-		if (compareWithKey != null) {
-			if (context.compatible(compareWithKey.getOrigin())) {
-				return compareWithKey;
-			}
-		}
-
-		final AbsolutePath path =
-			absolutePath(context, "operators", "compare", "with");
-		final Field<?> rightOperand =
-			path.resolveArtifact(context).getScope().toField();
-
-		return compareWithKey = rightOperand.getKey();
-	}
+	private static final PathBuilder WITH =
+		pathBuilder("operators", "compare", "with");
 
 	public NumericCompareOpObj(
 			IntrinsicObject owner,
@@ -69,8 +52,8 @@ public abstract class NumericCompareOpObj<L extends Number>
 	}
 
 	@Override
-	protected MemberKey rightOperandKey() {
-		return getCompareWithKey(getContext());
+	protected PathBuilder getRightOperand() {
+		return WITH;
 	}
 
 	@Override

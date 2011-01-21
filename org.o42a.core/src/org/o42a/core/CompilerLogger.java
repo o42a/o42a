@@ -36,432 +36,432 @@ public class CompilerLogger implements Logger {
 	public void abstractNotOverridden(LogInfo locaion, String fieldName) {
 		error(
 				"abstract_not_overridden",
-				"Abstract field '%s' not overridden",
 				locaion,
+				"Abstract field '%s' not overridden",
 				fieldName);
 	}
 
 	public void abstractValue(LogInfo location) {
-		error("abstract_value", "Abstract value access", location);
+		error("abstract_value", location, "Abstract value access");
 	}
 
 	public void ambiguousClause(LogInfo location, String clauseName) {
 		error(
 				"ambiguous_clause",
-				"Clause '%s' declaration is ambiguous",
 				location,
+				"Clause '%s' declaration is ambiguous",
 				clauseName);
 	}
 
 	public void ambiguousField(LogInfo location, String fieldName) {
 		error(
 				"ambiguousField",
-				"Field '%s' declaration is ambiguous",
 				location,
+				"Field '%s' declaration is ambiguous",
 				fieldName);
 	}
 
 	public void ambiguousValue(LogInfo location) {
-		error("ambiguous_value", "Ambiguous value declaration", location);
+		error("ambiguous_value", location, "Ambiguous value declaration");
 	}
 
 	public void arithmeticError(LogInfo location, String message) {
-		error("arithmetic_error", "Arithmetic error: %s", location, message);
+		error("arithmetic_error", location, "Arithmetic error: %s", message);
 	}
 
 	public void cantDeclareOverridden(LogInfo location, String fieldName) {
 		error(
 				"cant_declare_overridden",
-				"Can not declare already overridden field '%s'",
 				location,
+				"Can not declare already overridden field '%s'",
 				fieldName);
 	}
 
 	public void cantInherit(LogInfo location, Object target) {
-		error("cant_inherit", "%s can not be inherited", location, target);
+		error("cant_inherit", location, "%s can not be inherited", target);
 	}
 
 	public void cantOverrideDeclared(LogInfo location, String fieldName) {
 		error(
 				"cant_override_declared",
-				"Can not override already declared field '%s'",
 				location,
+				"Can not override already declared field '%s'",
 				fieldName);
 	}
 
 	public void cantOverrideUnknown(LogInfo location, String fieldName) {
 		error(
 				"cant_override_unknown",
-				"Can not override unknown field '%s'",
 				location,
+				"Can not override unknown field '%s'",
 				fieldName);
 	}
 
 	public void dublicateBlockName(LogInfo location, String blockName) {
 		error(
 				"duplicate_block_name",
-				"Block '%s' already declared",
 				location,
+				"Block '%s' already declared",
 				blockName);
 	}
 
 	public void expectedClauseName(LogInfo location) {
-		error("expected_clause_name", "Clause name expected here", location);
+		error("expected_clause_name", location, "Clause name expected here");
 	}
 
 	public void expectedDefinition(LogInfo location) {
-		error("expected_definition", "Definition expected here", location);
+		error("expected_definition", location, "Definition expected here");
 	}
 
 	public void forbiddenAccess(LogInfo location, Object target) {
 		error(
 				"forbidden_access",
-				"Access to %s is forbidden",
 				location,
+				"Access to %s is forbidden",
 				target);
 	}
 
 	public void illegalVisibility(LogInfo location) {
 		error(
 				"illegal_visibility",
-				"Illegal field visibility qualifier",
-				location);
+				location,
+				"Illegal field visibility qualifier");
 	}
 
 	public void ignored(LogInfo location) {
-		warning("ignored", "Statement ignored", location);
+		warning("ignored", location, "Statement ignored");
 	}
 
 	public void incompatible(LogInfo location, Object type) {
-		error("incompatible", "Not compatible with %s", location, type);
+		error("incompatible", location, "Not compatible with %s", type);
 	}
 
 	public void indefiniteValue(LogInfo location) {
-		error("indefinite_value", "Indefinite value access", location);
+		error("indefinite_value", location, "Indefinite value access");
 	}
 
 	public void invalidArtifact(LogInfo location) {
-		error("invalid_artifact", "Artifact is not valid", location);
+		error("invalid_artifact", location, "Artifact is not valid");
 	}
 
 	public void invalidClause(LogInfo location) {
-		error("invalid_clause", "Invalid clause", location);
+		error("invalid_clause", location, "Invalid clause");
 	}
 
 	public void invalidClauseContent(LogInfo location) {
-		error("invalid_clause_content", "Invalid clause content", location);
+		error("invalid_clause_content", location, "Invalid clause content");
 	}
 
 	public void invalidClauseReused(LogInfo location) {
 		error(
 				"invalid_clause_reused",
-				"Attempt to reuse inaccessible clause",
-				location);
+				location,
+				"Attempt to reuse inaccessible clause");
 	}
 
 	public void invalidDeclaration(LogInfo location) {
-		error("invalid_declaration", "Invalid declaration", location);
+		error("invalid_declaration", location, "Invalid declaration");
 	}
 
 	public void invalidDefinition(LogInfo location) {
-		error("invalid_definition", "Not a valid member definition", location);
+		error("invalid_definition", location, "Not a valid member definition");
 	}
 
 	public void invalidExpression(LogInfo location) {
-		error("invalid_expression", "Not a valid expression", location);
+		error("invalid_expression", location, "Not a valid expression");
 	}
 
 	public void invalidInteger(LogInfo location, String reason) {
 		error(
 				"invalid_integer",
-				"Invalid integer literal %s ",
 				location,
+				"Invalid integer literal %s ",
 				reason);
 	}
 
 	public void invalidOverridden(LogInfo location) {
-		error("invalid_overridden", "Only field can be overridden", location);
+		error("invalid_overridden", location, "Only field can be overridden");
 	}
 
 	public void invalidPhrasePrefix(LogInfo location) {
-		error("invalid_phrase_prefix", "Invalid phrase prefix", location);
+		error("invalid_phrase_prefix", location, "Invalid phrase prefix");
 	}
 
 	public void invalidReference(LogInfo location) {
-		error("invalid_reference", "Not a valid reference", location);
+		error("invalid_reference", location, "Not a valid reference");
 	}
 
 	public void invalidStatement(LogInfo location) {
-		error("invalid_statement", "Not a valid statement", location);
+		error("invalid_statement", location, "Not a valid statement");
 	}
 
 	public void invalidType(LogInfo location) {
-		error("invalid_type", "Not a valid type reference", location);
+		error("invalid_type", location, "Not a valid type reference");
 	}
 
 	public void noClauseTarget(LogInfo location) {
-		error("no_clause_target", "Clause has no target", location);
+		error("no_clause_target", location, "Clause has no target");
 	}
 
 	public void noDefinition(LogInfo location) {
-		error("no_definition", "Definition is missing", location);
+		error("no_definition", location, "Definition is missing");
 	}
 
 	public void noModuleNoObject(LogInfo location) {
 		error(
 				"no_module_no_object",
-				"Either module or object should be specified",
-				location);
+				location,
+				"Either module or object should be specified");
 	}
 
 	public void noName(LogInfo location) {
-		error("no_name", "Name not specified", location);
+		error("no_name", location, "Name not specified");
 	}
 
 	public void notAbstract(LogInfo location) {
-		error("not_abstract", "Abstract declaration expected", location);
+		error("not_abstract", location, "Abstract declaration expected");
 	}
 
 	public void notAdapter(LogInfo location) {
-		error("not_adapter", "Adapter declaration expected", location);
+		error("not_adapter", location, "Adapter declaration expected");
 	}
 
 	public void notArray(LogInfo location) {
-		error("not_array", "Not array", location);
+		error("not_array", location, "Not array");
 	}
 
 	public void notArrayItemInitializer(LogInfo location) {
 		error(
 				"not_array_item_initializer",
-				"Array item initializer expected",
-				location);
+				location,
+				"Array item initializer expected");
 	}
 
 	public void notClause(LogInfo location) {
-		error("not_clause", "Not clause", location);
+		error("not_clause", location, "Not clause");
 	}
 
 	public void notClauseDeclaration(LogInfo location) {
-		error("not_clause_declaration", "Not a clause declaration", location);
+		error("not_clause_declaration", location, "Not a clause declaration");
 	}
 
 	public void notCondition(LocationSpec location) {
-		error("not_condition", "Not a condition", location);
+		error("not_condition", location, "Not a condition");
 	}
 
 	public void notDerivedFrom(LogInfo location, Object ascendant) {
-		error("not_deried_from", "Not derived from %s", location, ascendant);
+		error("not_deried_from", location, "Not derived from %s", ascendant);
 	}
 
 	public void notFieldDeclaration(LogInfo location) {
-		error("not_field_declaration", "Not a field declaration", location);
+		error("not_field_declaration", location, "Not a field declaration");
 	}
 
 	public void notFloat(LogInfo location, String literal) {
-		error("not_float", "Not a floating point value: %s", location, literal);
+		error("not_float", location, "Not a floating point value: %s", literal);
 	}
 
 	public void notInteger(LogInfo location, String literal) {
-		error("not_integer", "Not an integer: %s", location, literal);
+		error("not_integer", location, "Not an integer: %s", literal);
 	}
 
 	public void notPath(LogInfo location) {
-		error("not_path", "Not a path", location);
+		error("not_path", location, "Not a path");
 	}
 
 	public void notPrototype(LogInfo location) {
-		error("not_prototype", "Prototype declaration expected", location);
+		error("not_prototype", location, "Prototype declaration expected");
 	}
 
 	public void notReproducible(LogInfo location) {
-		error("not_reproducible", "Not reproducible", location);
+		error("not_reproducible", location, "Not reproducible");
 	}
 
 	public void notObject(LogInfo location, Object target) {
-		error("not_object", "%s is not an object", location, target);
+		error("not_object", location, "%s is not an object", target);
 	}
 
 	public void notObjectDeclaration(LogInfo location) {
 		error(
 				"not_object_declaration",
-				"Object declaration expected",
-				location);
+				location,
+				"Object declaration expected");
 	}
 
 	public void notTypeRef(LogInfo location) {
-		error("not_type_ref", "Not a valid type reference", location);
+		error("not_type_ref", location, "Not a valid type reference");
 	}
 
 	public void prohibitedAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_abstract",
+				location,
 				"Field '%s' can no be declared abstract, because "
 				+  "it's not inside of prototype or another abstract field",
-				location,
 				fieldName);
 	}
 
 	public void prohibitedClauseDeclaration(LogInfo location) {
 		error(
 				"prohibited_clause_declaration",
-				"Clause declarations prohibited here",
-				location);
+				location,
+				"Clause declarations prohibited here");
 	}
 
 	public void prohibitedConditionalDeclaration(LogInfo location) {
 		error(
 				"prohibited_conditional_declaration",
+				location,
 				"Only object field can be declared"
-				+ " within conditional sentence",
-				location);
+				+ " within conditional sentence");
 	}
 
 	public void prohibitedDeclaration(LogInfo location) {
 		error(
 				"prohibited_declaration",
-				"Declarations prohibited here",
-				location);
+				location,
+				"Declarations prohibited here");
 	}
 
 	public void prohibitedDeclaredIn(LogInfo location) {
 		error(
 				"prohibited_declared_in",
-				"Field scope declaration is prohibited here",
-				location);
+				location,
+				"Field scope declaration is prohibited here");
 	}
 
 	public void prohibitedDeclarativeEllipsis(LogInfo location) {
 		error(
 				"prohibited_declarative_ellipsis",
-				"Ellipsis is only allowed within imperative block",
-				location);
+				location,
+				"Ellipsis is only allowed within imperative block");
 	}
 
 	public void prohibitedDefinition(LogInfo location) {
 		error(
 				"prohibited_definition",
-				"Definition is prohibited here",
-				location);
+				location,
+				"Definition is prohibited here");
 	}
 
 	public void prohibitedDirective(LogInfo location, String directiveName) {
 		error(
 				"prohibited_directive",
-				"Directive '%s' is prohibited here",
 				location,
+				"Directive '%s' is prohibited here",
 				directiveName);
 	}
 
 	public void prohibitedIssueEllipsis(LogInfo location) {
 		error(
 				"prohibited_issue_ellipsis",
-				"Ellipsis is prohibited within issue",
-				location);
+				location,
+				"Ellipsis is prohibited within issue");
 	}
 
 	public void prohibitedLinkType(LogInfo location) {
 		error(
 				"prohibited_link_type",
-				"Link type is not expected here",
-				location);
+				location,
+				"Link type is not expected here");
 	}
 
 	public void prohibitedLocal(LogInfo location) {
 		error(
 				"prohibited_local",
-				"Local scope declaration is prohibited here",
-				location);
+				location,
+				"Local scope declaration is prohibited here");
 	}
 
 	public void prohibitedLocalAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_local_abstract",
-				"Local field '%s' can no be abstract",
 				location,
+				"Local field '%s' can no be abstract",
 				fieldName);
 	}
 
 	public void prohibitedLocalAdapter(LogInfo location) {
-		error("prohibited_local_adapter", "Adapter can not be local", location);
+		error("prohibited_local_adapter", location, "Adapter can not be local");
 	}
 
 	public void prohibitedLocalVisibility(LogInfo location, String fieldName) {
 		error(
 				"prohibited_local_visibility",
-				"Local field '%s' can not have visibility",
 				location,
+				"Local field '%s' can not have visibility",
 				fieldName);
 	}
 
 	public void prohibitedOverriderClause(LogInfo location) {
 		error(
 				"prohibited_overrider_clause",
-				"Overrider clause is prohibited here",
-				location);
+				location,
+				"Overrider clause is prohibited here");
 	}
 
 	public void prohibitedPhraseName(LogInfo location) {
 		error(
 				"prohibited_phrase_name",
-				"Name can not follow another name or phrase prefix",
-				location);
+				location,
+				"Name can not follow another name or phrase prefix");
 	}
 
 	public void prohibitedPrivateAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_private_abstract",
-				"Private field '%s' can not be abstract",
 				location,
+				"Private field '%s' can not be abstract",
 				fieldName);
 	}
 
 	public void prohibitedPrototype(LogInfo location) {
 		error(
 				"prohibited_prototype",
-				"Field can not be declared as prototype",
-				location);
+				location,
+				"Field can not be declared as prototype");
 	}
 
 	public void prohibitedRuntimeSample(LogInfo location) {
 		error(
 				"prohibited_runtime_sample",
+				location,
 				"Sample should be resolvable at compile time."
-				+ " Variable, link or local can not be used as sample",
-				location);
+				+ " Variable, link or local can not be used as sample");
 	}
 
 	public void prohibitedSampleAtRuntime(LogInfo location) {
 		error(
 				"prohibited_sample_at_runtime",
-				"Run-time object can not have samples",
-				location);
+				location,
+				"Run-time object can not have samples");
 	}
 
 	public void prohibitedSamples(LogInfo location) {
-		error("prohibited_samples", "Samples are prohibited here", location);
+		error("prohibited_samples", location, "Samples are prohibited here");
 	}
 
 	public void prohibitedVariableType(LogInfo location) {
 		error(
 				"prohibited_variable_type",
-				"Variable type is not expected here",
-				location);
+				location,
+				"Variable type is not expected here");
 	}
 
 	public void recursiveResolution(LogInfo location, Object resolvable) {
 		error(
 				"recursive_resolution",
-				"Infinite recursion when resolving %s",
 				location,
+				"Infinite recursion when resolving %s",
 				resolvable);
 	}
 
 	public void requiredInitializer(LogInfo location) {
-		error("required_initializer", "Initializer required here", location);
+		error("required_initializer", location, "Initializer required here");
 	}
 
 	public void requiredLinkTarget(LogInfo location) {
-		error("required_link_target", "Link target is required here", location);
+		error("required_link_target", location, "Link target is required here");
 	}
 
 	public void unavailableSource(
@@ -470,8 +470,8 @@ public class CompilerLogger implements Logger {
 			String reason) {
 		error(
 				"unavailable_source",
-				"Source '%s' can not be opened: %s",
 				location,
+				"Source '%s' can not be opened: %s",
 				sourceName,
 				reason);
 	}
@@ -479,19 +479,19 @@ public class CompilerLogger implements Logger {
 	public void unexpectedAbstract(LogInfo location) {
 		error(
 				"unexpected_abstract",
-				"Unexpected abstract declaration",
-				location);
+				location,
+				"Unexpected abstract declaration");
 	}
 
 	public void unexpectedAbsolutePath(LogInfo location) {
 		error(
 				"unexpected_absolute_path",
-				"Relative path expected here",
-				location);
+				location,
+				"Relative path expected here");
 	}
 
 	public void unexpectedAdapter(LogInfo location) {
-		error("unexpected_adapter", "Unexpected adapter declaration", location);
+		error("unexpected_adapter", location, "Unexpected adapter declaration");
 	}
 
 	public void unexpectedAncestor(
@@ -500,8 +500,8 @@ public class CompilerLogger implements Logger {
 			Object expected) {
 		error(
 				"unexpected_ancestor",
-				"Wrong ancestor: %s, but expected: %s",
 				location,
+				"Wrong ancestor: %s, but expected: %s",
 				actual,
 				expected);
 	}
@@ -512,8 +512,8 @@ public class CompilerLogger implements Logger {
 			int expected) {
 		error(
 				"unexpected_array_dimension",
-				"Unexpected array dimension: %d, but %d expected",
 				location,
+				"Unexpected array dimension: %d, but %d expected",
 				actual,
 				expected);
 	}
@@ -521,8 +521,8 @@ public class CompilerLogger implements Logger {
 	public void unexpectedPrototype(LogInfo location) {
 		error(
 				"unexpected_prototype",
-				"Unexpected prototype declaration",
-				location);
+				location,
+				"Unexpected prototype declaration");
 	}
 
 	public void unexpectedType(
@@ -531,8 +531,8 @@ public class CompilerLogger implements Logger {
 			Object expected) {
 		error(
 				"unexpected_type",
-				"Unexpected type: %s, but %s expected",
 				location,
+				"Unexpected type: %s, but %s expected",
 				actual,
 				expected);
 	}
@@ -544,42 +544,42 @@ public class CompilerLogger implements Logger {
 			Visibility expected) {
 		error(
 				"unexpected_visibility",
-				"Wrong '%s' field visibility: %s, but %s expected",
 				location,
+				"Wrong '%s' field visibility: %s, but %s expected",
 				fieldName,
 				actual,
 				expected);
 	}
 
 	public void unresolved(LogInfo location, Object target) {
-		error("unresolved", "'%s' can not be resolved", location, target);
+		error("unresolved", location, "'%s' can not be resolved", target);
 	}
 
 	public void unresolvedModule(LogInfo location, String moduleId) {
 		error(
 				"unresolved_module",
-				"Module <%s> can not be resolved",
 				location,
+				"Module <%s> can not be resolved",
 				moduleId);
 	}
 
 	public void unresolvedParent(LogInfo location, String fieldName) {
 		error(
 				"unresolved_parent",
-				"Enclosing field '%s' can be found",
 				location,
+				"Enclosing field '%s' can be found",
 				fieldName);
 	}
 
 	public void unresolvedScope(LogInfo location, String scope) {
-		error("unresolved_scope", "Unresolved scope: %s", location, scope);
+		error("unresolved_scope", location, "Unresolved scope: %s", scope);
 	}
 
 	public void unresolvedValue(LogInfo location, Object valuable) {
 		error(
 				"unresolved_value",
-				"Value of '%s' can not be resolved",
 				location,
+				"Value of '%s' can not be resolved",
 				valuable);
 	}
 
@@ -589,9 +589,9 @@ public class CompilerLogger implements Logger {
 			Object adapterType) {
 		error(
 				"unsupported_binary_operator",
+				location,
 				"Binary operator '%s' is not supported, because neither left,"
 				+ " nor right operand have an '%s' adapter",
-				location,
 				operator,
 				adapterType);
 	}
@@ -602,8 +602,8 @@ public class CompilerLogger implements Logger {
 			String operator) {
 		error(
 				"unsupported_right_operand",
-				"Right operand of type %s is not supported by operator %s",
 				location,
+				"Right operand of type %s is not supported by operator %s",
 				operandType,
 				operator);
 	}
@@ -614,11 +614,27 @@ public class CompilerLogger implements Logger {
 			Object adapterType) {
 		error(
 				"unsupported_unary_operator",
+				location,
 				"Unary operator '%s' is not supported, "
 				+ "because operand doesn't have an '%s' adapter",
-				location,
 				operator,
 				adapterType);
+	}
+
+	public final void error(
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		log(Severity.ERROR, code, defaultMessage, location, args);
+	}
+
+	public final void warning(
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		log(Severity.WARNING, code, defaultMessage, location, args);
 	}
 
 	@Override
@@ -632,22 +648,6 @@ public class CompilerLogger implements Logger {
 
 	protected Object getSource() {
 		return this.source;
-	}
-
-	private final void error(
-			String code,
-			String defaultMessage,
-			LogInfo location,
-			Object... args) {
-		log(Severity.ERROR, code, defaultMessage, location, args);
-	}
-
-	private final void warning(
-			String code,
-			String defaultMessage,
-			LogInfo location,
-			Object... args) {
-		log(Severity.WARNING, code, defaultMessage, location, args);
 	}
 
 	private final void log(

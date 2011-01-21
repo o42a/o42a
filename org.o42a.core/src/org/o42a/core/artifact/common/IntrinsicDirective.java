@@ -17,49 +17,52 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.intrinsic;
+package org.o42a.core.artifact.common;
 
+import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.MemberId.memberName;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
 
 
-public class IntrinsicType extends IntrinsicObject {
+public abstract class IntrinsicDirective
+		extends IntrinsicObject
+		implements Directive {
 
-	public IntrinsicType(
-			Container enclosingContainer,
-			String name,
-			ValueType<?> valueType) {
+	public IntrinsicDirective(FieldDeclaration declarator) {
+		super(declarator);
+	}
+
+	public IntrinsicDirective(Container enclosingContainer, String name) {
 		super(
 				FieldDeclaration.fieldDeclaration(
 						enclosingContainer,
-						enclosingContainer.getScope().distribute(),
+						declarativeDistributor(enclosingContainer),
 						memberName(name))
 				.prototype());
-		setValueType(valueType);
+	}
+
+	@Override
+	public final Directive toDirective() {
+		return this;
 	}
 
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(getScope()).setAncestor(
-				ValueType.VOID.typeRef(this, getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ancestorDefinitions) {
-		return getValueType().noValueDefinitions(this, scope);
+				ValueType.VOID.typeRef(
+						this,
+						getScope().getEnclosingScope()));
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getValueType().noValueDefinitions(this, getScope());
+		return Definitions.emptyDefinitions(this, getScope());
 	}
 
 }

@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Module := string(False, = "").
-Object := string(False, = "").
+Module := string(False).
+Object := string(False).
 
 <*'Module id' | use namespace> module = *.
 <*[Module id] | use namespace> module = *.

@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Intrinsics
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,36 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.intrinsic;
 
-import org.o42a.core.Container;
-import org.o42a.core.Namespace;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
+/* Convenience adapter identifier to construct object value by string. */
+By string :=> void(
 
+  /* Input string to parse. */
+  Input :=< `string(False).
 
-public interface Intrinsics {
-
-	Obj getVoid();
-
-	Field<Obj> getVoidField();
-
-	Container getTop();
-
-	Namespace getModuleNamespace();
-
-	Obj getRoot();
-
-	Obj getFalse();
-
-	Obj getInteger();
-
-	Obj getFloat();
-
-	Obj getString();
-
-	Module getModule(String moduleId);
-
-	Module getMainModule();
-
-}
+).
