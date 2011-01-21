@@ -20,7 +20,7 @@
 package org.o42a.intrinsic.root;
 
 import org.o42a.core.Container;
-import org.o42a.core.artifact.intrinsic.IntrinsicType;
+import org.o42a.core.artifact.common.IntrinsicType;
 import org.o42a.core.value.ValueType;
 
 

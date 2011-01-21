@@ -30,7 +30,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.artifact.intrinsic.Intrinsics;
+import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.Val;

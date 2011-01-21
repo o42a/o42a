@@ -31,10 +31,6 @@ public class IRGenerator extends ObjectIRGenerator {
 		super(generator);
 	}
 
-	public final CodePtr<ObjectFunc> fillBwtFunc() {
-		return getGenerator().externalFunction("o42a_obwt", objectSignature());
-	}
-
 	public final CodePtr<BinaryFunc> castFunc() {
 		return getGenerator().externalFunction("o42a_cast", binarySignature());
 	}

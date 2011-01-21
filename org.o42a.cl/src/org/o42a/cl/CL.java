@@ -29,7 +29,7 @@ import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.CompilerContext;
-import org.o42a.core.artifact.intrinsic.Module;
+import org.o42a.core.artifact.common.Module;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.ArrayUtil;

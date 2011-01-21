@@ -26,8 +26,8 @@ import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import java.util.HashMap;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.intrinsic.Intrinsics;
-import org.o42a.core.artifact.intrinsic.Module;
+import org.o42a.core.artifact.common.Intrinsics;
+import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.member.field.Field;

@@ -17,42 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.operator;
+package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.ref.path.Path.absolutePath;
 
 import org.o42a.ast.expression.BinaryOperator;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.intrinsic.IntrinsicObject;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.path.AbsolutePath;
+import org.o42a.core.artifact.common.IntrinsicObject;
+import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
-import org.o42a.intrinsic.root.FloatObject;
-import org.o42a.intrinsic.root.IntegerObject;
+import org.o42a.intrinsic.operator.BinaryOpObj;
 
 
 public abstract class NumericEqualsOpObj<L extends Number>
 		extends BinaryOpObj<org.o42a.core.value.Void, L> {
 
-	private static MemberKey equalsToKey;
-
-	public static MemberKey getEqualsToKey(CompilerContext context) {
-		if (equalsToKey != null) {
-			if (context.compatible(equalsToKey.getOrigin())) {
-				return equalsToKey;
-			}
-		}
-
-		final AbsolutePath path =
-			absolutePath(context, "operators", "equals", "to");
-		final Field<?> rightOperand =
-			path.resolveArtifact(context).getScope().toField();
-
-		return equalsToKey = rightOperand.getKey();
-	}
+	private static final PathBuilder TO =
+		PathBuilder.pathBuilder("operators", "equals", "to");
 
 	public NumericEqualsOpObj(
 			IntrinsicObject owner,
@@ -71,8 +53,8 @@ public abstract class NumericEqualsOpObj<L extends Number>
 	}
 
 	@Override
-	protected MemberKey rightOperandKey() {
-		return getEqualsToKey(getContext());
+	protected PathBuilder getRightOperand() {
+		return TO;
 	}
 
 	@Override

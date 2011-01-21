@@ -21,7 +21,7 @@ package org.o42a.core;
 
 import java.net.URL;
 
-import org.o42a.core.artifact.intrinsic.Intrinsics;
+import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.util.Source;
@@ -75,8 +75,12 @@ public abstract class CompilerContext {
 	}
 
 	public final boolean compatible(LocationSpec location) {
-		return location.getContext().compiler == this.compiler
-		&& location.getContext().intrinsics == this.intrinsics;
+		return compatible(location.getContext());
+	}
+
+	public final boolean compatible(CompilerContext other) {
+		return (other.compiler == this.compiler
+				&& other.intrinsics == this.intrinsics);
 	}
 
 	public abstract Source getSource();

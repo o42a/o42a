@@ -17,21 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.root;
+package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.ref.path.Path.absolutePath;
 
 import org.o42a.core.Container;
-import org.o42a.core.artifact.intrinsic.IntrinsicType;
+import org.o42a.core.artifact.common.IntrinsicType;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.operator.*;
+import org.o42a.intrinsic.operator.UnaryOpObj;
 
 
 public class FloatObject extends IntrinsicType {
 
-	FloatObject(Container enclosingContainer) {
+	public FloatObject(Container enclosingContainer) {
 		super(enclosingContainer, "float", ValueType.FLOAT);
 	}
 
@@ -73,6 +73,7 @@ public class FloatObject extends IntrinsicType {
 			new NumericCompareOpObj.FloatCompare(this);
 		final NumericEqualsOpObj.FloatEquals equals =
 			new NumericEqualsOpObj.FloatEquals(this);
+		final FloatByString byString = new FloatByString(this);
 
 		getFieldRegistry().declareMember(plus.toMember());
 		getFieldRegistry().declareMember(minus.toMember());
@@ -82,6 +83,7 @@ public class FloatObject extends IntrinsicType {
 		getFieldRegistry().declareMember(divide.toMember());
 		getFieldRegistry().declareMember(compare.toMember());
 		getFieldRegistry().declareMember(equals.toMember());
+		getFieldRegistry().declareMember(byString.toMember());
 
 		super.declareMembers(members);
 	}

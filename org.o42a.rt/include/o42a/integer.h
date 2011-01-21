@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 
-void o42a_int_by_str(o42a_val_t *, const o42a_val_t *, uint8_t);
+void o42a_int_by_str(o42a_val_t *, const o42a_val_t *, uint32_t);
 
 
 #ifdef __cplusplus

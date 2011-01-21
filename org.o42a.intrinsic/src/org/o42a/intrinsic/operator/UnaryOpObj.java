@@ -30,7 +30,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.intrinsic.IntrinsicObject;
+import org.o42a.core.artifact.common.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldDeclaration;

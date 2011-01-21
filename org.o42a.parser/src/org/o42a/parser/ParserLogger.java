@@ -27,10 +27,10 @@ public abstract class ParserLogger implements Logger {
 	public void cantAccept(LogInfo location, int acceptingBut, int charsLeft) {
 		warning(
 				"cant_accept",
+				location,
 				"Can not accept all but %d"
 				+ " characters: only %d"
 				+ " pending characters left",
-				location,
 				acceptingBut,
 				charsLeft);
 	}
@@ -38,140 +38,164 @@ public abstract class ParserLogger implements Logger {
 	public void discouragingSoftHyphen(LogInfo location) {
 		warning(
 				"discouraging_soft_hyphen",
-				"Discouraging soft hyphen",
-				location);
+				location,
+				"Discouraging soft hyphen");
 	}
 
 	public void discouragingWhitespace(LogInfo location) {
 		warning(
 				"discouraging_whitespace",
-				"Discouraging whitespace",
-				location);
+				location,
+				"Discouraging whitespace");
 	}
 
 	public void emptyAlternative(LogInfo location) {
-		warning("empty_alternative", "Empty alternative", location);
+		warning("empty_alternative", location, "Empty alternative");
 	}
 
 	public void emptyOpposite(LogInfo location) {
-		error("empty_opposite", "Opposite is empty", location);
+		error("empty_opposite", location, "Opposite is empty");
 	}
 
 	public void emptyStatement(LogInfo location) {
-		warning("empty_statement", "Empty statement", location);
+		warning("empty_statement", location, "Empty statement");
 	}
 
 	public void eof(LogInfo location) {
-		fatal("eof", "Unexpected end of file", location);
+		fatal("eof", location, "Unexpected end of file");
 	}
 
 	public void invalidDefinition(LogInfo location) {
-		fatal("invalid_definition", "Invalid definition", location);
+		fatal("invalid_definition", location, "Invalid definition");
 	}
 
 	public void invalidEllipsisTarget(LogInfo location) {
 		error(
 				"invalid_ellipsis_target",
-				"Invalid target: expected either block name or nothing",
-				location);
+				location,
+				"Invalid target: expected either block name or nothing");
 	}
 
 	public void invalidSpaceInNumber(LogInfo location) {
 		warning(
 				"invalid_space_in_number",
-				"Only a single space character allowed in number",
-				location);
+				location,
+				"Only a single space character allowed in number");
 	}
 
 	public void ioError(LogInfo location, String message) {
-		fatal("io_error", "I/O error: %s", location, message);
+		fatal("io_error", location, "I/O error: %s", message);
 	}
 
 	public void missingClause(LogInfo location) {
 		error(
 				"missing_clause",
-				"Clause reference is missing",
-				location);
+				location,
+				"Clause reference is missing");
 	}
 
 	public void missingDeclaredIn(LogInfo location) {
 		error(
 				"missing_declared_in",
-				"Declaration reference is missing",
-				location);
+				location,
+				"Declaration reference is missing");
 	}
 
 	public void missingOperand(LogInfo location, String operator) {
 		error(
 				"missing_operand",
-				"Operand of operator '%s' is missing",
 				location,
+				"Operand of operator '%s' is missing",
 				operator);
 	}
 
 	public void missingRightOperand(LogInfo location, String operator) {
 		error(
 				"missing_right_operand",
-				"Right operand of operator '%s' is missing",
 				location,
+				"Right operand of operator '%s' is missing",
 				operator);
 	}
 
 	public void missingSample(LogInfo location) {
-		error("missing_sample", "Sample reference is missing", location);
+		error("missing_sample", location, "Sample reference is missing");
 	}
 
 	public void missingType(LogInfo location) {
-		error("missing_type", "Type is missing", location);
+		error("missing_type", location, "Type is missing");
 	}
 
 	public void missingValue(LogInfo location) {
-		error("missing_value", "Value is missing", location);
+		error("missing_value", location, "Value is missing");
 	}
 
 	public void notAccepted(LogInfo location) {
 		warning(
 				"not_accepted",
-				"Result produced, but no characters accepted",
-				location);
+				location,
+				"Result produced, but no characters accepted");
 	}
 
 	public void notClosed(LogInfo location, String brace) {
-		error("not_closed", "'%s' not closed", location, brace);
+		error("not_closed", location, "'%s' not closed", brace);
 	}
 
 	public void oppositeToEmpty(LogInfo location) {
-		warning("opposite_to_empty", "Opposite to empty sentence", location);
+		warning("opposite_to_empty", location, "Opposite to empty sentence");
 	}
 
 	public void syntaxError(LogInfo location) {
-		error("syntax_error", "Syntax error", location);
+		error("syntax_error", location, "Syntax error");
 	}
 
 	public void unrecognizedEscapeSequence(LogInfo location, String sequence) {
 		error(
 				"unrecognized_escape_sequence",
-				"Unrecognized escape sequence: %s",
 				location,
+				"Unrecognized escape sequence: %s",
 				sequence);
 	}
 
 	public void unrecognizedSentence(LogInfo location) {
-		fatal("unrecognized_sentence", "Unrecognized sentence", location);
+		fatal("unrecognized_sentence", location, "Unrecognized sentence");
 	}
 
 	public void unterminatedStringLiteral(LogInfo location) {
 		error(
 				"unterminated_string_literal",
-				"Unterminated string literal",
-				location);
+				location,
+				"Unterminated string literal");
 	}
 
 	public void unterminatedUnicodeEscapeSequence(LogInfo location) {
 		error(
 				"unterminated_unicode_escape_sequence",
-				"Unterminated unicode escape sequence",
-				location);
+				location,
+				"Unterminated unicode escape sequence");
+	}
+
+	public final void fatal(
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		log(Severity.FATAL, code, defaultMessage, location, args);
+	}
+
+	public final void error(
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		log(Severity.ERROR, code, defaultMessage, location, args);
+	}
+
+	public final void warning(
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		log(Severity.WARNING, code, defaultMessage, location, args);
 	}
 
 	@Override
@@ -183,29 +207,6 @@ public abstract class ParserLogger implements Logger {
 
 	protected abstract Logger getLogger();
 
-	private final void fatal(
-			String code,
-			String defaultMessage,
-			LogInfo location,
-			Object... args) {
-		log(Severity.FATAL, code, defaultMessage, location, args);
-	}
-
-	private final void error(
-			String code,
-			String defaultMessage,
-			LogInfo location,
-			Object... args) {
-		log(Severity.ERROR, code, defaultMessage, location, args);
-	}
-
-	private final void warning(
-			String code,
-			String defaultMessage,
-			LogInfo location,
-			Object... args) {
-		log(Severity.WARNING, code, defaultMessage, location, args);
-	}
 
 	private final void log(
 			Severity severity,

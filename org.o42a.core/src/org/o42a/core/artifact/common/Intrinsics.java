@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Compiler Core
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,14 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Clauses := void(
-  Argument :=> void.
-  Imperative :=> void.
-  String :=> $$string.
-).
+package org.o42a.core.artifact.common;
 
-Adapters := void(Include 'adapters.o42a').
+import org.o42a.core.Container;
+import org.o42a.core.Namespace;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.field.Field;
 
-Operators := void(Include 'operators.o42a').
 
-Number :=> void(Include 'number.o42a').
+public interface Intrinsics {
+
+	Obj getVoid();
+
+	Field<Obj> getVoidField();
+
+	Container getTop();
+
+	Namespace getModuleNamespace();
+
+	Obj getRoot();
+
+	Obj getFalse();
+
+	Obj getInteger();
+
+	Obj getFloat();
+
+	Obj getString();
+
+	Module getModule(String moduleId);
+
+	Module getMainModule();
+
+}

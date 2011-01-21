@@ -26,7 +26,7 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.intrinsic.Intrinsics;
+import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.IRGenerator;

@@ -61,15 +61,15 @@ enum float_parse_stage {
 
 void o42a_float_by_str(
 		o42a_val_t *const result,
-		const o42a_val_t *const string) {
+		const o42a_val_t *const input) {
 	O42A_ENTER;
 
-	if (!(string->flags & O42A_TRUE)) {
+	if (!(input->flags & O42A_TRUE)) {
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
 
-	const size_t len = string->length;
+	const size_t len = input->length;
 
 	if (!len) {
 		o42a_error_print("Empty string can not be converted to float");
@@ -100,9 +100,9 @@ void o42a_float_by_str(
 	o42a_bool_t space = O42A_FALSE;
 	o42a_bool_t negative = O42A_FALSE;
 	double value = 0.0;
-	const size_t step = o42a_val_alignment(string);
-	const UChar32 cmask = o42a_str_cmask(string);
-	const void *const str = o42a_val_data(string);
+	const size_t step = o42a_val_alignment(input);
+	const UChar32 cmask = o42a_str_cmask(input);
+	const void *const str = o42a_val_data(input);
 
 	for (size_t i = 0; i < len; i += step) {
 
@@ -128,6 +128,14 @@ void o42a_float_by_str(
 			if (stage > PARSE_INT_MANTISSA) {
 				break;
 			}
+			if (space) {
+				o42a_error_printf(
+						"Unexpected space in number at position %zu",
+						i);
+				result->flags = O42A_FALSE;
+				fesetenv(&env);
+				O42A_RETURN;
+			}
 			int_mantissa = negative ? -value : value;
 			space = O42A_FALSE;
 			value = 0.0;
@@ -137,6 +145,14 @@ void o42a_float_by_str(
 		case SMALL_E:
 			if (stage >= PARSE_EXPONENT) {
 				break;
+			}
+			if (space) {
+				o42a_error_printf(
+						"Unexpected space in number at position %zu",
+						i);
+				result->flags = O42A_FALSE;
+				fesetenv(&env);
+				O42A_RETURN;
 			}
 			if (stage == PARSE_FRAC_MATISSA) {
 				frac_mantissa = negative ? -value : value;
@@ -151,7 +167,20 @@ void o42a_float_by_str(
 		default:
 			if (u_charType(c) == U_SPACE_SEPARATOR) {
 				if (space) {
-					o42a_error_print("Two subsequent spaces in number");
+					o42a_error_printf(
+							"Two subsequent spaces in number at position %zu",
+							i);
+					result->flags = O42A_FALSE;
+					fesetenv(&env);
+					O42A_RETURN;
+				}
+				if (stage == PARSE_SIGN
+						|| stage == PARSE_EXPONENT_SIGN
+						|| (stage == PARSE_FRAC_MATISSA
+								&& !frac_mantissa_len)) {
+					o42a_error_printf(
+							"Unexpected space in number at position %zu",
+							i);
 					result->flags = O42A_FALSE;
 					fesetenv(&env);
 					O42A_RETURN;
@@ -161,9 +190,9 @@ void o42a_float_by_str(
 			}
 		}
 
-		const uint32_t digit = u_digit(c, 10);
+		const int32_t digit = u_digit(c, 10);
 
-		if (!digit) {
+		if (digit < 0) {
 			o42a_error_printf(
 					"Illegal character in number at position %zu",
 					i);

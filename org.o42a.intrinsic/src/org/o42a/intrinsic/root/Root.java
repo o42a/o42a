@@ -28,8 +28,8 @@ import java.net.URL;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
-import org.o42a.core.artifact.intrinsic.IntrinsicDirective;
-import org.o42a.core.artifact.intrinsic.IntrinsicObject;
+import org.o42a.core.artifact.common.IntrinsicDirective;
+import org.o42a.core.artifact.common.IntrinsicObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.*;
@@ -44,6 +44,8 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
+import org.o42a.intrinsic.numeric.FloatObject;
+import org.o42a.intrinsic.numeric.IntegerObject;
 
 
 public class Root extends Obj {

@@ -38,16 +38,16 @@ enum number_signs {
 
 void o42a_int_by_str(
 		o42a_val_t *const result,
-		const o42a_val_t *const string,
-		const uint8_t radix) {
+		const o42a_val_t *const input,
+		const uint32_t radix) {
 	O42A_ENTER;
 
-	if (!(string->flags & O42A_TRUE)) {
+	if (!(input->flags & O42A_TRUE)) {
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
 
-	const size_t len = string->length;
+	const size_t len = input->length;
 
 	if (!len) {
 		o42a_error_print("Empty string can not be converted to integer");
@@ -58,11 +58,10 @@ void o42a_int_by_str(
 	o42a_bool_t space = O42A_FALSE;
 	o42a_bool_t negative = O42A_FALSE;
 	o42a_bool_t has_value = O42A_FALSE;
-	uint64_t max = INT64_MAX;
-	uint64_t value = 0;
-	const size_t step = o42a_val_alignment(string);
-	const UChar32 cmask = o42a_str_cmask(string);
-	const void *const str = o42a_val_data(string);
+	int64_t value = 0;
+	const size_t step = o42a_val_alignment(input);
+	const UChar32 cmask = o42a_str_cmask(input);
+	const void *const str = o42a_val_data(input);
 
 	for (size_t i = 0; i < len; i += step) {
 
@@ -73,14 +72,15 @@ void o42a_int_by_str(
 			case HYPHEN_MINUS:
 			case MINUS_SIGN:
 				negative = O42A_TRUE;
-				max = ((uint64_t) INT64_MAX) + 1;
 				continue;
 			case PLUS_SIGN:
 				continue;
 			}
 		} else if (u_charType(c) == U_SPACE_SEPARATOR) {
 			if (space) {
-				o42a_error_print("Two subsequent spaces in number");
+				o42a_error_printf(
+						"Two subsequent spaces in number at position %zu",
+						i);
 				result->flags = O42A_FALSE;
 				O42A_RETURN;
 			}
@@ -88,20 +88,28 @@ void o42a_int_by_str(
 			continue;
 		}
 
-		const uint32_t digit = u_digit(c, radix);
+		const int32_t digit = u_digit(c, radix);
 
-		if (!digit) {
+		if (digit < 0) {
 			o42a_error_printf("Illegal character in number at position %zu", i);
 			result->flags = O42A_FALSE;
 			O42A_RETURN;
 		}
 
-		value = value * radix + digit;
-
-		if (value > max) {
-			o42a_error_print("Integer overflow");
-			result->flags = O42A_FALSE;
-			O42A_RETURN;
+		if (negative) {
+			value = value * radix - digit;
+			if (value > 0) {
+				o42a_error_print("Integer overflow");
+				result->flags = O42A_FALSE;
+				O42A_RETURN;
+			}
+		} else {
+			value = value * radix + digit;
+			if (value < 0) {
+				o42a_error_print("Integer overflow");
+				result->flags = O42A_FALSE;
+				O42A_RETURN;
+			}
 		}
 
 		space = O42A_FALSE;
@@ -109,7 +117,9 @@ void o42a_int_by_str(
 	}
 
 	if (space) {
-		o42a_error_print("Unexpected space after number");
+		o42a_error_printf(
+				"Unexpected space after number",
+				len - 1);
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
@@ -119,12 +129,7 @@ void o42a_int_by_str(
 		O42A_RETURN;
 	}
 
-	if (!negative) {
-		result->value.v_integer = value;
-	} else {
-		result->value.v_integer = -((int64_t) value);
-	}
-
+	result->value.v_integer = value;
 	result->flags = O42A_TRUE;
 
 	O42A_RETURN;

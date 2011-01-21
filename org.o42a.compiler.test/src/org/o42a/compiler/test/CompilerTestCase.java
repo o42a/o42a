@@ -35,7 +35,7 @@ import org.o42a.compiler.Compiler;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.intrinsic.Module;
+import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.member.Member;
