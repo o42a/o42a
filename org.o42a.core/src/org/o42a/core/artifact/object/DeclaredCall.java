@@ -47,7 +47,7 @@ class DeclaredCall extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		getExplicitDefinitions();
+		this.decl.declareMembers();
 		this.decl.getMemberRegistry().registerMembers(members);
 	}
 

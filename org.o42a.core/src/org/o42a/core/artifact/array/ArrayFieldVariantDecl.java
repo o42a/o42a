@@ -38,6 +38,10 @@ final class ArrayFieldVariantDecl extends FieldVariantDecl<Array> {
 	}
 
 	@Override
+	protected void declareMembers() {
+	}
+
+	@Override
 	protected Definitions define(DefinitionTarget scope) {
 		throw new UnsupportedOperationException(
 				"An attempt to define array: " + this);

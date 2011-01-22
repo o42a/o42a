@@ -51,8 +51,10 @@ public abstract class FieldVariantDecl<A extends Artifact<A>> {
 		return this.variant.toString();
 	}
 
-	protected abstract Definitions define(DefinitionTarget scope);
-
 	protected abstract void init();
+
+	protected abstract void declareMembers();
+
+	protected abstract Definitions define(DefinitionTarget scope);
 
 }

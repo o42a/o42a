@@ -53,6 +53,7 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		this.decl.declareMembers();
 	}
 
 	@Override
