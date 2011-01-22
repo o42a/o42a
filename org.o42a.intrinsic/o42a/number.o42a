@@ -37,4 +37,6 @@
 @Operators: equals :=> *(
   To =< `&number
 ).
-@Adapters: by string :=> *().
+@Adapters: by string :=<> *().
+
+<*> = ::@@adapters: by string(<*''> Input = string).

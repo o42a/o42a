@@ -158,7 +158,7 @@ public class Namespace extends AbstractContainer {
 
 			if (result != null) {
 				if (resultPriority == priority) {
-					getContext().getLogger().ambiguousField(
+					getContext().getLogger().ambiguousMember(
 							user,
 							memberId.toString());
 					return null;

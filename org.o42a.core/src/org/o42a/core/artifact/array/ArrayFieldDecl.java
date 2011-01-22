@@ -59,7 +59,7 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 
 	@Override
 	protected void merge(FieldDecl<?> decl) {
-		getLogger().ambiguousField(
+		getLogger().ambiguousMember(
 				decl.getField(),
 				getField().getDisplayName());
 	}

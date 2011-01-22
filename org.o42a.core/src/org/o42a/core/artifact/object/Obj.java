@@ -734,7 +734,7 @@ public abstract class Obj extends Artifact<Obj>
 				// otherwise members are empty
 				this.resolution = Resolution.RESOLVING_MEMBERS;
 				try {
-					resolveMembers(new ObjectMembers(this));
+					resolveMembers();
 				} finally {
 					this.resolution = resolution;
 				}
@@ -743,10 +743,13 @@ public abstract class Obj extends Artifact<Obj>
 		}
 	}
 
-	private void resolveMembers(ObjectMembers members) {
+	private void resolveMembers() {
+
+		final ObjectMembers members = new ObjectMembers(this);
+
 		if (getScope().getEnclosingScopePath() != null
 				&& getScope().getEnclosingContainer().toObject() != null) {
-			new ScopeField(this).put(members);
+			members.addMember(new ScopeField(this).toMember());
 		}
 		declareMembers(members);
 
@@ -757,8 +760,10 @@ public abstract class Obj extends Artifact<Obj>
 		final TypeRef ancestor = getAncestor();
 
 		if (ancestor != null) {
-			members.inheritMembers(ancestor.getType());
+			members.deriveMembers(ancestor.getType());
 		}
+
+		members.registerMembers();
 	}
 
 	private Dep addDep(MemberKey memberKey) {

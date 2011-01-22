@@ -96,7 +96,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	}
 
 	public void registerMembers(ObjectMembers members) {
-		members.addFields(this.namedFields.values());
+		//members.addFields(this.namedFields.values());
 		members.addMembers(this.members);
 	}
 

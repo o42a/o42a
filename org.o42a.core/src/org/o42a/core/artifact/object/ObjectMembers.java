@@ -34,49 +34,41 @@ public class ObjectMembers extends ContainerMembers {
 		return (Obj) getContainer();
 	}
 
-	@Override
-	public final Map<MemberKey, Member> members() {
-		return getObject().members();
-	}
-
-	@Override
-	public final Map<MemberId, Symbol> symbols() {
-		return getObject().symbols();
-	}
-
-	public void inheritMembers(Obj ascendant) {
-
-		final Obj object = getObject();
-		final Map<MemberKey, Member> allFields = members();
-		final boolean abstractFieldsAllowed =
-			object.isAbstract()
-			|| object.isPrototype()
-			|| object.toClause() != null;
-
+	public void deriveMembers(Obj ascendant) {
 		for (Member member : ascendant.getMembers()) {
-			if (allFields.containsKey(member.getKey())) {
-				continue;// field already overridden
-			}
-
-			final Member propagated = member.propagateTo(object.getScope());
-
-			if (propagated == null) {
-				continue;
-			}
-			if (!propagated.put(this)) {
-				continue;
-			}
-			if (!abstractFieldsAllowed && member.isAbstract()) {
-				object.getLogger().abstractNotOverridden(
-						object,
-						member.getDisplayName());
-			}
+			propagateMember(member);
 		}
 	}
 
 	@Override
-	public String toString() {
-		return "ObjectMembers" + members();
+	protected final Map<MemberKey, Member> members() {
+		return getObject().members();
+	}
+
+	@Override
+	protected final Map<MemberId, Symbol> symbols() {
+		return getObject().symbols();
+	}
+
+	@Override
+	protected boolean register(Member member) {
+		if (member.isAbstract()) {
+
+			final Obj object = getObject();
+			final boolean abstractAllowed =
+				object.isAbstract()
+				|| object.isPrototype()
+				|| object.toClause() != null;
+
+			if (!abstractAllowed) {
+				object.getLogger().abstractNotOverridden(
+						object,
+						member.getDisplayName());
+				return false;
+			}
+		}
+
+		return super.register(member);
 	}
 
 }

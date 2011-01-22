@@ -56,8 +56,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 						owner.distribute(),
 						BY_STRING.toAdapterId(owner, owner.distribute()))
 				.prototype()
-				.override()
-				.setDeclaredIn(owner.getAncestor().toStatic()));
+				.override());
 		setValueType(valueType);
 	}
 
