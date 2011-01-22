@@ -99,7 +99,7 @@ final class ExplicitSample extends Sample {
 
 	@Override
 	public void inheritMembers(ObjectMembers members) {
-		members.inheritMembers(getObject());
+		members.deriveMembers(getObject());
 	}
 
 	@Override

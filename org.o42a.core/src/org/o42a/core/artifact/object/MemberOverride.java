@@ -72,7 +72,7 @@ final class MemberOverride extends Sample {
 
 	@Override
 	public void inheritMembers(ObjectMembers members) {
-		members.inheritMembers(getObject());
+		members.deriveMembers(getObject());
 	}
 
 	@Override

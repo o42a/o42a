@@ -21,7 +21,6 @@ package org.o42a.core.member;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
@@ -108,24 +107,6 @@ public abstract class Member extends Placed {
 
 	public abstract Member propagateTo(Scope scope);
 
-	public boolean put(ContainerMembers members) {
-
-		final MemberKey key = getKey();
-
-		if (!key.isValid()) {
-			// field declaration is broken - ignore it
-			return false;
-		}
-
-		if (!registerMember(members.members(), key)) {
-			return false;
-		}
-
-		registerSymbol(members.symbols());
-
-		return true;
-	}
-
 	public abstract void resolveAll();
 
 	public abstract Member wrap(Member inherited, Container container);
@@ -147,51 +128,6 @@ public abstract class Member extends Placed {
 	}
 
 	protected abstract void merge(Member member);
-
-	private void registerSymbol(Map<MemberId, Symbol> symbols) {
-		if (getVisibility() == Visibility.PRIVATE && isPropagated()) {
-			// private field registered by name
-			// only when declared explicitly
-			return;
-		}
-
-		final MemberId memberId = getKey().getMemberId();
-		Symbol fieldName = symbols.get(memberId);
-
-		if (fieldName != null) {
-			fieldName.addMember(this);
-		} else {
-			fieldName = new Symbol(this);
-			symbols.put(memberId, fieldName);
-		}
-	}
-
-	private boolean registerMember(
-			Map<MemberKey, Member> members,
-			MemberKey key) {
-
-		final Member old = members.put(key, this);
-
-		if (old != null) {
-			if (old == this) {
-				return false;
-			}
-			// field already declared - leave the old one
-			members.put(key, old);
-
-			if (!old.isPropagated() && !isPropagated()) {
-				// add explicit field variant
-				old.merge(this);
-				return true;
-			}
-
-			getLogger().ambiguousField(this, getDisplayName());
-
-			return false;
-		}
-
-		return true;
-	}
 
 	private Member[] overriddenMembers() {
 		if (!isOverride()) {

@@ -130,25 +130,25 @@ public class Root extends Obj {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 
-		final ObjectMemberRegistry fieldRegistry =
+		final ObjectMemberRegistry memberRegistry =
 			new ObjectMemberRegistry(this);
 
-		fieldRegistry.declareMember(getVoidField().toMember());
-		fieldRegistry.declareMember(getFalse().toMember());
-		fieldRegistry.declareMember(getInteger().toMember());
-		fieldRegistry.declareMember(getFloat().toMember());
-		fieldRegistry.declareMember(getString().toMember());
-		fieldRegistry.declareMember(this.include.toMember());
-		fieldRegistry.declareMember(this.useNamespace.toMember());
-		fieldRegistry.declareMember(this.useObject.toMember());
+		memberRegistry.declareMember(getVoidField().toMember());
+		memberRegistry.declareMember(getFalse().toMember());
+		memberRegistry.declareMember(getInteger().toMember());
+		memberRegistry.declareMember(getFloat().toMember());
+		memberRegistry.declareMember(getString().toMember());
+		memberRegistry.declareMember(this.include.toMember());
+		memberRegistry.declareMember(this.useNamespace.toMember());
+		memberRegistry.declareMember(this.useObject.toMember());
 
 		final BlockBuilder compiled = getContext().compileBlock();
 		final DeclarativeBlock block =
-			new DeclarativeBlock(this, distribute(), fieldRegistry);
+			new DeclarativeBlock(this, distribute(), memberRegistry);
 
 		compiled.buildBlock(block);
 
-		fieldRegistry.registerMembers(members);
+		memberRegistry.registerMembers(members);
 	}
 
 	@Override

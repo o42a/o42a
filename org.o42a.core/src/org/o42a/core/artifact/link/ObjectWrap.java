@@ -74,7 +74,7 @@ public abstract class ObjectWrap extends PlainObject {
 				continue;
 			}
 
-			member.wrap(inherited, this).put(members);
+			members.addMember(member.wrap(inherited, this));
 		}
 	}
 

@@ -53,11 +53,11 @@ public class CompilerLogger implements Logger {
 				clauseName);
 	}
 
-	public void ambiguousField(LogInfo location, String fieldName) {
+	public void ambiguousMember(LogInfo location, String fieldName) {
 		error(
-				"ambiguousField",
+				"ambiguous_member",
 				location,
-				"Field '%s' declaration is ambiguous",
+				"Member '%s' declaration is ambiguous",
 				fieldName);
 	}
 

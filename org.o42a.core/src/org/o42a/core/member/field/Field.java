@@ -272,10 +272,6 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return getKey().equals(field2.getKey());
 	}
 
-	public final void put(ContainerMembers members) {
-		this.member.put(members);
-	}
-
 	@Override
 	public final FieldIR<A> ir(IRGenerator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {

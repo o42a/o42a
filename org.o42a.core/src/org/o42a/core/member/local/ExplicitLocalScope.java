@@ -222,7 +222,7 @@ final class ExplicitLocalScope extends LocalScope {
 		final Field<?> field = old.toField();
 
 		if (field != null) {
-			getLogger().ambiguousField(member, field.getDisplayName());
+			getLogger().ambiguousMember(member, field.getDisplayName());
 		} else {
 			getLogger().ambiguousClause(
 					member,

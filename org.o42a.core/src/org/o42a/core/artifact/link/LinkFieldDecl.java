@@ -71,7 +71,7 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 
 	@Override
 	protected void merge(FieldDecl<?> decl) {
-		getLogger().ambiguousField(
+		getLogger().ambiguousMember(
 				decl.getField(),
 				getField().getDisplayName());
 	}
@@ -162,7 +162,7 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 				if (variants.isEmpty()) {
 					getLogger().invalidDeclaration(getField());
 				} else {
-					getLogger().ambiguousField(
+					getLogger().ambiguousMember(
 							getField(),
 							getField().getDisplayName());
 				}

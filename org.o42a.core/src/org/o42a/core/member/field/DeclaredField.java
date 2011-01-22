@@ -153,7 +153,7 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 	@Override
 	protected void merge(Field<?> field) {
 		if (!(field instanceof DeclaredField<?>)) {
-			getLogger().ambiguousField(field, getDisplayName());
+			getLogger().ambiguousMember(field, getDisplayName());
 			return;
 		}
 
