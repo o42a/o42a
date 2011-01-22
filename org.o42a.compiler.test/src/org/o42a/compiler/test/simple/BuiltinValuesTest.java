@@ -41,7 +41,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void longValue() {
+	public void integerValue() {
 		compile("Integer value := 12345678900");
 
 		final Obj field = getField("integer_value").getArtifact().materialize();
@@ -51,8 +51,18 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void integerByStringValue() {
+		compile("Integer value := integer '12345678900'");
+
+		final Obj field = getField("integer_value").getArtifact().materialize();
+
+		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertThat(definiteValue(field, Long.class), is(12345678900L));
+	}
+
+	@Test
 	public void floatValue() {
-		compile("Float value := '1234567890.25'");
+		compile("Float value := float '1234567890.25'");
 
 		final Obj field = getField("float_value").getArtifact().materialize();
 

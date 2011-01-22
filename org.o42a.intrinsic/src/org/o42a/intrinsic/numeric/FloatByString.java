@@ -74,6 +74,8 @@ final strictfp class FloatByString extends ByString<Double> {
 
 			final int c = input.codePointAt(i);
 
+			i += Character.charCount(c);
+
 			switch (c) {
 			case HYPHEN_MINUS:
 			case MINUS_SIGN:
@@ -177,7 +179,6 @@ final strictfp class FloatByString extends ByString<Double> {
 			}
 
 			space = false;
-			i += Character.charCount(c);
 		} while (i < len);
 
 		if (space) {
