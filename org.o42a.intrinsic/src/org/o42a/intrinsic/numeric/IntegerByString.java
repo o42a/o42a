@@ -81,6 +81,8 @@ final class IntegerByString extends ByString<Long> {
 
 			final int c = input.codePointAt(i);
 
+			i += Character.charCount(c);
+
 			if (i == 0) {
 				switch (c) {
 				case HYPHEN_MINUS:
@@ -136,7 +138,6 @@ final class IntegerByString extends ByString<Long> {
 
 			space = false;
 			hasValue = true;
-			i += Character.charCount(c);
 		} while (i < len);
 
 		if (space) {
