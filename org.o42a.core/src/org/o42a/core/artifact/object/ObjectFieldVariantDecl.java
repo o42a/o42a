@@ -52,13 +52,18 @@ final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
 	}
 
 	@Override
-	protected Definitions define(DefinitionTarget target) {
-		return getContent().define(target);
+	protected void init() {
+		getContent();
 	}
 
 	@Override
-	protected void init() {
-		getContent();
+	protected void declareMembers() {
+		getContent().executeInstructions();
+	}
+
+	@Override
+	protected Definitions define(DefinitionTarget target) {
+		return getContent().define(target);
 	}
 
 	private void buildContent() {

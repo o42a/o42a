@@ -37,6 +37,12 @@ public abstract class FieldDecl<A extends Artifact<A>> {
 		return this.field;
 	}
 
+	public void declareMembers() {
+		for (FieldVariant<A> variant : getField().getVariants()) {
+			variant.getDecl().declareMembers();
+		}
+	}
+
 	public Definitions define(DefinitionTarget target) {
 
 		Definitions result = null;

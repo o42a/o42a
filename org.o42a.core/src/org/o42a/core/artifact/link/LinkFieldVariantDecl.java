@@ -43,4 +43,8 @@ final class LinkFieldVariantDecl extends FieldVariantDecl<Link> {
 	protected void init() {
 	}
 
+	@Override
+	protected void declareMembers() {
+	}
+
 }
