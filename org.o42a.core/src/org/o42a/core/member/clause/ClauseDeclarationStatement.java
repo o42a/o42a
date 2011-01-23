@@ -22,19 +22,26 @@ package org.o42a.core.member.clause;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
+import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
 
 
-final class ClauseVariant extends St {
+final class ClauseDeclarationStatement extends DeclarationStatement {
 
 	private final Clause clause;
 
-	ClauseVariant(ClauseBuilder builder, Clause clause) {
+	ClauseDeclarationStatement(ClauseBuilder builder, Clause clause) {
 		super(builder, builder.distribute());
 		this.clause = clause;
+	}
+
+	@Override
+	public Member toMember() {
+		return this.clause.toMember();
 	}
 
 	public Clause getClause() {

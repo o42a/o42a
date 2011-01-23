@@ -26,10 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.*;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueType;
@@ -136,20 +139,20 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		statement(value.rescope(getScope()));
 	}
 
-	public FieldVariant<?> field(
+	public FieldBuilder field(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 
-		final FieldVariant<?> variant =
-			getMemberRegistry().declareField(declaration, definition);
+		final FieldBuilder builder =
+			getMemberRegistry().newField(declaration, definition);
 
-		if (variant == null) {
+		if (builder == null) {
 			return null;
 		}
 
-		statement(variant);
+		statement(builder.build());
 
-		return variant;
+		return builder;
 	}
 
 	public final ClauseBuilder clause(ClauseDeclaration declaration) {

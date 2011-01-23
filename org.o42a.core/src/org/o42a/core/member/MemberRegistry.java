@@ -17,13 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member;
 
 import org.o42a.core.LocationSpec;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.MemberRegistryLocalBase;
 
 
@@ -33,7 +35,7 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		return new NoDeclarations();
 	}
 
-	public abstract FieldVariant<?> declareField(
+	public abstract FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition);
 
@@ -49,7 +51,7 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		}
 
 		@Override
-		public FieldVariant<?> declareField(
+		public FieldBuilder newField(
 				FieldDeclaration declaration,
 				FieldDefinition definition) {
 			declaration.getContext().getLogger().prohibitedDeclaration(

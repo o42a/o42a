@@ -20,21 +20,27 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.FieldVariant;
-import org.o42a.core.member.field.FieldVariantDecl;
 import org.o42a.core.st.DefinitionTarget;
 
 
-final class ArrayFieldVariantDecl extends FieldVariantDecl<Array> {
+final class ArrayFieldVariant extends FieldVariant<Array> {
 
-	ArrayFieldVariantDecl(
-			ArrayFieldDecl fieldDecl,
-			FieldVariant<Array> variant) {
-		super(fieldDecl, variant);
+	ArrayFieldVariant(
+			DeclaredArrayField field,
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		super(field, declaration, definition);
 	}
 
 	@Override
 	protected void init() {
+		if (!getInitialConditions().isEmpty(getField())) {
+			getLogger().prohibitedConditionalDeclaration(this);
+			getArrayField().invalid();
+		}
 	}
 
 	@Override
@@ -45,6 +51,10 @@ final class ArrayFieldVariantDecl extends FieldVariantDecl<Array> {
 	protected Definitions define(DefinitionTarget scope) {
 		throw new UnsupportedOperationException(
 				"An attempt to define array: " + this);
+	}
+
+	private final DeclaredArrayField getArrayField() {
+		return (DeclaredArrayField) getField();
 	}
 
 }

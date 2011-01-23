@@ -21,22 +21,31 @@ package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.field.DeclaredField;
-import org.o42a.core.member.field.FieldVariant;
+import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.field.Field;
 
 
 public final class LocalFieldOp extends StOp {
 
 	private LclOp op;
+	private final Field<?> field;
 
-	public LocalFieldOp(LocalBuilder builder, FieldVariant<?> variant) {
-		super(builder, variant);
+	public LocalFieldOp(
+			LocalBuilder builder,
+			DeclarationStatement statement,
+			Field<?> field) {
+		super(builder, statement);
+		this.field = field;
+	}
+
+	public final Field<?> getField() {
+		return this.field;
 	}
 
 	@Override
 	public void allocate(LocalBuilder builder, Code code) {
 
-		final LocalFieldIRBase<?> fieldIR = getField().ir(getGenerator());
+		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
 
 		this.op = fieldIR.allocate(builder, code);
 	}
@@ -49,14 +58,6 @@ public final class LocalFieldOp extends StOp {
 	@Override
 	public void writeCondition(Control control) {
 		throw new UnsupportedOperationException();
-	}
-
-	private final DeclaredField<?> getField() {
-		return getVariant().getField();
-	}
-
-	private final FieldVariant<?> getVariant() {
-		return (FieldVariant<?>) getStatement();
 	}
 
 }

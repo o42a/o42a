@@ -24,18 +24,27 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import java.util.List;
 
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 
 
-class ArrayFieldDecl extends FieldDecl<Array> {
+class DeclaredArrayField extends DeclaredField<Array> {
 
 	private FieldDefinition definition;
 	private boolean invalid;
 
-	ArrayFieldDecl(DeclaredField<Array> field) {
-		super(field);
+	DeclaredArrayField(MemberField member) {
+		super(member, ArtifactKind.ARRAY);
+	}
+
+	private DeclaredArrayField(
+			Container enclosingContainer,
+			DeclaredField<Array> sample) {
+		super(enclosingContainer, sample);
 	}
 
 	@Override
@@ -45,32 +54,33 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 
 	@Override
 	protected Array overrideArtifact() {
-		if (getField().getDeclaration().isPrototype()) {
-			getLogger().prohibitedPrototype(getField());
+		if (getDeclaration().isPrototype()) {
+			getLogger().prohibitedPrototype(this);
 			invalid();
 		}
 		return new OverriddenArray(this);
 	}
 
 	@Override
-	protected Array propagateArtifact() {
+	protected FieldVariant<Array> createVariant(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		return new ArrayFieldVariant(this, declaration, definition);
+	}
+
+	@Override
+	protected void merge(DeclaredField<Array> other) {
+		getLogger().ambiguousMember(other, getDisplayName());
+	}
+
+	@Override
+	protected DeclaredField<Array> propagate(Scope enclosingScope) {
+		return new DeclaredArrayField(enclosingScope.getContainer(), this);
+	}
+
+	@Override
+	protected Array propagateArtifact(Field<Array> overridden) {
 		return new PropagatedArray(this);
-	}
-
-	@Override
-	protected void merge(FieldDecl<?> decl) {
-		getLogger().ambiguousMember(
-				decl.getField(),
-				getField().getDisplayName());
-	}
-
-	@Override
-	protected FieldVariantDecl<Array> variantDecl(FieldVariant<Array> variant) {
-		if (!variant.getInitialConditions().isEmpty(getField())) {
-			getLogger().prohibitedConditionalDeclaration(variant);
-			invalid();
-		}
-		return new ArrayFieldVariantDecl(this, variant);
 	}
 
 	TypeRef declaredItemTypeRef() {
@@ -95,7 +105,7 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 
 		ArrayTypeRef typeRef = null;
 
-		for (Field<Array> field : getField().getOverridden()) {
+		for (Field<Array> field : getOverridden()) {
 
 			final ArrayTypeRef overriddenTypeRef =
 				field.getArtifact().getArrayTypeRef();
@@ -111,7 +121,7 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 					typeRef = commonInheritant;
 				} else {
 					getLogger().unexpectedType(
-							getField(),
+							this,
 							overriddenTypeRef,
 							typeRef);
 					invalid();
@@ -120,7 +130,7 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 		}
 
 		return typeRef != null
-		? typeRef.toScope(getField().getEnclosingScope()) : null;
+		? typeRef.toScope(getEnclosingScope()) : null;
 	}
 
 	ArrayInitializer declaredInitializer() {
@@ -128,7 +138,7 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 		final FieldDefinition definition = getDefinition();
 
 		if (!definition.isValid()) {
-			return invalidArrayInitializer(getField(), definition.distribute());
+			return invalidArrayInitializer(this, definition.distribute());
 		}
 		if (definition.isArray()) {
 			return definition.getArrayInitializer();
@@ -140,8 +150,7 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 			return null;
 		}
 
-		final Array array =
-			value.resolve(getField().getEnclosingScope()).toArray();
+		final Array array = value.resolve(getEnclosingScope()).toArray();
 
 		if (array == null) {
 			return null;
@@ -161,12 +170,11 @@ class ArrayFieldDecl extends FieldDecl<Array> {
 	FieldDefinition getDefinition() {
 		if (this.definition == null) {
 
-			final List<FieldVariant<Array>> variants = getField().getVariants();
+			final List<FieldVariant<Array>> variants = getVariants();
 
 			if (variants.size() != 1) {
 				invalid();
-				this.definition =
-					invalidDefinition(getField(), getField().distribute());
+				this.definition = invalidDefinition(this, distribute());
 			} else {
 				this.definition = variants.get(0).getDefinition();
 			}

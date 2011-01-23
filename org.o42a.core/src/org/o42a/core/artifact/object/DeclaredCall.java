@@ -27,17 +27,17 @@ import org.o42a.core.st.DefinitionTarget;
 class DeclaredCall extends PlainObject {
 
 	private final Ascendants explicitAscendants;
-	private final ObjectFieldDecl decl;
+	private final DeclaredObjectField field;
 
-	DeclaredCall(ObjectFieldDecl decl, Ascendants explicitAscendants) {
-		super(decl.getField());
-		this.decl = decl;
+	DeclaredCall(DeclaredObjectField field, Ascendants explicitAscendants) {
+		super(field);
+		this.field = field;
 		this.explicitAscendants = explicitAscendants;
 	}
 
 	@Override
 	public String toString() {
-		return this.decl != null ? this.decl.toString() : super.toString();
+		return this.field != null ? this.field.toString() : super.toString();
 	}
 
 	@Override
@@ -47,13 +47,13 @@ class DeclaredCall extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		this.decl.declareMembers();
-		this.decl.getMemberRegistry().registerMembers(members);
+		this.field.declareMembers();
+		this.field.getMemberRegistry().registerMembers(members);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.decl.define(new DefinitionTarget(
+		return this.field.define(new DefinitionTarget(
 				getScope(),
 				getAncestor().getType().getValueType()));
 	}

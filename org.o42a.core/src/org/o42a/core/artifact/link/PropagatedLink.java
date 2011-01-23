@@ -25,37 +25,35 @@ import org.o42a.core.member.field.Field;
 
 final class PropagatedLink extends Link {
 
-	private final LinkFieldDecl decl;
+	private final DeclaredLinkField field;
 
-	PropagatedLink(LinkFieldDecl decl) {
-		super(
-				decl.getField(),
-				decl.getField().getOverridden()[0].getArtifact());
-		this.decl = decl;
+	PropagatedLink(DeclaredLinkField field) {
+		super(field, field.getOverridden()[0].getArtifact());
+		this.field = field;
 	}
 
 	@Override
 	public boolean isValid() {
-		return this.decl.validate(false);
+		return this.field.validate(false);
 	}
 
 	@Override
 	public String toString() {
-		return this.decl.toString();
+		return this.field.toString();
 	}
 
 	@Override
 	protected TypeRef buildTypeRef() {
-		return this.decl.inheritedTypeRef();
+		return this.field.inheritedTypeRef();
 	}
 
 	@Override
 	protected TargetRef buildTargetRef() {
 
-		final Field<Link>[] overridden = this.decl.getField().getOverridden();
+		final Field<Link>[] overridden = this.field.getOverridden();
 
 		if (overridden.length != 1) {
-			getLogger().requiredLinkTarget(this.decl.getField());
+			getLogger().requiredLinkTarget(this.field);
 		}
 
 		return overridden[0].getArtifact().getTargetRef();

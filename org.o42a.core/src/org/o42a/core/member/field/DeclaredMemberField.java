@@ -19,20 +19,87 @@
 */
 package org.o42a.core.member.field;
 
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.Member;
+
 
 final class DeclaredMemberField extends MemberField {
 
-	private final DeclaredField<?> field;
+	private DeclaredField<?> field;
+	private ArtifactKind<?> artifactKind;
+	private final FieldBuilder builder;
+	private FieldDeclarationStatement statement;
 
-	@SuppressWarnings("rawtypes")
-	public DeclaredMemberField(FieldDeclaration declaration) {
-		super(declaration);
-		this.field = new DeclaredField(this);
+	public DeclaredMemberField(FieldBuilder builder) {
+		super(builder.getDeclaration());
+		this.builder = builder;
+	}
+
+	public ArtifactKind<?> getArtifactKind() {
+		if (this.artifactKind != null) {
+			return this.artifactKind;
+		}
+
+		final ArtifactKind<?> kind;
+		final Member[] overridden = getOverridden();
+
+		if (overridden.length > 0) {
+			kind = overridden[0].toField().getArtifact().getKind();
+		} else {
+
+			final FieldDefinition definition = this.builder.getDefinition();
+
+			if (definition.isArray()) {
+				kind = ArtifactKind.ARRAY;
+			} else {
+
+				final Artifact<?> value =
+					definition.getValue().getResolution().toArtifact();
+
+				if (value.getKind() == ArtifactKind.ARRAY) {
+					kind = ArtifactKind.ARRAY;
+				} else if (getDeclaration().isLink()) {
+					kind = ArtifactKind.LINK;
+				} else if (getDeclaration().isVariable()) {
+					kind = ArtifactKind.VARIABLE;
+				} else {
+					kind = ArtifactKind.OBJECT;
+				}
+			}
+		}
+		if (!kind.is(ArtifactKind.OBJECT)) {
+			if (getDeclaration().isLink() && !kind.is(ArtifactKind.LINK)) {
+				getLogger().prohibitedLinkType(getDeclaration());
+			}
+			if (getDeclaration().isVariable()
+					&& !kind.is(ArtifactKind.VARIABLE)) {
+				getLogger().prohibitedVariableType(getDeclaration());
+			}
+		}
+
+		return this.artifactKind = kind;
 	}
 
 	@Override
 	public DeclaredField<?> toField() {
+		if (this.field != null) {
+			return this.field;
+		}
+
+		this.field = getArtifactKind().declareField(this);
+
+		final FieldVariant<?> variant = this.field.variant(
+				this.builder.getDeclaration(),
+				this.builder.getDefinition());
+
+		variant.setStatement(this.statement);
+
 		return this.field;
+	}
+
+	final void setStatement(FieldDeclarationStatement statement) {
+		this.statement = statement;
 	}
 
 }

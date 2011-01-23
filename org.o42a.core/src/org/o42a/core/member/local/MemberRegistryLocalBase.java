@@ -30,7 +30,8 @@ import org.o42a.core.member.clause.MemberRegistryClauseBase;
 import org.o42a.core.st.Reproducer;
 
 
-public abstract class MemberRegistryLocalBase extends MemberRegistryClauseBase {
+public abstract class MemberRegistryLocalBase
+		extends MemberRegistryClauseBase {
 
 	public abstract Obj getOwner();
 

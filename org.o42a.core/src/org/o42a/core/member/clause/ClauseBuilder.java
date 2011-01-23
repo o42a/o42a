@@ -24,11 +24,11 @@ import static org.o42a.core.member.clause.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
 
 import org.o42a.core.*;
+import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.MemberRegistry;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.st.St;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;
@@ -156,7 +156,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this.reusedClauses;
 	}
 
-	public St build() {
+	public DeclarationStatement build() {
 		assert getDeclaration().getKind().isPlain() :
 			"Plain clause declaration expected: " + getDeclaration();
 
@@ -164,7 +164,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		this.memberRegistry.declareMember(clause.toMember());
 
-		return new ClauseVariant(this, clause);
+		return new ClauseDeclarationStatement(this, clause);
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		this.memberRegistry.declareMember(clause.toMember());
 
-		group.getStatements().statement(new ClauseVariant(this, clause));
+		group.getStatements().statement(new ClauseDeclarationStatement(this, clause));
 
 		return definition;
 	}
@@ -230,7 +230,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		this.memberRegistry.declareMember(clause.toMember());
 
-		group.getStatements().statement(new ClauseVariant(this, clause));
+		group.getStatements().statement(new ClauseDeclarationStatement(this, clause));
 
 		return definition;
 	}

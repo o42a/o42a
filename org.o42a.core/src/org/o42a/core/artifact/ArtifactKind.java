@@ -33,7 +33,7 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldDecl;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
@@ -77,7 +77,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 	public abstract TypeRef typeRef(TargetRef ref);
 
-	public abstract FieldDecl<A> fieldDecl(DeclaredField<A> field);
+	public abstract DeclaredField<A> declareField(MemberField member);
 
 	public abstract FieldIR<A> fieldIR(IRGenerator generator, Field<A> field);
 
@@ -88,8 +88,8 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 	private static final class ObjectKind extends ArtifactKind<Obj> {
 
 		@Override
-		public FieldDecl<Obj> fieldDecl(DeclaredField<Obj> field) {
-			return Obj.fieldDecl(field);
+		public DeclaredField<Obj> declareField(MemberField member) {
+			return Obj.declareField(member);
 		}
 
 		@Override
@@ -123,8 +123,8 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public FieldDecl<Link> fieldDecl(DeclaredField<Link> field) {
-			return Link.fieldDecl(field, this);
+		public DeclaredField<Link> declareField(MemberField member) {
+			return Link.declareField(member, this);
 		}
 
 		@Override
@@ -159,8 +159,8 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 	private static final class ArrayKind extends ArtifactKind<Array> {
 
 		@Override
-		public FieldDecl<Array> fieldDecl(DeclaredField<Array> field) {
-			return Array.fieldDecl(field);
+		public DeclaredField<Array> declareField(MemberField member) {
+			return Array.declareField(member);
 		}
 
 		@Override

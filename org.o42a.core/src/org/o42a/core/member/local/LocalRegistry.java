@@ -22,9 +22,12 @@ package org.o42a.core.member.local;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 
 
 public class LocalRegistry extends MemberRegistry {
@@ -47,20 +50,17 @@ public class LocalRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public FieldVariant<?> declareField(
+	public FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		assert declaration.getPlace().isImperative() :
 			"Imperative field declaration expected: " + declaration;
 
-		final FieldVariant<?> variant =
-			DeclaredField.declareField(declaration, definition);
+		final FieldBuilder variant =
+			createFieldBuilder(declaration, definition);
 
 		if (variant == null) {
 			return null;
-		}
-		if (this.scope.addMember(variant.toMember())) {
-			return variant;
 		}
 
 		return null;

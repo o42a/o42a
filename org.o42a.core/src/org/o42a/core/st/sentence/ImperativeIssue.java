@@ -22,7 +22,7 @@ package org.o42a.core.st.sentence;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.ir.local.LocalBuilder;
-import org.o42a.core.member.field.MemberRegistry;
+import org.o42a.core.member.MemberRegistry;
 
 
 abstract class ImperativeIssue extends ImperativeSentence {

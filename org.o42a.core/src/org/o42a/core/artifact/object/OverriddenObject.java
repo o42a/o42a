@@ -28,35 +28,35 @@ import org.o42a.core.st.DefinitionTarget;
 
 final class OverriddenObject extends PlainObject {
 
-	private final ObjectFieldDecl decl;
+	private final DeclaredObjectField field;
 
-	OverriddenObject(ObjectFieldDecl decl) {
-		super(decl.getField());
-		this.decl = decl;
+	OverriddenObject(DeclaredObjectField field) {
+		super(field);
+		this.field = field;
 	}
 
 	@Override
 	public String toString() {
-		return this.decl != null ? this.decl.toString() : super.toString();
+		return this.field != null ? this.field.toString() : super.toString();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
 
-		final Ascendants ascendants = new Ascendants(this.decl.getField());
+		final Ascendants ascendants = new Ascendants(this.field);
 
-		return this.decl.buildAscendants(
-				deriveSamples(this.decl.getField(), ascendants));
+		return this.field.buildAscendants(
+				deriveSamples(this.field, ascendants));
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		this.decl.getMemberRegistry().registerMembers(members);
+		this.field.getMemberRegistry().registerMembers(members);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.decl.define(new DefinitionTarget(
+		return this.field.define(new DefinitionTarget(
 				getScope(),
 				getAncestor().getType().getValueType()));
 	}

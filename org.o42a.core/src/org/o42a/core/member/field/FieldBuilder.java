@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,36 +20,33 @@
 package org.o42a.core.member.field;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.st.Conditions;
-import org.o42a.core.st.DefinitionTarget;
+import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class FieldVariant<A extends Artifact<A>> implements PlaceSpec {
+public final class FieldBuilder implements PlaceSpec {
 
-	private final DeclaredField<A> field;
+	private final MemberRegistry memberRegistry;
 	private final FieldDeclaration declaration;
 	private final FieldDefinition definition;
-	private FieldDeclarationStatement statement;
 
-	protected FieldVariant(
-			DeclaredField<A> field,
+	FieldBuilder(
+			MemberRegistry memberRegistry,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		this.field = field;
+		this.memberRegistry = memberRegistry;
 		this.declaration = declaration;
 		this.definition = definition;
+		declaration.assertSameScope(definition);
 	}
 
-	@Override
-	public final Scope getScope() {
-		return this.declaration.getScope();
+	public final FieldDeclaration getDeclaration() {
+		return this.declaration;
 	}
 
-	public final MemberField toMember() {
-		return this.field.toMember();
+	public final FieldDefinition getDefinition() {
+		return this.definition;
 	}
 
 	@Override
@@ -63,6 +60,11 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceSpec {
 	}
 
 	@Override
+	public final Scope getScope() {
+		return this.declaration.getScope();
+	}
+
+	@Override
 	public final ScopePlace getPlace() {
 		return this.declaration.getPlace();
 	}
@@ -70,26 +72,6 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceSpec {
 	@Override
 	public final Container getContainer() {
 		return this.declaration.getContainer();
-	}
-
-	public final CompilerLogger getLogger() {
-		return this.field.getLogger();
-	}
-
-	public final DeclaredField<A> getField() {
-		return this.field;
-	}
-
-	public final FieldDeclaration getDeclaration() {
-		return this.declaration;
-	}
-
-	public final FieldDefinition getDefinition() {
-		return this.definition;
-	}
-
-	public final Conditions getInitialConditions() {
-		return this.statement.getInitialConditions();
 	}
 
 	@Override
@@ -100,6 +82,18 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceSpec {
 	@Override
 	public final Distributor distributeIn(Container container) {
 		return this.declaration.distributeIn(container);
+	}
+
+	public DeclarationStatement build() {
+
+		final DeclaredMemberField member = new DeclaredMemberField(this);
+		final FieldDeclarationStatement statement =
+			new FieldDeclarationStatement(this, member);
+
+		member.setStatement(statement);
+		this.memberRegistry.declareMember(member);
+
+		return statement;
 	}
 
 	@Override
@@ -124,21 +118,7 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceSpec {
 
 	@Override
 	public String toString() {
-		return "FieldVariant[" + this.field + "]:" + this.definition;
-	}
-
-	protected abstract void init();
-
-	protected abstract void declareMembers();
-
-	protected abstract Definitions define(DefinitionTarget scope);
-
-	final FieldDeclarationStatement getStatement() {
-		return this.statement;
-	}
-
-	final void setStatement(FieldDeclarationStatement statement) {
-		this.statement = statement;
+		return "FieldBuilder[" + this.declaration + "]:" + this.definition;
 	}
 
 }

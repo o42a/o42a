@@ -19,6 +19,7 @@
 */
 package org.o42a.core;
 
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.Visibility;
 import org.o42a.util.log.*;
 
@@ -619,6 +620,18 @@ public class CompilerLogger implements Logger {
 				+ "because operand doesn't have an '%s' adapter",
 				operator,
 				adapterType);
+	}
+
+	public void wrongArtifactKind(
+			LogInfo location,
+			ArtifactKind<?> actual,
+			ArtifactKind<?> expected) {
+		error(
+				"wrong_artifact_kind",
+				location,
+				"Wrong kind of artifact: %s, but %s expected",
+				actual,
+				expected);
 	}
 
 	public final void error(

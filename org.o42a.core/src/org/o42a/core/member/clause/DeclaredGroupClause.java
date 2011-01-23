@@ -23,6 +23,7 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.*;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
@@ -274,10 +275,10 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		}
 
 		@Override
-		public FieldVariant<?> declareField(
+		public FieldBuilder newField(
 				FieldDeclaration declaration,
 				FieldDefinition definition) {
-			return this.registry.declareField(
+			return this.registry.newField(
 					declaration.inGroup(getGroupId()),
 					definition);
 		}

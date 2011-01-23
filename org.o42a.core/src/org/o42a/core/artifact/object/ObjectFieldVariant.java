@@ -23,25 +23,22 @@ import org.o42a.core.LocationSpec;
 import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.*;
 
 
-final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
+final class ObjectFieldVariant extends FieldVariant<Obj> {
 
 	private Block<Declaratives> content;
 
-	ObjectFieldVariantDecl(
-			FieldDecl<Obj> fieldDecl,
-			FieldVariant<Obj> variant) {
-		super(fieldDecl, variant);
-	}
-
-	@Override
-	public ObjectFieldDecl getFieldDecl() {
-		return (ObjectFieldDecl) super.getFieldDecl();
+	public ObjectFieldVariant(
+			DeclaredObjectField field,
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		super(field, declaration, definition);
 	}
 
 	public Block<Declaratives> getContent() {
@@ -68,29 +65,28 @@ final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
 
 	private void buildContent() {
 
-		final FieldVariant<Obj> variant = getVariant();
 		final MemberRegistry memberRegistry;
 		final StaticTypeRef ascendant =
-			getVariant().getDefinition().getAscendants().getAscendant();
+			getDefinition().getAscendants().getAscendant();
 
 		if (ascendant == null) {
-			memberRegistry = getFieldDecl().getMemberRegistry();
+			memberRegistry = getObjectField().getMemberRegistry();
 		} else if (ascendant.getType().derivedFrom(getField().getArtifact())) {
-			memberRegistry = getFieldDecl().getMemberRegistry();
+			memberRegistry = getObjectField().getMemberRegistry();
 		} else {
 			memberRegistry = new ScopedRegistry(
-					getFieldDecl().getMemberRegistry(),
+					getObjectField().getMemberRegistry(),
 					ascendant);
 		}
 
-		final FieldDefinition definition = variant.getDefinition();
+		final FieldDefinition definition = getDefinition();
 
 		this.content = new DeclarativeBlock(
 				definition,
 				getField(),
 				null,
 				memberRegistry);
-		this.content.setConditions(getVariant().getInitialConditions());
+		this.content.setConditions(getInitialConditions());
 
 		final BlockBuilder declarations = definition.getDeclarations();
 
@@ -104,6 +100,10 @@ final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
 				this.content.propose(value).alternative(value).assign(value);
 			}
 		}
+	}
+
+	private final DeclaredObjectField getObjectField() {
+		return (DeclaredObjectField) getField();
 	}
 
 	private static final class ScopedRegistry extends MemberRegistry {
@@ -122,18 +122,21 @@ final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
 		}
 
 		@Override
-		public FieldVariant<?> declareField(FieldDeclaration declaration, FieldDefinition definition) {
+		public FieldBuilder newField(
+				FieldDeclaration declaration,
+				FieldDefinition definition) {
 			if (declaration.getDeclaredIn() != null) {
-				return this.registry.declareField(declaration, definition);
+				return this.registry.newField(declaration, definition);
 			}
 			if (!declaration.isOverride()) {
-				return this.registry.declareField(declaration, definition);
+				return this.registry.newField(declaration, definition);
 			}
-			return this.registry.declareField(
+			return this.registry.newField(
 					new FieldDeclaration(
 							declaration,
 							declaration.distribute(),
-							declaration).setDeclaredIn(this.declaredIn), definition);
+							declaration).setDeclaredIn(this.declaredIn),
+					definition);
 		}
 
 		@Override

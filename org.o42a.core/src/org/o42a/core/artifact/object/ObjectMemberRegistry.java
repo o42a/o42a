@@ -24,7 +24,10 @@ import java.util.HashSet;
 
 import org.o42a.core.LocationSpec;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 
 
 public class ObjectMemberRegistry extends MemberRegistry {
@@ -52,7 +55,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public FieldVariant<?> declareField(
+	public FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		if (declaration.isAbstract()
@@ -63,7 +66,12 @@ public class ObjectMemberRegistry extends MemberRegistry {
 					declaration.getDisplayName());
 			return null;
 		}
-		return declare(declaration, definition);
+
+		assert getOwner() == declaration.getContainer().toObject() :
+			"Wrong container " + declaration.getContainer()
+			+ ", but " + getOwner() + " expected";
+
+		return createFieldBuilder(declaration, definition);
 	}
 
 	@Override
@@ -116,25 +124,6 @@ public class ObjectMemberRegistry extends MemberRegistry {
 		out.append('}');
 
 		return out.toString();
-	}
-
-	private FieldVariant<?> declare(
-			FieldDeclaration declaration,
-			FieldDefinition definition) {
-		assert getOwner() == declaration.getContainer().toObject() :
-			"Wrong container " + declaration.getContainer()
-			+ ", but " + getOwner() + " expected";
-
-		final FieldVariant<?> variant =
-			DeclaredField.declareField(declaration, definition);
-
-		if (variant == null) {
-			return null;
-		}
-
-		this.members.add(variant.toMember());
-
-		return variant;
 	}
 
 }
