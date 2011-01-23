@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.member.field.Field;
 import org.o42a.util.ArrayUtil;
 
 
@@ -54,12 +53,6 @@ public abstract class ContainerMembers {
 	public void addMembers(Iterable<? extends Member> members) {
 		for (Member member : members) {
 			addMember(member);
-		}
-	}
-
-	public void addFields(Iterable<? extends Field<?>> fields) {
-		for (Field<?> field : fields) {
-			addMember(field.toMember());
 		}
 	}
 
@@ -94,14 +87,15 @@ public abstract class ContainerMembers {
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
-		boolean notFirst = false;
+		boolean comma = false;
 
-		out.append("Members[");
+		out.append(getClass().getSimpleName());
+		out.append('[');
 		for (Map.Entry<MemberKey, Entry[]> e : this.registry.entrySet()) {
-			if (notFirst) {
+			if (comma) {
 				out.append(", ");
 			} else {
-				notFirst = true;
+				comma = true;
 			}
 			out.append(e.getKey()).append('=');
 			out.append(Arrays.toString(e.getValue()));
@@ -123,7 +117,7 @@ public abstract class ContainerMembers {
 		return true;
 	}
 
-	public void addMember(Entry entry) {
+	private void addMember(Entry entry) {
 
 		final MemberKey key = entry.getKey();
 
@@ -234,7 +228,7 @@ public abstract class ContainerMembers {
 		@Override
 		public String toString() {
 			if (this.propagated) {
-				return "Propagated " + this.member;
+				return this.member + "^";
 			}
 			return this.member.toString();
 		}

@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.object;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.o42a.core.LocationSpec;
@@ -36,8 +35,6 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	private int localScopeIndex;
 	Obj owner;
 
-	private final HashMap<String, DeclaredField<?>> namedFields =
-		new HashMap<String, DeclaredField<?>>();
 	private final ArrayList<Member> members = new ArrayList<Member>();
 
 	public ObjectMemberRegistry(Obj owner) {
@@ -66,27 +63,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 					declaration.getDisplayName());
 			return null;
 		}
-
-		final String name = declaration.getMemberId().toName();
-
-		if (name == null) {
-			return declare(declaration);
-		}
-		if (declaration.getDeclaredIn() != null) {
-			return declare(declaration);
-		}
-
-		final DeclaredField<?> existing = this.namedFields.get(name);
-
-		if (existing != null) {
-			return existing;
-		}
-
-		final DeclaredField<?> declared = declare(declaration);
-
-		this.namedFields.put(name, declared);
-
-		return declared;
+		return declare(declaration);
 	}
 
 	@Override
@@ -96,7 +73,6 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	}
 
 	public void registerMembers(ObjectMembers members) {
-		//members.addFields(this.namedFields.values());
 		members.addMembers(this.members);
 	}
 
@@ -126,10 +102,16 @@ public class ObjectMemberRegistry extends MemberRegistry {
 		out.append(this.owner != null ? this.owner : "<unresolved>");
 		out.append("]{");
 
-		final boolean comma;
+		boolean comma = false;
 
-		comma = printFields(out, false, this.namedFields.values());
-		printFields(out, comma, this.members);
+		for (Object m : this.members) {
+			if (comma) {
+				out.append(", ");
+			} else {
+				comma = true;
+			}
+			out.append(m);
+		}
 
 		out.append('}');
 
@@ -147,21 +129,5 @@ public class ObjectMemberRegistry extends MemberRegistry {
 
 		return field;
 	}
-
-	private static boolean printFields(
-			StringBuilder out,
-			boolean comma,
-			Iterable<?> members) {
-		for (Object m : members) {
-			if (comma) {
-				out.append(", ");
-			} else {
-				comma = true;
-			}
-			out.append(m);
-		}
-		return comma;
-	}
-
 
 }
