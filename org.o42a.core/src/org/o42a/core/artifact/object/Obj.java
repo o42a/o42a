@@ -209,10 +209,6 @@ public abstract class Obj extends Artifact<Obj>
 		return getAscendants().getAncestor();
 	}
 
-	public final TypeRef getExplicitAncestor() {
-		return getAscendants().getExplicitAncestor();
-	}
-
 	/**
 	 * Object samples in descending precedence order.
 	 *

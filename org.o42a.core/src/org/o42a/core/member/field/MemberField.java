@@ -232,10 +232,7 @@ public abstract class MemberField extends Member {
 
 	private MemberKey overrideField() {
 
-		final Obj container = getContainer().toObject();
-		final Obj declaredIn = declaredIn(container);
-
-		final Member overridden = overridden(declaredIn);
+		final Member overridden = overridden();
 
 		if (overridden != null) {
 			this.visibility = overridden.getVisibility();
@@ -247,66 +244,67 @@ public abstract class MemberField extends Member {
 		return brokenMemberKey();
 	}
 
-	private Obj declaredIn(final Obj container) {
+	private Member overridden() {
 
+		Member overridden = null;
 		final StaticTypeRef declaredInRef = getDeclaration().getDeclaredIn();
 
 		if (declaredInRef != null) {
-			return declaredInRef.getType();
-		}
 
-		final Sample[] samples = container.getSamples();
+			final Obj declaredIn = declaredInRef.getType();
 
-		for (Sample sample : samples) {
-			if (sample.isExplicit()) {
-				return sample.getType();
+			if (declaredIn == null) {
+				return null;
+			}
+			overridden = declaredIn.member(getId(), Accessor.INHERITANT);
+		} else {
+
+			final Obj container = getContainer().toObject();
+
+			for (Sample sample : container.getSamples()) {
+				overridden = overridden(overridden, sample.getType());
+			}
+
+			final TypeRef ancestor = container.getAncestor();
+
+			if (ancestor != null) {
+				overridden = overridden(overridden, ancestor.getType());
 			}
 		}
 
-		final TypeRef explicitAncestor = container.getExplicitAncestor();
-
-		if (explicitAncestor != null) {
-			return explicitAncestor.getType();
+		if (overridden == null) {
+			getLogger().cantOverrideUnknown(this, getDisplayName());
 		}
 
-		return null;
+		return overridden;
+	}
+
+	private Member overridden(Member overridden, Obj ascendant) {
+		if (ascendant == null) {
+			return overridden;
+		}
+
+		final Member member = ascendant.member(getId(), Accessor.INHERITANT);
+
+		if (member == null) {
+			return overridden;
+		}
+		if (overridden == null) {
+			return member;
+		}
+		if (overridden.definedAfter(member)) {
+			return overridden;
+		}
+		if (member.definedAfter(overridden)) {
+			return member;
+		}
+
+		return overridden;
 	}
 
 	private MemberKey declareNewField() {
 		this.visibility = getDeclaration().getVisibility();
 		return getId().key(getScope());
-	}
-
-	private Member overridden(Obj declaredIn) {
-		if (declaredIn != null) {
-
-			final Member result =
-				declaredIn.member(getId(), Accessor.INHERITANT);
-
-			if (result == null) {
-				getLogger().cantOverrideUnknown(this, getDisplayName());
-			}
-
-			return result;
-		}
-
-		for (Sample sample : getContainer().toObject().getSamples()) {
-			if (sample.isExplicit()) {
-				continue;
-			}
-
-			final Obj type = sample.getType();
-			final Member result =
-				type.member(getId(), Accessor.INHERITANT);
-
-			if (result != null) {
-				return result;
-			}
-		}
-
-		getLogger().cantOverrideUnknown(this, getDisplayName());
-
-		return null;
 	}
 
 	static final class Overridden extends MemberField {
