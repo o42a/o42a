@@ -140,19 +140,16 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 
-		final DeclaredField<?> field =
-			getMemberRegistry().declareField(declaration);
+		final FieldVariant<?> variant =
+			getMemberRegistry().declareField(declaration, definition);
 
-		if (field == null) {
+		if (variant == null) {
 			return null;
 		}
 
-		final FieldVariant<?> fieldVariant =
-			field.variant(declaration, definition);
+		statement(variant);
 
-		statement(fieldVariant);
-
-		return fieldVariant;
+		return variant;
 	}
 
 	public final ClauseBuilder clause(ClauseDeclaration declaration) {
