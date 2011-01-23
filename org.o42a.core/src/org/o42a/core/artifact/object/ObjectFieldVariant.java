@@ -19,12 +19,10 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.core.LocationSpec;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.FieldVariant;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.*;
@@ -65,27 +63,13 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 
 	private void buildContent() {
 
-		final MemberRegistry memberRegistry;
-		final StaticTypeRef ascendant =
-			getDefinition().getAscendants().getAscendant();
-
-		if (ascendant == null) {
-			memberRegistry = getObjectField().getMemberRegistry();
-		} else if (ascendant.getType().derivedFrom(getField().getArtifact())) {
-			memberRegistry = getObjectField().getMemberRegistry();
-		} else {
-			memberRegistry = new ScopedRegistry(
-					getObjectField().getMemberRegistry(),
-					ascendant);
-		}
-
 		final FieldDefinition definition = getDefinition();
 
 		this.content = new DeclarativeBlock(
 				definition,
 				getField(),
 				null,
-				memberRegistry);
+				getObjectField().getMemberRegistry());
 		this.content.setConditions(getInitialConditions());
 
 		final BlockBuilder declarations = definition.getDeclarations();
@@ -104,56 +88,6 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 
 	private final DeclaredObjectField getObjectField() {
 		return (DeclaredObjectField) getField();
-	}
-
-	private static final class ScopedRegistry extends MemberRegistry {
-
-		private final MemberRegistry registry;
-		private final StaticTypeRef declaredIn;
-
-		ScopedRegistry(MemberRegistry registry, StaticTypeRef declaredIn) {
-			this.registry = registry;
-			this.declaredIn = declaredIn;
-		}
-
-		@Override
-		public Obj getOwner() {
-			return this.registry.getOwner();
-		}
-
-		@Override
-		public FieldBuilder newField(
-				FieldDeclaration declaration,
-				FieldDefinition definition) {
-			if (declaration.getDeclaredIn() != null) {
-				return this.registry.newField(declaration, definition);
-			}
-			if (!declaration.isOverride()) {
-				return this.registry.newField(declaration, definition);
-			}
-			return this.registry.newField(
-					new FieldDeclaration(
-							declaration,
-							declaration.distribute(),
-							declaration).setDeclaredIn(this.declaredIn),
-					definition);
-		}
-
-		@Override
-		public void declareMember(Member member) {
-			this.registry.declareMember(member);
-		}
-
-		@Override
-		public boolean declareBlock(LocationSpec location, String name) {
-			return this.registry.declareBlock(location, name);
-		}
-
-		@Override
-		public String anonymousBlockName() {
-			return this.registry.anonymousBlockName();
-		}
-
 	}
 
 }

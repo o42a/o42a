@@ -19,16 +19,16 @@
 */
 @Operators: plus :=> ::.
 @Operators: minus :=> ::.
-@Operators: add :=> :: & operators: binary operator(
+@Operators: add :=> ::(
   Right operand =< `&number
 ).
-@Operators: subtract :=> :: & operators: binary operator(
+@Operators: subtract :=> ::(
   Right operand =< `&number
 ).
-@Operators: multiply :=> :: & operators: binary operator(
+@Operators: multiply :=> ::(
   Right operand =< `&number
 ).
-@Operators: divide :=> :: & operators: binary operator(
+@Operators: divide :=> ::(
   Right operand =< `&number
 ).
 @Operators: compare :=> *(

@@ -221,8 +221,7 @@ public abstract class ContainerMembers {
 		}
 
 		public final boolean definedAfter(Entry entry) {
-			return this.member.getScope().derivedFrom(
-					entry.getMember().getDefinedIn());
+			return this.member.definedAfter(entry.getMember());
 		}
 
 		@Override

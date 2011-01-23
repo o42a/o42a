@@ -105,6 +105,10 @@ public abstract class Member extends Placed {
 		return this.overridden = overriddenMembers();
 	}
 
+	public final boolean definedAfter(Member other) {
+		return getScope().derivedFrom(other.getDefinedIn());
+	}
+
 	public abstract Member propagateTo(Scope scope);
 
 	public abstract void resolveAll();
