@@ -50,7 +50,11 @@ public class FieldVariant<A extends Artifact<A>> extends St {
 		this.definition = definition;
 	}
 
-	public DeclaredField<A> getField() {
+	public final MemberField toMember() {
+		return this.field.toMember();
+	}
+
+	public final DeclaredField<A> getField() {
 		return this.field;
 	}
 

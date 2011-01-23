@@ -70,12 +70,9 @@ class ObjectFieldDecl extends FieldDecl<Obj> {
 
 		@SuppressWarnings("unchecked")
 		final DeclaredField<Obj> other = (DeclaredField<Obj>) decl.getField();
-		final DeclaredField<Obj> field = getField();
 
 		for (FieldVariant<Obj> variant : other.getVariants()) {
-			if (variant.getDeclaration().validateVariantDeclaration(field)) {
-				addVariant(variant);
-			}
+			addVariant(variant);
 		}
 	}
 

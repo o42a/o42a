@@ -22,7 +22,7 @@ package org.o42a.core.artifact.link;
 import static org.o42a.core.ref.Ref.falseRef;
 
 import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.member.field.DeclaredField;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 
 
@@ -54,7 +54,7 @@ final class DeclaredLink extends Link {
 			return null;
 		}
 
-		final DeclaredField<Link> field = this.decl.getField();
+		final Field<Link> field = this.decl.getField();
 		final TypeRef typeRef = field.getDeclaration().type(definition);
 
 		if (typeRef == null) {

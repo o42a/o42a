@@ -122,18 +122,18 @@ final class ObjectFieldVariantDecl extends FieldVariantDecl<Obj> {
 		}
 
 		@Override
-		public DeclaredField<?> declareField(FieldDeclaration declaration) {
+		public FieldVariant<?> declareField(FieldDeclaration declaration, FieldDefinition definition) {
 			if (declaration.getDeclaredIn() != null) {
-				return this.registry.declareField(declaration);
+				return this.registry.declareField(declaration, definition);
 			}
 			if (!declaration.isOverride()) {
-				return this.registry.declareField(declaration);
+				return this.registry.declareField(declaration, definition);
 			}
 			return this.registry.declareField(
 					new FieldDeclaration(
 							declaration,
 							declaration.distribute(),
-							declaration).setDeclaredIn(this.declaredIn));
+							declaration).setDeclaredIn(this.declaredIn), definition);
 		}
 
 		@Override

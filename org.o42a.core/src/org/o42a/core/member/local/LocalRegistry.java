@@ -24,9 +24,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
-import org.o42a.core.member.field.DeclaredField;
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.MemberRegistry;
+import org.o42a.core.member.field.*;
 
 
 public class LocalRegistry extends MemberRegistry {
@@ -49,14 +47,20 @@ public class LocalRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public DeclaredField<?> declareField(FieldDeclaration declaration) {
+	public FieldVariant<?> declareField(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
 		assert declaration.getPlace().isImperative() :
 			"Imperative field declaration expected: " + declaration;
 
-		final DeclaredField<?> field = DeclaredField.declareField(declaration);
+		final FieldVariant<?> variant =
+			DeclaredField.declareField(declaration, definition);
 
-		if (this.scope.addMember(field.toMember())) {
-			return field;
+		if (variant == null) {
+			return null;
+		}
+		if (this.scope.addMember(variant.toMember())) {
+			return variant;
 		}
 
 		return null;

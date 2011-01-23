@@ -30,8 +30,14 @@ import org.o42a.core.artifact.ArtifactKind;
 
 public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 
-	public static DeclaredField<?> declareField(FieldDeclaration declaration) {
-		return new DeclaredMemberField(declaration).toField();
+	public static FieldVariant<?> declareField(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+
+		final DeclaredField<?> field =
+			new DeclaredMemberField(declaration).toField();
+
+		return field.variant(declaration, definition);
 	}
 
 	private final ArrayList<FieldVariant<A>> variants =
@@ -123,23 +129,6 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 		return this.variants;
 	}
 
-	public FieldVariant<A> variant(
-			FieldDeclaration declaration,
-			FieldDefinition definition) {
-		if (!declaration.validateVariantDeclaration(this)) {
-			return null;
-		}
-
-		final FieldVariant<A> variant = new FieldVariant<A>(
-				this,
-				declaration,
-				definition);
-
-		addVariant(variant);
-
-		return variant;
-	}
-
 	@Override
 	protected Field<A> propagate(Scope enclosingScope) {
 		return new DeclaredField<A>(enclosingScope.getContainer(), this);
@@ -169,9 +158,21 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 		return this.decl;
 	}
 
-	void addVariant(FieldVariant<A> variant) {
-		this.variants.add(variant);
-	}
+	FieldVariant<A> variant(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		if (!declaration.validateVariantDeclaration(this)) {
+			return null;
+		}
 
+		final FieldVariant<A> variant = new FieldVariant<A>(
+				this,
+				declaration,
+				definition);
+
+		this.variants.add(variant);
+
+		return variant;
+	}
 
 }

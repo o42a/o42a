@@ -74,7 +74,7 @@ public abstract class FieldDecl<A extends Artifact<A>> {
 	}
 
 	protected void addVariant(FieldVariant<A> variant) {
-		getField().addVariant(variant);
+		getField().variant(variant.getDeclaration(), variant.getDefinition());
 	}
 
 	protected FieldVariantDecl<A> decl(FieldVariant<A> variant) {

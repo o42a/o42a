@@ -33,7 +33,9 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		return new NoDeclarations();
 	}
 
-	public abstract DeclaredField<?> declareField(FieldDeclaration declaration);
+	public abstract FieldVariant<?> declareField(
+			FieldDeclaration declaration,
+			FieldDefinition definition);
 
 	public MemberRegistry prohibitDeclarations() {
 		return new ProhibitDeclarations(this);
@@ -47,7 +49,9 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		}
 
 		@Override
-		public DeclaredField<?> declareField(FieldDeclaration declaration) {
+		public FieldVariant<?> declareField(
+				FieldDeclaration declaration,
+				FieldDefinition definition) {
 			declaration.getContext().getLogger().prohibitedDeclaration(
 					declaration);
 			return null;
