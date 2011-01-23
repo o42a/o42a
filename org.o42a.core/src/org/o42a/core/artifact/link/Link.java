@@ -28,15 +28,15 @@ import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldDecl;
+import org.o42a.core.member.field.MemberField;
 
 
 public abstract class Link extends Artifact<Link> {
 
-	public static FieldDecl<Link> fieldDecl(
-			DeclaredField<Link> field,
-			ArtifactKind<Link> kind) {
-		return new LinkFieldDecl(field, kind);
+	public static DeclaredField<Link> declareField(
+			MemberField member,
+			ArtifactKind<Link> artifactKind) {
+		return new DeclaredLinkField(member, artifactKind);
 	}
 
 	public static FieldIR<Link> fieldIR(

@@ -27,21 +27,21 @@ import org.o42a.core.member.field.FieldDefinition;
 
 final class DeclaredArray extends Array {
 
-	private final ArrayFieldDecl decl;
+	private final DeclaredArrayField field;
 
-	DeclaredArray(ArrayFieldDecl decl) {
-		super(decl.getField());
-		this.decl = decl;
+	DeclaredArray(DeclaredArrayField field) {
+		super(field);
+		this.field = field;
 	}
 
 	@Override
 	public boolean isValid() {
-		return super.isValid() && this.decl.validate();
+		return super.isValid() && this.field.validate();
 	}
 
 	@Override
 	public String toString() {
-		return this.decl.toString();
+		return this.field.toString();
 	}
 
 	@Override
@@ -51,22 +51,22 @@ final class DeclaredArray extends Array {
 
 	@Override
 	protected TypeRef buildItemTypeRef() {
-		return this.decl.declaredItemTypeRef();
+		return this.field.declaredItemTypeRef();
 	}
 
 	@Override
 	protected ArrayInitializer buildInitializer() {
 
-		final ArrayInitializer initializer = this.decl.declaredInitializer();
+		final ArrayInitializer initializer = this.field.declaredInitializer();
 
 		if (initializer != null) {
 			return initializer;
 		}
 
-		final FieldDefinition definition = this.decl.getDefinition();
+		final FieldDefinition definition = this.field.getDefinition();
 
 		getLogger().notArray(definition);
-		this.decl.invalid();
+		this.field.invalid();
 
 		return invalidArrayInitializer(definition, definition.distribute());
 	}

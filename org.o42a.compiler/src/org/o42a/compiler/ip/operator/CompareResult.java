@@ -33,9 +33,7 @@ import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.Visibility;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.*;
@@ -219,7 +217,7 @@ abstract class CompareResult extends Result {
 				.setVisibility(Visibility.PRIVATE);
 
 			final TypeRef operator = CompareResult.this.operator;
-			final FieldVariant<?> field = statements.field(
+			final FieldBuilder builder = statements.field(
 					declarator,
 					fieldDefinition(
 							this,
@@ -232,7 +230,18 @@ abstract class CompareResult extends Result {
 									CompareResult.this.binaryOp.getNode()
 									.getRightOperand())));
 
-			CompareResult.this.resultKey = field.getField().getKey();
+			if (builder == null) {
+				return;
+			}
+
+			final DeclarationStatement statement = builder.build();
+
+			if (statement == null) {
+				return;
+			}
+
+			statements.statement(statement);
+			CompareResult.this.resultKey = statement.toMember().getKey();
 		}
 
 	}

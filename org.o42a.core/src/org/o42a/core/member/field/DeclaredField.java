@@ -26,81 +26,31 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.st.DefinitionTarget;
 
 
-public class DeclaredField<A extends Artifact<A>> extends Field<A> {
+public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
 
-	public static FieldVariant<?> declareField(
-			FieldDeclaration declaration,
-			FieldDefinition definition) {
-
-		final DeclaredField<?> field =
-			new DeclaredMemberField(declaration).toField();
-
-		return field.variant(declaration, definition);
-	}
-
+	private final ArtifactKind<A> artifactKind;
 	private final ArrayList<FieldVariant<A>> variants =
 		new ArrayList<FieldVariant<A>>();
-	private ArtifactKind<A> artifactKind;
-	private FieldDecl<A> decl;
 
-	DeclaredField(DeclaredMemberField member) {
+	public DeclaredField(MemberField member, ArtifactKind<A> artifactKind) {
 		super(member);
+		this.artifactKind = artifactKind;
 	}
 
-	private DeclaredField(
+	protected DeclaredField(
 			Container enclosingContainer,
 			DeclaredField<A> sample) {
 		super(enclosingContainer, sample);
+		this.artifactKind = sample.artifactKind;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public ArtifactKind<A> getArtifactKind() {
-		if (this.artifactKind != null) {
-			return this.artifactKind;
-		}
-
-		final ArtifactKind<?> kind;
-		final Field<A>[] overridden = getOverridden();
-
-		if (overridden.length > 0) {
-			kind = overridden[0].getArtifact().getKind();
-		} else {
-
-			final FieldDefinition definition =
-				getVariants().get(0).getDefinition();
-
-			if (definition.isArray()) {
-				kind = ArtifactKind.ARRAY;
-			} else {
-
-				final Artifact<?> value =
-					definition.getValue().getResolution().toArtifact();
-
-				if (value.getKind() == ArtifactKind.ARRAY) {
-					kind = ArtifactKind.ARRAY;
-				} else if (getDeclaration().isLink()) {
-					kind = ArtifactKind.LINK;
-				} else if (getDeclaration().isVariable()) {
-					kind = ArtifactKind.VARIABLE;
-				} else {
-					kind = ArtifactKind.OBJECT;
-				}
-			}
-		}
-		if (!kind.is(ArtifactKind.OBJECT)) {
-			if (getDeclaration().isLink() && !kind.is(ArtifactKind.LINK)) {
-				getLogger().prohibitedLinkType(getDeclaration());
-			}
-			if (getDeclaration().isVariable()
-					&& !kind.is(ArtifactKind.VARIABLE)) {
-				getLogger().prohibitedVariableType(getDeclaration());
-			}
-		}
-
-		return this.artifactKind = (ArtifactKind<A>) kind;
+	public final ArtifactKind<A> getArtifactKind() {
+		return this.artifactKind;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -113,9 +63,9 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 
 				setScopeArtifact((A) falseObject);
 			} else if (isOverride()) {
-				setScopeArtifact(getDecl().overrideArtifact());
+				setScopeArtifact(overrideArtifact());
 			} else {
-				setScopeArtifact(getDecl().declareArtifact());
+				setScopeArtifact(declareArtifact());
 			}
 			for (FieldVariant<A> variant : getVariants()) {
 				variant.init();
@@ -125,38 +75,77 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 		return getScopeArtifact();
 	}
 
-	public List<FieldVariant<A>> getVariants() {
+	public final List<FieldVariant<A>> getVariants() {
 		return this.variants;
 	}
 
-	@Override
-	protected Field<A> propagate(Scope enclosingScope) {
-		return new DeclaredField<A>(enclosingScope.getContainer(), this);
+	public Definitions define(DefinitionTarget target) {
+
+		Definitions result = null;
+
+		for (FieldVariant<A> variant : getVariants()) {
+
+			final Definitions definition = variant.define(target);
+
+			if (definition == null) {
+				continue;
+			}
+			if (result == null) {
+				result = definition;
+			} else {
+				result = result.refine(definition);
+			}
+		}
+
+		return result;
 	}
 
-	@Override
-	protected A propagateArtifact(Field<A> overridden) {
-		return getDecl().propagateArtifact();
+	public void declareMembers() {
+		for (FieldVariant<A> variant : getVariants()) {
+			variant.declareMembers();
+		}
 	}
 
+	protected void mergeVariant(FieldVariant<A> variant) {
+
+		final FieldVariant<A> newVariant =
+			variant(variant.getDeclaration(), variant.getDefinition());
+
+		newVariant.setStatement(variant.getStatement());
+	}
+
+	protected abstract FieldVariant<A> createVariant(
+			FieldDeclaration declaration,
+			FieldDefinition definition);
+
+	protected abstract A declareArtifact();
+
+	protected abstract A overrideArtifact();
+
 	@Override
-	protected void merge(Field<?> field) {
+	protected final void merge(Field<?> field) {
 		if (!(field instanceof DeclaredField<?>)) {
 			getLogger().ambiguousMember(field, getDisplayName());
 			return;
 		}
-
-		final DeclaredField<?> declaredField = (DeclaredField<?>) field;
-
-		getDecl().merge(declaredField.getDecl());
-	}
-
-	final FieldDecl<A> getDecl() {
-		if (this.decl == null) {
-			this.decl = getArtifactKind().fieldDecl(this);
+		if (field.getArtifactKind() != getArtifactKind()) {
+			getLogger().wrongArtifactKind(
+					this,
+					field.getArtifactKind(),
+					getArtifactKind());
+			return;
 		}
-		return this.decl;
+
+		final DeclaredField<A> declaredField =
+			(DeclaredField<A>) field.toKind(getArtifactKind());
+
+		merge(declaredField);
 	}
+
+	protected abstract void merge(DeclaredField<A> other);
+
+	@Override
+	protected abstract DeclaredField<A> propagate(Scope enclosingScope);
 
 	FieldVariant<A> variant(
 			FieldDeclaration declaration,
@@ -165,11 +154,11 @@ public class DeclaredField<A extends Artifact<A>> extends Field<A> {
 			return null;
 		}
 
-		final FieldVariant<A> variant = new FieldVariant<A>(
-				this,
-				declaration,
-				definition);
+		final FieldVariant<A> variant = createVariant(declaration, definition);
 
+		if (variant == null) {
+			return null;
+		}
 		this.variants.add(variant);
 
 		return variant;

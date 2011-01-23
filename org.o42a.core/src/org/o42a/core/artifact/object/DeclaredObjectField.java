@@ -19,25 +19,31 @@
 */
 package org.o42a.core.artifact.object;
 
+import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.*;
 
 
-class ObjectFieldDecl extends FieldDecl<Obj> {
+class DeclaredObjectField extends DeclaredField<Obj> {
 
 	private Registry memberRegistry;
 
-	ObjectFieldDecl(DeclaredField<Obj> field) {
-		super(field);
+	DeclaredObjectField(MemberField member) {
+		super(member, ArtifactKind.OBJECT);
+	}
+
+	private DeclaredObjectField(
+			Container enclosingContainer,
+			DeclaredField<Obj> sample) {
+		super(enclosingContainer, sample);
 	}
 
 	@Override
 	protected Obj declareArtifact() {
 
-		final Ascendants ascendants =
-			buildAscendants(new Ascendants(getField()));
+		final Ascendants ascendants = buildAscendants(new Ascendants(this));
 
 		if (ascendants.getAncestor() != null) {
 			return new DeclaredCall(this, ascendants);
@@ -52,28 +58,27 @@ class ObjectFieldDecl extends FieldDecl<Obj> {
 	}
 
 	@Override
-	protected Obj propagateArtifact() {
-		return new PropagatedObject(getField());
-	}
-
-	@Override
-	protected FieldVariantDecl<Obj> variantDecl(FieldVariant<Obj> variant) {
-		return new ObjectFieldVariantDecl(this, variant);
-	}
-
-	@Override
-	protected void merge(FieldDecl<?> decl) {
-		if (decl.getField().getArtifact().getKind() != ArtifactKind.OBJECT) {
-			getField().getLogger().notObjectDeclaration(decl.getField());
-			return;
-		}
-
-		@SuppressWarnings("unchecked")
-		final DeclaredField<Obj> other = (DeclaredField<Obj>) decl.getField();
-
+	protected void merge(DeclaredField<Obj> other) {
 		for (FieldVariant<Obj> variant : other.getVariants()) {
-			addVariant(variant);
+			mergeVariant(variant);
 		}
+	}
+
+	@Override
+	protected FieldVariant<Obj> createVariant(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		return new ObjectFieldVariant(this, declaration, definition);
+	}
+
+	@Override
+	protected DeclaredField<Obj> propagate(Scope enclosingScope) {
+		return new DeclaredObjectField(enclosingScope.getContainer(), this);
+	}
+
+	@Override
+	protected Obj propagateArtifact(Field<Obj> overridden) {
+		return new PropagatedObject(this);
 	}
 
 	ObjectMemberRegistry getMemberRegistry() {
@@ -84,7 +89,7 @@ class ObjectFieldDecl extends FieldDecl<Obj> {
 	}
 
 	Ascendants buildAscendants(Ascendants ascendants) {
-		for (FieldVariant<Obj> variant : getField().getVariants()) {
+		for (FieldVariant<Obj> variant : getVariants()) {
 			updateAscendants(ascendants, variant);
 		}
 		return ascendants;
@@ -94,14 +99,13 @@ class ObjectFieldDecl extends FieldDecl<Obj> {
 			Ascendants ascendants,
 			FieldVariant<Obj> variant) {
 
-		final Scope scope = getField().getEnclosingScope();
+		final Scope scope = getEnclosingScope();
 
 		variant.getDefinition().getAscendants().updateAscendants(
 				scope,
 				ascendants);
 
-		final AdapterId adapterId =
-			getField().toMember().getId().getAdapterId();
+		final AdapterId adapterId = toMember().getId().getAdapterId();
 
 		if (adapterId != null) {
 			ascendants.addExplicitSample(adapterId.adapterType(scope));
@@ -112,7 +116,7 @@ class ObjectFieldDecl extends FieldDecl<Obj> {
 
 		@Override
 		protected Obj findOwner() {
-			return getField().getArtifact();
+			return getArtifact();
 		}
 
 	}

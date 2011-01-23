@@ -25,28 +25,26 @@ import org.o42a.core.member.field.Field;
 
 final class PropagatedArray extends Array {
 
-	private final ArrayFieldDecl decl;
+	private final DeclaredArrayField field;
 
-	PropagatedArray(ArrayFieldDecl decl) {
-		super(
-				decl.getField(),
-				decl.getField().getOverridden()[0].getArtifact());
-		this.decl = decl;
+	PropagatedArray(DeclaredArrayField field) {
+		super(field, field.getOverridden()[0].getArtifact());
+		this.field = field;
 	}
 
 	@Override
 	public boolean isValid() {
-		return super.isValid() && this.decl.validate();
+		return super.isValid() && this.field.validate();
 	}
 
 	@Override
 	public String toString() {
-		return this.decl.toString();
+		return this.field.toString();
 	}
 
 	@Override
 	protected ArrayTypeRef buildTypeRef() {
-		return this.decl.inheritedTypeRef();
+		return this.field.inheritedTypeRef();
 	}
 
 	@Override
@@ -57,10 +55,10 @@ final class PropagatedArray extends Array {
 	@Override
 	protected ArrayInitializer buildInitializer() {
 
-		final Field<Array>[] overridden = this.decl.getField().getOverridden();
+		final Field<Array>[] overridden = this.field.getOverridden();
 
 		if (overridden.length != 1) {
-			getLogger().requiredInitializer(this.decl.getField());
+			getLogger().requiredInitializer(this.field);
 		}
 
 		return overridden[0].getArtifact().getInitializer();

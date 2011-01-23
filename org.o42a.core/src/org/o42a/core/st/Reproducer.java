@@ -20,8 +20,8 @@
 package org.o42a.core.st;
 
 import org.o42a.core.*;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.field.MemberRegistry;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Statements;
 

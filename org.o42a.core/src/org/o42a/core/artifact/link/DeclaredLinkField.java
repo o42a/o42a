@@ -24,6 +24,8 @@ import static org.o42a.core.ref.Ref.falseRef;
 
 import java.util.List;
 
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.*;
@@ -31,19 +33,19 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 
 
-final class LinkFieldDecl extends FieldDecl<Link> {
+final class DeclaredLinkField extends DeclaredField<Link> {
 
-	private final ArtifactKind<Link> kind;
 	private boolean invalid;
 	private FieldDefinition definition;
 
-	LinkFieldDecl(DeclaredField<Link> field, ArtifactKind<Link> kind) {
-		super(field);
-		this.kind = kind;
+	DeclaredLinkField(MemberField member, ArtifactKind<Link> artifactKind) {
+		super(member, artifactKind);
 	}
 
-	public final ArtifactKind<Link> getKind() {
-		return this.kind;
+	private DeclaredLinkField(
+			Container enclosingContainer,
+			DeclaredLinkField sample) {
+		super(enclosingContainer, sample);
 	}
 
 	@Override
@@ -57,30 +59,32 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 	}
 
 	@Override
-	protected Link propagateArtifact() {
+	protected FieldVariant<Link> createVariant(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		return new LinkFieldVariant(this, declaration, definition);
+	}
+
+	@Override
+	protected void merge(DeclaredField<Link> other) {
+		getLogger().ambiguousMember(other, getDisplayName());
+	}
+
+	@Override
+	protected DeclaredField<Link> propagate(Scope enclosingScope) {
+		return new DeclaredLinkField(enclosingScope.getContainer(), this);
+	}
+
+	@Override
+	protected Link propagateArtifact(Field<Link> overridden) {
 		return new PropagatedLink(this);
-	}
-
-	@Override
-	protected FieldVariantDecl<Link> variantDecl(FieldVariant<Link> variant) {
-		if (!variant.getInitialConditions().isEmpty(getField())) {
-			getLogger().prohibitedConditionalDeclaration(variant);
-		}
-		return new LinkFieldVariantDecl(this, variant);
-	}
-
-	@Override
-	protected void merge(FieldDecl<?> decl) {
-		getLogger().ambiguousMember(
-				decl.getField(),
-				getField().getDisplayName());
 	}
 
 	TypeRef inheritedTypeRef() {
 
 		TypeRef typeRef = null;
 
-		for (Field<Link> field : getField().getOverridden()) {
+		for (Field<Link> field : getOverridden()) {
 
 			final TypeRef overriddenTypeRef = field.getArtifact().getTypeRef();
 
@@ -95,7 +99,7 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 					typeRef = commonInheritant;
 				} else {
 					getLogger().unexpectedType(
-							getField(),
+							this,
 							overriddenTypeRef,
 							typeRef);
 					invalid();
@@ -104,7 +108,7 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 		}
 
 		return typeRef != null
-		? typeRef.upgradeScope(getField().getEnclosingScope()) : null;
+		? typeRef.upgradeScope(getEnclosingScope()) : null;
 	}
 
 	TargetRef declaredRef() {
@@ -113,30 +117,27 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 
 		if (!definition.isValid()) {
 			return falseRef(
-					getField(),
-					getField().distributeIn(
-							getField().getEnclosingContainer())).toTargetRef();
+					this,
+					distributeIn(getEnclosingContainer())).toTargetRef();
 		}
 
 		final Ref value = definition.getValue();
 
 		if (value == null || !checkInheritable(value)) {
 			return falseRef(
-					getField(),
-					getField().distributeIn(
-							getField().getEnclosingContainer())).toTargetRef();
+					this,
+					distributeIn(getEnclosingContainer())).toTargetRef();
 		}
 
 		final Resolution resolution = value.getResolution();
 
 		if (resolution.isError()) {
 			invalid();
-		} else if (!resolution.toArtifact().accessBy(getField())
-				.checkInstanceUse()) {
+		} else if (!resolution.toArtifact().accessBy(this).checkInstanceUse()) {
 			invalid();
 		}
 
-		return value.toTargetRef().rescope(getField().getEnclosingScope());
+		return value.toTargetRef().rescope(getEnclosingScope());
 	}
 
 	final void invalid() {
@@ -149,28 +150,25 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 				return false;
 			}
 		}
-		getField().getArtifact().resolveAll();
+		getArtifact().resolveAll();
 		return !this.invalid;
 	}
 
 	FieldDefinition getDefinition() {
 		if (this.definition == null) {
 
-			final List<FieldVariant<Link>> variants = getField().getVariants();
+			final List<FieldVariant<Link>> variants = getVariants();
 
 			if (variants.size() != 1) {
 				if (variants.isEmpty()) {
-					getLogger().invalidDeclaration(getField());
+					getLogger().invalidDeclaration(this);
 				} else {
-					getLogger().ambiguousMember(
-							getField(),
-							getField().getDisplayName());
+					getLogger().ambiguousMember(this, getDisplayName());
 				}
 				invalid();
 				this.definition = invalidDefinition(
-						getField(),
-						getField().distributeIn(
-								getField().getEnclosingContainer()));
+						this,
+						distributeIn(getEnclosingContainer()));
 			} else {
 				this.definition = variants.get(0).getDefinition();
 			}
@@ -187,7 +185,7 @@ final class LinkFieldDecl extends FieldDecl<Link> {
 			return false;
 		}
 		if (!resolution.toArtifact().getKind().isInheritable()) {
-			getLogger().notObjectDeclaration(getField());
+			getLogger().notObjectDeclaration(this);
 			invalid();
 			return false;
 		}

@@ -27,37 +27,35 @@ import org.o42a.core.member.field.Field;
 
 final class OverriddenArray extends Array {
 
-	private final ArrayFieldDecl decl;
+	private final DeclaredArrayField field;
 
-	OverriddenArray(ArrayFieldDecl decl) {
-		super(
-				decl.getField(),
-				decl.getField().getOverridden()[0].getArtifact());
-		this.decl = decl;
+	OverriddenArray(DeclaredArrayField field) {
+		super(field, field.getOverridden()[0].getArtifact());
+		this.field = field;
 	}
 
 	@Override
 	public boolean isValid() {
-		return super.isValid() && this.decl.validate();
+		return super.isValid() && this.field.validate();
 	}
 
 	@Override
 	public String toString() {
-		return this.decl.toString();
+		return this.field.toString();
 	}
 
 	@Override
 	protected ArrayTypeRef buildTypeRef() {
 
-		final ArrayTypeRef inherited = this.decl.inheritedTypeRef();
-		final TypeRef declared = this.decl.declaredItemTypeRef();
+		final ArrayTypeRef inherited = this.field.inheritedTypeRef();
+		final TypeRef declared = this.field.declaredItemTypeRef();
 
 		if (declared != null) {
 			if (declared.derivedFrom(inherited.getItemTypeRef())) {
 				return arrayTypeRef(declared, inherited.getDimension());
 			}
 			getLogger().notDerivedFrom(declared, inherited);
-			this.decl.invalid();
+			this.field.invalid();
 		}
 
 		return inherited;
@@ -71,16 +69,16 @@ final class OverriddenArray extends Array {
 	@Override
 	protected ArrayInitializer buildInitializer() {
 
-		final ArrayInitializer initializer = this.decl.declaredInitializer();
+		final ArrayInitializer initializer = this.field.declaredInitializer();
 
 		if (initializer != null) {
 			return initializer;
 		}
 
-		final Field<Array>[] overridden = this.decl.getField().getOverridden();
+		final Field<Array>[] overridden = this.field.getOverridden();
 
 		if (overridden.length != 1) {
-			getLogger().requiredInitializer(this.decl.getField());
+			getLogger().requiredInitializer(this.field);
 		}
 
 		return overridden[0].getArtifact().getInitializer();

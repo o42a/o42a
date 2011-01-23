@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,30 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.field;
 
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.field.MemberRegistryFieldBase;
 
 
-public abstract class MemberRegistryClauseBase extends MemberRegistryFieldBase {
+public abstract class MemberRegistryFieldBase {
 
-	private int clauseSeq;
-
-	public ClauseBuilder newClause(ClauseDeclaration declaration) {
-		return createClause(declaration);
-	}
-
-	final ClauseBuilder createClause(ClauseDeclaration declaration) {
-		if (!declaration.isAnonymous()) {
-			return createNewClause(declaration);
-		}
-		return createNewClause(
-				declaration.setName("_clause_" + (++this.clauseSeq)));
-	}
-
-	private final ClauseBuilder createNewClause(ClauseDeclaration declaration) {
-		return new ClauseBuilder((MemberRegistry) this, declaration);
+	protected FieldBuilder createFieldBuilder(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		return new FieldBuilder((MemberRegistry) this, declaration, definition);
 	}
 
 }

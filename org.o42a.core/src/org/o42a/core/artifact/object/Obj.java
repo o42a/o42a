@@ -46,7 +46,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldDecl;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
@@ -61,8 +61,8 @@ public abstract class Obj extends Artifact<Obj>
 
 	public static final MemberId SCOPE_MEMBER_ID = memberName("_scope");
 
-	public static FieldDecl<Obj> fieldDecl(DeclaredField<Obj> field) {
-		return new ObjectFieldDecl(field);
+	public static DeclaredField<Obj> declareField(MemberField member) {
+		return new DeclaredObjectField(member);
 	}
 
 	public static FieldIR<Obj> fieldIR(

@@ -20,34 +20,33 @@
 package org.o42a.core.artifact.link;
 
 import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 
 
 final class OverriddenLink extends Link {
 
-	private final LinkFieldDecl decl;
+	private final DeclaredLinkField field;
 
-	OverriddenLink(LinkFieldDecl decl) {
-		super(decl.getField(), decl.getKind());
-		this.decl = decl;
+	OverriddenLink(DeclaredLinkField field) {
+		super(field, field.getArtifactKind());
+		this.field = field;
 	}
 
 	@Override
 	public boolean isValid() {
-		return this.decl.validate(true);
+		return this.field.validate(true);
 	}
 
 	@Override
 	public String toString() {
-		return this.decl.toString();
+		return this.field.toString();
 	}
 
 	@Override
 	protected TypeRef buildTypeRef() {
 
-		final TypeRef inherited = this.decl.inheritedTypeRef();
+		final TypeRef inherited = this.field.inheritedTypeRef();
 		final TypeRef declared = declaredTypeRef();
 
 		if (declared != null) {
@@ -55,7 +54,7 @@ final class OverriddenLink extends Link {
 				return declared;
 			}
 			getLogger().notDerivedFrom(declared, inherited);
-			this.decl.invalid();
+			this.field.invalid();
 		}
 
 		return inherited;
@@ -63,38 +62,37 @@ final class OverriddenLink extends Link {
 
 	private TypeRef declaredTypeRef() {
 
-		final FieldDefinition definition = this.decl.getDefinition();
+		final FieldDefinition definition = this.field.getDefinition();
 
 		if (definition == null) {
 			return null;
 		}
 
-		final DeclaredField<Link> field = this.decl.getField();
-		final TypeRef typeRef = field.getDeclaration().getType();
+		final TypeRef typeRef = this.field.getDeclaration().getType();
 
 		if (typeRef == null) {
 			return null;
 		}
-		if (!typeRef.getArtifact().accessBy(field).checkPrototypeUse()) {
-			this.decl.invalid();
+		if (!typeRef.getArtifact().accessBy(this.field).checkPrototypeUse()) {
+			this.field.invalid();
 		}
 
-		return typeRef.rescope(field.getEnclosingScope());
+		return typeRef.rescope(this.field.getEnclosingScope());
 	}
 
 	@Override
 	protected TargetRef buildTargetRef() {
 
-		final TargetRef ref = this.decl.declaredRef();
+		final TargetRef ref = this.field.declaredRef();
 
 		if (ref != null) {
 			return ref;
 		}
 
-		final Field<Link>[] overridden = this.decl.getField().getOverridden();
+		final Field<Link>[] overridden = this.field.getOverridden();
 
 		if (overridden.length != 1) {
-			getLogger().requiredLinkTarget(this.decl.getField());
+			getLogger().requiredLinkTarget(this.field);
 		}
 
 		return overridden[0].getArtifact().getTargetRef();
@@ -112,7 +110,7 @@ final class OverriddenLink extends Link {
 	}
 
 	private Link getOverridden() {
-		return this.decl.getField().getOverridden()[0].getArtifact();
+		return this.field.getOverridden()[0].getArtifact();
 	}
 
 }

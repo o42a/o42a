@@ -27,16 +27,16 @@ import org.o42a.core.value.ValueType;
 
 class DeclaredObject extends PlainObject {
 
-	private final ObjectFieldDecl decl;
+	private final DeclaredObjectField field;
 
-	public DeclaredObject(ObjectFieldDecl decl) {
-		super(decl.getField());
-		this.decl = decl;
+	public DeclaredObject(DeclaredObjectField field) {
+		super(field);
+		this.field = field;
 	}
 
 	@Override
 	public String toString() {
-		return this.decl != null ? this.decl.toString() : super.toString();
+		return this.field != null ? this.field.toString() : super.toString();
 	}
 
 	@Override
@@ -53,12 +53,12 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		this.decl.declareMembers();
+		this.field.declareMembers();
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.decl.define(new DefinitionTarget(getScope()));
+		return this.field.define(new DefinitionTarget(getScope()));
 	}
 
 	private Ascendants createAscendants(ValueType<?> valueType) {

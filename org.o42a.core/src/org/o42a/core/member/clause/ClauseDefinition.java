@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.member.field.MemberRegistry.noDeclarations;
+import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.StaticTypeRef;

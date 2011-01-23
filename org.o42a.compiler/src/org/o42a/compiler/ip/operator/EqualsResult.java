@@ -34,9 +34,7 @@ import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.Visibility;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Cond;
 import org.o42a.core.ref.Ref;
@@ -130,7 +128,7 @@ class EqualsResult extends PlainObject {
 				.setVisibility(Visibility.PRIVATE);
 
 			final TypeRef operator = EqualsResult.this.operator;
-			final FieldVariant<?> field = statements.field(
+			final FieldBuilder builder = statements.field(
 					declarator,
 					fieldDefinition(
 							this,
@@ -143,7 +141,18 @@ class EqualsResult extends PlainObject {
 									EqualsResult.this.binaryOp.getNode()
 									.getRightOperand())));
 
-			EqualsResult.this.resultKey = field.getField().getKey();
+			if (builder == null) {
+				return;
+			}
+
+			final DeclarationStatement statement = builder.build();
+
+			if (statement == null) {
+				return;
+			}
+
+			statements.statement(statement);
+			EqualsResult.this.resultKey = statement.toMember().getKey();
 		}
 
 	}

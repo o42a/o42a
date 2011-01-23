@@ -20,17 +20,19 @@
 package org.o42a.core.artifact.link;
 
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.FieldVariant;
-import org.o42a.core.member.field.FieldVariantDecl;
 import org.o42a.core.st.DefinitionTarget;
 
 
-final class LinkFieldVariantDecl extends FieldVariantDecl<Link> {
+final class LinkFieldVariant extends FieldVariant<Link> {
 
-	LinkFieldVariantDecl(
-			LinkFieldDecl fieldDecl,
-			FieldVariant<Link> variant) {
-		super(fieldDecl, variant);
+	LinkFieldVariant(
+			DeclaredLinkField field,
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		super(field, declaration, definition);
 	}
 
 	@Override
@@ -41,10 +43,18 @@ final class LinkFieldVariantDecl extends FieldVariantDecl<Link> {
 
 	@Override
 	protected void init() {
+		if (!getInitialConditions().isEmpty(getField())) {
+			getLogger().prohibitedConditionalDeclaration(this);
+			getLinkField().invalid();
+		}
 	}
 
 	@Override
 	protected void declareMembers() {
+	}
+
+	private final DeclaredLinkField getLinkField() {
+		return (DeclaredLinkField) getField();
 	}
 
 }

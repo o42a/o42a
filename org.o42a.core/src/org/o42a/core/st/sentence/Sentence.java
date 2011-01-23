@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.*;
-import org.o42a.core.member.field.MemberRegistry;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementKind;
 import org.o42a.core.value.ValueType;
