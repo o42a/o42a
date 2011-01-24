@@ -74,7 +74,7 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
+	public Action initialLogicalValue(LocalScope scope) {
 		return null;
 	}
 

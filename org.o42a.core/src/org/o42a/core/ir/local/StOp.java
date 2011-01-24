@@ -51,6 +51,6 @@ public abstract class StOp {
 
 	public abstract void writeAssignment(Control control, ValOp result);
 
-	public abstract void writeCondition(Control control);
+	public abstract void writeLogicalValue(Control control);
 
 }

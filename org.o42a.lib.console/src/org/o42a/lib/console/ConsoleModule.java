@@ -80,7 +80,7 @@ public class ConsoleModule extends Module {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		getFieldRegistry().declareMember(new Print(this).toMember());
+		getMemberRegistry().declareMember(new Print(this).toMember());
 		super.declareMembers(members);
 	}
 

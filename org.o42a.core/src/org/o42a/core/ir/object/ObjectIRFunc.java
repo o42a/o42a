@@ -22,9 +22,9 @@ package org.o42a.core.ir.object;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.CondDef;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.LogicalDef;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.LogicalValue;
@@ -54,11 +54,11 @@ abstract class ObjectIRFunc {
 		return getObjectIR().getObject().getDefinitions();
 	}
 
-	public boolean isExplicit(CondDef cond) {
-		if (cond.isEmpty()) {
+	public boolean isExplicit(LogicalDef def) {
+		if (def.isEmpty()) {
 			return false;
 		}
-		return cond.hasDefinitionsFrom(getObjectIR().getObject());
+		return def.hasDefinitionsFrom(getObjectIR().getObject());
 	}
 
 	public final boolean isFalse(DefValue condition, ObjectOp body) {
@@ -90,9 +90,9 @@ abstract class ObjectIRFunc {
 
 		if (!object.isRuntime()) {
 			if (isFalse(
-					definitions.postCondition(definitions.getScope()),
+					definitions.condition(definitions.getScope()),
 					body)) {
-				code.debug("Static object post-condition is false");
+				code.debug("Static object condition is false");
 				result.storeFalse(code);
 				return true;
 			}

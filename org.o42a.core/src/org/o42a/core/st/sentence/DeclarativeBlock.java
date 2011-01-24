@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.ref.Cond.disjunction;
+import static org.o42a.core.ref.Logical.disjunction;
 import static org.o42a.core.st.Conditions.emptyConditions;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
@@ -33,7 +33,7 @@ import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.Reproducer;
@@ -131,7 +131,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 	@Override
 	public Definitions define(DefinitionTarget target) {
-		if (!getKind().hasCondition()) {
+		if (!getKind().hasLogicalValue()) {
 			return null;
 		}
 
@@ -162,7 +162,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
+	public Action initialLogicalValue(LocalScope scope) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -239,47 +239,47 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 			return this.conditions.prerequisite(scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
+		public Logical precondition(Scope scope) {
 
 			final List<DeclarativeSentence> sentences =
 				this.block.getSentences();
 			final int size = sentences.size();
 
 			if (size <= 0) {
-				return this.conditions.condition(scope);
+				return this.conditions.precondition(scope);
 			}
 
-			Cond req = null;
-			final Cond[] vars = new Cond[size];
+			Logical req = null;
+			final Logical[] vars = new Logical[size];
 			int varIdx = 0;
 
 			for (DeclarativeSentence sentence : sentences) {
 
-				final Cond fullCondition =
-					sentence.getConditions().fullCondition(scope);
+				final Logical fullLogical =
+					sentence.getConditions().fullLogical(scope);
 
 				if (sentence.getPrerequisite() != null) {
-					vars[varIdx++] = fullCondition;
+					vars[varIdx++] = fullLogical;
 				} else if (req == null) {
-					req = fullCondition;
+					req = fullLogical;
 				} else {
-					req = req.and(fullCondition);
+					req = req.and(fullLogical);
 				}
 			}
 
 			if (varIdx == 0) {
 				if (req == null) {
-					return this.conditions.condition(scope);
+					return this.conditions.precondition(scope);
 				}
 				return req;
 			}
 
-			final Cond disjunction = disjunction(
+			final Logical disjunction = disjunction(
 					this.block,
 					this.block.getScope(),
 					ArrayUtil.clip(vars, varIdx));

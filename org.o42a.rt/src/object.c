@@ -350,7 +350,7 @@ static o42a_rotype_t *propagate_object(
 	data->value_f = adata->value_f;
 	data->requirement_f = adata->requirement_f;
 	data->claim_f = adata->claim_f;
-	data->post_condition_f = adata->post_condition_f;
+	data->condition_f = adata->condition_f;
 	data->proposition_f = adata->proposition_f;
 
 	data->owner_type = ctr->scope_type;
@@ -592,7 +592,7 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	data->value_f = sdata->value_f;
 	data->requirement_f = sdata->requirement_f;
 	data->claim_f = sdata->claim_f;
-	data->post_condition_f = sdata->post_condition_f;
+	data->condition_f = sdata->condition_f;
 	data->proposition_f = sdata->proposition_f;
 
 	data->owner_type = ctr->scope_type;

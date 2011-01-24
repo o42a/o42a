@@ -88,15 +88,15 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public void writePostCondition(Code code, CodePos exit, ObjOp body) {
+	public void writeCondition(Code code, CodePos exit, ObjOp body) {
 		if (!getPrecision().isExact()) {
-			super.writePostCondition(code, exit, body);
+			super.writeCondition(code, exit, body);
 			return;
 		}
 
 		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
 
-		valueIR.writePostCondition(code, exit, this, body);
+		valueIR.writeCondition(code, exit, this, body);
 	}
 
 	@Override

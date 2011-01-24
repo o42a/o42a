@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.def.Definitions.postConditionDefinitions;
+import static org.o42a.core.def.Definitions.conditionDefinitions;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import org.o42a.core.Container;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.St;
@@ -87,7 +87,7 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	protected Definitions define(DefinitionTarget target) {
-		if (!getKind().hasCondition()) {
+		if (!getKind().hasLogicalValue()) {
 			return null;
 		}
 		if (!getKind().hasValue()) {
@@ -95,10 +95,10 @@ public class Declaratives extends Statements<Declaratives> {
 				return null;
 			}
 
-			final Cond condition =
-				lastConditions().fullCondition(target.getScope());
+			final Logical condition =
+				lastConditions().fullLogical(target.getScope());
 
-			return postConditionDefinitions(
+			return conditionDefinitions(
 					condition,
 					target.getScope(),
 					condition);
@@ -147,13 +147,13 @@ public class Declaratives extends Statements<Declaratives> {
 	private final class DeclarativeConditions extends Conditions {
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 			return lastConditions().prerequisite(scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
-			return lastConditions().condition(scope);
+		public Logical precondition(Scope scope) {
+			return lastConditions().precondition(scope);
 		}
 
 		@Override

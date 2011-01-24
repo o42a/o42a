@@ -192,7 +192,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			}
 
 			// write explicit definition
-			def.getPrerequisite().writeFullCondition(block, nextPos, host);
+			def.getPrerequisite().writeFullLogical(block, nextPos, host);
 			def.writeValue(block, nextPos, host, result);
 
 			block.go(code.tail());

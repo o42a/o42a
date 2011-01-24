@@ -86,7 +86,7 @@ public abstract class DefinedObject extends PlainObject {
 
 		final Block<Declaratives> definition = getDefinition();
 
-		if (!definition.getKind().hasCondition()) {
+		if (!definition.getKind().hasLogicalValue()) {
 			return null;
 		}
 

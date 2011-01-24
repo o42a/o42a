@@ -23,18 +23,18 @@ package org.o42a.core.st;
 public enum StatementKind {
 
 	EMPTY,
-	CONDITION,
+	LOGICAL,
 	FIELD,
 	VALUE;
 
 	public static final StatementKind CLAUSE = EMPTY;
 
-	public final boolean hasCondition() {
+	public final boolean hasLogicalValue() {
 		return this != EMPTY;
 	}
 
-	public final boolean isCondition() {
-		return this == CONDITION;
+	public final boolean isLogical() {
+		return this == LOGICAL;
 	}
 
 	public final boolean hasDefinition() {

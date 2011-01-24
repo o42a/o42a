@@ -94,15 +94,15 @@ public abstract class Rescoper {
 			changed |= newProposition != proposition;
 		}
 
-		final CondDef requirement = definitions.getRequirement();
-		final CondDef newRequirement = requirement.rescope(this);
+		final LogicalDef requirement = definitions.getRequirement();
+		final LogicalDef newRequirement = requirement.rescope(this);
 
 		changed = changed || requirement != newRequirement;
 
-		final CondDef postCondition = definitions.getPostCondition();
-		final CondDef newPostCondition = postCondition.rescope(this);
+		final LogicalDef condition = definitions.getCondition();
+		final LogicalDef newCondition = condition.rescope(this);
 
-		changed |= postCondition != newPostCondition;
+		changed |= condition != newCondition;
 
 		if (!changed) {
 			return definitions;
@@ -113,7 +113,7 @@ public abstract class Rescoper {
 				resultScope,
 				definitions.getValueType(),
 				newRequirement,
-				newPostCondition,
+				newCondition,
 				newClaims,
 				newPropositions);
 	}

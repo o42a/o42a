@@ -99,7 +99,7 @@ public class Imperatives extends Statements<Imperatives> {
 			final StOp op = statement.op(control.getBuilder());
 
 			if (result == null) {
-				op.writeCondition(control);
+				op.writeLogicalValue(control);
 			} else {
 				op.writeAssignment(control, result);
 			}

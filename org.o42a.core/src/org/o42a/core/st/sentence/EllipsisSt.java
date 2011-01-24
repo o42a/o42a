@@ -81,7 +81,7 @@ final class EllipsisSt extends St {
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
+	public Action initialLogicalValue(LocalScope scope) {
 		return initialValue(scope);
 	}
 
@@ -118,7 +118,7 @@ final class EllipsisSt extends St {
 		}
 
 		@Override
-		public void writeCondition(Control control) {
+		public void writeLogicalValue(Control control) {
 		}
 
 	}
@@ -142,7 +142,7 @@ final class EllipsisSt extends St {
 		}
 
 		@Override
-		public void writeCondition(Control control) {
+		public void writeLogicalValue(Control control) {
 		}
 
 	}

@@ -44,7 +44,7 @@ public class ObjectValueIR {
 	private final ObjectValue value;
 	private final Requirement requirement;
 	private final Claim claim;
-	private final PostCondition postCondition;
+	private final Condition condition;
 	private final Proposition proposition;
 	private ArrayList<LocalIRFunc> locals;
 
@@ -55,7 +55,7 @@ public class ObjectValueIR {
 		this.value = new ObjectValue(objectIR);
 		this.requirement = new Requirement(objectIR);
 		this.claim = new Claim(objectIR);
-		this.postCondition = new PostCondition(objectIR);
+		this.condition = new Condition(objectIR);
 		this.proposition = new Proposition(objectIR);
 	}
 
@@ -102,12 +102,12 @@ public class ObjectValueIR {
 		this.claim.call(code, result, host, body);
 	}
 
-	protected void writePostCondition(
+	protected void writeCondition(
 			Code code,
 			CodePos exit,
 			ObjOp host,
 			ObjectOp body) {
-		this.postCondition.call(code, exit, host, body);
+		this.condition.call(code, exit, host, body);
 	}
 
 	protected void writeProposition(
@@ -123,7 +123,7 @@ public class ObjectValueIR {
 		final Obj object = getObjectIR().getObject();
 		final Definitions definitions = object.getDefinitions();
 
-		if (!object.isRuntime() && definitions.getPostCondition().isFalse()
+		if (!object.isRuntime() && definitions.getCondition().isFalse()
 				|| definitions.getRequirement().isFalse()) {
 			createFalseFunctions(typeIR, definitions);
 		} else {
@@ -152,13 +152,13 @@ public class ObjectValueIR {
 
 		final CodeBlk done = code.addBlock("done");
 
-		final CodeBlk postConditionFailed =
-			code.addBlock("post_condition_failed");
+		final CodeBlk conditionFailed =
+			code.addBlock("condition_failed");
 
-		writePostCondition(code, postConditionFailed.head(), host, null);
-		if (postConditionFailed.exists()) {
-			result.storeFalse(postConditionFailed);
-			postConditionFailed.returnVoid();
+		writeCondition(code, conditionFailed.head(), host, null);
+		if (conditionFailed.exists()) {
+			result.storeFalse(conditionFailed);
+			conditionFailed.returnVoid();
 		}
 
 		this.claim.call(code, result, host, null);
@@ -200,18 +200,18 @@ public class ObjectValueIR {
 		this.claim.buildFunc(code, result, host, definitions, true);
 	}
 
-	protected void createPostCondition(
+	protected void createCondition(
 			ObjectTypeIR typeIR,
 			Definitions definitions) {
-		this.postCondition.create(typeIR, definitions);
+		this.condition.create(typeIR, definitions);
 	}
 
-	protected void buildPostCondition(
+	protected void buildCondition(
 			Code code,
 			CodePos exit,
 			ObjOp host,
 			Definitions definitions) {
-		this.postCondition.buildFunc(code, exit, host, definitions);
+		this.condition.buildFunc(code, exit, host, definitions);
 	}
 
 	protected void createProposition(
@@ -277,14 +277,14 @@ public class ObjectValueIR {
 		} else {
 			createClaimFunctions(typeIR, definitions);
 		}
-		this.postCondition.setFalse(typeIR);
+		this.condition.setFalse(typeIR);
 		this.proposition.setFalse(typeIR);
 	}
 
 	private void createFunctions(ObjectTypeIR typeIR, Definitions definitions) {
 		createValue(typeIR, definitions);
 		createClaimFunctions(typeIR, definitions);
-		createPostCondition(typeIR, definitions);
+		createCondition(typeIR, definitions);
 		createProposition(typeIR, definitions);
 	}
 
@@ -292,7 +292,7 @@ public class ObjectValueIR {
 		this.value.build(definitions);
 		this.requirement.build(definitions);
 		this.claim.build(definitions);
-		this.postCondition.build(definitions);
+		this.condition.build(definitions);
 		this.proposition.build(definitions);
 	}
 
@@ -408,25 +408,25 @@ public class ObjectValueIR {
 
 	}
 
-	private final class PostCondition extends ObjectValueIRCondFunc {
+	private final class Condition extends ObjectValueIRCondFunc {
 
-		private PostCondition(ObjectIR objectIR) {
+		private Condition(ObjectIR objectIR) {
 			super(objectIR);
 		}
 
 		@Override
 		protected String suffix() {
-			return "post_condition";
+			return "condition";
 		}
 
 		@Override
 		protected DefValue value(Definitions definitions) {
-			return definitions.postCondition(definitions.getScope());
+			return definitions.condition(definitions.getScope());
 		}
 
 		@Override
 		protected CodeRec<ObjectCondFunc> func(ObjectDataType data) {
-			return data.getPostConditionFunc();
+			return data.getConditionFunc();
 		}
 
 		@Override
@@ -435,7 +435,7 @@ public class ObjectValueIR {
 				CodePos exit,
 				ObjOp host,
 				Definitions definitions) {
-			buildPostCondition(code, exit, host, definitions);
+			buildCondition(code, exit, host, definitions);
 		}
 
 	}

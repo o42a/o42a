@@ -24,7 +24,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -35,7 +35,7 @@ public abstract class DefWrap extends Def {
 
 	public DefWrap(
 			Def wrapped,
-			CondDef prerequisite,
+			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(
 				wrapped.getSource(),
@@ -48,7 +48,7 @@ public abstract class DefWrap extends Def {
 	protected DefWrap(
 			DefWrap prototype,
 			Def wrapped,
-			CondDef prerequisite,
+			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 		this.wrapped = prototype.wrapped;
@@ -65,9 +65,9 @@ public abstract class DefWrap extends Def {
 	}
 
 	@Override
-	public final Def and(Cond condition) {
+	public final Def and(Logical logical) {
 
-		final Def newDef = this.wrapped.and(condition);
+		final Def newDef = this.wrapped.and(logical);
 
 		if (newDef == this.wrapped) {
 			return this;
@@ -91,13 +91,13 @@ public abstract class DefWrap extends Def {
 	}
 
 	@Override
-	protected final CondDef buildPrerequisite() {
+	protected final LogicalDef buildPrerequisite() {
 		return this.wrapped.getPrerequisite();
 	}
 
 	@Override
-	protected final Cond condition() {
-		return this.wrapped.condition();
+	protected final Logical logical() {
+		return this.wrapped.logical();
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public abstract class DefWrap extends Def {
 	protected final DefWrap create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			CondDef prerequisite) {
+			LogicalDef prerequisite) {
 
 		final Def newWrapped = this.wrapped.rescope(additionalRescoper);
 
@@ -122,6 +122,6 @@ public abstract class DefWrap extends Def {
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			Def wrapped,
-			CondDef prerequisite);
+			LogicalDef prerequisite);
 
 }

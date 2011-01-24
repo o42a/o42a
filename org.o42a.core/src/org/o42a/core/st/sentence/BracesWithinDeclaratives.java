@@ -73,7 +73,7 @@ final class BracesWithinDeclaratives extends St {
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
+	public Action initialLogicalValue(LocalScope scope) {
 		throw new UnsupportedOperationException();
 	}
 

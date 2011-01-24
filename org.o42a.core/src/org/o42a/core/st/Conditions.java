@@ -19,12 +19,12 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.ref.Cond.trueCondition;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Def;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 
 
 public abstract class Conditions {
@@ -33,16 +33,16 @@ public abstract class Conditions {
 		return new Empty(location);
 	}
 
-	public abstract Cond prerequisite(Scope scope);
+	public abstract Logical prerequisite(Scope scope);
 
-	public abstract Cond condition(Scope scope);
+	public abstract Logical precondition(Scope scope);
 
 	public boolean isEmpty(Scope scope) {
-		return prerequisite(scope).isTrue() && condition(scope).isTrue();
+		return prerequisite(scope).isTrue() && precondition(scope).isTrue();
 	}
 
-	public Cond fullCondition(Scope scope) {
-		return prerequisite(scope).and(condition(scope));
+	public Logical fullLogical(Scope scope) {
+		return prerequisite(scope).and(precondition(scope));
 	}
 
 	public Conditions notCondition(LocationSpec location) {
@@ -50,8 +50,8 @@ public abstract class Conditions {
 	}
 
 	public Def apply(Def def) {
-		return def.addPrerequisite(prerequisite(def.getScope()).toCondDef())
-		.and(condition(def.getScope()));
+		return def.addPrerequisite(prerequisite(def.getScope()).toLogicalDef())
+		.and(precondition(def.getScope()));
 	}
 
 	private static final class Empty extends Conditions {
@@ -63,13 +63,13 @@ public abstract class Conditions {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
-			return trueCondition(this.location, scope);
+		public Logical prerequisite(Scope scope) {
+			return logicalTrue(this.location, scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
-			return trueCondition(this.location, scope);
+		public Logical precondition(Scope scope) {
+			return logicalTrue(this.location, scope);
 		}
 
 		@Override
@@ -96,15 +96,15 @@ public abstract class Conditions {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 			reportError();
 			return this.conditions.prerequisite(scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
+		public Logical precondition(Scope scope) {
 			reportError();
-			return this.conditions.condition(scope);
+			return this.conditions.precondition(scope);
 		}
 
 		@Override

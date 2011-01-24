@@ -19,23 +19,23 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 
 
-final class CondDefConjunction {
+final class LogicalDefConjunction {
 
-	public static CondDefConjunction conjunction(
-			SingleCondDef[] conds,
-			CondDef cond,
+	public static LogicalDefConjunction conjunction(
+			SingleLogicalDef[] defs,
+			LogicalDef def,
 			boolean reverse) {
-		return conjunction(conds, 0, conds.length, cond, reverse);
+		return conjunction(defs, 0, defs.length, def, reverse);
 	}
 
-	public static CondDefConjunction conjunction(
-			SingleCondDef[] conds,
+	public static LogicalDefConjunction conjunction(
+			SingleLogicalDef[] defs,
 			int from,
 			int to,
-			CondDef cond,
+			LogicalDef def,
 			boolean reverse) {
 
 		final int step = reverse ? -1 : 1;
@@ -43,57 +43,57 @@ final class CondDefConjunction {
 
 		for (int i = start; i >= from && i < to; i += step) {
 
-			final SingleCondDef conjunction;
+			final SingleLogicalDef conjunction;
 
 			if (reverse) {
-				conjunction = simpleConjunction(conds[i], cond);
+				conjunction = simpleConjunction(defs[i], def);
 			} else {
-				conjunction = simpleConjunction(cond, conds[i]);
+				conjunction = simpleConjunction(def, defs[i]);
 			}
 
 			if (conjunction != null) {
-				return new CondDefConjunction(conjunction, i);
+				return new LogicalDefConjunction(conjunction, i);
 			}
 		}
 
 		return null;
 	}
 
-	public static SingleCondDef simpleConjunction(
-			CondDef cond1,
-			CondDef cond2) {
+	public static SingleLogicalDef simpleConjunction(
+			LogicalDef cond1,
+			LogicalDef cond2) {
 
-		final Cond conjunction = condConjunction(cond1, cond2);
+		final Logical conjunction = condConjunction(cond1, cond2);
 
 		if (conjunction == null) {
 			return null;
 		}
 
-		return new SingleCondDef(
+		return new SingleLogicalDef(
 				cond1.getSource(),
 				conjunction,
 				cond1.getRescoper());
 	}
 
-	private static Cond condConjunction(CondDef cond1, CondDef cond2) {
+	private static Logical condConjunction(LogicalDef cond1, LogicalDef cond2) {
 		if (cond1.getSource() != cond2.getSource()) {
 			return null;
 		}
 		if (!cond1.getRescoper().equals(cond2.getRescoper())) {
 			return null;
 		}
-		return cond1.condition().and(cond2.condition());
+		return cond1.logical().and(cond2.logical());
 	}
 
-	private final SingleCondDef conjunction;
+	private final SingleLogicalDef conjunction;
 	private final int index;
 
-	public CondDefConjunction(SingleCondDef conjunction, int index) {
+	public LogicalDefConjunction(SingleLogicalDef conjunction, int index) {
 		this.conjunction = conjunction;
 		this.index = index;
 	}
 
-	public final SingleCondDef getConjunction() {
+	public final SingleLogicalDef getConjunction() {
 		return this.conjunction;
 	}
 

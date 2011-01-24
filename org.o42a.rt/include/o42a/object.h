@@ -231,13 +231,13 @@ struct o42a_odata {
 	o42a_oval_ft *claim_f;
 
 	/**
-	 * Object's post-condition calculator function.
+	 * Object's condition calculator function.
 	 *
 	 * Implies common claim.
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_ocond_ft *post_condition_f;
+	o42a_ocond_ft *condition_f;
 
 	/**
 	 * Object's proposition calculator function.

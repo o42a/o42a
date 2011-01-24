@@ -36,48 +36,48 @@ import org.o42a.core.value.*;
 import org.o42a.core.value.Void;
 
 
-public abstract class Cond extends CondBase {
+public abstract class Logical extends CondBase {
 
-	public static Cond trueCondition(LocationSpec location, Scope scope) {
+	public static Logical logicalTrue(LocationSpec location, Scope scope) {
 		return new True(location, scope);
 	}
 
-	public static Cond falseCondition(LocationSpec location, Scope scope) {
+	public static Logical logicalFalse(LocationSpec location, Scope scope) {
 		return new False(location, scope);
 	}
 
-	public static Cond runtimeCondition(LocationSpec location, Scope scope) {
+	public static Logical runtimeLogical(LocationSpec location, Scope scope) {
 		return new Runtime(location, scope);
 	}
 
-	public static Cond and(Cond cond1, Cond cond2) {
+	public static Logical and(Logical cond1, Logical cond2) {
 		if (cond1 == null) {
 			return cond2;
 		}
 		return cond1.and(cond2);
 	}
 
-	public static Cond or(Cond cond1, Cond cond2) {
+	public static Logical or(Logical cond1, Logical cond2) {
 		if (cond1 == null) {
 			return cond2;
 		}
 		return cond1.or(cond2);
 	}
 
-	public static Cond conjunction(
+	public static Logical conjunction(
 			LocationSpec location,
 			Scope scope,
-			Cond... claims) {
+			Logical... claims) {
 		if (claims.length == 0) {
-			return falseCondition(location, scope);
+			return logicalFalse(location, scope);
 		}
 		if (claims.length == 1) {
 			return claims[0];
 		}
 
-		final ArrayList<Cond> newClaims = new ArrayList<Cond>(claims.length);
+		final ArrayList<Logical> newClaims = new ArrayList<Logical>(claims.length);
 
-		for (Cond claim : claims) {
+		for (Logical claim : claims) {
 			claim.assertCompatible(scope);
 
 			final LogicalValue value = claim.getConstantValue();
@@ -89,10 +89,10 @@ public abstract class Cond extends CondBase {
 				continue;
 			}
 
-			final Cond[] expanded = claim.expandConjunction();
+			final Logical[] expanded = claim.expandConjunction();
 
 			if (expanded != null) {
-				for (Cond c : expanded) {
+				for (Logical c : expanded) {
 					and(newClaims, c);
 				}
 			} else {
@@ -109,34 +109,34 @@ public abstract class Cond extends CondBase {
 		return new And(
 				location,
 				scope,
-				newClaims.toArray(new Cond[size]));
+				newClaims.toArray(new Logical[size]));
 	}
 
-	public static Cond conjunction(
+	public static Logical conjunction(
 			LocationSpec location,
 			Scope scope,
-			Collection<? extends Cond> claims) {
+			Collection<? extends Logical> claims) {
 		return conjunction(
 				location,
 				scope,
-				claims.toArray(new Cond[claims.size()]));
+				claims.toArray(new Logical[claims.size()]));
 	}
 
-	public static Cond disjunction(
+	public static Logical disjunction(
 			LocationSpec location,
 			Scope scope,
-			Cond... variants) {
+			Logical... variants) {
 		if (variants.length == 0) {
-			return falseCondition(location, scope);
+			return logicalFalse(location, scope);
 		}
 		if (variants.length == 1) {
 			return variants[0];
 		}
 
-		final ArrayList<Cond> newVariants =
-			new ArrayList<Cond>(variants.length);
+		final ArrayList<Logical> newVariants =
+			new ArrayList<Logical>(variants.length);
 
-		for (Cond variant : variants) {
+		for (Logical variant : variants) {
 
 			final LogicalValue value = variant.getConstantValue();
 
@@ -147,10 +147,10 @@ public abstract class Cond extends CondBase {
 				continue;
 			}
 
-			final Cond[] expanded = variant.expandDisjunction();
+			final Logical[] expanded = variant.expandDisjunction();
 
 			if (expanded != null) {
-				for (Cond v : expanded) {
+				for (Logical v : expanded) {
 					or(newVariants, v);
 				}
 			} else {
@@ -167,30 +167,30 @@ public abstract class Cond extends CondBase {
 		return new Or(
 				location,
 				scope,
-				newVariants.toArray(new Cond[size]));
+				newVariants.toArray(new Logical[size]));
 	}
 
-	public static Cond disjunction(
+	public static Logical disjunction(
 			LocationSpec location,
 			Scope scope,
-			Collection<? extends Cond> variants) {
+			Collection<? extends Logical> variants) {
 		return disjunction(
 				location,
 				scope,
-				variants.toArray(new Cond[variants.size()]));
+				variants.toArray(new Logical[variants.size()]));
 	}
 
-	private static void and(ArrayList<Cond> claims, Cond claim) {
+	private static void and(ArrayList<Logical> claims, Logical claim) {
 		if (claims.isEmpty()) {
 			claims.add(claim);
 			return;
 		}
 
-		final Iterator<Cond> i = claims.iterator();
+		final Iterator<Logical> i = claims.iterator();
 
 		while (i.hasNext()) {
 
-			final Cond c1 = i.next();
+			final Logical c1 = i.next();
 
 			if (c1.requires(claim)) {
 				return;
@@ -199,7 +199,7 @@ public abstract class Cond extends CondBase {
 				i.remove();
 				while (i.hasNext()) {
 
-					final Cond c2 = i.next();
+					final Logical c2 = i.next();
 
 					if (claim.requires(c2)) {
 						i.remove();
@@ -213,17 +213,17 @@ public abstract class Cond extends CondBase {
 		claims.add(claim);
 	}
 
-	private static void or(ArrayList<Cond> variants, Cond variant) {
+	private static void or(ArrayList<Logical> variants, Logical variant) {
 		if (variants.isEmpty()) {
 			variants.add(variant);
 			return;
 		}
 
-		final Iterator<Cond> i = variants.iterator();
+		final Iterator<Logical> i = variants.iterator();
 
 		while (i.hasNext()) {
 
-			final Cond c1 = i.next();
+			final Logical c1 = i.next();
 
 			if (c1.implies(variant)) {
 				return;
@@ -232,7 +232,7 @@ public abstract class Cond extends CondBase {
 				i.remove();
 				while (i.hasNext()) {
 
-					final Cond c2 = i.next();
+					final Logical c2 = i.next();
 
 					if (variant.implies(c2)) {
 						i.remove();
@@ -245,9 +245,9 @@ public abstract class Cond extends CondBase {
 		variants.add(variant);
 	}
 
-	private Cond negated;
+	private Logical negated;
 
-	public Cond(LocationSpec location, Scope scope) {
+	public Logical(LocationSpec location, Scope scope) {
 		super(location, scope);
 	}
 
@@ -267,9 +267,9 @@ public abstract class Cond extends CondBase {
 
 	public abstract LogicalValue logicalValue(Scope scope);
 
-	public abstract Cond reproduce(Reproducer reproducer);
+	public abstract Logical reproduce(Reproducer reproducer);
 
-	public final Cond or(Cond other) {
+	public final Logical or(Logical other) {
 		if (other == null) {
 			return this;
 		}
@@ -286,7 +286,7 @@ public abstract class Cond extends CondBase {
 			return this;
 		}
 
-		final Cond[] array = new Cond[2];
+		final Logical[] array = new Logical[2];
 
 		array[0] = this;
 		array[1] = other;
@@ -294,7 +294,7 @@ public abstract class Cond extends CondBase {
 		return new Or(this, getScope(), array);
 	}
 
-	public final Cond and(Cond other) {
+	public final Logical and(Logical other) {
 		if (other == null) {
 			return this;
 		}
@@ -311,7 +311,7 @@ public abstract class Cond extends CondBase {
 			return this;
 		}
 
-		final Cond[] array = new Cond[2];
+		final Logical[] array = new Logical[2];
 
 		array[0] = this;
 		array[1] = other;
@@ -319,16 +319,16 @@ public abstract class Cond extends CondBase {
 		return new And(this, getScope(), array);
 	}
 
-	public final Cond negate() {
+	public final Logical negate() {
 		if (this.negated == null) {
 
 			final LogicalValue logicalValue = getConstantValue();
 
 			if (logicalValue.isConstant()) {
 				if (logicalValue.isFalse()) {
-					this.negated = trueCondition(this, getScope());
+					this.negated = logicalTrue(this, getScope());
 				} else {
-					this.negated = falseCondition(this, getScope());
+					this.negated = logicalFalse(this, getScope());
 				}
 			} else {
 				this.negated = new Negated(this);
@@ -339,7 +339,7 @@ public abstract class Cond extends CondBase {
 		return this.negated;
 	}
 
-	public boolean sameAs(Cond other) {
+	public boolean sameAs(Logical other) {
 		if (equals(other)) {
 			return true;
 		}
@@ -353,7 +353,7 @@ public abstract class Cond extends CondBase {
 		return value == other.getConstantValue();
 	}
 
-	public final boolean implies(Cond other) {
+	public final boolean implies(Logical other) {
 		if (equals(other)) {
 			return true;
 		}
@@ -373,7 +373,7 @@ public abstract class Cond extends CondBase {
 		return other.isFalse();
 	}
 
-	public final boolean requires(Cond other) {
+	public final boolean requires(Logical other) {
 		if (equals(other)) {
 			return true;
 		}
@@ -408,14 +408,14 @@ public abstract class Cond extends CondBase {
 
 	public abstract void write(Code code, CodePos exit, HostOp host);
 
-	protected boolean runtimeImplies(Cond other) {
+	protected boolean runtimeImplies(Logical other) {
 
-		final Cond[] disjunction = expandDisjunction();
+		final Logical[] disjunction = expandDisjunction();
 
 		if (disjunction == null) {
 			return false;
 		}
-		for (Cond variant : disjunction) {
+		for (Logical variant : disjunction) {
 			if (variant.implies(other)) {
 				return true;
 			}
@@ -424,14 +424,14 @@ public abstract class Cond extends CondBase {
 		return false;
 	}
 
-	protected boolean runtimeRequires(Cond other) {
+	protected boolean runtimeRequires(Logical other) {
 
-		final Cond[] conjunction = expandConjunction();
+		final Logical[] conjunction = expandConjunction();
 
 		if (conjunction == null) {
 			return false;
 		}
-		for (Cond claim : conjunction) {
+		for (Logical claim : conjunction) {
 			if (claim.requires(other)) {
 				return true;
 			}
@@ -440,15 +440,15 @@ public abstract class Cond extends CondBase {
 		return false;
 	}
 
-	protected Cond[] expandConjunction() {
+	protected Logical[] expandConjunction() {
 		return null;
 	}
 
-	protected Cond[] expandDisjunction() {
+	protected Logical[] expandDisjunction() {
 		return null;
 	}
 
-	private static final class True extends Cond {
+	private static final class True extends Logical {
 
 		True(LocationSpec location, Scope scope) {
 			super(location, scope);
@@ -465,14 +465,14 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 			return new True(this, reproducer.getScope());
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Cond: " + this);
+			code.debug("Logical: TRUE");
 		}
 
 		@Override
@@ -482,7 +482,7 @@ public abstract class Cond extends CondBase {
 
 	}
 
-	private static final class False extends Cond {
+	private static final class False extends Logical {
 
 		False(LocationSpec location, Scope scope) {
 			super(location, scope);
@@ -499,14 +499,14 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 			return new False(this, reproducer.getScope());
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Cond: FALSE");
+			code.debug("Logical: FALSE");
 			code.go(exit);
 		}
 
@@ -517,7 +517,7 @@ public abstract class Cond extends CondBase {
 
 	}
 
-	private static final class Runtime extends Cond {
+	private static final class Runtime extends Logical {
 
 		Runtime(LocationSpec location, Scope scope) {
 			super(location, scope);
@@ -534,14 +534,14 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 			return new Runtime(this, reproducer.getScope());
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Cond: " + this);
+			code.debug("Logical: " + this);
 		}
 
 		@Override
@@ -551,11 +551,11 @@ public abstract class Cond extends CondBase {
 
 	}
 
-	private static final class Or extends Cond {
+	private static final class Or extends Logical {
 
-		private final Cond[] variants;
+		private final Logical[] variants;
 
-		Or(LocationSpec location, Scope scope, Cond[] variants) {
+		Or(LocationSpec location, Scope scope, Logical[] variants) {
 			super(location, scope);
 			this.variants = variants;
 		}
@@ -565,7 +565,7 @@ public abstract class Cond extends CondBase {
 
 			LogicalValue result = null;
 
-			for (Cond variant : this.variants) {
+			for (Logical variant : this.variants) {
 
 				final LogicalValue value = variant.getConstantValue();
 
@@ -584,7 +584,7 @@ public abstract class Cond extends CondBase {
 
 			LogicalValue result = null;
 
-			for (Cond variant : this.variants) {
+			for (Logical variant : this.variants) {
 
 				final LogicalValue value = variant.logicalValue(scope);
 
@@ -599,14 +599,14 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 
-			final Cond[] variants = new Cond[this.variants.length];
+			final Logical[] variants = new Logical[this.variants.length];
 
 			for (int i = 0; i < variants.length; ++i) {
 
-				final Cond reproduced =
+				final Logical reproduced =
 					this.variants[i].reproduce(reproducer);
 
 				if (reproduced == null) {
@@ -621,7 +621,7 @@ public abstract class Cond extends CondBase {
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Cond: " + this);
+			code.debug("Logical: " + this);
 
 			Code block = code.addBlock("0_or");
 
@@ -653,7 +653,7 @@ public abstract class Cond extends CondBase {
 			final StringBuilder out = new StringBuilder();
 
 			out.append('(');
-			for (Cond variant : this.variants) {
+			for (Logical variant : this.variants) {
 				if (out.length() > 1) {
 					out.append(" | ");
 				}
@@ -665,7 +665,7 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		protected Cond[] expandDisjunction() {
+		protected Logical[] expandDisjunction() {
 			return this.variants;
 		}
 
@@ -673,22 +673,22 @@ public abstract class Cond extends CondBase {
 
 	private static final class And extends AbstractConjunction {
 
-		private final Cond[] claims;
+		private final Logical[] claims;
 
-		And(LocationSpec location, Scope scope, Cond[] claims) {
+		And(LocationSpec location, Scope scope, Logical[] claims) {
 			super(location, scope);
 			this.claims = claims;
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 
-			final Cond[] claims = new Cond[this.claims.length];
+			final Logical[] claims = new Logical[this.claims.length];
 
 			for (int i = 0; i < claims.length; ++i) {
 
-				final Cond reproduced =
+				final Logical reproduced =
 					this.claims[i].reproduce(reproducer);
 
 				if (reproduced == null) {
@@ -702,7 +702,7 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		protected Cond[] expandConjunction() {
+		protected Logical[] expandConjunction() {
 			return this.claims;
 		}
 
@@ -712,15 +712,15 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		protected Cond claim(int index) {
+		protected Logical claim(int index) {
 			return this.claims[index];
 		}
 
 	}
 
-	private static final class Negated extends Cond {
+	private static final class Negated extends Logical {
 
-		Negated(Cond original) {
+		Negated(Logical original) {
 			super(original, original.getScope());
 		}
 
@@ -735,10 +735,10 @@ public abstract class Cond extends CondBase {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 
-			final Cond reproduced = negate().reproduce(reproducer);
+			final Logical reproduced = negate().reproduce(reproducer);
 
 			if (reproduced == null) {
 				return null;
@@ -749,7 +749,7 @@ public abstract class Cond extends CondBase {
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Cond: " + this);
+			code.debug("Logical: " + this);
 
 			final CodeBlk isTrue = code.addBlock("is_true");
 

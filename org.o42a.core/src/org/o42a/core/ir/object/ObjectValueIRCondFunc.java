@@ -145,11 +145,11 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 
 		if (condition.isRequirement()) {
 			writeAncestorDef(code, exit, host, condition);
-			builder.addDefs(condition.getCondDef().getRequirements());
+			builder.addDefs(condition.getLogicalDef().getRequirements());
 			return;
 		}
 
-		builder.addDefs(condition.getCondDef().getRequirements());
+		builder.addDefs(condition.getLogicalDef().getRequirements());
 		if (builder.hasExplicitDefs) {
 			return;
 		}
@@ -187,7 +187,7 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		if (condition.isRequirement()) {
 			ancestorData.writeRequirement(hasAncestor, exit, ancestorBody);
 		} else {
-			ancestorData.writePostCondition(hasAncestor, exit, ancestorBody);
+			ancestorData.writeCondition(hasAncestor, exit, ancestorBody);
 		}
 
 		hasAncestor.go(code.tail());
@@ -206,7 +206,7 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		return false;
 	}
 
-	private static final class Builder extends DefCollector<CondDef> {
+	private static final class Builder extends DefCollector<LogicalDef> {
 
 		private final Code code;
 		private final CodePos exit;
@@ -221,8 +221,8 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		}
 
 		@Override
-		protected void explicitDef(CondDef def) {
-			def.writeFullCondition(this.code, this.exit, this.host);
+		protected void explicitDef(LogicalDef def) {
+			def.writeFullLogical(this.code, this.exit, this.host);
 			this.hasExplicitDefs = true;
 		}
 

@@ -52,8 +52,8 @@ final class RefCondition extends St {
 
 		final StatementKind kind = this.ref.getKind();
 
-		return kind.hasCondition()
-		? StatementKind.CONDITION : StatementKind.EMPTY;
+		return kind.hasLogicalValue()
+		? StatementKind.LOGICAL : StatementKind.EMPTY;
 	}
 
 	@Override
@@ -73,12 +73,12 @@ final class RefCondition extends St {
 
 	@Override
 	public Action initialValue(LocalScope scope) {
-		return initialCondition(scope);
+		return initialLogicalValue(scope);
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
-		return this.ref.initialCondition(scope);
+	public Action initialLogicalValue(LocalScope scope) {
+		return this.ref.initialLogicalValue(scope);
 	}
 
 	@Override
@@ -111,12 +111,12 @@ final class RefCondition extends St {
 
 		@Override
 		public void writeAssignment(Control control, ValOp result) {
-			writeCondition(control);
+			writeLogicalValue(control);
 		}
 
 		@Override
-		public void writeCondition(Control control) {
-			getStatement().op(getBuilder()).writeCondition(control);
+		public void writeLogicalValue(Control control) {
+			getStatement().op(getBuilder()).writeLogicalValue(control);
 		}
 
 	}

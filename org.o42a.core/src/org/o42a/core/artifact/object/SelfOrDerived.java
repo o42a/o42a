@@ -87,11 +87,11 @@ final class SelfOrDerived extends Ref {
 		}
 
 		@Override
-		public void writeCondition(Code code, CodePos exit) {
+		public void writeLogicalValue(Code code, CodePos exit) {
 
 			final HostOp target = target(code, exit);
 
-			target.materialize(code, exit).writeCondition(
+			target.materialize(code, exit).writeLogicalValue(
 					code,
 					exit,
 					host().toObject(code, exit));

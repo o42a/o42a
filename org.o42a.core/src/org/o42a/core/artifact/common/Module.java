@@ -38,14 +38,14 @@ public class Module extends PlainObject {
 
 	private final String moduleName;
 	private DeclarativeBlock definition;
-	private ObjectMemberRegistry fieldRegistry;
+	private ObjectMemberRegistry memberRegistry;
 
 	public Module(CompilerContext context, String moduleName) {
 		super(new ModuleScope(
 				new Location(context, context.getSource()),
 				moduleName));
 		this.moduleName = moduleName;
-		this.fieldRegistry = new ObjectMemberRegistry(this);
+		this.memberRegistry = new ObjectMemberRegistry(this);
 	}
 
 	public final String getModuleName() {
@@ -65,8 +65,8 @@ public class Module extends PlainObject {
 		return getScope().toString();
 	}
 
-	protected ObjectMemberRegistry getFieldRegistry() {
-		return this.fieldRegistry;
+	protected ObjectMemberRegistry getMemberRegistry() {
+		return this.memberRegistry;
 	}
 
 	protected DeclarativeBlock getDefinition() {
@@ -76,7 +76,7 @@ public class Module extends PlainObject {
 			final DeclarativeBlock definition = new DeclarativeBlock(
 					this,
 					new Namespace(this),
-					this.fieldRegistry);
+					this.memberRegistry);
 
 			compiled.buildBlock(definition);
 
@@ -97,7 +97,7 @@ public class Module extends PlainObject {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		getDefinition().executeInstructions();
-		this.fieldRegistry.registerMembers(members);
+		this.memberRegistry.registerMembers(members);
 	}
 
 	@Override

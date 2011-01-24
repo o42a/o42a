@@ -69,15 +69,15 @@ public class IntegerObject extends IntrinsicType {
 			new NumericEqualsOpObj.IntegerEquals(this);
 		final IntegerByString byString = new IntegerByString(this);
 
-		getFieldRegistry().declareMember(plus.toMember());
-		getFieldRegistry().declareMember(minus.toMember());
-		getFieldRegistry().declareMember(add.toMember());
-		getFieldRegistry().declareMember(subtract.toMember());
-		getFieldRegistry().declareMember(multiply.toMember());
-		getFieldRegistry().declareMember(divide.toMember());
-		getFieldRegistry().declareMember(compare.toMember());
-		getFieldRegistry().declareMember(equals.toMember());
-		getFieldRegistry().declareMember(byString.toMember());
+		getMemberRegistry().declareMember(plus.toMember());
+		getMemberRegistry().declareMember(minus.toMember());
+		getMemberRegistry().declareMember(add.toMember());
+		getMemberRegistry().declareMember(subtract.toMember());
+		getMemberRegistry().declareMember(multiply.toMember());
+		getMemberRegistry().declareMember(divide.toMember());
+		getMemberRegistry().declareMember(compare.toMember());
+		getMemberRegistry().declareMember(equals.toMember());
+		getMemberRegistry().declareMember(byString.toMember());
 
 		super.declareMembers(members);
 	}

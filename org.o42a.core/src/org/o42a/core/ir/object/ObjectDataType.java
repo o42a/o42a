@@ -48,7 +48,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private CodeRec<ObjectValFunc> valueFunc;
 	private CodeRec<ObjectCondFunc> requirementFunc;
 	private CodeRec<ObjectValFunc> claimFunc;
-	private CodeRec<ObjectCondFunc> postConditionFunc;
+	private CodeRec<ObjectCondFunc> conditionFunc;
 	private CodeRec<ObjectValFunc> propositionFunc;
 	private CodeRec<ObjectRefFunc> ancestorFunc;
 	private AnyPtrRec ancestorType;
@@ -93,8 +93,8 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		return this.claimFunc;
 	}
 
-	public final CodeRec<ObjectCondFunc> getPostConditionFunc() {
-		return this.postConditionFunc;
+	public final CodeRec<ObjectCondFunc> getConditionFunc() {
+		return this.conditionFunc;
 	}
 
 	public final CodeRec<ObjectValFunc> getPropositionFunc() {
@@ -142,8 +142,8 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		this.claimFunc = data.addCodePtr(
 				"claim_f",
 				this.generator.objectValSignature());
-		this.postConditionFunc = data.addCodePtr(
-				"post_condition_f",
+		this.conditionFunc = data.addCodePtr(
+				"condition_f",
 				this.generator.objectCondSignature());
 		this.propositionFunc = data.addCodePtr(
 				"proposition_f",
@@ -202,8 +202,8 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			return writer().func(code, getType().getClaimFunc());
 		}
 
-		public final CodeOp<ObjectCondFunc> postConditionFunc(Code code) {
-			return writer().func(code, getType().getPostConditionFunc());
+		public final CodeOp<ObjectCondFunc> conditionFunc(Code code) {
+			return writer().func(code, getType().getConditionFunc());
 		}
 
 		public final CodeOp<ObjectValFunc> propositionFunc(Code code) {

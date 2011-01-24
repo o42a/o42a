@@ -33,9 +33,9 @@ import org.o42a.core.value.Value;
 final class ConditionalRef extends Ref {
 
 	private final Ref ref;
-	private final Cond condition;
+	private final Logical condition;
 
-	ConditionalRef(Ref ref, Cond condition) {
+	ConditionalRef(Ref ref, Logical condition) {
 		super(ref, ref.distribute());
 		this.ref = ref;
 		this.condition = condition;
@@ -62,14 +62,13 @@ final class ConditionalRef extends Ref {
 			return null;
 		}
 
-		final Cond reproducedCond =
-			this.condition.reproduce(reproducer);
+		final Logical reproduction = this.condition.reproduce(reproducer);
 
-		if (reproducedCond == null) {
+		if (reproduction == null) {
 			return null;
 		}
 
-		return new ConditionalRef(reproducedRef, reproducedCond);
+		return new ConditionalRef(reproducedRef, reproduction);
 	}
 
 	@Override
@@ -89,9 +88,9 @@ final class ConditionalRef extends Ref {
 		}
 
 		@Override
-		public void writeCondition(Code code, CodePos exit) {
+		public void writeLogicalValue(Code code, CodePos exit) {
 			ref().condition.write(code, exit, host());
-			super.writeCondition(code, exit);
+			super.writeLogicalValue(code, exit);
 		}
 
 		@Override

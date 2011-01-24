@@ -42,8 +42,8 @@ final class ValuePartOp extends NewObjectOp {
 	}
 
 	@Override
-	public void writeCondition(Code code, CodePos exit) {
-		part().writeCondition(code, exit, this);
+	public void writeLogicalValue(Code code, CodePos exit) {
+		part().writeLogicalValue(code, exit, this);
 	}
 
 	@Override

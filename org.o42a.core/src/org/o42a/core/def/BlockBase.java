@@ -19,7 +19,7 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.CondDef.trueCondDef;
+import static org.o42a.core.def.LogicalDef.trueLogicalDef;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
@@ -40,7 +40,7 @@ public abstract class BlockBase extends St {
 		final Rescoper rescoper = block.getScope().rescoperTo(scope);
 		final LocalDef localDef = new LocalDef(
 				block,
-				trueCondDef(block, block.getScope()).rescope(rescoper),
+				trueLogicalDef(block, block.getScope()).rescope(rescoper),
 				rescoper,
 				explicit);
 

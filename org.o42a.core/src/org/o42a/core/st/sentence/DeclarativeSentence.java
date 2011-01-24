@@ -19,15 +19,15 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.def.Definitions.postConditionDefinitions;
-import static org.o42a.core.ref.Cond.disjunction;
+import static org.o42a.core.def.Definitions.conditionDefinitions;
+import static org.o42a.core.ref.Logical.disjunction;
 
 import java.util.List;
 
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
 
@@ -60,18 +60,18 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	}
 
 	protected Definitions define(DefinitionTarget target) {
-		if (!getKind().hasCondition()) {
+		if (!getKind().hasLogicalValue()) {
 			return null;
 		}
 		if (!getKind().hasDefinition()) {
 
-			final Cond fullCondition =
-				getConditions().fullCondition(target.getScope());
+			final Logical fullLogical =
+				getConditions().fullLogical(target.getScope());
 
-			return postConditionDefinitions(
-					fullCondition,
+			return conditionDefinitions(
+					fullLogical,
 					target.getScope(),
-					fullCondition);
+					fullLogical);
 		}
 		for (Declaratives alt : getAlternatives()) {
 
@@ -162,7 +162,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 
 			final Conditions initial =
 				this.sentence.getBlock().getInitialConditions();
@@ -174,13 +174,13 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			}
 
 			return initial.prerequisite(scope).and(
-					prerequisite.getConditions().fullCondition(scope));
+					prerequisite.getConditions().fullLogical(scope));
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
+		public Logical precondition(Scope scope) {
 			return this.sentence.getBlock()
-			.getInitialConditions().condition(scope);
+			.getInitialConditions().precondition(scope);
 		}
 
 		@Override
@@ -207,12 +207,12 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 			return this.sentence.getInitialConditions().prerequisite(scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
+		public Logical precondition(Scope scope) {
 
 			final List<Declaratives> alternatives =
 				this.sentence.getAlternatives();
@@ -221,16 +221,16 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			if (size <= 1) {
 				if (size == 0) {
 					return this.sentence.getInitialConditions()
-					.condition(scope);
+					.precondition(scope);
 				}
-				return alternatives.get(0).getConditions().fullCondition(scope);
+				return alternatives.get(0).getConditions().fullLogical(scope);
 			}
 
-			final Cond[] vars = new Cond[size];
+			final Logical[] vars = new Logical[size];
 
 			for (int i = 0; i < size; ++i) {
 				vars[i] =
-					alternatives.get(i).getConditions().fullCondition(scope);
+					alternatives.get(i).getConditions().fullLogical(scope);
 			}
 
 			return disjunction(this.sentence, this.sentence.getScope(), vars);

@@ -20,9 +20,9 @@
 package org.o42a.core.def;
 
 import static java.lang.System.arraycopy;
-import static org.o42a.core.def.CondDef.*;
 import static org.o42a.core.def.DefValue.nonExistingValue;
-import static org.o42a.core.ref.Cond.disjunction;
+import static org.o42a.core.def.LogicalDef.*;
+import static org.o42a.core.ref.Logical.disjunction;
 
 import java.util.Collection;
 
@@ -31,7 +31,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.LogInfo;
@@ -52,41 +52,46 @@ public class Definitions extends Scoped {
 			Scope scope,
 			ValueType<?> valueType) {
 
-		final CondDef postCondition = trueCondDef(location, scope);
+		final LogicalDef condition = trueLogicalDef(location, scope);
 
 		return new Definitions(
 				location,
 				scope,
 				valueType,
-				postCondition,
-				postCondition);
+				condition,
+				condition);
 	}
 
-	public static Definitions postConditionDefinitions(
+	public static Definitions conditionDefinitions(
 			LocationSpec location,
 			Scope scope,
-			Cond postCondition) {
+			Logical condition) {
 		return new Definitions(
 				location,
 				scope,
 				null,
-				trueCondDef(location, scope),
-				postCondition.toCondDef());
+				trueLogicalDef(location, scope),
+				condition.toLogicalDef());
 	}
 
 	public static Definitions requirementDefinitions(
 			LocationSpec location,
 			Scope scope,
-			Cond requirement) {
+			Logical requirement) {
 
-		final CondDef condDef = requirement.toCondDef();
+		final LogicalDef requirementDef = requirement.toLogicalDef();
 
-		return new Definitions(location, scope, null, condDef, condDef);
+		return new Definitions(
+				location,
+				scope,
+				null,
+				requirementDef,
+				requirementDef);
 	}
 
 	public static Definitions falseClaims(LocationSpec location, Scope scope) {
 
-		final CondDef requirement = falseCondDef(location, scope);
+		final LogicalDef requirement = falseLogicalDef(location, scope);
 
 		return new Definitions(location, scope, null, requirement, requirement);
 	}
@@ -135,7 +140,7 @@ public class Definitions extends Scoped {
 				}
 			}
 			if (definition.getPrerequisite().isFalse()) {
-				continue;// ignore definition with false pre-condition
+				continue;// ignore definition with false prerequisite
 			}
 			defLen++;
 			if (definition.isClaim()) {
@@ -166,21 +171,21 @@ public class Definitions extends Scoped {
 			}
 		}
 
-		final CondDef postCondition = emptyCondDef(location, scope);
+		final LogicalDef condition = emptyLogicalDef(location, scope);
 
 		return new Definitions(
 				location,
 				scope,
 				valueType,
-				postCondition,
-				postCondition,
+				condition,
+				condition,
 				newClaims,
 				newPropositions);
 	}
 
 	private final ValueType<?> valueType;
-	private final CondDef requirement;
-	private final CondDef postCondition;
+	private final LogicalDef requirement;
+	private final LogicalDef condition;
 	private final Def[] claims;
 	private final Def[] propositions;
 
@@ -188,14 +193,14 @@ public class Definitions extends Scoped {
 			LocationSpec location,
 			Scope scope,
 			ValueType<?> valueType,
-			CondDef requirement,
-			CondDef postCondition,
+			LogicalDef requirement,
+			LogicalDef condition,
 			Def[] claims,
 			Def[] propositions) {
 		super(location, scope);
 		this.valueType = valueType;
 		this.requirement = requirement;
-		this.postCondition = postCondition;
+		this.condition = condition;
 		this.claims = claims;
 		this.propositions = propositions;
 		assertEmptyWithoutDefinitions();
@@ -204,7 +209,7 @@ public class Definitions extends Scoped {
 	private Definitions(LocationSpec location, Scope scope) {
 		super(location, scope);
 		this.valueType = null;
-		this.requirement = this.postCondition = emptyCondDef(location, scope);
+		this.requirement = this.condition = emptyLogicalDef(location, scope);
 		this.claims = this.propositions = NO_DEFS;
 		assertEmptyWithoutDefinitions();
 	}
@@ -213,12 +218,12 @@ public class Definitions extends Scoped {
 			LocationSpec location,
 			Scope scope,
 			ValueType<?> valueType,
-			CondDef requirement,
-			CondDef postCondition) {
+			LogicalDef requirement,
+			LogicalDef condition) {
 		super(location, scope);
 		this.valueType = valueType;
 		this.requirement = requirement;
-		this.postCondition = postCondition;
+		this.condition = condition;
 		this.claims = this.propositions = NO_DEFS;
 		assertEmptyWithoutDefinitions();
 	}
@@ -226,14 +231,14 @@ public class Definitions extends Scoped {
 	private Definitions(
 			Definitions prototype,
 			ValueType<?> valueType,
-			CondDef requirement,
-			CondDef postCondition,
+			LogicalDef requirement,
+			LogicalDef condition,
 			Def[] claims,
 			Def[] propositions) {
 		super(prototype, prototype.getScope());
 		this.valueType = valueType;
 		this.requirement = requirement;
-		this.postCondition = postCondition;
+		this.condition = condition;
 		this.claims = claims;
 		this.propositions = propositions;
 		assertEmptyWithoutDefinitions();
@@ -243,12 +248,12 @@ public class Definitions extends Scoped {
 		return this.valueType;
 	}
 
-	public final CondDef getRequirement() {
+	public final LogicalDef getRequirement() {
 		return this.requirement;
 	}
 
-	public final CondDef getPostCondition() {
-		return this.postCondition;
+	public final LogicalDef getCondition() {
+		return this.condition;
 	}
 
 	public final Def[] getClaims() {
@@ -263,35 +268,35 @@ public class Definitions extends Scoped {
 		return false;
 	}
 
-	public final Cond fullCondition() {
+	public final Logical fullLogical() {
 
 		final int len =
 			this.claims.length
 			+ this.propositions.length;
 
 		if (len == 0) {
-			return this.postCondition.fullCondition();
+			return this.condition.fullLogical();
 		}
 
-		final Cond[] result = new Cond[len];
+		final Logical[] result = new Logical[len];
 		int idx = 0;
 
 		for (Def claim : this.claims) {
-			result[idx++] = claim.fullCondition();
+			result[idx++] = claim.fullLogical();
 		}
 		for (Def proposition : this.propositions) {
-			result[idx++] = proposition.fullCondition();
+			result[idx++] = proposition.fullLogical();
 		}
 
-		final Cond disjunction = disjunction(this, getScope(), result);
+		final Logical disjunction = disjunction(this, getScope(), result);
 
-		return disjunction.and(this.postCondition.fullCondition());
+		return disjunction.and(this.condition.fullLogical());
 	}
 
 	public final boolean onlyClaims() {
 		return (this.propositions.length == 0
-				&& this.postCondition.fullCondition().sameAs(
-						this.requirement.fullCondition()));
+				&& this.condition.fullLogical().sameAs(
+						this.requirement.fullLogical()));
 	}
 
 	public final boolean noClaims() {
@@ -333,8 +338,8 @@ public class Definitions extends Scoped {
 		return nonExistingValue(this);
 	}
 
-	public DefValue postCondition(Scope scope) {
-		if (getPostCondition().isEmpty()) {
+	public DefValue condition(Scope scope) {
+		if (getCondition().isEmpty()) {
 			return DefValue.nonExistingValue(this);
 		}
 
@@ -343,8 +348,8 @@ public class Definitions extends Scoped {
 		if (requirement.exists()) {
 			if (!requirement.isUnknown()) {
 				return DefValue.logicalValue(
-						getPostCondition(),
-						getPostCondition().logicalValue(scope),
+						getCondition(),
+						getCondition().logicalValue(scope),
 						false);
 			}
 			if (requirement.isFalse()) {
@@ -353,17 +358,17 @@ public class Definitions extends Scoped {
 		}
 
 		return DefValue.logicalValue(
-				getPostCondition(),
-				getPostCondition().logicalValue(scope),
+				getCondition(),
+				getCondition().logicalValue(scope),
 				false);
 	}
 
 	public DefValue value(Scope scope) {
 
-		final DefValue postCondition = postCondition(scope);
+		final DefValue condition = condition(scope);
 
-		if (postCondition.isFalse() && !postCondition.isUnknown()) {
-			return postCondition;
+		if (condition.isFalse() && !condition.isUnknown()) {
+			return condition;
 		}
 
 		final DefValue value;
@@ -378,19 +383,19 @@ public class Definitions extends Scoped {
 			return value;
 		}
 
-		return value.and(postCondition);
+		return value.and(condition);
 	}
 
-	public final Definitions addRequirement(Cond requirement) {
+	public final Definitions addRequirement(Logical requirement) {
 		if (requirement == null) {
 			return this;
 		}
-		return addRequirement(requirement.toCondDef());
+		return addRequirement(requirement.toLogicalDef());
 	}
 
-	public Definitions addRequirement(CondDef requirement) {
+	public Definitions addRequirement(LogicalDef requirement) {
 
-		final CondDef newRequirement = this.requirement.and(requirement);
+		final LogicalDef newRequirement = this.requirement.and(requirement);
 
 		if (newRequirement == this.requirement) {
 			return this;
@@ -400,23 +405,23 @@ public class Definitions extends Scoped {
 				this,
 				getValueType(),
 				newRequirement,
-				this.postCondition.and(requirement),
+				this.condition.and(requirement),
 				this.claims,
 				this.propositions);
 	}
 
-	public Definitions addPostCondition(Cond condition) {
+	public Definitions addCondition(Logical condition) {
 		if (condition == null) {
 			return this;
 		}
-		return addPostCondition(condition.toCondDef());
+		return addCondition(condition.toLogicalDef());
 	}
 
-	public Definitions addPostCondition(CondDef condition) {
+	public Definitions addCondition(LogicalDef condition) {
 
-		final CondDef newPostCondition = this.postCondition.and(condition);
+		final LogicalDef newCondition = this.condition.and(condition);
 
-		if (newPostCondition == this.postCondition) {
+		if (newCondition == this.condition) {
 			return this;
 		}
 
@@ -424,12 +429,12 @@ public class Definitions extends Scoped {
 				this,
 				getValueType(),
 				this.requirement,
-				newPostCondition,
+				newCondition,
 				this.claims,
 				this.propositions);
 	}
 
-	public Definitions addPrerequisite(CondDef prerequisite) {
+	public Definitions addPrerequisite(LogicalDef prerequisite) {
 		if (prerequisite == null || prerequisite.isTrue()) {
 			return this;
 		}
@@ -447,12 +452,12 @@ public class Definitions extends Scoped {
 				this,
 				getValueType(),
 				this.requirement,
-				this.postCondition,
+				this.condition,
 				newClaims,
 				newPropositions);
 	}
 
-	public Definitions and(Cond condition) {
+	public Definitions and(Logical condition) {
 		if (condition == null || condition.isTrue()) {
 			return this;
 		}
@@ -469,7 +474,7 @@ public class Definitions extends Scoped {
 				this,
 				getValueType(),
 				this.requirement,
-				this.postCondition,
+				this.condition,
 				newClaims,
 				newPropositions);
 	}
@@ -536,12 +541,12 @@ public class Definitions extends Scoped {
 
 		if (overriders.propositions.length == 0) {
 			// no propositions specified
-			if (overriders.postCondition.isEmpty()) {
-				// no post-condition specified
+			if (overriders.condition.isEmpty()) {
+				// no condition specified
 				return refineConditions(valueType, overriders)
 				.refineClaims(valueType, overriders.getClaims());
 			}
-			return removePostCondition()
+			return removeCondition()
 			.refineConditions(valueType, overriders)
 			.refineClaims(valueType, overriders.getClaims());
 		}
@@ -571,8 +576,8 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				getValueType(),
-				this.postCondition,
-				this.postCondition,
+				this.condition,
+				this.condition,
 				claims,
 				NO_DEFS);
 	}
@@ -600,8 +605,8 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				getValueType(),
-				trueCondDef(this, getScope()),
-				this.postCondition,
+				trueLogicalDef(this, getScope()),
+				this.condition,
 				NO_DEFS,
 				propositions);
 	}
@@ -614,19 +619,19 @@ public class Definitions extends Scoped {
 		return new UpgradeRescoper(getScope(), scope).update(this);
 	}
 
-	public Definitions removePostConditions(LocationSpec location) {
-		if (this.postCondition.isTrue()) {
+	public Definitions removeCondition(LocationSpec location) {
+		if (this.condition.isTrue()) {
 			return this;
 		}
 
-		final CondDef postCondition = emptyCondDef(this, getScope());
+		final LogicalDef condition = emptyLogicalDef(this, getScope());
 
 		return new Definitions(
 				location,
 				getScope(),
 				getValueType(),
-				postCondition,
-				postCondition,
+				condition,
+				condition,
 				this.claims,
 				this.propositions);
 	}
@@ -636,7 +641,7 @@ public class Definitions extends Scoped {
 		final Obj object = scope.getContainer().toObject();
 		final TypeRef ancestorType = object.getAncestor();
 
-		return addPostCondition(runtimeCondDef(
+		return addCondition(runtimeLogicalDef(
 				scope,
 				scope,
 				ancestorType.getType()));
@@ -662,8 +667,8 @@ public class Definitions extends Scoped {
 			out.append(this.requirement).append("!");
 			space = " ";
 		}
-		if (!this.postCondition.isTrue()) {
-			out.append(space).append(this.postCondition);
+		if (!this.condition.isTrue()) {
+			out.append(space).append(this.condition);
 			space = ". ";
 		}
 		if (this.claims.length > 0) {
@@ -724,7 +729,7 @@ public class Definitions extends Scoped {
 		return ValueType.NONE;
 	}
 
-	private Def[] addPrerequisite(Def[] defs, CondDef requirement) {
+	private Def[] addPrerequisite(Def[] defs, LogicalDef requirement) {
 		if (defs.length == 0) {
 			return defs;
 		}
@@ -748,7 +753,7 @@ public class Definitions extends Scoped {
 		return result;
 	}
 
-	private Def[] and(Def[] defs, Cond condition) {
+	private Def[] and(Def[] defs, Logical condition) {
 		if (defs.length == 0) {
 			return defs;
 		}
@@ -772,8 +777,8 @@ public class Definitions extends Scoped {
 		return result;
 	}
 
-	private Definitions removePostCondition() {
-		if (this.postCondition.isTrue()) {
+	private Definitions removeCondition() {
+		if (this.condition.isTrue()) {
 			return this;
 		}
 		return new Definitions(
@@ -802,12 +807,12 @@ public class Definitions extends Scoped {
 			ValueType<?> valueType,
 			Definitions refinements) {
 
-		final CondDef newRequirement =
+		final LogicalDef newRequirement =
 			this.requirement.and(refinements.requirement);
-		final CondDef newPostCondition =
-			this.postCondition.and(refinements.postCondition);
+		final LogicalDef newCondition =
+			this.condition.and(refinements.condition);
 
-		if (newPostCondition == this.postCondition &&
+		if (newCondition == this.condition &&
 				newRequirement == this.requirement) {
 			return this;
 		}
@@ -816,7 +821,7 @@ public class Definitions extends Scoped {
 					this,
 					valueType,
 					newRequirement,
-					newPostCondition,
+					newCondition,
 					this.claims,
 					this.propositions);
 	}
@@ -838,7 +843,7 @@ public class Definitions extends Scoped {
 				this,
 				valueType,
 				this.requirement,
-				this.postCondition,
+				this.condition,
 				newClaims,
 				newPropositions);
 	}
@@ -860,7 +865,7 @@ public class Definitions extends Scoped {
 				this,
 				valueType,
 				this.requirement,
-				this.postCondition,
+				this.condition,
 				this.claims,
 				newPropositions);
 	}
@@ -878,12 +883,12 @@ public class Definitions extends Scoped {
 
 		for (Def claim : claims) {
 
-			final Cond prerequisite = claim.getPrerequisite().fullCondition();
+			final Logical prerequisite = claim.getPrerequisite().fullLogical();
 
 			for (int i = 0; i < len; ++i) {
 
 				final Def c1 = this.claims[i];
-				final Cond prereq = c1.getPrerequisite().fullCondition();
+				final Logical prereq = c1.getPrerequisite().fullLogical();
 
 				if (prereq.implies(prerequisite)) {
 					if (claims.length == 1) {
@@ -896,7 +901,7 @@ public class Definitions extends Scoped {
 						final Def c2 = this.claims[i];
 
 						if (!prerequisite.implies(
-								c2.getPrerequisite().fullCondition())) {
+								c2.getPrerequisite().fullLogical())) {
 							newClaims[idx++] = c2;
 						}
 					}
@@ -962,8 +967,8 @@ public class Definitions extends Scoped {
 
 	private boolean impliedBy(Def def, Def[] defs) {
 		for (Def claim : defs) {
-			if (claim.getPrerequisite().fullCondition().implies(
-					def.getPrerequisite().fullCondition())) {
+			if (claim.getPrerequisite().fullLogical().implies(
+					def.getPrerequisite().fullLogical())) {
 				return true;
 			}
 		}

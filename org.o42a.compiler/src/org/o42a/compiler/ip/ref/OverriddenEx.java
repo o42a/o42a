@@ -134,7 +134,7 @@ public class OverriddenEx extends Ex {
 		}
 
 		@Override
-		public void writeCondition(Code code, CodePos exit) {
+		public void writeLogicalValue(Code code, CodePos exit) {
 
 			final ValOp result =
 				code.allocate(getGenerator().valType()).storeUnknown(code);

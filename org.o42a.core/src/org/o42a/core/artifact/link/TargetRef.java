@@ -31,7 +31,7 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -40,7 +40,7 @@ import org.o42a.core.value.LogicalValue;
 public final class TargetRef extends RescopableRef {
 
 	private TypeRef typeRef;
-	private Cond fullCondition;
+	private Logical fullLogical;
 
 	public TargetRef(Ref ref) {
 		super(ref, transparentRescoper(ref.getScope()));
@@ -60,11 +60,11 @@ public final class TargetRef extends RescopableRef {
 		return this.typeRef = artifact.getKind().typeRef(this);
 	}
 
-	public Cond fullCondition() {
-		if (this.fullCondition != null) {
-			return this.fullCondition;
+	public Logical fullLogical() {
+		if (this.fullLogical != null) {
+			return this.fullLogical;
 		}
-		return this.fullCondition = new FullCondition(this);
+		return this.fullLogical = new FullLogical(this);
 	}
 
 	@Override
@@ -111,28 +111,28 @@ public final class TargetRef extends RescopableRef {
 		return new TargetRef(reproducedRef, rescoper);
 	}
 
-	private static final class FullCondition extends Cond {
+	private static final class FullLogical extends Logical {
 
 		private final TargetRef targetRef;
 
-		FullCondition(TargetRef targetRef) {
+		FullLogical(TargetRef targetRef) {
 			super(targetRef, targetRef.getScope());
 			this.targetRef = targetRef;
 		}
 
 		@Override
 		public LogicalValue getConstantValue() {
-			return this.targetRef.getRef().getCondition().getConstantValue();
+			return this.targetRef.getRef().getLogical().getConstantValue();
 		}
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
-			return this.targetRef.getRef().getCondition().logicalValue(
+			return this.targetRef.getRef().getLogical().logicalValue(
 					this.targetRef.getRescoper().rescope(scope));
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 
 			final TargetRef targetRef = this.targetRef.reproduce(reproducer);
 
@@ -140,12 +140,12 @@ public final class TargetRef extends RescopableRef {
 				return null;
 			}
 
-			return targetRef.fullCondition();
+			return targetRef.fullLogical();
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			this.targetRef.getRef().getCondition().write(
+			this.targetRef.getRef().getLogical().write(
 					code,
 					exit,
 					this.targetRef.getRescoper().rescope(code, exit, host));
