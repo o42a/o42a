@@ -98,13 +98,13 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				if (lastCondition != null) {
 					continue;
 				}
-				if (kind.hasCondition()) {
+				if (kind.hasLogicalValue()) {
 					lastCondition = statement;
 				}
 			} else {
 				if (lastCondition != null) {
 					getLogger().expectedDefinition(lastCondition);
-					return this.kind = StatementKind.CONDITION;
+					return this.kind = StatementKind.LOGICAL;
 				}
 				if (kind.hasValue()) {
 					return this.kind = StatementKind.VALUE;
@@ -301,7 +301,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			int index,
 			LocationSpec location,
 			Container container,
-			MemberRegistry fieldRegistry) {
+			MemberRegistry memberRegistry) {
 
 		@SuppressWarnings("unchecked")
 		final Block<S> parentheses =

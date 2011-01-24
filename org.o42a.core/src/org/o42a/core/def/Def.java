@@ -19,11 +19,11 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.CondDef.emptyCondDef;
-import static org.o42a.core.def.CondDef.trueCondDef;
 import static org.o42a.core.def.Definitions.NO_DEFS;
-import static org.o42a.core.ref.Cond.falseCondition;
-import static org.o42a.core.ref.Cond.trueCondition;
+import static org.o42a.core.def.LogicalDef.emptyLogicalDef;
+import static org.o42a.core.def.LogicalDef.trueLogicalDef;
+import static org.o42a.core.ref.Logical.logicalFalse;
+import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.codegen.code.Code;
@@ -34,7 +34,7 @@ import org.o42a.core.def.RefDef.VoidDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.St;
@@ -49,14 +49,14 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		return voidDef(
 				location,
 				distributor,
-				trueCondition(location, distributor.getScope()));
+				logicalTrue(location, distributor.getScope()));
 	}
 
 	public static Def falseDef(LocationSpec location, Distributor distributor) {
 		return voidDef(
 				location,
 				distributor,
-				falseCondition(location, distributor.getScope()));
+				logicalFalse(location, distributor.getScope()));
 	}
 
 	public static Def voidClaim(
@@ -65,7 +65,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		return voidClaim(
 				location,
 				distributor,
-				trueCondition(location, distributor.getScope()));
+				logicalTrue(location, distributor.getScope()));
 	}
 
 	public static Def falseClaim(
@@ -74,26 +74,26 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		return voidClaim(
 				location,
 				distributor,
-				falseCondition(location, distributor.getScope()));
+				logicalFalse(location, distributor.getScope()));
 	}
 
 	public static Def voidDef(
 			LocationSpec location,
 			Distributor distributor,
-			Cond prerequisite) {
+			Logical prerequisite) {
 
 		final Ref voidRef = voidRef(location, distributor);
 
 		return new VoidDef(
 				voidRef,
-				prerequisite != null ? prerequisite.toCondDef()
-				: trueCondDef(location, voidRef.getScope()));
+				prerequisite != null ? prerequisite.toLogicalDef()
+				: trueLogicalDef(location, voidRef.getScope()));
 	}
 
 	public static Def voidClaim(
 			LocationSpec location,
 			Distributor distributor,
-			Cond prerequisite) {
+			Logical prerequisite) {
 		return voidDef(location, distributor, prerequisite).claim();
 	}
 
@@ -118,13 +118,13 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	private final Obj source;
-	private CondDef prerequisite;
-	private Cond fullCondition;
+	private LogicalDef prerequisite;
+	private Logical fullLogical;
 
 	public Def(
 			Obj source,
 			St statement,
-			CondDef prerequisite,
+			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(statement, rescoper);
 		this.source = source;
@@ -134,7 +134,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		}
 	}
 
-	protected Def(Def prototype, CondDef prerequisite, Rescoper rescoper) {
+	protected Def(Def prototype, LogicalDef prerequisite, Rescoper rescoper) {
 		this(
 				prototype.getSource(),
 				prototype.getStatement(),
@@ -151,26 +151,26 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 
 	public abstract ValueType<?> getValueType();
 
-	public final CondDef getPrerequisite() {
+	public final LogicalDef getPrerequisite() {
 		if (this.prerequisite == null) {
 			this.prerequisite = buildPrerequisite();
 			assert this.prerequisite != null :
-				"Definition without condition";
+				"Definition without prerequisite";
 		}
 		return this.prerequisite;
 	}
 
-	public final Cond fullCondition() {
-		if (this.fullCondition != null) {
-			return this.fullCondition;
+	public final Logical fullLogical() {
+		if (this.fullLogical != null) {
+			return this.fullLogical;
 		}
-		return this.fullCondition = new FullCondition(this);
+		return this.fullLogical = new FullLogical(this);
 	}
 
-	public final Def addPrerequisite(CondDef rerequisite) {
+	public final Def addPrerequisite(LogicalDef rerequisite) {
 
-		final CondDef oldPrerequisite = getPrerequisite();
-		final CondDef newPrerequisite = oldPrerequisite.and(rerequisite);
+		final LogicalDef oldPrerequisite = getPrerequisite();
+		final LogicalDef newPrerequisite = oldPrerequisite.and(rerequisite);
 
 		if (oldPrerequisite.sameAs(newPrerequisite)) {
 			return this;
@@ -179,7 +179,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		return new FilteredDef(this, newPrerequisite, isClaim());
 	}
 
-	public abstract Def and(Cond condition);
+	public abstract Def and(Logical logical);
 
 	public Def claim() {
 		return new FilteredDef(this, prerequisite(), true);
@@ -232,7 +232,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 
 	public final Definitions toDefinitions() {
 
-		final CondDef postCondition = emptyCondDef(this, getScope());
+		final LogicalDef logicalDef = emptyLogicalDef(this, getScope());
 		final Def[] defs = new Def[] {this};
 
 		if (isClaim()) {
@@ -240,8 +240,8 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 					this,
 					getScope(),
 					getValueType(),
-					postCondition,
-					postCondition,
+					logicalDef,
+					logicalDef,
 					defs,
 					NO_DEFS);
 		}
@@ -250,8 +250,8 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 				this,
 				getScope(),
 				getValueType(),
-				postCondition,
-				postCondition,
+				logicalDef,
+				logicalDef,
 				NO_DEFS,
 				defs);
 	}
@@ -289,11 +289,11 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		return out.toString();
 	}
 
-	protected abstract CondDef buildPrerequisite();
+	protected abstract LogicalDef buildPrerequisite();
 
 	protected abstract Value<?> calculateValue(Scope scope);
 
-	protected abstract Cond condition();
+	protected abstract Logical logical();
 
 	@Override
 	protected final Def create(
@@ -309,9 +309,9 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	protected abstract Def create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			CondDef prerequisite);
+			LogicalDef prerequisite);
 
-	protected final CondDef prerequisite() {
+	protected final LogicalDef prerequisite() {
 		return this.prerequisite;
 	}
 
@@ -328,7 +328,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 
 		private final boolean claim;
 
-		FilteredDef(Def def, CondDef prerequisite, boolean claim) {
+		FilteredDef(Def def, LogicalDef prerequisite, boolean claim) {
 			super(def, prerequisite, def.getRescoper());
 			this.claim = claim;
 		}
@@ -336,7 +336,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		private FilteredDef(
 				FilteredDef prototype,
 				Def wrapped,
-				CondDef prerequisite,
+				LogicalDef prerequisite,
 				Rescoper rescoper) {
 			super(prototype, wrapped, prerequisite, rescoper);
 			this.claim = prototype.claim;
@@ -368,7 +368,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 				Rescoper rescoper,
 				Rescoper additionalRescoper,
 				Def wrapped,
-				CondDef prerequisite) {
+				LogicalDef prerequisite) {
 			return new FilteredDef(this, wrapped, prerequisite, rescoper);
 		}
 
@@ -379,11 +379,11 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 
 	}
 
-	private static final class FullCondition extends Cond {
+	private static final class FullLogical extends Logical {
 
 		private final Def def;
 
-		FullCondition(Def def) {
+		FullLogical(Def def) {
 			super(def, def.getScope());
 			this.def = def;
 		}
@@ -391,19 +391,19 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		@Override
 		public LogicalValue getConstantValue() {
 			return this.def.getPrerequisite().getConstantValue().and(
-					this.def.condition().getConstantValue());
+					this.def.logical().getConstantValue());
 		}
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
 			return this.def.getPrerequisite().logicalValue(scope).and(
-					this.def.condition().logicalValue(scope));
+					this.def.logical().logicalValue(scope));
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			this.def.getPrerequisite().writeFullCondition(code, exit, host);
-			this.def.condition().write(
+			this.def.getPrerequisite().writeFullLogical(code, exit, host);
+			this.def.logical().write(
 					code,
 					exit,
 					this.def.getRescoper().rescope(code, exit, host));
@@ -415,7 +415,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 
 			final Def reproducedDef = this.def.reproduce(reproducer);
 
@@ -423,7 +423,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 				return null;
 			}
 
-			return reproducedDef.fullCondition();
+			return reproducedDef.fullLogical();
 		}
 
 	}

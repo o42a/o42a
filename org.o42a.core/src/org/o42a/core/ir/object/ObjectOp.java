@@ -81,7 +81,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public abstract ObjOp cast(Code code, CodePos exit, Obj ascendant);
 
-	public final void writeCondition(Code code, CodePos exit) {
+	public final void writeLogicalValue(Code code, CodePos exit) {
 
 		final ObjectDataOp data = data(code);
 		final ValOp value = data.ptr().value(code);
@@ -99,7 +99,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		value.condition(indefinite).go(indefinite, code.tail(), exit);
 	}
 
-	public final void writeCondition(Code code, CodePos exit, ObjectOp body) {
+	public final void writeLogicalValue(
+			Code code,
+			CodePos exit,
+			ObjectOp body) {
 
 		final ValOp result =
 			code.allocate(getGenerator().valType()).storeUnknown(code);
@@ -175,18 +178,17 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		}
 	}
 
-	public final void writePostCondition(Code code, CodePos exit) {
-		writePostCondition(code, exit, null);
+	public final void writeCondition(Code code, CodePos exit) {
+		writeCondition(code, exit, null);
 	}
 
-	public void writePostCondition(Code code, CodePos exit, ObjOp body) {
+	public void writeCondition(Code code, CodePos exit, ObjOp body) {
 		if (body != null) {
-			code.debug(
-					"Post-condition of " + body.getAscendant() + " by " + this);
+			code.debug("Condition of " + body.getAscendant() + " by " + this);
 		} else {
-			code.debug("Post-condition of " + this);
+			code.debug("Condition of " + this);
 		}
-		data(code).writePostCondition(code, exit, body);
+		data(code).writeCondition(code, exit, body);
 	}
 
 	public final void writeProposition(Code code, ValOp result) {

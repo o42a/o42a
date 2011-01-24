@@ -24,11 +24,11 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
 
 
-public abstract class AbstractConjunction extends Cond {
+public abstract class AbstractConjunction extends Logical {
 
 	public AbstractConjunction(LocationSpec location, Scope scope) {
 		super(location, scope);
@@ -42,7 +42,7 @@ public abstract class AbstractConjunction extends Cond {
 
 		for (int i = 0; i < numClaims; ++i) {
 
-			final Cond claim = claim(i);
+			final Logical claim = claim(i);
 			final LogicalValue value = claim.getConstantValue();
 
 			if (value.isFalse()) {
@@ -62,7 +62,7 @@ public abstract class AbstractConjunction extends Cond {
 
 		for (int i = 0; i < numClaims; ++i) {
 
-			final Cond claim = claim(i);
+			final Logical claim = claim(i);
 			final LogicalValue value = claim.logicalValue(scope);
 
 			if (value.isFalse()) {
@@ -76,7 +76,7 @@ public abstract class AbstractConjunction extends Cond {
 
 	@Override
 	public void write(Code code, CodePos exit, HostOp host) {
-		code.debug("Cond: " + this);
+		code.debug("Logical: " + this);
 
 		final int numClaims = numClaims();
 
@@ -106,10 +106,10 @@ public abstract class AbstractConjunction extends Cond {
 	}
 
 	@Override
-	protected Cond[] expandConjunction() {
+	protected Logical[] expandConjunction() {
 
 		final int numClaims = numClaims();
-		final Cond[] claims = new Cond[numClaims];
+		final Logical[] claims = new Logical[numClaims];
 
 		for (int i = 0; i < numClaims; ++i) {
 			claims[i] = claim(i);
@@ -120,6 +120,6 @@ public abstract class AbstractConjunction extends Cond {
 
 	protected abstract int numClaims();
 
-	protected abstract Cond claim(int index);
+	protected abstract Logical claim(int index);
 
 }

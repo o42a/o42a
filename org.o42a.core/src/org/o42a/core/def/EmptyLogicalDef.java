@@ -21,46 +21,46 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Def.sourceOf;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.ref.Cond.trueCondition;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
 
-final class EmptyCondDef extends CondDef {
+final class EmptyLogicalDef extends LogicalDef {
 
-	private static final SingleCondDef[] NO_REQUIREMENTS =
-		new SingleCondDef[0];
+	private static final SingleLogicalDef[] NO_REQUIREMENTS =
+		new SingleLogicalDef[0];
 
-	EmptyCondDef(LocationSpec location, Scope scope) {
+	EmptyLogicalDef(LocationSpec location, Scope scope) {
 		super(
 				sourceOf(scope),
-				trueCondition(location, scope),
+				logicalTrue(location, scope),
 				transparentRescoper(scope),
 				NO_REQUIREMENTS);
 	}
 
-	private EmptyCondDef(EmptyCondDef prototype, Rescoper rescoper) {
+	private EmptyLogicalDef(EmptyLogicalDef prototype, Rescoper rescoper) {
 		super(
 				prototype.getSource(),
-				prototype.condition(),
+				prototype.logical(),
 				rescoper,
 				NO_REQUIREMENTS);
 	}
 
 	@Override
-	public void writeFullCondition(Code code, CodePos exit, HostOp host) {
-		code.debug("Full cond: " + this);
+	public void writeFullLogical(Code code, CodePos exit, HostOp host) {
+		code.debug("Full logical: " + this);
 	}
 
 	@Override
-	public boolean sameAs(CondDef other) {
+	public boolean sameAs(LogicalDef other) {
 		return other.isEmpty();
 	}
 
@@ -70,27 +70,27 @@ final class EmptyCondDef extends CondDef {
 	}
 
 	@Override
-	protected Cond createFullCondition() {
-		return new FullCondition(this);
+	protected Logical createFullLogical() {
+		return new FullLogical(this);
 	}
 
 	@Override
-	protected EmptyCondDef create(
+	protected EmptyLogicalDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new EmptyCondDef(this, rescoper);
+		return new EmptyLogicalDef(this, rescoper);
 	}
 
 	@Override
-	protected CondDef conjunctionWith(CondDef requirement) {
+	protected LogicalDef conjunctionWith(LogicalDef requirement) {
 		return requirement;
 	}
 
-	private static final class FullCondition extends Cond {
+	private static final class FullLogical extends Logical {
 
-		private final CondDef def;
+		private final LogicalDef def;
 
-		FullCondition(CondDef def) {
+		FullLogical(LogicalDef def) {
 			super(def, def.getScope());
 			this.def = def;
 		}
@@ -106,7 +106,7 @@ final class EmptyCondDef extends CondDef {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			getLogger().notReproducible(this);
 			return null;
 		}
@@ -116,7 +116,7 @@ final class EmptyCondDef extends CondDef {
 		}
 
 		@Override
-		public CondDef toCondDef() {
+		public LogicalDef toLogicalDef() {
 			return this.def;
 		}
 

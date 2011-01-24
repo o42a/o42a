@@ -25,7 +25,7 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 
 
 public abstract class CondBase extends Scoped {
@@ -34,10 +34,10 @@ public abstract class CondBase extends Scoped {
 		super(location, scope);
 	}
 
-	public CondDef toCondDef() {
-		return new SingleCondDef(
+	public LogicalDef toLogicalDef() {
+		return new SingleLogicalDef(
 				sourceOf(this),
-				(Cond) this,
+				(Logical) this,
 				transparentRescoper(getScope()));
 	}
 

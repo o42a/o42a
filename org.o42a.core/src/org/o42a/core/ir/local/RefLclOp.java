@@ -118,7 +118,7 @@ public final class RefLclOp extends LclOp {
 			getBuilder().newObject(code, exit, object, CtrOp.NEW_INSTANCE);
 
 		ptr().object(code).store(code, newObject.toAny(code));
-		newObject.writeCondition(code, exit);
+		newObject.writeLogicalValue(code, exit);
 	}
 
 	public static final class Op extends LclOp.Op {

@@ -36,7 +36,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.*;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.*;
@@ -74,14 +74,14 @@ class EqualsResult extends PlainObject {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 
-		final ObjectMemberRegistry fieldRegistry =
+		final ObjectMemberRegistry memberRegistry =
 			new ObjectMemberRegistry(this);
 		final DeclarativeBlock block =
-			new DeclarativeBlock(this, this, fieldRegistry);
+			new DeclarativeBlock(this, this, memberRegistry);
 
 		new ResultBuilder(getContext(), this).buildBlock(block);
 
-		fieldRegistry.registerMembers(members);
+		memberRegistry.registerMembers(members);
 	}
 
 	@Override
@@ -89,8 +89,8 @@ class EqualsResult extends PlainObject {
 		return voidDef(this, distribute()).and(condition()).toDefinitions();
 	}
 
-	protected Cond condition() {
-		return new ResultCond();
+	protected Logical condition() {
+		return new ResultLogical();
 	}
 
 	static final class NotEqualsResult extends EqualsResult {
@@ -103,7 +103,7 @@ class EqualsResult extends PlainObject {
 		}
 
 		@Override
-		protected Cond condition() {
+		protected Logical condition() {
 			return super.condition().negate();
 		}
 
@@ -177,9 +177,9 @@ class EqualsResult extends PlainObject {
 
 	}
 
-	private final class ResultCond extends Cond {
+	private final class ResultLogical extends Logical {
 
-		ResultCond() {
+		ResultLogical() {
 			super(EqualsResult.this, EqualsResult.this.getScope());
 		}
 
@@ -202,7 +202,7 @@ class EqualsResult extends PlainObject {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 			getLogger().notReproducible(this);
 			return null;
@@ -214,7 +214,7 @@ class EqualsResult extends PlainObject {
 			final HostOp field =
 				host.field(code, exit, EqualsResult.this.resultKey);
 
-			field.toObject(code, exit).writeCondition(code, exit);
+			field.toObject(code, exit).writeLogicalValue(code, exit);
 		}
 
 		@Override

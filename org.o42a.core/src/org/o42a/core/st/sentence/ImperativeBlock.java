@@ -34,7 +34,7 @@ import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
 import org.o42a.core.value.LogicalValue;
@@ -243,7 +243,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
+	public Action initialLogicalValue(LocalScope scope) {
 		return initialValue(scope).accept(RETURN_CONDITION_VISITOR);
 	}
 
@@ -382,7 +382,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		@Override
-		public void writeCondition(Control control) {
+		public void writeLogicalValue(Control control) {
 			writeSentences(control, null);
 		}
 
@@ -480,7 +480,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 			return new ReturnValue(
 					returnValue,
 					result.getLogicalValue()
-					.toCond(returnValue, returnValue.getScope())
+					.toLogical(returnValue, returnValue.getScope())
 					.toValue());
 		}
 
@@ -510,14 +510,14 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 			return this.conditions.prerequisite(scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
-			return this.conditions.condition(scope).and(
-					localDef(this.block, scope).fullCondition());
+		public Logical precondition(Scope scope) {
+			return this.conditions.precondition(scope).and(
+					localDef(this.block, scope).fullLogical());
 		}
 
 		@Override

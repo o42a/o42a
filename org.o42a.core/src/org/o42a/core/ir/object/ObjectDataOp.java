@@ -85,13 +85,13 @@ public class ObjectDataOp extends IROp {
 		function.call(code, result, body(code, body));
 	}
 
-	final void writePostCondition(
+	final void writeCondition(
 			Code code,
 			CodePos exit,
 			ObjectOp body) {
 
 		final ObjectCondFunc function =
-			ptr().postConditionFunc(code).load(code);
+			ptr().conditionFunc(code).load(code);
 
 		function.call(code, body(code, body)).go(code, code.tail(), exit);
 	}
@@ -137,8 +137,8 @@ public class ObjectDataOp extends IROp {
 		// TODO overridden requirement
 	}
 
-	public final void writeOverriddenPostCondition(Code code, CodePos exit) {
-		// TODO overridden post-condition
+	public final void writeOverriddenCondition(Code code, CodePos exit) {
+		// TODO overridden condition
 	}
 
 	public void writeOverriddenInitializer(Code code, CodePos exit, ValOp result) {

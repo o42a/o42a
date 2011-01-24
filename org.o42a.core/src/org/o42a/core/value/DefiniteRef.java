@@ -80,7 +80,7 @@ final class DefiniteRef<T> extends Ex {
 		}
 
 		@Override
-		public void writeCondition(Code code, CodePos exit) {
+		public void writeLogicalValue(Code code, CodePos exit) {
 		}
 
 		@Override

@@ -50,7 +50,7 @@ public abstract class St extends Placed {
 
 	public abstract Action initialValue(LocalScope scope);
 
-	public abstract Action initialCondition(LocalScope scope);
+	public abstract Action initialLogicalValue(LocalScope scope);
 
 	public abstract St reproduce(Reproducer reproducer);
 

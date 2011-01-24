@@ -19,68 +19,68 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.CondDefConjunction.conjunction;
-import static org.o42a.core.def.CondDefConjunction.simpleConjunction;
+import static org.o42a.core.def.LogicalDefConjunction.conjunction;
+import static org.o42a.core.def.LogicalDefConjunction.simpleConjunction;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
 
-final class SingleCondDef extends CondDef {
+final class SingleLogicalDef extends LogicalDef {
 
-	SingleCondDef(Obj source, Cond condition, Rescoper rescoper) {
-		super(source, condition, rescoper);
+	SingleLogicalDef(Obj source, Logical logical, Rescoper rescoper) {
+		super(source, logical, rescoper);
 	}
 
 	@Override
-	public SingleCondDef rescope(Rescoper rescoper) {
-		return (SingleCondDef) super.rescope(rescoper);
+	public SingleLogicalDef rescope(Rescoper rescoper) {
+		return (SingleLogicalDef) super.rescope(rescoper);
 	}
 
 	@Override
-	public void writeFullCondition(Code code, CodePos exit, HostOp host) {
-		code.debug("Full cond: " + this);
-		writeCondition(code, exit, host);
+	public void writeFullLogical(Code code, CodePos exit, HostOp host) {
+		code.debug("Full logical: " + this);
+		writeLogical(code, exit, host);
 	}
 
 	@Override
 	public String toString() {
-		return condition().toString();
+		return logical().toString();
 	}
 
 	@Override
-	protected Cond createFullCondition() {
+	protected Logical createFullLogical() {
 
-		final Cond condition = condition();
+		final Logical logical = logical();
 
-		if (getScope() == condition.getScope()) {
-			return condition;
+		if (getScope() == logical.getScope()) {
+			return logical;
 		}
 
-		return new FullCondition(this);
+		return new FullLogical(this);
 	}
 
 	@Override
-	protected SingleCondDef create(
+	protected SingleLogicalDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new SingleCondDef(getSource(), condition(), rescoper);
+		return new SingleLogicalDef(getSource(), logical(), rescoper);
 	}
 
 	@Override
-	protected CondDef conjunctionWith(CondDef requirement) {
+	protected LogicalDef conjunctionWith(LogicalDef requirement) {
 
-		final SingleCondDef[] requirements = requirement.requirements();
+		final SingleLogicalDef[] requirements = requirement.requirements();
 
 		if (requirements.length == 1) {
 
-			final SingleCondDef conjunction =
+			final SingleLogicalDef conjunction =
 				simpleConjunction(this, requirement);
 
 			if (conjunction != null) {
@@ -88,13 +88,13 @@ final class SingleCondDef extends CondDef {
 			}
 		}
 
-		final CondDefConjunction conjunction =
+		final LogicalDefConjunction conjunction =
 			conjunction(requirements, this, false);
 
 		if (conjunction == null) {
 
-			final SingleCondDef[] newReqs =
-				new SingleCondDef[1 + requirements.length];
+			final SingleLogicalDef[] newReqs =
+				new SingleLogicalDef[1 + requirements.length];
 
 			newReqs[0] = this;
 			System.arraycopy(
@@ -104,49 +104,49 @@ final class SingleCondDef extends CondDef {
 					1,
 					requirements.length);
 
-			return new CondDefs(newReqs);
+			return new LogicalDefs(newReqs);
 		}
 
-		final SingleCondDef[] newReqs = requirements.clone();
+		final SingleLogicalDef[] newReqs = requirements.clone();
 
 		newReqs[conjunction.getIndex()] = conjunction.getConjunction();
 
-		return new CondDefs(newReqs);
+		return new LogicalDefs(newReqs);
 	}
 
-	private static final class FullCondition extends Cond {
+	private static final class FullLogical extends Logical {
 
-		private final SingleCondDef def;
+		private final SingleLogicalDef def;
 
-		FullCondition(SingleCondDef def) {
+		FullLogical(SingleLogicalDef def) {
 			super(def, def.getScope());
 			this.def = def;
 		}
 
 		@Override
 		public LogicalValue getConstantValue() {
-			return this.def.condition().getConstantValue();
+			return this.def.logical().getConstantValue();
 		}
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
-			return this.def.condition().logicalValue(
+			return this.def.logical().logicalValue(
 					this.def.getRescoper().rescope(scope));
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			getLogger().notReproducible(this);
 			return null;
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			this.def.writeFullCondition(code, exit, host);
+			this.def.writeFullLogical(code, exit, host);
 		}
 
 		@Override
-		public CondDef toCondDef() {
+		public LogicalDef toLogicalDef() {
 			return this.def;
 		}
 

@@ -53,11 +53,11 @@ public abstract class RefOp {
 		return this.ref;
 	}
 
-	public void writeCondition(Code code, CodePos exit) {
+	public void writeLogicalValue(Code code, CodePos exit) {
 
 		final HostOp target = target(code, exit);
 
-		target.materialize(code, exit).writeCondition(code, exit);
+		target.materialize(code, exit).writeLogicalValue(code, exit);
 	}
 
 	public final void writeValue(Code code, ValOp result) {

@@ -112,7 +112,7 @@ class DeclaredObjectField extends DeclaredField<Obj> {
 		}
 	}
 
-	private final class Registry extends OwnerFieldRegistry {
+	private final class Registry extends OwnerMemberRegistry {
 
 		@Override
 		protected Obj findOwner() {

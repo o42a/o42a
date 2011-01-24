@@ -32,7 +32,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 
 public abstract class IntrinsicObject extends PlainObject {
 
-	private ObjectMemberRegistry fieldRegistry;
+	private ObjectMemberRegistry memberRegistry;
 
 	public IntrinsicObject(
 			Container enclosingContainer,
@@ -106,14 +106,14 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		getFieldRegistry().registerMembers(members);
+		getMemberRegistry().registerMembers(members);
 	}
 
-	protected ObjectMemberRegistry getFieldRegistry() {
-		if (this.fieldRegistry == null) {
-			this.fieldRegistry = new ObjectMemberRegistry(this);
+	protected ObjectMemberRegistry getMemberRegistry() {
+		if (this.memberRegistry == null) {
+			this.memberRegistry = new ObjectMemberRegistry(this);
 		}
-		return this.fieldRegistry;
+		return this.memberRegistry;
 	}
 
 	protected void includeSource(String source) {
@@ -134,7 +134,7 @@ public abstract class IntrinsicObject extends PlainObject {
 		final DeclarativeBlock definition = new DeclarativeBlock(
 				new Location(context, compiled),
 				new DefinitionDistributor(this),
-				getFieldRegistry());
+				getMemberRegistry());
 
 		compiled.buildBlock(definition);
 	}

@@ -107,7 +107,7 @@ final class Wrapper extends Rescoper {
 		WrappedDef(
 				WrappedDef prototype,
 				Def wrapped,
-				CondDef prerequisite,
+				LogicalDef prerequisite,
 				Rescoper rescoper) {
 			super(prototype, wrapped, prerequisite, rescoper);
 		}
@@ -117,7 +117,7 @@ final class Wrapper extends Rescoper {
 				Rescoper rescoper,
 				Rescoper additionalRescoper,
 				Def wrapped,
-				CondDef prerequisite) {
+				LogicalDef prerequisite) {
 			return new WrappedDef(this, wrapped, prerequisite, rescoper);
 		}
 

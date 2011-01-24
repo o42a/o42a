@@ -19,7 +19,7 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.CondDef.trueCondDef;
+import static org.o42a.core.def.LogicalDef.trueLogicalDef;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -30,7 +30,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ActionVisitor;
@@ -47,11 +47,11 @@ class LocalDef extends Def {
 		new ActionValueVisitor();
 
 	private final boolean explicit;
-	private Cond condition;
+	private Logical logical;
 
 	LocalDef(
 			ImperativeBlock block,
-			CondDef prerequisite,
+			LogicalDef prerequisite,
 			Rescoper rescoper,
 			boolean explicit) {
 		super(
@@ -64,12 +64,12 @@ class LocalDef extends Def {
 
 	private LocalDef(
 			LocalDef prototype,
-			CondDef prerequisite,
+			LogicalDef prerequisite,
 			Rescoper rescoper,
-			Cond condition) {
+			Logical logical) {
 		super(prototype, prerequisite, rescoper);
 		this.explicit = prototype.explicit;
-		this.condition = condition;
+		this.logical = logical;
 	}
 
 	public final ImperativeBlock getBlock() {
@@ -87,15 +87,15 @@ class LocalDef extends Def {
 	}
 
 	@Override
-	public LocalDef and(Cond condition) {
-		if (condition == null || condition.isTrue()) {
+	public LocalDef and(Logical logical) {
+		if (logical == null || logical.isTrue()) {
 			return this;
 		}
 
-		final Cond oldCondition = condition();
-		final Cond newCondition = oldCondition.and(condition);
+		final Logical oldLogical = logical();
+		final Logical newLogical = oldLogical.and(logical);
 
-		if (oldCondition == newCondition) {
+		if (oldLogical == newLogical) {
 			return this;
 		}
 
@@ -103,7 +103,7 @@ class LocalDef extends Def {
 				this,
 				getPrerequisite(),
 				getRescoper(),
-				newCondition);
+				newLogical);
 	}
 
 	@Override
@@ -139,8 +139,8 @@ class LocalDef extends Def {
 	}
 
 	@Override
-	protected CondDef buildPrerequisite() {
-		return trueCondDef(this, getScope());
+	protected LogicalDef buildPrerequisite() {
+		return trueLogicalDef(this, getScope());
 	}
 
 	@Override
@@ -157,19 +157,19 @@ class LocalDef extends Def {
 	}
 
 	@Override
-	protected Cond condition() {
-		if (this.condition != null) {
-			return this.condition;
+	protected Logical logical() {
+		if (this.logical != null) {
+			return this.logical;
 		}
-		return this.condition = new LocalCondition(this);
+		return this.logical = new LocalLogical(this);
 	}
 
 	@Override
 	protected Def create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			CondDef prerequisite) {
-		return new LocalDef(this, prerequisite, rescoper, this.condition);
+			LogicalDef prerequisite) {
+		return new LocalDef(this, prerequisite, rescoper, this.logical);
 	}
 
 	private static final class ActionValueVisitor
@@ -197,11 +197,11 @@ class LocalDef extends Def {
 
 	}
 
-	private static final class LocalCondition extends Cond {
+	private static final class LocalLogical extends Logical {
 
 		private final LocalDef def;
 
-		LocalCondition(LocalDef def) {
+		LocalLogical(LocalDef def) {
 			super(def, def.getScope());
 			this.def = def;
 		}
@@ -221,13 +221,13 @@ class LocalDef extends Def {
 				"Not a local scope: " + scope;
 
 			final Action action =
-				this.def.getBlock().initialCondition(local);
+				this.def.getBlock().initialLogicalValue(local);
 
 			return action.getLogicalValue();
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 
 			final LocalDef def = this.def.reproduce(reproducer);
 
@@ -235,12 +235,12 @@ class LocalDef extends Def {
 				return null;
 			}
 
-			return def.condition();
+			return def.logical();
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Cond: " + this);
+			code.debug("Logical: " + this);
 
 			final ValOp result =
 				code.allocate(host.getGenerator().valType()).storeUnknown(code);

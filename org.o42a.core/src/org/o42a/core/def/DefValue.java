@@ -48,13 +48,13 @@ public class DefValue {
 	}
 
 	static DefValue logicalValue(
-			CondDef condition,
+			LogicalDef logicalDef,
 			LogicalValue logicalValue,
 			boolean requirement) {
-		if (!condition.isFalse()) {
-			return new DefLogical(condition, logicalValue, requirement);
+		if (!logicalDef.isFalse()) {
+			return new DefLogical(logicalDef, logicalValue, requirement);
 		}
-		return new AlwaysLogical(condition, logicalValue, requirement);
+		return new AlwaysLogical(logicalDef, logicalValue, requirement);
 	}
 
 	final SourceSpec sourced;
@@ -75,7 +75,7 @@ public class DefValue {
 		return (Def) this.sourced;
 	}
 
-	public CondDef getCondDef() {
+	public LogicalDef getLogicalDef() {
 		return null;
 	}
 
@@ -84,7 +84,7 @@ public class DefValue {
 	 *
 	 * <p>Some definitions may produce logical value, but not a real one.
 	 * For example, when {@link Def#getPrerequisite() prerequisite} fails,
-	 * post-condition is <code>false</code>, or no definitions at all.</p>
+	 * condition is <code>false</code>, or no definitions at all.</p>
 	 *
 	 * @return real value, or <code>null</code> when value is logical.
 	 */
@@ -183,13 +183,13 @@ public class DefValue {
 		return valueType.cast(this.value);
 	}
 
-	public DefValue and(DefValue condition) {
-		if (condition.isUnknown()) {
+	public DefValue and(DefValue logicalDef) {
+		if (logicalDef.isUnknown()) {
 			return this;
 		}
 
 		final Value<?> newValue =
-			this.value.require(condition.getLogicalValue());
+			this.value.require(logicalDef.getLogicalValue());
 
 		if (newValue == this.value) {
 			return this;
@@ -285,10 +285,10 @@ public class DefValue {
 		private final boolean requirement;
 
 		DefLogical(
-				CondDef condition,
+				LogicalDef logicalDef,
 				LogicalValue logicalValue,
 				boolean requirement) {
-			super(condition, logicalValue.toValue());
+			super(logicalDef, logicalValue.toValue());
 			this.requirement = requirement;
 		}
 
@@ -298,8 +298,8 @@ public class DefValue {
 		}
 
 		@Override
-		public CondDef getCondDef() {
-			return (CondDef) this.sourced;
+		public LogicalDef getLogicalDef() {
+			return (LogicalDef) this.sourced;
 		}
 
 		@Override
@@ -325,10 +325,10 @@ public class DefValue {
 	private static final class AlwaysLogical extends DefLogical {
 
 		AlwaysLogical(
-				CondDef condition,
+				LogicalDef logicalDef,
 				LogicalValue logicalValue,
 				boolean requirement) {
-			super(condition, logicalValue, requirement);
+			super(logicalDef, logicalValue, requirement);
 		}
 
 		@Override

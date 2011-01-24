@@ -21,7 +21,7 @@ package org.o42a.core.artifact.object;
 
 
 
-public abstract class OwnerFieldRegistry extends ObjectMemberRegistry {
+public abstract class OwnerMemberRegistry extends ObjectMemberRegistry {
 
 	@Override
 	public Obj getOwner() {

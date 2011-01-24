@@ -78,11 +78,11 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 	@Override
 	public Action initialValue(LocalScope scope) {
-		return initialCondition(scope);
+		return initialLogicalValue(scope);
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
+	public Action initialLogicalValue(LocalScope scope) {
 
 		final Field<?> field =
 			scope.member(this.member.getKey())
@@ -91,7 +91,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 			field.getArtifact()
 			.materialize()
 			.getDefinitions()
-			.fullCondition()
+			.fullLogical()
 			.logicalValue(scope);
 
 		return new ExecuteCommand(this, logicalValue);

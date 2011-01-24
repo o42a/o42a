@@ -56,7 +56,7 @@ public final class LocalFieldOp extends StOp {
 	}
 
 	@Override
-	public void writeCondition(Control control) {
+	public void writeLogicalValue(Control control) {
 		throw new UnsupportedOperationException();
 	}
 

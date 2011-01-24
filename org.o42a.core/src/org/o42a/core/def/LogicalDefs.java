@@ -20,32 +20,32 @@
 package org.o42a.core.def;
 
 import static java.lang.System.arraycopy;
-import static org.o42a.core.def.CondDefConjunction.conjunction;
+import static org.o42a.core.def.LogicalDefConjunction.conjunction;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ref.Cond;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.common.AbstractConjunction;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
 
 
-final class CondDefs extends CondDef {
+final class LogicalDefs extends LogicalDef {
 
-	CondDefs(SingleCondDef[] requirements) {
+	LogicalDefs(SingleLogicalDef[] requirements) {
 		super(
 				requirements[0].getSource(),
-				requirements[0].condition(),
+				requirements[0].logical(),
 				requirements[0].getRescoper(),
 				requirements);
 	}
 
 	@Override
-	public void writeFullCondition(Code code, CodePos exit, HostOp host) {
-		code.debug("Full cond: " + this);
-		for (SingleCondDef req : requirements()) {
-			req.writeFullCondition(code, exit, host);
+	public void writeFullLogical(Code code, CodePos exit, HostOp host) {
+		code.debug("Full logical: " + this);
+		for (SingleLogicalDef req : requirements()) {
+			req.writeFullLogical(code, exit, host);
 		}
 	}
 
@@ -55,7 +55,7 @@ final class CondDefs extends CondDef {
 		final StringBuilder out = new StringBuilder();
 
 		out.append('(');
-		for (CondDef prereq : getRequirements()) {
+		for (LogicalDef prereq : getRequirements()) {
 			out.append(" & ").append(prereq);
 		}
 		out.append(')');
@@ -64,50 +64,50 @@ final class CondDefs extends CondDef {
 	}
 
 	@Override
-	protected CondDef create(
+	protected LogicalDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
 
-		final SingleCondDef[] requirements = requirements();
-		final SingleCondDef[] newRequirements =
-			new SingleCondDef[requirements.length];
+		final SingleLogicalDef[] requirements = requirements();
+		final SingleLogicalDef[] newRequirements =
+			new SingleLogicalDef[requirements.length];
 
 		for (int i = 0; i < requirements.length; ++i) {
 			newRequirements[i] =
 				requirements[i].rescope(additionalRescoper);
 		}
 
-		return new CondDefs(newRequirements);
+		return new LogicalDefs(newRequirements);
 	}
 
 	@Override
-	protected Cond createFullCondition() {
-		return new FullCondition(this);
+	protected Logical createFullLogical() {
+		return new FullLogical(this);
 	}
 
 	@Override
-	protected CondDef conjunctionWith(CondDef requirement) {
+	protected LogicalDef conjunctionWith(LogicalDef requirement) {
 
-		final SingleCondDef[] reqs1 = requirements();
-		final SingleCondDef[] reqs2 = requirement.requirements();
+		final SingleLogicalDef[] reqs1 = requirements();
+		final SingleLogicalDef[] reqs2 = requirement.requirements();
 
 		if (reqs2.length == 1) {
 
-			final CondDefConjunction conjunction =
+			final LogicalDefConjunction conjunction =
 				conjunction(reqs1, requirement, true);
 
 			if (conjunction != null) {
 
-				final SingleCondDef[] newReqs = reqs1.clone();
+				final SingleLogicalDef[] newReqs = reqs1.clone();
 
 				newReqs[conjunction.getIndex()] = conjunction.getConjunction();
 
-				return new CondDefs(newReqs);
+				return new LogicalDefs(newReqs);
 			}
 		}
 
-		final SingleCondDef[] newReqs =
-			new SingleCondDef[reqs1.length + reqs2.length];
+		final SingleLogicalDef[] newReqs =
+			new SingleLogicalDef[reqs1.length + reqs2.length];
 
 		arraycopy(reqs1, 0, newReqs, 0, reqs1.length);
 
@@ -115,8 +115,8 @@ final class CondDefs extends CondDef {
 
 		for (int i = 0; i < reqs2.length; ++i) {
 
-			final SingleCondDef req = reqs2[i];
-			final CondDefConjunction conjunction =
+			final SingleLogicalDef req = reqs2[i];
+			final LogicalDefConjunction conjunction =
 				conjunction(newReqs, 0, reqs1.length, requirement, true);
 
 			if (conjunction == null) {
@@ -126,32 +126,32 @@ final class CondDefs extends CondDef {
 			newReqs[conjunction.getIndex()] = conjunction.getConjunction();
 		}
 
-		return new CondDefs(ArrayUtil.clip(newReqs, idx));
+		return new LogicalDefs(ArrayUtil.clip(newReqs, idx));
 	}
 
-	private static final class FullCondition extends AbstractConjunction {
+	private static final class FullLogical extends AbstractConjunction {
 
-		private final CondDefs defs;
+		private final LogicalDefs defs;
 
-		FullCondition(CondDefs def) {
+		FullLogical(LogicalDefs def) {
 			super(def, def.getScope());
 			this.defs = def;
 		}
 
 		@Override
-		public CondDef toCondDef() {
+		public LogicalDef toLogicalDef() {
 			return this.defs;
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 			getLogger().notReproducible(this);
 			return null;
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			this.defs.writeFullCondition(code, exit, host);
+			this.defs.writeFullLogical(code, exit, host);
 		}
 
 		@Override
@@ -165,8 +165,8 @@ final class CondDefs extends CondDef {
 		}
 
 		@Override
-		protected Cond claim(int index) {
-			return this.defs.requirements()[index].condition();
+		protected Logical claim(int index) {
+			return this.defs.requirements()[index].logical();
 		}
 
 	}

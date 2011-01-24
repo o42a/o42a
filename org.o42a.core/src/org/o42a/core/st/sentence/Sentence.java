@@ -79,11 +79,11 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 			final StatementKind kind = alt.getKind();
 
 			if (kind.hasDefinition()) {
-				if (result.isCondition()) {
+				if (result.isLogical()) {
 					getLogger().prohibitedDefinition(alt);
 					continue;
 				}
-			} else if (kind.isCondition()) {
+			} else if (kind.isLogical()) {
 				if (result.hasDefinition()) {
 					getLogger().expectedDefinition(alt);
 					continue;

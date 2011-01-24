@@ -40,12 +40,12 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeCondition(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
 			final ObjectOp object = op.object(code, exit);
 
 			if (!op.isOverridden()) {
-				object.writeCondition(code, exit);
+				object.writeLogicalValue(code, exit);
 				return;
 			}
 
@@ -74,11 +74,11 @@ enum ValuePart {
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
-			return definitions.removePostConditions(ex);
+			return definitions.removeCondition(ex);
 		}
 
 		@Override
-		void writeCondition(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
 			final ValOp result =
 				code.allocate(op.getGenerator().valType()).storeUnknown(code);
@@ -108,12 +108,12 @@ enum ValuePart {
 			return voidDef(
 					ex,
 					ex.distribute(),
-					definitions.getRequirement().fullCondition())
+					definitions.getRequirement().fullLogical())
 					.toDefinitions();
 		}
 
 		@Override
-		void writeCondition(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
 			final ObjectOp object = op.object(code, exit);
 
@@ -129,41 +129,41 @@ enum ValuePart {
 
 		@Override
 		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
-			writeCondition(code, exit, op);
+			writeLogicalValue(code, exit, op);
 			result.storeVoid(code);
 		}
 
 	},
 
-	POST_CONDITION("PostCondition", "post-condition") {
+	CONDITION("Condition", "condition") {
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
 			return voidDef(
 					ex,
 					ex.distribute(),
-					definitions.getPostCondition().fullCondition())
+					definitions.getCondition().fullLogical())
 					.toDefinitions();
 		}
 
 		@Override
-		void writeCondition(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
 			final ObjectOp object = op.object(code, exit);
 
 			if (!op.isOverridden()) {
-				object.writePostCondition(code, exit);
+				object.writeCondition(code, exit);
 			} else {
 
 				final ObjectDataOp data = object.data(code);
 
-				data.writeOverriddenPostCondition(code, exit);
+				data.writeOverriddenCondition(code, exit);
 			}
 		}
 
 		@Override
 		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
-			writeCondition(code, exit, op);
+			writeLogicalValue(code, exit, op);
 			result.storeVoid(code);
 		}
 
@@ -180,7 +180,7 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeCondition(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
 			final ValOp result =
 				code.allocate(op.getGenerator().valType()).storeUnknown(code);
@@ -214,7 +214,7 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeCondition(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
 			final ValOp result =
 				code.allocate(op.getGenerator().valType()).storeUnknown(code);
@@ -253,7 +253,7 @@ enum ValuePart {
 
 	abstract Definitions valuePart(ValuePartRef ex, Definitions definitions);
 
-	abstract void writeCondition(Code code, CodePos exit, ValuePartOp op);
+	abstract void writeLogicalValue(Code code, CodePos exit, ValuePartOp op);
 
 	abstract void writeValue(
 			Code code,

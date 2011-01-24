@@ -80,16 +80,16 @@ public abstract class Ref extends RefBase {
 	}
 
 	private ConditionsWrap conditions;
-	private Cond condition;
+	private Logical logical;
 	private RefOp op;
 
 	public Ref(LocationSpec location, Distributor distributor) {
 		this(location, distributor, null);
 	}
 
-	Ref(LocationSpec location, Distributor distributor, Cond condition) {
+	Ref(LocationSpec location, Distributor distributor, Logical logical) {
 		super(location, distributor);
-		this.condition = condition;
+		this.logical = logical;
 	}
 
 	public Path getPath() {
@@ -101,11 +101,11 @@ public abstract class Ref extends RefBase {
 		return getResolution().materialize().getValueType();
 	}
 
-	public final Cond getCondition() {
-		if (this.condition == null) {
-			this.condition = new RefCond();
+	public final Logical getLogical() {
+		if (this.logical == null) {
+			this.logical = new RefLogical();
 		}
-		return this.condition;
+		return this.logical;
 	}
 
 	public final Resolution getResolution() {
@@ -118,7 +118,7 @@ public abstract class Ref extends RefBase {
 	}
 
 	@Override
-	public Action initialCondition(LocalScope scope) {
+	public Action initialLogicalValue(LocalScope scope) {
 		return new ExecuteCommand(this, value(scope).getLogicalValue());
 	}
 
@@ -275,11 +275,11 @@ public abstract class Ref extends RefBase {
 		return new ApplyDirective(directive);
 	}
 
-	public Ref and(Cond condition) {
-		if (condition.isTrue()) {
+	public Ref and(Logical logical) {
+		if (logical.isTrue()) {
 			return this;
 		}
-		return new ConditionalRef(this, condition);
+		return new ConditionalRef(this, logical);
 	}
 
 	public TypeRef toTypeRef() {
@@ -321,7 +321,7 @@ public abstract class Ref extends RefBase {
 
 		final Ref clone = (Ref) super.clone();
 
-		clone.condition = null;
+		clone.logical = null;
 		clone.op = null;
 
 		return clone;
@@ -341,13 +341,13 @@ public abstract class Ref extends RefBase {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 			return getWrapped().prerequisite(scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
-			return getWrapped().condition(scope);
+		public Logical precondition(Scope scope) {
+			return getWrapped().precondition(scope);
 		}
 
 		@Override
@@ -382,14 +382,14 @@ public abstract class Ref extends RefBase {
 		}
 
 		@Override
-		public Cond prerequisite(Scope scope) {
+		public Logical prerequisite(Scope scope) {
 			return this.conditions.prerequisite(scope);
 		}
 
 		@Override
-		public Cond condition(Scope scope) {
-			return this.conditions.condition(scope).and(
-					Ref.this.rescope(scope).getCondition());
+		public Logical precondition(Scope scope) {
+			return this.conditions.precondition(scope).and(
+					Ref.this.rescope(scope).getLogical());
 		}
 
 		@Override
@@ -421,9 +421,9 @@ public abstract class Ref extends RefBase {
 
 	}
 
-	private final class RefCond extends Cond {
+	private final class RefLogical extends Logical {
 
-		public RefCond() {
+		public RefLogical() {
 			super(Ref.this, Ref.this.getScope());
 		}
 
@@ -438,7 +438,7 @@ public abstract class Ref extends RefBase {
 		}
 
 		@Override
-		public Cond reproduce(Reproducer reproducer) {
+		public Logical reproduce(Reproducer reproducer) {
 
 			final Ref reproduced = Ref.this.reproduce(reproducer);
 
@@ -446,13 +446,13 @@ public abstract class Ref extends RefBase {
 				return null;
 			}
 
-			return reproduced.getCondition();
+			return reproduced.getLogical();
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Cond: " + this);
-			Ref.this.op(host).writeCondition(code, exit);
+			code.debug("Logical: " + this);
+			Ref.this.op(host).writeLogicalValue(code, exit);
 		}
 
 		@Override
@@ -485,8 +485,8 @@ public abstract class Ref extends RefBase {
 		}
 
 		@Override
-		public void writeCondition(Control control) {
-			this.ref.writeCondition(control.code(), control.exit());
+		public void writeLogicalValue(Control control) {
+			this.ref.writeLogicalValue(control.code(), control.exit());
 		}
 
 	}

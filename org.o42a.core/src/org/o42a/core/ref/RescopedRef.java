@@ -70,8 +70,8 @@ final class RescopedRef extends Wrap {
 			super(
 					ref,
 					distributor,
-					ref.getCondition().toCondDef()
-					.rescope(rescoper).fullCondition());
+					ref.getLogical().toLogicalDef()
+					.rescope(rescoper).fullLogical());
 			this.ref = ref;
 			this.rescoper = rescoper;
 		}
@@ -212,8 +212,8 @@ final class RescopedRef extends Wrap {
 		}
 
 		@Override
-		public void writeCondition(Code code, CodePos exit) {
-			rescope(code, exit).writeCondition(code, exit);
+		public void writeLogicalValue(Code code, CodePos exit) {
+			rescope(code, exit).writeLogicalValue(code, exit);
 		}
 
 		@Override
