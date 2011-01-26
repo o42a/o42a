@@ -25,9 +25,9 @@ import static org.o42a.core.st.Conditions.emptyConditions;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
+import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;

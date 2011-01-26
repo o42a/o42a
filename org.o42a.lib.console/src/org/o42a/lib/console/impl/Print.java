@@ -27,7 +27,7 @@ import static org.o42a.lib.console.impl.PrintFunc.printSignature;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CondBlk;
-import org.o42a.core.artifact.common.IntrinsicObject;
+import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;

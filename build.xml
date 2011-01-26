@@ -27,6 +27,7 @@
 		<file name="org.o42a.parser"/>
 		<file name="org.o42a.codegen"/>
 		<file name="org.o42a.core"/>
+		<file name="org.o42a.common"/>
 		<file name="org.o42a.lib.console"/>
 		<file name="org.o42a.intrinsic"/>
 		<file name="org.o42a.compiler"/>
