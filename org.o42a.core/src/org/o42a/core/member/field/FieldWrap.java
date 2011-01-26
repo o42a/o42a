@@ -79,10 +79,6 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 
 		private FieldWrap<?> field;
 
-		public Member(Container container, String name) {
-			super(container, name);
-		}
-
 		public Member(FieldDeclaration declaration) {
 			super(declaration);
 		}

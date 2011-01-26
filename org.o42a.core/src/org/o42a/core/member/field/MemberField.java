@@ -19,13 +19,9 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.core.Container;
-import org.o42a.core.Location;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.*;
 import org.o42a.core.artifact.object.Obj;
@@ -44,14 +40,6 @@ public abstract class MemberField extends Member {
 	public MemberField(FieldDeclaration declaration) {
 		super(declaration, declaration.distribute());
 		this.declaration = declaration;
-	}
-
-	public MemberField(Container container, String name) {
-		super(
-				new Location(container.getContext(), null),
-				declarativeDistributor(container));
-		this.declaration =
-			fieldDeclaration(this, distribute(), memberName(name));
 	}
 
 	private MemberField(Container container, MemberField overridden) {

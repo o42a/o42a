@@ -78,6 +78,7 @@ public final class Include extends IntrinsicDirective {
 		final BlockBuilder builder = context.compileBlock();
 
 		builder.buildBlock(destination);
+		destination.executeInstructions();
 	}
 
 	@Override

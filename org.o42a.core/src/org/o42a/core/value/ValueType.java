@@ -24,10 +24,13 @@ import static org.o42a.core.ir.op.Val.VOID_VAL;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationSpec;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Def;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.Val;
@@ -123,6 +126,18 @@ public abstract class ValueType<T> {
 				distributor,
 				this,
 				value);
+	}
+
+	public final Ref runtimeRef(
+			LocationSpec location,
+			Distributor distributor) {
+		return Ref.runtimeRef(location, distributor, this);
+	}
+
+	public final Def runtimeDef(
+			LocationSpec location,
+			Distributor distributor) {
+		return runtimeRef(location, distributor).toDef();
 	}
 
 	public final Obj definiteObject(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Compiler Command-Line Interface Build Script
-    Copyright (C) 2010 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -26,6 +26,7 @@
 		<file name="org.o42a.intrinsic"/>
 		<file name="org.o42a.backend.llvm"/>
 		<file name="org.o42a.backend.llvm.jni"/>
+		<file name="org.o42a.rt"/>
 	</filelist>
 
 	<filelist id="package.deps" dir="..">
@@ -36,6 +37,7 @@
 		<file name="org.o42a.core"/>
 		<file name="org.o42a.common"/>
 		<file name="org.o42a.lib.console"/>
+		<file name="org.o42a.lib.test"/>
 		<file name="org.o42a.intrinsic"/>
 	</filelist>
 

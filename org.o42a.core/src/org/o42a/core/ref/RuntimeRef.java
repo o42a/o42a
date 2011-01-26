@@ -32,25 +32,44 @@ import org.o42a.core.value.ValueType;
 
 final class RuntimeRef extends NewObjectEx {
 
-	RuntimeRef(LocationSpec location, Distributor distributor) {
+	private final ValueType<?> valueType;
+
+	RuntimeRef(
+			LocationSpec location,
+			Distributor distributor,
+			ValueType<?> valueType) {
 		super(location, distributor);
+		this.valueType = valueType;
 	}
 
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		return new RuntimeRef(this, reproducer.distribute());
+		return new RuntimeRef(this, reproducer.distribute(), this.valueType);
+	}
+
+	@Override
+	public String toString() {
+		return "Run-time " + this.valueType;
 	}
 
 	@Override
 	protected Obj createObject() {
-		return new RuntimeObject(this, distribute());
+		return new RuntimeObject(this, distribute(), this.valueType);
 	}
 
 	private static final class RuntimeObject extends Result {
 
-		RuntimeObject(LocationSpec location, Distributor enclosing) {
-			super(location, enclosing, ValueType.VOID);
+		RuntimeObject(
+				LocationSpec location,
+				Distributor enclosing,
+				ValueType<?> valueType) {
+			super(location, enclosing, valueType);
+		}
+
+		@Override
+		public String toString() {
+			return "Run-time " + getValueType();
 		}
 
 		@Override

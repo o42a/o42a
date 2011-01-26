@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,22 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.numeric;
+package org.o42a.common.adapter;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationSpec;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 
 
-final class IntegerByString extends ByString<Long> {
+public class IntegerByString extends ByString<Long> {
 
 	private static final int PLUS_SIGN = 0x002b;
 	private static final int HYPHEN_MINUS = 0x002d;
 	private static final int MINUS_SIGN = 0x2212;
 
-	IntegerByString(IntegerObject owner) {
+	public IntegerByString(Obj owner) {
 		super(owner, ValueType.INTEGER);
 	}
 
@@ -42,18 +44,16 @@ final class IntegerByString extends ByString<Long> {
 	}
 
 	@Override
-	protected void parse(
-			IRGenerator generator,
-			Code code,
-			ValOp result,
-			ValOp input) {
+	protected void parse(Code code, ValOp result, ObjectOp input) {
 
+		final IRGenerator generator = input.getGenerator();
+		final ValOp inputValue = input.writeValue(code);
 		final ParseWithRadixFunc parseFunc =
 			generator.externalFunction(
 					"o42a_int_by_str",
 					ParseWithRadixFunc.signature(generator)).op(code);
 
-		parseFunc.parse(code, result, input, 10);
+		parseFunc.parse(code, result, inputValue, 10);
 	}
 
 	private Long integerByString(

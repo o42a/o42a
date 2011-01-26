@@ -1,6 +1,6 @@
 /*
-    Console Module
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Test Framework
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,34 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.console.impl;
+package org.o42a.lib.test.rt;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.lib.console.impl.PrintFunc.printSignature;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CondBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.value.ValueType;
-import org.o42a.lib.console.ConsoleModule;
+import org.o42a.lib.test.TestModule;
 
 
-public class Print extends IntrinsicObject {
+public class RtVoid extends IntrinsicObject {
 
-	public Print(ConsoleModule module) {
-		super(
-				fieldDeclaration(
-						module,
-						module.distribute(),
-						memberName("print"))
-				.prototype());
+	public RtVoid(TestModule module) {
+		super(fieldDeclaration(
+				module,
+				module.distribute(),
+				memberName("rt-void")));
 		setValueType(ValueType.VOID);
 	}
 
@@ -52,12 +46,6 @@ public class Print extends IntrinsicObject {
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
 				getValueType().typeRef(this, getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource("print.o42a");
 	}
 
 	@Override
@@ -70,7 +58,7 @@ public class Print extends IntrinsicObject {
 		return new ValueIR(objectIR);
 	}
 
-	private final class ValueIR extends ProposedValueIR {
+	private static final class ValueIR extends ProposedValueIR {
 
 		ValueIR(ObjectIR objectIR) {
 			super(objectIR);
@@ -78,32 +66,8 @@ public class Print extends IntrinsicObject {
 
 		@Override
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
-
-			final MemberKey textKey = memberName("text").key(getScope());
-			final CodeBlk cantPrint = code.addBlock("cant_print");
-			final ObjectOp textObject =
-				host.field(code, cantPrint.head(), textKey)
-				.materialize(code, cantPrint.head());
-			final ValOp text = textObject.writeValue(code);
-			final CondBlk print =
-				text.condition(code).branch(code, "print", "dont_print");
-			final CodeBlk dontPrint = print.otherwise();
-			final PrintFunc printFunc = getGenerator().externalFunction(
-					"o42a_io_print_str",
-					printSignature(getGenerator())).op(print);
-
-			printFunc.print(print, text);
-			result.storeVoid(print);
-			print.returnVoid();
-
-			if (cantPrint.exists()) {
-				result.storeFalse(cantPrint);
-				cantPrint.returnVoid();
-			}
-			if (dontPrint.exists()) {
-				result.storeFalse(dontPrint);
-				dontPrint.returnVoid();
-			}
+			code.debug("Run-time void");
+			result.storeVoid(code);
 		}
 
 	}

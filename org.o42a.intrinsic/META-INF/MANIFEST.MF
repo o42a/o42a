@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.o42a.intrinsic;singleton:=true
 Bundle-Version: 0.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.o42a.common;bundle-version="0.1.0",
- org.o42a.lib.console;bundle-version="0.1.0"
+ org.o42a.lib.console;bundle-version="0.1.0",
+ org.o42a.lib.test;bundle-version="0.1.0"
 Export-Package: org.o42a.intrinsic
 Bundle-ActivationPolicy: lazy

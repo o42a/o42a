@@ -129,24 +129,23 @@ public class Root extends Obj {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		members.addMember(getVoidField().toMember());
+		members.addMember(getFalse().toMember());
+		members.addMember(getInteger().toMember());
+		members.addMember(getFloat().toMember());
+		members.addMember(getString().toMember());
+		members.addMember(this.include.toMember());
+		members.addMember(this.useNamespace.toMember());
+		members.addMember(this.useObject.toMember());
 
 		final ObjectMemberRegistry memberRegistry =
 			new ObjectMemberRegistry(this);
-
-		memberRegistry.declareMember(getVoidField().toMember());
-		memberRegistry.declareMember(getFalse().toMember());
-		memberRegistry.declareMember(getInteger().toMember());
-		memberRegistry.declareMember(getFloat().toMember());
-		memberRegistry.declareMember(getString().toMember());
-		memberRegistry.declareMember(this.include.toMember());
-		memberRegistry.declareMember(this.useNamespace.toMember());
-		memberRegistry.declareMember(this.useObject.toMember());
-
 		final BlockBuilder compiled = getContext().compileBlock();
 		final DeclarativeBlock block =
 			new DeclarativeBlock(this, distribute(), memberRegistry);
 
 		compiled.buildBlock(block);
+		block.executeInstructions();
 
 		memberRegistry.registerMembers(members);
 	}

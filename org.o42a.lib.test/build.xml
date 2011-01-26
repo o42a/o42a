@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Module Commons Build Script
+    Test Framework Build Script
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -19,16 +19,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="org.o42a.common" default="package">
+<project name="org.o42a.lib.test" default="package">
 
 	<filelist id="project.deps" dir="..">
-		<file name="org.o42a.core"/>
+		<file name="org.o42a.common"/>
 	</filelist>
 
 	<property
 		name="compile.deps"
-		value="org.o42a.util,org.o42a.codegen"/>
+		value="org.o42a.util,org.o42a.core,org.o42a.codegen"/>
 
-	<import file="../build/common.build.xml"/>
+	<import file="../build/common.build.xml" />
+
+	<target name="copy-resources">
+		<copy todir="${output..}" taskname="${ant.project.name}">
+			<fileset dir="o42a"/>
+		</copy>
+	</target>
 
 </project>

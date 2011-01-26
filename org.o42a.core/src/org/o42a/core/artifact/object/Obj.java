@@ -626,14 +626,14 @@ public abstract class Obj extends Artifact<Obj>
 		return this.selfOrDerived = new SelfOrDerived(this);
 	}
 
-	public ObjectIR ir(IRGenerator generator) {
+	public final ObjectIR ir(IRGenerator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = new ObjectIR(generator, this);
+			this.ir = createIR(generator);
 		}
 		return this.ir;
 	}
 
-	public ObjectValueIR valueIR(IRGenerator generator) {
+	public final ObjectValueIR valueIR(IRGenerator generator) {
 		if (this.valueIR == null || this.valueIR.getGenerator() != generator) {
 			this.valueIR = createValueIR(ir(generator));
 		}
@@ -671,6 +671,10 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected Value<?> calculateValue(Scope scope) {
 		return getDefinitions().value(scope).getValue();
+	}
+
+	protected ObjectIR createIR(IRGenerator generator) {
+		return new ObjectIR(generator, this);
 	}
 
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {

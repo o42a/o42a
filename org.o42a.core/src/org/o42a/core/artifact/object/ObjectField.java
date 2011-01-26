@@ -21,8 +21,8 @@ package org.o42a.core.artifact.object;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
 
 
@@ -30,11 +30,6 @@ public abstract class ObjectField extends Field<Obj> {
 
 	public ObjectField(FieldDeclaration declaration) {
 		super(new Member(declaration));
-		((Member) toMember()).field = this;
-	}
-
-	public ObjectField(Container enclosingContainer, String name) {
-		super(new Member(enclosingContainer, name));
 		((Member) toMember()).field = this;
 	}
 
@@ -75,11 +70,7 @@ public abstract class ObjectField extends Field<Obj> {
 
 		private ObjectField field;
 
-		public Member(Container container, String name) {
-			super(container, name);
-		}
-
-		public Member(FieldDeclaration declaration) {
+		Member(FieldDeclaration declaration) {
 			super(declaration);
 		}
 

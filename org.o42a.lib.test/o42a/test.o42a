@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-    Module Commons Build Script
+/*
+    Test Framework
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,18 +16,4 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-
-<project name="org.o42a.common" default="package">
-
-	<filelist id="project.deps" dir="..">
-		<file name="org.o42a.core"/>
-	</filelist>
-
-	<property
-		name="compile.deps"
-		value="org.o42a.util,org.o42a.codegen"/>
-
-	<import file="../build/common.build.xml"/>
-
-</project>
+*/

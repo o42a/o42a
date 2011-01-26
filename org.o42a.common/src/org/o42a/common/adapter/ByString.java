@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.numeric;
+package org.o42a.common.adapter;
 
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
@@ -31,10 +31,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.st.DefinitionTarget;
@@ -44,19 +44,24 @@ import org.o42a.core.value.ValueType;
 
 public abstract class ByString<T> extends IntrinsicObject {
 
-	private static final PathBuilder BY_STRING =
+	public static final PathBuilder BY_STRING =
 		pathBuilder("adapters", "by_string");
-	private static final PathBuilder INPUT =
+	public static final PathBuilder INPUT =
 		BY_STRING.appendName("input");
 
-	ByString(Obj owner, ValueType<T> valueType) {
-		super(
+	public ByString(Obj owner, ValueType<T> valueType) {
+		this(
 				fieldDeclaration(
 						owner,
 						owner.distribute(),
 						BY_STRING.toAdapterId(owner, owner.distribute()))
 				.prototype()
-				.override());
+				.override(),
+				valueType);
+	}
+
+	public ByString(FieldDeclaration declaration, ValueType<T> valueType) {
+		super(declaration);
 		setValueType(valueType);
 	}
 
@@ -113,11 +118,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 
 	protected abstract T byString(LocationSpec location, String input);
 
-	protected abstract void parse(
-			IRGenerator generator,
-			Code code,
-			ValOp result,
-			ValOp input);
+	protected abstract void parse(Code code, ValOp result, ObjectOp input);
 
 	private final class ValueIR extends ProposedValueIR {
 
@@ -135,12 +136,8 @@ public abstract class ByString<T> extends IntrinsicObject {
 						cantParse.head(),
 						INPUT.memberOf(getScope()).getKey())
 				.materialize(code, cantParse.head());
-			final ValOp value =
-				code.allocate(getGenerator().valType()).storeUnknown(code);
 
-			input.writeValue(code, value);
-
-			parse(getGenerator(), code, result, value);
+			parse(code, result, input);
 			code.returnVoid();
 
 			if (cantParse.exists()) {

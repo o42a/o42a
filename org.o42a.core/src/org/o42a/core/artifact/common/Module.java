@@ -65,10 +65,6 @@ public class Module extends PlainObject {
 		return getScope().toString();
 	}
 
-	protected ObjectMemberRegistry getMemberRegistry() {
-		return this.memberRegistry;
-	}
-
 	protected DeclarativeBlock getDefinition() {
 		if (this.definition == null) {
 
