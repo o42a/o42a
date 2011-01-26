@@ -19,41 +19,25 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.ref.path.Path.absolutePath;
-import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
-
+import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.IntrinsicObject;
-import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryOpObj;
+import org.o42a.intrinsic.operator.BinaryOperator;
 
 
 public abstract class NumericCompareOpObj<L extends Number>
 		extends BinaryOpObj<Long, L> {
-
-	private static final PathBuilder WITH =
-		pathBuilder("operators", "compare", "with");
 
 	public NumericCompareOpObj(
 			IntrinsicObject owner,
 			ValueType<L> leftOperandType) {
 		super(
 				owner.getContainer(),
-				absolutePath(
-						owner.getContext(),
-						"operators",
-						"compare")
-						.target(owner.getScope()).toStaticTypeRef(),
+				BinaryOperator.COMPARE,
 				owner.getAncestor().toStatic(),
 				ValueType.INTEGER,
-				leftOperandType,
-				"<compare>");
-	}
-
-	@Override
-	protected PathBuilder getRightOperand() {
-		return WITH;
+				leftOperandType);
 	}
 
 	@Override

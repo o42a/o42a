@@ -20,42 +20,41 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
 import static org.o42a.core.st.Conditions.emptyConditions;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.common.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.log.LoggableData;
 
 
 public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 
-	public static PathBuilder RIGHT_OPERAND =
-		pathBuilder("operators", "binary_operator", "right_operand");
-
 	private static FieldDeclaration declaration(
 			Container enclosingContainer,
-			StaticTypeRef adapterType,
+			BinaryOperator operator,
 			StaticTypeRef declaredIn) {
 
+		final Location location = new Location(
+				enclosingContainer.getContext(),
+				new LoggableData("<ROOT>"));
+		final Distributor distributor =
+			declarativeDistributor(enclosingContainer);
+		final AdapterId adapterId =
+			operator.getPath().toAdapterId(location, distributor);
 		final FieldDeclaration declaration =
-			fieldDeclaration(
-					enclosingContainer,
-					declarativeDistributor(enclosingContainer),
-					adapterId(adapterType)).prototype();
+			fieldDeclaration(location, distributor, adapterId).prototype();
 
 		if (declaredIn == null) {
 			return declaration;
@@ -65,16 +64,15 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 	}
 
 	private final ValueType<L> leftOperandType;
-	private final String operator;
+	private final BinaryOperator operator;
 
 	public BinaryOpObj(
 			Container enclosingContainer,
-			StaticTypeRef adapterType,
+			BinaryOperator operator,
 			StaticTypeRef declaredIn,
 			ValueType<T> resultType,
-			ValueType<L> leftOperandType,
-			String operator) {
-		super(declaration(enclosingContainer, adapterType, declaredIn));
+			ValueType<L> leftOperandType) {
+		super(declaration(enclosingContainer, operator, declaredIn));
 		setValueType(resultType);
 		this.leftOperandType = leftOperandType;
 		this.operator = operator;
@@ -85,18 +83,18 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 		return (ValueType<T>) getValueType();
 	}
 
-	public ValueType<L> getLeftOperandType() {
+	public final ValueType<L> getLeftOperandType() {
 		return this.leftOperandType;
 	}
 
-	public String getOperator() {
+	public final BinaryOperator getOperator() {
 		return this.operator;
 	}
 
 	@Override
 	public String toString() {
 		return ("Binary " + this.leftOperandType
-				+ " " + this.operator
+				+ " " + this.operator.getSign()
 				+ "[" + getResultType() + "]");
 	}
 
@@ -123,7 +121,8 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 
 		final Artifact<?> leftOperand =
 			getScope().getEnclosingScopePath().resolveArtifact(this, scope);
-		final Field<?> rightOperand = getRightOperand().fieldOf(scope);
+		final Field<?> rightOperand =
+			getOperator().getRightOperand().fieldOf(scope);
 		final Value<?> leftValue =
 			leftOperand.materialize().getValue();
 		final Value<?> rightValue =
@@ -151,7 +150,7 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 			getLogger().unsupportedRightOperand(
 					rightOperand,
 					rightType,
-					getOperator());
+					getOperator().getSign());
 			return getResultType().falseValue();
 		}
 
@@ -168,8 +167,6 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 
 		return result;
 	}
-
-	protected abstract PathBuilder getRightOperand();
 
 	protected abstract boolean rightOperandSupported(ValueType<?> valueType);
 

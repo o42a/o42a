@@ -19,42 +19,26 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.ref.path.Path.absolutePath;
-
-import org.o42a.ast.expression.BinaryOperator;
+import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.IntrinsicObject;
-import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
 import org.o42a.intrinsic.operator.BinaryOpObj;
+import org.o42a.intrinsic.operator.BinaryOperator;
 
 
 public abstract class NumericEqualsOpObj<L extends Number>
 		extends BinaryOpObj<org.o42a.core.value.Void, L> {
-
-	private static final PathBuilder TO =
-		PathBuilder.pathBuilder("operators", "equals", "to");
 
 	public NumericEqualsOpObj(
 			IntrinsicObject owner,
 			ValueType<L> leftOperandType) {
 		super(
 				owner.getContainer(),
-				absolutePath(
-						owner.getContext(),
-						"operators",
-						"equals")
-						.target(owner.getScope()).toStaticTypeRef(),
+				BinaryOperator.EQUALS,
 				owner.getAncestor().toStatic(),
 				ValueType.VOID,
-				leftOperandType,
-				BinaryOperator.EQUAL.getSign());
-	}
-
-	@Override
-	protected PathBuilder getRightOperand() {
-		return TO;
+				leftOperandType);
 	}
 
 	@Override

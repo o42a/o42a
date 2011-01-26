@@ -19,34 +19,21 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.ref.path.Path.absolutePath;
-
-import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryOpObj;
+import org.o42a.intrinsic.operator.BinaryOperator;
 
 
 public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 
-	public FloatBinaryOpObj(
-			FloatObject owner,
-			StaticTypeRef adapterType,
-			BinaryOperator operator) {
+	public FloatBinaryOpObj(FloatObject owner, BinaryOperator operator) {
 		super(
 				owner.getContainer(),
-				adapterType,
+				operator,
 				owner.getAncestor().toStatic(),
 				ValueType.FLOAT,
-				ValueType.FLOAT,
-				operator.getSign());
-	}
-
-	@Override
-	protected PathBuilder getRightOperand() {
-		return RIGHT_OPERAND;
+				ValueType.FLOAT);
 	}
 
 	@Override
@@ -78,14 +65,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Add extends FloatBinaryOpObj {
 
 		public Add(FloatObject owner) {
-			super(
-					owner,
-					absolutePath(
-							owner.getContext(),
-							"operators",
-							"add")
-							.target(owner.getScope()).toStaticTypeRef(),
-					BinaryOperator.ADD);
+			super(owner, BinaryOperator.ADD);
 		}
 
 		@Override
@@ -98,14 +78,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Subtract extends FloatBinaryOpObj {
 
 		public Subtract(FloatObject owner) {
-			super(
-					owner,
-					absolutePath(
-							owner.getContext(),
-							"operators",
-							"subtract")
-							.target(owner.getScope()).toStaticTypeRef(),
-					BinaryOperator.SUBTRACT);
+			super(owner, BinaryOperator.SUBTRACT);
 		}
 
 		@Override
@@ -118,14 +91,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Multiply extends FloatBinaryOpObj {
 
 		public Multiply(FloatObject owner) {
-			super(
-					owner,
-					absolutePath(
-							owner.getContext(),
-							"operators",
-							"multiply")
-							.target(owner.getScope()).toStaticTypeRef(),
-					BinaryOperator.MULTIPLY);
+			super(owner, BinaryOperator.MULTIPLY);
 		}
 
 		@Override
@@ -138,14 +104,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Divide extends FloatBinaryOpObj {
 
 		public Divide(FloatObject owner) {
-			super(
-					owner,
-					absolutePath(
-							owner.getContext(),
-							"operators",
-							"divide")
-							.target(owner.getScope()).toStaticTypeRef(),
-					BinaryOperator.DIVIDE);
+			super(owner, BinaryOperator.DIVIDE);
 		}
 
 		@Override
