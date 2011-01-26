@@ -22,6 +22,7 @@ package org.o42a.intrinsic;
 import static org.o42a.core.ir.IRUtil.canonicalName;
 import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
+import static org.o42a.lib.test.TestModule.testModule;
 
 import java.util.HashMap;
 
@@ -64,6 +65,7 @@ public class CompilerIntrinsics implements Intrinsics {
 		this.root.resolveAll();
 		this.consoleModule = consoleModule(this.root.getContext());
 		addModule(this.consoleModule);
+		addModule(testModule(this.root.getContext()));
 	}
 
 	public final BlockCompiler getCompiler() {

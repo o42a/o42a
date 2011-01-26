@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.numeric;
+package org.o42a.common.adapter;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
@@ -28,7 +28,7 @@ import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.ValOp;
 
 
-class ParseWithRadixFunc extends Func {
+public final class ParseWithRadixFunc extends Func {
 
 	private static FuncSignature signature;
 
@@ -48,7 +48,7 @@ class ParseWithRadixFunc extends Func {
 		caller().call(code, result, input, code.int32(radix));
 	}
 
-	public static final class FuncSignature
+	private static final class FuncSignature
 			extends Signature<ParseWithRadixFunc> {
 
 		private final IRGenerator generator;

@@ -75,8 +75,9 @@ public abstract class Ref extends RefBase {
 
 	public static Ref runtimeRef(
 			LocationSpec location,
-			Distributor distributor) {
-		return new RuntimeRef(location, distributor);
+			Distributor distributor,
+			ValueType<?> valueType) {
+		return new RuntimeRef(location, distributor, valueType);
 	}
 
 	private ConditionsWrap conditions;

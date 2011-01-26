@@ -21,6 +21,7 @@ package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.ref.path.Path.absolutePath;
 
+import org.o42a.common.adapter.FloatByString;
 import org.o42a.common.intrinsic.IntrinsicType;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.object.Ascendants;
@@ -75,15 +76,15 @@ public class FloatObject extends IntrinsicType {
 			new NumericEqualsOpObj.FloatEquals(this);
 		final FloatByString byString = new FloatByString(this);
 
-		getMemberRegistry().declareMember(plus.toMember());
-		getMemberRegistry().declareMember(minus.toMember());
-		getMemberRegistry().declareMember(add.toMember());
-		getMemberRegistry().declareMember(subtract.toMember());
-		getMemberRegistry().declareMember(multiply.toMember());
-		getMemberRegistry().declareMember(divide.toMember());
-		getMemberRegistry().declareMember(compare.toMember());
-		getMemberRegistry().declareMember(equals.toMember());
-		getMemberRegistry().declareMember(byString.toMember());
+		members.addMember(plus.toMember());
+		members.addMember(minus.toMember());
+		members.addMember(add.toMember());
+		members.addMember(subtract.toMember());
+		members.addMember(multiply.toMember());
+		members.addMember(divide.toMember());
+		members.addMember(compare.toMember());
+		members.addMember(equals.toMember());
+		members.addMember(byString.toMember());
 
 		super.declareMembers(members);
 	}

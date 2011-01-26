@@ -30,6 +30,7 @@ import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.Member;
 
 
@@ -49,11 +50,6 @@ public abstract class ObjectWrap extends PlainObject {
 
 	@Override
 	public abstract Obj getWrapped();
-
-	@Override
-	public ObjectIR ir(IRGenerator generator) {
-		return getWrapped().ir(generator);
-	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
@@ -82,6 +78,16 @@ public abstract class ObjectWrap extends PlainObject {
 	protected Definitions explicitDefinitions() {
 		return wrapper(getScope(), getWrapped().getScope())
 		.update(getWrapped().getDefinitions());
+	}
+
+	@Override
+	protected ObjectIR createIR(IRGenerator generator) {
+		return getWrapped().ir(generator);
+	}
+
+	@Override
+	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
+		return getWrapped().valueIR(objectIR.getGenerator());
 	}
 
 }

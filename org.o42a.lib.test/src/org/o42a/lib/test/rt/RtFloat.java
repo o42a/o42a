@@ -1,6 +1,6 @@
 /*
-    Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Test Framework
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,51 +17,70 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.root;
+package org.o42a.lib.test.rt;
 
-import static org.o42a.core.def.Def.falseDef;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.value.Value.falseValue;
 
+import org.o42a.common.adapter.FloatByString;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.lib.test.TestModule;
 
 
-public final class False extends IntrinsicObject {
+public class RtFloat extends IntrinsicObject {
 
-	public False(Root root) {
-		super(fieldDeclaration(
-				root,
-				root.distribute(),
-				memberName("false")));
-	}
-
-	@Override
-	public String toString() {
-		return "false";
+	public RtFloat(TestModule module) {
+		super(
+				fieldDeclaration(
+						module,
+						module.distribute(),
+						memberName("rt-float"))
+				.prototype());
+		setValueType(ValueType.FLOAT);
 	}
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
-				ValueType.VOID.typeRef(
-						this,
-						getScope().getEnclosingScope()));
+		return new Ascendants(this).setAncestor(
+				getValueType().typeRef(this, getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected void declareMembers(ObjectMembers members) {
+		members.addMember(new Parse(this).toMember());
+		super.declareMembers(members);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return falseDef(this, distribute()).toDefinitions();
+		return null;
 	}
 
-	@Override
-	protected Value<?> calculateValue(Scope scope) {
-		return falseValue();
+	private static final class Parse extends FloatByString {
+
+		Parse(Obj owner) {
+			super(owner);
+		}
+
+		@Override
+		protected Value<?> calculateValue(Scope scope) {
+
+			final Value<?> value = super.calculateValue(scope);
+
+			if (!value.getLogicalValue().isTrue()) {
+				return value;
+			}
+
+			return getValueType().runtimeValue();
+		}
+
 	}
 
 }

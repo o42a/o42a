@@ -21,13 +21,14 @@ package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.ref.path.Path.absolutePath;
 
+import org.o42a.common.adapter.IntegerByString;
 import org.o42a.common.intrinsic.IntrinsicType;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.operator.*;
+import org.o42a.intrinsic.operator.UnaryOpObj;
 
 
 public class IntegerObject extends IntrinsicType {
@@ -69,15 +70,15 @@ public class IntegerObject extends IntrinsicType {
 			new NumericEqualsOpObj.IntegerEquals(this);
 		final IntegerByString byString = new IntegerByString(this);
 
-		getMemberRegistry().declareMember(plus.toMember());
-		getMemberRegistry().declareMember(minus.toMember());
-		getMemberRegistry().declareMember(add.toMember());
-		getMemberRegistry().declareMember(subtract.toMember());
-		getMemberRegistry().declareMember(multiply.toMember());
-		getMemberRegistry().declareMember(divide.toMember());
-		getMemberRegistry().declareMember(compare.toMember());
-		getMemberRegistry().declareMember(equals.toMember());
-		getMemberRegistry().declareMember(byString.toMember());
+		members.addMember(plus.toMember());
+		members.addMember(minus.toMember());
+		members.addMember(add.toMember());
+		members.addMember(subtract.toMember());
+		members.addMember(multiply.toMember());
+		members.addMember(divide.toMember());
+		members.addMember(compare.toMember());
+		members.addMember(equals.toMember());
+		members.addMember(byString.toMember());
 
 		super.declareMembers(members);
 	}

@@ -60,17 +60,6 @@ public abstract class DefinedObject extends PlainObject {
 		return this.definition;
 	}
 
-	public ObjectMemberRegistry getMemberRegistry() {
-		if (this.memberRegistry == null) {
-			this.memberRegistry = createMemberRegistry();
-		}
-		return this.memberRegistry;
-	}
-
-	protected ObjectMemberRegistry createMemberRegistry() {
-		return new ObjectMemberRegistry(this);
-	}
-
 	protected DeclarativeBlock createDeclarativeBlock() {
 		return new DeclarativeBlock(this, this, getMemberRegistry());
 	}
@@ -113,6 +102,13 @@ public abstract class DefinedObject extends PlainObject {
 			return this.definition;
 		}
 		return this.definition = createDeclarativeBlock();
+	}
+
+	private ObjectMemberRegistry getMemberRegistry() {
+		if (this.memberRegistry == null) {
+			this.memberRegistry = new ObjectMemberRegistry(this);
+		}
+		return this.memberRegistry;
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,16 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.numeric;
+package org.o42a.common.adapter;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationSpec;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 
 
-final strictfp class FloatByString extends ByString<Double> {
+public strictfp class FloatByString extends ByString<Double> {
 
 	private static final int PLUS_SIGN = 0x002b;
 	private static final int COMMA = 0x002c;
@@ -42,7 +44,7 @@ final strictfp class FloatByString extends ByString<Double> {
 	private static final byte PARSE_EXPONENT_SIGN = 3;
 	private static final byte PARSE_EXPONENT = 4;
 
-	FloatByString(FloatObject owner) {
+	public FloatByString(Obj owner) {
 		super(owner, ValueType.FLOAT);
 	}
 
@@ -241,18 +243,16 @@ final strictfp class FloatByString extends ByString<Double> {
 	}
 
 	@Override
-	protected void parse(
-			IRGenerator generator,
-			Code code,
-			ValOp result,
-			ValOp input) {
+	protected void parse(Code code, ValOp result, ObjectOp input) {
 
+		final IRGenerator generator = input.getGenerator();
+		final ValOp inputValue = input.writeValue(code);
 		final ParseFunc parseFunc =
 			generator.externalFunction(
 					"o42a_float_by_str",
 					ParseFunc.signature(generator)).op(code);
 
-		parseFunc.parse(code, result, input);
+		parseFunc.parse(code, result, inputValue);
 	}
 
 	private boolean hasError(LocationSpec location, double x) {

@@ -110,11 +110,19 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		writeValue(code, exit, result, body);
 	}
 
-	public final void writeValue(Code code, ValOp result) {
-		writeValue(code, null, result);
+	public final ValOp writeValue(Code code) {
+		return writeValue(code, (CodePos) null, (ValOp) null);
 	}
 
-	public final void writeValue(Code code, CodePos exit, ValOp result) {
+	public final ValOp writeValue(Code code, CodePos exit) {
+		return writeValue(code, exit, null);
+	}
+
+	public final ValOp writeValue(Code code, ValOp result) {
+		return writeValue(code, null, result);
+	}
+
+	public final ValOp writeValue(Code code, CodePos exit, ValOp result) {
 
 		final ObjectDataOp data = data(code);
 		final ValOp value = data.ptr().value(code);
@@ -125,13 +133,19 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final CodeBlk definite = indefinite.otherwise();
 
 		definite.dumpValue(this + " value is definite", value);
-		result.store(definite, value);
+		if (result != null) {
+			result.store(definite, value);
+		}
 		checkValue(definite, code.tail(), exit, value);
 
 		writeValue(indefinite, value, null);
 		indefinite.dumpValue(this + " value calculated", value);
-		result.store(indefinite, value);
+		if (result != null) {
+			result.store(indefinite, value);
+		}
 		checkValue(indefinite, code.tail(), exit, value);
+
+		return value;
 	}
 
 	public final void writeValue(

@@ -35,13 +35,6 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	private ObjectMemberRegistry memberRegistry;
 
-	public IntrinsicObject(
-			Container enclosingContainer,
-			String name) {
-		super(new IntrinsicField(enclosingContainer, name));
-		((IntrinsicField) getScope()).init(this);
-	}
-
 	public IntrinsicObject(FieldDeclaration declaration) {
 		super(new IntrinsicField(declaration));
 		((IntrinsicField) getScope()).init(this);
@@ -107,14 +100,9 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		getMemberRegistry().registerMembers(members);
-	}
-
-	protected ObjectMemberRegistry getMemberRegistry() {
-		if (this.memberRegistry == null) {
-			this.memberRegistry = new ObjectMemberRegistry(this);
+		if (this.memberRegistry != null) {
+			this.memberRegistry.registerMembers(members);
 		}
-		return this.memberRegistry;
 	}
 
 	protected void includeSource(String source) {
@@ -132,22 +120,22 @@ public abstract class IntrinsicObject extends PlainObject {
 		}
 
 		final BlockBuilder compiled = context.compileBlock();
+
+		this.memberRegistry = new ObjectMemberRegistry(this);
+
 		final DeclarativeBlock definition = new DeclarativeBlock(
 				new Location(context, compiled),
 				new DefinitionDistributor(this),
-				getMemberRegistry());
+				this.memberRegistry);
 
 		compiled.buildBlock(definition);
+		definition.executeInstructions();
 	}
 
 	private static final class IntrinsicField extends ObjectField {
 
 		IntrinsicField(FieldDeclaration declaration) {
 			super(declaration);
-		}
-
-		IntrinsicField(Container enclosingContainer, String name) {
-			super(enclosingContainer, name);
 		}
 
 		private IntrinsicField(
