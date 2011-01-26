@@ -56,7 +56,7 @@ final class OverriddenChecker implements PathWalker {
 	}
 
 	@Override
-	public boolean module(PathFragment fragment, String moduleId, Obj module) {
+	public boolean module(PathFragment fragment, Obj module) {
 		return error();
 	}
 

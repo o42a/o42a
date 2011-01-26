@@ -51,8 +51,8 @@ final class PathWalkTracker implements PathWalker {
 	}
 
 	@Override
-	public boolean module(PathFragment fragment, String moduleId, Obj module) {
-		return walk(this.walker.module(fragment, moduleId, module));
+	public boolean module(PathFragment fragment, Obj module) {
+		return walk(this.walker.module(fragment, module));
 	}
 
 	@Override

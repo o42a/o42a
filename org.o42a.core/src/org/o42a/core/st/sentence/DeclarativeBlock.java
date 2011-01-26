@@ -123,6 +123,21 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
+	public final DeclarativeSentence propose(LocationSpec location) {
+		return (DeclarativeSentence) super.propose(location);
+	}
+
+	@Override
+	public final DeclarativeSentence claim(LocationSpec location) {
+		return (DeclarativeSentence) super.claim(location);
+	}
+
+	@Override
+	public final DeclarativeSentence issue(LocationSpec location) {
+		return (DeclarativeSentence) super.issue(location);
+	}
+
+	@Override
 	public Conditions setConditions(Conditions conditions) {
 		assert this.conditions == null :
 			"Conditions already set for " + this;

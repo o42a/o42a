@@ -33,10 +33,6 @@ public abstract class PathFragment {
 
 	static final MaterializeFragment MATERIALIZE = new MaterializeFragment();
 
-	static PathFragment moduleId(String moduleId) {
-		return new ModuleFragment(moduleId);
-	}
-
 	public boolean isAbsolute() {
 		return false;
 	}

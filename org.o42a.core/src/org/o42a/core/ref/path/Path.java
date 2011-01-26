@@ -23,7 +23,6 @@ import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOfRange;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.PathFragment.MATERIALIZE;
-import static org.o42a.core.ref.path.PathFragment.moduleId;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -58,7 +57,7 @@ public class Path {
 	}
 
 	public static AbsolutePath modulePath(String moduleId) {
-		return new AbsolutePath(moduleId(moduleId));
+		return new AbsolutePath(new ModuleFragment(moduleId));
 	}
 
 	public static Path memberPath(MemberKey memberKey) {

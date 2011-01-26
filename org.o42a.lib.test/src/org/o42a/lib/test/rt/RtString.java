@@ -42,7 +42,7 @@ public class RtString extends IntrinsicObject {
 	public RtString(TestModule module) {
 		super(
 				fieldDeclaration(
-						module,
+						module.locationFor("rt-string.o42a"),
 						module.distribute(),
 						memberName("rt-string"))
 				.prototype());
@@ -57,7 +57,7 @@ public class RtString extends IntrinsicObject {
 
 	@Override
 	protected void postResolve() {
-		includeSource("rt-string.o42a");
+		includeSource();
 		super.postResolve();
 	}
 

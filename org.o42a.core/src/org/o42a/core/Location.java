@@ -58,6 +58,10 @@ public class Location implements LocationSpec {
 		return getContext().getLogger();
 	}
 
+	public final LocationSpec locationFor(String path) {
+		return getContext().locationFor(this, path);
+	}
+
 	@Override
 	public String toString() {
 

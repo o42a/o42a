@@ -21,7 +21,6 @@ package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -45,12 +44,6 @@ class PhraseObject extends DefinedObject {
 		super(mainContext.getPhrase(), distributor);
 		this.mainContext = mainContext;
 		this.ascendants = ascendants;
-	}
-
-	private PhraseObject(Scope scope, PhraseObject sample) {
-		super(scope, sample);
-		this.mainContext = sample.mainContext;
-		this.ascendants = sample.ascendants;
 	}
 
 	@Override

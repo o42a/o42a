@@ -25,6 +25,7 @@ import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.util.Source;
+import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Logger;
 
 
@@ -86,6 +87,23 @@ public abstract class CompilerContext {
 	public abstract Source getSource();
 
 	public abstract CompilerContext contextFor(String path) throws Exception;
+
+	public final LocationSpec locationFor(LogInfo location, String path) {
+
+		final CompilerContext context;
+
+		try {
+			context = contextFor(path);
+		} catch (Exception e) {
+			getLogger().unavailableSource(
+					location,
+					path,
+					e.getLocalizedMessage());
+			return null;
+		}
+
+		return new Location(context, context.getSource());
+	}
 
 	public boolean declarationsVisibleFrom(CompilerContext viewer) {
 		return getSource().equals(viewer.getSource());
