@@ -217,6 +217,21 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
+	public final ImperativeSentence propose(LocationSpec location) {
+		return (ImperativeSentence) super.propose(location);
+	}
+
+	@Override
+	public final ImperativeSentence claim(LocationSpec location) {
+		return (ImperativeSentence) super.claim(location);
+	}
+
+	@Override
+	public final ImperativeSentence issue(LocationSpec location) {
+		return (ImperativeSentence) super.issue(location);
+	}
+
+	@Override
 	public Conditions setConditions(Conditions conditions) {
 		assert this.initialConditions == null :
 			"Conditions already set for " + this;

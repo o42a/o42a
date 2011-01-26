@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.core.Namespace;
@@ -39,7 +40,12 @@ public class UseNamespace extends IntrinsicDirective {
 	private final MemberKey objectKey;
 
 	public UseNamespace(Root root) {
-		super(root, "use_namespace");
+		super(
+				fieldDeclaration(
+						root.locationFor("use_namespace.o42a"),
+						root.distribute(),
+						memberName("use_namespace"))
+				.prototype());
 		this.moduleKey = memberName("module").key(getScope());
 		this.objectKey = memberName("object").key(getScope());
 	}
@@ -101,7 +107,7 @@ public class UseNamespace extends IntrinsicDirective {
 
 	@Override
 	protected void postResolve() {
-		includeSource("use_namespace.o42a");
+		includeSource();
 		super.postResolve();
 	}
 

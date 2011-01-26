@@ -41,7 +41,7 @@ public class Print extends IntrinsicObject {
 	public Print(ConsoleModule module) {
 		super(
 				fieldDeclaration(
-						module,
+						module.locationFor("print.o42a"),
 						module.distribute(),
 						memberName("print"))
 				.prototype());
@@ -56,8 +56,8 @@ public class Print extends IntrinsicObject {
 
 	@Override
 	protected void postResolve() {
+		includeSource();
 		super.postResolve();
-		includeSource("print.o42a");
 	}
 
 	@Override

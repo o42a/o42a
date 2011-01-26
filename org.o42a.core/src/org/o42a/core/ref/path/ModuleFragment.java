@@ -22,6 +22,7 @@ package org.o42a.core.ref.path;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
+import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -53,13 +54,13 @@ final class ModuleFragment extends PathFragment {
 			PathWalker walker) {
 
 		final CompilerContext context = start.getContext();
-		final Obj module = context.getIntrinsics().getModule(this.moduleId);
+		final Module module = context.getIntrinsics().getModule(this.moduleId);
 
 		if (module == null) {
 			context.getLogger().unresolvedModule(location, this.moduleId);
 			return null;
 		}
-		walker.module(this, this.moduleId, module);
+		walker.module(this, module);
 
 		return module;
 	}

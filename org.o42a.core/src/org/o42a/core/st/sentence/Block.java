@@ -147,7 +147,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		return this.sentences;
 	}
 
-	public final Sentence<S> propose(LocationSpec location) {
+	public Sentence<S> propose(LocationSpec location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -157,7 +157,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		return addStatementSentence(proposition);
 	}
 
-	public final Sentence<S> claim(LocationSpec location) {
+	public Sentence<S> claim(LocationSpec location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -167,7 +167,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		return addStatementSentence(claim);
 	}
 
-	public final Sentence<S> issue(LocationSpec location) {
+	public Sentence<S> issue(LocationSpec location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();

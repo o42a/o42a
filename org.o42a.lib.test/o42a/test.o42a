@@ -17,3 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/*
+  Test signature.
+
+  Inherit this object or create an adapter to it in public field. Then such
+  field will be recognized as test.
+
+  The 'run tests' directive searches for all tests in enclosing object
+  and executes them.
+ */
+Test :=> void(
+
+  /*
+    Optional test name.
+    
+    Will be generated automatically if omitted.
+  */
+  Name := string(False).
+
+).

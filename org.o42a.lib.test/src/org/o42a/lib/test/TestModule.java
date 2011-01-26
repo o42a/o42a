@@ -26,8 +26,11 @@ import java.net.URL;
 
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.member.Member;
 import org.o42a.lib.test.rt.*;
+import org.o42a.lib.test.run.RunTests;
 
 
 public class TestModule extends Module {
@@ -56,18 +59,50 @@ public class TestModule extends Module {
 		return new TestModule(moduleContext);
 	}
 
+	private Obj test;
+
 	private TestModule(CompilerContext context) {
 		super(context, "Test");
 	}
 
+	public Obj getTest() {
+		if (this.test == null) {
+			this.test = objectByName("test");
+		}
+		if (this.test == getContext().getFalse()) {
+			return null;
+		}
+		return this.test;
+	}
+
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		members.addMember(new RunTests(this).toMember());
 		members.addMember(new RtVoid(this).toMember());
 		members.addMember(new RtFalse(this).toMember());
 		members.addMember(new RtString(this).toMember());
 		members.addMember(new RtInteger(this).toMember());
 		members.addMember(new RtFloat(this).toMember());
 		super.declareMembers(members);
+	}
+
+	private Obj objectByName(String name) {
+
+		final Member member = member(name);
+
+		if (member == null) {
+			getLogger().unresolved(this, toString() + ':' + name);
+			return getContext().getFalse();
+		}
+
+		final Obj object = member.getSubstance().toObject();
+
+		if (object == null) {
+			getLogger().notObject(this, toString() + ':' + name);
+			return getContext().getFalse();
+		}
+
+		return object;
 	}
 
 }

@@ -20,10 +20,10 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
-import org.o42a.core.CompilerContext;
-import org.o42a.core.Location;
+import org.o42a.core.LocationSpec;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
@@ -39,7 +39,12 @@ public final class Include extends IntrinsicDirective {
 	private final MemberKey pathKey;
 
 	public Include(Root root) {
-		super(root, "include");
+		super(
+				fieldDeclaration(
+						root.locationFor("include.o42a"),
+						root.distribute(),
+						memberName("include"))
+				.prototype());
 		this.pathKey = memberName("path").key(getScope());
 	}
 
@@ -58,24 +63,12 @@ public final class Include extends IntrinsicDirective {
 			return;
 		}
 
-		final CompilerContext context;
-
-		try {
-			context = block.getContext().contextFor(file);
-		} catch (Exception e) {
-			getLogger().unavailableSource(
-					fileField,
-					file,
-					e.getLocalizedMessage());
-			return;
-		}
-
-		final Location location = new Location(context, directive);
+		final LocationSpec location = directive.locationFor(file);
 		final S statements = sentence.alternative(location);
 		final Block<S> destination = statements.parentheses(
 				location,
 				new Namespace(statements.getContainer()));
-		final BlockBuilder builder = context.compileBlock();
+		final BlockBuilder builder = location.getContext().compileBlock();
 
 		builder.buildBlock(destination);
 		destination.executeInstructions();
@@ -83,7 +76,7 @@ public final class Include extends IntrinsicDirective {
 
 	@Override
 	protected void postResolve() {
-		includeSource("include.o42a");
+		includeSource();
 		super.postResolve();
 	}
 

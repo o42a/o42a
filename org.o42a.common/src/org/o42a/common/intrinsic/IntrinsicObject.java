@@ -105,26 +105,14 @@ public abstract class IntrinsicObject extends PlainObject {
 		}
 	}
 
-	protected void includeSource(String source) {
+	protected void includeSource() {
 
-		final CompilerContext context;
-
-		try {
-			context = getContext().contextFor(source);
-		} catch (Exception e) {
-			getLogger().unavailableSource(
-					this,
-					source,
-					e.getLocalizedMessage());
-			return;
-		}
-
-		final BlockBuilder compiled = context.compileBlock();
+		final BlockBuilder compiled = getContext().compileBlock();
 
 		this.memberRegistry = new ObjectMemberRegistry(this);
 
 		final DeclarativeBlock definition = new DeclarativeBlock(
-				new Location(context, compiled),
+				this,
 				new DefinitionDistributor(this),
 				this.memberRegistry);
 

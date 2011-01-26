@@ -33,7 +33,7 @@ public interface PathWalker {
 
 	boolean start(Path path, Scope start);
 
-	boolean module(PathFragment fragment, String moduleId, Obj module);
+	boolean module(PathFragment fragment, Obj module);
 
 	boolean up(Container enclosed, PathFragment fragment, Container enclosing);
 

@@ -19,10 +19,6 @@
 */
 package org.o42a.common.intrinsic;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.member.MemberId.memberName;
-
-import org.o42a.core.Container;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
@@ -36,15 +32,6 @@ public abstract class IntrinsicDirective
 
 	public IntrinsicDirective(FieldDeclaration declarator) {
 		super(declarator);
-	}
-
-	public IntrinsicDirective(Container enclosingContainer, String name) {
-		super(
-				FieldDeclaration.fieldDeclaration(
-						enclosingContainer,
-						declarativeDistributor(enclosingContainer),
-						memberName(name))
-				.prototype());
 	}
 
 	@Override
