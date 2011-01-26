@@ -20,38 +20,40 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.ref.path.Path.absolutePath;
 import static org.o42a.core.st.Conditions.emptyConditions;
 
-import org.o42a.ast.expression.UnaryOperator;
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.common.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.log.LoggableData;
 
 
 public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 	private static FieldDeclaration declaration(
 			Container enclosingContainer,
-			StaticTypeRef adapterType,
+			UnaryOperator operator,
 			StaticTypeRef declaredIn) {
 
+		final Location location = new Location(
+						enclosingContainer.getContext(),
+						new LoggableData("<ROOT>"));
+		final Distributor distributor =
+			declarativeDistributor(enclosingContainer);
+		final AdapterId adapterId =
+			operator.getPath().toAdapterId(location, distributor);
 		final FieldDeclaration declaration =
-			fieldDeclaration(
-					enclosingContainer,
-					declarativeDistributor(enclosingContainer),
-					adapterId(adapterType)).prototype();
+			fieldDeclaration(location, distributor, adapterId).prototype();
 
 		if (declaredIn == null) {
 			return declaration;
@@ -65,12 +67,14 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 	public UnaryOpObj(
 			Container enclosingContainer,
-			StaticTypeRef adapterType,
+			UnaryOperator operator,
 			StaticTypeRef declaredIn,
 			ValueType<T> resultType,
-			ValueType<O> operandType,
-			UnaryOperator operator) {
-		super(declaration(enclosingContainer, adapterType, declaredIn));
+			ValueType<O> operandType) {
+		super(declaration(
+				enclosingContainer,
+				operator,
+				declaredIn));
 		setValueType(resultType);
 		this.operandType = operandType;
 		this.operator = operator;
@@ -144,15 +148,10 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 				ValueType<O> operandType) {
 			super(
 					enclosingContainer,
-					absolutePath(
-							enclosingContainer.getContext(),
-							"operators",
-							"plus").target(enclosingContainer)
-							.toStaticTypeRef(),
+					UnaryOperator.PLUS,
 					declaredIn,
 					operandType,
-					operandType,
-					UnaryOperator.PLUS);
+					operandType);
 		}
 
 		@Override
@@ -169,16 +168,12 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 				Container enclosingContainer,
 				StaticTypeRef declaredIn,
 				ValueType<O> operandType) {
-			super(enclosingContainer,
-					absolutePath(
-							enclosingContainer.getContext(),
-							"operators",
-							"minus").target(enclosingContainer)
-							.toStaticTypeRef(),
+			super(
+					enclosingContainer,
+					UnaryOperator.MINUS,
 					declaredIn,
 					operandType,
-					operandType,
-					UnaryOperator.MINUS);
+					operandType);
 		}
 
 	}
