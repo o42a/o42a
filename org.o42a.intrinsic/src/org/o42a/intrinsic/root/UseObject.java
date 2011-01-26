@@ -21,8 +21,8 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
 
+import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.core.Namespace;
-import org.o42a.core.artifact.common.IntrinsicDirective;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;

@@ -27,9 +27,9 @@ import java.net.URL;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.common.intrinsic.IntrinsicDirective;
+import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
-import org.o42a.core.artifact.common.IntrinsicDirective;
-import org.o42a.core.artifact.common.IntrinsicObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.*;

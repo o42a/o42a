@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: o42a Modules Commons
+Bundle-SymbolicName: org.o42a.common
+Bundle-Version: 0.1.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.o42a.core;bundle-version="0.1.0";visibility:=reexport,
+ org.o42a.codegen;bundle-version="0.1.0";visibility:=reexport
+Export-Package: org.o42a.common.intrinsic

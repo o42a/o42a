@@ -10,12 +10,12 @@ white=$'\033[1;37m'
 dirname=`dirname $0`
 
 assign_copyright() {
-    dir="$1"
-    name="$2"
-    pattern="$3"
-    echo "${blue}***${white} Processing ${green}${dir}${white}"
-    find "${dirname}/../$dir" -name "$pattern" \
-	-exec sh "${dirname}/copyright_file.sh" \{\} "$name" \;
+	dir="$1"
+	name="$2"
+	pattern="$3"
+	echo "${blue}***${white} Processing ${green}${dir}${white}"
+	find "${dirname}/../$dir" -name "$pattern" \
+		-exec sh "${dirname}/copyright_file.sh" \{\} "$name" \;
 }
 
 assign_copyright org.o42a.ast/src "Abstract Syntax Tree" "*.java"
@@ -25,6 +25,7 @@ assign_copyright org.o42a.backend.llvm.jni/src "Compiler JNI Bindings to LLVM" "
 assign_copyright org.o42a.backend.llvm.test/src "Compiler LLVM Back-end Tests" "*.java"
 assign_copyright org.o42a.cl/src "Compiler Command-Line Interface" "*.java"
 assign_copyright org.o42a.codegen/src "Compiler Code Generator" "*.java"
+assign_copyright org.o42a.common/src "Modules Commons" "*.java"
 assign_copyright org.o42a.compiler/src "Compiler" "*.java"
 assign_copyright org.o42a.compiler.test/src "Compiler Tests" "*.java"
 assign_copyright org.o42a.core/src "Compiler Core" "*.java"
