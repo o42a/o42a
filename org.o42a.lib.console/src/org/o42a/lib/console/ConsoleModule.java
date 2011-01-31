@@ -80,7 +80,14 @@ public class ConsoleModule extends Module {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		members.addMember(new Print(this).toMember());
+		members.addMember(new Print(
+				this,
+				"print",
+				"o42a_io_print_str").toMember());
+		members.addMember(new Print(
+				this,
+				"print_error",
+				"o42a_error_append_str").toMember());
 		super.declareMembers(members);
 	}
 
