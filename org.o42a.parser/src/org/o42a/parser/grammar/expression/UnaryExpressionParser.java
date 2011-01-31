@@ -45,13 +45,35 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 
 		switch (context.next()) {
 		case '+':
-			operator = UnaryOperator.PLUS;
-			context.acceptAll();
+			switch (context.next()) {
+			case '+':
+				operator = UnaryOperator.IS_TRUE;
+				context.acceptAll();
+				break;
+			case '-':
+				operator = UnaryOperator.KNOWN;
+				context.acceptAll();
+				break;
+			default:
+				operator = UnaryOperator.PLUS;
+				context.acceptButLast();
+			}
 			break;
 		case '-':
 		case Grammar.MINUS:
-			operator = UnaryOperator.MINUS;
-			context.acceptAll();
+			switch (context.next()) {
+			case '+':
+				operator = UnaryOperator.UNKNOWN;
+				context.acceptAll();
+				break;
+			case '-':
+				operator = UnaryOperator.NOT;
+				context.acceptAll();
+				break;
+			default:
+				operator = UnaryOperator.MINUS;
+				context.acceptButLast();
+			}
 			break;
 		default:
 			return null;
