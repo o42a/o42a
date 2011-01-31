@@ -25,7 +25,11 @@ import org.o42a.ast.atom.SignType;
 public enum UnaryOperator implements SignType {
 
 	MINUS("-"),
-	PLUS("+");
+	PLUS("+"),
+	NOT("--"),
+	IS_TRUE("++"),
+	KNOWN("+-"),
+	UNKNOWN("-+");
 
 	private final String sign;
 

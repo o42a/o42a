@@ -23,22 +23,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.expression.UnaryOperator;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Parser;
 
 
 public class UnaryExpressionTest extends GrammarTestCase {
-
-	private Parser<UnaryNode> parser;
-
-	@Before
-	public void setup() {
-		this.parser = DECLARATIVE.unaryExpression();
-	}
 
 	@Test
 	public void plus() {
@@ -76,8 +67,56 @@ public class UnaryExpressionTest extends GrammarTestCase {
 		assertRange(0, 1, result.getSign());
 	}
 
+	@Test
+	public void not() {
+
+		final UnaryNode result = parse("--foo");
+
+		assertNotNull(result);
+		assertEquals(UnaryOperator.NOT, result.getOperator());
+		assertName("foo", result.getOperand());
+		assertRange(0, 5, result);
+		assertRange(0, 2, result.getSign());
+	}
+
+	@Test
+	public void isTrue() {
+
+		final UnaryNode result = parse("++foo");
+
+		assertNotNull(result);
+		assertEquals(UnaryOperator.IS_TRUE, result.getOperator());
+		assertName("foo", result.getOperand());
+		assertRange(0, 5, result);
+		assertRange(0, 2, result.getSign());
+	}
+
+	@Test
+	public void known() {
+
+		final UnaryNode result = parse("+-foo");
+
+		assertNotNull(result);
+		assertEquals(UnaryOperator.KNOWN, result.getOperator());
+		assertName("foo", result.getOperand());
+		assertRange(0, 5, result);
+		assertRange(0, 2, result.getSign());
+	}
+
+	@Test
+	public void unknown() {
+
+		final UnaryNode result = parse("-+foo");
+
+		assertNotNull(result);
+		assertEquals(UnaryOperator.UNKNOWN, result.getOperator());
+		assertName("foo", result.getOperand());
+		assertRange(0, 5, result);
+		assertRange(0, 2, result.getSign());
+	}
+
 	private UnaryNode parse(String text) {
-		return parse(this.parser, text);
+		return parse(DECLARATIVE.unaryExpression(), text);
 	}
 
 }

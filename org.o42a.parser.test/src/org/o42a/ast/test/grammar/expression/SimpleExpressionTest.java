@@ -94,6 +94,10 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(UnaryNode.class, parse("+foo"));
 		to(UnaryNode.class, parse("-foo"));
 		to(UnaryNode.class, parse("\u2212 foo"));
+		to(UnaryNode.class, parse("++foo"));
+		to(UnaryNode.class, parse("--foo"));
+		to(UnaryNode.class, parse("+-foo"));
+		to(UnaryNode.class, parse("-+foo"));
 	}
 
 	@Test

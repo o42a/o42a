@@ -96,6 +96,57 @@ public class ExpressionTest extends GrammarTestCase {
 		assertName("baz", right.getAscendants()[1].getAscendant());
 	}
 
+	@Test
+	public void unaryPrecedence() {
+		assertUnaries(
+				UnaryOperator.IS_TRUE,
+				UnaryOperator.PLUS,
+				"foo",
+				parse("+++foo"));
+		assertUnaries(
+				UnaryOperator.PLUS,
+				UnaryOperator.IS_TRUE,
+				"foo",
+				parse("+ ++foo"));
+		assertUnaries(
+				UnaryOperator.NOT,
+				UnaryOperator.MINUS,
+				"foo",
+				parse("---foo"));
+		assertUnaries(
+				UnaryOperator.MINUS,
+				UnaryOperator.NOT,
+				"foo",
+				parse("- --foo"));
+		assertUnaries(
+				UnaryOperator.UNKNOWN,
+				UnaryOperator.MINUS,
+				"foo",
+				parse("-+-foo"));
+		assertUnaries(
+				UnaryOperator.KNOWN,
+				UnaryOperator.PLUS,
+				"foo",
+				parse("+-+foo"));
+	}
+
+	private static void assertUnaries(
+			UnaryOperator first,
+			UnaryOperator second,
+			String name,
+			ExpressionNode expression) {
+
+		final UnaryNode unary1 = to(UnaryNode.class, expression);
+
+		assertEquals(first, unary1.getOperator());
+
+		final UnaryNode unary2 = to(UnaryNode.class, unary1.getOperand());
+
+		assertEquals(second, unary2.getOperator());
+
+		assertName(name, unary2.getOperand());
+	}
+
 	private ExpressionNode parse(String text) {
 		return parse(DECLARATIVE.expression(), text);
 	}
