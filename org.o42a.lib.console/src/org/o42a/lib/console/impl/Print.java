@@ -27,37 +27,45 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CondBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.ref.path.Path;
 import org.o42a.lib.console.ConsoleModule;
 
 
 public class Print extends IntrinsicObject {
 
-	public Print(ConsoleModule module) {
+	private final String funcName;
+
+	public Print(
+			ConsoleModule module,
+			String name,
+			String funcName) {
 		super(
 				fieldDeclaration(
-						module.locationFor("print.o42a"),
+						module,
 						module.distribute(),
-						memberName("print"))
+						memberName(name))
 				.prototype());
-		setValueType(ValueType.VOID);
+		this.funcName = funcName;
 	}
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
-	}
 
-	@Override
-	protected void postResolve() {
-		includeSource();
-		super.postResolve();
+		final Scope enclosingScope = getScope().getEnclosingScope();
+		final Path printToConsole =
+			memberName("print_to_console").key(enclosingScope).toPath();
+
+		return new Ascendants(this).setAncestor(
+				printToConsole.target(
+						this,
+						enclosingScope.distribute())
+				.toTypeRef());
 	}
 
 	@Override
@@ -79,7 +87,8 @@ public class Print extends IntrinsicObject {
 		@Override
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
-			final MemberKey textKey = memberName("text").key(getScope());
+			final MemberKey textKey =
+				memberName("text").key(getAncestor().getType().getScope());
 			final CodeBlk cantPrint = code.addBlock("cant_print");
 			final ObjectOp textObject =
 				host.field(code, cantPrint.head(), textKey)
@@ -89,7 +98,7 @@ public class Print extends IntrinsicObject {
 				text.condition(code).branch(code, "print", "dont_print");
 			final CodeBlk dontPrint = print.otherwise();
 			final PrintFunc printFunc = getGenerator().externalFunction(
-					"o42a_io_print_str",
+					Print.this.funcName,
 					printSignature(getGenerator())).op(print);
 
 			printFunc.print(print, text);

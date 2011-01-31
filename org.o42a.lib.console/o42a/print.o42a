@@ -21,10 +21,10 @@ Text :=< `"".
 
 <*Printer> Void(
   <*Content> {
-    <*Invoker> Print (
+    <*Invoker> Print to console (
       <*[] | content> Text = string.
       <*'' | content> Text = string.
     ).
-    <NL | content> Print(Text = "\n").
+    <NL | content> Print to console(Text = "\n").
   }
 )
