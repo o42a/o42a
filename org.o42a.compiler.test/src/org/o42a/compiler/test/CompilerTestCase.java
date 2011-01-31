@@ -109,6 +109,14 @@ public abstract class CompilerTestCase {
 		assertTrue(value + " is not false", value.isFalse());
 	}
 
+	public static void assertKnownValue(Value<?> value) {
+		assertFalse(value + " is unknown", value.isUnknown());
+	}
+
+	public static void assertUnknownValue(Value<?> value) {
+		assertTrue(value + " is known", value.isUnknown());
+	}
+
 	public static void assertTrueVoid(Obj object) {
 		assertEquals(
 				object + " is not void",
@@ -123,6 +131,14 @@ public abstract class CompilerTestCase {
 				ValueType.VOID,
 				object.getValueType());
 		assertFalseValue(object.getValue());
+	}
+
+	public static void assertUnknownVoid(Obj object) {
+		assertEquals(
+				object + " is not void",
+				ValueType.VOID,
+				object.getValueType());
+		assertKnownValue(object.getValue());
 	}
 
 	public static Field<?> getField(Field<?> container, String name) {

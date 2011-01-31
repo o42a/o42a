@@ -33,7 +33,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	public void plus() {
 		compile(
 				"A := void(@$$Operators: plus :=> 1).",
-				"B := +a");
+				"B := + a");
 
 		final Obj b = getField("b").getArtifact().materialize();
 
@@ -45,7 +45,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	public void minus() {
 		compile(
 				"A := void(@Operators: minus :=> 1).",
-				"B := -a");
+				"B := - a");
 
 		final Obj b = getField("b").getArtifact().materialize();
 
