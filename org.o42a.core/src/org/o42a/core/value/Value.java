@@ -35,6 +35,10 @@ public abstract class Value<T> {
 		return ValueType.VOID.falseValue();
 	}
 
+	public static final Value<Void> unknownValue() {
+		return ValueType.VOID.unknownValue();
+	}
+
 	private final ValueType<T> valueType;
 
 	Value(ValueType<T> valueType) {
@@ -47,6 +51,10 @@ public abstract class Value<T> {
 
 	public final boolean isFalse() {
 		return getLogicalValue().isFalse();
+	}
+
+	public boolean isUnknown() {
+		return false;
 	}
 
 	public final boolean isDefinite() {

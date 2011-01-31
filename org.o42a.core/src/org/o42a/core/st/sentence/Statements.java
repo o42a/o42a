@@ -327,6 +327,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		if (this.instructionsExecuted) {
 			return;
 		}
+		this.instructionsExecuted = true;
 
 		final List<St> statements = getStatements();
 

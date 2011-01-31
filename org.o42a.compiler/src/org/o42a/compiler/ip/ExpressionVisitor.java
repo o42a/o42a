@@ -34,6 +34,7 @@ import org.o42a.ast.atom.StringNode.Quote;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.operator.BinaryOp;
+import org.o42a.compiler.ip.operator.LogicalOp;
 import org.o42a.compiler.ip.operator.UnaryOp;
 import org.o42a.core.Distributor;
 import org.o42a.core.Location;
@@ -101,6 +102,11 @@ public class ExpressionVisitor
 		case PLUS:
 		case MINUS:
 			return new UnaryOp(p.getContext(), expression, p);
+		case IS_TRUE:
+		case NOT:
+		case KNOWN:
+		case UNKNOWN:
+			return new LogicalOp(p.getContext(), expression, p);
 		}
 
 		return super.visitUnary(expression, p);

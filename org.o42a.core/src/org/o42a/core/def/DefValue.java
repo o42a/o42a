@@ -206,16 +206,16 @@ public class DefValue {
 	private static class Unknown extends DefValue {
 
 		Unknown(Def def) {
-			super(def, Value.falseValue());
+			super(def, Value.unknownValue());
 		}
 
 		@Override
-		public Value<?> getRealValue() {
+		public final Value<?> getRealValue() {
 			return null;
 		}
 
 		@Override
-		public boolean isUnknown() {
+		public final boolean isUnknown() {
 			return true;
 		}
 
