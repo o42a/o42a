@@ -212,7 +212,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		final S self = (S) this;
 		final ImperativeBlock braces = getSentenceFactory().createBraces(
 				location,
-				nextDistributor(),
+				nextDistributor(container),
 				self,
 				name);
 
@@ -231,7 +231,18 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			return distribute();
 		}
 
-		return new NextDistributor(trace.next());
+		return new NextDistributor(getContainer(), trace.next());
+	}
+
+	public final Distributor nextDistributor(Container container) {
+
+		final Trace trace = getTrace();
+
+		if (trace == null) {
+			return distributeIn(container);
+		}
+
+		return new NextDistributor(container, trace.next());
 	}
 
 	public final void statement(St statement) {
@@ -307,7 +318,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		final Block<S> parentheses =
 			getSentence().getSentenceFactory().createParentheses(
 					location,
-					nextDistributor(),
+					nextDistributor(container),
 					(S) this);
 
 		statement(index, parentheses);
@@ -389,9 +400,11 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private final class NextDistributor extends Distributor {
 
+		private final Container container;
 		private final LocalPlace place;
 
-		NextDistributor(Place place) {
+		NextDistributor(Container container, Place place) {
+			this.container = container;
 			this.place = localPlace(
 					Statements.this.getScope().toLocal(),
 					place);
@@ -404,12 +417,12 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 		@Override
 		public Container getContainer() {
-			return Statements.this.getContainer();
+			return this.container;
 		}
 
 		@Override
 		public Scope getScope() {
-			return Statements.this.getScope();
+			return this.container.getScope();
 		}
 
 	}

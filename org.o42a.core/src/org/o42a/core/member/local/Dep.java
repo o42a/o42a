@@ -124,7 +124,8 @@ public final class Dep extends PathFragment {
 		final Obj object = start.getContainer().toObject();
 
 		assert object != null :
-			"Not an object: " + start;
+			"Dependency " + path.toString(index + 1)
+			+ " should be resolved against object, but were not: " + start;
 
 		final LocalScope enclosingLocal =
 			object.getScope().getEnclosingContainer().toLocal();

@@ -138,11 +138,9 @@ public abstract class ByString<T> extends IntrinsicObject {
 				.materialize(code, cantParse.head());
 
 			parse(code, result, input);
-			code.returnVoid();
-
 			if (cantParse.exists()) {
 				result.storeFalse(cantParse);
-				cantParse.returnVoid();
+				cantParse.go(code.tail());
 			}
 		}
 

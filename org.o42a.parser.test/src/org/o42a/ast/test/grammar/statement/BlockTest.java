@@ -34,6 +34,26 @@ import org.o42a.ast.test.grammar.GrammarTestCase;
 public class BlockTest extends GrammarTestCase {
 
 	@Test
+	public void emptyParentheses() {
+
+		final ParenthesesNode result = to(
+				ParenthesesNode.class,
+				parse(DECLARATIVE.statement(), "(  )"));
+
+		assertEquals(0, result.getContent().length);
+	}
+
+	@Test
+	public void emptyBraces() {
+
+		final BracesNode result = to(
+				BracesNode.class,
+				parse(DECLARATIVE.statement(), "{  }"));
+
+		assertEquals(0, result.getContent().length);
+	}
+
+	@Test
 	public void declaratorWithinParentheses() {
 
 		final ParenthesesNode result = to(
@@ -45,6 +65,18 @@ public class BlockTest extends GrammarTestCase {
 		assertEquals(DeclarationTarget.OVERRIDE_VALUE, declarator.getTarget());
 		assertName("foo", declarator.getDeclarable());
 		assertName("bar", declarator.getDefinition());
+	}
+
+	@Test
+	public void emptyBracesWithinParentheses() {
+
+		final ParenthesesNode result = to(
+				ParenthesesNode.class,
+				parse(DECLARATIVE.statement(), "({  })"));
+		final BracesNode braces =
+			singleStatement(BracesNode.class, result);
+
+		assertEquals(0, braces.getContent().length);
 	}
 
 	@Test
@@ -89,6 +121,20 @@ public class BlockTest extends GrammarTestCase {
 		assertName(
 				"bar",
 				singleStatement(MemberRefNode.class, result.getBlock()));
+	}
+
+	@Test
+	public void emptyNamedBlock() {
+
+		final NamedBlockNode result = to(
+				NamedBlockNode.class,
+				parse(IMPERATIVE.statement(), "foo: {}"));
+
+		assertEquals("foo", result.getName().getName());
+		assertEquals(
+				NamedBlockNode.Separator.COLON,
+				result.getSeparator().getType());
+		assertEquals(0, result.getBlock().getContent().length);
 	}
 
 }

@@ -62,6 +62,14 @@ abstract class CompareResult extends Result {
 	}
 
 	@Override
+	public String toString() {
+		if (this.binaryOp != null) {
+			return this.binaryOp.toString();
+		}
+		return "CompareResult";
+	}
+
+	@Override
 	protected void declareMembers(ObjectMembers members) {
 
 		final ObjectMemberRegistry memberRegistry =

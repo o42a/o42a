@@ -88,8 +88,8 @@ public abstract class IntrinsicObject extends PlainObject {
 				field.toMember().getId().getAdapterId();
 
 			if (adapterId != null) {
-				ascendants.addExplicitSample(
-						adapterId.adapterType(ascendants.getScope()));
+				ascendants.addExplicitSample(adapterId.adapterType(
+						ascendants.getScope().getEnclosingScope()));
 			}
 		}
 

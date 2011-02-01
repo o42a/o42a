@@ -170,11 +170,14 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 			return 0L;
 		}
 		if (enclosing.getTypePtr() == this.type.getTypePtr()) {
+			System.err.println("(!) Field: " + allocation.llvmId());
 			return field(
 					blockPtr,
 					getNativePtr(),
 					allocation.llvmId().getIndex());
 		}
+
+		System.err.println("(!) Enclosing field: " + enclosing.llvmId());
 
 		final long enclosingField = field(blockPtr, enclosing);
 

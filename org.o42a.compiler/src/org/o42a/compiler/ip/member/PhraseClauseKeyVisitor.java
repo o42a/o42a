@@ -70,6 +70,9 @@ final class PhraseClauseKeyVisitor
 
 	@Override
 	public ClauseDeclaration visitText(TextNode text, Distributor p) {
+		if (text.isDoubleQuote()) {
+			return super.visitText(text, p);
+		}
 
 		final String name = canonicalName(text.getText());
 
