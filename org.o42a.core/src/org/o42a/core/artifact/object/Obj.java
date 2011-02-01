@@ -111,7 +111,6 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected Obj(Scope scope, Obj sample) {
 		super(scope, sample);
-		//this.directive = sample.directive;
 	}
 
 	@Override

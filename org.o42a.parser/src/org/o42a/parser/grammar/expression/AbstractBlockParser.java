@@ -53,6 +53,9 @@ public abstract class AbstractBlockParser<
 
 		final SignNode<S> opening =
 			new SignNode<S>(start, context.current(), this.opening);
+
+		context.skipComments(opening);
+
 		SentenceNode[] content =
 			context.expect(this.closing.getSign())
 			.parse(getContentParser());

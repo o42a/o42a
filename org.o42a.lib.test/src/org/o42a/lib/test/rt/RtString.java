@@ -30,7 +30,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -72,25 +72,6 @@ public class RtString extends IntrinsicObject {
 		return null;
 	}
 
-	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
-	}
-
-	private static final class ValueIR extends ProposedValueIR {
-
-		ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-			code.debug("Run-time string");
-			result.storeVoid(code);
-		}
-
-	}
-
 	private static final class Parse extends ByString<String> {
 
 		Parse(RtString owner) {
@@ -122,6 +103,7 @@ public class RtString extends IntrinsicObject {
 
 		@Override
 		protected void parse(Code code, ValOp result, ObjectOp input) {
+			code.debug("Run-time string");
 			result.store(code, input.writeValue(code));
 		}
 

@@ -18,6 +18,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+Use object 'Print error' from 'Console'.
+
 /*
   Test signature.
 
@@ -36,4 +38,37 @@ Test :=> void(
   */
   Name := string(False).
 
+).
+
+/*
+  Assertion.
+
+  Usage syntax:
+    Assert[condition] 'Error message'.
+  , where condition is arbitrary expression and error message is a message
+  to report when condition fails.
+ */
+Assert :=> void(
+
+  /*
+    Condition which should be satisfied.
+
+    Otherwise, an error reported.
+   */
+  Condition :=< void.
+
+  /*
+    Error message.
+
+    A message reported when condition fails.
+   */
+  Message := "Error".
+
+  -- Condition, print error[message].
+
+  <*[] | error message> Condition = void.
+  <*Error message> (
+    <*''> Message = string().
+    <*[]> Message = string().
+  ).
 ).

@@ -87,7 +87,7 @@ public class LogicalOp extends NewObjectEx {
 
 		@Override
 		public String toString() {
-			return this.ref != null ? this.ref.toString() : super.toString();
+			return this.ref != null ? this.ref.toString() : "LogicalOp";
 		}
 
 		@Override
@@ -130,16 +130,16 @@ public class LogicalOp extends NewObjectEx {
 
 		@Override
 		protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-			return new IR(objectIR, this);
+			return new ValueIR(objectIR, this);
 		}
 
 	}
 
-	private static final class IR extends ProposedValueIR {
+	private static final class ValueIR extends ProposedValueIR {
 
 		private final Res res;
 
-		IR(ObjectIR objectIR, Res res) {
+		ValueIR(ObjectIR objectIR, Res res) {
 			super(objectIR);
 			this.res = res;
 		}

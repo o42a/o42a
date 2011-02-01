@@ -44,7 +44,8 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 public final class BinaryOp extends NewObjectEx {
 
 	private final BinaryNode node;
-	private BinaryOperatorLookup operator;
+	private final Ref operator;
+	private byte resolvedIndex;
 
 	public BinaryOp(
 			CompilerContext context,
@@ -52,11 +53,19 @@ public final class BinaryOp extends NewObjectEx {
 			Distributor distributor) {
 		super(new Location(context, node), distributor);
 		this.node = node;
+
+		final Ref leftOperand = getNode().getLeftOperand().accept(
+				EXPRESSION_VISITOR,
+				distributor);
+
+		this.operator = new BinaryOperatorLookup(leftOperand, getNode());
 	}
 
-	private BinaryOp(BinaryOp prototype, Distributor distributor) {
-		super(prototype, distributor);
+	private BinaryOp(BinaryOp prototype, Reproducer reproducer) {
+		super(prototype, reproducer.distribute());
 		this.node = prototype.node;
+		this.operator = prototype.operator.reproduce(reproducer);
+		this.resolvedIndex = prototype.resolvedIndex;
 	}
 
 	public BinaryNode getNode() {
@@ -66,15 +75,30 @@ public final class BinaryOp extends NewObjectEx {
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		return new BinaryOp(this, reproducer.distribute());
+		return new BinaryOp(this, reproducer);
+	}
+
+	@Override
+	public String toString() {
+		return getScope().getEnclosingScope().toString();
 	}
 
 	@Override
 	protected Obj createObject() {
+		if (this.resolvedIndex == 0) {
 
-		final BinaryOperatorLookup operator = operator();
+			final BinaryOperatorLookup op =
+				(BinaryOperatorLookup) this.operator;
 
-		if (operator.getResolution().isFalse()) {
+			op.getResolution();
+
+			if (op.isSecond()) {
+				this.resolvedIndex = 2;
+			} else {
+				this.resolvedIndex = 1;
+			}
+		}
+		if (this.operator.getResolution().isFalse()) {
 			// operator not supported
 			return null;
 		}
@@ -85,46 +109,33 @@ public final class BinaryOp extends NewObjectEx {
 		case MULTIPLY:
 		case DIVIDE:
 			return operatorCall(
-					operator,
+					this.operator,
 					new RightOperand(
 							getContext(),
 							getNode().getRightOperand()));
 		case EQUAL:
-			if (!operator.isSecond()) {
-				return new EqualsResult(this, distribute(), operator);
+			if (this.resolvedIndex < 2) {
+				return new EqualsResult(this, distribute(), this.operator);
 			}
-			return new EqualsCompareResult(this, distribute(), operator);
+			return new EqualsCompareResult(this, distribute(), this.operator);
 		case NOT_EQUAL:
-			if (!operator.isSecond()) {
-				return new NotEqualsResult(this, distribute(), operator);
+			if (this.resolvedIndex < 2) {
+				return new NotEqualsResult(this, distribute(), this.operator);
 			}
-			return new NotEqualsCompareResult(this, distribute(), operator);
+			return new NotEqualsCompareResult(this, distribute(), this.operator);
 		case LESS:
-			return new LessResult(this, distribute(), operator);
+			return new LessResult(this, distribute(), this.operator);
 		case LESS_OR_EQUAL:
-			return new LessOrEqualsResult(this, distribute(), operator);
+			return new LessOrEqualsResult(this, distribute(), this.operator);
 		case GREATER:
-			return new GreaterResult(this, distribute(), operator);
+			return new GreaterResult(this, distribute(), this.operator);
 		case GREATER_OR_EQUAL:
-			return new GreaterOrEqualsResult(this, distribute(), operator);
+			return new GreaterOrEqualsResult(this, distribute(), this.operator);
 		}
 
 		throw new IllegalArgumentException(
 				"Unsupported binary operator: "
 				+ getNode().getOperator().getSign());
-	}
-
-	private BinaryOperatorLookup operator() {
-		if (this.operator == null) {
-
-			final Ref leftOperand = getNode().getLeftOperand().accept(
-					EXPRESSION_VISITOR,
-					distribute());
-
-			this.operator = new BinaryOperatorLookup(leftOperand, getNode());
-		}
-
-		return this.operator;
 	}
 
 	private Obj operatorCall(Ref operator, BlockBuilder rightOperand) {

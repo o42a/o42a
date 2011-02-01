@@ -22,6 +22,7 @@ package org.o42a.lib.test.rt;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.common.adapter.IntegerByString;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
@@ -29,6 +30,8 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
@@ -79,6 +82,12 @@ public class RtInteger extends IntrinsicObject {
 			}
 
 			return getValueType().runtimeValue();
+		}
+
+		@Override
+		protected void parse(Code code, ValOp result, ObjectOp input) {
+			code.debug("Run-time integer");
+			super.parse(code, result, input);
 		}
 
 	}

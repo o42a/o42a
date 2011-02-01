@@ -46,6 +46,7 @@ public abstract class ProposedValueIR extends ObjectValueIR {
 			ObjOp host,
 			Definitions definitions) {
 		proposition(code, result, host);
+		code.returnVoid();
 	}
 
 	protected abstract void proposition(Code code, ValOp result, ObjectOp host);

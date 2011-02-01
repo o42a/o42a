@@ -29,8 +29,6 @@ import java.util.Collection;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
@@ -637,14 +635,7 @@ public class Definitions extends Scoped {
 	}
 
 	public Definitions runtime(Scope scope) {
-
-		final Obj object = scope.getContainer().toObject();
-		final TypeRef ancestorType = object.getAncestor();
-
-		return addCondition(runtimeLogicalDef(
-				scope,
-				scope,
-				ancestorType.getType()));
+		return addCondition(runtimeLogicalDef(scope, scope));
 	}
 
 	@Override

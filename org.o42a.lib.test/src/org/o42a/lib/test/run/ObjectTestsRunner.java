@@ -57,7 +57,7 @@ final class ObjectTestsRunner extends DefinedObject {
 
 	@Override
 	public String toString() {
-		return "Run tests[" + getScope().getScope() + ']';
+		return "Run tests[" + getScope().getEnclosingScope() + ']';
 	}
 
 	@Override

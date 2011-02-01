@@ -44,6 +44,9 @@ public abstract class Result extends PlainObject {
 	}
 
 	@Override
+	public abstract String toString();
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(getScope()).setAncestor(
 				getValueType().typeRef(

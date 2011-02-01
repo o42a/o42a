@@ -54,8 +54,7 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 
 	static LogicalDef runtimeLogicalDef(
 			LocationSpec location,
-			Scope scope,
-			Obj source) {
+			Scope scope) {
 		return runtimeLogical(location, scope).toLogicalDef();
 	}
 

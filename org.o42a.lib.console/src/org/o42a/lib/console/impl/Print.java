@@ -103,15 +103,15 @@ public class Print extends IntrinsicObject {
 
 			printFunc.print(print, text);
 			result.storeVoid(print);
-			print.returnVoid();
+			print.go(code.tail());
 
 			if (cantPrint.exists()) {
 				result.storeFalse(cantPrint);
-				cantPrint.returnVoid();
+				cantPrint.go(code.tail());
 			}
 			if (dontPrint.exists()) {
 				result.storeFalse(dontPrint);
-				dontPrint.returnVoid();
+				dontPrint.go(code.tail());
 			}
 		}
 

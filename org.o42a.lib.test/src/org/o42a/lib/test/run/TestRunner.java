@@ -160,13 +160,20 @@ final class TestRunner extends PlainObject {
 	@Override
 	protected Ascendants buildAscendants() {
 
-		final Scope enclosingScope = getScope().getEnclosingScope();
-		final Path objectPath = getScope().getEnclosingScopePath().append(
-				enclosingScope.getEnclosingScopePath());
+		final Scope localScope = getScope().getEnclosingScope();
+
+		assert localScope.toLocal() != null :
+			this + " should be inside of local scope, but is inside of "
+			+ localScope;
+
+		final Scope objectTestsScope = localScope.getEnclosingScope();
+		final Path objectPath =
+			localScope.getEnclosingScopePath().append(
+					objectTestsScope.getEnclosingScopePath());
 		final Path testPath = objectPath.append(this.runTest.testKey);
 
 		return new Ascendants(this).setAncestor(
-				testPath.target(this, enclosingScope.distribute()).toTypeRef());
+				testPath.target(this, localScope.distribute()).toTypeRef());
 	}
 
 	@Override

@@ -93,6 +93,11 @@ final class BinaryOperatorLookup extends AdapterLookup {
 	}
 
 	@Override
+	public String toString() {
+		return getAdaptable() + " " + this.node.getOperator().getSign();
+	}
+
+	@Override
 	protected void noAdapter(Ref owner) {
 		getLogger().unsupportedBinaryOperator(
 				getNode().getSign(),
