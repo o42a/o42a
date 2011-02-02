@@ -105,13 +105,13 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public boolean isPropagated() {
-		return false;
+	public final boolean isAbstract() {
+		return getDeclaration().isAbstract();
 	}
 
 	@Override
-	public final boolean isAbstract() {
-		return getDeclaration().isAbstract();
+	public Member getPropagatedFrom() {
+		return null;
 	}
 
 	@Override
@@ -298,23 +298,26 @@ public abstract class MemberField extends Member {
 	static final class Overridden extends MemberField {
 
 		private final Field<?> field;
+		private final MemberField propagatedFrom;
 
 		Overridden(
 				Container container,
 				Field<?> field,
-				MemberField overridden) {
+				MemberField overridden,
+				boolean propagated) {
 			super(container, overridden);
 			this.field = field;
+			this.propagatedFrom = propagated ? overridden : null;
+		}
+
+		@Override
+		public Member getPropagatedFrom() {
+			return this.propagatedFrom;
 		}
 
 		@Override
 		public Field<?> toField() {
 			return this.field;
-		}
-
-		@Override
-		public boolean isPropagated() {
-			return true;
 		}
 
 	}

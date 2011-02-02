@@ -41,13 +41,11 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_field(
 	IRBuilder<> builder(block);
 	Value *pointer = from_ptr<Value>(pointerPtr);
 
-	errs() << block->getParent()->getName() << ": " << *pointer << " #" << field << "\n";
 	OCODE(
 			block,
 			"field #" << field << " of " << *pointer << "\n");
 
 	Value *result = builder.CreateConstInBoundsGEP2_32(pointer, 0, field);
-	errs() << "Success\n";
 
 	ODUMP(result);
 

@@ -34,6 +34,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 public abstract class IntrinsicObject extends PlainObject {
 
 	private ObjectMemberRegistry memberRegistry;
+	private DeclarativeBlock definition;
 
 	public IntrinsicObject(FieldDeclaration declaration) {
 		super(new IntrinsicField(declaration));
@@ -100,8 +101,15 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		if (this.memberRegistry != null) {
+		if (this.definition != null) {
 			this.memberRegistry.registerMembers(members);
+		}
+	}
+
+	@Override
+	protected void updateMembers() {
+		if (this.definition != null) {
+			this.definition.executeInstructions();
 		}
 	}
 
@@ -111,13 +119,13 @@ public abstract class IntrinsicObject extends PlainObject {
 
 		this.memberRegistry = new ObjectMemberRegistry(this);
 
-		final DeclarativeBlock definition = new DeclarativeBlock(
+		this.definition = new DeclarativeBlock(
 				this,
 				new DefinitionDistributor(this),
 				this.memberRegistry);
 
-		compiled.buildBlock(definition);
-		definition.executeInstructions();
+		compiled.buildBlock(this.definition);
+		this.definition.executeInstructions();
 	}
 
 	private static final class IntrinsicField extends ObjectField {

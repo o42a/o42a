@@ -62,7 +62,9 @@ public abstract class Member extends Placed {
 
 	public abstract boolean isOverride();
 
-	public abstract boolean isPropagated();
+	public final boolean isPropagated() {
+		return getPropagatedFrom() != null;
+	}
 
 	public abstract boolean isAbstract();
 
@@ -74,6 +76,8 @@ public abstract class Member extends Placed {
 	public final Scope getDefinedIn() {
 		return getLastDefinition().getScope();
 	}
+
+	public abstract Member getPropagatedFrom();
 
 	/**
 	 * The last definition of this member.

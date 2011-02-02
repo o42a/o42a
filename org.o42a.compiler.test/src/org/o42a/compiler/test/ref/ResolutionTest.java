@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Compiler Tests
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
+package org.o42a.compiler.test.ref;
 
-import java.util.Map;
+import org.junit.Test;
+import org.o42a.compiler.test.CompilerTestCase;
 
-import org.o42a.core.member.*;
 
+public class ResolutionTest extends CompilerTestCase {
 
-public class ObjectMembers extends ContainerMembers {
-
-	public ObjectMembers(Obj object) {
-		super(object);
+	@Test
+	public void resolveBeforeUse() {
+		compile(
+				"A := void.",
+				"A().");
 	}
 
-	public final Obj getObject() {
-		return (Obj) getContainer();
+	@Test
+	public void adapterId() {
+		compile(
+				"A := void.",
+				"@A := *().");
 	}
 
-	public void deriveMembers(Obj ascendant) {
-		for (Member member : ascendant.getMembers()) {
-			propagateMember(member);
-		}
+	@Test
+	public void moduleObject() {
+		compile(
+				"Use namespace 'Console'.",
+				"Print 'Hello'.");
 	}
 
-	@Override
-	protected final Map<MemberKey, Member> members() {
-		return getObject().members();
-	}
-
-	@Override
-	protected final Map<MemberId, Symbol> symbols() {
-		return getObject().symbols();
+	@Test
+	public void adapterIdFromModule() {
+		compile(
+				"Use namespace 'Console'.",
+				"@Main :=> *().");
 	}
 
 }

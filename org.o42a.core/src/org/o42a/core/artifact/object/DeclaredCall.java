@@ -47,8 +47,12 @@ class DeclaredCall extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		this.field.declareMembers();
 		this.field.getMemberRegistry().registerMembers(members);
+	}
+
+	@Override
+	protected void updateMembers() {
+		this.field.declareMembers();
 	}
 
 	@Override

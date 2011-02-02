@@ -87,14 +87,17 @@ public abstract class DefinedObject extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		getMemberRegistry().registerMembers(members);
+	}
+
+	@Override
+	protected void updateMembers() {
 
 		final DeclarativeBlock definition = getDefinition();
 
 		if (definition != null) {
 			definition.executeInstructions();
 		}
-
-		getMemberRegistry().registerMembers(members);
 	}
 
 	private DeclarativeBlock definition() {
