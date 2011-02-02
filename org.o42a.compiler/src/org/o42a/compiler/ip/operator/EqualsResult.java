@@ -120,11 +120,9 @@ class EqualsResult extends PlainObject {
 
 			final Statements<?> statements =
 				block.propose(this).alternative(this);
+			final Distributor distributor = statements.nextDistributor();
 			final FieldDeclaration declarator =
-				FieldDeclaration.fieldDeclaration(
-						this,
-						block.distribute(),
-						RESULT)
+				fieldDeclaration(this, distributor, RESULT)
 				.setVisibility(Visibility.PRIVATE);
 
 			final TypeRef operator = EqualsResult.this.operator;
@@ -134,8 +132,8 @@ class EqualsResult extends PlainObject {
 							this,
 							new AscendantsDefinition(
 									operator,
-									block.distribute()).setAncestor(
-											operator.rescope(block.getScope())),
+									distributor)
+							.setAncestor(operator.rescope(block.getScope())),
 							new RightEqOperand(
 									getContext(),
 									EqualsResult.this.binaryOp.getNode()

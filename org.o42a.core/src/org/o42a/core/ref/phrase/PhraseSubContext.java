@@ -34,6 +34,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -135,12 +136,18 @@ class PhraseSubContext extends PhraseContext {
 		final FieldDeclaration declaration =
 			createDeclaration(location, distributor);
 
-		statements.field(
+		final FieldBuilder builder = statements.field(
 				declaration,
 				fieldDefinition(
 						location,
 						ascendants(location, distributor),
 						instance.getDefinition()));
+
+		if (builder == null) {
+			return;
+		}
+
+		statements.statement(builder.build());
 	}
 
 	private void groupDefinition(Statements<?> statements) {

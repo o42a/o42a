@@ -126,16 +126,12 @@ public final class Symbol {
 		if (old == null) {
 			return true;
 		}
-		if (member == old) {
-			return false;
+		if (!member.isOverride()) {
+			return true;
 		}
-		if (old.isOverride() || old.isPropagated()) {
-			if (!member.isOverride() && !member.isPropagated()) {
-				return true;
-			}
-
-			if (!old.getKey().getOrigin().derivedFrom(
-					member.getKey().getOrigin())) {
+		if (old.isOverride()) {
+			if (member.getKey().getOrigin().derivedFrom(
+					old.getKey().getOrigin())) {
 				return true;
 			}
 		}
@@ -159,16 +155,10 @@ public final class Symbol {
 
 		final Member old = newMembers.put(member.getKey().getOrigin(), member);
 
-		if (old == null) {
-			return true;
-		}
-		if (old == member) {
-			return false;
-		}
+		assert old == null || old.isPropagated() :
+			old + " is not propagated, but replaced with " + member;
 
-		newMembers.put(member.getKey().getOrigin(), old);
-
-		return false;
+		return true;
 	}
 
 }
