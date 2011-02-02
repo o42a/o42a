@@ -59,10 +59,7 @@ final class ScopeField extends ObjectField {
 			Container enclosingContainer,
 			ScopeField sample,
 			Obj owner) {
-		super(
-				enclosingContainer,
-				sample,
-				false);
+		super(enclosingContainer, sample, true);
 		this.owner = owner;
 		setScopeArtifact(
 				owner.getScope().getEnclosingContainer().toObject());

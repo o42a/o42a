@@ -20,7 +20,6 @@
 package org.o42a.core.member.clause;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.IRGenerator;
@@ -29,9 +28,9 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldScope;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ex;
+import org.o42a.core.ref.ExpressionScope;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
 
@@ -249,11 +248,6 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public <A extends Artifact<A>> Field<A> propagateField(Field<A> sample) {
-		return this.base.propagateField(sample);
-	}
-
-	@Override
 	public final void assertDerivedFrom(Scope other) {
 		AbstractScope.assertDerivedFrom(this, other);
 	}
@@ -276,7 +270,7 @@ public abstract class PlainClause
 
 	protected abstract Obj propagateClauseObject(PlainClause overridden);
 
-	private final class Base extends FieldScope {
+	private final class Base extends ExpressionScope {
 
 		@Override
 		public Scope getScope() {

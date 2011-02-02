@@ -92,8 +92,12 @@ public class Module extends PlainObject {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		getDefinition().executeInstructions();
 		this.memberRegistry.registerMembers(members);
+	}
+
+	@Override
+	protected void updateMembers() {
+		getDefinition().executeInstructions();
 	}
 
 	@Override

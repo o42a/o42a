@@ -19,7 +19,6 @@
 */
 package org.o42a.core;
 
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
@@ -61,7 +60,5 @@ public interface Scope extends PlaceSpec {
 	void assertDerivedFrom(Scope other);
 
 	Resolution resolveExpression(Ex ex);
-
-	<A extends Artifact<A>> Field<A> propagateField(Field<A> sample);
 
 }

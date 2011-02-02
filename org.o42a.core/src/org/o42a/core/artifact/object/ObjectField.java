@@ -33,6 +33,19 @@ public abstract class ObjectField extends Field<Obj> {
 		((Member) toMember()).field = this;
 	}
 
+	protected ObjectField(
+			Container enclosingContainer,
+			ObjectField overridden) {
+		super(enclosingContainer, overridden);
+	}
+
+	protected ObjectField(
+			Container enclosingContainer,
+			ObjectField overridden,
+			boolean propagate) {
+		super(enclosingContainer, overridden, propagate);
+	}
+
 	@Override
 	public boolean derivedFrom(Scope other) {
 		if (this == other) {
@@ -46,19 +59,6 @@ public abstract class ObjectField extends Field<Obj> {
 		}
 
 		return getArtifact().derivedFrom(otherObject);
-	}
-
-	protected ObjectField(
-			Container enclosingContainer,
-			ObjectField overridden) {
-		super(enclosingContainer, overridden);
-	}
-
-	protected ObjectField(
-			Container enclosingContainer,
-			ObjectField overridden,
-			boolean propagate) {
-		super(enclosingContainer, overridden, propagate);
 	}
 
 	@Override

@@ -36,7 +36,8 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	private int localScopeIndex;
 	Obj owner;
 
-	private final ArrayList<Member> members = new ArrayList<Member>();
+	private final ArrayList<Member> pending = new ArrayList<Member>();
+	private ObjectMembers members;
 
 	public ObjectMemberRegistry(Obj owner) {
 		if (owner == null) {
@@ -77,11 +78,21 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	@Override
 	public void declareMember(Member member) {
 		member.assertScopeIs(getOwner().getScope());
-		this.members.add(member);
+		if (this.members != null) {
+			this.members.addMember(member);
+		} else {
+			this.pending.add(member);
+		}
 	}
 
 	public void registerMembers(ObjectMembers members) {
-		members.addMembers(this.members);
+		assert this.members == null :
+			"Object members already registered: " + this;
+		this.members = members;
+		for (Member member : this.pending) {
+			members.addMember(member);
+		}
+		this.pending.clear();
 	}
 
 	@Override
@@ -109,19 +120,24 @@ public class ObjectMemberRegistry extends MemberRegistry {
 		out.append('[');
 		out.append(this.owner != null ? this.owner : "<unresolved>");
 		out.append("]{");
+		if (this.members != null) {
+			out.append(this.members);
+		} else {
+			out.append("pending: ");
 
-		boolean comma = false;
+			boolean comma = false;
 
-		for (Object m : this.members) {
-			if (comma) {
-				out.append(", ");
-			} else {
-				comma = true;
+			for (Object m : this.pending) {
+				if (comma) {
+					out.append(", ");
+				} else {
+					comma = true;
+				}
+				out.append(m);
 			}
-			out.append(m);
-		}
 
-		out.append('}');
+			out.append('}');
+		}
 
 		return out.toString();
 	}

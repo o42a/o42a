@@ -38,10 +38,10 @@ final class PropagatedLocalScope extends LocalScope {
 	private final ExplicitLocalScope explicit;
 	private final PropagatedMember member;
 
-	PropagatedLocalScope(ExplicitLocalScope explicit, Obj owner) {
-		super(explicit, owner);
-		this.explicit = explicit;
-		this.member = new PropagatedMember(this);
+	PropagatedLocalScope(LocalScope overridden, Obj owner) {
+		super(overridden, owner);
+		this.explicit = overridden.explicit();
+		this.member = new PropagatedMember(this, overridden);
 	}
 
 	@Override
@@ -118,13 +118,17 @@ final class PropagatedLocalScope extends LocalScope {
 	private static final class PropagatedMember extends MemberLocal {
 
 		private final PropagatedLocalScope localScope;
+		private final LocalScope overridden;
 
-		PropagatedMember(PropagatedLocalScope localScope) {
+		PropagatedMember(
+				PropagatedLocalScope localScope,
+				LocalScope overridden) {
 			super(
 					localScope,
 					localScope.getOwner().distribute(),
 					localScope.getOwner());
 			this.localScope = localScope;
+			this.overridden = overridden;
 		}
 
 		@Override
@@ -138,8 +142,8 @@ final class PropagatedLocalScope extends LocalScope {
 		}
 
 		@Override
-		public boolean isPropagated() {
-			return true;
+		public Member getPropagatedFrom() {
+			return this.overridden.toMember();
 		}
 
 		@Override

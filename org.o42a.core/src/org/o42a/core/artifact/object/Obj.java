@@ -96,6 +96,8 @@ public abstract class Obj extends Artifact<Obj>
 	private Clause[] explicitClauses;
 	private Clause[] implicitClauses;
 
+	private ObjectMembers objectMembers;
+
 	public Obj(LocationSpec location, Distributor enclosing) {
 		this(new ObjScope(location, enclosing));
 	}
@@ -563,9 +565,7 @@ public abstract class Obj extends Artifact<Obj>
 			if (!resolveIfNotResolving()) {
 				return;
 			}
-			for (Member member : getMembers()) {
-				member.resolveAll();
-			}
+			resolveAllMembers();
 			validateImplicitSubClauses(getExplicitClauses());
 			getDefinitions();
 		} finally {
@@ -664,6 +664,9 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected abstract void declareMembers(ObjectMembers members);
 
+	protected void updateMembers() {
+	}
+
 	protected abstract Definitions overrideDefinitions(
 			Scope scope,
 			Definitions ascendantDefinitions);
@@ -721,6 +724,13 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	private void defineMembers() {
+		if (this.objectMembers != null) {
+			// Register members incrementally.
+			this.objectMembers.registerMembers();
+			updateMembers();
+			this.objectMembers.registerMembers();
+			return;
+		}
 		if (!this.resolution.membersResolved()) {
 			if (!resolveIfNotResolving()) {
 				return;
@@ -738,31 +748,47 @@ public abstract class Obj extends Artifact<Obj>
 					this.resolution = resolution;
 				}
 				this.resolution = Resolution.MEMBERS_RESOLVED;
+				updateMembers();
 			}
 		}
 	}
 
 	private void resolveMembers() {
-
-		final ObjectMembers members = new ObjectMembers(this);
-
+		this.objectMembers = new ObjectMembers(this);
 		if (getScope().getEnclosingScopePath() != null
 				&& getScope().getEnclosingContainer().toObject() != null) {
-			members.addMember(new ScopeField(this).toMember());
+			this.objectMembers.addMember(new ScopeField(this).toMember());
 		}
-		declareMembers(members);
+		declareMembers(this.objectMembers);
 
 		for (Sample sample : getSamples()) {
-			sample.inheritMembers(members);
+			sample.inheritMembers(this.objectMembers);
 		}
 
 		final TypeRef ancestor = getAncestor();
 
 		if (ancestor != null) {
-			members.deriveMembers(ancestor.getType());
+			this.objectMembers.deriveMembers(ancestor.getType());
 		}
 
-		members.registerMembers();
+		this.objectMembers.registerMembers();
+	}
+
+	private void resolveAllMembers() {
+
+		final boolean abstractAllowed =
+			isAbstract()
+			|| isPrototype()
+			|| toClause() != null;
+
+		for (Member member : getMembers()) {
+			if (!abstractAllowed && member.isAbstract()) {
+				getLogger().abstractNotOverridden(
+						this,
+						member.getDisplayName());
+			}
+			member.resolveAll();
+		}
 	}
 
 	private Dep addDep(MemberKey memberKey) {
@@ -788,8 +814,12 @@ public abstract class Obj extends Artifact<Obj>
 			return found;
 		}
 
-		assert getScope().getEnclosingContainer().toLocal().getOwner() == owner :
-			owner + " is not owner of " + this + " enclosing local scope";
+		final LocalScope enclosingLocal =
+			getScope().getEnclosingContainer().toLocal();
+
+		assert enclosingLocal.getOwner() == owner :
+			owner + " is not owner of " + this
+			+ " enclosing local scope " + enclosingLocal;
 
 		final Dep dep = enclosingOwnerDep(this);
 

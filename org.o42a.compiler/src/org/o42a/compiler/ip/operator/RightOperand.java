@@ -27,6 +27,7 @@ import static org.o42a.core.ref.path.Path.absolutePath;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
+import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -53,9 +54,15 @@ class RightOperand extends BlockBuilder {
 		final FieldDeclaration declaration =
 			declaration(statements.nextDistributor()).override();
 
-		statements.field(
+		final FieldBuilder builder = statements.field(
 				declaration,
 				getNode().accept(DEFINITION_VISITOR, declaration));
+
+		if (builder == null) {
+			return;
+		}
+
+		statements.statement(builder.build());
 	}
 
 	protected FieldDeclaration declaration(Distributor distributor) {
