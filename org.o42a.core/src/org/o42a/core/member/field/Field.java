@@ -47,7 +47,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	protected Field(Container enclosingContainer, Field<A> overridden) {
-		this(enclosingContainer, overridden, false);
+		this(enclosingContainer, overridden, true);
 		setScopeArtifact(propagateArtifact(overridden));
 	}
 
@@ -58,7 +58,8 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		this.member = new MemberField.Overridden(
 				enclosingContainer,
 				this,
-				overridden.toMember());
+				overridden.toMember(),
+				propagate);
 	}
 
 	@Override
@@ -243,7 +244,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 			return this;
 		}
 		scope.assertDerivedFrom(getEnclosingScope());
-		return scope.propagateField(this);
+		return propagate(scope);
 	}
 
 	@Override

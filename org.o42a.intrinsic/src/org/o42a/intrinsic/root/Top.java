@@ -34,7 +34,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
@@ -157,12 +156,6 @@ public final class Top extends AbstractScope implements Container {
 	@Override
 	public String toString() {
 		return "TOP";
-	}
-
-	@Override
-	public <A extends Artifact<A>> Field<A> propagateField(Field<A> sample) {
-		throw new UnsupportedOperationException(
-				"Can not propagate " + sample + " to " + this);
 	}
 
 	private static final class IR extends ScopeIR {

@@ -143,6 +143,12 @@ public class Namespace extends AbstractContainer {
 
 	private Path findInNs(ScopeSpec user, MemberId memberId, Obj declaredIn) {
 
+		final Obj object = toObject();
+
+		if (object != null) {
+			object.getMembers();// Update members.
+		}
+
 		Path result = null;
 		int resultPriority = 0;
 

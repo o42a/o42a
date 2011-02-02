@@ -19,20 +19,17 @@
 */
 package org.o42a.core.member;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
-import org.o42a.util.ArrayUtil;
+import org.o42a.util.Chain;
 
 
 public abstract class ContainerMembers {
 
 	private final Container container;
-	private final HashMap<MemberKey, Entry[]> registry =
-		new HashMap<MemberKey, Entry[]>();
+	private final MemberEntries pending = new MemberEntries();
+	private MemberEntry registering;
 
 	public ContainerMembers(Container container) {
 		this.container = container;
@@ -43,43 +40,36 @@ public abstract class ContainerMembers {
 	}
 
 	public final void addMember(Member member) {
-		addMember(new Entry(member, false));
+		this.pending.add(new MemberEntry(member, false));
 	}
 
 	public final void propagateMember(Member overridden) {
-		addMember(new Entry(overridden, true));
-	}
-
-	public void addMembers(Iterable<? extends Member> members) {
-		for (Member member : members) {
-			addMember(member);
-		}
+		this.pending.add(new MemberEntry(overridden, true));
 	}
 
 	public void registerMembers() {
 
-		final Scope scope = getContainer().getScope();
-
-		for (Entry[] members : this.registry.values()) {
-
-			Member member = null;
-
-			for (Entry e : members) {
-
-				final Member m = e.createMember(scope);
-
-				if (member == null) {
-					member = m;
+		for (;;) {
+			if (this.registering == null) {
+				// Registration is not in progress.
+				if (this.pending.isEmpty()) {
+					// No pending members to register. Exit.
+					return;
+				}
+				// Register first pending.
+				this.registering = this.pending.getFirst();
+				this.pending.empty();
+			} else {
+				// Register next pending.
+				this.registering = this.registering.removeNext();
+				if (this.registering == null) {
+					// Nothing to register.
+					// Try for more pending members.
 					continue;
 				}
-				if (m == null) {
-					continue;
-				}
-				member.merge(m);
 			}
-			if (member != null) {
-				register(member);
-			}
+
+			this.registering.register(this);
 		}
 	}
 
@@ -87,18 +77,34 @@ public abstract class ContainerMembers {
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
-		boolean comma = false;
 
 		out.append(getClass().getSimpleName());
 		out.append('[');
-		for (Map.Entry<MemberKey, Entry[]> e : this.registry.entrySet()) {
-			if (comma) {
-				out.append(", ");
-			} else {
-				comma = true;
+		if (this.registering != null) {
+			out.append("registering: [");
+
+			MemberEntry entry = this.registering;
+			boolean comma = false;
+
+			do {
+				if (comma) {
+					out.append(", ");
+				} else {
+					comma = true;
+				}
+				out.append(entry);
+				entry = entry.next;
+			} while (entry != null);
+
+			out.append("]");
+		}
+		if (!this.pending.isEmpty()) {
+			if (this.registering != null) {
+				out.append(' ');
 			}
-			out.append(e.getKey()).append('=');
-			out.append(Arrays.toString(e.getValue()));
+			out.append("pending: ");
+			out.append(this.pending);
+			out.append('}');
 		}
 		out.append(']');
 
@@ -110,70 +116,11 @@ public abstract class ContainerMembers {
 	protected abstract Map<MemberId, Symbol> symbols();
 
 	protected boolean register(Member member) {
-		if (!registerMember(member)) {
-			return false;
-		}
-		registerSymbol(member);
+		members().put(member.getKey(), member);
 		return true;
 	}
 
-	private void addMember(Entry entry) {
-
-		final MemberKey key = entry.getKey();
-
-		if (!key.isValid()) {
-			return;
-		}
-
-		final Entry[] registered = this.registry.get(key);
-
-		if (registered == null) {
-			this.registry.put(key, new Entry[] {entry});
-		} else if (entry.isOverride()) {
-			updateOverridden(registered, entry);
-		} else {
-			this.registry.put(key, ArrayUtil.append(registered, entry));
-		}
-	}
-
-	private void updateOverridden(Entry[] registered, Entry entry) {
-
-		for (int i = registered.length - 1; i >= 0 ; --i) {
-
-			final Entry e = registered[i];
-
-			if (e.definedAfter(entry)) {
-				// The already registered member is defined after the new one.
-				// Leave it in registry.
-				return;
-			}
-			if (entry.definedAfter(e)) {
-				// The new member is defined after the already registered one.
-				// Update the registry with the new member.
-				registered = ArrayUtil.remove(registered, i);
-			}
-		}
-
-		this.registry.put(entry.getKey(), ArrayUtil.append(registered, entry));
-	}
-
-	private boolean registerMember(Member member) {
-
-		final MemberKey key = member.getKey();
-		final Member old = members().put(key, member);
-
-		if (old != null) {
-			members().put(key, old);
-			this.container.getContext().getLogger().ambiguousMember(
-					member,
-					member.getDisplayName());
-			return false;
-		}
-
-		return true;
-	}
-
-	private void registerSymbol(Member member) {
+	protected void registerSymbol(Member member) {
 		if (member.getVisibility() == Visibility.PRIVATE
 				&& member.isOverride()) {
 			// Only explicitly declared private members registered.
@@ -191,45 +138,16 @@ public abstract class ContainerMembers {
 		}
 	}
 
-	private static final class Entry {
+	private static final class MemberEntries extends Chain<MemberEntry> {
 
-		private final Member member;
-		private final boolean propagated;
-
-		Entry(Member member, boolean propagated) {
-			this.member = member;
-			this.propagated = propagated;
-		}
-
-		public final MemberKey getKey() {
-			return this.member.getKey();
-		}
-
-		public final Member getMember() {
-			return this.member;
-		}
-
-		public final boolean isOverride() {
-			return this.propagated || this.member.isOverride();
-		}
-
-		public final Member createMember(Scope scope) {
-			if (!this.propagated) {
-				return this.member;
-			}
-			return this.member.propagateTo(scope);
-		}
-
-		public final boolean definedAfter(Entry entry) {
-			return this.member.definedAfter(entry.getMember());
+		@Override
+		protected MemberEntry next(MemberEntry item) {
+			return item.next;
 		}
 
 		@Override
-		public String toString() {
-			if (this.propagated) {
-				return this.member + "^";
-			}
-			return this.member.toString();
+		protected void setNext(MemberEntry prev, MemberEntry next) {
+			prev.next = next;
 		}
 
 	}

@@ -283,8 +283,8 @@ final class ExplicitLocalScope extends LocalScope {
 		}
 
 		@Override
-		public boolean isPropagated() {
-			return false;
+		public Member getPropagatedFrom() {
+			return null;
 		}
 
 		@Override

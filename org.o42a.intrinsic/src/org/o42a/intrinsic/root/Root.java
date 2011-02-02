@@ -145,9 +145,8 @@ public class Root extends Obj {
 			new DeclarativeBlock(this, distribute(), memberRegistry);
 
 		compiled.buildBlock(block);
-		block.executeInstructions();
-
 		memberRegistry.registerMembers(members);
+		block.executeInstructions();
 	}
 
 	@Override

@@ -231,7 +231,7 @@ public abstract class LocalScope
 			return this;
 		}
 		owner.assertDerivedFrom(getOwner());
-		return new PropagatedLocalScope(explicit(), owner);
+		return new PropagatedLocalScope(this, owner);
 	}
 
 	abstract boolean addMember(Member member);

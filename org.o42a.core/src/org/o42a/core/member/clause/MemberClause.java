@@ -80,11 +80,6 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public boolean isPropagated() {
-		return false;
-	}
-
-	@Override
 	public final boolean isAbstract() {
 		return false;
 	}
@@ -92,6 +87,11 @@ public abstract class MemberClause extends Member {
 	@Override
 	public Container getSubstance() {
 		return toClause().getContainer();
+	}
+
+	@Override
+	public Member getPropagatedFrom() {
+		return null;
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public abstract class MemberClause extends Member {
 	static final class Overridden extends MemberClause {
 
 		private final Clause clause;
-		private final boolean propagated;
+		private final MemberClause propagatedFrom;
 
 		Overridden(
 				Container container,
@@ -160,7 +160,7 @@ public abstract class MemberClause extends Member {
 				boolean propagated) {
 			super(container, overridden);
 			this.clause = clause;
-			this.propagated = propagated;
+			this.propagatedFrom = propagated ? overridden : null;
 		}
 
 		@Override
@@ -169,8 +169,8 @@ public abstract class MemberClause extends Member {
 		}
 
 		@Override
-		public boolean isPropagated() {
-			return this.propagated;
+		public Member getPropagatedFrom() {
+			return this.propagatedFrom;
 		}
 
 	}

@@ -150,8 +150,6 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			return null;
 		}
 
-		statement(builder.build());
-
 		return builder;
 	}
 
