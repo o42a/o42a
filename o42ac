@@ -28,4 +28,13 @@ for arg in "$@"; do
 	fi
 done
 
-${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}" | ${CC} "${cc_args[@]}"
+pipe_if_not_empty () {
+	head=$(dd bs=1 count=1 2>/dev/null; echo a)
+	head=${head%a}
+	if [ "x$head" != x"" ]; then
+		{ printf %s "$head"; cat; } | "$@"
+	fi
+}
+
+${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}" | \
+	pipe_if_not_empty ${CC} "${cc_args[@]}"
