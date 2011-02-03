@@ -27,66 +27,29 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 
 
-public class ResolutionTest extends CompilerTestCase {
+public class DirectiveTest extends CompilerTestCase {
 
 	@Test
-	public void resolveBeforeUse() {
-		compile(
-				"A := void.",
-				"A().");
-	}
-
-	@Test
-	public void adapterId() {
-		compile(
-				"A := void.",
-				"@A := *().");
-	}
-
-	@Test
-	public void namespaceRef() {
-		compile(
-				"Use namespace 'Console'.",
-				"Print 'Hello'.");
-	}
-
-	@Test
-	public void adapterIdFromNamespace() {
-		compile(
-				"Use namespace 'Console'.",
-				"@Main :=> *().");
-	}
-
-	@Test
-	public void referIncluded() {
+	public void include() {
 		addSource(
 				"included.o42a",
-				"A := 24");
-		compile(
-				"B := a(= 44).",
-				"Include 'included.o42a'.");
+				"A := 42");
+		compile("Include 'included.o42a'");
 
 		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
 
-		assertThat(definiteValue(a, Long.class), is(24L));
-		assertThat(definiteValue(b, Long.class), is(44L));
+		assertThat(definiteValue(a, Long.class), is(42L));
 	}
 
 	@Test
-	public void referIncludedIsideBlock() {
+	public void includeInsideBlock() {
 		addSource(
 				"included.o42a",
-				"A := 24");
-		compile(
-				"(Include 'included.o42a').",
-				"B := a(= 44).");
+				"A := 42");
+		compile("(Include 'included.o42a')");
 
 		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
 
-		assertThat(definiteValue(a, Long.class), is(24L));
-		assertThat(definiteValue(b, Long.class), is(44L));
+		assertThat(definiteValue(a, Long.class), is(42L));
 	}
-
 }

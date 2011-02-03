@@ -27,6 +27,7 @@ import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.junit.After;
@@ -198,7 +199,8 @@ public abstract class CompilerTestCase {
 	}
 
 	@Before
-	public void clearExpectations() {
+	public void setUpCompiler() {
+		this.context = new Context();
 		this.expectedErrors.clear();
 		this.moduleName = getClass().getSimpleName();
 	}
@@ -218,8 +220,24 @@ public abstract class CompilerTestCase {
 		return getField(this.module, name);
 	}
 
-	protected void compile(String line, String... lines) {
+	protected void addSource(
+			String path,
+			String line,
+			String... lines) {
+		addSource(
+				path,
+				new Src(getModuleName() + '/' + path, buildCode(line, lines)));
+	}
 
+	protected void addSource(String path, Source source) {
+		((Context) this.context).addSource(path, source);
+	}
+
+	protected void compile(String line, String... lines) {
+		compile(new Src(buildCode(line, lines)));
+	}
+
+	private String buildCode(String line, String... lines) {
 		final String code;
 
 		if (lines.length == 0) {
@@ -235,12 +253,11 @@ public abstract class CompilerTestCase {
 
 			code = text.toString();
 		}
-
-		compile(new Src(code));
+		return code;
 	}
 
 	protected void compile(Source source) {
-		this.context = new Context(source);
+		((Context) this.context).setSource(source);
 		this.module = new Module(this.context, this.moduleName);
 		INTRINSICS.setMainModule(this.module);
 		this.module.resolveAll();
@@ -253,17 +270,24 @@ public abstract class CompilerTestCase {
 
 	protected final class Src extends Source {
 
-		private static final long serialVersionUID = -5699419138891923266L;
+		private static final long serialVersionUID = -1127243814012269504L;
 
+		private final String name;
 		private final String code;
 
 		public Src(String code) {
 			this.code = code;
+			this.name = getModuleName();
+		}
+
+		Src(String name, String code) {
+			this.code = code;
+			this.name = name;
 		}
 
 		@Override
 		public String getName() {
-			return CompilerTestCase.this.getClass().getSimpleName();
+			return this.name;
 		}
 
 		@Override
@@ -273,24 +297,72 @@ public abstract class CompilerTestCase {
 
 	}
 
-	private final class Context extends CompilerContext {
+	private class Context extends CompilerContext {
 
-		private final Source source;
+		private Source source;
+		private final HashMap<String, Context> subContexts =
+			new HashMap<String, Context>();
 
-		Context(Source source) {
+		Context() {
 			super(COMPILER, INTRINSICS, new TestLogger());
+			this.source = new Src("");
+		}
+
+		Context(CompilerContext parent, Source source) {
+			super(parent, parent.getLogger());
 			this.source = source;
 		}
 
 		@Override
 		public CompilerContext contextFor(String path) throws Exception {
-			throw new UnsupportedOperationException(
-					this + " has no child contexts");
+
+			final int idx = path.indexOf('/');
+			final String src;
+
+			if (idx < 0) {
+				src = path;
+			} else {
+				src = path.substring(0, idx);
+			}
+
+			final Context context = this.subContexts.get(src);
+
+			if (context == null) {
+				throw new IllegalStateException(src + " not found in " + this);
+			}
+			if (idx < 0) {
+				return context;
+			}
+
+			return context.contextFor(path.substring(idx + 1));
 		}
 
 		@Override
 		public Source getSource() {
 			return this.source;
+		}
+
+		void setSource(Source source) {
+			this.source = source;
+		}
+
+		void addSource(String path, Source source) {
+
+			final int idx = path.indexOf('/');
+
+			if (idx < 0) {
+				this.subContexts.put(path, new Context(this, source));
+				return;
+			}
+
+			final String src = path.substring(0, idx);
+			final Context context = this.subContexts.get(src);
+
+			if (context == null) {
+				throw new IllegalStateException(src + " not found in " + this);
+			}
+
+			context.addSource(path.substring(idx + 1), source);
 		}
 
 	}

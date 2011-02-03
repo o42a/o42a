@@ -462,6 +462,7 @@ public abstract class Obj extends Artifact<Obj>
 				this.resolution = Resolution.RESOLVING_MEMBERS;
 				try {
 					declareMembers();
+					this.objectMembers.registerMembers(resolveAdapters);
 				} finally {
 					this.resolution = resolution;
 				}
@@ -770,8 +771,6 @@ public abstract class Obj extends Artifact<Obj>
 		if (ancestor != null) {
 			this.objectMembers.deriveMembers(ancestor.getType());
 		}
-
-		this.objectMembers.registerMembers(true);
 	}
 
 	private void resolveAllMembers() {

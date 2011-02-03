@@ -350,13 +350,26 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				continue;
 			}
 
-			final Block<S> block = parentheses(
-				i,
-				this,
-				getContainer(),
-				getMemberRegistry());
+			switch (instruction.getInstructionKind()) {
+			case GENERIC_INSTRUCTION:
+				instruction.execute();
+				break;
+			case REPLACEMENT_INSTRUCTION:
 
-			instruction.execute(block);
+				final Block<S> block = parentheses(
+					i,
+					this,
+					getContainer(),
+					getMemberRegistry());
+
+				instruction.execute(block);
+				break;
+			default:
+				throw new IllegalStateException(
+						"Unsupported instruction kind: "
+						+ instruction.getInstructionKind());
+			}
+
 		}
 
 		this.instructionsExecuted = true;

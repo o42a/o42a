@@ -409,6 +409,15 @@ public abstract class Ref extends RefBase {
 		}
 
 		@Override
+		public InstructionKind getInstructionKind() {
+			return InstructionKind.REPLACEMENT_INSTRUCTION;
+		}
+
+		@Override
+		public void execute() {
+		}
+
+		@Override
 		public <S extends Statements<S>> void execute(Block<S> block) {
 			Ref.this.conditions.setWrapped(
 					block.setConditions(getInitialConditions()));
