@@ -24,10 +24,10 @@ import java.util.List;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
+import org.o42a.core.Scope;
 import org.o42a.core.def.BlockBase;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.StatementKind;
+import org.o42a.core.st.*;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -147,6 +147,14 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		return this.sentences;
 	}
 
+	@Override
+	public Instruction toInstruction(Scope scope, boolean assignment) {
+		if (!assignment) {
+			return null;
+		}
+		return new ExecuteInstructions();
+	}
+
 	public Sentence<S> propose(LocationSpec location) {
 
 		@SuppressWarnings("rawtypes")
@@ -230,6 +238,29 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 			this.sentences.add(sentence);
 		}
 		return sentence;
+	}
+
+	private final class ExecuteInstructions implements Instruction {
+
+		@Override
+		public InstructionKind getInstructionKind() {
+			return InstructionKind.GENERIC_INSTRUCTION;
+		}
+
+		@Override
+		public void execute() {
+			executeInstructions();
+		}
+
+		@Override
+		public <ST extends Statements<ST>> void execute(Block<ST> block) {
+		}
+
+		@Override
+		public String toString() {
+			return "ExecuteInstructions[" + Block.this + ']';
+		}
+
 	}
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,16 +19,10 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Statements;
 
+public enum InstructionKind {
 
-public interface Instruction {
-
-	InstructionKind getInstructionKind();
-
-	void execute();
-
-	<S extends Statements<S>> void execute(Block<S> block);
+	GENERIC_INSTRUCTION,
+	REPLACEMENT_INSTRUCTION
 
 }
