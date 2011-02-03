@@ -28,8 +28,8 @@ import org.o42a.util.Chain;
 public abstract class ContainerMembers {
 
 	private final Container container;
-	private final MemberEntries pending = new MemberEntries();
-	private MemberEntry registering;
+	private final MemberEntries members = new MemberEntries();
+	private final MemberEntries adapters = new MemberEntries();
 
 	public ContainerMembers(Container container) {
 		this.container = container;
@@ -40,36 +40,17 @@ public abstract class ContainerMembers {
 	}
 
 	public final void addMember(Member member) {
-		this.pending.add(new MemberEntry(member, false));
+		addMember(new MemberEntry(member, false));
 	}
 
 	public final void propagateMember(Member overridden) {
-		this.pending.add(new MemberEntry(overridden, true));
+		addMember(new MemberEntry(overridden, true));
 	}
 
-	public void registerMembers() {
-
-		for (;;) {
-			if (this.registering == null) {
-				// Registration is not in progress.
-				if (this.pending.isEmpty()) {
-					// No pending members to register. Exit.
-					return;
-				}
-				// Register first pending.
-				this.registering = this.pending.getFirst();
-				this.pending.empty();
-			} else {
-				// Register next pending.
-				this.registering = this.registering.removeNext();
-				if (this.registering == null) {
-					// Nothing to register.
-					// Try for more pending members.
-					continue;
-				}
-			}
-
-			this.registering.register(this);
+	public void registerMembers(boolean registerAdapters) {
+		this.members.registerMembers(this);
+		if (registerAdapters) {
+			this.adapters.registerMembers(this);
 		}
 	}
 
@@ -79,34 +60,19 @@ public abstract class ContainerMembers {
 		final StringBuilder out = new StringBuilder();
 
 		out.append(getClass().getSimpleName());
-		out.append('[');
-		if (this.registering != null) {
-			out.append("registering: [");
-
-			MemberEntry entry = this.registering;
-			boolean comma = false;
-
-			do {
-				if (comma) {
-					out.append(", ");
-				} else {
-					comma = true;
-				}
-				out.append(entry);
-				entry = entry.next;
-			} while (entry != null);
-
-			out.append("]");
+		out.append('{');
+		if (!this.members.isEmpty()) {
+			out.append("members: ");
+			out.append(this.members);
 		}
-		if (!this.pending.isEmpty()) {
-			if (this.registering != null) {
+		if (!this.adapters.isEmpty()) {
+			if (!this.members.isEmpty()) {
 				out.append(' ');
 			}
-			out.append("pending: ");
-			out.append(this.pending);
-			out.append('}');
+			out.append("adapters: ");
+			out.append(this.adapters);
 		}
-		out.append(']');
+		out.append('}');
 
 		return out.toString();
 	}
@@ -138,7 +104,53 @@ public abstract class ContainerMembers {
 		}
 	}
 
+	private void addMember(MemberEntry entry) {
+		if (entry.getMember().getId().getAdapterId() != null) {
+			this.adapters.add(entry);
+		} else {
+			this.members.add(entry);
+		}
+	}
+
 	private static final class MemberEntries extends Chain<MemberEntry> {
+
+		private MemberEntry registering;
+
+		@Override
+		public String toString() {
+
+			final StringBuilder out = new StringBuilder();
+
+			out.append('{');
+			if (this.registering != null) {
+				out.append("registering: [");
+
+				MemberEntry entry = this.registering;
+				boolean comma = false;
+
+				do {
+					if (comma) {
+						out.append(", ");
+					} else {
+						comma = true;
+					}
+					out.append(entry);
+					entry = entry.next;
+				} while (entry != null);
+
+				out.append(']');
+			}
+			if (!isEmpty()) {
+				if (this.registering != null) {
+					out.append(' ');
+				}
+				out.append("pending: ");
+				out.append(super.toString());
+			}
+			out.append('}');
+
+			return out.toString();
+		}
 
 		@Override
 		protected MemberEntry next(MemberEntry item) {
@@ -148,6 +160,32 @@ public abstract class ContainerMembers {
 		@Override
 		protected void setNext(MemberEntry prev, MemberEntry next) {
 			prev.next = next;
+		}
+
+		void registerMembers(ContainerMembers members) {
+
+			for (;;) {
+				if (this.registering == null) {
+					// Registration is not in progress.
+					if (isEmpty()) {
+						// No pending members to register. Exit.
+						return;
+					}
+					// Register first pending.
+					this.registering = getFirst();
+					empty();
+				} else {
+					// Register next pending.
+					this.registering = this.registering.removeNext();
+					if (this.registering == null) {
+						// Nothing to register.
+						// Try for more pending members.
+						continue;
+					}
+				}
+
+				this.registering.register(members);
+			}
 		}
 
 	}

@@ -226,7 +226,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public Collection<Member> getMembers() {
-		defineMembers();
+		resolveMembers(true);
 		return this.members.values();
 	}
 
@@ -308,7 +308,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public final Member member(MemberKey memberKey) {
-		defineMembers();
+		resolveMembers(memberKey.getMemberId().containsAdapterId());
 		return members().get(memberKey);
 	}
 
@@ -346,7 +346,7 @@ public abstract class Obj extends Artifact<Obj>
 			MemberId memberId,
 			Obj declaredIn,
 			Accessor accessor) {
-		defineMembers();
+		resolveMembers(memberId.containsAdapterId());
 
 		final Symbol found = memberById(memberId);
 
@@ -440,6 +440,36 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return overridden.cloneOf(other);
+	}
+
+	public void resolveMembers(boolean resolveAdapters) {
+		if (this.objectMembers != null) {
+			// Register members incrementally.
+			updateMembers();
+			this.objectMembers.registerMembers(resolveAdapters);
+			return;
+		}
+		if (!this.resolution.membersResolved()) {
+			if (!resolveIfNotResolving()) {
+				return;
+			}
+
+			final Resolution resolution = this.resolution;
+
+			if (resolution.typeResolved() && !resolution.membersResolved()) {
+				// resolution is not in progress - resolve members
+				// otherwise members are empty
+				this.resolution = Resolution.RESOLVING_MEMBERS;
+				try {
+					declareMembers();
+				} finally {
+					this.resolution = resolution;
+				}
+				this.resolution = Resolution.MEMBERS_RESOLVED;
+				updateMembers();
+				this.objectMembers.registerMembers(resolveAdapters);
+			}
+		}
 	}
 
 	@Override
@@ -723,37 +753,7 @@ public abstract class Obj extends Artifact<Obj>
 		}
 	}
 
-	private void defineMembers() {
-		if (this.objectMembers != null) {
-			// Register members incrementally.
-			this.objectMembers.registerMembers();
-			updateMembers();
-			this.objectMembers.registerMembers();
-			return;
-		}
-		if (!this.resolution.membersResolved()) {
-			if (!resolveIfNotResolving()) {
-				return;
-			}
-
-			final Resolution resolution = this.resolution;
-
-			if (resolution.typeResolved() && !resolution.membersResolved()) {
-				// resolution is not in progress - resolve members
-				// otherwise members are empty
-				this.resolution = Resolution.RESOLVING_MEMBERS;
-				try {
-					resolveMembers();
-				} finally {
-					this.resolution = resolution;
-				}
-				this.resolution = Resolution.MEMBERS_RESOLVED;
-				updateMembers();
-			}
-		}
-	}
-
-	private void resolveMembers() {
+	private void declareMembers() {
 		this.objectMembers = new ObjectMembers(this);
 		if (getScope().getEnclosingScopePath() != null
 				&& getScope().getEnclosingContainer().toObject() != null) {
@@ -771,7 +771,7 @@ public abstract class Obj extends Artifact<Obj>
 			this.objectMembers.deriveMembers(ancestor.getType());
 		}
 
-		this.objectMembers.registerMembers();
+		this.objectMembers.registerMembers(true);
 	}
 
 	private void resolveAllMembers() {
@@ -829,7 +829,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	private Symbol memberById(MemberId memberId) {
-		defineMembers();
+		resolveMembers(memberId.containsAdapterId());
 		return this.symbols.get(memberId);
 	}
 

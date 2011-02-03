@@ -83,13 +83,4 @@ public class InheritanceTest extends CompilerTestCase {
 						Derivation.MEMBER_OVERRIDE));
 	}
 
-	@Test
-	public void indefiniteObjectInheritance() {
-		expectError("compiler.cant_inherit");
-
-		compile(
-				"A :=> void(foo := 1);",
-				"b := &a:foo");
-	}
-
 }
