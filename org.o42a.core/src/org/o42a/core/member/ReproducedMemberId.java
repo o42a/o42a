@@ -56,6 +56,11 @@ final class ReproducedMemberId extends MemberId {
 	}
 
 	@Override
+	public boolean containsAdapterId() {
+		return this.memberId.containsAdapterId();
+	}
+
+	@Override
 	public String toName() {
 		return this.memberId.toName();
 	}

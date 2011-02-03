@@ -36,6 +36,7 @@ public abstract class MemberId {
 
 	public abstract boolean isValid();
 
+
 	public abstract String getName();
 
 	public abstract AdapterId getAdapterId();
@@ -53,6 +54,8 @@ public abstract class MemberId {
 	public MemberId getEnclosingId() {
 		return null;
 	}
+
+	public abstract boolean containsAdapterId();
 
 	public abstract String toName();
 
@@ -99,6 +102,11 @@ public abstract class MemberId {
 		@Override
 		public AdapterId getAdapterId() {
 			return null;
+		}
+
+		@Override
+		public boolean containsAdapterId() {
+			return false;
 		}
 
 		@Override

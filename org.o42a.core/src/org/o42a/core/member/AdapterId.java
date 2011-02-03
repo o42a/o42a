@@ -75,6 +75,11 @@ public final class AdapterId extends MemberId {
 	}
 
 	@Override
+	public boolean containsAdapterId() {
+		return true;
+	}
+
+	@Override
 	public String toName() {
 		return null;
 	}

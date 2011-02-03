@@ -44,6 +44,11 @@ final class MemberName extends MemberId {
 	}
 
 	@Override
+	public boolean containsAdapterId() {
+		return false;
+	}
+
+	@Override
 	public String toName() {
 		return this.name;
 	}

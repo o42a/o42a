@@ -17,40 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.test.ref;
+package org.o42a.compiler.test.inheritance;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 
 
-public class ResolutionTest extends CompilerTestCase {
+public class PrototypeAccessTest extends CompilerTestCase {
 
 	@Test
-	public void resolveBeforeUse() {
-		compile(
-				"A := void.",
-				"A().");
-	}
+	public void indefiniteObjectInheritance() {
+		expectError("compiler.cant_inherit");
 
-	@Test
-	public void adapterId() {
 		compile(
-				"A := void.",
-				"@A := *().");
-	}
-
-	@Test
-	public void namespaceRef() {
-		compile(
-				"Use namespace 'Console'.",
-				"Print 'Hello'.");
-	}
-
-	@Test
-	public void adapterIdFromNamespace() {
-		compile(
-				"Use namespace 'Console'.",
-				"@Main :=> *().");
+				"A :=> void(foo := 1);",
+				"b := &a: foo");
 	}
 
 }

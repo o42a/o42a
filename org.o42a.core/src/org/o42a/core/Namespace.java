@@ -146,7 +146,7 @@ public class Namespace extends AbstractContainer {
 		final Obj object = toObject();
 
 		if (object != null) {
-			object.getMembers();// Update members.
+			object.resolveMembers(memberId.containsAdapterId());
 		}
 
 		Path result = null;

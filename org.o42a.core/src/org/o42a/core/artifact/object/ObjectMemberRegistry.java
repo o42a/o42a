@@ -135,9 +135,8 @@ public class ObjectMemberRegistry extends MemberRegistry {
 				}
 				out.append(m);
 			}
-
-			out.append('}');
 		}
+		out.append('}');
 
 		return out.toString();
 	}
