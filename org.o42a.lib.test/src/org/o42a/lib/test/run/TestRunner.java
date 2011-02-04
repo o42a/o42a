@@ -142,7 +142,7 @@ final class TestRunner extends PlainObject {
 			}
 		}
 
-		return field.toString();
+		return field.getDisplayName().replace('_', ' ');
 	}
 
 	private final RunTest runTest;
