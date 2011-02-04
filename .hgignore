@@ -21,3 +21,5 @@ syntax: regexp
 ^org\.o42a\.helloworld/debug_hello_world$
 syntax: regexp
 ^org\.o42a\.test/all_tests$
+syntax: regexp
+^org\.o42a\.test/debug_all_tests$

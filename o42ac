@@ -50,8 +50,10 @@ pipe_if_not_empty () {
 {
 	${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}"
 	error=$?
-	if (( error > 3 || error < 0 )) ; then
-		echo "${red}ERROR${white}[${blue}${error}${white}]: o42ac failed." >&2;
+	if (( error != 0 )) ; then
+		if (( error > 3 )); then
+			echo "${red}ERROR${white}[${blue}${error}${white}]: o42ac failed." >&2;
+		fi
 		exit $error 
 	fi
 } | pipe_if_not_empty ${CC} "${cc_args[@]}"
