@@ -112,7 +112,7 @@ final class StringType extends ValueType<String> {
 
 			final byte b = bytes[i];
 
-			result |= (b & 0xFFL) << i;
+			result |= (b & 0xFFL) << (i << 3);
 		}
 
 		return result;
