@@ -49,7 +49,7 @@ public class CodeBuilder {
 		final LocalScope local = scope.toLocal();
 
 		if (local != null) {
-			return new LocalBuilder(function, local.ir(generator));
+			return new LocalBuilder(function, local.ir(generator), hostArg);
 		}
 
 		final Obj scopeObject = scope.getContainer().toObject();
@@ -62,20 +62,6 @@ public class CodeBuilder {
 					scopeObject.ir(generator).getBodyType(),
 					scopeObject,
 					hostPrecision);
-		}
-
-		return new CodeBuilder(generator, function, scope);
-	}
-
-	public static CodeBuilder codeBuilder(
-			IRGenerator generator,
-			Function<?> function,
-			Scope scope) {
-
-		final LocalScope local = scope.toLocal();
-
-		if (local != null) {
-			return new LocalBuilder(function, local.ir(generator));
 		}
 
 		return new CodeBuilder(generator, function, scope);

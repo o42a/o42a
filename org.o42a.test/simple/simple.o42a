@@ -1,3 +1,6 @@
+Use namespace 'Console'.
 Use namespace 'Test'.
 
-
+Simple test := test(
+  Print "Execute simple test" nl.
+).
