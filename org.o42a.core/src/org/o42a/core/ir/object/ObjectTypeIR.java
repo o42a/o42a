@@ -227,7 +227,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 					getObjectIR().getScopeIR().prefix(
 							IRSymbolSeparator.DETAIL,
 							"ancestor"),
-				getGenerator().objectRefSignature());
+					getGenerator().objectRefSignature());
 		final CodeBlk failure = function.addBlock("failure");
 
 		final TypeRef ancestor = getObjectIR().getObject().getAncestor();

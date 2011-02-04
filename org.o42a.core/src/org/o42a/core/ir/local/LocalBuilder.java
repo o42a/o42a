@@ -33,10 +33,12 @@ import org.o42a.core.member.local.Dep;
 
 public class LocalBuilder extends CodeBuilder {
 
+	private final int ownerArg;
 	private ObjectOp owner;
 
-	public LocalBuilder(Function<?> function, LocalIR scopeIR) {
+	public LocalBuilder(Function<?> function, LocalIR scopeIR, int ownerArg) {
 		super(function, scopeIR);
+		this.ownerArg = ownerArg;
 	}
 
 	@Override
@@ -50,7 +52,8 @@ public class LocalBuilder extends CodeBuilder {
 		}
 
 		final Obj owner = host().getScope().getOwner();
-		final AnyOp ownerPtr = getFunction().ptrArg(getFunction(), 1);
+		final AnyOp ownerPtr =
+			getFunction().ptrArg(getFunction(), this.ownerArg);
 
 		return this.owner = anonymousObject(this, ownerPtr, owner);
 	}

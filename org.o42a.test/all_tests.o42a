@@ -4,7 +4,7 @@ Use namespace 'Test'.
 @Main :=> *(
   Simple tests := test(
     Name = "Simple tests".
-    Include 'simple/simple.o42a'
+    Include 'simple/simple.o42a'.
   ).
   Run tests().
 ).

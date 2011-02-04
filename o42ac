@@ -3,6 +3,12 @@
 # o42a Compiler
 #
 
+blue=$'\033[1;34m'
+green=$'\033[0;32m'
+red=$'\033[0;31m'
+white=$'\033[1;37m'
+
+
 JAR_DIR=${JAR_DIR:-"`dirname $0`/target"}
 JAR=${JAR:-"${JAR_DIR}/org.o42a.cl-0.1.0.jar"}
 JAVA=${JAVA:-java}
@@ -19,6 +25,11 @@ for arg in "$@"; do
 		append_arg="cc"
 	elif [[ "${arg}" == "--vmargs" ]]; then
 		append_arg="vm"
+	elif [[ "${arg}" == "--nocolor" ]]; then
+		blue=""
+		green=""
+		red=""
+		white=""
 	elif [[ ${append_arg} == "cc" ]]; then
 		cc_args[${#cc_args[*]}]="${arg}"
 	elif [[ ${append_arg} == "vm" ]]; then
@@ -36,5 +47,11 @@ pipe_if_not_empty () {
 	fi
 }
 
-${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}" | \
-	pipe_if_not_empty ${CC} "${cc_args[@]}"
+{
+	${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}"
+	error=$?
+	if (( error > 3 || error < 0 )) ; then
+		echo "${red}ERROR${white}[${blue}${error}${white}]: o42ac failed." >&2;
+		exit $error 
+	fi
+} | pipe_if_not_empty ${CC} "${cc_args[@]}"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    "Hello, World!" Build Script
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    o42a Tests Build Script
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="org.o42a.helloworld" default="compile">
+<project name="org.o42a.test" default="compile">
 
 	<import file="../build/build.setup.xml"/>
 
@@ -31,7 +31,7 @@
 
 	<target name="compile" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
-			<param name="_compile.name" value="hello_world"/>
+			<param name="_compile.name" value="all_tests"/>
 			<param name="_compile.debug" value="off"/>
 			<param name="_compile.lib" value="o42a"/>
 		</antcall>
@@ -39,7 +39,7 @@
 	
 	<target name="compile-debug" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
-			<param name="_compile.name" value="debug_hello_world"/>
+			<param name="_compile.name" value="debug_all_tests"/>
 			<param name="_compile.debug" value="on"/>
 			<param name="_compile.lib" value="o42a_debug"/>
 		</antcall>
@@ -47,7 +47,7 @@
 
 	<target name="exec" depends="compile">
 		<exec
-			executable="hello_world"
+			executable="all_tests"
 			searchpath="false"
 			resolveexecutable="true"
 			taskname="exec"
@@ -58,7 +58,7 @@
 	
 	<target name="debug" depends="compile-debug">
 		<exec
-			executable="debug_hello_world"
+			executable="debug_all_tests"
 			searchpath="false"
 			resolveexecutable="true"
 			taskname="debug"
@@ -68,8 +68,8 @@
 	</target>
 
 	<target name="clean">
-		<delete file="hello_world"/>
-		<delete file="debug_hello_world"/>
+		<delete file="all_tests"/>
+		<delete file="debug_all_tests"/>
 	</target>
 
 	<target name="_compile">
@@ -80,7 +80,7 @@
 			failonerror="true">
 			<arg line="--nocolor"/>
 			<arg line="--debug=${_compile.debug}"/>
-			<arg line="hello_world.o42a"/>
+			<arg line="all_tests.o42a"/>
 			
 			<arg line="--vmargs"/>
 			<arg line="-Djava.library.path=${root.dir}/target"/>

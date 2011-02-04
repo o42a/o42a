@@ -81,10 +81,10 @@ final class LocalIRFunc extends ObjectIRFunc {
 	public void build() {
 
 		final LocalBuilder builder =
-			new LocalBuilder(this.function, this.localIR);
+			new LocalBuilder(this.function, this.localIR, 1);
 		final ValOp result =
-			this.function.allocate(getGenerator().valType())
-			.storeUnknown(this.function);
+			this.function.ptrArg(this.function, 0)
+			.to(this.function, getGenerator().valType());
 
 		build(builder, this.function, result);
 
