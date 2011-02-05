@@ -79,7 +79,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 
 			final Function<ObjectValFunc> function =
 				getGenerator().newFunction().create(
-						getName(),
+						getId(),
 						getGenerator().objectValSignature());
 
 			function.debug("Calculating value");

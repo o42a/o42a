@@ -21,8 +21,11 @@ package org.o42a.core.ir.local;
 
 import static org.o42a.core.ir.IRUtil.encodeMemberId;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.IRGenerator;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectLocalIR;
 import org.o42a.core.member.local.LocalScope;
@@ -30,32 +33,27 @@ import org.o42a.core.member.local.LocalScope;
 
 public final class LocalIR extends ObjectLocalIR {
 
-	private final String id;
+	private CodeId id;
 
 	public LocalIR(IRGenerator generator, LocalScope scope) {
 		super(generator, scope);
 		scope.assertExplicit();
-
-		final ScopeIR ownerIR = scope.getOwner().getScope().ir(generator);
-
-		this.id = encodeMemberId(
-				ownerIR.getGenerator(),
-				ownerIR,
-				scope.toMember());
 	}
 
 	@Override
-	public String getId() {
-		return this.id;
+	public CodeId getId() {
+		if (this.id != null) {
+			return this.id;
+		}
+
+		final LocalScope scope = getScope();
+		final ScopeIR ownerIR = scope.getOwner().getScope().ir(getGenerator());
+
+		return this.id = encodeMemberId(ownerIR, scope.toMember());
 	}
 
 	public final ObjectIR getOwnerIR() {
 		return getScope().getOwner().ir(getGenerator());
-	}
-
-	@Override
-	public String prefix(IRSymbolSeparator separator, String suffix) {
-		return this.id + separator + suffix;
 	}
 
 	@Override

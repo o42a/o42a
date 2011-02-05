@@ -21,12 +21,15 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.IRUtil.encodeMemberId;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalFieldIRBase;
@@ -37,32 +40,20 @@ import org.o42a.core.member.field.Field;
 public abstract class FieldIRBase<A extends Artifact<A>>
 		extends LocalFieldIRBase<A> {
 
-	private final String id;
-	private final String localName;
+	private final CodeId id;
 	private Fld lastFld;
 	private boolean targetAllocated;
 
 	public FieldIRBase(IRGenerator generator, Field<A> field) {
 		super(generator, field);
 		this.id = encodeMemberId(
-				generator,
 				field.getEnclosingScope().ir(generator),
 				field.toMember());
-		this.localName = encodeMemberId(generator, null, field.toMember());
 	}
 
 	@Override
-	public final String getId() {
+	public final CodeId getId() {
 		return this.id;
-	}
-
-	public final String getLocalName() {
-		return this.localName;
-	}
-
-	@Override
-	public String prefix(IRSymbolSeparator separator, String suffix) {
-		return this.id + separator + suffix;
 	}
 
 	public FldOp field(Code code, ObjOp host) {

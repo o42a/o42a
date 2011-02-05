@@ -27,6 +27,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.op.AnyOp;
@@ -64,10 +66,10 @@ public abstract class Debug extends Globals {
 
 	@Override
 	protected <F extends Func> void addFunction(
-			String name,
+			CodeId id,
 			Signature<F> signature,
 			CodePtr<F> function) {
-		super.addFunction(name, signature, function);
+		super.addFunction(id, signature, function);
 		if (this.writeDebug) {
 			return;
 		}
@@ -76,14 +78,19 @@ public abstract class Debug extends Globals {
 		}
 
 		final DbgFunc dbgFunc =
-			this.info.getFunctions().addFunction(name, signature, function);
+			this.info.getFunctions().addFunction(id, signature, function);
 
 		final Function<F> code = function.getFunction();
 
 		if (code != null) {
 
 			final Ptr<AnyOp> namePtr =
-				addASCIIString("DEBUG.FUNC_NAME." + name, name);
+				addASCIIString(
+						generator()
+						.id("DEBUG")
+						.sub("FUNC_NAME")
+						.sub(id),
+						id.getId());
 
 			dbgFunc.setNamePtr(namePtr);
 
@@ -161,11 +168,11 @@ public abstract class Debug extends Globals {
 		return this.dbgStackFrameType;
 	}
 
-	final Ptr<AnyOp> addASCIIString(String id, String value) {
+	final Ptr<AnyOp> addASCIIString(CodeId id, String value) {
 		return addBinary(id, nullTermASCIIString(value));
 	}
 
-	final void setName(AnyPtrRec field, String id, String value) {
+	final void setName(AnyPtrRec field, CodeId id, String value) {
 
 		final Ptr<AnyOp> binary = addASCIIString(id, value);
 
@@ -194,7 +201,7 @@ public abstract class Debug extends Globals {
 			return found;
 		}
 
-		final DbgStruct struct = new DbgStruct(this, type);
+		final DbgStruct struct = new DbgStruct(generator(), type);
 
 		newGlobal().setConstant().create(struct);
 
@@ -216,20 +223,25 @@ public abstract class Debug extends Globals {
 		}
 		this.writeDebug = true;
 		try {
-			this.dbgFuncType = addType(new DbgFuncType(this));
-			this.dbgFieldType = addType(new DbgFieldType());
-			this.dbgGlobalType = addType(new DbgGlobalType(this));
-			this.dbgStackFrameType = addType(new DbgStackFrameType());
+			this.dbgFuncType = addType(new DbgFuncType(generator()));
+			this.dbgFieldType = addType(new DbgFieldType(generator()));
+			this.dbgGlobalType = addType(new DbgGlobalType(generator()));
+			this.dbgStackFrameType =
+				addType(new DbgStackFrameType(generator()));
 			this.enterFunc = externalFunction(
 					"o42a_dbg_enter",
 					new DbgEnterFunc.EnterSignature(this));
 			this.exitFunc =
 				externalFunction("o42a_dbg_exit", EXIT_SIGNATURE);
-			this.info = new DebugInfo(this);
+			this.info = new DebugInfo(generator());
 		} finally {
 			this.writeDebug = false;
 		}
 		return true;
+	}
+
+	private final Generator generator() {
+		return (Generator) this;
 	}
 
 	private static byte[] nullTermASCIIString(String string) {

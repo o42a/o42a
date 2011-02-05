@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -27,13 +28,13 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Struct<O extends PtrOp> extends Type<O> {
 
-	public Struct(String id) {
+	public Struct(CodeId id) {
 		super(id);
 	}
 
 	protected abstract void fill();
 
-	final void setStruct(String name) {
+	final void setStruct(CodeId name) {
 		this.data = new StructData<O>(this, name);
 	}
 
@@ -43,8 +44,8 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 
 	private static final class StructData<O extends PtrOp> extends SubData<O> {
 
-		StructData(Struct<O> type, String name) {
-			super(name, type.getId(), type);
+		StructData(Struct<O> type, CodeId name) {
+			super(type.getId().setLocal(name), type);
 		}
 
 		@Override
@@ -78,7 +79,7 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 		private final Global<O, ?> global;
 
 		public GlobalData(Type<O> type, Global<O, ?> global) {
-			super(global.getId(), global.getId(), type);
+			super(global.getId().removeLocal(), type);
 			this.global = global;
 		}
 

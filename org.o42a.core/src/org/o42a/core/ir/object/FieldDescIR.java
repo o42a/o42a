@@ -108,7 +108,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 
 		Type(ObjectIRGenerator generator) {
-			super("FieldDesc");
+			super(generator.id("FieldDesc"));
 			this.generator = generator;
 		}
 

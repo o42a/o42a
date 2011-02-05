@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -29,11 +30,8 @@ public final class StructPtrRec<O extends PtrOp> extends PtrRec<O> {
 	private final Type<O> type;
 	private Generator generator;
 
-	StructPtrRec(
-			String name,
-			String id,
-			Type<O> type, Content<StructPtrRec<O>> content) {
-		super(name, id, content);
+	StructPtrRec(CodeId id, Type<O> type, Content<StructPtrRec<O>> content) {
+		super(id, content);
 		this.type = type;
 	}
 

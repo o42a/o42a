@@ -161,7 +161,7 @@ public class ObjFld extends RefFld {
 		private AnyPtrRec previous;
 
 		Type(IRGenerator generator) {
-			super(generator, "ObjFld");
+			super(generator, generator.id("ObjFld"));
 		}
 
 		public final AnyPtrRec getPrevious() {

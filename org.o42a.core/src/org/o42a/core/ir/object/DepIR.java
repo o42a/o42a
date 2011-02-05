@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -27,7 +28,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.IRGenerator;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.local.Dep;
 
 
@@ -65,18 +66,20 @@ public class DepIR {
 
 	void allocate(SubData<?> data) {
 
-		final String localName;
+		final CodeId localId;
 
 		if (getDep().dependencyOnEnclosingOwner()) {
-			localName = "_owner";
+			localId = getGenerator().id("_owner");
 		} else {
 
-			final Field<?> dependency = this.dep.getDependency();
+			final FieldIR<?> dependencyIR =
+				this.dep.getDependency().ir(getGenerator());
 
-			localName = "_dep_" + dependency.ir(getGenerator()).getLocalName();
+			localId =
+				getGenerator().id("_dep").sub(dependencyIR.getId().getLocal());
 		}
 
-		this.instance = data.addInstance(localName, getGenerator().depType());
+		this.instance = data.addInstance(localId, getGenerator().depType());
 		this.instance.getObject().setNull();
 	}
 
@@ -89,8 +92,8 @@ public class DepIR {
 
 		private AnyPtrRec object;
 
-		Type() {
-			super("Dep");
+		Type(ObjectIRGenerator generator) {
+			super(generator.id("Dep"));
 		}
 
 		public final AnyPtrRec getObject() {

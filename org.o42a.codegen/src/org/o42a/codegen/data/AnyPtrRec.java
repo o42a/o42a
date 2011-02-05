@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -28,8 +29,8 @@ public final class AnyPtrRec extends PtrRec<AnyOp> {
 
 	private Generator generator;
 
-	AnyPtrRec(String name, String id, Content<AnyPtrRec> content) {
-		super(name, id, content);
+	AnyPtrRec(CodeId id, Content<AnyPtrRec> content) {
+		super(id, content);
 	}
 
 	@Override

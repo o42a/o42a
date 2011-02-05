@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -29,8 +30,8 @@ public abstract class Rec<O extends PtrOp, T> extends Data<O> {
 	@SuppressWarnings("rawtypes")
 	private final Content content;
 
-	Rec(String name, String id, Content<?> content) {
-		super(name, id);
+	Rec(CodeId id, Content<?> content) {
+		super(id);
 		this.content = content != null ? content : Type.EMPTY_CONTENT;
 	}
 

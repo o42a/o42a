@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data.backend;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
@@ -29,7 +30,7 @@ import org.o42a.codegen.data.Type;
 
 public interface DataAllocator {
 
-	DataAllocation<AnyOp> addBinary(String id, byte[] data, int start, int end);
+	DataAllocation<AnyOp> addBinary(CodeId id, byte[] data, int start, int end);
 
 	<O extends PtrOp> DataAllocation<O> begin(Type<O> type);
 

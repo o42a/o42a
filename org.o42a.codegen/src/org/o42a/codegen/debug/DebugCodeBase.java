@@ -56,6 +56,10 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		}
 	}
 
+	public final Generator getGenerator() {
+		return this.generator;
+	}
+
 	public final Function<?> getFunction() {
 		return this.function;
 	}
@@ -173,7 +177,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		stringToBinary(message, bytes, bytesPerChar);
 
-		return generator().addBinary("DEBUG_" + (debugSeq++), bytes);
+		return generator().addBinary(
+				generator().id("DEBUG_" + (debugSeq++)),
+				bytes);
 	}
 
 	protected final Generator generator() {

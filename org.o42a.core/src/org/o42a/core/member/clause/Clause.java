@@ -22,6 +22,7 @@ package org.o42a.core.member.clause;
 import java.util.HashMap;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -87,6 +88,7 @@ public abstract class Clause implements PlaceSpec {
 	private final Member member;
 	private final ClauseDeclaration declaration;
 	private Clause enclosingClause;
+	private Obj enclosingObject;
 	private Path pathInObject;
 	private Clause[] implicitClauses;
 	private byte resolution;
@@ -222,6 +224,26 @@ public abstract class Clause implements PlaceSpec {
 	public abstract Clause[] getSubClauses();
 
 	public abstract ReusedClause[] getReusedClauses();
+
+	public final Obj getEnclosingObject() {
+		if (this.enclosingObject != null) {
+			return this.enclosingObject;
+		}
+
+		final Scope enclosingScope = getEnclosingScope();
+		final Clause clause = enclosingScope.getContainer().toClause();
+
+		if (clause != null) {
+			return this.enclosingObject = clause.getEnclosingObject();
+		}
+
+		this.enclosingObject = enclosingScope.getContainer().toObject();
+
+		assert this.enclosingObject != null :
+			"Enclosing object not found: " + this;
+
+		return this.enclosingObject;
+	}
 
 	public final Path pathInObject() {
 		if (this.pathInObject != null) {

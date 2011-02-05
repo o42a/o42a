@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectScopeIRBase;
@@ -28,7 +29,7 @@ public abstract class ScopeIR extends ObjectScopeIRBase {
 
 	private final IRGenerator generator;
 	private final Scope scope;
-	private int nextAnonymousId;
+	private int anonymousSeq;
 	private HostOp op;
 
 	public ScopeIR(IRGenerator generator, Scope scope) {
@@ -44,14 +45,10 @@ public abstract class ScopeIR extends ObjectScopeIRBase {
 		return this.scope;
 	}
 
-	public abstract String getId();
+	public abstract CodeId getId();
 
-	public abstract String prefix(IRSymbolSeparator separator, String suffix);
-
-	public String nextAnonymousId() {
-		return prefix(
-				IRSymbolSeparator.ANONYMOUS,
-				Integer.toString(this.nextAnonymousId++));
+	public CodeId nextAnonymousId() {
+		return getId().anonymous(++this.anonymousSeq);
 	}
 
 	public HostOp op(CodeBuilder builder, Code code) {

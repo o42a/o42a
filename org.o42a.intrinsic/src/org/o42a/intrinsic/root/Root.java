@@ -25,6 +25,7 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.common.intrinsic.IntrinsicDirective;
@@ -211,21 +212,16 @@ public class Root extends Obj {
 
 	private static final class IR extends ScopeIR {
 
+		private final CodeId id;
+
 		IR(IRGenerator generator, Scope scope) {
 			super(generator, scope);
+			this.id = generator.topId();
 		}
 
 		@Override
-		public String getId() {
-			return "ROOT";
-		}
-
-		@Override
-		public String prefix(IRSymbolSeparator separator, String suffix) {
-			if (separator == IRSymbolSeparator.SUB) {
-				return separator + suffix;
-			}
-			return "." + separator + suffix;
+		public CodeId getId() {
+			return this.id;
 		}
 
 		@Override

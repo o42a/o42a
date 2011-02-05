@@ -84,7 +84,7 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 
 		final Function<ObjectCondFunc> function =
 			getGenerator().newFunction().create(
-					getName(),
+					getId(),
 					getGenerator().objectCondSignature());
 
 		function.debug("Calculating condition");

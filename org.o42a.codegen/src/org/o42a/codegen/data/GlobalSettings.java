@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.PtrOp;
 
@@ -67,13 +68,13 @@ public final class GlobalSettings {
 	}
 
 	public final <O extends PtrOp, T extends Type<O>> Global<O, T> create(
-			String id,
+			CodeId id,
 			T type) {
 		return this.globals.addGlobal(this, id, type, null);
 	}
 
 	public final <O extends PtrOp, T extends Type<O>> Global<O, T> create(
-			String id,
+			CodeId id,
 			T type,
 			Content<T> content) {
 		return this.globals.addGlobal(this, id, type, content);

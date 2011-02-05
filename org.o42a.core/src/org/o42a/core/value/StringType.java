@@ -76,7 +76,9 @@ final class StringType extends ValueType<String> {
 		} else {
 
 			final Ptr<AnyOp> binary =
-				generator.getGenerator().addBinary("STRING_" + (seq++), bytes);
+				generator.getGenerator().addBinary(
+						generator.id("STRING_" + (seq++)),
+						bytes);
 
 			val = new Val(
 					CONDITION_FLAG | EXTERNAL_FLAG

@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Functions;
 import org.o42a.codegen.code.op.AnyOp;
@@ -31,12 +32,12 @@ public abstract class Globals extends Functions {
 
 	private final DataChain globals = new DataChain();
 
-	public final Ptr<AnyOp> addBinary(String id, byte[] data) {
+	public final Ptr<AnyOp> addBinary(CodeId id, byte[] data) {
 		return new Ptr<AnyOp>(
 				dataAllocator().addBinary(id, data, 0, data.length));
 	}
 
-	public Ptr<AnyOp> addBinary(String id, byte[] data, int start, int end) {
+	public Ptr<AnyOp> addBinary(CodeId id, byte[] data, int start, int end) {
 		return new Ptr<AnyOp>(dataAllocator().addBinary(id, data, start, end));
 	}
 
@@ -82,7 +83,7 @@ public abstract class Globals extends Functions {
 
 	<O extends PtrOp, T extends Type<O>> Global<O, T> addGlobal(
 			GlobalSettings settings,
-			String id,
+			CodeId id,
 			T type,
 			Content<T> content) {
 

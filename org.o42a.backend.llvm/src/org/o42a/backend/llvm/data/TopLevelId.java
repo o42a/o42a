@@ -24,7 +24,7 @@ import org.o42a.backend.llvm.code.LLVMFunction;
 
 abstract class TopLevelId extends LLVMId {
 
-	TopLevelId(String globalId, LLVMIdKind kind) {
+	TopLevelId(org.o42a.codegen.CodeId globalId, LLVMIdKind kind) {
 		super(globalId, kind);
 	}
 
@@ -40,7 +40,7 @@ abstract class TopLevelId extends LLVMId {
 
 	@Override
 	public String toString() {
-		return getGlobalId();
+		return getGlobalId().toString();
 	}
 
 	@Override
@@ -63,7 +63,7 @@ abstract class TopLevelId extends LLVMId {
 
 		@Override
 		public String toString() {
-			return getGlobalId();
+			return getGlobalId().toString();
 		}
 
 		@Override
@@ -82,7 +82,9 @@ abstract class TopLevelId extends LLVMId {
 
 		private final ContainerAllocation<?> globalAllocation;
 
-		GlobalId(String globalId, ContainerAllocation<?> globalAllocation) {
+		GlobalId(
+				org.o42a.codegen.CodeId globalId,
+				ContainerAllocation<?> globalAllocation) {
 			super(globalId, LLVMIdKind.DATA);
 			this.globalAllocation = globalAllocation;
 		}
@@ -98,7 +100,7 @@ abstract class TopLevelId extends LLVMId {
 
 		private long nativePtr;
 
-		DataId(String id, long nativePtr) {
+		DataId(org.o42a.codegen.CodeId id, long nativePtr) {
 			super(id, LLVMIdKind.DATA);
 			this.nativePtr = nativePtr;
 		}
@@ -115,7 +117,7 @@ abstract class TopLevelId extends LLVMId {
 		private final LLVMFunction<?> function;
 
 		CodeId(LLVMFunction<?> function) {
-			super(function.getName(), LLVMIdKind.CODE);
+			super(function.getId(), LLVMIdKind.CODE);
 			this.function = function;
 		}
 
@@ -130,8 +132,8 @@ abstract class TopLevelId extends LLVMId {
 
 		private long nativePtr;
 
-		ExternId(String name, long nativePtr) {
-			super(name, LLVMIdKind.CODE);
+		ExternId(org.o42a.codegen.CodeId id, long nativePtr) {
+			super(id, LLVMIdKind.CODE);
 			this.nativePtr = nativePtr;
 		}
 

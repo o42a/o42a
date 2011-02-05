@@ -27,7 +27,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ObjectRefFunc;
 
@@ -155,7 +154,7 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private final IRGenerator generator;
+		private final ObjectIRGenerator generator;
 
 		private StructPtrRec<ObjectDataType.Op> scopeType;
 		private CodeRec<ObjectRefFunc> ancestorFunc;
@@ -163,8 +162,8 @@ public class CtrOp extends IROp {
 		private StructPtrRec<ObjectDataType.Op> type;
 		private Int32rec flags;
 
-		Type(IRGenerator generator) {
-			super("Ctr");
+		Type(ObjectIRGenerator generator) {
+			super(generator.id("Ctr"));
 			this.generator = generator;
 		}
 

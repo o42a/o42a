@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
@@ -28,16 +29,16 @@ import org.o42a.codegen.data.*;
 
 final class DbgStruct extends Struct<DbgStruct.Op> {
 
-	private final Debug debug;
+	private final Generator generator;
 	private final Type<?> type;
 
 	private AnyPtrRec name;
 	private Rec<DataOp<Int32op>, Integer> dataLayout;
 	private Rec<DataOp<Int32op>, Integer> size;
 
-	DbgStruct(Debug debug, Type<?> type) {
-		super("DEBUG.TYPE." + type.getId());
-		this.debug = debug;
+	DbgStruct(Generator generator, Type<?> type) {
+		super(generator.id("DEBUG").sub("TYPE").sub(type.getId()));
+		this.generator = generator;
 		this.type = type;
 	}
 
@@ -60,18 +61,21 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 		this.dataLayout = data.addInt32("layout");
 		this.size = data.addInt32("size");
 
-		this.debug.setName(
+		debug().setName(
 				this.name,
-				"DEBUG.TYPE_NAME." + this.type.getId(),
-				this.type.getId());
+				this.generator.id("DEBUG")
+				.sub("TYPE_NAME")
+				.sub(this.type.getId()),
+				this.type.getId().getId());
 		this.dataLayout.setValue(getType().getLayout().toBinaryForm());
 		this.size.setValue(getType().size());
 		for (Data<?> fieldData : getType()) {
 
-			final DbgFieldType field =
-				data.addInstance(fieldData.getName(), this.debug.dbgFieldType());
+			final DbgFieldType field = data.addInstance(
+					fieldData.getId().getLocal(),
+					debug().dbgFieldType());
 
-			field.fill(this.debug, this, fieldData);
+			field.fill(this.generator, this, fieldData);
 		}
 	}
 
@@ -79,8 +83,12 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 	protected void fill() {
 	}
 
+	final Generator generator() {
+		return this.generator;
+	}
+
 	final Debug debug() {
-		return this.debug;
+		return this.generator;
 	}
 
 	public static final class Op extends StructOp {

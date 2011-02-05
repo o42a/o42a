@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.backend;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.Signature;
@@ -33,7 +34,7 @@ public interface CodeBackend {
 			CodeCallback callback);
 
 	<F extends Func> CodeAllocation<F> externFunction(
-			String name,
+			CodeId id,
 			Signature<F> signature);
 
 	void done();

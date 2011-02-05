@@ -19,17 +19,18 @@
 */
 package org.o42a.backend.llvm.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
 final class LLVMBlk extends LLVMCode {
 
-	LLVMBlk(LLVMCode enclosing, Code code, String name) {
+	LLVMBlk(LLVMCode enclosing, Code code, CodeId id) {
 		super(
 				enclosing.getModule(),
 				enclosing.getFunction(),
 				code,
-				enclosing.includedId(name));
+				id);
 		init();
 	}
 
@@ -39,7 +40,7 @@ final class LLVMBlk extends LLVMCode {
 
 	@Override
 	protected long createFirtsBlock() {
-		return createBlock(getFunction().getFunctionPtr(), getId());
+		return createBlock(getFunction().getFunctionPtr(), getId().getId());
 	}
 
 }

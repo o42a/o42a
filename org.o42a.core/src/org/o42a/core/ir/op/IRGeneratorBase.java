@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
@@ -41,8 +42,8 @@ public abstract class IRGeneratorBase {
 
 	public IRGeneratorBase(Generator generator) {
 		this.generator = generator;
-		this.valType = generator.addType(new ValOp.Type());
-		this.relListType = generator.addType(new RelList.Type());
+		this.valType = generator.addType(new ValOp.Type(this));
+		this.relListType = generator.addType(new RelList.Type(this));
 		this.objectVal = new ObjectVal();
 	}
 
@@ -52,6 +53,22 @@ public abstract class IRGeneratorBase {
 
 	public final String getId() {
 		return this.generator.getId();
+	}
+
+	public final CodeId id() {
+		return getGenerator().id();
+	}
+
+	public final CodeId topId() {
+		return getGenerator().topId();
+	}
+
+	public final CodeId id(String name) {
+		return getGenerator().id(name);
+	}
+
+	public CodeId rawId(String id) {
+		return getGenerator().rawId(id);
 	}
 
 	public final ValOp.Type valType() {

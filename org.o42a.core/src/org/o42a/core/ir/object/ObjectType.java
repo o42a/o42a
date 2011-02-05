@@ -19,8 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRSymbolSeparator.DETAIL;
-
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -40,7 +39,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 	private Int32rec mainBodyLayout;
 
 	ObjectType(ObjectIRGenerator generator) {
-		super("ObjectType");
+		super(generator.id("ObjectType"));
 		this.generator = generator;
 	}
 
@@ -67,8 +66,9 @@ public class ObjectType extends Type<ObjectType.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		this.objectData =
-			data.addInstance("object_data", this.generator.objectDataType());
+		this.objectData = data.addInstance(
+				data.getGenerator().id("object_data"),
+				this.generator.objectDataType());
 		this.fields = new Fields().allocate(this.generator, data, "fields");
 		this.overriders =
 			new Overriders().allocate(this.generator, data, "overriders");
@@ -114,11 +114,11 @@ public class ObjectType extends Type<ObjectType.Op> {
 
 			final Fld fld = item.fld();
 			final IRGenerator generator = fld.getGenerator();
-			final String name =
-				"field" + DETAIL
-				+ fld.getField().ir(generator).getLocalName();
+			final CodeId id =
+				generator.id("field")
+				.sub(fld.getField().ir(generator).getId().getLocal());
 			final FieldDescIR.Type desc =
-				data.addInstance(name, generator.fieldDescType(), item);
+				data.addInstance(id, generator.fieldDescType(), item);
 
 			return desc.getPointer();
 		}
@@ -135,11 +135,11 @@ public class ObjectType extends Type<ObjectType.Op> {
 
 			final Fld fld = item.fld();
 			final IRGenerator generator = fld.getGenerator();
-			final String name =
-				"overrider" + DETAIL
-				+ fld.getField().ir(generator).getId();
+			final CodeId id =
+				generator.id("overrider")
+				.sub(fld.getField().ir(generator).getId());
 			final OverriderDescIR.Type desc =
-				data.addInstance(name, generator.overriderDescType(), item);
+				data.addInstance(id, generator.overriderDescType(), item);
 
 			return desc.getPointer();
 		}

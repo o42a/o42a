@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.core.ir.IRSymbolSeparator.DETAIL;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -102,7 +102,7 @@ public abstract class RefFld extends Fld {
 		}
 
 		this.constructor = getGenerator().newFunction().create(
-				getField().ir(getGenerator()).getId() + DETAIL + "constructor",
+				getField().ir(getGenerator()).getId().detail("constructor"),
 				getGenerator().objectRefSignature());
 	}
 
@@ -310,7 +310,7 @@ public abstract class RefFld extends Fld {
 		private AnyPtrRec object;
 		private CodeRec<ObjectRefFunc> constructor;
 
-		Type(IRGenerator generator, String id) {
+		Type(IRGenerator generator, CodeId id) {
 			super(id);
 			this.generator = generator;
 		}

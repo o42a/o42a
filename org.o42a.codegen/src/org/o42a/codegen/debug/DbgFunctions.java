@@ -21,6 +21,8 @@ package org.o42a.codegen.debug;
 
 import java.util.ArrayList;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -32,12 +34,12 @@ import org.o42a.codegen.data.SubData;
 
 final class DbgFunctions extends Struct<DbgFunctions.Op> {
 
-	private final Debug debug;
+	private final Generator generator;
 	private final ArrayList<DbgFunc> functions = new ArrayList<DbgFunc>();
 
-	DbgFunctions(Debug debug) {
-		super("DEBUG.FUNCTIONS");
-		this.debug = debug;
+	DbgFunctions(Generator generator) {
+		super(generator.id("DEBUG").sub("FUNCTIONS"));
+		this.generator = generator;
 	}
 
 	public final int numFunctions() {
@@ -53,8 +55,8 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 	protected void allocate(SubData<Op> data) {
 		for (DbgFunc func : this.functions) {
 			data.addInstance(
-					func.getName(),
-					this.debug.dbgFuncType(),
+					func.getId(),
+					debug().dbgFuncType(),
 					func);
 		}
 	}
@@ -63,12 +65,16 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 	protected void fill() {
 	}
 
+	private final Debug debug() {
+		return this.generator;
+	}
+
 	<F extends Func> DbgFunc addFunction(
-			String name,
+			CodeId id,
 			Signature<F> signature,
 			CodePtr<F> function) {
 
-		final DbgFunc dbgFunc = new DbgFunc(name, signature, function);
+		final DbgFunc dbgFunc = new DbgFunc(id, signature, function);
 
 		this.functions.add(dbgFunc);
 

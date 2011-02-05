@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.data.LLVMId.codeId;
 
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.Signature;
@@ -56,17 +57,17 @@ public class LLVMCodeBackend implements CodeBackend {
 
 	@Override
 	public <F extends Func> CodeAllocation<F> externFunction(
-			String name,
+			CodeId id,
 			Signature<F> signature) {
 
 		final long functionPtr = LLVMFunction.externFunction(
 				this.module.getNativePtr(),
-				name,
+				id.getId(),
 				nativePtr(signature));
 
 		return new FuncAllocation<F>(
 				this.module,
-				codeId(name, functionPtr),
+				codeId(id, functionPtr),
 				signature);
 	}
 

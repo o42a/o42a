@@ -45,7 +45,7 @@ public final class LLVMFunction<F extends Func>
 			LLVMModule module,
 			Function<F> function,
 			CodeCallback callback) {
-		super(module, null, function, function.getName());
+		super(module, null, function, function.getId());
 		this.function = function;
 		this.callback = callback;
 		init();
@@ -53,10 +53,6 @@ public final class LLVMFunction<F extends Func>
 				module,
 				codeId(this),
 				function.getSignature());
-	}
-
-	public String getName() {
-		return this.function.getName();
 	}
 
 	public final long getFunctionPtr() {
@@ -139,18 +135,10 @@ public final class LLVMFunction<F extends Func>
 	protected long createFirtsBlock() {
 		this.functionPtr = createFunction(
 				getModule().getNativePtr(),
-				getName(),
+				getId().getId(),
 				nativePtr(this.function.getSignature()),
 				this.function.isExported());
-		return createBlock(this.functionPtr, getId());
-	}
-
-	@Override
-	String includedId(String name) {
-		if (name == null) {
-			return Integer.toString(++this.includedIdx);
-		}
-		return name;
+		return createBlock(this.functionPtr, getId().getId());
 	}
 
 	static native long externFunction(

@@ -105,7 +105,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		private RelPtrRec body;
 
 		Type(ObjectIRGenerator generator) {
-			super("OverriderDesc");
+			super(generator.id("OverriderDesc"));
 			this.generator = generator;
 		}
 

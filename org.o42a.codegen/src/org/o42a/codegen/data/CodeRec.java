@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -31,11 +32,10 @@ public abstract class CodeRec<F extends Func>
 	private final Signature<F> signature;
 
 	public CodeRec(
-			String name,
-			String id,
+			CodeId id,
 			Signature<F> signature,
 			Content<CodeRec<F>> content) {
-		super(name, id, content);
+		super(id, content);
 		this.signature = signature;
 	}
 

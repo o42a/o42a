@@ -96,7 +96,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		private RelPtrRec body;
 
 		Type(ObjectIRGenerator generator) {
-			super("AscendantDesc");
+			super(generator.id("AscendantDesc"));
 			this.generator = generator;
 		}
 

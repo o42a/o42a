@@ -19,17 +19,18 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.PtrOp;
 
 
 public final class Global<O extends PtrOp, T extends Type<O>> {
 
 	private final GlobalSettings settings;
-	private final String id;
+	private final CodeId id;
 	private final T instance;
 
 	@SuppressWarnings("unchecked")
-	Global(GlobalSettings settings, String id, T type, Content<T> content) {
+	Global(GlobalSettings settings, CodeId id, T type, Content<T> content) {
 		this.settings = settings;
 		this.id = id;
 		this.instance = (T) type.instantiate(this, content);
@@ -42,7 +43,7 @@ public final class Global<O extends PtrOp, T extends Type<O>> {
 		this.instance = (T) struct;
 	}
 
-	public final String getId() {
+	public final CodeId getId() {
 		return this.id;
 	}
 
@@ -64,7 +65,7 @@ public final class Global<O extends PtrOp, T extends Type<O>> {
 
 	@Override
 	public String toString() {
-		return this.id;
+		return this.id.toString();
 	}
 
 }

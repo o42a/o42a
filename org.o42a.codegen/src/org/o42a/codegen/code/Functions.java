@@ -21,6 +21,8 @@ package org.o42a.codegen.code;
 
 import java.util.HashMap;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr.ExternPtr;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.CodeCallback;
@@ -49,15 +51,16 @@ public abstract class Functions {
 			return found;
 		}
 
+		final CodeId id = generator().rawId(name);
 		final ExternPtr<F> extern = new ExternPtr<F>(
 				name,
 				signature,
 				codeBackend().externFunction(
-						name,
+						id,
 						signature.allocate(codeBackend())));
 
 		this.externals.put(name, extern);
-		addFunction(name, signature, extern);
+		addFunction(id, signature, extern);
 
 		return extern;
 	}
@@ -76,7 +79,7 @@ public abstract class Functions {
 	public abstract CodeBackend codeBackend();
 
 	protected <F extends Func> void addFunction(
-			String name,
+			CodeId id,
 			Signature<F> signature,
 			CodePtr<F> function) {
 	}
@@ -86,6 +89,10 @@ public abstract class Functions {
 	}
 
 	protected abstract void writeData();
+
+	private final Generator generator() {
+		return (Generator) this;
+	}
 
 	private static final class NoOpCodeCallback implements CodeCallback {
 

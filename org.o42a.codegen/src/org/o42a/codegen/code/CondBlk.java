@@ -61,11 +61,11 @@ public class CondBlk extends CodeBlk {
 	@Override
 	public String toString() {
 		return this.condition.toString()
-		+ " ? " + getName() + " : " + this.falseName;
+		+ " ? " + getId() + " : " + this.falseName;
 	}
 
 	private void initBlocks() {
-		this.writer = getEnclosing().writer().block(this, getName());
+		this.writer = getEnclosing().writer().block(this, getId());
 		this.otherwise = getEnclosing().addBlock(this.falseName);
 		getEnclosing().writer().go(
 				this.condition,

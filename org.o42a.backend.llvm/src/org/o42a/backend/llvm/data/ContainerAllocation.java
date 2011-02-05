@@ -24,6 +24,7 @@ import static org.o42a.backend.llvm.data.LLVMId.nullId;
 
 import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.backend.llvm.code.LLVMStruct;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.DataLayout;
@@ -122,7 +123,7 @@ public abstract class ContainerAllocation<O extends PtrOp>
 				long typePtr,
 				long nativePtr,
 				ContainerAllocation<?> prev,
-				String id,
+				CodeId id,
 				Type<O> type) {
 			super(module, typePtr, nativePtr, prev, type);
 			this.llvmId = dataId(id, this);

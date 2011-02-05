@@ -19,8 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRSymbolSeparator.DETAIL;
-
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -57,7 +56,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private RelList<ObjectBodyIR> samples;
 
 	ObjectDataType(IRGenerator generator) {
-		super("ObjectData");
+		super(generator.id("ObjectData"));
 		this.generator = generator;
 	}
 
@@ -132,7 +131,9 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		this.flags = data.addInt32("flags");
 		this.start = data.addRelPtr("start");
 		this.allBodiesLayout = data.addInt32("all_bodies_layout");
-		this.value = data.addInstance("value", this.generator.valType());
+		this.value = data.addInstance(
+				this.generator.id("value"),
+				this.generator.valType());
 		this.valueFunc = data.addCodePtr(
 				"value_f",
 				this.generator.objectValSignature());
@@ -245,11 +246,11 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 				ObjectBodyIR item) {
 
 			final IRGenerator generator = item.getGenerator();
-			final String name =
-				"ascendant" + DETAIL
-				+ item.getAscendant().ir(generator).getId();
+			final CodeId id =
+				generator.id("ascendant")
+				.sub(item.getAscendant().ir(generator).getId());
 			final AscendantDescIR.Type desc = data.addInstance(
-					name,
+					id,
 					generator.ascendantDescType(),
 					new AscendantDescIR(item));
 
@@ -267,11 +268,11 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 				ObjectBodyIR item) {
 
 			final IRGenerator generator = item.getGenerator();
-			final String name =
-				"sample" + DETAIL
-				+ item.getAscendant().ir(generator).getId();
+			final CodeId id =
+				generator.id("sample")
+				.sub(item.getAscendant().ir(generator).getId());
 			final SampleDescIR.Type desc = data.addInstance(
-					name,
+					id,
 					generator.sampleDescType(),
 					new SampleDescIR(item));
 

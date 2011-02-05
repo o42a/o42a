@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.CodeRec;
 import org.o42a.codegen.data.Content;
@@ -29,12 +30,8 @@ final class CodePtrRec<F extends Func> extends CodeRec<F> {
 
 	private Generator generator;
 
-	CodePtrRec(
-			String name,
-			String id,
-			Signature<F> signature,
-			Content<CodeRec<F>> content) {
-		super(name, id, signature, content);
+	CodePtrRec(CodeId id, Signature<F> signature, Content<CodeRec<F>> content) {
+		super(id, signature, content);
 	}
 
 	@Override

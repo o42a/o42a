@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.DataBase;
 import org.o42a.codegen.code.op.PtrOp;
@@ -28,22 +29,16 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Data<O extends PtrOp> extends DataBase {
 
-	private final String name;
-	private final String id;
+	private final CodeId id;
 	private final Ptr<O> pointer;
 	private Data<?> next;
 
-	Data(String name, String id) {
-		this.name = name;
+	Data(CodeId id) {
 		this.id = id;
 		this.pointer = new Ptr<O>(this);
 	}
 
-	public final String getName() {
-		return this.name;
-	}
-
-	public final String getId() {
+	public final CodeId getId() {
 		return this.id;
 	}
 
@@ -59,7 +54,7 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 
 	@Override
 	public String toString() {
-		return this.id;
+		return this.id.toString();
 	}
 
 	protected abstract void allocate(Generator generator);
