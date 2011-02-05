@@ -21,6 +21,7 @@ package org.o42a.core.ir;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
@@ -147,14 +148,8 @@ public class CodeBuilder {
 		return this.host;
 	}
 
-	public final String nextName() {
-		return prefixName(
-				IRSymbolSeparator.ANONYMOUS,
-				Integer.toString(++this.nameSeq));
-	}
-
-	public final String prefixName(IRSymbolSeparator separator, String suffix) {
-		return getFunction().getName() + separator + suffix;
+	public final CodeId nextId() {
+		return getFunction().getId().anonymous(++this.nameSeq);
 	}
 
 	public ObjectOp newObject(

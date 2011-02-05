@@ -94,7 +94,7 @@ public class VarFld extends RefFld {
 		private CodeRec<AssignerFunc> assigner;
 
 		Type(IRGenerator generator) {
-			super(generator, "VarFld");
+			super(generator, generator.id("VarFld"));
 		}
 
 		public final CodeRec<AssignerFunc> getAssigner() {

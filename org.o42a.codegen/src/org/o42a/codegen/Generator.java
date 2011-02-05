@@ -38,4 +38,20 @@ public abstract class Generator extends Debug {
 		return this.id;
 	}
 
+	public CodeId id() {
+		return new DefaultCodeId(false);
+	}
+
+	public CodeId topId() {
+		return new DefaultCodeId(true);
+	}
+
+	public CodeId id(String name) {
+		return new DefaultCodeId(name, false);
+	}
+
+	public CodeId rawId(String id) {
+		return new DefaultCodeId(id, true);
+	}
+
 }

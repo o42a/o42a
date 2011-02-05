@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -54,8 +55,8 @@ public abstract class Fld {
 		return this.bodyIR;
 	}
 
-	public String getId() {
-		return getField().ir(getGenerator()).getLocalName();
+	public CodeId getId() {
+		return getField().ir(getGenerator()).getId();
 	}
 
 	public abstract FldKind getKind();
@@ -100,7 +101,7 @@ public abstract class Fld {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void allocate(SubData<?> data) {
 		this.instance = data.addInstance(
-				getId(),
+				getId().getLocal(),
 				(Type) getType(),
 				(Content) content());
 	}
@@ -127,7 +128,7 @@ public abstract class Fld {
 	public static abstract class Type<O extends Op>
 			extends org.o42a.codegen.data.Type<O> {
 
-		public Type(String id) {
+		public Type(CodeId id) {
 			super(id);
 		}
 

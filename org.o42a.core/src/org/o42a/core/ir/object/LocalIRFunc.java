@@ -19,8 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRSymbolSeparator.DETAIL;
-
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.op.ObjectValFunc;
@@ -31,11 +30,13 @@ import org.o42a.core.member.local.LocalScope;
 final class LocalIRFunc extends ObjectIRFunc {
 
 	private final LocalIR localIR;
+	private final CodeId id;
 	private Function<ObjectValFunc> function;
 
 	public LocalIRFunc(LocalIR localIR) {
 		super(localIR.getOwnerIR());
 		this.localIR = localIR;
+		this.id = localIR.getId().detail("value");
 	}
 
 	public void call(
@@ -74,8 +75,8 @@ final class LocalIRFunc extends ObjectIRFunc {
 		return this.function;
 	}
 
-	public final String getName() {
-		return this.localIR.prefix(DETAIL, "value");
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	public void build() {
@@ -93,14 +94,14 @@ final class LocalIRFunc extends ObjectIRFunc {
 
 	@Override
 	public String toString() {
-		return getName();
+		return getId().toString();
 	}
 
 	private void create() {
 
 		final Function<ObjectValFunc> function =
 			getGenerator().newFunction().create(
-					getName(),
+					getId(),
 					getGenerator().objectValSignature());
 
 		function.debug("Calculating value");

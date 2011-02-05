@@ -21,6 +21,7 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.ScopePlace.TOP_PLACE;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
@@ -160,21 +161,16 @@ public final class Top extends AbstractScope implements Container {
 
 	private static final class IR extends ScopeIR {
 
+		private final CodeId id;
+
 		IR(IRGenerator generator, Top scope) {
 			super(generator, scope);
+			this.id = generator.topId();
 		}
 
 		@Override
-		public String getId() {
-			return "";
-		}
-
-		@Override
-		public String prefix(IRSymbolSeparator separator, String suffix) {
-			if (separator == IRSymbolSeparator.DETAIL) {
-				return separator + suffix;
-			}
-			return "." + separator + suffix;
+		public CodeId getId() {
+			return this.id;
 		}
 
 		@Override

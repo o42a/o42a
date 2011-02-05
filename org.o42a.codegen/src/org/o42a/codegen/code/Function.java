@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr.FuncPtr;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
@@ -34,9 +36,9 @@ public final class Function<F extends Func> extends Code {
 
 	Function(
 			FunctionSettings settings,
-			String name,
+			CodeId id,
 			Signature<F> signature) {
-		super(settings.getGenerator(), name);
+		super(settings.getGenerator(), id);
 		this.settings = settings;
 		this.signature = signature.allocate(backend());
 	}
@@ -108,7 +110,17 @@ public final class Function<F extends Func> extends Code {
 
 	@Override
 	public String toString() {
-		return getName() + '(' + this.signature + ')';
+		return getId().getId() + '(' + this.signature + ')';
+	}
+
+	@Override
+	CodeId nestedId(String name) {
+
+		final Generator generator = generator();
+
+		return name != null
+		? generator.id(name)
+		: generator.id().anonymous(++this.blockSeq);
 	}
 
 }

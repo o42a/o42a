@@ -36,7 +36,7 @@ public abstract class FieldIRGenerator extends IRGeneratorBase {
 
 		final IRGenerator self = (IRGenerator) this;
 
-		this.scopeFldType = generator.addType(new ScopeFld.Type());
+		this.scopeFldType = generator.addType(new ScopeFld.Type(self));
 		this.objFldType = generator.addType(new ObjFld.Type(self));
 		this.linkFldType = generator.addType(new LinkFld.Type(self));
 		this.varFldType = generator.addType(new VarFld.Type(self));

@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -34,8 +35,8 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 	private AnyPtrRec name;
 	private AnyPtrRec prev;
 
-	DbgStackFrameType() {
-		super("DEBUG.StackFrame");
+	DbgStackFrameType(Generator generator) {
+		super(generator.id("DEBUG").sub("StackFrame"));
 	}
 
 	public final AnyPtrRec getName() {

@@ -84,8 +84,8 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
 		private RelPtrRec body;
 
-		Type() {
-			super("SampleDesc");
+		Type(ObjectIRGenerator generator) {
+			super(generator.id("SampleDesc"));
 		}
 
 		public final RelPtrRec getBody() {

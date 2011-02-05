@@ -32,7 +32,9 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
@@ -112,7 +114,10 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	}
 
 	void allocate(SubData<?> data) {
-		data.addInstance("object_type", getGenerator().objectType(), this);
+		data.addInstance(
+				getGenerator().id("object_type"),
+				getGenerator().objectType(),
+				this);
 
 		getObjectData().getAscendants().addAll(getObjectIR().getBodyIRs());
 		getObjectData().getSamples().addAll(getObjectIR().getSampleBodyIRs());
@@ -224,9 +229,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 		final Function<ObjectRefFunc> function =
 			getGenerator().newFunction().create(
-					getObjectIR().getScopeIR().prefix(
-							IRSymbolSeparator.DETAIL,
-							"ancestor"),
+					getObjectIR().getId().detail("ancestor"),
 					getGenerator().objectRefSignature());
 		final CodeBlk failure = function.addBlock("failure");
 

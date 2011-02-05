@@ -19,8 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRSymbolSeparator.DETAIL;
-
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -42,18 +41,22 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		this.bodyIR = bodyIR;
 	}
 
-	private static String id(ObjectBodyIR bodyIR) {
+	private static CodeId id(ObjectBodyIR bodyIR) {
 
 		final ObjectIR objectIR = bodyIR.getObjectIR();
+		final CodeId localId;
 
 		if (bodyIR.isMain()) {
-			return objectIR.getId() + DETAIL + "type_methods";
+			localId = bodyIR.getGenerator().id("type_methods");
+		} else {
+
+			final Obj ascendant = bodyIR.getAscendant();
+
+			localId = bodyIR.getGenerator().id("methods").sub(
+					ascendant.ir(objectIR.getGenerator()).getId());
 		}
 
-		final Obj ascendant = bodyIR.getAscendant();
-
-		return (objectIR.getId() + DETAIL + "methods" + DETAIL
-				+ ascendant.ir(objectIR.getGenerator()).getId());
+		return objectIR.getId().setLocal(localId);
 	}
 
 	public final IRGenerator getGenerator() {

@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Data;
 
@@ -39,11 +40,14 @@ final class DbgGlobal implements Content<DbgGlobalType> {
 	public void fill(DbgGlobalType instance) {
 
 		final Debug debug = instance.debug();
+		final Generator generator = instance.generator();
 
 		debug.setName(
 				instance.getName(),
-				"DEBUG.GLOBAL_NAME." + this.global.getId(),
-				this.global.getId());
+				generator.id("DEBUG")
+				.sub("GLOBAL_NAME")
+				.sub(this.global.getId()),
+				this.global.getId().getId());
 		instance.getStart().setValue(this.global.getPointer().toAny());
 		instance.getContent().fill(debug, null, this.global);
 	}

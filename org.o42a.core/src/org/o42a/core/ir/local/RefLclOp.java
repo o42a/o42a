@@ -152,8 +152,8 @@ public final class RefLclOp extends LclOp {
 
 		private AnyPtrRec object;
 
-		Type() {
-			super("RefLcl");
+		Type(LocalIRGenerator generator) {
+			super(generator.id("RefLcl"));
 		}
 
 		public final AnyPtrRec getObject() {

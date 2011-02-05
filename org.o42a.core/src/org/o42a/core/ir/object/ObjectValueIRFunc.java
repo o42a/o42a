@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.data.CodeRec;
@@ -26,21 +27,20 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.SourceSpec;
-import org.o42a.core.ir.IRSymbolSeparator;
 
 
 abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 
+	private final CodeId id;
 	private CodeRec<F> func;
 
 	ObjectValueIRFunc(ObjectIR objectIR) {
 		super(objectIR);
+		this.id = objectIR.getId().setLocal(suffix());
 	}
 
-	public final String getName() {
-		return getObjectIR().getScopeIR().prefix(
-				IRSymbolSeparator.DETAIL,
-				suffix());
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	public final CodePtr<F> get() {
@@ -105,7 +105,7 @@ abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 
 	@Override
 	public String toString() {
-		return getName();
+		return getId().toString();
 	}
 
 	protected abstract String suffix();

@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.RelOp;
@@ -27,8 +28,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class RelPtrRec extends Rec<DataOp<RelOp>, RelPtr> {
 
-	RelPtrRec(String name, String id, Content<RelPtrRec> content) {
-		super(name, id, content);
+	RelPtrRec(CodeId id, Content<RelPtrRec> content) {
+		super(id, content);
 	}
 
 	@Override

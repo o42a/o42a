@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -88,7 +89,7 @@ public abstract class LclOp extends IROp implements HostOp {
 	public static abstract class Type<O extends Op>
 			extends org.o42a.codegen.data.Type<O> {
 
-		public Type(String id) {
+		public Type(CodeId id) {
 			super(id);
 		}
 

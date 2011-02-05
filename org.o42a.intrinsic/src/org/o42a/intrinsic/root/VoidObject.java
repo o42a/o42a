@@ -23,6 +23,7 @@ import static org.o42a.core.def.Def.voidDef;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
@@ -126,18 +127,16 @@ public final class VoidObject extends Obj {
 
 	private static final class IR extends ScopeIR {
 
+		private CodeId id;
+
 		IR(IRGenerator generator, Scope scope) {
 			super(generator, scope);
+			this.id = generator.id("VOID");
 		}
 
 		@Override
-		public String getId() {
-			return "VOID";
-		}
-
-		@Override
-		public String prefix(IRSymbolSeparator separator, String suffix) {
-			return getId() + separator + suffix;
+		public CodeId getId() {
+			return this.id;
 		}
 
 		@Override

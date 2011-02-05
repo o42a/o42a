@@ -21,6 +21,7 @@ package org.o42a.codegen.data;
 
 import java.util.Iterator;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.PtrOp;
@@ -35,16 +36,16 @@ public abstract class Type<O extends PtrOp>
 	@SuppressWarnings("rawtypes")
 	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
 
-	private final String id;
+	private final CodeId id;
 	private Type<O> original;
 	SubData<O> data;
 
-	public Type(String id) {
+	public Type(CodeId id) {
 		this.id = id;
 		this.original = this;
 	}
 
-	public final String getId() {
+	public final CodeId getId() {
 		return this.id;
 	}
 
@@ -84,7 +85,7 @@ public abstract class Type<O extends PtrOp>
 
 	@Override
 	public String toString() {
-		return this.id;
+		return this.id.toString();
 	}
 
 	protected void allocate() {
@@ -110,11 +111,11 @@ public abstract class Type<O extends PtrOp>
 		this.data = new TypeData<O>(this);
 	}
 
-	final Type<O> instantiate(String name, String id, Content<?> content) {
+	final Type<O> instantiate(CodeId id, Content<?> content) {
 
 		final Type<O> instance = clone();
 
-		instance.data = new InstanceData<O>(name, id, instance, content);
+		instance.data = new InstanceData<O>(id, instance, content);
 
 		return instance;
 	}
@@ -135,7 +136,7 @@ public abstract class Type<O extends PtrOp>
 	private static final class TypeData<O extends PtrOp> extends SubData<O> {
 
 		TypeData(Type<O> type) {
-			super(type.getId(), type.getId(), type);
+			super(type.getId().removeLocal(), type);
 		}
 
 		@Override
@@ -167,8 +168,8 @@ public abstract class Type<O extends PtrOp>
 		final Content content;
 		private Data<?> next;
 
-		InstanceData(String name, String id, Type<O> type, Content<?> content) {
-			super(name, id, type);
+		InstanceData(CodeId id, Type<O> type, Content<?> content) {
+			super(id, type);
 			this.content = content != null ? content : EMPTY_CONTENT;
 			this.next = type.original.data.data().getFirst();
 		}
@@ -217,11 +218,8 @@ public abstract class Type<O extends PtrOp>
 
 		private final Global<O, ?> global;
 
-		GlobalData(
-				Type<O> type,
-				Global<O, ?> global,
-				Content<?> structData) {
-			super(global.getId(), global.getId(), type, structData);
+		GlobalData(Type<O> type, Global<O, ?> global, Content<?> content) {
+			super(global.getId().removeLocal(), type, content);
 			this.global = global;
 		}
 

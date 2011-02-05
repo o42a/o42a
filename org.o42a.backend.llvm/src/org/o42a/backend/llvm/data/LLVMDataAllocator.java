@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.data;
 import static org.o42a.backend.llvm.data.LLVMId.dataId;
 
 import org.o42a.backend.llvm.code.LLVMCode;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
@@ -45,13 +46,13 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	@Override
 	public DataAllocation<AnyOp> addBinary(
-			String id,
+			CodeId id,
 			byte[] data,
 			int start,
 			int end) {
 
 		final long nativePtr =
-			binaryConstant(getModulePtr(), id, data, start, end);
+			binaryConstant(getModulePtr(), id.getId(), data, start, end);
 
 		return new AnyDataAlloc(getModule(), dataId(id, nativePtr), null);
 	}
@@ -122,7 +123,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (typePtr == 0L) {
 			typePtr = allocateType(
 					getModulePtr(),
-					data.getId(),
+					data.getId().getId(),
 					allocation.getNativePtr(),
 					data.getType().isPacked());
 			allocation.setTypePtr(typePtr);
@@ -158,7 +159,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		}
 		allocation.setNativePtr(allocateGlobal(
 				getModulePtr(),
-				global.getId(),
+				global.getId().getId(),
 				typePtr,
 				global.isConstant(),
 				global.isExported()));
@@ -175,7 +176,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		allocation.setTypePtr(allocateType(
 				getModulePtr(),
-				type.getId(),
+				type.getId().getId(),
 				allocation.getNativePtr(),
 				type.isPacked()));
 	}

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRSymbolSeparator.DETAIL;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
 import java.util.ArrayList;
@@ -198,7 +197,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 		// it's here to prevent recursion
 		this.mainBodyIR = new ObjectBodyIR(this);
 		this.allBodies = new AllBodies();
-		data.addStruct("all_bodies", this.allBodies);
+		data.addStruct(this.allBodies.getId().getLocal(), this.allBodies);
 		this.typeIR.allocate(data);
 		allocateMetaIRs(data);
 	}
@@ -265,16 +264,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 		final Obj ascendant = bodyIR.getAscendant();
 
 		this.bodyIRs.put(ascendant, bodyIR);
-
-		final String name;
-
-		if (bodyIR.isMain()) {
-			name = "main_body";
-		} else {
-			name = "body" + DETAIL + ascendant.ir(getGenerator()).getId();
-		}
-
-		data.addStruct(name, bodyIR);
+		data.addStruct(bodyIR.getId().getLocal(), bodyIR);
 
 		if (inherited) {
 			bodyIR.setKind(ObjectBodyIR.Kind.INHERITED);
@@ -331,7 +321,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 	private final class AllBodies extends Struct<AllBodiesOp> {
 
 		AllBodies() {
-			super(ObjectIR.this.getId() + DETAIL + "all_bodies");
+			super(ObjectIR.this.getId().setLocal("all_bodies"));
 		}
 
 		@Override

@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
@@ -28,17 +29,17 @@ import org.o42a.codegen.data.Ptr;
 
 final class DbgFunc implements Content<DbgFuncType> {
 
-	private final String name;
+	private final CodeId id;
 	private final CodePtr<?> function;
 	private Ptr<AnyOp> namePtr;
 
-	DbgFunc(String name, Signature<?> signature, CodePtr<?> function) {
-		this.name = name;
+	DbgFunc(CodeId id, Signature<?> signature, CodePtr<?> function) {
+		this.id = id;
 		this.function = function;
 	}
 
-	public final String getName() {
-		return this.name;
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	@Override
@@ -55,8 +56,11 @@ final class DbgFunc implements Content<DbgFuncType> {
 		} else {
 			debug.setName(
 					instance.getName(),
-					"DEBUG.FUNC_NAME." + this.name,
-					this.name);
+					instance.getGenerator()
+					.id("DEBUG")
+					.sub("FUNC_NAME")
+					.sub(this.id),
+					this.id.getId());
 		}
 		instance.getFunction().setValue(this.function.toAny());
 	}

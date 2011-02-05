@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.backend;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -32,11 +33,11 @@ public interface CodeWriter {
 
 	void done();
 
-	String getId();
+	CodeId getId();
 
 	FuncCaller caller(CodeAllocation<?> allocation);
 
-	CodeWriter block(Code code, String name);
+	CodeWriter block(Code code, CodeId id);
 
 	Int32op int32(int value);
 

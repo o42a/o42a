@@ -21,8 +21,8 @@ package org.o42a.core.artifact.common;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.IRUtil.canonicalName;
-import static org.o42a.core.ir.IRUtil.encodeName;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
@@ -140,21 +140,16 @@ public class Module extends PlainObject {
 
 	private static final class ModuleIR extends ScopeIR {
 
-		private final String id;
+		private final CodeId id;
 
 		ModuleIR(IRGenerator generator, ModuleScope scope) {
 			super(generator, scope);
-			this.id = encodeName(scope.moduleId);
+			this.id = generator.id(scope.moduleId);
 		}
 
 		@Override
-		public String getId() {
+		public CodeId getId() {
 			return this.id;
-		}
-
-		@Override
-		public String prefix(IRSymbolSeparator separator, String suffix) {
-			return getId() + separator + suffix;
 		}
 
 		@Override

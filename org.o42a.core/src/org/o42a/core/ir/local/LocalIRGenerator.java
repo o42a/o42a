@@ -29,7 +29,7 @@ public abstract class LocalIRGenerator extends FieldIRGenerator {
 
 	public LocalIRGenerator(Generator generator) {
 		super(generator);
-		this.refLclType = generator.addType(new RefLclOp.Type());
+		this.refLclType = generator.addType(new RefLclOp.Type(this));
 	}
 
 	public final RefLclOp.Type refLclType() {

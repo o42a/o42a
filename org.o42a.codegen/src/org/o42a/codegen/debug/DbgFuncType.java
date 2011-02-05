@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AnyPtrRec;
@@ -28,18 +29,22 @@ import org.o42a.codegen.data.Type;
 
 final class DbgFuncType extends Type<DbgFuncType.Op> {
 
-	private final Debug debug;
+	private final Generator generator;
 
 	private AnyPtrRec name;
 	private AnyPtrRec function;
 
-	DbgFuncType(Debug debug) {
-		super("DEBUG.Func");
-		this.debug = debug;
+	DbgFuncType(Generator generator) {
+		super(generator.id("DEBUG").sub("Func"));
+		this.generator = generator;
+	}
+
+	public final Generator getGenerator() {
+		return this.generator;
 	}
 
 	public final Debug getDebug() {
-		return this.debug;
+		return this.generator;
 	}
 
 	public final AnyPtrRec getName() {

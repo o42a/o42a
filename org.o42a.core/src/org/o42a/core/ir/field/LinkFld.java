@@ -84,7 +84,7 @@ public class LinkFld extends RefFld {
 	public static final class Type extends RefFld.Type<Op> {
 
 		Type(IRGenerator generator) {
-			super(generator, "LinkFld");
+			super(generator, generator.id("LinkFld"));
 		}
 
 		@Override

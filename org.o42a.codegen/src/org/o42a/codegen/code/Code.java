@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.*;
@@ -28,21 +29,30 @@ import org.o42a.codegen.debug.DebugCodeBase;
 
 public abstract class Code extends DebugCodeBase {
 
-	private final String name;
+	private final CodeId id;
 	private final Head head = new Head(this);
+	int blockSeq;
 
 	Code(Code enclosing, String name) {
 		super(enclosing);
-		this.name = name;
+		this.id = enclosing.nestedId(name);
 	}
 
-	Code(Generator generator, String name) {
+	Code(Generator generator, CodeId id) {
 		super(generator);
-		this.name = name;
+		this.id = id;
 	}
 
-	public final String getName() {
-		return this.name;
+	public final CodeId getId() {
+		return this.id;
+	}
+
+	public final CodeId id() {
+		return getGenerator().id();
+	}
+
+	public final CodeId id(String name) {
+		return getGenerator().id(name);
 	}
 
 	public abstract boolean exists();
@@ -143,7 +153,7 @@ public abstract class Code extends DebugCodeBase {
 
 	@Override
 	public String toString() {
-		return this.name;
+		return this.id.toString();
 	}
 
 	@Override
@@ -158,6 +168,16 @@ public abstract class Code extends DebugCodeBase {
 			String falseName) {
 		assertIncomplete();
 		return new CondBlk(this, condition, trueName, falseName);
+	}
+
+	CodeId nestedId(String name) {
+
+		final Generator generator = generator();
+
+		return getId().setLocal(
+				name != null
+				? generator.id(name)
+				: generator.id().anonymous(++this.blockSeq));
 	}
 
 }

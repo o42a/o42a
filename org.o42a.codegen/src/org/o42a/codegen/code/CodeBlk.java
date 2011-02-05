@@ -46,7 +46,7 @@ public class CodeBlk extends Code {
 		if (this.writer != null) {
 			return this.writer;
 		}
-		return this.writer = getEnclosing().writer().block(this, getName());
+		return this.writer = getEnclosing().writer().block(this, getId());
 	}
 
 }

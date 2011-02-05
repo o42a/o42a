@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code;
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.ContainerAllocation;
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeAllocation;
 import org.o42a.codegen.code.backend.CodeWriter;
@@ -95,18 +96,17 @@ public abstract class LLVMCode implements CodeWriter {
 	private final LLVMModule module;
 	private final LLVMFunction<?> function;
 	private final Code code;
-	private final String id;
+	private final CodeId id;
 	private LLVMCodePos.Head head;
 	private LLVMCodePos.Tail tail;
 	private long blockPtr;
 	private int blockIdx;
-	int includedIdx;
 
 	public LLVMCode(
 			LLVMModule module,
 			LLVMFunction<?> function,
 			Code code,
-			String id) {
+			CodeId id) {
 		this.module = module;
 		this.code = code;
 		this.id = id;
@@ -122,7 +122,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public final String getId() {
+	public final CodeId getId() {
 		return this.id;
 	}
 
@@ -164,7 +164,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 		final long nextPtr = createBlock(
 				getFunction().getFunctionPtr(),
-				getId() + '-' + (++this.blockIdx));
+				getId().getId() + '-' + (++this.blockIdx));
 
 		this.tail = new LLVMCodePos.Tail(this, nextPtr);
 
@@ -182,7 +182,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public LLVMBlk block(Code code, String id) {
+	public LLVMBlk block(Code code, CodeId id) {
 		return new LLVMBlk(this, code, id);
 	}
 
@@ -373,7 +373,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 	@Override
 	public String toString() {
-		return getId();
+		return getId().toString();
 	}
 
 	protected final void init() {
@@ -383,13 +383,6 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	protected abstract long createFirtsBlock();
-
-	String includedId(String name) {
-		if (name == null) {
-			return getId() + '.' + (++this.includedIdx);
-		}
-		return getId() + '.' + name;
-	}
 
 	static native long createBlock(long functionPtr, String name);
 

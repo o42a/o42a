@@ -21,11 +21,19 @@ package org.o42a.core.ir;
 
 import static java.lang.Character.*;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.PathWalker;
 
 
 public class IRUtil {
@@ -37,10 +45,13 @@ public class IRUtil {
 		boolean prevDigit = false;
 		boolean prevLetter = false;
 		boolean prevSeparator = false;
+		int i = 0;
 
-		for (int i = 0; i < len; ++i) {
+		while (i < len) {
 
-			final char c = name.charAt(i);
+			final int c = name.codePointAt(i);
+
+			i += Character.charCount(c);
 
 			if (isWhitespace(c) || isISOControl(c) || c == '_') {
 				if (prevSeparator) {
@@ -61,7 +72,7 @@ public class IRUtil {
 				}
 				prevDigit = true;
 				prevLetter = false;
-				result.append(c);
+				result.appendCodePoint(c);
 				continue;
 			}
 			if (isLetter(c)) {
@@ -73,177 +84,177 @@ public class IRUtil {
 				}
 				prevDigit = false;
 				prevLetter = true;
-				result.append(toLowerCase(c));
+				result.appendCodePoint(toLowerCase(c));
 				continue;
 			}
 			prevDigit = false;
 			prevLetter = false;
 			prevSeparator = false;
-			result.append(toLowerCase(c));
+			result.appendCodePoint(toLowerCase(c));
 		}
 
 		return result.toString();
 	}
 
-	public static String encodeName(String name) {
+	public static CodeId encodeMemberId(ScopeIR enclosingIR, Member member) {
 
-		final int len = name.length();
-		final StringBuilder result = new StringBuilder(len);
+		final IRGenerator generator = enclosingIR.getGenerator();
+		final MemberId memberId = member.getId();
 
-		for (int i = 0; i < len; ++i) {
+		CodeId localId = addMemberId(generator, null, memberId);
 
-			final char c = name.charAt(i);
-
-			if ((c >= '0' && c <= '9')
-					|| (c >= 'a' && c <= 'z')
-					|| c == '_') {
-				result.append(c);
-			} else if (c == '-') {
-				result.append("__");
-			} else {
-				printHex(result, c);
-			}
+		for (Scope reproducedFrom : memberId.getReproducedFrom()) {
+			localId = addDeclaredIn(generator, localId, reproducedFrom);
 		}
 
-		return result.toString();
-	}
+		CodeId id = enclosingIR.getId().setLocal(localId);
 
-	public static String encodeMemberId(
-			IRGenerator generator,
-			ScopeIR enclosingIR,
-			Member member) {
-
-		final StringBuilder out = new StringBuilder();
-		final MemberId id = member.getId();
-
-		addMemberId(generator, out, enclosingIR, id);
 		if (member.isOverride()) {
-			addDeclaredIn(generator, out, member.getKey().getOrigin());
-		}
-		for (Scope reproducedFrom : id.getReproducedFrom()) {
-			addDeclaredIn(generator, out, reproducedFrom);
+			id = addDeclaredIn(generator, id, member.getKey().getOrigin());
 		}
 
-		return out.toString();
+		return id;
 	}
 
-	private static void printHex(StringBuilder result, int c) {
-		if (c == 0) {
-			result.append(hex(0));
-			return;
-		}
-		for (;;) {
-
-			final int s = c & 0xF000;
-
-			c = (c << 4) & 0xFFFF;
-			if (s != 0) {
-				result.append(hex(s >>> 12));
-				break;
-			}
-		}
-		while (c != 0) {
-
-			final int s = c & 0xF000;
-
-			result.append(hex(s >>> 12));
-			c = (c << 4) & 0xFFFF;
-		}
-	}
-
-	private static final char hex(int symbol) {
-		return (char) ('A' + symbol);
-	}
-
-	private static void addMemberId(
+	private static CodeId addMemberId(
 			IRGenerator generator,
-			StringBuilder out,
-			MemberId id) {
-		if (id.toName() != null) {
-			out.append(IRSymbolSeparator.SUB);
-		}
-		addMemberId(generator, out, null, id);
-	}
+			CodeId prefix,
+			MemberId memberId) {
 
-	private static void addMemberId(
-			IRGenerator generator,
-			StringBuilder out,
-			ScopeIR enclosingIR,
-			MemberId id) {
-
-		final String name = id.toName();
+		final String name = memberId.toName();
 
 		if (name != null) {
-
-			final String encodedName = encodeName(name);
-
-			if (enclosingIR != null) {
-				out.append(enclosingIR.prefix(
-						IRSymbolSeparator.SUB,
-						encodedName));
-			} else {
-				out.append(encodedName);
+			if (prefix == null) {
+				return generator.id(name);
 			}
-
-			return;
+			return prefix.sub(name);
 		}
 
-		final AdapterId adapterId = id.toAdapterId();
+		final AdapterId adapterId = memberId.toAdapterId();
 
 		if (adapterId != null) {
 
 			final ScopeIR adapterTypeIR =
 				adapterId.getAdapterTypeScope().ir(generator);
 
-			if (enclosingIR != null) {
-				out.append(enclosingIR.prefix(
-						IRSymbolSeparator.TYPE,
-						adapterTypeIR.getId()));
-			} else {
-				out.append(IRSymbolSeparator.TYPE);
-				out.append(adapterTypeIR.getId());
+			if (prefix == null) {
+				return generator.id().type(adapterTypeIR.getId());
 			}
 
-			return;
+			return prefix.type(adapterTypeIR.getId());
 		}
 
-		final MemberId[] ids = id.toIds();
+		final MemberId[] ids = memberId.toIds();
 
 		if (ids != null) {
-			addMemberId(
-					generator,
-					out,
-					enclosingIR,
-					ids[0]);
-			for (int i = 1; i < ids.length; ++i) {
-				addMemberId(generator, out, ids[i]);
+
+			CodeId result = prefix;
+
+			for (MemberId id : ids) {
+				result = addMemberId(generator, result, id);
 			}
 
-			return;
+			return result;
 		}
 
 		throw new IllegalStateException(
-				"Can not generate IR identifier for " + id);
+				"Can not generate IR identifier for " + memberId);
 	}
 
-	private static void addDeclaredIn(
+	private static CodeId addDeclaredIn(
 			IRGenerator generator,
-			StringBuilder out,
+			CodeId prefix,
 			Scope scope) {
 
 		final Clause clause = scope.getContainer().toClause();
 
 		if (clause == null) {
-			out.append(IRSymbolSeparator.IN);
-			out.append(scope.ir(generator).getId());
-			return;
+			return prefix.in(scope.ir(generator).getId());
 		}
 
-		addDeclaredIn(generator, out, clause.getEnclosingScope());
-		addMemberId(generator, out, clause.getKey().getMemberId());
+		final Scope enclosingObjectScope =
+			clause.getEnclosingObject().getScope();
+		final CodeId id = addDeclaredIn(
+				generator,
+				prefix,
+				enclosingObjectScope);
+		final DeclaredInWriter writer = new DeclaredInWriter(generator, id);
+
+		clause.pathInObject().walk(scope, enclosingObjectScope, writer);
+
+		return writer.id;
 	}
 
 	private IRUtil() {
+	}
+
+	private static final class DeclaredInWriter implements PathWalker {
+
+		private final IRGenerator generator;
+		private CodeId id;
+
+		DeclaredInWriter(IRGenerator generator, CodeId id) {
+			this.generator = generator;
+			this.id = id;
+		}
+
+		@Override
+		public boolean root(Path path, Scope root) {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public boolean start(Path path, Scope start) {
+			return true;
+		}
+
+		@Override
+		public boolean module(PathFragment fragment, Obj module) {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public boolean up(
+				Container enclosed,
+				PathFragment fragment,
+				Container enclosing) {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public boolean member(
+				Container container,
+				PathFragment fragment,
+				Member member) {
+			this.id = addMemberId(this.generator, this.id, member.getId());
+			return true;
+		}
+
+		@Override
+		public boolean dep(
+				Obj object,
+				PathFragment fragment,
+				Field<?> dependency) {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public boolean materialize(
+				Artifact<?> artifact,
+				PathFragment fragment,
+				Obj result) {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public void abortedAt(Scope last, PathFragment brokenFragment) {
+		}
+
+		@Override
+		public boolean done(Container result) {
+			return true;
+		}
+
 	}
 
 }

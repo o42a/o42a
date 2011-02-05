@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
@@ -28,15 +29,15 @@ import org.o42a.codegen.data.*;
 
 final class DebugInfo extends Struct<DebugInfo.Op> {
 
-	private final Debug debug;
+	private final Debug generator;
 	private final DbgFunctions functions;
 	private final DbgGlobals globals;
 
-	DebugInfo(Debug debug) {
-		super("o42a_debug_info");
-		this.debug = debug;
-		this.functions = new DbgFunctions(debug);
-		this.globals = new DbgGlobals(debug);
+	DebugInfo(Generator generator) {
+		super(generator.rawId("o42a_debug_info"));
+		this.generator = generator;
+		this.functions = new DbgFunctions(generator);
+		this.globals = new DbgGlobals(generator);
 	}
 
 	public final DbgFunctions getFunctions() {
@@ -56,10 +57,10 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 	protected void allocate(SubData<Op> data) {
 
 		final DbgFunctions functions =
-			this.debug.newGlobal().setConstant().create(this.functions)
+			this.generator.newGlobal().setConstant().create(this.functions)
 			.getInstance();
 		final DbgGlobals globals =
-			this.debug.newGlobal().setConstant().create(this.globals)
+			this.generator.newGlobal().setConstant().create(this.globals)
 			.getInstance();
 
 		final StructPtrRec<DbgFunctions.Op> functionsPtr =

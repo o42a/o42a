@@ -37,7 +37,10 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 			IRGeneratorBase generator,
 			SubData<?> data,
 			String fieldName) {
-		data.addInstance(fieldName, generator.relListType(), this);
+		data.addInstance(
+				generator.id(fieldName),
+				generator.relListType(),
+				this);
 		return this;
 	}
 
@@ -136,8 +139,8 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		private RelPtrRec list;
 		private Int32rec size;
 
-		Type() {
-			super("RelList");
+		Type(IRGeneratorBase generator) {
+			super(generator.id("RelList"));
 		}
 
 		public final RelPtrRec getList() {

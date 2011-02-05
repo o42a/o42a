@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AnyPtrRec;
@@ -28,15 +29,15 @@ import org.o42a.codegen.data.Type;
 
 final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 
-	private final Debug debug;
+	private final Generator generator;
 
 	private AnyPtrRec name;
 	private AnyPtrRec start;
 	private DbgFieldType content;
 
-	DbgGlobalType(Debug debug) {
-		super("DEBUG.Global");
-		this.debug = debug;
+	DbgGlobalType(Generator generator) {
+		super(generator.id("DEBUG").sub("Global"));
+		this.generator = generator;
 	}
 
 	public final AnyPtrRec getName() {
@@ -60,11 +61,17 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 	protected void allocate(SubData<Op> data) {
 		this.name = data.addPtr("name");
 		this.start = data.addPtr("start");
-		this.content = data.addInstance("content", this.debug.dbgFieldType());
+		this.content = data.addInstance(
+				generator().id("content"),
+				debug().dbgFieldType());
 	}
 
 	final Debug debug() {
-		return this.debug;
+		return this.generator;
+	}
+
+	final Generator generator() {
+		return this.generator;
 	}
 
 	public static final class Op extends StructOp {

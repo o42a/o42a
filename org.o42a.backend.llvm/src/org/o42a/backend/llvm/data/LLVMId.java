@@ -20,6 +20,7 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.LLVMFunction;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
@@ -36,32 +37,32 @@ public abstract class LLVMId {
 	}
 
 	public static LLVMId dataId(
-			String globalId,
+			CodeId globalId,
 			ContainerAllocation<?> globalContainer) {
 		return new TopLevelId.GlobalId(globalId, globalContainer);
 	}
 
-	public static LLVMId dataId(String name, long nativePtr) {
-		return new TopLevelId.DataId(name, nativePtr);
+	public static LLVMId dataId(CodeId id, long nativePtr) {
+		return new TopLevelId.DataId(id, nativePtr);
 	}
 
 	public static LLVMId codeId(LLVMFunction<?> function) {
 		return new TopLevelId.CodeId(function);
 	}
 
-	public static LLVMId codeId(String name, long nativePtr) {
-		return new TopLevelId.ExternId(name, nativePtr);
+	public static LLVMId codeId(CodeId id, long nativePtr) {
+		return new TopLevelId.ExternId(id, nativePtr);
 	}
 
-	private final String globalId;
+	private final CodeId globalId;
 	final LLVMIdKind kind;
 
-	LLVMId(String globalId, LLVMIdKind kind) {
+	LLVMId(CodeId globalId, LLVMIdKind kind) {
 		this.globalId = globalId;
 		this.kind = kind;
 	}
 
-	public String getGlobalId() {
+	public CodeId getGlobalId() {
 		return this.globalId;
 	}
 

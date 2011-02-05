@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
@@ -27,8 +28,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class Int32rec extends Rec<DataOp<Int32op>, Integer> {
 
-	Int32rec(String name, String id, Content<Int32rec> content) {
-		super(name, id, content);
+	Int32rec(CodeId id, Content<Int32rec> content) {
+		super(id, content);
 	}
 
 	@Override

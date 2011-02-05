@@ -21,6 +21,7 @@ package org.o42a.codegen.data;
 
 import java.util.Iterator;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -38,9 +39,13 @@ public abstract class SubData<O extends PtrOp>
 	private Generator generator;
 	private int size;
 
-	SubData(String name, String id, Type<O> type) {
-		super(name, id);
+	SubData(CodeId id, Type<O> type) {
+		super(id);
 		this.type = type;
+	}
+
+	public final Generator getGenerator() {
+		return this.generator;
 	}
 
 	@Override
@@ -53,19 +58,27 @@ public abstract class SubData<O extends PtrOp>
 	}
 
 	public final Int32rec addInt32(String name) {
-		return add(new Int32rec(name, id(name), null));
+		return add(new Int32rec(id(name), null));
 	}
 
 	public final Int32rec addInt32(String name, Content<Int32rec> content) {
-		return add(new Int32rec(name, id(name), content));
+		return add(new Int32rec(id(name), content));
 	}
 
 	public final Int64rec addInt64(String name) {
-		return add(new Int64rec(name, id(name), null));
+		return add(new Int64rec(id(name), null));
 	}
 
 	public final Int64rec addInt64(String name, Content<Int64rec> content) {
-		return add(new Int64rec(name, id(name), content));
+		return add(new Int64rec(id(name), content));
+	}
+
+	public final Fp64rec addFp64(String name) {
+		return add(new Fp64rec(id(name), null));
+	}
+
+	public final Fp64rec addFp64(String name, Content<Fp64rec> content) {
+		return add(new Fp64rec(id(name), content));
 	}
 
 	public final <F extends Func> CodeRec<F> addCodePtr(
@@ -75,7 +88,6 @@ public abstract class SubData<O extends PtrOp>
 		final SignatureDataBase<F> sign = signature;
 
 		return add(codePtrRecord(
-				name,
 				id(name),
 				sign.allocate(this.generator.codeBackend()),
 				null));
@@ -89,54 +101,53 @@ public abstract class SubData<O extends PtrOp>
 		final SignatureDataBase<F> sign = signature;
 
 		return add(codePtrRecord(
-				name,
 				id(name),
 				sign.allocate(this.generator.codeBackend()),
 				content));
 	}
 
 	public final AnyPtrRec addPtr(String name) {
-		return add(new AnyPtrRec(name, id(name), null));
+		return add(new AnyPtrRec(id(name), null));
 	}
 
 	public final AnyPtrRec addPtr(
 			String name,
 			Content<AnyPtrRec> content) {
-		return add(new AnyPtrRec(name, id(name), content));
+		return add(new AnyPtrRec(id(name), content));
 	}
 
 	public final <P extends StructOp> StructPtrRec<P> addPtr(
 			String name,
 			Type<P> type) {
-		return add(new StructPtrRec<P>(name, id(name), type, null));
+		return add(new StructPtrRec<P>(id(name), type, null));
 	}
 
 	public final <P extends StructOp> StructPtrRec<P> addPtr(
 			String name,
 			Type<P> type,
 			Content<StructPtrRec<P>> content) {
-		return add(new StructPtrRec<P>(name, id(name), type, content));
+		return add(new StructPtrRec<P>(id(name), type, content));
 	}
 
 	public final RelPtrRec addRelPtr(String name) {
-		return add(new RelPtrRec(name, id(name), null));
+		return add(new RelPtrRec(id(name), null));
 	}
 
 	public final RelPtrRec addRelPtr(String name, Content<RelPtrRec> content) {
-		return add(new RelPtrRec(name, id(name), content));
+		return add(new RelPtrRec(id(name), content));
 	}
 
-	public final <T extends Type<?>> T addInstance(String name, T type) {
+	public final <T extends Type<?>> T addInstance(CodeId name, T type) {
 		return addInstance(name, type, null);
 	}
 
 	public final <T extends Type<?>> T addInstance(
-			String name,
+			CodeId name,
 			T type,
 			Content<T> content) {
 
 		@SuppressWarnings("unchecked")
-		final T instance = (T) type.instantiate(name, id(name), content);
+		final T instance = (T) type.instantiate(id(name), content);
 		final SubData<?> data = instance.getTypeData();
 
 		add(data);
@@ -144,8 +155,8 @@ public abstract class SubData<O extends PtrOp>
 		return instance;
 	}
 
-	public final <S extends Struct<?>> S addStruct(String name, S struct) {
-		struct.setStruct(name);
+	public final <S extends Struct<?>> S addStruct(CodeId name, S struct) {
+		struct.setStruct(id(name));
 		add(struct.getTypeData());
 
 		final Globals globals = this.generator;
@@ -188,8 +199,12 @@ public abstract class SubData<O extends PtrOp>
 		}
 	}
 
-	private String id(String name) {
-		return getId() + '.' + name;
+	private CodeId id(CodeId name) {
+		return getId().setLocal(name);
+	}
+
+	private CodeId id(String name) {
+		return getId().setLocal(getGenerator().id(name));
 	}
 
 }

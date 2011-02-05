@@ -116,8 +116,8 @@ public final class ValOp extends StructOp {
 		private Int32rec length;
 		private Int64rec value;
 
-		Type() {
-			super("Val");
+		Type(IRGeneratorBase generator) {
+			super(generator.id("Val"));
 		}
 
 		public final Int32rec getFlags() {

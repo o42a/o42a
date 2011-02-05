@@ -90,7 +90,7 @@ public class NewObjectOp extends RefOp {
 		}
 
 		this.ancestorFunc = getGenerator().newFunction().create(
-				getBuilder().nextName(),
+				getBuilder().nextId(),
 				getGenerator().objectRefSignature());
 		final CodeBlk ancestorNotFound =
 			this.ancestorFunc.addBlock("ancestor_not_found");

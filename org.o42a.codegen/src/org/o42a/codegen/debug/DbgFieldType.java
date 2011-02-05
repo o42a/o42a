@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -26,13 +27,16 @@ import org.o42a.codegen.data.*;
 
 final class DbgFieldType extends Type<DbgFieldType.Op> {
 
+	private final Generator generator;
+
 	private AnyPtrRec name;
 	private AnyPtrRec dbgStruct;
 	private Rec<DataOp<Int32op>, Integer> dataType;
 	private Rec<DataOp<RelOp>, RelPtr> offset;
 
-	DbgFieldType() {
-		super("DEBUG.Field");
+	DbgFieldType(Generator generator) {
+		super(generator.id("DEBUG").sub("Field"));
+		this.generator = generator;
 	}
 
 	public final AnyPtrRec getName() {
@@ -83,8 +87,11 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 		} else {
 			debug.setName(
 					getName(),
-					"DEBUG.FIELD_NAME." + fieldData.getId(),
-					fieldData.getName());
+					this.generator
+					.id("DEBUG")
+					.sub("FIELD_NAME")
+					.sub(fieldData.getId()),
+					fieldData.getId().getLocal().getId());
 		}
 		if (struct != null) {
 			getDbgStruct().setValue(struct.getPointer().toAny());

@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 
 
@@ -51,12 +52,12 @@ public final class FunctionSettings {
 	}
 
 	public <F extends Func> Function<F> create(
-			String name,
+			CodeId id,
 			Signature<F> signature) {
 
-		final Function<F> function = new Function<F>(this, name, signature);
+		final Function<F> function = new Function<F>(this, id, signature);
 
-		this.functions.addFunction(name, signature, function.getPointer());
+		this.functions.addFunction(id, signature, function.getPointer());
 
 		return function;
 	}

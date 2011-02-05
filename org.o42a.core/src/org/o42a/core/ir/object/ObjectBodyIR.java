@@ -19,13 +19,13 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRSymbolSeparator.DETAIL;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -62,7 +62,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private Int32rec flags;
 
 	ObjectBodyIR(ObjectIR objectIR) {
-		super(objectIR.getId() + DETAIL + "main_body");
+		super(objectIR.getId().setLocal("main_body"));
 		this.objectIR = objectIR;
 		this.ascendant = objectIR.getObject();
 	}
@@ -73,9 +73,12 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		this.ascendant = ascendant;
 	}
 
-	private static String id(ObjectIR objectIR, Obj ascendant) {
-		return (objectIR.getId() + DETAIL + "body" + DETAIL
-				+ ascendant.ir(objectIR.getGenerator()).getId());
+	private static CodeId id(ObjectIR objectIR, Obj ascendant) {
+
+		final IRGenerator generator = objectIR.getGenerator();
+
+		return objectIR.getId().setLocal(generator.id("body").sub(
+				ascendant.ir(objectIR.getGenerator()).getId()));
 	}
 
 	public final IRGenerator getGenerator() {
@@ -201,19 +204,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	void allocateMetaIR(SubData<?> data) {
 		if (isMain()) {
 			this.methodsIR = new ObjectMethodsIR(this);
-
-			final String name;
-
-			if (isMain()) {
-				name = "type_methods";
-			} else {
-				name =
-					"methods" + DETAIL
-					+ getAscendant().ir(getGenerator()).getId();
-			}
-
-			data.addStruct(name, this.methodsIR);
-
+			data.addStruct(this.methodsIR.getId().getLocal(), this.methodsIR);
 			return;
 		}
 		// reuse meta from original type

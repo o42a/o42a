@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -30,8 +31,8 @@ public final class Int64rec extends Rec<DataOp<Int64op>, Long> {
 
 	private Ptr<AnyOp> nativePtr;
 
-	Int64rec(String name, String id, Content<Int64rec> content) {
-		super(name, id, content);
+	Int64rec(CodeId id, Content<Int64rec> content) {
+		super(id, content);
 	}
 
 	@Override
