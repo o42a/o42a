@@ -46,6 +46,10 @@ public abstract class Logical extends CondBase {
 		return new False(location, scope);
 	}
 
+	public static Logical runtimeTrue(LocationSpec location, Scope scope) {
+		return new RuntimeTrue(location, scope);
+	}
+
 	public static Logical runtimeLogical(LocationSpec location, Scope scope) {
 		return new Runtime(location, scope);
 	}
@@ -541,12 +545,47 @@ public abstract class Logical extends CondBase {
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
+			throw new UnsupportedOperationException(
+					"Abstract run-time logical should not generate any code");
+		}
+
+		@Override
+		public String toString() {
+			return "RUN-TIME";
+		}
+
+	}
+
+	private static final class RuntimeTrue extends Logical {
+
+		RuntimeTrue(LocationSpec location, Scope scope) {
+			super(location, scope);
+		}
+
+		@Override
+		public LogicalValue getConstantValue() {
+			return LogicalValue.RUNTIME;
+		}
+
+		@Override
+		public LogicalValue logicalValue(Scope scope) {
+			return LogicalValue.RUNTIME;
+		}
+
+		@Override
+		public Logical reproduce(Reproducer reproducer) {
+			assertCompatible(reproducer.getReproducingScope());
+			return new Runtime(this, reproducer.getScope());
+		}
+
+		@Override
+		public void write(Code code, CodePos exit, HostOp host) {
 			code.debug("Logical: " + this);
 		}
 
 		@Override
 		public String toString() {
-			return "RUNTIME";
+			return "RUN-TIME TRUE";
 		}
 
 	}

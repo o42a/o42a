@@ -321,7 +321,8 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 	private final class AllBodies extends Struct<AllBodiesOp> {
 
 		AllBodies() {
-			super(ObjectIR.this.getId().setLocal("all_bodies"));
+			super(ObjectIR.this.getId().setLocal(
+					getGenerator().id().detail("all_bodies")));
 		}
 
 		@Override

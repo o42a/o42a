@@ -21,8 +21,12 @@ package org.o42a.core.def;
 
 import static java.lang.System.arraycopy;
 import static org.o42a.core.def.DefValue.nonExistingValue;
-import static org.o42a.core.def.LogicalDef.*;
+import static org.o42a.core.def.LogicalDef.emptyLogicalDef;
+import static org.o42a.core.def.LogicalDef.falseLogicalDef;
+import static org.o42a.core.def.LogicalDef.trueLogicalDef;
+import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.disjunction;
+import static org.o42a.core.ref.Logical.runtimeTrue;
 
 import java.util.Collection;
 
@@ -635,7 +639,12 @@ public class Definitions extends Scoped {
 	}
 
 	public Definitions runtime(Scope scope) {
-		return addCondition(runtimeLogicalDef(scope, scope));
+		return addCondition(new SingleLogicalDef(
+				/* The source should differ from scope, as this logical
+				 * definition is not explicit. */
+				scope.getContext().getVoid(),
+				runtimeTrue(scope, scope),
+				transparentRescoper(scope)));
 	}
 
 	@Override

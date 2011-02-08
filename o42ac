@@ -3,6 +3,8 @@
 # o42a Compiler
 #
 
+set -o pipefail
+
 blue=$'\033[1;34m'
 green=$'\033[0;32m'
 red=$'\033[0;31m'

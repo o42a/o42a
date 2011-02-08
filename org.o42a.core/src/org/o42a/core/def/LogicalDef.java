@@ -21,7 +21,6 @@ package org.o42a.core.def;
 
 import static org.o42a.core.ref.Logical.logicalFalse;
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.Logical.runtimeLogical;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -50,12 +49,6 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 			LocationSpec location,
 			Scope scope) {
 		return logicalFalse(location, scope).toLogicalDef();
-	}
-
-	static LogicalDef runtimeLogicalDef(
-			LocationSpec location,
-			Scope scope) {
-		return runtimeLogical(location, scope).toLogicalDef();
 	}
 
 	private final Obj source;
