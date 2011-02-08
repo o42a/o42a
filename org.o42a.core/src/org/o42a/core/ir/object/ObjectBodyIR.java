@@ -62,7 +62,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private Int32rec flags;
 
 	ObjectBodyIR(ObjectIR objectIR) {
-		super(objectIR.getId().setLocal("main_body"));
+		super(objectIR.getId().setLocal(
+				objectIR.getGenerator().id().detail("main_body")));
 		this.objectIR = objectIR;
 		this.ascendant = objectIR.getObject();
 	}
@@ -77,7 +78,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		final IRGenerator generator = objectIR.getGenerator();
 
-		return objectIR.getId().setLocal(generator.id("body").sub(
+		return objectIR.getId().setLocal(generator.id().detail("body").detail(
 				ascendant.ir(objectIR.getGenerator()).getId()));
 	}
 

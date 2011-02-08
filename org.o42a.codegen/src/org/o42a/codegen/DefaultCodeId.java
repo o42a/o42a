@@ -263,14 +263,13 @@ public class DefaultCodeId extends CodeId {
 			return;
 		}
 		switch (next) {
-		case TYPE:
-			return;
-		case DETAIL:
-			appendSeparator(result, Separator.DETAIL);
-			appendSeparator(result, Separator.SUB);
+		case NONE:
+		case TOP:
+		case IN:
+			appendSeparator(result, separator);
 			return;
 		default:
-			appendSeparator(result, Separator.SUB);
+			return;
 		}
 	}
 

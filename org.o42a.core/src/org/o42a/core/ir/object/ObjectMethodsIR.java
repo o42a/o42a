@@ -43,16 +43,17 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 
 	private static CodeId id(ObjectBodyIR bodyIR) {
 
+		final IRGenerator generator = bodyIR.getGenerator();
 		final ObjectIR objectIR = bodyIR.getObjectIR();
 		final CodeId localId;
 
 		if (bodyIR.isMain()) {
-			localId = bodyIR.getGenerator().id("type_methods");
+			localId = generator.id().detail("type_methods");
 		} else {
 
 			final Obj ascendant = bodyIR.getAscendant();
 
-			localId = bodyIR.getGenerator().id("methods").sub(
+			localId = generator.id().detail("methods").detail(
 					ascendant.ir(objectIR.getGenerator()).getId());
 		}
 

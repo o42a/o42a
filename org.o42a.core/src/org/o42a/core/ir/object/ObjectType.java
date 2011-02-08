@@ -116,7 +116,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 			final IRGenerator generator = fld.getGenerator();
 			final CodeId id =
 				generator.id("field")
-				.sub(fld.getField().ir(generator).getId().getLocal());
+				.detail(fld.getField().ir(generator).getId().getLocal());
 			final FieldDescIR.Type desc =
 				data.addInstance(id, generator.fieldDescType(), item);
 
@@ -137,7 +137,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 			final IRGenerator generator = fld.getGenerator();
 			final CodeId id =
 				generator.id("overrider")
-				.sub(fld.getField().ir(generator).getId());
+				.detail(fld.getField().ir(generator).getId());
 			final OverriderDescIR.Type desc =
 				data.addInstance(id, generator.overriderDescType(), item);
 

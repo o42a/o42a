@@ -248,7 +248,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			final IRGenerator generator = item.getGenerator();
 			final CodeId id =
 				generator.id("ascendant")
-				.sub(item.getAscendant().ir(generator).getId());
+				.detail(item.getAscendant().ir(generator).getId());
 			final AscendantDescIR.Type desc = data.addInstance(
 					id,
 					generator.ascendantDescType(),
@@ -270,7 +270,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			final IRGenerator generator = item.getGenerator();
 			final CodeId id =
 				generator.id("sample")
-				.sub(item.getAscendant().ir(generator).getId());
+				.detail(item.getAscendant().ir(generator).getId());
 			final SampleDescIR.Type desc = data.addInstance(
 					id,
 					generator.sampleDescType(),

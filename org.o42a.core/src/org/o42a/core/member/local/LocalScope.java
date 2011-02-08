@@ -250,10 +250,9 @@ public abstract class LocalScope
 
 			final LocalScope local = start.toLocal();
 
-			assert local == LocalScope.this :
-				start + " is not " + LocalScope.this;
+			local.assertDerivedFrom(LocalScope.this);
 
-			final Obj owner = getOwner();
+			final Obj owner = local.getOwner();
 
 			walker.up(local, this, owner);
 
