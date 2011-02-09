@@ -253,9 +253,11 @@ void o42a_dbg_dump_field(
 		const uint32_t depth) {
 	if (!ptr) {
 		fputs(": NULL\n", stderr);
+		return;
 	}
 	if (!field) {
 		fprintf(stderr, ": <unknown@%lx>\n", (long) ptr);
+		return;
 	}
 	dbg_print_field_value(ptr, field, depth, 0);
 	fputc('\n', stderr);
@@ -267,9 +269,11 @@ void o42a_dbg_dump_struct(
 		const uint32_t depth) {
 	if (!ptr) {
 		fputs(": NULL\n", stderr);
+		return;
 	}
 	if (!dbg_struct) {
 		fprintf(stderr, ": <unknown@%lx>\n", (long) ptr);
+		return;
 	}
 	fprintf(stderr, ": %s = {\n", dbg_struct->name);
 	dbg_print_field_struct(ptr, dbg_struct, depth, 1);

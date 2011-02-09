@@ -249,8 +249,8 @@ static void derive_object_body(
 			to_body,
 			o42a_dbg_subfield(
 					o42a_dbg_field(from_body),
-					"all_bodies",
-					"main_body",
+					"$all_bodies",
+					"$main_body",
 					NULL),
 			1000);
 
