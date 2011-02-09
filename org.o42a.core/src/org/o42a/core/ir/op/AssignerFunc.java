@@ -21,7 +21,9 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -37,6 +39,26 @@ public final class AssignerFunc extends Func {
 
 	public BoolOp assign(Code code, AnyOp object, AnyOp value) {
 		return caller().callBool(code, object, value);
+	}
+
+	static final class Assigner extends Signature<AssignerFunc> {
+
+		Assigner() {
+			super("bool", "AssignerF", "any*, any*");
+		}
+
+		@Override
+		public AssignerFunc op(FuncCaller caller) {
+			return new AssignerFunc(caller);
+		}
+
+		@Override
+		protected void write(SignatureWriter<AssignerFunc> writer) {
+			writer.returnBool();
+			writer.addAny();
+			writer.addAny();
+		}
+
 	}
 
 }

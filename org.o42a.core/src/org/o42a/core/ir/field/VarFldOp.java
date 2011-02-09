@@ -20,9 +20,10 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.op.ObjectRefFunc;
 
 
-public class VarFldOp extends RefFldOp {
+public class VarFldOp extends RefFldOp<ObjectRefFunc> {
 
 	VarFldOp(VarFld fld, ObjOp host, VarFld.Op ptr) {
 		super(fld, host, ptr);

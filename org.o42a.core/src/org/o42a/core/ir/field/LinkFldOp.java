@@ -20,9 +20,10 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.op.ObjectRefFunc;
 
 
-public class LinkFldOp extends RefFldOp {
+public class LinkFldOp extends RefFldOp<ObjectRefFunc> {
 
 	LinkFldOp(LinkFld fld, ObjOp host, LinkFld.Op ptr) {
 		super(fld, host, ptr);

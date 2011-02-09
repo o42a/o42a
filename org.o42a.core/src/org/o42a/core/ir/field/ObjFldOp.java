@@ -22,7 +22,7 @@ package org.o42a.core.ir.field;
 import org.o42a.core.ir.object.ObjOp;
 
 
-public class ObjFldOp extends RefFldOp {
+public class ObjFldOp extends RefFldOp<ObjectConstructorFunc> {
 
 	ObjFldOp(ObjFld fld, ObjOp host, ObjFld.Op ptr) {
 		super(fld, host, ptr);

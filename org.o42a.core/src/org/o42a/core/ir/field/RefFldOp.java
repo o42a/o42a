@@ -21,6 +21,7 @@ package org.o42a.core.ir.field;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -31,20 +32,22 @@ import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.MemberKey;
 
 
-public abstract class RefFldOp extends FldOp {
+public abstract class RefFldOp<C extends Func> extends FldOp {
 
-	RefFldOp(RefFld fld, ObjOp host, RefFld.Op ptr) {
+	RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<C> ptr) {
 		super(fld, host, ptr);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public RefFld fld() {
-		return (RefFld) super.fld();
+	public RefFld<C> fld() {
+		return (RefFld<C>) super.fld();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Op ptr() {
-		return (Op) super.ptr();
+	public Op<C> ptr() {
+		return (Op<C>) super.ptr();
 	}
 
 	@Override
@@ -75,7 +78,7 @@ public abstract class RefFldOp extends FldOp {
 		code.dumpName("Link field: ", ptr());
 		code.dumpName("Link host: ", host().ptr());
 
-		final AnyOp ptr = ptr().target(code, host().toAny(code));
+		final AnyOp ptr = ptr().target(code, host());
 		final Obj targetAscendant = fld().getTargetAscendant();
 		final Obj targetType;
 

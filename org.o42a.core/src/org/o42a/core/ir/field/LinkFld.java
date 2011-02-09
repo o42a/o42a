@@ -20,15 +20,17 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.member.field.Field;
 
 
-public class LinkFld extends RefFld {
+public class LinkFld extends RefFld<ObjectRefFunc> {
 
 	public LinkFld(ObjectBodyIR bodyIR, Field<Link> field) {
 		super(bodyIR, field);
@@ -63,7 +65,7 @@ public class LinkFld extends RefFld {
 		return getGenerator().linkFldType();
 	}
 
-	public static final class Op extends RefFld.Op {
+	public static final class Op extends RefFld.Op<ObjectRefFunc> {
 
 		private Op(StructWriter writer) {
 			super(writer);
@@ -79,17 +81,30 @@ public class LinkFld extends RefFld {
 			return new Op(writer);
 		}
 
+		@Override
+		protected AnyOp construct(
+				Code code,
+				ObjOp host,
+				ObjectRefFunc constructor) {
+			return constructor.call(code, host.toAny(code));
+		}
+
 	}
 
-	public static final class Type extends RefFld.Type<Op> {
+	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
-		Type(IRGenerator generator) {
+		Type(FieldIRGenerator generator) {
 			super(generator, generator.id("LinkFld"));
 		}
 
 		@Override
 		public Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected Signature<ObjectRefFunc> signature() {
+			return this.generator.objectRefSignature();
 		}
 
 	}

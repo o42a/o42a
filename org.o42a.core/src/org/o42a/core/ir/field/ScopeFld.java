@@ -27,7 +27,6 @@ import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.field.Field;
@@ -124,7 +123,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 		private AnyPtrRec object;
 
-		Type(IRGenerator generator) {
+		Type(FieldIRGenerator generator) {
 			super(generator.id("ScopeFld"));
 		}
 

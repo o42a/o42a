@@ -21,7 +21,9 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 
 
@@ -33,6 +35,29 @@ public final class ObjectValFunc extends Func {
 
 	public void call(Code code, ValOp result, AnyOp object) {
 		caller().call(code, result, object);
+	}
+
+	static final class ObjectVal extends Signature<ObjectValFunc> {
+
+		private final IRGeneratorBase generator;
+
+		ObjectVal(IRGeneratorBase generator) {
+			super("void", "ObjectValF", "val*, any*");
+			this.generator = generator;
+		}
+
+		@Override
+		public ObjectValFunc op(FuncCaller caller) {
+			return new ObjectValFunc(caller);
+		}
+
+		@Override
+		protected void write(SignatureWriter<ObjectValFunc> writer) {
+			writer.returnVoid();
+			writer.addPtr(this.generator.valType());
+			writer.addAny();
+		}
+
 	}
 
 }

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.IRGenerator;
+import org.o42a.codegen.code.Signature;
 import org.o42a.core.ir.op.IRGeneratorBase;
 
 
@@ -30,16 +30,18 @@ public abstract class FieldIRGenerator extends IRGeneratorBase {
 	private final ObjFld.Type objFldType;
 	private final LinkFld.Type linkFldType;
 	private final VarFld.Type varFldType;
+	private final Signature<ObjectConstructorFunc> objectConstructorSignature;
 
 	public FieldIRGenerator(Generator generator) {
 		super(generator);
 
-		final IRGenerator self = (IRGenerator) this;
+		this.objectConstructorSignature =
+			new ObjectConstructorFunc.ObjectConstructor();
 
-		this.scopeFldType = generator.addType(new ScopeFld.Type(self));
-		this.objFldType = generator.addType(new ObjFld.Type(self));
-		this.linkFldType = generator.addType(new LinkFld.Type(self));
-		this.varFldType = generator.addType(new VarFld.Type(self));
+		this.scopeFldType = generator.addType(new ScopeFld.Type(this));
+		this.objFldType = generator.addType(new ObjFld.Type(this));
+		this.linkFldType = generator.addType(new LinkFld.Type(this));
+		this.varFldType = generator.addType(new VarFld.Type(this));
 
 	}
 
@@ -57,6 +59,10 @@ public abstract class FieldIRGenerator extends IRGeneratorBase {
 
 	public final VarFld.Type varFldType() {
 		return this.varFldType;
+	}
+
+	public final Signature<ObjectConstructorFunc> objectConstructorSignature() {
+		return this.objectConstructorSignature;
 	}
 
 }
