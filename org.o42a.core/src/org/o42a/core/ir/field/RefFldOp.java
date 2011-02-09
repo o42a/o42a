@@ -77,9 +77,6 @@ public abstract class RefFldOp extends FldOp {
 
 		final AnyOp ptr = ptr().target(code, host().toAny(code));
 		final Obj targetAscendant = fld().getTargetAscendant();
-		final ObjectBodyIR.Op bodyPtr = ptr.to(
-				code,
-				targetAscendant.ir(getGenerator()).getBodyType());
 		final Obj targetType;
 
 		final Obj hostAscendant = host().getAscendant();
@@ -93,7 +90,11 @@ public abstract class RefFldOp extends FldOp {
 			targetType = targetAscendant;
 		}
 
-		return bodyPtr.op(getBuilder(), targetType, host().getPrecision());
+		final ObjectBodyIR.Op targetBodyPtr = ptr.to(
+				code,
+				targetAscendant.ir(getGenerator()).getBodyType());
+
+		return targetBodyPtr.op(getBuilder(), targetType, host().getPrecision());
 	}
 
 	@Override
