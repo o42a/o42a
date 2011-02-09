@@ -101,7 +101,8 @@ public final class ObjOp extends ObjectOp {
 
 	@Override
 	public ObjOp cast(Code code, CodePos exit, Obj ascendant) {
-		getAscendant().assertDerivedFrom(ascendant);
+		ptr().getBodyIR().getObjectIR().getObject().assertDerivedFrom(
+				ascendant);
 		if (ascendant == getAscendant()) {
 			return this;
 		}

@@ -35,6 +35,7 @@ public class DefaultCodeId extends CodeId {
 	private CodeId local;
 
 	protected DefaultCodeId(boolean top) {
+		this.local = this;
 		if (top) {
 			this.id = separatorSign(Separator.TOP);
 			this.startsFrom = Separator.TOP;
@@ -44,6 +45,7 @@ public class DefaultCodeId extends CodeId {
 	protected DefaultCodeId(String id, boolean raw) {
 		assert id != null :
 			"Identifier not specified";
+		this.local = this;
 		if (raw) {
 			this.id = id;
 		} else {

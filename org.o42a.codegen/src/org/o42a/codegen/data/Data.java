@@ -34,6 +34,8 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 	private Data<?> next;
 
 	Data(CodeId id) {
+		assert id != null :
+			"Data identifier not specified";
 		this.id = id;
 		this.pointer = new Ptr<O>(this);
 	}

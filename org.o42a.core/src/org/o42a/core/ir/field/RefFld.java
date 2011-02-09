@@ -295,11 +295,11 @@ public abstract class RefFld extends Fld {
 		private AnyOp construct(Code code, AnyOp host) {
 
 			final ObjectRefFunc constructor = constructor(code).load(code);
-			final AnyOp self = host.toAny(code);
 
 			code.dumpName("Constructor: ", constructor);
-			code.dumpName("Host: ", self);
-			return constructor.call(code, self);
+			code.dumpName("Host: ", host);
+
+			return constructor.call(code, host);
 		}
 
 	}

@@ -147,7 +147,7 @@ public abstract class SubData<O extends PtrOp>
 			Content<T> content) {
 
 		@SuppressWarnings("unchecked")
-		final T instance = (T) type.instantiate(id(name), content);
+		final T instance = (T) type.instantiate(name, content);
 		final SubData<?> data = instance.getTypeData();
 
 		add(data);
@@ -156,7 +156,7 @@ public abstract class SubData<O extends PtrOp>
 	}
 
 	public final <S extends Struct<?>> S addStruct(CodeId name, S struct) {
-		struct.setStruct(id(name));
+		struct.setStruct(name);
 		add(struct.getTypeData());
 
 		final Globals globals = this.generator;
@@ -197,10 +197,6 @@ public abstract class SubData<O extends PtrOp>
 			data.write(writer);
 			data = data.getNext();
 		}
-	}
-
-	private CodeId id(CodeId name) {
-		return getId().setLocal(name);
 	}
 
 	private CodeId id(String name) {

@@ -70,7 +70,10 @@ public class DepOp extends IROp implements HostOp {
 			return null;
 		}
 
-		return anonymousObject(getBuilder(), toAny(code), object);
+		return anonymousObject(
+				getBuilder(),
+				ptr().object(code).load(code),
+				object);
 	}
 
 	@Override
@@ -88,7 +91,10 @@ public class DepOp extends IROp implements HostOp {
 
 		final Artifact<?> target = depIR().getDep().getTarget();
 
-		return anonymousObject(getBuilder(), toAny(code), target.materialize());
+		return anonymousObject(
+				getBuilder(),
+				ptr().object(code).load(code),
+				target.materialize());
 	}
 
 	public void fill(LocalBuilder builder, Code code, CodePos exit) {
