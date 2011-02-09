@@ -38,11 +38,15 @@ void o42a_fld_scope_propagate(o42a_ctable_t *const ctable) {
 			o42a_otype_t *const owner_type =
 					ctable->object_type->data.owner_type;
 
-			to->scope = o42a_data_object(&owner_type->data);
+			if (owner_type) {
+				to->scope = o42a_data_object(&owner_type->data);
 
-			o42a_debug_mem_name("Updated scope: ", to->scope);
+				o42a_debug_mem_name("Updated scope: ", to->scope);
 
-			O42A_RETURN;
+				O42A_RETURN;
+			}
+
+			O42A_DEBUG("Object is local\n");
 		}
 	} else {
 		O42A_DEBUG("New object instantiation\n");
