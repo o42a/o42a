@@ -22,29 +22,30 @@ package org.o42a.core.ir.op;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.data.GlobalSettings;
 
 
 public abstract class IRGeneratorBase {
 
-	private static final Object object = new Object();
-	private static final Binary binary = new Binary();
-	private static final ObjectRef objectRef = new ObjectRef();
-	private static final ObjectCond objectCond = new ObjectCond();
-	private static final Assigner assigner = new Assigner();
+	private static final Signature<BinaryFunc> binary =
+		new BinaryFunc.Binary();
+	private static final Signature<ObjectRefFunc> objectRef =
+		new ObjectRefFunc.ObjectRef();
+	private static final Signature<ObjectCondFunc> objectCond =
+		new ObjectCondFunc.ObjectCond();
+	private static final Signature<AssignerFunc> assigner =
+		new AssignerFunc.Assigner();
 
 	private final Generator generator;
 	private final ValOp.Type valType;
 	private final RelList.Type relListType;
-	private final ObjectVal objectVal;
+	private final Signature<ObjectValFunc> objectVal;
 
 	public IRGeneratorBase(Generator generator) {
 		this.generator = generator;
 		this.valType = generator.addType(new ValOp.Type(this));
 		this.relListType = generator.addType(new RelList.Type(this));
-		this.objectVal = new ObjectVal();
+		this.objectVal = new ObjectValFunc.ObjectVal(this);
 	}
 
 	public final Generator getGenerator() {
@@ -77,10 +78,6 @@ public abstract class IRGeneratorBase {
 
 	public final RelList.Type relListType() {
 		return this.relListType;
-	}
-
-	public final Signature<ObjectFunc> objectSignature() {
-		return object;
 	}
 
 	public final Signature<BinaryFunc> binarySignature() {
@@ -120,123 +117,6 @@ public abstract class IRGeneratorBase {
 	@Override
 	public String toString() {
 		return this.generator.toString();
-	}
-
-	private static final class Object extends Signature<ObjectFunc> {
-
-		Object() {
-			super("void", "ObjectF", "any*");
-		}
-
-		@Override
-		public ObjectFunc op(FuncCaller caller) {
-			return new ObjectFunc(caller);
-		}
-
-		@Override
-		protected void write(SignatureWriter<ObjectFunc> writer) {
-			writer.returnVoid();
-			writer.addAny();
-		}
-
-	}
-
-	private static final class Binary extends Signature<BinaryFunc> {
-
-		Binary() {
-			super("any*", "BinaryF", "any*, any*");
-		}
-
-		@Override
-		public BinaryFunc op(FuncCaller caller) {
-			return new BinaryFunc(caller);
-		}
-
-		@Override
-		protected void write(SignatureWriter<BinaryFunc> writer) {
-			writer.returnAny();
-			writer.addAny();
-			writer.addAny();
-		}
-
-	}
-
-	private static final class ObjectRef extends Signature<ObjectRefFunc> {
-
-		ObjectRef() {
-			super("any*", "ObjectRefF", "any*");
-		}
-
-		@Override
-		public ObjectRefFunc op(FuncCaller caller) {
-			return new ObjectRefFunc(caller);
-		}
-
-		@Override
-		protected void write(SignatureWriter<ObjectRefFunc> writer) {
-			writer.returnAny();
-			writer.addAny();
-		}
-
-	}
-
-	private final class ObjectVal extends Signature<ObjectValFunc> {
-
-		ObjectVal() {
-			super("void", "ObjectValF", "val*, any*");
-		}
-
-		@Override
-		public ObjectValFunc op(FuncCaller caller) {
-			return new ObjectValFunc(caller);
-		}
-
-		@Override
-		protected void write(SignatureWriter<ObjectValFunc> writer) {
-			writer.returnVoid();
-			writer.addPtr(valType());
-			writer.addAny();
-		}
-
-	}
-
-	private static final class ObjectCond extends Signature<ObjectCondFunc> {
-
-		ObjectCond() {
-			super("bool", "ObjectCondF", "any*");
-		}
-
-		@Override
-		public ObjectCondFunc op(FuncCaller caller) {
-			return new ObjectCondFunc(caller);
-		}
-
-		@Override
-		protected void write(SignatureWriter<ObjectCondFunc> writer) {
-			writer.returnBool();
-			writer.addAny();
-		}
-
-	}
-
-	private static final class Assigner extends Signature<AssignerFunc> {
-
-		Assigner() {
-			super("bool", "AssignerF", "any*, any*");
-		}
-
-		@Override
-		public AssignerFunc op(FuncCaller caller) {
-			return new AssignerFunc(caller);
-		}
-
-		@Override
-		protected void write(SignatureWriter<AssignerFunc> writer) {
-			writer.returnBool();
-			writer.addAny();
-			writer.addAny();
-		}
-
 	}
 
 }

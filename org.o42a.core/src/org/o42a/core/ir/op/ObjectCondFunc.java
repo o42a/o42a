@@ -21,7 +21,9 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -34,6 +36,25 @@ public final class ObjectCondFunc extends Func {
 
 	public BoolOp call(Code code, AnyOp object) {
 		return caller().callBool(code, object);
+	}
+
+	static final class ObjectCond extends Signature<ObjectCondFunc> {
+
+		ObjectCond() {
+			super("bool", "ObjectCondF", "any*");
+		}
+
+		@Override
+		public ObjectCondFunc op(FuncCaller caller) {
+			return new ObjectCondFunc(caller);
+		}
+
+		@Override
+		protected void write(SignatureWriter<ObjectCondFunc> writer) {
+			writer.returnBool();
+			writer.addAny();
+		}
+
 	}
 
 }

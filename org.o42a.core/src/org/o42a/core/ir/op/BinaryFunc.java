@@ -21,7 +21,9 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 
 
@@ -33,6 +35,26 @@ public final class BinaryFunc extends Func {
 
 	public AnyOp call(Code code, AnyOp object1, AnyOp object2) {
 		return caller().callAny(code, object1, object2);
+	}
+
+	static final class Binary extends Signature<BinaryFunc> {
+
+		Binary() {
+			super("any*", "BinaryF", "any*, any*");
+		}
+
+		@Override
+		public BinaryFunc op(FuncCaller caller) {
+			return new BinaryFunc(caller);
+		}
+
+		@Override
+		protected void write(SignatureWriter<BinaryFunc> writer) {
+			writer.returnAny();
+			writer.addAny();
+			writer.addAny();
+		}
+
 	}
 
 }

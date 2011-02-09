@@ -32,13 +32,11 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.member.field.Field;
 
 
-public abstract class RefFld extends Fld {
+public abstract class RefFld<C extends Func> extends Fld {
 
 	private final ObjectIR targetIR;
 	private Obj targetAscendant;
@@ -48,7 +46,7 @@ public abstract class RefFld extends Fld {
 	private boolean filledFields;
 	private boolean filledAll;
 
-	private Function<ObjectRefFunc> constructor;
+	private Function<C> constructor;
 	private boolean constructorReused;
 
 	RefFld(ObjectBodyIR bodyIR, Field<?> field) {
@@ -64,9 +62,10 @@ public abstract class RefFld extends Fld {
 		return this.targetAscendant;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Type<?> getInstance() {
-		return (Type<?>) super.getInstance();
+	public Type<?, C> getInstance() {
+		return (Type<?, C>) super.getInstance();
 	}
 
 	public final void allocate(SubData<?> data, Obj targetAscendant) {
@@ -86,14 +85,14 @@ public abstract class RefFld extends Fld {
 	}
 
 	@Override
-	protected abstract Type<?> getType();
+	protected abstract Type<?, C> getType();
 
 	@Override
-	public abstract RefFldOp op(Code code, ObjOp host);
+	public abstract RefFldOp<C> op(Code code, ObjOp host);
 
 	protected void allocateMethods() {
 
-		final Function<ObjectRefFunc> reusedConstructor = reusedConstructor();
+		final Function<C> reusedConstructor = reusedConstructor();
 
 		if (reusedConstructor != null) {
 			this.constructor = reusedConstructor;
@@ -103,7 +102,7 @@ public abstract class RefFld extends Fld {
 
 		this.constructor = getGenerator().newFunction().create(
 				getField().ir(getGenerator()).getId().detail("constructor"),
-				getGenerator().objectRefSignature());
+				getType().signature());
 	}
 
 	protected void fill() {
@@ -144,7 +143,7 @@ public abstract class RefFld extends Fld {
 			Code code,
 			CodePos exit) {
 
-		final RefFldOp fld = op(code, builder.host());
+		final RefFldOp<C> fld = op(code, builder.host());
 
 		final ObjectOp result = construct(builder, code, exit, fld);
 		final AnyOp res = result.toAny(code);
@@ -157,7 +156,7 @@ public abstract class RefFld extends Fld {
 			ObjBuilder builder,
 			Code code,
 			CodePos exit,
-			RefFldOp fld) {
+			RefFldOp<C> fld) {
 
 		final Artifact<?> artifact = getField().getArtifact();
 		final Obj object = artifact.toObject();
@@ -193,8 +192,8 @@ public abstract class RefFld extends Fld {
 	}
 
 	@Override
-	protected Content<Type<?>> content() {
-		return new FldContent<Type<?>>(this);
+	protected Content<Type<?, C>> content() {
+		return new FldContent<Type<?, C>, C>(this);
 	}
 
 	private void fillTarget(ObjectBodyIR targetBodyIR) {
@@ -234,7 +233,7 @@ public abstract class RefFld extends Fld {
 		}
 	}
 
-	private Function<ObjectRefFunc> reusedConstructor() {
+	private Function<C> reusedConstructor() {
 		if (!getField().isClone()) {
 			return null;
 		}
@@ -247,32 +246,34 @@ public abstract class RefFld extends Fld {
 			lastDefinition.getEnclosingScope().getContainer().toObject();
 		final ObjectIR overriddenOwnerIR =
 			overriddenOwner.ir(getGenerator()).getBodyType().getObjectIR();
-		final RefFld overriddenFld =
-			(RefFld) overriddenOwnerIR.fld(getField().getKey());
+		@SuppressWarnings("unchecked")
+		final RefFld<C> overriddenFld =
+			(RefFld<C>) overriddenOwnerIR.fld(getField().getKey());
 
 		return overriddenFld.constructor;
 	}
 
-	public static abstract class Op extends Fld.Op {
+	public static abstract class Op<C extends Func> extends Fld.Op {
 
 		Op(StructWriter writer) {
 			super(writer);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
-		public Type<?> getType() {
-			return (Type<?>) super.getType();
+		public Type<?, C> getType() {
+			return (Type<?, C>) super.getType();
 		}
 
 		public final DataOp<AnyOp> object(Code code) {
 			return writer().ptr(code, getType().getObject());
 		}
 
-		public CodeOp<ObjectRefFunc> constructor(Code code) {
+		public CodeOp<C> constructor(Code code) {
 			return writer().func(code, getType().getConstructor());
 		}
 
-		public AnyOp target(Code code, AnyOp host) {
+		public AnyOp target(Code code, ObjOp host) {
 
 			final AnyOp object = object(code).load(code);
 			final CondBlk noTarget = object.isNull(code).branch(
@@ -292,25 +293,31 @@ public abstract class RefFld extends Fld {
 			return code.phi(object1, object2);
 		}
 
-		private AnyOp construct(Code code, AnyOp host) {
+		protected abstract AnyOp construct(
+				Code code,
+				ObjOp host,
+				C constructor);
 
-			final ObjectRefFunc constructor = constructor(code).load(code);
+		private AnyOp construct(Code code, ObjOp host) {
+
+			final C constructor = constructor(code).load(code);
 
 			code.dumpName("Constructor: ", constructor);
-			code.dumpName("Host: ", host);
+			code.dumpName("Host: ", host.ptr());
 
-			return constructor.call(code, host);
+			return construct(code, host, constructor);
 		}
 
 	}
 
-	public static abstract class Type<O extends Op> extends Fld.Type<O> {
+	public static abstract class Type<O extends Op<C>, C extends Func>
+			extends Fld.Type<O> {
 
-		protected final IRGenerator generator;
+		protected final FieldIRGenerator generator;
 		private AnyPtrRec object;
-		private CodeRec<ObjectRefFunc> constructor;
+		private CodeRec<C> constructor;
 
-		Type(IRGenerator generator, CodeId id) {
+		Type(FieldIRGenerator generator, CodeId id) {
 			super(id);
 			this.generator = generator;
 		}
@@ -319,7 +326,7 @@ public abstract class RefFld extends Fld {
 			return this.object;
 		}
 
-		public final CodeRec<ObjectRefFunc> getConstructor() {
+		public final CodeRec<C> getConstructor() {
 			return this.constructor;
 		}
 
@@ -328,20 +335,23 @@ public abstract class RefFld extends Fld {
 			this.object = data.addPtr("object");
 			this.constructor = data.addCodePtr(
 					"constructor",
-					this.generator.objectRefSignature());
+					signature());
 		}
+
+		protected abstract Signature<C> signature();
 
 	}
 
-	private static class FldContent<T extends Type<?>> implements Content<T> {
+	private static class FldContent<T extends Type<?, C>, C extends Func>
+			implements Content<T> {
 
-		private final RefFld fld;
+		private final RefFld<C> fld;
 
-		FldContent(RefFld fld) {
+		FldContent(RefFld<C> fld) {
 			this.fld = fld;
 		}
 
-		public final RefFld fld() {
+		public final RefFld<C> fld() {
 			return this.fld;
 		}
 

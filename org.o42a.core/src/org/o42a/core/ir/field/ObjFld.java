@@ -29,13 +29,11 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.member.field.Field;
 
 
-public class ObjFld extends RefFld {
+public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 	public ObjFld(ObjectBodyIR bodyIR, Field<Obj> field) {
 		super(bodyIR, field);
@@ -83,14 +81,19 @@ public class ObjFld extends RefFld {
 			CodePos exit) {
 
 		final ObjOp host = builder.host();
-		final ObjFldOp fld = op(code, host);
-		final AnyOp previousPtr = fld.ptr().previous(code).load(code);
+		final ObjFld.Op fld =
+			builder.getFunction().ptrArg(code, 1)
+			.to(code, getGenerator().objFldType());
+		final AnyOp previousPtr = fld.previous(code).load(code);
 
 		final CondBlk construct =
 			previousPtr.isNull(code).branch(code, "construct", "delegate");
 
-		final AnyOp result1 =
-			construct(builder, construct, exit, fld).toAny(construct);
+		final AnyOp result1 = construct(
+				builder,
+				construct,
+				exit,
+				new ObjFldOp(this, host, fld)).toAny(construct);
 
 		construct.go(code.tail());
 
@@ -102,11 +105,11 @@ public class ObjFld extends RefFld {
 
 		final AnyOp result = code.phi(result1, result2);
 
-		final BoolOp homeHost =
-			host.ptr().eq(code, getBodyIR().getPointer().op(code));
-		final CondBlk store = homeHost.branch(code, "store", "do_not_store");
+		final FldOp ownFld = host.field(code, exit, getField().getKey());
+		final BoolOp isOwn = ownFld.ptr().eq(code, fld);
+		final CondBlk store = isOwn.branch(code, "store", "do_not_store");
 
-		fld.ptr().object(store).store(store, result);
+		fld.object(store).store(store, result);
 		result.returnValue(store);
 
 		result.returnValue(store.otherwise());
@@ -117,12 +120,15 @@ public class ObjFld extends RefFld {
 			Code code,
 			CodePos exit,
 			AnyOp previousPtr) {
+		code.dumpName("Delegate to ", previousPtr);
 
 		final Op previous = previousPtr.to(code, getType().getOriginal());
-		final ObjectRefFunc constructor =
+		final ObjectConstructorFunc constructor =
 			previous.constructor(code).load(code);
-		final AnyOp ancestorPtr =
-			constructor.call(code, builder.host().toAny(code));
+		final AnyOp ancestorPtr = constructor.call(
+				code,
+				builder.host().toAny(code),
+				previous.toAny(code));
 		final ObjectOp ancestor =
 			anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
 
@@ -134,7 +140,7 @@ public class ObjFld extends RefFld {
 				CtrOp.FIELD_PROPAGATION);
 	}
 
-	public static final class Op extends RefFld.Op {
+	public static final class Op extends RefFld.Op<ObjectConstructorFunc> {
 
 		private Op(StructWriter writer) {
 			super(writer);
@@ -154,13 +160,22 @@ public class ObjFld extends RefFld {
 			return new Op(writer);
 		}
 
+		@Override
+		protected AnyOp construct(
+				Code code,
+				ObjOp host,
+				ObjectConstructorFunc constructor) {
+			return constructor.call(code, host.toAny(code), toAny(code));
+		}
+
 	}
 
-	public static final class Type extends RefFld.Type<Op> {
+	public static final class Type
+			extends RefFld.Type<Op, ObjectConstructorFunc> {
 
 		private AnyPtrRec previous;
 
-		Type(IRGenerator generator) {
+		Type(FieldIRGenerator generator) {
 			super(generator, generator.id("ObjFld"));
 		}
 
@@ -177,6 +192,11 @@ public class ObjFld extends RefFld {
 		@Override
 		public Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected Signature<ObjectConstructorFunc> signature() {
+			return this.generator.objectConstructorSignature();
 		}
 
 	}

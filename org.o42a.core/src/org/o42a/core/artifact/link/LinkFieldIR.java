@@ -44,9 +44,9 @@ final class LinkFieldIR extends FieldIR<Link> {
 	}
 
 	@Override
-	protected RefFld declare(SubData<?> data, ObjectBodyIR bodyIR) {
+	protected RefFld<?> declare(SubData<?> data, ObjectBodyIR bodyIR) {
 
-		final RefFld fld;
+		final RefFld<?> fld;
 		final Field<Link> field = getField();
 
 		if (field.getArtifact().isVariable()) {

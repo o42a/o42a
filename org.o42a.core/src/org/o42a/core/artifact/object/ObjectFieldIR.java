@@ -26,10 +26,8 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.ObjFld;
-import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.RefLclOp;
-import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.field.Field;
 
@@ -38,11 +36,6 @@ final class ObjectFieldIR extends FieldIR<Obj> {
 
 	ObjectFieldIR(IRGenerator generator, Field<Obj> field) {
 		super(generator, field);
-	}
-
-	@Override
-	public RefFldOp field(Code code, ObjOp host) {
-		return (RefFldOp) super.field(code, host);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.field;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
@@ -27,30 +27,32 @@ import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 
 
-public final class ObjectRefFunc extends Func {
+public class ObjectConstructorFunc extends Func {
 
-	ObjectRefFunc(FuncCaller caller) {
+	ObjectConstructorFunc(FuncCaller caller) {
 		super(caller);
 	}
 
-	public AnyOp call(Code code, AnyOp object) {
-		return caller().callAny(code, object);
+	public AnyOp call(Code code, AnyOp object, AnyOp fld) {
+		return caller().callAny(code, object, fld);
 	}
 
-	static final class ObjectRef extends Signature<ObjectRefFunc> {
+	static final class ObjectConstructor
+			extends Signature<ObjectConstructorFunc> {
 
-		ObjectRef() {
-			super("any*", "ObjectRefF", "any*");
+		ObjectConstructor() {
+			super("any*", "ObjectConstructorF", "any*, Fld*");
 		}
 
 		@Override
-		public ObjectRefFunc op(FuncCaller caller) {
-			return new ObjectRefFunc(caller);
+		public ObjectConstructorFunc op(FuncCaller caller) {
+			return new ObjectConstructorFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<ObjectRefFunc> writer) {
+		protected void write(SignatureWriter<ObjectConstructorFunc> writer) {
 			writer.returnAny();
+			writer.addAny();
 			writer.addAny();
 		}
 
