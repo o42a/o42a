@@ -59,10 +59,4 @@ public class RunTests extends IntrinsicDirective {
 				this.module));
 	}
 
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
-	}
-
 }
