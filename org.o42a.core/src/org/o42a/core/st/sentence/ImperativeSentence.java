@@ -21,8 +21,10 @@ package org.o42a.core.st.sentence;
 
 import java.util.List;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationSpec;
+import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.op.ValOp;
@@ -110,18 +112,17 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 	void write(Control control, String index, ValOp result) {
 
 		final ImperativeSentence prerequisite = getPrerequisite();
+		final Code prereqFailed;
 
-		if (prerequisite != null) {
+		if (prerequisite == null) {
+			prereqFailed = null;
+		} else {
 			// write prerequisite
+			prereqFailed = control.addBlock(index + "_prereq_failed");
 
-			final Code next = control.addBlock(index + ".next");
-			final Control prereqControl = control.issue(next.head());
+			final Control prereqControl = control.issue(prereqFailed.head());
 
-			prerequisite.write(prereqControl, index + ".prereq", null);
-			if (next.exists()) {
-				// prerequisite failed - continue execution
-				next.go(control.code().tail());
-			}
+			prerequisite.write(prereqControl, index + "_prereq", null);
 			control.reachability(prereqControl);
 			if (!prereqControl.mayContinue()) {
 				return;
@@ -135,15 +136,18 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 			if (len != 0) {
 				alternatives.get(0).write(control, result);
 			}
+			endPrereq(control, prereqFailed);
 			end(control, control);
 			return;
 		}
 
 		// code blocks for each alternative
 		final Code[] blocks = new Code[len];
+		final IRGenerator generator = control.getGenerator();
+		final CodeId sentId = generator.id(index + "_sent");
 
 		for (int i = 0; i < len; ++i) {
-			blocks[i] = control.addBlock(index + "_sent." + i + "_alt");
+			blocks[i] = control.addBlock(sentId.sub(i + "_alt"));
 		}
 		control.code().go(blocks[0].head());
 
@@ -211,6 +215,7 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 				altCode.go(blocks[nextNonOppositeIdx].head());
 			} else {
 				// everything is successfully done
+				endPrereq(control, prereqFailed);
 				end(control, altControl);
 			}
 		}
@@ -250,6 +255,14 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 		}
 
 		return -1;
+	}
+
+	private void endPrereq(Control control, Code prereqFailed) {
+		if (prereqFailed != null && prereqFailed.exists()) {
+			prereqFailed.debug("(!) ---------------- Prerequisite failed");
+			// prerequisite failed - continue execution
+			prereqFailed.go(control.code().tail());
+		}
 	}
 
 	private void end(Control mainControl, Control control) {
