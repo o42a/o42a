@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.value.ValueType;
 
 
 public class BinaryOperatorTest extends CompilerTestCase {
@@ -76,102 +75,6 @@ public class BinaryOperatorTest extends CompilerTestCase {
 
 		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
 		assertEquals(1L, definiteValue(b));
-	}
-
-	@Test
-	public void equals() {
-		compile(
-				"A := void(@Operators: equals :=> void).",
-				"B := A == 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
-	}
-
-	@Test
-	public void notEquals() {
-		compile(
-				"A := void(@Operators: equals :=> void()).",
-				"B := A <> 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
-	}
-
-	@Test
-	public void less() {
-		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A < 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
-	}
-
-	@Test
-	public void lessOrEquals() {
-		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A <= 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
-	}
-
-	@Test
-	public void greater() {
-		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A > 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
-	}
-
-	@Test
-	public void greaterOrEquals() {
-		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A >= 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
-	}
-
-	@Test
-	public void compareEquals() {
-		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A == 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
-	}
-
-	@Test
-	public void compareNotEquals() {
-		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A <> 2");
-
-		final Obj b = getField("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
 	}
 
 }
