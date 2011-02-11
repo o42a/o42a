@@ -175,6 +175,9 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
 		final CodeBlk noAncestor = hasAncestor.otherwise();
 
+		noAncestor.debug(
+				condition.isRequirement()
+				? "No ancestor requirement" : "No ancestor condition");
 		noAncestor.go(code.tail());
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
@@ -185,8 +188,10 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 			.data(host.getBuilder(), hasAncestor, DERIVED);
 
 		if (condition.isRequirement()) {
+			hasAncestor.dumpName("Ancestor requirement: ", ancestorBody.ptr());
 			ancestorData.writeRequirement(hasAncestor, exit, ancestorBody);
 		} else {
+			hasAncestor.dumpName("Ancestor condition: ", ancestorBody.ptr());
 			ancestorData.writeCondition(hasAncestor, exit, ancestorBody);
 		}
 
