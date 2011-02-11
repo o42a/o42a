@@ -63,6 +63,8 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 		super(logical, rescoper);
 		this.source = source;
 		this.requirements = requirements;
+		assert requirements.length != 0 || getClass() == EmptyLogicalDef.class :
+			"At least one requirement expected";
 	}
 
 	LogicalDef(
