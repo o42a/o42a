@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.CondBlk;
@@ -41,8 +42,8 @@ public abstract class OpCodeBase extends CodeBase {
 
 	protected abstract CondBlk choose(
 			BoolOp condition,
-			String trueId,
-			String falseId);
+			CodeId trueName,
+			CodeId falseName);
 
 	protected static final class Head implements CodePos {
 

@@ -263,7 +263,7 @@ public abstract class Debug extends Globals {
 		@Override
 		public void beforeReturn(Code code) {
 
-			final Debug debug = code.generator();
+			final Debug debug = code.getGenerator();
 
 			debug.exitFunc.op(code).exit(code);
 		}

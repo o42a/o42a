@@ -43,7 +43,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	private final Function<?> function;
 
 	public DebugCodeBase(Code enclosing) {
-		this.generator = enclosing.generator();
+		this.generator = enclosing.getGenerator();
 		this.function = enclosing.getFunction();
 	}
 
@@ -66,7 +66,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	public void debug(String message) {
 		assertIncomplete();
-		if (!generator().isDebug()) {
+		if (!getGenerator().isDebug()) {
 			return;
 		}
 
@@ -78,7 +78,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	public final void dumpName(String prefix, PtrOp data) {
 		assertIncomplete();
-		if (!generator().isDebug()) {
+		if (!getGenerator().isDebug()) {
 			return;
 		}
 
@@ -95,7 +95,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	public void dumpName(String prefix, Func code) {
 		assertIncomplete();
-		if (!generator().isDebug()) {
+		if (!getGenerator().isDebug()) {
 			return;
 		}
 
@@ -116,7 +116,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	public final void dump(String message, PtrOp data, int depth) {
 		assertIncomplete();
-		if (!generator().isDebug()) {
+		if (!getGenerator().isDebug()) {
 			return;
 		}
 
@@ -136,11 +136,11 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	public final void dumpValue(String message, StructOp data, int depth) {
 		assertIncomplete();
-		if (!generator().isDebug()) {
+		if (!getGenerator().isDebug()) {
 			return;
 		}
 
-		final Debug debug = generator();
+		final Debug debug = getGenerator();
 		final DbgStruct typeStruct = debug.typeStruct(data.getType());
 
 		if (typeStruct == null) {
@@ -177,13 +177,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		stringToBinary(message, bytes, bytesPerChar);
 
-		return generator().addBinary(
-				generator().id("DEBUG_" + (debugSeq++)),
+		return getGenerator().addBinary(
+				getGenerator().id("DEBUG_" + (debugSeq++)),
 				bytes);
-	}
-
-	protected final Generator generator() {
-		return this.generator;
 	}
 
 	protected final CodeBackend backend() {

@@ -20,7 +20,6 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr.FuncPtr;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
@@ -98,7 +97,7 @@ public final class Function<F extends Func> extends Code {
 			return this.writer;
 		}
 
-		final Functions functions = generator();
+		final Functions functions = getGenerator();
 
 		this.writer = backend().addFunction(
 				this,
@@ -114,13 +113,11 @@ public final class Function<F extends Func> extends Code {
 	}
 
 	@Override
-	CodeId nestedId(String name) {
-
-		final Generator generator = generator();
-
-		return name != null
-		? generator.id(name)
-		: generator.id().anonymous(++this.blockSeq);
+	CodeId nestedId(CodeId name) {
+		if (name != null) {
+			return name;
+		}
+		return getGenerator().id().anonymous(++this.blockSeq);
 	}
 
 }

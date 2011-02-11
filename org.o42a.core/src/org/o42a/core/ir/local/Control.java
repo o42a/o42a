@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationSpec;
+import org.o42a.core.ir.IRGenerator;
 
 
 public abstract class Control {
@@ -60,6 +62,10 @@ public abstract class Control {
 		this.braces = null;
 		this.code = code;
 		this.exit = exit;
+	}
+
+	public final IRGenerator getGenerator() {
+		return getBuilder().getGenerator();
 	}
 
 	public final LocalBuilder getBuilder() {
@@ -154,6 +160,10 @@ public abstract class Control {
 	}
 
 	public final Code addBlock(String name) {
+		return this.code.addBlock(name);
+	}
+
+	public final Code addBlock(CodeId name) {
 		return this.code.addBlock(name);
 	}
 

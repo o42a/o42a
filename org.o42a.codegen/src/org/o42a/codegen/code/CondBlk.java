@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -26,14 +27,14 @@ import org.o42a.codegen.code.op.BoolOp;
 public class CondBlk extends CodeBlk {
 
 	private final BoolOp condition;
-	private final String falseName;
+	private final CodeId falseName;
 	private CodeBlk otherwise;
 
 	CondBlk(
 			Code enclosing,
 			BoolOp condition,
-			String trueName,
-			String falseName) {
+			CodeId trueName,
+			CodeId falseName) {
 		super(enclosing, trueName);
 		this.condition = condition;
 		this.falseName = falseName;
