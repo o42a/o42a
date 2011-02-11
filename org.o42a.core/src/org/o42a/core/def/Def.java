@@ -207,7 +207,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		}
 
 		if (getPrerequisite().isTrue()) {
-			DefValue.alwaysMeaningfulValue(this, value);
+			return DefValue.alwaysMeaningfulValue(this, value);
 		}
 
 		return DefValue.value(

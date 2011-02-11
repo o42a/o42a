@@ -21,6 +21,7 @@ package org.o42a.codegen.code.op;
 
 import static org.o42a.codegen.code.op.OpCodeBase.unwrapPos;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.CondBlk;
@@ -40,14 +41,27 @@ public abstract class BoolOp implements Op {
 			Code source,
 			String trueName,
 			String falseName) {
+		return branch(
+				source,
+				trueName != null ? source.getGenerator().id(trueName) : null,
+				falseName != null ? source.getGenerator().id(falseName) : null);
+	}
+
+	public final CondBlk branch(
+			Code source,
+			CodeId trueName,
+			CodeId falseName) {
 
 		final OpCodeBase src = source;
 
 		return src.choose(
 				this,
-				trueName != null ? trueName : "true",
-				falseName != null ? falseName
-						: (trueName != null ? "not_" + trueName : "false"));
+				trueName != null ? trueName : source.getGenerator().id("true"),
+				falseName != null
+				? falseName
+				: (trueName != null
+						? source.getGenerator().id("not").sub(trueName)
+						: source.getGenerator().id("false")));
 	}
 
 	public final void go(Code source, CodePos truePos) {

@@ -33,7 +33,7 @@ public abstract class Code extends DebugCodeBase {
 	private final Head head = new Head(this);
 	int blockSeq;
 
-	Code(Code enclosing, String name) {
+	Code(Code enclosing, CodeId name) {
 		super(enclosing);
 		this.id = enclosing.nestedId(name);
 	}
@@ -70,10 +70,15 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final CodeBlk addBlock() {
-		return addBlock(null);
+		return addBlock((CodeId) null);
 	}
 
 	public final CodeBlk addBlock(String name) {
+		assertIncomplete();
+		return new CodeBlk(this, getGenerator().id(name));
+	}
+
+	public final CodeBlk addBlock(CodeId name) {
 		assertIncomplete();
 		return new CodeBlk(this, name);
 	}
@@ -164,20 +169,18 @@ public abstract class Code extends DebugCodeBase {
 	@Override
 	protected final CondBlk choose(
 			BoolOp condition,
-			String trueName,
-			String falseName) {
+			CodeId trueName,
+			CodeId falseName) {
 		assertIncomplete();
 		return new CondBlk(this, condition, trueName, falseName);
 	}
 
-	CodeId nestedId(String name) {
+	CodeId nestedId(CodeId name) {
+		if (name != null) {
+			return getId().setLocal(name);
+		}
 
-		final Generator generator = generator();
-
-		return getId().setLocal(
-				name != null
-				? generator.id(name)
-				: generator.id().anonymous(++this.blockSeq));
+		return getId().setLocal(getGenerator().id().anonymous(++this.blockSeq));
 	}
 
 }
