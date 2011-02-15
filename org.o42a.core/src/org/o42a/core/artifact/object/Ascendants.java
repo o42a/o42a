@@ -37,6 +37,7 @@ public final class Ascendants {
 	private Directive directive;
 	private Sample[] samples = NO_SAMPLES;
 	private byte runtime;
+	private boolean validated;
 
 	public Ascendants(Scope scope) {
 		this.scope = scope;
@@ -177,6 +178,10 @@ public final class Ascendants {
 	}
 
 	void validate() {
+		if (this.validated) {
+			return;
+		}
+		this.validated = true;
 		if (this.explicitAncestor != null) {
 			if (!this.explicitAncestor.validate()) {
 				this.explicitAncestor = null;
@@ -254,11 +259,24 @@ public final class Ascendants {
 			return false;
 		}
 
+		final boolean explicit = sample.isExplicit();
 		final TypeRef ancestor = getExplicitAncestor();
 
 		if (ancestor != null) {
 
-			final TypeRelation relation = ancestor.relationTo(sampleAncestor);
+			final TypeRef first;
+			final TypeRef second;
+
+			if (explicit) {
+				first = ancestor;
+				second = sampleAncestor;
+			} else {
+				first = sampleAncestor;
+				second = ancestor;
+			}
+
+			final TypeRelation relation =
+				first.relationTo(second).revert(!explicit);
 
 			if (!relation.isDerivative()) {
 				if (!relation.isError()) {
@@ -267,10 +285,14 @@ public final class Ascendants {
 							"unexpected_ancestor",
 							sample,
 							"Wrong ancestor: %s, but expected: %s",
-							sampleAncestor,
-							ancestor);
+							second,
+							first);
 				}
-				return false;
+				if (explicit) {
+					return false;
+				}
+				this.ancestor = null;
+				return true;
 			}
 		}
 
@@ -278,12 +300,32 @@ public final class Ascendants {
 
 			final Sample s = this.samples[i];
 
-			if (s.relationTo(sample, false).isAscendant()) {
-				this.samples = ArrayUtil.remove(this.samples, i);
-				continue;
+			final TypeRef first;
+			final TypeRef second;
+
+			if (explicit) {
+				first = sampleAncestor;
+				second = s.getTypeRef();
+			} else {
+				first = s.getTypeRef();
+				second = sampleAncestor;
 			}
 
-			return false;
+			final TypeRelation relation =
+				first.relationTo(second, false).revert(!explicit);
+
+			if (relation.isAscendant()) {
+				if (!explicit) {
+					continue;
+				}
+				return false;
+			}
+			if (relation.isDerivative()) {
+				if (!explicit) {
+					return false;
+				}
+				this.samples = ArrayUtil.remove(this.samples, i);
+			}
 		}
 
 		return true;

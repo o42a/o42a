@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.ref.Ref.voidRef;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
@@ -46,10 +48,14 @@ class DeclaredObjectField extends DeclaredField<Obj> {
 		final Ascendants ascendants = buildAscendants(new Ascendants(this));
 
 		if (ascendants.getAncestor() != null) {
-			return new DeclaredCall(this, ascendants);
+			return new DeclaredObject(this, ascendants);
 		}
 
-		return new DeclaredObject(this);
+		return new DeclaredObject(
+				this,
+				ascendants.setAncestor(voidRef(
+						this,
+						getEnclosingScope().distribute()).toTypeRef()));
 	}
 
 	@Override
@@ -101,14 +107,15 @@ class DeclaredObjectField extends DeclaredField<Obj> {
 
 		final Scope scope = getEnclosingScope();
 
-		variant.getDefinition().getAscendants().updateAscendants(
+		ascendants = variant.getDefinition().getAscendants().updateAscendants(
 				scope,
 				ascendants);
 
 		final AdapterId adapterId = toMember().getId().getAdapterId();
 
 		if (adapterId != null) {
-			ascendants.addExplicitSample(adapterId.adapterType(scope));
+			ascendants =
+				ascendants.addExplicitSample(adapterId.adapterType(scope));
 		}
 	}
 

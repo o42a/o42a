@@ -30,8 +30,6 @@ import org.o42a.core.st.sentence.BlockBuilder;
 final class PhraseFieldDefinition extends FieldDefinition {
 
 	private final Phrase phrase;
-	private AscendantsDefinition ascendants;
-	private BlockBuilder declarations;
 	private FieldDefinition definition;
 	private Ref value;
 
@@ -42,14 +40,12 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public AscendantsDefinition getAscendants() {
-		build();
-		return this.ascendants;
+		return getDefinition().getAscendants();
 	}
 
 	@Override
 	public BlockBuilder getDeclarations() {
-		build();
-		return this.declarations;
+		return getDefinition().getDeclarations();
 	}
 
 	@Override
@@ -91,26 +87,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 				this,
 				mainContext.getAscendants(),
 				mainContext.getInstances()[0].getDefinition());
-	}
-
-	private void build() {
-		if (this.ascendants != null) {
-			return;
-		}
-
-		final MainPhraseContext mainContext = this.phrase.getMainContext();
-
-		if (!mainContext.createsObject()) {
-
-			final Ref value = mainContext.standaloneRef();
-
-			this.ascendants =
-				new AscendantsDefinition(value, distribute())
-				.addSample(value.toStaticTypeRef());
-		} else {
-			this.ascendants = mainContext.getAscendants();
-			this.declarations = mainContext.getInstances()[0].getDefinition();
-		}
 	}
 
 }

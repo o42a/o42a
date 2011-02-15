@@ -22,7 +22,9 @@ package org.o42a.core.artifact.object;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.artifact.*;
+import org.o42a.core.artifact.Directive;
+import org.o42a.core.artifact.StaticTypeRef;
+import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 
@@ -48,18 +50,6 @@ public abstract class Sample extends Scoped {
 	}
 
 	public abstract Directive toDirective();
-
-	public final TypeRelation relationTo(Sample other) {
-		return relationTo(other, true);
-	}
-
-	public final TypeRelation relationTo(
-			Sample other,
-			boolean reportIncompatibility) {
-		return getTypeRef().relationTo(
-				other.getTypeRef(),
-				reportIncompatibility);
-	}
 
 	public abstract void inheritMembers(ObjectMembers members);
 

@@ -48,4 +48,26 @@ public enum TypeRelation {
 		return this == SAME || this == DERIVATIVE;
 	}
 
+	public TypeRelation revert(boolean revert) {
+		return revert ? revert() : this;
+	}
+
+	public TypeRelation revert() {
+		switch (this) {
+		case SAME:
+		case INCOMPATIBLE:
+			return this;
+		case ASCENDANT:
+			return DERIVATIVE;
+		case DERIVATIVE:
+			return ASCENDANT;
+		case PREFERRED:
+			return INVALID;
+		case INVALID:
+			return PREFERRED;
+		}
+		throw new IllegalStateException(
+				"Can not revert type relation: " + this);
+	}
+
 }

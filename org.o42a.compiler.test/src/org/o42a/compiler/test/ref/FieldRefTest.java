@@ -75,7 +75,7 @@ public class FieldRefTest extends CompilerTestCase {
 	public void enclosedFieldRef() {
 		compile(
 				"A := void(Foo := 1).",
-				"B := void(Bar := a:foo)");
+				"B := void(Bar := a: foo)");
 
 		final Obj foo = getField(this.a, "foo").getArtifact().toObject();
 		final Obj bar = getField(this.b, "bar").getArtifact().toObject();
@@ -88,8 +88,8 @@ public class FieldRefTest extends CompilerTestCase {
 	public void overrideFieldRef() {
 		compile(
 				"A := void(Foo := 1).",
-				"B := void(Bar := a:foo).",
-				"C := b(Bar = 2)");
+				"B := void(Bar := a: foo).",
+				"C := b(Bar = a: foo(= 2))");
 
 		final Obj c = getField("c").getArtifact().toObject();
 
