@@ -204,6 +204,11 @@ public class Root extends Obj {
 		}
 
 		@Override
+		public boolean contains(Scope other) {
+			return true;
+		}
+
+		@Override
 		protected ScopeIR createIR(IRGenerator generator) {
 			return new IR(generator, this);
 		}

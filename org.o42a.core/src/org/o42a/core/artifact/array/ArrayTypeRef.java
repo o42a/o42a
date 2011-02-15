@@ -21,6 +21,7 @@ package org.o42a.core.artifact.array;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.artifact.TypeRelation;
 import org.o42a.core.ref.Ref;
 import org.o42a.util.log.Loggable;
 
@@ -96,29 +97,15 @@ public class ArrayTypeRef implements ScopeSpec {
 		return new ArrayTypeRef(typeRef, this.dimension);
 	}
 
-	public boolean derivedFrom(ArrayTypeRef other) {
-		if (this.dimension != other.dimension) {
-			return false;
-		}
-		return this.itemTypeRef.derivedFrom(other.itemTypeRef);
-	}
-
-	public ArrayTypeRef commonInheritant(ArrayTypeRef other) {
+	public ArrayTypeRef commonDerivative(ArrayTypeRef other) {
 		if (this.dimension != other.dimension) {
 			return null;
 		}
 
-		final TypeRef commonInheritant =
-			this.itemTypeRef.commonInheritant(other.itemTypeRef);
+		final TypeRelation relation =
+			this.itemTypeRef.relationTo(other.itemTypeRef);
 
-		if (commonInheritant == null) {
-			return null;
-		}
-		if (commonInheritant == this.itemTypeRef) {
-			return this;
-		}
-
-		return other;
+		return relation.isPreferred() ? this : other;
 	}
 
 	@Override

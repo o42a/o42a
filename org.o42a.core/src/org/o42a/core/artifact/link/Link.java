@@ -150,8 +150,12 @@ public abstract class Link extends Artifact<Link> {
 			return;
 		}
 
-		if (!refType(ref).derivedFrom(typeRef)) {
-			getLogger().notDerivedFrom(ref, typeRef);
+		final TypeRelation relation = typeRef.relationTo(refType(ref));
+
+		if (!relation.isAscendant()) {
+			if (!relation.isError()) {
+				getLogger().notDerivedFrom(ref, typeRef);
+			}
 			this.targetRef = correctTargetRef(ref, typeRef);
 			this.typeRef = correctTypeRef(ref, typeRef);
 			return;

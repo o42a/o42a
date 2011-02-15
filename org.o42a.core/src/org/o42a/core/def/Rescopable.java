@@ -83,6 +83,10 @@ public abstract class Rescopable implements ScopeSpec {
 		return rescope(getScope().rescoperTo(scope));
 	}
 
+	public final CompilerLogger getLogger() {
+		return getScope().getLogger();
+	}
+
 	@Override
 	public void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);

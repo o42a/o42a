@@ -46,24 +46,19 @@ final class SelfRef extends Ref {
 	}
 
 	@Override
-	public TypeRef toTypeRef() {
-		return toStaticTypeRef();
-	}
-
-	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new SelfRef(reproducer.distribute(), this.self.toArtifact());
 	}
 
 	@Override
-	public Ref fixScope() {
-		return this;
+	public String toString() {
+		return "&" + this.self.toString();
 	}
 
 	@Override
-	public String toString() {
-		return "&" + this.self.toString();
+	protected boolean isKnownStatic() {
+		return true;
 	}
 
 	@Override

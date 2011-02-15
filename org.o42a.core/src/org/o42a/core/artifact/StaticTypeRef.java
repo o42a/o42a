@@ -22,6 +22,7 @@ package org.o42a.core.artifact;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
@@ -33,11 +34,6 @@ public final class StaticTypeRef extends TypeRef {
 
 	StaticTypeRef(Ref ref, Rescoper rescoper) {
 		super(ref.fixScope(), rescoper);
-	}
-
-	@Override
-	public boolean isStatic() {
-		return true;
 	}
 
 	@Override
@@ -68,6 +64,39 @@ public final class StaticTypeRef extends TypeRef {
 	@Override
 	public RefOp op(Code code, CodePos exit, HostOp host) {
 		return getType().selfOrDerived().op(host);
+	}
+
+	public final TypeRelation relationTo(StaticTypeRef other) {
+		return relationTo(other, true);
+	}
+
+	public TypeRelation relationTo(
+			StaticTypeRef other,
+			boolean reportIncompatibility) {
+		assertSameScope(other);
+		if (!other.validate()) {
+			return TypeRelation.PREFERRED;
+		}
+		if (!validate()) {
+			return TypeRelation.INVALID;
+		}
+
+		final Obj type1 = getType();
+		final Obj type2 = other.getType();
+
+		if (type1 == type2) {
+			return TypeRelation.SAME;
+		}
+		if (type2.derivedFrom(type1)) {
+			return TypeRelation.ASCENDANT;
+		}
+		if (type1.derivedFrom(type2)) {
+			return TypeRelation.DERIVATIVE;
+		}
+		if (reportIncompatibility) {
+			getLogger().incompatible(other, this);
+		}
+		return TypeRelation.INCOMPATIBLE;
 	}
 
 	@Override

@@ -93,7 +93,7 @@ final class DeclaredLinkField extends DeclaredField<Link> {
 			} else {
 
 				final TypeRef commonInheritant =
-					typeRef.commonInheritant(overriddenTypeRef);
+					typeRef.commonDerivative(overriddenTypeRef);
 
 				if (commonInheritant != null) {
 					typeRef = commonInheritant;

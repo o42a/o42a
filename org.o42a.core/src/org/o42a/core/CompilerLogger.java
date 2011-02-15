@@ -495,18 +495,6 @@ public class CompilerLogger implements Logger {
 		error("unexpected_adapter", location, "Unexpected adapter declaration");
 	}
 
-	public void unexpectedAncestor(
-			LogInfo location,
-			Object actual,
-			Object expected) {
-		error(
-				"unexpected_ancestor",
-				location,
-				"Wrong ancestor: %s, but expected: %s",
-				actual,
-				expected);
-	}
-
 	public void unexpectedArrayDimension(
 			LogInfo location,
 			int actual,

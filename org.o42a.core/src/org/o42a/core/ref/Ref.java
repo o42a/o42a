@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.artifact.TypeRef.staticTypeRef;
-import static org.o42a.core.artifact.TypeRef.typeRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.code.Code;
@@ -29,7 +27,9 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.*;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.*;
+import org.o42a.core.def.Def;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -83,6 +83,7 @@ public abstract class Ref extends RefBase {
 	private ConditionsWrap conditions;
 	private Logical logical;
 	private RefOp op;
+	private Path resolutionRoot;
 
 	public Ref(LocationSpec location, Distributor distributor) {
 		this(location, distributor, null);
@@ -111,6 +112,59 @@ public abstract class Ref extends RefBase {
 
 	public final Resolution getResolution() {
 		return resolve(getScope());
+	}
+
+	/**
+	 * Resolution root path.
+	 *
+	 * <p>This is either upward part of {@link #getPath() path}
+	 * (if present) or resolution root of ancestor.</p>
+	 *
+	 * <p>This is used by {@link TypeRef} to check the type resolution
+	 * compatibility.</p>
+	 *
+	 * @return resolution root path, never <code>null</code>.
+	 */
+	public Path getResolutionRoot() {
+		if (this.resolutionRoot != null) {
+			return this.resolutionRoot;
+		}
+		if (isKnownStatic()) {
+			return this.resolutionRoot = Path.ROOT_PATH;
+		}
+
+		final Path path = getPath();
+
+		if (path != null) {
+			if (path.isAbsolute()) {
+				return this.resolutionRoot = Path.ROOT_PATH;
+			}
+
+			final ResolutionRootFinder rootFinder =
+				new ResolutionRootFinder(this);
+
+			path.walk(this, getScope(), rootFinder);
+
+			return this.resolutionRoot = rootFinder.getRoot();
+		}
+
+		if (getResolution().isFalse()) {
+			// False resolution is always absolute.
+			return this.resolutionRoot = Path.ROOT_PATH;
+		}
+
+		final Obj object = getResolution().toObject();
+
+		assert object != null :
+			"Non-object reference expected to have a path";
+
+		if (object == getContext().getIntrinsics().getVoid()) {
+			// Explicit VOID resolution is always absolute.
+			return this.resolutionRoot = Path.ROOT_PATH;
+		}
+
+		return this.resolutionRoot =
+			object.getAncestor().getRef().getResolutionRoot();
 	}
 
 	@Override
@@ -233,7 +287,10 @@ public abstract class Ref extends RefBase {
 		return objectResolution(resolved.toPlainClause().getObject());
 	}
 
-	public Ref fixScope() {
+	public final Ref fixScope() {
+		if (isKnownStatic()) {
+			return this;
+		}
 		return new FixedScopeRef(this);
 	}
 
@@ -284,15 +341,18 @@ public abstract class Ref extends RefBase {
 	}
 
 	public TypeRef toTypeRef() {
+		if (isKnownStatic()) {
+			return toStaticTypeRef();
+		}
 		return typeRef(this);
-	}
-
-	public TargetRef toTargetRef() {
-		return new TargetRef(this);
 	}
 
 	public StaticTypeRef toStaticTypeRef() {
 		return staticTypeRef(this);
+	}
+
+	public TargetRef toTargetRef() {
+		return new TargetRef(this);
 	}
 
 	public Rescoper toRescoper() {
@@ -308,6 +368,10 @@ public abstract class Ref extends RefBase {
 		}
 
 		return this.op = createOp(host);
+	}
+
+	protected boolean isKnownStatic() {
+		return false;
 	}
 
 	protected abstract RefOp createOp(HostOp host);

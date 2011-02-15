@@ -221,10 +221,7 @@ public final class Ascendants {
 				result = ancestor;
 				continue;
 			}
-			if (result.derivedFrom(ancestor)) {
-				continue;
-			}
-			result = ancestor;
+			result = result.commonDerivative(ancestor);
 		}
 
 		return result;
@@ -253,21 +250,26 @@ public final class Ascendants {
 
 		final TypeRef sampleAncestor = sample.getAncestor();
 
-		if (sampleAncestor == null) {
-			return true;
-		}
 		if (!sampleAncestor.validate()) {
 			return false;
 		}
 
 		final TypeRef ancestor = getExplicitAncestor();
 
-		if (ancestor != null && !ancestor.derivedFrom(sampleAncestor)) {
-			if (!sampleAncestor.derivedFrom(ancestor)) {
-				getScope().getLogger().unexpectedAncestor(
-						sample,
-						sampleAncestor,
-						ancestor);
+		if (ancestor != null) {
+
+			final TypeRelation relation = ancestor.relationTo(sampleAncestor);
+
+			if (!relation.isDerivative()) {
+				if (!relation.isError()) {
+					ancestor.relationTo(sampleAncestor);
+					getScope().getLogger().error(
+							"unexpected_ancestor",
+							sample,
+							"Wrong ancestor: %s, but expected: %s",
+							sampleAncestor,
+							ancestor);
+				}
 				return false;
 			}
 		}
@@ -276,13 +278,12 @@ public final class Ascendants {
 
 			final Sample s = this.samples[i];
 
-			if (sample.derivedFrom(s)) {
+			if (s.relationTo(sample, false).isAscendant()) {
 				this.samples = ArrayUtil.remove(this.samples, i);
 				continue;
 			}
-			if (s.derivedFrom(sample)) {
-				return false;
-			}
+
+			return false;
 		}
 
 		return true;

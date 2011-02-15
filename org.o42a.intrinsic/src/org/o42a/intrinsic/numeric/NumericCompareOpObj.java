@@ -21,6 +21,7 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryOpObj;
 import org.o42a.intrinsic.operator.BinaryOperator;
@@ -38,6 +39,14 @@ public abstract class NumericCompareOpObj<L extends Number>
 				owner.getAncestor().toStatic(),
 				ValueType.INTEGER,
 				leftOperandType);
+	}
+
+	@Override
+	protected Ascendants createAscendants() {
+		return new Ascendants(getScope()).setAncestor(
+				getValueType().typeRef(
+						this,
+						getScope().getEnclosingScope()));
 	}
 
 	@Override
