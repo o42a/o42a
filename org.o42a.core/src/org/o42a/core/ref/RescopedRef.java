@@ -22,6 +22,7 @@ package org.o42a.core.ref;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
+import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
@@ -160,6 +161,11 @@ final class RescopedRef extends Wrap {
 		@Override
 		public TypeRef toTypeRef() {
 			return this.ref.toTypeRef().rescope(this.rescoper);
+		}
+
+		@Override
+		public StaticTypeRef toStaticTypeRef() {
+			return this.ref.toStaticTypeRef().rescope(this.rescoper);
 		}
 
 		@Override

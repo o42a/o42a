@@ -20,7 +20,6 @@
 package org.o42a.core.artifact;
 
 import static org.o42a.core.artifact.Artifact.unresolvableObject;
-import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -38,28 +37,10 @@ import org.o42a.core.st.Reproducer;
 
 public class TypeRef extends RescopableRef {
 
-	public static TypeRef typeRef(Ref ref) {
-		if (ref == null) {
-			throw new NullPointerException("Type reference not specified");
-		}
-		return new TypeRef(ref, transparentRescoper(ref.getScope()));
-	}
-
-	public static StaticTypeRef staticTypeRef(Ref ref) {
-		if (ref == null) {
-			throw new NullPointerException("Type reference not specified");
-		}
-		return new StaticTypeRef(ref, transparentRescoper(ref.getScope()));
-	}
-
 	private Obj type;
 
 	TypeRef(Ref ref, Rescoper rescoper) {
 		super(ref, rescoper);
-	}
-
-	public boolean isStatic() {
-		return false;
 	}
 
 	public Obj getType() {
@@ -97,39 +78,82 @@ public class TypeRef extends RescopableRef {
 		return this.type = object;
 	}
 
-	public boolean derivedFrom(TypeRef ascendant) {
-
-		final Obj type1 = getType();
-
-		if (type1 == null) {
-			return false;
-		}
-
-		final Obj type2 = ascendant.getType();
-
-		if (type2 == null) {
-			return false;
-		}
-
-		return type1.derivedFrom(type2);
-	}
-
 	public boolean validate() {
 		return getType() != null;
+	}
+
+	public final TypeRelation relationTo(TypeRef other) {
+		return relationTo(other, true);
+	}
+
+	public TypeRelation relationTo(
+			TypeRef other,
+			boolean reportIncompatibility) {
+		assertSameScope(other);
+		if (!other.validate()) {
+			return TypeRelation.PREFERRED;
+		}
+		if (!validate()) {
+			return TypeRelation.INVALID;
+		}
+
+		final Scope root1 = getRef().getResolutionRoot().resolve(
+				this,
+				getRescoper().rescope(getScope())).getScope();
+		final Scope root2 = other.getRef().getResolutionRoot().resolve(
+				other,
+				other.getRescoper().rescope(other.getScope())).getScope();
+
+		final Obj type1 = getType();
+		final Obj type2 = other.getType();
+
+		if (root1 == root2) {
+			if (type1.getScope() == type2.getScope()) {
+				return TypeRelation.SAME;
+			}
+			if (type1.derivedFrom(type2)) {
+				return TypeRelation.DERIVATIVE;
+			}
+			if (type2.derivedFrom(type1)) {
+				return TypeRelation.ASCENDANT;
+			}
+			if (reportIncompatibility) {
+				getLogger().incompatible(other, this);
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		if (root2.contains(root1)) {
+			if (type1.derivedFrom(type2)) {
+				return TypeRelation.DERIVATIVE;
+			}
+			if (reportIncompatibility) {
+				getLogger().notDerivedFrom(this, other);
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		if (root1.contains(root2)) {
+			if (type2.derivedFrom(type1)) {
+				return TypeRelation.ASCENDANT;
+			}
+			if (reportIncompatibility) {
+				getLogger().notDerivedFrom(other, this);
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		getLogger().incompatible(other, this);
+
+		return TypeRelation.INCOMPATIBLE;
 	}
 
 	public StaticTypeRef toStatic() {
 		return new StaticTypeRef(getRef(), getRescoper());
 	}
 
-	public TypeRef commonInheritant(TypeRef other) {
-		if (derivedFrom(other)) {
-			return this;
-		}
-		if (other.derivedFrom(this)) {
-			return other;
-		}
-		return null;
+	public final TypeRef commonDerivative(TypeRef other) {
+		return relationTo(other).isPreferred() ? this : other;
 	}
 
 	@Override

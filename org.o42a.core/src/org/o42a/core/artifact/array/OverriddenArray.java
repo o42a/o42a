@@ -22,6 +22,7 @@ package org.o42a.core.artifact.array;
 import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeRef;
 
 import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.artifact.TypeRelation;
 import org.o42a.core.member.field.Field;
 
 
@@ -51,10 +52,16 @@ final class OverriddenArray extends Array {
 		final TypeRef declared = this.field.declaredItemTypeRef();
 
 		if (declared != null) {
-			if (declared.derivedFrom(inherited.getItemTypeRef())) {
+
+			final TypeRelation relation =
+				inherited.getItemTypeRef().relationTo(declared);
+
+			if (relation.isAscendant()) {
 				return arrayTypeRef(declared, inherited.getDimension());
 			}
-			getLogger().notDerivedFrom(declared, inherited);
+			if (!relation.isError()) {
+				getLogger().notDerivedFrom(declared, inherited);
+			}
 			this.field.invalid();
 		}
 

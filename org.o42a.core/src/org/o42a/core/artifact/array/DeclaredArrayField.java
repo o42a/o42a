@@ -115,7 +115,7 @@ class DeclaredArrayField extends DeclaredField<Array> {
 			} else {
 
 				final ArrayTypeRef commonInheritant =
-					typeRef.commonInheritant(overriddenTypeRef);
+					typeRef.commonDerivative(overriddenTypeRef);
 
 				if (commonInheritant != null) {
 					typeRef = commonInheritant;

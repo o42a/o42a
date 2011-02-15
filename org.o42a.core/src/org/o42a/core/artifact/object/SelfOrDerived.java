@@ -22,7 +22,6 @@ package org.o42a.core.artifact.object;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
@@ -56,11 +55,6 @@ final class SelfOrDerived extends Ref {
 	}
 
 	@Override
-	public TypeRef toTypeRef() {
-		return toStaticTypeRef();
-	}
-
-	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		getLogger().notReproducible(this);
@@ -70,6 +64,11 @@ final class SelfOrDerived extends Ref {
 	@Override
 	public String toString() {
 		return this.self.toString();
+	}
+
+	@Override
+	protected boolean isKnownStatic() {
+		return true;
 	}
 
 	@Override

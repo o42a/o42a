@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.artifact.TypeRef.staticTypeRef;
 import static org.o42a.core.ir.op.Val.VOID_VAL;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
@@ -182,7 +181,7 @@ public abstract class ValueType<T> {
 
 		@Override
 		public StaticTypeRef typeRef(LocationSpec location, Scope scope) {
-			return staticTypeRef(voidRef(location, scope.distribute()));
+			return voidRef(location, scope.distribute()).toStaticTypeRef();
 		}
 
 		@Override

@@ -23,7 +23,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.RefOp;
@@ -73,18 +72,13 @@ final class FixedScopeRef extends Ref {
 	}
 
 	@Override
-	public TypeRef toTypeRef() {
-		return toStaticTypeRef();
-	}
-
-	@Override
-	public Ref fixScope() {
-		return this;
-	}
-
-	@Override
 	public String toString() {
 		return "&" + this.ref;
+	}
+
+	@Override
+	protected boolean isKnownStatic() {
+		return true;
 	}
 
 	@Override

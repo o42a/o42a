@@ -24,6 +24,7 @@ import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.artifact.TypeRelation;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.util.log.LogInfo;
@@ -108,7 +109,7 @@ public final class ArrayInitializer extends Placed {
 			}
 
 			final ArrayTypeRef commonInheritant =
-				type.commonInheritant(itemType);
+				type.commonDerivative(itemType);
 
 			if (commonInheritant != null) {
 				type = commonInheritant;
@@ -191,11 +192,13 @@ public final class ArrayInitializer extends Placed {
 		final TypeRef itemType = value.toTargetRef().getTypeRef();
 
 		if (expectedItemType != null) {
-			if (!itemType.derivedFrom(expectedItemType)) {
-				getLogger().unexpectedType(
-						definition,
-						itemType,
-						expectedItemType);
+
+			final TypeRelation relation = expectedItemType.relationTo(itemType);
+
+			if (!relation.isAscendant()) {
+				if (!relation.isError()) {
+					getLogger().notDerivedFrom(itemType, expectedItemType);
+				}
 				return null;
 			}
 		}

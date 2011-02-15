@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.link;
 
 import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.artifact.TypeRelation;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 
@@ -50,10 +51,15 @@ final class OverriddenLink extends Link {
 		final TypeRef declared = declaredTypeRef();
 
 		if (declared != null) {
-			if (declared.derivedFrom(inherited)) {
+
+			final TypeRelation relation = inherited.relationTo(declared);
+
+			if (relation.isAscendant()) {
 				return declared;
 			}
-			getLogger().notDerivedFrom(declared, inherited);
+			if (!relation.isError()) {
+				getLogger().notDerivedFrom(declared, inherited);
+			}
 			this.field.invalid();
 		}
 

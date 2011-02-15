@@ -21,6 +21,7 @@ package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.Conditions.emptyConditions;
 
 import org.o42a.common.intrinsic.IntrinsicObject;
@@ -101,10 +102,11 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
-				getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
+
+		final Scope enclosing = getScope().getEnclosingScope();
+
+		return new Ascendants(this).setAncestor(
+				SELF_PATH.target(this, enclosing.distribute()).toTypeRef());
 	}
 
 	@Override

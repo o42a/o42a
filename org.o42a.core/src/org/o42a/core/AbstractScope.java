@@ -214,7 +214,7 @@ public abstract class AbstractScope extends ExpressionScope implements Scope {
 	}
 
 	@Override
-	public final boolean contains(Scope other) {
+	public boolean contains(Scope other) {
 		return contains(this, other);
 	}
 
