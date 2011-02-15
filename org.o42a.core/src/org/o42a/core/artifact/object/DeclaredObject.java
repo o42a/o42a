@@ -22,16 +22,17 @@ package org.o42a.core.artifact.object;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.st.DefinitionTarget;
-import org.o42a.core.value.ValueType;
 
 
 class DeclaredObject extends PlainObject {
 
+	private final Ascendants explicitAscendants;
 	private final DeclaredObjectField field;
 
-	public DeclaredObject(DeclaredObjectField field) {
+	DeclaredObject(DeclaredObjectField field, Ascendants explicitAscendants) {
 		super(field);
 		this.field = field;
+		this.explicitAscendants = explicitAscendants;
 	}
 
 	@Override
@@ -41,18 +42,12 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-
-		final ValueType<?> valueType = getExplicitDefinitions().getValueType();
-
-		if (valueType == null) {
-			return createAscendants(ValueType.VOID);
-		}
-
-		return createAscendants(valueType);
+		return this.explicitAscendants;
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		this.field.getMemberRegistry().registerMembers(members);
 	}
 
 	@Override
@@ -62,14 +57,9 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.field.define(new DefinitionTarget(getScope()));
-	}
-
-	private Ascendants createAscendants(ValueType<?> valueType) {
-		return new Ascendants(this).setAncestor(
-				valueType.typeRef(
-						this,
-						getScope().getEnclosingScope()));
+		return this.field.define(new DefinitionTarget(
+				getScope(),
+				getAncestor().getType().getValueType()));
 	}
 
 }

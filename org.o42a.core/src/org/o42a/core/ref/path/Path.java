@@ -35,6 +35,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.PathFragment.Reproduction;
@@ -287,9 +288,23 @@ public class Path {
 			Reproducer reproducer) {
 
 		Scope toScope = reproducer.getScope();
+		final int len = this.fragments.length;
+
+		if (len == 0) {
+
+			final Clause clause =
+				reproducer.getReproducingScope().getContainer().toClause();
+
+			if (clause == null) {
+				return outOfClausePath(SELF_PATH, SELF_PATH);
+			}
+
+			return reproducedPath(SELF_PATH);
+		}
+
 		Path reproduced = SELF_PATH;
 
-		for (int i = 0; i < this.fragments.length; ++i) {
+		for (int i = 0; i < len; ++i) {
 
 			final PathFragment fragment = this.fragments[i];
 			final Reproduction reproduction =

@@ -72,11 +72,11 @@ public abstract class FieldDefinition extends Placed {
 	}
 
 	public static FieldDefinition nameDefinition(Ref value) {
-		return new Value(value, true);
+		return new Name(value);
 	}
 
 	public static FieldDefinition valueDefinition(Ref value) {
-		return new Value(value, false);
+		return new Value(value);
 	}
 
 	public static FieldDefinition arrayDefinition(ArrayInitializer array) {
@@ -193,22 +193,16 @@ public abstract class FieldDefinition extends Placed {
 
 	}
 
-	private static final class Value extends FieldDefinition {
+	private static final class Name extends FieldDefinition {
 
 		private final AscendantsDefinition ascendants;
 		private final Ref value;
 
-		Value(Ref value, boolean name) {
+		Name(Ref value) {
 			super(value, value.distribute());
-			if (name) {
-				this.ascendants =
-					new AscendantsDefinition(value, distribute())
-					.setAncestor(value.toTypeRef());
-			} else {
-				this.ascendants =
-					new AscendantsDefinition(value, distribute())
-					.addSample(value.toStaticTypeRef());
-			}
+			this.ascendants =
+				new AscendantsDefinition(value, distribute())
+				.setAncestor(value.toTypeRef());
 			this.value = value;
 		}
 
@@ -242,7 +236,60 @@ public abstract class FieldDefinition extends Placed {
 				return null;
 			}
 
-			return new Value(value, this.ascendants.getSamples().length == 0);
+			return new Name(value);
+		}
+
+		@Override
+		public String toString() {
+			return this.value.toString();
+		}
+
+	}
+
+	private static final class Value extends FieldDefinition {
+
+		private final Ref value;
+		private final AscendantsDefinition ascendants;
+
+		Value(Ref value) {
+			super(value, value.distribute());
+			this.value = value;
+			this.ascendants =
+				new AscendantsDefinition(this, distribute())
+				.addSample(this.value.toStaticTypeRef());
+		}
+
+		@Override
+		public AscendantsDefinition getAscendants() {
+			return this.ascendants;
+		}
+
+		@Override
+		public BlockBuilder getDeclarations() {
+			return null;
+		}
+
+		@Override
+		public ArrayInitializer getArrayInitializer() {
+			return null;
+		}
+
+		@Override
+		public Ref getValue() {
+			return this.value;
+		}
+
+		@Override
+		public FieldDefinition reproduce(Reproducer reproducer) {
+			assertCompatible(reproducer.getReproducingScope());
+
+			final Ref value = this.value.reproduce(reproducer);
+
+			if (value == null) {
+				return null;
+			}
+
+			return new Value(value);
 		}
 
 		@Override
