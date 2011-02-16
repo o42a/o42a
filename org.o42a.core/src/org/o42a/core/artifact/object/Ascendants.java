@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import java.util.Arrays;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.*;
@@ -36,6 +38,7 @@ public final class Ascendants {
 	private TypeRef ancestor;
 	private Directive directive;
 	private Sample[] samples = NO_SAMPLES;
+	private Sample[] discardedSamples = NO_SAMPLES;
 	private byte runtime;
 	private boolean validated;
 
@@ -84,8 +87,12 @@ public final class Ascendants {
 		return this.directive;
 	}
 
-	public Sample[] getSamples() {
+	public final Sample[] getSamples() {
 		return this.samples;
+	}
+
+	public final Sample[] getDiscardedSamples() {
+		return this.discardedSamples;
 	}
 
 	public Ascendants setAncestor(TypeRef explicitAncestor) {
@@ -124,7 +131,7 @@ public final class Ascendants {
 
 		sampleRef.assertCompatible(enclosingScope);
 
-		return addSample(new ExplicitSample(enclosingScope, sampleRef, true));
+		return addSample(new PlainSample(enclosingScope, sampleRef, true));
 	}
 
 	public Ascendants addImplicitSample(StaticTypeRef sampleRef) {
@@ -133,7 +140,7 @@ public final class Ascendants {
 
 		sampleRef.assertCompatible(enclosingScope);
 
-		return addSample(new ExplicitSample(enclosingScope, sampleRef, false));
+		return addSample(new PlainSample(enclosingScope, sampleRef, false));
 	}
 
 	public Ascendants addMemberOverride(Member overriddenMember) {
@@ -159,18 +166,24 @@ public final class Ascendants {
 
 		out.append("Ascendants[");
 		if (this.ancestor != null) {
+			out.append("ancestor=");
 			out.append(this.ancestor);
 			comma = true;
 		}
-		if (this.samples != null) {
-			for (Sample sample : this.samples) {
-				if (comma) {
-					out.append(", ");
-				} else {
-					comma = true;
-				}
-				out.append(sample);
+		if (this.samples.length != 0) {
+			if (comma) {
+				out.append(' ');
 			}
+			out.append("samples=");
+			out.append(Arrays.toString(this.samples));
+			comma = true;
+		}
+		if (this.discardedSamples.length != 0) {
+			if (comma) {
+				out.append(' ');
+			}
+			out.append("discarded=");
+			out.append(Arrays.toString(this.discardedSamples));
 		}
 		out.append(']');
 
@@ -289,9 +302,9 @@ public final class Ascendants {
 							first);
 				}
 				if (explicit) {
-					return false;
+					return discardSample(sample);
 				}
-				this.ancestor = null;
+				this.explicitAncestor = null;
 				return true;
 			}
 		}
@@ -300,35 +313,43 @@ public final class Ascendants {
 
 			final Sample s = this.samples[i];
 
-			final TypeRef first;
-			final TypeRef second;
+			if (!explicit) {
 
-			if (explicit) {
-				first = sampleAncestor;
-				second = s.getTypeRef();
-			} else {
-				first = s.getTypeRef();
-				second = sampleAncestor;
+				final TypeRelation relation =
+					sample.getTypeRef().relationTo(s.getTypeRef(), false);
+
+				if (relation.isAscendant()) {
+					return discardSample(sample);
+				}
+				if (relation.isDerivative()) {
+					removeSample(i);
+				}
+
+				continue;
 			}
 
 			final TypeRelation relation =
-				first.relationTo(second, false).revert(!explicit);
+				s.getTypeRef().relationTo(sample.getTypeRef(), false);
 
-			if (relation.isAscendant()) {
-				if (!explicit) {
-					continue;
-				}
-				return false;
-			}
 			if (relation.isDerivative()) {
-				if (!explicit) {
-					return false;
-				}
-				this.samples = ArrayUtil.remove(this.samples, i);
+				return discardSample(sample);
+			}
+			if (relation.isAscendant()) {
+				removeSample(i);
 			}
 		}
 
 		return true;
+	}
+
+	private boolean discardSample(Sample sample) {
+		this.discardedSamples = ArrayUtil.append(this.discardedSamples, sample);
+		return false;
+	}
+
+	private void removeSample(int index) {
+		discardSample(this.samples[index]);
+		this.samples = ArrayUtil.remove(this.samples, index);
 	}
 
 	private Directive sampleDirective() {

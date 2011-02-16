@@ -105,8 +105,8 @@ final class ClauseExpressionVisitor
 		return p.setAscendants(
 				new AscendantsDefinition(
 						location(p, expression),
-						p.distribute())
-				.setAncestor(ref.toTypeRef()));
+						p.distribute(),
+						ref.toTypeRef()));
 	}
 
 	private static final class PhrasePrefixVisitor
@@ -157,8 +157,10 @@ final class ClauseExpressionVisitor
 			}
 
 			return p.setAscendants(
-					new AscendantsDefinition(ancestor, distributor)
-					.setAncestor(ancestor.toTypeRef()));
+					new AscendantsDefinition(
+							ancestor,
+							distributor,
+							ancestor.toTypeRef()));
 		}
 
 	}

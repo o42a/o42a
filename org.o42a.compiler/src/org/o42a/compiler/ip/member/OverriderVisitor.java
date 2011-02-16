@@ -111,8 +111,7 @@ final class OverriderVisitor
 		}
 
 		return p.setAscendants(
-				new AscendantsDefinition(ref, distributor)
-				.setAncestor(ref.toTypeRef()));
+				new AscendantsDefinition(ref, distributor, ref.toTypeRef()));
 	}
 
 	private static final class DeclarableVisitor

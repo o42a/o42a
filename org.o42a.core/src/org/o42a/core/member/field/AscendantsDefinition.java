@@ -28,7 +28,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
 
 
-public final class AscendantsDefinition extends Placed implements Cloneable {
+public class AscendantsDefinition extends Placed implements Cloneable {
 
 	private static final StaticTypeRef[] NO_SAMPLES = new StaticTypeRef[0];
 
@@ -41,11 +41,11 @@ public final class AscendantsDefinition extends Placed implements Cloneable {
 		super(location, distributor);
 	}
 
-	private AscendantsDefinition(
+	public AscendantsDefinition(
 			LocationSpec location,
 			Distributor distributor,
 			TypeRef ancestor,
-			StaticTypeRef[] samples) {
+			StaticTypeRef... samples) {
 		super(location, distributor);
 		this.ancestor = ancestor;
 		this.samples = samples;
@@ -109,20 +109,20 @@ public final class AscendantsDefinition extends Placed implements Cloneable {
 
 	public Ascendants updateAscendants(Ascendants ascendants) {
 		if (this.ancestor != null) {
-			ascendants.setAncestor(this.ancestor);
+			ascendants = ascendants.setAncestor(this.ancestor);
 		}
 		for (StaticTypeRef sample : this.samples) {
-			ascendants.addExplicitSample(sample);
+			ascendants = ascendants.addExplicitSample(sample);
 		}
 		return ascendants;
 	}
 
 	public Ascendants updateAscendants(Scope scope, Ascendants ascendants) {
 		if (this.ancestor != null) {
-			ascendants.setAncestor(this.ancestor.rescope(scope));
+			ascendants = ascendants.setAncestor(this.ancestor.rescope(scope));
 		}
 		for (StaticTypeRef sample : this.samples) {
-			ascendants.addExplicitSample(sample.rescope(scope));
+			ascendants = ascendants.addExplicitSample(sample.rescope(scope));
 		}
 		return ascendants;
 	}
@@ -143,7 +143,7 @@ public final class AscendantsDefinition extends Placed implements Cloneable {
 			samples[i] = this.samples[i].rescope(rescoper);
 		}
 
-		return new AscendantsDefinition(
+		return create(
 				this,
 				distributeIn(rescoper.getFinalScope().getContainer()),
 				ancestor,
@@ -177,11 +177,7 @@ public final class AscendantsDefinition extends Placed implements Cloneable {
 			samples[i] = sample;
 		}
 
-		return new AscendantsDefinition(
-				this,
-				reproducer.distribute(),
-				ancestor,
-				samples);
+		return create(this, reproducer.distribute(), ancestor, samples);
 	}
 
 	@Override
@@ -199,6 +195,18 @@ public final class AscendantsDefinition extends Placed implements Cloneable {
 		}
 
 		return out.toString();
+	}
+
+	protected AscendantsDefinition create(
+			LocationSpec location,
+			Distributor distributor,
+			TypeRef ancestor,
+			StaticTypeRef[] samples) {
+		return new AscendantsDefinition(
+				location,
+				distributor,
+				ancestor,
+				samples);
 	}
 
 	@Override
