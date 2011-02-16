@@ -117,7 +117,7 @@ public enum Derivation {
 
 		@Override
 		boolean acceptSample(Sample sample) {
-			return sample.getExplicitAscendant() != null;
+			return sample.isExplicit();
 		}
 
 	},
@@ -136,8 +136,26 @@ public enum Derivation {
 
 		@Override
 		boolean acceptSample(Sample sample) {
-			return sample.getOverriddenMember() == null
-			&& sample.getExplicitAscendant() == null;
+			return !sample.isExplicit() && sample.getOverriddenMember() == null;
+		}
+
+	},
+
+	IMPLICIT_PROPAGATION() {
+
+		@Override
+		boolean acceptAncestor() {
+			return false;
+		}
+
+		@Override
+		boolean acceptsSamples() {
+			return true;
+		}
+
+		@Override
+		boolean acceptSample(Sample sample) {
+			return !sample.isExplicit();
 		}
 
 	},

@@ -200,9 +200,10 @@ public abstract class FieldDefinition extends Placed {
 
 		Name(Ref value) {
 			super(value, value.distribute());
-			this.ascendants =
-				new AscendantsDefinition(value, distribute())
-				.setAncestor(value.toTypeRef());
+			this.ascendants = new AscendantsDefinition(
+					value,
+					distribute(),
+					value.toTypeRef());
 			this.value = value;
 		}
 
@@ -249,19 +250,20 @@ public abstract class FieldDefinition extends Placed {
 	private static final class Value extends FieldDefinition {
 
 		private final Ref value;
-		private final AscendantsDefinition ascendants;
+		private final ImplicitSamplesDefinition samples;
 
 		Value(Ref value) {
 			super(value, value.distribute());
 			this.value = value;
-			this.ascendants =
-				new AscendantsDefinition(this, distribute())
-				.addSample(this.value.toStaticTypeRef());
+			this.samples = new ImplicitSamplesDefinition(
+					this,
+					distribute(),
+					this.value.toStaticTypeRef());
 		}
 
 		@Override
 		public AscendantsDefinition getAscendants() {
-			return this.ascendants;
+			return this.samples;
 		}
 
 		@Override

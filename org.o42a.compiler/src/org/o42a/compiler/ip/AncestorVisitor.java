@@ -76,7 +76,7 @@ public class AncestorVisitor
 
 		if (ancestor != noAncestor(distributor.getContext())
 				&& ancestor == impliedAncestor(distributor.getContext())) {
-			ascendants.setAncestor(ancestor);
+			ascendants = ascendants.setAncestor(ancestor);
 		}
 
 		for (int i = 1; i < ascendantNodes.length; ++i) {

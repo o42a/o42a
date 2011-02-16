@@ -231,8 +231,8 @@ abstract class CompareResult extends Result {
 							this,
 							new AscendantsDefinition(
 									operator,
-									block.distribute()).setAncestor(
-											operator.rescope(block.getScope())),
+									block.distribute(),
+									operator.rescope(block.getScope())),
 							new RightCmpOperand(
 									getContext(),
 									CompareResult.this.binaryOp.getNode()

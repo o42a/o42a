@@ -416,6 +416,17 @@ public abstract class Obj extends Artifact<Obj>
 					return true;
 				}
 			}
+			for (Sample sample : getAscendants().getDiscardedSamples()) {
+				if (!derivation.acceptSample(sample)) {
+					continue;
+				}
+				if (sample.getType().derivedFrom(
+						other,
+						derivation,
+						newDepth)) {
+					return true;
+				}
+			}
 		}
 
 		return false;

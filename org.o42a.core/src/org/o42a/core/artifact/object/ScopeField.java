@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
 import static org.o42a.core.artifact.object.Obj.SCOPE_MEMBER_ID;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
@@ -34,6 +35,7 @@ import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
@@ -97,12 +99,35 @@ final class ScopeField extends ObjectField {
 		final Obj oldOwner = getOwner();
 		final Obj newOwner = enclosingScope.getContainer().toObject();
 
-		if (newOwner.derivedFrom(oldOwner, Derivation.MEMBER_OVERRIDE, 1)) {
-			// field overridden - update it's owner
+		if (newOwner.derivedFrom(oldOwner, IMPLICIT_PROPAGATION)) {
+			// Field declared in the scope implicitly derived from
+			// the previous one. Update owner
 			return newOwner;
 		}
 
-		// field declared in a new scope - don't change it's owner
+		final MemberKey key = getKey();
+
+		// Find if the same field present in implicit samples.
+		for (Sample sample : newOwner.getAscendants().getDiscardedSamples()) {
+			if (sample.isExplicit()) {
+				// Skip discarded explicit samples.
+				continue;
+			}
+
+			final org.o42a.core.member.Member found =
+				sample.getType().member(key);
+
+			if (found == null) {
+				continue;
+			}
+
+			// The same field is present in implicit sample.
+			// Update owner.
+
+			return newOwner;
+		}
+
+		// Field declared in the new scope. Don't change it's owner.
 
 		return oldOwner;
 	}

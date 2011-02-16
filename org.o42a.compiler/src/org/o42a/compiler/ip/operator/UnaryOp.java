@@ -64,8 +64,10 @@ public class UnaryOp extends Wrap {
 		return new DefinitionValue(
 				new Location(getContext(), getNode().getSign()),
 				distribute(),
-				new AscendantsDefinition(operator, operator.distribute())
-				.setAncestor(operator.toTypeRef()),
+				new AscendantsDefinition(
+						operator,
+						operator.distribute(),
+						operator.toTypeRef()),
 				emptyBlock(this));
 	}
 

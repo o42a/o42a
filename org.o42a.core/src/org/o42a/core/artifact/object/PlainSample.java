@@ -39,14 +39,14 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class ExplicitSample extends Sample {
+final class PlainSample extends Sample {
 
 	private final StaticTypeRef sampleRef;
 	private final StaticTypeRef explicitAscendant;
 	private Obj object;
 	private TypeRef ancestor;
 
-	ExplicitSample(
+	PlainSample(
 			final Scope scope,
 			final StaticTypeRef sampleRef,
 			final boolean explicit) {

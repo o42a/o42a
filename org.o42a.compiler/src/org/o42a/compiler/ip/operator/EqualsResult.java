@@ -132,8 +132,8 @@ class EqualsResult extends PlainObject {
 							this,
 							new AscendantsDefinition(
 									operator,
-									distributor)
-							.setAncestor(operator.rescope(block.getScope())),
+									distributor,
+									operator.rescope(block.getScope())),
 							new RightEqOperand(
 									getContext(),
 									EqualsResult.this.binaryOp.getNode()
