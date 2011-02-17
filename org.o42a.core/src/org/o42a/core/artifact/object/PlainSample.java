@@ -50,26 +50,32 @@ final class PlainSample extends Sample {
 			final Scope scope,
 			final StaticTypeRef sampleRef,
 			final boolean explicit) {
-		super(sampleRef, sampleRef.getScope());
+		super(sampleRef, scope);
 		this.sampleRef = sampleRef;
 		this.explicitAscendant = explicit ? sampleRef : null;
+		assertSameScope(sampleRef);
 	}
 
 	@Override
 	public TypeRef getAncestor() {
-		if (this.ancestor == null) {
-
-			final Obj type = this.sampleRef.getType();
-			final ValueType<?> valueType = type.getValueType();
-
-			if (valueType.wrapper(getContext().getIntrinsics()) == type) {
-				this.ancestor = valueType.typeRef(this.sampleRef, getScope());
-			} else {
-				this.ancestor = new AncestorEx(this.sampleRef).toTypeRef();
-			}
+		if (this.ancestor != null) {
+			return this.ancestor;
 		}
 
-		return this.ancestor;
+		final Obj type = this.sampleRef.getType();
+
+		if (!isExplicit()) {
+			return this.ancestor = type.getAncestor().upgradeScope(getScope());
+		}
+
+		final ValueType<?> valueType = type.getValueType();
+
+		if (valueType.wrapper(getContext().getIntrinsics()) == type) {
+			return this.ancestor = valueType.typeRef(this.sampleRef, getScope());
+		}
+
+		return this.ancestor =
+			new AncestorEx(getScope(), this.sampleRef).toTypeRef();
 	}
 
 	@Override
@@ -128,11 +134,11 @@ final class PlainSample extends Sample {
 
 	private static final class AncestorEx extends Ex {
 
-		private final StaticTypeRef typeRef;
+		private final StaticTypeRef sampleRef;
 
-		AncestorEx(StaticTypeRef typeRef) {
-			super(typeRef, typeRef.getScope().distribute());
-			this.typeRef = typeRef;
+		AncestorEx(Scope scope, StaticTypeRef sampleRef) {
+			super(sampleRef, scope.distribute());
+			this.sampleRef = sampleRef;
 		}
 
 		@Override
@@ -151,13 +157,13 @@ final class PlainSample extends Sample {
 		public Ref reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 
-			final StaticTypeRef typeRef = this.typeRef.reproduce(reproducer);
+			final StaticTypeRef typeRef = this.sampleRef.reproduce(reproducer);
 
 			if (typeRef == null) {
 				return null;
 			}
 
-			return new AncestorEx(typeRef);
+			return new AncestorEx(reproducer.getScope(), typeRef);
 		}
 
 		@Override
@@ -179,7 +185,7 @@ final class PlainSample extends Sample {
 
 		private TypeRef ancestor(Scope scope) {
 
-			final Obj sample = this.typeRef.upgradeScope(scope).getType();
+			final Obj sample = this.sampleRef.getType();
 
 			if (sample == null) {
 				return null;
@@ -187,6 +193,7 @@ final class PlainSample extends Sample {
 
 			return sample.getAncestor();
 		}
+
 	}
 
 	private static final class AncestorOp extends RefOp {
