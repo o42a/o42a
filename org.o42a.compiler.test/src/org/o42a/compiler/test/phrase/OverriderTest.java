@@ -38,8 +38,8 @@ public class OverriderTest extends CompilerTestCase {
 				").",
 				"B := a[2]");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, Long.class), is(2L));
 	}
@@ -53,8 +53,8 @@ public class OverriderTest extends CompilerTestCase {
 				").",
 				"B := a'b'");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, String.class), is("b"));
 	}
@@ -68,8 +68,8 @@ public class OverriderTest extends CompilerTestCase {
 				").",
 				"B := a['b']");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, String.class), is("b"));
 	}
@@ -83,8 +83,8 @@ public class OverriderTest extends CompilerTestCase {
 				").",
 				"B := a\"b\"");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, String.class), is("b"));
 	}

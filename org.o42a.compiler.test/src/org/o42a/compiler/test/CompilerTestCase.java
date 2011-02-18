@@ -142,22 +142,22 @@ public abstract class CompilerTestCase {
 		assertKnownValue(object.getValue());
 	}
 
-	public static Field<?> getField(Field<?> container, String name) {
-		return getField(container.getArtifact(), name);
+	public static Field<?> field(Field<?> container, String name) {
+		return field(container.getArtifact(), name);
 	}
 
-	public static Field<?> getField(Artifact<?> container, String name) {
-		return getField(container, name, Accessor.PUBLIC);
+	public static Field<?> field(Artifact<?> container, String name) {
+		return field(container, name, Accessor.PUBLIC);
 	}
 
-	public static Field<?> getField(
+	public static Field<?> field(
 			Field<?> container,
 			String name,
 			Accessor accessor) {
-		return getField(container.getArtifact(), name, accessor);
+		return field(container.getArtifact(), name, accessor);
 	}
 
-	public static Field<?> getField(
+	public static Field<?> field(
 			Artifact<?> container,
 			String name,
 			Accessor accessor) {
@@ -216,8 +216,8 @@ public abstract class CompilerTestCase {
 		this.expectedErrors.addLast(code);
 	}
 
-	public Field<?> getField(String name) {
-		return getField(this.module, name);
+	public Field<?> field(String name) {
+		return field(this.module, name);
 	}
 
 	protected void addSource(

@@ -47,7 +47,17 @@ public class MemberById extends Wrap {
 
 	@Override
 	public String toString() {
-		return "" + this.memberId;
+
+		final Ref wrapped = getWrapped();
+
+		if (wrapped != null) {
+			return wrapped.toString();
+		}
+		if (this.memberId == null) {
+			return super.toString();
+		}
+
+		return this.memberId.toString();
 	}
 
 	@Override

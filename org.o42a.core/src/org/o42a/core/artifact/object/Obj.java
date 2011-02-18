@@ -723,6 +723,26 @@ public abstract class Obj extends Artifact<Obj>
 		return Obj.this.symbols;
 	}
 
+	Definitions overriddenDefinitions(
+			Scope scope,
+			Definitions overriddenDefinitions) {
+
+		final Sample[] samples = getSamples();
+
+		if (samples.length == 0) {
+			return overriddenDefinitions;
+		}
+
+		Definitions definitions = overriddenDefinitions;
+
+		for (int i = samples.length - 1; i >= 0; --i) {
+			definitions =
+				samples[i].overrideDefinitions(scope, definitions);
+		}
+
+		return definitions;
+	}
+
 	private final boolean resolve(boolean skipIfResolving) {
 		if (this.resolution == Resolution.NOT_RESOLVED) {
 			try {
@@ -848,26 +868,6 @@ public abstract class Obj extends Artifact<Obj>
 		return ancestorDefinitions;
 	}
 
-	private Definitions overriddenDefinitions(
-			Scope scope,
-			Definitions overriddenDefinitions) {
-
-		final Sample[] samples = getSamples();
-
-		if (samples.length == 0) {
-			return overriddenDefinitions;
-		}
-
-		Definitions definitions = overriddenDefinitions;
-
-		for (int i = samples.length - 1; i >= 0; --i) {
-			definitions =
-				samples[i].overrideDefinitions(scope, definitions);
-		}
-
-		return definitions;
-	}
-
 	private static final class ParentObjectFragment extends MemberFragment {
 
 		ParentObjectFragment(MemberKey memberKey) {
@@ -881,6 +881,9 @@ public abstract class Obj extends Artifact<Obj>
 				int index,
 				Scope start,
 				PathWalker walker) {
+			if (toString().equals("_scope@<<a@<<comparisonoperatortest>>> <:_result>")) {
+				System.err.println("(!) " + start);
+			}
 
 			final Obj object = start.getContainer().toObject();
 

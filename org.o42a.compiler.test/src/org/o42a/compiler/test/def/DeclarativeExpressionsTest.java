@@ -39,12 +39,12 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 				"A := integer(Void(), = 1).",
 				"B := A().");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 
 		assertTrueValue(a.getArtifact().materialize().getValue());
 		assertThat(definiteValue(a, Long.class), is(1L));
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertTrueValue(b.getArtifact().materialize().getValue());
 		assertThat(definiteValue(b, Long.class), is(1L));
@@ -56,12 +56,12 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 				"A := integer(Void(). = 1).",
 				"B := A().");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 
 		assertTrueValue(a.getArtifact().materialize().getValue());
 		assertThat(definiteValue(a, Long.class), is(1L));
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertTrueValue(b.getArtifact().materialize().getValue());
 		assertThat(definiteValue(b, Long.class), is(1L));
@@ -73,13 +73,13 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 				"A := integer(Void(False), = 1).",
 				"B := A().");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 		final Value<?> aValue = a.getArtifact().materialize().getValue();
 
 		assertFalseValue(aValue);
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 		final Value<?> bValue = b.getArtifact().materialize().getValue();
 
 		assertFalseValue(bValue);
@@ -92,13 +92,13 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 				"A := integer(Void(False). = 1).",
 				"B := A().");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 		final Value<?> aValue = a.getArtifact().materialize().getValue();
 
 		assertFalseValue(aValue);
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 		final Value<?> bValue = b.getArtifact().materialize().getValue();
 
 		assertFalseValue(bValue);
@@ -112,7 +112,7 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 				"A := integer(Void(Print(Text = \"1\")), = 1).",
 				"B := A().");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 		final Value<?> aValue = a.getArtifact().materialize().getValue();
 
 		assertFalse(aValue.isDefinite());
@@ -120,7 +120,7 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 		assertFalse(aValue.getLogicalValue().isConstant());
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 		final Value<?> bValue = b.getArtifact().materialize().getValue();
 
 		assertFalse(bValue.isDefinite());
@@ -136,7 +136,7 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 				"A := integer(Void(Print(Text = \"1\")). = 1).",
 				"B := A().");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 		final Value<?> aValue = a.getArtifact().materialize().getValue();
 
 		assertFalse(aValue.isDefinite());
@@ -144,7 +144,7 @@ public class DeclarativeExpressionsTest extends CompilerTestCase {
 		assertFalse(aValue.getLogicalValue().isConstant());
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 		final Value<?> bValue = b.getArtifact().materialize().getValue();
 
 		assertFalse(bValue.isDefinite());

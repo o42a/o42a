@@ -73,7 +73,7 @@ public class IntegerCompareTest extends CompilerTestCase {
 	@Override
 	protected void compile(Source source) {
 		super.compile(source);
-		this.result = getField("result").getArtifact().materialize();
+		this.result = field("result").getArtifact().materialize();
 	}
 
 }
