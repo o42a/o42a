@@ -35,7 +35,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: add :=> 1).",
 				"B := a + 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
 		assertEquals(1L, definiteValue(b));
@@ -47,7 +47,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: subtract :=> 1).",
 				"B := a - 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
 		assertEquals(1L, definiteValue(b));
@@ -59,7 +59,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: multiply :=> 1).",
 				"B := A * 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
 		assertEquals(1L, definiteValue(b));
@@ -71,7 +71,7 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: divide :=> 1).",
 				"B := A / 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
 		assertEquals(1L, definiteValue(b));

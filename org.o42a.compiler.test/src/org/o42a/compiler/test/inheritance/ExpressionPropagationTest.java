@@ -34,22 +34,115 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 		compile(
 				"A := void(",
 				"  Value := integer(= 1).",
-				"  Foo := value(",
-				"    = value().",
+				"  Foo := integer(",
+				"    = Value().",
 				"  ).",
 				").",
 				"B := A(",
-				"  Value = integer(= 2).",
-				").");
+				"  Value = *(= 2).",
+				").",
+				"C := B.");
 
-		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
+		final Field<?> c = field("c");
 
-		final Field<?> aFoo = getField(a, "foo");
-		final Field<?> bFoo = getField(b, "foo");
+		final Field<?> aFoo = field(a, "foo");
+		final Field<?> bFoo = field(b, "foo");
+		final Field<?> cFoo = field(c, "foo");
 
 		assertThat(definiteValue(aFoo, Long.class), is(1L));
 		assertThat(definiteValue(bFoo, Long.class), is(2L));
+		assertThat(definiteValue(cFoo, Long.class), is(2L));
+	}
+
+	@Test
+	public void fieldCallPropagation() {
+		compile(
+				"A := void(",
+				"  Container := void(",
+				"    Value := integer(= 1).",
+				"  ).",
+				"  Foo := integer(",
+				"    = Container: value().",
+				"  ).",
+				").",
+				"B := A(",
+				"  Container = *(",
+				"    Value = *(= 2).",
+				"  ).",
+				").",
+				"C := B.");
+
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
+		final Field<?> c = field("c");
+
+		final Field<?> aFoo = field(a, "foo");
+		final Field<?> bFoo = field(b, "foo");
+		final Field<?> cFoo = field(c, "foo");
+
+		assertThat(definiteValue(aFoo, Long.class), is(1L));
+		assertThat(definiteValue(bFoo, Long.class), is(2L));
+		assertThat(definiteValue(cFoo, Long.class), is(2L));
+	}
+
+	@Test
+	public void scopeDependentFieldInheritance() {
+		compile(
+				"A := void(",
+				"  Value := integer(",
+				"    = 1.",
+				"    Field := integer(= value).",
+				"  ).",
+				"  Foo := value: field().",
+				").",
+				"B := A(",
+				"  Value = *(= 2).",
+				").",
+				"C := B.");
+
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
+		final Field<?> c = field("c");
+
+		final Field<?> aFoo = field(a, "foo");
+		final Field<?> bFoo = field(b, "foo");
+		final Field<?> cFoo = field(c, "foo");
+
+		assertThat(definiteValue(aFoo, Long.class), is(1L));
+		assertThat(definiteValue(bFoo, Long.class), is(2L));
+		assertThat(definiteValue(cFoo, Long.class), is(2L));
+	}
+
+	@Test
+	public void scopeDependentFieldCallPropagation() {
+		compile(
+				"A := void(",
+				"  Value := integer(",
+				"    = 1.",
+				"    Field := integer(= value).",
+				"  ).",
+				"  Foo := integer(",
+				"    = Value: field().",
+				"  ).",
+				").",
+				"B := A(",
+				"  Value = *(= 2).",
+				").",
+				"C := B.");
+
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
+		final Field<?> c = field("c");
+
+		final Field<?> aFoo = field(a, "foo");
+		final Field<?> bFoo = field(b, "foo");
+		final Field<?> cFoo = field(c, "foo");
+
+		assertThat(definiteValue(aFoo, Long.class), is(1L));
+		assertThat(definiteValue(bFoo, Long.class), is(2L));
+		assertThat(definiteValue(cFoo, Long.class), is(2L));
 	}
 
 }

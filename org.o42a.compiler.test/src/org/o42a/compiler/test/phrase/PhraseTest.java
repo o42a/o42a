@@ -38,9 +38,9 @@ public class PhraseTest extends CompilerTestCase {
 				").",
 				"B := a[2]'b'");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
-		final Field<?> bar = getField(foo, "bar");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
+		final Field<?> bar = field(foo, "bar");
 
 		assertThat(definiteValue(foo, Long.class), is(2L));
 		assertThat(definiteValue(bar, String.class), is("b"));
@@ -55,8 +55,8 @@ public class PhraseTest extends CompilerTestCase {
 				").",
 				"B := a[2]'b'");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
 		assertThat(definiteValue(b, Long.class), is(2L));
 		assertThat(definiteValue(foo, String.class), is("b"));

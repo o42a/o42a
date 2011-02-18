@@ -50,8 +50,8 @@ public class AdapterTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.adapterType = getField("adapter").getArtifact();
-		this.a = getField("a").getArtifact();
+		this.adapterType = field("adapter").getArtifact();
+		this.a = field("a").getArtifact();
 	}
 
 }

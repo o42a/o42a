@@ -39,7 +39,7 @@ public class ImperativeGroupTest extends CompilerTestCase {
 				").",
 				"B := A[5]");
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(b, Long.class), is(5L));
 	}

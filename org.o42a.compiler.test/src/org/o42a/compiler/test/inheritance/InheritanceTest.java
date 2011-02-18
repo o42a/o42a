@@ -22,11 +22,11 @@ package org.o42a.compiler.test.inheritance;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
+import static org.o42a.core.artifact.object.Derivation.MEMBER_OVERRIDE;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 
@@ -35,30 +35,43 @@ public class InheritanceTest extends CompilerTestCase {
 
 	private Obj a;
 	private Obj b;
+	private Obj c;
 
 	@Before
 	public void setUp() {
 		compile(
-				"A := void(Foo := 123456); ",
-				"b := &a(Foo = 1234567)");
-		this.a = getField("a").getArtifact().toObject();
-		this.b = getField("b").getArtifact().toObject();
+				"A := integer(= 1. Foo := 123456).",
+				"B := a(= 2. Foo = 1234567).",
+				"C := b.");
+		this.a = field("a").getArtifact().toObject();
+		this.b = field("b").getArtifact().toObject();
+		this.c = field("c").getArtifact().toObject();
 	}
 
 	@Test
 	public void inheritance() {
 		assertThat(
-				this.b.getAncestor().getType().toArtifact()
+				this.b.getAncestor().getType()
 				.getScope().toField().getKey().getName(),
 				is("a"));
-		assertSame(this.a, this.b.getAncestor().getType().toArtifact());
+		assertSame(this.a, this.b.getAncestor().getType());
 		assertTrue(this.b.inherits(this.a));
+		assertSame(this.b, this.c.getAncestor().getType());
+		assertTrue(this.c.inherits(this.a));
+		assertTrue(this.c.inherits(this.b));
+	}
+
+	@Test
+	public void value() {
+		assertThat(definiteValue(this.a, Long.class), is(1L));
+		assertThat(definiteValue(this.b, Long.class), is(2L));
+		assertThat(definiteValue(this.c, Long.class), is(2L));
 	}
 
 	@Test
 	public void fieldDeclaration() {
 
-		final Field<?> aFoo = getField(this.a, "foo");
+		final Field<?> aFoo = field(this.a, "foo");
 
 		assertThat(aFoo, notNullValue());
 		assertFalse(aFoo.isPropagated());
@@ -71,16 +84,32 @@ public class InheritanceTest extends CompilerTestCase {
 	@Test
 	public void fieldOverride() {
 
-		final Field<?> found = getField(this.b, "foo");
+		final Field<?> aFoo = field(this.a, "foo");
+		final Field<?> bFoo = field(this.b, "foo");
 
-		assertFalse(found.isPropagated());
-
-		final Field<?> overridden = getField(this.a, "foo");
-
+		assertFalse(bFoo.isPropagated());
 		assertTrue(
-				found.getArtifact().toObject().derivedFrom(
-						overridden.getArtifact().toObject(),
-						Derivation.MEMBER_OVERRIDE));
+				bFoo.getArtifact().toObject().derivedFrom(
+						aFoo.getArtifact().toObject(),
+						MEMBER_OVERRIDE));
+	}
+
+	@Test
+	public void fieldPropagation() {
+
+		final Field<?> aFoo = field(this.a, "foo");
+		final Field<?> bFoo = field(this.b, "foo");
+		final Field<?> cFoo = field(this.c, "foo");
+
+		assertTrue(cFoo.isPropagated());
+		assertTrue(
+				cFoo.getArtifact().toObject().derivedFrom(
+						aFoo.getArtifact().toObject(),
+						MEMBER_OVERRIDE));
+		assertTrue(
+				cFoo.getArtifact().toObject().derivedFrom(
+						bFoo.getArtifact().toObject(),
+						MEMBER_OVERRIDE));
 	}
 
 }

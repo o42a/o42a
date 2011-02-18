@@ -30,8 +30,8 @@ public class LogicalOperatorTest extends CompilerTestCase {
 	public void isTrue() {
 		compile("A := ++ 1. B := ++ false");
 
-		final Obj a = getField("a").getArtifact().materialize();
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj a = field("a").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertTrueVoid(a);
 		assertFalseVoid(b);
@@ -42,8 +42,8 @@ public class LogicalOperatorTest extends CompilerTestCase {
 	public void not() {
 		compile("A := -- 1. B := -- false");
 
-		final Obj a = getField("a").getArtifact().materialize();
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj a = field("a").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertFalseVoid(a);
 		assertKnownValue(a.getValue());
@@ -57,9 +57,9 @@ public class LogicalOperatorTest extends CompilerTestCase {
 				"B := Integer(False ? = 1).",
 				"C := +- b.");
 
-		final Obj a = getField("a").getArtifact().materialize();
-		final Obj b = getField("b").getArtifact().materialize();
-		final Obj c = getField("c").getArtifact().materialize();
+		final Obj a = field("a").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
+		final Obj c = field("c").getArtifact().materialize();
 
 		assertTrueVoid(a);
 		assertFalseValue(b.getValue());
@@ -75,9 +75,9 @@ public class LogicalOperatorTest extends CompilerTestCase {
 				"B := Integer(False ? = 1).",
 				"C := -+ b.");
 
-		final Obj a = getField("a").getArtifact().materialize();
-		final Obj b = getField("b").getArtifact().materialize();
-		final Obj c = getField("c").getArtifact().materialize();
+		final Obj a = field("a").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
+		final Obj c = field("c").getArtifact().materialize();
 
 		assertFalseVoid(a);
 		assertKnownValue(a.getValue());

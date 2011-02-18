@@ -463,7 +463,8 @@ public class Path {
 		Scope prev = start;
 
 		for (int i = 0; i < this.fragments.length; ++i) {
-			result = this.fragments[i].resolve(location, this, i, prev, tracker);
+			result =
+				this.fragments[i].resolve(location, this, i, prev, tracker);
 			if (tracker.isAborted()) {
 				return null;
 			}
