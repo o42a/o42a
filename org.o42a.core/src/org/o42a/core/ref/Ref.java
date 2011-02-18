@@ -218,6 +218,18 @@ public abstract class Ref extends RefBase {
 		return resolve(scope).materialize().getValue();
 	}
 
+	public Ref materialize() {
+
+		final Resolution resolution = getResolution();
+		final Path materializationPath = resolution.materializationPath();
+
+		if (materializationPath.isSelf()) {
+			return this;
+		}
+
+		return materializationPath.target(this, distribute(), this);
+	}
+
 	@Override
 	public abstract Ref reproduce(Reproducer reproducer);
 
@@ -287,7 +299,7 @@ public abstract class Ref extends RefBase {
 		return objectResolution(resolved.toPlainClause().getObject());
 	}
 
-	public final Ref fixScope() {
+	public Ref fixScope() {
 		if (isKnownStatic()) {
 			return this;
 		}

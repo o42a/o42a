@@ -63,7 +63,7 @@ public final class StaticTypeRef extends TypeRef {
 
 	@Override
 	public RefOp op(Code code, CodePos exit, HostOp host) {
-		return getType().selfOrDerived().op(host);
+		return getType().selfRef().op(host);
 	}
 
 	public final TypeRelation relationTo(StaticTypeRef other) {

@@ -238,6 +238,10 @@ public class CompilerLogger implements Logger {
 				"Array item initializer expected");
 	}
 
+	public void notArtifact(LogInfo location) {
+		error("not_artifact", location, "Not an artifact");
+	}
+
 	public void notClause(LogInfo location) {
 		error("not_clause", location, "Not clause");
 	}

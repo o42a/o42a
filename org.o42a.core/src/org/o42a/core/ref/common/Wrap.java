@@ -22,6 +22,9 @@ package org.o42a.core.ref.common;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.StaticTypeRef;
+import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
@@ -63,6 +66,38 @@ public abstract class Wrap extends Ref {
 	public final Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return wrapped().reproduce(reproducer);
+	}
+
+	@Override
+	public final Ref fixScope() {
+		if (this.wrapped != null) {
+			return this.wrapped.fixScope();
+		}
+		return super.fixScope();
+	}
+
+	@Override
+	public final TypeRef toTypeRef() {
+		if (this.wrapped != null) {
+			return this.wrapped.toTypeRef();
+		}
+		return super.toTypeRef();
+	}
+
+	@Override
+	public final StaticTypeRef toStaticTypeRef() {
+		if (this.wrapped != null) {
+			return this.wrapped.toStaticTypeRef();
+		}
+		return super.toStaticTypeRef();
+	}
+
+	@Override
+	public final TargetRef toTargetRef() {
+		if (this.wrapped != null) {
+			return this.wrapped.toTargetRef();
+		}
+		return super.toTargetRef();
 	}
 
 	@Override

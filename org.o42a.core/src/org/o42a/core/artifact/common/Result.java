@@ -61,7 +61,7 @@ public abstract class Result extends PlainObject {
 	@Override
 	protected Definitions explicitDefinitions() {
 
-		final Ref self = selfOrDerived();
+		final Ref self = selfRef();
 
 		self.setConditions(emptyConditions(this));
 

@@ -17,27 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
+package org.o42a.core.artifact;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
 
 
-final class SelfOrDerived extends Ref {
+final class FixedRef extends Ref {
 
 	private final Resolution self;
 
-	SelfOrDerived(Obj self) {
-		super(self, self.distribute());
-		this.self = objectResolution(self);
+	FixedRef(Distributor distributor, Artifact<?> self) {
+		super(self, distributor);
+		this.self = artifactResolution(self);
 	}
 
 	@Override
@@ -47,23 +46,14 @@ final class SelfOrDerived extends Ref {
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
-		if (scope == this.self.getScope()) {
-			return this.self.toObject().getValue();
-		}
-		return this.self.toObject().calculateValue(scope);
-	}
-
-	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		getLogger().notReproducible(this);
-		return null;
+		return new FixedRef(reproducer.distribute(), this.self.toArtifact());
 	}
 
 	@Override
 	public String toString() {
-		return this.self.toString();
+		return "&(" + this.self.toString() + " / " + getScope() + ')';
 	}
 
 	@Override
@@ -78,34 +68,11 @@ final class SelfOrDerived extends Ref {
 
 	private static final class Op extends RefOp {
 
-		private final SelfOrDerived ref;
+		private final FixedRef ref;
 
-		public Op(HostOp host, SelfOrDerived ref) {
+		public Op(HostOp host, FixedRef ref) {
 			super(host, ref);
 			this.ref = ref;
-		}
-
-		@Override
-		public void writeLogicalValue(Code code, CodePos exit) {
-
-			final HostOp target = target(code, exit);
-
-			target.materialize(code, exit).writeLogicalValue(
-					code,
-					exit,
-					host().toObject(code, exit));
-		}
-
-		@Override
-		public void writeValue(Code code, CodePos exit, ValOp result) {
-
-			final HostOp target = target(code, exit);
-
-			target.materialize(code, exit).writeValue(
-					code,
-					exit,
-					result,
-					host().toObject(code, exit));
 		}
 
 		@Override

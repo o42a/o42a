@@ -71,7 +71,8 @@ final class PlainSample extends Sample {
 		final ValueType<?> valueType = type.getValueType();
 
 		if (valueType.wrapper(getContext().getIntrinsics()) == type) {
-			return this.ancestor = valueType.typeRef(this.sampleRef, getScope());
+			return this.ancestor =
+				valueType.typeRef(this.sampleRef, getScope());
 		}
 
 		return this.ancestor =
@@ -144,7 +145,7 @@ final class PlainSample extends Sample {
 		@Override
 		public Value<?> value(Scope scope) {
 
-			final TypeRef ancestor = ancestor(scope);
+			final TypeRef ancestor = ancestor();
 
 			if (ancestor == null) {
 				return falseValue();
@@ -169,7 +170,7 @@ final class PlainSample extends Sample {
 		@Override
 		protected Resolution resolveExpression(Scope scope) {
 
-			final TypeRef ancestor = ancestor(scope);
+			final TypeRef ancestor = ancestor();
 
 			if (ancestor == null) {
 				return null;
@@ -183,15 +184,11 @@ final class PlainSample extends Sample {
 			return new AncestorOp(host, this);
 		}
 
-		private TypeRef ancestor(Scope scope) {
-
-			final Obj sample = this.sampleRef.getType();
-
-			if (sample == null) {
+		private TypeRef ancestor() {
+			if (!this.sampleRef.validate()) {
 				return null;
 			}
-
-			return sample.getAncestor();
+			return this.sampleRef.getType().getAncestor();
 		}
 
 	}

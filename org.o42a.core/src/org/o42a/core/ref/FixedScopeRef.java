@@ -19,18 +19,11 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
+import org.o42a.core.ref.common.Wrap;
 
 
-final class FixedScopeRef extends Ref {
+final class FixedScopeRef extends Wrap {
 
 	private final Ref ref;
 
@@ -40,20 +33,7 @@ final class FixedScopeRef extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		assertCompatible(scope);
-		return this.ref.getResolution();
-	}
-
-	@Override
-	public Value<?> value(Scope scope) {
-		assertCompatible(scope);
-		return this.ref.getValue();
-	}
-
-	@Override
-	public Ref reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
+	protected Ref resolveWrapped() {
 
 		final Resolution resolution = this.ref.getResolution();
 
@@ -64,50 +44,24 @@ final class FixedScopeRef extends Ref {
 		final Artifact<?> artifact = resolution.toArtifact();
 
 		if (artifact == null) {
-			getLogger().notReproducible(this);
+			getLogger().notArtifact(this);
 			return null;
 		}
 
-		return artifact.self(reproducer.distribute());
+		return artifact.fixedRef(distribute());
 	}
 
 	@Override
 	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
 		return "&" + this.ref;
 	}
 
 	@Override
 	protected boolean isKnownStatic() {
 		return true;
-	}
-
-	@Override
-	protected RefOp createOp(HostOp host) {
-		return new Op(host, this);
-	}
-
-	private static final class Op extends RefOp {
-
-		Op(HostOp host, FixedScopeRef ref) {
-			super(host, ref);
-		}
-
-		@Override
-		public HostOp target(Code code, CodePos exit) {
-			return ref().ref.op(rescope(code, exit)).target(code, exit);
-		}
-
-		private HostOp rescope(Code code, CodePos exit) {
-
-			final ScopeIR scopeIR = ref().ref.getScope().ir(getGenerator());
-
-			return scopeIR.op(getBuilder(), code);
-		}
-
-		private final FixedScopeRef ref() {
-			return (FixedScopeRef) getRef();
-		}
-
 	}
 
 }

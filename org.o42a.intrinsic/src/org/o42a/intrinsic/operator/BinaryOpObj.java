@@ -111,11 +111,11 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 	@Override
 	protected Definitions explicitDefinitions() {
 
-		final Ref selfOrDerived = selfOrDerived();
+		final Ref self = selfRef();
 
-		selfOrDerived.setConditions(emptyConditions(this));
+		self.setConditions(emptyConditions(this));
 
-		return selfOrDerived.define(new DefinitionTarget(getScope()));
+		return self.define(new DefinitionTarget(getScope()));
 	}
 
 	@Override
