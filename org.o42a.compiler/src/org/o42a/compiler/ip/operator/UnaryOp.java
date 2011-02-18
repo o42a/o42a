@@ -26,9 +26,13 @@ import org.o42a.ast.expression.UnaryNode;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.Location;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.DefinitionValue;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Wrap;
 
 
@@ -49,25 +53,58 @@ public class UnaryOp extends Wrap {
 	}
 
 	@Override
+	public String toString() {
+
+		final Ref wrapped = getWrapped();
+
+		if (wrapped != null) {
+			return wrapped.toString();
+		}
+		if (this.node == null) {
+			return super.toString();
+		}
+
+		return "Unary " + this.node.getSign();
+	}
+
+	@Override
 	protected Ref resolveWrapped() {
 
-		final Ref operand =
+		final UnaryOperatorType type =
+			UnaryOperatorType.byOperator(this.node.getOperator());
+		final Ref operandRef =
 			getNode().getOperand().accept(EXPRESSION_VISITOR, distribute());
-		final UnaryOperatorLookup operator =
-			new UnaryOperatorLookup(operand, getNode());
+		final Resolution operandResolution = operandRef.getResolution();
+		final Obj operand = operandResolution.materialize();
+		final Location operatorLocation =
+			new Location(getContext(), this.node.getSign());
+		final AdapterId adapterId =
+			type.getPath().toAdapterId(operatorLocation, distribute());
+		final Member adapter = operand.member(adapterId);
 
-		if (operator.getResolution().isFalse()) {
-			// operator not supported
+		if (adapter == null) {
+			getLogger().error(
+					"unsupported_unary_operator",
+					operatorLocation,
+					"Unary operator '%s' is not supported, "
+					+ "because operand doesn't have a '%s' adapter",
+					type,
+					adapterId);
 			return null;
 		}
 
+		final Ref adapterRef = adapter.getKey().toPath().target(
+				operatorLocation,
+				distribute(),
+				operandRef.materialize());
+
 		return new DefinitionValue(
-				new Location(getContext(), getNode().getSign()),
+				this,
 				distribute(),
 				new AscendantsDefinition(
-						operator,
-						operator.distribute(),
-						operator.toTypeRef()),
+						adapterRef,
+						adapterRef.distribute(),
+						adapterRef.toTypeRef()),
 				emptyBlock(this));
 	}
 

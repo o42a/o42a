@@ -37,7 +37,7 @@ public class GroupTest extends CompilerTestCase {
 				").",
 				"B := A[2]");
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(b, Long.class), is(2L));
 	}
@@ -53,8 +53,8 @@ public class GroupTest extends CompilerTestCase {
 				").",
 				"B := A() set[2]");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, Long.class), is(2L));
 	}
@@ -70,8 +70,8 @@ public class GroupTest extends CompilerTestCase {
 				").",
 				"B := A[2]");
 
-		final Field<?> b = getField("b");
-		final Field<?> foo = getField(b, "foo");
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, Long.class), is(2L));
 	}
@@ -86,7 +86,7 @@ public class GroupTest extends CompilerTestCase {
 				").",
 				"B := A() set[2]");
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(b, Long.class), is(2L));
 	}
@@ -103,7 +103,7 @@ public class GroupTest extends CompilerTestCase {
 				").",
 				"B := A[2]");
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(b, Long.class), is(2L));
 	}
@@ -120,7 +120,7 @@ public class GroupTest extends CompilerTestCase {
 				").",
 				"B := A[2]");
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(b, Long.class), is(2L));
 	}
@@ -135,7 +135,7 @@ public class GroupTest extends CompilerTestCase {
 				").",
 				"B := A[2]");
 
-		final Field<?> b = getField("b");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(b, Long.class), is(2L));
 	}

@@ -88,7 +88,7 @@ public class IntegerOperatorsTest extends CompilerTestCase {
 	@Override
 	protected void compile(Source source) {
 		super.compile(source);
-		this.result = getField("result").getArtifact().materialize();
+		this.result = field("result").getArtifact().materialize();
 		assertEquals(ValueType.INTEGER, this.result.getValueType());
 		assertTrue(this.result.inherits(
 				this.context.getIntrinsics().getInteger()));

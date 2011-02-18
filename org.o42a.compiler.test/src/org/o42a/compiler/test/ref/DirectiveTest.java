@@ -36,7 +36,7 @@ public class DirectiveTest extends CompilerTestCase {
 				"A := 42");
 		compile("Include 'included.o42a'");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 
 		assertThat(definiteValue(a, Long.class), is(42L));
 	}
@@ -48,7 +48,7 @@ public class DirectiveTest extends CompilerTestCase {
 				"A := 42");
 		compile("(Include 'included.o42a')");
 
-		final Field<?> a = getField("a");
+		final Field<?> a = field("a");
 
 		assertThat(definiteValue(a, Long.class), is(42L));
 	}

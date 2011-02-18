@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
+import static org.o42a.core.artifact.object.Derivation.INHERITANCE;
 import static org.o42a.core.artifact.object.Obj.SCOPE_MEMBER_ID;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
@@ -27,6 +28,8 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.ScopeFld;
@@ -105,20 +108,20 @@ final class ScopeField extends ObjectField {
 		return new IR(generator, this);
 	}
 
-	private void updateOwner(ScopeField sample) {
+	private void updateOwner(ScopeField overridden) {
 
-		final Obj oldOwner = sample.getOwner();
+		final Obj oldOwner = overridden.getOwner();
 
 		final boolean debug = false;
 			//toString().startsWith("<expressionpropagationtest>:b");
 
 		if (oldOwner == null) {
 			// No explicit owner. Copy the scope path.
-			this.scopeRef = sample.scopeRef;
+			this.scopeRef = overridden.scopeRef;
 			if (debug) {
 				System.err.println(
 						"(!) copy scope ref(" + getKey() + " / " + this + "): "
-						+ "\n    " + sample.scopeRef);
+						+ "\n    " + overridden.scopeRef);
 			}
 			return;
 		}
@@ -137,7 +140,7 @@ final class ScopeField extends ObjectField {
 			return;
 		}
 
-		/*if (newOwner.derivedFrom(oldOwner, INHERITANCE, 1)) {
+		if (newOwner.derivedFrom(oldOwner, INHERITANCE, 1)) {
 			// Inherited scope field. Construct the scope path.
 
 			final TypeRef ancestor = newOwner.getAncestor();
@@ -159,7 +162,7 @@ final class ScopeField extends ObjectField {
 			}
 
 			return;
-		}*/
+		}
 
 		// Field declared in explicit sample. Leave owner as is.
 		this.owner = oldOwner;

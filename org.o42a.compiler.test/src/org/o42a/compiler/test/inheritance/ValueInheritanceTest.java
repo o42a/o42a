@@ -67,8 +67,8 @@ public class ValueInheritanceTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.a = getField("a");
-		this.b = getField("b");
+		this.a = field("a");
+		this.b = field("b");
 	}
 
 }

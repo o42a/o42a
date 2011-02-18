@@ -35,7 +35,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	public void voidValue() {
 		compile("Void value := void");
 
-		final Obj field = getField("void_value").getArtifact().materialize();
+		final Obj field = field("void_value").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, field.getValueType());
 	}
@@ -44,7 +44,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	public void integerValue() {
 		compile("Integer value := 12345678900");
 
-		final Obj field = getField("integer_value").getArtifact().materialize();
+		final Obj field = field("integer_value").getArtifact().materialize();
 
 		assertEquals(ValueType.INTEGER, field.getValueType());
 		assertThat(definiteValue(field, Long.class), is(12345678900L));
@@ -54,7 +54,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	public void integerByStringValue() {
 		compile("Integer value := integer '12345678900'");
 
-		final Obj field = getField("integer_value").getArtifact().materialize();
+		final Obj field = field("integer_value").getArtifact().materialize();
 
 		assertEquals(ValueType.INTEGER, field.getValueType());
 		assertThat(definiteValue(field, Long.class), is(12345678900L));
@@ -64,7 +64,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	public void floatValue() {
 		compile("Float value := float '1234567890.25'");
 
-		final Obj field = getField("float_value").getArtifact().materialize();
+		final Obj field = field("float_value").getArtifact().materialize();
 
 		assertEquals(ValueType.FLOAT, field.getValueType());
 		assertThat(definiteValue(field, Double.class), is(1234567890.25d));
@@ -74,7 +74,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	public void stringValue() {
 		compile("String value := \"abc\"");
 
-		final Obj field = getField("string_value").getArtifact().materialize();
+		final Obj field = field("string_value").getArtifact().materialize();
 
 		assertEquals(ValueType.STRING, field.getValueType());
 		assertEquals("abc", definiteValue(field));

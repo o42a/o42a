@@ -35,7 +35,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: equals :=> void).",
 				"B := A == 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertTrueValue(b.getValue());
@@ -47,7 +47,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: equals :=> void()).",
 				"B := A <> 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertFalseValue(b.getValue());
@@ -59,7 +59,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: compare :=> -1).",
 				"B := A < 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertTrueValue(b.getValue());
@@ -71,7 +71,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: compare :=> -1).",
 				"B := A <= 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertTrueValue(b.getValue());
@@ -83,7 +83,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: compare :=> -1).",
 				"B := A > 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertFalseValue(b.getValue());
@@ -95,7 +95,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: compare :=> -1).",
 				"B := A >= 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertFalseValue(b.getValue());
@@ -107,7 +107,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: compare :=> -1).",
 				"B := A == 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertFalseValue(b.getValue());
@@ -119,7 +119,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(@Operators: compare :=> -1).",
 				"B := A <> 2");
 
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj b = field("b").getArtifact().materialize();
 
 		assertEquals(ValueType.VOID, b.getValueType());
 		assertTrueValue(b.getValue());
