@@ -35,15 +35,16 @@ import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 
 
 final class ScopeField extends ObjectField {
 
-	private final Obj owner;
+	private Obj owner;
+	private Ref scopeRef;
 
 	ScopeField(Obj owner) {
 		super(
@@ -53,18 +54,11 @@ final class ScopeField extends ObjectField {
 						SCOPE_MEMBER_ID)
 				.setVisibility(Visibility.PROTECTED));
 		this.owner = owner;
-		setScopeArtifact(
-				owner.getScope().getEnclosingContainer().toObject());
 	}
 
-	private ScopeField(
-			Container enclosingContainer,
-			ScopeField sample,
-			Obj owner) {
+	private ScopeField(Container enclosingContainer, ScopeField sample) {
 		super(enclosingContainer, sample, true);
-		this.owner = owner;
-		setScopeArtifact(
-				owner.getScope().getEnclosingContainer().toObject());
+		updateOwner(sample);
 	}
 
 	public final Obj getOwner() {
@@ -78,15 +72,32 @@ final class ScopeField extends ObjectField {
 
 	@Override
 	public Obj getArtifact() {
-		return getScopeArtifact();
+
+		final Obj artifact = getScopeArtifact();
+
+		if (artifact != null) {
+			return artifact;
+		}
+
+		final Obj newArtifact;
+
+		if (this.owner != null) {
+			newArtifact =
+				this.owner.getScope().getEnclosingContainer().toObject();
+		} else {
+			newArtifact = this.scopeRef.resolve(getEnclosingScope()).toObject();
+		}
+
+		setScopeArtifact(newArtifact);
+
+		return newArtifact;
 	}
 
 	@Override
 	protected ScopeField propagate(Scope enclosingScope) {
 		return new ScopeField(
 				enclosingScope.getContainer(),
-				this,
-				updateOwner(enclosingScope));
+				this);
 	}
 
 	@Override
@@ -94,42 +105,70 @@ final class ScopeField extends ObjectField {
 		return new IR(generator, this);
 	}
 
-	private Obj updateOwner(Scope enclosingScope) {
+	private void updateOwner(ScopeField sample) {
 
-		final Obj oldOwner = getOwner();
-		final Obj newOwner = enclosingScope.getContainer().toObject();
+		final Obj oldOwner = sample.getOwner();
 
-		if (newOwner.derivedFrom(oldOwner, IMPLICIT_PROPAGATION)) {
+		final boolean debug = false;
+			//toString().startsWith("<expressionpropagationtest>:b");
+
+		if (oldOwner == null) {
+			// No explicit owner. Copy the scope path.
+			this.scopeRef = sample.scopeRef;
+			if (debug) {
+				System.err.println(
+						"(!) copy scope ref(" + getKey() + " / " + this + "): "
+						+ "\n    " + sample.scopeRef);
+			}
+			return;
+		}
+
+		final Obj newOwner = getEnclosingScope().getContainer().toObject();
+
+		if (newOwner.derivedFrom(oldOwner, IMPLICIT_PROPAGATION, 1)) {
 			// Field declared in the scope implicitly derived from
-			// the previous one. Update owner
-			return newOwner;
+			// the previous one. Update owner.
+			this.owner = newOwner;
+			if (debug) {
+				System.err.println(
+						"(!) new owner(" + getKey() + " / "  + this + "): "
+						+ "\n    " + newOwner);
+			}
+			return;
 		}
 
-		final MemberKey key = getKey();
+		/*if (newOwner.derivedFrom(oldOwner, INHERITANCE, 1)) {
+			// Inherited scope field. Construct the scope path.
 
-		// Find if the same field present in implicit samples.
-		for (Sample sample : newOwner.getAscendants().getDiscardedSamples()) {
-			if (sample.isExplicit()) {
-				// Skip discarded explicit samples.
-				continue;
+			final TypeRef ancestor = newOwner.getAncestor();
+			final Rescoper ancestorRescoper =
+				getEnclosingScope().getEnclosingScopePath().rescoper(
+						getEnclosingScope());
+			final Ref ancestorRef =
+				ancestor.getRef().rescope(ancestorRescoper);
+
+			this.scopeRef = getKey().toPath().target(
+					this,
+					ancestorRef.distribute(),
+					ancestorRef);
+
+			if (debug) {
+				System.err.println(
+						"(!) new scope ref(" + getKey() + " / "  + this + "): "
+						+ "\n    " + this.scopeRef);
 			}
 
-			final org.o42a.core.member.Member found =
-				sample.getType().member(key);
+			return;
+		}*/
 
-			if (found == null) {
-				continue;
-			}
+		// Field declared in explicit sample. Leave owner as is.
+		this.owner = oldOwner;
 
-			// The same field is present in implicit sample.
-			// Update owner.
-
-			return newOwner;
+		if (debug) {
+			System.err.println(
+					"(!) old owner(" + getKey() + " / "  + this + "): "
+					+ "\n    " + oldOwner);
 		}
-
-		// Field declared in the new scope. Don't change it's owner.
-
-		return oldOwner;
 	}
 
 	private static final class IR extends FieldIR<Obj> {

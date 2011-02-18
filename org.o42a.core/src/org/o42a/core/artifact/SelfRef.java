@@ -21,21 +21,23 @@ package org.o42a.core.artifact;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.SelfRefBase;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.Value;
 
 
-final class SelfRef extends Ref {
+final class SelfRef extends SelfRefBase {
 
 	private final Resolution self;
 
-	SelfRef(Distributor distributor, Artifact<?> self) {
-		super(self, distributor);
+	SelfRef(Artifact<?> self) {
+		super(self, self.distribute());
 		this.self = artifactResolution(self);
 	}
 
@@ -46,9 +48,18 @@ final class SelfRef extends Ref {
 	}
 
 	@Override
+	public Value<?> value(Scope scope) {
+		if (scope == this.self.getScope()) {
+			return this.self.materialize().getValue();
+		}
+		return calculateValue(this.self.materialize(), scope);
+	}
+
+	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		return new SelfRef(reproducer.distribute(), this.self.toArtifact());
+		getLogger().notReproducible(this);
+		return null;
 	}
 
 	@Override
@@ -73,6 +84,29 @@ final class SelfRef extends Ref {
 		public Op(HostOp host, SelfRef ref) {
 			super(host, ref);
 			this.ref = ref;
+		}
+
+		@Override
+		public void writeLogicalValue(Code code, CodePos exit) {
+
+			final HostOp target = target(code, exit);
+
+			target.materialize(code, exit).writeLogicalValue(
+					code,
+					exit,
+					host().toObject(code, exit));
+		}
+
+		@Override
+		public void writeValue(Code code, CodePos exit, ValOp result) {
+
+			final HostOp target = target(code, exit);
+
+			target.materialize(code, exit).writeValue(
+					code,
+					exit,
+					result,
+					host().toObject(code, exit));
 		}
 
 		@Override

@@ -49,7 +49,6 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -87,8 +86,6 @@ public abstract class Obj extends Artifact<Obj>
 
 	private Definitions definitions;
 	private Value<?> value;
-
-	private Ref selfOrDerived;
 
 	private ObjectIR ir;
 	private ObjectValueIR valueIR;
@@ -658,13 +655,6 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return scopePathFragment.toPath();
-	}
-
-	public Ref selfOrDerived() {
-		if (this.selfOrDerived != null) {
-			return this.selfOrDerived;
-		}
-		return this.selfOrDerived = new SelfOrDerived(this);
 	}
 
 	public final ObjectIR ir(IRGenerator generator) {

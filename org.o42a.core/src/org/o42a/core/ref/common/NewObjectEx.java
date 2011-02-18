@@ -71,7 +71,8 @@ public abstract class NewObjectEx extends Ex {
 			super(
 					propagatedFrom,
 					propagatedFrom.distributeIn(scope.getContainer()));
-			this.propagatedFrom = propagatedFrom.toStaticTypeRef();
+			this.propagatedFrom =
+				propagatedFrom.toStaticTypeRef().upgradeScope(scope);
 		}
 
 		@Override

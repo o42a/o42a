@@ -1,6 +1,6 @@
 /*
     Compiler Tests
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,39 +19,37 @@
 */
 package org.o42a.compiler.test.inheritance;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.Location;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.member.field.Field;
 
 
-public class AdapterTest extends CompilerTestCase {
-
-	private Artifact<?> adapterType;
-	private Artifact<?> a;
+public class ExpressionPropagationTest extends CompilerTestCase {
 
 	@Test
-	public void adapter() {
+	public void callPropagation() {
 		compile(
-				"Adapter :=> void(Foo := 1);",
-				"a := void(@Adapter := adapter)");
+				"A := void(",
+				"  Value := integer(= 1).",
+				"  Foo := value(",
+				"    = value().",
+				"  ).",
+				").",
+				"B := A(",
+				"  Value = integer(= 2).",
+				").");
 
-		final Ref adapter = this.a.selfRef().adapt(
-				new Location(this.a.getContext(), null),
-				this.adapterType.selfRef().toStaticTypeRef());
+		final Field<?> a = getField("a");
+		final Field<?> b = getField("b");
 
-		assertThat(adapter, notNullValue());
-	}
+		final Field<?> aFoo = getField(a, "foo");
+		final Field<?> bFoo = getField(b, "foo");
 
-	@Override
-	protected void compile(String line, String... lines) {
-		super.compile(line, lines);
-		this.adapterType = getField("adapter").getArtifact();
-		this.a = getField("a").getArtifact();
+		assertThat(definiteValue(aFoo, Long.class), is(1L));
+		assertThat(definiteValue(bFoo, Long.class), is(2L));
 	}
 
 }

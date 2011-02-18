@@ -195,7 +195,7 @@ class PhraseSubContext extends PhraseContext {
 					distributor,
 					adapterId(
 							overriddenKey.getAdapterId().getAdapterTypeScope()
-							.getContainer().toArtifact().self(distributor)
+							.getContainer().toArtifact().fixedRef(distributor)
 							.toStaticTypeRef()));
 		} else {
 			declaration = fieldDeclaration(
@@ -209,7 +209,7 @@ class PhraseSubContext extends PhraseContext {
 
 		declaration =
 			declaration.override()
-			.setDeclaredIn(origin.self(distributor).toStaticTypeRef())
+			.setDeclaredIn(origin.fixedRef(distributor).toStaticTypeRef())
 			.setVisibility(overridden.getVisibility());
 
 		if (getClause().toPlainClause().isPrototype()) {

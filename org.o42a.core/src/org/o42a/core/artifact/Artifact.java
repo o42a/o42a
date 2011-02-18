@@ -91,15 +91,15 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public abstract Obj materialize();
 
-	public final Ref self() {
+	public final Ref selfRef() {
 		if (this.self != null) {
 			return this.self;
 		}
-		return this.self = self(distribute());
+		return this.self = new SelfRef(this);
 	}
 
-	public final Ref self(Distributor distributor) {
-		return new SelfRef(distributor, this);
+	public final Ref fixedRef(Distributor distributor) {
+		return new FixedRef(distributor, this);
 	}
 
 	public boolean isAbstract() {

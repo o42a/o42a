@@ -49,6 +49,14 @@ final class RescopedRef extends Wrap {
 	}
 
 	@Override
+	public String toString() {
+		if (this.rescoped == null) {
+			return super.toString();
+		}
+		return this.rescoped.toString();
+	}
+
+	@Override
 	protected Ref resolveWrapped() {
 
 		final Path path = this.rescoped.getPath();
@@ -182,6 +190,7 @@ final class RescopedRef extends Wrap {
 		protected RefOp createOp(HostOp host) {
 			return new Op(host, this);
 		}
+
 	}
 
 	private static final class RescopedDistrubutor extends Distributor {

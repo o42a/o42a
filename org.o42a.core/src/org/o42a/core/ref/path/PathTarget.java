@@ -172,20 +172,16 @@ class PathTarget extends Ex {
 
 	@Override
 	public String toString() {
-
-		final Resolution resolved = getResolved();
-
-		if (resolved != null) {
-			return resolved.toString();
-		}
 		if (this.fullPath != null) {
 			return this.fullPath.toString();
 		}
-		if (this.start == null) {
-			return this.path.toString();
+		if (this.path != null) {
+			if (this.start == null) {
+				return this.path.toString();
+			}
+			return this.start + ":" + this.path;
 		}
-
-		return this.start + ":" + this.path.toString();
+		return super.toString();
 	}
 
 	@Override

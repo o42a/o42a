@@ -24,6 +24,8 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -62,6 +64,14 @@ public final class PathBuilder {
 
 	public final Ref target(CompilerContext context) {
 		return path(context).target(context);
+	}
+
+	public final Artifact<?> artifact(CompilerContext context) {
+		return path(context).target(context).getResolution().toArtifact();
+	}
+
+	public final Obj materialize(CompilerContext context) {
+		return artifact(context).materialize();
 	}
 
 	public final Ref target(LocationSpec location, Distributor distributor) {
