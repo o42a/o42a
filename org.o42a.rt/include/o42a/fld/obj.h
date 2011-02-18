@@ -27,7 +27,7 @@ typedef struct o42a_obj_fld o42a_obj_fld;
 
 struct o42a_obj_fld {
 	o42a_obj_t *object;
-	o42a_oref_ft *constructor;
+	o42a_oconstructor_ft *constructor;
 	o42a_obj_fld *previous;
 };
 

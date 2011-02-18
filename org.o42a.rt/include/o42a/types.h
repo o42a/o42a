@@ -35,6 +35,7 @@ typedef struct o42a_sample o42a_sample_t;
 typedef const struct o42a_field o42a_field_t;
 typedef const struct o42a_overrider o42a_overrider_t;
 typedef struct o42a_ctable o42a_ctable_t;
+struct o42a_obj_fld;
 typedef union o42a_fld o42a_fld;
 
 /** Object represented by it's body. */
@@ -188,7 +189,7 @@ typedef struct o42a_val {
  * \param result[out] object value to fill by function.
  * \param object[in] object pointer.
  */
-typedef void o42a_oval_ft(o42a_val_t*, o42a_obj_t*);
+typedef void o42a_oval_ft(o42a_val_t*, o42a_obj_t *);
 
 /**
  * Object condition calculator function.
@@ -197,7 +198,7 @@ typedef void o42a_oval_ft(o42a_val_t*, o42a_obj_t*);
  *
  * \return condition.
  */
-typedef o42a_bool_t o42a_ocond_ft(o42a_obj_t*);
+typedef o42a_bool_t o42a_ocond_ft(o42a_obj_t *);
 
 /**
  * Object reference function.
@@ -206,7 +207,19 @@ typedef o42a_bool_t o42a_ocond_ft(o42a_obj_t*);
  *
  * \return resulting object reference.
  */
-typedef o42a_obj_t *o42a_oref_ft(o42a_obj_t*);
+typedef o42a_obj_t *o42a_oref_ft(o42a_obj_t *);
+
+/**
+ * Object constructor function.
+ *
+ * \param scope[in] scope object pointer.
+ * \param fld[in] pointer to field, which object construction invoked for. This
+ * may be a field from object different from scope (see o42a_obj_fld.previous),
+ * but is always belongs to compatible body of that object.
+ *
+ * \return resulting object reference.
+ */
+typedef o42a_obj_t *o42a_oconstructor_ft(o42a_obj_t *, struct o42a_obj_fld *);
 
 /**
  * Variable assigner function.
