@@ -37,10 +37,10 @@ public class LinkTest extends CompilerTestCase {
 				"A := 1;",
 				"b := `a.");
 
-		final Obj a = getField("a").getArtifact().toObject();
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj a = field("a").getArtifact().toObject();
+		final Obj b = field("b").getArtifact().materialize();
 
-		assertEquals(ArtifactKind.LINK, getField("b").getArtifact().getKind());
+		assertEquals(ArtifactKind.LINK, field("b").getArtifact().getKind());
 		assertEquals(1L, definiteValue(b));
 		assertSame(a, b.getWrapped());
 	}
@@ -51,10 +51,10 @@ public class LinkTest extends CompilerTestCase {
 				"A := 1;" +
 				"b := (`integer) a.");
 
-		final Obj a = getField("a").getArtifact().toObject();
-		final Obj b = getField("b").getArtifact().materialize();
+		final Obj a = field("a").getArtifact().toObject();
+		final Obj b = field("b").getArtifact().materialize();
 
-		assertEquals(ArtifactKind.LINK, getField("b").getArtifact().getKind());
+		assertEquals(ArtifactKind.LINK, field("b").getArtifact().getKind());
 		assertEquals(1L, definiteValue(b));
 		assertSame(a, b.toArtifact().materialize().getWrapped());
 	}
@@ -65,17 +65,17 @@ public class LinkTest extends CompilerTestCase {
 				"A := void(Foo := 1; bar := `foo);",
 				"b := a(Foo = 2).");
 
-		final Obj a = getField("a").getArtifact().toObject();
-		final Obj b = getField("b").getArtifact().toObject();
+		final Obj a = field("a").getArtifact().toObject();
+		final Obj b = field("b").getArtifact().toObject();
 
-		final Obj aFoo = getField(a, "foo").getArtifact().toObject();
-		final Field<?> aBar = getField(a, "bar");
+		final Obj aFoo = field(a, "foo").getArtifact().toObject();
+		final Field<?> aBar = field(a, "bar");
 
 		assertEquals(ArtifactKind.LINK, aBar.getArtifact().getKind());
 		assertSame(aFoo, aBar.getArtifact().materialize().getWrapped());
 
-		final Obj bFoo = getField(b, "foo").getArtifact().toObject();
-		final Field<?> bBar = getField(b, "bar");
+		final Obj bFoo = field(b, "foo").getArtifact().toObject();
+		final Field<?> bBar = field(b, "bar");
 
 		assertEquals(ArtifactKind.LINK, bBar.getArtifact().getKind());
 		assertSame(bFoo, bBar.getArtifact().materialize().getWrapped());
@@ -87,16 +87,16 @@ public class LinkTest extends CompilerTestCase {
 				"A := void(Foo := 1; bar := `&foo);",
 				"b := a(Foo = 2).");
 
-		final Obj a = getField("a").getArtifact().toObject();
-		final Obj b = getField("b").getArtifact().toObject();
+		final Obj a = field("a").getArtifact().toObject();
+		final Obj b = field("b").getArtifact().toObject();
 
-		final Obj aFoo = getField(a, "foo").getArtifact().toObject();
-		final Field<?> aBar = getField(a, "bar");
+		final Obj aFoo = field(a, "foo").getArtifact().toObject();
+		final Field<?> aBar = field(a, "bar");
 
 		assertEquals(ArtifactKind.LINK, aBar.getArtifact().getKind());
 		assertSame(aFoo, aBar.getArtifact().materialize().getWrapped());
 
-		final Field<?> bBar = getField(b, "bar");
+		final Field<?> bBar = field(b, "bar");
 
 		assertEquals(ArtifactKind.LINK, bBar.getArtifact().getKind());
 		assertSame(aFoo, bBar.getArtifact().materialize().getWrapped());

@@ -37,7 +37,8 @@ final class MemberOverride extends Sample {
 		super(overriddenMember, scope);
 		this.overriddenMember = overriddenMember;
 		this.ancestor = getObject().getAncestor().upgradeScope(scope);
-		this.typeRef = getObject().fixedRef(scope.distribute()).toStaticTypeRef();
+		this.typeRef =
+			getObject().fixedRef(scope.distribute()).toStaticTypeRef();
 	}
 
 	@Override
@@ -79,7 +80,12 @@ final class MemberOverride extends Sample {
 	public Definitions overrideDefinitions(
 			Scope scope,
 			Definitions ancestorDefinitions) {
-		return getObject().overrideDefinitions(scope, ancestorDefinitions);
+
+		final Obj object = getObject();
+		final Definitions overriddenDefinitions =
+			object.overriddenDefinitions(scope, ancestorDefinitions);
+
+		return object.overrideDefinitions(scope, overriddenDefinitions);
 	}
 
 	@Override

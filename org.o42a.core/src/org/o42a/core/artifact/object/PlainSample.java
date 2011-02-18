@@ -113,9 +113,12 @@ final class PlainSample extends Sample {
 	public Definitions overrideDefinitions(
 			Scope scope,
 			Definitions ancestorDefinitions) {
-		return getObject().overrideDefinitions(
-				scope,
-				ancestorDefinitions);
+
+		final Obj object = getObject();
+		final Definitions overriddenDefinitions =
+			object.overriddenDefinitions(scope, ancestorDefinitions);
+
+		return object.overrideDefinitions(scope, overriddenDefinitions);
 	}
 
 	@Override

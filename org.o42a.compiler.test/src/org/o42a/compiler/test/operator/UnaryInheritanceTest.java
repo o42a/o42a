@@ -38,11 +38,11 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 				").",
 				"B := A(Foo = 2).");
 
-		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
 
-		final Field<?> aBar = getField(a, "bar");
-		final Field<?> bBar = getField(b, "bar");
+		final Field<?> aBar = field(a, "bar");
+		final Field<?> bBar = field(b, "bar");
 
 		assertThat(definiteValue(aBar, Long.class), is(1L));
 		assertThat(definiteValue(bBar, Long.class), is(2L));
@@ -57,11 +57,11 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 				").",
 				"B := A(Foo = 2).");
 
-		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
 
-		final Field<?> aBar = getField(a, "bar");
-		final Field<?> bBar = getField(b, "bar");
+		final Field<?> aBar = field(a, "bar");
+		final Field<?> bBar = field(b, "bar");
 
 		assertThat(definiteValue(aBar, Long.class), is(-1L));
 		assertThat(definiteValue(bBar, Long.class), is(-2L));

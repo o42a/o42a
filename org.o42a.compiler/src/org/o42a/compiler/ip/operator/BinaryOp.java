@@ -80,7 +80,13 @@ public final class BinaryOp extends NewObjectEx {
 
 	@Override
 	public String toString() {
-		return getScope().getEnclosingScope().toString();
+		if (this.operator != null) {
+			return this.operator.toString();
+		}
+		if (this.node != null) {
+			return "Binary " + this.node.getSign();
+		}
+		return super.toString();
 	}
 
 	@Override

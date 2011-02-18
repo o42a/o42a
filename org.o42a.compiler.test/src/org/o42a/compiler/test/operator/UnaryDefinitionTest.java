@@ -33,8 +33,8 @@ public class UnaryDefinitionTest extends CompilerTestCase {
 	public void plus() {
 		compile("A := 1. B := +a.");
 
-		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(a, Long.class), is(1L));
 		assertThat(definiteValue(b, Long.class), is(1L));
@@ -44,8 +44,8 @@ public class UnaryDefinitionTest extends CompilerTestCase {
 	public void minus() {
 		compile("A := 1. B := -a.");
 
-		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(a, Long.class), is(1L));
 		assertThat(definiteValue(b, Long.class), is(-1L));

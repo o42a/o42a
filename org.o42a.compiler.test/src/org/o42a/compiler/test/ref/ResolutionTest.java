@@ -66,8 +66,8 @@ public class ResolutionTest extends CompilerTestCase {
 				"B := a(= 44).",
 				"Include 'included.o42a'.");
 
-		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(a, Long.class), is(24L));
 		assertThat(definiteValue(b, Long.class), is(44L));
@@ -82,8 +82,8 @@ public class ResolutionTest extends CompilerTestCase {
 				"(Include 'included.o42a').",
 				"B := a(= 44).");
 
-		final Field<?> a = getField("a");
-		final Field<?> b = getField("b");
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
 
 		assertThat(definiteValue(a, Long.class), is(24L));
 		assertThat(definiteValue(b, Long.class), is(44L));
