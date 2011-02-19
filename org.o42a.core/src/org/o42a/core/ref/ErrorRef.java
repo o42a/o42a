@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,49 +19,44 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.ref.common.Wrap;
+import static org.o42a.core.ref.Logical.logicalFalse;
+
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationSpec;
+import org.o42a.core.Scope;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.st.Reproducer;
 
 
-final class FixedScopeRef extends Wrap {
+public final class ErrorRef extends Ref {
 
-	private final Ref ref;
-
-	FixedScopeRef(Ref ref) {
-		super(ref, ref.distribute());
-		this.ref = ref;
+	ErrorRef(LocationSpec location, Distributor distributor) {
+		super(
+				location,
+				distributor,
+				logicalFalse(location, distributor.getScope()));
 	}
 
 	@Override
-	protected Ref resolveWrapped() {
+	public Resolution resolve(Scope scope) {
+		return noResolution();
+	}
 
-		final Resolution resolution = this.ref.getResolution();
-
-		if (resolution.isError()) {
-			return errorRef(resolution);
-		}
-
-		final Artifact<?> artifact = resolution.toArtifact();
-
-		if (artifact == null) {
-			getLogger().notArtifact(this);
-			return errorRef(this);
-		}
-
-		return artifact.fixedRef(distribute());
+	@Override
+	public Ref reproduce(Reproducer reproducer) {
+		return errorRef(this, reproducer.distribute());
 	}
 
 	@Override
 	public String toString() {
-		if (this.ref == null) {
-			return super.toString();
-		}
-		return "&" + this.ref;
+		return "ERROR";
 	}
 
 	@Override
-	protected boolean isKnownStatic() {
-		return true;
+	protected RefOp createOp(HostOp host) {
+		throw new UnsupportedOperationException(
+				"Can not generate IR for ERROR");
 	}
 
 }

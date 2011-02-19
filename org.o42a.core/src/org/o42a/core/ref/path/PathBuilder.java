@@ -84,16 +84,25 @@ public final class PathBuilder {
 		return adapterId(target(location, distributor).toStaticTypeRef());
 	}
 
-	public final Member memberOf(Container container) {
+	public final MemberKey memberKey(CompilerContext context) {
 
-		final CompilerContext context = container.getContext();
 		final AbsolutePath path = path(context);
 		final Member member = path.resolve(context).toMember();
 
 		assert member != null :
 			"Member not found: " + this;
 
-		final MemberKey key = member.getKey();
+		return member.getKey();
+
+	}
+
+	public final MemberId memberId(CompilerContext context) {
+		return memberKey(context).getMemberId();
+	}
+
+	public final Member memberOf(Container container) {
+
+		final MemberKey key = memberKey(container.getContext());
 		final Member found = container.member(key);
 
 		assert found != null :

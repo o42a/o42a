@@ -37,48 +37,43 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Wrap;
 
 
-public class UnaryOp extends Wrap {
+public class UnaryOperatorRef extends Wrap {
 
 	private final UnaryNode node;
+	private final Ref operand;
 
-	public UnaryOp(
+	public UnaryOperatorRef(
 			CompilerContext context,
 			UnaryNode node,
 			Distributor distributor) {
 		super(new Location(context, node), distributor);
 		this.node = node;
-	}
-
-	public UnaryNode getNode() {
-		return this.node;
+		this.operand =
+			node.getOperand().accept(EXPRESSION_VISITOR, distribute());
 	}
 
 	@Override
 	public String toString() {
-
-		final Ref wrapped = getWrapped();
-
-		if (wrapped != null) {
-			return wrapped.toString();
-		}
-		if (this.node == null) {
+		if (this.operand == null) {
 			return super.toString();
 		}
-
-		return "Unary " + this.node.getSign();
+		return this.node.getOperator().getSign() + this.operand;
 	}
 
 	@Override
 	protected Ref resolveWrapped() {
 
-		final UnaryOperatorInfo info =
-			UnaryOperatorInfo.bySign(this.node.getOperator().getSign());
-		final Ref operandRef =
-			getNode().getOperand().accept(EXPRESSION_VISITOR, distribute());
-		final Resolution operandResolution = operandRef.getResolution();
+		final Resolution operandResolution = this.operand.getResolution();
+
+		if (operandResolution.isError()) {
+			return errorRef(operandResolution, distribute());
+		}
+
 		final Obj operand = operandResolution.materialize();
 		final Location operatorLocation =
 			new Location(getContext(), this.node.getSign());
+		final UnaryOperatorInfo info =
+			UnaryOperatorInfo.bySign(this.node.getOperator().getSign());
 		final AdapterId adapterId =
 			info.getPath().toAdapterId(operatorLocation, distribute());
 		final Member adapter = operand.member(adapterId);
@@ -88,16 +83,16 @@ public class UnaryOp extends Wrap {
 					"unsupported_unary_operator",
 					operatorLocation,
 					"Unary operator '%s' is not supported, "
-					+ "because operand doesn't have a '%s' adapter",
+					+ "because operand doesn't have an '%s' adapter",
 					info,
 					adapterId);
-			return null;
+			return errorRef(operatorLocation);
 		}
 
 		final Ref adapterRef = adapter.getKey().toPath().target(
 				operatorLocation,
 				distribute(),
-				operandRef.materialize());
+				this.operand.materialize());
 
 		return new DefinitionValue(
 				this,

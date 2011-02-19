@@ -33,17 +33,11 @@ final class Adapter extends Wrap {
 
 	private final Ref ref;
 	private final StaticTypeRef adapterType;
-	private final boolean requireCompatibility;
 
-	Adapter(
-			LocationSpec location,
-			Ref ref,
-			StaticTypeRef adapterType,
-			boolean requireCompatibility) {
+	Adapter(LocationSpec location, Ref ref, StaticTypeRef adapterType) {
 		super(location, ref.distribute());
 		this.ref = ref;
 		this.adapterType = adapterType;
-		this.requireCompatibility = requireCompatibility;
 	}
 
 	@Override
@@ -52,7 +46,7 @@ final class Adapter extends Wrap {
 		final Resolution resolution = this.ref.getResolution();
 
 		if (resolution.isError()) {
-			return null;
+			return errorRef(resolution);
 		}
 
 		final Obj objectType = resolution.materialize();
@@ -65,10 +59,8 @@ final class Adapter extends Wrap {
 			objectType.member(adapterId(this.adapterType));
 
 		if (adapterMember == null) {
-			if (this.requireCompatibility) {
-				getLogger().incompatible(this.ref, this.adapterType);
-			}
-			return null;
+			getLogger().incompatible(this.ref, this.adapterType);
+			return errorRef(this);
 		}
 
 		final Path adapterPath = adapterMember.getKey().toPath();
