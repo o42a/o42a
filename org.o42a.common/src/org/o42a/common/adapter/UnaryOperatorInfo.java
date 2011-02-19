@@ -17,24 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.operator;
+package org.o42a.common.adapter;
 
 import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
+
+import java.util.HashMap;
 
 import org.o42a.core.ref.path.PathBuilder;
 
 
-public enum UnaryOperator {
+public enum UnaryOperatorInfo {
 
 	PLUS("+", pathBuilder("operators", "plus")),
 	MINUS("-", pathBuilder("operators", "minus"));
 
+	public static UnaryOperatorInfo bySign(String operator) {
+
+		final UnaryOperatorInfo result = Registry.operators.get(operator);
+
+		assert result != null :
+			"Unsupported unary operator: " + operator;
+
+		return result;
+	}
+
 	private final String sign;
 	private final PathBuilder path;
 
-	UnaryOperator(String sign, PathBuilder path) {
+	UnaryOperatorInfo(String sign, PathBuilder path) {
 		this.sign = sign;
 		this.path = path;
+		Registry.operators.put(sign, this);
 	}
 
 	public final String getSign() {
@@ -43,6 +56,13 @@ public enum UnaryOperator {
 
 	public final PathBuilder getPath() {
 		return this.path;
+	}
+
+	private static final class Registry {
+
+		private static HashMap<String, UnaryOperatorInfo> operators =
+			new HashMap<String, UnaryOperatorInfo>(2);
+
 	}
 
 }

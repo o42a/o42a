@@ -19,13 +19,13 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
 import org.o42a.intrinsic.operator.BinaryOpObj;
-import org.o42a.intrinsic.operator.BinaryOperator;
 
 
 public abstract class NumericEqualsOpObj<L extends Number>
@@ -36,7 +36,7 @@ public abstract class NumericEqualsOpObj<L extends Number>
 			ValueType<L> leftOperandType) {
 		super(
 				owner.getContainer(),
-				BinaryOperator.EQUALS,
+				BinaryOperatorInfo.EQUALS,
 				owner.getAncestor().toStatic(),
 				ValueType.VOID,
 				leftOperandType);

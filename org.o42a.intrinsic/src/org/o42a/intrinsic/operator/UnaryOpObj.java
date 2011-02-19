@@ -24,6 +24,7 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.Conditions.emptyConditions;
 
+import org.o42a.common.adapter.UnaryOperatorInfo;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -43,7 +44,7 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 	private static FieldDeclaration declaration(
 			Container enclosingContainer,
-			UnaryOperator operator,
+			UnaryOperatorInfo operator,
 			StaticTypeRef declaredIn) {
 
 		final Location location = new Location(
@@ -64,11 +65,11 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 	}
 
 	private final ValueType<O> operandType;
-	private final UnaryOperator operator;
+	private final UnaryOperatorInfo operator;
 
 	public UnaryOpObj(
 			Container enclosingContainer,
-			UnaryOperator operator,
+			UnaryOperatorInfo operator,
 			StaticTypeRef declaredIn,
 			ValueType<T> resultType,
 			ValueType<O> operandType) {
@@ -90,7 +91,7 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 		return this.operandType;
 	}
 
-	public final UnaryOperator getOperator() {
+	public final UnaryOperatorInfo getOperator() {
 		return this.operator;
 	}
 
@@ -150,7 +151,7 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 				ValueType<O> operandType) {
 			super(
 					enclosingContainer,
-					UnaryOperator.PLUS,
+					UnaryOperatorInfo.PLUS,
 					declaredIn,
 					operandType,
 					operandType);
@@ -172,7 +173,7 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 				ValueType<O> operandType) {
 			super(
 					enclosingContainer,
-					UnaryOperator.MINUS,
+					UnaryOperatorInfo.MINUS,
 					declaredIn,
 					operandType,
 					operandType);

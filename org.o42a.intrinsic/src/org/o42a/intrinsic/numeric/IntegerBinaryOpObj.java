@@ -19,15 +19,15 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryOpObj;
-import org.o42a.intrinsic.operator.BinaryOperator;
 
 
 public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 
-	public IntegerBinaryOpObj(IntegerObject owner, BinaryOperator operator) {
+	public IntegerBinaryOpObj(IntegerObject owner, BinaryOperatorInfo operator) {
 		super(
 				owner.getContainer(),
 				operator,
@@ -63,7 +63,7 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 	public static class Add extends IntegerBinaryOpObj {
 
 		public Add(IntegerObject owner) {
-			super(owner, BinaryOperator.ADD);
+			super(owner, BinaryOperatorInfo.ADD);
 		}
 
 		@Override
@@ -76,7 +76,7 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 	public static class Subtract extends IntegerBinaryOpObj {
 
 		public Subtract(IntegerObject owner) {
-			super(owner, BinaryOperator.SUBTRACT);
+			super(owner, BinaryOperatorInfo.SUBTRACT);
 		}
 
 		@Override
@@ -89,7 +89,7 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 	public static class Multiply extends IntegerBinaryOpObj {
 
 		public Multiply(IntegerObject owner) {
-			super(owner, BinaryOperator.MULTIPLY);
+			super(owner, BinaryOperatorInfo.MULTIPLY);
 		}
 
 		@Override
@@ -102,7 +102,7 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 	public static class Divide extends IntegerBinaryOpObj {
 
 		public Divide(IntegerObject owner) {
-			super(owner, BinaryOperator.DIVIDE);
+			super(owner, BinaryOperatorInfo.DIVIDE);
 		}
 
 		@Override

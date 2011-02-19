@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.UnaryNode;
+import org.o42a.common.adapter.UnaryOperatorInfo;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.Location;
@@ -70,8 +71,8 @@ public class UnaryOp extends Wrap {
 	@Override
 	protected Ref resolveWrapped() {
 
-		final UnaryOperatorType type =
-			UnaryOperatorType.byOperator(this.node.getOperator());
+		final UnaryOperatorInfo info =
+			UnaryOperatorInfo.bySign(this.node.getOperator().getSign());
 		final Ref operandRef =
 			getNode().getOperand().accept(EXPRESSION_VISITOR, distribute());
 		final Resolution operandResolution = operandRef.getResolution();
@@ -79,7 +80,7 @@ public class UnaryOp extends Wrap {
 		final Location operatorLocation =
 			new Location(getContext(), this.node.getSign());
 		final AdapterId adapterId =
-			type.getPath().toAdapterId(operatorLocation, distribute());
+			info.getPath().toAdapterId(operatorLocation, distribute());
 		final Member adapter = operand.member(adapterId);
 
 		if (adapter == null) {
@@ -88,7 +89,7 @@ public class UnaryOp extends Wrap {
 					operatorLocation,
 					"Unary operator '%s' is not supported, "
 					+ "because operand doesn't have a '%s' adapter",
-					type,
+					info,
 					adapterId);
 			return null;
 		}
