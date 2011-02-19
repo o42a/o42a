@@ -881,9 +881,6 @@ public abstract class Obj extends Artifact<Obj>
 				int index,
 				Scope start,
 				PathWalker walker) {
-			if (toString().equals("_scope@<<a@<<comparisonoperatortest>>> <:_result>")) {
-				System.err.println("(!) " + start);
-			}
 
 			final Obj object = start.getContainer().toObject();
 
