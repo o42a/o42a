@@ -19,15 +19,15 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryOpObj;
-import org.o42a.intrinsic.operator.BinaryOperator;
 
 
 public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 
-	public FloatBinaryOpObj(FloatObject owner, BinaryOperator operator) {
+	public FloatBinaryOpObj(FloatObject owner, BinaryOperatorInfo operator) {
 		super(
 				owner.getContainer(),
 				operator,
@@ -65,7 +65,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Add extends FloatBinaryOpObj {
 
 		public Add(FloatObject owner) {
-			super(owner, BinaryOperator.ADD);
+			super(owner, BinaryOperatorInfo.ADD);
 		}
 
 		@Override
@@ -78,7 +78,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Subtract extends FloatBinaryOpObj {
 
 		public Subtract(FloatObject owner) {
-			super(owner, BinaryOperator.SUBTRACT);
+			super(owner, BinaryOperatorInfo.SUBTRACT);
 		}
 
 		@Override
@@ -91,7 +91,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Multiply extends FloatBinaryOpObj {
 
 		public Multiply(FloatObject owner) {
-			super(owner, BinaryOperator.MULTIPLY);
+			super(owner, BinaryOperatorInfo.MULTIPLY);
 		}
 
 		@Override
@@ -104,7 +104,7 @@ public abstract class FloatBinaryOpObj extends BinaryOpObj<Double, Double> {
 	public static class Divide extends FloatBinaryOpObj {
 
 		public Divide(FloatObject owner) {
-			super(owner, BinaryOperator.DIVIDE);
+			super(owner, BinaryOperatorInfo.DIVIDE);
 		}
 
 		@Override

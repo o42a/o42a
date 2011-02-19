@@ -17,14 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.operator;
+package org.o42a.common.adapter;
 
 import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
+
+import java.util.HashMap;
 
 import org.o42a.core.ref.path.PathBuilder;
 
 
-public enum BinaryOperator {
+public enum BinaryOperatorInfo {
 
 	ADD("+", pathBuilder("operators", "add")),
 	SUBTRACT("-", pathBuilder("operators", "subtract")),
@@ -39,17 +41,28 @@ public enum BinaryOperator {
 			pathBuilder("operators", "compare"),
 			pathBuilder("operators", "compare", "with"));
 
+	public static BinaryOperatorInfo bySign(String operator) {
+
+		final BinaryOperatorInfo result = Constants.operators.get(operator);
+
+		assert result != null :
+			"Unsupported binary operator: " + operator;
+
+		return result;
+	}
+
 	private final String sign;
 	private final PathBuilder path;
 	private final PathBuilder rightOperand;
 
-	BinaryOperator(String sign, PathBuilder path) {
+	BinaryOperatorInfo(String sign, PathBuilder path) {
 		this.sign = sign;
 		this.path = path;
 		this.rightOperand = Constants.RIGHT_OPERANT;
+		Constants.operators.put(sign, this);
 	}
 
-	BinaryOperator(
+	BinaryOperatorInfo(
 			String sign,
 			PathBuilder path,
 			PathBuilder rightOperand) {
@@ -72,8 +85,10 @@ public enum BinaryOperator {
 
 	private static final class Constants {
 
-		static final PathBuilder RIGHT_OPERANT =
+		private static final PathBuilder RIGHT_OPERANT =
 			pathBuilder("operators", "binary_operator", "right_operand");
+		private static HashMap<String, BinaryOperatorInfo> operators =
+			new HashMap<String, BinaryOperatorInfo>(2);
 
 	}
 

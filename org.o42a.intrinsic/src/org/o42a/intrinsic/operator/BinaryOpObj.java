@@ -24,6 +24,7 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.Conditions.emptyConditions;
 
+import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -44,7 +45,7 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 
 	private static FieldDeclaration declaration(
 			Container enclosingContainer,
-			BinaryOperator operator,
+			BinaryOperatorInfo operator,
 			StaticTypeRef declaredIn) {
 
 		final Location location = new Location(
@@ -65,11 +66,11 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 	}
 
 	private final ValueType<L> leftOperandType;
-	private final BinaryOperator operator;
+	private final BinaryOperatorInfo operator;
 
 	public BinaryOpObj(
 			Container enclosingContainer,
-			BinaryOperator operator,
+			BinaryOperatorInfo operator,
 			StaticTypeRef declaredIn,
 			ValueType<T> resultType,
 			ValueType<L> leftOperandType) {
@@ -88,7 +89,7 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 		return this.leftOperandType;
 	}
 
-	public final BinaryOperator getOperator() {
+	public final BinaryOperatorInfo getOperator() {
 		return this.operator;
 	}
 
