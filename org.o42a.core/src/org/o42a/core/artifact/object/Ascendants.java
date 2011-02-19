@@ -125,22 +125,22 @@ public final class Ascendants {
 		return this;
 	}
 
-	public Ascendants addExplicitSample(StaticTypeRef sampleRef) {
+	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
-		sampleRef.assertCompatible(enclosingScope);
+		explicitAscendant.assertCompatible(enclosingScope);
 
-		return addSample(new PlainSample(enclosingScope, sampleRef, true));
+		return addSample(new ExplicitSample(enclosingScope, explicitAscendant));
 	}
 
-	public Ascendants addImplicitSample(StaticTypeRef sampleRef) {
+	public Ascendants addImplicitSample(StaticTypeRef implicitAscendant) {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
-		sampleRef.assertCompatible(enclosingScope);
+		implicitAscendant.assertCompatible(enclosingScope);
 
-		return addSample(new PlainSample(enclosingScope, sampleRef, false));
+		return addSample(new ImplicitSample(enclosingScope, implicitAscendant));
 	}
 
 	public Ascendants addMemberOverride(Member overriddenMember) {

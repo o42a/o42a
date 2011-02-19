@@ -25,28 +25,31 @@ import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.Member;
 
 
-final class MemberOverride extends Sample {
+final class ImplicitSample extends Sample {
 
-	private final Member overriddenMember;
-	private final TypeRef ancestor;
-	private final StaticTypeRef typeRef;
+	private final StaticTypeRef implicitAscendant;
+	private TypeRef ancestor;
 
-	MemberOverride(final Scope scope, final Member overriddenMember) {
-		super(overriddenMember, scope);
-		this.overriddenMember = overriddenMember;
-		this.ancestor = getObject().getAncestor().upgradeScope(scope);
-		this.typeRef =
-			getObject().fixedRef(scope.distribute()).toStaticTypeRef();
+	ImplicitSample(Scope scope, StaticTypeRef implicitAscendant) {
+		super(implicitAscendant, scope);
+		this.implicitAscendant = implicitAscendant;
+		assertSameScope(implicitAscendant);
 	}
 
 	@Override
 	public TypeRef getAncestor() {
-		return this.ancestor;
+		if (this.ancestor != null) {
+			return this.ancestor;
+		}
+
+		final Obj type = this.implicitAscendant.getType();
+
+		return this.ancestor = type.getAncestor().upgradeScope(getScope());
 	}
 
 	@Override
 	public StaticTypeRef getTypeRef() {
-		return this.typeRef;
+		return this.implicitAscendant;
 	}
 
 	@Override
@@ -56,7 +59,7 @@ final class MemberOverride extends Sample {
 
 	@Override
 	public Member getOverriddenMember() {
-		return this.overriddenMember;
+		return null;
 	}
 
 	@Override
@@ -66,12 +69,12 @@ final class MemberOverride extends Sample {
 
 	@Override
 	public String toString() {
-		return "MemberOverride[" + this.overriddenMember + ']';
+		return "ImplicitSample[" + this.implicitAscendant + ']';
 	}
 
 	@Override
-	protected final Obj getObject() {
-		return this.overriddenMember.getSubstance().toObject();
+	protected Obj getObject() {
+		return this.implicitAscendant.getType();
 	}
 
 }

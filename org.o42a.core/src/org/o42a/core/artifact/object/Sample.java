@@ -49,12 +49,25 @@ public abstract class Sample extends Scoped {
 		return getTypeRef().getType();
 	}
 
-	public abstract Directive toDirective();
+	public final Directive toDirective() {
+		return getObject().toDirective();
+	}
 
-	public abstract void inheritMembers(ObjectMembers members);
+	public final void inheritMembers(ObjectMembers members) {
+		members.deriveMembers(getObject());
+	}
 
-	public abstract Definitions overrideDefinitions(
+	public final Definitions overrideDefinitions(
 			Scope scope,
-			Definitions ancestorDefinitions);
+			Definitions ancestorDefinitions) {
+
+		final Obj object = getObject();
+		final Definitions overriddenDefinitions =
+			object.overriddenDefinitions(scope, ancestorDefinitions);
+
+		return object.overrideDefinitions(scope, overriddenDefinitions);
+	}
+
+	protected abstract Obj getObject();
 
 }

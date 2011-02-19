@@ -24,10 +24,8 @@ import static org.o42a.core.value.Value.falseValue;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.Member;
@@ -39,21 +37,15 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class PlainSample extends Sample {
+final class ExplicitSample extends Sample {
 
-	private final StaticTypeRef sampleRef;
 	private final StaticTypeRef explicitAscendant;
-	private Obj object;
 	private TypeRef ancestor;
 
-	PlainSample(
-			final Scope scope,
-			final StaticTypeRef sampleRef,
-			final boolean explicit) {
-		super(sampleRef, scope);
-		this.sampleRef = sampleRef;
-		this.explicitAscendant = explicit ? sampleRef : null;
-		assertSameScope(sampleRef);
+	ExplicitSample(Scope scope, StaticTypeRef explicitAscendant) {
+		super(explicitAscendant, scope);
+		this.explicitAscendant = explicitAscendant;
+		assertSameScope(explicitAscendant);
 	}
 
 	@Override
@@ -62,31 +54,26 @@ final class PlainSample extends Sample {
 			return this.ancestor;
 		}
 
-		final Obj type = this.sampleRef.getType();
-
-		if (!isExplicit()) {
-			return this.ancestor = type.getAncestor().upgradeScope(getScope());
-		}
-
+		final Obj type = this.explicitAscendant.getType();
 		final ValueType<?> valueType = type.getValueType();
 
 		if (valueType.wrapper(getContext().getIntrinsics()) == type) {
 			return this.ancestor =
-				valueType.typeRef(this.sampleRef, getScope());
+				valueType.typeRef(this.explicitAscendant, getScope());
 		}
 
 		return this.ancestor =
-			new AncestorEx(getScope(), this.sampleRef).toTypeRef();
+			new AncestorRef(getScope(), this.explicitAscendant).toTypeRef();
 	}
 
 	@Override
 	public StaticTypeRef getTypeRef() {
-		return this.sampleRef;
+		return this.explicitAscendant;
 	}
 
 	@Override
 	public boolean isExplicit() {
-		return this.explicitAscendant != null;
+		return true;
 	}
 
 	@Override
@@ -100,49 +87,22 @@ final class PlainSample extends Sample {
 	}
 
 	@Override
-	public Directive toDirective() {
-		return getObject().toDirective();
-	}
-
-	@Override
-	public void inheritMembers(ObjectMembers members) {
-		members.deriveMembers(getObject());
-	}
-
-	@Override
-	public Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ancestorDefinitions) {
-
-		final Obj object = getObject();
-		final Definitions overriddenDefinitions =
-			object.overriddenDefinitions(scope, ancestorDefinitions);
-
-		return object.overrideDefinitions(scope, overriddenDefinitions);
-	}
-
-	@Override
 	public String toString() {
-		if (this.explicitAscendant == null) {
-			return "ImplicitSample[" + this.sampleRef + ']';
-		}
 		return "ExplicitSample[" + this.explicitAscendant + ']';
 	}
 
-	private Obj getObject() {
-		if (this.object == null) {
-			this.object = this.sampleRef.getType();
-		}
-		return this.object;
+	@Override
+	protected Obj getObject() {
+		return this.explicitAscendant.getType();
 	}
 
-	private static final class AncestorEx extends Ex {
+	private static final class AncestorRef extends Ex {
 
-		private final StaticTypeRef sampleRef;
+		private final StaticTypeRef explicitAscendant;
 
-		AncestorEx(Scope scope, StaticTypeRef sampleRef) {
-			super(sampleRef, scope.distribute());
-			this.sampleRef = sampleRef;
+		AncestorRef(Scope scope, StaticTypeRef explicitAscendant) {
+			super(explicitAscendant, scope.distribute());
+			this.explicitAscendant = explicitAscendant;
 		}
 
 		@Override
@@ -161,13 +121,13 @@ final class PlainSample extends Sample {
 		public Ref reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 
-			final StaticTypeRef typeRef = this.sampleRef.reproduce(reproducer);
+			final StaticTypeRef typeRef = this.explicitAscendant.reproduce(reproducer);
 
 			if (typeRef == null) {
 				return null;
 			}
 
-			return new AncestorEx(reproducer.getScope(), typeRef);
+			return new AncestorRef(reproducer.getScope(), typeRef);
 		}
 
 		@Override
@@ -188,10 +148,10 @@ final class PlainSample extends Sample {
 		}
 
 		private TypeRef ancestor() {
-			if (!this.sampleRef.validate()) {
+			if (!this.explicitAscendant.validate()) {
 				return null;
 			}
-			return this.sampleRef.getType().getAncestor();
+			return this.explicitAscendant.getType().getAncestor();
 		}
 
 	}
@@ -200,7 +160,7 @@ final class PlainSample extends Sample {
 
 		private final Obj ancestor;
 
-		AncestorOp(HostOp scope, AncestorEx ref) {
+		AncestorOp(HostOp scope, AncestorRef ref) {
 			super(scope, ref);
 			this.ancestor = ref.getResolution().toObject();
 		}
