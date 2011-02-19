@@ -68,7 +68,7 @@ public class MemberRef extends Wrap {
 		final Resolution ownerResolution = this.owner.getResolution();
 
 		if (ownerResolution.isError()) {
-			return null;
+			return errorRef(ownerResolution);
 		}
 
 		final Path memberPath = ownerResolution.member(
@@ -77,7 +77,7 @@ public class MemberRef extends Wrap {
 				this.declaredIn != null ? this.declaredIn.getType() : null);
 
 		if (memberPath == null) {
-			return null;
+			return errorRef(this);
 		}
 
 		return memberPath.target(this, distribute(), this.owner);

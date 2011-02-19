@@ -33,9 +33,9 @@ import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.StringNode.Quote;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.compiler.ip.operator.BinaryOp;
-import org.o42a.compiler.ip.operator.LogicalOp;
-import org.o42a.compiler.ip.operator.UnaryOp;
+import org.o42a.compiler.ip.operator.BinaryOperatorRef;
+import org.o42a.compiler.ip.operator.LogicalRef;
+import org.o42a.compiler.ip.operator.UnaryOperatorRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.Location;
 import org.o42a.core.ref.Ref;
@@ -101,12 +101,12 @@ public class ExpressionVisitor
 		switch (expression.getOperator()) {
 		case PLUS:
 		case MINUS:
-			return new UnaryOp(p.getContext(), expression, p);
+			return new UnaryOperatorRef(p.getContext(), expression, p);
 		case IS_TRUE:
 		case NOT:
 		case KNOWN:
 		case UNKNOWN:
-			return new LogicalOp(p.getContext(), expression, p);
+			return new LogicalRef(p.getContext(), expression, p);
 		}
 
 		return super.visitUnary(expression, p);
@@ -114,7 +114,7 @@ public class ExpressionVisitor
 
 	@Override
 	public Ref visitBinary(BinaryNode expression, Distributor p) {
-		return new BinaryOp(p.getContext(), expression, p);
+		return BinaryOperatorRef.binaryOp(p.getContext(), expression, p);
 	}
 
 	@Override

@@ -115,6 +115,10 @@ public abstract class Wrap extends Ref {
 
 	protected abstract Ref resolveWrapped();
 
+	protected final Ref errorRef(LocationSpec location) {
+		return errorRef(location, distribute());
+	}
+
 	@Override
 	protected RefOp createOp(HostOp host) {
 		return wrapped().op(host);

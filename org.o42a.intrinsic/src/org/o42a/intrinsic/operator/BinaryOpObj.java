@@ -150,8 +150,11 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 		final ValueType rightType = rightValue.getValueType();
 
 		if (!rightOperandSupported(rightType)) {
-			getLogger().unsupportedRightOperand(
+			getLogger().error(
+					"unsupported_right_operand",
 					rightOperand,
+					"Right operand of type '%s'"
+					+ " is not supported by operator '%s'",
 					rightType,
 					getOperator().getSign());
 			return getResultType().falseValue();

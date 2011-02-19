@@ -36,7 +36,7 @@ public abstract class NumericEqualsOpObj<L extends Number>
 			ValueType<L> leftOperandType) {
 		super(
 				owner.getContainer(),
-				BinaryOperatorInfo.EQUALS,
+				BinaryOperatorInfo.EQUAL,
 				owner.getAncestor().toStatic(),
 				ValueType.VOID,
 				leftOperandType);

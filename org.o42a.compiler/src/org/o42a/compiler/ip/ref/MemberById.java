@@ -71,7 +71,7 @@ public class MemberById extends Wrap {
 
 		if (result == null) {
 			getLogger().unresolved(this, this.memberId);
-			return null;
+			return errorRef(this);
 		}
 
 		return result.target(this, distributor);

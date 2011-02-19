@@ -576,44 +576,6 @@ public class CompilerLogger implements Logger {
 				valuable);
 	}
 
-	public void unsupportedBinaryOperator(
-			LogInfo location,
-			String operator,
-			Object adapterType) {
-		error(
-				"unsupported_binary_operator",
-				location,
-				"Binary operator '%s' is not supported, because neither left,"
-				+ " nor right operand have an '%s' adapter",
-				operator,
-				adapterType);
-	}
-
-	public void unsupportedRightOperand(
-			LogInfo location,
-			Object operandType,
-			String operator) {
-		error(
-				"unsupported_right_operand",
-				location,
-				"Right operand of type %s is not supported by operator %s",
-				operandType,
-				operator);
-	}
-
-	public void unsupportedUnaryOperator(
-			LogInfo location,
-			String operator,
-			Object adapterType) {
-		error(
-				"unsupported_unary_operator",
-				location,
-				"Unary operator '%s' is not supported, "
-				+ "because operand doesn't have an '%s' adapter",
-				operator,
-				adapterType);
-	}
-
 	public void wrongArtifactKind(
 			LogInfo location,
 			ArtifactKind<?> actual,

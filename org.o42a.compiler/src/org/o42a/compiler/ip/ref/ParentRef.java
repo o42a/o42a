@@ -64,7 +64,7 @@ public class ParentRef extends Wrap {
 
 			if (parent == null) {
 				getLogger().unresolvedParent(this, this.name);
-				return null;
+				return errorRef(this);
 			}
 
 			final Scope enclosingScope = enclosing.getScope();
@@ -73,7 +73,7 @@ public class ParentRef extends Wrap {
 
 			if (enclosingScopePath == null) {
 				getLogger().unresolvedParent(this, this.name);
-				return null;
+				return errorRef(this);
 			}
 
 			if (enclosingScope == parent.getScope()) {

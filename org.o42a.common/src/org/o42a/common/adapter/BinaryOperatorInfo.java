@@ -32,7 +32,7 @@ public enum BinaryOperatorInfo {
 	SUBTRACT("-", pathBuilder("operators", "subtract")),
 	MULTIPLY("*", pathBuilder("operators", "multiply")),
 	DIVIDE("/", pathBuilder("operators", "divide")),
-	EQUALS(
+	EQUAL(
 			"==",
 			pathBuilder("operators", "equals"),
 			pathBuilder("operators", "equals", "to")),
@@ -87,6 +87,7 @@ public enum BinaryOperatorInfo {
 
 		private static final PathBuilder RIGHT_OPERANT =
 			pathBuilder("operators", "binary_operator", "right_operand");
+
 		private static HashMap<String, BinaryOperatorInfo> operators =
 			new HashMap<String, BinaryOperatorInfo>(2);
 

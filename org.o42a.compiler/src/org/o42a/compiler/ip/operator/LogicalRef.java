@@ -37,12 +37,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class LogicalOp extends NewObjectEx {
+public class LogicalRef extends NewObjectEx {
 
 	private final UnaryNode node;
 	private Ref operand;
 
-	public LogicalOp(
+	public LogicalRef(
 			CompilerContext context,
 			UnaryNode node,
 			Distributor distributor) {
@@ -52,7 +52,7 @@ public class LogicalOp extends NewObjectEx {
 			this.node.getOperand().accept(EXPRESSION_VISITOR, distribute());
 	}
 
-	private LogicalOp(LogicalOp sample, Reproducer reproducer) {
+	private LogicalRef(LogicalRef sample, Reproducer reproducer) {
 		super(sample, reproducer.distribute());
 		this.node = sample.node;
 		this.operand = sample.operand.reproduce(reproducer);
@@ -60,7 +60,7 @@ public class LogicalOp extends NewObjectEx {
 
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
-		return new LogicalOp(this, reproducer);
+		return new LogicalRef(this, reproducer);
 	}
 
 	@Override
@@ -78,9 +78,9 @@ public class LogicalOp extends NewObjectEx {
 
 	private static final class Res extends Result {
 
-		private final LogicalOp ref;
+		private final LogicalRef ref;
 
-		Res(LogicalOp ref) {
+		Res(LogicalRef ref) {
 			super(ref, ref.distributeIn(ref.getContainer()), ValueType.VOID);
 			this.ref = ref;
 		}

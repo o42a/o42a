@@ -73,6 +73,10 @@ public abstract class Ref extends RefBase {
 		return falsePath.target(location, distributor);
 	}
 
+	public static Ref errorRef(LocationSpec location, Distributor distributor) {
+		return new ErrorRef(location, distributor);
+	}
+
 	public static Ref runtimeRef(
 			LocationSpec location,
 			Distributor distributor,
@@ -307,13 +311,7 @@ public abstract class Ref extends RefBase {
 	}
 
 	public final Ref adapt(LocationSpec location, StaticTypeRef adapterType) {
-		return new Adapter(location, this, adapterType, true);
-	}
-
-	public final Ref findAdapter(
-			LocationSpec location,
-			StaticTypeRef adapterType) {
-		return new Adapter(location, this, adapterType, false);
+		return new Adapter(location, this, adapterType);
 	}
 
 	public final Ref rescope(Scope toScope) {
