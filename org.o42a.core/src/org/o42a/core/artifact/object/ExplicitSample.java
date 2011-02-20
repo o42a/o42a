@@ -28,7 +28,6 @@ import org.o42a.core.member.Member;
 final class ExplicitSample extends Sample {
 
 	private final StaticTypeRef explicitAscendant;
-	private TypeRef ancestor;
 
 	ExplicitSample(Scope scope, StaticTypeRef explicitAscendant) {
 		super(explicitAscendant, scope);
@@ -38,10 +37,7 @@ final class ExplicitSample extends Sample {
 
 	@Override
 	public TypeRef getAncestor() {
-		if (this.ancestor != null) {
-			return this.ancestor;
-		}
-		return this.ancestor = this.explicitAscendant.getRef().ancestor(this);
+		return this.explicitAscendant.getAncestor();
 	}
 
 	@Override

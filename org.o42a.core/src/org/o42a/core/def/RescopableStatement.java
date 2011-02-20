@@ -57,7 +57,11 @@ public abstract class RescopableStatement extends Rescopable {
 			return null;
 		}
 
-		return createReproduction(reproducer, statement, rescoper);
+		return createReproduction(
+				reproducer,
+				rescopedReproducer,
+				statement,
+				rescoper);
 	}
 
 	@Override
@@ -67,6 +71,7 @@ public abstract class RescopableStatement extends Rescopable {
 
 	protected abstract RescopableStatement createReproduction(
 			Reproducer reproducer,
+			Reproducer rescopedReproducer,
 			St statement,
 			Rescoper rescoper);
 

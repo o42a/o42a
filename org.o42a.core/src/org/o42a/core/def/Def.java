@@ -318,6 +318,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	@Override
 	protected Def createReproduction(
 			Reproducer reproducer,
+			Reproducer rescopedReproducer,
 			St statement,
 			Rescoper rescoper) {
 		getScope().getLogger().notReproducible(this);

@@ -32,8 +32,8 @@ import org.o42a.core.st.Reproducer;
 
 public final class StaticTypeRef extends TypeRef {
 
-	StaticTypeRef(Ref ref, Rescoper rescoper) {
-		super(ref.fixScope(), rescoper);
+	StaticTypeRef(Ref ref, Ref untouchedRef, Rescoper rescoper) {
+		super(ref.fixScope(), untouchedRef, rescoper);
 	}
 
 	@Override
@@ -103,15 +103,17 @@ public final class StaticTypeRef extends TypeRef {
 	protected StaticTypeRef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new StaticTypeRef(getRef(), rescoper);
+		return new StaticTypeRef(getRef(), getUntachedRef(), rescoper);
 	}
 
 	@Override
-	protected StaticTypeRef createReproduction(
+	protected TypeRef createReproduction(
 			Reproducer reproducer,
-			Ref reproducedRef,
+			Reproducer rescopedReproducer,
+			Ref ref,
+			Ref untouchedRef,
 			Rescoper rescoper) {
-		return new StaticTypeRef(reproducedRef, rescoper);
+		return new StaticTypeRef(ref, untouchedRef, rescoper);
 	}
 
 }
