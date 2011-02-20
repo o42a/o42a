@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.member.field.FieldDefinition.valueDefinition;
 import static org.o42a.core.st.Conditions.emptyConditions;
 
 import org.o42a.ast.expression.BinaryNode;
@@ -263,8 +262,8 @@ public class BinaryOperatorRef extends Wrap {
 				.override();
 			final FieldBuilder builder = registry.newField(
 					declaration,
-					valueDefinition(
-					this.operator.rightOperand.rescope(getScope())));
+					this.operator.rightOperand.rescope(getScope())
+					.toFieldDefinition());
 
 			if (builder == null) {
 				return;

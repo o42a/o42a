@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.ref.Ref.voidRef;
+
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.st.DefinitionTarget;
@@ -42,7 +44,13 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return this.explicitAscendants;
+		if (this.explicitAscendants.getAncestor() != null) {
+			return this.explicitAscendants;
+		}
+		return this.explicitAscendants.setAncestor(voidRef(
+						this,
+						getScope().getEnclosingScope().distribute())
+				.toTypeRef());
 	}
 
 	@Override

@@ -19,11 +19,18 @@
 */
 package org.o42a.core.ref;
 
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.sentence.BlockBuilder;
 
 
-final class FixedScopeRef extends Wrap {
+final class FixedScopeRef extends Ref {
 
 	private final Ref ref;
 
@@ -33,22 +40,25 @@ final class FixedScopeRef extends Wrap {
 	}
 
 	@Override
-	protected Ref resolveWrapped() {
+	public Resolution resolve(Scope scope) {
+		return this.ref.getResolution();
+	}
 
-		final Resolution resolution = this.ref.getResolution();
+	@Override
+	public Ref reproduce(Reproducer reproducer) {
 
-		if (resolution.isError()) {
-			return errorRef(resolution);
+		final Ref ref = this.ref.reproduce(reproducer);
+
+		if (ref == null) {
+			return null;
 		}
 
-		final Artifact<?> artifact = resolution.toArtifact();
+		return new FixedScopeRef(ref);
+	}
 
-		if (artifact == null) {
-			getLogger().notArtifact(this);
-			return errorRef(this);
-		}
-
-		return artifact.fixedRef(distribute());
+	@Override
+	public FieldDefinition toFieldDefinition() {
+		return new FixedFieldDefinition(this.ref.toFieldDefinition());
 	}
 
 	@Override
@@ -62,6 +72,70 @@ final class FixedScopeRef extends Wrap {
 	@Override
 	protected boolean isKnownStatic() {
 		return true;
+	}
+
+	@Override
+	protected RefOp createOp(HostOp host) {
+
+		final Artifact<?> artifact = this.ref.getResolution().toArtifact();
+
+		assert artifact != null :
+			"Not artifact: " + this.ref;
+
+		return artifact.fixedRef(distribute()).op(host);
+	}
+
+	private static final class FixedFieldDefinition extends FieldDefinition {
+
+		private final FieldDefinition definition;
+		private AscendantsDefinition ascendants;
+		private Ref value;
+
+		FixedFieldDefinition(FieldDefinition definition) {
+			super(definition, definition.distribute());
+			this.definition = definition;
+		}
+
+		@Override
+		public AscendantsDefinition getAscendants() {
+			if (this.ascendants != null) {
+				return this.ascendants;
+			}
+			return this.ascendants =
+				this.definition.getAscendants().toStatic();
+		}
+
+		@Override
+		public BlockBuilder getDeclarations() {
+			return this.definition.getDeclarations();
+		}
+
+		@Override
+		public ArrayInitializer getArrayInitializer() {
+			return null;
+		}
+
+		@Override
+		public Ref getValue() {
+			if (this.value != null) {
+				return this.value;
+			}
+			return this.value = this.definition.getValue().fixScope();
+		}
+
+		@Override
+		public FieldDefinition reproduce(Reproducer reproducer) {
+
+			final FieldDefinition definition =
+				this.definition.reproduce(reproducer);
+
+			if (definition == null) {
+				return null;
+			}
+
+			return new FixedFieldDefinition(definition);
+		}
+
 	}
 
 }

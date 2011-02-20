@@ -39,6 +39,7 @@ import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
@@ -367,6 +368,10 @@ public abstract class Ref extends RefBase {
 
 	public Rescoper toRescoper() {
 		return new RefRescoper(this);
+	}
+
+	public FieldDefinition toFieldDefinition() {
+		return new ValueFieldDefinition(this);
 	}
 
 	public final RefOp op(HostOp host) {

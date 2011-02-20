@@ -24,14 +24,18 @@ import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.Value;
 
 
@@ -106,6 +110,14 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
+	public FieldDefinition toFieldDefinition() {
+		if (this.wrapped != null) {
+			return this.wrapped.toFieldDefinition();
+		}
+		return new DefinitionWrap();
+	}
+
+	@Override
 	public String toString() {
 		if (this.wrapped != null) {
 			return this.wrapped.toString();
@@ -134,6 +146,56 @@ public abstract class Wrap extends Ref {
 			}
 		}
 		return this.wrapped;
+	}
+
+	private final class DefinitionWrap extends FieldDefinition {
+
+		private FieldDefinition def;
+
+		DefinitionWrap() {
+			super(Wrap.this, Wrap.this.distribute());
+		}
+
+		@Override
+		public AscendantsDefinition getAscendants() {
+			return def().getAscendants();
+		}
+
+		@Override
+		public BlockBuilder getDeclarations() {
+			return def().getDeclarations();
+		}
+
+		@Override
+		public ArrayInitializer getArrayInitializer() {
+			return def().getArrayInitializer();
+		}
+
+		@Override
+		public Ref getValue() {
+			return def().getValue();
+		}
+
+		@Override
+		public FieldDefinition reproduce(Reproducer reproducer) {
+			return def().reproduce(reproducer);
+		}
+
+		@Override
+		public String toString() {
+			if (this.def != null) {
+				return this.def.toString();
+			}
+			return "FieldDefinition[" + Wrap.this + ']';
+		}
+
+		private FieldDefinition def() {
+			if (this.def != null) {
+				return this.def;
+			}
+			return this.def = wrapped().toFieldDefinition();
+		}
+
 	}
 
 }

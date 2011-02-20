@@ -127,6 +127,14 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		return ascendants;
 	}
 
+	public final AscendantsDefinition toStatic() {
+		return create(
+				this,
+				distribute(),
+				this.ancestor.toStatic(),
+				this.samples);
+	}
+
 	public AscendantsDefinition rescope(Rescoper rescoper) {
 
 		final TypeRef ancestor;

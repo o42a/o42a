@@ -31,7 +31,7 @@ public class PrototypeAccessTest extends CompilerTestCase {
 
 		compile(
 				"A :=> void(foo := 1);",
-				"b := &a: foo");
+				"b := a: foo");
 	}
 
 }

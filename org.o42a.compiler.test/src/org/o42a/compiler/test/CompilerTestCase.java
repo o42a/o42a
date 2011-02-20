@@ -233,7 +233,7 @@ public abstract class CompilerTestCase {
 		((Context) this.context).addSource(path, source);
 	}
 
-	protected void compile(String line, String... lines) {
+	protected final void compile(String line, String... lines) {
 		compile(new Src(buildCode(line, lines)));
 	}
 

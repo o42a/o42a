@@ -19,8 +19,6 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.core.ref.Ref.voidRef;
-
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
@@ -47,15 +45,7 @@ class DeclaredObjectField extends DeclaredField<Obj> {
 
 		final Ascendants ascendants = buildAscendants(new Ascendants(this));
 
-		if (ascendants.getAncestor() != null) {
-			return new DeclaredObject(this, ascendants);
-		}
-
-		return new DeclaredObject(
-				this,
-				ascendants.setAncestor(voidRef(
-						this,
-						getEnclosingScope().distribute()).toTypeRef()));
+		return new DeclaredObject(this, ascendants);
 	}
 
 	@Override

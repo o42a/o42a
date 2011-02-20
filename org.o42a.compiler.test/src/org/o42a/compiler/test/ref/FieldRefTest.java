@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.util.Source;
 
 
 public class FieldRefTest extends CompilerTestCase {
@@ -38,7 +39,7 @@ public class FieldRefTest extends CompilerTestCase {
 	public void staticFieldRefInheritance() {
 		compile(
 				"A := void(Foo := 1).",
-				"B := &a:foo");
+				"B := &a: foo.");
 
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 
@@ -50,7 +51,7 @@ public class FieldRefTest extends CompilerTestCase {
 	public void dynamicFieldRefInheritance() {
 		compile(
 				"A := void(Foo := 1).",
-				"B := a:foo");
+				"B := a: foo");
 
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 
@@ -62,7 +63,7 @@ public class FieldRefTest extends CompilerTestCase {
 	public void fieldRefDerivation() {
 		compile(
 				"A := void(Foo := 1).",
-				"B := * & a:foo");
+				"B := * & a: foo");
 
 		final Artifact<?> foo = field(this.a, "foo").getArtifact();
 
@@ -101,8 +102,8 @@ public class FieldRefTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(String line, String... lines) {
-		super.compile(line, lines);
+	protected void compile(Source source) {
+		super.compile(source);
 		this.a = field("a").getArtifact().toObject();
 		this.b = field("b").getArtifact().toObject();
 	}

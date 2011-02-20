@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,35 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.core.ref;
 
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.member.field.ImplicitSamplesDefinition;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-final class PhraseFieldDefinition extends FieldDefinition {
+final class ValueFieldDefinition extends FieldDefinition {
 
-	private final Phrase phrase;
-	private FieldDefinition definition;
-	private Ref value;
+	private final Ref value;
+	private final ImplicitSamplesDefinition samples;
 
-	PhraseFieldDefinition(Phrase phrase) {
-		super(phrase, phrase.distribute());
-		this.phrase = phrase;
+	ValueFieldDefinition(Ref value) {
+		super(value, value.distribute());
+		this.value = value;
+		this.samples = new ImplicitSamplesDefinition(
+				this,
+				distribute(),
+				this.value.toStaticTypeRef());
 	}
 
 	@Override
 	public AscendantsDefinition getAscendants() {
-		return getDefinition().getAscendants();
+		return this.samples;
 	}
 
 	@Override
 	public BlockBuilder getDeclarations() {
-		return getDefinition().getDeclarations();
+		return null;
 	}
 
 	@Override
@@ -55,38 +58,25 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public Ref getValue() {
-		if (this.value != null) {
-			return this.value;
-		}
-		return this.value = this.phrase.toRef();
+		return this.value;
 	}
 
 	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
-		return getDefinition().reproduce(reproducer);
+		assertCompatible(reproducer.getReproducingScope());
+
+		final Ref value = this.value.reproduce(reproducer);
+
+		if (value == null) {
+			return null;
+		}
+
+		return new ValueFieldDefinition(value);
 	}
 
 	@Override
 	public String toString() {
-		return this.phrase.toString();
-	}
-
-	private final FieldDefinition getDefinition() {
-		if (this.definition != null) {
-			return this.definition;
-		}
-
-		final MainPhraseContext mainContext = this.phrase.getMainContext();
-
-		if (!mainContext.createsObject()) {
-			return this.definition =
-				mainContext.standaloneRef().toFieldDefinition();
-		}
-
-		return this.definition = fieldDefinition(
-				this,
-				mainContext.getAscendants(),
-				mainContext.getInstances()[0].getDefinition());
+		return this.value.toString();
 	}
 
 }
