@@ -223,6 +223,10 @@ public abstract class Ref extends RefBase {
 		return resolve(scope).materialize().getValue();
 	}
 
+	public final TypeRef ancestor(LocationSpec location) {
+		return new AncestorRef(location, this).toTypeRef();
+	}
+
 	public Ref materialize() {
 
 		final Resolution resolution = getResolution();
