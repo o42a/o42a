@@ -37,10 +37,26 @@ import org.o42a.core.st.Reproducer;
 
 public class TypeRef extends RescopableRef {
 
+	private final Ref untachedRef;
+	private TypeRef ancestor;
 	private Obj type;
 
-	TypeRef(Ref ref, Rescoper rescoper) {
+	TypeRef(Ref ref, Ref untachedRef, Rescoper rescoper) {
 		super(ref, rescoper);
+		this.untachedRef = untachedRef;
+		ref.assertSameScope(untachedRef);
+	}
+
+	public final Ref getUntachedRef() {
+		return this.untachedRef;
+	}
+
+	public final TypeRef getAncestor() {
+		if (this.ancestor != null) {
+			return this.ancestor;
+		}
+		return this.ancestor =
+			getUntachedRef().ancestor(this).rescope(getRescoper());
 	}
 
 	public Obj getType() {
@@ -149,7 +165,7 @@ public class TypeRef extends RescopableRef {
 	}
 
 	public StaticTypeRef toStatic() {
-		return new StaticTypeRef(getRef(), getRescoper());
+		return new StaticTypeRef(getRef(), getUntachedRef(), getRescoper());
 	}
 
 	public final TypeRef commonDerivative(TypeRef other) {
@@ -206,15 +222,42 @@ public class TypeRef extends RescopableRef {
 
 	@Override
 	protected TypeRef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new TypeRef(getRef(), rescoper);
+		return new TypeRef(getRef(), getUntachedRef(), rescoper);
 	}
 
 	@Override
+	protected final TypeRef createReproduction(
+			Reproducer reproducer,
+			Reproducer rescopedReproducer,
+			Ref ref,
+			Rescoper rescoper) {
+
+		final Ref untouchedRef;
+
+		if (getRef() == getUntachedRef()) {
+			untouchedRef = ref;
+		} else {
+			untouchedRef = ref.reproduce(rescopedReproducer);
+			if (untouchedRef == null) {
+				return null;
+			}
+		}
+
+		return createReproduction(
+				reproducer,
+				rescopedReproducer,
+				ref,
+				untouchedRef,
+				rescoper);
+	}
+
 	protected TypeRef createReproduction(
 			Reproducer reproducer,
-			Ref reproducedRef,
+			Reproducer rescopedReproducer,
+			Ref ref,
+			Ref untouchedRef,
 			Rescoper rescoper) {
-		return new TypeRef(reproducedRef, rescoper);
+		return new TypeRef(ref, untouchedRef, rescoper);
 	}
 
 }

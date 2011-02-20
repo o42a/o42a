@@ -32,14 +32,20 @@ public abstract class RefBase extends org.o42a.core.def.RefBase {
 		if (ref == null) {
 			throw new NullPointerException("Type reference not specified");
 		}
-		return new TypeRef(ref, transparentRescoper(ref.getScope()));
+		return new TypeRef(
+				ref,
+				ref,
+				transparentRescoper(ref.getScope()));
 	}
 
 	protected static StaticTypeRef staticTypeRef(Ref ref) {
 		if (ref == null) {
 			throw new NullPointerException("Type reference not specified");
 		}
-		return new StaticTypeRef(ref, transparentRescoper(ref.getScope()));
+		return new StaticTypeRef(
+				ref,
+				ref,
+				transparentRescoper(ref.getScope()));
 	}
 
 	public RefBase(LocationSpec location, Distributor distributor) {

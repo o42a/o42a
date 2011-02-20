@@ -93,17 +93,20 @@ public abstract class RescopableRef extends RescopableStatement {
 	@Override
 	protected final RescopableRef createReproduction(
 			Reproducer reproducer,
-			St reproducedStatement,
+			Reproducer rescopedReproducer,
+			St statement,
 			Rescoper rescoper) {
 		return createReproduction(
 				reproducer,
-				(Ref) reproducedStatement,
+				rescopedReproducer,
+				(Ref) statement,
 				rescoper);
 	}
 
 	protected abstract RescopableRef createReproduction(
 			Reproducer reproducer,
-			Ref reproducedRef,
+			Reproducer rescopedReproducer,
+			Ref ref,
 			Rescoper rescoper);
 
 }

@@ -26,7 +26,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.member.Member;
@@ -153,8 +152,8 @@ public final class AbsolutePath extends Path {
 		}
 
 		@Override
-		public TypeRef toTypeRef() {
-			return toStaticTypeRef();
+		protected boolean isKnownStatic() {
+			return true;
 		}
 
 	}

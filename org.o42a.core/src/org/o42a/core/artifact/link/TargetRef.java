@@ -106,6 +106,7 @@ public final class TargetRef extends RescopableRef {
 	@Override
 	protected RescopableRef createReproduction(
 			Reproducer reproducer,
+			Reproducer rescopedReproducer,
 			Ref reproducedRef,
 			Rescoper rescoper) {
 		return new TargetRef(reproducedRef, rescoper);
