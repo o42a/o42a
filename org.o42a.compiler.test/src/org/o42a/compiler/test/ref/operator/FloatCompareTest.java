@@ -24,42 +24,42 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
 
 
-public class IntegerCompareTest extends CompilerTestCase {
+public class FloatCompareTest extends CompilerTestCase {
 
 	@Test
 	public void less() {
-		assertTrueVoid(compare("Result := 1 < 2"));
-		assertFalseVoid(compare("Result := 2 < 1"));
+		assertTrueVoid(compare("Result := float '1.1' < float '1.2'"));
+		assertFalseVoid(compare("Result := float '1.2' < float '1.1'"));
 	}
 
 	@Test
 	public void lessOrEqual() {
-		assertTrueVoid(compare("Result := 1 <= 2"));
-		assertFalseVoid(compare("Result := 2 <= 1"));
+		assertTrueVoid(compare("Result := float '0.1' <= float '0.2'"));
+		assertFalseVoid(compare("Result := float '0.2' <= float '0.1'"));
 	}
 
 	@Test
 	public void greater() {
-		assertTrueVoid(compare("Result := 2 > 1"));
-		assertFalseVoid(compare("Result := 1 > 2"));
+		assertTrueVoid(compare("Result := float '0.2' > float '0.1'"));
+		assertFalseVoid(compare("Result := float '0.1' > float '0.2'"));
 	}
 
 	@Test
 	public void greaterOrEqual() {
-		assertTrueVoid(compare("Result := 2 >= 1"));
-		assertFalseVoid(compare("Result := 1 >= 2"));
+		assertTrueVoid(compare("Result := float '0.2' >= float '0.1'"));
+		assertFalseVoid(compare("Result := float '0.1' >= float '0.2'"));
 	}
 
 	@Test
 	public void equal() {
-		assertTrueVoid(compare("Result := 2 == 2"));
-		assertFalseVoid(compare("Result := 1 == 2"));
+		assertTrueVoid(compare("Result := float '0.2' == float '0.2'"));
+		assertFalseVoid(compare("Result := float '0.1' == float '0.2'"));
 	}
 
 	@Test
 	public void notEqual() {
-		assertTrueVoid(compare("Result := 1 <> 2"));
-		assertFalseVoid(compare("Result := 1 <> 1"));
+		assertTrueVoid(compare("Result := float '0.1' <> float '0.2'"));
+		assertFalseVoid(compare("Result := float '0.1' <> float '0.1'"));
 	}
 
 	private Obj compare(String line, String... lines) {
