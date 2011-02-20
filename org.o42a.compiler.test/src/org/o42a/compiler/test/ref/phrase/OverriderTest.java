@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.test.phrase;
+package org.o42a.compiler.test.ref.phrase;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,83 +27,66 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 
 
-public class ClauseReuseTest extends CompilerTestCase {
+public class OverriderTest extends CompilerTestCase {
 
 	@Test
-	public void reuseObject() {
+	public void argument() {
 		compile(
-				"A := string(",
+				"A := void(",
 				"  Foo := 1.",
-				"  <*[foo value] | a> foo = *.",
-				"  <bar> (<*'value'>).",
+				"  <*[arg]> foo = *.",
 				").",
-				"B := a[2]bar'b'.");
+				"B := a[2]");
 
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(b, String.class), is("b"));
 		assertThat(definiteValue(foo, Long.class), is(2L));
 	}
 
 	@Test
-	public void reuseGroup() {
-		compile(
-				"A := string(",
-				"  Foo := 1.",
-				"  <*[foo value] | group> foo = *.",
-				"  <*group> (",
-				"    <bar> (<*'value'>).",
-				"  )",
-				").",
-				"B := a[2]bar'b'.");
-
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
-
-		assertThat(definiteValue(b, String.class), is("b"));
-		assertThat(definiteValue(foo, Long.class), is(2L));
-	}
-
-	@Test
-	public void reusePrecedence() {
+	public void string() {
 		compile(
 				"A := void(",
 				"  Foo := \"a\".",
-				"  Bar := \"b\".",
-				"  <Foo group> (<*''> Foo = *).",
-				"  <Bar group> (<*''> Bar = *).",
-				" <Set | foo group | bar group> ().",
+				"  <*'arg'> foo = *.",
 				").",
-				"B := a () set 'c'");
+				"B := a'b'");
 
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
-		final Field<?> bar = field(b, "bar");
 
-		assertThat(definiteValue(foo, String.class), is("a"));
-		assertThat(definiteValue(bar, String.class), is("c"));
+		assertThat(definiteValue(foo, String.class), is("b"));
 	}
 
 	@Test
-	public void reuseParent() {
+	public void stringInBrackets() {
 		compile(
 				"A := void(",
 				"  Foo := \"a\".",
-				"  Bar := \"b\".",
-				"  <*Group> (",
-				"    <*'' | group> Foo = *.",
-				"    <*[] | group> Bar = *.",
-				"  ).",
+				"  <*'arg'> foo = *.",
 				").",
-				"B := a 'c' [\"d\"]");
+				"B := a['b']");
 
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
-		final Field<?> bar = field(b, "bar");
 
-		assertThat(definiteValue(foo, String.class), is("c"));
-		assertThat(definiteValue(bar, String.class), is("d"));
+		assertThat(definiteValue(foo, String.class), is("b"));
+	}
+
+	@Test
+	public void doubleQuotedStringArgument() {
+		compile(
+				"A := void(",
+				"  Foo := \"a\".",
+				"  <*[arg]> foo = *.",
+				").",
+				"B := a\"b\"");
+
+		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
+
+		assertThat(definiteValue(foo, String.class), is("b"));
 	}
 
 }
