@@ -1,6 +1,6 @@
 /*
     Compiler Tests
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.test.operator;
+package org.o42a.compiler.test.ref.phrase;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,28 +27,39 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 
 
-public class UnaryDefinitionTest extends CompilerTestCase {
+public class PhraseTest extends CompilerTestCase {
 
 	@Test
-	public void plus() {
-		compile("A := 1. B := +a.");
+	public void overriderInsideOverrider() {
+		compile(
+				"A := void(",
+				"  Foo := integer(Bar :=> string. = 1).",
+				"  <*[]> foo = *(<*''> bar = *).",
+				").",
+				"B := a[2]'b'");
 
-		final Field<?> a = field("a");
 		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
+		final Field<?> bar = field(foo, "bar");
 
-		assertThat(definiteValue(a, Long.class), is(1L));
-		assertThat(definiteValue(b, Long.class), is(1L));
+		assertThat(definiteValue(foo, Long.class), is(2L));
+		assertThat(definiteValue(bar, String.class), is("b"));
 	}
 
 	@Test
-	public void minus() {
-		compile("A := 1. B := -a.");
+	public void overriderInsideClause() {
+		compile(
+				"A := integer(",
+				"  Foo :=> string.",
+				"  <*[]> a(<*''> foo = string).",
+				").",
+				"B := a[2]'b'");
 
-		final Field<?> a = field("a");
 		final Field<?> b = field("b");
+		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(a, Long.class), is(1L));
-		assertThat(definiteValue(b, Long.class), is(-1L));
+		assertThat(definiteValue(b, Long.class), is(2L));
+		assertThat(definiteValue(foo, String.class), is("b"));
 	}
 
 }

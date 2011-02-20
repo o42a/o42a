@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.test.operator;
+package org.o42a.compiler.test.ref.operator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,13 +27,13 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
 
 
-public class UnaryOperatorTest extends CompilerTestCase {
+public class BinaryOperatorTest extends CompilerTestCase {
 
 	@Test
-	public void plus() {
+	public void add() {
 		compile(
-				"A := void(@$$Operators: plus :=> 1).",
-				"B := + a");
+				"A := void(@Operators: add :=> 1).",
+				"B := a + 2");
 
 		final Obj b = field("b").getArtifact().materialize();
 
@@ -42,10 +42,34 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void minus() {
+	public void subtract() {
 		compile(
-				"A := void(@Operators: minus :=> 1).",
-				"B := - a");
+				"A := void(@Operators: subtract :=> 1).",
+				"B := a - 2");
+
+		final Obj b = field("b").getArtifact().materialize();
+
+		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
+		assertEquals(1L, definiteValue(b));
+	}
+
+	@Test
+	public void multiply() {
+		compile(
+				"A := void(@Operators: multiply :=> 1).",
+				"B := A * 2");
+
+		final Obj b = field("b").getArtifact().materialize();
+
+		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
+		assertEquals(1L, definiteValue(b));
+	}
+
+	@Test
+	public void divide() {
+		compile(
+				"A := void(@Operators: divide :=> 1).",
+				"B := A / 2");
 
 		final Obj b = field("b").getArtifact().materialize();
 
