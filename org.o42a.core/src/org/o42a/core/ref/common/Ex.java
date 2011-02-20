@@ -17,17 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.common;
+
+import java.util.IdentityHashMap;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.util.log.Loggable;
 
 
 public abstract class Ex extends Ref {
 
 	private Resolution resolved;
+	private IdentityHashMap<Scope, Resolution> cache;
 
 	public Ex(LocationSpec location, Distributor distributor) {
 		super(location, distributor);
@@ -41,7 +46,25 @@ public abstract class Ex extends Ref {
 			}
 			return this.resolved = doResolveExpression(getScope());
 		}
-		return scope.resolveExpression(this);
+
+		assertCompatible(scope);
+
+		if (this.cache == null) {
+			this.cache = new IdentityHashMap<Scope, Resolution>(2);
+		} else {
+
+			final Resolution cached = this.cache.get(scope);
+
+			if (cached != null) {
+				return cached;
+			}
+		}
+
+		final Resolution resolution = doResolveExpression(scope);
+
+		this.cache.put(scope, resolution);
+
+		return resolution;
 	}
 
 	public final Resolution getResolved() {
@@ -85,8 +108,7 @@ public abstract class Ex extends Ref {
 		return clone;
 	}
 
-	final Resolution doResolveExpression(Scope scope) {
-		assertCompatible(scope);
+	private final Resolution doResolveExpression(Scope scope) {
 
 		final Resolution resolution = resolveExpression(scope);
 

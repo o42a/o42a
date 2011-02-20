@@ -30,7 +30,6 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.NewObjectOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ref.Ex;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 

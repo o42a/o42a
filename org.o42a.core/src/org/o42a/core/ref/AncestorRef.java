@@ -27,7 +27,10 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectDataOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ref.common.Ex;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -147,16 +150,24 @@ final class AncestorRef extends Ex {
 
 	private static final class AncestorOp extends RefOp {
 
-		private final Obj ancestor;
-
 		AncestorOp(HostOp scope, AncestorRef ref) {
 			super(scope, ref);
-			this.ancestor = ref.getResolution().toObject();
 		}
 
 		@Override
 		public HostOp target(Code code, CodePos exit) {
-			return this.ancestor.ir(getGenerator()).op(getBuilder(), code);
+
+			final AncestorRef ref = (AncestorRef) getRef();
+			final ObjectOp object =
+				ref.ref.op(host()).target(code, exit).materialize(code, exit);
+			final ObjectDataOp ancestorData =
+				object.data(code).ptr()
+				.ancestorType(code)
+				.load(code)
+				.to(code, getGenerator().objectDataType())
+				.op(getBuilder(), object.getPrecision());
+
+			return ancestorData.object(code, ref.getResolution().materialize());
 		}
 
 	}

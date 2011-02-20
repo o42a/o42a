@@ -26,11 +26,10 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.ExpressionScope;
 import org.o42a.core.ref.path.Path;
 
 
-public abstract class AbstractScope extends ExpressionScope implements Scope {
+public abstract class AbstractScope implements Scope {
 
 	public static void assertDerivedFrom(Scope scope, Scope other) {
 		assert scope.derivedFrom(other) :

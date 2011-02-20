@@ -19,23 +19,14 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationSpec;
+import org.o42a.core.Placed;
 import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectDataOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
-import org.o42a.core.ref.Ex;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
 
 
 public class FieldDeclaration extends Placed implements Cloneable {
@@ -230,28 +221,8 @@ public class FieldDeclaration extends Placed implements Cloneable {
 			return this.type = ascendants.getAncestor();
 		}
 
-		final Ref value = definition.getValue();
-
-		if (value == null) {
-			return null;
-		}
-
-		final Resolution resolution = value.getResolution();
-
-		if (resolution.isError()) {
-			return null;
-		}
-
-		final Artifact<?> artifact = resolution.toArtifact();
-
-		if (artifact.getTypeRef() != null) {
-			return this.type = value.toTargetRef().getTypeRef();
-		}
-		if (artifact.materialize().getAncestor() == null) {
-			return null;
-		}
-
-		return this.type = new AncestorEx(value).toTypeRef();
+		return this.type =
+			definition.getValue().ancestor(definition.getValue());
 	}
 
 	public boolean validateVariantDeclaration(DeclaredField<?> field) {
@@ -328,90 +299,6 @@ public class FieldDeclaration extends Placed implements Cloneable {
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
-	}
-
-	private static final class AncestorEx extends Ex {
-
-		private final Ref value;
-
-		AncestorEx(Ref value) {
-			super(value, value.distribute());
-			this.value = value;
-		}
-
-		@Override
-		public Value<?> value(Scope scope) {
-
-			final Resolution resolution = this.value.resolve(scope);
-
-			if (resolution.isError()) {
-				return Value.falseValue();
-			}
-
-			return resolution.materialize().getAncestor().getValue();
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final Ref value = this.value.reproduce(reproducer);
-
-			if (value == null) {
-				return null;
-			}
-
-			return new AncestorEx(value);
-		}
-
-		@Override
-		protected Resolution resolveExpression(Scope scope) {
-
-			final Resolution resolution = this.value.resolve(scope);
-
-			if (resolution.isError()) {
-				return resolution;
-			}
-
-			final Resolution ancestorResolution =
-				resolution.materialize().getAncestor().getResolution();
-
-			if (ancestorResolution.isError()) {
-				return ancestorResolution;
-			}
-
-			return objectResolution(ancestorResolution.materialize());
-		}
-
-		@Override
-		protected RefOp createOp(HostOp host) {
-			return new AncestorOp(host, this);
-		}
-
-	}
-
-	private static final class AncestorOp extends RefOp {
-
-		AncestorOp(HostOp scope, AncestorEx ref) {
-			super(scope, ref);
-		}
-
-		@Override
-		public HostOp target(Code code, CodePos exit) {
-
-			final AncestorEx ref = (AncestorEx) getRef();
-			final ObjectOp object =
-				ref.value.op(host()).target(code, exit).materialize(code, exit);
-			final ObjectDataOp ancestorData =
-				object.data(code).ptr()
-				.ancestorType(code)
-				.load(code)
-				.to(code, getGenerator().objectDataType())
-				.op(getBuilder(), object.getPrecision());
-
-			return ancestorData.object(code, ref.getResolution().materialize());
-		}
-
 	}
 
 }
