@@ -25,9 +25,18 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.util.Source;
 
 
 public class UnaryInheritanceTest extends CompilerTestCase {
+
+	private Field<?> a;
+	private Field<?> b;
+	private Field<?> c;
+
+	private Field<?> aBar;
+	private Field<?> bBar;
+	private Field<?> cBar;
 
 	@Test
 	public void plus() {
@@ -36,16 +45,12 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 				"  Foo := 1.",
 				"  Bar := +foo.",
 				").",
-				"B := A(Foo = 2).");
+				"B := a(Foo = 2).",
+				"C := b.");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
-
-		final Field<?> aBar = field(a, "bar");
-		final Field<?> bBar = field(b, "bar");
-
-		assertThat(definiteValue(aBar, Long.class), is(1L));
-		assertThat(definiteValue(bBar, Long.class), is(2L));
+		assertThat(definiteValue(this.aBar, Long.class), is(1L));
+		assertThat(definiteValue(this.bBar, Long.class), is(2L));
+		assertThat(definiteValue(this.cBar, Long.class), is(2L));
 	}
 
 	@Test
@@ -55,16 +60,24 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 				"  Foo := 1.",
 				"  Bar := -foo.",
 				").",
-				"B := A(Foo = 2).");
+				"B := a(Foo = 2).",
+				"C := b.");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
+		assertThat(definiteValue(this.aBar, Long.class), is(-1L));
+		assertThat(definiteValue(this.bBar, Long.class), is(-2L));
+		assertThat(definiteValue(this.cBar, Long.class), is(-2L));
+	}
 
-		final Field<?> aBar = field(a, "bar");
-		final Field<?> bBar = field(b, "bar");
+	@Override
+	protected void compile(Source source) {
+		super.compile(source);
+		this.a = field("a");
+		this.b = field("b");
+		this.c = field("c");
 
-		assertThat(definiteValue(aBar, Long.class), is(-1L));
-		assertThat(definiteValue(bBar, Long.class), is(-2L));
+		this.aBar = field(this.a, "bar");
+		this.bBar = field(this.b, "bar");
+		this.cBar = field(this.c, "bar");
 	}
 
 }
