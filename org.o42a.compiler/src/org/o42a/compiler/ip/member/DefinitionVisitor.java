@@ -24,10 +24,10 @@ import static org.o42a.compiler.ip.Interpreter.arrayInitializer;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.phrase;
 import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
-import static org.o42a.core.member.field.FieldDefinition.*;
+import static org.o42a.core.member.field.FieldDefinition.arrayDefinition;
+import static org.o42a.core.member.field.FieldDefinition.defaultDefinition;
 
 import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.core.artifact.array.ArrayInitializer;
@@ -57,13 +57,13 @@ public class DefinitionVisitor
 	public FieldDefinition visitAscendants(
 			AscendantsNode ascendants,
 			FieldDeclaration p) {
-		if (ascendants.getAscendants().length == 1) {
-			return FieldDefinition.nameDefinition(
-					ascendants.getAscendants()[0].getAscendant().accept(
-							REF_VISITOR,
-							p.distribute()).fixScope());
+		if (ascendants.getAscendants().length != 1) {
+			return phrase(ascendants, p.distribute()).toFieldDefinition(p);
 		}
-		return phrase(ascendants, p.distribute()).toFieldDefinition(p);
+
+		return ascendants.getAscendants()[0].getAscendant().accept(
+					REF_VISITOR,
+					p.distribute()).fixScope().toFieldDefinition();
 	}
 
 	@Override
@@ -102,18 +102,6 @@ public class DefinitionVisitor
 	}
 
 	@Override
-	protected FieldDefinition visitRef(RefNode ref, FieldDeclaration p) {
-
-		final Ref definition = ref.accept(EXPRESSION_VISITOR, p.distribute());
-
-		if (definition == null) {
-			return null;
-		}
-
-		return nameDefinition(definition);
-	}
-
-	@Override
 	protected FieldDefinition visitExpression(
 			ExpressionNode expression,
 			FieldDeclaration p) {
@@ -125,7 +113,7 @@ public class DefinitionVisitor
 			return null;
 		}
 
-		return valueDefinition(definition);
+		return definition.toFieldDefinition();
 	}
 
 }

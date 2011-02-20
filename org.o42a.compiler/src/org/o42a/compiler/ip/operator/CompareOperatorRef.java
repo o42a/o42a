@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.operator;
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.member.field.FieldDefinition.valueDefinition;
 import static org.o42a.core.st.Conditions.emptyConditions;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
@@ -158,10 +157,11 @@ abstract class CompareOperatorRef extends NewObjectEx {
 			final FieldBuilder builder = memberRegistry.newField(
 					fieldDeclaration(this, distributor, RESULT)
 					.setVisibility(Visibility.PRIVATE),
-					valueDefinition(createOperator(
+					createOperator(
 							distributor,
 							this.compare.leftOperand.rescope(getScope()),
-							this.compare.rightOperand.rescope(getScope()))));
+							this.compare.rightOperand.rescope(getScope()))
+					.toFieldDefinition());
 
 			if (builder == null) {
 				return;

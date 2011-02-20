@@ -52,8 +52,8 @@ public final class ArrayInitializer extends Placed {
 				items);
 	}
 
-	private final FieldDefinition[] items;
 	private final TypeRef itemType;
+	private final FieldDefinition[] items;
 
 	private ArrayInitializer(
 			LocationSpec location,
@@ -72,6 +72,16 @@ public final class ArrayInitializer extends Placed {
 		super(context, location, distributor);
 		this.itemType = itemType;
 		this.items = items;
+	}
+
+	private ArrayInitializer(
+			LocationSpec location,
+			Distributor distributor,
+			TypeRef itemType,
+			FieldDefinition[] items) {
+		super(location, distributor);
+		this.items = items;
+		this.itemType = itemType;
 	}
 
 	public boolean isValid() {

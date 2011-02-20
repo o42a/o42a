@@ -26,6 +26,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ex;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -168,6 +169,11 @@ class PathTarget extends Ex {
 		final Scope start = this.start.resolve(getScope()).getScope();
 
 		return this.path.rescoper(start).and(this.start.toRescoper());
+	}
+
+	@Override
+	public FieldDefinition toFieldDefinition() {
+		return new PathTargetDefinition(this);
 	}
 
 	@Override

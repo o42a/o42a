@@ -71,14 +71,6 @@ public abstract class FieldDefinition extends Placed {
 				null);
 	}
 
-	public static FieldDefinition nameDefinition(Ref value) {
-		return new Name(value);
-	}
-
-	public static FieldDefinition valueDefinition(Ref value) {
-		return new Value(value);
-	}
-
 	public static FieldDefinition arrayDefinition(ArrayInitializer array) {
 		return new Array(array);
 	}
@@ -189,114 +181,6 @@ public abstract class FieldDefinition extends Placed {
 		@Override
 		public String toString() {
 			return this.arrayInitializer.toString();
-		}
-
-	}
-
-	private static final class Name extends FieldDefinition {
-
-		private final AscendantsDefinition ascendants;
-		private final Ref value;
-
-		Name(Ref value) {
-			super(value, value.distribute());
-			this.ascendants = new AscendantsDefinition(
-					value,
-					distribute(),
-					value.toTypeRef());
-			this.value = value;
-		}
-
-		@Override
-		public AscendantsDefinition getAscendants() {
-			return this.ascendants;
-		}
-
-		@Override
-		public BlockBuilder getDeclarations() {
-			return null;
-		}
-
-		@Override
-		public ArrayInitializer getArrayInitializer() {
-			return null;
-		}
-
-		@Override
-		public Ref getValue() {
-			return this.value;
-		}
-
-		@Override
-		public FieldDefinition reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final Ref value = this.value.reproduce(reproducer);
-
-			if (value == null) {
-				return null;
-			}
-
-			return new Name(value);
-		}
-
-		@Override
-		public String toString() {
-			return this.value.toString();
-		}
-
-	}
-
-	private static final class Value extends FieldDefinition {
-
-		private final Ref value;
-		private final ImplicitSamplesDefinition samples;
-
-		Value(Ref value) {
-			super(value, value.distribute());
-			this.value = value;
-			this.samples = new ImplicitSamplesDefinition(
-					this,
-					distribute(),
-					this.value.toStaticTypeRef());
-		}
-
-		@Override
-		public AscendantsDefinition getAscendants() {
-			return this.samples;
-		}
-
-		@Override
-		public BlockBuilder getDeclarations() {
-			return null;
-		}
-
-		@Override
-		public ArrayInitializer getArrayInitializer() {
-			return null;
-		}
-
-		@Override
-		public Ref getValue() {
-			return this.value;
-		}
-
-		@Override
-		public FieldDefinition reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final Ref value = this.value.reproduce(reproducer);
-
-			if (value == null) {
-				return null;
-			}
-
-			return new Value(value);
-		}
-
-		@Override
-		public String toString() {
-			return this.value.toString();
 		}
 
 	}

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.core.ref.path;
 
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.AscendantsDefinition;
@@ -27,25 +27,28 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-final class PhraseFieldDefinition extends FieldDefinition {
+final class PathTargetDefinition extends FieldDefinition {
 
-	private final Phrase phrase;
-	private FieldDefinition definition;
-	private Ref value;
+	private final AscendantsDefinition ascendants;
+	private final Ref target;
 
-	PhraseFieldDefinition(Phrase phrase) {
-		super(phrase, phrase.distribute());
-		this.phrase = phrase;
+	PathTargetDefinition(Ref target) {
+		super(target, target.distribute());
+		this.ascendants = new AscendantsDefinition(
+				target,
+				distribute(),
+				target.toTypeRef());
+		this.target = target;
 	}
 
 	@Override
 	public AscendantsDefinition getAscendants() {
-		return getDefinition().getAscendants();
+		return this.ascendants;
 	}
 
 	@Override
 	public BlockBuilder getDeclarations() {
-		return getDefinition().getDeclarations();
+		return null;
 	}
 
 	@Override
@@ -55,38 +58,28 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public Ref getValue() {
-		if (this.value != null) {
-			return this.value;
-		}
-		return this.value = this.phrase.toRef();
+		return this.target;
 	}
 
 	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
-		return getDefinition().reproduce(reproducer);
+		assertCompatible(reproducer.getReproducingScope());
+
+		final Ref value = this.target.reproduce(reproducer);
+
+		if (value == null) {
+			return null;
+		}
+
+		return new PathTargetDefinition(value);
 	}
 
 	@Override
 	public String toString() {
-		return this.phrase.toString();
-	}
-
-	private final FieldDefinition getDefinition() {
-		if (this.definition != null) {
-			return this.definition;
+		if (this.target == null) {
+			return super.toString();
 		}
-
-		final MainPhraseContext mainContext = this.phrase.getMainContext();
-
-		if (!mainContext.createsObject()) {
-			return this.definition =
-				mainContext.standaloneRef().toFieldDefinition();
-		}
-
-		return this.definition = fieldDefinition(
-				this,
-				mainContext.getAscendants(),
-				mainContext.getInstances()[0].getDefinition());
+		return "FieldDefinition[" + this.target.toString() + ']';
 	}
 
 }
