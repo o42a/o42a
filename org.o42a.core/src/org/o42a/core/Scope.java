@@ -24,8 +24,6 @@ import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Ex;
-import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
 
 
@@ -58,7 +56,5 @@ public interface Scope extends PlaceSpec {
 	ScopeIR ir(IRGenerator generator);
 
 	void assertDerivedFrom(Scope other);
-
-	Resolution resolveExpression(Ex ex);
 
 }

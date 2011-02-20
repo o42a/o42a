@@ -29,17 +29,12 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Ex;
-import org.o42a.core.ref.ExpressionScope;
-import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
 
 
 public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
-
-	private final Base base = new Base();
 
 	private Obj clauseObject;
 	private Path enclosingScopePath;
@@ -243,11 +238,6 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public Resolution resolveExpression(Ex ex) {
-		return this.base.resolveExpression(ex);
-	}
-
-	@Override
 	public final void assertDerivedFrom(Scope other) {
 		AbstractScope.assertDerivedFrom(this, other);
 	}
@@ -269,14 +259,5 @@ public abstract class PlainClause
 	protected abstract PlainClause propagate(Scope enclosingScope);
 
 	protected abstract Obj propagateClauseObject(PlainClause overridden);
-
-	private final class Base extends ExpressionScope {
-
-		@Override
-		public Scope getScope() {
-			return PlainClause.this;
-		}
-
-	}
 
 }
