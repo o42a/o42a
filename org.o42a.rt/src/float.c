@@ -208,6 +208,8 @@ void o42a_float_by_str(
 		}
 		if (stage == PARSE_FRAC_MATISSA) {
 			++frac_mantissa_len;
+		} else if (stage == PARSE_SIGN) {
+			stage = PARSE_INT_MANTISSA;
 		}
 
 		space = O42A_FALSE;

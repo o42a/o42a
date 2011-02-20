@@ -178,6 +178,8 @@ public strictfp class FloatByString extends ByString<Double> {
 			}
 			if (stage == PARSE_FRAC_MATISSA) {
 				++frac_mantissa_len;
+			} else if (stage == PARSE_SIGN) {
+				stage = PARSE_INT_MANTISSA;
 			}
 
 			space = false;
@@ -203,6 +205,7 @@ public strictfp class FloatByString extends ByString<Double> {
 			exponent = negative ? -value : value;
 			break;
 		default:
+			System.err.println("(!) " + stage);
 			getLogger().error(
 					"empty_input",
 					location,
@@ -267,7 +270,10 @@ public strictfp class FloatByString extends ByString<Double> {
 					"Floating point number overflow");
 			return true;
 		}
-		if (Math.abs(x) < Double.MIN_NORMAL) {
+
+		final double abs = Math.abs(x);
+
+		if (abs < Double.MIN_NORMAL && x > 0.0) {
 			getLogger().error(
 					"float_underflow",
 					location,
