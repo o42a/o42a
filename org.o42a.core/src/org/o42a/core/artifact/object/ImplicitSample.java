@@ -44,10 +44,7 @@ final class ImplicitSample extends Sample {
 
 		final Obj type = this.implicitAscendant.getType();
 
-		return this.ancestor =
-			type.getAncestor().rescope(
-					this.implicitAscendant.getRescoper())
-			.upgradeScope(getScope());
+		return this.ancestor = type.getAncestor().upgradeScope(getScope());
 	}
 
 	@Override
