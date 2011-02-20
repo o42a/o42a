@@ -30,10 +30,6 @@ import org.o42a.util.Source;
 
 public class UnaryInheritanceTest extends CompilerTestCase {
 
-	private Field<?> a;
-	private Field<?> b;
-	private Field<?> c;
-
 	private Field<?> aBar;
 	private Field<?> bBar;
 	private Field<?> cBar;
@@ -71,13 +67,10 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 	@Override
 	protected void compile(Source source) {
 		super.compile(source);
-		this.a = field("a");
-		this.b = field("b");
-		this.c = field("c");
 
-		this.aBar = field(this.a, "bar");
-		this.bBar = field(this.b, "bar");
-		this.cBar = field(this.c, "bar");
+		this.aBar = field(field("a"), "bar");
+		this.bBar = field(field("b"), "bar");
+		this.cBar = field(field("c"), "bar");
 	}
 
 }
