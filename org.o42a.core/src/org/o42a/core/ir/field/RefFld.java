@@ -166,7 +166,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 					code,
 					exit,
 					object,
-					CtrOp.FIELD_PROPAGATION);
+					CtrOp.PROPAGATION);
 		}
 
 		final Link link = artifact.toLink();

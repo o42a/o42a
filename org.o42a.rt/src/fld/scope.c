@@ -28,28 +28,23 @@ void o42a_fld_scope_propagate(o42a_ctable_t *const ctable) {
 
 	o42a_fld *const to = ctable->to.fld;
 
-	if (ctable->flags & O42A_CTR_FIELD_PROPAGATION) {
-		// Update the scope only when propagating field.
-		O42A_DEBUG("Field propagation\n");
-		if (ctable->to.body->flags & O42A_OBODY_PROPAGATED) {
-			// Update only the scope of body propagated from field
-			// or the one of main body.
+	// Update the scope only when propagating field.
+	if (ctable->to.body->flags & O42A_OBODY_PROPAGATED) {
+		// Update only the scope of body propagated from field
+		// or the one of main body.
 
-			o42a_otype_t *const owner_type =
-					ctable->object_type->data.owner_type;
+		o42a_otype_t *const owner_type =
+				ctable->object_type->data.owner_type;
 
-			if (owner_type) {
-				to->scope = o42a_data_object(&owner_type->data);
+		if (owner_type) {
+			to->scope = o42a_data_object(&owner_type->data);
 
-				o42a_debug_mem_name("Updated scope: ", to->scope);
+			o42a_debug_mem_name("Updated scope: ", to->scope);
 
-				O42A_RETURN;
-			}
-
-			O42A_DEBUG("Object is local\n");
+			O42A_RETURN;
 		}
-	} else {
-		O42A_DEBUG("New object instantiation\n");
+
+		O42A_DEBUG("Object is local\n");
 	}
 
 	to->scope = ctable->from.fld->scope;

@@ -27,7 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.NewObjectOp;
+import org.o42a.core.ir.op.ConstructorOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -63,7 +63,7 @@ public abstract class ObjectConstructor extends Ex {
 
 	@Override
 	protected RefOp createOp(HostOp host) {
-		return new NewObjectOp(host, this);
+		return new ConstructorOp(host, this);
 	}
 
 	private static final class Propagated extends Obj {

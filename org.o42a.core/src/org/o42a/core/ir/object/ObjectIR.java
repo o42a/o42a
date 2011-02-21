@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.ir.CodeBuilder;
@@ -272,7 +272,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 			bodyIR.setKind(ObjectBodyIR.Kind.MAIN);
 		} else if (getObject().derivedFrom(
 				bodyIR.getAscendant(),
-				Derivation.MEMBER_OVERRIDE)) {
+				IMPLICIT_PROPAGATION)) {
 			bodyIR.setKind(ObjectBodyIR.Kind.PROPAGATED);
 		} else {
 			bodyIR.setKind(ObjectBodyIR.Kind.EXPLICIT);

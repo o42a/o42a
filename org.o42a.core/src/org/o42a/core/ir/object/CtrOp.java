@@ -34,7 +34,7 @@ import org.o42a.core.ir.op.ObjectRefFunc;
 public class CtrOp extends IROp {
 
 	public static final int NEW_INSTANCE = 0;
-	public static final int FIELD_PROPAGATION = 1;
+	public static final int PROPAGATION = 1;
 
 	private CtrOp(CodeBuilder builder, Op ptr) {
 		super(builder, ptr);

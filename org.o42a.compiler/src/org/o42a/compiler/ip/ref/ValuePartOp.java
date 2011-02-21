@@ -23,11 +23,11 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.NewObjectOp;
+import org.o42a.core.ir.op.ConstructorOp;
 import org.o42a.core.ir.op.ValOp;
 
 
-final class ValuePartOp extends NewObjectOp {
+final class ValuePartOp extends ConstructorOp {
 
 	ValuePartOp(HostOp host, ValuePartRef ref) {
 		super(host, ref);
