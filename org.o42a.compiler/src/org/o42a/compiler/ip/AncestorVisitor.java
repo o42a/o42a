@@ -30,13 +30,13 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.core.*;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
 

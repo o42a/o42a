@@ -22,8 +22,6 @@ package org.o42a.core.ref;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -31,6 +29,8 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 

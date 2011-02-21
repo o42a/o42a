@@ -21,11 +21,11 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class PropagatedObject extends PlainObject {

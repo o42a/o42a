@@ -50,6 +50,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;

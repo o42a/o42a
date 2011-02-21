@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.ref.type;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
@@ -32,8 +32,7 @@ public abstract class RefBase extends org.o42a.core.def.RefBase {
 		if (ref == null) {
 			throw new NullPointerException("Type reference not specified");
 		}
-		return new TypeRef(
-				ref,
+		return new DefaultTypeRef(
 				ref,
 				transparentRescoper(ref.getScope()));
 	}
@@ -42,7 +41,7 @@ public abstract class RefBase extends org.o42a.core.def.RefBase {
 		if (ref == null) {
 			throw new NullPointerException("Type reference not specified");
 		}
-		return new StaticTypeRef(
+		return new DefaultStaticTypeRef(
 				ref,
 				ref,
 				transparentRescoper(ref.getScope()));

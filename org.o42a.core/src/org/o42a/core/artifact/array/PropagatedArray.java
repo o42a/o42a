@@ -19,8 +19,8 @@
 */
 package org.o42a.core.artifact.array;
 
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class PropagatedArray extends Array {

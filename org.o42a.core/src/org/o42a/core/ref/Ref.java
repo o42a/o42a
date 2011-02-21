@@ -24,7 +24,8 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
-import org.o42a.core.artifact.*;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Def;
@@ -43,6 +44,9 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.RefBase;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -223,7 +227,20 @@ public abstract class Ref extends RefBase {
 		return resolve(scope).materialize().getValue();
 	}
 
-	public final TypeRef ancestor(LocationSpec location) {
+	/**
+	 * Builds ancestor reference.
+	 *
+	 * <p>This returns ancestor of object or interface of the link. This
+	 * shouldn't be called for e.g. arrays.</p>
+	 *
+	 * <p>If this reference is an object constructor, the ancestor should be
+	 * built before object construction.</p>
+	 *
+	 * @param location the location of caller.
+	 *
+	 * @return ancestor reference or <code>null</code> if can not be determined.
+	 */
+	public TypeRef ancestor(LocationSpec location) {
 		return new AncestorRef(location, this).toTypeRef();
 	}
 

@@ -22,11 +22,11 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;

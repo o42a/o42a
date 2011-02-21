@@ -24,11 +24,14 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.*;
+import org.o42a.core.CompilerContext;
+import org.o42a.core.LocationSpec;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class LogicalDef extends Rescopable implements SourceSpec {
@@ -52,6 +55,7 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 	}
 
 	private final Obj source;
+	private final Logical logical;
 	private final SingleLogicalDef[] requirements;
 	private Logical fullLogical;
 
@@ -60,8 +64,9 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 			Logical logical,
 			Rescoper rescoper,
 			SingleLogicalDef[] requirements) {
-		super(logical, rescoper);
+		super(rescoper);
 		this.source = source;
+		this.logical = logical;
 		this.requirements = requirements;
 		assert requirements.length != 0 || getClass() == EmptyLogicalDef.class :
 			"At least one requirement expected";
@@ -71,9 +76,20 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 			Obj source,
 			Logical logical,
 			Rescoper rescoper) {
-		super(logical, rescoper);
+		super(rescoper);
 		this.source = source;
+		this.logical = logical;
 		this.requirements = new SingleLogicalDef[] {(SingleLogicalDef) this};
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.logical.getContext();
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return this.logical.getLoggable();
 	}
 
 	public final boolean isEmpty() {
@@ -90,12 +106,10 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 			return this.fullLogical;
 		}
 
-		final Logical logical = logical();
-
-		if (logical.isTrue()) {
+		if (this.logical.isTrue()) {
 			return this.fullLogical = logicalTrue(this, getScope());
 		}
-		if (logical.isFalse()) {
+		if (this.logical.isFalse()) {
 			return this.fullLogical = logicalFalse(this, getScope());
 		}
 
@@ -198,7 +212,7 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 		final HostOp rescopedHost =
 			getRescoper().rescope(code, exit, host);
 
-		logical().write(code, exit, rescopedHost);
+		this.logical.write(code, exit, rescopedHost);
 	}
 
 	public abstract void writeFullLogical(
@@ -206,32 +220,13 @@ public abstract class LogicalDef extends Rescopable implements SourceSpec {
 			CodePos exit,
 			HostOp host);
 
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeSpec other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
-
 	protected abstract Logical createFullLogical();
 
 	protected abstract LogicalDef conjunctionWith(LogicalDef requirement);
 
-	final Logical logical() {
-		return (Logical) getScoped();
+	@Override
+	protected final Logical getScoped() {
+		return this.logical;
 	}
 
 	final SingleLogicalDef[] requirements() {

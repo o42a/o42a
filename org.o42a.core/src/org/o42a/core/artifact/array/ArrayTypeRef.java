@@ -20,9 +20,9 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.artifact.TypeRelation;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.log.Loggable;
 
 

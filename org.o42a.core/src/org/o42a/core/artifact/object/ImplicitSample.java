@@ -20,9 +20,9 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class ImplicitSample extends Sample {

@@ -29,7 +29,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
@@ -103,7 +104,7 @@ final class ObjectTestsRunner extends DefinedObject {
 		}
 	}
 
-	private static final class RunObjectTests extends NewObjectEx {
+	private static final class RunObjectTests extends ObjectConstructor {
 
 		private final TestModule module;
 
@@ -113,6 +114,11 @@ final class ObjectTestsRunner extends DefinedObject {
 				TestModule module) {
 			super(location, distributor);
 			this.module = module;
+		}
+
+		@Override
+		public TypeRef ancestor(LocationSpec location) {
+			return ValueType.VOID.typeRef(location, getScope());
 		}
 
 		@Override

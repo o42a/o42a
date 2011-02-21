@@ -30,11 +30,11 @@ import org.o42a.ast.ref.TypeNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.core.*;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.phrase.Phrase;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.*;
 
 

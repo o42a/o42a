@@ -25,13 +25,14 @@ import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public class DefinitionValue extends NewObjectEx {
+public class DefinitionValue extends ObjectConstructor {
 
 	private final AscendantsDefinition ascendants;
 	private final BlockBuilder declarations;
@@ -44,6 +45,11 @@ public class DefinitionValue extends NewObjectEx {
 		super(location, distributor);
 		this.ascendants = ascendants;
 		this.declarations = declarations;
+	}
+
+	@Override
+	public TypeRef ancestor(LocationSpec location) {
+		return this.ascendants.getAncestor();
 	}
 
 	@Override

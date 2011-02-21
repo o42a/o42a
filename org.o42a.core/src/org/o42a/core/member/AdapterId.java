@@ -20,9 +20,9 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public final class AdapterId extends MemberId {

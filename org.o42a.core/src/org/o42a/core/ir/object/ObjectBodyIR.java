@@ -30,7 +30,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.IRGenerator;
@@ -40,6 +39,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {

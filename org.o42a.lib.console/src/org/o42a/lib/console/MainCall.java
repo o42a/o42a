@@ -27,7 +27,6 @@ import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -39,6 +38,7 @@ import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 

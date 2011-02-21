@@ -30,7 +30,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.Sample;
@@ -41,6 +40,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public final class ObjectIR extends Struct<ObjectIR.Op> {

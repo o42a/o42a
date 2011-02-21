@@ -22,10 +22,10 @@ package org.o42a.core.member.field;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Placed;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
 

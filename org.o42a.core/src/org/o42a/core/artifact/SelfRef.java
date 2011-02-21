@@ -21,6 +21,7 @@ package org.o42a.core.artifact;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.SelfRefBase;
 import org.o42a.core.ir.HostOp;
@@ -28,6 +29,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
@@ -39,6 +41,11 @@ final class SelfRef extends SelfRefBase {
 	SelfRef(Artifact<?> self) {
 		super(self, self.distribute());
 		this.self = artifactResolution(self);
+	}
+
+	@Override
+	public TypeRef ancestor(LocationSpec location) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

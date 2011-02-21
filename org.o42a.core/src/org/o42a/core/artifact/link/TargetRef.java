@@ -23,9 +23,9 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -33,21 +33,36 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.log.Loggable;
 
 
 public final class TargetRef extends RescopableRef {
 
+	private final Ref ref;
 	private TypeRef typeRef;
 	private Logical fullLogical;
 
 	public TargetRef(Ref ref) {
-		super(ref, transparentRescoper(ref.getScope()));
+		super(transparentRescoper(ref.getScope()));
+		this.ref = ref;
 	}
 
 	private TargetRef(Ref ref, Rescoper rescoper) {
-		super(ref, rescoper);
+		super(rescoper);
+		this.ref = ref;
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.ref.getContext();
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return this.ref.getLoggable();
 	}
 
 	public TypeRef getTypeRef() {
@@ -96,6 +111,11 @@ public final class TargetRef extends RescopableRef {
 
 	public HostOp target(Code code, CodePos exit, ObjOp host) {
 		return ref(code, exit, host).target(code, exit);
+	}
+
+	@Override
+	protected final Ref getScoped() {
+		return this.ref;
 	}
 
 	@Override

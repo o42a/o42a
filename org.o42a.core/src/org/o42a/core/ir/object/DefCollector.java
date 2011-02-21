@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ir.object;
 
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.def.SourceSpec;
+import org.o42a.core.ref.type.TypeRef;
 
 
 abstract class DefCollector<D extends SourceSpec> {

@@ -41,6 +41,7 @@ import org.o42a.core.st.St;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Def extends RescopableStatement implements SourceSpec {
@@ -118,6 +119,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	private final Obj source;
+	private final St statement;
 	private LogicalDef prerequisite;
 	private Logical fullLogical;
 
@@ -126,8 +128,9 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 			St statement,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
-		super(statement, rescoper);
+		super(rescoper);
 		this.source = source;
+		this.statement = statement;
 		this.prerequisite = prerequisite;
 		if (prerequisite != null) {
 			assertSameScope(prerequisite);
@@ -140,6 +143,16 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 				prototype.getStatement(),
 				prerequisite,
 				rescoper);
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return this.statement.getLoggable();
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.statement.getContext();
 	}
 
 	@Override
@@ -287,6 +300,11 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 		out.append(']');
 
 		return out.toString();
+	}
+
+	@Override
+	protected final St getScoped() {
+		return this.statement;
 	}
 
 	protected abstract LogicalDef buildPrerequisite();

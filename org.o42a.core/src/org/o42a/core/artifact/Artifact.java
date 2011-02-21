@@ -30,6 +30,7 @@ import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.log.Loggable;
 
 

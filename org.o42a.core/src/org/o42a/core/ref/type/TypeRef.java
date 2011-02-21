@@ -17,39 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.ref.type;
 
 import static org.o42a.core.artifact.Artifact.unresolvableObject;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeSpec;
-import org.o42a.core.Scoped;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
-public class TypeRef extends RescopableRef {
+public abstract class TypeRef extends RescopableRef {
 
-	private final Ref untachedRef;
 	private TypeRef ancestor;
 	private Obj type;
 
-	TypeRef(Ref ref, Ref untachedRef, Rescoper rescoper) {
-		super(ref, rescoper);
-		this.untachedRef = untachedRef;
-		ref.assertSameScope(untachedRef);
+	TypeRef(Rescoper rescoper) {
+		super(rescoper);
 	}
 
-	public final Ref getUntachedRef() {
-		return this.untachedRef;
-	}
+	public abstract Ref getUntachedRef();
 
 	public final TypeRef getAncestor() {
 		if (this.ancestor != null) {
@@ -164,9 +154,7 @@ public class TypeRef extends RescopableRef {
 		return TypeRelation.INCOMPATIBLE;
 	}
 
-	public StaticTypeRef toStatic() {
-		return new StaticTypeRef(getRef(), getUntachedRef(), getRescoper());
-	}
+	public abstract StaticTypeRef toStatic();
 
 	public final TypeRef commonDerivative(TypeRef other) {
 		return relationTo(other).isPreferred() ? this : other;
@@ -193,37 +181,9 @@ public class TypeRef extends RescopableRef {
 	}
 
 	@Override
-	public RefOp op(Code code, CodePos exit, HostOp host) {
-
-		final HostOp rescoped = getRescoper().rescope(code, exit, host);
-
-		return getRef().op(rescoped);
-	}
-
-	@Override
-	public void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public void assertSameScope(ScopeSpec other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public void assertCompatibleScope(ScopeSpec other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
-
-	@Override
-	protected TypeRef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new TypeRef(getRef(), getUntachedRef(), rescoper);
-	}
+	protected abstract TypeRef create(
+			Rescoper rescoper,
+			Rescoper additionalRescoper);
 
 	@Override
 	protected final TypeRef createReproduction(
@@ -251,13 +211,11 @@ public class TypeRef extends RescopableRef {
 				rescoper);
 	}
 
-	protected TypeRef createReproduction(
+	protected abstract TypeRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Ref ref,
 			Ref untouchedRef,
-			Rescoper rescoper) {
-		return new TypeRef(ref, untouchedRef, rescoper);
-	}
+			Rescoper rescoper);
 
 }

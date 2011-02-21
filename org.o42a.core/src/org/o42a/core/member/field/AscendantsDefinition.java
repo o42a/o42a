@@ -20,10 +20,10 @@
 package org.o42a.core.member.field;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
 

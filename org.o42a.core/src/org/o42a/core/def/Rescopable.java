@@ -20,27 +20,14 @@
 package org.o42a.core.def;
 
 import org.o42a.core.*;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class Rescopable implements ScopeSpec {
 
-	private final ScopeSpec scoped;
 	private final Rescoper rescoper;
 
-	public Rescopable(ScopeSpec scoped, Rescoper rescoper) {
-		this.scoped = scoped;
+	public Rescopable(Rescoper rescoper) {
 		this.rescoper = rescoper;
-	}
-
-	@Override
-	public final CompilerContext getContext() {
-		return this.scoped.getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.scoped.getLoggable();
 	}
 
 	@Override
@@ -88,33 +75,26 @@ public abstract class Rescopable implements ScopeSpec {
 	}
 
 	@Override
-	public void assertScopeIs(Scope scope) {
+	public final void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);
 	}
 
 	@Override
-	public void assertCompatible(Scope scope) {
+	public final void assertCompatible(Scope scope) {
 		Scoped.assertCompatible(this, scope);
 	}
 
 	@Override
-	public void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeSpec other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeSpec other) {
 		Scoped.assertSameScope(this, other);
 	}
 
-	@Override
-	public String toString() {
-		return this.scoped.toString();
-	}
-
-	protected final ScopeSpec getScoped() {
-		return this.scoped;
-	}
+	protected abstract ScopeSpec getScoped();
 
 	protected abstract Rescopable create(
 			Rescoper rescoper,

@@ -26,6 +26,7 @@ import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
 
@@ -36,6 +37,11 @@ public final class ErrorRef extends Ref {
 				location,
 				distributor,
 				logicalFalse(location, distributor.getScope()));
+	}
+
+	@Override
+	public TypeRef ancestor(LocationSpec location) {
+		return null;
 	}
 
 	@Override
