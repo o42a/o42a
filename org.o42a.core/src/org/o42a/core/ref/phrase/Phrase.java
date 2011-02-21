@@ -20,7 +20,7 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
@@ -36,7 +36,7 @@ public class Phrase extends Placed {
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
 
-	public Phrase(LocationSpec location, Distributor distributor) {
+	public Phrase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
@@ -48,7 +48,7 @@ public class Phrase extends Placed {
 		return this.prefix != null ? this.prefix.getAncestor() : null;
 	}
 
-	public final Phrase setImpliedAncestor(LocationSpec location) {
+	public final Phrase setImpliedAncestor(LocationInfo location) {
 		if (this.prefix == null) {
 			this.last = this.prefix = new PhrasePrefix(location, this);
 		}
@@ -75,11 +75,11 @@ public class Phrase extends Placed {
 		return this;
 	}
 
-	public final Phrase name(LocationSpec location, String name) {
+	public final Phrase name(LocationInfo location, String name) {
 		return append(this.last.name(location, name));
 	}
 
-	public final Phrase emptyArgument(LocationSpec location) {
+	public final Phrase emptyArgument(LocationInfo location) {
 		return append(this.last.argument(location, null));
 	}
 
@@ -88,7 +88,7 @@ public class Phrase extends Placed {
 		return append(this.last.argument(value, value));
 	}
 
-	public final Phrase string(LocationSpec location, String string) {
+	public final Phrase string(LocationInfo location, String string) {
 		return append(this.last.string(location, string));
 	}
 

@@ -22,7 +22,7 @@ package org.o42a.core.ref;
 import static org.o42a.core.ref.Logical.logicalFalse;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
@@ -32,7 +32,7 @@ import org.o42a.core.st.Reproducer;
 
 public final class ErrorRef extends Ref {
 
-	ErrorRef(LocationSpec location, Distributor distributor) {
+	ErrorRef(LocationInfo location, Distributor distributor) {
 		super(
 				location,
 				distributor,
@@ -40,7 +40,7 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		return null;
 	}
 

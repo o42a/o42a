@@ -85,7 +85,7 @@ public class Root extends Obj {
 	private final IntrinsicObject floatObject;
 	private final IntrinsicObject stringObject;
 
-	private Root(LocationSpec location, Scope topScope) {
+	private Root(LocationInfo location, Scope topScope) {
 		super(new RootScope(location, topScope.distribute()));
 		setValueType(ValueType.VOID);
 		this.voidField = new VoidField(this);
@@ -199,7 +199,7 @@ public class Root extends Obj {
 
 	private static final class RootScope extends ObjectScope {
 
-		RootScope(LocationSpec location, Distributor enclosing) {
+		RootScope(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);
 		}
 
@@ -253,7 +253,7 @@ public class Root extends Obj {
 
 	private static final class RootAncestor extends Ex {
 
-		RootAncestor(LocationSpec location, Scope scope) {
+		RootAncestor(LocationInfo location, Scope scope) {
 			super(location, scope.distribute());
 		}
 

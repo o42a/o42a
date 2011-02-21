@@ -22,7 +22,7 @@ package org.o42a.core.def;
 import org.o42a.core.*;
 
 
-public abstract class Rescopable implements ScopeSpec {
+public abstract class Rescopable implements ScopeInfo {
 
 	private final Rescoper rescoper;
 
@@ -85,16 +85,16 @@ public abstract class Rescopable implements ScopeSpec {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
-	protected abstract ScopeSpec getScoped();
+	protected abstract ScopeInfo getScoped();
 
 	protected abstract Rescopable create(
 			Rescoper rescoper,

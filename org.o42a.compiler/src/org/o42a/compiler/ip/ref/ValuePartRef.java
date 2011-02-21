@@ -44,7 +44,7 @@ public final class ValuePartRef extends Ex {
 		new HashMap<String, ValuePart>();
 
 	public static Ref overridden(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return new ValuePartRef(location, distributor, ValuePart.ALL, true);
 	}
@@ -71,7 +71,7 @@ public final class ValuePartRef extends Ex {
 	private Resolution resolution;
 
 	private ValuePartRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			ValuePart valuePart,
 			boolean overridden) {
@@ -130,7 +130,7 @@ public final class ValuePartRef extends Ex {
 
 	private final class ValuePartObj extends PlainObject {
 
-		ValuePartObj(LocationSpec location, Distributor enclosing) {
+		ValuePartObj(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);
 		}
 

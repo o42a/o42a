@@ -20,7 +20,7 @@
 package org.o42a.common.adapter;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjectOp;
@@ -39,7 +39,7 @@ public class IntegerByString extends ByString<Long> {
 	}
 
 	@Override
-	protected Long byString(LocationSpec location, String input) {
+	protected Long byString(LocationInfo location, String input) {
 		return integerByString(location, input, 10);
 	}
 
@@ -57,7 +57,7 @@ public class IntegerByString extends ByString<Long> {
 	}
 
 	private Long integerByString(
-			LocationSpec location,
+			LocationInfo location,
 			String input,
 			int radix) {
 

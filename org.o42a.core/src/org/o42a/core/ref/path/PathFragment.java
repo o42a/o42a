@@ -22,7 +22,7 @@ package org.o42a.core.ref.path;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -42,13 +42,13 @@ public abstract class PathFragment {
 	}
 
 	public abstract Container resolve(
-			LocationSpec location,
+			LocationInfo location,
 			Path path,
 			int index,
 			Scope start,
 			PathWalker walker);
 
-	public abstract Reproduction reproduce(LocationSpec location, Scope scope);
+	public abstract Reproduction reproduce(LocationInfo location, Scope scope);
 
 	public PathFragment combineWithMember(MemberKey memberKey) {
 		return null;

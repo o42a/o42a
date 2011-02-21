@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.member.MemberRegistry;
 
@@ -30,7 +30,7 @@ abstract class ImperativeIssue extends ImperativeSentence {
 	private final MemberRegistry memberRegistry;
 
 	ImperativeIssue(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeBlock block,
 			ImperativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
@@ -61,7 +61,7 @@ abstract class ImperativeIssue extends ImperativeSentence {
 	static final class Claiming extends ImperativeIssue {
 
 		Claiming(
-				LocationSpec location,
+				LocationInfo location,
 				ImperativeBlock block,
 				ImperativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
@@ -72,7 +72,7 @@ abstract class ImperativeIssue extends ImperativeSentence {
 	static final class Proposing extends ImperativeIssue {
 
 		Proposing(
-				LocationSpec location,
+				LocationInfo location,
 				ImperativeBlock block,
 				ImperativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);

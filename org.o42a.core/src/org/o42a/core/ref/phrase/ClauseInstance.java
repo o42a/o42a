@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
@@ -37,7 +37,7 @@ public final class ClauseInstance {
 	private static final PhraseContinuation[] NO_CONTENT =
 		new PhraseContinuation[0];
 
-	private final LocationSpec location;
+	private final LocationInfo location;
 	private final PhraseContext context;
 	private final HashMap<MemberKey, PhraseSubContext> subContexts =
 		new HashMap<MemberKey, PhraseSubContext>();
@@ -49,12 +49,12 @@ public final class ClauseInstance {
 		this(context, context.getLocation());
 	}
 
-	ClauseInstance(PhraseContext context, LocationSpec location) {
+	ClauseInstance(PhraseContext context, LocationInfo location) {
 		this.location = location;
 		this.context = context;
 	}
 
-	public final LocationSpec getLocation() {
+	public final LocationInfo getLocation() {
 		return this.location;
 	}
 
@@ -105,7 +105,7 @@ public final class ClauseInstance {
 		this.complete = true;
 	}
 
-	PhraseSubContext addSubContext(LocationSpec location, Clause clause) {
+	PhraseSubContext addSubContext(LocationInfo location, Clause clause) {
 
 		final MemberKey key = clause.getKey();
 		final PhraseSubContext existing = this.subContexts.get(key);

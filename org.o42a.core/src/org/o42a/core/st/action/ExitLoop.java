@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.action;
 
-import org.o42a.core.ScopeSpec;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -27,7 +27,7 @@ public class ExitLoop extends Action {
 
 	private final String blockName;
 
-	public ExitLoop(ScopeSpec statement, String blockName) {
+	public ExitLoop(ScopeInfo statement, String blockName) {
 		super(statement);
 		this.blockName = blockName;
 	}

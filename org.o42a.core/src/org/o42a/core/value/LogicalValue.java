@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
 
@@ -29,7 +29,7 @@ public enum LogicalValue {
 	TRUE(0, 2) {
 
 		@Override
-		public Logical toLogical(LocationSpec location, Scope scope) {
+		public Logical toLogical(LocationInfo location, Scope scope) {
 			return Logical.logicalTrue(location, scope);
 		}
 
@@ -43,7 +43,7 @@ public enum LogicalValue {
 	RUNTIME(1, 1) {
 
 		@Override
-		public Logical toLogical(LocationSpec location, Scope scope) {
+		public Logical toLogical(LocationInfo location, Scope scope) {
 			return Logical.runtimeLogical(location, scope);
 		}
 
@@ -57,7 +57,7 @@ public enum LogicalValue {
 	FALSE(2, 0) {
 
 		@Override
-		public Logical toLogical(LocationSpec location, Scope scope) {
+		public Logical toLogical(LocationInfo location, Scope scope) {
 			return Logical.logicalFalse(location, scope);
 		}
 
@@ -120,7 +120,7 @@ public enum LogicalValue {
 		return this;
 	}
 
-	public abstract Logical toLogical(LocationSpec location, Scope scope);
+	public abstract Logical toLogical(LocationInfo location, Scope scope);
 
 	public abstract Value<Void> toValue();
 

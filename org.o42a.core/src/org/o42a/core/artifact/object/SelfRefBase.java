@@ -20,7 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.Value;
@@ -32,7 +32,7 @@ public abstract class SelfRefBase extends Ref {
 		return object.calculateValue(scope);
 	}
 
-	public SelfRefBase(LocationSpec location, Distributor distributor) {
+	public SelfRefBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

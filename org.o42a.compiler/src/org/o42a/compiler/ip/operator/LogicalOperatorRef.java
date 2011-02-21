@@ -60,7 +60,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		return ValueType.VOID.typeRef(location, getScope());
 	}
 

@@ -117,7 +117,7 @@ public class Module extends PlainObject {
 
 		private final String moduleId;
 
-		ModuleScope(LocationSpec location, String moduleId) {
+		ModuleScope(LocationInfo location, String moduleId) {
 			super(
 					location,
 					declarativeDistributor(

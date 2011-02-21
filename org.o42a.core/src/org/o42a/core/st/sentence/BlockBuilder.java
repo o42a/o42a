@@ -21,13 +21,13 @@ package org.o42a.core.st.sentence;
 
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Location;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.util.log.LogInfo;
 
 
 public abstract class BlockBuilder extends Location {
 
-	public static BlockBuilder emptyBlock(LocationSpec location) {
+	public static BlockBuilder emptyBlock(LocationInfo location) {
 		return new EmptyBlock(location);
 	}
 
@@ -35,7 +35,7 @@ public abstract class BlockBuilder extends Location {
 		super(context, logInfo);
 	}
 
-	public BlockBuilder(LocationSpec location) {
+	public BlockBuilder(LocationInfo location) {
 		super(location);
 	}
 
@@ -43,7 +43,7 @@ public abstract class BlockBuilder extends Location {
 
 	private static final class EmptyBlock extends BlockBuilder {
 
-		EmptyBlock(LocationSpec location) {
+		EmptyBlock(LocationInfo location) {
 			super(location);
 		}
 

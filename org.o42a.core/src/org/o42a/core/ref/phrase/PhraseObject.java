@@ -20,7 +20,7 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -81,7 +81,7 @@ class PhraseObject extends DefinedObject {
 		}
 
 		private Ex(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor distributor,
 				MainPhraseContext mainContext,
 				AscendantsDefinition ascendants) {
@@ -91,7 +91,7 @@ class PhraseObject extends DefinedObject {
 		}
 
 		@Override
-		public TypeRef ancestor(LocationSpec location) {
+		public TypeRef ancestor(LocationInfo location) {
 			return this.ascendants.getAncestor();
 		}
 

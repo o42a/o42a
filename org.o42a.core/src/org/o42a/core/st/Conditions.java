@@ -21,7 +21,7 @@ package org.o42a.core.st;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Def;
 import org.o42a.core.ref.Logical;
@@ -29,7 +29,7 @@ import org.o42a.core.ref.Logical;
 
 public abstract class Conditions {
 
-	public static Conditions emptyConditions(LocationSpec location) {
+	public static Conditions emptyConditions(LocationInfo location) {
 		return new Empty(location);
 	}
 
@@ -45,7 +45,7 @@ public abstract class Conditions {
 		return prerequisite(scope).and(precondition(scope));
 	}
 
-	public Conditions notCondition(LocationSpec location) {
+	public Conditions notCondition(LocationInfo location) {
 		return new NotCondition(location, this);
 	}
 
@@ -56,9 +56,9 @@ public abstract class Conditions {
 
 	private static final class Empty extends Conditions {
 
-		private final LocationSpec location;
+		private final LocationInfo location;
 
-		Empty(LocationSpec location) {
+		Empty(LocationInfo location) {
 			this.location = location;
 		}
 
@@ -86,11 +86,11 @@ public abstract class Conditions {
 
 	private static final class NotCondition extends Conditions {
 
-		private final LocationSpec location;
+		private final LocationInfo location;
 		private final Conditions conditions;
 		private boolean errorReported;
 
-		NotCondition(LocationSpec location, Conditions conditions) {
+		NotCondition(LocationInfo location, Conditions conditions) {
 			this.location = location;
 			this.conditions = conditions;
 		}
@@ -108,7 +108,7 @@ public abstract class Conditions {
 		}
 
 		@Override
-		public Conditions notCondition(LocationSpec location) {
+		public Conditions notCondition(LocationInfo location) {
 			return new NotCondition(location, this.conditions);
 		}
 

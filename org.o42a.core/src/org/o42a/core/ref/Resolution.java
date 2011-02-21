@@ -36,11 +36,11 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Resolution implements ScopeSpec {
+public abstract class Resolution implements ScopeInfo {
 
-	private final ScopeSpec resolved;
+	private final ScopeInfo resolved;
 
-	Resolution(ScopeSpec resolved) {
+	Resolution(ScopeInfo resolved) {
 		this.resolved = resolved;
 	}
 
@@ -92,7 +92,7 @@ public abstract class Resolution implements ScopeSpec {
 	public abstract Path materializationPath();
 
 	public abstract Path member(
-			PlaceSpec user,
+			PlaceInfo user,
 			MemberId memberId,
 			Obj declaredIn);
 
@@ -107,12 +107,12 @@ public abstract class Resolution implements ScopeSpec {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 
@@ -121,7 +121,7 @@ public abstract class Resolution implements ScopeSpec {
 		return this.resolved.toString();
 	}
 
-	protected final ScopeSpec getResolved() {
+	protected final ScopeInfo getResolved() {
 		return this.resolved;
 	}
 
@@ -162,7 +162,7 @@ public abstract class Resolution implements ScopeSpec {
 		}
 
 		@Override
-		public Path member(PlaceSpec user, MemberId memberId, Obj declaredIn) {
+		public Path member(PlaceInfo user, MemberId memberId, Obj declaredIn) {
 			return null;
 		}
 
@@ -200,7 +200,7 @@ public abstract class Resolution implements ScopeSpec {
 		}
 
 		@Override
-		public Path member(PlaceSpec user, MemberId memberId, Obj declaredIn) {
+		public Path member(PlaceInfo user, MemberId memberId, Obj declaredIn) {
 
 			final Obj owner = materialize();
 			final Path found = owner.member(user, memberId, declaredIn);
@@ -242,7 +242,7 @@ public abstract class Resolution implements ScopeSpec {
 		}
 
 		@Override
-		public Path member(PlaceSpec user, MemberId memberId, Obj declaredIn) {
+		public Path member(PlaceInfo user, MemberId memberId, Obj declaredIn) {
 
 			final Obj owner = toArtifact();
 			final Path found = owner.member(user, memberId, declaredIn);
@@ -284,7 +284,7 @@ public abstract class Resolution implements ScopeSpec {
 		}
 
 		@Override
-		public Path member(PlaceSpec user, MemberId memberId, Obj declaredIn) {
+		public Path member(PlaceInfo user, MemberId memberId, Obj declaredIn) {
 
 			final Path found =
 				toContainer().member(user, memberId, declaredIn);
@@ -326,7 +326,7 @@ public abstract class Resolution implements ScopeSpec {
 		}
 
 		@Override
-		public Path member(PlaceSpec user, MemberId memberId, Obj declaredIn) {
+		public Path member(PlaceInfo user, MemberId memberId, Obj declaredIn) {
 
 			final Path found =
 				toContainer().member(user, memberId, declaredIn);

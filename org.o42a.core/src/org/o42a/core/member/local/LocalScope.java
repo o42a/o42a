@@ -50,7 +50,7 @@ public abstract class LocalScope
 		implements Container, ClauseContainer, SourceSpec {
 
 	static ExplicitLocalScope explicitScope(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Obj owner,
 			String name) {
@@ -62,7 +62,7 @@ public abstract class LocalScope
 	}
 
 	static ExplicitLocalScope reproducedScope(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Obj owner,
 			ExplicitLocalScope reproducedFrom) {
@@ -78,7 +78,7 @@ public abstract class LocalScope
 	private final Obj owner;
 	private final Path ownerScopePath;
 
-	LocalScope(LocationSpec location, Obj owner) {
+	LocalScope(LocationInfo location, Obj owner) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.owner = owner;
@@ -159,7 +159,7 @@ public abstract class LocalScope
 
 	public abstract Collection<Member> getMembers();
 
-	public final LocalPlace placeOf(ScopeSpec other) {
+	public final LocalPlace placeOf(ScopeInfo other) {
 
 		Scope scope = other.getScope();
 
@@ -196,7 +196,7 @@ public abstract class LocalScope
 
 	@Override
 	public final Path findPath(
-			ScopeSpec user,
+			ScopeInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);
@@ -242,7 +242,7 @@ public abstract class LocalScope
 
 		@Override
 		public Container resolve(
-				LocationSpec location,
+				LocationInfo location,
 				Path path,
 				int index,
 				Scope start,
@@ -260,7 +260,7 @@ public abstract class LocalScope
 		}
 
 		@Override
-		public Reproduction reproduce(LocationSpec location, Scope scope) {
+		public Reproduction reproduce(LocationInfo location, Scope scope) {
 			return reproduced(scope.toLocal().getEnclosingScopePath());
 		}
 

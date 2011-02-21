@@ -21,7 +21,7 @@ package org.o42a.core.st.sentence;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
@@ -36,7 +36,7 @@ import org.o42a.core.value.LogicalValue;
 public class Imperatives extends Statements<Imperatives> {
 
 	Imperatives(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeSentence sentence,
 			boolean opposite) {
 		super(location, sentence, opposite);
@@ -53,19 +53,19 @@ public class Imperatives extends Statements<Imperatives> {
 	}
 
 	@Override
-	public final ImperativeBlock parentheses(LocationSpec location) {
+	public final ImperativeBlock parentheses(LocationInfo location) {
 		return parentheses(location, getContainer());
 	}
 
 	@Override
 	public final ImperativeBlock parentheses(
-			LocationSpec location,
+			LocationInfo location,
 			Container container) {
 		return (ImperativeBlock) super.parentheses(location, container);
 	}
 
 	@Override
-	public void ellipsis(LocationSpec location, String name) {
+	public void ellipsis(LocationInfo location, String name) {
 		if (getSentence().isIssue()) {
 			getLogger().prohibitedIssueEllipsis(location);
 			return;
@@ -131,7 +131,7 @@ public class Imperatives extends Statements<Imperatives> {
 		return new ExecuteCommand(this, LogicalValue.TRUE);
 	}
 
-	private Block<?> blockByName(LocationSpec location, String name) {
+	private Block<?> blockByName(LocationInfo location, String name) {
 		if (name == null) {
 			return getSentence().getBlock();
 		}

@@ -191,7 +191,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return localPlace;
 	}
 
-	public final Access accessBy(ScopeSpec user) {
+	public final Access accessBy(ScopeInfo user) {
 		return artifactAccess(user, this);
 	}
 
@@ -293,9 +293,9 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	private static final class ArtifactDistributor extends Distributor {
 
 		private final Scope scope;
-		private final PlaceSpec placed;
+		private final PlaceInfo placed;
 
-		ArtifactDistributor(Scope scope, PlaceSpec placed) {
+		ArtifactDistributor(Scope scope, PlaceInfo placed) {
 			this.scope = scope;
 			this.placed = placed;
 		}

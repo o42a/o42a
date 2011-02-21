@@ -23,23 +23,23 @@ import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 
 
-public class Scoped extends Location implements ScopeSpec {
+public class Scoped extends Location implements ScopeInfo {
 
-	public static final void assertScopeIs(ScopeSpec scoped, Scope scope) {
+	public static final void assertScopeIs(ScopeInfo scoped, Scope scope) {
 		assert scoped.getScope() == scope :
 			scoped + " has scope " + scoped.getScope()
 			+ ", but " + scope + " expected";
 	}
 
-	public static final void assertCompatible(ScopeSpec scoped, Scope scope) {
+	public static final void assertCompatible(ScopeInfo scoped, Scope scope) {
 		assert scope.derivedFrom(scoped.getScope()) :
 			"Scope " + scope + " is not compatible with "
 			+ scoped + ": it's not derived from " + scoped.getScope();
 	}
 
 	public static final void assertSameScope(
-			ScopeSpec scoped,
-			ScopeSpec other) {
+			ScopeInfo scoped,
+			ScopeInfo other) {
 		assert scoped.getScope() == other.getScope() :
 			scoped + " has scope " + scoped.getScope()
 			+ ", which differs from scope " + other.getScope()
@@ -47,8 +47,8 @@ public class Scoped extends Location implements ScopeSpec {
 	}
 
 	public static final void assertCompatibleScope(
-			ScopeSpec scoped,
-			ScopeSpec other) {
+			ScopeInfo scoped,
+			ScopeInfo other) {
 		assert other.getScope().derivedFrom(scoped.getScope()) :
 			other + " scope " + other.getScope()
 			+ " is not compatible with " + scoped
@@ -57,7 +57,7 @@ public class Scoped extends Location implements ScopeSpec {
 
 	private final Scope scope;
 
-	public Scoped(LocationSpec location, Scope scope) {
+	public Scoped(LocationInfo location, Scope scope) {
 		super(location);
 		assert scope != null :
 			"Scope not specified";
@@ -90,12 +90,12 @@ public class Scoped extends Location implements ScopeSpec {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		assertCompatibleScope(this, other);
 	}
 

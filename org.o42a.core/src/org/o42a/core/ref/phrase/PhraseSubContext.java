@@ -25,7 +25,7 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
@@ -50,7 +50,7 @@ class PhraseSubContext extends PhraseContext {
 
 	PhraseSubContext(
 			PhraseContext enclosing,
-			LocationSpec location,
+			LocationInfo location,
 			Clause clause) {
 		super(enclosing, location);
 		this.mainContext = enclosing.getMainContext();
@@ -63,7 +63,7 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	public NextClause clauseByName(LocationSpec location, String name) {
+	public NextClause clauseByName(LocationInfo location, String name) {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
@@ -71,7 +71,7 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	public NextClause clauseById(LocationSpec location, ClauseId clauseId) {
+	public NextClause clauseById(LocationInfo location, ClauseId clauseId) {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
@@ -132,7 +132,7 @@ class PhraseSubContext extends PhraseContext {
 
 		final ClauseInstance instance = getInstances()[0];
 		final Distributor distributor = statements.nextDistributor();
-		final LocationSpec location = instance.getLocation();
+		final LocationInfo location = instance.getLocation();
 		final FieldDeclaration declaration =
 			createDeclaration(location, distributor);
 
@@ -182,7 +182,7 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	private FieldDeclaration createDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 
 		final MemberKey overriddenKey =
@@ -233,7 +233,7 @@ class PhraseSubContext extends PhraseContext {
 			this.instance = instance;
 			this.memberRegistry = block.getMemberRegistry();
 
-			final LocationSpec location = instance.getLocation();
+			final LocationInfo location = instance.getLocation();
 
 			this.statements = block.propose(location).alternative(location);
 		}
@@ -256,7 +256,7 @@ class PhraseSubContext extends PhraseContext {
 
 		@Override
 		public void applyClause(
-				LocationSpec location,
+				LocationInfo location,
 				Statements<?> statements,
 				Clause clause) {
 

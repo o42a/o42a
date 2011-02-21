@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.st.DefinitionTarget;
@@ -30,7 +30,7 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 	private final MemberRegistry memberRegistry;
 
 	public DeclarativeIssue(
-			LocationSpec location,
+			LocationInfo location,
 			DeclarativeBlock block,
 			DeclarativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
@@ -56,7 +56,7 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 	static final class Claiming extends DeclarativeIssue {
 
 		Claiming(
-				LocationSpec location,
+				LocationInfo location,
 				DeclarativeBlock block,
 				DeclarativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
@@ -79,7 +79,7 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 	static final class Proposing extends DeclarativeIssue {
 
 		Proposing(
-				LocationSpec location,
+				LocationInfo location,
 				DeclarativeBlock block,
 				DeclarativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);

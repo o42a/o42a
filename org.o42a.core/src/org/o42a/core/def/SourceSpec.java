@@ -19,11 +19,11 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.ScopeSpec;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.object.Obj;
 
 
-public interface SourceSpec extends ScopeSpec {
+public interface SourceSpec extends ScopeInfo {
 
 	Obj getSource();
 

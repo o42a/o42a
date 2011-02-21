@@ -20,7 +20,7 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
@@ -38,7 +38,7 @@ final class RuntimeRef extends ObjectConstructor {
 	private final ValueType<?> valueType;
 
 	RuntimeRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			ValueType<?> valueType) {
 		super(location, distributor);
@@ -46,7 +46,7 @@ final class RuntimeRef extends ObjectConstructor {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -74,7 +74,7 @@ final class RuntimeRef extends ObjectConstructor {
 	private static final class RuntimeObject extends Result {
 
 		RuntimeObject(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor enclosing,
 				ValueType<?> valueType) {
 			super(location, enclosing, valueType);

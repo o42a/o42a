@@ -30,7 +30,7 @@ import static org.o42a.core.ref.Logical.runtimeTrue;
 
 import java.util.Collection;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.ref.Logical;
@@ -44,13 +44,13 @@ public class Definitions extends Scoped {
 	static final Def[] NO_DEFS = new Def[0];
 
 	public static Definitions emptyDefinitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope) {
 		return new Empty(location, scope);
 	}
 
 	public static Definitions noValueDefinitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			ValueType<?> valueType) {
 
@@ -65,7 +65,7 @@ public class Definitions extends Scoped {
 	}
 
 	public static Definitions conditionDefinitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Logical condition) {
 		return new Definitions(
@@ -77,7 +77,7 @@ public class Definitions extends Scoped {
 	}
 
 	public static Definitions requirementDefinitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Logical requirement) {
 
@@ -91,7 +91,7 @@ public class Definitions extends Scoped {
 				requirementDef);
 	}
 
-	public static Definitions falseClaims(LocationSpec location, Scope scope) {
+	public static Definitions falseClaims(LocationInfo location, Scope scope) {
 
 		final LogicalDef requirement = falseLogicalDef(location, scope);
 
@@ -99,7 +99,7 @@ public class Definitions extends Scoped {
 	}
 
 	public static Definitions definitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Collection<? extends Def> definitions) {
 
@@ -116,7 +116,7 @@ public class Definitions extends Scoped {
 	}
 
 	public static Definitions definitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Def... definitions) {
 		if (definitions.length == 0) {
@@ -192,7 +192,7 @@ public class Definitions extends Scoped {
 	private final Def[] propositions;
 
 	Definitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			ValueType<?> valueType,
 			LogicalDef requirement,
@@ -208,7 +208,7 @@ public class Definitions extends Scoped {
 		assertEmptyWithoutDefinitions();
 	}
 
-	private Definitions(LocationSpec location, Scope scope) {
+	private Definitions(LocationInfo location, Scope scope) {
 		super(location, scope);
 		this.valueType = null;
 		this.requirement = this.condition = emptyLogicalDef(location, scope);
@@ -217,7 +217,7 @@ public class Definitions extends Scoped {
 	}
 
 	private Definitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			ValueType<?> valueType,
 			LogicalDef requirement,
@@ -621,7 +621,7 @@ public class Definitions extends Scoped {
 		return new UpgradeRescoper(getScope(), scope).update(this);
 	}
 
-	public Definitions removeCondition(LocationSpec location) {
+	public Definitions removeCondition(LocationInfo location) {
 		if (this.condition.isTrue()) {
 			return this;
 		}
@@ -977,7 +977,7 @@ public class Definitions extends Scoped {
 
 	private static final class Empty extends Definitions {
 
-		Empty(LocationSpec location, Scope scope) {
+		Empty(LocationInfo location, Scope scope) {
 			super(location, scope);
 		}
 

@@ -22,7 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.util.Lambda;
@@ -43,7 +43,7 @@ public class ImperativeFactory implements SentenceFactory<
 
 	@Override
 	public ImperativeBlock createParentheses(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Imperatives enclosing) {
 		return nestedImperativeBlock(
@@ -67,7 +67,7 @@ public class ImperativeFactory implements SentenceFactory<
 
 	@Override
 	public ImperativeBlock createBraces(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Imperatives enclosing,
 			String name) {
@@ -93,7 +93,7 @@ public class ImperativeFactory implements SentenceFactory<
 
 	@Override
 	public ImperativeSentence issue(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeBlock block) {
 		return new ImperativeIssue.Proposing(
 				location,
@@ -103,7 +103,7 @@ public class ImperativeFactory implements SentenceFactory<
 
 	@Override
 	public Imperatives createAlternative(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeSentence sentence,
 			boolean opposite) {
 		return new Imperatives(location, sentence, opposite);
@@ -111,14 +111,14 @@ public class ImperativeFactory implements SentenceFactory<
 
 	@Override
 	public ImperativeSentence propose(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeBlock block) {
 		return new ImperativeSentence.Proposition(location, block, this);
 	}
 
 	@Override
 	public ImperativeSentence claim(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeBlock block) {
 		return new ImperativeSentence.Claim(location, block, this);
 	}

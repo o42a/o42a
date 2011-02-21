@@ -22,7 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.util.Lambda;
@@ -47,7 +47,7 @@ final class ImperativeGroupFactory extends ImperativeFactory {
 
 	@Override
 	public ImperativeBlock createBraces(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Imperatives enclosing,
 			String name) {

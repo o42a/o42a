@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -35,7 +35,7 @@ public class MemberRef extends Wrap {
 	private final StaticTypeRef declaredIn;
 
 	public MemberRef(
-			LocationSpec location,
+			LocationInfo location,
 			Ref owner,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {

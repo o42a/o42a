@@ -375,13 +375,13 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		}
 
 		@Override
-		public Path member(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+		public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 			return null;
 		}
 
 		@Override
 		public Path findMember(
-				ScopeSpec user,
+				ScopeInfo user,
 				MemberId memberId,
 				Obj declaredIn) {
 			return null;

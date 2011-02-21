@@ -60,7 +60,7 @@ import org.o42a.core.value.ValueType;
 
 public abstract class Ref extends RefBase {
 
-	public static Ref voidRef(LocationSpec location, Distributor distributor) {
+	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 
 		final Field<Obj> wrapperField =
 			location.getContext().getIntrinsics().getVoidField();
@@ -69,7 +69,7 @@ public abstract class Ref extends RefBase {
 				wrapperField.getKey()).target(location, distributor);
 	}
 
-	public static Ref falseRef(LocationSpec location, Distributor distributor) {
+	public static Ref falseRef(LocationInfo location, Distributor distributor) {
 
 		final Obj falseObject = location.getContext().getFalse();
 		final AbsolutePath falsePath = ROOT_PATH.append(
@@ -78,12 +78,12 @@ public abstract class Ref extends RefBase {
 		return falsePath.target(location, distributor);
 	}
 
-	public static Ref errorRef(LocationSpec location, Distributor distributor) {
+	public static Ref errorRef(LocationInfo location, Distributor distributor) {
 		return new ErrorRef(location, distributor);
 	}
 
 	public static Ref runtimeRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			ValueType<?> valueType) {
 		return new RuntimeRef(location, distributor, valueType);
@@ -94,11 +94,11 @@ public abstract class Ref extends RefBase {
 	private RefOp op;
 	private Path resolutionRoot;
 
-	public Ref(LocationSpec location, Distributor distributor) {
+	public Ref(LocationInfo location, Distributor distributor) {
 		this(location, distributor, null);
 	}
 
-	Ref(LocationSpec location, Distributor distributor, Logical logical) {
+	Ref(LocationInfo location, Distributor distributor, Logical logical) {
 		super(location, distributor);
 		this.logical = logical;
 	}
@@ -240,7 +240,7 @@ public abstract class Ref extends RefBase {
 	 *
 	 * @return ancestor reference or <code>null</code> if can not be determined.
 	 */
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		return new AncestorRef(location, this).toTypeRef();
 	}
 
@@ -332,7 +332,7 @@ public abstract class Ref extends RefBase {
 		return new FixedScopeRef(this);
 	}
 
-	public final Ref adapt(LocationSpec location, StaticTypeRef adapterType) {
+	public final Ref adapt(LocationInfo location, StaticTypeRef adapterType) {
 		return new Adapter(location, this, adapterType);
 	}
 

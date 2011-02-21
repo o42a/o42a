@@ -37,10 +37,10 @@ public abstract class PhraseContext {
 
 	private final Phrase phrase;
 	private final PhraseContext enclosing;
-	private final LocationSpec location;
+	private final LocationInfo location;
 	private ClauseInstance[] instances;
 
-	public PhraseContext(Phrase phrase, LocationSpec location) {
+	public PhraseContext(Phrase phrase, LocationInfo location) {
 		assert location != null :
 			"Location not specified";
 		this.phrase = phrase;
@@ -49,7 +49,7 @@ public abstract class PhraseContext {
 		this.instances = new ClauseInstance[] {new ClauseInstance(this)};
 	}
 
-	public PhraseContext(PhraseContext enclosing, LocationSpec location) {
+	public PhraseContext(PhraseContext enclosing, LocationInfo location) {
 		assert location != null :
 			"Location not specified";
 		this.phrase = enclosing.getPhrase();
@@ -66,7 +66,7 @@ public abstract class PhraseContext {
 		return this.enclosing;
 	}
 
-	public final LocationSpec getLocation() {
+	public final LocationInfo getLocation() {
 		return this.location;
 	}
 
@@ -77,11 +77,11 @@ public abstract class PhraseContext {
 	}
 
 	public abstract NextClause clauseByName(
-			LocationSpec location,
+			LocationInfo location,
 			String name);
 
 	public abstract NextClause clauseById(
-			LocationSpec location,
+			LocationInfo location,
 			ClauseId clauseId);
 
 	public abstract Path pathToObject(Scope scope);
@@ -122,7 +122,7 @@ public abstract class PhraseContext {
 		return lastInstance().subContexts();
 	}
 
-	void reuse(LocationSpec location) {
+	void reuse(LocationInfo location) {
 		if (!lastInstance().isComplete()) {
 			return;
 		}
@@ -132,7 +132,7 @@ public abstract class PhraseContext {
 		this.instances = ArrayUtil.append(this.instances, newInstance);
 	}
 
-	final AdapterId clauseId(LocationSpec location, ClauseId clauseId) {
+	final AdapterId clauseId(LocationInfo location, ClauseId clauseId) {
 		return adapterId(clauseId.adapterType(
 				location,
 				getPhrase().distribute()));
@@ -140,7 +140,7 @@ public abstract class PhraseContext {
 
 	NextClause findClause(
 			ClauseContainer container,
-			LocationSpec location,
+			LocationInfo location,
 			MemberId memberId) {
 		if (container == null) {
 			return clauseNotFound(memberId);
@@ -162,7 +162,7 @@ public abstract class PhraseContext {
 	}
 
 	final AscendantsDefinition ascendants(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return ClauseAscendantsReproducer.ascendants(
 				location,
@@ -172,7 +172,7 @@ public abstract class PhraseContext {
 
 	private NextClause findClauseIn(
 			ClauseContainer container,
-			LocationSpec location,
+			LocationInfo location,
 			MemberId memberId) {
 
 		final Clause found = container.clause(memberId, null);
@@ -200,7 +200,7 @@ public abstract class PhraseContext {
 
 	private NextClause findReusedClause(
 			Clause clause,
-			LocationSpec location,
+			LocationInfo location,
 			MemberId memberId) {
 
 		final ReusedClause[] reused = clause.getReusedClauses();

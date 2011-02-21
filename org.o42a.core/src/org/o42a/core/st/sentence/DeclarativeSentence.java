@@ -24,7 +24,7 @@ import static org.o42a.core.ref.Logical.disjunction;
 
 import java.util.List;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
@@ -38,7 +38,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	private SentenceConditions conditions;
 
 	DeclarativeSentence(
-			LocationSpec location,
+			LocationInfo location,
 			DeclarativeBlock block,
 			DeclarativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
@@ -102,7 +102,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	static final class Proposition extends DeclarativeSentence {
 
 		Proposition(
-				LocationSpec location,
+				LocationInfo location,
 				DeclarativeBlock block,
 				DeclarativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
@@ -123,7 +123,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	static final class Claim extends DeclarativeSentence {
 
 		Claim(
-				LocationSpec location,
+				LocationInfo location,
 				DeclarativeBlock block,
 				DeclarativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);

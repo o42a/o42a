@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.operator;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
@@ -39,7 +39,7 @@ abstract class EqualityRef extends CompareOperatorRef {
 	}
 
 	public EqualityRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			BinaryNode node,
 			Ref leftOperand,
@@ -70,7 +70,7 @@ abstract class EqualityRef extends CompareOperatorRef {
 	static final class Equal extends EqualityRef {
 
 		public Equal(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor distributor,
 				BinaryNode node,
 				Ref leftOperand,
@@ -104,7 +104,7 @@ abstract class EqualityRef extends CompareOperatorRef {
 	static final class NotEqual extends EqualityRef {
 
 		public NotEqual(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor distributor,
 				BinaryNode node,
 				Ref leftOperand,
@@ -138,7 +138,7 @@ abstract class EqualityRef extends CompareOperatorRef {
 	private static final class EqualBinary extends BinaryOperatorRef {
 
 		EqualBinary(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor distributor,
 				BinaryNode node,
 				Ref leftOperand,

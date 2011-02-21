@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.phrase;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
@@ -31,7 +31,7 @@ public class PhraseString extends ValuedPhrasePart {
 	private final String string;
 
 	PhraseString(
-			LocationSpec location,
+			LocationInfo location,
 			PhrasePart preceding,
 			String string) {
 		super(location, preceding);

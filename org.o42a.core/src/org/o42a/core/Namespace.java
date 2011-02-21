@@ -98,12 +98,12 @@ public class Namespace extends AbstractContainer {
 	}
 
 	@Override
-	public Path member(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return this.enclosing.member(user, memberId, declaredIn);
 	}
 
 	@Override
-	public Path findMember(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		if (accessibleFrom(user)) {
 
 			final Path found = findInNs(user, memberId, declaredIn);
@@ -121,7 +121,7 @@ public class Namespace extends AbstractContainer {
 		return "Namespace[" + this.enclosing + ']';
 	}
 
-	protected boolean accessibleFrom(ScopeSpec user) {
+	protected boolean accessibleFrom(ScopeInfo user) {
 		return user.getContext() == getContext();
 	}
 
@@ -141,7 +141,7 @@ public class Namespace extends AbstractContainer {
 		return container;
 	}
 
-	private Path findInNs(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	private Path findInNs(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 
 		final Obj object = toObject();
 
@@ -218,7 +218,7 @@ public class Namespace extends AbstractContainer {
 		}
 
 		public Path findField(
-				ScopeSpec user,
+				ScopeInfo user,
 				MemberId memberId,
 				Obj declaredIn) {
 
@@ -274,7 +274,7 @@ public class Namespace extends AbstractContainer {
 
 		@Override
 		public Path findField(
-				ScopeSpec user,
+				ScopeInfo user,
 				MemberId memberId,
 				Obj declaredIn) {
 			if (declaredIn != null) {

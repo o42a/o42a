@@ -20,14 +20,14 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.st.St;
 
 
 public abstract class DeclarationStatement extends St {
 
 	public DeclarationStatement(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		super(location, distributor);
 	}

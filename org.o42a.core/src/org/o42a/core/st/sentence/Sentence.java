@@ -43,7 +43,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 	private ValueType<?> valueType;
 
 	Sentence(
-			LocationSpec location,
+			LocationInfo location,
 			Block<S> block,
 			SentenceFactory<S, ?, ?> sentenceFactory) {
 		super(location, new SentenceDistributor(block));
@@ -131,15 +131,15 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		return getBlock().isConditional();
 	}
 
-	public final S alternative(LocationSpec location) {
+	public final S alternative(LocationInfo location) {
 		return alternative(location, false);
 	}
 
-	public final S opposite(LocationSpec location) {
+	public final S opposite(LocationInfo location) {
 		return alternative(location, true);
 	}
 
-	public S alternative(LocationSpec location, boolean opposite) {
+	public S alternative(LocationInfo location, boolean opposite) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();

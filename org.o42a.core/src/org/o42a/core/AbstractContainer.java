@@ -33,7 +33,7 @@ public abstract class AbstractContainer extends Location implements Container {
 
 	public static Path findContainerPath(
 			Container container,
-			ScopeSpec user,
+			ScopeInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 
@@ -105,7 +105,7 @@ public abstract class AbstractContainer extends Location implements Container {
 		super(context, location);
 	}
 
-	public AbstractContainer(LocationSpec location) {
+	public AbstractContainer(LocationInfo location) {
 		super(location);
 	}
 
@@ -115,7 +115,7 @@ public abstract class AbstractContainer extends Location implements Container {
 	}
 
 	@Override
-	public Path findPath(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path findPath(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
@@ -130,12 +130,12 @@ public abstract class AbstractContainer extends Location implements Container {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 

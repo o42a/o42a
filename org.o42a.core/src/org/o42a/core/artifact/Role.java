@@ -19,26 +19,26 @@
 */
 package org.o42a.core.artifact;
 
-import org.o42a.core.ScopeSpec;
+import org.o42a.core.ScopeInfo;
 
 
 public enum Role {
 
 	NONE() {
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeSpec user) {
+		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
 		}
 		@Override
-		public void reportMisuse(ScopeSpec target, ScopeSpec user) {
+		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
 		}
 	},
 	ANY() {
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeSpec user) {
+		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
 			artifact.getLogger().invalidArtifact(artifact);
 		}
 		@Override
-		public void reportMisuse(ScopeSpec target, ScopeSpec user) {
+		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
 			target.getContext().getLogger().forbiddenAccess(
 					user,
 					target);
@@ -46,17 +46,17 @@ public enum Role {
 	},
 	PROTOTYPE() {
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeSpec user) {
+		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
 			artifact.getLogger().cantInherit(user, artifact);
 		}
 		@Override
-		public void reportMisuse(ScopeSpec target, ScopeSpec user) {
+		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
 			target.getContext().getLogger().cantInherit(user, target);
 		}
 	},
 	INSTANCE() {
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeSpec user) {
+		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
 			if (artifact.isAbstract()) {
 				artifact.getLogger().abstractValue(user);
 			} else {
@@ -64,13 +64,13 @@ public enum Role {
 			}
 		}
 		@Override
-		public void reportMisuse(ScopeSpec target, ScopeSpec user) {
+		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
 			target.getContext().getLogger().notObject(user, target);
 		}
 	};
 
-	public abstract void reportMisuse(Artifact<?> artifact, ScopeSpec user);
+	public abstract void reportMisuse(Artifact<?> artifact, ScopeInfo user);
 
-	public abstract void reportMisuse(ScopeSpec target, ScopeSpec user);
+	public abstract void reportMisuse(ScopeInfo target, ScopeInfo user);
 
 }

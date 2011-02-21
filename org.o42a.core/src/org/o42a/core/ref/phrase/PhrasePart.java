@@ -20,7 +20,7 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Location;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -30,7 +30,7 @@ public abstract class PhrasePart extends Location {
 	private final PhrasePart preceding;
 	private PhraseContinuation following;
 
-	PhrasePart(LocationSpec location, PhrasePart preceding) {
+	PhrasePart(LocationInfo location, PhrasePart preceding) {
 		super(location);
 		this.preceding = preceding;
 	}
@@ -43,15 +43,15 @@ public abstract class PhrasePart extends Location {
 		return this.following;
 	}
 
-	protected PhraseName name(LocationSpec location, String name) {
+	protected PhraseName name(LocationInfo location, String name) {
 		return setFollowing(new PhraseName(location, this, name));
 	}
 
-	protected PhraseArgument argument(LocationSpec location, Ref value) {
+	protected PhraseArgument argument(LocationInfo location, Ref value) {
 		return setValue(new PhraseArgument(this, location, value));
 	}
 
-	protected PhraseString string(LocationSpec location, String string) {
+	protected PhraseString string(LocationInfo location, String string) {
 		return setValue(new PhraseString(location, this, string));
 	}
 

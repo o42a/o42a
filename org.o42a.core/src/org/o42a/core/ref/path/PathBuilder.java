@@ -74,12 +74,12 @@ public final class PathBuilder {
 		return artifact(context).materialize();
 	}
 
-	public final Ref target(LocationSpec location, Distributor distributor) {
+	public final Ref target(LocationInfo location, Distributor distributor) {
 		return path(location.getContext()).target(location, distributor);
 	}
 
 	public final AdapterId toAdapterId(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return adapterId(target(location, distributor).toStaticTypeRef());
 	}

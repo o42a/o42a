@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.action;
 
-import org.o42a.core.ScopeSpec;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -27,7 +27,7 @@ public class ExecuteCommand extends Action {
 
 	private final LogicalValue logicalValue;
 
-	public ExecuteCommand(ScopeSpec statement, LogicalValue logicalValue) {
+	public ExecuteCommand(ScopeInfo statement, LogicalValue logicalValue) {
 		super(statement);
 		this.logicalValue = logicalValue;
 	}

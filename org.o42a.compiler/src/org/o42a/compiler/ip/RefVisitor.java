@@ -34,7 +34,7 @@ import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.ref.*;
 import org.o42a.core.Distributor;
 import org.o42a.core.Location;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -241,7 +241,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		}
 
 		public final Owner memberRefOwner(
-				LocationSpec location,
+				LocationInfo location,
 				MemberId memberId,
 				StaticTypeRef declaredIn) {
 			return wrap(new MemberRef(

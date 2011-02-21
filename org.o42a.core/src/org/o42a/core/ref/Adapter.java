@@ -21,7 +21,7 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.member.AdapterId.adapterId;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.common.Wrap;
@@ -34,7 +34,7 @@ final class Adapter extends Wrap {
 	private final Ref ref;
 	private final StaticTypeRef adapterType;
 
-	Adapter(LocationSpec location, Ref ref, StaticTypeRef adapterType) {
+	Adapter(LocationInfo location, Ref ref, StaticTypeRef adapterType) {
 		super(location, ref.distribute());
 		this.ref = ref;
 		this.adapterType = adapterType;

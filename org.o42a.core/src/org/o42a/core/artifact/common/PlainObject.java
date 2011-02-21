@@ -22,7 +22,7 @@ package org.o42a.core.artifact.common;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectScope;
@@ -33,7 +33,7 @@ public abstract class PlainObject extends Obj {
 
 	private Definitions explicitDefinitions;
 
-	public PlainObject(LocationSpec location, Distributor enclosing) {
+	public PlainObject(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
 	}
 

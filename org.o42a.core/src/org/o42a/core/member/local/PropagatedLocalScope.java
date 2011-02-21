@@ -21,7 +21,7 @@ package org.o42a.core.member.local;
 
 import java.util.Collection;
 
-import org.o42a.core.ScopeSpec;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.LocalIR;
@@ -80,7 +80,7 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path member(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return this.explicit.member(user, memberId, declaredIn);
 	}
 
@@ -90,7 +90,7 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path findMember(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return this.explicit.findMember(user, memberId, declaredIn);
 	}
 

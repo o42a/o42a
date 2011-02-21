@@ -22,7 +22,7 @@ package org.o42a.core.def;
 import static org.o42a.core.def.LogicalDef.trueLogicalDef;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.St;
@@ -55,7 +55,7 @@ public abstract class BlockBase extends St {
 		return def.upgradeScope(actualOwner.getScope());
 	}
 
-	public BlockBase(LocationSpec location, Distributor distributor) {
+	public BlockBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

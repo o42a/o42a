@@ -50,7 +50,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	private ValueType<?> valueType;
 
 	Statements(
-			LocationSpec location,
+			LocationInfo location,
 			Sentence<S> sentence,
 			boolean opposite) {
 		super(location, new StatementsDistributor(sentence));
@@ -159,7 +159,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return getMemberRegistry().newClause(declaration);
 	}
 
-	public Group group(LocationSpec location, ClauseDeclaration declaration) {
+	public Group group(LocationInfo location, ClauseDeclaration declaration) {
 		assert declaration.getKind() == ClauseKind.GROUP :
 			"Group declaration expected: " + declaration;
 
@@ -173,11 +173,11 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return new Group(location, this, builder);
 	}
 
-	public Block<S> parentheses(LocationSpec location) {
+	public Block<S> parentheses(LocationInfo location) {
 		return parentheses(location, getContainer());
 	}
 
-	public Block<S> parentheses(LocationSpec location, Container container) {
+	public Block<S> parentheses(LocationInfo location, Container container) {
 		return parentheses(
 				-1,
 				location,
@@ -185,16 +185,16 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				getMemberRegistry());
 	}
 
-	public final ImperativeBlock braces(LocationSpec location) {
+	public final ImperativeBlock braces(LocationInfo location) {
 		return braces(location, null, getContainer());
 	}
 
-	public final ImperativeBlock braces(LocationSpec location, String name) {
+	public final ImperativeBlock braces(LocationInfo location, String name) {
 		return braces(location, name, getContainer());
 	}
 
 	public final ImperativeBlock braces(
-			LocationSpec location,
+			LocationInfo location,
 			String name,
 			Container container) {
 		if (name != null) {
@@ -219,7 +219,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return braces;
 	}
 
-	public abstract void ellipsis(LocationSpec location, String name);
+	public abstract void ellipsis(LocationInfo location, String name);
 
 	public final Distributor nextDistributor() {
 
@@ -308,7 +308,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private Block<S> parentheses(
 			int index,
-			LocationSpec location,
+			LocationInfo location,
 			Container container,
 			MemberRegistry memberRegistry) {
 

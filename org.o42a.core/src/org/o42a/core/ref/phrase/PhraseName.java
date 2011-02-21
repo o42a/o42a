@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.phrase;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 
 
@@ -27,7 +27,7 @@ public class PhraseName extends PhraseContinuation {
 
 	private final String name;
 
-	PhraseName(LocationSpec location, PhrasePart prev, String name) {
+	PhraseName(LocationInfo location, PhrasePart prev, String name) {
 		super(location, prev);
 		this.name = name;
 	}
@@ -42,7 +42,7 @@ public class PhraseName extends PhraseContinuation {
 	}
 
 	@Override
-	protected PhraseName name(LocationSpec location, String name) {
+	protected PhraseName name(LocationInfo location, String name) {
 		getLogger().prohibitedPhraseName(location);
 		return null;
 	}

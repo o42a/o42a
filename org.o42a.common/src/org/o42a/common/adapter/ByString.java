@@ -26,7 +26,7 @@ import static org.o42a.core.st.Conditions.emptyConditions;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -116,7 +116,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 		return new ValueIR(objectIR);
 	}
 
-	protected abstract T byString(LocationSpec location, String input);
+	protected abstract T byString(LocationInfo location, String input);
 
 	protected abstract void parse(Code code, ValOp result, ObjectOp input);
 

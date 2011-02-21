@@ -27,7 +27,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 
 
-public interface Scope extends PlaceSpec {
+public interface Scope extends PlaceInfo {
 
 	boolean isTopScope();
 

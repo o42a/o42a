@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.action;
 
-import org.o42a.core.ScopeSpec;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -27,7 +27,7 @@ public class RepeatLoop extends Action {
 
 	private final String blockName;
 
-	public RepeatLoop(ScopeSpec statement, String blockName) {
+	public RepeatLoop(ScopeInfo statement, String blockName) {
 		super(statement);
 		this.blockName = blockName;
 	}

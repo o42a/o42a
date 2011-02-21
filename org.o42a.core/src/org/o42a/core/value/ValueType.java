@@ -24,7 +24,7 @@ import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
@@ -92,7 +92,7 @@ public abstract class ValueType<T> {
 
 	public abstract Obj wrapper(Intrinsics intrinsics);
 
-	public StaticTypeRef typeRef(LocationSpec location, Scope scope) {
+	public StaticTypeRef typeRef(LocationInfo location, Scope scope) {
 
 		final Distributor distributor = scope.distribute();
 		@SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public abstract class ValueType<T> {
 	}
 
 	public final Ref definiteRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			T value) {
 		return new DefiniteRef<T>(
@@ -133,19 +133,19 @@ public abstract class ValueType<T> {
 	}
 
 	public final Ref runtimeRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return Ref.runtimeRef(location, distributor, this);
 	}
 
 	public final Def runtimeDef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return runtimeRef(location, distributor).toDef();
 	}
 
 	public final Obj definiteObject(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor enclosing,
 			T value) {
 		return new DefiniteValue.DefiniteObject<T>(
@@ -156,7 +156,7 @@ public abstract class ValueType<T> {
 	}
 
 	public final Definitions noValueDefinitions(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope) {
 		return Definitions.noValueDefinitions(location, scope, this);
 	}
@@ -180,7 +180,7 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		public StaticTypeRef typeRef(LocationSpec location, Scope scope) {
+		public StaticTypeRef typeRef(LocationInfo location, Scope scope) {
 			return voidRef(location, scope.distribute()).toStaticTypeRef();
 		}
 

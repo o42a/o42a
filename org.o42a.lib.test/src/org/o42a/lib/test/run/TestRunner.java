@@ -22,7 +22,7 @@ package org.o42a.lib.test.run;
 import static org.o42a.core.member.AdapterId.adapterId;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.common.PlainObject;
@@ -179,7 +179,7 @@ final class TestRunner extends PlainObject {
 		private final String name;
 
 		RunTest(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor distributor,
 				String name,
 				MemberKey testKey,
@@ -191,7 +191,7 @@ final class TestRunner extends PlainObject {
 		}
 
 		@Override
-		public TypeRef ancestor(LocationSpec location) {
+		public TypeRef ancestor(LocationInfo location) {
 
 			final Scope localScope = getScope();
 

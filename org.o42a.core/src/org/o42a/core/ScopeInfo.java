@@ -19,11 +19,17 @@
 */
 package org.o42a.core;
 
-import org.o42a.util.log.LogInfo;
 
+public interface ScopeInfo extends LocationInfo {
 
-public interface LocationSpec extends LogInfo {
+	Scope getScope();
 
-	CompilerContext getContext();
+	void assertScopeIs(Scope scope);
+
+	void assertCompatible(Scope scope);
+
+	void assertSameScope(ScopeInfo other);
+
+	void assertCompatibleScope(ScopeInfo other);
 
 }

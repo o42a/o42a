@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.phrase;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -29,7 +29,7 @@ public class PhrasePrefix extends PhrasePart {
 
 	private AscendantsDefinition ascendants;
 
-	PhrasePrefix(LocationSpec location, Phrase phrase) {
+	PhrasePrefix(LocationInfo location, Phrase phrase) {
 		super(location, null);
 		this.ascendants = new AscendantsDefinition(this, phrase.distribute());
 	}
@@ -69,7 +69,7 @@ public class PhrasePrefix extends PhrasePart {
 	}
 
 	@Override
-	protected PhraseName name(LocationSpec location, String name) {
+	protected PhraseName name(LocationInfo location, String name) {
 		getLogger().prohibitedPhraseName(location);
 		return null;
 	}

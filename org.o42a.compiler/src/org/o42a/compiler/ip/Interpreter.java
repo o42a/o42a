@@ -96,7 +96,7 @@ public class Interpreter {
 		}
 	}
 
-	public static Location location(ScopeSpec p, Node node) {
+	public static Location location(ScopeInfo p, Node node) {
 		return new Location(p.getContext(), node);
 	}
 

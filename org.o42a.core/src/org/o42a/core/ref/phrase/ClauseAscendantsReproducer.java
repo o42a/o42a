@@ -20,7 +20,7 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
@@ -38,7 +38,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 	private final PhraseContext context;
 
 	static AscendantsDefinition ascendants(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			PhraseContext context) {
 
@@ -137,7 +137,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 
 	@Override
 	public void applyClause(
-			LocationSpec location,
+			LocationInfo location,
 			Statements<?> statements,
 			Clause clause) {
 		throw new UnsupportedOperationException();

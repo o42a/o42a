@@ -20,7 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectScopeIR;
@@ -28,7 +28,7 @@ import org.o42a.core.ir.object.ObjectScopeIR;
 
 final class ObjScope extends ObjectScope {
 
-	protected ObjScope(LocationSpec location, Distributor enclosing) {
+	protected ObjScope(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
 	}
 

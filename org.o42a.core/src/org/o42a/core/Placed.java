@@ -22,14 +22,14 @@ package org.o42a.core;
 import org.o42a.util.log.LogInfo;
 
 
-public class Placed extends Scoped implements PlaceSpec {
+public class Placed extends Scoped implements PlaceInfo {
 
-	public static Distributor distribute(PlaceSpec placed) {
+	public static Distributor distribute(PlaceInfo placed) {
 		return new PlaceDistributor(placed);
 	}
 
 	public static Distributor distributeIn(
-			PlaceSpec placed,
+			PlaceInfo placed,
 			Container container) {
 		return new OtherContainerDistributor(container, placed);
 	}
@@ -37,7 +37,7 @@ public class Placed extends Scoped implements PlaceSpec {
 	private final ScopePlace place;
 	private final Container container;
 
-	public Placed(LocationSpec location, Distributor distributor) {
+	public Placed(LocationInfo location, Distributor distributor) {
 		super(location, distributor.getScope());
 		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
@@ -82,9 +82,9 @@ public class Placed extends Scoped implements PlaceSpec {
 
 	private static final class PlaceDistributor extends Distributor {
 
-		private final PlaceSpec placed;
+		private final PlaceInfo placed;
 
-		private PlaceDistributor(PlaceSpec placed) {
+		private PlaceDistributor(PlaceInfo placed) {
 			this.placed = placed;
 		}
 
@@ -108,11 +108,11 @@ public class Placed extends Scoped implements PlaceSpec {
 	private static final class OtherContainerDistributor extends Distributor {
 
 		private final Container container;
-		private final PlaceSpec placed;
+		private final PlaceInfo placed;
 
 		private OtherContainerDistributor(
 				Container container,
-				PlaceSpec placed) {
+				PlaceInfo placed) {
 			this.container = container;
 			this.placed = placed;
 		}

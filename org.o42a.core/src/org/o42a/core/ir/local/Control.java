@@ -22,7 +22,7 @@ package org.o42a.core.ir.local;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.IRGenerator;
 
 
@@ -99,7 +99,7 @@ public abstract class Control {
 		exitBraces(null, null);
 	}
 
-	public final void exitBraces(LocationSpec location, String name) {
+	public final void exitBraces(LocationInfo location, String name) {
 		if (isDone()) {
 			return;
 		}
@@ -117,7 +117,7 @@ public abstract class Control {
 		}
 	}
 
-	public final void repeat(LocationSpec location, String name) {
+	public final void repeat(LocationInfo location, String name) {
 		if (isDone()) {
 			return;
 		}
@@ -135,7 +135,7 @@ public abstract class Control {
 		}
 	}
 
-	public final boolean reach(LocationSpec location) {
+	public final boolean reach(LocationInfo location) {
 		if (!isDone()) {
 			return true;
 		}

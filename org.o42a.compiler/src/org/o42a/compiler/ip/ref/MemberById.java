@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
@@ -36,7 +36,7 @@ public class MemberById extends Wrap {
 	private final MemberId memberId;
 
 	public MemberById(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {

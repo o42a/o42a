@@ -250,7 +250,7 @@ public class CompilerLogger implements Logger {
 		error("not_clause_declaration", location, "Not a clause declaration");
 	}
 
-	public void notCondition(LocationSpec location) {
+	public void notCondition(LocationInfo location) {
 		error("not_condition", location, "Not a condition");
 	}
 

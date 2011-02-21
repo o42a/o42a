@@ -46,7 +46,7 @@ import org.o42a.util.log.Loggable;
 public final class DeclarativeBlock extends Block<Declaratives> {
 
 	static DeclarativeBlock declarativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
 			DeclarativeFactory sentenceFactory) {
@@ -60,7 +60,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	private BlockConditions conditions;
 
 	public DeclarativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Container container,
 			MemberRegistry memberRegistry) {
 		this(
@@ -70,7 +70,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	public DeclarativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry) {
 		super(
@@ -81,7 +81,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	public DeclarativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			DeclaredField<?> field,
 			Statements<?> enclosing,
 			MemberRegistry memberRegistry) {
@@ -94,7 +94,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	private DeclarativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
 			DeclarativeFactory sentenceFactory) {
@@ -123,17 +123,17 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public final DeclarativeSentence propose(LocationSpec location) {
+	public final DeclarativeSentence propose(LocationInfo location) {
 		return (DeclarativeSentence) super.propose(location);
 	}
 
 	@Override
-	public final DeclarativeSentence claim(LocationSpec location) {
+	public final DeclarativeSentence claim(LocationInfo location) {
 		return (DeclarativeSentence) super.claim(location);
 	}
 
 	@Override
-	public final DeclarativeSentence issue(LocationSpec location) {
+	public final DeclarativeSentence issue(LocationInfo location) {
 		return (DeclarativeSentence) super.issue(location);
 	}
 

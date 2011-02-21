@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -76,7 +76,7 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		}
 
 		@Override
-		public boolean declareBlock(LocationSpec location, String name) {
+		public boolean declareBlock(LocationInfo location, String name) {
 			location.getContext().getLogger().prohibitedDeclaration(location);
 			return false;
 		}
@@ -103,7 +103,7 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		}
 
 		@Override
-		public boolean declareBlock(LocationSpec location, String name) {
+		public boolean declareBlock(LocationInfo location, String name) {
 			return this.registry.declareBlock(location, name);
 		}
 

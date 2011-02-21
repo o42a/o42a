@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.util.Lambda;
@@ -45,7 +45,7 @@ public interface SentenceFactory<
 	boolean isDeclarative();
 
 	B createParentheses(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			S enclosing);
 
@@ -55,7 +55,7 @@ public interface SentenceFactory<
 			MemberRegistry memberRegistry);
 
 	ImperativeBlock createBraces(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			S enclosing,
 			String name);
@@ -66,14 +66,14 @@ public interface SentenceFactory<
 			String name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry);
 
-	T propose(LocationSpec location, B block);
+	T propose(LocationInfo location, B block);
 
-	T claim(LocationSpec location, B block);
+	T claim(LocationInfo location, B block);
 
-	T issue(LocationSpec location, B block);
+	T issue(LocationInfo location, B block);
 
 	S createAlternative(
-			LocationSpec location,
+			LocationInfo location,
 			T sentence,
 			boolean opposite);
 

@@ -29,7 +29,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 
 
-public interface Container extends ScopeSpec {
+public interface Container extends ScopeInfo {
 
 	Container getEnclosingContainer();
 
@@ -61,12 +61,12 @@ public interface Container extends ScopeSpec {
 	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path member(ScopeSpec user, MemberId memberId, Obj declaredIn);
+	Path member(ScopeInfo user, MemberId memberId, Obj declaredIn);
 
 	/**
 	 * Searches for the member in current container.
 	 *
-	 * <p>In contrast to {@link #member(ScopeSpec, MemberId, Obj)} the result
+	 * <p>In contrast to {@link #member(ScopeInfo, MemberId, Obj)} the result
 	 * is not necessarily belongs to this container. For example, it may return
 	 * a path to member from used name space or to clause inside a group.</p>
 	 *
@@ -77,7 +77,7 @@ public interface Container extends ScopeSpec {
 	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path findMember(ScopeSpec user, MemberId memberId, Obj declaredIn);
+	Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn);
 
 	/**
 	 * Searches for the visible member.
@@ -93,6 +93,6 @@ public interface Container extends ScopeSpec {
 	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path findPath(ScopeSpec user, MemberId memberId, Obj declaredIn);
+	Path findPath(ScopeInfo user, MemberId memberId, Obj declaredIn);
 
 }

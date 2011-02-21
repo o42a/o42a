@@ -22,7 +22,7 @@ package org.o42a.core.member.local;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -115,7 +115,7 @@ public final class Dep extends PathFragment {
 
 	@Override
 	public Container resolve(
-			LocationSpec location,
+			LocationInfo location,
 			Path path,
 			int index,
 			Scope start,
@@ -149,7 +149,7 @@ public final class Dep extends PathFragment {
 	}
 
 	@Override
-	public Reproduction reproduce(LocationSpec location, Scope scope) {
+	public Reproduction reproduce(LocationInfo location, Scope scope) {
 		if (dependencyOnEnclosingOwner()) {
 			return reproduced(new Dep(scope.getContainer().toObject()));
 		}

@@ -43,7 +43,7 @@ public abstract class Wrap extends Ref {
 
 	private Ref wrapped;
 
-	public Wrap(LocationSpec location, Distributor distributor) {
+	public Wrap(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
@@ -57,7 +57,7 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final TypeRef ancestor(LocationSpec location) {
+	public final TypeRef ancestor(LocationInfo location) {
 		if (this.wrapped != null) {
 			return this.wrapped.ancestor(location);
 		}
@@ -135,7 +135,7 @@ public abstract class Wrap extends Ref {
 
 	protected abstract Ref resolveWrapped();
 
-	protected final Ref errorRef(LocationSpec location) {
+	protected final Ref errorRef(LocationInfo location) {
 		return errorRef(location, distribute());
 	}
 
@@ -158,14 +158,14 @@ public abstract class Wrap extends Ref {
 
 	private final class AncestorWrap extends TypeRefWrap {
 
-		private final LocationSpec location;
+		private final LocationInfo location;
 
-		AncestorWrap(LocationSpec location) {
+		AncestorWrap(LocationInfo location) {
 			super(Wrap.this.getScope());
 			this.location = location;
 		}
 
-		AncestorWrap(LocationSpec location, Rescoper rescoper) {
+		AncestorWrap(LocationInfo location, Rescoper rescoper) {
 			super(rescoper);
 			this.location = location;
 		}

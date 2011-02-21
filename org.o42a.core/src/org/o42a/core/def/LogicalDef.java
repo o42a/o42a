@@ -25,7 +25,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.CompilerContext;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -37,19 +37,19 @@ import org.o42a.util.log.Loggable;
 public abstract class LogicalDef extends Rescopable implements SourceSpec {
 
 	public static LogicalDef emptyLogicalDef(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope) {
 		return new EmptyLogicalDef(location, scope);
 	}
 
 	public static LogicalDef trueLogicalDef(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope) {
 		return logicalTrue(location, scope).toLogicalDef();
 	}
 
 	public static LogicalDef falseLogicalDef(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope) {
 		return logicalFalse(location, scope).toLogicalDef();
 	}

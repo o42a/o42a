@@ -20,7 +20,7 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -37,12 +37,12 @@ import org.o42a.core.ref.type.TypeRef;
 
 public abstract class ObjectConstructor extends Ex {
 
-	public ObjectConstructor(LocationSpec location, Distributor distributor) {
+	public ObjectConstructor(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
 	@Override
-	public abstract TypeRef ancestor(LocationSpec location);
+	public abstract TypeRef ancestor(LocationInfo location);
 
 	@Override
 	protected final Resolution resolveExpression(Scope scope) {

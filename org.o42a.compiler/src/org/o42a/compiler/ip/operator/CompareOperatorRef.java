@@ -66,7 +66,7 @@ abstract class CompareOperatorRef extends ObjectConstructor {
 	}
 
 	public CompareOperatorRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			BinaryNode node,
 			Ref leftOperand,
@@ -93,7 +93,7 @@ abstract class CompareOperatorRef extends ObjectConstructor {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		return ValueType.VOID.typeRef(location, getScope());
 	}
 

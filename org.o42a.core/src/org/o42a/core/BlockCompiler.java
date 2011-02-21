@@ -30,7 +30,7 @@ public interface BlockCompiler {
 	Ref compilePath(
 			Scope scope,
 			String moduleId,
-			LocationSpec location,
+			LocationInfo location,
 			String string);
 
 }
