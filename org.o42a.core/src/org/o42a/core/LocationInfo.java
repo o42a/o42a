@@ -19,15 +19,11 @@
 */
 package org.o42a.core;
 
+import org.o42a.util.log.LogInfo;
 
-public interface PlaceSpec extends ScopeSpec {
 
-	ScopePlace getPlace();
+public interface LocationInfo extends LogInfo {
 
-	Container getContainer();
-
-	Distributor distribute();
-
-	Distributor distributeIn(Container container);
+	CompilerContext getContext();
 
 }

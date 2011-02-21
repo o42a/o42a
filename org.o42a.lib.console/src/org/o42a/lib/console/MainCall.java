@@ -26,7 +26,7 @@ import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -74,7 +74,7 @@ final class MainCall extends DefinedObject {
 	}
 
 	private MainCall(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor enclosing,
 			TypeRef adapterRef) {
 		super(location, enclosing);

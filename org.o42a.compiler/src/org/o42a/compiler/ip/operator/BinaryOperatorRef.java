@@ -88,7 +88,7 @@ public class BinaryOperatorRef extends Wrap {
 	}
 
 	BinaryOperatorRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			BinaryNode node,
 			Ref leftOperand,
@@ -188,7 +188,7 @@ public class BinaryOperatorRef extends Wrap {
 		}
 
 		@Override
-		public TypeRef ancestor(LocationSpec location) {
+		public TypeRef ancestor(LocationInfo location) {
 
 			final Ref adapterRef = this.adapterKey.toPath().target(
 					location,

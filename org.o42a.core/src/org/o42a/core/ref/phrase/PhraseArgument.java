@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.phrase;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
@@ -30,7 +30,7 @@ public class PhraseArgument extends ValuedPhrasePart {
 
 	private final Ref value;
 
-	PhraseArgument(PhrasePart preceding, LocationSpec location, Ref value) {
+	PhraseArgument(PhrasePart preceding, LocationInfo location, Ref value) {
 		super(location, preceding);
 		this.value = value;
 	}

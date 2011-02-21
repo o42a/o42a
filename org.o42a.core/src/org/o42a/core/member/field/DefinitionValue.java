@@ -20,7 +20,7 @@
 package org.o42a.core.member.field;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -38,7 +38,7 @@ public class DefinitionValue extends ObjectConstructor {
 	private final BlockBuilder declarations;
 
 	public DefinitionValue(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			AscendantsDefinition ascendants,
 			BlockBuilder declarations) {
@@ -48,7 +48,7 @@ public class DefinitionValue extends ObjectConstructor {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		return this.ascendants.getAncestor();
 	}
 
@@ -85,7 +85,7 @@ public class DefinitionValue extends ObjectConstructor {
 		private final BlockBuilder declarations;
 
 		ValueObject(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor enclosing,
 				AscendantsDefinition ascendants,
 				BlockBuilder declarations) {

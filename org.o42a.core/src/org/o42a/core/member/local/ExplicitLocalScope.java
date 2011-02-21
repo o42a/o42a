@@ -49,7 +49,7 @@ final class ExplicitLocalScope extends LocalScope {
 	private LocalIR ir;
 
 	ExplicitLocalScope(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Obj owner,
 			String name) {
@@ -59,7 +59,7 @@ final class ExplicitLocalScope extends LocalScope {
 	}
 
 	ExplicitLocalScope(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Obj owner,
 			ExplicitLocalScope reproducedFrom) {
@@ -119,7 +119,7 @@ final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path member(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		if (declaredIn != null) {
 			return null;
 		}
@@ -170,7 +170,7 @@ final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path findMember(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return member(user, memberId, declaredIn);
 	}
 

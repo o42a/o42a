@@ -127,17 +127,17 @@ public final class Top extends AbstractScope implements Container {
 	}
 
 	@Override
-	public Path member(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 
 	@Override
-	public Path findMember(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 
 	@Override
-	public Path findPath(ScopeSpec user, MemberId memberId, Obj declaredIn) {
+	public Path findPath(ScopeInfo user, MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 

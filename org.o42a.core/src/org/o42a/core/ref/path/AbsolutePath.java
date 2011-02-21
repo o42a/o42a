@@ -85,7 +85,7 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
-	public Ref target(LocationSpec location, Distributor distributor) {
+	public Ref target(LocationInfo location, Distributor distributor) {
 		return new AbsolutePathTarget(location, distributor, this);
 	}
 
@@ -119,7 +119,7 @@ public final class AbsolutePath extends Path {
 
 	@Override
 	public PathReproduction reproduce(
-			LocationSpec location,
+			LocationInfo location,
 			Reproducer reproducer) {
 		return reproducedPath(this);
 	}
@@ -137,7 +137,7 @@ public final class AbsolutePath extends Path {
 	private static final class AbsolutePathTarget extends PathTarget {
 
 		AbsolutePathTarget(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor distributor,
 				Path path) {
 			super(location, distributor, path);

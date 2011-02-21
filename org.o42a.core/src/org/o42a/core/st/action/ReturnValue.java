@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.action;
 
-import org.o42a.core.ScopeSpec;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 
@@ -28,7 +28,7 @@ public class ReturnValue extends Action {
 
 	private final Value<?> result;
 
-	public ReturnValue(ScopeSpec statement, Value<?> result) {
+	public ReturnValue(ScopeInfo statement, Value<?> result) {
 		super(statement);
 		this.result = result;
 	}

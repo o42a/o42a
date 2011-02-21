@@ -45,11 +45,11 @@ public abstract class Access {
 		return ACCESS_ENCLOSING_DECLARATION;
 	}
 
-	public static Access noAccess(ScopeSpec from, ScopeSpec to) {
+	public static Access noAccess(ScopeInfo from, ScopeInfo to) {
 		return new NoAccess(from, to);
 	}
 
-	static Access artifactAccess(ScopeSpec from, Artifact<?> to) {
+	static Access artifactAccess(ScopeInfo from, Artifact<?> to) {
 		if (from == to) {
 			return accessByOwner();
 		}
@@ -70,7 +70,7 @@ public abstract class Access {
 	}
 
 	private static Access localArtifactAccess(
-			ScopeSpec from,
+			ScopeInfo from,
 			Artifact<?> to,
 			LocalPlace place) {
 
@@ -116,7 +116,7 @@ public abstract class Access {
 		return checkRole(Role.PROTOTYPE);
 	}
 
-	private static Accessor accessor(Artifact<?> to, ScopeSpec by) {
+	private static Accessor accessor(Artifact<?> to, ScopeInfo by) {
 		if (to.getContext().declarationsVisibleFrom(by.getContext())) {
 			return Accessor.DECLARATION;
 		}
@@ -182,7 +182,7 @@ public abstract class Access {
 		return Accessor.PUBLIC;
 	}
 
-	private static Role role(Artifact<?> to, ScopeSpec user) {
+	private static Role role(Artifact<?> to, ScopeInfo user) {
 
 		final Scope userScope = user.getScope();
 
@@ -202,10 +202,10 @@ public abstract class Access {
 
 	private static final class NoAccess extends Access {
 
-		private final ScopeSpec from;
-		private final ScopeSpec to;
+		private final ScopeInfo from;
+		private final ScopeInfo to;
 
-		NoAccess(ScopeSpec from, ScopeSpec to) {
+		NoAccess(ScopeInfo from, ScopeInfo to) {
 			this.from = from;
 			this.to = to;
 		}
@@ -263,12 +263,12 @@ public abstract class Access {
 
 	private static final class ArtifactAccess extends Access {
 
-		private final ScopeSpec from;
+		private final ScopeInfo from;
 		private final Artifact<?> to;
 		private Accessor accessor;
 		private Role role;
 
-		ArtifactAccess(ScopeSpec from, Artifact<?> to) {
+		ArtifactAccess(ScopeInfo from, Artifact<?> to) {
 			this.from = from;
 			this.to = to;
 		}

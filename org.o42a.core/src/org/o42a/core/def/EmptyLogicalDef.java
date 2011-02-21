@@ -25,7 +25,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.Logical;
@@ -38,7 +38,7 @@ final class EmptyLogicalDef extends LogicalDef {
 	private static final SingleLogicalDef[] NO_REQUIREMENTS =
 		new SingleLogicalDef[0];
 
-	EmptyLogicalDef(LocationSpec location, Scope scope) {
+	EmptyLogicalDef(LocationInfo location, Scope scope) {
 		super(
 				sourceOf(scope),
 				logicalTrue(location, scope),

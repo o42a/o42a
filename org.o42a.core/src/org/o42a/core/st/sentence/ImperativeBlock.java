@@ -51,7 +51,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		new ReturnConditionVisitor();
 
 	static ImperativeBlock topLevelImperativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
 			String name,
@@ -84,7 +84,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	static ImperativeBlock nestedImperativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
 			boolean parentheses,
@@ -109,7 +109,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private Conditions initialConditions;
 
 	public ImperativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			LocalScope scope,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
@@ -121,7 +121,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	private ImperativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
@@ -137,7 +137,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	private ImperativeBlock(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
 			boolean parentheses,
@@ -217,17 +217,17 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public final ImperativeSentence propose(LocationSpec location) {
+	public final ImperativeSentence propose(LocationInfo location) {
 		return (ImperativeSentence) super.propose(location);
 	}
 
 	@Override
-	public final ImperativeSentence claim(LocationSpec location) {
+	public final ImperativeSentence claim(LocationInfo location) {
 		return (ImperativeSentence) super.claim(location);
 	}
 
 	@Override
-	public final ImperativeSentence issue(LocationSpec location) {
+	public final ImperativeSentence issue(LocationInfo location) {
 		return (ImperativeSentence) super.issue(location);
 	}
 

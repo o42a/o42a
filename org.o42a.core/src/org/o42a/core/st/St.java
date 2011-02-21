@@ -32,7 +32,7 @@ public abstract class St extends Placed {
 
 	private StOp op;
 
-	public St(LocationSpec location, Distributor distributor) {
+	public St(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

@@ -46,14 +46,14 @@ import org.o42a.util.log.Loggable;
 
 public abstract class Def extends RescopableStatement implements SourceSpec {
 
-	public static Def voidDef(LocationSpec location, Distributor distributor) {
+	public static Def voidDef(LocationInfo location, Distributor distributor) {
 		return voidDef(
 				location,
 				distributor,
 				logicalTrue(location, distributor.getScope()));
 	}
 
-	public static Def falseDef(LocationSpec location, Distributor distributor) {
+	public static Def falseDef(LocationInfo location, Distributor distributor) {
 		return voidDef(
 				location,
 				distributor,
@@ -61,7 +61,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	public static Def voidClaim(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return voidClaim(
 				location,
@@ -70,7 +70,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	public static Def falseClaim(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return voidClaim(
 				location,
@@ -79,7 +79,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	public static Def voidDef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Logical prerequisite) {
 
@@ -92,13 +92,13 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	public static Def voidClaim(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Logical prerequisite) {
 		return voidDef(location, distributor, prerequisite).claim();
 	}
 
-	static final Obj sourceOf(ScopeSpec scope) {
+	static final Obj sourceOf(ScopeInfo scope) {
 		return sourceOf(scope.getScope().getContainer());
 	}
 

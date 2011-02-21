@@ -25,7 +25,7 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.adapter.ByString;
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
@@ -97,7 +97,7 @@ public class RtString extends IntrinsicObject {
 		}
 
 		@Override
-		protected String byString(LocationSpec location, String input) {
+		protected String byString(LocationInfo location, String input) {
 			return input;
 		}
 

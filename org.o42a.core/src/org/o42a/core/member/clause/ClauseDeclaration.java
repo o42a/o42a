@@ -24,7 +24,7 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.clause.ClauseId.byAdapterType;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
@@ -35,7 +35,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 public class ClauseDeclaration extends Placed implements Cloneable {
 
 	public static ClauseDeclaration clauseDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			String name,
 			ClauseId clauseId) {
@@ -48,7 +48,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	}
 
 	public static ClauseDeclaration clauseDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			String name,
 			MemberId memberId) {
@@ -61,7 +61,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	}
 
 	public static ClauseDeclaration anonymousClauseDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return new ClauseDeclaration(location, distributor);
 	}
@@ -75,7 +75,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	private boolean implicit;
 
 	private ClauseDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			String name,
 			MemberId memberId,
@@ -90,7 +90,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	}
 
 	private ClauseDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			ClauseDeclaration prototype) {
 		super(location, distributor);
@@ -102,7 +102,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	}
 
 	private ClauseDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		super(location, distributor);
 		this.name = null;

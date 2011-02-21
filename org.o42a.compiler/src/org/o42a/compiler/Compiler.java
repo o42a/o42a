@@ -89,7 +89,7 @@ public class Compiler implements BlockCompiler {
 	public Ref compilePath(
 			Scope scope,
 			String moduleId,
-			LocationSpec location,
+			LocationInfo location,
 			String string) {
 		if (string == null) {
 			return modulePath(moduleId).target(location, scope.distribute());
@@ -157,7 +157,7 @@ public class Compiler implements BlockCompiler {
 
 	private <T> T parse(
 			Parser<T> parser,
-			LocationSpec location,
+			LocationInfo location,
 			Logger logger,
 			Source source) {
 
@@ -198,7 +198,7 @@ public class Compiler implements BlockCompiler {
 
 	private RefNode parsePath(
 			Parser<? extends RefNode> parser,
-			LocationSpec location,
+			LocationInfo location,
 			CompilerLogger logger,
 			String string) {
 

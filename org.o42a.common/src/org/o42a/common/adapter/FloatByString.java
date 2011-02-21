@@ -20,7 +20,7 @@
 package org.o42a.common.adapter;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjectOp;
@@ -49,7 +49,7 @@ public strictfp class FloatByString extends ByString<Double> {
 	}
 
 	@Override
-	protected Double byString(LocationSpec location, String input) {
+	protected Double byString(LocationInfo location, String input) {
 
 		final int len = input.length();
 
@@ -258,7 +258,7 @@ public strictfp class FloatByString extends ByString<Double> {
 		parseFunc.parse(code, result, inputValue);
 	}
 
-	private boolean hasError(LocationSpec location, double x) {
+	private boolean hasError(LocationInfo location, double x) {
 		if (Double.isNaN(x)) {
 			getLogger().error("nan", location, "Not a number");
 			return true;

@@ -22,7 +22,7 @@ package org.o42a.core.artifact.common;
 import static org.o42a.core.st.Conditions.emptyConditions;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
@@ -36,7 +36,7 @@ import org.o42a.core.value.ValueType;
 public abstract class Result extends PlainObject {
 
 	public Result(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor enclosing,
 			ValueType<?> valueType) {
 		super(location, enclosing);

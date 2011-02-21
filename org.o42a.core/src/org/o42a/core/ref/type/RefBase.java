@@ -22,7 +22,7 @@ package org.o42a.core.ref.type;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
 
 
@@ -47,7 +47,7 @@ public abstract class RefBase extends org.o42a.core.def.RefBase {
 				transparentRescoper(ref.getScope()));
 	}
 
-	public RefBase(LocationSpec location, Distributor distributor) {
+	public RefBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

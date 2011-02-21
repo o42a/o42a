@@ -32,7 +32,7 @@ import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Clause implements PlaceSpec {
+public abstract class Clause implements PlaceInfo {
 
 	protected static final ReusedClause[] NOTHING_REUSED = new ReusedClause[0];
 
@@ -287,12 +287,12 @@ public abstract class Clause implements PlaceSpec {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 

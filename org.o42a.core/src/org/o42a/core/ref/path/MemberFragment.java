@@ -22,7 +22,7 @@ package org.o42a.core.ref.path;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.member.Member;
@@ -51,7 +51,7 @@ public class MemberFragment extends PathFragment {
 
 	@Override
 	public Container resolve(
-			LocationSpec location,
+			LocationInfo location,
 			Path path,
 			int index,
 			Scope start,
@@ -69,7 +69,7 @@ public class MemberFragment extends PathFragment {
 	}
 
 	@Override
-	public final Reproduction reproduce(LocationSpec location, Scope scope) {
+	public final Reproduction reproduce(LocationInfo location, Scope scope) {
 
 		final Scope origin = this.memberKey.getOrigin();
 		final Member member = origin.getContainer().member(this.memberKey);
@@ -135,7 +135,7 @@ public class MemberFragment extends PathFragment {
 	}
 
 	protected Member resolveMember(
-			LocationSpec location,
+			LocationInfo location,
 			Path path,
 			int index,
 			Scope start) {
@@ -151,7 +151,7 @@ public class MemberFragment extends PathFragment {
 	}
 
 	protected Reproduction reproduce(
-			LocationSpec location,
+			LocationInfo location,
 			Scope origin,
 			Scope scope) {
 
@@ -162,7 +162,7 @@ public class MemberFragment extends PathFragment {
 	}
 
 	private Container unresolved(
-			LocationSpec location,
+			LocationInfo location,
 			Path path,
 			int index,
 			Scope start) {

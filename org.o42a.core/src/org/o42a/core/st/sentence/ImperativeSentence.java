@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -38,7 +38,7 @@ import org.o42a.core.value.LogicalValue;
 public abstract class ImperativeSentence extends Sentence<Imperatives> {
 
 	ImperativeSentence(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeBlock block,
 			ImperativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
@@ -284,7 +284,7 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 	static final class Proposition extends ImperativeSentence {
 
 		Proposition(
-				LocationSpec location,
+				LocationInfo location,
 				ImperativeBlock block,
 				ImperativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
@@ -305,7 +305,7 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 	static final class Claim extends ImperativeSentence {
 
 		Claim(
-				LocationSpec location,
+				LocationInfo location,
 				ImperativeBlock block,
 				ImperativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);

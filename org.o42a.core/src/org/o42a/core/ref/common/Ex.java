@@ -22,7 +22,7 @@ package org.o42a.core.ref.common;
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -34,7 +34,7 @@ public abstract class Ex extends Ref {
 	private Resolution resolved;
 	private IdentityHashMap<Scope, Resolution> cache;
 
-	public Ex(LocationSpec location, Distributor distributor) {
+	public Ex(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

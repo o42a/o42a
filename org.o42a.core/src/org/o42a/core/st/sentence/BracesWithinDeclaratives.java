@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -40,7 +40,7 @@ final class BracesWithinDeclaratives extends St {
 	private final ImperativeBlock block;
 
 	BracesWithinDeclaratives(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			ImperativeBlock block) {
 		super(location, distributor);
@@ -167,7 +167,7 @@ final class BracesWithinDeclaratives extends St {
 
 		@Override
 		public void applyClause(
-				LocationSpec location,
+				LocationInfo location,
 				Statements<?> statements,
 				Clause clause) {
 			throw new UnsupportedOperationException();

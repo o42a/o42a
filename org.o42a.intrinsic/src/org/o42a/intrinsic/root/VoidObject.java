@@ -114,7 +114,7 @@ public final class VoidObject extends Obj {
 
 	private static final class VoidScope extends ObjectScope {
 
-		VoidScope(LocationSpec location, Distributor enclosing) {
+		VoidScope(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);
 		}
 

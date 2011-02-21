@@ -54,7 +54,7 @@ public abstract class Reproducer {
 
 	public abstract Statements<?> getStatements();
 
-	public final void applyClause(LocationSpec location, Clause clause) {
+	public final void applyClause(LocationInfo location, Clause clause) {
 		applyClause(location, getStatements(), clause);
 	}
 
@@ -79,7 +79,7 @@ public abstract class Reproducer {
 	}
 
 	public abstract void applyClause(
-			LocationSpec location,
+			LocationInfo location,
 			Statements<?> statements,
 			Clause clause);
 
@@ -140,7 +140,7 @@ public abstract class Reproducer {
 
 		@Override
 		public void applyClause(
-				LocationSpec location,
+				LocationInfo location,
 				Statements<?> statements,
 				Clause clause) {
 			this.reproducer.applyClause(location, statements, clause);

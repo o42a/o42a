@@ -23,7 +23,7 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.path.Path;
@@ -136,7 +136,7 @@ public abstract class Rescoper {
 	public abstract HostOp rescope(Code code, CodePos exit, HostOp host);
 
 	public abstract Rescoper reproduce(
-			LocationSpec location,
+			LocationInfo location,
 			Reproducer reproducer);
 
 }

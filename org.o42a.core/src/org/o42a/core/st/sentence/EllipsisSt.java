@@ -21,7 +21,7 @@ package org.o42a.core.st.sentence;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -40,7 +40,7 @@ final class EllipsisSt extends St {
 	private final String name;
 	private final boolean exit;
 
-	EllipsisSt(LocationSpec location, Imperatives enclosing, String name) {
+	EllipsisSt(LocationInfo location, Imperatives enclosing, String name) {
 		super(location, enclosing.nextDistributor());
 		this.name = name;
 		this.exit = enclosing.getSentence().isClaim();

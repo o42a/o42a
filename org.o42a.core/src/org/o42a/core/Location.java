@@ -24,12 +24,12 @@ import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableData;
 
 
-public class Location implements LocationSpec {
+public class Location implements LocationInfo {
 
 	private final CompilerContext context;
 	private final Loggable loggable;
 
-	public Location(LocationSpec location) {
+	public Location(LocationInfo location) {
 		assert location != null :
 			"Location not specified";
 		this.context = location.getContext();
@@ -58,7 +58,7 @@ public class Location implements LocationSpec {
 		return getContext().getLogger();
 	}
 
-	public final LocationSpec locationFor(String path) {
+	public final LocationInfo locationFor(String path) {
 		return getContext().locationFor(this, path);
 	}
 

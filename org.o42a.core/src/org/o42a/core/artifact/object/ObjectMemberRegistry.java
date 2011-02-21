@@ -22,7 +22,7 @@ package org.o42a.core.artifact.object;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.FieldBuilder;
@@ -96,7 +96,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public boolean declareBlock(LocationSpec location, String name) {
+	public boolean declareBlock(LocationInfo location, String name) {
 		if (!this.blockNames.add(name)) {
 			location.getContext().getLogger().dublicateBlockName(
 					location,

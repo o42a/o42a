@@ -24,11 +24,11 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Action implements ScopeSpec {
+public abstract class Action implements ScopeInfo {
 
-	private final ScopeSpec statement;
+	private final ScopeInfo statement;
 
-	public Action(ScopeSpec statement) {
+	public Action(ScopeInfo statement) {
 		this.statement = statement;
 	}
 
@@ -70,12 +70,12 @@ public abstract class Action implements ScopeSpec {
 	}
 
 	@Override
-	public void assertSameScope(ScopeSpec other) {
+	public void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public void assertCompatibleScope(ScopeSpec other) {
+	public void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 

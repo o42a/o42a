@@ -21,7 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -53,7 +53,7 @@ final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public Rescoper reproduce(LocationSpec location, Reproducer reproducer) {
+	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
 
 		final Ref ref = this.ref.reproduce(reproducer);
 

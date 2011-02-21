@@ -20,7 +20,7 @@
 package org.o42a.core.member.field;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
@@ -32,7 +32,7 @@ import org.o42a.core.st.Reproducer;
 public class FieldDeclaration extends Placed implements Cloneable {
 
 	public static FieldDeclaration fieldDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			MemberId memberId) {
 		return new FieldDeclaration(location, distributor, memberId);
@@ -50,14 +50,14 @@ public class FieldDeclaration extends Placed implements Cloneable {
 	private TypeRef type;
 
 	public FieldDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			FieldDeclaration sample) {
 		this(location, distributor, sample, sample.getMemberId());
 	}
 
 	private FieldDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			MemberId memberId) {
 		super(location, distributor);
@@ -65,7 +65,7 @@ public class FieldDeclaration extends Placed implements Cloneable {
 	}
 
 	private FieldDeclaration(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			FieldDeclaration sample,
 			MemberId memberId) {

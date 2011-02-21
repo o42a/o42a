@@ -47,7 +47,7 @@ final class ModuleFragment extends PathFragment {
 
 	@Override
 	public Container resolve(
-			LocationSpec location,
+			LocationInfo location,
 			Path path,
 			int index,
 			Scope start,
@@ -76,7 +76,7 @@ final class ModuleFragment extends PathFragment {
 	}
 
 	@Override
-	public Reproduction reproduce(LocationSpec location, Scope scope) {
+	public Reproduction reproduce(LocationInfo location, Scope scope) {
 		return unchanged();
 	}
 

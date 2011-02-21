@@ -25,7 +25,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.util.log.Loggable;
 
 
-public final class FieldBuilder implements PlaceSpec {
+public final class FieldBuilder implements PlaceInfo {
 
 	private final MemberRegistry memberRegistry;
 	private final FieldDeclaration declaration;
@@ -107,12 +107,12 @@ public final class FieldBuilder implements PlaceSpec {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 

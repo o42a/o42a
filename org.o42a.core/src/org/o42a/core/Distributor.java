@@ -24,7 +24,7 @@ import static org.o42a.core.ScopePlace.scopePlace;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Distributor implements PlaceSpec {
+public abstract class Distributor implements PlaceInfo {
 
 	public static Distributor declarativeDistributor(Container container) {
 		return new DeclarativeDistributor(container);
@@ -65,12 +65,12 @@ public abstract class Distributor implements PlaceSpec {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 

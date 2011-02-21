@@ -22,7 +22,7 @@ package org.o42a.core.artifact;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
@@ -42,7 +42,7 @@ final class FixedRef extends Ref {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
 	}
 

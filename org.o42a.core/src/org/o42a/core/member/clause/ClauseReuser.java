@@ -33,7 +33,7 @@ import org.o42a.core.ref.path.PathWalker;
 
 final class ClauseReuser implements PathWalker {
 
-	private final LocationSpec location;
+	private final LocationInfo location;
 	private Container container;
 	private ReusedClause reused;
 

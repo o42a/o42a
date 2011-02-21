@@ -24,7 +24,7 @@ import static org.o42a.core.ref.phrase.NextClause.clauseNotFound;
 
 import java.util.LinkedList;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
@@ -89,12 +89,12 @@ final class MainPhraseContext extends PhraseContext {
 	}
 
 	@Override
-	public NextClause clauseByName(LocationSpec location, String name) {
+	public NextClause clauseByName(LocationInfo location, String name) {
 		return findObjectClause(location, memberName(name));
 	}
 
 	@Override
-	public NextClause clauseById(LocationSpec location, ClauseId clauseId) {
+	public NextClause clauseById(LocationInfo location, ClauseId clauseId) {
 		return findObjectClause(location, clauseId(location, clauseId));
 	}
 
@@ -123,7 +123,7 @@ final class MainPhraseContext extends PhraseContext {
 	protected void define(ClauseInstance instance, Block<?> definition) {
 		for (PhraseSubContext subContext : subContexts()) {
 
-			final LocationSpec location = instance.getLocation();
+			final LocationInfo location = instance.getLocation();
 			final Statements<?> statements =
 				definition.propose(location).alternative(location);
 
@@ -140,7 +140,7 @@ final class MainPhraseContext extends PhraseContext {
 		this.fieldDeclaration = fieldDeclaration;
 	}
 
-	NextClause findObjectClause(LocationSpec location, MemberId memberId) {
+	NextClause findObjectClause(LocationInfo location, MemberId memberId) {
 		assert this.createsObject >= 0 :
 			"Object won't be constructed, so resolution of \"" + location
 			+ "\" is impossible";

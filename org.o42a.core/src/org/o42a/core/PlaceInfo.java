@@ -20,16 +20,14 @@
 package org.o42a.core;
 
 
-public interface ScopeSpec extends LocationSpec {
+public interface PlaceInfo extends ScopeInfo {
 
-	Scope getScope();
+	ScopePlace getPlace();
 
-	void assertScopeIs(Scope scope);
+	Container getContainer();
 
-	void assertCompatible(Scope scope);
+	Distributor distribute();
 
-	void assertSameScope(ScopeSpec other);
-
-	void assertCompatibleScope(ScopeSpec other);
+	Distributor distributeIn(Container container);
 
 }

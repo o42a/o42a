@@ -99,20 +99,20 @@ public class Path {
 	}
 
 	public final Artifact<?> resolveArtifact(
-			LocationSpec location,
+			LocationInfo location,
 			Scope start) {
 		return walkToArtifact(location, start, DUMMY_WALKER);
 	}
 
 	public final Artifact<?> resolveArtifact(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Ref start) {
 		return walkToArtifact(location, scope, start, DUMMY_WALKER);
 	}
 
 	public Artifact<?> walkToArtifact(
-			LocationSpec location,
+			LocationInfo location,
 			Scope start,
 			PathWalker walker) {
 		return walkPathToArtifact(
@@ -123,7 +123,7 @@ public class Path {
 	}
 
 	public Artifact<?> walkToArtifact(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Ref start,
 			PathWalker walker) {
@@ -143,19 +143,19 @@ public class Path {
 		return walkPathToArtifact(location, resolution.getScope(), walker);
 	}
 
-	public final Container resolve(LocationSpec location, Scope start) {
+	public final Container resolve(LocationInfo location, Scope start) {
 		return walk(location, start, DUMMY_WALKER);
 	}
 
 	public final Container resolve(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Ref start) {
 		return walk(location, scope, start, DUMMY_WALKER);
 	}
 
 	public Container walk(
-			LocationSpec location,
+			LocationInfo location,
 			Scope start,
 			PathWalker walker) {
 		return walkPath(
@@ -165,7 +165,7 @@ public class Path {
 	}
 
 	public Container walk(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Ref start,
 			PathWalker walker) {
@@ -249,7 +249,7 @@ public class Path {
 	}
 
 	public Ref target(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Ref start) {
 		if (start == null) {
@@ -265,7 +265,7 @@ public class Path {
 		return new PathTarget(location, distributor, this, start);
 	}
 
-	public Ref target(LocationSpec location, Distributor distributor) {
+	public Ref target(LocationInfo location, Distributor distributor) {
 		return new PathTarget(location, distributor, this);
 	}
 
@@ -284,7 +284,7 @@ public class Path {
 	}
 
 	public PathReproduction reproduce(
-			LocationSpec location,
+			LocationInfo location,
 			Reproducer reproducer) {
 
 		Scope toScope = reproducer.getScope();
@@ -426,7 +426,7 @@ public class Path {
 	}
 
 	private Artifact<?> walkPathToArtifact(
-			LocationSpec location,
+			LocationInfo location,
 			Scope start,
 			PathWalker walker) {
 
@@ -445,7 +445,7 @@ public class Path {
 	}
 
 	private Container walkPath(
-			LocationSpec location,
+			LocationInfo location,
 			Scope start,
 			PathWalker walker) {
 		if (isAbsolute()) {

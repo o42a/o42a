@@ -38,7 +38,7 @@ public abstract class ObjectScope extends AbstractScope {
 
 	private ScopeIR ir;
 
-	protected ObjectScope(LocationSpec location, Distributor enclosing) {
+	protected ObjectScope(LocationInfo location, Distributor enclosing) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.enclosingContainer = enclosing.getContainer();

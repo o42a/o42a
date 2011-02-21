@@ -22,7 +22,7 @@ package org.o42a.core.artifact.link;
 import static org.o42a.core.def.Rescoper.wrapper;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Obj;
@@ -40,7 +40,7 @@ public abstract class ObjectWrap extends PlainObject {
 		super(scope);
 	}
 
-	public ObjectWrap(LocationSpec location, Distributor enclosing) {
+	public ObjectWrap(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
 	}
 

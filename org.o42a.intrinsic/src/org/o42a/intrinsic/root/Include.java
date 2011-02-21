@@ -23,7 +23,7 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
@@ -63,7 +63,7 @@ public final class Include extends IntrinsicDirective {
 			return;
 		}
 
-		final LocationSpec location = directive.locationFor(file);
+		final LocationInfo location = directive.locationFor(file);
 		final S statements = sentence.alternative(location);
 		final Block<S> destination = statements.parentheses(
 				location,

@@ -21,7 +21,7 @@ package org.o42a.core.ref.common;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.Logical;
@@ -30,7 +30,7 @@ import org.o42a.core.value.LogicalValue;
 
 public abstract class AbstractConjunction extends Logical {
 
-	public AbstractConjunction(LocationSpec location, Scope scope) {
+	public AbstractConjunction(LocationInfo location, Scope scope) {
 		super(location, scope);
 	}
 

@@ -26,7 +26,7 @@ import java.util.Iterator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.CondBase;
 import org.o42a.core.ir.HostOp;
@@ -38,19 +38,19 @@ import org.o42a.core.value.Void;
 
 public abstract class Logical extends CondBase {
 
-	public static Logical logicalTrue(LocationSpec location, Scope scope) {
+	public static Logical logicalTrue(LocationInfo location, Scope scope) {
 		return new True(location, scope);
 	}
 
-	public static Logical logicalFalse(LocationSpec location, Scope scope) {
+	public static Logical logicalFalse(LocationInfo location, Scope scope) {
 		return new False(location, scope);
 	}
 
-	public static Logical runtimeTrue(LocationSpec location, Scope scope) {
+	public static Logical runtimeTrue(LocationInfo location, Scope scope) {
 		return new RuntimeTrue(location, scope);
 	}
 
-	public static Logical runtimeLogical(LocationSpec location, Scope scope) {
+	public static Logical runtimeLogical(LocationInfo location, Scope scope) {
 		return new Runtime(location, scope);
 	}
 
@@ -69,7 +69,7 @@ public abstract class Logical extends CondBase {
 	}
 
 	public static Logical conjunction(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Logical... claims) {
 		if (claims.length == 0) {
@@ -117,7 +117,7 @@ public abstract class Logical extends CondBase {
 	}
 
 	public static Logical conjunction(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Collection<? extends Logical> claims) {
 		return conjunction(
@@ -127,7 +127,7 @@ public abstract class Logical extends CondBase {
 	}
 
 	public static Logical disjunction(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Logical... variants) {
 		if (variants.length == 0) {
@@ -175,7 +175,7 @@ public abstract class Logical extends CondBase {
 	}
 
 	public static Logical disjunction(
-			LocationSpec location,
+			LocationInfo location,
 			Scope scope,
 			Collection<? extends Logical> variants) {
 		return disjunction(
@@ -251,7 +251,7 @@ public abstract class Logical extends CondBase {
 
 	private Logical negated;
 
-	public Logical(LocationSpec location, Scope scope) {
+	public Logical(LocationInfo location, Scope scope) {
 		super(location, scope);
 	}
 
@@ -454,7 +454,7 @@ public abstract class Logical extends CondBase {
 
 	private static final class True extends Logical {
 
-		True(LocationSpec location, Scope scope) {
+		True(LocationInfo location, Scope scope) {
 			super(location, scope);
 		}
 
@@ -488,7 +488,7 @@ public abstract class Logical extends CondBase {
 
 	private static final class False extends Logical {
 
-		False(LocationSpec location, Scope scope) {
+		False(LocationInfo location, Scope scope) {
 			super(location, scope);
 		}
 
@@ -523,7 +523,7 @@ public abstract class Logical extends CondBase {
 
 	private static final class Runtime extends Logical {
 
-		Runtime(LocationSpec location, Scope scope) {
+		Runtime(LocationInfo location, Scope scope) {
 			super(location, scope);
 		}
 
@@ -558,7 +558,7 @@ public abstract class Logical extends CondBase {
 
 	private static final class RuntimeTrue extends Logical {
 
-		RuntimeTrue(LocationSpec location, Scope scope) {
+		RuntimeTrue(LocationInfo location, Scope scope) {
 			super(location, scope);
 		}
 
@@ -594,7 +594,7 @@ public abstract class Logical extends CondBase {
 
 		private final Logical[] variants;
 
-		Or(LocationSpec location, Scope scope, Logical[] variants) {
+		Or(LocationInfo location, Scope scope, Logical[] variants) {
 			super(location, scope);
 			this.variants = variants;
 		}
@@ -714,7 +714,7 @@ public abstract class Logical extends CondBase {
 
 		private final Logical[] claims;
 
-		And(LocationSpec location, Scope scope, Logical[] claims) {
+		And(LocationInfo location, Scope scope, Logical[] claims) {
 			super(location, scope);
 			this.claims = claims;
 		}

@@ -33,7 +33,7 @@ import org.o42a.util.log.LogInfo;
 public final class ArrayInitializer extends Placed {
 
 	public static ArrayInitializer invalidArrayInitializer(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return new ArrayInitializer(location, distributor);
 	}
@@ -56,7 +56,7 @@ public final class ArrayInitializer extends Placed {
 	private final FieldDefinition[] items;
 
 	private ArrayInitializer(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		super(location, distributor);
 		this.itemType = null;
@@ -75,7 +75,7 @@ public final class ArrayInitializer extends Placed {
 	}
 
 	private ArrayInitializer(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			TypeRef itemType,
 			FieldDefinition[] items) {

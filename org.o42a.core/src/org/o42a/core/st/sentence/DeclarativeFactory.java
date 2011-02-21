@@ -23,7 +23,7 @@ import static org.o42a.core.st.sentence.DeclarativeBlock.declarativeBlock;
 import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.util.Lambda;
@@ -44,7 +44,7 @@ public class DeclarativeFactory implements SentenceFactory<
 
 	@Override
 	public DeclarativeBlock createParentheses(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Declaratives enclosing) {
 		return declarativeBlock(location, distributor, enclosing, this);
@@ -75,7 +75,7 @@ public class DeclarativeFactory implements SentenceFactory<
 
 	@Override
 	public ImperativeBlock createBraces(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Declaratives enclosing,
 			String name) {
@@ -90,7 +90,7 @@ public class DeclarativeFactory implements SentenceFactory<
 
 	@Override
 	public DeclarativeSentence issue(
-			LocationSpec location,
+			LocationInfo location,
 			DeclarativeBlock block) {
 		return new DeclarativeIssue.Proposing(
 				location,
@@ -100,7 +100,7 @@ public class DeclarativeFactory implements SentenceFactory<
 
 	@Override
 	public Declaratives createAlternative(
-			LocationSpec location,
+			LocationInfo location,
 			DeclarativeSentence sentence,
 			boolean opposite) {
 		return new Declaratives(location, sentence, opposite);
@@ -108,14 +108,14 @@ public class DeclarativeFactory implements SentenceFactory<
 
 	@Override
 	public DeclarativeSentence propose(
-			LocationSpec location,
+			LocationInfo location,
 			DeclarativeBlock block) {
 		return new DeclarativeSentence.Proposition(location, block, this);
 	}
 
 	@Override
 	public DeclarativeSentence claim(
-			LocationSpec location,
+			LocationInfo location,
 			DeclarativeBlock block) {
 		return new DeclarativeSentence.Claim(location, block, this);
 	}

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.BlockBase;
 import org.o42a.core.member.MemberRegistry;
@@ -45,7 +45,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	private boolean instructionsExecuted;
 
 	protected Block(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
 			SentenceFactory<S, ?, ?> sentenceFactory) {
@@ -56,7 +56,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	}
 
 	Block(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
 			MemberRegistry memberRegistry,
@@ -155,7 +155,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		return new ExecuteInstructions();
 	}
 
-	public Sentence<S> propose(LocationSpec location) {
+	public Sentence<S> propose(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -165,7 +165,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		return addStatementSentence(proposition);
 	}
 
-	public Sentence<S> claim(LocationSpec location) {
+	public Sentence<S> claim(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -175,7 +175,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		return addStatementSentence(claim);
 	}
 
-	public Sentence<S> issue(LocationSpec location) {
+	public Sentence<S> issue(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();

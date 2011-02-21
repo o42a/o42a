@@ -26,7 +26,7 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.log.Loggable;
 
 
-public class ArrayTypeRef implements ScopeSpec {
+public class ArrayTypeRef implements ScopeInfo {
 
 	public static ArrayTypeRef arrayTypeRef(
 			TypeRef itemTypeRef,
@@ -114,7 +114,7 @@ public class ArrayTypeRef implements ScopeSpec {
 	}
 
 	@Override
-	public void assertSameScope(ScopeSpec other) {
+	public void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
@@ -124,7 +124,7 @@ public class ArrayTypeRef implements ScopeSpec {
 	}
 
 	@Override
-	public void assertCompatibleScope(ScopeSpec other) {
+	public void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 

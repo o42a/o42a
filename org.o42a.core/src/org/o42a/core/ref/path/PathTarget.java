@@ -41,7 +41,7 @@ class PathTarget extends Ex {
 	private boolean fullPathBuilt;
 
 	PathTarget(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Path path,
 			Ref start) {
@@ -51,7 +51,7 @@ class PathTarget extends Ex {
 	}
 
 	PathTarget(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Path path) {
 		super(location, distributor);

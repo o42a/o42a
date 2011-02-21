@@ -38,7 +38,7 @@ public abstract class Member extends Placed {
 	private Member lastDefinition;
 	private Member[] overridden;
 
-	public Member(LocationSpec location, Distributor distributor) {
+	public Member(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

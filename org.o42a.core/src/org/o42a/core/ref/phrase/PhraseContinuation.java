@@ -19,13 +19,13 @@
 */
 package org.o42a.core.ref.phrase;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 
 
 public abstract class PhraseContinuation extends PhrasePart {
 
-	public PhraseContinuation(LocationSpec location, PhrasePart preceding) {
+	public PhraseContinuation(LocationInfo location, PhrasePart preceding) {
 		super(location, preceding);
 	}
 

@@ -96,7 +96,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	private ObjectMembers objectMembers;
 
-	public Obj(LocationSpec location, Distributor enclosing) {
+	public Obj(LocationInfo location, Distributor enclosing) {
 		this(new ObjScope(location, enclosing));
 	}
 
@@ -311,7 +311,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public final Member objectMember(
-			ScopeSpec user,
+			ScopeInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 
@@ -484,7 +484,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public final Path member(
-			ScopeSpec user,
+			ScopeInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 
@@ -560,7 +560,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public final Path findMember(
-			ScopeSpec user,
+			ScopeInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 		return member(user, memberId, declaredIn);
@@ -568,7 +568,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public final Path findPath(
-			ScopeSpec user,
+			ScopeInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);
@@ -877,7 +877,7 @@ public abstract class Obj extends Artifact<Obj>
 
 		@Override
 		public Container resolve(
-				LocationSpec location,
+				LocationInfo location,
 				Path path,
 				int index,
 				Scope start,
@@ -914,7 +914,7 @@ public abstract class Obj extends Artifact<Obj>
 
 		@Override
 		protected Reproduction reproduce(
-				LocationSpec location,
+				LocationInfo location,
 				Scope origin,
 				Scope scope) {
 
@@ -948,7 +948,7 @@ public abstract class Obj extends Artifact<Obj>
 
 		@Override
 		public Container resolve(
-				LocationSpec location,
+				LocationInfo location,
 				Path path,
 				int index,
 				Scope start,
@@ -984,7 +984,7 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		@Override
-		public Reproduction reproduce(LocationSpec location, Scope scope) {
+		public Reproduction reproduce(LocationInfo location, Scope scope) {
 			return reproduced(scope.getScope().getEnclosingScopePath());
 		}
 

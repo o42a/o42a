@@ -29,7 +29,7 @@ import org.o42a.core.member.field.Field;
 
 abstract class MemberLocal extends Member {
 
-	MemberLocal(LocationSpec location, Distributor distributor, Obj owner) {
+	MemberLocal(LocationInfo location, Distributor distributor, Obj owner) {
 		super(location, distributor);
 	}
 

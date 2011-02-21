@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Directive;
@@ -31,7 +31,7 @@ import org.o42a.core.ref.type.TypeRef;
 
 public abstract class Sample extends Scoped {
 
-	public Sample(LocationSpec location, Scope scope) {
+	public Sample(LocationInfo location, Scope scope) {
 		super(location, scope);
 	}
 

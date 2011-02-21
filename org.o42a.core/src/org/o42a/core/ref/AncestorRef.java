@@ -21,7 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -41,13 +41,13 @@ final class AncestorRef extends Ex {
 	private final Ref ref;
 	private boolean error;
 
-	AncestorRef(LocationSpec location, Ref ref) {
+	AncestorRef(LocationInfo location, Ref ref) {
 		super(location, ref.distribute());
 		this.ref = ref;
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
 	}
 

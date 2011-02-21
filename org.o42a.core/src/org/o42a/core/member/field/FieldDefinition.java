@@ -22,7 +22,7 @@ package org.o42a.core.member.field;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.ref.Ref;
@@ -35,7 +35,7 @@ import org.o42a.core.st.sentence.BlockBuilder;
 public abstract class FieldDefinition extends Placed {
 
 	public static FieldDefinition invalidDefinition(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		return new Invalid(location, distributor);
 	}
@@ -50,7 +50,7 @@ public abstract class FieldDefinition extends Placed {
 	}
 
 	public static FieldDefinition fieldDefinition(
-			LocationSpec location,
+			LocationInfo location,
 			AscendantsDefinition ascendants,
 			BlockBuilder definition) {
 		return new Default(
@@ -62,7 +62,7 @@ public abstract class FieldDefinition extends Placed {
 	}
 
 	public static FieldDefinition defaultDefinition(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor scope) {
 		return new Default(
 				location,
@@ -75,7 +75,7 @@ public abstract class FieldDefinition extends Placed {
 		return new Array(array);
 	}
 
-	public FieldDefinition(LocationSpec location, Distributor distributor) {
+	public FieldDefinition(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
@@ -99,7 +99,7 @@ public abstract class FieldDefinition extends Placed {
 
 	private static final class Invalid extends FieldDefinition {
 
-		public Invalid(LocationSpec location, Distributor distributor) {
+		public Invalid(LocationInfo location, Distributor distributor) {
 			super(location, distributor);
 		}
 
@@ -193,7 +193,7 @@ public abstract class FieldDefinition extends Placed {
 		private Ref value;
 
 		Default(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor scope,
 				AscendantsDefinition ascendants,
 				BlockBuilder declarations) {

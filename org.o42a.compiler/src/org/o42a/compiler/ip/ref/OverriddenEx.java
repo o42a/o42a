@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.ref;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
@@ -46,7 +46,7 @@ public class OverriddenEx extends Ex {
 	private Resolution resolution;
 
 	public OverriddenEx(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			Ref host) {
 		super(location, distributor);
@@ -83,7 +83,7 @@ public class OverriddenEx extends Ex {
 
 	private static final class Overridden extends PlainObject {
 
-		Overridden(LocationSpec location, Distributor enclosing) {
+		Overridden(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);
 		}
 

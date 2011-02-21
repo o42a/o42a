@@ -24,7 +24,7 @@ import static org.o42a.core.def.Definitions.conditionDefinitions;
 import java.util.List;
 
 import org.o42a.core.Container;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
@@ -39,7 +39,7 @@ public class Declaratives extends Statements<Declaratives> {
 	private Conditions lastConditions;
 
 	Declaratives(
-			LocationSpec location,
+			LocationInfo location,
 			DeclarativeSentence sentence,
 			boolean opposite) {
 		super(location, sentence, opposite);
@@ -56,19 +56,19 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	@Override
-	public final DeclarativeBlock parentheses(LocationSpec location) {
+	public final DeclarativeBlock parentheses(LocationInfo location) {
 		return parentheses(location, getContainer());
 	}
 
 	@Override
 	public final DeclarativeBlock parentheses(
-			LocationSpec location,
+			LocationInfo location,
 			Container container) {
 		return (DeclarativeBlock) super.parentheses(location, container);
 	}
 
 	@Override
-	public void ellipsis(LocationSpec location, String name) {
+	public void ellipsis(LocationInfo location, String name) {
 		getLogger().prohibitedDeclarativeEllipsis(location);
 	}
 

@@ -23,7 +23,7 @@ import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Result;
 import org.o42a.core.ir.IRGenerator;
@@ -77,7 +77,7 @@ final class DefiniteValue<T> extends Value<T> {
 		private final T value;
 
 		DefiniteObject(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor enclosing,
 				ValueType<T> valueType,
 				T value) {

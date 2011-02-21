@@ -24,7 +24,7 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
@@ -32,7 +32,7 @@ import org.o42a.core.ref.path.Path;
 
 public class ModuleRef extends Wrap {
 
-	public ModuleRef(LocationSpec location, Distributor distributor) {
+	public ModuleRef(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

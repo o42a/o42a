@@ -289,7 +289,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		}
 
 		@Override
-		public boolean declareBlock(LocationSpec location, String name) {
+		public boolean declareBlock(LocationInfo location, String name) {
 			return this.registry.declareBlock(location, name);
 		}
 
@@ -405,7 +405,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 
 		@Override
 		public void applyClause(
-				LocationSpec location,
+				LocationInfo location,
 				Statements<?> statements,
 				Clause clause) {
 			this.reproducer.applyClause(location, statements, clause);

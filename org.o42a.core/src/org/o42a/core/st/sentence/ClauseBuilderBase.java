@@ -19,10 +19,10 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.core.PlaceSpec;
+import org.o42a.core.PlaceInfo;
 
 
-public abstract class ClauseBuilderBase implements PlaceSpec {
+public abstract class ClauseBuilderBase implements PlaceInfo {
 
 	protected abstract Block<?> parentheses(Group group);
 

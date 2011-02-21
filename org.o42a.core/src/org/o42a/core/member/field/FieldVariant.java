@@ -27,7 +27,7 @@ import org.o42a.core.st.DefinitionTarget;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class FieldVariant<A extends Artifact<A>> implements PlaceSpec {
+public abstract class FieldVariant<A extends Artifact<A>> implements PlaceInfo {
 
 	private final DeclaredField<A> field;
 	private final FieldDeclaration declaration;
@@ -113,12 +113,12 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceSpec {
 	}
 
 	@Override
-	public final void assertSameScope(ScopeSpec other) {
+	public final void assertSameScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
 	}
 
 	@Override
-	public final void assertCompatibleScope(ScopeSpec other) {
+	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
 	}
 

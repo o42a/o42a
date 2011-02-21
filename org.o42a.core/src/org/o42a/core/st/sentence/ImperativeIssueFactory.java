@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 
 
 public class ImperativeIssueFactory extends ImperativeFactory {
@@ -29,14 +29,14 @@ public class ImperativeIssueFactory extends ImperativeFactory {
 
 	@Override
 	public ImperativeSentence propose(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeBlock block) {
 		return new ImperativeIssue.Proposing(location, block, this);
 	}
 
 	@Override
 	public ImperativeSentence claim(
-			LocationSpec location,
+			LocationInfo location,
 			ImperativeBlock block) {
 		return new ImperativeIssue.Claiming(location, block, this);
 	}

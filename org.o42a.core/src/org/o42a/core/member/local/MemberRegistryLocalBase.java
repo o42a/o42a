@@ -23,7 +23,7 @@ import static org.o42a.core.member.local.LocalScope.explicitScope;
 import static org.o42a.core.member.local.LocalScope.reproducedScope;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.MemberRegistryClauseBase;
@@ -36,7 +36,7 @@ public abstract class MemberRegistryLocalBase
 	public abstract Obj getOwner();
 
 	public LocalScope newLocalScope(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			String name) {
 
@@ -81,11 +81,11 @@ public abstract class MemberRegistryLocalBase
 
 	public abstract void declareMember(Member member);
 
-	public abstract boolean declareBlock(LocationSpec location, String name);
+	public abstract boolean declareBlock(LocationInfo location, String name);
 
 	public abstract String anonymousBlockName();
 
-	private Obj owner(LocationSpec location) {
+	private Obj owner(LocationInfo location) {
 
 		final Obj owner = getOwner();
 

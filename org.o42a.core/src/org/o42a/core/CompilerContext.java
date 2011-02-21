@@ -75,7 +75,7 @@ public abstract class CompilerContext {
 		return getIntrinsics().getRoot();
 	}
 
-	public final boolean compatible(LocationSpec location) {
+	public final boolean compatible(LocationInfo location) {
 		return compatible(location.getContext());
 	}
 
@@ -88,7 +88,7 @@ public abstract class CompilerContext {
 
 	public abstract CompilerContext contextFor(String path) throws Exception;
 
-	public final LocationSpec locationFor(LogInfo location, String path) {
+	public final LocationInfo locationFor(LogInfo location, String path) {
 
 		final CompilerContext context;
 

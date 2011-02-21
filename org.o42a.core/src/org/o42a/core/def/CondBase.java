@@ -22,7 +22,7 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Def.sourceOf;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.ref.Logical;
@@ -30,7 +30,7 @@ import org.o42a.core.ref.Logical;
 
 public abstract class CondBase extends Scoped {
 
-	public CondBase(LocationSpec location, Scope scope) {
+	public CondBase(LocationInfo location, Scope scope) {
 		super(location, scope);
 	}
 

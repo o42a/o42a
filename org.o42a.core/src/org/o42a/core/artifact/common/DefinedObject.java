@@ -20,7 +20,7 @@
 package org.o42a.core.artifact.common;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -36,7 +36,7 @@ public abstract class DefinedObject extends PlainObject {
 	private DeclarativeBlock definition;
 	private boolean definitionBuilt;
 
-	public DefinedObject(LocationSpec location, Distributor enclosing) {
+	public DefinedObject(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
 	}
 

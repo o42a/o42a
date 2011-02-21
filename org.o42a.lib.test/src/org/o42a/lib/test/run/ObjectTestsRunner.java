@@ -22,7 +22,7 @@ package org.o42a.lib.test.run;
 import static org.o42a.lib.test.run.TestRunner.runTest;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -42,7 +42,7 @@ import org.o42a.lib.test.TestModule;
 final class ObjectTestsRunner extends DefinedObject {
 
 	public static Ref runObjectTests(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			TestModule module) {
 		return new RunObjectTests(location, distributor, module);
@@ -109,7 +109,7 @@ final class ObjectTestsRunner extends DefinedObject {
 		private final TestModule module;
 
 		RunObjectTests(
-				LocationSpec location,
+				LocationInfo location,
 				Distributor distributor,
 				TestModule module) {
 			super(location, distributor);
@@ -117,7 +117,7 @@ final class ObjectTestsRunner extends DefinedObject {
 		}
 
 		@Override
-		public TypeRef ancestor(LocationSpec location) {
+		public TypeRef ancestor(LocationInfo location) {
 			return ValueType.VOID.typeRef(location, getScope());
 		}
 

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
 
@@ -30,7 +30,7 @@ public final class Group extends Placed {
 	private final Statements<?> statements;
 
 	Group(
-			LocationSpec location,
+			LocationInfo location,
 			Statements<?> statements,
 			ClauseBuilder builder) {
 		super(location, statements.nextDistributor());

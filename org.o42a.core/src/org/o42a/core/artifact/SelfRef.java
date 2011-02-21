@@ -21,7 +21,7 @@ package org.o42a.core.artifact;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.SelfRefBase;
 import org.o42a.core.ir.HostOp;
@@ -44,7 +44,7 @@ final class SelfRef extends SelfRefBase {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationSpec location) {
+	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
 	}
 

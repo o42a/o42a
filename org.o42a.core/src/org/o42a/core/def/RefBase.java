@@ -20,14 +20,14 @@
 package org.o42a.core.def;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.St;
 
 
 public abstract class RefBase extends St {
 
-	public RefBase(LocationSpec location, Distributor distributor) {
+	public RefBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

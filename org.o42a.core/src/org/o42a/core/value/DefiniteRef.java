@@ -22,7 +22,7 @@ package org.o42a.core.value;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -40,7 +40,7 @@ final class DefiniteRef<T> extends Ex {
 	private final T value;
 
 	DefiniteRef(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			ValueType<T> valueType,
 			T value) {

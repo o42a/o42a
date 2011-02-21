@@ -36,13 +36,13 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	private StaticTypeRef[] samples = NO_SAMPLES;
 
 	public AscendantsDefinition(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor) {
 		super(location, distributor);
 	}
 
 	public AscendantsDefinition(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			TypeRef ancestor,
 			StaticTypeRef... samples) {
@@ -206,7 +206,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	}
 
 	protected AscendantsDefinition create(
-			LocationSpec location,
+			LocationInfo location,
 			Distributor distributor,
 			TypeRef ancestor,
 			StaticTypeRef[] samples) {

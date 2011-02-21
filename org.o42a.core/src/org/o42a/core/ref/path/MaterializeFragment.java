@@ -22,7 +22,7 @@ package org.o42a.core.ref.path;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -34,7 +34,7 @@ final class MaterializeFragment extends PathFragment {
 
 	@Override
 	public Container resolve(
-			LocationSpec location,
+			LocationInfo location,
 			Path path,
 			int index,
 			Scope start,
@@ -55,7 +55,7 @@ final class MaterializeFragment extends PathFragment {
 	}
 
 	@Override
-	public Reproduction reproduce(LocationSpec location, Scope scope) {
+	public Reproduction reproduce(LocationInfo location, Scope scope) {
 		return reproduced(this);
 	}
 

@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ref.phrase;
 
-import org.o42a.core.LocationSpec;
+import org.o42a.core.LocationInfo;
 
 
 public abstract class ValuedPhrasePart extends PhraseContinuation {
 
-	ValuedPhrasePart(LocationSpec location, PhrasePart preceding) {
+	ValuedPhrasePart(LocationInfo location, PhrasePart preceding) {
 		super(location, preceding);
 	}
 
