@@ -29,7 +29,7 @@ import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.NewObjectOp;
+import org.o42a.core.ir.op.ConstructorOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
@@ -127,7 +127,7 @@ public class OverriddenEx extends Ex {
 
 	}
 
-	private static final class Op extends NewObjectOp {
+	private static final class Op extends ConstructorOp {
 
 		Op(HostOp host, OverriddenEx ref) {
 			super(host, ref);

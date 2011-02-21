@@ -137,7 +137,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				exit,
 				ancestor,
 				getField().getArtifact().toObject(),
-				CtrOp.FIELD_PROPAGATION);
+				CtrOp.PROPAGATION);
 	}
 
 	public static final class Op extends RefFld.Op<ObjectConstructorFunc> {

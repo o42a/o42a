@@ -203,7 +203,7 @@ static void derive_object_body(
 
 	uint32_t body_kind = O42A_OBODY_INHERITED;
 
-	if (kind != DK_INHERIT && (ctable->flags & O42A_CTR_FIELD_PROPAGATION)) {
+	if (kind != DK_INHERIT) {
 		// keep the kind of body when propagating field
 		to_body->flags = from_body->flags;
 	} else {
@@ -370,7 +370,7 @@ static o42a_rotype_t *propagate_object(
 		ancestor_type: atype,
 		sample_type: sstype,
 		object_type: otype,
-		flags: !inherit ? ctr->flags : ctr->flags & !O42A_CTR_FIELD_PROPAGATION,
+		flags: ctr->flags,
 	};
 
 	derive_ancestor_bodies(&ctable, DK_COPY);

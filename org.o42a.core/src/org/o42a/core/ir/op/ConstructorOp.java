@@ -32,11 +32,11 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ref.Ref;
 
 
-public class NewObjectOp extends RefOp {
+public class ConstructorOp extends RefOp {
 
 	private Function<ObjectRefFunc> ancestorFunc;
 
-	public NewObjectOp(HostOp host, Ref ref) {
+	public ConstructorOp(HostOp host, Ref ref) {
 		super(host, ref);
 	}
 
