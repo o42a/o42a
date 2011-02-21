@@ -20,13 +20,15 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.LocationSpec;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
@@ -51,21 +53,26 @@ final class ClauseInstantiation extends Wrap {
 		final AscendantsDefinition ascendants =
 			this.instance.getContext().ascendants(this, distribute());
 
-		return new Constructor(this.instance, distribute(), ascendants);
+		return new ClauseConstructor(this.instance, distribute(), ascendants);
 	}
 
-	private static final class Constructor extends NewObjectEx {
+	private static final class ClauseConstructor extends ObjectConstructor {
 
 		private final ClauseInstance instance;
 		private final AscendantsDefinition ascendants;
 
-		Constructor(
+		ClauseConstructor(
 				ClauseInstance instance,
 				Distributor distributor,
 				AscendantsDefinition ascendants) {
 			super(instance.getLocation(), distributor);
 			this.instance = instance;
 			this.ascendants = ascendants;
+		}
+
+		@Override
+		public TypeRef ancestor(LocationSpec location) {
+			return this.ascendants.getAncestor();
 		}
 
 		@Override
@@ -87,7 +94,7 @@ final class ClauseInstantiation extends Wrap {
 				return null;
 			}
 
-			return new Constructor(
+			return new ClauseConstructor(
 					this.instance,
 					reproducer.distribute(),
 					ascendants);

@@ -23,9 +23,9 @@ import static org.o42a.core.def.Rescoper.wrapper;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class LinkFieldWrap extends FieldWrap<Link> {

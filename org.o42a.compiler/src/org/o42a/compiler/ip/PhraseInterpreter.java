@@ -30,9 +30,9 @@ import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.phrase.Phrase;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class PhraseInterpreter {

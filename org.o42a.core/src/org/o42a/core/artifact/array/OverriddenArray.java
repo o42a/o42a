@@ -21,9 +21,9 @@ package org.o42a.core.artifact.array;
 
 import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeRef;
 
-import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.artifact.TypeRelation;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 
 
 final class OverriddenArray extends Array {

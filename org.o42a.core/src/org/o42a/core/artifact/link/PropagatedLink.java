@@ -19,8 +19,8 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class PropagatedLink extends Link {

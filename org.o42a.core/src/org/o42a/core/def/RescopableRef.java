@@ -37,12 +37,12 @@ public abstract class RescopableRef extends RescopableStatement {
 	private Resolution resolution;
 	private Ref rescopedRef;
 
-	public RescopableRef(Ref ref, Rescoper rescoper) {
-		super(ref, rescoper);
+	public RescopableRef(Rescoper rescoper) {
+		super(rescoper);
 	}
 
 	public final Ref getRef() {
-		return (Ref) getScoped();
+		return getScoped();
 	}
 
 	public final Ref getRescopedRef() {
@@ -89,6 +89,9 @@ public abstract class RescopableRef extends RescopableStatement {
 
 		return getRef().op(rescoped);
 	}
+
+	@Override
+	protected abstract Ref getScoped();
 
 	@Override
 	protected final RescopableRef createReproduction(

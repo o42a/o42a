@@ -29,8 +29,8 @@ import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.ref.AbstractTypeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public final class TypeVisitor

@@ -22,12 +22,12 @@ package org.o42a.compiler.ip.ref;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public class MemberById extends Wrap {

@@ -21,10 +21,10 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.artifact.array.ArrayTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class ArrayFieldWrap extends FieldWrap<Array> {

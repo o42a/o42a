@@ -25,6 +25,9 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.*;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.ArrayUtil;
 
 

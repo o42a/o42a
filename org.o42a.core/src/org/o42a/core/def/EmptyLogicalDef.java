@@ -49,7 +49,7 @@ final class EmptyLogicalDef extends LogicalDef {
 	private EmptyLogicalDef(EmptyLogicalDef prototype, Rescoper rescoper) {
 		super(
 				prototype.getSource(),
-				prototype.logical(),
+				prototype.getScoped(),
 				rescoper,
 				NO_REQUIREMENTS);
 	}

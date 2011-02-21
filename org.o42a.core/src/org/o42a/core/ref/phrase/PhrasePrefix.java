@@ -20,9 +20,9 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.LocationSpec;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public class PhrasePrefix extends PhrasePart {

@@ -19,11 +19,7 @@
 */
 package org.o42a.core.ref.common;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.LocationSpec;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
+import org.o42a.core.*;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
@@ -34,9 +30,13 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRefWrap;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.Value;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Wrap extends Ref {
@@ -54,6 +54,14 @@ public abstract class Wrap extends Ref {
 
 	public final Ref getWrapped() {
 		return this.wrapped;
+	}
+
+	@Override
+	public final TypeRef ancestor(LocationSpec location) {
+		if (this.wrapped != null) {
+			return this.wrapped.ancestor(location);
+		}
+		return new AncestorWrap(location);
 	}
 
 	@Override
@@ -105,12 +113,12 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public Rescoper toRescoper() {
+	public final Rescoper toRescoper() {
 		return wrapped().toRescoper();
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
+	public final FieldDefinition toFieldDefinition() {
 		if (this.wrapped != null) {
 			return this.wrapped.toFieldDefinition();
 		}
@@ -146,6 +154,49 @@ public abstract class Wrap extends Ref {
 			}
 		}
 		return this.wrapped;
+	}
+
+	private final class AncestorWrap extends TypeRefWrap {
+
+		private final LocationSpec location;
+
+		AncestorWrap(LocationSpec location) {
+			super(Wrap.this.getScope());
+			this.location = location;
+		}
+
+		AncestorWrap(LocationSpec location, Rescoper rescoper) {
+			super(rescoper);
+			this.location = location;
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.location.getContext();
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.location.getLoggable();
+		}
+
+		@Override
+		public String toString() {
+			return Wrap.this + "^^";
+		}
+
+		@Override
+		protected TypeRef create(
+				Rescoper rescoper,
+				Rescoper additionalRescoper) {
+			return new AncestorWrap(this.location, rescoper);
+		}
+
+		@Override
+		protected TypeRef resolveWrapped() {
+			return Wrap.this.wrapped().ancestor(this);
+		}
+
 	}
 
 	private final class DefinitionWrap extends FieldDefinition {

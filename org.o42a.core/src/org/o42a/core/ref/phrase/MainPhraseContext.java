@@ -26,8 +26,6 @@ import java.util.LinkedList;
 
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
@@ -37,6 +35,8 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 

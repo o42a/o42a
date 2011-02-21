@@ -31,18 +31,19 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class LogicalRef extends NewObjectEx {
+public class LogicalOperatorRef extends ObjectConstructor {
 
 	private final UnaryNode node;
 	private Ref operand;
 
-	public LogicalRef(
+	public LogicalOperatorRef(
 			CompilerContext context,
 			UnaryNode node,
 			Distributor distributor) {
@@ -52,15 +53,20 @@ public class LogicalRef extends NewObjectEx {
 			this.node.getOperand().accept(EXPRESSION_VISITOR, distribute());
 	}
 
-	private LogicalRef(LogicalRef sample, Reproducer reproducer) {
+	private LogicalOperatorRef(LogicalOperatorRef sample, Reproducer reproducer) {
 		super(sample, reproducer.distribute());
 		this.node = sample.node;
 		this.operand = sample.operand.reproduce(reproducer);
 	}
 
 	@Override
+	public TypeRef ancestor(LocationSpec location) {
+		return ValueType.VOID.typeRef(location, getScope());
+	}
+
+	@Override
 	public Ref reproduce(Reproducer reproducer) {
-		return new LogicalRef(this, reproducer);
+		return new LogicalOperatorRef(this, reproducer);
 	}
 
 	@Override
@@ -78,9 +84,9 @@ public class LogicalRef extends NewObjectEx {
 
 	private static final class Res extends Result {
 
-		private final LogicalRef ref;
+		private final LogicalOperatorRef ref;
 
-		Res(LogicalRef ref) {
+		Res(LogicalOperatorRef ref) {
 			super(ref, ref.distributeIn(ref.getContainer()), ValueType.VOID);
 			this.ref = ref;
 		}

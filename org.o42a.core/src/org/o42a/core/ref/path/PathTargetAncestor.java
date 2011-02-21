@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.path;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -29,6 +29,8 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Ex;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -36,19 +38,19 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class AncestorRef extends Ex {
+final class PathTargetAncestor extends Ex {
 
 	private final Ref ref;
 	private boolean error;
 
-	AncestorRef(LocationSpec location, Ref ref) {
+	PathTargetAncestor(LocationSpec location, Ref ref) {
 		super(location, ref.distribute());
 		this.ref = ref;
 	}
 
 	@Override
 	public TypeRef ancestor(LocationSpec location) {
-		throw new UnsupportedOperationException();
+		return ancestor(getScope()).getAncestor();
 	}
 
 	@Override
@@ -73,7 +75,7 @@ final class AncestorRef extends Ex {
 			return null;
 		}
 
-		return new AncestorRef(reproducer.getScope(), ref);
+		return new PathTargetAncestor(reproducer.getScope(), ref);
 	}
 
 	@Override
@@ -155,14 +157,14 @@ final class AncestorRef extends Ex {
 
 	private static final class AncestorOp extends RefOp {
 
-		AncestorOp(HostOp scope, AncestorRef ref) {
+		AncestorOp(HostOp scope, PathTargetAncestor ref) {
 			super(scope, ref);
 		}
 
 		@Override
 		public HostOp target(Code code, CodePos exit) {
 
-			final AncestorRef ref = (AncestorRef) getRef();
+			final PathTargetAncestor ref = (PathTargetAncestor) getRef();
 			final ObjectOp object =
 				ref.ref.op(host()).target(code, exit).materialize(code, exit);
 			final ObjectDataOp ancestorData =

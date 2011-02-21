@@ -29,6 +29,8 @@ import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public abstract class MemberField extends Member {

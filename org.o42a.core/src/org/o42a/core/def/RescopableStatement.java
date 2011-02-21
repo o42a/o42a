@@ -26,8 +26,8 @@ import org.o42a.core.st.St;
 
 public abstract class RescopableStatement extends Rescopable {
 
-	public RescopableStatement(St statement, Rescoper rescoper) {
-		super(statement, rescoper);
+	public RescopableStatement(Rescoper rescoper) {
+		super(rescoper);
 	}
 
 	public final St getStatement() {

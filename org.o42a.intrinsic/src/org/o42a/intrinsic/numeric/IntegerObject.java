@@ -24,9 +24,9 @@ import static org.o42a.core.ref.path.Path.absolutePath;
 import org.o42a.common.adapter.IntegerByString;
 import org.o42a.common.intrinsic.IntrinsicType;
 import org.o42a.core.Container;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.UnaryOpObj;
 

@@ -30,7 +30,6 @@ import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -41,6 +40,7 @@ import org.o42a.core.ir.op.RelList;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public final class ObjectTypeIR implements Content<ObjectType> {

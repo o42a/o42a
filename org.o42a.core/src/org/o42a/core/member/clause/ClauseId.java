@@ -25,9 +25,9 @@ import static org.o42a.core.ref.path.Path.absolutePath;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.path.AbsolutePath;
+import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public enum ClauseId {

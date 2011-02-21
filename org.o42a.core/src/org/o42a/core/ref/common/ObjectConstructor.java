@@ -22,7 +22,6 @@ package org.o42a.core.ref.common;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
@@ -32,13 +31,18 @@ import org.o42a.core.ir.op.NewObjectOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
-public abstract class NewObjectEx extends Ex {
+public abstract class ObjectConstructor extends Ex {
 
-	public NewObjectEx(LocationSpec location, Distributor distributor) {
+	public ObjectConstructor(LocationSpec location, Distributor distributor) {
 		super(location, distributor);
 	}
+
+	@Override
+	public abstract TypeRef ancestor(LocationSpec location);
 
 	@Override
 	protected final Resolution resolveExpression(Scope scope) {

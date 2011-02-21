@@ -21,8 +21,8 @@ package org.o42a.core.artifact.array;
 
 import static org.o42a.core.artifact.array.ArrayInitializer.invalidArrayInitializer;
 
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.type.TypeRef;
 
 
 final class DeclaredArray extends Array {

@@ -27,9 +27,9 @@ import java.util.List;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 
 
 class DeclaredArrayField extends DeclaredField<Array> {

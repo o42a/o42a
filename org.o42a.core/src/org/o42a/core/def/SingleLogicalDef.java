@@ -51,13 +51,13 @@ final class SingleLogicalDef extends LogicalDef {
 
 	@Override
 	public String toString() {
-		return logical().toString();
+		return getScoped().toString();
 	}
 
 	@Override
 	protected Logical createFullLogical() {
 
-		final Logical logical = logical();
+		final Logical logical = getScoped();
 
 		if (getScope() == logical.getScope()) {
 			return logical;
@@ -70,7 +70,7 @@ final class SingleLogicalDef extends LogicalDef {
 	protected SingleLogicalDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new SingleLogicalDef(getSource(), logical(), rescoper);
+		return new SingleLogicalDef(getSource(), getScoped(), rescoper);
 	}
 
 	@Override
@@ -125,12 +125,12 @@ final class SingleLogicalDef extends LogicalDef {
 
 		@Override
 		public LogicalValue getConstantValue() {
-			return this.def.logical().getConstantValue();
+			return this.def.getScoped().getConstantValue();
 		}
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
-			return this.def.logical().logicalValue(
+			return this.def.getScoped().logicalValue(
 					this.def.getRescoper().rescope(scope));
 		}
 

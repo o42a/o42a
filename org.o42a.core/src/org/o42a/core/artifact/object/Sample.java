@@ -23,10 +23,10 @@ import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Directive;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public abstract class Sample extends Scoped {

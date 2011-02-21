@@ -22,9 +22,9 @@ package org.o42a.core.member.field;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.StaticTypeRef;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public class ImplicitSamplesDefinition extends AscendantsDefinition {

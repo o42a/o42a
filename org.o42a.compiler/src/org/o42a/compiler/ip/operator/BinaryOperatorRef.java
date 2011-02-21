@@ -33,8 +33,9 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
 
@@ -152,7 +153,7 @@ public class BinaryOperatorRef extends Wrap {
 		return BinaryOperatorInfo.bySign(this.node.getOperator().getSign());
 	}
 
-	private static final class BinaryRef extends NewObjectEx {
+	private static final class BinaryRef extends ObjectConstructor {
 
 		private final Ref leftOperand;
 		private final Ref rightOperand;
@@ -184,6 +185,17 @@ public class BinaryOperatorRef extends Wrap {
 			this.info = reproducing.info;
 			this.sign = reproducing.sign;
 			this.adapterKey = reproducing.adapterKey;
+		}
+
+		@Override
+		public TypeRef ancestor(LocationSpec location) {
+
+			final Ref adapterRef = this.adapterKey.toPath().target(
+					location,
+					distribute(),
+					this.leftOperand.materialize());
+
+			return adapterRef.toTypeRef();
 		}
 
 		@Override
@@ -238,13 +250,8 @@ public class BinaryOperatorRef extends Wrap {
 
 		@Override
 		protected Ascendants buildAscendants() {
-
-			final Ref adapterRef = this.operator.adapterKey.toPath().target(
-					this,
-					getScope().getEnclosingScope().distribute(),
-					this.operator.leftOperand.materialize());
-
-			return new Ascendants(this).setAncestor(adapterRef.toTypeRef());
+			return new Ascendants(this).setAncestor(
+					this.operator.ancestor(this));
 		}
 
 		@Override

@@ -26,7 +26,8 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -65,7 +66,7 @@ class PhraseObject extends DefinedObject {
 		definitionBuilder.buildBlock(definition);
 	}
 
-	static final class Ex extends NewObjectEx {
+	static final class Ex extends ObjectConstructor {
 
 		private final MainPhraseContext mainContext;
 		private final AscendantsDefinition ascendants;
@@ -87,6 +88,11 @@ class PhraseObject extends DefinedObject {
 			super(location, distributor);
 			this.mainContext = mainContext;
 			this.ascendants = ascendants;
+		}
+
+		@Override
+		public TypeRef ancestor(LocationSpec location) {
+			return this.ascendants.getAncestor();
 		}
 
 		@Override

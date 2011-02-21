@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.ref.type;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -30,19 +30,19 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
-public final class StaticTypeRef extends TypeRef {
+public abstract class StaticTypeRef extends TypeRef {
 
-	StaticTypeRef(Ref ref, Ref untouchedRef, Rescoper rescoper) {
-		super(ref.fixScope(), untouchedRef, rescoper);
+	StaticTypeRef(Rescoper rescoper) {
+		super(rescoper);
 	}
 
 	@Override
-	public StaticTypeRef toStatic() {
+	public final StaticTypeRef toStatic() {
 		return this;
 	}
 
 	@Override
-	public final StaticTypeRef rescope(Rescoper rescoper) {
+	public StaticTypeRef rescope(Rescoper rescoper) {
 		return (StaticTypeRef) super.rescope(rescoper);
 	}
 
@@ -52,7 +52,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public StaticTypeRef upgradeScope(Scope scope) {
+	public final StaticTypeRef upgradeScope(Scope scope) {
 		return (StaticTypeRef) super.upgradeScope(scope);
 	}
 
@@ -62,7 +62,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public RefOp op(Code code, CodePos exit, HostOp host) {
+	public final RefOp op(Code code, CodePos exit, HostOp host) {
 		return getType().selfRef().op(host);
 	}
 
@@ -100,20 +100,16 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	protected StaticTypeRef create(
+	protected abstract StaticTypeRef create(
 			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new StaticTypeRef(getRef(), getUntachedRef(), rescoper);
-	}
+			Rescoper additionalRescoper);
 
 	@Override
-	protected TypeRef createReproduction(
+	protected abstract StaticTypeRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Ref ref,
 			Ref untouchedRef,
-			Rescoper rescoper) {
-		return new StaticTypeRef(ref, untouchedRef, rescoper);
-	}
+			Rescoper rescoper);
 
 }

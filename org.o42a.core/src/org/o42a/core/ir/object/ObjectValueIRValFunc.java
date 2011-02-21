@@ -22,13 +22,13 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
 import org.o42a.codegen.code.*;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Def;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 

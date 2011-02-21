@@ -35,8 +35,9 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
@@ -159,21 +160,7 @@ final class TestRunner extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-
-		final Scope localScope = getScope().getEnclosingScope();
-
-		assert localScope.toLocal() != null :
-			this + " should be inside of local scope, but is inside of "
-			+ localScope;
-
-		final Scope objectTestsScope = localScope.getEnclosingScope();
-		final Path objectPath =
-			localScope.getEnclosingScopePath().append(
-					objectTestsScope.getEnclosingScopePath());
-		final Path testPath = objectPath.append(this.runTest.testKey);
-
-		return new Ascendants(this).setAncestor(
-				testPath.target(this, localScope.distribute()).toTypeRef());
+		return new Ascendants(this).setAncestor(this.runTest.ancestor(this));
 	}
 
 	@Override
@@ -185,7 +172,7 @@ final class TestRunner extends PlainObject {
 		return null;
 	}
 
-	private static final class RunTest extends NewObjectEx {
+	private static final class RunTest extends ObjectConstructor {
 
 		private final MemberKey testKey;
 		private final MemberKey adapterKey;
@@ -201,6 +188,26 @@ final class TestRunner extends PlainObject {
 			this.testKey = testKey;
 			this.adapterKey = adapterKey;
 			this.name = name;
+		}
+
+		@Override
+		public TypeRef ancestor(LocationSpec location) {
+
+			final Scope localScope = getScope();
+
+			assert localScope.toLocal() != null :
+				this + " should be inside of local scope, but is inside of "
+				+ localScope;
+
+			final Scope objectTestsScope = localScope.getEnclosingScope();
+			final Path objectPath =
+				localScope.getEnclosingScopePath().append(
+						objectTestsScope.getEnclosingScopePath());
+			final Path testPath = objectPath.append(this.testKey);
+
+			return testPath.target(
+					location,
+					localScope.distribute()).toTypeRef();
 		}
 
 		@Override

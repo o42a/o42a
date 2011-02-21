@@ -26,10 +26,10 @@ import static org.o42a.core.member.clause.ClauseId.byAdapterType;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationSpec;
 import org.o42a.core.Placed;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public class ClauseDeclaration extends Placed implements Cloneable {

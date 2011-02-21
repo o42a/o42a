@@ -32,8 +32,8 @@ import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.RefVisitor.Owner;
 import org.o42a.compiler.ip.ref.ModuleRef;
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.StaticTypeRef;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {

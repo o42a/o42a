@@ -36,13 +36,14 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.NewObjectEx;
+import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-abstract class CompareOperatorRef extends NewObjectEx {
+abstract class CompareOperatorRef extends ObjectConstructor {
 
 	private static final MemberId RESULT = memberName("_result");
 
@@ -89,6 +90,11 @@ abstract class CompareOperatorRef extends NewObjectEx {
 
 	public final BinaryNode getNode() {
 		return this.node;
+	}
+
+	@Override
+	public TypeRef ancestor(LocationSpec location) {
+		return ValueType.VOID.typeRef(location, getScope());
 	}
 
 	@Override

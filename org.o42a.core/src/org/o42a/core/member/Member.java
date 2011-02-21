@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.type.TypeRef;
 
 
 public abstract class Member extends Placed {

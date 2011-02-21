@@ -20,13 +20,13 @@
 package org.o42a.common.intrinsic;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.TypeRef;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 

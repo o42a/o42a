@@ -19,10 +19,10 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.core.artifact.TypeRef;
-import org.o42a.core.artifact.TypeRelation;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 
 
 final class OverriddenLink extends Link {
