@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
@@ -39,6 +40,11 @@ final class PathTargetDefinition extends FieldDefinition {
 				distribute(),
 				target.toTypeRef());
 		this.target = target;
+	}
+
+	@Override
+	public ArtifactKind<?> determineArtifactKind() {
+		return artifactKind(this.target);
 	}
 
 	@Override

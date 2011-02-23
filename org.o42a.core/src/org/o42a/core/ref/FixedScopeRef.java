@@ -21,6 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
@@ -94,6 +95,16 @@ final class FixedScopeRef extends Ref {
 		FixedFieldDefinition(FieldDefinition definition) {
 			super(definition, definition.distribute());
 			this.definition = definition;
+		}
+
+		@Override
+		public boolean isValid() {
+			return this.definition.isValid();
+		}
+
+		@Override
+		public ArtifactKind<?> determineArtifactKind() {
+			return this.definition.determineArtifactKind();
 		}
 
 		@Override

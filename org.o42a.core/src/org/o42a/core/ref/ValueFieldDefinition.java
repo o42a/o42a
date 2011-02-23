@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref;
 
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
@@ -39,6 +40,11 @@ final class ValueFieldDefinition extends FieldDefinition {
 				this,
 				distribute(),
 				this.value.toStaticTypeRef());
+	}
+
+	@Override
+	public ArtifactKind<?> determineArtifactKind() {
+		return artifactKind(this.value);
 	}
 
 	@Override

@@ -23,29 +23,41 @@ import static org.o42a.core.member.MemberKey.brokenMemberKey;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.*;
+import org.o42a.core.artifact.Accessor;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.ArrayUtil;
 
 
 public abstract class MemberField extends Member {
 
+	private static final MemberField[] NO_MERGED = new MemberField[0];
+
 	private final FieldDeclaration declaration;
+	private Field<?> field;
 	private MemberKey key;
 	private Visibility visibility;
+	private MemberField[] mergedWith = NO_MERGED;
 
 	public MemberField(FieldDeclaration declaration) {
 		super(declaration, declaration.distribute());
 		this.declaration = declaration;
 	}
 
-	private MemberField(Container container, MemberField overridden) {
+	private MemberField(
+			Container container,
+			Field<?> field,
+			MemberField overridden) {
 		super(overridden, overridden.distributeIn(container));
+		this.field = field;
 		this.key = overridden.getKey();
 		this.visibility = overridden.getVisibility();
 		this.declaration =
@@ -84,6 +96,32 @@ public abstract class MemberField extends Member {
 			return this.key = overrideField();
 		}
 		return this.key = declareNewField();
+	}
+
+	@Override
+	public final MemberField toMemberField() {
+		return this;
+	}
+
+	@Override
+	public final MemberClause toMemberClause() {
+		return null;
+	}
+
+	@Override
+	public final MemberLocal toMemberLocal() {
+		return null;
+	}
+
+	@Override
+	public final Field<?> toField() {
+		if (this.field != null) {
+			return this.field;
+		}
+
+		setField(createField());
+
+		return this.field;
 	}
 
 	@Override
@@ -211,13 +249,38 @@ public abstract class MemberField extends Member {
 	@Override
 	protected void merge(Member member) {
 
-		final Field<?> field = member.toField();
+		final MemberField memberField = member.toMemberField();
 
-		if (field == null) {
-			getLogger().notFieldDeclaration(member);
-		} else {
-			toField().merge(member.toField());
+		if (memberField == null) {
+			getLogger().error(
+					"not_field",
+					member,
+					"'%s' is not a field",
+					member.getDisplayName());
+			return;
 		}
+		if (this.field != null) {
+			mergeField(memberField);
+		} else {
+			this.mergedWith = ArrayUtil.append(this.mergedWith, memberField);
+		}
+	}
+
+	protected ArtifactKind<?> determineArtifactKind() {
+		return toField().getArtifactKind();
+	}
+
+	protected final void setField(Field<?> field) {
+		this.field = field;
+		for (MemberField merged : getMergedWith()) {
+			mergeField(merged);
+		}
+	}
+
+	protected abstract Field<?> createField();
+
+	final MemberField[] getMergedWith() {
+		return this.mergedWith;
 	}
 
 	private MemberKey overrideField() {
@@ -297,9 +360,12 @@ public abstract class MemberField extends Member {
 		return getId().key(getScope());
 	}
 
+	private void mergeField(MemberField member) {
+		this.field.merge(member.toField());
+	}
+
 	static final class Overridden extends MemberField {
 
-		private final Field<?> field;
 		private final MemberField propagatedFrom;
 
 		Overridden(
@@ -307,8 +373,7 @@ public abstract class MemberField extends Member {
 				Field<?> field,
 				MemberField overridden,
 				boolean propagated) {
-			super(container, overridden);
-			this.field = field;
+			super(container, field, overridden);
 			this.propagatedFrom = propagated ? overridden : null;
 		}
 
@@ -318,8 +383,8 @@ public abstract class MemberField extends Member {
 		}
 
 		@Override
-		public Field<?> toField() {
-			return this.field;
+		protected Field<?> createField() {
+			throw new UnsupportedOperationException();
 		}
 
 	}

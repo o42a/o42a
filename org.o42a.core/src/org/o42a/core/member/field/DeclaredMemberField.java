@@ -19,16 +19,14 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.Member;
 
 
 final class DeclaredMemberField extends MemberField {
 
-	private DeclaredField<?> field;
-	private ArtifactKind<?> artifactKind;
 	private final FieldBuilder builder;
+	private ArtifactKind<?> artifactKind;
 	private FieldDeclarationStatement statement;
 
 	public DeclaredMemberField(FieldBuilder builder) {
@@ -41,65 +39,86 @@ final class DeclaredMemberField extends MemberField {
 			return this.artifactKind;
 		}
 
-		final ArtifactKind<?> kind;
-		final Member[] overridden = getOverridden();
+		final ArtifactKind<?> kind = determineArtifactKind();
 
-		if (overridden.length > 0) {
-			kind = overridden[0].toField().getArtifact().getKind();
-		} else {
-
-			final FieldDefinition definition = this.builder.getDefinition();
-
-			if (definition.isArray()) {
-				kind = ArtifactKind.ARRAY;
-			} else {
-
-				final Artifact<?> value =
-					definition.getValue().getResolution().toArtifact();
-
-				if (value.getKind() == ArtifactKind.ARRAY) {
-					kind = ArtifactKind.ARRAY;
-				} else if (getDeclaration().isLink()) {
-					kind = ArtifactKind.LINK;
-				} else if (getDeclaration().isVariable()) {
-					kind = ArtifactKind.VARIABLE;
-				} else {
-					kind = ArtifactKind.OBJECT;
-				}
-			}
-		}
-		if (!kind.is(ArtifactKind.OBJECT)) {
-			if (getDeclaration().isLink() && !kind.is(ArtifactKind.LINK)) {
-				getLogger().prohibitedLinkType(getDeclaration());
-			}
-			if (getDeclaration().isVariable()
-					&& !kind.is(ArtifactKind.VARIABLE)) {
-				getLogger().prohibitedVariableType(getDeclaration());
-			}
+		if (kind == null) {
+			return this.artifactKind = ArtifactKind.OBJECT;
 		}
 
 		return this.artifactKind = kind;
 	}
 
 	@Override
-	public DeclaredField<?> toField() {
-		if (this.field != null) {
-			return this.field;
+	protected ArtifactKind<?> determineArtifactKind() {
+
+		ArtifactKind<?> kind;
+		final Member[] overridden = getOverridden();
+
+		if (overridden.length > 0) {
+			kind = overridden[0].toField().getArtifact().getKind();
+		} else if (getDeclaration().isVariable()) {
+			kind = ArtifactKind.VARIABLE;
+		} else if (getDeclaration().isLink()) {
+			kind = ArtifactKind.LINK;
+		} else {
+			kind = this.builder.getDefinition().determineArtifactKind();
 		}
 
-		this.field = getArtifactKind().declareField(this);
+		for (MemberField merged : getMergedWith()) {
 
-		final FieldVariant<?> variant = this.field.variant(
+			final ArtifactKind<?> mergedKind = merged.determineArtifactKind();
+
+			if (mergedKind == null) {
+				continue;
+			}
+			if (kind == null) {
+				if (validateArtifactKind(mergedKind)) {
+					kind = mergedKind;
+				}
+				continue;
+			}
+			if (kind == mergedKind) {
+				continue;
+			}
+			getLogger().error(
+					"ambiguous_artifact_kind",
+					merged,
+					"Field artifact kind is ambiguous: " + mergedKind
+					+ ", while " + kind + " expected");
+		}
+
+		return kind;
+	}
+
+	@Override
+	protected Field<?> createField() {
+
+		DeclaredField<?> field = getArtifactKind().declareField(this);
+
+		final FieldVariant<?> variant = field.variant(
 				this.builder.getDeclaration(),
 				this.builder.getDefinition());
 
 		variant.setStatement(this.statement);
 
-		return this.field;
+		return field;
 	}
 
 	final void setStatement(FieldDeclarationStatement statement) {
 		this.statement = statement;
+	}
+
+	private boolean validateArtifactKind(ArtifactKind<?> kind) {
+		if (getDeclaration().isLink() && !kind.is(ArtifactKind.LINK)) {
+			getLogger().prohibitedLinkType(getDeclaration());
+			return false;
+		}
+		if (getDeclaration().isVariable()
+				&& !kind.is(ArtifactKind.VARIABLE)) {
+			getLogger().prohibitedVariableType(getDeclaration());
+			return false;
+		}
+		return true;
 	}
 
 }

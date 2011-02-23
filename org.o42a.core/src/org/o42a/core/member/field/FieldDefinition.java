@@ -24,8 +24,10 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -87,6 +89,8 @@ public abstract class FieldDefinition extends Placed {
 		return getArrayInitializer() != null;
 	}
 
+	public abstract ArtifactKind<?> determineArtifactKind();
+
 	public abstract AscendantsDefinition getAscendants();
 
 	public abstract BlockBuilder getDeclarations();
@@ -97,6 +101,17 @@ public abstract class FieldDefinition extends Placed {
 
 	public abstract FieldDefinition reproduce(Reproducer reproducer);
 
+	protected static ArtifactKind<?> artifactKind(Ref ref) {
+
+		final Resolution resolution = ref.getResolution();
+
+		if (resolution.toArray() != null) {
+			return ArtifactKind.ARRAY;
+		}
+
+		return ArtifactKind.OBJECT;
+	}
+
 	private static final class Invalid extends FieldDefinition {
 
 		public Invalid(LocationInfo location, Distributor distributor) {
@@ -106,6 +121,11 @@ public abstract class FieldDefinition extends Placed {
 		@Override
 		public boolean isValid() {
 			return false;
+		}
+
+		@Override
+		public ArtifactKind<?> determineArtifactKind() {
+			return null;
 		}
 
 		@Override
@@ -148,6 +168,11 @@ public abstract class FieldDefinition extends Placed {
 		Array(ArrayInitializer arrayInitializer) {
 			super(arrayInitializer, arrayInitializer.distribute());
 			this.arrayInitializer = arrayInitializer;
+		}
+
+		@Override
+		public ArtifactKind<?> determineArtifactKind() {
+			return ArtifactKind.ARRAY;
 		}
 
 		@Override
@@ -203,6 +228,21 @@ public abstract class FieldDefinition extends Placed {
 			this.declarations =
 				declarations != null
 				? declarations : emptyBlock(location);
+		}
+
+		@Override
+		public ArtifactKind<?> determineArtifactKind() {
+			if (this.ascendants.getSamples().length != 0) {
+				return ArtifactKind.OBJECT;
+			}
+
+			final TypeRef ancestor = this.ascendants.getAncestor();
+
+			if (ancestor == null || !ancestor.validate()) {
+				return null;
+			}
+
+			return artifactKind(ancestor.getRef());
 		}
 
 		@Override

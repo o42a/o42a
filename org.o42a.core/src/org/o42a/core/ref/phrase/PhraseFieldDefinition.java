@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.phrase;
 
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
@@ -36,6 +37,11 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	PhraseFieldDefinition(Phrase phrase) {
 		super(phrase, phrase.distribute());
 		this.phrase = phrase;
+	}
+
+	@Override
+	public ArtifactKind<?> determineArtifactKind() {
+		return getDefinition().determineArtifactKind();
 	}
 
 	@Override

@@ -258,10 +258,6 @@ public class CompilerLogger implements Logger {
 		error("not_deried_from", location, "Not derived from %s", ascendant);
 	}
 
-	public void notFieldDeclaration(LogInfo location) {
-		error("not_field_declaration", location, "Not a field declaration");
-	}
-
 	public void notFloat(LogInfo location, String literal) {
 		error("not_float", location, "Not a floating point value: %s", literal);
 	}
