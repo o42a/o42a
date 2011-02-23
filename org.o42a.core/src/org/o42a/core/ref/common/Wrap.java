@@ -20,6 +20,7 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
@@ -205,6 +206,16 @@ public abstract class Wrap extends Ref {
 
 		DefinitionWrap() {
 			super(Wrap.this, Wrap.this.distribute());
+		}
+
+		@Override
+		public boolean isValid() {
+			return def().isValid();
+		}
+
+		@Override
+		public ArtifactKind<?> determineArtifactKind() {
+			return def().determineArtifactKind();
 		}
 
 		@Override

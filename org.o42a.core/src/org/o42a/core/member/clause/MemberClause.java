@@ -23,7 +23,9 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.MemberLocal;
 
 
 public abstract class MemberClause extends Member {
@@ -57,6 +59,21 @@ public abstract class MemberClause extends Member {
 	@Override
 	public MemberId getId() {
 		return this.declaration.getMemberId();
+	}
+
+	@Override
+	public final MemberField toMemberField() {
+		return null;
+	}
+
+	@Override
+	public final MemberClause toMemberClause() {
+		return this;
+	}
+
+	@Override
+	public final MemberLocal toMemberLocal() {
+		return null;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 						wrapped.distributeIn(enclosingContainer),
 						wrapped.getDeclaration())
 				.override()));
-		((Member) toMember()).field = this;
+		((Member) toMember()).init(this);
 		this.iface = (Field<A>) type;
 		this.wrapped = (Field<A>) wrapped;
 		setScopeArtifact(wrapArtifact());
@@ -77,15 +77,17 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 
 	private static final class Member extends MemberField {
 
-		private FieldWrap<?> field;
-
 		public Member(FieldDeclaration declaration) {
 			super(declaration);
 		}
 
 		@Override
-		public Field<?> toField() {
-			return this.field;
+		protected Field<?> createField() {
+			throw new UnsupportedOperationException();
+		}
+
+		final void init(FieldWrap<?> field) {
+			setField(field);
 		}
 
 	}

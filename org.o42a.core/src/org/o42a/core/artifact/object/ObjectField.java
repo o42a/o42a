@@ -30,7 +30,7 @@ public abstract class ObjectField extends Field<Obj> {
 
 	public ObjectField(FieldDeclaration declaration) {
 		super(new Member(declaration));
-		((Member) toMember()).field = this;
+		((Member) toMember()).init(this);
 	}
 
 	protected ObjectField(
@@ -68,15 +68,17 @@ public abstract class ObjectField extends Field<Obj> {
 
 	private static final class Member extends MemberField {
 
-		private ObjectField field;
-
 		Member(FieldDeclaration declaration) {
 			super(declaration);
 		}
 
 		@Override
-		public Field<?> toField() {
-			return this.field;
+		protected Field<?> createField() {
+			throw new UnsupportedOperationException();
+		}
+
+		final void init(ObjectField field) {
+			setField(field);
 		}
 
 	}

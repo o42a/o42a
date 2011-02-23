@@ -24,13 +24,30 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 
 
-abstract class MemberLocal extends Member {
+public abstract class MemberLocal extends Member {
 
 	MemberLocal(LocationInfo location, Distributor distributor, Obj owner) {
 		super(location, distributor);
+	}
+
+	@Override
+	public final MemberField toMemberField() {
+		return null;
+	}
+
+	@Override
+	public final MemberClause toMemberClause() {
+		return null;
+	}
+
+	@Override
+	public final MemberLocal toMemberLocal() {
+		return this;
 	}
 
 	@Override
