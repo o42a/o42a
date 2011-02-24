@@ -69,25 +69,26 @@ class PhraseObject extends DefinedObject {
 
 	static final class Ex extends ObjectConstructor {
 
-		private final MainPhraseContext mainContext;
+		private final PhraseEx phrase;
 		private final AscendantsDefinition ascendants;
 
-		Ex(MainPhraseContext mainContext) {
+		Ex(PhraseEx phrase) {
 			super(
-					mainContext.getPhrase(),
-					mainContext.getPhrase().distribute());
-			this.mainContext = mainContext;
-			this.ascendants = mainContext.getAscendants();
+					phrase.getPhrase(),
+					phrase.distribute());
+			this.phrase = phrase;
+			this.ascendants =
+				phrase.getPhrase().getMainContext().getAscendants();
 			this.ascendants.assertCompatibleScope(this);
 		}
 
 		private Ex(
 				LocationInfo location,
 				Distributor distributor,
-				MainPhraseContext mainContext,
+				PhraseEx phrase,
 				AscendantsDefinition ascendants) {
 			super(location, distributor);
-			this.mainContext = mainContext;
+			this.phrase = phrase;
 			this.ascendants = ascendants;
 		}
 
@@ -98,14 +99,13 @@ class PhraseObject extends DefinedObject {
 
 		@Override
 		public FieldDefinition toFieldDefinition() {
-			return new PhraseFieldDefinition(
-					this.mainContext.getPhrase());
+			return new PhraseFieldDefinition(this.phrase);
 		}
 
 		@Override
 		protected Obj createObject() {
 			return new PhraseObject(
-					this.mainContext,
+					this.phrase.getPhrase().getMainContext(),
 					distribute(),
 					this.ascendants);
 		}
@@ -124,7 +124,7 @@ class PhraseObject extends DefinedObject {
 			return new Ex(
 					this,
 					reproducer.distribute(),
-					this.mainContext,
+					this.phrase,
 					ascendants);
 		}
 

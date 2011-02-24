@@ -37,6 +37,10 @@ class PhraseEx extends Wrap {
 		this.phrase = phrase;
 	}
 
+	public Phrase getPhrase() {
+		return this.phrase;
+	}
+
 	@Override
 	public FieldDefinition toFieldDefinition() {
 		return new Definition(this.phrase, super.toFieldDefinition());
@@ -44,7 +48,14 @@ class PhraseEx extends Wrap {
 
 	@Override
 	protected Ref resolveWrapped() {
-		return this.phrase.getMainContext().createRef();
+
+		final MainPhraseContext context = this.phrase.getMainContext();
+
+		if (!context.createsObject()) {
+			return context.standaloneRef();
+		}
+
+		return new PhraseObject.Ex(this);
 	}
 
 	@Override
@@ -65,7 +76,7 @@ class PhraseEx extends Wrap {
 
 		@Override
 		public ArtifactKind<?> determineArtifactKind() {
-			return ArtifactKind.OBJECT;
+			return this.definition.determineArtifactKind();
 		}
 
 		@Override
