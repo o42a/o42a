@@ -60,31 +60,16 @@ final class DeclaredMemberField extends MemberField {
 			kind = ArtifactKind.VARIABLE;
 		} else if (getDeclaration().isLink()) {
 			kind = ArtifactKind.LINK;
+		} else if (getDeclaration().isAdapter()) {
+			kind = ArtifactKind.OBJECT;
 		} else {
 			kind = this.builder.getDefinition().determineArtifactKind();
 		}
 
+		validateArtifactKind(kind);
+
 		for (MemberField merged : getMergedWith()) {
-
-			final ArtifactKind<?> mergedKind = merged.determineArtifactKind();
-
-			if (mergedKind == null) {
-				continue;
-			}
-			if (kind == null) {
-				if (validateArtifactKind(mergedKind)) {
-					kind = mergedKind;
-				}
-				continue;
-			}
-			if (kind == mergedKind) {
-				continue;
-			}
-			getLogger().error(
-					"ambiguous_artifact_kind",
-					merged,
-					"Field artifact kind is ambiguous: " + mergedKind
-					+ ", while " + kind + " expected");
+			kind = determineArtifactKind(merged, kind);
 		}
 
 		return kind;
@@ -106,6 +91,34 @@ final class DeclaredMemberField extends MemberField {
 
 	final void setStatement(FieldDeclarationStatement statement) {
 		this.statement = statement;
+	}
+
+	private ArtifactKind<?> determineArtifactKind(
+			MemberField member,
+			ArtifactKind<?> expectedKind) {
+
+		final ArtifactKind<?> memberKind = member.determineArtifactKind();
+
+		if (memberKind == null) {
+			return expectedKind;
+		}
+		if (expectedKind == null) {
+			if (validateArtifactKind(memberKind)) {
+				return memberKind;
+			}
+			return expectedKind;
+		}
+		if (expectedKind == memberKind) {
+			return expectedKind;
+		}
+
+		getLogger().error(
+				"ambiguous_artifact_kind",
+				member,
+				"Field artifact kind is ambiguous: " + memberKind
+				+ ", while " + expectedKind + " expected");
+
+		return expectedKind;
 	}
 
 	private boolean validateArtifactKind(ArtifactKind<?> kind) {

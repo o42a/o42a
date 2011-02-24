@@ -29,11 +29,10 @@ import org.o42a.core.st.Reproducer;
 
 final class PhraseFieldDefinition extends FieldDefinition {
 
-	private final Phrase phrase;
+	private final PhraseEx phrase;
 	private FieldDefinition definition;
-	private Ref value;
 
-	PhraseFieldDefinition(Phrase phrase) {
+	PhraseFieldDefinition(PhraseEx phrase) {
 		super(phrase, phrase.distribute());
 		this.phrase = phrase;
 	}
@@ -45,8 +44,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		this.phrase.getMainContext().setImplicitAscendants(
-				definer.getImplicitAscendants());
 		getDefinition().defineObject(definer);
 	}
 
@@ -62,10 +59,7 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public Ref getValue() {
-		if (this.value != null) {
-			return this.value;
-		}
-		return this.value = this.phrase.toRef();
+		return this.phrase;
 	}
 
 	@Override
@@ -83,7 +77,8 @@ final class PhraseFieldDefinition extends FieldDefinition {
 			return this.definition;
 		}
 
-		final MainPhraseContext mainContext = this.phrase.getMainContext();
+		final MainPhraseContext mainContext =
+			this.phrase.getPhrase().getMainContext();
 
 		return this.definition = fieldDefinition(
 				this,

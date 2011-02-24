@@ -86,8 +86,8 @@ public final class ClauseInstance {
 		}
 	}
 
-	public Ref instantiateObject(Distributor distributor, boolean topLevel) {
-		return new ClauseInstantiation(this, distributor, topLevel);
+	public Ref instantiateObject(Distributor distributor) {
+		return new ClauseInstantiation(this, distributor);
 	}
 
 	@Override

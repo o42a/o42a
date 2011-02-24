@@ -63,13 +63,6 @@ final class MainPhraseContext extends PhraseContext {
 		return this.createsObject > 0;
 	}
 
-	public Ref createRef() {
-		if (!createsObject()) {
-			return standaloneRef();
-		}
-		return new PhraseObject.Ex(this);
-	}
-
 	public Ref standaloneRef() {
 		this.standaloneRef = true;
 
@@ -80,7 +73,7 @@ final class MainPhraseContext extends PhraseContext {
 
 		final ClauseInstance instance = instances[0];
 
-		return instance.instantiateObject(getPhrase().distribute(), true);
+		return instance.instantiateObject(getPhrase().distribute());
 	}
 
 	@Override
