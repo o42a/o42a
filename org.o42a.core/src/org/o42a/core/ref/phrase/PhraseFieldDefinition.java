@@ -40,7 +40,7 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public ArtifactKind<?> determineArtifactKind() {
-		return getDefinition().determineArtifactKind();
+		return ArtifactKind.OBJECT;
 	}
 
 	@Override

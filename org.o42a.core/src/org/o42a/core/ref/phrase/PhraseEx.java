@@ -19,8 +19,13 @@
 */
 package org.o42a.core.ref.phrase;
 
+import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.st.Reproducer;
 
 
 class PhraseEx extends Wrap {
@@ -33,6 +38,11 @@ class PhraseEx extends Wrap {
 	}
 
 	@Override
+	public FieldDefinition toFieldDefinition() {
+		return new Definition(this.phrase, super.toFieldDefinition());
+	}
+
+	@Override
 	protected Ref resolveWrapped() {
 		return this.phrase.getMainContext().createRef();
 	}
@@ -40,6 +50,59 @@ class PhraseEx extends Wrap {
 	@Override
 	public String toString() {
 		return this.phrase.toString();
+	}
+
+	private static final class Definition extends FieldDefinition {
+
+		private final Phrase phrase;
+		private final FieldDefinition definition;
+
+		Definition(Phrase phrase, FieldDefinition definition) {
+			super(definition, definition.distribute());
+			this.phrase = phrase;
+			this.definition = definition;
+		}
+
+		@Override
+		public ArtifactKind<?> determineArtifactKind() {
+			return ArtifactKind.OBJECT;
+		}
+
+		@Override
+		public void defineObject(ObjectDefiner definer) {
+			this.phrase.getMainContext().setImplicitAscendants(
+					definer.getImplicitAscendants());
+			this.definition.defineObject(definer);
+		}
+
+		@Override
+		public AscendantsDefinition getAscendants() {
+			return this.definition.getAscendants();
+		}
+
+		@Override
+		public ArrayInitializer getArrayInitializer() {
+			return this.definition.getArrayInitializer();
+		}
+
+		@Override
+		public Ref getValue() {
+			return this.definition.getValue();
+		}
+
+		@Override
+		public FieldDefinition reproduce(Reproducer reproducer) {
+			return this.definition.reproduce(reproducer);
+		}
+
+		@Override
+		public String toString() {
+			if (this.definition == null) {
+				return super.toString();
+			}
+			return this.definition.toString();
+		}
+
 	}
 
 }
