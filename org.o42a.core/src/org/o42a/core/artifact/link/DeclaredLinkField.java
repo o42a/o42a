@@ -33,7 +33,7 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.TypeRef;
 
 
-final class DeclaredLinkField extends DeclaredField<Link> {
+final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 
 	private boolean invalid;
 	private FieldDefinition definition;
@@ -59,19 +59,20 @@ final class DeclaredLinkField extends DeclaredField<Link> {
 	}
 
 	@Override
-	protected FieldVariant<Link> createVariant(
+	protected LinkFieldVariant createVariant(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		return new LinkFieldVariant(this, declaration, definition);
 	}
 
 	@Override
-	protected void merge(DeclaredField<Link> other) {
+	protected void merge(DeclaredField<Link, LinkFieldVariant> other) {
 		getLogger().ambiguousMember(other, getDisplayName());
 	}
 
 	@Override
-	protected DeclaredField<Link> propagate(Scope enclosingScope) {
+	protected DeclaredField<Link, LinkFieldVariant> propagate(
+			Scope enclosingScope) {
 		return new DeclaredLinkField(enclosingScope.getContainer(), this);
 	}
 
@@ -157,7 +158,7 @@ final class DeclaredLinkField extends DeclaredField<Link> {
 	FieldDefinition getDefinition() {
 		if (this.definition == null) {
 
-			final List<FieldVariant<Link>> variants = getVariants();
+			final List<LinkFieldVariant> variants = getVariants();
 
 			if (variants.size() != 1) {
 				if (variants.isEmpty()) {

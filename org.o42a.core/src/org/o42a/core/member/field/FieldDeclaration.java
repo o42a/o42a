@@ -225,7 +225,7 @@ public class FieldDeclaration extends Placed implements Cloneable {
 			definition.getValue().ancestor(definition.getValue());
 	}
 
-	public boolean validateVariantDeclaration(DeclaredField<?> field) {
+	public boolean validateVariantDeclaration(DeclaredField<?, ?> field) {
 
 		final FieldDeclaration fieldDeclaration = field.getDeclaration();
 

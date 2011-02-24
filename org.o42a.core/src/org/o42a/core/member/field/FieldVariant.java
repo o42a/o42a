@@ -21,21 +21,19 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.st.Conditions;
-import org.o42a.core.st.DefinitionTarget;
 import org.o42a.util.log.Loggable;
 
 
 public abstract class FieldVariant<A extends Artifact<A>> implements PlaceInfo {
 
-	private final DeclaredField<A> field;
+	private final DeclaredField<A, ?> field;
 	private final FieldDeclaration declaration;
 	private final FieldDefinition definition;
 	private FieldDeclarationStatement statement;
 
 	protected FieldVariant(
-			DeclaredField<A> field,
+			DeclaredField<A, ?> field,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		this.field = field;
@@ -76,7 +74,7 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceInfo {
 		return this.field.getLogger();
 	}
 
-	public final DeclaredField<A> getField() {
+	public final DeclaredField<A, ?> getField() {
 		return this.field;
 	}
 
@@ -128,10 +126,6 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceInfo {
 	}
 
 	protected abstract void init();
-
-	protected abstract void declareMembers();
-
-	protected abstract Definitions define(DefinitionTarget scope);
 
 	final FieldDeclarationStatement getStatement() {
 		return this.statement;

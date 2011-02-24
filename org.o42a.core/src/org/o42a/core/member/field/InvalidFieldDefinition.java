@@ -17,45 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.member.field;
 
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.ImplicitSamplesDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
-final class ValueFieldDefinition extends FieldDefinition {
+final class InvalidFieldDefinition extends FieldDefinition {
 
-	private final Ref value;
-	private final ImplicitSamplesDefinition samples;
+	public InvalidFieldDefinition(LocationInfo location, Distributor distributor) {
+		super(location, distributor);
+	}
 
-	ValueFieldDefinition(Ref value) {
-		super(value, value.distribute());
-		this.value = value;
-		this.samples = new ImplicitSamplesDefinition(
-				this,
-				distribute(),
-				this.value.toStaticTypeRef());
+	@Override
+	public boolean isValid() {
+		return false;
 	}
 
 	@Override
 	public ArtifactKind<?> determineArtifactKind() {
-		return artifactKind(this.value);
+		return null;
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAscendants(
-				definer.getImplicitAscendants().addImplicitSample(
-						this.value.toStaticTypeRef()));
 	}
 
 	@Override
 	public AscendantsDefinition getAscendants() {
-		return this.samples;
+		return null;
 	}
 
 	@Override
@@ -65,25 +59,18 @@ final class ValueFieldDefinition extends FieldDefinition {
 
 	@Override
 	public Ref getValue() {
-		return this.value;
+		return null;
 	}
 
 	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref value = this.value.reproduce(reproducer);
-
-		if (value == null) {
-			return null;
-		}
-
-		return new ValueFieldDefinition(value);
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return this.value.toString();
+		return "INVALID DEFINITION";
 	}
 
 }

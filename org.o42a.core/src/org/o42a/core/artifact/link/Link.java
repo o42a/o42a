@@ -21,7 +21,9 @@ package org.o42a.core.artifact.link;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.*;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
@@ -35,7 +37,7 @@ import org.o42a.core.ref.type.TypeRelation;
 
 public abstract class Link extends Artifact<Link> {
 
-	public static DeclaredField<Link> declareField(
+	public static DeclaredField<Link, ?> declareField(
 			MemberField member,
 			ArtifactKind<Link> artifactKind) {
 		return new DeclaredLinkField(member, artifactKind);

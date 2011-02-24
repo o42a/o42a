@@ -78,7 +78,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 	public abstract TypeRef typeRef(TargetRef ref);
 
-	public abstract DeclaredField<A> declareField(MemberField member);
+	public abstract DeclaredField<A, ?> declareField(MemberField member);
 
 	public abstract FieldIR<A> fieldIR(IRGenerator generator, Field<A> field);
 
@@ -89,7 +89,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 	private static final class ObjectKind extends ArtifactKind<Obj> {
 
 		@Override
-		public DeclaredField<Obj> declareField(MemberField member) {
+		public DeclaredField<Obj, ?> declareField(MemberField member) {
 			return Obj.declareField(member);
 		}
 
@@ -124,7 +124,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public DeclaredField<Link> declareField(MemberField member) {
+		public DeclaredField<Link, ?> declareField(MemberField member) {
 			return Link.declareField(member, this);
 		}
 
@@ -160,7 +160,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 	private static final class ArrayKind extends ArtifactKind<Array> {
 
 		@Override
-		public DeclaredField<Array> declareField(MemberField member) {
+		public DeclaredField<Array, ?> declareField(MemberField member) {
 			return Array.declareField(member);
 		}
 

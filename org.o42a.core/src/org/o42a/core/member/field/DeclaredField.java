@@ -26,15 +26,15 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.st.DefinitionTarget;
 
 
-public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
+public abstract class DeclaredField<
+		A extends Artifact<A>,
+		V extends FieldVariant<A>>
+				extends Field<A> {
 
 	private final ArtifactKind<A> artifactKind;
-	private final ArrayList<FieldVariant<A>> variants =
-		new ArrayList<FieldVariant<A>>();
+	private final ArrayList<V> variants = new ArrayList<V>(1);
 
 	public DeclaredField(MemberField member, ArtifactKind<A> artifactKind) {
 		super(member);
@@ -43,7 +43,7 @@ public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
 
 	protected DeclaredField(
 			Container enclosingContainer,
-			DeclaredField<A> sample) {
+			DeclaredField<A, V> sample) {
 		super(enclosingContainer, sample);
 		this.artifactKind = sample.artifactKind;
 	}
@@ -75,35 +75,8 @@ public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
 		return getScopeArtifact();
 	}
 
-	public final List<FieldVariant<A>> getVariants() {
+	public final List<V> getVariants() {
 		return this.variants;
-	}
-
-	public Definitions define(DefinitionTarget target) {
-
-		Definitions result = null;
-
-		for (FieldVariant<A> variant : getVariants()) {
-
-			final Definitions definition = variant.define(target);
-
-			if (definition == null) {
-				continue;
-			}
-			if (result == null) {
-				result = definition;
-			} else {
-				result = result.refine(definition);
-			}
-		}
-
-		return result;
-	}
-
-	public void declareMembers() {
-		for (FieldVariant<A> variant : getVariants()) {
-			variant.declareMembers();
-		}
 	}
 
 	protected void mergeVariant(FieldVariant<A> variant) {
@@ -114,7 +87,7 @@ public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
 		newVariant.setStatement(variant.getStatement());
 	}
 
-	protected abstract FieldVariant<A> createVariant(
+	protected abstract V createVariant(
 			FieldDeclaration declaration,
 			FieldDefinition definition);
 
@@ -124,7 +97,7 @@ public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
 
 	@Override
 	protected final void merge(Field<?> field) {
-		if (!(field instanceof DeclaredField<?>)) {
+		if (!(field instanceof DeclaredField<?, ?>)) {
 			getLogger().ambiguousMember(field, getDisplayName());
 			return;
 		}
@@ -136,16 +109,17 @@ public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
 			return;
 		}
 
-		final DeclaredField<A> declaredField =
-			(DeclaredField<A>) field.toKind(getArtifactKind());
+		@SuppressWarnings("unchecked")
+		final DeclaredField<A, V> declaredField =
+			(DeclaredField<A, V>) field.toKind(getArtifactKind());
 
 		merge(declaredField);
 	}
 
-	protected abstract void merge(DeclaredField<A> other);
+	protected abstract void merge(DeclaredField<A, V> other);
 
 	@Override
-	protected abstract DeclaredField<A> propagate(Scope enclosingScope);
+	protected abstract DeclaredField<A, V> propagate(Scope enclosingScope);
 
 	FieldVariant<A> variant(
 			FieldDeclaration declaration,
@@ -154,7 +128,7 @@ public abstract class DeclaredField<A extends Artifact<A>> extends Field<A> {
 			return null;
 		}
 
-		final FieldVariant<A> variant = createVariant(declaration, definition);
+		final V variant = createVariant(declaration, definition);
 
 		if (variant == null) {
 			return null;

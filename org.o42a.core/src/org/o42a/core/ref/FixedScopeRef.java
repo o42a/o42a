@@ -23,10 +23,13 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.StaticAscendants;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition.ObjectDefiner;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -108,17 +111,17 @@ final class FixedScopeRef extends Ref {
 		}
 
 		@Override
+		public void defineObject(ObjectDefiner definer) {
+			this.definition.defineObject(new ObjectDefinerWrap(definer));
+		}
+
+		@Override
 		public AscendantsDefinition getAscendants() {
 			if (this.ascendants != null) {
 				return this.ascendants;
 			}
 			return this.ascendants =
 				this.definition.getAscendants().toStatic();
-		}
-
-		@Override
-		public BlockBuilder getDeclarations() {
-			return this.definition.getDeclarations();
 		}
 
 		@Override
@@ -145,6 +148,47 @@ final class FixedScopeRef extends Ref {
 			}
 
 			return new FixedFieldDefinition(definition);
+		}
+
+	}
+
+	private static final class ObjectDefinerWrap implements ObjectDefiner {
+
+		private final ObjectDefiner definer;
+		private StaticAscendants ascendants;
+
+		ObjectDefinerWrap(ObjectDefiner definer) {
+			this.definer = definer;
+			this.ascendants =
+				new StaticAscendants(definer.getImplicitAscendants());
+		}
+
+		@Override
+		public Field<Obj> getField() {
+			return this.definer.getField();
+		}
+
+		@Override
+		public Ascendants getImplicitAscendants() {
+			return this.ascendants;
+		}
+
+		@Override
+		public void setAscendants(Ascendants ascendants) {
+			this.definer.setAscendants(ascendants);
+		}
+
+		@Override
+		public void setDefinitions(BlockBuilder definitions) {
+			this.definer.setDefinitions(definitions);
+		}
+
+		@Override
+		public String toString() {
+			if (this.definer == null) {
+				return super.toString();
+			}
+			return this.definer.toString();
 		}
 
 	}

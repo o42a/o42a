@@ -35,7 +35,6 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefWrap;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
 
@@ -219,13 +218,13 @@ public abstract class Wrap extends Ref {
 		}
 
 		@Override
-		public AscendantsDefinition getAscendants() {
-			return def().getAscendants();
+		public void defineObject(ObjectDefiner definer) {
+			def().defineObject(definer);
 		}
 
 		@Override
-		public BlockBuilder getDeclarations() {
-			return def().getDeclarations();
+		public AscendantsDefinition getAscendants() {
+			return def().getAscendants();
 		}
 
 		@Override

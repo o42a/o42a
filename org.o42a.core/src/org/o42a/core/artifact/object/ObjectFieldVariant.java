@@ -28,9 +28,14 @@ import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.*;
 
 
-final class ObjectFieldVariant extends FieldVariant<Obj> {
+final class ObjectFieldVariant
+		extends FieldVariant<Obj>
+		implements FieldDefinition.ObjectDefiner {
 
 	private Block<Declaratives> content;
+	private Ascendants implicitAscendants;
+	private Ascendants ascendants;
+	private BlockBuilder definitions;
 
 	public ObjectFieldVariant(
 			DeclaredObjectField field,
@@ -47,38 +52,63 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 	}
 
 	@Override
-	protected void init() {
-		getContent();
+	public final Ascendants getImplicitAscendants() {
+		return this.implicitAscendants;
 	}
 
 	@Override
-	protected void declareMembers() {
+	public void setAscendants(Ascendants ascendants) {
+		this.ascendants = ascendants;
+	}
+
+	@Override
+	public void setDefinitions(BlockBuilder definitions) {
+		this.definitions = definitions;
+	}
+
+	@Override
+	protected void init() {
+	}
+
+	Ascendants buildAscendants(Ascendants implicitAscendants) {
+		this.implicitAscendants = implicitAscendants;
+		this.ascendants = implicitAscendants;
+		getDefinition().defineObject(this);
+		return this.ascendants;
+	}
+
+	void declareMembers() {
 		getContent().executeInstructions();
 	}
 
-	@Override
-	protected Definitions define(DefinitionTarget target) {
-		return getContent().define(target);
+	Definitions define(Definitions definitions, DefinitionTarget target) {
+
+		final Definitions variantDefinitions = getContent().define(target);
+
+		if (variantDefinitions == null) {
+			return definitions;
+		}
+		if (definitions == null) {
+			return variantDefinitions;
+		}
+
+		return definitions.refine(variantDefinitions);
 	}
 
 	private void buildContent() {
-
-		final FieldDefinition definition = getDefinition();
-
 		this.content = new DeclarativeBlock(
-				definition,
+				getDefinition(),
 				getField(),
 				null,
 				getObjectField().getMemberRegistry());
 		this.content.setConditions(getInitialConditions());
 
-		final BlockBuilder declarations = definition.getDeclarations();
-
-		if (declarations != null) {
-			declarations.buildBlock(this.content);
+		if (this.definitions != null) {
+			this.definitions.buildBlock(this.content);
 		} else {
+			// TODO remove definition by value
 
-			final Ref value = definition.getValue();
+			final Ref value = getDefinition().getValue();
 
 			if (value != null) {
 				this.content.propose(value).alternative(value).assign(value);

@@ -55,6 +55,11 @@ final class OverriddenObject extends PlainObject {
 	}
 
 	@Override
+	protected void updateMembers() {
+		this.field.updateMembers();
+	}
+
+	@Override
 	protected Definitions explicitDefinitions() {
 		return this.field.define(new DefinitionTarget(
 				getScope(),

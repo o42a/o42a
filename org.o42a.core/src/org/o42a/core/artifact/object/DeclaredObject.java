@@ -28,13 +28,11 @@ import org.o42a.core.st.DefinitionTarget;
 
 class DeclaredObject extends PlainObject {
 
-	private final Ascendants explicitAscendants;
 	private final DeclaredObjectField field;
 
-	DeclaredObject(DeclaredObjectField field, Ascendants explicitAscendants) {
+	DeclaredObject(DeclaredObjectField field) {
 		super(field);
 		this.field = field;
-		this.explicitAscendants = explicitAscendants;
 	}
 
 	@Override
@@ -44,10 +42,15 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		if (this.explicitAscendants.getAncestor() != null) {
-			return this.explicitAscendants;
+
+		final Ascendants ascendants =
+			this.field.buildAscendants(new Ascendants(this));
+
+		if (ascendants.getAncestor() != null) {
+			return ascendants;
 		}
-		return this.explicitAscendants.setAncestor(voidRef(
+
+		return ascendants.setAncestor(voidRef(
 						this,
 						getScope().getEnclosingScope().distribute())
 				.toTypeRef());
@@ -60,7 +63,7 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected void updateMembers() {
-		this.field.declareMembers();
+		this.field.updateMembers();
 	}
 
 	@Override

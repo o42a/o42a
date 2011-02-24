@@ -19,11 +19,9 @@
 */
 package org.o42a.core.artifact.array;
 
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.FieldVariant;
-import org.o42a.core.st.DefinitionTarget;
 
 
 final class ArrayFieldVariant extends FieldVariant<Array> {
@@ -41,16 +39,6 @@ final class ArrayFieldVariant extends FieldVariant<Array> {
 			getLogger().prohibitedConditionalDeclaration(this);
 			getArrayField().invalid();
 		}
-	}
-
-	@Override
-	protected void declareMembers() {
-	}
-
-	@Override
-	protected Definitions define(DefinitionTarget scope) {
-		throw new UnsupportedOperationException(
-				"An attempt to define array: " + this);
 	}
 
 	private final DeclaredArrayField getArrayField() {
