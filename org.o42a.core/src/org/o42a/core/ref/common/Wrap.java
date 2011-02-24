@@ -118,7 +118,7 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final FieldDefinition toFieldDefinition() {
+	public FieldDefinition toFieldDefinition() {
 		if (this.wrapped != null) {
 			return this.wrapped.toFieldDefinition();
 		}
