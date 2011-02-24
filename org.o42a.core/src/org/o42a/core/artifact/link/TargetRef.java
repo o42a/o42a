@@ -114,6 +114,17 @@ public final class TargetRef extends RescopableRef {
 	}
 
 	@Override
+	public String toString() {
+		if (this.typeRef != null) {
+			return "(" + this.typeRef + ") " + this.ref;
+		}
+		if (this.ref == null) {
+			return super.toString();
+		}
+		return this.ref.toString();
+	}
+
+	@Override
 	protected final Ref getScoped() {
 		return this.ref;
 	}

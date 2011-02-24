@@ -25,9 +25,9 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.st.St;
 
 
-public abstract class RefBase extends St {
+public abstract class RefDefBase extends St {
 
-	public RefBase(LocationInfo location, Distributor distributor) {
+	public RefDefBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

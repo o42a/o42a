@@ -23,7 +23,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.SelfRefBase;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
@@ -34,7 +33,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
 
-final class SelfRef extends SelfRefBase {
+final class SelfRef extends Ref {
 
 	private final Resolution self;
 

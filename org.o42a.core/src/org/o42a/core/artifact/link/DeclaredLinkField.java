@@ -55,7 +55,7 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 
 	@Override
 	protected Link overrideArtifact() {
-		return new OverriddenLink(this);
+		return new OverriderLink(this);
 	}
 
 	@Override

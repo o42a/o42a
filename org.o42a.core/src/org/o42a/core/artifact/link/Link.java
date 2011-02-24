@@ -144,28 +144,31 @@ public abstract class Link extends Artifact<Link> {
 
 	private void define() {
 
-		final TargetRef ref = buildTargetRef();
+		final TargetRef targetRef = buildTargetRef();
 		final TypeRef typeRef = buildTypeRef();
 
-		ref.assertCompatible(getScope().getEnclosingScope());
+		targetRef.assertScopeIs(getScope().getEnclosingScope());
+
 		if (typeRef == null) {
-			this.targetRef = ref;
-			this.typeRef = ref.getTypeRef();
+			this.targetRef = targetRef;
+			this.typeRef = targetRef.getTypeRef();
 			return;
 		}
 
-		final TypeRelation relation = typeRef.relationTo(refType(ref));
+		typeRef.assertScopeIs(getScope().getEnclosingScope());
+
+		final TypeRelation relation = typeRef.relationTo(refType(targetRef));
 
 		if (!relation.isAscendant()) {
 			if (!relation.isError()) {
-				getLogger().notDerivedFrom(ref, typeRef);
+				getLogger().notDerivedFrom(targetRef, typeRef);
 			}
-			this.targetRef = correctTargetRef(ref, typeRef);
-			this.typeRef = correctTypeRef(ref, typeRef);
+			this.targetRef = correctTargetRef(targetRef, typeRef);
+			this.typeRef = correctTypeRef(targetRef, typeRef);
 			return;
 		}
 
-		this.targetRef = ref;
+		this.targetRef = targetRef;
 		this.typeRef = typeRef;
 	}
 

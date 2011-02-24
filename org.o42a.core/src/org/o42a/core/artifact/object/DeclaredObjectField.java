@@ -51,7 +51,7 @@ class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
 
 	@Override
 	protected Obj overrideArtifact() {
-		return new OverriddenObject(this);
+		return new OverriderObject(this);
 	}
 
 	@Override
