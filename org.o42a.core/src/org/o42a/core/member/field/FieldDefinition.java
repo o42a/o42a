@@ -123,9 +123,11 @@ public abstract class FieldDefinition extends Placed {
 
 		Ascendants getImplicitAscendants();
 
+		Ascendants getAscendants();
+
 		void setAscendants(Ascendants ascendants);
 
-		void setDefinitions(BlockBuilder definitions);
+		void define(BlockBuilder definitions);
 
 	}
 

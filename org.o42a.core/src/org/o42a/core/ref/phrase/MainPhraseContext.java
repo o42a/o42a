@@ -26,13 +26,13 @@ import java.util.LinkedList;
 
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.member.AdapterId;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -46,7 +46,7 @@ final class MainPhraseContext extends PhraseContext {
 	private int createsObject;
 	private boolean standaloneRef;
 	private PhraseContext nextContext;
-	private FieldDeclaration fieldDeclaration;
+	private Ascendants implicitAscendants;
 
 	MainPhraseContext(Phrase phrase) {
 		super(phrase, phrase.getPrefix());
@@ -80,7 +80,7 @@ final class MainPhraseContext extends PhraseContext {
 
 		final ClauseInstance instance = instances[0];
 
-		return instance.instantiateObject(getPhrase().distribute());
+		return instance.instantiateObject(getPhrase().distribute(), true);
 	}
 
 	@Override
@@ -136,8 +136,8 @@ final class MainPhraseContext extends PhraseContext {
 		return this;
 	}
 
-	void setFieldDeclaration(FieldDeclaration fieldDeclaration) {
-		this.fieldDeclaration = fieldDeclaration;
+	void setImplicitAscendants(Ascendants implicitAscendants) {
+		this.implicitAscendants = implicitAscendants;
 	}
 
 	NextClause findObjectClause(LocationInfo location, MemberId memberId) {
@@ -155,24 +155,14 @@ final class MainPhraseContext extends PhraseContext {
 			}
 		}
 
-		if (this.fieldDeclaration != null) {
+		if (this.implicitAscendants != null) {
+			for (Sample sample : this.implicitAscendants.getSamples()) {
 
-			final AdapterId adapterId =
-				this.fieldDeclaration.getMemberId().getAdapterId();
+				final NextClause found =
+					findClause(sample.getType(), location, memberId);
 
-			if (adapterId != null) {
-
-				final StaticTypeRef adapterType =
-					adapterId.adapterType(getPhrase().getScope());
-
-				if (adapterType != null) {
-
-					final NextClause found =
-						findClause(adapterType.getType(), location, memberId);
-
-					if (found.found()) {
-						return found;
-					}
+				if (found != null) {
+					return found;
 				}
 			}
 		}
@@ -186,6 +176,20 @@ final class MainPhraseContext extends PhraseContext {
 
 			if (found.found()) {
 				return found;
+			}
+		} else if (this.implicitAscendants != null) {
+
+			final TypeRef implicitAncestor =
+				this.implicitAscendants.getExplicitAncestor();
+
+			if (implicitAncestor != null) {
+
+				final NextClause found =
+					findClause(implicitAncestor.getType(), location, memberId);
+
+				if (found != null) {
+					return found;
+				}
 			}
 		}
 

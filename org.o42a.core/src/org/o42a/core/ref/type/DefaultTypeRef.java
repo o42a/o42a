@@ -59,6 +59,14 @@ final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
+	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
+		return this.ref.toString();
+	}
+
+	@Override
 	protected Ref getScoped() {
 		return this.ref;
 	}

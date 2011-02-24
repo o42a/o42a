@@ -45,6 +45,8 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
+		this.phrase.getMainContext().setImplicitAscendants(
+				definer.getImplicitAscendants());
 		getDefinition().defineObject(definer);
 	}
 
@@ -73,7 +75,7 @@ final class PhraseFieldDefinition extends FieldDefinition {
 
 	@Override
 	public String toString() {
-		return this.phrase.toString();
+		return "FieldDefinition[" + this.phrase + ']';
 	}
 
 	private final FieldDefinition getDefinition() {
@@ -82,11 +84,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 		}
 
 		final MainPhraseContext mainContext = this.phrase.getMainContext();
-
-		if (!mainContext.createsObject()) {
-			return this.definition =
-				mainContext.standaloneRef().toFieldDefinition();
-		}
 
 		return this.definition = fieldDefinition(
 				this,

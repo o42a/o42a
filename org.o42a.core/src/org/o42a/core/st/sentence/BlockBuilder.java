@@ -22,6 +22,7 @@ package org.o42a.core.st.sentence;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Location;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.ref.Ref;
 import org.o42a.util.log.LogInfo;
 
 
@@ -29,6 +30,10 @@ public abstract class BlockBuilder extends Location {
 
 	public static BlockBuilder emptyBlock(LocationInfo location) {
 		return new EmptyBlock(location);
+	}
+
+	public static BlockBuilder valueBlock(Ref value) {
+		return new ValueBlock(value);
 	}
 
 	public BlockBuilder(CompilerContext context, LogInfo logInfo) {
@@ -49,6 +54,22 @@ public abstract class BlockBuilder extends Location {
 
 		@Override
 		public void buildBlock(Block<?> block) {
+		}
+
+	}
+
+	private static final class ValueBlock extends BlockBuilder {
+
+		private final Ref value;
+
+		public ValueBlock(Ref value) {
+			super(value.getContext(), value);
+			this.value = value;
+		}
+
+		@Override
+		public void buildBlock(Block<?> block) {
+			block.propose(this).alternative(this).assign(this.value);
 		}
 
 	}

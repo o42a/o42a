@@ -22,8 +22,6 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.arrayInitializer;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.Interpreter.phrase;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.core.member.field.FieldDefinition.arrayDefinition;
 import static org.o42a.core.member.field.FieldDefinition.defaultDefinition;
 
@@ -51,24 +49,6 @@ public class DefinitionVisitor
 			return defaultDefinition(location(p, ref), p.distribute());
 		}
 		return super.visitScopeRef(ref, p);
-	}
-
-	@Override
-	public FieldDefinition visitAscendants(
-			AscendantsNode ascendants,
-			FieldDeclaration p) {
-		if (ascendants.getAscendants().length != 1) {
-			return phrase(ascendants, p.distribute()).toFieldDefinition(p);
-		}
-
-		return ascendants.getAscendants()[0].getAscendant().accept(
-					REF_VISITOR,
-					p.distribute()).fixScope().toFieldDefinition();
-	}
-
-	@Override
-	public FieldDefinition visitPhrase(PhraseNode phrase, FieldDeclaration p) {
-		return phrase(phrase, p.distribute()).toFieldDefinition(p);
 	}
 
 	@Override

@@ -168,7 +168,7 @@ class PhraseSubContext extends PhraseContext {
 		for (ClauseInstance instance : getInstances()) {
 
 			final Ref ref =
-				instance.instantiateObject(statements.nextDistributor());
+				instance.instantiateObject(statements.nextDistributor(), false);
 
 			if (ref == null) {
 				continue;

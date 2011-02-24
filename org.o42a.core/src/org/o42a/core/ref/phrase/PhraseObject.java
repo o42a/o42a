@@ -25,6 +25,7 @@ import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
@@ -93,6 +94,12 @@ class PhraseObject extends DefinedObject {
 		@Override
 		public TypeRef ancestor(LocationInfo location) {
 			return this.ascendants.getAncestor();
+		}
+
+		@Override
+		public FieldDefinition toFieldDefinition() {
+			return new PhraseFieldDefinition(
+					this.mainContext.getPhrase());
 		}
 
 		@Override
