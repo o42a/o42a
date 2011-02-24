@@ -32,6 +32,7 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.member.field.FieldDefinition.ObjectDefiner;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.Value;
 
 
 final class FixedScopeRef extends Ref {
@@ -41,6 +42,11 @@ final class FixedScopeRef extends Ref {
 	FixedScopeRef(Ref ref) {
 		super(ref, ref.distribute());
 		this.ref = ref;
+	}
+
+	@Override
+	public Value<?> value(Scope scope) {
+		return calculateValue(getResolution().materialize(), scope);
 	}
 
 	@Override
@@ -86,7 +92,7 @@ final class FixedScopeRef extends Ref {
 		assert artifact != null :
 			"Not artifact: " + this.ref;
 
-		return artifact.fixedRef(distribute()).op(host);
+		return artifact.selfRef().op(host);
 	}
 
 	private static final class FixedFieldDefinition extends FieldDefinition {

@@ -58,7 +58,7 @@ class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 			getLogger().prohibitedPrototype(this);
 			invalid();
 		}
-		return new OverriddenArray(this);
+		return new OverriderArray(this);
 	}
 
 	@Override

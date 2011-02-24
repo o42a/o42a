@@ -44,7 +44,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.type.RefBase;
+import org.o42a.core.ref.type.RefTypeBase;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.*;
@@ -58,7 +58,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class Ref extends RefBase {
+public abstract class Ref extends RefTypeBase {
 
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 

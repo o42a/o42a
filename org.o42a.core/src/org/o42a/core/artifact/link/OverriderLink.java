@@ -25,11 +25,11 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
 
-final class OverriddenLink extends Link {
+final class OverriderLink extends Link {
 
 	private final DeclaredLinkField field;
 
-	OverriddenLink(DeclaredLinkField field) {
+	OverriderLink(DeclaredLinkField field) {
 		super(field, field.getArtifactKind());
 		this.field = field;
 	}
@@ -66,6 +66,36 @@ final class OverriddenLink extends Link {
 		return inherited;
 	}
 
+	@Override
+	protected TargetRef buildTargetRef() {
+
+		final TargetRef declared = this.field.declaredRef();
+
+		if (declared != null) {
+			return declared;
+		}
+
+		final Field<Link>[] overridden = this.field.getOverridden();
+
+		if (overridden.length != 1) {
+			getLogger().requiredLinkTarget(this.field);
+		}
+
+		return overridden[0].getArtifact().getTargetRef().upgradeScope(
+				getScope().getEnclosingScope());
+	}
+
+	@Override
+	protected TypeRef correctTypeRef(TargetRef targetRef, TypeRef typeRef) {
+		return getOverridden().getTypeRef().upgradeScope(
+				getScope().getEnclosingScope());
+	}
+
+	@Override
+	protected TargetRef correctTargetRef(TargetRef targetRef, TypeRef typeRef) {
+		return getOverridden().getTargetRef();
+	}
+
 	private TypeRef declaredTypeRef() {
 
 		final FieldDefinition definition = this.field.getDefinition();
@@ -84,35 +114,6 @@ final class OverriddenLink extends Link {
 		}
 
 		return typeRef.rescope(this.field.getEnclosingScope());
-	}
-
-	@Override
-	protected TargetRef buildTargetRef() {
-
-		final TargetRef ref = this.field.declaredRef();
-
-		if (ref != null) {
-			return ref;
-		}
-
-		final Field<Link>[] overridden = this.field.getOverridden();
-
-		if (overridden.length != 1) {
-			getLogger().requiredLinkTarget(this.field);
-		}
-
-		return overridden[0].getArtifact().getTargetRef();
-	}
-
-	@Override
-	protected TypeRef correctTypeRef(TargetRef targetRef, TypeRef typeRef) {
-		return getOverridden().getTypeRef().upgradeScope(
-				getScope().getEnclosingScope());
-	}
-
-	@Override
-	protected TargetRef correctTargetRef(TargetRef targetRef, TypeRef typeRef) {
-		return getOverridden().getTargetRef();
 	}
 
 	private Link getOverridden() {

@@ -26,11 +26,11 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.st.DefinitionTarget;
 
 
-final class OverriddenObject extends PlainObject {
+final class OverriderObject extends PlainObject {
 
 	private final DeclaredObjectField field;
 
-	OverriddenObject(DeclaredObjectField field) {
+	OverriderObject(DeclaredObjectField field) {
 		super(field);
 		this.field = field;
 	}

@@ -56,7 +56,8 @@ final class PropagatedLink extends Link {
 			getLogger().requiredLinkTarget(this.field);
 		}
 
-		return overridden[0].getArtifact().getTargetRef();
+		return overridden[0].getArtifact().getTargetRef().upgradeScope(
+				getScope().getEnclosingScope());
 	}
 
 }

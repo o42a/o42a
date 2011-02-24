@@ -22,17 +22,17 @@ package org.o42a.core.artifact.object;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.def.RefDefBase;
 import org.o42a.core.value.Value;
 
 
-public abstract class SelfRefBase extends Ref {
+public abstract class RefObjectBase extends RefDefBase {
 
 	protected static Value<?> calculateValue(Obj object, Scope scope) {
 		return object.calculateValue(scope);
 	}
 
-	public SelfRefBase(LocationInfo location, Distributor distributor) {
+	public RefObjectBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

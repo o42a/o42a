@@ -26,11 +26,11 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
 
-final class OverriddenArray extends Array {
+final class OverriderArray extends Array {
 
 	private final DeclaredArrayField field;
 
-	OverriddenArray(DeclaredArrayField field) {
+	OverriderArray(DeclaredArrayField field) {
 		super(field, field.getOverridden()[0].getArtifact());
 		this.field = field;
 	}
