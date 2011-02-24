@@ -22,7 +22,6 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Definitions.NO_DEFS;
 import static org.o42a.core.def.LogicalDef.emptyLogicalDef;
 import static org.o42a.core.def.LogicalDef.trueLogicalDef;
-import static org.o42a.core.ref.Logical.logicalFalse;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Ref.voidRef;
 
@@ -53,13 +52,6 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 				logicalTrue(location, distributor.getScope()));
 	}
 
-	public static Def falseDef(LocationInfo location, Distributor distributor) {
-		return voidDef(
-				location,
-				distributor,
-				logicalFalse(location, distributor.getScope()));
-	}
-
 	public static Def voidClaim(
 			LocationInfo location,
 			Distributor distributor) {
@@ -67,15 +59,6 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 				location,
 				distributor,
 				logicalTrue(location, distributor.getScope()));
-	}
-
-	public static Def falseClaim(
-			LocationInfo location,
-			Distributor distributor) {
-		return voidClaim(
-				location,
-				distributor,
-				logicalFalse(location, distributor.getScope()));
 	}
 
 	public static Def voidDef(

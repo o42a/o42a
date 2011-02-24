@@ -19,9 +19,9 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.def.Def.falseDef;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.common.intrinsic.IntrinsicObject;
@@ -56,7 +56,7 @@ public final class False extends IntrinsicObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return falseDef(this, distribute()).toDefinitions();
+		return falseRef(this, distribute()).toDef().toDefinitions();
 	}
 
 	@Override
