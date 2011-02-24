@@ -25,7 +25,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.*;
 import org.o42a.core.st.DefinitionTarget;
 
@@ -87,23 +86,15 @@ class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
 		return this.memberRegistry;
 	}
 
-	Ascendants buildAscendants(Ascendants ascendants) {
-
-		final AdapterId adapterId =
-			getDeclaration().getMemberId().getAdapterId();
-
-		if (adapterId == null) {
-			this.ascendants = ascendants;
-		} else {
-			this.ascendants =
-				ascendants.addExplicitSample(
-						adapterId.adapterType(getEnclosingScope()));
-		}
+	Ascendants buildAscendants(Ascendants implicitAscendants) {
+		this.ascendants = implicitAscendants;
 
 		final List<ObjectFieldVariant> variants = getVariants();
 
 		for (ObjectFieldVariant variant : variants) {
-			this.ascendants = variant.buildAscendants(this.ascendants);
+			this.ascendants = variant.buildAscendants(
+					implicitAscendants,
+					this.ascendants);
 		}
 
 		return this.ascendants;

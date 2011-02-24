@@ -21,10 +21,13 @@ package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.common.Wrap;
@@ -36,10 +39,15 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 final class ClauseInstantiation extends Wrap {
 
 	private final ClauseInstance instance;
+	private final boolean topLevel;
 
-	ClauseInstantiation(ClauseInstance instance, Distributor distributor) {
+	ClauseInstantiation(
+			ClauseInstance instance,
+			Distributor distributor,
+			boolean topLevel) {
 		super(instance.getLocation(), distributor);
 		this.instance = instance;
+		this.topLevel = topLevel;
 	}
 
 	@Override
@@ -53,26 +61,47 @@ final class ClauseInstantiation extends Wrap {
 		final AscendantsDefinition ascendants =
 			this.instance.getContext().ascendants(this, distribute());
 
-		return new ClauseConstructor(this.instance, distribute(), ascendants);
+		return new ClauseConstructor(
+				this.instance,
+				distribute(),
+				this.topLevel,
+				ascendants);
 	}
 
 	private static final class ClauseConstructor extends ObjectConstructor {
 
 		private final ClauseInstance instance;
 		private final AscendantsDefinition ascendants;
+		private final boolean topLevel;
 
 		ClauseConstructor(
 				ClauseInstance instance,
 				Distributor distributor,
+				boolean topLevel,
 				AscendantsDefinition ascendants) {
 			super(instance.getLocation(), distributor);
 			this.instance = instance;
 			this.ascendants = ascendants;
+			this.topLevel = topLevel;
 		}
 
 		@Override
 		public TypeRef ancestor(LocationInfo location) {
 			return this.ascendants.getAncestor();
+		}
+
+		@Override
+		public FieldDefinition toFieldDefinition() {
+
+			final Phrase phrase = this.instance.getContext().getPhrase();
+
+			if (this.topLevel) {
+				return new TopInstanceDefinition(
+						phrase.getMainContext(),
+						super.toFieldDefinition());
+			}
+
+			return super.toFieldDefinition();
 		}
 
 		@Override
@@ -97,7 +126,60 @@ final class ClauseInstantiation extends Wrap {
 			return new ClauseConstructor(
 					this.instance,
 					reproducer.distribute(),
+					this.topLevel,
 					ascendants);
+		}
+
+	}
+
+	private static final class TopInstanceDefinition extends FieldDefinition {
+
+		private final FieldDefinition definition;
+		private final MainPhraseContext mainContext;
+
+		public TopInstanceDefinition(
+				MainPhraseContext mainContext,
+				FieldDefinition definition) {
+			super(definition, definition.distribute());
+			this.mainContext = mainContext;
+			this.definition = definition;
+		}
+
+		@Override
+		public ArtifactKind<?> determineArtifactKind() {
+			return this.definition.determineArtifactKind();
+		}
+
+		@Override
+		public void defineObject(ObjectDefiner definer) {
+			this.mainContext.setImplicitAscendants(
+					definer.getImplicitAscendants());
+			this.definition.defineObject(definer);
+		}
+
+		@Override
+		public AscendantsDefinition getAscendants() {
+			return this.definition.getAscendants();
+		}
+
+		@Override
+		public ArrayInitializer getArrayInitializer() {
+			return this.definition.getArrayInitializer();
+		}
+
+		@Override
+		public Ref getValue() {
+			return this.definition.getValue();
+		}
+
+		@Override
+		public FieldDefinition reproduce(Reproducer reproducer) {
+			return this.definition.reproduce(reproducer);
+		}
+
+		@Override
+		public String toString() {
+			return this.definition.toString();
 		}
 
 	}

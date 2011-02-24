@@ -22,8 +22,6 @@ package org.o42a.core.ref.phrase;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -102,12 +100,6 @@ public class Phrase extends Placed {
 
 	public final Ref toRef() {
 		return new PhraseEx(this);
-	}
-
-	public final FieldDefinition toFieldDefinition(
-			FieldDeclaration declaration) {
-		getMainContext().setFieldDeclaration(declaration);
-		return new PhraseFieldDefinition(this);
 	}
 
 	@Override

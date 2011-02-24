@@ -49,8 +49,7 @@ final class PathTargetDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAscendants(
-				definer.getImplicitAscendants().setAncestor(
-						this.target.toTypeRef()));
+				definer.getAscendants().setAncestor(this.target.toTypeRef()));
 	}
 
 	@Override

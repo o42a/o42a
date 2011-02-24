@@ -70,9 +70,8 @@ final class DefaultFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAscendants(
-				this.ascendants.updateAscendants(
-						definer.getImplicitAscendants()));
-		definer.setDefinitions(this.definitions);
+				this.ascendants.updateAscendants(definer.getAscendants()));
+		definer.define(this.definitions);
 	}
 
 	@Override

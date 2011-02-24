@@ -23,7 +23,6 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.FieldVariant;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.*;
 
@@ -35,7 +34,6 @@ final class ObjectFieldVariant
 	private Block<Declaratives> content;
 	private Ascendants implicitAscendants;
 	private Ascendants ascendants;
-	private BlockBuilder definitions;
 
 	public ObjectFieldVariant(
 			DeclaredObjectField field,
@@ -45,9 +43,17 @@ final class ObjectFieldVariant
 	}
 
 	public Block<Declaratives> getContent() {
-		if (this.content == null) {
-			buildContent();
+		if (this.content != null) {
+			return this.content;
 		}
+
+		this.content = new DeclarativeBlock(
+				getDefinition(),
+				getField(),
+				null,
+				getObjectField().getMemberRegistry());
+		this.content.setConditions(getInitialConditions());
+
 		return this.content;
 	}
 
@@ -57,22 +63,29 @@ final class ObjectFieldVariant
 	}
 
 	@Override
+	public Ascendants getAscendants() {
+		return this.ascendants;
+	}
+
+	@Override
 	public void setAscendants(Ascendants ascendants) {
 		this.ascendants = ascendants;
 	}
 
 	@Override
-	public void setDefinitions(BlockBuilder definitions) {
-		this.definitions = definitions;
+	public void define(BlockBuilder definitions) {
+		definitions.buildBlock(getContent());
 	}
 
 	@Override
 	protected void init() {
 	}
 
-	Ascendants buildAscendants(Ascendants implicitAscendants) {
+	Ascendants buildAscendants(
+			Ascendants implicitAscendants,
+			Ascendants ascendants) {
 		this.implicitAscendants = implicitAscendants;
-		this.ascendants = implicitAscendants;
+		this.ascendants = ascendants;
 		getDefinition().defineObject(this);
 		return this.ascendants;
 	}
@@ -93,27 +106,6 @@ final class ObjectFieldVariant
 		}
 
 		return definitions.refine(variantDefinitions);
-	}
-
-	private void buildContent() {
-		this.content = new DeclarativeBlock(
-				getDefinition(),
-				getField(),
-				null,
-				getObjectField().getMemberRegistry());
-		this.content.setConditions(getInitialConditions());
-
-		if (this.definitions != null) {
-			this.definitions.buildBlock(this.content);
-		} else {
-			// TODO remove definition by value
-
-			final Ref value = getDefinition().getValue();
-
-			if (value != null) {
-				this.content.propose(value).alternative(value).assign(value);
-			}
-		}
 	}
 
 	private final DeclaredObjectField getObjectField() {

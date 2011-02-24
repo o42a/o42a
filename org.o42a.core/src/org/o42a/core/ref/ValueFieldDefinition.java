@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.AscendantsDefinition;
@@ -49,8 +51,9 @@ final class ValueFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAscendants(
-				definer.getImplicitAscendants().addImplicitSample(
+				definer.getAscendants().addImplicitSample(
 						this.value.toStaticTypeRef()));
+		definer.define(valueBlock(this.value));
 	}
 
 	@Override

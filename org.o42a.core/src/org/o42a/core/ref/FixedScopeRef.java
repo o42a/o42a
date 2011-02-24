@@ -155,11 +155,12 @@ final class FixedScopeRef extends Ref {
 	private static final class ObjectDefinerWrap implements ObjectDefiner {
 
 		private final ObjectDefiner definer;
-		private StaticAscendants ascendants;
+		private final StaticAscendants implicitAscendants;
+		private Ascendants ascendants;
 
 		ObjectDefinerWrap(ObjectDefiner definer) {
 			this.definer = definer;
-			this.ascendants =
+			this.implicitAscendants =
 				new StaticAscendants(definer.getImplicitAscendants());
 		}
 
@@ -170,17 +171,27 @@ final class FixedScopeRef extends Ref {
 
 		@Override
 		public Ascendants getImplicitAscendants() {
-			return this.ascendants;
+			return this.implicitAscendants;
+		}
+
+		@Override
+		public Ascendants getAscendants() {
+			if (this.ascendants != null) {
+				return this.ascendants;
+			}
+			return this.ascendants =
+				new StaticAscendants(this.definer.getAscendants());
 		}
 
 		@Override
 		public void setAscendants(Ascendants ascendants) {
 			this.definer.setAscendants(ascendants);
+			this.ascendants = ascendants;
 		}
 
 		@Override
-		public void setDefinitions(BlockBuilder definitions) {
-			this.definer.setDefinitions(definitions);
+		public void define(BlockBuilder definitions) {
+			this.definer.define(definitions);
 		}
 
 		@Override

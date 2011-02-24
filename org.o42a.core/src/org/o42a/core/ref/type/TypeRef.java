@@ -197,7 +197,7 @@ public abstract class TypeRef extends RescopableRef {
 		if (getRef() == getUntachedRef()) {
 			untouchedRef = ref;
 		} else {
-			untouchedRef = ref.reproduce(rescopedReproducer);
+			untouchedRef = getUntachedRef().reproduce(rescopedReproducer);
 			if (untouchedRef == null) {
 				return null;
 			}

@@ -23,6 +23,7 @@ import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.AdapterId;
 import org.o42a.core.st.DefinitionTarget;
 
 
@@ -43,8 +44,16 @@ class DeclaredObject extends PlainObject {
 	@Override
 	protected Ascendants buildAscendants() {
 
-		final Ascendants ascendants =
-			this.field.buildAscendants(new Ascendants(this));
+		Ascendants ascendants = new Ascendants(this);
+		final AdapterId adapterId =
+			this.field.getDeclaration().getMemberId().getAdapterId();
+
+		if (adapterId != null) {
+			ascendants = ascendants.addExplicitSample(
+					adapterId.adapterType(getScope().getEnclosingScope()));
+		}
+
+		ascendants = this.field.buildAscendants(ascendants);
 
 		if (ascendants.getAncestor() != null) {
 			return ascendants;
