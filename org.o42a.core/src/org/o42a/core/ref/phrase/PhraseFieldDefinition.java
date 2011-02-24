@@ -25,7 +25,6 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.sentence.BlockBuilder;
 
 
 final class PhraseFieldDefinition extends FieldDefinition {
@@ -45,13 +44,13 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public AscendantsDefinition getAscendants() {
-		return getDefinition().getAscendants();
+	public void defineObject(ObjectDefiner definer) {
+		getDefinition().defineObject(definer);
 	}
 
 	@Override
-	public BlockBuilder getDeclarations() {
-		return getDefinition().getDeclarations();
+	public AscendantsDefinition getAscendants() {
+		return getDefinition().getAscendants();
 	}
 
 	@Override

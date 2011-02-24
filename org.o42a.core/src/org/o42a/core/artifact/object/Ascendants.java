@@ -23,7 +23,8 @@ import java.util.Arrays;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.*;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.Directive;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -31,7 +32,7 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.ArrayUtil;
 
 
-public final class Ascendants {
+public class Ascendants {
 
 	private static final Sample[] NO_SAMPLES = new Sample[0];
 	private static final byte EXPLICIT_RUNTIME = 2;
@@ -51,6 +52,14 @@ public final class Ascendants {
 
 	public Ascendants(Obj object) {
 		this.scope = object.getScope();
+	}
+
+	protected Ascendants(Ascendants ascendants) {
+		this.scope = ascendants.getScope();
+		this.explicitAncestor = ascendants.explicitAncestor;
+		this.samples = ascendants.samples;
+		this.discardedSamples = ascendants.discardedSamples;
+		this.runtime = ascendants.runtime;
 	}
 
 	public final Scope getScope() {

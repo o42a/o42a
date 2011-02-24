@@ -17,73 +17,62 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.member.field;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.ImplicitSamplesDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
-final class ValueFieldDefinition extends FieldDefinition {
+final class ArrayFieldDefinition extends FieldDefinition {
 
-	private final Ref value;
-	private final ImplicitSamplesDefinition samples;
+	private final ArrayInitializer arrayInitializer;
 
-	ValueFieldDefinition(Ref value) {
-		super(value, value.distribute());
-		this.value = value;
-		this.samples = new ImplicitSamplesDefinition(
-				this,
-				distribute(),
-				this.value.toStaticTypeRef());
+	ArrayFieldDefinition(ArrayInitializer arrayInitializer) {
+		super(arrayInitializer, arrayInitializer.distribute());
+		this.arrayInitializer = arrayInitializer;
 	}
 
 	@Override
 	public ArtifactKind<?> determineArtifactKind() {
-		return artifactKind(this.value);
+		return ArtifactKind.ARRAY;
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAscendants(
-				definer.getImplicitAscendants().addImplicitSample(
-						this.value.toStaticTypeRef()));
+		getLogger().error(
+				"not_object",
+				this,
+				"Array initializer can not declare object");
 	}
 
 	@Override
 	public AscendantsDefinition getAscendants() {
-		return this.samples;
-	}
-
-	@Override
-	public ArrayInitializer getArrayInitializer() {
 		return null;
 	}
 
 	@Override
+	public ArrayInitializer getArrayInitializer() {
+		return this.arrayInitializer;
+	}
+
+	@Override
 	public Ref getValue() {
-		return this.value;
+		return null;
 	}
 
 	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref value = this.value.reproduce(reproducer);
-
-		if (value == null) {
-			return null;
-		}
-
-		return new ValueFieldDefinition(value);
+		// TODO reproduce array initializer
+		getLogger().notReproducible(this);
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return this.value.toString();
+		return this.arrayInitializer.toString();
 	}
 
 }

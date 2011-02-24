@@ -25,7 +25,6 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.sentence.BlockBuilder;
 
 
 final class PathTargetDefinition extends FieldDefinition {
@@ -48,13 +47,15 @@ final class PathTargetDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public AscendantsDefinition getAscendants() {
-		return this.ascendants;
+	public void defineObject(ObjectDefiner definer) {
+		definer.setAscendants(
+				definer.getImplicitAscendants().setAncestor(
+						this.target.toTypeRef()));
 	}
 
 	@Override
-	public BlockBuilder getDeclarations() {
-		return null;
+	public AscendantsDefinition getAscendants() {
+		return this.ascendants;
 	}
 
 	@Override

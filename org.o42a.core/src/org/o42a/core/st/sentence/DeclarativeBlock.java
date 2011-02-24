@@ -82,7 +82,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 	public DeclarativeBlock(
 			LocationInfo location,
-			DeclaredField<?> field,
+			DeclaredField<?, ?> field,
 			Statements<?> enclosing,
 			MemberRegistry memberRegistry) {
 		super(

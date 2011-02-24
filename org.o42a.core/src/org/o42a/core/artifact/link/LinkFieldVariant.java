@@ -19,11 +19,9 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.FieldVariant;
-import org.o42a.core.st.DefinitionTarget;
 
 
 final class LinkFieldVariant extends FieldVariant<Link> {
@@ -36,21 +34,11 @@ final class LinkFieldVariant extends FieldVariant<Link> {
 	}
 
 	@Override
-	protected Definitions define(DefinitionTarget scope) {
-		throw new UnsupportedOperationException(
-				"An attempt to define a link: " + this);
-	}
-
-	@Override
 	protected void init() {
 		if (!getInitialConditions().isEmpty(getField())) {
 			getLogger().prohibitedConditionalDeclaration(this);
 			getLinkField().invalid();
 		}
-	}
-
-	@Override
-	protected void declareMembers() {
 	}
 
 	private final DeclaredLinkField getLinkField() {

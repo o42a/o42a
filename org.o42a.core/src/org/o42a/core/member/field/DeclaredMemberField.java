@@ -93,7 +93,7 @@ final class DeclaredMemberField extends MemberField {
 	@Override
 	protected Field<?> createField() {
 
-		DeclaredField<?> field = getArtifactKind().declareField(this);
+		DeclaredField<?, ?> field = getArtifactKind().declareField(this);
 
 		final FieldVariant<?> variant = field.variant(
 				this.builder.getDeclaration(),

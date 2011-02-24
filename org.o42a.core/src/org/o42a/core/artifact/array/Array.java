@@ -26,7 +26,9 @@ import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.*;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.IRGenerator;
@@ -39,7 +41,7 @@ import org.o42a.core.ref.type.TypeRef;
 
 public abstract class Array extends Artifact<Array> {
 
-	public static DeclaredField<Array> declareField(MemberField member) {
+	public static DeclaredField<Array, ?> declareField(MemberField member) {
 		return new DeclaredArrayField(member);
 	}
 

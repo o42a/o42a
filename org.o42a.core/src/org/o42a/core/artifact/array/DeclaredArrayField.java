@@ -32,7 +32,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
-class DeclaredArrayField extends DeclaredField<Array> {
+class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 
 	private FieldDefinition definition;
 	private boolean invalid;
@@ -43,7 +43,7 @@ class DeclaredArrayField extends DeclaredField<Array> {
 
 	private DeclaredArrayField(
 			Container enclosingContainer,
-			DeclaredField<Array> sample) {
+			DeclaredArrayField sample) {
 		super(enclosingContainer, sample);
 	}
 
@@ -62,19 +62,19 @@ class DeclaredArrayField extends DeclaredField<Array> {
 	}
 
 	@Override
-	protected FieldVariant<Array> createVariant(
+	protected ArrayFieldVariant createVariant(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		return new ArrayFieldVariant(this, declaration, definition);
 	}
 
 	@Override
-	protected void merge(DeclaredField<Array> other) {
+	protected void merge(DeclaredField<Array, ArrayFieldVariant> other) {
 		getLogger().ambiguousMember(other, getDisplayName());
 	}
 
 	@Override
-	protected DeclaredField<Array> propagate(Scope enclosingScope) {
+	protected DeclaredArrayField propagate(Scope enclosingScope) {
 		return new DeclaredArrayField(enclosingScope.getContainer(), this);
 	}
 
@@ -170,7 +170,7 @@ class DeclaredArrayField extends DeclaredField<Array> {
 	FieldDefinition getDefinition() {
 		if (this.definition == null) {
 
-			final List<FieldVariant<Array>> variants = getVariants();
+			final List<ArrayFieldVariant> variants = getVariants();
 
 			if (variants.size() != 1) {
 				invalid();

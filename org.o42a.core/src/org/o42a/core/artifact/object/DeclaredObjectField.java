@@ -19,15 +19,20 @@
 */
 package org.o42a.core.artifact.object;
 
+import java.util.List;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.*;
+import org.o42a.core.st.DefinitionTarget;
 
 
-class DeclaredObjectField extends DeclaredField<Obj> {
+class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
 
+	private Ascendants ascendants;
 	private Registry memberRegistry;
 
 	DeclaredObjectField(MemberField member) {
@@ -36,16 +41,13 @@ class DeclaredObjectField extends DeclaredField<Obj> {
 
 	private DeclaredObjectField(
 			Container enclosingContainer,
-			DeclaredField<Obj> sample) {
+			DeclaredField<Obj, ObjectFieldVariant> sample) {
 		super(enclosingContainer, sample);
 	}
 
 	@Override
 	protected Obj declareArtifact() {
-
-		final Ascendants ascendants = buildAscendants(new Ascendants(this));
-
-		return new DeclaredObject(this, ascendants);
+		return new DeclaredObject(this);
 	}
 
 	@Override
@@ -54,21 +56,22 @@ class DeclaredObjectField extends DeclaredField<Obj> {
 	}
 
 	@Override
-	protected void merge(DeclaredField<Obj> other) {
+	protected void merge(DeclaredField<Obj, ObjectFieldVariant> other) {
 		for (FieldVariant<Obj> variant : other.getVariants()) {
 			mergeVariant(variant);
 		}
 	}
 
 	@Override
-	protected FieldVariant<Obj> createVariant(
+	protected ObjectFieldVariant createVariant(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		return new ObjectFieldVariant(this, declaration, definition);
 	}
 
 	@Override
-	protected DeclaredField<Obj> propagate(Scope enclosingScope) {
+	protected DeclaredField<Obj, ObjectFieldVariant> propagate(
+			Scope enclosingScope) {
 		return new DeclaredObjectField(enclosingScope.getContainer(), this);
 	}
 
@@ -85,27 +88,41 @@ class DeclaredObjectField extends DeclaredField<Obj> {
 	}
 
 	Ascendants buildAscendants(Ascendants ascendants) {
-		for (FieldVariant<Obj> variant : getVariants()) {
-			updateAscendants(ascendants, variant);
+
+		final AdapterId adapterId =
+			getDeclaration().getMemberId().getAdapterId();
+
+		if (adapterId == null) {
+			this.ascendants = ascendants;
+		} else {
+			this.ascendants =
+				ascendants.addExplicitSample(
+						adapterId.adapterType(getEnclosingScope()));
 		}
-		return ascendants;
+
+		final List<ObjectFieldVariant> variants = getVariants();
+
+		for (ObjectFieldVariant variant : variants) {
+			this.ascendants = variant.buildAscendants(this.ascendants);
+		}
+
+		return this.ascendants;
 	}
 
-	private void updateAscendants(
-			Ascendants ascendants,
-			FieldVariant<Obj> variant) {
+	Definitions define(DefinitionTarget target) {
 
-		final Scope scope = getEnclosingScope();
+		Definitions result = null;
 
-		ascendants = variant.getDefinition().getAscendants().updateAscendants(
-				scope,
-				ascendants);
+		for (ObjectFieldVariant variant : getVariants()) {
+			result = variant.define(result, target);
+		}
 
-		final AdapterId adapterId = toMember().getId().getAdapterId();
+		return result;
+	}
 
-		if (adapterId != null) {
-			ascendants =
-				ascendants.addExplicitSample(adapterId.adapterType(scope));
+	void updateMembers() {
+		for (ObjectFieldVariant variant : getVariants()) {
+			variant.declareMembers();
 		}
 	}
 

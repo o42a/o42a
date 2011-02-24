@@ -61,7 +61,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	public static final MemberId SCOPE_MEMBER_ID = memberName("_scope");
 
-	public static DeclaredField<Obj> declareField(MemberField member) {
+	public static DeclaredField<Obj, ?> declareField(MemberField member) {
 		return new DeclaredObjectField(member);
 	}
 
