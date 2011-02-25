@@ -21,10 +21,9 @@ Use namespace 'Console'.
 Use namespace 'Test'.
 
 @Main :=> *(
-  Simple tests := test(
-    Name = "Simple tests".
+  Simple := test(
     Include 'simple/simple.o42a'.
-    Run tests.
   ).
+  Print "Run all tests" nl.
   Run tests.
 ).

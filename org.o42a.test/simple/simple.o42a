@@ -20,6 +20,14 @@
 Use namespace 'Console'.
 Use namespace 'Test'.
 
-Simple test := test(
-  Print "Execute simple test" nl.
+
+Name = "Simple tests".
+
+Run tests.
+
+Assertion := test(
+  Assert(Condition = false. Message = "True is not true"). 
+  //Assert [rt-void] 'Rt-void is not true'.
+  //Assert [--rt-false] 'Rt-false is not false'.
 ).
+ 

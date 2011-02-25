@@ -44,8 +44,8 @@ Test :=> void(
   Assertion.
 
   Usage syntax:
-    Assert[condition] 'Error message'.
-  , where condition is arbitrary expression and error message is a message
+    Assert [condition] 'Error message'.
+  where condition is arbitrary expression and error message is a message
   to report when condition fails.
  */
 Assert :=> void(
@@ -63,8 +63,11 @@ Assert :=> void(
     A message reported when condition fails.
    */
   Message := "Error".
-
-  -- Condition, print error[message].
+  
+  {
+    --Condition? Print error(Text = message).
+    Void
+  }.
 
   <*[] | error message> Condition = void.
   <*Error message> (
