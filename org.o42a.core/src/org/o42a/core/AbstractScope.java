@@ -21,6 +21,7 @@ package org.o42a.core;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
@@ -45,6 +46,17 @@ public abstract class AbstractScope implements Scope {
 		}
 
 		return enclosingContainer.getScope();
+	}
+
+	public Scope materialize(Scope scope) {
+
+		final Artifact<?> artifact = scope.getContainer().toArtifact();
+
+		assert artifact != null :
+			"Can not materialize" + this
+			+ ", because is is not an artifact scope";
+
+		return artifact.materialize().getScope();
 	}
 
 	public static Path pathTo(Scope scope, Scope targetScope) {
@@ -171,6 +183,11 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public LocalScope toLocal() {
 		return null;
+	}
+
+	@Override
+	public Scope materialize() {
+		return materialize(this);
 	}
 
 	@Override

@@ -46,7 +46,9 @@ final class FixedScopeRef extends Ref {
 
 	@Override
 	public Value<?> value(Scope scope) {
-		return calculateValue(getResolution().materialize(), scope);
+		return calculateValue(
+				getResolution().materialize(),
+				scope.materialize());
 	}
 
 	@Override
