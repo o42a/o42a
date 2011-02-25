@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.artifact.array.ArrayInitializer.invalidArrayInitializer;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import java.util.List;
@@ -28,7 +27,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -49,16 +47,12 @@ class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 
 	@Override
 	protected Array declareArtifact() {
-		return new DeclaredArray(this);
+		return new DeclaredArray(getVariant());
 	}
 
 	@Override
 	protected Array overrideArtifact() {
-		if (getDeclaration().isPrototype()) {
-			getLogger().prohibitedPrototype(this);
-			invalid();
-		}
-		return new OverriderArray(this);
+		return new OverriderArray(getVariant());
 	}
 
 	@Override
@@ -84,24 +78,10 @@ class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 	}
 
 	TypeRef declaredItemTypeRef() {
-
-		final FieldDefinition definition = getDefinition();
-
-		if (definition == null) {
-			return null;
-		}
-
-		final ArrayInitializer arrayInitializer =
-			definition.getArrayInitializer();
-
-		if (arrayInitializer == null) {
-			return null;
-		}
-
-		return arrayInitializer.getItemType();
+		return getDeclaration().getType();
 	}
 
-	ArrayTypeRef inheritedTypeRef() {
+	ArrayTypeRef derivedTypeRef() {
 
 		ArrayTypeRef typeRef = null;
 
@@ -130,33 +110,18 @@ class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 		}
 
 		return typeRef != null
-		? typeRef.toScope(getEnclosingScope()) : null;
+		? typeRef.upgradeScope(getEnclosingScope()) : null;
 	}
 
-	ArrayInitializer declaredInitializer() {
+	ArrayInitializer derivedInitializer() {
 
-		final FieldDefinition definition = getDefinition();
+		final Field<Array>[] overridden = getOverridden();
 
-		if (!definition.isValid()) {
-			return invalidArrayInitializer(this, definition.distribute());
-		}
-		if (definition.isArray()) {
-			return definition.getArrayInitializer();
+		if (overridden.length != 1) {
+			getLogger().requiredInitializer(this);
 		}
 
-		final Ref value = getDefinition().getValue();
-
-		if (value == null) {
-			return null;
-		}
-
-		final Array array = value.resolve(getEnclosingScope()).toArray();
-
-		if (array == null) {
-			return null;
-		}
-
-		return array.getInitializer();
+		return overridden[0].getArtifact().getInitializer();
 	}
 
 	final void invalid() {
@@ -181,6 +146,10 @@ class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 		}
 
 		return this.definition;
+	}
+
+	final ArrayFieldVariant getVariant() {
+		return getVariants().get(0);
 	}
 
 }

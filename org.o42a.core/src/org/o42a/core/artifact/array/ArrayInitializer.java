@@ -23,14 +23,14 @@ import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeObject;
 import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.core.*;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.log.LogInfo;
 
 
-public final class ArrayInitializer extends Placed {
+public class ArrayInitializer extends Placed {
 
 	public static ArrayInitializer invalidArrayInitializer(
 			LocationInfo location,
@@ -38,12 +38,16 @@ public final class ArrayInitializer extends Placed {
 		return new ArrayInitializer(location, distributor);
 	}
 
+	public static ArrayInitializer valueArrayInitializer(Ref value) {
+		return new ValueArrayInitializer(value);
+	}
+
 	public static ArrayInitializer arrayInitializer(
 			CompilerContext context,
 			LogInfo location,
 			Distributor distributor,
 			TypeRef itemType,
-			FieldDefinition[] items) {
+			Ref[] items) {
 		return new ArrayInitializer(
 				context,
 				location,
@@ -52,8 +56,8 @@ public final class ArrayInitializer extends Placed {
 				items);
 	}
 
-	private final TypeRef itemType;
-	private final FieldDefinition[] items;
+	TypeRef itemType;
+	Ref[] items;
 
 	private ArrayInitializer(
 			LocationInfo location,
@@ -68,7 +72,7 @@ public final class ArrayInitializer extends Placed {
 			LogInfo location,
 			Distributor distributor,
 			TypeRef itemType,
-			FieldDefinition[] items) {
+			Ref[] items) {
 		super(context, location, distributor);
 		this.itemType = itemType;
 		this.items = items;
@@ -78,22 +82,53 @@ public final class ArrayInitializer extends Placed {
 			LocationInfo location,
 			Distributor distributor,
 			TypeRef itemType,
-			FieldDefinition[] items) {
+			Ref[] items) {
 		super(location, distributor);
 		this.items = items;
 		this.itemType = itemType;
 	}
 
 	public boolean isValid() {
-		return this.items != null;
+		return getItems() != null;
 	}
 
 	public TypeRef getItemType() {
 		return this.itemType;
 	}
 
-	public FieldDefinition[] getItems() {
+	public Ref[] getItems() {
 		return this.items;
+	}
+
+	public ArrayInitializer toStatic() {
+		if (!isValid()) {
+			return this;
+		}
+
+		final StaticTypeRef itemType = this.itemType.toStatic();
+
+		boolean changed = itemType != this.itemType;
+
+		final Ref[] items = new Ref[this.items.length];
+
+		for (int i = 0; i < items.length; ++i) {
+
+			final Ref item = this.items[i];
+			final Ref staticItem = item.toStatic();
+
+			items[i] = staticItem;
+			changed |= item != staticItem;
+		}
+
+		if (!changed) {
+			return this;
+		}
+
+		return new ArrayInitializer(
+				this,
+				distribute(),
+				itemType,
+				items);
 	}
 
 	public ArrayTypeRef arrayTypeRef(TypeRef expectedItemType) {
@@ -106,7 +141,7 @@ public final class ArrayInitializer extends Placed {
 			? expectedItemType.upgradeScope(getScope()) : null;
 		ArrayTypeRef type = null;
 
-		for (FieldDefinition item : this.items) {
+		for (Ref item : this.items) {
 
 			final ArrayTypeRef itemType = arrayTypeRef(item, expected);
 
@@ -184,22 +219,15 @@ public final class ArrayInitializer extends Placed {
 		return out.toString();
 	}
 
-	private ArrayTypeRef arrayTypeRef(
-			FieldDefinition definition,
-			TypeRef expectedItemType) {
-		if (definition.isArray()) {
-			return definition.getArrayInitializer().arrayTypeRef(
-					expectedItemType);
+	private ArrayTypeRef arrayTypeRef(Ref item, TypeRef expectedItemType) {
+
+		final Array array = item.getResolution().toArray();
+
+		if (array != null) {
+			return array.getInitializer().arrayTypeRef(expectedItemType);
 		}
 
-		final Ref value = definition.getValue();
-
-		if (value == null) {
-			getLogger().notArrayItemInitializer(definition);
-			return null;
-		}
-
-		final TypeRef itemType = value.ancestor(value);
+		final TypeRef itemType = item.ancestor(item);
 
 		if (expectedItemType != null) {
 
@@ -214,6 +242,85 @@ public final class ArrayInitializer extends Placed {
 		}
 
 		return ArrayTypeRef.arrayTypeRef(itemType, 0);
+	}
+
+	private static final class ValueArrayInitializer extends ArrayInitializer {
+
+		private final Ref value;
+		private boolean invalid;
+
+		ValueArrayInitializer(Ref value) {
+			super(value, value.distribute());
+			this.value = value;
+		}
+
+		@Override
+		public TypeRef getItemType() {
+			if (this.itemType != null) {
+				return this.itemType;
+			}
+
+			final Array array = getArray();
+
+			if (array == null) {
+				return null;
+			}
+
+			return this.itemType = array.getArrayTypeRef().getItemTypeRef();
+		}
+
+		@Override
+		public Ref[] getItems() {
+			if (this.items != null) {
+				return this.items;
+			}
+
+			final Array array = getArray();
+
+			if (array == null) {
+				return null;
+			}
+
+			return this.items = array.getInitializer().getItems();
+		}
+
+		@Override
+		public ArrayInitializer toStatic() {
+			if (!isValid()) {
+				return this;
+			}
+
+			final Ref staticValue = this.value.toStatic();
+
+			if (staticValue == this.value) {
+				return this;
+			}
+
+			return new ValueArrayInitializer(staticValue);
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
+		private Array getArray() {
+			if (this.invalid) {
+				return null;
+			}
+
+			final Array array = this.value.getResolution().toArray();
+
+			if (array == null) {
+				getLogger().error("not_array", this, "Not array");
+				this.invalid = true;
+			}
+			return array;
+		}
+
 	}
 
 }

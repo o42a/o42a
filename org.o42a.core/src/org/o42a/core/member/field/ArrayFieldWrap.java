@@ -70,7 +70,7 @@ final class ArrayFieldWrap extends FieldWrap<Array> {
 		@Override
 		protected ArrayTypeRef buildTypeRef() {
 			return field().getInterface().getArtifact().getArrayTypeRef()
-			.toScope(getScope().getEnclosingScope());
+			.upgradeScope(getScope().getEnclosingScope());
 		}
 
 		@Override

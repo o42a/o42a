@@ -227,10 +227,6 @@ public class CompilerLogger implements Logger {
 		error("not_adapter", location, "Adapter declaration expected");
 	}
 
-	public void notArray(LogInfo location) {
-		error("not_array", location, "Not array");
-	}
-
 	public void notArrayItemInitializer(LogInfo location) {
 		error(
 				"not_array_item_initializer",
@@ -307,14 +303,6 @@ public class CompilerLogger implements Logger {
 				"prohibited_clause_declaration",
 				location,
 				"Clause declarations prohibited here");
-	}
-
-	public void prohibitedConditionalDeclaration(LogInfo location) {
-		error(
-				"prohibited_conditional_declaration",
-				location,
-				"Only object field can be declared"
-				+ " within conditional sentence");
 	}
 
 	public void prohibitedDeclaration(LogInfo location) {

@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip;
 
+import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.TypeVisitor.TYPE_VISITOR;
 import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
-import static org.o42a.compiler.ip.member.DefinitionVisitor.DEFINITION_VISITOR;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.SignNode;
@@ -32,7 +32,7 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.phrase.Phrase;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.*;
@@ -136,28 +136,28 @@ public class Interpreter {
 			BracketsNode brackets,
 			FieldDeclaration declaration) {
 
+		final Distributor distributor = declaration.distribute();
 		boolean ok = true;
 		final ArgumentNode[] arguments = brackets.getArguments();
-		final FieldDefinition[] items = new FieldDefinition[arguments.length];
+		final Ref[] items = new Ref[arguments.length];
 
 		for (int i = 0; i < arguments.length; ++i) {
 
-			final ExpressionNode defNode = arguments[i].getValue();
+			final ExpressionNode itemNode = arguments[i].getValue();
 
-			if (defNode == null) {
+			if (itemNode == null) {
 				ok = false;
 				continue;
 			}
 
-			final FieldDefinition def =
-				defNode.accept(DEFINITION_VISITOR, declaration);
+			final Ref item = itemNode.accept(EXPRESSION_VISITOR, distributor);
 
-			if (def == null) {
+			if (item == null) {
 				ok = false;
 				continue;
 			}
 
-			items[i] = def;
+			items[i] = item;
 		}
 
 		if (!ok) {

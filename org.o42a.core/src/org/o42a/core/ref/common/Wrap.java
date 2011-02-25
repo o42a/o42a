@@ -21,13 +21,11 @@ package org.o42a.core.ref.common;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
@@ -81,11 +79,11 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final Ref fixScope() {
+	public final Ref toStatic() {
 		if (this.wrapped != null) {
-			return this.wrapped.fixScope();
+			return this.wrapped.toStatic();
 		}
-		return super.fixScope();
+		return super.toStatic();
 	}
 
 	@Override
@@ -228,18 +226,13 @@ public abstract class Wrap extends Ref {
 		}
 
 		@Override
+		public void defineArray(ArrayDefiner definer) {
+			def().defineArray(definer);
+		}
+
+		@Override
 		public AscendantsDefinition getAscendants() {
 			return def().getAscendants();
-		}
-
-		@Override
-		public ArrayInitializer getArrayInitializer() {
-			return def().getArrayInitializer();
-		}
-
-		@Override
-		public Ref getValue() {
-			return def().getValue();
 		}
 
 		@Override

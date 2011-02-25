@@ -19,12 +19,19 @@
 */
 package org.o42a.core.artifact.array;
 
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.FieldVariant;
+import static org.o42a.core.artifact.array.ArrayInitializer.invalidArrayInitializer;
+
+import org.o42a.core.member.field.*;
+import org.o42a.core.ref.type.TypeRef;
 
 
-final class ArrayFieldVariant extends FieldVariant<Array> {
+final class ArrayFieldVariant
+		extends FieldVariant<Array>
+		implements ArrayDefiner {
+
+	private ArrayTypeRef typeRef;
+	private TypeRef itemTypeRef;
+	private ArrayInitializer initializer;
 
 	ArrayFieldVariant(
 			DeclaredArrayField field,
@@ -34,15 +41,68 @@ final class ArrayFieldVariant extends FieldVariant<Array> {
 	}
 
 	@Override
+	public ArrayTypeRef getTypeRef() {
+		return this.typeRef;
+	}
+
+	@Override
+	public TypeRef getItemTypeRef() {
+		return this.itemTypeRef;
+	}
+
+	@Override
+	public void define(ArrayInitializer initializer) {
+		this.initializer = initializer;
+	}
+
+	@Override
 	protected void init() {
+	}
+
+	final DeclaredArrayField getArrayField() {
+		return (DeclaredArrayField) getField();
+	}
+
+	void build(ArrayTypeRef typeRef, TypeRef itemTypeRef) {
 		if (!getInitialConditions().isEmpty(getField())) {
-			getLogger().prohibitedConditionalDeclaration(this);
-			getArrayField().invalid();
+			getLogger().error(
+					"prohibiter_conditional_declaration",
+					this,
+					"Array field '%s' declaration can not be conditional",
+					getArrayField().getDisplayName());
+			invalid();
+		}
+		if (getDeclaration().isPrototype()) {
+			getLogger().error(
+					"prohibited_prototype",
+					this,
+					"Array field '%s' can not be a prototype",
+					getArrayField().getDisplayName());
+			invalid();
+		}
+		this.typeRef = typeRef;
+		this.itemTypeRef = itemTypeRef;
+
+		getDefinition().defineArray(this);
+
+		if (this.initializer == null) {
+			invalid();
+			this.initializer = invalidArrayInitializer(
+					getDefinition(),
+					getDefinition().distribute());
 		}
 	}
 
-	private final DeclaredArrayField getArrayField() {
-		return (DeclaredArrayField) getField();
+	final void invalid() {
+		getArrayField().invalid();
+	}
+
+	final boolean validate() {
+		return getArrayField().validate();
+	}
+
+	final ArrayInitializer getInitializer() {
+		return this.initializer;
 	}
 
 }

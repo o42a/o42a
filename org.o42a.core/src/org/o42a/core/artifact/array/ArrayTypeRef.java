@@ -86,7 +86,7 @@ public class ArrayTypeRef implements ScopeInfo {
 		return this.itemTypeRef.getLoggable();
 	}
 
-	public final ArrayTypeRef toScope(Scope scope) {
+	public final ArrayTypeRef upgradeScope(Scope scope) {
 
 		final TypeRef typeRef = this.itemTypeRef.upgradeScope(scope);
 

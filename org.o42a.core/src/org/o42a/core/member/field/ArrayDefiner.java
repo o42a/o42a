@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,43 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.array;
+package org.o42a.core.member.field;
 
+import org.o42a.core.artifact.array.Array;
+import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.artifact.array.ArrayTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 
 
-final class PropagatedArray extends Array {
+public interface ArrayDefiner extends FieldDefiner<Array> {
 
-	private final DeclaredArrayField field;
+	ArrayTypeRef getTypeRef();
 
-	PropagatedArray(DeclaredArrayField field) {
-		super(field, field.getOverridden()[0].getArtifact());
-		this.field = field;
-	}
+	TypeRef getItemTypeRef();
 
-	@Override
-	public boolean isValid() {
-		return super.isValid() && this.field.validate();
-	}
-
-	@Override
-	public String toString() {
-		return this.field.toString();
-	}
-
-	@Override
-	protected ArrayTypeRef buildTypeRef() {
-		return this.field.derivedTypeRef();
-	}
-
-	@Override
-	protected TypeRef buildItemTypeRef() {
-		return null;
-	}
-
-	@Override
-	protected ArrayInitializer buildInitializer() {
-		return this.field.derivedInitializer();
-	}
+	void define(ArrayInitializer initializer);
 
 }

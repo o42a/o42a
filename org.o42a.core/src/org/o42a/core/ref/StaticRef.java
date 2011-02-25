@@ -22,7 +22,9 @@ package org.o42a.core.ref;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.artifact.array.ArrayTypeRef;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Ascendants;
@@ -31,19 +33,17 @@ import org.o42a.core.artifact.object.StaticAscendants;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.*;
-import org.o42a.core.member.field.FieldDefinition.LinkDefiner;
-import org.o42a.core.member.field.FieldDefinition.ObjectDefiner;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.Value;
 
 
-final class FixedScopeRef extends Ref {
+final class StaticRef extends Ref {
 
 	private final Ref ref;
 
-	FixedScopeRef(Ref ref) {
+	StaticRef(Ref ref) {
 		super(ref, ref.distribute());
 		this.ref = ref;
 	}
@@ -67,7 +67,7 @@ final class FixedScopeRef extends Ref {
 			return null;
 		}
 
-		return new FixedScopeRef(ref);
+		return new StaticRef(ref);
 	}
 
 	@Override
@@ -103,7 +103,6 @@ final class FixedScopeRef extends Ref {
 
 		private final FieldDefinition definition;
 		private AscendantsDefinition ascendants;
-		private Ref value;
 
 		FixedFieldDefinition(FieldDefinition definition) {
 			super(definition, definition.distribute());
@@ -126,6 +125,11 @@ final class FixedScopeRef extends Ref {
 		}
 
 		@Override
+		public void defineArray(ArrayDefiner definer) {
+			this.definition.defineArray(new ArrayDefinerWrap(definer));
+		}
+
+		@Override
 		public void defineLink(LinkDefiner definer) {
 			this.definition.defineLink(new LinkDefinerWrap(definer));
 		}
@@ -137,19 +141,6 @@ final class FixedScopeRef extends Ref {
 			}
 			return this.ascendants =
 				this.definition.getAscendants().toStatic();
-		}
-
-		@Override
-		public ArrayInitializer getArrayInitializer() {
-			return null;
-		}
-
-		@Override
-		public Ref getValue() {
-			if (this.value != null) {
-				return this.value;
-			}
-			return this.value = this.definition.getValue().fixScope();
 		}
 
 		@Override
@@ -254,4 +245,33 @@ final class FixedScopeRef extends Ref {
 
 	}
 
+	private static final class ArrayDefinerWrap implements ArrayDefiner {
+
+		private final ArrayDefiner definer;
+
+		ArrayDefinerWrap(ArrayDefiner definer) {
+			this.definer = definer;
+		}
+
+		@Override
+		public Field<Array> getField() {
+			return this.definer.getField();
+		}
+
+		@Override
+		public ArrayTypeRef getTypeRef() {
+			return this.definer.getTypeRef();
+		}
+
+		@Override
+		public TypeRef getItemTypeRef() {
+			return this.definer.getItemTypeRef();
+		}
+
+		@Override
+		public void define(ArrayInitializer initializer) {
+			this.definer.define(initializer.toStatic());
+		}
+
+	}
 }
