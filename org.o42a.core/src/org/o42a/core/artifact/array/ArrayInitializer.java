@@ -199,7 +199,7 @@ public final class ArrayInitializer extends Placed {
 			return null;
 		}
 
-		final TypeRef itemType = value.toTargetRef().getTypeRef();
+		final TypeRef itemType = value.ancestor(value);
 
 		if (expectedItemType != null) {
 

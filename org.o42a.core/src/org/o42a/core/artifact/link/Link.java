@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.link;
 
+import static org.o42a.core.ref.Ref.falseRef;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -52,7 +54,6 @@ public abstract class Link extends Artifact<Link> {
 	private final ArtifactKind<Link> kind;
 	private Obj target;
 	private TargetRef targetRef;
-	private TypeRef typeRef;
 
 	public Link(Scope scope, ArtifactKind<Link> kind) {
 		super(scope);
@@ -93,16 +94,9 @@ public abstract class Link extends Artifact<Link> {
 		return getKind() == ArtifactKind.VARIABLE;
 	}
 
-	public final Obj getType() {
-		return getTypeRef().getType();
-	}
-
 	@Override
 	public final TypeRef getTypeRef() {
-		if (this.typeRef == null) {
-			define();
-		}
-		return this.typeRef;
+		return getTargetRef().getTypeRef();
 	}
 
 	public final TargetRef getTargetRef() {
@@ -126,55 +120,43 @@ public abstract class Link extends Artifact<Link> {
 
 	@Override
 	public void resolveAll() {
-		getType();
+		getTargetRef();
 		materialize().resolveAll();
 	}
 
-	protected abstract TypeRef buildTypeRef();
-
 	protected abstract TargetRef buildTargetRef();
 
-	protected TypeRef correctTypeRef(TargetRef targetRef, TypeRef typeRef) {
-		return refType(targetRef);
-	}
-
-	protected TargetRef correctTargetRef(TargetRef targetRef, TypeRef typeRef) {
-		return targetRef;
-	}
-
 	private void define() {
-
-		final TargetRef targetRef = buildTargetRef();
-		final TypeRef typeRef = buildTypeRef();
-
-		targetRef.assertScopeIs(getScope().getEnclosingScope());
-
-		if (typeRef == null) {
-			this.targetRef = targetRef;
-			this.typeRef = targetRef.getTypeRef();
+		this.targetRef = buildTargetRef();
+		if (this.targetRef == null) {
+			getLogger().error(
+					"missing_link_target",
+					this,
+					"Link target is missing");
+			this.targetRef = falseRef(
+					this,
+					getScope().getEnclosingScope().distribute())
+					.toTargetRef(null);
 			return;
 		}
 
-		typeRef.assertScopeIs(getScope().getEnclosingScope());
+		this.targetRef.assertScopeIs(getScope().getEnclosingScope());
+		if (!isAbstract() && !isPrototype()) {
+			this.targetRef.getArtifact().accessBy(this).checkInstanceUse();
+		}
 
-		final TypeRelation relation = typeRef.relationTo(refType(targetRef));
+		final TypeRef typeRef = this.targetRef.getTypeRef();
+
+		typeRef.getArtifact().accessBy(this).checkPrototypeUse();
+
+		final TypeRelation relation =
+			typeRef.relationTo(this.targetRef.toTypeRef());
 
 		if (!relation.isAscendant()) {
 			if (!relation.isError()) {
-				getLogger().notDerivedFrom(targetRef, typeRef);
+				getLogger().notDerivedFrom(this.targetRef, typeRef);
 			}
-			this.targetRef = correctTargetRef(targetRef, typeRef);
-			this.typeRef = correctTypeRef(targetRef, typeRef);
-			return;
 		}
-
-		this.targetRef = targetRef;
-		this.typeRef = typeRef;
-	}
-
-	private TypeRef refType(final TargetRef ref) {
-		return ref.getTypeRef().upgradeScope(
-				getScope().getEnclosingScope());
 	}
 
 	private boolean enclosingScopeIsRuntime() {

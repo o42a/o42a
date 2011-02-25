@@ -17,38 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.type;
+package org.o42a.core.artifact.link;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.artifact.link.RefLinkBase;
+import org.o42a.core.artifact.object.RefObjectBase;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 
 
-public abstract class RefTypeBase extends RefLinkBase {
+public abstract class RefLinkBase extends RefObjectBase {
 
-	protected static TypeRef typeRef(Ref ref) {
-		if (ref == null) {
-			throw new NullPointerException("Type reference not specified");
+	protected static TargetRef createTargetRef(Ref ref, TypeRef typeRef) {
+		if (typeRef != null) {
+			return new TargetRef(
+					ref,
+					typeRef,
+					transparentRescoper(ref.getScope()));
 		}
-		return new DefaultTypeRef(
+		return new TargetRef(
 				ref,
+				ref.ancestor(ref),
 				transparentRescoper(ref.getScope()));
 	}
 
-	protected static StaticTypeRef staticTypeRef(Ref ref) {
-		if (ref == null) {
-			throw new NullPointerException("Type reference not specified");
+	protected static TargetRef createTargetRef(
+			Ref ref,
+			TypeRef typeRef,
+			Rescoper rescoper) {
+		if (typeRef != null) {
+			return new TargetRef(ref, typeRef, rescoper);
 		}
-		return new DefaultStaticTypeRef(
+		return new TargetRef(
 				ref,
-				ref,
-				transparentRescoper(ref.getScope()));
+				ref.ancestor(ref).rescope(rescoper),
+				rescoper);
 	}
 
-	public RefTypeBase(LocationInfo location, Distributor distributor) {
+	public RefLinkBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

@@ -55,6 +55,11 @@ final class ValueFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void defineLink(LinkDefiner definer) {
+		definer.setTargetRef(this.value.toTargetRef(definer.getTypeRef()));
+	}
+
+	@Override
 	public AscendantsDefinition getAscendants() {
 		return this.samples;
 	}

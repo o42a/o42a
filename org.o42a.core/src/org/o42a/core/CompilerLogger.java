@@ -461,10 +461,6 @@ public class CompilerLogger implements Logger {
 		error("required_initializer", location, "Initializer required here");
 	}
 
-	public void requiredLinkTarget(LogInfo location) {
-		error("required_link_target", location, "Link target is required here");
-	}
-
 	public void unavailableSource(
 			LogInfo location,
 			String sourceName,

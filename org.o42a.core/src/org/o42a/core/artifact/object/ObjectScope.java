@@ -78,11 +78,6 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	@Override
-	public Scope materialize() {
-		return this;
-	}
-
-	@Override
 	public Path getEnclosingScopePath() {
 		if (this.enclosingContainer.getScope().isTopScope()) {
 			return null;

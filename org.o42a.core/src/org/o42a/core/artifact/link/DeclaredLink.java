@@ -19,19 +19,17 @@
 */
 package org.o42a.core.artifact.link;
 
-import static org.o42a.core.ref.Ref.falseRef;
-
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.type.TypeRef;
 
 
 final class DeclaredLink extends Link {
 
+	private final LinkFieldVariant variant;
 	private final DeclaredLinkField field;
 
-	DeclaredLink(DeclaredLinkField field) {
-		super(field, field.getArtifactKind());
-		this.field = field;
+	DeclaredLink(LinkFieldVariant variant) {
+		super(variant.getField(), variant.getField().getArtifactKind());
+		this.variant = variant;
+		this.field = variant.getLinkField();
 	}
 
 	@Override
@@ -45,41 +43,10 @@ final class DeclaredLink extends Link {
 	}
 
 	@Override
-	protected TypeRef buildTypeRef() {
-
-		final FieldDefinition definition = this.field.getDefinition();
-
-		if (definition == null) {
-			return null;
-		}
-
-		final TypeRef typeRef = this.field.getDeclaration().type(definition);
-
-		if (typeRef == null) {
-			return null;
-		}
-		if (!typeRef.getArtifact().accessBy(this.field).checkPrototypeUse()) {
-			this.field.invalid();
-		}
-
-		return typeRef.rescope(this.field.getEnclosingScope());
-	}
-
-	@Override
 	protected TargetRef buildTargetRef() {
-
-		final TargetRef ref = this.field.declaredRef();
-
-		if (ref != null) {
-			return ref;
-		}
-
-		this.field.invalid();
-
-		return falseRef(
-				this,
-				distributeIn(this.field.getEnclosingContainer()))
-				.toTargetRef();
+		return this.variant.build(
+				this.variant.getDeclaration().getType(),
+				null);
 	}
 
 }

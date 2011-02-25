@@ -383,8 +383,8 @@ public abstract class Ref extends RefTypeBase {
 		return staticTypeRef(this);
 	}
 
-	public TargetRef toTargetRef() {
-		return new TargetRef(this);
+	public TargetRef toTargetRef(TypeRef typeRef) {
+		return createTargetRef(this, typeRef);
 	}
 
 	public Rescoper toRescoper() {

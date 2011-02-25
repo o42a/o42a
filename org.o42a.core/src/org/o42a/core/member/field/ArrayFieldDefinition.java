@@ -48,6 +48,14 @@ final class ArrayFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void defineLink(LinkDefiner definer) {
+		getLogger().error(
+				"not_link",
+				this,
+				"Array initializer can not declare link");
+	}
+
+	@Override
 	public AscendantsDefinition getAscendants() {
 		return null;
 	}

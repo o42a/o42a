@@ -19,13 +19,10 @@
 */
 package org.o42a.core.artifact.link;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -42,17 +39,14 @@ import org.o42a.util.log.Loggable;
 public final class TargetRef extends RescopableRef {
 
 	private final Ref ref;
-	private TypeRef typeRef;
+	private final TypeRef typeRef;
 	private Logical fullLogical;
 
-	public TargetRef(Ref ref) {
-		super(transparentRescoper(ref.getScope()));
-		this.ref = ref;
-	}
-
-	private TargetRef(Ref ref, Rescoper rescoper) {
+	TargetRef(Ref ref, TypeRef typeRef, Rescoper rescoper) {
 		super(rescoper);
 		this.ref = ref;
+		this.typeRef = typeRef;
+		typeRef.assertSameScope(this);
 	}
 
 	@Override
@@ -66,13 +60,7 @@ public final class TargetRef extends RescopableRef {
 	}
 
 	public TypeRef getTypeRef() {
-		if (this.typeRef != null) {
-			return this.typeRef;
-		}
-
-		final Artifact<?> artifact = getArtifact();
-
-		return this.typeRef = artifact.getKind().typeRef(this);
+		return this.typeRef;
 	}
 
 	public Logical fullLogical() {
@@ -80,6 +68,17 @@ public final class TargetRef extends RescopableRef {
 			return this.fullLogical;
 		}
 		return this.fullLogical = new FullLogical(this);
+	}
+
+	public final TypeRef toTypeRef() {
+		return getRef().toTypeRef().rescope(getRescoper());
+	}
+
+	public final TargetRef toStatic() {
+		return new TargetRef(
+				this.ref.fixScope(),
+				this.typeRef.toStatic(),
+				getRescoper());
 	}
 
 	@Override
@@ -115,13 +114,10 @@ public final class TargetRef extends RescopableRef {
 
 	@Override
 	public String toString() {
-		if (this.typeRef != null) {
-			return "(" + this.typeRef + ") " + this.ref;
-		}
-		if (this.ref == null) {
+		if (this.typeRef == null) {
 			return super.toString();
 		}
-		return this.ref.toString();
+		return "(" + this.typeRef + ") " + this.ref;
 	}
 
 	@Override
@@ -131,16 +127,26 @@ public final class TargetRef extends RescopableRef {
 
 	@Override
 	protected TargetRef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new TargetRef(getRef(), rescoper);
+		return new TargetRef(
+				getRef(),
+				getTypeRef().rescope(additionalRescoper),
+				rescoper);
 	}
 
 	@Override
 	protected RescopableRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
-			Ref reproducedRef,
+			Ref ref,
 			Rescoper rescoper) {
-		return new TargetRef(reproducedRef, rescoper);
+
+		final TypeRef typeRef = getTypeRef().reproduce(reproducer);
+
+		if (typeRef == null) {
+			return null;
+		}
+
+		return new TargetRef(ref, typeRef, rescoper);
 	}
 
 	private static final class FullLogical extends Logical {
@@ -189,6 +195,5 @@ public final class TargetRef extends RescopableRef {
 		}
 
 	}
-
 
 }

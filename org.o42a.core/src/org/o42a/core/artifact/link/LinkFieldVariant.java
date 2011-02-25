@@ -22,9 +22,16 @@ package org.o42a.core.artifact.link;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.FieldVariant;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 
 
-final class LinkFieldVariant extends FieldVariant<Link> {
+final class LinkFieldVariant extends FieldVariant<Link>
+		implements FieldDefinition.LinkDefiner {
+
+	private TypeRef typeRef;
+	private TargetRef defaultTargetRef;
+	private TargetRef targetRef;
 
 	LinkFieldVariant(
 			DeclaredLinkField field,
@@ -34,15 +41,61 @@ final class LinkFieldVariant extends FieldVariant<Link> {
 	}
 
 	@Override
+	public TypeRef getTypeRef() {
+		return this.typeRef;
+	}
+
+	@Override
+	public TargetRef getDefaultTargetRef() {
+		return this.defaultTargetRef;
+	}
+
+	@Override
+	public TargetRef getTargetRef() {
+		return this.targetRef;
+	}
+
+	@Override
+	public void setTargetRef(TargetRef targetRef) {
+		this.targetRef = targetRef;
+	}
+
+	@Override
 	protected void init() {
 		if (!getInitialConditions().isEmpty(getField())) {
 			getLogger().prohibitedConditionalDeclaration(this);
-			getLinkField().invalid();
+			invalid();
 		}
 	}
 
-	private final DeclaredLinkField getLinkField() {
+	final TargetRef build(TypeRef typeRef, TargetRef defaultTargetRef) {
+		this.typeRef = typeRef;
+		this.targetRef = this.defaultTargetRef = defaultTargetRef;
+
+		getDefinition().defineLink(this);
+
+		if (typeRef != null) {
+
+			final TypeRelation relation =
+				typeRef.relationTo(this.typeRef);
+
+			if (!relation.isAscendant()) {
+				if (!relation.isError()) {
+					getLogger().notDerivedFrom(this.typeRef, this.targetRef);
+				}
+				invalid();
+			}
+		}
+
+		return this.targetRef;
+	}
+
+	final DeclaredLinkField getLinkField() {
 		return (DeclaredLinkField) getField();
+	}
+
+	final void invalid() {
+		getLinkField().invalid();
 	}
 
 }

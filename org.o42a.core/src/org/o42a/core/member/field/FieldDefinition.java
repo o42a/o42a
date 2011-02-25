@@ -27,10 +27,13 @@ import org.o42a.core.Placed;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.artifact.link.Link;
+import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -94,6 +97,8 @@ public abstract class FieldDefinition extends Placed {
 
 	public abstract void defineObject(ObjectDefiner definer);
 
+	public abstract void defineLink(LinkDefiner definer);
+
 	public abstract AscendantsDefinition getAscendants();
 
 	public abstract ArrayInitializer getArrayInitializer();
@@ -128,6 +133,18 @@ public abstract class FieldDefinition extends Placed {
 		void setAscendants(Ascendants ascendants);
 
 		void define(BlockBuilder definitions);
+
+	}
+
+	public interface LinkDefiner extends Definer<Link> {
+
+		TypeRef getTypeRef();
+
+		TargetRef getDefaultTargetRef();
+
+		TargetRef getTargetRef();
+
+		void setTargetRef(TargetRef targetRef);
 
 	}
 

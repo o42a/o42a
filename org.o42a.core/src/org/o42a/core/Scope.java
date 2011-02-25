@@ -41,8 +41,6 @@ public interface Scope extends PlaceInfo {
 
 	LocalScope toLocal();
 
-	Scope materialize();
-
 	boolean isRuntime();
 
 	boolean derivedFrom(Scope other);
