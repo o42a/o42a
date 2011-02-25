@@ -19,15 +19,13 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.FieldVariant;
+import org.o42a.core.member.field.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
 
 final class LinkFieldVariant extends FieldVariant<Link>
-		implements FieldDefinition.LinkDefiner {
+		implements LinkDefiner {
 
 	private TypeRef typeRef;
 	private TargetRef defaultTargetRef;
@@ -62,13 +60,19 @@ final class LinkFieldVariant extends FieldVariant<Link>
 
 	@Override
 	protected void init() {
-		if (!getInitialConditions().isEmpty(getField())) {
-			getLogger().prohibitedConditionalDeclaration(this);
-			invalid();
-		}
 	}
 
 	final TargetRef build(TypeRef typeRef, TargetRef defaultTargetRef) {
+		if (!getInitialConditions().isEmpty(getField())) {
+			getLogger().error(
+					"prohibited_conditional_declaration",
+					this,
+					(getLinkField().isVariable() ? "Variable" : "Link")
+					+ " field '%s' declaration can not be conditional",
+					getLinkField().getDisplayName());
+			invalid();
+		}
+
 		this.typeRef = typeRef;
 		this.targetRef = this.defaultTargetRef = defaultTargetRef;
 

@@ -76,7 +76,7 @@ public final class TargetRef extends RescopableRef {
 
 	public final TargetRef toStatic() {
 		return new TargetRef(
-				this.ref.fixScope(),
+				this.ref.toStatic(),
 				this.typeRef.toStatic(),
 				getRescoper());
 	}

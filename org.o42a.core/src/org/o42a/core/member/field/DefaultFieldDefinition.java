@@ -24,7 +24,6 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -84,16 +83,15 @@ final class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void defineArray(ArrayDefiner definer) {
+		getLogger().error("not_array", this, "Not array");
+	}
+
+	@Override
 	public AscendantsDefinition getAscendants() {
 		return this.ascendants;
 	}
 
-	@Override
-	public ArrayInitializer getArrayInitializer() {
-		return null;
-	}
-
-	@Override
 	public Ref getValue() {
 		if (this.value != null) {
 			return this.value;

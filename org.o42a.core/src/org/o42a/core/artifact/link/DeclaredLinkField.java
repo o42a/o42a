@@ -78,8 +78,8 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 		return new PropagatedLink(this);
 	}
 
-	void build(TypeRef defaultTypeRef, TargetRef defaultTargetRef) {
-		getVariant().build(defaultTypeRef, defaultTargetRef);
+	final boolean isVariable() {
+		return getArtifactKind() == ArtifactKind.VARIABLE;
 	}
 
 	TypeRef derivedTypeRef() {
@@ -142,8 +142,10 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 				getLogger().error(
 						"ambiguous_link_target",
 						this,
-						"It is required to specify a '%s' field link target,"
-						+ " as it's definition is ambiguous",
+						"It is required to specify a "
+						+ (isVariable()
+								? "variable initializer" : "link target")
+						+ "for field '%s', as it's definition is ambiguous",
 						getDisplayName());
 				errorReported = true;
 				invalid();

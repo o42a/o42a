@@ -19,29 +19,27 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.artifact.array.ArrayInitializer.invalidArrayInitializer;
-
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 
 
 final class DeclaredArray extends Array {
 
-	private final DeclaredArrayField field;
+	private final ArrayFieldVariant variant;
+	private boolean built;
 
-	DeclaredArray(DeclaredArrayField field) {
-		super(field);
-		this.field = field;
+	DeclaredArray(ArrayFieldVariant variant) {
+		super(variant.getField());
+		this.variant = variant;
 	}
 
 	@Override
 	public boolean isValid() {
-		return super.isValid() && this.field.validate();
+		return super.isValid() && this.variant.validate();
 	}
 
 	@Override
 	public String toString() {
-		return this.field.toString();
+		return this.variant.getArrayField().toString();
 	}
 
 	@Override
@@ -51,24 +49,24 @@ final class DeclaredArray extends Array {
 
 	@Override
 	protected TypeRef buildItemTypeRef() {
-		return this.field.declaredItemTypeRef();
+		build();
+		return this.variant.getItemTypeRef();
 	}
 
 	@Override
 	protected ArrayInitializer buildInitializer() {
+		build();
+		return this.variant.getInitializer();
+	}
 
-		final ArrayInitializer initializer = this.field.declaredInitializer();
-
-		if (initializer != null) {
-			return initializer;
+	private void build() {
+		if (this.built) {
+			return;
 		}
-
-		final FieldDefinition definition = this.field.getDefinition();
-
-		getLogger().notArray(definition);
-		this.field.invalid();
-
-		return invalidArrayInitializer(definition, definition.distribute());
+		this.built = true;
+		this.variant.build(
+				null,
+				this.variant.getArrayField().declaredItemTypeRef());
 	}
 
 }

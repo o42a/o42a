@@ -21,51 +21,36 @@ package org.o42a.core.artifact.array;
 
 import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeRef;
 
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
 
 final class OverriderArray extends Array {
 
-	private final DeclaredArrayField field;
+	private final ArrayFieldVariant variant;
+	private boolean built;
 
-	OverriderArray(DeclaredArrayField field) {
-		super(field, field.getOverridden()[0].getArtifact());
-		this.field = field;
+	OverriderArray(ArrayFieldVariant variant) {
+		super(
+				variant.getField(),
+				variant.getArrayField().getOverridden()[0].getArtifact());
+		this.variant = variant;
 	}
 
 	@Override
 	public boolean isValid() {
-		return super.isValid() && this.field.validate();
+		return super.isValid() && this.variant.validate();
 	}
 
 	@Override
 	public String toString() {
-		return this.field.toString();
+		return this.variant.toString();
 	}
 
 	@Override
 	protected ArrayTypeRef buildTypeRef() {
-
-		final ArrayTypeRef inherited = this.field.inheritedTypeRef();
-		final TypeRef declared = this.field.declaredItemTypeRef();
-
-		if (declared != null) {
-
-			final TypeRelation relation =
-				inherited.getItemTypeRef().relationTo(declared);
-
-			if (relation.isAscendant()) {
-				return arrayTypeRef(declared, inherited.getDimension());
-			}
-			if (!relation.isError()) {
-				getLogger().notDerivedFrom(declared, inherited);
-			}
-			this.field.invalid();
-		}
-
-		return inherited;
+		build();
+		return this.variant.getTypeRef();
 	}
 
 	@Override
@@ -75,20 +60,50 @@ final class OverriderArray extends Array {
 
 	@Override
 	protected ArrayInitializer buildInitializer() {
+		build();
 
-		final ArrayInitializer initializer = this.field.declaredInitializer();
+		final ArrayInitializer initializer = this.variant.getInitializer();
 
 		if (initializer != null) {
 			return initializer;
 		}
 
-		final Field<Array>[] overridden = this.field.getOverridden();
+		return this.variant.getArrayField().derivedInitializer();
+	}
 
-		if (overridden.length != 1) {
-			getLogger().requiredInitializer(this.field);
+	private void build() {
+		if (this.built) {
+			return;
+		}
+		this.built = true;
+
+		final ArrayTypeRef knownTypeRef = knownTypeRef();
+
+		this.variant.build(knownTypeRef, knownTypeRef.getItemTypeRef());
+	}
+
+	private ArrayTypeRef knownTypeRef() {
+
+		final ArrayTypeRef derived =
+			this.variant.getArrayField().derivedTypeRef();
+		final TypeRef declared =
+			this.variant.getArrayField().declaredItemTypeRef();
+
+		if (declared != null) {
+
+			final TypeRelation relation =
+				derived.getItemTypeRef().relationTo(declared);
+
+			if (relation.isAscendant()) {
+				return arrayTypeRef(declared, derived.getDimension());
+			}
+			if (!relation.isError()) {
+				getLogger().notDerivedFrom(declared, derived);
+			}
+			this.variant.invalid();
 		}
 
-		return overridden[0].getArtifact().getInitializer();
+		return derived;
 	}
 
 }

@@ -134,7 +134,7 @@ public class ExpressionVisitor
 		if (ascendants.getAscendants().length == 1) {
 			return ascendants.getAscendants()[0].getAscendant().accept(
 					REF_VISITOR,
-					p).fixScope();
+					p).toStatic();
 		}
 		return phrase(ascendants, p).toRef();
 	}

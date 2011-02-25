@@ -20,9 +20,7 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.st.Reproducer;
@@ -92,18 +90,13 @@ class PhraseEx extends Wrap {
 		}
 
 		@Override
+		public void defineArray(ArrayDefiner definer) {
+			this.definition.defineArray(definer);
+		}
+
+		@Override
 		public AscendantsDefinition getAscendants() {
 			return this.definition.getAscendants();
-		}
-
-		@Override
-		public ArrayInitializer getArrayInitializer() {
-			return this.definition.getArrayInitializer();
-		}
-
-		@Override
-		public Ref getValue() {
-			return this.definition.getValue();
 		}
 
 		@Override

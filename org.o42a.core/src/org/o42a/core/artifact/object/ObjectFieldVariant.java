@@ -20,16 +20,14 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.FieldVariant;
+import org.o42a.core.member.field.*;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.*;
 
 
 final class ObjectFieldVariant
 		extends FieldVariant<Obj>
-		implements FieldDefinition.ObjectDefiner {
+		implements ObjectDefiner {
 
 	private Block<Declaratives> content;
 	private Ascendants implicitAscendants;

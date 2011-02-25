@@ -325,11 +325,11 @@ public abstract class Ref extends RefTypeBase {
 		return objectResolution(resolved.toPlainClause().getObject());
 	}
 
-	public Ref fixScope() {
+	public Ref toStatic() {
 		if (isKnownStatic()) {
 			return this;
 		}
-		return new FixedScopeRef(this);
+		return new StaticRef(this);
 	}
 
 	public final Ref adapt(LocationInfo location, StaticTypeRef adapterType) {

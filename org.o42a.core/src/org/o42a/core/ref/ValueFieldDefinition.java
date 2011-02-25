@@ -21,9 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.ImplicitSamplesDefinition;
+import org.o42a.core.member.field.*;
 import org.o42a.core.st.Reproducer;
 
 
@@ -55,6 +53,11 @@ final class ValueFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void defineArray(ArrayDefiner definer) {
+		definer.define(ArrayInitializer.valueArrayInitializer(this.value));
+	}
+
+	@Override
 	public void defineLink(LinkDefiner definer) {
 		definer.setTargetRef(this.value.toTargetRef(definer.getTypeRef()));
 	}
@@ -62,16 +65,6 @@ final class ValueFieldDefinition extends FieldDefinition {
 	@Override
 	public AscendantsDefinition getAscendants() {
 		return this.samples;
-	}
-
-	@Override
-	public ArrayInitializer getArrayInitializer() {
-		return null;
-	}
-
-	@Override
-	public Ref getValue() {
-		return this.value;
 	}
 
 	@Override

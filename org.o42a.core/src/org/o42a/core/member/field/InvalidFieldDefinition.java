@@ -22,8 +22,6 @@ package org.o42a.core.member.field;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
@@ -52,17 +50,11 @@ final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void defineArray(ArrayDefiner definer) {
+	}
+
+	@Override
 	public AscendantsDefinition getAscendants() {
-		return null;
-	}
-
-	@Override
-	public ArrayInitializer getArrayInitializer() {
-		return null;
-	}
-
-	@Override
-	public Ref getValue() {
 		return null;
 	}
 

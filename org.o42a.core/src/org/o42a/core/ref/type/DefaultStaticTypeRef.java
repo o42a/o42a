@@ -33,7 +33,7 @@ final class DefaultStaticTypeRef extends StaticTypeRef {
 
 	DefaultStaticTypeRef(Ref ref, Ref untouchedRef, Rescoper rescoper) {
 		super(rescoper);
-		this.fixedRef = ref.fixScope();
+		this.fixedRef = ref.toStatic();
 		this.untouchedRef = untouchedRef;
 		ref.assertSameScope(untouchedRef);
 	}
