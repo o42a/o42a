@@ -207,24 +207,6 @@ public class FieldDeclaration extends Placed implements Cloneable {
 				groupId.append(getMemberId()));
 	}
 
-	public TypeRef type(FieldDefinition definition) {
-		if (this.type != null) {
-			return this.type;
-		}
-		if (!isLink() && !isVariable()) {
-			return null;
-		}
-
-		final AscendantsDefinition ascendants = definition.getAscendants();
-
-		if (ascendants != null && ascendants.getAncestor() != null) {
-			return this.type = ascendants.getAncestor();
-		}
-
-		return this.type =
-			definition.getValue().ancestor(definition.getValue());
-	}
-
 	public boolean validateVariantDeclaration(DeclaredField<?, ?> field) {
 
 		final FieldDeclaration fieldDeclaration = field.getDeclaration();

@@ -188,7 +188,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 
 		final Link link = artifact.toLink();
 
-		return link.getType();
+		return link.getTypeRef().getType();
 	}
 
 	@Override

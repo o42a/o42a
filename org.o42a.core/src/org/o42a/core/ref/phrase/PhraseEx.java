@@ -87,6 +87,11 @@ class PhraseEx extends Wrap {
 		}
 
 		@Override
+		public void defineLink(LinkDefiner definer) {
+			this.definition.defineLink(definer);
+		}
+
+		@Override
 		public AscendantsDefinition getAscendants() {
 			return this.definition.getAscendants();
 		}

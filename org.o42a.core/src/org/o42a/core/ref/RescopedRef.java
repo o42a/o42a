@@ -113,12 +113,12 @@ final class RescopedRef extends Wrap {
 
 		@Override
 		public Resolution resolve(Scope scope) {
-			return this.ref.resolve(this.rescoper.rescope(scope).materialize());
+			return this.ref.resolve(this.rescoper.rescope(scope));
 		}
 
 		@Override
 		public Value<?> value(Scope scope) {
-			return this.ref.value(this.rescoper.rescope(scope).materialize());
+			return this.ref.value(this.rescoper.rescope(scope));
 		}
 
 		@Override
@@ -177,8 +177,11 @@ final class RescopedRef extends Wrap {
 		}
 
 		@Override
-		public TargetRef toTargetRef() {
-			return this.ref.toTargetRef().rescope(this.rescoper);
+		public TargetRef toTargetRef(TypeRef typeRef) {
+			return createTargetRef(
+					this.ref,
+					typeRef,
+					this.rescoper);
 		}
 
 		@Override

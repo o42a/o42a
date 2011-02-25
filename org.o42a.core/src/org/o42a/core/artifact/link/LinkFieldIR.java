@@ -55,7 +55,7 @@ final class LinkFieldIR extends FieldIR<Link> {
 			fld = new LinkFld(bodyIR, field);
 		}
 
-		fld.allocate(data, getField().getArtifact().getType());
+		fld.allocate(data, getField().getArtifact().getTypeRef().getType());
 
 		return fld;
 	}

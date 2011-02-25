@@ -48,6 +48,10 @@ final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void defineLink(LinkDefiner definer) {
+	}
+
+	@Override
 	public AscendantsDefinition getAscendants() {
 		return null;
 	}

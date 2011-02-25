@@ -105,11 +105,11 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final TargetRef toTargetRef() {
+	public final TargetRef toTargetRef(TypeRef typeRef) {
 		if (this.wrapped != null) {
-			return this.wrapped.toTargetRef();
+			return this.wrapped.toTargetRef(typeRef);
 		}
-		return super.toTargetRef();
+		return super.toTargetRef(typeRef);
 	}
 
 	@Override
@@ -220,6 +220,11 @@ public abstract class Wrap extends Ref {
 		@Override
 		public void defineObject(ObjectDefiner definer) {
 			def().defineObject(definer);
+		}
+
+		@Override
+		public void defineLink(LinkDefiner definer) {
+			def().defineLink(definer);
 		}
 
 		@Override

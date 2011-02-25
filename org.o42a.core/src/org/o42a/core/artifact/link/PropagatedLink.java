@@ -19,8 +19,6 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.type.TypeRef;
 
 
 final class PropagatedLink extends Link {
@@ -43,21 +41,8 @@ final class PropagatedLink extends Link {
 	}
 
 	@Override
-	protected TypeRef buildTypeRef() {
-		return this.field.inheritedTypeRef();
-	}
-
-	@Override
 	protected TargetRef buildTargetRef() {
-
-		final Field<Link>[] overridden = this.field.getOverridden();
-
-		if (overridden.length != 1) {
-			getLogger().requiredLinkTarget(this.field);
-		}
-
-		return overridden[0].getArtifact().getTargetRef().upgradeScope(
-				getScope().getEnclosingScope());
+		return this.field.derivedTargetRef();
 	}
 
 }

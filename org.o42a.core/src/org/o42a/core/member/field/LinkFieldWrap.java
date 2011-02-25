@@ -25,7 +25,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.ref.type.TypeRef;
 
 
 final class LinkFieldWrap extends FieldWrap<Link> {
@@ -64,17 +63,6 @@ final class LinkFieldWrap extends FieldWrap<Link> {
 
 		Wrap(LinkFieldWrap scope, Link sample) {
 			super(scope, sample);
-		}
-
-		@Override
-		protected TypeRef buildTypeRef() {
-
-			final TypeRef typeRef =
-				field().getInterface().getArtifact().getTypeRef();
-
-			return typeRef.rescope(wrapper(
-					getScope().getEnclosingScope(),
-					field().getWrapped().getScope().getEnclosingScope()));
 		}
 
 		@Override

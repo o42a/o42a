@@ -182,11 +182,6 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final Scope materialize() {
-		return this;
-	}
-
-	@Override
 	public final PlainClause toPlainClause() {
 		return this;
 	}

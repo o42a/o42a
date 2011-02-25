@@ -36,7 +36,6 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
@@ -76,8 +75,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		return (Field<A>) field;
 	}
 
-	public abstract TypeRef typeRef(TargetRef ref);
-
 	public abstract DeclaredField<A, ?> declareField(MemberField member);
 
 	public abstract FieldIR<A> fieldIR(IRGenerator generator, Field<A> field);
@@ -96,11 +93,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		@Override
 		public Obj cast(Artifact<?> artifact) {
 			return artifact.toObject();
-		}
-
-		@Override
-		public TypeRef typeRef(TargetRef ref) {
-			return ref.getRef().toTypeRef().rescope(ref.getRescoper());
 		}
 
 		@Override
@@ -134,18 +126,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public TypeRef typeRef(TargetRef ref) {
-
-			final Link link = ref.getArtifact().toLink();
-
-			if (link == null) {
-				return null;
-			}
-
-			return new LinkTypeRef(ref).toTypeRef();
-		}
-
-		@Override
 		public FieldIR<Link> fieldIR(IRGenerator generator, Field<Link> field) {
 			return Link.fieldIR(generator, field);
 		}
@@ -167,11 +147,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		@Override
 		public Array cast(Artifact<?> artifact) {
 			return artifact.toArray();
-		}
-
-		@Override
-		public TypeRef typeRef(TargetRef ref) {
-			return null;
 		}
 
 		@Override

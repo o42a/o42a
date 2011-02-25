@@ -23,13 +23,17 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.artifact.link.Link;
+import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.StaticAscendants;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition.LinkDefiner;
 import org.o42a.core.member.field.FieldDefinition.ObjectDefiner;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.Value;
@@ -46,9 +50,7 @@ final class FixedScopeRef extends Ref {
 
 	@Override
 	public Value<?> value(Scope scope) {
-		return calculateValue(
-				getResolution().materialize(),
-				scope.materialize());
+		return calculateValue(getResolution().materialize(), scope);
 	}
 
 	@Override
@@ -121,6 +123,11 @@ final class FixedScopeRef extends Ref {
 		@Override
 		public void defineObject(ObjectDefiner definer) {
 			this.definition.defineObject(new ObjectDefinerWrap(definer));
+		}
+
+		@Override
+		public void defineLink(LinkDefiner definer) {
+			this.definition.defineLink(new LinkDefinerWrap(definer));
 		}
 
 		@Override
@@ -208,6 +215,41 @@ final class FixedScopeRef extends Ref {
 				return super.toString();
 			}
 			return this.definer.toString();
+		}
+
+	}
+
+	private static final class LinkDefinerWrap implements LinkDefiner {
+
+		private final LinkDefiner definer;
+
+		LinkDefinerWrap(LinkDefiner definer) {
+			this.definer = definer;
+		}
+
+		@Override
+		public Field<Link> getField() {
+			return this.definer.getField();
+		}
+
+		@Override
+		public TypeRef getTypeRef() {
+			return this.definer.getTypeRef();
+		}
+
+		@Override
+		public TargetRef getDefaultTargetRef() {
+			return this.definer.getDefaultTargetRef();
+		}
+
+		@Override
+		public TargetRef getTargetRef() {
+			return this.definer.getTargetRef();
+		}
+
+		@Override
+		public void setTargetRef(TargetRef targetRef) {
+			this.definer.setTargetRef(targetRef.toStatic());
 		}
 
 	}

@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
-import static org.o42a.core.ref.Ref.falseRef;
 
 import java.util.List;
 
@@ -28,8 +27,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -50,12 +47,12 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 
 	@Override
 	protected Link declareArtifact() {
-		return new DeclaredLink(this);
+		return new DeclaredLink(getVariant());
 	}
 
 	@Override
 	protected Link overrideArtifact() {
-		return new OverriderLink(this);
+		return new OverriderLink(getVariant());
 	}
 
 	@Override
@@ -81,7 +78,11 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 		return new PropagatedLink(this);
 	}
 
-	TypeRef inheritedTypeRef() {
+	void build(TypeRef defaultTypeRef, TargetRef defaultTargetRef) {
+		getVariant().build(defaultTypeRef, defaultTargetRef);
+	}
+
+	TypeRef derivedTypeRef() {
 
 		TypeRef typeRef = null;
 
@@ -112,33 +113,48 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 		? typeRef.upgradeScope(getEnclosingScope()) : null;
 	}
 
-	TargetRef declaredRef() {
+	TargetRef derivedTargetRef() {
 
-		final FieldDefinition definition = getDefinition();
+		boolean errorReported = false;
+		TargetRef result = null;
+		Field<Link> lastDefinition = null;
 
-		if (!definition.isValid()) {
-			return falseRef(
-					this,
-					distributeIn(getEnclosingContainer())).toTargetRef();
+		for (Field<Link> overridden : getOverridden()) {
+
+			final Field<Link> overriddenDefinition =
+				overridden.getLastDefinition();
+
+			if (lastDefinition == null) {
+				result = overridden.getArtifact().getTargetRef();
+				lastDefinition = overriddenDefinition;
+				continue;
+			}
+			if (lastDefinition.derivedFrom(overriddenDefinition)) {
+				continue;
+			}
+			if (overriddenDefinition.derivedFrom(lastDefinition)) {
+				result = overridden.getArtifact().getTargetRef();
+				lastDefinition = overriddenDefinition;
+				continue;
+			}
+			if (!errorReported) {
+				// Report this error at most once.
+				getLogger().error(
+						"ambiguous_link_target",
+						this,
+						"It is required to specify a '%s' field link target,"
+						+ " as it's definition is ambiguous",
+						getDisplayName());
+				errorReported = true;
+				invalid();
+			}
 		}
 
-		final Ref value = definition.getValue();
-
-		if (value == null || !checkInheritable(value)) {
-			return falseRef(
-					this,
-					distributeIn(getEnclosingContainer())).toTargetRef();
+		if (result == null) {
+			return result;
 		}
 
-		final Resolution resolution = value.getResolution();
-
-		if (resolution.isError()) {
-			invalid();
-		} else if (!resolution.toArtifact().accessBy(this).checkInstanceUse()) {
-			invalid();
-		}
-
-		return value.toTargetRef().rescope(getEnclosingScope());
+		return result.upgradeScope(getScope().getEnclosingScope());
 	}
 
 	final void invalid() {
@@ -178,20 +194,8 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 		return this.definition;
 	}
 
-	private boolean checkInheritable(Ref value) {
-
-		final Resolution resolution = value.getResolution();
-
-		if (resolution.isError()) {
-			return false;
-		}
-		if (!resolution.toArtifact().getKind().isInheritable()) {
-			getLogger().notObjectDeclaration(this);
-			invalid();
-			return false;
-		}
-
-		return true;
+	private LinkFieldVariant getVariant() {
+		return getVariants().get(0);
 	}
 
 }
