@@ -42,7 +42,7 @@ public class InheritanceTest extends CompilerTestCase {
 		compile(
 				"A := integer(= 1. Foo := 123456).",
 				"B := a(= 2. Foo = 1234567).",
-				"C := b.");
+				"C := b().");
 		this.a = field("a").getArtifact().toObject();
 		this.b = field("b").getArtifact().toObject();
 		this.c = field("c").getArtifact().toObject();

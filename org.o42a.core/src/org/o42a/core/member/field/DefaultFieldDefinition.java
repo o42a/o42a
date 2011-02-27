@@ -23,6 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -118,7 +119,7 @@ final class DefaultFieldDefinition extends FieldDefinition {
 			getLogger().noDefinition(this);
 		}
 
-		return this.value = new DefinitionValue(
+		return this.value = new Call(
 				this,
 				distribute(),
 				this.ascendants,

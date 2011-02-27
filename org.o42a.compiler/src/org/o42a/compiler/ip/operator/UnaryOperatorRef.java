@@ -31,9 +31,9 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.DefinitionValue;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.common.Wrap;
 
 
@@ -94,7 +94,7 @@ public class UnaryOperatorRef extends Wrap {
 				distribute(),
 				this.operand.materialize());
 
-		return new DefinitionValue(
+		return new Call(
 				this,
 				distribute(),
 				new AscendantsDefinition(

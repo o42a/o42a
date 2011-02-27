@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object;
 import org.o42a.core.*;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
@@ -73,7 +74,12 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	@Override
-	public Field<Obj> toField() {
+	public final Member toMember() {
+		return null;
+	}
+
+	@Override
+	public final Field<Obj> toField() {
 		return null;
 	}
 

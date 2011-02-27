@@ -17,39 +17,58 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.ref.common;
+
+import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public class DefinitionValue extends ObjectConstructor {
+public class Call extends ObjectConstructor {
 
 	private final AscendantsDefinition ascendants;
-	private final BlockBuilder declarations;
+	private final BlockBuilder definitions;
 
-	public DefinitionValue(
+	public Call(
 			LocationInfo location,
 			Distributor distributor,
 			AscendantsDefinition ascendants,
-			BlockBuilder declarations) {
+			BlockBuilder definitions) {
 		super(location, distributor);
 		this.ascendants = ascendants;
-		this.declarations = declarations;
+		this.definitions = definitions;
+	}
+
+	public final AscendantsDefinition getAscendants() {
+		return this.ascendants;
+	}
+
+	public final BlockBuilder getDefinitions() {
+		return this.definitions;
 	}
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return this.ascendants.getAncestor();
+	}
+
+	@Override
+	public FieldDefinition toFieldDefinition() {
+		return fieldDefinition(
+				this,
+				this.ascendants,
+				this.definitions);
 	}
 
 	@Override
@@ -63,28 +82,28 @@ public class DefinitionValue extends ObjectConstructor {
 			return null;
 		}
 
-		return new DefinitionValue(
+		return new Call(
 				this,
 				reproducer.distribute(),
 				ascendants,
-				this.declarations);
+				this.definitions);
 	}
 
 	@Override
 	protected Obj createObject() {
-		return new ValueObject(
+		return new CallObject(
 				this,
 				distribute(),
 				this.ascendants,
-				this.declarations);
+				this.definitions);
 	}
 
-	private static final class ValueObject extends DefinedObject {
+	private static final class CallObject extends DefinedObject {
 
 		private final AscendantsDefinition ascendants;
 		private final BlockBuilder declarations;
 
-		ValueObject(
+		CallObject(
 				LocationInfo location,
 				Distributor enclosing,
 				AscendantsDefinition ascendants,
