@@ -54,11 +54,6 @@ final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public AscendantsDefinition getAscendants() {
-		return null;
-	}
-
-	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return null;

@@ -102,7 +102,6 @@ final class StaticRef extends Ref {
 	private static final class FixedFieldDefinition extends FieldDefinition {
 
 		private final FieldDefinition definition;
-		private AscendantsDefinition ascendants;
 
 		FixedFieldDefinition(FieldDefinition definition) {
 			super(definition, definition.distribute());
@@ -132,15 +131,6 @@ final class StaticRef extends Ref {
 		@Override
 		public void defineLink(LinkDefiner definer) {
 			this.definition.defineLink(new LinkDefinerWrap(definer));
-		}
-
-		@Override
-		public AscendantsDefinition getAscendants() {
-			if (this.ascendants != null) {
-				return this.ascendants;
-			}
-			return this.ascendants =
-				this.definition.getAscendants().toStatic();
 		}
 
 		@Override

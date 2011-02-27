@@ -60,11 +60,6 @@ final class ArrayFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public AscendantsDefinition getAscendants() {
-		return null;
-	}
-
-	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		// TODO reproduce array initializer

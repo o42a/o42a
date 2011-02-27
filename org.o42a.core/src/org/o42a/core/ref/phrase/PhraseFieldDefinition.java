@@ -55,11 +55,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public AscendantsDefinition getAscendants() {
-		return getDefinition().getAscendants();
-	}
-
-	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
 		return getDefinition().reproduce(reproducer);
 	}

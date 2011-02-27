@@ -40,15 +40,6 @@ public abstract class FieldDefinition extends Placed {
 		return new InvalidFieldDefinition(location, distributor);
 	}
 
-	public static FieldDefinition ascendantsDefinition(
-			AscendantsDefinition ascendants) {
-		return new DefaultFieldDefinition(
-				ascendants,
-				ascendants.distribute(),
-				ascendants,
-				null);
-	}
-
 	public static FieldDefinition fieldDefinition(
 			LocationInfo location,
 			AscendantsDefinition ascendants,
@@ -61,14 +52,14 @@ public abstract class FieldDefinition extends Placed {
 				? definition : emptyBlock(location));
 	}
 
-	public static FieldDefinition defaultDefinition(
+	public static FieldDefinition impliedDefinition(
 			LocationInfo location,
 			Distributor scope) {
 		return new DefaultFieldDefinition(
 				location,
 				scope,
 				new AscendantsDefinition(location, scope),
-				null);
+				emptyBlock(location));
 	}
 
 	public static FieldDefinition arrayDefinition(ArrayInitializer array) {
@@ -90,8 +81,6 @@ public abstract class FieldDefinition extends Placed {
 	public abstract void defineLink(LinkDefiner definer);
 
 	public abstract void defineArray(ArrayDefiner definer);
-
-	public abstract AscendantsDefinition getAscendants();
 
 	public abstract FieldDefinition reproduce(Reproducer reproducer);
 

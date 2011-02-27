@@ -95,11 +95,6 @@ class PhraseEx extends Wrap {
 		}
 
 		@Override
-		public AscendantsDefinition getAscendants() {
-			return this.definition.getAscendants();
-		}
-
-		@Override
 		public FieldDefinition reproduce(Reproducer reproducer) {
 			return this.definition.reproduce(reproducer);
 		}

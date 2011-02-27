@@ -30,15 +30,10 @@ import org.o42a.core.st.Reproducer;
 
 final class PathTargetDefinition extends FieldDefinition {
 
-	private final AscendantsDefinition ascendants;
 	private final Ref target;
 
 	PathTargetDefinition(Ref target) {
 		super(target, target.distribute());
-		this.ascendants = new AscendantsDefinition(
-				target,
-				distribute(),
-				target.toTypeRef());
 		this.target = target;
 	}
 
@@ -66,11 +61,6 @@ final class PathTargetDefinition extends FieldDefinition {
 	@Override
 	public void defineArray(ArrayDefiner definer) {
 		definer.define(valueArrayInitializer(this.target));
-	}
-
-	@Override
-	public AscendantsDefinition getAscendants() {
-		return this.ascendants;
 	}
 
 	@Override

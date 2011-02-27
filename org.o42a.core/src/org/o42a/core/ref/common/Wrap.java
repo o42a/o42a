@@ -231,11 +231,6 @@ public abstract class Wrap extends Ref {
 		}
 
 		@Override
-		public AscendantsDefinition getAscendants() {
-			return def().getAscendants();
-		}
-
-		@Override
 		public FieldDefinition reproduce(Reproducer reproducer) {
 			return def().reproduce(reproducer);
 		}

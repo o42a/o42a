@@ -23,7 +23,7 @@ import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.arrayInitializer;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.field.FieldDefinition.arrayDefinition;
-import static org.o42a.core.member.field.FieldDefinition.defaultDefinition;
+import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.ScopeRefNode;
@@ -46,7 +46,7 @@ public class DefinitionVisitor
 	@Override
 	public FieldDefinition visitScopeRef(ScopeRefNode ref, FieldDeclaration p) {
 		if (ref.getType() == ScopeType.IMPLIED) {
-			return defaultDefinition(location(p, ref), p.distribute());
+			return impliedDefinition(location(p, ref), p.distribute());
 		}
 		return super.visitScopeRef(ref, p);
 	}

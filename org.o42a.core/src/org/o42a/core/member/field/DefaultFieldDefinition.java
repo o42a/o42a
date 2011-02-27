@@ -19,13 +19,10 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -35,7 +32,6 @@ final class DefaultFieldDefinition extends FieldDefinition {
 
 	private final AscendantsDefinition ascendants;
 	private final BlockBuilder definitions;
-	private final boolean call;
 	private Ref value;
 
 	DefaultFieldDefinition(
@@ -45,10 +41,7 @@ final class DefaultFieldDefinition extends FieldDefinition {
 			BlockBuilder definitions) {
 		super(location, scope);
 		this.ascendants = ascendants;
-		this.call = definitions != null;
-		this.definitions =
-			definitions != null
-			? definitions : emptyBlock(location);
+		this.definitions = definitions;
 	}
 
 	@Override
@@ -88,50 +81,6 @@ final class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public AscendantsDefinition getAscendants() {
-		return this.ascendants;
-	}
-
-	public Ref getValue() {
-		if (this.value != null) {
-			return this.value;
-		}
-
-		if (!this.call) {
-
-			final StaticTypeRef[] samples = getAscendants().getSamples();
-
-			if (samples.length == 0) {
-
-				final TypeRef ancestor = getAscendants().getAncestor();
-
-				if (ancestor != null) {
-					// ancestor and no samples
-					return this.value = ancestor.getRef();
-				}
-
-				// implied scope expression
-
-				return null;
-			}
-			if (samples.length == 1) {
-				// single sample
-				return this.value = samples[0].getRef();
-			}
-		}
-
-		if (getAscendants().isEmpty()) {
-			getLogger().noDefinition(this);
-		}
-
-		return this.value = new DefinitionValue(
-				this,
-				distribute(),
-				this.ascendants,
-				this.definitions);
-	}
-
-	@Override
 	public FieldDefinition reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
@@ -146,7 +95,7 @@ final class DefaultFieldDefinition extends FieldDefinition {
 				this,
 				reproducer.distribute(),
 				ascendants,
-				this.call ? this.definitions : null);
+				this.definitions);
 	}
 
 	@Override
@@ -155,11 +104,25 @@ final class DefaultFieldDefinition extends FieldDefinition {
 		final StringBuilder out = new StringBuilder();
 
 		out.append(this.ascendants);
-		if (this.definitions != null) {
-			out.append(this.definitions);
-		}
+		out.append(this.definitions);
 
 		return out.toString();
+	}
+
+	private Ref getValue() {
+		if (this.value != null) {
+			return this.value;
+		}
+
+		if (this.ascendants.isEmpty()) {
+			getLogger().noDefinition(this);
+		}
+
+		return this.value = new DefinitionValue(
+				this,
+				distribute(),
+				this.ascendants,
+				this.definitions);
 	}
 
 }
