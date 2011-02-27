@@ -142,25 +142,6 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-		final Scope enclosingScope = getScope();
-
-		if (enclosingScope == getContext().getRoot().getScope()) {
-			out.append("$$");
-		} else {
-			out.append(enclosingScope).append(':');
-		}
-		out.append(getDisplayName());
-		if (isPropagated()) {
-			out.append("{propagated}");
-		}
-
-		return out.toString();
-	}
-
-	@Override
 	protected void merge(Member member) {
 		throw new IllegalStateException();
 	}

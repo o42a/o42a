@@ -194,6 +194,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
 	public abstract A getArtifact();
 
+	@Override
 	public final MemberField toMember() {
 		return this.member;
 	}

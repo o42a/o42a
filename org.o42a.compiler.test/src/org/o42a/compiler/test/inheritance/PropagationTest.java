@@ -41,8 +41,8 @@ public class PropagationTest extends CompilerTestCase {
 	@Test
 	public void overrideAncestor() {
 		compile(
-				"A := void(Foo := 1; bar := foo);",
-				"b := &a(Foo = 3)");
+				"A := void(Foo := 1; bar := foo()).",
+				"B := &a(Foo = 3)");
 
 		final Obj aFoo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bFoo = field(this.b, "foo").getArtifact().toObject();

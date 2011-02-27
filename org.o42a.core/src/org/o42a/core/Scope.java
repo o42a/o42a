@@ -22,6 +22,7 @@ package org.o42a.core;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
@@ -37,7 +38,9 @@ public interface Scope extends PlaceInfo {
 
     Path getEnclosingScopePath();
 
-	Field<?> toField();
+    Member toMember();
+
+    Field<?> toField();
 
 	LocalScope toLocal();
 

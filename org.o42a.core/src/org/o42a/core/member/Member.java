@@ -53,6 +53,29 @@ public abstract class Member extends Placed {
 		return getId().toString();
 	}
 
+	public final String getDisplayPath() {
+
+		final StringBuilder out = new StringBuilder();
+		final Scope enclosingScope = getScope();
+
+		if (enclosingScope == getContext().getRoot().getScope()) {
+			out.append("$$");
+		} else {
+
+			final Member enclosingMember = enclosingScope.toMember();
+
+			if (enclosingMember == null) {
+				out.append(enclosingScope);
+			} else {
+				out.append(enclosingMember.getDisplayPath());
+			}
+			out.append(':');
+		}
+		out.append(getDisplayName());
+
+		return out.toString();
+	}
+
 	public abstract MemberField toMemberField();
 
 	public abstract MemberClause toMemberClause();
@@ -130,16 +153,29 @@ public abstract class Member extends Placed {
 
 	@Override
 	public String toString() {
+		if (!isOverride()) {
+			return getDisplayPath();
+		}
 
 		final StringBuilder out = new StringBuilder();
-		final Scope enclosingScope = getScope();
 
-		if (enclosingScope != getContext().getRoot().getScope()) {
-			out.append(enclosingScope).append(':');
-		} else {
-			out.append("$$");
+		out.append(getDisplayPath());
+		if (isPropagated()) {
+			out.append("{propagated from ");
+
+			boolean comma = false;
+
+			for (Member overridden : getOverridden()) {
+				if (!comma) {
+					comma = true;
+				} else {
+					out.append(", ");
+				}
+				out.append(overridden.getDisplayPath());
+			}
+
+			out.append('}');
 		}
-		out.append(getDisplayName());
 
 		return out.toString();
 	}
