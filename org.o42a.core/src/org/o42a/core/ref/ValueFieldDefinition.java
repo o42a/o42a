@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.*;
@@ -28,15 +30,10 @@ import org.o42a.core.st.Reproducer;
 final class ValueFieldDefinition extends FieldDefinition {
 
 	private final Ref value;
-	private final ImplicitSamplesDefinition samples;
 
 	ValueFieldDefinition(Ref value) {
 		super(value, value.distribute());
 		this.value = value;
-		this.samples = new ImplicitSamplesDefinition(
-				this,
-				distribute(),
-				this.value.toStaticTypeRef());
 	}
 
 	@Override
@@ -49,7 +46,7 @@ final class ValueFieldDefinition extends FieldDefinition {
 		definer.setAscendants(
 				definer.getAscendants().addImplicitSample(
 						this.value.toStaticTypeRef()));
-		//definer.define(valueBlock(this.value));
+		definer.define(valueBlock(this.value));
 	}
 
 	@Override
@@ -60,11 +57,6 @@ final class ValueFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineLink(LinkDefiner definer) {
 		definer.setTargetRef(this.value.toTargetRef(definer.getTypeRef()));
-	}
-
-	@Override
-	public AscendantsDefinition getAscendants() {
-		return this.samples;
 	}
 
 	@Override
