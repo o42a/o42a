@@ -67,18 +67,18 @@ final class ClauseDefinition extends Obj {
 	@Override
 	protected Ascendants buildAscendants() {
 
-		final Ascendants ascendants = new Ascendants(this);
+		Ascendants ascendants = new Ascendants(this);
 		final Ref overridden = toClause().getBuilder().getOverridden();
 
 		if (overridden != null) {
-			ascendants.setAncestor(overridden.toTypeRef());
+			ascendants = ascendants.setAncestor(overridden.toTypeRef());
 		}
 
 		final StaticTypeRef adapterType =
 			toClause().getDeclaration().getAdapterType();
 
 		if (adapterType != null) {
-			ascendants.addExplicitSample(adapterType);
+			ascendants = ascendants.addExplicitSample(adapterType);
 		}
 
 		return toClause().getAscendants().updateAscendants(ascendants);

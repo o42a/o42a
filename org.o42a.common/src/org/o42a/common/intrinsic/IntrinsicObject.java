@@ -54,7 +54,7 @@ public abstract class IntrinsicObject extends PlainObject {
 	@Override
 	protected final Ascendants buildAscendants() {
 
-		final Ascendants ascendants = createAscendants();
+		Ascendants ascendants = createAscendants();
 		final Field<Obj> field = getField();
 
 		if (field.isOverride()) {
@@ -68,7 +68,7 @@ public abstract class IntrinsicObject extends PlainObject {
 					ancestor.getType().member(field.getKey());
 
 				if (overridden != null) {
-					ascendants.addMemberOverride(overridden);
+					ascendants = ascendants.addMemberOverride(overridden);
 				}
 			}
 
@@ -80,7 +80,7 @@ public abstract class IntrinsicObject extends PlainObject {
 					containerSamples[i].getType().member(field.getKey());
 
 				if (overridden != null) {
-					ascendants.addMemberOverride(overridden);
+					ascendants = ascendants.addMemberOverride(overridden);
 				}
 			}
 		} else {
@@ -89,7 +89,7 @@ public abstract class IntrinsicObject extends PlainObject {
 				field.toMember().getId().getAdapterId();
 
 			if (adapterId != null) {
-				ascendants.addExplicitSample(adapterId.adapterType(
+				ascendants = ascendants.addExplicitSample(adapterId.adapterType(
 						ascendants.getScope().getEnclosingScope()));
 			}
 		}

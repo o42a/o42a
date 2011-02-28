@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -39,18 +40,31 @@ public class StaticAscendants extends Ascendants {
 	}
 
 	@Override
-	public Ascendants setAncestor(TypeRef explicitAncestor) {
-		return super.setAncestor(explicitAncestor.toStatic());
+	public StaticAscendants setAncestor(TypeRef explicitAncestor) {
+		return (StaticAscendants) super.setAncestor(
+				explicitAncestor.toStatic());
 	}
 
 	@Override
-	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
-		return super.addExplicitSample(explicitAscendant.toStatic());
+	public StaticAscendants runtime() {
+		return (StaticAscendants) super.runtime();
 	}
 
 	@Override
-	public Ascendants addImplicitSample(StaticTypeRef implicitAscendant) {
-		return super.addImplicitSample(implicitAscendant.toStatic());
+	public StaticAscendants addExplicitSample(StaticTypeRef explicitAscendant) {
+		return (StaticAscendants) super.addExplicitSample(
+				explicitAscendant.toStatic());
+	}
+
+	@Override
+	public StaticAscendants addImplicitSample(StaticTypeRef implicitAscendant) {
+		return (StaticAscendants) super.addImplicitSample(
+				implicitAscendant.toStatic());
+	}
+
+	@Override
+	public StaticAscendants addMemberOverride(Member overriddenMember) {
+		return (StaticAscendants) super.addMemberOverride(overriddenMember);
 	}
 
 }

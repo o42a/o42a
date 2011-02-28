@@ -46,7 +46,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 				containerAncestor.getType().member(clause.getKey());
 
 			if (overriddenMember != null) {
-				ascendants.addMemberOverride(overriddenMember);
+				ascendants = ascendants.addMemberOverride(overriddenMember);
 			}
 		}
 
@@ -58,7 +58,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 				containerSamples[i].getType().member(clause.getKey());
 
 			if (overriddenMember != null) {
-				ascendants.addMemberOverride(overriddenMember);
+				ascendants = ascendants.addMemberOverride(overriddenMember);
 			}
 		}
 

@@ -43,7 +43,7 @@ final class PropagatedObject extends PlainObject {
 				containerAncestor.getType().member(field.getKey());
 
 			if (overridden != null) {
-				ascendants.addMemberOverride(overridden);
+				ascendants = ascendants.addMemberOverride(overridden);
 			}
 		}
 
@@ -55,7 +55,7 @@ final class PropagatedObject extends PlainObject {
 				containerSamples[i].getType().member(field.getKey());
 
 			if (overridden != null) {
-				ascendants.addMemberOverride(overridden);
+				ascendants = ascendants.addMemberOverride(overridden);
 			}
 		}
 
