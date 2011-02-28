@@ -32,7 +32,7 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.ArrayUtil;
 
 
-public class Ascendants {
+public class Ascendants implements Cloneable {
 
 	private static final Sample[] NO_SAMPLES = new Sample[0];
 	private static final byte EXPLICIT_RUNTIME = 2;
@@ -83,6 +83,18 @@ public class Ascendants {
 		return this.explicitAncestor;
 	}
 
+	public Ascendants setAncestor(TypeRef explicitAncestor) {
+		getScope().getEnclosingScope().assertDerivedFrom(
+				explicitAncestor.getScope());
+
+		final Ascendants clone = clone();
+
+		clone.explicitAncestor =
+			explicitAncestor.upgradeScope(getScope().getEnclosingScope());
+
+		return clone;
+	}
+
 	public final Directive getDirective() {
 		if (this.directive == null) {
 
@@ -107,14 +119,6 @@ public class Ascendants {
 		return this.discardedSamples;
 	}
 
-	public Ascendants setAncestor(TypeRef explicitAncestor) {
-		getScope().getEnclosingScope().assertDerivedFrom(
-				explicitAncestor.getScope());
-		this.explicitAncestor =
-			explicitAncestor.upgradeScope(getScope().getEnclosingScope());
-		return this;
-	}
-
 	public boolean isRuntime() {
 		if (this.runtime == 0) {
 
@@ -133,8 +137,12 @@ public class Ascendants {
 	}
 
 	public Ascendants runtime() {
-		this.runtime = EXPLICIT_RUNTIME;
-		return this;
+
+		final Ascendants clone = clone();
+
+		clone.runtime = EXPLICIT_RUNTIME;
+
+		return clone;
 	}
 
 	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
@@ -160,14 +168,19 @@ public class Ascendants {
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
 		enclosingScope.assertDerivedFrom(overriddenMember.getScope());
+		assert overriddenMember.getSubstance().toObject() != null :
+			"Can not override non-object member " + overriddenMember;
 
-		if (overriddenMember.getSubstance().toObject() != null) {
-			return addSample(
-					new MemberOverride(enclosingScope, overriddenMember));
+		return addSample(new MemberOverride(enclosingScope, overriddenMember));
+	}
+
+	@Override
+	protected Ascendants clone() {
+		try {
+			return (Ascendants) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
 		}
-
-		throw new UnsupportedOperationException(
-				"Can not override non-object field");
 	}
 
 	@Override
@@ -225,8 +238,12 @@ public class Ascendants {
 	}
 
 	private Ascendants addSample(Sample sample) {
-		this.samples = ArrayUtil.prepend(sample, this.samples);
-		return this;
+
+		final Ascendants clone = clone();
+
+		clone.samples = ArrayUtil.prepend(sample, this.samples);
+
+		return clone;
 	}
 
 	private boolean validateUse(Artifact<?> checkUse) {
