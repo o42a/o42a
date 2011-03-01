@@ -34,6 +34,8 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		super(objectIR);
 	}
 
+	public abstract boolean isRequirement();
+
 	public void call(
 			Code code,
 			CodePos exit,
@@ -133,9 +135,8 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		final DefValue condition = value(definitions);
 
 		if (condition.isUnknown()) {
-			if (condition.isRequirement()
-					|| !hasExplicitProposition(definitions)) {
-				writeAncestorDef(code, exit, host, condition);
+			if (isRequirement() || !hasExplicitProposition(definitions)) {
+				writeAncestorDef(code, exit, host);
 			}
 			return;
 		}
@@ -143,20 +144,21 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		final Builder builder =
 			new Builder(getObjectIR().getObject(), code, exit, host);
 
-		if (condition.isRequirement()) {
-			writeAncestorDef(code, exit, host, condition);
+		if (isRequirement()) {
+			writeAncestorDef(code, exit, host);
+			builder.ancestorWritten = true;
 			builder.addDefs(condition.getLogicalDef().getRequirements());
 			return;
 		}
 
 		builder.addDefs(condition.getLogicalDef().getRequirements());
-		if (builder.hasExplicitDefs) {
+		if (builder.written) {
 			return;
 		}
 		if (hasExplicitProposition(definitions)) {
 			return;
 		}
-		writeAncestorDef(code, exit, host, condition);
+		writeAncestorDef(code, exit, host);
 	}
 
 	protected abstract void build(
@@ -168,15 +170,14 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 	private void writeAncestorDef(
 			Code code,
 			CodePos exit,
-			ObjOp host,
-			DefValue condition) {
+			ObjOp host) {
 
 		final CondBlk hasAncestor =
 			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
 		final CodeBlk noAncestor = hasAncestor.otherwise();
 
 		noAncestor.debug(
-				condition.isRequirement()
+				isRequirement()
 				? "No ancestor requirement" : "No ancestor condition");
 		noAncestor.go(code.tail());
 
@@ -187,7 +188,7 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 			.load(hasAncestor)
 			.data(host.getBuilder(), hasAncestor, DERIVED);
 
-		if (condition.isRequirement()) {
+		if (isRequirement()) {
 			hasAncestor.dumpName("Ancestor requirement: ", ancestorBody.ptr());
 			ancestorData.writeRequirement(hasAncestor, exit, ancestorBody);
 		} else {
@@ -211,12 +212,13 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		return false;
 	}
 
-	private static final class Builder extends DefCollector<LogicalDef> {
+	private final class Builder extends DefCollector<LogicalDef> {
 
 		private final Code code;
 		private final CodePos exit;
 		private final ObjOp host;
-		private boolean hasExplicitDefs;
+		private boolean written;
+		private boolean ancestorWritten;
 
 		Builder(Obj object, Code code, CodePos exit, ObjOp host) {
 			super(object);
@@ -228,7 +230,17 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		@Override
 		protected void explicitDef(LogicalDef def) {
 			def.writeFullLogical(this.code, this.exit, this.host);
-			this.hasExplicitDefs = true;
+			this.written = true;
+		}
+
+		@Override
+		protected void ancestorDef(LogicalDef def) {
+			this.written = true;
+			if (this.ancestorWritten) {
+				return;
+			}
+			writeAncestorDef(this.code, this.exit, this.host);
+			this.ancestorWritten = true;
 		}
 
 	}

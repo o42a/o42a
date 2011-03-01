@@ -197,7 +197,7 @@ public class ObjectValueIR {
 			ValOp result,
 			ObjOp host,
 			Definitions definitions) {
-		this.claim.buildFunc(code, result, host, definitions, true);
+		this.claim.buildFunc(code, result, host, definitions);
 	}
 
 	protected void createCondition(
@@ -225,7 +225,7 @@ public class ObjectValueIR {
 			ValOp result,
 			ObjOp host,
 			Definitions definitions) {
-		this.proposition.buildFunc(code, result, host, definitions, false);
+		this.proposition.buildFunc(code, result, host, definitions);
 	}
 
 	final void addLocal(LocalIRFunc local) {
@@ -319,6 +319,11 @@ public class ObjectValueIR {
 		}
 
 		@Override
+		public boolean isClaim() {
+			return false;
+		}
+
+		@Override
 		protected String suffix() {
 			return "value";
 		}
@@ -346,8 +351,13 @@ public class ObjectValueIR {
 
 	private final class Requirement extends ObjectValueIRCondFunc {
 
-		private Requirement(ObjectIR objectIR) {
+		Requirement(ObjectIR objectIR) {
 			super(objectIR);
+		}
+
+		@Override
+		public boolean isRequirement() {
+			return true;
 		}
 
 		@Override
@@ -378,8 +388,13 @@ public class ObjectValueIR {
 
 	private final class Claim extends ObjectValueIRValFunc {
 
-		private Claim(ObjectIR objectIR) {
+		Claim(ObjectIR objectIR) {
 			super(objectIR);
+		}
+
+		@Override
+		public boolean isClaim() {
+			return true;
 		}
 
 		@Override
@@ -410,8 +425,13 @@ public class ObjectValueIR {
 
 	private final class Condition extends ObjectValueIRCondFunc {
 
-		private Condition(ObjectIR objectIR) {
+		Condition(ObjectIR objectIR) {
 			super(objectIR);
+		}
+
+		@Override
+		public boolean isRequirement() {
+			return false;
 		}
 
 		@Override
@@ -442,8 +462,13 @@ public class ObjectValueIR {
 
 	private final class Proposition extends ObjectValueIRValFunc {
 
-		private Proposition(ObjectIR objectIR) {
+		Proposition(ObjectIR objectIR) {
 			super(objectIR);
+		}
+
+		@Override
+		public boolean isClaim() {
+			return false;
 		}
 
 		@Override

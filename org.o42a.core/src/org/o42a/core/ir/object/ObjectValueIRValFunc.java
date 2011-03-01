@@ -39,6 +39,8 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		super(objectIR);
 	}
 
+	public abstract boolean isClaim();
+
 	public void call(Code code, ValOp result, ObjOp host, ObjectOp body) {
 		if (body != null) {
 			code.dumpName("Calculate value " + this + " for ", body.ptr());
@@ -125,18 +127,17 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			Code code,
 			ValOp result,
 			ObjOp host,
-			Definitions definitions,
-			boolean claim) {
+			Definitions definitions) {
 
 		final Def[] defs;
 
-		if (claim) {
+		if (isClaim()) {
 			defs = definitions.getClaims();
 		} else {
 			defs = definitions.getPropositions();
 		}
 		if (defs.length == 0) {
-			writeAncestorDef(code, result, host, claim);
+			writeAncestorDef(code, result, host);
 			return;
 		}
 
@@ -144,9 +145,10 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			new Collector(getObjectIR().getObject(), defs.length);
 
 		collector.addDefs(defs);
-
-		if (claim || collector.size() == 0) {
-			writeAncestorDef(code, result, host, claim);
+		if (collector.ancestorIndex < 0) {
+			if (collector.size() == 0) {
+				writeAncestorDef(code, result, host);
+			}
 		}
 		writeExplicitDefs(code, result, host, collector);
 
@@ -179,7 +181,6 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		code.go(block.head());
 		for (int i = 0; i < size; ++i) {
 
-			final Def def = defs[i];
 			final Code next;
 			final CodePos nextPos;
 
@@ -191,11 +192,19 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 				nextPos = code.tail();
 			}
 
-			// write explicit definition
-			def.getPrerequisite().writeFullLogical(block, nextPos, host);
-			def.writeValue(block, nextPos, host, result);
+			if (i == collector.ancestorIndex) {
+				writeAncestorDef(block, result, host);
+				result.unknown(code).go(block, nextPos, code.tail());
+			} else {
+				// Write explicit definition.
 
-			block.go(code.tail());
+				final Def def = defs[i];
+
+				def.getPrerequisite().writeFullLogical(block, nextPos, host);
+				def.writeValue(block, nextPos, host, result);
+				block.go(code.tail());
+			}
+
 			if (next == null) {
 				break;
 			}
@@ -203,11 +212,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		}
 	}
 
-	private void writeAncestorDef(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			boolean claim) {
+	private void writeAncestorDef(Code code, ValOp result, ObjOp host) {
 
 		final CondBlk hasAncestor =
 			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
@@ -234,15 +239,13 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		noAncestor.go(code.tail());
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
-
-
 		final ObjectDataOp ancestorData =
 			ancestorBody.methods(hasAncestor)
 			.objectType(hasAncestor)
 			.load(hasAncestor)
 			.data(host.getBuilder(), hasAncestor, DERIVED);
 
-		if (claim) {
+		if (isClaim()) {
 			hasAncestor.dumpName("Ancestor claim: ", ancestorBody.ptr());
 			ancestorData.writeClaim(hasAncestor, result, ancestorBody);
 		} else {
@@ -253,10 +256,11 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		hasAncestor.go(code.tail());
 	}
 
-	private static final class Collector extends DefCollector<Def> {
+	private final class Collector extends DefCollector<Def> {
 
 		private final Def[] explicitDefs;
 		private int size;
+		private int ancestorIndex = -1;
 
 		Collector(Obj object, int capacity) {
 			super(object);
@@ -274,6 +278,15 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		@Override
 		protected void explicitDef(Def def) {
 			this.explicitDefs[this.size++] = def;
+		}
+
+		@Override
+		protected void ancestorDef(Def def) {
+			if (this.ancestorIndex >= 0) {
+				return;
+			}
+			this.ancestorIndex = this.size;
+			this.explicitDefs[this.size++] = null;
 		}
 
 	}
