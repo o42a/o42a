@@ -36,7 +36,7 @@ enum o42a_obj_ctr_flags {
 	 * If set, then object is constructed as a part of field propagation
 	 * process. Otherwise a new object instantiation occurs.
 	 */
-	o42a_obj_ctr_FIELD_PROPAGATION = 0x01,
+	O42A_OBJ_CTR_FIELD_PROPAGATION = 0x01,
 
 };
 
@@ -84,34 +84,34 @@ enum o42a_obj_body_flags {
 	 *
 	 * \see o42a_obj_body_kind for possible values.
 	 */
-	O42A_obj_body_TYPE = 0x3,
+	O42A_OBJ_BODY_TYPE = 0x3,
 
 };
 
 /**
  * The kinds of object bodies.
  *
- * Apply O42A_obj_body_TYPE to o42a_obj_body.flags to gain one of these values.
+ * Apply O42A_OBJ_BODY_TYPE to o42a_obj_body.flags to gain one of these values.
  *
  * Body kind is exact only for static objects. When Constructing object at run
- * time, it is only kept when o42a_obj_ctr_FIELD_PROPAGATION flags is set. Otherwise
- * the value is dropped to O42A_obj_body_INHERITED.
+ * time, it is only kept when O42A_OBJ_CTR_FIELD_PROPAGATION flags is set. Otherwise
+ * the value is dropped to O42A_OBJ_BODY_INHERITED.
  *
  * This is used to update scope fields properly.
  */
 enum o42a_obj_body_kind {
 
 	/** The body is inherited from ancestor. */
-	O42A_obj_body_INHERITED = 0,
+	O42A_OBJ_BODY_INHERITED = 0,
 
 	/** The body is from explicit sample. */
-	O42A_obj_body_EXPLICIT = 1,
+	O42A_OBJ_BODY_EXPLICIT = 1,
 
 	/** The body is propagated from ascendant field. */
-	O42A_obj_body_PROPAGATED = 2,
+	O42A_OBJ_BODY_PROPAGATED = 2,
 
 	/** The body is main one. */
-	O42A_obj_body_MAIN = 3,
+	O42A_OBJ_BODY_MAIN = 3,
 
 };
 
@@ -575,6 +575,10 @@ o42a_fld *o42a_obj_field_fld(const o42a_obj_body_t*, const o42a_obj_field_t*);
  */
 o42a_fld *o42a_obj_overrider_fld(const o42a_obj_overrider_t*);
 
+o42a_obj_overrider_t *o42a_obj_field_overrider(
+		const o42a_obj_stype_t*,
+		const o42a_obj_field_t*);
+
 /**
  * Searches for ascendant descriptor of the given type.
  *
@@ -607,16 +611,25 @@ o42a_obj_body_t *o42a_obj_cast(o42a_obj_t*, const o42a_obj_stype_t*);
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t*);
 
+o42a_bool_t o42a_obj_cond_false(o42a_obj_t*);
+
+o42a_bool_t o42a_obj_cond_true(o42a_obj_t*);
+
+void o42a_obj_val_false(o42a_val_t*, o42a_obj_t*);
+
+void o42a_obj_val_unknown(o42a_val_t*, o42a_obj_t*);
+
 /**
  * Object reference function, which always returns NULL.
  *
  * This can be used e.g. to refer void object ancestor.
  */
-o42a_obj_body_t *o42a_obj_null_ref(o42a_obj_t*);
+o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t*);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+
+#endif /* O42A_OBJECT_H */

@@ -25,7 +25,7 @@ typedef struct {
 	o42a_obj_t *object;
 	o42a_obj_ref_ft *constructor;
 	o42a_obj_assigner_ft *assigner;
-} o42a_var_fld;
+} o42a_fld_var;
 
 
 #ifdef __cplusplus

@@ -26,8 +26,8 @@
 void o42a_fld_link_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
-	const o42a_link_fld *const from = &ctable->from.fld->link;
-	o42a_link_fld *const to = &ctable->to.fld->link;
+	const o42a_fld_link *const from = &ctable->from.fld->link;
+	o42a_fld_link *const to = &ctable->to.fld->link;
 
 	to->object = NULL;
 	to->constructor = from->constructor;
@@ -38,8 +38,8 @@ void o42a_fld_link_propagate(o42a_obj_ctable_t *const ctable) {
 void o42a_fld_link_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
-	const o42a_link_fld *const from = &ctable->from.fld->link;
-	o42a_link_fld *const to = &ctable->to.fld->link;
+	const o42a_fld_link *const from = &ctable->from.fld->link;
+	o42a_fld_link *const to = &ctable->to.fld->link;
 
 	to->object = NULL;
 

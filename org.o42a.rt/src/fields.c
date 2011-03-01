@@ -51,28 +51,6 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 };
 
 
-inline o42a_fld_desc_t *o42a_obj_field_desc(const o42a_obj_field_t *const field) {
+inline o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *const field) {
 	return &o42a_obj_field_kinds[field->kind];
-}
-
-const o42a_obj_overrider_t *o42a_obj_field_overrider(
-		const o42a_obj_stype_t *const sample_type,
-		const o42a_obj_field_t *const field) {
-	O42A_ENTER;
-
-	const size_t num_overriders = sample_type->overriders.size;
-	const o42a_obj_overrider_t *const overriders =
-			o42a_obj_overriders(sample_type);
-
-	// TODO perform a binary search for overrider
-	for (size_t i = 0; i < num_overriders; ++i) {
-
-		const o42a_obj_overrider_t *const overrider = overriders + i;
-
-		if (overrider->field == field) {
-			O42A_RETURN overrider;
-		}
-	}
-
-	O42A_RETURN NULL;
 }

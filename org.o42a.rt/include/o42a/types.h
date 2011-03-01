@@ -35,7 +35,7 @@ typedef struct o42a_obj_sample o42a_obj_sample_t;
 typedef const struct o42a_obj_field o42a_obj_field_t;
 typedef const struct o42a_obj_overrider o42a_obj_overrider_t;
 typedef struct o42a_obj_ctable o42a_obj_ctable_t;
-struct o42a_obj_fld;
+struct o42a_fld_obj;
 typedef union o42a_fld o42a_fld;
 
 /** Object represented by it's body. */
@@ -214,12 +214,12 @@ typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *);
  *
  * \param scope[in] scope object pointer.
  * \param fld[in] pointer to field, which object construction invoked for. This
- * may be a field from object different from scope (see o42a_obj_fld.previous),
+ * may be a field from object different from scope (see o42a_fld_obj.previous),
  * but is always belongs to compatible body of that object.
  *
  * \return resulting object reference.
  */
-typedef o42a_obj_t *o42a_obj_constructor_ft(o42a_obj_t *, struct o42a_obj_fld *);
+typedef o42a_obj_t *o42a_obj_constructor_ft(o42a_obj_t *, struct o42a_fld_obj *);
 
 /**
  * Variable assigner function.

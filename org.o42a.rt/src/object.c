@@ -95,6 +95,28 @@ inline o42a_fld *o42a_obj_overrider_fld(const o42a_obj_overrider_t *const overri
 	return (o42a_fld*) (body + overrider->field->fld);
 }
 
+const o42a_obj_overrider_t *o42a_obj_field_overrider(
+		const o42a_obj_stype_t *const sample_type,
+		const o42a_obj_field_t *const field) {
+	O42A_ENTER;
+
+	const size_t num_overriders = sample_type->overriders.size;
+	const o42a_obj_overrider_t *const overriders =
+			o42a_obj_overriders(sample_type);
+
+	// TODO perform a binary search for overrider
+	for (size_t i = 0; i < num_overriders; ++i) {
+
+		const o42a_obj_overrider_t *const overrider = overriders + i;
+
+		if (overrider->field == field) {
+			O42A_RETURN overrider;
+		}
+	}
+
+	O42A_RETURN NULL;
+}
+
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
 		const o42a_obj_data_t *const data,
 		const o42a_obj_stype_t *const type) {
@@ -201,7 +223,7 @@ static void derive_object_body(
 			: ((void*) ancestor_body) - ((void*) to_body);
 	to_body->methods = from_body->methods;
 
-	uint32_t body_kind = O42A_obj_body_INHERITED;
+	uint32_t body_kind = O42A_OBJ_BODY_INHERITED;
 
 	if (kind != DK_INHERIT) {
 		// keep the kind of body when propagating field
@@ -209,7 +231,7 @@ static void derive_object_body(
 	} else {
 		// drop kind of body to "inherited"
 		to_body->flags =
-				(from_body->flags & ~O42A_obj_body_TYPE) | O42A_obj_body_INHERITED;
+				(from_body->flags & ~O42A_OBJ_BODY_TYPE) | O42A_OBJ_BODY_INHERITED;
 	}
 
 
@@ -225,7 +247,7 @@ static void derive_object_body(
 		ctable->from.fld = o42a_obj_field_fld(from_body, field);
 		ctable->to.fld = o42a_obj_field_fld(to_body, field);
 
-		const o42a_fld_desc_t *const desc = o42a_obj_field_desc(field);
+		const o42a_fld_desc_t *const desc = o42a_fld_desc(field);
 
 		O42A_DEBUG(
 				kind == DK_INHERIT
@@ -639,7 +661,29 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
-o42a_obj_body_t *o42a_obj_null_ref(o42a_obj_t *scope) {
+o42a_bool_t o42a_obj_cond_false(o42a_obj_t *const object) {
+	O42A_ENTER;
+	O42A_RETURN O42A_FALSE;
+}
+
+o42a_bool_t o42a_obj_cond_true(o42a_obj_t *const object) {
+	O42A_ENTER;
+	O42A_RETURN O42A_TRUE;
+}
+
+void o42a_obj_val_false(o42a_val_t *const result, o42a_obj_t *const object) {
+	O42A_ENTER;
+	result->flags = O42A_FALSE;
+	O42A_RETURN;
+}
+
+void o42a_obj_val_unknown(o42a_val_t *const result, o42a_obj_t *const object) {
+	O42A_ENTER;
+	result->flags = O42A_UNKNOWN;
+	O42A_RETURN;
+}
+
+o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope) {
 	O42A_ENTER;
 	O42A_RETURN NULL;
 }

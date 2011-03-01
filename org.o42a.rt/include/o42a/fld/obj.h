@@ -23,12 +23,12 @@
 #include "o42a/field.h"
 
 
-typedef struct o42a_obj_fld o42a_obj_fld;
+typedef struct o42a_fld_obj o42a_fld_obj;
 
-struct o42a_obj_fld {
+struct o42a_fld_obj {
 	o42a_obj_t *object;
 	o42a_obj_constructor_ft *constructor;
-	o42a_obj_fld *previous;
+	o42a_fld_obj *previous;
 };
 
 
