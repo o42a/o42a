@@ -25,7 +25,7 @@
 
 typedef struct {
 	o42a_obj_t *object;
-	o42a_oref_ft *constructor;
+	o42a_obj_ref_ft *constructor;
 } o42a_link_fld;
 
 
@@ -34,9 +34,9 @@ extern "C" {
 #endif
 
 
-void o42a_fld_link_propagate(o42a_ctable_t*);
+void o42a_fld_link_propagate(o42a_obj_ctable_t*);
 
-void o42a_fld_link_inherit(o42a_ctable_t*);
+void o42a_fld_link_inherit(o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus

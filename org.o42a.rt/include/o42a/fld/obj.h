@@ -27,7 +27,7 @@ typedef struct o42a_obj_fld o42a_obj_fld;
 
 struct o42a_obj_fld {
 	o42a_obj_t *object;
-	o42a_oconstructor_ft *constructor;
+	o42a_obj_constructor_ft *constructor;
 	o42a_obj_fld *previous;
 };
 
@@ -37,9 +37,9 @@ extern "C" {
 #endif
 
 
-void o42a_fld_obj_propagate(o42a_ctable_t*);
+void o42a_fld_obj_propagate(o42a_obj_ctable_t*);
 
-void o42a_fld_obj_inherit(o42a_ctable_t*);
+void o42a_fld_obj_inherit(o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus
