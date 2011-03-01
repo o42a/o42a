@@ -65,7 +65,6 @@ objects += $(srcdir)/string.o
 objects += $(srcdir)/error.o
 objects += $(srcdir)/integer.o
 objects += $(srcdir)/float.o
-objects += $(srcdir)/values.o
 objects += $(srcdir)/object.o
 objects += $(srcdir)/fld/link.o
 objects += $(srcdir)/fld/obj.o
@@ -141,12 +140,6 @@ $(srcdir)/object.*.o : $(common_deps)
 $(srcdir)/object.*.o : $(headersdir)/field.h
 $(srcdir)/object.*.o : $(headersdir)/object.h
 $(srcdir)/object.%.o : $(srcdir)/object.c
-	$(call compile)
-
-$(srcdir)/values.*.o : $(common_deps)
-$(srcdir)/values.*.o : $(headersdir)/object.h
-$(srcdir)/values.*.o : $(headersdir)/values.h
-$(srcdir)/values.%.o : $(srcdir)/values.c
 	$(call compile)
 
 $(srcdir)/fields.*.o : $(fld_deps)

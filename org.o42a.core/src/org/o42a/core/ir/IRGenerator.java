@@ -45,31 +45,31 @@ public class IRGenerator extends ObjectIRGenerator {
 
 	public final CodePtr<ObjectCondFunc> falseFunc() {
 		return getGenerator().externalFunction(
-				"o42a_false",
+				"o42a_obj_cond_false",
 				objectCondSignature());
 	}
 
 	public final CodePtr<ObjectCondFunc> trueFunc() {
 		return getGenerator().externalFunction(
-				"o42a_true",
+				"o42a_obj_cond_true",
 				objectCondSignature());
 	}
 
 	public final CodePtr<ObjectValFunc> falseValFunc() {
 		return getGenerator().externalFunction(
-				"o42a_false_val",
+				"o42a_obj_val_false",
 				objectValSignature());
 	}
 
 	public final CodePtr<ObjectValFunc> unknownValFunc() {
 		return getGenerator().externalFunction(
-				"o42a_unknown_val",
+				"o42a_obj_val_unknown",
 				objectValSignature());
 	}
 
 	public final CodePtr<ObjectRefFunc> nullObjectRef() {
 		return getGenerator().externalFunction(
-				"o42a_obj_null_ref",
+				"o42a_obj_ref_null",
 				objectRefSignature());
 	}
 

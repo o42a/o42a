@@ -26,8 +26,8 @@
 void o42a_fld_var_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
-	const o42a_var_fld *const from = &ctable->from.fld->var;
-	o42a_var_fld *const to = &ctable->to.fld->var;
+	const o42a_fld_var *const from = &ctable->from.fld->var;
+	o42a_fld_var *const to = &ctable->to.fld->var;
 
 	to->object = NULL;
 	to->constructor = from->constructor;
@@ -39,8 +39,8 @@ void o42a_fld_var_propagate(o42a_obj_ctable_t *const ctable) {
 void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
-	const o42a_var_fld *const from = &ctable->from.fld->var;
-	o42a_var_fld *const to = &ctable->to.fld->var;
+	const o42a_fld_var *const from = &ctable->from.fld->var;
+	o42a_fld_var *const to = &ctable->to.fld->var;
 
 	to->object = NULL;
 
@@ -55,7 +55,7 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 			// and thus not overridden there.
 			// Use definition from overrider.
 
-			const o42a_var_fld *const ovr = &o42a_obj_overrider_fld(overrider)->var;
+			const o42a_fld_var *const ovr = &o42a_obj_overrider_fld(overrider)->var;
 
 			to->constructor = ovr->constructor;
 			to->assigner = ovr->assigner;

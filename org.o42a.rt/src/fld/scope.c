@@ -29,7 +29,7 @@ void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 	o42a_fld *const to = ctable->to.fld;
 
 	// Update the scope only when propagating field.
-	if (ctable->to.body->flags & O42A_obj_body_PROPAGATED) {
+	if (ctable->to.body->flags & O42A_OBJ_BODY_PROPAGATED) {
 		// Update only the scope of body propagated from field
 		// or the one of main body.
 

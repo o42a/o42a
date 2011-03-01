@@ -17,13 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef o42a_obj_field_H
-#define o42a_obj_field_H
+#ifndef O42A_OBJ_FIELD_H
+#define O42A_OBJ_FIELD_H
 
 #include "o42a/types.h"
 
 
-enum o42a_obj_field_kind {
+enum o42a_fld_kind {
 
 	O42A_FLD_OBJ = 0,
 
@@ -66,13 +66,13 @@ struct o42a_obj_ctable {
 
 };
 
-typedef void o42a_fcopy_ft(o42a_obj_ctable_t *);
+typedef void o42a_fld_copy_ft(o42a_obj_ctable_t *);
 
 typedef const struct o42a_fld_desc {
 
-	o42a_fcopy_ft *const inherit;
+	o42a_fld_copy_ft *const inherit;
 
-	o42a_fcopy_ft *const propagate;
+	o42a_fld_copy_ft *const propagate;
 
 } o42a_fld_desc_t;
 
@@ -82,11 +82,7 @@ extern "C" {
 #endif
 
 
-o42a_fld_desc_t *o42a_obj_field_desc(const o42a_obj_field_t*);
-
-o42a_obj_overrider_t *o42a_obj_field_overrider(
-		const o42a_obj_stype_t*,
-		const o42a_obj_field_t*);
+o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t*);
 
 
 #ifdef __cplusplus
@@ -94,4 +90,4 @@ o42a_obj_overrider_t *o42a_obj_field_overrider(
 #endif
 
 
-#endif
+#endif /* O42A_OBJ_FIELD_H */
