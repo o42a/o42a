@@ -636,9 +636,13 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public Definitions getOverriddenDefinitions() {
+
+		final Definitions ancestorDefinitions = getAncestorDefinitions();
+
 		return overriddenDefinitions(
 				getScope(),
-				getAncestorDefinitions());
+				ancestorDefinitions,
+				ancestorDefinitions);
 	}
 
 	public Path scopePath() {
@@ -726,19 +730,33 @@ public abstract class Obj extends Artifact<Obj>
 
 	Definitions overriddenDefinitions(
 			Scope scope,
-			Definitions overriddenDefinitions) {
+			Definitions overriddenDefinitions,
+			Definitions ancestorDefinitions) {
 
+		boolean hasExplicitAncestor =
+			getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = getSamples();
-
-		if (samples.length == 0) {
-			return overriddenDefinitions;
-		}
-
 		Definitions definitions = overriddenDefinitions;
 
 		for (int i = samples.length - 1; i >= 0; --i) {
-			definitions =
-				samples[i].overrideDefinitions(scope, definitions);
+
+			final Sample sample = samples[i];
+
+			if (sample.isExplicit()) {
+				if (hasExplicitAncestor) {
+					definitions = definitions.override(ancestorDefinitions);
+					hasExplicitAncestor = false;
+				}
+			}
+
+			definitions = sample.overrideDefinitions(
+					scope,
+					definitions,
+					ancestorDefinitions);
+		}
+
+		if (hasExplicitAncestor) {
+			definitions = definitions.override(ancestorDefinitions);
 		}
 
 		return definitions;
@@ -785,7 +803,7 @@ public abstract class Obj extends Artifact<Obj>
 		declareMembers(this.objectMembers);
 
 		for (Sample sample : getSamples()) {
-			sample.inheritMembers(this.objectMembers);
+			sample.deriveMembers(this.objectMembers);
 		}
 
 		final TypeRef ancestor = getAncestor();

@@ -75,6 +75,8 @@ abstract class DefCollector<D extends SourceSpec> {
 			explicitDef(def);
 			return;
 		}
+
+
 	}
 
 	public void addDefs(D[] sources) {
@@ -84,6 +86,8 @@ abstract class DefCollector<D extends SourceSpec> {
 	}
 
 	protected abstract void explicitDef(D def);
+
+	protected abstract void ancestorDef(D def);
 
 	private boolean explicit(Obj source) {
 		return source == getObject();

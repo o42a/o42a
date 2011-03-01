@@ -238,6 +238,10 @@ public class Ascendants implements Cloneable {
 	}
 
 	private Ascendants addSample(Sample sample) {
+		assert (!sample.isExplicit()
+				|| this.samples.length == 0
+				|| !this.samples[0].isExplicit()) :
+			"Implicit sample should be added before explicit one: " + sample;
 
 		final Ascendants clone = clone();
 

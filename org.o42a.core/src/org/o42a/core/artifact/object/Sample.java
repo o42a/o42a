@@ -53,19 +53,22 @@ public abstract class Sample extends Scoped {
 		return getObject().toDirective();
 	}
 
-	public final void inheritMembers(ObjectMembers members) {
+	public final void deriveMembers(ObjectMembers members) {
 		members.deriveMembers(getObject());
 	}
 
 	public final Definitions overrideDefinitions(
 			Scope scope,
+			Definitions overriddenDefinitions,
 			Definitions ancestorDefinitions) {
 
 		final Obj object = getObject();
-		final Definitions overriddenDefinitions =
-			object.overriddenDefinitions(scope, ancestorDefinitions);
+		final Definitions definitions = object.overriddenDefinitions(
+				scope,
+				overriddenDefinitions,
+				ancestorDefinitions);
 
-		return object.overrideDefinitions(scope, overriddenDefinitions);
+		return object.overrideDefinitions(scope, definitions);
 	}
 
 	protected abstract Obj getObject();

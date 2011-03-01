@@ -114,7 +114,7 @@ public class PropagationTest extends CompilerTestCase {
 		assertThat(definiteValue(foo, Long.class), is(1L));
 		assertThat(definiteValue(bar, Long.class), is(2L));
 		assertThat(definiteValue(aFoo, Long.class), is(3L));
-		assertThat(definiteValue(bFoo, Long.class), is(3L));
+		assertThat(definiteValue(bFoo, Long.class), is(2L));
 	}
 
 	@Override
