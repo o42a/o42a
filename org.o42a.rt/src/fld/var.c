@@ -23,7 +23,7 @@
 #include "o42a/object.h"
 
 
-void o42a_fld_var_propagate(o42a_ctable_t *const ctable) {
+void o42a_fld_var_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
 	const o42a_var_fld *const from = &ctable->from.fld->var;
@@ -36,7 +36,7 @@ void o42a_fld_var_propagate(o42a_ctable_t *const ctable) {
 	O42A_RETURN;
 }
 
-void o42a_fld_var_inherit(o42a_ctable_t *const ctable) {
+void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
 	const o42a_var_fld *const from = &ctable->from.fld->var;
@@ -44,18 +44,18 @@ void o42a_fld_var_inherit(o42a_ctable_t *const ctable) {
 
 	to->object = NULL;
 
-	o42a_overrider_t *const overrider =
-			o42a_field_overrider(ctable->sample_type, ctable->field);
+	o42a_obj_overrider_t *const overrider =
+			o42a_obj_field_overrider(ctable->sample_type, ctable->field);
 
 	if (overrider) {// Field is overridden.
-		if (!o42a_ascendant_of_type(
+		if (!o42a_obj_ascendant_of_type(
 				&ctable->ancestor_type->data,
 				overrider->defined_in)) {
 			// The body overrider defined in isn't present in ancestor
 			// and thus not overridden there.
 			// Use definition from overrider.
 
-			const o42a_var_fld *const ovr = &o42a_overrider_fld(overrider)->var;
+			const o42a_var_fld *const ovr = &o42a_obj_overrider_fld(overrider)->var;
 
 			to->constructor = ovr->constructor;
 			to->assigner = ovr->assigner;

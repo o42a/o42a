@@ -25,82 +25,82 @@
 #include <malloc.h>
 
 
-inline o42a_otype_t *o42a_object_type(const o42a_obody_t *const body) {
-	return (o42a_otype_t*) (((void*) body) + body->object_type);
+inline o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *const body) {
+	return (o42a_obj_type_t*) (((void*) body) + body->object_type);
 }
 
-inline o42a_obody_t *o42a_object_ancestor(const o42a_obody_t *const body) {
-	return (o42a_obody_t*) (((void*) body) + body->ancestor_body);
+inline o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t *const body) {
+	return (o42a_obj_body_t*) (((void*) body) + body->ancestor_body);
 }
 
-inline o42a_sotype_t *o42a_static_type(o42a_otype_t *const type) {
+inline o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t *const type) {
 	return (type->data.flags & O42A_OBJ_RT)
-			? type->rotype.sample : &type->sotype;
+			? type->obj_rtype.sample : &type->obj_stype;
 }
 
-inline o42a_obj_t *o42a_data_object(const o42a_odata_t *const data) {
+inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
 	return (o42a_obj_t*) (((void*) data) + data->object);
 }
 
-inline o42a_ascendant_t *o42a_object_ascendants(
-		const o42a_odata_t *const data) {
+inline o42a_obj_ascendant_t *o42a_obj_ascendants(
+		const o42a_obj_data_t *const data) {
 
 	const o42a_rlist_t *const list = &data->ascendants;
 
-	return (o42a_ascendant_t*) (((void*) list) + list->list);
+	return (o42a_obj_ascendant_t*) (((void*) list) + list->list);
 }
 
-inline o42a_sample_t *o42a_object_samples(const o42a_odata_t *const data) {
+inline o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *const data) {
 
 	const o42a_rlist_t *const list = &data->samples;
 
-	return (o42a_sample_t*) (((void*) list) + list->list);
+	return (o42a_obj_sample_t*) (((void*) list) + list->list);
 }
 
-inline o42a_field_t* o42a_object_fields(
-		const o42a_sotype_t *const type) {
+inline o42a_obj_field_t* o42a_obj_fields(
+		const o42a_obj_stype_t *const type) {
 
 	const o42a_rlist_t *const list = &type->fields;
 
-	return (o42a_field_t*) (((void*) list) + list->list);
+	return (o42a_obj_field_t*) (((void*) list) + list->list);
 }
 
-inline o42a_overrider_t* o42a_object_overriders(
-		const o42a_sotype_t *const type) {
+inline o42a_obj_overrider_t* o42a_obj_overriders(
+		const o42a_obj_stype_t *const type) {
 
 	const o42a_rlist_t *const list = &type->overriders;
 
-	return (o42a_overrider_t*) (((void*) list) + list->list);
+	return (o42a_obj_overrider_t*) (((void*) list) + list->list);
 }
 
-inline o42a_obody_t *o42a_ascendant_body(
-		const o42a_ascendant_t *const ascendant) {
-	return (o42a_obody_t *) (((void*) ascendant) + ascendant->body);
+inline o42a_obj_body_t *o42a_obj_ascendant_body(
+		const o42a_obj_ascendant_t *const ascendant) {
+	return (o42a_obj_body_t *) (((void*) ascendant) + ascendant->body);
 }
 
-inline o42a_obody_t *o42a_sample_body(const o42a_sample_t *const sample) {
-	return (o42a_obody_t *) (((void*) sample) + sample->body);
+inline o42a_obj_body_t *o42a_obj_sample_body(const o42a_obj_sample_t *const sample) {
+	return (o42a_obj_body_t *) (((void*) sample) + sample->body);
 }
 
-inline o42a_fld *o42a_field_fld(
-		const o42a_obody_t *const body,
-		const o42a_field_t *const field) {
+inline o42a_fld *o42a_obj_field_fld(
+		const o42a_obj_body_t *const body,
+		const o42a_obj_field_t *const field) {
 	return (o42a_fld*) (((void*) body) + field->fld);
 }
 
-inline o42a_fld *o42a_overrider_fld(const o42a_overrider_t *const overrider) {
+inline o42a_fld *o42a_obj_overrider_fld(const o42a_obj_overrider_t *const overrider) {
 
 	void *const body = ((void*) overrider) + overrider->body;
 
 	return (o42a_fld*) (body + overrider->field->fld);
 }
 
-const o42a_ascendant_t *o42a_ascendant_of_type(
-		const o42a_odata_t *const data,
-		const o42a_sotype_t *const type) {
+const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
+		const o42a_obj_data_t *const data,
+		const o42a_obj_stype_t *const type) {
 	O42A_ENTER;
 
-	const o42a_ascendant_t *ascendant = o42a_object_ascendants(data);
+	const o42a_obj_ascendant_t *ascendant = o42a_obj_ascendants(data);
 
 	for (size_t i = data->ascendants.size; i > 0; --i) {
 		if (ascendant->type == type) {
@@ -113,19 +113,19 @@ const o42a_ascendant_t *o42a_ascendant_of_type(
 	O42A_RETURN NULL;
 }
 
-static inline o42a_obody_t *body_of_type(
-		const o42a_odata_t *const data,
-		const o42a_sotype_t *const type) {
+static inline o42a_obj_body_t *body_of_type(
+		const o42a_obj_data_t *const data,
+		const o42a_obj_stype_t *const type) {
 
-	const o42a_ascendant_t *const ascendant =
-			o42a_ascendant_of_type(data, type);
+	const o42a_obj_ascendant_t *const ascendant =
+			o42a_obj_ascendant_of_type(data, type);
 
-	return ascendant ? o42a_ascendant_body(ascendant) : NULL;
+	return ascendant ? o42a_obj_ascendant_body(ascendant) : NULL;
 }
 
-o42a_obody_t *o42a_cast(
+o42a_obj_body_t *o42a_obj_cast(
 		o42a_obj_t *const object,
-		const o42a_sotype_t *const type) {
+		const o42a_obj_stype_t *const type) {
 	O42A_ENTER;
 
 	if (type->data.flags & O42A_OBJ_VOID) {
@@ -143,8 +143,8 @@ o42a_obody_t *o42a_cast(
 	o42a_debug_mem_name("Cast of: ", object);
 	o42a_debug_mem_name("     to: ", type);
 
-	o42a_obody_t *const result =
-			body_of_type(&o42a_object_type(object)->data, type);
+	o42a_obj_body_t *const result =
+			body_of_type(&o42a_obj_type(object)->data, type);
 
 	o42a_debug_mem_name("Cast result: ", result);
 
@@ -152,13 +152,13 @@ o42a_obody_t *o42a_cast(
 }
 
 static inline void copy_ancestor_ascendants(
-		const o42a_odata_t *const ancestor_data,
-		o42a_ascendant_t *ascendants,
+		const o42a_obj_data_t *const ancestor_data,
+		o42a_obj_ascendant_t *ascendants,
 		void *start) {
 	O42A_ENTER;
 
 	void* astart = ((void*) ancestor_data) + ancestor_data->start;
-	const o42a_ascendant_t *a = o42a_object_ascendants(ancestor_data);
+	const o42a_obj_ascendant_t *a = o42a_obj_ascendants(ancestor_data);
 	const o42a_rptr_t aascendants_rptr = ((void*) a) - astart;
 	const o42a_rptr_t ascendants_rptr = ((void*) ascendants) - start;
 	const o42a_rptr_t diff = aascendants_rptr - ascendants_rptr;
@@ -181,13 +181,13 @@ enum derivation_kind {
 };
 
 static void derive_object_body(
-		o42a_ctable_t *const ctable,
-		o42a_obody_t *ancestor_body,
+		o42a_obj_ctable_t *const ctable,
+		o42a_obj_body_t *ancestor_body,
 		int kind) {
 	O42A_ENTER;
 
-	const o42a_obody_t *const from_body = ctable->from.body;
-	o42a_obody_t *const to_body = ctable->to.body;
+	const o42a_obj_body_t *const from_body = ctable->from.body;
+	o42a_obj_body_t *const to_body = ctable->to.body;
 
 	O42A_DEBUG("Derive body %lx -> %lx\n", (long) from_body, (long) to_body);
 	o42a_debug_mem_name("Body type: ", ctable->body_type);
@@ -201,7 +201,7 @@ static void derive_object_body(
 			: ((void*) ancestor_body) - ((void*) to_body);
 	to_body->methods = from_body->methods;
 
-	uint32_t body_kind = O42A_OBODY_INHERITED;
+	uint32_t body_kind = O42A_obj_body_INHERITED;
 
 	if (kind != DK_INHERIT) {
 		// keep the kind of body when propagating field
@@ -209,23 +209,23 @@ static void derive_object_body(
 	} else {
 		// drop kind of body to "inherited"
 		to_body->flags =
-				(from_body->flags & ~O42A_OBODY_TYPE) | O42A_OBODY_INHERITED;
+				(from_body->flags & ~O42A_obj_body_TYPE) | O42A_obj_body_INHERITED;
 	}
 
 
 	// derive fields
 	const size_t num_fields = ctable->body_type->fields.size;
-	o42a_field_t *const fields = o42a_object_fields(ctable->body_type);
+	o42a_obj_field_t *const fields = o42a_obj_fields(ctable->body_type);
 
 	for (size_t i = 0; i < num_fields; ++i) {
 
-		o42a_field_t *const field = fields + i;
+		o42a_obj_field_t *const field = fields + i;
 
 		ctable->field = field;
-		ctable->from.fld = o42a_field_fld(from_body, field);
-		ctable->to.fld = o42a_field_fld(to_body, field);
+		ctable->from.fld = o42a_obj_field_fld(from_body, field);
+		ctable->to.fld = o42a_obj_field_fld(to_body, field);
 
-		const o42a_fld_desc_t *const desc = o42a_field_desc(field);
+		const o42a_fld_desc_t *const desc = o42a_obj_field_desc(field);
 
 		O42A_DEBUG(
 				kind == DK_INHERIT
@@ -257,18 +257,18 @@ static void derive_object_body(
 	O42A_RETURN;
 }
 
-static void derive_ancestor_bodies(o42a_ctable_t *const ctable, int kind) {
+static void derive_ancestor_bodies(o42a_obj_ctable_t *const ctable, int kind) {
 	O42A_ENTER;
 
-	const o42a_ascendant_t *ascendant =
-			o42a_object_ascendants(&ctable->object_type->data);
-	const o42a_odata_t *const adata = &ctable->ancestor_type->data;
-	const o42a_ascendant_t *aascendant = o42a_object_ascendants(adata);
+	const o42a_obj_ascendant_t *ascendant =
+			o42a_obj_ascendants(&ctable->object_type->data);
+	const o42a_obj_data_t *const adata = &ctable->ancestor_type->data;
+	const o42a_obj_ascendant_t *aascendant = o42a_obj_ascendants(adata);
 
 	for (size_t i = adata->ascendants.size; i > 0; --i) {
 		ctable->body_type = ascendant->type;
-		ctable->from.body = o42a_ascendant_body(aascendant);
-		ctable->to.body = o42a_ascendant_body(ascendant);
+		ctable->from.body = o42a_obj_ascendant_body(aascendant);
+		ctable->to.body = o42a_obj_ascendant_body(ascendant);
 		derive_object_body(ctable, NULL, kind);
 		++aascendant;
 		++ascendant;
@@ -278,13 +278,13 @@ static void derive_ancestor_bodies(o42a_ctable_t *const ctable, int kind) {
 }
 
 static inline void copy_samples(
-		const o42a_odata_t *const ancestor_data,
-		o42a_sample_t *samples,
+		const o42a_obj_data_t *const ancestor_data,
+		o42a_obj_sample_t *samples,
 		void *start) {
 	O42A_ENTER;
 
 	void* astart = ((void*) ancestor_data) + ancestor_data->start;
-	const o42a_sample_t *s = o42a_object_samples(ancestor_data);
+	const o42a_obj_sample_t *s = o42a_obj_samples(ancestor_data);
 	const o42a_rptr_t asamples_rptr = ((void*) s) - astart;
 	const o42a_rptr_t samples_rptr = ((void*) samples) - start;
 	const o42a_rptr_t diff = asamples_rptr - samples_rptr;
@@ -298,25 +298,25 @@ static inline void copy_samples(
 	O42A_RETURN;
 }
 
-static o42a_rotype_t *propagate_object(
-		const o42a_ctr_t *const ctr,
-		o42a_otype_t *const atype,
-		const o42a_odata_t *const adata,
-		o42a_sotype_t *const sstype,
+static o42a_obj_rtype_t *propagate_object(
+		const o42a_obj_ctr_t *const ctr,
+		o42a_obj_type_t *const atype,
+		const o42a_obj_data_t *const adata,
+		o42a_obj_stype_t *const sstype,
 		char inherit) {
 	O42A_ENTER;
 
 	const size_t main_body_start = (size_t) (adata->object - adata->start);
 	const size_t data_start = -adata->start;
-	const o42a_layout_t rotype_layout = o42a_layout(o42a_rotype_t);
+	const o42a_layout_t obj_rtype_layout = o42a_layout(o42a_obj_rtype_t);
 
 	const size_t ascendants_start =
-			data_start + o42a_layout_size(rotype_layout);
+			data_start + o42a_layout_size(obj_rtype_layout);
 	const size_t num_ascendants = adata->ascendants.size;
 	const size_t num_samples = adata->samples.size;
 
-	const o42a_layout_t ascendant_layout = o42a_layout(o42a_ascendant_t);
-	const o42a_layout_t sample_layout = o42a_layout(o42a_sample_t);
+	const o42a_layout_t ascendant_layout = o42a_layout(o42a_obj_ascendant_t);
+	const o42a_layout_t sample_layout = o42a_layout(o42a_obj_sample_t);
 	const size_t samples_start =
 			o42a_layout_pad(
 					ascendants_start
@@ -329,12 +329,12 @@ static o42a_rotype_t *propagate_object(
 	void *mem = malloc(size);
 
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
-	o42a_rotype_t *const otype = (o42a_rotype_t*) (mem + data_start);
-	o42a_odata_t *const data = &otype->data;
-	o42a_ascendant_t *const ascendants =
-			(o42a_ascendant_t*) (mem + ascendants_start);
-	o42a_sample_t *const samples =
-			(o42a_sample_t*) (mem + samples_start);
+	o42a_obj_rtype_t *const obj_type = (o42a_obj_rtype_t*) (mem + data_start);
+	o42a_obj_data_t *const data = &obj_type->data;
+	o42a_obj_ascendant_t *const ascendants =
+			(o42a_obj_ascendant_t*) (mem + ascendants_start);
+	o42a_obj_sample_t *const samples =
+			(o42a_obj_sample_t*) (mem + samples_start);
 
 	// build samples
 	copy_ancestor_ascendants(adata, ascendants, mem);
@@ -363,20 +363,20 @@ static o42a_rotype_t *propagate_object(
 	data->samples.list = ((void*) samples) - ((void*) &data->samples);
 	data->samples.size = num_samples;
 
-	otype->sample = o42a_static_type(atype);
+	obj_type->sample = o42a_obj_stype(atype);
 
 	// propagate bodies
-	o42a_ctable_t ctable = {
+	o42a_obj_ctable_t ctable = {
 		ancestor_type: atype,
 		sample_type: sstype,
-		object_type: otype,
+		object_type: obj_type,
 		flags: ctr->flags,
 	};
 
 	derive_ancestor_bodies(&ctable, DK_COPY);
 	copy_samples(&atype->data, samples, mem);
 
-	O42A_DEBUG("Object data: (%lx)", (long) otype);
+	O42A_DEBUG("Object data: (%lx)", (long) obj_type);
 	o42a_dbg_dump_field(
 			data,
 			o42a_dbg_subfield(
@@ -385,32 +385,32 @@ static o42a_rotype_t *propagate_object(
 					NULL),
 			1000);
 
-	O42A_RETURN otype;
+	O42A_RETURN obj_type;
 }
 
 typedef struct sample_data {
-	o42a_sample_t *sample;
-	o42a_obody_t *old_body;
+	o42a_obj_sample_t *sample;
+	o42a_obj_body_t *old_body;
 	size_t new_body;
 } sample_data_t;
 
 static inline size_t fill_sample_data(
 		o42a_layout_t *layout,
-		const o42a_odata_t *const adata,
-		const o42a_odata_t *const sdata,
+		const o42a_obj_data_t *const adata,
+		const o42a_obj_data_t *const sdata,
 		sample_data_t *sample_data) {
 	O42A_ENTER;
 
 	size_t num_samples = 0;
-	o42a_sample_t *old_sample = o42a_object_samples(sdata);
+	o42a_obj_sample_t *old_sample = o42a_obj_samples(sdata);
 
 	for (size_t i = sdata->samples.size; i > 0; --i) {
 
-		o42a_obody_t *const old_body = o42a_sample_body(old_sample);
-		const o42a_sotype_t *const body_type = old_body->methods->object_type;
+		o42a_obj_body_t *const old_body = o42a_obj_sample_body(old_sample);
+		const o42a_obj_stype_t *const body_type = old_body->methods->object_type;
 
 		sample_data->sample = old_sample;
-		if (o42a_ascendant_of_type(adata, body_type)) {
+		if (o42a_obj_ascendant_of_type(adata, body_type)) {
 			// sample body already present in ancestor
 			sample_data->old_body = NULL;
 		} else {
@@ -431,16 +431,16 @@ static inline size_t fill_sample_data(
 }
 
 static inline void propagate_samples(
-		o42a_ctable_t *const ctable,
+		o42a_obj_ctable_t *const ctable,
 		void *mem,
-		o42a_obody_t *const ancestor_body,
+		o42a_obj_body_t *const ancestor_body,
 		sample_data_t *sample_data,
-		o42a_sample_t *samples) {
+		o42a_obj_sample_t *samples) {
 	O42A_ENTER;
 
 	for (size_t i = ctable->sample_type->data.samples.size; i > 0; --i) {
 
-		o42a_obody_t *const old_body = sample_data->old_body;
+		o42a_obj_body_t *const old_body = sample_data->old_body;
 
 		if (!old_body) {
 			++sample_data;
@@ -448,7 +448,7 @@ static inline void propagate_samples(
 		}
 
 		ctable->from.body = old_body;
-		ctable->to.body = (o42a_obody_t*) (mem + sample_data->new_body);
+		ctable->to.body = (o42a_obj_body_t*) (mem + sample_data->new_body);
 		derive_object_body(ctable, ancestor_body, DK_PROPAGATE);
 		samples->body = ((void*) samples) - ((void*) ctable->to.body);
 		++sample_data;
@@ -458,20 +458,20 @@ static inline void propagate_samples(
 	O42A_RETURN;
 }
 
-o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
+o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER;
 
 	o42a_obj_t *ancestor = NULL;
-	o42a_otype_t *atype = NULL;
+	o42a_obj_type_t *atype = NULL;
 
 	if (ctr->ancestor_f) {
 		o42a_debug_func_name("Ancestor function: ", ctr->ancestor_f);
 		o42a_debug_mem_name("Ancestor scope: ", ctr->scope_type);
 		ancestor = (*ctr->ancestor_f)
-				(o42a_data_object(&ctr->scope_type->data));
+				(o42a_obj_by_data(&ctr->scope_type->data));
 		o42a_debug_mem_name("Ancestor: ", ancestor);
 		if (ancestor) {
-			atype = o42a_object_type(ancestor);
+			atype = o42a_obj_type(ancestor);
 			if (atype->data.flags & O42A_OBJ_VOID) {
 				atype = NULL;
 				ancestor = NULL;
@@ -483,56 +483,56 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 			if (atype->data.flags & O42A_OBJ_VOID) {
 				atype = NULL;
 			} else {
-				ancestor = o42a_data_object(&ctr->ancestor_type->data);
+				ancestor = o42a_obj_by_data(&ctr->ancestor_type->data);
 			}
 		}
 	}
 
-	const o42a_odata_t *const adata = atype ? &atype->data : NULL;
+	const o42a_obj_data_t *const adata = atype ? &atype->data : NULL;
 
 	if (adata && (adata->flags & O42A_OBJ_FALSE)) {
 		O42A_RETURN NULL;
 	}
 
-	o42a_otype_t *const stype = ctr->type;
-	o42a_sotype_t *const sstype = o42a_static_type(stype);
+	o42a_obj_type_t *const stype = ctr->type;
+	o42a_obj_stype_t *const sstype = o42a_obj_stype(stype);
 
 	if (!adata) {
 		// Sample has no ancestor.
 		// Propagate sample.
 		o42a_debug_mem_name("No ancestor of ", stype);
 
-		o42a_rotype_t *const result =
+		o42a_obj_rtype_t *const result =
 				propagate_object(ctr, stype, &stype->data, sstype, 0);
 
-		O42A_RETURN o42a_data_object(&result->data);
+		O42A_RETURN o42a_obj_by_data(&result->data);
 	}
 
-	const o42a_ascendant_t *const consuming_ascendant =
-			o42a_ascendant_of_type(adata, sstype);
+	const o42a_obj_ascendant_t *const consuming_ascendant =
+			o42a_obj_ascendant_of_type(adata, sstype);
 
 	if (consuming_ascendant) {
 		// Ancestor has a body of the same type as object.
 		// Propagate ancestor.
 		o42a_debug_mem_name("Sample consumed by ", consuming_ascendant);
 
-		o42a_rotype_t *const result =
+		o42a_obj_rtype_t *const result =
 				propagate_object(ctr, atype, adata, sstype, 1);
 
 		// obtain consuming ascendant from result type
-		const o42a_ascendant_t *const a_ascendants =
-				o42a_object_ascendants(adata);
-		const o42a_ascendant_t *const res_ascendants =
-				o42a_object_ascendants(&result->data);
-		const o42a_ascendant_t *const res_consuming_ascendant =
+		const o42a_obj_ascendant_t *const a_ascendants =
+				o42a_obj_ascendants(adata);
+		const o42a_obj_ascendant_t *const res_ascendants =
+				o42a_obj_ascendants(&result->data);
+		const o42a_obj_ascendant_t *const res_consuming_ascendant =
 				res_ascendants + (consuming_ascendant - a_ascendants);
 
-		return o42a_ascendant_body(res_consuming_ascendant);
+		return o42a_obj_ascendant_body(res_consuming_ascendant);
 	}
 
 	o42a_layout_t bodies_layout = adata->all_bodies_layout;
 
-	const o42a_odata_t *const sdata = &stype->data;
+	const o42a_obj_data_t *const sdata = &stype->data;
 	sample_data_t sample_data[sdata->samples.size];
 	const size_t num_samples = fill_sample_data(
 			&bodies_layout,
@@ -546,16 +546,16 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 
 	bodies_layout = o42a_layout_both(bodies_layout, sstype->main_body_layout);
 
-	const o42a_layout_t rotype_layout = o42a_layout(o42a_rotype_t);
+	const o42a_layout_t obj_rtype_layout = o42a_layout(o42a_obj_rtype_t);
 	const size_t data_start =
-			o42a_layout_pad(o42a_layout_size(bodies_layout), rotype_layout);
+			o42a_layout_pad(o42a_layout_size(bodies_layout), obj_rtype_layout);
 
 	const size_t ascendants_start =
-			data_start + o42a_layout_size(rotype_layout);
+			data_start + o42a_layout_size(obj_rtype_layout);
 	const size_t num_ascendants = adata->ascendants.size + 1;
 
-	const o42a_layout_t ascendant_layout = o42a_layout(o42a_ascendant_t);
-	const o42a_layout_t sample_layout = o42a_layout(o42a_sample_t);
+	const o42a_layout_t ascendant_layout = o42a_layout(o42a_obj_ascendant_t);
+	const o42a_layout_t sample_layout = o42a_layout(o42a_obj_sample_t);
 	const size_t samples_start =
 			o42a_layout_pad(
 					ascendants_start
@@ -568,15 +568,15 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	void *mem = malloc(size);
 
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
-	o42a_rotype_t *const otype = (o42a_rotype_t*) (mem + data_start);
-	o42a_odata_t *const data = &otype->data;
-	o42a_ascendant_t *const ascendants =
-			(o42a_ascendant_t*) (mem + ascendants_start);
+	o42a_obj_rtype_t *const obj_type = (o42a_obj_rtype_t*) (mem + data_start);
+	o42a_obj_data_t *const data = &obj_type->data;
+	o42a_obj_ascendant_t *const ascendants =
+			(o42a_obj_ascendant_t*) (mem + ascendants_start);
 
 	// build samples
 	copy_ancestor_ascendants(adata, ascendants, mem);
 
-	o42a_ascendant_t *const main_ascendant = ascendants + (num_ascendants - 1);
+	o42a_obj_ascendant_t *const main_ascendant = ascendants + (num_ascendants - 1);
 
 	main_ascendant->type = sstype;
 	main_ascendant->body = ((void*) object) - ((void*) main_ascendant);
@@ -598,21 +598,21 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	data->owner_type = ctr->scope_type;
 	data->ancestor_f = ctr->ancestor_f;
 	data->ancestor_type = atype;
-	otype->sample = sstype;
+	obj_type->sample = sstype;
 
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
 	data->ascendants.size = num_ascendants;
 
 	// propagate sample and inherit ancestor
-	o42a_ctable_t ctable = {
+	o42a_obj_ctable_t ctable = {
 		ancestor_type: atype,
 		sample_type: sstype,
-		object_type: otype,
+		object_type: obj_type,
 		flags: ctr->flags,
 	};
 
-	o42a_obody_t *const ancestor_body =
-			(o42a_obody_t*) (mem + (adata->object - adata->start));
+	o42a_obj_body_t *const ancestor_body =
+			(o42a_obj_body_t*) (mem + (adata->object - adata->start));
 
 	derive_ancestor_bodies(&ctable, DK_INHERIT);
 	propagate_samples(
@@ -620,14 +620,14 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 			mem,
 			ancestor_body,
 			sample_data,
-			(o42a_sample_t*) (mem + samples_start));
+			(o42a_obj_sample_t*) (mem + samples_start));
 
-	ctable.from.body = o42a_data_object(sdata);
+	ctable.from.body = o42a_obj_by_data(sdata);
 	ctable.to.body = object;
 	ctable.body_type = sstype;
 	derive_object_body(&ctable, ancestor_body, DK_MAIN);
 
-	O42A_DEBUG("Object data: (%lx)", (long) otype);
+	O42A_DEBUG("Object data: (%lx)", (long) obj_type);
 	o42a_dbg_dump_field(
 			data,
 			o42a_dbg_subfield(
@@ -639,7 +639,7 @@ o42a_obj_t *o42a_new(const o42a_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
-o42a_obody_t *o42a_null_object_ref(o42a_obj_t *scope) {
+o42a_obj_body_t *o42a_obj_null_ref(o42a_obj_t *scope) {
 	O42A_ENTER;
 	O42A_RETURN NULL;
 }

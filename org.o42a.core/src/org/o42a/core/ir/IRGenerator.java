@@ -32,12 +32,14 @@ public class IRGenerator extends ObjectIRGenerator {
 	}
 
 	public final CodePtr<BinaryFunc> castFunc() {
-		return getGenerator().externalFunction("o42a_cast", binarySignature());
+		return getGenerator().externalFunction(
+				"o42a_obj_cast",
+				binarySignature());
 	}
 
 	public final CodePtr<ObjectRefFunc> newFunc() {
 		return getGenerator().externalFunction(
-				"o42a_new",
+				"o42a_obj_new",
 				objectRefSignature());
 	}
 
@@ -67,7 +69,7 @@ public class IRGenerator extends ObjectIRGenerator {
 
 	public final CodePtr<ObjectRefFunc> nullObjectRef() {
 		return getGenerator().externalFunction(
-				"o42a_null_object_ref",
+				"o42a_obj_null_ref",
 				objectRefSignature());
 	}
 

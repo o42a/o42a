@@ -28,9 +28,9 @@ extern "C" {
 #endif
 
 
-void o42a_fld_scope_propagate(o42a_ctable_t*);
+void o42a_fld_scope_propagate(o42a_obj_ctable_t*);
 
-void o42a_fld_scope_inherit(o42a_ctable_t*);
+void o42a_fld_scope_inherit(o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus

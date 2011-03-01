@@ -23,21 +23,21 @@
 #include "o42a/object.h"
 
 
-void o42a_fld_scope_propagate(o42a_ctable_t *const ctable) {
+void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
 	o42a_fld *const to = ctable->to.fld;
 
 	// Update the scope only when propagating field.
-	if (ctable->to.body->flags & O42A_OBODY_PROPAGATED) {
+	if (ctable->to.body->flags & O42A_obj_body_PROPAGATED) {
 		// Update only the scope of body propagated from field
 		// or the one of main body.
 
-		o42a_otype_t *const owner_type =
+		o42a_obj_type_t *const owner_type =
 				ctable->object_type->data.owner_type;
 
 		if (owner_type) {
-			to->scope = o42a_data_object(&owner_type->data);
+			to->scope = o42a_obj_by_data(&owner_type->data);
 
 			o42a_debug_mem_name("Updated scope: ", to->scope);
 
@@ -54,7 +54,7 @@ void o42a_fld_scope_propagate(o42a_ctable_t *const ctable) {
 	O42A_RETURN;
 }
 
-void o42a_fld_scope_inherit(o42a_ctable_t *const ctable) {
+void o42a_fld_scope_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
 	const o42a_fld *const from = ctable->from.fld;

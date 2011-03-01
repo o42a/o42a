@@ -26,9 +26,9 @@
 /**
  * Object constructor flags.
  *
- * Used in o42a_ctr.flags.
+ * Used in o42a_obj_ctr.flags.
  */
-enum o42a_ctr_flags {
+enum o42a_obj_ctr_flags {
 
 	/**
 	 * Field propagation.
@@ -36,30 +36,30 @@ enum o42a_ctr_flags {
 	 * If set, then object is constructed as a part of field propagation
 	 * process. Otherwise a new object instantiation occurs.
 	 */
-	O42A_CTR_FIELD_PROPAGATION = 0x01,
+	o42a_obj_ctr_FIELD_PROPAGATION = 0x01,
 
 };
 
 /**
  * Object type flags.
  *
- * Used in o42a_odata.flags.
+ * Used in o42a_obj_data.flags.
  */
-enum o42a_otype_flags {
+enum o42a_obj_type_flags {
 
 	/**
 	 * Object is created at run-time.
 	 *
-	 * If this is set, than object type implementation is o42a_rotype.
-	 * Otherwise it's o42a_sotype.
+	 * If this is set, than object type implementation is o42a_obj_rtype.
+	 * Otherwise it's o42a_obj_stype.
 	 */
 	O42A_OBJ_RT = 0x1,
 
 	/** Object is abstract. */
 	O42A_OBJ_ABSTRACT = 0x2,
 
-	/** Object is prototype. */
-	O42A_OBJ_PROTOTYPE = 0x4,
+	/** Object is protobj_type. */
+	O42A_OBJ_PROTobj_type = 0x4,
 
 	/** Object is VOID special object. */
 	O42A_OBJ_VOID = 0x80000000,
@@ -75,43 +75,43 @@ enum o42a_otype_flags {
 /**
  * Object body flags.
  *
- * Used in o42a_obody.flags.
+ * Used in o42a_obj_body.flags.
  */
-enum o42a_obody_flags {
+enum o42a_obj_body_flags {
 
 	/**
 	 * The mask to apply to flags to gain a kind of body.
 	 *
-	 * \see o42a_obody_kind for possible values.
+	 * \see o42a_obj_body_kind for possible values.
 	 */
-	O42A_OBODY_TYPE = 0x3,
+	O42A_obj_body_TYPE = 0x3,
 
 };
 
 /**
  * The kinds of object bodies.
  *
- * Apply O42A_OBODY_TYPE to o42a_obody.flags to gain one of these values.
+ * Apply O42A_obj_body_TYPE to o42a_obj_body.flags to gain one of these values.
  *
  * Body kind is exact only for static objects. When Constructing object at run
- * time, it is only kept when O42A_CTR_FIELD_PROPAGATION flags is set. Otherwise
- * the value is dropped to O42A_OBODY_INHERITED.
+ * time, it is only kept when o42a_obj_ctr_FIELD_PROPAGATION flags is set. Otherwise
+ * the value is dropped to O42A_obj_body_INHERITED.
  *
  * This is used to update scope fields properly.
  */
-enum o42a_obody_kind {
+enum o42a_obj_body_kind {
 
 	/** The body is inherited from ancestor. */
-	O42A_OBODY_INHERITED = 0,
+	O42A_obj_body_INHERITED = 0,
 
 	/** The body is from explicit sample. */
-	O42A_OBODY_EXPLICIT = 1,
+	O42A_obj_body_EXPLICIT = 1,
 
 	/** The body is propagated from ascendant field. */
-	O42A_OBODY_PROPAGATED = 2,
+	O42A_obj_body_PROPAGATED = 2,
 
 	/** The body is main one. */
-	O42A_OBODY_MAIN = 3,
+	O42A_obj_body_MAIN = 3,
 
 };
 
@@ -124,7 +124,7 @@ enum o42a_obody_kind {
  * Each object contains one or more bodies. One of them is called main
  * and corresponds to object type. Others corresponds to object ancestors.
  */
-struct o42a_obody {
+struct o42a_obj_body {
 
 	/*
 	 * Relative pointer to object type.
@@ -142,12 +142,12 @@ struct o42a_obody {
 	/**
 	 * Pointer to object methods corresponding to this body's type.
 	 */
-	o42a_omethods_t *methods;
+	o42a_obj_methods_t *methods;
 
 	/**
 	 * Object body flags.
 	 *
-	 * \see o42a_obody_flags for possible values.
+	 * \see o42a_obj_body_flags for possible values.
 	 */
 	uint32_t flags;
 
@@ -162,12 +162,12 @@ struct o42a_obody {
  * Each body has an associated methods instance. Different bodies can share the
  * same meta instance.
  */
-struct o42a_omethods {
+struct o42a_obj_methods {
 
 	/**
 	 * Pointer to object type, where corresponding body were first declared in.
 	 */
-	o42a_sotype_t *object_type;
+	o42a_obj_stype_t *object_type;
 
 };
 
@@ -182,7 +182,7 @@ struct o42a_omethods {
  * Object type always starts with data field, so it is safe to cast type pointer
  * to data pointer.
  */
-struct o42a_odata {
+struct o42a_obj_data {
 
 	/** Relative pointer to main object body. */
 	o42a_rptr_t object;
@@ -191,7 +191,7 @@ struct o42a_odata {
 	 * Type flags.
 	 *
 	 * This can be used to distinguish object type implementation and contains
-	 * other information. See o42a_otype_flags enum.
+	 * other information. See o42a_obj_type_flags enum.
 	 */
 	uint32_t flags;
 
@@ -214,21 +214,21 @@ struct o42a_odata {
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_oval_ft *value_f;
+	o42a_obj_val_ft *value_f;
 
 	/**
 	 * Object's requirement calculator function.
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_ocond_ft *requirement_f;
+	o42a_obj_cond_ft *requirement_f;
 
 	/**
 	 * Object's claim calculator function.
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_oval_ft *claim_f;
+	o42a_obj_val_ft *claim_f;
 
 	/**
 	 * Object's condition calculator function.
@@ -237,21 +237,21 @@ struct o42a_odata {
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_ocond_ft *condition_f;
+	o42a_obj_cond_ft *condition_f;
 
 	/**
 	 * Object's proposition calculator function.
 	 *
 	 * Accepts main object body as a second argument.
 	 */
-	o42a_oval_ft *proposition_f;
+	o42a_obj_val_ft *proposition_f;
 
 	/**
 	 * Pointer to the type of this object's owner (i.e. enclosing object).
 	 *
 	 * May be NULL when object is local.
 	 */
-	o42a_otype_t *owner_type;
+	o42a_obj_type_t *owner_type;
 
 	/**
 	 * Object ancestor finder function.
@@ -262,7 +262,7 @@ struct o42a_odata {
 	 *
 	 * \return ancestor pointer or NULL when ancestor is void.
 	 */
-	o42a_oref_ft *ancestor_f;
+	o42a_obj_ref_ft *ancestor_f;
 
 	/**
 	 * Ancestor type.
@@ -271,7 +271,7 @@ struct o42a_odata {
 	 *
 	 * NULL when ancestor is void.
 	 */
-	const o42a_otype_t *ancestor_type;
+	const o42a_obj_type_t *ancestor_type;
 
 	/** Relative pointer to the list of ascendant descriptors. */
 	o42a_rlist_t ascendants;
@@ -284,10 +284,10 @@ struct o42a_odata {
 /**
  * Static object type generated by compiler.
  */
-struct o42a_sotype {
+struct o42a_obj_stype {
 
 	/** Object data. */
-	o42a_odata_t data;
+	o42a_obj_data_t data;
 
 	/** Relative pointer to the list of field descriptors. */
 	o42a_rlist_t fields;
@@ -310,10 +310,10 @@ struct o42a_sotype {
  *
  * Describes object body corresponding to ascending type.
  */
-struct o42a_ascendant {
+struct o42a_obj_ascendant {
 
 	/** Pointer to the ascending object's type. */
-	o42a_sotype_t *type;
+	o42a_obj_stype_t *type;
 
 	/** Relative pointer to ascendant body. */
 	o42a_rptr_t body;
@@ -325,7 +325,7 @@ struct o42a_ascendant {
  *
  * Describes explicit sample or propagated field's body .
  */
-struct o42a_sample {
+struct o42a_obj_sample {
 
 	/** Relative pointer to sample body. */
 	o42a_rptr_t body;
@@ -338,15 +338,15 @@ struct o42a_sample {
  * This is used to describe the new fields only. Fields generated due to
  * override described with o42a_override.
  */
-struct o42a_field {
+struct o42a_obj_field {
 
 	/** Pointer to object type the field first declared in. */
-	o42a_sotype_t *declared_in;
+	o42a_obj_stype_t *declared_in;
 
 	/**
 	 * Field kind.
 	 *
-	 * One of the o42a_field_kind enum values.
+	 * One of the o42a_obj_field_kind enum values.
 	 */
 	uint32_t kind;
 
@@ -358,13 +358,13 @@ struct o42a_field {
 /**
  * Field overrider descriptor.
  */
-struct o42a_overrider {
+struct o42a_obj_overrider {
 
 	/** Pointer to descriptor of the overridden field. */
-	o42a_field_t *field;
+	o42a_obj_field_t *field;
 
 	/** Type of the object the overrider field were defined in. */
-	o42a_sotype_t *defined_in;
+	o42a_obj_stype_t *defined_in;
 
 	/** Relative pointer to the body containing overriding field. */
 	o42a_rptr_t body;
@@ -374,13 +374,13 @@ struct o42a_overrider {
 /**
  * Object type generated at run-time.
  */
-struct o42a_rotype {
+struct o42a_obj_rtype {
 
 	/** Object data. */
-	o42a_odata_t data;
+	o42a_obj_data_t data;
 
 	/** Pointer to sample type. */
-	o42a_sotype_t *sample;
+	o42a_obj_stype_t *sample;
 
 };
 
@@ -388,76 +388,76 @@ struct o42a_rotype {
  * Object type.
  *
  * There is exactly one type section per object, which can be either of
- * o42a_sotype_t or o42a_rotype_t type depending on header flags.
+ * o42a_obj_stype_t or o42a_obj_rtype_t type depending on header flags.
  */
-union o42a_otype {
+union o42a_obj_type {
 
 	/**
 	 * Object data.
 	 *
 	 * Always presents.
 	 */
-	o42a_odata_t data;
+	o42a_obj_data_t data;
 
 	/**
 	 * Static object type.
 	 *
 	 * Presents if !(header.flags & O24A_OBJ_RT).
 	 */
-	o42a_sotype_t sotype;
+	o42a_obj_stype_t obj_stype;
 
 	/**
 	 * Run-time object type.
 	 *
 	 * Presents if (header.flags & O24A_OBJ_RT).
 	 */
-	o42a_rotype_t rotype;
+	o42a_obj_rtype_t obj_rtype;
 
 };
 
 /**
  * Object construction data.
  */
-typedef struct o42a_ctr {
+typedef struct o42a_obj_ctr {
 
 	/**
 	 * Pointer to enclosing object's type.
 	 *
 	 * NULL when constructing object within imperative code.
 	 */
-	o42a_otype_t *scope_type;
+	o42a_obj_type_t *scope_type;
 
 	/**
 	 * Ancestor finder function.
 	 *
 	 * When NULL an ancestor_type should be used.
 	 *
-	 * See o42a_odata_t.ancestor_f.
+	 * See o42a_obj_data_t.ancestor_f.
 	 */
-	o42a_oref_ft *ancestor_f;
+	o42a_obj_ref_ft *ancestor_f;
 
 	/**
 	 * Ancestor type.
 	 *
 	 * Ignored when ancestor_f specified.
 	 *
-	 * See o42a_odata_t.ancestor_type.
+	 * See o42a_obj_data_t.ancestor_type.
 	 */
-	o42a_otype_t *ancestor_type;
+	o42a_obj_type_t *ancestor_type;
 
 	/**
 	 * Sample object type.
 	 */
-	o42a_otype_t *type;
+	o42a_obj_type_t *type;
 
 	/**
 	 * Constructor flags bit mask.
 	 *
-	 * \see o42a_ctr_flags enumeration for possible values.
+	 * \see o42a_obj_ctr_flags enumeration for possible values.
 	 */
 	uint32_t flags;
 
-} o42a_ctr_t;
+} o42a_obj_ctr_t;
 
 
 #ifdef __cplusplus
@@ -472,7 +472,7 @@ extern "C" {
  *
  * \return object type pointer.
  */
-o42a_otype_t *o42a_object_type(const o42a_obody_t*);
+o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t*);
 
 /**
  * Retrieves object ancestor's body.
@@ -481,7 +481,7 @@ o42a_otype_t *o42a_object_type(const o42a_obody_t*);
  *
  * \return ancestor body pointer.
  */
-o42a_obody_t *o42a_object_ancestor(const o42a_obody_t*);
+o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t*);
 
 /**
  * Extracts object's static type.
@@ -491,7 +491,7 @@ o42a_obody_t *o42a_object_ancestor(const o42a_obody_t*);
  * \return either type itself (if it's static) or sample type (if type is
  * run-time generated).
  */
-o42a_sotype_t *o42a_static_type(o42a_otype_t*);
+o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t*);
 
 /**
  * Retrieves object from it's data.
@@ -500,7 +500,7 @@ o42a_sotype_t *o42a_static_type(o42a_otype_t*);
  *
  * \return pointer to object's main body.
  */
-o42a_obody_t *o42a_data_object(const o42a_odata_t*);
+o42a_obj_body_t *o42a_obj_by_data(const o42a_obj_data_t*);
 
 /**
  * Retrieves object ascendant's descriptors.
@@ -509,7 +509,7 @@ o42a_obody_t *o42a_data_object(const o42a_odata_t*);
  *
  * \return pointer to the first element of ascendant descriptors array.
  */
-o42a_ascendant_t *o42a_object_ascendants(const o42a_odata_t*);
+o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t*);
 
 /**
  * Retrieves object sample's descriptors.
@@ -518,7 +518,7 @@ o42a_ascendant_t *o42a_object_ascendants(const o42a_odata_t*);
  *
  * \return pointer to the first element of sample descriptors array.
  */
-o42a_sample_t *o42a_object_samples(const o42a_odata_t*);
+o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t*);
 
 /**
  * Retrieves field descriptors.
@@ -527,7 +527,7 @@ o42a_sample_t *o42a_object_samples(const o42a_odata_t*);
  *
  * \return pointer to the first element of the field descriptors array.
  */
-o42a_field_t *o42a_object_fields(const o42a_sotype_t*);
+o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t*);
 
 /**
  * Retrieves field override descriptors.
@@ -536,7 +536,7 @@ o42a_field_t *o42a_object_fields(const o42a_sotype_t*);
  *
  * \return pointer to the first element of the field override descriptors array.
  */
-o42a_overrider_t *o42a_object_overriders(const o42a_sotype_t*);
+o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_stype_t*);
 
 /**
  * Retrieves object body corresponding to the given ascendant.
@@ -545,7 +545,7 @@ o42a_overrider_t *o42a_object_overriders(const o42a_sotype_t*);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_ascendant_body(const o42a_ascendant_t*);
+o42a_obj_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t*);
 
 /**
  * Retrieves object body corresponding to the given sample.
@@ -554,7 +554,7 @@ o42a_obj_t *o42a_ascendant_body(const o42a_ascendant_t*);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_sample_body(const o42a_sample_t*);
+o42a_obj_t *o42a_obj_sample_body(const o42a_obj_sample_t*);
 
 /**
  * Retrieves field from body.
@@ -564,7 +564,7 @@ o42a_obj_t *o42a_sample_body(const o42a_sample_t*);
  *
  * \return field pointer.
  */
-o42a_fld *o42a_field_fld(const o42a_obody_t*, const o42a_field_t*);
+o42a_fld *o42a_obj_field_fld(const o42a_obj_body_t*, const o42a_obj_field_t*);
 
 /**
  * Retrieves overriding field from body.
@@ -573,7 +573,7 @@ o42a_fld *o42a_field_fld(const o42a_obody_t*, const o42a_field_t*);
  *
  * \return overriding field pointer..
  */
-o42a_fld *o42a_overrider_fld(const o42a_overrider_t*);
+o42a_fld *o42a_obj_overrider_fld(const o42a_obj_overrider_t*);
 
 /**
  * Searches for ascendant descriptor of the given type.
@@ -583,9 +583,9 @@ o42a_fld *o42a_overrider_fld(const o42a_overrider_t*);
  *
  * \return ascendant descriptor or NULL if not found.
  */
-const o42a_ascendant_t *o42a_ascendant_of_type(
-		const o42a_odata_t *const,
-		const o42a_sotype_t *const);
+const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
+		const o42a_obj_data_t *const,
+		const o42a_obj_stype_t *const);
 
 /**
  * Searches for the object's body of the given type.
@@ -596,7 +596,7 @@ const o42a_ascendant_t *o42a_ascendant_of_type(
  * \return object body pointer corresponding to the given type or NULL if object
  * is not derived from type.
  */
-o42a_obody_t *o42a_cast(o42a_obj_t*, const o42a_sotype_t*);
+o42a_obj_body_t *o42a_obj_cast(o42a_obj_t*, const o42a_obj_stype_t*);
 
 /**
  * Instantiates a new object.
@@ -605,14 +605,14 @@ o42a_obody_t *o42a_cast(o42a_obj_t*, const o42a_sotype_t*);
  *
  * \return pointer to object's body of the sample type.
  */
-o42a_obj_t *o42a_new(const o42a_ctr_t*);
+o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t*);
 
 /**
  * Object reference function, which always returns NULL.
  *
  * This can be used e.g. to refer void object ancestor.
  */
-o42a_obody_t *o42a_null_object_ref(o42a_obj_t*);
+o42a_obj_body_t *o42a_obj_null_ref(o42a_obj_t*);
 
 
 #ifdef __cplusplus

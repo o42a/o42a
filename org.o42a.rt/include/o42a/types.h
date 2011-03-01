@@ -24,22 +24,22 @@
 #include <stdint.h>
 
 
-typedef struct o42a_obody o42a_obody_t;
-typedef struct o42a_omethods o42a_omethods_t;
-typedef struct o42a_odata o42a_odata_t;
-typedef union o42a_otype o42a_otype_t;
-typedef struct o42a_sotype o42a_sotype_t;
-typedef struct o42a_rotype o42a_rotype_t;
-typedef struct o42a_ascendant o42a_ascendant_t;
-typedef struct o42a_sample o42a_sample_t;
-typedef const struct o42a_field o42a_field_t;
-typedef const struct o42a_overrider o42a_overrider_t;
-typedef struct o42a_ctable o42a_ctable_t;
+typedef struct o42a_obj_body o42a_obj_body_t;
+typedef struct o42a_obj_methods o42a_obj_methods_t;
+typedef struct o42a_obj_data o42a_obj_data_t;
+typedef union o42a_obj_type o42a_obj_type_t;
+typedef struct o42a_obj_stype o42a_obj_stype_t;
+typedef struct o42a_obj_rtype o42a_obj_rtype_t;
+typedef struct o42a_obj_ascendant o42a_obj_ascendant_t;
+typedef struct o42a_obj_sample o42a_obj_sample_t;
+typedef const struct o42a_obj_field o42a_obj_field_t;
+typedef const struct o42a_obj_overrider o42a_obj_overrider_t;
+typedef struct o42a_obj_ctable o42a_obj_ctable_t;
 struct o42a_obj_fld;
 typedef union o42a_fld o42a_fld;
 
 /** Object represented by it's body. */
-typedef o42a_obody_t o42a_obj_t;
+typedef o42a_obj_body_t o42a_obj_t;
 
 /** Relative pointer. */
 typedef int32_t o42a_rptr_t;
@@ -108,7 +108,7 @@ enum o42a_val_flags {
 
 	/**
 	 * A bit meaning the value is not yet calculated. This is only applicable to
-	 * o42a_odata.value and should be set along with O42A_UNKNOWN.
+	 * o42a_obj_data.value and should be set along with O42A_UNKNOWN.
 	 */
 	O42A_INDEFINITE = 4,
 
@@ -189,7 +189,7 @@ typedef struct o42a_val {
  * \param result[out] object value to fill by function.
  * \param object[in] object pointer.
  */
-typedef void o42a_oval_ft(o42a_val_t*, o42a_obj_t *);
+typedef void o42a_obj_val_ft(o42a_val_t*, o42a_obj_t *);
 
 /**
  * Object condition calculator function.
@@ -198,7 +198,7 @@ typedef void o42a_oval_ft(o42a_val_t*, o42a_obj_t *);
  *
  * \return condition.
  */
-typedef o42a_bool_t o42a_ocond_ft(o42a_obj_t *);
+typedef o42a_bool_t o42a_obj_cond_ft(o42a_obj_t *);
 
 /**
  * Object reference function.
@@ -207,7 +207,7 @@ typedef o42a_bool_t o42a_ocond_ft(o42a_obj_t *);
  *
  * \return resulting object reference.
  */
-typedef o42a_obj_t *o42a_oref_ft(o42a_obj_t *);
+typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *);
 
 /**
  * Object constructor function.
@@ -219,7 +219,7 @@ typedef o42a_obj_t *o42a_oref_ft(o42a_obj_t *);
  *
  * \return resulting object reference.
  */
-typedef o42a_obj_t *o42a_oconstructor_ft(o42a_obj_t *, struct o42a_obj_fld *);
+typedef o42a_obj_t *o42a_obj_constructor_ft(o42a_obj_t *, struct o42a_obj_fld *);
 
 /**
  * Variable assigner function.
@@ -229,7 +229,7 @@ typedef o42a_obj_t *o42a_oconstructor_ft(o42a_obj_t *, struct o42a_obj_fld *);
  *
  * \return assigned object of valid type or NULL if assignment failed.
  */
-typedef o42a_obj_t *o42a_assigner_ft(o42a_obj_t*, o42a_obj_t*);
+typedef o42a_obj_t *o42a_obj_assigner_ft(o42a_obj_t*, o42a_obj_t*);
 
 
 #define o42a_layout(target) _o42a_layout(__alignof__ (target), sizeof (target))

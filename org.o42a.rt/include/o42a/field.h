@@ -17,13 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_FIELD_H
-#define O42A_FIELD_H
+#ifndef o42a_obj_field_H
+#define o42a_obj_field_H
 
 #include "o42a/types.h"
 
 
-enum o42a_field_kind {
+enum o42a_obj_field_kind {
 
 	O42A_FLD_OBJ = 0,
 
@@ -40,21 +40,21 @@ enum o42a_field_kind {
 };
 
 
-struct o42a_ctable {
+struct o42a_obj_ctable {
 
-	o42a_otype_t *const ancestor_type;
+	o42a_obj_type_t *const ancestor_type;
 
-	o42a_sotype_t *const sample_type;
+	o42a_obj_stype_t *const sample_type;
 
-	o42a_rotype_t *const object_type;
+	o42a_obj_rtype_t *const object_type;
 
-	o42a_sotype_t *body_type;
+	o42a_obj_stype_t *body_type;
 
-	o42a_field_t *field;
+	o42a_obj_field_t *field;
 
 	struct o42a_cside {
 
-		o42a_obody_t *body;
+		o42a_obj_body_t *body;
 
 		o42a_fld *fld;
 
@@ -66,7 +66,7 @@ struct o42a_ctable {
 
 };
 
-typedef void o42a_fcopy_ft(o42a_ctable_t *);
+typedef void o42a_fcopy_ft(o42a_obj_ctable_t *);
 
 typedef const struct o42a_fld_desc {
 
@@ -82,11 +82,11 @@ extern "C" {
 #endif
 
 
-o42a_fld_desc_t *o42a_field_desc(const o42a_field_t*);
+o42a_fld_desc_t *o42a_obj_field_desc(const o42a_obj_field_t*);
 
-o42a_overrider_t *o42a_field_overrider(
-		const o42a_sotype_t*,
-		const o42a_field_t*);
+o42a_obj_overrider_t *o42a_obj_field_overrider(
+		const o42a_obj_stype_t*,
+		const o42a_obj_field_t*);
 
 
 #ifdef __cplusplus
