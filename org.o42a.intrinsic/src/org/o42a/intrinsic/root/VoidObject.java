@@ -80,7 +80,7 @@ public final class VoidObject extends Obj {
 		if (ascendantDefinitions != null) {
 			return ascendantDefinitions;
 		}
-		return voidDef(this, distribute()).toDefinitions();
+		return voidDef(this, scope.distribute()).toDefinitions();
 	}
 
 	@Override
