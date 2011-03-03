@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.st.StatementKinds.FIELD_DECLARATIONS;
+
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
@@ -45,8 +47,8 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public StatementKind getKind() {
-		return StatementKind.FIELD;
+	public StatementKinds getStatementKinds() {
+		return FIELD_DECLARATIONS;
 	}
 
 	@Override

@@ -25,6 +25,8 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.ValueType;
 
 
@@ -40,7 +42,15 @@ public abstract class St extends Placed {
 		return null;
 	}
 
-	public abstract StatementKind getKind();
+	public DeclarativeBlock toDeclarativeBlock() {
+		return null;
+	}
+
+	public ImperativeBlock toImperativeBlock() {
+		return null;
+	}
+
+	public abstract StatementKinds getStatementKinds();
 
 	public abstract ValueType<?> getValueType();
 

@@ -52,4 +52,20 @@ public class DirectiveTest extends CompilerTestCase {
 
 		assertThat(definiteValue(a, Long.class), is(42L));
 	}
+
+	@Test
+	public void includeDefinition() {
+		addSource(
+				"included.o42a",
+				"= 42");
+		compile(
+				"A := integer(",
+				"  Include 'included.o42a'.",
+				").");
+
+		final Field<?> a = field("a");
+
+		assertThat(definiteValue(a, Long.class), is(42L));
+	}
+
 }

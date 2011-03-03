@@ -205,7 +205,6 @@ public strictfp class FloatByString extends ByString<Double> {
 			exponent = negative ? -value : value;
 			break;
 		default:
-			System.err.println("(!) " + stage);
 			getLogger().error(
 					"empty_input",
 					location,

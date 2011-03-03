@@ -102,14 +102,7 @@ public class Module extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-
-		final DeclarativeBlock definition = getDefinition();
-
-		if (!definition.getKind().hasDefinition()) {
-			return null;
-		}
-
-		return definition.define(
+		return getDefinition().define(
 				new DefinitionTarget(getScope(), getValueType()));
 	}
 

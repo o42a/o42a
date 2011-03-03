@@ -28,7 +28,7 @@ import java.util.List;
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.StatementKind;
+import org.o42a.core.st.StatementKinds;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -39,7 +39,6 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 	private final SentenceFactory<S, ?, ?> sentenceFactory;
 	private final ArrayList<S> alternatives = new ArrayList<S>();
 	private Sentence<S> prerequisite;
-	private StatementKind kind;
 	private ValueType<?> valueType;
 
 	Sentence(
@@ -67,36 +66,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 
 	public abstract boolean isIssue();
 
-	public StatementKind getKind() {
-		if (this.kind != null) {
-			return this.kind;
-		}
-
-		StatementKind result = StatementKind.EMPTY;
-
-		for (Statements<?> alt : getAlternatives()) {
-
-			final StatementKind kind = alt.getKind();
-
-			if (kind.hasDefinition()) {
-				if (result.isLogical()) {
-					getLogger().prohibitedDefinition(alt);
-					continue;
-				}
-			} else if (kind.isLogical()) {
-				if (result.hasDefinition()) {
-					getLogger().expectedDefinition(alt);
-					continue;
-				}
-			}
-
-			if (kind.ordinal() > result.ordinal()) {
-				result = kind;
-			}
-		}
-
-		return this.kind = result;
-	}
+	public abstract StatementKinds getStatementKinds();
 
 	public ValueType<?> getValueType() {
 		if (this.valueType != null) {
@@ -150,6 +120,33 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		this.alternatives.add(alternative);
 
 		return alternative;
+	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+		boolean separator = false;
+
+		for (Statements<?> alt : getAlternatives()) {
+			if (!separator) {
+				separator = true;
+			} else if (alt.isOpposite()) {
+				out.append(" | ");
+			} else {
+				out.append("; ");
+			}
+			out.append(alt);
+		}
+		if (isIssue()) {
+			out.append('?');
+		} else if (isClaim()) {
+			out.append('!');
+		} else {
+			out.append('.');
+		}
+
+		return out.toString();
 	}
 
 	final void setPrerequisite(Sentence<S> prerequisite) {

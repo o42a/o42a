@@ -25,9 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.st.DefinitionTarget;
-import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.Declaratives;
 
 
 public abstract class DefinedObject extends PlainObject {
@@ -72,14 +70,7 @@ public abstract class DefinedObject extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-
-		final Block<Declaratives> definition = getDefinition();
-
-		if (!definition.getKind().hasLogicalValue()) {
-			return null;
-		}
-
-		return definition.define(
+		return getDefinition().define(
 				new DefinitionTarget(getScope(), getValueType()));
 	}
 

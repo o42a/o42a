@@ -48,8 +48,8 @@ final class BracesWithinDeclaratives extends St {
 	}
 
 	@Override
-	public StatementKind getKind() {
-		return this.block.getKind();
+	public StatementKinds getStatementKinds() {
+		return this.block.getStatementKinds();
 	}
 
 	@Override

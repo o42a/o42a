@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
@@ -28,12 +30,15 @@ import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.St;
+import org.o42a.core.st.StatementKinds;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.LogicalValue;
 
 
 public class Imperatives extends Statements<Imperatives> {
+
+	private StatementKinds kinds;
 
 	Imperatives(
 			LocationInfo location,
@@ -50,6 +55,23 @@ public class Imperatives extends Statements<Imperatives> {
 	@Override
 	public final ImperativeFactory getSentenceFactory() {
 		return getSentence().getSentenceFactory();
+	}
+
+	@Override
+	public StatementKinds getStatementKinds() {
+		if (this.kinds != null) {
+			return this.kinds;
+		}
+
+		executeInstructions();
+
+		StatementKinds result = NO_STATEMENTS;
+
+		for (St statement : getStatements()) {
+			result = result.add(statement.getStatementKinds());
+		}
+
+		return this.kinds = result;
 	}
 
 	@Override

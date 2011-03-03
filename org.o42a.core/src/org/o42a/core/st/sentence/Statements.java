@@ -46,7 +46,6 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	private final boolean opposite;
 	private final ArrayList<St> statements = new ArrayList<St>();
 	private boolean instructionsExecuted;
-	private StatementKind kind;
 	private ValueType<?> valueType;
 
 	Statements(
@@ -78,44 +77,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return getSentence().getMemberRegistry();
 	}
 
-	public StatementKind getKind() {
-		if (this.kind != null) {
-			return this.kind;
-		}
-
-		executeInstructions();
-
-		final List<St> statements = getStatements();
-		St lastCondition = null;
-		StatementKind result = StatementKind.EMPTY;
-
-		for (int i = statements.size() - 1; i >= 0; --i) {
-
-			final St statement = statements.get(i);
-			final StatementKind kind = statement.getKind();
-
-			if (!kind.hasDefinition()) {
-				if (lastCondition != null) {
-					continue;
-				}
-				if (kind.hasLogicalValue()) {
-					lastCondition = statement;
-				}
-			} else {
-				if (lastCondition != null) {
-					getLogger().expectedDefinition(lastCondition);
-					return this.kind = StatementKind.LOGICAL;
-				}
-				if (kind.hasValue()) {
-					return this.kind = StatementKind.VALUE;
-				}
-			}
-
-			result = kind;
-		}
-
-		return this.kind = result;
-	}
+	public abstract StatementKinds getStatementKinds();
 
 	public ValueType<?> getValueType() {
 		if (this.valueType != null) {
@@ -181,7 +143,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return parentheses(
 				-1,
 				location,
-				container,
+				nextDistributor(container),
 				getMemberRegistry());
 	}
 
@@ -250,9 +212,35 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		statement(-1, statement);
 	}
 
+	@Override
+	public String toString() {
+
+		final List<St> statements = getStatements();
+
+		if (statements.isEmpty()) {
+			return "<no statements>";
+		}
+
+		final StringBuilder out = new StringBuilder();
+		boolean comma = false;
+
+		for (St statement : statements) {
+			if (!comma) {
+				comma = true;
+			} else {
+				out.append(", ");
+			}
+			out.append(statement);
+		}
+
+		return out.toString();
+	}
+
 	protected abstract void braces(ImperativeBlock braces);
 
 	protected void addStatement(St statement) {
+		assert !this.instructionsExecuted :
+			"Instructions already executed. Can not add statement " + statement;
 		this.statements.add(statement);
 	}
 
@@ -266,7 +254,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		boolean hasResult = false;
 
 		for (St statement : getStatements()) {
-			if (!statement.getKind().hasValue()) {
+			if (!statement.getStatementKinds().haveValue()) {
 				continue;
 			}
 
@@ -309,14 +297,14 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	private Block<S> parentheses(
 			int index,
 			LocationInfo location,
-			Container container,
+			Distributor distributor,
 			MemberRegistry memberRegistry) {
 
 		@SuppressWarnings("unchecked")
 		final Block<S> parentheses =
 			getSentence().getSentenceFactory().createParentheses(
 					location,
-					nextDistributor(container),
+					distributor,
 					(S) this);
 
 		statement(index, parentheses);
@@ -359,7 +347,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				final Block<S> block = parentheses(
 					i,
 					this,
-					getContainer(),
+					statement.distribute(),
 					getMemberRegistry());
 
 				instruction.execute(block);
