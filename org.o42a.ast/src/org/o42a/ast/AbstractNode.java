@@ -23,12 +23,11 @@ import java.util.Collection;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.util.Source;
-import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableVisitor;
 
 
-public abstract class AbstractNode implements Node {
+public abstract class AbstractNode implements Node, Cloneable {
 
 	public static Node lastNode(Node... nodes) {
 		if (nodes == null || nodes.length == 0) {
@@ -70,6 +69,7 @@ public abstract class AbstractNode implements Node {
 	private final FixedPosition start;
 	private final FixedPosition end;
 	private CommentNode[] comments = NO_COMMENTS;
+	private Loggable previous;
 
 	public AbstractNode(Position start, Position end) {
 		this.start = start.fix();
@@ -101,8 +101,25 @@ public abstract class AbstractNode implements Node {
 	}
 
 	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
+	public Loggable getPreviousLoggable() {
+		return this.previous;
+	}
+
+	@Override
+	public AbstractNode setPreviousLoggable(Loggable previous) {
+		if (previous == null) {
+			return this;
+		}
+
+		final AbstractNode clone = clone();
+
+		if (this.previous == null) {
+			clone.previous = previous;
+		} else {
+			clone.previous = this.previous.setPreviousLoggable(previous);
+		}
+
+		return clone;
 	}
 
 	@Override
@@ -255,6 +272,15 @@ public abstract class AbstractNode implements Node {
 		printContent(out);
 
 		return out.toString();
+	}
+
+	@Override
+	protected AbstractNode clone() {
+		try {
+			return (AbstractNode) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 }

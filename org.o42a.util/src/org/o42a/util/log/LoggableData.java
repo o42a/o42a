@@ -20,12 +20,18 @@
 package org.o42a.util.log;
 
 
-public class LoggableData implements Loggable {
+public class LoggableData implements Loggable, Cloneable {
 
 	private final Object loggableData;
+	private Loggable previous;
 
 	public LoggableData(Object loggableData) {
 		this.loggableData = loggableData;
+	}
+
+	public LoggableData(Object loggableData, Loggable previous) {
+		this.loggableData = loggableData;
+		this.previous = previous;
 	}
 
 	public final Object getLoggableData() {
@@ -38,8 +44,25 @@ public class LoggableData implements Loggable {
 	}
 
 	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
+	public Loggable getPreviousLoggable() {
+		return this.previous;
+	}
+
+	@Override
+	public LoggableData setPreviousLoggable(Loggable previous) {
+		if (previous == null) {
+			return this;
+		}
+
+		final LoggableData clone = clone();
+
+		if (this.previous == null) {
+			clone.previous = previous;
+		} else {
+			clone.previous = this.previous.setPreviousLoggable(previous);
+		}
+
+		return clone;
 	}
 
 	@Override
@@ -56,6 +79,15 @@ public class LoggableData implements Loggable {
 	public String toString() {
 		return this.loggableData != null
 		? this.loggableData.toString() : "null";
+	}
+
+	@Override
+	protected LoggableData clone() {
+		try {
+			return (LoggableData) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 }
