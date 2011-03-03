@@ -22,18 +22,22 @@ package org.o42a.ast;
 import java.io.Serializable;
 
 import org.o42a.util.Source;
-import org.o42a.util.log.*;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggablePosition;
+import org.o42a.util.log.LoggableVisitor;
 
 
-public class FixedPosition extends Position
-		implements LoggablePosition, Serializable {
+public class FixedPosition
+		extends Position
+		implements LoggablePosition, Cloneable, Serializable {
 
-	private static final long serialVersionUID = 2797703397923244242L;
+	private static final long serialVersionUID = 6809375589547367813L;
 
 	private final Source source;
 	private final int line;
 	private final int column;
 	private final long offset;
+	private Loggable previous;
 
 	public FixedPosition(Source source) {
 		this.source = source;
@@ -58,8 +62,25 @@ public class FixedPosition extends Position
 	}
 
 	@Override
-	public LogInfo getPreviousLogInfo() {
-		return null;
+	public Loggable getPreviousLoggable() {
+		return this.previous;
+	}
+
+	@Override
+	public FixedPosition setPreviousLoggable(Loggable previous) {
+		if (previous == null) {
+			return this;
+		}
+
+		final FixedPosition clone = clone();
+
+		if (this.previous == null) {
+			clone.previous = previous;
+		} else {
+			clone.previous = this.previous.setPreviousLoggable(previous);
+		}
+
+		return clone;
 	}
 
 	@Override
@@ -100,6 +121,15 @@ public class FixedPosition extends Position
 	@Override
 	public void printContent(StringBuilder out) {
 		print(out, true);
+	}
+
+	@Override
+	protected FixedPosition clone() {
+		try {
+			return (FixedPosition) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 }
