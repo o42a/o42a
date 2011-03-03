@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.st.StatementKinds.CLAUSE_DECLARATIONS;
+
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
@@ -49,8 +51,8 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public StatementKind getKind() {
-		return StatementKind.CLAUSE;
+	public StatementKinds getStatementKinds() {
+		return CLAUSE_DECLARATIONS;
 	}
 
 	@Override

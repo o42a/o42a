@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		new ArrayList<Sentence<S>>();
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<S, ?, ?> sentenceFactory;
-	private StatementKind kind;
+	private StatementKinds kinds;
 	private ValueType<?> valueType;
 	private boolean instructionsExecuted;
 
@@ -91,26 +93,18 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	}
 
 	@Override
-	public StatementKind getKind() {
-		if (this.kind != null) {
-			return this.kind;
+	public StatementKinds getStatementKinds() {
+		if (this.kinds != null) {
+			return this.kinds;
 		}
 
-		StatementKind result = StatementKind.EMPTY;
+		StatementKinds result = NO_STATEMENTS;
 
 		for (Sentence<?> sentence : getSentences()) {
-
-			final StatementKind kind = sentence.getKind();
-
-			if (kind.ordinal() > result.ordinal()) {
-				if (kind.hasValue()) {
-					return this.kind = StatementKind.VALUE;
-				}
-				result = kind;
-			}
+			result = result.add(sentence.getStatementKinds());
 		}
 
-		return this.kind = result;
+		return this.kinds = result;
 	}
 
 	@Override
@@ -118,7 +112,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		if (this.valueType != null) {
 			return this.valueType;
 		}
-		if (!getKind().hasValue()) {
+		if (!getStatementKinds().haveValue()) {
 			return this.valueType = ValueType.VOID;
 		}
 
@@ -220,6 +214,21 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 
 	@Override
 	public abstract Block<?> reproduce(Reproducer reproducer);
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+		final boolean parentheses = isParentheses();
+
+		out.append(parentheses ? '(' : '{');
+		for (Sentence<?> sentence : getSentences()) {
+			out.append(sentence);
+		}
+		out.append(parentheses ? ')' : '}');
+
+		return out.toString();
+	}
 
 	abstract Trace getTrace();
 

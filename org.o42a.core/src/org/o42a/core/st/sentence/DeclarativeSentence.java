@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.conditionDefinitions;
 import static org.o42a.core.ref.Logical.disjunction;
+import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
 
 import java.util.List;
 
@@ -30,12 +31,15 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.DefinitionTarget;
+import org.o42a.core.st.StatementKinds;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 	private InitialConditions initialConditions;
 	private SentenceConditions conditions;
+	private StatementKinds statementKinds;
 
 	DeclarativeSentence(
 			LocationInfo location,
@@ -59,11 +63,59 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return (DeclarativeSentence) super.getPrerequisite();
 	}
 
+	@Override
+	public StatementKinds getStatementKinds() {
+		if (this.statementKinds != null) {
+			return this.statementKinds;
+		}
+
+		StatementKinds result = NO_STATEMENTS;
+
+		for (Declaratives alt : getAlternatives()) {
+
+			final StatementKinds altStatementKinds = alt.getStatementKinds();
+
+			if (altStatementKinds.isEmpty()) {
+				continue;
+			}
+			if (result.isEmpty()) {
+				result = altStatementKinds;
+				continue;
+			}
+			if (altStatementKinds.haveDeclaration()) {
+				if (!result.haveDeclaration()) {
+					getLogger().error(
+							"unexpected_declaration",
+							alt,
+							"Alternative should not contain self-assignment"
+							+ " or field declaration");
+					continue;
+				}
+			} else {
+				if (result.haveDeclaration()) {
+					getLogger().error(
+							"expected_declaration",
+							alt,
+							"Alternative should contain self-assignment"
+							+ " or field declaration");
+					continue;
+				}
+			}
+
+			result = result.add(altStatementKinds);
+		}
+
+		return this.statementKinds = result;
+	}
+
 	protected Definitions define(DefinitionTarget target) {
-		if (!getKind().hasLogicalValue()) {
+
+		final StatementKinds statementKinds = getStatementKinds();
+
+		if (!statementKinds.haveDefinition()) {
 			return null;
 		}
-		if (!getKind().hasDefinition()) {
+		if (!statementKinds.haveValue()) {
 
 			final Logical fullLogical =
 				getConditions().fullLogical(target.getScope());
@@ -73,16 +125,33 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 					target.getScope(),
 					fullLogical);
 		}
+
+		Loggable previous = null;
+		Definitions result = null;
+
 		for (Declaratives alt : getAlternatives()) {
+
+			final StatementKinds altStatementKinds = alt.getStatementKinds();
+
+			if (!altStatementKinds.haveValue()) {
+				continue;
+			}
 
 			final Definitions definitions = alt.define(target);
 
-			if (definitions != null) {
-				return definitions;
+			if (result == null) {
+				result = definitions;
+				previous = alt.getLoggable();
+				continue;
 			}
+
+			getLogger().error(
+					"ambiguous_value",
+					alt.getLoggable().setPreviousLoggable(previous),
+					"Ambiguous value definition");
 		}
 
-		return null;
+		return result;
 	}
 
 	Conditions getInitialConditions() {

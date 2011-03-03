@@ -20,6 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.conditionDefinitions;
+import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
 
 import java.util.List;
 
@@ -28,15 +29,15 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
-import org.o42a.core.st.DefinitionTarget;
-import org.o42a.core.st.St;
+import org.o42a.core.st.*;
+import org.o42a.util.log.LogInfo;
 
 
 public class Declaratives extends Statements<Declaratives> {
 
 	private DeclarativeConditions conditions;
 	private Conditions lastConditions;
+	private StatementKinds statementKinds;
 
 	Declaratives(
 			LocationInfo location,
@@ -53,6 +54,41 @@ public class Declaratives extends Statements<Declaratives> {
 	@Override
 	public final DeclarativeFactory getSentenceFactory() {
 		return getSentence().getSentenceFactory();
+	}
+
+	@Override
+	public StatementKinds getStatementKinds() {
+		if (this.statementKinds != null) {
+			return this.statementKinds;
+		}
+
+		executeInstructions();
+
+		final List<St> statements = getStatements();
+		StatementKinds result = NO_STATEMENTS;
+		final int size = statements.size();
+
+		for (int i = size - 1; i >= 0; --i) {
+
+			final St statement = statements.get(i);
+			final StatementKinds kinds = statement.getStatementKinds();
+
+			if (kinds.isEmpty()) {
+				continue;
+			}
+			if (kinds.haveDeclaration()) {
+				if (result.haveCondition()) {
+					for (int j = i + 1; j < size; ++j) {
+						redundantConditions(statement, statements.get(j));
+					}
+				}
+				result = kinds;
+				continue;
+			}
+			result = result.add(kinds);
+		}
+
+		return this.statementKinds = result;
 	}
 
 	@Override
@@ -87,13 +123,13 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	protected Definitions define(DefinitionTarget target) {
-		if (!getKind().hasLogicalValue()) {
+
+		final StatementKinds kinds = getStatementKinds();
+
+		if (!kinds.haveDefinition()) {
 			return null;
 		}
-		if (!getKind().hasValue()) {
-			if (getKind().hasDefinition()) {
-				return null;
-			}
+		if (!kinds.haveValue()) {
 
 			final Logical condition =
 				lastConditions().fullLogical(target.getScope());
@@ -142,6 +178,90 @@ public class Declaratives extends Statements<Declaratives> {
 			return this.lastConditions;
 		}
 		return this.lastConditions = getSentence().getInitialConditions();
+	}
+
+	private void redundantConditions(St declaration, St statement) {
+
+		final DeclarativeBlock block = statement.toDeclarativeBlock();
+
+		if (block != null) {
+			redundantConditions(declaration, block);
+			return;
+		}
+
+		final StatementKinds statementKinds = statement.getStatementKinds();
+
+		if (!statementKinds.haveCondition()) {
+			return;
+		}
+
+		logRedundantCondition(declaration, statement, statementKinds);
+	}
+
+	private void redundantConditions(St declaration, DeclarativeBlock block) {
+
+		final StatementKinds statementKinds = block.getStatementKinds();
+
+		if (!statementKinds.haveCondition()) {
+			return;
+		}
+		for (DeclarativeSentence sentence : block.getSentences()) {
+
+			final StatementKinds sentenceStatementKinds =
+				sentence.getStatementKinds();
+
+			if (!sentenceStatementKinds.haveCondition()) {
+				continue;
+			}
+			if (sentenceStatementKinds.onlyConditions()) {
+				logRedundantCondition(
+						declaration,
+						sentence,
+						sentenceStatementKinds);
+				continue;
+			}
+			redundantConditions(declaration, sentence);
+		}
+	}
+
+	private void redundantConditions(
+			St declaration,
+			DeclarativeSentence sentence) {
+		for (Declaratives alt : sentence.getAlternatives()) {
+
+			final StatementKinds altStatementKinds =
+				alt.getStatementKinds();
+
+			if (!altStatementKinds.haveCondition()) {
+				continue;
+			}
+			if (altStatementKinds.onlyConditions()) {
+				logRedundantCondition(
+						declaration,
+						alt,
+						altStatementKinds);
+				continue;
+			}
+			redundantConditions(declaration, alt);
+		}
+	}
+
+	private void redundantConditions(St declaration, Declaratives alt) {
+		for (St statement : alt.getStatements()) {
+			redundantConditions(declaration, statement);
+		}
+	}
+
+	private void logRedundantCondition(
+			St declaration,
+			LogInfo statement,
+			StatementKinds statementKinds) {
+		getLogger().error(
+				"redundant_condition",
+				statement.getLoggable().setPreviousLoggable(
+						declaration.getLoggable()),
+				"Condition is redunant, as it follows the field declaration "
+				+ " or self-assignment statement");
 	}
 
 	private final class DeclarativeConditions extends Conditions {

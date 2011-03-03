@@ -19,6 +19,9 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.st.StatementKinds.CONDITIONS;
+import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
@@ -48,12 +51,11 @@ final class RefCondition extends St {
 	}
 
 	@Override
-	public StatementKind getKind() {
+	public StatementKinds getStatementKinds() {
 
-		final StatementKind kind = this.ref.getKind();
+		final StatementKinds kinds = this.ref.getStatementKinds();
 
-		return kind.hasLogicalValue()
-		? StatementKind.LOGICAL : StatementKind.EMPTY;
+		return kinds.haveDefinition() ? CONDITIONS : NO_STATEMENTS;
 	}
 
 	@Override

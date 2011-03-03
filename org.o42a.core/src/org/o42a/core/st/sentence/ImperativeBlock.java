@@ -42,7 +42,6 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
-import org.o42a.util.log.Loggable;
 
 
 public final class ImperativeBlock extends Block<Imperatives> {
@@ -191,7 +190,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		if (this.valueType != null) {
 			return this.valueType;
 		}
-		if (!getKind().hasValue()) {
+		if (!getStatementKinds().haveValue()) {
 			return this.valueType = ValueType.VOID;
 		}
 
@@ -214,6 +213,11 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		return this.valueType = result;
+	}
+
+	@Override
+	public final ImperativeBlock toImperativeBlock() {
+		return this;
 	}
 
 	@Override
@@ -292,24 +296,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 			return this;
 		}
 		return new BracesWithinDeclaratives(this, distributor, this);
-	}
-
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-		final Loggable loggable = getLoggable();
-
-		if (loggable != null) {
-			loggable.printContent(out);
-			if (out.length() < 2 || out.charAt(0) != '{') {
-				out.insert(0, '{').append('}');
-			}
-		} else {
-			out.append("{...}");
-		}
-
-		return out.toString();
 	}
 
 	@Override

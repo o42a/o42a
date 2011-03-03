@@ -40,7 +40,6 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.Place.Trace;
-import org.o42a.util.log.Loggable;
 
 
 public final class DeclarativeBlock extends Block<Declaratives> {
@@ -123,6 +122,11 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
+	public final DeclarativeBlock toDeclarativeBlock() {
+		return this;
+	}
+
+	@Override
 	public final DeclarativeSentence propose(LocationInfo location) {
 		return (DeclarativeSentence) super.propose(location);
 	}
@@ -146,7 +150,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 	@Override
 	public Definitions define(DefinitionTarget target) {
-		if (!getKind().hasLogicalValue()) {
+		if (!getStatementKinds().haveDefinition()) {
 			return null;
 		}
 
@@ -201,24 +205,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		reproduceSentences(reproducer, reproduction);
 
 		return null;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-		final Loggable loggable = getLoggable();
-
-		if (loggable != null) {
-			loggable.printContent(out);
-			if (out.length() < 2 || out.charAt(0) != '(') {
-				out.insert(0, '(').append(')');
-			}
-		} else {
-			out.append("(...)");
-		}
-
-		return out.toString();
 	}
 
 	@Override
