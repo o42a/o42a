@@ -67,6 +67,18 @@
 		</exec>
 	</target>
 
+	<target name="jdwp" depends="package-deps">
+		<java
+			jar="${root.dir}/target/org.o42a.cl-${project.version}.jar"
+			fork="true">
+			<jvmarg line="-Djava.library.path=${root.dir}/target"/>
+			<jvmarg line="-ea:org.o42a..."/>
+			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"/>
+			<arg line="-o/dev/null"/>
+			<arg line="all_tests.o42a"/>
+		</java>
+	</target>
+
 	<target name="clean">
 		<delete file="all_tests"/>
 		<delete file="debug_all_tests"/>
@@ -81,11 +93,11 @@
 			<arg line="--nocolor"/>
 			<arg line="--debug=${_compile.debug}"/>
 			<arg line="all_tests.o42a"/>
-			
+
 			<arg line="--vmargs"/>
 			<arg line="-Djava.library.path=${root.dir}/target"/>
 			<arg line="-ea:org.o42a..."/>
-			
+
 			<arg line="--"/>
 			<arg line="-Xlinker -rpath=${root.dir}/target"/>
 			<arg line="-Xlinker --no-undefined"/>

@@ -21,9 +21,15 @@ Use namespace 'Console'.
 Use namespace 'Test'.
 
 @Main :=> *(
+  Tests.
+).
+
+Tests := void(
+
+  Print "Run all tests" nl.
+  Run tests.
+
   Simple := test(
     Include 'simple/simple.o42a'.
   ).
-  Print "Run all tests" nl.
-  Run tests.
 ).
