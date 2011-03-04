@@ -31,32 +31,65 @@
 using namespace llvm;
 
 
-static void initCommandLine(JNIEnv *env, jobjectArray commandLine) {
+void Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs(
+		JNIEnv *env,
+		jclass cls,
+		jobjectArray commandLine) {
 
-	jStringArray args(env, commandLine);
+	jObjectArray<jbyteArray> args(env, commandLine);
 	const jsize argc = args.length();
-	char *argv[argc];
+	jbyteArray byteArrays[argc];
+	jbyte *argv[argc];
 
 	for (int i = 0; i < argc; ++i) {
-		argv[i] = const_cast<char*>(env->GetStringUTFChars(args[i], NULL));
+
+		jbyteArray byteArray = args[i];
+
+		byteArrays[i] = byteArray;
+		argv[i] = env->GetByteArrayElements(byteArray, NULL);
 	}
 
-	cl::ParseCommandLineOptions(argc, argv, "o42a Compiler");
+	cl::ParseCommandLineOptions(
+			argc,
+			(char**) argv,
+			"o42a Compiler");
 
 	for (int i = 0; i < argc; ++i) {
-		env->ReleaseStringUTFChars(args[i], argv[i]);
+		env->ReleaseByteArrayElements(byteArrays[i], argv[i], JNI_ABORT);
 	}
+}
+
+jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputFilename(
+		JNIEnv *env,
+		jclass cls) {
+
+	const std::string *filename = o42ac::BackendModule::getInputFilename();
+
+	if (!filename) {
+		return NULL;
+	}
+
+	const size_t len = filename->length();
+	jbyteArray array = env->NewByteArray(len);
+	jbyte *items = env->GetByteArrayElements(array, NULL);
+
+	for (size_t i = 0; i < len; ++i) {
+		items[i] = filename->at(i);
+	}
+
+	env->ReleaseByteArrayElements(array, items, JNI_COMMIT);
+
+	return array;
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(
 		JNIEnv *env,
 		jclass cls,
-		jstring id,
-		jobjectArray commandLine) {
-	initCommandLine(env, commandLine);
+		jstring id) {
 
 	jStringRef moduleId(env, id);
-	o42ac::BackendModule *module = o42ac::BackendModule::createBackend(moduleId);
+	o42ac::BackendModule *module =
+			o42ac::BackendModule::createBackend(moduleId);
 
 	return to_ptr(module);
 }

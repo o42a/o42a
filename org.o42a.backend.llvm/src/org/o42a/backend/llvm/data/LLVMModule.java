@@ -19,7 +19,10 @@
 */
 package org.o42a.backend.llvm.data;
 
-import org.o42a.backend.llvm.LLVMGenerator;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.codegen.data.Type;
 
@@ -30,7 +33,8 @@ public final class LLVMModule {
 		System.loadLibrary("o42ac_llvm");
 	}
 
-	private final LLVMGenerator generator;
+	private final String id;
+	private String inputFilename;
 	private final long nativePtr;
 
 	private final LLVMDataAllocator dataAllocator;
@@ -44,18 +48,33 @@ public final class LLVMModule {
 	private long boolType;
 	private long anyType;
 
-	public LLVMModule(LLVMGenerator generator, String[] commandLine) {
-		this.generator = generator;
-		this.nativePtr = createModule(generator.getId(), commandLine);
+	public LLVMModule(String id, String[] args) {
+		parseArgs(encodeArgs(args));
+
+		this.inputFilename = decodeArg(inputFilename());
+		if (id != null) {
+			this.id = id;
+		} else if (this.inputFilename != null) {
+			this.id = this.inputFilename;
+		} else {
+			this.id = "module";
+		}
+
+		this.nativePtr = createModule(this.id);
 		assert this.nativePtr != 0 :
-			"Failed to create LLVM module " + generator.getId();
+			"Failed to create LLVM module " + id;
+
 		this.dataAllocator = new LLVMDataAllocator(this);
 		this.dataWriter = new LLVMDataWriter(this);
 		this.codeBackend = new LLVMCodeBackend(this);
 	}
 
-	public LLVMGenerator getGenerator() {
-		return this.generator;
+	public String getId() {
+		return this.id;
+	}
+
+	public String getInputFilename() {
+		return this.inputFilename;
 	}
 
 	public long getNativePtr() {
@@ -137,7 +156,11 @@ public final class LLVMModule {
 		destroy();
 	}
 
-	private static native long createModule(String id, String commandLine[]);
+	private static native void parseArgs(byte[][] args);
+
+	private static native byte[] inputFilename();
+
+	private static native long createModule(String id);
 
 	private static native boolean write(long modulePtr);
 
@@ -157,4 +180,32 @@ public final class LLVMModule {
 
 	private static native long pointerTo(long typePtr);
 
+	private static byte[][] encodeArgs(String[] args) {
+
+		final Charset charset = Charset.defaultCharset();
+		final byte[][] encoded = new byte[args.length][];
+
+		for (int i = 0; i < args.length; ++i) {
+
+			final ByteBuffer buffer = charset.encode(args[i]);
+			final int len = buffer.limit();
+			final byte[] result = new byte[len + 1];// zero-terminated
+
+			buffer.get(result, 0, len);
+			encoded[i] = result;
+		}
+
+		return encoded;
+	}
+
+	private static String decodeArg(byte[] arg) {
+		if (arg == null) {
+			return null;
+		}
+
+		final Charset charset = Charset.defaultCharset();
+		final CharBuffer decoded = charset.decode(ByteBuffer.wrap(arg));
+
+		return decoded.toString();
+	}
 }

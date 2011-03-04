@@ -177,6 +177,7 @@ public:
 
 };
 
+typedef jArray<jbyteArray, jbyte> jByteArray;
 typedef jArray<jintArray, jint> jInt32Array;
 typedef jArray<jlongArray, jlong> jInt64Array;
 

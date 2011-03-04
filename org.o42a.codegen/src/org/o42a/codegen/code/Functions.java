@@ -65,7 +65,7 @@ public abstract class Functions {
 		return extern;
 	}
 
-	public void write() {
+	public final void write() {
 
 		final CodeBackend coder = codeBackend();
 
@@ -77,6 +77,9 @@ public abstract class Functions {
 	}
 
 	public abstract CodeBackend codeBackend();
+
+	public void close() {
+	}
 
 	protected <F extends Func> void addFunction(
 			CodeId id,

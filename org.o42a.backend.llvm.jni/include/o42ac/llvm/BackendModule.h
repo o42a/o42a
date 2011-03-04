@@ -48,6 +48,8 @@ public:
 
 	static BackendModule *createBackend(StringRef &ModuleID);
 
+	static const std::string *getInputFilename();
+
 	const TargetData &getTargetData() const;
 
 	bool validateFunction(Function*);
