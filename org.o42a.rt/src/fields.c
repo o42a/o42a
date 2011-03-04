@@ -54,3 +54,17 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 inline o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *const field) {
 	return &o42a_obj_field_kinds[field->kind];
 }
+
+inline o42a_fld *o42a_fld_by_field(
+		const o42a_obj_body_t *const body,
+		const o42a_obj_field_t *const field) {
+	return (o42a_fld*) (((void*) body) + field->fld);
+}
+
+inline o42a_fld *o42a_fld_by_overrider(
+		const o42a_obj_overrider_t *const overrider) {
+
+	void *const body = ((void*) overrider) + overrider->body;
+
+	return (o42a_fld*) (body + overrider->field->fld);
+}

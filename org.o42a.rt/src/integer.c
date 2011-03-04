@@ -118,7 +118,7 @@ void o42a_int_by_str(
 
 	if (space) {
 		o42a_error_printf(
-				"Unexpected space after number",
+				"Unexpected space after number at position %zu",
 				len - 1);
 		result->flags = O42A_FALSE;
 		O42A_RETURN;

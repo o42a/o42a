@@ -78,21 +78,9 @@ inline o42a_obj_body_t *o42a_obj_ascendant_body(
 	return (o42a_obj_body_t *) (((void*) ascendant) + ascendant->body);
 }
 
-inline o42a_obj_body_t *o42a_obj_sample_body(const o42a_obj_sample_t *const sample) {
+inline o42a_obj_body_t *o42a_obj_sample_body(
+		const o42a_obj_sample_t *const sample) {
 	return (o42a_obj_body_t *) (((void*) sample) + sample->body);
-}
-
-inline o42a_fld *o42a_obj_field_fld(
-		const o42a_obj_body_t *const body,
-		const o42a_obj_field_t *const field) {
-	return (o42a_fld*) (((void*) body) + field->fld);
-}
-
-inline o42a_fld *o42a_obj_overrider_fld(const o42a_obj_overrider_t *const overrider) {
-
-	void *const body = ((void*) overrider) + overrider->body;
-
-	return (o42a_fld*) (body + overrider->field->fld);
 }
 
 const o42a_obj_overrider_t *o42a_obj_field_overrider(
@@ -231,7 +219,8 @@ static void derive_object_body(
 	} else {
 		// drop kind of body to "inherited"
 		to_body->flags =
-				(from_body->flags & ~O42A_OBJ_BODY_TYPE) | O42A_OBJ_BODY_INHERITED;
+				(from_body->flags & ~O42A_OBJ_BODY_TYPE)
+				| O42A_OBJ_BODY_INHERITED;
 	}
 
 
@@ -244,8 +233,8 @@ static void derive_object_body(
 		o42a_obj_field_t *const field = fields + i;
 
 		ctable->field = field;
-		ctable->from.fld = o42a_obj_field_fld(from_body, field);
-		ctable->to.fld = o42a_obj_field_fld(to_body, field);
+		ctable->from.fld = o42a_fld_by_field(from_body, field);
+		ctable->to.fld = o42a_fld_by_field(to_body, field);
 
 		const o42a_fld_desc_t *const desc = o42a_fld_desc(field);
 
@@ -429,7 +418,8 @@ static inline size_t fill_sample_data(
 	for (size_t i = sdata->samples.size; i > 0; --i) {
 
 		o42a_obj_body_t *const old_body = o42a_obj_sample_body(old_sample);
-		const o42a_obj_stype_t *const body_type = old_body->methods->object_type;
+		const o42a_obj_stype_t *const body_type =
+				old_body->methods->object_type;
 
 		sample_data->sample = old_sample;
 		if (o42a_obj_ascendant_of_type(adata, body_type)) {
@@ -598,7 +588,8 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	// build samples
 	copy_ancestor_ascendants(adata, ascendants, mem);
 
-	o42a_obj_ascendant_t *const main_ascendant = ascendants + (num_ascendants - 1);
+	o42a_obj_ascendant_t *const main_ascendant =
+			ascendants + (num_ascendants - 1);
 
 	main_ascendant->type = sstype;
 	main_ascendant->body = ((void*) object) - ((void*) main_ascendant);

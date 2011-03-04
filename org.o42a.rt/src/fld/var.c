@@ -55,7 +55,7 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 			// and thus not overridden there.
 			// Use definition from overrider.
 
-			const o42a_fld_var *const ovr = &o42a_obj_overrider_fld(overrider)->var;
+			const o42a_fld_var *const ovr = &o42a_fld_by_overrider(overrider)->var;
 
 			to->constructor = ovr->constructor;
 			to->assigner = ovr->assigner;
