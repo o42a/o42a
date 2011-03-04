@@ -9,11 +9,27 @@ extern "C" {
 #endif
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
+ * Method:    parseArgs
+ * Signature: ([[B)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs
+  (JNIEnv *, jclass, jobjectArray);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMModule
+ * Method:    inputFilename
+ * Signature: ()[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_inputFilename
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    createModule
- * Signature: (Ljava/lang/String;[Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_createModule
-  (JNIEnv *, jclass, jstring, jobjectArray);
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule

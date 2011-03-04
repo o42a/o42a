@@ -49,8 +49,13 @@ static cl::opt<std::string> OutputFilename(
 		"o",
 		cl::Prefix,
 		cl::ValueRequired,
-		cl::desc("Override output filename"),
-		cl::value_desc("filename"));
+		cl::desc("Output file name. Print to standard output if omitted."),
+		cl::value_desc("output_file"));
+
+static cl::opt<std::string> InputFilename(
+		cl::Positional,
+		cl::desc("Input file name."),
+		cl::value_desc("input_file"));
 
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
@@ -69,6 +74,13 @@ BackendModule::~BackendModule() {
 
 BackendModule *BackendModule::createBackend(StringRef &ModuleID) {
 	return new BackendModule(ModuleID, *new LLVMContext());
+}
+
+const std::string *BackendModule::getInputFilename() {
+	if (!InputFilename.getNumOccurrences()) {
+		return NULL;
+	}
+	return &InputFilename;
 }
 
 const TargetData &BackendModule::getTargetData() const {

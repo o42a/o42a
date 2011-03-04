@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm;
 
-import java.util.ArrayList;
-
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.CodeBackend;
@@ -30,137 +28,46 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public class LLVMGenerator extends Generator {
 
-	public static LLVMGenerator newGenerator(String toolName, String id) {
-		return new LLVMGenerator(toolName, id);
+	public static LLVMGenerator newGenerator(
+			String id,
+			String... args) {
+		return new LLVMGenerator(new LLVMModule(id, args));
 	}
 
-	private final ArrayList<String> commandLine = new ArrayList<String>();
+	private final LLVMModule module;
 
-	private LLVMModule module;
-
-	private LLVMGenerator(String toolName, String id) {
-		super(id);
-		this.commandLine.add(toolName);
+	private LLVMGenerator(LLVMModule module) {
+		super(module.getId());
+		this.module = module;
 	}
 
-	public void addArg(String arg) {
-		this.commandLine.add(arg);
-	}
-
-	public void addValue(String name, String value) {
-		if (value == null) {
-			addArg(name);
-		} else {
-			this.commandLine.add(name + "=" + value);
-		}
-	}
-
-	public void addArgs(String... args) {
-		this.commandLine.ensureCapacity(this.commandLine.size() + args.length);
-		for (String arg : args) {
-			this.commandLine.add(arg);
-		}
-	}
-
-	public void addArgs(String args) {
-
-		boolean escaped = false;
-		char quote = 0;
-
-		final StringBuilder arg = new StringBuilder();
-
-		for (int i = 0, len = args.length(); i < len; ++i) {
-
-			final char c = args.charAt(i);
-
-			if (escaped) {
-				switch (c) {
-				case 'n':
-					arg.append('\n');
-					break;
-				case 'r':
-					arg.append('\r');
-					break;
-				case 't':
-					arg.append('\t');
-					break;
-				default:
-					arg.append(c);
-				}
-				escaped = false;
-				continue;
-			}
-			if (c == '\\') {
-				escaped = true;
-				continue;
-			}
-			if (quote != 0) {
-				if (c == quote) {
-					quote = 0;
-					continue;
-				}
-				arg.append(c);
-				continue;
-			}
-			switch (c) {
-			case '\'':
-			case '\"':
-				quote = c;
-				continue;
-			case ' ':
-			case '\r':
-			case '\n':
-			case '\t':
-				if (arg.length() != 0) {
-					this.commandLine.add(arg.toString());
-					arg.setLength(0);
-				}
-				continue;
-			default:
-				arg.append(c);
-			}
-		}
-
-		if (arg.length() != 0) {
-			this.commandLine.add(arg.toString());
-		}
-	}
-
-	@Override
-	public void write() {
-
-		final LLVMModule module = module();
-
-		try {
-			super.write();
-			module.write();
-		} finally {
-			module.destroy();
-		}
+	public final String getInputFilename() {
+		return this.module.getInputFilename();
 	}
 
 	@Override
 	public DataAllocator dataAllocator() {
-		return module().dataAllocator();
+		return this.module.dataAllocator();
 	}
 
 	@Override
 	public DataWriter dataWriter() {
-		return module().dataWriter();
+		return this.module.dataWriter();
 	}
 
 	@Override
 	public CodeBackend codeBackend() {
-		return module().codeBackend();
+		return this.module.codeBackend();
 	}
 
-	private LLVMModule module() {
-		if (this.module != null) {
-			return this.module;
-		}
-		return this.module = new LLVMModule(
-				this,
-				this.commandLine.toArray(new String[this.commandLine.size()]));
+	@Override
+	public void close() {
+		this.module.destroy();
 	}
 
+	@Override
+	protected void writeData() {
+		super.writeData();
+		this.module.write();
+	}
 }

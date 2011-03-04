@@ -77,52 +77,47 @@ public class CL {
 
 	public static void main(String[] args) {
 
-		final String[] llvmArgs = new String[args.length];
+		final String[] llvmArgs = new String[args.length + 1];
 		int llvmArgsLen = 0;
-		String source = null;
 		boolean debug = false;
 
+		llvmArgs[llvmArgsLen++] = "o42ac";
 		for (String arg : args) {
-			if (arg.startsWith("-")) {
-				if (!arg.startsWith(DEBUG_PREFIX)) {
-					llvmArgs[llvmArgsLen++] = arg;
-					continue;
-				}
-
-				final String flag = arg.substring(DEBUG_PREFIX.length());
-
-				debug = !"off".equalsIgnoreCase(flag);
-
+			if (!arg.startsWith(DEBUG_PREFIX)) {
+				llvmArgs[llvmArgsLen++] = arg;
 				continue;
 			}
-			if (source == null) {
-				source = arg;
-				continue;
-			}
-			System.err.println("Only one source file expected");
-			System.exit(INVALID_INPUT);
-			return;
+
+			final String flag = arg.substring(DEBUG_PREFIX.length());
+
+			debug = !"off".equalsIgnoreCase(flag);
 		}
 
-		if (source == null) {
-			System.err.println("Input file not specified");
-			System.exit(INVALID_INPUT);
-			return;
-		}
-
-		final LLVMGenerator generator = newGenerator("compiler", source);
-
-		generator.setDebug(debug);
-		generator.addArgs(ArrayUtil.clip(llvmArgs, llvmArgsLen));
-
-		final CL instance = new CL(generator);
+		final LLVMGenerator generator =
+			newGenerator(null, ArrayUtil.clip(llvmArgs, llvmArgsLen));
 
 		try {
-			instance.compile(source);
-		} catch (Throwable e) {
-			e.printStackTrace();
-			System.exit(COMPILATION_FAILED);
-			return;
+			generator.setDebug(debug);
+
+			final String source = generator.getInputFilename();
+
+			if (source == null) {
+				System.err.println("Input file not specified");
+				System.exit(INVALID_INPUT);
+				return;
+			}
+
+			final CL instance = new CL(generator);
+
+			try {
+				instance.compile(source);
+			} catch (Throwable e) {
+				e.printStackTrace();
+				System.exit(COMPILATION_FAILED);
+				return;
+			}
+		} finally {
+			generator.close();
 		}
 	}
 
