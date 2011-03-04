@@ -22,6 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.def.Definitions.conditionDefinitions;
 import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Container;
@@ -36,8 +37,11 @@ import org.o42a.util.log.LogInfo;
 public class Declaratives extends Statements<Declaratives> {
 
 	private DeclarativeConditions conditions;
-	private Conditions lastConditions;
+	private Conditions prevConditions;
+	private Conditions lastDefinitionConditions;
 	private StatementKinds statementKinds;
+	private final ArrayList<Conditions> statementConditions =
+		new ArrayList<Conditions>(1);
 
 	Declaratives(
 			LocationInfo location,
@@ -119,7 +123,10 @@ public class Declaratives extends Statements<Declaratives> {
 	@Override
 	protected void addStatement(St statement) {
 		super.addStatement(statement);
-		this.lastConditions = statement.setConditions(lastConditions());
+		this.prevConditions = statement.setConditions(
+				this.prevConditions != null
+				? this.prevConditions : getSentence().getInitialConditions());
+		this.statementConditions.add(this.prevConditions);
 	}
 
 	protected Definitions define(DefinitionTarget target) {
@@ -132,7 +139,7 @@ public class Declaratives extends Statements<Declaratives> {
 		if (!kinds.haveValue()) {
 
 			final Logical condition =
-				lastConditions().fullLogical(target.getScope());
+				lastDefinitionConditions().fullLogical(target.getScope());
 
 			return conditionDefinitions(
 					condition,
@@ -173,11 +180,27 @@ public class Declaratives extends Statements<Declaratives> {
 		return this.conditions = new DeclarativeConditions();
 	}
 
-	private Conditions lastConditions() {
-		if (this.lastConditions != null) {
-			return this.lastConditions;
+	private Conditions lastDefinitionConditions() {
+		if (this.lastDefinitionConditions != null) {
+			return this.lastDefinitionConditions;
 		}
-		return this.lastConditions = getSentence().getInitialConditions();
+
+		final List<St> statements = getStatements();
+
+		for (int i = statements.size() - 1; i >= 0; --i) {
+
+			final St statement = statements.get(i);
+
+			if (!statement.getStatementKinds().haveDefinition()) {
+				continue;
+			}
+
+			return this.lastDefinitionConditions =
+				this.statementConditions.get(i);
+		}
+
+		return this.lastDefinitionConditions =
+			getSentence().getInitialConditions();
 	}
 
 	private void redundantConditions(St declaration, St statement) {
@@ -268,18 +291,18 @@ public class Declaratives extends Statements<Declaratives> {
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return lastConditions().prerequisite(scope);
+			return lastDefinitionConditions().prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return lastConditions().precondition(scope);
+			return lastDefinitionConditions().precondition(scope);
 		}
 
 		@Override
 		public String toString() {
-			if (Declaratives.this.lastConditions != null) {
-				return Declaratives.this.lastConditions.toString();
+			if (Declaratives.this.prevConditions != null) {
+				return Declaratives.this.prevConditions.toString();
 			}
 			return Declaratives.this + "?";
 		}

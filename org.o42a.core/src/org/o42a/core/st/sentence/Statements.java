@@ -44,7 +44,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private final Sentence<S> sentence;
 	private final boolean opposite;
-	private final ArrayList<St> statements = new ArrayList<St>();
+	private final ArrayList<St> statements = new ArrayList<St>(1);
 	private boolean instructionsExecuted;
 	private ValueType<?> valueType;
 
@@ -209,7 +209,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		if (statement == null) {
 			return;
 		}
-		statement(-1, statement);
+		addStatement(statement);
 	}
 
 	@Override
@@ -242,6 +242,10 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		assert !this.instructionsExecuted :
 			"Instructions already executed. Can not add statement " + statement;
 		this.statements.add(statement);
+	}
+
+	protected void replaceStatement(int index, St statement) {
+		this.statements.set(index, statement);
 	}
 
 	final Trace getTrace() {
@@ -307,17 +311,13 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 					distributor,
 					(S) this);
 
-		statement(index, parentheses);
+		if (index < 0) {
+			addStatement(parentheses);
+		} else {
+			replaceStatement(index, parentheses);
+		}
 
 		return parentheses;
-	}
-
-	private void statement(int index, St statement) {
-		if (index < 0) {
-			addStatement(statement);
-		} else {
-			this.statements.set(index, statement);
-		}
 	}
 
 	void executeInstructions() {
