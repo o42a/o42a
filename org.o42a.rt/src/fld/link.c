@@ -53,7 +53,7 @@ void o42a_fld_link_inherit(o42a_obj_ctable_t *const ctable) {
 			// The body overrider defined in isn't present in ancestor
 			// and thus not overridden there.
 			// Use definition from overrider.
-			to->constructor = o42a_obj_overrider_fld(overrider)->link.constructor;
+			to->constructor = o42a_fld_by_overrider(overrider)->link.constructor;
 			O42A_RETURN;
 		}
 	}

@@ -20,8 +20,10 @@
 #ifndef O42A_OBJ_FIELD_H
 #define O42A_OBJ_FIELD_H
 
-#include "o42a/types.h"
+#include "o42a/object.h"
 
+
+typedef union o42a_fld o42a_fld;
 
 enum o42a_fld_kind {
 
@@ -36,33 +38,6 @@ enum o42a_fld_kind {
 	O42A_FLD_SCOPE = 4,
 
 	O42A_FLD_DEP = 5,
-
-};
-
-
-struct o42a_obj_ctable {
-
-	o42a_obj_type_t *const ancestor_type;
-
-	o42a_obj_stype_t *const sample_type;
-
-	o42a_obj_rtype_t *const object_type;
-
-	o42a_obj_stype_t *body_type;
-
-	o42a_obj_field_t *field;
-
-	struct o42a_cside {
-
-		o42a_obj_body_t *body;
-
-		o42a_fld *fld;
-
-	} from;
-
-	struct o42a_cside to;
-
-	uint32_t flags;
 
 };
 
@@ -82,7 +57,26 @@ extern "C" {
 #endif
 
 
-o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t*);
+o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *);
+
+/**
+ * Retrieves field from body.
+ *
+ * \param body object body to retrieve field from.
+ * \param field target field descriptor.
+ *
+ * \return field pointer.
+ */
+o42a_fld *o42a_fld_by_field(const o42a_obj_body_t *, const o42a_obj_field_t *);
+
+/**
+ * Retrieves overriding field from body.
+ *
+ * \param field target field overrider descriptor.
+ *
+ * \return overriding field pointer..
+ */
+o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
 
 
 #ifdef __cplusplus

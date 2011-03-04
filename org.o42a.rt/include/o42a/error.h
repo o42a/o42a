@@ -31,6 +31,7 @@ void o42a_error_print_str(const o42a_val_t *);
 
 void o42a_error_print(const char *);
 
+__attribute__ ((format(printf, 1, 2)))
 void o42a_error_printf(const char *, ...);
 
 
@@ -40,6 +41,7 @@ void o42a_error_append_str(const o42a_val_t *);
 
 void o42a_error_append(const char *);
 
+__attribute__ ((format(printf, 1, 2)))
 void o42a_error_appendf(const char *, ...);
 
 void o42a_error_end();

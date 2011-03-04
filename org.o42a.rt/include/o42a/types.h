@@ -24,23 +24,6 @@
 #include <stdint.h>
 
 
-typedef struct o42a_obj_body o42a_obj_body_t;
-typedef struct o42a_obj_methods o42a_obj_methods_t;
-typedef struct o42a_obj_data o42a_obj_data_t;
-typedef union o42a_obj_type o42a_obj_type_t;
-typedef struct o42a_obj_stype o42a_obj_stype_t;
-typedef struct o42a_obj_rtype o42a_obj_rtype_t;
-typedef struct o42a_obj_ascendant o42a_obj_ascendant_t;
-typedef struct o42a_obj_sample o42a_obj_sample_t;
-typedef const struct o42a_obj_field o42a_obj_field_t;
-typedef const struct o42a_obj_overrider o42a_obj_overrider_t;
-typedef struct o42a_obj_ctable o42a_obj_ctable_t;
-struct o42a_fld_obj;
-typedef union o42a_fld o42a_fld;
-
-/** Object represented by it's body. */
-typedef o42a_obj_body_t o42a_obj_t;
-
 /** Relative pointer. */
 typedef int32_t o42a_rptr_t;
 
@@ -181,55 +164,6 @@ typedef struct o42a_val {
 	} value;
 
 } o42a_val_t;
-
-
-/**
- * Object value calculator function.
- *
- * \param result[out] object value to fill by function.
- * \param object[in] object pointer.
- */
-typedef void o42a_obj_val_ft(o42a_val_t*, o42a_obj_t *);
-
-/**
- * Object condition calculator function.
- *
- * \param object[in] object pointer.
- *
- * \return condition.
- */
-typedef o42a_bool_t o42a_obj_cond_ft(o42a_obj_t *);
-
-/**
- * Object reference function.
- *
- * \param scope[in] scope object pointer.
- *
- * \return resulting object reference.
- */
-typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *);
-
-/**
- * Object constructor function.
- *
- * \param scope[in] scope object pointer.
- * \param fld[in] pointer to field, which object construction invoked for. This
- * may be a field from object different from scope (see o42a_fld_obj.previous),
- * but is always belongs to compatible body of that object.
- *
- * \return resulting object reference.
- */
-typedef o42a_obj_t *o42a_obj_constructor_ft(o42a_obj_t *, struct o42a_fld_obj *);
-
-/**
- * Variable assigner function.
- *
- * \param object[in] object containing variable.
- * \param value[in] value to assign.
- *
- * \return assigned object of valid type or NULL if assignment failed.
- */
-typedef o42a_obj_t *o42a_obj_assigner_ft(o42a_obj_t*, o42a_obj_t*);
 
 
 #define o42a_layout(target) _o42a_layout(__alignof__ (target), sizeof (target))
