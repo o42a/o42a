@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
+import static org.o42a.core.ir.op.BinaryFunc.BINARY;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
@@ -31,6 +32,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.op.BinaryFunc;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
@@ -286,7 +288,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
 		final ObjectDataType.Op ascendantType = ascendantObj.data(code).ptr();
 
-		final AnyOp result = getGenerator().castFunc().op(code).call(
+		final AnyOp result = castFunc().op(code).call(
 				code,
 				ptr().toAny(code),
 				ascendantType.toAny(code));
@@ -326,6 +328,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	protected final ObjectDataOp cachedData() {
 		return this.data;
+	}
+
+	private CodePtr<BinaryFunc> castFunc() {
+		return getGenerator().externalFunction("o42a_obj_cast", BINARY);
 	}
 
 	private final ObjectBodyIR.Op body(Code code) {

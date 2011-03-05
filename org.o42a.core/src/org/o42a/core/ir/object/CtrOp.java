@@ -27,6 +27,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -69,8 +70,7 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.data(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final AnyOp result =
-			getGenerator().newFunc().op(code).call(code, ptr().toAny(code));
+		final AnyOp result = newFunc().op(code).call(code, ptr().toAny(code));
 
 		result.isNull(code).go(code, exit);
 
@@ -103,8 +103,7 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.data(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final AnyOp result =
-			getGenerator().newFunc().op(code).call(code, ptr().toAny(code));
+		final AnyOp result = newFunc().op(code).call(code, ptr().toAny(code));
 
 		result.isNull(code).go(code, exit);
 
@@ -112,6 +111,12 @@ public class CtrOp extends IROp {
 				sample.getBuilder(),
 				result,
 				sample.getWellKnownType());
+	}
+
+	private CodePtr<ObjectRefFunc> newFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_new",
+				OBJECT_REF);
 	}
 
 	public static final class Op extends StructOp {

@@ -73,14 +73,14 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 
 		if (condition.isUnknown()) {
 			if (!getObjectIR().getObject().isRuntime()) {
-				set(typeIR, getGenerator().trueFunc());
+				set(typeIR, trueFunc());
 				return;
 			}
 		} else if (condition.isDefinite()) {
 			if (condition.isFalse()) {
-				set(typeIR, getGenerator().falseFunc());
+				set(typeIR, falseFunc());
 			} else {
-				set(typeIR, getGenerator().trueFunc());
+				set(typeIR, trueFunc());
 			}
 			return;
 		}
@@ -93,7 +93,7 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 	}
 
 	public void setFalse(ObjectTypeIR typeIR) {
-		set(typeIR, getGenerator().falseFunc());
+		set(typeIR, falseFunc());
 	}
 
 	public void build(Definitions definitions) {
@@ -209,6 +209,18 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		}
 
 		return false;
+	}
+
+	private CodePtr<ObjectCondFunc> trueFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_cond_true",
+				OBJECT_COND);
+	}
+
+	private CodePtr<ObjectCondFunc> falseFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_cond_false",
+				OBJECT_COND);
 	}
 
 	private final class Builder extends DefCollector<LogicalDef> {
