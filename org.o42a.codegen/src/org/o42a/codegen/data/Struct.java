@@ -30,8 +30,8 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 
 	protected abstract void fill();
 
-	final void setStruct(CodeId name) {
-		this.data = new StructData<O>(this, name);
+	final void setStruct(Generator generator, CodeId name) {
+		this.data = new StructData<O>(generator, this, name);
 	}
 
 	final void setGlobal(Global<O, ?> global) {
@@ -40,8 +40,8 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 
 	private static final class StructData<O extends PtrOp> extends SubData<O> {
 
-		StructData(Struct<O> type, CodeId name) {
-			super(type.getId().setLocal(name), type);
+		StructData(Generator generator, Struct<O> type, CodeId name) {
+			super(type.codeId(generator).setLocal(name), type);
 		}
 
 		@Override

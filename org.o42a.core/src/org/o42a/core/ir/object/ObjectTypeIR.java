@@ -223,14 +223,16 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
 						.getPointer().toAny());
-		instance.getAncestorFunc().setValue(createAncestorFunc());
+		instance.getAncestorFunc().setValue(createAncestorFunc(instance));
 	}
 
-	private CodePtr<ObjectRefFunc> createAncestorFunc() {
+	private CodePtr<ObjectRefFunc> createAncestorFunc(ObjectDataType instance) {
 
 		final Function<ObjectRefFunc> function =
 			getGenerator().newFunction().create(
-					getObjectIR().getId().detail("ancestor"),
+					getObjectIR()
+					.codeId(instance.generator())
+					.detail("ancestor"),
 					OBJECT_REF);
 		final CodeBlk failure = function.addBlock("failure");
 

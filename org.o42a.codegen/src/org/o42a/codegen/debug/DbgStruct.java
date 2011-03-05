@@ -56,7 +56,7 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.id("DEBUG").sub("TYPE").sub(this.type.getId());
+		return factory.id("DEBUG").sub("TYPE").sub(this.type.codeId(factory));
 	}
 
 	@Override
@@ -72,8 +72,8 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 				this.name,
 				generator.id("DEBUG")
 				.sub("TYPE_NAME")
-				.sub(this.type.getId()),
-				this.type.getId().getId());
+				.sub(this.type.codeId(generator)),
+				this.type.codeId(generator).getId());
 		this.dataLayout.setValue(getType().getLayout().toBinaryForm());
 		this.size.setValue(getType().size());
 		for (Data<?> fieldData : getType()) {
@@ -82,7 +82,7 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 					fieldData.getId().getLocal(),
 					debug.dbgFieldType());
 
-			field.fill(generator, this, fieldData);
+			field.fill(this, fieldData);
 		}
 	}
 

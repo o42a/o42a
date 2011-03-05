@@ -39,7 +39,7 @@ final class DbgGlobal implements Content<DbgGlobalType> {
 	@Override
 	public void fill(DbgGlobalType instance) {
 
-		final Generator generator = instance.getData().getGenerator();
+		final Generator generator = instance.generator();
 		final Debug debug = generator;
 
 		debug.setName(
@@ -49,7 +49,7 @@ final class DbgGlobal implements Content<DbgGlobalType> {
 				.sub(this.global.getId()),
 				this.global.getId().getId());
 		instance.getStart().setValue(this.global.getPointer().toAny());
-		instance.getContent().fill(generator, null, this.global);
+		instance.getContent().fill(null, this.global);
 	}
 
 }

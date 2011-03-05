@@ -176,7 +176,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		allocation.setTypePtr(allocateType(
 				getModulePtr(),
-				type.getId().getId(),
+				type.codeId(type.generator()).getId(),
 				allocation.getNativePtr(),
 				type.isPacked()));
 	}
