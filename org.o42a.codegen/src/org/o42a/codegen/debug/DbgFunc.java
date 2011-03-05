@@ -50,7 +50,7 @@ final class DbgFunc implements Content<DbgFuncType> {
 	@Override
 	public void fill(DbgFuncType instance) {
 
-		final Generator generator = instance.getData().getGenerator();
+		final Generator generator = instance.generator();
 		final Debug debug = generator;
 
 		if (this.namePtr != null) {

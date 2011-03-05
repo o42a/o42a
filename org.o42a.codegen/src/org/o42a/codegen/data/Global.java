@@ -39,7 +39,7 @@ public final class Global<O extends PtrOp, T extends Type<O>> {
 	@SuppressWarnings("unchecked")
 	<S extends Struct<O>> Global(GlobalSettings settings, S struct) {
 		this.settings = settings;
-		this.id = struct.getId();
+		this.id = struct.codeId(settings.getGenerator());
 		this.instance = (T) struct;
 	}
 

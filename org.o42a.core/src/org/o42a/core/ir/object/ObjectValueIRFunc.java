@@ -36,7 +36,7 @@ abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 
 	ObjectValueIRFunc(ObjectIR objectIR) {
 		super(objectIR);
-		this.id = objectIR.getId().setLocal(
+		this.id = objectIR.codeId(objectIR.generator()).setLocal(
 				getGenerator().id().detail(suffix()));
 	}
 

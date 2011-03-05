@@ -152,15 +152,16 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
 		if (this.objectIR.getObject() == this.ascendant) {
-			return this.objectIR.getId().setLocal(
+			return this.objectIR.codeId(factory).setLocal(
 					factory.id().detail("main_body"));
 		}
 
 		final ObjectIR ascendantIR =
 			this.ascendant.ir(this.objectIR.getGenerator());
 
-		return this.objectIR.getId().setLocal(
-				factory.id().detail("body").detail(ascendantIR.getId()));
+		return this.objectIR.codeId(factory).setLocal(
+				factory.id().detail("body").detail(
+						ascendantIR.codeId(factory)));
 	}
 
 	@Override
@@ -209,7 +210,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	void allocateMetaIR(SubData<?> data) {
 		if (isMain()) {
 			this.methodsIR = new ObjectMethodsIR(this);
-			data.addStruct(this.methodsIR.getId().getLocal(), this.methodsIR);
+			data.addStruct(
+					this.methodsIR.codeId(data.getGenerator()).getLocal(),
+					this.methodsIR);
 			return;
 		}
 		// reuse meta from original type
@@ -329,7 +332,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		@Override
 		public String toString() {
-			return "*" + this.bodyIR.getId();
+			return "*" + this.bodyIR.codeId(this.bodyIR.generator());
 		}
 
 		final ObjOp op(ObjectDataOp data, Obj ascendant) {

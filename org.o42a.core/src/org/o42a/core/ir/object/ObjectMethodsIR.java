@@ -71,10 +71,10 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 			final Obj ascendant = this.bodyIR.getAscendant();
 
 			localId = factory.id().detail("methods").detail(
-					ascendant.ir(objectIR.getGenerator()).getId());
+					ascendant.ir(objectIR.getGenerator()).codeId(factory));
 		}
 
-		return objectIR.getId().setLocal(localId);
+		return objectIR.codeId(factory).setLocal(localId);
 	}
 
 	@Override

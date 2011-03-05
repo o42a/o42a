@@ -42,7 +42,7 @@ public abstract class Globals extends Functions {
 	}
 
 	public final <T extends Type<?>> T addType(T type) {
-		type.setType();
+		type.setType((Generator) this);
 
 		final SubData<?> data = type.getTypeData();
 

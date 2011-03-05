@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.data;
 
-import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
-
 import java.util.Iterator;
 
 import org.o42a.codegen.CodeId;
@@ -47,11 +45,19 @@ public abstract class Type<O extends PtrOp>
 		this.original = this;
 	}
 
-	public final CodeId getId() {
-		if (this.id == null) {
-			this.id = buildCodeId(DEFAULT_CODE_ID_FACTORY);
+	public final CodeId codeId(Generator generator) {
+		return codeId(generator.getCodeIdFactory());
+	}
+
+	public final CodeId codeId(CodeIdFactory factory) {
+
+		final CodeId id = this.id;
+
+		if (id != null && id.compatibleWith(factory)) {
+			return id;
 		}
-		return this.id;
+
+		return this.id = buildCodeId(factory);
 	}
 
 	public final Type<O> getOriginal() {
@@ -81,6 +87,10 @@ public abstract class Type<O extends PtrOp>
 	}
 
 	public abstract O op(StructWriter writer);
+
+	public final Generator generator() {
+		return this.data.getGenerator();
+	}
 
 	@Override
 	public Iterator<Data<?>> iterator() {
@@ -122,8 +132,8 @@ public abstract class Type<O extends PtrOp>
 		return this.data.getPointer().getAllocation();
 	}
 
-	final void setType() {
-		this.data = new TypeData<O>(this);
+	final void setType(Generator generator) {
+		this.data = new TypeData<O>(generator, this);
 	}
 
 	final Type<O> instantiate(CodeId id, Content<?> content) {
@@ -157,8 +167,10 @@ public abstract class Type<O extends PtrOp>
 
 	private static final class TypeData<O extends PtrOp> extends SubData<O> {
 
-		TypeData(Type<O> type) {
-			super(type.getId().removeLocal(), type);
+		TypeData(Generator generator, Type<O> type) {
+			super(
+					type.codeId(generator.getCodeIdFactory()).removeLocal(),
+					type);
 		}
 
 		@Override

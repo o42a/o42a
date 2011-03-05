@@ -203,7 +203,9 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 		// it's here to prevent recursion
 		this.mainBodyIR = new ObjectBodyIR(this);
 		this.allBodies = new AllBodies();
-		data.addStruct(this.allBodies.getId().getLocal(), this.allBodies);
+		data.addStruct(
+				this.allBodies.codeId(data.getGenerator()).getLocal(),
+				this.allBodies);
 		this.typeIR.allocate(data);
 		allocateMetaIRs(data);
 	}
@@ -270,7 +272,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 		final Obj ascendant = bodyIR.getAscendant();
 
 		this.bodyIRs.put(ascendant, bodyIR);
-		data.addStruct(bodyIR.getId().getLocal(), bodyIR);
+		data.addStruct(bodyIR.codeId(data.getGenerator()).getLocal(), bodyIR);
 
 		if (inherited) {
 			bodyIR.setKind(ObjectBodyIR.Kind.INHERITED);
@@ -336,7 +338,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return ObjectIR.this.getId().setLocal(
+			return ObjectIR.this.codeId(factory).setLocal(
 					factory.id().detail("all_bodies"));
 		}
 

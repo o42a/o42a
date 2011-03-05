@@ -68,9 +68,10 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 		this.offset = data.addRelPtr("offset");
 	}
 
-	void fill(Generator generator, DbgStruct enclosing, Data<?> fieldData) {
+	void fill(DbgStruct enclosing, Data<?> fieldData) {
 
-		final Debug debug = generator;
+		final Generator generator = fieldData.getGenerator();
+		final Debug debug = fieldData.getGenerator();
 		final DbgStruct struct = debug.writeStruct(fieldData);
 
 		if (enclosing != null) {
@@ -83,7 +84,7 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 							fieldData.getPointer()));
 		}
 		if (enclosing == null
-				&& struct.getType().getId().equals(fieldData.getId())) {
+				&& struct.getType().codeId(generator).equals(fieldData.getId())) {
 			getName().setValue(struct.getName().getValue());
 		} else {
 			debug.setName(
