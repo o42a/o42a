@@ -80,13 +80,11 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		final DefValue value = value(definitions);
 
 		if (value.isUnknown()) {
-			set(typeIR, getGenerator().unknownValFunc());
+			set(typeIR, unknownValFunc());
 		} else {
 
 			final Function<ObjectValFunc> function =
-				getGenerator().newFunction().create(
-						getId(),
-						OBJECT_VAL);
+				getGenerator().newFunction().create(getId(), OBJECT_VAL);
 
 			function.debug("Calculating value");
 			set(typeIR, function.getPointer());
@@ -94,7 +92,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 	}
 
 	public void setFalse(ObjectTypeIR typeIR) {
-		set(typeIR, getGenerator().falseValFunc());
+		set(typeIR, falseValFunc());
 	}
 
 	public void build(Definitions definitions) {
@@ -164,6 +162,18 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			ValOp result,
 			ObjOp host,
 			Definitions definitions);
+
+	private CodePtr<ObjectValFunc> falseValFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_val_false",
+				OBJECT_VAL);
+	}
+
+	private CodePtr<ObjectValFunc> unknownValFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_val_unknown",
+				OBJECT_VAL);
+	}
 
 	private void writeExplicitDefs(
 			Code code,

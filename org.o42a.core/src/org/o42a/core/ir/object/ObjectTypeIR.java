@@ -220,7 +220,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 		if (ancestorBodyIR == null) {
 			instance.getAncestorType().setNull();
-			instance.getAncestorFunc().setValue(getGenerator().nullObjectRef());
+			instance.getAncestorFunc().setValue(nullObjectRef());
 			return;
 		}
 
@@ -229,6 +229,12 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.generator()).toAny());
 		instance.getAncestorFunc().setValue(createAncestorFunc(instance));
+	}
+
+	private CodePtr<ObjectRefFunc> nullObjectRef() {
+		return getGenerator().externalFunction(
+				"o42a_obj_ref_null",
+				OBJECT_REF);
 	}
 
 	private CodePtr<ObjectRefFunc> createAncestorFunc(ObjectDataType instance) {

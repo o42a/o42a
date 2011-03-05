@@ -19,63 +19,74 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.op.BinaryFunc.BINARY;
-import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
-import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
-import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
-
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.CodePtr;
-import org.o42a.core.ir.object.ObjectIRGenerator;
-import org.o42a.core.ir.op.*;
+import org.o42a.codegen.code.*;
+import org.o42a.codegen.data.GlobalSettings;
+import org.o42a.core.ir.object.*;
 
 
-public class IRGenerator extends ObjectIRGenerator {
+public class IRGenerator {
+
+	private final Generator generator;
 
 	public IRGenerator(Generator generator) {
-		super(generator);
+		this.generator = generator;
+
+		// Allocated types in the right order.
+		// TODO implement forward type allocations.
+		ObjectDataType.OBJECT_DATA_TYPE.data(generator);
+
+		ObjectType.OBJECT_TYPE.data(generator);
+		DepIR.DEP_IR.data(generator);
+
+		AscendantDescIR.ASCENDANT_DESC_IR.data(generator);
+		SampleDescIR.SAMPLE_DESC_IR.data(generator);
+		FieldDescIR.FIELD_DESC_IR.data(generator);
+		OverriderDescIR.OVERRIDER_DESC_IR.data(generator);
 	}
 
-	public final CodePtr<BinaryFunc> castFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_cast",
-				BINARY);
+	public final Generator getGenerator() {
+		return this.generator;
 	}
 
-	public final CodePtr<ObjectRefFunc> newFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_new",
-				OBJECT_REF);
+	public final String getId() {
+		return this.generator.getId();
 	}
 
-	public final CodePtr<ObjectCondFunc> falseFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_cond_false",
-				OBJECT_COND);
+	public final CodeId id() {
+		return getGenerator().id();
 	}
 
-	public final CodePtr<ObjectCondFunc> trueFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_cond_true",
-				OBJECT_COND);
+	public final CodeId topId() {
+		return getGenerator().topId();
 	}
 
-	public final CodePtr<ObjectValFunc> falseValFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_val_false",
-				OBJECT_VAL);
+	public final CodeId id(String name) {
+		return getGenerator().id(name);
 	}
 
-	public final CodePtr<ObjectValFunc> unknownValFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_val_unknown",
-				OBJECT_VAL);
+	public CodeId rawId(String id) {
+		return getGenerator().rawId(id);
 	}
 
-	public final CodePtr<ObjectRefFunc> nullObjectRef() {
-		return getGenerator().externalFunction(
-				"o42a_obj_ref_null",
-				OBJECT_REF);
+	public final GlobalSettings newGlobal() {
+		return this.generator.newGlobal();
+	}
+
+	public final FunctionSettings newFunction() {
+		return this.generator.newFunction();
+	}
+
+	public <F extends Func> CodePtr<F> externalFunction(
+			String name,
+			Signature<F> signature) {
+		return this.generator.externalFunction(name, signature);
+	}
+
+	@Override
+	public String toString() {
+		return this.generator.toString();
 	}
 
 }
