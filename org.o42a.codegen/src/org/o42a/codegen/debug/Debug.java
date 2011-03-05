@@ -223,9 +223,9 @@ public abstract class Debug extends Globals {
 		}
 		this.writeDebug = true;
 		try {
-			this.dbgFuncType = addType(new DbgFuncType(generator()));
+			this.dbgFuncType = addType(new DbgFuncType());
 			this.dbgFieldType = addType(new DbgFieldType());
-			this.dbgGlobalType = addType(new DbgGlobalType(generator()));
+			this.dbgGlobalType = addType(new DbgGlobalType());
 			this.dbgStackFrameType =
 				addType(new DbgStackFrameType());
 			this.enterFunc = externalFunction(
@@ -233,7 +233,7 @@ public abstract class Debug extends Globals {
 					new DbgEnterFunc.EnterSignature(this));
 			this.exitFunc =
 				externalFunction("o42a_dbg_exit", EXIT_SIGNATURE);
-			this.info = new DebugInfo(generator());
+			this.info = new DebugInfo();
 		} finally {
 			this.writeDebug = false;
 		}

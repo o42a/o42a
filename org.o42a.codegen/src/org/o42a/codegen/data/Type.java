@@ -168,12 +168,11 @@ public abstract class Type<O extends PtrOp>
 
 		@Override
 		protected void allocate(Generator generator) {
-			setGenerator(generator);
 
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.begin(getType()));
-			getType().allocate(this);
+			getType().allocateType(this);
 			allocator.end(getType());
 		}
 
@@ -199,12 +198,11 @@ public abstract class Type<O extends PtrOp>
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void allocate(Generator generator) {
-			setGenerator(generator);
 
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.enter(getType().allocation(), this));
-			getType().allocate(this);
+			getType().allocateType(this);
 			allocator.exit(this);
 			this.content.allocated(getType());
 		}
@@ -248,12 +246,11 @@ public abstract class Type<O extends PtrOp>
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void allocate(Generator generator) {
-			setGenerator(generator);
 
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.begin(getAllocation(), this.global));
-			getType().allocate(this);
+			getType().allocateType(this);
 			allocator.end(this.global);
 			this.content.allocated(getType());
 		}

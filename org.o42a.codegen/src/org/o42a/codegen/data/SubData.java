@@ -22,7 +22,6 @@ package org.o42a.codegen.data;
 import java.util.Iterator;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.PtrOp;
@@ -36,16 +35,11 @@ public abstract class SubData<O extends PtrOp>
 
 	private final Type<O> type;
 	private final DataChain data = new DataChain();
-	private Generator generator;
 	private int size;
 
 	SubData(CodeId id, Type<O> type) {
 		super(id);
 		this.type = type;
-	}
-
-	public final Generator getGenerator() {
-		return this.generator;
 	}
 
 	@Override
@@ -89,7 +83,7 @@ public abstract class SubData<O extends PtrOp>
 
 		return add(codePtrRecord(
 				id(name),
-				sign.allocate(this.generator.codeBackend()),
+				sign.allocate(getGenerator().codeBackend()),
 				null));
 	}
 
@@ -102,7 +96,7 @@ public abstract class SubData<O extends PtrOp>
 
 		return add(codePtrRecord(
 				id(name),
-				sign.allocate(this.generator.codeBackend()),
+				sign.allocate(getGenerator().codeBackend()),
 				content));
 	}
 
@@ -159,7 +153,7 @@ public abstract class SubData<O extends PtrOp>
 		struct.setStruct(name);
 		add(struct.getTypeData());
 
-		final Globals globals = this.generator;
+		final Globals globals = getGenerator();
 
 		globals.addType(struct.getTypeData());
 
@@ -176,13 +170,9 @@ public abstract class SubData<O extends PtrOp>
 	}
 
 	protected <D extends Data<?>> D add(D data) {
-		data.allocate(this.generator);
+		data.allocateData(getGenerator());
 		this.size++;
 		return this.data.add(data);
-	}
-
-	final void setGenerator(Generator generator) {
-		this.generator = generator;
 	}
 
 	final DataChain data() {

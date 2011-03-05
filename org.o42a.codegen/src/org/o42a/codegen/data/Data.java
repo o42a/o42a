@@ -32,12 +32,17 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 	private final CodeId id;
 	private final Ptr<O> pointer;
 	private Data<?> next;
+	private Generator generator;
 
 	Data(CodeId id) {
 		assert id != null :
 			"Data identifier not specified";
 		this.id = id;
 		this.pointer = new Ptr<O>(this);
+	}
+
+	public final Generator getGenerator() {
+		return this.generator;
 	}
 
 	public final CodeId getId() {
@@ -69,6 +74,11 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 
 	protected void setAllocation(DataAllocation<O> allocation) {
 		getPointer().setAllocation(allocation);
+	}
+
+	void allocateData(Generator generator) {
+		this.generator = generator;
+		allocate(generator);
 	}
 
 	final Data<?> getNext() {

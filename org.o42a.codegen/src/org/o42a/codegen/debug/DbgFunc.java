@@ -20,6 +20,7 @@
 package org.o42a.codegen.debug;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
@@ -49,14 +50,15 @@ final class DbgFunc implements Content<DbgFuncType> {
 	@Override
 	public void fill(DbgFuncType instance) {
 
-		final Debug debug = instance.getDebug();
+		final Generator generator = instance.getData().getGenerator();
+		final Debug debug = generator;
 
 		if (this.namePtr != null) {
 			instance.getName().setValue(this.namePtr);
 		} else {
 			debug.setName(
 					instance.getName(),
-					instance.getGenerator()
+					generator
 					.id("DEBUG")
 					.sub("FUNC_NAME")
 					.sub(this.id),
