@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -39,7 +40,6 @@ public class ObjectType extends Type<ObjectType.Op> {
 	private Int32rec mainBodyLayout;
 
 	ObjectType(ObjectIRGenerator generator) {
-		super(generator.id("ObjectType"));
 		this.generator = generator;
 	}
 
@@ -62,6 +62,11 @@ public class ObjectType extends Type<ObjectType.Op> {
 	@Override
 	public Op op(StructWriter writer) {
 		return new Op(writer);
+	}
+
+	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("ObjectType");
 	}
 
 	@Override

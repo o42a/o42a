@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -57,7 +59,6 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 	private Struct<?> allBodies;
 
 	public ObjectIR(IRGenerator generator, Obj object) {
-		super(object.getScope().ir(generator).getId());
 		this.generator = generator;
 		this.object = object;
 		this.typeIR = new ObjectTypeIR(this);
@@ -186,6 +187,11 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 	@Override
 	public String toString() {
 		return this.object + " IR";
+	}
+
+	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return this.object.getScope().ir(this.generator).getId();
 	}
 
 	protected ObjectValueIR createValueIR() {
@@ -321,13 +327,17 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 	private final class AllBodies extends Struct<AllBodiesOp> {
 
 		AllBodies() {
-			super(ObjectIR.this.getId().setLocal(
-					getGenerator().id().detail("all_bodies")));
 		}
 
 		@Override
 		public AllBodiesOp op(StructWriter writer) {
 			return new AllBodiesOp(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return ObjectIR.this.getId().setLocal(
+					factory.id().detail("all_bodies"));
 		}
 
 		@Override

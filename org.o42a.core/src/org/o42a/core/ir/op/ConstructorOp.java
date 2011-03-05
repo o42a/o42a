@@ -21,6 +21,7 @@ package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
@@ -91,7 +92,7 @@ public class ConstructorOp extends RefOp {
 
 		this.ancestorFunc = getGenerator().newFunction().create(
 				getBuilder().nextId(),
-				getGenerator().objectRefSignature());
+				OBJECT_REF);
 		final CodeBlk ancestorNotFound =
 			this.ancestorFunc.addBlock("ancestor_not_found");
 

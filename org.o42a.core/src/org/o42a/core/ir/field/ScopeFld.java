@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -123,8 +125,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 		private AnyPtrRec object;
 
-		Type(FieldIRGenerator generator) {
-			super(generator.id("ScopeFld"));
+		Type() {
 		}
 
 		public final AnyPtrRec getObject() {
@@ -134,6 +135,11 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		@Override
 		public Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ScopeFld");
 		}
 
 		@Override

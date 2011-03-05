@@ -27,15 +27,6 @@ import org.o42a.codegen.data.GlobalSettings;
 
 public abstract class IRGeneratorBase {
 
-	private static final Signature<BinaryFunc> binary =
-		new BinaryFunc.Binary();
-	private static final Signature<ObjectRefFunc> objectRef =
-		new ObjectRefFunc.ObjectRef();
-	private static final Signature<ObjectCondFunc> objectCond =
-		new ObjectCondFunc.ObjectCond();
-	private static final Signature<AssignerFunc> assigner =
-		new AssignerFunc.Assigner();
-
 	private final Generator generator;
 	private final ValOp.Type valType;
 	private final RelList.Type relListType;
@@ -43,8 +34,8 @@ public abstract class IRGeneratorBase {
 
 	public IRGeneratorBase(Generator generator) {
 		this.generator = generator;
-		this.valType = generator.addType(new ValOp.Type(this));
-		this.relListType = generator.addType(new RelList.Type(this));
+		this.valType = generator.addType(new ValOp.Type());
+		this.relListType = generator.addType(new RelList.Type());
 		this.objectVal = new ObjectValFunc.ObjectVal(this);
 	}
 
@@ -80,24 +71,8 @@ public abstract class IRGeneratorBase {
 		return this.relListType;
 	}
 
-	public final Signature<BinaryFunc> binarySignature() {
-		return binary;
-	}
-
-	public final Signature<ObjectRefFunc> objectRefSignature() {
-		return objectRef;
-	}
-
-	public final Signature<ObjectCondFunc> objectCondSignature() {
-		return objectCond;
-	}
-
 	public final Signature<ObjectValFunc> objectValSignature() {
 		return this.objectVal;
-	}
-
-	public final Signature<AssignerFunc> assignerSignature() {
-		return assigner;
 	}
 
 	public final GlobalSettings newGlobal() {

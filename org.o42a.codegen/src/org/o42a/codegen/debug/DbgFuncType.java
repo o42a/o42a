@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -35,7 +37,6 @@ final class DbgFuncType extends Type<DbgFuncType.Op> {
 	private AnyPtrRec function;
 
 	DbgFuncType(Generator generator) {
-		super(generator.id("DEBUG").sub("Func"));
 		this.generator = generator;
 	}
 
@@ -58,6 +59,11 @@ final class DbgFuncType extends Type<DbgFuncType.Op> {
 	@Override
 	public Op op(StructWriter writer) {
 		return new Op(writer);
+	}
+
+	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("DEBUG").sub("Func");
 	}
 
 	@Override

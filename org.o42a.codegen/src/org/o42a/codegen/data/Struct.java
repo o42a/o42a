@@ -28,10 +28,6 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Struct<O extends PtrOp> extends Type<O> {
 
-	public Struct(CodeId id) {
-		super(id);
-	}
-
 	protected abstract void fill();
 
 	final void setStruct(CodeId name) {

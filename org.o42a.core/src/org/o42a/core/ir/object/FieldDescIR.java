@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -108,7 +110,6 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 
 		Type(ObjectIRGenerator generator) {
-			super(generator.id("FieldDesc"));
 			this.generator = generator;
 		}
 
@@ -127,6 +128,11 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		@Override
 		public final Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("FieldDesc");
 		}
 
 		@Override

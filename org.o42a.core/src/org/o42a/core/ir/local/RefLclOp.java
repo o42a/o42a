@@ -21,6 +21,8 @@ package org.o42a.core.ir.local;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -152,8 +154,7 @@ public final class RefLclOp extends LclOp {
 
 		private AnyPtrRec object;
 
-		Type(LocalIRGenerator generator) {
-			super(generator.id("RefLcl"));
+		Type() {
 		}
 
 		public final AnyPtrRec getObject() {
@@ -163,6 +164,11 @@ public final class RefLclOp extends LclOp {
 		@Override
 		public Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("RefLcl");
 		}
 
 		@Override

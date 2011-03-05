@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -37,27 +38,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 	private StructPtrRec<ObjectType.Op> objectType;
 
 	ObjectMethodsIR(ObjectBodyIR bodyIR) {
-		super(id(bodyIR));
 		this.bodyIR = bodyIR;
-	}
-
-	private static CodeId id(ObjectBodyIR bodyIR) {
-
-		final IRGenerator generator = bodyIR.getGenerator();
-		final ObjectIR objectIR = bodyIR.getObjectIR();
-		final CodeId localId;
-
-		if (bodyIR.isMain()) {
-			localId = generator.id().detail("type_methods");
-		} else {
-
-			final Obj ascendant = bodyIR.getAscendant();
-
-			localId = generator.id().detail("methods").detail(
-					ascendant.ir(objectIR.getGenerator()).getId());
-		}
-
-		return objectIR.getId().setLocal(localId);
 	}
 
 	public final IRGenerator getGenerator() {
@@ -75,6 +56,25 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 	@Override
 	public final Op op(StructWriter writer) {
 		return new Op(writer, this);
+	}
+
+	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+
+		final ObjectIR objectIR = this.bodyIR.getObjectIR();
+		final CodeId localId;
+
+		if (this.bodyIR.isMain()) {
+			localId = factory.id().detail("type_methods");
+		} else {
+
+			final Obj ascendant = this.bodyIR.getAscendant();
+
+			localId = factory.id().detail("methods").detail(
+					ascendant.ir(objectIR.getGenerator()).getId());
+		}
+
+		return objectIR.getId().setLocal(localId);
 	}
 
 	@Override

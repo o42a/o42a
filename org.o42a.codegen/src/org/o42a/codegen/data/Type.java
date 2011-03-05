@@ -19,9 +19,12 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
+
 import java.util.Iterator;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.PtrOp;
@@ -36,16 +39,18 @@ public abstract class Type<O extends PtrOp>
 	@SuppressWarnings("rawtypes")
 	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
 
-	private final CodeId id;
+	private CodeId id;
 	private Type<O> original;
 	SubData<O> data;
 
-	public Type(CodeId id) {
-		this.id = id;
+	public Type() {
 		this.original = this;
 	}
 
 	public final CodeId getId() {
+		if (this.id == null) {
+			this.id = buildCodeId(DEFAULT_CODE_ID_FACTORY);
+		}
 		return this.id;
 	}
 
@@ -85,8 +90,13 @@ public abstract class Type<O extends PtrOp>
 
 	@Override
 	public String toString() {
+		if (this.id == null) {
+			return getClass().getSimpleName();
+		}
 		return this.id.toString();
 	}
+
+	protected abstract CodeId buildCodeId(CodeIdFactory factory);
 
 	protected void allocate() {
 	}
@@ -101,6 +111,11 @@ public abstract class Type<O extends PtrOp>
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
+	}
+
+	final void allocateType(SubData<O> data) {
+		refineCodeId(data.getGenerator().getCodeIdFactory());
+		allocate(data);
 	}
 
 	final DataAllocation<O> allocation() {
@@ -131,6 +146,13 @@ public abstract class Type<O extends PtrOp>
 
 	final SubData<O> getTypeData() {
 		return this.data;
+	}
+
+	private void refineCodeId(CodeIdFactory factory) {
+		if (this.id.compatibleWith(factory)) {
+			return;
+		}
+		this.id = buildCodeId(factory);
 	}
 
 	private static final class TypeData<O extends PtrOp> extends SubData<O> {

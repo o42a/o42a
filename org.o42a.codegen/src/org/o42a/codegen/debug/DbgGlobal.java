@@ -49,7 +49,7 @@ final class DbgGlobal implements Content<DbgGlobalType> {
 				.sub(this.global.getId()),
 				this.global.getId().getId());
 		instance.getStart().setValue(this.global.getPointer().toAny());
-		instance.getContent().fill(debug, null, this.global);
+		instance.getContent().fill(generator, null, this.global);
 	}
 
 }

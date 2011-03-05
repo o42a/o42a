@@ -21,6 +21,8 @@ package org.o42a.core.ir.op;
 
 import java.util.ArrayList;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -139,8 +141,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		private RelPtrRec list;
 		private Int32rec size;
 
-		Type(IRGeneratorBase generator) {
-			super(generator.id("RelList"));
+		Type() {
 		}
 
 		public final RelPtrRec getList() {
@@ -154,6 +155,11 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		@Override
 		public final Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("RelList");
 		}
 
 		@Override

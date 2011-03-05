@@ -21,7 +21,8 @@ package org.o42a.codegen.debug;
 
 import java.util.ArrayList;
 
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Data;
@@ -31,13 +32,7 @@ import org.o42a.codegen.data.SubData;
 
 final class DbgGlobals extends Struct<DbgGlobals.Op> {
 
-	private final Generator generator;
 	private final ArrayList<Data<?>> globals = new ArrayList<Data<?>>();
-
-	DbgGlobals(Generator generator) {
-		super(generator.id("DEBUG").sub("GLOBALS"));
-		this.generator = generator;
-	}
 
 	public final int numGlobals() {
 		return this.globals.size();
@@ -49,9 +44,14 @@ final class DbgGlobals extends Struct<DbgGlobals.Op> {
 	}
 
 	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("DEBUG").sub("GLOBALS");
+	}
+
+	@Override
 	protected void allocate(SubData<Op> data) {
 
-		final Debug debug = this.generator;
+		final Debug debug = data.getGenerator();
 
 		for (Data<?> global : this.globals) {
 			data.addInstance(

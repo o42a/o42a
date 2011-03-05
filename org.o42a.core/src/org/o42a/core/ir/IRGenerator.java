@@ -19,6 +19,10 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.core.ir.op.BinaryFunc.BINARY;
+import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
+import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.core.ir.object.ObjectIRGenerator;
@@ -34,25 +38,25 @@ public class IRGenerator extends ObjectIRGenerator {
 	public final CodePtr<BinaryFunc> castFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_cast",
-				binarySignature());
+				BINARY);
 	}
 
 	public final CodePtr<ObjectRefFunc> newFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_new",
-				objectRefSignature());
+				OBJECT_REF);
 	}
 
 	public final CodePtr<ObjectCondFunc> falseFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_cond_false",
-				objectCondSignature());
+				OBJECT_COND);
 	}
 
 	public final CodePtr<ObjectCondFunc> trueFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_cond_true",
-				objectCondSignature());
+				OBJECT_COND);
 	}
 
 	public final CodePtr<ObjectValFunc> falseValFunc() {
@@ -70,7 +74,7 @@ public class IRGenerator extends ObjectIRGenerator {
 	public final CodePtr<ObjectRefFunc> nullObjectRef() {
 		return getGenerator().externalFunction(
 				"o42a_obj_ref_null",
-				objectRefSignature());
+				OBJECT_REF);
 	}
 
 }

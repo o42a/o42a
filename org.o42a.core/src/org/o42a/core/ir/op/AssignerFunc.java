@@ -33,6 +33,8 @@ import org.o42a.codegen.code.op.BoolOp;
  */
 public final class AssignerFunc extends Func {
 
+	public static Signature<AssignerFunc> ASSIGNER = new Assigner();
+
 	AssignerFunc(FuncCaller caller) {
 		super(caller);
 	}
@@ -41,7 +43,7 @@ public final class AssignerFunc extends Func {
 		return caller().callBool(code, object, value);
 	}
 
-	static final class Assigner extends Signature<AssignerFunc> {
+	private static final class Assigner extends Signature<AssignerFunc> {
 
 		Assigner() {
 			super("bool", "AssignerF", "any*, any*");

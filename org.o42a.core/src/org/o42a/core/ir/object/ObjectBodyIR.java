@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -62,24 +63,13 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private Int32rec flags;
 
 	ObjectBodyIR(ObjectIR objectIR) {
-		super(objectIR.getId().setLocal(
-				objectIR.getGenerator().id().detail("main_body")));
 		this.objectIR = objectIR;
 		this.ascendant = objectIR.getObject();
 	}
 
 	private ObjectBodyIR(ObjectIR inheritantIR, Obj ascendant) {
-		super(id(inheritantIR, ascendant));
 		this.objectIR = inheritantIR;
 		this.ascendant = ascendant;
-	}
-
-	private static CodeId id(ObjectIR objectIR, Obj ascendant) {
-
-		final IRGenerator generator = objectIR.getGenerator();
-
-		return objectIR.getId().setLocal(generator.id().detail("body").detail(
-				ascendant.ir(objectIR.getGenerator()).getId()));
 	}
 
 	public final IRGenerator getGenerator() {
@@ -157,6 +147,20 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	@Override
 	public String toString() {
 		return print(" body IR");
+	}
+
+	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		if (this.objectIR.getObject() == this.ascendant) {
+			return this.objectIR.getId().setLocal(
+					factory.id().detail("main_body"));
+		}
+
+		final ObjectIR ascendantIR =
+			this.ascendant.ir(this.objectIR.getGenerator());
+
+		return this.objectIR.getId().setLocal(
+				factory.id().detail("body").detail(ascendantIR.getId()));
 	}
 
 	@Override

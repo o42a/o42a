@@ -19,6 +19,10 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -93,8 +97,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
-		Type(FieldIRGenerator generator) {
-			super(generator, generator.id("LinkFld"));
+		Type() {
 		}
 
 		@Override
@@ -103,8 +106,13 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("LinkFld");
+		}
+
+		@Override
 		protected Signature<ObjectRefFunc> signature() {
-			return this.generator.objectRefSignature();
+			return OBJECT_REF;
 		}
 
 	}

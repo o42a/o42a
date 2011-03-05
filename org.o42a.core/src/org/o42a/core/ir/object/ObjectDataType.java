@@ -19,7 +19,11 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
+import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -56,7 +60,6 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private RelList<ObjectBodyIR> samples;
 
 	ObjectDataType(IRGenerator generator) {
-		super(generator.id("ObjectData"));
 		this.generator = generator;
 	}
 
@@ -126,6 +129,11 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	}
 
 	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("ObjectData");
+	}
+
+	@Override
 	protected void allocate(SubData<ObjectDataType.Op> data) {
 		this.object = data.addRelPtr("object");
 		this.flags = data.addInt32("flags");
@@ -137,22 +145,16 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		this.valueFunc = data.addCodePtr(
 				"value_f",
 				this.generator.objectValSignature());
-		this.requirementFunc = data.addCodePtr(
-				"requirement_f",
-				this.generator.objectCondSignature());
+		this.requirementFunc = data.addCodePtr("requirement_f", OBJECT_COND);
 		this.claimFunc = data.addCodePtr(
 				"claim_f",
 				this.generator.objectValSignature());
-		this.conditionFunc = data.addCodePtr(
-				"condition_f",
-				this.generator.objectCondSignature());
+		this.conditionFunc = data.addCodePtr("condition_f", OBJECT_COND);
 		this.propositionFunc = data.addCodePtr(
 				"proposition_f",
 				this.generator.objectValSignature());
 		this.ownerType = data.addPtr("owner_type");
-		this.ancestorFunc = data.addCodePtr(
-				"ancestor_f",
-				this.generator.objectRefSignature());
+		this.ancestorFunc = data.addCodePtr("ancestor_f", OBJECT_REF);
 		this.ancestorType = data.addPtr("ancestor_type");
 		this.ascendants =
 			new Ascendants().allocate(this.generator, data, "ascendants");

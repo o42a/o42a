@@ -21,7 +21,6 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -313,13 +312,10 @@ public abstract class RefFld<C extends Func> extends Fld {
 	public static abstract class Type<O extends Op<C>, C extends Func>
 			extends Fld.Type<O> {
 
-		protected final FieldIRGenerator generator;
 		private AnyPtrRec object;
 		private CodeRec<C> constructor;
 
-		Type(FieldIRGenerator generator, CodeId id) {
-			super(id);
-			this.generator = generator;
+		Type() {
 		}
 
 		public final AnyPtrRec getObject() {

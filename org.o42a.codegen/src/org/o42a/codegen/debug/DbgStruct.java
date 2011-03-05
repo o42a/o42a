@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -29,16 +31,13 @@ import org.o42a.codegen.data.*;
 
 final class DbgStruct extends Struct<DbgStruct.Op> {
 
-	private final Generator generator;
 	private final Type<?> type;
 
 	private AnyPtrRec name;
 	private Rec<DataOp<Int32op>, Integer> dataLayout;
 	private Rec<DataOp<Int32op>, Integer> size;
 
-	DbgStruct(Generator generator, Type<?> type) {
-		super(generator.id("DEBUG").sub("TYPE").sub(type.getId()));
-		this.generator = generator;
+	DbgStruct(Type<?> type) {
 		this.type = type;
 	}
 
@@ -56,14 +55,22 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 	}
 
 	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("DEBUG").sub("TYPE").sub(this.type.getId());
+	}
+
+	@Override
 	protected void allocate(SubData<Op> data) {
 		this.name = data.addPtr("name");
 		this.dataLayout = data.addInt32("layout");
 		this.size = data.addInt32("size");
 
-		debug().setName(
+		final Generator generator = data.getGenerator();
+		final Debug debug = generator;
+
+		debug.setName(
 				this.name,
-				this.generator.id("DEBUG")
+				generator.id("DEBUG")
 				.sub("TYPE_NAME")
 				.sub(this.type.getId()),
 				this.type.getId().getId());
@@ -73,22 +80,14 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 
 			final DbgFieldType field = data.addInstance(
 					fieldData.getId().getLocal(),
-					debug().dbgFieldType());
+					debug.dbgFieldType());
 
-			field.fill(this.generator, this, fieldData);
+			field.fill(generator, this, fieldData);
 		}
 	}
 
 	@Override
 	protected void fill() {
-	}
-
-	final Generator generator() {
-		return this.generator;
-	}
-
-	final Debug debug() {
-		return this.generator;
 	}
 
 	public static final class Op extends StructOp {
