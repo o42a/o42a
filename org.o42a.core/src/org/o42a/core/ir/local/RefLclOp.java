@@ -42,6 +42,8 @@ import org.o42a.core.member.field.Field;
 
 public final class RefLclOp extends LclOp {
 
+	public static final Type REF_LCL = new Type();
+
 	private RefLclOp(LocalBuilder builder, FieldIR<?> fieldIR, Op ptr) {
 		super(builder, fieldIR, ptr);
 	}
@@ -154,7 +156,7 @@ public final class RefLclOp extends LclOp {
 
 		private AnyPtrRec object;
 
-		Type() {
+		private Type() {
 		}
 
 		public final AnyPtrRec getObject() {

@@ -19,6 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.FieldDescIR.FIELD_DESC_IR;
+import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.object.OverriderDescIR.OVERRIDER_DESC_IR;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
@@ -33,14 +37,14 @@ import org.o42a.core.ir.op.RelList;
 
 public class ObjectType extends Type<ObjectType.Op> {
 
-	private final ObjectIRGenerator generator;
+	public static final ObjectType OBJECT_TYPE = new ObjectType();
+
 	private ObjectDataType objectData;
 	private RelList<FieldDescIR> fields;
 	private RelList<OverriderDescIR> overriders;
 	private Int32rec mainBodyLayout;
 
-	ObjectType(ObjectIRGenerator generator) {
-		this.generator = generator;
+	private ObjectType() {
 	}
 
 	public final ObjectDataType getObjectData() {
@@ -73,10 +77,9 @@ public class ObjectType extends Type<ObjectType.Op> {
 	protected void allocate(SubData<Op> data) {
 		this.objectData = data.addInstance(
 				data.getGenerator().id("object_data"),
-				this.generator.objectDataType());
-		this.fields = new Fields().allocate(this.generator, data, "fields");
-		this.overriders =
-			new Overriders().allocate(this.generator, data, "overriders");
+				OBJECT_DATA_TYPE);
+		this.fields = new Fields().allocate(data, "fields");
+		this.overriders = new Overriders().allocate(data, "overriders");
 		this.mainBodyLayout = data.addInt32("main_body_layout");
 	}
 
@@ -123,9 +126,9 @@ public class ObjectType extends Type<ObjectType.Op> {
 				generator.id("field")
 				.detail(fld.getField().ir(generator).getId().getLocal());
 			final FieldDescIR.Type desc =
-				data.addInstance(id, generator.fieldDescType(), item);
+				data.addInstance(id, FIELD_DESC_IR, item);
 
-			return desc.getPointer();
+			return desc.data(data.getGenerator()).getPointer();
 		}
 
 	}
@@ -144,9 +147,9 @@ public class ObjectType extends Type<ObjectType.Op> {
 				generator.id("overrider")
 				.detail(fld.getField().ir(generator).getId());
 			final OverriderDescIR.Type desc =
-				data.addInstance(id, generator.overriderDescType(), item);
+				data.addInstance(id, OVERRIDER_DESC_IR, item);
 
-			return desc.getPointer();
+			return desc.data(data.getGenerator()).getPointer();
 		}
 
 	}

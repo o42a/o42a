@@ -19,6 +19,8 @@
 */
 package org.o42a.lib.console.impl;
 
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -64,7 +66,7 @@ public final class PrintFunc extends Func {
 		@Override
 		protected void write(SignatureWriter<PrintFunc> writer) {
 			writer.returnVoid();
-			writer.addPtr(this.generator.valType());
+			writer.addPtr(VAL_TYPE);
 		}
 
 	}

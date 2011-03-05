@@ -63,7 +63,8 @@ public abstract class FieldIRBase<A extends Artifact<A>>
 
 	@Override
 	public void allocate() {
-		getField().getArtifact().materialize().ir(getGenerator()).allocate();
+		getField().getArtifact().materialize().ir(getGenerator()).allocate(
+				getGenerator().getGenerator());
 	}
 
 	@Override

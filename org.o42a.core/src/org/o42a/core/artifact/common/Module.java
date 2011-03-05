@@ -150,7 +150,7 @@ public class Module extends PlainObject {
 
 			final Obj object = getScope().getContainer().toObject();
 
-			object.ir(getGenerator()).getData();
+			object.ir(getGenerator()).data(getGenerator().getGenerator());
 		}
 
 		@Override

@@ -33,6 +33,8 @@ import org.o42a.codegen.data.SubData;
 
 public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
+	public static final Type SAMPLE_DESC_IR = new Type();
+
 	private final ObjectBodyIR bodyIR;
 
 	SampleDescIR(ObjectBodyIR bodyIR) {
@@ -50,8 +52,8 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 	@Override
 	public void fill(Type instance) {
 		instance.getBody().setValue(
-				this.bodyIR.getData().getPointer().relativeTo(
-						instance.getPointer()));
+				this.bodyIR.pointer(instance.generator()).relativeTo(
+						instance.pointer(instance.generator())));
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
 		private RelPtrRec body;
 
-		Type() {
+		private Type() {
 		}
 
 		public final RelPtrRec getBody() {

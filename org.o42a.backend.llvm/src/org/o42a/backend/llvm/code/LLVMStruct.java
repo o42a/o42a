@@ -51,7 +51,8 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 			long blockPtr,
 			long nativePtr) {
 		this(
-				(ContainerAllocation<?>) type.getPointer().getAllocation(),
+				(ContainerAllocation<?>) type.pointer(type.generator())
+				.getAllocation(),
 				blockPtr,
 				nativePtr);
 	}
@@ -122,7 +123,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		return field.op(new LLVMStruct(
 				field,
 				nextPtr,
-				field(nextPtr, field.getPointer())));
+				field(nextPtr, field.pointer(code.getGenerator()))));
 	}
 
 	@Override

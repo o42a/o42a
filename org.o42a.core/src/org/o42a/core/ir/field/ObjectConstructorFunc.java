@@ -29,6 +29,9 @@ import org.o42a.codegen.code.op.AnyOp;
 
 public class ObjectConstructorFunc extends Func {
 
+	public static final Signature<ObjectConstructorFunc> OBJECT_CONSTRUCTOR =
+		new ObjectConstructor();
+
 	ObjectConstructorFunc(FuncCaller caller) {
 		super(caller);
 	}
@@ -37,7 +40,7 @@ public class ObjectConstructorFunc extends Func {
 		return caller().callAny(code, object, fld);
 	}
 
-	static final class ObjectConstructor
+	private static final class ObjectConstructor
 			extends Signature<ObjectConstructorFunc> {
 
 		ObjectConstructor() {

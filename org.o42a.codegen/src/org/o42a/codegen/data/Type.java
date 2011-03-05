@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.data;
 
-import java.util.Iterator;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
@@ -31,8 +29,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Type<O extends PtrOp>
-		implements Cloneable, Iterable<Data<?>> {
+public abstract class Type<O extends PtrOp> implements Cloneable {
 
 	@SuppressWarnings("rawtypes")
 	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
@@ -40,6 +37,8 @@ public abstract class Type<O extends PtrOp>
 	private CodeId id;
 	private Type<O> original;
 	SubData<O> data;
+	private Generator allocated;
+	private Generator allocating;
 
 	public Type() {
 		this.original = this;
@@ -64,26 +63,26 @@ public abstract class Type<O extends PtrOp>
 		return this.original;
 	}
 
-	public final Ptr<O> getPointer() {
-		return getData().getPointer();
+	public final Ptr<O> pointer(Generator generator) {
+		return data(generator, false).getPointer();
 	}
 
 	public boolean isPacked() {
 		return false;
 	}
 
-	public final Data<O> getData() {
-		allocate();
-		return this.data;
+	public final Data<O> data(Generator generator) {
+		return data(generator, true);
 	}
 
-	public final int size() {
-		allocate();
+	public final int size(Generator generator) {
+		typeAllocated(generator, true);
+		allocate(generator);
 		return this.data.size();
 	}
 
-	public final DataLayout getLayout() {
-		return getData().getLayout();
+	public final DataLayout layout(Generator generator) {
+		return data(generator, true).getLayout();
 	}
 
 	public abstract O op(StructWriter writer);
@@ -92,10 +91,10 @@ public abstract class Type<O extends PtrOp>
 		return this.data.getGenerator();
 	}
 
-	@Override
-	public Iterator<Data<?>> iterator() {
-		allocate();
-		return this.data.iterator();
+	public Iterable<Data<?>> iterate(Generator generator) {
+		typeAllocated(generator, true);
+		allocate(generator);
+		return this.data;
 	}
 
 	@Override
@@ -108,7 +107,7 @@ public abstract class Type<O extends PtrOp>
 
 	protected abstract CodeId buildCodeId(CodeIdFactory factory);
 
-	protected void allocate() {
+	protected void allocate(Generator generator) {
 	}
 
 	protected abstract void allocate(SubData<O> data);
@@ -123,6 +122,22 @@ public abstract class Type<O extends PtrOp>
 		}
 	}
 
+	final boolean startAllocation(Generator generator) {
+		if (this.original.allocating == generator) {
+			return false;
+		}
+		this.original.allocating = generator;
+		return true;
+	}
+
+	final boolean isAllocated(Generator generator) {
+		return this.original.allocated == generator;
+	}
+
+	final void setAllocated(Generator generator) {
+		this.original.allocated = generator;
+	}
+
 	final void allocateType(SubData<O> data) {
 		refineCodeId(data.getGenerator().getCodeIdFactory());
 		allocate(data);
@@ -132,11 +147,11 @@ public abstract class Type<O extends PtrOp>
 		return this.data.getPointer().getAllocation();
 	}
 
-	final void setType(Generator generator) {
-		this.data = new TypeData<O>(generator, this);
-	}
-
-	final Type<O> instantiate(CodeId id, Content<?> content) {
+	final Type<O> instantiate(
+			Generator generator,
+			CodeId id,
+			Content<?> content) {
+		typeAllocated(generator, true);
 
 		final Type<O> instance = clone();
 
@@ -146,12 +161,18 @@ public abstract class Type<O extends PtrOp>
 	}
 
 	final Type<O> instantiate(Global<O, ?> global, Content<?> content) {
+		typeAllocated(global.getGenerator(), true);
 
 		final Type<O> instance = clone();
 
 		instance.data = new GlobalInstanceData<O>(instance, global, content);
 
 		return instance;
+	}
+
+	final void assertAllocated(Generator generator) {
+		assert isAllocated(generator) :
+			"Not allocated: " + this;
 	}
 
 	final SubData<O> getTypeData() {
@@ -163,6 +184,28 @@ public abstract class Type<O extends PtrOp>
 			return;
 		}
 		this.id = buildCodeId(factory);
+	}
+
+	private final Data<O> data(Generator generator, boolean fullyAllocated) {
+		typeAllocated(generator, fullyAllocated);
+		allocate(generator);
+		return this.data;
+	}
+
+	private final void typeAllocated(
+			Generator generator,
+			boolean fullyAllocated) {
+		if (getOriginal() != this) {
+			getOriginal().typeAllocated(generator, fullyAllocated);
+			return;
+		}
+		if (this.data == null) {
+			this.data = new TypeData<O>(generator, this);
+		}
+		this.data.allocateData(generator);
+		if (fullyAllocated) {
+			assertAllocated(generator);
+		}
 	}
 
 	private static final class TypeData<O extends PtrOp> extends SubData<O> {
@@ -178,12 +221,16 @@ public abstract class Type<O extends PtrOp>
 
 		@Override
 		protected void allocate(Generator generator) {
+			if (!getType().startAllocation(generator)) {
+				return;
+			}
 
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.begin(getType()));
 			getType().allocateType(this);
 			allocator.end(getType());
+			getType().setAllocated(generator);
 
 			final Globals globals = generator;
 
@@ -192,7 +239,9 @@ public abstract class Type<O extends PtrOp>
 
 		@Override
 		protected void write(DataWriter writer) {
-			throw new IllegalStateException("Can not write type data" + this);
+			throw new UnsupportedOperationException(
+					"Type " + getId() + " itself can not be written out. "
+					+ "Write an instance instead.");
 		}
 
 	}

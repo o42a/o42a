@@ -19,8 +19,12 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.FieldDescIR.FIELD_DESC_IR;
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -32,6 +36,8 @@ import org.o42a.core.ir.field.Fld;
 
 
 public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
+
+	public static final Type OVERRIDER_DESC_IR = new Type();
 
 	private final Fld fld;
 
@@ -50,6 +56,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 	@Override
 	public void fill(Type instance) {
 
+		final Generator generator = instance.generator();
 		final ObjectIR declaredInIR =
 			this.fld.getDeclaredIn().ir(this.fld.getGenerator());
 		final FieldDescIR fieldDescIR =
@@ -58,12 +65,13 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			this.fld.getField().getDefinedIn().getContainer().toObject();
 		final ObjectIR definedInIR = definedIn.ir(this.fld.getGenerator());
 
-		instance.getField().setValue(fieldDescIR.getInstance().getPointer());
+		instance.getField().setValue(
+				fieldDescIR.getInstance().pointer(generator));
 		instance.getDefinedIn().setValue(
-				definedInIR.getTypeIR().getObjectType().getPointer());
+				definedInIR.getTypeIR().getObjectType().pointer(generator));
 		instance.getBody().setValue(
-				this.fld.getBodyIR().getPointer().relativeTo(
-						instance.getPointer()));
+				this.fld.getBodyIR().pointer(generator).relativeTo(
+						instance.pointer(generator)));
 	}
 
 	@Override
@@ -100,14 +108,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<OverriderDescIR.Op> {
 
-		private final ObjectIRGenerator generator;
-
 		private StructPtrRec<FieldDescIR.Op> field;
 		private StructPtrRec<ObjectType.Op> definedIn;
 		private RelPtrRec body;
 
-		Type(ObjectIRGenerator generator) {
-			this.generator = generator;
+		private Type() {
 		}
 
 		public final StructPtrRec<FieldDescIR.Op> getField() {
@@ -134,9 +139,8 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.field = data.addPtr("field", this.generator.fieldDescType());
-			this.definedIn =
-				data.addPtr("defined_in", this.generator.objectType());
+			this.field = data.addPtr("field", FIELD_DESC_IR);
+			this.definedIn = data.addPtr("defined_in", OBJECT_TYPE);
 			this.body = data.addRelPtr("body");
 		}
 

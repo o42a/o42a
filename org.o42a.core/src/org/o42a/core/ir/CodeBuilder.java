@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
@@ -160,7 +161,7 @@ public class CodeBuilder {
 			Obj sample,
 			int flags) {
 
-		final CtrOp.Op ctr = code.allocate(getGenerator().ctr());
+		final CtrOp.Op ctr = code.allocate(CTR_TYPE);
 
 		return ctr.op(this).newObject(
 				code,
@@ -191,7 +192,7 @@ public class CodeBuilder {
 			Obj sample,
 			int flags) {
 
-		final CtrOp.Op ctr = code.allocate(getGenerator().ctr());
+		final CtrOp.Op ctr = code.allocate(CTR_TYPE);
 
 		return ctr.op(this).newObject(
 				code,

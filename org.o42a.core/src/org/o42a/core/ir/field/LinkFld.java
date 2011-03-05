@@ -36,6 +36,8 @@ import org.o42a.core.member.field.Field;
 
 public class LinkFld extends RefFld<ObjectRefFunc> {
 
+	public static final Type LINK_FLD = new Type();
+
 	public LinkFld(ObjectBodyIR bodyIR, Field<Link> field) {
 		super(bodyIR, field);
 	}
@@ -66,7 +68,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 	@Override
 	protected Type getType() {
-		return getGenerator().linkFldType();
+		return LINK_FLD;
 	}
 
 	public static final class Op extends RefFld.Op<ObjectRefFunc> {
@@ -97,7 +99,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
-		Type() {
+		private Type() {
 		}
 
 		@Override

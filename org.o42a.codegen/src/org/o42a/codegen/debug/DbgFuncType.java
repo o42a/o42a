@@ -30,8 +30,13 @@ import org.o42a.codegen.data.Type;
 
 final class DbgFuncType extends Type<DbgFuncType.Op> {
 
+	public static final DbgFuncType DBG_FUNC_TYPE = new DbgFuncType();
+
 	private AnyPtrRec name;
 	private AnyPtrRec function;
+
+	private DbgFuncType() {
+	}
 
 	public final AnyPtrRec getName() {
 		return this.name;

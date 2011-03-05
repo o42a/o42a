@@ -170,9 +170,10 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		final TypeAllocation<?> allocation = (TypeAllocation<?>) pull();
 
-		assert type.getPointer().getAllocation() == allocation :
+		assert type.pointer(type.generator()).getAllocation() == allocation :
 			"Wrong " + type + " allocation: " + allocation
-			+ ", but " + type.getPointer().getAllocation() + " expected";
+			+ ", but " + type.pointer(type.generator()).getAllocation()
+			+ " expected";
 
 		allocation.setTypePtr(allocateType(
 				getModulePtr(),

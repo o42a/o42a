@@ -19,13 +19,17 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -136,8 +140,7 @@ public class OverriddenEx extends Ex {
 		@Override
 		public void writeLogicalValue(Code code, CodePos exit) {
 
-			final ValOp result =
-				code.allocate(getGenerator().valType()).storeUnknown(code);
+			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result);
 			result.condition(code).go(code, null, exit);

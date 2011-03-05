@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DbgFieldType.DBG_FIELD_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
@@ -31,9 +33,14 @@ import org.o42a.codegen.data.Type;
 
 final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 
+	public static final DbgGlobalType DBG_GLOBAL_TYPE = new DbgGlobalType();
+
 	private AnyPtrRec name;
 	private AnyPtrRec start;
 	private DbgFieldType content;
+
+	private DbgGlobalType() {
+	}
 
 	public final AnyPtrRec getName() {
 		return this.name;
@@ -61,13 +68,12 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 	protected void allocate(SubData<Op> data) {
 
 		final Generator generator = data.getGenerator();
-		final Debug debug = generator;
 
 		this.name = data.addPtr("name");
 		this.start = data.addPtr("start");
 		this.content = data.addInstance(
 				generator.id("content"),
-				debug.dbgFieldType());
+				DBG_FIELD_TYPE);
 	}
 
 	public static final class Op extends StructOp {

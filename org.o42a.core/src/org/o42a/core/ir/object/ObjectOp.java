@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyOp;
@@ -104,8 +105,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			CodePos exit,
 			ObjectOp body) {
 
-		final ValOp result =
-			code.allocate(getGenerator().valType()).storeUnknown(code);
+		final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 		writeValue(code, exit, result, body);
 	}

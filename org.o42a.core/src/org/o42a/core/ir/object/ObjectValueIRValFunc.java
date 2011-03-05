@@ -20,6 +20,8 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
@@ -84,7 +86,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			final Function<ObjectValFunc> function =
 				getGenerator().newFunction().create(
 						getId(),
-						getGenerator().objectValSignature());
+						OBJECT_VAL);
 
 			function.debug("Calculating value");
 			set(typeIR, function.getPointer());
@@ -105,7 +107,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 
 		final CodeBlk failure = function.addBlock("failure");
 		final ValOp result =
-			function.ptrArg(function, 0).to(function, getGenerator().valType());
+			function.ptrArg(function, 0).to(function, VAL_TYPE);
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				failure.head(),

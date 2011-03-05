@@ -57,7 +57,8 @@ public class LLVMDataWriter implements DataWriter {
 	public <O extends PtrOp> DataAllocation<O> nullPtr(Type<O> type) {
 
 		final ContainerAllocation<O> typeAlloc =
-			(ContainerAllocation<O>) type.getPointer().getAllocation();
+			(ContainerAllocation<O>) type.pointer(type.generator())
+			.getAllocation();
 		final long nativePtr = nullStructPtr(
 				getModule().getNativePtr(),
 				typeAlloc.getTypePtr());
@@ -80,7 +81,7 @@ public class LLVMDataWriter implements DataWriter {
 	public <O extends PtrOp> void begin(
 			DataAllocation<O> allocation,
 			Global<O, ?> global) {
-		push(createStruct(global.getInstance().size()));
+		push(createStruct(global.getInstance().size(global.getGenerator())));
 	}
 
 	@Override

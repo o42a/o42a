@@ -20,6 +20,7 @@
 package org.o42a.lib.console;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
 
 import org.o42a.codegen.code.CodeBlk;
@@ -110,8 +111,7 @@ final class MainCall extends DefinedObject {
 
 		final CodeBuilder builder = codeBuilder(generator, getContext(), main);
 
-		final ValOp result =
-			main.allocate(generator.valType()).storeUnknown(main);
+		final ValOp result = main.allocate(VAL_TYPE).storeUnknown(main);
 		final CodeBlk exit = main.addBlock("exit");
 
 		ir.op(builder, main).writeValue(main, exit.head(), result);

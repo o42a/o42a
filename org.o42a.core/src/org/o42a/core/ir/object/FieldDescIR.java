@@ -19,8 +19,11 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -29,6 +32,8 @@ import org.o42a.core.ir.field.Fld;
 
 
 public final class FieldDescIR implements Content<FieldDescIR.Type> {
+
+	public static final Type FIELD_DESC_IR = new Type();
 
 	private final Fld fld;
 	private Type instance;
@@ -53,15 +58,18 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	@Override
 	public void fill(Type instance) {
 
+		final Generator generator = instance.generator();
 		final ObjectIR declaredInIR =
 			this.fld.getDeclaredIn().ir(fld().getGenerator());
 
 		instance.getDeclaredIn().setValue(
-				declaredInIR.getTypeIR().getObjectType().getPointer());
+				declaredInIR.getTypeIR().getObjectType()
+				.data(generator).getPointer());
 		instance.getKind().setValue(this.fld.getKind().getCode());
 		instance.getFld().setValue(
-				this.fld.getInstance().getPointer().relativeTo(
-						this.fld.getBodyIR().getData().getPointer()));
+				this.fld.getInstance().data(generator).getPointer()
+				.relativeTo(
+						this.fld.getBodyIR().data(generator).getPointer()));
 	}
 
 	@Override
@@ -102,15 +110,11 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<FieldDescIR.Op> {
 
-		private final ObjectIRGenerator generator;
-
 		private StructPtrRec<ObjectType.Op> declaredIn;
 		private Int32rec kind;
 		private RelPtrRec fld;
 
-
-		Type(ObjectIRGenerator generator) {
-			this.generator = generator;
+		private Type() {
 		}
 
 		public final StructPtrRec<ObjectType.Op> getDeclaredIn() {
@@ -137,8 +141,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.declaredIn =
-				data.addPtr("declared_in", this.generator.objectType());
+			this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
 			this.kind = data.addInt32("kind");
 			this.fld = data.addRelPtr("fld");
 		}

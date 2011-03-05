@@ -22,10 +22,12 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectDataType.*;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import java.util.HashMap;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Function;
@@ -89,22 +91,24 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	@Override
 	public void fill(ObjectType instance) {
 
+		final Generator generator = instance.generator();
 		final ObjectDataType data = instance.getObjectData();
 
 		data.getObject().setValue(
-				getObjectIR().getMainBodyIR().getPointer().relativeTo(
-						data.getPointer()));
+				getObjectIR().getMainBodyIR().data(generator).getPointer()
+				.relativeTo(
+						data.data(generator).getPointer()));
 		data.getFlags().setValue(objectFlags());
 		data.getStart().setValue(
-				getObjectIR().getPointer().relativeTo(
-						data.getPointer()));
+				getObjectIR().data(generator).getPointer().relativeTo(
+						data.data(generator).getPointer()));
 		data.getAllBodiesLayout().setValue(
-				getObjectIR().getAllBodies().getLayout().toBinaryForm());
+				getObjectIR().getAllBodies().layout(generator).toBinaryForm());
 
 		fillOwnerTypePointer(data);
 		fillAncestor(data);
 		instance.getMainBodyLayout().setValue(
-				getObjectIR().getMainBodyIR().getLayout().toBinaryForm());
+				getObjectIR().getMainBodyIR().layout(generator).toBinaryForm());
 
 		getObjectIR().getValueIR().fill(this);
 	}
@@ -116,8 +120,8 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 	void allocate(SubData<?> data) {
 		data.addInstance(
-				getGenerator().id("object_type"),
-				getGenerator().objectType(),
+				data.getGenerator().id("object_type"),
+				OBJECT_TYPE,
 				this);
 
 		getObjectData().getAscendants().addAll(getObjectIR().getBodyIRs());
@@ -205,7 +209,8 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		final ObjectType ownerType =
 			owner.ir(getGenerator()).getTypeIR().getObjectType();
 
-		instance.getOwnerType().setValue(ownerType.getPointer().toAny());
+		instance.getOwnerType().setValue(
+				ownerType.pointer(instance.generator()).toAny());
 	}
 
 	private void fillAncestor(ObjectDataType instance) {
@@ -222,7 +227,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		instance.getAncestorType().setValue(
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
-						.getPointer().toAny());
+						.pointer(instance.generator()).toAny());
 		instance.getAncestorFunc().setValue(createAncestorFunc(instance));
 	}
 

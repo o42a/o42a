@@ -39,6 +39,7 @@ public class LLVMGenerator extends Generator {
 	private LLVMGenerator(LLVMModule module) {
 		super(module.getId());
 		this.module = module;
+		module.init(this);
 	}
 
 	public final String getInputFilename() {

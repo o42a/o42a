@@ -32,6 +32,8 @@ import org.o42a.codegen.data.*;
 
 public final class ValOp extends StructOp {
 
+	public static final Type VAL_TYPE = new Type();
+
 	private ValOp(StructWriter writer) {
 		super(writer);
 	}
@@ -118,7 +120,7 @@ public final class ValOp extends StructOp {
 		private Int32rec length;
 		private Int64rec value;
 
-		Type() {
+		private Type() {
 		}
 
 		public final Int32rec getFlags() {

@@ -22,6 +22,7 @@ package org.o42a.core.ir;
 import static org.o42a.core.ir.op.BinaryFunc.BINARY;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr;
@@ -62,13 +63,13 @@ public class IRGenerator extends ObjectIRGenerator {
 	public final CodePtr<ObjectValFunc> falseValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_false",
-				objectValSignature());
+				OBJECT_VAL);
 	}
 
 	public final CodePtr<ObjectValFunc> unknownValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_unknown",
-				objectValSignature());
+				OBJECT_VAL);
 	}
 
 	public final CodePtr<ObjectRefFunc> nullObjectRef() {
