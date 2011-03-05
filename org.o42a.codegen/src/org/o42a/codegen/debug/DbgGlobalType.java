@@ -31,15 +31,9 @@ import org.o42a.codegen.data.Type;
 
 final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 
-	private final Generator generator;
-
 	private AnyPtrRec name;
 	private AnyPtrRec start;
 	private DbgFieldType content;
-
-	DbgGlobalType(Generator generator) {
-		this.generator = generator;
-	}
 
 	public final AnyPtrRec getName() {
 		return this.name;
@@ -74,14 +68,6 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 		this.content = data.addInstance(
 				generator.id("content"),
 				debug.dbgFieldType());
-	}
-
-	final Debug debug() {
-		return this.generator;
-	}
-
-	final Generator generator() {
-		return this.generator;
 	}
 
 	public static final class Op extends StructOp {

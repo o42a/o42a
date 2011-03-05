@@ -31,12 +31,10 @@ import org.o42a.codegen.data.*;
 
 final class DebugInfo extends Struct<DebugInfo.Op> {
 
-	private final Debug generator;
 	private final DbgFunctions functions;
 	private final DbgGlobals globals;
 
-	DebugInfo(Generator generator) {
-		this.generator = generator;
+	DebugInfo() {
 		this.functions = new DbgFunctions();
 		this.globals = new DbgGlobals();
 	}
@@ -62,11 +60,12 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 	@Override
 	protected void allocate(SubData<Op> data) {
 
+		final Generator generator = data.getGenerator();
 		final DbgFunctions functions =
-			this.generator.newGlobal().setConstant().create(this.functions)
+			generator.newGlobal().setConstant().create(this.functions)
 			.getInstance();
 		final DbgGlobals globals =
-			this.generator.newGlobal().setConstant().create(this.globals)
+			generator.newGlobal().setConstant().create(this.globals)
 			.getInstance();
 
 		final StructPtrRec<DbgFunctions.Op> functionsPtr =

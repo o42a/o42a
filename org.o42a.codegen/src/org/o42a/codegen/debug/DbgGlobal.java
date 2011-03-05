@@ -39,8 +39,8 @@ final class DbgGlobal implements Content<DbgGlobalType> {
 	@Override
 	public void fill(DbgGlobalType instance) {
 
-		final Debug debug = instance.debug();
-		final Generator generator = instance.generator();
+		final Generator generator = instance.getData().getGenerator();
+		final Debug debug = generator;
 
 		debug.setName(
 				instance.getName(),
