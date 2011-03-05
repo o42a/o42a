@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -103,8 +105,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 		private CodeRec<AssignerFunc> assigner;
 
-		Type(FieldIRGenerator generator) {
-			super(generator, generator.id("VarFld"));
+		Type() {
 		}
 
 		public final CodeRec<AssignerFunc> getAssigner() {
@@ -116,7 +117,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 			super.allocate(data);
 			this.assigner = data.addCodePtr(
 					"assigner",
-					this.generator.assignerSignature());
+					AssignerFunc.ASSIGNER);
 		}
 
 		@Override
@@ -125,8 +126,13 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("VarFld");
+		}
+
+		@Override
 		protected Signature<ObjectRefFunc> signature() {
-			return this.generator.objectRefSignature();
+			return ObjectRefFunc.OBJECT_REF;
 		}
 
 	}

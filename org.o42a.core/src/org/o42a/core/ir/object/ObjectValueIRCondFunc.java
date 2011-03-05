@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
@@ -85,9 +86,7 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		}
 
 		final Function<ObjectCondFunc> function =
-			getGenerator().newFunction().create(
-					getId(),
-					getGenerator().objectCondSignature());
+			getGenerator().newFunction().create(getId(), OBJECT_COND);
 
 		function.debug("Calculating condition");
 		set(typeIR, function.getPointer());

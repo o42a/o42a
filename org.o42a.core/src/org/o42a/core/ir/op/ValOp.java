@@ -22,6 +22,8 @@ package org.o42a.core.ir.op;
 import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.op.Val.UNKNOWN_FLAG;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -116,8 +118,7 @@ public final class ValOp extends StructOp {
 		private Int32rec length;
 		private Int64rec value;
 
-		Type(IRGeneratorBase generator) {
-			super(generator.id("Val"));
+		Type() {
 		}
 
 		public final Int32rec getFlags() {
@@ -156,6 +157,11 @@ public final class ValOp extends StructOp {
 		@Override
 		public ValOp op(StructWriter writer) {
 			return new ValOp(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("Val");
 		}
 
 		@Override

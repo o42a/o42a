@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -36,7 +38,6 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 	private DbgFieldType content;
 
 	DbgGlobalType(Generator generator) {
-		super(generator.id("DEBUG").sub("Global"));
 		this.generator = generator;
 	}
 
@@ -58,12 +59,21 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 	}
 
 	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("DEBUG").sub("Global");
+	}
+
+	@Override
 	protected void allocate(SubData<Op> data) {
+
+		final Generator generator = data.getGenerator();
+		final Debug debug = generator;
+
 		this.name = data.addPtr("name");
 		this.start = data.addPtr("start");
 		this.content = data.addInstance(
-				generator().id("content"),
-				debug().dbgFieldType());
+				generator.id("content"),
+				debug.dbgFieldType());
 	}
 
 	final Debug debug() {

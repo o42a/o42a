@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -105,7 +107,6 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		private RelPtrRec body;
 
 		Type(ObjectIRGenerator generator) {
-			super(generator.id("OverriderDesc"));
 			this.generator = generator;
 		}
 
@@ -124,6 +125,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		@Override
 		public final Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("OverriderDesc");
 		}
 
 		@Override

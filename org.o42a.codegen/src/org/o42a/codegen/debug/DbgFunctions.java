@@ -22,7 +22,7 @@ package org.o42a.codegen.debug;
 import java.util.ArrayList;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -34,13 +34,7 @@ import org.o42a.codegen.data.SubData;
 
 final class DbgFunctions extends Struct<DbgFunctions.Op> {
 
-	private final Generator generator;
 	private final ArrayList<DbgFunc> functions = new ArrayList<DbgFunc>();
-
-	DbgFunctions(Generator generator) {
-		super(generator.id("DEBUG").sub("FUNCTIONS"));
-		this.generator = generator;
-	}
 
 	public final int numFunctions() {
 		return this.functions.size();
@@ -52,21 +46,25 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 	}
 
 	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("DEBUG").sub("FUNCTIONS");
+	}
+
+	@Override
 	protected void allocate(SubData<Op> data) {
+
+		final Debug debug = data.getGenerator();
+
 		for (DbgFunc func : this.functions) {
 			data.addInstance(
 					func.getId(),
-					debug().dbgFuncType(),
+					debug.dbgFuncType(),
 					func);
 		}
 	}
 
 	@Override
 	protected void fill() {
-	}
-
-	private final Debug debug() {
-		return this.generator;
 	}
 
 	<F extends Func> DbgFunc addFunction(

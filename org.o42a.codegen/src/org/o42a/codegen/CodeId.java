@@ -82,6 +82,10 @@ public abstract class CodeId implements Cloneable {
 		return separate(Separator.IN, in);
 	}
 
+	public boolean compatibleWith(CodeIdFactory factory) {
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		return getId().toString();

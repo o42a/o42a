@@ -21,6 +21,8 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -173,10 +175,11 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	public static final class Type
 			extends RefFld.Type<Op, ObjectConstructorFunc> {
 
+		private final FieldIRGenerator generator;
 		private AnyPtrRec previous;
 
 		Type(FieldIRGenerator generator) {
-			super(generator, generator.id("ObjFld"));
+			this.generator = generator;
 		}
 
 		public final AnyPtrRec getPrevious() {
@@ -192,6 +195,11 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		@Override
 		public Op op(StructWriter writer) {
 			return new Op(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ObjFld");
 		}
 
 		@Override

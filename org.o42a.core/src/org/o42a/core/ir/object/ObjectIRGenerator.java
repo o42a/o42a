@@ -43,12 +43,12 @@ public abstract class ObjectIRGenerator extends LocalIRGenerator {
 		// object type refers to descriptor type instances,
 		// but not to their structures
 		this.ascendantDescType = new AscendantDescIR.Type(this);
-		this.sampleDescType = new SampleDescIR.Type(this);
+		this.sampleDescType = new SampleDescIR.Type();
 		this.fieldDescType = new FieldDescIR.Type(this);
 		this.overriderDescType = new OverriderDescIR.Type(this);
 
 		this.objectType = generator.addType(new ObjectType(this));
-		this.depType = generator.addType(new DepIR.Type(this));
+		this.depType = generator.addType(new DepIR.Type());
 
 		// deferred descriptor types allocation
 		generator.addType(this.ascendantDescType);

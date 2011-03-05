@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -34,10 +36,9 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 	private final DbgGlobals globals;
 
 	DebugInfo(Generator generator) {
-		super(generator.rawId("o42a_debug_info"));
 		this.generator = generator;
-		this.functions = new DbgFunctions(generator);
-		this.globals = new DbgGlobals(generator);
+		this.functions = new DbgFunctions();
+		this.globals = new DbgGlobals();
 	}
 
 	public final DbgFunctions getFunctions() {
@@ -51,6 +52,11 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 	@Override
 	public Op op(StructWriter writer) {
 		return new Op(writer);
+	}
+
+	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.rawId("o42a_debug_info");
 	}
 
 	@Override

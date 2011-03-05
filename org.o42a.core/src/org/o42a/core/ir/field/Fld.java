@@ -128,10 +128,6 @@ public abstract class Fld {
 	public static abstract class Type<O extends Op>
 			extends org.o42a.codegen.data.Type<O> {
 
-		public Type(CodeId id) {
-			super(id);
-		}
-
 	}
 
 }

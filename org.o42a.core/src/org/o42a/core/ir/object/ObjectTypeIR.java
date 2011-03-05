@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectDataType.*;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import java.util.HashMap;
 
@@ -230,7 +231,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		final Function<ObjectRefFunc> function =
 			getGenerator().newFunction().create(
 					getObjectIR().getId().detail("ancestor"),
-					getGenerator().objectRefSignature());
+					OBJECT_REF);
 		final CodeBlk failure = function.addBlock("failure");
 
 		final TypeRef ancestor = getObjectIR().getObject().getAncestor();

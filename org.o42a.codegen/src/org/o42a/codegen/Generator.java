@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen;
 
+import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
+
 import org.o42a.codegen.debug.Debug;
 
 
@@ -38,20 +40,24 @@ public abstract class Generator extends Debug {
 		return this.id;
 	}
 
-	public CodeId id() {
-		return new DefaultCodeId(false);
+	public CodeIdFactory getCodeIdFactory() {
+		return DEFAULT_CODE_ID_FACTORY;
 	}
 
-	public CodeId topId() {
-		return new DefaultCodeId(true);
+	public final CodeId id() {
+		return getCodeIdFactory().id();
 	}
 
-	public CodeId id(String name) {
-		return new DefaultCodeId(name, false);
+	public final CodeId topId() {
+		return getCodeIdFactory().topId();
 	}
 
-	public CodeId rawId(String id) {
-		return new DefaultCodeId(id, true);
+	public final CodeId id(String name) {
+		return getCodeIdFactory().id(name);
+	}
+
+	public final CodeId rawId(String id) {
+		return getCodeIdFactory().rawId(id);
 	}
 
 }

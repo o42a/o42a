@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen;
 
+import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
+
 
 public class DefaultCodeId extends CodeId {
 
@@ -122,6 +124,11 @@ public class DefaultCodeId extends CodeId {
 	@Override
 	public final boolean isLastEncoded() {
 		return this.lastEncoded;
+	}
+
+	@Override
+	public boolean compatibleWith(CodeIdFactory factory) {
+		return factory == DEFAULT_CODE_ID_FACTORY;
 	}
 
 	@Override

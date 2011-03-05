@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Compiler Code Generator
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,23 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.local;
-
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.field.FieldIRGenerator;
+package org.o42a.codegen;
 
 
-public abstract class LocalIRGenerator extends FieldIRGenerator {
+public interface CodeIdFactory {
 
-	private final RefLclOp.Type refLclType;
+	CodeIdFactory DEFAULT_CODE_ID_FACTORY = new DefaultCodeIdFactory();
 
-	public LocalIRGenerator(Generator generator) {
-		super(generator);
-		this.refLclType = generator.addType(new RefLclOp.Type());
-	}
+	CodeId id();
 
-	public final RefLclOp.Type refLclType() {
-		return this.refLclType;
-	}
+	CodeId topId();
+
+	CodeId id(String name);
+
+	CodeId rawId(String id);
 
 }

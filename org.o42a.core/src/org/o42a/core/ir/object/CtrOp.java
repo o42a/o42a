@@ -20,7 +20,10 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -90,7 +93,7 @@ public class CtrOp extends IROp {
 				code.nullPtr(getGenerator().objectDataType()));
 		ptr().ancestorFunc(code).store(
 				code,
-				code.nullPtr(getGenerator().objectRefSignature()));
+				code.nullPtr(OBJECT_REF));
 		ptr().ancestorType(code).store(
 				code,
 				ancestor != null
@@ -163,7 +166,6 @@ public class CtrOp extends IROp {
 		private Int32rec flags;
 
 		Type(ObjectIRGenerator generator) {
-			super(generator.id("Ctr"));
 			this.generator = generator;
 		}
 
@@ -193,12 +195,17 @@ public class CtrOp extends IROp {
 		}
 
 		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("Ctr");
+		}
+
+		@Override
 		protected void allocate(SubData<Op> data) {
 			this.scopeType =
 				data.addPtr("scope_type", this.generator.objectDataType());
 			this.ancestorFunc = data.addCodePtr(
 					"ancestor_f",
-					this.generator.objectRefSignature());
+					OBJECT_REF);
 			this.ancestorType =
 				data.addPtr("ancestor_type", this.generator.objectDataType());
 			this.type = data.addPtr("type", this.generator.objectDataType());

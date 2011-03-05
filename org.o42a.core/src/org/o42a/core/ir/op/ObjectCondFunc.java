@@ -30,6 +30,9 @@ import org.o42a.codegen.code.op.BoolOp;
 
 public final class ObjectCondFunc extends Func {
 
+	public static final Signature<ObjectCondFunc> OBJECT_COND =
+		new ObjectCond();
+
 	ObjectCondFunc(FuncCaller caller) {
 		super(caller);
 	}
@@ -38,7 +41,7 @@ public final class ObjectCondFunc extends Func {
 		return caller().callBool(code, object);
 	}
 
-	static final class ObjectCond extends Signature<ObjectCondFunc> {
+	private static final class ObjectCond extends Signature<ObjectCondFunc> {
 
 		ObjectCond() {
 			super("bool", "ObjectCondF", "any*");

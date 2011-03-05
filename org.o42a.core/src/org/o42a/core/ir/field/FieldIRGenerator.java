@@ -38,10 +38,10 @@ public abstract class FieldIRGenerator extends IRGeneratorBase {
 		this.objectConstructorSignature =
 			new ObjectConstructorFunc.ObjectConstructor();
 
-		this.scopeFldType = generator.addType(new ScopeFld.Type(this));
+		this.scopeFldType = generator.addType(new ScopeFld.Type());
 		this.objFldType = generator.addType(new ObjFld.Type(this));
-		this.linkFldType = generator.addType(new LinkFld.Type(this));
-		this.varFldType = generator.addType(new VarFld.Type(this));
+		this.linkFldType = generator.addType(new LinkFld.Type());
+		this.varFldType = generator.addType(new VarFld.Type());
 
 	}
 

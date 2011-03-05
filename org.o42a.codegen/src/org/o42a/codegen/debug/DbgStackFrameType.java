@@ -19,7 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -35,10 +36,6 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 	private AnyPtrRec name;
 	private AnyPtrRec prev;
 
-	DbgStackFrameType(Generator generator) {
-		super(generator.id("DEBUG").sub("StackFrame"));
-	}
-
 	public final AnyPtrRec getName() {
 		return this.name;
 	}
@@ -50,6 +47,11 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 	@Override
 	public Op op(StructWriter writer) {
 		return new Op(writer);
+	}
+
+	@Override
+	protected CodeId buildCodeId(CodeIdFactory factory) {
+		return factory.id("DEBUG").sub("StackFrame");
 	}
 
 	@Override

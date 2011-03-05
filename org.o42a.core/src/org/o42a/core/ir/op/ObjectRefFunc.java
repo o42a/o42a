@@ -29,6 +29,8 @@ import org.o42a.codegen.code.op.AnyOp;
 
 public final class ObjectRefFunc extends Func {
 
+	public static final Signature<ObjectRefFunc> OBJECT_REF = new ObjectRef();
+
 	ObjectRefFunc(FuncCaller caller) {
 		super(caller);
 	}
@@ -37,7 +39,7 @@ public final class ObjectRefFunc extends Func {
 		return caller().callAny(code, object);
 	}
 
-	static final class ObjectRef extends Signature<ObjectRefFunc> {
+	private static final class ObjectRef extends Signature<ObjectRefFunc> {
 
 		ObjectRef() {
 			super("any*", "ObjectRefF", "any*");

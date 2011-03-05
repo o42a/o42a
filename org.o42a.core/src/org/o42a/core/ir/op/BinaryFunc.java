@@ -29,6 +29,8 @@ import org.o42a.codegen.code.op.AnyOp;
 
 public final class BinaryFunc extends Func {
 
+	public static final Signature<BinaryFunc> BINARY = new Binary();
+
 	BinaryFunc(FuncCaller caller) {
 		super(caller);
 	}
@@ -37,7 +39,7 @@ public final class BinaryFunc extends Func {
 		return caller().callAny(code, object1, object2);
 	}
 
-	static final class Binary extends Signature<BinaryFunc> {
+	private static final class Binary extends Signature<BinaryFunc> {
 
 		Binary() {
 			super("any*", "BinaryF", "any*, any*");

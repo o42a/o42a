@@ -201,7 +201,7 @@ public abstract class Debug extends Globals {
 			return found;
 		}
 
-		final DbgStruct struct = new DbgStruct(generator(), type);
+		final DbgStruct struct = new DbgStruct(type);
 
 		newGlobal().setConstant().create(struct);
 
@@ -224,10 +224,10 @@ public abstract class Debug extends Globals {
 		this.writeDebug = true;
 		try {
 			this.dbgFuncType = addType(new DbgFuncType(generator()));
-			this.dbgFieldType = addType(new DbgFieldType(generator()));
+			this.dbgFieldType = addType(new DbgFieldType());
 			this.dbgGlobalType = addType(new DbgGlobalType(generator()));
 			this.dbgStackFrameType =
-				addType(new DbgStackFrameType(generator()));
+				addType(new DbgStackFrameType());
 			this.enterFunc = externalFunction(
 					"o42a_dbg_enter",
 					new DbgEnterFunc.EnterSignature(this));
