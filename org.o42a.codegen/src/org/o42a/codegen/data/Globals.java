@@ -47,7 +47,6 @@ public abstract class Globals extends Functions {
 		final SubData<?> data = type.getTypeData();
 
 		data.allocateData((Generator) this);
-		addType(data);
 
 		return type;
 	}
@@ -92,7 +91,6 @@ public abstract class Globals extends Functions {
 		final SubData<O> data = global.getInstance().getTypeData();
 
 		data.allocateData((Generator) this);
-		addGlobal(global.getInstance().getTypeData());
 
 		return global;
 	}
@@ -108,8 +106,6 @@ public abstract class Globals extends Functions {
 		final SubData<O> data = global.getInstance().getTypeData();
 
 		data.allocateData((Generator) this);
-		addType(global.getInstance().getTypeData());
-		addGlobal(global.getInstance().getTypeData());
 
 		return global;
 	}

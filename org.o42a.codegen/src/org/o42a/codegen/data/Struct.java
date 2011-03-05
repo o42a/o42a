@@ -57,6 +57,10 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 			setAllocation(allocator.enter(getType().allocation(), this));
 			getType().allocateType(this);
 			allocator.exit(this);
+
+			final Globals globals = generator;
+
+			globals.addType(this);
 		}
 
 		@Override
@@ -86,6 +90,11 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 			setAllocation(allocator.begin(getType().allocation(), this.global));
 			getType().allocateType(this);
 			allocator.end(this.global);
+
+			final Globals globals = generator;
+
+			globals.addType(this);
+			globals.addGlobal(this);
 		}
 
 		@Override

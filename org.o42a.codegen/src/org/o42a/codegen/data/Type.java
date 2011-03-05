@@ -149,7 +149,7 @@ public abstract class Type<O extends PtrOp>
 
 		final Type<O> instance = clone();
 
-		instance.data = new GlobalData<O>(instance, global, content);
+		instance.data = new GlobalInstanceData<O>(instance, global, content);
 
 		return instance;
 	}
@@ -168,9 +168,7 @@ public abstract class Type<O extends PtrOp>
 	private static final class TypeData<O extends PtrOp> extends SubData<O> {
 
 		TypeData(Generator generator, Type<O> type) {
-			super(
-					type.codeId(generator.getCodeIdFactory()).removeLocal(),
-					type);
+			super(type.codeId(generator).removeLocal(), type);
 		}
 
 		@Override
@@ -186,6 +184,10 @@ public abstract class Type<O extends PtrOp>
 			setAllocation(allocator.begin(getType()));
 			getType().allocateType(this);
 			allocator.end(getType());
+
+			final Globals globals = generator;
+
+			globals.addType(this);
 		}
 
 		@Override
@@ -245,12 +247,15 @@ public abstract class Type<O extends PtrOp>
 
 	}
 
-	private static final class GlobalData<O extends PtrOp>
+	private static final class GlobalInstanceData<O extends PtrOp>
 			extends InstanceData<O> {
 
 		private final Global<O, ?> global;
 
-		GlobalData(Type<O> type, Global<O, ?> global, Content<?> content) {
+		GlobalInstanceData(
+				Type<O> type,
+				Global<O, ?> global,
+				Content<?> content) {
 			super(global.getId().removeLocal(), type, content);
 			this.global = global;
 		}
@@ -265,6 +270,10 @@ public abstract class Type<O extends PtrOp>
 			getType().allocateType(this);
 			allocator.end(this.global);
 			this.content.allocated(getType());
+
+			final Globals globals = generator;
+
+			globals.addGlobal(this);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -274,6 +283,10 @@ public abstract class Type<O extends PtrOp>
 			this.content.fill(getType());
 			writeIncluded(writer);
 			writer.end(getPointer().getAllocation(), this.global);
+
+			final Globals globals = getGenerator();
+
+			globals.addType(this);
 		}
 
 	}

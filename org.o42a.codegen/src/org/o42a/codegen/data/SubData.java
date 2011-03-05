@@ -152,11 +152,6 @@ public abstract class SubData<O extends PtrOp>
 	public final <S extends Struct<?>> S addStruct(CodeId name, S struct) {
 		struct.setStruct(getGenerator(), name);
 		add(struct.getTypeData());
-
-		final Globals globals = getGenerator();
-
-		globals.addType(struct.getTypeData());
-
 		return struct;
 	}
 
