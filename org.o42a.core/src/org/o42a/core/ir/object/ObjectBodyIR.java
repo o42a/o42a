@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -177,21 +179,25 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	@Override
 	protected void fill() {
 
+		final Generator generator = generator();
 		final ObjectType objectType = getObjectIR().getTypeIR().getObjectType();
 
 		this.objectType.setValue(
-				objectType.getPointer().relativeTo(getPointer()));
+				objectType.data(generator).getPointer().relativeTo(
+						data(generator).getPointer()));
 
 		final ObjectBodyIR ancestorBodyIR = getObjectIR().getAncestorBodyIR();
 
 		if (ancestorBodyIR != null) {
 			this.ancestorBody.setValue(
-					ancestorBodyIR.getPointer().relativeTo(getPointer()));
+					ancestorBodyIR.data(generator).getPointer().relativeTo(
+							data(generator).getPointer()));
 		} else {
 			this.ancestorBody.setNull();
 		}
 
-		this.methods.setValue(getMethodsIR().getPointer().toAny());
+		this.methods.setValue(
+				getMethodsIR().data(generator).getPointer().toAny());
 	}
 
 	String print(String suffix) {
@@ -286,9 +292,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			final DataOp<RelOp> bodyHeader = toRel(code);
 			final AnyOp dataPtr = bodyHeader.load(code).offset(code, this);
 
-			return dataPtr.to(
-					code,
-					getBodyIR().getGenerator().objectDataType());
+			return dataPtr.to(code, OBJECT_DATA_TYPE);
 		}
 
 		public final DataOp<RelOp> ancestorBody(Code code) {

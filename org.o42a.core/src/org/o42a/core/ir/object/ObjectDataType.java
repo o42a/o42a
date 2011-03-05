@@ -19,11 +19,16 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
+import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -41,7 +46,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	public static final int OBJ_FLAG_VOID = 0x80000000;
 	public static final int OBJ_FLAG_FALSE = 0x40000000;
 
-	private final IRGenerator generator;
+	public static final ObjectDataType OBJECT_DATA_TYPE = new ObjectDataType();
 
 	private RelPtrRec object;
 	private Int32rec flags;
@@ -59,8 +64,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private RelList<ObjectBodyIR> ascendants;
 	private RelList<ObjectBodyIR> samples;
 
-	ObjectDataType(IRGenerator generator) {
-		this.generator = generator;
+	private ObjectDataType() {
 	}
 
 	public final RelPtrRec getObject() {
@@ -135,31 +139,24 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 
 	@Override
 	protected void allocate(SubData<ObjectDataType.Op> data) {
+
+		final Generator generator = data.getGenerator();
+
 		this.object = data.addRelPtr("object");
 		this.flags = data.addInt32("flags");
 		this.start = data.addRelPtr("start");
 		this.allBodiesLayout = data.addInt32("all_bodies_layout");
-		this.value = data.addInstance(
-				this.generator.id("value"),
-				this.generator.valType());
-		this.valueFunc = data.addCodePtr(
-				"value_f",
-				this.generator.objectValSignature());
+		this.value = data.addInstance(generator.id("value"), VAL_TYPE);
+		this.valueFunc = data.addCodePtr("value_f", OBJECT_VAL);
 		this.requirementFunc = data.addCodePtr("requirement_f", OBJECT_COND);
-		this.claimFunc = data.addCodePtr(
-				"claim_f",
-				this.generator.objectValSignature());
+		this.claimFunc = data.addCodePtr("claim_f", OBJECT_VAL);
 		this.conditionFunc = data.addCodePtr("condition_f", OBJECT_COND);
-		this.propositionFunc = data.addCodePtr(
-				"proposition_f",
-				this.generator.objectValSignature());
+		this.propositionFunc = data.addCodePtr("proposition_f", OBJECT_VAL);
 		this.ownerType = data.addPtr("owner_type");
 		this.ancestorFunc = data.addCodePtr("ancestor_f", OBJECT_REF);
 		this.ancestorType = data.addPtr("ancestor_type");
-		this.ascendants =
-			new Ascendants().allocate(this.generator, data, "ascendants");
-		this.samples =
-			new Samples().allocate(this.generator, data, "samples");
+		this.ascendants = new Ascendants().allocate(data, "ascendants");
+		this.samples = new Samples().allocate(data, "samples");
 	}
 
 	public static final class Op extends StructOp {
@@ -254,10 +251,10 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 						data.getGenerator()));
 			final AscendantDescIR.Type desc = data.addInstance(
 					id,
-					generator.ascendantDescType(),
+					ASCENDANT_DESC_IR,
 					new AscendantDescIR(item));
 
-			return desc.getPointer();
+			return desc.data(data.getGenerator()).getPointer();
 		}
 
 	}
@@ -277,10 +274,10 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 						data.getGenerator()));
 			final SampleDescIR.Type desc = data.addInstance(
 					id,
-					generator.sampleDescType(),
+					SAMPLE_DESC_IR,
 					new SampleDescIR(item));
 
-			return desc.getPointer();
+			return desc.data(data.getGenerator()).getPointer();
 		}
 
 	}

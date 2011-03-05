@@ -136,12 +136,16 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	public final void dumpValue(String message, StructOp data, int depth) {
 		assertIncomplete();
-		if (!getGenerator().isDebug()) {
+
+		final Generator generator = getGenerator();
+
+		if (!generator.isDebug()) {
 			return;
 		}
 
-		final Debug debug = getGenerator();
-		final DbgStruct typeStruct = debug.typeStruct(data.getType());
+		final Debug debug = generator;
+		final DbgStruct typeStruct =
+			debug.typeStruct(generator, data.getType());
 
 		if (typeStruct == null) {
 			assert typeStruct != null :

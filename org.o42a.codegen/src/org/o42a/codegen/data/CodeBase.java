@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 
@@ -29,7 +30,11 @@ public abstract class CodeBase {
 
 	public <O extends PtrOp> O allocate(Type<O> type) {
 		assertIncomplete();
-		return writer().allocateStruct(type.getPointer().getAllocation());
+
+		final Code code = (Code) this;
+
+		return writer().allocateStruct(
+				type.data(code.getGenerator()).getAllocation());
 	}
 
 	public final void done() {

@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DbgStackFrameType.DBG_STACK_FRAME_TYPE;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -28,6 +30,9 @@ import org.o42a.codegen.code.backend.SignatureWriter;
 
 final class DbgEnterFunc extends Func {
 
+	public static final Signature<DbgEnterFunc> DBG_ENTER =
+		new DbgEnter();
+
 	private DbgEnterFunc(FuncCaller caller) {
 		super(caller);
 	}
@@ -36,13 +41,10 @@ final class DbgEnterFunc extends Func {
 		caller().call(code, stackFrame);
 	}
 
-	static final class EnterSignature extends Signature<DbgEnterFunc> {
+	private static final class DbgEnter extends Signature<DbgEnterFunc> {
 
-		private final Debug debug;
-
-		EnterSignature(Debug debug) {
+		DbgEnter() {
 			super("void", "DEBUG.EnterF", "DEBUG.StackFrame*");
-			this.debug = debug;
 		}
 
 		@Override
@@ -53,7 +55,7 @@ final class DbgEnterFunc extends Func {
 		@Override
 		protected void write(SignatureWriter<DbgEnterFunc> writer) {
 			writer.returnVoid();
-			writer.addPtr(this.debug.dbgStackFrameType());
+			writer.addPtr(DBG_STACK_FRAME_TYPE);
 		}
 
 	}

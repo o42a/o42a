@@ -29,10 +29,15 @@ import org.o42a.codegen.data.*;
 
 final class DbgFieldType extends Type<DbgFieldType.Op> {
 
+	public static final DbgFieldType DBG_FIELD_TYPE = new DbgFieldType();
+
 	private AnyPtrRec name;
 	private AnyPtrRec dbgStruct;
 	private Rec<DataOp<Int32op>, Integer> dataType;
 	private Rec<DataOp<RelOp>, RelPtr> offset;
+
+	private DbgFieldType() {
+	}
 
 	public final AnyPtrRec getName() {
 		return this.name;
@@ -77,7 +82,7 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 		if (enclosing != null) {
 			getOffset().setValue(
 					fieldData.getPointer().relativeTo(
-							enclosing.getType().getPointer()));
+							enclosing.getType().data(generator).getPointer()));
 		} else {
 			getOffset().setValue(
 					fieldData.getPointer().relativeTo(
@@ -96,7 +101,8 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 					fieldData.getId().getLocal().getId());
 		}
 		if (struct != null) {
-			getDbgStruct().setValue(struct.getPointer().toAny());
+			getDbgStruct().setValue(
+					struct.data(generator).getPointer().toAny());
 		} else {
 			getDbgStruct().setNull();
 		}

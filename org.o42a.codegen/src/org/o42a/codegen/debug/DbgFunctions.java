@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DbgFuncType.DBG_FUNC_TYPE;
+
 import java.util.ArrayList;
 
 import org.o42a.codegen.CodeId;
@@ -52,14 +54,8 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-
-		final Debug debug = data.getGenerator();
-
 		for (DbgFunc func : this.functions) {
-			data.addInstance(
-					func.getId(),
-					debug.dbgFuncType(),
-					func);
+			data.addInstance(func.getId(), DBG_FUNC_TYPE, func);
 		}
 	}
 

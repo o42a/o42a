@@ -41,7 +41,7 @@ final class DumpStructFunc extends Func {
 		caller().call(
 				code,
 				data,
-				struct.getPointer().op(code).toAny(code),
+				struct.pointer(code.getGenerator()).op(code).toAny(code),
 				depth);
 	}
 

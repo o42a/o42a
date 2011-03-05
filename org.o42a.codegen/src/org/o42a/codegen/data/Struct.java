@@ -51,12 +51,16 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 
 		@Override
 		protected void allocate(Generator generator) {
+			if (!getType().startAllocation(generator)) {
+				return;
+			}
 
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.enter(getType().allocation(), this));
 			getType().allocateType(this);
 			allocator.exit(this);
+			getType().setAllocated(generator);
 
 			final Globals globals = generator;
 
@@ -84,12 +88,16 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 
 		@Override
 		protected void allocate(Generator generator) {
+			if (!getType().startAllocation(generator)) {
+				return;
+			}
 
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.begin(getType().allocation(), this.global));
 			getType().allocateType(this);
 			allocator.end(this.global);
+			getType().setAllocated(generator);
 
 			final Globals globals = generator;
 

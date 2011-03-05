@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
@@ -79,8 +81,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		this.objectType =
-			data.addPtr("object_type", getGenerator().objectType());
+		this.objectType = data.addPtr("object_type", OBJECT_TYPE);
 	}
 
 	@Override
@@ -90,7 +91,8 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 			getBodyIR().getAscendant().ir(getGenerator());
 
 		this.objectType.setValue(
-				ascendantIR.getTypeIR().getObjectType().getPointer());
+				ascendantIR.getTypeIR().getObjectType()
+				.data(generator()).getPointer());
 	}
 
 	public static final class Op extends StructOp {

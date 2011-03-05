@@ -99,7 +99,8 @@ public abstract class ContainerAllocation<O extends PtrOp>
 			super(
 					module,
 					((ContainerAllocation<?>)
-							type.getPointer().getAllocation()).getTypePtr(),
+							type.pointer(module.getGenerator())
+							.getAllocation()).getTypePtr(),
 					nativePtr,
 					null,
 					type);

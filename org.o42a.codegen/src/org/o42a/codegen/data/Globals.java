@@ -41,16 +41,6 @@ public abstract class Globals extends Functions {
 		return new Ptr<AnyOp>(dataAllocator().addBinary(id, data, start, end));
 	}
 
-	public final <T extends Type<?>> T addType(T type) {
-		type.setType((Generator) this);
-
-		final SubData<?> data = type.getTypeData();
-
-		data.allocateData((Generator) this);
-
-		return type;
-	}
-
 	public final GlobalSettings newGlobal() {
 		return new GlobalSettings(this);
 	}

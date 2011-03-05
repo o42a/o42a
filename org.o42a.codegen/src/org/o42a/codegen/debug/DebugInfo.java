@@ -77,8 +77,8 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 		final Rec<DataOp<Int32op>, Integer> numGlobals =
 			data.addInt32("num_globals");
 
-		functionsPtr.setValue(functions.getPointer());
-		globalsPtr.setValue(globals.getPointer());
+		functionsPtr.setValue(functions.data(generator).getPointer());
+		globalsPtr.setValue(globals.data(generator).getPointer());
 		numFunctions.setValue(this.functions.numFunctions());
 		numGlobals.setValue(this.globals.numGlobals());
 	}

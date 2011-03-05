@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
@@ -35,6 +36,8 @@ import org.o42a.core.ir.op.ObjectRefFunc;
 
 
 public class CtrOp extends IROp {
+
+	public static final Type CTR_TYPE = new Type();
 
 	public static final int NEW_INSTANCE = 0;
 	public static final int PROPAGATION = 1;
@@ -88,9 +91,7 @@ public class CtrOp extends IROp {
 				+ ", ancestor=" + ancestor
 				+ ", flags=" + Integer.toHexString(flags));
 
-		ptr().scopeType(code).store(
-				code,
-				code.nullPtr(getGenerator().objectDataType()));
+		ptr().scopeType(code).store(code, code.nullPtr(OBJECT_DATA_TYPE));
 		ptr().ancestorFunc(code).store(
 				code,
 				code.nullPtr(OBJECT_REF));
@@ -98,7 +99,7 @@ public class CtrOp extends IROp {
 				code,
 				ancestor != null
 				? ancestor.data(code).ptr()
-				: code.nullPtr(getGenerator().objectDataType()));
+				: code.nullPtr(OBJECT_DATA_TYPE));
 		ptr().type(code).store(code, sample.data(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
@@ -157,16 +158,13 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private final ObjectIRGenerator generator;
-
 		private StructPtrRec<ObjectDataType.Op> scopeType;
 		private CodeRec<ObjectRefFunc> ancestorFunc;
 		private StructPtrRec<ObjectDataType.Op> ancestorType;
 		private StructPtrRec<ObjectDataType.Op> type;
 		private Int32rec flags;
 
-		Type(ObjectIRGenerator generator) {
-			this.generator = generator;
+		private Type() {
 		}
 
 		@Override
@@ -201,14 +199,10 @@ public class CtrOp extends IROp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.scopeType =
-				data.addPtr("scope_type", this.generator.objectDataType());
-			this.ancestorFunc = data.addCodePtr(
-					"ancestor_f",
-					OBJECT_REF);
-			this.ancestorType =
-				data.addPtr("ancestor_type", this.generator.objectDataType());
-			this.type = data.addPtr("type", this.generator.objectDataType());
+			this.scopeType = data.addPtr("scope_type", OBJECT_DATA_TYPE);
+			this.ancestorFunc = data.addCodePtr("ancestor_f", OBJECT_REF);
+			this.ancestorType = data.addPtr("ancestor_type", OBJECT_DATA_TYPE);
+			this.type = data.addPtr("type", OBJECT_DATA_TYPE);
 			this.flags = data.addInt32("flags");
 		}
 

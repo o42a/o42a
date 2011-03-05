@@ -33,8 +33,14 @@ import org.o42a.codegen.data.Type;
 
 final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 
+	public static final DbgStackFrameType DBG_STACK_FRAME_TYPE =
+		new DbgStackFrameType();
+
 	private AnyPtrRec name;
 	private AnyPtrRec prev;
+
+	private DbgStackFrameType() {
+	}
 
 	public final AnyPtrRec getName() {
 		return this.name;

@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DbgFieldType.DBG_FIELD_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
@@ -74,13 +76,13 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 				.sub("TYPE_NAME")
 				.sub(this.type.codeId(generator)),
 				this.type.codeId(generator).getId());
-		this.dataLayout.setValue(getType().getLayout().toBinaryForm());
-		this.size.setValue(getType().size());
-		for (Data<?> fieldData : getType()) {
+		this.dataLayout.setValue(getType().layout(generator).toBinaryForm());
+		this.size.setValue(getType().size(generator));
+		for (Data<?> fieldData : getType().iterate(generator)) {
 
 			final DbgFieldType field = data.addInstance(
 					fieldData.getId().getLocal(),
-					debug.dbgFieldType());
+					DBG_FIELD_TYPE);
 
 			field.fill(this, fieldData);
 		}

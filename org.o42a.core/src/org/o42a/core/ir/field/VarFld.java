@@ -38,6 +38,8 @@ import org.o42a.core.member.field.Field;
 
 public class VarFld extends RefFld<ObjectRefFunc> {
 
+	public static final Type VAR_FLD = new Type();
+
 	public VarFld(ObjectBodyIR bodyIR, Field<Link> field) {
 		super(bodyIR, field);
 	}
@@ -68,7 +70,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	@Override
 	protected Type getType() {
-		return getGenerator().varFldType();
+		return VAR_FLD;
 	}
 
 	public static final class Op extends RefFld.Op<ObjectRefFunc> {
@@ -105,7 +107,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 		private CodeRec<AssignerFunc> assigner;
 
-		Type() {
+		private Type() {
 		}
 
 		public final CodeRec<AssignerFunc> getAssigner() {

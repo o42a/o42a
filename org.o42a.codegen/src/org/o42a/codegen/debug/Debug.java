@@ -19,7 +19,9 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DbgEnterFunc.DBG_ENTER;
 import static org.o42a.codegen.debug.DbgExitFunc.EXIT_SIGNATURE;
+import static org.o42a.codegen.debug.DbgStackFrameType.DBG_STACK_FRAME_TYPE;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -45,10 +47,6 @@ public abstract class Debug extends Globals {
 
 	private boolean writeDebug;
 
-	private DbgFuncType dbgFuncType;
-	private DbgFieldType dbgFieldType;
-	private DbgGlobalType dbgGlobalType;
-	private DbgStackFrameType dbgStackFrameType;
 	private CodePtr<DbgEnterFunc> enterFunc;
 	private CodePtr<DbgExitFunc> exitFunc;
 	private DebugInfo info;
@@ -94,7 +92,7 @@ public abstract class Debug extends Globals {
 
 			dbgFunc.setNamePtr(namePtr);
 
-			final Op stackFrame = code.allocate(dbgStackFrameType());
+			final Op stackFrame = code.allocate(DBG_STACK_FRAME_TYPE);
 
 			stackFrame.name(code).store(code, namePtr.op(code));
 			this.enterFunc.op(code).enter(code, stackFrame);
@@ -152,22 +150,6 @@ public abstract class Debug extends Globals {
 		}
 	}
 
-	final DbgFuncType dbgFuncType() {
-		return this.dbgFuncType;
-	}
-
-	final DbgFieldType dbgFieldType() {
-		return this.dbgFieldType;
-	}
-
-	final DbgGlobalType dbgGlobalType() {
-		return this.dbgGlobalType;
-	}
-
-	final DbgStackFrameType dbgStackFrameType() {
-		return this.dbgStackFrameType;
-	}
-
 	final Ptr<AnyOp> addASCIIString(CodeId id, String value) {
 		return addBinary(id, nullTermASCIIString(value));
 	}
@@ -181,6 +163,7 @@ public abstract class Debug extends Globals {
 
 	DbgStruct writeStruct(Data<?> fieldData) {
 
+		final Generator generator = fieldData.getGenerator();
 		final Type<?> type;
 
 		if (fieldData.getDataType() == DataType.STRUCT) {
@@ -194,7 +177,7 @@ public abstract class Debug extends Globals {
 			return null;
 		}
 
-		final Ptr<?> typePointer = type.getPointer();
+		final Ptr<?> typePointer = type.data(generator).getPointer();
 		final DbgStruct found = this.structs.get(typePointer);
 
 		if (found != null) {
@@ -210,8 +193,9 @@ public abstract class Debug extends Globals {
 		return struct;
 	}
 
-	DbgStruct typeStruct(Type<?> type) {
-		return this.structs.get(type.getOriginal().getPointer());
+	DbgStruct typeStruct(Generator generator, Type<?> type) {
+		return this.structs.get(
+				type.getOriginal().data(generator).getPointer());
 	}
 
 	private final boolean checkDebug() {
@@ -223,14 +207,7 @@ public abstract class Debug extends Globals {
 		}
 		this.writeDebug = true;
 		try {
-			this.dbgFuncType = addType(new DbgFuncType());
-			this.dbgFieldType = addType(new DbgFieldType());
-			this.dbgGlobalType = addType(new DbgGlobalType());
-			this.dbgStackFrameType =
-				addType(new DbgStackFrameType());
-			this.enterFunc = externalFunction(
-					"o42a_dbg_enter",
-					new DbgEnterFunc.EnterSignature(this));
+			this.enterFunc = externalFunction("o42a_dbg_enter", DBG_ENTER);
 			this.exitFunc =
 				externalFunction("o42a_dbg_exit", EXIT_SIGNATURE);
 			this.info = new DebugInfo();

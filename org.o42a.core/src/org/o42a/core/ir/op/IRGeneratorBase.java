@@ -28,15 +28,9 @@ import org.o42a.codegen.data.GlobalSettings;
 public abstract class IRGeneratorBase {
 
 	private final Generator generator;
-	private final ValOp.Type valType;
-	private final RelList.Type relListType;
-	private final Signature<ObjectValFunc> objectVal;
 
 	public IRGeneratorBase(Generator generator) {
 		this.generator = generator;
-		this.valType = generator.addType(new ValOp.Type());
-		this.relListType = generator.addType(new RelList.Type());
-		this.objectVal = new ObjectValFunc.ObjectVal(this);
 	}
 
 	public final Generator getGenerator() {
@@ -61,18 +55,6 @@ public abstract class IRGeneratorBase {
 
 	public CodeId rawId(String id) {
 		return getGenerator().rawId(id);
-	}
-
-	public final ValOp.Type valType() {
-		return this.valType;
-	}
-
-	public final RelList.Type relListType() {
-		return this.relListType;
-	}
-
-	public final Signature<ObjectValFunc> objectValSignature() {
-		return this.objectVal;
 	}
 
 	public final GlobalSettings newGlobal() {

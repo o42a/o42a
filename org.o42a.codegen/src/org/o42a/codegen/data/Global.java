@@ -20,6 +20,7 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.PtrOp;
 
 
@@ -43,6 +44,10 @@ public final class Global<O extends PtrOp, T extends Type<O>> {
 		this.instance = (T) struct;
 	}
 
+	public final Generator getGenerator() {
+		return this.settings.getGenerator();
+	}
+
 	public final CodeId getId() {
 		return this.id;
 	}
@@ -56,7 +61,7 @@ public final class Global<O extends PtrOp, T extends Type<O>> {
 	}
 
 	public final Ptr<O> getPointer() {
-		return getInstance().getPointer();
+		return getInstance().pointer(getGenerator());
 	}
 
 	public final T getInstance() {

@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DbgGlobalType.DBG_GLOBAL_TYPE;
+
 import java.util.ArrayList;
 
 import org.o42a.codegen.CodeId;
@@ -50,13 +52,10 @@ final class DbgGlobals extends Struct<DbgGlobals.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-
-		final Debug debug = data.getGenerator();
-
 		for (Data<?> global : this.globals) {
 			data.addInstance(
 					global.getId(),
-					debug.dbgGlobalType(),
+					DBG_GLOBAL_TYPE,
 					new DbgGlobal(global));
 		}
 	}

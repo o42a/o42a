@@ -36,6 +36,8 @@ import org.o42a.core.member.field.Field;
 
 public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
+	public static final Type SCOPE_FLD = new Type();
+
 	private ObjectBodyIR target;
 
 	public ScopeFld(ObjectBodyIR bodyIR, Field<Obj> field) {
@@ -86,12 +88,13 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 	@Override
 	public void fill(Type instance) {
-		instance.getObject().setValue(this.target.getPointer().toAny());
+		instance.getObject().setValue(
+				this.target.pointer(instance.generator()).toAny());
 	}
 
 	@Override
 	protected Type getType() {
-		return getGenerator().scopeFldType();
+		return SCOPE_FLD;
 	}
 
 	@Override
@@ -125,7 +128,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 		private AnyPtrRec object;
 
-		Type() {
+		private Type() {
 		}
 
 		public final AnyPtrRec getObject() {

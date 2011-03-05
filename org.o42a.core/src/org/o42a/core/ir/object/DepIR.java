@@ -35,6 +35,8 @@ import org.o42a.core.member.local.Dep;
 
 public class DepIR {
 
+	public static final Type DEP_IR = new Type();
+
 	private final IRGenerator generator;
 	private final Dep dep;
 	private Type instance;
@@ -80,7 +82,7 @@ public class DepIR {
 				getGenerator().id("_dep").sub(dependencyIR.getId().getLocal());
 		}
 
-		this.instance = data.addInstance(localId, getGenerator().depType());
+		this.instance = data.addInstance(localId, DEP_IR);
 		this.instance.getObject().setNull();
 	}
 
@@ -93,7 +95,7 @@ public class DepIR {
 
 		private AnyPtrRec object;
 
-		Type() {
+		private Type() {
 		}
 
 		public final AnyPtrRec getObject() {

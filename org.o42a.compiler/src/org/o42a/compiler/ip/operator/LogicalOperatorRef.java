@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
@@ -160,8 +161,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				this.res.getScope().getEnclosingScopePath()
 				.target(this.res, this.res.distribute());
 
-			final ValOp operandValue =
-				code.allocate(host.getGenerator().valType());
+			final ValOp operandValue = code.allocate(VAL_TYPE);
 			final HostOp operandHost =
 				enclosingRef.op(host).target(code, failure.head());
 

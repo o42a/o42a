@@ -115,7 +115,7 @@ public abstract class Code extends DebugCodeBase {
 
 	public final <O extends PtrOp> O nullPtr(Type<O> type) {
 		assertIncomplete();
-		return writer().nullPtr(type.getPointer().getAllocation());
+		return writer().nullPtr(type.pointer(getGenerator()).getAllocation());
 	}
 
 	public final <F extends Func> F nullPtr(Signature<F> signature) {

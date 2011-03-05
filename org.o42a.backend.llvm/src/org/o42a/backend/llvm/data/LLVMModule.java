@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
+import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.codegen.data.Type;
 
@@ -47,6 +48,7 @@ public final class LLVMModule {
 	private long fp64type;
 	private long boolType;
 	private long anyType;
+	private LLVMGenerator generator;
 
 	public LLVMModule(String id, String[] args) {
 		parseArgs(encodeArgs(args));
@@ -67,6 +69,14 @@ public final class LLVMModule {
 		this.dataAllocator = new LLVMDataAllocator(this);
 		this.dataWriter = new LLVMDataWriter(this);
 		this.codeBackend = new LLVMCodeBackend(this);
+	}
+
+	public void init(LLVMGenerator generator) {
+		this.generator = generator;
+	}
+
+	public final LLVMGenerator getGenerator() {
+		return this.generator;
 	}
 
 	public String getId() {
@@ -138,7 +148,8 @@ public final class LLVMModule {
 	public long pointerTo(Type<?> type) {
 
 		final ContainerAllocation<?> allocation =
-			(ContainerAllocation<?>) type.getPointer().getAllocation();
+			(ContainerAllocation<?>) type.pointer(
+					getGenerator()).getAllocation();
 
 		return pointerTo(allocation.getTypePtr());
 	}

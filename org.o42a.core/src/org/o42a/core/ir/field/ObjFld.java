@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.field.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
@@ -36,6 +37,8 @@ import org.o42a.core.member.field.Field;
 
 
 public class ObjFld extends RefFld<ObjectConstructorFunc> {
+
+	public static final Type OBJ_FLD = new Type();
 
 	public ObjFld(ObjectBodyIR bodyIR, Field<Obj> field) {
 		super(bodyIR, field);
@@ -67,7 +70,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 	@Override
 	protected Type getType() {
-		return getGenerator().objFldType();
+		return OBJ_FLD;
 	}
 
 	@Override
@@ -85,7 +88,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
 			builder.getFunction().ptrArg(code, 1)
-			.to(code, getGenerator().objFldType());
+			.to(code, OBJ_FLD);
 		final AnyOp previousPtr = fld.previous(code).load(code);
 
 		final CondBlk construct =
@@ -175,11 +178,9 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	public static final class Type
 			extends RefFld.Type<Op, ObjectConstructorFunc> {
 
-		private final FieldIRGenerator generator;
 		private AnyPtrRec previous;
 
-		Type(FieldIRGenerator generator) {
-			this.generator = generator;
+		private Type() {
 		}
 
 		public final AnyPtrRec getPrevious() {
@@ -204,7 +205,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		@Override
 		protected Signature<ObjectConstructorFunc> signature() {
-			return this.generator.objectConstructorSignature();
+			return OBJECT_CONSTRUCTOR;
 		}
 
 	}

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.link;
 
+import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.data.SubData;
@@ -62,7 +64,7 @@ final class LinkFieldIR extends FieldIR<Link> {
 
 	@Override
 	protected RefLclOp allocateLocal(LocalBuilder builder, Code code) {
-		return code.allocate(getGenerator().refLclType()).op(builder, this);
+		return code.allocate(REF_LCL).op(builder, this);
 	}
 
 	@Override

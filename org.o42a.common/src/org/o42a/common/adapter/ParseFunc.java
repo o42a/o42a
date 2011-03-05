@@ -19,6 +19,8 @@
 */
 package org.o42a.common.adapter;
 
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -65,8 +67,8 @@ public final class ParseFunc extends Func {
 		@Override
 		protected void write(SignatureWriter<ParseFunc> writer) {
 			writer.returnVoid();
-			writer.addPtr(this.generator.valType());
-			writer.addPtr(this.generator.valType());
+			writer.addPtr(VAL_TYPE);
+			writer.addPtr(VAL_TYPE);
 		}
 
 	}

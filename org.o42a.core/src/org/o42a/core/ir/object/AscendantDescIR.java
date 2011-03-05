@@ -19,8 +19,11 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -30,6 +33,8 @@ import org.o42a.codegen.data.*;
 
 
 public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
+
+	public static final Type ASCENDANT_DESC_IR = new Type();
 
 	private final ObjectBodyIR bodyIR;
 
@@ -48,14 +53,16 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	@Override
 	public void fill(Type instance) {
 
+		final Generator generator = instance.generator();
 		final ObjectIR ascendantIR =
 			this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
 
 		instance.getType().setValue(
-				ascendantIR.getTypeIR().getObjectType().getPointer());
+				ascendantIR.getTypeIR().getObjectType()
+				.data(generator).getPointer());
 		instance.getBody().setValue(
-				this.bodyIR.getData().getPointer().relativeTo(
-						instance.getPointer()));
+				this.bodyIR.data(generator).getPointer().relativeTo(
+						instance.data(generator).getPointer()));
 	}
 
 	@Override
@@ -92,13 +99,10 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<AscendantDescIR.Op> {
 
-		private final ObjectIRGenerator generator;
-
 		private StructPtrRec<ObjectType.Op> type;
 		private RelPtrRec body;
 
-		Type(ObjectIRGenerator generator) {
-			this.generator = generator;
+		private Type() {
 		}
 
 		public final StructPtrRec<ObjectType.Op> getType() {
@@ -121,7 +125,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.type = data.addPtr("type", this.generator.objectType());
+			this.type = data.addPtr("type", OBJECT_TYPE);
 			this.body = data.addRelPtr("body");
 		}
 

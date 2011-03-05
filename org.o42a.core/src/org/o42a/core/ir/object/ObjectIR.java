@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -132,20 +133,16 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 		return this.object.valueIR(getGenerator());
 	}
 
-	@Override
-	public void allocate() {
-		if (this.mainBodyIR != null) {
-			return;
-		}
-		getGenerator().newGlobal().create(this);
-		getScopeIR().targetAllocated();
+	public final void allocate() {
+		allocate(getGenerator().getGenerator());
 	}
 
 	public ObjOp op(CodeBuilder builder, Code code) {
 
 		final ObjectBodyIR bodyType = getBodyType();
 
-		return bodyType.getPointer().op(code).op(builder, getObject(), EXACT);
+		return bodyType.data(code.getGenerator())
+		.getPointer().op(code).op(builder, getObject(), EXACT);
 	}
 
 	@Override
@@ -196,6 +193,15 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 
 	protected ObjectValueIR createValueIR() {
 		return new ObjectValueIR(this);
+	}
+
+	@Override
+	protected void allocate(Generator generator) {
+		if (this.mainBodyIR != null) {
+			return;
+		}
+		getGenerator().newGlobal().create(this);
+		getScopeIR().targetAllocated();
 	}
 
 	@Override

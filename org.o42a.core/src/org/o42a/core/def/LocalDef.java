@@ -20,6 +20,7 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.LogicalDef.trueLogicalDef;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -242,8 +243,7 @@ class LocalDef extends Def {
 		public void write(Code code, CodePos exit, HostOp host) {
 			code.debug("Logical: " + this);
 
-			final ValOp result =
-				code.allocate(host.getGenerator().valType()).storeUnknown(code);
+			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			this.def.writeValue(code, exit, host, result);
 		}

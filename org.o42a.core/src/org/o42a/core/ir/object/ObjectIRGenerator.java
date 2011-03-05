@@ -20,75 +20,25 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.IRGenerator;
-import org.o42a.core.ir.local.LocalIRGenerator;
+import org.o42a.core.ir.op.IRGeneratorBase;
 
 
-public abstract class ObjectIRGenerator extends LocalIRGenerator {
-
-	private final ObjectDataType objectDataType;
-	private final ObjectType objectType;
-	private final DepIR.Type depType;
-	private final AscendantDescIR.Type ascendantDescType;
-	private final SampleDescIR.Type sampleDescType;
-	private final FieldDescIR.Type fieldDescType;
-	private final OverriderDescIR.Type overriderDescType;
-	private final CtrOp.Type ctr;
+public abstract class ObjectIRGenerator extends IRGeneratorBase {
 
 	public ObjectIRGenerator(Generator generator) {
 		super(generator);
-		this.objectDataType =
-			generator.addType(new ObjectDataType((IRGenerator) this));
 
-		// object type refers to descriptor type instances,
-		// but not to their structures
-		this.ascendantDescType = new AscendantDescIR.Type(this);
-		this.sampleDescType = new SampleDescIR.Type();
-		this.fieldDescType = new FieldDescIR.Type(this);
-		this.overriderDescType = new OverriderDescIR.Type(this);
+		// Allocated types in the right order.
+		// TODO implement forward type allocations.
+		ObjectDataType.OBJECT_DATA_TYPE.data(generator);
 
-		this.objectType = generator.addType(new ObjectType(this));
-		this.depType = generator.addType(new DepIR.Type());
+		ObjectType.OBJECT_TYPE.data(generator);
+		DepIR.DEP_IR.data(generator);
 
-		// deferred descriptor types allocation
-		generator.addType(this.ascendantDescType);
-		generator.addType(this.sampleDescType);
-		generator.addType(this.fieldDescType);
-		generator.addType(this.overriderDescType);
-
-		this.ctr = generator.addType(new CtrOp.Type(this));
-	}
-
-	public final ObjectDataType objectDataType() {
-		return this.objectDataType;
-	}
-
-	public final ObjectType objectType() {
-		return this.objectType;
-	}
-
-	public final DepIR.Type depType() {
-		return this.depType;
-	}
-
-	public final AscendantDescIR.Type ascendantDescType() {
-		return this.ascendantDescType;
-	}
-
-	public final SampleDescIR.Type sampleDescType() {
-		return this.sampleDescType;
-	}
-
-	public final FieldDescIR.Type fieldDescType() {
-		return this.fieldDescType;
-	}
-
-	public final OverriderDescIR.Type overriderDescType() {
-		return this.overriderDescType;
-	}
-
-	public final CtrOp.Type ctr() {
-		return this.ctr;
+		AscendantDescIR.ASCENDANT_DESC_IR.data(generator);
+		SampleDescIR.SAMPLE_DESC_IR.data(generator);
+		FieldDescIR.FIELD_DESC_IR.data(generator);
+		OverriderDescIR.OVERRIDER_DESC_IR.data(generator);
 	}
 
 }

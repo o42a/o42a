@@ -49,7 +49,7 @@ public final class StructPtrRec<O extends PtrOp> extends PtrRec<O> {
 		this.generator = generator;
 		setAllocation(generator.dataAllocator().allocatePtr(
 				getAllocation(),
-				this.type.getPointer().getAllocation()));
+				this.type.pointer(generator).getAllocation()));
 	}
 
 	@Override

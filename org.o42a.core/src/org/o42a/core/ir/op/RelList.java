@@ -31,17 +31,16 @@ import org.o42a.codegen.data.*;
 
 public abstract class RelList<T> implements Content<RelList.Type> {
 
+	public static final Type REL_LIST_TYPE = new Type();
+
 	private final ArrayList<T> content = new ArrayList<T>();
 	private Ptr<?> firstItem;
 	private Type instance;
 
-	public RelList<T> allocate(
-			IRGeneratorBase generator,
-			SubData<?> data,
-			String fieldName) {
+	public RelList<T> allocate(SubData<?> data, String fieldName) {
 		data.addInstance(
-				generator.id(fieldName),
-				generator.relListType(),
+				data.getGenerator().id(fieldName),
+				REL_LIST_TYPE,
 				this);
 		return this;
 	}
@@ -88,16 +87,15 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 		instance.getSize().setValue(size);
 		if (size == 0) {
-			instance.getList().setValue(
-					instance.getPointer().relativeTo(instance.getPointer()));
+			instance.getList().setNull();
 			return;
 		}
 
 		assert this.firstItem != null :
 			this + " items not allocated yet";
 
-		instance.getList().setValue(
-				this.firstItem.relativeTo(instance.getPointer()));
+		instance.getList().setValue(this.firstItem.relativeTo(
+				instance.data(instance.generator()).getPointer()));
 	}
 
 	@Override
@@ -141,7 +139,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		private RelPtrRec list;
 		private Int32rec size;
 
-		Type() {
+		private Type() {
 		}
 
 		public final RelPtrRec getList() {

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
@@ -169,7 +171,7 @@ final class AncestorRef extends Ex {
 				object.data(code).ptr()
 				.ancestorType(code)
 				.load(code)
-				.to(code, getGenerator().objectDataType())
+				.to(code, OBJECT_DATA_TYPE)
 				.op(getBuilder(), object.getPrecision());
 
 			return ancestorData.object(code, ref.getResolution().materialize());

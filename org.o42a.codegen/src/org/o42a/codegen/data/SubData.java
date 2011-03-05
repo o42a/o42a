@@ -141,7 +141,7 @@ public abstract class SubData<O extends PtrOp>
 			Content<T> content) {
 
 		@SuppressWarnings("unchecked")
-		final T instance = (T) type.instantiate(name, content);
+		final T instance = (T) type.instantiate(getGenerator(), name, content);
 		final SubData<?> data = instance.getTypeData();
 
 		add(data);

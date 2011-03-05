@@ -19,6 +19,9 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.local.*;
@@ -85,7 +88,7 @@ final class LocalIRFunc extends ObjectIRFunc {
 			new LocalBuilder(this.function, this.localIR, 1);
 		final ValOp result =
 			this.function.ptrArg(this.function, 0)
-			.to(this.function, getGenerator().valType());
+			.to(this.function, VAL_TYPE);
 
 		build(builder, this.function, result);
 
@@ -102,7 +105,7 @@ final class LocalIRFunc extends ObjectIRFunc {
 		final Function<ObjectValFunc> function =
 			getGenerator().newFunction().create(
 					getId(),
-					getGenerator().objectValSignature());
+					OBJECT_VAL);
 
 		function.debug("Calculating value");
 

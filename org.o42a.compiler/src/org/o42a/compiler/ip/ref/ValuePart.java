@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.core.def.Def.voidDef;
 import static org.o42a.core.def.Definitions.definitions;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -49,8 +50,7 @@ enum ValuePart {
 				return;
 			}
 
-			final ValOp result =
-				code.allocate(op.getGenerator().valType()).storeUnknown(code);
+			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			object.data(code).writeOverriddenValue(code, result);
 			result.condition(code).go(code, null, exit);
@@ -80,8 +80,7 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
-			final ValOp result =
-				code.allocate(op.getGenerator().valType()).storeUnknown(code);
+			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result, op);
 			result.condition(code).go(code, null, exit);
@@ -182,8 +181,7 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
-			final ValOp result =
-				code.allocate(op.getGenerator().valType()).storeUnknown(code);
+			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result, op);
 			result.condition(code).go(code, null, exit);
@@ -216,8 +214,7 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
 
-			final ValOp result =
-				code.allocate(op.getGenerator().valType()).storeUnknown(code);
+			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result, op);
 			result.condition(code).goUnless(code, exit);
