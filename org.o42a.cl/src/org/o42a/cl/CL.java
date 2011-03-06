@@ -30,7 +30,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.LogRecord;
@@ -70,7 +69,7 @@ public class CL {
 
 		logger.abortOnError();
 
-		intrinsics.generateAll(new IRGenerator(this.generator));
+		intrinsics.generateAll(this.generator);
 
 		this.generator.write();
 	}

@@ -35,7 +35,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.member.Member;
@@ -74,7 +73,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		this.ascendant = ascendant;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return this.objectIR.getGenerator();
 	}
 
@@ -231,7 +230,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private final void allocateFields(SubData<Op> data) {
 
 		final Obj ascendant = getAscendant();
-		final IRGenerator generator = getGenerator();
+		final Generator generator = getGenerator();
 		final Obj object = getObjectIR().getObject();
 
 		for (Member declared : ascendant.getMembers()) {

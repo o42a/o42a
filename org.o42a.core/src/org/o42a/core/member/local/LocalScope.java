@@ -24,6 +24,7 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 
 import java.util.Collection;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
@@ -31,7 +32,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.SourceSpec;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -218,7 +218,7 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public abstract LocalIR ir(IRGenerator generator);
+	public abstract LocalIR ir(Generator generator);
 
 	public final void assertExplicit() {
 		assert isExplicit() :

@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
@@ -41,7 +42,7 @@ import org.o42a.core.ref.type.TypeRef;
 public class CodeBuilder {
 
 	public static CodeBuilder codeBuilder(
-			IRGenerator generator,
+			Generator generator,
 			Function<?> function,
 			CodePos exit,
 			int hostArg,
@@ -70,13 +71,13 @@ public class CodeBuilder {
 	}
 
 	public static CodeBuilder codeBuilder(
-			IRGenerator generator,
+			Generator generator,
 			CompilerContext context,
 			Function<?> function) {
 		return new CodeBuilder(generator, context, function);
 	}
 
-	private final IRGenerator generator;
+	private final Generator generator;
 	private final CompilerContext context;
 	private final HostOp host;
 	private final Function<?> function;
@@ -114,7 +115,7 @@ public class CodeBuilder {
 	}
 
 	private CodeBuilder(
-			IRGenerator generator,
+			Generator generator,
 			Function<?> function,
 			Scope scope) {
 		this.generator = generator;
@@ -124,7 +125,7 @@ public class CodeBuilder {
 	}
 
 	private CodeBuilder(
-			IRGenerator generator,
+			Generator generator,
 			CompilerContext context,
 			Function<?> function) {
 		this.generator = generator;
@@ -133,7 +134,7 @@ public class CodeBuilder {
 		this.host = null;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return this.generator;
 	}
 

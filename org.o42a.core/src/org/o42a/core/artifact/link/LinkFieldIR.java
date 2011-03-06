@@ -21,6 +21,7 @@ package org.o42a.core.artifact.link;
 
 import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.data.SubData;
@@ -28,7 +29,6 @@ import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalOp;
@@ -41,7 +41,7 @@ import org.o42a.core.member.field.Field;
 
 final class LinkFieldIR extends FieldIR<Link> {
 
-	LinkFieldIR(IRGenerator generator, Field<Link> field) {
+	LinkFieldIR(Generator generator, Field<Link> field) {
 		super(generator, field);
 	}
 
@@ -83,7 +83,7 @@ final class LinkFieldIR extends FieldIR<Link> {
 		}
 
 		@Override
-		public IRGenerator getGenerator() {
+		public Generator getGenerator() {
 			return this.fieldIR.getGenerator();
 		}
 

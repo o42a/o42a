@@ -19,10 +19,10 @@
 */
 package org.o42a.core.member.clause;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -218,7 +218,7 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final ScopeIR ir(IRGenerator generator) {
+	public final ScopeIR ir(Generator generator) {
 		throw new UnsupportedOperationException();
 	}
 

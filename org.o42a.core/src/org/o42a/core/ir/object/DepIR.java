@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -28,7 +29,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.local.Dep;
 
@@ -37,16 +37,16 @@ public class DepIR {
 
 	public static final Type DEP_IR = new Type();
 
-	private final IRGenerator generator;
+	private final Generator generator;
 	private final Dep dep;
 	private Type instance;
 
-	public DepIR(IRGenerator generator, Dep dep) {
+	public DepIR(Generator generator, Dep dep) {
 		this.generator = generator;
 		this.dep = dep;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return this.generator;
 	}
 

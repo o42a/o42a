@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.IRUtil.encodeMemberId;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
@@ -29,7 +30,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalFieldIRBase;
@@ -44,7 +44,7 @@ public abstract class FieldIRBase<A extends Artifact<A>>
 	private Fld lastFld;
 	private boolean targetAllocated;
 
-	public FieldIRBase(IRGenerator generator, Field<A> field) {
+	public FieldIRBase(Generator generator, Field<A> field) {
 		super(generator, field);
 		this.id = encodeMemberId(
 				field.getEnclosingScope().ir(generator),
@@ -64,7 +64,7 @@ public abstract class FieldIRBase<A extends Artifact<A>>
 	@Override
 	public void allocate() {
 		getField().getArtifact().materialize().ir(getGenerator()).allocate(
-				getGenerator().getGenerator());
+				getGenerator());
 	}
 
 	@Override

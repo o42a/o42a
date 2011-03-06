@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.common.intrinsic.IntrinsicDirective;
@@ -33,7 +34,9 @@ import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.Field;
@@ -209,7 +212,7 @@ public class Root extends Obj {
 		}
 
 		@Override
-		protected ScopeIR createIR(IRGenerator generator) {
+		protected ScopeIR createIR(Generator generator) {
 			return new IR(generator, this);
 		}
 
@@ -219,7 +222,7 @@ public class Root extends Obj {
 
 		private final CodeId id;
 
-		IR(IRGenerator generator, Scope scope) {
+		IR(Generator generator, Scope scope) {
 			super(generator, scope);
 			this.id = generator.topId();
 		}
@@ -234,7 +237,7 @@ public class Root extends Obj {
 
 			final Obj object = getScope().getContainer().toObject();
 
-			object.ir(getGenerator()).data(getGenerator().getGenerator());
+			object.ir(getGenerator()).data(getGenerator());
 		}
 
 		@Override

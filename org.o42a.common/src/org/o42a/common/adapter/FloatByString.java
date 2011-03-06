@@ -19,10 +19,11 @@
 */
 package org.o42a.common.adapter;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePtr;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
@@ -247,14 +248,17 @@ public strictfp class FloatByString extends ByString<Double> {
 	@Override
 	protected void parse(Code code, ValOp result, ObjectOp input) {
 
-		final IRGenerator generator = input.getGenerator();
+		final Generator generator = input.getGenerator();
 		final ValOp inputValue = input.writeValue(code);
-		final ParseFunc parseFunc =
-			generator.externalFunction(
-					"o42a_float_by_str",
-					ParseFunc.signature(generator)).op(code);
+		final ParseFunc parseFunc = parseFunc(generator).op(code);
 
 		parseFunc.parse(code, result, inputValue);
+	}
+
+	private CodePtr<ParseFunc> parseFunc(Generator generator) {
+		return generator.externalFunction(
+				"o42a_float_by_str",
+				ParseFunc.PARSE);
 	}
 
 	private boolean hasError(LocationInfo location, double x) {

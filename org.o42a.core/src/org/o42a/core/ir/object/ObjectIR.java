@@ -37,7 +37,6 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.member.MemberKey;
@@ -48,7 +47,7 @@ import org.o42a.core.ref.type.TypeRef;
 
 public final class ObjectIR extends Struct<ObjectIR.Op> {
 
-	private final IRGenerator generator;
+	private final Generator generator;
 	private final Obj object;
 	private final ObjectTypeIR typeIR;
 	private final LinkedHashMap<Obj, ObjectBodyIR> bodyIRs =
@@ -59,13 +58,13 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 
 	private Struct<?> allBodies;
 
-	public ObjectIR(IRGenerator generator, Obj object) {
+	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
 		this.object = object;
 		this.typeIR = new ObjectTypeIR(this);
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return this.generator;
 	}
 
@@ -134,7 +133,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 	}
 
 	public final void allocate() {
-		allocate(getGenerator().getGenerator());
+		allocate(getGenerator());
 	}
 
 	public ObjOp op(CodeBuilder builder, Code code) {

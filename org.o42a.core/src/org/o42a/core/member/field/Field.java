@@ -19,11 +19,11 @@
 */
 package org.o42a.core.member.field;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -275,7 +275,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	@Override
-	public final FieldIR<A> ir(IRGenerator generator) {
+	public final FieldIR<A> ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
 			this.ir = createIR(generator);
 		}
@@ -304,7 +304,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 				"Field " + this + " can not have variants");
 	}
 
-	protected FieldIR<A> createIR(IRGenerator generator) {
+	protected FieldIR<A> createIR(Generator generator) {
 		return getArtifact().getKind().fieldIR(generator, this);
 	}
 

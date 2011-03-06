@@ -20,10 +20,10 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.ir.IRGenerator;
 
 
 public abstract class Control {
@@ -64,7 +64,7 @@ public abstract class Control {
 		this.exit = exit;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return getBuilder().getGenerator();
 	}
 

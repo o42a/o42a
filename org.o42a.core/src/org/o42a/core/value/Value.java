@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.ir.IRGenerator;
+import org.o42a.codegen.Generator;
 import org.o42a.core.ir.op.Val;
 
 
@@ -69,7 +69,7 @@ public abstract class Value<T> {
 
 	public abstract T getDefiniteValue();
 
-	public abstract Val val(IRGenerator generator);
+	public abstract Val val(Generator generator);
 
 	public Value<T> require(LogicalValue requirement) {
 
@@ -125,7 +125,7 @@ public abstract class Value<T> {
 		}
 
 		@Override
-		public Val val(IRGenerator generator) {
+		public Val val(Generator generator) {
 			throw new UnsupportedOperationException();
 		}
 

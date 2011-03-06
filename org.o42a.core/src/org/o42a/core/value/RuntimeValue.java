@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.ir.IRGenerator;
+import org.o42a.codegen.Generator;
 import org.o42a.core.ir.op.Val;
 
 
@@ -40,7 +40,7 @@ final class RuntimeValue<T> extends Value<T> {
 	}
 
 	@Override
-	public Val val(IRGenerator generator) {
+	public Val val(Generator generator) {
 		throw new UnsupportedOperationException(
 				"Abstract tun-time value should not generate any code");
 	}

@@ -36,7 +36,6 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
@@ -57,7 +56,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		this.objectIR = objectIR;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
 	}
 

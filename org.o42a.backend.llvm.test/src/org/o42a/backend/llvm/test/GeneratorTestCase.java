@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.util.Source;
 
 
@@ -41,7 +40,7 @@ public class GeneratorTestCase extends CompilerTestCase {
 
 		try {
 			generator.setDebug(true);
-			generateCode(new IRGenerator(generator));
+			generateCode(generator);
 			generator.write();
 		} finally {
 			generator.close();

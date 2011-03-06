@@ -22,12 +22,15 @@ package org.o42a.intrinsic.root;
 import static org.o42a.core.ScopePlace.TOP_PLACE;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -147,7 +150,7 @@ public final class Top extends AbstractScope implements Container {
 	}
 
 	@Override
-	public ScopeIR ir(IRGenerator generator) {
+	public ScopeIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
 			this.ir = new IR(generator, this);
 		}
@@ -163,7 +166,7 @@ public final class Top extends AbstractScope implements Container {
 
 		private final CodeId id;
 
-		IR(IRGenerator generator, Top scope) {
+		IR(Generator generator, Top scope) {
 			super(generator, scope);
 			this.id = generator.topId();
 		}
@@ -199,7 +202,7 @@ public final class Top extends AbstractScope implements Container {
 		}
 
 		@Override
-		public IRGenerator getGenerator() {
+		public Generator getGenerator() {
 			return this.builder.getGenerator();
 		}
 

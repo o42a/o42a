@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 
 
 public abstract class IROp {
@@ -41,7 +41,7 @@ public abstract class IROp {
 		return this.builder.getContext();
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return this.builder.getGenerator();
 	}
 

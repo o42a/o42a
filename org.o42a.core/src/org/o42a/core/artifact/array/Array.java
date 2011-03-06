@@ -24,6 +24,7 @@ import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeObject;
 import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeRef;
 import static org.o42a.core.ref.Ref.voidRef;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -31,7 +32,6 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
@@ -46,7 +46,7 @@ public abstract class Array extends Artifact<Array> {
 	}
 
 	public static FieldIR<Array> fieldIR(
-			IRGenerator generator,
+			Generator generator,
 			Field<Array> field) {
 		return new ArrayFieldIR(generator, field);
 	}

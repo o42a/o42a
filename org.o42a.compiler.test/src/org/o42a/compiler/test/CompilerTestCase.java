@@ -32,13 +32,13 @@ import java.util.LinkedList;
 
 import org.junit.After;
 import org.junit.Before;
+import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.LogicalValue;
@@ -276,7 +276,7 @@ public abstract class CompilerTestCase {
 		this.module.resolveAll();
 	}
 
-	protected void generateCode(IRGenerator generator) {
+	protected void generateCode(Generator generator) {
 		this.module.resolveAll();
 		INTRINSICS.generateAll(generator);
 	}

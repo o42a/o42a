@@ -21,6 +21,7 @@ package org.o42a.core.artifact.link;
 
 import static org.o42a.core.def.Rescoper.wrapper;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -28,7 +29,6 @@ import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.Member;
@@ -81,7 +81,7 @@ public abstract class ObjectWrap extends PlainObject {
 	}
 
 	@Override
-	protected ObjectIR createIR(IRGenerator generator) {
+	protected ObjectIR createIR(Generator generator) {
 		return getWrapped().ir(generator);
 	}
 

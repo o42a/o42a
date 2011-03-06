@@ -19,8 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
@@ -108,7 +108,7 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	@Override
-	public final ScopeIR ir(IRGenerator generator) {
+	public final ScopeIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
 			this.ir = createIR(generator);
 		}
@@ -121,7 +121,7 @@ public abstract class ObjectScope extends AbstractScope {
 				? this.object.toString() : "ObjectScope");
 	}
 
-	protected abstract ScopeIR createIR(IRGenerator generator);
+	protected abstract ScopeIR createIR(Generator generator);
 
 	void setScopeObject(Obj object) {
 		this.object = object;

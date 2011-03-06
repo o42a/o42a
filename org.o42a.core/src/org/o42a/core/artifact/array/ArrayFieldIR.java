@@ -19,11 +19,11 @@
 */
 package org.o42a.core.artifact.array;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.local.LclOp;
@@ -34,7 +34,7 @@ import org.o42a.core.member.field.Field;
 
 final class ArrayFieldIR extends FieldIR<Array> {
 
-	ArrayFieldIR(IRGenerator generator, Field<Array> field) {
+	ArrayFieldIR(Generator generator, Field<Array> field) {
 		super(generator, field);
 	}
 

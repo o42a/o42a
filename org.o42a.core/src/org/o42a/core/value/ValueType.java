@@ -23,6 +23,7 @@ import static org.o42a.core.ir.op.Val.VOID_VAL;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -30,7 +31,6 @@ import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Def;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.Val;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -161,7 +161,7 @@ public abstract class ValueType<T> {
 		return Definitions.noValueDefinitions(location, scope, this);
 	}
 
-	protected abstract Val val(IRGenerator generator, T value);
+	protected abstract Val val(Generator generator, T value);
 
 	@Override
 	public String toString() {
@@ -185,7 +185,7 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		protected Val val(IRGenerator generator, Void value) {
+		protected Val val(Generator generator, Void value) {
 			return VOID_VAL;
 		}
 
@@ -203,7 +203,7 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		protected Val val(IRGenerator generator, Long value) {
+		protected Val val(Generator generator, Long value) {
 			return new Val(value);
 		}
 
@@ -221,7 +221,7 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		protected Val val(IRGenerator generator, Double value) {
+		protected Val val(Generator generator, Double value) {
 			return new Val(value);
 		}
 
@@ -239,7 +239,7 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		protected Val val(IRGenerator generator, java.lang.Void value) {
+		protected Val val(Generator generator, java.lang.Void value) {
 			throw new IllegalStateException("Type NONE can not have a value");
 		}
 

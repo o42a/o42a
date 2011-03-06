@@ -29,6 +29,7 @@ import static org.o42a.core.member.local.Dep.fieldDep;
 
 import java.util.*;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
@@ -37,7 +38,6 @@ import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
@@ -66,7 +66,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public static FieldIR<Obj> fieldIR(
-			IRGenerator generator,
+			Generator generator,
 			Field<Obj> field) {
 		return new ObjectFieldIR(generator, field);
 	}
@@ -662,14 +662,14 @@ public abstract class Obj extends Artifact<Obj>
 		return scopePathFragment.toPath();
 	}
 
-	public final ObjectIR ir(IRGenerator generator) {
+	public final ObjectIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
 			this.ir = createIR(generator);
 		}
 		return this.ir;
 	}
 
-	public final ObjectValueIR valueIR(IRGenerator generator) {
+	public final ObjectValueIR valueIR(Generator generator) {
 		if (this.valueIR == null || this.valueIR.getGenerator() != generator) {
 			this.valueIR = createValueIR(ir(generator));
 		}
@@ -712,7 +712,7 @@ public abstract class Obj extends Artifact<Obj>
 		return getDefinitions().value(scope).getValue();
 	}
 
-	protected ObjectIR createIR(IRGenerator generator) {
+	protected ObjectIR createIR(Generator generator) {
 		return new ObjectIR(generator, this);
 	}
 

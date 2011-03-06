@@ -21,7 +21,7 @@ package org.o42a.core.value;
 
 import static org.o42a.core.ir.op.Val.FALSE_VAL;
 
-import org.o42a.core.ir.IRGenerator;
+import org.o42a.codegen.Generator;
 import org.o42a.core.ir.op.Val;
 
 
@@ -42,7 +42,7 @@ final class FalseValue<T> extends Value<T> {
 	}
 
 	@Override
-	public Val val(IRGenerator generator) {
+	public Val val(Generator generator) {
 		return FALSE_VAL;
 	}
 

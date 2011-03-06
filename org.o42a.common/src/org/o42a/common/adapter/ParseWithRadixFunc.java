@@ -26,21 +26,13 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.ValOp;
 
 
 public final class ParseWithRadixFunc extends Func {
 
-	private static FuncSignature signature;
-
-	public static Signature<ParseWithRadixFunc> signature(
-			IRGenerator generator) {
-		if (signature != null && signature.generator == generator) {
-			return signature;
-		}
-		return signature = new FuncSignature(generator);
-	}
+	public static final Signature<ParseWithRadixFunc> PARSE_WITH_RADIX =
+		new ParseWithRadix();
 
 	private ParseWithRadixFunc(FuncCaller caller) {
 		super(caller);
@@ -50,14 +42,11 @@ public final class ParseWithRadixFunc extends Func {
 		caller().call(code, result, input, code.int32(radix));
 	}
 
-	private static final class FuncSignature
+	private static final class ParseWithRadix
 			extends Signature<ParseWithRadixFunc> {
 
-		private final IRGenerator generator;
-
-		private FuncSignature(IRGenerator generator) {
+		private ParseWithRadix() {
 			super("void", "ParseWithRadixF", "Val*, Val*, int32");
-			this.generator = generator;
 		}
 
 		@Override

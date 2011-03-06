@@ -21,11 +21,11 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.ObjFld;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -36,7 +36,7 @@ import org.o42a.core.member.field.Field;
 
 final class ObjectFieldIR extends FieldIR<Obj> {
 
-	ObjectFieldIR(IRGenerator generator, Field<Obj> field) {
+	ObjectFieldIR(Generator generator, Field<Obj> field) {
 		super(generator, field);
 	}
 

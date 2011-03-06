@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.st.St;
 
@@ -35,7 +35,7 @@ public abstract class StOp {
 		this.statement = statement;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return getBuilder().getGenerator();
 	}
 

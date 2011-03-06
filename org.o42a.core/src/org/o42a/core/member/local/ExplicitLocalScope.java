@@ -24,9 +24,9 @@ import static org.o42a.core.member.MemberId.memberName;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -183,7 +183,7 @@ final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public LocalIR ir(IRGenerator generator) {
+	public LocalIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
 			this.ir = new LocalIR(generator, this);
 		}

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
@@ -27,7 +28,6 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.RefOp;
@@ -77,7 +77,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 	public abstract DeclaredField<A, ?> declareField(MemberField member);
 
-	public abstract FieldIR<A> fieldIR(IRGenerator generator, Field<A> field);
+	public abstract FieldIR<A> fieldIR(Generator generator, Field<A> field);
 
 	public final boolean is(ArtifactKind<?> kind) {
 		return this == kind;
@@ -96,7 +96,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public FieldIR<Obj> fieldIR(IRGenerator generator, Field<Obj> field) {
+		public FieldIR<Obj> fieldIR(Generator generator, Field<Obj> field) {
 			return Obj.fieldIR(generator, field);
 		}
 
@@ -126,7 +126,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public FieldIR<Link> fieldIR(IRGenerator generator, Field<Link> field) {
+		public FieldIR<Link> fieldIR(Generator generator, Field<Link> field) {
 			return Link.fieldIR(generator, field);
 		}
 
@@ -151,7 +151,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		@Override
 		public FieldIR<Array> fieldIR(
-				IRGenerator generator,
+				Generator generator,
 				Field<Array> field) {
 			return Array.fieldIR(generator, field);
 		}

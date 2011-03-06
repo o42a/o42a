@@ -32,7 +32,6 @@ import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.Val;
 
 
@@ -53,7 +52,7 @@ final class StringType extends ValueType<String> {
 	}
 
 	@Override
-	protected Val val(IRGenerator generator, String value) {
+	protected Val val(Generator generator, String value) {
 
 		final Val cachedVal = cachedVal(generator, value);
 
@@ -76,7 +75,7 @@ final class StringType extends ValueType<String> {
 		} else {
 
 			final Ptr<AnyOp> binary =
-				generator.getGenerator().addBinary(
+				generator.addBinary(
 						generator.id("STRING_" + (seq++)),
 						bytes);
 
@@ -92,18 +91,16 @@ final class StringType extends ValueType<String> {
 		return val;
 	}
 
-	private static Val cachedVal(IRGenerator generator, String string) {
-
-		final Generator gen = generator.getGenerator();
-
-		if (gen != cacheGenerator) {
-			cacheGenerator = gen;
-			cache.clear();
-			seq = 0;
-			return null;
+	private static Val cachedVal(Generator generator, String string) {
+		if (generator == cacheGenerator) {
+			return cache.get(string);
 		}
 
-		return cache.get(string);
+		cacheGenerator = generator;
+		cache.clear();
+		seq = 0;
+
+		return null;
 	}
 
 	private static long bytesToLong(byte[] bytes) {

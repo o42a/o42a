@@ -20,18 +20,21 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
 
 
 public final class ObjectScopeIR extends ScopeIR {
 
 	private final CodeId id;
 
-	public ObjectScopeIR(IRGenerator generator, Obj object) {
+	public ObjectScopeIR(Generator generator, Obj object) {
 		super(generator, object.getScope());
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
@@ -50,7 +53,7 @@ public final class ObjectScopeIR extends ScopeIR {
 	@Override
 	public void allocate() {
 		getScope().getContainer().toObject().ir(getGenerator()).data(
-				getGenerator().getGenerator());
+				getGenerator());
 	}
 
 	@Override

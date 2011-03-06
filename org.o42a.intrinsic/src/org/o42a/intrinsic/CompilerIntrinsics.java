@@ -26,11 +26,11 @@ import static org.o42a.lib.test.TestModule.testModule;
 
 import java.util.HashMap;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.member.field.Field;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
@@ -142,7 +142,7 @@ public class CompilerIntrinsics implements Intrinsics {
 		this.mainModule = registerModule(module.getModuleId(), module);
 	}
 
-	public void generateAll(IRGenerator generator) {
+	public void generateAll(Generator generator) {
 		getMainModule().ir(generator).allocate();
 		if (this.modules.get(this.consoleModule.getModuleId()).isUsed()) {
 			this.consoleModule.generateMain(generator);

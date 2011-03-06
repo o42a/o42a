@@ -21,11 +21,8 @@ package org.o42a.lib.console.impl;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.lib.console.impl.PrintFunc.printSignature;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CondBlk;
+import org.o42a.codegen.code.*;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
@@ -97,9 +94,7 @@ public class Print extends IntrinsicObject {
 			final CondBlk print =
 				text.condition(code).branch(code, "print", "dont_print");
 			final CodeBlk dontPrint = print.otherwise();
-			final PrintFunc printFunc = getGenerator().externalFunction(
-					Print.this.funcName,
-					printSignature(getGenerator())).op(print);
+			final PrintFunc printFunc = printFunc().op(print);
 
 			printFunc.print(print, text);
 			result.storeVoid(print);
@@ -113,6 +108,12 @@ public class Print extends IntrinsicObject {
 				result.storeFalse(dontPrint);
 				dontPrint.go(code.tail());
 			}
+		}
+
+		private CodePtr<PrintFunc> printFunc() {
+			return getGenerator().externalFunction(
+					Print.this.funcName,
+					PrintFunc.PRINT);
 		}
 
 	}

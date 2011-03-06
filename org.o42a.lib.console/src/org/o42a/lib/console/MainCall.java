@@ -23,6 +23,7 @@ import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Function;
@@ -32,7 +33,6 @@ import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.AdapterId;
@@ -91,12 +91,12 @@ final class MainCall extends DefinedObject {
 	protected void buildDefinition(DeclarativeBlock definition) {
 	}
 
-	public void generateMain(IRGenerator generator) {
+	public void generateMain(Generator generator) {
 
 		final ObjectIR ir = ir(generator);
 		final Function<MainFunc> main;
 
-		if (generator.getGenerator().isDebug()) {
+		if (generator.isDebug()) {
 			main = generator.newFunction().create(
 					generator.rawId("_o42a_main"),
 					MainFunc.SIGNATURE);
@@ -126,7 +126,7 @@ final class MainCall extends DefinedObject {
 	}
 
 	private void generateDebugMain(
-			IRGenerator generator,
+			Generator generator,
 			Function<MainFunc> main) {
 
 		final Function<MainFunc> debugMain =
