@@ -76,8 +76,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 	}
 
 	public final int size(Generator generator) {
-		typeAllocated(generator, true);
-		allocate(generator);
+		ensureTypeAllocated(generator, true);
 		return this.data.size();
 	}
 
@@ -92,8 +91,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 	}
 
 	public Iterable<Data<?>> iterate(Generator generator) {
-		typeAllocated(generator, true);
-		allocate(generator);
+		ensureTypeAllocated(generator, true);
 		return this.data;
 	}
 
@@ -106,9 +104,6 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 	}
 
 	protected abstract CodeId buildCodeId(CodeIdFactory factory);
-
-	protected void allocate(Generator generator) {
-	}
 
 	protected abstract void allocate(SubData<O> data);
 
@@ -151,7 +146,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 			Generator generator,
 			CodeId id,
 			Content<?> content) {
-		typeAllocated(generator, true);
+		ensureTypeAllocated(generator, true);
 
 		final Type<O> instance = clone();
 
@@ -161,7 +156,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 	}
 
 	final Type<O> instantiate(Global<O, ?> global, Content<?> content) {
-		typeAllocated(global.getGenerator(), true);
+		ensureTypeAllocated(global.getGenerator(), true);
 
 		final Type<O> instance = clone();
 
@@ -182,16 +177,15 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 	}
 
 	private final Data<O> data(Generator generator, boolean fullyAllocated) {
-		typeAllocated(generator, fullyAllocated);
-		allocate(generator);
+		ensureTypeAllocated(generator, fullyAllocated);
 		return this.data;
 	}
 
-	private final void typeAllocated(
+	private final void ensureTypeAllocated(
 			Generator generator,
 			boolean fullyAllocated) {
 		if (getOriginal() != this) {
-			getOriginal().typeAllocated(generator, fullyAllocated);
+			getOriginal().ensureTypeAllocated(generator, fullyAllocated);
 			return;
 		}
 		if (this.data == null) {

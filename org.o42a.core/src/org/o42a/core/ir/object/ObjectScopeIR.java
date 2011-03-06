@@ -52,8 +52,7 @@ public final class ObjectScopeIR extends ScopeIR {
 
 	@Override
 	public void allocate() {
-		getScope().getContainer().toObject().ir(getGenerator()).data(
-				getGenerator());
+		getScope().getContainer().toObject().ir(getGenerator()).getData();
 	}
 
 	@Override
