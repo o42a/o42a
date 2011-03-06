@@ -162,21 +162,13 @@ public abstract class Debug extends Globals {
 	}
 
 	DbgStruct writeStruct(Data<?> fieldData) {
-
-		final Generator generator = fieldData.getGenerator();
-		final Type<?> type;
-
-		if (fieldData.getDataType() == DataType.STRUCT) {
-
-			final SubData<?> fieldStruct = (SubData<?>) fieldData;
-
-			type = fieldStruct.getType().getOriginal();
-		} else if (fieldData instanceof StructPtrRec) {
-			type = ((StructPtrRec<?>) fieldData).getType().getOriginal();
-		} else {
+		if (fieldData.getDataType() != DataType.STRUCT) {
 			return null;
 		}
 
+		final Generator generator = fieldData.getGenerator();
+		final SubData<?> fieldStruct = (SubData<?>) fieldData;
+		final Type<?> type = fieldStruct.getType().getOriginal();
 		final Ptr<?> typePointer = type.data(generator).getPointer();
 		final DbgStruct found = this.structs.get(typePointer);
 

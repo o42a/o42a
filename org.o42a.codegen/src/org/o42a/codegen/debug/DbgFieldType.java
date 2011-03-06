@@ -89,7 +89,8 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 							fieldData.getPointer()));
 		}
 		if (enclosing == null
-				&& struct.getType().codeId(generator).equals(fieldData.getId())) {
+				&& struct.getType().codeId(generator).equals(
+						fieldData.getId())) {
 			getName().setValue(struct.getName().getValue());
 		} else {
 			debug.setName(
