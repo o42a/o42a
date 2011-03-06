@@ -61,6 +61,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	public <O extends PtrOp> DataAllocation<O> begin(Type<O> type) {
 		return push(new TypeAllocation<O>(
 				getModule(),
+				createType(getModulePtr()),
 				createTypeData(getModulePtr()),
 				this.top,
 				type));
@@ -72,20 +73,20 @@ public class LLVMDataAllocator implements DataAllocator {
 			Global<O, ?> global) {
 
 		final long typePtr;
-		final long dataPtr;
+		final long typeDataPtr;
 
 		if (type != null) {
 			typePtr = typePtr(type);
-			dataPtr = 0L;
+			typeDataPtr = 0L;
 		} else {
-			typePtr = 0L;
-			dataPtr = createTypeData(getModulePtr());
+			typePtr = createType(getModulePtr());
+			typeDataPtr = createTypeData(getModulePtr());
 		}
 
 		return push(new ContainerAllocation.Global<O>(
 				getModule(),
 				typePtr,
-				dataPtr,
+				typeDataPtr,
 				this.top,
 				global.getId(),
 				global.getInstance()));
@@ -97,19 +98,19 @@ public class LLVMDataAllocator implements DataAllocator {
 			SubData<O> data) {
 
 		final long typePtr;
-		final long dataPtr;
+		final long typeDataPtr;
 
 		if (type != null) {
 			typePtr = typePtr(type);
-			dataPtr = 0L;
+			typeDataPtr = 0L;
 		} else {
-			typePtr = 0L;
-			dataPtr = createTypeData(getModulePtr());
+			typePtr = createType(getModulePtr());
+			typeDataPtr = createTypeData(getModulePtr());
 		}
 
 		return push(new ContainerAllocation.Struct<O>(
 				typePtr,
-				dataPtr,
+				typeDataPtr,
 				this.top,
 				data.getType()));
 	}
@@ -118,21 +119,20 @@ public class LLVMDataAllocator implements DataAllocator {
 	public void exit(SubData<?> data) {
 
 		final ContainerAllocation<?> allocation = pull();
-		long typePtr = allocation.getTypePtr();
 
-		if (typePtr == 0L) {
-			typePtr = allocateType(
+		if (!allocation.isTypeAllocated()) {
+			allocation.setUniqueTypePtr(refineType(
 					getModulePtr(),
 					data.getId().getId(),
-					allocation.getNativePtr(),
-					data.getType().isPacked());
-			allocation.setTypePtr(typePtr);
+					allocation.getTypePtr(),
+					allocation.getTypeDataPtr(),
+					data.getType().isPacked()));
 		}
 		if (allocate()) {
 			allocation.setNativePtr(allocateStruct(
 					getModulePtr(),
 					getTypeDataPtr(),
-					typePtr));
+					allocation.getTypePtr()));
 		} else {
 			allocation.setNativePtr(allocation.getTypePtr());
 		}
@@ -147,20 +147,18 @@ public class LLVMDataAllocator implements DataAllocator {
 		assert allocation.llvmId().getGlobalId().equals(global.getId()) :
 			"Error closing global data " + global;
 
-		long typePtr = allocation.getTypePtr();
-
-		if (typePtr == 0L) {
-			typePtr = allocateType(
+		if (!allocation.isTypeAllocated()) {
+			allocation.setUniqueTypePtr(refineType(
 					getModulePtr(),
-					global.getId() + "$type",
-					allocation.getNativePtr(),
-					global.getInstance().isPacked());
-			allocation.setTypePtr(typePtr);
+					global.getId().detail("type").toString(),
+					allocation.getTypePtr(),
+					allocation.getTypeDataPtr(),
+					global.getInstance().isPacked()));
 		}
 		allocation.setNativePtr(allocateGlobal(
 				getModulePtr(),
 				global.getId().getId(),
-				typePtr,
+				allocation.getTypePtr(),
 				global.isConstant(),
 				global.isExported()));
 	}
@@ -175,11 +173,13 @@ public class LLVMDataAllocator implements DataAllocator {
 			+ ", but " + type.pointer(type.generator()).getAllocation()
 			+ " expected";
 
-		allocation.setTypePtr(allocateType(
+		allocation.setUniqueTypePtr(refineType(
 				getModulePtr(),
 				type.codeId(type.generator()).getId(),
-				allocation.getNativePtr(),
+				allocation.getTypePtr(),
+				allocation.getTypeDataPtr(),
 				type.isPacked()));
+		allocation.setNativePtr(allocation.getTypePtr());
 	}
 
 	@Override
@@ -215,7 +215,6 @@ public class LLVMDataAllocator implements DataAllocator {
 			Signature<F> signature) {
 		if (allocate()) {
 			allocateCodePtr(
-					getModulePtr(),
 					getTypeDataPtr(),
 					LLVMCode.nativePtr(signature));
 		}
@@ -240,7 +239,6 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		if (allocate()) {
 			allocateStructPtr(
-					getModulePtr(),
 					getTypeDataPtr(),
 					llvmStruct.getTypePtr());
 		}
@@ -289,11 +287,11 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	private boolean allocate() {
-		return this.top.getTypePtr() == 0L;
+		return !this.top.isTypeAllocated();
 	}
 
 	private long getTypeDataPtr() {
-		return this.top.getNativePtr();
+		return this.top.getTypeDataPtr();
 	}
 
 	private long getModulePtr() {
@@ -326,6 +324,8 @@ public class LLVMDataAllocator implements DataAllocator {
 			int start,
 			int end);
 
+	private static native long createType(long modulePtr);
+
 	private static native long createTypeData(long modulePtr);
 
 	private static native long allocateStruct(
@@ -340,10 +340,11 @@ public class LLVMDataAllocator implements DataAllocator {
 			boolean constant,
 			boolean exported);
 
-	private static native long allocateType(
+	private static native long refineType(
 			long modulePtr,
 			String id,
-			long dataPtr,
+			long typePtr,
+			long typeDataPtr,
 			boolean packed);
 
 	private static native void allocateInt32(long modulePtr, long enclosingPtr);
@@ -353,14 +354,12 @@ public class LLVMDataAllocator implements DataAllocator {
 	private static native void allocateFp64(long modulePtr, long enclosingPtr);
 
 	private static native void allocateCodePtr(
-			long modulePtr,
 			long enclosingPtr,
 			long functTypePtr);
 
 	private static native void allocatePtr(long modulePtr, long enclosingPtr);
 
 	private static native void allocateStructPtr(
-			long modulePtr,
 			long enclosingPtr,
 			long typePtr);
 

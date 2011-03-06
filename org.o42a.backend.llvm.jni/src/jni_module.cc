@@ -176,7 +176,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerTo(
 		jclass cls,
 		jlong typePtr) {
 
-	const Type *type = from_ptr<const Type>(typePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	return to_ptr(type->getPointerTo());
+	return to_ptr(type->get()->getPointerTo());
 }

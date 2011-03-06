@@ -170,7 +170,7 @@ public abstract class LLVMId {
 
 	abstract int[] buildIndices(int len);
 
-	static native long typeExpression(long modulePtr, long typeId);
+	static native long typeExpression(long typePtr);
 
 	static native long expression(
 			long modulePtr,

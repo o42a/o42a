@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMId
  * Method:    typeExpression
- * Signature: (JJ)J
+ * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMId_typeExpression
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMId

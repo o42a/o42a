@@ -187,15 +187,13 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_nullPtr(
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullStructPtr(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr,
 		jlong typePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
-	Type *type = from_ptr<Type>(typePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	OTRACE("nullStructPtr: " << *type << "\n");
+	OTRACE("nullStructPtr: " << *type->get() << "\n");
 
-	Constant *result = Constant::getNullValue(type->getPointerTo());
+	Constant *result = Constant::getNullValue(type->get()->getPointerTo());
 
 	ODUMP(result);
 
@@ -205,11 +203,9 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullStructPtr(
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullFuncPtr(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr,
-		jlong typePtr) {
+		jlong funcTypePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
-	Type *type = from_ptr<Type>(typePtr);
+	Type *type = from_ptr<Type>(funcTypePtr);
 
 	OTRACE("nullFuncPtr: " << *type << "\n");
 
@@ -245,12 +241,13 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct(
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
-	StructType *type = from_ptr<StructType>(typePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
 	OCODE(block, "allocateStruct: "
-			<< block->getParent()->getParent()->getTypeName(type) << "\n");
+			<< block->getParent()->getParent()->getTypeName(type->get())
+			<< "\n");
 
-	Value *result = builder.CreateAlloca(type);
+	Value *result = builder.CreateAlloca(type->get());
 
 	ODUMP(result);
 

@@ -72,6 +72,19 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 	return to_ptr(result);
 }
 
+jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createType(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr) {
+
+	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
+	PATypeHolder *type = module->newOpaqueType();
+
+	OTRACE("createType: " << type << "\n");
+
+	return to_ptr(type);
+}
+
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createTypeData(
 		JNIEnv *env,
 		jclass cls,
@@ -94,12 +107,12 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
 	const Module *module = from_ptr<Module>(modulePtr);
 	std::vector<const Type*> *enclosing =
 			from_ptr<std::vector<const Type*> >(enclosingPtr);
-	const Type *type = from_ptr<Type>(typePtr);
+	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	enclosing->push_back(type);
+	enclosing->push_back(type->get());
 
-	OTRACE("allocateStruct (" << module->getTypeName(type)
-			<< "): " << *type << "\n");
+	OTRACE("allocateStruct (" << module->getTypeName(type->get())
+			<< "): " << *type->get() << "\n");
 
 	return to_ptr(type);
 }
@@ -114,10 +127,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
 		jboolean exported) {
 
 	Module *module = from_ptr<Module>(modulePtr);
-	Type *type = from_ptr<Type>(typePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 	jStringRef name(env, id);
 	GlobalVariable *global =
-			cast<GlobalVariable>(module->getOrInsertGlobal(name, type));
+			cast<GlobalVariable>(module->getOrInsertGlobal(name, type->get()));
 
 	global->setConstant(constant);
 	global->setLinkage(
@@ -130,32 +143,38 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
 	return to_ptr(global);
 }
 
-jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateType(
+jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
 		jstring id,
+		jlong typePtr,
 		jlong typeDataPtr,
 		jboolean packed) {
 
 	Module *module = from_ptr<Module>(modulePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 	std::vector<const Type*> *typeData =
 			from_ptr<std::vector<const Type*> >(typeDataPtr);
-	StructType *type = StructType::get(module->getContext(), *typeData, packed);
+	StructType *newType =
+			StructType::get(module->getContext(), *typeData, packed);
 
+	delete typeData;
+
+	cast<StructType>(type->get())->refineAbstractTypeTo(newType);
+	newType = cast<StructType>(type->get());
 	if (id) {
 
 		jStringRef name(env, id);
 
-		module->addTypeName(name, type);
+		module->addTypeName(name, newType);
 	}
 
-	OTRACE("allocateType (" << module->getTypeName(type) << "): "
-			<< *type << "\n");
+	OTRACE("allocateType (" << module->getTypeName(newType) << "): "
+			<< *newType << "\n");
 
-	return to_ptr(type);
+	return to_ptr(newType);
 }
-
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt32(
 		JNIEnv *env,
@@ -199,11 +218,9 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp64(
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateCodePtr(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr,
 		jlong enclosingPtr,
 		jlong funcTypePtr) {
 
-	const Module *module = from_ptr<Module>(modulePtr);
 	std::vector<const Type*> *enclosing =
 			from_ptr<std::vector<const Type*> >(enclosingPtr);
 	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);
@@ -227,27 +244,25 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocatePtr(
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStructPtr(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr,
 		jlong enclosingPtr,
 		jlong typePtr) {
 
-	const Module *module = from_ptr<Module>(modulePtr);
 	std::vector<const Type*> *enclosing =
 			from_ptr<std::vector<const Type*> >(enclosingPtr);
-	Type *type = from_ptr<Type>(typePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	enclosing->push_back(type->getPointerTo());
+	enclosing->push_back(type->get()->getPointerTo());
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateRelPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
-		jlong typePtr) {
+		jlong enclosingPtr) {
 
 	const Module *module = from_ptr<Module>(modulePtr);
 	std::vector<const Type*> *typeData =
-			from_ptr<std::vector<const Type*> >(typePtr);
+			from_ptr<std::vector<const Type*> >(enclosingPtr);
 
 	typeData->push_back(Type::getInt32Ty(module->getContext()));
 }
@@ -325,9 +340,9 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_structLayout(
 
 	const o42ac::BackendModule *module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
-	const Type *type = from_ptr<Type>(typePtr);
+	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	return typeLayout(module, type);
+	return typeLayout(module, type->get());
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr(
@@ -344,23 +359,19 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr(
 jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullStructPtr(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr,
 		jlong typePtr) {
 
-	const Module *module = from_ptr<Module>(modulePtr);
-	const Type *type = from_ptr<Type>(typePtr);
+	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	return to_ptr(Constant::getNullValue(type->getPointerTo()));
+	return to_ptr(Constant::getNullValue(type->get()->getPointerTo()));
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullFuncPtr(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr,
-		jlong typePtr) {
+		jlong funcTypePtr) {
 
-	const Module *module = from_ptr<Module>(modulePtr);
-	const Type *type = from_ptr<Type>(typePtr);
+	const Type *type = from_ptr<Type>(funcTypePtr);
 
 	return to_ptr(Constant::getNullValue(type->getPointerTo()));
 }
@@ -521,7 +532,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeStruct(
 		jlong typePtr,
 		jlong dataPtr) {
 
-	StructType *type = from_ptr<StructType>(typePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 	std::vector<Constant*> *enclosing =
 			from_ptr<std::vector<Constant*> >(enclosingPtr);
 	std::vector<Constant*> *data =
@@ -536,10 +547,11 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeStruct(
 				llvm::errs() << c->getName() << ": " << *c->getType();
 				llvm::errs() << "\n";
 			}
-			llvm::errs() << "**** " << *type << "\n";
+			llvm::errs() << "**** " << *type->get() << "\n";
 	);
 
-	Constant *constant = ConstantStruct::get(type, *data);
+	Constant *constant =
+			ConstantStruct::get(cast<StructType>(type->get()), *data);
 
 	ODUMP(constant);
 

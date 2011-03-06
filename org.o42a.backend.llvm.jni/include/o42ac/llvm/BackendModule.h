@@ -21,6 +21,7 @@
 #define O42AC_LLVM_BACKEND_MODULE_H
 
 #include "llvm/Module.h"
+#include "llvm/AbstractTypeUser.h"
 
 using namespace llvm;
 
@@ -39,6 +40,7 @@ class BackendModule : public Module {
 
 	mutable TargetData *targetData;
 	mutable FunctionPassManager *functionPassManager;
+	std::vector<PATypeHolder *> types;
 
 	explicit BackendModule(StringRef ModuleID, LLVMContext &context);
 
@@ -51,6 +53,8 @@ public:
 	static const std::string *getInputFilename();
 
 	const TargetData &getTargetData() const;
+
+	PATypeHolder *newOpaqueType();
 
 	bool validateFunction(Function*);
 

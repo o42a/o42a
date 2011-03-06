@@ -74,18 +74,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_nullPtr
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    nullStructPtr
- * Signature: (JJ)J
+ * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_nullStructPtr
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    nullFuncPtr
- * Signature: (JJ)J
+ * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_nullFuncPtr
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode

@@ -86,12 +86,12 @@ jlong Java_org_o42a_backend_llvm_code_LLVMFunction_createFunction(
 		jclass cls,
 		jlong modulePtr,
 		jstring name,
-		jlong typePtr,
+		jlong funcTypePtr,
 		jboolean exported) {
 
 	Module *module = from_ptr<Module>(modulePtr);
 	jStringRef funcName(env, name);
-	FunctionType *type = from_ptr<FunctionType>(typePtr);
+	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);
 	GlobalValue::LinkageTypes linkageType =
 			exported
 			? GlobalValue::ExternalLinkage : GlobalValue::InternalLinkage;

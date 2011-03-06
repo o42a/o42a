@@ -214,7 +214,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toRelPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castTo(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castStructTo(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -224,7 +224,30 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castTo(
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	Value *pointer = from_ptr<Value>(pointerPtr);
-	Type *type = from_ptr<Type>(typePtr);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+
+	OCODE(block, "cast (" << *pointer << ") to (" << *type->get() << ")\n");
+
+	Value *result = builder.CreatePointerCast(
+			pointer,
+			type->get()->getPointerTo());
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}
+
+jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castFuncTo(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jlong pointerPtr,
+		jlong funcTypePtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	IRBuilder<> builder(block);
+	Value *pointer = from_ptr<Value>(pointerPtr);
+	Type *type = from_ptr<Type>(funcTypePtr);
 
 	OCODE(block, "cast (" << *pointer << ") to (" << *type << ")\n");
 

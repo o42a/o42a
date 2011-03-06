@@ -170,11 +170,6 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 		return instance;
 	}
 
-	final void assertAllocated(Generator generator) {
-		assert isAllocated(generator) :
-			"Not allocated: " + this;
-	}
-
 	final SubData<O> getTypeData() {
 		return this.data;
 	}
@@ -204,7 +199,8 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 		}
 		this.data.allocateData(generator);
 		if (fullyAllocated) {
-			assertAllocated(generator);
+			assert isAllocated(generator) :
+				"Not allocated: " + this;
 		}
 	}
 

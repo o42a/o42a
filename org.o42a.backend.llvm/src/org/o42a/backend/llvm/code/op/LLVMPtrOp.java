@@ -131,7 +131,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 		return new LLVMCodeOp<F>(
 				nextPtr,
-				castTo(nextPtr, getNativePtr(), nativePtr(signature)),
+				castFuncTo(nextPtr, getNativePtr(), nativePtr(signature)),
 				signature);
 	}
 
@@ -143,7 +143,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return type.op(new LLVMStruct(
 				type,
 				nextPtr,
-				castTo(nextPtr, getNativePtr(), typePtr(type))));
+				castStructTo(nextPtr, getNativePtr(), typePtr(type))));
 	}
 
 	protected static native long field(
@@ -170,10 +170,15 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 	private static native long toRelPtr(long blockPtr, long pointerPtr);
 
-	private static native long castTo(
+	private static native long castStructTo(
 			long blockPtr,
 			long pointerPtr,
 			long typePtr);
+
+	private static native long castFuncTo(
+			long blockPtr,
+			long pointerPtr,
+			long funcTypePtr);
 
 	private static native long isNull(long blockPtr, long pointerPtr);
 

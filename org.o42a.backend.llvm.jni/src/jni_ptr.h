@@ -81,10 +81,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toRelPtr
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
- * Method:    castTo
+ * Method:    castStructTo
  * Signature: (JJJ)J
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castTo
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castStructTo
+  (JNIEnv *, jclass, jlong, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
+ * Method:    castFuncTo
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castFuncTo
   (JNIEnv *, jclass, jlong, jlong, jlong);
 
 /*

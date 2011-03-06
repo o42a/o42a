@@ -261,9 +261,7 @@ public abstract class LLVMCode implements CodeWriter {
 		return allocation.getType().op(new LLVMStruct(
 				allocation,
 				nextPtr(),
-				nullStructPtr(
-						getModule().getNativePtr(),
-						allocation.getTypePtr())));
+				nullStructPtr(allocation.getTypePtr())));
 	}
 
 	@Override
@@ -274,9 +272,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 		return new LLVMFunc<F>(
 				nextPtr(),
-				nullFuncPtr(
-						getModule().getNativePtr(),
-						allocation.getNativePtr()));
+				nullFuncPtr(allocation.getNativePtr()));
 	}
 
 	@Override
@@ -406,9 +402,9 @@ public abstract class LLVMCode implements CodeWriter {
 
 	private static native long nullPtr(long modulePtr);
 
-	private static native long nullStructPtr(long modulePtr, long typePtr);
+	private static native long nullStructPtr(long typePtr);
 
-	private static native long nullFuncPtr(long modulePtr, long typePtr);
+	private static native long nullFuncPtr(long funcTypePtr);
 
 	private static native long allocatePtr(long blockPtr);
 
