@@ -73,6 +73,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		this.ascendant = ascendant;
 	}
 
+	@Override
 	public final Generator getGenerator() {
 		return this.objectIR.getGenerator();
 	}
@@ -178,7 +179,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	@Override
 	protected void fill() {
 
-		final Generator generator = generator();
+		final Generator generator = getGenerator();
 		final ObjectType objectType = getObjectIR().getTypeIR().getObjectType();
 
 		this.objectType.setValue(
@@ -335,7 +336,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		@Override
 		public String toString() {
-			return "*" + this.bodyIR.codeId(this.bodyIR.generator());
+			return "*" + this.bodyIR.codeId(this.bodyIR.getGenerator());
 		}
 
 		final ObjOp op(ObjectDataOp data, Obj ascendant) {

@@ -87,7 +87,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 
 	public abstract O op(StructWriter writer);
 
-	public final Generator generator() {
+	public Generator getGenerator() {
 		return this.data.getGenerator();
 	}
 

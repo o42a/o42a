@@ -95,7 +95,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 			this + " items not allocated yet";
 
 		instance.getList().setValue(this.firstItem.relativeTo(
-				instance.data(instance.generator()).getPointer()));
+				instance.data(instance.getGenerator()).getPointer()));
 	}
 
 	@Override

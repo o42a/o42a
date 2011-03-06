@@ -59,7 +59,7 @@ abstract class TopLevelId extends LLVMId {
 		TypeId(TypeAllocation<?> typeAllocation) {
 			super(
 					typeAllocation.getType().codeId(
-							typeAllocation.getType().generator()),
+							typeAllocation.getType().getGenerator()),
 					LLVMIdKind.TYPE);
 			this.typeAllocation = typeAllocation;
 		}

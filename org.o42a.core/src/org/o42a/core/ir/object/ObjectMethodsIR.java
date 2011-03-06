@@ -43,6 +43,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		this.bodyIR = bodyIR;
 	}
 
+	@Override
 	public final Generator getGenerator() {
 		return this.bodyIR.getGenerator();
 	}
@@ -92,7 +93,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 
 		this.objectType.setValue(
 				ascendantIR.getTypeIR().getObjectType()
-				.data(generator()).getPointer());
+				.data(getGenerator()).getPointer());
 	}
 
 	public static final class Op extends StructOp {

@@ -58,7 +58,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	@Override
 	public void fill(Type instance) {
 
-		final Generator generator = instance.generator();
+		final Generator generator = instance.getGenerator();
 		final ObjectIR declaredInIR =
 			this.fld.getDeclaredIn().ir(fld().getGenerator());
 

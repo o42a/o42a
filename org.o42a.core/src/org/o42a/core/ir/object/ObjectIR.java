@@ -64,6 +64,7 @@ public final class ObjectIR extends Struct<ObjectIR.Op> {
 		this.typeIR = new ObjectTypeIR(this);
 	}
 
+	@Override
 	public final Generator getGenerator() {
 		return this.generator;
 	}

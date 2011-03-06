@@ -197,7 +197,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 
 	private void fillTarget(ObjectBodyIR targetBodyIR) {
 		getInstance().getObject().setValue(
-				targetBodyIR.pointer(targetBodyIR.generator()).toAny());
+				targetBodyIR.pointer(targetBodyIR.getGenerator()).toAny());
 	}
 
 	private void fill(boolean fillFields, boolean fillTarget) {
