@@ -59,9 +59,7 @@ public class LLVMDataWriter implements DataWriter {
 		final ContainerAllocation<O> typeAlloc =
 			(ContainerAllocation<O>) type.pointer(type.generator())
 			.getAllocation();
-		final long nativePtr = nullStructPtr(
-				getModule().getNativePtr(),
-				typeAlloc.getTypePtr());
+		final long nativePtr = nullStructPtr(typeAlloc.getTypePtr());
 
 		return new ContainerAllocation.Null<O>(
 				getModule(),
@@ -73,7 +71,7 @@ public class LLVMDataWriter implements DataWriter {
 	public <F extends Func> FuncAllocation<F> nullPtr(Signature<F> signature) {
 		return new FuncAllocation<F>(
 				this.module,
-				nullFuncPtr(getModule().getNativePtr(), nativePtr(signature)),
+				nullFuncPtr(nativePtr(signature)),
 				signature);
 	}
 
@@ -190,9 +188,9 @@ public class LLVMDataWriter implements DataWriter {
 
 	private static native long nullPtr(long modulePtr);
 
-	private static native long nullStructPtr(long modulePtr, long typePtr);
+	private static native long nullStructPtr(long typePtr);
 
-	private static native long nullFuncPtr(long modulePtr, long typePtr);
+	private static native long nullFuncPtr(long funcTypePtr);
 
 	private static native long createStruct(int size);
 

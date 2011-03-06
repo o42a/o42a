@@ -74,9 +74,8 @@ abstract class TopLevelId extends LLVMId {
 			if (this.nativePtr != 0L) {
 				return this.nativePtr;
 			}
-			return this.nativePtr = typeExpression(
-					module.getNativePtr(),
-					this.typeAllocation.getTypePtr());
+			return this.nativePtr =
+				typeExpression(this.typeAllocation.getTypePtr());
 		}
 
 	}

@@ -35,24 +35,42 @@ public abstract class ContainerAllocation<O extends PtrOp>
 		extends LLVMDataAllocation<O> {
 
 	private final Type<O> type;
-	private long typePtr;
+	private final long typePtr;
+	private long uniqueTypePtr;
 	private long nativePtr;
 	private int nextIndex;
 
 	ContainerAllocation(
 			LLVMModule module,
 			long typePtr,
-			long nativePtr,
+			long typeDataPtr,
 			ContainerAllocation<?> enclosing,
 			Type<O> type) {
 		super(module, enclosing);
 		this.typePtr = typePtr;
-		this.nativePtr = nativePtr;
+		this.nativePtr = typeDataPtr;
 		this.type = type;
+		if (typeDataPtr != 0L) {
+			this.uniqueTypePtr = 0L;
+		} else {
+
+			final ContainerAllocation<?> typeAllocation =
+				(ContainerAllocation<?>) type.pointer(module.getGenerator())
+				.getAllocation();
+
+			this.uniqueTypePtr = typeAllocation.getUniqueTypePtr();
+		}
+
+		assert typePtr != 0L :
+			"Type not created";
 	}
 
 	public final long getTypePtr() {
 		return this.typePtr;
+	}
+
+	public final long getUniqueTypePtr() {
+		return this.uniqueTypePtr;
 	}
 
 	public final Type<O> getType() {
@@ -75,20 +93,36 @@ public abstract class ContainerAllocation<O extends PtrOp>
 				llvmId().expression(code.getModule())));
 	}
 
-	final long getNativePtr() {
+	final boolean isTypeAllocated() {
+		return this.uniqueTypePtr != 0L;
+	}
+
+	final long getTypeDataPtr() {
+		assert !isTypeAllocated() :
+			"Type already allocated";
 		return this.nativePtr;
+	}
+
+	final long getNativePtr() {
+		assert isTypeAllocated() :
+			"Type not allocated yet";
+		return this.nativePtr;
+	}
+
+	final void setUniqueTypePtr(long uniqueTypePtr) {
+		assert !isTypeAllocated() :
+			"Type already allocated";
+		this.uniqueTypePtr = uniqueTypePtr;
+	}
+
+	final void setNativePtr(long nativePtr) {
+		assert isTypeAllocated() :
+			"Type not allocated yet";
+		this.nativePtr = nativePtr;
 	}
 
 	final LLVMId nextId() {
 		return llvmId().addIndex(this.nextIndex++);
-	}
-
-	final void setTypePtr(long typePtr) {
-		this.typePtr = typePtr;
-	}
-
-	final void setNativePtr(long nativePtr) {
-		this.nativePtr = nativePtr;
 	}
 
 	static final class Null<O extends PtrOp> extends ContainerAllocation<O> {
@@ -122,11 +156,11 @@ public abstract class ContainerAllocation<O extends PtrOp>
 		Global(
 				LLVMModule module,
 				long typePtr,
-				long nativePtr,
+				long typeDataPtr,
 				ContainerAllocation<?> prev,
 				CodeId id,
 				Type<O> type) {
-			super(module, typePtr, nativePtr, prev, type);
+			super(module, typePtr, typeDataPtr, prev, type);
 			this.llvmId = dataId(id, this);
 		}
 

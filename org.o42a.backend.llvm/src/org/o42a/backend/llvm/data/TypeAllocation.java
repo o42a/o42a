@@ -33,15 +33,11 @@ public final class TypeAllocation<O extends PtrOp>
 
 	TypeAllocation(
 			LLVMModule module,
-			long nativePtr,
+			long typePtr,
+			long typeDataPtr,
 			ContainerAllocation<?> prev,
 			Type<O> type) {
-		super(
-				module,
-				0L,
-				nativePtr,
-				prev,
-				type);
+		super(module, typePtr, typeDataPtr, prev, type);
 		this.llvmId = typeId(this);
 	}
 

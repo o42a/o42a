@@ -17,6 +17,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binary
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
+ * Method:    createType
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createType
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    createTypeData
  * Signature: (J)J
  */
@@ -41,11 +49,11 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_alloca
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
- * Method:    allocateType
- * Signature: (JLjava/lang/String;JZ)J
+ * Method:    refineType
+ * Signature: (JLjava/lang/String;JJZ)J
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateType
-  (JNIEnv *, jclass, jlong, jstring, jlong, jboolean);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jboolean);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
@@ -74,10 +82,10 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocat
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    allocateCodePtr
- * Signature: (JJJ)V
+ * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateCodePtr
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
@@ -90,10 +98,10 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocat
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    allocateStructPtr
- * Signature: (JJJ)V
+ * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStructPtr
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
@@ -173,18 +181,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
  * Method:    nullStructPtr
- * Signature: (JJ)J
+ * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullStructPtr
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
  * Method:    nullFuncPtr
- * Signature: (JJ)J
+ * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullFuncPtr
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter

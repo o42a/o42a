@@ -60,7 +60,8 @@ static cl::opt<std::string> InputFilename(
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
 		targetData(NULL),
-		functionPassManager(NULL) {
+		functionPassManager(NULL),
+		types() {
 }
 
 BackendModule::~BackendModule() {
@@ -69,6 +70,12 @@ BackendModule::~BackendModule() {
 	}
 	if (this->functionPassManager) {
 		delete this->functionPassManager;
+	}
+
+	const size_t size = this->types.size();
+
+	for (size_t i = 0; i < size; ++i) {
+		delete this->types[i];
 	}
 }
 
@@ -96,6 +103,15 @@ const TargetData &BackendModule::getTargetData() const {
 	this->targetData = new TargetData(this);
 
 	return *this->targetData;
+}
+
+PATypeHolder *BackendModule::newOpaqueType() {
+
+	PATypeHolder *holder = new PATypeHolder(OpaqueType::get(getContext()));
+
+	this->types.push_back(holder);
+
+	return holder;
 }
 
 bool BackendModule::validateFunction(Function *const function) {

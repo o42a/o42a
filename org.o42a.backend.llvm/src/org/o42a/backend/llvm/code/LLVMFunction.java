@@ -149,7 +149,7 @@ public final class LLVMFunction<F extends Func>
 	private static native long createFunction(
 			long modulePtr,
 			String name,
-			long signaturePtr,
+			long funcTypePtr,
 			boolean exported);
 
 	private static native long arg(long functionPtr, int index);

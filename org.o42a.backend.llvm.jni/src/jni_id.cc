@@ -32,13 +32,11 @@ using namespace llvm;
 jlong Java_org_o42a_backend_llvm_data_LLVMId_typeExpression(
 		JNIEnv *env,
 		jclass cld,
-		jlong modulePtr,
 		jlong typePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
-	const Type *type = from_ptr<const Type>(typePtr);
+	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	return to_ptr(Constant::getNullValue(type->getPointerTo()));
+	return to_ptr(Constant::getNullValue(type->get()->getPointerTo()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMId_expression(

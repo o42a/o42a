@@ -170,7 +170,13 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		if (enclosing == null) {
 			return 0L;
 		}
-		if (enclosing.getTypePtr() == this.type.getTypePtr()) {
+		// Rely on LLVM ability to unify types with the same structure.
+		// So, despite getTypePtr() (pointing to PATypeHolder) can be different,
+		// the getUniquePtr() (pointing to Type) are the same for the similar
+		// structures.
+		// This may happen e.g. for object bodies of the same ascendant
+		// in different objects.
+		if (enclosing.getUniqueTypePtr() == this.type.getUniqueTypePtr()) {
 			return field(
 					blockPtr,
 					getNativePtr(),
