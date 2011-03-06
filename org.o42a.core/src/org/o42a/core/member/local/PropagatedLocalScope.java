@@ -21,9 +21,9 @@ package org.o42a.core.member.local;
 
 import java.util.Collection;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -95,7 +95,7 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public LocalIR ir(IRGenerator generator) {
+	public LocalIR ir(Generator generator) {
 		return explicit().ir(generator);
 	}
 

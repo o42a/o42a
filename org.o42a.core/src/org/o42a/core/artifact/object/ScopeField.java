@@ -23,11 +23,11 @@ import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
 import static org.o42a.core.artifact.object.Obj.SCOPE_MEMBER_ID;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.ScopeFld;
 import org.o42a.core.ir.field.ScopeFldOp;
@@ -109,13 +109,13 @@ final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	protected FieldIR<Obj> createIR(IRGenerator generator) {
+	protected FieldIR<Obj> createIR(Generator generator) {
 		return new IR(generator, this);
 	}
 
 	private static final class IR extends FieldIR<Obj> {
 
-		IR(IRGenerator generator, Field<Obj> field) {
+		IR(Generator generator, Field<Obj> field) {
 			super(generator, field);
 		}
 

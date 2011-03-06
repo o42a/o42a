@@ -23,11 +23,14 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.IRUtil.canonicalName;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -125,7 +128,7 @@ public class Module extends PlainObject {
 		}
 
 		@Override
-		protected ScopeIR createIR(IRGenerator generator) {
+		protected ScopeIR createIR(Generator generator) {
 			return new ModuleIR(generator, this);
 		}
 
@@ -135,7 +138,7 @@ public class Module extends PlainObject {
 
 		private final CodeId id;
 
-		ModuleIR(IRGenerator generator, ModuleScope scope) {
+		ModuleIR(Generator generator, ModuleScope scope) {
 			super(generator, scope);
 			this.id = generator.id(scope.moduleId);
 		}
@@ -150,7 +153,7 @@ public class Module extends PlainObject {
 
 			final Obj object = getScope().getContainer().toObject();
 
-			object.ir(getGenerator()).data(getGenerator().getGenerator());
+			object.ir(getGenerator()).data(getGenerator());
 		}
 
 		@Override

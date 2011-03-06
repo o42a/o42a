@@ -25,6 +25,7 @@ import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 
 import java.util.ArrayList;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
@@ -32,7 +33,6 @@ import org.o42a.codegen.data.CodeRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.value.Value;
 
@@ -59,7 +59,7 @@ public class ObjectValueIR {
 		this.proposition = new Proposition(objectIR);
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
 	}
 

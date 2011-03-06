@@ -20,6 +20,7 @@
 package org.o42a.core.ir;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectScopeIRBase;
@@ -27,17 +28,17 @@ import org.o42a.core.ir.object.ObjectScopeIRBase;
 
 public abstract class ScopeIR extends ObjectScopeIRBase {
 
-	private final IRGenerator generator;
+	private final Generator generator;
 	private final Scope scope;
 	private int anonymousSeq;
 	private HostOp op;
 
-	public ScopeIR(IRGenerator generator, Scope scope) {
+	public ScopeIR(Generator generator, Scope scope) {
 		this.generator = generator;
 		this.scope = scope;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return this.generator;
 	}
 

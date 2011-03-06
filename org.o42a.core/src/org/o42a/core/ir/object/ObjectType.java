@@ -25,12 +25,12 @@ import static org.o42a.core.ir.object.OverriderDescIR.OVERRIDER_DESC_IR;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.op.RelList;
 
@@ -121,7 +121,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 				FieldDescIR item) {
 
 			final Fld fld = item.fld();
-			final IRGenerator generator = fld.getGenerator();
+			final Generator generator = fld.getGenerator();
 			final CodeId id =
 				generator.id("field")
 				.detail(fld.getField().ir(generator).getId().getLocal());
@@ -142,7 +142,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 				OverriderDescIR item) {
 
 			final Fld fld = item.fld();
-			final IRGenerator generator = fld.getGenerator();
+			final Generator generator = fld.getGenerator();
 			final CodeId id =
 				generator.id("overrider")
 				.detail(fld.getField().ir(generator).getId());

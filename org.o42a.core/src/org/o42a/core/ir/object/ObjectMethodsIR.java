@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -31,7 +32,6 @@ import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.StructPtrRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 
 
 public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
@@ -43,7 +43,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		this.bodyIR = bodyIR;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return this.bodyIR.getGenerator();
 	}
 

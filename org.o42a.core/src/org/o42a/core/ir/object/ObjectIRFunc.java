@@ -19,13 +19,13 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.LogicalDef;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.LogicalValue;
 
@@ -42,7 +42,7 @@ abstract class ObjectIRFunc {
 		this.objectIR = objectIR;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
 	}
 

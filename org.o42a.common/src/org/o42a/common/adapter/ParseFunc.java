@@ -26,21 +26,12 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.ValOp;
 
 
 public final class ParseFunc extends Func {
 
-	private static FuncSignature signature;
-
-	public static Signature<ParseFunc> signature(
-			IRGenerator generator) {
-		if (signature != null && signature.generator == generator) {
-			return signature;
-		}
-		return signature = new FuncSignature(generator);
-	}
+	public static final Signature<ParseFunc> PARSE = new Parse();
 
 	private ParseFunc(FuncCaller caller) {
 		super(caller);
@@ -50,13 +41,10 @@ public final class ParseFunc extends Func {
 		caller().call(code, result, input);
 	}
 
-	private static final class FuncSignature extends Signature<ParseFunc> {
+	private static final class Parse extends Signature<ParseFunc> {
 
-		private final IRGenerator generator;
-
-		private FuncSignature(IRGenerator generator) {
+		private Parse() {
 			super("void", "ParseF", "Val*, Val*");
-			this.generator = generator;
 		}
 
 		@Override

@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ref.Ref;
 
 
@@ -37,7 +37,7 @@ public abstract class RefOp {
 		this.ref = ref;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return host().getGenerator();
 	}
 

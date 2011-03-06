@@ -24,11 +24,14 @@ import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.*;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
@@ -119,7 +122,7 @@ public final class VoidObject extends Obj {
 		}
 
 		@Override
-		protected ScopeIR createIR(IRGenerator generator) {
+		protected ScopeIR createIR(Generator generator) {
 			return new IR(generator, this);
 		}
 
@@ -129,7 +132,7 @@ public final class VoidObject extends Obj {
 
 		private CodeId id;
 
-		IR(IRGenerator generator, Scope scope) {
+		IR(Generator generator, Scope scope) {
 			super(generator, scope);
 			this.id = generator.id("VOID");
 		}
@@ -144,7 +147,7 @@ public final class VoidObject extends Obj {
 
 			final Obj object = getScope().getContainer().toObject();
 
-			object.ir(getGenerator()).data(getGenerator().getGenerator());
+			object.ir(getGenerator()).data(getGenerator());
 		}
 
 		@Override

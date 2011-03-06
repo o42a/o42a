@@ -22,11 +22,11 @@ package org.o42a.core.value;
 import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Result;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.Val;
 
 
@@ -50,7 +50,7 @@ final class DefiniteValue<T> extends Value<T> {
 	}
 
 	@Override
-	public Val val(IRGenerator generator) {
+	public Val val(Generator generator) {
 		if (!getLogicalValue().isConstant()) {
 			return UNKNOWN_VAL;
 		}

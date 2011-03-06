@@ -20,13 +20,13 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.field.Field;
@@ -43,7 +43,7 @@ public abstract class Fld {
 		this.bodyIR = bodyIR;
 	}
 
-	public final IRGenerator getGenerator() {
+	public final Generator getGenerator() {
 		return getBodyIR().getGenerator();
 	}
 

@@ -19,9 +19,9 @@
 */
 package org.o42a.core.artifact.object;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectScopeIR;
 
@@ -33,7 +33,7 @@ final class ObjScope extends ObjectScope {
 	}
 
 	@Override
-	protected ScopeIR createIR(IRGenerator generator) {
+	protected ScopeIR createIR(Generator generator) {
 		return new ObjectScopeIR(generator, getContainer());
 	}
 

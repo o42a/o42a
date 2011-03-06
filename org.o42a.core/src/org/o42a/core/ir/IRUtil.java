@@ -22,6 +22,7 @@ package org.o42a.core.ir;
 import static java.lang.Character.*;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -98,7 +99,7 @@ public class IRUtil {
 
 	public static CodeId encodeMemberId(ScopeIR enclosingIR, Member member) {
 
-		final IRGenerator generator = enclosingIR.getGenerator();
+		final Generator generator = enclosingIR.getGenerator();
 		final MemberId memberId = member.getId();
 
 		CodeId localId = addMemberId(generator, null, memberId);
@@ -117,7 +118,7 @@ public class IRUtil {
 	}
 
 	private static CodeId addMemberId(
-			IRGenerator generator,
+			Generator generator,
 			CodeId prefix,
 			MemberId memberId) {
 
@@ -162,7 +163,7 @@ public class IRUtil {
 	}
 
 	private static CodeId addDeclaredIn(
-			IRGenerator generator,
+			Generator generator,
 			CodeId prefix,
 			Scope scope) {
 
@@ -190,10 +191,10 @@ public class IRUtil {
 
 	private static final class DeclaredInWriter implements PathWalker {
 
-		private final IRGenerator generator;
+		private final Generator generator;
 		private CodeId id;
 
-		DeclaredInWriter(IRGenerator generator, CodeId id) {
+		DeclaredInWriter(Generator generator, CodeId id) {
 			this.generator = generator;
 			this.id = id;
 		}

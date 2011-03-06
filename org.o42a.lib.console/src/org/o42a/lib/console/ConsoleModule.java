@@ -25,11 +25,11 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.lib.console.impl.Print;
 
 
@@ -63,7 +63,7 @@ public class ConsoleModule extends Module {
 		super(context, "Console");
 	}
 
-	public void generateMain(IRGenerator generator) {
+	public void generateMain(Generator generator) {
 
 		final Obj mainModule = getContext().getIntrinsics().getMainModule();
 

@@ -64,7 +64,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			if (realValue != null && realValue.isDefinite()) {
 				if (!object.isRuntime() || value.getSource() == object) {
 					code.debug(getObjectIR().codeId(
-							host.getGenerator().getGenerator())
+							host.getGenerator())
 							+ " = " + realValue);
 					result.store(code, realValue.val(getGenerator()));
 					return;

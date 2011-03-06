@@ -34,7 +34,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.*;
 
 
@@ -244,7 +243,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 				int index,
 				ObjectBodyIR item) {
 
-			final IRGenerator generator = item.getGenerator();
+			final Generator generator = item.getGenerator();
 			final CodeId id =
 				generator.id("ascendant")
 				.detail(item.getAscendant().ir(generator).codeId(
@@ -267,7 +266,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 				int index,
 				ObjectBodyIR item) {
 
-			final IRGenerator generator = item.getGenerator();
+			final Generator generator = item.getGenerator();
 			final CodeId id =
 				generator.id("sample")
 				.detail(item.getAscendant().ir(generator).codeId(

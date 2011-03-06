@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.CompilerContext;
@@ -29,7 +30,7 @@ import org.o42a.core.member.MemberKey;
 
 public interface HostOp {
 
-	IRGenerator getGenerator();
+	Generator getGenerator();
 
 	CodeBuilder getBuilder();
 

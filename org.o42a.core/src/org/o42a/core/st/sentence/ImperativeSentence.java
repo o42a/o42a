@@ -24,9 +24,9 @@ import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
 import java.util.List;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.op.ValOp;
@@ -163,7 +163,7 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 
 		// code blocks for each alternative
 		final Code[] blocks = new Code[len];
-		final IRGenerator generator = control.getGenerator();
+		final Generator generator = control.getGenerator();
 		final CodeId sentId = generator.id(index + "_sent");
 
 		for (int i = 0; i < len; ++i) {

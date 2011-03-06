@@ -22,9 +22,9 @@ package org.o42a.core.ir.local;
 import static org.o42a.core.ir.IRUtil.encodeMemberId;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectLocalIR;
@@ -35,7 +35,7 @@ public final class LocalIR extends ObjectLocalIR {
 
 	private CodeId id;
 
-	public LocalIR(IRGenerator generator, LocalScope scope) {
+	public LocalIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
 		scope.assertExplicit();
 	}

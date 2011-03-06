@@ -19,9 +19,9 @@
 */
 package org.o42a.core.def;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ValOp;
@@ -30,7 +30,7 @@ import org.o42a.core.member.local.LocalScope;
 
 public abstract class LocalIRBase extends ScopeIR {
 
-	public LocalIRBase(IRGenerator generator, LocalScope scope) {
+	public LocalIRBase(Generator generator, LocalScope scope) {
 		super(generator, scope);
 	}
 

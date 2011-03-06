@@ -19,8 +19,8 @@
 */
 package org.o42a.core;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
@@ -56,7 +56,7 @@ public interface Scope extends PlaceInfo {
 
 	boolean contains(Scope other);
 
-	ScopeIR ir(IRGenerator generator);
+	ScopeIR ir(Generator generator);
 
 	void assertDerivedFrom(Scope other);
 

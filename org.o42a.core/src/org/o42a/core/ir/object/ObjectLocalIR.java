@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.def.LocalIRBase;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
@@ -32,7 +32,7 @@ public abstract class ObjectLocalIR extends LocalIRBase {
 
 	private final LocalIRFunc function;
 
-	public ObjectLocalIR(IRGenerator generator, LocalScope scope) {
+	public ObjectLocalIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
 		this.function = new LocalIRFunc((LocalIR) this);
 	}

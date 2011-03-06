@@ -26,20 +26,12 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.op.ValOp;
 
 
 public final class PrintFunc extends Func {
 
-	private static PrintSignature signature;
-
-	public static Signature<PrintFunc> printSignature(IRGenerator generator) {
-		if (signature != null && signature.generator == generator) {
-			return signature;
-		}
-		return signature = new PrintSignature(generator);
-	}
+	public static final Signature<PrintFunc> PRINT = new Print();
 
 	private PrintFunc(FuncCaller caller) {
 		super(caller);
@@ -49,13 +41,10 @@ public final class PrintFunc extends Func {
 		caller().call(code, text);
 	}
 
-	public static final class PrintSignature extends Signature<PrintFunc> {
+	private static final class Print extends Signature<PrintFunc> {
 
-		private final IRGenerator generator;
-
-		private PrintSignature(IRGenerator generator) {
+		private Print() {
 			super("void", "console.PrintF", "Val*");
-			this.generator = generator;
 		}
 
 		@Override

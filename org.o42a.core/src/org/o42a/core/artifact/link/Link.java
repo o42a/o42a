@@ -21,6 +21,7 @@ package org.o42a.core.artifact.link;
 
 import static org.o42a.core.ref.Ref.falseRef;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -28,7 +29,6 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.IRGenerator;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
@@ -46,7 +46,7 @@ public abstract class Link extends Artifact<Link> {
 	}
 
 	public static FieldIR<Link> fieldIR(
-			IRGenerator generator,
+			Generator generator,
 			Field<Link> field) {
 		return new LinkFieldIR(generator, field);
 	}
