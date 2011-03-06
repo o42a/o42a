@@ -90,7 +90,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	@Override
 	public void fill(ObjectType instance) {
 
-		final Generator generator = instance.generator();
+		final Generator generator = instance.getGenerator();
 		final ObjectDataType data = instance.getObjectData();
 
 		data.getObject().setValue(
@@ -209,7 +209,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 			owner.ir(getGenerator()).getTypeIR().getObjectType();
 
 		instance.getOwnerType().setValue(
-				ownerType.pointer(instance.generator()));
+				ownerType.pointer(instance.getGenerator()));
 	}
 
 	private void fillAncestor(ObjectDataType instance) {
@@ -226,7 +226,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		instance.getAncestorType().setValue(
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
-						.pointer(instance.generator()));
+						.pointer(instance.getGenerator()));
 		instance.getAncestorFunc().setValue(createAncestorFunc(instance));
 	}
 
@@ -241,7 +241,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		final Function<ObjectRefFunc> function =
 			getGenerator().newFunction().create(
 					getObjectIR()
-					.codeId(instance.generator())
+					.codeId(instance.getGenerator())
 					.detail("ancestor"),
 					OBJECT_REF);
 		final CodeBlk failure = function.addBlock("failure");

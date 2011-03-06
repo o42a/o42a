@@ -168,14 +168,14 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		final TypeAllocation<?> allocation = (TypeAllocation<?>) pull();
 
-		assert type.pointer(type.generator()).getAllocation() == allocation :
+		assert type.pointer(type.getGenerator()).getAllocation() == allocation :
 			"Wrong " + type + " allocation: " + allocation
-			+ ", but " + type.pointer(type.generator()).getAllocation()
+			+ ", but " + type.pointer(type.getGenerator()).getAllocation()
 			+ " expected";
 
 		allocation.setUniqueTypePtr(refineType(
 				getModulePtr(),
-				type.codeId(type.generator()).getId(),
+				type.codeId(type.getGenerator()).getId(),
 				allocation.getTypePtr(),
 				allocation.getTypeDataPtr(),
 				type.isPacked()));

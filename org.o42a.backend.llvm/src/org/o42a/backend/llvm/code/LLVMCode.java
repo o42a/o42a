@@ -88,7 +88,7 @@ public abstract class LLVMCode implements CodeWriter {
 	public static final long typePtr(Type<?> type) {
 
 		final ContainerAllocation<?> allocation =
-			(ContainerAllocation<?>) type.pointer(type.generator())
+			(ContainerAllocation<?>) type.pointer(type.getGenerator())
 			.getAllocation();
 
 		return allocation.getTypePtr();

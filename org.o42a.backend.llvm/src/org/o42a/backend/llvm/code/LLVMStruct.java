@@ -51,7 +51,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 			long blockPtr,
 			long nativePtr) {
 		this(
-				(ContainerAllocation<?>) type.pointer(type.generator())
+				(ContainerAllocation<?>) type.pointer(type.getGenerator())
 				.getAllocation(),
 				blockPtr,
 				nativePtr);
