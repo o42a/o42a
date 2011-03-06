@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
@@ -58,8 +59,8 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private CodeRec<ObjectCondFunc> conditionFunc;
 	private CodeRec<ObjectValFunc> propositionFunc;
 	private CodeRec<ObjectRefFunc> ancestorFunc;
-	private AnyPtrRec ancestorType;
-	private AnyPtrRec ownerType;
+	private StructPtrRec<ObjectType.Op> ancestorType;
+	private StructPtrRec<ObjectType.Op> ownerType;
 	private RelList<ObjectBodyIR> ascendants;
 	private RelList<ObjectBodyIR> samples;
 
@@ -106,7 +107,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		return this.propositionFunc;
 	}
 
-	public final AnyPtrRec getOwnerType() {
+	public final StructPtrRec<ObjectType.Op> getOwnerType() {
 		return this.ownerType;
 	}
 
@@ -114,7 +115,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		return this.ancestorFunc;
 	}
 
-	public final AnyPtrRec getAncestorType() {
+	public final StructPtrRec<ObjectType.Op> getAncestorType() {
 		return this.ancestorType;
 	}
 
@@ -151,9 +152,9 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		this.claimFunc = data.addCodePtr("claim_f", OBJECT_VAL);
 		this.conditionFunc = data.addCodePtr("condition_f", OBJECT_COND);
 		this.propositionFunc = data.addCodePtr("proposition_f", OBJECT_VAL);
-		this.ownerType = data.addPtr("owner_type");
+		this.ownerType = data.addPtr("owner_type", OBJECT_TYPE);
 		this.ancestorFunc = data.addCodePtr("ancestor_f", OBJECT_REF);
-		this.ancestorType = data.addPtr("ancestor_type");
+		this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 		this.ascendants = new Ascendants().allocate(data, "ascendants");
 		this.samples = new Samples().allocate(data, "samples");
 	}
@@ -213,7 +214,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			return writer().func(code, getType().getAncestorFunc());
 		}
 
-		public final DataOp<AnyOp> ancestorType(Code code) {
+		public final DataOp<ObjectType.Op> ancestorType(Code code) {
 			return writer().ptr(code, getType().getAncestorType());
 		}
 

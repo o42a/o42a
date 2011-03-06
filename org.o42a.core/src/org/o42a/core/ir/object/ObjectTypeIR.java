@@ -209,7 +209,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 			owner.ir(getGenerator()).getTypeIR().getObjectType();
 
 		instance.getOwnerType().setValue(
-				ownerType.pointer(instance.generator()).toAny());
+				ownerType.pointer(instance.generator()));
 	}
 
 	private void fillAncestor(ObjectDataType instance) {
@@ -226,7 +226,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		instance.getAncestorType().setValue(
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
-						.pointer(instance.generator()).toAny());
+						.pointer(instance.generator()));
 		instance.getAncestorFunc().setValue(createAncestorFunc(instance));
 	}
 
