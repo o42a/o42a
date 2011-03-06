@@ -48,7 +48,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	private static final int KIND_MASK = 3;
 
-	private final ObjectIR objectIR;
+	private final ObjectIRStruct objectIRStruct;
 	private final Obj ascendant;
 
 	private ObjectMethodsIR methodsIR;
@@ -63,23 +63,23 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private AnyPtrRec methods;
 	private Int32rec flags;
 
-	ObjectBodyIR(ObjectIR objectIR) {
-		this.objectIR = objectIR;
-		this.ascendant = objectIR.getObject();
+	ObjectBodyIR(ObjectIRStruct objectIRStruct) {
+		this.objectIRStruct = objectIRStruct;
+		this.ascendant = objectIRStruct.getObject();
 	}
 
 	private ObjectBodyIR(ObjectIR inheritantIR, Obj ascendant) {
-		this.objectIR = inheritantIR;
+		this.objectIRStruct = inheritantIR.getStruct();
 		this.ascendant = ascendant;
 	}
 
 	@Override
 	public final Generator getGenerator() {
-		return this.objectIR.getGenerator();
+		return this.objectIRStruct.getGenerator();
 	}
 
 	public final ObjectIR getObjectIR() {
-		return this.objectIR;
+		return this.objectIRStruct.getObjectIR();
 	}
 
 	public final Obj getAscendant() {
@@ -87,7 +87,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	}
 
 	public final boolean isMain() {
-		return this == this.objectIR.getMainBodyIR();
+		return this == this.objectIRStruct.getMainBodyIR();
 	}
 
 	public void setKind(Kind kind) {
@@ -153,17 +153,17 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		if (this.objectIR.getObject() == this.ascendant) {
-			return this.objectIR.codeId(factory).setLocal(
+		if (this.objectIRStruct.getObject() == this.ascendant) {
+			return this.objectIRStruct.codeId(factory).setLocal(
 					factory.id().detail("main_body"));
 		}
 
 		final ObjectIR ascendantIR =
-			this.ascendant.ir(this.objectIR.getGenerator());
+			this.ascendant.ir(this.objectIRStruct.getGenerator());
 
-		return this.objectIR.codeId(factory).setLocal(
+		return this.objectIRStruct.codeId(factory).setLocal(
 				factory.id().detail("body").detail(
-						ascendantIR.codeId(factory)));
+						ascendantIR.getStruct().codeId(factory)));
 	}
 
 	@Override
@@ -202,11 +202,11 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	String print(String suffix) {
 		if (isMain()) {
-			return this.objectIR.getObject() + suffix;
+			return this.objectIRStruct.getObject() + suffix;
 		}
 
 		return ("(" + this.ascendant + ") "
-				+ this.objectIR.getObject() + suffix);
+				+ this.objectIRStruct.getObject() + suffix);
 	}
 
 	final List<Fld> getDeclaredFields() {

@@ -237,7 +237,7 @@ public class Root extends Obj {
 
 			final Obj object = getScope().getContainer().toObject();
 
-			object.ir(getGenerator()).data(getGenerator());
+			object.ir(getGenerator()).allocate();
 		}
 
 		@Override

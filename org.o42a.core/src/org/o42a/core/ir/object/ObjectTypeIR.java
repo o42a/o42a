@@ -47,13 +47,13 @@ import org.o42a.core.ref.type.TypeRef;
 
 public final class ObjectTypeIR implements Content<ObjectType> {
 
-	private final ObjectIR objectIR;
+	private final ObjectIRStruct objectIRStruct;
 	private final HashMap<MemberKey, FieldDescIR> fieldDescs =
 		new HashMap<MemberKey, FieldDescIR>();
 	private ObjectType instance;
 
-	public ObjectTypeIR(ObjectIR objectIR) {
-		this.objectIR = objectIR;
+	ObjectTypeIR(ObjectIRStruct objectIRStruct) {
+		this.objectIRStruct = objectIRStruct;
 	}
 
 	public final Generator getGenerator() {
@@ -61,7 +61,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	}
 
 	public final ObjectIR getObjectIR() {
-		return this.objectIR;
+		return this.objectIRStruct.getObjectIR();
 	}
 
 	public final ObjectType getObjectType() {
@@ -99,7 +99,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 						data.data(generator).getPointer()));
 		data.getFlags().setValue(objectFlags());
 		data.getStart().setValue(
-				getObjectIR().data(generator).getPointer().relativeTo(
+				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						data.data(generator).getPointer()));
 		data.getAllBodiesLayout().setValue(
 				getObjectIR().getAllBodies().layout(generator).toBinaryForm());
@@ -114,7 +114,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 	@Override
 	public String toString() {
-		return this.objectIR.getMainBodyIR().print(" type IR");
+		return this.objectIRStruct.getMainBodyIR().print(" type IR");
 	}
 
 	void allocate(SubData<?> data) {
@@ -123,8 +123,10 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 				OBJECT_TYPE,
 				this);
 
-		getObjectData().getAscendants().addAll(getObjectIR().getBodyIRs());
-		getObjectData().getSamples().addAll(getObjectIR().getSampleBodyIRs());
+		getObjectData().getAscendants().addAll(
+				this.objectIRStruct.getBodyIRs().values());
+		getObjectData().getSamples().addAll(
+				this.objectIRStruct.getSampleBodyIRs());
 		fillFields();
 
 		getObjectData().getAscendants().allocateItems(data);
@@ -240,7 +242,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 		final Function<ObjectRefFunc> function =
 			getGenerator().newFunction().create(
-					getObjectIR()
+					this.objectIRStruct
 					.codeId(instance.getGenerator())
 					.detail("ancestor"),
 					OBJECT_REF);
