@@ -18,7 +18,9 @@ JAVA=${JAVA:-java}
 CC=${CC:-gcc}
 ICU_CONFIG=${ICU_CONFIG:-icu-config}
 
-o42ac_args=()
+temp_fd=/dev/fd/5
+
+o42ac_args=(-o${temp_fd})
 vm_args=(-Djava.library.path="${JAVA_LIBRARY_PATH}")
 cc_args=(-x assembler -)
 append_arg="o42ac"
@@ -50,13 +52,17 @@ pipe_if_not_empty () {
 	fi
 }
 
-{
-	${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}"
-	error=$?
-	if (( error != 0 )) ; then
-		if (( error > 3 )); then
-			echo "${red}ERROR${white}[${blue}${error}${white}]: o42ac failed." >&2;
-		fi
-		exit $error 
-	fi
-} | pipe_if_not_empty ${CC} "${cc_args[@]}"
+{ 
+	{
+		{
+			${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}"
+			error=$?
+			if (( error != 0 )) ; then
+				if (( error > 3 )); then
+					echo "${red}ERROR${white}[${blue}${error}${white}]: o42ac failed." >&2;
+				fi
+				exit $error 
+			fi
+		} |  tee /dev/fd/6 > /dev/null
+	} 5>&1 | pipe_if_not_empty ${CC} "${cc_args[@]}" >&6
+} 6>&1
