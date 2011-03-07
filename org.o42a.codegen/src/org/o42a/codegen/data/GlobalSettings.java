@@ -70,19 +70,44 @@ public final class GlobalSettings {
 	public final <O extends PtrOp, T extends Type<O>> Global<O, T> create(
 			CodeId id,
 			T type) {
-		return this.globals.addGlobal(this, id, type, null);
+		return create(id, type, null);
 	}
 
 	public final <O extends PtrOp, T extends Type<O>> Global<O, T> create(
 			CodeId id,
 			T type,
 			Content<T> content) {
-		return this.globals.addGlobal(this, id, type, content);
+		return this.globals.addGlobal(this, id, type, null, content);
 	}
 
 	public final <O extends PtrOp, S extends Struct<O>> Global<O, S> create(
 			S struct) {
 		return this.globals.addGlobal(this, struct);
+	}
+
+	public final <O extends PtrOp, T extends Type<O>> Global<O, T> build(
+			CodeId id,
+			T type,
+			T instance) {
+		return build(id, type, instance, null);
+	}
+
+	public final <O extends PtrOp, T extends Type<O>> Global<O, T> build(
+			CodeId id,
+			T type,
+			T instance,
+			Content<T> content) {
+		return this.globals.addGlobal(this, id, type, instance, content);
+	}
+
+	public final <O extends PtrOp, S extends Struct<O>> Global<O, S> create(
+			CodeId id,
+			S type,
+			S instance) {
+
+		final Content<S> content = Struct.structContent();
+
+		return build(id, type, instance, content);
 	}
 
 }

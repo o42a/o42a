@@ -74,10 +74,11 @@ public abstract class Globals extends Functions {
 			GlobalSettings settings,
 			CodeId id,
 			T type,
+			T instance,
 			Content<T> content) {
 
 		final Global<O, T> global =
-			new Global<O, T>(settings, id, type, content);
+			new Global<O, T>(settings, id, type, instance, content);
 		final SubData<O> data = global.getInstance().getTypeData();
 
 		data.allocateData((Generator) this);

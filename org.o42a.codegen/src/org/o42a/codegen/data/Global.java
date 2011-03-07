@@ -30,11 +30,15 @@ public final class Global<O extends PtrOp, T extends Type<O>> {
 	private final CodeId id;
 	private final T instance;
 
-	@SuppressWarnings("unchecked")
-	Global(GlobalSettings settings, CodeId id, T type, Content<T> content) {
+	Global(
+			GlobalSettings settings,
+			CodeId id,
+			T type,
+			T instance,
+			Content<T> content) {
 		this.settings = settings;
 		this.id = id;
-		this.instance = (T) type.instantiate(this, content);
+		this.instance = type.instantiate(this, instance, content);
 	}
 
 	@SuppressWarnings("unchecked")

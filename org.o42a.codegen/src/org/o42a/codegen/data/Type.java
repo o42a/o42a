@@ -142,23 +142,35 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 		return this.data.getPointer().getAllocation();
 	}
 
-	final Type<O> instantiate(
+	@SuppressWarnings("unchecked")
+	final <I extends Type<O>> I instantiate(
 			Generator generator,
 			CodeId id,
+			I instance,
 			Content<?> content) {
 		ensureTypeAllocated(generator, true);
-
-		final Type<O> instance = clone();
+		if (instance == null) {
+			instance = (I) clone();
+		} else {
+			instance.original = this.original;
+		}
 
 		instance.data = new InstanceData<O>(id, instance, content);
 
 		return instance;
 	}
 
-	final Type<O> instantiate(Global<O, ?> global, Content<?> content) {
+	@SuppressWarnings("unchecked")
+	final <I extends Type<O>> I instantiate(
+			Global<O, ?> global,
+			I instance,
+			Content<?> content) {
 		ensureTypeAllocated(global.getGenerator(), true);
-
-		final Type<O> instance = clone();
+		if (instance == null) {
+			instance = (I) clone();
+		} else {
+			instance.original = this.original;
+		}
 
 		instance.data = new GlobalInstanceData<O>(instance, global, content);
 
@@ -244,6 +256,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 
 		InstanceData(CodeId id, Type<O> type, Content<?> content) {
 			super(id, type);
+			getPointer().copyAllocation(type.getOriginal().getTypeData());
 			this.content = content != null ? content : EMPTY_CONTENT;
 			this.next = type.original.data.data().getFirst();
 		}
@@ -296,6 +309,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 				Global<O, ?> global,
 				Content<?> content) {
 			super(global.getId().removeLocal(), type, content);
+			getPointer().copyAllocation(type.getOriginal().getTypeData());
 			this.global = global;
 		}
 
