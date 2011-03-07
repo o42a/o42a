@@ -48,9 +48,13 @@ class BackendModule : public Module {
 
 public:
 
-	static BackendModule *createBackend(StringRef &ModuleID);
+	static void initializeTargets();
 
 	static const std::string *getInputFilename();
+
+	static bool isDebugEnabled();
+
+	static BackendModule *createBackend(StringRef &ModuleID);
 
 	const TargetData &getTargetData() const;
 

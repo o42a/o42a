@@ -38,8 +38,6 @@ import org.o42a.util.log.Logger;
 
 public class CL {
 
-	private static final String DEBUG_PREFIX = "--debug=";
-
 	private static final int COMPILE_ERROR = 1;
 	private static final int COMPILATION_FAILED = 2;
 	private static final int INVALID_INPUT = 3;
@@ -76,27 +74,10 @@ public class CL {
 
 	public static void main(String[] args) {
 
-		final String[] llvmArgs = new String[args.length + 1];
-		int llvmArgsLen = 0;
-		boolean debug = false;
-
-		llvmArgs[llvmArgsLen++] = "o42ac";
-		for (String arg : args) {
-			if (!arg.startsWith(DEBUG_PREFIX)) {
-				llvmArgs[llvmArgsLen++] = arg;
-				continue;
-			}
-
-			final String flag = arg.substring(DEBUG_PREFIX.length());
-
-			debug = !"off".equalsIgnoreCase(flag);
-		}
-
-		final LLVMGenerator generator =
-			newGenerator(null, ArrayUtil.clip(llvmArgs, llvmArgsLen));
+		final String[] llvmArgs = ArrayUtil.prepend("o42ac", args);
+		final LLVMGenerator generator = newGenerator(null, llvmArgs);
 
 		try {
-			generator.setDebug(debug);
 
 			final String source = generator.getInputFilename();
 
