@@ -32,7 +32,7 @@
 	<target name="compile" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
 			<param name="_compile.name" value="hello_world"/>
-			<param name="_compile.debug" value="off"/>
+			<param name="_compile.debug" value="0"/>
 			<param name="_compile.lib" value="o42a"/>
 		</antcall>
 	</target>
@@ -40,7 +40,7 @@
 	<target name="compile-debug" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
 			<param name="_compile.name" value="debug_hello_world"/>
-			<param name="_compile.debug" value="on"/>
+			<param name="_compile.debug" value="1"/>
 			<param name="_compile.lib" value="o42a_debug"/>
 		</antcall>
 	</target>
@@ -79,11 +79,10 @@
 			taskname="o42ac"
 			failonerror="true">
 			<arg line="--nocolor"/>
-			<arg line="--debug=${_compile.debug}"/>
+			<arg line="-debug=${_compile.debug}"/>
 			<arg line="hello_world.o42a"/>
 			
 			<arg line="--vmargs"/>
-			<arg line="-Djava.library.path=${root.dir}/target"/>
 			<arg line="-ea:org.o42a..."/>
 			
 			<arg line="--"/>

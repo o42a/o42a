@@ -35,6 +35,7 @@ void Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs(
 		JNIEnv *env,
 		jclass cls,
 		jobjectArray commandLine) {
+	o42ac::BackendModule::initializeTargets();
 
 	jObjectArray<jbyteArray> args(env, commandLine);
 	const jsize argc = args.length();
@@ -80,6 +81,12 @@ jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputFilename(
 	env->ReleaseByteArrayElements(array, items, JNI_COMMIT);
 
 	return array;
+}
+
+jboolean JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
+		JNIEnv *env,
+		jclass cls) {
+	return o42ac::BackendModule::isDebugEnabled() ? JNI_TRUE : JNI_FALSE;
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(

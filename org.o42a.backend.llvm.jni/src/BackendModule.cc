@@ -50,12 +50,21 @@ static cl::opt<std::string> OutputFilename(
 		cl::Prefix,
 		cl::ValueRequired,
 		cl::desc("Output file name. Print to standard output if omitted."),
-		cl::value_desc("output_file"));
+		cl::value_desc("output file"));
 
 static cl::opt<std::string> InputFilename(
 		cl::Positional,
 		cl::desc("Input file name."),
-		cl::value_desc("input_file"));
+		cl::value_desc("input file"));
+
+static cl::opt<cl::boolOrDefault> Debug(
+		"debug",
+		cl::ValueOptional,
+		cl::desc(
+				"Whether compiled code contains debug info. "
+				"Disabled by default. "
+				"Enabled if value is omitted."),
+		cl::value_desc("0/1"));
 
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
@@ -79,8 +88,11 @@ BackendModule::~BackendModule() {
 	}
 }
 
-BackendModule *BackendModule::createBackend(StringRef &ModuleID) {
-	return new BackendModule(ModuleID, *new LLVMContext());
+void BackendModule::initializeTargets() {
+	OTRACE("--------- Initializing\n");
+	InitializeAllTargetInfos();
+	InitializeAllTargets();
+	InitializeAllAsmPrinters();
 }
 
 const std::string *BackendModule::getInputFilename() {
@@ -90,15 +102,21 @@ const std::string *BackendModule::getInputFilename() {
 	return &InputFilename;
 }
 
+bool BackendModule::isDebugEnabled() {
+	if (!Debug.getNumOccurrences()) {
+		return false;
+	}
+	return Debug.getValue() != cl::BOU_FALSE;
+}
+
+BackendModule *BackendModule::createBackend(StringRef &ModuleID) {
+	return new BackendModule(ModuleID, *new LLVMContext());
+}
+
 const TargetData &BackendModule::getTargetData() const {
 	if (this->targetData) {
 		return *this->targetData;
 	}
-
-	OTRACE("--------- Initializing\n");
-	InitializeAllTargetInfos();
-	InitializeAllTargets();
-	InitializeAllAsmPrinters();
 
 	this->targetData = new TargetData(this);
 

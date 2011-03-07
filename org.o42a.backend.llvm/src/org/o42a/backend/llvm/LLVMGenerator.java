@@ -40,6 +40,7 @@ public class LLVMGenerator extends Generator {
 		super(module.getId());
 		this.module = module;
 		module.init(this);
+		setDebug(module.isDebug());
 	}
 
 	public final String getInputFilename() {

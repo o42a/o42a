@@ -87,6 +87,10 @@ public final class LLVMModule {
 		return this.inputFilename;
 	}
 
+	public boolean isDebug() {
+		return debugEnabled();
+	}
+
 	public long getNativePtr() {
 		return this.nativePtr;
 	}
@@ -170,6 +174,8 @@ public final class LLVMModule {
 	private static native void parseArgs(byte[][] args);
 
 	private static native byte[] inputFilename();
+
+	private static native boolean debugEnabled();
 
 	private static native long createModule(String id);
 
