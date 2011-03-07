@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.data.Struct.structContent;
+
 import java.util.Iterator;
 
 import org.o42a.codegen.CodeId;
@@ -131,22 +133,48 @@ public abstract class SubData<O extends PtrOp>
 		return add(new RelPtrRec(id(name), content));
 	}
 
-	public final <T extends Type<?>> T addInstance(CodeId name, T type) {
-		return addInstance(name, type, null);
+	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
+			CodeId name,
+			T type) {
+		return addInstance(name, type, null, null);
 	}
 
-	public final <T extends Type<?>> T addInstance(
+	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
 			CodeId name,
 			T type,
 			Content<T> content) {
+		return addInstance(name, type, null, content);
+	}
 
-		@SuppressWarnings("unchecked")
-		final T instance = (T) type.instantiate(getGenerator(), name, content);
+	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
+			CodeId name,
+			T type,
+			T instance) {
+		return addInstance(name, type, instance, null);
+	}
+
+	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
+			CodeId name,
+			T type,
+			T instance,
+			Content<T> content) {
+		instance = type.instantiate(getGenerator(), name, instance, content);
+
 		final SubData<?> data = instance.getTypeData();
 
 		add(data);
 
 		return instance;
+	}
+
+	public final <OP extends PtrOp, T extends Struct<OP>> T addStruct(
+			CodeId name,
+			T type,
+			T instance) {
+
+		final Content<T> content = structContent();
+
+		return addInstance(name, type, instance, content);
 	}
 
 	public final <S extends Struct<?>> S addStruct(CodeId name, S struct) {

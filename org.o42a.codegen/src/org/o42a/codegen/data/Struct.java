@@ -28,6 +28,14 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Struct<O extends PtrOp> extends Type<O> {
 
+	@SuppressWarnings("rawtypes")
+	private static final StructContent<?> STRUCT_CONTENT = new StructContent();
+
+	@SuppressWarnings("unchecked")
+	public static final <S extends Struct<?>> Content<S> structContent() {
+		return (Content<S>) STRUCT_CONTENT;
+	}
+
 	protected abstract void fill();
 
 	final void setStruct(Generator generator, CodeId name) {
@@ -111,6 +119,20 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 			((Struct<O>) getType()).fill();
 			writeIncluded(writer);
 			writer.end(getPointer().getAllocation(), this.global);
+		}
+
+	}
+
+	private static final class StructContent<T extends Struct<?>>
+			implements Content<T> {
+
+		@Override
+		public void allocated(T instance) {
+		}
+
+		@Override
+		public void fill(T instance) {
+			instance.fill();
 		}
 
 	}

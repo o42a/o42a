@@ -128,7 +128,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			deriveBodyIRs(data, samples[i].getType(), false);
 		}
 
-		allocateBodyIR(data, this.mainBodyIR, false);
+		allocateBodyIR(data, this.mainBodyIR, null, false);
 	}
 
 	private void deriveBodyIRs(
@@ -147,7 +147,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 			final ObjectBodyIR bodyIR = ascendantBodyIR.derive(getObjectIR());
 
-			allocateBodyIR(data, bodyIR, inherited);
+			allocateBodyIR(data, bodyIR, ascendantBodyIR, inherited);
 			if (!inherited) {
 				this.sampleBodyIRs.add(bodyIR);
 			}
@@ -157,12 +157,22 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	private void allocateBodyIR(
 			SubData<?> data,
 			ObjectBodyIR bodyIR,
+			ObjectBodyIR derivedFrom,
 			boolean inherited) {
 
 		final Obj ascendant = bodyIR.getAscendant();
 
 		this.bodyIRs.put(ascendant, bodyIR);
-		data.addStruct(bodyIR.codeId(data.getGenerator()).getLocal(), bodyIR);
+		if (derivedFrom != null) {
+			data.addStruct(
+					bodyIR.codeId(data.getGenerator()).getLocal(),
+					derivedFrom,
+					bodyIR);
+		} else {
+			data.addStruct(
+					bodyIR.codeId(data.getGenerator()).getLocal(),
+					bodyIR);
+		}
 
 		if (inherited) {
 			bodyIR.setKind(ObjectBodyIR.Kind.INHERITED);
