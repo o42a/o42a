@@ -63,6 +63,6 @@ pipe_if_not_empty () {
 				fi
 				exit $error 
 			fi
-		} |  tee /dev/fd/6 > /dev/null
+		} > /dev/fd/6
 	} 5>&1 | pipe_if_not_empty ${CC} "${cc_args[@]}" >&6
 } 6>&1
