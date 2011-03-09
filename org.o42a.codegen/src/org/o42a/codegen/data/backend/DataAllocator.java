@@ -32,13 +32,13 @@ public interface DataAllocator {
 
 	DataAllocation<AnyOp> addBinary(CodeId id, byte[] data, int start, int end);
 
-	<O extends PtrOp> DataAllocation<O> begin(Type<O> type);
+	<O extends StructOp> DataAllocation<O> begin(Type<O> type);
 
-	<O extends PtrOp> DataAllocation<O> begin(
+	<O extends StructOp> DataAllocation<O> begin(
 			DataAllocation<O> type,
 			Global<O, ?> global);
 
-	<O extends PtrOp> DataAllocation<O> enter(
+	<O extends StructOp> DataAllocation<O> enter(
 			DataAllocation<O> type,
 			SubData<O> data);
 
@@ -63,7 +63,7 @@ public interface DataAllocator {
 
 	DataAllocation<AnyOp> allocatePtr(DataAllocation<AnyOp> type);
 
-	<P extends PtrOp> DataAllocation<P> allocatePtr(
+	<P extends StructOp> DataAllocation<P> allocatePtr(
 			DataAllocation<P> type,
 			DataAllocation<P> struct);
 

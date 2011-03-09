@@ -87,7 +87,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp implements FuncCaller {
 	}
 
 	@Override
-	public <O extends PtrOp> O callPtr(Code code, Type<O> type, Op... args) {
+	public <O extends StructOp> O callPtr(Code code, Type<O> type, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 

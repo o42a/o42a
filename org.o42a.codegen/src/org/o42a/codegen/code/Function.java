@@ -84,7 +84,7 @@ public final class Function<F extends Func> extends Code {
 		return writer().ptrArg(code, index);
 	}
 
-	public final <O extends PtrOp> O ptrArg(
+	public final <O extends StructOp> O ptrArg(
 			Code code,
 			int index,
 			Type<O> type) {

@@ -98,11 +98,6 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			return writer().relPtr(code, getType().getBody());
 		}
 
-		@Override
-		public final Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	public static final class Type

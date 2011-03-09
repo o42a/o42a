@@ -47,6 +47,6 @@ public interface PtrOp extends Op {
 
 	<F extends Func> CodeOp<F> toFunc(Code code, Signature<F> signature);
 
-	<O extends PtrOp> O to(Code code, Type<O> type);
+	<O extends StructOp> O to(Code code, Type<O> type);
 
 }

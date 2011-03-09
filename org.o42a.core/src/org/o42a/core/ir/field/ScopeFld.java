@@ -117,11 +117,6 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 			return writer().ptr(code, getType().getObject());
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	public static final class Type extends Fld.Type<Op> {

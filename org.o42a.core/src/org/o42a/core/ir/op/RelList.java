@@ -127,11 +127,6 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 			return writer().int32(code, getType().getSize());
 		}
 
-		@Override
-		public final Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {

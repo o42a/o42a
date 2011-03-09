@@ -253,7 +253,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends PtrOp> O nullPtr(DataAllocation<O> type) {
+	public <O extends StructOp> O nullPtr(DataAllocation<O> type) {
 
 		final ContainerAllocation<O> allocation =
 			(ContainerAllocation<O>) type;
@@ -276,7 +276,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends PtrOp> O allocateStruct(DataAllocation<O> allocation) {
+	public <O extends StructOp> O allocateStruct(DataAllocation<O> allocation) {
 
 		final ContainerAllocation<O> type =
 			(ContainerAllocation<O>) allocation;
@@ -307,7 +307,7 @@ public abstract class LLVMCode implements CodeWriter {
 			final StructOp struct = (StructOp) op;
 			final LLVMStruct writer = (LLVMStruct) struct.writer();
 
-			return (O) struct.create(writer.create(
+			return (O) struct.getType().op(writer.create(
 					nextPtr,
 					phi(nextPtr, writer.getBlockPtr(), writer.getNativePtr())));
 		}
@@ -334,7 +334,7 @@ public abstract class LLVMCode implements CodeWriter {
 			final LLVMStruct writer2 =
 				(LLVMStruct) struct2.writer();
 
-			return (O) struct1.create(writer1.create(
+			return (O) struct1.getType().op(writer1.create(
 					nextPtr,
 					phi2(
 							nextPtr,

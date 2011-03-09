@@ -143,7 +143,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	@Override
 	public Op op(StructWriter writer) {
-		return new Op(writer, this);
+		return new Op(writer);
 	}
 
 	@Override
@@ -265,19 +265,17 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	public static final class Op extends StructOp {
 
-		private final ObjectBodyIR bodyIR;
-
-		private Op(StructWriter writer, ObjectBodyIR bodyIR) {
+		private Op(StructWriter writer) {
 			super(writer);
-			this.bodyIR = bodyIR;
 		}
 
-		public final ObjectBodyIR getBodyIR() {
-			return this.bodyIR;
+		@Override
+		public final ObjectBodyIR getType() {
+			return (ObjectBodyIR) super.getType();
 		}
 
 		public final Obj getAscendant() {
-			return getBodyIR().getAscendant();
+			return getType().getAscendant();
 		}
 
 		public final ObjOp op(
@@ -296,13 +294,12 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 
 		public final DataOp<RelOp> ancestorBody(Code code) {
-			return writer().relPtr(code, this.bodyIR.ancestorBody);
+			return writer().relPtr(code, getType().ancestorBody);
 		}
 
 		public final ObjectOp ancestor(CodeBuilder builder, Code code) {
 
-			final TypeRef ancestorRef =
-				this.bodyIR.getAscendant().getAncestor();
+			final TypeRef ancestorRef = getAscendant().getAncestor();
 			final Obj ancestor;
 
 			if (ancestorRef == null) {
@@ -312,7 +309,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final RelOp ancestorBody =
-				writer().relPtr(code, this.bodyIR.ancestorBody).load(code);
+				writer().relPtr(code, getType().ancestorBody).load(code);
 			final AnyOp ancestorBodyPtr = ancestorBody.offset(code, this);
 
 			return anonymousObject(
@@ -324,19 +321,14 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		public final ObjectMethodsIR.Op methods(Code code) {
 
 			final AnyOp metaPtr =
-				writer().ptr(code, this.bodyIR.methods).load(code);
+				writer().ptr(code, getType().methods).load(code);
 
-			return metaPtr.to(code, this.bodyIR.getMethodsIR());
-		}
-
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer, getBodyIR());
+			return metaPtr.to(code, getType().getMethodsIR());
 		}
 
 		@Override
 		public String toString() {
-			return "*" + this.bodyIR.codeId(this.bodyIR.getGenerator());
+			return "*" + getType().codeId(getType().getGenerator());
 		}
 
 		final ObjOp op(ObjectDataOp data, Obj ascendant) {
@@ -345,7 +337,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		FldOp declaredField(Code code, ObjOp host, MemberKey memberKey) {
 
-			final Fld declared = this.bodyIR.fld(memberKey);
+			final Fld declared = getType().fld(memberKey);
 
 			assert declared != null :
 				memberKey + " is not declared in " + this;

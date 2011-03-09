@@ -82,11 +82,6 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 			super(writer);
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 }

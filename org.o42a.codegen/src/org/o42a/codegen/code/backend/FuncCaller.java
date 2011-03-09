@@ -38,6 +38,6 @@ public interface FuncCaller extends PtrOp {
 
 	AnyOp callAny(Code code, Op... args);
 
-	<O extends PtrOp> O callPtr(Code code, Type<O> type, Op... args);
+	<O extends StructOp> O callPtr(Code code, Type<O> type, Op... args);
 
 }

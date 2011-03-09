@@ -109,11 +109,6 @@ public final class ValOp extends StructOp {
 		return this;
 	}
 
-	@Override
-	public ValOp create(StructWriter writer) {
-		return new ValOp(writer);
-	}
-
 	public static final class Type extends org.o42a.codegen.data.Type<ValOp> {
 
 		private Int32rec flags;

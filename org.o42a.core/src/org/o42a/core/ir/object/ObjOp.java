@@ -101,7 +101,7 @@ public final class ObjOp extends ObjectOp {
 
 	@Override
 	public ObjOp cast(Code code, CodePos exit, Obj ascendant) {
-		ptr().getBodyIR().getObjectIR().getObject().assertDerivedFrom(
+		ptr().getType().getObjectIR().getObject().assertDerivedFrom(
 				ascendant);
 		if (ascendant == getAscendant()) {
 			return this;
@@ -121,7 +121,7 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public FldOp field(Code code, CodePos exit, MemberKey memberKey) {
 
-		final Fld fld = ptr().getBodyIR().getObjectIR().fld(memberKey);
+		final Fld fld = ptr().getType().getObjectIR().fld(memberKey);
 		final ObjOp host =
 			cast(code, exit, memberKey.getOrigin().getContainer().toObject());
 
@@ -131,7 +131,7 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public DepOp dep(Code code, CodePos exit, Dep dep) {
 
-		final DepIR ir = ptr().getBodyIR().getObjectIR().dep(dep);
+		final DepIR ir = ptr().getType().getObjectIR().dep(dep);
 		final ObjOp host = cast(code, exit, dep.getObject());
 
 		return ir.op(code, host);
@@ -144,7 +144,7 @@ public final class ObjOp extends ObjectOp {
 	private ObjOp staticCast(Code code, Obj ascendant) {
 
 		final ObjectBodyIR ascendantBodyIR =
-			ptr().getBodyIR().getObjectIR().bodyIR(ascendant);
+			ptr().getType().getObjectIR().bodyIR(ascendant);
 		final ObjectBodyIR.Op ascendantBody =
 			ascendantBodyIR.pointer(code.getGenerator()).op(code);
 

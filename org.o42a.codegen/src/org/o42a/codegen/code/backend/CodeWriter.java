@@ -49,7 +49,7 @@ public interface CodeWriter {
 
 	AnyOp nullPtr();
 
-	<O extends PtrOp> O nullPtr(DataAllocation<O> type);
+	<O extends StructOp> O nullPtr(DataAllocation<O> type);
 
 	<F extends Func> FuncCaller nullPtr(Signature<F> signature);
 
@@ -59,7 +59,7 @@ public interface CodeWriter {
 
 	DataOp<AnyOp> allocatePtr();
 
-	<O extends PtrOp> O allocateStruct(DataAllocation<O> allocation);
+	<O extends StructOp> O allocateStruct(DataAllocation<O> allocation);
 
 	<O extends Op> O phi(O op);
 

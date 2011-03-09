@@ -26,12 +26,12 @@ import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class ContainerAllocation<O extends PtrOp>
+public abstract class ContainerAllocation<O extends StructOp>
 		extends LLVMDataAllocation<O> {
 
 	private final Type<O> type;
@@ -125,7 +125,7 @@ public abstract class ContainerAllocation<O extends PtrOp>
 		return llvmId().addIndex(this.nextIndex++);
 	}
 
-	static final class Null<O extends PtrOp> extends ContainerAllocation<O> {
+	static final class Null<O extends StructOp> extends ContainerAllocation<O> {
 
 		private final LLVMId llvmId;
 
@@ -148,7 +148,7 @@ public abstract class ContainerAllocation<O extends PtrOp>
 
 	}
 
-	static final class Global<O extends PtrOp>
+	static final class Global<O extends StructOp>
 			extends ContainerAllocation<O> {
 
 		private final LLVMId llvmId;
@@ -171,7 +171,8 @@ public abstract class ContainerAllocation<O extends PtrOp>
 
 	}
 
-	static final class Struct<O extends PtrOp> extends ContainerAllocation<O> {
+	static final class Struct<O extends StructOp>
+			extends ContainerAllocation<O> {
 
 		private final LLVMId llvmId;
 

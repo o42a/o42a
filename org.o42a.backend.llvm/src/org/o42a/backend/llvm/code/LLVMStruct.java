@@ -58,7 +58,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public Type<?> getType() {
+	public Type<? extends StructOp> getType() {
 		return this.type.getType();
 	}
 
@@ -116,7 +116,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public <O extends PtrOp> O struct(Code code, Type<O> field) {
+	public <O extends StructOp> O struct(Code code, Type<O> field) {
 
 		final long nextPtr = nextPtr(code);
 

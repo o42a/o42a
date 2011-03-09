@@ -134,11 +134,6 @@ public class DepIR {
 			return writer().ptr(code, getType().getObject());
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 }

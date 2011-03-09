@@ -154,11 +154,6 @@ public class CtrOp extends IROp {
 			return new CtrOp(builder, this);
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {

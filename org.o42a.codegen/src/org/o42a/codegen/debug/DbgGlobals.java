@@ -74,11 +74,6 @@ final class DbgGlobals extends Struct<DbgGlobals.Op> {
 			super(writer);
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 }

@@ -21,11 +21,11 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class StructPtrRec<O extends PtrOp> extends PtrRec<O> {
+public final class StructPtrRec<O extends StructOp> extends PtrRec<O> {
 
 	private final Type<O> type;
 	private Generator generator;

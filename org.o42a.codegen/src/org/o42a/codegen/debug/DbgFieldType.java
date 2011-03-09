@@ -116,11 +116,6 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 			super(writer);
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 }

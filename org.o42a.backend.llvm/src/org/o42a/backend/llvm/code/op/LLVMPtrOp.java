@@ -136,7 +136,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	}
 
 	@Override
-	public <O extends PtrOp> O to(Code code, Type<O> type) {
+	public <O extends StructOp> O to(Code code, Type<O> type) {
 
 		final long nextPtr = nextPtr(code);
 

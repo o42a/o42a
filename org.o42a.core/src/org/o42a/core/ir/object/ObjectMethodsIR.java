@@ -58,7 +58,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 
 	@Override
 	public final Op op(StructWriter writer) {
-		return new Op(writer, this);
+		return new Op(writer);
 	}
 
 	@Override
@@ -98,24 +98,17 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 
 	public static final class Op extends StructOp {
 
-		private final ObjectMethodsIR methodsIR;
-
-		private Op(StructWriter writer, ObjectMethodsIR metaIR) {
+		private Op(StructWriter writer) {
 			super(writer);
-			this.methodsIR = metaIR;
-		}
-
-		public final ObjectMethodsIR getMethodsIR() {
-			return this.methodsIR;
-		}
-
-		public final DataOp<ObjectType.Op> objectType(Code code) {
-			return writer().ptr(code, this.methodsIR.objectType);
 		}
 
 		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer, this.methodsIR);
+		public final ObjectMethodsIR getType() {
+			return (ObjectMethodsIR) super.getType();
+		}
+
+		public final DataOp<ObjectType.Op> objectType(Code code) {
+			return writer().ptr(code, getType().objectType);
 		}
 
 	}

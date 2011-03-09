@@ -94,11 +94,9 @@ public abstract class StructOp implements PtrOp {
 	}
 
 	@Override
-	public final <O extends PtrOp> O to(Code code, Type<O> type) {
+	public final <O extends StructOp> O to(Code code, Type<O> type) {
 		return writer().to(code, type);
 	}
-
-	public abstract StructOp create(StructWriter writer);
 
 	public final StructWriter writer() {
 		return this.writer;
