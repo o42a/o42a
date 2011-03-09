@@ -25,8 +25,8 @@ import org.o42a.codegen.code.op.PtrOp;
 
 public abstract class PtrRec<O extends PtrOp> extends Rec<O, Ptr<O>> {
 
-	PtrRec(CodeId id, Content<?> content) {
-		super(id, content);
+	PtrRec(SubData<?> enclosing, CodeId id, Content<?> content) {
+		super(enclosing, id, content);
 	}
 
 	public abstract void setNull();

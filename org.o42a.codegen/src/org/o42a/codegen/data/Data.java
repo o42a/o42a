@@ -29,14 +29,27 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Data<O extends PtrOp> extends DataBase {
 
+	private final Generator generator;
 	private final CodeId id;
 	private final Ptr<O> pointer;
 	private Data<?> next;
-	private Generator generator;
 
-	Data(CodeId id) {
+	Data(Generator generator, CodeId id) {
+		assert generator != null :
+			"Code generator not specified";
 		assert id != null :
 			"Data identifier not specified";
+		this.generator = generator;
+		this.id = id;
+		this.pointer = new Ptr<O>(this);
+	}
+
+	Data(SubData<?> enclosing, CodeId id) {
+		assert enclosing != null :
+			"Enclosing data not specified";
+		assert id != null :
+			"Data identifier not specified";
+		this.generator = enclosing.getGenerator();
 		this.id = id;
 		this.pointer = new Ptr<O>(this);
 	}
@@ -44,6 +57,10 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 	public final Generator getGenerator() {
 		return this.generator;
 	}
+
+	public abstract Global<?, ?> getGlobal();
+
+	public abstract SubData<?> getEnclosing();
 
 	public final CodeId getId() {
 		return this.id;
@@ -77,7 +94,6 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 	}
 
 	void allocateData(Generator generator) {
-		this.generator = generator;
 		allocate(generator);
 	}
 

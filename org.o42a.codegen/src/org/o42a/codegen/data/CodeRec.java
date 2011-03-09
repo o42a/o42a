@@ -32,10 +32,11 @@ public abstract class CodeRec<F extends Func>
 	private final Signature<F> signature;
 
 	public CodeRec(
+			SubData<?> enclosing,
 			CodeId id,
 			Signature<F> signature,
 			Content<CodeRec<F>> content) {
-		super(id, content);
+		super(enclosing, id, content);
 		this.signature = signature;
 	}
 

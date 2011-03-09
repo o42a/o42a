@@ -38,18 +38,37 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 
 	protected abstract void fill();
 
-	final void setStruct(Generator generator, CodeId name) {
-		this.data = new StructData<O>(generator, this, name);
+	final void setStruct(SubData<?> enclosing, CodeId name) {
+		this.data = new StructData<O>(enclosing, this, name);
 	}
 
 	final void setGlobal(Global<O, ?> global) {
-		this.data = new GlobalData<O>(this, global);
+		this.data = new GlobalData<O>(global, this);
 	}
 
-	private static final class StructData<O extends StructOp> extends SubData<O> {
+	private static final class StructData<O extends StructOp>
+			extends SubData<O> {
 
-		StructData(Generator generator, Struct<O> type, CodeId name) {
-			super(type.codeId(generator).setLocal(name), type);
+		private final Global<?, ?> global;
+		private final SubData<?> enclosing;
+
+		StructData(SubData<?> enclosing, Struct<O> type, CodeId name) {
+			super(
+					enclosing.getGenerator(),
+					type.codeId(enclosing.getGenerator()).setLocal(name),
+					type);
+			this.global = enclosing.getGlobal();
+			this.enclosing = enclosing;
+		}
+
+		@Override
+		public Global<?, ?> getGlobal() {
+			return this.global;
+		}
+
+		@Override
+		public SubData<?> getEnclosing() {
+			return this.enclosing;
 		}
 
 		@Override
@@ -90,9 +109,19 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 
 		private final Global<O, ?> global;
 
-		public GlobalData(Type<O> type, Global<O, ?> global) {
-			super(global.getId().removeLocal(), type);
+		GlobalData(Global<O, ?> global, Type<O> type) {
+			super(global.getGenerator(), global.getId().removeLocal(), type);
 			this.global = global;
+		}
+
+		@Override
+		public Global<O, ?> getGlobal() {
+			return this.global;
+		}
+
+		@Override
+		public SubData<?> getEnclosing() {
+			return null;
 		}
 
 		@Override

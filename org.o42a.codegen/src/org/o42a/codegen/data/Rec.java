@@ -27,17 +27,28 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public abstract class Rec<O extends PtrOp, T> extends Data<O> {
 
+	private final SubData<?> enclosing;
 	@SuppressWarnings("rawtypes")
 	private final Content content;
+	private T value;
 
-	Rec(CodeId id, Content<?> content) {
-		super(id);
+	Rec(SubData<?> enclosing, CodeId id, Content<?> content) {
+		super(enclosing, id);
+		this.enclosing = enclosing;
 		this.content = content != null ? content : Type.EMPTY_CONTENT;
 	}
 
-	private T value;
+	@Override
+	public final Global<?, ?> getGlobal() {
+		return getEnclosing().getGlobal();
+	}
 
-	public T getValue() {
+	@Override
+	public final SubData<?> getEnclosing() {
+		return this.enclosing;
+	}
+
+	public final T getValue() {
 		return this.value;
 	}
 

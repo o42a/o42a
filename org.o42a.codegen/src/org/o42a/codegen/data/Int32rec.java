@@ -28,8 +28,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class Int32rec extends Rec<DataOp<Int32op>, Integer> {
 
-	Int32rec(CodeId id, Content<Int32rec> content) {
-		super(id, content);
+	Int32rec(SubData<?> enclosing, CodeId id, Content<Int32rec> content) {
+		super(enclosing, id, content);
 	}
 
 	@Override

@@ -144,18 +144,18 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 	@SuppressWarnings("unchecked")
 	final <I extends Type<O>> I instantiate(
-			Generator generator,
+			SubData<?> enclosing,
 			CodeId id,
 			I instance,
 			Content<?> content) {
-		ensureTypeAllocated(generator, true);
+		ensureTypeAllocated(enclosing.getGenerator(), true);
 		if (instance == null) {
 			instance = (I) clone();
 		} else {
 			instance.original = this.original;
 		}
 
-		instance.data = new InstanceData<O>(id, instance, content);
+		instance.data = new InstanceData<O>(enclosing, id, instance, content);
 
 		return instance;
 	}
@@ -172,7 +172,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 			instance.original = this.original;
 		}
 
-		instance.data = new GlobalInstanceData<O>(instance, global, content);
+		instance.data = new GlobalInstanceData<O>(global, instance, content);
 
 		return instance;
 	}
@@ -213,7 +213,17 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 	private static final class TypeData<O extends StructOp> extends SubData<O> {
 
 		TypeData(Generator generator, Type<O> type) {
-			super(type.codeId(generator).removeLocal(), type);
+			super(generator, type.codeId(generator).removeLocal(), type);
+		}
+
+		@Override
+		public Global<?, ?> getGlobal() {
+			return null;
+		}
+
+		@Override
+		public SubData<?> getEnclosing() {
+			return null;
 		}
 
 		@Override
@@ -248,17 +258,65 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 	}
 
-	private static class InstanceData<O extends StructOp> extends SubData<O> {
+	private static abstract class AbstractInstanceData<O extends StructOp>
+			extends SubData<O> {
 
 		@SuppressWarnings("rawtypes")
 		final Content content;
 		private Data<?> next;
 
-		InstanceData(CodeId id, Type<O> type, Content<?> content) {
-			super(id, type);
+		AbstractInstanceData(
+				Generator generator,
+				CodeId id,
+				Type<O> type,
+				Content<?> content) {
+			super(generator, id, type);
 			getPointer().copyAllocation(type.getOriginal().getTypeData());
 			this.content = content != null ? content : EMPTY_CONTENT;
 			this.next = type.original.data.data().getFirst();
+		}
+
+		@Override
+		protected <D extends Data<?>> D add(D data) {
+			assert this.next != null :
+				"An attempt to add more fields to instance,"
+				+ " than type contains: " + data + " (" + (size() + 1) + ")";
+			assert data.getClass() == this.next.getClass() :
+				"Wrong field " + data + " at position " + size()
+				+ ", while " + this.next + " expected";
+
+			data.getPointer().copyAllocation(this.next);
+			this.next = this.next.getNext();
+
+			return super.add(data);
+		}
+
+	}
+
+	private static final class InstanceData<O extends StructOp>
+			extends AbstractInstanceData<O> {
+
+		private final Global<?, ?> global;
+		private final SubData<?> enclosing;
+
+		InstanceData(
+				SubData<?> enclosing,
+				CodeId id,
+				Type<O> type,
+				Content<?> content) {
+			super(enclosing.getGenerator(), id, type, content);
+			this.global = enclosing.getGlobal();
+			this.enclosing = enclosing;
+		}
+
+		@Override
+		public Global<?, ?> getGlobal() {
+			return this.global;
+		}
+
+		@Override
+		public SubData<?> getEnclosing() {
+			return this.enclosing;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -282,35 +340,33 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 			writer.exit(getPointer().getAllocation(), this);
 		}
 
-		@Override
-		protected <D extends Data<?>> D add(D data) {
-			assert this.next != null :
-				"An attempt to add more fields to instance,"
-				+ " than type contains: " + data + " (" + (size() + 1) + ")";
-			assert data.getClass() == this.next.getClass() :
-				"Wrong field " + data + " at position " + size()
-				+ ", while " + this.next + " expected";
-
-			data.getPointer().copyAllocation(this.next);
-			this.next = this.next.getNext();
-
-			return super.add(data);
-		}
-
 	}
 
 	private static final class GlobalInstanceData<O extends StructOp>
-			extends InstanceData<O> {
+			extends AbstractInstanceData<O> {
 
 		private final Global<O, ?> global;
 
 		GlobalInstanceData(
-				Type<O> type,
 				Global<O, ?> global,
+				Type<O> type,
 				Content<?> content) {
-			super(global.getId().removeLocal(), type, content);
-			getPointer().copyAllocation(type.getOriginal().getTypeData());
+			super(
+					global.getGenerator(),
+					global.getId().removeLocal(),
+					type,
+					content);
 			this.global = global;
+		}
+
+		@Override
+		public Global<?, ?> getGlobal() {
+			return this.global;
+		}
+
+		@Override
+		public SubData<?> getEnclosing() {
+			return null;
 		}
 
 		@SuppressWarnings("unchecked")
