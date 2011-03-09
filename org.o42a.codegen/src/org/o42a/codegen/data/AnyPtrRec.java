@@ -27,20 +27,17 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class AnyPtrRec extends PtrRec<AnyOp> {
 
-	private Generator generator;
-
-	AnyPtrRec(CodeId id, Content<AnyPtrRec> content) {
-		super(id, content);
+	AnyPtrRec(SubData<?> enclosing, CodeId id, Content<AnyPtrRec> content) {
+		super(enclosing, id, content);
 	}
 
 	@Override
 	public void setNull() {
-		setValue(new Ptr<AnyOp>(this.generator.dataWriter().nullPtr()));
+		setValue(new Ptr<AnyOp>(getGenerator().dataWriter().nullPtr()));
 	}
 
 	@Override
 	protected void allocate(Generator generator) {
-		this.generator = generator;
 		setAllocation(generator.dataAllocator().allocatePtr(
 				getAllocation()));
 	}

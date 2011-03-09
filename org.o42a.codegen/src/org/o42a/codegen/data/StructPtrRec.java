@@ -30,8 +30,12 @@ public final class StructPtrRec<O extends StructOp> extends PtrRec<O> {
 	private final Type<O> type;
 	private Generator generator;
 
-	StructPtrRec(CodeId id, Type<O> type, Content<StructPtrRec<O>> content) {
-		super(id, content);
+	StructPtrRec(
+			SubData<?> enclosing,
+			CodeId id,
+			Type<O> type,
+			Content<StructPtrRec<O>> content) {
+		super(enclosing, id, content);
 		this.type = type;
 	}
 

@@ -23,27 +23,29 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.CodeRec;
 import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
 final class CodePtrRec<F extends Func> extends CodeRec<F> {
 
-	private Generator generator;
-
-	CodePtrRec(CodeId id, Signature<F> signature, Content<CodeRec<F>> content) {
-		super(id, signature, content);
+	CodePtrRec(
+			SubData<?> enclosing,
+			CodeId id,
+			Signature<F> signature,
+			Content<CodeRec<F>> content) {
+		super(enclosing, id, signature, content);
 	}
 
 	@Override
 	public void setNull() {
 		setValue(new CodePtr.NullPtr<F>(
 				getSignature(),
-				this.generator.dataWriter().nullPtr(getSignature())));
+				getGenerator().dataWriter().nullPtr(getSignature())));
 	}
 
 	@Override
 	protected void allocate(Generator generator) {
-		this.generator = generator;
 		setAllocation(generator.dataAllocator().allocateCodePtr(
 				getAllocation(),
 				getSignature()));

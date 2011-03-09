@@ -28,8 +28,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class Fp64rec extends Rec<DataOp<Fp64op>, Double> {
 
-	Fp64rec(CodeId id, Content<Fp64rec> content) {
-		super(id, content);
+	Fp64rec(SubData<?> enclosing, CodeId id, Content<Fp64rec> content) {
+		super(enclosing, id, content);
 	}
 
 	@Override

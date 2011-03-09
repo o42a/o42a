@@ -22,15 +22,17 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.data.CodeRec;
 import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.SubData;
 
 
 public abstract class DataBase {
 
 	protected static <F extends Func> CodeRec<F> codePtrRecord(
+			SubData<?> enclosing,
 			CodeId id,
 			Signature<F> signature,
 			Content<CodeRec<F>> content) {
-		return new CodePtrRec<F>(id, signature, content);
+		return new CodePtrRec<F>(enclosing, id, signature, content);
 	}
 
 }

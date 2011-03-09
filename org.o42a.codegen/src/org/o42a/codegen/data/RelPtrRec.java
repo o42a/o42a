@@ -28,8 +28,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class RelPtrRec extends Rec<DataOp<RelOp>, RelPtr> {
 
-	RelPtrRec(CodeId id, Content<RelPtrRec> content) {
-		super(id, content);
+	RelPtrRec(SubData<?> enclosing, CodeId id, Content<RelPtrRec> content) {
+		super(enclosing, id, content);
 	}
 
 	@Override

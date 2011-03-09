@@ -24,6 +24,7 @@ import static org.o42a.codegen.data.Struct.structContent;
 import java.util.Iterator;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.StructOp;
@@ -38,8 +39,8 @@ public abstract class SubData<O extends StructOp>
 	private final DataChain data = new DataChain();
 	private int size;
 
-	SubData(CodeId id, Type<O> type) {
-		super(id);
+	SubData(Generator generator, CodeId id, Type<O> type) {
+		super(generator, id);
 		this.type = type;
 	}
 
@@ -53,39 +54,33 @@ public abstract class SubData<O extends StructOp>
 	}
 
 	public final Int32rec addInt32(String name) {
-		return add(new Int32rec(id(name), null));
+		return add(new Int32rec(this, id(name), null));
 	}
 
 	public final Int32rec addInt32(String name, Content<Int32rec> content) {
-		return add(new Int32rec(id(name), content));
+		return add(new Int32rec(this, id(name), content));
 	}
 
 	public final Int64rec addInt64(String name) {
-		return add(new Int64rec(id(name), null));
+		return add(new Int64rec(this, id(name), null));
 	}
 
 	public final Int64rec addInt64(String name, Content<Int64rec> content) {
-		return add(new Int64rec(id(name), content));
+		return add(new Int64rec(this, id(name), content));
 	}
 
 	public final Fp64rec addFp64(String name) {
-		return add(new Fp64rec(id(name), null));
+		return add(new Fp64rec(this, id(name), null));
 	}
 
 	public final Fp64rec addFp64(String name, Content<Fp64rec> content) {
-		return add(new Fp64rec(id(name), content));
+		return add(new Fp64rec(this, id(name), content));
 	}
 
 	public final <F extends Func> CodeRec<F> addCodePtr(
 			String name,
 			Signature<F> signature) {
-
-		final SignatureDataBase<F> sign = signature;
-
-		return add(codePtrRecord(
-				id(name),
-				sign.allocate(getGenerator().codeBackend()),
-				null));
+		return addCodePtr(name, signature, null);
 	}
 
 	public final <F extends Func> CodeRec<F> addCodePtr(
@@ -96,40 +91,45 @@ public abstract class SubData<O extends StructOp>
 		final SignatureDataBase<F> sign = signature;
 
 		return add(codePtrRecord(
+				this,
 				id(name),
 				sign.allocate(getGenerator().codeBackend()),
 				content));
 	}
 
 	public final AnyPtrRec addPtr(String name) {
-		return add(new AnyPtrRec(id(name), null));
+		return add(new AnyPtrRec(this, id(name), null));
 	}
 
 	public final AnyPtrRec addPtr(
 			String name,
 			Content<AnyPtrRec> content) {
-		return add(new AnyPtrRec(id(name), content));
+		return add(new AnyPtrRec(this, id(name), content));
 	}
 
 	public final <P extends StructOp> StructPtrRec<P> addPtr(
 			String name,
 			Type<P> type) {
-		return add(new StructPtrRec<P>(id(name), type, null));
+		return add(new StructPtrRec<P>(this, id(name), type, null));
 	}
 
 	public final <P extends StructOp> StructPtrRec<P> addPtr(
 			String name,
 			Type<P> type,
 			Content<StructPtrRec<P>> content) {
-		return add(new StructPtrRec<P>(id(name), type, content));
+		return add(new StructPtrRec<P>(
+				this,
+				id(name),
+				type,
+				content));
 	}
 
 	public final RelPtrRec addRelPtr(String name) {
-		return add(new RelPtrRec(id(name), null));
+		return add(new RelPtrRec(this, id(name), null));
 	}
 
 	public final RelPtrRec addRelPtr(String name, Content<RelPtrRec> content) {
-		return add(new RelPtrRec(id(name), content));
+		return add(new RelPtrRec(this, id(name), content));
 	}
 
 	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
@@ -157,7 +157,7 @@ public abstract class SubData<O extends StructOp>
 			T type,
 			T instance,
 			Content<T> content) {
-		instance = type.instantiate(getGenerator(), name, instance, content);
+		instance = type.instantiate(this, name, instance, content);
 
 		final SubData<?> data = instance.getTypeData();
 
@@ -177,7 +177,7 @@ public abstract class SubData<O extends StructOp>
 	}
 
 	public final <S extends Struct<?>> S addStruct(CodeId name, S struct) {
-		struct.setStruct(getGenerator(), name);
+		struct.setStruct(this, name);
 		add(struct.getTypeData());
 		return struct;
 	}
