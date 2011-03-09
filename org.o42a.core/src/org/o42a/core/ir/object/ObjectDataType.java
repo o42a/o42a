@@ -225,11 +225,6 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
-		@Override
 		public String toString() {
 			return getType() + " data";
 		}

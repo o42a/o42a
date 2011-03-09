@@ -141,22 +141,22 @@ public abstract class LLVMDataOp<O extends Op>
 
 	}
 
-	public static final class Struct<P extends PtrOp> extends LLVMDataOp<P> {
+	public static final class Struct<O extends StructOp> extends LLVMDataOp<O> {
 
-		private final Type<P> type;
+		private final Type<O> type;
 
-		public Struct(Type<P> type, long blockPtr, long nativePtr) {
+		public Struct(Type<O> type, long blockPtr, long nativePtr) {
 			super(blockPtr, nativePtr);
 			this.type = type;
 		}
 
 		@Override
-		public Struct<P> create(long blockPtr, long nativePtr) {
-			return new Struct<P>(this.type, blockPtr, nativePtr);
+		public Struct<O> create(long blockPtr, long nativePtr) {
+			return new Struct<O>(this.type, blockPtr, nativePtr);
 		}
 
 		@Override
-		protected P createLoaded(long blockPtr, long nativePtr) {
+		protected O createLoaded(long blockPtr, long nativePtr) {
 			return this.type.op(
 					new LLVMStruct(this.type, blockPtr, nativePtr));
 		}

@@ -23,6 +23,7 @@ import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
 
@@ -60,7 +61,7 @@ abstract class SimpleDataAllocation<O extends PtrOp>
 
 	protected abstract O op(long blockPtr, long nativePtr);
 
-	static final class StructPtr<O extends PtrOp>
+	static final class StructPtr<O extends StructOp>
 			extends SimpleDataAllocation<O> {
 
 		private final Type<O> type;

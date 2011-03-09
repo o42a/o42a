@@ -93,11 +93,6 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 			super(writer);
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 }

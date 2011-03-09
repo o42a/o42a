@@ -41,6 +41,6 @@ public interface FuncWriter<F extends Func> extends CodeWriter {
 
 	AnyOp ptrArg(Code code, int index);
 
-	<O extends PtrOp> O ptrArg(Code code, int index, Type<O> type);
+	<O extends StructOp> O ptrArg(Code code, int index, Type<O> type);
 
 }

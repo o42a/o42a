@@ -199,11 +199,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			super(writer);
 		}
 
-		@Override
-		public AllBodiesOp create(StructWriter writer) {
-			return new AllBodiesOp(writer);
-		}
-
 	}
 
 	private final class AllBodies extends Struct<AllBodiesOp> {
@@ -237,11 +232,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 		public Op(StructWriter writer) {
 			super(writer);
-		}
-
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
 		}
 
 	}

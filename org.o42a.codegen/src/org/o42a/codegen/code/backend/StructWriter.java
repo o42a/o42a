@@ -41,7 +41,7 @@ public interface StructWriter extends PtrOp {
 
 	DataOp<RelOp> relPtr(Code code, RelPtrRec field);
 
-	<O extends PtrOp> O struct(Code code, Type<O> field);
+	<O extends StructOp> O struct(Code code, Type<O> field);
 
 	<F extends Func> CodeOp<F> func(Code code, CodeRec<F> field);
 

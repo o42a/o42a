@@ -76,11 +76,6 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 			return writer().relPtr(code, getType().getBody());
 		}
 
-		@Override
-		public final Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	public static final class Type

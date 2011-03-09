@@ -26,12 +26,11 @@ import java.util.Iterator;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class SubData<O extends PtrOp>
+public abstract class SubData<O extends StructOp>
 		extends Data<O>
 		implements Iterable<Data<?>> {
 
@@ -133,27 +132,27 @@ public abstract class SubData<O extends PtrOp>
 		return add(new RelPtrRec(id(name), content));
 	}
 
-	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
+	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
 			CodeId name,
 			T type) {
 		return addInstance(name, type, null, null);
 	}
 
-	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
+	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
 			CodeId name,
 			T type,
 			Content<T> content) {
 		return addInstance(name, type, null, content);
 	}
 
-	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
+	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
 			CodeId name,
 			T type,
 			T instance) {
 		return addInstance(name, type, instance, null);
 	}
 
-	public final <OP extends PtrOp, T extends Type<OP>> T addInstance(
+	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
 			CodeId name,
 			T type,
 			T instance,
@@ -167,7 +166,7 @@ public abstract class SubData<O extends PtrOp>
 		return instance;
 	}
 
-	public final <OP extends PtrOp, T extends Struct<OP>> T addStruct(
+	public final <OP extends StructOp, T extends Struct<OP>> T addStruct(
 			CodeId name,
 			T type,
 			T instance) {

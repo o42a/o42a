@@ -111,7 +111,7 @@ public final class LLVMFunction<F extends Func>
 	}
 
 	@Override
-	public <O extends PtrOp> O ptrArg(Code code, int index, Type<O> type) {
+	public <O extends StructOp> O ptrArg(Code code, int index, Type<O> type) {
 		return type.op(new LLVMStruct(
 				type,
 				head().getBlockPtr(),

@@ -58,7 +58,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <O extends PtrOp> DataAllocation<O> begin(Type<O> type) {
+	public <O extends StructOp> DataAllocation<O> begin(Type<O> type) {
 		return push(new TypeAllocation<O>(
 				getModule(),
 				createType(getModulePtr()),
@@ -68,7 +68,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <O extends PtrOp> DataAllocation<O> begin(
+	public <O extends StructOp> DataAllocation<O> begin(
 			DataAllocation<O> type,
 			Global<O, ?> global) {
 
@@ -93,7 +93,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <O extends PtrOp> DataAllocation<O> enter(
+	public <O extends StructOp> DataAllocation<O> enter(
 			DataAllocation<O> type,
 			SubData<O> data) {
 
@@ -230,7 +230,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <P extends PtrOp> DataAllocation<P> allocatePtr(
+	public <P extends StructOp> DataAllocation<P> allocatePtr(
 			DataAllocation<P> type,
 			DataAllocation<P> struct) {
 
@@ -298,7 +298,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		return getModule().getNativePtr();
 	}
 
-	private <O extends PtrOp> ContainerAllocation<O> push(
+	private <O extends StructOp> ContainerAllocation<O> push(
 			ContainerAllocation<O> allocation) {
 		this.top = allocation;
 		return allocation;

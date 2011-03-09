@@ -85,11 +85,6 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 			return writer().ptr(code, getType().getPrev());
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 }

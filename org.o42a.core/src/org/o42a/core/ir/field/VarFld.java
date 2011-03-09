@@ -89,11 +89,6 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
-		@Override
 		protected AnyOp construct(
 				Code code,
 				ObjOp host,

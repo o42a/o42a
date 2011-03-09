@@ -21,10 +21,10 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 
 
-public final class Global<O extends PtrOp, T extends Type<O>> {
+public final class Global<O extends StructOp, T extends Type<O>> {
 
 	private final GlobalSettings settings;
 	private final CodeId id;

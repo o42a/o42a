@@ -23,13 +23,13 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Type<O extends PtrOp> implements Cloneable {
+public abstract class Type<O extends StructOp> implements Cloneable {
 
 	@SuppressWarnings("rawtypes")
 	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
@@ -210,7 +210,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 		}
 	}
 
-	private static final class TypeData<O extends PtrOp> extends SubData<O> {
+	private static final class TypeData<O extends StructOp> extends SubData<O> {
 
 		TypeData(Generator generator, Type<O> type) {
 			super(type.codeId(generator).removeLocal(), type);
@@ -248,7 +248,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 
 	}
 
-	private static class InstanceData<O extends PtrOp> extends SubData<O> {
+	private static class InstanceData<O extends StructOp> extends SubData<O> {
 
 		@SuppressWarnings("rawtypes")
 		final Content content;
@@ -299,7 +299,7 @@ public abstract class Type<O extends PtrOp> implements Cloneable {
 
 	}
 
-	private static final class GlobalInstanceData<O extends PtrOp>
+	private static final class GlobalInstanceData<O extends StructOp>
 			extends InstanceData<O> {
 
 		private final Global<O, ?> global;

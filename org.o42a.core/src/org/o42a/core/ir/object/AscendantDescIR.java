@@ -89,11 +89,6 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return writer().relPtr(code, getType().getBody());
 		}
 
-		@Override
-		public final Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	public static final class Type

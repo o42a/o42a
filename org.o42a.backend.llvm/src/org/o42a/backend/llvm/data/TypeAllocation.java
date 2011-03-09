@@ -22,11 +22,11 @@ package org.o42a.backend.llvm.data;
 import static org.o42a.backend.llvm.data.LLVMId.typeId;
 
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 
 
-public final class TypeAllocation<O extends PtrOp>
+public final class TypeAllocation<O extends StructOp>
 		extends ContainerAllocation<O> {
 
 	private final LLVMId llvmId;

@@ -21,12 +21,12 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Struct<O extends PtrOp> extends Type<O> {
+public abstract class Struct<O extends StructOp> extends Type<O> {
 
 	@SuppressWarnings("rawtypes")
 	private static final StructContent<?> STRUCT_CONTENT = new StructContent();
@@ -46,7 +46,7 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 		this.data = new GlobalData<O>(this, global);
 	}
 
-	private static final class StructData<O extends PtrOp> extends SubData<O> {
+	private static final class StructData<O extends StructOp> extends SubData<O> {
 
 		StructData(Generator generator, Struct<O> type, CodeId name) {
 			super(type.codeId(generator).setLocal(name), type);
@@ -85,7 +85,8 @@ public abstract class Struct<O extends PtrOp> extends Type<O> {
 
 	}
 
-	private static final class GlobalData<O extends PtrOp> extends SubData<O> {
+	private static final class GlobalData<O extends StructOp>
+			extends SubData<O> {
 
 		private final Global<O, ?> global;
 

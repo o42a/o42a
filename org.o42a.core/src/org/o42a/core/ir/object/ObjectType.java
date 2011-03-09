@@ -105,11 +105,6 @@ public class ObjectType extends Type<ObjectType.Op> {
 			return data(code).op(builder, precision);
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	private static final class Fields extends RelList<FieldDescIR> {

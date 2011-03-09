@@ -21,14 +21,14 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 
 
 public abstract class CodeBase {
 
 	private boolean complete;
 
-	public <O extends PtrOp> O allocate(Type<O> type) {
+	public <O extends StructOp> O allocate(Type<O> type) {
 		assertIncomplete();
 
 		final Code code = (Code) this;

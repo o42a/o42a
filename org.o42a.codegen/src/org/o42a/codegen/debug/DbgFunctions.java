@@ -81,11 +81,6 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 			super(writer);
 		}
 
-		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 }

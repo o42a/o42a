@@ -161,11 +161,6 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		public Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
-		@Override
 		protected AnyOp construct(
 				Code code,
 				ObjOp host,

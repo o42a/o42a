@@ -21,7 +21,7 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 
 
 public final class GlobalSettings {
@@ -67,32 +67,32 @@ public final class GlobalSettings {
 		return this;
 	}
 
-	public final <O extends PtrOp, T extends Type<O>> Global<O, T> create(
+	public final <O extends StructOp, T extends Type<O>> Global<O, T> create(
 			CodeId id,
 			T type) {
 		return create(id, type, null);
 	}
 
-	public final <O extends PtrOp, T extends Type<O>> Global<O, T> create(
+	public final <O extends StructOp, T extends Type<O>> Global<O, T> create(
 			CodeId id,
 			T type,
 			Content<T> content) {
 		return this.globals.addGlobal(this, id, type, null, content);
 	}
 
-	public final <O extends PtrOp, S extends Struct<O>> Global<O, S> create(
+	public final <O extends StructOp, S extends Struct<O>> Global<O, S> create(
 			S struct) {
 		return this.globals.addGlobal(this, struct);
 	}
 
-	public final <O extends PtrOp, T extends Type<O>> Global<O, T> build(
+	public final <O extends StructOp, T extends Type<O>> Global<O, T> build(
 			CodeId id,
 			T type,
 			T instance) {
 		return build(id, type, instance, null);
 	}
 
-	public final <O extends PtrOp, T extends Type<O>> Global<O, T> build(
+	public final <O extends StructOp, T extends Type<O>> Global<O, T> build(
 			CodeId id,
 			T type,
 			T instance,
@@ -100,7 +100,7 @@ public final class GlobalSettings {
 		return this.globals.addGlobal(this, id, type, instance, content);
 	}
 
-	public final <O extends PtrOp, S extends Struct<O>> Global<O, S> create(
+	public final <O extends StructOp, S extends Struct<O>> Global<O, S> create(
 			CodeId id,
 			S type,
 			S instance) {

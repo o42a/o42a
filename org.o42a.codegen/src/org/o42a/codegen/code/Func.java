@@ -85,7 +85,7 @@ public abstract class Func implements PtrOp {
 	}
 
 	@Override
-	public final <O extends PtrOp> O to(Code code, Type<O> type) {
+	public final <O extends StructOp> O to(Code code, Type<O> type) {
 		return caller().to(code, type);
 	}
 

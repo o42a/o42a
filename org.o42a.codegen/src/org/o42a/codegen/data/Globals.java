@@ -23,7 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Functions;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -70,7 +70,7 @@ public abstract class Globals extends Functions {
 		this.globals.add(global);
 	}
 
-	<O extends PtrOp, T extends Type<O>> Global<O, T> addGlobal(
+	<O extends StructOp, T extends Type<O>> Global<O, T> addGlobal(
 			GlobalSettings settings,
 			CodeId id,
 			T type,
@@ -86,7 +86,7 @@ public abstract class Globals extends Functions {
 		return global;
 	}
 
-	<O extends PtrOp, S extends Struct<O>> Global<O, S> addGlobal(
+	<O extends StructOp, S extends Struct<O>> Global<O, S> addGlobal(
 			GlobalSettings settings,
 			S struct) {
 

@@ -100,11 +100,6 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return writer().relPtr(code, getType().getFld());
 		}
 
-		@Override
-		public final Op create(StructWriter writer) {
-			return new Op(writer);
-		}
-
 	}
 
 	public static final class Type
