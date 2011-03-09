@@ -51,6 +51,8 @@ public abstract class Debug extends Globals {
 	private CodePtr<DbgExitFunc> exitFunc;
 	private DebugInfo info;
 
+	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
+		new HashMap<Ptr<?>, DebugTypeInfo>();
 	private final HashMap<Ptr<?>, DbgStruct> structs =
 		new HashMap<Ptr<?>, DbgStruct>();
 
@@ -159,6 +161,17 @@ public abstract class Debug extends Globals {
 		final Ptr<AnyOp> binary = addASCIIString(id, value);
 
 		field.setValue(binary);
+	}
+
+	DebugTypeInfo typeInfo(Type<?> type) {
+
+		final DebugTypeInfo typeInfo =
+			this.typeInfo.get(type.getOriginal().pointer(generator()));
+
+		assert typeInfo != null :
+			"Unknown debug type info of " + type.getOriginal();
+
+		return typeInfo;
 	}
 
 	DbgStruct writeStruct(Data<?> fieldData) {
