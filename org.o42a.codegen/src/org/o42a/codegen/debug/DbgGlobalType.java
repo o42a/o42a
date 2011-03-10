@@ -42,6 +42,11 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 	private DbgGlobalType() {
 	}
 
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
 	public final AnyPtrRec name() {
 		return this.name;
 	}

@@ -52,6 +52,8 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 
 	public abstract Type<?> getEnclosing();
 
+	public abstract Type<?> getInstance();
+
 	public final CodeId getId() {
 		return this.id;
 	}

@@ -43,6 +43,11 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 		this.type = type;
 	}
 
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
 	public final Type<?> getTarget() {
 		return this.type;
 	}

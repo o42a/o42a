@@ -44,6 +44,30 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		this.type = this;
 	}
 
+	public final Generator getGenerator() {
+		return this.data.getGenerator();
+	}
+
+	public boolean isPacked() {
+		return false;
+	}
+
+	public final boolean isEmbedded() {
+		return getEmbeddedInto() != null;
+	}
+
+	public Type<?> getEmbeddedInto() {
+		return null;
+	}
+
+	public boolean isDebugInfo() {
+		return false;
+	}
+
+	public final Type<O> getType() {
+		return this.type;
+	}
+
 	public final CodeId codeId(Generator generator) {
 		return codeId(generator.getCodeIdFactory());
 	}
@@ -59,16 +83,8 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		return this.id = buildCodeId(factory);
 	}
 
-	public final Type<O> getType() {
-		return this.type;
-	}
-
 	public final Ptr<O> pointer(Generator generator) {
 		return data(generator, false).getPointer();
-	}
-
-	public boolean isPacked() {
-		return false;
 	}
 
 	public final Data<O> data(Generator generator) {
@@ -85,10 +101,6 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 	}
 
 	public abstract O op(StructWriter writer);
-
-	public Generator getGenerator() {
-		return this.data.getGenerator();
-	}
 
 	public Iterable<Data<?>> iterate(Generator generator) {
 		ensureTypeAllocated(generator, true);
@@ -133,7 +145,21 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		this.type.allocated = generator;
 	}
 
-	final void allocateType(SubData<O> data) {
+	final void allocateInstance(SubData<O> data) {
+		if (getType() != this) {
+
+			final Type<?> embeddedInto = getEmbeddedInto();
+
+			if (embeddedInto != null) {
+				if (data.getEnclosing().getType() != embeddedInto) {
+					throw new IllegalStateException(
+							"Type " + this + " is embedded into "
+							+ embeddedInto + ", but is allocated inside "
+							+ data.getInstance());
+				}
+			}
+		}
+
 		refineCodeId(data.getGenerator().getCodeIdFactory());
 		allocate(data);
 	}
@@ -240,7 +266,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.begin(getInstance()));
-			getInstance().allocateType(this);
+			getInstance().allocateInstance(this);
 			allocator.end(getInstance());
 			getInstance().setAllocated(generator);
 
@@ -326,7 +352,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.enter(getInstance().allocation(), this));
-			getInstance().allocateType(this);
+			getInstance().allocateInstance(this);
 			allocator.exit(this);
 			this.content.allocated(getInstance());
 		}
@@ -376,7 +402,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.begin(getAllocation(), this.global));
-			getInstance().allocateType(this);
+			getInstance().allocateInstance(this);
 			allocator.end(this.global);
 			this.content.allocated(getInstance());
 

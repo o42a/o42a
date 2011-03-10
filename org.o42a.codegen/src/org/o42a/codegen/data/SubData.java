@@ -49,6 +49,7 @@ public abstract class SubData<O extends StructOp>
 		return DataType.STRUCT;
 	}
 
+	@Override
 	public final Type<O> getInstance() {
 		return this.instance;
 	}

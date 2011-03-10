@@ -38,6 +38,11 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 
 	private final ArrayList<DbgFunc> functions = new ArrayList<DbgFunc>();
 
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
 	public final int getNumFunctions() {
 		return this.functions.size();
 	}

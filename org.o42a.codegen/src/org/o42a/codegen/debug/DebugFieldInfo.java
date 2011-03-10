@@ -50,7 +50,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 	public void fill(FieldInfoType instance) {
 
 		final Data<?> fieldData = getFieldData();
-		final Type<?> enclosing = fieldData.getEnclosing();
+		final Type<?> enclosing = enclosingNonEmbedded();
 		final Generator generator = instance.getGenerator();
 		final Debug debug = generator;
 
@@ -65,17 +65,44 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 				generator.id("DEBUG").sub("field_name")
 				.sub(enclosing.codeId(generator))
 				.sub(fieldData.getId()),
-				fieldData.getId().toString());
-		if (fieldData.getDataType() != DataType.STRUCT) {
+				fieldName(fieldData).toString());
+
+		final Type<?> fieldInstance = fieldData.getInstance();
+
+		if (fieldInstance == null) {
 			instance.typeInfo().setNull();
 		} else {
 
-			final SubData<?> fieldStruct = (SubData<?>) fieldData;
-			final DebugTypeInfo typeInfo =
-				debug.typeInfo(fieldStruct.getInstance());
+			final DebugTypeInfo typeInfo = debug.typeInfo(fieldInstance);
 
 			instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
 		}
+	}
+
+	private Type<?> enclosingNonEmbedded() {
+
+		Type<?> enclosing = getFieldData().getEnclosing();
+
+		while (enclosing.isEmbedded()) {
+			enclosing =
+				enclosing.data(getFieldData().getGenerator()).getEnclosing();
+		}
+
+		return enclosing;
+	}
+
+	static CodeId fieldName(Data<?> fieldData) {
+
+		final Type<?> enclosing = fieldData.getEnclosing();
+
+		if (!enclosing.isEmbedded()) {
+			return fieldData.getId();
+		}
+
+		final CodeId enclosingName =
+			fieldName(enclosing.data(fieldData.getGenerator()));
+
+		return enclosingName.sub(fieldData.getId());
 	}
 
 	public static final class Op extends StructOp {
@@ -95,6 +122,11 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		private AnyPtrRec typeInfo;
 
 		private FieldInfoType() {
+		}
+
+		@Override
+		public boolean isDebugInfo() {
+			return true;
 		}
 
 		public final Int32rec dataType() {

@@ -73,6 +73,11 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		@Override
+		public boolean isDebugInfo() {
+			return true;
+		}
+
+		@Override
 		public Op op(StructWriter writer) {
 			return new Op(writer);
 		}

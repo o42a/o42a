@@ -39,6 +39,11 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 	private DbgFieldType() {
 	}
 
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
 	public final AnyPtrRec name() {
 		return this.name;
 	}

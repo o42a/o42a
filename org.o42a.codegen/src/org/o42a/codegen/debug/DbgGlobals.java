@@ -36,6 +36,11 @@ final class DbgGlobals extends Struct<DbgGlobals.Op> {
 
 	private final ArrayList<Data<?>> globals = new ArrayList<Data<?>>();
 
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
 	public final int getNumGlobals() {
 		return this.globals.size();
 	}

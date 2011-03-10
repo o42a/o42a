@@ -39,11 +39,16 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 		this.globals = new DbgGlobals();
 	}
 
-	public final DbgFunctions getFunctions() {
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
+	public final DbgFunctions functions() {
 		return this.functions;
 	}
 
-	public final DbgGlobals getGlobals() {
+	public final DbgGlobals globals() {
 		return this.globals;
 	}
 

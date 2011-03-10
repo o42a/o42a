@@ -40,6 +40,11 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 	private DbgStackFrameType() {
 	}
 
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
 	public final AnyPtrRec name() {
 		return this.name;
 	}
