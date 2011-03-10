@@ -76,7 +76,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	@Override
 	protected void fill() {
 		super.fill();
-		getInstance().getPrevious().setNull();
+		getInstance().previous().setNull();
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			AnyOp previousPtr) {
 		code.dumpName("Delegate to ", previousPtr);
 
-		final Op previous = previousPtr.to(code, getType().getOriginal());
+		final Op previous = previousPtr.to(code, getType().getType());
 		final ObjectConstructorFunc constructor =
 			previous.constructor(code).load(code);
 		final AnyOp ancestorPtr = constructor.call(
@@ -157,7 +157,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		public final DataOp<AnyOp> previous(Code code) {
-			return writer().ptr(code, getType().getPrevious());
+			return writer().ptr(code, getType().previous());
 		}
 
 		@Override
@@ -178,7 +178,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		private Type() {
 		}
 
-		public final AnyPtrRec getPrevious() {
+		public final AnyPtrRec previous() {
 			return this.previous;
 		}
 
@@ -199,7 +199,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		protected Signature<ObjectConstructorFunc> signature() {
+		protected Signature<ObjectConstructorFunc> getSignature() {
 			return OBJECT_CONSTRUCTOR;
 		}
 

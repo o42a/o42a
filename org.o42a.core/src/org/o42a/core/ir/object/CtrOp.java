@@ -131,23 +131,23 @@ public class CtrOp extends IROp {
 		}
 
 		public final DataOp<ObjectDataType.Op> scopeType(Code code) {
-			return writer().ptr(code, getType().getScopeType());
+			return writer().ptr(code, getType().scopeType());
 		}
 
 		public final CodeOp<ObjectRefFunc> ancestorFunc(Code code) {
-			return writer().func(code, getType().getAncestorFunc());
+			return writer().func(code, getType().ancestorFunc());
 		}
 
 		public final DataOp<ObjectDataType.Op> ancestorType(Code code) {
-			return writer().ptr(code, getType().getAncestorType());
+			return writer().ptr(code, getType().ancestorType());
 		}
 
 		public final DataOp<ObjectDataType.Op> type(Code code) {
-			return writer().ptr(code, getType().getType());
+			return writer().ptr(code, getType().type());
 		}
 
 		public final DataOp<Int32op> flags(Code code) {
-			return writer().int32(code, getType().getFlags());
+			return writer().int32(code, getType().flags());
 		}
 
 		public final CtrOp op(CodeBuilder builder) {
@@ -172,23 +172,23 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructPtrRec<ObjectDataType.Op> getScopeType() {
+		public final StructPtrRec<ObjectDataType.Op> scopeType() {
 			return this.scopeType;
 		}
 
-		public final CodeRec<ObjectRefFunc> getAncestorFunc() {
+		public final CodeRec<ObjectRefFunc> ancestorFunc() {
 			return this.ancestorFunc;
 		}
 
-		public final StructPtrRec<ObjectDataType.Op> getAncestorType() {
+		public final StructPtrRec<ObjectDataType.Op> ancestorType() {
 			return this.ancestorType;
 		}
 
-		public final StructPtrRec<ObjectDataType.Op> getType() {
+		public final StructPtrRec<ObjectDataType.Op> type() {
 			return this.type;
 		}
 
-		public final Int32rec getFlags() {
+		public final Int32rec flags() {
 			return this.flags;
 		}
 

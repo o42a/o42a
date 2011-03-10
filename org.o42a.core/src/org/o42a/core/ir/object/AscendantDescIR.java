@@ -57,10 +57,10 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		final ObjectIR ascendantIR =
 			this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
 
-		instance.getType().setValue(
+		instance.type().setValue(
 				ascendantIR.getTypeIR().getObjectType()
 				.data(generator).getPointer());
-		instance.getBody().setValue(
+		instance.body().setValue(
 				this.bodyIR.data(generator).getPointer().relativeTo(
 						instance.data(generator).getPointer()));
 	}
@@ -82,11 +82,11 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		}
 
 		public final DataOp<ObjectType.Op> type(Code code) {
-			return writer().ptr(code, getType().getType());
+			return writer().ptr(code, getType().type());
 		}
 
 		public final DataOp<RelOp> body(Code code) {
-			return writer().relPtr(code, getType().getBody());
+			return writer().relPtr(code, getType().body());
 		}
 
 	}
@@ -100,11 +100,11 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		private Type() {
 		}
 
-		public final StructPtrRec<ObjectType.Op> getType() {
+		public final StructPtrRec<ObjectType.Op> type() {
 			return this.type;
 		}
 
-		public final RelPtrRec getBody() {
+		public final RelPtrRec body() {
 			return this.body;
 		}
 

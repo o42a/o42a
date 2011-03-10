@@ -85,16 +85,16 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 		final int size = this.content.size();
 
-		instance.getSize().setValue(size);
+		instance.size().setValue(size);
 		if (size == 0) {
-			instance.getList().setNull();
+			instance.list().setNull();
 			return;
 		}
 
 		assert this.firstItem != null :
 			this + " items not allocated yet";
 
-		instance.getList().setValue(this.firstItem.relativeTo(
+		instance.list().setValue(this.firstItem.relativeTo(
 				instance.data(instance.getGenerator()).getPointer()));
 	}
 
@@ -120,11 +120,11 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		}
 
 		public final DataOp<RelOp> list(Code code) {
-			return writer().relPtr(code, getType().getList());
+			return writer().relPtr(code, getType().list());
 		}
 
 		public final DataOp<Int32op> size(Code code) {
-			return writer().int32(code, getType().getSize());
+			return writer().int32(code, getType().size());
 		}
 
 	}
@@ -137,11 +137,11 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		private Type() {
 		}
 
-		public final RelPtrRec getList() {
+		public final RelPtrRec list() {
 			return this.list;
 		}
 
-		public final Int32rec getSize() {
+		public final Int32rec size() {
 			return this.size;
 		}
 

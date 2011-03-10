@@ -85,7 +85,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		public final CodeOp<AssignerFunc> assigner(Code code) {
-			return writer().func(code, getType().getAssigner());
+			return writer().func(code, getType().assigner());
 		}
 
 		@Override
@@ -105,7 +105,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		private Type() {
 		}
 
-		public final CodeRec<AssignerFunc> getAssigner() {
+		public final CodeRec<AssignerFunc> assigner() {
 			return this.assigner;
 		}
 
@@ -128,7 +128,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected Signature<ObjectRefFunc> signature() {
+		protected Signature<ObjectRefFunc> getSignature() {
 			return ObjectRefFunc.OBJECT_REF;
 		}
 

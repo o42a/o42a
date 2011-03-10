@@ -108,7 +108,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected Signature<ObjectRefFunc> signature() {
+		protected Signature<ObjectRefFunc> getSignature() {
 			return OBJECT_REF;
 		}
 

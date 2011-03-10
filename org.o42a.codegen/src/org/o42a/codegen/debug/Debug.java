@@ -166,10 +166,10 @@ public abstract class Debug extends Globals {
 	DebugTypeInfo typeInfo(Type<?> type) {
 
 		final DebugTypeInfo typeInfo =
-			this.typeInfo.get(type.getOriginal().pointer(generator()));
+			this.typeInfo.get(type.getType().pointer(generator()));
 
 		assert typeInfo != null :
-			"Unknown debug type info of " + type.getOriginal();
+			"Unknown debug type info of " + type.getType();
 
 		return typeInfo;
 	}
@@ -181,7 +181,7 @@ public abstract class Debug extends Globals {
 
 		final Generator generator = fieldData.getGenerator();
 		final SubData<?> fieldStruct = (SubData<?>) fieldData;
-		final Type<?> type = fieldStruct.getType().getOriginal();
+		final Type<?> type = fieldStruct.getInstance().getType();
 		final Ptr<?> typePointer = type.data(generator).getPointer();
 		final DbgStruct found = this.structs.get(typePointer);
 
@@ -200,7 +200,7 @@ public abstract class Debug extends Globals {
 
 	DbgStruct typeStruct(Generator generator, Type<?> type) {
 		return this.structs.get(
-				type.getOriginal().data(generator).getPointer());
+				type.getType().data(generator).getPointer());
 	}
 
 	private final boolean checkDebug() {

@@ -65,11 +65,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			this.fld.getField().getDefinedIn().getContainer().toObject();
 		final ObjectIR definedInIR = definedIn.ir(this.fld.getGenerator());
 
-		instance.getField().setValue(
+		instance.field().setValue(
 				fieldDescIR.getInstance().pointer(generator));
-		instance.getDefinedIn().setValue(
+		instance.definedIn().setValue(
 				definedInIR.getTypeIR().getObjectType().pointer(generator));
-		instance.getBody().setValue(
+		instance.body().setValue(
 				this.fld.getBodyIR().pointer(generator).relativeTo(
 						instance.pointer(generator)));
 	}
@@ -91,11 +91,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		}
 
 		public final DataOp<FieldDescIR.Op> field(Code code) {
-			return writer().ptr(code, getType().getField());
+			return writer().ptr(code, getType().field());
 		}
 
 		public final DataOp<RelOp> fld(Code code) {
-			return writer().relPtr(code, getType().getBody());
+			return writer().relPtr(code, getType().body());
 		}
 
 	}
@@ -110,15 +110,15 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		private Type() {
 		}
 
-		public final StructPtrRec<FieldDescIR.Op> getField() {
+		public final StructPtrRec<FieldDescIR.Op> field() {
 			return this.field;
 		}
 
-		public final StructPtrRec<ObjectType.Op> getDefinedIn() {
+		public final StructPtrRec<ObjectType.Op> definedIn() {
 			return this.definedIn;
 		}
 
-		public final RelPtrRec getBody() {
+		public final RelPtrRec body() {
 			return this.body;
 		}
 

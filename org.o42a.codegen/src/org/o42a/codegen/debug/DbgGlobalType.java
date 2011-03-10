@@ -42,15 +42,15 @@ final class DbgGlobalType extends Type<DbgGlobalType.Op> {
 	private DbgGlobalType() {
 	}
 
-	public final AnyPtrRec getName() {
+	public final AnyPtrRec name() {
 		return this.name;
 	}
 
-	public final AnyPtrRec getStart() {
+	public final AnyPtrRec start() {
 		return this.start;
 	}
 
-	public final DbgFieldType getContent() {
+	public final DbgFieldType content() {
 		return this.content;
 	}
 

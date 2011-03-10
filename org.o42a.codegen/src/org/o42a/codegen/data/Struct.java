@@ -52,11 +52,11 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		private final Global<?, ?> global;
 		private final SubData<?> enclosing;
 
-		StructData(SubData<?> enclosing, Struct<O> type, CodeId name) {
+		StructData(SubData<?> enclosing, Struct<O> instance, CodeId name) {
 			super(
 					enclosing.getGenerator(),
-					type.codeId(enclosing.getGenerator()).setLocal(name),
-					type);
+					instance.codeId(enclosing.getGenerator()).setLocal(name),
+					instance);
 			this.global = enclosing.getGlobal();
 			this.enclosing = enclosing;
 		}
@@ -73,21 +73,21 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 
 		@Override
 		public String toString() {
-			return getType().toString();
+			return getInstance().toString();
 		}
 
 		@Override
 		protected void allocate(Generator generator) {
-			if (!getType().startAllocation(generator)) {
+			if (!getInstance().startAllocation(generator)) {
 				return;
 			}
 
 			final DataAllocator allocator = generator.dataAllocator();
 
-			setAllocation(allocator.enter(getType().allocation(), this));
-			getType().allocateType(this);
+			setAllocation(allocator.enter(getInstance().allocation(), this));
+			getInstance().allocateType(this);
 			allocator.exit(this);
-			getType().setAllocated(generator);
+			getInstance().setAllocated(generator);
 
 			final Globals globals = generator;
 
@@ -97,7 +97,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		@Override
 		protected void write(DataWriter writer) {
 			writer.enter(getPointer().getAllocation(), this);
-			((Struct<O>) getType()).fill();
+			((Struct<O>) getInstance()).fill();
 			writeIncluded(writer);
 			writer.exit(getPointer().getAllocation(), this);
 		}
@@ -109,8 +109,11 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 
 		private final Global<O, ?> global;
 
-		GlobalData(Global<O, ?> global, Type<O> type) {
-			super(global.getGenerator(), global.getId().removeLocal(), type);
+		GlobalData(Global<O, ?> global, Type<O> instance) {
+			super(
+					global.getGenerator(),
+					global.getId().removeLocal(),
+					instance);
 			this.global = global;
 		}
 
@@ -126,16 +129,16 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 
 		@Override
 		protected void allocate(Generator generator) {
-			if (!getType().startAllocation(generator)) {
+			if (!getInstance().startAllocation(generator)) {
 				return;
 			}
 
 			final DataAllocator allocator = generator.dataAllocator();
 
-			setAllocation(allocator.begin(getType().allocation(), this.global));
-			getType().allocateType(this);
+			setAllocation(allocator.begin(getInstance().allocation(), this.global));
+			getInstance().allocateType(this);
 			allocator.end(this.global);
-			getType().setAllocated(generator);
+			getInstance().setAllocated(generator);
 
 			final Globals globals = generator;
 
@@ -146,7 +149,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		@Override
 		protected void write(DataWriter writer) {
 			writer.begin(getPointer().getAllocation(), this.global);
-			((Struct<O>) getType()).fill();
+			((Struct<O>) getInstance()).fill();
 			writeIncluded(writer);
 			writer.end(getPointer().getAllocation(), this.global);
 		}

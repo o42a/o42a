@@ -142,7 +142,7 @@ public final class RefLclOp extends LclOp {
 		}
 
 		public final DataOp<AnyOp> object(Code code) {
-			return writer().ptr(code, getType().getObject());
+			return writer().ptr(code, getType().object());
 		}
 
 	}
@@ -154,7 +154,7 @@ public final class RefLclOp extends LclOp {
 		private Type() {
 		}
 
-		public final AnyPtrRec getObject() {
+		public final AnyPtrRec object() {
 			return this.object;
 		}
 

@@ -38,7 +38,7 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 
 	private final ArrayList<DbgFunc> functions = new ArrayList<DbgFunc>();
 
-	public final int numFunctions() {
+	public final int getNumFunctions() {
 		return this.functions.size();
 	}
 

@@ -62,11 +62,11 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		final ObjectIR declaredInIR =
 			this.fld.getDeclaredIn().ir(fld().getGenerator());
 
-		instance.getDeclaredIn().setValue(
+		instance.declaredIn().setValue(
 				declaredInIR.getTypeIR().getObjectType()
 				.data(generator).getPointer());
-		instance.getKind().setValue(this.fld.getKind().getCode());
-		instance.getFld().setValue(
+		instance.kind().setValue(this.fld.getKind().getCode());
+		instance.fld().setValue(
 				this.fld.getInstance().data(generator).getPointer()
 				.relativeTo(
 						this.fld.getBodyIR().data(generator).getPointer()));
@@ -89,15 +89,15 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		}
 
 		public final DataOp<ObjectType.Op> declaredIn(Code code) {
-			return writer().ptr(code, getType().getDeclaredIn());
+			return writer().ptr(code, getType().declaredIn());
 		}
 
 		public final DataOp<Int32op> kind(Code code) {
-			return writer().int32(code, getType().getKind());
+			return writer().int32(code, getType().kind());
 		}
 
 		public final DataOp<RelOp> fld(Code code) {
-			return writer().relPtr(code, getType().getFld());
+			return writer().relPtr(code, getType().fld());
 		}
 
 	}
@@ -112,15 +112,15 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		private Type() {
 		}
 
-		public final StructPtrRec<ObjectType.Op> getDeclaredIn() {
+		public final StructPtrRec<ObjectType.Op> declaredIn() {
 			return this.declaredIn;
 		}
 
-		public final Int32rec getKind() {
+		public final Int32rec kind() {
 			return this.kind;
 		}
 
-		public final RelPtrRec getFld() {
+		public final RelPtrRec fld() {
 			return this.fld;
 		}
 

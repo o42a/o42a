@@ -38,11 +38,11 @@ final class DbgFuncType extends Type<DbgFuncType.Op> {
 	private DbgFuncType() {
 	}
 
-	public final AnyPtrRec getName() {
+	public final AnyPtrRec name() {
 		return this.name;
 	}
 
-	public final AnyPtrRec getFunction() {
+	public final AnyPtrRec function() {
 		return this.function;
 	}
 

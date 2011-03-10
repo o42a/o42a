@@ -54,17 +54,17 @@ final class DbgFunc implements Content<DbgFuncType> {
 		final Debug debug = generator;
 
 		if (this.namePtr != null) {
-			instance.getName().setValue(this.namePtr);
+			instance.name().setValue(this.namePtr);
 		} else {
 			debug.setName(
-					instance.getName(),
+					instance.name(),
 					generator
 					.id("DEBUG")
 					.sub("FUNC_NAME")
 					.sub(this.id),
 					this.id.getId());
 		}
-		instance.getFunction().setValue(this.function.toAny());
+		instance.function().setValue(this.function.toAny());
 	}
 
 	void setNamePtr(Ptr<AnyOp> namePtr) {
