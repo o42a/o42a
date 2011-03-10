@@ -73,11 +73,6 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		this.ascendant = ascendant;
 	}
 
-	@Override
-	public final Generator getGenerator() {
-		return this.objectIRStruct.getGenerator();
-	}
-
 	public final ObjectIR getObjectIR() {
 		return this.objectIRStruct.getObjectIR();
 	}

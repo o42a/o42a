@@ -20,6 +20,7 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.DebugFieldInfo.DEBUG_FIELD_INFO_TYPE;
+import static org.o42a.codegen.debug.DebugFieldInfo.fieldName;
 
 import java.security.SecureRandom;
 
@@ -45,6 +46,11 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 	public DebugTypeInfo(Type<?> target) {
 		this.target = target;
 		this.code = typeCodeGenerator.nextInt();
+	}
+
+	@Override
+	public boolean isDebugInfo() {
+		return true;
 	}
 
 	public final Type<?> getTarget() {
@@ -98,11 +104,25 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 				typeId.toString());
 
 		for (Data<?> field : getTarget().iterate(generator)) {
-			data.addInstance(
-					generator.id("field").sub(field.getId()),
-					DEBUG_FIELD_INFO_TYPE,
-					new DebugFieldInfo(field));
+			addFieldInfo(data, field);
 		}
+	}
+
+	private void addFieldInfo(SubData<Op> data, Data<?> field) {
+
+		final Type<?> fieldInstance = field.getInstance();
+
+		if (fieldInstance != null && fieldInstance.isEmbedded()) {
+			for (Data<?> f : getTarget().iterate(data.getGenerator())) {
+				addFieldInfo(data, f);
+			}
+			return;
+		}
+
+		data.addInstance(
+				data.getGenerator().id("field").detail(fieldName(field)),
+				DEBUG_FIELD_INFO_TYPE,
+				new DebugFieldInfo(field));
 	}
 
 	@Override

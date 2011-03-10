@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -41,11 +40,6 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 
 	ObjectMethodsIR(ObjectBodyIR bodyIR) {
 		this.bodyIR = bodyIR;
-	}
-
-	@Override
-	public final Generator getGenerator() {
-		return this.bodyIR.getGenerator();
 	}
 
 	public final ObjectIR getObjectIR() {

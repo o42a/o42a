@@ -67,6 +67,11 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private ObjectDataType() {
 	}
 
+	@Override
+	public final ObjectType getEmbeddedInto() {
+		return ObjectType.OBJECT_TYPE;
+	}
+
 	public final RelPtrRec object() {
 		return this.object;
 	}

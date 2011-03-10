@@ -85,7 +85,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.enter(getInstance().allocation(), this));
-			getInstance().allocateType(this);
+			getInstance().allocateInstance(this);
 			allocator.exit(this);
 			getInstance().setAllocated(generator);
 
@@ -135,8 +135,10 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 
 			final DataAllocator allocator = generator.dataAllocator();
 
-			setAllocation(allocator.begin(getInstance().allocation(), this.global));
-			getInstance().allocateType(this);
+			setAllocation(allocator.begin(
+					getInstance().allocation(),
+					this.global));
+			getInstance().allocateInstance(this);
 			allocator.end(this.global);
 			getInstance().setAllocated(generator);
 

@@ -48,6 +48,11 @@ public abstract class Rec<O extends PtrOp, T> extends Data<O> {
 		return this.enclosing.getInstance();
 	}
 
+	@Override
+	public final Type<?> getInstance() {
+		return null;
+	}
+
 	public final T getValue() {
 		return this.value;
 	}

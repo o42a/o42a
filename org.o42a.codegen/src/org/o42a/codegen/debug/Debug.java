@@ -78,7 +78,7 @@ public abstract class Debug extends Globals {
 		}
 
 		final DbgFunc dbgFunc =
-			this.info.getFunctions().addFunction(id, signature, function);
+			this.info.functions().addFunction(id, signature, function);
 
 		final Function<F> code = function.getFunction();
 
@@ -135,7 +135,7 @@ public abstract class Debug extends Globals {
 		if (!checkDebug()) {
 			return;
 		}
-		this.info.getGlobals().addGlobal(global);
+		this.info.globals().addGlobal(global);
 	}
 
 	@Override
@@ -163,13 +163,13 @@ public abstract class Debug extends Globals {
 		field.setValue(binary);
 	}
 
-	DebugTypeInfo typeInfo(Type<?> type) {
+	DebugTypeInfo typeInfo(Type<?> instance) {
 
 		final DebugTypeInfo typeInfo =
-			this.typeInfo.get(type.getType().pointer(generator()));
+			this.typeInfo.get(instance.getType().pointer(generator()));
 
 		assert typeInfo != null :
-			"Unknown debug type info of " + type.getType();
+			"Unknown debug type info of " + instance.getType();
 
 		return typeInfo;
 	}

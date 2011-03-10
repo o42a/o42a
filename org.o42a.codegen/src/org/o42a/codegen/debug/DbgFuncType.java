@@ -38,6 +38,11 @@ final class DbgFuncType extends Type<DbgFuncType.Op> {
 	private DbgFuncType() {
 	}
 
+	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
 	public final AnyPtrRec name() {
 		return this.name;
 	}
