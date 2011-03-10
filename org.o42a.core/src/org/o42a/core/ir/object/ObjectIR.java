@@ -81,11 +81,11 @@ public final class ObjectIR  {
 	}
 
 	public final ObjectBodyIR getMainBodyIR() {
-		return getStruct().getMainBodyIR();
+		return getStruct().mainBodyIR();
 	}
 
 	public final Collection<? extends ObjectBodyIR> getBodyIRs() {
-		return getStruct().getBodyIRs().values();
+		return getStruct().bodyIRs().values();
 	}
 
 	public ObjectBodyIR getAncestorBodyIR() {
@@ -106,11 +106,11 @@ public final class ObjectIR  {
 	}
 
 	public final Struct<?> getAllBodies() {
-		return getStruct().getAllBodies();
+		return getStruct().allBodies();
 	}
 
 	public final ObjectTypeIR getTypeIR() {
-		return getStruct().getTypeIR();
+		return getStruct().typeIR();
 	}
 
 	public final ObjectValueIR getValueIR() {
@@ -139,7 +139,7 @@ public final class ObjectIR  {
 			return getMainBodyIR();
 		}
 
-		final ObjectBodyIR bodyIR = getStruct().getBodyIRs().get(ascendant);
+		final ObjectBodyIR bodyIR = getStruct().bodyIRs().get(ascendant);
 
 		assert bodyIR != null :
 			"Can not find ascendant body for " + ascendant + " in " + this;

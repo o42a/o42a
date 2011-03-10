@@ -69,7 +69,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	}
 
 	public final ObjectDataType getObjectData() {
-		return this.instance.getObjectData();
+		return this.instance.objectData();
 	}
 
 	public final FieldDescIR fieldDescIR(MemberKey key) {
@@ -91,22 +91,22 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	public void fill(ObjectType instance) {
 
 		final Generator generator = instance.getGenerator();
-		final ObjectDataType data = instance.getObjectData();
+		final ObjectDataType data = instance.objectData();
 
-		data.getObject().setValue(
+		data.object().setValue(
 				getObjectIR().getMainBodyIR().data(generator).getPointer()
 				.relativeTo(
 						data.data(generator).getPointer()));
-		data.getFlags().setValue(objectFlags());
-		data.getStart().setValue(
+		data.flags().setValue(objectFlags());
+		data.start().setValue(
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						data.data(generator).getPointer()));
-		data.getAllBodiesLayout().setValue(
+		data.allBodiesLayout().setValue(
 				getObjectIR().getAllBodies().layout(generator).toBinaryForm());
 
 		fillOwnerTypePointer(data);
 		fillAncestor(data);
-		instance.getMainBodyLayout().setValue(
+		instance.mainBodyLayout().setValue(
 				getObjectIR().getMainBodyIR().layout(generator).toBinaryForm());
 
 		getObjectIR().getValueIR().fill(this);
@@ -114,7 +114,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 	@Override
 	public String toString() {
-		return this.objectIRStruct.getMainBodyIR().print(" type IR");
+		return this.objectIRStruct.mainBodyIR().print(" type IR");
 	}
 
 	void allocate(SubData<?> data) {
@@ -123,16 +123,16 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 				OBJECT_TYPE,
 				this);
 
-		getObjectData().getAscendants().addAll(
-				this.objectIRStruct.getBodyIRs().values());
-		getObjectData().getSamples().addAll(
-				this.objectIRStruct.getSampleBodyIRs());
+		getObjectData().ascendants().addAll(
+				this.objectIRStruct.bodyIRs().values());
+		getObjectData().samples().addAll(
+				this.objectIRStruct.sampleBodyIRs());
 		fillFields();
 
-		getObjectData().getAscendants().allocateItems(data);
-		getObjectData().getSamples().allocateItems(data);
-		getObjectType().getFields().allocateItems(data);
-		getObjectType().getOverriders().allocateItems(data);
+		getObjectData().ascendants().allocateItems(data);
+		getObjectData().samples().allocateItems(data);
+		getObjectType().fields().allocateItems(data);
+		getObjectType().overriders().allocateItems(data);
 
 		getObjectIR().getValueIR().allocate(this);
 	}
@@ -140,7 +140,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	private void fillFields() {
 
 		final ObjectIR objectIR = getObjectIR();
-		final RelList<FieldDescIR> fields = getObjectType().getFields();
+		final RelList<FieldDescIR> fields = getObjectType().fields();
 
 		for (Fld fld : objectIR.getMainBodyIR().getDeclaredFields()) {
 
@@ -153,7 +153,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		}
 
 		final RelList<OverriderDescIR> overriders =
-			getObjectType().getOverriders();
+			getObjectType().overriders();
 
 		for (Member member : objectIR.getObject().getMembers()) {
 
@@ -203,14 +203,14 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 			.getEnclosingContainer().toObject();
 
 		if (owner == null) {
-			instance.getOwnerType().setNull();
+			instance.ownerType().setNull();
 			return;
 		}
 
 		final ObjectType ownerType =
 			owner.ir(getGenerator()).getTypeIR().getObjectType();
 
-		instance.getOwnerType().setValue(
+		instance.ownerType().setValue(
 				ownerType.pointer(instance.getGenerator()));
 	}
 
@@ -220,16 +220,16 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		final ObjectBodyIR ancestorBodyIR = objectIR.getAncestorBodyIR();
 
 		if (ancestorBodyIR == null) {
-			instance.getAncestorType().setNull();
-			instance.getAncestorFunc().setValue(nullObjectRef());
+			instance.ancestorType().setNull();
+			instance.ancestorFunc().setValue(nullObjectRef());
 			return;
 		}
 
-		instance.getAncestorType().setValue(
+		instance.ancestorType().setValue(
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
-		instance.getAncestorFunc().setValue(createAncestorFunc(instance));
+		instance.ancestorFunc().setValue(createAncestorFunc(instance));
 	}
 
 	private CodePtr<ObjectRefFunc> nullObjectRef() {

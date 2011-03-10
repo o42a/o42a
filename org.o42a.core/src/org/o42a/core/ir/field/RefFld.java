@@ -101,17 +101,17 @@ public abstract class RefFld<C extends Func> extends Fld {
 
 		this.constructor = getGenerator().newFunction().create(
 				getField().ir(getGenerator()).getId().detail("constructor"),
-				getType().signature());
+				getType().getSignature());
 	}
 
 	protected void fill() {
-		getInstance().getObject().setNull();
+		getInstance().object().setNull();
 		createConstructor();
 	}
 
 	protected final void createConstructor() {
 		if (this.constructorReused) {
-			getInstance().getConstructor().setValue(
+			getInstance().constructor().setValue(
 					this.constructor.getPointer());
 			return;
 		}
@@ -133,7 +133,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 
 		this.constructor.done();
 
-		getInstance().getConstructor().setValue(
+		getInstance().constructor().setValue(
 				this.constructor.getPointer());
 	}
 
@@ -196,7 +196,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 	}
 
 	private void fillTarget(ObjectBodyIR targetBodyIR) {
-		getInstance().getObject().setValue(
+		getInstance().object().setValue(
 				targetBodyIR.pointer(targetBodyIR.getGenerator()).toAny());
 	}
 
@@ -266,11 +266,11 @@ public abstract class RefFld<C extends Func> extends Fld {
 		}
 
 		public final DataOp<AnyOp> object(Code code) {
-			return writer().ptr(code, getType().getObject());
+			return writer().ptr(code, getType().object());
 		}
 
 		public CodeOp<C> constructor(Code code) {
-			return writer().func(code, getType().getConstructor());
+			return writer().func(code, getType().constructor());
 		}
 
 		public AnyOp target(Code code, ObjOp host) {
@@ -319,11 +319,11 @@ public abstract class RefFld<C extends Func> extends Fld {
 		Type() {
 		}
 
-		public final AnyPtrRec getObject() {
+		public final AnyPtrRec object() {
 			return this.object;
 		}
 
-		public final CodeRec<C> getConstructor() {
+		public final CodeRec<C> constructor() {
 			return this.constructor;
 		}
 
@@ -332,10 +332,10 @@ public abstract class RefFld<C extends Func> extends Fld {
 			this.object = data.addPtr("object");
 			this.constructor = data.addCodePtr(
 					"constructor",
-					signature());
+					getSignature());
 		}
 
-		protected abstract Signature<C> signature();
+		protected abstract Signature<C> getSignature();
 
 	}
 

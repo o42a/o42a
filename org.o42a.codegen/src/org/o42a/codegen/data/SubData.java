@@ -35,13 +35,13 @@ public abstract class SubData<O extends StructOp>
 		extends Data<O>
 		implements Iterable<Data<?>> {
 
-	private final Type<O> type;
+	private final Type<O> instance;
 	private final DataChain data = new DataChain();
 	private int size;
 
-	SubData(Generator generator, CodeId id, Type<O> type) {
+	SubData(Generator generator, CodeId id, Type<O> instance) {
 		super(generator, id);
-		this.type = type;
+		this.instance = instance;
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public abstract class SubData<O extends StructOp>
 		return DataType.STRUCT;
 	}
 
-	public final Type<O> getType() {
-		return this.type;
+	public final Type<O> getInstance() {
+		return this.instance;
 	}
 
 	public final Int32rec addInt32(String name) {

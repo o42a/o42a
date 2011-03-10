@@ -39,19 +39,19 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 	private DbgFieldType() {
 	}
 
-	public final AnyPtrRec getName() {
+	public final AnyPtrRec name() {
 		return this.name;
 	}
 
-	public final AnyPtrRec getDbgStruct() {
+	public final AnyPtrRec dbgStruct() {
 		return this.dbgStruct;
 	}
 
-	public final Rec<DataOp<Int32op>, Integer> getDataType() {
+	public final Rec<DataOp<Int32op>, Integer> dataType() {
 		return this.dataType;
 	}
 
-	public final Rec<DataOp<RelOp>, RelPtr> getOffset() {
+	public final Rec<DataOp<RelOp>, RelPtr> offset() {
 		return this.offset;
 	}
 
@@ -80,21 +80,21 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 		final DbgStruct struct = debug.writeStruct(fieldData);
 
 		if (enclosing != null) {
-			getOffset().setValue(
+			offset().setValue(
 					fieldData.getPointer().relativeTo(
-							enclosing.getType().data(generator).getPointer()));
+							enclosing.getTarget().data(generator).getPointer()));
 		} else {
-			getOffset().setValue(
+			offset().setValue(
 					fieldData.getPointer().relativeTo(
 							fieldData.getPointer()));
 		}
 		if (enclosing == null
-				&& struct.getType().codeId(generator).equals(
+				&& struct.getTarget().codeId(generator).equals(
 						fieldData.getId())) {
-			getName().setValue(struct.getName().getValue());
+			name().setValue(struct.name().getValue());
 		} else {
 			debug.setName(
-					getName(),
+					name(),
 					generator
 					.id("DEBUG")
 					.sub("FIELD_NAME")
@@ -102,12 +102,12 @@ final class DbgFieldType extends Type<DbgFieldType.Op> {
 					fieldData.getId().getLocal().getId());
 		}
 		if (struct != null) {
-			getDbgStruct().setValue(
+			dbgStruct().setValue(
 					struct.data(generator).getPointer().toAny());
 		} else {
-			getDbgStruct().setNull();
+			dbgStruct().setNull();
 		}
-		getDataType().setValue(fieldData.getDataType().getCode());
+		dataType().setValue(fieldData.getDataType().getCode());
 	}
 
 	public static final class Op extends StructOp {

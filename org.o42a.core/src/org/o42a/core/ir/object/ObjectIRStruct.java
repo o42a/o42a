@@ -63,23 +63,23 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		return this.objectIR;
 	}
 
-	public final ObjectTypeIR getTypeIR() {
+	public final ObjectTypeIR typeIR() {
 		return this.typeIR;
 	}
 
-	public final Struct<?> getAllBodies() {
+	public final Struct<?> allBodies() {
 		return this.allBodies;
 	}
 
-	public final ObjectBodyIR getMainBodyIR() {
+	public final ObjectBodyIR mainBodyIR() {
 		return this.mainBodyIR;
 	}
 
-	public final LinkedHashMap<Obj, ObjectBodyIR> getBodyIRs() {
+	public final LinkedHashMap<Obj, ObjectBodyIR> bodyIRs() {
 		return this.bodyIRs;
 	}
 
-	public final ArrayList<ObjectBodyIR> getSampleBodyIRs() {
+	public final ArrayList<ObjectBodyIR> sampleBodyIRs() {
 		return this.sampleBodyIRs;
 	}
 
@@ -188,7 +188,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	}
 
 	private void allocateMetaIRs(SubData<?> data) {
-		for (ObjectBodyIR bodyIR : getBodyIRs().values()) {
+		for (ObjectBodyIR bodyIR : bodyIRs().values()) {
 			bodyIR.allocateMetaIR(data);
 		}
 	}

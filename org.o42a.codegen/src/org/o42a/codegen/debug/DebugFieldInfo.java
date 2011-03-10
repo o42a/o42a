@@ -59,28 +59,28 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		final Generator generator = instance.getGenerator();
 		final Debug debug = generator;
 
+		instance.dataType().setValue(fieldData.getDataType().getCode());
 		instance.offset().setValue(
 				fieldData.getPointer().relativeTo(
 						getEnclosingType().pointer(generator)));
-		instance.dataType.setValue(fieldData.getDataType().getCode());
+		instance.enclosingTypeInfo().setValue(
+				debug.typeInfo(getEnclosingType()).pointer(generator).toAny());
 		debug.setName(
 				instance.name(),
 				generator.id("DEBUG").sub("field_name")
 				.sub(getEnclosingType().codeId(generator))
 				.sub(fieldData.getId()),
 				fieldData.getId().toString());
-
 		if (fieldData.getDataType() != DataType.STRUCT) {
 			instance.typeInfo().setNull();
 		} else {
 
 			final SubData<?> fieldStruct = (SubData<?>) fieldData;
 			final DebugTypeInfo typeInfo =
-				debug.typeInfo(fieldStruct.getType());
+				debug.typeInfo(fieldStruct.getInstance());
 
 			instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
 		}
-
 	}
 
 	public static final class Op extends StructOp {
@@ -93,20 +93,25 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 	public static final class FieldInfoType extends Type<Op> {
 
-		private RelPtrRec offset;
 		private Int32rec dataType;
+		private RelPtrRec offset;
+		private AnyPtrRec enclosingTypeInfo;
 		private AnyPtrRec name;
 		private AnyPtrRec typeInfo;
 
 		private FieldInfoType() {
 		}
 
+		public final Int32rec dataType() {
+			return this.dataType;
+		}
+
 		public final RelPtrRec offset() {
 			return this.offset;
 		}
 
-		public final Int32rec dataType() {
-			return this.dataType;
+		public final AnyPtrRec enclosingTypeInfo() {
+			return this.enclosingTypeInfo;
 		}
 
 		public final AnyPtrRec name() {
@@ -129,8 +134,9 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.offset = data.addRelPtr("offset");
 			this.dataType = data.addInt32("data_type");
+			this.offset = data.addRelPtr("offset");
+			this.enclosingTypeInfo = data.addPtr("enclosing_type_info");
 			this.name = data.addPtr("name");
 			this.typeInfo = data.addPtr("type_info");
 		}

@@ -44,7 +44,7 @@ public final class ValOp extends StructOp {
 	}
 
 	public final DataOp<Int32op> flags(Code code) {
-		return writer().int32(code, getType().getFlags());
+		return writer().int32(code, getType().flags());
 	}
 
 	public final BoolOp condition(Code code) {
@@ -60,11 +60,11 @@ public final class ValOp extends StructOp {
 	}
 
 	public final DataOp<Int32op> length(Code code) {
-		return writer().int32(code, getType().getLength());
+		return writer().int32(code, getType().length());
 	}
 
 	public final DataOp<Int64op> plainValue(Code code) {
-		return writer().int64(code, getType().getValue());
+		return writer().int64(code, getType().value());
 	}
 
 	public final AnyOp value(Code code) {
@@ -118,36 +118,36 @@ public final class ValOp extends StructOp {
 		private Type() {
 		}
 
-		public final Int32rec getFlags() {
+		public final Int32rec flags() {
 			return this.flags;
 		}
 
-		public final Int32rec getLength() {
+		public final Int32rec length() {
 			return this.length;
 		}
 
-		public final Int64rec getValue() {
+		public final Int64rec value() {
 			return this.value;
 		}
 
 		public final Type set(Val val) {
-			getFlags().setValue(val.getFlags());
-			getLength().setValue(val.getLength());
+			flags().setValue(val.getFlags());
+			length().setValue(val.getLength());
 
 			final Ptr<AnyOp> pointer = val.getPointer();
 
 			if (pointer != null) {
-				getValue().setNativePtr(pointer);
+				value().setNativePtr(pointer);
 			} else {
-				getValue().setValue(val.getValue());
+				value().setValue(val.getValue());
 			}
 			return this;
 		}
 
 		public final Type setUnknown() {
-			getFlags().setValue(UNKNOWN_FLAG);
-			getLength().setValue(0);
-			getValue().setValue(0L);
+			flags().setValue(UNKNOWN_FLAG);
+			length().setValue(0);
+			value().setValue(0L);
 			return this;
 		}
 

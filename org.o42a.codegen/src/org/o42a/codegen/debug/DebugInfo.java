@@ -79,8 +79,8 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 
 		functionsPtr.setValue(functions.data(generator).getPointer());
 		globalsPtr.setValue(globals.data(generator).getPointer());
-		numFunctions.setValue(this.functions.numFunctions());
-		numGlobals.setValue(this.globals.numGlobals());
+		numFunctions.setValue(this.functions.getNumFunctions());
+		numGlobals.setValue(this.globals.getNumGlobals());
 	}
 
 	@Override

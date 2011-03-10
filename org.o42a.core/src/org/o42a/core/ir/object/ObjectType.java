@@ -47,19 +47,19 @@ public class ObjectType extends Type<ObjectType.Op> {
 	private ObjectType() {
 	}
 
-	public final ObjectDataType getObjectData() {
+	public final ObjectDataType objectData() {
 		return this.objectData;
 	}
 
-	public final RelList<FieldDescIR> getFields() {
+	public final RelList<FieldDescIR> fields() {
 		return this.fields;
 	}
 
-	public final RelList<OverriderDescIR> getOverriders() {
+	public final RelList<OverriderDescIR> overriders() {
 		return this.overriders;
 	}
 
-	public final Int32rec getMainBodyLayout() {
+	public final Int32rec mainBodyLayout() {
 		return this.mainBodyLayout;
 	}
 
@@ -95,7 +95,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 		}
 
 		public final ObjectDataType.Op data(Code code) {
-			return writer().struct(code, getType().getObjectData());
+			return writer().struct(code, getType().objectData());
 		}
 
 		public final ObjectDataOp data(

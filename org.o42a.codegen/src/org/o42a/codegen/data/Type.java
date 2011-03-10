@@ -35,13 +35,13 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
 
 	private CodeId id;
-	private Type<O> original;
+	private Type<O> type;
 	SubData<O> data;
 	private Generator allocated;
 	private Generator allocating;
 
 	public Type() {
-		this.original = this;
+		this.type = this;
 	}
 
 	public final CodeId codeId(Generator generator) {
@@ -59,8 +59,8 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		return this.id = buildCodeId(factory);
 	}
 
-	public final Type<O> getOriginal() {
-		return this.original;
+	public final Type<O> getType() {
+		return this.type;
 	}
 
 	public final Ptr<O> pointer(Generator generator) {
@@ -118,19 +118,19 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 	}
 
 	final boolean startAllocation(Generator generator) {
-		if (this.original.allocating == generator) {
+		if (this.type.allocating == generator) {
 			return false;
 		}
-		this.original.allocating = generator;
+		this.type.allocating = generator;
 		return true;
 	}
 
 	final boolean isAllocated(Generator generator) {
-		return this.original.allocated == generator;
+		return this.type.allocated == generator;
 	}
 
 	final void setAllocated(Generator generator) {
-		this.original.allocated = generator;
+		this.type.allocated = generator;
 	}
 
 	final void allocateType(SubData<O> data) {
@@ -152,7 +152,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		if (instance == null) {
 			instance = (I) clone();
 		} else {
-			instance.original = this.original;
+			instance.type = this.type;
 		}
 
 		instance.data = new InstanceData<O>(enclosing, id, instance, content);
@@ -169,7 +169,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		if (instance == null) {
 			instance = (I) clone();
 		} else {
-			instance.original = this.original;
+			instance.type = this.type;
 		}
 
 		instance.data = new GlobalInstanceData<O>(global, instance, content);
@@ -196,8 +196,8 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 	private final void ensureTypeAllocated(
 			Generator generator,
 			boolean fullyAllocated) {
-		if (getOriginal() != this) {
-			getOriginal().ensureTypeAllocated(generator, fullyAllocated);
+		if (getType() != this) {
+			getType().ensureTypeAllocated(generator, fullyAllocated);
 			return;
 		}
 		if (this.data == null) {
@@ -228,21 +228,21 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 		@Override
 		public String toString() {
-			return getType().toString();
+			return getInstance().toString();
 		}
 
 		@Override
 		protected void allocate(Generator generator) {
-			if (!getType().startAllocation(generator)) {
+			if (!getInstance().startAllocation(generator)) {
 				return;
 			}
 
 			final DataAllocator allocator = generator.dataAllocator();
 
-			setAllocation(allocator.begin(getType()));
-			getType().allocateType(this);
-			allocator.end(getType());
-			getType().setAllocated(generator);
+			setAllocation(allocator.begin(getInstance()));
+			getInstance().allocateType(this);
+			allocator.end(getInstance());
+			getInstance().setAllocated(generator);
 
 			final Globals globals = generator;
 
@@ -268,12 +268,12 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		AbstractInstanceData(
 				Generator generator,
 				CodeId id,
-				Type<O> type,
+				Type<O> instance,
 				Content<?> content) {
-			super(generator, id, type);
-			getPointer().copyAllocation(type.getOriginal().getTypeData());
+			super(generator, id, instance);
+			getPointer().copyAllocation(instance.getType().getTypeData());
 			this.content = content != null ? content : EMPTY_CONTENT;
-			this.next = type.original.data.data().getFirst();
+			this.next = instance.type.data.data().getFirst();
 		}
 
 		@Override
@@ -302,9 +302,9 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		InstanceData(
 				SubData<?> enclosing,
 				CodeId id,
-				Type<O> type,
+				Type<O> instance,
 				Content<?> content) {
-			super(enclosing.getGenerator(), id, type, content);
+			super(enclosing.getGenerator(), id, instance, content);
 			this.global = enclosing.getGlobal();
 			this.enclosing = enclosing;
 		}
@@ -325,17 +325,17 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 			final DataAllocator allocator = generator.dataAllocator();
 
-			setAllocation(allocator.enter(getType().allocation(), this));
-			getType().allocateType(this);
+			setAllocation(allocator.enter(getInstance().allocation(), this));
+			getInstance().allocateType(this);
 			allocator.exit(this);
-			this.content.allocated(getType());
+			this.content.allocated(getInstance());
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void write(DataWriter writer) {
 			writer.enter(getPointer().getAllocation(), this);
-			this.content.fill(getType());
+			this.content.fill(getInstance());
 			writeIncluded(writer);
 			writer.exit(getPointer().getAllocation(), this);
 		}
@@ -349,12 +349,12 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 		GlobalInstanceData(
 				Global<O, ?> global,
-				Type<O> type,
+				Type<O> instance,
 				Content<?> content) {
 			super(
 					global.getGenerator(),
 					global.getId().removeLocal(),
-					type,
+					instance,
 					content);
 			this.global = global;
 		}
@@ -376,9 +376,9 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 			final DataAllocator allocator = generator.dataAllocator();
 
 			setAllocation(allocator.begin(getAllocation(), this.global));
-			getType().allocateType(this);
+			getInstance().allocateType(this);
 			allocator.end(this.global);
-			this.content.allocated(getType());
+			this.content.allocated(getInstance());
 
 			final Globals globals = generator;
 
@@ -389,7 +389,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		@Override
 		protected void write(DataWriter writer) {
 			writer.begin(getPointer().getAllocation(), this.global);
-			this.content.fill(getType());
+			this.content.fill(getInstance());
 			writeIncluded(writer);
 			writer.end(getPointer().getAllocation(), this.global);
 

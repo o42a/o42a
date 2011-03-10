@@ -43,11 +43,11 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 		this.type = type;
 	}
 
-	public final Type<?> getType() {
+	public final Type<?> getTarget() {
 		return this.type;
 	}
 
-	public final AnyPtrRec getName() {
+	public final AnyPtrRec name() {
 		return this.name;
 	}
 
@@ -76,9 +76,9 @@ final class DbgStruct extends Struct<DbgStruct.Op> {
 				.sub("TYPE_NAME")
 				.sub(this.type.codeId(generator)),
 				this.type.codeId(generator).getId());
-		this.dataLayout.setValue(getType().layout(generator).toBinaryForm());
-		this.size.setValue(getType().size(generator));
-		for (Data<?> fieldData : getType().iterate(generator)) {
+		this.dataLayout.setValue(getTarget().layout(generator).toBinaryForm());
+		this.size.setValue(getTarget().size(generator));
+		for (Data<?> fieldData : getTarget().iterate(generator)) {
 
 			final DbgFieldType field = data.addInstance(
 					fieldData.getId().getLocal(),

@@ -112,7 +112,7 @@ public class LLVMDataAllocator implements DataAllocator {
 				typePtr,
 				typeDataPtr,
 				this.top,
-				data.getType()));
+				data.getInstance()));
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class LLVMDataAllocator implements DataAllocator {
 					data.getId().getId(),
 					allocation.getTypePtr(),
 					allocation.getTypeDataPtr(),
-					data.getType().isPacked()));
+					data.getInstance().isPacked()));
 		}
 		if (allocate()) {
 			allocation.setNativePtr(allocateStruct(

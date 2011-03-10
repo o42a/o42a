@@ -51,7 +51,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
 	@Override
 	public void fill(Type instance) {
-		instance.getBody().setValue(
+		instance.body().setValue(
 				this.bodyIR.pointer(instance.getGenerator()).relativeTo(
 						instance.pointer(instance.getGenerator())));
 	}
@@ -73,7 +73,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 		}
 
 		public final DataOp<RelOp> body(Code code) {
-			return writer().relPtr(code, getType().getBody());
+			return writer().relPtr(code, getType().body());
 		}
 
 	}
@@ -86,7 +86,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 		private Type() {
 		}
 
-		public final RelPtrRec getBody() {
+		public final RelPtrRec body() {
 			return this.body;
 		}
 

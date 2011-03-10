@@ -264,7 +264,7 @@ public class ObjectValueIR {
 			val = FALSE_VAL;
 		}
 
-		typeIR.getObjectData().getValue().set(val);
+		typeIR.getObjectData().value().set(val);
 	}
 
 	private void createFalseFunctions(
@@ -330,7 +330,7 @@ public class ObjectValueIR {
 
 		@Override
 		protected CodeRec<ObjectValFunc> func(ObjectDataType data) {
-			return data.getValueFunc();
+			return data.valueFunc();
 		}
 
 		@Override
@@ -372,7 +372,7 @@ public class ObjectValueIR {
 
 		@Override
 		protected CodeRec<ObjectCondFunc> func(ObjectDataType data) {
-			return data.getRequirementFunc();
+			return data.requirementFunc();
 		}
 
 		@Override
@@ -409,7 +409,7 @@ public class ObjectValueIR {
 
 		@Override
 		protected CodeRec<ObjectValFunc> func(ObjectDataType data) {
-			return data.getClaimFunc();
+			return data.claimFunc();
 		}
 
 		@Override
@@ -446,7 +446,7 @@ public class ObjectValueIR {
 
 		@Override
 		protected CodeRec<ObjectCondFunc> func(ObjectDataType data) {
-			return data.getConditionFunc();
+			return data.conditionFunc();
 		}
 
 		@Override
@@ -483,7 +483,7 @@ public class ObjectValueIR {
 
 		@Override
 		protected CodeRec<ObjectValFunc> func(ObjectDataType data) {
-			return data.getPropositionFunc();
+			return data.propositionFunc();
 		}
 
 		@Override

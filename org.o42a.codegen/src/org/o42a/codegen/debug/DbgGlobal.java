@@ -43,13 +43,13 @@ final class DbgGlobal implements Content<DbgGlobalType> {
 		final Debug debug = generator;
 
 		debug.setName(
-				instance.getName(),
+				instance.name(),
 				generator.id("DEBUG")
 				.sub("GLOBAL_NAME")
 				.sub(this.global.getId()),
 				this.global.getId().getId());
-		instance.getStart().setValue(this.global.getPointer().toAny());
-		instance.getContent().fill(null, this.global);
+		instance.start().setValue(this.global.getPointer().toAny());
+		instance.content().fill(null, this.global);
 	}
 
 }

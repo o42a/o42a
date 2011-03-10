@@ -88,7 +88,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 	@Override
 	public void fill(Type instance) {
-		instance.getObject().setValue(
+		instance.object().setValue(
 				this.target.pointer(instance.getGenerator()).toAny());
 	}
 
@@ -114,7 +114,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		}
 
 		public final DataOp<AnyOp> object(Code code) {
-			return writer().ptr(code, getType().getObject());
+			return writer().ptr(code, getType().object());
 		}
 
 	}
@@ -126,7 +126,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		private Type() {
 		}
 
-		public final AnyPtrRec getObject() {
+		public final AnyPtrRec object() {
 			return this.object;
 		}
 

@@ -83,7 +83,7 @@ public class DepIR {
 		}
 
 		this.instance = data.addInstance(localId, DEP_IR);
-		this.instance.getObject().setNull();
+		this.instance.object().setNull();
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class DepIR {
 		private Type() {
 		}
 
-		public final AnyPtrRec getObject() {
+		public final AnyPtrRec object() {
 			return this.object;
 		}
 
@@ -131,7 +131,7 @@ public class DepIR {
 		}
 
 		public final DataOp<AnyOp> object(Code code) {
-			return writer().ptr(code, getType().getObject());
+			return writer().ptr(code, getType().object());
 		}
 
 	}

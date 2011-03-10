@@ -87,7 +87,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	}
 
 	public final boolean isMain() {
-		return this == this.objectIRStruct.getMainBodyIR();
+		return this == this.objectIRStruct.mainBodyIR();
 	}
 
 	public void setKind(Kind kind) {
