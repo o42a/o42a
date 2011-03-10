@@ -33,19 +33,19 @@ public abstract class Rec<O extends PtrOp, T> extends Data<O> {
 	private T value;
 
 	Rec(SubData<?> enclosing, CodeId id, Content<?> content) {
-		super(enclosing, id);
+		super(enclosing.getGenerator(), id);
 		this.enclosing = enclosing;
 		this.content = content != null ? content : Type.EMPTY_CONTENT;
 	}
 
 	@Override
 	public final Global<?, ?> getGlobal() {
-		return getEnclosing().getGlobal();
+		return this.enclosing.getGlobal();
 	}
 
 	@Override
-	public final SubData<?> getEnclosing() {
-		return this.enclosing;
+	public final Type<?> getEnclosing() {
+		return this.enclosing.getInstance();
 	}
 
 	public final T getValue() {

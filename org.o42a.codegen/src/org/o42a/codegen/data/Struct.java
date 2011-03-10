@@ -50,7 +50,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 			extends SubData<O> {
 
 		private final Global<?, ?> global;
-		private final SubData<?> enclosing;
+		private final Type<?> enclosing;
 
 		StructData(SubData<?> enclosing, Struct<O> instance, CodeId name) {
 			super(
@@ -58,7 +58,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 					instance.codeId(enclosing.getGenerator()).setLocal(name),
 					instance);
 			this.global = enclosing.getGlobal();
-			this.enclosing = enclosing;
+			this.enclosing = enclosing.getInstance();
 		}
 
 		@Override
@@ -67,7 +67,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		}
 
 		@Override
-		public SubData<?> getEnclosing() {
+		public Type<?> getEnclosing() {
 			return this.enclosing;
 		}
 
@@ -123,7 +123,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		}
 
 		@Override
-		public SubData<?> getEnclosing() {
+		public Type<?> getEnclosing() {
 			return null;
 		}
 
