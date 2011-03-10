@@ -101,7 +101,7 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 			data.addInstance(
 					generator.id("field").sub(field.getId()),
 					DEBUG_FIELD_INFO_TYPE,
-					new DebugFieldInfo(getTarget(), field));
+					new DebugFieldInfo(field));
 		}
 	}
 

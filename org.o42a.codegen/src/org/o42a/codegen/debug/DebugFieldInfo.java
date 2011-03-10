@@ -32,16 +32,10 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 	public static final FieldInfoType DEBUG_FIELD_INFO_TYPE =
 		new FieldInfoType();
 
-	private final Type<?> enclosingType;
 	private final Data<?> fieldData;
 
-	public DebugFieldInfo(Type<?> enclosingType, Data<?> fieldData) {
-		this.enclosingType = enclosingType;
+	public DebugFieldInfo(Data<?> fieldData) {
 		this.fieldData = fieldData;
-	}
-
-	public final Type<?> getEnclosingType() {
-		return this.enclosingType;
 	}
 
 	public final Data<?> getFieldData() {
@@ -56,19 +50,20 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 	public void fill(FieldInfoType instance) {
 
 		final Data<?> fieldData = getFieldData();
+		final Type<?> enclosing = fieldData.getEnclosing();
 		final Generator generator = instance.getGenerator();
 		final Debug debug = generator;
 
 		instance.dataType().setValue(fieldData.getDataType().getCode());
 		instance.offset().setValue(
 				fieldData.getPointer().relativeTo(
-						getEnclosingType().pointer(generator)));
+						enclosing.pointer(generator)));
 		instance.enclosingTypeInfo().setValue(
-				debug.typeInfo(getEnclosingType()).pointer(generator).toAny());
+				debug.typeInfo(enclosing).pointer(generator).toAny());
 		debug.setName(
 				instance.name(),
 				generator.id("DEBUG").sub("field_name")
-				.sub(getEnclosingType().codeId(generator))
+				.sub(enclosing.codeId(generator))
 				.sub(fieldData.getId()),
 				fieldData.getId().toString());
 		if (fieldData.getDataType() != DataType.STRUCT) {

@@ -44,23 +44,13 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 		this.pointer = new Ptr<O>(this);
 	}
 
-	Data(SubData<?> enclosing, CodeId id) {
-		assert enclosing != null :
-			"Enclosing data not specified";
-		assert id != null :
-			"Data identifier not specified";
-		this.generator = enclosing.getGenerator();
-		this.id = id;
-		this.pointer = new Ptr<O>(this);
-	}
-
 	public final Generator getGenerator() {
 		return this.generator;
 	}
 
 	public abstract Global<?, ?> getGlobal();
 
-	public abstract SubData<?> getEnclosing();
+	public abstract Type<?> getEnclosing();
 
 	public final CodeId getId() {
 		return this.id;

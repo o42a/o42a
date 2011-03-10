@@ -222,7 +222,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		}
 
 		@Override
-		public SubData<?> getEnclosing() {
+		public Type<?> getEnclosing() {
 			return null;
 		}
 
@@ -297,7 +297,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 			extends AbstractInstanceData<O> {
 
 		private final Global<?, ?> global;
-		private final SubData<?> enclosing;
+		private final Type<?> enclosing;
 
 		InstanceData(
 				SubData<?> enclosing,
@@ -306,7 +306,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 				Content<?> content) {
 			super(enclosing.getGenerator(), id, instance, content);
 			this.global = enclosing.getGlobal();
-			this.enclosing = enclosing;
+			this.enclosing = enclosing.getInstance();
 		}
 
 		@Override
@@ -315,7 +315,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		}
 
 		@Override
-		public SubData<?> getEnclosing() {
+		public Type<?> getEnclosing() {
 			return this.enclosing;
 		}
 
@@ -365,7 +365,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		}
 
 		@Override
-		public SubData<?> getEnclosing() {
+		public Type<?> getEnclosing() {
 			return null;
 		}
 
