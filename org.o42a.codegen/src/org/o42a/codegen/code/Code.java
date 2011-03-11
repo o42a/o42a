@@ -108,6 +108,11 @@ public abstract class Code extends DebugCodeBase {
 		return writer().bool(value);
 	}
 
+	public final RelOp nullRelPtr() {
+		assertIncomplete();
+		return writer().nullRelPtr();
+	}
+
 	public final AnyOp nullPtr() {
 		assertIncomplete();
 		return writer().nullPtr();

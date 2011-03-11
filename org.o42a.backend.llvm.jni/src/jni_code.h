@@ -97,6 +97,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_allocatePtr
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
+ * Method:    allocateStructPtr
+ * Signature: (JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_allocateStructPtr
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    allocateStruct
  * Signature: (JJ)J
  */

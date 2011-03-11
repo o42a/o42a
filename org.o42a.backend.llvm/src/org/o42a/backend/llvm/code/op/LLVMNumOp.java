@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.NumOp;
+import org.o42a.codegen.code.op.StructOp;
 
 
 public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
@@ -44,6 +45,10 @@ public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
 	@Override
 	public final long getNativePtr() {
 		return this.nativePtr;
+	}
+
+	@Override
+	public void allocated(Code code, StructOp[] enclosing) {
 	}
 
 	@Override
