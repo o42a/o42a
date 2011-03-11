@@ -98,11 +98,10 @@ public class ObjectType extends Type<ObjectType.Op> {
 			return writer().struct(code, getType().objectData());
 		}
 
-		public final ObjectDataOp data(
+		public final ObjectTypeOp op(
 				CodeBuilder builder,
-				Code code,
 				ObjectPrecision precision) {
-			return data(code).op(builder, precision);
+			return new ObjectTypeOp(builder, this, precision);
 		}
 
 	}

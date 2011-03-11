@@ -27,13 +27,13 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
 
 
-public class ObjectDataOp extends IROp {
+public class ObjectTypeOp extends IROp {
 
 	private final ObjectPrecision precision;
 
-	ObjectDataOp(
+	ObjectTypeOp(
 			CodeBuilder builder,
-			ObjectDataType.Op ptr,
+			ObjectType.Op ptr,
 			ObjectPrecision precision) {
 		super(builder, ptr);
 		this.precision = precision;
@@ -44,8 +44,8 @@ public class ObjectDataOp extends IROp {
 	}
 
 	@Override
-	public final ObjectDataType.Op ptr() {
-		return (ObjectDataType.Op) super.ptr();
+	public final ObjectType.Op ptr() {
+		return (ObjectType.Op) super.ptr();
 	}
 
 	public final ObjectOp object(Code code, Obj wellKnownType) {
@@ -53,7 +53,7 @@ public class ObjectDataOp extends IROp {
 	}
 
 	public final AnyOp start(Code code) {
-		return ptr().startPtr(code);
+		return ptr().data(code).startPtr(code);
 	}
 
 	public final ObjOp objectOfType(Code code, Obj type) {
@@ -65,7 +65,8 @@ public class ObjectDataOp extends IROp {
 
 	final void writeValue(Code code, ValOp result, ObjectOp body) {
 
-		final ObjectValFunc function = ptr().valueFunc(code).load(code);
+		final ObjectValFunc function =
+			ptr().data(code).valueFunc(code).load(code);
 
 		function.call(code, result, body(code, body));
 		code.dumpValue("Value", result);
@@ -73,14 +74,16 @@ public class ObjectDataOp extends IROp {
 
 	final void writeRequirement(Code code, CodePos exit, ObjectOp body) {
 
-		final ObjectCondFunc function = ptr().requirementFunc(code).load(code);
+		final ObjectCondFunc function =
+			ptr().data(code).requirementFunc(code).load(code);
 
 		function.call(code, body(code, body)).go(code, code.tail(), exit);
 	}
 
 	final void writeClaim(Code code, ValOp result, ObjectOp body) {
 
-		final ObjectValFunc function = ptr().claimFunc(code).load(code);
+		final ObjectValFunc function =
+			ptr().data(code).claimFunc(code).load(code);
 
 		function.call(code, result, body(code, body));
 	}
@@ -91,14 +94,15 @@ public class ObjectDataOp extends IROp {
 			ObjectOp body) {
 
 		final ObjectCondFunc function =
-			ptr().conditionFunc(code).load(code);
+			ptr().data(code).conditionFunc(code).load(code);
 
 		function.call(code, body(code, body)).go(code, code.tail(), exit);
 	}
 
 	final void writeProposition(Code code, ValOp result, ObjectOp body) {
 
-		final ObjectValFunc function = ptr().propositionFunc(code).load(code);
+		final ObjectValFunc function =
+			ptr().data(code).propositionFunc(code).load(code);
 
 		function.call(code, result, body(code, body));
 	}
@@ -156,7 +160,7 @@ public class ObjectDataOp extends IROp {
 	}
 
 	private final AnyOp mainBody(Code code) {
-		return ptr().objectPtr(code);
+		return ptr().data(code).objectPtr(code);
 	}
 
 }

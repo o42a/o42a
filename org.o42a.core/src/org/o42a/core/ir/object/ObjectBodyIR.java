@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -280,12 +280,12 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return new ObjOp(builder, this, ascendant, precision);
 		}
 
-		public final ObjectDataType.Op data(Code code) {
+		public final ObjectType.Op objectType(Code code) {
 
 			final DataOp<RelOp> bodyHeader = toRel(code);
 			final AnyOp dataPtr = bodyHeader.load(code).offset(code, this);
 
-			return dataPtr.to(code, OBJECT_DATA_TYPE);
+			return dataPtr.to(code, OBJECT_TYPE);
 		}
 
 		public final DataOp<RelOp> ancestorBody(Code code) {
@@ -326,7 +326,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return "*" + getType().codeId(getType().getGenerator());
 		}
 
-		final ObjOp op(ObjectDataOp data, Obj ascendant) {
+		final ObjOp op(ObjectTypeOp data, Obj ascendant) {
 			return new ObjOp(this, ascendant, data);
 		}
 

@@ -251,18 +251,18 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		noAncestor.go(code.tail());
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
-		final ObjectDataOp ancestorData =
+		final ObjectTypeOp ancestorType =
 			ancestorBody.methods(hasAncestor)
 			.objectType(hasAncestor)
 			.load(hasAncestor)
-			.data(host.getBuilder(), hasAncestor, DERIVED);
+			.op(host.getBuilder(), DERIVED);
 
 		if (isClaim()) {
 			hasAncestor.dumpName("Ancestor claim: ", ancestorBody.ptr());
-			ancestorData.writeClaim(hasAncestor, result, ancestorBody);
+			ancestorType.writeClaim(hasAncestor, result, ancestorBody);
 		} else {
 			hasAncestor.dumpName("Ancestor proposition: ", ancestorBody.ptr());
-			ancestorData.writeProposition(hasAncestor, result, ancestorBody);
+			ancestorType.writeProposition(hasAncestor, result, ancestorBody);
 		}
 
 		hasAncestor.go(code.tail());
