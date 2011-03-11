@@ -37,7 +37,7 @@ public final class ObjOp extends ObjectOp {
 
 	private final Obj ascendant;
 
-	ObjOp(ObjectBodyIR.Op ptr, Obj ascendant, ObjectDataOp data) {
+	ObjOp(ObjectBodyIR.Op ptr, Obj ascendant, ObjectTypeOp data) {
 		super(ptr, data);
 		this.ascendant = ascendant;
 		assert getPrecision().isCompatible() :
@@ -148,7 +148,7 @@ public final class ObjOp extends ObjectOp {
 		final ObjectBodyIR.Op ascendantBody =
 			ascendantBodyIR.pointer(code.getGenerator()).op(code);
 
-		final ObjectDataOp cachedData = cachedData();
+		final ObjectTypeOp cachedData = cachedData();
 
 		if (cachedData != null) {
 			return ascendantBody.op(cachedData, ascendant);

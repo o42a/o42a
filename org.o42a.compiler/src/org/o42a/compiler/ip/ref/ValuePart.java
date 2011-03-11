@@ -26,7 +26,7 @@ import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.ObjectDataOp;
+import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
 
@@ -52,7 +52,7 @@ enum ValuePart {
 
 			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
-			object.data(code).writeOverriddenValue(code, result);
+			object.objectType(code).writeOverriddenValue(code, result);
 			result.condition(code).go(code, null, exit);
 		}
 
@@ -64,7 +64,7 @@ enum ValuePart {
 			if (!op.isOverridden()) {
 				object.writeValue(code, exit, result);
 			} else {
-				object.data(code).writeOverriddenValue(code, exit, result);
+				object.objectType(code).writeOverriddenValue(code, exit, result);
 			}
 		}
 
@@ -94,7 +94,7 @@ enum ValuePart {
 			if (!op.isOverridden()) {
 				object.writeValue(code, result);
 			} else {
-				object.data(code).writeOverriddenValue(code, result);
+				object.objectType(code).writeOverriddenValue(code, result);
 			}
 		}
 
@@ -120,7 +120,7 @@ enum ValuePart {
 				object.writeRequirement(code, exit);
 			} else {
 
-				final ObjectDataOp data = object.data(code);
+				final ObjectTypeOp data = object.objectType(code);
 
 				data.writeOverriddenRequirement(code, exit);
 			}
@@ -154,7 +154,7 @@ enum ValuePart {
 				object.writeCondition(code, exit);
 			} else {
 
-				final ObjectDataOp data = object.data(code);
+				final ObjectTypeOp data = object.objectType(code);
 
 				data.writeOverriddenCondition(code, exit);
 			}
@@ -195,7 +195,7 @@ enum ValuePart {
 			if (!op.isOverridden()) {
 				object.writeClaim(code, exit, result);
 			} else {
-				object.data(code).writeOverriddenClaim(code, exit, result);
+				object.objectType(code).writeOverriddenClaim(code, exit, result);
 			}
 		}
 
@@ -229,7 +229,7 @@ enum ValuePart {
 				object.writeProposition(code, exit, result);
 			} else {
 
-				final ObjectDataOp data = object.data(code);
+				final ObjectTypeOp data = object.objectType(code);
 
 				data.writeOverriddenPsoposition(code, exit, result);
 			}

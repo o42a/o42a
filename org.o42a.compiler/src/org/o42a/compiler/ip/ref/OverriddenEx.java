@@ -154,7 +154,7 @@ public class OverriddenEx extends Ex {
 			final ObjectOp object =
 				hostRef.target(code, exit).toObject(code, exit);
 
-			object.data(code).writeOverriddenValue(code, exit, result);
+			object.objectType(code).writeOverriddenValue(code, exit, result);
 		}
 
 	}

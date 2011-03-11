@@ -34,7 +34,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
 
 
@@ -69,7 +68,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 
 	@Override
 	public final ObjectType getEmbeddedInto() {
-		return ObjectType.OBJECT_TYPE;
+		return OBJECT_TYPE;
 	}
 
 	public final RelPtrRec object() {
@@ -221,12 +220,6 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 
 		public final DataOp<ObjectType.Op> ancestorType(Code code) {
 			return writer().ptr(code, getType().ancestorType());
-		}
-
-		public final ObjectDataOp op(
-				CodeBuilder builder,
-				ObjectPrecision precision) {
-			return new ObjectDataOp(builder, this, precision);
 		}
 
 		@Override

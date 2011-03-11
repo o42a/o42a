@@ -52,7 +52,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	private final ObjectPrecision precision;
-	private final ObjectDataOp data;
+	private final ObjectTypeOp data;
 
 	ObjectOp(CodeBuilder builder, PtrOp ptr, ObjectPrecision precision) {
 		super(builder, ptr);
@@ -60,7 +60,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		this.data = null;
 	}
 
-	ObjectOp(PtrOp ptr, ObjectDataOp data) {
+	ObjectOp(PtrOp ptr, ObjectTypeOp data) {
 		super(data.getBuilder(), ptr);
 		this.data = data;
 		this.precision = data.getPrecision();
@@ -86,8 +86,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public final void writeLogicalValue(Code code, CodePos exit) {
 
-		final ObjectDataOp data = data(code);
-		final ValOp value = data.ptr().value(code);
+		final ObjectTypeOp objectType = objectType(code);
+		final ValOp value = objectType.ptr().data(code).value(code);
 		final CondBlk indefinite = value.indefinite(code).branch(
 				code,
 				"cond_indefinite",
@@ -126,8 +126,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public final ValOp writeValue(Code code, CodePos exit, ValOp result) {
 
-		final ObjectDataOp data = data(code);
-		final ValOp value = data.ptr().value(code);
+		final ObjectTypeOp data = objectType(code);
+		final ValOp value = data.ptr().data(code).value(code);
 		final CondBlk indefinite = value.indefinite(code).branch(
 				code,
 				"val_indefinite",
@@ -172,7 +172,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		} else {
 			code.debug("Requirement");
 		}
-		data(code).writeRequirement(code, exit, body);
+		objectType(code).writeRequirement(code, exit, body);
 	}
 
 	public final void writeClaim(Code code, ValOp result) {
@@ -204,7 +204,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		} else {
 			code.debug("Condition of " + this);
 		}
-		data(code).writeCondition(code, exit, body);
+		objectType(code).writeCondition(code, exit, body);
 	}
 
 	public final void writeProposition(Code code, ValOp result) {
@@ -226,11 +226,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		}
 	}
 
-	public final ObjectDataOp data(Code code) {
+	public final ObjectTypeOp objectType(Code code) {
 		if (this.data != null) {
 			return this.data;
 		}
-		return body(code).data(code).op(getBuilder(), getPrecision());
+		return body(code).objectType(code).op(getBuilder(), getPrecision());
 	}
 
 	public final BoolOp hasAncestor(Code code) {
@@ -286,7 +286,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
-		final ObjectDataType.Op ascendantType = ascendantObj.data(code).ptr();
+		final ObjectType.Op ascendantType =
+			ascendantObj.objectType(code).ptr();
 
 		final AnyOp result = castFunc().op(code).call(
 				code,
@@ -305,7 +306,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		} else {
 			code.debug("Value of " + this);
 		}
-		data(code).writeValue(code, result, body);
+		objectType(code).writeValue(code, result, body);
 	}
 
 	protected void writeClaim(Code code, ValOp result, ObjectOp body) {
@@ -314,7 +315,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		} else {
 			code.debug("Claim of " + this);
 		}
-		data(code).writeClaim(code, result, body);
+		objectType(code).writeClaim(code, result, body);
 	}
 
 	protected void writeProposition(Code code, ValOp result, ObjectOp body) {
@@ -323,10 +324,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		} else {
 			code.debug("Proposition of " + this);
 		}
-		data(code).writeProposition(code, result, body);
+		objectType(code).writeProposition(code, result, body);
 	}
 
-	protected final ObjectDataOp cachedData() {
+	protected final ObjectTypeOp cachedData() {
 		return this.data;
 	}
 

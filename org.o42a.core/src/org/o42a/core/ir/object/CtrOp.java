@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.CodeId;
@@ -65,9 +65,9 @@ public class CtrOp extends IROp {
 				+ ", scope=" + scope
 				+ ", flags=" + Integer.toHexString(flags));
 
-		ptr().scopeType(code).store(code, scope.data(code).ptr());
+		ptr().scopeType(code).store(code, scope.objectType(code).ptr());
 		ptr().ancestorFunc(code).store(code, ancestorFunc);
-		ptr().type(code).store(code, sample.data(code).ptr());
+		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
 		final AnyOp result = newFunc().op(code).call(code, ptr().toAny(code));
@@ -91,16 +91,16 @@ public class CtrOp extends IROp {
 				+ ", ancestor=" + ancestor
 				+ ", flags=" + Integer.toHexString(flags));
 
-		ptr().scopeType(code).store(code, code.nullPtr(OBJECT_DATA_TYPE));
+		ptr().scopeType(code).store(code, code.nullPtr(OBJECT_TYPE));
 		ptr().ancestorFunc(code).store(
 				code,
 				code.nullPtr(OBJECT_REF));
 		ptr().ancestorType(code).store(
 				code,
 				ancestor != null
-				? ancestor.data(code).ptr()
-				: code.nullPtr(OBJECT_DATA_TYPE));
-		ptr().type(code).store(code, sample.data(code).ptr());
+				? ancestor.objectType(code).ptr()
+				: code.nullPtr(OBJECT_TYPE));
+		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
 		final AnyOp result = newFunc().op(code).call(code, ptr().toAny(code));
@@ -130,7 +130,7 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<ObjectDataType.Op> scopeType(Code code) {
+		public final DataOp<ObjectType.Op> scopeType(Code code) {
 			return writer().ptr(code, getType().scopeType());
 		}
 
@@ -138,11 +138,11 @@ public class CtrOp extends IROp {
 			return writer().func(code, getType().ancestorFunc());
 		}
 
-		public final DataOp<ObjectDataType.Op> ancestorType(Code code) {
+		public final DataOp<ObjectType.Op> ancestorType(Code code) {
 			return writer().ptr(code, getType().ancestorType());
 		}
 
-		public final DataOp<ObjectDataType.Op> type(Code code) {
+		public final DataOp<ObjectType.Op> type(Code code) {
 			return writer().ptr(code, getType().type());
 		}
 
@@ -158,10 +158,10 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructPtrRec<ObjectDataType.Op> scopeType;
+		private StructPtrRec<ObjectType.Op> scopeType;
 		private CodeRec<ObjectRefFunc> ancestorFunc;
-		private StructPtrRec<ObjectDataType.Op> ancestorType;
-		private StructPtrRec<ObjectDataType.Op> type;
+		private StructPtrRec<ObjectType.Op> ancestorType;
+		private StructPtrRec<ObjectType.Op> type;
 		private Int32rec flags;
 
 		private Type() {
@@ -172,7 +172,7 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructPtrRec<ObjectDataType.Op> scopeType() {
+		public final StructPtrRec<ObjectType.Op> scopeType() {
 			return this.scopeType;
 		}
 
@@ -180,11 +180,11 @@ public class CtrOp extends IROp {
 			return this.ancestorFunc;
 		}
 
-		public final StructPtrRec<ObjectDataType.Op> ancestorType() {
+		public final StructPtrRec<ObjectType.Op> ancestorType() {
 			return this.ancestorType;
 		}
 
-		public final StructPtrRec<ObjectDataType.Op> type() {
+		public final StructPtrRec<ObjectType.Op> type() {
 			return this.type;
 		}
 
@@ -199,10 +199,10 @@ public class CtrOp extends IROp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.scopeType = data.addPtr("scope_type", OBJECT_DATA_TYPE);
+			this.scopeType = data.addPtr("scope_type", OBJECT_TYPE);
 			this.ancestorFunc = data.addCodePtr("ancestor_f", OBJECT_REF);
-			this.ancestorType = data.addPtr("ancestor_type", OBJECT_DATA_TYPE);
-			this.type = data.addPtr("type", OBJECT_DATA_TYPE);
+			this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
+			this.type = data.addPtr("type", OBJECT_TYPE);
 			this.flags = data.addInt32("flags");
 		}
 

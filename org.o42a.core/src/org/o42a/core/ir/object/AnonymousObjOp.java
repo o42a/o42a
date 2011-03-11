@@ -37,7 +37,7 @@ final class AnonymousObjOp extends ObjectOp {
 
 	private final Obj wellKnownType;
 
-	AnonymousObjOp(ObjectDataOp data, AnyOp ptr, Obj wellKnownType) {
+	AnonymousObjOp(ObjectTypeOp data, AnyOp ptr, Obj wellKnownType) {
 		super(ptr, data);
 		this.wellKnownType = wellKnownType;
 	}

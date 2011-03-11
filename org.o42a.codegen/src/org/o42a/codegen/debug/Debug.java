@@ -117,15 +117,14 @@ public abstract class Debug extends Globals {
 		if (!isDebug()) {
 			return;
 		}
-		if (typeData.getInstance().isDebugInfo()) {
-			return;
+		if (!typeData.getInstance().isDebugInfo()) {
+
+			final Type<?> type = typeData.getInstance();
+			final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
+
+			newGlobal().struct(typeInfo);
+			this.typeInfo.put(typeData.getPointer(), typeInfo);
 		}
-
-		final Type<?> type = typeData.getInstance();
-		final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
-
-		newGlobal().struct(typeInfo);
-		this.typeInfo.put(typeData.getPointer(), typeInfo);
 
 		if (this.writeDebug) {
 			return;

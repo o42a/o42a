@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
@@ -28,8 +26,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectDataOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.common.Ex;
 import org.o42a.core.ref.type.TypeRef;
@@ -167,11 +165,11 @@ final class AncestorRef extends Ex {
 			final AncestorRef ref = (AncestorRef) getRef();
 			final ObjectOp object =
 				ref.ref.op(host()).target(code, exit).materialize(code, exit);
-			final ObjectDataOp ancestorData =
-				object.data(code).ptr()
+			final ObjectTypeOp ancestorData =
+				object.objectType(code).ptr()
+				.data(code)
 				.ancestorType(code)
 				.load(code)
-				.to(code, OBJECT_DATA_TYPE)
 				.op(getBuilder(), object.getPrecision());
 
 			return ancestorData.object(code, ref.getResolution().materialize());

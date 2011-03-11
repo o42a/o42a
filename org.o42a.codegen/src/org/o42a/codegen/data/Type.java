@@ -163,9 +163,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 						+ embeddedInto + ", but is allocated inside "
 						+ data.getInstance());
 			}
-		}
-
-		if (generator.isDebug() && !isDebugInfo()) {
+		} else if (generator.isDebug() && !isDebugInfo()) {
 			data.addInstance(
 					generator.id("__o42a_dbg_header__"),
 					DEBUG_HEADER_TYPE,

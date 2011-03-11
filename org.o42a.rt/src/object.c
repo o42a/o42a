@@ -109,6 +109,8 @@ const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
 		const o42a_obj_stype_t *const type) {
 	O42A_ENTER;
 
+	o42a_debug_mem_name("--- Data:", data);
+	o42a_debug_mem_name("--- Type:", type);
 	const o42a_obj_ascendant_t *ascendant = o42a_obj_ascendants(data);
 
 	for (size_t i = data->ascendants.size; i > 0; --i) {
