@@ -24,7 +24,8 @@
 void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
-	o42a_fld *const to = ctable->to.fld;
+	const o42a_fld_scope *const from = &ctable->from.fld->scope;
+	o42a_fld_scope *const to = &ctable->to.fld->scope;
 
 	// Update the scope only when propagating field.
 	if (ctable->to.body->flags & O42A_OBJ_BODY_PROPAGATED) {
@@ -35,9 +36,9 @@ void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 				ctable->object_type->data.owner_type;
 
 		if (owner_type) {
-			to->scope = o42a_obj_by_data(&owner_type->data);
+			to->object = o42a_obj_by_data(&owner_type->data);
 
-			o42a_debug_mem_name("Updated scope: ", to->scope);
+			o42a_debug_mem_name("Updated scope: ", to->object);
 
 			O42A_RETURN;
 		}
@@ -45,9 +46,9 @@ void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 		O42A_DEBUG("Object is local\n");
 	}
 
-	to->scope = ctable->from.fld->scope;
+	to->object = from->object;
 
-	o42a_debug_mem_name("Leave the scope unchanged: ", to->scope);
+	o42a_debug_mem_name("Leave the scope unchanged: ", to->object);
 
 	O42A_RETURN;
 }
@@ -55,10 +56,10 @@ void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 void o42a_fld_scope_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER;
 
-	const o42a_fld *const from = ctable->from.fld;
-	o42a_fld *const to = ctable->to.fld;
+	const o42a_fld_scope *const from = &ctable->from.fld->scope;
+	o42a_fld_scope *const to = &ctable->to.fld->scope;
 
-	to->scope = from->scope;
+	to->object = from->object;
 
 	O42A_RETURN;
 }

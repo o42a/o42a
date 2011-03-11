@@ -92,7 +92,7 @@ public abstract class LLVMId {
 			llvmWriter.writeCodeId(this);
 			return;
 		case TYPE:
-			throw new IllegalStateException("Type pointer not be written");
+			throw new IllegalStateException("Type pointer can not be written");
 		}
 		throw new IllegalStateException();
 	}

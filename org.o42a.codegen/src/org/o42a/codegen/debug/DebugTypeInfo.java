@@ -112,11 +112,16 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 
 		final Type<?> fieldInstance = field.getInstance();
 
-		if (fieldInstance != null && fieldInstance.isEmbedded()) {
-			for (Data<?> f : getTarget().iterate(data.getGenerator())) {
-				addFieldInfo(data, f);
+		if (fieldInstance != null) {
+			if (fieldInstance.isDebugInfo()) {
+				return;
 			}
-			return;
+			if (fieldInstance.isEmbedded()) {
+				for (Data<?> f : fieldInstance.iterate(data.getGenerator())) {
+					addFieldInfo(data, f);
+				}
+				return;
+			}
 		}
 
 		data.addInstance(

@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.debug.DebugHeader.DEBUG_HEADER_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
@@ -27,6 +29,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.codegen.debug.DebugHeader;
 
 
 public abstract class Type<O extends StructOp> implements Cloneable {
@@ -146,21 +149,29 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 	}
 
 	final void allocateInstance(SubData<O> data) {
-		if (getType() != this) {
 
-			final Type<?> embeddedInto = getEmbeddedInto();
+		final Generator generator = data.getGenerator();
 
-			if (embeddedInto != null) {
-				if (data.getEnclosing().getType() != embeddedInto) {
-					throw new IllegalStateException(
-							"Type " + this + " is embedded into "
-							+ embeddedInto + ", but is allocated inside "
-							+ data.getInstance());
-				}
+		codeId(generator);// Refine code id.
+
+		final Type<?> embeddedInto = getEmbeddedInto();
+
+		if (embeddedInto != null) {
+			if (data.getEnclosing().getType() != embeddedInto) {
+				throw new IllegalStateException(
+						"Type " + this + " is embedded into "
+						+ embeddedInto + ", but is allocated inside "
+						+ data.getInstance());
 			}
 		}
 
-		refineCodeId(data.getGenerator().getCodeIdFactory());
+		if (generator.isDebug() && !isDebugInfo()) {
+			data.addInstance(
+					generator.id("__o42a_dbg_header__"),
+					DEBUG_HEADER_TYPE,
+					new DebugHeader(this));
+		}
+
 		allocate(data);
 	}
 
@@ -207,13 +218,6 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		return this.data;
 	}
 
-	private void refineCodeId(CodeIdFactory factory) {
-		if (this.id.compatibleWith(factory)) {
-			return;
-		}
-		this.id = buildCodeId(factory);
-	}
-
 	private final Data<O> data(Generator generator, boolean fullyAllocated) {
 		ensureTypeAllocated(generator, fullyAllocated);
 		return this.data;
@@ -249,7 +253,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 		@Override
 		public Type<?> getEnclosing() {
-			return null;
+			return getInstance().getEmbeddedInto();
 		}
 
 		@Override

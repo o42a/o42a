@@ -178,7 +178,7 @@ public final class ObjectIR  {
 
 		this.struct = new ObjectIRStruct(this);
 
-		getGenerator().newGlobal().create(this.struct);
+		getGenerator().newGlobal().struct(this.struct);
 		getScopeIR().targetAllocated();
 
 		return this.struct;

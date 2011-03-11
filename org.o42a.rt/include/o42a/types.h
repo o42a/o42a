@@ -24,7 +24,42 @@
 #include <stdint.h>
 
 
+/** Relative pointer. */
+typedef int32_t o42a_rptr_t;
+
+/**
+ * Boolean type.
+ *
+ * Possible values are O42A_TRUE and O42A_FALSE.
+ */
+typedef uint8_t o42a_bool_t;
+
+/**
+ * Data allocation.
+ *
+ * This indicates data allocation size and alignment.
+ */
+typedef uint32_t o42a_layout_t;
+
+#define o42a_layout(target) _o42a_layout(__alignof__ (target), sizeof (target))
+
+enum o42a_data_types {
+
+	O42A_TYPE_STRUCT = 0,
+	O42A_TYPE_REL_PTR = 0x12,
+	O42A_TYPE_DATA_PTR = 0x22,
+	O42A_TYPE_CODE_PTR = 0x32,
+	O42A_TYPE_INT32 = 0x11 | (4 << 8),
+	O42A_TYPE_INT64 = 0x11 | (8 << 8),
+	O42A_TYPE_FP64 = 0x21 | (8 << 8),
+
+};
+
+
 #ifdef NDEBUG
+
+
+#define O42A_HEADER
 
 
 #define O42A_ENTER
@@ -48,6 +83,9 @@
 #else /* NDEBUG */
 
 
+#define O42A_HEADER o42a_dbg_header_t __o42a_dbg_header__
+
+
 #define O42A_ENTER \
 	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = {__func__, NULL}; \
 	o42a_dbg_enter(&__o42a_dbg_stack_frame__)
@@ -69,30 +107,35 @@
 #define o42a_debug_dump_field(ptr, field, depth) o42a_dbg_dump_field(ptr, field, depth)
 
 
+typedef const struct o42a_dbg_type_info o42a_dbg_type_info_t;
+
+typedef struct o42a_dbg_header {
+
+	uint32_t flags;
+
+	int32_t type_code;
+
+	const char *name;
+
+	o42a_dbg_type_info_t *type_info;
+
+	o42a_rptr_t enclosing;
+
+} __attribute__ ((packed)) o42a_dbg_header_t;
+
+
+#include "o42a/debug.h"
+
+
 #endif /* NDEBUG */
 
-
-/** Relative pointer. */
-typedef int32_t o42a_rptr_t;
-
-/**
- * Boolean type.
- *
- * Possible values are O42A_TRUE and O42A_FALSE.
- */
-typedef uint8_t o42a_bool_t;
-
-/**
- * Data allocation.
- *
- * This indicates data allocation size and alignment.
- */
-typedef uint32_t o42a_layout_t;
 
 /**
  * Relative pointer to list of known length.
  */
 typedef struct o42a_rlist {
+
+	O42A_HEADER;
 
 	/** Relative pointer to the first element of list. */
 	o42a_rptr_t list;
@@ -101,18 +144,6 @@ typedef struct o42a_rlist {
 	uint32_t size;
 
 } o42a_rlist_t;
-
-enum o42a_data_types {
-
-	O42A_TYPE_STRUCT = 0,
-	O42A_TYPE_REL_PTR = 0x12,
-	O42A_TYPE_DATA_PTR = 0x22,
-	O42A_TYPE_CODE_PTR = 0x32,
-	O42A_TYPE_INT32 = 0x11 | (4 << 8),
-	O42A_TYPE_INT64 = 0x11 | (8 << 8),
-	O42A_TYPE_FP64 = 0x21 | (8 << 8),
-
-};
 
 /**
  * Value flags.
@@ -173,6 +204,8 @@ enum o42a_val_flags {
  */
 typedef struct o42a_val {
 
+	O42A_HEADER;
+
 	/**
 	 * Value flags.
 	 *
@@ -214,8 +247,6 @@ typedef struct o42a_val {
 } o42a_val_t;
 
 
-#define o42a_layout(target) _o42a_layout(__alignof__ (target), sizeof (target))
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -251,11 +282,5 @@ void *o42a_val_data(const o42a_val_t*);
 }
 #endif
 
-
-#ifndef NDEBUG
-
-#include "o42a/debug.h"
-
-#endif /* NDEBUG */
 
 #endif /* O42A_TYPES_H */

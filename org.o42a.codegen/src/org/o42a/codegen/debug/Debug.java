@@ -112,8 +112,21 @@ public abstract class Debug extends Globals {
 	}
 
 	@Override
-	protected void addType(SubData<?> type) {
-		super.addType(type);
+	protected void addType(SubData<?> typeData) {
+		super.addType(typeData);
+		if (!isDebug()) {
+			return;
+		}
+		if (typeData.getInstance().isDebugInfo()) {
+			return;
+		}
+
+		final Type<?> type = typeData.getInstance();
+		final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
+
+		newGlobal().struct(typeInfo);
+		this.typeInfo.put(typeData.getPointer(), typeInfo);
+
 		if (this.writeDebug) {
 			return;
 		}
@@ -122,7 +135,7 @@ public abstract class Debug extends Globals {
 		}
 		this.writeDebug = true;
 		try {
-			writeStruct(type);
+			writeStruct(typeData);
 		} finally {
 			this.writeDebug = false;
 		}
@@ -146,7 +159,7 @@ public abstract class Debug extends Globals {
 		if (checkDebug()) {
 			this.writeDebug = true;
 			try {
-				newGlobal().export().setConstant().create(this.info);
+				newGlobal().export().setConstant().struct(this.info);
 				super.writeData();
 			} finally {
 				this.writeDebug = false;
@@ -205,7 +218,7 @@ public abstract class Debug extends Globals {
 
 		final DbgStruct struct = new DbgStruct(type);
 
-		newGlobal().setConstant().create(struct);
+		newGlobal().setConstant().struct(struct);
 
 		this.structs.put(typePointer, struct);
 

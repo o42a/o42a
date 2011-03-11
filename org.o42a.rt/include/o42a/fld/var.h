@@ -20,11 +20,19 @@
 #ifndef O42A_FLD_VAR_H
 #define O42A_FLD_VAR_H
 
+#include "o42a/field.h"
+
 
 typedef struct {
+
+	O42A_HEADER;
+
 	o42a_obj_t *object;
+
 	o42a_obj_ref_ft *constructor;
+
 	o42a_obj_assigner_ft *assigner;
+
 } o42a_fld_var;
 
 
@@ -42,4 +50,4 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t*);
 }
 #endif
 
-#endif
+#endif /* O42A_FLD_VAR_H */

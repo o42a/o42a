@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_OBJ_FIELDS_H
-#define O42A_OBJ_FIELDS_H
+#ifndef O42A_FIELDS_H
+#define O42A_FIELDS_H
 
 #include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"
@@ -28,15 +28,17 @@
 
 union o42a_fld {
 
+	O42A_HEADER;
+
 	o42a_fld_obj obj;
 
 	o42a_fld_link link;
 
 	o42a_fld_var var;
 
-	o42a_obj_body_t *scope;
+	o42a_fld_scope scope;
 
 };
 
 
-#endif /* O42A_OBJ_FIELDS_H */
+#endif /* O42A_FIELDS_H */

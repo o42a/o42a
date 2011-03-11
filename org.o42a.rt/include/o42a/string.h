@@ -39,4 +39,4 @@ UChar32 o42a_str_cmask(const o42a_val_t *);
 }
 #endif
 
-#endif
+#endif /* O42A_STRING_H */

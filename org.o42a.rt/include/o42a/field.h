@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_OBJ_FIELD_H
-#define O42A_OBJ_FIELD_H
+#ifndef O42A_FIELD_H
+#define O42A_FIELD_H
 
 #include "o42a/object.h"
 
@@ -44,6 +44,8 @@ enum o42a_fld_kind {
 typedef void o42a_fld_copy_ft(o42a_obj_ctable_t *);
 
 typedef const struct o42a_fld_desc {
+
+	O42A_HEADER;
 
 	o42a_fld_copy_ft *const inherit;
 
@@ -84,4 +86,4 @@ o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
 #endif
 
 
-#endif /* O42A_OBJ_FIELD_H */
+#endif /* O42A_FIELD_H */
