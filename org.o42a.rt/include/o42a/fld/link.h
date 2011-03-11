@@ -24,8 +24,13 @@
 
 
 typedef struct {
+
+	O42A_HEADER;
+
 	o42a_obj_t *object;
+
 	o42a_obj_ref_ft *constructor;
+
 } o42a_fld_link;
 
 
@@ -43,4 +48,4 @@ void o42a_fld_link_inherit(o42a_obj_ctable_t*);
 }
 #endif
 
-#endif
+#endif /* O42A_FLD_LINK_H */

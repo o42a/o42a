@@ -26,9 +26,15 @@
 typedef struct o42a_fld_obj o42a_fld_obj;
 
 struct o42a_fld_obj {
+
+	O42A_HEADER;
+
 	o42a_obj_t *object;
+
 	o42a_obj_constructor_ft *constructor;
+
 	o42a_fld_obj *previous;
+
 };
 
 
@@ -46,4 +52,4 @@ void o42a_fld_obj_inherit(o42a_obj_ctable_t*);
 }
 #endif
 
-#endif
+#endif /* O42A_FLD_OBJ_H */

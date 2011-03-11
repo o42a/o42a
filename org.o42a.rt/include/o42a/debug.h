@@ -25,6 +25,43 @@
 #include <stdio.h>
 
 
+enum o42a_dbg_header_flags {
+
+	O42A_DBG_HDR_STATIC = 0x01,
+
+	O42A_DBG_HDR_STACK = 0x02,
+
+	O42A_DBG_HDR_COMMENT = 0x04
+
+};
+
+typedef const struct o42a_dbg_field_info {
+
+	uint32_t data_type;
+
+	o42a_rptr_t offset;
+
+	o42a_dbg_type_info_t *enclosing_type_info;
+
+	const char *name;
+
+	o42a_dbg_type_info_t *type_info;
+
+} o42a_dbg_field_info_t;
+
+struct o42a_dbg_type_info {
+
+	int32_t type_code;
+
+	uint32_t field_num;
+
+	const char *name;
+
+	o42a_dbg_field_info_t fields[];
+
+};
+
+
 typedef const struct o42a_dbg_func o42a_dbg_func_t;
 typedef const struct o42a_dbg_field o42a_dbg_field_t;
 typedef const struct o42a_dbg_struct o42a_dbg_struct_t;

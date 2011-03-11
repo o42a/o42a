@@ -23,6 +23,15 @@
 #include "o42a/field.h"
 
 
+typedef struct {
+
+	O42A_HEADER;
+
+	o42a_obj_body_t *object;
+
+} o42a_fld_scope;
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -37,4 +46,4 @@ void o42a_fld_scope_inherit(o42a_obj_ctable_t*);
 }
 #endif
 
-#endif
+#endif /* O42A_FLD_SCOPE_H */

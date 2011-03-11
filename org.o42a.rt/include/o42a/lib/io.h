@@ -35,4 +35,4 @@ void o42a_io_print_str(const o42a_val_t *);
 }
 #endif
 
-#endif
+#endif /* O42A_LIB_IO_H */

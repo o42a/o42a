@@ -186,6 +186,8 @@ enum o42a_obj_body_kind {
  */
 typedef struct o42a_obj_body {
 
+	O42A_HEADER;
+
 	/*
 	 * Relative pointer to object type.
 	 *
@@ -228,6 +230,8 @@ typedef struct o42a_obj_body {
  * to data pointer.
  */
 typedef struct o42a_obj_data {
+
+	O42A_HEADER;
 
 	/** Relative pointer to main object body. */
 	o42a_rptr_t object;
@@ -331,6 +335,8 @@ typedef struct o42a_obj_data {
  */
 typedef struct o42a_obj_stype {
 
+	O42A_HEADER;
+
 	/** Object data. */
 	o42a_obj_data_t data;
 
@@ -357,6 +363,8 @@ typedef struct o42a_obj_stype {
  */
 typedef struct o42a_obj_ascendant {
 
+	O42A_HEADER;
+
 	/** Pointer to the ascending object's type. */
 	o42a_obj_stype_t *type;
 
@@ -372,6 +380,8 @@ typedef struct o42a_obj_ascendant {
  */
 typedef struct o42a_obj_sample {
 
+	O42A_HEADER;
+
 	/** Relative pointer to sample body. */
 	o42a_rptr_t body;
 
@@ -384,6 +394,8 @@ typedef struct o42a_obj_sample {
  * override described with o42a_override.
  */
 typedef const struct o42a_obj_field {
+
+	O42A_HEADER;
 
 	/** Pointer to object type the field first declared in. */
 	o42a_obj_stype_t *declared_in;
@@ -405,6 +417,8 @@ typedef const struct o42a_obj_field {
  */
 typedef const struct o42a_obj_overrider {
 
+	O42A_HEADER;
+
 	/** Pointer to descriptor of the overridden field. */
 	o42a_obj_field_t *field;
 
@@ -421,6 +435,8 @@ typedef const struct o42a_obj_overrider {
  */
 typedef struct o42a_obj_rtype {
 
+	O42A_HEADER;
+
 	/** Object data. */
 	o42a_obj_data_t data;
 
@@ -436,6 +452,8 @@ typedef struct o42a_obj_rtype {
  * o42a_obj_stype_t or o42a_obj_rtype_t type depending on header flags.
  */
 typedef union o42a_obj_type {
+
+	O42A_HEADER;
 
 	/**
 	 * Object data.
@@ -468,6 +486,8 @@ typedef union o42a_obj_type {
  */
 typedef struct o42a_obj_methods {
 
+	O42A_HEADER;
+
 	/**
 	 * Pointer to object type, where corresponding body were first declared in.
 	 */
@@ -479,6 +499,8 @@ typedef struct o42a_obj_methods {
  * Object construction data.
  */
 typedef struct o42a_obj_ctr {
+
+	O42A_HEADER;
 
 	/**
 	 * Pointer to enclosing object's type.
@@ -520,6 +542,8 @@ typedef struct o42a_obj_ctr {
 } o42a_obj_ctr_t;
 
 typedef struct o42a_obj_ctable {
+
+	O42A_HEADER;
 
 	o42a_obj_type_t *const ancestor_type;
 

@@ -67,10 +67,10 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 
 		final Generator generator = data.getGenerator();
 		final DbgFunctions functions =
-			generator.newGlobal().setConstant().create(this.functions)
+			generator.newGlobal().setConstant().struct(this.functions)
 			.getInstance();
 		final DbgGlobals globals =
-			generator.newGlobal().setConstant().create(this.globals)
+			generator.newGlobal().setConstant().struct(this.globals)
 			.getInstance();
 
 		final StructPtrRec<DbgFunctions.Op> functionsPtr =

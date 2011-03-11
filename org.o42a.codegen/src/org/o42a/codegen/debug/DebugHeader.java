@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DebugFieldInfo.enclosingNonEmbedded;
 import static org.o42a.codegen.debug.DebugFieldInfo.fieldName;
 
 import java.util.Arrays;
@@ -59,12 +60,11 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 		final Generator generator = instance.getGenerator();
 		final Debug debug = generator;
-		final Data<Op> data = instance.data(generator);
-		final Type<?> enclosing = data.getEnclosing();
+		final Data<?> data = getTarget().data(generator);
 
 		instance.flags().setValue(DBG_HDR_STATIC);
 
-		if (enclosing == null) {
+		if (data.getEnclosing() == null) {
 
 			final Global<?, ?> global = data.getGlobal();
 
@@ -76,6 +76,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			instance.enclosing().setNull();
 		} else {
 
+			final Type<?> enclosing = enclosingNonEmbedded(data);
 			final CodeId fieldName = DebugFieldInfo.fieldName(data);
 
 			debug.setName(
@@ -87,7 +88,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 							data.getPointer()));
 		}
 
-		final DebugTypeInfo typeInfo = debug.typeInfo(instance);
+		final DebugTypeInfo typeInfo = debug.typeInfo(getTarget());
 
 		instance.typeCode().setValue(typeInfo.getCode());
 		instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
