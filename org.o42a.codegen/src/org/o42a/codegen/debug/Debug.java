@@ -51,6 +51,8 @@ public abstract class Debug extends Globals {
 	private CodePtr<DbgExitFunc> exitFunc;
 	private DebugInfo info;
 
+	private final HashMap<String, Ptr<AnyOp>> names =
+		new HashMap<String, Ptr<AnyOp>>();
 	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
 		new HashMap<Ptr<?>, DebugTypeInfo>();
 	private final HashMap<Ptr<?>, DbgStruct> structs =
@@ -158,9 +160,17 @@ public abstract class Debug extends Globals {
 
 	final void setName(AnyPtrRec field, CodeId id, String value) {
 
+		final Ptr<AnyOp> found = this.names.get(value);
+
+		if (found != null) {
+			field.setValue(found);
+			return;
+		}
+
 		final Ptr<AnyOp> binary = addASCIIString(id, value);
 
 		field.setValue(binary);
+		this.names.put(value, binary);
 	}
 
 	DebugTypeInfo typeInfo(Type<?> instance) {

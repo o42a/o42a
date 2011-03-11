@@ -60,12 +60,13 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 						enclosing.pointer(generator)));
 		instance.enclosingTypeInfo().setValue(
 				debug.typeInfo(enclosing).pointer(generator).toAny());
+
+		final CodeId fieldName = fieldName(fieldData);
+
 		debug.setName(
 				instance.name(),
-				generator.id("DEBUG").sub("field_name")
-				.sub(enclosing.codeId(generator))
-				.sub(fieldData.getId()),
-				fieldName(fieldData).toString());
+				generator.id("DEBUG").sub("field_name").sub(fieldName),
+				fieldName.toString());
 
 		final Type<?> fieldInstance = fieldData.getInstance();
 
