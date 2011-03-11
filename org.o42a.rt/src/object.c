@@ -19,7 +19,6 @@
 */
 #include "o42a/object.h"
 
-#include "o42a/debug.h"
 #include "o42a/field.h"
 
 #include <malloc.h>
@@ -244,7 +243,7 @@ static void derive_object_body(
 				: "Propagate field %lx -> %lx\n",
 				(long) ctable->from.fld,
 				(long) ctable->to.fld);
-		o42a_dbg_dump_mem(field, 1000);
+		o42a_debug_dump_mem(field, 1000);
 		(kind == DK_INHERIT ? desc->inherit : desc->propagate) (ctable);
 	}
 
@@ -256,7 +255,7 @@ static void derive_object_body(
 							? "Copied body (%lx)"
 							: "Propagated body (%lx)")),
 			(long) to_body);
-	o42a_dbg_dump_field(
+	o42a_debug_dump_field(
 			to_body,
 			o42a_dbg_subfield(
 					o42a_dbg_field(from_body),
@@ -388,7 +387,7 @@ static o42a_obj_rtype_t *propagate_object(
 	copy_samples(&atype->data, samples, mem);
 
 	O42A_DEBUG("Object data: (%lx)", (long) obj_type);
-	o42a_dbg_dump_field(
+	o42a_debug_dump_field(
 			data,
 			o42a_dbg_subfield(
 					o42a_dbg_field(sstype),
@@ -641,7 +640,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	derive_object_body(&ctable, ancestor_body, DK_MAIN);
 
 	O42A_DEBUG("Object data: (%lx)", (long) obj_type);
-	o42a_dbg_dump_field(
+	o42a_debug_dump_field(
 			data,
 			o42a_dbg_subfield(
 					o42a_dbg_field(sdata),

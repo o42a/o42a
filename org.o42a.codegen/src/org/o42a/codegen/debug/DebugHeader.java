@@ -38,7 +38,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 	public static final int DBG_HDR_STATIC = 0x01;
 	public static final int DBG_HDR_STACK = 0x02;
-	public static final int DBG_HDR_GLOBAL = 0x02;
 	public static final int DBG_HDR_COMMENT = 0x04;
 
 	private final Type<?> target;
@@ -63,11 +62,12 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		final Data<Op> data = instance.data(generator);
 		final Type<?> enclosing = data.getEnclosing();
 
+		instance.flags().setValue(DBG_HDR_STATIC);
+
 		if (enclosing == null) {
 
 			final Global<?, ?> global = data.getGlobal();
 
-			instance.flags().setValue(DBG_HDR_STATIC | DBG_HDR_GLOBAL);
 			debug.setName(
 					instance.name(),
 					generator.id("DEBUG").sub("global_name")
@@ -78,7 +78,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 			final CodeId fieldName = DebugFieldInfo.fieldName(data);
 
-			instance.flags().setValue(0);
 			debug.setName(
 					instance.name(),
 					generator.id("DEBUG").sub("field_name").sub(fieldName),
@@ -131,8 +130,9 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			final Generator generator = code.getGenerator();
 			final Debug debug = generator;
 
+			flags(code).store(code, code.int32(DBG_HDR_STACK));
+
 			if (enclosing.length == 0) {
-				flags(code).store(code, code.int32(DBG_HDR_STACK));
 				// TODO Put last comment here:
 				name(code).store(code, code.nullPtr());
 				enclosing(code).store(code, code.nullRelPtr());
@@ -142,7 +142,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 					enclosingNonEmbedded(getType().getType(), enclosing);
 				final CodeId fieldName = fieldName(getType().data(generator));
 
-				flags(code).store(code, code.int32(0));
 				name(code).store(
 						code,
 						debug.allocateName(

@@ -19,7 +19,6 @@
 */
 #include "o42a/fields.h"
 
-#include "o42a/debug.h"
 #include "o42a/object.h"
 
 

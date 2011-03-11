@@ -24,6 +24,54 @@
 #include <stdint.h>
 
 
+#ifdef NDEBUG
+
+
+#define O42A_ENTER
+
+#define O42A_RETURN return
+
+#define O42A_DEBUG(format, args...)
+
+
+#define o42a_debug(message)
+
+#define o42a_debug_mem_name(prefix, ptr)
+
+#define o42a_debug_func_name(prefix, ptr)
+
+#define o42a_debug_dump_mem(ptr, depth)
+
+#define o42a_debug_dump_field(ptr, field, depth)
+
+
+#else /* NDEBUG */
+
+
+#define O42A_ENTER \
+	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = {__func__, NULL}; \
+	o42a_dbg_enter(&__o42a_dbg_stack_frame__)
+
+#define O42A_RETURN o42a_dbg_exit(); return
+
+#define O42A_DEBUG(format, args...) \
+	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name); \
+	fprintf(stderr, format, ## args)
+
+#define o42a_debug(message) o42a_dbg(message)
+
+#define o42a_debug_mem_name(prefix, ptr) o42a_dbg_mem_name(prefix, ptr)
+
+#define o42a_debug_func_name(prefix, ptr) o42a_dbg_func_name(prefix, ptr)
+
+#define o42a_debug_dump_mem(ptr, depth) o42a_dbg_dump_mem(ptr, depth)
+
+#define o42a_debug_dump_field(ptr, field, depth) o42a_dbg_dump_field(ptr, field, depth)
+
+
+#endif /* NDEBUG */
+
+
 /** Relative pointer. */
 typedef int32_t o42a_rptr_t;
 
@@ -168,6 +216,7 @@ typedef struct o42a_val {
 
 #define o42a_layout(target) _o42a_layout(__alignof__ (target), sizeof (target))
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -202,4 +251,11 @@ void *o42a_val_data(const o42a_val_t*);
 }
 #endif
 
-#endif
+
+#ifndef NDEBUG
+
+#include "o42a/debug.h"
+
+#endif /* NDEBUG */
+
+#endif /* O42A_TYPES_H */

@@ -19,8 +19,6 @@
 */
 #include "o42a/string.h"
 
-#include "o42a/debug.h"
-
 
 inline size_t o42a_str_len(const o42a_val_t *const val) {
 	return val->length >> o42a_val_ashift(val);

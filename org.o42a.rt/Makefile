@@ -41,8 +41,8 @@ release_flags = $(release_cppflags) $(release_cflags)
 debug_flags = $(debug_cppflags) $(debug_cflags)
 
 common_deps = $(headersdir)/types.h
-common_deps += $(headersdir)/error.h
 common_deps += $(headersdir)/debug.h
+common_deps += $(headersdir)/error.h
 
 fld_deps = $(common_deps)
 fld_deps += $(headersdir)/object.h
@@ -111,6 +111,7 @@ $(srcdir)/debug.%.o : $(srcdir)/debug.c
 	$(call compile)
 
 $(srcdir)/types.*.o : $(headersdir)/types.h
+$(srcdir)/types.*.o : $(headersdir)/debug.h
 $(srcdir)/types.%.o : $(srcdir)/types.c
 	$(call compile)
 
