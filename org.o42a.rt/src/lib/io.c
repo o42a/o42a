@@ -19,7 +19,6 @@
 */
 #include "o42a/lib/io.h"
 
-#include "o42a/debug.h"
 #include "o42a/string.h"
 
 #include "unicode/ustdio.h"

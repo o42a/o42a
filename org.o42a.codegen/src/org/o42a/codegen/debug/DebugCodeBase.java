@@ -71,7 +71,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		}
 
 		final CodePtr<DebugFunc> func =
-			this.generator.externalFunction("o42a_debug", DEBUG_SIGNATURE);
+			this.generator.externalFunction("o42a_dbg", DEBUG_SIGNATURE);
 
 		func.op(code()).call(code(), binaryMessage(message + '\n').op(code()));
 	}
@@ -84,7 +84,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		final CodePtr<DumpNameFunc> func =
 			this.generator.externalFunction(
-					"o42a_debug_mem_name",
+					"o42a_dbg_mem_name",
 					DUMP_NAME_SIGNATURE);
 
 		func.op(code()).call(
@@ -101,7 +101,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		final CodePtr<DumpNameFunc> func =
 			this.generator.externalFunction(
-					"o42a_debug_func_name",
+					"o42a_dbg_func_name",
 					DUMP_NAME_SIGNATURE);
 
 		func.op(code()).call(
@@ -155,7 +155,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		}
 
 		final CodePtr<DebugFunc> debugFunc =
-			this.generator.externalFunction("o42a_debug", DEBUG_SIGNATURE);
+			this.generator.externalFunction("o42a_dbg", DEBUG_SIGNATURE);
 
 		debugFunc.op(code()).call(
 				code(),

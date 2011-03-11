@@ -18,8 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "o42a/fields.h"
-
-#include "o42a/debug.h"
 #include "o42a/object.h"
 
 

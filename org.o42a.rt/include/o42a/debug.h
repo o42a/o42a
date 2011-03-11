@@ -20,49 +20,9 @@
 #ifndef O42A_DEBUG_H
 #define O42A_DEBUG_H
 
-#include <assert.h>
-
-
-#ifdef NDEBUG
-
-
-#define O42A_ENTER
-
-#define O42A_RETURN return
-
-#define O42A_DEBUG(format, args...)
-
-
-#define o42a_debug(message)
-
-#define o42a_debug_mem_name(prefix, ptr)
-
-#define o42a_debug_func_name(prefix, ptr);
-
-#define o42a_dbg_dump_mem(ptr, depth)
-
-#define o42a_dbg_dump_field(ptr, field, depth)
-
-#define o42a_dbg_print_stack_trace(dump)
-
-
-#else
-
-
 #include "o42a/types.h"
 
 #include <stdio.h>
-
-
-#define O42A_ENTER \
-	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = {__func__, NULL}; \
-	o42a_dbg_enter(&__o42a_dbg_stack_frame__)
-
-#define O42A_RETURN o42a_dbg_exit(); return
-
-#define O42A_DEBUG(format, args...) \
-	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name); \
-	fprintf(stderr, format, ## args)
 
 
 typedef const struct o42a_dbg_func o42a_dbg_func_t;
@@ -117,11 +77,11 @@ extern "C" {
 
 int32_t o42a_dbg_exec_main(int32_t(*)(int32_t, char**), int32_t, char**);
 
-void o42a_debug(const char *);
+void o42a_dbg(const char *);
 
-void o42a_debug_mem_name(const char *, const void *);
+void o42a_dbg_mem_name(const char *, const void *);
 
-void o42a_debug_func_name(const char *, const void *);
+void o42a_dbg_func_name(const char *, const void *);
 
 void o42a_dbg_dump_mem(const void *, uint32_t);
 
@@ -152,6 +112,4 @@ void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *);
 }
 #endif
 
-#endif
-
-#endif
+#endif /* O42A_DEBUG_H */

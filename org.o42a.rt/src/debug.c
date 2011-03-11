@@ -21,6 +21,7 @@
 
 #include "o42a/debug.h"
 
+#include <assert.h>
 #include <signal.h>
 #include <string.h>
 
@@ -70,7 +71,7 @@ static inline void dbg_print_prefix() {
 	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name);
 }
 
-void o42a_debug(const char *const message) {
+void o42a_dbg(const char *const message) {
 	dbg_print_prefix();
 	fputs(message, stderr);
 }
@@ -80,7 +81,7 @@ static const o42a_dbg_global_t *dbg_mem(
 		o42a_dbg_field_t**,
 		int);
 
-void o42a_debug_mem_name(
+void o42a_dbg_mem_name(
 		const char *const prefix,
 		const void *const ptr) {
 	o42a_debug(prefix);
@@ -105,7 +106,7 @@ static void dbg_print_func_name(
 	fprintf(stderr, "%s", func->name);
 }
 
-void o42a_debug_func_name(
+void o42a_dbg_func_name(
 		const char *const prefix,
 		const void *const ptr) {
 

@@ -19,7 +19,6 @@
 */
 #include "o42a/float.h"
 
-#include "o42a/debug.h"
 #include "o42a/error.h"
 #include "o42a/string.h"
 
