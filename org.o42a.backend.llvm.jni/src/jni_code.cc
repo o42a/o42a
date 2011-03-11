@@ -233,6 +233,29 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocatePtr(
 	return to_ptr(result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStructPtr(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jlong typePtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	IRBuilder<> builder(block);
+	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+
+	OCODE(
+			block,
+			"allocateStructPtr: "
+			<< block->getParent()->getParent()->getTypeName(type->get())
+			<< "\n");
+
+	Value *result = builder.CreateAlloca(type->get()->getPointerTo());
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct(
 		JNIEnv *env,
 		jclass cls,
@@ -243,7 +266,9 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct(
 	IRBuilder<> builder(block);
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
-	OCODE(block, "allocateStruct: "
+	OCODE(
+			block,
+			"allocateStruct: "
 			<< block->getParent()->getParent()->getTypeName(type->get())
 			<< "\n");
 

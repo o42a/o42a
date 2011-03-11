@@ -33,6 +33,10 @@ public abstract class Func implements PtrOp {
 	}
 
 	@Override
+	public void allocated(Code code, StructOp[] enclosing) {
+	}
+
+	@Override
 	public final void returnValue(Code code) {
 		caller().returnValue(code);
 	}

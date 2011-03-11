@@ -248,6 +248,11 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
+	public RelOp nullRelPtr() {
+		return new LLVMRelOp(nextPtr(), int32(getModule().getNativePtr(), 0));
+	}
+
+	@Override
 	public LLVMAnyOp nullPtr() {
 		return new LLVMAnyOp(nextPtr(), nullPtr(getModule().getNativePtr()));
 	}
@@ -294,6 +299,20 @@ public abstract class LLVMCode implements CodeWriter {
 		final long nextPtr = nextPtr();
 
 		return new LLVMDataOp.Any(nextPtr, allocatePtr(nextPtr));
+	}
+
+	@Override
+	public <O extends StructOp> DataOp<O> allocatePtr(
+			DataAllocation<O> allocation) {
+
+		final ContainerAllocation<O> alloc =
+			(ContainerAllocation<O>) allocation;
+		final long nextPtr = nextPtr();
+
+		return new LLVMDataOp.Struct<O>(
+				alloc.getType(),
+				nextPtr,
+				allocateStructPtr(nextPtr, alloc.getTypePtr()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -407,6 +426,8 @@ public abstract class LLVMCode implements CodeWriter {
 	private static native long nullFuncPtr(long funcTypePtr);
 
 	private static native long allocatePtr(long blockPtr);
+
+	private static native long allocateStructPtr(long blockPtr, long typePtr);
 
 	private static native long allocateStruct(long blockPtr, long typePtr);
 

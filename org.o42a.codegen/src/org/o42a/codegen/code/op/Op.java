@@ -19,7 +19,11 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.code.Code;
+
 
 public interface Op {
+
+	void allocated(Code code, StructOp[] enclosing);
 
 }

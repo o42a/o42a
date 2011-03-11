@@ -50,7 +50,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 	public void fill(FieldInfoType instance) {
 
 		final Data<?> fieldData = getFieldData();
-		final Type<?> enclosing = enclosingNonEmbedded();
+		final Type<?> enclosing = enclosingNonEmbedded(getFieldData());
 		final Generator generator = instance.getGenerator();
 		final Debug debug = generator;
 
@@ -80,13 +80,13 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		}
 	}
 
-	private Type<?> enclosingNonEmbedded() {
+	static Type<?> enclosingNonEmbedded(Data<?> fieldData) {
 
-		Type<?> enclosing = getFieldData().getEnclosing();
+		Type<?> enclosing = fieldData.getEnclosing();
 
 		while (enclosing.isEmbedded()) {
 			enclosing =
-				enclosing.data(getFieldData().getGenerator()).getEnclosing();
+				enclosing.data(fieldData.getGenerator()).getEnclosing();
 		}
 
 		return enclosing;

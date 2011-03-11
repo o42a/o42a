@@ -29,6 +29,8 @@ public interface StructWriter extends PtrOp {
 
 	Type<?> getType();
 
+	DataOp<?> field(Code code, Data<?> field);
+
 	DataOp<Int32op> int32(Code code, Int32rec field);
 
 	DataOp<Int64op> int64(Code code, Int64rec field);

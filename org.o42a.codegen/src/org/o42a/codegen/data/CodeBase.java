@@ -21,10 +21,13 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
 
 
 public abstract class CodeBase {
+
+	protected static final StructOp[] NO_ENCLOSING = new StructOp[0];
 
 	private boolean complete;
 
@@ -32,9 +35,25 @@ public abstract class CodeBase {
 		assertIncomplete();
 
 		final Code code = (Code) this;
-
-		return writer().allocateStruct(
+		final O result = writer().allocateStruct(
 				type.data(code.getGenerator()).getAllocation());
+
+
+		result.allocated(code, NO_ENCLOSING);
+
+		return result;
+	}
+
+	public <O extends StructOp> DataOp<O> allocatePtr(Type<O> type) {
+		assertIncomplete();
+
+		final Code code = (Code) this;
+		final DataOp<O> result = writer().allocatePtr(
+				type.data(code.getGenerator()).getAllocation());
+
+		result.allocated(code, NO_ENCLOSING);
+
+		return result;
 	}
 
 	public final void done() {

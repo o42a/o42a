@@ -63,6 +63,14 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
+	public DataOp<?> field(Code code, Data<?> field) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMDataOp.Any(nextPtr, field(nextPtr, field));
+	}
+
+	@Override
 	public DataOp<Int32op> int32(Code code, Int32rec field) {
 
 		final long nextPtr = nextPtr(code);

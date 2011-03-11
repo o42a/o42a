@@ -158,19 +158,23 @@ public abstract class Debug extends Globals {
 		return addBinary(id, nullTermASCIIString(value));
 	}
 
-	final void setName(AnyPtrRec field, CodeId id, String value) {
+	final Ptr<AnyOp> allocateName(CodeId id, String value) {
 
 		final Ptr<AnyOp> found = this.names.get(value);
 
 		if (found != null) {
-			field.setValue(found);
-			return;
+			return found;
 		}
 
 		final Ptr<AnyOp> binary = addASCIIString(id, value);
 
-		field.setValue(binary);
 		this.names.put(value, binary);
+
+		return binary;
+	}
+
+	final void setName(AnyPtrRec field, CodeId id, String value) {
+		field.setValue(allocateName(id, value));
 	}
 
 	DebugTypeInfo typeInfo(Type<?> instance) {

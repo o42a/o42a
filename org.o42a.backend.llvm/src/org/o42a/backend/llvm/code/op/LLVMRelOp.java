@@ -25,6 +25,7 @@ import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.code.op.StructOp;
 
 
 public final class LLVMRelOp implements LLVMOp, RelOp {
@@ -45,6 +46,10 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 	@Override
 	public long getNativePtr() {
 		return this.nativePtr;
+	}
+
+	@Override
+	public void allocated(Code code, StructOp[] enclosing) {
 	}
 
 	@Override
