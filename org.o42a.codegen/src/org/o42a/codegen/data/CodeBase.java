@@ -27,8 +27,6 @@ import org.o42a.codegen.code.op.StructOp;
 
 public abstract class CodeBase {
 
-	protected static final StructOp[] NO_ENCLOSING = new StructOp[0];
-
 	private boolean complete;
 
 	public <O extends StructOp> O allocate(Type<O> type) {
@@ -39,7 +37,7 @@ public abstract class CodeBase {
 				type.data(code.getGenerator()).getAllocation());
 
 
-		result.allocated(code, NO_ENCLOSING);
+		result.allocated(code, null, true);
 
 		return result;
 	}
@@ -51,7 +49,7 @@ public abstract class CodeBase {
 		final DataOp<O> result = writer().allocatePtr(
 				type.data(code.getGenerator()).getAllocation());
 
-		result.allocated(code, NO_ENCLOSING);
+		result.allocated(code, null, true);
 
 		return result;
 	}

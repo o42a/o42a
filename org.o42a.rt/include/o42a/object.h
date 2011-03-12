@@ -335,6 +335,8 @@ typedef struct o42a_obj_data {
  */
 typedef struct o42a_obj_stype {
 
+	O42A_HEADER;
+
 	/** Object data. */
 	o42a_obj_data_t data;
 
@@ -432,6 +434,8 @@ typedef const struct o42a_obj_overrider {
  * Object type generated at run-time.
  */
 typedef struct o42a_obj_rtype {
+
+	O42A_HEADER;
 
 	/** Object data. */
 	o42a_obj_data_t data;

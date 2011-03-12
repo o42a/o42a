@@ -109,7 +109,7 @@ enum o42a_data_types {
 
 typedef const struct o42a_dbg_type_info o42a_dbg_type_info_t;
 
-typedef struct o42a_dbg_header {
+typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 	uint32_t flags;
 
@@ -121,7 +121,7 @@ typedef struct o42a_dbg_header {
 
 	o42a_rptr_t enclosing;
 
-} __attribute__ ((packed)) o42a_dbg_header_t;
+} o42a_dbg_header_t;
 
 
 #include "o42a/debug.h"

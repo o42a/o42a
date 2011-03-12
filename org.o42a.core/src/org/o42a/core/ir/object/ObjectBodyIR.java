@@ -112,6 +112,22 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return this.methodsIR;
 	}
 
+	public final RelPtrRec objectType() {
+		return this.objectType;
+	}
+
+	public final RelPtrRec ancestorBody() {
+		return this.ancestorBody;
+	}
+
+	public final AnyPtrRec methods() {
+		return this.methods;
+	}
+
+	public final Int32rec flags() {
+		return this.flags;
+	}
+
 	public final ObjectBodyIR derive(ObjectIR inheritantIR) {
 		return new ObjectBodyIR(inheritantIR, getAscendant());
 	}
@@ -273,6 +289,22 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return getType().getAscendant();
 		}
 
+		public final DataOp<RelOp> objectType(Code code) {
+			return writer().relPtr(code, getType().objectType());
+		}
+
+		public final DataOp<RelOp> ancestorBody(Code code) {
+			return writer().relPtr(code, getType().ancestorBody());
+		}
+
+		public final DataOp<AnyOp> methods(Code code) {
+			return writer().ptr(code, getType().methods());
+		}
+
+		public final DataOp<Int32op> flags(Code code) {
+			return writer().int32(code, getType().flags());
+		}
+
 		public final ObjOp op(
 				CodeBuilder builder,
 				Obj ascendant,
@@ -280,19 +312,15 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return new ObjOp(builder, this, ascendant, precision);
 		}
 
-		public final ObjectType.Op objectType(Code code) {
+		public final ObjectType.Op loadObjectType(Code code) {
 
-			final DataOp<RelOp> bodyHeader = toRel(code);
-			final AnyOp dataPtr = bodyHeader.load(code).offset(code, this);
+			final AnyOp objectTypePtr =
+				objectType(code).load(code).offset(code, this);
 
-			return dataPtr.to(code, OBJECT_TYPE);
+			return objectTypePtr.to(code, OBJECT_TYPE);
 		}
 
-		public final DataOp<RelOp> ancestorBody(Code code) {
-			return writer().relPtr(code, getType().ancestorBody);
-		}
-
-		public final ObjectOp ancestor(CodeBuilder builder, Code code) {
+		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
 
 			final TypeRef ancestorRef = getAscendant().getAncestor();
 			final Obj ancestor;
@@ -303,9 +331,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				ancestor = ancestorRef.getType();
 			}
 
-			final RelOp ancestorBody =
-				writer().relPtr(code, getType().ancestorBody).load(code);
-			final AnyOp ancestorBodyPtr = ancestorBody.offset(code, this);
+			final AnyOp ancestorBodyPtr =
+				ancestorBody(code).load(code).offset(code, this);
 
 			return anonymousObject(
 					builder,
@@ -313,10 +340,10 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 					ancestor);
 		}
 
-		public final ObjectMethodsIR.Op methods(Code code) {
+		public final ObjectMethodsIR.Op loadMethods(Code code) {
 
 			final AnyOp metaPtr =
-				writer().ptr(code, getType().methods).load(code);
+				methods(code).load(code);
 
 			return metaPtr.to(code, getType().getMethodsIR());
 		}

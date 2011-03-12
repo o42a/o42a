@@ -50,7 +50,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 	public void fill(FieldInfoType instance) {
 
 		final Data<?> fieldData = getFieldData();
-		final Type<?> enclosing = enclosingNonEmbedded(getFieldData());
+		final Type<?> enclosing = getFieldData().getEnclosing();
 		final Generator generator = instance.getGenerator();
 		final Debug debug = generator;
 
@@ -61,7 +61,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		instance.enclosingTypeInfo().setValue(
 				debug.typeInfo(enclosing).pointer(generator).toAny());
 
-		final CodeId fieldName = fieldName(fieldData);
+		final CodeId fieldName = fieldData.getId();
 
 		debug.setName(
 				instance.name(),
@@ -78,32 +78,6 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 			instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
 		}
-	}
-
-	static Type<?> enclosingNonEmbedded(Data<?> fieldData) {
-
-		Type<?> enclosing = fieldData.getEnclosing();
-
-		while (enclosing.isEmbedded()) {
-			enclosing =
-				enclosing.data(fieldData.getGenerator()).getEnclosing();
-		}
-
-		return enclosing;
-	}
-
-	static CodeId fieldName(Data<?> fieldData) {
-
-		final Type<?> enclosing = fieldData.getEnclosing();
-
-		if (!enclosing.isEmbedded()) {
-			return fieldData.getId();
-		}
-
-		final CodeId enclosingName =
-			fieldName(enclosing.data(fieldData.getGenerator()));
-
-		return enclosingName.sub(fieldData.getId());
 	}
 
 	public static final class Op extends StructOp {

@@ -94,7 +94,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 			return (ObjectType) super.getType();
 		}
 
-		public final ObjectDataType.Op data(Code code) {
+		public final ObjectDataType.Op objectData(Code code) {
 			return writer().struct(code, getType().objectData());
 		}
 

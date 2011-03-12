@@ -25,7 +25,6 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.Type;
-import org.o42a.util.ArrayUtil;
 
 
 public abstract class StructOp implements PtrOp {
@@ -41,15 +40,12 @@ public abstract class StructOp implements PtrOp {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp[] enclosing) {
-
-		final StructOp[] nestedEnclosing = ArrayUtil.append(enclosing, this);
-
+	public void allocated(Code code, StructOp enclosing, boolean stack) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
 			final DataOp<?> fieldOp = writer().field(code, field);
 
-			fieldOp.allocated(code, nestedEnclosing);
+			fieldOp.allocated(code, this, stack);
 		}
 	}
 
