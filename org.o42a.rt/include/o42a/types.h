@@ -24,6 +24,13 @@
 #include <stdint.h>
 
 
+#ifndef __cplusplus
+#ifndef offsetof
+#define offsetof(TYPE, MEMBER)  __builtin_offsetof (TYPE, MEMBER)
+#endif
+#endif
+
+
 /** Relative pointer. */
 typedef int32_t o42a_rptr_t;
 

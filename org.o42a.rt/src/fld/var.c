@@ -47,7 +47,7 @@ void o42a_fld_var_inherit(o42a_obj_ctable_t *const ctable) {
 
 	if (overrider) {// Field is overridden.
 		if (!o42a_obj_ascendant_of_type(
-				&ctable->ancestor_type->data,
+				&ctable->ancestor_type->type.data,
 				overrider->defined_in)) {
 			// The body overrider defined in isn't present in ancestor
 			// and thus not overridden there.

@@ -453,28 +453,32 @@ typedef struct o42a_obj_rtype {
  */
 typedef union o42a_obj_type {
 
-	O42A_HEADER;
+	struct {
 
-	/**
-	 * Object data.
-	 *
-	 * Always presents.
-	 */
-	o42a_obj_data_t data;
+		O42A_HEADER;
+
+		/**
+		 * Object data.
+		 *
+		 * Always presents.
+		 */
+		o42a_obj_data_t data;
+
+	} type;
 
 	/**
 	 * Static object type.
 	 *
 	 * Presents if !(header.flags & O24A_OBJ_RT).
 	 */
-	o42a_obj_stype_t obj_stype;
+	o42a_obj_stype_t stype;
 
 	/**
 	 * Run-time object type.
 	 *
 	 * Presents if (header.flags & O24A_OBJ_RT).
 	 */
-	o42a_obj_rtype_t obj_rtype;
+	o42a_obj_rtype_t rtype;
 
 } o42a_obj_type_t;
 
@@ -582,7 +586,7 @@ extern "C" {
  *
  * \return object type pointer.
  */
-o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t*);
+o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *);
 
 /**
  * Retrieves object ancestor's body.
@@ -591,7 +595,7 @@ o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t*);
  *
  * \return ancestor body pointer.
  */
-o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t*);
+o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t *);
 
 /**
  * Extracts object's static type.
@@ -601,7 +605,7 @@ o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t*);
  * \return either type itself (if it's static) or sample type (if type is
  * run-time generated).
  */
-o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t*);
+o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t *);
 
 /**
  * Retrieves object from it's data.
@@ -610,7 +614,7 @@ o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t*);
  *
  * \return pointer to object's main body.
  */
-o42a_obj_body_t *o42a_obj_by_data(const o42a_obj_data_t*);
+o42a_obj_body_t *o42a_obj_by_data(const o42a_obj_data_t *);
 
 /**
  * Retrieves object ascendant's descriptors.
@@ -619,7 +623,7 @@ o42a_obj_body_t *o42a_obj_by_data(const o42a_obj_data_t*);
  *
  * \return pointer to the first element of ascendant descriptors array.
  */
-o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t*);
+o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t *);
 
 /**
  * Retrieves object sample's descriptors.
@@ -628,7 +632,7 @@ o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t*);
  *
  * \return pointer to the first element of sample descriptors array.
  */
-o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t*);
+o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *);
 
 /**
  * Retrieves field descriptors.
@@ -637,7 +641,7 @@ o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t*);
  *
  * \return pointer to the first element of the field descriptors array.
  */
-o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t*);
+o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t *);
 
 /**
  * Retrieves field override descriptors.
@@ -646,7 +650,7 @@ o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t*);
  *
  * \return pointer to the first element of the field override descriptors array.
  */
-o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_stype_t*);
+o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_stype_t *);
 
 /**
  * Retrieves object body corresponding to the given ascendant.
@@ -655,7 +659,7 @@ o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_stype_t*);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t*);
+o42a_obj_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
 
 /**
  * Retrieves object body corresponding to the given sample.
@@ -664,11 +668,11 @@ o42a_obj_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t*);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_obj_sample_body(const o42a_obj_sample_t*);
+o42a_obj_t *o42a_obj_sample_body(const o42a_obj_sample_t *);
 
 o42a_obj_overrider_t *o42a_obj_field_overrider(
-		const o42a_obj_stype_t*,
-		const o42a_obj_field_t*);
+		const o42a_obj_stype_t *,
+		const o42a_obj_field_t *);
 
 /**
  * Searches for ascendant descriptor of the given type.
@@ -679,8 +683,8 @@ o42a_obj_overrider_t *o42a_obj_field_overrider(
  * \return ascendant descriptor or NULL if not found.
  */
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
-		const o42a_obj_data_t *const,
-		const o42a_obj_stype_t *const);
+		const o42a_obj_data_t *,
+		const o42a_obj_stype_t *);
 
 /**
  * Searches for the object's body of the given type.
@@ -691,7 +695,7 @@ const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
  * \return object body pointer corresponding to the given type or NULL if object
  * is not derived from type.
  */
-o42a_obj_body_t *o42a_obj_cast(o42a_obj_t*, const o42a_obj_stype_t*);
+o42a_obj_body_t *o42a_obj_cast(o42a_obj_t *, const o42a_obj_stype_t *);
 
 /**
  * Instantiates a new object.
@@ -700,22 +704,22 @@ o42a_obj_body_t *o42a_obj_cast(o42a_obj_t*, const o42a_obj_stype_t*);
  *
  * \return pointer to object's body of the sample type.
  */
-o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t*);
+o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
 
-o42a_bool_t o42a_obj_cond_false(o42a_obj_t*);
+o42a_bool_t o42a_obj_cond_false(o42a_obj_t *);
 
-o42a_bool_t o42a_obj_cond_true(o42a_obj_t*);
+o42a_bool_t o42a_obj_cond_true(o42a_obj_t *);
 
-void o42a_obj_val_false(o42a_val_t*, o42a_obj_t*);
+void o42a_obj_val_false(o42a_val_t *, o42a_obj_t *);
 
-void o42a_obj_val_unknown(o42a_val_t*, o42a_obj_t*);
+void o42a_obj_val_unknown(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object reference function, which always returns NULL.
  *
  * This can be used e.g. to refer void object ancestor.
  */
-o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t*);
+o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *);
 
 
 #ifdef __cplusplus
