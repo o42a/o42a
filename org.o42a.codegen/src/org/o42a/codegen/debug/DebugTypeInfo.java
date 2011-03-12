@@ -20,7 +20,6 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.debug.DebugFieldInfo.DEBUG_FIELD_INFO_TYPE;
-import static org.o42a.codegen.debug.DebugFieldInfo.fieldName;
 
 import java.security.SecureRandom;
 
@@ -116,16 +115,10 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 			if (fieldInstance.isDebugInfo()) {
 				return;
 			}
-			if (fieldInstance.isEmbedded()) {
-				for (Data<?> f : fieldInstance.iterate(data.getGenerator())) {
-					addFieldInfo(data, f);
-				}
-				return;
-			}
 		}
 
 		data.addInstance(
-				data.getGenerator().id("field").detail(fieldName(field)),
+				data.getGenerator().id("field").detail(field.getId()),
 				DEBUG_FIELD_INFO_TYPE,
 				new DebugFieldInfo(field));
 	}

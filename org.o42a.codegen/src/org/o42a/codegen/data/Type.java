@@ -55,14 +55,6 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 		return false;
 	}
 
-	public final boolean isEmbedded() {
-		return getEmbeddedInto() != null;
-	}
-
-	public Type<?> getEmbeddedInto() {
-		return null;
-	}
-
 	public boolean isDebugInfo() {
 		return false;
 	}
@@ -154,16 +146,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 		codeId(generator);// Refine code id.
 
-		final Type<?> embeddedInto = getEmbeddedInto();
-
-		if (embeddedInto != null) {
-			if (data.getEnclosing().getType() != embeddedInto) {
-				throw new IllegalStateException(
-						"Type " + this + " is embedded into "
-						+ embeddedInto + ", but is allocated inside "
-						+ data.getInstance());
-			}
-		} else if (generator.isDebug() && !isDebugInfo()) {
+		if (generator.isDebug() && !isDebugInfo()) {
 			data.addInstance(
 					generator.id("__o42a_dbg_header__"),
 					DEBUG_HEADER_TYPE,
@@ -251,7 +234,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 		@Override
 		public Type<?> getEnclosing() {
-			return getInstance().getEmbeddedInto();
+			return null;
 		}
 
 		@Override

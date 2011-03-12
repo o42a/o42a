@@ -19,11 +19,6 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugFieldInfo.enclosingNonEmbedded;
-import static org.o42a.codegen.debug.DebugFieldInfo.fieldName;
-
-import java.util.Arrays;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
@@ -76,15 +71,14 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			instance.enclosing().setNull();
 		} else {
 
-			final Type<?> enclosing = enclosingNonEmbedded(data);
-			final CodeId fieldName = DebugFieldInfo.fieldName(data);
+			final CodeId fieldName = data.getId();
 
 			debug.setName(
 					instance.name(),
 					generator.id("DEBUG").sub("field_name").sub(fieldName),
 					fieldName.toString());
 			instance.enclosing().setValue(
-					enclosing.pointer(generator).relativeTo(
+					data.getEnclosing().pointer(generator).relativeTo(
 							data.getPointer()));
 		}
 
@@ -126,22 +120,20 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		@Override
-		public void allocated(Code code, StructOp[] enclosing) {
+		public void allocated(Code code, StructOp enclosing, boolean stack) {
 
 			final Generator generator = code.getGenerator();
 			final Debug debug = generator;
 
 			flags(code).store(code, code.int32(DBG_HDR_STACK));
 
-			if (enclosing.length == 0) {
+			if (enclosing == null) {
 				// TODO Put last comment here:
 				name(code).store(code, code.nullPtr());
 				enclosing(code).store(code, code.nullRelPtr());
 			} else {
 
-				final StructOp enclosingNonEmbedded =
-					enclosingNonEmbedded(getType().getType(), enclosing);
-				final CodeId fieldName = fieldName(getType().data(generator));
+				final CodeId fieldName = getType().codeId(generator);
 
 				name(code).store(
 						code,
@@ -152,7 +144,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 				enclosing(code).store(
 						code,
 						getType().pointer(generator).relativeTo(
-								enclosingNonEmbedded.getType().pointer(
+								enclosing.getType().pointer(
 										generator)).op(code));
 			}
 
@@ -163,32 +155,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 					code,
 					typeInfo.pointer(generator).toAny().op(code));
 
-			super.allocated(code, enclosing);
-		}
-
-		private static StructOp enclosingNonEmbedded(
-				Type<?> type,
-				StructOp[] enclosing) {
-
-			for (int i = enclosing.length - 1; i >= 0; --i) {
-
-				final StructOp enc = enclosing[i];
-				final Type<?> encType = enc.getType().getType();
-
-				assert type == encType :
-					"Wrong enclosing type: " + encType
-					+ ", but " + type + " expected";
-
-				if (!encType.isEmbedded()) {
-					return enclosing[i];
-				}
-
-				type = encType;
-			}
-
-			throw new IllegalStateException(
-					"All enclosing structures are embedded: " +
-					Arrays.toString(enclosing));
+			super.allocated(code, enclosing, stack);
 		}
 
 	}
@@ -248,9 +215,9 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		protected void allocate(SubData<Op> data) {
 			this.flags = data.addInt32("flags");
 			this.typeCode = data.addInt32("type_code");
-			this.enclosing = data.addRelPtr("enclosing");
 			this.name = data.addPtr("name");
 			this.typeInfo = data.addPtr("type_info");
+			this.enclosing = data.addRelPtr("enclosing");
 		}
 
 	}

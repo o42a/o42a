@@ -169,7 +169,7 @@ final class PathTargetAncestor extends Ex {
 				ref.ref.op(host()).target(code, exit).materialize(code, exit);
 			final ObjectTypeOp ancestorData =
 				object.objectType(code).ptr()
-				.data(code)
+				.objectData(code)
 				.ancestorType(code)
 				.load(code)
 				.op(getBuilder(), object.getPrecision());

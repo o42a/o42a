@@ -33,7 +33,7 @@ public abstract class Func implements PtrOp {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp[] enclosing) {
+	public void allocated(Code code, StructOp enclosing, boolean stack) {
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class ObjectTypeOp extends IROp {
 	}
 
 	public final AnyOp start(Code code) {
-		return ptr().data(code).startPtr(code);
+		return ptr().objectData(code).startPtr(code);
 	}
 
 	public final ObjOp objectOfType(Code code, Obj type) {
@@ -66,7 +66,7 @@ public class ObjectTypeOp extends IROp {
 	final void writeValue(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
-			ptr().data(code).valueFunc(code).load(code);
+			ptr().objectData(code).valueFunc(code).load(code);
 
 		function.call(code, result, body(code, body));
 		code.dumpValue("Value", result);
@@ -75,7 +75,7 @@ public class ObjectTypeOp extends IROp {
 	final void writeRequirement(Code code, CodePos exit, ObjectOp body) {
 
 		final ObjectCondFunc function =
-			ptr().data(code).requirementFunc(code).load(code);
+			ptr().objectData(code).requirementFunc(code).load(code);
 
 		function.call(code, body(code, body)).go(code, code.tail(), exit);
 	}
@@ -83,7 +83,7 @@ public class ObjectTypeOp extends IROp {
 	final void writeClaim(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
-			ptr().data(code).claimFunc(code).load(code);
+			ptr().objectData(code).claimFunc(code).load(code);
 
 		function.call(code, result, body(code, body));
 	}
@@ -94,7 +94,7 @@ public class ObjectTypeOp extends IROp {
 			ObjectOp body) {
 
 		final ObjectCondFunc function =
-			ptr().data(code).conditionFunc(code).load(code);
+			ptr().objectData(code).conditionFunc(code).load(code);
 
 		function.call(code, body(code, body)).go(code, code.tail(), exit);
 	}
@@ -102,7 +102,7 @@ public class ObjectTypeOp extends IROp {
 	final void writeProposition(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
-			ptr().data(code).propositionFunc(code).load(code);
+			ptr().objectData(code).propositionFunc(code).load(code);
 
 		function.call(code, result, body(code, body));
 	}
@@ -160,7 +160,7 @@ public class ObjectTypeOp extends IROp {
 	}
 
 	private final AnyOp mainBody(Code code) {
-		return ptr().data(code).objectPtr(code);
+		return ptr().objectData(code).objectPtr(code);
 	}
 
 }

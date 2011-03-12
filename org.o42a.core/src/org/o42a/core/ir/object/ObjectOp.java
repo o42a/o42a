@@ -52,18 +52,18 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	private final ObjectPrecision precision;
-	private final ObjectTypeOp data;
+	private final ObjectTypeOp objectType;
 
 	ObjectOp(CodeBuilder builder, PtrOp ptr, ObjectPrecision precision) {
 		super(builder, ptr);
 		this.precision = precision;
-		this.data = null;
+		this.objectType = null;
 	}
 
-	ObjectOp(PtrOp ptr, ObjectTypeOp data) {
-		super(data.getBuilder(), ptr);
-		this.data = data;
-		this.precision = data.getPrecision();
+	ObjectOp(PtrOp ptr, ObjectTypeOp objectType) {
+		super(objectType.getBuilder(), ptr);
+		this.objectType = objectType;
+		this.precision = objectType.getPrecision();
 	}
 
 	public abstract Obj getWellKnownType();
@@ -87,7 +87,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	public final void writeLogicalValue(Code code, CodePos exit) {
 
 		final ObjectTypeOp objectType = objectType(code);
-		final ValOp value = objectType.ptr().data(code).value(code);
+		final ValOp value = objectType.ptr().objectData(code).value(code);
 		final CondBlk indefinite = value.indefinite(code).branch(
 				code,
 				"cond_indefinite",
@@ -126,8 +126,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public final ValOp writeValue(Code code, CodePos exit, ValOp result) {
 
-		final ObjectTypeOp data = objectType(code);
-		final ValOp value = data.ptr().data(code).value(code);
+		final ValOp value = objectType(code).ptr().objectData(code).value(code);
 		final CondBlk indefinite = value.indefinite(code).branch(
 				code,
 				"val_indefinite",
@@ -227,10 +226,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	public final ObjectTypeOp objectType(Code code) {
-		if (this.data != null) {
-			return this.data;
+		if (this.objectType != null) {
+			return this.objectType;
 		}
-		return body(code).objectType(code).op(getBuilder(), getPrecision());
+		return body(code).loadObjectType(code).op(getBuilder(), getPrecision());
 	}
 
 	public final BoolOp hasAncestor(Code code) {
@@ -239,11 +238,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	public final ObjectOp ancestor(Code code) {
-		return body(code).ancestor(getBuilder(), code);
+		return body(code).loadAncestor(getBuilder(), code);
 	}
 
 	public final ObjectMethodsIR.Op methods(Code code) {
-		return body(code).methods(code);
+		return body(code).loadMethods(code);
 	}
 
 	@Override
@@ -328,7 +327,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	protected final ObjectTypeOp cachedData() {
-		return this.data;
+		return this.objectType;
 	}
 
 	private CodePtr<BinaryFunc> castFunc() {
