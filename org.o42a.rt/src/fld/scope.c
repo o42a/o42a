@@ -36,7 +36,7 @@ void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 				ctable->object_type->data.owner_type;
 
 		if (owner_type) {
-			to->object = o42a_obj_by_data(&owner_type->data);
+			to->object = o42a_obj_by_data(&owner_type->type.data);
 
 			o42a_debug_mem_name("Updated scope: ", to->object);
 
