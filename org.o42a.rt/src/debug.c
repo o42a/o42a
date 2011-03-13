@@ -17,8 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef NDEBUG
-
 #include "o42a/debug.h"
 
 #include <assert.h>
@@ -537,4 +535,41 @@ void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *frame) {
 }
 
 
-#endif
+void o42a_dbg_copy_header(
+		const o42a_dbg_header_t *from,
+		o42a_dbg_header_t *to,
+		const o42a_dbg_header_t *const enclosing) {
+	to->flags = from->flags;
+	to->type_code = from->type_code;
+	to->name = from->name;
+	to->type_info = from->type_info;
+	if (enclosing) {
+		to->enclosing = enclosing - to;
+	} else {
+		to->enclosing = 0;
+	}
+
+	const o42a_dbg_type_info_t *const type_info = from->type_info;
+	size_t field_num = type_info->field_num;
+
+	if (!field_num) {
+		return;
+	}
+
+	const o42a_dbg_field_info_t *field = type_info->fields;
+
+	for (;;) {
+
+		const o42a_dbg_header_t *const f =
+				(o42a_dbg_header_t *) ((void*) from) + field->offset;
+		o42a_dbg_header_t *const t =
+				(o42a_dbg_header_t *) ((void*) to) + field->offset;
+
+		o42a_dbg_copy_header(f, t, to);
+
+		if (!(--field_num)) {
+			break;
+		}
+		++field;
+	}
+}

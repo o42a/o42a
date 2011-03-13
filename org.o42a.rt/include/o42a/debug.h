@@ -145,6 +145,12 @@ void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *);
 void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *);
 
 
+void o42a_dbg_copy_header(
+		const o42a_dbg_header_t *,
+		o42a_dbg_header_t *,
+		const o42a_dbg_header_t *);
+
+
 #ifdef __cplusplus
 }
 #endif

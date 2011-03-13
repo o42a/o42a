@@ -59,8 +59,7 @@ include $(default_mk)
 includes += -I include
 CFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused $(includes)
 
-objects = $(srcdir)/debug.o
-objects += $(srcdir)/types.o
+objects = $(srcdir)/types.o
 objects += $(srcdir)/string.o
 objects += $(srcdir)/error.o
 objects += $(srcdir)/integer.o
@@ -98,6 +97,7 @@ $(release_so_lib) :
 	$(LD) $(LDFLAGS) -shared -o $@ $+
 
 # Build debug shared library.
+$(debug_so_lib) : $(srcdir)/debug.o
 $(debug_so_lib) : $(subst .o,.dbg.o,$(objects))
 $(debug_so_lib) :
 	mkdir -p $(target_dir)
@@ -105,10 +105,10 @@ $(debug_so_lib) :
 
 
 # Compile individual files.
-$(srcdir)/debug.*.o : $(headersdir)/types.h
-$(srcdir)/debug.*.o : $(headersdir)/debug.h
-$(srcdir)/debug.%.o : $(srcdir)/debug.c
-	$(call compile)
+$(srcdir)/debug.o : $(headersdir)/types.h
+$(srcdir)/debug.o : $(headersdir)/debug.h
+$(srcdir)/debug.o : $(srcdir)/debug.c
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(debug_flags) -o $@ $<
 
 $(srcdir)/types.*.o : $(headersdir)/types.h
 $(srcdir)/types.*.o : $(headersdir)/debug.h
