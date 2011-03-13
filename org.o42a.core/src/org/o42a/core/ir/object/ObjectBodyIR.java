@@ -158,23 +158,14 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	}
 
 	@Override
-	public String toString() {
-		return print(" body IR");
-	}
-
-	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		if (this.objectIRStruct.getObject() == this.ascendant) {
-			return this.objectIRStruct.codeId(factory).setLocal(
-					factory.id().detail("main_body"));
-		}
 
 		final ObjectIR ascendantIR =
 			this.ascendant.ir(this.objectIRStruct.getGenerator());
+		final CodeId localId = factory.id().detail("body").detail(
+				ascendantIR.getStruct().codeId(factory));
 
-		return this.objectIRStruct.codeId(factory).setLocal(
-				factory.id().detail("body").detail(
-						ascendantIR.getStruct().codeId(factory)));
+		return this.objectIRStruct.codeId(factory).setLocal(localId);
 	}
 
 	@Override
@@ -209,15 +200,6 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		this.methods.setValue(
 				getMethodsIR().data(generator).getPointer().toAny());
-	}
-
-	String print(String suffix) {
-		if (isMain()) {
-			return this.objectIRStruct.getObject() + suffix;
-		}
-
-		return ("(" + this.ascendant + ") "
-				+ this.objectIRStruct.getObject() + suffix);
 	}
 
 	final List<Fld> getDeclaredFields() {

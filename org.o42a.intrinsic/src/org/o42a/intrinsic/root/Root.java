@@ -19,13 +19,11 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -34,11 +32,9 @@ import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -169,89 +165,9 @@ public class Root extends Obj {
 		return ascendantDefinitions;
 	}
 
-	private static final class VoidField extends ObjectField {
-
-		VoidField(Root root) {
-			super(fieldDeclaration(
-					root,
-					root.distribute(),
-					MemberId.memberName("void")));
-			setScopeArtifact(getContext().getVoid());
-		}
-
-		private VoidField(Container enclosingContainer, VoidField sample) {
-			super(enclosingContainer, sample);
-		}
-
-		@Override
-		public Obj getArtifact() {
-			return getContext().getVoid();
-		}
-
-		@Override
-		public String toString() {
-			return "$$void";
-		}
-
-		@Override
-		protected VoidField propagate(Scope enclosingScope) {
-			return new VoidField(enclosingScope.getContainer(), this);
-		}
-
-	}
-
-	private static final class RootScope extends ObjectScope {
-
-		RootScope(LocationInfo location, Distributor enclosing) {
-			super(location, enclosing);
-		}
-
-		@Override
-		public boolean contains(Scope other) {
-			return true;
-		}
-
-		@Override
-		protected ScopeIR createIR(Generator generator) {
-			return new IR(generator, this);
-		}
-
-	}
-
-	private static final class IR extends ScopeIR {
-
-		private final CodeId id;
-
-		IR(Generator generator, Scope scope) {
-			super(generator, scope);
-			this.id = generator.topId();
-		}
-
-		@Override
-		public CodeId getId() {
-			return this.id;
-		}
-
-		@Override
-		public void allocate() {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			object.ir(getGenerator()).allocate();
-		}
-
-		@Override
-		protected void targetAllocated() {
-		}
-
-		@Override
-		protected HostOp createOp(CodeBuilder builder, Code code) {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			return object.ir(getGenerator()).op(builder, code);
-		}
-
+	@Override
+	protected ObjectIR createIR(Generator generator) {
+		return new IR(generator, this);
 	}
 
 	private static final class RootAncestor extends Ex {
@@ -295,6 +211,26 @@ public class Root extends Obj {
 		@Override
 		public String toString() {
 			return "void";
+		}
+
+	}
+
+	private static final class IR extends ObjectIR {
+
+		IR(Generator generator, Root root) {
+			super(generator, root);
+		}
+
+		@Override
+		protected void allocateData() {
+
+			final IntrinsicsIR intrinsicsIR =
+				new IntrinsicsIR((Root) getObject());
+
+			getGenerator().newGlobal().export().struct(intrinsicsIR);
+			if (getGenerator().isDebug()) {
+				getGenerator().newGlobal().export().struct(new DebugIR());
+			}
 		}
 
 	}

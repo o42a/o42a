@@ -39,7 +39,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 
 	public static final ObjectType OBJECT_TYPE = new ObjectType();
 
-	private ObjectDataType objectData;
+	private ObjectDataType data;
 	private RelList<FieldDescIR> fields;
 	private RelList<OverriderDescIR> overriders;
 	private Int32rec mainBodyLayout;
@@ -47,8 +47,8 @@ public class ObjectType extends Type<ObjectType.Op> {
 	private ObjectType() {
 	}
 
-	public final ObjectDataType objectData() {
-		return this.objectData;
+	public final ObjectDataType data() {
+		return this.data;
 	}
 
 	public final RelList<FieldDescIR> fields() {
@@ -75,8 +75,8 @@ public class ObjectType extends Type<ObjectType.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		this.objectData = data.addInstance(
-				data.getGenerator().id("object_data"),
+		this.data = data.addInstance(
+				data.getGenerator().id("data"),
 				OBJECT_DATA_TYPE);
 		this.fields = new Fields().allocate(data, "fields");
 		this.overriders = new Overriders().allocate(data, "overriders");
@@ -94,8 +94,8 @@ public class ObjectType extends Type<ObjectType.Op> {
 			return (ObjectType) super.getType();
 		}
 
-		public final ObjectDataType.Op objectData(Code code) {
-			return writer().struct(code, getType().objectData());
+		public final ObjectDataType.Op data(Code code) {
+			return writer().struct(code, getType().data());
 		}
 
 		public final ObjectTypeOp op(

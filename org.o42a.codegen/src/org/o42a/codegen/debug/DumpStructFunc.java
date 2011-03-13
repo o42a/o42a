@@ -30,8 +30,8 @@ import org.o42a.codegen.code.op.Int32op;
 
 final class DumpStructFunc extends Func {
 
-	public static final Signature<DumpStructFunc> DUMP_STRUCT_SIGNATURE =
-		new DumpStructSignature();
+	public static final Signature<DumpStructFunc> DEBUG_DUMP_STRUCT =
+		new DumpStruct();
 
 	private DumpStructFunc(FuncCaller caller) {
 		super(caller);
@@ -45,10 +45,9 @@ final class DumpStructFunc extends Func {
 				depth);
 	}
 
-	private static final class DumpStructSignature
-			extends Signature<DumpStructFunc> {
+	private static final class DumpStruct extends Signature<DumpStructFunc> {
 
-		DumpStructSignature() {
+		DumpStruct() {
 			super(
 					"void",
 					"DEBUG.DumpStructF",

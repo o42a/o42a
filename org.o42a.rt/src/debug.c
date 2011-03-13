@@ -69,7 +69,7 @@ static inline void dbg_print_prefix() {
 	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name);
 }
 
-void o42a_dbg(const char *const message) {
+void o42a_dbg_print(const char *const message) {
 	dbg_print_prefix();
 	fputs(message, stderr);
 }
@@ -535,16 +535,58 @@ void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *frame) {
 }
 
 
+void o42a_dbg_fill_header(
+		const o42a_dbg_type_info_t *const type_info,
+		o42a_dbg_header_t *const header,
+		const o42a_dbg_header_t *const enclosing) {
+	header->flags = 0;
+	header->type_code = type_info->type_code;
+	header->name = type_info->name;
+	header->type_info = type_info;
+	if (enclosing) {
+		header->enclosing = ((void*) enclosing) - ((void*) header);
+	} else {
+		header->enclosing = 0;
+	}
+
+	size_t field_num = type_info->field_num;
+
+	if (!field_num) {
+		return;
+	}
+
+	const o42a_dbg_field_info_t *field = type_info->fields;
+
+	for (;;) {
+
+		const o42a_dbg_type_info_t *const field_type_info =
+				field->type_info;
+
+		if (field_type_info) {
+
+			o42a_dbg_header_t *const to =
+					(o42a_dbg_header_t *) ((void*) header) + field->offset;
+
+			o42a_dbg_fill_header(field_type_info, to, header);
+		}
+
+		if (!(--field_num)) {
+			break;
+		}
+		++field;
+	}
+}
+
 void o42a_dbg_copy_header(
-		const o42a_dbg_header_t *from,
-		o42a_dbg_header_t *to,
+		const o42a_dbg_header_t *const from,
+		o42a_dbg_header_t *const to,
 		const o42a_dbg_header_t *const enclosing) {
 	to->flags = from->flags;
 	to->type_code = from->type_code;
 	to->name = from->name;
 	to->type_info = from->type_info;
 	if (enclosing) {
-		to->enclosing = enclosing - to;
+		to->enclosing = ((void*) enclosing) - ((void*) to);
 	} else {
 		to->enclosing = 0;
 	}
@@ -560,12 +602,18 @@ void o42a_dbg_copy_header(
 
 	for (;;) {
 
-		const o42a_dbg_header_t *const f =
-				(o42a_dbg_header_t *) ((void*) from) + field->offset;
-		o42a_dbg_header_t *const t =
-				(o42a_dbg_header_t *) ((void*) to) + field->offset;
+		const o42a_dbg_type_info_t *const field_type_info =
+				field->type_info;
 
-		o42a_dbg_copy_header(f, t, to);
+		if (field_type_info) {
+
+			const o42a_dbg_header_t *const f =
+					(o42a_dbg_header_t *) ((void*) from) + field->offset;
+			o42a_dbg_header_t *const t =
+					(o42a_dbg_header_t *) ((void*) to) + field->offset;
+
+			o42a_dbg_copy_header(f, t, to);
+		}
 
 		if (!(--field_num)) {
 			break;

@@ -69,7 +69,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	}
 
 	public final ObjectDataType getObjectData() {
-		return this.instance.objectData();
+		return this.instance.data();
 	}
 
 	public final FieldDescIR fieldDescIR(MemberKey key) {
@@ -91,7 +91,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	public void fill(ObjectType instance) {
 
 		final Generator generator = instance.getGenerator();
-		final ObjectDataType data = instance.objectData();
+		final ObjectDataType data = instance.data();
 
 		data.object().setValue(
 				getObjectIR().getMainBodyIR().data(generator).getPointer()
@@ -112,7 +112,8 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 	@Override
 	public String toString() {
-		return this.objectIRStruct.mainBodyIR().print(" type IR");
+		return this.objectIRStruct.codeId(getGenerator())
+		.sub("object_data").toString();
 	}
 
 	void allocate(SubData<?> data) {

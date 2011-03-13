@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,67 +19,54 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.StructPtrRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.codegen.data.Type;
 
 
-public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
+public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 
-	private final ObjectBodyIR bodyIR;
-	private StructPtrRec<ObjectType.Op> objectType;
+	public static final RuntimeObjectType RUNTIME_OBJECT_TYPE =
+		new RuntimeObjectType();
 
-	ObjectMethodsIR(ObjectBodyIR bodyIR) {
-		this.bodyIR = bodyIR;
+	private ObjectDataType data;
+	private StructPtrRec<ObjectType.Op> sample;
+
+	private RuntimeObjectType() {
 	}
 
-	public final ObjectIR getObjectIR() {
-		return this.bodyIR.getObjectIR();
+	public final ObjectDataType data() {
+		return this.data;
 	}
 
-	public final ObjectBodyIR getBodyIR() {
-		return this.bodyIR;
+	public final StructPtrRec<ObjectType.Op> sample() {
+		return this.sample;
 	}
 
 	@Override
-	public final Op op(StructWriter writer) {
+	public Op op(StructWriter writer) {
 		return new Op(writer);
 	}
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-
-		final ObjectIR objectIR = this.bodyIR.getObjectIR();
-		final Obj ascendant = this.bodyIR.getAscendant();
-		final CodeId localId = factory.id().detail("methods").detail(
-				ascendant.ir(objectIR.getGenerator()).getId());
-
-		return objectIR.getId().setLocal(localId);
+		return factory.id("RuntimeObjectType");
 	}
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		this.objectType = data.addPtr("object_type", OBJECT_TYPE);
-	}
-
-	@Override
-	protected void fill() {
-
-		final ObjectIR ascendantIR =
-			getBodyIR().getAscendant().ir(getGenerator());
-
-		this.objectType.setValue(
-				ascendantIR.getTypeIR().getObjectType()
-				.data(getGenerator()).getPointer());
+		this.data = data.addInstance(
+				getGenerator().id("data"),
+				OBJECT_DATA_TYPE);
+		this.sample = data.addPtr("sample", OBJECT_TYPE);
 	}
 
 	public static final class Op extends StructOp {
@@ -89,12 +76,12 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		}
 
 		@Override
-		public final ObjectMethodsIR getType() {
-			return (ObjectMethodsIR) super.getType();
+		public final RuntimeObjectType getType() {
+			return (RuntimeObjectType) super.getType();
 		}
 
-		public final DataOp<ObjectType.Op> objectType(Code code) {
-			return writer().ptr(code, getType().objectType);
+		public final ObjectDataType.Op data(Code code) {
+			return writer().struct(code, getType().data());
 		}
 
 	}
