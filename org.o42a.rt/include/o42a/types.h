@@ -63,6 +63,23 @@ enum o42a_data_types {
 };
 
 
+typedef const struct o42a_dbg_type_info o42a_dbg_type_info_t;
+
+typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
+
+	uint32_t flags;
+
+	int32_t type_code;
+
+	const char *name;
+
+	o42a_dbg_type_info_t *type_info;
+
+	o42a_rptr_t enclosing;
+
+} o42a_dbg_header_t;
+
+
 #ifdef NDEBUG
 
 
@@ -111,24 +128,8 @@ enum o42a_data_types {
 
 #define o42a_debug_dump_mem(ptr, depth) o42a_dbg_dump_mem(ptr, depth)
 
-#define o42a_debug_dump_field(ptr, field, depth) o42a_dbg_dump_field(ptr, field, depth)
-
-
-typedef const struct o42a_dbg_type_info o42a_dbg_type_info_t;
-
-typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
-
-	uint32_t flags;
-
-	int32_t type_code;
-
-	const char *name;
-
-	o42a_dbg_type_info_t *type_info;
-
-	o42a_rptr_t enclosing;
-
-} o42a_dbg_header_t;
+#define o42a_debug_dump_field(ptr, field, depth) \
+	o42a_dbg_dump_field(ptr, field, depth)
 
 
 #include "o42a/debug.h"
