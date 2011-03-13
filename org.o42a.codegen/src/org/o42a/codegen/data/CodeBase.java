@@ -37,7 +37,7 @@ public abstract class CodeBase {
 				type.data(code.getGenerator()).getAllocation());
 
 
-		result.allocated(code, null, true);
+		result.allocated(code, null);
 
 		return result;
 	}
@@ -49,7 +49,7 @@ public abstract class CodeBase {
 		final DataOp<O> result = writer().allocatePtr(
 				type.data(code.getGenerator()).getAllocation());
 
-		result.allocated(code, null, true);
+		result.allocated(code, null);
 
 		return result;
 	}

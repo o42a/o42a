@@ -539,7 +539,6 @@ void o42a_dbg_fill_header(
 		const o42a_dbg_type_info_t *const type_info,
 		o42a_dbg_header_t *const header,
 		const o42a_dbg_header_t *const enclosing) {
-	header->flags = 0;
 	header->type_code = type_info->type_code;
 	header->name = type_info->name;
 	header->type_info = type_info;
@@ -581,7 +580,6 @@ void o42a_dbg_copy_header(
 		const o42a_dbg_header_t *const from,
 		o42a_dbg_header_t *const to,
 		const o42a_dbg_header_t *const enclosing) {
-	to->flags = from->flags;
 	to->type_code = from->type_code;
 	to->name = from->name;
 	to->type_info = from->type_info;

@@ -30,7 +30,7 @@ import org.o42a.codegen.code.CondBlk;
 public abstract class BoolOp implements Op {
 
 	@Override
-	public void allocated(Code code, StructOp enclosing, boolean stack) {
+	public void allocated(Code code, StructOp enclosing) {
 	}
 
 	public final CondBlk branch(Code source) {

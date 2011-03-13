@@ -40,12 +40,12 @@ public abstract class StructOp implements PtrOp {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp enclosing, boolean stack) {
+	public void allocated(Code code, StructOp enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
 			final DataOp<?> fieldOp = writer().field(code, field);
 
-			fieldOp.allocated(code, this, stack);
+			fieldOp.allocated(code, this);
 		}
 	}
 

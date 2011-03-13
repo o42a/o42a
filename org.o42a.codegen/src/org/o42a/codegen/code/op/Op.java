@@ -24,6 +24,6 @@ import org.o42a.codegen.code.Code;
 
 public interface Op {
 
-	void allocated(Code code, StructOp enclosing, boolean stack);
+	void allocated(Code code, StructOp enclosing);
 
 }

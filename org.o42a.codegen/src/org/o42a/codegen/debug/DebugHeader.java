@@ -32,10 +32,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 	public static final HeaderType DEBUG_HEADER_TYPE = new HeaderType();
 
-	public static final int DBG_HDR_STATIC = 0x01;
-	public static final int DBG_HDR_STACK = 0x02;
-	public static final int DBG_HDR_COMMENT = 0x04;
-
 	private final Type<?> target;
 
 	public DebugHeader(Type<?> target) {
@@ -56,8 +52,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		final Generator generator = instance.getGenerator();
 		final Debug debug = generator;
 		final Data<?> data = getTarget().data(generator);
-
-		instance.flags().setValue(DBG_HDR_STATIC);
 
 		if (data.getEnclosing() == null) {
 
@@ -99,10 +93,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			return (HeaderType) super.getType();
 		}
 
-		public final DataOp<Int32op> flags(Code code) {
-			return writer().int32(code, getType().flags());
-		}
-
 		public final DataOp<Int32op> typeCode(Code code) {
 			return writer().int32(code, getType().typeCode());
 		}
@@ -120,15 +110,13 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		@Override
-		public void allocated(Code code, StructOp enclosing, boolean stack) {
+		public void allocated(Code code, StructOp enclosing) {
 
 			final Generator generator = code.getGenerator();
 			final Debug debug = generator;
 
-			flags(code).store(code, code.int32(stack ? DBG_HDR_STACK : 0));
-
 			if (enclosing == null) {
-				// TODO Put last comment here:
+				// TODO Put the last comment here:
 				name(code).store(code, code.nullPtr());
 				enclosing(code).store(code, code.nullRelPtr());
 			} else {
@@ -155,18 +143,17 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 					code,
 					typeInfo.pointer(generator).toAny().op(code));
 
-			super.allocated(code, enclosing, stack);
+			super.allocated(code, enclosing);
 		}
 
 	}
 
 	public static final class HeaderType extends Type<Op> {
 
-		private Int32rec flags;
 		private Int32rec typeCode;
+		private RelPtrRec enclosing;
 		private AnyPtrRec name;
 		private AnyPtrRec typeInfo;
-		private RelPtrRec enclosing;
 
 		private HeaderType() {
 		}
@@ -181,12 +168,12 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			return true;
 		}
 
-		public final Int32rec flags() {
-			return this.flags;
-		}
-
 		public final Int32rec typeCode() {
 			return this.typeCode;
+		}
+
+		public final RelPtrRec enclosing() {
+			return this.enclosing;
 		}
 
 		public final AnyPtrRec name() {
@@ -195,10 +182,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 		public final AnyPtrRec typeInfo() {
 			return this.typeInfo;
-		}
-
-		public final RelPtrRec enclosing() {
-			return this.enclosing;
 		}
 
 		@Override
@@ -213,11 +196,10 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.flags = data.addInt32("flags");
 			this.typeCode = data.addInt32("type_code");
+			this.enclosing = data.addRelPtr("enclosing");
 			this.name = data.addPtr("name");
 			this.typeInfo = data.addPtr("type_info");
-			this.enclosing = data.addRelPtr("enclosing");
 		}
 
 	}

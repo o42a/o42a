@@ -25,16 +25,6 @@
 #include <stdio.h>
 
 
-enum o42a_dbg_header_flags {
-
-	O42A_DBG_HDR_STATIC = 0x01,
-
-	O42A_DBG_HDR_STACK = 0x02,
-
-	O42A_DBG_HDR_COMMENT = 0x04
-
-};
-
 typedef struct o42a_dbg_field_info {
 
 	uint32_t data_type;

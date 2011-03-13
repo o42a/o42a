@@ -67,15 +67,13 @@ typedef struct o42a_dbg_type_info o42a_dbg_type_info_t;
 
 typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
-	uint32_t flags;
-
 	int32_t type_code;
+
+	o42a_rptr_t enclosing;
 
 	const char *name;
 
 	const o42a_dbg_type_info_t *type_info;
-
-	o42a_rptr_t enclosing;
 
 } o42a_dbg_header_t;
 
