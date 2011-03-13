@@ -357,8 +357,6 @@ static o42a_obj_rtype_t *propagate_object(
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = adata->start;
 
-	data->all_bodies_layout = adata->all_bodies_layout;
-
 	data->value.flags = O42A_UNKNOWN | O42A_INDEFINITE;
 	data->value_f = adata->value_f;
 	data->requirement_f = adata->requirement_f;
@@ -408,7 +406,7 @@ typedef struct sample_data {
 } sample_data_t;
 
 static inline size_t fill_sample_data(
-		o42a_layout_t *layout,
+		size_t *start,
 		const o42a_obj_data_t *const adata,
 		const o42a_obj_data_t *const sdata,
 		sample_data_t *sample_data) {
@@ -429,10 +427,12 @@ static inline size_t fill_sample_data(
 			sample_data->old_body = NULL;
 		} else {
 			sample_data->old_body = old_body;
-			sample_data->new_body = o42a_layout_pad(
-					o42a_layout_size(*layout),
-					body_type->main_body_layout);
-			*layout = o42a_layout_both(*layout, body_type->main_body_layout);
+
+			const o42a_layout_t layout = body_type->main_body_layout;
+			const size_t new_body = o42a_layout_pad(*start, layout);
+
+			sample_data->new_body = new_body;
+			*start = new_body + o42a_layout_size(layout);
 			++num_samples;
 		}
 		++sample_data;
@@ -544,25 +544,25 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 		return o42a_obj_ascendant_body(res_consuming_ascendant);
 	}
 
-	o42a_layout_t bodies_layout = adata->all_bodies_layout;
+	// Ancestor bodies size.
+	size_t start = offsetof(o42a_obj_stype_t, data) - adata->start;
 
 	const o42a_obj_data_t *const sdata = &stype->type.data;
 	sample_data_t sample_data[sdata->samples.size];
 	const size_t num_samples = fill_sample_data(
-			&bodies_layout,
+			&start,
 			adata,
 			sdata,
 			sample_data);
 
 	const size_t main_body_start = o42a_layout_pad(
-			o42a_layout_size(bodies_layout),
+			start,
 			sstype->main_body_layout);
 
-	bodies_layout = o42a_layout_both(bodies_layout, sstype->main_body_layout);
+	start = main_body_start + o42a_layout_size(sstype->main_body_layout);
 
 	const o42a_layout_t obj_rtype_layout = o42a_layout(o42a_obj_rtype_t);
-	const size_t type_start =
-			o42a_layout_pad(o42a_layout_size(bodies_layout), obj_rtype_layout);
+	const size_t type_start = o42a_layout_pad(start, obj_rtype_layout);
 
 	const size_t ascendants_start =
 			type_start + o42a_layout_size(obj_rtype_layout);
@@ -602,8 +602,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->object = main_body_start - data_start;
 	data->flags = O42A_OBJ_RT | (sdata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = -data_start;
-
-	data->all_bodies_layout = bodies_layout;
 
 	data->value.flags = O42A_UNKNOWN | O42A_INDEFINITE;
 	data->value_f = sdata->value_f;

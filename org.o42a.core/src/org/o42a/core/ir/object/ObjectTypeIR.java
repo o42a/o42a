@@ -101,8 +101,6 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		data.start().setValue(
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						data.data(generator).getPointer()));
-		data.allBodiesLayout().setValue(
-				getObjectIR().getAllBodies().layout(generator).toBinaryForm());
 
 		fillOwnerTypePointer(data);
 		fillAncestor(data);

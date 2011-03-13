@@ -27,7 +27,6 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.Struct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
@@ -103,10 +102,6 @@ public final class ObjectIR  {
 		}
 
 		return bodyIR(ancestor);
-	}
-
-	public final Struct<?> getAllBodies() {
-		return getStruct().allBodies();
 	}
 
 	public final ObjectTypeIR getTypeIR() {

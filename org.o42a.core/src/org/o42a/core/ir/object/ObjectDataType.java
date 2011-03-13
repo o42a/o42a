@@ -50,7 +50,6 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private RelPtrRec object;
 	private Int32rec flags;
 	private RelPtrRec start;
-	private Int32rec allBodiesLayout;
 	private ValOp.Type value;
 	private CodeRec<ObjectValFunc> valueFunc;
 	private CodeRec<ObjectCondFunc> requirementFunc;
@@ -76,10 +75,6 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 
 	public final RelPtrRec start() {
 		return this.start;
-	}
-
-	public final Int32rec allBodiesLayout() {
-		return this.allBodiesLayout;
 	}
 
 	public final ValOp.Type value() {
@@ -144,7 +139,6 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		this.object = data.addRelPtr("object");
 		this.flags = data.addInt32("flags");
 		this.start = data.addRelPtr("start");
-		this.allBodiesLayout = data.addInt32("all_bodies_layout");
 		this.value = data.addInstance(generator.id("value"), VAL_TYPE);
 		this.valueFunc = data.addCodePtr("value_f", OBJECT_VAL);
 		this.requirementFunc = data.addCodePtr("requirement_f", OBJECT_COND);
