@@ -252,9 +252,6 @@ typedef struct o42a_obj_data {
 	 */
 	o42a_rptr_t start;
 
-	/** Layout of all bodies. */
-	o42a_layout_t all_bodies_layout;
-
 	/** Constructed object value. */
 	o42a_val_t value;
 

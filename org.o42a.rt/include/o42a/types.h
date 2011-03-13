@@ -85,6 +85,8 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_HEADER
 
+#define O42A_HEADER_SIZE 0
+
 
 #define O42A_ENTER
 
@@ -108,6 +110,8 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 
 #define O42A_HEADER o42a_dbg_header_t __o42a_dbg_header__
+
+#define O42A_HEADER_SIZE sizeof(o42a_dbg_header_t)
 
 
 #define O42A_ENTER \

@@ -45,12 +45,10 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		new LinkedHashMap<Obj, ObjectBodyIR>();
 	private final ArrayList<ObjectBodyIR> sampleBodyIRs =
 		new ArrayList<ObjectBodyIR>();
-	private final Struct<?> allBodies;
 	private final ObjectBodyIR mainBodyIR;
 
 	public ObjectIRStruct(ObjectIR objectIR) {
 		this.objectIR = objectIR;
-		this.allBodies = new AllBodies();
 		this.mainBodyIR = new ObjectBodyIR(this);
 		this.typeIR = new ObjectTypeIR(this);
 	}
@@ -65,10 +63,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	public final ObjectTypeIR typeIR() {
 		return this.typeIR;
-	}
-
-	public final Struct<?> allBodies() {
-		return this.allBodies;
 	}
 
 	public final ObjectBodyIR mainBodyIR() {
@@ -90,11 +84,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	@Override
 	protected final void allocate(SubData<Op> data) {
-		// it's here to prevent recursion
-
-		data.addStruct(
-				this.allBodies.codeId(data.getGenerator()).getLocal(),
-				this.allBodies);
+		allocateBodyIRs(data);
 		this.typeIR.allocate(data);
 		allocateMetaIRs(data);
 	}
@@ -191,41 +181,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		for (ObjectBodyIR bodyIR : bodyIRs().values()) {
 			bodyIR.allocateMetaIR(data);
 		}
-	}
-
-	private final class AllBodiesOp extends StructOp {
-
-		public AllBodiesOp(StructWriter writer) {
-			super(writer);
-		}
-
-	}
-
-	private final class AllBodies extends Struct<AllBodiesOp> {
-
-		AllBodies() {
-		}
-
-		@Override
-		public AllBodiesOp op(StructWriter writer) {
-			return new AllBodiesOp(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return ObjectIRStruct.this.codeId(factory).setLocal(
-					factory.id().detail("all_bodies"));
-		}
-
-		@Override
-		protected void fill() {
-		}
-
-		@Override
-		protected void allocate(SubData<AllBodiesOp> data) {
-			allocateBodyIRs(data);
-		}
-
 	}
 
 	public static final class Op extends StructOp {
