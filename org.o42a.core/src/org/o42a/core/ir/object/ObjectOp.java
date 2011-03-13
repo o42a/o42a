@@ -87,7 +87,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	public final void writeLogicalValue(Code code, CodePos exit) {
 
 		final ObjectTypeOp objectType = objectType(code);
-		final ValOp value = objectType.ptr().objectData(code).value(code);
+		final ValOp value = objectType.ptr().data(code).value(code);
 		final CondBlk indefinite = value.indefinite(code).branch(
 				code,
 				"cond_indefinite",
@@ -126,7 +126,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public final ValOp writeValue(Code code, CodePos exit, ValOp result) {
 
-		final ValOp value = objectType(code).ptr().objectData(code).value(code);
+		final ValOp value = objectType(code).ptr().data(code).value(code);
 		final CondBlk indefinite = value.indefinite(code).branch(
 				code,
 				"val_indefinite",

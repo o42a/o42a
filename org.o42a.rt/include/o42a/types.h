@@ -63,7 +63,7 @@ enum o42a_data_types {
 };
 
 
-typedef const struct o42a_dbg_type_info o42a_dbg_type_info_t;
+typedef struct o42a_dbg_type_info o42a_dbg_type_info_t;
 
 typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
@@ -73,7 +73,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 	const char *name;
 
-	o42a_dbg_type_info_t *type_info;
+	const o42a_dbg_type_info_t *type_info;
 
 	o42a_rptr_t enclosing;
 
@@ -124,7 +124,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name); \
 	fprintf(stderr, format, ## args)
 
-#define o42a_debug(message) o42a_dbg(message)
+#define o42a_debug(message) o42a_dbg_print(message)
 
 #define o42a_debug_mem_name(prefix, ptr) o42a_dbg_mem_name(prefix, ptr)
 

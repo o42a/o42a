@@ -30,8 +30,8 @@ import org.o42a.codegen.code.op.Int32op;
 
 final class DumpFunc extends Func {
 
-	public static final Signature<DumpFunc> DUMP_SIGNATURE =
-		new DumpSignature();
+	public static final Signature<DumpFunc> DEBUG_DUMP =
+		new Dump();
 
 	private DumpFunc(FuncCaller caller) {
 		super(caller);
@@ -41,10 +41,9 @@ final class DumpFunc extends Func {
 		caller().call(code, data, depth);
 	}
 
-	private static final class DumpSignature
-			extends Signature<DumpFunc> {
+	private static final class Dump extends Signature<DumpFunc> {
 
-		DumpSignature() {
+		Dump() {
 			super("void", "DEBUG.DumpF", "void*, uint32_t*");
 		}
 

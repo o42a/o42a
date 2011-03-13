@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
 import static org.o42a.codegen.debug.DebugHeader.DEBUG_HEADER_TYPE;
 
 import org.o42a.codegen.CodeId;
@@ -30,9 +31,12 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.DebugHeader;
+import org.o42a.codegen.debug.TypeDebugBase;
 
 
-public abstract class Type<O extends StructOp> implements Cloneable {
+public abstract class Type<O extends StructOp>
+		extends TypeDebugBase
+		implements Cloneable {
 
 	@SuppressWarnings("rawtypes")
 	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
@@ -57,6 +61,10 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 	public boolean isDebugInfo() {
 		return false;
+	}
+
+	public boolean isDebuggable() {
+		return !isDebugInfo();
 	}
 
 	public final Type<O> getType() {
@@ -105,7 +113,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 	@Override
 	public String toString() {
 		if (this.id == null) {
-			return getClass().getSimpleName();
+			return codeId(DEFAULT_CODE_ID_FACTORY).toString();
 		}
 		return this.id.toString();
 	}
@@ -146,7 +154,7 @@ public abstract class Type<O extends StructOp> implements Cloneable {
 
 		codeId(generator);// Refine code id.
 
-		if (generator.isDebug() && !isDebugInfo()) {
+		if (generator.isDebug() && isDebuggable()) {
 			data.addInstance(
 					generator.id("__o42a_dbg_header__"),
 					DEBUG_HEADER_TYPE,

@@ -125,7 +125,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			final Generator generator = code.getGenerator();
 			final Debug debug = generator;
 
-			flags(code).store(code, code.int32(DBG_HDR_STACK));
+			flags(code).store(code, code.int32(stack ? DBG_HDR_STACK : 0));
 
 			if (enclosing == null) {
 				// TODO Put last comment here:

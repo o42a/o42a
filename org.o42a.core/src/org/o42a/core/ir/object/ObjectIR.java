@@ -37,7 +37,7 @@ import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public final class ObjectIR  {
+public class ObjectIR  {
 
 	private final Generator generator;
 	private final Obj object;
@@ -162,6 +162,9 @@ public final class ObjectIR  {
 		return this.object + " IR";
 	}
 
+	protected void allocateData() {
+	}
+
 	protected ObjectValueIR createValueIR() {
 		return new ObjectValueIR(this);
 	}
@@ -175,6 +178,7 @@ public final class ObjectIR  {
 
 		getGenerator().newGlobal().struct(this.struct);
 		getScopeIR().targetAllocated();
+		allocateData();
 
 		return this.struct;
 	}

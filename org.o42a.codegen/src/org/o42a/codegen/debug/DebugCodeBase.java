@@ -21,10 +21,10 @@ package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.data.StringCodec.bytesPerChar;
 import static org.o42a.codegen.data.StringCodec.stringToBinary;
-import static org.o42a.codegen.debug.DebugFunc.DEBUG_SIGNATURE;
-import static org.o42a.codegen.debug.DumpFunc.DUMP_SIGNATURE;
+import static org.o42a.codegen.debug.DebugPrintFunc.DEBUG_PRINT;
+import static org.o42a.codegen.debug.DumpFunc.DEBUG_DUMP;
 import static org.o42a.codegen.debug.DumpNameFunc.DUMP_NAME_SIGNATURE;
-import static org.o42a.codegen.debug.DumpStructFunc.DUMP_STRUCT_SIGNATURE;
+import static org.o42a.codegen.debug.DumpStructFunc.DEBUG_DUMP_STRUCT;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
@@ -70,8 +70,8 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		final CodePtr<DebugFunc> func =
-			this.generator.externalFunction("o42a_dbg", DEBUG_SIGNATURE);
+		final CodePtr<DebugPrintFunc> func =
+			this.generator.externalFunction("o42a_dbg_print", DEBUG_PRINT);
 
 		func.op(code()).call(code(), binaryMessage(message + '\n').op(code()));
 	}
@@ -125,7 +125,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final CodePtr<DumpFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_dump_mem",
-					DUMP_SIGNATURE);
+					DEBUG_DUMP);
 
 		func.op(code()).call(code(), data.toAny(code()), code().int32(depth));
 	}
@@ -154,8 +154,8 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		final CodePtr<DebugFunc> debugFunc =
-			this.generator.externalFunction("o42a_dbg", DEBUG_SIGNATURE);
+		final CodePtr<DebugPrintFunc> debugFunc =
+			this.generator.externalFunction("o42a_dbg_print", DEBUG_PRINT);
 
 		debugFunc.op(code()).call(
 				code(),
@@ -164,7 +164,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final CodePtr<DumpStructFunc> dumpFunc =
 			this.generator.externalFunction(
 					"o42a_dbg_dump_struct",
-					DUMP_STRUCT_SIGNATURE);
+					DEBUG_DUMP_STRUCT);
 
 		dumpFunc.op(code()).call(
 				code(),

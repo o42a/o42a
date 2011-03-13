@@ -27,12 +27,12 @@ import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 
 
-final class DebugFunc extends Func {
+final class DebugPrintFunc extends Func {
 
-	public static final Signature<DebugFunc> DEBUG_SIGNATURE =
-		new DebugSignature();
+	public static final Signature<DebugPrintFunc> DEBUG_PRINT =
+		new DebugPrint();
 
-	private DebugFunc(FuncCaller caller) {
+	private DebugPrintFunc(FuncCaller caller) {
 		super(caller);
 	}
 
@@ -40,19 +40,20 @@ final class DebugFunc extends Func {
 		caller().call(code, message);
 	}
 
-	private static final class DebugSignature extends Signature<DebugFunc> {
+	private static final class DebugPrint
+			extends Signature<DebugPrintFunc> {
 
-		DebugSignature() {
-			super("void", "DEBUG.DebugF", "wchar_t*");
+		DebugPrint() {
+			super("void", "DEBUG.PrintF", "char *");
 		}
 
 		@Override
-		public DebugFunc op(FuncCaller caller) {
-			return new DebugFunc(caller);
+		public DebugPrintFunc op(FuncCaller caller) {
+			return new DebugPrintFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<DebugFunc> writer) {
+		protected void write(SignatureWriter<DebugPrintFunc> writer) {
 			writer.returnVoid();
 			writer.addAny();
 		}

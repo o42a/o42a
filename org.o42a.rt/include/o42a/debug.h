@@ -35,7 +35,7 @@ enum o42a_dbg_header_flags {
 
 };
 
-typedef const struct o42a_dbg_field_info {
+typedef struct o42a_dbg_field_info {
 
 	uint32_t data_type;
 
@@ -106,6 +106,12 @@ extern const struct o42a_dbg_info {
 	uint32_t num_globals;
 } o42a_debug_info;
 
+extern const struct {
+
+	const o42a_dbg_type_info_t *rtype_type_info;
+
+} o42a_dbg;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -114,7 +120,7 @@ extern "C" {
 
 int32_t o42a_dbg_exec_main(int32_t(*)(int32_t, char**), int32_t, char**);
 
-void o42a_dbg(const char *);
+void o42a_dbg_print(const char *);
 
 void o42a_dbg_mem_name(const char *, const void *);
 
@@ -144,6 +150,11 @@ void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *);
 
 void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *);
 
+
+void o42a_dbg_fill_header(
+		const o42a_dbg_type_info_t *,
+		o42a_dbg_header_t *,
+		const o42a_dbg_header_t *);
 
 void o42a_dbg_copy_header(
 		const o42a_dbg_header_t *,
