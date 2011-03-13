@@ -49,7 +49,7 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp enclosing, boolean stack) {
+	public void allocated(Code code, StructOp enclosing) {
 	}
 
 	@Override
