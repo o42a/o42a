@@ -58,8 +58,6 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		instance.offset().setValue(
 				fieldData.getPointer().relativeTo(
 						enclosing.pointer(generator)));
-		instance.enclosingTypeInfo().setValue(
-				debug.typeInfo(enclosing).pointer(generator).toAny());
 
 		final CodeId fieldName = fieldData.getId();
 
@@ -92,7 +90,6 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 		private Int32rec dataType;
 		private RelPtrRec offset;
-		private AnyPtrRec enclosingTypeInfo;
 		private AnyPtrRec name;
 		private AnyPtrRec typeInfo;
 
@@ -110,10 +107,6 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 		public final RelPtrRec offset() {
 			return this.offset;
-		}
-
-		public final AnyPtrRec enclosingTypeInfo() {
-			return this.enclosingTypeInfo;
 		}
 
 		public final AnyPtrRec name() {
@@ -138,7 +131,6 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		protected void allocate(SubData<Op> data) {
 			this.dataType = data.addInt32("data_type");
 			this.offset = data.addRelPtr("offset");
-			this.enclosingTypeInfo = data.addPtr("enclosing_type_info");
 			this.name = data.addPtr("name");
 			this.typeInfo = data.addPtr("type_info");
 		}

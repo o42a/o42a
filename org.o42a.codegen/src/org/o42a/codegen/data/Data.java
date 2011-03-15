@@ -85,7 +85,7 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 		getPointer().setAllocation(allocation);
 	}
 
-	void allocateData(Generator generator) {
+	final void allocateData(Generator generator) {
 		allocate(generator);
 	}
 

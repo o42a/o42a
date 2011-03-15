@@ -288,7 +288,14 @@ public class DefaultCodeId extends CodeId {
 
 	@Override
 	protected DefaultCodeId clone() {
-		return (DefaultCodeId) super.clone();
+
+		final DefaultCodeId clone = (DefaultCodeId) super.clone();
+
+		if (this.local == this) {
+			clone.local = clone;
+		}
+
+		return clone;
 	}
 
 	private boolean isTop() {

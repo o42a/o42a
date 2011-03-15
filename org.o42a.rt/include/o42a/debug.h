@@ -31,11 +31,9 @@ typedef struct o42a_dbg_field_info {
 
 	o42a_rptr_t offset;
 
-	o42a_dbg_type_info_t *enclosing_type_info;
-
 	const char *name;
 
-	o42a_dbg_type_info_t *type_info;
+	const o42a_dbg_type_info_t *type_info;
 
 } o42a_dbg_field_info_t;
 
@@ -150,6 +148,10 @@ void o42a_dbg_copy_header(
 		const o42a_dbg_header_t *,
 		o42a_dbg_header_t *,
 		const o42a_dbg_header_t *);
+
+void o42a_dbg_fill_field_info(
+		const o42a_dbg_header_t *,
+		o42a_dbg_field_info_t *);
 
 
 #ifdef __cplusplus

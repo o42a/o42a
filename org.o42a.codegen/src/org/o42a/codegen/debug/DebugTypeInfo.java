@@ -93,7 +93,6 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 		final Debug debug = generator;
 
 		typeCode().setValue(getCode());
-		fieldNum().setValue(getTarget().size(generator));
 
 		final CodeId typeId = getTarget().codeId(generator);
 
@@ -102,18 +101,24 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 				generator.id("DEBUG").sub("type_name").sub(typeId),
 				typeId.toString());
 
+		int fieldNum = 0;
+
 		for (Data<?> field : getTarget().iterate(generator)) {
-			addFieldInfo(data, field);
+			if (addFieldInfo(data, field)) {
+				++fieldNum;
+			}
 		}
+
+		fieldNum().setValue(fieldNum);
 	}
 
-	private void addFieldInfo(SubData<Op> data, Data<?> field) {
+	private boolean addFieldInfo(SubData<Op> data, Data<?> field) {
 
 		final Type<?> fieldInstance = field.getInstance();
 
 		if (fieldInstance != null) {
 			if (fieldInstance.isDebugInfo()) {
-				return;
+				return false;
 			}
 		}
 
@@ -121,6 +126,8 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 				data.getGenerator().id("field").detail(field.getId()),
 				DEBUG_FIELD_INFO_TYPE,
 				new DebugFieldInfo(field));
+
+		return true;
 	}
 
 	@Override

@@ -101,7 +101,7 @@ public abstract class Fld {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void allocate(SubData<?> data) {
 		this.instance = data.addInstance(
-				getId().getLocal(),
+				getGenerator().id("fld").detail(getId().getLocal()),
 				(Type) getType(),
 				(Content) content());
 	}
