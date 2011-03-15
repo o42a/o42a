@@ -272,22 +272,14 @@ static void derive_object_body(
 		(kind == DK_INHERIT ? desc->inherit : desc->propagate) (ctable);
 	}
 
-	O42A_DEBUG(
-			kind == DK_MAIN ? "Main body (%lx)" : (
+	o42a_debug(
+			kind == DK_MAIN ? "Main body: " : (
 					kind == DK_INHERIT
-					? "Inherited body (%lx)" : (
+					? "Inherited body: " : (
 							kind == DK_COPY
-							? "Copied body (%lx)"
-							: "Propagated body (%lx)")),
-			(long) to_body);
-	o42a_debug_dump_field(
-			to_body,
-			o42a_dbg_subfield(
-					o42a_dbg_field(from_body),
-					"$all_bodies",
-					"$main_body",
-					NULL),
-			1000);
+							? "Copied body: "
+							: "Propagated body: ")));
+	o42a_debug_dump_mem(to_body, 10);
 
 	O42A_RETURN;
 }
@@ -375,6 +367,7 @@ static inline void fill_type_info(
 	o42a_dbg_header_t *header = (o42a_dbg_header_t*) start;
 
 	header->type_code = type_info->type_code;
+	header->enclosing = 0;
 	header->name = type_info->name;
 	header->type_info = type_info;
 
@@ -517,7 +510,10 @@ static o42a_obj_rtype_t *propagate_object(
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
 	data->ascendants.size = num_ascendants;
 
-	data->samples.list = ((void*) samples) - ((void*) &data->samples);
+	data->samples.list =
+			num_samples
+			? ((void*) samples) - ((void*) &data->samples)
+			: 0;
 	data->samples.size = num_samples;
 
 	type->sample = o42a_obj_stype(atype);
@@ -537,14 +533,8 @@ static o42a_obj_rtype_t *propagate_object(
 	fill_field_infos(type, type_info);
 #endif
 
-	O42A_DEBUG("Object data: (%lx)", (long) type);
-	o42a_debug_dump_field(
-			data,
-			o42a_dbg_subfield(
-					o42a_dbg_field(sstype),
-					"object_data",
-					NULL),
-			1000);
+	o42a_debug("Object: ");
+	o42a_debug_dump_mem(mem, 10);
 
 	O42A_RETURN type;
 }
@@ -816,7 +806,10 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
 	data->ascendants.size = num_ascendants;
 
-	data->samples.list = (mem + samples_start) - ((void*) &data->samples);
+	data->samples.list =
+			num_samples
+			? (mem + samples_start) - ((void*) &data->samples)
+			: 0;
 	data->samples.size = num_samples;
 
 	type->sample = sstype;
@@ -848,14 +841,8 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	fill_field_infos(type, type_info);
 #endif
 
-	O42A_DEBUG("Object data: (%lx)", (long) type);
-	o42a_debug_dump_field(
-			data,
-			o42a_dbg_subfield(
-					o42a_dbg_field(sdata),
-					"object_data",
-					NULL),
-			1000);
+	o42a_debug("Object: ");
+	o42a_debug_dump_mem(mem, 10);
 
 	O42A_RETURN object;
 }

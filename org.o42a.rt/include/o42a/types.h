@@ -53,8 +53,9 @@ typedef uint32_t o42a_layout_t;
 enum o42a_data_types {
 
 	O42A_TYPE_STRUCT = 0,
-	O42A_TYPE_REL_PTR = 0x12,
-	O42A_TYPE_DATA_PTR = 0x22,
+	O42A_TYPE_REL_PTR = 0x02,
+	O42A_TYPE_DATA_PTR = 0x12,
+	O42A_TYPE_STRUCT_PTR = 0x22,
 	O42A_TYPE_CODE_PTR = 0x32,
 	O42A_TYPE_INT32 = 0x11 | (4 << 8),
 	O42A_TYPE_INT64 = 0x11 | (8 << 8),
@@ -101,8 +102,6 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define o42a_debug_dump_mem(ptr, depth)
 
-#define o42a_debug_dump_field(ptr, field, depth)
-
 
 #else /* NDEBUG */
 
@@ -129,9 +128,6 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define o42a_debug_func_name(prefix, ptr) o42a_dbg_func_name(prefix, ptr)
 
 #define o42a_debug_dump_mem(ptr, depth) o42a_dbg_dump_mem(ptr, depth)
-
-#define o42a_debug_dump_field(ptr, field, depth) \
-	o42a_dbg_dump_field(ptr, field, depth)
 
 
 #include "o42a/debug.h"

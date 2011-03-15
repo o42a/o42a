@@ -69,7 +69,7 @@ public class ObjectTypeOp extends IROp {
 			ptr().data(code).valueFunc(code).load(code);
 
 		function.call(code, result, body(code, body));
-		code.dumpValue("Value", result);
+		code.dump("Value: ", result);
 	}
 
 	final void writeRequirement(Code code, CodePos exit, ObjectOp body) {

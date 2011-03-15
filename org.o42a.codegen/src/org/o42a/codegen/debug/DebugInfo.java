@@ -32,11 +32,9 @@ import org.o42a.codegen.data.*;
 final class DebugInfo extends Struct<DebugInfo.Op> {
 
 	private final DbgFunctions functions;
-	private final DbgGlobals globals;
 
 	DebugInfo() {
 		this.functions = new DbgFunctions();
-		this.globals = new DbgGlobals();
 	}
 
 	@Override
@@ -46,10 +44,6 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 
 	public final DbgFunctions functions() {
 		return this.functions;
-	}
-
-	public final DbgGlobals globals() {
-		return this.globals;
 	}
 
 	@Override
@@ -69,23 +63,14 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 		final DbgFunctions functions =
 			generator.newGlobal().setConstant().struct(this.functions)
 			.getInstance();
-		final DbgGlobals globals =
-			generator.newGlobal().setConstant().struct(this.globals)
-			.getInstance();
 
 		final StructPtrRec<DbgFunctions.Op> functionsPtr =
 			data.addPtr("functions", functions);
-		final StructPtrRec<DbgGlobals.Op> globalsPtr =
-			data.addPtr("globals", globals);
 		final Rec<DataOp<Int32op>, Integer> numFunctions =
 			data.addInt32("num_functions");
-		final Rec<DataOp<Int32op>, Integer> numGlobals =
-			data.addInt32("num_globals");
 
 		functionsPtr.setValue(functions.data(generator).getPointer());
-		globalsPtr.setValue(globals.data(generator).getPointer());
 		numFunctions.setValue(this.functions.getNumFunctions());
-		numGlobals.setValue(this.globals.getNumGlobals());
 	}
 
 	@Override

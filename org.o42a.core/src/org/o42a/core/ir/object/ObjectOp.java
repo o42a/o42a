@@ -94,11 +94,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				"cond_definite");
 		final CodeBlk definite = indefinite.otherwise();
 
-		definite.dumpValue("Definite value", value);
+		definite.dump("Definite value: ", value);
 		value.condition(definite).go(definite, code.tail(), exit);
 
 		writeValue(indefinite, value, null);
-		indefinite.dumpValue("Calculated value", value);
+		indefinite.dump("Calculated value: ", value);
 		value.condition(indefinite).go(indefinite, code.tail(), exit);
 	}
 
@@ -133,14 +133,14 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				"val_definite");
 		final CodeBlk definite = indefinite.otherwise();
 
-		definite.dumpValue(this + " value is definite", value);
+		definite.dump(this + " value is definite:\n", value);
 		if (result != null) {
 			result.store(definite, value);
 		}
 		checkValue(definite, code.tail(), exit, value);
 
 		writeValue(indefinite, value, null);
-		indefinite.dumpValue(this + " value calculated", value);
+		indefinite.dump(this + " value calculated:\n", value);
 		if (result != null) {
 			result.store(indefinite, value);
 		}
@@ -155,7 +155,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			ValOp result,
 			ObjectOp body) {
 		writeValue(code, result, body);
-		code.dumpValue("Write value of " + body + " by " + this, result);
+		code.dump("Write value of " + body + " by " + this + ":\n", result);
 		if (exit != null) {
 			result.condition(code).goUnless(code, exit);
 		}

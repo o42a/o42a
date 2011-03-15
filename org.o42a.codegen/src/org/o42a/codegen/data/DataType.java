@@ -23,8 +23,9 @@ package org.o42a.codegen.data;
 public enum DataType {
 
 	STRUCT(0),
-	REL_PTR(0x12),
-	DATA_PTR(0x22),
+	REL_PTR(0x02),
+	DATA_PTR(0x12),
+	STRUCT_PTR(0x22),
 	CODE_PTR(0x32),
 	INT32(0x11 | (4 << 8)),
 	INT64(0x11 | (8 << 8)),

@@ -51,34 +51,11 @@ struct o42a_dbg_type_info {
 
 
 typedef const struct o42a_dbg_func o42a_dbg_func_t;
-typedef const struct o42a_dbg_field o42a_dbg_field_t;
-typedef const struct o42a_dbg_struct o42a_dbg_struct_t;
-typedef const struct o42a_dbg_global o42a_dbg_global_t;
 typedef const struct o42a_dbg_stack_frame o42a_dbg_stack_frame_t;
 
 struct o42a_dbg_func {
 	char *name;
 	void *function;
-};
-
-struct o42a_dbg_field {
-	char *name;
-	o42a_dbg_struct_t *dbg_struct;
-	uint32_t data_type;
-	o42a_rptr_t offset;
-};
-
-struct o42a_dbg_struct {
-	char *name;
-	o42a_layout_t layout;
-	uint32_t size;
-	o42a_dbg_field_t fields[0];
-};
-
-struct o42a_dbg_global {
-	char *name;
-	void *start;
-	o42a_dbg_field_t content;
 };
 
 struct o42a_dbg_stack_frame {
@@ -89,9 +66,7 @@ struct o42a_dbg_stack_frame {
 
 extern const struct o42a_dbg_info {
 	o42a_dbg_func_t *functions;
-	o42a_dbg_global_t *globals;
 	uint32_t num_functions;
-	uint32_t num_globals;
 } o42a_debug_info;
 
 extern const struct {
@@ -108,6 +83,10 @@ extern "C" {
 
 int32_t o42a_dbg_exec_main(int32_t(*)(int32_t, char**), int32_t, char**);
 
+
+const o42a_dbg_header_t *o42a_dbg_header(const void *);
+
+
 void o42a_dbg_print(const char *);
 
 void o42a_dbg_mem_name(const char *, const void *);
@@ -116,17 +95,8 @@ void o42a_dbg_func_name(const char *, const void *);
 
 void o42a_dbg_dump_mem(const void *, uint32_t);
 
-void o42a_dbg_dump_field(const void *, o42a_dbg_field_t *, uint32_t);
-
-void o42a_dbg_dump_struct(const void *, o42a_dbg_struct_t *, uint32_t);
-
 const o42a_dbg_func_t *o42a_dbg_func(const void *);
 
-const o42a_dbg_global_t *o42a_dbg_mem(const void *, o42a_dbg_field_t **);
-
-const o42a_dbg_field_t *o42a_dbg_field(const void *);
-
-const o42a_dbg_field_t *o42a_dbg_subfield(o42a_dbg_field_t *, ...);
 
 void o42a_dbg_enter(struct o42a_dbg_stack_frame *);
 
