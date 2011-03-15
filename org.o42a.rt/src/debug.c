@@ -539,6 +539,8 @@ void o42a_dbg_fill_header(
 		const o42a_dbg_type_info_t *const type_info,
 		o42a_dbg_header_t *const header,
 		const o42a_dbg_header_t *const enclosing) {
+	O42A_ENTER;
+
 	header->type_code = type_info->type_code;
 	header->name = type_info->name;
 	header->type_info = type_info;
@@ -551,35 +553,41 @@ void o42a_dbg_fill_header(
 	size_t field_num = type_info->field_num;
 
 	if (!field_num) {
-		return;
+		O42A_RETURN;
 	}
 
-	const o42a_dbg_field_info_t *field = type_info->fields;
+	const o42a_dbg_field_info_t *field_info = type_info->fields;
 
 	for (;;) {
 
 		const o42a_dbg_type_info_t *const field_type_info =
-				field->type_info;
+				field_info->type_info;
 
 		if (field_type_info) {
 
 			o42a_dbg_header_t *const to =
-					(o42a_dbg_header_t *) ((void*) header) + field->offset;
+					(o42a_dbg_header_t*)
+					(((void*) header) + field_info->offset);
 
 			o42a_dbg_fill_header(field_type_info, to, header);
+			to->name = field_info->name;
 		}
 
 		if (!(--field_num)) {
 			break;
 		}
-		++field;
+		++field_info;
 	}
+
+	O42A_RETURN;
 }
 
 void o42a_dbg_copy_header(
 		const o42a_dbg_header_t *const from,
 		o42a_dbg_header_t *const to,
 		const o42a_dbg_header_t *const enclosing) {
+	O42A_ENTER;
+
 	to->type_code = from->type_code;
 	to->name = from->name;
 	to->type_info = from->type_info;
@@ -593,22 +601,18 @@ void o42a_dbg_copy_header(
 	size_t field_num = type_info->field_num;
 
 	if (!field_num) {
-		return;
+		O42A_RETURN;
 	}
 
-	const o42a_dbg_field_info_t *field = type_info->fields;
+	const o42a_dbg_field_info_t *field_info = type_info->fields;
 
 	for (;;) {
-
-		const o42a_dbg_type_info_t *const field_type_info =
-				field->type_info;
-
-		if (field_type_info) {
+		if (field_info->type_info) {
 
 			const o42a_dbg_header_t *const f =
-					(o42a_dbg_header_t *) ((void*) from) + field->offset;
+					(o42a_dbg_header_t*) (((void*) from) + field_info->offset);
 			o42a_dbg_header_t *const t =
-					(o42a_dbg_header_t *) ((void*) to) + field->offset;
+					(o42a_dbg_header_t*) (((void*) to) + field_info->offset);
 
 			o42a_dbg_copy_header(f, t, to);
 		}
@@ -616,6 +620,17 @@ void o42a_dbg_copy_header(
 		if (!(--field_num)) {
 			break;
 		}
-		++field;
+		++field_info;
 	}
+
+	O42A_RETURN;
+}
+
+inline void o42a_dbg_fill_field_info(
+		const o42a_dbg_header_t *const header,
+		o42a_dbg_field_info_t *const field_info) {
+	field_info->data_type = O42A_TYPE_STRUCT;
+	field_info->offset = -header->enclosing;
+	field_info->name = header->name;
+	field_info->type_info = header->type_info;
 }

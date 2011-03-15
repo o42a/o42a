@@ -38,13 +38,18 @@ class DebugIR extends Struct<DebugIR.Op> {
 	}
 
 	@Override
+	public boolean isDebugInfo() {
+		return true;
+	}
+
+	@Override
 	public Op op(StructWriter writer) {
 		return new Op(writer);
 	}
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.rawId("o42a_dbg_data");
+		return factory.rawId("o42a_dbg");
 	}
 
 	@Override

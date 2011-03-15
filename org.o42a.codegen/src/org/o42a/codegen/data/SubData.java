@@ -213,7 +213,7 @@ public abstract class SubData<O extends StructOp>
 	}
 
 	private CodeId id(String name) {
-		return getId().setLocal(getGenerator().id(name));
+		return getGenerator().id(name);
 	}
 
 }
