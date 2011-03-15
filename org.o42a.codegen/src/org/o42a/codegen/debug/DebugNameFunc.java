@@ -27,12 +27,11 @@ import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 
 
-final class DumpNameFunc extends Func {
+final class DebugNameFunc extends Func {
 
-	public static final Signature<DumpNameFunc> DUMP_NAME_SIGNATURE =
-		new DumpNameSignature();
+	public static final Signature<DebugNameFunc> DEBUG_NAME = new Name();
 
-	private DumpNameFunc(FuncCaller caller) {
+	private DebugNameFunc(FuncCaller caller) {
 		super(caller);
 	}
 
@@ -40,20 +39,19 @@ final class DumpNameFunc extends Func {
 		caller().call(code, message, data);
 	}
 
-	private static final class DumpNameSignature
-			extends Signature<DumpNameFunc> {
+	private static final class Name extends Signature<DebugNameFunc> {
 
-		DumpNameSignature() {
-			super("void", "DEBUG.DumpNameF", "wchar_t*, void*");
+		private Name() {
+			super("void", "DEBUG.NameF", "wchar_t*, void*");
 		}
 
 		@Override
-		public DumpNameFunc op(FuncCaller caller) {
-			return new DumpNameFunc(caller);
+		public DebugNameFunc op(FuncCaller caller) {
+			return new DebugNameFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<DumpNameFunc> writer) {
+		protected void write(SignatureWriter<DebugNameFunc> writer) {
 			writer.returnVoid();
 			writer.addAny();
 			writer.addAny();

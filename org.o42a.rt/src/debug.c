@@ -21,6 +21,7 @@
 
 #include <assert.h>
 #include <signal.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "unicode/ustdio.h"
@@ -65,6 +66,21 @@ int32_t o42a_dbg_exec_main(
 	O42A_RETURN result;
 }
 
+
+inline const o42a_dbg_header_t *o42a_dbg_header(const void *const ptr) {
+
+	const o42a_dbg_header_t *const header = (o42a_dbg_header_t*) ptr;
+	const o42a_dbg_type_info_t *const type_info = header->type_info;
+
+	if (header->type_code != type_info->type_code) {
+		fprintf(stderr, "Wrong debug header at %lx\n", (long) header);
+		exit(EXIT_FAILURE);
+	}
+
+	return header;
+}
+
+
 static inline void dbg_print_prefix() {
 	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name);
 }
@@ -74,20 +90,27 @@ void o42a_dbg_print(const char *const message) {
 	fputs(message, stderr);
 }
 
-static const o42a_dbg_global_t *dbg_mem(
-		const void*,
-		o42a_dbg_field_t**,
-		int);
+static inline void dbg_mem_name(const o42a_dbg_header_t *const header) {
+
+	const o42a_rptr_t enclosing = header->enclosing;
+
+	if (enclosing) {
+		dbg_mem_name(o42a_dbg_header((void*) header + enclosing));
+		fputc(':', stderr);
+	}
+
+	fputs(header->name, stderr);
+}
 
 void o42a_dbg_mem_name(
 		const char *const prefix,
 		const void *const ptr) {
+
+	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
+
 	o42a_debug(prefix);
-
-	o42a_dbg_field_t *field = NULL;
-
-	dbg_mem(ptr, &field, 1);
-	fputc('\n', stderr);
+	dbg_mem_name(header);
+	fprintf(stderr, " <0x%lx>: %s\n", (long) ptr, header->type_info->name);
 }
 
 static void dbg_print_func_name(
@@ -115,48 +138,45 @@ void o42a_dbg_func_name(
 	fputc('\n', stderr);
 }
 
-static void dbg_print_indent(const size_t indent) {
+static void dbg_indent(const size_t indent) {
 	for (int i = indent - 1; i >= 0; --i) {
 		fputc(' ', stderr);
 		fputc(' ', stderr);
 	}
 }
 
-static void dbg_print_field_value(
+static void dbg_field_value(
 		const void *const data,
-		o42a_dbg_field_t *field,
+		const o42a_dbg_field_info_t *const field_info,
 		const int depth,
 		const size_t indent);
 
-static void dbg_print_field_struct(
-		const void *const data,
-		o42a_dbg_struct_t *dbg_struct,
+static void dbg_struct(
+		const o42a_dbg_header_t *const header,
 		const int depth,
 		const size_t indent) {
 
-	o42a_dbg_field_t *const fields = dbg_struct->fields;
-	const size_t size = dbg_struct->size;
+	const o42a_dbg_type_info_t *const type_info = header->type_info;
+	const void *const data = (void*) header;
+	const o42a_dbg_field_info_t *field_info = type_info->fields;
+	size_t field_num = type_info->field_num;
 
-	for (size_t i = 0; i < size; ++i) {
-
-		o42a_dbg_field_t *const field = fields + i;
-
-		dbg_print_indent(indent);
-		fputs(field->name, stderr);
-		dbg_print_field_value(data + field->offset, field, depth, indent);
+	while (field_num > 0) {
+		dbg_indent(indent);
+		fputs(field_info->name, stderr);
+		dbg_field_value(data + field_info->offset, field_info, depth, indent);
 		fputc('\n', stderr);
+		++field_info;
+		--field_num;
 	}
 }
 
-static void dbg_print_field_value(
+static void dbg_field_value(
 		const void *const data,
-		o42a_dbg_field_t *field,
+		const o42a_dbg_field_info_t *const field_info,
 		const int depth,
 		const size_t indent) {
-
-	o42a_dbg_struct_t *const dbg_struct = field->dbg_struct;
-
-	switch (field->data_type) {
+	switch (field_info->data_type) {
 	case O42A_TYPE_INT32: {
 
 		const long val =
@@ -204,78 +224,82 @@ static void dbg_print_field_value(
 
 		break;
 	}
+	case O42A_TYPE_STRUCT_PTR:
 	case O42A_TYPE_DATA_PTR: {
-		if (dbg_struct) {
-			fprintf(stderr, ": *%s -> ", dbg_struct->name);
+
+		const o42a_dbg_type_info_t *const type_info = field_info->type_info;
+
+		if (type_info) {
+			fprintf(stderr, ": *%s -> ", type_info->name);
 		} else {
 			fputs(": * -> ", stderr);
 		}
 
 		void *data_ptr = *((void**) data);
-		const o42a_dbg_field_t *data_field = NULL;
 
-		dbg_mem(data_ptr, &data_field, 1);
-
-		break;
-	}
-	case O42A_TYPE_STRUCT:
-		if (!depth) {
-			fprintf(stderr, ": %s = ...\n", dbg_struct->name);
+		if (!data_ptr) {
+			fputs("NULL", stderr);
 			break;
 		}
 
-		fprintf(stderr, ": %s = {\n", dbg_struct->name);
-		dbg_print_field_struct(data, field->dbg_struct, depth - 1, indent + 1);
-		dbg_print_indent(indent);
+		if (!type_info) {
+			fprintf(stderr, "<0x%lx>", (long) data_ptr);
+			break;
+		}
+
+		const o42a_dbg_header_t *const data_header =
+				o42a_dbg_header(data_ptr);
+
+		if (data_header->type_info != type_info) {
+			fprintf(
+					stderr,
+					"Incorrect pointer to %s, but %s expected",
+					data_header->type_info->name,
+					type_info->name);
+			exit(EXIT_FAILURE);
+		}
+
+		dbg_mem_name(data_header);
+
+		break;
+	}
+	case O42A_TYPE_STRUCT: {
+
+		const o42a_dbg_type_info_t *const type_info = field_info->type_info;
+
+		if (!depth) {
+			fprintf(stderr, ": %s = ...\n", type_info->name);
+			break;
+		}
+
+		const o42a_dbg_header_t *const data_header = o42a_dbg_header(data);
+		if (data_header->type_info != type_info) {
+			fprintf(
+					stderr,
+					"Incorrect pointer to %s, but %s expected",
+					data_header->type_info->name,
+					type_info->name);
+			exit(EXIT_FAILURE);
+		}
+		fprintf(stderr, ": %s = {\n", type_info->name);
+		dbg_struct(data_header, depth - 1, indent + 1);
+		dbg_indent(indent);
 		fputc('}', stderr);
 
 		break;
+	}
 	default:
-		fprintf(stderr, ": <unknown:%x>", field->data_type);
+		fprintf(stderr, ": <unknown:%x>", field_info->data_type);
 	}
 }
 
 void o42a_dbg_dump_mem(const void *const ptr, const uint32_t depth) {
 
-	o42a_dbg_field_t *field = NULL;
+	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
-	dbg_mem(ptr, &field, 1);
-	if (field) {
-		dbg_print_field_value(ptr, field, depth, 0);
-	}
-	fputc('\n', stderr);
-}
-
-void o42a_dbg_dump_field(
-		const void *ptr,
-		const o42a_dbg_field_t *const field,
-		const uint32_t depth) {
-	if (!ptr) {
-		fputs(": NULL\n", stderr);
-		return;
-	}
-	if (!field) {
-		fprintf(stderr, ": <unknown@%lx>\n", (long) ptr);
-		return;
-	}
-	dbg_print_field_value(ptr, field, depth, 0);
-	fputc('\n', stderr);
-}
-
-void o42a_dbg_dump_struct(
-		const void *ptr,
-		o42a_dbg_struct_t *const dbg_struct,
-		const uint32_t depth) {
-	if (!ptr) {
-		fputs(": NULL\n", stderr);
-		return;
-	}
-	if (!dbg_struct) {
-		fprintf(stderr, ": <unknown@%lx>\n", (long) ptr);
-		return;
-	}
-	fprintf(stderr, ": %s = {\n", dbg_struct->name);
-	dbg_print_field_struct(ptr, dbg_struct, depth, 1);
+	dbg_mem_name(header);
+	fprintf(stderr, " <0x%lx>: %s = {\n", (long) ptr, header->type_info->name);
+	dbg_struct(header, depth, 1);
 	fputs("}\n", stderr);
 }
 
@@ -297,202 +321,6 @@ const o42a_dbg_func_t *o42a_dbg_func(const void* ptr) {
 	}
 
 	return NULL;
-}
-
-static const o42a_dbg_global_t *dbg_global(const void *ptr, const int print) {
-	if (!ptr) {
-		if (print) {
-			fputs("NULL", stderr);
-		}
-		return NULL;
-	}
-
-	o42a_dbg_global_t *const globals = o42a_debug_info.globals;
-	const size_t size = o42a_debug_info.num_globals;
-
-	for (size_t i = 0; i < size; ++i) {
-
-		const o42a_dbg_global_t *const global = globals + i;
-
-		if (ptr < global->start) {
-			continue;
-		}
-		if (ptr == global->start) {
-			if (print) {
-				fputs(global->name, stderr);
-			}
-			return global;
-		}
-
-		if (global->content.data_type != O42A_TYPE_STRUCT) {
-			continue;
-		}
-
-		o42a_dbg_struct_t *const dbg_struct = global->content.dbg_struct;
-		void *end =
-				global->start + o42a_layout_size(dbg_struct->layout);
-
-		if (ptr >= end) {
-			continue;
-		}
-
-		if (print) {
-			fputs(global->name, stderr);
-			if (print > 0) {
-				fputs(" :: ", stderr);
-			}
-		}
-
-		return global;
-	}
-
-	if (print) {
-		fprintf(stderr, "<unknown@%lx>", (long) ptr);
-	}
-
-	return NULL;
-}
-
-static const o42a_dbg_field_t* dbg_field(
-		o42a_dbg_struct_t *const dbg_struct,
-		const size_t offset,
-		const int print) {
-
-	o42a_dbg_field_t *const fields = dbg_struct->fields;
-	const size_t num_fields = dbg_struct->size;
-
-	for (size_t i = 0; i < num_fields; ++i) {
-
-		o42a_dbg_field_t *const field = fields + i;
-		const int diff = offset - field->offset;
-
-		if (!diff) {
-			if (print) {
-				fprintf(stderr, "%s", field->name);
-			}
-			return field;
-		}
-		if (diff < 0) {
-			continue;
-		}
-		if (field->data_type != O42A_TYPE_STRUCT) {
-			continue;
-		}
-
-		o42a_dbg_struct_t *const field_struct = field->dbg_struct;
-		const size_t new_offset = diff;
-
-		if (new_offset >= o42a_layout_size(field_struct->layout)) {
-			continue;
-		}
-		if (print) {
-			fprintf(stderr, "%s:", field->name);
-		}
-
-		o42a_dbg_field_t *const sub_field =
-				dbg_field(field_struct, new_offset, print);
-
-		if (sub_field) {
-			return sub_field;
-		}
-
-		break;
-	}
-
-	if (print) {
-		fprintf(stderr, "<+%zu>", offset);
-	}
-
-	return NULL;
-}
-
-static const o42a_dbg_global_t *dbg_mem(
-		const void *const ptr,
-		o42a_dbg_field_t **const field,
-		const int print) {
-
-	o42a_dbg_global_t *global =
-			dbg_global(ptr, print ? (field ? 1 : -1) : 0);
-
-	if (!global) {
-		return NULL;
-	}
-	if (!field) {
-		return global;
-	}
-
-	const ptrdiff_t offset = ptr - global->start;
-
-	if (!offset) {
-		*field = &global->content;
-		return global;
-	}
-
-	if (global->content.data_type != O42A_TYPE_STRUCT) {
-		fprintf(stderr, "<%+ti>", offset);
-		return global;
-	}
-
-	*field = dbg_field(global->content.dbg_struct, offset, print);
-
-	return global;
-}
-
-inline const o42a_dbg_global_t *o42a_dbg_mem(
-		const void *const ptr,
-		o42a_dbg_field_t **const field) {
-	return dbg_mem(ptr, field, 0);
-}
-
-inline const o42a_dbg_field_t *o42a_dbg_field(const void *const ptr) {
-
-	o42a_dbg_field_t* field = NULL;
-
-	dbg_mem(ptr, &field, 0);
-
-	return field;
-}
-
-const o42a_dbg_field_t *o42a_dbg_subfield(const o42a_dbg_field_t *field, ...) {
-	if (!field) {
-		return field;
-	}
-
-	va_list va_names;
-
-	va_start(va_names, field);
-
-	iterate_names: for (;;) {
-		if (field->data_type != O42A_TYPE_STRUCT) {
-			break;
-		}
-
-		const char *name = va_arg(va_names, const char*);
-
-		if (!name) {
-			break;
-		}
-
-		o42a_dbg_struct_t *const dbg_struct = field->dbg_struct;
-		o42a_dbg_field_t *const sub_fields = dbg_struct->fields;
-		const size_t num_fields = dbg_struct->size;
-
-		for (size_t i = 0; i < num_fields; ++i) {
-
-			const o42a_dbg_field_t *const sub_field = sub_fields + i;
-
-			if (!strcmp(sub_field->name, name)) {
-				field = sub_field;
-				goto iterate_names;
-			}
-		}
-
-		break;
-	}
-
-	va_end(va_names);
-
-	return field;
 }
 
 
@@ -541,6 +369,11 @@ void o42a_dbg_fill_header(
 		const o42a_dbg_header_t *const enclosing) {
 	O42A_ENTER;
 
+	O42A_DEBUG("Type: %s\n", type_info->name);
+	if (enclosing) {
+		o42a_dbg_mem_name("Enclosing: ", enclosing);
+	}
+
 	header->type_code = type_info->type_code;
 	header->name = type_info->name;
 	header->type_info = type_info;
@@ -559,17 +392,13 @@ void o42a_dbg_fill_header(
 	const o42a_dbg_field_info_t *field_info = type_info->fields;
 
 	for (;;) {
-
-		const o42a_dbg_type_info_t *const field_type_info =
-				field_info->type_info;
-
-		if (field_type_info) {
+		if (field_info->data_type == O42A_TYPE_STRUCT) {
 
 			o42a_dbg_header_t *const to =
 					(o42a_dbg_header_t*)
 					(((void*) header) + field_info->offset);
 
-			o42a_dbg_fill_header(field_type_info, to, header);
+			o42a_dbg_fill_header(field_info->type_info, to, header);
 			to->name = field_info->name;
 		}
 
@@ -587,6 +416,11 @@ void o42a_dbg_copy_header(
 		o42a_dbg_header_t *const to,
 		const o42a_dbg_header_t *const enclosing) {
 	O42A_ENTER;
+
+	o42a_dbg_mem_name("From: ", from);
+	if (enclosing) {
+		o42a_dbg_mem_name("Enclosing: ", enclosing);
+	}
 
 	to->type_code = from->type_code;
 	to->name = from->name;
@@ -607,7 +441,7 @@ void o42a_dbg_copy_header(
 	const o42a_dbg_field_info_t *field_info = type_info->fields;
 
 	for (;;) {
-		if (field_info->type_info) {
+		if (field_info->data_type == O42A_TYPE_STRUCT) {
 
 			const o42a_dbg_header_t *const f =
 					(o42a_dbg_header_t*) (((void*) from) + field_info->offset);

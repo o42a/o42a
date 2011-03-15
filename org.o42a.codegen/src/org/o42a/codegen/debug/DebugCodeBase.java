@@ -23,13 +23,14 @@ import static org.o42a.codegen.data.StringCodec.bytesPerChar;
 import static org.o42a.codegen.data.StringCodec.stringToBinary;
 import static org.o42a.codegen.debug.DebugPrintFunc.DEBUG_PRINT;
 import static org.o42a.codegen.debug.DumpFunc.DEBUG_DUMP;
-import static org.o42a.codegen.debug.DumpNameFunc.DUMP_NAME_SIGNATURE;
-import static org.o42a.codegen.debug.DumpStructFunc.DEBUG_DUMP_STRUCT;
+import static org.o42a.codegen.debug.DebugNameFunc.DEBUG_NAME;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.OpCodeBase;
+import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 
@@ -65,6 +66,10 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	public void debug(String message) {
+		debug(message, true);
+	}
+
+	public void debug(String message, boolean nl) {
 		assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
@@ -73,7 +78,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final CodePtr<DebugPrintFunc> func =
 			this.generator.externalFunction("o42a_dbg_print", DEBUG_PRINT);
 
-		func.op(code()).call(code(), binaryMessage(message + '\n').op(code()));
+		func.op(code()).call(
+				code(),
+				binaryMessage(nl ? message + '\n' : message).op(code()));
 	}
 
 	public final void dumpName(String prefix, PtrOp data) {
@@ -82,10 +89,10 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		final CodePtr<DumpNameFunc> func =
+		final CodePtr<DebugNameFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_mem_name",
-					DUMP_NAME_SIGNATURE);
+					DEBUG_NAME);
 
 		func.op(code()).call(
 				code(),
@@ -99,10 +106,10 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		final CodePtr<DumpNameFunc> func =
+		final CodePtr<DebugNameFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_func_name",
-					DUMP_NAME_SIGNATURE);
+					DEBUG_NAME);
 
 		func.op(code()).call(
 				code(),
@@ -120,7 +127,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		debug(message);
+		debug(message, false);
 
 		final CodePtr<DumpFunc> func =
 			this.generator.externalFunction(
@@ -128,49 +135,6 @@ public abstract class DebugCodeBase extends OpCodeBase {
 					DEBUG_DUMP);
 
 		func.op(code()).call(code(), data.toAny(code()), code().int32(depth));
-	}
-
-	public final void dumpValue(String message, StructOp data) {
-		dumpValue(message, data, Integer.MAX_VALUE);
-	}
-
-	public final void dumpValue(String message, StructOp data, int depth) {
-		assertIncomplete();
-
-		final Generator generator = getGenerator();
-
-		if (!generator.isDebug()) {
-			return;
-		}
-
-		final Debug debug = generator;
-		final DbgStruct typeStruct =
-			debug.typeStruct(generator, data.getType());
-
-		if (typeStruct == null) {
-			assert typeStruct != null :
-				"Unknown type structure: " + data.getType();
-			dump(message, data, depth);
-			return;
-		}
-
-		final CodePtr<DebugPrintFunc> debugFunc =
-			this.generator.externalFunction("o42a_dbg_print", DEBUG_PRINT);
-
-		debugFunc.op(code()).call(
-				code(),
-				binaryMessage(message).op(code()));
-
-		final CodePtr<DumpStructFunc> dumpFunc =
-			this.generator.externalFunction(
-					"o42a_dbg_dump_struct",
-					DEBUG_DUMP_STRUCT);
-
-		dumpFunc.op(code()).call(
-				code(),
-				data.toAny(code()),
-				typeStruct,
-				code().int32(depth));
 	}
 
 	private Ptr<AnyOp> binaryMessage(String message) {

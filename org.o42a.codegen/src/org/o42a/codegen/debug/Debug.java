@@ -55,8 +55,6 @@ public abstract class Debug extends Globals {
 		new HashMap<String, Ptr<AnyOp>>();
 	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
 		new HashMap<Ptr<?>, DebugTypeInfo>();
-	private final HashMap<Ptr<?>, DbgStruct> structs =
-		new HashMap<Ptr<?>, DbgStruct>();
 
 	public final boolean isDebug() {
 		return this.debug;
@@ -125,31 +123,6 @@ public abstract class Debug extends Globals {
 			newGlobal().struct(typeInfo);
 			this.typeInfo.put(typeData.getPointer(), typeInfo);
 		}
-
-		if (this.writeDebug) {
-			return;
-		}
-		if (!checkDebug()) {
-			return;
-		}
-		this.writeDebug = true;
-		try {
-			writeStruct(typeData);
-		} finally {
-			this.writeDebug = false;
-		}
-	}
-
-	@Override
-	protected void addGlobal(SubData<?> global) {
-		super.addGlobal(global);
-		if (this.writeDebug) {
-			return;
-		}
-		if (!checkDebug()) {
-			return;
-		}
-		this.info.globals().addGlobal(global);
 	}
 
 	@Override
@@ -198,35 +171,6 @@ public abstract class Debug extends Globals {
 			"Unknown debug type info of " + instance.getType();
 
 		return typeInfo;
-	}
-
-	DbgStruct writeStruct(Data<?> fieldData) {
-		if (fieldData.getDataType() != DataType.STRUCT) {
-			return null;
-		}
-
-		final Generator generator = fieldData.getGenerator();
-		final SubData<?> fieldStruct = (SubData<?>) fieldData;
-		final Type<?> type = fieldStruct.getInstance().getType();
-		final Ptr<?> typePointer = type.data(generator).getPointer();
-		final DbgStruct found = this.structs.get(typePointer);
-
-		if (found != null) {
-			return found;
-		}
-
-		final DbgStruct struct = new DbgStruct(type);
-
-		newGlobal().setConstant().struct(struct);
-
-		this.structs.put(typePointer, struct);
-
-		return struct;
-	}
-
-	DbgStruct typeStruct(Generator generator, Type<?> type) {
-		return this.structs.get(
-				type.getType().data(generator).getPointer());
 	}
 
 	private final boolean checkDebug() {

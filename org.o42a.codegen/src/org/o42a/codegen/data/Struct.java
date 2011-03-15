@@ -53,10 +53,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		private final Type<?> enclosing;
 
 		StructData(SubData<?> enclosing, Struct<O> instance, CodeId name) {
-			super(
-					enclosing.getGenerator(),
-					instance.codeId(enclosing.getGenerator()).setLocal(name),
-					instance);
+			super(enclosing.getGenerator(), name, instance);
 			this.global = enclosing.getGlobal();
 			this.enclosing = enclosing.getInstance();
 		}
