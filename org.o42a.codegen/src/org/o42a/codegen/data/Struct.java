@@ -20,8 +20,8 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -47,7 +47,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 	}
 
 	private static final class StructData<O extends StructOp>
-			extends SubData<O> {
+			extends AbstractTypeData<O> {
 
 		private final Global<?, ?> global;
 		private final Type<?> enclosing;
@@ -69,26 +69,18 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		}
 
 		@Override
-		public String toString() {
-			return getInstance().toString();
+		protected DataAllocation<O> beginTypeAllocation(
+				DataAllocator allocator) {
+			return allocator.enter(
+					getEnclosing().getAllocation(),
+					getInstance().getAllocation(), this);
 		}
 
 		@Override
-		protected void allocate(Generator generator) {
-			if (!getInstance().startAllocation(generator)) {
-				return;
-			}
-
-			final DataAllocator allocator = generator.dataAllocator();
-
-			setAllocation(allocator.enter(getInstance().allocation(), this));
-			getInstance().allocateInstance(this);
-			allocator.exit(this);
-			getInstance().setAllocated(generator);
-
-			final Globals globals = generator;
-
-			globals.addType(this);
+		protected void endTypeAllocation(DataAllocator allocator) {
+			allocator.exit(
+					getEnclosing().getAllocation(),
+					this);
 		}
 
 		@Override
@@ -102,7 +94,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 	}
 
 	private static final class GlobalData<O extends StructOp>
-			extends SubData<O> {
+			extends AbstractTypeData<O> {
 
 		private final Global<O, ?> global;
 
@@ -125,23 +117,27 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		}
 
 		@Override
-		protected void allocate(Generator generator) {
-			if (!getInstance().startAllocation(generator)) {
-				return;
-			}
+		public String toString() {
+			return this.global.toString();
+		}
 
-			final DataAllocator allocator = generator.dataAllocator();
+		@Override
+		protected DataAllocation<O> beginTypeAllocation(
+				DataAllocator allocator) {
+			return allocator.begin(getInstance().getAllocation(), this.global);
+		}
 
-			setAllocation(allocator.begin(
-					getInstance().allocation(),
-					this.global));
-			getInstance().allocateInstance(this);
+		@Override
+		protected void endTypeAllocation(DataAllocator allocator) {
 			allocator.end(this.global);
-			getInstance().setAllocated(generator);
+		}
 
-			final Globals globals = generator;
+		@Override
+		protected void postTypeAllocation() {
+			super.postTypeAllocation();
 
-			globals.addType(this);
+			final Globals globals = getGenerator();
+
 			globals.addGlobal(this);
 		}
 

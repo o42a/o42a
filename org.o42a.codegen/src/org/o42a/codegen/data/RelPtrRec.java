@@ -20,9 +20,9 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -42,8 +42,9 @@ public final class RelPtrRec extends Rec<DataOp<RelOp>, RelPtr> {
 	}
 
 	@Override
-	protected void allocate(Generator generator) {
-		setAllocation(generator.dataAllocator().allocateRelPtr(
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocateRelPtr(
+				getEnclosing().getAllocation(),
 				getAllocation()));
 	}
 

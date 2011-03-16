@@ -20,10 +20,10 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int64op;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -56,8 +56,10 @@ public final class Int64rec extends Rec<DataOp<Int64op>, Long> {
 	}
 
 	@Override
-	protected void allocate(Generator generator) {
-		setAllocation(generator.dataAllocator().allocateInt64(getAllocation()));
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocateInt64(
+				getEnclosing().getAllocation(),
+				getAllocation()));
 	}
 
 	@Override

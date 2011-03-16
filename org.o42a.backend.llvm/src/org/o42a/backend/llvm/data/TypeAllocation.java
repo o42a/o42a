@@ -35,9 +35,8 @@ public final class TypeAllocation<O extends StructOp>
 			LLVMModule module,
 			long typePtr,
 			long typeDataPtr,
-			ContainerAllocation<?> prev,
 			Type<O> type) {
-		super(module, typePtr, typeDataPtr, prev, type);
+		super(module, typePtr, typeDataPtr, null, type);
 		this.llvmId = typeId(this);
 	}
 

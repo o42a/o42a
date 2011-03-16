@@ -27,6 +27,8 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.TypeInstanceData.GlobalInstanceData;
+import org.o42a.codegen.data.TypeInstanceData.InstanceData;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -42,7 +44,7 @@ public abstract class Type<O extends StructOp>
 	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
 
 	private CodeId id;
-	private Type<O> type;
+	Type<O> type;
 	SubData<O> data;
 	private Generator allocated;
 	private Generator allocating;
@@ -57,6 +59,10 @@ public abstract class Type<O extends StructOp>
 
 	public boolean isPacked() {
 		return false;
+	}
+
+	public boolean isReentrant() {
+		return !isDebugInfo();
 	}
 
 	public boolean isDebugInfo() {
@@ -164,7 +170,7 @@ public abstract class Type<O extends StructOp>
 		allocate(data);
 	}
 
-	final DataAllocation<O> allocation() {
+	final DataAllocation<O> getAllocation() {
 		return this.data.getPointer().getAllocation();
 	}
 
@@ -222,14 +228,15 @@ public abstract class Type<O extends StructOp>
 		if (this.data == null) {
 			this.data = new TypeData<O>(generator, this);
 		}
-		this.data.allocateData(generator);
+		this.data.allocateType(fullyAllocated);
 		if (fullyAllocated) {
 			assert isAllocated(generator) :
 				"Not allocated: " + this;
 		}
 	}
 
-	private static final class TypeData<O extends StructOp> extends SubData<O> {
+	private static final class TypeData<O extends StructOp>
+			extends AbstractTypeData<O> {
 
 		TypeData(Generator generator, Type<O> type) {
 			super(generator, type.codeId(generator).removeLocal(), type);
@@ -246,26 +253,14 @@ public abstract class Type<O extends StructOp>
 		}
 
 		@Override
-		public String toString() {
-			return getInstance().toString();
+		protected DataAllocation<O> beginTypeAllocation(
+				DataAllocator allocator) {
+			return allocator.begin(getInstance());
 		}
 
 		@Override
-		protected void allocate(Generator generator) {
-			if (!getInstance().startAllocation(generator)) {
-				return;
-			}
-
-			final DataAllocator allocator = generator.dataAllocator();
-
-			setAllocation(allocator.begin(getInstance()));
-			getInstance().allocateInstance(this);
+		protected void endTypeAllocation(DataAllocator allocator) {
 			allocator.end(getInstance());
-			getInstance().setAllocated(generator);
-
-			final Globals globals = generator;
-
-			globals.addType(this);
 		}
 
 		@Override
@@ -273,148 +268,6 @@ public abstract class Type<O extends StructOp>
 			throw new UnsupportedOperationException(
 					"Type " + getId() + " itself can not be written out. "
 					+ "Write an instance instead.");
-		}
-
-	}
-
-	private static abstract class AbstractInstanceData<O extends StructOp>
-			extends SubData<O> {
-
-		@SuppressWarnings("rawtypes")
-		final Content content;
-		private Data<?> next;
-
-		AbstractInstanceData(
-				Generator generator,
-				CodeId id,
-				Type<O> instance,
-				Content<?> content) {
-			super(generator, id, instance);
-			getPointer().copyAllocation(instance.getType().getTypeData());
-			this.content = content != null ? content : EMPTY_CONTENT;
-			this.next = instance.type.data.data().getFirst();
-		}
-
-		@Override
-		protected <D extends Data<?>> D add(D data) {
-			assert this.next != null :
-				"An attempt to add more fields to instance,"
-				+ " than type contains: " + data + " (" + (size() + 1) + ")";
-			assert data.getClass() == this.next.getClass() :
-				"Wrong field " + data + " at position " + size()
-				+ ", while " + this.next + " expected";
-
-			data.getPointer().copyAllocation(this.next);
-			this.next = this.next.getNext();
-
-			return super.add(data);
-		}
-
-	}
-
-	private static final class InstanceData<O extends StructOp>
-			extends AbstractInstanceData<O> {
-
-		private final Global<?, ?> global;
-		private final Type<?> enclosing;
-
-		InstanceData(
-				SubData<?> enclosing,
-				CodeId id,
-				Type<O> instance,
-				Content<?> content) {
-			super(enclosing.getGenerator(), id, instance, content);
-			this.global = enclosing.getGlobal();
-			this.enclosing = enclosing.getInstance();
-		}
-
-		@Override
-		public Global<?, ?> getGlobal() {
-			return this.global;
-		}
-
-		@Override
-		public Type<?> getEnclosing() {
-			return this.enclosing;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void allocate(Generator generator) {
-
-			final DataAllocator allocator = generator.dataAllocator();
-
-			setAllocation(allocator.enter(getInstance().allocation(), this));
-			getInstance().allocateInstance(this);
-			allocator.exit(this);
-			this.content.allocated(getInstance());
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void write(DataWriter writer) {
-			writer.enter(getPointer().getAllocation(), this);
-			this.content.fill(getInstance());
-			writeIncluded(writer);
-			writer.exit(getPointer().getAllocation(), this);
-		}
-
-	}
-
-	private static final class GlobalInstanceData<O extends StructOp>
-			extends AbstractInstanceData<O> {
-
-		private final Global<O, ?> global;
-
-		GlobalInstanceData(
-				Global<O, ?> global,
-				Type<O> instance,
-				Content<?> content) {
-			super(
-					global.getGenerator(),
-					global.getId().removeLocal(),
-					instance,
-					content);
-			this.global = global;
-		}
-
-		@Override
-		public Global<?, ?> getGlobal() {
-			return this.global;
-		}
-
-		@Override
-		public Type<?> getEnclosing() {
-			return null;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void allocate(Generator generator) {
-
-			final DataAllocator allocator = generator.dataAllocator();
-
-			setAllocation(allocator.begin(getAllocation(), this.global));
-			getInstance().allocateInstance(this);
-			allocator.end(this.global);
-			this.content.allocated(getInstance());
-
-			final Globals globals = generator;
-
-			globals.addGlobal(this);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void write(DataWriter writer) {
-			writer.begin(getPointer().getAllocation(), this.global);
-			this.content.fill(getInstance());
-			writeIncluded(writer);
-			writer.end(getPointer().getAllocation(), this.global);
-
-			final Globals globals = getGenerator();
-
-			globals.addType(this);
 		}
 
 	}

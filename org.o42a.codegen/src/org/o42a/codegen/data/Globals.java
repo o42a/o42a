@@ -19,8 +19,9 @@
 */
 package org.o42a.codegen.data;
 
+import java.util.LinkedList;
+
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Functions;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -31,6 +32,9 @@ import org.o42a.codegen.data.backend.DataWriter;
 public abstract class Globals extends Functions {
 
 	private final DataChain globals = new DataChain();
+	private int typesAllocating;
+	private final LinkedList<AbstractTypeData<?>> scheduled =
+		new LinkedList<AbstractTypeData<?>>();
 
 	public final Ptr<AnyOp> addBinary(CodeId id, byte[] data) {
 		return new Ptr<AnyOp>(
@@ -63,6 +67,9 @@ public abstract class Globals extends Functions {
 		this.globals.empty();
 	}
 
+	protected void registerType(SubData<?> type) {
+	}
+
 	protected void addType(SubData<?> type) {
 	}
 
@@ -81,7 +88,7 @@ public abstract class Globals extends Functions {
 			new Global<O, T>(settings, id, type, instance, content);
 		final SubData<O> data = global.getInstance().getTypeData();
 
-		data.allocateData((Generator) this);
+		data.allocateType(false);
 
 		return global;
 	}
@@ -96,9 +103,49 @@ public abstract class Globals extends Functions {
 
 		final SubData<O> data = global.getInstance().getTypeData();
 
-		data.allocateData((Generator) this);
+		data.allocateType(false);
 
 		return global;
+	}
+
+	final void allocatingType(AbstractTypeData<?> typeData) {
+		++this.typesAllocating;
+	}
+
+	final void allocatedType(
+			AbstractTypeData<?> typeData,
+			boolean immediately) {
+		addType(typeData);
+		if (immediately) {
+			--this.typesAllocating;
+		}
+		allocateScheduled();
+	}
+
+	void scheduleTypeAllocation(AbstractTypeData<?> typeData) {
+		if (!allocateScheduled()) {
+			this.scheduled.addLast(typeData);
+			return;
+		}
+		typeData.end(false);
+	}
+
+	private boolean allocateScheduled() {
+		if (this.typesAllocating != 0) {
+			assert this.typesAllocating > 0 :
+				"Wrong types allocation count";
+			return false;
+		}
+		for (;;) {
+
+			final AbstractTypeData<?> scheduled = this.scheduled.poll();
+
+			if (scheduled == null) {
+				return true;
+			}
+
+			scheduled.end(false);
+		}
 	}
 
 }

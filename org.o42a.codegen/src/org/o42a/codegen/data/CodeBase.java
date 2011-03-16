@@ -36,7 +36,6 @@ public abstract class CodeBase {
 		final O result = writer().allocateStruct(
 				type.data(code.getGenerator()).getAllocation());
 
-
 		result.allocated(code, null);
 
 		return result;
