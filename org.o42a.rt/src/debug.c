@@ -73,7 +73,7 @@ inline const o42a_dbg_header_t *o42a_dbg_header(const void *const ptr) {
 	const o42a_dbg_type_info_t *const type_info = header->type_info;
 
 	if (header->type_code != type_info->type_code) {
-		fprintf(stderr, "Wrong debug header at %lx\n", (long) header);
+		fprintf(stderr, "Wrong debug header at <0x%lx>\n", (long) header);
 		exit(EXIT_FAILURE);
 	}
 
@@ -106,6 +106,10 @@ void o42a_dbg_mem_name(
 		const char *const prefix,
 		const void *const ptr) {
 	o42a_debug(prefix);
+	if (!ptr) {
+		fputs("NULL\n", stderr);
+		return;
+	}
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 

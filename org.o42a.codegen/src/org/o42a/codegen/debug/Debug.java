@@ -123,7 +123,12 @@ public abstract class Debug extends Globals {
 		final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
 
 		newGlobal().struct(typeInfo);
-		this.typeInfo.put(typeData.getPointer(), typeInfo);
+
+		final DebugTypeInfo old =
+			this.typeInfo.put(typeData.getPointer(), typeInfo);
+
+		assert old == null :
+			"Type info already exists: " + old;
 	}
 
 	@Override

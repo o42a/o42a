@@ -108,7 +108,17 @@ public class IRUtil {
 			localId = addDeclaredIn(generator, localId, reproducedFrom);
 		}
 
-		CodeId id = enclosingIR.getId().setLocal(localId);
+		final Scope enclosingScope = enclosingIR.getScope();
+		final Scope rootScope =
+			enclosingScope.getContext().getRoot().getScope();
+
+		CodeId id;
+
+		if (enclosingScope == rootScope) {
+			id = generator.topId().setLocal(localId);
+		} else {
+			id = enclosingIR.getId().setLocal(localId);
+		}
 
 		if (member.isOverride()) {
 			id = addDeclaredIn(generator, id, member.getKey().getOrigin());
