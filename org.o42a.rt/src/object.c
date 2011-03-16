@@ -181,7 +181,7 @@ static inline void copy_ancestor_ascendants(
 	for (size_t i = ancestor_data->ascendants.size; i > 0; --i) {
 #ifndef NDEBUG
 		o42a_dbg_copy_header(
-				&aascendants->__o42a_dbg_header__,
+				o42a_dbg_header(aascendants),
 				&ascendants->__o42a_dbg_header__,
 				(o42a_dbg_header_t*) start);
 #endif
@@ -221,7 +221,7 @@ static void derive_object_body(
 			(o42a_dbg_header_t*) (((void*) object_data) + object_data->start);
 
 	o42a_dbg_copy_header(
-			&from_body->__o42a_dbg_header__,
+			o42a_dbg_header(from_body),
 			&to_body->__o42a_dbg_header__,
 			object_header);
 
@@ -262,13 +262,12 @@ static void derive_object_body(
 
 		const o42a_fld_desc_t *const desc = o42a_fld_desc(field);
 
-		O42A_DEBUG(
-				kind == DK_INHERIT
-				? "Inherit field %lx -> %lx\n"
-				: "Propagate field %lx -> %lx\n",
-				(long) ctable->from.fld,
-				(long) ctable->to.fld);
+		o42a_debug_mem_name(
+				kind == DK_INHERIT ? "Inherit field " : "Propagate field ",
+				ctable->from.fld);
+		O42A_DEBUG("To: <0x%lx>\n", (long) ctable->to.fld);
 		o42a_debug_dump_mem(field, 1000);
+
 		(kind == DK_INHERIT ? desc->inherit : desc->propagate) (ctable);
 	}
 

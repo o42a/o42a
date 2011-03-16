@@ -68,7 +68,7 @@ public final class FuncAllocation<F extends Func>
 
 	@Override
 	public DataAllocation<AnyOp> toAny() {
-		return new AnyDataAlloc(getModule(), llvmId().toAny(), null);
+		return new AnyAlloc(getModule(), llvmId().toAny(), null);
 	}
 
 	@Override

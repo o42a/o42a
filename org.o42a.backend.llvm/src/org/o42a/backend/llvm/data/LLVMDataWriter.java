@@ -47,6 +47,14 @@ public class LLVMDataWriter implements DataWriter {
 
 	@Override
 	public DataAllocation<AnyOp> nullPtr() {
+		return new AnyAlloc(
+				getModule(),
+				LLVMId.nullId(nullPtr(getModule().getNativePtr()), false),
+				null);
+	}
+
+	@Override
+	public DataAllocation<DataOp> nullDataPtr() {
 		return new AnyDataAlloc(
 				getModule(),
 				LLVMId.nullId(nullPtr(getModule().getNativePtr()), false),

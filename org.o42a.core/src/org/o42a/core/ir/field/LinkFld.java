@@ -87,7 +87,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 				Code code,
 				ObjOp host,
 				ObjectRefFunc constructor) {
-			return constructor.call(code, host.toAny(code));
+			return constructor.call(code, host.ptr().toAny(code));
 		}
 
 	}

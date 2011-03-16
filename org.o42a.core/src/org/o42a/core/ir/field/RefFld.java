@@ -23,9 +23,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
@@ -197,7 +195,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 
 	private void fillTarget(ObjectBodyIR targetBodyIR) {
 		getInstance().object().setValue(
-				targetBodyIR.pointer(targetBodyIR.getGenerator()).toAny());
+				targetBodyIR.pointer(targetBodyIR.getGenerator()).toData());
 	}
 
 	private void fill(boolean fillFields, boolean fillTarget) {
@@ -265,7 +263,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 			return (Type<?, C>) super.getType();
 		}
 
-		public final RecOp<AnyOp> object(Code code) {
+		public final RecOp<DataOp> object(Code code) {
 			return writer().ptr(code, getType().object());
 		}
 
@@ -273,32 +271,32 @@ public abstract class RefFld<C extends Func> extends Fld {
 			return writer().func(code, getType().constructor());
 		}
 
-		public AnyOp target(Code code, ObjOp host) {
+		public DataOp target(Code code, ObjOp host) {
 
-			final AnyOp object = object(code).load(code);
+			final DataOp object = object(code).load(code);
 			final CondBlk noTarget = object.isNull(code).branch(
 					code,
 					"no_target",
 					"has_target");
 			final CodeBlk hasTarget = noTarget.otherwise();
 
-			final AnyOp object1 = hasTarget.phi(object);
+			final DataOp object1 = hasTarget.phi(object);
 
 			hasTarget.go(code.tail());
 
-			final AnyOp object2 = construct(noTarget, host);
+			final DataOp object2 = construct(noTarget, host);
 
 			noTarget.go(code.tail());
 
 			return code.phi(object1, object2);
 		}
 
-		protected abstract AnyOp construct(
+		protected abstract DataOp construct(
 				Code code,
 				ObjOp host,
 				C constructor);
 
-		private AnyOp construct(Code code, ObjOp host) {
+		private DataOp construct(Code code, ObjOp host) {
 
 			final C constructor = constructor(code).load(code);
 
@@ -313,13 +311,13 @@ public abstract class RefFld<C extends Func> extends Fld {
 	public static abstract class Type<O extends Op<C>, C extends Func>
 			extends Fld.Type<O> {
 
-		private AnyPtrRec object;
+		private DataRec<DataOp> object;
 		private FuncRec<C> constructor;
 
 		Type() {
 		}
 
-		public final AnyPtrRec object() {
+		public final DataRec<DataOp> object() {
 			return this.object;
 		}
 
@@ -329,7 +327,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 
 		@Override
 		public void allocate(SubData<O> data) {
-			this.object = data.addPtr("object");
+			this.object = data.addDataPtr("object");
 			this.constructor = data.addCodePtr(
 					"constructor",
 					getSignature());

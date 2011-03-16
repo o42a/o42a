@@ -57,7 +57,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		final long nativePtr =
 			binaryConstant(getModulePtr(), id.getId(), data, start, end);
 
-		return new AnyDataAlloc(getModule(), dataId(id, nativePtr), null);
+		return new AnyAlloc(getModule(), dataId(id, nativePtr), null);
 	}
 
 	@Override
@@ -234,6 +234,16 @@ public class LLVMDataAllocator implements DataAllocator {
 	public DataAllocation<AnyOp> allocatePtr(
 			DataAllocation<?> enclosing,
 			DataAllocation<AnyOp> type) {
+		if (allocate(enclosing)) {
+			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
+		}
+		return new AnyAlloc(container(enclosing));
+	}
+
+	@Override
+	public DataAllocation<DataOp> allocateDataPtr(
+			DataAllocation<?> enclosing,
+			DataAllocation<DataOp> type) {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
 		}

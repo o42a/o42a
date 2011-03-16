@@ -103,6 +103,14 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
+	public RecOp<DataOp> ptr(Code code, DataRec<?> field) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Data(nextPtr, field(nextPtr, field));
+	}
+
+	@Override
 	public <P extends StructOp> RecOp<P> ptr(
 			Code code,
 			StructRec<P> field) {

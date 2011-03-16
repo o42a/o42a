@@ -39,7 +39,6 @@ public class GeneratorTestCase extends CompilerTestCase {
 				parseArgs(System.getProperty("llvm.args", "")));
 
 		try {
-			generator.setDebug(true);
 			generateCode(generator);
 			generator.write();
 		} finally {

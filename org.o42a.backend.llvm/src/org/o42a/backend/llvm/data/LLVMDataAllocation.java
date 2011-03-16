@@ -20,6 +20,7 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -49,6 +50,11 @@ public abstract class LLVMDataAllocation<O extends PtrOp>
 
 	@Override
 	public DataAllocation<AnyOp> toAny() {
+		return new AnyAlloc(getModule(), llvmId().toAny(), getEnclosing());
+	}
+
+	@Override
+	public DataAllocation<DataOp> toData() {
 		return new AnyDataAlloc(getModule(), llvmId().toAny(), getEnclosing());
 	}
 

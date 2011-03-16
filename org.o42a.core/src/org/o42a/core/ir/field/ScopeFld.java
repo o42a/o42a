@@ -23,10 +23,10 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjOp;
@@ -89,7 +89,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 	@Override
 	public void fill(Type instance) {
 		instance.object().setValue(
-				this.target.pointer(instance.getGenerator()).toAny());
+				this.target.pointer(instance.getGenerator()).toData());
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<AnyOp> object(Code code) {
+		public final RecOp<DataOp> object(Code code) {
 			return writer().ptr(code, getType().object());
 		}
 
@@ -121,12 +121,12 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 	public static final class Type extends Fld.Type<Op> {
 
-		private AnyPtrRec object;
+		private DataRec<DataOp> object;
 
 		private Type() {
 		}
 
-		public final AnyPtrRec object() {
+		public final DataRec<DataOp> object() {
 			return this.object;
 		}
 
@@ -142,7 +142,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.object = data.addPtr("object");
+			this.object = data.addDataPtr("object");
 		}
 
 	}

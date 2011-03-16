@@ -22,7 +22,7 @@ package org.o42a.core.ir.field;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
@@ -78,7 +78,7 @@ public abstract class RefFldOp<C extends Func> extends FldOp {
 		code.dumpName("Link field: ", ptr());
 		code.dumpName("Link host: ", host().ptr());
 
-		final AnyOp ptr = ptr().target(code, host());
+		final DataOp ptr = ptr().target(code, host());
 		final Obj targetAscendant = fld().getTargetAscendant();
 		final Obj targetType;
 
@@ -97,7 +97,10 @@ public abstract class RefFldOp<C extends Func> extends FldOp {
 				code,
 				targetAscendant.ir(getGenerator()).getBodyType());
 
-		return targetBodyPtr.op(getBuilder(), targetType, host().getPrecision());
+		return targetBodyPtr.op(
+				getBuilder(),
+				targetType,
+				host().getPrecision());
 	}
 
 	@Override

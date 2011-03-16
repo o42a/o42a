@@ -26,9 +26,9 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.data.AnyPtrRec;
+import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -99,7 +99,7 @@ public final class RefLclOp extends LclOp {
 		final Obj ascendant = getAscendant();
 		final ObjectBodyIR ascendantBodyType =
 			ascendant.ir(getGenerator()).getBodyType();
-		final AnyOp objectPtr = ptr().object(code).load(code);
+		final DataOp objectPtr = ptr().object(code).load(code);
 
 		objectPtr.isNull(code).go(code, exit);
 
@@ -121,7 +121,7 @@ public final class RefLclOp extends LclOp {
 		final ObjectOp newObject =
 			getBuilder().newObject(code, exit, object, CtrOp.NEW_INSTANCE);
 
-		ptr().object(code).store(code, newObject.toAny(code));
+		ptr().object(code).store(code, newObject.ptr());
 		newObject.writeLogicalValue(code, exit);
 	}
 
@@ -141,7 +141,7 @@ public final class RefLclOp extends LclOp {
 			return new RefLclOp(builder, fieldIR, this);
 		}
 
-		public final RecOp<AnyOp> object(Code code) {
+		public final RecOp<DataOp> object(Code code) {
 			return writer().ptr(code, getType().object());
 		}
 
@@ -149,12 +149,12 @@ public final class RefLclOp extends LclOp {
 
 	public static final class Type extends LclOp.Type<Op> {
 
-		private AnyPtrRec object;
+		private DataRec<DataOp> object;
 
 		private Type() {
 		}
 
-		public final AnyPtrRec object() {
+		public final DataRec<DataOp> object() {
 			return this.object;
 		}
 
@@ -170,7 +170,7 @@ public final class RefLclOp extends LclOp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.object = data.addPtr("object");
+			this.object = data.addDataPtr("object");
 		}
 
 	}

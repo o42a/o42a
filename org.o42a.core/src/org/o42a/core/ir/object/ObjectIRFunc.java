@@ -33,7 +33,7 @@ import org.o42a.core.value.LogicalValue;
 abstract class ObjectIRFunc {
 
 	public static AnyOp body(Code code, ObjOp host, ObjectOp body) {
-		return body != null ? body.toAny(code) : host.toAny(code);
+		return body != null ? body.toAny(code) : host.ptr().toAny(code);
 	}
 
 	private final ObjectIR objectIR;
