@@ -41,11 +41,6 @@ final class AnyId extends LLVMId {
 	}
 
 	@Override
-	int[] buildIndices(int len) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public long expression(LLVMModule module) {
 		if (this.nativePtr != 0L) {
 			return this.nativePtr;
@@ -61,6 +56,11 @@ final class AnyId extends LLVMId {
 	@Override
 	public String toString() {
 		return "ANY " + this.prototype;
+	}
+
+	@Override
+	int[] buildIndices(int len) {
+		throw new UnsupportedOperationException();
 	}
 
 }

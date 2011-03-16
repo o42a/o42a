@@ -168,7 +168,7 @@ public final class Top extends AbstractScope implements Container {
 
 		IR(Generator generator, Top scope) {
 			super(generator, scope);
-			this.id = generator.topId();
+			this.id = generator.id("TOP");
 		}
 
 		@Override

@@ -73,14 +73,13 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 				DataAllocator allocator) {
 			return allocator.enter(
 					getEnclosing().getAllocation(),
-					getInstance().getAllocation(), this);
+					getInstance().getAllocation(),
+					this);
 		}
 
 		@Override
 		protected void endTypeAllocation(DataAllocator allocator) {
-			allocator.exit(
-					getEnclosing().getAllocation(),
-					this);
+			allocator.exit(getEnclosing().getAllocation(), this);
 		}
 
 		@Override

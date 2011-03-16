@@ -54,7 +54,7 @@ final class RootScope extends ObjectScope {
 
 		IR(Generator generator, Scope scope) {
 			super(generator, scope);
-			this.id = generator.topId();
+			this.id = generator.id("ROOT");
 		}
 
 		@Override
