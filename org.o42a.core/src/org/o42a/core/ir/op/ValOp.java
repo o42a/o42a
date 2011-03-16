@@ -43,7 +43,7 @@ public final class ValOp extends StructOp {
 		return (Type) super.getType();
 	}
 
-	public final DataOp<Int32op> flags(Code code) {
+	public final RecOp<Int32op> flags(Code code) {
 		return writer().int32(code, getType().flags());
 	}
 
@@ -59,11 +59,11 @@ public final class ValOp extends StructOp {
 		return flags(code).load(code).lshr(code, 2).lowestBit(code);
 	}
 
-	public final DataOp<Int32op> length(Code code) {
+	public final RecOp<Int32op> length(Code code) {
 		return writer().int32(code, getType().length());
 	}
 
-	public final DataOp<Int64op> plainValue(Code code) {
+	public final RecOp<Int64op> plainValue(Code code) {
 		return writer().int64(code, getType().value());
 	}
 

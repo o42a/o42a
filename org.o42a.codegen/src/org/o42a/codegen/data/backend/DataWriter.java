@@ -52,14 +52,14 @@ public interface DataWriter {
 			DataAllocation<O> allocation,
 			Global<O, ?> global);
 
-	void writeInt32(DataAllocation<DataOp<Int32op>> allocation, int value);
+	void writeInt32(DataAllocation<RecOp<Int32op>> allocation, int value);
 
-	void writeInt64(DataAllocation<DataOp<Int64op>> allocation, long value);
+	void writeInt64(DataAllocation<RecOp<Int64op>> allocation, long value);
 
 	void writeNativePtrAsInt64(
-			DataAllocation<DataOp<Int64op>> allocation,
+			DataAllocation<RecOp<Int64op>> allocation,
 			DataAllocation<AnyOp> valueAllocation);
 
-	void writeFp64(DataAllocation<DataOp<Fp64op>> allocation, Double value);
+	void writeFp64(DataAllocation<RecOp<Fp64op>> allocation, Double value);
 
 }

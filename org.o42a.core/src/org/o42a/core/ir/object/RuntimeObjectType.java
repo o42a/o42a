@@ -27,7 +27,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.StructPtrRec;
+import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.Type;
 
@@ -38,7 +38,7 @@ public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 		new RuntimeObjectType();
 
 	private ObjectDataType data;
-	private StructPtrRec<ObjectType.Op> sample;
+	private StructRec<ObjectType.Op> sample;
 
 	private RuntimeObjectType() {
 	}
@@ -47,7 +47,7 @@ public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 		return this.data;
 	}
 
-	public final StructPtrRec<ObjectType.Op> sample() {
+	public final StructRec<ObjectType.Op> sample() {
 		return this.sample;
 	}
 

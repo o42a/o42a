@@ -20,20 +20,20 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.data.CodeRec;
+import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class CodePtrRec<F extends Func> extends CodeRec<F> {
+final class FuncPtrRec<F extends Func> extends FuncRec<F> {
 
-	CodePtrRec(
+	FuncPtrRec(
 			SubData<?> enclosing,
 			CodeId id,
 			Signature<F> signature,
-			Content<CodeRec<F>> content) {
+			Content<FuncRec<F>> content) {
 		super(enclosing, id, signature, content);
 	}
 

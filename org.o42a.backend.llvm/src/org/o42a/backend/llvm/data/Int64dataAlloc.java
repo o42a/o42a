@@ -19,13 +19,13 @@
 */
 package org.o42a.backend.llvm.data;
 
-import org.o42a.backend.llvm.code.op.LLVMDataOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.backend.llvm.code.op.LLVMRecOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.data.DataLayout;
 
 
-final class Int64dataAlloc extends SimpleDataAllocation<DataOp<Int64op>> {
+final class Int64dataAlloc extends SimpleDataAllocation<RecOp<Int64op>> {
 
 	public Int64dataAlloc(ContainerAllocation<?> enclosing) {
 		super(enclosing);
@@ -37,8 +37,8 @@ final class Int64dataAlloc extends SimpleDataAllocation<DataOp<Int64op>> {
 	}
 
 	@Override
-	protected DataOp<Int64op> op(long blockPtr, long nativePtr) {
-		return new LLVMDataOp.Int64(blockPtr, nativePtr);
+	protected RecOp<Int64op> op(long blockPtr, long nativePtr) {
+		return new LLVMRecOp.Int64(blockPtr, nativePtr);
 	}
 
 }

@@ -22,7 +22,7 @@ package org.o42a.core.ir.object;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.CodePtr;
 import org.o42a.codegen.code.Func;
-import org.o42a.codegen.data.CodeRec;
+import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
@@ -32,7 +32,7 @@ import org.o42a.core.def.SourceSpec;
 abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 
 	private final CodeId id;
-	private CodeRec<F> func;
+	private FuncRec<F> func;
 
 	ObjectValueIRFunc(ObjectIR objectIR) {
 		super(objectIR);
@@ -118,6 +118,6 @@ abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 		this.func.setValue(ptr);
 	}
 
-	protected abstract CodeRec<F> func(ObjectDataType data);
+	protected abstract FuncRec<F> func(ObjectDataType data);
 
 }

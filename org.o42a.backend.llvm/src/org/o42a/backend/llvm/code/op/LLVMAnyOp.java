@@ -22,13 +22,25 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Type;
 
 
 public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 	public LLVMAnyOp(long blockPtr, long nativePtr) {
 		super(blockPtr, nativePtr);
+	}
+
+	@Override
+	public final Type<?> getType() {
+		return null;
+	}
+
+	@Override
+	public final Signature<?> getSignature() {
+		return null;
 	}
 
 	@Override
@@ -41,6 +53,46 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		}
 
 		return super.toAny(code);
+	}
+
+	@Override
+	public LLVMRecOp<AnyOp> toPtr(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Any(nextPtr, toPtr(nextPtr, getNativePtr()));
+	}
+
+	@Override
+	public LLVMRecOp<Int32op> toInt32(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Int32(nextPtr, toInt32(nextPtr, getNativePtr()));
+	}
+
+	@Override
+	public LLVMRecOp<Int64op> toInt64(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Int64(nextPtr, toInt64(nextPtr, getNativePtr()));
+	}
+
+	@Override
+	public LLVMRecOp<Fp64op> toFp64(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Fp64(nextPtr, toFp64(nextPtr, getNativePtr()));
+	}
+
+	@Override
+	public LLVMRecOp<RelOp> toRel(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Rel(nextPtr, toRelPtr(nextPtr, getNativePtr()));
 	}
 
 	@Override

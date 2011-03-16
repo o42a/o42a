@@ -28,7 +28,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
@@ -156,7 +156,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<AnyOp> previous(Code code) {
+		public final RecOp<AnyOp> previous(Code code) {
 			return writer().ptr(code, getType().previous());
 		}
 

@@ -21,7 +21,6 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Type;
 
 
 public abstract class Func implements PtrOp {
@@ -54,43 +53,6 @@ public abstract class Func implements PtrOp {
 	@Override
 	public final AnyOp toAny(Code code) {
 		return caller().toAny(code);
-	}
-
-	@Override
-	public DataOp<AnyOp> toPtr(Code code) {
-		return caller().toPtr(code);
-	}
-
-	@Override
-	public final DataOp<Int32op> toInt32(Code code) {
-		return caller().toInt32(code);
-	}
-
-	@Override
-	public final DataOp<Int64op> toInt64(Code code) {
-		return caller().toInt64(code);
-	}
-
-	@Override
-	public final DataOp<Fp64op> toFp64(Code code) {
-		return caller().toFp64(code);
-	}
-
-	@Override
-	public final DataOp<RelOp> toRel(Code code) {
-		return caller().toRel(code);
-	}
-
-	@Override
-	public final <F extends Func> CodeOp<F> toFunc(
-			Code code,
-			Signature<F> signature) {
-		return caller().toFunc(code, signature);
-	}
-
-	@Override
-	public final <O extends StructOp> O to(Code code, Type<O> type) {
-		return caller().to(code, type);
 	}
 
 	public final FuncCaller caller() {

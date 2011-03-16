@@ -26,7 +26,8 @@ import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 
 
@@ -85,47 +86,15 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return new LLVMAnyOp(nextPtr, toAny(nextPtr, getNativePtr()));
 	}
 
-	@Override
-	public LLVMDataOp<AnyOp> toPtr(Code code) {
-
+	public <O extends StructOp> O to(Code code, Type<O> type) {
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Any(nextPtr, toPtr(nextPtr, getNativePtr()));
+		return type.op(new LLVMStruct(
+				type,
+				nextPtr,
+				castStructTo(nextPtr, getNativePtr(), typePtr(type))));
 	}
 
-	@Override
-	public LLVMDataOp<Int32op> toInt32(Code code) {
-
-		final long nextPtr = nextPtr(code);
-
-		return new LLVMDataOp.Int32(nextPtr, toInt32(nextPtr, getNativePtr()));
-	}
-
-	@Override
-	public LLVMDataOp<Int64op> toInt64(Code code) {
-
-		final long nextPtr = nextPtr(code);
-
-		return new LLVMDataOp.Int64(nextPtr, toInt64(nextPtr, getNativePtr()));
-	}
-
-	@Override
-	public LLVMDataOp<Fp64op> toFp64(Code code) {
-
-		final long nextPtr = nextPtr(code);
-
-		return new LLVMDataOp.Fp64(nextPtr, toFp64(nextPtr, getNativePtr()));
-	}
-
-	@Override
-	public LLVMDataOp<RelOp> toRel(Code code) {
-
-		final long nextPtr = nextPtr(code);
-
-		return new LLVMDataOp.Rel(nextPtr, toRelPtr(nextPtr, getNativePtr()));
-	}
-
-	@Override
 	public <F extends Func> LLVMCodeOp<F> toFunc(
 			Code code,
 			Signature<F> signature) {
@@ -137,17 +106,6 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				nextPtr,
 				castFuncTo(nextPtr, getNativePtr(), nativePtr(signature)),
 				signature);
-	}
-
-	@Override
-	public <O extends StructOp> O to(Code code, Type<O> type) {
-
-		final long nextPtr = nextPtr(code);
-
-		return type.op(new LLVMStruct(
-				type,
-				nextPtr,
-				castStructTo(nextPtr, getNativePtr(), typePtr(type))));
 	}
 
 	protected static native long field(
@@ -162,17 +120,17 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 			long pointerPtr,
 			long valuePtr);
 
-	private static native long toAny(long blockPtr, long pointerPtr);
+	static native long toAny(long blockPtr, long pointerPtr);
 
-	private static native long toPtr(long blockPtr, long pointerPtr);
+	static native long toPtr(long blockPtr, long pointerPtr);
 
-	private static native long toInt32(long blockPtr, long pointerPtr);
+	static native long toInt32(long blockPtr, long pointerPtr);
 
-	private static native long toInt64(long blockPtr, long pointerPtr);
+	static native long toInt64(long blockPtr, long pointerPtr);
 
-	private static native long toFp64(long blockPtr, long pointerPtr);
+	static native long toFp64(long blockPtr, long pointerPtr);
 
-	private static native long toRelPtr(long blockPtr, long pointerPtr);
+	static native long toRelPtr(long blockPtr, long pointerPtr);
 
 	private static native long castStructTo(
 			long blockPtr,

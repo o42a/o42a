@@ -271,19 +271,19 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return getType().getAscendant();
 		}
 
-		public final DataOp<RelOp> objectType(Code code) {
+		public final RecOp<RelOp> objectType(Code code) {
 			return writer().relPtr(code, getType().objectType());
 		}
 
-		public final DataOp<RelOp> ancestorBody(Code code) {
+		public final RecOp<RelOp> ancestorBody(Code code) {
 			return writer().relPtr(code, getType().ancestorBody());
 		}
 
-		public final DataOp<AnyOp> methods(Code code) {
+		public final RecOp<AnyOp> methods(Code code) {
 			return writer().ptr(code, getType().methods());
 		}
 
-		public final DataOp<Int32op> flags(Code code) {
+		public final RecOp<Int32op> flags(Code code) {
 			return writer().int32(code, getType().flags());
 		}
 

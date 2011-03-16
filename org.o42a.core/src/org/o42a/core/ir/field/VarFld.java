@@ -25,8 +25,8 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.CodeOp;
-import org.o42a.codegen.data.CodeRec;
+import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.object.ObjOp;
@@ -84,7 +84,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 			return (Type) super.getType();
 		}
 
-		public final CodeOp<AssignerFunc> assigner(Code code) {
+		public final FuncOp<AssignerFunc> assigner(Code code) {
 			return writer().func(code, getType().assigner());
 		}
 
@@ -100,12 +100,12 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
-		private CodeRec<AssignerFunc> assigner;
+		private FuncRec<AssignerFunc> assigner;
 
 		private Type() {
 		}
 
-		public final CodeRec<AssignerFunc> assigner() {
+		public final FuncRec<AssignerFunc> assigner() {
 			return this.assigner;
 		}
 

@@ -25,12 +25,12 @@ import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.op.CodeOp;
+import org.o42a.codegen.code.op.FuncOp;
 
 
 public final class LLVMCodeOp<F extends Func>
 		extends LLVMPtrOp
-		implements CodeOp<F> {
+		implements FuncOp<F> {
 
 	private final Signature<F> signature;
 

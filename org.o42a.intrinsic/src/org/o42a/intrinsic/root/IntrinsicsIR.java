@@ -35,12 +35,12 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
 	private final Root root;
 
-	private StructPtrRec<ObjectType.Op> rootType;
-	private StructPtrRec<ObjectType.Op> voidType;
-	private StructPtrRec<ObjectType.Op> falseType;
-	private StructPtrRec<ObjectType.Op> integerType;
-	private StructPtrRec<ObjectType.Op> floatType;
-	private StructPtrRec<ObjectType.Op> stringType;
+	private StructRec<ObjectType.Op> rootType;
+	private StructRec<ObjectType.Op> voidType;
+	private StructRec<ObjectType.Op> falseType;
+	private StructRec<ObjectType.Op> integerType;
+	private StructRec<ObjectType.Op> floatType;
+	private StructRec<ObjectType.Op> stringType;
 
 	IntrinsicsIR(Root root) {
 		this.root = root;

@@ -20,14 +20,12 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class StructOp implements PtrOp {
+public abstract class StructOp implements DataOp {
 
 	private final StructWriter writer;
 
@@ -35,6 +33,7 @@ public abstract class StructOp implements PtrOp {
 		this.writer = writer;
 	}
 
+	@Override
 	public Type<?> getType() {
 		return writer().getType();
 	}
@@ -43,7 +42,7 @@ public abstract class StructOp implements PtrOp {
 	public void allocated(Code code, StructOp enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
-			final DataOp<?> fieldOp = writer().field(code, field);
+			final RecOp<?> fieldOp = writer().field(code, field);
 
 			fieldOp.allocated(code, this);
 		}
@@ -70,42 +69,7 @@ public abstract class StructOp implements PtrOp {
 	}
 
 	@Override
-	public DataOp<AnyOp> toPtr(Code code) {
-		return writer().toPtr(code);
-	}
-
-	@Override
-	public final DataOp<Int32op> toInt32(Code code) {
-		return writer().toInt32(code);
-	}
-
-	@Override
-	public final DataOp<Int64op> toInt64(Code code) {
-		return writer().toInt64(code);
-	}
-
-	@Override
-	public final DataOp<Fp64op> toFp64(Code code) {
-		return writer().toFp64(code);
-	}
-
-	@Override
-	public final DataOp<RelOp> toRel(Code code) {
-		return writer().toRel(code);
-	}
-
-	@Override
-	public final <F extends Func> CodeOp<F> toFunc(
-			Code code,
-			Signature<F> signature) {
-
-		final SignatureOpBase<F> sign = signature;
-
-		return writer().toFunc(code, sign.allocate(writer().backend()));
-	}
-
-	@Override
-	public final <O extends StructOp> O to(Code code, Type<O> type) {
+	public <O extends StructOp> O to(Code code, Type<O> type) {
 		return writer().to(code, type);
 	}
 

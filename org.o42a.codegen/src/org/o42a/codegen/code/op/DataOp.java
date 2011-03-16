@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,12 +20,13 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.Type;
 
 
-public interface DataOp<O extends Op> extends PtrOp {
+public interface DataOp extends PtrOp {
 
-	O load(Code code);
+	Type<?> getType();
 
-	void store(Code code, O value);
+	<O extends StructOp> O to(Code code, Type<O> type);
 
 }

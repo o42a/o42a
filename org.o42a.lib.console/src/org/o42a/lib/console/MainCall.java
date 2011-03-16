@@ -122,7 +122,8 @@ final class MainCall extends DefinedObject {
 		}
 
 		main.debug("Execution succeed");
-		result.plainValue(main).toInt32(main).load(main).returnValue(main);
+		result.plainValue(main).toAny(main).toInt32(main)
+		.load(main).returnValue(main);
 	}
 
 	private void generateDebugMain(

@@ -119,11 +119,11 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<RelOp> list(Code code) {
+		public final RecOp<RelOp> list(Code code) {
 			return writer().relPtr(code, getType().list());
 		}
 
-		public final DataOp<Int32op> size(Code code) {
+		public final RecOp<Int32op> size(Code code) {
 			return writer().int32(code, getType().size());
 		}
 

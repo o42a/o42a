@@ -29,11 +29,11 @@ public abstract class PtrRec<O extends PtrOp> extends Rec<O, Ptr<O>> {
 		super(enclosing, id, content);
 	}
 
-	public abstract void setNull();
-
 	@Override
-	public final DataType getDataType() {
-		return DataType.DATA_PTR;
+	public DataType getDataType() {
+		return DataType.PTR;
 	}
+
+	public abstract void setNull();
 
 }

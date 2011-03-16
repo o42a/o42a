@@ -20,13 +20,13 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class RelPtrRec extends Rec<DataOp<RelOp>, RelPtr> {
+public final class RelPtrRec extends Rec<RecOp<RelOp>, RelPtr> {
 
 	RelPtrRec(SubData<?> enclosing, CodeId id, Content<RelPtrRec> content) {
 		super(enclosing, id, content);

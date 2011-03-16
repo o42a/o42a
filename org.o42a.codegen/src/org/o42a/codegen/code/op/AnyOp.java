@@ -19,7 +19,19 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.code.Code;
 
-public interface AnyOp extends PtrOp {
+
+public interface AnyOp extends DataOp, CodeOp {
+
+	RecOp<AnyOp> toPtr(Code code);
+
+	RecOp<Int32op> toInt32(Code code);
+
+	RecOp<Int64op> toInt64(Code code);
+
+	RecOp<Fp64op> toFp64(Code code);
+
+	RecOp<RelOp> toRel(Code code);
 
 }

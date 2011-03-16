@@ -88,15 +88,15 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<ObjectType.Op> declaredIn(Code code) {
+		public final RecOp<ObjectType.Op> declaredIn(Code code) {
 			return writer().ptr(code, getType().declaredIn());
 		}
 
-		public final DataOp<Int32op> kind(Code code) {
+		public final RecOp<Int32op> kind(Code code) {
 			return writer().int32(code, getType().kind());
 		}
 
-		public final DataOp<RelOp> fld(Code code) {
+		public final RecOp<RelOp> fld(Code code) {
 			return writer().relPtr(code, getType().fld());
 		}
 
@@ -105,14 +105,14 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<FieldDescIR.Op> {
 
-		private StructPtrRec<ObjectType.Op> declaredIn;
+		private StructRec<ObjectType.Op> declaredIn;
 		private Int32rec kind;
 		private RelPtrRec fld;
 
 		private Type() {
 		}
 
-		public final StructPtrRec<ObjectType.Op> declaredIn() {
+		public final StructRec<ObjectType.Op> declaredIn() {
 			return this.declaredIn;
 		}
 

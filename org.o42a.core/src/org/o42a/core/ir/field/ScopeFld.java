@@ -24,7 +24,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
@@ -113,7 +113,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<AnyOp> object(Code code) {
+		public final RecOp<AnyOp> object(Code code) {
 			return writer().ptr(code, getType().object());
 		}
 

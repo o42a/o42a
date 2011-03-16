@@ -27,7 +27,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
@@ -90,11 +90,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<FieldDescIR.Op> field(Code code) {
+		public final RecOp<FieldDescIR.Op> field(Code code) {
 			return writer().ptr(code, getType().field());
 		}
 
-		public final DataOp<RelOp> fld(Code code) {
+		public final RecOp<RelOp> fld(Code code) {
 			return writer().relPtr(code, getType().body());
 		}
 
@@ -103,18 +103,18 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<OverriderDescIR.Op> {
 
-		private StructPtrRec<FieldDescIR.Op> field;
-		private StructPtrRec<ObjectType.Op> definedIn;
+		private StructRec<FieldDescIR.Op> field;
+		private StructRec<ObjectType.Op> definedIn;
 		private RelPtrRec body;
 
 		private Type() {
 		}
 
-		public final StructPtrRec<FieldDescIR.Op> field() {
+		public final StructRec<FieldDescIR.Op> field() {
 			return this.field;
 		}
 
-		public final StructPtrRec<ObjectType.Op> definedIn() {
+		public final StructRec<ObjectType.Op> definedIn() {
 			return this.definedIn;
 		}
 

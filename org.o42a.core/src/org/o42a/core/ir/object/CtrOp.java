@@ -130,23 +130,23 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<ObjectType.Op> scopeType(Code code) {
+		public final RecOp<ObjectType.Op> scopeType(Code code) {
 			return writer().ptr(code, getType().scopeType());
 		}
 
-		public final CodeOp<ObjectRefFunc> ancestorFunc(Code code) {
+		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
 			return writer().func(code, getType().ancestorFunc());
 		}
 
-		public final DataOp<ObjectType.Op> ancestorType(Code code) {
+		public final RecOp<ObjectType.Op> ancestorType(Code code) {
 			return writer().ptr(code, getType().ancestorType());
 		}
 
-		public final DataOp<ObjectType.Op> type(Code code) {
+		public final RecOp<ObjectType.Op> type(Code code) {
 			return writer().ptr(code, getType().type());
 		}
 
-		public final DataOp<Int32op> flags(Code code) {
+		public final RecOp<Int32op> flags(Code code) {
 			return writer().int32(code, getType().flags());
 		}
 
@@ -158,10 +158,10 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructPtrRec<ObjectType.Op> scopeType;
-		private CodeRec<ObjectRefFunc> ancestorFunc;
-		private StructPtrRec<ObjectType.Op> ancestorType;
-		private StructPtrRec<ObjectType.Op> type;
+		private StructRec<ObjectType.Op> scopeType;
+		private FuncRec<ObjectRefFunc> ancestorFunc;
+		private StructRec<ObjectType.Op> ancestorType;
+		private StructRec<ObjectType.Op> type;
 		private Int32rec flags;
 
 		private Type() {
@@ -172,19 +172,19 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructPtrRec<ObjectType.Op> scopeType() {
+		public final StructRec<ObjectType.Op> scopeType() {
 			return this.scopeType;
 		}
 
-		public final CodeRec<ObjectRefFunc> ancestorFunc() {
+		public final FuncRec<ObjectRefFunc> ancestorFunc() {
 			return this.ancestorFunc;
 		}
 
-		public final StructPtrRec<ObjectType.Op> ancestorType() {
+		public final StructRec<ObjectType.Op> ancestorType() {
 			return this.ancestorType;
 		}
 
-		public final StructPtrRec<ObjectType.Op> type() {
+		public final StructRec<ObjectType.Op> type() {
 			return this.type;
 		}
 
