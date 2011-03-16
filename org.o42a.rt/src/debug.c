@@ -105,10 +105,10 @@ static inline void dbg_mem_name(const o42a_dbg_header_t *const header) {
 void o42a_dbg_mem_name(
 		const char *const prefix,
 		const void *const ptr) {
+	o42a_debug(prefix);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
-	o42a_debug(prefix);
 	dbg_mem_name(header);
 	fprintf(stderr, " <0x%lx>: %s\n", (long) ptr, header->type_info->name);
 }

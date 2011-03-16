@@ -20,12 +20,12 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.op.LLVMAnyOp;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public final class AnyDataAlloc extends SimpleDataAllocation<AnyOp> {
+public final class AnyDataAlloc extends SimpleDataAllocation<DataOp> {
 
 	AnyDataAlloc(ContainerAllocation<?> enclosing) {
 		super(enclosing);
@@ -44,7 +44,7 @@ public final class AnyDataAlloc extends SimpleDataAllocation<AnyOp> {
 	}
 
 	@Override
-	public DataAllocation<AnyOp> toAny() {
+	public DataAllocation<DataOp> toData() {
 		return this;
 	}
 

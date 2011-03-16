@@ -69,6 +69,24 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
+	public static final class Data extends LLVMRecOp<DataOp> {
+
+		public Data(long blockPtr, long nativePtr) {
+			super(blockPtr, nativePtr);
+		}
+
+		@Override
+		public Data create(long blockPtr, long nativePtr) {
+			return new Data(blockPtr, nativePtr);
+		}
+
+		@Override
+		protected DataOp createLoaded(long blockPtr, long nativePtr) {
+			return new LLVMAnyOp(blockPtr, nativePtr);
+		}
+
+	}
+
 	public static final class Int32 extends LLVMRecOp<Int32op> {
 
 		public Int32(long blockPtr, long nativePtr) {

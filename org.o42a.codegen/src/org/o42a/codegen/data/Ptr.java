@@ -21,6 +21,7 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 
@@ -42,6 +43,10 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 
 	public final RelPtr relativeTo(Ptr<?> ptr) {
 		return new RelPtr(this, ptr);
+	}
+
+	public final Ptr<DataOp> toData() {
+		return new Ptr<DataOp>(this.allocation.toData());
 	}
 
 	public final O op(Code code) {

@@ -60,7 +60,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	private RelPtrRec objectType;
 	private RelPtrRec ancestorBody;
-	private AnyPtrRec methods;
+	private DataRec<DataOp> methods;
 	private Int32rec flags;
 
 	ObjectBodyIR(ObjectIRStruct objectIRStruct) {
@@ -120,7 +120,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return this.ancestorBody;
 	}
 
-	public final AnyPtrRec methods() {
+	public final DataRec<DataOp> methods() {
 		return this.methods;
 	}
 
@@ -172,7 +172,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	protected void allocate(SubData<Op> data) {
 		this.objectType = data.addRelPtr("object_type");
 		this.ancestorBody = data.addRelPtr("ancestor_body");
-		this.methods = data.addPtr("methods");
+		this.methods = data.addDataPtr("methods");
 		this.flags = data.addInt32("flags");
 		allocateFields(data);
 		allocateDeps(data);
@@ -199,7 +199,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 
 		this.methods.setValue(
-				getMethodsIR().data(generator).getPointer().toAny());
+				getMethodsIR().data(generator).getPointer().toData());
 	}
 
 	final List<Fld> getDeclaredFields() {
@@ -279,7 +279,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return writer().relPtr(code, getType().ancestorBody());
 		}
 
-		public final RecOp<AnyOp> methods(Code code) {
+		public final RecOp<DataOp> methods(Code code) {
 			return writer().ptr(code, getType().methods());
 		}
 
@@ -324,10 +324,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		public final ObjectMethodsIR.Op loadMethods(Code code) {
 
-			final AnyOp metaPtr =
-				methods(code).load(code);
+			final DataOp methodsPtr = methods(code).load(code);
 
-			return metaPtr.to(code, getType().getMethodsIR());
+			return methodsPtr.to(code, getType().getMethodsIR());
 		}
 
 		@Override

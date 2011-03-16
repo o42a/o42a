@@ -23,7 +23,7 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -99,7 +99,7 @@ public class DepOp extends IROp implements HostOp {
 
 	public void fill(LocalBuilder builder, Code code, CodePos exit) {
 
-		final AnyOp value;
+		final DataOp value;
 		final Field<?> dependency = depIR().getDep().getDependency();
 
 		if (dependency != null) {
@@ -109,9 +109,9 @@ public class DepOp extends IROp implements HostOp {
 					exit,
 					dependency.getKey());
 
-			value = field.toAny(code);
+			value = field.ptr();
 		} else {
-			value = builder.owner().toAny(code);
+			value = builder.owner().ptr();
 		}
 
 		ptr().object(code).store(code, value);

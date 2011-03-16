@@ -26,10 +26,8 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.data.AnyPtrRec;
+import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.*;
@@ -89,7 +87,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final ObjFld.Op fld =
 			builder.getFunction().ptrArg(code, 1)
 			.to(code, OBJ_FLD);
-		final AnyOp previousPtr = fld.previous(code).load(code);
+		final DataOp previousPtr = fld.previous(code).load(code);
 
 		final CondBlk construct =
 			previousPtr.isNull(code).branch(code, "construct", "delegate");
@@ -124,15 +122,15 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			ObjBuilder builder,
 			Code code,
 			CodePos exit,
-			AnyOp previousPtr) {
+			DataOp previousPtr) {
 		code.dumpName("Delegate to ", previousPtr);
 
 		final Op previous = previousPtr.to(code, getType().getType());
 		final ObjectConstructorFunc constructor =
 			previous.constructor(code).load(code);
-		final AnyOp ancestorPtr = constructor.call(
+		final DataOp ancestorPtr = constructor.call(
 				code,
-				builder.host().toAny(code),
+				builder.host().ptr().toAny(code),
 				previous.toAny(code));
 		final ObjectOp ancestor =
 			anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
@@ -156,7 +154,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<AnyOp> previous(Code code) {
+		public final RecOp<DataOp> previous(Code code) {
 			return writer().ptr(code, getType().previous());
 		}
 
@@ -165,7 +163,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				Code code,
 				ObjOp host,
 				ObjectConstructorFunc constructor) {
-			return constructor.call(code, host.toAny(code), toAny(code));
+			return constructor.call(code, host.ptr().toAny(code), toAny(code));
 		}
 
 	}
@@ -173,19 +171,19 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	public static final class Type
 			extends RefFld.Type<Op, ObjectConstructorFunc> {
 
-		private AnyPtrRec previous;
+		private DataRec<DataOp> previous;
 
 		private Type() {
 		}
 
-		public final AnyPtrRec previous() {
+		public final DataRec<DataOp> previous() {
 			return this.previous;
 		}
 
 		@Override
 		public void allocate(SubData<Op> data) {
 			super.allocate(data);
-			this.previous = data.addPtr("previous");
+			this.previous = data.addDataPtr("previous");
 		}
 
 		@Override

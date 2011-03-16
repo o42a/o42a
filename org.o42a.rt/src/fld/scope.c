@@ -61,5 +61,7 @@ void o42a_fld_scope_inherit(o42a_obj_ctable_t *const ctable) {
 
 	to->object = from->object;
 
+	o42a_debug_mem_name("Leave the scope unchanged: ", from->object);
+
 	O42A_RETURN;
 }

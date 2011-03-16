@@ -24,8 +24,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
@@ -37,14 +36,14 @@ final class AnonymousObjOp extends ObjectOp {
 
 	private final Obj wellKnownType;
 
-	AnonymousObjOp(ObjectTypeOp data, AnyOp ptr, Obj wellKnownType) {
+	AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
 		super(ptr, data);
 		this.wellKnownType = wellKnownType;
 	}
 
 	AnonymousObjOp(
 			CodeBuilder builder,
-			PtrOp ptr,
+			DataOp ptr,
 			Obj wellKnownType) {
 		super(builder, ptr, DERIVED);
 		this.wellKnownType =
@@ -55,11 +54,6 @@ final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public final Obj getWellKnownType() {
 		return this.wellKnownType;
-	}
-
-	@Override
-	public final AnyOp ptr() {
-		return (AnyOp) super.ptr();
 	}
 
 	@Override

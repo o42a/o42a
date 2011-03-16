@@ -70,6 +70,10 @@ public interface DataAllocator {
 			DataAllocation<?> enclosing,
 			DataAllocation<AnyOp> type);
 
+	DataAllocation<DataOp> allocateDataPtr(
+			DataAllocation<?> enclosing,
+			DataAllocation<DataOp> type);
+
 	<P extends StructOp> DataAllocation<P> allocatePtr(
 			DataAllocation<?> enclosing,
 			DataAllocation<P> type,
