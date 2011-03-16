@@ -193,7 +193,7 @@ public abstract class SubData<O extends StructOp>
 	}
 
 	protected <D extends Data<?>> D add(D data) {
-		data.allocateData(getGenerator());
+		data.allocateData();
 		this.size++;
 		return this.data.add(data);
 	}

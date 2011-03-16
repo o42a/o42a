@@ -110,19 +110,25 @@ public abstract class Debug extends Globals {
 	}
 
 	@Override
-	protected void addType(SubData<?> typeData) {
-		super.addType(typeData);
+	protected void registerType(SubData<?> typeData) {
+		super.registerType(typeData);
 		if (!isDebug()) {
 			return;
 		}
-		if (!typeData.getInstance().isDebugInfo()) {
-
-			final Type<?> type = typeData.getInstance();
-			final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
-
-			newGlobal().struct(typeInfo);
-			this.typeInfo.put(typeData.getPointer(), typeInfo);
+		if (typeData.getInstance().isDebugInfo()) {
+			return;
 		}
+
+		final Type<?> type = typeData.getInstance();
+		final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
+
+		newGlobal().struct(typeInfo);
+		this.typeInfo.put(typeData.getPointer(), typeInfo);
+	}
+
+	@Override
+	protected void addType(SubData<?> typeData) {
+		super.addType(typeData);
 	}
 
 	@Override

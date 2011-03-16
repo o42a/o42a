@@ -20,9 +20,9 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -38,8 +38,9 @@ public final class Int32rec extends Rec<DataOp<Int32op>, Integer> {
 	}
 
 	@Override
-	protected void allocate(Generator generator) {
-		setAllocation(generator.dataAllocator().allocateInt32(
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocateInt32(
+				getEnclosing().getAllocation(),
 				getAllocation()));
 	}
 

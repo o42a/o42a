@@ -39,35 +39,44 @@ public interface DataAllocator {
 			Global<O, ?> global);
 
 	<O extends StructOp> DataAllocation<O> enter(
+			DataAllocation<?> enclosing,
 			DataAllocation<O> type,
 			SubData<O> data);
 
-	void exit(SubData<?> data);
+	void exit(DataAllocation<?> enclosing, SubData<?> data);
 
 	void end(Global<?, ?> global);
 
 	void end(Type<?> type);
 
 	DataAllocation<DataOp<Int32op>> allocateInt32(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<Int32op>> type);
 
 	DataAllocation<DataOp<Int64op>> allocateInt64(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<Int64op>> type);
 
 	DataAllocation<DataOp<Fp64op>> allocateFp64(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<Fp64op>> allocation);
 
 	<F extends Func> DataAllocation<CodeOp<F>> allocateCodePtr(
+			DataAllocation<?> enclosing,
 			DataAllocation<CodeOp<F>> type,
 			Signature<F> signature);
 
-	DataAllocation<AnyOp> allocatePtr(DataAllocation<AnyOp> type);
+	DataAllocation<AnyOp> allocatePtr(
+			DataAllocation<?> enclosing,
+			DataAllocation<AnyOp> type);
 
 	<P extends StructOp> DataAllocation<P> allocatePtr(
+			DataAllocation<?> enclosing,
 			DataAllocation<P> type,
 			DataAllocation<P> struct);
 
 	DataAllocation<DataOp<RelOp>> allocateRelPtr(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<RelOp>> type);
 
 }

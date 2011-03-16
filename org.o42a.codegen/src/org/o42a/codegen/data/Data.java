@@ -24,6 +24,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.DataBase;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -73,7 +74,7 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 		return this.id.toString();
 	}
 
-	protected abstract void allocate(Generator generator);
+	protected abstract void allocate(DataAllocator allocator);
 
 	protected abstract void write(DataWriter writer);
 
@@ -85,8 +86,12 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 		getPointer().setAllocation(allocation);
 	}
 
-	final void allocateData(Generator generator) {
-		allocate(generator);
+	final void allocateData() {
+		allocate(getGenerator().dataAllocator());
+	}
+
+	void allocateType(boolean fully) {
+		allocateData();
 	}
 
 	final Data<?> getNext() {

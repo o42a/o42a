@@ -20,9 +20,9 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -38,8 +38,10 @@ public final class Fp64rec extends Rec<DataOp<Fp64op>, Double> {
 	}
 
 	@Override
-	protected void allocate(Generator generator) {
-		setAllocation(generator.dataAllocator().allocateFp64(getAllocation()));
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocateFp64(
+				getEnclosing().getAllocation(),
+				getAllocation()));
 	}
 
 	@Override

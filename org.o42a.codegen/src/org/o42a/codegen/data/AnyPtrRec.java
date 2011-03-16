@@ -20,8 +20,8 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -37,8 +37,9 @@ public final class AnyPtrRec extends PtrRec<AnyOp> {
 	}
 
 	@Override
-	protected void allocate(Generator generator) {
-		setAllocation(generator.dataAllocator().allocatePtr(
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocatePtr(
+				getEnclosing().getAllocation(),
 				getAllocation()));
 	}
 

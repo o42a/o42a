@@ -33,8 +33,11 @@ import org.o42a.codegen.data.backend.DataAllocator;
 
 public class LLVMDataAllocator implements DataAllocator {
 
+	static ContainerAllocation<?> container(DataAllocation<?> allocation) {
+		return (ContainerAllocation<?>) allocation;
+	}
+
 	private final LLVMModule module;
-	private ContainerAllocation<?> top;
 
 	LLVMDataAllocator(LLVMModule module) {
 		this.module = module;
@@ -59,12 +62,11 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	@Override
 	public <O extends StructOp> DataAllocation<O> begin(Type<O> type) {
-		return push(new TypeAllocation<O>(
+		return new TypeAllocation<O>(
 				getModule(),
 				createType(getModulePtr()),
 				createTypeData(getModulePtr()),
-				this.top,
-				type));
+				type);
 	}
 
 	@Override
@@ -83,17 +85,17 @@ public class LLVMDataAllocator implements DataAllocator {
 			typeDataPtr = createTypeData(getModulePtr());
 		}
 
-		return push(new ContainerAllocation.Global<O>(
+		return new ContainerAllocation.Global<O>(
 				getModule(),
 				typePtr,
 				typeDataPtr,
-				this.top,
 				global.getId(),
-				global.getInstance()));
+				global.getInstance());
 	}
 
 	@Override
 	public <O extends StructOp> DataAllocation<O> enter(
+			DataAllocation<?> enclosing,
 			DataAllocation<O> type,
 			SubData<O> data) {
 
@@ -108,17 +110,18 @@ public class LLVMDataAllocator implements DataAllocator {
 			typeDataPtr = createTypeData(getModulePtr());
 		}
 
-		return push(new ContainerAllocation.Struct<O>(
+		return new ContainerAllocation.Struct<O>(
 				typePtr,
 				typeDataPtr,
-				this.top,
-				data.getInstance()));
+				container(enclosing),
+				data.getInstance());
 	}
 
 	@Override
-	public void exit(SubData<?> data) {
+	public void exit(DataAllocation<?> enclosing, SubData<?> data) {
 
-		final ContainerAllocation<?> allocation = pull();
+		final ContainerAllocation<?> allocation =
+			container(data.getPointer().getAllocation());
 
 		if (!allocation.isTypeAllocated()) {
 			allocation.setUniqueTypePtr(refineType(
@@ -128,10 +131,10 @@ public class LLVMDataAllocator implements DataAllocator {
 					allocation.getTypeDataPtr(),
 					data.getInstance().isPacked()));
 		}
-		if (allocate()) {
+		if (allocate(enclosing)) {
 			allocation.setNativePtr(allocateStruct(
 					getModulePtr(),
-					getTypeDataPtr(),
+					typeDataPtr(enclosing),
 					allocation.getTypePtr()));
 		} else {
 			allocation.setNativePtr(allocation.getTypePtr());
@@ -142,7 +145,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	public void end(Global<?, ?> global) {
 
 		final ContainerAllocation.Global<?> allocation =
-			(ContainerAllocation.Global<?>) pull();
+			(ContainerAllocation.Global<?>) global.getPointer().getAllocation();
 
 		assert allocation.llvmId().getGlobalId().equals(global.getId()) :
 			"Error closing global data " + global;
@@ -166,7 +169,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public void end(Type<?> type) {
 
-		final TypeAllocation<?> allocation = (TypeAllocation<?>) pull();
+		final TypeAllocation<?> allocation =
+			(TypeAllocation<?>) type.pointer(
+					type.getGenerator()).getAllocation();
 
 		assert type.pointer(type.getGenerator()).getAllocation() == allocation :
 			"Wrong " + type + " allocation: " + allocation
@@ -184,77 +189,85 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	@Override
 	public DataAllocation<DataOp<Int32op>> allocateInt32(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<Int32op>> type) {
-		if (allocate()) {
-			allocateInt32(getModulePtr(), getTypeDataPtr());
+		if (allocate(enclosing)) {
+			allocateInt32(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new Int32dataAlloc(this.top);
+		return new Int32dataAlloc(container(enclosing));
 	}
 
 	@Override
 	public DataAllocation<DataOp<Int64op>> allocateInt64(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<Int64op>> type) {
-		if (allocate()) {
-			allocateInt64(getModulePtr(), getTypeDataPtr());
+		if (allocate(enclosing)) {
+			allocateInt64(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new Int64dataAlloc(this.top);
+		return new Int64dataAlloc(container(enclosing));
 	}
 
 	@Override
 	public DataAllocation<DataOp<Fp64op>> allocateFp64(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<Fp64op>> type) {
-		if (allocate()) {
-			allocateFp64(getModulePtr(), getTypeDataPtr());
+		if (allocate(enclosing)) {
+			allocateFp64(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new Fp64dataAlloc(this.top);
+		return new Fp64dataAlloc(container(enclosing));
 	}
 
 	@Override
 	public <F extends Func> DataAllocation<CodeOp<F>> allocateCodePtr(
+			DataAllocation<?> enclosing,
 			DataAllocation<CodeOp<F>> type,
 			Signature<F> signature) {
-		if (allocate()) {
+		if (allocate(enclosing)) {
 			allocateCodePtr(
-					getTypeDataPtr(),
+					typeDataPtr(enclosing),
 					LLVMCode.nativePtr(signature));
 		}
-		return new FuncPtrAlloc<F>(this.top, signature);
+		return new FuncPtrAlloc<F>(container(enclosing), signature);
 	}
 
 	@Override
-	public DataAllocation<AnyOp> allocatePtr(DataAllocation<AnyOp> type) {
-		if (allocate()) {
-			allocatePtr(getModulePtr(), getTypeDataPtr());
+	public DataAllocation<AnyOp> allocatePtr(
+			DataAllocation<?> enclosing,
+			DataAllocation<AnyOp> type) {
+		if (allocate(enclosing)) {
+			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new AnyDataAlloc(this.top);
+		return new AnyDataAlloc(container(enclosing));
 	}
 
 	@Override
 	public <P extends StructOp> DataAllocation<P> allocatePtr(
+			DataAllocation<?> enclosing,
 			DataAllocation<P> type,
 			DataAllocation<P> struct) {
 
 		final ContainerAllocation<P> llvmStruct =
 			(ContainerAllocation<P>) struct;
 
-		if (allocate()) {
+		if (allocate(enclosing)) {
 			allocateStructPtr(
-					getTypeDataPtr(),
+					typeDataPtr(enclosing),
 					llvmStruct.getTypePtr());
 		}
 
 		return new SimpleDataAllocation.StructPtr<P>(
-				this.top,
+				container(enclosing),
 				llvmStruct.getType());
 	}
 
 	@Override
 	public DataAllocation<DataOp<RelOp>> allocateRelPtr(
+			DataAllocation<?> enclosing,
 			DataAllocation<DataOp<RelOp>> type) {
-		if (allocate()) {
-			allocateRelPtr(getModulePtr(), getTypeDataPtr());
+		if (allocate(enclosing)) {
+			allocateRelPtr(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new RelDataAlloc(this.top);
+		return new RelDataAlloc(container(enclosing));
 	}
 
 	@Override
@@ -286,31 +299,16 @@ public class LLVMDataAllocator implements DataAllocator {
 		return new DataLayout(structLayout(getModulePtr(), type.getTypePtr()));
 	}
 
-	private boolean allocate() {
-		return !this.top.isTypeAllocated();
+	private static boolean allocate(DataAllocation<?> enclosing) {
+		return !container(enclosing).isTypeAllocated();
 	}
 
-	private long getTypeDataPtr() {
-		return this.top.getTypeDataPtr();
+	private static long typeDataPtr(DataAllocation<?> enclosing) {
+		return container(enclosing).getTypeDataPtr();
 	}
 
 	private long getModulePtr() {
 		return getModule().getNativePtr();
-	}
-
-	private <O extends StructOp> ContainerAllocation<O> push(
-			ContainerAllocation<O> allocation) {
-		this.top = allocation;
-		return allocation;
-	}
-
-	private ContainerAllocation<?> pull() {
-
-		final ContainerAllocation<?> top = this.top;
-
-		this.top = top.getEnclosing();
-
-		return top;
 	}
 
 	private static long typePtr(DataAllocation<?> allocation) {

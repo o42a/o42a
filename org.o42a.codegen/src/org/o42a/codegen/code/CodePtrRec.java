@@ -20,10 +20,10 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.CodeRec;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -45,8 +45,9 @@ final class CodePtrRec<F extends Func> extends CodeRec<F> {
 	}
 
 	@Override
-	protected void allocate(Generator generator) {
-		setAllocation(generator.dataAllocator().allocateCodePtr(
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocateCodePtr(
+				getEnclosing().pointer(getGenerator()).getAllocation(),
 				getAllocation(),
 				getSignature()));
 	}

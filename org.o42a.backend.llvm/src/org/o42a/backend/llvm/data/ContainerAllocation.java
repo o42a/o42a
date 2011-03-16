@@ -157,10 +157,9 @@ public abstract class ContainerAllocation<O extends StructOp>
 				LLVMModule module,
 				long typePtr,
 				long typeDataPtr,
-				ContainerAllocation<?> prev,
 				CodeId id,
 				Type<O> type) {
-			super(module, typePtr, typeDataPtr, prev, type);
+			super(module, typePtr, typeDataPtr, null, type);
 			this.llvmId = dataId(id, this);
 		}
 

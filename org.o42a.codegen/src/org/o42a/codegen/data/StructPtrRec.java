@@ -20,15 +20,14 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
 public final class StructPtrRec<O extends StructOp> extends PtrRec<O> {
 
 	private final Type<O> type;
-	private Generator generator;
 
 	StructPtrRec(
 			SubData<?> enclosing,
@@ -45,15 +44,15 @@ public final class StructPtrRec<O extends StructOp> extends PtrRec<O> {
 
 	@Override
 	public void setNull() {
-		setValue(new Ptr<O>(this.generator.dataWriter().nullPtr(getType())));
+		setValue(new Ptr<O>(getGenerator().dataWriter().nullPtr(getType())));
 	}
 
 	@Override
-	protected void allocate(Generator generator) {
-		this.generator = generator;
-		setAllocation(generator.dataAllocator().allocatePtr(
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocatePtr(
+				getEnclosing().getAllocation(),
 				getAllocation(),
-				this.type.pointer(generator).getAllocation()));
+				this.type.pointer(getGenerator()).getAllocation()));
 	}
 
 	@Override
