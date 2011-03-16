@@ -23,7 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
@@ -64,9 +64,9 @@ final class DebugInfo extends Struct<DebugInfo.Op> {
 			generator.newGlobal().setConstant().struct(this.functions)
 			.getInstance();
 
-		final StructPtrRec<DbgFunctions.Op> functionsPtr =
+		final StructRec<DbgFunctions.Op> functionsPtr =
 			data.addPtr("functions", functions);
-		final Rec<DataOp<Int32op>, Integer> numFunctions =
+		final Rec<RecOp<Int32op>, Integer> numFunctions =
 			data.addInt32("num_functions");
 
 		functionsPtr.setValue(functions.data(generator).getPointer());

@@ -24,8 +24,8 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.CodeOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
@@ -265,11 +265,11 @@ public abstract class RefFld<C extends Func> extends Fld {
 			return (Type<?, C>) super.getType();
 		}
 
-		public final DataOp<AnyOp> object(Code code) {
+		public final RecOp<AnyOp> object(Code code) {
 			return writer().ptr(code, getType().object());
 		}
 
-		public CodeOp<C> constructor(Code code) {
+		public FuncOp<C> constructor(Code code) {
 			return writer().func(code, getType().constructor());
 		}
 
@@ -314,7 +314,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 			extends Fld.Type<O> {
 
 		private AnyPtrRec object;
-		private CodeRec<C> constructor;
+		private FuncRec<C> constructor;
 
 		Type() {
 		}
@@ -323,7 +323,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 			return this.object;
 		}
 
-		public final CodeRec<C> constructor() {
+		public final FuncRec<C> constructor() {
 			return this.constructor;
 		}
 

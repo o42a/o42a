@@ -21,7 +21,7 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.StructOp;
 
 
@@ -41,11 +41,11 @@ public abstract class CodeBase {
 		return result;
 	}
 
-	public <O extends StructOp> DataOp<O> allocatePtr(Type<O> type) {
+	public <O extends StructOp> RecOp<O> allocatePtr(Type<O> type) {
 		assertIncomplete();
 
 		final Code code = (Code) this;
-		final DataOp<O> result = writer().allocatePtr(
+		final RecOp<O> result = writer().allocatePtr(
 				type.data(code.getGenerator()).getAllocation());
 
 		result.allocated(code, null);

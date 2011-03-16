@@ -20,9 +20,6 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.data.Type;
 
 
 public interface PtrOp extends Op {
@@ -34,19 +31,5 @@ public interface PtrOp extends Op {
 	BoolOp eq(Code code, PtrOp other);
 
 	AnyOp toAny(Code code);
-
-	DataOp<AnyOp> toPtr(Code code);
-
-	DataOp<Int32op> toInt32(Code code);
-
-	DataOp<Int64op> toInt64(Code code);
-
-	DataOp<Fp64op> toFp64(Code code);
-
-	DataOp<RelOp> toRel(Code code);
-
-	<F extends Func> CodeOp<F> toFunc(Code code, Signature<F> signature);
-
-	<O extends StructOp> O to(Code code, Type<O> type);
 
 }

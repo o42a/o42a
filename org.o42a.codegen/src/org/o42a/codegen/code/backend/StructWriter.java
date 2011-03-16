@@ -25,27 +25,25 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public interface StructWriter extends PtrOp {
+public interface StructWriter extends DataOp {
 
-	Type<?> getType();
+	RecOp<?> field(Code code, Data<?> field);
 
-	DataOp<?> field(Code code, Data<?> field);
+	RecOp<Int32op> int32(Code code, Int32rec field);
 
-	DataOp<Int32op> int32(Code code, Int32rec field);
+	RecOp<Int64op> int64(Code code, Int64rec field);
 
-	DataOp<Int64op> int64(Code code, Int64rec field);
+	RecOp<Fp64op> fp64(Code code, Fp64rec field);
 
-	DataOp<Fp64op> fp64(Code code, Fp64rec field);
+	RecOp<AnyOp> ptr(Code code, AnyPtrRec field);
 
-	DataOp<AnyOp> ptr(Code code, AnyPtrRec field);
+	<P extends StructOp> RecOp<P> ptr(Code code, StructRec<P> field);
 
-	<P extends StructOp> DataOp<P> ptr(Code code, StructPtrRec<P> field);
-
-	DataOp<RelOp> relPtr(Code code, RelPtrRec field);
+	RecOp<RelOp> relPtr(Code code, RelPtrRec field);
 
 	<O extends StructOp> O struct(Code code, Type<O> field);
 
-	<F extends Func> CodeOp<F> func(Code code, CodeRec<F> field);
+	<F extends Func> FuncOp<F> func(Code code, FuncRec<F> field);
 
 	CodeBackend backend();
 

@@ -25,7 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AnyPtrRec;
 import org.o42a.codegen.data.SubData;
@@ -130,7 +130,7 @@ public class DepIR {
 			return (Type) super.getType();
 		}
 
-		public final DataOp<AnyOp> object(Code code) {
+		public final RecOp<AnyOp> object(Code code) {
 			return writer().ptr(code, getType().object());
 		}
 

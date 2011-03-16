@@ -22,12 +22,12 @@ package org.o42a.backend.llvm.data;
 import org.o42a.backend.llvm.code.op.LLVMCodeOp;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.op.CodeOp;
+import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.DataLayout;
 
 
 final class FuncPtrAlloc<F extends Func>
-		extends SimpleDataAllocation<CodeOp<F>> {
+		extends SimpleDataAllocation<FuncOp<F>> {
 
 	private final Signature<F> signature;
 
@@ -44,7 +44,7 @@ final class FuncPtrAlloc<F extends Func>
 	}
 
 	@Override
-	protected CodeOp<F> op(long blockPtr, long nativePtr) {
+	protected FuncOp<F> op(long blockPtr, long nativePtr) {
 		return new LLVMCodeOp<F>(
 				blockPtr,
 				nativePtr,

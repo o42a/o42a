@@ -29,7 +29,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.data.CodeRec;
+import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
@@ -329,7 +329,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected CodeRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
 			return data.valueFunc();
 		}
 
@@ -371,7 +371,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected CodeRec<ObjectCondFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectCondFunc> func(ObjectDataType data) {
 			return data.requirementFunc();
 		}
 
@@ -408,7 +408,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected CodeRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
 			return data.claimFunc();
 		}
 
@@ -445,7 +445,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected CodeRec<ObjectCondFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectCondFunc> func(ObjectDataType data) {
 			return data.conditionFunc();
 		}
 
@@ -482,7 +482,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected CodeRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
 			return data.propositionFunc();
 		}
 

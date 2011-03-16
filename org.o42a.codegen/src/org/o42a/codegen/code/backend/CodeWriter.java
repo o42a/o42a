@@ -59,9 +59,9 @@ public interface CodeWriter {
 
 	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
 
-	DataOp<AnyOp> allocatePtr();
+	RecOp<AnyOp> allocatePtr();
 
-	<O extends StructOp> DataOp<O> allocatePtr(DataAllocation<O> allocation);
+	<O extends StructOp> RecOp<O> allocatePtr(DataAllocation<O> allocation);
 
 	<O extends StructOp> O allocateStruct(DataAllocation<O> allocation);
 

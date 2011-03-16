@@ -24,7 +24,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
@@ -35,7 +35,7 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 		new DbgStackFrameType();
 
 	private AnyPtrRec name;
-	private StructPtrRec<Op> prev;
+	private StructRec<Op> prev;
 
 	private DbgStackFrameType() {
 	}
@@ -49,7 +49,7 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 		return this.name;
 	}
 
-	public final StructPtrRec<Op> getPrev() {
+	public final StructRec<Op> getPrev() {
 		return this.prev;
 	}
 
@@ -80,11 +80,11 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 			return (DbgStackFrameType) super.getType();
 		}
 
-		public final DataOp<AnyOp> name(Code code) {
+		public final RecOp<AnyOp> name(Code code) {
 			return writer().ptr(code, getType().name());
 		}
 
-		public final DataOp<Op> prev(Code code) {
+		public final RecOp<Op> prev(Code code) {
 			return writer().ptr(code, getType().getPrev());
 		}
 

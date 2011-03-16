@@ -78,16 +78,16 @@ public abstract class SubData<O extends StructOp>
 		return add(new Fp64rec(this, id(name), content));
 	}
 
-	public final <F extends Func> CodeRec<F> addCodePtr(
+	public final <F extends Func> FuncRec<F> addCodePtr(
 			String name,
 			Signature<F> signature) {
 		return addCodePtr(name, signature, null);
 	}
 
-	public final <F extends Func> CodeRec<F> addCodePtr(
+	public final <F extends Func> FuncRec<F> addCodePtr(
 			String name,
 			Signature<F> signature,
-			Content<CodeRec<F>> content) {
+			Content<FuncRec<F>> content) {
 
 		final SignatureDataBase<F> sign = signature;
 
@@ -108,17 +108,17 @@ public abstract class SubData<O extends StructOp>
 		return add(new AnyPtrRec(this, id(name), content));
 	}
 
-	public final <P extends StructOp> StructPtrRec<P> addPtr(
+	public final <P extends StructOp> StructRec<P> addPtr(
 			String name,
 			Type<P> type) {
-		return add(new StructPtrRec<P>(this, id(name), type, null));
+		return add(new StructRec<P>(this, id(name), type, null));
 	}
 
-	public final <P extends StructOp> StructPtrRec<P> addPtr(
+	public final <P extends StructOp> StructRec<P> addPtr(
 			String name,
 			Type<P> type,
-			Content<StructPtrRec<P>> content) {
-		return add(new StructPtrRec<P>(
+			Content<StructRec<P>> content) {
+		return add(new StructRec<P>(
 				this,
 				id(name),
 				type,

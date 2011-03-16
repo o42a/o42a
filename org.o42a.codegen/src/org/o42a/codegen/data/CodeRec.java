@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,24 +20,14 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.CodePtr;
-import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.CodeOp;
 
 
-public abstract class CodeRec<F extends Func>
-		extends Rec<CodeOp<F>, CodePtr<F>> {
+public abstract class CodeRec<O extends CodeOp, T> extends Rec<O, T> {
 
-	private final Signature<F> signature;
-
-	public CodeRec(
-			SubData<?> enclosing,
-			CodeId id,
-			Signature<F> signature,
-			Content<CodeRec<F>> content) {
+	public CodeRec(SubData<?> enclosing, CodeId id, Content<?> content) {
 		super(enclosing, id, content);
-		this.signature = signature;
 	}
 
 	@Override
@@ -45,8 +35,8 @@ public abstract class CodeRec<F extends Func>
 		return DataType.CODE_PTR;
 	}
 
-	public final Signature<F> getSignature() {
-		return this.signature;
+	public Signature<?> getSignature() {
+		return null;
 	}
 
 	public abstract void setNull();

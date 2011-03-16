@@ -51,14 +51,14 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private Int32rec flags;
 	private RelPtrRec start;
 	private ValOp.Type value;
-	private CodeRec<ObjectValFunc> valueFunc;
-	private CodeRec<ObjectCondFunc> requirementFunc;
-	private CodeRec<ObjectValFunc> claimFunc;
-	private CodeRec<ObjectCondFunc> conditionFunc;
-	private CodeRec<ObjectValFunc> propositionFunc;
-	private CodeRec<ObjectRefFunc> ancestorFunc;
-	private StructPtrRec<ObjectType.Op> ancestorType;
-	private StructPtrRec<ObjectType.Op> ownerType;
+	private FuncRec<ObjectValFunc> valueFunc;
+	private FuncRec<ObjectCondFunc> requirementFunc;
+	private FuncRec<ObjectValFunc> claimFunc;
+	private FuncRec<ObjectCondFunc> conditionFunc;
+	private FuncRec<ObjectValFunc> propositionFunc;
+	private FuncRec<ObjectRefFunc> ancestorFunc;
+	private StructRec<ObjectType.Op> ancestorType;
+	private StructRec<ObjectType.Op> ownerType;
 	private RelList<ObjectBodyIR> ascendants;
 	private RelList<ObjectBodyIR> samples;
 
@@ -81,35 +81,35 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		return this.value;
 	}
 
-	public final CodeRec<ObjectValFunc> valueFunc() {
+	public final FuncRec<ObjectValFunc> valueFunc() {
 		return this.valueFunc;
 	}
 
-	public final CodeRec<ObjectCondFunc> requirementFunc() {
+	public final FuncRec<ObjectCondFunc> requirementFunc() {
 		return this.requirementFunc;
 	}
 
-	public final CodeRec<ObjectValFunc> claimFunc() {
+	public final FuncRec<ObjectValFunc> claimFunc() {
 		return this.claimFunc;
 	}
 
-	public final CodeRec<ObjectCondFunc> conditionFunc() {
+	public final FuncRec<ObjectCondFunc> conditionFunc() {
 		return this.conditionFunc;
 	}
 
-	public final CodeRec<ObjectValFunc> propositionFunc() {
+	public final FuncRec<ObjectValFunc> propositionFunc() {
 		return this.propositionFunc;
 	}
 
-	public final StructPtrRec<ObjectType.Op> ownerType() {
+	public final StructRec<ObjectType.Op> ownerType() {
 		return this.ownerType;
 	}
 
-	public final CodeRec<ObjectRefFunc> ancestorFunc() {
+	public final FuncRec<ObjectRefFunc> ancestorFunc() {
 		return this.ancestorFunc;
 	}
 
-	public final StructPtrRec<ObjectType.Op> ancestorType() {
+	public final StructRec<ObjectType.Op> ancestorType() {
 		return this.ancestorType;
 	}
 
@@ -163,7 +163,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			return (ObjectDataType) super.getType();
 		}
 
-		public final DataOp<RelOp> object(Code code) {
+		public final RecOp<RelOp> object(Code code) {
 			return writer().relPtr(code, getType().object());
 		}
 
@@ -171,7 +171,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			return object(code).load(code).offset(code, this);
 		}
 
-		public final DataOp<RelOp> start(Code code) {
+		public final RecOp<RelOp> start(Code code) {
 			return writer().relPtr(code, getType().start());
 		}
 
@@ -183,31 +183,31 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			return writer().struct(code, getType().value());
 		}
 
-		public final CodeOp<ObjectValFunc> valueFunc(Code code) {
+		public final FuncOp<ObjectValFunc> valueFunc(Code code) {
 			return writer().func(code, getType().valueFunc());
 		}
 
-		public final CodeOp<ObjectCondFunc> requirementFunc(Code code) {
+		public final FuncOp<ObjectCondFunc> requirementFunc(Code code) {
 			return writer().func(code, getType().requirementFunc());
 		}
 
-		public final CodeOp<ObjectValFunc> claimFunc(Code code) {
+		public final FuncOp<ObjectValFunc> claimFunc(Code code) {
 			return writer().func(code, getType().claimFunc());
 		}
 
-		public final CodeOp<ObjectCondFunc> conditionFunc(Code code) {
+		public final FuncOp<ObjectCondFunc> conditionFunc(Code code) {
 			return writer().func(code, getType().conditionFunc());
 		}
 
-		public final CodeOp<ObjectValFunc> propositionFunc(Code code) {
+		public final FuncOp<ObjectValFunc> propositionFunc(Code code) {
 			return writer().func(code, getType().propositionFunc());
 		}
 
-		public final CodeOp<ObjectRefFunc> ancestorFunc(Code code) {
+		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
 			return writer().func(code, getType().ancestorFunc());
 		}
 
-		public final DataOp<ObjectType.Op> ancestorType(Code code) {
+		public final RecOp<ObjectType.Op> ancestorType(Code code) {
 			return writer().ptr(code, getType().ancestorType());
 		}
 

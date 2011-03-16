@@ -128,14 +128,14 @@ public abstract class Code extends DebugCodeBase {
 		return signature.op(writer().nullPtr(signature.allocate(backend())));
 	}
 
-	public final DataOp<AnyOp> allocatePtr() {
+	public final RecOp<AnyOp> allocatePtr() {
 		assertIncomplete();
 		return writer().allocatePtr();
 	}
 
-	public final DataOp<AnyOp> allocateNull() {
+	public final RecOp<AnyOp> allocateNull() {
 
-		final DataOp<AnyOp> result = allocatePtr();
+		final RecOp<AnyOp> result = allocatePtr();
 
 		result.store(this, nullPtr());
 

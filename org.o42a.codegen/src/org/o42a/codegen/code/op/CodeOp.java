@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,12 +19,15 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 
 
-public interface CodeOp<F extends Func> extends DataOp<F> {
+public interface CodeOp extends PtrOp {
 
-	Signature<F> getSignature();
+	Signature<?> getSignature();
+
+	<F extends Func> FuncOp<F> toFunc(Code code, Signature<F> signature);
 
 }

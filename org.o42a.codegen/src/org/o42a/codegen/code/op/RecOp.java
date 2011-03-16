@@ -1,5 +1,5 @@
 /*
-    Compiler LLVM Back-end
+    Compiler Code Generator
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,28 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.llvm.data;
+package org.o42a.codegen.code.op;
 
-import org.o42a.backend.llvm.code.op.LLVMRecOp;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.Fp64op;
-import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.code.Code;
 
 
-final class Fp64dataAlloc extends SimpleDataAllocation<RecOp<Fp64op>> {
+public interface RecOp<O extends Op> extends PtrOp {
 
-	public Fp64dataAlloc(ContainerAllocation<?> enclosing) {
-		super(enclosing);
-	}
+	O load(Code code);
 
-	@Override
-	public DataLayout getLayout() {
-		return getModule().dataAllocator().fp64layout();
-	}
-
-	@Override
-	protected RecOp<Fp64op> op(long blockPtr, long nativePtr) {
-		return new LLVMRecOp.Fp64(blockPtr, nativePtr);
-	}
+	void store(Code code, O value);
 
 }

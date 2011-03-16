@@ -28,11 +28,11 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class LLVMDataOp<O extends Op>
+public abstract class LLVMRecOp<O extends Op>
 		extends LLVMPtrOp
-		implements DataOp<O> {
+		implements RecOp<O> {
 
-	public LLVMDataOp(long blockPtr, long nativePtr) {
+	public LLVMRecOp(long blockPtr, long nativePtr) {
 		super(blockPtr, nativePtr);
 	}
 
@@ -51,7 +51,7 @@ public abstract class LLVMDataOp<O extends Op>
 
 	protected abstract O createLoaded(long blockPtr, long nativePtr);
 
-	public static final class Any extends LLVMDataOp<AnyOp> {
+	public static final class Any extends LLVMRecOp<AnyOp> {
 
 		public Any(long blockPtr, long nativePtr) {
 			super(blockPtr, nativePtr);
@@ -69,7 +69,7 @@ public abstract class LLVMDataOp<O extends Op>
 
 	}
 
-	public static final class Int32 extends LLVMDataOp<Int32op> {
+	public static final class Int32 extends LLVMRecOp<Int32op> {
 
 		public Int32(long blockPtr, long nativePtr) {
 			super(blockPtr, nativePtr);
@@ -87,7 +87,7 @@ public abstract class LLVMDataOp<O extends Op>
 
 	}
 
-	public static final class Int64 extends LLVMDataOp<Int64op> {
+	public static final class Int64 extends LLVMRecOp<Int64op> {
 
 		public Int64(long blockPtr, long nativePtr) {
 			super(blockPtr, nativePtr);
@@ -105,7 +105,7 @@ public abstract class LLVMDataOp<O extends Op>
 
 	}
 
-	public static final class Fp64 extends LLVMDataOp<Fp64op> {
+	public static final class Fp64 extends LLVMRecOp<Fp64op> {
 
 		public Fp64(long blockPtr, long nativePtr) {
 			super(blockPtr, nativePtr);
@@ -123,7 +123,7 @@ public abstract class LLVMDataOp<O extends Op>
 
 	}
 
-	public static final class Rel extends LLVMDataOp<RelOp> {
+	public static final class Rel extends LLVMRecOp<RelOp> {
 
 		public Rel(long blockPtr, long nativePtr) {
 			super(blockPtr, nativePtr);
@@ -141,7 +141,7 @@ public abstract class LLVMDataOp<O extends Op>
 
 	}
 
-	public static final class Struct<O extends StructOp> extends LLVMDataOp<O> {
+	public static final class Struct<O extends StructOp> extends LLVMRecOp<O> {
 
 		private final Type<O> type;
 

@@ -188,9 +188,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public DataAllocation<DataOp<Int32op>> allocateInt32(
+	public DataAllocation<RecOp<Int32op>> allocateInt32(
 			DataAllocation<?> enclosing,
-			DataAllocation<DataOp<Int32op>> type) {
+			DataAllocation<RecOp<Int32op>> type) {
 		if (allocate(enclosing)) {
 			allocateInt32(getModulePtr(), typeDataPtr(enclosing));
 		}
@@ -198,9 +198,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public DataAllocation<DataOp<Int64op>> allocateInt64(
+	public DataAllocation<RecOp<Int64op>> allocateInt64(
 			DataAllocation<?> enclosing,
-			DataAllocation<DataOp<Int64op>> type) {
+			DataAllocation<RecOp<Int64op>> type) {
 		if (allocate(enclosing)) {
 			allocateInt64(getModulePtr(), typeDataPtr(enclosing));
 		}
@@ -208,9 +208,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public DataAllocation<DataOp<Fp64op>> allocateFp64(
+	public DataAllocation<RecOp<Fp64op>> allocateFp64(
 			DataAllocation<?> enclosing,
-			DataAllocation<DataOp<Fp64op>> type) {
+			DataAllocation<RecOp<Fp64op>> type) {
 		if (allocate(enclosing)) {
 			allocateFp64(getModulePtr(), typeDataPtr(enclosing));
 		}
@@ -218,9 +218,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <F extends Func> DataAllocation<CodeOp<F>> allocateCodePtr(
+	public <F extends Func> DataAllocation<FuncOp<F>> allocateCodePtr(
 			DataAllocation<?> enclosing,
-			DataAllocation<CodeOp<F>> type,
+			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature) {
 		if (allocate(enclosing)) {
 			allocateCodePtr(
@@ -261,9 +261,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public DataAllocation<DataOp<RelOp>> allocateRelPtr(
+	public DataAllocation<RecOp<RelOp>> allocateRelPtr(
 			DataAllocation<?> enclosing,
-			DataAllocation<DataOp<RelOp>> type) {
+			DataAllocation<RecOp<RelOp>> type) {
 		if (allocate(enclosing)) {
 			allocateRelPtr(getModulePtr(), typeDataPtr(enclosing));
 		}

@@ -224,7 +224,19 @@ static void dbg_field_value(
 
 		break;
 	}
-	case O42A_TYPE_STRUCT_PTR:
+	case O42A_TYPE_PTR:
+		fputs(": * -> ", stderr);
+
+		void *data_ptr = *((void**) data);
+
+		if (!data_ptr) {
+			fputs("NULL", stderr);
+			break;
+		}
+
+		fprintf(stderr, "<0x%lx>", (long) data_ptr);
+
+		break;
 	case O42A_TYPE_DATA_PTR: {
 
 		const o42a_dbg_type_info_t *const type_info = field_info->type_info;
@@ -242,21 +254,11 @@ static void dbg_field_value(
 			break;
 		}
 
-		if (!type_info) {
-			fprintf(stderr, "<0x%lx>", (long) data_ptr);
-			break;
-		}
-
 		const o42a_dbg_header_t *const data_header =
 				o42a_dbg_header(data_ptr);
 
-		if (data_header->type_info != type_info) {
-			fprintf(
-					stderr,
-					"Incorrect pointer to %s, but %s expected",
-					data_header->type_info->name,
-					type_info->name);
-			exit(EXIT_FAILURE);
+		if (type_info && data_header->type_info != type_info) {
+			fputs("(!) ", stderr);
 		}
 
 		dbg_mem_name(data_header);
@@ -273,6 +275,7 @@ static void dbg_field_value(
 		}
 
 		const o42a_dbg_header_t *const data_header = o42a_dbg_header(data);
+
 		if (data_header->type_info != type_info) {
 			fprintf(
 					stderr,
@@ -281,6 +284,7 @@ static void dbg_field_value(
 					type_info->name);
 			exit(EXIT_FAILURE);
 		}
+
 		fprintf(stderr, ": %s = {\n", type_info->name);
 		dbg_struct(data_header, depth - 1, indent + 1);
 		dbg_indent(indent);

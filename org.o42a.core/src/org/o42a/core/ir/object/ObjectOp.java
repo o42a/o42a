@@ -335,7 +335,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	private final ObjectBodyIR.Op body(Code code) {
-		return ptr().to(
+		return ptr().toAny(code).to(
 				code,
 				getWellKnownType().ir(getGenerator()).getBodyType());
 	}

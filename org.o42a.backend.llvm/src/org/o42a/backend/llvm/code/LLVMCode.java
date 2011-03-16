@@ -294,22 +294,22 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public LLVMDataOp<AnyOp> allocatePtr() {
+	public LLVMRecOp<AnyOp> allocatePtr() {
 
 		final long nextPtr = nextPtr();
 
-		return new LLVMDataOp.Any(nextPtr, allocatePtr(nextPtr));
+		return new LLVMRecOp.Any(nextPtr, allocatePtr(nextPtr));
 	}
 
 	@Override
-	public <O extends StructOp> DataOp<O> allocatePtr(
+	public <O extends StructOp> RecOp<O> allocatePtr(
 			DataAllocation<O> allocation) {
 
 		final ContainerAllocation<O> alloc =
 			(ContainerAllocation<O>) allocation;
 		final long nextPtr = nextPtr();
 
-		return new LLVMDataOp.Struct<O>(
+		return new LLVMRecOp.Struct<O>(
 				alloc.getType(),
 				nextPtr,
 				allocateStructPtr(nextPtr, alloc.getTypePtr()));

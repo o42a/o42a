@@ -21,13 +21,13 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class Int64rec extends Rec<DataOp<Int64op>, Long> {
+public final class Int64rec extends Rec<RecOp<Int64op>, Long> {
 
 	private Ptr<AnyOp> nativePtr;
 

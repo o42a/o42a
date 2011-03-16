@@ -93,19 +93,19 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			return (HeaderType) super.getType();
 		}
 
-		public final DataOp<Int32op> typeCode(Code code) {
+		public final RecOp<Int32op> typeCode(Code code) {
 			return writer().int32(code, getType().typeCode());
 		}
 
-		public final DataOp<AnyOp> name(Code code) {
+		public final RecOp<AnyOp> name(Code code) {
 			return writer().ptr(code, getType().name());
 		}
 
-		public final DataOp<AnyOp> typeInfo(Code code) {
+		public final RecOp<AnyOp> typeInfo(Code code) {
 			return writer().ptr(code, getType().typeInfo());
 		}
 
-		public final DataOp<RelOp> enclosing(Code code) {
+		public final RecOp<RelOp> enclosing(Code code) {
 			return writer().relPtr(code, getType().enclosing());
 		}
 

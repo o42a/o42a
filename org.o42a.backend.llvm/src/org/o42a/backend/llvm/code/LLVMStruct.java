@@ -22,8 +22,8 @@ package org.o42a.backend.llvm.code;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.backend.llvm.code.op.LLVMCodeOp;
-import org.o42a.backend.llvm.code.op.LLVMDataOp;
 import org.o42a.backend.llvm.code.op.LLVMPtrOp;
+import org.o42a.backend.llvm.code.op.LLVMRecOp;
 import org.o42a.backend.llvm.data.ContainerAllocation;
 import org.o42a.backend.llvm.data.LLVMDataAllocation;
 import org.o42a.codegen.code.Code;
@@ -63,64 +63,64 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public DataOp<?> field(Code code, Data<?> field) {
+	public RecOp<?> field(Code code, Data<?> field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Any(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Any(nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public DataOp<Int32op> int32(Code code, Int32rec field) {
+	public RecOp<Int32op> int32(Code code, Int32rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Int32(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int32(nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public DataOp<Int64op> int64(Code code, Int64rec field) {
+	public RecOp<Int64op> int64(Code code, Int64rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Int64(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int64(nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public DataOp<Fp64op> fp64(Code code, Fp64rec field) {
+	public RecOp<Fp64op> fp64(Code code, Fp64rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Fp64(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Fp64(nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public DataOp<AnyOp> ptr(Code code, AnyPtrRec field) {
+	public RecOp<AnyOp> ptr(Code code, AnyPtrRec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Any(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Any(nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public <P extends StructOp> DataOp<P> ptr(
+	public <P extends StructOp> RecOp<P> ptr(
 			Code code,
-			StructPtrRec<P> field) {
+			StructRec<P> field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Struct<P>(
+		return new LLVMRecOp.Struct<P>(
 				field.getType(),
 				nextPtr,
 				field(nextPtr, field));
 	}
 
 	@Override
-	public DataOp<RelOp> relPtr(Code code, RelPtrRec field) {
+	public RecOp<RelOp> relPtr(Code code, RelPtrRec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp.Rel(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Rel(nextPtr, field(nextPtr, field));
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public <F extends Func> CodeOp<F> func(Code code, CodeRec<F> field) {
+	public <F extends Func> FuncOp<F> func(Code code, FuncRec<F> field) {
 
 		final long nextPtr = nextPtr(code);
 

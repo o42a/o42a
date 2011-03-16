@@ -66,14 +66,31 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 				generator.id("DEBUG").sub("field_name").sub(fieldName),
 				fieldName.toString());
 
-		final Type<?> fieldInstance = fieldData.getInstance();
+		final DebugTypeInfo typeInfo;
 
-		if (fieldInstance == null) {
+		switch (fieldData.getDataType()) {
+		case STRUCT:
+			typeInfo = debug.typeInfo(fieldData.getInstance());
+			break;
+		case DATA_PTR:
+
+			final DataRec<?> dataPtr = (DataRec<?>) fieldData;
+			final Type<?> pointedType = dataPtr.getType();
+
+			if (pointedType != null) {
+				typeInfo = debug.typeInfo(pointedType);
+			} else {
+				typeInfo = null;
+			}
+
+			break;
+		default:
+			typeInfo = null;
+		}
+
+		if (typeInfo == null) {
 			instance.typeInfo().setNull();
 		} else {
-
-			final DebugTypeInfo typeInfo = debug.typeInfo(fieldInstance);
-
 			instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
 		}
 	}
