@@ -26,7 +26,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
@@ -83,11 +83,11 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected AnyOp construct(
+		protected DataOp construct(
 				Code code,
 				ObjOp host,
 				ObjectRefFunc constructor) {
-			return constructor.call(code, host.ptr().toAny(code));
+			return constructor.call(code, host.ptr().toAny(code)).toData(code);
 		}
 
 	}

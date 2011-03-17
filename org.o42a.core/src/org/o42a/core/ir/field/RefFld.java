@@ -23,7 +23,9 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
@@ -143,7 +145,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 		final RefFldOp<C> fld = op(code, builder.host());
 
 		final ObjectOp result = construct(builder, code, exit, fld);
-		final AnyOp res = result.toAny(code);
+		final DataOp res = result.toData(code);
 
 		fld.ptr().object(code).store(code, res);
 		res.returnValue(code);

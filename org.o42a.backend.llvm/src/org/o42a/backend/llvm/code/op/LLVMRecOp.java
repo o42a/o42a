@@ -82,7 +82,7 @@ public abstract class LLVMRecOp<O extends Op>
 
 		@Override
 		protected DataOp createLoaded(long blockPtr, long nativePtr) {
-			return new LLVMAnyOp(blockPtr, nativePtr);
+			return new LLVMDataOp(blockPtr, nativePtr);
 		}
 
 	}
