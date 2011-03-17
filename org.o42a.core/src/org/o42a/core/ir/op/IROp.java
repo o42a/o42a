@@ -55,7 +55,7 @@ public abstract class IROp {
 	}
 
 	public final DataOp toData(Code code) {
-		return toAny(code);
+		return toAny(code).toData(code);
 	}
 
 	public final AnyOp toAny(Code code) {

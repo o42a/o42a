@@ -92,21 +92,21 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final CondBlk construct =
 			previousPtr.isNull(code).branch(code, "construct", "delegate");
 
-		final AnyOp result1 = construct(
+		final DataOp result1 = construct(
 				builder,
 				construct,
 				exit,
-				new ObjFldOp(this, host, fld)).toAny(construct);
+				new ObjFldOp(this, host, fld)).toData(construct);
 
 		construct.go(code.tail());
 
 		final CodeBlk delegate = construct.otherwise();
-		final AnyOp result2 =
-			delegate(builder, delegate, exit, previousPtr).toAny(delegate);
+		final DataOp result2 =
+			delegate(builder, delegate, exit, previousPtr).toData(delegate);
 
 		delegate.go(code.tail());
 
-		final AnyOp result = code.phi(result1, result2);
+		final DataOp result = code.phi(result1, result2);
 
 		final FldOp ownFld = host.field(code, exit, getField().getKey());
 		final BoolOp isOwn = ownFld.ptr().eq(code, fld);
@@ -128,9 +128,9 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final Op previous = previousPtr.to(code, getType().getType());
 		final ObjectConstructorFunc constructor =
 			previous.constructor(code).load(code);
-		final DataOp ancestorPtr = constructor.call(
+		final AnyOp ancestorPtr = constructor.call(
 				code,
-				builder.host().ptr().toAny(code),
+				builder.host().toAny(code),
 				previous.toAny(code));
 		final ObjectOp ancestor =
 			anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
@@ -159,11 +159,14 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		protected AnyOp construct(
+		protected DataOp construct(
 				Code code,
 				ObjOp host,
 				ObjectConstructorFunc constructor) {
-			return constructor.call(code, host.ptr().toAny(code), toAny(code));
+			return constructor.call(
+					code,
+					host.ptr().toAny(code),
+					toAny(code)).toData(code);
 		}
 
 	}

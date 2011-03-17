@@ -22,9 +22,10 @@ package org.o42a.codegen.code.op;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.data.Type;
 
 
-public interface AnyOp extends DataOp {
+public interface AnyOp extends PtrOp {
 
 	RecOp<AnyOp> toPtr(Code code);
 
@@ -36,6 +37,10 @@ public interface AnyOp extends DataOp {
 
 	RecOp<RelOp> toRel(Code code);
 
+	DataOp toData(Code code);
+
 	<F extends Func> FuncOp<F> toFunc(Code code, Signature<F> signature);
+
+	<O extends StructOp> O to(Code code, Type<O> type);
 
 }
