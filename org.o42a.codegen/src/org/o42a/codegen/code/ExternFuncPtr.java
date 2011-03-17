@@ -22,11 +22,11 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.code.backend.CodeAllocation;
 
 
-final class ExternCodePtr<F extends Func> extends CodePtr<F> {
+final class ExternFuncPtr<F extends Func> extends FuncPtr<F> {
 
 	private final String name;
 
-	ExternCodePtr(
+	ExternFuncPtr(
 			String name,
 			Signature<F> signature,
 			CodeAllocation<F> allocation) {

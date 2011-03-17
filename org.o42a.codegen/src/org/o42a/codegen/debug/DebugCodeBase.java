@@ -75,7 +75,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		final CodePtr<DebugPrintFunc> func =
+		final FuncPtr<DebugPrintFunc> func =
 			this.generator.externalFunction("o42a_dbg_print", DEBUG_PRINT);
 
 		func.op(code()).call(
@@ -89,7 +89,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		final CodePtr<DebugNameFunc> func =
+		final FuncPtr<DebugNameFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_mem_name",
 					DEBUG_NAME);
@@ -106,7 +106,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		final CodePtr<DebugNameFunc> func =
+		final FuncPtr<DebugNameFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_func_name",
 					DEBUG_NAME);
@@ -129,7 +129,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		debug(message, false);
 
-		final CodePtr<DumpFunc> func =
+		final FuncPtr<DumpFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_dump_mem",
 					DEBUG_DUMP);

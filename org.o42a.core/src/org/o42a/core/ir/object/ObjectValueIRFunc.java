@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
@@ -44,11 +44,11 @@ abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 		return this.id;
 	}
 
-	public final CodePtr<F> get() {
+	public final FuncPtr<F> get() {
 		return this.func.getValue();
 	}
 
-	public final CodePtr<F> get(ObjOp host) {
+	public final FuncPtr<F> get(ObjOp host) {
 
 		final ObjectIR objectIR = host.getAscendant().ir(getGenerator());
 		final ObjectTypeIR typeIR =
@@ -113,7 +113,7 @@ abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 
 	protected abstract DefValue value(Definitions definitions);
 
-	protected final void set(ObjectTypeIR typeIR, CodePtr<F> ptr) {
+	protected final void set(ObjectTypeIR typeIR, FuncPtr<F> ptr) {
 		this.func = func(typeIR.getObjectData());
 		this.func.setValue(ptr);
 	}

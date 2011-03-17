@@ -39,7 +39,7 @@ final class FuncPtrRec<F extends Func> extends FuncRec<F> {
 
 	@Override
 	public void setNull() {
-		setValue(new NullCodePtr<F>(
+		setValue(new NullFuncPtr<F>(
 				getSignature(),
 				getGenerator().getGlobals().dataWriter().nullPtr(
 						getSignature())));
@@ -47,7 +47,7 @@ final class FuncPtrRec<F extends Func> extends FuncRec<F> {
 
 	@Override
 	protected void allocate(DataAllocator allocator) {
-		setAllocation(allocator.allocateCodePtr(
+		setAllocation(allocator.allocateFuncPtr(
 				getEnclosing().pointer(getGenerator()).getAllocation(),
 				getAllocation(),
 				getSignature()));

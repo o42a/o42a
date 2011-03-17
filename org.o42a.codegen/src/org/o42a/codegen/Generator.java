@@ -99,7 +99,7 @@ public abstract class Generator {
 		return this.functions.newFunction();
 	}
 
-	public final <F extends Func> CodePtr<F> externalFunction(
+	public final <F extends Func> FuncPtr<F> externalFunction(
 			String name,
 			Signature<F> signature) {
 		return this.functions.externalFunction(name, signature);
@@ -150,7 +150,7 @@ public abstract class Generator {
 	protected <F extends Func> void addFunction(
 			CodeId id,
 			Signature<F> signature,
-			CodePtr<F> function) {
+			FuncPtr<F> function) {
 		this.debug.addFunction(id, signature, function);
 	}
 

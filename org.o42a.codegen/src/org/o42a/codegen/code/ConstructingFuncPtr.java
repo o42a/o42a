@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,35 +20,25 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.code.backend.CodeAllocation;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.AbstractPtr;
-import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public abstract class CodePtr<F extends Func> extends AbstractPtr {
+final class ConstructingFuncPtr<F extends Func> extends FuncPtr<F> {
 
-	final Signature<F> signature;
-	final CodeAllocation<F> allocation;
+	private final Function<F> function;
 
-	CodePtr(Signature<F> signature, CodeAllocation<F> allocation) {
-		this.signature = signature;
-		this.allocation = allocation;
-	}
-
-	public abstract Function<F> getFunction();
-
-	public F op(Code code) {
-		code.assertIncomplete();
-		return this.signature.op(code.writer().caller(this.allocation));
-	}
-
-	final CodeAllocation<F> getAllocation() {
-		return this.allocation;
+	ConstructingFuncPtr(Function<F> function, CodeAllocation<F> allocation) {
+		super(function.getSignature(), allocation);
+		this.function = function;
 	}
 
 	@Override
-	protected DataAllocation<AnyOp> allocationToAny() {
-		return this.allocation.toAny();
+	public Function<F> getFunction() {
+		return this.function;
+	}
+
+	@Override
+	public String toString() {
+		return "&" + this.function;
 	}
 
 }

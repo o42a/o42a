@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
@@ -231,13 +231,13 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		instance.ancestorFunc().setValue(createAncestorFunc(instance));
 	}
 
-	private CodePtr<ObjectRefFunc> nullObjectRef() {
+	private FuncPtr<ObjectRefFunc> nullObjectRef() {
 		return getGenerator().externalFunction(
 				"o42a_obj_ref_null",
 				OBJECT_REF);
 	}
 
-	private CodePtr<ObjectRefFunc> createAncestorFunc(ObjectDataType instance) {
+	private FuncPtr<ObjectRefFunc> createAncestorFunc(ObjectDataType instance) {
 
 		final Function<ObjectRefFunc> function =
 			getGenerator().newFunction().create(

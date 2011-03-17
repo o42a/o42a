@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -71,7 +71,7 @@ final class DbgFunctions extends Struct<DbgFunctions.Op> {
 	<F extends Func> DbgFunc addFunction(
 			CodeId id,
 			Signature<F> signature,
-			CodePtr<F> function) {
+			FuncPtr<F> function) {
 
 		final DbgFunc dbgFunc = new DbgFunc(id, signature, function);
 

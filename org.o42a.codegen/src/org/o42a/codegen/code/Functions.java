@@ -29,8 +29,8 @@ import org.o42a.codegen.code.backend.CodeCallback;
 
 public abstract class Functions {
 
-	private final HashMap<String, CodePtr<?>> externals =
-		new HashMap<String, CodePtr<?>>();
+	private final HashMap<String, FuncPtr<?>> externals =
+		new HashMap<String, FuncPtr<?>>();
 
 	private final Generator generator;
 
@@ -46,19 +46,19 @@ public abstract class Functions {
 		return new FunctionSettings(this);
 	}
 
-	public <F extends Func> CodePtr<F> externalFunction(
+	public <F extends Func> FuncPtr<F> externalFunction(
 			String name,
 			Signature<F> signature) {
 
 		@SuppressWarnings("unchecked")
-		final CodePtr<F> found = (CodePtr<F>) this.externals.get(name);
+		final FuncPtr<F> found = (FuncPtr<F>) this.externals.get(name);
 
 		if (found != null) {
 			return found;
 		}
 
 		final CodeId id = getGenerator().rawId(name);
-		final ExternCodePtr<F> extern = new ExternCodePtr<F>(
+		final ExternFuncPtr<F> extern = new ExternFuncPtr<F>(
 				name,
 				signature,
 				codeBackend().externFunction(
@@ -76,7 +76,7 @@ public abstract class Functions {
 	protected abstract <F extends Func> void addFunction(
 			CodeId id,
 			Signature<F> signature,
-			CodePtr<F> function);
+			FuncPtr<F> function);
 
 	protected abstract CodeCallback createCodeCallback(Function<?> function);
 

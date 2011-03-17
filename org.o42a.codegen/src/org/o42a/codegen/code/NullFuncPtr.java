@@ -22,9 +22,9 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.code.backend.CodeAllocation;
 
 
-final class NullCodePtr<F extends Func> extends CodePtr<F> {
+final class NullFuncPtr<F extends Func> extends FuncPtr<F> {
 
-	NullCodePtr(Signature<F> signature, CodeAllocation<F> allocation) {
+	NullFuncPtr(Signature<F> signature, CodeAllocation<F> allocation) {
 		super(signature, allocation);
 	}
 

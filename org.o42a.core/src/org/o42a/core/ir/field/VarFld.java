@@ -112,7 +112,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		@Override
 		public void allocate(SubData<Op> data) {
 			super.allocate(data);
-			this.assigner = data.addCodePtr(
+			this.assigner = data.addFuncPtr(
 					"assigner",
 					AssignerFunc.ASSIGNER);
 		}
