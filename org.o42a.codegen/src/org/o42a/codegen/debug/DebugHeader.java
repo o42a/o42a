@@ -50,7 +50,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 	public void fill(HeaderType instance) {
 
 		final Generator generator = instance.getGenerator();
-		final Debug debug = generator;
+		final Debug debug = generator.getDebug();
 		final Data<?> data = getTarget().data(generator);
 
 		if (data.getEnclosing() == null) {
@@ -113,7 +113,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		public void allocated(Code code, StructOp enclosing) {
 
 			final Generator generator = code.getGenerator();
-			final Debug debug = generator;
+			final Debug debug = generator.getDebug();
 
 			if (enclosing == null) {
 				// TODO Put the last comment here:

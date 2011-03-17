@@ -95,7 +95,7 @@ public abstract class SubData<O extends StructOp>
 		return add(codePtrRecord(
 				this,
 				id(name),
-				sign.allocate(getGenerator().codeBackend()),
+				sign.allocate(getGenerator().getFunctions().codeBackend()),
 				content));
 	}
 

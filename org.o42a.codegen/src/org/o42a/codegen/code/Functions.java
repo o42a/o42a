@@ -19,12 +19,9 @@
 */
 package org.o42a.codegen.code;
 
-import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
-
 import java.util.HashMap;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePtr.ExternPtr;
 import org.o42a.codegen.code.backend.CodeBackend;
@@ -33,30 +30,17 @@ import org.o42a.codegen.code.backend.CodeCallback;
 
 public abstract class Functions {
 
-	private static final CodeCallback NOOP_CODE_CALLBACK =
-		new NoOpCodeCallback();
-
 	private final HashMap<String, CodePtr<?>> externals =
 		new HashMap<String, CodePtr<?>>();
 
-	public CodeIdFactory getCodeIdFactory() {
-		return DEFAULT_CODE_ID_FACTORY;
+	private final Generator generator;
+
+	public Functions(Generator generator) {
+		this.generator = generator;
 	}
 
-	public final CodeId id() {
-		return getCodeIdFactory().id();
-	}
-
-	public final CodeId topId() {
-		return getCodeIdFactory().topId();
-	}
-
-	public final CodeId id(String name) {
-		return getCodeIdFactory().id(name);
-	}
-
-	public final CodeId rawId(String id) {
-		return getCodeIdFactory().rawId(id);
+	public final Generator getGenerator() {
+		return this.generator;
 	}
 
 	public final FunctionSettings newFunction() {
@@ -74,7 +58,7 @@ public abstract class Functions {
 			return found;
 		}
 
-		final CodeId id = generator().rawId(name);
+		final CodeId id = getGenerator().rawId(name);
 		final ExternPtr<F> extern = new ExternPtr<F>(
 				name,
 				signature,
@@ -88,44 +72,13 @@ public abstract class Functions {
 		return extern;
 	}
 
-	public final void write() {
-
-		final CodeBackend coder = codeBackend();
-
-		try {
-			writeData();
-		} finally {
-			coder.done();
-		}
-	}
-
 	public abstract CodeBackend codeBackend();
 
-	public void close() {
-	}
-
-	protected <F extends Func> void addFunction(
+	protected abstract <F extends Func> void addFunction(
 			CodeId id,
 			Signature<F> signature,
-			CodePtr<F> function) {
-	}
+			CodePtr<F> function);
 
-	protected CodeCallback createCodeCallback(Function<?> function) {
-		return NOOP_CODE_CALLBACK;
-	}
-
-	protected abstract void writeData();
-
-	private final Generator generator() {
-		return (Generator) this;
-	}
-
-	private static final class NoOpCodeCallback implements CodeCallback {
-
-		@Override
-		public void beforeReturn(Code code) {
-		}
-
-	}
+	protected abstract CodeCallback createCodeCallback(Function<?> function);
 
 }

@@ -90,7 +90,7 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 		this.name = data.addPtr("name");
 
 		final Generator generator = data.getGenerator();
-		final Debug debug = generator;
+		final Debug debug = generator.getDebug();
 
 		typeCode().setValue(getCode());
 

@@ -142,10 +142,7 @@ abstract class TypeInstanceData<O extends StructOp>
 			getInstance().allocateInstance(this);
 			allocator.end(this.global);
 			this.content.allocated(getInstance());
-
-			final Globals globals = getGenerator();
-
-			globals.addGlobal(this);
+			getGenerator().getGlobals().addGlobal(this);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -155,10 +152,7 @@ abstract class TypeInstanceData<O extends StructOp>
 			this.content.fill(getInstance());
 			writeIncluded(writer);
 			writer.end(getPointer().getAllocation(), this.global);
-
-			final Globals globals = getGenerator();
-
-			globals.addType(this);
+			getGenerator().getGlobals().addType(this);
 		}
 
 	}

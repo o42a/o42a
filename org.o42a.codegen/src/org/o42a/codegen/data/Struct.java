@@ -135,9 +135,9 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 		protected void postTypeAllocation() {
 			super.postTypeAllocation();
 
-			final Globals globals = getGenerator();
+			final Globals globals = getGenerator().getGlobals();
 
-			globals.addGlobal(this);
+			globals.globalCreated(this);
 		}
 
 		@Override

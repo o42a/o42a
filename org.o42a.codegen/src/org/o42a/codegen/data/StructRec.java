@@ -45,7 +45,8 @@ public final class StructRec<O extends StructOp> extends DataRec<O> {
 
 	@Override
 	public void setNull() {
-		setValue(new Ptr<O>(getGenerator().dataWriter().nullPtr(getType())));
+		setValue(new Ptr<O>(
+				getGenerator().getGlobals().dataWriter().nullPtr(getType())));
 	}
 
 	@Override

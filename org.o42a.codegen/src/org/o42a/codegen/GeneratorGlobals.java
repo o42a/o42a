@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,45 +17,43 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code;
+package org.o42a.codegen;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.FuncRec;
+import org.o42a.codegen.data.Globals;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class FuncPtrRec<F extends Func> extends FuncRec<F> {
+final class GeneratorGlobals extends Globals {
 
-	FuncPtrRec(
-			SubData<?> enclosing,
-			CodeId id,
-			Signature<F> signature,
-			Content<FuncRec<F>> content) {
-		super(enclosing, id, signature, content);
+	GeneratorGlobals(Generator generator) {
+		super(generator);
 	}
 
 	@Override
-	public void setNull() {
-		setValue(new CodePtr.NullPtr<F>(
-				getSignature(),
-				getGenerator().getGlobals().dataWriter().nullPtr(
-						getSignature())));
+	public DataAllocator dataAllocator() {
+		return getGenerator().dataAllocator();
 	}
 
 	@Override
-	protected void allocate(DataAllocator allocator) {
-		setAllocation(allocator.allocateCodePtr(
-				getEnclosing().pointer(getGenerator()).getAllocation(),
-				getAllocation(),
-				getSignature()));
+	public DataWriter dataWriter() {
+		return getGenerator().dataWriter();
 	}
 
 	@Override
-	protected void write(DataWriter writer) {
-		getValue().getAllocation().write(writer);
+	protected void registerType(SubData<?> type) {
+		getGenerator().registerType(type);
+	}
+
+	@Override
+	protected void addType(SubData<?> type) {
+		getGenerator().addType(type);
+	}
+
+	@Override
+	protected void addGlobal(SubData<?> global) {
+		getGenerator().addGlobal(global);
 	}
 
 }
