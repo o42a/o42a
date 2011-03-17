@@ -121,7 +121,7 @@ public final class RefLclOp extends LclOp {
 		final ObjectOp newObject =
 			getBuilder().newObject(code, exit, object, CtrOp.NEW_INSTANCE);
 
-		ptr().object(code).store(code, newObject.ptr());
+		ptr().object(code).store(code, newObject.ptr().toAny(code));
 		newObject.writeLogicalValue(code, exit);
 	}
 

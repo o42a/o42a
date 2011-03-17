@@ -26,7 +26,7 @@ import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -43,7 +43,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
-			DataOp ptr,
+			PtrOp ptr,
 			Obj wellKnownType) {
 		return new AnonymousObjOp(
 				builder,
@@ -54,13 +54,13 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	private final ObjectPrecision precision;
 	private final ObjectTypeOp objectType;
 
-	ObjectOp(CodeBuilder builder, DataOp ptr, ObjectPrecision precision) {
+	ObjectOp(CodeBuilder builder, PtrOp ptr, ObjectPrecision precision) {
 		super(builder, ptr);
 		this.precision = precision;
 		this.objectType = null;
 	}
 
-	ObjectOp(DataOp ptr, ObjectTypeOp objectType) {
+	ObjectOp(PtrOp ptr, ObjectTypeOp objectType) {
 		super(objectType.getBuilder(), ptr);
 		this.objectType = objectType;
 		this.precision = objectType.getPrecision();
@@ -335,7 +335,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	private final ObjectBodyIR.Op body(Code code) {
-		return ptr().to(
+		return ptr().toAny(code).to(
 				code,
 				getWellKnownType().ir(getGenerator()).getBodyType());
 	}
