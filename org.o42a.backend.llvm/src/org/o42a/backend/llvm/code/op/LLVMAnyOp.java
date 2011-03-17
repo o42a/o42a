@@ -22,7 +22,6 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 
 
@@ -30,11 +29,6 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 	public LLVMAnyOp(long blockPtr, long nativePtr) {
 		super(blockPtr, nativePtr);
-	}
-
-	@Override
-	public final Signature<?> getSignature() {
-		return null;
 	}
 
 	@Override

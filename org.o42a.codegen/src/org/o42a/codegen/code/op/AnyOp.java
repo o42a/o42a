@@ -20,9 +20,11 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 
 
-public interface AnyOp extends DataOp, CodeOp {
+public interface AnyOp extends DataOp {
 
 	RecOp<AnyOp> toPtr(Code code);
 
@@ -33,5 +35,7 @@ public interface AnyOp extends DataOp, CodeOp {
 	RecOp<Fp64op> toFp64(Code code);
 
 	RecOp<RelOp> toRel(Code code);
+
+	<F extends Func> FuncOp<F> toFunc(Code code, Signature<F> signature);
 
 }
