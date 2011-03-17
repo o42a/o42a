@@ -20,10 +20,9 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.code.backend.*;
-import org.o42a.codegen.data.SignatureDataBase;
 
 
-public abstract class Signature<F extends Func> extends SignatureDataBase<F> {
+public abstract class Signature<F extends Func> {
 
 	private SignatureAllocation<F> allocation;
 	private final String result;
@@ -52,17 +51,7 @@ public abstract class Signature<F extends Func> extends SignatureDataBase<F> {
 		return this.allocation;
 	}
 
-	public abstract F op(FuncCaller caller);
-
-	@Override
-	public String toString() {
-		return this.result + ' ' + this.name + '(' + this.args + ')';
-	}
-
-	protected abstract void write(SignatureWriter<F> writer);
-
-	@Override
-	protected final Signature<F> allocate(CodeBackend backend) {
+	public final Signature<F> allocate(CodeBackend backend) {
 
 		final SignatureAllocation<F> allocation = getAllocation();
 
@@ -78,5 +67,14 @@ public abstract class Signature<F extends Func> extends SignatureDataBase<F> {
 
 		return this;
 	}
+
+	public abstract F op(FuncCaller caller);
+
+	@Override
+	public String toString() {
+		return this.result + ' ' + this.name + '(' + this.args + ')';
+	}
+
+	protected abstract void write(SignatureWriter<F> writer);
 
 }
