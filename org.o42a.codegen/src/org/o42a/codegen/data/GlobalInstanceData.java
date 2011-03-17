@@ -1,25 +1,25 @@
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class TypeInstanceData<O extends StructOp>
+final class GlobalInstanceData<O extends StructOp>
 		extends AbstractInstanceData<O> {
 
-	private final Global<?, ?> global;
-	private final Type<?> enclosing;
+	private final Global<O, ?> global;
 
-	TypeInstanceData(
-			SubData<?> enclosing,
-			CodeId id,
+	GlobalInstanceData(
+			Global<O, ?> global,
 			Type<O> instance,
 			Content<?> content) {
-		super(enclosing.getGenerator(), id, instance, content);
-		this.global = enclosing.getGlobal();
-		this.enclosing = enclosing.getInstance();
+		super(
+				global.getGenerator(),
+				global.getId().removeLocal(),
+				instance,
+				content);
+		this.global = global;
 	}
 
 	@Override
@@ -29,28 +29,27 @@ final class TypeInstanceData<O extends StructOp>
 
 	@Override
 	public Type<?> getEnclosing() {
-		return this.enclosing;
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void allocate(DataAllocator allocator) {
-		setAllocation(allocator.enter(
-				getEnclosing().getAllocation(),
-				getInstance().getAllocation(),
-				this));
+		setAllocation(allocator.begin(getAllocation(), this.global));
 		getInstance().allocateInstance(this);
-		allocator.exit(getEnclosing().getAllocation(), this);
+		allocator.end(this.global);
 		this.content.allocated(getInstance());
+		getGenerator().getGlobals().addGlobal(this);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void write(DataWriter writer) {
-		writer.enter(getPointer().getAllocation(), this);
+		writer.begin(getPointer().getAllocation(), this.global);
 		this.content.fill(getInstance());
 		writeIncluded(writer);
-		writer.exit(getPointer().getAllocation(), this);
+		writer.end(getPointer().getAllocation(), this.global);
+		getGenerator().getGlobals().addType(this);
 	}
 
 }

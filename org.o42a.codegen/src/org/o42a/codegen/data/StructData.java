@@ -2,22 +2,19 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class TypeInstanceData<O extends StructOp>
-		extends AbstractInstanceData<O> {
+final class StructData<O extends StructOp>
+		extends AbstractTypeData<O> {
 
 	private final Global<?, ?> global;
 	private final Type<?> enclosing;
 
-	TypeInstanceData(
-			SubData<?> enclosing,
-			CodeId id,
-			Type<O> instance,
-			Content<?> content) {
-		super(enclosing.getGenerator(), id, instance, content);
+	StructData(SubData<?> enclosing, Struct<O> instance, CodeId name) {
+		super(enclosing.getGenerator(), name, instance);
 		this.global = enclosing.getGlobal();
 		this.enclosing = enclosing.getInstance();
 	}
@@ -32,23 +29,24 @@ final class TypeInstanceData<O extends StructOp>
 		return this.enclosing;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void allocate(DataAllocator allocator) {
-		setAllocation(allocator.enter(
+	protected DataAllocation<O> beginTypeAllocation(
+			DataAllocator allocator) {
+		return allocator.enter(
 				getEnclosing().getAllocation(),
 				getInstance().getAllocation(),
-				this));
-		getInstance().allocateInstance(this);
-		allocator.exit(getEnclosing().getAllocation(), this);
-		this.content.allocated(getInstance());
+				this);
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+	protected void endTypeAllocation(DataAllocator allocator) {
+		allocator.exit(getEnclosing().getAllocation(), this);
+	}
+
 	@Override
 	protected void write(DataWriter writer) {
 		writer.enter(getPointer().getAllocation(), this);
-		this.content.fill(getInstance());
+		((Struct<O>) getInstance()).fill();
 		writeIncluded(writer);
 		writer.exit(getPointer().getAllocation(), this);
 	}
