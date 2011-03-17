@@ -36,7 +36,7 @@ public final class GlobalSettings {
 	}
 
 	public final Generator getGenerator() {
-		return (Generator) this.globals;
+		return this.globals.getGenerator();
 	}
 
 	public final boolean isExported() {

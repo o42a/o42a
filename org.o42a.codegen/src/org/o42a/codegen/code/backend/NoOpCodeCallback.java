@@ -17,19 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.debug;
+package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.code.Code;
 
 
-public abstract class TypeDebugBase {
+final class NoOpCodeCallback implements CodeCallback {
 
-	public final DebugTypeInfo getTypeInfo() {
-
-		final Type<?> type = (Type<?>) this;
-		final Debug debug = type.getGenerator().getDebug();
-
-		return debug.typeInfo(type);
+	@Override
+	public void beforeReturn(Code code) {
 	}
 
 }

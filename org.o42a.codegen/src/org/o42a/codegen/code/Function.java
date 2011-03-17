@@ -97,7 +97,7 @@ public final class Function<F extends Func> extends Code {
 			return this.writer;
 		}
 
-		final Functions functions = getGenerator();
+		final Functions functions = getGenerator().getFunctions();
 
 		this.writer = backend().addFunction(
 				this,

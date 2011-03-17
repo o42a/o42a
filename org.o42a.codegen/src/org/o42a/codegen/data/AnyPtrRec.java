@@ -33,7 +33,8 @@ public final class AnyPtrRec extends PtrRec<AnyOp> {
 
 	@Override
 	public void setNull() {
-		setValue(new Ptr<AnyOp>(getGenerator().dataWriter().nullPtr()));
+		setValue(new Ptr<AnyOp>(
+				getGenerator().getGlobals().dataWriter().nullPtr()));
 	}
 
 	@Override

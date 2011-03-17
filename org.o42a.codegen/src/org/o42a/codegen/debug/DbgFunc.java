@@ -51,7 +51,7 @@ final class DbgFunc implements Content<DbgFuncType> {
 	public void fill(DbgFuncType instance) {
 
 		final Generator generator = instance.getGenerator();
-		final Debug debug = generator;
+		final Debug debug = generator.getDebug();
 
 		if (this.namePtr != null) {
 			instance.name().setValue(this.namePtr);

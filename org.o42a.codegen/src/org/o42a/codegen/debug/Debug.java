@@ -38,10 +38,12 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DbgStackFrameType.Op;
 
 
-public abstract class Debug extends Globals {
+public class Debug {
 
-	private static final CodeCallback DEBUG_CODE_CALLBACK =
+	public static final CodeCallback DEBUG_CODE_CALLBACK =
 		new DebugCodeCallback();
+
+	private final Generator generator;
 
 	private boolean debug;
 
@@ -56,6 +58,14 @@ public abstract class Debug extends Globals {
 	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
 		new HashMap<Ptr<?>, DebugTypeInfo>();
 
+	public Debug(Generator generator) {
+		this.generator = generator;
+	}
+
+	public final Generator getGenerator() {
+		return this.generator;
+	}
+
 	public final boolean isDebug() {
 		return this.debug;
 	}
@@ -64,12 +74,10 @@ public abstract class Debug extends Globals {
 		this.debug = debug;
 	}
 
-	@Override
-	protected <F extends Func> void addFunction(
+	public <F extends Func> void addFunction(
 			CodeId id,
 			Signature<F> signature,
 			CodePtr<F> function) {
-		super.addFunction(id, signature, function);
 		if (this.writeDebug) {
 			return;
 		}
@@ -86,7 +94,7 @@ public abstract class Debug extends Globals {
 
 			final Ptr<AnyOp> namePtr =
 				addASCIIString(
-						generator()
+						getGenerator()
 						.id("DEBUG")
 						.sub("FUNC_NAME")
 						.sub(id),
@@ -101,17 +109,7 @@ public abstract class Debug extends Globals {
 		}
 	}
 
-	@Override
-	protected CodeCallback createCodeCallback(Function<?> function) {
-		if (isDebug()) {
-			return DEBUG_CODE_CALLBACK;
-		}
-		return super.createCodeCallback(function);
-	}
-
-	@Override
-	protected void registerType(SubData<?> typeData) {
-		super.registerType(typeData);
+	public void registerType(SubData<?> typeData) {
 		if (!isDebug()) {
 			return;
 		}
@@ -122,7 +120,7 @@ public abstract class Debug extends Globals {
 		final Type<?> type = typeData.getInstance();
 		final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
 
-		newGlobal().struct(typeInfo);
+		getGenerator().newGlobal().struct(typeInfo);
 
 		final DebugTypeInfo old =
 			this.typeInfo.put(typeData.getPointer(), typeInfo);
@@ -131,19 +129,14 @@ public abstract class Debug extends Globals {
 			"Type info already exists: " + old;
 	}
 
-	@Override
-	protected void addType(SubData<?> typeData) {
-		super.addType(typeData);
-	}
-
-	@Override
-	protected void writeData() {
-		super.writeData();
+	public void write() {
+		getGenerator().getGlobals().write();
 		if (checkDebug()) {
 			this.writeDebug = true;
 			try {
-				newGlobal().export().setConstant().struct(this.info);
-				super.writeData();
+				getGenerator().newGlobal().export().setConstant().struct(
+						this.info);
+				getGenerator().getGlobals().write();
 			} finally {
 				this.writeDebug = false;
 			}
@@ -151,7 +144,7 @@ public abstract class Debug extends Globals {
 	}
 
 	final Ptr<AnyOp> addASCIIString(CodeId id, String value) {
-		return addBinary(id, nullTermASCIIString(value));
+		return getGenerator().addBinary(id, nullTermASCIIString(value));
 	}
 
 	final Ptr<AnyOp> allocateName(CodeId id, String value) {
@@ -176,7 +169,7 @@ public abstract class Debug extends Globals {
 	DebugTypeInfo typeInfo(Type<?> instance) {
 
 		final DebugTypeInfo typeInfo =
-			this.typeInfo.get(instance.getType().pointer(generator()));
+			this.typeInfo.get(instance.getType().pointer(getGenerator()));
 
 		assert typeInfo != null :
 			"Unknown debug type info of " + instance.getType();
@@ -191,20 +184,20 @@ public abstract class Debug extends Globals {
 		if (this.info != null) {
 			return true;
 		}
+
 		this.writeDebug = true;
 		try {
-			this.enterFunc = externalFunction("o42a_dbg_enter", DBG_ENTER);
-			this.exitFunc =
-				externalFunction("o42a_dbg_exit", EXIT_SIGNATURE);
+			this.enterFunc = getGenerator().externalFunction(
+					"o42a_dbg_enter",
+					DBG_ENTER);
+			this.exitFunc = getGenerator().externalFunction(
+					"o42a_dbg_exit",
+					EXIT_SIGNATURE);
 			this.info = new DebugInfo();
 		} finally {
 			this.writeDebug = false;
 		}
 		return true;
-	}
-
-	private final Generator generator() {
-		return (Generator) this;
 	}
 
 	private static byte[] nullTermASCIIString(String string) {
@@ -226,7 +219,7 @@ public abstract class Debug extends Globals {
 		@Override
 		public void beforeReturn(Code code) {
 
-			final Debug debug = code.getGenerator();
+			final Debug debug = code.getGenerator().getDebug();
 
 			debug.exitFunc.op(code).exit(code);
 		}

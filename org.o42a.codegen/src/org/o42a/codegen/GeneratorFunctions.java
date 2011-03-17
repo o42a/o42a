@@ -17,19 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.debug;
+package org.o42a.codegen;
 
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.backend.CodeBackend;
+import org.o42a.codegen.code.backend.CodeCallback;
 
 
-public abstract class TypeDebugBase {
+final class GeneratorFunctions extends Functions {
 
-	public final DebugTypeInfo getTypeInfo() {
+	GeneratorFunctions(Generator generator) {
+		super(generator);
+	}
 
-		final Type<?> type = (Type<?>) this;
-		final Debug debug = type.getGenerator().getDebug();
+	@Override
+	public CodeBackend codeBackend() {
+		return getGenerator().codeBackend();
+	}
 
-		return debug.typeInfo(type);
+	@Override
+	protected <F extends Func> void addFunction(
+			CodeId id,
+			Signature<F> signature,
+			CodePtr<F> function) {
+		getGenerator().addFunction(id, signature, function);
+	}
+
+	@Override
+	protected CodeCallback createCodeCallback(Function<?> function) {
+		return getGenerator().createCodeCallback(function);
 	}
 
 }

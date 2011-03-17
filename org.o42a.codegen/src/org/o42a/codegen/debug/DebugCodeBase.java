@@ -151,7 +151,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	protected final CodeBackend backend() {
-		return this.generator.codeBackend();
+		return this.generator.getFunctions().codeBackend();
 	}
 
 	private final Code code() {

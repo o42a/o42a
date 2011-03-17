@@ -24,6 +24,8 @@ import org.o42a.codegen.code.Code;
 
 public interface CodeCallback {
 
+	CodeCallback NOOP_CODE_CALLBACK = new NoOpCodeCallback();
+
 	void beforeReturn(Code code);
 
 }

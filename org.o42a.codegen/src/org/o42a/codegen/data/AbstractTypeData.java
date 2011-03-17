@@ -67,7 +67,7 @@ abstract class AbstractTypeData<O extends StructOp> extends SubData<O> {
 			return;
 		}
 
-		final Globals globals = getGenerator();
+		final Globals globals = getGenerator().getGlobals();
 
 		globals.scheduleTypeAllocation(this);
 	}
@@ -83,7 +83,7 @@ abstract class AbstractTypeData<O extends StructOp> extends SubData<O> {
 
 		this.scheduled = false; // Prevent double allocation.
 
-		final Globals globals = getGenerator();
+		final Globals globals = getGenerator().getGlobals();
 
 		getInstance().allocateInstance(this);
 		endTypeAllocation(globals.dataAllocator());
@@ -106,12 +106,12 @@ abstract class AbstractTypeData<O extends StructOp> extends SubData<O> {
 		}
 		this.scheduled = !immediately;
 
-		final Globals globals = getGenerator();
+		final Globals globals = getGenerator().getGlobals();
 
 		if (immediately) {
 			globals.allocatingType(this);
 		}
-		setAllocation(beginTypeAllocation(getGenerator().dataAllocator()));
+		setAllocation(beginTypeAllocation(globals.dataAllocator()));
 
 		globals.registerType(this);
 

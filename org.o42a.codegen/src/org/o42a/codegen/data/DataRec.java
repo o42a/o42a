@@ -52,7 +52,7 @@ public abstract class DataRec<O extends DataOp> extends PtrRec<O> {
 		@Override
 		public void setNull() {
 			setValue(new Ptr<DataOp>(
-					getGenerator().dataWriter().nullDataPtr()));
+					getGenerator().getGlobals().dataWriter().nullDataPtr()));
 		}
 
 		@Override

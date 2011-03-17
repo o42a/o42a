@@ -34,7 +34,7 @@ public final class FunctionSettings {
 	}
 
 	public final Generator getGenerator() {
-		return (Generator) this.functions;
+		return this.functions.getGenerator();
 	}
 
 	public final boolean isExported() {

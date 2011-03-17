@@ -52,7 +52,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		final Data<?> fieldData = getFieldData();
 		final Type<?> enclosing = getFieldData().getEnclosing();
 		final Generator generator = instance.getGenerator();
-		final Debug debug = generator;
+		final Debug debug = generator.getDebug();
 
 		instance.dataType().setValue(fieldData.getDataType().getCode());
 		instance.offset().setValue(
