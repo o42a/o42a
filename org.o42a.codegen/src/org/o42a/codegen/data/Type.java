@@ -27,11 +27,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.TypeInstanceData.GlobalInstanceData;
-import org.o42a.codegen.data.TypeInstanceData.InstanceData;
 import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.codegen.data.backend.DataAllocator;
-import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.DebugHeader;
 import org.o42a.codegen.debug.TypeDebugBase;
 
@@ -41,7 +37,12 @@ public abstract class Type<O extends StructOp>
 		implements Cloneable {
 
 	@SuppressWarnings("rawtypes")
-	static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
+	private static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
+
+	@SuppressWarnings("unchecked")
+	public static <T> Content<T> emptyContent() {
+		return (Content<T>) EMPTY_CONTENT;
+	}
 
 	private CodeId id;
 	Type<O> type;
@@ -187,7 +188,7 @@ public abstract class Type<O extends StructOp>
 			instance.type = this.type;
 		}
 
-		instance.data = new InstanceData<O>(enclosing, id, instance, content);
+		instance.data = new TypeInstanceData<O>(enclosing, id, instance, content);
 
 		return instance;
 	}
@@ -233,43 +234,6 @@ public abstract class Type<O extends StructOp>
 			assert isAllocated(generator) :
 				"Not allocated: " + this;
 		}
-	}
-
-	private static final class TypeData<O extends StructOp>
-			extends AbstractTypeData<O> {
-
-		TypeData(Generator generator, Type<O> type) {
-			super(generator, type.codeId(generator).removeLocal(), type);
-		}
-
-		@Override
-		public Global<?, ?> getGlobal() {
-			return null;
-		}
-
-		@Override
-		public Type<?> getEnclosing() {
-			return null;
-		}
-
-		@Override
-		protected DataAllocation<O> beginTypeAllocation(
-				DataAllocator allocator) {
-			return allocator.begin(getInstance());
-		}
-
-		@Override
-		protected void endTypeAllocation(DataAllocator allocator) {
-			allocator.end(getInstance());
-		}
-
-		@Override
-		protected void write(DataWriter writer) {
-			throw new UnsupportedOperationException(
-					"Type " + getId() + " itself can not be written out. "
-					+ "Write an instance instead.");
-		}
-
 	}
 
 	private static final class EmptyContent<T> implements Content<T> {

@@ -21,9 +21,6 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.codegen.data.backend.DataAllocator;
-import org.o42a.codegen.data.backend.DataWriter;
 
 
 public abstract class Struct<O extends StructOp> extends Type<O> {
@@ -43,111 +40,7 @@ public abstract class Struct<O extends StructOp> extends Type<O> {
 	}
 
 	final void setGlobal(Global<O, ?> global) {
-		this.data = new GlobalData<O>(global, this);
-	}
-
-	private static final class StructData<O extends StructOp>
-			extends AbstractTypeData<O> {
-
-		private final Global<?, ?> global;
-		private final Type<?> enclosing;
-
-		StructData(SubData<?> enclosing, Struct<O> instance, CodeId name) {
-			super(enclosing.getGenerator(), name, instance);
-			this.global = enclosing.getGlobal();
-			this.enclosing = enclosing.getInstance();
-		}
-
-		@Override
-		public Global<?, ?> getGlobal() {
-			return this.global;
-		}
-
-		@Override
-		public Type<?> getEnclosing() {
-			return this.enclosing;
-		}
-
-		@Override
-		protected DataAllocation<O> beginTypeAllocation(
-				DataAllocator allocator) {
-			return allocator.enter(
-					getEnclosing().getAllocation(),
-					getInstance().getAllocation(),
-					this);
-		}
-
-		@Override
-		protected void endTypeAllocation(DataAllocator allocator) {
-			allocator.exit(getEnclosing().getAllocation(), this);
-		}
-
-		@Override
-		protected void write(DataWriter writer) {
-			writer.enter(getPointer().getAllocation(), this);
-			((Struct<O>) getInstance()).fill();
-			writeIncluded(writer);
-			writer.exit(getPointer().getAllocation(), this);
-		}
-
-	}
-
-	private static final class GlobalData<O extends StructOp>
-			extends AbstractTypeData<O> {
-
-		private final Global<O, ?> global;
-
-		GlobalData(Global<O, ?> global, Type<O> instance) {
-			super(
-					global.getGenerator(),
-					global.getId().removeLocal(),
-					instance);
-			this.global = global;
-		}
-
-		@Override
-		public Global<O, ?> getGlobal() {
-			return this.global;
-		}
-
-		@Override
-		public Type<?> getEnclosing() {
-			return null;
-		}
-
-		@Override
-		public String toString() {
-			return this.global.toString();
-		}
-
-		@Override
-		protected DataAllocation<O> beginTypeAllocation(
-				DataAllocator allocator) {
-			return allocator.begin(getInstance().getAllocation(), this.global);
-		}
-
-		@Override
-		protected void endTypeAllocation(DataAllocator allocator) {
-			allocator.end(this.global);
-		}
-
-		@Override
-		protected void postTypeAllocation() {
-			super.postTypeAllocation();
-
-			final Globals globals = getGenerator().getGlobals();
-
-			globals.globalCreated(this);
-		}
-
-		@Override
-		protected void write(DataWriter writer) {
-			writer.begin(getPointer().getAllocation(), this.global);
-			((Struct<O>) getInstance()).fill();
-			writeIncluded(writer);
-			writer.end(getPointer().getAllocation(), this.global);
-		}
-
+		this.data = new GlobalStructData<O>(global, this);
 	}
 
 	private static final class StructContent<T extends Struct<?>>
