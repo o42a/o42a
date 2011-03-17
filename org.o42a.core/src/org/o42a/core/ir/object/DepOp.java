@@ -109,9 +109,9 @@ public class DepOp extends IROp implements HostOp {
 					exit,
 					dependency.getKey());
 
-			value = field.ptr();
+			value = field.ptr().toData(code);
 		} else {
-			value = builder.owner().ptr();
+			value = builder.owner().toData(code);
 		}
 
 		ptr().object(code).store(code, value);

@@ -23,16 +23,17 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.CodeBuilder;
 
 
 public abstract class IROp {
 
-	final DataOp ptr;
+	final PtrOp ptr;
 	private final CodeBuilder builder;
 
-	public IROp(CodeBuilder builder, DataOp ptr) {
+	public IROp(CodeBuilder builder, PtrOp ptr) {
 		this.builder = builder;
 		this.ptr = ptr;
 	}
@@ -49,8 +50,12 @@ public abstract class IROp {
 		return this.builder;
 	}
 
-	public DataOp ptr() {
+	public PtrOp ptr() {
 		return this.ptr;
+	}
+
+	public final DataOp toData(Code code) {
+		return toAny(code);
 	}
 
 	public final AnyOp toAny(Code code) {

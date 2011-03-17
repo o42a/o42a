@@ -86,6 +86,13 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return new LLVMAnyOp(nextPtr, toAny(nextPtr, getNativePtr()));
 	}
 
+	public LLVMDataOp toData(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMDataOp(nextPtr, toAny(nextPtr, getNativePtr()));
+	}
+
 	public <O extends StructOp> O to(Code code, Type<O> type) {
 		final long nextPtr = nextPtr(code);
 

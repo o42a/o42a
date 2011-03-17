@@ -29,8 +29,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.OpCodeBase;
+import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 
@@ -83,7 +83,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				binaryMessage(nl ? message + '\n' : message).op(code()));
 	}
 
-	public final void dumpName(String prefix, DataOp data) {
+	public final void dumpName(String prefix, PtrOp data) {
 		assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
@@ -117,11 +117,11 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				code.toAny(code()));
 	}
 
-	public final void dump(String message, DataOp data) {
+	public final void dump(String message, PtrOp data) {
 		dump(message, data, Integer.MAX_VALUE);
 	}
 
-	public final void dump(String message, DataOp data, int depth) {
+	public final void dump(String message, PtrOp data, int depth) {
 		assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;

@@ -24,18 +24,12 @@ import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Type;
 
 
 public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 	public LLVMAnyOp(long blockPtr, long nativePtr) {
 		super(blockPtr, nativePtr);
-	}
-
-	@Override
-	public final Type<?> getType() {
-		return null;
 	}
 
 	@Override

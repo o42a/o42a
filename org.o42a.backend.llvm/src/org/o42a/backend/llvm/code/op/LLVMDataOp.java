@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2011 Ruslan Lopatin
+    Compiler LLVM Back-end
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,14 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.op;
+package org.o42a.backend.llvm.code.op;
+
+import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.code.op.DataOp;
 
 
-public interface DataOp extends PtrOp {
+public final class LLVMDataOp extends LLVMPtrOp implements DataOp {
 
-	<O extends StructOp> O to(Code code, Type<O> type);
+	public LLVMDataOp(long blockPtr, long nativePtr) {
+		super(blockPtr, nativePtr);
+	}
+
+	@Override
+	public LLVMDataOp toData(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		if (nextPtr == getBlockPtr()) {
+			return this;
+		}
+
+		return super.toData(code);
+	}
+
+	@Override
+	public LLVMDataOp create(long blockPtr, long nativePtr) {
+		return new LLVMDataOp(blockPtr, nativePtr);
+	}
 
 }

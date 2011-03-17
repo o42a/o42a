@@ -25,7 +25,9 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public interface StructWriter extends DataOp {
+public interface StructWriter extends PtrOp {
+
+	Type<?> getType();
 
 	RecOp<?> field(Code code, Data<?> field);
 
@@ -46,6 +48,10 @@ public interface StructWriter extends DataOp {
 	<O extends StructOp> O struct(Code code, Type<O> field);
 
 	<F extends Func> FuncOp<F> func(Code code, FuncRec<F> field);
+
+	DataOp toData(Code code);
+
+	<O extends StructOp> O to(Code code, Type<O> type);
 
 	CodeBackend backend();
 

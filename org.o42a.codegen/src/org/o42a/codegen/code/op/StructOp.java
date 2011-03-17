@@ -25,7 +25,7 @@ import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class StructOp implements DataOp {
+public abstract class StructOp implements PtrOp {
 
 	private final StructWriter writer;
 
@@ -33,7 +33,6 @@ public abstract class StructOp implements DataOp {
 		this.writer = writer;
 	}
 
-	@Override
 	public Type<?> getType() {
 		return writer().getType();
 	}
@@ -68,7 +67,10 @@ public abstract class StructOp implements DataOp {
 		return writer().toAny(code);
 	}
 
-	@Override
+	public final DataOp toData(Code code) {
+		return writer().toData(code);
+	}
+
 	public <O extends StructOp> O to(Code code, Type<O> type) {
 		return writer().to(code, type);
 	}
