@@ -61,7 +61,7 @@ public interface DataAllocator {
 			DataAllocation<?> enclosing,
 			DataAllocation<RecOp<Fp64op>> allocation);
 
-	<F extends Func> DataAllocation<FuncOp<F>> allocateCodePtr(
+	<F extends Func> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature);

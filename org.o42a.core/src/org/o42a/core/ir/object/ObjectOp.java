@@ -330,7 +330,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return this.objectType;
 	}
 
-	private CodePtr<BinaryFunc> castFunc() {
+	private FuncPtr<BinaryFunc> castFunc() {
 		return getGenerator().externalFunction("o42a_obj_cast", BINARY);
 	}
 

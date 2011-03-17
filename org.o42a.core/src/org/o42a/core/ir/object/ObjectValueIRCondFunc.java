@@ -211,13 +211,13 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		return false;
 	}
 
-	private CodePtr<ObjectCondFunc> trueFunc() {
+	private FuncPtr<ObjectCondFunc> trueFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_cond_true",
 				OBJECT_COND);
 	}
 
-	private CodePtr<ObjectCondFunc> falseFunc() {
+	private FuncPtr<ObjectCondFunc> falseFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_cond_false",
 				OBJECT_COND);

@@ -30,7 +30,7 @@ public final class Function<F extends Func> extends Code {
 	private final FunctionSettings settings;
 	private final Signature<F> signature;
 	private FuncWriter<F> writer;
-	private CodePtr<F> pointer;
+	private FuncPtr<F> pointer;
 
 	Function(
 			FunctionSettings settings,
@@ -49,7 +49,7 @@ public final class Function<F extends Func> extends Code {
 		return this.settings.isExported();
 	}
 
-	public final CodePtr<F> getPointer() {
+	public final FuncPtr<F> getPointer() {
 		writer();// init writer
 		return this.pointer;
 	}
@@ -101,7 +101,7 @@ public final class Function<F extends Func> extends Code {
 		this.writer = backend().addFunction(
 				this,
 				functions.createCodeCallback(this));
-		this.pointer = new FuncCodePtr<F>(this, this.writer.getAllocation());
+		this.pointer = new ConstructingFuncPtr<F>(this, this.writer.getAllocation());
 
 		return this.writer;
 	}

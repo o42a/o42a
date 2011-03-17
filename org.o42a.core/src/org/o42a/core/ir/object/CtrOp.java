@@ -27,7 +27,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -113,7 +113,7 @@ public class CtrOp extends IROp {
 				sample.getWellKnownType());
 	}
 
-	private CodePtr<ObjectRefFunc> newFunc() {
+	private FuncPtr<ObjectRefFunc> newFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_new",
 				OBJECT_REF);
@@ -200,7 +200,7 @@ public class CtrOp extends IROp {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.scopeType = data.addPtr("scope_type", OBJECT_TYPE);
-			this.ancestorFunc = data.addCodePtr("ancestor_f", OBJECT_REF);
+			this.ancestorFunc = data.addFuncPtr("ancestor_f", OBJECT_REF);
 			this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 			this.type = data.addPtr("type", OBJECT_TYPE);
 			this.flags = data.addInt32("flags");

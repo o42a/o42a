@@ -161,13 +161,13 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			ObjOp host,
 			Definitions definitions);
 
-	private CodePtr<ObjectValFunc> falseValFunc() {
+	private FuncPtr<ObjectValFunc> falseValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_false",
 				OBJECT_VAL);
 	}
 
-	private CodePtr<ObjectValFunc> unknownValFunc() {
+	private FuncPtr<ObjectValFunc> unknownValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_unknown",
 				OBJECT_VAL);

@@ -20,14 +20,14 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 
 
 public abstract class FuncRec<F extends Func>
-		extends CodeRec<FuncOp<F>, CodePtr<F>> {
+		extends Rec<FuncOp<F>, FuncPtr<F>> {
 
 	private final Signature<F> signature;
 
@@ -41,8 +41,14 @@ public abstract class FuncRec<F extends Func>
 	}
 
 	@Override
+	public final DataType getDataType() {
+		return DataType.CODE_PTR;
+	}
+
 	public final Signature<F> getSignature() {
 		return this.signature;
 	}
+
+	public abstract void setNull();
 
 }

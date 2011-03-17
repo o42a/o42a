@@ -218,7 +218,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <F extends Func> DataAllocation<FuncOp<F>> allocateCodePtr(
+	public <F extends Func> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature) {

@@ -25,7 +25,7 @@ import static org.o42a.core.member.AdapterId.adapterId;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -135,7 +135,7 @@ final class MainCall extends DefinedObject {
 					generator.rawId("main"),
 					MainFunc.SIGNATURE);
 
-		final CodePtr<DbgExecMainFunc> executeMain =
+		final FuncPtr<DbgExecMainFunc> executeMain =
 			generator.externalFunction(
 					"o42a_dbg_exec_main",
 					DbgExecMainFunc.SIGNATURE);

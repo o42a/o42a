@@ -39,7 +39,7 @@ final class GeneratorFunctions extends Functions {
 	protected <F extends Func> void addFunction(
 			CodeId id,
 			Signature<F> signature,
-			CodePtr<F> function) {
+			FuncPtr<F> function) {
 		getGenerator().addFunction(id, signature, function);
 	}
 

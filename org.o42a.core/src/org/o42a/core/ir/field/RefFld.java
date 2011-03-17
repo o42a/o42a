@@ -328,7 +328,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 		@Override
 		public void allocate(SubData<O> data) {
 			this.object = data.addDataPtr("object");
-			this.constructor = data.addCodePtr(
+			this.constructor = data.addFuncPtr(
 					"constructor",
 					getSignature());
 		}

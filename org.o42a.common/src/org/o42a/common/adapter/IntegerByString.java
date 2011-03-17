@@ -21,7 +21,7 @@ package org.o42a.common.adapter;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectOp;
@@ -54,7 +54,7 @@ public class IntegerByString extends ByString<Long> {
 		parseFunc.parse(code, result, inputValue, 10);
 	}
 
-	private CodePtr<ParseWithRadixFunc> parseFunc(Generator generator) {
+	private FuncPtr<ParseWithRadixFunc> parseFunc(Generator generator) {
 		return generator.externalFunction(
 				"o42a_int_by_str",
 				ParseWithRadixFunc.PARSE_WITH_RADIX);

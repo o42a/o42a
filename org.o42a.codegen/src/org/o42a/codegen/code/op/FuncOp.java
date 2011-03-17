@@ -19,13 +19,15 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 
 
-public interface FuncOp<F extends Func> extends RecOp<F>, CodeOp {
+public interface FuncOp<F extends Func> extends RecOp<F> {
 
-	@Override
 	Signature<F> getSignature();
+
+	<FF extends Func> FuncOp<FF> toFunc(Code code, Signature<FF> signature);
 
 }

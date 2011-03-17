@@ -110,7 +110,7 @@ public class Print extends IntrinsicObject {
 			}
 		}
 
-		private CodePtr<PrintFunc> printFunc() {
+		private FuncPtr<PrintFunc> printFunc() {
 			return getGenerator().externalFunction(
 					Print.this.funcName,
 					PrintFunc.PRINT);

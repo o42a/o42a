@@ -21,7 +21,7 @@ package org.o42a.codegen.debug;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.CodePtr;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Content;
@@ -31,10 +31,10 @@ import org.o42a.codegen.data.Ptr;
 final class DbgFunc implements Content<DbgFuncType> {
 
 	private final CodeId id;
-	private final CodePtr<?> function;
+	private final FuncPtr<?> function;
 	private Ptr<AnyOp> namePtr;
 
-	DbgFunc(CodeId id, Signature<?> signature, CodePtr<?> function) {
+	DbgFunc(CodeId id, Signature<?> signature, FuncPtr<?> function) {
 		this.id = id;
 		this.function = function;
 	}

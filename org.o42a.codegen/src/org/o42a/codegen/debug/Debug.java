@@ -49,8 +49,8 @@ public class Debug {
 
 	private boolean writeDebug;
 
-	private CodePtr<DbgEnterFunc> enterFunc;
-	private CodePtr<DbgExitFunc> exitFunc;
+	private FuncPtr<DbgEnterFunc> enterFunc;
+	private FuncPtr<DbgExitFunc> exitFunc;
 	private DebugInfo info;
 
 	private final HashMap<String, Ptr<AnyOp>> names =
@@ -77,7 +77,7 @@ public class Debug {
 	public <F extends Func> void addFunction(
 			CodeId id,
 			Signature<F> signature,
-			CodePtr<F> function) {
+			FuncPtr<F> function) {
 		if (this.writeDebug) {
 			return;
 		}
