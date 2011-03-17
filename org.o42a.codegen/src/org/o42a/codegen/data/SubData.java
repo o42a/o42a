@@ -89,13 +89,10 @@ public abstract class SubData<O extends StructOp>
 			String name,
 			Signature<F> signature,
 			Content<FuncRec<F>> content) {
-
-		final SignatureDataBase<F> sign = signature;
-
 		return add(codePtrRecord(
 				this,
 				id(name),
-				sign.allocate(getGenerator().getFunctions().codeBackend()),
+				signature.allocate(getGenerator().getFunctions().codeBackend()),
 				content));
 	}
 
@@ -116,7 +113,7 @@ public abstract class SubData<O extends StructOp>
 	public final DataRec<DataOp> addDataPtr(
 			String name,
 			Content<DataRec<DataOp>> content) {
-		return add(new DataRec.Rec(this, id(name), content));
+		return add(new DataPtrRec(this, id(name), content));
 	}
 
 	public final <P extends StructOp> StructRec<P> addPtr(

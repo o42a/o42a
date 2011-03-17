@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.CodePtr.ExternPtr;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.CodeCallback;
 
@@ -59,7 +58,7 @@ public abstract class Functions {
 		}
 
 		final CodeId id = getGenerator().rawId(name);
-		final ExternPtr<F> extern = new ExternPtr<F>(
+		final ExternCodePtr<F> extern = new ExternCodePtr<F>(
 				name,
 				signature,
 				codeBackend().externFunction(

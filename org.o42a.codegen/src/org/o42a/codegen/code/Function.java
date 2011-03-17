@@ -20,7 +20,6 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.CodePtr.FuncPtr;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -102,7 +101,7 @@ public final class Function<F extends Func> extends Code {
 		this.writer = backend().addFunction(
 				this,
 				functions.createCodeCallback(this));
-		this.pointer = new FuncPtr<F>(this, this.writer.getAllocation());
+		this.pointer = new FuncCodePtr<F>(this, this.writer.getAllocation());
 
 		return this.writer;
 	}

@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,18 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.data;
+package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.CodeBackend;
-import org.o42a.codegen.code.op.SignatureOpBase;
+import org.o42a.codegen.code.backend.CodeAllocation;
 
 
-public abstract class SignatureDataBase<F extends Func>
-		extends SignatureOpBase<F> {
+final class NullCodePtr<F extends Func> extends CodePtr<F> {
+
+	NullCodePtr(Signature<F> signature, CodeAllocation<F> allocation) {
+		super(signature, allocation);
+	}
 
 	@Override
-	protected abstract Signature<F> allocate(CodeBackend backend);
+	public Function<F> getFunction() {
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return this.allocation.toString();
+	}
 
 }

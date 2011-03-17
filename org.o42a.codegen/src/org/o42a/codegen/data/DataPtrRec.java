@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,44 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code;
+package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.FuncRec;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class FuncPtrRec<F extends Func> extends FuncRec<F> {
+final class DataPtrRec extends DataRec<DataOp> {
 
-	FuncPtrRec(
-			SubData<?> enclosing,
-			CodeId id,
-			Signature<F> signature,
-			Content<FuncRec<F>> content) {
-		super(enclosing, id, signature, content);
+	DataPtrRec(SubData<?> enclosing, CodeId id, Content<DataRec<DataOp>> content) {
+		super(enclosing, id, content);
 	}
 
 	@Override
 	public void setNull() {
-		setValue(new NullCodePtr<F>(
-				getSignature(),
-				getGenerator().getGlobals().dataWriter().nullPtr(
-						getSignature())));
+		setValue(new Ptr<DataOp>(
+				getGenerator().getGlobals().dataWriter().nullDataPtr()));
 	}
 
 	@Override
 	protected void allocate(DataAllocator allocator) {
-		setAllocation(allocator.allocateCodePtr(
-				getEnclosing().pointer(getGenerator()).getAllocation(),
-				getAllocation(),
-				getSignature()));
+		setAllocation(allocator.allocateDataPtr(
+				getEnclosing().getAllocation(),
+				getAllocation()));
 	}
 
 	@Override
 	protected void write(DataWriter writer) {
+		fill(writer);
 		getValue().getAllocation().write(writer);
 	}
 
