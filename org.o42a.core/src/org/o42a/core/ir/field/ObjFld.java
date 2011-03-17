@@ -171,12 +171,12 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	public static final class Type
 			extends RefFld.Type<Op, ObjectConstructorFunc> {
 
-		private DataRec<DataOp> previous;
+		private DataRec previous;
 
 		private Type() {
 		}
 
-		public final DataRec<DataOp> previous() {
+		public final DataRec previous() {
 			return this.previous;
 		}
 

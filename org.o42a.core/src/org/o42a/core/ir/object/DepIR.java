@@ -93,12 +93,12 @@ public class DepIR {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private DataRec<DataOp> object;
+		private DataRec object;
 
 		private Type() {
 		}
 
-		public final DataRec<DataOp> object() {
+		public final DataRec object() {
 			return this.object;
 		}
 

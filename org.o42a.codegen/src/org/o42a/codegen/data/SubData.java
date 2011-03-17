@@ -27,7 +27,6 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -106,14 +105,14 @@ public abstract class SubData<O extends StructOp>
 		return add(new AnyPtrRec(this, id(name), content));
 	}
 
-	public final DataRec<DataOp> addDataPtr(String name) {
+	public final DataRec addDataPtr(String name) {
 		return addDataPtr(name, null);
 	}
 
-	public final DataRec<DataOp> addDataPtr(
+	public final DataRec addDataPtr(
 			String name,
-			Content<DataRec<DataOp>> content) {
-		return add(new DataPtrRec(this, id(name), content));
+			Content<DataRec> content) {
+		return add(new DataRec(this, id(name), content));
 	}
 
 	public final <P extends StructOp> StructRec<P> addPtr(
