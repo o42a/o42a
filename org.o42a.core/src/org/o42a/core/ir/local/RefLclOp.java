@@ -149,12 +149,12 @@ public final class RefLclOp extends LclOp {
 
 	public static final class Type extends LclOp.Type<Op> {
 
-		private DataRec<DataOp> object;
+		private DataRec object;
 
 		private Type() {
 		}
 
-		public final DataRec<DataOp> object() {
+		public final DataRec object() {
 			return this.object;
 		}
 

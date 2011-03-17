@@ -25,7 +25,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class StructRec<O extends StructOp> extends DataRec<O> {
+public final class StructRec<O extends StructOp> extends PtrRec<O> {
 
 	private final Type<O> type;
 
@@ -39,6 +39,10 @@ public final class StructRec<O extends StructOp> extends DataRec<O> {
 	}
 
 	@Override
+	public final DataType getDataType() {
+		return DataType.DATA_PTR;
+	}
+
 	public final Type<O> getType() {
 		return this.type;
 	}

@@ -73,12 +73,11 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 			typeInfo = debug.typeInfo(fieldData.getInstance());
 			break;
 		case DATA_PTR:
+			if (fieldData instanceof StructRec) {
 
-			final DataRec<?> dataPtr = (DataRec<?>) fieldData;
-			final Type<?> pointedType = dataPtr.getType();
+				final StructRec<?> structPtr = (StructRec<?>) fieldData;
 
-			if (pointedType != null) {
-				typeInfo = debug.typeInfo(pointedType);
+				typeInfo = debug.typeInfo(structPtr.getType());
 			} else {
 				typeInfo = null;
 			}

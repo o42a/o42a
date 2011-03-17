@@ -311,13 +311,13 @@ public abstract class RefFld<C extends Func> extends Fld {
 	public static abstract class Type<O extends Op<C>, C extends Func>
 			extends Fld.Type<O> {
 
-		private DataRec<DataOp> object;
+		private DataRec object;
 		private FuncRec<C> constructor;
 
 		Type() {
 		}
 
-		public final DataRec<DataOp> object() {
+		public final DataRec object() {
 			return this.object;
 		}
 

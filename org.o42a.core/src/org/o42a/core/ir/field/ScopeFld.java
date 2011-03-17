@@ -121,12 +121,12 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 	public static final class Type extends Fld.Type<Op> {
 
-		private DataRec<DataOp> object;
+		private DataRec object;
 
 		private Type() {
 		}
 
-		public final DataRec<DataOp> object() {
+		public final DataRec object() {
 			return this.object;
 		}
 

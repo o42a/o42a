@@ -21,14 +21,16 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.data.backend.DataAllocator;
+import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class DataRec<O extends DataOp> extends PtrRec<O> {
+public final class DataRec extends PtrRec<DataOp> {
 
 	DataRec(
 			SubData<?> enclosing,
 			CodeId id,
-			Content<?> content) {
+			Content<DataRec> content) {
 		super(enclosing, id, content);
 	}
 
@@ -37,8 +39,23 @@ public abstract class DataRec<O extends DataOp> extends PtrRec<O> {
 		return DataType.DATA_PTR;
 	}
 
-	public Type<?> getType() {
-		return null;
+	@Override
+	public void setNull() {
+		setValue(new Ptr<DataOp>(
+				getGenerator().getGlobals().dataWriter().nullDataPtr()));
+	}
+
+	@Override
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocateDataPtr(
+				getEnclosing().getAllocation(),
+				getAllocation()));
+	}
+
+	@Override
+	protected void write(DataWriter writer) {
+		fill(writer);
+		getValue().getAllocation().write(writer);
 	}
 
 }

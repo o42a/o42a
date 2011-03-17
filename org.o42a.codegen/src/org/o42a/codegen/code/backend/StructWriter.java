@@ -37,7 +37,7 @@ public interface StructWriter extends DataOp {
 
 	RecOp<AnyOp> ptr(Code code, AnyPtrRec field);
 
-	RecOp<DataOp> ptr(Code code, DataRec<?> field);
+	RecOp<DataOp> ptr(Code code, DataRec field);
 
 	<P extends StructOp> RecOp<P> ptr(Code code, StructRec<P> field);
 

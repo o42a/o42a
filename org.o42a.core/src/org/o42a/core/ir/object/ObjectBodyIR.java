@@ -60,7 +60,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	private RelPtrRec objectType;
 	private RelPtrRec ancestorBody;
-	private DataRec<DataOp> methods;
+	private DataRec methods;
 	private Int32rec flags;
 
 	ObjectBodyIR(ObjectIRStruct objectIRStruct) {
@@ -120,7 +120,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return this.ancestorBody;
 	}
 
-	public final DataRec<DataOp> methods() {
+	public final DataRec methods() {
 		return this.methods;
 	}
 
