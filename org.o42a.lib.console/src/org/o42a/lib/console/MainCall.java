@@ -22,6 +22,7 @@ package org.o42a.lib.console;
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.lib.console.MainFunc.MAIN;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodeBlk;
@@ -133,7 +134,7 @@ final class MainCall extends DefinedObject {
 		final Function<MainFunc> debugMain =
 			generator.newFunction().export().create(
 					generator.rawId("main"),
-					MainFunc.MAIN);
+					MAIN);
 
 		final FuncPtr<DebugExecMainFunc> executeMain =
 			generator.externalFunction(
@@ -143,8 +144,8 @@ final class MainCall extends DefinedObject {
 		executeMain.op(debugMain).call(
 				debugMain,
 				main.getPointer().op(debugMain),
-				debugMain.int32arg(debugMain, 0),
-				debugMain.ptrArg(debugMain, 1)).returnValue(debugMain);
+				debugMain.arg(MAIN.argc()),
+				debugMain.arg(MAIN.argv())).returnValue(debugMain);
 	}
 
 }

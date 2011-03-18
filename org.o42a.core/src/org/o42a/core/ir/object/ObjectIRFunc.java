@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
@@ -32,8 +31,8 @@ import org.o42a.core.value.LogicalValue;
 
 abstract class ObjectIRFunc {
 
-	public static DataOp body(Code code, ObjOp host, ObjectOp body) {
-		return body != null ? body.toData(code) : host.ptr().toData(code);
+	public static ObjectOp body(Code code, ObjOp host, ObjectOp body) {
+		return body != null ? body : host;
 	}
 
 	private final ObjectIR objectIR;

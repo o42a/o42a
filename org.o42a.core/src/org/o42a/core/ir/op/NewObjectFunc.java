@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,70 +19,57 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectType.Op;
-import org.o42a.core.ir.object.ObjectTypeOp;
+import org.o42a.core.ir.object.CtrOp;
+import org.o42a.core.ir.object.CtrOp.Op;
 
 
-public final class CastObjectFunc extends Func {
+public class NewObjectFunc extends Func {
 
-	public static final CastObject CAST_OBJECT = new CastObject();
+	public static final NewObject NEW_OBJECT = new NewObject();
 
-	CastObjectFunc(FuncCaller<CastObjectFunc> caller) {
+	private NewObjectFunc(FuncCaller<NewObjectFunc> caller) {
 		super(caller);
 	}
 
-	public DataOp cast(Code code, ObjectOp object, ObjectTypeOp type) {
-		return invoke(
-				code,
-				CAST_OBJECT.result(),
-				object.toData(code),
-				type.ptr());
+	public DataOp newObject(Code code, CtrOp ctr) {
+		return invoke(code, NEW_OBJECT.result(), ctr.ptr());
 	}
 
-	public static final class CastObject extends Signature<CastObjectFunc> {
+	public static final class NewObject extends Signature<NewObjectFunc> {
 
 		private Return<DataOp> result;
-		private Arg<DataOp> object;
-		private Arg<Op> type;
+		private Arg<Op> ctr;
 
-		private CastObject() {
+		private NewObject() {
 		}
 
 		public final Return<DataOp> result() {
 			return this.result;
 		}
 
-		public final Arg<DataOp> object() {
-			return this.object;
-		}
-
-		public final Arg<Op> type() {
-			return this.type;
+		public final Arg<Op> ctr() {
+			return this.ctr;
 		}
 
 		@Override
-		public CastObjectFunc op(FuncCaller<CastObjectFunc> caller) {
-			return new CastObjectFunc(caller);
+		public NewObjectFunc op(FuncCaller<NewObjectFunc> caller) {
+			return new NewObjectFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectCastF");
+			return factory.id("NewObjectF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnData();
-			this.object = builder.addData("object");
-			this.type = builder.addPtr("type", OBJECT_TYPE);
+			this.ctr = builder.addPtr("ctr", CtrOp.CTR_TYPE);
 		}
 
 	}

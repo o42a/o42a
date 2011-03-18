@@ -25,6 +25,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjectOp;
 
 
 public final class ObjectCondFunc extends Func {
@@ -35,11 +36,16 @@ public final class ObjectCondFunc extends Func {
 		super(caller);
 	}
 
+	public BoolOp call(Code code, ObjectOp object) {
+		return call(code, object.toData(code));
+	}
+
 	public BoolOp call(Code code, DataOp object) {
 		return invoke(code, OBJECT_COND.result(), object);
 	}
 
-	public static final class ObjectCond extends Signature<ObjectCondFunc> {
+	public static final class ObjectCond
+			extends ObjectSignature<ObjectCondFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<DataOp> object;
@@ -51,6 +57,7 @@ public final class ObjectCondFunc extends Func {
 			return this.result;
 		}
 
+		@Override
 		public final Arg<DataOp> object() {
 			return this.object;
 		}

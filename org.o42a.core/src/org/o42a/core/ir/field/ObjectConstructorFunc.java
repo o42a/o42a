@@ -25,6 +25,8 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.ObjFld.Op;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ObjectSignature;
 
 
 public class ObjectConstructorFunc extends Func {
@@ -36,12 +38,16 @@ public class ObjectConstructorFunc extends Func {
 		super(caller);
 	}
 
-	public DataOp call(Code code, DataOp object, ObjFld.Op fld) {
-		return invoke(code, OBJECT_CONSTRUCTOR.result(), object, fld);
+	public DataOp call(Code code, ObjectOp object, ObjFld.Op fld) {
+		return invoke(
+				code,
+				OBJECT_CONSTRUCTOR.result(),
+				object.toData(code),
+				fld);
 	}
 
 	public static final class ObjectConstructor
-			extends Signature<ObjectConstructorFunc> {
+			extends ObjectSignature<ObjectConstructorFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
@@ -54,6 +60,7 @@ public class ObjectConstructorFunc extends Func {
 			return this.result;
 		}
 
+		@Override
 		public final Arg<DataOp> object() {
 			return this.object;
 		}

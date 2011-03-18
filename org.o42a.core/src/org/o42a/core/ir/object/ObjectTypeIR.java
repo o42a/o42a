@@ -252,7 +252,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 				getGenerator(),
 				function,
 				failure.head(),
-				0,
+				OBJECT_REF.object(),
 				ancestor.getScope(),
 				DERIVED);
 
