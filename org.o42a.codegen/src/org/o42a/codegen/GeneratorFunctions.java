@@ -22,6 +22,7 @@ package org.o42a.codegen;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.CodeCallback;
+import org.o42a.codegen.data.backend.DataWriter;
 
 
 final class GeneratorFunctions extends Functions {
@@ -31,8 +32,18 @@ final class GeneratorFunctions extends Functions {
 	}
 
 	@Override
-	public CodeBackend codeBackend() {
+	protected CodeBackend codeBackend() {
 		return getGenerator().codeBackend();
+	}
+
+	@Override
+	protected DataWriter dataWriter() {
+		return getGenerator().dataWriter();
+	}
+
+	@Override
+	protected CodeCallback createCodeCallback(Function<?> function) {
+		return getGenerator().createCodeCallback(function);
 	}
 
 	@Override
@@ -41,11 +52,6 @@ final class GeneratorFunctions extends Functions {
 			Signature<F> signature,
 			FuncPtr<F> function) {
 		getGenerator().addFunction(id, signature, function);
-	}
-
-	@Override
-	protected CodeCallback createCodeCallback(Function<?> function) {
-		return getGenerator().createCodeCallback(function);
 	}
 
 }

@@ -32,12 +32,12 @@ final class GeneratorGlobals extends Globals {
 	}
 
 	@Override
-	public DataAllocator dataAllocator() {
+	protected DataAllocator dataAllocator() {
 		return getGenerator().dataAllocator();
 	}
 
 	@Override
-	public DataWriter dataWriter() {
+	protected DataWriter dataWriter() {
 		return getGenerator().dataWriter();
 	}
 

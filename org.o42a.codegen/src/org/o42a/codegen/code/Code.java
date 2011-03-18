@@ -125,7 +125,8 @@ public abstract class Code extends DebugCodeBase {
 
 	public final <F extends Func> F nullPtr(Signature<F> signature) {
 		assertIncomplete();
-		return signature.op(writer().nullPtr(signature.allocate(backend())));
+		return signature.op(writer().nullPtr(
+				getGenerator().getFunctions().allocate(signature)));
 	}
 
 	public final RecOp<AnyOp> allocatePtr() {

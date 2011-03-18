@@ -24,10 +24,10 @@ import org.o42a.codegen.code.backend.*;
 
 public abstract class Signature<F extends Func> {
 
-	private SignatureAllocation<F> allocation;
 	private final String result;
 	private final String name;
 	private final String args;
+	private SignatureAllocation<F> allocation;
 
 	public Signature(String result, String name, String args) {
 		this.result = result;
@@ -51,7 +51,16 @@ public abstract class Signature<F extends Func> {
 		return this.allocation;
 	}
 
-	public final Signature<F> allocate(CodeBackend backend) {
+	public abstract F op(FuncCaller caller);
+
+	@Override
+	public String toString() {
+		return this.result + ' ' + this.name + '(' + this.args + ')';
+	}
+
+	protected abstract void write(SignatureWriter<F> writer);
+
+	final Signature<F> allocate(CodeBackend backend) {
 
 		final SignatureAllocation<F> allocation = getAllocation();
 
@@ -67,14 +76,5 @@ public abstract class Signature<F extends Func> {
 
 		return this;
 	}
-
-	public abstract F op(FuncCaller caller);
-
-	@Override
-	public String toString() {
-		return this.result + ' ' + this.name + '(' + this.args + ')';
-	}
-
-	protected abstract void write(SignatureWriter<F> writer);
 
 }

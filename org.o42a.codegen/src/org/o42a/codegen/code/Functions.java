@@ -25,6 +25,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.CodeCallback;
+import org.o42a.codegen.data.backend.DataWriter;
 
 
 public abstract class Functions {
@@ -61,9 +62,7 @@ public abstract class Functions {
 		final ExternFuncPtr<F> extern = new ExternFuncPtr<F>(
 				name,
 				signature,
-				codeBackend().externFunction(
-						id,
-						signature.allocate(codeBackend())));
+				codeBackend().externFunction(id, allocate(signature)));
 
 		this.externals.put(name, extern);
 		addFunction(id, signature, extern);
@@ -71,13 +70,19 @@ public abstract class Functions {
 		return extern;
 	}
 
-	public abstract CodeBackend codeBackend();
+	public final <F extends Func> Signature<F> allocate(Signature<F> signature) {
+		return signature.allocate(codeBackend());
+	}
+
+	protected abstract CodeBackend codeBackend();
+
+	protected abstract DataWriter dataWriter();
+
+	protected abstract CodeCallback createCodeCallback(Function<?> function);
 
 	protected abstract <F extends Func> void addFunction(
 			CodeId id,
 			Signature<F> signature,
 			FuncPtr<F> function);
-
-	protected abstract CodeCallback createCodeCallback(Function<?> function);
 
 }
