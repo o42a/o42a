@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.op.NewObjectFunc.NEW_OBJECT;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.CodeId;
@@ -33,6 +34,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.NewObjectFunc;
 import org.o42a.core.ir.op.ObjectRefFunc;
 
 
@@ -70,7 +72,7 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final DataOp result = newFunc().op(code).call(code, ptr().toData(code));
+		final DataOp result = newFunc().op(code).newObject(code, this);
 
 		result.isNull(code).go(code, exit);
 
@@ -103,7 +105,7 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final DataOp result = newFunc().op(code).call(code, ptr().toData(code));
+		final DataOp result = newFunc().op(code).newObject(code, this);
 
 		result.isNull(code).go(code, exit);
 
@@ -113,10 +115,8 @@ public class CtrOp extends IROp {
 				sample.getWellKnownType());
 	}
 
-	private FuncPtr<ObjectRefFunc> newFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_new",
-				OBJECT_REF);
+	private FuncPtr<NewObjectFunc> newFunc() {
+		return getGenerator().externalFunction("o42a_obj_new", NEW_OBJECT);
 	}
 
 	public static final class Op extends StructOp {

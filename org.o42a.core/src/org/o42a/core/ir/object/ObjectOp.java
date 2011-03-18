@@ -285,11 +285,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
-		final ObjectType.Op ascendantType =
-			ascendantObj.objectType(code).ptr();
+		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
 		final DataOp result =
-			castFunc().op(code).call(code, toData(code), ascendantType);
+			castFunc().op(code).cast(code, this, ascendantType);
 
 		return result.to(code, ascendantIR.getBodyType()).op(
 				getBuilder(),

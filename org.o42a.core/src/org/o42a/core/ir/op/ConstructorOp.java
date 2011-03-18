@@ -100,7 +100,7 @@ public class ConstructorOp extends RefOp {
 				getGenerator(),
 				this.ancestorFunc,
 				ancestorNotFound.head(),
-				0,
+				OBJECT_REF.object(),
 				getRef().getScope(),
 				DERIVED);
 

@@ -24,6 +24,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjectOp;
 
 
 public final class ObjectRefFunc extends Func {
@@ -34,11 +35,12 @@ public final class ObjectRefFunc extends Func {
 		super(caller);
 	}
 
-	public DataOp call(Code code, DataOp object) {
-		return invoke(code, OBJECT_REF.result(), object);
+	public DataOp call(Code code, ObjectOp object) {
+		return invoke(code, OBJECT_REF.result(), object.toData(code));
 	}
 
-	public static final class ObjectRef extends Signature<ObjectRefFunc> {
+	public static final class ObjectRef
+			extends ObjectSignature<ObjectRefFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
@@ -50,6 +52,7 @@ public final class ObjectRefFunc extends Func {
 			return this.result;
 		}
 
+		@Override
 		public final Arg<DataOp> object() {
 			return this.object;
 		}

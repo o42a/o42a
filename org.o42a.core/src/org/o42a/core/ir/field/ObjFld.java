@@ -32,6 +32,7 @@ import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.field.ObjectConstructorFunc.ObjectConstructor;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.member.field.Field;
 
@@ -87,8 +88,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
-			builder.getFunction().ptrArg(code, 1)
-			.to(code, OBJ_FLD);
+			builder.getFunction().arg(OBJECT_CONSTRUCTOR.field());
 		final DataOp previousPtr = fld.previous(code).load(code);
 
 		final CondBlk construct =
@@ -131,7 +131,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final ObjectConstructorFunc constructor =
 			previous.constructor(code).load(code);
 		final DataOp ancestorPtr =
-			constructor.call(code, builder.host().toData(code), previous);
+			constructor.call(code, builder.host(), previous);
 		final ObjectOp ancestor =
 			anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
 
@@ -163,7 +163,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				Code code,
 				ObjOp host,
 				ObjectConstructorFunc constructor) {
-			return constructor.call(code, host.toData(code), this);
+			return constructor.call(code, host, this);
 		}
 
 	}
@@ -197,7 +197,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		protected Signature<ObjectConstructorFunc> getSignature() {
+		protected ObjectConstructor getSignature() {
 			return OBJECT_CONSTRUCTOR;
 		}
 

@@ -24,9 +24,8 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -45,7 +44,7 @@ public class CodeBuilder {
 			Generator generator,
 			Function<?> function,
 			CodePos exit,
-			int hostArg,
+			Arg<DataOp> hostArg,
 			Scope scope,
 			ObjectPrecision hostPrecision) {
 
@@ -86,7 +85,7 @@ public class CodeBuilder {
 	protected CodeBuilder(
 			Function<?> function,
 			CodePos exit,
-			int hostArg,
+			Arg<DataOp> hostArg,
 			ObjectBodyIR hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
@@ -95,13 +94,13 @@ public class CodeBuilder {
 		this.function = function;
 		if (hostPrecision.isCompatible()) {
 			this.host =
-				function.ptrArg(function, hostArg)
+				function.arg(hostArg)
 				.to(function, hostIR)
 				.op(this, hostType, hostPrecision);
 		} else {
 			this.host = anonymousObject(
 					this,
-					function.dataArg(function, hostArg),
+					function.arg(hostArg),
 					hostType)
 					.cast(function, exit, hostType);
 		}

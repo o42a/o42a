@@ -25,6 +25,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.op.ObjectSignature;
 
 
 /**
@@ -38,14 +39,15 @@ public final class AssignerFunc extends Func {
 		super(caller);
 	}
 
-	public BoolOp assign(Code code, VarFld.Op variable, DataOp value) {
-		return invoke(code, ASSIGNER.result(), variable, value);
+	public BoolOp assign(Code code, DataOp object, DataOp value) {
+		return invoke(code, ASSIGNER.result(), object, value);
 	}
 
-	public static final class Assigner extends Signature<AssignerFunc> {
+	public static final class Assigner
+			extends ObjectSignature<AssignerFunc> {
 
 		private Return<BoolOp> result;
-		private Arg<VarFld.Op> variable;
+		private Arg<DataOp> object;
 		private Arg<DataOp> value;
 
 		private Assigner() {
@@ -55,8 +57,9 @@ public final class AssignerFunc extends Func {
 			return this.result;
 		}
 
-		public final Arg<VarFld.Op> object() {
-			return this.variable;
+		@Override
+		public final Arg<DataOp> object() {
+			return this.object;
 		}
 
 		public final Arg<DataOp> value() {
@@ -76,7 +79,7 @@ public final class AssignerFunc extends Func {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnBool();
-			this.variable = builder.addPtr("variable", VarFld.VAR_FLD);
+			this.object = builder.addData("object");
 			this.value = builder.addData("value");
 		}
 

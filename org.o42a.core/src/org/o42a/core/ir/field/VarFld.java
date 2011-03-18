@@ -19,10 +19,12 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.field.AssignerFunc.ASSIGNER;
+import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.FuncOp;
@@ -32,6 +34,7 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.op.ObjectRefFunc;
+import org.o42a.core.ir.op.ObjectRefFunc.ObjectRef;
 import org.o42a.core.member.field.Field;
 
 
@@ -92,7 +95,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 				Code code,
 				ObjOp host,
 				ObjectRefFunc constructor) {
-			return constructor.call(code, host.ptr().toData(code));
+			return constructor.call(code, host);
 		}
 
 	}
@@ -111,9 +114,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		@Override
 		public void allocate(SubData<Op> data) {
 			super.allocate(data);
-			this.assigner = data.addFuncPtr(
-					"assigner",
-					AssignerFunc.ASSIGNER);
+			this.assigner = data.addFuncPtr("assigner", ASSIGNER);
 		}
 
 		@Override
@@ -127,8 +128,8 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected Signature<ObjectRefFunc> getSignature() {
-			return ObjectRefFunc.OBJECT_REF;
+		protected ObjectRef getSignature() {
+			return OBJECT_REF;
 		}
 
 	}

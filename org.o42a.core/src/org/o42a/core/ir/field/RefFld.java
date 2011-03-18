@@ -32,6 +32,7 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.member.field.Field;
 
 
@@ -120,7 +121,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 		final ObjBuilder builder = new ObjBuilder(
 				this.constructor,
 				failure.head(),
-				0,
+				getType().getSignature().object(),
 				getBodyIR(),
 				getBodyIR().getAscendant(),
 				COMPATIBLE);
@@ -335,7 +336,7 @@ public abstract class RefFld<C extends Func> extends Fld {
 					getSignature());
 		}
 
-		protected abstract Signature<C> getSignature();
+		protected abstract ObjectSignature<C> getSignature();
 
 	}
 

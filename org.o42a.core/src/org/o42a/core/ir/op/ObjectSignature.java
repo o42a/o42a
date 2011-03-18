@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Arg;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
 
 
-public final class ObjBuilder extends CodeBuilder {
+public abstract class ObjectSignature<F extends Func> extends Signature<F> {
 
-	public ObjBuilder(
-			Function<?> function,
-			CodePos exit,
-			Arg<DataOp> hostArg,
-			ObjectBodyIR hostIR,
-			Obj hostType,
-			ObjectPrecision hostPrecision) {
-		super(function, exit, hostArg, hostIR, hostType, hostPrecision);
-	}
-
-	@Override
-	public final ObjOp host() {
-		return (ObjOp) super.host();
-	}
+	public abstract Arg<DataOp> object();
 
 }

@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -85,10 +84,8 @@ final class LocalIRFunc extends ObjectIRFunc {
 	public void build() {
 
 		final LocalBuilder builder =
-			new LocalBuilder(this.function, this.localIR, 1);
-		final ValOp result =
-			this.function.ptrArg(this.function, 0)
-			.to(this.function, VAL_TYPE);
+			new LocalBuilder(this.function, this.localIR, OBJECT_VAL.object());
+		final ValOp result = this.function.arg(OBJECT_VAL.value());
 
 		build(builder, this.function, result);
 

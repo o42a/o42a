@@ -21,8 +21,7 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncWriter;
-import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.code.op.Op;
 
 
 public final class Function<F extends Func> extends Code {
@@ -59,39 +58,11 @@ public final class Function<F extends Func> extends Code {
 		return this.writer != null;
 	}
 
-	public final Int32op int32arg(Code code, int index) {
-		return writer().int32arg(index);
-	}
-
-	public final Int64op int64arg(Code code, int index) {
-		return writer().int64arg(index);
-	}
-
-	public final Fp64op fp64arg(Code code, int index) {
-		return writer().fp64arg(index);
-	}
-
-	public final BoolOp boolArg(Code code, int index) {
-		return writer().boolArg(index);
-	}
-
-	public final RelOp relPtrArg(Code code, int index) {
-		return writer().relPtrArg(index);
-	}
-
-	public final DataOp dataArg(Code code, int index) {
-		return writer().dataArg(index);
-	}
-
-	public final AnyOp ptrArg(Code code, int index) {
-		return writer().ptrArg(index);
-	}
-
-	public final <O extends StructOp> O ptrArg(
-			Code code,
-			int index,
-			Type<O> type) {
-		return writer().ptrArg(index, type);
+	public final <O extends Op> O arg(Arg<O> arg) {
+		assert getSignature() == arg.getSignature() :
+			"Argument " + arg + " does not belong to " + getSignature()
+			+ ". It is defined in " + arg.getSignature();
+		return arg.get(this.writer);
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public abstract class Arg<O extends Op> {
 
 	public abstract boolean compatibleWith(Op op);
 
-	protected abstract O get(Code code, FuncWriter<?> writer);
+	protected abstract O get(FuncWriter<?> writer);
 
 	@Override
 	public String toString() {
@@ -87,7 +87,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Int32op get(Code code, FuncWriter<?> writer) {
+		protected Int32op get(FuncWriter<?> writer) {
 			return writer.int32arg(getIndex());
 		}
 
@@ -105,7 +105,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Int64op get(Code code, FuncWriter<?> writer) {
+		protected Int64op get(FuncWriter<?> writer) {
 			return writer.int64arg(getIndex());
 		}
 
@@ -123,7 +123,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Fp64op get(Code code, FuncWriter<?> writer) {
+		protected Fp64op get(FuncWriter<?> writer) {
 			return writer.fp64arg(getIndex());
 		}
 
@@ -141,7 +141,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected BoolOp get(Code code, FuncWriter<?> writer) {
+		protected BoolOp get(FuncWriter<?> writer) {
 			return writer.boolArg(getIndex());
 		}
 
@@ -159,7 +159,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected RelOp get(Code code, FuncWriter<?> writer) {
+		protected RelOp get(FuncWriter<?> writer) {
 			return writer.relPtrArg(getIndex());
 		}
 
@@ -177,7 +177,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected AnyOp get(Code code, FuncWriter<?> writer) {
+		protected AnyOp get(FuncWriter<?> writer) {
 			return writer.ptrArg(getIndex());
 		}
 
@@ -195,7 +195,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected DataOp get(Code code, FuncWriter<?> writer) {
+		protected DataOp get(FuncWriter<?> writer) {
 			return writer.dataArg(getIndex());
 		}
 
@@ -231,7 +231,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected O get(Code code, FuncWriter<?> writer) {
+		protected O get(FuncWriter<?> writer) {
 			return writer.ptrArg(getIndex(), this.type);
 		}
 
@@ -267,7 +267,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected F get(Code code, FuncWriter<?> writer) {
+		protected F get(FuncWriter<?> writer) {
 			return writer.funcPtrArg(getIndex(), this.targetSignature);
 		}
 
