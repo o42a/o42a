@@ -19,43 +19,55 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 
 
 final class DebugPrintFunc extends Func {
 
-	public static final Signature<DebugPrintFunc> DEBUG_PRINT =
-		new DebugPrint();
+	public static final DebugPrint DEBUG_PRINT = new DebugPrint();
 
-	private DebugPrintFunc(FuncCaller caller) {
+	private DebugPrintFunc(FuncCaller<DebugPrintFunc> caller) {
 		super(caller);
 	}
 
 	public void call(Code code, AnyOp message) {
-		caller().call(code, message);
+		invoke(code, DEBUG_PRINT.result(), message);
 	}
 
-	private static final class DebugPrint
-			extends Signature<DebugPrintFunc> {
+	public static final class DebugPrint extends Signature<DebugPrintFunc> {
 
-		DebugPrint() {
-			super("void", "DEBUG.PrintF", "char *");
+		private Return<Void> result;
+		private Arg<AnyOp> message;
+
+		private DebugPrint() {
+		}
+
+		public final Return<Void> result() {
+			return this.result;
+		}
+
+		public final Arg<AnyOp> message() {
+			return this.message;
 		}
 
 		@Override
-		public DebugPrintFunc op(FuncCaller caller) {
+		public DebugPrintFunc op(FuncCaller<DebugPrintFunc> caller) {
 			return new DebugPrintFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<DebugPrintFunc> writer) {
-			writer.returnVoid();
-			writer.addAny();
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("DEBUG").sub("PrintF");
+		}
+
+		@Override
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnVoid();
+			this.message = builder.addAny("message");
 		}
 
 	}

@@ -21,15 +21,13 @@ package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.data.StringCodec.bytesPerChar;
 import static org.o42a.codegen.data.StringCodec.stringToBinary;
+import static org.o42a.codegen.debug.DebugDumpFunc.DEBUG_DUMP;
 import static org.o42a.codegen.debug.DebugNameFunc.DEBUG_NAME;
 import static org.o42a.codegen.debug.DebugPrintFunc.DEBUG_PRINT;
-import static org.o42a.codegen.debug.DumpFunc.DEBUG_DUMP;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.OpCodeBase;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 
@@ -64,6 +62,10 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		return this.function;
 	}
 
+	public final boolean isDebug() {
+		return getGenerator().isDebug();
+	}
+
 	public void debug(String message) {
 		debug(message, true);
 	}
@@ -82,7 +84,14 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				binaryMessage(nl ? message + '\n' : message).op(code()));
 	}
 
-	public final void dumpName(String prefix, PtrOp data) {
+	public final void dumpName(String prefix, StructOp data) {
+		assertIncomplete();
+		if (isDebug()) {
+			dumpName(prefix, data.toData(code()));
+		}
+	}
+
+	public final void dumpName(String prefix, DataOp data) {
 		assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
@@ -116,11 +125,22 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				code.toAny(code()));
 	}
 
-	public final void dump(String message, PtrOp data) {
+	public final void dump(String message, StructOp data) {
 		dump(message, data, Integer.MAX_VALUE);
 	}
 
-	public final void dump(String message, PtrOp data, int depth) {
+	public final void dump(String message, StructOp data, int depth) {
+		assertIncomplete();
+		if (isDebug()) {
+			dump(message, data.toData(code()), depth);
+		}
+	}
+
+	public final void dump(String message, DataOp data) {
+		dump(message, data, 3);
+	}
+
+	public final void dump(String message, DataOp data, int depth) {
 		assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
@@ -128,12 +148,12 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		debug(message, false);
 
-		final FuncPtr<DumpFunc> func =
+		final FuncPtr<DebugDumpFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_dump_mem",
 					DEBUG_DUMP);
 
-		func.op(code()).call(code(), data.toAny(code()), code().int32(depth));
+		func.op(code()).call(code(), data, code().int32(depth));
 	}
 
 	private Ptr<AnyOp> binaryMessage(String message) {

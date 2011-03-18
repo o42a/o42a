@@ -21,42 +21,61 @@ package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 
 
 public final class ObjectValFunc extends Func {
 
-	public static final Signature<ObjectValFunc> OBJECT_VAL = new ObjectVal();
+	public static final ObjectVal OBJECT_VAL = new ObjectVal();
 
-	private ObjectValFunc(FuncCaller caller) {
+	private ObjectValFunc(FuncCaller<ObjectValFunc> caller) {
 		super(caller);
 	}
 
-	public void call(Code code, ValOp result, AnyOp object) {
-		caller().call(code, result, object);
+	public void call(Code code, ValOp value, DataOp object) {
+		invoke(code, OBJECT_VAL.result(), value, object);
 	}
 
-	private static final class ObjectVal extends Signature<ObjectValFunc> {
+	public static final class ObjectVal extends Signature<ObjectValFunc> {
+
+		private Return<Void> result;
+		private Arg<ValOp> value;
+		private Arg<DataOp> object;
 
 		private ObjectVal() {
-			super("void", "ObjectValF", "val*, any*");
+		}
+
+		public final Return<Void> result() {
+			return this.result;
+		}
+
+		public final Arg<ValOp> value() {
+			return this.value;
+		}
+
+		public final Arg<DataOp> object() {
+			return this.object;
 		}
 
 		@Override
-		public ObjectValFunc op(FuncCaller caller) {
+		public ObjectValFunc op(FuncCaller<ObjectValFunc> caller) {
 			return new ObjectValFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<ObjectValFunc> writer) {
-			writer.returnVoid();
-			writer.addPtr(VAL_TYPE);
-			writer.addAny();
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ObjectValF");
+		}
+
+		@Override
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnVoid();
+			this.value = builder.addPtr("value", VAL_TYPE);
+			this.object = builder.addData("object");
 		}
 
 	}

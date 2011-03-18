@@ -22,20 +22,20 @@ package org.o42a.backend.llvm.code;
 import org.o42a.backend.llvm.data.*;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.CodeAllocation;
+import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class FuncAllocation<F extends Func>
-		implements CodeAllocation<F>, LLVMAllocation {
+public final class LLVMFuncAllocation<F extends Func>
+		implements FuncAllocation<F>, LLVMAllocation {
 
 	private final LLVMModule module;
 	private final LLVMId llvmId;
 	private final Signature<F> signature;
 
-	public FuncAllocation(
+	public LLVMFuncAllocation(
 			LLVMModule module,
 			LLVMId llvmId,
 			Signature<F> signature) {
@@ -44,7 +44,7 @@ public final class FuncAllocation<F extends Func>
 		this.signature = signature;
 	}
 
-	public FuncAllocation(
+	public LLVMFuncAllocation(
 			LLVMModule module,
 			long nativePtr,
 			Signature<F> signature) {
@@ -62,6 +62,7 @@ public final class FuncAllocation<F extends Func>
 		return this.llvmId;
 	}
 
+	@Override
 	public final Signature<F> getSignature() {
 		return this.signature;
 	}

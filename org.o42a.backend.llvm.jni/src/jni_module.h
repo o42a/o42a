@@ -97,6 +97,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_boolType
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
+ * Method:    relPtrType
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_relPtrType
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    anyType
  * Signature: (J)J
  */
@@ -109,6 +117,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_anyType
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_pointerTo
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMModule
+ * Method:    pointerToFunc
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_pointerToFunc
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus

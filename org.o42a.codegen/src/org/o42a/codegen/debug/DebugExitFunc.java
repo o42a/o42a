@@ -19,40 +19,48 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
 
 
-final class DbgExitFunc extends Func {
+final class DebugExitFunc extends Func {
 
-	public static final Signature<DbgExitFunc> EXIT_SIGNATURE =
-		new FuncSignature();
+	public static final DebugExit DEBUG_EXIT = new DebugExit();
 
-	private DbgExitFunc(FuncCaller caller) {
+	private DebugExitFunc(FuncCaller<DebugExitFunc> caller) {
 		super(caller);
 	}
 
 	public void exit(Code code) {
-		caller().call(code);
+		invoke(code, DEBUG_EXIT.result());
 	}
 
-	private static final class FuncSignature extends Signature<DbgExitFunc> {
+	public static final class DebugExit extends Signature<DebugExitFunc> {
 
-		FuncSignature() {
-			super("void", "DEBUG.ExitF", "");
+		private Return<Void> result;
+
+		private DebugExit() {
+		}
+
+		public final Return<Void> result() {
+			return this.result;
 		}
 
 		@Override
-		public DbgExitFunc op(FuncCaller caller) {
-			return new DbgExitFunc(caller);
+		public DebugExitFunc op(FuncCaller<DebugExitFunc> caller) {
+			return new DebugExitFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<DbgExitFunc> writer) {
-			writer.returnVoid();
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("DEBUG").sub("ExitF");
+		}
+
+		@Override
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnVoid();
 		}
 
 	}

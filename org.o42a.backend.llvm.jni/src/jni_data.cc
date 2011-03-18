@@ -215,7 +215,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp64(
 	enclosing->push_back(Type::getDoubleTy(module->getContext()));
 }
 
-void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateCodePtr(
+void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFuncPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong enclosingPtr,
@@ -480,15 +480,15 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeNativePtr(
 	data->push_back(result);
 }
 
-void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeCodePtr(
+void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFuncPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong structPtr,
-		jlong codePtr) {
+		jlong funcPtr) {
 
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(structPtr);
-	Function *function = from_ptr<Function>(codePtr);
+	Function *function = from_ptr<Function>(funcPtr);
 
 	OTRACE("writeCodePtr: " << function->getName() << "\n");
 

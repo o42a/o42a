@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.CodeAllocation;
+import org.o42a.codegen.code.backend.FuncAllocation;
 
 
 final class ExternFuncPtr<F extends Func> extends FuncPtr<F> {
@@ -29,7 +29,7 @@ final class ExternFuncPtr<F extends Func> extends FuncPtr<F> {
 	ExternFuncPtr(
 			String name,
 			Signature<F> signature,
-			CodeAllocation<F> allocation) {
+			FuncAllocation<F> allocation) {
 		super(signature, allocation);
 		this.name = name;
 	}

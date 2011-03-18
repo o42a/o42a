@@ -23,9 +23,9 @@ import static org.o42a.backend.llvm.data.LLVMId.codeId;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
@@ -38,7 +38,7 @@ public final class LLVMFunction<F extends Func>
 
 	private final Function<F> function;
 	private final CodeCallback callback;
-	private final FuncAllocation<F> allocation;
+	private final LLVMFuncAllocation<F> allocation;
 	private long functionPtr;
 
 	LLVMFunction(
@@ -49,7 +49,7 @@ public final class LLVMFunction<F extends Func>
 		this.function = function;
 		this.callback = callback;
 		init();
-		this.allocation = new FuncAllocation<F>(
+		this.allocation = new LLVMFuncAllocation<F>(
 				module,
 				codeId(this),
 				function.getSignature());
@@ -64,7 +64,7 @@ public final class LLVMFunction<F extends Func>
 	}
 
 	@Override
-	public FuncAllocation<F> getAllocation() {
+	public LLVMFuncAllocation<F> getAllocation() {
 		return this.allocation;
 	}
 
@@ -90,30 +90,45 @@ public final class LLVMFunction<F extends Func>
 	}
 
 	@Override
-	public BoolOp boolArg(Code code, int index) {
+	public BoolOp boolArg(int index) {
 		return new LLVMBoolOp(
 				head().getBlockPtr(),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public RelOp relPtrArg(Code code, int index) {
+	public RelOp relPtrArg(int index) {
 		return new LLVMRelOp(
 				head().getBlockPtr(),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public AnyOp ptrArg(Code code, int index) {
+	public AnyOp ptrArg(int index) {
 		return new LLVMAnyOp(
 				head().getBlockPtr(),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public <O extends StructOp> O ptrArg(Code code, int index, Type<O> type) {
+	public DataOp dataArg(int index) {
+		return new LLVMDataOp(
+				head().getBlockPtr(),
+				arg(getFunctionPtr(), index));
+	}
+
+	@Override
+	public <O extends StructOp> O ptrArg(int index, Type<O> type) {
 		return type.op(new LLVMStruct(
 				type,
+				head().getBlockPtr(),
+				arg(getFunctionPtr(), index)));
+	}
+
+	@Override
+	public <FF extends Func> FF funcPtrArg(int index, Signature<FF> signature) {
+		return signature.op(new LLVMFunc<FF>(
+				signature,
 				head().getBlockPtr(),
 				arg(getFunctionPtr(), index)));
 	}
@@ -136,7 +151,7 @@ public final class LLVMFunction<F extends Func>
 		this.functionPtr = createFunction(
 				getModule().getNativePtr(),
 				getId().getId(),
-				nativePtr(this.function.getSignature()),
+				getModule().nativePtr(this.function.getSignature()),
 				this.function.isExported());
 		return createBlock(this.functionPtr, getId().getId());
 	}

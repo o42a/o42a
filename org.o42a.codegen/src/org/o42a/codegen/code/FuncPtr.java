@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.CodeAllocation;
+import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -28,9 +28,9 @@ import org.o42a.codegen.data.backend.DataAllocation;
 public abstract class FuncPtr<F extends Func> extends AbstractPtr {
 
 	final Signature<F> signature;
-	final CodeAllocation<F> allocation;
+	final FuncAllocation<F> allocation;
 
-	FuncPtr(Signature<F> signature, CodeAllocation<F> allocation) {
+	FuncPtr(Signature<F> signature, FuncAllocation<F> allocation) {
 		this.signature = signature;
 		this.allocation = allocation;
 	}
@@ -42,7 +42,7 @@ public abstract class FuncPtr<F extends Func> extends AbstractPtr {
 		return this.signature.op(code.writer().caller(this.allocation));
 	}
 
-	final CodeAllocation<F> getAllocation() {
+	final FuncAllocation<F> getAllocation() {
 		return this.allocation;
 	}
 

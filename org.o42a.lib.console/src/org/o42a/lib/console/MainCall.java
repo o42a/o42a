@@ -99,12 +99,12 @@ final class MainCall extends DefinedObject {
 		if (generator.isDebug()) {
 			main = generator.newFunction().create(
 					generator.rawId("_o42a_main"),
-					MainFunc.SIGNATURE);
+					MainFunc.MAIN);
 			generateDebugMain(generator, main);
 		} else {
 			main = generator.newFunction().export().create(
 					generator.rawId("main"),
-					MainFunc.SIGNATURE);
+					MainFunc.MAIN);
 		}
 
 		main.debug("Start execution");
@@ -133,12 +133,12 @@ final class MainCall extends DefinedObject {
 		final Function<MainFunc> debugMain =
 			generator.newFunction().export().create(
 					generator.rawId("main"),
-					MainFunc.SIGNATURE);
+					MainFunc.MAIN);
 
-		final FuncPtr<DbgExecMainFunc> executeMain =
+		final FuncPtr<DebugExecMainFunc> executeMain =
 			generator.externalFunction(
 					"o42a_dbg_exec_main",
-					DbgExecMainFunc.SIGNATURE);
+					DebugExecMainFunc.DEBUG_EXEC_MAIN);
 
 		executeMain.op(debugMain).call(
 				debugMain,

@@ -52,14 +52,16 @@ typedef uint32_t o42a_layout_t;
 
 enum o42a_data_types {
 
+	O42A_TYPE_VOID = 0x80000000,
 	O42A_TYPE_STRUCT = 0,
 	O42A_TYPE_REL_PTR = 0x02,
 	O42A_TYPE_PTR = 0x12,
 	O42A_TYPE_DATA_PTR = 0x22,
 	O42A_TYPE_CODE_PTR = 0x32,
-	O42A_TYPE_INT32 = 0x11 | (4 << 8),
-	O42A_TYPE_INT64 = 0x11 | (8 << 8),
-	O42A_TYPE_FP64 = 0x21 | (8 << 8),
+	O42A_TYPE_BOOL = 0x01,
+	O42A_TYPE_INT32 = 0x11 | (2 << 8),
+	O42A_TYPE_INT64 = 0x11 | (3 << 8),
+	O42A_TYPE_FP64 = 0x21 | (3 << 8),
 
 };
 

@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.CodeAllocation;
+import org.o42a.codegen.code.backend.FuncAllocation;
 
 
 final class NullFuncPtr<F extends Func> extends FuncPtr<F> {
 
-	NullFuncPtr(Signature<F> signature, CodeAllocation<F> allocation) {
+	NullFuncPtr(Signature<F> signature, FuncAllocation<F> allocation) {
 		super(signature, allocation);
 	}
 

@@ -81,10 +81,10 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocat
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
- * Method:    allocateCodePtr
+ * Method:    allocateFuncPtr
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateCodePtr
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFuncPtr
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
@@ -236,10 +236,10 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFp64
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
- * Method:    writeCodePtr
+ * Method:    writeFuncPtr
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeCodePtr
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFuncPtr
   (JNIEnv *, jclass, jlong, jlong);
 
 /*

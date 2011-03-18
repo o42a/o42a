@@ -72,22 +72,26 @@ public final class Function<F extends Func> extends Code {
 	}
 
 	public final BoolOp boolArg(Code code, int index) {
-		return writer().boolArg(code, index);
+		return writer().boolArg(index);
 	}
 
 	public final RelOp relPtrArg(Code code, int index) {
-		return writer().relPtrArg(code, index);
+		return writer().relPtrArg(index);
+	}
+
+	public final DataOp dataArg(Code code, int index) {
+		return writer().dataArg(index);
 	}
 
 	public final AnyOp ptrArg(Code code, int index) {
-		return writer().ptrArg(code, index);
+		return writer().ptrArg(index);
 	}
 
 	public final <O extends StructOp> O ptrArg(
 			Code code,
 			int index,
 			Type<O> type) {
-		return writer().ptrArg(code, index, type);
+		return writer().ptrArg(index, type);
 	}
 
 	@Override
@@ -101,7 +105,8 @@ public final class Function<F extends Func> extends Code {
 		this.writer = getGenerator().getFunctions().codeBackend().addFunction(
 				this,
 				functions.createCodeCallback(this));
-		this.pointer = new ConstructingFuncPtr<F>(this, this.writer.getAllocation());
+		this.pointer =
+			new ConstructingFuncPtr<F>(this, this.writer.getAllocation());
 
 		return this.writer;
 	}

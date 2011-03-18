@@ -44,10 +44,14 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 	public abstract boolean isClaim();
 
 	public void call(Code code, ValOp result, ObjOp host, ObjectOp body) {
-		if (body != null) {
-			code.dumpName("Calculate value " + this + " for ", body.ptr());
-		} else {
-			code.debug("Calculate value " + this);
+		if (code.isDebug()) {
+			if (body != null) {
+				code.dumpName(
+						"Calculate value " + this + " for ",
+						body.toData(code));
+			} else {
+				code.debug("Calculate value " + this);
+			}
 		}
 
 		if (writeFalseValue(code, result, body)) {
@@ -258,10 +262,18 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			.op(host.getBuilder(), DERIVED);
 
 		if (isClaim()) {
-			hasAncestor.dumpName("Ancestor claim: ", ancestorBody.ptr());
+			if (hasAncestor.isDebug()) {
+				hasAncestor.dumpName(
+						"Ancestor claim: ",
+						ancestorBody.toData(code));
+			}
 			ancestorType.writeClaim(hasAncestor, result, ancestorBody);
 		} else {
-			hasAncestor.dumpName("Ancestor proposition: ", ancestorBody.ptr());
+			if (hasAncestor.isDebug()) {
+				hasAncestor.dumpName(
+						"Ancestor proposition: ",
+						ancestorBody.toData(code));
+			}
 			ancestorType.writeProposition(hasAncestor, result, ancestorBody);
 		}
 

@@ -20,8 +20,8 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;

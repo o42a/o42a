@@ -25,20 +25,30 @@ import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public class LLVMFunc<F extends Func> extends LLVMPtrOp implements FuncCaller {
+public class LLVMFunc<F extends Func> extends LLVMPtrOp
+		implements FuncCaller<F> {
 
-	public LLVMFunc(long blockPtr, long nativePtr) {
+	private final Signature<F> signature;
+
+	public LLVMFunc(Signature<F> signature, long blockPtr, long nativePtr) {
 		super(0L, nativePtr);
+		this.signature = signature;
+	}
+
+	@Override
+	public Signature<F> getSignature() {
+		return this.signature;
 	}
 
 	@Override
 	public LLVMFunc<F> create(long blockPtr, long nativePtr) {
-		return new LLVMFunc<F>(blockPtr, getNativePtr());
+		return new LLVMFunc<F>(this.signature, blockPtr, getNativePtr());
 	}
 
 	@Override
@@ -84,6 +94,14 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp implements FuncCaller {
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMAnyOp(nextPtr, call(nextPtr, args));
+	}
+
+	@Override
+	public DataOp callData(Code code, Op... args) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMDataOp(nextPtr, call(nextPtr, args));
 	}
 
 	@Override

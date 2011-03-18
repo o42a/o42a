@@ -1,5 +1,5 @@
 /*
-    Console Module
+    Compiler Code Generator
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,64 +17,64 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.console;
+package org.o42a.codegen.debug;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
 
 
-public final class MainFunc extends Func {
+final class DebugDumpFunc extends Func {
 
-	public static final Main MAIN = new Main();
+	public static final DebugDump DEBUG_DUMP = new DebugDump();
 
-	private MainFunc(FuncCaller<MainFunc> caller) {
+	private DebugDumpFunc(FuncCaller<DebugDumpFunc> caller) {
 		super(caller);
 	}
 
-	public Int32op call(Code code, Int32op argc, AnyOp argv) {
-		return invoke(code, MAIN.result(), argc, argv);
+	public void call(Code code, DataOp data, Int32op depth) {
+		invoke(code, DEBUG_DUMP.result(), data, depth);
 	}
 
-	public static final class Main extends Signature<MainFunc> {
+	public static final class DebugDump extends Signature<DebugDumpFunc> {
 
-		private Return<Int32op> result;
-		private Arg<Int32op> argc;
-		private Arg<AnyOp> argv;
+		private Return<Void> result;
+		private Arg<DataOp> data;
+		private Arg<Int32op> depth;
 
-		private Main() {
+		private DebugDump() {
 		}
 
-		public final Return<Int32op> result() {
+		public final Return<Void> result() {
 			return this.result;
 		}
 
-		public final Arg<Int32op> argc() {
-			return this.argc;
+		public final Arg<DataOp> data() {
+			return this.data;
 		}
 
-		public final Arg<AnyOp> argv() {
-			return this.argv;
+		public final Arg<Int32op> depth() {
+			return this.depth;
 		}
 
 		@Override
-		public MainFunc op(FuncCaller<MainFunc> caller) {
-			return new MainFunc(caller);
+		public DebugDumpFunc op(FuncCaller<DebugDumpFunc> caller) {
+			return new DebugDumpFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("console").sub("MainF");
+			return factory.id("DEBUG").sub("DumpF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnInt32();
-			this.argc = builder.addInt32("argc");
-			this.argv = builder.addAny("argv");
+			this.result = builder.returnVoid();
+			this.data = builder.addData("data");
+			this.depth = builder.addInt32("depth");
 		}
 
 	}

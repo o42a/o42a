@@ -20,11 +20,15 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public interface FuncCaller extends PtrOp {
+public interface FuncCaller<F extends Func> extends PtrOp {
+
+	Signature<F> getSignature();
 
 	void call(Code code, Op... args);
 
@@ -37,6 +41,8 @@ public interface FuncCaller extends PtrOp {
 	BoolOp callBool(Code code, Op... args);
 
 	AnyOp callAny(Code code, Op... args);
+
+	DataOp callData(Code code, Op... args);
 
 	<O extends StructOp> O callPtr(Code code, Type<O> type, Op... args);
 

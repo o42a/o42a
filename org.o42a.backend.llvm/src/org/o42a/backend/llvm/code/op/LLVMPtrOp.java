@@ -102,16 +102,19 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				castStructTo(nextPtr, getNativePtr(), typePtr(type))));
 	}
 
-	public <F extends Func> LLVMCodeOp<F> toFunc(
+	public <F extends Func> LLVMFuncOp<F> toFunc(
 			Code code,
 			Signature<F> signature) {
 
 		final LLVMCode llvm = LLVMCode.llvm(code);
 		final long nextPtr = llvm.nextPtr();
 
-		return new LLVMCodeOp<F>(
+		return new LLVMFuncOp<F>(
 				nextPtr,
-				castFuncTo(nextPtr, getNativePtr(), nativePtr(signature)),
+				castFuncTo(
+						nextPtr,
+						getNativePtr(),
+						llvm.getModule().nativePtr(signature)),
 				signature);
 	}
 

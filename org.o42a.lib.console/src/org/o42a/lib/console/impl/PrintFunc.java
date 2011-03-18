@@ -21,41 +21,55 @@ package org.o42a.lib.console.impl;
 
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.core.ir.op.ValOp;
 
 
 public final class PrintFunc extends Func {
 
-	public static final Signature<PrintFunc> PRINT = new Print();
+	public static final Print PRINT = new Print();
 
-	private PrintFunc(FuncCaller caller) {
+	private PrintFunc(FuncCaller<PrintFunc> caller) {
 		super(caller);
 	}
 
 	public void print(Code code, ValOp text) {
-		caller().call(code, text);
+		invoke(code, PRINT.result(), text);
 	}
 
-	private static final class Print extends Signature<PrintFunc> {
+	public static final class Print extends Signature<PrintFunc> {
+
+		private Return<Void> result;
+		private Arg<ValOp> text;
 
 		private Print() {
-			super("void", "console.PrintF", "Val*");
+		}
+
+		public final Return<Void> result() {
+			return this.result;
+		}
+
+		public final Arg<ValOp> text() {
+			return this.text;
 		}
 
 		@Override
-		public PrintFunc op(FuncCaller caller) {
+		public PrintFunc op(FuncCaller<PrintFunc> caller) {
 			return new PrintFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<PrintFunc> writer) {
-			writer.returnVoid();
-			writer.addPtr(VAL_TYPE);
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("console").sub("PrintF");
+		}
+
+		@Override
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnVoid();
+			this.text = builder.addPtr("text", VAL_TYPE);
 		}
 
 	}

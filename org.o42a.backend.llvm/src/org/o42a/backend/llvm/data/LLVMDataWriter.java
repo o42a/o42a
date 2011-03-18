@@ -19,9 +19,7 @@
 */
 package org.o42a.backend.llvm.data;
 
-import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
-
-import org.o42a.backend.llvm.code.FuncAllocation;
+import org.o42a.backend.llvm.code.LLVMFuncAllocation;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
@@ -76,10 +74,10 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <F extends Func> FuncAllocation<F> nullPtr(Signature<F> signature) {
-		return new FuncAllocation<F>(
+	public <F extends Func> LLVMFuncAllocation<F> nullPtr(Signature<F> signature) {
+		return new LLVMFuncAllocation<F>(
 				this.module,
-				nullFuncPtr(nativePtr(signature)),
+				nullFuncPtr(getModule().nativePtr(signature)),
 				signature);
 	}
 
@@ -170,7 +168,7 @@ public class LLVMDataWriter implements DataWriter {
 
 		final long ptr = llvmId.expression(getModule());
 
-		writeCodePtr(getStructPtr(), ptr);
+		writeFuncPtr(getStructPtr(), ptr);
 	}
 
 	final void writeRelPtr(long nativePtr) {
@@ -222,7 +220,7 @@ public class LLVMDataWriter implements DataWriter {
 			long structPtr,
 			double value);
 
-	private static native void writeCodePtr(long structPtr, long codePtr);
+	private static native void writeFuncPtr(long structPtr, long funcPtr);
 
 	private static native void writeDataPtr(long structPtr, long dataPtr);
 

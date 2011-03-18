@@ -28,13 +28,13 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 
 
-public final class LLVMCodeOp<F extends Func>
+public final class LLVMFuncOp<F extends Func>
 		extends LLVMPtrOp
 		implements FuncOp<F> {
 
 	private final Signature<F> signature;
 
-	public LLVMCodeOp(long blockPtr, long nativePtr, Signature<F> signature) {
+	public LLVMFuncOp(long blockPtr, long nativePtr, Signature<F> signature) {
 		super(blockPtr, nativePtr);
 		this.signature = signature;
 	}
@@ -50,6 +50,7 @@ public final class LLVMCodeOp<F extends Func>
 		final long nextPtr = nextPtr(code);
 
 		return getSignature().op(new LLVMFunc<F>(
+				getSignature(),
 				nextPtr,
 				load(nextPtr, getNativePtr())));
 	}
@@ -60,8 +61,8 @@ public final class LLVMCodeOp<F extends Func>
 	}
 
 	@Override
-	public LLVMCodeOp<F> create(long blockPtr, long nativePtr) {
-		return new LLVMCodeOp<F>(blockPtr, nativePtr, this.signature);
+	public LLVMFuncOp<F> create(long blockPtr, long nativePtr) {
+		return new LLVMFuncOp<F>(blockPtr, nativePtr, this.signature);
 	}
 
 }
