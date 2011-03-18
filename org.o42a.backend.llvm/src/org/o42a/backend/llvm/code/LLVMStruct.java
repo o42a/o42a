@@ -21,7 +21,7 @@ package org.o42a.backend.llvm.code;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
-import org.o42a.backend.llvm.code.op.LLVMCodeOp;
+import org.o42a.backend.llvm.code.op.LLVMFuncOp;
 import org.o42a.backend.llvm.code.op.LLVMPtrOp;
 import org.o42a.backend.llvm.code.op.LLVMRecOp;
 import org.o42a.backend.llvm.data.ContainerAllocation;
@@ -147,7 +147,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMCodeOp<F>(
+		return new LLVMFuncOp<F>(
 				nextPtr,
 				field(nextPtr, field),
 				field.getSignature());

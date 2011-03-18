@@ -19,41 +19,55 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 
 
 public final class ObjectRefFunc extends Func {
 
-	public static final Signature<ObjectRefFunc> OBJECT_REF = new ObjectRef();
+	public static final ObjectRef OBJECT_REF = new ObjectRef();
 
-	ObjectRefFunc(FuncCaller caller) {
+	ObjectRefFunc(FuncCaller<ObjectRefFunc> caller) {
 		super(caller);
 	}
 
-	public AnyOp call(Code code, AnyOp object) {
-		return caller().callAny(code, object);
+	public DataOp call(Code code, DataOp object) {
+		return invoke(code, OBJECT_REF.result(), object);
 	}
 
-	private static final class ObjectRef extends Signature<ObjectRefFunc> {
+	public static final class ObjectRef extends Signature<ObjectRefFunc> {
 
-		ObjectRef() {
-			super("any*", "ObjectRefF", "any*");
+		private Return<DataOp> result;
+		private Arg<DataOp> object;
+
+		private ObjectRef() {
+		}
+
+		public final Return<DataOp> result() {
+			return this.result;
+		}
+
+		public final Arg<DataOp> object() {
+			return this.object;
 		}
 
 		@Override
-		public ObjectRefFunc op(FuncCaller caller) {
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ObjectRefF");
+		}
+
+		@Override
+		public ObjectRefFunc op(FuncCaller<ObjectRefFunc> caller) {
 			return new ObjectRefFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<ObjectRefFunc> writer) {
-			writer.returnAny();
-			writer.addAny();
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnData();
+			this.object = builder.addData("object");
 		}
 
 	}

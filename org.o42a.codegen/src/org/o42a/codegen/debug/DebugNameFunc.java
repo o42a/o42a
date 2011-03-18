@@ -19,42 +19,61 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.AnyOp;
 
 
 final class DebugNameFunc extends Func {
 
-	public static final Signature<DebugNameFunc> DEBUG_NAME = new Name();
+	public static final DebugName DEBUG_NAME = new DebugName();
 
-	private DebugNameFunc(FuncCaller caller) {
+	private DebugNameFunc(FuncCaller<DebugNameFunc> caller) {
 		super(caller);
 	}
 
 	public void call(Code code, AnyOp message, AnyOp data) {
-		caller().call(code, message, data);
+		invoke(code, DEBUG_NAME.result(), message, data);
 	}
 
-	private static final class Name extends Signature<DebugNameFunc> {
+	public static final class DebugName extends Signature<DebugNameFunc> {
 
-		private Name() {
-			super("void", "DEBUG.NameF", "wchar_t*, void*");
+		private Return<Void> result;
+		private Arg<AnyOp> message;
+		private Arg<AnyOp> data;
+
+		private DebugName() {
+		}
+
+		public final Return<Void> result() {
+			return this.result;
+		}
+
+		public final Arg<AnyOp> message() {
+			return this.message;
+		}
+
+		public final Arg<AnyOp> data() {
+			return this.data;
 		}
 
 		@Override
-		public DebugNameFunc op(FuncCaller caller) {
+		public DebugNameFunc op(FuncCaller<DebugNameFunc> caller) {
 			return new DebugNameFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<DebugNameFunc> writer) {
-			writer.returnVoid();
-			writer.addAny();
-			writer.addAny();
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("DEBUG").sub("NameF");
+		}
+
+		@Override
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnVoid();
+			this.message = builder.addAny("message");
+			this.data = builder.addAny("data");
 		}
 
 	}

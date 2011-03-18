@@ -228,11 +228,16 @@ public abstract class Type<O extends StructOp>
 		}
 		if (this.data == null) {
 			this.data = new TypeData<O>(generator, this);
+		} else if (this.data.getGenerator() != generator) {
+			assert this.data instanceof TypeData :
+				"Wrong data type of " + codeId(generator) + ": "
+				+ this.data.getClass().getName();
+			this.data = new TypeData<O>(generator, this);
 		}
 		this.data.allocateType(fullyAllocated);
 		if (fullyAllocated) {
 			assert isAllocated(generator) :
-				"Not allocated: " + this;
+				"Not allocated: " + codeId(generator);
 		}
 	}
 

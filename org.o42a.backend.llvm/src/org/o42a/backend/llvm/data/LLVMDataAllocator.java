@@ -21,7 +21,6 @@ package org.o42a.backend.llvm.data;
 
 import static org.o42a.backend.llvm.data.LLVMId.dataId;
 
-import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -223,9 +222,9 @@ public class LLVMDataAllocator implements DataAllocator {
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature) {
 		if (allocate(enclosing)) {
-			allocateCodePtr(
+			allocateFuncPtr(
 					typeDataPtr(enclosing),
-					LLVMCode.nativePtr(signature));
+					getModule().nativePtr(signature));
 		}
 		return new FuncPtrAlloc<F>(container(enclosing), signature);
 	}
@@ -361,7 +360,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	private static native void allocateFp64(long modulePtr, long enclosingPtr);
 
-	private static native void allocateCodePtr(
+	private static native void allocateFuncPtr(
 			long enclosingPtr,
 			long functTypePtr);
 

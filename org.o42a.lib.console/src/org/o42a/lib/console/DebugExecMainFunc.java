@@ -27,29 +27,35 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 
 
-public final class MainFunc extends Func {
+public final class DebugExecMainFunc extends Func {
 
-	public static final Main MAIN = new Main();
+	public static final DebugExecMain DEBUG_EXEC_MAIN = new DebugExecMain();
 
-	private MainFunc(FuncCaller<MainFunc> caller) {
+	private DebugExecMainFunc(FuncCaller<DebugExecMainFunc> caller) {
 		super(caller);
 	}
 
-	public Int32op call(Code code, Int32op argc, AnyOp argv) {
-		return invoke(code, MAIN.result(), argc, argv);
+	public Int32op call(Code code, MainFunc main, Int32op argc, AnyOp argv) {
+		return invoke(code, DEBUG_EXEC_MAIN.result(), main, argc, argv);
 	}
 
-	public static final class Main extends Signature<MainFunc> {
+	public static final class DebugExecMain
+			extends Signature<DebugExecMainFunc> {
 
 		private Return<Int32op> result;
+		private Arg<MainFunc> main;
 		private Arg<Int32op> argc;
 		private Arg<AnyOp> argv;
 
-		private Main() {
+		private DebugExecMain() {
 		}
 
 		public final Return<Int32op> result() {
 			return this.result;
+		}
+
+		public final Arg<MainFunc> main() {
+			return this.main;
 		}
 
 		public final Arg<Int32op> argc() {
@@ -61,18 +67,19 @@ public final class MainFunc extends Func {
 		}
 
 		@Override
-		public MainFunc op(FuncCaller<MainFunc> caller) {
-			return new MainFunc(caller);
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("console").sub("DebugExecMainF");
 		}
 
 		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("console").sub("MainF");
+		public DebugExecMainFunc op(FuncCaller<DebugExecMainFunc> caller) {
+			return new DebugExecMainFunc(caller);
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnInt32();
+			this.main = builder.addFuncPtr("main", MainFunc.MAIN);
 			this.argc = builder.addInt32("argc");
 			this.argv = builder.addAny("argv");
 		}

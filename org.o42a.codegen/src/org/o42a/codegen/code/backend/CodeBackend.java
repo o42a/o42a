@@ -33,7 +33,7 @@ public interface CodeBackend {
 			Function<F> function,
 			CodeCallback callback);
 
-	<F extends Func> CodeAllocation<F> externFunction(
+	<F extends Func> FuncAllocation<F> externFunction(
 			CodeId id,
 			Signature<F> signature);
 

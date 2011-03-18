@@ -31,7 +31,6 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.ir.op.AssignerFunc;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.member.field.Field;
 
@@ -93,7 +92,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 				Code code,
 				ObjOp host,
 				ObjectRefFunc constructor) {
-			return constructor.call(code, host.ptr().toAny(code)).toData(code);
+			return constructor.call(code, host.ptr().toData(code));
 		}
 
 	}

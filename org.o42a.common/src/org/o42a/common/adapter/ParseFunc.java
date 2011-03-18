@@ -21,42 +21,61 @@ package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.core.ir.op.ValOp;
 
 
 public final class ParseFunc extends Func {
 
-	public static final Signature<ParseFunc> PARSE = new Parse();
+	public static final Parse PARSE = new Parse();
 
-	private ParseFunc(FuncCaller caller) {
+	private ParseFunc(FuncCaller<ParseFunc> caller) {
 		super(caller);
 	}
 
-	public void parse(Code code, ValOp result, ValOp input) {
-		caller().call(code, result, input);
+	public void parse(Code code, ValOp output, ValOp input) {
+		invoke(code, PARSE.result(), output, input);
 	}
 
-	private static final class Parse extends Signature<ParseFunc> {
+	public static final class Parse extends Signature<ParseFunc> {
+
+		private Return<Void> result;
+		private Arg<ValOp> output;
+		private Arg<ValOp> input;
 
 		private Parse() {
-			super("void", "ParseF", "Val*, Val*");
+		}
+
+		public final Return<Void> result() {
+			return this.result;
+		}
+
+		public final Arg<ValOp> output() {
+			return this.output;
+		}
+
+		public final Arg<ValOp> input() {
+			return this.input;
 		}
 
 		@Override
-		public ParseFunc op(FuncCaller caller) {
+		public ParseFunc op(FuncCaller<ParseFunc> caller) {
 			return new ParseFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<ParseFunc> writer) {
-			writer.returnVoid();
-			writer.addPtr(VAL_TYPE);
-			writer.addPtr(VAL_TYPE);
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ParseF");
+		}
+
+		@Override
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnVoid();
+			this.output = builder.addPtr("output", VAL_TYPE);
+			this.input = builder.addPtr("input", VAL_TYPE);
 		}
 
 	}

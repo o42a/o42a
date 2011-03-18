@@ -24,8 +24,8 @@ import org.o42a.backend.llvm.data.ContainerAllocation;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.CodeAllocation;
 import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -52,12 +52,13 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	public static final LLVMFunc<?> llvm(Func func) {
-		return (LLVMFunc<?>) func.caller();
+		return (LLVMFunc<?>) func.getCaller();
 	}
 
 	public static final <F extends Func> LLVMSignature<F> llvm(
+			LLVMModule module,
 			Signature<F> signature) {
-		return (LLVMSignature<F>) signature.getAllocation();
+		return (LLVMSignature<F>) signature.allocation(module.getGenerator());
 	}
 
 	public static LLVMCodePos llvm(CodePos pos) {
@@ -72,14 +73,9 @@ public abstract class LLVMCode implements CodeWriter {
 		return llvm(op).getNativePtr();
 	}
 
-	public static final long nativePtr(Signature<?> signature) {
-		return llvm(signature).getNativePtr();
-	}
-
 	public static final long blockPtr(CodePos pos) {
 		return llvm(pos).getBlockPtr();
 	}
-
 
 	public static final long nextPtr(Code code) {
 		return llvm(code).nextPtr();
@@ -172,14 +168,19 @@ public abstract class LLVMCode implements CodeWriter {
 		return this.blockPtr = nextPtr;
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({
+		"rawtypes", "unchecked"
+	})
 	@Override
-	public LLVMFunc<?> caller(CodeAllocation<?> allocation) {
+	public <F extends Func> LLVMFunc<F> caller(FuncAllocation<F> allocation) {
 
-		final FuncAllocation<?> alloc =
-			(FuncAllocation<?>) allocation;
+		final LLVMFuncAllocation<?> alloc =
+			(LLVMFuncAllocation<?>) allocation;
 
-		return new LLVMFunc(nextPtr(), alloc.llvmId().expression(getModule()));
+		return new LLVMFunc(
+				allocation.getSignature(),
+				nextPtr(),
+				alloc.llvmId().expression(getModule()));
 	}
 
 	@Override
@@ -272,10 +273,10 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public <F extends Func> LLVMFunc<F> nullPtr(Signature<F> signature) {
 
-		final LLVMSignature<F> allocation =
-			(LLVMSignature<F>) signature.getAllocation();
+		final LLVMSignature<F> allocation = llvm(getModule(), signature);
 
 		return new LLVMFunc<F>(
+				signature,
 				nextPtr(),
 				nullFuncPtr(allocation.getNativePtr()));
 	}

@@ -21,7 +21,7 @@ package org.o42a.codegen.data.backend;
 
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.CodeAllocation;
+import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.SubData;
@@ -36,7 +36,7 @@ public interface DataWriter {
 
 	<O extends StructOp> DataAllocation<O> nullPtr(Type<O> type);
 
-	<F extends Func> CodeAllocation<F> nullPtr(Signature<F> signature);
+	<F extends Func> FuncAllocation<F> nullPtr(Signature<F> signature);
 
 	<O extends StructOp> void begin(
 			DataAllocation<O> allocation,

@@ -1,5 +1,5 @@
 /*
-    Console Module
+    Compiler Code Generator
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,64 +17,59 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.console;
+package org.o42a.codegen.debug;
+
+import static org.o42a.codegen.debug.DebugStackFrameType.DEBUG_STACK_FRAME_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.Int32op;
 
 
-public final class MainFunc extends Func {
+final class DebugEnterFunc extends Func {
 
-	public static final Main MAIN = new Main();
+	public static final DebugEnter DEBUG_ENTER = new DebugEnter();
 
-	private MainFunc(FuncCaller<MainFunc> caller) {
+	private DebugEnterFunc(FuncCaller<DebugEnterFunc> caller) {
 		super(caller);
 	}
 
-	public Int32op call(Code code, Int32op argc, AnyOp argv) {
-		return invoke(code, MAIN.result(), argc, argv);
+	public void enter(Code code, DebugStackFrameType.Op stackFrame) {
+		invoke(code, DEBUG_ENTER.result(), stackFrame);
 	}
 
-	public static final class Main extends Signature<MainFunc> {
+	public static final class DebugEnter extends Signature<DebugEnterFunc> {
 
-		private Return<Int32op> result;
-		private Arg<Int32op> argc;
-		private Arg<AnyOp> argv;
+		private Return<Void> result;
+		private Arg<DebugStackFrameType.Op> stackFrame;
 
-		private Main() {
+		private DebugEnter() {
 		}
 
-		public final Return<Int32op> result() {
+		public final Return<Void> result() {
 			return this.result;
 		}
 
-		public final Arg<Int32op> argc() {
-			return this.argc;
-		}
-
-		public final Arg<AnyOp> argv() {
-			return this.argv;
+		public final Arg<DebugStackFrameType.Op> stackFrame() {
+			return this.stackFrame;
 		}
 
 		@Override
-		public MainFunc op(FuncCaller<MainFunc> caller) {
-			return new MainFunc(caller);
+		public DebugEnterFunc op(FuncCaller<DebugEnterFunc> caller) {
+			return new DebugEnterFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("console").sub("MainF");
+			return factory.id("DEBUG").sub("EnterF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnInt32();
-			this.argc = builder.addInt32("argc");
-			this.argv = builder.addAny("argv");
+			this.result = builder.returnVoid();
+			this.stackFrame =
+				builder.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE);
 		}
 
 	}

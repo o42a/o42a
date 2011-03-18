@@ -19,43 +19,56 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.DataOp;
 
 
 public final class ObjectCondFunc extends Func {
 
-	public static final Signature<ObjectCondFunc> OBJECT_COND =
-		new ObjectCond();
+	public static final ObjectCond OBJECT_COND = new ObjectCond();
 
-	ObjectCondFunc(FuncCaller caller) {
+	ObjectCondFunc(FuncCaller<ObjectCondFunc> caller) {
 		super(caller);
 	}
 
-	public BoolOp call(Code code, AnyOp object) {
-		return caller().callBool(code, object);
+	public BoolOp call(Code code, DataOp object) {
+		return invoke(code, OBJECT_COND.result(), object);
 	}
 
-	private static final class ObjectCond extends Signature<ObjectCondFunc> {
+	public static final class ObjectCond extends Signature<ObjectCondFunc> {
 
-		ObjectCond() {
-			super("bool", "ObjectCondF", "any*");
+		private Return<BoolOp> result;
+		private Arg<DataOp> object;
+
+		private ObjectCond() {
+		}
+
+		public final Return<BoolOp> result() {
+			return this.result;
+		}
+
+		public final Arg<DataOp> object() {
+			return this.object;
 		}
 
 		@Override
-		public ObjectCondFunc op(FuncCaller caller) {
+		public ObjectCondFunc op(FuncCaller<ObjectCondFunc> caller) {
 			return new ObjectCondFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<ObjectCondFunc> writer) {
-			writer.returnBool();
-			writer.addAny();
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ObjectCondF");
+		}
+
+		@Override
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnBool();
+			this.object = builder.addData("object");
 		}
 
 	}

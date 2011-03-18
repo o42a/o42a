@@ -21,7 +21,7 @@ package org.o42a.core.ir.object;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
@@ -49,11 +49,14 @@ public class ObjectTypeOp extends IROp {
 	}
 
 	public final ObjectOp object(Code code, Obj wellKnownType) {
-		return new AnonymousObjOp(this, mainBody(code), wellKnownType);
+		return new AnonymousObjOp(
+				this,
+				mainBody(code),
+				wellKnownType);
 	}
 
-	public final AnyOp start(Code code) {
-		return ptr().data(code).startPtr(code);
+	public final DataOp start(Code code) {
+		return ptr().data(code).loadStart(code);
 	}
 
 	public final ObjOp objectOfType(Code code, Obj type) {
@@ -155,12 +158,12 @@ public class ObjectTypeOp extends IROp {
 		return "ObjectData[" + ptr().toString() + ']';
 	}
 
-	private final AnyOp body(Code code, ObjectOp body) {
-		return body != null ? body.toAny(code) : mainBody(code);
+	private final DataOp body(Code code, ObjectOp body) {
+		return body != null ? body.toData(code) : mainBody(code);
 	}
 
-	private final AnyOp mainBody(Code code) {
-		return ptr().data(code).objectPtr(code);
+	private final DataOp mainBody(Code code) {
+		return ptr().data(code).loadObject(code);
 	}
 
 }

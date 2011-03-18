@@ -26,7 +26,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
@@ -128,10 +130,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final Op previous = previousPtr.to(code, getType().getType());
 		final ObjectConstructorFunc constructor =
 			previous.constructor(code).load(code);
-		final AnyOp ancestorPtr = constructor.call(
-				code,
-				builder.host().toAny(code),
-				previous.toAny(code));
+		final DataOp ancestorPtr =
+			constructor.call(code, builder.host().toData(code), previous);
 		final ObjectOp ancestor =
 			anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
 
@@ -163,10 +163,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				Code code,
 				ObjOp host,
 				ObjectConstructorFunc constructor) {
-			return constructor.call(
-					code,
-					host.ptr().toAny(code),
-					toAny(code)).toData(code);
+			return constructor.call(code, host.toData(code), this);
 		}
 
 	}

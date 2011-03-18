@@ -188,10 +188,18 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 			.op(host.getBuilder(), DERIVED);
 
 		if (isRequirement()) {
-			hasAncestor.dumpName("Ancestor requirement: ", ancestorBody.ptr());
+			if (hasAncestor.isDebug()) {
+				hasAncestor.dumpName(
+						"Ancestor requirement: ",
+						ancestorBody.toData(code));
+			}
 			ancestorType.writeRequirement(hasAncestor, exit, ancestorBody);
 		} else {
-			hasAncestor.dumpName("Ancestor condition: ", ancestorBody.ptr());
+			if (hasAncestor.isDebug()) {
+				hasAncestor.dumpName(
+						"Ancestor condition: ",
+						ancestorBody.toData(code));
+			}
 			ancestorType.writeCondition(hasAncestor, exit, ancestorBody);
 		}
 

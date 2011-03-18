@@ -24,7 +24,7 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectOp;
@@ -52,8 +52,8 @@ public class LocalBuilder extends CodeBuilder {
 		}
 
 		final Obj owner = host().getScope().getOwner();
-		final AnyOp ownerPtr =
-			getFunction().ptrArg(getFunction(), this.ownerArg);
+		final DataOp ownerPtr =
+			getFunction().dataArg(getFunction(), this.ownerArg);
 
 		return this.owner = anonymousObject(this, ownerPtr, owner);
 	}

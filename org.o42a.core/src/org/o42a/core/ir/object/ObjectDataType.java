@@ -167,16 +167,16 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			return writer().relPtr(code, getType().object());
 		}
 
-		public final AnyOp objectPtr(Code code) {
-			return object(code).load(code).offset(code, this);
+		public final DataOp loadObject(Code code) {
+			return object(code).load(code).offset(code, this).toData(code);
 		}
 
 		public final RecOp<RelOp> start(Code code) {
 			return writer().relPtr(code, getType().start());
 		}
 
-		public final AnyOp startPtr(Code code) {
-			return start(code).load(code).offset(code, this);
+		public final DataOp loadStart(Code code) {
+			return start(code).load(code).offset(code, this).toData(code);
 		}
 
 		public final ValOp value(Code code) {

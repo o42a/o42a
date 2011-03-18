@@ -25,10 +25,18 @@ import org.o42a.codegen.code.op.*;
 
 public abstract class Func implements PtrOp {
 
-	private final FuncCaller caller;
+	private final FuncCaller<?> caller;
 
-	public Func(FuncCaller caller) {
+	public Func(FuncCaller<?> caller) {
 		this.caller = caller;
+	}
+
+	public final Signature<?> getSignature() {
+		return this.caller.getSignature();
+	}
+
+	public final FuncCaller<?> getCaller() {
+		return this.caller;
 	}
 
 	@Override
@@ -37,31 +45,49 @@ public abstract class Func implements PtrOp {
 
 	@Override
 	public final void returnValue(Code code) {
-		caller().returnValue(code);
+		this.caller.returnValue(code);
 	}
 
 	@Override
 	public final BoolOp isNull(Code code) {
-		return caller().isNull(code);
+		return this.caller.isNull(code);
 	}
 
 	@Override
 	public final BoolOp eq(Code code, PtrOp other) {
-		return caller().eq(code, other);
+		return this.caller.eq(code, other);
 	}
 
 	@Override
 	public final AnyOp toAny(Code code) {
-		return caller().toAny(code);
-	}
-
-	public final FuncCaller caller() {
-		return this.caller;
+		return this.caller.toAny(code);
 	}
 
 	@Override
 	public String toString() {
 		return this.caller.toString();
+	}
+
+	protected final <O> O invoke(Code code, Return<O> ret, Op... args) {
+		assert validSignature(ret.getSignature(), args);
+		return ret.call(code, this.caller, args);
+	}
+
+	private boolean validSignature(Signature<?> signature, Op[] args) {
+
+		final Arg<?>[] signatureArgs = signature.getArgs();
+
+		assert signatureArgs.length == args.length :
+			"Wrong number of arguments: " + args.length + ", but "
+			+ signatureArgs.length + " expected by " + signature;
+
+		for (int i = 0; i < args.length; ++i) {
+			assert signatureArgs[i].compatibleWith(args[i]) :
+				"Argument #" + i + " (" + args[i] + ") is not compatible with "
+				+ signature;
+		}
+
+		return true;
 	}
 
 }

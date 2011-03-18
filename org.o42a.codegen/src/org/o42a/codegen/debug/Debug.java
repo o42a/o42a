@@ -19,9 +19,9 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DbgEnterFunc.DBG_ENTER;
-import static org.o42a.codegen.debug.DbgExitFunc.EXIT_SIGNATURE;
-import static org.o42a.codegen.debug.DbgStackFrameType.DBG_STACK_FRAME_TYPE;
+import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
+import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
+import static org.o42a.codegen.debug.DebugStackFrameType.DEBUG_STACK_FRAME_TYPE;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -35,7 +35,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.*;
-import org.o42a.codegen.debug.DbgStackFrameType.Op;
+import org.o42a.codegen.debug.DebugStackFrameType.Op;
 
 
 public class Debug {
@@ -49,8 +49,8 @@ public class Debug {
 
 	private boolean writeDebug;
 
-	private FuncPtr<DbgEnterFunc> enterFunc;
-	private FuncPtr<DbgExitFunc> exitFunc;
+	private FuncPtr<DebugEnterFunc> enterFunc;
+	private FuncPtr<DebugExitFunc> exitFunc;
 	private DebugInfo info;
 
 	private final HashMap<String, Ptr<AnyOp>> names =
@@ -102,7 +102,7 @@ public class Debug {
 
 			dbgFunc.setNamePtr(namePtr);
 
-			final Op stackFrame = code.allocate(DBG_STACK_FRAME_TYPE);
+			final Op stackFrame = code.allocate(DEBUG_STACK_FRAME_TYPE);
 
 			stackFrame.name(code).store(code, namePtr.op(code));
 			this.enterFunc.op(code).enter(code, stackFrame);
@@ -189,10 +189,10 @@ public class Debug {
 		try {
 			this.enterFunc = getGenerator().externalFunction(
 					"o42a_dbg_enter",
-					DBG_ENTER);
+					DEBUG_ENTER);
 			this.exitFunc = getGenerator().externalFunction(
 					"o42a_dbg_exit",
-					EXIT_SIGNATURE);
+					DEBUG_EXIT);
 			this.info = new DebugInfo();
 		} finally {
 			this.writeDebug = false;

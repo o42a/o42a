@@ -20,6 +20,7 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
 
 
@@ -37,6 +38,8 @@ public interface SignatureWriter<F extends Func> {
 
 	void returnAny();
 
+	void returnData();
+
 	void returnPtr(Type<?> type);
 
 	void addInt32();
@@ -47,9 +50,15 @@ public interface SignatureWriter<F extends Func> {
 
 	void addBool();
 
+	void addRelPtr();
+
 	void addAny();
 
+	void addData();
+
 	void addPtr(Type<?> type);
+
+	void addFuncPtr(Signature<?> signature);
 
 	SignatureAllocation<F> done();
 

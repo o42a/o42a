@@ -70,7 +70,7 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final AnyOp result = newFunc().op(code).call(code, ptr().toAny(code));
+		final DataOp result = newFunc().op(code).call(code, ptr().toData(code));
 
 		result.isNull(code).go(code, exit);
 
@@ -103,7 +103,7 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final AnyOp result = newFunc().op(code).call(code, ptr().toAny(code));
+		final DataOp result = newFunc().op(code).call(code, ptr().toData(code));
 
 		result.isNull(code).go(code, exit);
 

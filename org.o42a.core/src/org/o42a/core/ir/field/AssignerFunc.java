@@ -1,5 +1,5 @@
 /*
-    Console Module
+    Compiler Core
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,64 +17,67 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.console;
+package org.o42a.core.ir.field;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.DataOp;
 
 
-public final class MainFunc extends Func {
+/**
+ * Link or variable assignment function.
+ */
+public final class AssignerFunc extends Func {
 
-	public static final Main MAIN = new Main();
+	public static Assigner ASSIGNER = new Assigner();
 
-	private MainFunc(FuncCaller<MainFunc> caller) {
+	AssignerFunc(FuncCaller<AssignerFunc> caller) {
 		super(caller);
 	}
 
-	public Int32op call(Code code, Int32op argc, AnyOp argv) {
-		return invoke(code, MAIN.result(), argc, argv);
+	public BoolOp assign(Code code, VarFld.Op variable, DataOp value) {
+		return invoke(code, ASSIGNER.result(), variable, value);
 	}
 
-	public static final class Main extends Signature<MainFunc> {
+	public static final class Assigner extends Signature<AssignerFunc> {
 
-		private Return<Int32op> result;
-		private Arg<Int32op> argc;
-		private Arg<AnyOp> argv;
+		private Return<BoolOp> result;
+		private Arg<VarFld.Op> variable;
+		private Arg<DataOp> value;
 
-		private Main() {
+		private Assigner() {
 		}
 
-		public final Return<Int32op> result() {
+		public final Return<BoolOp> result() {
 			return this.result;
 		}
 
-		public final Arg<Int32op> argc() {
-			return this.argc;
+		public final Arg<VarFld.Op> object() {
+			return this.variable;
 		}
 
-		public final Arg<AnyOp> argv() {
-			return this.argv;
+		public final Arg<DataOp> value() {
+			return this.value;
 		}
 
 		@Override
-		public MainFunc op(FuncCaller<MainFunc> caller) {
-			return new MainFunc(caller);
+		public AssignerFunc op(FuncCaller<AssignerFunc> caller) {
+			return new AssignerFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("console").sub("MainF");
+			return factory.id("AssignerF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnInt32();
-			this.argc = builder.addInt32("argc");
-			this.argv = builder.addAny("argv");
+			this.result = builder.returnBool();
+			this.variable = builder.addPtr("variable", VarFld.VAR_FLD);
+			this.value = builder.addData("value");
 		}
 
 	}

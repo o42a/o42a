@@ -318,7 +318,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 			return anonymousObject(
 					builder,
-					ancestorBodyPtr,
+					ancestorBodyPtr.toData(code),
 					ancestor);
 		}
 

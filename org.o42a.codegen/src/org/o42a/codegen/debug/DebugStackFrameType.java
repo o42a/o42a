@@ -29,15 +29,15 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
 
-final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
+final class DebugStackFrameType extends Type<DebugStackFrameType.Op> {
 
-	public static final DbgStackFrameType DBG_STACK_FRAME_TYPE =
-		new DbgStackFrameType();
+	public static final DebugStackFrameType DEBUG_STACK_FRAME_TYPE =
+		new DebugStackFrameType();
 
 	private AnyPtrRec name;
 	private StructRec<Op> prev;
 
-	private DbgStackFrameType() {
+	private DebugStackFrameType() {
 	}
 
 	@Override
@@ -66,7 +66,7 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 	@Override
 	protected void allocate(SubData<Op> data) {
 		this.name = data.addPtr("name");
-		this.prev = data.addPtr("prev", DBG_STACK_FRAME_TYPE);
+		this.prev = data.addPtr("prev", DEBUG_STACK_FRAME_TYPE);
 	}
 
 	public static class Op extends StructOp {
@@ -76,8 +76,8 @@ final class DbgStackFrameType extends Type<DbgStackFrameType.Op> {
 		}
 
 		@Override
-		public final DbgStackFrameType getType() {
-			return (DbgStackFrameType) super.getType();
+		public final DebugStackFrameType getType() {
+			return (DebugStackFrameType) super.getType();
 		}
 
 		public final RecOp<AnyOp> name(Code code) {

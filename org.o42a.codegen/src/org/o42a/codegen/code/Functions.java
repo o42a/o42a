@@ -71,7 +71,7 @@ public abstract class Functions {
 	}
 
 	public final <F extends Func> Signature<F> allocate(Signature<F> signature) {
-		return signature.allocate(codeBackend());
+		return signature.allocate(getGenerator());
 	}
 
 	protected abstract CodeBackend codeBackend();

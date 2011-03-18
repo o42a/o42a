@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.op;
+
+import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.field.ObjFld.Op;
+import org.o42a.core.ir.object.ObjectType;
+import org.o42a.core.ir.object.ObjectType.Op;
 
 
-public class ObjectConstructorFunc extends Func {
+public final class CastObjectFunc extends Func {
 
-	public static final ObjectConstructor OBJECT_CONSTRUCTOR =
-		new ObjectConstructor();
+	public static final CastObject CAST_OBJECT = new CastObject();
 
-	private ObjectConstructorFunc(FuncCaller<ObjectConstructorFunc> caller) {
+	CastObjectFunc(FuncCaller<CastObjectFunc> caller) {
 		super(caller);
 	}
 
-	public DataOp call(Code code, DataOp object, ObjFld.Op fld) {
-		return invoke(code, OBJECT_CONSTRUCTOR.result(), object, fld);
+	public DataOp call(Code code, DataOp object, ObjectType.Op type) {
+		return invoke(code, CAST_OBJECT.result(), object, type);
 	}
 
-	public static final class ObjectConstructor
-			extends Signature<ObjectConstructorFunc> {
+	public static final class CastObject extends Signature<CastObjectFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
-		private Arg<Op> field;
+		private Arg<Op> type;
 
-		private ObjectConstructor() {
+		private CastObject() {
 		}
 
 		public final Return<DataOp> result() {
@@ -58,26 +59,25 @@ public class ObjectConstructorFunc extends Func {
 			return this.object;
 		}
 
-		public final Arg<Op> field() {
-			return this.field;
+		public final Arg<Op> type() {
+			return this.type;
+		}
+
+		@Override
+		public CastObjectFunc op(FuncCaller<CastObjectFunc> caller) {
+			return new CastObjectFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectConstructorF");
-		}
-
-		@Override
-		public ObjectConstructorFunc op(
-				FuncCaller<ObjectConstructorFunc> caller) {
-			return new ObjectConstructorFunc(caller);
+			return factory.id("ObjectCastF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnData();
 			this.object = builder.addData("object");
-			this.field = builder.addPtr("field", ObjFld.OBJ_FLD);
+			this.type = builder.addPtr("type", OBJECT_TYPE);
 		}
 
 	}

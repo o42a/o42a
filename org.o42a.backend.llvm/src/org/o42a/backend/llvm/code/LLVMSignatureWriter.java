@@ -72,6 +72,11 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
+	public void returnData() {
+		this.returnType = this.module.anyType();
+	}
+
+	@Override
 	public void returnPtr(Type<?> type) {
 		this.returnType = this.module.pointerTo(type);
 	}
@@ -97,7 +102,17 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
+	public void addRelPtr() {
+		addParam(this.module.relPtrType());
+	}
+
+	@Override
 	public void addAny() {
+		addParam(this.module.anyType());
+	}
+
+	@Override
+	public void addData() {
 		addParam(this.module.anyType());
 	}
 
@@ -107,11 +122,16 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
+	public void addFuncPtr(Signature<?> signature) {
+		addParam(this.module.pointerTo(signature));
+	}
+
+	@Override
 	public LLVMSignature<F> done() {
 
 		final long signaturePtr = createSignature(
 				this.module.getNativePtr(),
-				this.signature.getName(),
+				this.signature.codeId(this.module.getGenerator()).toString(),
 				this.returnType,
 				this.params);
 

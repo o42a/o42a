@@ -19,15 +19,15 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
 public interface FuncWriter<F extends Func> extends CodeWriter {
 
-	CodeAllocation<F> getAllocation();
+	FuncAllocation<F> getAllocation();
 
 	Int32op int32arg(int index);
 
@@ -35,12 +35,16 @@ public interface FuncWriter<F extends Func> extends CodeWriter {
 
 	Fp64op fp64arg(int index);
 
-	BoolOp boolArg(Code code, int index);
+	BoolOp boolArg(int index);
 
-	RelOp relPtrArg(Code code, int index);
+	RelOp relPtrArg(int index);
 
-	AnyOp ptrArg(Code code, int index);
+	AnyOp ptrArg(int index);
 
-	<O extends StructOp> O ptrArg(Code code, int index, Type<O> type);
+	DataOp dataArg(int index);
+
+	<O extends StructOp> O ptrArg(int index, Type<O> type);
+
+	<FF extends Func> FF funcPtrArg(int index, Signature<FF> signature);
 
 }

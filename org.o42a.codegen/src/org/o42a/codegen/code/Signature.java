@@ -19,62 +19,126 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.*;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.backend.SignatureAllocation;
+import org.o42a.codegen.code.backend.SignatureWriter;
+import org.o42a.util.ArrayUtil;
 
 
 public abstract class Signature<F extends Func> {
 
-	private final String result;
-	private final String name;
-	private final String args;
+	private static final Arg<?>[] NO_ARGS = new Arg<?>[0];
+
+	private CodeId codeId;
+	private Generator generator;
 	private SignatureAllocation<F> allocation;
+	private Return<?> ret;
+	private Arg<?>[] args = NO_ARGS;
 
-	public Signature(String result, String name, String args) {
-		this.result = result;
-		this.name = name;
-		this.args = args;
+	public Return<?> returns(Generator generator) {
+		allocate(generator);
+		return this.ret;
 	}
 
-	public final String getResult() {
-		return this.result;
+	public final CodeId codeId(CodeIdFactory factory) {
+		if (this.codeId != null && this.codeId.compatibleWith(factory)) {
+			return this.codeId;
+		}
+		return this.codeId = buildCodeId(factory);
 	}
 
-	public final String getName() {
-		return this.name;
+	public final CodeId codeId(Generator generator) {
+		return codeId(generator.getCodeIdFactory());
 	}
 
-	public final String getArgs() {
+	public final Arg<?>[] args(Generator generator) {
+		allocate(generator);
 		return this.args;
 	}
 
-	public final SignatureAllocation<F> getAllocation() {
+	public final SignatureAllocation<F> allocation(Generator generator) {
+		allocate(generator);
 		return this.allocation;
 	}
 
-	public abstract F op(FuncCaller caller);
+	public abstract F op(FuncCaller<F> caller);
 
 	@Override
 	public String toString() {
-		return this.result + ' ' + this.name + '(' + this.args + ')';
+		if (this.codeId == null) {
+			codeId(CodeIdFactory.DEFAULT_CODE_ID_FACTORY);
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		if (this.ret != null) {
+			out.append(this.ret.typeName()).append(' ');
+		} else {
+			out.append("? ");
+		}
+		out.append(this.codeId);
+		out.append('(');
+		for (int i = 0; i < this.args.length; ++i) {
+			if (i != 0) {
+				out.append(", ");
+			}
+			out.append(this.args[i]);
+		}
+		out.append(')');
+
+		return out.toString();
 	}
 
-	protected abstract void write(SignatureWriter<F> writer);
+	protected abstract CodeId buildCodeId(CodeIdFactory factory);
 
-	final Signature<F> allocate(CodeBackend backend) {
+	protected abstract void build(SignatureBuilder builder);
 
-		final SignatureAllocation<F> allocation = getAllocation();
-
-		if (allocation != null) {
+	final Signature<F> allocate(Generator generator) {
+		if (this.allocation != null && this.generator == generator) {
 			return this;
 		}
 
-		final SignatureWriter<F> writer = backend.addSignature(this);
+		this.allocation = null;
+		this.generator = generator;
 
-		write(writer);
+		final SignatureWriter<F> writer =
+			generator.getFunctions().codeBackend().addSignature(this);
+		final SignatureBuilder builder = new SignatureBuilder(this, writer);
+
+		build(builder);
+
+		assert this.ret != null :
+			"Signature does not declare a return type: " + this;
 
 		this.allocation = writer.done();
 
 		return this;
+	}
+
+	final Generator getGenerator() {
+		return this.generator;
+	}
+
+	final void setReturn(Return<?> ret) {
+		assert this.ret == null :
+			"Return type of " + this + " already set. Can not change to " + ret;
+		this.ret = ret;
+	}
+
+	final Return<?> getReturn() {
+		return this.ret;
+	}
+
+	final Arg<?>[] getArgs() {
+		return this.args;
+	}
+
+	@SuppressWarnings("unchecked")
+	final void addArg(Arg<?> arg) {
+		this.args = ArrayUtil.append(this.args, arg);
 	}
 
 }

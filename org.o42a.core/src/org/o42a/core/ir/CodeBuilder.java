@@ -101,7 +101,7 @@ public class CodeBuilder {
 		} else {
 			this.host = anonymousObject(
 					this,
-					function.ptrArg(function, hostArg),
+					function.dataArg(function, hostArg),
 					hostType)
 					.cast(function, exit, hostType);
 		}

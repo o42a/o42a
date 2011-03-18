@@ -21,45 +21,74 @@ package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.backend.SignatureWriter;
+import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.op.ValOp;
 
 
 public final class ParseWithRadixFunc extends Func {
 
-	public static final Signature<ParseWithRadixFunc> PARSE_WITH_RADIX =
-		new ParseWithRadix();
+	public static final ParseWithRadix PARSE_WITH_RADIX = new ParseWithRadix();
 
-	private ParseWithRadixFunc(FuncCaller caller) {
+	private ParseWithRadixFunc(FuncCaller<ParseWithRadixFunc> caller) {
 		super(caller);
 	}
 
-	public void parse(Code code, ValOp result, ValOp input, int radix) {
-		caller().call(code, result, input, code.int32(radix));
+	public void parse(Code code, ValOp output, ValOp input, int radix) {
+		invoke(
+				code,
+				PARSE_WITH_RADIX.result(),
+				output,
+				input,
+				code.int32(radix));
 	}
 
-	private static final class ParseWithRadix
+	public static final class ParseWithRadix
 			extends Signature<ParseWithRadixFunc> {
 
+		private Return<Void> result;
+		private Arg<ValOp> output;
+		private Arg<ValOp> input;
+		private Arg<Int32op> radix;
+
 		private ParseWithRadix() {
-			super("void", "ParseWithRadixF", "Val*, Val*, int32");
+		}
+
+		public final Return<Void> result() {
+			return this.result;
+		}
+
+		public final Arg<ValOp> output() {
+			return this.output;
+		}
+
+		public final Arg<ValOp> input() {
+			return this.input;
+		}
+
+		public final Arg<Int32op> radix() {
+			return this.radix;
 		}
 
 		@Override
-		public ParseWithRadixFunc op(FuncCaller caller) {
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ParseWithRadixF");
+		}
+
+		@Override
+		public ParseWithRadixFunc op(FuncCaller<ParseWithRadixFunc> caller) {
 			return new ParseWithRadixFunc(caller);
 		}
 
 		@Override
-		protected void write(SignatureWriter<ParseWithRadixFunc> writer) {
-			writer.returnVoid();
-			writer.addPtr(VAL_TYPE);
-			writer.addPtr(VAL_TYPE);
-			writer.addInt32();
+		protected void build(SignatureBuilder builder) {
+			this.result = builder.returnVoid();
+			this.output = builder.addPtr("output", VAL_TYPE);
+			this.input = builder.addPtr("input", VAL_TYPE);
+			this.radix = builder.addInt32("radix");
 		}
 
 	}

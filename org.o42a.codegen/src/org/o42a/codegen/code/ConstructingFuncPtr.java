@@ -19,14 +19,14 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.CodeAllocation;
+import org.o42a.codegen.code.backend.FuncAllocation;
 
 
 final class ConstructingFuncPtr<F extends Func> extends FuncPtr<F> {
 
 	private final Function<F> function;
 
-	ConstructingFuncPtr(Function<F> function, CodeAllocation<F> allocation) {
+	ConstructingFuncPtr(Function<F> function, FuncAllocation<F> allocation) {
 		super(function.getSignature(), allocation);
 		this.function = function;
 	}

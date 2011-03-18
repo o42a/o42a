@@ -24,7 +24,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
@@ -36,12 +36,12 @@ final class AnonymousObjOp extends ObjectOp {
 
 	private final Obj wellKnownType;
 
-	AnonymousObjOp(ObjectTypeOp data, PtrOp ptr, Obj wellKnownType) {
+	AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
 		super(ptr, data);
 		this.wellKnownType = wellKnownType;
 	}
 
-	AnonymousObjOp(CodeBuilder builder, PtrOp ptr, Obj wellKnownType) {
+	AnonymousObjOp(CodeBuilder builder, DataOp ptr, Obj wellKnownType) {
 		super(builder, ptr, DERIVED);
 		this.wellKnownType =
 			wellKnownType != null
@@ -54,6 +54,11 @@ final class AnonymousObjOp extends ObjectOp {
 	}
 
 	@Override
+	public final DataOp ptr() {
+		return (DataOp) super.ptr();
+	}
+
+	@Override
 	public ObjOp cast(Code code, CodePos exit, Obj ascendant) {
 		getWellKnownType().assertDerivedFrom(ascendant);
 		if (ascendant == getContext().getVoid()) {
@@ -61,7 +66,7 @@ final class AnonymousObjOp extends ObjectOp {
 
 			final ObjectIR ir = getWellKnownType().ir(getGenerator());
 
-			return ptr().toAny(code).to(code, ir.getBodyType()).op(
+			return ptr().to(code, ir.getBodyType()).op(
 					getBuilder(),
 					getWellKnownType(),
 					COMPATIBLE);

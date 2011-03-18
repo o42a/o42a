@@ -25,6 +25,9 @@ import java.nio.charset.Charset;
 
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
+import org.o42a.backend.llvm.code.LLVMSignature;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
 
 
@@ -47,6 +50,7 @@ public final class LLVMModule {
 	private long int64type;
 	private long fp64type;
 	private long boolType;
+	private long relPtrType;
 	private long anyType;
 	private LLVMGenerator generator;
 
@@ -142,6 +146,13 @@ public final class LLVMModule {
 		return this.boolType = boolType(getNativePtr());
 	}
 
+	public long relPtrType() {
+		if (this.relPtrType != 0L) {
+			return this.relPtrType;
+		}
+		return this.relPtrType = relPtrType(getNativePtr());
+	}
+
 	public long anyType() {
 		if (this.anyType != 0L) {
 			return this.anyType;
@@ -156,6 +167,22 @@ public final class LLVMModule {
 					getGenerator()).getAllocation();
 
 		return pointerTo(allocation.getTypePtr());
+	}
+
+	public long pointerTo(Signature<?> signature) {
+
+		final LLVMSignature<?> allocation = llvm(signature);
+
+		return pointerToFunc(allocation.getNativePtr());
+	}
+
+	public final <F extends Func> LLVMSignature<F> llvm(
+			Signature<F> signature) {
+		return (LLVMSignature<F>) signature.allocation(getGenerator());
+	}
+
+	public final long nativePtr(Signature<?> signature) {
+		return llvm(signature).getNativePtr();
 	}
 
 	public void write() {
@@ -193,9 +220,13 @@ public final class LLVMModule {
 
 	private static native long boolType(long modulePtr);
 
+	private static native long relPtrType(long modulePtr);
+
 	private static native long anyType(long modulePtr);
 
 	private static native long pointerTo(long typePtr);
+
+	private static native long pointerToFunc(long funcTypePtr);
 
 	private static byte[][] encodeArgs(String[] args) {
 

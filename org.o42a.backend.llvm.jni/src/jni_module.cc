@@ -23,9 +23,10 @@
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
 
+#include "llvm/DerivedTypes.h"
+#include "llvm/Function.h"
 #include "llvm/LLVMContext.h"
 #include "llvm/Module.h"
-#include "llvm/Type.h"
 #include "llvm/Support/CommandLine.h"
 
 using namespace llvm;
@@ -168,6 +169,16 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_boolType(
 	return to_ptr(Type::getInt1Ty(module->getContext()));
 }
 
+jlong Java_org_o42a_backend_llvm_data_LLVMModule_relPtrType(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr)  {
+
+	Module *module = from_ptr<Module>(modulePtr);
+
+	return to_ptr(Type::getInt32Ty(module->getContext()));
+}
+
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_anyType(
 		JNIEnv *env,
 		jclass cls,
@@ -186,4 +197,14 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerTo(
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
 	return to_ptr(type->get()->getPointerTo());
+}
+
+jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerToFunc(
+		JNIEnv *env,
+		jclass cls,
+		jlong funcTypePtr) {
+
+	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);
+
+	return to_ptr(type->getPointerTo());
 }

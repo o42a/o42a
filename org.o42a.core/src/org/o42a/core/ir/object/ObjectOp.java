@@ -20,19 +20,19 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
-import static org.o42a.core.ir.op.BinaryFunc.BINARY;
+import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.op.BinaryFunc;
+import org.o42a.core.ir.op.CastObjectFunc;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
@@ -43,7 +43,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
-			PtrOp ptr,
+			DataOp ptr,
 			Obj wellKnownType) {
 		return new AnonymousObjOp(
 				builder,
@@ -288,10 +288,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final ObjectType.Op ascendantType =
 			ascendantObj.objectType(code).ptr();
 
-		final AnyOp result = castFunc().op(code).call(
-				code,
-				toAny(code),
-				ascendantType.toAny(code));
+		final DataOp result =
+			castFunc().op(code).call(code, toData(code), ascendantType);
 
 		return result.to(code, ascendantIR.getBodyType()).op(
 				getBuilder(),
@@ -330,8 +328,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return this.objectType;
 	}
 
-	private FuncPtr<BinaryFunc> castFunc() {
-		return getGenerator().externalFunction("o42a_obj_cast", BINARY);
+	private FuncPtr<CastObjectFunc> castFunc() {
+		return getGenerator().externalFunction("o42a_obj_cast", CAST_OBJECT);
 	}
 
 	private final ObjectBodyIR.Op body(Code code) {

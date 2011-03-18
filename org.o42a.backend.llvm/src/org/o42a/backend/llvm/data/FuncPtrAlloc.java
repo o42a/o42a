@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.llvm.data;
 
-import org.o42a.backend.llvm.code.op.LLVMCodeOp;
+import org.o42a.backend.llvm.code.op.LLVMFuncOp;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
@@ -45,7 +45,7 @@ final class FuncPtrAlloc<F extends Func>
 
 	@Override
 	protected FuncOp<F> op(long blockPtr, long nativePtr) {
-		return new LLVMCodeOp<F>(
+		return new LLVMFuncOp<F>(
 				blockPtr,
 				nativePtr,
 				this.signature);
