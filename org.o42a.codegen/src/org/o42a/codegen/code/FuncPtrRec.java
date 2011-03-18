@@ -41,7 +41,7 @@ final class FuncPtrRec<F extends Func> extends FuncRec<F> {
 	public void setNull() {
 		setValue(new NullFuncPtr<F>(
 				getSignature(),
-				getGenerator().getGlobals().dataWriter().nullPtr(
+				getGenerator().getFunctions().dataWriter().nullPtr(
 						getSignature())));
 	}
 

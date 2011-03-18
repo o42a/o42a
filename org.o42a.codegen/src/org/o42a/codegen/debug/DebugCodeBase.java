@@ -27,7 +27,6 @@ import static org.o42a.codegen.debug.DumpFunc.DEBUG_DUMP;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.OpCodeBase;
 import org.o42a.codegen.code.op.PtrOp;
@@ -148,10 +147,6 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		return getGenerator().addBinary(
 				getGenerator().id("DEBUG_" + (debugSeq++)),
 				bytes);
-	}
-
-	protected final CodeBackend backend() {
-		return this.generator.getFunctions().codeBackend();
 	}
 
 	private final Code code() {

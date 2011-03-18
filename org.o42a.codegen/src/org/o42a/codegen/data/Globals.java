@@ -59,10 +59,6 @@ public abstract class Globals {
 		return new Ptr<AnyOp>(dataAllocator().addBinary(id, data, start, end));
 	}
 
-	public abstract DataAllocator dataAllocator();
-
-	public abstract DataWriter dataWriter();
-
 	public void write() {
 
 		final DataWriter writer = dataWriter();
@@ -75,6 +71,10 @@ public abstract class Globals {
 
 		this.globals.empty();
 	}
+
+	protected abstract DataAllocator dataAllocator();
+
+	protected abstract DataWriter dataWriter();
 
 	protected abstract void registerType(SubData<?> type);
 

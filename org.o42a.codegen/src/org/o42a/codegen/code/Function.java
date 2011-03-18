@@ -38,7 +38,7 @@ public final class Function<F extends Func> extends Code {
 			Signature<F> signature) {
 		super(settings.getGenerator(), id);
 		this.settings = settings;
-		this.signature = signature.allocate(backend());
+		this.signature = getGenerator().getFunctions().allocate(signature);
 	}
 
 	public final Signature<F> getSignature() {
@@ -98,7 +98,7 @@ public final class Function<F extends Func> extends Code {
 
 		final Functions functions = getGenerator().getFunctions();
 
-		this.writer = backend().addFunction(
+		this.writer = getGenerator().getFunctions().codeBackend().addFunction(
 				this,
 				functions.createCodeCallback(this));
 		this.pointer = new ConstructingFuncPtr<F>(this, this.writer.getAllocation());
