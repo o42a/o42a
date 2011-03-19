@@ -110,7 +110,7 @@ final class MainCall extends DefinedObject {
 
 		main.debug("Start execution");
 
-		final CodeBuilder builder = codeBuilder(generator, getContext(), main);
+		final CodeBuilder builder = codeBuilder(getContext(), main);
 
 		final ValOp result = main.allocate(VAL_TYPE).storeUnknown(main);
 		final CodeBlk exit = main.addBlock("exit");

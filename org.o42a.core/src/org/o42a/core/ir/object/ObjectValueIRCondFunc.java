@@ -108,7 +108,6 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				exit.head(),
-				OBJECT_COND.object(),
 				getObjectIR().getMainBodyIR(),
 				getObjectIR().getObject(),
 				DERIVED);
