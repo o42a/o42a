@@ -66,6 +66,11 @@ public class DebugEnvOp extends StructOp {
 		private Type() {
 		}
 
+		@Override
+		public boolean isDebuggable() {
+			return false;
+		}
+
 		public final StructRec<DebugStackFrameOp> stackFrame() {
 			return this.stackFrame;
 		}

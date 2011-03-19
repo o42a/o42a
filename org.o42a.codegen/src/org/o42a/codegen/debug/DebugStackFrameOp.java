@@ -61,8 +61,8 @@ public final class DebugStackFrameOp extends StructOp {
 		}
 
 		@Override
-		public boolean isDebugInfo() {
-			return true;
+		public boolean isDebuggable() {
+			return false;
 		}
 
 		public final AnyPtrRec name() {
