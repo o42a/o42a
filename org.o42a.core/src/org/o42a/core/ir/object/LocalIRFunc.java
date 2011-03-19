@@ -84,7 +84,7 @@ final class LocalIRFunc extends ObjectIRFunc {
 	public void build() {
 
 		final LocalBuilder builder =
-			new LocalBuilder(this.function, this.localIR, OBJECT_VAL.object());
+			new LocalBuilder(this.function, this.localIR);
 		final ValOp result = this.function.arg(OBJECT_VAL.value());
 
 		build(builder, this.function, result);

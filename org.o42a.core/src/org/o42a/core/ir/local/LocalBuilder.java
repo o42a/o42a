@@ -21,25 +21,25 @@ package org.o42a.core.ir.local;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.local.Dep;
 
 
 public class LocalBuilder extends CodeBuilder {
 
-	private final Arg<DataOp> ownerArg;
 	private ObjectOp owner;
 
 	public LocalBuilder(
-			Function<?> function,
-			LocalIR scopeIR,
-			Arg<DataOp> ownerArg) {
+			Function<? extends ObjectFunc> function,
+			LocalIR scopeIR) {
 		super(function, scopeIR);
-		this.ownerArg = ownerArg;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class LocalBuilder extends CodeBuilder {
 		}
 
 		final Obj owner = host().getScope().getOwner();
-		final DataOp ownerPtr = getFunction().arg(this.ownerArg);
+		final DataOp ownerPtr = getFunction().arg(getObjectSignature().object());
 
 		return this.owner = anonymousObject(this, ownerPtr, owner);
 	}

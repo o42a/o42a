@@ -249,10 +249,8 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 		final TypeRef ancestor = getObjectIR().getObject().getAncestor();
 		final CodeBuilder builder = codeBuilder(
-				getGenerator(),
 				function,
 				failure.head(),
-				OBJECT_REF.object(),
 				ancestor.getScope(),
 				DERIVED);
 

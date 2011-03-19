@@ -109,7 +109,6 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				failure.head(),
-				OBJECT_VAL.object(),
 				getObjectIR().getMainBodyIR(),
 				getObjectIR().getObject(),
 				DERIVED);

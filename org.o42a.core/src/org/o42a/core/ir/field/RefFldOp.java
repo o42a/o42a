@@ -21,7 +21,6 @@ package org.o42a.core.ir.field;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -29,10 +28,11 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.RefFld.Op;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
 
 
-public abstract class RefFldOp<C extends Func> extends FldOp {
+public abstract class RefFldOp<C extends ObjectFunc> extends FldOp {
 
 	RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<C> ptr) {
 		super(fld, host, ptr);

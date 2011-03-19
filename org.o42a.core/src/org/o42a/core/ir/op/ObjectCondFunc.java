@@ -28,7 +28,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
 
 
-public final class ObjectCondFunc extends Func {
+public final class ObjectCondFunc extends ObjectFunc {
 
 	public static final ObjectCond OBJECT_COND = new ObjectCond();
 
