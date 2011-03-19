@@ -47,6 +47,8 @@ public abstract class Return<O> {
 		return getDataType().getName();
 	}
 
+	public abstract void returnNull(Code code);
+
 	@Override
 	public String toString() {
 		return "return " + typeName();
@@ -58,6 +60,11 @@ public abstract class Return<O> {
 
 		ReturnVoid(Signature<?> signature) {
 			super(signature, DataType.VOID);
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.returnVoid();
 		}
 
 		@Override
@@ -75,6 +82,11 @@ public abstract class Return<O> {
 		}
 
 		@Override
+		public void returnNull(Code code) {
+			code.int32(0).returnValue(code);
+		}
+
+		@Override
 		protected Int32op call(Code code, FuncCaller<?> caller, Op... args) {
 			return caller.callInt32(code, args);
 		}
@@ -85,6 +97,11 @@ public abstract class Return<O> {
 
 		ReturnInt64(Signature<?> signature) {
 			super(signature, DataType.INT64);
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.int64(0L).returnValue(code);
 		}
 
 		@Override
@@ -101,6 +118,11 @@ public abstract class Return<O> {
 		}
 
 		@Override
+		public void returnNull(Code code) {
+			code.fp64(0.0d).returnValue(code);
+		}
+
+		@Override
 		protected Fp64op call(Code code, FuncCaller<?> caller, Op... args) {
 			return caller.callFp64(code, args);
 		}
@@ -111,6 +133,11 @@ public abstract class Return<O> {
 
 		ReturnBool(Signature<?> signature) {
 			super(signature, DataType.BOOL);
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.bool(false).returnValue(code);
 		}
 
 		@Override
@@ -127,6 +154,11 @@ public abstract class Return<O> {
 		}
 
 		@Override
+		public void returnNull(Code code) {
+			code.nullPtr().returnValue(code);
+		}
+
+		@Override
 		protected AnyOp call(Code code, FuncCaller<?> caller, Op... args) {
 			return caller.callAny(code, args);
 		}
@@ -137,6 +169,11 @@ public abstract class Return<O> {
 
 		ReturnData(Signature<?> signature) {
 			super(signature, DataType.DATA_PTR);
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.nullDataPtr().returnValue(code);
 		}
 
 		@Override
@@ -158,6 +195,11 @@ public abstract class Return<O> {
 		@Override
 		public String typeName() {
 			return this.type.toString();
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.nullPtr(this.type).returnValue(code);
 		}
 
 		@Override

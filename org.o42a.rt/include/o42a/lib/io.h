@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 
-void o42a_io_print_str(const o42a_val_t *);
+void o42a_io_print_str(O42A_DECLS const o42a_val_t *);
 
 
 #ifdef __cplusplus

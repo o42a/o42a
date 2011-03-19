@@ -22,6 +22,7 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.debug.DebugEnvOp;
 
 
 public final class Function<F extends Func> extends Code {
@@ -58,11 +59,31 @@ public final class Function<F extends Func> extends Code {
 		return this.writer != null;
 	}
 
+	public final DebugEnvOp debugEnv() {
+
+		final Arg<DebugEnvOp> debugEnv = getSignature().debugEnv();
+
+		if (debugEnv == null) {
+			assert !getSignature().isDebuggable() :
+				getSignature() + " is debuggable, but does not contain"
+				+ " a debug environment argument";
+			return null;
+		}
+
+		return arg(debugEnv);
+	}
+
 	public final <O extends Op> O arg(Arg<O> arg) {
 		assert getSignature() == arg.getSignature() :
 			"Argument " + arg + " does not belong to " + getSignature()
 			+ ". It is defined in " + arg.getSignature();
-		return arg.get(this.writer);
+
+		final O op = arg.get(this.writer);
+
+		assert op != null :
+			"Argument " + arg + " not present in " + this;
+
+		return op;
 	}
 
 	@Override

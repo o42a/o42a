@@ -51,7 +51,7 @@ final class GeneratorFunctions extends Functions {
 			CodeId id,
 			Signature<F> signature,
 			FuncPtr<F> function) {
-		getGenerator().addFunction(id, signature, function);
+		getGenerator().addFunction(id, function);
 	}
 
 }

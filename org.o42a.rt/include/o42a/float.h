@@ -28,9 +28,9 @@ extern "C" {
 #endif
 
 
-void o42a_float_by_str(o42a_val_t *, const o42a_val_t *);
+void o42a_float_by_str(O42A_DECLS o42a_val_t *, const o42a_val_t *);
 
-int o42a_float_error(o42a_val_t *);
+int o42a_float_error(O42A_DECLS o42a_val_t *);
 
 
 #ifdef __cplusplus

@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,45 +19,54 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugStackFrameType.DEBUG_STACK_FRAME_TYPE;
+import static org.o42a.codegen.debug.DebugEnvOp.DEBUG_ENV_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.op.BoolOp;
 
 
-final class DebugEnterFunc extends Func {
+final class DebugExecCommandFunc extends Func {
 
-	public static final DebugEnter DEBUG_ENTER = new DebugEnter();
+	public static final DebugExecCommand DEBUG_EXEC_COMMAND =
+		new DebugExecCommand();
 
-	private DebugEnterFunc(FuncCaller<DebugEnterFunc> caller) {
+	private DebugExecCommandFunc(FuncCaller<DebugExecCommandFunc> caller) {
 		super(caller);
 	}
 
-	public void enter(Code code, DebugStackFrameType.Op stackFrame) {
-		invoke(code, DEBUG_ENTER.result(), stackFrame);
+	public BoolOp exec(Code code, DebugEnvOp env) {
+		return invoke(code, DEBUG_EXEC_COMMAND.result(), env);
 	}
 
-	public static final class DebugEnter extends Signature<DebugEnterFunc> {
+	public static final class DebugExecCommand
+			extends Signature<DebugExecCommandFunc> {
 
-		private Return<Void> result;
-		private Arg<DebugStackFrameType.Op> stackFrame;
+		private Return<BoolOp> result;
+		private Arg<DebugEnvOp> env;
 
-		private DebugEnter() {
-		}
-
-		public final Return<Void> result() {
-			return this.result;
-		}
-
-		public final Arg<DebugStackFrameType.Op> stackFrame() {
-			return this.stackFrame;
+		private DebugExecCommand() {
 		}
 
 		@Override
-		public DebugEnterFunc op(FuncCaller<DebugEnterFunc> caller) {
-			return new DebugEnterFunc(caller);
+		public boolean isDebuggable() {
+			return false;
+		}
+
+		public final Return<BoolOp> result() {
+			return this.result;
+		}
+
+		public final Arg<DebugEnvOp> env() {
+			return this.env;
+		}
+
+		@Override
+		public DebugExecCommandFunc op(
+				FuncCaller<DebugExecCommandFunc> caller) {
+			return new DebugExecCommandFunc(caller);
 		}
 
 		@Override
@@ -67,9 +76,8 @@ final class DebugEnterFunc extends Func {
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.stackFrame =
-				builder.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE);
+			this.result = builder.returnBool();
+			this.env = builder.addPtr("env", DEBUG_ENV_TYPE);
 		}
 
 	}

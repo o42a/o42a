@@ -51,6 +51,8 @@ public interface CodeWriter {
 
 	AnyOp nullPtr();
 
+	DataOp nullDataPtr();
+
 	<O extends StructOp> O nullPtr(DataAllocation<O> type);
 
 	<F extends Func> FuncCaller<F> nullPtr(Signature<F> signature);

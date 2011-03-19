@@ -118,6 +118,11 @@ public abstract class Code extends DebugCodeBase {
 		return writer().nullPtr();
 	}
 
+	public final DataOp nullDataPtr() {
+		assertIncomplete();
+		return writer().nullDataPtr();
+	}
+
 	public final <O extends StructOp> O nullPtr(Type<O> type) {
 		assertIncomplete();
 		return writer().nullPtr(type.pointer(getGenerator()).getAllocation());
