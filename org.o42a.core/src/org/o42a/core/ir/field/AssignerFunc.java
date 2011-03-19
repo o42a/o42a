@@ -25,13 +25,14 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
 
 
 /**
  * Link or variable assignment function.
  */
-public final class AssignerFunc extends Func {
+public final class AssignerFunc extends ObjectFunc {
 
 	public static Assigner ASSIGNER = new Assigner();
 

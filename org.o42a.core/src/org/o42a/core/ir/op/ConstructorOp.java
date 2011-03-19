@@ -97,10 +97,8 @@ public class ConstructorOp extends RefOp {
 			this.ancestorFunc.addBlock("ancestor_not_found");
 
 		final CodeBuilder builder = codeBuilder(
-				getGenerator(),
 				this.ancestorFunc,
 				ancestorNotFound.head(),
-				OBJECT_REF.object(),
 				getRef().getScope(),
 				DERIVED);
 

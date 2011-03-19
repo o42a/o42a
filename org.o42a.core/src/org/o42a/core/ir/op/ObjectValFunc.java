@@ -29,7 +29,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
 
 
-public final class ObjectValFunc extends Func {
+public final class ObjectValFunc extends ObjectFunc {
 
 	public static final ObjectVal OBJECT_VAL = new ObjectVal();
 

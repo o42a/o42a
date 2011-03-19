@@ -24,16 +24,16 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.Function;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.ObjectRefFunc;
-import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -41,17 +41,16 @@ import org.o42a.core.ref.type.TypeRef;
 public class CodeBuilder {
 
 	public static CodeBuilder codeBuilder(
-			Generator generator,
-			Function<?> function,
+			Function<? extends ObjectFunc> function,
 			CodePos exit,
-			Arg<DataOp> hostArg,
 			Scope scope,
 			ObjectPrecision hostPrecision) {
 
+		final Generator generator = function.getGenerator();
 		final LocalScope local = scope.toLocal();
 
 		if (local != null) {
-			return new LocalBuilder(function, local.ir(generator), hostArg);
+			return new LocalBuilder(function, local.ir(generator));
 		}
 
 		final Obj scopeObject = scope.getContainer().toObject();
@@ -60,81 +59,73 @@ public class CodeBuilder {
 			return new CodeBuilder(
 					function,
 					exit,
-					hostArg,
 					scopeObject.ir(generator).getBodyType(),
 					scopeObject,
 					hostPrecision);
 		}
 
-		return new CodeBuilder(generator, function, scope);
+		return new CodeBuilder(function, scope);
 	}
 
 	public static CodeBuilder codeBuilder(
-			Generator generator,
 			CompilerContext context,
 			Function<?> function) {
-		return new CodeBuilder(generator, context, function);
+		return new CodeBuilder(context, function);
 	}
 
-	private final Generator generator;
 	private final CompilerContext context;
 	private final HostOp host;
 	private final Function<?> function;
 	private int nameSeq;
 
 	protected CodeBuilder(
-			Function<?> function,
+			Function<? extends ObjectFunc> function,
 			CodePos exit,
-			Arg<DataOp> hostArg,
 			ObjectBodyIR hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
-		this.generator = hostIR.getGenerator();
 		this.context = hostIR.getAscendant().getContext();
 		this.function = function;
 		if (hostPrecision.isCompatible()) {
 			this.host =
-				function.arg(hostArg)
+				function.arg(getObjectSignature().object())
 				.to(function, hostIR)
 				.op(this, hostType, hostPrecision);
 		} else {
 			this.host = anonymousObject(
 					this,
-					function.arg(hostArg),
+					function.arg(getObjectSignature().object()),
 					hostType)
 					.cast(function, exit, hostType);
 		}
 	}
 
-	protected CodeBuilder(Function<?> function, LocalIR scopeIR) {
-		this.generator = scopeIR.getGenerator();
+	protected CodeBuilder(
+			Function<? extends ObjectFunc> function,
+			LocalIR scopeIR) {
 		this.context = scopeIR.getScope().getContext();
 		this.function = function;
 		this.host = scopeIR.op(this, function);
 	}
 
 	private CodeBuilder(
-			Generator generator,
-			Function<?> function,
+			Function<? extends ObjectFunc> function,
 			Scope scope) {
-		this.generator = generator;
 		this.context = scope.getContext();
 		this.function = function;
-		this.host = scope.ir(generator).op(this, function);
+		this.host = scope.ir(function.getGenerator()).op(this, function);
 	}
 
 	private CodeBuilder(
-			Generator generator,
 			CompilerContext context,
 			Function<?> function) {
-		this.generator = generator;
 		this.context = context;
 		this.function = function;
 		this.host = null;
 	}
 
 	public final Generator getGenerator() {
-		return this.generator;
+		return this.function.getGenerator();
 	}
 
 	public final CompilerContext getContext() {
@@ -143,6 +134,10 @@ public class CodeBuilder {
 
 	public final Function<?> getFunction() {
 		return this.function;
+	}
+
+	public final ObjectSignature<?> getObjectSignature() {
+		return (ObjectSignature<?>) this.function.getSignature();
 	}
 
 	public HostOp host() {

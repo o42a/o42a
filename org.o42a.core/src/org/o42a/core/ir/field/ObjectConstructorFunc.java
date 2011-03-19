@@ -26,10 +26,11 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.ObjFld.Op;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
 
 
-public class ObjectConstructorFunc extends Func {
+public class ObjectConstructorFunc extends ObjectFunc {
 
 	public static final ObjectConstructor OBJECT_CONSTRUCTOR =
 		new ObjectConstructor();
