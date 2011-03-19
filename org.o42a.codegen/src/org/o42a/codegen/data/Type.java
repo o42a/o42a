@@ -188,7 +188,8 @@ public abstract class Type<O extends StructOp>
 			instance.type = this.type;
 		}
 
-		instance.data = new TypeInstanceData<O>(enclosing, id, instance, content);
+		instance.data =
+			new TypeInstanceData<O>(enclosing, id, instance, content);
 
 		return instance;
 	}

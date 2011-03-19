@@ -41,7 +41,7 @@ enum o42a_fld_kind {
 
 };
 
-typedef void o42a_fld_copy_ft(o42a_obj_ctable_t *);
+typedef void o42a_fld_copy_ft(O42A_DECLS o42a_obj_ctable_t *);
 
 typedef const struct o42a_fld_desc {
 
@@ -59,7 +59,7 @@ extern "C" {
 #endif
 
 
-o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *);
+o42a_fld_desc_t *o42a_fld_desc(O42A_DECLS const o42a_obj_field_t *);
 
 /**
  * Retrieves field from body.
@@ -69,7 +69,10 @@ o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *);
  *
  * \return field pointer.
  */
-o42a_fld *o42a_fld_by_field(const o42a_obj_body_t *, const o42a_obj_field_t *);
+o42a_fld *o42a_fld_by_field(
+		O42A_DECLS
+		const o42a_obj_body_t *,
+		const o42a_obj_field_t *);
 
 /**
  * Retrieves overriding field from body.
@@ -78,7 +81,7 @@ o42a_fld *o42a_fld_by_field(const o42a_obj_body_t *, const o42a_obj_field_t *);
  *
  * \return overriding field pointer..
  */
-o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
+o42a_fld *o42a_fld_by_overrider(O42A_DECLS const o42a_obj_overrider_t *);
 
 
 #ifdef __cplusplus

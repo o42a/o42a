@@ -19,6 +19,8 @@
 */
 package org.o42a.lib.console;
 
+import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
@@ -35,7 +37,11 @@ public final class DebugExecMainFunc extends Func {
 		super(caller);
 	}
 
-	public Int32op call(Code code, MainFunc main, Int32op argc, AnyOp argv) {
+	public Int32op call(
+			Code code,
+			DebuggableMainFunc main,
+			Int32op argc,
+			AnyOp argv) {
 		return invoke(code, DEBUG_EXEC_MAIN.result(), main, argc, argv);
 	}
 
@@ -43,18 +49,23 @@ public final class DebugExecMainFunc extends Func {
 			extends Signature<DebugExecMainFunc> {
 
 		private Return<Int32op> result;
-		private Arg<MainFunc> main;
+		private Arg<DebuggableMainFunc> main;
 		private Arg<Int32op> argc;
 		private Arg<AnyOp> argv;
 
 		private DebugExecMain() {
 		}
 
+		@Override
+		public boolean isDebuggable() {
+			return false;
+		}
+
 		public final Return<Int32op> result() {
 			return this.result;
 		}
 
-		public final Arg<MainFunc> main() {
+		public final Arg<DebuggableMainFunc> main() {
 			return this.main;
 		}
 
@@ -79,7 +90,7 @@ public final class DebugExecMainFunc extends Func {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnInt32();
-			this.main = builder.addFuncPtr("main", MainFunc.MAIN);
+			this.main = builder.addFuncPtr("main", DEBUGGABLE_MAIN);
 			this.argc = builder.addInt32("argc");
 			this.argv = builder.addAny("argv");
 		}

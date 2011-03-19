@@ -48,7 +48,10 @@ typedef uint8_t o42a_bool_t;
  */
 typedef uint32_t o42a_layout_t;
 
-#define o42a_layout(target) _o42a_layout(__alignof__ (target), sizeof (target))
+#define O42A_LAYOUT(target) o42a_layout( \
+		O42A_ARGS \
+		__alignof__ (target), \
+		sizeof (target))
 
 enum o42a_data_types {
 
@@ -58,6 +61,7 @@ enum o42a_data_types {
 	O42A_TYPE_PTR = 0x12,
 	O42A_TYPE_DATA_PTR = 0x22,
 	O42A_TYPE_CODE_PTR = 0x32,
+	O42A_TYPE_FUNC_PTR = 0x42,
 	O42A_TYPE_BOOL = 0x01,
 	O42A_TYPE_INT32 = 0x11 | (2 << 8),
 	O42A_TYPE_INT64 = 0x11 | (3 << 8),
@@ -66,6 +70,7 @@ enum o42a_data_types {
 };
 
 
+typedef struct o42a_dbg_env o42a_dbg_env_t;
 typedef struct o42a_dbg_type_info o42a_dbg_type_info_t;
 
 typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
@@ -89,7 +94,22 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_HEADER_SIZE 0
 
 
-#define O42A_ENTER
+#define O42A_ARGC 0
+
+#define O42A_DECL
+
+#define O42A_DECLS
+
+#define O42A_PARAM
+
+#define O42A_PARAMS
+
+#define O42A_ARG
+
+#define O42A_ARGS
+
+
+#define O42A_ENTER(return_null)
 
 #define O42A_RETURN return
 
@@ -113,23 +133,48 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_HEADER_SIZE sizeof(o42a_dbg_header_t)
 
 
-#define O42A_ENTER \
-	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = {__func__, NULL}; \
-	o42a_dbg_enter(&__o42a_dbg_stack_frame__)
+#define O42A_ARGC 1
 
-#define O42A_RETURN o42a_dbg_exit(); return
+#define O42A_DECL o42a_dbg_env_t *
+
+#define O42A_DECLS O42A_DECL,
+
+#define O42A_PARAM o42a_dbg_env_t *const __o42a_dbg_env__
+
+#define O42A_PARAMS O42A_PARAM,
+
+#define O42A_ARG __o42a_dbg_env__
+
+#define O42A_ARGS O42A_ARG,
+
+
+#define O42A_ENTER(return_null) \
+	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = { \
+		name: __func__, \
+		prev: __o42a_dbg_env__->stack_frame \
+	}; \
+	__o42a_dbg_env__->stack_frame = &__o42a_dbg_stack_frame__; \
+	if (o42a_dbg_exec_command(__o42a_dbg_env__)) { \
+		return_null; \
+	} \
+	o42a_dbg_enter(O42A_ARG)
+
+#define O42A_RETURN o42a_dbg_exit(__o42a_dbg_env__); return
 
 #define O42A_DEBUG(format, args...) \
-	fprintf(stderr, "[%s] ", o42a_dbg_stack()->name); \
+	fprintf(stderr, "[%s] ", __o42a_dbg_env__->stack_frame->name); \
 	fprintf(stderr, format, ## args)
 
-#define o42a_debug(message) o42a_dbg_print(message)
+#define o42a_debug(message) o42a_dbg_print(O42A_ARGS message)
 
-#define o42a_debug_mem_name(prefix, ptr) o42a_dbg_mem_name(prefix, ptr)
+#define o42a_debug_mem_name(prefix, ptr) \
+	o42a_dbg_mem_name(O42A_ARGS prefix, ptr)
 
-#define o42a_debug_func_name(prefix, ptr) o42a_dbg_func_name(prefix, ptr)
+#define o42a_debug_func_name(prefix, ptr) \
+	o42a_dbg_func_name(O42A_ARGS prefix, ptr)
 
-#define o42a_debug_dump_mem(ptr, depth) o42a_dbg_dump_mem(ptr, depth)
+#define o42a_debug_dump_mem(ptr, depth) \
+	o42a_dbg_dump_mem(O42A_ARGS ptr, depth)
 
 
 #include "o42a/debug.h"
@@ -261,29 +306,29 @@ extern "C" {
 #endif
 
 
-size_t o42a_layout_size(o42a_layout_t);
+size_t o42a_layout_size(O42A_DECLS o42a_layout_t);
 
-size_t o42a_layout_array_size(o42a_layout_t, size_t);
+size_t o42a_layout_array_size(O42A_DECLS o42a_layout_t, size_t);
 
-o42a_layout_t o42a_layout_array(o42a_layout_t, size_t);
+o42a_layout_t o42a_layout_array(O42A_DECLS o42a_layout_t, size_t);
 
-uint8_t o42a_layout_alignment(o42a_layout_t);
+uint8_t o42a_layout_alignment(O42A_DECLS o42a_layout_t);
 
-size_t o42a_layout_offset(size_t, o42a_layout_t);
+size_t o42a_layout_offset(O42A_DECLS size_t, o42a_layout_t);
 
-size_t o42a_layout_pad(size_t, o42a_layout_t);
+size_t o42a_layout_pad(O42A_DECLS size_t, o42a_layout_t);
 
-o42a_layout_t o42a_layout_both(o42a_layout_t, o42a_layout_t);
-
-
-o42a_layout_t _o42a_layout(uint8_t, size_t);
+o42a_layout_t o42a_layout_both(O42A_DECLS o42a_layout_t, o42a_layout_t);
 
 
-size_t o42a_val_ashift(const o42a_val_t*);
+o42a_layout_t o42a_layout(O42A_DECLS uint8_t, size_t);
 
-size_t o42a_val_alignment(const o42a_val_t*);
 
-void *o42a_val_data(const o42a_val_t*);
+size_t o42a_val_ashift(O42A_DECLS const o42a_val_t*);
+
+size_t o42a_val_alignment(O42A_DECLS const o42a_val_t*);
+
+void *o42a_val_data(O42A_DECLS const o42a_val_t*);
 
 
 #ifdef __cplusplus

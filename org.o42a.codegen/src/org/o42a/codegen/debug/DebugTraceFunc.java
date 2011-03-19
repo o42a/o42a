@@ -19,48 +19,61 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DebugEnvOp.DEBUG_ENV_TYPE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 
 
-final class DebugExitFunc extends Func {
+final class DebugTraceFunc extends Func {
 
-	public static final DebugExit DEBUG_EXIT = new DebugExit();
+	public static final DebugTrace DEBUG_TRACE = new DebugTrace();
 
-	private DebugExitFunc(FuncCaller<DebugExitFunc> caller) {
+	private DebugTraceFunc(FuncCaller<DebugTraceFunc> caller) {
 		super(caller);
 	}
 
-	public void exit(Code code) {
-		invoke(code, DEBUG_EXIT.result());
+	public void trace(Code code, DebugEnvOp env) {
+		invoke(code, DEBUG_TRACE.result(), env);
 	}
 
-	public static final class DebugExit extends Signature<DebugExitFunc> {
+	public static final class DebugTrace extends Signature<DebugTraceFunc> {
 
 		private Return<Void> result;
+		private Arg<DebugEnvOp> env;
 
-		private DebugExit() {
+		private DebugTrace() {
+		}
+
+		@Override
+		public boolean isDebuggable() {
+			return false;
 		}
 
 		public final Return<Void> result() {
 			return this.result;
 		}
 
+		public final Arg<DebugEnvOp> env() {
+			return this.env;
+		}
+
 		@Override
-		public DebugExitFunc op(FuncCaller<DebugExitFunc> caller) {
-			return new DebugExitFunc(caller);
+		public DebugTraceFunc op(FuncCaller<DebugTraceFunc> caller) {
+			return new DebugTraceFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("ExitF");
+			return factory.id("DEBUG").sub("EnterF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
+			this.env = builder.addPtr("env", DEBUG_ENV_TYPE);
 		}
 
 	}

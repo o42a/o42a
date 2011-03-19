@@ -70,7 +70,8 @@ public abstract class Functions {
 		return extern;
 	}
 
-	public final <F extends Func> Signature<F> allocate(Signature<F> signature) {
+	public final <F extends Func> Signature<F> allocate(
+			Signature<F> signature) {
 		return signature.allocate(getGenerator());
 	}
 

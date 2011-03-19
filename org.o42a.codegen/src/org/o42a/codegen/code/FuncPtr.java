@@ -35,6 +35,10 @@ public abstract class FuncPtr<F extends Func> extends AbstractPtr {
 		this.allocation = allocation;
 	}
 
+	public final Signature<F> getSignature() {
+		return this.signature;
+	}
+
 	public abstract Function<F> getFunction();
 
 	public F op(Code code) {

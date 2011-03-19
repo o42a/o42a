@@ -36,10 +36,11 @@ enum number_signs {
 };
 
 void o42a_int_by_str(
+		O42A_PARAMS
 		o42a_val_t *const result,
 		const o42a_val_t *const input,
 		const uint32_t radix) {
-	O42A_ENTER;
+	O42A_ENTER(return);
 
 	if (!(input->flags & O42A_TRUE)) {
 		result->flags = O42A_FALSE;
@@ -49,7 +50,9 @@ void o42a_int_by_str(
 	const size_t len = input->length;
 
 	if (!len) {
-		o42a_error_print("Empty string can not be converted to integer");
+		o42a_error_print(
+				O42A_ARGS
+				"Empty string can not be converted to integer");
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
@@ -58,9 +61,9 @@ void o42a_int_by_str(
 	o42a_bool_t negative = O42A_FALSE;
 	o42a_bool_t has_value = O42A_FALSE;
 	int64_t value = 0;
-	const size_t step = o42a_val_alignment(input);
-	const UChar32 cmask = o42a_str_cmask(input);
-	const void *const str = o42a_val_data(input);
+	const size_t step = o42a_val_alignment(O42A_ARGS input);
+	const UChar32 cmask = o42a_str_cmask(O42A_ARGS input);
+	const void *const str = o42a_val_data(O42A_ARGS input);
 
 	for (size_t i = 0; i < len; i += step) {
 
@@ -78,6 +81,7 @@ void o42a_int_by_str(
 		} else if (u_charType(c) == U_SPACE_SEPARATOR) {
 			if (space) {
 				o42a_error_printf(
+						O42A_ARGS
 						"Two subsequent spaces in number at position %zu",
 						i);
 				result->flags = O42A_FALSE;
@@ -90,7 +94,10 @@ void o42a_int_by_str(
 		const int32_t digit = u_digit(c, radix);
 
 		if (digit < 0) {
-			o42a_error_printf("Illegal character in number at position %zu", i);
+			o42a_error_printf(
+					O42A_ARGS
+					"Illegal character in number at position %zu",
+					i);
 			result->flags = O42A_FALSE;
 			O42A_RETURN;
 		}
@@ -98,14 +105,14 @@ void o42a_int_by_str(
 		if (negative) {
 			value = value * radix - digit;
 			if (value > 0) {
-				o42a_error_print("Integer overflow");
+				o42a_error_print(O42A_ARGS "Integer overflow");
 				result->flags = O42A_FALSE;
 				O42A_RETURN;
 			}
 		} else {
 			value = value * radix + digit;
 			if (value < 0) {
-				o42a_error_print("Integer overflow");
+				o42a_error_print(O42A_ARGS "Integer overflow");
 				result->flags = O42A_FALSE;
 				O42A_RETURN;
 			}
@@ -117,13 +124,14 @@ void o42a_int_by_str(
 
 	if (space) {
 		o42a_error_printf(
+				O42A_ARGS
 				"Unexpected space after number at position %zu",
 				len - 1);
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
 	if (!has_value) {
-		o42a_error_print("Unexpected end of integer input");
+		o42a_error_print(O42A_ARGS "Unexpected end of integer input");
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
