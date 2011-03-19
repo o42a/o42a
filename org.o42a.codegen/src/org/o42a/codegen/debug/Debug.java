@@ -48,6 +48,7 @@ public class Debug {
 
 	private boolean debug;
 
+	private Code dontExitFrom;
 	private FuncPtr<DebugTraceFunc> enterFunc;
 	private FuncPtr<DebugTraceFunc> exitFunc;
 	private FuncPtr<DebugExecCommandFunc> execCommandFunc;
@@ -115,7 +116,15 @@ public class Debug {
 		final CodeBlk commandExecuted = function.addBlock("command_executed");
 
 		execResult.go(function, commandExecuted.head());
-		signature.returns(getGenerator()).returnNull(commandExecuted);
+
+		final Code oldDontExitFrom = this.dontExitFrom;
+
+		try {
+			this.dontExitFrom = commandExecuted;
+			signature.returns(getGenerator()).returnNull(commandExecuted);
+		} finally {
+			this.dontExitFrom = oldDontExitFrom;
+		}
 
 		enterFunc().op(function).trace(function, debugEnv);
 	}
@@ -164,9 +173,6 @@ public class Debug {
 	}
 
 	DebugTypeInfo typeInfo(Type<?> instance) {
-		if (!instance.isDebuggable()) {
-			return null;
-		}
 
 		final DebugTypeInfo typeInfo =
 			this.typeInfo.get(instance.getType().pointer(getGenerator()));
@@ -223,9 +229,11 @@ public class Debug {
 
 			final Debug debug = code.getGenerator().getDebug();
 
-			debug.exitFunc().op(code).trace(
-					code,
-					code.getFunction().debugEnv());
+			if (debug.dontExitFrom != code) {
+				debug.exitFunc().op(code).trace(
+						code,
+						code.getFunction().debugEnv());
+			}
 		}
 
 	}
