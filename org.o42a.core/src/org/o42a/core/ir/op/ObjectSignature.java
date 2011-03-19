@@ -20,12 +20,12 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Arg;
-import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.DataOp;
 
 
-public abstract class ObjectSignature<F extends Func> extends Signature<F> {
+public abstract class ObjectSignature<F extends ObjectFunc>
+		extends Signature<F> {
 
 	public abstract Arg<DataOp> object();
 

@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
 
 
-public final class ObjectRefFunc extends Func {
+public final class ObjectRefFunc extends ObjectFunc {
 
 	public static final ObjectRef OBJECT_REF = new ObjectRef();
 
