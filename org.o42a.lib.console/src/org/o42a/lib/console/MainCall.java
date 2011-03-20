@@ -22,6 +22,8 @@ package org.o42a.lib.console;
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
+import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
 import static org.o42a.lib.console.MainFunc.MAIN;
 
 import org.o42a.codegen.Generator;
@@ -95,17 +97,17 @@ final class MainCall extends DefinedObject {
 	public void generateMain(Generator generator) {
 
 		final ObjectIR ir = ir(generator);
-		final Function<MainFunc> main;
+		final Function<DebuggableMainFunc> main;
 
 		if (generator.isDebug()) {
 			main = generator.newFunction().create(
-					generator.rawId("_o42a_main"),
-					MainFunc.MAIN);
+					generator.rawId("__o42a_main__"),
+					DEBUGGABLE_MAIN);
 			generateDebugMain(generator, main);
 		} else {
 			main = generator.newFunction().export().create(
 					generator.rawId("main"),
-					MainFunc.MAIN);
+					DEBUGGABLE_MAIN);
 		}
 
 		main.debug("Start execution");
@@ -129,17 +131,16 @@ final class MainCall extends DefinedObject {
 
 	private void generateDebugMain(
 			Generator generator,
-			Function<MainFunc> main) {
+			Function<DebuggableMainFunc> main) {
 
 		final Function<MainFunc> debugMain =
 			generator.newFunction().export().create(
 					generator.rawId("main"),
 					MAIN);
-
 		final FuncPtr<DebugExecMainFunc> executeMain =
 			generator.externalFunction(
 					"o42a_dbg_exec_main",
-					DebugExecMainFunc.DEBUG_EXEC_MAIN);
+					DEBUG_EXEC_MAIN);
 
 		executeMain.op(debugMain).call(
 				debugMain,

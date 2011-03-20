@@ -137,7 +137,7 @@ public abstract class Generator {
 	protected abstract CodeBackend codeBackend();
 
 	protected CodeCallback createCodeCallback(Function<?> function) {
-		if (isDebug()) {
+		if (isDebug() && function.getSignature().isDebuggable()) {
 			return DEBUG_CODE_CALLBACK;
 		}
 		return NOOP_CODE_CALLBACK;
@@ -149,9 +149,8 @@ public abstract class Generator {
 
 	protected <F extends Func> void addFunction(
 			CodeId id,
-			Signature<F> signature,
-			FuncPtr<F> function) {
-		this.debug.addFunction(id, signature, function);
+			FuncPtr<F> functionPtr) {
+		this.debug.addFunction(id, functionPtr);
 	}
 
 	protected void registerType(SubData<?> type) {
@@ -165,7 +164,7 @@ public abstract class Generator {
 	}
 
 	protected void writeData() {
-		this.debug.write();
+		this.globals.write();
 	}
 
 }

@@ -19,9 +19,9 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
-import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
-import static org.o42a.codegen.debug.DebugStackFrameType.DEBUG_STACK_FRAME_TYPE;
+import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
+import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
+import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -34,8 +34,9 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.*;
-import org.o42a.codegen.debug.DebugStackFrameType.Op;
 
 
 public class Debug {
@@ -47,11 +48,10 @@ public class Debug {
 
 	private boolean debug;
 
-	private boolean writeDebug;
-
-	private FuncPtr<DebugEnterFunc> enterFunc;
-	private FuncPtr<DebugExitFunc> exitFunc;
-	private DebugInfo info;
+	private Code dontExitFrom;
+	private FuncPtr<DebugTraceFunc> enterFunc;
+	private FuncPtr<DebugTraceFunc> exitFunc;
+	private FuncPtr<DebugExecCommandFunc> execCommandFunc;
 
 	private final HashMap<String, Ptr<AnyOp>> names =
 		new HashMap<String, Ptr<AnyOp>>();
@@ -76,37 +76,57 @@ public class Debug {
 
 	public <F extends Func> void addFunction(
 			CodeId id,
-			Signature<F> signature,
-			FuncPtr<F> function) {
-		if (this.writeDebug) {
-			return;
-		}
-		if (!checkDebug()) {
+			FuncPtr<F> functionPtr) {
+		if (!isDebug()) {
 			return;
 		}
 
-		final DbgFunc dbgFunc =
-			this.info.functions().addFunction(id, signature, function);
+		final Function<F> function = functionPtr.getFunction();
 
-		final Function<F> code = function.getFunction();
-
-		if (code != null) {
-
-			final Ptr<AnyOp> namePtr =
-				addASCIIString(
-						getGenerator()
-						.id("DEBUG")
-						.sub("FUNC_NAME")
-						.sub(id),
-						id.getId());
-
-			dbgFunc.setNamePtr(namePtr);
-
-			final Op stackFrame = code.allocate(DEBUG_STACK_FRAME_TYPE);
-
-			stackFrame.name(code).store(code, namePtr.op(code));
-			this.enterFunc.op(code).enter(code, stackFrame);
+		if (function == null) {
+			return;// External function.
 		}
+
+		final Signature<F> signature = functionPtr.getSignature();
+
+		if (!signature.isDebuggable()) {
+			return;
+		}
+
+		final Ptr<AnyOp> namePtr =
+			addASCIIString(
+					getGenerator()
+					.id("DEBUG")
+					.sub("func_name")
+					.sub(id),
+					id.getId());
+
+		final DebugEnvOp debugEnv = function.debugEnv();
+		final RecOp<DebugStackFrameOp> envStackFrame =
+			debugEnv.stackFrame(function);
+		final DebugStackFrameOp stackFrame =
+			function.allocate(DEBUG_STACK_FRAME_TYPE);
+
+		stackFrame.name(function).store(function, namePtr.op(function));
+		stackFrame.prev(function).store(function, envStackFrame.load(function));
+		envStackFrame.store(function, stackFrame);
+
+		final BoolOp execResult =
+			execCommandFunc().op(function).exec(function, debugEnv);
+		final CodeBlk commandExecuted = function.addBlock("command_executed");
+
+		execResult.go(function, commandExecuted.head());
+
+		final Code oldDontExitFrom = this.dontExitFrom;
+
+		try {
+			this.dontExitFrom = commandExecuted;
+			signature.returns(getGenerator()).returnNull(commandExecuted);
+		} finally {
+			this.dontExitFrom = oldDontExitFrom;
+		}
+
+		enterFunc().op(function).trace(function, debugEnv);
 	}
 
 	public void registerType(SubData<?> typeData) {
@@ -127,20 +147,6 @@ public class Debug {
 
 		assert old == null :
 			"Type info already exists: " + old;
-	}
-
-	public void write() {
-		getGenerator().getGlobals().write();
-		if (checkDebug()) {
-			this.writeDebug = true;
-			try {
-				getGenerator().newGlobal().export().setConstant().struct(
-						this.info);
-				getGenerator().getGlobals().write();
-			} finally {
-				this.writeDebug = false;
-			}
-		}
 	}
 
 	final Ptr<AnyOp> addASCIIString(CodeId id, String value) {
@@ -177,27 +183,29 @@ public class Debug {
 		return typeInfo;
 	}
 
-	private final boolean checkDebug() {
-		if (!isDebug()) {
-			return false;
+	private FuncPtr<DebugTraceFunc> enterFunc() {
+		if (this.enterFunc != null) {
+			return this.enterFunc;
 		}
-		if (this.info != null) {
-			return true;
-		}
+		return this.enterFunc =
+			getGenerator().externalFunction("o42a_dbg_enter", DEBUG_TRACE);
+	}
 
-		this.writeDebug = true;
-		try {
-			this.enterFunc = getGenerator().externalFunction(
-					"o42a_dbg_enter",
-					DEBUG_ENTER);
-			this.exitFunc = getGenerator().externalFunction(
-					"o42a_dbg_exit",
-					DEBUG_EXIT);
-			this.info = new DebugInfo();
-		} finally {
-			this.writeDebug = false;
+	private FuncPtr<DebugTraceFunc> exitFunc() {
+		if (this.exitFunc != null) {
+			return this.exitFunc;
 		}
-		return true;
+		return this.exitFunc =
+			getGenerator().externalFunction("o42a_dbg_exit", DEBUG_TRACE);
+	}
+
+	private FuncPtr<DebugExecCommandFunc> execCommandFunc() {
+		if (this.execCommandFunc != null) {
+			return this.execCommandFunc;
+		}
+		return this.execCommandFunc = getGenerator().externalFunction(
+				"o42a_dbg_exec_command",
+				DEBUG_EXEC_COMMAND);
 	}
 
 	private static byte[] nullTermASCIIString(String string) {
@@ -221,7 +229,11 @@ public class Debug {
 
 			final Debug debug = code.getGenerator().getDebug();
 
-			debug.exitFunc.op(code).exit(code);
+			if (debug.dontExitFrom != code) {
+				debug.exitFunc().op(code).trace(
+						code,
+						code.getFunction().debugEnv());
+			}
 		}
 
 	}

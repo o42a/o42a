@@ -20,8 +20,8 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 
@@ -42,6 +42,9 @@ public abstract class FuncRec<F extends Func>
 
 	@Override
 	public final DataType getDataType() {
+		if (this.signature.isDebuggable()) {
+			return DataType.FUNC_PTR;
+		}
 		return DataType.CODE_PTR;
 	}
 

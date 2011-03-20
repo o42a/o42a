@@ -27,30 +27,26 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 
 
-public final class MainFunc extends Func {
+public final class DebuggableMainFunc extends Func {
 
-	public static final Main MAIN = new Main();
+	public static final DebuggableMain DEBUGGABLE_MAIN = new DebuggableMain();
 
-	private MainFunc(FuncCaller<MainFunc> caller) {
+	private DebuggableMainFunc(FuncCaller<DebuggableMainFunc> caller) {
 		super(caller);
 	}
 
 	public Int32op call(Code code, Int32op argc, AnyOp argv) {
-		return invoke(code, MAIN.result(), argc, argv);
+		return invoke(code, DEBUGGABLE_MAIN.result(), argc, argv);
 	}
 
-	public static final class Main extends Signature<MainFunc> {
+	public static final class DebuggableMain
+			extends Signature<DebuggableMainFunc> {
 
 		private Return<Int32op> result;
 		private Arg<Int32op> argc;
 		private Arg<AnyOp> argv;
 
-		private Main() {
-		}
-
-		@Override
-		public boolean isDebuggable() {
-			return false;
+		private DebuggableMain() {
 		}
 
 		public final Return<Int32op> result() {
@@ -66,8 +62,8 @@ public final class MainFunc extends Func {
 		}
 
 		@Override
-		public MainFunc op(FuncCaller<MainFunc> caller) {
-			return new MainFunc(caller);
+		public DebuggableMainFunc op(FuncCaller<DebuggableMainFunc> caller) {
+			return new DebuggableMainFunc(caller);
 		}
 
 		@Override
