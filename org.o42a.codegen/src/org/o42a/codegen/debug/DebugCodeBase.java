@@ -108,21 +108,23 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				data.toAny(code()));
 	}
 
-	public void dumpName(String prefix, Func code) {
+	public void dumpName(String prefix, Func func) {
 		assertIncomplete();
+		assert func.getSignature().isDebuggable() :
+			"Can not dump " + func + " name: it is not debuggable";
 		if (!getGenerator().isDebug()) {
 			return;
 		}
 
-		final FuncPtr<DebugNameFunc> func =
+		final FuncPtr<DebugNameFunc> debugFunc =
 			this.generator.externalFunction(
 					"o42a_dbg_func_name",
 					DEBUG_NAME);
 
-		func.op(code()).call(
+		debugFunc.op(code()).call(
 				code(),
 				binaryMessage(prefix).op(code()),
-				code.toAny(code()));
+				func.toAny(code()));
 	}
 
 	public final void dump(String message, StructOp data) {

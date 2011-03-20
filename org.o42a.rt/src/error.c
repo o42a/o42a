@@ -24,53 +24,53 @@
 #include "unicode/ustdio.h"
 
 
-void o42a_error_print_str(const o42a_val_t *const message) {
-	O42A_ENTER;
+void o42a_error_print_str(O42A_PARAMS const o42a_val_t *const message) {
+	O42A_ENTER(return);
 
-	o42a_error_start();
-	o42a_error_append_str(message);
-	o42a_error_end();
+	o42a_error_start(O42A_ARG);
+	o42a_error_append_str(O42A_ARGS message);
+	o42a_error_end(O42A_ARG);
 
 	O42A_RETURN;
 }
 
-void o42a_error_print(const char *const message) {
-	O42A_ENTER;
+void o42a_error_print(O42A_PARAMS const char *const message) {
+	O42A_ENTER(return);
 
-	o42a_error_start();
+	o42a_error_start(O42A_ARG);
 	fputs(message, stderr);
-	o42a_error_end();
+	o42a_error_end(O42A_ARG);
 
 	O42A_RETURN;
 }
 
-void o42a_error_printf(const char *const format, ...) {
-	O42A_ENTER;
+void o42a_error_printf(O42A_PARAMS const char *const format, ...) {
+	O42A_ENTER(return);
 
 	va_list args;
 
 	va_start(args, format);
-	o42a_error_start();
+	o42a_error_start(O42A_ARG);
 
 	vfprintf(stderr, format, args);
 
 	va_end(args);
-	o42a_error_end();
+	o42a_error_end(O42A_ARG);
 
 	O42A_RETURN;
 }
 
 
-inline void o42a_error_start() {
-	O42A_ENTER;
+inline void o42a_error_start(O42A_PARAM) {
+	O42A_ENTER(return);
 
 	fputs("[E] ", stderr);
 
 	O42A_RETURN;
 }
 
-void o42a_error_append_str(const o42a_val_t *const message) {
-	O42A_ENTER;
+void o42a_error_append_str(O42A_PARAMS const o42a_val_t *const message) {
+	O42A_ENTER(return);
 
 	const size_t len = message->length;
 
@@ -78,9 +78,9 @@ void o42a_error_append_str(const o42a_val_t *const message) {
 		O42A_RETURN;
 	}
 
-	const size_t step = o42a_val_alignment(message);
-	const UChar32 cmask = o42a_str_cmask(message);
-	const void *const str = o42a_val_data(message);
+	const size_t step = o42a_val_alignment(O42A_ARGS message);
+	const UChar32 cmask = o42a_str_cmask(O42A_ARGS message);
+	const void *const str = o42a_val_data(O42A_ARGS message);
 
 	UFILE *const uerr = u_finit(stderr, NULL, NULL);
 
@@ -93,16 +93,16 @@ void o42a_error_append_str(const o42a_val_t *const message) {
 	O42A_RETURN;
 }
 
-inline void o42a_error_append(const char *const message) {
-	O42A_ENTER;
+inline void o42a_error_append(O42A_PARAMS const char *const message) {
+	O42A_ENTER(return);
 
 	fputs(message, stderr);
 
 	O42A_RETURN;
 }
 
-void o42a_error_appendf(const char *const format, ...) {
-	O42A_ENTER;
+void o42a_error_appendf(O42A_PARAMS const char *const format, ...) {
+	O42A_ENTER(return);
 
 	va_list args;
 
@@ -113,8 +113,8 @@ void o42a_error_appendf(const char *const format, ...) {
 	O42A_RETURN;
 }
 
-inline void o42a_error_end() {
-	O42A_ENTER;
+inline void o42a_error_end(O42A_PARAM) {
+	O42A_ENTER(return);
 
 	fputc('\n', stderr);
 

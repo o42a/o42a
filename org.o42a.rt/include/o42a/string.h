@@ -30,9 +30,9 @@ extern "C" {
 #endif
 
 
-size_t o42a_str_len(const o42a_val_t *);
+size_t o42a_str_len(O42A_DECLS const o42a_val_t *);
 
-UChar32 o42a_str_cmask(const o42a_val_t *);
+UChar32 o42a_str_cmask(O42A_DECLS const o42a_val_t *);
 
 
 #ifdef __cplusplus

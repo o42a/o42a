@@ -25,6 +25,33 @@
 #include <stdio.h>
 
 
+enum {
+
+	O42A_DBG_CMD_EXEC = 0,
+	O42A_DBG_CMD_REPORT = 1,
+
+};
+
+
+typedef struct o42a_dbg_stack_frame o42a_dbg_stack_frame_t;
+
+struct o42a_dbg_stack_frame {
+
+	const char *name;
+
+	o42a_dbg_stack_frame_t *prev;
+
+};
+
+struct o42a_dbg_env {
+
+	o42a_dbg_stack_frame_t *stack_frame;
+
+	uint32_t command;
+
+};
+
+
 typedef struct o42a_dbg_field_info {
 
 	uint32_t data_type;
@@ -50,25 +77,6 @@ struct o42a_dbg_type_info {
 };
 
 
-typedef const struct o42a_dbg_func o42a_dbg_func_t;
-typedef const struct o42a_dbg_stack_frame o42a_dbg_stack_frame_t;
-
-struct o42a_dbg_func {
-	char *name;
-	void *function;
-};
-
-struct o42a_dbg_stack_frame {
-	const char *name;
-	o42a_dbg_stack_frame_t *prev;
-};
-
-
-extern const struct o42a_dbg_info {
-	o42a_dbg_func_t *functions;
-	uint32_t num_functions;
-} o42a_debug_info;
-
 extern const struct {
 
 	const o42a_dbg_type_info_t *rtype_type_info;
@@ -81,28 +89,28 @@ extern "C" {
 #endif
 
 
-int32_t o42a_dbg_exec_main(int32_t(*)(int32_t, char**), int32_t, char**);
+int32_t o42a_dbg_exec_main(
+		int32_t(*)(O42A_DECLS int32_t, char**), int32_t, char**);
 
 
 const o42a_dbg_header_t *o42a_dbg_header(const void *);
 
 
-void o42a_dbg_print(const char *);
+void o42a_dbg_print(O42A_DECLS const char *);
 
-void o42a_dbg_mem_name(const char *, const void *);
+void o42a_dbg_mem_name(O42A_DECLS const char *, const void *);
 
-void o42a_dbg_func_name(const char *, const void *);
+void o42a_dbg_func_name(O42A_DECLS const char *, const void *);
 
-void o42a_dbg_dump_mem(const void *, uint32_t);
+void o42a_dbg_dump_mem(O42A_DECLS const void *, uint32_t);
 
-const o42a_dbg_func_t *o42a_dbg_func(const void *);
+o42a_bool_t o42a_dbg_exec_command(o42a_dbg_env_t *);
 
 
-void o42a_dbg_enter(struct o42a_dbg_stack_frame *);
+void o42a_dbg_enter(o42a_dbg_env_t *);
 
-void o42a_dbg_exit();
+void o42a_dbg_exit(o42a_dbg_env_t *);
 
-o42a_dbg_stack_frame_t *o42a_dbg_stack();
 
 void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *);
 
@@ -110,16 +118,19 @@ void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *);
 
 
 void o42a_dbg_fill_header(
+		O42A_DECLS
 		const o42a_dbg_type_info_t *,
 		o42a_dbg_header_t *,
 		const o42a_dbg_header_t *);
 
 void o42a_dbg_copy_header(
+		O42A_DECLS
 		const o42a_dbg_header_t *,
 		o42a_dbg_header_t *,
 		const o42a_dbg_header_t *);
 
 void o42a_dbg_fill_field_info(
+		O42A_DECLS
 		const o42a_dbg_header_t *,
 		o42a_dbg_field_info_t *);
 

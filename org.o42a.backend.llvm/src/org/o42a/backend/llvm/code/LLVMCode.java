@@ -259,6 +259,11 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
+	public LLVMDataOp nullDataPtr() {
+		return new LLVMDataOp(nextPtr(), nullPtr(getModule().getNativePtr()));
+	}
+
+	@Override
 	public <O extends StructOp> O nullPtr(DataAllocation<O> type) {
 
 		final ContainerAllocation<O> allocation =

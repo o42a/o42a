@@ -29,63 +29,64 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
 
-final class DebugStackFrameType extends Type<DebugStackFrameType.Op> {
+public final class DebugStackFrameOp extends StructOp {
 
 	public static final DebugStackFrameType DEBUG_STACK_FRAME_TYPE =
 		new DebugStackFrameType();
 
-	private AnyPtrRec name;
-	private StructRec<Op> prev;
-
-	private DebugStackFrameType() {
+	private DebugStackFrameOp(StructWriter writer) {
+		super(writer);
 	}
 
 	@Override
-	public boolean isDebugInfo() {
-		return true;
+	public final DebugStackFrameType getType() {
+		return (DebugStackFrameType) super.getType();
 	}
 
-	public final AnyPtrRec name() {
-		return this.name;
+	public final RecOp<AnyOp> name(Code code) {
+		return writer().ptr(code, getType().name());
 	}
 
-	public final StructRec<Op> getPrev() {
-		return this.prev;
+	public final RecOp<DebugStackFrameOp> prev(Code code) {
+		return writer().ptr(code, getType().prev());
 	}
 
-	@Override
-	public Op op(StructWriter writer) {
-		return new Op(writer);
-	}
+	public static final class DebugStackFrameType
+			extends Type<DebugStackFrameOp> {
 
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.id("DEBUG").sub("StackFrame");
-	}
+		private AnyPtrRec name;
+		private StructRec<DebugStackFrameOp> prev;
 
-	@Override
-	protected void allocate(SubData<Op> data) {
-		this.name = data.addPtr("name");
-		this.prev = data.addPtr("prev", DEBUG_STACK_FRAME_TYPE);
-	}
-
-	public static class Op extends StructOp {
-
-		private Op(StructWriter writer) {
-			super(writer);
+		private DebugStackFrameType() {
 		}
 
 		@Override
-		public final DebugStackFrameType getType() {
-			return (DebugStackFrameType) super.getType();
+		public boolean isDebuggable() {
+			return false;
 		}
 
-		public final RecOp<AnyOp> name(Code code) {
-			return writer().ptr(code, getType().name());
+		public final AnyPtrRec name() {
+			return this.name;
 		}
 
-		public final RecOp<Op> prev(Code code) {
-			return writer().ptr(code, getType().getPrev());
+		public final StructRec<DebugStackFrameOp> prev() {
+			return this.prev;
+		}
+
+		@Override
+		public DebugStackFrameOp op(StructWriter writer) {
+			return new DebugStackFrameOp(writer);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("DEBUG").sub("StackFrame");
+		}
+
+		@Override
+		protected void allocate(SubData<DebugStackFrameOp> data) {
+			this.name = data.addPtr("name");
+			this.prev = data.addPtr("prev", DEBUG_STACK_FRAME_TYPE);
 		}
 
 	}
