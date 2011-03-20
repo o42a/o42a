@@ -53,7 +53,7 @@ enum ValuePart {
 			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			object.objectType(code).writeOverriddenValue(code, result);
-			result.condition(code).go(code, null, exit);
+			result.loadCondition(code).go(code, null, exit);
 		}
 
 		@Override
@@ -83,7 +83,7 @@ enum ValuePart {
 			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result, op);
-			result.condition(code).go(code, null, exit);
+			result.loadCondition(code).go(code, null, exit);
 		}
 
 		@Override
@@ -184,7 +184,7 @@ enum ValuePart {
 			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result, op);
-			result.condition(code).go(code, null, exit);
+			result.loadCondition(code).go(code, null, exit);
 		}
 
 		@Override
@@ -217,7 +217,7 @@ enum ValuePart {
 			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result, op);
-			result.condition(code).goUnless(code, exit);
+			result.loadCondition(code).goUnless(code, exit);
 		}
 
 		@Override

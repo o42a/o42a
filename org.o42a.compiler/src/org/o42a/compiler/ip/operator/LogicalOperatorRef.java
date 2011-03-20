@@ -169,25 +169,25 @@ public class LogicalOperatorRef extends ObjectConstructor {
 
 			switch (this.res.ref.node.getOperator()) {
 			case NOT:
-				operandValue.condition(code).go(
+				operandValue.loadCondition(code).go(
 						code,
 						returnFalse.head(),
 						returnTrue.head());
 				break;
 			case IS_TRUE:
-				operandValue.condition(code).go(
+				operandValue.loadCondition(code).go(
 						code,
 						returnTrue.head(),
 						returnFalse.head());
 				break;
 			case KNOWN:
-				operandValue.unknown(code).go(
+				operandValue.loadUnknown(code).go(
 						code,
 						returnFalse.head(),
 						returnTrue.head());
 				break;
 			case UNKNOWN:
-				operandValue.unknown(code).go(
+				operandValue.loadUnknown(code).go(
 						code,
 						returnTrue.head(),
 						returnFalse.head());

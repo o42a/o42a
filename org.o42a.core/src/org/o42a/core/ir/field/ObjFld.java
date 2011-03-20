@@ -66,7 +66,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		return new ObjFldOp(
 				this,
 				host,
-				host.ptr().writer().struct(code, getInstance()));
+				host.ptr().field(code, getInstance()));
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		public final RecOp<DataOp> previous(Code code) {
-			return writer().ptr(code, getType().previous());
+			return ptr(code, getType().previous());
 		}
 
 		@Override

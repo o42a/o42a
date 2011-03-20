@@ -131,23 +131,23 @@ public class CtrOp extends IROp {
 		}
 
 		public final RecOp<ObjectType.Op> scopeType(Code code) {
-			return writer().ptr(code, getType().scopeType());
+			return ptr(code, getType().scopeType());
 		}
 
 		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
-			return writer().func(code, getType().ancestorFunc());
+			return func(code, getType().ancestorFunc());
 		}
 
 		public final RecOp<ObjectType.Op> ancestorType(Code code) {
-			return writer().ptr(code, getType().ancestorType());
+			return ptr(code, getType().ancestorType());
 		}
 
 		public final RecOp<ObjectType.Op> type(Code code) {
-			return writer().ptr(code, getType().type());
+			return ptr(code, getType().type());
 		}
 
 		public final RecOp<Int32op> flags(Code code) {
-			return writer().int32(code, getType().flags());
+			return int32(code, getType().flags());
 		}
 
 		public final CtrOp op(CodeBuilder builder) {

@@ -48,7 +48,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	public static final LLVMStruct llvm(StructOp op) {
-		return (LLVMStruct) op.writer();
+		return (LLVMStruct) op.getWriter();
 	}
 
 	public static final LLVMFunc<?> llvm(Func func) {
@@ -330,7 +330,7 @@ public abstract class LLVMCode implements CodeWriter {
 		if (op instanceof StructOp) {
 
 			final StructOp struct = (StructOp) op;
-			final LLVMStruct writer = (LLVMStruct) struct.writer();
+			final LLVMStruct writer = llvm(struct);
 
 			return (O) struct.getType().op(writer.create(
 					nextPtr,
@@ -354,10 +354,8 @@ public abstract class LLVMCode implements CodeWriter {
 
 			final StructOp struct1 = (StructOp) op1;
 			final StructOp struct2 = (StructOp) op2;
-			final LLVMStruct writer1 =
-				(LLVMStruct) struct1.writer();
-			final LLVMStruct writer2 =
-				(LLVMStruct) struct2.writer();
+			final LLVMStruct writer1 = llvm(struct1);
+			final LLVMStruct writer2 = llvm(struct2);
 
 			return (O) struct1.getType().op(writer1.create(
 					nextPtr,

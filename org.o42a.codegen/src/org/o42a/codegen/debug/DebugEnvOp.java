@@ -50,11 +50,11 @@ public class DebugEnvOp extends StructOp {
 	}
 
 	public final RecOp<DebugStackFrameOp> stackFrame(Code code) {
-		return writer().ptr(code, getType().stackFrame());
+		return ptr(code, getType().stackFrame());
 	}
 
 	public final RecOp<Int32op> command(Code code) {
-		return writer().int32(code, getType().command());
+		return int32(code, getType().command());
 	}
 
 	public static final class Type

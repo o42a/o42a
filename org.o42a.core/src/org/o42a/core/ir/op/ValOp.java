@@ -44,31 +44,31 @@ public final class ValOp extends StructOp {
 	}
 
 	public final RecOp<Int32op> flags(Code code) {
-		return writer().int32(code, getType().flags());
+		return int32(code, getType().flags());
 	}
 
-	public final BoolOp condition(Code code) {
+	public final BoolOp loadCondition(Code code) {
 		return flags(code).load(code).lowestBit(code);
 	}
 
-	public final BoolOp unknown(Code code) {
+	public final BoolOp loadUnknown(Code code) {
 		return flags(code).load(code).lshr(code, 1).lowestBit(code);
 	}
 
-	public final BoolOp indefinite(Code code) {
+	public final BoolOp loadIndefinite(Code code) {
 		return flags(code).load(code).lshr(code, 2).lowestBit(code);
 	}
 
 	public final RecOp<Int32op> length(Code code) {
-		return writer().int32(code, getType().length());
+		return int32(code, getType().length());
 	}
 
-	public final RecOp<Int64op> plainValue(Code code) {
-		return writer().int64(code, getType().value());
+	public final RecOp<Int64op> rawValue(Code code) {
+		return int64(code, getType().value());
 	}
 
 	public final AnyOp value(Code code) {
-		return plainValue(code).toAny(code);
+		return rawValue(code).toAny(code);
 	}
 
 	public ValOp store(Code code, Val value) {
@@ -81,7 +81,7 @@ public final class ValOp extends StructOp {
 			if (pointer != null) {
 				value(code).toPtr(code).store(code, pointer.op(code));
 			} else {
-				plainValue(code).store(code, code.int64(value.getValue()));
+				rawValue(code).store(code, code.int64(value.getValue()));
 			}
 		}
 		return this;
@@ -105,7 +105,7 @@ public final class ValOp extends StructOp {
 	public final ValOp store(Code code, ValOp value) {
 		flags(code).store(code, value.flags(code).load(code));
 		length(code).store(code, value.length(code).load(code));
-		plainValue(code).store(code, value.plainValue(code).load(code));
+		rawValue(code).store(code, value.rawValue(code).load(code));
 		return this;
 	}
 

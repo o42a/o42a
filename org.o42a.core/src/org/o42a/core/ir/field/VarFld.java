@@ -67,7 +67,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		return new VarFldOp(
 				this,
 				host,
-				host.ptr().writer().struct(code, getInstance()));
+				host.ptr().field(code, getInstance()));
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		public final FuncOp<AssignerFunc> assigner(Code code) {
-			return writer().func(code, getType().assigner());
+			return func(code, getType().assigner());
 		}
 
 		@Override

@@ -74,7 +74,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		return new ScopeFldOp(
 				this,
 				host,
-				host.ptr().writer().struct(code, getInstance()));
+				host.ptr().field(code, getInstance()));
 	}
 
 	public final void declare(SubData<?> data, ObjectBodyIR target) {
@@ -114,7 +114,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return writer().ptr(code, getType().object());
+			return ptr(code, getType().object());
 		}
 
 	}
