@@ -164,7 +164,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		public final RecOp<RelOp> object(Code code) {
-			return writer().relPtr(code, getType().object());
+			return relPtr(code, getType().object());
 		}
 
 		public final DataOp loadObject(Code code) {
@@ -172,7 +172,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		public final RecOp<RelOp> start(Code code) {
-			return writer().relPtr(code, getType().start());
+			return relPtr(code, getType().start());
 		}
 
 		public final DataOp loadStart(Code code) {
@@ -180,35 +180,35 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		public final ValOp value(Code code) {
-			return writer().struct(code, getType().value());
+			return struct(code, getType().value());
 		}
 
 		public final FuncOp<ObjectValFunc> valueFunc(Code code) {
-			return writer().func(code, getType().valueFunc());
+			return func(code, getType().valueFunc());
 		}
 
 		public final FuncOp<ObjectCondFunc> requirementFunc(Code code) {
-			return writer().func(code, getType().requirementFunc());
+			return func(code, getType().requirementFunc());
 		}
 
 		public final FuncOp<ObjectValFunc> claimFunc(Code code) {
-			return writer().func(code, getType().claimFunc());
+			return func(code, getType().claimFunc());
 		}
 
 		public final FuncOp<ObjectCondFunc> conditionFunc(Code code) {
-			return writer().func(code, getType().conditionFunc());
+			return func(code, getType().conditionFunc());
 		}
 
 		public final FuncOp<ObjectValFunc> propositionFunc(Code code) {
-			return writer().func(code, getType().propositionFunc());
+			return func(code, getType().propositionFunc());
 		}
 
 		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
-			return writer().func(code, getType().ancestorFunc());
+			return func(code, getType().ancestorFunc());
 		}
 
 		public final RecOp<ObjectType.Op> ancestorType(Code code) {
-			return writer().ptr(code, getType().ancestorType());
+			return ptr(code, getType().ancestorType());
 		}
 
 		@Override

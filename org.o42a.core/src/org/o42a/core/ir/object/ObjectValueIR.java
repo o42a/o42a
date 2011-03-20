@@ -81,7 +81,7 @@ public class ObjectValueIR {
 
 		final Code stillIndefinite = code.addBlock("still_indefinite");
 
-		result.indefinite(code).go(code, stillIndefinite.head());
+		result.loadIndefinite(code).go(code, stillIndefinite.head());
 		result.storeUnknown(stillIndefinite);
 		stillIndefinite.go(code.tail());
 	}
@@ -162,10 +162,10 @@ public class ObjectValueIR {
 		}
 
 		this.claim.call(code, result, host, null);
-		result.unknown(code).goUnless(code, done.head());
+		result.loadUnknown(code).goUnless(code, done.head());
 
 		this.proposition.call(code, result, host, null);
-		result.unknown(code).goUnless(code, done.head());
+		result.loadUnknown(code).goUnless(code, done.head());
 
 		result.storeUnknown(code);// to override indefinite value
 		code.returnVoid();

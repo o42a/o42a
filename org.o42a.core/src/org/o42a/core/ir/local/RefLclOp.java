@@ -144,7 +144,7 @@ public final class RefLclOp extends LclOp {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return writer().ptr(code, getType().object());
+			return ptr(code, getType().object());
 		}
 
 	}

@@ -64,7 +64,7 @@ public class DepIR {
 		return new DepOp(
 				this,
 				host,
-				host.ptr().writer().struct(code, getInstance()));
+				host.ptr().dep(code, getInstance()));
 	}
 
 	void allocate(SubData<?> data) {
@@ -131,7 +131,7 @@ public class DepIR {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return writer().ptr(code, getType().object());
+			return ptr(code, getType().object());
 		}
 
 	}

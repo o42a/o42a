@@ -267,11 +267,11 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return writer().ptr(code, getType().object());
+			return ptr(code, getType().object());
 		}
 
 		public FuncOp<C> constructor(Code code) {
-			return writer().func(code, getType().constructor());
+			return func(code, getType().constructor());
 		}
 
 		public DataOp target(Code code, ObjOp host) {

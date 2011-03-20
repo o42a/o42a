@@ -272,19 +272,29 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 
 		public final RecOp<RelOp> objectType(Code code) {
-			return writer().relPtr(code, getType().objectType());
+			return relPtr(code, getType().objectType());
 		}
 
 		public final RecOp<RelOp> ancestorBody(Code code) {
-			return writer().relPtr(code, getType().ancestorBody());
+			return relPtr(code, getType().ancestorBody());
 		}
 
 		public final RecOp<DataOp> methods(Code code) {
-			return writer().ptr(code, getType().methods());
+			return ptr(code, getType().methods());
 		}
 
 		public final RecOp<Int32op> flags(Code code) {
-			return writer().int32(code, getType().flags());
+			return int32(code, getType().flags());
+		}
+
+		public final <O extends Fld.Op> O field(
+				Code code,
+				Fld.Type<O> instance) {
+			return struct(code, instance);
+		}
+
+		public final DepIR.Op dep(Code code, DepIR.Type instance) {
+			return struct(code, instance);
 		}
 
 		public final ObjOp op(

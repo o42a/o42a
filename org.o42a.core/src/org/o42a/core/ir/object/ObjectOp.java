@@ -88,18 +88,18 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 		final ObjectTypeOp objectType = objectType(code);
 		final ValOp value = objectType.ptr().data(code).value(code);
-		final CondBlk indefinite = value.indefinite(code).branch(
+		final CondBlk indefinite = value.loadIndefinite(code).branch(
 				code,
 				"cond_indefinite",
 				"cond_definite");
 		final CodeBlk definite = indefinite.otherwise();
 
 		definite.dump("Definite value: ", value);
-		value.condition(definite).go(definite, code.tail(), exit);
+		value.loadCondition(definite).go(definite, code.tail(), exit);
 
 		writeValue(indefinite, value, null);
 		indefinite.dump("Calculated value: ", value);
-		value.condition(indefinite).go(indefinite, code.tail(), exit);
+		value.loadCondition(indefinite).go(indefinite, code.tail(), exit);
 	}
 
 	public final void writeLogicalValue(
@@ -127,7 +127,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	public final ValOp writeValue(Code code, CodePos exit, ValOp result) {
 
 		final ValOp value = objectType(code).ptr().data(code).value(code);
-		final CondBlk indefinite = value.indefinite(code).branch(
+		final CondBlk indefinite = value.loadIndefinite(code).branch(
 				code,
 				"val_indefinite",
 				"val_definite");
@@ -157,7 +157,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		writeValue(code, result, body);
 		code.dump("Write value of " + body + " by " + this + ":\n", result);
 		if (exit != null) {
-			result.condition(code).goUnless(code, exit);
+			result.loadCondition(code).goUnless(code, exit);
 		}
 	}
 
@@ -189,7 +189,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			ObjOp body) {
 		writeClaim(code, result, body);
 		if (exit != null) {
-			result.condition(code).goUnless(code, exit);
+			result.loadCondition(code).goUnless(code, exit);
 		}
 	}
 
@@ -221,7 +221,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			ObjOp body) {
 		writeProposition(code, result, body);
 		if (exit != null) {
-			result.condition(code).goUnless(code, exit);
+			result.loadCondition(code).goUnless(code, exit);
 		}
 	}
 
@@ -343,7 +343,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			CodePos exit,
 			ValOp value) {
 		if (exit != null) {
-			value.condition(code).go(code, ok, exit);
+			value.loadCondition(code).go(code, ok, exit);
 		} else {
 			code.go(ok);
 		}

@@ -207,7 +207,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 
 			if (i == collector.ancestorIndex) {
 				writeAncestorDef(block, result, host);
-				result.unknown(code).go(block, nextPos, code.tail());
+				result.loadUnknown(code).go(block, nextPos, code.tail());
 			} else {
 				// Write explicit definition.
 

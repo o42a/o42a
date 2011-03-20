@@ -44,11 +44,11 @@ public final class DebugStackFrameOp extends StructOp {
 	}
 
 	public final RecOp<AnyOp> name(Code code) {
-		return writer().ptr(code, getType().name());
+		return ptr(code, getType().name());
 	}
 
 	public final RecOp<DebugStackFrameOp> prev(Code code) {
-		return writer().ptr(code, getType().prev());
+		return ptr(code, getType().prev());
 	}
 
 	public static final class DebugStackFrameType

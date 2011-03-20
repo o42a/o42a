@@ -143,7 +143,7 @@ public class OverriddenEx extends Ex {
 			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
 			writeValue(code, exit, result);
-			result.condition(code).go(code, null, exit);
+			result.loadCondition(code).go(code, null, exit);
 		}
 
 		@Override

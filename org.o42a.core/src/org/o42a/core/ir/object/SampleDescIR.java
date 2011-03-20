@@ -73,7 +73,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 		}
 
 		public final RecOp<RelOp> body(Code code) {
-			return writer().relPtr(code, getType().body());
+			return relPtr(code, getType().body());
 		}
 
 	}
