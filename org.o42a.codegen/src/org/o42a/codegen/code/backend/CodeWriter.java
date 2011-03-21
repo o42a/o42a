@@ -39,9 +39,15 @@ public interface CodeWriter {
 
 	CodeWriter block(Code code, CodeId id);
 
+	Int8op int8(byte value);
+
+	Int16op int16(short value);
+
 	Int32op int32(int value);
 
 	Int64op int64(long value);
+
+	Fp32op fp32(float value);
 
 	Fp64op fp64(double value);
 

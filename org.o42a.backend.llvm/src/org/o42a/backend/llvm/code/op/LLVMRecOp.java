@@ -87,6 +87,42 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
+	public static final class Int8 extends LLVMRecOp<Int8op> {
+
+		public Int8(long blockPtr, long nativePtr) {
+			super(blockPtr, nativePtr);
+		}
+
+		@Override
+		public Int8 create(long blockPtr, long nativePtr) {
+			return new Int8(blockPtr, nativePtr);
+		}
+
+		@Override
+		protected Int8op createLoaded(long blockPtr, long nativePtr) {
+			return new LLVMInt8op(blockPtr, nativePtr);
+		}
+
+	}
+
+	public static final class Int16 extends LLVMRecOp<Int16op> {
+
+		public Int16(long blockPtr, long nativePtr) {
+			super(blockPtr, nativePtr);
+		}
+
+		@Override
+		public Int16 create(long blockPtr, long nativePtr) {
+			return new Int16(blockPtr, nativePtr);
+		}
+
+		@Override
+		protected Int16op createLoaded(long blockPtr, long nativePtr) {
+			return new LLVMInt16op(blockPtr, nativePtr);
+		}
+
+	}
+
 	public static final class Int32 extends LLVMRecOp<Int32op> {
 
 		public Int32(long blockPtr, long nativePtr) {
@@ -119,6 +155,24 @@ public abstract class LLVMRecOp<O extends Op>
 		@Override
 		protected Int64op createLoaded(long blockPtr, long nativePtr) {
 			return new LLVMInt64op(blockPtr, nativePtr);
+		}
+
+	}
+
+	public static final class Fp32 extends LLVMRecOp<Fp32op> {
+
+		public Fp32(long blockPtr, long nativePtr) {
+			super(blockPtr, nativePtr);
+		}
+
+		@Override
+		public Fp32 create(long blockPtr, long nativePtr) {
+			return new Fp32(blockPtr, nativePtr);
+		}
+
+		@Override
+		protected Fp32op createLoaded(long blockPtr, long nativePtr) {
+			return new LLVMFp32op(blockPtr, nativePtr);
 		}
 
 	}

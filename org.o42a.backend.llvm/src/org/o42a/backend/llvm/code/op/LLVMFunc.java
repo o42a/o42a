@@ -57,6 +57,22 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 	}
 
 	@Override
+	public Int8op callInt8(Code code, Op... args) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMInt8op(nextPtr, call(nextPtr, args));
+	}
+
+	@Override
+	public Int16op callInt16(Code code, Op... args) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMInt16op(nextPtr, call(nextPtr, args));
+	}
+
+	@Override
 	public Int32op callInt32(Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
@@ -70,6 +86,14 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMInt64op(nextPtr, call(nextPtr, args));
+	}
+
+	@Override
+	public Fp32op callFp32(Code code, Op... args) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMFp32op(nextPtr, call(nextPtr, args));
 	}
 
 	@Override

@@ -176,20 +176,21 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
 	return to_ptr(newType);
 }
 
-void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt32(
+void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
-		jlong enclosingPtr) {
+		jlong enclosingPtr,
+		jbyte intBits) {
 
 	const Module *module = from_ptr<Module>(modulePtr);
 	std::vector<const Type*> *enclosing =
 			from_ptr<std::vector<const Type*> >(enclosingPtr);
 
-	enclosing->push_back(Type::getInt32Ty(module->getContext()));
+	enclosing->push_back(IntegerType::get(module->getContext(), intBits));
 }
 
-void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt64(
+void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -199,7 +200,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt64(
 	std::vector<const Type*> *enclosing =
 			from_ptr<std::vector<const Type*> >(enclosingPtr);
 
-	enclosing->push_back(Type::getInt64Ty(module->getContext()));
+	enclosing->push_back(Type::getFloatTy(module->getContext()));
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp64(
@@ -277,18 +278,19 @@ static inline jint typeLayout(
 			| (targetData.getPreferredTypeAlignmentShift(type) << 29);
 }
 
-jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_int32layout(
+jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_intLayout(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr) {
+		jlong modulePtr,
+		jbyte intBits) {
 
 	const o42ac::BackendModule *module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return typeLayout(module, Type::getInt32Ty(module->getContext()));
+	return typeLayout(module, IntegerType::get(module->getContext(), intBits));
 }
 
-jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_int64layout(
+jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp32layout(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr) {
@@ -296,7 +298,7 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_int64layout(
 	const o42ac::BackendModule *module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return typeLayout(module, Type::getInt64Ty(module->getContext()));
+	return typeLayout(module, Type::getFloatTy(module->getContext()));
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp64layout(

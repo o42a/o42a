@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,36 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.llvm.code.op;
+package org.o42a.backend.llvm.data;
 
-import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
+import org.o42a.backend.llvm.code.op.LLVMRecOp;
+import org.o42a.codegen.code.op.Fp32op;
+import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.data.DataLayout;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Fp64op;
 
+final class Fp32dataAlloc extends SimpleDataAllocation<RecOp<Fp32op>> {
 
-public final class LLVMFp64op extends LLVMFpOp<Fp64op, LLVMFp64op>
-		implements Fp64op {
-
-	public LLVMFp64op(long blockPtr, long nativePtr) {
-		super(blockPtr, nativePtr);
+	Fp32dataAlloc(ContainerAllocation<?> enclosing) {
+		super(enclosing);
 	}
 
 	@Override
-	public LLVMFp64op toFp64(Code code) {
-
-		final long nextPtr = nextPtr(code);
-
-		if (nextPtr == getBlockPtr()) {
-			return this;
-		}
-
-		return super.toFp64(code);
+	public DataLayout getLayout() {
+		return getModule().dataAllocator().fp32layout();
 	}
 
 	@Override
-	public LLVMFp64op create(long blockPtr, long nativePtr) {
-		return new LLVMFp64op(blockPtr, nativePtr);
+	protected RecOp<Fp32op> op(long blockPtr, long nativePtr) {
+		return new LLVMRecOp.Fp32(blockPtr, nativePtr);
 	}
 
 }

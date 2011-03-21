@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,47 +19,7 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.code.Code;
 
-
-public interface NumOp<O extends NumOp<O>> extends Op {
-
-	O neg(Code code);
-
-	O add(Code code, O summand);
-
-	O sub(Code code, O subtrahend);
-
-	O mul(Code code, O multiplier);
-
-	O div(Code code, O divisor);
-
-	O rem(Code code, O divisor);
-
-	BoolOp eq(Code code, O other);
-
-	BoolOp ne(Code code, O other);
-
-	BoolOp gt(Code code, O other);
-
-	BoolOp ge(Code code, O other);
-
-	BoolOp lt(Code code, O other);
-
-	BoolOp le(Code code, O other);
-
-	Int8op toInt8(Code code);
-
-	Int16op toInt16(Code code);
-
-	Int32op toInt32(Code code);
-
-	Int64op toInt64(Code code);
-
-	Fp32op toFp32(Code code);
-
-	Fp64op toFp64(Code code);
-
-	void returnValue(Code code);
+public interface Int8op extends IntOp<Int8op> {
 
 }

@@ -57,18 +57,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refine
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
- * Method:    allocateInt32
- * Signature: (JJ)V
+ * Method:    allocateInt
+ * Signature: (JJB)V
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt32
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt
+  (JNIEnv *, jclass, jlong, jlong, jbyte);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
- * Method:    allocateInt64
+ * Method:    allocateFp32
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt64
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp32
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
@@ -113,18 +113,18 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocat
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
- * Method:    int32layout
- * Signature: (J)I
+ * Method:    intLayout
+ * Signature: (JB)I
  */
-JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_int32layout
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_intLayout
+  (JNIEnv *, jclass, jlong, jbyte);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
- * Method:    int64layout
+ * Method:    fp32layout
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_int64layout
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp32layout
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -204,6 +204,22 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_createStr
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
+ * Method:    writeInt8
+ * Signature: (JJB)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt8
+  (JNIEnv *, jclass, jlong, jlong, jbyte);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
+ * Method:    writeInt16
+ * Signature: (JJS)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt16
+  (JNIEnv *, jclass, jlong, jlong, jshort);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
  * Method:    writeInt32
  * Signature: (JJI)V
  */
@@ -225,6 +241,14 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt64
  */
 JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64
   (JNIEnv *, jclass, jlong, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
+ * Method:    writeFp32
+ * Signature: (JJF)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFp32
+  (JNIEnv *, jclass, jlong, jlong, jfloat);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter

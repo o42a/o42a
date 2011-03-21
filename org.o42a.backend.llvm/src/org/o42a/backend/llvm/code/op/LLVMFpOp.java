@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,90 +23,15 @@ import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.IntOp;
+import org.o42a.codegen.code.op.FpOp;
 
 
-public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
+public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 		extends LLVMNumOp< O, T>
-		implements IntOp<O> {
+		implements FpOp<O> {
 
-	public LLVMIntOp(long blockPtr, long nativePtr) {
+	public LLVMFpOp(long blockPtr, long nativePtr) {
 		super(blockPtr, nativePtr);
-	}
-
-	@Override
-	public T shl(Code code, O numBits) {
-
-		final long nextPtr = nextPtr(code);
-
-		return create(
-				nextPtr,
-				shl(nextPtr, getNativePtr(), nativePtr(numBits)));
-	}
-
-	@Override
-	public T shl(Code code, int numBits) {
-		return shl(code, constantValue(code, numBits));
-	}
-
-	@Override
-	public T lshr(Code code, O numBits) {
-
-		final long nextPtr = nextPtr(code);
-
-		return create(
-				nextPtr,
-				lshr(nextPtr, getNativePtr(), nativePtr(numBits)));
-	}
-
-	@Override
-	public T lshr(Code code, int numBits) {
-		return lshr(code, constantValue(code, numBits));
-	}
-
-	@Override
-	public T ashr(Code code, O numBits) {
-
-		final long nextPtr = nextPtr(code);
-
-		return create(
-				nextPtr,
-				ashr(nextPtr, getNativePtr(), nativePtr(numBits)));
-	}
-
-	@Override
-	public T ashr(Code code, int numBits) {
-		return ashr(code, constantValue(code, numBits));
-	}
-
-	@Override
-	public T and(Code code, O operand) {
-
-		final long nextPtr = nextPtr(code);
-
-		return create(
-				nextPtr,
-				and(nextPtr, getNativePtr(), nativePtr(operand)));
-	}
-
-	@Override
-	public T or(Code code, O operand) {
-
-		final long nextPtr = nextPtr(code);
-
-		return create(
-				nextPtr,
-				or(nextPtr, getNativePtr(), nativePtr(operand)));
-	}
-
-	@Override
-	public T xor(Code code, O operand) {
-
-		final long nextPtr = nextPtr(code);
-
-		return create(
-				nextPtr,
-				xor(nextPtr, getNativePtr(), nativePtr(operand)));
 	}
 
 	@Override
@@ -194,7 +119,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		return new LLVMBoolOp(
 				nextPtr,
-				gt(nextPtr(code), getNativePtr(), nativePtr(other)));
+				gt(nextPtr, getNativePtr(), nativePtr(other)));
 	}
 
 	@Override
@@ -234,7 +159,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		return new LLVMInt8op(
 				nextPtr,
-				int2int(nextPtr, getNativePtr(), (byte) 8));
+				fp2int(nextPtr, getNativePtr(), (byte) 8));
 	}
 
 	@Override
@@ -244,7 +169,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		return new LLVMInt16op(
 				nextPtr,
-				int2int(nextPtr, getNativePtr(), (byte) 16));
+				fp2int(nextPtr, getNativePtr(), (byte) 16));
 	}
 
 	@Override
@@ -254,7 +179,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		return new LLVMInt32op(
 				nextPtr,
-				int2int(nextPtr, getNativePtr(), (byte) 32));
+				fp2int(nextPtr, getNativePtr(), (byte) 32));
 	}
 
 	@Override
@@ -264,7 +189,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		return new LLVMInt64op(
 				nextPtr,
-				int2int(nextPtr, getNativePtr(), (byte) 64));
+				fp2int(nextPtr, getNativePtr(), (byte) 64));
 	}
 
 	@Override
@@ -274,7 +199,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		return new LLVMFp32op(
 				nextPtr,
-				intToFp32(nextPtr, getNativePtr()));
+				fp2fp32(nextPtr, getNativePtr()));
 	}
 
 	@Override
@@ -284,119 +209,40 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		return new LLVMFp64op(
 				nextPtr,
-				intToFp64(nextPtr, getNativePtr()));
+				fp2fp64(nextPtr, getNativePtr()));
 	}
-
-	@Override
-	public LLVMBoolOp lowestBit(Code code) {
-
-		final long nextPtr = nextPtr(code);
-
-		return new LLVMBoolOp(
-				nextPtr,
-				lowestBit(nextPtr, getNativePtr()));
-	}
-
-	protected abstract T constantValue(Code code, int value);
-
-	private static native long shl(
-			long blockPtr,
-			long valuePtr,
-			long numBitsPtr);
-
-	private static native long lshr(
-			long blockPtr,
-			long valuePtr,
-			long numBitsPtr);
-
-	private static native long ashr(
-			long blockPtr,
-			long valuePtr,
-			long numBitsPtr);
-
-	private static native long and(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
-
-	private static native long or(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
-
-	private static native long xor(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
 
 	private static native long neg(long blockPtr, long valuePtr);
 
-	private static native long add(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long add(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long sub(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long sub(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long mul(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long mul(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long div(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long div(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long rem(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long rem(long blockPtr, long op1ptr, long op2ptr);
 
-	static native long eq(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long eq(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long ne(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long ne(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long gt(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long gt(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long ge(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long ge(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long lt(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long lt(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long le(
-			long blockPtr,
-			long op1ptr,
-			long op2ptr);
+	private static native long le(long blockPtr, long op1ptr, long op2ptr);
 
-	private static native long int2int(
+	private static native long fp2int(
 			long blockPtr,
 			long valuePtr,
 			byte intBits);
 
-	private static native long intToFp32(long blockPtr, long valuePtr);
+	private static native long fp2fp32(long blockPtr, long valuePtr);
 
-	private static native long intToFp64(long blockPtr, long valuePtr);
-
-	private static native long lowestBit(
-			long blockPtr,
-			long valuePtr);
+	private static native long fp2fp64(long blockPtr, long valuePtr);
 
 }

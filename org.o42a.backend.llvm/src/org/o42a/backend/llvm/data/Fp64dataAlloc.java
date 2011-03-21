@@ -20,14 +20,14 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.op.LLVMRecOp;
-import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.DataLayout;
 
 
 final class Fp64dataAlloc extends SimpleDataAllocation<RecOp<Fp64op>> {
 
-	public Fp64dataAlloc(ContainerAllocation<?> enclosing) {
+	Fp64dataAlloc(ContainerAllocation<?> enclosing) {
 		super(enclosing);
 	}
 

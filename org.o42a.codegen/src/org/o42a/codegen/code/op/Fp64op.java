@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface Fp64op extends NumOp<Fp64op> {
+public interface Fp64op extends FpOp<Fp64op> {
 
 }

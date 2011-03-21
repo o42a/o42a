@@ -29,9 +29,15 @@ public interface FuncWriter<F extends Func> extends CodeWriter {
 
 	FuncAllocation<F> getAllocation();
 
+	Int8op int8arg(int index);
+
+	Int16op int16arg(int index);
+
 	Int32op int32arg(int index);
 
 	Int64op int64arg(int index);
+
+	Fp32op fp32arg(int index);
 
 	Fp64op fp64arg(int index);
 

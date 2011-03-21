@@ -69,6 +69,20 @@ public final class LLVMFunction<F extends Func>
 	}
 
 	@Override
+	public Int8op int8arg(int index) {
+		return new LLVMInt8op(
+				head().getBlockPtr(),
+				arg(getFunctionPtr(), index));
+	}
+
+	@Override
+	public Int16op int16arg(int index) {
+		return new LLVMInt16op(
+				head().getBlockPtr(),
+				arg(getFunctionPtr(), index));
+	}
+
+	@Override
 	public Int32op int32arg(int index) {
 		return new LLVMInt32op(
 				head().getBlockPtr(),
@@ -78,6 +92,13 @@ public final class LLVMFunction<F extends Func>
 	@Override
 	public Int64op int64arg(int index) {
 		return new LLVMInt64op(
+				head().getBlockPtr(),
+				arg(getFunctionPtr(), index));
+	}
+
+	@Override
+	public Fp32op fp32arg(int index) {
+		return new LLVMFp32op(
 				head().getBlockPtr(),
 				arg(getFunctionPtr(), index));
 	}

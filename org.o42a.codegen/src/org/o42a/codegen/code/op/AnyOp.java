@@ -29,6 +29,10 @@ public interface AnyOp extends PtrOp {
 
 	RecOp<AnyOp> toPtr(Code code);
 
+	RecOp<Int8op> toInt8(Code code);
+
+	RecOp<Int16op> toInt16(Code code);
+
 	RecOp<Int32op> toInt32(Code code);
 
 	RecOp<Int64op> toInt64(Code code);

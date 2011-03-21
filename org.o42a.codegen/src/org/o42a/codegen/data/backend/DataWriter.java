@@ -54,6 +54,10 @@ public interface DataWriter {
 			DataAllocation<O> allocation,
 			Global<O, ?> global);
 
+	void writeInt8(DataAllocation<RecOp<Int8op>> allocation, byte value);
+
+	void writeInt16(DataAllocation<RecOp<Int16op>> allocation, short value);
+
 	void writeInt32(DataAllocation<RecOp<Int32op>> allocation, int value);
 
 	void writeInt64(DataAllocation<RecOp<Int64op>> allocation, long value);
@@ -62,6 +66,8 @@ public interface DataWriter {
 			DataAllocation<RecOp<Int64op>> allocation,
 			DataAllocation<AnyOp> valueAllocation);
 
-	void writeFp64(DataAllocation<RecOp<Fp64op>> allocation, Double value);
+	void writeFp32(DataAllocation<RecOp<Fp32op>> allocation, float value);
+
+	void writeFp64(DataAllocation<RecOp<Fp64op>> allocation, double value);
 
 }

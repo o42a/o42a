@@ -63,8 +63,11 @@ enum o42a_data_types {
 	O42A_TYPE_CODE_PTR = 0x32,
 	O42A_TYPE_FUNC_PTR = 0x42,
 	O42A_TYPE_BOOL = 0x01,
+	O42A_TYPE_INT8 = 0x11,
+	O42A_TYPE_INT16 = 0x11 | (1 << 8),
 	O42A_TYPE_INT32 = 0x11 | (2 << 8),
 	O42A_TYPE_INT64 = 0x11 | (3 << 8),
+	O42A_TYPE_FP32 = 0x21 | (2 << 8),
 	O42A_TYPE_FP64 = 0x21 | (3 << 8),
 
 };

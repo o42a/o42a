@@ -75,6 +75,42 @@ public abstract class Return<O> {
 
 	}
 
+	static final class ReturnInt8 extends Return<Int8op> {
+
+		ReturnInt8(Signature<?> signature) {
+			super(signature, DataType.INT8);
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.int8((byte) 0).returnValue(code);
+		}
+
+		@Override
+		protected Int8op call(Code code, FuncCaller<?> caller, Op... args) {
+			return caller.callInt8(code, args);
+		}
+
+	}
+
+	static final class ReturnInt16 extends Return<Int16op> {
+
+		ReturnInt16(Signature<?> signature) {
+			super(signature, DataType.INT16);
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.int16((short) 0).returnValue(code);
+		}
+
+		@Override
+		protected Int16op call(Code code, FuncCaller<?> caller, Op... args) {
+			return caller.callInt16(code, args);
+		}
+
+	}
+
 	static final class ReturnInt32 extends Return<Int32op> {
 
 		ReturnInt32(Signature<?> signature) {
@@ -107,6 +143,24 @@ public abstract class Return<O> {
 		@Override
 		protected Int64op call(Code code, FuncCaller<?> caller, Op... args) {
 			return caller.callInt64(code, args);
+		}
+
+	}
+
+	static final class ReturnFp32 extends Return<Fp32op> {
+
+		ReturnFp32(Signature<?> signature) {
+			super(signature, DataType.FP32);
+		}
+
+		@Override
+		public void returnNull(Code code) {
+			code.fp32(0.0f).returnValue(code);
+		}
+
+		@Override
+		protected Fp32op call(Code code, FuncCaller<?> caller, Op... args) {
+			return caller.callFp32(code, args);
 		}
 
 	}

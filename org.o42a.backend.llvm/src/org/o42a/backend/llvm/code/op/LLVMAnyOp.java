@@ -52,11 +52,33 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
+	public LLVMRecOp<Int8op> toInt8(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Int8(
+				nextPtr,
+				toInt(nextPtr, getNativePtr(), (byte) 8));
+	}
+
+	@Override
+	public LLVMRecOp<Int16op> toInt16(Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Int16(
+				nextPtr,
+				toInt(nextPtr, getNativePtr(), (byte) 16));
+	}
+
+	@Override
 	public LLVMRecOp<Int32op> toInt32(Code code) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int32(nextPtr, toInt32(nextPtr, getNativePtr()));
+		return new LLVMRecOp.Int32(
+				nextPtr,
+				toInt(nextPtr, getNativePtr(), (byte) 32));
 	}
 
 	@Override
@@ -64,7 +86,9 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int64(nextPtr, toInt64(nextPtr, getNativePtr()));
+		return new LLVMRecOp.Int64(
+				nextPtr,
+				toInt(nextPtr, getNativePtr(), (byte) 64));
 	}
 
 	@Override

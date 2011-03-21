@@ -129,24 +129,25 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_voidType(
 	return to_ptr(Type::getVoidTy(module->getContext()));
 }
 
-jlong Java_org_o42a_backend_llvm_data_LLVMModule_int32type(
+jlong Java_org_o42a_backend_llvm_data_LLVMModule_intType(
 		JNIEnv *env,
 		jclass cls,
-		jlong modulePtr) {
+		jlong modulePtr,
+		jbyte numBits) {
 
 	Module *module = from_ptr<Module>(modulePtr);
 
-	return to_ptr(Type::getInt32Ty(module->getContext()));
+	return to_ptr(IntegerType::get(module->getContext(), numBits));
 }
 
-jlong Java_org_o42a_backend_llvm_data_LLVMModule_int64type(
+jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp32type(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
 
-	return to_ptr(Type::getInt64Ty(module->getContext()));
+	return to_ptr(Type::getFloatTy(module->getContext()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp64type(

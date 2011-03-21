@@ -30,8 +30,11 @@ public enum DataType {
 	CODE_PTR(0x32, "(void*)()"),
 	FUNC_PTR(0x42, "(func*)()"),
 	BOOL(0x01, "bool"),
+	INT8(0x11, "int8"),
+	INT16(0x11 | (1 << 8), "int16"),
 	INT32(0x11 | (2 << 8), "int32"),
 	INT64(0x11 | (3 << 8), "int64"),
+	FP32(0x21 | (2 << 8), "fp32"),
 	FP64(0x21 | (3 << 8), "fp64");
 
 	private final int code;

@@ -54,6 +54,22 @@ public abstract class SubData<O extends StructOp>
 		return this.instance;
 	}
 
+	public final Int8rec addInt8(String name) {
+		return add(new Int8rec(this, id(name), null));
+	}
+
+	public final Int8rec addInt8(String name, Content<Int8rec> content) {
+		return add(new Int8rec(this, id(name), content));
+	}
+
+	public final Int16rec addInt16(String name) {
+		return add(new Int16rec(this, id(name), null));
+	}
+
+	public final Int16rec addInt16(String name, Content<Int16rec> content) {
+		return add(new Int16rec(this, id(name), content));
+	}
+
 	public final Int32rec addInt32(String name) {
 		return add(new Int32rec(this, id(name), null));
 	}
@@ -68,6 +84,14 @@ public abstract class SubData<O extends StructOp>
 
 	public final Int64rec addInt64(String name, Content<Int64rec> content) {
 		return add(new Int64rec(this, id(name), content));
+	}
+
+	public final Fp32rec addFp32(String name) {
+		return add(new Fp32rec(this, id(name), null));
+	}
+
+	public final Fp32rec addFp32(String name, Content<Fp32rec> content) {
+		return add(new Fp32rec(this, id(name), content));
 	}
 
 	public final Fp64rec addFp64(String name) {
