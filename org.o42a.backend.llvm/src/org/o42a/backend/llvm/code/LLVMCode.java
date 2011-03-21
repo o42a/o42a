@@ -221,6 +221,20 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
+	public LLVMInt8op int8(byte value) {
+		return new LLVMInt8op(
+				nextPtr(),
+				int8(getModule().getNativePtr(), value));
+	}
+
+	@Override
+	public LLVMInt16op int16(short value) {
+		return new LLVMInt16op(
+				nextPtr(),
+				int16(getModule().getNativePtr(), value));
+	}
+
+	@Override
 	public LLVMInt32op int32(int value) {
 		return new LLVMInt32op(
 				nextPtr(),
@@ -232,6 +246,13 @@ public abstract class LLVMCode implements CodeWriter {
 		return new LLVMInt64op(
 				nextPtr(),
 				int64(getModule().getNativePtr(), value));
+	}
+
+	@Override
+	public LLVMFp32op fp32(float value) {
+		return new LLVMFp32op(
+				nextPtr(),
+				fp32(getModule().getNativePtr(), value));
 	}
 
 	@Override
@@ -414,10 +435,15 @@ public abstract class LLVMCode implements CodeWriter {
 			long truePtr,
 			long falsePtr);
 
+	private static native long int8(long modulePtr, byte value);
+
+	private static native long int16(long modulePtr, short value);
 
 	private static native long int32(long modulePtr, int value);
 
 	private static native long int64(long modulePtr, long value);
+
+	private static native long fp32(long modulePtr, float value);
 
 	private static native long fp64(long modulePtr, double value);
 

@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,21 +19,22 @@
 */
 package org.o42a.backend.llvm.code.op;
 
+import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.codegen.code.op.Int8op;
 
 
-public final class LLVMFp64op extends LLVMFpOp<Fp64op, LLVMFp64op>
-		implements Fp64op {
+public final class LLVMInt8op extends LLVMIntOp<Int8op, LLVMInt8op>
+		implements Int8op {
 
-	public LLVMFp64op(long blockPtr, long nativePtr) {
+	public LLVMInt8op(long blockPtr, long nativePtr) {
 		super(blockPtr, nativePtr);
 	}
 
 	@Override
-	public LLVMFp64op toFp64(Code code) {
+	public LLVMInt8op toInt8(Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -41,12 +42,17 @@ public final class LLVMFp64op extends LLVMFpOp<Fp64op, LLVMFp64op>
 			return this;
 		}
 
-		return super.toFp64(code);
+		return super.toInt8(code);
 	}
 
 	@Override
-	public LLVMFp64op create(long blockPtr, long nativePtr) {
-		return new LLVMFp64op(blockPtr, nativePtr);
+	public LLVMInt8op create(long blockPtr, long nativePtr) {
+		return new LLVMInt8op(blockPtr, nativePtr);
+	}
+
+	@Override
+	protected LLVMInt8op constantValue(Code code, int value) {
+		return llvm(code).int8((byte) value);
 	}
 
 }

@@ -130,28 +130,29 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt32(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
-		jlong pointerPtr) {
+		jlong pointerPtr,
+		jbyte intBits) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	Value *pointer = from_ptr<Value>(pointerPtr);
 
-	OCODE(block, "toInt32ptr: " << *pointer << "\n");
+	OCODE(block, "toInt" << intBits << ": " << *pointer << "\n");
 
 	Value *result = builder.CreatePointerCast(
 			pointer,
-			builder.getInt32Ty()->getPointerTo());
+			IntegerType::get(block->getContext(), intBits)->getPointerTo());
 
 	ODUMP(result);
 
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt64(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -161,11 +162,11 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt64(
 	IRBuilder<> builder(block);
 	Value *pointer = from_ptr<Value>(pointerPtr);
 
-	OCODE(block, "toInt64ptr: " << *pointer << "\n");
+	OCODE(block, "toFp32ptr: " << *pointer << "\n");
 
 	Value *result = builder.CreatePointerCast(
 			pointer,
-			builder.getInt64Ty()->getPointerTo());
+			builder.getFloatTy()->getPointerTo());
 
 	ODUMP(result);
 

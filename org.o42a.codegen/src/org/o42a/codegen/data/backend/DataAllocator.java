@@ -49,6 +49,14 @@ public interface DataAllocator {
 
 	void end(Type<?> type);
 
+	DataAllocation<RecOp<Int8op>> allocateInt8(
+			DataAllocation<?> enclosing,
+			DataAllocation<RecOp<Int8op>> type);
+
+	DataAllocation<RecOp<Int16op>> allocateInt16(
+			DataAllocation<?> enclosing,
+			DataAllocation<RecOp<Int16op>> type);
+
 	DataAllocation<RecOp<Int32op>> allocateInt32(
 			DataAllocation<?> enclosing,
 			DataAllocation<RecOp<Int32op>> type);
@@ -56,6 +64,10 @@ public interface DataAllocator {
 	DataAllocation<RecOp<Int64op>> allocateInt64(
 			DataAllocation<?> enclosing,
 			DataAllocation<RecOp<Int64op>> type);
+
+	DataAllocation<RecOp<Fp32op>> allocateFp32(
+			DataAllocation<?> enclosing,
+			DataAllocation<RecOp<Fp32op>> allocation);
 
 	DataAllocation<RecOp<Fp64op>> allocateFp64(
 			DataAllocation<?> enclosing,

@@ -298,21 +298,25 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_le(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int32to64(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int2int(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
-		jlong valuePtr) {
+		jlong valuePtr,
+		jbyte intBits) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateIntCast(value, builder.getInt64Ty(), true);
+	Value *result = builder.CreateIntCast(
+			value,
+			IntegerType::get(block->getContext(), intBits),
+			true);
 
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int64to32(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -321,7 +325,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int64to32(
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateIntCast(value, builder.getInt32Ty(), true);
+	Value *result = builder.CreateSIToFP(value, builder.getFloatTy());
 
 	return to_ptr(result);
 }

@@ -75,7 +75,43 @@ public abstract class Arg<O extends Op> {
 		return typeName() + " #" + getIndex();
 	}
 
-	public static final class Int32arg extends Arg<Int32op> {
+	static final class Int8arg extends Arg<Int8op> {
+
+		Int8arg(Signature<?> signature, int index, String name) {
+			super(signature, index, name, DataType.INT8);
+		}
+
+		@Override
+		public boolean compatibleWith(Op op) {
+			return op instanceof Int8op;
+		}
+
+		@Override
+		protected Int8op get(FuncWriter<?> writer) {
+			return writer.int8arg(getIndex());
+		}
+
+	}
+
+	static final class Int16arg extends Arg<Int16op> {
+
+		Int16arg(Signature<?> signature, int index, String name) {
+			super(signature, index, name, DataType.INT16);
+		}
+
+		@Override
+		public boolean compatibleWith(Op op) {
+			return op instanceof Int16op;
+		}
+
+		@Override
+		protected Int16op get(FuncWriter<?> writer) {
+			return writer.int16arg(getIndex());
+		}
+
+	}
+
+	static final class Int32arg extends Arg<Int32op> {
 
 		Int32arg(Signature<?> signature, int index, String name) {
 			super(signature, index, name, DataType.INT32);
@@ -93,7 +129,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class Int64arg extends Arg<Int64op> {
+	static final class Int64arg extends Arg<Int64op> {
 
 		Int64arg(Signature<?> signature, int index, String name) {
 			super(signature, index, name, DataType.INT64);
@@ -111,10 +147,28 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class Fp64arg extends Arg<Fp64op> {
+	static final class Fp32arg extends Arg<Fp32op> {
+
+		Fp32arg(Signature<?> signature, int index, String name) {
+			super(signature, index, name, DataType.FP32);
+		}
+
+		@Override
+		public boolean compatibleWith(Op op) {
+			return op instanceof Fp64op;
+		}
+
+		@Override
+		protected Fp32op get(FuncWriter<?> writer) {
+			return writer.fp32arg(getIndex());
+		}
+
+	}
+
+	static final class Fp64arg extends Arg<Fp64op> {
 
 		Fp64arg(Signature<?> signature, int index, String name) {
-			super(signature, index, name, DataType.INT64);
+			super(signature, index, name, DataType.FP64);
 		}
 
 		@Override
@@ -129,7 +183,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class BoolArg extends Arg<BoolOp> {
+	static final class BoolArg extends Arg<BoolOp> {
 
 		BoolArg(Signature<?> signature, int index, String name) {
 			super(signature, index, name, DataType.BOOL);
@@ -147,7 +201,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class RelPtrArg extends Arg<RelOp> {
+	static final class RelPtrArg extends Arg<RelOp> {
 
 		RelPtrArg(Signature<?> signature, int index, String name) {
 			super(signature, index, name, DataType.REL_PTR);
@@ -165,7 +219,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class AnyArg extends Arg<AnyOp> {
+	static final class AnyArg extends Arg<AnyOp> {
 
 		AnyArg(Signature<?> signature, int index, String name) {
 			super(signature, index, name, DataType.REL_PTR);
@@ -183,7 +237,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class DataArg extends Arg<DataOp> {
+	static final class DataArg extends Arg<DataOp> {
 
 		DataArg(Signature<?> signature, int index, String name) {
 			super(signature, index, name, DataType.DATA_PTR);
@@ -201,7 +255,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class PtrArg<O extends StructOp> extends Arg<O> {
+	static final class PtrArg<O extends StructOp> extends Arg<O> {
 
 		private final Type<O> type;
 
@@ -237,7 +291,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	public static final class FuncPtrArg<F extends Func> extends Arg<F> {
+	static final class FuncPtrArg<F extends Func> extends Arg<F> {
 
 		private final Signature<F> targetSignature;
 

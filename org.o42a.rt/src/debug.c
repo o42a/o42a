@@ -231,10 +231,33 @@ static void dbg_field_value(
 		const int depth,
 		const size_t indent) {
 	switch (field_info->data_type) {
+	case O42A_TYPE_INT8: {
+
+		const int val = *((int8_t*) data);
+
+		if (!val) {
+			fputs(": int8 = 0", stderr);
+		} else {
+			fprintf(stderr, ": int8 = %1$i (%1$#x)", val);
+		}
+
+		break;
+	}
+	case O42A_TYPE_INT16: {
+
+		const int val = *((int16_t*) data);
+
+		if (!val) {
+			fputs(": int16 = 0", stderr);
+		} else {
+			fprintf(stderr, ": int16 = %1$i (%1$#x)", val);
+		}
+
+		break;
+	}
 	case O42A_TYPE_INT32: {
 
-		const long val =
-				sizeof (int) == 4 ? *((int*) data) : *((long*) data);
+		const long val = *((int32_t*) data);
 
 		if (!val) {
 			fputs(": int32 = 0", stderr);
@@ -246,8 +269,7 @@ static void dbg_field_value(
 	}
 	case O42A_TYPE_INT64: {
 
-		const long long val =
-				sizeof (long) == 8 ? *((long*) data) : *((long long*) data);
+		const long long val = *((int64_t*) data);
 
 		if (!val) {
 			fputs(": int64 = 0", stderr);
@@ -257,6 +279,9 @@ static void dbg_field_value(
 
 		break;
 	}
+	case O42A_TYPE_FP32:
+		fprintf(stderr, ": fp32 = %f", (double) (*((float*) data)));
+		break;
 	case O42A_TYPE_FP64:
 		fprintf(stderr, ": fp64 = %f", *((double*) data));
 		break;

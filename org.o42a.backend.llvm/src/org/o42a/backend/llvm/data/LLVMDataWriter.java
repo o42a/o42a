@@ -74,7 +74,8 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <F extends Func> LLVMFuncAllocation<F> nullPtr(Signature<F> signature) {
+	public <F extends Func> LLVMFuncAllocation<F> nullPtr(
+			Signature<F> signature) {
 		return new LLVMFuncAllocation<F>(
 				this.module,
 				nullFuncPtr(getModule().nativePtr(signature)),
@@ -119,6 +120,20 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
+	public void writeInt8(
+			DataAllocation<RecOp<Int8op>> allocation,
+			byte value) {
+		writeInt8(getModule().getNativePtr(), getStructPtr(), value);
+	}
+
+	@Override
+	public void writeInt16(
+			DataAllocation<RecOp<Int16op>> allocation,
+			short value) {
+		writeInt16(getModule().getNativePtr(), getStructPtr(), value);
+	}
+
+	@Override
 	public void writeInt32(
 			DataAllocation<RecOp<Int32op>> allocation,
 			int value) {
@@ -146,9 +161,16 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
+	public void writeFp32(
+			DataAllocation<RecOp<Fp32op>> allocation,
+			float value) {
+		writeFp32(getModule().getNativePtr(), getStructPtr(), value);
+	}
+
+	@Override
 	public void writeFp64(
 			DataAllocation<RecOp<Fp64op>> allocation,
-			Double value) {
+			double value) {
 		writeFp64(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
@@ -200,6 +222,16 @@ public class LLVMDataWriter implements DataWriter {
 
 	private static native long createStruct(int size);
 
+	private static native void writeInt8(
+			long modulePtr,
+			long structPtr,
+			byte value);
+
+	private static native void writeInt16(
+			long modulePtr,
+			long structPtr,
+			short value);
+
 	private static native void writeInt32(
 			long modulePtr,
 			long structPtr,
@@ -214,6 +246,11 @@ public class LLVMDataWriter implements DataWriter {
 			long modulePtr,
 			long structPtr,
 			long value);
+
+	private static native void writeFp32(
+			long modulePtr,
+			long structPtr,
+			float value);
 
 	private static native void writeFp64(
 			long modulePtr,

@@ -134,9 +134,9 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 	static native long toPtr(long blockPtr, long pointerPtr);
 
-	static native long toInt32(long blockPtr, long pointerPtr);
+	static native long toInt(long blockPtr, long pointerPtr, byte numBits);
 
-	static native long toInt64(long blockPtr, long pointerPtr);
+	static native long toFp32(long blockPtr, long pointerPtr);
 
 	static native long toFp64(long blockPtr, long pointerPtr);
 

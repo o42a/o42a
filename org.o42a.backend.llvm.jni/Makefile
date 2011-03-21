@@ -124,7 +124,7 @@ $(srcdir)/jni_function.h :
 $(srcdir)/jni_int.h : $(java_package_dir)/code/op/LLVMIntOp.class
 	$(call make_javah)
 
-$(srcdir)/jni_fp.h : $(java_package_dir)/code/op/LLVMFp64op.class
+$(srcdir)/jni_fp.h : $(java_package_dir)/code/op/LLVMFpOp.class
 	$(call make_javah)
 
 $(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/LLVMPtrOp.class

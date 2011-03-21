@@ -39,6 +39,16 @@ public final class SignatureBuilder {
 		return ret(new Return.ReturnVoid(this.signature));
 	}
 
+	public final Return<Int8op> returnInt8() {
+		this.writer.returnInt8();
+		return ret(new Return.ReturnInt8(this.signature));
+	}
+
+	public final Return<Int16op> returnInt16() {
+		this.writer.returnInt16();
+		return ret(new Return.ReturnInt16(this.signature));
+	}
+
 	public final Return<Int32op> returnInt32() {
 		this.writer.returnInt32();
 		return ret(new Return.ReturnInt32(this.signature));
@@ -47,6 +57,11 @@ public final class SignatureBuilder {
 	public final Return<Int64op> returnInt64() {
 		this.writer.returnInt64();
 		return ret(new Return.ReturnInt64(this.signature));
+	}
+
+	public final Return<Fp32op> returnFp32() {
+		this.writer.returnFp32();
+		return ret(new Return.ReturnFp32(this.signature));
 	}
 
 	public final Return<Fp64op> returnFp64() {
@@ -74,6 +89,16 @@ public final class SignatureBuilder {
 		return new Return.ReturnPtr<O>(this.signature, type);
 	}
 
+	public final Arg<Int8op> addInt8(String name) {
+		this.writer.addInt8();
+		return arg(new Arg.Int8arg(this.signature, argIndex(), name));
+	}
+
+	public final Arg<Int16op> addInt16(String name) {
+		this.writer.addInt16();
+		return arg(new Arg.Int16arg(this.signature, argIndex(), name));
+	}
+
 	public final Arg<Int32op> addInt32(String name) {
 		this.writer.addInt32();
 		return arg(new Arg.Int32arg(this.signature, argIndex(), name));
@@ -82,6 +107,11 @@ public final class SignatureBuilder {
 	public final Arg<Int64op> addInt64(String name) {
 		this.writer.addInt64();
 		return arg(new Arg.Int64arg(this.signature, argIndex(), name));
+	}
+
+	public final Arg<Fp32op> addFp32(String name) {
+		this.writer.addFp32();
+		return arg(new Arg.Fp32arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Fp64op> addFp64(String name) {

@@ -89,6 +89,46 @@ void Java_org_o42a_backend_llvm_code_LLVMCode_choose(
 	ODUMP(result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_int8(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr,
+		jbyte value) {
+
+	Module *module = from_ptr<Module>(modulePtr);
+
+	OTRACE("int8: " << value << "\n");
+
+	Constant *result = ConstantInt::get(
+			Type::getInt8Ty(module->getContext()),
+			value,
+			true);
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}
+
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_int16(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr,
+		jshort value) {
+
+	Module *module = from_ptr<Module>(modulePtr);
+
+	OTRACE("int16: " << value << "\n");
+
+	Constant *result = ConstantInt::get(
+			Type::getInt16Ty(module->getContext()),
+			value,
+			true);
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_int32(
 		JNIEnv *env,
 		jclass cls,
@@ -129,6 +169,25 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_int64(
 	return to_ptr(result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_fp32(
+		JNIEnv *env,
+		jclass cls,
+		jlong modulePtr,
+		jfloat value) {
+
+	Module *module = from_ptr<Module>(modulePtr);
+
+	OTRACE("fp32: " << value << "\n");
+
+	Constant *result = ConstantFP::get(
+			Type::getFloatTy(module->getContext()),
+			value);
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_fp64(
 		JNIEnv *env,
 		jclass cls,
@@ -140,7 +199,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_fp64(
 	OTRACE("fp64: " << value << "\n");
 
 	Constant *result = ConstantFP::get(
-			Type::getInt64Ty(module->getContext()),
+			Type::getDoubleTy(module->getContext()),
 			value);
 
 	ODUMP(result);

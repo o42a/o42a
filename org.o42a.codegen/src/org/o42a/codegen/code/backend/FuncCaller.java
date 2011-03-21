@@ -32,9 +32,15 @@ public interface FuncCaller<F extends Func> extends PtrOp {
 
 	void call(Code code, Op... args);
 
+	Int8op callInt8(Code code, Op... args);
+
+	Int16op callInt16(Code code, Op... args);
+
 	Int32op callInt32(Code code, Op... args);
 
 	Int64op callInt64(Code code, Op... args);
+
+	Fp32op callFp32(Code code, Op... args);
 
 	Fp64op callFp64(Code code, Op... args);
 

@@ -31,9 +31,15 @@ public interface StructWriter extends PtrOp {
 
 	RecOp<?> field(Code code, Data<?> field);
 
+	RecOp<Int8op> int8(Code code, Int8rec field);
+
+	RecOp<Int16op> int16(Code code, Int16rec field);
+
 	RecOp<Int32op> int32(Code code, Int32rec field);
 
 	RecOp<Int64op> int64(Code code, Int64rec field);
+
+	RecOp<Fp32op> fp32(Code code, Fp32rec field);
 
 	RecOp<Fp64op> fp64(Code code, Fp64rec field);
 

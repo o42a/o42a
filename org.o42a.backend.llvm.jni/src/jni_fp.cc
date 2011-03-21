@@ -28,7 +28,7 @@
 using namespace llvm;
 
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_neg(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_neg(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -42,7 +42,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_neg(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_add(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_add(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -58,7 +58,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_add(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_sub(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_sub(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -74,7 +74,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_sub(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_mul(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_mul(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -90,7 +90,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_mul(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_div(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_div(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -106,7 +106,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_div(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_rem(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_rem(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -122,7 +122,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_rem(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_eq(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_eq(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -138,7 +138,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_eq(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_ne(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_ne(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -154,7 +154,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_ne(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_gt(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_gt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -170,7 +170,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_gt(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_ge(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_ge(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -186,7 +186,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_ge(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_lt(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_lt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -202,7 +202,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_lt(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_le(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_le(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -218,21 +218,24 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_le(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_fp64toInt32(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2int(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
-		jlong valuePtr) {
+		jlong valuePtr,
+		jbyte intBits) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFPToSI(value, builder.getInt32Ty());
+	Value *result = builder.CreateFPToSI(
+			value,
+			IntegerType::get(block->getContext(), intBits));
 
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_fp64toInt64(
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2fp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -241,7 +244,21 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFp64op_fp64toInt64(
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFPToSI(value, builder.getInt64Ty());
+	Value *result = builder.CreateFPCast(value, builder.getFloatTy());
+
+	return to_ptr(result);
+}
+
+jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2fp64(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jlong valuePtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	Value *value = from_ptr<Value>(valuePtr);
+	IRBuilder<> builder(block);
+	Value *result = builder.CreateFPCast(value, builder.getDoubleTy());
 
 	return to_ptr(result);
 }

@@ -71,6 +71,22 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
+	public RecOp<Int8op> int8(Code code, Int8rec field) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Int8(nextPtr, field(nextPtr, field));
+	}
+
+	@Override
+	public RecOp<Int16op> int16(Code code, Int16rec field) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Int16(nextPtr, field(nextPtr, field));
+	}
+
+	@Override
 	public RecOp<Int32op> int32(Code code, Int32rec field) {
 
 		final long nextPtr = nextPtr(code);
@@ -84,6 +100,14 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMRecOp.Int64(nextPtr, field(nextPtr, field));
+	}
+
+	@Override
+	public RecOp<Fp32op> fp32(Code code, Fp32rec field) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Fp32(nextPtr, field(nextPtr, field));
 	}
 
 	@Override

@@ -35,17 +35,14 @@ public final class LLVMInt32op extends LLVMIntOp<Int32op, LLVMInt32op>
 
 	@Override
 	public LLVMInt32op toInt32(Code code) {
-		return this;
-	}
-
-	@Override
-	public LLVMInt64op toInt64(Code code) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt64op(
-				nextPtr,
-				int32to64(nextPtr, getNativePtr()));
+		if (nextPtr == getBlockPtr()) {
+			return this;
+		}
+
+		return super.toInt32(code);
 	}
 
 	@Override

@@ -65,18 +65,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_voidType
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
- * Method:    int32type
- * Signature: (J)J
+ * Method:    intType
+ * Signature: (JB)J
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_int32type
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_intType
+  (JNIEnv *, jclass, jlong, jbyte);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
- * Method:    int64type
+ * Method:    fp32type
  * Signature: (J)J
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_int64type
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_fp32type
   (JNIEnv *, jclass, jlong);
 
 /*

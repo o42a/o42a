@@ -38,6 +38,15 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	private final LLVMModule module;
 
+	private DataLayout int8layout;
+	private DataLayout int16layout;
+	private DataLayout int32layout;
+	private DataLayout int64layout;
+	private DataLayout fp32layout;
+	private DataLayout fp64layout;
+	private DataLayout ptrLayout;
+	private DataLayout relPtrLayout;
+
 	LLVMDataAllocator(LLVMModule module) {
 		this.module = module;
 	}
@@ -187,11 +196,31 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
+	public DataAllocation<RecOp<Int8op>> allocateInt8(
+			DataAllocation<?> enclosing,
+			DataAllocation<RecOp<Int8op>> type) {
+		if (allocate(enclosing)) {
+			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 8);
+		}
+		return new Int8dataAlloc(container(enclosing));
+	}
+
+	@Override
+	public DataAllocation<RecOp<Int16op>> allocateInt16(
+			DataAllocation<?> enclosing,
+			DataAllocation<RecOp<Int16op>> type) {
+		if (allocate(enclosing)) {
+			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 16);
+		}
+		return new Int16dataAlloc(container(enclosing));
+	}
+
+	@Override
 	public DataAllocation<RecOp<Int32op>> allocateInt32(
 			DataAllocation<?> enclosing,
 			DataAllocation<RecOp<Int32op>> type) {
 		if (allocate(enclosing)) {
-			allocateInt32(getModulePtr(), typeDataPtr(enclosing));
+			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 32);
 		}
 		return new Int32dataAlloc(container(enclosing));
 	}
@@ -201,9 +230,19 @@ public class LLVMDataAllocator implements DataAllocator {
 			DataAllocation<?> enclosing,
 			DataAllocation<RecOp<Int64op>> type) {
 		if (allocate(enclosing)) {
-			allocateInt64(getModulePtr(), typeDataPtr(enclosing));
+			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 64);
 		}
 		return new Int64dataAlloc(container(enclosing));
+	}
+
+	@Override
+	public DataAllocation<RecOp<Fp32op>> allocateFp32(
+			DataAllocation<?> enclosing,
+			DataAllocation<RecOp<Fp32op>> type) {
+		if (allocate(enclosing)) {
+			allocateFp32(getModulePtr(), typeDataPtr(enclosing));
+		}
+		return new Fp32dataAlloc(container(enclosing));
 	}
 
 	@Override
@@ -284,24 +323,64 @@ public class LLVMDataAllocator implements DataAllocator {
 		return "LLVM data allocator";
 	}
 
+	final DataLayout int8layout() {
+		if (this.int8layout != null) {
+			return this.int8layout;
+		}
+		return this.int8layout =
+			new DataLayout(intLayout(getModulePtr(), (byte) 8));
+	}
+
+	final DataLayout int16layout() {
+		if (this.int16layout != null) {
+			return this.int16layout;
+		}
+		return this.int16layout =
+			new DataLayout(intLayout(getModulePtr(), (byte) 16));
+	}
+
 	final DataLayout int32layout() {
-		return new DataLayout(int32layout(getModulePtr()));
+		if (this.int32layout != null) {
+			return this.int32layout;
+		}
+		return this.int32layout =
+			new DataLayout(intLayout(getModulePtr(), (byte) 32));
 	}
 
 	final DataLayout int64layout() {
-		return new DataLayout(int64layout(getModulePtr()));
+		if (this.int64layout != null) {
+			return this.int64layout;
+		}
+		return this.int64layout =
+			new DataLayout(intLayout(getModulePtr(), (byte) 64));
+	}
+
+	final DataLayout fp32layout() {
+		if (this.fp32layout != null) {
+			return this.fp32layout;
+		}
+		return this.fp32layout = new DataLayout(fp32layout(getModulePtr()));
 	}
 
 	final DataLayout fp64layout() {
-		return new DataLayout(fp64layout(getModulePtr()));
+		if (this.fp64layout != null) {
+			return this.fp64layout;
+		}
+		return this.fp64layout = new DataLayout(fp64layout(getModulePtr()));
 	}
 
 	final DataLayout ptrLayout() {
-		return new DataLayout(ptrLayout(getModulePtr()));
+		if (this.ptrLayout != null) {
+			return this.ptrLayout;
+		}
+		return this.ptrLayout = new DataLayout(ptrLayout(getModulePtr()));
 	}
 
 	final DataLayout relPtrLayout() {
-		return new DataLayout(relPtrLayout(getModulePtr()));
+		if (this.relPtrLayout != null) {
+			return this.relPtrLayout;
+		}
+		return this.relPtrLayout = new DataLayout(relPtrLayout(getModulePtr()));
 	}
 
 	final DataLayout structLayout(ContainerAllocation<?> type) {
@@ -354,9 +433,12 @@ public class LLVMDataAllocator implements DataAllocator {
 			long typeDataPtr,
 			boolean packed);
 
-	private static native void allocateInt32(long modulePtr, long enclosingPtr);
+	private static native void allocateInt(
+			long modulePtr,
+			long enclosingPtr,
+			byte numBits);
 
-	private static native void allocateInt64(long modulePtr, long enclosingPtr);
+	private static native void allocateFp32(long modulePtr, long enclosingPtr);
 
 	private static native void allocateFp64(long modulePtr, long enclosingPtr);
 
@@ -374,9 +456,9 @@ public class LLVMDataAllocator implements DataAllocator {
 			long modulePtr,
 			long enclosingPtr);
 
-	private static native int int32layout(long modulePtr);
+	private static native int intLayout(long modulePtr, byte numBits);
 
-	private static native int int64layout(long modulePtr);
+	private static native int fp32layout(long modulePtr);
 
 	private static native int fp64layout(long modulePtr);
 

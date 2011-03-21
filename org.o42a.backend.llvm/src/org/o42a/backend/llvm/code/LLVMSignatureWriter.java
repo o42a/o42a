@@ -47,6 +47,16 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
+	public void returnInt8() {
+		this.returnType = this.module.int8type();
+	}
+
+	@Override
+	public void returnInt16() {
+		this.returnType = this.module.int16type();
+	}
+
+	@Override
 	public void returnInt32() {
 		this.returnType = this.module.int32type();
 	}
@@ -54,6 +64,11 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	@Override
 	public void returnInt64() {
 		this.returnType = this.module.int64type();
+	}
+
+	@Override
+	public void returnFp32() {
+		this.returnType = this.module.fp32type();
 	}
 
 	@Override
@@ -82,6 +97,16 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
+	public void addInt8() {
+		addParam(this.module.int8type());
+	}
+
+	@Override
+	public void addInt16() {
+		addParam(this.module.int16type());
+	}
+
+	@Override
 	public void addInt32() {
 		addParam(this.module.int32type());
 	}
@@ -89,6 +114,11 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	@Override
 	public void addInt64() {
 		addParam(this.module.int64type());
+	}
+
+	@Override
+	public void addFp32() {
+		addParam(this.module.fp32type());
 	}
 
 	@Override

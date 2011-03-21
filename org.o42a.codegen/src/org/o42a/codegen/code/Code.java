@@ -88,6 +88,16 @@ public abstract class Code extends DebugCodeBase {
 		writer().go(unwrapPos(pos));
 	}
 
+	public final Int8op int8(byte value) {
+		assertIncomplete();
+		return writer().int8(value);
+	}
+
+	public final Int16op int16(short value) {
+		assertIncomplete();
+		return writer().int16(value);
+	}
+
 	public final Int32op int32(int value) {
 		assertIncomplete();
 		return writer().int32(value);
@@ -96,6 +106,11 @@ public abstract class Code extends DebugCodeBase {
 	public final Int64op int64(long value) {
 		assertIncomplete();
 		return writer().int64(value);
+	}
+
+	public final Fp32op fp32(float value) {
+		assertIncomplete();
+		return writer().fp32(value);
 	}
 
 	public final Fp64op fp64(double value) {

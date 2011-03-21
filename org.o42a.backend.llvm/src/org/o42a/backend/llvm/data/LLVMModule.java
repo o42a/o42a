@@ -46,8 +46,11 @@ public final class LLVMModule {
 	private final LLVMCodeBackend codeBackend;
 
 	private long voidType;
+	private long int8type;
+	private long int16type;
 	private long int32type;
 	private long int64type;
+	private long fp32type;
 	private long fp64type;
 	private long boolType;
 	private long relPtrType;
@@ -111,49 +114,70 @@ public final class LLVMModule {
 		return this.codeBackend;
 	}
 
-	public long voidType() {
+	public final long voidType() {
 		if (this.voidType != 0L) {
 			return this.voidType;
 		}
 		return this.voidType = voidType(getNativePtr());
 	}
 
-	public long int32type() {
+	public final long int8type() {
+		if (this.int8type != 0L) {
+			return this.int8type;
+		}
+		return this.int8type = intType(getNativePtr(), (byte) 8);
+	}
+
+	public final long int16type() {
+		if (this.int16type != 0L) {
+			return this.int16type;
+		}
+		return this.int16type = intType(getNativePtr(), (byte) 16);
+	}
+
+	public final long int32type() {
 		if (this.int32type != 0L) {
 			return this.int32type;
 		}
-		return this.int32type = int32type(getNativePtr());
+		return this.int32type = intType(getNativePtr(), (byte) 32);
 	}
 
-	public long int64type() {
+	public final long int64type() {
 		if (this.int64type != 0L) {
 			return this.int64type;
 		}
-		return this.int64type = int64type(getNativePtr());
+		return this.int64type = intType(getNativePtr(), (byte) 64);
 	}
 
-	public long fp64type() {
+	public final long fp32type() {
+		if (this.fp32type != 0L) {
+			return this.fp32type;
+		}
+		return this.fp32type = fp32type(getNativePtr());
+	}
+
+	public final long fp64type() {
 		if (this.fp64type != 0L) {
 			return this.fp64type;
 		}
 		return this.fp64type = fp64type(getNativePtr());
 	}
 
-	public long boolType() {
+	public final long boolType() {
 		if (this.boolType != 0L) {
 			return this.boolType;
 		}
 		return this.boolType = boolType(getNativePtr());
 	}
 
-	public long relPtrType() {
+	public final long relPtrType() {
 		if (this.relPtrType != 0L) {
 			return this.relPtrType;
 		}
 		return this.relPtrType = relPtrType(getNativePtr());
 	}
 
-	public long anyType() {
+	public final long anyType() {
 		if (this.anyType != 0L) {
 			return this.anyType;
 		}
@@ -212,9 +236,9 @@ public final class LLVMModule {
 
 	private static native long voidType(long modulePtr);
 
-	private static native long int32type(long modulePtr);
+	private static native long intType(long modulePtr, byte numBits);
 
-	private static native long int64type(long modulePtr);
+	private static native long fp32type(long modulePtr);
 
 	private static native long fp64type(long modulePtr);
 

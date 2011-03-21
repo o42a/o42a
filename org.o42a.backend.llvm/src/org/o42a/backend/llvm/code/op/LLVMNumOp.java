@@ -70,10 +70,19 @@ public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
 	public abstract T rem(Code code, O divisor);
 
 	@Override
+	public abstract LLVMInt8op toInt8(Code code);
+
+	@Override
+	public abstract LLVMInt16op toInt16(Code code);
+
+	@Override
 	public abstract LLVMInt32op toInt32(Code code);
 
 	@Override
 	public abstract LLVMInt64op toInt64(Code code);
+
+	@Override
+	public abstract LLVMFp32op toFp32(Code code);
 
 	@Override
 	public abstract LLVMFp64op toFp64(Code code);

@@ -28,9 +28,15 @@ public interface SignatureWriter<F extends Func> {
 
 	void returnVoid();
 
+	void returnInt8();
+
+	void returnInt16();
+
 	void returnInt32();
 
 	void returnInt64();
+
+	void returnFp32();
 
 	void returnFp64();
 
@@ -42,9 +48,15 @@ public interface SignatureWriter<F extends Func> {
 
 	void returnPtr(Type<?> type);
 
+	void addInt8();
+
+	void addInt16();
+
 	void addInt32();
 
 	void addInt64();
+
+	void addFp32();
 
 	void addFp64();
 

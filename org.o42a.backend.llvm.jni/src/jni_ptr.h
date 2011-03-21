@@ -49,18 +49,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toPtr
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
- * Method:    toInt32
- * Signature: (JJ)J
+ * Method:    toInt
+ * Signature: (JJB)J
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt32
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt
+  (JNIEnv *, jclass, jlong, jlong, jbyte);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
- * Method:    toInt64
+ * Method:    toFp32
  * Signature: (JJ)J
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt64
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp32
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
