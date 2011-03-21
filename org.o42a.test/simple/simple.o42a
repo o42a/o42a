@@ -23,8 +23,7 @@ Use namespace 'Test'.
 
 Name = "Simple tests".
 
-Print "!!!" nl.
-//Run tests.
+Run tests.
 
 Assertion := test(
   Assert(Condition = false. Message = "True is not true"). 

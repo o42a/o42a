@@ -208,9 +208,13 @@ static void dbg_struct(
 	while (field_num > 0) {
 		dbg_indent(indent);
 		fputs(field_info->name, stderr);
+
+		const void *field_ptr = data + field_info->offset;
+
+		fprintf(stderr, " <0x%lx>", (long) field_ptr);
 		dbg_field_value(
 				O42A_ARGS
-				data + field_info->offset,
+				field_ptr,
 				field_info,
 				depth,
 				indent);

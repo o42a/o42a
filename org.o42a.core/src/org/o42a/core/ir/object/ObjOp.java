@@ -113,28 +113,38 @@ public final class ObjOp extends ObjectOp {
 			return staticCast(code, ascendant);
 		}
 		if (ascendant.cloneOf(ptr().getAscendant())) {
-			return ptr().op(getBuilder(), ascendant, getPrecision());
+			// Clone shares the body with it`s origin.
+			return this;
 		}
 		return dynamicCast(code, ascendant);
 	}
 
 	@Override
 	public FldOp field(Code code, CodePos exit, MemberKey memberKey) {
+		code.debug("Field " + memberKey + " of " + this);
 
 		final Fld fld = ptr().getType().getObjectIR().fld(memberKey);
 		final ObjOp host =
 			cast(code, exit, memberKey.getOrigin().getContainer().toObject());
 
-		return fld.op(code, host);
+		final FldOp op = fld.op(code, host);
+
+		code.dumpName("Field " + memberKey + ": ", op.ptr());
+
+		return op;
 	}
 
 	@Override
 	public DepOp dep(Code code, CodePos exit, Dep dep) {
+		code.debug("Dep " + dep + " of " + this);
 
 		final DepIR ir = ptr().getType().getObjectIR().dep(dep);
 		final ObjOp host = cast(code, exit, dep.getObject());
+		final DepOp op = ir.op(code, host);
 
-		return ir.op(code, host);
+		code.dumpName("Dep " + dep + ": ", op.ptr());
+
+		return op;
 	}
 
 	public FldOp declaredField(Code code, MemberKey memberKey) {

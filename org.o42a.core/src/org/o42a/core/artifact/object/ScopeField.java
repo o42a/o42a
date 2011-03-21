@@ -82,7 +82,7 @@ final class ScopeField extends ObjectField {
 
 		if (ancestorMember != null) {
 			// Scope field present in ancestor.
-			// Preserve an ancestor's scope.
+			// Preserve an ancestor`s scope.
 			newArtifact = ancestorMember.getSubstance().toObject();
 		} else {
 
