@@ -75,8 +75,11 @@ public abstract class RefFldOp<C extends ObjectFunc> extends FldOp {
 	}
 
 	public ObjOp target(Code code) {
-		code.dumpName("Link field: ", ptr());
-		code.dumpName("Link host: ", host().ptr());
+
+		final FldKind kind = fld().getKind();
+
+		code.dumpName(kind + " field: ", ptr());
+		code.dumpName(kind + " host: ", host().ptr());
 
 		final DataOp ptr = ptr().target(code, host());
 		final Obj targetAscendant = fld().getTargetAscendant();

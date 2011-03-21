@@ -77,19 +77,27 @@ final class AnonymousObjOp extends ObjectOp {
 
 	@Override
 	public FldOp field(Code code, CodePos exit, MemberKey memberKey) {
+		code.debug("Field " + memberKey + " of " + this);
 
 		final ObjOp ascendant =
 			cast(code, exit, memberKey.getOrigin().getContainer().toObject());
+		final FldOp op = ascendant.field(code, exit, memberKey);
 
-		return ascendant.field(code, exit, memberKey);
+		code.dumpName("Field " + memberKey + ": ", op.ptr());
+
+		return op;
 	}
 
 	@Override
 	public DepOp dep(Code code, CodePos exit, Dep dep) {
+		code.debug("Dep " + dep + " of " + this);
 
 		final ObjOp ascendant = cast(code, exit, dep.getObject());
+		final DepOp op = ascendant.dep(code, exit, dep);
 
-		return ascendant.dep(code, exit, dep);
+		code.dumpName("Dep " + dep + ": ", op.ptr());
+
+		return op;
 	}
 
 }
