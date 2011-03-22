@@ -48,10 +48,11 @@ skip {
 }
 
 comment && /^[ \t]*Copyright/ {
-	printf "%s", buffer
 	if ($3 ~ year) {
-		exit 42
+		skip=1
+		exit 0
 	}
+	printf "%s", buffer
 	print "    Copyright (C)", $3 "," year, author 
 	comment = 0
 	buffer = ""
@@ -61,8 +62,6 @@ comment && /^[ \t]*Copyright/ {
 
 comment && /\*\// {
 	print_copyright()
-	printf "%s", buffer
-	print
 	comment = 0
 	buffer = ""
 	skip = 1
@@ -77,9 +76,5 @@ comment {
 END {
 	if (!skip) {
 		print_copyright()
-		if (buffer) {
-	    	printf "%s", buffer
-	    	buffer = ""
-		}
 	}
 }

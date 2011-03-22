@@ -4,18 +4,46 @@
 # Assigns missing copyright notices to each source file.
 #
 
-green=$'\033[0;32m'
 blue=$'\033[1;34m'
+green=$'\033[0;32m'
+red=$'\033[0;31m'
 white=$'\033[1;37m'
 dirname=`dirname $0`
 
+write_if_not_empty() {
+	local filepath="$1"
+	local head=$(dd bs=1 count=1 2>/dev/null; echo a)
+	head=${head%a}
+	if [ "x$head" != x"" ]; then
+		{
+			printf %s "$head";
+			cat;
+		} | {
+			cat > "${filepath}.licensed" && \
+				mv -f "${filepath}.licensed" "${filepath}" && \
+				echo "Updated copyright of: ${green}${filepath}${white}" >&2
+		}
+	fi
+}
+
+process_file() {
+	local filepath="$1"
+	awk -v progname="$2" -f "${dirname}/copyright.awk" "${filepath}" | \
+		write_if_not_empty "${filepath}"
+}
+
+process_list() {
+	while read -r filepath; do
+		process_file "${filepath}" "$1"
+	done
+}
+
 assign_copyright() {
-	dir="$1"
-	name="$2"
-	pattern="$3"
-	echo "${blue}***${white} Processing ${green}${dir}${white}"
-	find "${dirname}/../$dir" -name "$pattern" \
-		-exec sh "${dirname}/copyright_file.sh" \{\} "$name" \;
+	local dir="$1"
+	local name="$2"
+	local pattern="$3"
+	echo "${blue}***${white} Processing ${green}${dir}${white}" >&2
+	find "${dirname}/../${dir}" -name "$pattern" | process_list "${name}"
 }
 
 assign_copyright org.o42a.ast/src "Abstract Syntax Tree" "*.java"
