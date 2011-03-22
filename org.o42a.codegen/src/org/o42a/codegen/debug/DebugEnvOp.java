@@ -25,10 +25,10 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.Int8op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Int32rec;
+import org.o42a.codegen.data.Int8rec;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 
@@ -53,15 +53,20 @@ public class DebugEnvOp extends StructOp {
 		return ptr(code, getType().stackFrame());
 	}
 
-	public final RecOp<Int32op> command(Code code) {
-		return int32(code, getType().command());
+	public final RecOp<Int8op> command(Code code) {
+		return int8(code, getType().command());
+	}
+
+	public final RecOp<Int8op> indent(Code code) {
+		return int8(code, getType().indent());
 	}
 
 	public static final class Type
 			extends org.o42a.codegen.data.Type<DebugEnvOp> {
 
 		private StructRec<DebugStackFrameOp> stackFrame;
-		private Int32rec command;
+		private Int8rec command;
+		private Int8rec indent;
 
 		private Type() {
 		}
@@ -75,8 +80,12 @@ public class DebugEnvOp extends StructOp {
 			return this.stackFrame;
 		}
 
-		public final Int32rec command() {
+		public final Int8rec command() {
 			return this.command;
+		}
+
+		public final Int8rec indent() {
+			return this.indent;
 		}
 
 		@Override
@@ -93,7 +102,8 @@ public class DebugEnvOp extends StructOp {
 		protected void allocate(SubData<DebugEnvOp> data) {
 			this.stackFrame =
 				data.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE);
-			this.command = data.addInt32("command");
+			this.command = data.addInt8("command");
+			this.indent = data.addInt8("indent");
 		}
 
 	}

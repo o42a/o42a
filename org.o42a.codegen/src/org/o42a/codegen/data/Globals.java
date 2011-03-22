@@ -51,8 +51,7 @@ public abstract class Globals {
 	}
 
 	public final Ptr<AnyOp> addBinary(CodeId id, byte[] data) {
-		return new Ptr<AnyOp>(
-				dataAllocator().addBinary(id, data, 0, data.length));
+		return addBinary(id, data, 0, data.length);
 	}
 
 	public Ptr<AnyOp> addBinary(CodeId id, byte[] data, int start, int end) {

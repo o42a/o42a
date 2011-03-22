@@ -161,16 +161,19 @@ o42a_obj_body_t *o42a_obj_cast(
 		o42a_obj_t *const object,
 		const o42a_obj_stype_t *const type) {
 	O42A_ENTER(return NULL);
+	O42A_DO("Cast");
 
 	if (type->data.flags & O42A_OBJ_VOID) {
 		// any body can be void
 		o42a_debug_mem_name("Cast to void: ", object);
+		O42A_DONE;
 		O42A_RETURN object;
 	}
 	if (object->methods->object_type == type) {
 		// body of the necessary type
 		o42a_debug_mem_name("Cast not required: ", object);
 		o42a_debug_mem_name("     to: ", type);
+		O42A_DONE;
 		O42A_RETURN object;
 	}
 
@@ -184,6 +187,7 @@ o42a_obj_body_t *o42a_obj_cast(
 
 	o42a_debug_mem_name("Cast result: ", result);
 
+	O42A_DONE;
 	O42A_RETURN result;
 }
 
@@ -231,6 +235,7 @@ static void derive_object_body(
 		o42a_obj_body_t *ancestor_body,
 		int kind) {
 	O42A_ENTER(return);
+	O42A_DO("Derive body");
 
 	const o42a_obj_body_t *const from_body = ctable->from.body;
 	o42a_obj_body_t *const to_body = ctable->to.body;
@@ -300,6 +305,7 @@ static void derive_object_body(
 				ctable);
 	}
 
+
 	o42a_debug(
 			kind == DK_MAIN ? "Main body: " : (
 					kind == DK_INHERIT
@@ -309,6 +315,7 @@ static void derive_object_body(
 							: "Propagated body: ")));
 	o42a_debug_dump_mem(to_body, 10);
 
+	O42A_DONE;
 	O42A_RETURN;
 }
 

@@ -23,9 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
@@ -51,11 +49,26 @@ public final class DebugStackFrameOp extends StructOp {
 		return ptr(code, getType().prev());
 	}
 
+	public final RecOp<AnyOp> comment(Code code) {
+		return ptr(code, getType().comment());
+	}
+
+	public final RecOp<AnyOp> file(Code code) {
+		return ptr(code, getType().file());
+	}
+
+	public final RecOp<Int32op> line(Code code) {
+		return int32(code, getType().line());
+	}
+
 	public static final class DebugStackFrameType
 			extends Type<DebugStackFrameOp> {
 
 		private AnyPtrRec name;
 		private StructRec<DebugStackFrameOp> prev;
+		private AnyPtrRec comment;
+		private AnyPtrRec file;
+		private Int32rec line;
 
 		private DebugStackFrameType() {
 		}
@@ -73,6 +86,18 @@ public final class DebugStackFrameOp extends StructOp {
 			return this.prev;
 		}
 
+		public final AnyPtrRec comment() {
+			return this.comment;
+		}
+
+		public final AnyPtrRec file() {
+			return this.file;
+		}
+
+		public final Int32rec line() {
+			return this.line;
+		}
+
 		@Override
 		public DebugStackFrameOp op(StructWriter writer) {
 			return new DebugStackFrameOp(writer);
@@ -87,6 +112,9 @@ public final class DebugStackFrameOp extends StructOp {
 		protected void allocate(SubData<DebugStackFrameOp> data) {
 			this.name = data.addPtr("name");
 			this.prev = data.addPtr("prev", DEBUG_STACK_FRAME_TYPE);
+			this.comment = data.addPtr("comment");
+			this.file = data.addPtr("file");
+			this.line = data.addInt32("line");
 		}
 
 	}

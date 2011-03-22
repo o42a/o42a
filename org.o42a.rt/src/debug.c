@@ -30,6 +30,7 @@
 static o42a_dbg_env_t dbg_env = {
 	stack_frame: NULL,
 	command: O42A_DBG_CMD_EXEC,
+	indent: 0,
 };
 
 static volatile sig_atomic_t program_error_in_progress = 0;
@@ -89,13 +90,36 @@ inline const o42a_dbg_header_t *o42a_dbg_header(const void *const ptr) {
 }
 
 
-static inline void dbg_print_prefix(o42a_dbg_env_t *env) {
+static void dbg_indent(o42a_dbg_env_t *const env, const uint8_t indent) {
+	for (uint8_t i = (0x0f & (indent + env->indent)); i > 0; --i) {
+		fputc(' ', stderr);
+		fputc(' ', stderr);
+	}
+}
+
+static inline void dbg_print_prefix(O42A_PARAMS o42a_dbg_env_t *env) {
+	dbg_indent(__o42a_dbg_env__, 0);
 	fprintf(stderr, "[%s] ", env->stack_frame->name);
 }
 
 void o42a_dbg_print(O42A_PARAMS const char *const message) {
-	dbg_print_prefix(__o42a_dbg_env__);
+	dbg_print_prefix(O42A_ARGS __o42a_dbg_env__);
 	fputs(message, stderr);
+}
+
+void o42a_dbg_print_wo_prefix(O42A_PARAMS const char *const message) {
+	fputs(message, stderr);
+}
+
+void o42a_dbg_printf(O42A_PARAMS const char *format, ...) {
+	va_list args;
+
+	va_start(args, format);
+	dbg_print_prefix(O42A_ARGS __o42a_dbg_env__);
+
+	vfprintf(stderr, format, args);
+
+	va_end(args);
 }
 
 static inline void dbg_mem_name(const o42a_dbg_header_t *const header) {
@@ -159,6 +183,7 @@ static void dbg_exit(o42a_dbg_env_t *const env, o42a_bool_t print) {
 	o42a_dbg_stack_frame_t *const prev = stack_frame->prev;
 
 	if (print) {
+		dbg_indent(env, 0);
 		if (!prev) {
 			fprintf(stderr, ">> %s >>\n", stack_frame->name);
 		} else {
@@ -180,25 +205,18 @@ o42a_bool_t o42a_dbg_exec_command(o42a_dbg_env_t *env) {
 	}
 }
 
-static void dbg_indent(const size_t indent) {
-	for (int i = indent - 1; i >= 0; --i) {
-		fputc(' ', stderr);
-		fputc(' ', stderr);
-	}
-}
-
 static void dbg_field_value(
 		O42A_DECLS
 		const void *const data,
 		const o42a_dbg_field_info_t *const field_info,
 		const int depth,
-		const size_t indent);
+		const uint8_t indent);
 
 static void dbg_struct(
 		O42A_PARAMS
 		const o42a_dbg_header_t *const header,
 		const int depth,
-		const size_t indent) {
+		const uint8_t indent) {
 
 	const o42a_dbg_type_info_t *const type_info = header->type_info;
 	const void *const data = (void*) header;
@@ -206,7 +224,7 @@ static void dbg_struct(
 	size_t field_num = type_info->field_num;
 
 	while (field_num > 0) {
-		dbg_indent(indent);
+		dbg_indent(__o42a_dbg_env__, indent);
 		fputs(field_info->name, stderr);
 
 		const void *field_ptr = data + field_info->offset;
@@ -229,7 +247,7 @@ static void dbg_field_value(
 		const void *const data,
 		const o42a_dbg_field_info_t *const field_info,
 		const int depth,
-		const size_t indent) {
+		const uint8_t indent) {
 	switch (field_info->data_type) {
 	case O42A_TYPE_INT8: {
 
@@ -378,7 +396,7 @@ static void dbg_field_value(
 
 		fprintf(stderr, ": %s = {\n", type_info->name);
 		dbg_struct(O42A_ARGS data_header, depth - 1, indent + 1);
-		dbg_indent(indent);
+		dbg_indent(__o42a_dbg_env__, indent);
 		fputc('}', stderr);
 
 		break;
@@ -395,13 +413,16 @@ void o42a_dbg_dump_mem(
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
+	dbg_indent(__o42a_dbg_env__, 0);
 	dbg_mem_name(header);
 	fprintf(stderr, " <0x%lx>: %s = {\n", (long) ptr, header->type_info->name);
 	dbg_struct(O42A_ARGS header, depth, 1);
+	dbg_indent(__o42a_dbg_env__, 0);
 	fputs("}\n", stderr);
 }
 
 void o42a_dbg_enter(o42a_dbg_env_t *const env) {
+	dbg_indent(env, 0);
 	fprintf(stderr, "<< %s <<\n", env->stack_frame->name);
 }
 
@@ -411,6 +432,19 @@ void o42a_dbg_exit(o42a_dbg_env_t *const env) {
 
 inline void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *const frame) {
 	fputs(frame->name, stderr);
+	if (frame->file) {
+		fputs(" (", stderr);
+		fputs(frame->file, stderr);
+		if (frame->line) {
+			fprintf(stderr, ":%lu", (long) frame->line);
+		}
+		fputc(')', stderr);
+	}
+	if (frame->comment) {
+		fputs(" /* ", stderr);
+		fputs(frame->comment, stderr);
+		fputs(" */", stderr);
+	}
 }
 
 void o42a_dbg_print_stack_trace(o42a_dbg_stack_frame_t *frame) {

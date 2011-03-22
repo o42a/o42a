@@ -83,12 +83,24 @@ public abstract class StructOp implements PtrOp {
 		return getWriter().field(code, field);
 	}
 
+	protected final RecOp<Int8op> int8(Code code, Int8rec field) {
+		return getWriter().int8(code, field);
+	}
+
+	protected final RecOp<Int16op> int16(Code code, Int16rec field) {
+		return getWriter().int16(code, field);
+	}
+
 	protected final RecOp<Int32op> int32(Code code, Int32rec field) {
 		return getWriter().int32(code, field);
 	}
 
 	protected final RecOp<Int64op> int64(Code code, Int64rec field) {
 		return getWriter().int64(code, field);
+	}
+
+	protected final RecOp<Fp32op> fp32(Code code, Fp32rec field) {
+		return getWriter().fp32(code, field);
 	}
 
 	protected final RecOp<Fp64op> fp64(Code code, Fp64rec field) {

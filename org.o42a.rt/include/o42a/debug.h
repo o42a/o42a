@@ -41,13 +41,21 @@ struct o42a_dbg_stack_frame {
 
 	o42a_dbg_stack_frame_t *prev;
 
+	const char *comment;
+
+	const char *file;
+
+	uint32_t line;
+
 };
 
 struct o42a_dbg_env {
 
 	o42a_dbg_stack_frame_t *stack_frame;
 
-	uint32_t command;
+	uint8_t command;
+
+	uint8_t indent;
 
 };
 
@@ -97,6 +105,11 @@ const o42a_dbg_header_t *o42a_dbg_header(const void *);
 
 
 void o42a_dbg_print(O42A_DECLS const char *);
+
+void o42a_dbg_print_wo_prefix(O42A_DECLS const char *);
+
+__attribute__ ((format(printf, O42A_ARGC + 1, O42A_ARGC + 2)))
+void o42a_dbg_printf(O42A_DECLS const char *, ...);
 
 void o42a_dbg_mem_name(O42A_DECLS const char *, const void *);
 
