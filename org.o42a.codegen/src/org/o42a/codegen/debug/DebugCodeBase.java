@@ -19,16 +19,16 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.data.StringCodec.bytesPerChar;
-import static org.o42a.codegen.data.StringCodec.stringToBinary;
+import static org.o42a.codegen.data.StringCodec.nullTermString;
 import static org.o42a.codegen.debug.DebugDumpFunc.DEBUG_DUMP;
 import static org.o42a.codegen.debug.DebugNameFunc.DEBUG_NAME;
 import static org.o42a.codegen.debug.DebugPrintFunc.DEBUG_PRINT;
 
+import java.nio.charset.Charset;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -159,16 +159,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	private Ptr<AnyOp> binaryMessage(String message) {
-
-		final DataAlignment bytesPerChar = bytesPerChar(message);
-		final int size = (message.length() + 1) * bytesPerChar.getBytes();
-		final byte[] bytes = new byte[size];
-
-		stringToBinary(message, bytes, bytesPerChar);
-
 		return getGenerator().addBinary(
 				getGenerator().id("DEBUG_" + (debugSeq++)),
-				bytes);
+				nullTermString(Charset.defaultCharset(), message));
 	}
 
 	private final Code code() {

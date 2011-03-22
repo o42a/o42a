@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.llvm.data;
 
+import static org.o42a.codegen.data.StringCodec.nullTermString;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -258,13 +260,7 @@ public final class LLVMModule {
 		final byte[][] encoded = new byte[args.length][];
 
 		for (int i = 0; i < args.length; ++i) {
-
-			final ByteBuffer buffer = charset.encode(args[i]);
-			final int len = buffer.limit();
-			final byte[] result = new byte[len + 1];// zero-terminated
-
-			buffer.get(result, 0, len);
-			encoded[i] = result;
+			encoded[i] = nullTermString(charset, args[i]);
 		}
 
 		return encoded;

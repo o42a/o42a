@@ -19,14 +19,11 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.data.StringCodec.nullTermASCIIString;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 
 import org.o42a.codegen.CodeId;
@@ -206,20 +203,6 @@ public class Debug {
 		return this.execCommandFunc = getGenerator().externalFunction(
 				"o42a_dbg_exec_command",
 				DEBUG_EXEC_COMMAND);
-	}
-
-	private static byte[] nullTermASCIIString(String string) {
-
-		final CharsetEncoder encoder = Charset.forName("ASCII").newEncoder();
-		final int length = string.length();
-		final byte[] result = new byte[length + 1];
-
-		final CharBuffer chars = CharBuffer.wrap(string);
-		final ByteBuffer bytes = ByteBuffer.wrap(result);
-
-		encoder.encode(chars, bytes, true);
-
-		return result;
 	}
 
 	private static final class DebugCodeCallback implements CodeCallback {

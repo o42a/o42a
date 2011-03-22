@@ -21,6 +21,11 @@ package org.o42a.codegen.data;
 
 import static java.lang.Character.charCount;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
 
 public class StringCodec {
 
@@ -98,6 +103,31 @@ public class StringCodec {
 		final byte[] result = new byte[written];
 
 		System.arraycopy(bytes, 0, result, 0, written);
+
+		return result;
+	}
+
+	public static byte[] nullTermASCIIString(String string) {
+
+		final CharsetEncoder encoder = Charset.forName("ASCII").newEncoder();
+		final int length = string.length();
+		final byte[] result = new byte[length + 1];
+
+		final CharBuffer chars = CharBuffer.wrap(string);
+		final ByteBuffer bytes = ByteBuffer.wrap(result);
+
+		encoder.encode(chars, bytes, true);
+
+		return result;
+	}
+
+	public static byte[] nullTermString(Charset charset, String string) {
+
+		final ByteBuffer buffer = charset.encode(string);
+		final int len = buffer.limit();
+		final byte[] result = new byte[len + 1];// zero-terminated
+
+		buffer.get(result, 0, len);
 
 		return result;
 	}
