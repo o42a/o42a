@@ -116,7 +116,11 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_RETURN return
 
-#define O42A_DEBUG(format, args...)
+#define O42A_DEBUG(format, ...)
+
+#define O42A_DO(comment)
+
+#define O42A_DONE
 
 
 #define o42a_debug(message)
@@ -146,7 +150,11 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_PARAMS O42A_PARAM,
 
-#define O42A_ARG __o42a_dbg_env__
+#define O42A_ARG \
+	({ \
+		__o42a_dbg_env__->stack_frame->line = __LINE__; \
+		__o42a_dbg_env__; \
+	})
 
 #define O42A_ARGS O42A_ARG,
 
@@ -154,7 +162,10 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_ENTER(return_null) \
 	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = { \
 		name: __func__, \
-		prev: __o42a_dbg_env__->stack_frame \
+		prev: __o42a_dbg_env__->stack_frame, \
+		comment: NULL, \
+		file: __FILE__, \
+		line: __LINE__, \
 	}; \
 	__o42a_dbg_env__->stack_frame = &__o42a_dbg_stack_frame__; \
 	if (o42a_dbg_exec_command(__o42a_dbg_env__)) { \
@@ -165,8 +176,47 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_RETURN o42a_dbg_exit(__o42a_dbg_env__); return
 
 #define O42A_DEBUG(format, args...) \
-	fprintf(stderr, "[%s] ", __o42a_dbg_env__->stack_frame->name); \
-	fprintf(stderr, format, ## args)
+	o42a_dbg_printf(__o42a_dbg_env__, format, ## args)
+
+#define _O42A_DO_(_sf, _comment) \
+	__o42a_dbg_env__->stack_frame->line = __LINE__; \
+	o42a_dbg_stack_frame_t _sf = { \
+		name: __func__, \
+		prev: __o42a_dbg_env__->stack_frame, \
+		comment: (_comment), \
+		file: __FILE__, \
+		line: __LINE__, \
+	}; \
+	O42A_DEBUG( \
+			"((( /* %s */ (%s:%lu)\n", \
+			_sf.comment, \
+			__FILE__, \
+			(unsigned long) __LINE__); \
+	__o42a_dbg_env__->stack_frame = &_sf; \
+	++__o42a_dbg_env__->indent
+
+#define __O42A_DO(_sf, _sfend, _comment) \
+	_O42A_DO_(__o42a_dbg_stack_frame_##_sf##_sfend, _comment)
+
+#define _O42A_DO(_sf, _sfend, _comment) \
+	__O42A_DO(_sf, _sfend, _comment)
+
+#define O42A_DO(comment) _O42A_DO(__LINE__, __, comment)
+
+#define O42A_DONE \
+	do { \
+		--__o42a_dbg_env__->indent; \
+		O42A_DEBUG( \
+				"))) /* %s */ (%s:%lu)\n", \
+				__o42a_dbg_env__->stack_frame->comment, \
+				__FILE__, \
+				(unsigned long) __LINE__); \
+		o42a_dbg_stack_frame_t *const _prev = \
+				__o42a_dbg_env__->stack_frame->prev; \
+		_prev->line = __LINE__; \
+		__o42a_dbg_env__->stack_frame = _prev; \
+	} while (0)
+
 
 #define o42a_debug(message) o42a_dbg_print(O42A_ARGS message)
 

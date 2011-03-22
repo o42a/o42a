@@ -61,8 +61,8 @@ public class CtrOp extends IROp {
 			ObjectRefFunc ancestorFunc,
 			ObjectOp sample,
 			int flags) {
-		code.debug(
-				"--- newObject: sample=" + sample
+		code.begin(
+				"New object: sample=" + sample
 				+ ", ancestorFunc=" + ancestorFunc
 				+ ", scope=" + scope
 				+ ", flags=" + Integer.toHexString(flags));
@@ -74,6 +74,7 @@ public class CtrOp extends IROp {
 
 		final DataOp result = newFunc().op(code).newObject(code, this);
 
+		code.end();
 		result.isNull(code).go(code, exit);
 
 		return anonymousObject(
@@ -88,8 +89,8 @@ public class CtrOp extends IROp {
 			ObjectOp ancestor,
 			ObjectOp sample,
 			int flags) {
-		code.debug(
-				"--- newObject: sample=" + sample
+		code.begin(
+				"New object: sample=" + sample
 				+ ", ancestor=" + ancestor
 				+ ", flags=" + Integer.toHexString(flags));
 
@@ -105,14 +106,17 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final DataOp result = newFunc().op(code).newObject(code, this);
+		final DataOp resultPtr = newFunc().op(code).newObject(code, this);
 
-		result.isNull(code).go(code, exit);
+		code.end();
+		resultPtr.isNull(code).go(code, exit);
 
-		return anonymousObject(
+		final ObjectOp res = anonymousObject(
 				sample.getBuilder(),
-				result,
+				resultPtr,
 				sample.getWellKnownType());
+
+		return res;
 	}
 
 	private FuncPtr<NewObjectFunc> newFunc() {

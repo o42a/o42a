@@ -20,10 +20,12 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.data.StringCodec.nullTermASCIIString;
+import static org.o42a.codegen.data.StringCodec.nullTermString;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 
 import org.o42a.codegen.CodeId;
@@ -51,6 +53,8 @@ public class Debug {
 	private FuncPtr<DebugExecCommandFunc> execCommandFunc;
 
 	private final HashMap<String, Ptr<AnyOp>> names =
+		new HashMap<String, Ptr<AnyOp>>();
+	private final HashMap<String, Ptr<AnyOp>> messages =
 		new HashMap<String, Ptr<AnyOp>>();
 	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
 		new HashMap<Ptr<?>, DebugTypeInfo>();
@@ -91,7 +95,7 @@ public class Debug {
 		}
 
 		final Ptr<AnyOp> namePtr =
-			addASCIIString(
+			allocateName(
 					getGenerator()
 					.id("DEBUG")
 					.sub("func_name")
@@ -106,6 +110,10 @@ public class Debug {
 
 		stackFrame.name(function).store(function, namePtr.op(function));
 		stackFrame.prev(function).store(function, envStackFrame.load(function));
+		stackFrame.comment(function).store(function, function.nullPtr());
+		stackFrame.file(function).store(function, function.nullPtr());
+		stackFrame.line(function).store(function, function.int32(0));
+
 		envStackFrame.store(function, stackFrame);
 
 		final BoolOp execResult =
@@ -146,9 +154,6 @@ public class Debug {
 			"Type info already exists: " + old;
 	}
 
-	final Ptr<AnyOp> addASCIIString(CodeId id, String value) {
-		return getGenerator().addBinary(id, nullTermASCIIString(value));
-	}
 
 	final Ptr<AnyOp> allocateName(CodeId id, String value) {
 
@@ -158,9 +163,27 @@ public class Debug {
 			return found;
 		}
 
-		final Ptr<AnyOp> binary = addASCIIString(id, value);
+		final Ptr<AnyOp> binary =
+			getGenerator().addBinary(id, nullTermASCIIString(value));
 
 		this.names.put(value, binary);
+
+		return binary;
+	}
+
+	final Ptr<AnyOp> allocateMessage(CodeId id, String value) {
+
+		final Ptr<AnyOp> found = this.messages.get(value);
+
+		if (found != null) {
+			return found;
+		}
+
+		final Ptr<AnyOp> binary =  getGenerator().addBinary(
+				id,
+				nullTermString(Charset.defaultCharset(), value));
+
+		this.messages.put(value, binary);
 
 		return binary;
 	}
