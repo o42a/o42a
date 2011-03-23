@@ -61,7 +61,7 @@ public abstract class Arg<O extends Op> {
 
 	public abstract boolean compatibleWith(Op op);
 
-	protected abstract O get(FuncWriter<?> writer);
+	protected abstract O get(Code code, FuncWriter<?> writer);
 
 	@Override
 	public String toString() {
@@ -87,8 +87,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Int8op get(FuncWriter<?> writer) {
-			return writer.int8arg(getIndex());
+		protected Int8op get(Code code, FuncWriter<?> writer) {
+			return writer.int8arg(code, getIndex());
 		}
 
 	}
@@ -105,8 +105,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Int16op get(FuncWriter<?> writer) {
-			return writer.int16arg(getIndex());
+		protected Int16op get(Code code, FuncWriter<?> writer) {
+			return writer.int16arg(code, getIndex());
 		}
 
 	}
@@ -123,8 +123,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Int32op get(FuncWriter<?> writer) {
-			return writer.int32arg(getIndex());
+		protected Int32op get(Code code, FuncWriter<?> writer) {
+			return writer.int32arg(code, getIndex());
 		}
 
 	}
@@ -141,8 +141,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Int64op get(FuncWriter<?> writer) {
-			return writer.int64arg(getIndex());
+		protected Int64op get(Code code, FuncWriter<?> writer) {
+			return writer.int64arg(code, getIndex());
 		}
 
 	}
@@ -159,8 +159,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Fp32op get(FuncWriter<?> writer) {
-			return writer.fp32arg(getIndex());
+		protected Fp32op get(Code code, FuncWriter<?> writer) {
+			return writer.fp32arg(code, getIndex());
 		}
 
 	}
@@ -177,8 +177,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected Fp64op get(FuncWriter<?> writer) {
-			return writer.fp64arg(getIndex());
+		protected Fp64op get(Code code, FuncWriter<?> writer) {
+			return writer.fp64arg(code, getIndex());
 		}
 
 	}
@@ -195,8 +195,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected BoolOp get(FuncWriter<?> writer) {
-			return writer.boolArg(getIndex());
+		protected BoolOp get(Code code, FuncWriter<?> writer) {
+			return writer.boolArg(code, getIndex());
 		}
 
 	}
@@ -213,8 +213,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected RelOp get(FuncWriter<?> writer) {
-			return writer.relPtrArg(getIndex());
+		protected RelOp get(Code code, FuncWriter<?> writer) {
+			return writer.relPtrArg(code, getIndex());
 		}
 
 	}
@@ -231,8 +231,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected AnyOp get(FuncWriter<?> writer) {
-			return writer.ptrArg(getIndex());
+		protected AnyOp get(Code code, FuncWriter<?> writer) {
+			return writer.ptrArg(code, getIndex());
 		}
 
 	}
@@ -249,8 +249,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected DataOp get(FuncWriter<?> writer) {
-			return writer.dataArg(getIndex());
+		protected DataOp get(Code code, FuncWriter<?> writer) {
+			return writer.dataArg(code, getIndex());
 		}
 
 	}
@@ -285,8 +285,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected O get(FuncWriter<?> writer) {
-			return writer.ptrArg(getIndex(), this.type);
+		protected O get(Code code, FuncWriter<?> writer) {
+			return writer.ptrArg(code, getIndex(), this.type);
 		}
 
 	}
@@ -321,8 +321,8 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected F get(FuncWriter<?> writer) {
-			return writer.funcPtrArg(getIndex(), this.targetSignature);
+		protected F get(Code code, FuncWriter<?> writer) {
+			return writer.funcPtrArg(code, getIndex(), this.targetSignature);
 		}
 
 	}

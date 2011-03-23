@@ -88,7 +88,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
-			builder.getFunction().arg(OBJECT_CONSTRUCTOR.field());
+			builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
 		final DataOp previousPtr = fld.previous(code).load(code);
 
 		final CondBlk construct =

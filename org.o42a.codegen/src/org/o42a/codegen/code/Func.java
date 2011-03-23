@@ -81,7 +81,7 @@ public abstract class Func implements PtrOp {
 			return invokeFunc(code, ret, args);
 		}
 
-		final Op[] debugArgs = ArrayUtil.prepend(callee.debugEnv(), args);
+		final Op[] debugArgs = ArrayUtil.prepend(callee.debugEnv(code), args);
 
 		return invokeFunc(code, ret, debugArgs);
 	}

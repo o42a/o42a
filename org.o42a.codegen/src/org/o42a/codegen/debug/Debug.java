@@ -102,7 +102,7 @@ public class Debug {
 					.sub(id),
 					id.getId());
 
-		final DebugEnvOp debugEnv = function.debugEnv();
+		final DebugEnvOp debugEnv = function.debugEnv(function);
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(function);
 		final DebugStackFrameOp stackFrame =
@@ -238,7 +238,7 @@ public class Debug {
 			if (debug.dontExitFrom != code) {
 				debug.exitFunc().op(code).trace(
 						code,
-						code.getFunction().debugEnv());
+						code.getFunction().debugEnv(code));
 			}
 		}
 

@@ -88,13 +88,13 @@ public class CodeBuilder {
 		this.function = function;
 		if (hostPrecision.isCompatible()) {
 			this.host =
-				function.arg(getObjectSignature().object())
+				function.arg(function, getObjectSignature().object())
 				.to(function, hostIR)
 				.op(this, hostType, hostPrecision);
 		} else {
 			this.host = anonymousObject(
 					this,
-					function.arg(getObjectSignature().object()),
+					function.arg(function, getObjectSignature().object()),
 					hostType)
 					.cast(function, exit, hostType);
 		}
