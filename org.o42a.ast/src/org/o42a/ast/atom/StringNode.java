@@ -19,9 +19,7 @@
 */
 package org.o42a.ast.atom;
 
-import static java.lang.Character.isISOControl;
-import static java.lang.Character.isSupplementaryCodePoint;
-import static java.lang.Integer.toHexString;
+import static org.o42a.util.StringCodec.escapeControlChars;
 
 import org.o42a.ast.Position;
 
@@ -81,35 +79,7 @@ public class StringNode extends AbstractAtomNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		this.openingQuotationMark.printContent(out);
-
-		for (int i = 0, len = this.text.length(); i < len; ++i) {
-
-			final int cp = this.text.codePointAt(i);
-
-			if (isSupplementaryCodePoint(cp)) {
-				++i;
-			} else {
-				if (isISOControl(cp)) {
-					switch (cp) {
-					case '\n':
-						out.append("\\n");
-						continue;
-					case '\t':
-						out.append("\\t");
-						continue;
-					case '\r':
-						out.append("\\r");
-						continue;
-					default:
-						out.append('\\').append(toHexString(cp)).append('\\');
-						continue;
-					}
-				}
-			}
-
-			out.appendCodePoint(cp);
-		}
-
+		escapeControlChars(out, this.text);
 		if (this.closingQuotationMark != null) {
 			this.closingQuotationMark.printContent(out);
 		} else {

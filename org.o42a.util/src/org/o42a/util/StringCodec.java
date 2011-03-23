@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Utilities
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.data;
+package org.o42a.util;
 
 import static java.lang.Character.charCount;
 
@@ -28,6 +28,69 @@ import java.nio.charset.CharsetEncoder;
 
 
 public class StringCodec {
+
+	public static String escapeControlChars(String string) {
+		return escapeControlChars(null, string).toString();
+	}
+
+	public static CharSequence escapeControlChars(
+			StringBuilder builder,
+			String string) {
+
+		final int len = string.length();
+
+		if (builder != null) {
+			builder.ensureCapacity(builder.length() + len);
+		}
+		for (int i = 0; i < len;) {
+
+			final int c = string.codePointAt(i);
+
+			i += Character.charCount(c);
+
+			if (!Character.isISOControl(c)) {
+				if (builder != null) {
+					builder.appendCodePoint(c);
+				}
+				continue;
+			}
+
+			switch (c) {
+			case '\r':
+				if (builder == null) {
+					builder = builder(string, i, len + 2);
+				}
+				builder.append("\\r");
+				continue;
+			case '\n':
+				if (builder == null) {
+					builder = builder(string, i, len + 2);
+				}
+				builder.append("\\n");
+				continue;
+			case '\t':
+				if (builder == null) {
+					builder = builder(string, i, len + 2);
+				}
+				builder.append("\\t");
+				continue;
+			}
+
+			final String hex = Integer.toHexString(c);
+
+			if (builder == null) {
+				builder = builder(string, i, len + 2 + hex.length());
+			}
+
+			builder.append(hex);
+		}
+
+		if (builder != null) {
+			return builder;
+		}
+
+		return string;
+	}
 
 	public static DataAlignment bytesPerChar(String string) {
 
@@ -130,6 +193,15 @@ public class StringCodec {
 		buffer.get(result, 0, len);
 
 		return result;
+	}
+
+	private static StringBuilder builder(String string, int index, int len) {
+
+		final StringBuilder builder = new StringBuilder(len);
+
+		builder.append(string, 0, index);
+
+		return builder;
 	}
 
 	private StringCodec() {

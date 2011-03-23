@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.util.DataAlignment;
+
 
 public final class DataLayout {
 

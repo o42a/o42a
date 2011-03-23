@@ -281,46 +281,54 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	protected ObjOp dynamicCast(Code code, Obj ascendant) {
-		code.debug("Dynamic cast " + this + " to " + ascendant);
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
+
+		code.begin("Dynamic cast " + this + " to " + ascendantIR.getId());
+
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
-		final DataOp result =
+		final DataOp resultPtr =
 			castFunc().op(code).cast(code, this, ascendantType);
-
-		return result.to(code, ascendantIR.getBodyType()).op(
+		final ObjOp result = resultPtr.to(code, ascendantIR.getBodyType()).op(
 				getBuilder(),
 				ascendant,
 				COMPATIBLE);
+
+		code.end();
+
+		return result;
 	}
 
 	protected void writeValue(Code code, ValOp result, ObjectOp body) {
 		if (body != null) {
-			code.debug("Value of " + body + " by " + this);
+			code.begin("Value of " + body + " by " + this);
 		} else {
-			code.debug("Value of " + this);
+			code.begin("Value of " + this);
 		}
 		objectType(code).writeValue(code, result, body);
+		code.end();
 	}
 
 	protected void writeClaim(Code code, ValOp result, ObjectOp body) {
 		if (body != null) {
-			code.debug("Claim of " + body + " by " + this);
+			code.begin("Claim of " + body + " by " + this);
 		} else {
-			code.debug("Claim of " + this);
+			code.begin("Claim of " + this);
 		}
 		objectType(code).writeClaim(code, result, body);
+		code.end();
 	}
 
 	protected void writeProposition(Code code, ValOp result, ObjectOp body) {
 		if (body != null) {
-			code.debug("Proposition of " + body + " by " + this);
+			code.begin("Proposition of " + body + " by " + this);
 		} else {
-			code.debug("Proposition of " + this);
+			code.begin("Proposition of " + this);
 		}
 		objectType(code).writeProposition(code, result, body);
+		code.end();
 	}
 
 	protected final ObjectTypeOp cachedData() {

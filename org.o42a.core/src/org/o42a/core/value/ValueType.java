@@ -42,7 +42,7 @@ public abstract class ValueType<T> {
 	public static final ValueType<Void> VOID = new VoidType();
 	public static final ValueType<Long> INTEGER = new IntegerType();
 	public static final ValueType<Double> FLOAT = new FloatType();
-	public static final ValueType<String> STRING = new StringType();
+	public static final ValueType<String> STRING = new StringValueType();
 
 	public static final ValueType<java.lang.Void> NONE = new NoneType();
 
@@ -161,12 +161,16 @@ public abstract class ValueType<T> {
 		return Definitions.noValueDefinitions(location, scope, this);
 	}
 
-	protected abstract Val val(Generator generator, T value);
+	public String valueString(T value) {
+		return value.toString();
+	}
 
 	@Override
 	public String toString() {
 		return getSystemId();
 	}
+
+	protected abstract Val val(Generator generator, T value);
 
 	private static final class VoidType extends ValueType<Void> {
 
