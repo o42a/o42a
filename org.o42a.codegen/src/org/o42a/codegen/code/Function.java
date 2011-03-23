@@ -59,7 +59,7 @@ public final class Function<F extends Func> extends Code {
 		return this.writer != null;
 	}
 
-	public final DebugEnvOp debugEnv() {
+	public final DebugEnvOp debugEnv(Code code) {
 
 		final Arg<DebugEnvOp> debugEnv = getSignature().debugEnv();
 
@@ -70,15 +70,15 @@ public final class Function<F extends Func> extends Code {
 			return null;
 		}
 
-		return arg(debugEnv);
+		return arg(code, debugEnv);
 	}
 
-	public final <O extends Op> O arg(Arg<O> arg) {
+	public final <O extends Op> O arg(Code code, Arg<O> arg) {
 		assert getSignature() == arg.getSignature() :
 			"Argument " + arg + " does not belong to " + getSignature()
 			+ ". It is defined in " + arg.getSignature();
 
-		final O op = arg.get(this.writer);
+		final O op = arg.get(code, this.writer);
 
 		assert op != null :
 			"Argument " + arg + " not present in " + this;

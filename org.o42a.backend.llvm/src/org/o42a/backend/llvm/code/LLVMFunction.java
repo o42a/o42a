@@ -23,9 +23,7 @@ import static org.o42a.backend.llvm.data.LLVMId.codeId;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
@@ -69,88 +67,91 @@ public final class LLVMFunction<F extends Func>
 	}
 
 	@Override
-	public Int8op int8arg(int index) {
+	public Int8op int8arg(Code code, int index) {
 		return new LLVMInt8op(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public Int16op int16arg(int index) {
+	public Int16op int16arg(Code code, int index) {
 		return new LLVMInt16op(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public Int32op int32arg(int index) {
+	public Int32op int32arg(Code code, int index) {
 		return new LLVMInt32op(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public Int64op int64arg(int index) {
+	public Int64op int64arg(Code code, int index) {
 		return new LLVMInt64op(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public Fp32op fp32arg(int index) {
+	public Fp32op fp32arg(Code code, int index) {
 		return new LLVMFp32op(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public Fp64op fp64arg(int index) {
+	public Fp64op fp64arg(Code code, int index) {
 		return new LLVMFp64op(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public BoolOp boolArg(int index) {
+	public BoolOp boolArg(Code code, int index) {
 		return new LLVMBoolOp(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public RelOp relPtrArg(int index) {
+	public RelOp relPtrArg(Code code, int index) {
 		return new LLVMRelOp(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public AnyOp ptrArg(int index) {
+	public AnyOp ptrArg(Code code, int index) {
 		return new LLVMAnyOp(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public DataOp dataArg(int index) {
+	public DataOp dataArg(Code code, int index) {
 		return new LLVMDataOp(
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index));
 	}
 
 	@Override
-	public <O extends StructOp> O ptrArg(int index, Type<O> type) {
+	public <O extends StructOp> O ptrArg(Code code, int index, Type<O> type) {
 		return type.op(new LLVMStruct(
 				type,
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index)));
 	}
 
 	@Override
-	public <FF extends Func> FF funcPtrArg(int index, Signature<FF> signature) {
+	public <FF extends Func> FF funcPtrArg(
+			Code code,
+			int index,
+			Signature<FF> signature) {
 		return signature.op(new LLVMFunc<FF>(
 				signature,
-				head().getBlockPtr(),
+				nextPtr(code),
 				arg(getFunctionPtr(), index)));
 	}
 

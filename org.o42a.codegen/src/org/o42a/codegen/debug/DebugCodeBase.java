@@ -87,7 +87,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final Code code = code();
 		final Function<?> function = code.getFunction();
 
-		final DebugEnvOp debugEnv = function.debugEnv();
+		final DebugEnvOp debugEnv = function.debugEnv(code);
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);
 		final DebugStackFrameOp prevStackFrame = envStackFrame.load(code);
@@ -137,7 +137,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final Code code = code();
 		final Function<?> function = code.getFunction();
 
-		final DebugEnvOp debugEnv = function.debugEnv();
+		final DebugEnvOp debugEnv = function.debugEnv(code);
 
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);

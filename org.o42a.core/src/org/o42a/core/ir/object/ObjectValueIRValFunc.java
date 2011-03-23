@@ -105,7 +105,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		}
 
 		final CodeBlk failure = function.addBlock("failure");
-		final ValOp result = function.arg(OBJECT_VAL.value());
+		final ValOp result = function.arg(function, OBJECT_VAL.value());
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				failure.head(),

@@ -145,8 +145,8 @@ final class MainCall extends DefinedObject {
 		executeMain.op(debugMain).call(
 				debugMain,
 				main.getPointer().op(debugMain),
-				debugMain.arg(MAIN.argc()),
-				debugMain.arg(MAIN.argv())).returnValue(debugMain);
+				debugMain.arg(debugMain, MAIN.argc()),
+				debugMain.arg(debugMain, MAIN.argv())).returnValue(debugMain);
 	}
 
 }
