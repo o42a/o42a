@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.llvm.data;
 
-import static org.o42a.codegen.data.StringCodec.nullTermString;
+import static org.o42a.util.StringCodec.nullTermString;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

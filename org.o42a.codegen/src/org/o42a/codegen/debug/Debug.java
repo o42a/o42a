@@ -19,11 +19,11 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.data.StringCodec.nullTermASCIIString;
-import static org.o42a.codegen.data.StringCodec.nullTermString;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
+import static org.o42a.util.StringCodec.nullTermASCIIString;
+import static org.o42a.util.StringCodec.nullTermString;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;

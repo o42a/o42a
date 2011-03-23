@@ -19,36 +19,49 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.codegen.data.StringCodec.bytesPerChar;
-import static org.o42a.codegen.data.StringCodec.stringToBinary;
 import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.op.Val.EXTERNAL_FLAG;
+import static org.o42a.util.StringCodec.bytesPerChar;
+import static org.o42a.util.StringCodec.escapeControlChars;
+import static org.o42a.util.StringCodec.stringToBinary;
 
 import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.DataAlignment;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.Val;
+import org.o42a.util.DataAlignment;
 
 
-final class StringType extends ValueType<String> {
+final class StringValueType extends ValueType<String> {
 
 	private static Generator cacheGenerator;
 	private static final HashMap<String, Val> cache =
 		new HashMap<String, Val>();
 	private static int seq;
 
-	StringType() {
+	StringValueType() {
 		super("string", String.class);
 	}
 
 	@Override
 	public Obj wrapper(Intrinsics intrinsics) {
 		return intrinsics.getString();
+	}
+
+	@Override
+	public String valueString(String value) {
+
+		final StringBuilder out = new StringBuilder(value.length() + 2);
+
+		out.append('"');
+		escapeControlChars(out, value);
+		out.append('"');
+
+		return out.toString();
 	}
 
 	@Override

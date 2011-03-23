@@ -69,7 +69,17 @@ final class DefiniteValue<T> extends Value<T> {
 
 	@Override
 	public String toString() {
-		return '(' + getValueType().toString() + ") " + this.value;
+		return valueString(getValueType(), this.value);
+	}
+
+	private static <T> String valueString(ValueType<T> valueType, T value) {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('(').append(valueType).append(") ");
+		out.append(valueType.valueString(value));
+
+		return out.toString();
 	}
 
 	static final class DefiniteObject<T> extends Result {
@@ -94,7 +104,11 @@ final class DefiniteValue<T> extends Value<T> {
 
 		@Override
 		public String toString() {
-			return "(" + getValueType() + ") " + this.value;
+
+			@SuppressWarnings("unchecked")
+			final ValueType<T> valueType = (ValueType<T>) getValueType();
+
+			return valueString(valueType, this.value);
 		}
 
 		@Override
