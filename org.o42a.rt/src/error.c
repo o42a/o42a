@@ -27,9 +27,9 @@
 void o42a_error_print_str(O42A_PARAMS const o42a_val_t *const message) {
 	O42A_ENTER(return);
 
-	o42a_error_start(O42A_ARG);
-	o42a_error_append_str(O42A_ARGS message);
-	o42a_error_end(O42A_ARG);
+	O42A(o42a_error_start(O42A_ARG));
+	O42A(o42a_error_append_str(O42A_ARGS message));
+	O42A(o42a_error_end(O42A_ARG));
 
 	O42A_RETURN;
 }
@@ -37,9 +37,9 @@ void o42a_error_print_str(O42A_PARAMS const o42a_val_t *const message) {
 void o42a_error_print(O42A_PARAMS const char *const message) {
 	O42A_ENTER(return);
 
-	o42a_error_start(O42A_ARG);
-	fputs(message, stderr);
-	o42a_error_end(O42A_ARG);
+	O42A(o42a_error_start(O42A_ARG));
+	O42A(fputs(message, stderr));
+	O42A(o42a_error_end(O42A_ARG));
 
 	O42A_RETURN;
 }
@@ -50,12 +50,12 @@ void o42a_error_printf(O42A_PARAMS const char *const format, ...) {
 	va_list args;
 
 	va_start(args, format);
-	o42a_error_start(O42A_ARG);
+	O42A(o42a_error_start(O42A_ARG));
 
-	vfprintf(stderr, format, args);
+	O42A(vfprintf(stderr, format, args));
 
 	va_end(args);
-	o42a_error_end(O42A_ARG);
+	O42A(o42a_error_end(O42A_ARG));
 
 	O42A_RETURN;
 }
@@ -64,7 +64,7 @@ void o42a_error_printf(O42A_PARAMS const char *const format, ...) {
 inline void o42a_error_start(O42A_PARAM) {
 	O42A_ENTER(return);
 
-	fputs("[E] ", stderr);
+	O42A(fputs("[E] ", stderr));
 
 	O42A_RETURN;
 }
@@ -78,17 +78,17 @@ void o42a_error_append_str(O42A_PARAMS const o42a_val_t *const message) {
 		O42A_RETURN;
 	}
 
-	const size_t step = o42a_val_alignment(O42A_ARGS message);
-	const UChar32 cmask = o42a_str_cmask(O42A_ARGS message);
-	const void *const str = o42a_val_data(O42A_ARGS message);
+	const size_t step = O42A(o42a_val_alignment(O42A_ARGS message));
+	const UChar32 cmask = O42A(o42a_str_cmask(O42A_ARGS message));
+	const void *const str = O42A(o42a_val_data(O42A_ARGS message));
 
-	UFILE *const uerr = u_finit(stderr, NULL, NULL);
+	UFILE *const uerr = O42A(u_finit(stderr, NULL, NULL));
 
 	for (size_t i = 0; i < len; i += step) {
-		u_fputc(*((UChar32*) (str + i)) & cmask, uerr);
+		O42A(u_fputc(*((UChar32*) (str + i)) & cmask, uerr));
 	}
 
-	u_fclose(uerr);
+	O42A(u_fclose(uerr));
 
 	O42A_RETURN;
 }
@@ -96,7 +96,7 @@ void o42a_error_append_str(O42A_PARAMS const o42a_val_t *const message) {
 inline void o42a_error_append(O42A_PARAMS const char *const message) {
 	O42A_ENTER(return);
 
-	fputs(message, stderr);
+	O42A(fputs(message, stderr));
 
 	O42A_RETURN;
 }
@@ -107,7 +107,7 @@ void o42a_error_appendf(O42A_PARAMS const char *const format, ...) {
 	va_list args;
 
 	va_start(args, format);
-	vfprintf(stderr, format, args);
+	O42A(vfprintf(stderr, format, args));
 	va_end(args);
 
 	O42A_RETURN;
@@ -116,7 +116,7 @@ void o42a_error_appendf(O42A_PARAMS const char *const format, ...) {
 inline void o42a_error_end(O42A_PARAM) {
 	O42A_ENTER(return);
 
-	fputc('\n', stderr);
+	O42A(fputc('\n', stderr));
 
 	O42A_RETURN;
 }
