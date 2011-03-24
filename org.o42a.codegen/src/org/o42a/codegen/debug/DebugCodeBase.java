@@ -117,6 +117,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	public CodePos end(String id, CodePos codePos) {
+		if (codePos == null) {
+			return null;
+		}
 		if (!isDebug()) {
 			return codePos;
 		}
@@ -220,14 +223,17 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		debug(message, false);
-
 		final FuncPtr<DebugDumpFunc> func =
 			this.generator.externalFunction(
 					"o42a_dbg_dump_mem",
 					DEBUG_DUMP);
+		final Code code = code();
 
-		func.op(code()).call(code(), data, code().int32(depth));
+		func.op(code).call(
+				code,
+				binaryMessage(message).op(code),
+				data,
+				code.int32(depth));
 	}
 
 	private FuncPtr<DebugPrintFunc> printFunc() {

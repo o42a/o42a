@@ -75,7 +75,7 @@ public final class DebuggableMainFunc extends Func {
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnInt32();
 			this.argc = builder.addInt32("argc");
-			this.argv = builder.addAny("argv");
+			this.argv = builder.addPtr("argv");
 		}
 
 	}

@@ -44,16 +44,14 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 
 	public void call(Code code, ValOp result, ObjOp host, ObjectOp body) {
 		if (code.isDebug()) {
+			code.begin("Calculate value " + this);
 			if (body != null) {
-				code.dumpName(
-						"Calculate value " + this + " for ",
-						body.toData(code));
-			} else {
-				code.debug("Calculate value " + this);
+				code.dumpName("For: ", body.toData(code));
 			}
 		}
 
 		if (writeFalseValue(code, result, body)) {
+			code.end();
 			return;
 		}
 
@@ -68,12 +66,14 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 				if (!object.isRuntime() || value.getSource() == object) {
 					code.debug(getObjectIR().getId() + " = " + realValue);
 					result.store(code, realValue.val(getGenerator()));
+					code.end();
 					return;
 				}
 			}
 		}
 
 		get(host).op(code).call(code, result, body(code, host, body));
+		code.end();
 	}
 
 	public void create(ObjectTypeIR typeIR, Definitions definitions) {
@@ -87,7 +87,6 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			final Function<ObjectValFunc> function =
 				getGenerator().newFunction().create(getId(), OBJECT_VAL);
 
-			function.debug("Calculating value");
 			set(typeIR, function.getPointer());
 		}
 	}
@@ -103,6 +102,8 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		if (function == null) {
 			return;
 		}
+
+		function.debug("Calculating value");
 
 		final CodeBlk failure = function.addBlock("failure");
 		final ValOp result = function.arg(function, OBJECT_VAL.value());
@@ -260,19 +261,18 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 
 		if (isClaim()) {
 			if (hasAncestor.isDebug()) {
-				hasAncestor.dumpName(
-						"Ancestor claim: ",
-						ancestorBody.toData(code));
+				hasAncestor.begin("Ancestor claim");
+				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
 			}
 			ancestorType.writeClaim(hasAncestor, result, ancestorBody);
 		} else {
 			if (hasAncestor.isDebug()) {
-				hasAncestor.dumpName(
-						"Ancestor proposition: ",
-						ancestorBody.toData(code));
+				hasAncestor.begin("Ancestor proposition");
+				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
 			}
 			ancestorType.writeProposition(hasAncestor, result, ancestorBody);
 		}
+		hasAncestor.end();
 
 		hasAncestor.go(code.tail());
 	}

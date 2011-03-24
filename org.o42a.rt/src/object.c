@@ -294,26 +294,27 @@ static void derive_object_body(
 
 		const o42a_fld_desc_t *const desc = o42a_fld_desc(O42A_ARGS field);
 
-		o42a_debug_mem_name(
-				kind == DK_INHERIT ? "Inherit field " : "Propagate field ",
-				ctable->from.fld);
-		O42A_DEBUG("To: <0x%lx>\n", (long) ctable->to.fld);
-		o42a_debug_dump_mem(field, 1000);
+		O42A_DO(kind == DK_INHERIT ? "Inherit field" : "Propagate field");
+		o42a_debug_mem_name("From: ", ctable->from.fld);
+		O42A_DEBUG("To: <0x%lx>\n", (long) &ctable->to.fld);
+		o42a_debug_dump_mem("Field: ", field, 3);
 
 		(kind == DK_INHERIT ? desc->inherit : desc->propagate) (
 				O42A_ARGS
 				ctable);
+
+		O42A_DONE;
 	}
 
-
-	o42a_debug(
+	o42a_debug_dump_mem(
 			kind == DK_MAIN ? "Main body: " : (
 					kind == DK_INHERIT
 					? "Inherited body: " : (
 							kind == DK_COPY
 							? "Copied body: "
-							: "Propagated body: ")));
-	o42a_debug_dump_mem(to_body, 10);
+							: "Propagated body: ")),
+			to_body,
+			3);
 
 	O42A_DONE;
 	O42A_RETURN;
@@ -598,8 +599,7 @@ static o42a_obj_rtype_t *propagate_object(
 	fill_field_infos(O42A_ARGS type, type_info);
 #endif
 
-	o42a_debug("Object: ");
-	o42a_debug_dump_mem(mem, 10);
+	o42a_debug_dump_mem("Object: ", mem, 3);
 
 	O42A_RETURN type;
 }
@@ -926,8 +926,7 @@ o42a_obj_t *o42a_obj_new(
 	fill_field_infos(O42A_ARGS type, type_info);
 #endif
 
-	o42a_debug("Object: ");
-	o42a_debug_dump_mem(mem, 10);
+	o42a_debug_dump_mem("Object: ", mem, 3);
 
 	O42A_RETURN object;
 }

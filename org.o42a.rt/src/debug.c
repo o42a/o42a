@@ -408,12 +408,13 @@ static void dbg_field_value(
 
 void o42a_dbg_dump_mem(
 		O42A_PARAMS
+		const char *const prefix,
 		const void *const ptr,
 		const uint32_t depth) {
+	o42a_debug(prefix);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
-	dbg_indent(__o42a_dbg_env__, 0);
 	dbg_mem_name(header);
 	fprintf(stderr, " <0x%lx>: %s = {\n", (long) ptr, header->type_info->name);
 	dbg_struct(O42A_ARGS header, depth, 1);
