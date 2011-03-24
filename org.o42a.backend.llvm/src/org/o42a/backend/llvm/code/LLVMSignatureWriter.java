@@ -137,7 +137,7 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
-	public void addAny() {
+	public void addPtr() {
 		addParam(this.module.anyType());
 	}
 

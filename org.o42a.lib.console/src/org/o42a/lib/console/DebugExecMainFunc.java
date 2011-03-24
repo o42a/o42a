@@ -92,7 +92,7 @@ public final class DebugExecMainFunc extends Func {
 			this.result = builder.returnInt32();
 			this.main = builder.addFuncPtr("main", DEBUGGABLE_MAIN);
 			this.argc = builder.addInt32("argc");
-			this.argv = builder.addAny("argv");
+			this.argv = builder.addPtr("argv");
 		}
 
 	}

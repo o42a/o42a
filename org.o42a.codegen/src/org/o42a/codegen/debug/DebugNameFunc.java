@@ -72,8 +72,8 @@ final class DebugNameFunc extends Func {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
-			this.message = builder.addAny("message");
-			this.data = builder.addAny("data");
+			this.message = builder.addPtr("message");
+			this.data = builder.addPtr("data");
 		}
 
 	}

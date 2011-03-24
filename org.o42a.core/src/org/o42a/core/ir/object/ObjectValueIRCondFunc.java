@@ -42,10 +42,12 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 			CodePos exit,
 			ObjOp host,
 			ObjectOp body) {
-		if (body != null) {
-			code.debug("Calculate condition " + this + " for " + body);
-		} else {
-			code.debug("Calculate condition " + this);
+		if (code.isDebug()) {
+			code.begin("Calculate condition " + this);
+			if (body != null) {
+				code.dumpName("For: ", body.toData(code));
+			}
+			exit = code.end("debug_exit", exit);
 		}
 
 		final Obj object = getObjectIR().getObject();
@@ -59,12 +61,15 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 			} else {
 				code.debug("True");
 			}
+			code.end();
 			return;
 		}
 
 		get(host).op(code).call(
 				code,
 				body(code, host, body)).goUnless(code, exit);
+
+		code.end();
 	}
 
 	public void create(ObjectTypeIR typeIR, Definitions definitions) {
@@ -88,7 +93,6 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		final Function<ObjectCondFunc> function =
 			getGenerator().newFunction().create(getId(), OBJECT_COND);
 
-		function.debug("Calculating condition");
 		set(typeIR, function.getPointer());
 	}
 
@@ -103,6 +107,8 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 		if (function == null) {
 			return;
 		}
+
+		function.debug("Calculating condition");
 
 		final CodeBlk exit = function.addBlock("exit");
 		final ObjBuilder builder = new ObjBuilder(
@@ -188,19 +194,20 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 
 		if (isRequirement()) {
 			if (hasAncestor.isDebug()) {
-				hasAncestor.dumpName(
-						"Ancestor requirement: ",
-						ancestorBody.toData(code));
+				hasAncestor.begin("Ancestor requirement");
+				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
+				exit = hasAncestor.end("debug_exit", exit);
 			}
 			ancestorType.writeRequirement(hasAncestor, exit, ancestorBody);
 		} else {
 			if (hasAncestor.isDebug()) {
-				hasAncestor.dumpName(
-						"Ancestor condition: ",
-						ancestorBody.toData(code));
+				hasAncestor.begin("Ancestor condition");
+				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
+				exit = hasAncestor.end("debug_exit", exit);
 			}
 			ancestorType.writeCondition(hasAncestor, exit, ancestorBody);
 		}
+		hasAncestor.end();
 
 		hasAncestor.go(code.tail());
 	}

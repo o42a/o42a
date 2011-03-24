@@ -133,14 +133,14 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				"val_definite");
 		final CodeBlk definite = indefinite.otherwise();
 
-		definite.dump(this + " value is definite:\n", value);
+		definite.dump(this + " value is definite: ", value);
 		if (result != null) {
 			result.store(definite, value);
 		}
 		checkValue(definite, code.tail(), exit, value);
 
 		writeValue(indefinite, value, null);
-		indefinite.dump(this + " value calculated:\n", value);
+		indefinite.dump(this + " value calculated: ", value);
 		if (result != null) {
 			result.store(indefinite, value);
 		}
@@ -154,8 +154,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			CodePos exit,
 			ValOp result,
 			ObjectOp body) {
+		code.begin("Write value of " + body + " by " + this);
 		writeValue(code, result, body);
-		code.dump("Write value of " + body + " by " + this + ":\n", result);
+		code.dump("Value: ", result);
+		code.end();
 		if (exit != null) {
 			result.loadCondition(code).goUnless(code, exit);
 		}
@@ -167,11 +169,13 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public void writeRequirement(Code code, CodePos exit, ObjectOp body) {
 		if (body != null) {
-			code.debug("Requirement of " + body);
+			code.begin("Requirement of " + body);
 		} else {
-			code.debug("Requirement");
+			code.begin("Requirement");
 		}
+		exit = code.end("debug_false_req", exit);
 		objectType(code).writeRequirement(code, exit, body);
+		code.end();
 	}
 
 	public final void writeClaim(Code code, ValOp result) {
@@ -199,11 +203,13 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public void writeCondition(Code code, CodePos exit, ObjOp body) {
 		if (body != null) {
-			code.debug("Condition of " + body.getAscendant() + " by " + this);
+			code.begin("Condition of " + body.getAscendant() + " by " + this);
 		} else {
-			code.debug("Condition of " + this);
+			code.begin("Condition of " + this);
 		}
+		exit = code.end("debug_false_cond", exit);
 		objectType(code).writeCondition(code, exit, body);
+		code.end();
 	}
 
 	public final void writeProposition(Code code, ValOp result) {

@@ -129,7 +129,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define o42a_debug_func_name(prefix, ptr)
 
-#define o42a_debug_dump_mem(ptr, depth)
+#define o42a_debug_dump_mem(prefix, ptr, depth)
 
 
 #else /* NDEBUG */
@@ -226,8 +226,8 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define o42a_debug_func_name(prefix, ptr) \
 	o42a_dbg_func_name(O42A_ARGS prefix, ptr)
 
-#define o42a_debug_dump_mem(ptr, depth) \
-	o42a_dbg_dump_mem(O42A_ARGS ptr, depth)
+#define o42a_debug_dump_mem(prefix, ptr, depth) \
+	o42a_dbg_dump_mem(O42A_ARGS prefix, ptr, depth)
 
 
 #include "o42a/debug.h"

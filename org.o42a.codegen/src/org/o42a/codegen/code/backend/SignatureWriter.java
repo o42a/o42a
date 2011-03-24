@@ -64,7 +64,7 @@ public interface SignatureWriter<F extends Func> {
 
 	void addRelPtr();
 
-	void addAny();
+	void addPtr();
 
 	void addData();
 

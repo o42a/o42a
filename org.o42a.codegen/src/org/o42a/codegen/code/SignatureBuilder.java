@@ -129,8 +129,8 @@ public final class SignatureBuilder {
 		return arg(new Arg.RelPtrArg(this.signature, argIndex(), name));
 	}
 
-	public final Arg<AnyOp> addAny(String name) {
-		this.writer.addAny();
+	public final Arg<AnyOp> addPtr(String name) {
+		this.writer.addPtr();
 		return arg(new Arg.AnyArg(this.signature, argIndex(), name));
 	}
 

@@ -67,7 +67,7 @@ final class DebugPrintFunc extends Func {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
-			this.message = builder.addAny("message");
+			this.message = builder.addPtr("message");
 		}
 
 	}

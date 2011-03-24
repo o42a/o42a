@@ -115,7 +115,7 @@ void o42a_dbg_mem_name(O42A_DECLS const char *, const void *);
 
 void o42a_dbg_func_name(O42A_DECLS const char *, const void *);
 
-void o42a_dbg_dump_mem(O42A_DECLS const void *, uint32_t);
+void o42a_dbg_dump_mem(O42A_DECLS const char *, const void *, uint32_t);
 
 o42a_bool_t o42a_dbg_exec_command(o42a_dbg_env_t *);
 

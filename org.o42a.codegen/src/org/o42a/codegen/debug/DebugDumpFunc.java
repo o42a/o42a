@@ -23,6 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
 
@@ -35,13 +36,14 @@ final class DebugDumpFunc extends Func {
 		super(caller);
 	}
 
-	public void call(Code code, DataOp data, Int32op depth) {
-		invoke(code, DEBUG_DUMP.result(), data, depth);
+	public void call(Code code, AnyOp prefix, DataOp data, Int32op depth) {
+		invoke(code, DEBUG_DUMP.result(), prefix, data, depth);
 	}
 
 	public static final class DebugDump extends Signature<DebugDumpFunc> {
 
 		private Return<Void> result;
+		private Arg<AnyOp> prefix;
 		private Arg<DataOp> data;
 		private Arg<Int32op> depth;
 
@@ -50,6 +52,10 @@ final class DebugDumpFunc extends Func {
 
 		public final Return<Void> result() {
 			return this.result;
+		}
+
+		public final Arg<AnyOp> prefix() {
+			return this.prefix;
 		}
 
 		public final Arg<DataOp> data() {
@@ -73,6 +79,7 @@ final class DebugDumpFunc extends Func {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
+			this.prefix = builder.addPtr("prefix");
 			this.data = builder.addData("data");
 			this.depth = builder.addInt32("depth");
 		}
