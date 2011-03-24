@@ -33,17 +33,17 @@ void o42a_io_print_str(O42A_PARAMS const o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	const size_t step = o42a_val_alignment(O42A_ARGS val);
-	const UChar32 cmask = o42a_str_cmask(O42A_ARGS val);
-	const void *const str = o42a_val_data(O42A_ARGS val);
+	const size_t step = O42A(o42a_val_alignment(O42A_ARGS val));
+	const UChar32 cmask = O42A(o42a_str_cmask(O42A_ARGS val));
+	const void *const str = O42A(o42a_val_data(O42A_ARGS val));
 
-	UFILE *const uout = u_finit(stdout, NULL, NULL);
+	UFILE *const uout = O42A(u_finit(stdout, NULL, NULL));
 
 	for (size_t i = 0; i < len; i += step) {
-		u_fputc(*((UChar32*) (str + i)) & cmask, uout);
+		O42A(u_fputc(*((UChar32*) (str + i)) & cmask, uout));
 	}
 
-	u_fclose(uout);
+	O42A(u_fclose(uout));
 
 	O42A_RETURN;
 }

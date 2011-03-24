@@ -94,13 +94,14 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final DebugStackFrameOp stackFrame =
 			code.allocate(DEBUG_STACK_FRAME_TYPE);
 
+		prevStackFrame.comment(code).store(
+				code,
+				binaryMessage(comment).op(code));
 		stackFrame.name(code).store(
 				code,
 				prevStackFrame.name(code).load(code));
 		stackFrame.prev(code).store(code, prevStackFrame);
-		stackFrame.comment(code).store(
-				code,
-				binaryMessage(comment).op(code));
+		stackFrame.comment(code).store(code, code.nullPtr());
 		stackFrame.file(code).store(code, code.nullPtr());
 		stackFrame.line(code).store(code, code.int32(0));
 
@@ -144,9 +145,12 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);
-		final DebugStackFrameOp oldStackFrame = envStackFrame.load(code);
+		final DebugStackFrameOp prevStackFrame =
+			envStackFrame.load(code).prev(code).load(code);
+		final AnyOp comment = prevStackFrame.comment(code).load(code);
 
-		envStackFrame.store(code, oldStackFrame.prev(code).load(code));
+		prevStackFrame.comment(code).store(code, code.nullPtr());
+		envStackFrame.store(code, prevStackFrame);
 
 		final RecOp<Int8op> indent = debugEnv.indent(code);
 
@@ -155,7 +159,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final DebugPrintFunc printFunc = printWoPrefixFunc().op(code);
 
 		debug("))) /* ", false);
-		printFunc.call(code, oldStackFrame.comment(code).load(code));
+		printFunc.call(code, comment);
 		printFunc.call(code, binaryMessage(" */\n").op(code));
 	}
 

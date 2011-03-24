@@ -41,22 +41,22 @@ void o42a_fld_link_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 
 	to->object = NULL;
 
-	o42a_obj_overrider_t *const overrider = o42a_obj_field_overrider(
+	o42a_obj_overrider_t *const overrider = O42A(o42a_obj_field_overrider(
 			O42A_ARGS
 			ctable->sample_type,
-			ctable->field);
+			ctable->field));
 
 	if (overrider) {// Field is overridden.
-		if (!o42a_obj_ascendant_of_type(
+		if (!O42A(o42a_obj_ascendant_of_type(
 				O42A_ARGS
 				&ctable->ancestor_type->type.data,
-				overrider->defined_in)) {
+				overrider->defined_in))) {
 			// The body overrider defined in isn't present in ancestor
 			// and thus not overridden there.
 			// Use definition from overrider.
-			to->constructor = o42a_fld_by_overrider(
+			to->constructor = O42A(o42a_fld_by_overrider(
 					O42A_ARGS
-					overrider)->link.constructor;
+					overrider)->link.constructor);
 			O42A_RETURN;
 		}
 	}

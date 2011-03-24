@@ -68,7 +68,7 @@ int32_t o42a_dbg_exec_main(
 
 	O42A_DEBUG("Executing main\n");
 
-	const int32_t result = main(O42A_ARGS argc, argv);
+	const int32_t result = O42A(main(O42A_ARGS argc, argv));
 
 	O42A_DEBUG("Return code: %li\n", (long) result);
 
@@ -138,7 +138,7 @@ void o42a_dbg_mem_name(
 		O42A_PARAMS
 		const char *const prefix,
 		const void *const ptr) {
-	o42a_debug(prefix);
+	o42a_dbg_print(O42A_ARGS prefix);
 	if (!ptr) {
 		fputs("NULL\n", stderr);
 		return;
@@ -169,7 +169,7 @@ void o42a_dbg_func_name(
 		O42A_PARAMS
 		const char *const prefix,
 		const void *const ptr) {
-	o42a_debug(prefix);
+	o42a_dbg_print(O42A_ARGS prefix);
 	dbg_func_name(O42A_ARGS ptr);
 	fputc('\n', stderr);
 }
@@ -411,7 +411,7 @@ void o42a_dbg_dump_mem(
 		const char *const prefix,
 		const void *const ptr,
 		const uint32_t depth) {
-	o42a_debug(prefix);
+	o42a_dbg_print(O42A_ARGS prefix);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
@@ -494,7 +494,10 @@ void o42a_dbg_fill_header(
 					(o42a_dbg_header_t*)
 					(((void*) header) + field_info->offset);
 
-			o42a_dbg_fill_header(O42A_ARGS field_info->type_info, to, header);
+			o42a_dbg_fill_header(
+					O42A_ARGS field_info->type_info,
+					to,
+					header);
 			to->name = field_info->name;
 		}
 
@@ -545,7 +548,7 @@ void o42a_dbg_copy_header(
 			o42a_dbg_header_t *const t =
 					(o42a_dbg_header_t*) (((void*) to) + field_info->offset);
 
-			o42a_dbg_copy_header(O42A_ARGS f, t, to);
+			O42A(o42a_dbg_copy_header(O42A_ARGS f, t, to));
 		}
 
 		if (!(--field_num)) {
