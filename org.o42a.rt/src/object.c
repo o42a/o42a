@@ -455,11 +455,14 @@ static inline void fill_field_infos(
 	const size_t num_ascendants = data->ascendants.size;
 
 	for (size_t i = 0; i < num_ascendants; ++i) {
+
+		const o42a_obj_body_t *const body = o42a_obj_ascendant_body(
+				O42A_ARGS
+				ascendants + i);
+
 		O42A(o42a_dbg_fill_field_info(
 				O42A_ARGS
-				&o42a_obj_ascendant_body(
-						O42A_ARGS
-						ascendants + i)->__o42a_dbg_header__,
+				o42a_dbg_header(body),
 				field_info++));
 	}
 
@@ -508,12 +511,14 @@ static o42a_obj_rtype_t *propagate_object(
 	const size_t type_start = data_start - offsetof(o42a_obj_rtype_t, data);
 	const o42a_layout_t obj_rtype_layout = O42A_LAYOUT(o42a_obj_rtype_t);
 
-	const size_t ascendants_start =
-			type_start + o42a_layout_size(O42A_ARGS obj_rtype_layout);
+	const o42a_layout_t ascendant_layout = O42A_LAYOUT(o42a_obj_ascendant_t);
+	const size_t ascendants_start = o42a_layout_pad(
+			O42A_ARGS
+			type_start + o42a_layout_size(O42A_ARGS obj_rtype_layout),
+			ascendant_layout);
 	const size_t num_ascendants = adata->ascendants.size;
 	const size_t num_samples = adata->samples.size;
 
-	const o42a_layout_t ascendant_layout = O42A_LAYOUT(o42a_obj_ascendant_t);
 	const o42a_layout_t sample_layout = O42A_LAYOUT(o42a_obj_sample_t);
 	const size_t samples_start =
 			o42a_layout_pad(
@@ -638,7 +643,7 @@ static inline size_t fill_sample_data(
 
 		sample_data->sample = old_sample;
 		if (O42A(o42a_obj_ascendant_of_type(O42A_ARGS adata, body_type))) {
-			// sample body already present in ancestor
+			// Sample body already present in ancestor.
 			sample_data->old_body = NULL;
 		} else {
 			sample_data->old_body = old_body;
@@ -663,18 +668,18 @@ static inline void propagate_samples(
 		O42A_PARAMS
 		o42a_obj_ctable_t *const ctable,
 		void *mem,
-		o42a_obj_ascendant_t *ascendants,
 		o42a_obj_body_t *const ancestor_body,
 		sample_data_t *sample_data) {
 	O42A_ENTER(return);
 
 	const size_t num_ancestors =
 			ctable->ancestor_type->type.data.ascendants.size;
-	const o42a_obj_data_t *const data = &ctable->sample_type->data;
-	o42a_obj_ascendant_t *ascendant = ascendants;
+	const o42a_obj_data_t *const data = &ctable->object_type->data;
+	o42a_obj_ascendant_t *ascendant =
+			o42a_obj_ascendants(O42A_ARGS data) + num_ancestors;
 	o42a_obj_sample_t *sample = O42A(o42a_obj_samples(O42A_ARGS data));
 
-	for (size_t i = data->samples.size; i > 0; --i) {
+	for (size_t i = data->samples.size; i > 0;) {
 
 		o42a_obj_body_t *const old_body = sample_data->old_body;
 
@@ -683,13 +688,36 @@ static inline void propagate_samples(
 			++sample_data;
 			continue;
 		}
+		--i;
 
 		o42a_obj_body_t *const new_body =
 				(o42a_obj_body_t*) (mem + sample_data->new_body);
 
-		sample->body = ((void*) sample) - ((void*) new_body);
+		sample->body = ((void*) new_body) - ((void*) sample);
 		ascendant->type = old_body->methods->object_type;
-		ascendant->body = ((void*) ascendant) - ((void*) new_body);
+		ascendant->body = ((void*) new_body) - ((void*) ascendant);
+
+#ifndef NDEBUG
+
+		O42A_DEBUG("Sample: <0x%lx>\n", (long) sample);
+		// Copy sample header.
+		O42A(o42a_dbg_copy_header(
+				O42A_ARGS
+				o42a_dbg_header(sample_data->sample),
+				&sample->__o42a_dbg_header__,
+				(o42a_dbg_header_t*) mem));
+
+		// Copy ascendant header.
+		O42A(o42a_dbg_copy_header(
+				O42A_ARGS
+				o42a_dbg_header(o42a_obj_ascendant_of_type(
+						O42A_ARGS
+						&ctable->sample_type->data,
+						old_body->methods->object_type)),
+				&ascendant->__o42a_dbg_header__,
+				(o42a_dbg_header_t*) mem));
+
+#endif
 
 		ctable->from.body = old_body;
 		ctable->to.body = new_body;
@@ -807,11 +835,13 @@ o42a_obj_t *o42a_obj_new(
 	const size_t type_start =
 			o42a_layout_pad(O42A_ARGS start, obj_rtype_layout);
 
-	const size_t ascendants_start =
-			type_start + o42a_layout_size(O42A_ARGS obj_rtype_layout);
+	const o42a_layout_t ascendant_layout = O42A_LAYOUT(o42a_obj_ascendant_t);
+	const size_t ascendants_start = o42a_layout_pad(
+			O42A_ARGS
+			type_start + o42a_layout_size(O42A_ARGS obj_rtype_layout),
+			ascendant_layout);
 	const size_t num_ascendants = adata->ascendants.size + num_samples + 1;
 
-	const o42a_layout_t ascendant_layout = O42A_LAYOUT(o42a_obj_ascendant_t);
 	const o42a_layout_t sample_layout = O42A_LAYOUT(o42a_obj_sample_t);
 	const size_t samples_start =
 			o42a_layout_pad(
@@ -872,10 +902,10 @@ o42a_obj_t *o42a_obj_new(
 	// Fill the main ascendant`s debug header.
 	O42A(o42a_dbg_copy_header(
 			O42A_ARGS
-			&o42a_obj_ascendant_of_type(
+			o42a_dbg_header(o42a_obj_ascendant_of_type(
 					O42A_ARGS
 					&stype->type.data,
-					sstype)->__o42a_dbg_header__,
+					sstype)),
 			&main_ascendant->__o42a_dbg_header__,
 			(o42a_dbg_header_t*) mem));
 
@@ -926,7 +956,6 @@ o42a_obj_t *o42a_obj_new(
 			O42A_ARGS
 			&ctable,
 			mem,
-			ascendants + adata->ascendants.size,
 			ancestor_body,
 			sample_data));
 
