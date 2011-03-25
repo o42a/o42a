@@ -20,7 +20,9 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.*;
+import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
 
 
@@ -31,18 +33,6 @@ public abstract class Action implements ScopeInfo {
 	public Action(ScopeInfo statement) {
 		this.statement = statement;
 	}
-
-	public boolean isAbort() {
-		return true;
-	}
-
-	public abstract LogicalValue getLogicalValue();
-
-	public final <T> T accept(ActionVisitor<Void, T> visitor) {
-		return accept(visitor, null);
-	}
-
-	public abstract <P, T> T accept(ActionVisitor<P, T> visitor, P p);
 
 	@Override
 	public Loggable getLoggable() {
@@ -58,6 +48,16 @@ public abstract class Action implements ScopeInfo {
 	public final Scope getScope() {
 		return this.statement.getScope();
 	}
+
+	public abstract boolean isAbort();
+
+	public abstract LogicalValue getLogicalValue();
+
+	public abstract Value<?> getValue();
+
+	public abstract Action toInitialLogicalValue();
+
+	public abstract LoopAction toLoopAction(ImperativeBlock block);
 
 	@Override
 	public void assertScopeIs(Scope scope) {
@@ -82,6 +82,12 @@ public abstract class Action implements ScopeInfo {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + '[' + this.statement + ']';
+	}
+
+	static final boolean blockMatchesName(
+			ImperativeBlock block,
+			String blockName) {
+		return blockName == null || blockName.equals(block.getName());
 	}
 
 }

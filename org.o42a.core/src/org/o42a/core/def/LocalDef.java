@@ -34,8 +34,6 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ActionVisitor;
-import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -43,9 +41,6 @@ import org.o42a.core.value.ValueType;
 
 
 class LocalDef extends Def {
-
-	private static final ActionValueVisitor ACTION_VALUE_VISITOR =
-		new ActionValueVisitor();
 
 	private final boolean explicit;
 	private Logical logical;
@@ -152,9 +147,7 @@ class LocalDef extends Def {
 		assert local != null :
 			"Not a local scope: " + scope;
 
-		final Action action = getBlock().initialValue(local);
-
-		return action.accept(ACTION_VALUE_VISITOR);
+		return getBlock().initialValue(local).getValue();
 	}
 
 	@Override
@@ -171,31 +164,6 @@ class LocalDef extends Def {
 			Rescoper additionalRescoper,
 			LogicalDef prerequisite) {
 		return new LocalDef(this, prerequisite, rescoper, this.logical);
-	}
-
-	private static final class ActionValueVisitor
-			extends ActionVisitor<Void, Value<?>> {
-
-		@Override
-		public Value<?> visitReturnValue(
-				ReturnValue returnValue,
-				Void p) {
-			return returnValue.getResult();
-		}
-
-		@Override
-		protected Value<?> visitAction(Action action, Void p) {
-			switch (action.getLogicalValue()) {
-			case TRUE:
-				return Value.voidValue();
-			case FALSE:
-				return Value.falseValue();
-			case RUNTIME:
-				return ValueType.VOID.runtimeValue();
-			}
-			throw new IllegalArgumentException("Can not handle " + action);
-		}
-
 	}
 
 	private static final class LocalLogical extends Logical {

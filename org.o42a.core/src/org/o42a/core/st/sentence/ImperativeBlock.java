@@ -36,18 +36,16 @@ import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.*;
+import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.st.action.LoopAction;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
 
 
 public final class ImperativeBlock extends Block<Imperatives> {
-
-	private static final ReturnConditionVisitor RETURN_CONDITION_VISITOR =
-		new ReturnConditionVisitor();
 
 	static ImperativeBlock topLevelImperativeBlock(
 			LocationInfo location,
@@ -251,19 +249,32 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	@Override
 	public Action initialValue(LocalScope scope) {
-		for (;;) {
+		for (ImperativeSentence sentence : getSentences()) {
 
-			final Action action = initialSentencesValue(scope);
+			final Action action = sentence.initialValue(scope);
+			final LoopAction loopAction = action.toLoopAction(this);
 
-			if (action != null) {
+			switch (loopAction) {
+			case CONTINUE:
+				continue;
+			case PULL:
 				return action;
+			case EXIT:
+				return new ExecuteCommand(action, action.getLogicalValue());
+			case REPEAT:
+				// Repeating is not supported at compile time.
+				return new ExecuteCommand(this, LogicalValue.RUNTIME);
 			}
+
+			throw new IllegalStateException("Unhandled action: " + action);
 		}
+
+		return new ExecuteCommand(this, LogicalValue.TRUE);
 	}
 
 	@Override
 	public Action initialLogicalValue(LocalScope scope) {
-		return initialValue(scope).accept(RETURN_CONDITION_VISITOR);
+		return initialValue(scope).toInitialLogicalValue();
 	}
 
 	@Override
@@ -306,37 +317,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	@Override
 	Trace getTrace() {
 		return this.trace;
-	}
-
-	private boolean thisBlock(String blockName) {
-		return blockName == null || blockName.equals(getName());
-	}
-
-	private Action initialSentencesValue(LocalScope scope) {
-		for (ImperativeSentence sentence : getSentences()) {
-
-			final Action action = sentence.initialValue(scope);
-			final LoopAction loopAction =
-				action.accept(new LoopActionVisitor());
-
-			switch (loopAction) {
-			case DONE:
-				if (action.getLogicalValue().isTrue()) {
-					continue;
-				}
-				return new ExecuteCommand(action, action.getLogicalValue());
-			case PULL:
-				return action;
-			case EXIT:
-				return new ExecuteCommand(action, action.getLogicalValue());
-			case REPEAT:
-				return null;
-			}
-
-			throw new IllegalStateException("Unhandled action: " + action);
-		}
-
-		return new ExecuteCommand(this, LogicalValue.TRUE);
 	}
 
 	public static final class BlockDistributor extends Distributor {
@@ -432,71 +412,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 			control.reachability(blockControl);
 		}
-
-	}
-
-	private final class LoopActionVisitor
-			extends ActionVisitor<Void, LoopAction> {
-
-		@Override
-		public LoopAction visitRepeatLoop(
-				RepeatLoop repeatLoop,
-				Void p) {
-			if (thisBlock(repeatLoop.getBlockName())) {
-				return LoopAction.REPEAT;
-			}
-			return LoopAction.PULL;
-		}
-
-		@Override
-		public LoopAction visitExitLoop(
-				ExitLoop exitLoop,
-				Void p) {
-			if (thisBlock(exitLoop.getBlockName())) {
-				return LoopAction.EXIT;
-			}
-			return LoopAction.PULL;
-		}
-
-		@Override
-		public LoopAction visitReturnValue(ReturnValue returnValue, Void p) {
-			return LoopAction.PULL;
-		}
-
-		@Override
-		protected LoopAction visitAction(Action action, Void p) {
-			return LoopAction.DONE;
-		}
-
-	}
-
-	private static final class ReturnConditionVisitor
-			extends ActionVisitor<Void, Action> {
-
-		@Override
-		public Action visitReturnValue(ReturnValue returnValue, Void p) {
-
-			final Value<?> result = returnValue.getResult();
-
-			return new ReturnValue(
-					returnValue,
-					result.getLogicalValue()
-					.toLogical(returnValue, returnValue.getScope())
-					.toValue());
-		}
-
-		@Override
-		protected Action visitAction(Action action, Void p) {
-			return action;
-		}
-	}
-
-	private enum LoopAction {
-
-		EXIT,
-		REPEAT,
-		PULL,
-		DONE
 
 	}
 

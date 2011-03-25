@@ -20,24 +20,11 @@
 package org.o42a.core.st.action;
 
 
-public abstract class ActionVisitor<P, T> {
+public enum LoopAction {
 
-	public T visitReturnValue(ReturnValue returnValue, P p) {
-		return visitAction(returnValue, p);
-	}
-
-	public T visitExecuteCommand(ExecuteCommand executeCommand, P p) {
-		return visitAction(executeCommand, p);
-	}
-
-	public T visitRepeatLoop(RepeatLoop repeatLoop, P p) {
-		return visitAction(repeatLoop, p);
-	}
-
-	public T visitExitLoop(ExitLoop exitLoop, P p) {
-		return visitAction(exitLoop, p);
-	}
-
-	protected abstract T visitAction(Action action, P p);
+	EXIT,
+	REPEAT,
+	PULL,
+	CONTINUE
 
 }
