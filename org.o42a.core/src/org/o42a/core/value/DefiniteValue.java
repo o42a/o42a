@@ -23,10 +23,6 @@ import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.Result;
 import org.o42a.core.ir.op.Val;
 
 
@@ -72,7 +68,7 @@ final class DefiniteValue<T> extends Value<T> {
 		return valueString(getValueType(), this.value);
 	}
 
-	private static <T> String valueString(ValueType<T> valueType, T value) {
+	static <T> String valueString(ValueType<T> valueType, T value) {
 
 		final StringBuilder out = new StringBuilder();
 
@@ -80,46 +76,6 @@ final class DefiniteValue<T> extends Value<T> {
 		out.append(valueType.valueString(value));
 
 		return out.toString();
-	}
-
-	static final class DefiniteObject<T> extends Result {
-
-		private final T value;
-
-		DefiniteObject(
-				LocationInfo location,
-				Distributor enclosing,
-				ValueType<T> valueType,
-				T value) {
-			super(location, enclosing, valueType);
-			setValueType(valueType);
-			this.value = value;
-		}
-
-		@Override
-		public boolean isRuntime() {
-			super.isRuntime();
-			return false;
-		}
-
-		@Override
-		public String toString() {
-
-			@SuppressWarnings("unchecked")
-			final ValueType<T> valueType = (ValueType<T>) getValueType();
-
-			return valueString(valueType, this.value);
-		}
-
-		@Override
-		protected Value<?> calculateValue(Scope scope) {
-
-			@SuppressWarnings("unchecked")
-			final ValueType<T> valueType = (ValueType<T>) getValueType();
-
-			return valueType.definiteValue(this.value);
-		}
-
 	}
 
 }
