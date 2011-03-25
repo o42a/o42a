@@ -170,7 +170,7 @@ final class FieldDeclarableVisitor
 				node.accept(TYPE_VISITOR, declaration.distribute());
 
 			if (type != null) {
-				declaration.setType(type);
+				declaration = declaration.setType(type);
 			}
 		}
 

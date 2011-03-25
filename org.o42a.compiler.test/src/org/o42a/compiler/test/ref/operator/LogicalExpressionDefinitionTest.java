@@ -25,7 +25,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.Source;
 
 
-public class LogicalDefinitionTest extends CompilerTestCase {
+public class LogicalExpressionDefinitionTest extends CompilerTestCase {
 
 	private Obj a;
 	private Obj b;
@@ -33,7 +33,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 
 	@Test
 	public void isTrue() {
-		compile("A := void. B := ++a. C := b.");
+		compile("A := void. B := void(= ++A). C := b.");
 
 		assertTrueVoid(this.a);
 		assertTrueVoid(this.b);
@@ -42,7 +42,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 
 	@Test
 	public void notTrue() {
-		compile("A := void. B := --a. C := b.");
+		compile("A := void. B := void(= --A). C := b.");
 
 		assertTrueVoid(this.a);
 		assertFalseVoid(this.b);
@@ -51,7 +51,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 
 	@Test
 	public void notFalse() {
-		compile("A := false. B := --a. C := b.");
+		compile("A := false. B := void(= --A). C := b.");
 
 		assertFalseVoid(this.a);
 		assertTrueVoid(this.b);
@@ -62,7 +62,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 	public void known() {
 		compile(
 				"A := false.",
-				"B := +-a.",
+				"B := void(= +-A).",
 				"C := b.");
 
 		assertKnownValue(this.a.getValue());
@@ -75,7 +75,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 	public void notKnown() {
 		compile(
 				"A := void(False? = Void).",
-				"B := +-a.",
+				"B := void(= +-A).",
 				"C := b.");
 
 		assertUnknownValue(this.a.getValue());
@@ -87,7 +87,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 	public void notUnknown() {
 		compile(
 				"A := void.",
-				"B := -+a.",
+				"B := void(= -+A).",
 				"C := b.");
 
 		assertKnownValue(this.a.getValue());
@@ -100,7 +100,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 	public void unknown() {
 		compile(
 				"A := void(False? = Void).",
-				"B := -+a.",
+				"B := void(= -+A).",
 				"C := b.");
 
 		assertUnknownValue(this.a.getValue());

@@ -540,7 +540,7 @@ public abstract class Ref extends RefTypeBase {
 
 		@Override
 		public LogicalValue getConstantValue() {
-			return getValue().getLogicalValue();
+			return LogicalValue.RUNTIME;
 		}
 
 		@Override
