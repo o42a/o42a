@@ -20,10 +20,11 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 
 
-public class ExecuteCommand extends Action {
+public class ExecuteCommand extends LogicalAction {
 
 	private final LogicalValue logicalValue;
 
@@ -43,8 +44,11 @@ public class ExecuteCommand extends Action {
 	}
 
 	@Override
-	public <P, T> T accept(ActionVisitor<P, T> visitor, P p) {
-		return visitor.visitExecuteCommand(this, p);
+	public LoopAction toLoopAction(ImperativeBlock block) {
+		if (getLogicalValue().isTrue()) {
+			return LoopAction.CONTINUE;
+		}
+		return LoopAction.EXIT;
 	}
 
 }

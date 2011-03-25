@@ -35,9 +35,9 @@ public class ConditionTest extends CompilerTestCase {
 				"B := A(Condition = false).",
 				"C := B.");
 
-		assertTrueVoid(field(field("a"), "value").getArtifact().materialize());
-		assertFalseVoid(field(field("b"), "value").getArtifact().materialize());
-		assertFalseVoid(field(field("c"), "value").getArtifact().materialize());
+		assertTrueVoid(field("a", "value").getArtifact().materialize());
+		assertFalseVoid(field("b", "value").getArtifact().materialize());
+		assertFalseVoid(field("c", "value").getArtifact().materialize());
 	}
 
 	@Test
@@ -50,9 +50,9 @@ public class ConditionTest extends CompilerTestCase {
 				"B := A(Condition = void).",
 				"C := B.");
 
-		assertTrueVoid(field(field("a"), "value").getArtifact().materialize());
-		assertFalseVoid(field(field("b"), "value").getArtifact().materialize());
-		assertFalseVoid(field(field("c"), "value").getArtifact().materialize());
+		assertTrueVoid(field("a", "value").getArtifact().materialize());
+		assertFalseVoid(field("b", "value").getArtifact().materialize());
+		assertFalseVoid(field("c", "value").getArtifact().materialize());
 	}
 
 }

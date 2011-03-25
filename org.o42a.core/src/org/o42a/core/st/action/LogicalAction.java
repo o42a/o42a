@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,52 +20,33 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 
 
-public class ReturnValue extends Action {
+public abstract class LogicalAction extends Action {
 
-	private final Value<?> value;
-
-	public ReturnValue(ScopeInfo statement, Value<?> value) {
+	public LogicalAction(ScopeInfo statement) {
 		super(statement);
-		this.value = value;
-	}
-
-	@Override
-	public final Value<?> getValue() {
-		return this.value;
-	}
-
-	@Override
-	public boolean isAbort() {
-		return true;
-	}
-
-	@Override
-	public LogicalValue getLogicalValue() {
-		return getValue().getLogicalValue();
 	}
 
 	@Override
 	public Action toInitialLogicalValue() {
-		return new ReturnValue(
-				this,
-				getValue().getLogicalValue()
-				.toLogical(this, getScope())
-				.toValue());
+		return this;
 	}
 
 	@Override
-	public LoopAction toLoopAction(ImperativeBlock block) {
-		return LoopAction.PULL;
-	}
-
-	@Override
-	public String toString() {
-		return "ReturnValue[" + this.value + ']';
+	public Value<?> getValue() {
+		switch (getLogicalValue()) {
+		case TRUE:
+			return Value.voidValue();
+		case FALSE:
+			return Value.falseValue();
+		case RUNTIME:
+			return ValueType.VOID.runtimeValue();
+		}
+		throw new IllegalStateException(
+				"Unsupported logical value: " + getLogicalValue());
 	}
 
 }

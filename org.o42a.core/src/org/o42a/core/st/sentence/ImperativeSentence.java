@@ -87,6 +87,27 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 
 	protected Action initialValue(LocalScope scope) {
 
+		final ImperativeSentence prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+
+			final Action action = prerequisite.initialValue(scope);
+
+			assert !action.isAbort() :
+				"Prerequisite can not abort execution";
+
+			final LogicalValue logicalValue = action.getLogicalValue();
+
+			if (!logicalValue.isConstant()) {
+				// Can not go on.
+				return action;
+			}
+			if (logicalValue.isFalse()) {
+				// Skip this sentence, as it`s prerequisite not satisfied.
+				return new ExecuteCommand(this, LogicalValue.TRUE);
+			}
+		}
+
 		final List<Imperatives> alternatives = getAlternatives();
 		final int size = alternatives.size();
 		Action result = null;

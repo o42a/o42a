@@ -20,10 +20,11 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 
 
-public class RepeatLoop extends Action {
+public class RepeatLoop extends LogicalAction {
 
 	private final String blockName;
 
@@ -37,13 +38,21 @@ public class RepeatLoop extends Action {
 	}
 
 	@Override
+	public boolean isAbort() {
+		return true;
+	}
+
+	@Override
 	public LogicalValue getLogicalValue() {
 		return null;
 	}
 
 	@Override
-	public <P, T> T accept(ActionVisitor<P, T> visitor, P p) {
-		return visitor.visitRepeatLoop(this, p);
+	public LoopAction toLoopAction(ImperativeBlock block) {
+		if (blockMatchesName(block, getBlockName())) {
+			return LoopAction.REPEAT;
+		}
+		return LoopAction.PULL;
 	}
 
 	@Override
