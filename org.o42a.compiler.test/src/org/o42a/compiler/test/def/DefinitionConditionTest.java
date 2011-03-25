@@ -31,7 +31,7 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 
 
-public class DeclarativeExpressionsTest extends CompilerTestCase {
+public class DefinitionConditionTest extends CompilerTestCase {
 
 	@Test
 	public void trueLogicalValue() {
