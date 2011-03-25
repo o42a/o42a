@@ -23,7 +23,6 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.st.StatementKinds.VALUES;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Directive;
@@ -52,9 +51,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
-import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -90,7 +86,7 @@ public abstract class Ref extends RefTypeBase {
 		return new RuntimeRef(location, distributor, valueType);
 	}
 
-	private ConditionsWrap conditions;
+	private RefConditionsWrap conditions;
 	private Logical logical;
 	private RefOp op;
 	private Path resolutionRoot;
@@ -115,7 +111,7 @@ public abstract class Ref extends RefTypeBase {
 
 	public final Logical getLogical() {
 		if (this.logical == null) {
-			this.logical = new RefLogical();
+			this.logical = new RefLogical(this);
 		}
 		return this.logical;
 	}
@@ -196,7 +192,7 @@ public abstract class Ref extends RefTypeBase {
 	public Conditions setConditions(Conditions conditions) {
 		assert this.conditions == null :
 			"Conditions already assigned for: " + conditions;
-		return this.conditions = new ConditionsWrap(conditions);
+		return this.conditions = new RefConditionsWrap(this, conditions);
 	}
 
 	@Override
@@ -215,7 +211,10 @@ public abstract class Ref extends RefTypeBase {
 			def = toDef();
 		}
 
-		return getInitialConditions().apply(def).toDefinitions();
+		final Conditions initialConditions =
+			getConditions().getInitialConditions();
+
+		return initialConditions.apply(def).toDefinitions();
 	}
 
 	public abstract Resolution resolve(Scope scope);
@@ -363,7 +362,7 @@ public abstract class Ref extends RefTypeBase {
 			return null;
 		}
 
-		return new ApplyDirective(directive);
+		return new ApplyDirective(this, directive);
 	}
 
 	public Ref and(Logical logical) {
@@ -429,148 +428,8 @@ public abstract class Ref extends RefTypeBase {
 		return clone;
 	}
 
-	private Conditions getInitialConditions() {
-		return this.conditions.conditions;
-	}
-
-	private final class ConditionsWrap extends Conditions {
-
-		private final Conditions conditions;
-		private Conditions wrapped;
-
-		ConditionsWrap(Conditions conditions) {
-			this.conditions = conditions;
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return getWrapped().prerequisite(scope);
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return getWrapped().precondition(scope);
-		}
-
-		@Override
-		public String toString() {
-			if (this.wrapped != null) {
-				return this.wrapped.toString();
-			}
-			return this.conditions + ", " + Ref.this;
-		}
-
-		private Conditions getWrapped() {
-			if (this.wrapped != null) {
-				return this.wrapped;
-			}
-			return this.wrapped = new RefConditions(this.conditions);
-		}
-
-		private void setWrapped(Conditions wrapped) {
-			assert this.wrapped == null :
-				"Conditions already built for " + Ref.this;
-			this.wrapped = wrapped;
-		}
-
-	}
-
-	private final class RefConditions extends Conditions {
-
-		private final Conditions conditions;
-
-		RefConditions(Conditions conditions) {
-			this.conditions = conditions;
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.conditions.prerequisite(scope);
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return this.conditions.precondition(scope).and(
-					Ref.this.rescope(scope).getLogical());
-		}
-
-		@Override
-		public String toString() {
-			return this.conditions + ", " + Ref.this;
-		}
-
-	}
-
-	private final class ApplyDirective implements Instruction {
-
-		private final Directive directive;
-
-		private ApplyDirective(Directive directive) {
-			this.directive = directive;
-		}
-
-		@Override
-		public InstructionKind getInstructionKind() {
-			return InstructionKind.REPLACEMENT_INSTRUCTION;
-		}
-
-		@Override
-		public void execute() {
-		}
-
-		@Override
-		public <S extends Statements<S>> void execute(Block<S> block) {
-			Ref.this.conditions.setWrapped(
-					block.setConditions(getInitialConditions()));
-			this.directive.apply(block, Ref.this);
-		}
-
-		@Override
-		public String toString() {
-			return "ApplyDirective[" + this.directive + ']';
-		}
-
-	}
-
-	private final class RefLogical extends Logical {
-
-		public RefLogical() {
-			super(Ref.this, Ref.this.getScope());
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return LogicalValue.RUNTIME;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			return value(scope).getLogicalValue();
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-
-			final Ref reproduced = Ref.this.reproduce(reproducer);
-
-			if (reproduced == null) {
-				return null;
-			}
-
-			return reproduced.getLogical();
-		}
-
-		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Logical: " + this);
-			Ref.this.op(host).writeLogicalValue(code, exit);
-		}
-
-		@Override
-		public String toString() {
-			return "(" + Ref.this + ")?";
-		}
-
+	final RefConditionsWrap getConditions() {
+		return this.conditions;
 	}
 
 	private static final class RefStOp extends StOp {

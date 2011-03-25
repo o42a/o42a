@@ -42,7 +42,7 @@ assign_copyright() {
 	local dir="$1"
 	local name="$2"
 	local pattern="$3"
-	echo "${blue}***${white} Processing ${green}${dir}${white}" >&2
+	echo "Processing ${blue}${dir}${white}" >&2
 	find "${dirname}/../${dir}" -name "$pattern" | process_list "${name}"
 }
 

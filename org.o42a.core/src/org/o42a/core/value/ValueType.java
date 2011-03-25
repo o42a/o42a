@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.Val.VOID_VAL;
-import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
@@ -39,12 +37,12 @@ import org.o42a.core.ref.type.StaticTypeRef;
 
 public abstract class ValueType<T> {
 
-	public static final ValueType<Void> VOID = new VoidType();
-	public static final ValueType<Long> INTEGER = new IntegerType();
-	public static final ValueType<Double> FLOAT = new FloatType();
+	public static final ValueType<Void> VOID = new VoidValueType();
+	public static final ValueType<Long> INTEGER = new IntegerValueType();
+	public static final ValueType<Double> FLOAT = new FloatValueType();
 	public static final ValueType<String> STRING = new StringValueType();
 
-	public static final ValueType<java.lang.Void> NONE = new NoneType();
+	public static final ValueType<java.lang.Void> NONE = new None();
 
 	private final String systemId;
 	private final Class<? extends T> valueClass;
@@ -148,7 +146,7 @@ public abstract class ValueType<T> {
 			LocationInfo location,
 			Distributor enclosing,
 			T value) {
-		return new DefiniteValue.DefiniteObject<T>(
+		return new DefiniteObject<T>(
 				location,
 				enclosing,
 				this,
@@ -172,68 +170,9 @@ public abstract class ValueType<T> {
 
 	protected abstract Val val(Generator generator, T value);
 
-	private static final class VoidType extends ValueType<Void> {
+	private static final class None extends ValueType<java.lang.Void> {
 
-		VoidType() {
-			super("void", Void.class);
-		}
-
-		@Override
-		public Obj wrapper(Intrinsics intrinsics) {
-			return intrinsics.getVoid();
-		}
-
-		@Override
-		public StaticTypeRef typeRef(LocationInfo location, Scope scope) {
-			return voidRef(location, scope.distribute()).toStaticTypeRef();
-		}
-
-		@Override
-		protected Val val(Generator generator, Void value) {
-			return VOID_VAL;
-		}
-
-	}
-
-	private static final class IntegerType extends ValueType<Long> {
-
-		private IntegerType() {
-			super("integer", Long.class);
-		}
-
-		@Override
-		public Obj wrapper(Intrinsics intrinsics) {
-			return intrinsics.getInteger();
-		}
-
-		@Override
-		protected Val val(Generator generator, Long value) {
-			return new Val(value);
-		}
-
-	}
-
-	private static final class FloatType extends ValueType<Double> {
-
-		private FloatType() {
-			super("float", Double.class);
-		}
-
-		@Override
-		public Obj wrapper(Intrinsics intrinsics) {
-			return intrinsics.getFloat();
-		}
-
-		@Override
-		protected Val val(Generator generator, Double value) {
-			return new Val(value);
-		}
-
-	}
-
-	private static final class NoneType extends ValueType<java.lang.Void> {
-
-		private NoneType() {
+		private None() {
 			super("none", java.lang.Void.class);
 		}
 

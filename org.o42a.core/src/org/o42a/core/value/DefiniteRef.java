@@ -61,7 +61,7 @@ final class DefiniteRef<T> extends Ex {
 
 	@Override
 	protected Resolution resolveExpression(Scope scope) {
-		return objectResolution(new DefiniteValue.DefiniteObject<T>(
+		return objectResolution(new DefiniteObject<T>(
 				this,
 				this.distributeIn(scope.getContainer()),
 				this.valueType,
