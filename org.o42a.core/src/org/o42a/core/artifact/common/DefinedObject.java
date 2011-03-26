@@ -19,12 +19,13 @@
 */
 package org.o42a.core.artifact.common;
 
+import static org.o42a.core.st.Conditions.objectConditions;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
@@ -58,10 +59,6 @@ public abstract class DefinedObject extends PlainObject {
 		return this.definition;
 	}
 
-	protected DeclarativeBlock createDeclarativeBlock() {
-		return new DeclarativeBlock(this, this, getMemberRegistry());
-	}
-
 	@Override
 	protected void postResolve() {
 		getDefinition();
@@ -70,8 +67,7 @@ public abstract class DefinedObject extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getDefinition().define(
-				new DefinitionTarget(getScope(), getValueType()));
+		return getDefinition().define(getScope());
 	}
 
 	protected abstract void buildDefinition(DeclarativeBlock definition);
@@ -95,7 +91,13 @@ public abstract class DefinedObject extends PlainObject {
 		if (this.definition != null) {
 			return this.definition;
 		}
-		return this.definition = createDeclarativeBlock();
+
+		final DeclarativeBlock definition =
+			new DeclarativeBlock(this, this, getMemberRegistry());
+
+		definition.setConditions(objectConditions(this));
+
+		return this.definition = definition;
 	}
 
 	private ObjectMemberRegistry getMemberRegistry() {

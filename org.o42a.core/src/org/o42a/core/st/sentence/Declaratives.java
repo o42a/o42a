@@ -30,7 +30,10 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Conditions;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.StatementKinds;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
 
 
@@ -68,13 +71,13 @@ public class Declaratives extends Statements<Declaratives> {
 
 		executeInstructions();
 
-		final List<St> statements = getStatements();
+		final List<Statement> statements = getStatements();
 		StatementKinds result = NO_STATEMENTS;
 		final int size = statements.size();
 
 		for (int i = size - 1; i >= 0; --i) {
 
-			final St statement = statements.get(i);
+			final Statement statement = statements.get(i);
 			final StatementKinds kinds = statement.getStatementKinds();
 
 			if (kinds.isEmpty()) {
@@ -121,7 +124,7 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	@Override
-	protected void addStatement(St statement) {
+	protected void addStatement(Statement statement) {
 		super.addStatement(statement);
 		this.prevConditions = statement.setConditions(
 				this.prevConditions != null
@@ -129,7 +132,7 @@ public class Declaratives extends Statements<Declaratives> {
 		this.statementConditions.add(this.prevConditions);
 	}
 
-	protected Definitions define(DefinitionTarget target) {
+	protected Definitions define(Scope scope) {
 
 		final StatementKinds kinds = getStatementKinds();
 
@@ -139,23 +142,20 @@ public class Declaratives extends Statements<Declaratives> {
 		if (!kinds.haveValue()) {
 
 			final Logical condition =
-				lastDefinitionConditions().fullLogical(target.getScope());
+				lastDefinitionConditions().fullLogical(scope);
 
-			return conditionDefinitions(
-					condition,
-					target.getScope(),
-					condition);
+			return conditionDefinitions(condition, scope, condition);
 		}
 
-		final List<St> statements = getStatements();
+		final List<Statement> statements = getStatements();
 		final int size = statements.size();
 
 		Definitions result = null;
 
 		for (int i = 0; i < size; ++i) {
 
-			final St statement = statements.get(i);
-			final Definitions definition = statement.define(target);
+			final Statement statement = statements.get(i);
+			final Definitions definition = statement.define(scope);
 
 			if (definition == null) {
 				continue;
@@ -185,11 +185,11 @@ public class Declaratives extends Statements<Declaratives> {
 			return this.lastDefinitionConditions;
 		}
 
-		final List<St> statements = getStatements();
+		final List<Statement> statements = getStatements();
 
 		for (int i = statements.size() - 1; i >= 0; --i) {
 
-			final St statement = statements.get(i);
+			final Statement statement = statements.get(i);
 
 			if (!statement.getStatementKinds().haveDefinition()) {
 				continue;
@@ -203,7 +203,7 @@ public class Declaratives extends Statements<Declaratives> {
 			getSentence().getInitialConditions();
 	}
 
-	private void redundantConditions(St declaration, St statement) {
+	private void redundantConditions(Statement declaration, Statement statement) {
 
 		final DeclarativeBlock block = statement.toDeclarativeBlock();
 
@@ -221,7 +221,7 @@ public class Declaratives extends Statements<Declaratives> {
 		logRedundantCondition(declaration, statement, statementKinds);
 	}
 
-	private void redundantConditions(St declaration, DeclarativeBlock block) {
+	private void redundantConditions(Statement declaration, DeclarativeBlock block) {
 
 		final StatementKinds statementKinds = block.getStatementKinds();
 
@@ -248,7 +248,7 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	private void redundantConditions(
-			St declaration,
+			Statement declaration,
 			DeclarativeSentence sentence) {
 		for (Declaratives alt : sentence.getAlternatives()) {
 
@@ -269,14 +269,14 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 	}
 
-	private void redundantConditions(St declaration, Declaratives alt) {
-		for (St statement : alt.getStatements()) {
+	private void redundantConditions(Statement declaration, Declaratives alt) {
+		for (Statement statement : alt.getStatements()) {
 			redundantConditions(declaration, statement);
 		}
 	}
 
 	private void logRedundantCondition(
-			St declaration,
+			Statement declaration,
 			LogInfo statement,
 			StatementKinds statementKinds) {
 		getLogger().error(
@@ -305,6 +305,12 @@ public class Declaratives extends Statements<Declaratives> {
 				return Declaratives.this.prevConditions.toString();
 			}
 			return Declaratives.this + "?";
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return getSentence().getBlock()
+			.getInitialConditions().getExpectedType();
 		}
 
 	}

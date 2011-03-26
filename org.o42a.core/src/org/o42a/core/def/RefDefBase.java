@@ -22,10 +22,10 @@ package org.o42a.core.def;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 
 
-public abstract class RefDefBase extends St {
+public abstract class RefDefBase extends Statement {
 
 	public RefDefBase(LocationInfo location, Distributor distributor) {
 		super(location, distributor);

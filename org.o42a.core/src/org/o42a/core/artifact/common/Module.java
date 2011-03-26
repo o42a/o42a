@@ -31,7 +31,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.st.DefinitionTarget;
+import org.o42a.core.st.Conditions;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
@@ -77,6 +77,7 @@ public class Module extends PlainObject {
 					new Namespace(this),
 					this.memberRegistry);
 
+			definition.setConditions(Conditions.objectConditions(this));
 			compiled.buildBlock(definition);
 
 			this.definition = definition;
@@ -105,8 +106,7 @@ public class Module extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getDefinition().define(
-				new DefinitionTarget(getScope(), getValueType()));
+		return getDefinition().define(getScope());
 	}
 
 	private static final class ModuleScope extends ObjectScope {

@@ -36,7 +36,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -102,13 +102,13 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	private final Obj source;
-	private final St statement;
+	private final Statement statement;
 	private LogicalDef prerequisite;
 	private Logical fullLogical;
 
 	public Def(
 			Obj source,
-			St statement,
+			Statement statement,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(rescoper);
@@ -286,7 +286,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	}
 
 	@Override
-	protected final St getScoped() {
+	protected final Statement getScoped() {
 		return this.statement;
 	}
 
@@ -320,7 +320,7 @@ public abstract class Def extends RescopableStatement implements SourceSpec {
 	protected Def createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
-			St statement,
+			Statement statement,
 			Rescoper rescoper) {
 		getScope().getLogger().notReproducible(this);
 		return null;

@@ -37,7 +37,6 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathBuilder;
-import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -80,7 +79,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 
 		self.setConditions(emptyConditions(this));
 
-		return self.define(new DefinitionTarget(getScope()));
+		return self.define(getScope());
 	}
 
 	@Override

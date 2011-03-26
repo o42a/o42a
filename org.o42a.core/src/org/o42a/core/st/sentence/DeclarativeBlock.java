@@ -20,6 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.ref.Logical.disjunction;
 import static org.o42a.core.st.Conditions.emptyConditions;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
@@ -34,10 +35,9 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
-import org.o42a.core.st.DefinitionTarget;
-import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.Place.Trace;
 
@@ -145,32 +145,72 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	public Conditions setConditions(Conditions conditions) {
 		assert this.conditions == null :
 			"Conditions already set for " + this;
-		return this.conditions = new BlockConditions(conditions, this);
+		return this.conditions = new BlockConditions(this, conditions);
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
+	public Definitions define(Scope scope) {
 		if (!getStatementKinds().haveDefinition()) {
 			return null;
 		}
 
 		final List<DeclarativeSentence> sentences = getSentences();
 		Definitions result = null;
+		Logical requirement = null;
+		Logical requirements = null;
+		Logical condition = null;
+		Logical conditions = null;
 
 		for (DeclarativeSentence sentence : sentences) {
 
-			final Definitions definitions = sentence.define(target);
+			final StatementKinds kinds = sentence.getStatementKinds();
 
-			if (definitions == null) {
+			if (!kinds.haveDefinition()) {
+				continue;
+			}
+			if (kinds.haveValue()) {
+
+				final Definitions definitions = sentence.define(scope);
+
+				assert definitions != null :
+					sentence + " has no definitions";
+
+				if (result == null) {
+					result = definitions;
+				} else {
+					result = result.refine(definitions);
+				}
+
 				continue;
 			}
 
-			if (result == null) {
-				result = definitions;
+			final Logical logical =
+				sentence.getConditions().fullLogical(scope.getScope());
+
+			if (sentence.isClaim()) {
+				if (sentence.getPrerequisite() == null) {
+					requirement = Logical.and(requirement, logical);
+				} else {
+					requirements = Logical.or(requirements, logical);
+				}
 			} else {
-				result = result.refine(definitions);
+				if (sentence.getPrerequisite() == null) {
+					condition = Logical.and(condition, logical);
+				} else {
+					conditions = Logical.or(conditions, logical);
+				}
+			}
+
+			if (result == null) {
+				result = emptyDefinitions(this, scope.getScope());
 			}
 		}
+		if (result == null) {
+			return null;
+		}
+
+		result = result.addRequirement(Logical.or(requirement, requirements));
+		result = result.addCondition(Logical.or(condition, conditions));
 
 		return result;
 	}
@@ -219,29 +259,29 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 	final Conditions getInitialConditions() {
 		if (this.conditions != null) {
-			return this.conditions.conditions;
+			return this.conditions.initialConditions;
 		}
 
 		final Conditions initial = emptyConditions(this);
 
-		this.conditions = new BlockConditions(initial, this);
+		this.conditions = new BlockConditions(this, initial);
 
 		return initial;
 	}
 
 	private static final class BlockConditions extends Conditions {
 
-		private final Conditions conditions;
+		private final Conditions initialConditions;
 		private final DeclarativeBlock block;
 
-		BlockConditions(Conditions conditions, DeclarativeBlock block) {
-			this.conditions = conditions;
+		BlockConditions(DeclarativeBlock block, Conditions initialConditions) {
+			this.initialConditions = initialConditions;
 			this.block = block;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.conditions.prerequisite(scope);
+			return this.initialConditions.prerequisite(scope);
 		}
 
 		@Override
@@ -252,11 +292,11 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			final int size = sentences.size();
 
 			if (size <= 0) {
-				return this.conditions.precondition(scope);
+				return this.initialConditions.precondition(scope);
 			}
 
 			Logical req = null;
-			final Logical[] vars = new Logical[size];
+			Logical vars[] = new Logical[size + 1];
 			int varIdx = 0;
 
 			for (DeclarativeSentence sentence : sentences) {
@@ -275,26 +315,28 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 			if (varIdx == 0) {
 				if (req == null) {
-					return this.conditions.precondition(scope);
+					return this.initialConditions.precondition(scope);
 				}
 				return req;
 			}
+			if (req != null) {
+				vars[varIdx++] = req;
+			}
 
-			final Logical disjunction = disjunction(
+			return disjunction(
 					this.block,
 					this.block.getScope(),
 					ArrayUtil.clip(vars, varIdx));
-
-			if (req == null) {
-				return disjunction;
-			}
-
-			return req.and(disjunction);
 		}
 
 		@Override
 		public String toString() {
 			return "BlockConditions[" + this.block + ']';
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.initialConditions.getExpectedType();
 		}
 
 	}

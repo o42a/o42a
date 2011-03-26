@@ -24,7 +24,6 @@ import static org.o42a.core.ref.Ref.voidRef;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.AdapterId;
-import org.o42a.core.st.DefinitionTarget;
 
 
 class DeclaredObject extends PlainObject {
@@ -77,9 +76,7 @@ class DeclaredObject extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.field.define(new DefinitionTarget(
-				getScope(),
-				getAncestor().getType().getValueType()));
+		return this.field.define(getScope());
 	}
 
 }

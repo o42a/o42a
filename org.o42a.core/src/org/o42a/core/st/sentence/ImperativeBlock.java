@@ -238,13 +238,13 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		assert this.initialConditions == null :
 			"Conditions already set for " + this;
 		this.initialConditions = conditions;
-		return new BlockConditions(conditions, this);
+		return new BlockConditions(this, conditions);
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
+	public Definitions define(Scope scope) {
 		return this.initialConditions.apply(
-				localDef(this, target.getScope())).toDefinitions();
+				localDef(this, scope.getScope())).toDefinitions();
 	}
 
 	@Override
@@ -302,7 +302,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		return reproduction;
 	}
 
-	public St wrap(Distributor distributor) {
+	public Statement wrap(Distributor distributor) {
 		if (!isTopLevel()) {
 			return this;
 		}
@@ -417,28 +417,33 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	private static final class BlockConditions extends Conditions {
 
-		private final Conditions conditions;
 		private final ImperativeBlock block;
+		private final Conditions initialConditions;
 
-		BlockConditions(Conditions conditions, ImperativeBlock block) {
-			this.conditions = conditions;
+		BlockConditions(ImperativeBlock block, Conditions initialConditions) {
+			this.initialConditions = initialConditions;
 			this.block = block;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.conditions.prerequisite(scope);
+			return this.initialConditions.prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return this.conditions.precondition(scope).and(
+			return this.initialConditions.precondition(scope).and(
 					localDef(this.block, scope).fullLogical());
 		}
 
 		@Override
 		public String toString() {
-			return this.conditions + ", " + this.block;
+			return this.initialConditions + ", " + this.block;
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.initialConditions.getExpectedType();
 		}
 
 	}

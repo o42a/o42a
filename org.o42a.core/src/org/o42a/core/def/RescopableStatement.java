@@ -21,7 +21,7 @@ package org.o42a.core.def;
 
 import org.o42a.core.Scope;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 
 
 public abstract class RescopableStatement extends Rescopable {
@@ -30,8 +30,8 @@ public abstract class RescopableStatement extends Rescopable {
 		super(rescoper);
 	}
 
-	public final St getStatement() {
-		return (St) getScoped();
+	public final Statement getStatement() {
+		return (Statement) getScoped();
 	}
 
 	public RescopableStatement reproduce(Reproducer reproducer) {
@@ -51,7 +51,7 @@ public abstract class RescopableStatement extends Rescopable {
 			return null;
 		}
 
-		final St statement = getStatement().reproduce(rescopedReproducer);
+		final Statement statement = getStatement().reproduce(rescopedReproducer);
 
 		if (statement == null) {
 			return null;
@@ -72,7 +72,7 @@ public abstract class RescopableStatement extends Rescopable {
 	protected abstract RescopableStatement createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
-			St statement,
+			Statement statement,
 			Rescoper rescoper);
 
 }

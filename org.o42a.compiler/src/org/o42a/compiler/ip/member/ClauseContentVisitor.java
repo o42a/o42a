@@ -32,13 +32,13 @@ import org.o42a.core.CompilerLogger;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Group;
 import org.o42a.core.st.sentence.Statements;
 
 
 final class ClauseContentVisitor
-		extends AbstractStatementVisitor<St, Statements<?>> {
+		extends AbstractStatementVisitor<Statement, Statements<?>> {
 
 	private final ClauseDeclaration declaration;
 	private final ClauseDeclaratorNode node;
@@ -51,7 +51,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public St visitParentheses(ParenthesesNode parentheses, Statements<?> p) {
+	public Statement visitParentheses(ParenthesesNode parentheses, Statements<?> p) {
 
 		final Group group = p.group(
 				location(this.declaration, parentheses),
@@ -71,7 +71,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public St visitBraces(BracesNode braces, Statements<?> p) {
+	public Statement visitBraces(BracesNode braces, Statements<?> p) {
 
 		final Group group = p.group(
 				location(this.declaration, braces),
@@ -91,7 +91,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public St visitNamedBlock(NamedBlockNode block, Statements<?> p) {
+	public Statement visitNamedBlock(NamedBlockNode block, Statements<?> p) {
 
 		final BracesNode braces = block.getBlock();
 		final Group group = p.group(
@@ -112,7 +112,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public St visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
+	public Statement visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
 
 		final ClauseBuilder builder =
 			buildOverrider(this.declaration, declarator, p);
@@ -125,7 +125,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public St visitSelfAssignment(
+	public Statement visitSelfAssignment(
 			SelfAssignmentNode assignment,
 			Statements<?> p) {
 
@@ -145,12 +145,12 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	protected St visitExpression(ExpressionNode expression, Statements<?> p) {
+	protected Statement visitExpression(ExpressionNode expression, Statements<?> p) {
 		return expression(expression, p, this.declaration);
 	}
 
 	@Override
-	protected St visitStatement(StatementNode statement, Statements<?> p) {
+	protected Statement visitStatement(StatementNode statement, Statements<?> p) {
 		getLogger().invalidClauseContent(statement);
 		return null;
 	}
@@ -163,7 +163,7 @@ final class ClauseContentVisitor
 		return ClauseInterpreter.reuseClauses(builder, this.node);
 	}
 
-	private St expression(
+	private Statement expression(
 			ExpressionNode expression,
 			Statements<?> p,
 			ClauseDeclaration declaration) {
@@ -190,7 +190,7 @@ final class ClauseContentVisitor
 		return reuseClauses(builder);
 	}
 
-	private St buildExpression(
+	private Statement buildExpression(
 			ClauseBuilder builder,
 			ExpressionNode expression) {
 		builder = expression.accept(CLAUSE_EXPRESSION_VISITOR, builder);

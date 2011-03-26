@@ -36,7 +36,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
 
 
-final class RefCondition extends St {
+final class RefCondition extends Statement {
 
 	private final Ref ref;
 
@@ -64,7 +64,7 @@ final class RefCondition extends St {
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
+	public Definitions define(Scope scope) {
 		return null;
 	}
 
@@ -84,7 +84,7 @@ final class RefCondition extends St {
 	}
 
 	@Override
-	public St reproduce(Reproducer reproducer) {
+	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final Ref ref = this.ref.reproduce(reproducer);
@@ -103,7 +103,7 @@ final class RefCondition extends St {
 
 	private static final class Op extends StOp {
 
-		Op(LocalBuilder builder, St statement) {
+		Op(LocalBuilder builder, Statement statement) {
 			super(builder, statement);
 		}
 

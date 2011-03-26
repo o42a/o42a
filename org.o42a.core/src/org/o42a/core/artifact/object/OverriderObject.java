@@ -23,7 +23,6 @@ import static org.o42a.core.artifact.object.PropagatedObject.deriveSamples;
 
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.st.DefinitionTarget;
 
 
 final class OverriderObject extends PlainObject {
@@ -61,9 +60,7 @@ final class OverriderObject extends PlainObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.field.define(new DefinitionTarget(
-				getScope(),
-				getAncestor().getType().getValueType()));
+		return this.field.define(getScope());
 	}
 
 }

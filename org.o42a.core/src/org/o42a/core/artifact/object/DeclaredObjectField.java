@@ -26,7 +26,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.*;
-import org.o42a.core.st.DefinitionTarget;
 
 
 class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
@@ -100,12 +99,12 @@ class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
 		return this.ascendants;
 	}
 
-	Definitions define(DefinitionTarget target) {
+	Definitions define(Scope scope) {
 
 		Definitions result = null;
 
 		for (ObjectFieldVariant variant : getVariants()) {
-			result = variant.define(result, target);
+			result = variant.define(result, scope);
 		}
 
 		return result;

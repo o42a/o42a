@@ -44,7 +44,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private final Sentence<S> sentence;
 	private final boolean opposite;
-	private final ArrayList<St> statements = new ArrayList<St>(1);
+	private final ArrayList<Statement> statements = new ArrayList<Statement>(1);
 	private boolean instructionsExecuted;
 	private ValueType<?> valueType;
 
@@ -65,7 +65,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return this.opposite;
 	}
 
-	public final List<St> getStatements() {
+	public final List<Statement> getStatements() {
 		return this.statements;
 	}
 
@@ -205,7 +205,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return new NextDistributor(container, trace.next());
 	}
 
-	public final void statement(St statement) {
+	public final void statement(Statement statement) {
 		if (statement == null) {
 			return;
 		}
@@ -215,7 +215,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	@Override
 	public String toString() {
 
-		final List<St> statements = getStatements();
+		final List<Statement> statements = getStatements();
 
 		if (statements.isEmpty()) {
 			return "<no statements>";
@@ -224,7 +224,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		for (St statement : statements) {
+		for (Statement statement : statements) {
 			if (!comma) {
 				comma = true;
 			} else {
@@ -238,13 +238,13 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	protected abstract void braces(ImperativeBlock braces);
 
-	protected void addStatement(St statement) {
+	protected void addStatement(Statement statement) {
 		assert !this.instructionsExecuted :
 			"Instructions already executed. Can not add statement " + statement;
 		this.statements.add(statement);
 	}
 
-	protected void replaceStatement(int index, St statement) {
+	protected void replaceStatement(int index, Statement statement) {
 		this.statements.set(index, statement);
 	}
 
@@ -257,7 +257,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		ValueType<?> result = expected;
 		boolean hasResult = false;
 
-		for (St statement : getStatements()) {
+		for (Statement statement : getStatements()) {
 			if (!statement.getStatementKinds().haveValue()) {
 				continue;
 			}
@@ -286,9 +286,9 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		final Reproducer statementsReproducer =
 			reproducer.reproduceIn(reproduction);
 
-		for (St statement : getStatements()) {
+		for (Statement statement : getStatements()) {
 
-			final St statementReproduction = statement.reproduce(
+			final Statement statementReproduction = statement.reproduce(
 					statementsReproducer.distributeBy(
 							reproduction.nextDistributor()));
 
@@ -326,11 +326,11 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 		this.instructionsExecuted = true;
 
-		final List<St> statements = getStatements();
+		final List<Statement> statements = getStatements();
 
 		for (int i = 0; i < statements.size(); ++i) {
 
-			final St statement = statements.get(i);
+			final Statement statement = statements.get(i);
 			final Instruction instruction =
 				statement.toInstruction(getScope(), true);
 

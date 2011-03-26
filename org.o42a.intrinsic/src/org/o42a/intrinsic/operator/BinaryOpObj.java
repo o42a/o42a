@@ -35,7 +35,6 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LoggableData;
@@ -116,7 +115,7 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 
 		self.setConditions(emptyConditions(this));
 
-		return self.define(new DefinitionTarget(getScope()));
+		return self.define(getScope());
 	}
 
 	@Override

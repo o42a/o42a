@@ -19,10 +19,13 @@
 */
 package org.o42a.core.artifact.object;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.*;
-import org.o42a.core.st.DefinitionTarget;
+import org.o42a.core.ref.Logical;
+import org.o42a.core.st.Conditions;
 import org.o42a.core.st.sentence.*;
+import org.o42a.core.value.ValueType;
 
 
 final class ObjectFieldVariant
@@ -50,7 +53,7 @@ final class ObjectFieldVariant
 				getField(),
 				null,
 				getObjectField().getMemberRegistry());
-		this.content.setConditions(getInitialConditions());
+		this.content.setConditions(new VariantConditions(this));
 
 		return this.content;
 	}
@@ -92,9 +95,9 @@ final class ObjectFieldVariant
 		getContent().executeInstructions();
 	}
 
-	Definitions define(Definitions definitions, DefinitionTarget target) {
+	Definitions define(Definitions definitions, Scope scope) {
 
-		final Definitions variantDefinitions = getContent().define(target);
+		final Definitions variantDefinitions = getContent().define(scope);
 
 		if (variantDefinitions == null) {
 			return definitions;
@@ -108,6 +111,32 @@ final class ObjectFieldVariant
 
 	private final DeclaredObjectField getObjectField() {
 		return (DeclaredObjectField) getField();
+	}
+
+	private static final class VariantConditions extends Conditions {
+
+		private final ObjectFieldVariant variant;
+
+		VariantConditions(ObjectFieldVariant variant) {
+			this.variant = variant;
+		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+			return this.variant.getInitialConditions().prerequisite(scope);
+		}
+
+		@Override
+		public Logical precondition(Scope scope) {
+			return this.variant.getInitialConditions().precondition(scope);
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.variant.getField().getArtifact().toObject()
+			.getAncestor().getType().getValueType();
+		}
+
 	}
 
 }

@@ -80,8 +80,7 @@ final class LinkFieldVariant extends FieldVariant<Link>
 
 		if (typeRef != null) {
 
-			final TypeRelation relation =
-				typeRef.relationTo(this.typeRef);
+			final TypeRelation relation = typeRef.relationTo(this.typeRef);
 
 			if (!relation.isAscendant()) {
 				if (!relation.isError()) {

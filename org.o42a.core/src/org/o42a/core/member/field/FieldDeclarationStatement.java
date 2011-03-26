@@ -21,6 +21,7 @@ package org.o42a.core.member.field;
 
 import static org.o42a.core.st.StatementKinds.FIELD_DECLARATIONS;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
@@ -40,7 +41,9 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	private final DeclaredMemberField member;
 	private Conditions initialConditions;
 
-	FieldDeclarationStatement(FieldBuilder builder, DeclaredMemberField member) {
+	FieldDeclarationStatement(
+			FieldBuilder builder,
+			DeclaredMemberField member) {
 		super(builder, builder.distribute());
 		this.builder = builder;
 		this.member = member;
@@ -74,7 +77,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
+	public Definitions define(Scope scope) {
 		return null;
 	}
 
@@ -100,7 +103,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public St reproduce(Reproducer reproducer) {
+	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final FieldDeclaration declaration =
