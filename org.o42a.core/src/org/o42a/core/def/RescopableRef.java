@@ -28,7 +28,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.value.Value;
 
 
@@ -97,7 +97,7 @@ public abstract class RescopableRef extends RescopableStatement {
 	protected final RescopableRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
-			St statement,
+			Statement statement,
 			Rescoper rescoper) {
 		return createReproduction(
 				reproducer,

@@ -32,7 +32,7 @@ import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Group;
 import org.o42a.core.st.sentence.Statements;
 
@@ -54,7 +54,7 @@ public class ClauseInterpreter {
 			return null;
 		}
 
-		final St result;
+		final Statement result;
 		final StatementNode content = declarator.getContent();
 
 		if (content != null) {

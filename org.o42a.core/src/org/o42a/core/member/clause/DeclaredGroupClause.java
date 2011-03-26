@@ -31,7 +31,7 @@ import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.Lambda;
 
@@ -97,7 +97,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	public void define(Reproducer reproducer) {
 		if (this.localScope == null) {
 
-			final St reproduction = this.definition.reproduce(reproducer);
+			final Statement reproduction = this.definition.reproduce(reproducer);
 
 			if (reproduction != null) {
 

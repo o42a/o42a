@@ -30,8 +30,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
-import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.StatementKinds;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
@@ -108,7 +108,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return this.statementKinds = result;
 	}
 
-	protected Definitions define(DefinitionTarget target) {
+	protected Definitions define(Scope scope) {
 
 		final StatementKinds statementKinds = getStatementKinds();
 
@@ -118,12 +118,9 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		if (!statementKinds.haveValue()) {
 
 			final Logical fullLogical =
-				getConditions().fullLogical(target.getScope());
+				getConditions().fullLogical(scope);
 
-			return conditionDefinitions(
-					fullLogical,
-					target.getScope(),
-					fullLogical);
+			return conditionDefinitions(fullLogical, scope, fullLogical);
 		}
 
 		Loggable previous = null;
@@ -137,7 +134,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				continue;
 			}
 
-			final Definitions definitions = alt.define(target);
+			final Definitions definitions = alt.define(scope);
 
 			if (result == null) {
 				result = definitions;
@@ -209,9 +206,9 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 
 		@Override
-		protected Definitions define(DefinitionTarget target) {
+		protected Definitions define(Scope scope) {
 
-			final Definitions definitions = super.define(target);
+			final Definitions definitions = super.define(scope);
 
 			if (definitions == null) {
 				return null;
@@ -265,6 +262,12 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			return this.sentence.toString();
 		}
 
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.sentence.getBlock()
+			.getInitialConditions().getExpectedType();
+		}
+
 	}
 
 	private static final class SentenceConditions extends Conditions {
@@ -308,6 +311,12 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		@Override
 		public String toString() {
 			return "(" + this.sentence + ")?";
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.sentence.getBlock()
+			.getInitialConditions().getExpectedType();
 		}
 
 	}

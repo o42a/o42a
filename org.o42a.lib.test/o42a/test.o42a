@@ -55,14 +55,14 @@ Assert :=> void(
 
     Otherwise, an error reported.
    */
-  Condition :=< void.
+  Condition :=< `void.
 
   /*
     Error message.
 
     A message reported when condition fails.
    */
-  Message := "Error".
+  Message := `"Error".
   
   {
     --Condition? Print error(Text = message).

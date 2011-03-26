@@ -21,6 +21,7 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.st.StatementKinds.CLAUSE_DECLARATIONS;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
@@ -66,7 +67,7 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
+	public Definitions define(Scope scope) {
 		return null;
 	}
 
@@ -81,7 +82,7 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public St reproduce(Reproducer reproducer) {
+	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		reproducer.applyClause(this, getClause());
 		return null;

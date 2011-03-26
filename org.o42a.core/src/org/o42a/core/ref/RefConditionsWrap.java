@@ -21,6 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
 import org.o42a.core.st.Conditions;
+import org.o42a.core.value.ValueType;
 
 
 final class RefConditionsWrap extends Conditions {
@@ -50,6 +51,11 @@ final class RefConditionsWrap extends Conditions {
 			return this.wrapped.toString();
 		}
 		return this.initialConditions + ", " + this.ref;
+	}
+
+	@Override
+	protected ValueType<?> expectedType() {
+		return getInitialConditions().getExpectedType();
 	}
 
 	final Conditions getInitialConditions() {
@@ -94,6 +100,11 @@ final class RefConditionsWrap extends Conditions {
 		@Override
 		public String toString() {
 			return this.initialConditions + ", " + this.ref;
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.initialConditions.getExpectedType();
 		}
 
 	}

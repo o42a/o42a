@@ -196,9 +196,10 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
+	public Definitions define(Scope scope) {
 
-		final ValueType<?> expectedType = target.getExpectedType();
+		final ValueType<?> expectedType =
+			this.conditions.getInitialConditions().getExpectedType();
 		final Def def;
 
 		if (expectedType != null) {
@@ -438,7 +439,7 @@ public abstract class Ref extends RefTypeBase {
 
 		RefStOp(
 				LocalBuilder builder,
-				St statement,
+				Statement statement,
 				RefOp ref) {
 			super(builder, statement);
 			this.ref = ref;

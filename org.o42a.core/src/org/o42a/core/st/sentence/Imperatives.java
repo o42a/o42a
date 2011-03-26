@@ -29,7 +29,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementKinds;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -67,7 +67,7 @@ public class Imperatives extends Statements<Imperatives> {
 
 		StatementKinds result = NO_STATEMENTS;
 
-		for (St statement : getStatements()) {
+		for (Statement statement : getStatements()) {
 			result = result.add(statement.getStatementKinds());
 		}
 
@@ -107,13 +107,13 @@ public class Imperatives extends Statements<Imperatives> {
 	}
 
 	void allocate(LocalBuilder builder, Code code) {
-		for (St statement : getStatements()) {
+		for (Statement statement : getStatements()) {
 			statement.op(builder).allocate(builder, code);
 		}
 	}
 
 	void write(Control control, ValOp result) {
-		for (St statement : getStatements()) {
+		for (Statement statement : getStatements()) {
 			if (!control.reach(statement)) {
 				return;
 			}
@@ -132,7 +132,7 @@ public class Imperatives extends Statements<Imperatives> {
 
 		Action result = null;
 
-		for (St statement : getStatements()) {
+		for (Statement statement : getStatements()) {
 
 			final Action action = statement.initialValue(scope);
 

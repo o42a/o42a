@@ -22,15 +22,15 @@ package org.o42a.core.ir.local;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 
 
 public abstract class StOp {
 
 	private final LocalBuilder builder;
-	private final St statement;
+	private final Statement statement;
 
-	public StOp(LocalBuilder builder, St statement) {
+	public StOp(LocalBuilder builder, Statement statement) {
 		this.builder = builder;
 		this.statement = statement;
 	}
@@ -43,7 +43,7 @@ public abstract class StOp {
 		return this.builder;
 	}
 
-	public final St getStatement() {
+	public final Statement getStatement() {
 		return this.statement;
 	}
 

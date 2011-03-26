@@ -30,11 +30,11 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class St extends Placed {
+public abstract class Statement extends Placed {
 
 	private StOp op;
 
-	public St(LocationInfo location, Distributor distributor) {
+	public Statement(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
@@ -56,13 +56,13 @@ public abstract class St extends Placed {
 
 	public abstract Conditions setConditions(Conditions conditions);
 
-	public abstract Definitions define(DefinitionTarget target);
+	public abstract Definitions define(Scope scope);
 
 	public abstract Action initialValue(LocalScope scope);
 
 	public abstract Action initialLogicalValue(LocalScope scope);
 
-	public abstract St reproduce(Reproducer reproducer);
+	public abstract Statement reproduce(Reproducer reproducer);
 
 	public final StOp op(LocalBuilder builder) {
 
@@ -78,9 +78,9 @@ public abstract class St extends Placed {
 	protected abstract StOp createOp(LocalBuilder builder);
 
 	@Override
-	protected St clone() throws CloneNotSupportedException {
+	protected Statement clone() throws CloneNotSupportedException {
 
-		final St clone = (St) super.clone();
+		final Statement clone = (Statement) super.clone();
 
 		clone.op = null;
 

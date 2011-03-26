@@ -25,11 +25,11 @@ import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
-public abstract class BlockBase extends St {
+public abstract class BlockBase extends Statement {
 
 	protected static Def localDef(ImperativeBlock block, Scope scope) {
 

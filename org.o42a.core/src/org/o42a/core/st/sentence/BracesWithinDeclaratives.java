@@ -35,7 +35,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
 
 
-final class BracesWithinDeclaratives extends St {
+final class BracesWithinDeclaratives extends Statement {
 
 	private final ImperativeBlock block;
 
@@ -63,8 +63,8 @@ final class BracesWithinDeclaratives extends St {
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
-		return this.block.define(target);
+	public Definitions define(Scope scope) {
+		return this.block.define(scope);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ final class BracesWithinDeclaratives extends St {
 	}
 
 	@Override
-	public St reproduce(Reproducer reproducer) {
+	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final LocalScope reproducedScope =

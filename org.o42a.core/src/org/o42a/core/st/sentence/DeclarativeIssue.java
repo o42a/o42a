@@ -20,9 +20,9 @@
 package org.o42a.core.st.sentence;
 
 import org.o42a.core.LocationInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.st.DefinitionTarget;
 
 
 public abstract class DeclarativeIssue extends DeclarativeSentence {
@@ -63,9 +63,9 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 		}
 
 		@Override
-		protected Definitions define(DefinitionTarget target) {
+		protected Definitions define(Scope scope) {
 
-			final Definitions definitions = super.define(target);
+			final Definitions definitions = super.define(scope);
 
 			if (definitions == null) {
 				return null;

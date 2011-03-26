@@ -29,7 +29,7 @@ import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -63,7 +63,7 @@ final class ClauseStatementVisitor extends StatementVisitor {
 
 		builder.mandatory();
 
-		final St statement = builder.build();
+		final Statement statement = builder.build();
 
 		if (statement == null) {
 			return null;

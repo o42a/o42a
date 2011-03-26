@@ -24,6 +24,7 @@ import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -37,7 +38,7 @@ import org.o42a.core.st.action.RepeatLoop;
 import org.o42a.core.value.ValueType;
 
 
-final class EllipsisSt extends St {
+final class EllipsisSt extends Statement {
 
 	private final String name;
 	private final boolean exit;
@@ -70,7 +71,7 @@ final class EllipsisSt extends St {
 	}
 
 	@Override
-	public Definitions define(DefinitionTarget target) {
+	public Definitions define(Scope scope) {
 		return null;
 	}
 

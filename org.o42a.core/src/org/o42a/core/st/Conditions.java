@@ -23,14 +23,41 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Def;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class Conditions {
 
 	public static Conditions emptyConditions(LocationInfo location) {
 		return new Empty(location);
+	}
+
+	public static Conditions objectConditions(Obj object) {
+		return new ObjectConditions(object);
+	}
+
+	private ValueType<?> expectedType;
+
+	public final ValueType<?> getExpectedType() {
+		if (this.expectedType != null) {
+			if (this.expectedType == ValueType.NONE) {
+				return null;
+			}
+			return this.expectedType;
+		}
+
+		final ValueType<?> expectedType = expectedType();
+
+		if (expectedType == null) {
+			this.expectedType = ValueType.NONE;
+		} else {
+			this.expectedType = expectedType;
+		}
+
+		return expectedType;
 	}
 
 	public abstract Logical prerequisite(Scope scope);
@@ -53,6 +80,8 @@ public abstract class Conditions {
 		return def.addPrerequisite(prerequisite(def.getScope()).toLogicalDef())
 		.and(precondition(def.getScope()));
 	}
+
+	protected abstract ValueType<?> expectedType();
 
 	private static final class Empty extends Conditions {
 
@@ -80,6 +109,11 @@ public abstract class Conditions {
 		@Override
 		public String toString() {
 			return "EmptyConditions";
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return null;
 		}
 
 	}
@@ -123,11 +157,46 @@ public abstract class Conditions {
 			return this.location.toString();
 		}
 
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.conditions.getExpectedType();
+		}
+
 		private void reportError() {
 			if (this.errorReported) {
 				return;
 			}
 			this.location.getContext().getLogger().notCondition(this.location);
+		}
+
+	}
+
+	private static final class ObjectConditions extends Conditions {
+
+		private final Obj object;
+
+		ObjectConditions(Obj object) {
+			this.object = object;
+		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+			return logicalTrue(this.object, scope);
+		}
+
+		@Override
+		public Logical precondition(Scope scope) {
+			return logicalTrue(this.object, scope);
+		}
+
+		@Override
+		public String toString() {
+			return "ObjectConditions[" + this.object + ']';
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return this.object.getValueType();
 		}
 
 	}

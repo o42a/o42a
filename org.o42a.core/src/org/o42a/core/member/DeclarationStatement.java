@@ -21,10 +21,10 @@ package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.st.St;
+import org.o42a.core.st.Statement;
 
 
-public abstract class DeclarationStatement extends St {
+public abstract class DeclarationStatement extends Statement {
 
 	public DeclarationStatement(
 			LocationInfo location,
