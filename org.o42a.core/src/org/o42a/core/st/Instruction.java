@@ -19,15 +19,9 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.st.sentence.Block;
-
 
 public interface Instruction {
 
-	InstructionKind getInstructionKind();
-
-	void execute();
-
-	void execute(Block<?> block);
+	void execute(InstructionContext context);
 
 }

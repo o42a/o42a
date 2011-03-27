@@ -19,11 +19,13 @@
 */
 package org.o42a.core.st;
 
+import org.o42a.core.st.sentence.Block;
 
-public enum InstructionKind {
 
-	REMOVE_INSTRUCTION,
-	REMAIN_INSTRUCTION,
-	REPLACE_INSTRUCTION
+public interface InstructionContext {
+
+	Block<?> getBlock();
+
+	void doNotRemove();
 
 }

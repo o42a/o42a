@@ -329,55 +329,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			return;
 		}
 		this.instructionsExecuted = true;
-
-		final List<Statement> statements = getStatements();
-
-		for (int i = 0; i < statements.size();) {
-
-			final Statement statement = statements.get(i);
-			final Instruction instruction =
-				statement.toInstruction(getScope(), true);
-
-			if (instruction == null) {
-				++i;
-				continue;
-			}
-
-			if (executeInstruction(statement, i, instruction)) {
-				++i;
-			}
-		}
-
-		this.instructionsExecuted = true;
-	}
-
-	private boolean executeInstruction(
-			Statement statement,
-			int index,
-			Instruction instruction) {
-		switch (instruction.getInstructionKind()) {
-		case REMOVE_INSTRUCTION:
-			removeStatement(index);
-			instruction.execute();
-			return false;
-		case REMAIN_INSTRUCTION:
-			instruction.execute();
-			return true;
-		case REPLACE_INSTRUCTION:
-
-			final Block<S> block = parentheses(
-				index,
-				this,
-				statement.distribute(),
-				getMemberRegistry());
-
-			instruction.execute(block);
-
-			return true;
-		}
-		throw new IllegalStateException(
-				"Unsupported instruction kind: "
-				+ instruction.getInstructionKind());
+		new InstructionCtx().executeAll();
 	}
 
 	private static final class StatementsDistributor extends Distributor {
@@ -439,6 +391,73 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		@Override
 		public Scope getScope() {
 			return this.container.getScope();
+		}
+
+	}
+
+	private final class InstructionCtx implements InstructionContext {
+
+		private int index;
+		private Statement statement;
+		private Block<?> block;
+		private boolean doNotRemove;
+
+		@Override
+		public Block<?> getBlock() {
+			if (this.block != null) {
+				return this.block;
+			}
+
+			this.doNotRemove = true;
+
+			return this.block = parentheses(
+					this.index,
+					this.statement,
+					this.statement.distribute(),
+					getMemberRegistry());
+		}
+
+		@Override
+		public void doNotRemove() {
+			this.doNotRemove = true;
+		}
+
+		@Override
+		public String toString() {
+			return "InstructionContext[" + this.statement + ']';
+		}
+
+		final void executeAll() {
+
+			final List<Statement> statements = getStatements();
+
+			while (this.index < statements.size()) {
+				execute(statements.get(this.index));
+			}
+		}
+
+		private final void execute(Statement statement) {
+
+			final Instruction instruction =
+				statement.toInstruction(getScope(), true);
+
+			if (instruction == null) {
+				++this.index;
+				return;
+			}
+
+			this.statement = statement;
+			try {
+				instruction.execute(this);
+				if (!this.doNotRemove) {
+					removeStatement(this.index);
+				} else {
+					++this.index;
+				}
+			} finally {
+				this.block = null;
+				this.doNotRemove = false;
+			}
 		}
 
 	}

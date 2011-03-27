@@ -19,27 +19,14 @@
 */
 package org.o42a.core.artifact;
 
-import static org.o42a.core.st.InstructionKind.REMOVE_INSTRUCTION;
-
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.InstructionKind;
-import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.InstructionContext;
 
 
 final class SkipDirective implements Directive {
 
 	@Override
-	public InstructionKind getInstructionKind() {
-		return REMOVE_INSTRUCTION;
-	}
-
-	@Override
-	public void apply(Ref directive) {
-	}
-
-	@Override
-	public void apply(Block<?> block, Ref directive) {
-		throw new UnsupportedOperationException();
+	public void apply(Ref directive, InstructionContext context) {
 	}
 
 	@Override

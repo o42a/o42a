@@ -21,7 +21,6 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.st.InstructionKind.REMOVE_INSTRUCTION;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.core.Namespace;
@@ -29,8 +28,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.InstructionKind;
-import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -54,12 +52,7 @@ public class UseObject extends IntrinsicDirective {
 	}
 
 	@Override
-	public InstructionKind getInstructionKind() {
-		return REMOVE_INSTRUCTION;
-	}
-
-	@Override
-	public void apply(Ref directive) {
+	public void apply(Ref directive, InstructionContext context) {
 
 		final Namespace namespace = directive.getContainer().toNamespace();
 
@@ -124,11 +117,6 @@ public class UseObject extends IntrinsicDirective {
 		}
 
 		namespace.useObject(path, alias);
-	}
-
-	@Override
-	public void apply(Block<?> block, Ref directive) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

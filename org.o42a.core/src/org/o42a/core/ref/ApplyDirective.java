@@ -21,7 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.st.Instruction;
-import org.o42a.core.st.InstructionKind;
+import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
 
 
@@ -36,34 +36,64 @@ final class ApplyDirective implements Instruction {
 	}
 
 	@Override
-	public InstructionKind getInstructionKind() {
-		return this.directive.getInstructionKind();
-	}
-
-	@Override
-	public void execute() {
-
-		final RefConditionsWrap conditions = this.ref.getConditions();
-
-		conditions.removeWrapped();
-
-		this.directive.apply(this.ref);
-	}
-
-	@Override
-	public void execute(Block<?> block) {
-
-		final RefConditionsWrap conditions = this.ref.getConditions();
-
-		conditions.setWrapped(
-				block.setConditions(conditions.getInitialConditions()));
-
-		this.directive.apply(block, this.ref);
+	public void execute(InstructionContext context) {
+		new DirectiveContext(context).apply();
 	}
 
 	@Override
 	public String toString() {
 		return "ApplyDirective[" + this.directive + ']';
+	}
+
+	private final class DirectiveContext implements InstructionContext {
+
+		private final InstructionContext context;
+		private Block<?> block;
+		private boolean doNotRemove;
+
+		DirectiveContext(InstructionContext context) {
+			this.context = context;
+		}
+
+		@Override
+		public Block<?> getBlock() {
+			if (this.block != null) {
+				return this.block;
+			}
+
+			final RefConditionsWrap conditions =
+				ApplyDirective.this.ref.getConditions();
+
+			this.block = this.context.getBlock();
+			this.doNotRemove = true;
+			conditions.setWrapped(
+					this.block.setConditions(
+							conditions.getInitialConditions()));
+
+			return this.block;
+		}
+
+		@Override
+		public void doNotRemove() {
+			this.doNotRemove = true;
+			this.context.doNotRemove();
+		}
+
+		@Override
+		public String toString() {
+			if (this.context == null) {
+				return super.toString();
+			}
+			return this.context.toString();
+		}
+
+		void apply() {
+			ApplyDirective.this.directive.apply(ApplyDirective.this.ref, this);
+			if (!this.doNotRemove) {
+				ApplyDirective.this.ref.getConditions().removeWrapped();
+			}
+		}
+
 	}
 
 }
