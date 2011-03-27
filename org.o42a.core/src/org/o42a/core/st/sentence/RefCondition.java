@@ -30,6 +30,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -70,7 +71,7 @@ final class RefCondition extends Statement {
 
 	@Override
 	public Conditions setConditions(Conditions conditions) {
-		return this.ref.setConditions(conditions);
+		return this.ref.setConditions(new RefConditions(conditions));
 	}
 
 	@Override
@@ -119,6 +120,36 @@ final class RefCondition extends Statement {
 		@Override
 		public void writeLogicalValue(Control control) {
 			getStatement().op(getBuilder()).writeLogicalValue(control);
+		}
+
+	}
+
+	private static final class RefConditions extends Conditions {
+
+		private final Conditions conditions;
+
+		RefConditions(Conditions conditions) {
+			this.conditions = conditions;
+		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+			return this.conditions.prerequisite(scope);
+		}
+
+		@Override
+		public Logical precondition(Scope scope) {
+			return this.conditions.precondition(scope);
+		}
+
+		@Override
+		public String toString() {
+			return this.conditions.toString();
+		}
+
+		@Override
+		protected ValueType<?> expectedType() {
+			return null;// To prevent Ref adaption.
 		}
 
 	}

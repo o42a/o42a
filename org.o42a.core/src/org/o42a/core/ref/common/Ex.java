@@ -98,16 +98,6 @@ public abstract class Ex extends Ref {
 
 	protected abstract Resolution resolveExpression(Scope scope);
 
-	@Override
-	protected Ex clone() throws CloneNotSupportedException {
-
-		final Ex clone = (Ex) super.clone();
-
-		clone.resolved = null;
-
-		return clone;
-	}
-
 	private final Resolution doResolveExpression(Scope scope) {
 
 		final Resolution resolution = resolveExpression(scope);

@@ -86,6 +86,7 @@ public abstract class Ref extends RefTypeBase {
 		return new RuntimeRef(location, distributor, valueType);
 	}
 
+	private Ref expectedTypeAdapter;
 	private RefConditionsWrap conditions;
 	private Logical logical;
 	private RefOp op;
@@ -198,20 +199,7 @@ public abstract class Ref extends RefTypeBase {
 	@Override
 	public Definitions define(Scope scope) {
 
-		final ValueType<?> expectedType =
-			this.conditions.getInitialConditions().getExpectedType();
-		final Def def;
-
-		if (expectedType != null) {
-			def = adapt(
-					this,
-					expectedType.typeRef(
-							this,
-							getScope())).toDef();
-		} else {
-			def = toDef();
-		}
-
+		final Def def= expectedTypeAdapter().toDef();
 		final Conditions initialConditions =
 			getConditions().getInitialConditions();
 
@@ -418,15 +406,20 @@ public abstract class Ref extends RefTypeBase {
 		return new RefStOp(builder, this, op(builder.host()));
 	}
 
-	@Override
-	protected Ref clone() throws CloneNotSupportedException {
+	final Ref expectedTypeAdapter() {
+		if (this.expectedTypeAdapter != null) {
+			return this.expectedTypeAdapter;
+		}
 
-		final Ref clone = (Ref) super.clone();
+		final ValueType<?> expectedType =
+			this.conditions.getInitialConditions().getExpectedType();
 
-		clone.logical = null;
-		clone.op = null;
+		if (expectedType == null) {
+			return this.expectedTypeAdapter = this;
+		}
 
-		return clone;
+		return this.expectedTypeAdapter =
+			adapt(this, expectedType.typeRef(this, getScope()));
 	}
 
 	final RefConditionsWrap getConditions() {
