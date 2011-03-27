@@ -20,18 +20,13 @@
 package org.o42a.core.artifact;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.InstructionKind;
-import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.InstructionContext;
 
 
 public interface Directive {
 
 	Directive SKIP_DIRECTIVE = new SkipDirective();
 
-	InstructionKind getInstructionKind();
-
-	void apply(Ref directive);
-
-	void apply(Block<?> block, Ref directive);
+	void apply(Ref directive, InstructionContext context);
 
 }

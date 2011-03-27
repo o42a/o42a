@@ -20,7 +20,6 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-import static org.o42a.core.st.InstructionKind.REMAIN_INSTRUCTION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -253,18 +252,9 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	private final class ExecuteInstructions implements Instruction {
 
 		@Override
-		public InstructionKind getInstructionKind() {
-			return REMAIN_INSTRUCTION;
-		}
-
-		@Override
-		public void execute() {
+		public void execute(InstructionContext context) {
+			context.doNotRemove();
 			executeInstructions();
-		}
-
-		@Override
-		public void execute(Block<?> block) {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override
