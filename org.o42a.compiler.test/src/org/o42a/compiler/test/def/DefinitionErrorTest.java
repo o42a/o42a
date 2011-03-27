@@ -27,7 +27,7 @@ public class DefinitionErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterField() {
-		expectError("compiler.redundant_condition");
+		expectError("compiler.redundant_condition_after_field");
 		compile(
 				"A := 1,",
 				"false.");
@@ -35,7 +35,7 @@ public class DefinitionErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterValue() {
-		expectError("compiler.redundant_condition");
+		expectError("compiler.redundant_condition_after_field");
 		compile(
 				"A := void(",
 				"  Foo := 1,",
@@ -45,7 +45,7 @@ public class DefinitionErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterBlockWithField() {
-		expectError("compiler.redundant_condition");
+		expectError("compiler.redundant_condition_after_field");
 		compile(
 				"(A := 1.),",
 				"false.");
@@ -53,7 +53,7 @@ public class DefinitionErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterBlockWithValue() {
-		expectError("compiler.redundant_condition");
+		expectError("compiler.redundant_condition_after_value");
 		compile(
 				"A := integer(",
 				"  (= 2),",

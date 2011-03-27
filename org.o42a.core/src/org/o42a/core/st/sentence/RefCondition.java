@@ -20,6 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
@@ -53,13 +54,13 @@ final class RefCondition extends Statement {
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 
-		final DefinitionTargets targets = this.ref.getDefinitionTargets();
+		final DefinitionTarget target = this.ref.getDefinitionTargets();
 
-		if (targets.haveDefinition()) {
-			return conditionDefinition();
+		if (target.haveDefinition()) {
+			return conditionDefinition(this.ref);
 		}
 
-		return DefinitionTargets.noDefinitions();
+		return noDefinitions();
 	}
 
 	@Override

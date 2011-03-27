@@ -19,40 +19,68 @@
 */
 package org.o42a.core.st;
 
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.o42a.core.st.DefinitionKey.CONDITION_DEFINITION_KEY;
 import static org.o42a.core.st.DefinitionKey.VALUE_DEFINITION_KEY;
 import static org.o42a.core.st.DefinitionKey.fieldDefinitionKey;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.Map;
 
+import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.Ref;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
 
 
-public final class DefinitionTarget extends DefinitionTargets {
+public final class DefinitionTarget
+		extends DefinitionTargets
+		implements LogInfo {
 
-	private static final DefinitionTarget CONDITION =
-		new DefinitionTarget(CONDITION_MASK, CONDITION_DEFINITION_KEY);
-	private static final DefinitionTarget VALUE =
-		new DefinitionTarget(VALUE_MASK, VALUE_DEFINITION_KEY);
-
-	public static DefinitionTarget conditionDefinition() {
-		return CONDITION;
+	public static DefinitionTarget conditionDefinition(Ref ref) {
+		return new DefinitionTarget(
+				CONDITION_MASK,
+				ref,
+				CONDITION_DEFINITION_KEY);
 	}
 
-	public static DefinitionTarget valueDefinition() {
-		return VALUE;
+	public static DefinitionTarget valueDefinition(Ref ref) {
+		return new DefinitionTarget(VALUE_MASK, ref, VALUE_DEFINITION_KEY);
 	}
 
-	public static DefinitionTarget fieldDeclaration(MemberKey fieldKey) {
-		return new DefinitionTarget(FIELD_MASK, fieldDefinitionKey(fieldKey));
+	public static DefinitionTarget fieldDeclaration(
+			DeclarationStatement statement) {
+		return new DefinitionTarget(
+				FIELD_MASK,
+				statement,
+				fieldDefinitionKey(statement.toMember().getKey()));
 	}
 
+	private final Statement statement;
 	private final DefinitionKey definitionKey;
 
-	private DefinitionTarget(byte mask, DefinitionKey definitionKey) {
+	private DefinitionTarget(
+			byte mask,
+			Statement statement,
+			DefinitionKey definitionKey) {
 		super(mask);
+		this.statement = statement;
 		this.definitionKey = definitionKey;
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return getStatement().getLoggable();
+	}
+
+	public final Statement getStatement() {
+		return this.statement;
+	}
+
+	public final DefinitionKey getDefinitionKey() {
+		return this.definitionKey;
 	}
 
 	public final MemberKey getFieldKey() {
@@ -80,11 +108,40 @@ public final class DefinitionTarget extends DefinitionTargets {
 	}
 
 	@Override
-	public boolean haveField(MemberKey memberKey) {
-		if (!isField()) {
-			return false;
+	public final DefinitionTarget firstDeclaration() {
+		if (!isDeclaration()) {
+			return null;
 		}
-		return getFieldKey().equals(memberKey);
+		return this;
+	}
+
+	@Override
+	public final DefinitionTarget lastDeclaration() {
+		if (!isDeclaration()) {
+			return null;
+		}
+		return this;
+	}
+
+	@Override
+	public final DefinitionTarget first(DefinitionKey key) {
+		if (!key.equals(this.definitionKey)) {
+			return null;
+		}
+		return this;
+	}
+
+	@Override
+	public final DefinitionTarget last(DefinitionKey key) {
+		if (!key.equals(this.definitionKey)) {
+			return null;
+		}
+		return this;
+	}
+
+	@Override
+	public final Iterator<DefinitionKey> iterator() {
+		return singletonList(this.definitionKey).iterator();
 	}
 
 	@Override
@@ -109,8 +166,8 @@ public final class DefinitionTarget extends DefinitionTargets {
 	}
 
 	@Override
-	Set<DefinitionKey> definitions() {
-		return Collections.singleton(this.definitionKey);
+	Map<DefinitionKey, Entry> targets() {
+		return singletonMap(this.definitionKey, new Entry(this));
 	}
 
 }

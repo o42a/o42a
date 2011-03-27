@@ -21,7 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.conditionDefinitions;
 import static org.o42a.core.ref.Logical.disjunction;
-import static org.o42a.core.st.DefinitionTarget.noDefinitions;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.List;
 
@@ -29,10 +29,8 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
-import org.o42a.core.st.DefinitionTargets;
+import org.o42a.core.st.*;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class DeclarativeSentence extends Sentence<Declaratives> {
@@ -83,29 +81,86 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				continue;
 			}
 			if (targets.haveDeclaration()) {
-				if (!result.haveDeclaration()) {
-					getLogger().error(
-							"unexpected_declaration",
-							alt,
-							"Alternative should not contain self-assignment"
-							+ " or field declaration");
-					continue;
-				}
-			} else {
 				if (result.haveDeclaration()) {
-					getLogger().error(
-							"expected_declaration",
-							alt,
-							"Alternative should contain self-assignment"
-							+ " or field declaration");
+					reportAmbiguity(result, targets);
+					result = result.add(targets);
 					continue;
 				}
+
+				final DefinitionTarget declaration = targets.firstDeclaration();
+
+				if (declaration.isValue()) {
+					getLogger().error(
+							"unexpected_value_alt",
+							declaration.getLoggable().setPreviousLoggable(
+									result.lastCondition().getLoggable()),
+							"Alternative should not contain value assignment, "
+							+ " because previous one contains only condition");
+					continue;
+				}
+
+				getLogger().error(
+						"unexpected_field_alt",
+						declaration.getLoggable().setPreviousLoggable(
+								result.lastCondition().getLoggable()),
+						"Alternative should not contain field declaration, "
+						+ " because previous one contains only condition");
+				continue;
+			}
+			if (!result.haveDeclaration()) {
+				result = result.add(targets);
+				continue;
 			}
 
-			result = result.add(targets);
+			final DefinitionTarget declaration = result.lastDeclaration();
+
+			if (declaration.isValue()) {
+				getLogger().error(
+						"unexpected_condition_alt_after_value",
+						targets.firstCondition().getLoggable()
+						.setPreviousLoggable(declaration.getLoggable()),
+						"Alternative should contain condition, "
+						+ " because previous one contains value assignment");
+			}
+			getLogger().error(
+					"unexpected_condition_alt_after_field",
+					targets.firstCondition().getLoggable()
+					.setPreviousLoggable(declaration.getLoggable()),
+					"Alternative should contain condition, "
+					+ " because previous one contains field declaration");
 		}
 
 		return this.definitionTargets = result;
+	}
+
+	private void reportAmbiguity(
+			DefinitionTargets result,
+			DefinitionTargets targets) {
+		for (DefinitionKey key : targets) {
+			if (!key.isDeclaration()) {
+				continue;
+			}
+
+			final DefinitionTarget previousDeclaration = result.last(key);
+
+			if (previousDeclaration == null) {
+				continue;
+			}
+			if (key.isValue()) {
+				getLogger().error(
+						"ambiguous_value",
+						targets.first(key).getLoggable().setPreviousLoggable(
+								previousDeclaration.getLoggable()),
+						"Ambiguous value");
+				continue;
+			}
+			getLogger().error(
+					"ambiguous_field",
+					targets.first(key).getLoggable().setPreviousLoggable(
+							previousDeclaration.getLoggable()),
+					"Ambiguous declaration of field '%s'",
+					previousDeclaration.getFieldKey().getMemberId());
+		}
 	}
 
 	protected Definitions define(Scope scope) {
@@ -123,32 +178,16 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			return conditionDefinitions(fullLogical, scope, fullLogical);
 		}
 
-		Loggable previous = null;
-		Definitions result = null;
-
 		for (Declaratives alt : getAlternatives()) {
-
-			final DefinitionTargets altTargets = alt.getDefinitionTargets();
-
-			if (!altTargets.haveValue()) {
-				continue;
-			}
 
 			final Definitions definitions = alt.define(scope);
 
-			if (result == null) {
-				result = definitions;
-				previous = alt.getLoggable();
-				continue;
+			if (definitions != null) {
+				return definitions;
 			}
-
-			getLogger().error(
-					"ambiguous_value",
-					alt.getLoggable().setPreviousLoggable(previous),
-					"Ambiguous value definition");
 		}
 
-		return result;
+		throw new IllegalStateException("Value expected");
 	}
 
 	Conditions getInitialConditions() {

@@ -19,11 +19,11 @@
 */
 package org.o42a.core.st;
 
-import static java.util.Collections.emptySet;
+import static java.util.Collections.emptyMap;
 
-import java.util.Set;
-
-import org.o42a.core.member.MemberKey;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 
 
 final class EmptyDefinitionTargets extends DefinitionTargets {
@@ -33,18 +33,38 @@ final class EmptyDefinitionTargets extends DefinitionTargets {
 	}
 
 	@Override
-	public boolean haveField(MemberKey fieldKey) {
-		return false;
+	public DefinitionTarget firstDeclaration() {
+		return null;
 	}
 
 	@Override
-	Set<DefinitionKey> definitions() {
-		return emptySet();
+	public DefinitionTarget lastDeclaration() {
+		return null;
+	}
+
+	@Override
+	public DefinitionTarget first(DefinitionKey key) {
+		return null;
+	}
+
+	@Override
+	public DefinitionTarget last(DefinitionKey key) {
+		return null;
+	}
+
+	@Override
+	public Iterator<DefinitionKey> iterator() {
+		return Collections.<DefinitionKey>emptyList().iterator();
 	}
 
 	@Override
 	public String toString() {
 		return "EmptyDefinitionTargets";
+	}
+
+	@Override
+	Map<DefinitionKey, Entry> targets() {
+		return emptyMap();
 	}
 
 }
