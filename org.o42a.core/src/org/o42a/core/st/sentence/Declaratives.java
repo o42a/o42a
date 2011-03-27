@@ -129,6 +129,12 @@ public class Declaratives extends Statements<Declaratives> {
 		this.statementConditions.add(this.prevConditions);
 	}
 
+	@Override
+	protected void removeStatement(int index) {
+		super.removeStatement(index);
+		this.statementConditions.remove(index);
+	}
+
 	protected Definitions define(Scope scope) {
 
 		final DefinitionTargets kinds = getDefinitionTargets();

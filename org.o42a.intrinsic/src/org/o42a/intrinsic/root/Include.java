@@ -21,6 +21,7 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.st.InstructionKind.REPLACE_INSTRUCTION;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.core.LocationInfo;
@@ -29,6 +30,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.st.InstructionKind;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -49,11 +51,21 @@ public final class Include extends IntrinsicDirective {
 	}
 
 	@Override
-	public <S extends Statements<S>> void apply(Block<S> block, Ref directive) {
+	public InstructionKind getInstructionKind() {
+		return REPLACE_INSTRUCTION;
+	}
+
+	@Override
+	public void apply(Ref directive) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void apply(Block<?> block, Ref directive) {
 
 		final Obj object = directive.resolve(block.getScope()).materialize();
 		final Field<?> fileField = object.member(this.pathKey).toField();
-		final Sentence<S> sentence = block.propose(directive);
+		final Sentence<?> sentence = block.propose(directive);
 		final Value<String> value = ValueType.STRING.cast(
 				fileField.getArtifact().materialize().getValue());
 		final String file = value.getDefiniteValue();
@@ -64,8 +76,8 @@ public final class Include extends IntrinsicDirective {
 		}
 
 		final LocationInfo location = directive.locationFor(file);
-		final S statements = sentence.alternative(location);
-		final Block<S> destination = statements.parentheses(
+		final Statements<?> statements = sentence.alternative(location);
+		final Block<?> destination = statements.parentheses(
 				location,
 				new Namespace(statements.getContainer()));
 		final BlockBuilder builder = location.getContext().compileBlock();

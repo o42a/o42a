@@ -20,7 +20,6 @@
 package org.o42a.core.st;
 
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Statements;
 
 
 public interface Instruction {
@@ -29,6 +28,6 @@ public interface Instruction {
 
 	void execute();
 
-	<S extends Statements<S>> void execute(Block<S> block);
+	void execute(Block<?> block);
 
 }

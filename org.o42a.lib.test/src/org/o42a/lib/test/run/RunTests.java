@@ -20,12 +20,14 @@
 package org.o42a.lib.test.run;
 
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.st.InstructionKind.REPLACE_INSTRUCTION;
 import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.core.Location;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.st.InstructionKind;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.lib.test.TestModule;
@@ -49,9 +51,20 @@ public class RunTests extends IntrinsicDirective {
 	}
 
 	@Override
-	public <S extends Statements<S>> void apply(Block<S> block, Ref directive) {
+	public InstructionKind getInstructionKind() {
+		return REPLACE_INSTRUCTION;
+	}
 
-		final S statements = block.propose(directive).alternative(directive);
+	@Override
+	public void apply(Ref directive) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void apply(Block<?> block, Ref directive) {
+
+		final Statements<?> statements =
+			block.propose(directive).alternative(directive);
 
 		statements.expression(runObjectTests(
 				directive,
