@@ -94,7 +94,8 @@ final class RefConditionsWrap extends Conditions {
 		@Override
 		public Logical precondition(Scope scope) {
 			return this.initialConditions.precondition(scope).and(
-					this.ref.rescope(scope).getLogical());
+					this.ref.expectedTypeAdapter()
+					.rescope(scope).getLogical());
 		}
 
 		@Override
