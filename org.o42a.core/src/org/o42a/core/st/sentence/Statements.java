@@ -248,6 +248,10 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		this.statements.set(index, statement);
 	}
 
+	protected void removeStatement(int index) {
+		this.statements.remove(index);
+	}
+
 	final Trace getTrace() {
 		return getSentence().getBlock().getTrace();
 	}
@@ -328,39 +332,52 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 		final List<Statement> statements = getStatements();
 
-		for (int i = 0; i < statements.size(); ++i) {
+		for (int i = 0; i < statements.size();) {
 
 			final Statement statement = statements.get(i);
 			final Instruction instruction =
 				statement.toInstruction(getScope(), true);
 
 			if (instruction == null) {
+				++i;
 				continue;
 			}
 
-			switch (instruction.getInstructionKind()) {
-			case GENERIC_INSTRUCTION:
-				instruction.execute();
-				break;
-			case REPLACEMENT_INSTRUCTION:
-
-				final Block<S> block = parentheses(
-					i,
-					this,
-					statement.distribute(),
-					getMemberRegistry());
-
-				instruction.execute(block);
-				break;
-			default:
-				throw new IllegalStateException(
-						"Unsupported instruction kind: "
-						+ instruction.getInstructionKind());
+			if (executeInstruction(statement, i, instruction)) {
+				++i;
 			}
-
 		}
 
 		this.instructionsExecuted = true;
+	}
+
+	private boolean executeInstruction(
+			Statement statement,
+			int index,
+			Instruction instruction) {
+		switch (instruction.getInstructionKind()) {
+		case REMOVE_INSTRUCTION:
+			removeStatement(index);
+			instruction.execute();
+			return false;
+		case REMAIN_INSTRUCTION:
+			instruction.execute();
+			return true;
+		case REPLACE_INSTRUCTION:
+
+			final Block<S> block = parentheses(
+				index,
+				this,
+				statement.distribute(),
+				getMemberRegistry());
+
+			instruction.execute(block);
+
+			return true;
+		}
+		throw new IllegalStateException(
+				"Unsupported instruction kind: "
+				+ instruction.getInstructionKind());
 	}
 
 	private static final class StatementsDistributor extends Distributor {

@@ -64,8 +64,14 @@ final class RefConditionsWrap extends Conditions {
 
 	final void setWrapped(Conditions wrapped) {
 		assert this.wrapped == null :
-			"Conditions already built for " + this.ref;
+			"Conditions already assigned to " + this.ref;
 		this.wrapped = wrapped;
+	}
+
+	final void removeWrapped() {
+		assert this.wrapped == null :
+			"Conditions already assigned to " + this.ref;
+		this.wrapped = this.initialConditions;
 	}
 
 	private Conditions getWrapped() {

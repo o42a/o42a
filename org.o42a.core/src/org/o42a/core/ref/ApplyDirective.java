@@ -23,7 +23,6 @@ import org.o42a.core.artifact.Directive;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionKind;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Statements;
 
 
 final class ApplyDirective implements Instruction {
@@ -38,20 +37,27 @@ final class ApplyDirective implements Instruction {
 
 	@Override
 	public InstructionKind getInstructionKind() {
-		return InstructionKind.REPLACEMENT_INSTRUCTION;
+		return this.directive.getInstructionKind();
 	}
 
 	@Override
 	public void execute() {
+
+		final RefConditionsWrap conditions = this.ref.getConditions();
+
+		conditions.removeWrapped();
+
+		this.directive.apply(this.ref);
 	}
 
 	@Override
-	public <S extends Statements<S>> void execute(Block<S> block) {
+	public void execute(Block<?> block) {
 
 		final RefConditionsWrap conditions = this.ref.getConditions();
 
 		conditions.setWrapped(
 				block.setConditions(conditions.getInitialConditions()));
+
 		this.directive.apply(block, this.ref);
 	}
 
