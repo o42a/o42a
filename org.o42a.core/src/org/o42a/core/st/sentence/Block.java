@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		new ArrayList<Sentence<S>>();
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<S, ?, ?> sentenceFactory;
-	private StatementKinds kinds;
+	private DefinitionTargets definitionTargets;
 	private ValueType<?> valueType;
 	private boolean instructionsExecuted;
 
@@ -93,18 +93,18 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		if (this.kinds != null) {
-			return this.kinds;
+	public DefinitionTargets getDefinitionTargets() {
+		if (this.definitionTargets != null) {
+			return this.definitionTargets;
 		}
 
-		StatementKinds result = NO_STATEMENTS;
+		DefinitionTargets result = noDefinitions();
 
 		for (Sentence<?> sentence : getSentences()) {
-			result = result.add(sentence.getStatementKinds());
+			result = result.add(sentence.getDefinitionTargets());
 		}
 
-		return this.kinds = result;
+		return this.definitionTargets = result;
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		if (this.valueType != null) {
 			return this.valueType;
 		}
-		if (!getStatementKinds().haveValue()) {
+		if (!getDefinitionTargets().haveValue()) {
 			return this.valueType = ValueType.VOID;
 		}
 

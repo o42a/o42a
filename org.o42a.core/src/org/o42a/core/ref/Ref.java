@@ -20,7 +20,7 @@
 package org.o42a.core.ref;
 
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
-import static org.o42a.core.st.StatementKinds.VALUES;
+import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
@@ -185,8 +185,8 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		return VALUES;
+	public DefinitionTargets getDefinitionTargets() {
+		return valueDefinition();
 	}
 
 	@Override

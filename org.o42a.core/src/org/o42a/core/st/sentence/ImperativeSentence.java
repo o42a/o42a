@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.st.StatementKinds;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ExitLoop;
@@ -40,7 +40,7 @@ import org.o42a.core.value.LogicalValue;
 
 public abstract class ImperativeSentence extends Sentence<Imperatives> {
 
-	private StatementKinds statementKinds;
+	private DefinitionTargets statementKinds;
 
 	ImperativeSentence(
 			LocationInfo location,
@@ -65,15 +65,15 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
+	public DefinitionTargets getDefinitionTargets() {
 		if (this.statementKinds != null) {
 			return this.statementKinds;
 		}
 
-		StatementKinds result = NO_STATEMENTS;
+		DefinitionTargets result = noDefinitions();
 
 		for (Imperatives alt : getAlternatives()) {
-			result = result.add(alt.getStatementKinds());
+			result = result.add(alt.getDefinitionTargets());
 		}
 
 		return this.statementKinds = result;

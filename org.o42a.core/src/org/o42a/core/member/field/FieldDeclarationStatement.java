@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.st.StatementKinds.FIELD_DECLARATIONS;
+import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
@@ -50,8 +50,8 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		return FIELD_DECLARATIONS;
+	public DefinitionTargets getDefinitionTargets() {
+		return fieldDeclaration(this.member.getKey());
 	}
 
 	@Override

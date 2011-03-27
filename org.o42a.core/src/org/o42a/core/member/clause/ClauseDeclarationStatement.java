@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.st.StatementKinds.CLAUSE_DECLARATIONS;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
@@ -52,8 +52,8 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		return CLAUSE_DECLARATIONS;
+	public DefinitionTargets getDefinitionTargets() {
+		return noDefinitions();
 	}
 
 	@Override

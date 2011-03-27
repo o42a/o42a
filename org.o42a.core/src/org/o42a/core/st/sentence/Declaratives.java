@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.conditionDefinitions;
-import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+import static org.o42a.core.st.DefinitionTarget.noDefinitions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +31,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementKinds;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
 
@@ -42,7 +42,7 @@ public class Declaratives extends Statements<Declaratives> {
 	private DeclarativeConditions conditions;
 	private Conditions prevConditions;
 	private Conditions lastDefinitionConditions;
-	private StatementKinds statementKinds;
+	private DefinitionTargets definitionTargets;
 	private final ArrayList<Conditions> statementConditions =
 		new ArrayList<Conditions>(1);
 
@@ -64,38 +64,38 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		if (this.statementKinds != null) {
-			return this.statementKinds;
+	public DefinitionTargets getDefinitionTargets() {
+		if (this.definitionTargets != null) {
+			return this.definitionTargets;
 		}
 
 		executeInstructions();
 
 		final List<Statement> statements = getStatements();
-		StatementKinds result = NO_STATEMENTS;
+		DefinitionTargets result = noDefinitions();
 		final int size = statements.size();
 
 		for (int i = size - 1; i >= 0; --i) {
 
 			final Statement statement = statements.get(i);
-			final StatementKinds kinds = statement.getStatementKinds();
+			final DefinitionTargets targets = statement.getDefinitionTargets();
 
-			if (kinds.isEmpty()) {
+			if (targets.isEmpty()) {
 				continue;
 			}
-			if (kinds.haveDeclaration()) {
+			if (targets.haveDeclaration()) {
 				if (result.haveCondition()) {
 					for (int j = i + 1; j < size; ++j) {
 						redundantConditions(statement, statements.get(j));
 					}
 				}
-				result = kinds;
+				result = targets;
 				continue;
 			}
-			result = result.add(kinds);
+			result = result.add(targets);
 		}
 
-		return this.statementKinds = result;
+		return this.definitionTargets = result;
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class Declaratives extends Statements<Declaratives> {
 
 	protected Definitions define(Scope scope) {
 
-		final StatementKinds kinds = getStatementKinds();
+		final DefinitionTargets kinds = getDefinitionTargets();
 
 		if (!kinds.haveDefinition()) {
 			return null;
@@ -191,7 +191,7 @@ public class Declaratives extends Statements<Declaratives> {
 
 			final Statement statement = statements.get(i);
 
-			if (!statement.getStatementKinds().haveDefinition()) {
+			if (!statement.getDefinitionTargets().haveDefinition()) {
 				continue;
 			}
 
@@ -212,7 +212,7 @@ public class Declaratives extends Statements<Declaratives> {
 			return;
 		}
 
-		final StatementKinds statementKinds = statement.getStatementKinds();
+		final DefinitionTargets statementKinds = statement.getDefinitionTargets();
 
 		if (!statementKinds.haveCondition()) {
 			return;
@@ -223,15 +223,15 @@ public class Declaratives extends Statements<Declaratives> {
 
 	private void redundantConditions(Statement declaration, DeclarativeBlock block) {
 
-		final StatementKinds statementKinds = block.getStatementKinds();
+		final DefinitionTargets statementKinds = block.getDefinitionTargets();
 
 		if (!statementKinds.haveCondition()) {
 			return;
 		}
 		for (DeclarativeSentence sentence : block.getSentences()) {
 
-			final StatementKinds sentenceStatementKinds =
-				sentence.getStatementKinds();
+			final DefinitionTargets sentenceStatementKinds =
+				sentence.getDefinitionTargets();
 
 			if (!sentenceStatementKinds.haveCondition()) {
 				continue;
@@ -252,8 +252,8 @@ public class Declaratives extends Statements<Declaratives> {
 			DeclarativeSentence sentence) {
 		for (Declaratives alt : sentence.getAlternatives()) {
 
-			final StatementKinds altStatementKinds =
-				alt.getStatementKinds();
+			final DefinitionTargets altStatementKinds =
+				alt.getDefinitionTargets();
 
 			if (!altStatementKinds.haveCondition()) {
 				continue;
@@ -278,7 +278,7 @@ public class Declaratives extends Statements<Declaratives> {
 	private void logRedundantCondition(
 			Statement declaration,
 			LogInfo statement,
-			StatementKinds statementKinds) {
+			DefinitionTargets statementKinds) {
 		getLogger().error(
 				"redundant_condition",
 				statement.getLoggable().setPreviousLoggable(

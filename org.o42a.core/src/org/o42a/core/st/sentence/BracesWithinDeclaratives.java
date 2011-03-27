@@ -48,8 +48,8 @@ final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		return this.block.getStatementKinds();
+	public DefinitionTargets getDefinitionTargets() {
+		return this.block.getDefinitionTargets();
 	}
 
 	@Override

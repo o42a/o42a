@@ -77,7 +77,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return getSentence().getMemberRegistry();
 	}
 
-	public abstract StatementKinds getStatementKinds();
+	public abstract DefinitionTargets getDefinitionTargets();
 
 	public ValueType<?> getValueType() {
 		if (this.valueType != null) {
@@ -258,7 +258,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		boolean hasResult = false;
 
 		for (Statement statement : getStatements()) {
-			if (!statement.getStatementKinds().haveValue()) {
+			if (!statement.getDefinitionTargets().haveValue()) {
 				continue;
 			}
 

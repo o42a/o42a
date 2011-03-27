@@ -188,7 +188,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		if (this.valueType != null) {
 			return this.valueType;
 		}
-		if (!getStatementKinds().haveValue()) {
+		if (!getDefinitionTargets().haveValue()) {
 			return this.valueType = ValueType.VOID;
 		}
 
