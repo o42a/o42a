@@ -46,6 +46,10 @@ public abstract class DefinitionKey {
 		return getFieldKey() != null;
 	}
 
+	public final boolean isDeclaration() {
+		return !isCondition();
+	}
+
 	public abstract MemberKey getFieldKey();
 
 	private static final class ConditionKey extends DefinitionKey {

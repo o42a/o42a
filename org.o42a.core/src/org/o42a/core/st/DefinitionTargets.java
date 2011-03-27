@@ -19,13 +19,12 @@
 */
 package org.o42a.core.st;
 
-import java.util.HashSet;
-import java.util.Set;
+import static org.o42a.core.st.DefinitionKey.CONDITION_DEFINITION_KEY;
 
-import org.o42a.core.member.MemberKey;
+import java.util.Map;
 
 
-public abstract class DefinitionTargets {
+public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 
 	private static final EmptyDefinitionTargets EMPTY_DEFINITION_TARGETS =
 		new EmptyDefinitionTargets();
@@ -55,10 +54,6 @@ public abstract class DefinitionTargets {
 		return (this.mask & CONDITION_MASK) != 0;
 	}
 
-	public final boolean onlyConditions() {
-		return this.mask == CONDITION_MASK;
-	}
-
 	public final boolean haveValue() {
 		return (this.mask & VALUE_MASK) != 0;
 	}
@@ -66,8 +61,6 @@ public abstract class DefinitionTargets {
 	public final boolean haveField() {
 		return (this.mask & FIELD_MASK) != 0;
 	}
-
-	public abstract boolean haveField(MemberKey fieldKey);
 
 	public final boolean haveDefinition() {
 		return (this.mask & DEFINITION_MASK) != 0;
@@ -77,6 +70,22 @@ public abstract class DefinitionTargets {
 		return (this.mask & DECLARATION_MASK) != 0;
 	}
 
+	public abstract DefinitionTarget firstDeclaration();
+
+	public abstract DefinitionTarget lastDeclaration();
+
+	public final DefinitionTarget firstCondition() {
+		return first(CONDITION_DEFINITION_KEY);
+	}
+
+	public final DefinitionTarget lastCondition() {
+		return last(CONDITION_DEFINITION_KEY);
+	}
+
+	public abstract DefinitionTarget first(DefinitionKey key);
+
+	public abstract DefinitionTarget last(DefinitionKey key);
+
 	public final DefinitionTargets add(DefinitionTargets other) {
 		if (other.isEmpty()) {
 			return this;
@@ -84,29 +93,53 @@ public abstract class DefinitionTargets {
 		if (isEmpty()) {
 			return other;
 		}
-
-		final Set<DefinitionKey> definitions1 = definitions();
-		final Set<DefinitionKey> definitions2 = other.definitions();
-		final HashSet<DefinitionKey> definitions = new HashSet<DefinitionKey>(
-				definitions1.size() + definitions2.size());
-
-		definitions.addAll(definitions1);
-		if (!definitions.addAll(definitions2)) {
-			return this;
-		}
-		if (definitions2.size() == definitions.size()) {
-			return other;
-		}
-
-		return new MultiDefinitionTargets(
-				(byte) (this.mask | other.mask),
-				definitions);
+		return new MultiDefinitionTargets(this, other);
 	}
 
 	final byte mask() {
 		return this.mask;
 	}
 
-	abstract Set<DefinitionKey> definitions();
+	abstract Map<DefinitionKey, Entry> targets();
+
+	static final class Entry {
+
+		private final DefinitionTarget first;
+		private final DefinitionTarget last;
+
+		Entry(DefinitionTarget target) {
+			this.first = target;
+			this.last = target;
+		}
+
+		private Entry(DefinitionTarget first, DefinitionTarget last) {
+			this.first = first;
+			this.last = last;
+		}
+
+		public final DefinitionTarget getFirst() {
+			return this.first;
+		}
+
+		public final DefinitionTarget getLast() {
+			return this.last;
+		}
+
+		public Entry add(Entry other) {
+			if (other == null) {
+				return this;
+			}
+			return new Entry(this.first, other.last);
+		}
+
+		@Override
+		public String toString() {
+			if (this.first == this.last) {
+				return this.first.toString();
+			}
+			return "(first: " + this.first + ", last: " + this.last + ')';
+		}
+
+	}
 
 }

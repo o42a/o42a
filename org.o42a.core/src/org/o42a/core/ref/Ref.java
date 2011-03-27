@@ -185,8 +185,8 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return valueDefinition();
+	public DefinitionTarget getDefinitionTargets() {
+		return valueDefinition(this);
 	}
 
 	@Override

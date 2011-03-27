@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.conditionDefinitions;
-import static org.o42a.core.st.DefinitionTarget.noDefinitions;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,8 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
-import org.o42a.core.st.DefinitionTargets;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.*;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.log.LogInfo;
 
 
 public class Declaratives extends Statements<Declaratives> {
@@ -84,10 +81,10 @@ public class Declaratives extends Statements<Declaratives> {
 				continue;
 			}
 			if (targets.haveDeclaration()) {
-				if (result.haveCondition()) {
-					for (int j = i + 1; j < size; ++j) {
-						redundantConditions(statement, statements.get(j));
-					}
+				for (int j = i + 1; j < size; ++j) {
+					redundantDefinitions(
+							targets.lastDeclaration(),
+							statements.get(j));
 				}
 				result = targets;
 				continue;
@@ -148,29 +145,17 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 
 		final List<Statement> statements = getStatements();
-		final int size = statements.size();
 
-		Definitions result = null;
+		for (Statement statement : statements) {
 
-		for (int i = 0; i < size; ++i) {
+			final Definitions definitions = statement.define(scope);
 
-			final Statement statement = statements.get(i);
-			final Definitions definition = statement.define(scope);
-
-			if (definition == null) {
-				continue;
+			if (definitions != null) {
+				return definitions;
 			}
-			if (result == null) {
-				result = definition;
-				continue;
-			}
-			getLogger().ambiguousValue(definition);
 		}
 
-		assert result != null :
-			"Result is missing";
-
-		return result;
+		throw new IllegalStateException("Value is missing");
 	}
 
 	Conditions getConditions() {
@@ -203,88 +188,49 @@ public class Declaratives extends Statements<Declaratives> {
 			getSentence().getInitialConditions();
 	}
 
-	private void redundantConditions(Statement declaration, Statement statement) {
+	private void redundantDefinitions(
+			DefinitionTarget declaration,
+			Statement statement) {
 
-		final DeclarativeBlock block = statement.toDeclarativeBlock();
+		final DefinitionTargets targets = statement.getDefinitionTargets();
 
-		if (block != null) {
-			redundantConditions(declaration, block);
-			return;
-		}
-
-		final DefinitionTargets statementKinds = statement.getDefinitionTargets();
-
-		if (!statementKinds.haveCondition()) {
-			return;
-		}
-
-		logRedundantCondition(declaration, statement, statementKinds);
-	}
-
-	private void redundantConditions(Statement declaration, DeclarativeBlock block) {
-
-		final DefinitionTargets statementKinds = block.getDefinitionTargets();
-
-		if (!statementKinds.haveCondition()) {
-			return;
-		}
-		for (DeclarativeSentence sentence : block.getSentences()) {
-
-			final DefinitionTargets sentenceStatementKinds =
-				sentence.getDefinitionTargets();
-
-			if (!sentenceStatementKinds.haveCondition()) {
-				continue;
+		if (targets.haveCondition()) {
+			if (declaration.isValue()) {
+				getLogger().error(
+						"redundant_condition_after_value",
+						targets.firstCondition().getLoggable()
+						.setPreviousLoggable(declaration.getLoggable()),
+						"Condition is redunant, as it follows the "
+						+ " value assignment statement");
+			} else {
+				getLogger().error(
+						"redundant_condition_after_field",
+						targets.firstCondition().getLoggable()
+						.setPreviousLoggable(declaration.getLoggable()),
+						"Condition is redunant, as it follows the "
+						+ " field declaration");
 			}
-			if (sentenceStatementKinds.onlyConditions()) {
-				logRedundantCondition(
-						declaration,
-						sentence,
-						sentenceStatementKinds);
-				continue;
-			}
-			redundantConditions(declaration, sentence);
 		}
-	}
 
-	private void redundantConditions(
-			Statement declaration,
-			DeclarativeSentence sentence) {
-		for (Declaratives alt : sentence.getAlternatives()) {
+		final DefinitionTarget ambiguity =
+			targets.first(declaration.getDefinitionKey());
 
-			final DefinitionTargets altStatementKinds =
-				alt.getDefinitionTargets();
-
-			if (!altStatementKinds.haveCondition()) {
-				continue;
+		if (ambiguity != null) {
+			if (declaration.isValue()) {
+				getLogger().error(
+						"ambiguous_value",
+						ambiguity.getLoggable().setPreviousLoggable(
+								declaration.getLoggable()),
+						"Ambiguous value declaration");
+			} else {
+				getLogger().error(
+						"ambiguous_field",
+						ambiguity.getLoggable().setPreviousLoggable(
+								declaration.getLoggable()),
+						"Ambiguous declaration of field '%s'",
+						declaration.getFieldKey().getMemberId());
 			}
-			if (altStatementKinds.onlyConditions()) {
-				logRedundantCondition(
-						declaration,
-						alt,
-						altStatementKinds);
-				continue;
-			}
-			redundantConditions(declaration, alt);
 		}
-	}
-
-	private void redundantConditions(Statement declaration, Declaratives alt) {
-		for (Statement statement : alt.getStatements()) {
-			redundantConditions(declaration, statement);
-		}
-	}
-
-	private void logRedundantCondition(
-			Statement declaration,
-			LogInfo statement,
-			DefinitionTargets statementKinds) {
-		getLogger().error(
-				"redundant_condition",
-				statement.getLoggable().setPreviousLoggable(
-						declaration.getLoggable()),
-				"Condition is redunant, as it follows the field declaration "
-				+ " or self-assignment statement");
 	}
 
 	private final class DeclarativeConditions extends Conditions {

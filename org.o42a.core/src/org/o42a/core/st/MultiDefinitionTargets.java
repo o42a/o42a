@@ -19,23 +19,85 @@
 */
 package org.o42a.core.st;
 
-import java.util.HashSet;
-
-import org.o42a.core.member.MemberKey;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 final class MultiDefinitionTargets extends DefinitionTargets {
 
-	private final HashSet<DefinitionKey> definitions;
+	private final HashMap<DefinitionKey, Entry> targets;
+	private final DefinitionTarget firstDeclaration;
+	private final DefinitionTarget lastDeclaration;
 
-	MultiDefinitionTargets(byte mask, HashSet<DefinitionKey> definitions) {
-		super(mask);
-		this.definitions = definitions;
+	MultiDefinitionTargets(
+			DefinitionTargets targets1,
+			DefinitionTargets targets2) {
+		super((byte) (targets1.mask() | targets2.mask()));
+
+		final Map<DefinitionKey, Entry> t1 = targets1.targets();
+		final Map<DefinitionKey, Entry> t2 = targets2.targets();
+
+		this.targets = new HashMap<DefinitionKey, Entry>(t1.size() + t2.size());
+
+		for (Map.Entry<DefinitionKey, Entry> e : t1.entrySet()) {
+			this.targets.put(e.getKey(), e.getValue().add(t2.get(e.getKey())));
+		}
+		for (Map.Entry<DefinitionKey, Entry> e : t2.entrySet()) {
+
+			final DefinitionKey key = e.getKey();
+
+			if (!this.targets.containsKey(key)) {
+				this.targets.put(key, e.getValue());
+			}
+		}
+
+		final DefinitionTarget firstDeclaration = targets1.firstDeclaration();
+
+		if (firstDeclaration != null) {
+			this.firstDeclaration = firstDeclaration;
+		} else {
+			this.firstDeclaration = targets2.firstDeclaration();
+		}
+
+		final DefinitionTarget lastDeclaration = targets2.lastDeclaration();
+
+		if (lastDeclaration != null) {
+			this.lastDeclaration = lastDeclaration;
+		} else {
+			this.lastDeclaration = targets1.lastDeclaration();
+		}
 	}
 
 	@Override
-	public boolean haveField(MemberKey memberKey) {
-		return this.definitions.contains(memberKey);
+	public final DefinitionTarget firstDeclaration() {
+		return this.firstDeclaration;
+	}
+
+	@Override
+	public final DefinitionTarget lastDeclaration() {
+		return this.lastDeclaration;
+	}
+
+	@Override
+	public final DefinitionTarget first(DefinitionKey key) {
+
+		final Entry entry = this.targets.get(key);
+
+		return entry != null ? entry.getLast() : null;
+	}
+
+	@Override
+	public final DefinitionTarget last(DefinitionKey key) {
+
+		final Entry entry = this.targets.get(key);
+
+		return entry != null ? entry.getLast() : null;
+	}
+
+	@Override
+	public final Iterator<DefinitionKey> iterator() {
+		return this.targets.keySet().iterator();
 	}
 
 	@Override
@@ -48,7 +110,7 @@ final class MultiDefinitionTargets extends DefinitionTargets {
 		boolean comma = false;
 
 		out.append("DefinitionTargets[");
-		for (DefinitionKey key : this.definitions) {
+		for (DefinitionKey key : this.targets.keySet()) {
 			if (comma) {
 				out.append(", ");
 			}
@@ -60,8 +122,8 @@ final class MultiDefinitionTargets extends DefinitionTargets {
 	}
 
 	@Override
-	HashSet<DefinitionKey> definitions() {
-		return this.definitions;
+	final Map<DefinitionKey, Entry> targets() {
+		return this.targets;
 	}
 
 }

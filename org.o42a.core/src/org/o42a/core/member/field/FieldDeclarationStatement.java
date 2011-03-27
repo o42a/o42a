@@ -51,7 +51,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
-		return fieldDeclaration(this.member.getKey());
+		return fieldDeclaration(this);
 	}
 
 	@Override
