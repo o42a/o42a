@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+import static org.o42a.core.st.DefinitionTarget.noDefinitions;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
@@ -29,8 +29,8 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementKinds;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.LogicalValue;
@@ -38,7 +38,7 @@ import org.o42a.core.value.LogicalValue;
 
 public class Imperatives extends Statements<Imperatives> {
 
-	private StatementKinds kinds;
+	private DefinitionTargets kinds;
 
 	Imperatives(
 			LocationInfo location,
@@ -58,17 +58,17 @@ public class Imperatives extends Statements<Imperatives> {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
+	public DefinitionTargets getDefinitionTargets() {
 		if (this.kinds != null) {
 			return this.kinds;
 		}
 
 		executeInstructions();
 
-		StatementKinds result = NO_STATEMENTS;
+		DefinitionTargets result = noDefinitions();
 
 		for (Statement statement : getStatements()) {
-			result = result.add(statement.getStatementKinds());
+			result = result.add(statement.getDefinitionTargets());
 		}
 
 		return this.kinds = result;

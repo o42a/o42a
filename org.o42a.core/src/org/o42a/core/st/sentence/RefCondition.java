@@ -19,8 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.StatementKinds.CONDITIONS;
-import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
@@ -52,11 +51,15 @@ final class RefCondition extends Statement {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
+	public DefinitionTargets getDefinitionTargets() {
 
-		final StatementKinds kinds = this.ref.getStatementKinds();
+		final DefinitionTargets targets = this.ref.getDefinitionTargets();
 
-		return kinds.haveDefinition() ? CONDITIONS : NO_STATEMENTS;
+		if (targets.haveDefinition()) {
+			return conditionDefinition();
+		}
+
+		return DefinitionTargets.noDefinitions();
 	}
 
 	@Override

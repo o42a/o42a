@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+import static org.o42a.core.st.DefinitionTarget.noDefinitions;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
@@ -56,8 +56,8 @@ final class EllipsisSt extends Statement {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		return NO_STATEMENTS;
+	public DefinitionTargets getDefinitionTargets() {
+		return noDefinitions();
 	}
 
 	@Override

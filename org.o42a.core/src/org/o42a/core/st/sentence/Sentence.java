@@ -28,7 +28,7 @@ import java.util.List;
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.StatementKinds;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -66,7 +66,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 
 	public abstract boolean isIssue();
 
-	public abstract StatementKinds getStatementKinds();
+	public abstract DefinitionTargets getDefinitionTargets();
 
 	public ValueType<?> getValueType() {
 		if (this.valueType != null) {

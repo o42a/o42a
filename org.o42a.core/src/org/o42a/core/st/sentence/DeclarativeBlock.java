@@ -35,7 +35,9 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Conditions;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
@@ -150,20 +152,22 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 	@Override
 	public Definitions define(Scope scope) {
-		if (!getStatementKinds().haveDefinition()) {
+		if (!getDefinitionTargets().haveDefinition()) {
 			return null;
 		}
 
 		final List<DeclarativeSentence> sentences = getSentences();
 		Definitions result = null;
-		Logical requirement = null;
-		Logical requirements = null;
-		Logical condition = null;
-		Logical conditions = null;
+		Logical prereq = null;
+		Logical elseReq = null;
+		Logical reqs = null;
+		Logical precond = null;
+		Logical elseCond = null;
+		Logical conds = null;
 
 		for (DeclarativeSentence sentence : sentences) {
 
-			final StatementKinds kinds = sentence.getStatementKinds();
+			final DefinitionTargets kinds = sentence.getDefinitionTargets();
 
 			if (!kinds.haveDefinition()) {
 				continue;
@@ -188,16 +192,20 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 				sentence.getConditions().fullLogical(scope.getScope());
 
 			if (sentence.isClaim()) {
-				if (sentence.getPrerequisite() == null) {
-					requirement = Logical.and(requirement, logical);
+				if (sentence.getPrerequisite() != null) {
+					reqs = Logical.or(reqs, logical);
+				} else if (reqs == null) {
+					prereq = Logical.and(prereq, logical);
 				} else {
-					requirements = Logical.or(requirements, logical);
+					elseReq = Logical.and(elseReq, logical);
 				}
 			} else {
-				if (sentence.getPrerequisite() == null) {
-					condition = Logical.and(condition, logical);
+				if (sentence.getPrerequisite() != null) {
+					conds = Logical.or(conds, logical);
+				} else if (conds == null) {
+					precond = Logical.and(precond, logical);
 				} else {
-					conditions = Logical.or(conditions, logical);
+					elseCond = Logical.and(elseCond, logical);
 				}
 			}
 
@@ -209,8 +217,10 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return null;
 		}
 
-		result = result.addRequirement(Logical.or(requirement, requirements));
-		result = result.addCondition(Logical.or(condition, conditions));
+		result = result.addRequirement(
+				Logical.and(prereq, Logical.or(elseReq, reqs)));
+		result = result.addCondition(
+				Logical.and(precond, Logical.or(elseCond, conds)));
 
 		return result;
 	}

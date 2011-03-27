@@ -21,7 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.conditionDefinitions;
 import static org.o42a.core.ref.Logical.disjunction;
-import static org.o42a.core.st.StatementKinds.NO_STATEMENTS;
+import static org.o42a.core.st.DefinitionTarget.noDefinitions;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
-import org.o42a.core.st.StatementKinds;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
@@ -39,7 +39,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 	private InitialConditions initialConditions;
 	private SentenceConditions conditions;
-	private StatementKinds statementKinds;
+	private DefinitionTargets definitionTargets;
 
 	DeclarativeSentence(
 			LocationInfo location,
@@ -64,25 +64,25 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	}
 
 	@Override
-	public StatementKinds getStatementKinds() {
-		if (this.statementKinds != null) {
-			return this.statementKinds;
+	public DefinitionTargets getDefinitionTargets() {
+		if (this.definitionTargets != null) {
+			return this.definitionTargets;
 		}
 
-		StatementKinds result = NO_STATEMENTS;
+		DefinitionTargets result = noDefinitions();
 
 		for (Declaratives alt : getAlternatives()) {
 
-			final StatementKinds altStatementKinds = alt.getStatementKinds();
+			final DefinitionTargets targets = alt.getDefinitionTargets();
 
-			if (altStatementKinds.isEmpty()) {
+			if (targets.isEmpty()) {
 				continue;
 			}
 			if (result.isEmpty()) {
-				result = altStatementKinds;
+				result = targets;
 				continue;
 			}
-			if (altStatementKinds.haveDeclaration()) {
+			if (targets.haveDeclaration()) {
 				if (!result.haveDeclaration()) {
 					getLogger().error(
 							"unexpected_declaration",
@@ -102,20 +102,20 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				}
 			}
 
-			result = result.add(altStatementKinds);
+			result = result.add(targets);
 		}
 
-		return this.statementKinds = result;
+		return this.definitionTargets = result;
 	}
 
 	protected Definitions define(Scope scope) {
 
-		final StatementKinds statementKinds = getStatementKinds();
+		final DefinitionTargets targets = getDefinitionTargets();
 
-		if (!statementKinds.haveDefinition()) {
+		if (!targets.haveDefinition()) {
 			return null;
 		}
-		if (!statementKinds.haveValue()) {
+		if (!targets.haveValue()) {
 
 			final Logical fullLogical =
 				getConditions().fullLogical(scope);
@@ -128,9 +128,9 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 		for (Declaratives alt : getAlternatives()) {
 
-			final StatementKinds altStatementKinds = alt.getStatementKinds();
+			final DefinitionTargets altTargets = alt.getDefinitionTargets();
 
-			if (!altStatementKinds.haveValue()) {
+			if (!altTargets.haveValue()) {
 				continue;
 			}
 

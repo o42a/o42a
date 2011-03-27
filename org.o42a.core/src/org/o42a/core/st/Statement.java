@@ -50,7 +50,7 @@ public abstract class Statement extends Placed {
 		return null;
 	}
 
-	public abstract StatementKinds getStatementKinds();
+	public abstract DefinitionTargets getDefinitionTargets();
 
 	public abstract ValueType<?> getValueType();
 
