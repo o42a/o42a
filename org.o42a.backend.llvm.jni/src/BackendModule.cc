@@ -58,10 +58,10 @@ static cl::opt<std::string> InputFilename(
 		cl::value_desc("input file"));
 
 static cl::opt<cl::boolOrDefault> Debug(
-		"debug",
+		"rt-debug",
 		cl::ValueOptional,
 		cl::desc(
-				"Whether compiled code contains debug info. "
+				"Whether compiled code contains run-time debug info. "
 				"Disabled by default. "
 				"Enabled if value is omitted."),
 		cl::value_desc("0/1"));
