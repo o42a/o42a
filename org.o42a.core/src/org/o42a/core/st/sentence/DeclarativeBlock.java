@@ -20,8 +20,6 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.def.Definitions.emptyDefinitions;
-import static org.o42a.core.ref.Logical.disjunction;
 import static org.o42a.core.st.Conditions.emptyConditions;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
@@ -37,10 +35,8 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.ArrayUtil;
 import org.o42a.util.Place.Trace;
 
 
@@ -156,73 +152,10 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return null;
 		}
 
-		final List<DeclarativeSentence> sentences = getSentences();
-		Definitions result = null;
-		Logical prereq = null;
-		Logical elseReq = null;
-		Logical reqs = null;
-		Logical precond = null;
-		Logical elseCond = null;
-		Logical conds = null;
+		final SentenceCollector.DefinitionsCollector collector =
+			new SentenceCollector.DefinitionsCollector(this, scope);
 
-		for (DeclarativeSentence sentence : sentences) {
-
-			final DefinitionTargets kinds = sentence.getDefinitionTargets();
-
-			if (!kinds.haveDefinition()) {
-				continue;
-			}
-			if (kinds.haveValue()) {
-
-				final Definitions definitions = sentence.define(scope);
-
-				assert definitions != null :
-					sentence + " has no definitions";
-
-				if (result == null) {
-					result = definitions;
-				} else {
-					result = result.refine(definitions);
-				}
-
-				continue;
-			}
-
-			final Logical logical =
-				sentence.getConditions().fullLogical(scope.getScope());
-
-			if (sentence.isClaim()) {
-				if (sentence.getPrerequisite() != null) {
-					reqs = Logical.or(reqs, logical);
-				} else if (reqs == null) {
-					prereq = Logical.and(prereq, logical);
-				} else {
-					elseReq = Logical.and(elseReq, logical);
-				}
-			} else {
-				if (sentence.getPrerequisite() != null) {
-					conds = Logical.or(conds, logical);
-				} else if (conds == null) {
-					precond = Logical.and(precond, logical);
-				} else {
-					elseCond = Logical.and(elseCond, logical);
-				}
-			}
-
-			if (result == null) {
-				result = emptyDefinitions(this, scope.getScope());
-			}
-		}
-		if (result == null) {
-			return null;
-		}
-
-		result = result.addRequirement(
-				Logical.and(prereq, Logical.or(elseReq, reqs)));
-		result = result.addCondition(
-				Logical.and(precond, Logical.or(elseCond, conds)));
-
-		return result;
+		return collector.definitions();
 	}
 
 	@Override
@@ -297,46 +230,10 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		@Override
 		public Logical precondition(Scope scope) {
 
-			final List<DeclarativeSentence> sentences =
-				this.block.getSentences();
-			final int size = sentences.size();
+			final SentenceCollector.PreconditionCollector collector =
+				new SentenceCollector.PreconditionCollector(this.block, scope);
 
-			if (size <= 0) {
-				return this.initialConditions.precondition(scope);
-			}
-
-			Logical req = null;
-			Logical vars[] = new Logical[size + 1];
-			int varIdx = 0;
-
-			for (DeclarativeSentence sentence : sentences) {
-
-				final Logical fullLogical =
-					sentence.getConditions().fullLogical(scope);
-
-				if (sentence.getPrerequisite() != null) {
-					vars[varIdx++] = fullLogical;
-				} else if (req == null) {
-					req = fullLogical;
-				} else {
-					req = req.and(fullLogical);
-				}
-			}
-
-			if (varIdx == 0) {
-				if (req == null) {
-					return this.initialConditions.precondition(scope);
-				}
-				return req;
-			}
-			if (req != null) {
-				vars[varIdx++] = req;
-			}
-
-			return disjunction(
-					this.block,
-					this.block.getScope(),
-					ArrayUtil.clip(vars, varIdx));
+			return collector.precondition();
 		}
 
 		@Override

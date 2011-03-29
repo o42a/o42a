@@ -38,6 +38,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	private InitialConditions initialConditions;
 	private SentenceConditions conditions;
 	private DefinitionTargets definitionTargets;
+	private boolean ignored;
 
 	DeclarativeSentence(
 			LocationInfo location,
@@ -133,36 +134,6 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return this.definitionTargets = result;
 	}
 
-	private void reportAmbiguity(
-			DefinitionTargets result,
-			DefinitionTargets targets) {
-		for (DefinitionKey key : targets) {
-			if (!key.isDeclaration()) {
-				continue;
-			}
-
-			final DefinitionTarget previousDeclaration = result.last(key);
-
-			if (previousDeclaration == null) {
-				continue;
-			}
-			if (key.isValue()) {
-				getLogger().error(
-						"ambiguous_value",
-						targets.first(key).getLoggable().setPreviousLoggable(
-								previousDeclaration.getLoggable()),
-						"Ambiguous value");
-				continue;
-			}
-			getLogger().error(
-					"ambiguous_field",
-					targets.first(key).getLoggable().setPreviousLoggable(
-							previousDeclaration.getLoggable()),
-					"Ambiguous declaration of field '%s'",
-					previousDeclaration.getFieldKey().getMemberId());
-		}
-	}
-
 	protected Definitions define(Scope scope) {
 
 		final DefinitionTargets targets = getDefinitionTargets();
@@ -202,6 +173,44 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			return this.conditions;
 		}
 		return this.conditions = new SentenceConditions(this);
+	}
+
+	final boolean isIgnored() {
+		return this.ignored;
+	}
+
+	final void ignore() {
+		this.ignored = true;
+	}
+
+	private void reportAmbiguity(
+			DefinitionTargets result,
+			DefinitionTargets targets) {
+		for (DefinitionKey key : targets) {
+			if (!key.isDeclaration()) {
+				continue;
+			}
+
+			final DefinitionTarget previousDeclaration = result.last(key);
+
+			if (previousDeclaration == null) {
+				continue;
+			}
+			if (key.isValue()) {
+				getLogger().error(
+						"ambiguous_value",
+						targets.first(key).getLoggable().setPreviousLoggable(
+								previousDeclaration.getLoggable()),
+						"Ambiguous value");
+				continue;
+			}
+			getLogger().error(
+					"ambiguous_field",
+					targets.first(key).getLoggable().setPreviousLoggable(
+							previousDeclaration.getLoggable()),
+					"Ambiguous declaration of field '%s'",
+					previousDeclaration.getFieldKey().getMemberId());
+		}
 	}
 
 	static final class Proposition extends DeclarativeSentence {

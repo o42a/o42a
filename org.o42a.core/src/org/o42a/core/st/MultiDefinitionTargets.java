@@ -19,14 +19,14 @@
 */
 package org.o42a.core.st;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
 final class MultiDefinitionTargets extends DefinitionTargets {
 
-	private final HashMap<DefinitionKey, Entry> targets;
+	private final LinkedHashMap<DefinitionKey, Entry> targets;
 	private final DefinitionTarget firstDeclaration;
 	private final DefinitionTarget lastDeclaration;
 
@@ -38,7 +38,8 @@ final class MultiDefinitionTargets extends DefinitionTargets {
 		final Map<DefinitionKey, Entry> t1 = targets1.targets();
 		final Map<DefinitionKey, Entry> t2 = targets2.targets();
 
-		this.targets = new HashMap<DefinitionKey, Entry>(t1.size() + t2.size());
+		this.targets =
+			new LinkedHashMap<DefinitionKey, Entry>(t1.size() + t2.size());
 
 		for (Map.Entry<DefinitionKey, Entry> e : t1.entrySet()) {
 			this.targets.put(e.getKey(), e.getValue().add(t2.get(e.getKey())));
@@ -113,6 +114,8 @@ final class MultiDefinitionTargets extends DefinitionTargets {
 		for (DefinitionKey key : this.targets.keySet()) {
 			if (comma) {
 				out.append(", ");
+			} else {
+				comma = true;
 			}
 			out.append(key);
 		}

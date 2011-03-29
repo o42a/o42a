@@ -89,7 +89,7 @@ public class Declaratives extends Statements<Declaratives> {
 				result = targets;
 				continue;
 			}
-			result = result.add(targets);
+			result = targets.add(result);
 		}
 
 		return this.definitionTargets = result;
