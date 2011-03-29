@@ -79,7 +79,7 @@
 			taskname="o42ac"
 			failonerror="true">
 			<arg line="--nocolor"/>
-			<arg line="-debug=${_compile.debug}"/>
+			<arg line="-rt-debug=${_compile.debug}"/>
 			<arg line="hello_world.o42a"/>
 			
 			<arg line="--vmargs"/>

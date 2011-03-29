@@ -56,6 +56,7 @@ void Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs(
 			(char**) argv,
 			"o42a Compiler");
 
+
 	for (int i = 0; i < argc; ++i) {
 		env->ReleaseByteArrayElements(byteArrays[i], argv[i], JNI_ABORT);
 	}
