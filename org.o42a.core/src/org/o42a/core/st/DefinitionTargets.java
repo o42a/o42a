@@ -20,6 +20,7 @@
 package org.o42a.core.st;
 
 import static org.o42a.core.st.DefinitionKey.CONDITION_DEFINITION_KEY;
+import static org.o42a.core.st.DefinitionKey.VALUE_DEFINITION_KEY;
 
 import java.util.Map;
 
@@ -70,10 +71,6 @@ public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 		return (this.mask & DECLARATION_MASK) != 0;
 	}
 
-	public abstract DefinitionTarget firstDeclaration();
-
-	public abstract DefinitionTarget lastDeclaration();
-
 	public final DefinitionTarget firstCondition() {
 		return first(CONDITION_DEFINITION_KEY);
 	}
@@ -81,6 +78,18 @@ public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 	public final DefinitionTarget lastCondition() {
 		return last(CONDITION_DEFINITION_KEY);
 	}
+
+	public final DefinitionTarget firstValue() {
+		return first(VALUE_DEFINITION_KEY);
+	}
+
+	public final DefinitionTarget lastValue() {
+		return last(VALUE_DEFINITION_KEY);
+	}
+
+	public abstract DefinitionTarget firstDeclaration();
+
+	public abstract DefinitionTarget lastDeclaration();
 
 	public abstract DefinitionTarget first(DefinitionKey key);
 
