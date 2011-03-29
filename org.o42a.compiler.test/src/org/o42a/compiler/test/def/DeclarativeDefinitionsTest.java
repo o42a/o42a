@@ -91,8 +91,8 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 	@Test
 	public void runtimeLogicalValue() {
 		compile(
-				"Use namespace 'Console'.",
-				"A := integer(Print(Text = \"1\"), = 1).",
+				"Use namespace 'Test'.",
+				"A := integer(Rt-void, = 1).",
 				"B := A().");
 
 		final Field<?> a = field("a");
@@ -115,8 +115,8 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 	@Test
 	public void runtimeCondition() {
 		compile(
-				"Use namespace 'Console'.",
-				"A := integer(Print(Text = \"1\"). = 1).",
+				"Use namespace 'Test'.",
+				"A := integer(Rt-void. = 1).",
 				"B := A().");
 
 		final Field<?> a = field("a");

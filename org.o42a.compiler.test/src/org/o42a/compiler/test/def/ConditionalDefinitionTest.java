@@ -29,7 +29,7 @@ import org.o42a.compiler.test.CompilerTestCase;
 public class ConditionalDefinitionTest extends CompilerTestCase {
 
 	@Test
-	public void simpleCondition() {
+	public void conditionalValue() {
 		compile(
 				"A := void(",
 				"  Condition := `void.",
@@ -66,7 +66,7 @@ public class ConditionalDefinitionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void imperativeCondition() {
+	public void conditionalImperativeValue() {
 		compile(
 				"A := void(",
 				"  Condition := `void.",
