@@ -70,4 +70,19 @@ public class ConditionTest extends CompilerTestCase {
 		assertFalseVoid(field("c"));
 	}
 
+	@Test
+	public void unlessIssue() {
+		compile(
+				"A := void(",
+				"  Condition := 1.",
+				"  Condition > 0? False. Void.",
+				").",
+				"B := a(Condition = 0).",
+				"C := b.");
+
+		assertFalseVoid(field("a"));
+		assertTrueVoid(field("b"));
+		assertTrueVoid(field("c"));
+	}
+
 }
