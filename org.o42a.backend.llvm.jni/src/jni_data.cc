@@ -161,7 +161,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
 
 	delete typeData;
 
-	cast<StructType>(type->get())->refineAbstractTypeTo(newType);
+	cast<OpaqueType>(type->get())->refineAbstractTypeTo(newType);
 	newType = cast<StructType>(type->get());
 	if (id) {
 
