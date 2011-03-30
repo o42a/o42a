@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.test.grammar.statement;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
@@ -110,6 +111,27 @@ public class SentenceTest extends GrammarTestCase {
 		assertType(SentenceType.PROPOSITION, "foo");
 	}
 
+	@Test
+	public void multiLineConjunction() {
+
+		final SentenceNode result = parse(
+				"a,",
+				"b,",
+				"c");
+
+		assertThat(result.getDisjunction()[0].getConjunction().length, is(3));
+	}
+
+	@Test
+	public void multiLineDisjunction() {
+
+		final SentenceNode result = parse(
+				"a;",
+				"b;",
+				"c");
+
+		assertThat(result.getDisjunction().length, is(3));
+	}
 
 	private SentenceNode assertType(SentenceType type, String text) {
 
@@ -120,8 +142,8 @@ public class SentenceTest extends GrammarTestCase {
 		return sentence;
 	}
 
-	private SentenceNode parse(String text) {
-		return parse(DECLARATIVE.sentence(), text);
+	private SentenceNode parse(String... lines) {
+		return parseLines(DECLARATIVE.sentence(), lines);
 	}
 
 }

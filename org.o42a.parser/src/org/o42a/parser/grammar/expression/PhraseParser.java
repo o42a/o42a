@@ -112,7 +112,7 @@ public class PhraseParser implements Parser<PhraseNode> {
 
 				this.precedingName = true;
 
-				return context.acceptComments(name);
+				return context.acceptComments(false, name);
 			}
 		}
 

@@ -31,7 +31,9 @@ public class AlternativeNode extends AbstractNode {
 	private final SignNode<Separator> separator;
 	private final SerialNode[] conjunction;
 
-	public AlternativeNode(SignNode<Separator> separator, SerialNode[] conjunction) {
+	public AlternativeNode(
+			SignNode<Separator> separator,
+			SerialNode[] conjunction) {
 		super(separator, firstNode(conjunction), lastNode(conjunction));
 		this.separator = separator;
 		this.conjunction = conjunction;

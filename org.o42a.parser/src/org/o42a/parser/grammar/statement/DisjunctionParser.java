@@ -22,7 +22,7 @@ package org.o42a.parser.grammar.statement;
 import java.util.ArrayList;
 
 import org.o42a.ast.FixedPosition;
-import org.o42a.ast.atom.CommentNode;
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.AlternativeNode.Separator;
@@ -48,26 +48,22 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 
 		for (;;) {
 
-			final CommentNode[] comments = context.skipComments();
+			final SeparatorNodes separators = context.skipComments(true);
 			final FixedPosition conjunctionStart = context.current().fix();
-			final SerialNode[] conjunction =
+			final SerialNode[] alt =
 				expectations.parse(this.grammar.conjunction());
 			final AlternativeNode alternative;
 
-			if (conjunction != null) {
+			if (alt != null || separatorSign != null) {
 				alternative = new AlternativeNode(
 						separatorSign,
-						conjunction != null ? conjunction : new SerialNode[0]);
-
+						alt != null ? alt : new SerialNode[0]);
 			} else {
 
 				final FixedPosition start = context.current().fix();
 
 				alternative = new AlternativeNode(start, start);
 			}
-
-			alternative.addComments(comments);
-			context.skipComments(alternative);
 
 			final Separator separator;
 			final int c = context.next();
@@ -77,17 +73,16 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 			} else if (c == '|') {
 				separator = Separator.OPPOSITE;
 			} else {
-				if (conjunction == null && alternatives.isEmpty()) {
-					return null;
+				if (alt != null) {
+					alternatives.add(alternative);
 				}
-				context.acceptButLast();
-				alternatives.add(alternative);
 				break;
 			}
-			alternatives.add(alternative);
-			if (conjunction == null) {
+			if (alt == null) {
 				context.getLogger().emptyAlternative(conjunctionStart);
+				alternative.addComments(separators);
 			}
+			alternatives.add(alternative);
 
 			final FixedPosition separatorStart = context.current().fix();
 
@@ -96,7 +91,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 					separatorStart,
 					context.current(),
 					separator);
-			context.acceptComments(separatorSign);
+			context.acceptComments(true, separatorSign);
 		}
 
 		final int size = alternatives.size();

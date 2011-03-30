@@ -22,7 +22,6 @@ package org.o42a.parser.grammar.atom;
 import static java.lang.Character.isLetter;
 import static java.lang.Character.isWhitespace;
 import static org.o42a.parser.Grammar.*;
-import static org.o42a.parser.grammar.atom.WhitespaceParser.WHITESPACE;
 
 import org.o42a.ast.EmptyNode;
 import org.o42a.ast.FixedPosition;
@@ -43,7 +42,6 @@ public class NameParser implements Parser<NameNode> {
 
 	@Override
 	public NameNode parse(ParserContext context) {
-		context.push(WHITESPACE);
 
 		final FixedPosition start = context.current().fix();
 		final StringBuilder name = new StringBuilder();
@@ -55,10 +53,13 @@ public class NameParser implements Parser<NameNode> {
 			final int c = context.next();
 
 			if (isWhitespace(c)) {
+				if (c == '\n' && name.length() == 0) {
+					return null;
+				}
 				if (whitespace == null) {
 					whitespace = context.current().fix();
 				}
-				context.push(WHITESPACE);
+				context.push(whitespace(true));
 				if (hyphen == NON_BREAKING_HYPHEN) {
 					context.getLogger().discouragingWhitespace(
 							new EmptyNode(whitespace, context.current()));

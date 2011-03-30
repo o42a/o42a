@@ -55,7 +55,7 @@ public class NamedBlockParser implements Parser<NamedBlockNode> {
 					context.current(),
 					NamedBlockNode.Separator.COLON);
 
-		context.skipComments(separator);
+		context.skipComments(true, separator);
 
 		final BracesNode block = context.parse(braces());
 
@@ -64,7 +64,6 @@ public class NamedBlockParser implements Parser<NamedBlockNode> {
 		}
 
 		context.acceptAll();
-		context.acceptComments(block);
 
 		return new NamedBlockNode(this.name, separator, block);
 	}

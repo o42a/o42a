@@ -20,6 +20,7 @@
 package org.o42a.ast.test.grammar.statement;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
@@ -28,6 +29,7 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.ast.sentence.SentenceType;
 import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
@@ -74,8 +76,78 @@ public class ContentTest extends GrammarTestCase {
 		assertName("foo", decl2.getDefinition());
 	}
 
-	private SentenceNode[] parse(String text) {
-		return parse(DECLARATIVE.content(), text);
+	@Test
+	public void sentenceBreak() {
+
+		final SentenceNode[] result = parse(
+				"a()",
+				"b()");
+
+		assertThat(result.length, is(2));
+		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[0].getMark());
+		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[1].getMark());
+	}
+
+	@Test
+	public void sentenceBreakByEmptyStatement() {
+		expectError("empty_statement");
+
+		final SentenceNode[] result = parse(
+				"a",
+				", b");
+
+		assertThat(result.length, is(2));
+		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[0].getMark());
+		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[1].getMark());
+	}
+
+	@Test
+	public void sentenceBreakByEmptyAlternative() {
+		expectError("empty_alternative");
+
+		final SentenceNode[] result = parse(
+				"a",
+				"; b");
+
+		assertThat(result.length, is(2));
+		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[0].getMark());
+		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[1].getMark());
+	}
+
+	@Test
+	public void sentenceBreakByEmptyAlternativeWithOpposite() {
+		expectError("empty_alternative");
+
+		final SentenceNode[] result = parse(
+				"a",
+				"| b");
+
+		assertThat(result.length, is(2));
+		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[0].getMark());
+		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
+		assertNull(result[1].getMark());
+	}
+
+	@Test
+	public void noSentenceBreak() {
+
+		final SentenceNode[] result = parse(
+				"a",
+				"b");
+
+		assertThat(result.length, is(1));
+		assertName("a_b", singleStatement(MemberRefNode.class, result[0]));
+	}
+
+	private SentenceNode[] parse(String... lines) {
+		return parseLines(DECLARATIVE.content(), lines);
 	}
 
 }

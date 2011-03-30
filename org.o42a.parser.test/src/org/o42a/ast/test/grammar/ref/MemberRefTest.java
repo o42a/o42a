@@ -21,13 +21,13 @@ package org.o42a.ast.test.grammar.ref;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.MemberRefNode.Qualifier;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Grammar;
 
 
 public class MemberRefTest extends GrammarTestCase {
@@ -35,7 +35,7 @@ public class MemberRefTest extends GrammarTestCase {
 	@Test
 	public void memberRef() {
 
-		final MemberRefNode ref = to(MemberRefNode.class, parse("foo"));
+		final MemberRefNode ref = parse("foo");
 
 		assertName("foo", ref);
 		assertEquals(3, this.worker.position().offset());
@@ -45,7 +45,7 @@ public class MemberRefTest extends GrammarTestCase {
 	@Test
 	public void qualified() {
 
-		final MemberRefNode ref = to(MemberRefNode.class, parse("foo:bar"));
+		final MemberRefNode ref = parse("foo:bar");
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 
 		assertEquals("bar", ref.getName().getName());
@@ -61,8 +61,9 @@ public class MemberRefTest extends GrammarTestCase {
 	@Test
 	public void declaredIn() {
 
-		final MemberRefNode ref = to(MemberRefNode.class, parse("foo@bar"));
-		final MemberRefNode declaredIn = to(MemberRefNode.class, ref.getDeclaredIn());
+		final MemberRefNode ref = parse("foo@bar");
+		final MemberRefNode declaredIn =
+			to(MemberRefNode.class, ref.getDeclaredIn());
 
 		assertEquals("foo", ref.getName().getName());
 		assertNull(ref.getQualifier());
@@ -74,8 +75,45 @@ public class MemberRefTest extends GrammarTestCase {
 		assertRange(4, 7, declaredIn.getName());
 	}
 
-	private RefNode parse(String text) {
-		return parse(Grammar.ref(), text);
+	@Test
+	public void nlBeforeQualifier() {
+
+		final RefNode ref = parse(ref(), "foo \n: bar");
+
+		assertName("foo", ref);
+	}
+
+	@Test
+	public void nlAfterQualifier() {
+
+		final MemberRefNode ref = parse("foo:\nbar");
+
+		assertName("foo", ref.getOwner());
+		assertEquals("bar", ref.getName().getName());
+	}
+
+	@Test
+	public void nlBeforeRetention() {
+
+		final MemberRefNode ref = parse("foo: bar\n@ baz");
+
+		assertName("foo", ref.getOwner());
+		assertEquals("bar", ref.getName().getName());
+		assertNull(ref.getRetention());
+	}
+
+	@Test
+	public void nlAfterRetention() {
+
+		final MemberRefNode ref = parse("foo: bar @\nbaz");
+
+		assertName("foo", ref.getOwner());
+		assertEquals("bar", ref.getName().getName());
+		assertName("baz", ref.getDeclaredIn());
+	}
+
+	private MemberRefNode parse(String text) {
+		return to(MemberRefNode.class, parse(ref(), text));
 	}
 
 }

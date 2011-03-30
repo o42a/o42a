@@ -55,7 +55,7 @@ public class AscendantRefParser implements Parser<AscendantRefNode> {
 					context.current(),
 					AscendantRefNode.Boundary.CIRCUMFLEX);
 
-		context.acceptComments(prefix);
+		context.acceptComments(true, prefix);
 
 		final RefNode type = context.push(Grammar.ref());
 
@@ -73,11 +73,13 @@ public class AscendantRefParser implements Parser<AscendantRefNode> {
 					context.current(),
 					AscendantRefNode.Boundary.CIRCUMFLEX);
 
-		return context.acceptComments(new AscendantRefNode(
-				this.overridden,
-				prefix,
-				type,
-				suffix));
+		return context.acceptComments(
+				true,
+				new AscendantRefNode(
+						this.overridden,
+						prefix,
+						type,
+						suffix));
 	}
 
 }

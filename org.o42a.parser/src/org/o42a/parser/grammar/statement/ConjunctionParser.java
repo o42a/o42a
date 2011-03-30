@@ -26,7 +26,7 @@ import static org.o42a.parser.Grammar.ellipsis;
 import java.util.ArrayList;
 
 import org.o42a.ast.FixedPosition;
-import org.o42a.ast.atom.CommentNode;
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.sentence.SerialNode.Separator;
@@ -60,7 +60,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 
 		for (;;) {
 
-			final CommentNode[] comments = context.skipComments();
+			final SeparatorNodes separators = context.skipComments(true);
 			final FixedPosition statementStart = context.current().fix();
 			final StatementNode stat =
 				expectations.parse(this.grammar.statement());
@@ -72,46 +72,46 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 				statement = new SerialNode(statementStart);
 			}
 
-			statement.addComments(comments);
-			context.skipComments(statement);
-
 			final int c = context.next();
 
-			if (c != ',') {
-				if (this.grammar == IMPERATIVE
-						&& (c == '.' || c == HORIZONTAL_ELLIPSIS)) {
-
-					final EllipsisNode ellipsis = context.push(ellipsis());
-
-					if (ellipsis != null) {
-						if (stat != null) {
-							statements.add(statement);
-						}
-						statements.add(new SerialNode(null, ellipsis));
-						context.acceptAll();
-						break;
-					}
+			if (c == ',') {
+				if (stat == null) {
+					context.getLogger().emptyStatement(statementStart);
+					statement.addComments(separators);
 				}
-				if (stat == null && statements.isEmpty()) {
-					return null;
-				}
-				context.acceptButLast();
 				statements.add(statement);
-				break;
-			}
-			statements.add(statement);
-			if (stat == null) {
-				context.getLogger().emptyStatement(statementStart);
-			}
 
-			final FixedPosition separatorStart = context.current().fix();
+				final FixedPosition separatorStart = context.current().fix();
 
-			context.acceptAll();
-			separator = new SignNode<Separator>(
-					separatorStart,
-					context.current(),
-					Separator.THAN);
-			context.acceptComments(separator);
+				context.acceptAll();
+				separator = new SignNode<Separator>(
+						separatorStart,
+						context.current(),
+						Separator.THAN);
+				context.acceptAll();
+				context.acceptComments(true, separator);
+
+				continue;
+			}
+			if (this.grammar == IMPERATIVE
+					&& (c == '.' || c == HORIZONTAL_ELLIPSIS)) {
+
+				final EllipsisNode ellipsis = context.push(ellipsis());
+
+				if (ellipsis != null) {
+					if (stat != null) {
+						statements.add(statement);
+					}
+					ellipsis.addComments(separators);
+					statements.add(new SerialNode(null, ellipsis));
+					context.acceptAll();
+					break;
+				}
+			}
+			if (stat != null) {
+				statements.add(statement);
+			}
+			break;
 		}
 
 		final int size = statements.size();

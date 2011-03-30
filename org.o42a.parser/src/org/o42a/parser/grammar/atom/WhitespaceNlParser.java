@@ -1,6 +1,6 @@
 /*
-    Abstract Syntax Tree
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Parser
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,39 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast;
+package org.o42a.parser.grammar.atom;
+
+import org.o42a.parser.Parser;
+import org.o42a.parser.ParserContext;
 
 
-import org.o42a.ast.atom.CommentNode;
-import org.o42a.ast.atom.SeparatorNodes;
-import org.o42a.util.log.LoggableRange;
+public class WhitespaceNlParser implements Parser<Object> {
 
+	public static final WhitespaceNlParser WHITESPACE_NL =
+		new WhitespaceNlParser();
 
-public interface Node extends LoggableRange {
-
-	@Override
-	FixedPosition getStart();
-
-	@Override
-	FixedPosition getEnd();
-
-	CommentNode[] getComments();
-
-	void addComments(CommentNode... comments);
-
-	void addComments(SeparatorNodes separators);
-
-	<R, P> R accept(NodeVisitor<R, P> visitor, P p);
-
-	String nodeType();
-
-	void printRange(StringBuilder out);
-
-	void printNode(StringBuilder out);
-
-	String printContent();
+	private WhitespaceNlParser() {
+	}
 
 	@Override
-	void printContent(StringBuilder out);
+	public Object parse(ParserContext context) {
+
+		boolean whitespacePresent = false;
+
+		for (;;) {
+
+			final int c = context.next();
+
+			if (Character.isWhitespace(c)) {
+				whitespacePresent = true;
+				continue;
+			}
+			context.acceptButLast();
+			break;
+		}
+
+		return whitespacePresent ? Boolean.TRUE : null;
+	}
 
 }

@@ -19,6 +19,8 @@
 */
 package org.o42a.parser.grammar.atom;
 
+import static org.o42a.parser.Grammar.whitespace;
+
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.parser.Parser;
@@ -27,14 +29,17 @@ import org.o42a.parser.ParserContext;
 
 public class CommentParser implements Parser<CommentNode> {
 
-	public static final CommentParser COMMENT = new CommentParser();
+	public static final CommentParser COMMENT_NL = new CommentParser(true);
+	public static final CommentParser COMMENT = new CommentParser(false);
 
-	private CommentParser() {
+	private final boolean allowNewLine;
+
+	private CommentParser(boolean allowNewLine) {
+		this.allowNewLine = allowNewLine;
 	}
 
 	@Override
 	public CommentNode parse(ParserContext context) {
-		context.parse(WhitespaceParser.WHITESPACE);
 		if (context.next() != '/') {
 			return null;// not a first comment symbol
 		}
@@ -78,7 +83,7 @@ public class CommentParser implements Parser<CommentNode> {
 					}
 				}
 			} else if (c == '\n') {
-				context.acceptBut(1);
+				context.acceptButLast();
 				break;
 			}
 
@@ -91,10 +96,10 @@ public class CommentParser implements Parser<CommentNode> {
 				multiline,
 				text.toString());
 
-		if (!context.isEOF()) {
-			context.parse(WhitespaceParser.WHITESPACE);
+		if (multiline || this.allowNewLine) {
+			context.parse(whitespace(this.allowNewLine));
+			context.acceptAll();
 		}
-		context.acceptAll();
 
 		return comment;
 	}

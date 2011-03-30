@@ -19,9 +19,9 @@
 */
 package org.o42a.ast;
 
-import java.util.Collection;
 
 import org.o42a.ast.atom.CommentNode;
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.util.Source;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableVisitor;
@@ -157,32 +157,11 @@ public abstract class AbstractNode implements Node, Cloneable {
 	}
 
 	@Override
-	public void addComments(Collection<? extends CommentNode> comments) {
-		if (comments.isEmpty()) {
+	public final void addComments(SeparatorNodes separators) {
+		if (separators == null) {
 			return;
 		}
-		if (this.comments.length == 0) {
-			this.comments = comments.toArray(new CommentNode[comments.size()]);
-		} else {
-
-			final CommentNode[] newComments =
-				new CommentNode[this.comments.length + comments.size()];
-
-			System.arraycopy(
-					this.comments,
-					0,
-					newComments,
-					0,
-					this.comments.length);
-
-			int idx = this.comments.length;
-
-			for (CommentNode comment : comments) {
-				newComments[idx++] = comment;
-			}
-
-			this.comments = newComments;
-		}
+		this.comments = separators.appendCommentsTo(this.comments);
 	}
 
 	@Override

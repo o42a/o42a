@@ -22,6 +22,7 @@ package org.o42a.ast.test.grammar.statement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
 import org.o42a.ast.expression.AscendantNode;
@@ -31,7 +32,6 @@ import org.o42a.ast.statement.DeclarationTarget;
 import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.ast.statement.DefinitionKind;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.ParserWorker;
 
 
@@ -115,9 +115,7 @@ public class DefinitionTest extends GrammarTestCase {
 		this.worker = new ParserWorker(new Src(text));
 
 		final MemberRefNode field =
-			to(MemberRefNode.class, this.worker.parse(Grammar.ref()));
-
-		this.worker.skipComments();
+			to(MemberRefNode.class, this.worker.parse(ref()));
 
 		return this.worker.parse(DECLARATIVE.declarator(field));
 	}

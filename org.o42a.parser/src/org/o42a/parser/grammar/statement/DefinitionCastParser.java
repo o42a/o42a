@@ -105,7 +105,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 		final DefinitionCastNode result =
 			new DefinitionCastNode(opening, kind, type, closing);
 
-		return context.acceptComments(result);
+		return context.acceptComments(false, result);
 	}
 
 	private static final class DefinitionKindParser
@@ -134,7 +134,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 						context.firstUnaccepted(),
 						targetKind);
 
-			return context.acceptComments(result);
+			return context.acceptComments(true, result);
 		}
 
 	}

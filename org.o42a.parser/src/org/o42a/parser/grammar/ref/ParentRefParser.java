@@ -44,7 +44,7 @@ public class ParentRefParser implements Parser<ParentRefNode> {
 		if (name == null) {
 			return null;
 		}
-		context.skipComments(name);
+		context.skipComments(false, name);
 		if (context.next() != ':') {
 			return null;
 		}
@@ -66,7 +66,9 @@ public class ParentRefParser implements Parser<ParentRefNode> {
 					context.current(),
 					ParentRefNode.Qualifier.PARENT);
 
-		return context.acceptComments(new ParentRefNode(name, qualifier));
+		return context.acceptComments(
+				true,
+				new ParentRefNode(name, qualifier));
 	}
 
 }

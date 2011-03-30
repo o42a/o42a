@@ -25,6 +25,7 @@ import static java.util.Arrays.copyOf;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 
 public class ArrayUtil {
@@ -56,6 +57,24 @@ public class ArrayUtil {
 		final T[] newArray = copyOf(array, array.length + items.length);
 
 		arraycopy(items, 0, newArray, array.length, items.length);
+
+		return newArray;
+	}
+
+	public static <T> T[] append(T[] array, Collection<? extends T> items) {
+
+		final int size = items.size();
+
+		if (size == 0) {
+			return array;
+		}
+
+		final T[] newArray = copyOf(array, array.length + size);
+		int i = array.length;
+
+		for (T item : items) {
+			newArray[i++] = item;
+		}
 
 		return newArray;
 	}

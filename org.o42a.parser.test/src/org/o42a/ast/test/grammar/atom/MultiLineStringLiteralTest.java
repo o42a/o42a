@@ -20,12 +20,12 @@
 package org.o42a.ast.test.grammar.atom;
 
 import static org.junit.Assert.assertEquals;
+import static org.o42a.parser.Grammar.stringLiteral;
 
 import org.junit.Test;
 import org.o42a.ast.Position;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Grammar;
 
 
 public class MultiLineStringLiteralTest extends GrammarTestCase {
@@ -175,7 +175,7 @@ public class MultiLineStringLiteralTest extends GrammarTestCase {
 	}
 
 	private StringNode parse(String text) {
-		return parse(Grammar.stringLiteral(), text);
+		return parse(stringLiteral(), text);
 	}
 
 }

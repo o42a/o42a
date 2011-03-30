@@ -43,12 +43,25 @@ public class Grammar {
 	public static final Grammar DECLARATIVE = new DeclarativeGrammar();
 	public static final Grammar IMPERATIVE = new ImperativeGrammar();
 
-	public static Parser<Void> whitespace() {
-		return WhitespaceParser.WHITESPACE;
+	public static Parser<Object> whitespace(boolean allowNewLine) {
+		if (!allowNewLine) {
+			return WhitespaceParser.WHITESPACE;
+		}
+		return WhitespaceNlParser.WHITESPACE_NL;
 	}
 
-	public static Parser<CommentNode> comment() {
-		return CommentParser.COMMENT;
+	public static Parser<CommentNode> comment(boolean allowNewLine) {
+		if (!allowNewLine) {
+			return CommentParser.COMMENT;
+		}
+		return CommentParser.COMMENT_NL;
+	}
+
+	public static Parser<SeparatorNodes> separator(boolean allowNewLine) {
+		if (!allowNewLine) {
+			return SeparatorParser.SEPARATOR;
+		}
+		return SeparatorParser.SEPARATOR_NL;
 	}
 
 	public static Parser<NameNode> name() {

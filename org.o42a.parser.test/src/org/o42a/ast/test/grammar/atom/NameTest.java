@@ -85,17 +85,6 @@ public class NameTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void startFromWhitespace() {
-
-		final NameNode name = parse(" abc ");
-
-		assertNotNull(name);
-		assertRange(1, 4, name);
-		assertEquals("abc", name.getName());
-		assertEquals(4, this.worker.position().offset());
-	}
-
-	@Test
 	public void hyphen() {
 
 		final NameNode name = parse("a-b");
@@ -109,11 +98,22 @@ public class NameTest extends GrammarTestCase {
 	@Test
 	public void whitespaceAfterHyphenMinus() {
 
-		final NameNode name = parse("a- b");
+		final NameNode name = parse("a-\nb");
 
 		assertNotNull(name);
 		assertRange(0, 4, name);
 		assertEquals("a-b", name.getName());
+		assertEquals(4, this.worker.position().offset());
+	}
+
+	@Test
+	public void bultiLine() {
+
+		final NameNode name = parse("a\n b");
+
+		assertNotNull(name);
+		assertRange(0, 4, name);
+		assertEquals("a_b", name.getName());
 		assertEquals(4, this.worker.position().offset());
 	}
 

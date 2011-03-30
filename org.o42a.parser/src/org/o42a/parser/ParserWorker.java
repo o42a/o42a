@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.o42a.ast.Position;
-import org.o42a.ast.atom.CommentNode;
 import org.o42a.util.Source;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
@@ -70,11 +69,6 @@ public class ParserWorker {
 	public <T> T parse(Parser<T> parser) {
 		this.root.current.set(this.position);
 		return this.root.parse(parser);
-	}
-
-	public CommentNode[] skipComments() {
-		this.root.current.set(this.position);
-		return this.root.acceptComments();
 	}
 
 	public Position position() {
