@@ -20,7 +20,6 @@
 package org.o42a.parser.grammar.atom;
 
 import static java.lang.Character.isLetter;
-import static java.lang.Character.isWhitespace;
 import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.EmptyNode;
@@ -52,14 +51,11 @@ public class NameParser implements Parser<NameNode> {
 
 			final int c = context.next();
 
-			if (isWhitespace(c)) {
-				if (c == '\n' && name.length() == 0) {
-					return null;
-				}
+			if (Character.getType(c) == Character.SPACE_SEPARATOR) {
 				if (whitespace == null) {
 					whitespace = context.current().fix();
 				}
-				context.push(whitespace(true));
+				context.push(whitespace(false));
 				if (hyphen == NON_BREAKING_HYPHEN) {
 					context.getLogger().discouragingWhitespace(
 							new EmptyNode(whitespace, context.current()));
@@ -99,7 +95,7 @@ public class NameParser implements Parser<NameNode> {
 					return null;// first symbol can not be a digit
 				}
 				parser = NUMBER;
-			} else if (isLetter(c) || c == SOFT_HYPHEN) {
+			} else if (isLetter(c)) {
 				parser = WORD;
 			} else {
 				break;
@@ -148,7 +144,6 @@ public class NameParser implements Parser<NameNode> {
 		@Override
 		public CharSequence parse(ParserContext context) {
 
-			FixedPosition softHyphen = null;
 			final StringBuilder word = new StringBuilder();
 
 			for (;;) {
@@ -156,28 +151,11 @@ public class NameParser implements Parser<NameNode> {
 				final int c = context.next();
 
 				if (isNamePart(c)) {
-					if (softHyphen != null) {
-						if (word.length() == 0) {
-							context.getLogger().discouragingSoftHyphen(
-									softHyphen);
-						}
-						softHyphen = null;
-					}
 					word.append(Character.toLowerCase((char) c));
-					continue;
-				}
-				if (c == SOFT_HYPHEN) {
-					if (softHyphen != null) {
-						context.getLogger().discouragingSoftHyphen(softHyphen);
-					}
-					softHyphen = context.current().fix();
 					continue;
 				}
 				if (word.length() == 0) {
 					return null;
-				}
-				if (softHyphen != null) {
-					context.getLogger().discouragingSoftHyphen(softHyphen);
 				}
 				context.acceptButLast();
 

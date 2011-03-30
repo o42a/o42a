@@ -213,7 +213,8 @@ public class PhraseTest extends GrammarTestCase {
 	public void continuationAfterName() {
 
 		final PhraseNode result = parse(
-				"foo _ bar",
+				"foo ",
+				"_ bar",
 				"_ (baz)");
 
 		assertName("foo", result.getPrefix());

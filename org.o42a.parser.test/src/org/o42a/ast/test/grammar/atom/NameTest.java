@@ -96,9 +96,9 @@ public class NameTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void whitespaceAfterHyphenMinus() {
+	public void spaceAfterHyphenMinus() {
 
-		final NameNode name = parse("a-\nb");
+		final NameNode name = parse("a- b");
 
 		assertNotNull(name);
 		assertRange(0, 4, name);
@@ -107,18 +107,18 @@ public class NameTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void bultiLine() {
+	public void newLine() {
 
 		final NameNode name = parse("a\n b");
 
 		assertNotNull(name);
-		assertRange(0, 4, name);
-		assertEquals("a_b", name.getName());
-		assertEquals(4, this.worker.position().offset());
+		assertRange(0, 1, name);
+		assertEquals("a", name.getName());
+		assertEquals(1, this.worker.position().offset());
 	}
 
 	@Test
-	public void whitespaceAfterHyphen() {
+	public void spaceAfterHyphen() {
 
 		final NameNode name = parse("a\u2010 b");
 
@@ -197,41 +197,6 @@ public class NameTest extends GrammarTestCase {
 		assertRange(0, 1, name);
 		assertEquals("a", name.getName());
 		assertEquals(1, this.worker.position().offset());
-	}
-
-	@Test
-	public void softHyphen() {
-
-		final NameNode name = parse("after\u00ADwards");
-
-		assertEquals("afterwards", name.getName());
-	}
-
-	@Test
-	public void softHyphenAfterSoftHyphen() {
-		expectError("discouraging_soft_hyphen");
-
-		final NameNode name = parse("after\u00AD\u00ADwards");
-
-		assertEquals("afterwards", name.getName());
-	}
-
-	@Test
-	public void startFromSoftHyphen() {
-		expectError("discouraging_soft_hyphen");
-
-		final NameNode name = parse("\u00ADabc");
-
-		assertEquals("abc", name.getName());
-	}
-
-	@Test
-	public void endWithSoftHyphen() {
-		expectError("discouraging_soft_hyphen");
-
-		final NameNode name = parse("abc\u00AD");
-
-		assertEquals("abc", name.getName());
 	}
 
 	private NameNode parse(String text) {
