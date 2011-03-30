@@ -19,7 +19,6 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import static java.lang.Character.isWhitespace;
 import static org.o42a.parser.Grammar.isDigit;
 
 import org.o42a.ast.EmptyNode;
@@ -63,12 +62,9 @@ public class DecimalParser implements Parser<DecimalNode> {
 				number.append((char) c);
 				continue;
 			}
-			if (isWhitespace(c) && c != '\n') {
+			if (Character.getType(c) == Character.SPACE_SEPARATOR) {
 				if (spaceStart == null) {
 					spaceStart = context.current().fix();
-					if (Character.getType(c) != Character.SPACE_SEPARATOR) {
-						wrongSpace = true;
-					}
 				} else {
 					wrongSpace = true;
 				}

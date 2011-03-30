@@ -135,15 +135,15 @@ public class ContentTest extends GrammarTestCase {
 		assertNull(result[1].getMark());
 	}
 
-	@Test
-	public void noSentenceBreak() {
+	public void sentenceBreakByNames() {
 
 		final SentenceNode[] result = parse(
 				"a",
 				"b");
 
-		assertThat(result.length, is(1));
-		assertName("a_b", singleStatement(MemberRefNode.class, result[0]));
+		assertThat(result.length, is(2));
+		assertName("a", singleStatement(MemberRefNode.class, result[0]));
+		assertName("b", singleStatement(MemberRefNode.class, result[1]));
 	}
 
 	private SentenceNode[] parse(String... lines) {

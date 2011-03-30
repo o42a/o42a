@@ -34,21 +34,21 @@ public class WhitespaceParser implements Parser<Object> {
 	@Override
 	public Object parse(ParserContext context) {
 
-		boolean whitespacePresent = false;
+		boolean spacePresent = false;
 
 		for (;;) {
 
 			final int c = context.next();
 
-			if (Character.isWhitespace(c) && c != '\n') {
-				whitespacePresent = true;
+			if (Character.getType(c) == Character.SPACE_SEPARATOR) {
+				spacePresent = true;
 				continue;
 			}
 			context.acceptButLast();
 			break;
 		}
 
-		return whitespacePresent ? Boolean.TRUE : null;
+		return spacePresent ? Boolean.TRUE : null;
 	}
 
 }

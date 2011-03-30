@@ -35,13 +35,6 @@ public abstract class ParserLogger implements Logger {
 				charsLeft);
 	}
 
-	public void discouragingSoftHyphen(LogInfo location) {
-		warning(
-				"discouraging_soft_hyphen",
-				location,
-				"Discouraging soft hyphen");
-	}
-
 	public void discouragingWhitespace(LogInfo location) {
 		warning(
 				"discouraging_whitespace",

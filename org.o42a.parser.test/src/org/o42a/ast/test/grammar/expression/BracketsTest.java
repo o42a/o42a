@@ -110,17 +110,18 @@ public class BracketsTest extends GrammarTestCase {
 		final BracketsNode brackets = parse(
 				"[",
 				"  a()",
-				"  b ",
+				"  b",
 				"  c",
 				"]");
 
-		assertThat(brackets.getArguments().length, is(2));
+		assertThat(brackets.getArguments().length, is(3));
 		assertName(
 				"a",
 				to(
 						PhraseNode.class,
 						brackets.getArguments()[0].getValue()).getPrefix());
-		assertName("b_c", brackets.getArguments()[1].getValue());
+		assertName("b", brackets.getArguments()[1].getValue());
+		assertName("c", brackets.getArguments()[2].getValue());
 	}
 
 
