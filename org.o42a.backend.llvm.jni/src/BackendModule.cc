@@ -211,11 +211,10 @@ bool BackendModule::writeCode() {
 	TargetMachine *const machine =
 			target->createTargetMachine(getTargetTriple(), features);
 
-	std::string output = OutputFilename.getValue();
 	formatted_raw_ostream *out;
 	std::auto_ptr<formatted_raw_ostream> outPtr;
 
-	if (output.empty()) {
+	if (!OutputFilename.getNumOccurrences()) {
 		out = &fouts();
 	} else {
 
