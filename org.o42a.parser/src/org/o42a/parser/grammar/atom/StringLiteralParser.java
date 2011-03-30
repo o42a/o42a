@@ -111,10 +111,9 @@ public class StringLiteralParser implements Parser<StringNode> {
 			text.append((char) c);
 		}
 
-		return context.acceptComments(new StringNode(
-				opening,
-				text.toString(),
-				closing));
+		return context.acceptComments(
+				false,
+				new StringNode(opening, text.toString(), closing));
 	}
 
 	private static final class EscapeSequenceParser implements Parser<Integer> {

@@ -22,23 +22,14 @@ package org.o42a.ast.test.grammar.atom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.parser.Grammar.comment;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Grammar;
-import org.o42a.parser.Parser;
 
 
 public class CommentTest extends GrammarTestCase {
-
-	private Parser<CommentNode> parser;
-
-	@Before
-	public void setup() {
-		this.parser = Grammar.comment();
-	}
 
 	@Test
 	public void singleLineComment() {
@@ -78,20 +69,20 @@ public class CommentTest extends GrammarTestCase {
 
 	@Test
 	public void acceptWhitespaceAfterMultiLineComment() {
-		parse(" /**/  a");
-
-		assertEquals(7, this.worker.position().offset());
-	}
-
-	@Test
-	public void acceptWhitespaceAfterSingleLineComment() {
-		parse(" //\n  a");
+		parse("/**/  a");
 
 		assertEquals(6, this.worker.position().offset());
 	}
 
+	@Test
+	public void acceptWhitespaceAfterSingleLineComment() {
+		parse("//\n  a");
+
+		assertEquals(5, this.worker.position().offset());
+	}
+
 	private CommentNode parse(String text) {
-		return parse(this.parser, text);
+		return parse(comment(true), text);
 	}
 
 }

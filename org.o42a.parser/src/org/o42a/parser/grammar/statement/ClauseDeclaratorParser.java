@@ -86,7 +86,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 					context.current(),
 					ClauseDeclaratorNode.Parenthesis.OPENING);
 
-		return context.skipComments(opening);
+		return context.skipComments(true, opening);
 	}
 
 	private ClauseKeyNode clauseKey(ParserContext context) {
@@ -149,7 +149,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 					context.current(),
 					ClauseDeclaratorNode.Parenthesis.CLOSING);
 
-		return context.acceptComments(closing);
+		return context.acceptComments(false, closing);
 	}
 
 	private static final class ReusedClauseParser
@@ -171,7 +171,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 						context.current(),
 						ReusedClauseNode.Separator.OR);
 
-			context.acceptComments(separator);
+			context.acceptComments(true, separator);
 
 			final RefNode clause = context.parse(ref());
 
@@ -179,7 +179,9 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 				context.getLogger().missingClause(separator);
 			}
 
-			return new ReusedClauseNode(separator, clause);
+			return context.acceptComments(
+					true,
+					new ReusedClauseNode(separator, clause));
 		}
 
 	}

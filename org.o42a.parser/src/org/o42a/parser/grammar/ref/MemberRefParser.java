@@ -66,7 +66,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 		if (name == null) {
 			return null;
 		}
-		context.acceptComments(name);
+		context.acceptComments(false, name);
 
 		final SignNode<MemberRetention> retention = context.parse(RETENTION);
 		final RefNode declaredIn;
@@ -102,6 +102,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 			context.acceptAll();
 
 			return context.acceptComments(
+					true,
 					new SignNode<Qualifier>(
 							start,
 							context.current(),
@@ -128,10 +129,12 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 
 			context.acceptButLast();
 
-			return context.acceptComments(new SignNode<MemberRetention>(
-					start,
-					context.current(),
-					MemberRetention.DECLARED_IN));
+			return context.acceptComments(
+					true,
+					new SignNode<MemberRetention>(
+							start,
+							context.current(),
+							MemberRetention.DECLARED_IN));
 		}
 
 	}

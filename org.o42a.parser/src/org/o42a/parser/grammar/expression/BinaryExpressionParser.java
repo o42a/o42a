@@ -147,14 +147,13 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 				return null;
 			}
 
-			final SignNode<BinaryOperator> result = new SignNode<BinaryOperator>(
-					start,
-					context.current().fix(),
-					operator);
+			final SignNode<BinaryOperator> result =
+				new SignNode<BinaryOperator>(
+						start,
+						context.current().fix(),
+						operator);
 
-			result.addComments(context.acceptComments());
-
-			return result;
+			return context.acceptComments(true, result);
 		}
 
 	}

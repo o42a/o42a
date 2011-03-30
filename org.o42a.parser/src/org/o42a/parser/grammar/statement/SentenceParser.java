@@ -52,7 +52,11 @@ public class SentenceParser implements Parser<SentenceNode> {
 		final SignNode<SentenceType> mark = context.parse(MARK);
 		final SentenceNode sentence = new SentenceNode(disjunction, mark);
 
-		return context.acceptComments(sentence);
+		if (mark != null) {
+			return sentence;
+		}
+
+		return context.acceptComments(true, sentence);
 	}
 
 	private static final class MarkParser
@@ -80,10 +84,12 @@ public class SentenceParser implements Parser<SentenceNode> {
 
 			context.acceptAll();
 
-			final SignNode<SentenceType> result =
-				new SignNode<SentenceType>(start, context.current(), sentenceType);
+			final SignNode<SentenceType> result = new SignNode<SentenceType>(
+					start,
+					context.current(),
+					sentenceType);
 
-			return result;
+			return context.acceptComments(true, result);
 		}
 
 	}

@@ -167,8 +167,19 @@ public class GrammarTestCase {
 				this.expectedErrors.isEmpty());
 	}
 
+	public <T> T parseLines(Parser<T> parser, String... lines) {
+
+		final StringBuilder text = new StringBuilder();
+
+		for (String line : lines) {
+			text.append(line).append('\n');
+		}
+
+		return parse(parser, text.toString());
+	}
+
 	public <T> T parse(Parser<T> parser, String text) {
-		this.worker = new ParserWorker(new Src(text));
+		this.worker = new ParserWorker(new Src(text.toString()));
 		this.worker.setLogger(new TestLogger());
 		return this.worker.parse(parser);
 	}

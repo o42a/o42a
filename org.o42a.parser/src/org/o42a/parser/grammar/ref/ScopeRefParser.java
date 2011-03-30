@@ -74,6 +74,7 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 		}
 
 		return context.acceptComments(
+				true,
 				new ScopeRefNode(start, context.current(), type));
 	}
 

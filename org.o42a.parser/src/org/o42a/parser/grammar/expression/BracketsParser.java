@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import org.o42a.ast.EmptyNode;
 import org.o42a.ast.FixedPosition;
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.ArgumentNode.Separator;
@@ -51,6 +52,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 		final ArrayList<ArgumentNode> arguments = new ArrayList<ArgumentNode>();
 		SignNode<Bracket> closing = null;
 		SignNode<Separator> separator = null;
+		SeparatorNodes prevSeparators = null;
 
 		final Expectations expectations =
 			context.expectNothing().expect(',').expect(']');
@@ -61,12 +63,18 @@ public class BracketsParser implements Parser<BracketsNode> {
 					new ArgumentParser(separator, this.elementParser));
 
 			if (argument != null) {
+				argument.addComments(prevSeparators);
+				prevSeparators = null;
 				arguments.add(argument);
-				if (separator != null) {
-					arguments.add(new ArgumentNode(separator.getEnd()));
-				}
+			} else if (separator != null) {
+
+				final ArgumentNode emptyArg =
+					new ArgumentNode(separator.getEnd());
+
+				arguments.add(emptyArg);
 			}
 
+			final SeparatorNodes separators = context.acceptComments(true);
 			final int c = context.next();
 
 			if (c == ']') {
@@ -79,15 +87,27 @@ public class BracketsParser implements Parser<BracketsNode> {
 						closingStart,
 						context.current(),
 						CLOSING_BRACKET);
+				closing.addComments(prevSeparators);
+				prevSeparators = null;
+				closing.addComments(separators);
 				break;
 			}
 			if (c != ',') {
-				context.getLogger().notClosed(opening, "[");
-				context.acceptButLast();
-				break;
+				if (separators == null) {
+					context.getLogger().notClosed(opening, "[");
+					context.acceptButLast();
+					break;
+				}
+				prevSeparators = separators;
+				continue;
 			}
 			if (argument == null && separator == null) {
-				arguments.add(new ArgumentNode(opening.getEnd()));
+
+				final ArgumentNode emptyArg =
+					new ArgumentNode(opening.getEnd());
+
+				emptyArg.addComments(separators);
+				arguments.add(emptyArg);
 			}
 
 			final FixedPosition separatorStart = context.current().fix();
@@ -97,13 +117,18 @@ public class BracketsParser implements Parser<BracketsNode> {
 					separatorStart,
 					context.current(),
 					Separator.COMMA);
-			context.acceptComments(separator);
+			separator.addComments(prevSeparators);
+			prevSeparators = null;
+			separator.addComments(separators);
+			context.acceptComments(true, separator);
 		}
 
-		return context.acceptComments(new BracketsNode(
-					opening,
-					arguments.toArray(new ArgumentNode[arguments.size()]),
-					closing));
+		return context.acceptComments(
+				false,
+				new BracketsNode(
+						opening,
+						arguments.toArray(new ArgumentNode[arguments.size()]),
+						closing));
 	}
 
 	private SignNode<Bracket> opening(ParserContext context) {
@@ -115,7 +140,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 		final SignNode<Bracket> opening =
 			new SignNode<Bracket>(start, context.current(), OPENING_BRACKET);
 
-		context.skipComments(opening);
+		context.skipComments(true, opening);
 
 		return opening;
 	}
@@ -170,10 +195,13 @@ public class BracketsParser implements Parser<BracketsNode> {
 					return null;
 				}
 				if (firstUnexpected == null) {
+					if (context.skipComments(true) != null) {
+						return null;
+					}
 					firstUnexpected = start;
 				}
 				context.acceptAll();
-				if (context.acceptComments() != null) {
+				if (context.acceptComments(true) != null) {
 					logUnexpected(context, firstUnexpected, start);
 					firstUnexpected = null;
 				}

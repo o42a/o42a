@@ -19,7 +19,9 @@
 */
 package org.o42a.ast.test.grammar.expression;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.ast.atom.StringNode;
@@ -80,13 +82,40 @@ public class TextTest extends GrammarTestCase {
 	public void mixedLiteralsText() {
 
 		final TextNode text =
-			parse("'foo' /* comment */ \"bar\"\n\\' \nbaz\n  '\\ // comment");
+			parse("'foo' /* comment */ \"bar\" \\' \nbaz\n  '\\ // comment");
 
 		assertEquals(3, text.getLiterals().length);
 		assertEquals("foo", text.getLiterals()[0].getText());
 		assertEquals("bar", text.getLiterals()[1].getText());
 		assertEquals("baz", text.getLiterals()[2].getText());
 		assertEquals("foobarbaz", text.getText());
+	}
+
+	@Test
+	public void nlAfterMultiline() {
+
+		final TextNode text = parse("\\'foo'\\ \n \"bar\"");
+
+		assertThat(text.getLiterals().length, is(1));
+		assertThat(text.getText(), is("foo"));
+	}
+
+	@Test
+	public void nlAfterString() {
+
+		final TextNode text = parse("'foo' \n \"bar\"");
+
+		assertThat(text.getLiterals().length, is(1));
+		assertThat(text.getText(), is("foo"));
+	}
+
+	@Test
+	public void lineContinuation() {
+
+		final TextNode text = parse("\\'foo'\\ \n _ \"bar\"");
+
+		assertThat(text.getLiterals().length, is(2));
+		assertThat(text.getText(), is("foobar"));
 	}
 
 	private TextNode parse(String text) {

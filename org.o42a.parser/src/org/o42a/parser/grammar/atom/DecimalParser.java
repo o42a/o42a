@@ -63,7 +63,7 @@ public class DecimalParser implements Parser<DecimalNode> {
 				number.append((char) c);
 				continue;
 			}
-			if (isWhitespace(c)) {
+			if (isWhitespace(c) && c != '\n') {
 				if (spaceStart == null) {
 					spaceStart = context.current().fix();
 					if (Character.getType(c) != Character.SPACE_SEPARATOR) {
@@ -84,9 +84,7 @@ public class DecimalParser implements Parser<DecimalNode> {
 					context.firstUnaccepted(),
 					number.toString());
 
-			result.addComments(context.acceptComments());
-
-			return result;
+			return context.acceptComments(false, result);
 		}
 	}
 

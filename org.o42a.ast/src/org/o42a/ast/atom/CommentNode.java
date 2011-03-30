@@ -19,6 +19,8 @@
 */
 package org.o42a.ast.atom;
 
+import static org.o42a.util.StringCodec.escapeControlChars;
+
 import org.o42a.ast.Position;
 
 
@@ -71,7 +73,7 @@ public class CommentNode extends AbstractAtomNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		out.append(this.multiline ? "/*" : "//");
-		out.append(this.text);
+		escapeControlChars(out, this.text);
 		if (this.multiline) {
 			out.append("*/");
 		}

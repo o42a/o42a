@@ -22,8 +22,8 @@ package org.o42a.parser.grammar.statement;
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.SelfAssignmentNode;
 import org.o42a.ast.statement.AssignmentNode.AssignmentOperator;
+import org.o42a.ast.statement.SelfAssignmentNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -53,7 +53,7 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 					context.current(),
 					AssignmentOperator.ASSIGN);
 
-		context.acceptComments(prefix);
+		context.acceptComments(true, prefix);
 
 		final ExpressionNode value = context.parse(this.grammar.expression());
 

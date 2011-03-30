@@ -75,10 +75,13 @@ public class StatementParser implements Parser<StatementNode> {
 				return null;
 			}
 			if (firstUnexpected == null) {
+				if (context.skipComments(true) != null) {
+					return null;
+				}
 				firstUnexpected = start;
 			}
 			context.acceptAll();
-			if (context.acceptComments() != null) {
+			if (context.acceptComments(true) != null) {
 				logUnexpected(context, firstUnexpected, start);
 				firstUnexpected = null;
 			}

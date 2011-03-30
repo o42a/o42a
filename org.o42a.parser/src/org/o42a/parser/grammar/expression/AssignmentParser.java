@@ -54,7 +54,7 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 					context.current(),
 					AssignmentOperator.ASSIGN);
 
-		context.acceptComments(operator);
+		context.acceptComments(true, operator);
 
 		final ExpressionNode value = context.parse(IMPERATIVE.expression());
 

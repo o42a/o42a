@@ -138,9 +138,7 @@ final class MultiLineStringLiteralParser implements Parser<StringNode> {
 				text.toString(),
 				closing);
 
-		result.addComments(context.acceptComments());
-
-		return result;
+		return context.acceptComments(false, result);
 	}
 
 	private static String trimEnding(StringBuilder line) {

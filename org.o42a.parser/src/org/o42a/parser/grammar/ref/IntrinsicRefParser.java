@@ -31,7 +31,8 @@ import org.o42a.parser.ParserContext;
 
 public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 
-	public static final IntrinsicRefParser INTRINSIC_REF = new IntrinsicRefParser();
+	public static final IntrinsicRefParser INTRINSIC_REF =
+		new IntrinsicRefParser();
 
 	private IntrinsicRefParser() {
 	}
@@ -52,14 +53,14 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 					context.current(),
 					IntrinsicRefNode.Boundary.DOLLAR);
 
-		context.skipComments(prefix);
+		context.skipComments(true, prefix);
 
 		final NameNode name = context.push(NAME);
 
 		if (name == null) {
 			return null;
 		}
-		context.skipComments(name);
+		context.skipComments(true, name);
 		if (context.next() != '$') {
 			return null;
 		}
@@ -74,7 +75,9 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 					context.current(),
 					IntrinsicRefNode.Boundary.DOLLAR);
 
-		return context.acceptComments(new IntrinsicRefNode(prefix, name, suffix));
+		return context.acceptComments(
+				true,
+				new IntrinsicRefNode(prefix, name, suffix));
 	}
 
 }

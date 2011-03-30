@@ -23,27 +23,32 @@ import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public class WhitespaceParser implements Parser<Void> {
+public class WhitespaceParser implements Parser<Object> {
 
-	public static final Parser<Void> WHITESPACE = new WhitespaceParser();
+	public static final WhitespaceParser WHITESPACE =
+		new WhitespaceParser();
+
+	private WhitespaceParser() {
+	}
 
 	@Override
-	public Void parse(ParserContext context) {
+	public Object parse(ParserContext context) {
+
+		boolean whitespacePresent = false;
+
 		for (;;) {
 
 			final int c = context.next();
 
-			if (Character.isWhitespace(c)) {
+			if (Character.isWhitespace(c) && c != '\n') {
+				whitespacePresent = true;
 				continue;
 			}
 			context.acceptButLast();
 			break;
 		}
 
-		return null;
-	}
-
-	private WhitespaceParser() {
+		return whitespacePresent ? Boolean.TRUE : null;
 	}
 
 }

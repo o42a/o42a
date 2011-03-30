@@ -20,6 +20,7 @@
 package org.o42a.parser.grammar.expression;
 
 import org.o42a.ast.FixedPosition;
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.BlockNode;
@@ -54,7 +55,7 @@ public abstract class AbstractBlockParser<
 		final SignNode<S> opening =
 			new SignNode<S>(start, context.current(), this.opening);
 
-		context.skipComments(opening);
+		context.skipComments(true, opening);
 
 		SentenceNode[] content =
 			context.expect(this.closing.getSign())
@@ -63,6 +64,8 @@ public abstract class AbstractBlockParser<
 		if (content == null) {
 			content = new SentenceNode[0];
 		}
+
+		final SeparatorNodes separators = context.skipComments(true);
 
 		final B block;
 		final int c = context.next();
@@ -76,8 +79,9 @@ public abstract class AbstractBlockParser<
 			final SignNode<S> closing =
 				new SignNode<S>(closingStart, context.current(), this.closing);
 
+			closing.addComments(separators);
 			block = createBlock(opening, content, closing);
-			context.acceptComments(block);
+			context.acceptComments(false, block);
 		} else {
 			context.getLogger().notClosed(
 					start,

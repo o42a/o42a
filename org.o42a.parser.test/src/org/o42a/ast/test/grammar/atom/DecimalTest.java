@@ -57,12 +57,12 @@ public class DecimalTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void whitespace() {
-		expectError("invalid_space_in_number");
+	public void nlAfterNumber() {
 
 		final DecimalNode result = parse("1 234\n 567    ");
 
-		assertThat(result.getNumber(), is("1234567"));
+		assertThat(result.getNumber(), is("1234"));
+		assertThat(this.worker.position().offset(), is(5L));
 	}
 
 	private DecimalNode parse(String text) {

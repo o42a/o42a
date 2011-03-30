@@ -84,7 +84,7 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 				context.firstUnaccepted(),
 				operator);
 
-		context.acceptComments(sign);
+		context.acceptComments(true, sign);
 
 		final ExpressionNode parameter =
 			context.parse(this.grammar.simpleExpression());

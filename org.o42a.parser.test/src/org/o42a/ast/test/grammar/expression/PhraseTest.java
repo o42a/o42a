@@ -19,7 +19,9 @@
 */
 package org.o42a.ast.test.grammar.expression;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
@@ -47,7 +49,29 @@ public class PhraseTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void imperativeCall() {
+	public void nlAfterCall() {
+
+		final PhraseNode result = parse(
+				"foo()",
+				"bar");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(1));
+	}
+
+	@Test
+	public void continuationAfterCall() {
+
+		final PhraseNode result = parse(
+				"foo()",
+				"_ bar");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(2));
+	}
+
+	@Test
+	public void imperative() {
 
 		final PhraseNode result = parse("foo{bar}");
 
@@ -61,7 +85,29 @@ public class PhraseTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void positionalCall() {
+	public void nlAfterImperative() {
+
+		final PhraseNode result = parse(
+				"foo{}",
+				"bar");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(1));
+	}
+
+	@Test
+	public void continuationAfterImperative() {
+
+		final PhraseNode result = parse(
+				"foo{}",
+				"_ bar");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(2));
+	}
+
+	@Test
+	public void value() {
 
 		final PhraseNode result = parse("foo[bar]");
 
@@ -75,7 +121,29 @@ public class PhraseTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void qualifiedString() {
+	public void nlAfterValue() {
+
+		final PhraseNode result = parse(
+				"foo[]",
+				"bar");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(1));
+	}
+
+	@Test
+	public void continuationAfterValue() {
+
+		final PhraseNode result = parse(
+				"foo[]",
+				"_ bar");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(2));
+	}
+
+	@Test
+	public void string() {
 
 		final PhraseNode result = parse("foo 'bar' 'baz'");
 
@@ -91,7 +159,29 @@ public class PhraseTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void nameClause() {
+	public void nlAfterStrinf() {
+
+		final PhraseNode result = parse(
+				"foo 'bar'",
+				"baz");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(1));
+	}
+
+	@Test
+	public void continuationAfterString() {
+
+		final PhraseNode result = parse(
+				"foo 'bar'",
+				"_ baz");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(2));
+	}
+
+	@Test
+	public void name() {
 
 		final PhraseNode result = parse("foo [bar] baz");
 
@@ -108,8 +198,32 @@ public class PhraseTest extends GrammarTestCase {
 		assertEquals("baz", name.getName());
 	}
 
-	private PhraseNode parse(String text) {
-		return to(PhraseNode.class, parse(DECLARATIVE.expression(), text));
+	@Test
+	public void nlAfterName() {
+
+		final PhraseNode result = parse(
+				"foo _ bar",
+				"(baz)");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(1));
+	}
+
+	@Test
+	public void continuationAfterName() {
+
+		final PhraseNode result = parse(
+				"foo _ bar",
+				"_ (baz)");
+
+		assertName("foo", result.getPrefix());
+		assertThat(result.getClauses().length, is(2));
+	}
+
+	private PhraseNode parse(String... lines) {
+		return to(PhraseNode.class, parseLines(
+				DECLARATIVE.expression(),
+				lines));
 	}
 
 }

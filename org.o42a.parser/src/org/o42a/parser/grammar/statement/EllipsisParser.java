@@ -67,7 +67,7 @@ public class EllipsisParser implements Parser<EllipsisNode> {
 					context.current(),
 					EllipsisNode.Mark.ELLIPSIS);
 
-		context.acceptComments(mark);
+		context.acceptComments(true, mark);
 
 		final NameNode target;
 		final StatementNode suffix =

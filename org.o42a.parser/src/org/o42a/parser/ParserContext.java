@@ -19,15 +19,11 @@
 */
 package org.o42a.parser;
 
-import static java.util.Collections.emptyList;
-import static org.o42a.parser.grammar.atom.CommentParser.COMMENT;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.o42a.parser.Grammar.separator;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.Position;
-import org.o42a.ast.atom.CommentNode;
+import org.o42a.ast.atom.SeparatorNodes;
 
 
 public abstract class ParserContext {
@@ -54,46 +50,35 @@ public abstract class ParserContext {
 
 	public abstract void skip();
 
-	public CommentNode[] skipComments() {
-
-		final List<CommentNode> comments = parseComments();
-
-		if (comments != null) {
-			return comments.toArray(new CommentNode[comments.size()]);
-		}
-
-		return null;
+	public final SeparatorNodes skipComments(boolean allowNewLine) {
+		return push(separator(allowNewLine));
 	}
 
-	public CommentNode[] acceptComments() {
-
-		final CommentNode[] comments = skipComments();
-
-		if (comments != null) {
-			acceptAll();
-		}
-
-		return comments;
+	public final SeparatorNodes acceptComments(boolean allowNewLine) {
+		return parse(separator(allowNewLine));
 	}
 
-	public final <T extends Node> T skipComments(T node) {
+	public final <T extends Node> T skipComments(
+			boolean allowNewLine,
+			T node) {
 
-		final List<CommentNode> comments = parseComments();
+		final SeparatorNodes separators = skipComments(allowNewLine);
 
-		if (comments != null) {
-			node.addComments(comments);
+		if (separators != null) {
+			node.addComments(separators);
 		}
 
 		return node;
 	}
 
-	public final <T extends Node> T acceptComments(T node) {
+	public final <T extends Node> T acceptComments(
+			boolean allowNewLine,
+			T node) {
 
-		final List<CommentNode> comments = parseComments();
+		final SeparatorNodes separators = acceptComments(allowNewLine);
 
-		if (comments != null) {
-			acceptAll();
-			node.addComments(comments);
+		if (separators != null) {
+			node.addComments(separators);
 		}
 
 		return node;
@@ -138,35 +123,5 @@ public abstract class ParserContext {
 	protected abstract <T> T parse(Parser<T> parser, Expectations expectations);
 
 	protected abstract <T> T push(Parser<T> parser, Expectations expectations);
-
-	private List<CommentNode> parseComments() {
-		if (isEOF()) {
-			return null;
-		}
-
-		ArrayList<CommentNode> comments = null;
-		final long start = current().offset();
-
-		for (;;) {
-
-			final CommentNode comment = push(COMMENT);
-
-			if (comment == null) {
-				break;
-			}
-			if (comments == null) {
-				comments = new ArrayList<CommentNode>(1);
-			}
-			comments.add(comment);
-		}
-		if (comments != null) {
-			return comments;
-		}
-		if (current().offset() == start) {
-			return null;
-		}
-
-		return emptyList();
-	}
 
 }

@@ -21,12 +21,13 @@ package org.o42a.ast.test.grammar.ref;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
 import org.o42a.ast.ref.AdapterRefNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.parser.Grammar;
 
 
 public class AdapterRefTest extends GrammarTestCase {
@@ -78,8 +79,46 @@ public class AdapterRefTest extends GrammarTestCase {
 		assertName("type", ref.getDeclaredIn());
 	}
 
+	@Test
+	public void nlBeforeQualifier() {
+
+		final RefNode ref = parse(ref(), "foo\n@@");
+
+		assertName("foo", ref);
+	}
+
+	@Test
+	public void nlAfterQualifier() {
+
+		final AdapterRefNode ref = parse("foo@@\nbar");
+
+		assertName("foo", ref.getOwner());
+		assertName("bar", ref.getType());
+		assertNull(ref.getDeclaredIn());
+	}
+
+	@Test
+	public void nlBeforeRetention() {
+
+		final AdapterRefNode ref = parse("foo @@bar \n@baz");
+
+		assertName("foo", ref.getOwner());
+		assertName("bar", ref.getType());
+		assertNull(ref.getDeclaredIn());
+	}
+
+	@Test
+	public void nlAfterRetention() {
+
+		final AdapterRefNode ref = parse("foo @@bar @\nbaz");
+
+		assertName("foo", ref.getOwner());
+		assertName("bar", ref.getType());
+		assertName("baz", ref.getDeclaredIn());
+	}
+
 	private AdapterRefNode parse(String text) {
-		return to(AdapterRefNode.class, parse(Grammar.ref(), text));
+		return to(AdapterRefNode.class, parse(ref(), text));
 	}
 
 }
