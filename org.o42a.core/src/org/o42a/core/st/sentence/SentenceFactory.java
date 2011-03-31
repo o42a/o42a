@@ -23,6 +23,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.sentence.declarative.DeclarativeIssueFactory;
+import org.o42a.core.st.sentence.imperative.ImperativeGroupFactory;
+import org.o42a.core.st.sentence.imperative.ImperativeIssueFactory;
 import org.o42a.util.Lambda;
 
 
@@ -35,9 +38,9 @@ public interface SentenceFactory<
 		new DeclarativeFactory();
 	public static final ImperativeFactory IMPERATIVE_FACTORY =
 		new ImperativeFactory();
-	public static final DeclarativeIssueFactory DECLARATIVE_ISSUE_FACTORY =
+	public static final DeclarativeFactory DECLARATIVE_ISSUE_FACTORY =
 		new DeclarativeIssueFactory();
-	public static final ImperativeIssueFactory IMPERATIVE_ISSUE_FACTORY =
+	public static final ImperativeFactory IMPERATIVE_ISSUE_FACTORY =
 		new ImperativeIssueFactory();
 	public static final ImperativeFactory IMPERATIVE_GROUP_FACTORY =
 		new ImperativeGroupFactory();

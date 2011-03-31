@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.imperative;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -32,14 +32,16 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueType;
 
 
-final class BracesWithinDeclaratives extends Statement {
+public final class BracesWithinDeclaratives extends Statement {
 
 	private final ImperativeBlock block;
 
-	BracesWithinDeclaratives(
+	public BracesWithinDeclaratives(
 			LocationInfo location,
 			Distributor distributor,
 			ImperativeBlock block) {

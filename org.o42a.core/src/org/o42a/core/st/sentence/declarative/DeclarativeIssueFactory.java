@@ -17,48 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.declarative;
 
-import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
+import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.sentence.*;
 import org.o42a.util.Lambda;
 
 
-final class ImperativeGroupFactory extends ImperativeFactory {
+public class DeclarativeIssueFactory extends DeclarativeFactory {
 
 	@Override
-	public ImperativeBlock groupParentheses(
+	public DeclarativeBlock groupParentheses(
 			Group group,
 			Distributor distributor,
 			MemberRegistry memberRegistry) {
-		return nestedImperativeBlock(
-				group,
-				distributor,
-				group.getStatements(),
-				false,
-				null,
-				memberRegistry,
-				IMPERATIVE_GROUP_FACTORY);
+		group.getLogger().prohibitedClauseDeclaration(group);
+		return null;
 	}
 
 	@Override
 	public ImperativeBlock createBraces(
 			LocationInfo location,
 			Distributor distributor,
-			Imperatives enclosing,
+			Declaratives enclosing,
 			String name) {
-		return nestedImperativeBlock(
+		return topLevelImperativeBlock(
 				location,
 				distributor,
 				enclosing,
-				false,
 				name,
-				enclosing.getMemberRegistry(),
-				IMPERATIVE_FACTORY);
+				IMPERATIVE_ISSUE_FACTORY,
+				null);
 	}
 
 	@Override
@@ -67,14 +61,22 @@ final class ImperativeGroupFactory extends ImperativeFactory {
 			Distributor distributor,
 			String name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
-		return nestedImperativeBlock(
-				group,
-				distributor,
-				group.getStatements(),
-				false,
-				name,
-				memberRegistry.get(distributor.getScope().toLocal()),
-				IMPERATIVE_GROUP_FACTORY);
+		group.getLogger().prohibitedClauseDeclaration(group);
+		return null;
+	}
+
+	@Override
+	public DeclarativeSentence propose(
+			LocationInfo location,
+			DeclarativeBlock block) {
+		return new DeclarativeIssue.Proposing(location, block, this);
+	}
+
+	@Override
+	public DeclarativeSentence claim(
+			LocationInfo location,
+			DeclarativeBlock block) {
+		return new DeclarativeIssue.Claiming(location, block, this);
 	}
 
 }

@@ -17,44 +17,49 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.imperative;
 
-import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
+import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.sentence.*;
 import org.o42a.util.Lambda;
 
 
-public class DeclarativeIssueFactory extends DeclarativeFactory {
-
-	protected DeclarativeIssueFactory() {
-	}
+public final class ImperativeGroupFactory extends ImperativeFactory {
 
 	@Override
-	public DeclarativeBlock groupParentheses(
+	public ImperativeBlock groupParentheses(
 			Group group,
 			Distributor distributor,
 			MemberRegistry memberRegistry) {
-		group.getLogger().prohibitedClauseDeclaration(group);
-		return null;
+		return nestedImperativeBlock(
+				group,
+				distributor,
+				group.getStatements(),
+				false,
+				null,
+				memberRegistry,
+				IMPERATIVE_GROUP_FACTORY);
 	}
 
 	@Override
 	public ImperativeBlock createBraces(
 			LocationInfo location,
 			Distributor distributor,
-			Declaratives enclosing,
+			Imperatives enclosing,
 			String name) {
-		return topLevelImperativeBlock(
+		return nestedImperativeBlock(
 				location,
 				distributor,
 				enclosing,
+				false,
 				name,
-				IMPERATIVE_ISSUE_FACTORY,
-				null);
+				enclosing.getMemberRegistry(),
+				IMPERATIVE_FACTORY);
 	}
 
 	@Override
@@ -63,22 +68,14 @@ public class DeclarativeIssueFactory extends DeclarativeFactory {
 			Distributor distributor,
 			String name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
-		group.getLogger().prohibitedClauseDeclaration(group);
-		return null;
-	}
-
-	@Override
-	public DeclarativeSentence propose(
-			LocationInfo location,
-			DeclarativeBlock block) {
-		return new DeclarativeIssue.Proposing(location, block, this);
-	}
-
-	@Override
-	public DeclarativeSentence claim(
-			LocationInfo location,
-			DeclarativeBlock block) {
-		return new DeclarativeIssue.Claiming(location, block, this);
+		return nestedImperativeBlock(
+				group,
+				distributor,
+				group.getStatements(),
+				false,
+				name,
+				memberRegistry.get(distributor.getScope().toLocal()),
+				IMPERATIVE_GROUP_FACTORY);
 	}
 
 }

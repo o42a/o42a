@@ -25,6 +25,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.sentence.imperative.ImperativeClaim;
+import org.o42a.core.st.sentence.imperative.ImperativeIssue;
+import org.o42a.core.st.sentence.imperative.ImperativeProposition;
 import org.o42a.util.Lambda;
 
 
@@ -113,14 +116,14 @@ public class ImperativeFactory implements SentenceFactory<
 	public ImperativeSentence propose(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeSentence.Proposition(location, block, this);
+		return new ImperativeProposition(location, block, this);
 	}
 
 	@Override
 	public ImperativeSentence claim(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeSentence.Claim(location, block, this);
+		return new ImperativeClaim(location, block, this);
 	}
 
 }

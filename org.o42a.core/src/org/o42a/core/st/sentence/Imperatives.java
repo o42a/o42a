@@ -19,20 +19,16 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefinitionTarget.noDefinitions;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
-import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
+import org.o42a.core.st.sentence.imperative.EllipsisSt;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -104,28 +100,6 @@ public class Imperatives extends Statements<Imperatives> {
 	@Override
 	protected void braces(ImperativeBlock braces) {
 		statement(braces);
-	}
-
-	void allocate(LocalBuilder builder, Code code) {
-		for (Statement statement : getStatements()) {
-			statement.op(builder).allocate(builder, code);
-		}
-	}
-
-	void write(Control control, ValOp result) {
-		for (Statement statement : getStatements()) {
-			if (!control.reach(statement)) {
-				return;
-			}
-
-			final StOp op = statement.op(control.getBuilder());
-
-			if (result == null) {
-				op.writeLogicalValue(control);
-			} else {
-				op.writeAssignment(control, result);
-			}
-		}
 	}
 
 	Action initialValue(LocalScope scope) {

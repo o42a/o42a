@@ -17,22 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.declarative;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.Scope;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.DeclarativeFactory;
+import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
-abstract class ImperativeIssue extends ImperativeSentence {
+public abstract class DeclarativeIssue extends DeclarativeSentence {
 
 	private final MemberRegistry memberRegistry;
 
-	ImperativeIssue(
+	public DeclarativeIssue(
 			LocationInfo location,
-			ImperativeBlock block,
-			ImperativeFactory sentenceFactory) {
+			DeclarativeBlock block,
+			DeclarativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
 		this.memberRegistry =
 			block.getMemberRegistry().prohibitDeclarations();
@@ -53,28 +56,35 @@ abstract class ImperativeIssue extends ImperativeSentence {
 		return this.memberRegistry;
 	}
 
-	@Override
-	protected void allocate(LocalBuilder builder, Code code) {
-		// no declarations within issue - nothing to allocate
-	}
+	public static final class Claiming extends DeclarativeIssue {
 
-	static final class Claiming extends ImperativeIssue {
-
-		Claiming(
+		public Claiming(
 				LocationInfo location,
-				ImperativeBlock block,
-				ImperativeFactory sentenceFactory) {
+				DeclarativeBlock block,
+				DeclarativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
+		}
+
+		@Override
+		public Definitions define(Scope scope) {
+
+			final Definitions definitions = super.define(scope);
+
+			if (definitions == null) {
+				return null;
+			}
+
+			return definitions.claim();
 		}
 
 	}
 
-	static final class Proposing extends ImperativeIssue {
+	public static final class Proposing extends DeclarativeIssue {
 
-		Proposing(
+		public Proposing(
 				LocationInfo location,
-				ImperativeBlock block,
-				ImperativeFactory sentenceFactory) {
+				DeclarativeBlock block,
+				DeclarativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
 		}
 

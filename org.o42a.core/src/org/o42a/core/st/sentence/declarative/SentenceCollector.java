@@ -17,22 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
-
-import static org.o42a.core.def.Definitions.emptyDefinitions;
+package org.o42a.core.st.sentence.declarative;
 
 import java.util.HashMap;
 
 import org.o42a.core.CompilerLogger;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.DefinitionKey;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.DefinitionTargets;
+import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
-abstract class SentenceCollector {
+public abstract class SentenceCollector {
 
 	private final DeclarativeBlock block;
 	private final Scope scope;
@@ -191,100 +190,6 @@ abstract class SentenceCollector {
 				"Ignored value");
 		sentence.ignore();
 		return false;
-
-	}
-
-	static final class DefinitionsCollector extends SentenceCollector {
-
-		private Definitions definitions;
-
-		public DefinitionsCollector(DeclarativeBlock block, Scope scope) {
-			super(block, scope);
-		}
-
-		public Definitions definitions() {
-			collect();
-			if (this.definitions == null) {
-				return null;
-			}
-			this.definitions = this.definitions.addRequirement(requirement());
-			this.definitions = this.definitions.addCondition(condition());
-			return this.definitions;
-		}
-
-		@Override
-		protected void addCondition(
-				DeclarativeSentence sentence,
-				DefinitionTargets targets) {
-			if (this.definitions == null) {
-				this.definitions = emptyDefinitions(getBlock(), getScope());
-			}
-		}
-
-		@Override
-		protected void addDeclaration(
-				DeclarativeSentence sentence,
-				DefinitionTargets targets) {
-			if (!targets.haveValue()) {
-				return;
-			}
-
-			final Definitions definitions = sentence.define(getScope());
-
-			assert definitions != null :
-				sentence + " has no definitions";
-
-			if (this.definitions == null) {
-				this.definitions = definitions;
-			} else {
-				this.definitions = this.definitions.refine(definitions);
-			}
-		}
-
-	}
-
-	static final class PreconditionCollector extends SentenceCollector {
-
-		private Logical precondition;
-
-		public PreconditionCollector(DeclarativeBlock block, Scope scope) {
-			super(block, scope);
-		}
-
-		public Logical precondition() {
-			collect();
-
-			final Logical precondition = Logical.and(
-					Logical.and(requirement(), condition()),
-					this.precondition);
-
-			if (precondition != null) {
-				return precondition;
-			}
-
-			return getBlock().getInitialConditions().precondition(getScope());
-		}
-
-		@Override
-		protected void addCondition(
-				DeclarativeSentence sentence,
-				DefinitionTargets targets) {
-		}
-
-		@Override
-		protected void addDeclaration(
-				DeclarativeSentence sentence,
-				DefinitionTargets targets) {
-
-			final Logical logical =
-				sentence.getConditions().fullLogical(getScope());
-
-			if (!targets.haveValue()) {
-				return;
-			}
-
-			this.precondition = Logical.or(this.precondition, logical);
-		}
 
 	}
 

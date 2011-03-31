@@ -26,6 +26,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.sentence.declarative.DeclarativeClaim;
+import org.o42a.core.st.sentence.declarative.DeclarativeIssue;
+import org.o42a.core.st.sentence.declarative.DeclarativeProposition;
 import org.o42a.util.Lambda;
 
 
@@ -110,14 +113,14 @@ public class DeclarativeFactory implements SentenceFactory<
 	public DeclarativeSentence propose(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeSentence.Proposition(location, block, this);
+		return new DeclarativeProposition(location, block, this);
 	}
 
 	@Override
 	public DeclarativeSentence claim(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeSentence.Claim(location, block, this);
+		return new DeclarativeClaim(location, block, this);
 	}
 
 }

@@ -36,6 +36,8 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Conditions;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.st.sentence.declarative.SentenceDefinitionsCollector;
+import org.o42a.core.st.sentence.declarative.SentencePreconditionCollector;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -152,8 +154,8 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return null;
 		}
 
-		final SentenceCollector.DefinitionsCollector collector =
-			new SentenceCollector.DefinitionsCollector(this, scope);
+		final SentenceDefinitionsCollector collector =
+			new SentenceDefinitionsCollector(this, scope);
 
 		return collector.definitions();
 	}
@@ -190,17 +192,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		return null;
 	}
 
-	@Override
-	protected StOp createOp(LocalBuilder builder) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	final Trace getTrace() {
-		return null;
-	}
-
-	final Conditions getInitialConditions() {
+	public final Conditions getInitialConditions() {
 		if (this.conditions != null) {
 			return this.conditions.initialConditions;
 		}
@@ -210,6 +202,16 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		this.conditions = new BlockConditions(this, initial);
 
 		return initial;
+	}
+
+	@Override
+	protected StOp createOp(LocalBuilder builder) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	final Trace getTrace() {
+		return null;
 	}
 
 	private static final class BlockConditions extends Conditions {
@@ -230,8 +232,8 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		@Override
 		public Logical precondition(Scope scope) {
 
-			final SentenceCollector.PreconditionCollector collector =
-				new SentenceCollector.PreconditionCollector(this.block, scope);
+			final SentencePreconditionCollector collector =
+				new SentencePreconditionCollector(this.block, scope);
 
 			return collector.precondition();
 		}
