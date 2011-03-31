@@ -149,15 +149,16 @@ static inline o42a_obj_body_t *body_of_type(
 		O42A_PARAMS
 		const o42a_obj_data_t *const data,
 		const o42a_obj_stype_t *const type) {
+	O42A_ENTER(return NULL);
 
 	const o42a_obj_ascendant_t *const ascendant =
 			O42A(o42a_obj_ascendant_of_type(O42A_ARGS data, type));
 
 	if (!ascendant) {
-		return NULL;
+		O42A_RETURN NULL;
 	}
 
-	return O42A(o42a_obj_ascendant_body(O42A_ARGS ascendant));
+	O42A_RETURN o42a_obj_ascendant_body(O42A_ARGS ascendant);
 }
 
 o42a_obj_body_t *o42a_obj_cast(

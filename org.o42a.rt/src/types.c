@@ -48,8 +48,8 @@ inline size_t o42a_layout_array_size(
 		const size_t num_elements) {
 
 	const size_t element_size = o42a_layout_pad(
-			O42A_ARGS
-			o42a_layout_size(O42A_ARGS layout),
+			O42A_ARGS_
+			o42a_layout_size(O42A_ARGS_ layout),
 			layout);
 
 	return element_size * num_elements;;
@@ -59,12 +59,12 @@ inline o42a_layout_t o42a_layout_array(
 		O42A_PARAMS
 		const o42a_layout_t layout,
 		const size_t num_elements) {
-	return o42a_layout_array_size(O42A_ARGS layout, num_elements)
+	return o42a_layout_array_size(O42A_ARGS_ layout, num_elements)
 			| (layout & ALIGNMENT_MASK);
 }
 
 inline uint8_t o42a_layout_alignment(O42A_PARAMS const o42a_layout_t layout) {
-	return 1 << alignment_shift(O42A_ARGS layout);
+	return 1 << alignment_shift(O42A_ARGS_ layout);
 }
 
 inline size_t o42a_layout_offset(
@@ -72,7 +72,7 @@ inline size_t o42a_layout_offset(
 		const size_t start,
 		const o42a_layout_t layout) {
 
-	const uint8_t ashift = alignment_shift(O42A_ARGS layout);
+	const uint8_t ashift = alignment_shift(O42A_ARGS_ layout);
 	const size_t remainder = start & ~(ALL_ONES << ashift);
 
 	return remainder ? (1 << ashift) - remainder : 0;
@@ -82,7 +82,7 @@ inline size_t o42a_layout_pad(
 		O42A_PARAMS
 		const size_t start,
 		const o42a_layout_t layout) {
-	return start + o42a_layout_offset(O42A_ARGS start, layout);
+	return start + o42a_layout_offset(O42A_ARGS_ start, layout);
 }
 
 o42a_layout_t o42a_layout_both(
@@ -90,17 +90,17 @@ o42a_layout_t o42a_layout_both(
 		const o42a_layout_t layout1,
 		const o42a_layout_t layout2) {
 
-	const uint8_t al1 = o42a_layout_alignment(O42A_ARGS layout1);
-	const uint8_t al2 = o42a_layout_alignment(O42A_ARGS layout2);
+	const uint8_t al1 = o42a_layout_alignment(O42A_ARGS_ layout1);
+	const uint8_t al2 = o42a_layout_alignment(O42A_ARGS_ layout2);
 
 	return o42a_layout(
-			O42A_ARGS
+			O42A_ARGS_
 			al1 >= al2 ? al1 : al2,
 			o42a_layout_pad(
-					O42A_ARGS
-					o42a_layout_size(O42A_ARGS layout1),
+					O42A_ARGS_
+					o42a_layout_size(O42A_ARGS_ layout1),
 					layout2)
-			+ o42a_layout_size(O42A_ARGS layout2));
+			+ o42a_layout_size(O42A_ARGS_ layout2));
 }
 
 o42a_layout_t o42a_layout(
@@ -136,7 +136,7 @@ inline size_t o42a_val_ashift(O42A_PARAMS const o42a_val_t *const val) {
 }
 
 inline size_t o42a_val_alignment(O42A_PARAMS const o42a_val_t *const val) {
-	return 1 << o42a_val_ashift(O42A_ARGS val);
+	return 1 << o42a_val_ashift(O42A_ARGS_ val);
 }
 
 inline void *o42a_val_data(O42A_PARAMS const o42a_val_t *const val) {

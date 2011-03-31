@@ -280,6 +280,7 @@ void o42a_float_by_str(
 }
 
 inline int o42a_float_error(O42A_PARAMS o42a_val_t *const value) {
+	O42A_ENTER(return 0);
 
 	const int error = fetestexcept(
 			FE_DIVBYZERO | FE_INVALID | FE_UNDERFLOW | FE_OVERFLOW);
@@ -299,5 +300,5 @@ inline int o42a_float_error(O42A_PARAMS o42a_val_t *const value) {
 
 	value->flags = O42A_FALSE;
 
-	return error;
+	O42A_RETURN error;
 }
