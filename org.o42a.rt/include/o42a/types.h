@@ -113,6 +113,10 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_ARGS
 
+#define O42A_ARG_
+
+#define O42A_ARGS_
+
 
 #define O42A_ENTER(return_null)
 
@@ -153,7 +157,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_DECLS O42A_DECL,
 
-#define O42A_PARAM o42a_dbg_env_t *const __o42a_dbg_env__
+#define O42A_PARAM o42a_dbg_env_t *const __o42a_dbg_env_p__
 
 #define O42A_PARAMS O42A_PARAM,
 
@@ -161,8 +165,13 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_ARGS O42A_ARG,
 
+#define O42A_ARG_ __o42a_dbg_env_p__
+
+#define O42A_ARGS_ O42A_ARG_,
+
 
 #define O42A_ENTER(return_null) \
+	o42a_dbg_env_t *const __o42a_dbg_env__ = __o42a_dbg_env_p__; \
 	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = { \
 		name: __func__, \
 		prev: __o42a_dbg_env__->stack_frame, \

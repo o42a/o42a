@@ -53,7 +53,7 @@ int32_t o42a_dbg_exec_main(
 		int32_t argc,
 		char** argv) {
 
-	o42a_dbg_env_t *__o42a_dbg_env__ = &dbg_env;
+	o42a_dbg_env_t *__o42a_dbg_env_p__ = &dbg_env;
 
 	O42A_ENTER(return 0);
 
@@ -97,13 +97,13 @@ static void dbg_indent(o42a_dbg_env_t *const env, const uint8_t indent) {
 	}
 }
 
-static inline void dbg_print_prefix(O42A_PARAMS o42a_dbg_env_t *env) {
-	dbg_indent(__o42a_dbg_env__, 0);
+static inline void dbg_print_prefix(o42a_dbg_env_t *env) {
+	dbg_indent(env, 0);
 	fprintf(stderr, "[%s] ", env->stack_frame->name);
 }
 
 void o42a_dbg_print(O42A_PARAMS const char *const message) {
-	dbg_print_prefix(O42A_ARGS __o42a_dbg_env__);
+	dbg_print_prefix(__o42a_dbg_env_p__);
 	fputs(message, stderr);
 }
 
@@ -115,7 +115,7 @@ void o42a_dbg_printf(O42A_PARAMS const char *format, ...) {
 	va_list args;
 
 	va_start(args, format);
-	dbg_print_prefix(O42A_ARGS __o42a_dbg_env__);
+	dbg_print_prefix(__o42a_dbg_env_p__);
 
 	vfprintf(stderr, format, args);
 
@@ -138,7 +138,7 @@ void o42a_dbg_mem_name(
 		O42A_PARAMS
 		const char *const prefix,
 		const void *const ptr) {
-	o42a_dbg_print(O42A_ARGS prefix);
+	o42a_dbg_print(O42A_ARGS_ prefix);
 	if (!ptr) {
 		fputs("NULL\n", stderr);
 		return;
@@ -158,19 +158,19 @@ static void dbg_func_name(O42A_PARAMS const void *const ptr) {
 
 	void (*const func) (o42a_dbg_env_t *) = (void (*) (o42a_dbg_env_t *)) ptr;
 
-	const uint32_t old_command = __o42a_dbg_env__->command;
+	const uint32_t old_command = __o42a_dbg_env_p__->command;
 
-	__o42a_dbg_env__->command = O42A_DBG_CMD_REPORT;
-	func(O42A_ARG);
-	__o42a_dbg_env__->command = old_command;
+	__o42a_dbg_env_p__->command = O42A_DBG_CMD_REPORT;
+	func(O42A_ARG_);
+	__o42a_dbg_env_p__->command = old_command;
 }
 
 void o42a_dbg_func_name(
 		O42A_PARAMS
 		const char *const prefix,
 		const void *const ptr) {
-	o42a_dbg_print(O42A_ARGS prefix);
-	dbg_func_name(O42A_ARGS ptr);
+	o42a_dbg_print(O42A_ARGS_ prefix);
+	dbg_func_name(O42A_ARGS_ ptr);
 	fputc('\n', stderr);
 }
 
@@ -224,14 +224,14 @@ static void dbg_struct(
 	size_t field_num = type_info->field_num;
 
 	while (field_num > 0) {
-		dbg_indent(__o42a_dbg_env__, indent);
+		dbg_indent(__o42a_dbg_env_p__, indent);
 		fputs(field_info->name, stderr);
 
 		const void *field_ptr = data + field_info->offset;
 
 		fprintf(stderr, " <0x%lx>", (long) field_ptr);
 		dbg_field_value(
-				O42A_ARGS
+				O42A_ARGS_
 				field_ptr,
 				field_info,
 				depth,
@@ -321,7 +321,7 @@ static void dbg_field_value(
 		void *func_ptr = *((void**) data);
 
 		fputs(": function -> ", stderr);
-		dbg_func_name(__o42a_dbg_env__, func_ptr);
+		dbg_func_name(O42A_ARGS_ func_ptr);
 
 		break;
 	}
@@ -395,8 +395,8 @@ static void dbg_field_value(
 		}
 
 		fprintf(stderr, ": %s = {\n", type_info->name);
-		dbg_struct(O42A_ARGS data_header, depth - 1, indent + 1);
-		dbg_indent(__o42a_dbg_env__, indent);
+		dbg_struct(O42A_ARGS_ data_header, depth - 1, indent + 1);
+		dbg_indent(__o42a_dbg_env_p__, indent);
 		fputc('}', stderr);
 
 		break;
@@ -411,14 +411,14 @@ void o42a_dbg_dump_mem(
 		const char *const prefix,
 		const void *const ptr,
 		const uint32_t depth) {
-	o42a_dbg_print(O42A_ARGS prefix);
+	o42a_dbg_print(O42A_ARGS_ prefix);
 
 	const o42a_dbg_header_t *const header = o42a_dbg_header(ptr);
 
 	dbg_mem_name(header);
 	fprintf(stderr, " <0x%lx>: %s = {\n", (long) ptr, header->type_info->name);
-	dbg_struct(O42A_ARGS header, depth, 1);
-	dbg_indent(__o42a_dbg_env__, 0);
+	dbg_struct(O42A_ARGS_ header, depth, 1);
+	dbg_indent(__o42a_dbg_env_p__, 0);
 	fputs("}\n", stderr);
 }
 

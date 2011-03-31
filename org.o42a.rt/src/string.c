@@ -21,12 +21,12 @@
 
 
 inline size_t o42a_str_len(O42A_PARAMS const o42a_val_t *const val) {
-	return val->length >> o42a_val_ashift(O42A_ARGS val);
+	return val->length >> o42a_val_ashift(O42A_ARGS_ val);
 }
 
 inline UChar32 o42a_str_cmask(O42A_PARAMS const o42a_val_t *const val) {
 
-	const size_t char_size = o42a_val_alignment(O42A_ARGS val);
+	const size_t char_size = o42a_val_alignment(O42A_ARGS_ val);
 	size_t mask;
 
 	if (sizeof (UChar32) <= char_size) {
