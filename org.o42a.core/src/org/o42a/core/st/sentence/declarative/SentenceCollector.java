@@ -36,18 +36,16 @@ public abstract class SentenceCollector {
 	private final DeclarativeBlock block;
 	private final Scope scope;
 
-	private final HashMap<DefinitionKey, DefinitionTarget>unconditionalValues =
+	private final HashMap<DefinitionKey, DefinitionTarget> unconditionalValues =
 		new HashMap<DefinitionKey, DefinitionTarget>();
-	private Logical commonReq = null;
-	private Logical reqs = null;
-	private Logical req = null;
-	private Logical commonCond = null;
-	private Logical conds = null;
-	private Logical cond = null;
+	private final SentenceLogicals requirements;
+	private final SentenceLogicals conditions;
 
 	public SentenceCollector(DeclarativeBlock block, Scope scope) {
 		this.block = block;
 		this.scope = scope;
+		this.requirements = new SentenceLogicals(block, scope);
+		this.conditions = new SentenceLogicals(block, scope);
 	}
 
 	public final DeclarativeBlock getBlock() {
@@ -99,43 +97,19 @@ public abstract class SentenceCollector {
 			DefinitionTargets targets);
 
 	protected final Logical requirement() {
-		return Logical.and(this.commonReq, Logical.or(this.req, this.reqs));
+		return this.requirements.build();
 	}
 
 	protected final Logical condition() {
-		return Logical.and(this.commonCond, Logical.or(this.cond, this.conds));
+		return this.conditions.build();
 	}
 
 	private void updateConditions(DeclarativeSentence sentence) {
-
-		final Logical logical =
-			sentence.getConditions().fullLogical(getScope());
-
 		if (sentence.isClaim()) {
-			if (sentence.getPrerequisite() == null) {
-				this.req = Logical.and(this.req, logical);
-				return;
-			}
-			if (this.req == null) {
-				this.reqs = Logical.or(this.reqs, logical);
-				return;
-			}
-			this.commonReq = requirement();
-			this.reqs = logical;
-			this.req = null;
-			return;
+			this.requirements.addSentence(sentence);
+		} else {
+			this.conditions.addSentence(sentence);
 		}
-		if (sentence.getPrerequisite() == null) {
-			this.cond = Logical.and(this.cond, logical);
-			return;
-		}
-		if (this.cond == null) {
-			this.conds = Logical.or(this.conds, logical);
-			return;
-		}
-		this.commonCond = condition();
-		this.conds = logical;
-		this.cond = null;
 	}
 
 	private boolean checkAmbiguity(
@@ -183,14 +157,15 @@ public abstract class SentenceCollector {
 		if (unconditionalValue == null) {
 			return true;
 		}
+
 		getLogger().error(
 				"ignored_value",
 				targets.firstValue().getLoggable().setPreviousLoggable(
 						unconditionalValue.getLoggable()),
 				"Ignored value");
 		sentence.ignore();
-		return false;
 
+		return false;
 	}
 
 }
