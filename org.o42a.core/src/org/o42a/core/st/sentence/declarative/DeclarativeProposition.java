@@ -17,28 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.declarative;
 
 import org.o42a.core.LocationInfo;
+import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.DeclarativeFactory;
+import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
-public class ImperativeIssueFactory extends ImperativeFactory {
+public final class DeclarativeProposition extends DeclarativeSentence {
 
-	protected ImperativeIssueFactory() {
+	public DeclarativeProposition(
+			LocationInfo location,
+			DeclarativeBlock block,
+			DeclarativeFactory sentenceFactory) {
+		super(location, block, sentenceFactory);
 	}
 
 	@Override
-	public ImperativeSentence propose(
-			LocationInfo location,
-			ImperativeBlock block) {
-		return new ImperativeIssue.Proposing(location, block, this);
+	public boolean isClaim() {
+		return false;
 	}
 
 	@Override
-	public ImperativeSentence claim(
-			LocationInfo location,
-			ImperativeBlock block) {
-		return new ImperativeIssue.Claiming(location, block, this);
+	public boolean isIssue() {
+		return false;
 	}
 
 }

@@ -31,6 +31,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueType;
 
 
@@ -93,6 +94,13 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 
 		return this.definitionTargets = result;
+	}
+
+	public final Conditions getConditions() {
+		if (this.conditions != null) {
+			return this.conditions;
+		}
+		return this.conditions = new DeclarativeConditions();
 	}
 
 	@Override
@@ -162,13 +170,6 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 
 		throw new IllegalStateException("Value is missing");
-	}
-
-	Conditions getConditions() {
-		if (this.conditions != null) {
-			return this.conditions;
-		}
-		return this.conditions = new DeclarativeConditions();
 	}
 
 	private Conditions lastDefinitionConditions() {

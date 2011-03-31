@@ -20,16 +20,14 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.def.Definitions.conditionDefinitions;
-import static org.o42a.core.ref.Logical.disjunction;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
-import java.util.List;
 
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.declarative.SentenceConditions;
 import org.o42a.core.value.ValueType;
 
 
@@ -40,7 +38,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 	private DefinitionTargets definitionTargets;
 	private boolean ignored;
 
-	DeclarativeSentence(
+	protected DeclarativeSentence(
 			LocationInfo location,
 			DeclarativeBlock block,
 			DeclarativeFactory sentenceFactory) {
@@ -134,7 +132,29 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return this.definitionTargets = result;
 	}
 
-	protected Definitions define(Scope scope) {
+	public final Conditions getInitialConditions() {
+		if (this.initialConditions != null) {
+			return this.initialConditions;
+		}
+		return this.initialConditions = new InitialConditions(this);
+	}
+
+	public final Conditions getConditions() {
+		if (this.conditions != null) {
+			return this.conditions;
+		}
+		return this.conditions = new SentenceConditions(this);
+	}
+
+	public final boolean isIgnored() {
+		return this.ignored;
+	}
+
+	public final void ignore() {
+		this.ignored = true;
+	}
+
+	public Definitions define(Scope scope) {
 
 		final DefinitionTargets targets = getDefinitionTargets();
 
@@ -159,28 +179,6 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 
 		throw new IllegalStateException("Value expected");
-	}
-
-	Conditions getInitialConditions() {
-		if (this.initialConditions != null) {
-			return this.initialConditions;
-		}
-		return this.initialConditions = new InitialConditions(this);
-	}
-
-	Conditions getConditions() {
-		if (this.conditions != null) {
-			return this.conditions;
-		}
-		return this.conditions = new SentenceConditions(this);
-	}
-
-	final boolean isIgnored() {
-		return this.ignored;
-	}
-
-	final void ignore() {
-		this.ignored = true;
 	}
 
 	private void reportAmbiguity(
@@ -211,60 +209,6 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 					"Ambiguous declaration of field '%s'",
 					previousDeclaration.getFieldKey().getMemberId());
 		}
-	}
-
-	static final class Proposition extends DeclarativeSentence {
-
-		Proposition(
-				LocationInfo location,
-				DeclarativeBlock block,
-				DeclarativeFactory sentenceFactory) {
-			super(location, block, sentenceFactory);
-		}
-
-		@Override
-		public boolean isClaim() {
-			return false;
-		}
-
-		@Override
-		public boolean isIssue() {
-			return false;
-		}
-
-	}
-
-	static final class Claim extends DeclarativeSentence {
-
-		Claim(
-				LocationInfo location,
-				DeclarativeBlock block,
-				DeclarativeFactory sentenceFactory) {
-			super(location, block, sentenceFactory);
-		}
-
-		@Override
-		public boolean isClaim() {
-			return true;
-		}
-
-		@Override
-		public boolean isIssue() {
-			return false;
-		}
-
-		@Override
-		protected Definitions define(Scope scope) {
-
-			final Definitions definitions = super.define(scope);
-
-			if (definitions == null) {
-				return null;
-			}
-
-			return definitions.claim();
-		}
-
 	}
 
 	private static final class InitialConditions extends Conditions {
@@ -308,57 +252,6 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			}
 
 			return this.sentence.toString();
-		}
-
-		@Override
-		protected ValueType<?> expectedType() {
-			return this.sentence.getBlock()
-			.getInitialConditions().getExpectedType();
-		}
-
-	}
-
-	private static final class SentenceConditions extends Conditions {
-
-		private final DeclarativeSentence sentence;
-
-		SentenceConditions(DeclarativeSentence sentence) {
-			this.sentence = sentence;
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.sentence.getInitialConditions().prerequisite(scope);
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-
-			final List<Declaratives> alternatives =
-				this.sentence.getAlternatives();
-			final int size = alternatives.size();
-
-			if (size <= 1) {
-				if (size == 0) {
-					return this.sentence.getInitialConditions()
-					.precondition(scope);
-				}
-				return alternatives.get(0).getConditions().fullLogical(scope);
-			}
-
-			final Logical[] vars = new Logical[size];
-
-			for (int i = 0; i < size; ++i) {
-				vars[i] =
-					alternatives.get(i).getConditions().fullLogical(scope);
-			}
-
-			return disjunction(this.sentence, this.sentence.getScope(), vars);
-		}
-
-		@Override
-		public String toString() {
-			return "(" + this.sentence + ")?";
 		}
 
 		@Override

@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.imperative;
 
-import static org.o42a.core.st.DefinitionTarget.noDefinitions;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
@@ -35,15 +35,19 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
 import org.o42a.core.st.action.RepeatLoop;
+import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueType;
 
 
-final class EllipsisSt extends Statement {
+public final class EllipsisSt extends Statement {
 
 	private final String name;
 	private final boolean exit;
 
-	EllipsisSt(LocationInfo location, Imperatives enclosing, String name) {
+	public EllipsisSt(
+			LocationInfo location,
+			Imperatives enclosing,
+			String name) {
 		super(location, enclosing.nextDistributor());
 		this.name = name;
 		this.exit = enclosing.getSentence().isClaim();

@@ -24,21 +24,22 @@ import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Conditions;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.LoopAction;
+import org.o42a.core.st.sentence.imperative.BracesWithinDeclaratives;
+import org.o42a.core.st.sentence.imperative.ImperativeBlockOp;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Lambda;
@@ -47,7 +48,7 @@ import org.o42a.util.Place.Trace;
 
 public final class ImperativeBlock extends Block<Imperatives> {
 
-	static ImperativeBlock topLevelImperativeBlock(
+	public static ImperativeBlock topLevelImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
@@ -80,7 +81,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 				sentenceFactory);
 	}
 
-	static ImperativeBlock nestedImperativeBlock(
+	public static ImperativeBlock nestedImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
@@ -311,7 +312,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	@Override
 	protected StOp createOp(LocalBuilder builder) {
-		return new Op(builder, this);
+		return new ImperativeBlockOp(builder, this);
 	}
 
 	@Override
@@ -340,77 +341,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		@Override
 		public ScopePlace getPlace() {
 			return localPlace(getScope(), FIRST_PLACE);
-		}
-
-	}
-
-	private static final class Op extends StOp {
-
-		private Op(LocalBuilder builder, ImperativeBlock block) {
-			super(builder, block);
-		}
-
-		@Override
-		public void allocate(LocalBuilder builder, Code code) {
-			for (ImperativeSentence sentence : getBlock().getSentences()) {
-				sentence.allocate(builder, code);
-			}
-		}
-
-		@Override
-		public void writeAssignment(Control control, ValOp result) {
-			writeSentences(control, result);
-		}
-
-		@Override
-		public void writeLogicalValue(Control control) {
-			writeSentences(control, null);
-		}
-
-		private final ImperativeBlock getBlock() {
-			return (ImperativeBlock) getStatement();
-		}
-
-		private void writeSentences(Control control, ValOp result) {
-
-			final String name = control.name(getBlock().getName()) + "_blk";
-
-			final Code code = control.addBlock(name);
-			final Code next = control.addBlock(name + "_next");
-			final Control blockControl;
-
-			if (getBlock().isParentheses()) {
-				blockControl = control.parentheses(code, next.head());
-			} else {
-				blockControl = control.braces(code, next.head(), name);
-			}
-
-			final List<ImperativeSentence> sentences =
-				getBlock().getSentences();
-			final int len = sentences.size();
-
-			for (int i = 0; i < len; ++i) {
-
-				final ImperativeSentence sentence = sentences.get(i);
-
-				sentence.write(blockControl, Integer.toString(i), result);
-				if (!blockControl.mayContinue()) {
-					control.reachability(blockControl);
-					return;
-				}
-			}
-
-			if (code.exists()) {
-				control.code().go(code.head());
-				if (next.exists()) {
-					next.go(control.code().tail());
-				}
-				if (!blockControl.isDone()) {
-					code.go(control.code().tail());
-				}
-			}
-
-			control.reachability(blockControl);
 		}
 
 	}

@@ -17,22 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.imperative;
 
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.sentence.ImperativeFactory;
+import org.o42a.core.st.sentence.ImperativeSentence;
 
 
-public abstract class DeclarativeIssue extends DeclarativeSentence {
+public abstract class ImperativeIssue extends ImperativeSentence {
 
 	private final MemberRegistry memberRegistry;
 
-	public DeclarativeIssue(
+	ImperativeIssue(
 			LocationInfo location,
-			DeclarativeBlock block,
-			DeclarativeFactory sentenceFactory) {
+			ImperativeBlock block,
+			ImperativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
 		this.memberRegistry =
 			block.getMemberRegistry().prohibitDeclarations();
@@ -53,35 +54,23 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 		return this.memberRegistry;
 	}
 
-	static final class Claiming extends DeclarativeIssue {
+	public static final class Claiming extends ImperativeIssue {
 
-		Claiming(
+		public Claiming(
 				LocationInfo location,
-				DeclarativeBlock block,
-				DeclarativeFactory sentenceFactory) {
+				ImperativeBlock block,
+				ImperativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
-		}
-
-		@Override
-		protected Definitions define(Scope scope) {
-
-			final Definitions definitions = super.define(scope);
-
-			if (definitions == null) {
-				return null;
-			}
-
-			return definitions.claim();
 		}
 
 	}
 
-	static final class Proposing extends DeclarativeIssue {
+	public static final class Proposing extends ImperativeIssue {
 
-		Proposing(
+		public Proposing(
 				LocationInfo location,
-				DeclarativeBlock block,
-				DeclarativeFactory sentenceFactory) {
+				ImperativeBlock block,
+				ImperativeFactory sentenceFactory) {
 			super(location, block, sentenceFactory);
 		}
 
