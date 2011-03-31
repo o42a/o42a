@@ -167,10 +167,10 @@ final class SentenceLogicals {
 			}
 
 			if (this.otherwise == null) {
-				return this.otherwise.logicalValue(scope);
+				return LogicalValue.FALSE;
 			}
 
-			return LogicalValue.FALSE;
+			return this.otherwise.logicalValue(scope);
 		}
 
 		@Override
