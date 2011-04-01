@@ -61,14 +61,11 @@ final class ApplyDirective implements Instruction {
 				return this.block;
 			}
 
-			final RefConditionsWrap conditions =
-				ApplyDirective.this.ref.getConditions();
+			final RefEnvWrap env = ApplyDirective.this.ref.getEnv();
 
 			this.block = this.context.getBlock();
 			this.doNotRemove = true;
-			conditions.setWrapped(
-					this.block.setConditions(
-							conditions.getInitialConditions()));
+			env.setWrapped(this.block.setEnv(env.getInitialEnv()));
 
 			return this.block;
 		}
@@ -90,7 +87,7 @@ final class ApplyDirective implements Instruction {
 		void apply() {
 			ApplyDirective.this.directive.apply(ApplyDirective.this.ref, this);
 			if (!this.doNotRemove) {
-				ApplyDirective.this.ref.getConditions().removeWrapped();
+				ApplyDirective.this.ref.getEnv().removeWrapped();
 			}
 		}
 

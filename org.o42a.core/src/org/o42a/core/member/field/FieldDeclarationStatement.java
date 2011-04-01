@@ -39,7 +39,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 	private final FieldBuilder builder;
 	private final DeclaredMemberField member;
-	private Conditions initialConditions;
+	private StatementEnv env;
 
 	FieldDeclarationStatement(
 			FieldBuilder builder,
@@ -64,16 +64,16 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 		return this.member;
 	}
 
-	public final Conditions getInitialConditions() {
-		return this.initialConditions;
+	public final StatementEnv getEnv() {
+		return this.env;
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
-		assert this.initialConditions == null :
-			"Conditions already set for " + this;
-		this.initialConditions = conditions;
-		return conditions.notCondition(this);
+	public StatementEnv setEnv(StatementEnv env) {
+		assert this.env == null :
+			"Environment already assigned to " + this;
+		this.env = env;
+		return env.notCondition(this);
 	}
 
 	@Override

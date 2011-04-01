@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.st.Conditions.emptyConditions;
+import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.common.adapter.BinaryOperatorInfo;
@@ -282,7 +282,7 @@ public class BinaryOperatorRef extends Wrap {
 				return;
 			}
 
-			statement.setConditions(emptyConditions(this));
+			statement.setEnv(defaultEnv(this));
 
 			registry.registerMembers(members);
 		}

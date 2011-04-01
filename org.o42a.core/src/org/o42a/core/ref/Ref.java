@@ -87,7 +87,7 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	private Ref expectedTypeAdapter;
-	private RefConditionsWrap conditions;
+	private RefEnvWrap env;
 	private Logical logical;
 	private RefOp op;
 	private Path resolutionRoot;
@@ -190,20 +190,19 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
-		assert this.conditions == null :
-			"Conditions already assigned for: " + conditions;
-		return this.conditions = new RefConditionsWrap(this, conditions);
+	public StatementEnv setEnv(StatementEnv env) {
+		assert this.env == null :
+			"Environment already assigned fro: " + env;
+		return this.env = new RefEnvWrap(this, env);
 	}
 
 	@Override
 	public Definitions define(Scope scope) {
 
 		final Def def= expectedTypeAdapter().toDef();
-		final Conditions initialConditions =
-			getConditions().getInitialConditions();
+		final StatementEnv initialEnv = getEnv().getInitialEnv();
 
-		return initialConditions.apply(def).toDefinitions();
+		return initialEnv.apply(def).toDefinitions();
 	}
 
 	public abstract Resolution resolve(Scope scope);
@@ -412,7 +411,7 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		final ValueType<?> expectedType =
-			this.conditions.getInitialConditions().getExpectedType();
+			this.env.getInitialEnv().getExpectedType();
 
 		if (expectedType == null) {
 			return this.expectedTypeAdapter = this;
@@ -422,8 +421,8 @@ public abstract class Ref extends RefTypeBase {
 			adapt(this, expectedType.typeRef(this, getScope()));
 	}
 
-	final RefConditionsWrap getConditions() {
-		return this.conditions;
+	final RefEnvWrap getEnv() {
+		return this.env;
 	}
 
 	private static final class RefStOp extends StOp {

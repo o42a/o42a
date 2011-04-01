@@ -27,7 +27,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.LogicalValue;
@@ -94,8 +94,8 @@ final class SentenceLogicals {
 
 	private static final class Result extends Logical {
 
-		private final ArrayList<Conditions> variants =
-			new ArrayList<Conditions>();
+		private final ArrayList<StatementEnv> variants =
+			new ArrayList<StatementEnv>();
 		private Logical otherwise;
 
 		private LogicalValue constantValue;
@@ -117,7 +117,7 @@ final class SentenceLogicals {
 				return this.constantValue = this.otherwise.getConstantValue();
 			}
 
-			for (Conditions conditions : this.variants) {
+			for (StatementEnv conditions : this.variants) {
 
 				final Logical prerequisite =
 					conditions.prerequisite(getScope());
@@ -151,7 +151,7 @@ final class SentenceLogicals {
 				return this.otherwise.logicalValue(scope);
 			}
 
-			for (Conditions conditions : this.variants) {
+			for (StatementEnv conditions : this.variants) {
 
 				final LogicalValue prerequisite =
 					conditions.prerequisite(getScope()).logicalValue(scope);
@@ -208,7 +208,7 @@ final class SentenceLogicals {
 
 			for (;;) {
 
-				final Conditions conditions = this.variants.get(idx);
+				final StatementEnv conditions = this.variants.get(idx);
 				final Logical prerequisite =
 					conditions.prerequisite(getScope());
 				final Logical precondition =
@@ -242,7 +242,7 @@ final class SentenceLogicals {
 
 			final StringBuilder out = new StringBuilder();
 
-			for (Conditions conditions : this.variants) {
+			for (StatementEnv conditions : this.variants) {
 				out.append('(').append(conditions.prerequisite(getScope()));
 				out.append(")? (");
 				out.append(conditions.precondition(getScope())).append(").");
@@ -263,13 +263,13 @@ final class SentenceLogicals {
 			assert !otherwisePresent() :
 				"Can not add conditional sentence"
 				+ " when otherwise condition already present";
-			this.variants.add(setence.getConditions());
+			this.variants.add(setence.getEnv());
 		}
 
 		private final void otherwise(DeclarativeSentence sentence) {
 			this.otherwise = Logical.and(
 					this.otherwise,
-					sentence.getConditions().fullLogical(getScope()));
+					sentence.getEnv().fullLogical(getScope()));
 		}
 
 	}

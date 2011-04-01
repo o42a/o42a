@@ -20,19 +20,19 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
-import org.o42a.core.st.Conditions;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.ValueType;
 
 
-final class RefConditionsWrap extends Conditions {
+final class RefEnvWrap extends StatementEnv {
 
 	private final Ref ref;
-	private final Conditions initialConditions;
-	private Conditions wrapped;
+	private final StatementEnv initialEnv;
+	private StatementEnv wrapped;
 
-	RefConditionsWrap(Ref ref, Conditions initialConditions) {
+	RefEnvWrap(Ref ref, StatementEnv initialEnv) {
 		this.ref = ref;
-		this.initialConditions = initialConditions;
+		this.initialEnv = initialEnv;
 	}
 
 	@Override
@@ -50,68 +50,67 @@ final class RefConditionsWrap extends Conditions {
 		if (this.wrapped != null) {
 			return this.wrapped.toString();
 		}
-		return this.initialConditions + ", " + this.ref;
+		return this.initialEnv + ", " + this.ref;
 	}
 
 	@Override
 	protected ValueType<?> expectedType() {
-		return getInitialConditions().getExpectedType();
+		return getInitialEnv().getExpectedType();
 	}
 
-	final Conditions getInitialConditions() {
-		return this.initialConditions;
+	final StatementEnv getInitialEnv() {
+		return this.initialEnv;
 	}
 
-	final void setWrapped(Conditions wrapped) {
+	final void setWrapped(StatementEnv wrapped) {
 		assert this.wrapped == null :
-			"Conditions already assigned to " + this.ref;
+			"Environment already assigned to " + this.ref;
 		this.wrapped = wrapped;
 	}
 
 	final void removeWrapped() {
 		assert this.wrapped == null :
-			"Conditions already assigned to " + this.ref;
-		this.wrapped = this.initialConditions;
+			"Environment already assigned to " + this.ref;
+		this.wrapped = this.initialEnv;
 	}
 
-	private Conditions getWrapped() {
+	private StatementEnv getWrapped() {
 		if (this.wrapped != null) {
 			return this.wrapped;
 		}
-		return this.wrapped =
-			new RefConditions(this.ref, this.initialConditions);
+		return this.wrapped = new RefEnv(this.ref, this.initialEnv);
 	}
 
-	private static final class RefConditions extends Conditions {
+	private static final class RefEnv extends StatementEnv {
 
 		private final Ref ref;
-		private final Conditions initialConditions;
+		private final StatementEnv initialEnv;
 
-		RefConditions(Ref ref, Conditions initialConditions) {
+		RefEnv(Ref ref, StatementEnv initialEnv) {
 			this.ref = ref;
-			this.initialConditions = initialConditions;
+			this.initialEnv = initialEnv;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.initialConditions.prerequisite(scope);
+			return this.initialEnv.prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return this.initialConditions.precondition(scope).and(
+			return this.initialEnv.precondition(scope).and(
 					this.ref.expectedTypeAdapter()
 					.rescope(scope).getLogical());
 		}
 
 		@Override
 		public String toString() {
-			return this.initialConditions + ", " + this.ref;
+			return this.initialEnv + ", " + this.ref;
 		}
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.initialConditions.getExpectedType();
+			return this.initialEnv.getExpectedType();
 		}
 
 	}

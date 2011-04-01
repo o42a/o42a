@@ -27,14 +27,14 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.declarative.SentenceConditions;
+import org.o42a.core.st.sentence.declarative.SentenceEnv;
 import org.o42a.core.value.ValueType;
 
 
 public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
-	private InitialConditions initialConditions;
-	private SentenceConditions conditions;
+	private AltEnv altEnv;
+	private SentenceEnv env;
 	private DefinitionTargets definitionTargets;
 	private boolean ignored;
 
@@ -132,18 +132,18 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return this.definitionTargets = result;
 	}
 
-	public final Conditions getInitialConditions() {
-		if (this.initialConditions != null) {
-			return this.initialConditions;
+	public final StatementEnv getEnv() {
+		if (this.env != null) {
+			return this.env;
 		}
-		return this.initialConditions = new InitialConditions(this);
+		return this.env = new SentenceEnv(this);
 	}
 
-	public final Conditions getConditions() {
-		if (this.conditions != null) {
-			return this.conditions;
+	public final StatementEnv getAltEnv() {
+		if (this.altEnv != null) {
+			return this.altEnv;
 		}
-		return this.conditions = new SentenceConditions(this);
+		return this.altEnv = new AltEnv(this);
 	}
 
 	public final boolean isIgnored() {
@@ -163,8 +163,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 		if (!targets.haveValue()) {
 
-			final Logical fullLogical =
-				getConditions().fullLogical(scope);
+			final Logical fullLogical = getEnv().fullLogical(scope);
 
 			return conditionDefinitions(fullLogical, scope, fullLogical);
 		}
@@ -211,19 +210,19 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 	}
 
-	private static final class InitialConditions extends Conditions {
+	private static final class AltEnv extends StatementEnv {
 
 		private final DeclarativeSentence sentence;
 
-		InitialConditions(DeclarativeSentence sentence) {
+		AltEnv(DeclarativeSentence sentence) {
 			this.sentence = sentence;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
 
-			final Conditions initial =
-				this.sentence.getBlock().getInitialConditions();
+			final StatementEnv initial =
+				this.sentence.getBlock().getInitialEnv();
 			final DeclarativeSentence prerequisite =
 				this.sentence.getPrerequisite();
 
@@ -232,13 +231,13 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			}
 
 			return initial.prerequisite(scope).and(
-					prerequisite.getConditions().fullLogical(scope));
+					prerequisite.getEnv().fullLogical(scope));
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
 			return this.sentence.getBlock()
-			.getInitialConditions().precondition(scope);
+			.getInitialEnv().precondition(scope);
 		}
 
 		@Override
@@ -257,7 +256,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		@Override
 		protected ValueType<?> expectedType() {
 			return this.sentence.getBlock()
-			.getInitialConditions().getExpectedType();
+			.getInitialEnv().getExpectedType();
 		}
 
 	}

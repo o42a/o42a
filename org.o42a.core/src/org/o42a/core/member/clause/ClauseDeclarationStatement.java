@@ -62,8 +62,8 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
-		return conditions.notCondition(this);
+	public StatementEnv setEnv(StatementEnv env) {
+		return env.notCondition(this);
 	}
 
 	@Override

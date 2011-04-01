@@ -60,8 +60,8 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
-		return this.block.setConditions(conditions);
+	public StatementEnv setEnv(StatementEnv env) {
+		return this.block.setEnv(env);
 	}
 
 	@Override

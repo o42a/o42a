@@ -54,7 +54,7 @@ public abstract class Statement extends Placed {
 
 	public abstract ValueType<?> getValueType();
 
-	public abstract Conditions setConditions(Conditions conditions);
+	public abstract StatementEnv setEnv(StatementEnv env);
 
 	public abstract Definitions define(Scope scope);
 
