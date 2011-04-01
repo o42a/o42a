@@ -70,7 +70,7 @@ public final class EllipsisSt extends Statement {
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
+	public StatementEnv setEnv(StatementEnv env) {
 		throw new UnsupportedOperationException();
 	}
 

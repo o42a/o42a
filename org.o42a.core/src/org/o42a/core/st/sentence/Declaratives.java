@@ -37,12 +37,12 @@ import org.o42a.core.value.ValueType;
 
 public class Declaratives extends Statements<Declaratives> {
 
-	private DeclarativeConditions conditions;
-	private Conditions prevConditions;
-	private Conditions lastDefinitionConditions;
+	private DeclarativesEnv env;
+	private StatementEnv prevEnv;
+	private StatementEnv lastDefinitionEnv;
 	private DefinitionTargets definitionTargets;
-	private final ArrayList<Conditions> statementConditions =
-		new ArrayList<Conditions>(1);
+	private final ArrayList<StatementEnv> statementEnvs =
+		new ArrayList<StatementEnv>(1);
 
 	Declaratives(
 			LocationInfo location,
@@ -96,11 +96,11 @@ public class Declaratives extends Statements<Declaratives> {
 		return this.definitionTargets = result;
 	}
 
-	public final Conditions getConditions() {
-		if (this.conditions != null) {
-			return this.conditions;
+	public final StatementEnv getEnv() {
+		if (this.env != null) {
+			return this.env;
 		}
-		return this.conditions = new DeclarativeConditions();
+		return this.env = new DeclarativesEnv();
 	}
 
 	@Override
@@ -131,16 +131,16 @@ public class Declaratives extends Statements<Declaratives> {
 	@Override
 	protected void addStatement(Statement statement) {
 		super.addStatement(statement);
-		this.prevConditions = statement.setConditions(
-				this.prevConditions != null
-				? this.prevConditions : getSentence().getInitialConditions());
-		this.statementConditions.add(this.prevConditions);
+		this.prevEnv = statement.setEnv(
+				this.prevEnv != null
+				? this.prevEnv : getSentence().getAltEnv());
+		this.statementEnvs.add(this.prevEnv);
 	}
 
 	@Override
 	protected void removeStatement(int index) {
 		super.removeStatement(index);
-		this.statementConditions.remove(index);
+		this.statementEnvs.remove(index);
 	}
 
 	protected Definitions define(Scope scope) {
@@ -152,8 +152,7 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 		if (!kinds.haveValue()) {
 
-			final Logical condition =
-				lastDefinitionConditions().fullLogical(scope);
+			final Logical condition = lastDefinitionEnv().fullLogical(scope);
 
 			return conditionDefinitions(condition, scope, condition);
 		}
@@ -172,9 +171,9 @@ public class Declaratives extends Statements<Declaratives> {
 		throw new IllegalStateException("Value is missing");
 	}
 
-	private Conditions lastDefinitionConditions() {
-		if (this.lastDefinitionConditions != null) {
-			return this.lastDefinitionConditions;
+	private StatementEnv lastDefinitionEnv() {
+		if (this.lastDefinitionEnv != null) {
+			return this.lastDefinitionEnv;
 		}
 
 		final List<Statement> statements = getStatements();
@@ -187,12 +186,10 @@ public class Declaratives extends Statements<Declaratives> {
 				continue;
 			}
 
-			return this.lastDefinitionConditions =
-				this.statementConditions.get(i);
+			return this.lastDefinitionEnv = this.statementEnvs.get(i);
 		}
 
-		return this.lastDefinitionConditions =
-			getSentence().getInitialConditions();
+		return this.lastDefinitionEnv = getSentence().getAltEnv();
 	}
 
 	private void redundantDefinitions(
@@ -240,22 +237,22 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 	}
 
-	private final class DeclarativeConditions extends Conditions {
+	private final class DeclarativesEnv extends StatementEnv {
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return lastDefinitionConditions().prerequisite(scope);
+			return lastDefinitionEnv().prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return lastDefinitionConditions().precondition(scope);
+			return lastDefinitionEnv().precondition(scope);
 		}
 
 		@Override
 		public String toString() {
-			if (Declaratives.this.prevConditions != null) {
-				return Declaratives.this.prevConditions.toString();
+			if (Declaratives.this.prevEnv != null) {
+				return Declaratives.this.prevEnv.toString();
 			}
 			return Declaratives.this + "?";
 		}
@@ -263,7 +260,7 @@ public class Declaratives extends Statements<Declaratives> {
 		@Override
 		protected ValueType<?> expectedType() {
 			return getSentence().getBlock()
-			.getInitialConditions().getExpectedType();
+			.getInitialEnv().getExpectedType();
 		}
 
 	}

@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.st.Conditions.emptyConditions;
+import static org.o42a.core.st.StatementEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
 import java.util.List;
@@ -33,8 +33,8 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.declarative.SentenceDefinitionsCollector;
 import org.o42a.core.st.sentence.declarative.SentencePreconditionCollector;
@@ -56,7 +56,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 				sentenceFactory);
 	}
 
-	private BlockConditions conditions;
+	private BlockEnv env;
 
 	public DeclarativeBlock(
 			LocationInfo location,
@@ -142,10 +142,10 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
-		assert this.conditions == null :
-			"Conditions already set for " + this;
-		return this.conditions = new BlockConditions(this, conditions);
+	public StatementEnv setEnv(StatementEnv env) {
+		assert this.env == null :
+			"Environment already assigned to " + this;
+		return this.env = new BlockEnv(this, env);
 	}
 
 	@Override
@@ -192,14 +192,14 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		return null;
 	}
 
-	public final Conditions getInitialConditions() {
-		if (this.conditions != null) {
-			return this.conditions.initialConditions;
+	public final StatementEnv getInitialEnv() {
+		if (this.env != null) {
+			return this.env.initialEnv;
 		}
 
-		final Conditions initial = emptyConditions(this);
+		final StatementEnv initial = defaultEnv(this);
 
-		this.conditions = new BlockConditions(this, initial);
+		this.env = new BlockEnv(this, initial);
 
 		return initial;
 	}
@@ -214,19 +214,19 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		return null;
 	}
 
-	private static final class BlockConditions extends Conditions {
+	private static final class BlockEnv extends StatementEnv {
 
-		private final Conditions initialConditions;
+		private final StatementEnv initialEnv;
 		private final DeclarativeBlock block;
 
-		BlockConditions(DeclarativeBlock block, Conditions initialConditions) {
-			this.initialConditions = initialConditions;
+		BlockEnv(DeclarativeBlock block, StatementEnv initialEnv) {
+			this.initialEnv = initialEnv;
 			this.block = block;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.initialConditions.prerequisite(scope);
+			return this.initialEnv.prerequisite(scope);
 		}
 
 		@Override
@@ -240,12 +240,12 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 
 		@Override
 		public String toString() {
-			return "BlockConditions[" + this.block + ']';
+			return "BlockEnv[" + this.block + ']';
 		}
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.initialConditions.getExpectedType();
+			return this.initialEnv.getExpectedType();
 		}
 
 	}

@@ -45,7 +45,7 @@ public final class SentencePreconditionCollector extends SentenceCollector {
 			return precondition;
 		}
 
-		return getBlock().getInitialConditions().precondition(getScope());
+		return getBlock().getInitialEnv().precondition(getScope());
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public final class SentencePreconditionCollector extends SentenceCollector {
 			DefinitionTargets targets) {
 
 		final Logical logical =
-			sentence.getConditions().fullLogical(getScope());
+			sentence.getEnv().fullLogical(getScope());
 
 		if (!targets.haveValue()) {
 			return;

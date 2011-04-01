@@ -25,45 +25,43 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.core.value.ValueType;
 
 
-public final class SentenceConditions extends Conditions {
+public final class SentenceEnv extends StatementEnv {
 
 	private final DeclarativeSentence sentence;
 
-	public SentenceConditions(DeclarativeSentence sentence) {
+	public SentenceEnv(DeclarativeSentence sentence) {
 		this.sentence = sentence;
 	}
 
 	@Override
 	public Logical prerequisite(Scope scope) {
-		return this.sentence.getInitialConditions().prerequisite(scope);
+		return this.sentence.getAltEnv().prerequisite(scope);
 	}
 
 	@Override
 	public Logical precondition(Scope scope) {
 
-		final List<Declaratives> alternatives =
-			this.sentence.getAlternatives();
+		final List<Declaratives> alternatives = this.sentence.getAlternatives();
 		final int size = alternatives.size();
 
 		if (size <= 1) {
 			if (size == 0) {
-				return this.sentence.getInitialConditions()
-				.precondition(scope);
+				return this.sentence.getAltEnv().precondition(scope);
 			}
-			return alternatives.get(0).getConditions().fullLogical(scope);
+			return alternatives.get(0).getEnv().fullLogical(scope);
 		}
 
 		final Logical[] vars = new Logical[size];
 
 		for (int i = 0; i < size; ++i) {
 			vars[i] =
-				alternatives.get(i).getConditions().fullLogical(scope);
+				alternatives.get(i).getEnv().fullLogical(scope);
 		}
 
 		return disjunction(this.sentence, this.sentence.getScope(), vars);
@@ -77,7 +75,7 @@ public final class SentenceConditions extends Conditions {
 	@Override
 	protected ValueType<?> expectedType() {
 		return this.sentence.getBlock()
-		.getInitialConditions().getExpectedType();
+		.getInitialEnv().getExpectedType();
 	}
 
 }

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.common;
 
-import static org.o42a.core.st.Conditions.emptyConditions;
+import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -62,7 +62,7 @@ public abstract class Result extends PlainObject {
 
 		final Ref self = selfRef();
 
-		self.setConditions(emptyConditions(this));
+		self.setEnv(defaultEnv(this));
 
 		return self.define(getScope());
 	}

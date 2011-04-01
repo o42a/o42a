@@ -29,14 +29,14 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class Conditions {
+public abstract class StatementEnv {
 
-	public static Conditions emptyConditions(LocationInfo location) {
-		return new Empty(location);
+	public static StatementEnv defaultEnv(LocationInfo location) {
+		return new DefaultEnv(location);
 	}
 
-	public static Conditions objectConditions(Obj object) {
-		return new ObjectConditions(object);
+	public static StatementEnv objectEnv(Obj object) {
+		return new ObjectEnv(object);
 	}
 
 	private ValueType<?> expectedType;
@@ -64,15 +64,15 @@ public abstract class Conditions {
 
 	public abstract Logical precondition(Scope scope);
 
-	public boolean isEmpty(Scope scope) {
-		return prerequisite(scope).isTrue() && precondition(scope).isTrue();
+	public boolean hasConditions(Scope scope) {
+		return !prerequisite(scope).isTrue() || !precondition(scope).isTrue();
 	}
 
 	public Logical fullLogical(Scope scope) {
 		return prerequisite(scope).and(precondition(scope));
 	}
 
-	public Conditions notCondition(LocationInfo location) {
+	public StatementEnv notCondition(LocationInfo location) {
 		return new NotCondition(location, this);
 	}
 
@@ -83,11 +83,11 @@ public abstract class Conditions {
 
 	protected abstract ValueType<?> expectedType();
 
-	private static final class Empty extends Conditions {
+	private static final class DefaultEnv extends StatementEnv {
 
 		private final LocationInfo location;
 
-		Empty(LocationInfo location) {
+		DefaultEnv(LocationInfo location) {
 			this.location = location;
 		}
 
@@ -108,7 +108,7 @@ public abstract class Conditions {
 
 		@Override
 		public String toString() {
-			return "EmptyConditions";
+			return "DefaultEnv";
 		}
 
 		@Override
@@ -118,32 +118,32 @@ public abstract class Conditions {
 
 	}
 
-	private static final class NotCondition extends Conditions {
+	private static final class NotCondition extends StatementEnv {
 
 		private final LocationInfo location;
-		private final Conditions conditions;
+		private final StatementEnv env;
 		private boolean errorReported;
 
-		NotCondition(LocationInfo location, Conditions conditions) {
+		NotCondition(LocationInfo location, StatementEnv env) {
 			this.location = location;
-			this.conditions = conditions;
+			this.env = env;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
 			reportError();
-			return this.conditions.prerequisite(scope);
+			return this.env.prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
 			reportError();
-			return this.conditions.precondition(scope);
+			return this.env.precondition(scope);
 		}
 
 		@Override
-		public Conditions notCondition(LocationInfo location) {
-			return new NotCondition(location, this.conditions);
+		public StatementEnv notCondition(LocationInfo location) {
+			return new NotCondition(location, this.env);
 		}
 
 		@Override
@@ -159,7 +159,7 @@ public abstract class Conditions {
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.conditions.getExpectedType();
+			return this.env.getExpectedType();
 		}
 
 		private void reportError() {
@@ -171,11 +171,11 @@ public abstract class Conditions {
 
 	}
 
-	private static final class ObjectConditions extends Conditions {
+	private static final class ObjectEnv extends StatementEnv {
 
 		private final Obj object;
 
-		ObjectConditions(Obj object) {
+		ObjectEnv(Obj object) {
 			this.object = object;
 		}
 
@@ -191,7 +191,7 @@ public abstract class Conditions {
 
 		@Override
 		public String toString() {
-			return "ObjectConditions[" + this.object + ']';
+			return "ObjectEnv[" + this.object + ']';
 		}
 
 		@Override

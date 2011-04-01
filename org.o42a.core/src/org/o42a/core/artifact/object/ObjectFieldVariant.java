@@ -23,7 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.ValueType;
 
@@ -53,7 +53,7 @@ final class ObjectFieldVariant
 				getField(),
 				null,
 				getObjectField().getMemberRegistry());
-		this.content.setConditions(new VariantConditions(this));
+		this.content.setEnv(new VariantEnv(this));
 
 		return this.content;
 	}
@@ -113,22 +113,22 @@ final class ObjectFieldVariant
 		return (DeclaredObjectField) getField();
 	}
 
-	private static final class VariantConditions extends Conditions {
+	private static final class VariantEnv extends StatementEnv {
 
 		private final ObjectFieldVariant variant;
 
-		VariantConditions(ObjectFieldVariant variant) {
+		VariantEnv(ObjectFieldVariant variant) {
 			this.variant = variant;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.variant.getInitialConditions().prerequisite(scope);
+			return this.variant.getEnv().prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return this.variant.getInitialConditions().precondition(scope);
+			return this.variant.getEnv().precondition(scope);
 		}
 
 		@Override

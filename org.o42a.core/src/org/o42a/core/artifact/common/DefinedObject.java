@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.common;
 
-import static org.o42a.core.st.Conditions.objectConditions;
+import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -95,7 +95,7 @@ public abstract class DefinedObject extends PlainObject {
 		final DeclarativeBlock definition =
 			new DeclarativeBlock(this, this, getMemberRegistry());
 
-		definition.setConditions(objectConditions(this));
+		definition.setEnv(objectEnv(this));
 
 		return this.definition = definition;
 	}

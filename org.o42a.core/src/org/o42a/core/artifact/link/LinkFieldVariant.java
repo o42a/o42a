@@ -63,7 +63,7 @@ final class LinkFieldVariant extends FieldVariant<Link>
 	}
 
 	final TargetRef build(TypeRef typeRef, TargetRef defaultTargetRef) {
-		if (!getInitialConditions().isEmpty(getField())) {
+		if (getEnv().hasConditions(getField())) {
 			getLogger().error(
 					"prohibited_conditional_declaration",
 					this,

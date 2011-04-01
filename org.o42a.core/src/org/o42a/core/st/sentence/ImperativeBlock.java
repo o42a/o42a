@@ -32,9 +32,9 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Conditions;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.LoopAction;
@@ -104,7 +104,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final boolean topLevel;
 	private final Trace trace;
 	private ValueType<?> valueType;
-	private Conditions initialConditions;
+	private StatementEnv initialEnv;
 
 	public ImperativeBlock(
 			LocationInfo location,
@@ -235,16 +235,16 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
-		assert this.initialConditions == null :
-			"Conditions already set for " + this;
-		this.initialConditions = conditions;
-		return new BlockConditions(this, conditions);
+	public StatementEnv setEnv(StatementEnv env) {
+		assert this.initialEnv == null :
+			"Environment already set for " + this;
+		this.initialEnv = env;
+		return new ImperativeEnv(this, env);
 	}
 
 	@Override
 	public Definitions define(Scope scope) {
-		return this.initialConditions.apply(
+		return this.initialEnv.apply(
 				localDef(this, scope.getScope())).toDefinitions();
 	}
 
@@ -345,35 +345,35 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	}
 
-	private static final class BlockConditions extends Conditions {
+	private static final class ImperativeEnv extends StatementEnv {
 
 		private final ImperativeBlock block;
-		private final Conditions initialConditions;
+		private final StatementEnv initialEnv;
 
-		BlockConditions(ImperativeBlock block, Conditions initialConditions) {
-			this.initialConditions = initialConditions;
+		ImperativeEnv(ImperativeBlock block, StatementEnv initialEnv) {
+			this.initialEnv = initialEnv;
 			this.block = block;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.initialConditions.prerequisite(scope);
+			return this.initialEnv.prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return this.initialConditions.precondition(scope).and(
+			return this.initialEnv.precondition(scope).and(
 					localDef(this.block, scope).fullLogical());
 		}
 
 		@Override
 		public String toString() {
-			return this.initialConditions + ", " + this.block;
+			return this.initialEnv + ", " + this.block;
 		}
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.initialConditions.getExpectedType();
+			return this.initialEnv.getExpectedType();
 		}
 
 	}

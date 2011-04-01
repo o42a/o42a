@@ -74,8 +74,8 @@ final class RefCondition extends Statement {
 	}
 
 	@Override
-	public Conditions setConditions(Conditions conditions) {
-		return this.ref.setConditions(new RefConditions(conditions));
+	public StatementEnv setEnv(StatementEnv env) {
+		return this.ref.setEnv(new ConditionalEnv(env));
 	}
 
 	@Override
@@ -128,27 +128,27 @@ final class RefCondition extends Statement {
 
 	}
 
-	private static final class RefConditions extends Conditions {
+	private static final class ConditionalEnv extends StatementEnv {
 
-		private final Conditions conditions;
+		private final StatementEnv env;
 
-		RefConditions(Conditions conditions) {
-			this.conditions = conditions;
+		ConditionalEnv(StatementEnv conditions) {
+			this.env = conditions;
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.conditions.prerequisite(scope);
+			return this.env.prerequisite(scope);
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return this.conditions.precondition(scope);
+			return this.env.precondition(scope);
 		}
 
 		@Override
 		public String toString() {
-			return this.conditions.toString();
+			return this.env.toString();
 		}
 
 		@Override
