@@ -34,7 +34,7 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class LogicalDef extends Rescopable implements SourceSpec {
+public abstract class LogicalDef extends Rescopable implements SourceInfo {
 
 	public static LogicalDef emptyLogicalDef(
 			LocationInfo location,

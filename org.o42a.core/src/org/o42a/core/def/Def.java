@@ -43,7 +43,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Def extends RescopableStatement implements SourceSpec {
+public abstract class Def extends RescopableStatement implements SourceInfo {
 
 	public static Def voidDef(LocationInfo location, Distributor distributor) {
 		return voidDef(

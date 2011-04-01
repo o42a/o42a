@@ -23,7 +23,7 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.object.Obj;
 
 
-public interface SourceSpec extends ScopeInfo {
+public interface SourceInfo extends ScopeInfo {
 
 	Obj getSource();
 

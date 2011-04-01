@@ -30,7 +30,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.SourceSpec;
+import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
@@ -47,7 +47,7 @@ import org.o42a.util.log.Loggable;
 
 public abstract class LocalScope
 		extends LocalScopeBase
-		implements Container, ClauseContainer, SourceSpec {
+		implements Container, ClauseContainer, SourceInfo {
 
 	static ExplicitLocalScope explicitScope(
 			LocationInfo location,

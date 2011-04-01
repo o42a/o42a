@@ -26,7 +26,7 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.SourceSpec;
+import org.o42a.core.def.SourceInfo;
 
 
 abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
@@ -58,18 +58,18 @@ abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 		return func(data).getValue();
 	}
 
-	public int addSources(SourceSpec[] destination, SourceSpec[] sources) {
+	public int addSources(SourceInfo[] destination, SourceInfo[] sources) {
 
 		int size = 0;
 
-		for (SourceSpec def : sources) {
+		for (SourceInfo def : sources) {
 			size = addSource(destination, size, def);
 		}
 
 		return size;
 	}
 
-	private int addSource(SourceSpec[] destination, int at, SourceSpec source) {
+	private int addSource(SourceInfo[] destination, int at, SourceInfo source) {
 
 		final Obj src = source.getSource();
 
@@ -81,7 +81,7 @@ abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 
 		for (int i = 0; i < at; ++i) {
 
-			final SourceSpec d = destination[i];
+			final SourceInfo d = destination[i];
 
 			if (d == null) {
 				continue;
