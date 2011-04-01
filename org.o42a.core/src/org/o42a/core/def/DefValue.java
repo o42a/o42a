@@ -57,10 +57,10 @@ public class DefValue {
 		return new AlwaysLogical(logicalDef, logicalValue, requirement);
 	}
 
-	final SourceSpec sourced;
+	final SourceInfo sourced;
 	private final Value<?> value;
 
-	private DefValue(SourceSpec sourced, Value<?> value) {
+	private DefValue(SourceInfo sourced, Value<?> value) {
 		this.sourced = sourced;
 		this.value = value;
 		assert value != null :
