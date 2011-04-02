@@ -40,7 +40,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-class LocalDef extends Def {
+class LocalDef extends ValueDef {
 
 	private final boolean explicit;
 	private Logical logical;
@@ -159,7 +159,7 @@ class LocalDef extends Def {
 	}
 
 	@Override
-	protected Def create(
+	protected LocalDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			LogicalDef prerequisite) {

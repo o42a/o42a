@@ -29,12 +29,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class DefWrap extends Def {
+public abstract class ValueDefWrap extends ValueDef {
 
-	private final Def wrapped;
+	private final ValueDef wrapped;
 
-	public DefWrap(
-			Def wrapped,
+	public ValueDefWrap(
+			ValueDef wrapped,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(
@@ -45,9 +45,9 @@ public abstract class DefWrap extends Def {
 		this.wrapped = wrapped;
 	}
 
-	protected DefWrap(
-			DefWrap prototype,
-			Def wrapped,
+	protected ValueDefWrap(
+			ValueDefWrap prototype,
+			ValueDef wrapped,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
@@ -65,9 +65,9 @@ public abstract class DefWrap extends Def {
 	}
 
 	@Override
-	public final Def and(Logical logical) {
+	public final ValueDef and(Logical logical) {
 
-		final Def newDef = this.wrapped.and(logical);
+		final ValueDef newDef = this.wrapped.and(logical);
 
 		if (newDef == this.wrapped) {
 			return this;
@@ -105,23 +105,23 @@ public abstract class DefWrap extends Def {
 		return this.wrapped.calculateValue(scope);
 	}
 
-	protected abstract DefWrap create(Def wrapped);
+	protected abstract ValueDefWrap create(ValueDef wrapped);
 
 	@Override
-	protected final DefWrap create(
+	protected final ValueDefWrap create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			LogicalDef prerequisite) {
 
-		final Def newWrapped = this.wrapped.rescope(additionalRescoper);
+		final ValueDef newWrapped = this.wrapped.rescope(additionalRescoper);
 
 		return create(rescoper, additionalRescoper, newWrapped, prerequisite);
 	}
 
-	protected abstract DefWrap create(
+	protected abstract ValueDefWrap create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			Def wrapped,
+			ValueDef wrapped,
 			LogicalDef prerequisite);
 
 }

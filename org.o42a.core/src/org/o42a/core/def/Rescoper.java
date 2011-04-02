@@ -71,24 +71,24 @@ public abstract class Rescoper {
 			return emptyDefinitions(definitions, resultScope);
 		}
 
-		final Def[] claims = definitions.getClaims();
-		final Def[] newClaims = new Def[claims.length];
-		final Def[] propositions = definitions.getPropositions();
-		final Def[] newPropositions = new Def[propositions.length];
+		final ValueDef[] claims = definitions.getClaims();
+		final ValueDef[] newClaims = new ValueDef[claims.length];
+		final ValueDef[] propositions = definitions.getPropositions();
+		final ValueDef[] newPropositions = new ValueDef[propositions.length];
 		boolean changed = false;
 
 		for (int i = 0; i < claims.length; ++i) {
 
-			final Def claim = claims[i];
-			final Def newClaim = updateDef(claim);
+			final ValueDef claim = claims[i];
+			final ValueDef newClaim = updateDef(claim);
 
 			newClaims[i] = newClaim;
 			changed |= newClaim != claim;
 		}
 		for (int i = 0; i < propositions.length; ++i) {
 
-			final Def proposition = propositions[i];
-			final Def newProposition = updateDef(proposition);
+			final ValueDef proposition = propositions[i];
+			final ValueDef newProposition = updateDef(proposition);
 
 			newPropositions[i] = newProposition;
 			changed |= newProposition != proposition;
@@ -122,7 +122,7 @@ public abstract class Rescoper {
 
 	public abstract Scope updateScope(Scope scope);
 
-	public Def updateDef(Def def) {
+	public <D extends Def<D>> D updateDef(D def) {
 		return def.rescope(this);
 	}
 

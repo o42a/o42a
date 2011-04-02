@@ -19,15 +19,15 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.core.def.Def.voidDef;
 import static org.o42a.core.def.Definitions.definitions;
+import static org.o42a.core.def.ValueDef.voidDef;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.ValOp;
 
 

@@ -24,9 +24,9 @@ import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Def;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.type.TypeRef;
@@ -131,7 +131,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			ObjOp host,
 			Definitions definitions) {
 
-		final Def[] defs;
+		final ValueDef[] defs;
 
 		if (isClaim()) {
 			defs = definitions.getClaims();
@@ -143,8 +143,8 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			return;
 		}
 
-		final Collector collector =
-			new Collector(getObjectIR().getObject(), defs.length);
+		final ValueCollector collector =
+			new ValueCollector(getObjectIR().getObject(), defs.length);
 
 		collector.addDefs(defs);
 		if (collector.ancestorIndex < 0) {
@@ -179,7 +179,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			Code code,
 			ValOp result,
 			ObjOp host,
-			Collector collector) {
+			ValueCollector collector) {
 
 		final int size = collector.size();
 
@@ -187,7 +187,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			return;
 		}
 
-		final Def[] defs = collector.getExplicitDefs();
+		final ValueDef[] defs = collector.getExplicitDefs();
 
 		int displayIdx = 0;
 		Code block = code.addBlock("0_var");
@@ -212,7 +212,7 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 			} else {
 				// Write explicit definition.
 
-				final Def def = defs[i];
+				final ValueDef def = defs[i];
 
 				def.getPrerequisite().writeFullLogical(block, nextPos, host);
 				def.writeValue(block, nextPos, host, result);
@@ -277,18 +277,18 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		hasAncestor.go(code.tail());
 	}
 
-	private final class Collector extends DefCollector<Def> {
+	private final class ValueCollector extends DefCollector<ValueDef> {
 
-		private final Def[] explicitDefs;
+		private final ValueDef[] explicitDefs;
 		private int size;
 		private int ancestorIndex = -1;
 
-		Collector(Obj object, int capacity) {
+		ValueCollector(Obj object, int capacity) {
 			super(object);
-			this.explicitDefs = new Def[capacity];
+			this.explicitDefs = new ValueDef[capacity];
 		}
 
-		public final Def[] getExplicitDefs() {
+		public final ValueDef[] getExplicitDefs() {
 			return this.explicitDefs;
 		}
 
@@ -297,12 +297,12 @@ abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
 		}
 
 		@Override
-		protected void explicitDef(Def def) {
+		protected void explicitDef(ValueDef def) {
 			this.explicitDefs[this.size++] = def;
 		}
 
 		@Override
-		protected void ancestorDef(Def def) {
+		protected void ancestorDef(ValueDef def) {
 			if (this.ancestorIndex >= 0) {
 				return;
 			}

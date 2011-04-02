@@ -76,7 +76,7 @@ public abstract class StatementEnv {
 		return new NotCondition(location, this);
 	}
 
-	public Def apply(Def def) {
+	public <D extends Def<D>> D apply(D def) {
 		return def.addPrerequisite(prerequisite(def.getScope()).toLogicalDef())
 		.and(precondition(def.getScope()));
 	}
@@ -102,7 +102,7 @@ public abstract class StatementEnv {
 		}
 
 		@Override
-		public Def apply(Def def) {
+		public <D extends Def<D>> D apply(D def) {
 			return def;
 		}
 
@@ -147,7 +147,7 @@ public abstract class StatementEnv {
 		}
 
 		@Override
-		public Def apply(Def def) {
+		public <D extends Def<D>> D apply(D def) {
 			reportError();
 			return def;
 		}

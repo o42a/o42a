@@ -56,7 +56,7 @@ public final class False extends IntrinsicObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return falseRef(this, distribute()).toDef().toDefinitions();
+		return falseRef(this, distribute()).toValueDef().toDefinitions();
 	}
 
 	@Override

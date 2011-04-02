@@ -31,8 +31,8 @@ public abstract class RefDefBase extends Statement {
 		super(location, distributor);
 	}
 
-	public final Def toDef() {
-		return RefDef.refDef((Ref) this);
+	public final ValueDef toValueDef() {
+		return RefValueDef.refValueDef((Ref) this);
 	}
 
 }

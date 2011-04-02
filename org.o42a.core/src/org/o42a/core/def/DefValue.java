@@ -27,11 +27,11 @@ import org.o42a.core.value.ValueType;
 
 public class DefValue {
 
-	static DefValue unknownValue(Def def) {
+	static DefValue unknownValue(Def<?> def) {
 		return new Unknown(def);
 	}
 
-	static DefValue alwaysIgnoredValue(Def def) {
+	static DefValue alwaysIgnoredValue(Def<?> def) {
 		return new AlwaysIgnored(def);
 	}
 
@@ -39,11 +39,11 @@ public class DefValue {
 		return new NonExisting(definitions);
 	}
 
-	static DefValue value(Def def, Value<?> value) {
+	static DefValue value(Def<?> def, Value<?> value) {
 		return new DefValue(def, value);
 	}
 
-	static DefValue alwaysMeaningfulValue(Def def, Value<?> value) {
+	static DefValue alwaysMeaningfulValue(Def<?> def, Value<?> value) {
 		return new AlwaysMeaningful(def, value);
 	}
 
@@ -71,8 +71,8 @@ public class DefValue {
 		return this.sourced != null ? this.sourced.getSource() : null;
 	}
 
-	public Def getDef() {
-		return (Def) this.sourced;
+	public Def<?> getDef() {
+		return (Def<?>) this.sourced;
 	}
 
 	public LogicalDef getLogicalDef() {
@@ -103,7 +103,7 @@ public class DefValue {
 
 	public boolean isRequirement() {
 
-		final Def def = getDef();
+		final Def<?> def = getDef();
 
 		return def != null && def.isClaim();
 	}
@@ -125,9 +125,9 @@ public class DefValue {
 	 * Value is unknown.
 	 *
 	 * <p>This may happen e.g. when {@link Def#getPrerequisite() definition
-	 * prerequisite} not satisfied or {@link Def#definitionValue(org.o42a.core.Scope)
-	 * definition value} can not be calculated, which is possible for
-	 * imperative blocks.</p>
+	 * prerequisite} not satisfied or {@link Def#definitionValue(
+	 * org.o42a.core.Scope) definition value} can not be calculated, which is
+	 * possible for imperative blocks.</p>
 	 *
 	 * <p>Value is always unknown if it does not {@link #exists() exist} or
 	 * is {@link #isAlwaysIgnored() always ignored}.</p>
@@ -205,7 +205,7 @@ public class DefValue {
 
 	private static class Unknown extends DefValue {
 
-		Unknown(Def def) {
+		Unknown(Def<?> def) {
 			super(def, Value.unknownValue());
 		}
 
@@ -228,7 +228,7 @@ public class DefValue {
 
 	private static class AlwaysIgnored extends Unknown {
 
-		AlwaysIgnored(Def def) {
+		AlwaysIgnored(Def<?> def) {
 			super(def);
 		}
 
@@ -251,7 +251,7 @@ public class DefValue {
 		}
 
 		@Override
-		public Def getDef() {
+		public Def<?> getDef() {
 			return null;
 		}
 
@@ -264,7 +264,7 @@ public class DefValue {
 
 	private static final class AlwaysMeaningful extends DefValue {
 
-		AlwaysMeaningful(Def def, Value<?> value) {
+		AlwaysMeaningful(Def<?> def, Value<?> value) {
 			super(def, value);
 		}
 
@@ -293,7 +293,7 @@ public class DefValue {
 		}
 
 		@Override
-		public final Def getDef() {
+		public final Def<?> getDef() {
 			return null;
 		}
 
