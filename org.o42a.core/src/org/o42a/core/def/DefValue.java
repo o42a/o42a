@@ -105,7 +105,7 @@ public class DefValue {
 
 		final Def<?> def = getDef();
 
-		return def != null && def.isClaim();
+		return def != null && def.getKind().isClaim();
 	}
 
 	/**

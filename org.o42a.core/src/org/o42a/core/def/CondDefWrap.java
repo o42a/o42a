@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,22 +19,15 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
-public abstract class ValueDefWrap extends ValueDef {
+public abstract class CondDefWrap extends CondDef {
 
-	private final ValueDef wrapped;
+	private final CondDef wrapped;
 
-	public ValueDefWrap(
-			ValueDef wrapped,
+	public CondDefWrap(
+			CondDef wrapped,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(
@@ -45,9 +38,9 @@ public abstract class ValueDefWrap extends ValueDef {
 		this.wrapped = wrapped;
 	}
 
-	protected ValueDefWrap(
-			ValueDefWrap prototype,
-			ValueDef wrapped,
+	protected CondDefWrap(
+			CondDefWrap prototype,
+			CondDef wrapped,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
@@ -60,29 +53,15 @@ public abstract class ValueDefWrap extends ValueDef {
 	}
 
 	@Override
-	public final ValueType<?> getValueType() {
-		return this.wrapped.getValueType();
-	}
+	public final CondDef and(Logical logical) {
 
-	@Override
-	public final ValueDef and(Logical logical) {
-
-		final ValueDef newDef = this.wrapped.and(logical);
+		final CondDef newDef = this.wrapped.and(logical);
 
 		if (newDef == this.wrapped) {
 			return this;
 		}
 
 		return create(newDef);
-	}
-
-	@Override
-	public final void writeValue(
-			Code code,
-			CodePos exit,
-			HostOp host,
-			ValOp result) {
-		this.wrapped.writeValue(code, exit, host, result);
 	}
 
 	@Override
@@ -100,28 +79,23 @@ public abstract class ValueDefWrap extends ValueDef {
 		return this.wrapped.logical();
 	}
 
-	@Override
-	protected final Value<?> calculateValue(Scope scope) {
-		return this.wrapped.calculateValue(scope);
-	}
-
-	protected abstract ValueDefWrap create(ValueDef wrapped);
+	protected abstract CondDefWrap create(CondDef wrapped);
 
 	@Override
-	protected final ValueDefWrap create(
+	protected final CondDefWrap create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			LogicalDef prerequisite) {
 
-		final ValueDef newWrapped = this.wrapped.rescope(additionalRescoper);
+		final CondDef newWrapped = this.wrapped.rescope(additionalRescoper);
 
 		return create(rescoper, additionalRescoper, newWrapped, prerequisite);
 	}
 
-	protected abstract ValueDefWrap create(
+	protected abstract CondDefWrap create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			ValueDef wrapped,
+			CondDef wrapped,
 			LogicalDef prerequisite);
 
 }
