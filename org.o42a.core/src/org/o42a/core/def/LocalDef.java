@@ -73,8 +73,8 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	public boolean isClaim() {
-		return false;
+	public DefKind getKind() {
+		return DefKind.PROPOSITION;
 	}
 
 	@Override

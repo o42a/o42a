@@ -94,9 +94,8 @@ public abstract class ValueDef extends Def<ValueDef> {
 		super(prototype, prerequisite, rescoper);
 	}
 
-	@Override
-	public final boolean isValue() {
-		return true;
+	public final boolean isClaim() {
+		return getKind().isClaim();
 	}
 
 	public abstract ValueType<?> getValueType();
@@ -104,6 +103,11 @@ public abstract class ValueDef extends Def<ValueDef> {
 	@Override
 	public final ValueDef toValue() {
 		return this;
+	}
+
+	@Override
+	public CondDef toCondition() {
+		return null;
 	}
 
 	@Override
@@ -150,62 +154,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	@Override
 	final ValueDef filter(LogicalDef prerequisite, boolean claim) {
-		return new FilteredDef(this, prerequisite, claim);
-	}
-
-	private static class FilteredDef extends ValueDefWrap {
-
-		private final boolean claim;
-
-		FilteredDef(ValueDef def, LogicalDef prerequisite, boolean claim) {
-			super(def, prerequisite, def.getRescoper());
-			this.claim = claim;
-		}
-
-		private FilteredDef(
-				FilteredDef prototype,
-				ValueDef wrapped,
-				LogicalDef prerequisite,
-				Rescoper rescoper) {
-			super(prototype, wrapped, prerequisite, rescoper);
-			this.claim = prototype.claim;
-		}
-
-		@Override
-		public boolean isClaim() {
-			return this.claim;
-		}
-
-		@Override
-		public ValueDef claim() {
-			if (isClaim()) {
-				return this;
-			}
-			return new FilteredDef(this, prerequisite(), true);
-		}
-
-		@Override
-		public ValueDef unclaim() {
-			if (!isClaim()) {
-				return this;
-			}
-			return new FilteredDef(this, prerequisite(), false);
-		}
-
-		@Override
-		protected FilteredDef create(
-				Rescoper rescoper,
-				Rescoper additionalRescoper,
-				ValueDef wrapped,
-				LogicalDef prerequisite) {
-			return new FilteredDef(this, wrapped, prerequisite, rescoper);
-		}
-
-		@Override
-		protected FilteredDef create(ValueDef wrapped) {
-			return new FilteredDef(wrapped, getPrerequisite(), isClaim());
-		}
-
+		return new FilteredValueDef(this, prerequisite, claim);
 	}
 
 }

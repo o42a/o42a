@@ -75,8 +75,8 @@ abstract class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	public boolean isClaim() {
-		return false;
+	public DefKind getKind() {
+		return DefKind.PROPOSITION;
 	}
 
 	@Override
@@ -132,11 +132,6 @@ abstract class RefValueDef extends ValueDef {
 
 		VoidDef(VoidDef prototype, LogicalDef prerequisite, Rescoper rescoper) {
 			super(prototype, prerequisite, rescoper);
-		}
-
-		@Override
-		public boolean isClaim() {
-			return false;
 		}
 
 		@Override
@@ -208,8 +203,8 @@ abstract class RefValueDef extends ValueDef {
 		}
 
 		@Override
-		public boolean isClaim() {
-			return this.def.isClaim();
+		public DefKind getKind() {
+			return this.def.getKind();
 		}
 
 		@Override

@@ -99,9 +99,11 @@ public abstract class Def<D extends Def<D>>
 		return this.source;
 	}
 
-	public abstract boolean isValue();
+	public abstract DefKind getKind();
 
-	public abstract boolean isClaim();
+	public final boolean isValue() {
+		return getKind().isValue();
+	}
 
 	public final LogicalDef getPrerequisite() {
 		if (this.prerequisite == null) {
@@ -129,7 +131,7 @@ public abstract class Def<D extends Def<D>>
 			return (D) this;
 		}
 
-		return filter(newPrerequisite, isClaim());
+		return filter(newPrerequisite, getKind().isClaim());
 	}
 
 	public abstract D and(Logical logical);
@@ -188,6 +190,8 @@ public abstract class Def<D extends Def<D>>
 
 	public abstract ValueDef toValue();
 
+	public abstract CondDef toCondition();
+
 	public abstract Definitions toDefinitions();
 
 	@SuppressWarnings("unchecked")
@@ -201,7 +205,7 @@ public abstract class Def<D extends Def<D>>
 
 		final StringBuilder out = new StringBuilder();
 
-		if (isClaim()) {
+		if (getKind().isClaim()) {
 			out.append("Def![");
 		} else {
 			out.append("Def[");
