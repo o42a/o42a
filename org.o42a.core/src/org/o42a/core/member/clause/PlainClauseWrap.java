@@ -33,7 +33,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
@@ -160,7 +160,7 @@ final class PlainClauseWrap extends PlainClause {
 
 	}
 
-	private static final class AncestorEx extends Ex {
+	private static final class AncestorEx extends Expression {
 
 		private final Wrap wrap;
 

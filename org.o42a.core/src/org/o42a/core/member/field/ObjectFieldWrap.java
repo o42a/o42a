@@ -28,7 +28,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
@@ -91,7 +91,7 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 
 	}
 
-	private static final class AncestorEx extends Ex {
+	private static final class AncestorEx extends Expression {
 
 		private final Wrap wrap;
 

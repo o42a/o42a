@@ -29,12 +29,12 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Ex extends Ref {
+public abstract class Expression extends Ref {
 
 	private Resolution resolved;
 	private IdentityHashMap<Scope, Resolution> cache;
 
-	public Ex(LocationInfo location, Distributor distributor) {
+	public Expression(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 

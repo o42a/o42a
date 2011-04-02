@@ -31,14 +31,14 @@ import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class PathTargetAncestor extends Ex {
+final class PathTargetAncestor extends Expression {
 
 	private final Ref ref;
 	private boolean error;

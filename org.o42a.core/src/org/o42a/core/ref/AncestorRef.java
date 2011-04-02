@@ -29,14 +29,14 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class AncestorRef extends Ex {
+final class AncestorRef extends Expression {
 
 	private final Ref ref;
 	private boolean error;
