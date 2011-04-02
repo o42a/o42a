@@ -35,15 +35,15 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-abstract class RefDef extends Def {
+abstract class RefValueDef extends ValueDef {
 
-	static RefDef refDef(Ref ref) {
+	static RefValueDef refValueDef(Ref ref) {
 		return new SimpleDef(ref);
 	}
 
 	private Ref rescopedRef;
 
-	RefDef(
+	RefValueDef(
 			Obj source,
 			Ref ref,
 			LogicalDef prerequisite,
@@ -51,7 +51,10 @@ abstract class RefDef extends Def {
 		super(source, ref, prerequisite, rescoper);
 	}
 
-	RefDef(RefDef prototype, LogicalDef prerequisite, Rescoper rescoper) {
+	RefValueDef(
+			RefValueDef prototype,
+			LogicalDef prerequisite,
+			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 	}
 
@@ -77,7 +80,7 @@ abstract class RefDef extends Def {
 	}
 
 	@Override
-	public Def and(Logical logical) {
+	public RefValueDef and(Logical logical) {
 
 		final Ref ref = getRef();
 		final Ref newRef = ref.and(logical);
@@ -112,12 +115,12 @@ abstract class RefDef extends Def {
 	}
 
 	@Override
-	protected abstract RefDef create(
+	protected abstract RefValueDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			LogicalDef prerequisite);
 
-	static final class VoidDef extends RefDef {
+	static final class VoidDef extends RefValueDef {
 
 		VoidDef(Ref ref, LogicalDef prerequisite) {
 			super(
@@ -151,7 +154,7 @@ abstract class RefDef extends Def {
 
 	}
 
-	private static final class SimpleDef extends RefDef {
+	private static final class SimpleDef extends RefValueDef {
 
 		SimpleDef(Ref ref) {
 			super(
@@ -161,7 +164,10 @@ abstract class RefDef extends Def {
 					transparentRescoper(ref.getScope()));
 		}
 
-		SimpleDef(RefDef prototype, LogicalDef prerequisite, Rescoper rescoper) {
+		SimpleDef(
+				RefValueDef prototype,
+				LogicalDef prerequisite,
+				Rescoper rescoper) {
 			super(prototype, prerequisite, rescoper);
 		}
 
@@ -180,11 +186,11 @@ abstract class RefDef extends Def {
 
 	}
 
-	private static class ConditionalDef extends RefDef {
+	private static class ConditionalDef extends RefValueDef {
 
-		private final RefDef def;
+		private final RefValueDef def;
 
-		ConditionalDef(RefDef def, Ref ref) {
+		ConditionalDef(RefValueDef def, Ref ref) {
 			super(
 					def.getSource(),
 					ref,

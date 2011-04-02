@@ -31,7 +31,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 
 public abstract class BlockBase extends Statement {
 
-	protected static Def localDef(ImperativeBlock block, Scope scope) {
+	protected static ValueDef localDef(ImperativeBlock block, Scope scope) {
 
 		final Obj actualOwner = scope.getContainer().toObject();
 		final Obj explicitOwner = block.getScope().getOwner();
@@ -44,14 +44,14 @@ public abstract class BlockBase extends Statement {
 				rescoper,
 				explicit);
 
-		// rescope to explicit owner scope
-		final Def def = localDef.rescope(explicitOwner.getScope());
+		// Rescope to explicit owner scope.
+		final ValueDef def = localDef.rescope(explicitOwner.getScope());
 
 		if (explicit) {
 			return def;
 		}
 
-		// upgrade scope to actual owner's one
+		// Upgrade scope to actual owner's one.
 		return def.upgradeScope(actualOwner.getScope());
 	}
 

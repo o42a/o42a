@@ -51,9 +51,18 @@ final class Wrapper extends Rescoper {
 		return host;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Def updateDef(Def def) {
-		return new WrappedDef(def);
+	public <D extends Def<D>> D updateDef(D def) {
+		if (def.isValue()) {
+
+			final ValueDef valueDef = def.toValue();
+
+			return (D) new WrappedValueDef(valueDef);
+		}
+
+		// FIXME: Update ConditionDef.
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -98,32 +107,32 @@ final class Wrapper extends Rescoper {
 		return true;
 	}
 
-	private final class WrappedDef extends DefWrap {
+	private final class WrappedValueDef extends ValueDefWrap {
 
-		WrappedDef(Def wrapped) {
+		WrappedValueDef(ValueDef wrapped) {
 			super(wrapped, null, Wrapper.this);
 		}
 
-		WrappedDef(
-				WrappedDef prototype,
-				Def wrapped,
+		WrappedValueDef(
+				WrappedValueDef prototype,
+				ValueDef wrapped,
 				LogicalDef prerequisite,
 				Rescoper rescoper) {
 			super(prototype, wrapped, prerequisite, rescoper);
 		}
 
 		@Override
-		protected WrappedDef create(
+		protected WrappedValueDef create(
 				Rescoper rescoper,
 				Rescoper additionalRescoper,
-				Def wrapped,
+				ValueDef wrapped,
 				LogicalDef prerequisite) {
-			return new WrappedDef(this, wrapped, prerequisite, rescoper);
+			return new WrappedValueDef(this, wrapped, prerequisite, rescoper);
 		}
 
 		@Override
-		protected WrappedDef create(Def wrapped) {
-			return new WrappedDef(wrapped);
+		protected WrappedValueDef create(ValueDef wrapped) {
+			return new WrappedValueDef(wrapped);
 		}
 
 	}

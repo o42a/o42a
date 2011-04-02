@@ -19,67 +19,23 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.Definitions.NO_DEFS;
-import static org.o42a.core.def.LogicalDef.emptyLogicalDef;
-import static org.o42a.core.def.LogicalDef.trueLogicalDef;
-import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.Ref.voidRef;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.RefDef.VoidDef;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Def extends RescopableStatement implements SourceInfo {
-
-	public static Def voidDef(LocationInfo location, Distributor distributor) {
-		return voidDef(
-				location,
-				distributor,
-				logicalTrue(location, distributor.getScope()));
-	}
-
-	public static Def voidClaim(
-			LocationInfo location,
-			Distributor distributor) {
-		return voidClaim(
-				location,
-				distributor,
-				logicalTrue(location, distributor.getScope()));
-	}
-
-	public static Def voidDef(
-			LocationInfo location,
-			Distributor distributor,
-			Logical prerequisite) {
-
-		final Ref voidRef = voidRef(location, distributor);
-
-		return new VoidDef(
-				voidRef,
-				prerequisite != null ? prerequisite.toLogicalDef()
-				: trueLogicalDef(location, voidRef.getScope()));
-	}
-
-	public static Def voidClaim(
-			LocationInfo location,
-			Distributor distributor,
-			Logical prerequisite) {
-		return voidDef(location, distributor, prerequisite).claim();
-	}
+public abstract class Def<D extends Def<D>>
+		extends RescopableStatement
+		implements SourceInfo {
 
 	static final Obj sourceOf(ScopeInfo scope) {
 		return sourceOf(scope.getScope().getContainer());
@@ -120,7 +76,7 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 		}
 	}
 
-	protected Def(Def prototype, LogicalDef prerequisite, Rescoper rescoper) {
+	protected Def(D prototype, LogicalDef prerequisite, Rescoper rescoper) {
 		this(
 				prototype.getSource(),
 				prototype.getStatement(),
@@ -143,9 +99,9 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 		return this.source;
 	}
 
-	public abstract boolean isClaim();
+	public abstract boolean isValue();
 
-	public abstract ValueType<?> getValueType();
+	public abstract boolean isClaim();
 
 	public final LogicalDef getPrerequisite() {
 		if (this.prerequisite == null) {
@@ -163,26 +119,27 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 		return this.fullLogical = new FullLogical(this);
 	}
 
-	public final Def addPrerequisite(LogicalDef rerequisite) {
+	@SuppressWarnings("unchecked")
+	public final D addPrerequisite(LogicalDef rerequisite) {
 
 		final LogicalDef oldPrerequisite = getPrerequisite();
 		final LogicalDef newPrerequisite = oldPrerequisite.and(rerequisite);
 
 		if (oldPrerequisite.sameAs(newPrerequisite)) {
-			return this;
+			return (D) this;
 		}
 
-		return new FilteredDef(this, newPrerequisite, isClaim());
+		return filter(newPrerequisite, isClaim());
 	}
 
-	public abstract Def and(Logical logical);
+	public abstract D and(Logical logical);
 
-	public Def claim() {
-		return new FilteredDef(this, prerequisite(), true);
+	public D claim() {
+		return filter(prerequisite(), true);
 	}
 
-	public Def unclaim() {
-		return new FilteredDef(this, prerequisite(), false);
+	public D unclaim() {
+		return filter(prerequisite(), false);
 	}
 
 	public final DefValue definitionValue(Scope scope) {
@@ -211,57 +168,33 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 				value.require(logicalValue));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public final Def rescope(Rescoper rescoper) {
-		return (Def) super.rescope(rescoper);
+	public final D rescope(Rescoper rescoper) {
+		return (D) super.rescope(rescoper);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public final Def upgradeScope(Scope scope) {
-		return (Def) super.upgradeScope(scope);
+	public final D upgradeScope(Scope scope) {
+		return (D) super.upgradeScope(scope);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public final Def rescope(Scope scope) {
-		return (Def) super.rescope(scope);
+	public final D rescope(Scope scope) {
+		return (D) super.rescope(scope);
 	}
 
-	public final Definitions toDefinitions() {
+	public abstract ValueDef toValue();
 
-		final LogicalDef logicalDef = emptyLogicalDef(this, getScope());
-		final Def[] defs = new Def[] {this};
+	public abstract Definitions toDefinitions();
 
-		if (isClaim()) {
-			return new Definitions(
-					this,
-					getScope(),
-					getValueType(),
-					logicalDef,
-					logicalDef,
-					defs,
-					NO_DEFS);
-		}
-
-		return new Definitions(
-				this,
-				getScope(),
-				getValueType(),
-				logicalDef,
-				logicalDef,
-				NO_DEFS,
-				defs);
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public Def reproduce(Reproducer reproducer) {
-		return (Def) super.reproduce(reproducer);
+	public D reproduce(Reproducer reproducer) {
+		return (D) super.reproduce(reproducer);
 	}
-
-	public abstract void writeValue(
-			Code code,
-			CodePos exit,
-			HostOp host,
-			ValOp result);
 
 	@Override
 	public String toString() {
@@ -297,7 +230,7 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 	protected abstract Logical logical();
 
 	@Override
-	protected final Def create(
+	protected final D create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
 		return create(
@@ -307,17 +240,17 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 				? this.prerequisite.rescope(rescoper) : this.prerequisite);
 	}
 
-	protected abstract Def create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite);
-
 	protected final LogicalDef prerequisite() {
 		return this.prerequisite;
 	}
 
+	protected abstract D create(
+			Rescoper rescoper,
+			Rescoper additionalRescoper,
+			LogicalDef prerequisite);
+
 	@Override
-	protected Def createReproduction(
+	protected D createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Statement statement,
@@ -326,66 +259,13 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 		return null;
 	}
 
-	private static class FilteredDef extends DefWrap {
-
-		private final boolean claim;
-
-		FilteredDef(Def def, LogicalDef prerequisite, boolean claim) {
-			super(def, prerequisite, def.getRescoper());
-			this.claim = claim;
-		}
-
-		private FilteredDef(
-				FilteredDef prototype,
-				Def wrapped,
-				LogicalDef prerequisite,
-				Rescoper rescoper) {
-			super(prototype, wrapped, prerequisite, rescoper);
-			this.claim = prototype.claim;
-		}
-
-		@Override
-		public boolean isClaim() {
-			return this.claim;
-		}
-
-		@Override
-		public Def claim() {
-			if (isClaim()) {
-				return this;
-			}
-			return new FilteredDef(this, prerequisite(), true);
-		}
-
-		@Override
-		public Def unclaim() {
-			if (!isClaim()) {
-				return this;
-			}
-			return new FilteredDef(this, prerequisite(), false);
-		}
-
-		@Override
-		protected FilteredDef create(
-				Rescoper rescoper,
-				Rescoper additionalRescoper,
-				Def wrapped,
-				LogicalDef prerequisite) {
-			return new FilteredDef(this, wrapped, prerequisite, rescoper);
-		}
-
-		@Override
-		protected FilteredDef create(Def wrapped) {
-			return new FilteredDef(wrapped, getPrerequisite(), isClaim());
-		}
-
-	}
+	abstract D filter(LogicalDef prerequisite, boolean claim);
 
 	private static final class FullLogical extends Logical {
 
-		private final Def def;
+		private final Def<?> def;
 
-		FullLogical(Def def) {
+		FullLogical(Def<?> def) {
 			super(def, def.getScope());
 			this.def = def;
 		}
@@ -419,7 +299,7 @@ public abstract class Def extends RescopableStatement implements SourceInfo {
 		@Override
 		public Logical reproduce(Reproducer reproducer) {
 
-			final Def reproducedDef = this.def.reproduce(reproducer);
+			final Def<?> reproducedDef = this.def.reproduce(reproducer);
 
 			if (reproducedDef == null) {
 				return null;

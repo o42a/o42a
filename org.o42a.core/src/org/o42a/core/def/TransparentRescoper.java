@@ -62,7 +62,7 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public Def updateDef(Def def) {
+	public <D extends Def<D>> D updateDef(D def) {
 		return def;
 	}
 

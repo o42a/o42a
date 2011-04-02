@@ -28,6 +28,7 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.disjunction;
 import static org.o42a.core.ref.Logical.runtimeTrue;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 
 import org.o42a.core.LocationInfo;
@@ -41,7 +42,7 @@ import org.o42a.util.log.LogInfo;
 
 public class Definitions extends Scoped {
 
-	static final Def[] NO_DEFS = new Def[0];
+	static final ValueDef[] NO_VALUES = new ValueDef[0];
 
 	public static Definitions emptyDefinitions(
 			LocationInfo location,
@@ -101,7 +102,7 @@ public class Definitions extends Scoped {
 	public static Definitions definitions(
 			LocationInfo location,
 			Scope scope,
-			Collection<? extends Def> definitions) {
+			Collection<? extends ValueDef> definitions) {
 
 		final int size = definitions.size();
 
@@ -112,13 +113,13 @@ public class Definitions extends Scoped {
 		return definitions(
 				location,
 				scope,
-				definitions.toArray(new Def[size]));
+				definitions.toArray(new ValueDef[size]));
 	}
 
 	public static Definitions definitions(
 			LocationInfo location,
 			Scope scope,
-			Def... definitions) {
+			ValueDef... definitions) {
 		if (definitions.length == 0) {
 			return emptyDefinitions(location, scope);
 		}
@@ -127,7 +128,7 @@ public class Definitions extends Scoped {
 		int claimLen = 0;
 		int defLen = 0;
 
-		for (Def definition : definitions) {
+		for (ValueDef definition : definitions) {
 			if (valueType == null) {
 				valueType = definition.getValueType();
 			} else {
@@ -154,12 +155,12 @@ public class Definitions extends Scoped {
 			return emptyDefinitions(location, scope);
 		}
 
-		final Def[] newClaims = new Def[claimLen];
-		final Def[] newPropositions = new Def[defLen - claimLen];
+		final ValueDef[] newClaims = new ValueDef[claimLen];
+		final ValueDef[] newPropositions = new ValueDef[defLen - claimLen];
 		int claimIdx = 0;
 		int propositionIdx = 0;
 
-		for (Def definition : definitions) {
+		for (ValueDef definition : definitions) {
 			if (valueType != definition.getValueType()) {
 				continue;
 			}
@@ -188,8 +189,8 @@ public class Definitions extends Scoped {
 	private final ValueType<?> valueType;
 	private final LogicalDef requirement;
 	private final LogicalDef condition;
-	private final Def[] claims;
-	private final Def[] propositions;
+	private final ValueDef[] claims;
+	private final ValueDef[] propositions;
 
 	Definitions(
 			LocationInfo location,
@@ -197,8 +198,8 @@ public class Definitions extends Scoped {
 			ValueType<?> valueType,
 			LogicalDef requirement,
 			LogicalDef condition,
-			Def[] claims,
-			Def[] propositions) {
+			ValueDef[] claims,
+			ValueDef[] propositions) {
 		super(location, scope);
 		this.valueType = valueType;
 		this.requirement = requirement;
@@ -212,7 +213,7 @@ public class Definitions extends Scoped {
 		super(location, scope);
 		this.valueType = null;
 		this.requirement = this.condition = emptyLogicalDef(location, scope);
-		this.claims = this.propositions = NO_DEFS;
+		this.claims = this.propositions = NO_VALUES;
 		assertEmptyWithoutDefinitions();
 	}
 
@@ -226,7 +227,7 @@ public class Definitions extends Scoped {
 		this.valueType = valueType;
 		this.requirement = requirement;
 		this.condition = condition;
-		this.claims = this.propositions = NO_DEFS;
+		this.claims = this.propositions = NO_VALUES;
 		assertEmptyWithoutDefinitions();
 	}
 
@@ -235,8 +236,8 @@ public class Definitions extends Scoped {
 			ValueType<?> valueType,
 			LogicalDef requirement,
 			LogicalDef condition,
-			Def[] claims,
-			Def[] propositions) {
+			ValueDef[] claims,
+			ValueDef[] propositions) {
 		super(prototype, prototype.getScope());
 		this.valueType = valueType;
 		this.requirement = requirement;
@@ -258,11 +259,11 @@ public class Definitions extends Scoped {
 		return this.condition;
 	}
 
-	public final Def[] getClaims() {
+	public final ValueDef[] getClaims() {
 		return this.claims;
 	}
 
-	public final Def[] getPropositions() {
+	public final ValueDef[] getPropositions() {
 		return this.propositions;
 	}
 
@@ -283,10 +284,10 @@ public class Definitions extends Scoped {
 		final Logical[] result = new Logical[len];
 		int idx = 0;
 
-		for (Def claim : this.claims) {
+		for (ValueDef claim : this.claims) {
 			result[idx++] = claim.fullLogical();
 		}
-		for (Def proposition : this.propositions) {
+		for (ValueDef proposition : this.propositions) {
 			result[idx++] = proposition.fullLogical();
 		}
 
@@ -317,7 +318,7 @@ public class Definitions extends Scoped {
 	}
 
 	public DefValue claim(Scope scope) {
-		for (Def claim : this.claims) {
+		for (ValueDef claim : this.claims) {
 
 			final DefValue value = claim.definitionValue(scope);
 
@@ -329,7 +330,7 @@ public class Definitions extends Scoped {
 	}
 
 	public DefValue proposition(Scope scope) {
-		for (Def proposition : this.propositions) {
+		for (ValueDef proposition : this.propositions) {
 
 			final DefValue value = proposition.definitionValue(scope);
 
@@ -441,8 +442,8 @@ public class Definitions extends Scoped {
 			return this;
 		}
 
-		final Def[] newClaims = addPrerequisite(this.claims, prerequisite);
-		final Def[] newPropositions =
+		final ValueDef[] newClaims = addPrerequisite(this.claims, prerequisite);
+		final ValueDef[] newPropositions =
 			addPrerequisite(this.propositions, prerequisite);
 
 		if (this.claims == newClaims
@@ -459,29 +460,7 @@ public class Definitions extends Scoped {
 				newPropositions);
 	}
 
-	public Definitions and(Logical condition) {
-		if (condition == null || condition.isTrue()) {
-			return this;
-		}
-
-		final Def[] newClaims = and(this.claims, condition);
-		final Def[] newPropositions = and(this.propositions, condition);
-
-		if (this.claims == newClaims
-				&& this.propositions == newPropositions) {
-			return this;
-		}
-
-		return new Definitions(
-				this,
-				getValueType(),
-				this.requirement,
-				this.condition,
-				newClaims,
-				newPropositions);
-	}
-
-	public Definitions refine(Def refinement) {
+	public Definitions refine(ValueDef refinement) {
 
 		final ValueType<?> valueType = compatibleType(refinement);
 
@@ -493,13 +472,13 @@ public class Definitions extends Scoped {
 			return this;
 		}
 		if (refinement.isClaim()) {
-			return refineClaims(valueType, new Def[] {refinement});
+			return refineClaims(valueType, new ValueDef[] {refinement});
 		}
 		if (impliedBy(refinement, this.claims)) {
 			return this;
 		}
 
-		return refinePropositions(valueType, new Def[] {refinement});
+		return refinePropositions(valueType, new ValueDef[] {refinement});
 	}
 
 	public Definitions refine(Definitions refinements) {
@@ -565,13 +544,13 @@ public class Definitions extends Scoped {
 			return this;
 		}
 
-		final Def[] claims =
-			new Def[this.claims.length + this.propositions.length];
+		final ValueDef[] claims =
+			new ValueDef[this.claims.length + this.propositions.length];
 
 		arraycopy(this.claims, 0, claims, 0, this.claims.length);
 		int idx = this.claims.length;
 
-		for (Def proposition : this.propositions) {
+		for (ValueDef proposition : this.propositions) {
 			claims[idx++] = proposition.claim();
 		}
 
@@ -581,7 +560,7 @@ public class Definitions extends Scoped {
 				this.condition,
 				this.condition,
 				claims,
-				NO_DEFS);
+				NO_VALUES);
 	}
 
 	public Definitions unclaim() {
@@ -589,11 +568,11 @@ public class Definitions extends Scoped {
 			return this;
 		}
 
-		final Def[] propositions =
-			new Def[this.claims.length + this.propositions.length];
+		final ValueDef[] propositions =
+			new ValueDef[this.claims.length + this.propositions.length];
 		int idx = 0;
 
-		for (Def claim : this.claims) {
+		for (ValueDef claim : this.claims) {
 			propositions[idx++] = claim.unclaim();
 		}
 
@@ -609,7 +588,7 @@ public class Definitions extends Scoped {
 				getValueType(),
 				trueLogicalDef(this, getScope()),
 				this.condition,
-				NO_DEFS,
+				NO_VALUES,
 				propositions);
 	}
 
@@ -703,7 +682,7 @@ public class Definitions extends Scoped {
 					"Non-empty definitions should have a value type";
 	}
 
-	private ValueType<?> compatibleType(Def refinement) {
+	private ValueType<?> compatibleType(ValueDef refinement) {
 		return compatibleType(refinement, refinement.getValueType());
 	}
 
@@ -729,42 +708,23 @@ public class Definitions extends Scoped {
 		return ValueType.NONE;
 	}
 
-	private Def[] addPrerequisite(Def[] defs, LogicalDef requirement) {
+	private <D extends Def<D>> D[] addPrerequisite(
+			D[] defs,
+			LogicalDef requirement) {
 		if (defs.length == 0) {
 			return defs;
 		}
 
-		final Def[] result = new Def[defs.length];
+		@SuppressWarnings("unchecked")
+		final D[] result = (D[]) Array.newInstance(
+				defs.getClass().getComponentType(),
+				defs.length);
 		boolean changed = false;
 
 		for (int i = 0; i < defs.length; ++i) {
 
-			final Def def = defs[i];
-			final Def newDef = def.addPrerequisite(requirement);
-
-			result[i] = newDef;
-			changed = changed || def != newDef;
-		}
-
-		if (!changed) {
-			return defs;
-		}
-
-		return result;
-	}
-
-	private Def[] and(Def[] defs, Logical condition) {
-		if (defs.length == 0) {
-			return defs;
-		}
-
-		final Def[] result = new Def[defs.length];
-		boolean changed = false;
-
-		for (int i = 0; i < defs.length; ++i) {
-
-			final Def def = defs[i];
-			final Def newDef = def.and(condition);
+			final D def = defs[i];
+			final D newDef = def.addPrerequisite(requirement);
 
 			result[i] = newDef;
 			changed = changed || def != newDef;
@@ -800,7 +760,7 @@ public class Definitions extends Scoped {
 				this.requirement,
 				this.requirement,
 				this.claims,
-				NO_DEFS);
+				NO_VALUES);
 	}
 
 	private Definitions refineConditions(
@@ -826,13 +786,15 @@ public class Definitions extends Scoped {
 					this.propositions);
 	}
 
-	private Definitions refineClaims(ValueType<?> valueType, Def[] claims) {
+	private Definitions refineClaims(
+			ValueType<?> valueType,
+			ValueDef[] claims) {
 		if (claims.length == 0 && this.valueType == valueType) {
 			return this;
 		}
 
-		final Def[] newClaims = addClaims(claims);
-		final Def[] newPropositions =
+		final ValueDef[] newClaims = addClaims(claims);
+		final ValueDef[] newPropositions =
 			removeImpliedBy(this.propositions, claims);
 
 		if (newClaims == this.claims && newPropositions == this.propositions) {
@@ -850,12 +812,12 @@ public class Definitions extends Scoped {
 
 	private Definitions refinePropositions(
 			ValueType<?> valueType,
-			Def[] refinements) {
+			ValueDef[] refinements) {
 		if (refinements.length == 0 && this.valueType == valueType) {
 			return this;
 		}
 
-		final Def[] newPropositions = addPropositions(refinements);
+		final ValueDef[] newPropositions = addPropositions(refinements);
 
 		if (newPropositions == this.propositions) {
 			return this;
@@ -870,7 +832,7 @@ public class Definitions extends Scoped {
 				newPropositions);
 	}
 
-	private Def[] addClaims(Def[] claims) {
+	private ValueDef[] addClaims(ValueDef[] claims) {
 
 		final int len = this.claims.length;
 
@@ -878,16 +840,16 @@ public class Definitions extends Scoped {
 			return claims;
 		}
 
-		final Def[] newClaims = new Def[len + claims.length];
+		final ValueDef[] newClaims = new ValueDef[len + claims.length];
 		int idx = 0;
 
-		for (Def claim : claims) {
+		for (ValueDef claim : claims) {
 
 			final Logical prerequisite = claim.getPrerequisite().fullLogical();
 
 			for (int i = 0; i < len; ++i) {
 
-				final Def c1 = this.claims[i];
+				final ValueDef c1 = this.claims[i];
 				final Logical prereq = c1.getPrerequisite().fullLogical();
 
 				if (prereq.implies(prerequisite)) {
@@ -898,7 +860,7 @@ public class Definitions extends Scoped {
 					i++;
 					for (; i < len; ++i) {
 
-						final Def c2 = this.claims[i];
+						final ValueDef c2 = this.claims[i];
 
 						if (!prerequisite.implies(
 								c2.getPrerequisite().fullLogical())) {
@@ -915,7 +877,7 @@ public class Definitions extends Scoped {
 		return ArrayUtil.clip(newClaims, idx);
 	}
 
-	private Def[] addPropositions(Def[] propositions) {
+	private ValueDef[] addPropositions(ValueDef[] propositions) {
 
 		final int len = this.propositions.length;
 
@@ -923,7 +885,8 @@ public class Definitions extends Scoped {
 			return propositions;
 		}
 
-		final Def[] newPropositions = new Def[len + propositions.length];
+		final ValueDef[] newPropositions =
+			new ValueDef[len + propositions.length];
 
 		arraycopy(
 				this.propositions,
@@ -934,7 +897,7 @@ public class Definitions extends Scoped {
 
 		int idx = this.propositions.length;
 
-		for (Def proposition : propositions) {
+		for (ValueDef proposition : propositions) {
 			if (impliedBy(proposition, this.propositions)) {
 				continue;
 			}
@@ -947,13 +910,15 @@ public class Definitions extends Scoped {
 		return ArrayUtil.clip(newPropositions, idx);
 	}
 
-	private Def[] removeImpliedBy(Def[] defs, Def[] existing) {
+	private <D extends Def<D>> D[] removeImpliedBy(D[] defs, D[] existing) {
 
 		final int len = this.propositions.length;
-		final Def[] newPropositions = new Def[len];
+		@SuppressWarnings("unchecked")
+		final D[] newPropositions =
+			(D[]) Array.newInstance(defs.getClass().getComponentType(), len);
 		int idx = 0;
 
-		for (Def def : defs) {
+		for (D def : defs) {
 			if (!impliedBy(def, existing)) {
 				newPropositions[idx++] = def;
 			}
@@ -965,8 +930,8 @@ public class Definitions extends Scoped {
 		return ArrayUtil.clip(newPropositions, idx);
 	}
 
-	private boolean impliedBy(Def def, Def[] defs) {
-		for (Def claim : defs) {
+	private boolean impliedBy(Def<?> def, Def<?>[] defs) {
+		for (Def<?> claim : defs) {
 			if (claim.getPrerequisite().fullLogical().implies(
 					def.getPrerequisite().fullLogical())) {
 				return true;

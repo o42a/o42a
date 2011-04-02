@@ -216,7 +216,7 @@ abstract class ObjectValueIRCondFunc extends ObjectValueIRFunc<ObjectCondFunc> {
 
 		final Obj object = getObjectIR().getObject();
 
-		for (Def proposition : definitions.getPropositions()) {
+		for (ValueDef proposition : definitions.getPropositions()) {
 			if (proposition.getSource() == object) {
 				return true;
 			}
