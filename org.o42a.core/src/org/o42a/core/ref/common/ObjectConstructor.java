@@ -35,7 +35,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public abstract class ObjectConstructor extends Ex {
+public abstract class ObjectConstructor extends Expression {
 
 	public ObjectConstructor(LocationInfo location, Distributor distributor) {
 		super(location, distributor);

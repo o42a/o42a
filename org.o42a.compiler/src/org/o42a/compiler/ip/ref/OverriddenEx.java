@@ -38,13 +38,13 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
-public class OverriddenEx extends Ex {
+public class OverriddenEx extends Expression {
 
 	private final Ref host;
 	private Resolution resolution;

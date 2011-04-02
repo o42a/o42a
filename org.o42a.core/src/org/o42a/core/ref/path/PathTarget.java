@@ -29,11 +29,11 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
-class PathTarget extends Ex {
+class PathTarget extends Expression {
 
 	private final Path path;
 	private final Ref start;

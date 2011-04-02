@@ -30,11 +30,11 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
-final class DefiniteRef<T> extends Ex {
+final class DefiniteRef<T> extends Expression {
 
 	private final ValueType<T> valueType;
 	private final T value;

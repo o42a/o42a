@@ -38,7 +38,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -170,7 +170,7 @@ public class Root extends Obj {
 		return new IR(generator, this);
 	}
 
-	private static final class RootAncestor extends Ex {
+	private static final class RootAncestor extends Expression {
 
 		RootAncestor(LocationInfo location, Scope scope) {
 			super(location, scope.distribute());

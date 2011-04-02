@@ -35,7 +35,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Ex;
+import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
@@ -167,7 +167,7 @@ public class AncestorVisitor
 
 	}
 
-	private static final class NoRef extends Ex {
+	private static final class NoRef extends Expression {
 
 		NoRef(CompilerContext context) {
 			super(
