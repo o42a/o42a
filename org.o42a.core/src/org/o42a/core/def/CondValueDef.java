@@ -80,7 +80,8 @@ final class CondValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
-		return this.def.logical().logicalValue(scope).toValue();
+		return this.def.getLogical().logicalValue(
+				getRescoper().rescope(scope)).toValue();
 	}
 
 	@Override
@@ -102,8 +103,8 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical logical() {
-		return this.def.logical();
+	protected Logical getLogical() {
+		return this.def.getLogical();
 	}
 
 }

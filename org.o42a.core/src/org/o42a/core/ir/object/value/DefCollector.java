@@ -28,9 +28,25 @@ import org.o42a.core.ref.type.TypeRef;
 
 abstract class DefCollector<D extends SourceInfo> {
 
+	public static boolean explicitDef(Obj object, SourceInfo sourceInfo) {
+
+		final Obj source = sourceInfo.getSource();
+
+		if (source == object) {
+			return true;
+		}
+
+		for (Sample sample : object.getSamples()) {
+			if (sample.getType().derivedFrom(source, Derivation.PROPAGATION)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private final Obj object;
 	private final Obj ancestor;
-	private final Obj[] samples;
 
 	public DefCollector(Obj object) {
 		this.object = object;
@@ -42,13 +58,6 @@ abstract class DefCollector<D extends SourceInfo> {
 		} else {
 			this.ancestor = ancestorRef.getType();
 		}
-
-		final Sample[] samples = object.getSamples();
-
-		this.samples = new Obj[samples.length];
-		for (int i = 0; i < samples.length; ++i) {
-			this.samples[i] = samples[i].getType();
-		}
 	}
 
 	public final Obj getObject() {
@@ -59,24 +68,12 @@ abstract class DefCollector<D extends SourceInfo> {
 		return this.ancestor;
 	}
 
-	public final Obj[] getSamples() {
-		return this.samples;
-	}
-
 	public void addDef(D def) {
-
-		final Obj source = def.getSource();
-
-		if (explicit(source)) {
+		if (explicitDef(this.object, def)) {
 			explicitDef(def);
 			return;
 		}
-		if (belongsToSample(source)) {
-			explicitDef(def);
-			return;
-		}
-
-
+		ancestorDef(def);
 	}
 
 	public void addDefs(D[] sources) {
@@ -88,18 +85,5 @@ abstract class DefCollector<D extends SourceInfo> {
 	protected abstract void explicitDef(D def);
 
 	protected abstract void ancestorDef(D def);
-
-	private boolean explicit(Obj source) {
-		return source == getObject();
-	}
-
-	private boolean belongsToSample(Obj source) {
-		for (Obj sample : this.samples) {
-			if (sample.derivedFrom(source, Derivation.PROPAGATION)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 }

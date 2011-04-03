@@ -82,8 +82,8 @@ abstract class RefCondDef extends CondDef {
 	}
 
 	@Override
-	protected Logical logical() {
-		return getRescopedRef().getLogical();
+	protected Logical getLogical() {
+		return this.ref.getLogical();
 	}
 
 	@Override

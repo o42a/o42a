@@ -46,8 +46,8 @@ public class ObjectValueIR {
 	private final ObjectValue value;
 	private final Requirement requirement;
 	private final Claim claim;
-	private final ObjectConditionIR condition;
-	private final ObjectPropositionIR proposition;
+	private final Condition condition;
+	private final Proposition proposition;
 
 	public ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
@@ -55,8 +55,8 @@ public class ObjectValueIR {
 		this.value = new ObjectValue(objectIR);
 		this.requirement = new Requirement(objectIR);
 		this.claim = new Claim(objectIR);
-		this.condition = new ObjectConditionIR(objectIR);
-		this.proposition = new ObjectPropositionIR(objectIR);
+		this.condition = new Condition(objectIR);
+		this.proposition = new Proposition(objectIR);
 	}
 
 	public final Generator getGenerator() {
@@ -123,8 +123,8 @@ public class ObjectValueIR {
 		final Obj object = getObjectIR().getObject();
 		final Definitions definitions = object.getDefinitions();
 
-		if (!object.isRuntime() && definitions.getCondition().isFalse()
-				|| definitions.getRequirement().isFalse()) {
+		if (definitions.getConstantRequirement().isFalse()
+				|| definitions.getConstantCondition().isFalse()) {
 			createFalseFunctions(typeIR, definitions);
 		} else {
 			createFunctions(typeIR, definitions);
@@ -262,7 +262,7 @@ public class ObjectValueIR {
 			ObjectTypeIR typeIR,
 			Definitions definitions) {
 		this.value.setFalse(typeIR);
-		if (definitions.getRequirement().isFalse()) {
+		if (definitions.getConstantRequirement().isFalse()) {
 			this.requirement.setFalse(typeIR);
 			this.claim.setFalse(typeIR);
 		} else {
@@ -405,9 +405,9 @@ public class ObjectValueIR {
 
 	}
 
-	private final class ObjectConditionIR extends ObjectValueIRCondFunc {
+	private final class Condition extends ObjectValueIRCondFunc {
 
-		ObjectConditionIR(ObjectIR objectIR) {
+		Condition(ObjectIR objectIR) {
 			super(objectIR);
 		}
 
@@ -442,9 +442,9 @@ public class ObjectValueIR {
 
 	}
 
-	private final class ObjectPropositionIR extends ObjectValueIRValFunc {
+	private final class Proposition extends ObjectValueIRValFunc {
 
-		ObjectPropositionIR(ObjectIR objectIR) {
+		Proposition(ObjectIR objectIR) {
 			super(objectIR);
 		}
 

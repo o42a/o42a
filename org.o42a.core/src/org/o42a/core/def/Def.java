@@ -191,7 +191,7 @@ public abstract class Def<D extends Def<D>>
 
 	protected abstract LogicalDef buildPrerequisite();
 
-	protected abstract Logical logical();
+	protected abstract Logical getLogical();
 
 	@Override
 	protected final D create(
@@ -230,19 +230,24 @@ public abstract class Def<D extends Def<D>>
 		@Override
 		public LogicalValue getConstantValue() {
 			return this.def.getPrerequisite().getConstantValue().and(
-					this.def.logical().getConstantValue());
+					this.def.getLogical().getConstantValue());
 		}
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
 			return this.def.getPrerequisite().logicalValue(scope).and(
-					this.def.logical().logicalValue(scope));
+					this.def.getLogical().logicalValue(
+							this.def.getRescoper().rescope(scope)));
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
 			this.def.getPrerequisite().writeFullLogical(code, exit, host);
-			this.def.logical().write(code, exit, host);
+
+			final HostOp rescopedHost =
+				this.def.getRescoper().rescope(code, exit, host);
+
+			this.def.getLogical().write(code, exit, rescopedHost);
 		}
 
 		@Override

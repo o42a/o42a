@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.value.DefCollector.explicitDef;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 
 import org.o42a.codegen.code.*;
@@ -153,11 +154,11 @@ public abstract class ObjectValueIRCondFunc
 		if (isRequirement()) {
 			writeAncestorDef(code, exit, host);
 			builder.ancestorWritten = true;
-			builder.addDefs(condition.getLogicalDef().getRequirements());
+			builder.addDefs(definitions.getRequirements());
 			return;
 		}
 
-		builder.addDefs(condition.getLogicalDef().getRequirements());
+		builder.addDefs(definitions.getConditions());
 		if (builder.written) {
 			return;
 		}
@@ -219,7 +220,7 @@ public abstract class ObjectValueIRCondFunc
 		final Obj object = getObjectIR().getObject();
 
 		for (ValueDef proposition : definitions.getPropositions()) {
-			if (proposition.getSource() == object) {
+			if (explicitDef(object, proposition)) {
 				return true;
 			}
 		}
@@ -239,7 +240,7 @@ public abstract class ObjectValueIRCondFunc
 				OBJECT_COND);
 	}
 
-	private final class Builder extends DefCollector<LogicalDef> {
+	private final class Builder extends DefCollector<CondDef> {
 
 		private final Code code;
 		private final CodePos exit;
@@ -255,13 +256,13 @@ public abstract class ObjectValueIRCondFunc
 		}
 
 		@Override
-		protected void explicitDef(LogicalDef def) {
+		protected void explicitDef(CondDef def) {
 			def.writeFullLogical(this.code, this.exit, this.host);
 			this.written = true;
 		}
 
 		@Override
-		protected void ancestorDef(LogicalDef def) {
+		protected void ancestorDef(CondDef def) {
 			this.written = true;
 			if (this.ancestorWritten) {
 				return;

@@ -7,7 +7,7 @@ import org.o42a.core.ref.Logical;
 
 final class LogicalCondDef extends CondDef {
 
-	private final LogicalDef logical;
+	private final Logical logical;
 
 	public LogicalCondDef(Logical logical) {
 		super(
@@ -15,14 +15,14 @@ final class LogicalCondDef extends CondDef {
 				null,
 				null,
 				transparentRescoper(logical.getScope()));
-		this.logical = logical.toLogicalDef();
+		this.logical = logical;
 	}
 
 	private LogicalCondDef(
 			LogicalCondDef prototype,
 			LogicalDef prerequisite,
 			Rescoper rescoper,
-			LogicalDef logical) {
+			Logical logical) {
 		super(prototype, prerequisite, rescoper);
 		this.logical = logical;
 	}
@@ -40,7 +40,7 @@ final class LogicalCondDef extends CondDef {
 	@Override
 	public CondDef and(Logical logical) {
 
-		final LogicalDef newLogical = this.logical.and(logical);
+		final Logical newLogical = this.logical.and(logical);
 
 		if (newLogical == this.logical) {
 			return this;
@@ -59,8 +59,8 @@ final class LogicalCondDef extends CondDef {
 	}
 
 	@Override
-	protected Logical logical() {
-		return this.logical.fullLogical();
+	protected final Logical getLogical() {
+		return this.logical;
 	}
 
 	@Override
@@ -68,14 +68,7 @@ final class LogicalCondDef extends CondDef {
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			LogicalDef prerequisite) {
-
-		final LogicalDef logical = this.logical.rescope(additionalRescoper);
-
-		if (logical == null) {
-			return null;
-		}
-
-		return new LogicalCondDef(this, prerequisite, rescoper, logical);
+		return new LogicalCondDef(this, prerequisite, rescoper, this.logical);
 	}
 
 }
