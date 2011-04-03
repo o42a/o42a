@@ -80,8 +80,8 @@ public abstract class CondDefWrap extends CondDef {
 	}
 
 	@Override
-	protected final Logical logical() {
-		return this.wrapped.logical();
+	protected Logical getLogical() {
+		return this.wrapped.getLogical();
 	}
 
 	protected abstract CondDefWrap create(CondDef wrapped);

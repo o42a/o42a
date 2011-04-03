@@ -90,7 +90,7 @@ class LocalDef extends ValueDef {
 			return this;
 		}
 
-		final Logical oldLogical = logical();
+		final Logical oldLogical = getLogical();
 		final Logical newLogical = oldLogical.and(logical);
 
 		if (oldLogical == newLogical) {
@@ -148,7 +148,7 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical logical() {
+	protected Logical getLogical() {
 		if (this.logical != null) {
 			return this.logical;
 		}

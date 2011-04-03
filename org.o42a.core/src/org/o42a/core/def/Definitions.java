@@ -30,6 +30,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.LogInfo;
@@ -148,6 +149,8 @@ public class Definitions extends Scoped {
 	private final CondDef[] conditions;
 	private final ValueDef[] claims;
 	private final ValueDef[] propositions;
+	private LogicalValue constantRequirement;
+	private LogicalValue constantCondition;
 
 	Definitions(
 			LocationInfo location,
@@ -234,6 +237,20 @@ public class Definitions extends Scoped {
 
 	public final boolean noClaims() {
 		return this.claims.length == 0 && this.requirements.length == 0;
+	}
+
+	public final LogicalValue getConstantRequirement() {
+		if (this.constantRequirement != null) {
+			return this.constantRequirement;
+		}
+		return this.constantRequirement = constantValue(this.requirements);
+	}
+
+	public final LogicalValue getConstantCondition() {
+		if (this.constantCondition != null) {
+			return this.constantCondition;
+		}
+		return this.constantCondition = constantValue(this.conditions);
 	}
 
 	public final DefValue requirement(Scope scope) {
@@ -848,6 +865,19 @@ public class Definitions extends Scoped {
 			}
 		}
 		return false;
+	}
+
+	private static LogicalValue constantValue(CondDef[] conditions) {
+		for (CondDef condition : conditions) {
+
+			final LogicalValue constantValue = condition.getConstantValue();
+
+			if (!constantValue.isTrue()) {
+				return constantValue;
+			}
+		}
+
+		return LogicalValue.TRUE;
 	}
 
 	private DefValue calculateCondition(Scope scope, CondDef[] defs) {

@@ -103,8 +103,8 @@ abstract class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical logical() {
-		return getRescopedRef().getLogical();
+	protected Logical getLogical() {
+		return this.ref.getLogical();
 	}
 
 	@Override

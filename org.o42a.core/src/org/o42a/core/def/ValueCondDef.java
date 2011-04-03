@@ -63,8 +63,8 @@ final class ValueCondDef extends CondDef {
 	}
 
 	@Override
-	protected Logical logical() {
-		return this.def.logical();
+	protected Logical getLogical() {
+		return this.def.getLogical();
 	}
 
 	@Override

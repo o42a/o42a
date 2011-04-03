@@ -67,11 +67,16 @@ public abstract class CondDef extends Def<CondDef> {
 		return this;
 	}
 
+	public final LogicalValue getConstantValue() {
+		return getLogical().getConstantValue();
+	}
+
 	@Override
 	public final DefValue definitionValue(Scope scope) {
 		if (!hasPrerequisite()) {
 
-			final LogicalValue logicalValue = logical().logicalValue(scope);
+			final LogicalValue logicalValue =
+				getLogical().logicalValue(getRescoper().rescope(scope));
 
 			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
 		}
@@ -85,7 +90,8 @@ public abstract class CondDef extends Def<CondDef> {
 			return DefValue.unknownValue(this);
 		}
 
-		final LogicalValue logicalValue = logical().logicalValue(scope);
+		final LogicalValue logicalValue =
+			getLogical().logicalValue(getRescoper().rescope(scope));
 
 		if (getPrerequisite().isTrue()) {
 			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
@@ -126,7 +132,10 @@ public abstract class CondDef extends Def<CondDef> {
 			Code code,
 			CodePos exit,
 			HostOp host) {
-		logical().write(code, exit, host);
+
+		final HostOp rescopedHost = getRescoper().rescope(code, exit, host);
+
+		getLogical().write(code, exit, rescopedHost);
 	}
 
 	@Override
