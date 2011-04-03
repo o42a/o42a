@@ -36,7 +36,6 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.st.sentence.declarative.SentenceDefinitionsCollector;
 import org.o42a.core.st.sentence.declarative.SentencePreconditionCollector;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
@@ -154,10 +153,26 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return null;
 		}
 
-		final SentenceDefinitionsCollector collector =
-			new SentenceDefinitionsCollector(this, scope);
+		Definitions result = null;
 
-		return collector.definitions();
+		for (DeclarativeSentence sentence : getSentences()) {
+
+			final Definitions definitions = sentence.define(scope);
+
+			if (definitions == null) {
+				continue;
+			}
+			if (result == null) {
+				result = definitions;
+			} else {
+				result = result.refine(definitions);
+			}
+		}
+
+		assert result != null :
+			"Missing definitions: " + this;
+
+		return result;
 	}
 
 	@Override

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
@@ -27,6 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.type.TypeRef;
@@ -34,9 +35,10 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-abstract class ObjectValueIRValFunc extends ObjectValueIRFunc<ObjectValFunc> {
+public abstract class ObjectValueIRValFunc
+		extends ObjectValueIRFunc<ObjectValFunc> {
 
-	ObjectValueIRValFunc(ObjectIR objectIR) {
+	public ObjectValueIRValFunc(ObjectIR objectIR) {
 		super(objectIR);
 	}
 

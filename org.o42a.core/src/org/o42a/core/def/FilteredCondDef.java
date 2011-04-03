@@ -23,9 +23,15 @@ package org.o42a.core.def;
 class FilteredCondDef extends CondDefWrap {
 
 	private final DefKind kind;
+	private final boolean hasPrerequisite;
 
-	FilteredCondDef(CondDef def, LogicalDef prerequisite, boolean requirement) {
+	FilteredCondDef(
+			CondDef def,
+			LogicalDef prerequisite,
+			boolean hasPrerequisite,
+			boolean requirement) {
 		super(def, prerequisite, def.getRescoper());
+		this.hasPrerequisite = hasPrerequisite;
 		this.kind = requirement ? DefKind.REQUIREMENT : DefKind.CONDITION;
 	}
 
@@ -35,6 +41,7 @@ class FilteredCondDef extends CondDefWrap {
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(prototype, wrapped, prerequisite, rescoper);
+		this.hasPrerequisite = prototype.hasPrerequisite;
 		this.kind = prototype.kind;
 	}
 
@@ -44,11 +51,20 @@ class FilteredCondDef extends CondDefWrap {
 	}
 
 	@Override
+	public boolean hasPrerequisite() {
+		return this.hasPrerequisite;
+	}
+
+	@Override
 	public CondDef claim() {
 		if (isRequirement()) {
 			return this;
 		}
-		return new FilteredCondDef(this, prerequisite(), true);
+		return new FilteredCondDef(
+				this,
+				prerequisite(),
+				hasPrerequisite(),
+				true);
 	}
 
 	@Override
@@ -56,7 +72,11 @@ class FilteredCondDef extends CondDefWrap {
 		if (!isRequirement()) {
 			return this;
 		}
-		return new FilteredCondDef(this, prerequisite(), false);
+		return new FilteredCondDef(
+				this,
+				prerequisite(),
+				hasPrerequisite(),
+				false);
 	}
 
 	@Override
@@ -70,7 +90,11 @@ class FilteredCondDef extends CondDefWrap {
 
 	@Override
 	protected FilteredCondDef create(CondDef wrapped) {
-		return new FilteredCondDef(wrapped, getPrerequisite(), isRequirement());
+		return new FilteredCondDef(
+				wrapped,
+				getPrerequisite(),
+				hasPrerequisite(),
+				isRequirement());
 	}
 
 }

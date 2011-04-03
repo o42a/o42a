@@ -24,6 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.def.LocalIRBase;
 import org.o42a.core.ir.local.LocalIR;
+import org.o42a.core.ir.object.value.LocalIRFunc;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
@@ -34,7 +35,11 @@ public abstract class ObjectLocalIR extends LocalIRBase {
 
 	public ObjectLocalIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
-		this.function = new LocalIRFunc((LocalIR) this);
+
+		final LocalIR localIR = (LocalIR) this;
+		final ObjectValueIR ownerValueIR = localIR.getOwnerIR().getValueIR();
+
+		this.function = new LocalIRFunc(localIR, ownerValueIR.getLocals());
 	}
 
 	@Override

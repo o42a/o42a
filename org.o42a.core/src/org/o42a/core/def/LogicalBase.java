@@ -28,9 +28,9 @@ import org.o42a.core.Scoped;
 import org.o42a.core.ref.Logical;
 
 
-public abstract class CondBase extends Scoped {
+public abstract class LogicalBase extends Scoped {
 
-	public CondBase(LocationInfo location, Scope scope) {
+	public LogicalBase(LocationInfo location, Scope scope) {
 		super(location, scope);
 	}
 
@@ -39,6 +39,10 @@ public abstract class CondBase extends Scoped {
 				sourceOf(this),
 				(Logical) this,
 				transparentRescoper(getScope()));
+	}
+
+	public CondDef toCondDef() {
+		return new LogicalCondDef((Logical) this);
 	}
 
 }

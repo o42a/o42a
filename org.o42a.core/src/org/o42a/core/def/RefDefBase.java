@@ -35,4 +35,8 @@ public abstract class RefDefBase extends Statement {
 		return RefValueDef.refValueDef((Ref) this);
 	}
 
+	public final CondDef toCondDef() {
+		return RefCondDef.refCondDef((Ref) this);
+	}
+
 }

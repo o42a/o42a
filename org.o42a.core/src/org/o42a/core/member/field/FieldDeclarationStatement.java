@@ -96,8 +96,8 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 			field.getArtifact()
 			.materialize()
 			.getDefinitions()
-			.fullLogical()
-			.logicalValue(scope);
+			.value(scope)
+			.getLogicalValue();
 
 		return new ExecuteCommand(this, logicalValue);
 	}

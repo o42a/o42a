@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import org.o42a.core.CompilerLogger;
 import org.o42a.core.Scope;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.st.DefinitionKey;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.DefinitionTargets;
@@ -38,14 +37,10 @@ public abstract class SentenceCollector {
 
 	private final HashMap<DefinitionKey, DefinitionTarget> unconditionalValues =
 		new HashMap<DefinitionKey, DefinitionTarget>();
-	private final SentenceLogicals requirements;
-	private final SentenceLogicals conditions;
 
 	public SentenceCollector(DeclarativeBlock block, Scope scope) {
 		this.block = block;
 		this.scope = scope;
-		this.requirements = new SentenceLogicals(block, scope);
-		this.conditions = new SentenceLogicals(block, scope);
 	}
 
 	public final DeclarativeBlock getBlock() {
@@ -77,7 +72,6 @@ public abstract class SentenceCollector {
 			return;
 		}
 		if (targets.haveCondition()) {
-			updateConditions(sentence);
 			addCondition(sentence, targets);
 		}
 		if (targets.haveDeclaration()) {
@@ -95,22 +89,6 @@ public abstract class SentenceCollector {
 	protected abstract void addDeclaration(
 			DeclarativeSentence sentence,
 			DefinitionTargets targets);
-
-	protected final Logical requirement() {
-		return this.requirements.build();
-	}
-
-	protected final Logical condition() {
-		return this.conditions.build();
-	}
-
-	private void updateConditions(DeclarativeSentence sentence) {
-		if (sentence.isClaim()) {
-			this.requirements.addSentence(sentence);
-		} else {
-			this.conditions.addSentence(sentence);
-		}
-	}
 
 	private boolean checkAmbiguity(
 			DeclarativeSentence sentence,

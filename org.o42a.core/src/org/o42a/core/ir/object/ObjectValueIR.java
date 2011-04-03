@@ -23,8 +23,6 @@ import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 
-import java.util.ArrayList;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
@@ -33,6 +31,9 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.object.value.ObjectIRLocals;
+import org.o42a.core.ir.object.value.ObjectValueIRCondFunc;
+import org.o42a.core.ir.object.value.ObjectValueIRValFunc;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.value.Value;
 
@@ -41,22 +42,21 @@ public class ObjectValueIR {
 
 	private final ObjectIR objectIR;
 
+	private final ObjectIRLocals locals;
 	private final ObjectValue value;
 	private final Requirement requirement;
 	private final Claim claim;
-	private final Condition condition;
-	private final Proposition proposition;
-	private ArrayList<LocalIRFunc> locals;
-
-	private boolean filled;
+	private final ObjectConditionIR condition;
+	private final ObjectPropositionIR proposition;
 
 	public ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
+		this.locals = new ObjectIRLocals(this);
 		this.value = new ObjectValue(objectIR);
 		this.requirement = new Requirement(objectIR);
 		this.claim = new Claim(objectIR);
-		this.condition = new Condition(objectIR);
-		this.proposition = new Proposition(objectIR);
+		this.condition = new ObjectConditionIR(objectIR);
+		this.proposition = new ObjectPropositionIR(objectIR);
 	}
 
 	public final Generator getGenerator() {
@@ -137,7 +137,7 @@ public class ObjectValueIR {
 
 		assignValue(typeIR, definitions);
 		buildFunctions(typeIR, definitions);
-		buildLocals();
+		this.locals.build();
 	}
 
 	protected void createValue(ObjectTypeIR typeIR, Definitions definitions) {
@@ -228,17 +228,8 @@ public class ObjectValueIR {
 		this.proposition.buildFunc(code, result, host, definitions);
 	}
 
-	final void addLocal(LocalIRFunc local) {
-		if (this.locals == null) {
-			this.locals = new ArrayList<LocalIRFunc>();
-			this.locals.add(local);
-			getObjectIR().allocate();
-		} else {
-			this.locals.add(local);
-		}
-		if (this.filled) {
-			local.build();
-		}
+	final ObjectIRLocals getLocals() {
+		return this.locals;
 	}
 
 	private final Definitions definitions() {
@@ -294,15 +285,6 @@ public class ObjectValueIR {
 		this.claim.build(definitions);
 		this.condition.build(definitions);
 		this.proposition.build(definitions);
-	}
-
-	private void buildLocals() {
-		if (this.locals == null) {
-			return;
-		}
-		for (LocalIRFunc local : this.locals) {
-			local.build();
-		}
 	}
 
 	private void createClaimFunctions(
@@ -423,9 +405,9 @@ public class ObjectValueIR {
 
 	}
 
-	private final class Condition extends ObjectValueIRCondFunc {
+	private final class ObjectConditionIR extends ObjectValueIRCondFunc {
 
-		Condition(ObjectIR objectIR) {
+		ObjectConditionIR(ObjectIR objectIR) {
 			super(objectIR);
 		}
 
@@ -460,9 +442,9 @@ public class ObjectValueIR {
 
 	}
 
-	private final class Proposition extends ObjectValueIRValFunc {
+	private final class ObjectPropositionIR extends ObjectValueIRValFunc {
 
-		Proposition(ObjectIR objectIR) {
+		ObjectPropositionIR(ObjectIR objectIR) {
 			super(objectIR);
 		}
 

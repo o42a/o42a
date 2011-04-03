@@ -17,27 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.local.*;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
 
-final class LocalIRFunc extends ObjectIRFunc {
+public final class LocalIRFunc extends ObjectIRFunc {
 
 	private final LocalIR localIR;
 	private final CodeId id;
 	private Function<ObjectValFunc> function;
+	private final ObjectIRLocals locals;
 
-	public LocalIRFunc(LocalIR localIR) {
+	public LocalIRFunc(LocalIR localIR, ObjectIRLocals locals) {
 		super(localIR.getOwnerIR());
 		this.localIR = localIR;
+		this.locals = locals;
 		this.id = localIR.getId().detail("value");
 	}
 
@@ -73,7 +76,7 @@ final class LocalIRFunc extends ObjectIRFunc {
 			return this.function;
 		}
 		create();
-		getObjectIR().getValueIR().addLocal(this);
+		this.locals.addLocal(this);
 		return this.function;
 	}
 

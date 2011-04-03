@@ -55,6 +55,7 @@ public class ReturnValue extends Action {
 				this,
 				getValue().getLogicalValue()
 				.toLogical(this, getScope())
+				.logicalValue(getScope())
 				.toValue());
 	}
 

@@ -47,13 +47,12 @@ class LocalDef extends ValueDef {
 
 	LocalDef(
 			ImperativeBlock block,
-			LogicalDef prerequisite,
 			Rescoper rescoper,
 			boolean explicit) {
 		super(
 				sourceOf(block),
 				block,
-				prerequisite,
+				trueLogicalDef(block, block.getScope()).rescope(rescoper),
 				rescoper);
 		this.explicit = explicit;
 	}

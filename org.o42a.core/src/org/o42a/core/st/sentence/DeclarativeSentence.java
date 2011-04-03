@@ -19,11 +19,11 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.def.Definitions.conditionDefinitions;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
+import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.*;
@@ -164,8 +164,17 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		if (!targets.haveValue()) {
 
 			final Logical fullLogical = getEnv().fullLogical(scope);
+			final CondDef def = fullLogical.toCondDef();
+			final DeclarativeSentence prerequisite = getPrerequisite();
 
-			return conditionDefinitions(fullLogical, scope, fullLogical);
+			if (prerequisite == null) {
+				return def.toDefinitions();
+			}
+
+			final CondDef withPrereq = def.addPrerequisite(
+					prerequisite.getEnv().fullLogical(getScope()));
+
+			return withPrereq.toDefinitions();
 		}
 
 		for (Declaratives alt : getAlternatives()) {

@@ -19,13 +19,21 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.def.Definitions.NO_CONDITIONS;
+import static org.o42a.core.def.Definitions.NO_VALUES;
+
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.st.Statement;
-import org.o42a.core.value.Value;
+import org.o42a.core.value.LogicalValue;
 
 
 public abstract class CondDef extends Def<CondDef> {
+
+	private ValueDef value;
 
 	public CondDef(
 			Obj source,
@@ -48,7 +56,10 @@ public abstract class CondDef extends Def<CondDef> {
 
 	@Override
 	public final ValueDef toValue() {
-		return null;
+		if (this.value != null) {
+			return this.value;
+		}
+		return this.value = new CondValueDef(this);
 	}
 
 	@Override
@@ -57,19 +68,73 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	@Override
+	public final DefValue definitionValue(Scope scope) {
+		if (!hasPrerequisite()) {
+
+			final LogicalValue logicalValue = logical().logicalValue(scope);
+
+			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
+		}
+
+		final LogicalValue prerequisite = getPrerequisite().logicalValue(scope);
+
+		if (prerequisite.isFalse()) {
+			if (getPrerequisite().isFalse()) {
+				return DefValue.alwaysIgnoredValue(this);
+			}
+			return DefValue.unknownValue(this);
+		}
+
+		final LogicalValue logicalValue = logical().logicalValue(scope);
+
+		if (getPrerequisite().isTrue()) {
+			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
+		}
+
+		return DefValue.value(
+				this,
+				logicalValue.and(prerequisite).toValue());
+	}
+
+	@Override
 	public Definitions toDefinitions() {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CondDef[] defs = new CondDef[] {this};
+
+		if (isRequirement()) {
+			return new Definitions(
+					this,
+					getScope(),
+					null,
+					defs,
+					NO_CONDITIONS,
+					NO_VALUES,
+					NO_VALUES);
+		}
+
+		return new Definitions(
+				this,
+				getScope(),
+				null,
+				NO_CONDITIONS,
+				defs,
+				NO_VALUES,
+				NO_VALUES);
+	}
+
+	public final void writeLogicalValue(
+			Code code,
+			CodePos exit,
+			HostOp host) {
+		logical().write(code, exit, host);
 	}
 
 	@Override
-	protected final Value<?> calculateValue(Scope scope) {
-		return logical().logicalValue(scope).toValue();
-	}
-
-	@Override
-	CondDef filter(LogicalDef prerequisite, boolean claim) {
-		return new FilteredCondDef(this, prerequisite, claim);
+	CondDef filter(
+			LogicalDef prerequisite,
+			boolean hasPrerequisite,
+			boolean claim) {
+		return new FilteredCondDef(this, prerequisite, hasPrerequisite, claim);
 	}
 
 }

@@ -70,7 +70,7 @@ final class RefCondition extends Statement {
 
 	@Override
 	public Definitions define(Scope scope) {
-		return null;
+		return this.ref.toCondDef().toDefinitions();
 	}
 
 	@Override
