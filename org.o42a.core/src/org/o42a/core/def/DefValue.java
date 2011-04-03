@@ -47,16 +47,6 @@ public class DefValue {
 		return new AlwaysMeaningful(def, value);
 	}
 
-	static DefValue logicalValue(
-			LogicalDef logicalDef,
-			LogicalValue logicalValue,
-			boolean requirement) {
-		if (!logicalDef.isFalse()) {
-			return new DefLogical(logicalDef, logicalValue, requirement);
-		}
-		return new AlwaysLogical(logicalDef, logicalValue, requirement);
-	}
-
 	final SourceInfo sourced;
 	private final Value<?> value;
 
@@ -73,10 +63,6 @@ public class DefValue {
 
 	public Def<?> getDef() {
 		return (Def<?>) this.sourced;
-	}
-
-	public LogicalDef getLogicalDef() {
-		return null;
 	}
 
 	/**
@@ -276,72 +262,6 @@ public class DefValue {
 		@Override
 		public String toString() {
 			return "ALWAYS " + super.toString();
-		}
-
-	}
-
-	private static class DefLogical extends DefValue {
-
-		private final boolean requirement;
-
-		DefLogical(
-				LogicalDef logicalDef,
-				LogicalValue logicalValue,
-				boolean requirement) {
-			super(logicalDef, logicalValue.toValue());
-			this.requirement = requirement;
-		}
-
-		@Override
-		public final Def<?> getDef() {
-			return null;
-		}
-
-		@Override
-		public LogicalDef getLogicalDef() {
-			return (LogicalDef) this.sourced;
-		}
-
-		@Override
-		public final Value<?> getRealValue() {
-			return null;
-		}
-
-		@Override
-		public final boolean isRequirement() {
-			return this.requirement;
-		}
-
-		@Override
-		public String toString() {
-			if (!this.requirement) {
-				return this.sourced.toString();
-			}
-			return "REQUIRED " + this.sourced;
-		}
-
-	}
-
-	private static final class AlwaysLogical extends DefLogical {
-
-		AlwaysLogical(
-				LogicalDef logicalDef,
-				LogicalValue logicalValue,
-				boolean requirement) {
-			super(logicalDef, logicalValue, requirement);
-		}
-
-		@Override
-		public boolean isAlwaysMeaningful() {
-			return true;
-		}
-
-		@Override
-		public String toString() {
-			if (!isRequirement()) {
-				return "ALWAYS " + this.sourced;
-			}
-			return "REQUIRED ALWAYS " + this.sourced;
 		}
 
 	}

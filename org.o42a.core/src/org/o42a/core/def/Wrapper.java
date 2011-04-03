@@ -24,6 +24,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 
 
@@ -55,14 +56,9 @@ final class Wrapper extends Rescoper {
 	@Override
 	public <D extends Def<D>> D updateDef(D def) {
 		if (def.isValue()) {
-
-			final ValueDef valueDef = def.toValue();
-
-			return (D) new WrappedValueDef(valueDef);
+			return (D) new WrappedValueDef(def.toValue());
 		}
-
-		// FIXME: Update ConditionDef.
-		throw new UnsupportedOperationException();
+		return (D) new WrappedCondDef(def.toCondition());
 	}
 
 	@Override
@@ -116,7 +112,7 @@ final class Wrapper extends Rescoper {
 		WrappedValueDef(
 				WrappedValueDef prototype,
 				ValueDef wrapped,
-				LogicalDef prerequisite,
+				Logical prerequisite,
 				Rescoper rescoper) {
 			super(prototype, wrapped, prerequisite, rescoper);
 		}
@@ -125,14 +121,50 @@ final class Wrapper extends Rescoper {
 		protected WrappedValueDef create(
 				Rescoper rescoper,
 				Rescoper additionalRescoper,
-				ValueDef wrapped,
-				LogicalDef prerequisite) {
-			return new WrappedValueDef(this, wrapped, prerequisite, rescoper);
+				ValueDef wrapped) {
+			return new WrappedValueDef(
+					this,
+					wrapped,
+					getPrerequisite(),
+					rescoper);
 		}
 
 		@Override
 		protected WrappedValueDef create(ValueDef wrapped) {
 			return new WrappedValueDef(wrapped);
+		}
+
+	}
+
+	private final class WrappedCondDef extends CondDefWrap {
+
+		WrappedCondDef(CondDef wrapped) {
+			super(wrapped, null, Wrapper.this);
+		}
+
+		WrappedCondDef(
+				WrappedCondDef prototype,
+				CondDef wrapped,
+				Logical prerequisite,
+				Rescoper rescoper) {
+			super(prototype, wrapped, prerequisite, rescoper);
+		}
+
+		@Override
+		protected WrappedCondDef create(
+				Rescoper rescoper,
+				Rescoper additionalRescoper,
+				CondDef wrapped) {
+			return new WrappedCondDef(
+					this,
+					wrapped,
+					getPrerequisite(),
+					rescoper);
+		}
+
+		@Override
+		protected WrappedCondDef create(CondDef wrapped) {
+			return new WrappedCondDef(wrapped);
 		}
 
 	}

@@ -24,7 +24,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.LogicalDef;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -54,13 +53,6 @@ public abstract class ObjectIRFunc {
 
 	public final Definitions definitions() {
 		return getObjectIR().getObject().getDefinitions();
-	}
-
-	public boolean isExplicit(LogicalDef def) {
-		if (def.isEmpty()) {
-			return false;
-		}
-		return def.hasDefinitionsFrom(getObjectIR().getObject());
 	}
 
 	public final boolean isFalse(DefValue condition, ObjectOp body) {

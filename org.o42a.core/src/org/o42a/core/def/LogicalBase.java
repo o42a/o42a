@@ -19,9 +19,6 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.Def.sourceOf;
-import static org.o42a.core.def.Rescoper.transparentRescoper;
-
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
@@ -32,13 +29,6 @@ public abstract class LogicalBase extends Scoped {
 
 	public LogicalBase(LocationInfo location, Scope scope) {
 		super(location, scope);
-	}
-
-	public LogicalDef toLogicalDef() {
-		return new SingleLogicalDef(
-				sourceOf(this),
-				(Logical) this,
-				transparentRescoper(getScope()));
 	}
 
 	public CondDef toCondDef() {

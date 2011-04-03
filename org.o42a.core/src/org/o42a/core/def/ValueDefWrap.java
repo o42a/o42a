@@ -35,7 +35,7 @@ public abstract class ValueDefWrap extends ValueDef {
 
 	public ValueDefWrap(
 			ValueDef wrapped,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(wrapped.getSource(), wrapped, prerequisite, rescoper);
 		this.wrapped = wrapped;
@@ -44,7 +44,7 @@ public abstract class ValueDefWrap extends ValueDef {
 	protected ValueDefWrap(
 			ValueDefWrap prototype,
 			ValueDef wrapped,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 		this.wrapped = prototype.wrapped;
@@ -87,7 +87,7 @@ public abstract class ValueDefWrap extends ValueDef {
 	}
 
 	@Override
-	protected final LogicalDef buildPrerequisite() {
+	protected final Logical buildPrerequisite() {
 		return this.wrapped.getPrerequisite();
 	}
 
@@ -106,18 +106,16 @@ public abstract class ValueDefWrap extends ValueDef {
 	@Override
 	protected final ValueDefWrap create(
 			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite) {
+			Rescoper additionalRescoper) {
 
 		final ValueDef newWrapped = this.wrapped.rescope(additionalRescoper);
 
-		return create(rescoper, additionalRescoper, newWrapped, prerequisite);
+		return create(rescoper, additionalRescoper, newWrapped);
 	}
 
 	protected abstract ValueDefWrap create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			ValueDef wrapped,
-			LogicalDef prerequisite);
+			ValueDef wrapped);
 
 }

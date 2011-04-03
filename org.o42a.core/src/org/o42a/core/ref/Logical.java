@@ -29,6 +29,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.LogicalBase;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.common.AbstractConjunction;
 import org.o42a.core.st.Reproducer;
@@ -394,6 +395,10 @@ public abstract class Logical extends LogicalBase {
 		case TRUE:
 		}
 		return other.isTrue();
+	}
+
+	public Logical rescope(Rescoper rescoper) {
+		return new RescopedLogical(this, rescoper);
 	}
 
 	public abstract void write(Code code, CodePos exit, HostOp host);

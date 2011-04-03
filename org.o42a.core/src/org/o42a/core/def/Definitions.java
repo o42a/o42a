@@ -759,12 +759,12 @@ public class Definitions extends Scoped {
 
 		for (D def : defs) {
 
-			final Logical prerequisite = def.getPrerequisite().fullLogical();
+			final Logical prerequisite = def.getPrerequisite();
 
 			for (int i = 0; i < len; ++i) {
 
 				final D c1 = claims[i];
-				final Logical prereq = c1.getPrerequisite().fullLogical();
+				final Logical prereq = c1.getPrerequisite();
 
 				if (c1.hasPrerequisite() && prereq.implies(prerequisite)) {
 					if (defs.length == 1) {
@@ -777,8 +777,7 @@ public class Definitions extends Scoped {
 
 						final D c2 = claims[i];
 
-						if (!prerequisite.implies(
-								c2.getPrerequisite().fullLogical())) {
+						if (!prerequisite.implies(c2.getPrerequisite())) {
 							newClaims[idx++] = c2;
 						}
 					}
@@ -857,10 +856,10 @@ public class Definitions extends Scoped {
 			return false;
 		}
 
-		final Logical defLogical = def.getPrerequisite().fullLogical();
+		final Logical defLogical = def.getPrerequisite();
 
 		for (Def<?> claim : defs) {
-			if (claim.getPrerequisite().fullLogical().implies(defLogical)) {
+			if (claim.getPrerequisite().implies(defLogical)) {
 				return true;
 			}
 		}

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.LogicalDef.trueLogicalDef;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -53,7 +53,7 @@ class LocalDef extends ValueDef {
 		super(
 				sourceOf(block),
 				block,
-				trueLogicalDef(block, block.getScope()).rescope(rescoper),
+				logicalTrue(block, block.getScope()),
 				rescoper);
 		this.block = block;
 		this.explicit = explicit;
@@ -61,7 +61,7 @@ class LocalDef extends ValueDef {
 
 	private LocalDef(
 			LocalDef prototype,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper,
 			Logical logical) {
 		super(prototype, prerequisite, rescoper);
@@ -132,8 +132,8 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected LogicalDef buildPrerequisite() {
-		return trueLogicalDef(this, getScope());
+	protected Logical buildPrerequisite() {
+		return logicalTrue(this, getScope());
 	}
 
 	@Override
@@ -158,9 +158,8 @@ class LocalDef extends ValueDef {
 	@Override
 	protected LocalDef create(
 			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite) {
-		return new LocalDef(this, prerequisite, rescoper, this.logical);
+			Rescoper additionalRescoper) {
+		return new LocalDef(this, getPrerequisite(), rescoper, this.logical);
 	}
 
 	private static final class LocalLogical extends Logical {

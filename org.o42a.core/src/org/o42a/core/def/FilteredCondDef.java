@@ -19,6 +19,8 @@
 */
 package org.o42a.core.def;
 
+import org.o42a.core.ref.Logical;
+
 
 class FilteredCondDef extends CondDefWrap {
 
@@ -27,7 +29,7 @@ class FilteredCondDef extends CondDefWrap {
 
 	FilteredCondDef(
 			CondDef def,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			boolean hasPrerequisite,
 			boolean requirement) {
 		super(def, prerequisite, def.getRescoper());
@@ -38,7 +40,7 @@ class FilteredCondDef extends CondDefWrap {
 	private FilteredCondDef(
 			FilteredCondDef prototype,
 			CondDef wrapped,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, wrapped, prerequisite, rescoper);
 		this.hasPrerequisite = prototype.hasPrerequisite;
@@ -62,7 +64,7 @@ class FilteredCondDef extends CondDefWrap {
 		}
 		return new FilteredCondDef(
 				this,
-				prerequisite(),
+				getPrerequisite(),
 				hasPrerequisite(),
 				true);
 	}
@@ -74,7 +76,7 @@ class FilteredCondDef extends CondDefWrap {
 		}
 		return new FilteredCondDef(
 				this,
-				prerequisite(),
+				getPrerequisite(),
 				hasPrerequisite(),
 				false);
 	}
@@ -83,9 +85,8 @@ class FilteredCondDef extends CondDefWrap {
 	protected FilteredCondDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			CondDef wrapped,
-			LogicalDef prerequisite) {
-		return new FilteredCondDef(this, wrapped, prerequisite, rescoper);
+			CondDef wrapped) {
+		return new FilteredCondDef(this, wrapped, getPrerequisite(), rescoper);
 	}
 
 	@Override

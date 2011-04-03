@@ -77,7 +77,7 @@ public abstract class StatementEnv {
 	}
 
 	public <D extends Def<D>> D apply(D def) {
-		return def.addPrerequisite(prerequisite(def.getScope()).toLogicalDef())
+		return def.addPrerequisite(prerequisite(def.getScope()))
 		.and(precondition(def.getScope()));
 	}
 

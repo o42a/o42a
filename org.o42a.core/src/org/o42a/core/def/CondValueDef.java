@@ -41,7 +41,7 @@ final class CondValueDef extends ValueDef {
 
 	private CondValueDef(
 			CondValueDef prototype,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 		this.def = prototype.def;
@@ -87,9 +87,8 @@ final class CondValueDef extends ValueDef {
 	@Override
 	protected ValueDef create(
 			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite) {
-		return new CondValueDef(this, prerequisite, rescoper);
+			Rescoper additionalRescoper) {
+		return new CondValueDef(this, getPrerequisite(), rescoper);
 	}
 
 	@Override
@@ -98,7 +97,7 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected LogicalDef buildPrerequisite() {
+	protected Logical buildPrerequisite() {
 		return this.def.getPrerequisite();
 	}
 
