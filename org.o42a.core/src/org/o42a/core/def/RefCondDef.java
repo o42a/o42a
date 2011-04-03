@@ -37,6 +37,7 @@ abstract class RefCondDef extends CondDef {
 		return new SimpleDef(source, ref);
 	}
 
+	private final Ref ref;
 	private Ref rescopedRef;
 
 	RefCondDef(
@@ -45,6 +46,7 @@ abstract class RefCondDef extends CondDef {
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(source, ref, prerequisite, rescoper);
+		this.ref = ref;
 	}
 
 	RefCondDef(
@@ -52,17 +54,14 @@ abstract class RefCondDef extends CondDef {
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
-	}
-
-	public final Ref getRef() {
-		return (Ref) getScoped();
+		this.ref = prototype.ref;
 	}
 
 	public final Ref getRescopedRef() {
 		if (this.rescopedRef != null) {
 			return this.rescopedRef;
 		}
-		return this.rescopedRef = getRef().rescope(getRescoper());
+		return this.rescopedRef = this.ref.rescope(getRescoper());
 	}
 
 	@Override
@@ -73,10 +72,9 @@ abstract class RefCondDef extends CondDef {
 	@Override
 	public RefCondDef and(Logical logical) {
 
-		final Ref ref = getRef();
-		final Ref newRef = ref.and(logical);
+		final Ref newRef = this.ref.and(logical);
 
-		if (ref == newRef) {
+		if (this.ref == newRef) {
 			return this;
 		}
 

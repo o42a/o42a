@@ -27,11 +27,7 @@ final class ValueCondDef extends CondDef {
 	private final ValueDef def;
 
 	ValueCondDef(ValueDef def) {
-		super(
-				def.getSource(),
-				def.getStatement(),
-				null,
-				def.getRescoper());
+		super(def.getSource(), def, null, def.getRescoper());
 		this.def = def;
 	}
 

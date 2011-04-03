@@ -49,6 +49,11 @@ final class DefaultStaticTypeRef extends StaticTypeRef {
 	}
 
 	@Override
+	public final Ref getRef() {
+		return this.fixedRef;
+	}
+
+	@Override
 	public final Ref getUntachedRef() {
 		return this.untouchedRef;
 	}
@@ -59,11 +64,6 @@ final class DefaultStaticTypeRef extends StaticTypeRef {
 			return super.toString();
 		}
 		return this.fixedRef.toString();
-	}
-
-	@Override
-	protected Ref getScoped() {
-		return this.fixedRef;
 	}
 
 	@Override

@@ -32,7 +32,8 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.value.Value;
 
 
-public abstract class RescopableRef extends RescopableStatement {
+public abstract class RescopableRef<R extends RescopableRef<R>>
+		extends RescopableStatement<R> {
 
 	private Resolution resolution;
 	private Ref rescopedRef;
@@ -41,9 +42,12 @@ public abstract class RescopableRef extends RescopableStatement {
 		super(rescoper);
 	}
 
-	public final Ref getRef() {
-		return getScoped();
+	@Override
+	public final Statement getStatement() {
+		return getRef();
 	}
+
+	public abstract Ref getRef();
 
 	public final Ref getRescopedRef() {
 		if (this.rescopedRef != null) {
@@ -78,11 +82,6 @@ public abstract class RescopableRef extends RescopableStatement {
 		return getRef().value(getRescoper().rescope(scope));
 	}
 
-	@Override
-	public RescopableRef reproduce(Reproducer reproducer) {
-		return (RescopableRef) super.reproduce(reproducer);
-	}
-
 	public RefOp op(Code code, CodePos exit, HostOp host) {
 
 		final HostOp rescoped = getRescoper().rescope(code, exit, host);
@@ -91,10 +90,7 @@ public abstract class RescopableRef extends RescopableStatement {
 	}
 
 	@Override
-	protected abstract Ref getScoped();
-
-	@Override
-	protected final RescopableRef createReproduction(
+	protected final R createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Statement statement,
@@ -106,7 +102,7 @@ public abstract class RescopableRef extends RescopableStatement {
 				rescoper);
 	}
 
-	protected abstract RescopableRef createReproduction(
+	protected abstract R createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Ref ref,

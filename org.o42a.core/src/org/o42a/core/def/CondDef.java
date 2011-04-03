@@ -24,10 +24,10 @@ import static org.o42a.core.def.Definitions.NO_VALUES;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.st.Statement;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -37,10 +37,10 @@ public abstract class CondDef extends Def<CondDef> {
 
 	public CondDef(
 			Obj source,
-			Statement statement,
+			LocationInfo location,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
-		super(source, statement, prerequisite, rescoper);
+		super(source, location, prerequisite, rescoper);
 	}
 
 	protected CondDef(

@@ -32,7 +32,7 @@ public abstract class CondDefWrap extends CondDef {
 			Rescoper rescoper) {
 		super(
 				wrapped.getSource(),
-				wrapped.getStatement(),
+				wrapped,
 				prerequisite,
 				rescoper);
 		this.wrapped = wrapped;

@@ -24,17 +24,16 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 
 
-public abstract class RescopableStatement extends Rescopable {
+public abstract class RescopableStatement<R extends RescopableStatement<R>>
+		extends Rescopable<R> {
 
 	public RescopableStatement(Rescoper rescoper) {
 		super(rescoper);
 	}
 
-	public final Statement getStatement() {
-		return (Statement) getScoped();
-	}
+	public abstract Statement getStatement();
 
-	public RescopableStatement reproduce(Reproducer reproducer) {
+	public R reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final Scope rescoped = getRescoper().rescope(getScope());
@@ -51,7 +50,8 @@ public abstract class RescopableStatement extends Rescopable {
 			return null;
 		}
 
-		final Statement statement = getStatement().reproduce(rescopedReproducer);
+		final Statement statement =
+			getStatement().reproduce(rescopedReproducer);
 
 		if (statement == null) {
 			return null;
@@ -65,11 +65,11 @@ public abstract class RescopableStatement extends Rescopable {
 	}
 
 	@Override
-	protected abstract RescopableStatement create(
+	protected abstract R create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper);
 
-	protected abstract RescopableStatement createReproduction(
+	protected abstract R createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Statement statement,

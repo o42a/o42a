@@ -35,11 +35,7 @@ final class CondValueDef extends ValueDef {
 	private final CondDef def;
 
 	CondValueDef(CondDef def) {
-		super(
-				def.getSource(),
-				def.getStatement(),
-				def.getPrerequisite(),
-				def.getRescoper());
+		super(def.getSource(), def, def.getPrerequisite(), def.getRescoper());
 		this.def = def;
 	}
 

@@ -22,7 +22,8 @@ package org.o42a.core.def;
 import org.o42a.core.*;
 
 
-public abstract class Rescopable implements ScopeInfo {
+public abstract class Rescopable<R extends Rescopable<R>>
+		implements ScopeInfo {
 
 	private final Rescoper rescoper;
 
@@ -39,33 +40,33 @@ public abstract class Rescopable implements ScopeInfo {
 		return this.rescoper;
 	}
 
-	public Rescopable rescope(Rescoper rescoper) {
+	public R rescope(Rescoper rescoper) {
 
 		final Rescoper oldRescoper = getRescoper();
 
 		if (rescoper.getFinalScope() == oldRescoper.getFinalScope()) {
-			return this;
+			return self();
 		}
 
 		final Rescoper newRescoper = oldRescoper.and(rescoper);
 
 		if (newRescoper.equals(oldRescoper)) {
-			return this;
+			return self();
 		}
 
 		return create(newRescoper, rescoper);
 	}
 
-	public Rescopable upgradeScope(Scope scope) {
+	public R upgradeScope(Scope scope) {
 		if (scope == getScope()) {
-			return this;
+			return self();
 		}
 		return rescope(Rescoper.upgradeRescoper(getScope(), scope));
 	}
 
-	public Rescopable rescope(Scope scope) {
+	public R rescope(Scope scope) {
 		if (getScope() == scope) {
-			return this;
+			return self();
 		}
 		return rescope(getScope().rescoperTo(scope));
 	}
@@ -94,9 +95,12 @@ public abstract class Rescopable implements ScopeInfo {
 		Scoped.assertSameScope(this, other);
 	}
 
-	protected abstract ScopeInfo getScoped();
+	@SuppressWarnings("unchecked")
+	protected final R self() {
+		return (R) this;
+	}
 
-	protected abstract Rescopable create(
+	protected abstract R create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper);
 

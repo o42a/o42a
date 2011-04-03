@@ -36,7 +36,7 @@ final class LogicalDefs extends LogicalDef {
 	LogicalDefs(SingleLogicalDef[] requirements) {
 		super(
 				requirements[0].getSource(),
-				requirements[0].getScoped(),
+				requirements[0].getLogical(),
 				requirements[0].getRescoper(),
 				requirements);
 	}
@@ -166,7 +166,7 @@ final class LogicalDefs extends LogicalDef {
 
 		@Override
 		protected Logical claim(int index) {
-			return this.defs.requirements()[index].getScoped();
+			return this.defs.requirements()[index].getLogical();
 		}
 
 	}

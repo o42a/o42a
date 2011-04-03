@@ -30,7 +30,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
-public abstract class TypeRef extends RescopableRef {
+public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 	private TypeRef ancestor;
 	private Obj type;
@@ -159,31 +159,6 @@ public abstract class TypeRef extends RescopableRef {
 	public final TypeRef commonDerivative(TypeRef other) {
 		return relationTo(other).isPreferred() ? this : other;
 	}
-
-	@Override
-	public TypeRef rescope(Rescoper rescoper) {
-		return (TypeRef) super.rescope(rescoper);
-	}
-
-	@Override
-	public TypeRef rescope(Scope scope) {
-		return (TypeRef) super.rescope(scope);
-	}
-
-	@Override
-	public TypeRef upgradeScope(Scope scope) {
-		return (TypeRef) super.upgradeScope(scope);
-	}
-
-	@Override
-	public TypeRef reproduce(Reproducer reproducer) {
-		return (TypeRef) super.reproduce(reproducer);
-	}
-
-	@Override
-	protected abstract TypeRef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper);
 
 	@Override
 	protected final TypeRef createReproduction(

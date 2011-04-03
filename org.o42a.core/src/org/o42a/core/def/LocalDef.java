@@ -42,6 +42,7 @@ import org.o42a.core.value.ValueType;
 
 class LocalDef extends ValueDef {
 
+	private final ImperativeBlock block;
 	private final boolean explicit;
 	private Logical logical;
 
@@ -54,6 +55,7 @@ class LocalDef extends ValueDef {
 				block,
 				trueLogicalDef(block, block.getScope()).rescope(rescoper),
 				rescoper);
+		this.block = block;
 		this.explicit = explicit;
 	}
 
@@ -63,12 +65,13 @@ class LocalDef extends ValueDef {
 			Rescoper rescoper,
 			Logical logical) {
 		super(prototype, prerequisite, rescoper);
+		this.block = prototype.block;
 		this.explicit = prototype.explicit;
 		this.logical = logical;
 	}
 
 	public final ImperativeBlock getBlock() {
-		return (ImperativeBlock) getScoped();
+		return this.block;
 	}
 
 	@Override
@@ -99,11 +102,6 @@ class LocalDef extends ValueDef {
 				getPrerequisite(),
 				getRescoper(),
 				newLogical);
-	}
-
-	@Override
-	public LocalDef reproduce(Reproducer reproducer) {
-		return (LocalDef) super.reproduce(reproducer);
 	}
 
 	@Override
@@ -196,14 +194,8 @@ class LocalDef extends ValueDef {
 
 		@Override
 		public Logical reproduce(Reproducer reproducer) {
-
-			final LocalDef def = this.def.reproduce(reproducer);
-
-			if (def == null) {
-				return null;
-			}
-
-			return def.logical();
+			getLogger().notReproducible(this);
+			return null;
 		}
 
 		@Override

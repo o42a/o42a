@@ -46,6 +46,11 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 	}
 
 	@Override
+	public final Ref getRef() {
+		return wrapped().getRef();
+	}
+
+	@Override
 	public final Ref getUntachedRef() {
 		return wrapped().getUntachedRef();
 	}
@@ -69,11 +74,6 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 			return super.toString();
 		}
 		return this.wrapped.toString();
-	}
-
-	@Override
-	protected final Ref getScoped() {
-		return wrapped().getRef();
 	}
 
 	protected final StaticTypeRef wrapped() {
