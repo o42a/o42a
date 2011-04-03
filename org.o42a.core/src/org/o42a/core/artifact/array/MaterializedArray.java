@@ -19,13 +19,14 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.def.Definitions.falseClaims;
+import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ref.Ref;
 
 
 final class MaterializedArray extends Obj {
@@ -58,7 +59,10 @@ final class MaterializedArray extends Obj {
 			Scope scope,
 			Definitions ascendantDefinitions) {
 		getLogger().cantInherit(this, this);
-		return falseClaims(this, scope);
+
+		final Ref error = errorRef(this, scope.distributeIn(this));
+
+		return error.toCondDef().toDefinitions();
 	}
 
 }

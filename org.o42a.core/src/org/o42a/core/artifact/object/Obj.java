@@ -632,7 +632,7 @@ public abstract class Obj extends Artifact<Obj>
 			return this.definitions = definitions;
 		}
 
-		return this.definitions = definitions.runtime(getScope());
+		return this.definitions = definitions.runtime();
 	}
 
 	public Definitions getOverriddenDefinitions() {

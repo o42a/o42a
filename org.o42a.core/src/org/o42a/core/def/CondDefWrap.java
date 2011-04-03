@@ -53,6 +53,11 @@ public abstract class CondDefWrap extends CondDef {
 	}
 
 	@Override
+	public boolean hasPrerequisite() {
+		return this.wrapped.hasPrerequisite();
+	}
+
+	@Override
 	public final CondDef and(Logical logical) {
 
 		final CondDef newDef = this.wrapped.and(logical);

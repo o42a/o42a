@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.core.def.Definitions.definitions;
-import static org.o42a.core.def.ValueDef.voidDef;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.Code;
@@ -74,7 +73,7 @@ enum ValuePart {
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
-			return definitions.removeCondition(ex);
+			return definitions.valuePart(ex);
 		}
 
 		@Override
@@ -104,11 +103,7 @@ enum ValuePart {
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
-			return voidDef(
-					ex,
-					ex.distribute(),
-					definitions.getRequirement().fullLogical())
-					.toDefinitions();
+			return definitions.requirementPart(ex);
 		}
 
 		@Override
@@ -138,11 +133,7 @@ enum ValuePart {
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
-			return voidDef(
-					ex,
-					ex.distribute(),
-					definitions.getCondition().fullLogical())
-					.toDefinitions();
+			return definitions.conditionPart(ex);
 		}
 
 		@Override
@@ -172,10 +163,7 @@ enum ValuePart {
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
-			return definitions(
-					ex,
-					ex.getScope(),
-					definitions.getClaims());
+			return definitions.claimPart(ex);
 		}
 
 		@Override

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.def.Definitions.conditionDefinitions;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.ArrayList;
@@ -150,17 +149,12 @@ public class Declaratives extends Statements<Declaratives> {
 		if (!kinds.haveDefinition()) {
 			return null;
 		}
-		if (!kinds.haveValue()) {
-
-			final Logical condition = lastDefinitionEnv().fullLogical(scope);
-
-			return conditionDefinitions(condition, scope, condition);
-		}
 
 		final List<Statement> statements = getStatements();
 
-		for (Statement statement : statements) {
+		for (int i = statements.size() - 1; i >= 0; --i) {
 
+			final Statement statement = statements.get(i);
 			final Definitions definitions = statement.define(scope);
 
 			if (definitions != null) {
@@ -168,7 +162,7 @@ public class Declaratives extends Statements<Declaratives> {
 			}
 		}
 
-		throw new IllegalStateException("Value is missing");
+		throw new IllegalStateException("Missing definition: "+ this);
 	}
 
 	private StatementEnv lastDefinitionEnv() {

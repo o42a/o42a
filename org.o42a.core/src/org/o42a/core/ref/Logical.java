@@ -28,15 +28,14 @@ import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.def.CondBase;
+import org.o42a.core.def.LogicalBase;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.common.AbstractConjunction;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.*;
-import org.o42a.core.value.Void;
+import org.o42a.core.value.LogicalValue;
 
 
-public abstract class Logical extends CondBase {
+public abstract class Logical extends LogicalBase {
 
 	public static Logical logicalTrue(LocationInfo location, Scope scope) {
 		return new True(location, scope);
@@ -395,19 +394,6 @@ public abstract class Logical extends CondBase {
 		case TRUE:
 		}
 		return other.isTrue();
-	}
-
-	public Value<Void> toValue() {
-
-		final LogicalValue logicalValue = getConstantValue();
-
-		if (!logicalValue.isConstant()) {
-			return ValueType.VOID.runtimeValue();
-		}
-		if (logicalValue.isTrue()) {
-			return Value.voidValue();
-		}
-		return Value.falseValue();
 	}
 
 	public abstract void write(Code code, CodePos exit, HostOp host);

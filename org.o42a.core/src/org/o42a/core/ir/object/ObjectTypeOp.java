@@ -66,7 +66,7 @@ public class ObjectTypeOp extends IROp {
 				.op(this, type);
 	}
 
-	final void writeValue(Code code, ValOp result, ObjectOp body) {
+	public final void writeValue(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
 			ptr().data(code).valueFunc(code).load(code);
@@ -75,7 +75,7 @@ public class ObjectTypeOp extends IROp {
 		code.dump("Value: ", result);
 	}
 
-	final void writeRequirement(Code code, CodePos exit, ObjectOp body) {
+	public final void writeRequirement(Code code, CodePos exit, ObjectOp body) {
 
 		final ObjectCondFunc function =
 			ptr().data(code).requirementFunc(code).load(code);
@@ -83,7 +83,7 @@ public class ObjectTypeOp extends IROp {
 		function.call(code, body(code, body)).go(code, code.tail(), exit);
 	}
 
-	final void writeClaim(Code code, ValOp result, ObjectOp body) {
+	public final void writeClaim(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
 			ptr().data(code).claimFunc(code).load(code);
@@ -91,7 +91,7 @@ public class ObjectTypeOp extends IROp {
 		function.call(code, result, body(code, body));
 	}
 
-	final void writeCondition(
+	public final void writeCondition(
 			Code code,
 			CodePos exit,
 			ObjectOp body) {
@@ -102,7 +102,7 @@ public class ObjectTypeOp extends IROp {
 		function.call(code, body(code, body)).go(code, code.tail(), exit);
 	}
 
-	final void writeProposition(Code code, ValOp result, ObjectOp body) {
+	public final void writeProposition(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
 			ptr().data(code).propositionFunc(code).load(code);

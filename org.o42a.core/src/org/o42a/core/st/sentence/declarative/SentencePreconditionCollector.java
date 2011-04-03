@@ -28,10 +28,15 @@ import org.o42a.core.st.sentence.DeclarativeSentence;
 
 public final class SentencePreconditionCollector extends SentenceCollector {
 
+	private final SentenceLogicals requirements;
+	private final SentenceLogicals conditions;
+
 	private Logical precondition;
 
 	public SentencePreconditionCollector(DeclarativeBlock block, Scope scope) {
 		super(block, scope);
+		this.requirements = new SentenceLogicals(block, scope);
+		this.conditions = new SentenceLogicals(block, scope);
 	}
 
 	public Logical precondition() {
@@ -52,6 +57,11 @@ public final class SentencePreconditionCollector extends SentenceCollector {
 	protected void addCondition(
 			DeclarativeSentence sentence,
 			DefinitionTargets targets) {
+		if (sentence.isClaim()) {
+			this.requirements.addSentence(sentence);
+		} else {
+			this.conditions.addSentence(sentence);
+		}
 	}
 
 	@Override
@@ -67,6 +77,14 @@ public final class SentencePreconditionCollector extends SentenceCollector {
 		}
 
 		this.precondition = Logical.or(this.precondition, logical);
+	}
+
+	protected final Logical requirement() {
+		return this.requirements.build();
+	}
+
+	protected final Logical condition() {
+		return this.conditions.build();
 	}
 
 }

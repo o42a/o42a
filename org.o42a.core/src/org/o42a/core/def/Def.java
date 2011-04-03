@@ -19,6 +19,8 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.def.LogicalDef.trueLogicalDef;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
@@ -29,7 +31,6 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
 
 
@@ -105,12 +106,18 @@ public abstract class Def<D extends Def<D>>
 		return getKind().isValue();
 	}
 
+	public abstract boolean hasPrerequisite();
+
 	public final LogicalDef getPrerequisite() {
-		if (this.prerequisite == null) {
-			this.prerequisite = buildPrerequisite();
-			assert this.prerequisite != null :
-				"Definition without prerequisite";
+		if (this.prerequisite != null) {
+			return this.prerequisite;
 		}
+		if (!hasPrerequisite()) {
+			return this.prerequisite = trueLogicalDef(this, getScope());
+		}
+		this.prerequisite = buildPrerequisite();
+		assert this.prerequisite != null :
+			"Definition without prerequisite";
 		return this.prerequisite;
 	}
 
@@ -119,6 +126,10 @@ public abstract class Def<D extends Def<D>>
 			return this.fullLogical;
 		}
 		return this.fullLogical = new FullLogical(this);
+	}
+
+	public final D addPrerequisite(Logical prerequisite) {
+		return addPrerequisite(prerequisite.toLogicalDef());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -131,44 +142,20 @@ public abstract class Def<D extends Def<D>>
 			return (D) this;
 		}
 
-		return filter(newPrerequisite, getKind().isClaim());
+		return filter(newPrerequisite, true, getKind().isClaim());
 	}
 
 	public abstract D and(Logical logical);
 
 	public D claim() {
-		return filter(prerequisite(), true);
+		return filter(prerequisite(), hasPrerequisite(), true);
 	}
 
 	public D unclaim() {
-		return filter(prerequisite(), false);
+		return filter(prerequisite(), hasPrerequisite(), false);
 	}
 
-	public final DefValue definitionValue(Scope scope) {
-
-		final LogicalValue logicalValue = getPrerequisite().logicalValue(scope);
-
-		if (logicalValue.isFalse()) {
-			if (getPrerequisite().isFalse()) {
-				return DefValue.alwaysIgnoredValue(this);
-			}
-			return DefValue.unknownValue(this);
-		}
-
-		final Value<?> value = calculateValue(getRescoper().rescope(scope));
-
-		if (value == null) {
-			return DefValue.unknownValue(this);
-		}
-
-		if (getPrerequisite().isTrue()) {
-			return DefValue.alwaysMeaningfulValue(this, value);
-		}
-
-		return DefValue.value(
-				this,
-				value.require(logicalValue));
-	}
+	public abstract DefValue definitionValue(Scope scope);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -205,19 +192,24 @@ public abstract class Def<D extends Def<D>>
 
 		final StringBuilder out = new StringBuilder();
 
-		if (getKind().isClaim()) {
-			out.append("Def![");
+		if (getKind().isValue()) {
+			out.append("ValueDef[");
 		} else {
-			out.append("Def[");
+			out.append("CondDef[");
 		}
-		if (this.prerequisite == null) {
-			out.append("? ");
-		} else if (!this.prerequisite.isTrue()) {
-			out.append(this.prerequisite);
-			out.append("? ");
+		if (hasPrerequisite()) {
+			if (this.prerequisite == null) {
+				out.append("_? ");
+			} else {
+				out.append(this.prerequisite).append("? ");
+			}
 		}
 		out.append(getScoped());
-		out.append(']');
+		if (getKind().isClaim()) {
+			out.append("!]");
+		} else {
+			out.append(".]");
+		}
 
 		return out.toString();
 	}
@@ -228,8 +220,6 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	protected abstract LogicalDef buildPrerequisite();
-
-	protected abstract Value<?> calculateValue(Scope scope);
 
 	protected abstract Logical logical();
 
@@ -263,7 +253,10 @@ public abstract class Def<D extends Def<D>>
 		return null;
 	}
 
-	abstract D filter(LogicalDef prerequisite, boolean claim);
+	abstract D filter(
+			LogicalDef prerequisite,
+			boolean hasPrerequisite,
+			boolean claim);
 
 	private static final class FullLogical extends Logical {
 
@@ -289,10 +282,7 @@ public abstract class Def<D extends Def<D>>
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
 			this.def.getPrerequisite().writeFullLogical(code, exit, host);
-			this.def.logical().write(
-					code,
-					exit,
-					this.def.getRescoper().rescope(code, exit, host));
+			this.def.logical().write(code, exit, host);
 		}
 
 		@Override

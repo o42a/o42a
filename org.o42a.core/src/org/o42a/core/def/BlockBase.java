@@ -19,8 +19,6 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.LogicalDef.trueLogicalDef;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -38,11 +36,7 @@ public abstract class BlockBase extends Statement {
 		final boolean explicit = actualOwner == explicitOwner;
 
 		final Rescoper rescoper = block.getScope().rescoperTo(scope);
-		final LocalDef localDef = new LocalDef(
-				block,
-				trueLogicalDef(block, block.getScope()).rescope(rescoper),
-				rescoper,
-				explicit);
+		final LocalDef localDef = new LocalDef(block, rescoper, explicit);
 
 		// Rescope to explicit owner scope.
 		final ValueDef def = localDef.rescope(explicitOwner.getScope());

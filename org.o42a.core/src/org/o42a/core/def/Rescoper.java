@@ -21,6 +21,8 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
+import java.lang.reflect.Array;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
@@ -71,40 +73,19 @@ public abstract class Rescoper {
 			return emptyDefinitions(definitions, resultScope);
 		}
 
+		final CondDef[] requirements = definitions.getRequirements();
+		final CondDef[] newRequirements = updateDefs(requirements);
+		final CondDef[] conditions = definitions.getConditions();
+		final CondDef[] newConditions = updateDefs(conditions);
 		final ValueDef[] claims = definitions.getClaims();
-		final ValueDef[] newClaims = new ValueDef[claims.length];
+		final ValueDef[] newClaims = updateDefs(claims);
 		final ValueDef[] propositions = definitions.getPropositions();
-		final ValueDef[] newPropositions = new ValueDef[propositions.length];
-		boolean changed = false;
+		final ValueDef[] newPropositions = updateDefs(propositions);
 
-		for (int i = 0; i < claims.length; ++i) {
-
-			final ValueDef claim = claims[i];
-			final ValueDef newClaim = updateDef(claim);
-
-			newClaims[i] = newClaim;
-			changed |= newClaim != claim;
-		}
-		for (int i = 0; i < propositions.length; ++i) {
-
-			final ValueDef proposition = propositions[i];
-			final ValueDef newProposition = updateDef(proposition);
-
-			newPropositions[i] = newProposition;
-			changed |= newProposition != proposition;
-		}
-
-		final LogicalDef requirement = definitions.getRequirement();
-		final LogicalDef newRequirement = requirement.rescope(this);
-
-		changed = changed || requirement != newRequirement;
-
-		final LogicalDef condition = definitions.getCondition();
-		final LogicalDef newCondition = condition.rescope(this);
-
-		changed |= condition != newCondition;
-
-		if (!changed) {
+		if (requirements == newRequirements
+				&& conditions == newConditions
+				&& claims == newClaims
+				&& propositions == newPropositions) {
 			return definitions;
 		}
 
@@ -112,8 +93,8 @@ public abstract class Rescoper {
 				definitions,
 				resultScope,
 				definitions.getValueType(),
-				newRequirement,
-				newCondition,
+				newRequirements,
+				newConditions,
 				newClaims,
 				newPropositions);
 	}
@@ -138,5 +119,33 @@ public abstract class Rescoper {
 	public abstract Rescoper reproduce(
 			LocationInfo location,
 			Reproducer reproducer);
+
+	private <D extends Def<D>> D[] updateDefs(D[] defs) {
+
+		for (int i = 0; i < defs.length; ++i) {
+
+			final D def = defs[i];
+			final D newDef = updateDef(def);
+
+			if (def == newDef) {
+				continue;
+			}
+
+			@SuppressWarnings("unchecked")
+			final D[] newDefs = (D[]) Array.newInstance(
+					defs.getClass().getComponentType(),
+					defs.length);
+
+			System.arraycopy(defs, 0, newDefs, 0, i);
+			newDefs[i++] = newDef;
+			for (;i < defs.length; ++i) {
+				newDefs[i] = updateDef(def);
+			}
+
+			return newDefs;
+		}
+
+		return defs;
+	}
 
 }

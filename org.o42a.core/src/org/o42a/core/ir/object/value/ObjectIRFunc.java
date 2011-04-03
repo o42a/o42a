@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.value;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -25,11 +25,14 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.LogicalDef;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.LogicalValue;
 
 
-abstract class ObjectIRFunc {
+public abstract class ObjectIRFunc {
 
 	public static ObjectOp body(Code code, ObjOp host, ObjectOp body) {
 		return body != null ? body : host;

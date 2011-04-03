@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.value;
 
 import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
