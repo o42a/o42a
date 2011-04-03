@@ -28,7 +28,7 @@ public abstract class CondDefWrap extends CondDef {
 
 	public CondDefWrap(
 			CondDef wrapped,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(
 				wrapped.getSource(),
@@ -41,7 +41,7 @@ public abstract class CondDefWrap extends CondDef {
 	protected CondDefWrap(
 			CondDefWrap prototype,
 			CondDef wrapped,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 		this.wrapped = prototype.wrapped;
@@ -75,7 +75,7 @@ public abstract class CondDefWrap extends CondDef {
 	}
 
 	@Override
-	protected final LogicalDef buildPrerequisite() {
+	protected final Logical buildPrerequisite() {
 		return this.wrapped.getPrerequisite();
 	}
 
@@ -89,18 +89,16 @@ public abstract class CondDefWrap extends CondDef {
 	@Override
 	protected final CondDefWrap create(
 			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite) {
+			Rescoper additionalRescoper) {
 
 		final CondDef newWrapped = this.wrapped.rescope(additionalRescoper);
 
-		return create(rescoper, additionalRescoper, newWrapped, prerequisite);
+		return create(rescoper, additionalRescoper, newWrapped);
 	}
 
 	protected abstract CondDefWrap create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			CondDef wrapped,
-			LogicalDef prerequisite);
+			CondDef wrapped);
 
 }

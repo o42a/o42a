@@ -79,8 +79,7 @@ final class RescopedRef extends Wrap {
 			super(
 					ref,
 					distributor,
-					ref.getLogical().toLogicalDef()
-					.rescope(rescoper).fullLogical());
+					ref.getLogical().rescope(rescoper));
 			this.ref = ref;
 			this.rescoper = rescoper;
 		}

@@ -216,7 +216,7 @@ public abstract class ObjectValueIRValFunc
 
 				final ValueDef def = defs[i];
 
-				def.getPrerequisite().writeFullLogical(block, nextPos, host);
+				def.writePrerequisite(block, nextPos, host);
 				def.writeValue(block, nextPos, host, result);
 				block.go(code.tail());
 			}

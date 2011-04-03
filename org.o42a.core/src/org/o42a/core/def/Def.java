@@ -19,7 +19,7 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.LogicalDef.trueLogicalDef;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -59,13 +59,13 @@ public abstract class Def<D extends Def<D>>
 
 	private final Obj source;
 	private final LocationInfo location;
-	private LogicalDef prerequisite;
+	private Logical prerequisite;
 	private Logical fullLogical;
 
 	public Def(
 			Obj source,
 			LocationInfo location,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(rescoper);
 		this.location = location;
@@ -76,12 +76,11 @@ public abstract class Def<D extends Def<D>>
 		}
 	}
 
-	protected Def(D prototype, LogicalDef prerequisite, Rescoper rescoper) {
-		this(
-				prototype.getSource(),
-				prototype,
-				prerequisite,
-				rescoper);
+	protected Def(D prototype, Logical prerequisite, Rescoper rescoper) {
+		super(rescoper);
+		this.location = prototype.location;
+		this.source = prototype.source;
+		this.prerequisite = prerequisite;
 	}
 
 	@Override
@@ -107,19 +106,6 @@ public abstract class Def<D extends Def<D>>
 
 	public abstract boolean hasPrerequisite();
 
-	public final LogicalDef getPrerequisite() {
-		if (this.prerequisite != null) {
-			return this.prerequisite;
-		}
-		if (!hasPrerequisite()) {
-			return this.prerequisite = trueLogicalDef(this, getScope());
-		}
-		this.prerequisite = buildPrerequisite();
-		assert this.prerequisite != null :
-			"Definition without prerequisite";
-		return this.prerequisite;
-	}
-
 	public final Logical fullLogical() {
 		if (this.fullLogical != null) {
 			return this.fullLogical;
@@ -128,17 +114,12 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	public final D addPrerequisite(Logical prerequisite) {
-		return addPrerequisite(prerequisite.toLogicalDef());
-	}
 
-	@SuppressWarnings("unchecked")
-	public final D addPrerequisite(LogicalDef rerequisite) {
-
-		final LogicalDef oldPrerequisite = getPrerequisite();
-		final LogicalDef newPrerequisite = oldPrerequisite.and(rerequisite);
+		final Logical oldPrerequisite = getPrerequisite();
+		final Logical newPrerequisite = oldPrerequisite.and(prerequisite);
 
 		if (oldPrerequisite.sameAs(newPrerequisite)) {
-			return (D) this;
+			return self();
 		}
 
 		return filter(newPrerequisite, true, getKind().isClaim());
@@ -147,11 +128,11 @@ public abstract class Def<D extends Def<D>>
 	public abstract D and(Logical logical);
 
 	public D claim() {
-		return filter(prerequisite(), hasPrerequisite(), true);
+		return filter(getPrerequisite(), hasPrerequisite(), true);
 	}
 
 	public D unclaim() {
-		return filter(prerequisite(), hasPrerequisite(), false);
+		return filter(getPrerequisite(), hasPrerequisite(), false);
 	}
 
 	public abstract DefValue definitionValue(Scope scope);
@@ -189,32 +170,25 @@ public abstract class Def<D extends Def<D>>
 		return out.toString();
 	}
 
-	protected abstract LogicalDef buildPrerequisite();
-
-	protected abstract Logical getLogical();
-
-	@Override
-	protected final D create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return create(
-				rescoper,
-				additionalRescoper,
-				this.prerequisite != null
-				? this.prerequisite.rescope(rescoper) : this.prerequisite);
-	}
-
-	protected final LogicalDef prerequisite() {
+	protected final Logical getPrerequisite() {
+		if (this.prerequisite != null) {
+			return this.prerequisite;
+		}
+		if (!hasPrerequisite()) {
+			return this.prerequisite = logicalTrue(this, getScope());
+		}
+		this.prerequisite = buildPrerequisite();
+		assert this.prerequisite != null :
+			"Definition without prerequisite";
 		return this.prerequisite;
 	}
 
-	protected abstract D create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite);
+	protected abstract Logical buildPrerequisite();
+
+	protected abstract Logical getLogical();
 
 	abstract D filter(
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			boolean hasPrerequisite,
 			boolean claim);
 
@@ -235,19 +209,16 @@ public abstract class Def<D extends Def<D>>
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			scope = this.def.getRescoper().rescope(scope);
 			return this.def.getPrerequisite().logicalValue(scope).and(
-					this.def.getLogical().logicalValue(
-							this.def.getRescoper().rescope(scope)));
+					this.def.getLogical().logicalValue(scope));
 		}
 
 		@Override
 		public void write(Code code, CodePos exit, HostOp host) {
-			this.def.getPrerequisite().writeFullLogical(code, exit, host);
-
-			final HostOp rescopedHost =
-				this.def.getRescoper().rescope(code, exit, host);
-
-			this.def.getLogical().write(code, exit, rescopedHost);
+			host = this.def.getRescoper().rescope(code, exit, host);
+			this.def.getPrerequisite().write(code, exit, host);
+			this.def.getLogical().write(code, exit, host);
 		}
 
 		@Override

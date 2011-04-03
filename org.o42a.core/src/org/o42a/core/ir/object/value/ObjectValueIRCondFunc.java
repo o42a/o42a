@@ -257,7 +257,7 @@ public abstract class ObjectValueIRCondFunc
 
 		@Override
 		protected void explicitDef(CondDef def) {
-			def.writeFullLogical(this.code, this.exit, this.host);
+			def.writeLogicalValue(this.code, this.exit, this.host);
 			this.written = true;
 		}
 

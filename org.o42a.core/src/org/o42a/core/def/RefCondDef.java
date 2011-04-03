@@ -19,8 +19,8 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.LogicalDef.trueLogicalDef;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Logical;
@@ -43,7 +43,7 @@ abstract class RefCondDef extends CondDef {
 	RefCondDef(
 			Obj source,
 			Ref ref,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(source, ref, prerequisite, rescoper);
 		this.ref = ref;
@@ -51,7 +51,7 @@ abstract class RefCondDef extends CondDef {
 
 	RefCondDef(
 			RefCondDef prototype,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 		this.ref = prototype.ref;
@@ -89,8 +89,7 @@ abstract class RefCondDef extends CondDef {
 	@Override
 	protected abstract RefCondDef create(
 			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite);
+			Rescoper additionalRescoper);
 
 	private static final class SimpleDef extends RefCondDef {
 
@@ -98,13 +97,13 @@ abstract class RefCondDef extends CondDef {
 			super(
 					source,
 					ref,
-					trueLogicalDef(ref, ref.getScope()),
+					logicalTrue(ref, ref.getScope()),
 					transparentRescoper(ref.getScope()));
 		}
 
 		SimpleDef(
 				RefCondDef prototype,
-				LogicalDef prerequisite,
+				Logical prerequisite,
 				Rescoper rescoper) {
 			super(prototype, prerequisite, rescoper);
 		}
@@ -115,16 +114,15 @@ abstract class RefCondDef extends CondDef {
 		}
 
 		@Override
-		protected LogicalDef buildPrerequisite() {
-			return trueLogicalDef(this, getScope());
+		protected Logical buildPrerequisite() {
+			return logicalTrue(this, getScope());
 		}
 
 		@Override
 		protected SimpleDef create(
 				Rescoper rescoper,
-				Rescoper additionalRescoper,
-				LogicalDef prerequisite) {
-			return new SimpleDef(this, prerequisite, rescoper);
+				Rescoper additionalRescoper) {
+			return new SimpleDef(this, getPrerequisite(), rescoper);
 		}
 
 	}
@@ -137,14 +135,14 @@ abstract class RefCondDef extends CondDef {
 			super(
 					def.getSource(),
 					ref,
-					def.prerequisite(),
+					null,
 					def.getRescoper());
 			this.def = def;
 		}
 
 		ConditionalDef(
 				ConditionalDef prototype,
-				LogicalDef prerequisite,
+				Logical prerequisite,
 				Rescoper rescoper) {
 			super(prototype, prerequisite, rescoper);
 			this.def = prototype.def;
@@ -161,16 +159,15 @@ abstract class RefCondDef extends CondDef {
 		}
 
 		@Override
-		protected LogicalDef buildPrerequisite() {
+		protected Logical buildPrerequisite() {
 			return this.def.getPrerequisite();
 		}
 
 		@Override
 		protected ConditionalDef create(
 				Rescoper rescoper,
-				Rescoper additionalRescoper,
-				LogicalDef prerequisite) {
-			return new ConditionalDef(this, prerequisite, rescoper);
+				Rescoper additionalRescoper) {
+			return new ConditionalDef(this, getPrerequisite(), rescoper);
 		}
 
 	}

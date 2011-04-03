@@ -19,12 +19,14 @@
 */
 package org.o42a.core.def;
 
+import org.o42a.core.ref.Logical;
+
 
 class FilteredValueDef extends ValueDefWrap {
 
 	private final DefKind kind;
 
-	FilteredValueDef(ValueDef def, LogicalDef prerequisite, boolean claim) {
+	FilteredValueDef(ValueDef def, Logical prerequisite, boolean claim) {
 		super(def, prerequisite, def.getRescoper());
 		this.kind = claim ? DefKind.CLAIM : DefKind.PROPOSITION;
 	}
@@ -32,7 +34,7 @@ class FilteredValueDef extends ValueDefWrap {
 	private FilteredValueDef(
 			FilteredValueDef prototype,
 			ValueDef wrapped,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, wrapped, prerequisite, rescoper);
 		this.kind = prototype.kind;
@@ -48,7 +50,7 @@ class FilteredValueDef extends ValueDefWrap {
 		if (isClaim()) {
 			return this;
 		}
-		return new FilteredValueDef(this, prerequisite(), true);
+		return new FilteredValueDef(this, getPrerequisite(), true);
 	}
 
 	@Override
@@ -56,16 +58,15 @@ class FilteredValueDef extends ValueDefWrap {
 		if (!isClaim()) {
 			return this;
 		}
-		return new FilteredValueDef(this, prerequisite(), false);
+		return new FilteredValueDef(this, getPrerequisite(), false);
 	}
 
 	@Override
 	protected FilteredValueDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
-			ValueDef wrapped,
-			LogicalDef prerequisite) {
-		return new FilteredValueDef(this, wrapped, prerequisite, rescoper);
+			ValueDef wrapped) {
+		return new FilteredValueDef(this, wrapped, getPrerequisite(), rescoper);
 	}
 
 	@Override

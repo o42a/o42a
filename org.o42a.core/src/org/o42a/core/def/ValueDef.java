@@ -21,7 +21,6 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
-import static org.o42a.core.def.LogicalDef.trueLogicalDef;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Ref.voidRef;
 
@@ -70,8 +69,8 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 		return new VoidDef(
 				voidRef,
-				prerequisite != null ? prerequisite.toLogicalDef()
-				: trueLogicalDef(location, voidRef.getScope()));
+				prerequisite != null ? prerequisite
+				: logicalTrue(location, voidRef.getScope()));
 	}
 
 	public static ValueDef voidClaim(
@@ -86,14 +85,14 @@ public abstract class ValueDef extends Def<ValueDef> {
 	public ValueDef(
 			Obj source,
 			LocationInfo location,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(source, location, prerequisite, rescoper);
 	}
 
 	protected ValueDef(
 			ValueDef prototype,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 	}
@@ -124,6 +123,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	@Override
 	public final DefValue definitionValue(Scope scope) {
+		scope = getRescoper().rescope(scope);
 
 		final LogicalValue logicalValue = getPrerequisite().logicalValue(scope);
 
@@ -134,7 +134,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return DefValue.unknownValue(this);
 		}
 
-		final Value<?> value = calculateValue(getRescoper().rescope(scope));
+		final Value<?> value = calculateValue(scope);
 
 		if (value == null) {
 			return DefValue.unknownValue(this);
@@ -175,6 +175,11 @@ public abstract class ValueDef extends Def<ValueDef> {
 				defs);
 	}
 
+	public void writePrerequisite(Code code, CodePos exit, HostOp host) {
+		host = getRescoper().rescope(code, exit, host);
+		getPrerequisite().write(code, exit, host);
+	}
+
 	public abstract void writeValue(
 			Code code,
 			CodePos exit,
@@ -184,13 +189,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 	protected abstract Value<?> calculateValue(Scope scope);
 
 	@Override
-	protected abstract ValueDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper,
-			LogicalDef prerequisite);
-
-	@Override
-	final ValueDef filter(LogicalDef prerequisite, boolean hasPrerequisite, boolean claim) {
+	final ValueDef filter(
+			Logical prerequisite,
+			boolean hasPrerequisite,
+			boolean claim) {
 		return new FilteredValueDef(this, prerequisite, claim);
 	}
 

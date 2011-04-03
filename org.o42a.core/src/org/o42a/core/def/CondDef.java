@@ -28,6 +28,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -38,14 +39,14 @@ public abstract class CondDef extends Def<CondDef> {
 	public CondDef(
 			Obj source,
 			LocationInfo location,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(source, location, prerequisite, rescoper);
 	}
 
 	protected CondDef(
 			CondDef prototype,
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 	}
@@ -73,10 +74,11 @@ public abstract class CondDef extends Def<CondDef> {
 
 	@Override
 	public final DefValue definitionValue(Scope scope) {
+		scope = getRescoper().rescope(scope);
 		if (!hasPrerequisite()) {
 
 			final LogicalValue logicalValue =
-				getLogical().logicalValue(getRescoper().rescope(scope));
+				getLogical().logicalValue(scope);
 
 			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
 		}
@@ -91,7 +93,7 @@ public abstract class CondDef extends Def<CondDef> {
 		}
 
 		final LogicalValue logicalValue =
-			getLogical().logicalValue(getRescoper().rescope(scope));
+			getLogical().logicalValue(scope);
 
 		if (getPrerequisite().isTrue()) {
 			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
@@ -140,7 +142,7 @@ public abstract class CondDef extends Def<CondDef> {
 
 	@Override
 	CondDef filter(
-			LogicalDef prerequisite,
+			Logical prerequisite,
 			boolean hasPrerequisite,
 			boolean claim) {
 		return new FilteredCondDef(this, prerequisite, hasPrerequisite, claim);
