@@ -34,7 +34,9 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class LogicalDef extends Rescopable implements SourceInfo {
+public abstract class LogicalDef
+		extends Rescopable<LogicalDef>
+		implements SourceInfo {
 
 	public static LogicalDef emptyLogicalDef(
 			LocationInfo location,
@@ -92,6 +94,10 @@ public abstract class LogicalDef extends Rescopable implements SourceInfo {
 		return this.logical.getLoggable();
 	}
 
+	public final Logical getLogical() {
+		return this.logical;
+	}
+
 	public final boolean isEmpty() {
 		return this.requirements.length == 0;
 	}
@@ -142,21 +148,6 @@ public abstract class LogicalDef extends Rescopable implements SourceInfo {
 
 	public final LogicalDef[] getRequirements() {
 		return this.requirements;
-	}
-
-	@Override
-	public LogicalDef rescope(Rescoper rescoper) {
-		return (LogicalDef) super.rescope(rescoper);
-	}
-
-	@Override
-	public final LogicalDef upgradeScope(Scope scope) {
-		return (LogicalDef) super.upgradeScope(scope);
-	}
-
-	@Override
-	public final LogicalDef rescope(Scope scope) {
-		return (LogicalDef) super.rescope(scope);
 	}
 
 	public final LogicalDef and(Logical requirement) {
@@ -223,11 +214,6 @@ public abstract class LogicalDef extends Rescopable implements SourceInfo {
 	protected abstract Logical createFullLogical();
 
 	protected abstract LogicalDef conjunctionWith(LogicalDef requirement);
-
-	@Override
-	protected final Logical getScoped() {
-		return this.logical;
-	}
 
 	final SingleLogicalDef[] requirements() {
 		return this.requirements;

@@ -82,7 +82,7 @@ final class LogicalDefConjunction {
 		if (!cond1.getRescoper().equals(cond2.getRescoper())) {
 			return null;
 		}
-		return cond1.getScoped().and(cond2.getScoped());
+		return cond1.getLogical().and(cond2.getLogical());
 	}
 
 	private final SingleLogicalDef conjunction;

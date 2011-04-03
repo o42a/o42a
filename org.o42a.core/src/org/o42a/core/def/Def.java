@@ -29,13 +29,12 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
 
 
 public abstract class Def<D extends Def<D>>
-		extends RescopableStatement
+		extends Rescopable<D>
 		implements SourceInfo {
 
 	static final Obj sourceOf(ScopeInfo scope) {
@@ -59,18 +58,18 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	private final Obj source;
-	private final Statement statement;
+	private final LocationInfo location;
 	private LogicalDef prerequisite;
 	private Logical fullLogical;
 
 	public Def(
 			Obj source,
-			Statement statement,
+			LocationInfo location,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
 		super(rescoper);
+		this.location = location;
 		this.source = source;
-		this.statement = statement;
 		this.prerequisite = prerequisite;
 		if (prerequisite != null) {
 			assertSameScope(prerequisite);
@@ -80,19 +79,19 @@ public abstract class Def<D extends Def<D>>
 	protected Def(D prototype, LogicalDef prerequisite, Rescoper rescoper) {
 		this(
 				prototype.getSource(),
-				prototype.getStatement(),
+				prototype,
 				prerequisite,
 				rescoper);
 	}
 
 	@Override
 	public final Loggable getLoggable() {
-		return this.statement.getLoggable();
+		return this.location.getLoggable();
 	}
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.statement.getContext();
+		return this.location.getContext();
 	}
 
 	@Override
@@ -157,35 +156,11 @@ public abstract class Def<D extends Def<D>>
 
 	public abstract DefValue definitionValue(Scope scope);
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public final D rescope(Rescoper rescoper) {
-		return (D) super.rescope(rescoper);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public final D upgradeScope(Scope scope) {
-		return (D) super.upgradeScope(scope);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public final D rescope(Scope scope) {
-		return (D) super.rescope(scope);
-	}
-
 	public abstract ValueDef toValue();
 
 	public abstract CondDef toCondition();
 
 	public abstract Definitions toDefinitions();
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public D reproduce(Reproducer reproducer) {
-		return (D) super.reproduce(reproducer);
-	}
 
 	@Override
 	public String toString() {
@@ -204,7 +179,7 @@ public abstract class Def<D extends Def<D>>
 				out.append(this.prerequisite).append("? ");
 			}
 		}
-		out.append(getScoped());
+		out.append(this.location);
 		if (getKind().isClaim()) {
 			out.append("!]");
 		} else {
@@ -212,11 +187,6 @@ public abstract class Def<D extends Def<D>>
 		}
 
 		return out.toString();
-	}
-
-	@Override
-	protected final Statement getScoped() {
-		return this.statement;
 	}
 
 	protected abstract LogicalDef buildPrerequisite();
@@ -242,16 +212,6 @@ public abstract class Def<D extends Def<D>>
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			LogicalDef prerequisite);
-
-	@Override
-	protected D createReproduction(
-			Reproducer reproducer,
-			Reproducer rescopedReproducer,
-			Statement statement,
-			Rescoper rescoper) {
-		getScope().getLogger().notReproducible(this);
-		return null;
-	}
 
 	abstract D filter(
 			LogicalDef prerequisite,
@@ -292,14 +252,8 @@ public abstract class Def<D extends Def<D>>
 
 		@Override
 		public Logical reproduce(Reproducer reproducer) {
-
-			final Def<?> reproducedDef = this.def.reproduce(reproducer);
-
-			if (reproducedDef == null) {
-				return null;
-			}
-
-			return reproducedDef.fullLogical();
+			getLogger().notReproducible(this);
+			return null;
 		}
 
 	}

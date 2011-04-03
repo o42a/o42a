@@ -37,11 +37,7 @@ public abstract class ValueDefWrap extends ValueDef {
 			ValueDef wrapped,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
-		super(
-				wrapped.getSource(),
-				wrapped.getStatement(),
-				prerequisite,
-				rescoper);
+		super(wrapped.getSource(), wrapped, prerequisite, rescoper);
 		this.wrapped = wrapped;
 	}
 

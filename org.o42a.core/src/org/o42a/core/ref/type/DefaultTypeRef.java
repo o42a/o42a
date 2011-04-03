@@ -46,6 +46,11 @@ final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
+	public final Ref getRef() {
+		return this.ref;
+	}
+
+	@Override
 	public final Ref getUntachedRef() {
 		return this.ref;
 	}
@@ -64,11 +69,6 @@ final class DefaultTypeRef extends TypeRef {
 			return super.toString();
 		}
 		return this.ref.toString();
-	}
-
-	@Override
-	protected Ref getScoped() {
-		return this.ref;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
 
 
-public final class TargetRef extends RescopableRef {
+public final class TargetRef extends RescopableRef<TargetRef> {
 
 	private final Ref ref;
 	private final TypeRef typeRef;
@@ -57,6 +57,11 @@ public final class TargetRef extends RescopableRef {
 	@Override
 	public final Loggable getLoggable() {
 		return this.ref.getLoggable();
+	}
+
+	@Override
+	public final Ref getRef() {
+		return this.ref;
 	}
 
 	public TypeRef getTypeRef() {
@@ -81,31 +86,11 @@ public final class TargetRef extends RescopableRef {
 				getRescoper());
 	}
 
-	@Override
-	public TargetRef rescope(Rescoper rescoper) {
-		return (TargetRef) super.rescope(rescoper);
-	}
-
-	@Override
-	public final TargetRef upgradeScope(Scope scope) {
-		return (TargetRef) super.upgradeScope(scope);
-	}
-
-	@Override
-	public TargetRef rescope(Scope scope) {
-		return (TargetRef) super.rescope(scope);
-	}
-
 	public RefOp ref(Code code, CodePos exit, ObjOp host) {
 
 		final HostOp rescopedHost = getRescoper().rescope(code, exit, host);
 
 		return getRef().op(rescopedHost);
-	}
-
-	@Override
-	public TargetRef reproduce(Reproducer reproducer) {
-		return (TargetRef) super.reproduce(reproducer);
 	}
 
 	public HostOp target(Code code, CodePos exit, ObjOp host) {
@@ -121,11 +106,6 @@ public final class TargetRef extends RescopableRef {
 	}
 
 	@Override
-	protected final Ref getScoped() {
-		return this.ref;
-	}
-
-	@Override
 	protected TargetRef create(Rescoper rescoper, Rescoper additionalRescoper) {
 		return new TargetRef(
 				getRef(),
@@ -134,7 +114,7 @@ public final class TargetRef extends RescopableRef {
 	}
 
 	@Override
-	protected RescopableRef createReproduction(
+	protected TargetRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Ref ref,

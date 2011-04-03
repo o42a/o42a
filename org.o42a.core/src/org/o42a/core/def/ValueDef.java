@@ -36,7 +36,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.Statement;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -86,10 +85,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	public ValueDef(
 			Obj source,
-			Statement statement,
+			LocationInfo location,
 			LogicalDef prerequisite,
 			Rescoper rescoper) {
-		super(source, statement, prerequisite, rescoper);
+		super(source, location, prerequisite, rescoper);
 	}
 
 	protected ValueDef(
