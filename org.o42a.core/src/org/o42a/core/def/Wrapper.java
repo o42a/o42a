@@ -125,7 +125,7 @@ final class Wrapper extends Rescoper {
 			return new WrappedValueDef(
 					this,
 					wrapped,
-					getPrerequisite(),
+					prerequisite(),
 					rescoper);
 		}
 
@@ -158,7 +158,7 @@ final class Wrapper extends Rescoper {
 			return new WrappedCondDef(
 					this,
 					wrapped,
-					getPrerequisite(),
+					prerequisite(),
 					rescoper);
 		}
 

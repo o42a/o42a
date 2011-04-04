@@ -903,19 +903,16 @@ public class Definitions extends Scoped {
 				// But false value may appear later, so go on.
 				result = value;
 			}
-			if (def.hasPrerequisite()) {
-				// Prerequisite met.
-				// Skip the rest of alternatives and the following conditions
-				// without prerequisites ('otherwise').
-				i = nextNonPrereq(defs, i + 1);
-				if (i < 0) {
-					return result;
-				}
-				i = nextPrereq(defs, i + 1);
-				if (i < 0) {
-					return result;
-				}
+			if (!def.hasPrerequisite()) {
+				// All conditions without prerequisite should be met.
+				++i;
+				continue;
 			}
+			// Prerequisite met.
+			// Skip the rest of alternatives and the following conditions
+			// without prerequisites ('otherwise').
+			i = nextNonPrereq(defs, i + 1);
+			i = nextPrereq(defs, i + 1);
 		}
 
 		if (result == null) {
@@ -925,22 +922,24 @@ public class Definitions extends Scoped {
 		return result;
 	}
 
-	private int nextNonPrereq(CondDef[] defs, int start) {
-		for (int i = start; i < defs.length; ++i) {
-			if (!defs[i].hasPrerequisite()) {
-				return i;
+	private int nextNonPrereq(CondDef[] defs, int index) {
+		while (index < defs.length) {
+			if (!defs[index].hasPrerequisite()) {
+				return index;
 			}
+			++index;
 		}
-		return -1;
+		return index;
 	}
 
-	private int nextPrereq(CondDef[] defs, int start) {
-		for (int i = start; i < defs.length; ++i) {
-			if (defs[i].hasPrerequisite()) {
-				return i;
+	private int nextPrereq(CondDef[] defs, int index) {
+		while (index < defs.length) {
+			if (defs[index].hasPrerequisite()) {
+				return index;
 			}
+			++index;
 		}
-		return -1;
+		return index;
 	}
 
 	private DefValue calculateValue(Scope scope, ValueDef[] defs) {

@@ -64,7 +64,7 @@ class FilteredCondDef extends CondDefWrap {
 		}
 		return new FilteredCondDef(
 				this,
-				getPrerequisite(),
+				prerequisite(),
 				hasPrerequisite(),
 				true);
 	}
@@ -76,7 +76,7 @@ class FilteredCondDef extends CondDefWrap {
 		}
 		return new FilteredCondDef(
 				this,
-				getPrerequisite(),
+				prerequisite(),
 				hasPrerequisite(),
 				false);
 	}
@@ -86,14 +86,14 @@ class FilteredCondDef extends CondDefWrap {
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			CondDef wrapped) {
-		return new FilteredCondDef(this, wrapped, getPrerequisite(), rescoper);
+		return new FilteredCondDef(this, wrapped, prerequisite(), rescoper);
 	}
 
 	@Override
 	protected FilteredCondDef create(CondDef wrapped) {
 		return new FilteredCondDef(
 				wrapped,
-				getPrerequisite(),
+				prerequisite(),
 				hasPrerequisite(),
 				isRequirement());
 	}

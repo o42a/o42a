@@ -71,9 +71,6 @@ public abstract class Def<D extends Def<D>>
 		this.location = location;
 		this.source = source;
 		this.prerequisite = prerequisite;
-		if (prerequisite != null) {
-			assertSameScope(prerequisite);
-		}
 	}
 
 	protected Def(D prototype, Logical prerequisite, Rescoper rescoper) {
@@ -168,6 +165,10 @@ public abstract class Def<D extends Def<D>>
 		}
 
 		return out.toString();
+	}
+
+	protected final Logical prerequisite() {
+		return this.prerequisite;
 	}
 
 	protected final Logical getPrerequisite() {

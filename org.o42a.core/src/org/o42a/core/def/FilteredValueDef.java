@@ -50,7 +50,7 @@ class FilteredValueDef extends ValueDefWrap {
 		if (isClaim()) {
 			return this;
 		}
-		return new FilteredValueDef(this, getPrerequisite(), true);
+		return new FilteredValueDef(this, prerequisite(), true);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ class FilteredValueDef extends ValueDefWrap {
 		if (!isClaim()) {
 			return this;
 		}
-		return new FilteredValueDef(this, getPrerequisite(), false);
+		return new FilteredValueDef(this, prerequisite(), false);
 	}
 
 	@Override
@@ -66,12 +66,12 @@ class FilteredValueDef extends ValueDefWrap {
 			Rescoper rescoper,
 			Rescoper additionalRescoper,
 			ValueDef wrapped) {
-		return new FilteredValueDef(this, wrapped, getPrerequisite(), rescoper);
+		return new FilteredValueDef(this, wrapped, prerequisite(), rescoper);
 	}
 
 	@Override
 	protected FilteredValueDef create(ValueDef wrapped) {
-		return new FilteredValueDef(wrapped, getPrerequisite(), isClaim());
+		return new FilteredValueDef(wrapped, prerequisite(), isClaim());
 	}
 
 }
