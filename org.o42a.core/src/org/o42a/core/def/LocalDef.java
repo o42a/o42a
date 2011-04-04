@@ -45,30 +45,20 @@ class LocalDef extends ValueDef {
 
 	private final ImperativeBlock block;
 	private final boolean explicit;
-	private Logical logical;
 
 	LocalDef(
 			ImperativeBlock block,
 			Rescoper rescoper,
 			boolean explicit) {
-		super(
-				sourceOf(block),
-				block,
-				logicalTrue(block, block.getScope()),
-				rescoper);
+		super(sourceOf(block), block, rescoper);
 		this.block = block;
 		this.explicit = explicit;
 	}
 
-	private LocalDef(
-			LocalDef prototype,
-			Logical prerequisite,
-			Rescoper rescoper,
-			Logical logical) {
-		super(prototype, prerequisite, rescoper);
+	private LocalDef(LocalDef prototype, Rescoper rescoper) {
+		super(prototype, rescoper);
 		this.block = prototype.block;
 		this.explicit = prototype.explicit;
-		this.logical = logical;
 	}
 
 	public final ImperativeBlock getBlock() {
@@ -76,29 +66,8 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	public DefKind getKind() {
-		return DefKind.PROPOSITION;
-	}
-
-	@Override
 	public ValueType<?> getValueType() {
 		return getBlock().getValueType();
-	}
-
-	@Override
-	public LocalDef and(Logical logical) {
-		if (logical == null || logical.isTrue()) {
-			return this;
-		}
-
-		final Logical oldLogical = getLogical();
-		final Logical newLogical = oldLogical.and(logical);
-
-		if (oldLogical == newLogical) {
-			return this;
-		}
-
-		return new LocalDef(this, prerequisite(), getRescoper(), newLogical);
 	}
 
 	@Override
@@ -130,7 +99,7 @@ class LocalDef extends ValueDef {
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, getScope());
+		return logicalTrue(this, this.block.getScope());
 	}
 
 	@Override
@@ -145,18 +114,18 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical getLogical() {
-		if (this.logical != null) {
-			return this.logical;
-		}
-		return this.logical = new LocalLogical(this);
+	protected Logical buildPrecondition() {
+		return logicalTrue(this, getBlock().getScope());
 	}
 
 	@Override
-	protected LocalDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new LocalDef(this, prerequisite(), rescoper, this.logical);
+	protected Logical buildLogical() {
+		return new LocalLogical(this);
+	}
+
+	@Override
+	protected LocalDef create(Rescoper rescoper, Rescoper additionalRescoper) {
+		return new LocalDef(this, rescoper);
 	}
 
 	private static final class LocalLogical extends Logical {

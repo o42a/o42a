@@ -25,7 +25,6 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
@@ -35,54 +34,23 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-abstract class RefValueDef extends ValueDef {
-
-	static RefValueDef refValueDef(Ref ref) {
-		return new SimpleDef(ref);
-	}
+final class RefValueDef extends ValueDef {
 
 	private final Ref ref;
 
-	RefValueDef(
-			Obj source,
-			Ref ref,
-			Logical prerequisite,
-			Rescoper rescoper) {
-		super(source, ref, prerequisite, rescoper);
+	RefValueDef(Ref ref) {
+		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
 		this.ref = ref;
-		if (prerequisite != null) {
-			this.ref.assertSameScope(prerequisite);
-		}
 	}
 
-	RefValueDef(
-			RefValueDef prototype,
-			Logical prerequisite,
-			Rescoper rescoper) {
-		super(prototype, prerequisite, rescoper);
+	RefValueDef(RefValueDef prototype, Rescoper rescoper) {
+		super(prototype, rescoper);
 		this.ref = prototype.ref;
 	}
 
 	@Override
 	public ValueType<?> getValueType() {
 		return this.ref.getValueType();
-	}
-
-	@Override
-	public DefKind getKind() {
-		return DefKind.PROPOSITION;
-	}
-
-	@Override
-	public RefValueDef and(Logical logical) {
-
-		final Ref newRef = this.ref.and(logical);
-
-		if (this.ref == newRef) {
-			return this;
-		}
-
-		return new ConditionalDef(this, newRef);
 	}
 
 	public RefOp ref(Code code, CodePos exit, HostOp host) {
@@ -98,7 +66,17 @@ abstract class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical getLogical() {
+	protected Logical buildPrerequisite() {
+		return logicalTrue(this, this.ref.getScope());
+	}
+
+	@Override
+	protected Logical buildPrecondition() {
+		return logicalTrue(this, this.ref.getScope());
+	}
+
+	@Override
+	protected Logical buildLogical() {
 		return this.ref.getLogical();
 	}
 
@@ -108,107 +86,10 @@ abstract class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected abstract RefValueDef create(
+	protected RefValueDef create(
 			Rescoper rescoper,
-			Rescoper additionalRescoper);
-
-	static final class VoidDef extends RefValueDef {
-
-		VoidDef(Ref ref, Logical prerequisite) {
-			super(
-					sourceOf(ref),
-					ref,
-					prerequisite,
-					transparentRescoper(ref.getScope()));
-		}
-
-		VoidDef(VoidDef prototype, Logical prerequisite, Rescoper rescoper) {
-			super(prototype, prerequisite, rescoper);
-		}
-
-		@Override
-		protected Logical buildPrerequisite() {
-			return null;// never called
-		}
-
-		@Override
-		protected VoidDef create(
-				Rescoper rescoper,
-				Rescoper additionalRescoper) {
-			return new VoidDef(this, prerequisite(), rescoper);
-		}
-
-	}
-
-	private static final class SimpleDef extends RefValueDef {
-
-		SimpleDef(Ref ref) {
-			super(
-					sourceOf(ref),
-					ref,
-					logicalTrue(ref, ref.getScope()),
-					transparentRescoper(ref.getScope()));
-		}
-
-		SimpleDef(
-				RefValueDef prototype,
-				Logical prerequisite,
-				Rescoper rescoper) {
-			super(prototype, prerequisite, rescoper);
-		}
-
-		@Override
-		protected Logical buildPrerequisite() {
-			return logicalTrue(this, getScope());
-		}
-
-		@Override
-		protected SimpleDef create(
-				Rescoper rescoper,
-				Rescoper additionalRescoper) {
-			return new SimpleDef(this, prerequisite(), rescoper);
-		}
-
-	}
-
-	private static class ConditionalDef extends RefValueDef {
-
-		private final RefValueDef def;
-
-		ConditionalDef(RefValueDef def, Ref ref) {
-			super(
-					def.getSource(),
-					ref,
-					def.prerequisite(),
-					def.getRescoper());
-			this.def = def;
-		}
-
-		ConditionalDef(
-				ConditionalDef prototype,
-				Logical prerequisite,
-				Rescoper rescoper) {
-			super(prototype, prerequisite, rescoper);
-			this.def = prototype.def;
-		}
-
-		@Override
-		public DefKind getKind() {
-			return this.def.getKind();
-		}
-
-		@Override
-		protected Logical buildPrerequisite() {
-			return this.def.getPrerequisite();
-		}
-
-		@Override
-		protected ConditionalDef create(
-				Rescoper rescoper,
-				Rescoper additionalRescoper) {
-			return new ConditionalDef(this, prerequisite(), rescoper);
-		}
-
+			Rescoper additionalRescoper) {
+		return new RefValueDef(this, rescoper);
 	}
 
 }

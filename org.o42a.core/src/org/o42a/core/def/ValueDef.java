@@ -19,22 +19,17 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
-import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.RefValueDef.VoidDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -42,59 +37,14 @@ import org.o42a.core.value.ValueType;
 
 public abstract class ValueDef extends Def<ValueDef> {
 
-	public static ValueDef voidDef(
-			LocationInfo location,
-			Distributor distributor) {
-		return voidDef(
-				location,
-				distributor,
-				logicalTrue(location, distributor.getScope()));
-	}
-
-	public static ValueDef voidClaim(
-			LocationInfo location,
-			Distributor distributor) {
-		return voidClaim(
-				location,
-				distributor,
-				logicalTrue(location, distributor.getScope()));
-	}
-
-	public static ValueDef voidDef(
-			LocationInfo location,
-			Distributor distributor,
-			Logical prerequisite) {
-
-		final Ref voidRef = voidRef(location, distributor);
-
-		return new VoidDef(
-				voidRef,
-				prerequisite != null ? prerequisite
-				: logicalTrue(location, voidRef.getScope()));
-	}
-
-	public static ValueDef voidClaim(
-			LocationInfo location,
-			Distributor distributor,
-			Logical prerequisite) {
-		return voidDef(location, distributor, prerequisite).claim();
-	}
-
 	private CondDef condition;
 
-	public ValueDef(
-			Obj source,
-			LocationInfo location,
-			Logical prerequisite,
-			Rescoper rescoper) {
-		super(source, location, prerequisite, rescoper);
+	public ValueDef(Obj source, LocationInfo location, Rescoper rescoper) {
+		super(source, location, DefKind.PROPOSITION, rescoper);
 	}
 
-	protected ValueDef(
-			ValueDef prototype,
-			Logical prerequisite,
-			Rescoper rescoper) {
-		super(prototype, prerequisite, rescoper);
+	protected ValueDef(ValueDef prototype, Rescoper rescoper) {
+		super(prototype, rescoper);
 	}
 
 	public final boolean isClaim() {
@@ -102,11 +52,6 @@ public abstract class ValueDef extends Def<ValueDef> {
 	}
 
 	public abstract ValueType<?> getValueType();
-
-	@Override
-	public final boolean hasPrerequisite() {
-		return true;
-	}
 
 	@Override
 	public final ValueDef toValue() {
@@ -126,29 +71,42 @@ public abstract class ValueDef extends Def<ValueDef> {
 		assertCompatible(scope);
 
 		final Scope rescoped = getRescoper().rescope(scope);
-		final LogicalValue logicalValue =
+		final LogicalValue prerequisite =
 			getPrerequisite().logicalValue(rescoped);
 
-		if (logicalValue.isFalse()) {
-			if (getPrerequisite().isFalse()) {
-				return DefValue.alwaysIgnoredValue(this);
+		if (!prerequisite.isTrue()) {
+			if (!prerequisite.isFalse()) {
+				return defValue(this, getValueType().runtimeValue());
 			}
-			return DefValue.unknownValue(this);
+			if (getPrerequisite().isFalse()) {
+				return alwaysIgnoredValue(this);
+			}
+			return unknownValue(this);
+		}
+
+		final LogicalValue precondition =
+			getPrecondition().logicalValue(rescoped);
+
+		if (!precondition.isTrue()) {
+			if (!precondition.isFalse()) {
+				return defValue(this, getValueType().runtimeValue());
+			}
+			if (getPrerequisite().isTrue() && getPrecondition().isFalse()) {
+				return alwaysMeaningfulValue(this, getValueType().falseValue());
+			}
+			return defValue(this, getValueType().falseValue());
 		}
 
 		final Value<?> value = calculateValue(rescoped);
 
 		if (value == null) {
-			return DefValue.unknownValue(this);
+			return unknownValue(this);
+		}
+		if (getPrerequisite().isTrue() && getPrecondition().isTrue()) {
+			return alwaysMeaningfulValue(this, value);
 		}
 
-		if (getPrerequisite().isTrue()) {
-			return DefValue.alwaysMeaningfulValue(this, value);
-		}
-
-		return DefValue.value(
-				this,
-				value.require(logicalValue));
+		return defValue(this, value);
 	}
 
 	@Override
@@ -189,13 +147,5 @@ public abstract class ValueDef extends Def<ValueDef> {
 			ValOp result);
 
 	protected abstract Value<?> calculateValue(Scope scope);
-
-	@Override
-	final ValueDef filter(
-			Logical prerequisite,
-			boolean hasPrerequisite,
-			boolean claim) {
-		return new FilteredValueDef(this, prerequisite, claim);
-	}
 
 }

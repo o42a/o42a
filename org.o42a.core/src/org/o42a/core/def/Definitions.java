@@ -558,7 +558,7 @@ public class Definitions extends Scoped {
 				getValueType(),
 				this.requirements,
 				new CondDef[] {
-					RefCondDef.refCondDef(
+					new RefCondDef(
 							/* The source should differ from scope,
 							 * as this definition is not explicit. */
 							getScope().getContext().getVoid(),
@@ -742,7 +742,6 @@ public class Definitions extends Scoped {
 	private Definitions refinePropositions(
 			ValueType<?> valueType,
 			ValueDef[] refinements) {
-		assert assertDefsScopeIs(refinements, getScope());
 		if (refinements.length == 0 && this.valueType == valueType) {
 			return this;
 		}

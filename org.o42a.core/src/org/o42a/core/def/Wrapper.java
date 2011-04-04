@@ -24,7 +24,6 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 
 
@@ -50,15 +49,6 @@ final class Wrapper extends Rescoper {
 	@Override
 	public HostOp rescope(Code code, CodePos exit, HostOp host) {
 		return host;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <D extends Def<D>> D updateDef(D def) {
-		if (def.isValue()) {
-			return (D) new WrappedValueDef(def.toValue());
-		}
-		return (D) new WrappedCondDef(def.toCondition());
 	}
 
 	@Override
@@ -101,72 +91,6 @@ final class Wrapper extends Rescoper {
 		}
 
 		return true;
-	}
-
-	private final class WrappedValueDef extends ValueDefWrap {
-
-		WrappedValueDef(ValueDef wrapped) {
-			super(wrapped, null, Wrapper.this);
-		}
-
-		WrappedValueDef(
-				WrappedValueDef prototype,
-				ValueDef wrapped,
-				Logical prerequisite,
-				Rescoper rescoper) {
-			super(prototype, wrapped, prerequisite, rescoper);
-		}
-
-		@Override
-		protected WrappedValueDef create(
-				Rescoper rescoper,
-				Rescoper additionalRescoper,
-				ValueDef wrapped) {
-			return new WrappedValueDef(
-					this,
-					wrapped,
-					prerequisite(),
-					rescoper);
-		}
-
-		@Override
-		protected WrappedValueDef create(ValueDef wrapped) {
-			return new WrappedValueDef(wrapped);
-		}
-
-	}
-
-	private final class WrappedCondDef extends CondDefWrap {
-
-		WrappedCondDef(CondDef wrapped) {
-			super(wrapped, null, Wrapper.this);
-		}
-
-		WrappedCondDef(
-				WrappedCondDef prototype,
-				CondDef wrapped,
-				Logical prerequisite,
-				Rescoper rescoper) {
-			super(prototype, wrapped, prerequisite, rescoper);
-		}
-
-		@Override
-		protected WrappedCondDef create(
-				Rescoper rescoper,
-				Rescoper additionalRescoper,
-				CondDef wrapped) {
-			return new WrappedCondDef(
-					this,
-					wrapped,
-					prerequisite(),
-					rescoper);
-		}
-
-		@Override
-		protected WrappedCondDef create(CondDef wrapped) {
-			return new WrappedCondDef(wrapped);
-		}
-
 	}
 
 }

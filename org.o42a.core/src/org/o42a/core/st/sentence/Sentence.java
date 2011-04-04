@@ -27,8 +27,8 @@ import java.util.List;
 
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.DefinitionTargets;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -128,6 +128,11 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		final StringBuilder out = new StringBuilder();
 		boolean separator = false;
 
+		final Sentence<S> prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+			out.append(prerequisite).append(' ');
+		}
 		for (Statements<?> alt : getAlternatives()) {
 			if (!separator) {
 				separator = true;

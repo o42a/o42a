@@ -43,4 +43,12 @@ public enum DefKind {
 		return this.value;
 	}
 
+	public final DefKind claim() {
+		return isValue() ? CLAIM : REQUIREMENT;
+	}
+
+	public final DefKind unclaim() {
+		return isValue() ? PROPOSITION : CONDITION;
+	}
+
 }

@@ -28,7 +28,9 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.*;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -349,13 +351,6 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		return new ApplyDirective(this, directive);
-	}
-
-	public Ref and(Logical logical) {
-		if (logical.isTrue()) {
-			return this;
-		}
-		return new ConditionalRef(this, logical);
 	}
 
 	public TypeRef toTypeRef() {

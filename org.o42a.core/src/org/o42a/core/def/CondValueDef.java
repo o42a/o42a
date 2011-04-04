@@ -35,24 +35,16 @@ final class CondValueDef extends ValueDef {
 	private final CondDef def;
 
 	CondValueDef(CondDef def) {
-		super(def.getSource(), def, def.prerequisite(), def.getRescoper());
+		super(def.getSource(), def.getLocation(), def.getRescoper());
 		this.def = def;
+		update(
+				def.isRequirement() ? DefKind.CLAIM : DefKind.PROPOSITION,
+				true);
 	}
 
-	private CondValueDef(
-			CondValueDef prototype,
-			Logical prerequisite,
-			Rescoper rescoper) {
-		super(prototype, prerequisite, rescoper);
+	private CondValueDef(CondValueDef prototype, Rescoper rescoper) {
+		super(prototype, rescoper);
 		this.def = prototype.def;
-	}
-
-	@Override
-	public DefKind getKind() {
-		if (this.def.isRequirement()) {
-			return DefKind.CLAIM;
-		}
-		return DefKind.PROPOSITION;
 	}
 
 	@Override
@@ -84,15 +76,8 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new CondValueDef(this, prerequisite(), rescoper);
-	}
-
-	@Override
-	public ValueDef and(Logical logical) {
-		return this.def.and(logical).toValue();
+	protected ValueDef create(Rescoper rescoper, Rescoper additionalRescoper) {
+		return new CondValueDef(this, rescoper);
 	}
 
 	@Override
@@ -101,8 +86,13 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical getLogical() {
-		return this.def.getLogical();
+	protected Logical buildPrecondition() {
+		return this.def.getPrecondition();
+	}
+
+	@Override
+	protected Logical buildLogical() {
+		return this.def.buildLogical();
 	}
 
 }

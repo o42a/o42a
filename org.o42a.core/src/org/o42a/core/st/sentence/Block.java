@@ -220,9 +220,15 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 
 		final StringBuilder out = new StringBuilder();
 		final boolean parentheses = isParentheses();
+		boolean space = false;
 
 		out.append(parentheses ? '(' : '{');
 		for (Sentence<?> sentence : getSentences()) {
+			if (space) {
+				out.append(' ');
+			} else {
+				space = true;
+			}
 			out.append(sentence);
 		}
 		out.append(parentheses ? ')' : '}');
