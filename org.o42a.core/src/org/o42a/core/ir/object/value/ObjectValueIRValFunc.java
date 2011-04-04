@@ -149,12 +149,11 @@ public abstract class ObjectValueIRValFunc
 			new ValueCollector(getObjectIR().getObject(), defs.length);
 
 		collector.addDefs(defs);
-		if (collector.ancestorIndex < 0) {
-			if (collector.size() == 0) {
-				writeAncestorDef(code, result, host);
-			}
+		if (collector.size() == 0) {
+			writeAncestorDef(code, result, host);
+		} else {
+			writeExplicitDefs(code, result, host, collector);
 		}
-		writeExplicitDefs(code, result, host, collector);
 
 		code.returnVoid();
 	}
@@ -210,7 +209,7 @@ public abstract class ObjectValueIRValFunc
 
 			if (i == collector.ancestorIndex) {
 				writeAncestorDef(block, result, host);
-				result.loadUnknown(code).go(block, nextPos, code.tail());
+				result.loadUnknown(block).go(block, nextPos, code.tail());
 			} else {
 				// Write explicit definition.
 
@@ -264,13 +263,17 @@ public abstract class ObjectValueIRValFunc
 		if (isClaim()) {
 			if (hasAncestor.isDebug()) {
 				hasAncestor.begin("Ancestor claim");
-				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
+				hasAncestor.dumpName(
+						"Ancestor: ",
+						ancestorBody.toData(hasAncestor));
 			}
 			ancestorType.writeClaim(hasAncestor, result, ancestorBody);
 		} else {
 			if (hasAncestor.isDebug()) {
 				hasAncestor.begin("Ancestor proposition");
-				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
+				hasAncestor.dumpName(
+						"Ancestor: ",
+						ancestorBody.toData(hasAncestor));
 			}
 			ancestorType.writeProposition(hasAncestor, result, ancestorBody);
 		}
