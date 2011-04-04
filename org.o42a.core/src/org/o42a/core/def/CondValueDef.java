@@ -35,7 +35,7 @@ final class CondValueDef extends ValueDef {
 	private final CondDef def;
 
 	CondValueDef(CondDef def) {
-		super(def.getSource(), def, def.getPrerequisite(), def.getRescoper());
+		super(def.getSource(), def, def.prerequisite(), def.getRescoper());
 		this.def = def;
 	}
 
@@ -88,7 +88,7 @@ final class CondValueDef extends ValueDef {
 	protected ValueDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new CondValueDef(this, getPrerequisite(), rescoper);
+		return new CondValueDef(this, prerequisite(), rescoper);
 	}
 
 	@Override

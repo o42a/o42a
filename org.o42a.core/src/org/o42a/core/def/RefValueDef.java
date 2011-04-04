@@ -140,7 +140,7 @@ abstract class RefValueDef extends ValueDef {
 		protected VoidDef create(
 				Rescoper rescoper,
 				Rescoper additionalRescoper) {
-			return new VoidDef(this, getPrerequisite(), rescoper);
+			return new VoidDef(this, prerequisite(), rescoper);
 		}
 
 	}
@@ -171,7 +171,7 @@ abstract class RefValueDef extends ValueDef {
 		protected SimpleDef create(
 				Rescoper rescoper,
 				Rescoper additionalRescoper) {
-			return new SimpleDef(this, getPrerequisite(), rescoper);
+			return new SimpleDef(this, prerequisite(), rescoper);
 		}
 
 	}
@@ -184,7 +184,7 @@ abstract class RefValueDef extends ValueDef {
 			super(
 					def.getSource(),
 					ref,
-					def.getPrerequisite(),
+					def.prerequisite(),
 					def.getRescoper());
 			this.def = def;
 		}
@@ -211,7 +211,7 @@ abstract class RefValueDef extends ValueDef {
 		protected ConditionalDef create(
 				Rescoper rescoper,
 				Rescoper additionalRescoper) {
-			return new ConditionalDef(this, getPrerequisite(), rescoper);
+			return new ConditionalDef(this, prerequisite(), rescoper);
 		}
 
 	}

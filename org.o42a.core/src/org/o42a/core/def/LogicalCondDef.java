@@ -68,7 +68,7 @@ final class LogicalCondDef extends CondDef {
 
 		return new LogicalCondDef(
 				this,
-				getPrerequisite(),
+				prerequisite(),
 				getRescoper(),
 				newLogical);
 	}
@@ -87,7 +87,7 @@ final class LogicalCondDef extends CondDef {
 	protected CondDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new LogicalCondDef(this, getPrerequisite(), rescoper, this.logical);
+		return new LogicalCondDef(this, prerequisite(), rescoper, this.logical);
 	}
 
 }

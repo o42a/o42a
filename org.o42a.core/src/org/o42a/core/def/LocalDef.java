@@ -97,11 +97,7 @@ class LocalDef extends ValueDef {
 			return this;
 		}
 
-		return new LocalDef(
-				this,
-				getPrerequisite(),
-				getRescoper(),
-				newLogical);
+		return new LocalDef(this, prerequisite(), getRescoper(), newLogical);
 	}
 
 	@Override
@@ -159,7 +155,7 @@ class LocalDef extends ValueDef {
 	protected LocalDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new LocalDef(this, getPrerequisite(), rescoper, this.logical);
+		return new LocalDef(this, prerequisite(), rescoper, this.logical);
 	}
 
 	private static final class LocalLogical extends Logical {

@@ -71,7 +71,7 @@ final class ValueCondDef extends CondDef {
 	protected CondDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new ValueCondDef(this, getPrerequisite(), rescoper);
+		return new ValueCondDef(this, prerequisite(), rescoper);
 	}
 
 }

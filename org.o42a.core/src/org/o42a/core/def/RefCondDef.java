@@ -122,7 +122,7 @@ abstract class RefCondDef extends CondDef {
 		protected SimpleDef create(
 				Rescoper rescoper,
 				Rescoper additionalRescoper) {
-			return new SimpleDef(this, getPrerequisite(), rescoper);
+			return new SimpleDef(this, prerequisite(), rescoper);
 		}
 
 	}
@@ -167,7 +167,7 @@ abstract class RefCondDef extends CondDef {
 		protected ConditionalDef create(
 				Rescoper rescoper,
 				Rescoper additionalRescoper) {
-			return new ConditionalDef(this, getPrerequisite(), rescoper);
+			return new ConditionalDef(this, prerequisite(), rescoper);
 		}
 
 	}
