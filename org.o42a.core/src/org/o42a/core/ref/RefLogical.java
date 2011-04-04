@@ -46,6 +46,7 @@ final class RefLogical extends Logical {
 
 	@Override
 	public LogicalValue logicalValue(Scope scope) {
+		assertCompatible(scope);
 		return this.ref.value(scope).getLogicalValue();
 	}
 

@@ -210,9 +210,12 @@ public abstract class Def<D extends Def<D>>
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
-			scope = this.def.getRescoper().rescope(scope);
-			return this.def.getPrerequisite().logicalValue(scope).and(
-					this.def.getLogical().logicalValue(scope));
+			assertCompatible(scope);
+
+			final Scope rescoped = this.def.getRescoper().rescope(scope);
+
+			return this.def.getPrerequisite().logicalValue(rescoped).and(
+					this.def.getLogical().logicalValue(rescoped));
 		}
 
 		@Override

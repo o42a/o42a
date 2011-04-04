@@ -123,9 +123,11 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	@Override
 	public final DefValue definitionValue(Scope scope) {
-		scope = getRescoper().rescope(scope);
+		assertCompatible(scope);
 
-		final LogicalValue logicalValue = getPrerequisite().logicalValue(scope);
+		final Scope rescoped = getRescoper().rescope(scope);
+		final LogicalValue logicalValue =
+			getPrerequisite().logicalValue(rescoped);
 
 		if (logicalValue.isFalse()) {
 			if (getPrerequisite().isFalse()) {
@@ -134,7 +136,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return DefValue.unknownValue(this);
 		}
 
-		final Value<?> value = calculateValue(scope);
+		final Value<?> value = calculateValue(rescoped);
 
 		if (value == null) {
 			return DefValue.unknownValue(this);

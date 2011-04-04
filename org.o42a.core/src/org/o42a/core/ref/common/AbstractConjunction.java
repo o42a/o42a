@@ -56,6 +56,7 @@ public abstract class AbstractConjunction extends Logical {
 
 	@Override
 	public LogicalValue logicalValue(Scope scope) {
+		assertCompatible(scope);
 
 		LogicalValue result = null;
 		final int numClaims = numClaims();

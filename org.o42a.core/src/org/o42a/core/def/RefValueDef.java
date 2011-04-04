@@ -42,7 +42,6 @@ abstract class RefValueDef extends ValueDef {
 	}
 
 	private final Ref ref;
-	private Ref rescopedRef;
 
 	RefValueDef(
 			Obj source,
@@ -51,6 +50,9 @@ abstract class RefValueDef extends ValueDef {
 			Rescoper rescoper) {
 		super(source, ref, prerequisite, rescoper);
 		this.ref = ref;
+		if (prerequisite != null) {
+			this.ref.assertSameScope(prerequisite);
+		}
 	}
 
 	RefValueDef(
@@ -59,13 +61,6 @@ abstract class RefValueDef extends ValueDef {
 			Rescoper rescoper) {
 		super(prototype, prerequisite, rescoper);
 		this.ref = prototype.ref;
-	}
-
-	public final Ref getRescopedRef() {
-		if (this.rescopedRef != null) {
-			return this.rescopedRef;
-		}
-		return this.rescopedRef = this.ref.rescope(getRescoper());
 	}
 
 	@Override
@@ -109,7 +104,7 @@ abstract class RefValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
-		return this.ref.value(getRescoper().rescope(scope));
+		return this.ref.value(scope);
 	}
 
 	@Override

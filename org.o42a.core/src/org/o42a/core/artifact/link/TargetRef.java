@@ -145,6 +145,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 			return this.targetRef.getRef().getLogical().logicalValue(
 					this.targetRef.getRescoper().rescope(scope));
 		}

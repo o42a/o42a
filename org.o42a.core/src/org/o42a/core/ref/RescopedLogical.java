@@ -46,6 +46,7 @@ final class RescopedLogical extends Logical {
 
 	@Override
 	public LogicalValue logicalValue(Scope scope) {
+		assertCompatible(scope);
 		return this.logical.logicalValue(this.rescoper.rescope(scope));
 	}
 

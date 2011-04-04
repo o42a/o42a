@@ -27,8 +27,8 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.LogicalValue;
 
@@ -144,6 +144,7 @@ final class SentenceLogicals {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 			if (this.variants.isEmpty()) {
 				if (this.otherwise == null) {
 					return LogicalValue.TRUE;

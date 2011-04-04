@@ -456,6 +456,7 @@ public abstract class Logical extends LogicalBase {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 			return LogicalValue.TRUE;
 		}
 
@@ -490,6 +491,7 @@ public abstract class Logical extends LogicalBase {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 			return LogicalValue.FALSE;
 		}
 
@@ -525,6 +527,7 @@ public abstract class Logical extends LogicalBase {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 			return LogicalValue.RUNTIME;
 		}
 
@@ -560,6 +563,7 @@ public abstract class Logical extends LogicalBase {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 			return LogicalValue.RUNTIME;
 		}
 
@@ -611,6 +615,7 @@ public abstract class Logical extends LogicalBase {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 
 			LogicalValue result = null;
 
@@ -761,6 +766,7 @@ public abstract class Logical extends LogicalBase {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 			return negate().logicalValue(scope).negate();
 		}
 
