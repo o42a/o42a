@@ -732,6 +732,12 @@ public abstract class Obj extends Artifact<Obj>
 			Scope scope,
 			Definitions overriddenDefinitions,
 			Definitions ancestorDefinitions) {
+		if (ancestorDefinitions != null) {
+			ancestorDefinitions.assertScopeIs(scope);
+		}
+		if (overriddenDefinitions != null) {
+			overriddenDefinitions.assertScopeIs(scope);
+		}
 
 		boolean hasExplicitAncestor =
 			getAscendants().getExplicitAncestor() != null;

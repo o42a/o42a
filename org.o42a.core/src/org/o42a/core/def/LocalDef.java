@@ -27,6 +27,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
@@ -163,7 +164,7 @@ class LocalDef extends ValueDef {
 		private final LocalDef def;
 
 		LocalLogical(LocalDef def) {
-			super(def, def.getScope());
+			super(def, def.getBlock().getScope());
 			this.def = def;
 		}
 
@@ -174,9 +175,9 @@ class LocalDef extends ValueDef {
 
 		@Override
 		public LogicalValue logicalValue(Scope scope) {
+			assertCompatible(scope);
 
-			final LocalScope local =
-				this.def.getRescoper().rescope(scope).toLocal();
+			final LocalScope local = scope.toLocal();
 
 			assert local != null :
 				"Not a local scope: " + scope;
@@ -197,9 +198,10 @@ class LocalDef extends ValueDef {
 		public void write(Code code, CodePos exit, HostOp host) {
 			code.debug("Logical: " + this);
 
+			final LocalOp local = host.toLocal();
 			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
 
-			this.def.writeValue(code, exit, host, result);
+			this.def.writeValue(code, exit, local, result);
 		}
 
 		@Override

@@ -80,8 +80,7 @@ final class CondValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
-		return this.def.getLogical().logicalValue(
-				getRescoper().rescope(scope)).toValue();
+		return this.def.getLogical().logicalValue(scope).toValue();
 	}
 
 	@Override

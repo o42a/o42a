@@ -26,6 +26,7 @@ import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
@@ -68,6 +69,10 @@ public final class LocalOp implements HostOp {
 	@Override
 	public final ObjOp toObject(Code code, CodePos exit) {
 		return null;
+	}
+
+	public final ObjectOp owner() {
+		return getBuilder().owner();
 	}
 
 	@Override

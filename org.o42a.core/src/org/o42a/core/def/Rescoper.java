@@ -86,7 +86,10 @@ public abstract class Rescoper {
 				&& conditions == newConditions
 				&& claims == newClaims
 				&& propositions == newPropositions) {
-			return definitions;
+			if (resultScope == definitions.getScope()) {
+				// This may fail when there is no definitions.
+				return definitions;
+			}
 		}
 
 		return new Definitions(
@@ -127,6 +130,7 @@ public abstract class Rescoper {
 			final D def = defs[i];
 			final D newDef = updateDef(def);
 
+			newDef.assertScopeIs(getFinalScope());
 			if (def == newDef) {
 				continue;
 			}

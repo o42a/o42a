@@ -89,6 +89,7 @@ public class Definitions extends Scoped {
 		int defLen = 0;
 
 		for (ValueDef definition : definitions) {
+			definition.assertScopeIs(scope);
 			if (valueType == null) {
 				valueType = definition.getValueType();
 			} else {
@@ -166,6 +167,10 @@ public class Definitions extends Scoped {
 		this.conditions = conditions;
 		this.claims = claims;
 		this.propositions = propositions;
+		assert assertDefsScopeIs(requirements, scope);
+		assert assertDefsScopeIs(conditions, scope);
+		assert assertDefsScopeIs(claims, scope);
+		assert assertDefsScopeIs(propositions, scope);
 		assertEmptyWithoutValues();
 	}
 
@@ -188,6 +193,8 @@ public class Definitions extends Scoped {
 		this.requirements = requirements;
 		this.conditions = conditions;
 		this.claims = this.propositions = NO_VALUES;
+		assert assertDefsScopeIs(requirements, scope);
+		assert assertDefsScopeIs(conditions, scope);
 		assertEmptyWithoutValues();
 	}
 
@@ -204,6 +211,10 @@ public class Definitions extends Scoped {
 		this.conditions = conditions;
 		this.claims = claims;
 		this.propositions = propositions;
+		assert assertDefsScopeIs(requirements, getScope());
+		assert assertDefsScopeIs(conditions, getScope());
+		assert assertDefsScopeIs(claims, getScope());
+		assert assertDefsScopeIs(propositions, getScope());
 		assertEmptyWithoutValues();
 	}
 
@@ -299,6 +310,7 @@ public class Definitions extends Scoped {
 	}
 
 	public Definitions refine(Def<?> refinement) {
+		assertSameScope(refinement);
 		if (!refinement.isValue()) {
 
 			final CondDef condition = refinement.toCondition();
@@ -340,6 +352,7 @@ public class Definitions extends Scoped {
 	}
 
 	public Definitions refine(Definitions refinements) {
+		assertSameScope(refinements);
 		if (refinements.isEmpty()) {
 			return this;
 		}
@@ -467,7 +480,13 @@ public class Definitions extends Scoped {
 			return this;
 		}
 		assertCompatible(scope);
-		return new UpgradeRescoper(getScope(), scope).update(this);
+
+		final Definitions result =
+			new UpgradeRescoper(getScope(), scope).update(this);
+
+		result.assertScopeIs(scope);
+
+		return result;
 	}
 
 	public Definitions requirementPart(LocationInfo location) {
@@ -723,6 +742,7 @@ public class Definitions extends Scoped {
 	private Definitions refinePropositions(
 			ValueType<?> valueType,
 			ValueDef[] refinements) {
+		assert assertDefsScopeIs(refinements, getScope());
 		if (refinements.length == 0 && this.valueType == valueType) {
 			return this;
 		}
@@ -1003,6 +1023,13 @@ public class Definitions extends Scoped {
 			return "Empty Definitions";
 		}
 
+	}
+
+	private boolean assertDefsScopeIs(Def<?>[] defs, Scope scope) {
+		for (Def<?> def : defs) {
+			def.assertScopeIs(scope);
+		}
+		return true;
 	}
 
 }
