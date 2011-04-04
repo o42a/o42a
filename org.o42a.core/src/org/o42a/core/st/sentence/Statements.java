@@ -35,6 +35,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.declarative.RefCondition;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place;
 import org.o42a.util.Place.Trace;
@@ -229,6 +230,9 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				comma = true;
 			} else {
 				out.append(", ");
+			}
+			if (statement instanceof Ref) {
+				out.append('=');
 			}
 			out.append(statement);
 		}

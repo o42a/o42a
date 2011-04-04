@@ -88,12 +88,12 @@ public abstract class Expression extends Ref {
 
 			out.append('[');
 			loggable.printContent(out);
-			out.append("]?");
+			out.append("]");
 
 			return out.toString();
 		}
 
-		return getClass().getSimpleName() + '?';
+		return getClass().getSimpleName();
 	}
 
 	protected abstract Resolution resolveExpression(Scope scope);

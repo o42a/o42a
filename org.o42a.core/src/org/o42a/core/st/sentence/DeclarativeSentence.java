@@ -239,8 +239,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				return initial.prerequisite(scope);
 			}
 
-			return initial.prerequisite(scope).and(
-					prerequisite.getEnv().fullLogical(scope));
+			return prerequisite.getEnv().fullLogical(scope);
 		}
 
 		@Override

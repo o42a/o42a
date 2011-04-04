@@ -19,6 +19,8 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.def.Def.sourceOf;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
@@ -32,11 +34,11 @@ public abstract class RefDefBase extends Statement {
 	}
 
 	public final ValueDef toValueDef() {
-		return RefValueDef.refValueDef((Ref) this);
+		return new RefValueDef((Ref) this);
 	}
 
 	public final CondDef toCondDef() {
-		return RefCondDef.refCondDef((Ref) this);
+		return new RefCondDef(sourceOf(this), (Ref) this);
 	}
 
 }

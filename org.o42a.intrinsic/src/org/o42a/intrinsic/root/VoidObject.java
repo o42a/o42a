@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.def.ValueDef.voidDef;
+import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
@@ -83,7 +83,7 @@ public final class VoidObject extends Obj {
 		if (ascendantDefinitions != null) {
 			return ascendantDefinitions;
 		}
-		return voidDef(this, scope.distribute()).toDefinitions();
+		return voidRef(this, scope.distribute()).toValueDef().toDefinitions();
 	}
 
 	@Override

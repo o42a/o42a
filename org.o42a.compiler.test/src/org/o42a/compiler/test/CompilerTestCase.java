@@ -77,6 +77,8 @@ public abstract class CompilerTestCase {
 		final Value<?> value = object.getValue();
 
 		assertTrue("Value is not definite: " + value, value.isDefinite());
+		assertFalse("Value is unknown: " + value, value.isUnknown());
+		assertFalse("Value is false: " + value, value.isFalse());
 
 		final Object definiteValue = value.getDefiniteValue();
 

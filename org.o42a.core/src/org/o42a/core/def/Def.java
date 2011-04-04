@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
@@ -59,25 +60,33 @@ public abstract class Def<D extends Def<D>>
 
 	private final Obj source;
 	private final LocationInfo location;
+	private DefKind kind;
+	private boolean hasPrerequisite;
+	private Logical precondition;
 	private Logical prerequisite;
-	private Logical fullLogical;
+	private Logical logical;
 
-	public Def(
+	Def(
 			Obj source,
 			LocationInfo location,
-			Logical prerequisite,
+			DefKind kind,
 			Rescoper rescoper) {
 		super(rescoper);
 		this.location = location;
 		this.source = source;
-		this.prerequisite = prerequisite;
+		this.kind = kind;
+		this.hasPrerequisite = kind.isValue();
 	}
 
-	protected Def(D prototype, Logical prerequisite, Rescoper rescoper) {
+	Def(D prototype, Rescoper rescoper) {
 		super(rescoper);
-		this.location = prototype.location;
 		this.source = prototype.source;
-		this.prerequisite = prerequisite;
+		this.location = prototype.location;
+		this.kind = prototype.kind;
+		this.hasPrerequisite = prototype.hasPrerequisite;
+		this.prerequisite = prototype.prerequisite;
+		this.precondition = prototype.precondition;
+		this.logical = prototype.logical;
 	}
 
 	@Override
@@ -95,19 +104,20 @@ public abstract class Def<D extends Def<D>>
 		return this.source;
 	}
 
-	public abstract DefKind getKind();
+	public final DefKind getKind() {
+		return this.kind;
+	}
 
 	public final boolean isValue() {
 		return getKind().isValue();
 	}
 
-	public abstract boolean hasPrerequisite();
+	public final boolean hasPrerequisite() {
+		return this.hasPrerequisite;
+	}
 
 	public final Logical fullLogical() {
-		if (this.fullLogical != null) {
-			return this.fullLogical;
-		}
-		return this.fullLogical = new FullLogical(this);
+		return new FullLogical(this);
 	}
 
 	public final D addPrerequisite(Logical prerequisite) {
@@ -119,17 +129,54 @@ public abstract class Def<D extends Def<D>>
 			return self();
 		}
 
-		return filter(newPrerequisite, true, getKind().isClaim());
+		final D copy = copy();
+
+		copy.hasPrerequisite = true;
+		copy.prerequisite = newPrerequisite;
+
+		return copy;
 	}
 
-	public abstract D and(Logical logical);
+	public final D addPrecondition(Logical precondition) {
 
-	public D claim() {
-		return filter(getPrerequisite(), hasPrerequisite(), true);
+		final Logical oldPrecondition = getPrecondition();
+		final Logical newPrecondition =
+			Logical.and(oldPrecondition, precondition);
+
+		if (newPrecondition == oldPrecondition) {
+			return self();
+		}
+
+		final D copy = copy();
+
+		copy.precondition = newPrecondition;
+		copy.logical = null;
+
+		return copy;
 	}
 
-	public D unclaim() {
-		return filter(getPrerequisite(), hasPrerequisite(), false);
+	public final D claim() {
+		if (getKind().isClaim()) {
+			return self();
+		}
+
+		final D copy = copy();
+
+		copy.kind = this.kind.claim();
+
+		return copy;
+	}
+
+	public final D unclaim() {
+		if (!getKind().isClaim()) {
+			return self();
+		}
+
+		final D copy = copy();
+
+		copy.kind = this.kind.unclaim();
+
+		return copy;
 	}
 
 	public abstract DefValue definitionValue(Scope scope);
@@ -157,6 +204,9 @@ public abstract class Def<D extends Def<D>>
 				out.append(this.prerequisite).append("? ");
 			}
 		}
+		if (this.logical != null) {
+			out.append(this.logical).append(", ");
+		}
 		out.append(this.location);
 		if (getKind().isClaim()) {
 			out.append("!]");
@@ -165,10 +215,6 @@ public abstract class Def<D extends Def<D>>
 		}
 
 		return out.toString();
-	}
-
-	protected final Logical prerequisite() {
-		return this.prerequisite;
 	}
 
 	protected final Logical getPrerequisite() {
@@ -186,12 +232,36 @@ public abstract class Def<D extends Def<D>>
 
 	protected abstract Logical buildPrerequisite();
 
-	protected abstract Logical getLogical();
+	protected final Logical getPrecondition() {
+		if (this.precondition != null) {
+			return this.precondition;
+		}
+		return this.precondition = buildPrecondition();
+	}
 
-	abstract D filter(
-			Logical prerequisite,
-			boolean hasPrerequisite,
-			boolean claim);
+	protected abstract Logical buildPrecondition();
+
+	protected final Logical getLogical() {
+		if (this.logical != null) {
+			return this.logical;
+		}
+		return this.logical = getPrecondition().and(buildLogical());
+	}
+
+	protected abstract Logical buildLogical();
+
+	final LocationInfo getLocation() {
+		return this.location;
+	}
+
+	final void update(DefKind kind, boolean hasPrerequisite) {
+		this.kind = kind;
+		this.hasPrerequisite = hasPrerequisite;
+	}
+
+	private final D copy() {
+		return create(getRescoper(), transparentRescoper(getScope()));
+	}
 
 	private static final class FullLogical extends Logical {
 

@@ -39,7 +39,7 @@ public class DefValue {
 		return new NonExisting(definitions);
 	}
 
-	static DefValue value(Def<?> def, Value<?> value) {
+	static DefValue defValue(Def<?> def, Value<?> value) {
 		return new DefValue(def, value);
 	}
 

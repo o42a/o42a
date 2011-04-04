@@ -28,7 +28,6 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -36,19 +35,12 @@ public abstract class CondDef extends Def<CondDef> {
 
 	private ValueDef value;
 
-	public CondDef(
-			Obj source,
-			LocationInfo location,
-			Logical prerequisite,
-			Rescoper rescoper) {
-		super(source, location, prerequisite, rescoper);
+	public CondDef(Obj source, LocationInfo location, Rescoper rescoper) {
+		super(source, location, DefKind.CONDITION, rescoper);
 	}
 
-	protected CondDef(
-			CondDef prototype,
-			Logical prerequisite,
-			Rescoper rescoper) {
-		super(prototype, prerequisite, rescoper);
+	protected CondDef(CondDef prototype, Rescoper rescoper) {
+		super(prototype, rescoper);
 	}
 
 	public final boolean isRequirement() {
@@ -74,16 +66,20 @@ public abstract class CondDef extends Def<CondDef> {
 
 	@Override
 	public final DefValue definitionValue(Scope scope) {
-		scope = getRescoper().rescope(scope);
+		assertCompatible(scope);
+
+		final Scope rescoped = getRescoper().rescope(scope);
+
 		if (!hasPrerequisite()) {
 
 			final LogicalValue logicalValue =
-				getLogical().logicalValue(scope);
+				getLogical().logicalValue(rescoped);
 
 			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
 		}
 
-		final LogicalValue prerequisite = getPrerequisite().logicalValue(scope);
+		final LogicalValue prerequisite =
+			getPrerequisite().logicalValue(rescoped);
 
 		if (prerequisite.isFalse()) {
 			if (getPrerequisite().isFalse()) {
@@ -92,14 +88,13 @@ public abstract class CondDef extends Def<CondDef> {
 			return DefValue.unknownValue(this);
 		}
 
-		final LogicalValue logicalValue =
-			getLogical().logicalValue(scope);
+		final LogicalValue logicalValue = getLogical().logicalValue(rescoped);
 
 		if (getPrerequisite().isTrue()) {
 			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
 		}
 
-		return DefValue.value(
+		return DefValue.defValue(
 				this,
 				logicalValue.and(prerequisite).toValue());
 	}
@@ -138,14 +133,6 @@ public abstract class CondDef extends Def<CondDef> {
 		final HostOp rescopedHost = getRescoper().rescope(code, exit, host);
 
 		getLogical().write(code, exit, rescopedHost);
-	}
-
-	@Override
-	CondDef filter(
-			Logical prerequisite,
-			boolean hasPrerequisite,
-			boolean claim) {
-		return new FilteredCondDef(this, prerequisite, hasPrerequisite, claim);
 	}
 
 }

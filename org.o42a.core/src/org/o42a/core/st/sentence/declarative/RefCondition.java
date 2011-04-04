@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence;
+package org.o42a.core.st.sentence.declarative;
 
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
@@ -37,11 +37,11 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
 
 
-final class RefCondition extends Statement {
+public final class RefCondition extends Statement {
 
 	private final Ref ref;
 
-	RefCondition(Ref ref) {
+	public RefCondition(Ref ref) {
 		super(ref, ref.distribute());
 		this.ref = ref;
 	}
@@ -99,6 +99,11 @@ final class RefCondition extends Statement {
 		}
 
 		return new RefCondition(ref);
+	}
+
+	@Override
+	public String toString() {
+		return this.ref.toString();
 	}
 
 	@Override

@@ -33,53 +33,27 @@ final class LogicalCondDef extends CondDef {
 		super(
 				sourceOf(logical),
 				logical,
-				logicalTrue(logical, logical.getScope()),
 				transparentRescoper(logical.getScope()));
 		this.logical = logical;
 	}
 
-	private LogicalCondDef(
-			LogicalCondDef prototype,
-			Logical prerequisite,
-			Rescoper rescoper,
-			Logical logical) {
-		super(prototype, prerequisite, rescoper);
-		this.logical = logical;
-	}
-
-	@Override
-	public DefKind getKind() {
-		return DefKind.CONDITION;
-	}
-
-	@Override
-	public boolean hasPrerequisite() {
-		return false;
-	}
-
-	@Override
-	public CondDef and(Logical logical) {
-
-		final Logical newLogical = this.logical.and(logical);
-
-		if (newLogical == this.logical) {
-			return this;
-		}
-
-		return new LogicalCondDef(
-				this,
-				prerequisite(),
-				getRescoper(),
-				newLogical);
+	private LogicalCondDef(LogicalCondDef prototype, Rescoper rescoper) {
+		super(prototype, rescoper);
+		this.logical = prototype.logical;
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		throw new UnsupportedOperationException();
+		return logicalTrue(this, this.logical.getScope());
 	}
 
 	@Override
-	protected final Logical getLogical() {
+	protected Logical buildPrecondition() {
+		return logicalTrue(this, this.logical.getScope());
+	}
+
+	@Override
+	protected final Logical buildLogical() {
 		return this.logical;
 	}
 
@@ -87,7 +61,7 @@ final class LogicalCondDef extends CondDef {
 	protected CondDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new LogicalCondDef(this, prerequisite(), rescoper, this.logical);
+		return new LogicalCondDef(this, rescoper);
 	}
 
 }
