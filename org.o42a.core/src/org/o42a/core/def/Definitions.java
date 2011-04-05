@@ -785,11 +785,11 @@ public class Definitions extends Scoped {
 				final D c1 = claims[i];
 				final Logical prereq = c1.getPrerequisite();
 
-				if (c1.hasPrerequisite() && prereq.implies(prerequisite)) {
+				if (hasPrerequisite(c1) && prereq.implies(prerequisite)) {
 					if (defs.length == 1) {
 						return claims;
 					}
-				} else if (def.hasPrerequisite()
+				} else if (hasPrerequisite(def)
 						&& prerequisite.implies(prereq)) {
 					++i;
 					for (; i < len; ++i) {
@@ -861,7 +861,7 @@ public class Definitions extends Scoped {
 	}
 
 	private static boolean impliedBy(Def<?> def, Def<?>[] defs) {
-		if (!def.hasPrerequisite()) {
+		if (!hasPrerequisite(def)) {
 			return false;
 		}
 
@@ -873,6 +873,13 @@ public class Definitions extends Scoped {
 			}
 		}
 		return false;
+	}
+
+	private static final boolean hasPrerequisite(Def<?> def) {
+		if (def.isValue()) {
+			return true;
+		}
+		return def.hasPrerequisite();
 	}
 
 	private static LogicalValue constantValue(CondDef[] conditions) {

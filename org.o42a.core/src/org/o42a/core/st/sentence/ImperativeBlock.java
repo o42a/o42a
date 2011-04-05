@@ -356,6 +356,11 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		@Override
+		public boolean hasPrerequisite() {
+			return this.initialEnv.hasPrerequisite();
+		}
+
+		@Override
 		public Logical prerequisite(Scope scope) {
 			return this.initialEnv.prerequisite(scope);
 		}

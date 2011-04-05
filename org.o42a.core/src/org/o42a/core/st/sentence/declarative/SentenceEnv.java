@@ -40,6 +40,11 @@ public final class SentenceEnv extends StatementEnv {
 	}
 
 	@Override
+	public boolean hasPrerequisite() {
+		return this.sentence.getAltEnv().hasPrerequisite();
+	}
+
+	@Override
 	public Logical prerequisite(Scope scope) {
 		return this.sentence.getAltEnv().prerequisite(scope);
 	}

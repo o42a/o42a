@@ -60,6 +60,8 @@ public abstract class StatementEnv {
 		return expectedType;
 	}
 
+	public abstract boolean hasPrerequisite();
+
 	public abstract Logical prerequisite(Scope scope);
 
 	public abstract Logical precondition(Scope scope);
@@ -77,8 +79,10 @@ public abstract class StatementEnv {
 	}
 
 	public <D extends Def<D>> D apply(D def) {
-		return def.addPrerequisite(prerequisite(def.getScope()))
-		.addPrecondition(precondition(def.getScope()));
+		if (hasPrerequisite()) {
+			def = def.addPrerequisite(prerequisite(def.getScope()));
+		}
+		return def.addPrecondition(precondition(def.getScope()));
 	}
 
 	protected abstract ValueType<?> expectedType();
@@ -89,6 +93,11 @@ public abstract class StatementEnv {
 
 		DefaultEnv(LocationInfo location) {
 			this.location = location;
+		}
+
+		@Override
+		public boolean hasPrerequisite() {
+			return false;
 		}
 
 		@Override
@@ -127,6 +136,11 @@ public abstract class StatementEnv {
 		NotCondition(LocationInfo location, StatementEnv env) {
 			this.location = location;
 			this.env = env;
+		}
+
+		@Override
+		public boolean hasPrerequisite() {
+			return false;
 		}
 
 		@Override
@@ -177,6 +191,11 @@ public abstract class StatementEnv {
 
 		ObjectEnv(Obj object) {
 			this.object = object;
+		}
+
+		@Override
+		public boolean hasPrerequisite() {
+			return false;
 		}
 
 		@Override

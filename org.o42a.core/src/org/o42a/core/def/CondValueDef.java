@@ -39,7 +39,7 @@ final class CondValueDef extends ValueDef {
 		this.def = def;
 		update(
 				def.isRequirement() ? DefKind.CLAIM : DefKind.PROPOSITION,
-				true);
+				def.hasPrerequisite());
 	}
 
 	private CondValueDef(CondValueDef prototype, Rescoper rescoper) {

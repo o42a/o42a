@@ -36,6 +36,11 @@ final class RefEnvWrap extends StatementEnv {
 	}
 
 	@Override
+	public boolean hasPrerequisite() {
+		return getWrapped().hasPrerequisite();
+	}
+
+	@Override
 	public Logical prerequisite(Scope scope) {
 		return getWrapped().prerequisite(scope);
 	}
@@ -89,6 +94,11 @@ final class RefEnvWrap extends StatementEnv {
 		RefEnv(Ref ref, StatementEnv initialEnv) {
 			this.ref = ref;
 			this.initialEnv = initialEnv;
+		}
+
+		@Override
+		public boolean hasPrerequisite() {
+			return this.initialEnv.hasPrerequisite();
 		}
 
 		@Override

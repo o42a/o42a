@@ -20,7 +20,6 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -75,7 +74,7 @@ public abstract class Def<D extends Def<D>>
 		this.location = location;
 		this.source = source;
 		this.kind = kind;
-		this.hasPrerequisite = kind.isValue();
+		this.hasPrerequisite = false;
 	}
 
 	Def(D prototype, Rescoper rescoper) {
@@ -223,12 +222,13 @@ public abstract class Def<D extends Def<D>>
 		if (this.prerequisite != null) {
 			return this.prerequisite;
 		}
-		if (!hasPrerequisite()) {
-			return this.prerequisite = logicalTrue(this, getScope());
-		}
 		this.prerequisite = buildPrerequisite();
 		assert this.prerequisite != null :
 			"Definition without prerequisite";
+		if (!hasPrerequisite()) {
+			assert this.prerequisite.isTrue() :
+				"No prerequisite, so it should be TRUE: " + this.prerequisite;
+		}
 		return this.prerequisite;
 	}
 
