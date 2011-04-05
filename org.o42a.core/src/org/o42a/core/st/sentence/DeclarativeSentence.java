@@ -228,18 +228,31 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 
 		@Override
-		public Logical prerequisite(Scope scope) {
+		public boolean hasPrerequisite() {
+			if (this.sentence.getPrerequisite() != null) {
+				return true;
+			}
 
 			final StatementEnv initial =
 				this.sentence.getBlock().getInitialEnv();
+
+			return initial.hasPrerequisite();
+		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+
 			final DeclarativeSentence prerequisite =
 				this.sentence.getPrerequisite();
 
-			if (prerequisite == null) {
-				return initial.prerequisite(scope);
+			if (prerequisite != null) {
+				return prerequisite.getEnv().fullLogical(scope);
 			}
 
-			return prerequisite.getEnv().fullLogical(scope);
+			final StatementEnv initial =
+				this.sentence.getBlock().getInitialEnv();
+
+			return initial.prerequisite(scope);
 		}
 
 		@Override

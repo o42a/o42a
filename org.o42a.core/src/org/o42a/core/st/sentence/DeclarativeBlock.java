@@ -240,6 +240,11 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		}
 
 		@Override
+		public boolean hasPrerequisite() {
+			return this.initialEnv.hasPrerequisite();
+		}
+
+		@Override
 		public Logical prerequisite(Scope scope) {
 			return this.initialEnv.prerequisite(scope);
 		}

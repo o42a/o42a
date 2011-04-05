@@ -234,6 +234,11 @@ public class Declaratives extends Statements<Declaratives> {
 	private final class DeclarativesEnv extends StatementEnv {
 
 		@Override
+		public boolean hasPrerequisite() {
+			return lastDefinitionEnv().hasPrerequisite();
+		}
+
+		@Override
 		public Logical prerequisite(Scope scope) {
 			return lastDefinitionEnv().prerequisite(scope);
 		}

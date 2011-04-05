@@ -142,6 +142,11 @@ public final class RefCondition extends Statement {
 		}
 
 		@Override
+		public boolean hasPrerequisite() {
+			return this.env.hasPrerequisite();
+		}
+
+		@Override
 		public Logical prerequisite(Scope scope) {
 			return this.env.prerequisite(scope);
 		}

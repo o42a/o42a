@@ -122,6 +122,11 @@ final class ObjectFieldVariant
 		}
 
 		@Override
+		public boolean hasPrerequisite() {
+			return this.variant.getEnv().hasPrerequisite();
+		}
+
+		@Override
 		public Logical prerequisite(Scope scope) {
 			return this.variant.getEnv().prerequisite(scope);
 		}
