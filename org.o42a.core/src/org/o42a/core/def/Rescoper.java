@@ -143,7 +143,7 @@ public abstract class Rescoper {
 			System.arraycopy(defs, 0, newDefs, 0, i);
 			newDefs[i++] = newDef;
 			for (;i < defs.length; ++i) {
-				newDefs[i] = updateDef(def);
+				newDefs[i] = updateDef(defs[i]);
 			}
 
 			return newDefs;

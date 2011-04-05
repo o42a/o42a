@@ -72,7 +72,7 @@ final class RefLogical extends Logical {
 
 	@Override
 	public String toString() {
-		return "(" + this.ref + ")?";
+		return "(" + this.ref + "?)";
 	}
 
 }
