@@ -20,12 +20,12 @@
 package org.o42a.core.value;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
@@ -80,27 +80,31 @@ final class DefiniteRef<T> extends Expression {
 		}
 
 		@Override
-		public void writeLogicalValue(Code code, CodePos exit) {
+		public void writeLogicalValue(CodeDirs dirs) {
 		}
 
 		@Override
-		public void writeValue(Code code, CodePos exit, ValOp result) {
+		public void writeValue(CodeDirs dirs, ValOp result) {
 
 			@SuppressWarnings("unchecked")
 			final DefiniteRef<T> ref = (DefiniteRef<T>) getRef();
+			final Code code = dirs.code();
 
-			result.store(code, ref.valueType.val(getGenerator(), ref.value));
+			result.store(
+					code,
+					ref.valueType.val(getGenerator(), ref.value));
+			result.go(code, dirs);
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
+		public HostOp target(CodeDirs dirs) {
 
 			@SuppressWarnings("unchecked")
 			final DefiniteRef<T> ref = (DefiniteRef<T>) getRef();
 			final ObjectIR ir =
 				ref.getResolution().toObject().ir(getGenerator());
 
-			return ir.op(getBuilder(), code);
+			return ir.op(getBuilder(), dirs.code());
 		}
 
 	}

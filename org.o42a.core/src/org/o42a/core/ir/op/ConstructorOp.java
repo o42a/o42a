@@ -21,9 +21,12 @@ package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
+import org.o42a.codegen.code.Function;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -42,18 +45,17 @@ public class ConstructorOp extends RefOp {
 	}
 
 	@Override
-	public ObjectOp target(Code code, CodePos exit) {
+	public ObjectOp target(CodeDirs dirs) {
 
 		final CodeBuilder builder = getBuilder();
-		final ObjectOp object = host().toObject(code, exit);
+		final ObjectOp object = host().toObject(dirs);
 		final Obj sample = sample();
 
 		if (object != null) {
 			return builder.newObject(
-					code,
-					exit,
+					dirs,
 					object,
-					ancestorFunc().getPointer().op(code),
+					ancestorFunc().getPointer().op(dirs.code()),
 					sample,
 					CtrOp.NEW_INSTANCE);
 		}
@@ -67,9 +69,8 @@ public class ConstructorOp extends RefOp {
 		}
 
 		return builder.newObject(
-				code,
-				exit,
-				buildAncestor(builder, code, exit),
+				dirs,
+				buildAncestor(builder, dirs),
 				sample,
 				CtrOp.NEW_INSTANCE);
 	}
@@ -78,11 +79,8 @@ public class ConstructorOp extends RefOp {
 		return getRef().getResolution().toObject();
 	}
 
-	protected ObjectOp buildAncestor(
-			CodeBuilder builder,
-			Code code,
-			CodePos exit) {
-		return builder.objectAncestor(code, exit, sample());
+	protected ObjectOp buildAncestor(CodeBuilder builder, CodeDirs dirs) {
+		return builder.objectAncestor(dirs, sample());
 	}
 
 	private Function<ObjectRefFunc> ancestorFunc() {
@@ -113,8 +111,9 @@ public class ConstructorOp extends RefOp {
 	private void buildAncestorFunc(CodeBuilder builder, Code code) {
 
 		final CodeBlk ancestorFailed = code.addBlock("ancestor_failed");
-		final ObjectOp ancestor =
-			buildAncestor(builder, code, ancestorFailed.head());
+		final ObjectOp ancestor = buildAncestor(
+				builder,
+				exitWhenUnknown(code, ancestorFailed.head()));
 
 		if (ancestor == null) {
 			code.nullPtr().returnValue(code);

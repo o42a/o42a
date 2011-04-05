@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
@@ -26,7 +27,6 @@ import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
@@ -87,11 +87,10 @@ public class ObjectValueIR {
 	}
 
 	protected void writeRequirement(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjOp host,
 			ObjectOp body) {
-		this.requirement.call(code, exit, host, body);
+		this.requirement.call(dirs, host, body);
 	}
 
 	protected void writeClaim(
@@ -103,11 +102,10 @@ public class ObjectValueIR {
 	}
 
 	protected void writeCondition(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjOp host,
 			ObjectOp body) {
-		this.condition.call(code, exit, host, body);
+		this.condition.call(dirs, host, body);
 	}
 
 	protected void writeProposition(
@@ -152,22 +150,32 @@ public class ObjectValueIR {
 
 		final CodeBlk done = code.addBlock("done");
 
-		final CodeBlk conditionFailed =
-			code.addBlock("condition_failed");
+		final CodeBlk conditionFalse = code.addBlock("condition_false");
+		final CodeBlk conditionUnknwon = code.addBlock("condition_unknown");
+		final CodeDirs conditionDirs = splitWhenUnknown(
+				code,
+				conditionFalse.head(),
+				conditionUnknwon.head());
 
-		writeCondition(code, conditionFailed.head(), host, null);
-		if (conditionFailed.exists()) {
-			result.storeFalse(conditionFailed);
-			conditionFailed.returnVoid();
+		writeRequirement(conditionDirs, host, null);
+		writeCondition(conditionDirs, host, null);
+		if (conditionFalse.exists()) {
+			result.storeFalse(conditionFalse);
+			conditionFalse.returnVoid();
+		}
+		if (conditionUnknwon.exists()) {
+			// Override indefinite value.
+			result.storeUnknown(conditionUnknwon);
+			conditionUnknwon.returnVoid();
 		}
 
-		this.claim.call(code, result, host, null);
+		writeClaim(code, result, host, null);
 		result.loadUnknown(code).goUnless(code, done.head());
 
-		this.proposition.call(code, result, host, null);
+		writeProposition(code, result, host, null);
 		result.loadUnknown(code).goUnless(code, done.head());
 
-		result.storeUnknown(code);// to override indefinite value
+		result.storeUnknown(code);// Override indefinite value.
 		code.returnVoid();
 		if (done.exists()) {
 			done.returnVoid();
@@ -181,11 +189,10 @@ public class ObjectValueIR {
 	}
 
 	protected void buildRequirement(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
-		this.requirement.buildFunc(code, exit, host, definitions);
+		this.requirement.buildFunc(dirs, host, definitions);
 	}
 
 	protected void createClaim(ObjectTypeIR typeIR, Definitions definitions) {
@@ -207,11 +214,10 @@ public class ObjectValueIR {
 	}
 
 	protected void buildCondition(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
-		this.condition.buildFunc(code, exit, host, definitions);
+		this.condition.buildFunc(dirs, host, definitions);
 	}
 
 	protected void createProposition(
@@ -359,11 +365,10 @@ public class ObjectValueIR {
 
 		@Override
 		protected void build(
-				Code code,
-				CodePos exit,
+				CodeDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildRequirement(code, exit, host, definitions);
+			buildRequirement(dirs, host, definitions);
 		}
 
 	}
@@ -433,11 +438,10 @@ public class ObjectValueIR {
 
 		@Override
 		protected void build(
-				Code code,
-				CodePos exit,
+				CodeDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildCondition(code, exit, host, definitions);
+			buildCondition(dirs, host, definitions);
 		}
 
 	}

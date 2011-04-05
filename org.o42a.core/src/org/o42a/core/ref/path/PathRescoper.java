@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 
 
@@ -57,9 +56,14 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(Code code, CodePos exit, HostOp host) {
-		code.debug("Resccope to " + this.path);
-		return this.path.write(code, exit, host);
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		dirs = dirs.begin("rescope_by_path", "Resccope to " + this.path);
+
+		final HostOp result = this.path.write(dirs, host);
+
+		dirs.end();
+
+		return result;
 	}
 
 	@Override

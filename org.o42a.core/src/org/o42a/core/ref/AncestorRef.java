@@ -20,7 +20,6 @@
 package org.o42a.core.ref;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -28,6 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
@@ -160,11 +160,12 @@ final class AncestorRef extends Expression {
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
+		public HostOp target(CodeDirs dirs) {
 
+			final Code code = dirs.code();
 			final AncestorRef ref = (AncestorRef) getRef();
 			final ObjectOp object =
-				ref.ref.op(host()).target(code, exit).materialize(code, exit);
+				ref.ref.op(host()).target(dirs).materialize(dirs);
 			final ObjectTypeOp ancestorData =
 				object.objectType(code).ptr()
 				.data(code)

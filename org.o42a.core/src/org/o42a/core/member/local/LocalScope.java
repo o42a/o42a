@@ -25,14 +25,13 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 import java.util.Collection;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
@@ -265,7 +264,7 @@ public abstract class LocalScope
 		}
 
 		@Override
-		public HostOp write(Code code, CodePos exit, HostOp start) {
+		public HostOp write(CodeDirs dirs, HostOp start) {
 			return start.toLocal().getBuilder().owner();
 		}
 

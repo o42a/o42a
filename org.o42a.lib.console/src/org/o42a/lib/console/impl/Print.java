@@ -19,6 +19,7 @@
 */
 package org.o42a.lib.console.impl;
 
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
@@ -28,6 +29,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.Path;
@@ -87,9 +89,10 @@ public class Print extends IntrinsicObject {
 			final MemberKey textKey =
 				memberName("text").key(getAncestor().getType().getScope());
 			final CodeBlk cantPrint = code.addBlock("cant_print");
+			final CodeDirs dirs = exitWhenUnknown(code, cantPrint.head());
 			final ObjectOp textObject =
-				host.field(code, cantPrint.head(), textKey)
-				.materialize(code, cantPrint.head());
+				host.field(dirs, textKey)
+				.materialize(dirs);
 			final ValOp text = textObject.writeValue(code);
 			final CondBlk print =
 				text.loadCondition(code).branch(code, "print", "dont_print");

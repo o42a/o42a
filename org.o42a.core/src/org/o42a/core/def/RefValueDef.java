@@ -22,10 +22,9 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
@@ -53,16 +52,16 @@ final class RefValueDef extends ValueDef {
 		return this.ref.getValueType();
 	}
 
-	public RefOp ref(Code code, CodePos exit, HostOp host) {
+	public RefOp ref(CodeDirs dirs, HostOp host) {
 
-		final HostOp rescopedHost = getRescoper().rescope(code, exit, host);
+		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
 		return this.ref.op(rescopedHost);
 	}
 
 	@Override
-	public void writeValue(Code code, CodePos exit, HostOp host, ValOp result) {
-		ref(code, exit, host).writeValue(code, exit, result);
+	public void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
+		ref(dirs, host).writeValue(dirs, result);
 	}
 
 	@Override

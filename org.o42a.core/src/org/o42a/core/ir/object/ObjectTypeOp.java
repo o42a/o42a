@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -75,12 +74,13 @@ public class ObjectTypeOp extends IROp {
 		code.dump("Value: ", result);
 	}
 
-	public final void writeRequirement(Code code, CodePos exit, ObjectOp body) {
+	public final void writeRequirement(CodeDirs dirs, ObjectOp body) {
 
+		final Code code = dirs.code();
 		final ObjectCondFunc function =
 			ptr().data(code).requirementFunc(code).load(code);
 
-		function.call(code, body(code, body)).go(code, code.tail(), exit);
+		function.call(code, body(code, body)).go(code, dirs);
 	}
 
 	public final void writeClaim(Code code, ValOp result, ObjectOp body) {
@@ -91,15 +91,13 @@ public class ObjectTypeOp extends IROp {
 		function.call(code, result, body(code, body));
 	}
 
-	public final void writeCondition(
-			Code code,
-			CodePos exit,
-			ObjectOp body) {
+	public final void writeCondition(CodeDirs dirs, ObjectOp body) {
 
+		final Code code = dirs.code();
 		final ObjectCondFunc function =
 			ptr().data(code).conditionFunc(code).load(code);
 
-		function.call(code, body(code, body)).go(code, code.tail(), exit);
+		function.call(code, body(code, body)).go(code, dirs);
 	}
 
 	public final void writeProposition(Code code, ValOp result, ObjectOp body) {
@@ -111,46 +109,23 @@ public class ObjectTypeOp extends IROp {
 	}
 
 	public final void writeOverriddenValue(Code code, ValOp result) {
-		writeOverriddenValue(code, null, result);
-	}
-
-	public final void writeOverriddenValue(
-			Code code,
-			CodePos exit,
-			ValOp result) {
 		// TODO overridden value
 	}
 
-	public final void writeOverriddenClaim(Code code, ValOp result) {
-		writeOverriddenClaim(code, null, result);
+	public final void writeOverriddenRequirement(CodeDirs dirs) {
+		// TODO overridden requirement
 	}
 
-	public final void writeOverriddenClaim(Code code, CodePos exit, ValOp result) {
+	public final void writeOverriddenCondition(CodeDirs dirs) {
+		// TODO overridden condition
+	}
+
+	public final void writeOverriddenClaim(Code code, ValOp result) {
 		// TODO overridden claim
 	}
 
 	public final void writeOverriddenProposition(Code code, ValOp result) {
-		writeOverriddenPsoposition(code, null, result);
-	}
-
-	public final void writeOverriddenPsoposition(
-			Code code,
-			CodePos exit,
-			ValOp result) {
 		// TODO overridden definition
-	}
-
-	public final void writeOverriddenRequirement(Code code, CodePos exit) {
-		// TODO overridden requirement
-	}
-
-	public final void writeOverriddenCondition(Code code, CodePos exit) {
-		// TODO overridden condition
-	}
-
-	public void writeOverriddenInitializer(Code code, CodePos exit, ValOp result) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

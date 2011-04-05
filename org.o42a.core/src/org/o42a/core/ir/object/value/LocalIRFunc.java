@@ -22,9 +22,12 @@ package org.o42a.core.ir.object.value;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
+import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
@@ -45,16 +48,17 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	}
 
 	public void call(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ValOp result,
 			ObjOp owner,
 			ObjOp body) {
 		if (body != null) {
-			code.debug("Value for " + body);
+			dirs = dirs.begin("local_val", "Value for " + body);
 		} else {
-			code.debug("Value");
+			dirs = dirs.begin("local_val", "Value");
 		}
+
+		final Code code = dirs.code();
 
 		if (writeFalseValue(code, result, body)) {
 			return;
@@ -65,6 +69,8 @@ public final class LocalIRFunc extends ObjectIRFunc {
 		final ObjectValFunc func = getFunction().getPointer().op(code);
 
 		func.call(code, result, body(code, owner, body));
+
+		dirs.end();
 	}
 
 	public final LocalScope getScope() {

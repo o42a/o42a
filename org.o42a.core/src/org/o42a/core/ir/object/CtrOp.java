@@ -27,15 +27,13 @@ import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.op.IROp;
-import org.o42a.core.ir.op.NewObjectFunc;
-import org.o42a.core.ir.op.ObjectRefFunc;
+import org.o42a.core.ir.op.*;
 
 
 public class CtrOp extends IROp {
@@ -55,13 +53,16 @@ public class CtrOp extends IROp {
 	}
 
 	public ObjectOp newObject(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjectOp scope,
 			ObjectRefFunc ancestorFunc,
 			ObjectOp sample,
 			int flags) {
-		code.begin(
+
+		final Code code = dirs.code();
+
+		dirs = dirs.begin(
+				"new_object",
 				"New object: sample=" + sample
 				+ ", ancestorFunc=" + ancestorFunc
 				+ ", scope=" + scope
@@ -73,9 +74,15 @@ public class CtrOp extends IROp {
 		ptr().flags(code).store(code, code.int32(flags));
 
 		final DataOp result = newFunc().op(code).newObject(code, this);
+		final CodeBlk nullObject = code.addBlock("null_new_object");
 
-		code.end();
-		result.isNull(code).go(code, exit);
+		result.isNull(code).go(code, nullObject.head());
+
+		if (nullObject.exists()) {
+			dirs.goWhenFalse(nullObject);
+		}
+
+		dirs.end();
 
 		return anonymousObject(
 				sample.getBuilder(),
@@ -84,12 +91,15 @@ public class CtrOp extends IROp {
 	}
 
 	public ObjectOp newObject(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjectOp ancestor,
 			ObjectOp sample,
 			int flags) {
-		code.begin(
+
+		final Code code = dirs.code();
+
+		dirs = dirs.begin(
+				"new_object",
 				"New object: sample=" + sample
 				+ ", ancestor=" + ancestor
 				+ ", flags=" + Integer.toHexString(flags));
@@ -106,17 +116,21 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final DataOp resultPtr = newFunc().op(code).newObject(code, this);
+		final DataOp result = newFunc().op(code).newObject(code, this);
+		final CodeBlk nullObject = code.addBlock("null_new_object");
 
-		code.end();
-		resultPtr.isNull(code).go(code, exit);
+		result.isNull(code).go(code, nullObject.head());
 
-		final ObjectOp res = anonymousObject(
+		if (nullObject.exists()) {
+			dirs.goWhenFalse(nullObject);
+		}
+
+		dirs.end();
+
+		return anonymousObject(
 				sample.getBuilder(),
-				resultPtr,
+				result,
 				sample.getWellKnownType());
-
-		return res;
 	}
 
 	private FuncPtr<NewObjectFunc> newFunc() {

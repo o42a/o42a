@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 
 
@@ -65,7 +64,7 @@ public abstract class PathFragment {
 		return new Path(this);
 	}
 
-	public abstract HostOp write(Code code, CodePos exit, HostOp start);
+	public abstract HostOp write(CodeDirs dirs, HostOp start);
 
 	@Override
 	public String toString() {

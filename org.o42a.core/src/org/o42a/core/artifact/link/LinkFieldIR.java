@@ -23,7 +23,6 @@ import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.object.Obj;
@@ -35,6 +34,7 @@ import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.local.RefLclOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 
@@ -98,7 +98,7 @@ final class LinkFieldIR extends FieldIR<Link> {
 		}
 
 		@Override
-		public ObjectOp toObject(Code code, CodePos exit) {
+		public ObjectOp toObject(CodeDirs dirs) {
 			return null;
 		}
 
@@ -108,17 +108,17 @@ final class LinkFieldIR extends FieldIR<Link> {
 		}
 
 		@Override
-		public HostOp field(Code code, CodePos exit, MemberKey memberKey) {
+		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
 			return null;
 		}
 
 		@Override
-		public ObjectOp materialize(Code code, CodePos exit) {
+		public ObjectOp materialize(CodeDirs dirs) {
 
 			final Obj target =
 				this.fieldIR.getField().getArtifact().materialize();
 
-			return target.ir(getGenerator()).op(getBuilder(), code);
+			return target.ir(getGenerator()).op(getBuilder(), dirs.code());
 		}
 
 	}

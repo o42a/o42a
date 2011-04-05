@@ -19,11 +19,10 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -82,9 +81,9 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		return getRef().value(getRescoper().rescope(scope));
 	}
 
-	public RefOp op(Code code, CodePos exit, HostOp host) {
+	public RefOp op(CodeDirs dirs, HostOp host) {
 
-		final HostOp rescoped = getRescoper().rescope(code, exit, host);
+		final HostOp rescoped = getRescoper().rescope(dirs, host);
 
 		return getRef().op(rescoped);
 	}

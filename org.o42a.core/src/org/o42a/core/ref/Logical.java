@@ -19,18 +19,20 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ir.op.CodeDirs.continueWhenUnknown;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.LogicalBase;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.common.AbstractConjunction;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -401,7 +403,7 @@ public abstract class Logical extends LogicalBase {
 		return new RescopedLogical(this, rescoper);
 	}
 
-	public abstract void write(Code code, CodePos exit, HostOp host);
+	public abstract void write(CodeDirs dirs, HostOp host);
 
 	protected boolean runtimeImplies(Logical other) {
 
@@ -467,8 +469,8 @@ public abstract class Logical extends LogicalBase {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Logical: TRUE");
+		public void write(CodeDirs dirs, HostOp host) {
+			dirs.code().debug("Logical: TRUE");
 		}
 
 		@Override
@@ -502,9 +504,12 @@ public abstract class Logical extends LogicalBase {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
+		public void write(CodeDirs dirs, HostOp host) {
+
+			final Code code = dirs.code();
+
 			code.debug("Logical: FALSE");
-			code.go(exit);
+			dirs.goWhenFalse(code);
 		}
 
 		@Override
@@ -538,7 +543,7 @@ public abstract class Logical extends LogicalBase {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
+		public void write(CodeDirs dirs, HostOp host) {
 			throw new UnsupportedOperationException(
 					"Abstract run-time logical should not generate any code");
 		}
@@ -574,8 +579,8 @@ public abstract class Logical extends LogicalBase {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Logical: " + this);
+		public void write(CodeDirs dirs, HostOp host) {
+			dirs.code().debug("Logical: " + this);
 		}
 
 		@Override
@@ -655,31 +660,36 @@ public abstract class Logical extends LogicalBase {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Logical: " + this);
+		public void write(CodeDirs dirs, HostOp host) {
+			dirs = dirs.begin("or", "Logical OR: " + this);
 
-			Code block = code.addBlock("0_or");
+			final Code code = dirs.code();
+
+			Code block = code.addBlock("0_disj");
 
 			code.go(block.head());
 
 			for (int i = 0; i < this.variants.length; ++i) {
 
 				final Code next;
-				final CodePos nextPos;
+				final CodeDirs blockDirs;
 
 				if (i + 1 < this.variants.length) {
-					next = code.addBlock((i + 1) + "_or");
-					nextPos = next.head();
+					next = code.addBlock((i + 1) + "_disj");
 				} else {
-					next = null;
-					nextPos = exit;
+					next = code.addBlock("all_false");
+					dirs.goWhenFalse(next);
 				}
+				blockDirs =
+					continueWhenUnknown(block, code.tail(), next.head());
 
-				this.variants[i].write(block, nextPos, host);
+				this.variants[i].write(blockDirs, host);
 				block.go(code.tail());
 
 				block = next;
 			}
+
+			dirs.end();
 		}
 
 		@Override
@@ -784,17 +794,22 @@ public abstract class Logical extends LogicalBase {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Logical: " + this);
+		public void write(CodeDirs dirs, HostOp host) {
+			dirs = dirs.begin("not", "Logical NOT: " + this);
 
+			final Code code = dirs.code();
 			final CodeBlk isTrue = code.addBlock("is_true");
+			final CodeDirs negatedDirs =
+				continueWhenUnknown(code, isTrue.head(), null);
 
-			negate().write(code, isTrue.head(), host);
-			code.go(exit);
+			negate().write(negatedDirs, host);
 
 			if (isTrue.exists()) {
-				isTrue.go(code.tail());
+				dirs.goWhenFalse(isTrue);
 			}
+
+			dirs.goWhenTrue(code);
+			dirs.end();
 		}
 
 		@Override

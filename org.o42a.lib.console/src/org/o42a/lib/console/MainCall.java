@@ -20,6 +20,7 @@
 package org.o42a.lib.console;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
@@ -117,7 +118,9 @@ final class MainCall extends DefinedObject {
 		final ValOp result = main.allocate(VAL_TYPE).storeUnknown(main);
 		final CodeBlk exit = main.addBlock("exit");
 
-		ir.op(builder, main).writeValue(main, exit.head(), result);
+		ir.op(builder, main).writeValue(
+				exitWhenUnknown(main, exit.head()),
+				result);
 
 		if (exit.exists()) {
 			exit.debug("Execution failed");

@@ -20,8 +20,6 @@
 package org.o42a.core.artifact;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
@@ -30,6 +28,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
@@ -223,12 +222,12 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
+		public HostOp target(CodeDirs dirs) {
 
 			final ObjectIR ir =
 				getRef().getResolution().toObject().ir(getGenerator());
 
-			return ir.op(getBuilder(), code);
+			return ir.op(getBuilder(), dirs.code());
 		}
 
 	}

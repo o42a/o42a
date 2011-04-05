@@ -19,10 +19,9 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
@@ -63,11 +62,10 @@ final class RefLogical extends Logical {
 	}
 
 	@Override
-	public void write(Code code, CodePos exit, HostOp host) {
-		code.begin("Logical of ref " + this);
-		exit = code.end("debug_ref_logical_exit", exit);
-		this.ref.op(host).writeLogicalValue(code, exit);
-		code.end();
+	public void write(CodeDirs dirs, HostOp host) {
+		dirs = dirs.begin("ref_logical", "Logical of ref " + this);
+		this.ref.op(host).writeLogicalValue(dirs);
+		dirs.end();
 	}
 
 	@Override

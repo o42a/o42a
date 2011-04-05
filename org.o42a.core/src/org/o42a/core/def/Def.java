@@ -21,11 +21,10 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
@@ -291,10 +290,10 @@ public abstract class Def<D extends Def<D>>
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
-			host = this.def.getRescoper().rescope(code, exit, host);
-			this.def.getPrerequisite().write(code, exit, host);
-			this.def.getLogical().write(code, exit, host);
+		public void write(CodeDirs dirs, HostOp host) {
+			host = this.def.getRescoper().rescope(dirs, host);
+			this.def.getPrerequisite().write(dirs, host);
+			this.def.getLogical().write(dirs, host);
 		}
 
 		@Override

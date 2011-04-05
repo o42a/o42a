@@ -19,12 +19,11 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 
@@ -85,7 +84,7 @@ public class MemberFragment extends PathFragment {
 	}
 
 	@Override
-	public HostOp write(Code code, CodePos exit, HostOp start) {
+	public HostOp write(CodeDirs dirs, HostOp start) {
 
 		final Member member =
 			this.memberKey.getOrigin().getContainer().member(this.memberKey);
@@ -99,7 +98,7 @@ public class MemberFragment extends PathFragment {
 			"Field expected: " + member;
 
 		// Member is field.
-		return start.field(code, exit, this.memberKey);
+		return start.field(dirs, this.memberKey);
 	}
 
 	@Override

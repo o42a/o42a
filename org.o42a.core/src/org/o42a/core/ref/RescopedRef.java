@@ -19,12 +19,11 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.common.Wrap;
@@ -229,25 +228,25 @@ final class RescopedRef extends Wrap {
 		}
 
 		@Override
-		public void writeLogicalValue(Code code, CodePos exit) {
-			rescope(code, exit).writeLogicalValue(code, exit);
+		public void writeLogicalValue(CodeDirs dirs) {
+			rescope(dirs).writeLogicalValue(dirs);
 		}
 
 		@Override
-		public void writeValue(Code code, CodePos exit, ValOp result) {
-			rescope(code, exit).writeValue(code, exit, result);
+		public void writeValue(CodeDirs dirs, ValOp result) {
+			rescope(dirs).writeValue(dirs, result);
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
-			return rescope(code, exit).target(code, exit);
+		public HostOp target(CodeDirs dirs) {
+			return rescope(dirs).target(dirs);
 		}
 
 
-		private RefOp rescope(Code code, CodePos exit) {
+		private RefOp rescope(CodeDirs dirs) {
 
 			final Rescoped rescoped = (Rescoped) getRef();
-			final HostOp host = rescoped.rescoper.rescope(code, exit, host());
+			final HostOp host = rescoped.rescoper.rescope(dirs, host());
 
 			return rescoped.ref.op(host);
 		}

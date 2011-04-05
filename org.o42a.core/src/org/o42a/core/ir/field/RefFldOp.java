@@ -20,7 +20,6 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -28,6 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.RefFld.Op;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
 
@@ -51,31 +51,32 @@ public abstract class RefFldOp<C extends ObjectFunc> extends FldOp {
 	}
 
 	@Override
-	public final ObjOp toObject(Code code, CodePos exit) {
+	public final ObjOp toObject(CodeDirs dirs) {
 
 		final Artifact<?> artifact = fld().getField().getArtifact();
 
 		if (artifact.getKind() == ArtifactKind.OBJECT) {
-			return target(code);
+			return target(dirs);
 		}
 
 		return null;
 	}
 
 	@Override
-	public final FldOp field(Code code, CodePos exit, MemberKey memberKey) {
+	public final FldOp field(CodeDirs dirs, MemberKey memberKey) {
 
 		final Artifact<?> artifact = fld().getField().getArtifact();
 
 		if (artifact.getKind() == ArtifactKind.OBJECT) {
-			return target(code).field(code, exit, memberKey);
+			return target(dirs).field(dirs, memberKey);
 		}
 
 		return null;
 	}
 
-	public ObjOp target(Code code) {
+	public ObjOp target(CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final FldKind kind = fld().getKind();
 
 		code.dumpName(kind + " field: ", ptr());
@@ -107,8 +108,8 @@ public abstract class RefFldOp<C extends ObjectFunc> extends FldOp {
 	}
 
 	@Override
-	public final ObjOp materialize(Code code, CodePos exit) {
-		return target(code);
+	public final ObjOp materialize(CodeDirs dirs) {
+		return target(dirs);
 	}
 
 }

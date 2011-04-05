@@ -19,11 +19,13 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.value.Value;
@@ -53,20 +55,24 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	public void writeValue(
-			Code code,
-			CodePos exit,
-			HostOp host,
-			ValOp result) {
+	public void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
 
-		final CodeBlk condFalse = code.addBlock("false");
+		final Code code = dirs.code();
+		final CodeBlk defFalse = code.addBlock("def_false");
+		final CodeBlk defUnknown = code.addBlock("def_unknown");
+		final CodeDirs defDirs =
+			splitWhenUnknown(code, defFalse.head(), defUnknown.head());
 
-		this.def.writeLogicalValue(code, condFalse.head(), host);
+		this.def.writeLogicalValue(defDirs, host);
 		result.storeVoid(code);
 
-		if (condFalse.exists()) {
-			result.storeFalse(condFalse);
-			condFalse.go(exit);
+		if (defFalse.exists()) {
+			result.storeFalse(defFalse);
+			dirs.goWhenFalse(defFalse);
+		}
+		if (defUnknown.exists()) {
+			result.storeUnknown(defFalse);
+			dirs.goWhenFalse(defFalse);
 		}
 	}
 

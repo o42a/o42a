@@ -23,12 +23,11 @@ import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -135,16 +134,12 @@ public abstract class ValueDef extends Def<ValueDef> {
 				defs);
 	}
 
-	public void writePrerequisite(Code code, CodePos exit, HostOp host) {
-		host = getRescoper().rescope(code, exit, host);
-		getPrerequisite().write(code, exit, host);
+	public final void writePrerequisite(CodeDirs dirs, HostOp host) {
+		host = getRescoper().rescope(dirs, host);
+		getPrerequisite().write(dirs, host);
 	}
 
-	public abstract void writeValue(
-			Code code,
-			CodePos exit,
-			HostOp host,
-			ValOp result);
+	public abstract void writeValue(CodeDirs dirs, HostOp host, ValOp result);
 
 	protected abstract Value<?> calculateValue(Scope scope);
 

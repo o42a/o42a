@@ -19,12 +19,11 @@
 */
 package org.o42a.core.ref.type;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
@@ -62,7 +61,7 @@ public abstract class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public final RefOp op(Code code, CodePos exit, HostOp host) {
+	public final RefOp op(CodeDirs dirs, HostOp host) {
 		return getType().selfRef().op(host);
 	}
 

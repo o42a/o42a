@@ -19,12 +19,11 @@
 */
 package org.o42a.core.ir.field;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
 
@@ -54,7 +53,7 @@ public abstract class FldOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public ObjectOp toObject(Code code, CodePos exit) {
+	public ObjectOp toObject(CodeDirs dirs) {
 		return null;
 	}
 
@@ -64,6 +63,6 @@ public abstract class FldOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public abstract FldOp field(Code code, CodePos exit, MemberKey memberKey);
+	public abstract FldOp field(CodeDirs dirs, MemberKey memberKey);
 
 }

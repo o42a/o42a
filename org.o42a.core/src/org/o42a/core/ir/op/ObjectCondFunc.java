@@ -23,8 +23,8 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.Int8op;
 import org.o42a.core.ir.object.ObjectOp;
 
 
@@ -36,24 +36,24 @@ public final class ObjectCondFunc extends ObjectFunc {
 		super(caller);
 	}
 
-	public BoolOp call(Code code, ObjectOp object) {
+	public CondOp call(Code code, ObjectOp object) {
 		return call(code, object.toData(code));
 	}
 
-	public BoolOp call(Code code, DataOp object) {
-		return invoke(code, OBJECT_COND.result(), object);
+	public CondOp call(Code code, DataOp object) {
+		return new Int8CondOp(invoke(code, OBJECT_COND.result(), object));
 	}
 
 	public static final class ObjectCond
 			extends ObjectSignature<ObjectCondFunc> {
 
-		private Return<BoolOp> result;
+		private Return<Int8op> result;
 		private Arg<DataOp> object;
 
 		private ObjectCond() {
 		}
 
-		public final Return<BoolOp> result() {
+		public final Return<Int8op> result() {
 			return this.result;
 		}
 
@@ -74,7 +74,7 @@ public final class ObjectCondFunc extends ObjectFunc {
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnBool();
+			this.result = builder.returnInt8();
 			this.object = builder.addData("object");
 		}
 

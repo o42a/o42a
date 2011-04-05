@@ -23,11 +23,10 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import java.lang.reflect.Array;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
@@ -117,7 +116,7 @@ public abstract class Rescoper {
 		return new CompoundRescoper(this, other);
 	}
 
-	public abstract HostOp rescope(Code code, CodePos exit, HostOp host);
+	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
 
 	public abstract Rescoper reproduce(
 			LocationInfo location,

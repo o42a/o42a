@@ -30,8 +30,6 @@ import static org.o42a.core.member.local.Dep.fieldDep;
 import java.util.*;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.*;
 import org.o42a.core.artifact.array.Array;
@@ -41,6 +39,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
@@ -993,7 +992,7 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		@Override
-		public HostOp write(Code code, CodePos exit, HostOp start) {
+		public HostOp write(CodeDirs dirs, HostOp start) {
 			return start;
 		}
 

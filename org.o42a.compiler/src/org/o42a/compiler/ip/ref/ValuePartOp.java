@@ -19,10 +19,9 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ConstructorOp;
 import org.o42a.core.ir.op.ValOp;
 
@@ -37,18 +36,18 @@ final class ValuePartOp extends ConstructorOp {
 		return getPartRef().isOverridden();
 	}
 
-	public ObjectOp object(Code code, CodePos exit) {
-		return getRef().op(host()).target(code, exit).toObject(code, exit);
+	public ObjectOp object(CodeDirs dirs) {
+		return getRef().op(host()).target(dirs).toObject(dirs);
 	}
 
 	@Override
-	public void writeLogicalValue(Code code, CodePos exit) {
-		part().writeLogicalValue(code, exit, this);
+	public void writeLogicalValue(CodeDirs dirs) {
+		part().writeLogicalValue(dirs, this);
 	}
 
 	@Override
-	public void writeValue(Code code, CodePos exit, ValOp result) {
-		part().writeValue(code, exit, result, this);
+	public void writeValue(CodeDirs dirs, ValOp result) {
+		part().writeValue(dirs, result, this);
 	}
 
 	private final ValuePartRef getPartRef() {

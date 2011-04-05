@@ -21,10 +21,13 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.field.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
+import org.o42a.codegen.code.CondBlk;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -34,6 +37,7 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.ObjectConstructorFunc.ObjectConstructor;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
 
 
@@ -81,11 +85,9 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	}
 
 	@Override
-	protected void buildConstructor(
-			ObjBuilder builder,
-			Code code,
-			CodePos exit) {
+	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
 			builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
@@ -93,24 +95,35 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final CondBlk construct =
 			previousPtr.isNull(code).branch(code, "construct", "delegate");
+		final CodeBlk constructionFailed =
+			construct.addBlock("construction_failed");
 
 		final DataOp result1 = construct(
 				builder,
-				construct,
-				exit,
+				exitWhenUnknown(construct, constructionFailed.head()),
 				new ObjFldOp(this, host, fld)).toData(construct);
 
-		construct.go(code.tail());
+		if (constructionFailed.exists()) {
+			dirs.goWhenFalse(constructionFailed);
+		}
+		dirs.goWhenTrue(construct);
 
 		final CodeBlk delegate = construct.otherwise();
-		final DataOp result2 =
-			delegate(builder, delegate, exit, previousPtr).toData(delegate);
+		final CodeBlk delegationFailed =
+			delegate.addBlock("delegation_failed");
+		final DataOp result2 = delegate(
+				builder,
+				exitWhenUnknown(delegate, delegationFailed.head()),
+				previousPtr).toData(delegate);
 
-		delegate.go(code.tail());
+		if (delegationFailed.exists()) {
+			dirs.goWhenFalse(delegationFailed);
+		}
+		dirs.goWhenTrue(delegate);
 
 		final DataOp result = code.phi(result1, result2);
 
-		final FldOp ownFld = host.field(code, exit, getField().getKey());
+		final FldOp ownFld = host.field(dirs, getField().getKey());
 		final BoolOp isOwn = ownFld.ptr().eq(code, fld);
 		final CondBlk store = isOwn.branch(code, "store", "do_not_store");
 
@@ -122,9 +135,10 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 	private ObjectOp delegate(
 			ObjBuilder builder,
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			DataOp previousPtr) {
+		final Code code = dirs.code();
+
 		code.dumpName("Delegate to ", previousPtr);
 
 		final Op previous = previousPtr.to(code, getType().getType());
@@ -136,8 +150,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
 
 		return builder.newObject(
-				code,
-				exit,
+				dirs,
 				ancestor,
 				getField().getArtifact().toObject(),
 				CtrOp.PROPAGATION);

@@ -20,13 +20,12 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
@@ -67,7 +66,7 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
-	public final ObjOp toObject(Code code, CodePos exit) {
+	public final ObjOp toObject(CodeDirs dirs) {
 		return null;
 	}
 
@@ -76,7 +75,7 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
-	public LclOp field(Code code, CodePos exit, MemberKey memberKey) {
+	public LclOp field(CodeDirs dirs, MemberKey memberKey) {
 
 		final Field<?> field = getScope().member(memberKey).toField();
 		final FieldIR<?> fieldIR = field.ir(getGenerator());
@@ -85,7 +84,7 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
-	public ObjOp materialize(Code code, CodePos exit) {
+	public ObjOp materialize(CodeDirs dirs) {
 		throw new UnsupportedOperationException();
 	}
 
