@@ -198,14 +198,16 @@ public abstract class Def<D extends Def<D>>
 			out.append("CondDef[");
 		}
 		if (hasPrerequisite()) {
-			if (this.prerequisite == null) {
-				out.append("_? ");
-			} else {
-				out.append(this.prerequisite).append("? ");
-			}
+			out.append(getPrerequisite()).append("? ");
 		}
-		if (this.logical != null) {
-			out.append(this.logical).append(", ");
+
+		final Logical precondition = getPrecondition();
+
+		if (!precondition.isTrue()) {
+			out.append(precondition).append(", ");
+		}
+		if (isValue()) {
+			out.append('=');
 		}
 		out.append(this.location);
 		if (getKind().isClaim()) {

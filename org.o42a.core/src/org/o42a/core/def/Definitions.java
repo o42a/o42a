@@ -821,18 +821,8 @@ public class Definitions extends Scoped {
 			return defs;
 		}
 
-		@SuppressWarnings("unchecked")
-		final D[] newPropositions = (D[]) Array.newInstance(
-				propositions.getClass().getComponentType(),
-				len + defs.length);
-
-		arraycopy(
-				propositions,
-				0,
-				newPropositions,
-				0,
-				propositions.length);
-
+		final D[] newPropositions =
+			Arrays.copyOf(propositions, len + defs.length);
 		int idx = propositions.length;
 
 		for (D proposition : defs) {
