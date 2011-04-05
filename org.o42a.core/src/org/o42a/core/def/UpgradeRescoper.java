@@ -19,11 +19,11 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 
 
@@ -69,11 +69,18 @@ final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(Code code, CodePos exit, HostOp host) {
-		code.debug("Upgrade scope " + host + " to " + this.fromScope);
-		return host.toObject(code, exit).cast(
-				code,
-				exit, this.fromScope.getContainer().toObject());
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		dirs = dirs.begin(
+				"upgrade_scope",
+				"Upgrade scope " + host + " to " + this.fromScope);
+
+		final ObjOp result = host.toObject(dirs).cast(
+				dirs,
+				this.fromScope.getContainer().toObject());
+
+		dirs.end();
+
+		return result;
 	}
 
 	@Override

@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.op.CodeDirs;
 
 
 final class ModuleFragment extends PathFragment {
@@ -66,13 +65,13 @@ final class ModuleFragment extends PathFragment {
 	}
 
 	@Override
-	public HostOp write(Code code, CodePos exit, HostOp start) {
+	public HostOp write(CodeDirs dirs, HostOp start) {
 
 		final Obj module =
 			start.getContext().getIntrinsics().getModule(this.moduleId);
 		final ObjectIR moduleIR = module.ir(start.getGenerator());
 
-		return moduleIR.op(start.getBuilder(), code);
+		return moduleIR.op(start.getBuilder(), dirs.code());
 	}
 
 	@Override

@@ -22,11 +22,11 @@ package org.o42a.core.ir.field;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 
 
@@ -47,12 +47,13 @@ public class ScopeFldOp extends FldOp {
 	}
 
 	@Override
-	public ObjectOp toObject(Code code, CodePos exit) {
-		return target(code);
+	public ObjectOp toObject(CodeDirs dirs) {
+		return target(dirs);
 	}
 
-	public ObjectOp target(Code code) {
+	public ObjectOp target(CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final ObjectBodyIR target = fld().getTarget();
 		final DataOp targetPtr = ptr().object(code).load(code);
 
@@ -63,13 +64,13 @@ public class ScopeFldOp extends FldOp {
 	}
 
 	@Override
-	public FldOp field(Code code, CodePos exit, MemberKey memberKey) {
-		return target(code).field(code, exit, memberKey);
+	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
+		return target(dirs).field(dirs, memberKey);
 	}
 
 	@Override
-	public ObjectOp materialize(Code code, CodePos exit) {
-		return target(code);
+	public ObjectOp materialize(CodeDirs dirs) {
+		return target(dirs);
 	}
 
 }

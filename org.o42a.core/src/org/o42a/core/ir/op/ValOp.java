@@ -20,6 +20,7 @@
 package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.op.Val.INDEFINITE_FLAG;
 import static org.o42a.core.ir.op.Val.UNKNOWN_FLAG;
 
 import org.o42a.codegen.CodeId;
@@ -30,7 +31,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public final class ValOp extends StructOp {
+public final class ValOp extends StructOp implements CondOp {
 
 	public static final Type VAL_TYPE = new Type();
 
@@ -47,10 +48,12 @@ public final class ValOp extends StructOp {
 		return int32(code, getType().flags());
 	}
 
+	@Override
 	public final BoolOp loadCondition(Code code) {
 		return flags(code).load(code).lowestBit(code);
 	}
 
+	@Override
 	public final BoolOp loadUnknown(Code code) {
 		return flags(code).load(code).lshr(code, 1).lowestBit(code);
 	}
@@ -102,11 +105,21 @@ public final class ValOp extends StructOp {
 		return this;
 	}
 
+	public final ValOp storeIndefinite(Code code) {
+		flags(code).store(code, code.int32(UNKNOWN_FLAG | INDEFINITE_FLAG));
+		return this;
+	}
+
 	public final ValOp store(Code code, ValOp value) {
 		flags(code).store(code, value.flags(code).load(code));
 		length(code).store(code, value.length(code).load(code));
 		rawValue(code).store(code, value.rawValue(code).load(code));
 		return this;
+	}
+
+	@Override
+	public final void go(Code code, CodeDirs dirs) {
+		dirs.go(code, this);
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<ValOp> {

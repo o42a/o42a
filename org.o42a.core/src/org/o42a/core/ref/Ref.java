@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ir.op.CodeDirs.ignoreCondition;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
@@ -436,13 +437,13 @@ public abstract class Ref extends RefTypeBase {
 
 		@Override
 		public void writeAssignment(Control control, ValOp result) {
-			this.ref.writeValue(control.code(), control.exit(), result);
+			this.ref.writeValue(ignoreCondition(control.code()), result);
 			control.returnValue();
 		}
 
 		@Override
 		public void writeLogicalValue(Control control) {
-			this.ref.writeLogicalValue(control.code(), control.exit());
+			this.ref.writeLogicalValue(ignoreCondition(control.code()));
 		}
 
 	}

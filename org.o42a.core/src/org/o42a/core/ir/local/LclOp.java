@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValOp;
 
@@ -50,7 +49,7 @@ public abstract class LclOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public ObjectOp toObject(Code code, CodePos exit) {
+	public ObjectOp toObject(CodeDirs dirs) {
 		return null;
 	}
 

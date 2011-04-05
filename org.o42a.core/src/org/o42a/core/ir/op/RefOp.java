@@ -20,8 +20,6 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ref.Ref;
@@ -53,24 +51,20 @@ public abstract class RefOp {
 		return this.ref;
 	}
 
-	public void writeLogicalValue(Code code, CodePos exit) {
+	public void writeLogicalValue(CodeDirs dirs) {
 
-		final HostOp target = target(code, exit);
+		final HostOp target = target(dirs);
 
-		target.materialize(code, exit).writeLogicalValue(code, exit);
+		target.materialize(dirs).writeLogicalValue(dirs);
 	}
 
-	public final void writeValue(Code code, ValOp result) {
-		writeValue(code, null, result);
+	public void writeValue(CodeDirs dirs, ValOp result) {
+
+		final HostOp target = target(dirs);
+
+		target.materialize(dirs).writeValue(dirs, result);
 	}
 
-	public void writeValue(Code code, CodePos exit, ValOp result) {
-
-		final HostOp target = target(code, exit);
-
-		target.materialize(code, exit).writeValue(code, exit, result);
-	}
-
-	public abstract HostOp target(Code code, CodePos exit);
+	public abstract HostOp target(CodeDirs dirs);
 
 }

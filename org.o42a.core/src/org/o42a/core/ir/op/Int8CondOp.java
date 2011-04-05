@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,41 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.ir.op;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.Int8op;
 
 
-public abstract class LocalIRBase extends ScopeIR {
+public final class Int8CondOp implements CondOp {
 
-	public LocalIRBase(Generator generator, LocalScope scope) {
-		super(generator, scope);
+	private final Int8op op;
+
+	public Int8CondOp(Int8op op) {
+		assert op != null :
+			"Integer operation not specified";
+		this.op = op;
 	}
 
 	@Override
-	public final LocalScope getScope() {
-		return (LocalScope) super.getScope();
+	public final BoolOp loadCondition(Code code) {
+		return this.op.lowestBit(code);
 	}
 
-	protected abstract void writeValue(
-			CodeDirs dirs,
-			ValOp result,
-			ObjOp owner,
-			ObjOp ownerBody);
+	@Override
+	public final BoolOp loadUnknown(Code code) {
+		return this.op.lshr(code, 1).lowestBit(code);
+	}
+
+	@Override
+	public void go(Code code, CodeDirs dirs) {
+		dirs.go(code, this);
+	}
+
+	@Override
+	public String toString() {
+		return "CondOp[" + this.op + ']';
+	}
 
 }

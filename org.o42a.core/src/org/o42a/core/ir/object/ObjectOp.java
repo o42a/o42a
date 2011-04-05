@@ -32,9 +32,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.op.CastObjectFunc;
-import org.o42a.core.ir.op.IROp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 
@@ -73,7 +71,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public final ObjectOp toObject(Code code, CodePos exit) {
+	public final ObjectOp toObject(CodeDirs dirs) {
 		return this;
 	}
 
@@ -82,10 +80,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return null;
 	}
 
-	public abstract ObjOp cast(Code code, CodePos exit, Obj ascendant);
+	public abstract ObjOp cast(CodeDirs dirs, Obj ascendant);
 
-	public final void writeLogicalValue(Code code, CodePos exit) {
+	public final void writeLogicalValue(CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final ObjectTypeOp objectType = objectType(code);
 		final ValOp value = objectType.ptr().data(code).value(code);
 		final CondBlk indefinite = value.loadIndefinite(code).branch(
@@ -95,37 +94,37 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final CodeBlk definite = indefinite.otherwise();
 
 		definite.dump("Definite value: ", value);
-		value.loadCondition(definite).go(definite, code.tail(), exit);
+		value.go(definite, dirs);
 
 		writeValue(indefinite, value, null);
 		indefinite.dump("Calculated value: ", value);
-		value.loadCondition(indefinite).go(indefinite, code.tail(), exit);
+		value.go(indefinite, dirs);
 	}
 
-	public final void writeLogicalValue(
-			Code code,
-			CodePos exit,
-			ObjectOp body) {
+	public final void writeLogicalValue(CodeDirs dirs, ObjectOp body) {
 
-		final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
+		final Code code = dirs.code();
+		final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
-		writeValue(code, exit, result, body);
+		writeValue(dirs, result, body);
 	}
 
 	public final ValOp writeValue(Code code) {
-		return writeValue(code, (CodePos) null, (ValOp) null);
+
+		final ValOp value = objectType(code).ptr().data(code).value(code);
+
+		writeValue(code, value, null);
+
+		return value;
 	}
 
-	public final ValOp writeValue(Code code, CodePos exit) {
-		return writeValue(code, exit, null);
+	public final ValOp writeValue(CodeDirs dirs) {
+		return writeValue(dirs, null);
 	}
 
-	public final ValOp writeValue(Code code, ValOp result) {
-		return writeValue(code, null, result);
-	}
+	public final ValOp writeValue(CodeDirs dirs, ValOp result) {
 
-	public final ValOp writeValue(Code code, CodePos exit, ValOp result) {
-
+		final Code code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code);
 		final CondBlk indefinite = value.loadIndefinite(code).branch(
 				code,
@@ -137,98 +136,82 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		if (result != null) {
 			result.store(definite, value);
 		}
-		checkValue(definite, code.tail(), exit, value);
+		value.go(definite, dirs);
 
 		writeValue(indefinite, value, null);
 		indefinite.dump(this + " value calculated: ", value);
 		if (result != null) {
 			result.store(indefinite, value);
 		}
-		checkValue(indefinite, code.tail(), exit, value);
+		value.go(indefinite, dirs);
 
 		return value;
 	}
 
-	public final void writeValue(
-			Code code,
-			CodePos exit,
-			ValOp result,
-			ObjectOp body) {
-		code.begin("Write value of " + body + " by " + this);
+	public final void writeValue(CodeDirs dirs, ValOp result, ObjectOp body) {
+		dirs = dirs.begin(
+				"obj_value",
+				"Write value of " + body + " by " + this);
+
+		final Code code = dirs.code();
+
 		writeValue(code, result, body);
 		code.dump("Value: ", result);
-		code.end();
-		if (exit != null) {
-			result.loadCondition(code).goUnless(code, exit);
-		}
+		dirs.end();
+		result.go(code, dirs);
 	}
 
-	public final void writeRequirement(Code code, CodePos exit) {
-		writeRequirement(code, exit, null);
+	public final void writeRequirement(CodeDirs dirs) {
+		writeRequirement(dirs, null);
 	}
 
-	public void writeRequirement(Code code, CodePos exit, ObjectOp body) {
+	public void writeRequirement(CodeDirs dirs, ObjectOp body) {
 		if (body != null) {
-			code.begin("Requirement of " + body);
+			dirs = dirs.begin("obj_req", "Requirement of " + body);
 		} else {
-			code.begin("Requirement");
+			dirs = dirs.begin("obj_req", "Requirement");
 		}
-		exit = code.end("debug_false_req", exit);
-		objectType(code).writeRequirement(code, exit, body);
-		code.end();
+		objectType(dirs.code()).writeRequirement(dirs, body);
+		dirs.end();
 	}
 
-	public final void writeClaim(Code code, ValOp result) {
-		writeClaim(code, null, result, null);
+	public final void writeClaim(CodeDirs dirs, ValOp result) {
+		writeClaim(dirs, result, null);
 	}
 
-	public final void writeClaim(Code code, CodePos exit, ValOp result) {
-		writeClaim(code, exit, result, null);
+	public final void writeClaim(CodeDirs dirs, ValOp result, ObjOp body) {
+		writeClaim(dirs.code(), result, body);
+		result.go(dirs.code(), dirs);
 	}
 
-	public final void writeClaim(
-			Code code,
-			CodePos exit,
-			ValOp result,
-			ObjOp body) {
-		writeClaim(code, result, body);
-		if (exit != null) {
-			result.loadCondition(code).goUnless(code, exit);
-		}
+	public final void writeCondition(CodeDirs dirs) {
+		writeCondition(dirs, null);
 	}
 
-	public final void writeCondition(Code code, CodePos exit) {
-		writeCondition(code, exit, null);
-	}
-
-	public void writeCondition(Code code, CodePos exit, ObjOp body) {
+	public void writeCondition(CodeDirs dirs, ObjOp body) {
 		if (body != null) {
-			code.begin("Condition of " + body.getAscendant() + " by " + this);
+			dirs = dirs.begin("obj_cond", "Condition of " + body);
 		} else {
-			code.begin("Condition of " + this);
+			dirs = dirs.begin("obj_cond", "Condition");
 		}
-		exit = code.end("debug_false_cond", exit);
-		objectType(code).writeCondition(code, exit, body);
-		code.end();
+		objectType(dirs.code()).writeCondition(dirs, body);
+		dirs.end();
 	}
 
 	public final void writeProposition(Code code, ValOp result) {
-		writeProposition(code, null, result, null);
+		writeProposition(code, result, null);
 	}
 
-	public final void writeProposition(Code code, CodePos exit, ValOp result) {
-		writeProposition(code, exit, result, null);
+	public final void writeProposition(CodeDirs dirs, ValOp result) {
+		writeProposition(dirs, result, null);
 	}
 
 	public final void writeProposition(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ValOp result,
 			ObjOp body) {
-		writeProposition(code, result, body);
-		if (exit != null) {
-			result.loadCondition(code).goUnless(code, exit);
-		}
+		writeProposition(dirs.code(), result, body);
+		result.go(dirs.code(), dirs);
 	}
 
 	public final ObjectTypeOp objectType(Code code) {
@@ -252,12 +235,12 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public abstract FldOp field(Code code, CodePos exit, MemberKey memberKey);
+	public abstract FldOp field(CodeDirs dirs, MemberKey memberKey);
 
-	public abstract DepOp dep(Code code, CodePos exit, Dep dep);
+	public abstract DepOp dep(CodeDirs dirs, Dep dep);
 
 	@Override
-	public final ObjectOp materialize(Code code, CodePos exit) {
+	public final ObjectOp materialize(CodeDirs dirs) {
 		return this;
 	}
 
@@ -286,23 +269,35 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return out.toString();
 	}
 
-	protected ObjOp dynamicCast(Code code, Obj ascendant) {
+	protected ObjOp dynamicCast(CodeDirs dirs, Obj ascendant) {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
 
-		code.begin("Dynamic cast " + this + " to " + ascendantIR.getId());
+		dirs = dirs.begin(
+				"cast",
+				"Dynamic cast " + this + " to " + ascendantIR.getId());
 
+		final Code code = dirs.code();
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
 		final DataOp resultPtr =
 			castFunc().op(code).cast(code, this, ascendantType);
+		final CodeBlk castNull = code.addBlock("cast_null");
+
+		resultPtr.isNull(code).go(code, castNull.head());
+
 		final ObjOp result = resultPtr.to(code, ascendantIR.getBodyType()).op(
 				getBuilder(),
 				ascendant,
 				COMPATIBLE);
 
-		code.end();
+		if (castNull.exists()) {
+			castNull.debug("Cast failed");
+			dirs.goWhenFalse(castNull);
+		}
+
+		dirs.end();
 
 		return result;
 	}
@@ -349,18 +344,6 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return ptr().toAny(code).to(
 				code,
 				getWellKnownType().ir(getGenerator()).getBodyType());
-	}
-
-	private static void checkValue(
-			CodeBlk code,
-			CodePos ok,
-			CodePos exit,
-			ValOp value) {
-		if (exit != null) {
-			value.loadCondition(code).go(code, ok, exit);
-		} else {
-			code.go(ok);
-		}
 	}
 
 }

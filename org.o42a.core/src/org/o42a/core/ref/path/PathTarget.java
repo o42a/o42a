@@ -19,12 +19,11 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
@@ -216,7 +215,7 @@ class PathTarget extends Expression {
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
+		public HostOp target(CodeDirs dirs) {
 
 			final PathTarget ref = (PathTarget) getRef();
 			final HostOp start;
@@ -225,14 +224,14 @@ class PathTarget extends Expression {
 
 				final Obj root = host().getContext().getRoot();
 
-				start = root.ir(getGenerator()).op(getBuilder(), code);
+				start = root.ir(getGenerator()).op(getBuilder(), dirs.code());
 			} else if (ref.start != null) {
-				start = ref.start.op(host()).target(code, exit);
+				start = ref.start.op(host()).target(dirs);
 			} else {
 				start = host();
 			}
 
-			return ref.path.write(code, exit, start);
+			return ref.path.write(dirs, start);
 		}
 
 	}

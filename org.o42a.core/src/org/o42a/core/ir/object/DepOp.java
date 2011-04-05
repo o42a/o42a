@@ -22,7 +22,6 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -31,6 +30,7 @@ import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.DepIR.Op;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -61,7 +61,7 @@ public class DepOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public ObjectOp toObject(Code code, CodePos exit) {
+	public ObjectOp toObject(CodeDirs dirs) {
 
 		final Artifact<?> target = depIR().getDep().getTarget();
 		final Obj object = target.toObject();
@@ -69,6 +69,8 @@ public class DepOp extends IROp implements HostOp {
 		if (object == null) {
 			return null;
 		}
+
+		final Code code = dirs.code();
 
 		return anonymousObject(
 				getBuilder(),
@@ -82,13 +84,14 @@ public class DepOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public HostOp field(Code code, CodePos exit, MemberKey memberKey) {
-		return toObject(code, exit).field(code, exit, memberKey);
+	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+		return toObject(dirs).field(dirs, memberKey);
 	}
 
 	@Override
-	public ObjectOp materialize(Code code, CodePos exit) {
+	public ObjectOp materialize(CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final Artifact<?> target = depIR().getDep().getTarget();
 
 		return anonymousObject(
@@ -97,17 +100,15 @@ public class DepOp extends IROp implements HostOp {
 				target.materialize());
 	}
 
-	public void fill(LocalBuilder builder, Code code, CodePos exit) {
+	public void fill(LocalBuilder builder, CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final DataOp value;
 		final Field<?> dependency = depIR().getDep().getDependency();
 
 		if (dependency != null) {
 
-			final LclOp field = builder.host().field(
-					code,
-					exit,
-					dependency.getKey());
+			final LclOp field = builder.host().field(dirs, dependency.getKey());
 
 			value = field.ptr().toData(code);
 		} else {

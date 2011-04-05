@@ -19,11 +19,11 @@
 */
 package org.o42a.core.artifact;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
@@ -93,32 +93,33 @@ final class SelfRef extends Ref {
 		}
 
 		@Override
-		public void writeLogicalValue(Code code, CodePos exit) {
+		public void writeLogicalValue(CodeDirs dirs) {
 
-			final HostOp target = target(code, exit);
+			final HostOp target = target(dirs);
 
-			target.materialize(code, exit).writeLogicalValue(
-					code,
-					exit,
-					host().toObject(code, exit));
+			target.materialize(dirs).writeLogicalValue(
+					dirs,
+					host().toObject(dirs));
 		}
 
 		@Override
-		public void writeValue(Code code, CodePos exit, ValOp result) {
+		public void writeValue(CodeDirs dirs, ValOp result) {
 
-			final HostOp target = target(code, exit);
+			final HostOp target = target(dirs);
 
-			target.materialize(code, exit).writeValue(
-					code,
-					exit,
+			target.materialize(dirs).writeValue(
+					dirs,
 					result,
-					host().toObject(code, exit));
+					host().toObject(dirs));
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
-			return this.ref.getResolution().getScope().ir(getGenerator())
-			.op(getBuilder(), code);
+		public HostOp target(CodeDirs dirs) {
+
+			final ScopeIR ir =
+				this.ref.getResolution().getScope().ir(getGenerator());
+
+			return ir.op(getBuilder(), dirs.code());
 		}
 
 	}

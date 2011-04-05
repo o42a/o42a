@@ -25,8 +25,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
@@ -34,6 +32,7 @@ import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -202,10 +201,12 @@ public class Root extends Obj {
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
-			return getRef().getContext().getVoid().ir(getGenerator()).op(
-					getBuilder(),
-					code);
+		public HostOp target(CodeDirs dirs) {
+
+			final ObjectIR ir =
+				getRef().getContext().getVoid().ir(getGenerator());
+
+			return ir.op(getBuilder(), dirs.code());
 		}
 
 		@Override

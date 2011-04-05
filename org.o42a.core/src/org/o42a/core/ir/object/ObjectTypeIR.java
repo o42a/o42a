@@ -23,6 +23,7 @@ import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectDataType.*;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.member.Member;
@@ -95,8 +97,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 		data.object().setValue(
 				getObjectIR().getMainBodyIR().data(generator).getPointer()
-				.relativeTo(
-						data.data(generator).getPointer()));
+				.relativeTo(data.data(generator).getPointer()));
 		data.flags().setValue(objectFlags());
 		data.start().setValue(
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
@@ -246,6 +247,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 					.detail("ancestor"),
 					OBJECT_REF);
 		final CodeBlk failure = function.addBlock("failure");
+		final CodeDirs dirs = exitWhenUnknown(function, failure.head());
 
 		final TypeRef ancestor = getObjectIR().getObject().getAncestor();
 		final CodeBuilder builder = codeBuilder(
@@ -256,9 +258,9 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 		final HostOp host = builder.host();
 
-		ancestor.op(function, failure.head(), host)
-		.target(function, failure.head())
-		.materialize(function, failure.head())
+		ancestor.op(dirs, host)
+		.target(dirs)
+		.materialize(dirs)
 		.toAny(function)
 		.returnValue(function);
 

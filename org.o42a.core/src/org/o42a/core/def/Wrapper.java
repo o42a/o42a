@@ -19,11 +19,10 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 
 
@@ -47,7 +46,7 @@ final class Wrapper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(Code code, CodePos exit, HostOp host) {
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
 		return host;
 	}
 

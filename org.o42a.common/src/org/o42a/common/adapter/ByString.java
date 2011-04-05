@@ -19,6 +19,7 @@
 */
 package org.o42a.common.adapter;
 
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
@@ -32,6 +33,7 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -129,12 +131,10 @@ public abstract class ByString<T> extends IntrinsicObject {
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
 			final CodeBlk cantParse = code.addBlock("cant_parse");
+			final CodeDirs dirs = exitWhenUnknown(code, cantParse.head());
 			final ObjectOp input =
-				host.field(
-						code,
-						cantParse.head(),
-						INPUT.memberOf(getScope()).getKey())
-				.materialize(code, cantParse.head());
+				host.field(dirs, INPUT.memberOf(getScope()).getKey())
+				.materialize(dirs);
 
 			parse(code, result, input);
 			if (cantParse.exists()) {

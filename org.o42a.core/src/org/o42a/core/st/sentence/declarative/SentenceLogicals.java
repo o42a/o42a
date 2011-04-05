@@ -19,13 +19,17 @@
 */
 package org.o42a.core.st.sentence.declarative;
 
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+
 import java.util.ArrayList;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
@@ -180,26 +184,30 @@ final class SentenceLogicals {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
+		public void write(CodeDirs dirs, HostOp host) {
 
 			final int size = this.variants.size();
 
 			if (size == 0) {
 				if (this.otherwise != null) {
-					this.otherwise.write(code, exit, host);
+					this.otherwise.write(dirs, host);
 				}
 				return;
 			}
 
+			final Code code = dirs.code();
+			final CodeBlk exit = code.addBlock("exit");
 			CodePos otherwise;
 
 			if (this.otherwise == null) {
-				otherwise = exit;
+				otherwise = exit.head();
 			} else {
 
 				final Code otherwiseBlock = code.addBlock("otherwise");
 
-				this.otherwise.write(otherwiseBlock, exit, host);
+				this.otherwise.write(
+						exitWhenUnknown(otherwiseBlock, exit.head()),
+						host);
 
 				otherwise = otherwiseBlock.head();
 			}
@@ -217,18 +225,26 @@ final class SentenceLogicals {
 				final int nextIdx = idx + 1;
 
 				if (nextIdx >= size) {
-					prerequisite.write(prereq, otherwise, host);
-					precondition.write(prereq, exit, host);
-					return;
+					prerequisite.write(
+							exitWhenUnknown(prereq, otherwise),
+							host);
+					precondition.write(
+							exitWhenUnknown(prereq, exit.head()),
+							host);
+					break;
 				}
 
 				final Code next = code.addBlock(nextIdx + "_prereq");
 
-				prerequisite.write(prereq, next.head(), host);
-				precondition.write(prereq, exit, host);
+				prerequisite.write(exitWhenUnknown(prereq, next.head()), host);
+				precondition.write(exitWhenUnknown(prereq, exit.head()), host);
 
 				prereq = next;
 				idx = nextIdx;
+			}
+
+			if (exit.exists()) {
+				dirs.goWhenFalse(exit);
 			}
 		}
 

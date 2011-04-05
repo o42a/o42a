@@ -22,12 +22,11 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 
@@ -59,49 +58,46 @@ final class AnonymousObjOp extends ObjectOp {
 	}
 
 	@Override
-	public ObjOp cast(Code code, CodePos exit, Obj ascendant) {
+	public ObjOp cast(CodeDirs dirs, Obj ascendant) {
 		getWellKnownType().assertDerivedFrom(ascendant);
 		if (ascendant == getContext().getVoid()) {
 			// anything is compatible with void
 
 			final ObjectIR ir = getWellKnownType().ir(getGenerator());
 
-			return ptr().to(code, ir.getBodyType()).op(
+			return ptr().to(dirs.code(), ir.getBodyType()).op(
 					getBuilder(),
 					getWellKnownType(),
 					COMPATIBLE);
 		}
 
-		return dynamicCast(code, ascendant);
+		return dynamicCast(dirs, ascendant);
 	}
 
 	@Override
-	public FldOp field(Code code, CodePos exit, MemberKey memberKey) {
-		code.begin("Field " + memberKey + " of " + this);
-		exit = code.end("debug_exit", exit);
+	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
+		dirs = dirs.begin("field", "Field " + memberKey + " of " + this);
 
 		final ObjOp ascendant = cast(
-				code,
-				exit,
+				dirs,
 				memberKey.getOrigin().getContainer().toObject());
-		final FldOp op = ascendant.field(code, exit, memberKey);
+		final FldOp op = ascendant.field(dirs, memberKey);
 
-		code.end();
-		code.dumpName("Field: ", op.ptr());
+		dirs.code().dumpName("Field: ", op.ptr());
+		dirs.end();
 
 		return op;
 	}
 
 	@Override
-	public DepOp dep(Code code, CodePos exit, Dep dep) {
-		code.begin("Dep " + dep + " of " + this);
-		exit = code.end("debug_exit", exit);
+	public DepOp dep(CodeDirs dirs, Dep dep) {
+		dirs = dirs.begin("dep", "Dep " + dep + " of " + this);
 
-		final ObjOp ascendant = cast(code, exit, dep.getObject());
-		final DepOp op = ascendant.dep(code, exit, dep);
+		final ObjOp ascendant = cast(dirs, dep.getObject());
+		final DepOp op = ascendant.dep(dirs, dep);
 
-		code.end();
-		code.dumpName("Dep: ", op.ptr());
+		dirs.code().dumpName("Dep: ", op.ptr());
+		dirs.end();
 
 		return op;
 	}

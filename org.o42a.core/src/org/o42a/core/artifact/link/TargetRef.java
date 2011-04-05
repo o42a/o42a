@@ -19,14 +19,13 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
@@ -86,15 +85,15 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 				getRescoper());
 	}
 
-	public RefOp ref(Code code, CodePos exit, ObjOp host) {
+	public RefOp ref(CodeDirs dirs, ObjOp host) {
 
-		final HostOp rescopedHost = getRescoper().rescope(code, exit, host);
+		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
 		return getRef().op(rescopedHost);
 	}
 
-	public HostOp target(Code code, CodePos exit, ObjOp host) {
-		return ref(code, exit, host).target(code, exit);
+	public HostOp target(CodeDirs dirs, ObjOp host) {
+		return ref(dirs, host).target(dirs);
 	}
 
 	@Override
@@ -163,11 +162,10 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
+		public void write(CodeDirs dirs, HostOp host) {
 			this.targetRef.getRef().getLogical().write(
-					code,
-					exit,
-					this.targetRef.getRescoper().rescope(code, exit, host));
+					dirs,
+					this.targetRef.getRescoper().rescope(dirs, host));
 		}
 
 		@Override

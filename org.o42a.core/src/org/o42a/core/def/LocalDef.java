@@ -23,13 +23,13 @@ import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
@@ -71,28 +71,27 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	public void writeValue(Code code, CodePos exit, HostOp host, ValOp result) {
+	public void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
 
-		final HostOp rescopedHost = getRescoper().rescope(code, exit, host);
-		final ObjectOp ownerObject = rescopedHost.toObject(code, exit);
+		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
+		final ObjectOp ownerObject = rescopedHost.toObject(dirs);
 
 		assert ownerObject != null :
 			"Local scope owner expected: " + rescopedHost;
 
 		final LocalScope scope = getBlock().getScope().toLocal();
 		final Obj ownerType = scope.getOwner();
-		final ObjOp ownerBody = ownerObject.cast(code, exit, ownerType);
+		final ObjOp ownerBody = ownerObject.cast(dirs, ownerType);
 		final LocalIRBase ir = scope.ir(host.getGenerator());
 
 		if (this.explicit) {
-			ir.writeValue(code, exit, result, ownerBody, null);
+			ir.writeValue(dirs, result, ownerBody, null);
 		} else {
 			ir.writeValue(
-					code,
-					exit,
+					dirs,
 					result,
 					ownerType.ir(host.getGenerator())
-					.op(host.getBuilder(), code),
+					.op(host.getBuilder(), dirs.code()),
 					ownerBody);
 		}
 	}
@@ -164,13 +163,16 @@ class LocalDef extends ValueDef {
 		}
 
 		@Override
-		public void write(Code code, CodePos exit, HostOp host) {
-			code.debug("Logical: " + this);
+		public void write(CodeDirs dirs, HostOp host) {
+			dirs = dirs.begin("local_logical", "Local logical: " + this);
 
+			final Code code = dirs.code();
 			final LocalOp local = host.toLocal();
-			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
+			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
-			this.def.writeValue(code, exit, local, result);
+			this.def.writeValue(dirs, local, result);
+
+			dirs.end();
 		}
 
 		@Override

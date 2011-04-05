@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -35,6 +36,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -66,7 +68,7 @@ public final class RefLclOp extends LclOp {
 	}
 
 	@Override
-	public ObjOp toObject(Code code, CodePos exit) {
+	public ObjOp toObject(CodeDirs dirs) {
 
 		final Obj object = getFieldIR().getField().getArtifact().toObject();
 
@@ -74,11 +76,11 @@ public final class RefLclOp extends LclOp {
 			return null;
 		}
 
-		return target(code, exit);
+		return target(dirs);
 	}
 
 	@Override
-	public FldOp field(Code code, CodePos exit, MemberKey memberKey) {
+	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
 
 		final Obj object = getFieldIR().getField().getArtifact().toObject();
 
@@ -86,22 +88,25 @@ public final class RefLclOp extends LclOp {
 			return null;
 		}
 
-		return target(code, exit).field(code, exit, memberKey);
+		return target(dirs).field(dirs, memberKey);
 	}
 
 	@Override
-	public ObjOp materialize(Code code, CodePos exit) {
-		return target(code, exit);
+	public ObjOp materialize(CodeDirs dirs) {
+		return target(dirs);
 	}
 
-	public ObjOp target(Code code, CodePos exit) {
+	public ObjOp target(CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final Obj ascendant = getAscendant();
 		final ObjectBodyIR ascendantBodyType =
 			ascendant.ir(getGenerator()).getBodyType();
 		final DataOp objectPtr = ptr().object(code).load(code);
+		final CodeBlk nullLocal = code.addBlock("null_local");
 
-		objectPtr.isNull(code).go(code, exit);
+		objectPtr.isNull(code).go(code, nullLocal.head());
+		dirs.goWhenFalse(nullLocal);
 
 		return objectPtr.to(code, ascendantBodyType).op(
 				getBuilder(),
@@ -114,17 +119,18 @@ public final class RefLclOp extends LclOp {
 
 		final Code code = control.code();
 		final CodePos exit = control.exit();
+		final CodeDirs dirs = CodeDirs.exitWhenUnknown(code, exit);
 
 		final Field<?> field = getFieldIR().getField();
 		final Obj object = field.getArtifact().materialize();
 
 		final ObjectOp newObject =
-			getBuilder().newObject(code, exit, object, CtrOp.NEW_INSTANCE);
+			getBuilder().newObject(dirs, object, CtrOp.NEW_INSTANCE);
 
 		ptr().object(code).store(
 				code,
 				newObject.ptr().toAny(code).toData(code));
-		newObject.writeLogicalValue(code, exit);
+		newObject.writeLogicalValue(dirs);
 	}
 
 	public static final class Op extends LclOp.Op {

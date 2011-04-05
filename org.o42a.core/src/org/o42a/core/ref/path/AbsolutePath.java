@@ -22,12 +22,11 @@ package org.o42a.core.ref.path;
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
@@ -125,13 +124,13 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
-	HostOp write(Code code, CodePos exit, HostOp start) {
+	HostOp write(CodeDirs dirs, HostOp start) {
 
 		final Container target = resolve(start.getContext());
 
 		return target.getScope().ir(start.getGenerator()).op(
 				start.getBuilder(),
-				code);
+				dirs.code());
 	}
 
 	private static final class AbsolutePathTarget extends PathTarget {

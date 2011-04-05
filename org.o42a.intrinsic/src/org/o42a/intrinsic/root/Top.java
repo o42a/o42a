@@ -24,7 +24,6 @@ import static org.o42a.core.ScopePlace.TOP_PLACE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -34,6 +33,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -217,7 +217,7 @@ public final class Top extends AbstractScope implements Container {
 		}
 
 		@Override
-		public ObjectOp toObject(Code code, CodePos exit) {
+		public ObjectOp toObject(CodeDirs dirs) {
 			return null;
 		}
 
@@ -227,12 +227,12 @@ public final class Top extends AbstractScope implements Container {
 		}
 
 		@Override
-		public HostOp field(Code code, CodePos exit, MemberKey memberKey) {
+		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
 			return null;
 		}
 
 		@Override
-		public ObjOp materialize(Code code, CodePos exit) {
+		public ObjOp materialize(CodeDirs dirs) {
 			throw new UnsupportedOperationException();
 		}
 

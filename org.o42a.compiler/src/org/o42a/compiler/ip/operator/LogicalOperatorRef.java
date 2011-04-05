@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.ast.expression.UnaryNode;
@@ -30,6 +31,7 @@ import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
@@ -155,17 +157,18 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
 			final Code failure = code.addBlock("failure");
-			final CodeBlk returnTrue = code.addBlock("return_true");
-			final CodeBlk returnFalse = code.addBlock("return_false");
 			final Ref enclosingRef =
 				this.res.getScope().getEnclosingScopePath()
 				.target(this.res, this.res.distribute());
 
 			final ValOp operandValue = code.allocate(VAL_TYPE);
-			final HostOp operandHost =
-				enclosingRef.op(host).target(code, failure.head());
+			final CodeDirs dirs = exitWhenUnknown(code, failure.head());
+			final HostOp operandHost = enclosingRef.op(host).target(dirs);
 
-			this.res.ref.op(operandHost).writeValue(code, operandValue);
+			final CodeBlk returnTrue = code.addBlock("return_true");
+			final CodeBlk returnFalse = code.addBlock("return_false");
+
+			this.res.ref.op(operandHost).writeValue(dirs, operandValue);
 
 			switch (this.res.ref.node.getOperator()) {
 			case NOT:

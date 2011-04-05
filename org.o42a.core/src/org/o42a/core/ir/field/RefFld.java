@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -32,6 +33,7 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.member.field.Field;
@@ -125,8 +127,9 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 				getBodyIR(),
 				getBodyIR().getAscendant(),
 				COMPATIBLE);
+		final CodeDirs dirs = exitWhenUnknown(this.constructor, failure.head());
 
-		buildConstructor(builder, this.constructor, failure.head());
+		buildConstructor(builder, dirs);
 
 		if (failure.exists()) {
 			failure.nullPtr().returnValue(failure);
@@ -134,18 +137,15 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 		this.constructor.done();
 
-		getInstance().constructor().setValue(
-				this.constructor.getPointer());
+		getInstance().constructor().setValue(this.constructor.getPointer());
 	}
 
-	protected void buildConstructor(
-			ObjBuilder builder,
-			Code code,
-			CodePos exit) {
+	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
+		final Code code = dirs.code();
 		final RefFldOp<C> fld = op(code, builder.host());
 
-		final ObjectOp result = construct(builder, code, exit, fld);
+		final ObjectOp result = construct(builder, dirs, fld);
 		final DataOp res = result.toData(code);
 
 		fld.ptr().object(code).store(code, res);
@@ -154,8 +154,7 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 	protected ObjectOp construct(
 			ObjBuilder builder,
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			RefFldOp<C> fld) {
 
 		final Artifact<?> artifact = getField().getArtifact();
@@ -163,17 +162,16 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 		if (object != null) {
 			return builder.newObject(
-					code,
-					exit,
+					dirs,
 					object,
 					CtrOp.PROPAGATION);
 		}
 
 		final Link link = artifact.toLink();
 		final HostOp target =
-			link.getTargetRef().target(code, exit, builder.host());
+			link.getTargetRef().target(dirs, builder.host());
 
-		return target.materialize(code, exit);
+		return target.materialize(dirs);
 	}
 
 	protected final Obj targetType(Obj bodyType) {

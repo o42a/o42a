@@ -19,8 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -28,6 +26,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
@@ -159,14 +158,14 @@ public final class Dep extends PathFragment {
 	}
 
 	@Override
-	public HostOp write(Code code, CodePos exit, HostOp start) {
+	public HostOp write(CodeDirs dirs, HostOp start) {
 
-		final ObjectOp object = start.toObject(code, exit);
+		final ObjectOp object = start.toObject(dirs);
 
 		assert object != null :
 			"Not an object: " + start;
 
-		return object.dep(code, exit, this);
+		return object.dep(dirs, this);
 	}
 
 	@Override

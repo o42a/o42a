@@ -20,13 +20,15 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.core.def.Definitions.definitions;
+import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.CodeBlk;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -40,31 +42,36 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ObjectOp object = op.object(code, exit);
+			final ObjectOp object = op.object(dirs);
 
 			if (!op.isOverridden()) {
-				object.writeLogicalValue(code, exit);
+				object.writeLogicalValue(dirs);
 				return;
 			}
 
-			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
+			final Code code = dirs.code();
+			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
 			object.objectType(code).writeOverriddenValue(code, result);
-			result.loadCondition(code).go(code, null, exit);
+			result.go(code, dirs);
 		}
 
 		@Override
-		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
+		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
 
-			final ObjectOp object = op.object(code, exit);
+			final ObjectOp object = op.object(dirs);
 
 			if (!op.isOverridden()) {
-				object.writeValue(code, exit, result);
-			} else {
-				object.objectType(code).writeOverriddenValue(code, exit, result);
+				object.writeValue(dirs, result);
+				return;
 			}
+
+			final Code code = dirs.code();
+
+			object.objectType(code).writeOverriddenValue(code, result);
+			result.go(code, dirs);
 		}
 
 	},
@@ -77,24 +84,28 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
+			final Code code = dirs.code();
+			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
-			writeValue(code, exit, result, op);
-			result.loadCondition(code).go(code, null, exit);
+			writeValue(dirs, result, op);
 		}
 
 		@Override
-		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
+		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
 
-			final ObjectOp object = op.object(code, exit);
+			final ObjectOp object = op.object(dirs);
 
 			if (!op.isOverridden()) {
-				object.writeValue(code, result);
-			} else {
-				object.objectType(code).writeOverriddenValue(code, result);
+				object.writeValue(dirs, result);
+				return;
 			}
+
+			final Code code = dirs.code();
+
+			object.objectType(code).writeOverriddenValue(code, result);
+			result.go(code, dirs);
 		}
 
 	},
@@ -107,24 +118,39 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ObjectOp object = op.object(code, exit);
+			final ObjectOp object = op.object(dirs);
 
 			if (!op.isOverridden()) {
-				object.writeRequirement(code, exit);
-			} else {
-
-				final ObjectTypeOp data = object.objectType(code);
-
-				data.writeOverriddenRequirement(code, exit);
+				object.writeRequirement(dirs);
+				return;
 			}
+
+			object.objectType(dirs.code()).writeOverriddenRequirement(dirs);
 		}
 
 		@Override
-		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
-			writeLogicalValue(code, exit, op);
+		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
+
+			final Code code = dirs.code();
+			final CodeBlk reqFalse = code.addBlock("req_false");
+			final CodeBlk reqUnknown = code.addBlock("req_unknown");
+
+			writeLogicalValue(
+					splitWhenUnknown(
+							code,
+							reqFalse.head(),
+							reqUnknown.head()),
+					op);
+
 			result.storeVoid(code);
+			if (reqFalse.exists()) {
+				result.storeFalse(reqFalse);
+			}
+			if (reqUnknown.exists()) {
+				result.storeUnknown(reqUnknown);
+			}
 		}
 
 	},
@@ -137,24 +163,41 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ObjectOp object = op.object(code, exit);
+			final ObjectOp object = op.object(dirs);
 
 			if (!op.isOverridden()) {
-				object.writeCondition(code, exit);
-			} else {
-
-				final ObjectTypeOp data = object.objectType(code);
-
-				data.writeOverriddenCondition(code, exit);
+				object.writeCondition(dirs);
+				return;
 			}
+
+			final Code code = dirs.code();
+
+			object.objectType(code).writeOverriddenCondition(dirs);
 		}
 
 		@Override
-		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
-			writeLogicalValue(code, exit, op);
+		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
+
+			final Code code = dirs.code();
+			final CodeBlk reqFalse = code.addBlock("cond_false");
+			final CodeBlk reqUnknown = code.addBlock("cond_unknown");
+
+			writeLogicalValue(
+					splitWhenUnknown(
+							code,
+							reqFalse.head(),
+							reqUnknown.head()),
+					op);
+
 			result.storeVoid(code);
+			if (reqFalse.exists()) {
+				result.storeFalse(reqFalse);
+			}
+			if (reqUnknown.exists()) {
+				result.storeUnknown(reqUnknown);
+			}
 		}
 
 	},
@@ -167,24 +210,28 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
+			final Code code = dirs.code();
+			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
-			writeValue(code, exit, result, op);
-			result.loadCondition(code).go(code, null, exit);
+			writeValue(dirs, result, op);
 		}
 
 		@Override
-		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
+		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
 
-			final ObjectOp object = op.object(code, exit);
+			final ObjectOp object = op.object(dirs);
 
 			if (!op.isOverridden()) {
-				object.writeClaim(code, exit, result);
-			} else {
-				object.objectType(code).writeOverriddenClaim(code, exit, result);
+				object.writeClaim(dirs, result);
+				return;
 			}
+
+			final Code code = dirs.code();
+
+			object.objectType(code).writeOverriddenClaim(code, result);
+			result.go(code, dirs);
 		}
 
 	},
@@ -200,27 +247,29 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeLogicalValue(Code code, CodePos exit, ValuePartOp op) {
+		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
+			final Code code = dirs.code();
+			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
-			writeValue(code, exit, result, op);
-			result.loadCondition(code).goUnless(code, exit);
+			writeValue(dirs, result, op);
 		}
 
 		@Override
-		void writeValue(Code code, CodePos exit, ValOp result, ValuePartOp op) {
+		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
 
-			final ObjectOp object = op.object(code, exit);
+			final ObjectOp object = op.object(dirs);
 
 			if (!op.isOverridden()) {
-				object.writeProposition(code, exit, result);
-			} else {
-
-				final ObjectTypeOp data = object.objectType(code);
-
-				data.writeOverriddenPsoposition(code, exit, result);
+				object.writeProposition(dirs, result);
+				return;
 			}
+
+			final Code code = dirs.code();
+			final ObjectTypeOp data = object.objectType(code);
+
+			data.writeOverriddenProposition(code, result);
+			result.go(code, dirs);
 		}
 
 	};
@@ -238,12 +287,8 @@ enum ValuePart {
 
 	abstract Definitions valuePart(ValuePartRef ex, Definitions definitions);
 
-	abstract void writeLogicalValue(Code code, CodePos exit, ValuePartOp op);
+	abstract void writeLogicalValue(CodeDirs dirs, ValuePartOp op);
 
-	abstract void writeValue(
-			Code code,
-			CodePos exit,
-			ValOp result,
-			ValuePartOp op);
+	abstract void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op);
 
 }

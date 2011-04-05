@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,30 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir;
+package org.o42a.core.ir.op;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.CompilerContext;
-import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.MemberKey;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.BoolOp;
 
 
-public interface HostOp {
+public interface CondOp {
 
-	Generator getGenerator();
+	BoolOp loadCondition(Code code);
 
-	CodeBuilder getBuilder();
+	BoolOp loadUnknown(Code code);
 
-	CompilerContext getContext();
-
-	ObjectOp toObject(CodeDirs dirs);
-
-	LocalOp toLocal();
-
-	HostOp field(CodeDirs dirs, MemberKey memberKey);
-
-	ObjectOp materialize(CodeDirs dirs);
+	void go(Code code, CodeDirs dirs);
 
 }

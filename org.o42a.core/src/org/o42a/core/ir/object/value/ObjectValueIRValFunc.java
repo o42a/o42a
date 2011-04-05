@@ -20,6 +20,8 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.code.*;
@@ -188,6 +190,8 @@ public abstract class ObjectValueIRValFunc
 			return;
 		}
 
+		final CodeBlk falseValue = code.addBlock("val_false");
+		final CodeBlk unknownValue = code.addBlock("val_unknown");
 		final ValueDef[] defs = collector.getExplicitDefs();
 
 		int displayIdx = 0;
@@ -209,14 +213,22 @@ public abstract class ObjectValueIRValFunc
 
 			if (i == collector.ancestorIndex) {
 				writeAncestorDef(block, result, host);
-				result.loadUnknown(block).go(block, nextPos, code.tail());
+				result.loadIndefinite(block).go(block, nextPos, code.tail());
 			} else {
 				// Write explicit definition.
 
 				final ValueDef def = defs[i];
 
-				def.writePrerequisite(block, nextPos, host);
-				def.writeValue(block, nextPos, host, result);
+				def.writePrerequisite(
+						exitWhenUnknown(block, nextPos),
+						host);
+				def.writeValue(
+						splitWhenUnknown(
+								block,
+								falseValue.head(),
+								unknownValue.head()),
+						host,
+						result);
 				block.go(code.tail());
 			}
 
@@ -224,6 +236,13 @@ public abstract class ObjectValueIRValFunc
 				break;
 			}
 			block = next;
+		}
+
+		if (falseValue.exists()) {
+			result.storeFalse(falseValue);
+		}
+		if (unknownValue.exists()) {
+			result.storeUnknown(falseValue);
 		}
 	}
 

@@ -19,11 +19,10 @@
 */
 package org.o42a.core.ref.common;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
 
@@ -76,14 +75,16 @@ public abstract class AbstractConjunction extends Logical {
 	}
 
 	@Override
-	public void write(Code code, CodePos exit, HostOp host) {
-		code.debug("Logical: " + this);
+	public void write(CodeDirs dirs, HostOp host) {
+		dirs = dirs.begin("and", "Logical AND: " + this);
 
 		final int numClaims = numClaims();
 
 		for (int i = 0; i < numClaims; ++i) {
-			claim(i).write(code, exit, host);
+			claim(i).write(dirs, host);
 		}
+
+		dirs.end();
 	}
 
 	@Override

@@ -19,11 +19,10 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
@@ -57,9 +56,9 @@ final class RescopedLogical extends Logical {
 	}
 
 	@Override
-	public void write(Code code, CodePos exit, HostOp host) {
-		host = this.rescoper.rescope(code, exit, host);
-		this.logical.write(code, exit, host);
+	public void write(CodeDirs dirs, HostOp host) {
+		host = this.rescoper.rescope(dirs, host);
+		this.logical.write(dirs, host);
 	}
 
 	@Override

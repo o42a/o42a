@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.ref;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -33,9 +32,7 @@ import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ConstructorOp;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Expression;
@@ -138,23 +135,26 @@ public class OverriddenEx extends Expression {
 		}
 
 		@Override
-		public void writeLogicalValue(Code code, CodePos exit) {
+		public void writeLogicalValue(CodeDirs dirs) {
 
-			final ValOp result = code.allocate(VAL_TYPE).storeUnknown(code);
+			final Code code = dirs.code();
+			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
-			writeValue(code, exit, result);
-			result.loadCondition(code).go(code, null, exit);
+			writeValue(dirs, result);
+			result.go(code, dirs);
 		}
 
 		@Override
-		public void writeValue(Code code, CodePos exit, ValOp result) {
+		public void writeValue(CodeDirs dirs, ValOp result) {
 
 			final OverriddenEx ref = (OverriddenEx) getRef();
 			final RefOp hostRef = ref.host.op(host());
 			final ObjectOp object =
-				hostRef.target(code, exit).toObject(code, exit);
+				hostRef.target(dirs).toObject(dirs);
 
-			object.objectType(code).writeOverriddenValue(code, exit, result);
+			object.objectType(dirs.code()).writeOverriddenValue(
+					dirs.code(),
+					result);
 		}
 
 	}

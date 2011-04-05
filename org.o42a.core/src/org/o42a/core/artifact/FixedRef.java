@@ -19,12 +19,12 @@
 */
 package org.o42a.core.artifact;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -83,9 +83,12 @@ final class FixedRef extends Ref {
 		}
 
 		@Override
-		public HostOp target(Code code, CodePos exit) {
-			return this.ref.getResolution().getScope().ir(getGenerator())
-			.op(getBuilder(), code);
+		public HostOp target(CodeDirs dirs) {
+
+			final ScopeIR ir =
+				this.ref.getResolution().getScope().ir(getGenerator());
+
+			return ir.op(getBuilder(), dirs.code());
 		}
 
 	}

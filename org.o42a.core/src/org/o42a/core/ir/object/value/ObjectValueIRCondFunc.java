@@ -21,12 +21,16 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.value.DefCollector.explicitDef;
+import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
+import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.op.Val.UNKNOWN_FLAG;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.*;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectCondFunc;
 import org.o42a.core.value.LogicalValue;
 
@@ -40,17 +44,15 @@ public abstract class ObjectValueIRCondFunc
 
 	public abstract boolean isRequirement();
 
-	public void call(
-			Code code,
-			CodePos exit,
-			ObjOp host,
-			ObjectOp body) {
-		if (code.isDebug()) {
-			code.begin("Calculate condition " + this);
+	public void call(CodeDirs dirs, ObjOp host, ObjectOp body) {
+
+		final Code code = dirs.code();
+
+		if (dirs.isDebug()) {
+			dirs = dirs.begin("calc_cond", "Calculate condition " + this);
 			if (body != null) {
 				code.dumpName("For: ", body.toData(code));
 			}
-			exit = code.end("debug_exit", exit);
 		}
 
 		final Obj object = getObjectIR().getObject();
@@ -60,19 +62,19 @@ public abstract class ObjectValueIRCondFunc
 		if (logicalValue.isConstant()) {
 			if (logicalValue.isFalse()) {
 				code.debug("False");
-				code.go(exit);
+				dirs.goWhenFalse(code);
 			} else {
 				code.debug("True");
 			}
-			code.end();
+			dirs.end();
 			return;
 		}
 
 		get(host).op(code).call(
 				code,
-				body(code, host, body)).goUnless(code, exit);
+				body(code, host, body)).go(code, dirs);
 
-		code.end();
+		dirs.end();
 	}
 
 	public void create(ObjectTypeIR typeIR, Definitions definitions) {
@@ -113,46 +115,50 @@ public abstract class ObjectValueIRCondFunc
 
 		function.debug("Calculating condition");
 
-		final CodeBlk exit = function.addBlock("exit");
+		final CodeBlk condFalse = function.addBlock("false");
+		final CodeBlk condUnknown = function.addBlock("unknown");
 		final ObjBuilder builder = new ObjBuilder(
 				function,
-				exit.head(),
+				condFalse.head(),
 				getObjectIR().getMainBodyIR(),
 				getObjectIR().getObject(),
 				DERIVED);
 		final ObjOp host = builder.host();
 
 		function.dumpName("Host: ", host.ptr());
-		build(function, exit.head(), host, definitions);
+		final CodeDirs dirs =
+			splitWhenUnknown(function, condFalse.head(), condUnknown.head());
 
-		function.bool(true).returnValue(function);
-		if (exit.exists()) {
-			exit.bool(false).returnValue(exit);
+		build(dirs, host, definitions);
+
+		function.int8((byte) CONDITION_FLAG).returnValue(function);
+		if (condFalse.exists()) {
+			condFalse.int8((byte) 0).returnValue(condFalse);
+		}
+		if (condUnknown.exists()) {
+			condUnknown.int8((byte) UNKNOWN_FLAG)
+			.returnValue(condUnknown);
 		}
 
 		function.done();
 	}
 
-	public void buildFunc(
-			Code code,
-			CodePos exit,
-			ObjOp host,
-			Definitions definitions) {
+	public void buildFunc(CodeDirs dirs, ObjOp host, Definitions definitions) {
 
 		final DefValue condition = value(definitions);
 
 		if (condition.isUnknown()) {
 			if (isRequirement() || !hasExplicitProposition(definitions)) {
-				writeAncestorDef(code, exit, host);
+				writeAncestorDef(dirs, host);
 			}
 			return;
 		}
 
 		final Builder builder =
-			new Builder(getObjectIR().getObject(), code, exit, host);
+			new Builder(getObjectIR().getObject(), dirs, host);
 
 		if (isRequirement()) {
-			writeAncestorDef(code, exit, host);
+			writeAncestorDef(dirs, host);
 			builder.ancestorWritten = true;
 			builder.addDefs(definitions.getRequirements());
 			return;
@@ -165,20 +171,17 @@ public abstract class ObjectValueIRCondFunc
 		if (hasExplicitProposition(definitions)) {
 			return;
 		}
-		writeAncestorDef(code, exit, host);
+		writeAncestorDef(dirs, host);
 	}
 
 	protected abstract void build(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjOp host,
 			Definitions definitions);
 
-	private void writeAncestorDef(
-			Code code,
-			CodePos exit,
-			ObjOp host) {
+	private void writeAncestorDef(CodeDirs dirs, ObjOp host) {
 
+		final Code code = dirs.code();
 		final CondBlk hasAncestor =
 			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
 		final CodeBlk noAncestor = hasAncestor.otherwise();
@@ -186,7 +189,7 @@ public abstract class ObjectValueIRCondFunc
 		noAncestor.debug(
 				isRequirement()
 				? "No ancestor requirement" : "No ancestor condition");
-		noAncestor.go(code.tail());
+		dirs.goWhenUnknown(noAncestor);
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
 		final ObjectTypeOp ancestorType =
@@ -195,24 +198,44 @@ public abstract class ObjectValueIRCondFunc
 			.load(hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
+		final CodeBlk ancestorFalse = hasAncestor.addBlock("ancestor_false");
+		final CodeBlk ancestorUnknown =
+			hasAncestor.addBlock("ancestor_unknown");
+		CodeDirs ancestorDirs = splitWhenUnknown(
+				hasAncestor,
+				ancestorFalse.head(),
+				ancestorUnknown.head());
+
 		if (isRequirement()) {
 			if (hasAncestor.isDebug()) {
-				hasAncestor.begin("Ancestor requirement");
-				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
-				exit = hasAncestor.end("debug_exit", exit);
+				ancestorDirs = ancestorDirs.begin(
+						"ancestor",
+						"Ancestor requirement");
+				hasAncestor.dumpName(
+						"Ancestor: ",
+						ancestorBody.toData(hasAncestor));
 			}
-			ancestorType.writeRequirement(hasAncestor, exit, ancestorBody);
+			ancestorType.writeRequirement(ancestorDirs, ancestorBody);
 		} else {
 			if (hasAncestor.isDebug()) {
-				hasAncestor.begin("Ancestor condition");
-				hasAncestor.dumpName("Ancestor: ", ancestorBody.toData(code));
-				exit = hasAncestor.end("debug_exit", exit);
+				ancestorDirs = ancestorDirs.begin(
+						"ancestor",
+						"Ancestor condition");
+				hasAncestor.dumpName(
+						"Ancestor: ",
+						ancestorBody.toData(hasAncestor));
 			}
-			ancestorType.writeCondition(hasAncestor, exit, ancestorBody);
+			ancestorType.writeCondition(ancestorDirs, ancestorBody);
 		}
-		hasAncestor.end();
+		ancestorDirs.end();
 
-		hasAncestor.go(code.tail());
+		dirs.goWhenTrue(hasAncestor);
+		if (ancestorFalse.exists()) {
+			dirs.goWhenFalse(ancestorFalse);
+		}
+		if (ancestorUnknown.exists()) {
+			dirs.goWhenUnknown(ancestorUnknown);
+		}
 	}
 
 	private boolean hasExplicitProposition(Definitions definitions) {
@@ -242,22 +265,20 @@ public abstract class ObjectValueIRCondFunc
 
 	private final class Builder extends DefCollector<CondDef> {
 
-		private final Code code;
-		private final CodePos exit;
+		private final CodeDirs dirs;
 		private final ObjOp host;
 		private boolean written;
 		private boolean ancestorWritten;
 
-		Builder(Obj object, Code code, CodePos exit, ObjOp host) {
+		Builder(Obj object, CodeDirs dirs, ObjOp host) {
 			super(object);
-			this.code = code;
-			this.exit = exit;
+			this.dirs = dirs;
 			this.host = host;
 		}
 
 		@Override
 		protected void explicitDef(CondDef def) {
-			def.writeLogicalValue(this.code, this.exit, this.host);
+			def.writeLogicalValue(this.dirs, this.host);
 			this.written = true;
 		}
 
@@ -267,7 +288,7 @@ public abstract class ObjectValueIRCondFunc
 			if (this.ancestorWritten) {
 				return;
 			}
-			writeAncestorDef(this.code, this.exit, this.host);
+			writeAncestorDef(this.dirs, this.host);
 			this.ancestorWritten = true;
 		}
 

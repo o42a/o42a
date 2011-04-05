@@ -22,12 +22,12 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectBodyIR.Op;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
@@ -76,31 +76,31 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public void writeRequirement(Code code, CodePos exit, ObjectOp body) {
+	public void writeRequirement(CodeDirs dirs, ObjectOp body) {
 		if (!getPrecision().isExact()) {
-			super.writeRequirement(code, exit, body);
+			super.writeRequirement(dirs, body);
 			return;
 		}
 
 		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
 
-		valueIR.writeRequirement(code, exit, this, body);
+		valueIR.writeRequirement(dirs, this, body);
 	}
 
 	@Override
-	public void writeCondition(Code code, CodePos exit, ObjOp body) {
+	public void writeCondition(CodeDirs dirs, ObjOp body) {
 		if (!getPrecision().isExact()) {
-			super.writeCondition(code, exit, body);
+			super.writeCondition(dirs, body);
 			return;
 		}
 
 		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
 
-		valueIR.writeCondition(code, exit, this, body);
+		valueIR.writeCondition(dirs, this, body);
 	}
 
 	@Override
-	public ObjOp cast(Code code, CodePos exit, Obj ascendant) {
+	public ObjOp cast(CodeDirs dirs, Obj ascendant) {
 		ptr().getType().getObjectIR().getObject().assertDerivedFrom(
 				ascendant);
 		if (ascendant == getAscendant()) {
@@ -110,43 +110,42 @@ public final class ObjOp extends ObjectOp {
 			return this;
 		}
 		if (getPrecision().isExact()) {
-			return staticCast(code, ascendant);
+			return staticCast(dirs.code(), ascendant);
 		}
 		if (ascendant.cloneOf(ptr().getAscendant())) {
 			// Clone shares the body with it`s origin.
 			return this;
 		}
-		return dynamicCast(code, ascendant);
+		return dynamicCast(dirs, ascendant);
 	}
 
 	@Override
-	public FldOp field(Code code, CodePos exit, MemberKey memberKey) {
-		code.begin("Field " + memberKey + " of " + this);
-		exit = code.end("debug_exit", exit);
+	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
+		dirs = dirs.begin("field", "Field " + memberKey + " of " + this);
 
+		final Code code = dirs.code();
 		final Fld fld = ptr().getType().getObjectIR().fld(memberKey);
 		final ObjOp host =
-			cast(code, exit, memberKey.getOrigin().getContainer().toObject());
-
+			cast(dirs, memberKey.getOrigin().getContainer().toObject());
 		final FldOp op = fld.op(code, host);
 
-		code.end();
 		code.dumpName("Field: ", op.ptr());
+		dirs.end();
 
 		return op;
 	}
 
 	@Override
-	public DepOp dep(Code code, CodePos exit, Dep dep) {
-		code.begin("Dep " + dep + " of " + this);
-		exit = code.end("debug_exit", exit);
+	public DepOp dep(CodeDirs dirs, Dep dep) {
+		dirs = dirs.begin("dep", "Dep " + dep + " of " + this);
 
+		final Code code = dirs.code();
 		final DepIR ir = ptr().getType().getObjectIR().dep(dep);
-		final ObjOp host = cast(code, exit, dep.getObject());
+		final ObjOp host = cast(dirs, dep.getObject());
 		final DepOp op = ir.op(code, host);
 
-		code.end();
 		code.dumpName("Dep: ", op.ptr());
+		dirs.end();
 
 		return op;
 	}

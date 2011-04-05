@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -28,6 +26,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 
 
 final class MaterializeFragment extends PathFragment {
@@ -60,8 +59,8 @@ final class MaterializeFragment extends PathFragment {
 	}
 
 	@Override
-	public HostOp write(Code code, CodePos exit, HostOp start) {
-		return start.materialize(code, exit);
+	public HostOp write(CodeDirs dirs, HostOp start) {
+		return start.materialize(dirs);
 	}
 
 	@Override

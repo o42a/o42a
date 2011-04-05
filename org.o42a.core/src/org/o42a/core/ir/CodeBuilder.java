@@ -21,6 +21,7 @@ package org.o42a.core.ir;
 
 import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -96,7 +97,7 @@ public class CodeBuilder {
 					this,
 					function.arg(function, getObjectSignature().object()),
 					hostType)
-					.cast(function, exit, hostType);
+					.cast(exitWhenUnknown(function, exit), hostType);
 		}
 	}
 
@@ -149,18 +150,17 @@ public class CodeBuilder {
 	}
 
 	public ObjectOp newObject(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjectOp scope,
 			ObjectRefFunc ancestorFunc,
 			Obj sample,
 			int flags) {
 
+		final Code code = dirs.code();
 		final CtrOp.Op ctr = code.allocate(CTR_TYPE);
 
 		return ctr.op(this).newObject(
-				code,
-				exit,
+				dirs,
 				scope,
 				ancestorFunc,
 				sample.ir(getGenerator()).op(this, code),
@@ -168,36 +168,33 @@ public class CodeBuilder {
 	}
 
 	public final ObjectOp newObject(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			Obj sample,
 			int flags) {
 		return newObject(
-				code,
-				exit,
-				objectAncestor(code, exit, sample),
+				dirs,
+				objectAncestor(dirs, sample),
 				sample,
 				flags);
 	}
 
 	public ObjectOp newObject(
-			Code code,
-			CodePos exit,
+			CodeDirs dirs,
 			ObjectOp ancestor,
 			Obj sample,
 			int flags) {
 
+		final Code code = dirs.code();
 		final CtrOp.Op ctr = code.allocate(CTR_TYPE);
 
 		return ctr.op(this).newObject(
-				code,
-				exit,
+				dirs,
 				ancestor,
 				sample.ir(getGenerator()).op(this, code),
 				flags);
 	}
 
-	public ObjectOp objectAncestor(Code code, CodePos exit, Obj object) {
+	public ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
 
 		final TypeRef ancestorType = object.getAncestor();
 
@@ -205,9 +202,9 @@ public class CodeBuilder {
 			return null;
 		}
 
-		final RefOp ancestor = ancestorType.op(code, exit, host());
+		final RefOp ancestor = ancestorType.op(dirs, host());
 
-		return ancestor.target(code, exit).materialize(code, exit);
+		return ancestor.target(dirs).materialize(dirs);
 	}
 
 }

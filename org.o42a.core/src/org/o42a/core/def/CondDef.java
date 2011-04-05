@@ -22,12 +22,11 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -125,14 +124,11 @@ public abstract class CondDef extends Def<CondDef> {
 				NO_VALUES);
 	}
 
-	public final void writeLogicalValue(
-			Code code,
-			CodePos exit,
-			HostOp host) {
+	public final void writeLogicalValue(CodeDirs dirs, HostOp host) {
 
-		final HostOp rescopedHost = getRescoper().rescope(code, exit, host);
+		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
-		getLogical().write(code, exit, rescopedHost);
+		getLogical().write(dirs, rescopedHost);
 	}
 
 }

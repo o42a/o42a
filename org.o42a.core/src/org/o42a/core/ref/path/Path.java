@@ -28,12 +28,11 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import java.util.Arrays;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
@@ -411,12 +410,12 @@ public class Path {
 		return out.toString();
 	}
 
-	HostOp write(Code code, CodePos exit, HostOp start) {
+	HostOp write(CodeDirs dirs, HostOp start) {
 
 		HostOp found = start;
 
 		for (int i = 0; i < this.fragments.length; ++i) {
-			found = this.fragments[i].write(code, exit, found);
+			found = this.fragments[i].write(dirs, found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");
 			}
