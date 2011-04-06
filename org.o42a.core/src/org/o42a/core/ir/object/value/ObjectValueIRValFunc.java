@@ -185,11 +185,6 @@ public abstract class ObjectValueIRValFunc
 			ValueCollector collector) {
 
 		final int size = collector.size();
-
-		if (size == 0) {
-			return;
-		}
-
 		final CodeBlk falseValue = code.addBlock("val_false");
 		final CodeBlk unknownValue = code.addBlock("val_unknown");
 		final ValueDef[] defs = collector.getExplicitDefs();

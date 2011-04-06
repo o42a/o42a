@@ -57,13 +57,14 @@ final class CondValueDef extends ValueDef {
 	@Override
 	public void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
 
+		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 		final Code code = dirs.code();
 		final CodeBlk defFalse = code.addBlock("def_false");
 		final CodeBlk defUnknown = code.addBlock("def_unknown");
 		final CodeDirs defDirs =
 			splitWhenUnknown(code, defFalse.head(), defUnknown.head());
 
-		this.def.writeLogicalValue(defDirs, host);
+		this.def.getLogical().write(defDirs, rescopedHost);
 		result.storeVoid(code);
 
 		if (defFalse.exists()) {

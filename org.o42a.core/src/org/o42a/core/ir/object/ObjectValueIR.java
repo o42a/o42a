@@ -160,11 +160,13 @@ public class ObjectValueIR {
 		writeRequirement(conditionDirs, host, null);
 		writeCondition(conditionDirs, host, null);
 		if (conditionFalse.exists()) {
+			conditionFalse.debug("Object condition is FALSE");
 			result.storeFalse(conditionFalse);
 			conditionFalse.returnVoid();
 		}
 		if (conditionUnknwon.exists()) {
 			// Override indefinite value.
+			conditionUnknwon.debug("Object condition is UNKNOWN");
 			result.storeUnknown(conditionUnknwon);
 			conditionUnknwon.returnVoid();
 		}
