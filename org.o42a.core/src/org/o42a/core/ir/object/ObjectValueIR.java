@@ -255,6 +255,8 @@ public class ObjectValueIR {
 			} else {
 				val = INDEFINITE_VAL;
 			}
+		} else if (!value.isDefinite()) {
+			val = INDEFINITE_VAL;
 		} else if (value.isUnknown()) {
 			val = UNKNOWN_VAL;
 		} else {

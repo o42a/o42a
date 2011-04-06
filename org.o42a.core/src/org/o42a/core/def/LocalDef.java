@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
@@ -26,7 +27,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -43,22 +43,28 @@ import org.o42a.core.value.ValueType;
 
 class LocalDef extends ValueDef {
 
+	private final Scope ownerScope;
 	private final ImperativeBlock block;
 	private final boolean explicit;
+	private final Rescoper localRescoper;
 
 	LocalDef(
+			Scope ownerScope,
 			ImperativeBlock block,
-			Rescoper rescoper,
 			boolean explicit) {
-		super(sourceOf(block), block, rescoper);
+		super(sourceOf(block), block, transparentRescoper(ownerScope));
+		this.ownerScope = ownerScope;
 		this.block = block;
 		this.explicit = explicit;
+		this.localRescoper = block.getScope().rescoperTo(getOwnerScope());
 	}
 
 	private LocalDef(LocalDef prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
+		this.ownerScope = prototype.ownerScope;
 		this.block = prototype.block;
 		this.explicit = prototype.explicit;
+		this.localRescoper = prototype.localRescoper;
 	}
 
 	public final ImperativeBlock getBlock() {
@@ -98,13 +104,13 @@ class LocalDef extends ValueDef {
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.block.getScope());
+		return logicalTrue(this, getOwnerScope());
 	}
 
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 
-		final LocalScope local = scope.toLocal();
+		final LocalScope local = this.localRescoper.rescope(scope).toLocal();
 
 		assert local != null :
 			"Not a local scope: " + scope;
@@ -114,7 +120,7 @@ class LocalDef extends ValueDef {
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, getBlock().getScope());
+		return logicalTrue(this, getOwnerScope());
 	}
 
 	@Override
@@ -127,12 +133,16 @@ class LocalDef extends ValueDef {
 		return new LocalDef(this, rescoper);
 	}
 
+	private Scope getOwnerScope() {
+		return this.ownerScope;
+	}
+
 	private static final class LocalLogical extends Logical {
 
 		private final LocalDef def;
 
 		LocalLogical(LocalDef def) {
-			super(def, def.getBlock().getScope());
+			super(def, def.getOwnerScope());
 			this.def = def;
 		}
 
@@ -145,7 +155,8 @@ class LocalDef extends ValueDef {
 		public LogicalValue logicalValue(Scope scope) {
 			assertCompatible(scope);
 
-			final LocalScope local = scope.toLocal();
+			final LocalScope local =
+				this.def.localRescoper.rescope(scope).toLocal();
 
 			assert local != null :
 				"Not a local scope: " + scope;
@@ -167,10 +178,9 @@ class LocalDef extends ValueDef {
 			dirs = dirs.begin("local_logical", "Local logical: " + this);
 
 			final Code code = dirs.code();
-			final LocalOp local = host.toLocal();
 			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
 
-			this.def.writeValue(dirs, local, result);
+			this.def.writeValue(dirs, host, result);
 
 			dirs.end();
 		}
