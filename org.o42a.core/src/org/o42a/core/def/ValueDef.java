@@ -70,17 +70,21 @@ public abstract class ValueDef extends Def<ValueDef> {
 		assertCompatible(scope);
 
 		final Scope rescoped = getRescoper().rescope(scope);
-		final LogicalValue prerequisite =
-			getPrerequisite().logicalValue(rescoped);
 
-		if (!prerequisite.isTrue()) {
-			if (!prerequisite.isFalse()) {
-				return defValue(this, getValueType().runtimeValue());
+		if (hasPrerequisite()) {
+
+			final LogicalValue prerequisite =
+				getPrerequisite().logicalValue(rescoped);
+	
+			if (!prerequisite.isTrue()) {
+				if (!prerequisite.isFalse()) {
+					return defValue(this, getValueType().runtimeValue());
+				}
+				if (getPrerequisite().isFalse()) {
+					return alwaysIgnoredValue(this);
+				}
+				return unknownValue(this);
 			}
-			if (getPrerequisite().isFalse()) {
-				return alwaysIgnoredValue(this);
-			}
-			return unknownValue(this);
 		}
 
 		final LogicalValue precondition =

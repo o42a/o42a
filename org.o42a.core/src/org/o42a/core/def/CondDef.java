@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
 
@@ -69,33 +70,28 @@ public abstract class CondDef extends Def<CondDef> {
 
 		final Scope rescoped = getRescoper().rescope(scope);
 
-		if (!hasPrerequisite()) {
+		if (!hasPrerequisite() || getPrerequisite().isTrue()) {
 
 			final LogicalValue logicalValue =
 				getLogical().logicalValue(rescoped);
 
-			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
+			alwaysMeaningfulCondition(this, logicalValue);
 		}
 
 		final LogicalValue prerequisite =
 			getPrerequisite().logicalValue(rescoped);
 
-		if (prerequisite.isFalse()) {
-			if (getPrerequisite().isFalse()) {
-				return DefValue.alwaysIgnoredValue(this);
+		if (!prerequisite.isTrue()) {
+			if (!prerequisite.isFalse()) {
+				return defCondition(this, LogicalValue.RUNTIME);
 			}
-			return DefValue.unknownValue(this);
+			if (getPrerequisite().isFalse()) {
+				return alwaysIgnoredValue(this);
+			}
+			return unknownValue(this);
 		}
 
-		final LogicalValue logicalValue = getLogical().logicalValue(rescoped);
-
-		if (getPrerequisite().isTrue()) {
-			return DefValue.alwaysMeaningfulValue(this, logicalValue.toValue());
-		}
-
-		return DefValue.defValue(
-				this,
-				logicalValue.and(prerequisite).toValue());
+		return defCondition(this, getLogical().logicalValue(rescoped));
 	}
 
 	@Override

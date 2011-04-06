@@ -284,12 +284,18 @@ public class Definitions extends Scoped {
 
 		final DefValue requirement = requirement(scope);
 
+		if (!requirement.isDefinite()) {
+			return requirement;
+		}
 		if (requirement.isFalse() && !requirement.isUnknown()) {
 			return requirement;
 		}
 
 		final DefValue condition = condition(scope);
 
+		if (!condition.isDefinite()) {
+			return condition;
+		}
 		if (condition.isFalse() && !condition.isUnknown()) {
 			return condition;
 		}
@@ -306,7 +312,7 @@ public class Definitions extends Scoped {
 			return value;
 		}
 
-		return value.and(condition);
+		return value;
 	}
 
 	public Definitions refine(Def<?> refinement) {

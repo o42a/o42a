@@ -244,8 +244,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	@Override
 	public Definitions define(Scope scope) {
-		return this.initialEnv.apply(
-				localDef(this, scope.getScope())).toDefinitions();
+		return this.initialEnv.apply(localDef(this, scope)).toDefinitions();
 	}
 
 	@Override
