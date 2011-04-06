@@ -113,10 +113,14 @@ public class CodeDirs {
 		final BoolOp condition = cond.loadCondition(code);
 
 		if (this.unknownPos == this.falsePos) {
+			if (this.falsePos == this.truePos) {
+				goWhenTrue(code);
+				return;
+			}
 
 			final CodePos trueDir = dir(code, this.truePos);
 
-			condition.go(code, trueDir, this.falsePos);
+			condition.go(code, trueDir, dir(code, this.falsePos));
 
 			return;
 		}
@@ -193,7 +197,7 @@ public class CodeDirs {
 			return codePos;
 		}
 		if (code != this.code) {
-			return code.tail();
+			return this.code.tail();
 		}
 		return null;
 	}

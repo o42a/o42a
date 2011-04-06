@@ -38,13 +38,21 @@ public abstract class LLVMCodePos implements CodePos {
 
 	public static class Head extends LLVMCodePos {
 
-		Head(long blockPtr) {
+		private final LLVMCode code;
+
+		Head(LLVMCode code, long blockPtr) {
 			super(blockPtr);
+			this.code = code;
 		}
 
 		@Override
 		public boolean tailOf(LLVMCode code) {
 			return false;
+		}
+
+		@Override
+		public String toString() {
+			return this.code.toString();
 		}
 
 	}
@@ -61,6 +69,11 @@ public abstract class LLVMCodePos implements CodePos {
 		@Override
 		public boolean tailOf(LLVMCode code) {
 			return code == this.code;
+		}
+
+		@Override
+		public String toString() {
+			return this.code.toString() + "...";
 		}
 
 	}

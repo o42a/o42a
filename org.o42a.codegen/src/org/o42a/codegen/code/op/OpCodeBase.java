@@ -53,6 +53,11 @@ public abstract class OpCodeBase extends CodeBase {
 			this.code = code;
 		}
 
+		@Override
+		public String toString() {
+			return this.code.toString();
+		}
+
 		CodePos unwrap() {
 			return this.code.writer().head();
 		}
