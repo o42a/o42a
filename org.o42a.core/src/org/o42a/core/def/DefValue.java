@@ -25,7 +25,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class DefValue {
+public abstract class DefValue {
 
 	static DefValue unknownValue(Def<?> def) {
 		return new Unknown(def);
@@ -39,12 +39,22 @@ public class DefValue {
 		return new NonExisting(definitions);
 	}
 
-	static DefValue defValue(Def<?> def, Value<?> value) {
-		return new DefValue(def, value);
+	static DefValue defCondition(CondDef def, LogicalValue value) {
+		return new DefCondition(def, value);
 	}
 
-	static DefValue alwaysMeaningfulValue(Def<?> def, Value<?> value) {
-		return new AlwaysMeaningful(def, value);
+	static DefValue alwaysMeaningfulCondition(
+			CondDef def,
+			LogicalValue value) {
+		return new AlwaysMeaningfulCondition(def, value);
+	}
+
+	static DefValue defValue(ValueDef def, Value<?> value) {
+		return new DefWithValue(def, value);
+	}
+
+	static DefValue alwaysMeaningfulValue(ValueDef def, Value<?> value) {
+		return new AlwaysMeaningfulValue(def, value);
 	}
 
 	final SourceInfo sourced;
@@ -169,21 +179,6 @@ public class DefValue {
 		return valueType.cast(this.value);
 	}
 
-	public DefValue and(DefValue logicalDef) {
-		if (logicalDef.isUnknown()) {
-			return this;
-		}
-
-		final Value<?> newValue =
-			this.value.require(logicalDef.getLogicalValue());
-
-		if (newValue == this.value) {
-			return this;
-		}
-
-		return new DefValue(getDef(), newValue);
-	}
-
 	@Override
 	public String toString() {
 		return this.value.toString();
@@ -248,9 +243,53 @@ public class DefValue {
 
 	}
 
-	private static final class AlwaysMeaningful extends DefValue {
+	private static class DefCondition extends DefValue {
 
-		AlwaysMeaningful(Def<?> def, Value<?> value) {
+		DefCondition(CondDef def, LogicalValue value) {
+			super(def, value.toValue());
+		}
+
+		@Override
+		public final Value<?> getRealValue() {
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			return getValue().getLogicalValue().toString();
+		}
+
+	}
+
+	private static final class AlwaysMeaningfulCondition extends DefCondition {
+
+		AlwaysMeaningfulCondition(CondDef def, LogicalValue value) {
+			super(def, value);
+		}
+
+		@Override
+		public boolean isAlwaysMeaningful() {
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "ALWAYS " + super.toString();
+		}
+
+	}
+
+	private static class DefWithValue extends DefValue {
+
+		DefWithValue(ValueDef def, Value<?> value) {
+			super(def, value);
+		}
+
+	}
+
+	private static final class AlwaysMeaningfulValue extends DefWithValue {
+
+		AlwaysMeaningfulValue(ValueDef def, Value<?> value) {
 			super(def, value);
 		}
 
