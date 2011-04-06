@@ -21,6 +21,7 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.value.DefCollector.explicitDef;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
@@ -49,7 +50,11 @@ public abstract class ObjectValueIRCondFunc
 		final Code code = dirs.code();
 
 		if (dirs.isDebug()) {
-			dirs = dirs.begin("calc_cond", "Calculate condition " + this);
+			dirs = dirs.begin(
+					"calc_cond",
+					(isRequirement()
+							? "Calculate requirement "
+							: "Calculate condition ") + this);
 			if (body != null) {
 				code.dumpName("For: ", body.toData(code));
 			}
@@ -113,7 +118,9 @@ public abstract class ObjectValueIRCondFunc
 			return;
 		}
 
-		function.debug("Calculating condition");
+		function.debug(
+				isRequirement()
+				? "Calculating requirement" : "Calculating condition");
 
 		final CodeBlk condFalse = function.addBlock("false");
 		final CodeBlk condUnknown = function.addBlock("unknown");
@@ -145,33 +152,32 @@ public abstract class ObjectValueIRCondFunc
 
 	public void buildFunc(CodeDirs dirs, ObjOp host, Definitions definitions) {
 
-		final DefValue condition = value(definitions);
-
-		if (condition.isUnknown()) {
-			if (isRequirement() || !hasExplicitProposition(definitions)) {
-				writeAncestorDef(dirs, host);
-			}
-			return;
-		}
-
-		final Builder builder =
-			new Builder(getObjectIR().getObject(), dirs, host);
+		final CondDef[] defs;
 
 		if (isRequirement()) {
-			writeAncestorDef(dirs, host);
-			builder.ancestorWritten = true;
-			builder.addDefs(definitions.getRequirements());
-			return;
+			defs = definitions.getRequirements();
+		} else {
+			defs = definitions.getConditions();
 		}
 
-		builder.addDefs(definitions.getConditions());
-		if (builder.written) {
+		final CondCollector collector = new CondCollector(
+				dirs.code(),
+				getObjectIR().getObject(),
+				defs.length);
+
+		collector.addDefs(defs);
+		if (collector.hasExplicit) {
+			writeExplicitDefs(dirs, host, collector);
 			return;
 		}
-		if (hasExplicitProposition(definitions)) {
+		if (isRequirement()) {
+			writeAncestorDef(dirs, host, true);
 			return;
 		}
-		writeAncestorDef(dirs, host);
+		if (collector.size() == 0 && hasExplicitProposition(definitions)) {
+			return;
+		}
+		writeAncestorDef(dirs, host, true);
 	}
 
 	protected abstract void build(
@@ -179,7 +185,10 @@ public abstract class ObjectValueIRCondFunc
 			ObjOp host,
 			Definitions definitions);
 
-	private void writeAncestorDef(CodeDirs dirs, ObjOp host) {
+	private void writeAncestorDef(
+			CodeDirs dirs,
+			ObjOp host,
+			boolean trueWithoutAncestor) {
 
 		final Code code = dirs.code();
 		final CondBlk hasAncestor =
@@ -189,7 +198,11 @@ public abstract class ObjectValueIRCondFunc
 		noAncestor.debug(
 				isRequirement()
 				? "No ancestor requirement" : "No ancestor condition");
-		dirs.goWhenUnknown(noAncestor);
+		if (trueWithoutAncestor) {
+			noAncestor.go(code.tail());
+		} else {
+			dirs.goWhenUnknown(noAncestor);
+		}
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
 		final ObjectTypeOp ancestorType =
@@ -229,12 +242,69 @@ public abstract class ObjectValueIRCondFunc
 		}
 		ancestorDirs.end();
 
-		dirs.goWhenTrue(hasAncestor);
+		hasAncestor.go(code.tail());
 		if (ancestorFalse.exists()) {
 			dirs.goWhenFalse(ancestorFalse);
 		}
 		if (ancestorUnknown.exists()) {
 			dirs.goWhenUnknown(ancestorUnknown);
+		}
+	}
+
+	private void writeExplicitDefs(
+			CodeDirs dirs,
+			ObjOp host,
+			CondCollector collector) {
+
+		final Code code = dirs.code();
+		final Code condFalse = code.addBlock("cond_false");
+		final Code condUnknown = code.addBlock("cond_unknown");
+		final CondDef[] defs = collector.getExplicitDefs();
+		final int size = collector.size();
+
+		code.go(collector.blocks[0].head());
+		for (int i = 0; i < size; ++i) {
+
+			final CondDef def = defs[i];
+			final Code block = collector.blocks[i];
+
+			if (def == null) {
+				if (i == collector.ancestorIndex) {
+
+					final CodeDirs ancestorDirs = splitWhenUnknown(
+							block,
+							condFalse.head(),
+							collector.next(i, condUnknown.head()));
+
+					writeAncestorDef(ancestorDirs, host, false);
+					block.go(collector.next(i, code.tail()));
+				}
+				continue;
+			}
+			if (!def.hasPrerequisite()) {
+
+				final CodeDirs defDirs =
+					exitWhenUnknown(block, condFalse.head());
+
+				def.write(defDirs, host);
+				block.go(collector.next(i, code.tail()));
+				continue;
+			}
+
+			final CodeDirs defDirs = splitWhenUnknown(
+					block,
+					condFalse.head(),
+					collector.next(i, condUnknown.head()));
+
+			def.write(defDirs, host);
+			block.go(collector.nextRequired(i, code.tail()));
+		}
+
+		if (condFalse.exists()) {
+			dirs.goWhenFalse(condFalse);
+		}
+		if (condUnknown.exists()) {
+			dirs.goWhenUnknown(condUnknown);
 		}
 	}
 
@@ -263,33 +333,76 @@ public abstract class ObjectValueIRCondFunc
 				OBJECT_COND);
 	}
 
-	private final class Builder extends DefCollector<CondDef> {
+	private final class CondCollector extends DefCollector<CondDef> {
 
-		private final CodeDirs dirs;
-		private final ObjOp host;
-		private boolean written;
-		private boolean ancestorWritten;
+		private final Code code;
+		private final CondDef[] explicitDefs;
+		private final Code[] blocks;
+		private int size;
+		private int ancestorIndex = -1;
+		private boolean hasExplicit;
 
-		Builder(Obj object, CodeDirs dirs, ObjOp host) {
+		CondCollector(Code code, Obj object, int capacity) {
 			super(object);
-			this.dirs = dirs;
-			this.host = host;
+			this.code = code;
+			this.explicitDefs = new CondDef[capacity];
+			this.blocks = new Code[capacity];
+		}
+
+		public final CondDef[] getExplicitDefs() {
+			return this.explicitDefs;
+		}
+
+		public final int size() {
+			return this.size;
 		}
 
 		@Override
 		protected void explicitDef(CondDef def) {
-			def.writeLogicalValue(this.dirs, this.host);
-			this.written = true;
+			this.hasExplicit = true;
+			this.blocks[this.size] = this.code.addBlock(this.size + "_var");
+			this.explicitDefs[this.size++] = def;
 		}
 
 		@Override
 		protected void ancestorDef(CondDef def) {
-			this.written = true;
-			if (this.ancestorWritten) {
+			if (this.ancestorIndex >= 0) {
 				return;
 			}
-			writeAncestorDef(this.dirs, this.host);
-			this.ancestorWritten = true;
+			this.ancestorIndex = this.size;
+			this.blocks[this.size] = this.code.addBlock(this.size + "_var");
+			this.size++;
+		}
+
+		CodePos next(int index, CodePos defaultPos) {
+			for (int i = index + 1; i < this.blocks.length; ++i) {
+
+				final Code block = this.blocks[i];
+
+				if (block != null) {
+					return block.head();
+				}
+			}
+			return defaultPos;
+		}
+
+		CodePos nextRequired(int index, CodePos defaultPos) {
+			for (int i = index + 1; i < this.explicitDefs.length; ++i) {
+
+				final CondDef def = this.explicitDefs[i];
+
+				if (def == null) {
+					if (i == this.ancestorIndex) {
+						return this.blocks[i].head();
+					}
+					continue;
+				}
+				if (def.hasPrerequisite()) {
+					continue;
+				}
+				return this.blocks[i].head();
+			}
+			return defaultPos;
 		}
 
 	}

@@ -36,7 +36,7 @@ public abstract class ProposedValueIR extends ObjectValueIR {
 			ValOp result,
 			ObjOp host,
 			ObjectOp body) {
-		proposition(code, result, host);
+		proposition(code, result, body != null ? body : host);
 	}
 
 	@Override

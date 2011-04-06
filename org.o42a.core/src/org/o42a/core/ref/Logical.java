@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.op.CodeDirs.continueWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.LogicalBase;
@@ -680,9 +679,8 @@ public abstract class Logical extends LogicalBase {
 					next = code.addBlock("all_false");
 					dirs.goWhenFalse(next);
 				}
-				blockDirs =
-					continueWhenUnknown(block, code.tail(), next.head());
 
+				blockDirs = exitWhenUnknown(block, next.head());
 				this.variants[i].write(blockDirs, host);
 				block.go(code.tail());
 
@@ -798,18 +796,16 @@ public abstract class Logical extends LogicalBase {
 			dirs = dirs.begin("not", "Logical NOT: " + this);
 
 			final Code code = dirs.code();
-			final CodeBlk isTrue = code.addBlock("is_true");
-			final CodeDirs negatedDirs =
-				continueWhenUnknown(code, isTrue.head(), null);
+			final Code isFalse = code.addBlock("is_false");
+			final CodeDirs negatedDirs = exitWhenUnknown(code, isFalse.head());
 
 			negate().write(negatedDirs, host);
+			dirs = dirs.end();
+			dirs.goWhenFalse(code);
 
-			if (isTrue.exists()) {
-				dirs.goWhenFalse(isTrue);
+			if (isFalse.exists()) {
+				isFalse.go(code.tail());
 			}
-
-			dirs.goWhenTrue(code);
-			dirs.end();
 		}
 
 		@Override

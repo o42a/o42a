@@ -95,10 +95,12 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 		definite.dump("Definite value: ", value);
 		value.go(definite, dirs);
+		definite.go(code.tail());
 
 		writeValue(indefinite, value, null);
 		indefinite.dump("Calculated value: ", value);
 		value.go(indefinite, dirs);
+		indefinite.go(code.tail());
 	}
 
 	public final void writeLogicalValue(CodeDirs dirs, ObjectOp body) {
@@ -137,6 +139,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			result.store(definite, value);
 		}
 		value.go(definite, dirs);
+		definite.go(code.tail());
 
 		writeValue(indefinite, value, null);
 		indefinite.dump(this + " value calculated: ", value);
@@ -144,6 +147,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			result.store(indefinite, value);
 		}
 		value.go(indefinite, dirs);
+		indefinite.go(code.tail());
 
 		return value;
 	}

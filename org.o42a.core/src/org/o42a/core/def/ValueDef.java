@@ -75,7 +75,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 			final LogicalValue prerequisite =
 				getPrerequisite().logicalValue(rescoped);
-	
+
 			if (!prerequisite.isTrue()) {
 				if (!prerequisite.isFalse()) {
 					return defValue(this, getValueType().runtimeValue());

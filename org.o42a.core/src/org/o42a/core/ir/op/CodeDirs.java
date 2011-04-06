@@ -19,50 +19,48 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 
 
 public class CodeDirs {
 
 	public static CodeDirs ignoreCondition(Code code) {
-		return new CodeDirs(code, null, null, null);
+		return new CodeDirs(code, null, null);
 	}
 
 	public static CodeDirs continueWhenUnknown(
 			Code code,
-			CodePos truePos,
 			CodePos falsePos) {
-		return new CodeDirs(code, truePos, falsePos, null);
+		return new CodeDirs(code, falsePos, null);
 	}
 
 	public static CodeDirs exitWhenUnknown(
 			Code code,
 			CodePos exit) {
-		return new CodeDirs(code, null, exit, exit);
+		return new CodeDirs(code, exit, exit);
 	}
 
 	public static CodeDirs splitWhenUnknown(
 			Code code,
 			CodePos falsePos,
 			CodePos unknownPos) {
-		return new CodeDirs(code, null, falsePos, unknownPos);
+		return new CodeDirs(code, falsePos, unknownPos);
 	}
 
 	private final Code code;
-	private final CodePos truePos;
 	private final CodePos falsePos;
 	private final CodePos unknownPos;
 
 	CodeDirs(
 			Code code,
-			CodePos truePos,
 			CodePos falsePos,
 			CodePos unknownPos) {
 		assert code != null :
 			"Code not specified";
 		this.code = code;
-		this.truePos = truePos;
 		this.falsePos = falsePos;
 		this.unknownPos = unknownPos;
 	}
@@ -84,7 +82,6 @@ public class CodeDirs {
 
 		return new Nested(
 				this,
-				end(id + "_true", this.truePos),
 				end(id + "_false", this.falsePos),
 				end(id + "_unknown", this.unknownPos));
 	}
@@ -94,10 +91,6 @@ public class CodeDirs {
 			return this;
 		}
 		throw new IllegalStateException("Not a nested code dirs: " + this);
-	}
-
-	public final void goWhenTrue(Code code) {
-		go(code, this.truePos);
 	}
 
 	public final void goWhenFalse(Code code) {
@@ -113,27 +106,22 @@ public class CodeDirs {
 		final BoolOp condition = cond.loadCondition(code);
 
 		if (this.unknownPos == this.falsePos) {
-			if (this.falsePos == this.truePos) {
-				goWhenTrue(code);
+			if (this.falsePos == null) {
 				return;
 			}
-
-			final CodePos trueDir = dir(code, this.truePos);
-
-			condition.go(code, trueDir, dir(code, this.falsePos));
-
+			condition.goUnless(code, dir(code, this.falsePos));
 			return;
 		}
 
-		final CondBlk condTrue = condition.branch(code, "true", "false");
-		final CodeBlk condFalse = condTrue.otherwise();
+		final CodeBlk condFalse = code.addBlock("false");
 
-		goWhenTrue(condTrue);
-
-		cond.loadUnknown(condFalse).go(
-				condFalse,
-				dir(condFalse, this.unknownPos),
-				dir(condFalse, this.falsePos));
+		condition.goUnless(code, condFalse.head());
+		if (condFalse.exists()) {
+			cond.loadUnknown(condFalse).go(
+					condFalse,
+					dir(condFalse, this.unknownPos),
+					dir(condFalse, this.falsePos));
+		}
 	}
 
 	@Override
@@ -143,10 +131,6 @@ public class CodeDirs {
 		boolean semicolon = false;
 
 		out.append("CodeDirs[").append(this.code).append(": ");
-		if (this.truePos != null) {
-			out.append("true->").append(this.truePos);
-			semicolon = true;
-		}
 		if (this.falsePos != null) {
 			if (semicolon) {
 				out.append("; ");
@@ -209,10 +193,9 @@ public class CodeDirs {
 
 		Nested(
 				CodeDirs enclosing,
-				CodePos truePos,
 				CodePos falsePos,
 				CodePos unknownPos) {
-			super(enclosing.code, truePos, falsePos, unknownPos);
+			super(enclosing.code, falsePos, unknownPos);
 			this.enclosing = enclosing;
 		}
 

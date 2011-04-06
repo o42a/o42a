@@ -106,7 +106,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		if (constructionFailed.exists()) {
 			dirs.goWhenFalse(constructionFailed);
 		}
-		dirs.goWhenTrue(construct);
+		construct.go(code.tail());
 
 		final CodeBlk delegate = construct.otherwise();
 		final CodeBlk delegationFailed =
@@ -119,7 +119,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		if (delegationFailed.exists()) {
 			dirs.goWhenFalse(delegationFailed);
 		}
-		dirs.goWhenTrue(delegate);
+		delegate.go(code.tail());
 
 		final DataOp result = code.phi(result1, result2);
 
