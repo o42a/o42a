@@ -240,9 +240,11 @@ public abstract class ObjectValueIRValFunc
 
 		if (falseValue.exists()) {
 			result.storeFalse(falseValue);
+			falseValue.go(code.tail());
 		}
 		if (unknownValue.exists()) {
-			result.storeUnknown(falseValue);
+			result.storeUnknown(unknownValue);
+			unknownValue.go(code.tail());
 		}
 	}
 

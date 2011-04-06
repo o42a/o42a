@@ -419,7 +419,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 	protected final void init() {
 		this.blockPtr = createFirtsBlock();
-		this.head = new LLVMCodePos.Head(this.blockPtr);
+		this.head = new LLVMCodePos.Head(this, this.blockPtr);
 		this.tail = new LLVMCodePos.Tail(this, this.blockPtr);
 	}
 
