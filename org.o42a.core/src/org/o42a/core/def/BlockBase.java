@@ -35,8 +35,7 @@ public abstract class BlockBase extends Statement {
 		final Obj explicitOwner = block.getScope().getOwner();
 		final boolean explicit = actualOwner == explicitOwner;
 
-		final Rescoper rescoper = block.getScope().rescoperTo(scope);
-		final LocalDef localDef = new LocalDef(block, rescoper, explicit);
+		final LocalDef localDef = new LocalDef(scope, block, explicit);
 
 		// Rescope to explicit owner scope.
 		final ValueDef def = localDef.rescope(explicitOwner.getScope());
