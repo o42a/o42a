@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -80,7 +81,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return null;
 	}
 
-	public abstract ObjOp cast(CodeDirs dirs, Obj ascendant);
+	public abstract ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant);
 
 	public final void writeLogicalValue(CodeDirs dirs) {
 
@@ -273,12 +274,15 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return out.toString();
 	}
 
-	protected ObjOp dynamicCast(CodeDirs dirs, Obj ascendant) {
+	protected ObjOp dynamicCast(
+			CodeId id,
+			CodeDirs dirs,
+			Obj ascendant) {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
 
 		dirs = dirs.begin(
-				"cast",
+				id != null ? id.getId() : "cast",
 				"Dynamic cast " + this + " to " + ascendantIR.getId());
 
 		final Code code = dirs.code();
@@ -286,15 +290,22 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
 		final DataOp resultPtr =
-			castFunc().op(null, code).cast(code, this, ascendantType);
+			castFunc()
+			.op(null, code)
+			.cast(
+					id != null ? id.detail("ptr") : null,
+					code,
+					this,
+					ascendantType);
 		final CodeBlk castNull = code.addBlock("cast_null");
 
 		resultPtr.isNull(null, code).go(code, castNull.head());
 
-		final ObjOp result = resultPtr.to(null, code, ascendantIR.getBodyType()).op(
-				getBuilder(),
-				ascendant,
-				COMPATIBLE);
+		final ObjOp result =
+			resultPtr.to(id, code, ascendantIR.getBodyType()).op(
+							getBuilder(),
+							ascendant,
+							COMPATIBLE);
 
 		if (castNull.exists()) {
 			castNull.debug("Cast failed");

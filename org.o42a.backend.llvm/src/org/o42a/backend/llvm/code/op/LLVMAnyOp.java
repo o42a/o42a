@@ -33,7 +33,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMAnyOp toAny(String name, Code code) {
+	public LLVMAnyOp toAny(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -41,103 +41,103 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 			return this;
 		}
 
-		return super.toAny(name, code);
+		return super.toAny(id, code);
 	}
 
 	@Override
-	public LLVMRecOp<AnyOp> toPtr(String name, Code code) {
+	public LLVMRecOp<AnyOp> toPtr(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "any");
+		final CodeId resultId = castId(id, code, "any");
 
 		return new LLVMRecOp.Any(
-				id,
+				resultId,
 				nextPtr,
-				toPtr(nextPtr, id.getId(), getNativePtr()));
+				toPtr(nextPtr, resultId.getId(), getNativePtr()));
 	}
 
 	@Override
-	public LLVMRecOp<Int8op> toInt8(String name, Code code) {
+	public LLVMRecOp<Int8op> toInt8(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int8");
+		final CodeId resultId = castId(id, code, "int8");
 
 		return new LLVMRecOp.Int8(
-				id,
+				resultId,
 				nextPtr,
-				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 8));
+				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 8));
 	}
 
 	@Override
-	public LLVMRecOp<Int16op> toInt16(String name, Code code) {
+	public LLVMRecOp<Int16op> toInt16(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int16");
+		final CodeId resultId = castId(id, code, "int16");
 
 		return new LLVMRecOp.Int16(
-				id,
+				resultId,
 				nextPtr,
-				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 16));
+				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 16));
 	}
 
 	@Override
-	public LLVMRecOp<Int32op> toInt32(String name, Code code) {
+	public LLVMRecOp<Int32op> toInt32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int32");
+		final CodeId resultId = castId(id, code, "int32");
 
 		return new LLVMRecOp.Int32(
-				id,
+				resultId,
 				nextPtr,
-				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 32));
+				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 32));
 	}
 
 	@Override
-	public LLVMRecOp<Int64op> toInt64(String name, Code code) {
+	public LLVMRecOp<Int64op> toInt64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int64");
+		final CodeId resultId = castId(id, code, "int64");
 
 		return new LLVMRecOp.Int64(
-				id,
+				resultId,
 				nextPtr,
-				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 64));
+				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 64));
 	}
 
 	@Override
-	public LLVMRecOp<Fp32op> toFp32(String name, Code code) {
+	public LLVMRecOp<Fp32op> toFp32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "fp32");
+		final CodeId resultId = castId(id, code, "fp32");
 
 		return new LLVMRecOp.Fp32(
-				id,
+				resultId,
 				nextPtr,
-				toFp32(nextPtr, id.getId(), getNativePtr()));
+				toFp32(nextPtr, resultId.getId(), getNativePtr()));
 	}
 
 	@Override
-	public LLVMRecOp<Fp64op> toFp64(String name, Code code) {
+	public LLVMRecOp<Fp64op> toFp64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "fp64");
+		final CodeId resultId = castId(id, code, "fp64");
 
 		return new LLVMRecOp.Fp64(
-				id,
+				resultId,
 				nextPtr,
-				toFp64(nextPtr, id.getId(), getNativePtr()));
+				toFp64(nextPtr, resultId.getId(), getNativePtr()));
 	}
 
 	@Override
-	public LLVMRecOp<RelOp> toRel(String name, Code code) {
+	public LLVMRecOp<RelOp> toRel(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "rel");
+		final CodeId resultId = castId(id, code, "rel");
 
 		return new LLVMRecOp.Rel(
-				id,
+				resultId,
 				nextPtr,
-				toRelPtr(nextPtr, id.getId(), getNativePtr()));
+				toRelPtr(nextPtr, resultId.getId(), getNativePtr()));
 	}
 
 	@Override

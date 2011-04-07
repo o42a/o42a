@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.RecOp;
@@ -29,12 +30,12 @@ public abstract class CodeBase {
 
 	private boolean complete;
 
-	public <O extends StructOp> O allocate(String name, Type<O> type) {
+	public <O extends StructOp> O allocate(CodeId id, Type<O> type) {
 		assertIncomplete();
 
 		final Code code = (Code) this;
 		final O result = writer().allocateStruct(
-				code.nameId(name),
+				code.opId(id),
 				type.data(code.getGenerator()).getAllocation());
 
 		result.allocated(code, null);
@@ -43,13 +44,13 @@ public abstract class CodeBase {
 	}
 
 	public <O extends StructOp> RecOp<O> allocatePtr(
-			String name,
+			CodeId id,
 			Type<O> type) {
 		assertIncomplete();
 
 		final Code code = (Code) this;
 		final RecOp<O> result = writer().allocatePtr(
-				code.nameId(name),
+				code.opId(id),
 				type.data(code.getGenerator()).getAllocation());
 
 		result.allocated(code, null);

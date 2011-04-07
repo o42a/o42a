@@ -56,18 +56,18 @@ public abstract class Func implements PtrOp {
 	}
 
 	@Override
-	public final BoolOp isNull(String name, Code code) {
-		return this.caller.isNull(name, code);
+	public final BoolOp isNull(CodeId id, Code code) {
+		return this.caller.isNull(id, code);
 	}
 
 	@Override
-	public final BoolOp eq(String name, Code code, PtrOp other) {
-		return this.caller.eq(name, code, other);
+	public final BoolOp eq(CodeId id, Code code, PtrOp other) {
+		return this.caller.eq(id, code, other);
 	}
 
 	@Override
-	public final AnyOp toAny(String name, Code code) {
-		return this.caller.toAny(name, code);
+	public final AnyOp toAny(CodeId id, Code code) {
+		return this.caller.toAny(id, code);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public abstract class Func implements PtrOp {
 	}
 
 	protected final <O> O invoke(
-			String name,
+			CodeId id,
 			Code code,
 			Return<O> ret,
 			Op... args) {
@@ -88,21 +88,21 @@ public abstract class Func implements PtrOp {
 			code.getFunction() + " is not debuggable";
 
 		if (!debuggable || !code.isDebug()) {
-			return invokeFunc(name, code, ret, args);
+			return invokeFunc(id, code, ret, args);
 		}
 
 		final Op[] debugArgs = ArrayUtil.prepend(callee.debugEnv(code), args);
 
-		return invokeFunc(name, code, ret, debugArgs);
+		return invokeFunc(id, code, ret, debugArgs);
 	}
 
 	private <O> O invokeFunc(
-			String name,
+			CodeId id,
 			Code code,
 			Return<O> ret,
 			Op... args) {
 		assert validSignature(ret.getSignature(), args);
-		return ret.call(name, code, this.caller, args);
+		return ret.call(id, code, this.caller, args);
 	}
 
 	private boolean validSignature(Signature<?> signature, Op[] args) {

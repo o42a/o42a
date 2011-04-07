@@ -35,7 +35,7 @@ public final class LLVMInt64op extends LLVMIntOp<Int64op, LLVMInt64op>
 	}
 
 	@Override
-	public LLVMInt64op toInt64(String name, Code code) {
+	public LLVMInt64op toInt64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -43,7 +43,7 @@ public final class LLVMInt64op extends LLVMIntOp<Int64op, LLVMInt64op>
 			return this;
 		}
 
-		return super.toInt64(name, code);
+		return super.toInt64(id, code);
 	}
 
 	@Override

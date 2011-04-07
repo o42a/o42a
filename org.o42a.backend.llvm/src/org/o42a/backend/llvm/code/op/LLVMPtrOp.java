@@ -69,86 +69,71 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	}
 
 	@Override
-	public LLVMBoolOp isNull(String name, Code code) {
+	public LLVMBoolOp isNull(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = LLVMCode.unaryId(this, name, code, "is_null");
+		final CodeId resultId = LLVMCode.unaryId(this, id, code, "is_null");
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
-				isNull(nextPtr, id.getId(), getNativePtr()));
+				isNull(nextPtr, resultId.getId(), getNativePtr()));
 	}
 
 	@Override
-	public LLVMBoolOp eq(String name, Code code, PtrOp other) {
+	public LLVMBoolOp eq(CodeId id, Code code, PtrOp other) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = LLVMCode.binaryId(this, name, code, "eq", other);
+		final CodeId resultId =
+			LLVMCode.binaryId(this, id, code, "eq", other);
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				LLVMIntOp.eq(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
 
 	@Override
-	public LLVMAnyOp toAny(String name, Code code) {
+	public LLVMAnyOp toAny(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "any");
+		final CodeId castId = castId(id, code, "any");
 
 		return new LLVMAnyOp(
-				id,
+				castId,
 				nextPtr,
-				toAny(nextPtr, id.getId(), getNativePtr()));
-	}
-
-	public final LLVMDataOp toData(String name, Code code) {
-		return toData(castId(name, code, "struct"), code);
+				toAny(nextPtr, castId.getId(), getNativePtr()));
 	}
 
 	public LLVMDataOp toData(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId castId = castId(id, code, "struct");
 
 		return new LLVMDataOp(
-				id,
+				castId,
 				nextPtr,
-				toAny(nextPtr, id.getId(), getNativePtr()));
-	}
-
-	public final <O extends StructOp> O to(
-			String name,
-			Code code,
-			Type<O> type) {
-		return to(castId(name, code, type.getType().getId()), code, type);
+				toAny(nextPtr, castId.getId(), getNativePtr()));
 	}
 
 	public <O extends StructOp> O to(CodeId id, Code code, Type<O> type) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId castId = castId(id, code, type.getId());
 
 		return type.op(new LLVMStruct(
-				id,
+				castId,
 				type,
 				nextPtr,
 				castStructTo(
 						nextPtr,
-						id.getId(),
+						castId.getId(),
 						getNativePtr(),
 						typePtr(type))));
-	}
-
-	public final <F extends Func> LLVMFuncOp<F> toFunc(
-			String name,
-			Code code,
-			Signature<F> signature) {
-		return toFunc(castId(name, code, signature.getId()), code, signature);
 	}
 
 	public <F extends Func> LLVMFuncOp<F> toFunc(
@@ -175,17 +160,17 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return this.id.toString();
 	}
 
-	protected final CodeId castId(String name, Code code, String suffix) {
-		return LLVMCode.castId(this, name, code, suffix);
+	protected final CodeId castId(CodeId id, Code code, String suffix) {
+		return LLVMCode.castId(this, id, code, suffix);
 	}
 
-	protected final CodeId castId(String name, Code code, CodeId suffix) {
-		return LLVMCode.castId(this, name, code, suffix);
+	protected final CodeId castId(CodeId id, Code code, CodeId suffix) {
+		return LLVMCode.castId(this, id, code, suffix);
 	}
 
-	protected final CodeId derefId(String name, Code code) {
-		if (name != null) {
-			return code.nameId(name);
+	protected final CodeId derefId(CodeId id, Code code) {
+		if (id != null) {
+			return code.opId(id);
 		}
 		return getId().detail("deref");
 	}

@@ -39,9 +39,13 @@ public final class CastObjectFunc extends Func {
 		super(caller);
 	}
 
-	public DataOp cast(Code code, ObjectOp object, ObjectTypeOp type) {
+	public DataOp cast(
+			CodeId id,
+			Code code,
+			ObjectOp object,
+			ObjectTypeOp type) {
 		return invoke(
-				null,
+				id,
 				code,
 				CAST_OBJECT.result(),
 				object.toData(code), type.ptr());

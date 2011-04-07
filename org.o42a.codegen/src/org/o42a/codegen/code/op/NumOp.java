@@ -19,46 +19,47 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
 public interface NumOp<O extends NumOp<O>> extends Op {
 
-	O neg(String name, Code code);
+	O neg(CodeId id, Code code);
 
-	O add(String name, Code code, O summand);
+	O add(CodeId id, Code code, O summand);
 
-	O sub(String name, Code code, O subtrahend);
+	O sub(CodeId id, Code code, O subtrahend);
 
-	O mul(String name, Code code, O multiplier);
+	O mul(CodeId id, Code code, O multiplier);
 
-	O div(String name, Code code, O divisor);
+	O div(CodeId id, Code code, O divisor);
 
-	O rem(String name, Code code, O divisor);
+	O rem(CodeId id, Code code, O divisor);
 
-	BoolOp eq(String name, Code code, O other);
+	BoolOp eq(CodeId id, Code code, O other);
 
-	BoolOp ne(String name, Code code, O other);
+	BoolOp ne(CodeId id, Code code, O other);
 
-	BoolOp gt(String name, Code code, O other);
+	BoolOp gt(CodeId id, Code code, O other);
 
-	BoolOp ge(String name, Code code, O other);
+	BoolOp ge(CodeId id, Code code, O other);
 
-	BoolOp lt(String name, Code code, O other);
+	BoolOp lt(CodeId id, Code code, O other);
 
-	BoolOp le(String name, Code code, O other);
+	BoolOp le(CodeId id, Code code, O other);
 
-	Int8op toInt8(String name, Code code);
+	Int8op toInt8(CodeId id, Code code);
 
-	Int16op toInt16(String name, Code code);
+	Int16op toInt16(CodeId id, Code code);
 
-	Int32op toInt32(String name, Code code);
+	Int32op toInt32(CodeId id, Code code);
 
-	Int64op toInt64(String name, Code code);
+	Int64op toInt64(CodeId id, Code code);
 
-	Fp32op toFp32(String name, Code code);
+	Fp32op toFp32(CodeId id, Code code);
 
-	Fp64op toFp64(String name, Code code);
+	Fp64op toFp64(CodeId id, Code code);
 
 	void returnValue(Code code);
 

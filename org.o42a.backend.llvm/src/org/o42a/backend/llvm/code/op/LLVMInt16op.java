@@ -35,7 +35,7 @@ public final class LLVMInt16op extends LLVMIntOp<Int16op, LLVMInt16op>
 	}
 
 	@Override
-	public LLVMInt16op toInt16(String name, Code code) {
+	public LLVMInt16op toInt16(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -43,7 +43,7 @@ public final class LLVMInt16op extends LLVMIntOp<Int16op, LLVMInt16op>
 			return this;
 		}
 
-		return super.toInt16(name, code);
+		return super.toInt16(id, code);
 	}
 
 	@Override

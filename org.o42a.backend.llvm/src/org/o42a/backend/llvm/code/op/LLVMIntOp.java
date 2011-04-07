@@ -36,410 +36,409 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 	}
 
 	@Override
-	public T shl(String name, Code code, O numBits) {
+	public T shl(CodeId id, Code code, O numBits) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = unaryId(name, code, "shl");
+		final CodeId resultId = unaryId(id, code, "shl");
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				shl(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(numBits)));
 	}
 
 	@Override
-	public T shl(String name, Code code, int numBits) {
+	public T shl(CodeId id, Code code, int numBits) {
 		return shl(null, code, constantValue(code, numBits));
 	}
 
 	@Override
-	public T lshr(String name, Code code, O numBits) {
+	public T lshr(CodeId id, Code code, O numBits) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "lshr", numBits);
+		final CodeId resultId = binaryId(id, code, "lshr", numBits);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				lshr(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(numBits)));
 	}
 
 	@Override
-	public T lshr(String name, Code code, int numBits) {
+	public T lshr(CodeId id, Code code, int numBits) {
 		return lshr(null, code, constantValue(code, numBits));
 	}
 
 	@Override
-	public T ashr(String name, Code code, O numBits) {
+	public T ashr(CodeId id, Code code, O numBits) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "ashr", numBits);
+		final CodeId resultId = binaryId(id, code, "ashr", numBits);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				ashr(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(numBits)));
 	}
 
 	@Override
-	public T ashr(String name, Code code, int numBits) {
+	public T ashr(CodeId id, Code code, int numBits) {
 		return ashr(null, code, constantValue(code, numBits));
 	}
 
 	@Override
-	public T and(String name, Code code, O operand) {
+	public T and(CodeId id, Code code, O operand) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "and", operand);
+		final CodeId resultId = binaryId(id, code, "and", operand);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				and(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(operand)));
 	}
 
 	@Override
-	public T or(String name, Code code, O operand) {
+	public T or(CodeId id, Code code, O operand) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "or", operand);
+		final CodeId resultId = binaryId(id, code, "or", operand);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				or(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(operand)));
 	}
 
 	@Override
-	public T xor(String name, Code code, O operand) {
+	public T xor(CodeId id, Code code, O operand) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "xor", operand);
+		final CodeId resultId = binaryId(id, code, "xor", operand);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				xor(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(operand)));
 	}
 
 	@Override
-	public T neg(String name, Code code) {
+	public T neg(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = unaryId(name, code, "neg");
+		final CodeId resultId = unaryId(id, code, "neg");
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
-				neg(nextPtr, id.getId(), getNativePtr()));
+				neg(nextPtr, resultId.getId(), getNativePtr()));
 	}
 
 	@Override
-	public T add(String name, Code code, O summand) {
+	public T add(CodeId id, Code code, O summand) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "add", summand);
+		final CodeId resultId = binaryId(id, code, "add", summand);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				add(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(summand)));
 	}
 
 	@Override
-	public T sub(String name, Code code, O subtrahend) {
+	public T sub(CodeId id, Code code, O subtrahend) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "sub", subtrahend);
+		final CodeId resultId = binaryId(id, code, "sub", subtrahend);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				sub(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(subtrahend)));
 	}
 
 	@Override
-	public T mul(String name, Code code, O multiplier) {
+	public T mul(CodeId id, Code code, O multiplier) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "mul", multiplier);
+		final CodeId resultId = binaryId(id, code, "mul", multiplier);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				mul(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(multiplier)));
 	}
 
 	@Override
-	public T div(String name, Code code, O divisor) {
+	public T div(CodeId id, Code code, O divisor) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "div", divisor);
+		final CodeId resultId = binaryId(id, code, "div", divisor);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				div(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(divisor)));
 	}
 
 	@Override
-	public T rem(String name, Code code, O divisor) {
+	public T rem(CodeId id, Code code, O divisor) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "rem", divisor);
+		final CodeId resultId = binaryId(id, code, "rem", divisor);
 
 		return create(
-				id,
+				resultId,
 				nextPtr,
 				rem(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(divisor)));
 	}
 
 	@Override
-	public LLVMBoolOp eq(String name, Code code, O other) {
+	public LLVMBoolOp eq(CodeId id, Code code, O other) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "eq", other);
+		final CodeId resultId = binaryId(id, code, "eq", other);
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				eq(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
 
 	@Override
-	public LLVMBoolOp ne(String name, Code code, O other) {
+	public LLVMBoolOp ne(CodeId id, Code code, O other) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "ne", other);
+		final CodeId resultId = binaryId(id, code, "ne", other);
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				ne(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
 
 	@Override
-	public LLVMBoolOp gt(String name, Code code, O other) {
+	public LLVMBoolOp gt(CodeId id, Code code, O other) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "gt", other);
+		final CodeId resultId = binaryId(id, code, "gt", other);
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				gt(
 						nextPtr(code),
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
 
 	@Override
-	public LLVMBoolOp ge(String name, Code code, O other) {
+	public LLVMBoolOp ge(CodeId id, Code code, O other) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "ge", other);
+		final CodeId resultId = binaryId(id, code, "ge", other);
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				ge(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(), nativePtr(other)));
 	}
 
 	@Override
-	public LLVMBoolOp lt(String name, Code code, O other) {
+	public LLVMBoolOp lt(CodeId id, Code code, O other) {
 
 		final long nextPtr = nextPtr(code);
-
-		final CodeId id = binaryId(name, code, "lt", other);
+		final CodeId resultId = binaryId(id, code, "lt", other);
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				lt(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
 
 	@Override
-	public LLVMBoolOp le(String name, Code code, O other) {
+	public LLVMBoolOp le(CodeId id, Code code, O other) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = binaryId(name, code, "le", other);
+		final CodeId resultId = binaryId(id, code, "le", other);
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				le(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
 
 	@Override
-	public LLVMInt8op toInt8(String name, Code code) {
+	public LLVMInt8op toInt8(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int8");
+		final CodeId resultId = castId(id, code, "int8");
 
 		return new LLVMInt8op(
-				id,
+				resultId,
 				nextPtr,
 				int2int(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						(byte) 8));
 	}
 
 	@Override
-	public LLVMInt16op toInt16(String name, Code code) {
+	public LLVMInt16op toInt16(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int16");
+		final CodeId resultId = castId(id, code, "int16");
 
 		return new LLVMInt16op(
-				id,
+				resultId,
 				nextPtr,
 				int2int(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						(byte) 16));
 	}
 
 	@Override
-	public LLVMInt32op toInt32(String name, Code code) {
+	public LLVMInt32op toInt32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int32");
+		final CodeId resultId = castId(id, code, "int32");
 
 		return new LLVMInt32op(
-				id,
+				resultId,
 				nextPtr,
 				int2int(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						(byte) 32));
 	}
 
 	@Override
-	public LLVMInt64op toInt64(String name, Code code) {
+	public LLVMInt64op toInt64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "int64");
+		final CodeId resultId = castId(id, code, "int64");
 
 		return new LLVMInt64op(
-				id,
+				resultId,
 				nextPtr,
 				int2int(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr(),
 						(byte) 64));
 	}
 
 	@Override
-	public LLVMFp32op toFp32(String name, Code code) {
+	public LLVMFp32op toFp32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "fp32");
+		final CodeId resultId = castId(id, code, "fp32");
 
 		return new LLVMFp32op(
-				id,
+				resultId,
 				nextPtr,
 				intToFp32(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr()));
 	}
 
 	@Override
-	public LLVMFp64op toFp64(String name, Code code) {
+	public LLVMFp64op toFp64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "fp64");
+		final CodeId resultId = castId(id, code, "fp64");
 
 		return new LLVMFp64op(
-				id,
+				resultId,
 				nextPtr,
 				intToFp64(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr()));
 	}
 
 	@Override
-	public LLVMBoolOp lowestBit(String name, Code code) {
+	public LLVMBoolOp lowestBit(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = castId(name, code, "bool");
+		final CodeId resultId = castId(id, code, "bool");
 
 		return new LLVMBoolOp(
-				id,
+				resultId,
 				nextPtr,
 				lowestBit(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						getNativePtr()));
 	}
 

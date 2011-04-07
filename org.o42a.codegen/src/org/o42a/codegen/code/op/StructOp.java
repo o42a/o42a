@@ -64,114 +64,114 @@ public abstract class StructOp implements PtrOp {
 	}
 
 	@Override
-	public final BoolOp isNull(String name, Code code) {
-		return getWriter().isNull(name, code);
+	public final BoolOp isNull(CodeId id, Code code) {
+		return getWriter().isNull(id, code);
 	}
 
 	@Override
-	public BoolOp eq(String name, Code code, PtrOp other) {
-		return getWriter().eq(name, code, other);
+	public BoolOp eq(CodeId id, Code code, PtrOp other) {
+		return getWriter().eq(id, code, other);
 	}
 
 	@Override
-	public final AnyOp toAny(String name, Code code) {
-		return getWriter().toAny(name, code);
+	public final AnyOp toAny(CodeId id, Code code) {
+		return getWriter().toAny(id, code);
 	}
 
-	public final DataOp toData(String name, Code code) {
-		return getWriter().toData(code.nameId(name), code);
+	public final DataOp toData(CodeId id, Code code) {
+		return getWriter().toData(code.opId(id), code);
 	}
 
-	public <O extends StructOp> O to(String name, Code code, Type<O> type) {
-		return getWriter().to(code.nameId(name), code, type);
+	public <O extends StructOp> O to(CodeId id, Code code, Type<O> type) {
+		return getWriter().to(code.opId(id), code, type);
 	}
 
-	protected final RecOp<?> field(String name, Code code, Data<?> field) {
-		return getWriter().field(fieldId(name, code, field), code, field);
+	protected final RecOp<?> field(CodeId id, Code code, Data<?> field) {
+		return getWriter().field(fieldId(id, code, field), code, field);
 	}
 
-	protected final RecOp<Int8op> int8(String name, Code code, Int8rec field) {
-		return getWriter().int8(fieldId(name, code, field), code, field);
+	protected final RecOp<Int8op> int8(CodeId id, Code code, Int8rec field) {
+		return getWriter().int8(fieldId(id, code, field), code, field);
 	}
 
 	protected final RecOp<Int16op> int16(
-			String name,
+			CodeId id,
 			Code code,
 			Int16rec field) {
-		return getWriter().int16(fieldId(name, code, field), code, field);
+		return getWriter().int16(fieldId(id, code, field), code, field);
 	}
 
 	protected final RecOp<Int32op> int32(
-			String name,
+			CodeId id,
 			Code code,
 			Int32rec field) {
-		return getWriter().int32(fieldId(name, code, field), code, field);
+		return getWriter().int32(fieldId(id, code, field), code, field);
 	}
 
 	protected final RecOp<Int64op> int64(
-			String name,
+			CodeId id,
 			Code code,
 			Int64rec field) {
-		return getWriter().int64(fieldId(name, code, field), code, field);
+		return getWriter().int64(fieldId(id, code, field), code, field);
 	}
 
-	protected final RecOp<Fp32op> fp32(String name, Code code, Fp32rec field) {
-		return getWriter().fp32(fieldId(name, code, field), code, field);
+	protected final RecOp<Fp32op> fp32(CodeId id, Code code, Fp32rec field) {
+		return getWriter().fp32(fieldId(id, code, field), code, field);
 	}
 
-	protected final RecOp<Fp64op> fp64(String name, Code code, Fp64rec field) {
-		return getWriter().fp64(fieldId(name, code, field), code, field);
+	protected final RecOp<Fp64op> fp64(CodeId id, Code code, Fp64rec field) {
+		return getWriter().fp64(fieldId(id, code, field), code, field);
 	}
 
-	protected final RecOp<AnyOp> ptr(String name, Code code, AnyPtrRec field) {
-		return getWriter().ptr(fieldId(name, code, field), code, field);
+	protected final RecOp<AnyOp> ptr(CodeId id, Code code, AnyPtrRec field) {
+		return getWriter().ptr(fieldId(id, code, field), code, field);
 	}
 
-	protected final RecOp<DataOp> ptr(String name, Code code, DataRec field) {
-		return getWriter().ptr(fieldId(name, code, field), code, field);
+	protected final RecOp<DataOp> ptr(CodeId id, Code code, DataRec field) {
+		return getWriter().ptr(fieldId(id, code, field), code, field);
 	}
 
 	protected final <P extends StructOp> RecOp<P> ptr(
-			String name,
+			CodeId id,
 			Code code,
 			StructRec<P> field) {
-		return getWriter().ptr(fieldId(name, code, field), code, field);
+		return getWriter().ptr(fieldId(id, code, field), code, field);
 	}
 
 	protected final RecOp<RelOp> relPtr(
-			String name,
+			CodeId id,
 			Code code,
 			RelPtrRec field) {
-		return getWriter().relPtr(fieldId(name, code, field), code, field);
+		return getWriter().relPtr(fieldId(id, code, field), code, field);
 	}
 
 	protected final <O extends StructOp> O struct(
-			String name,
+			CodeId id,
 			Code code,
 			Type<O> field) {
 		return getWriter().struct(
-				fieldId(name, code, field.getId()),
+				fieldId(id, code, field.getId()),
 				code,
 				field);
 	}
 
 	protected final <F extends Func> FuncOp<F> func(
-			String name,
+			CodeId id,
 			Code code,
 			FuncRec<F> field) {
-		return getWriter().func(fieldId(name, code, field), code, field);
+		return getWriter().func(fieldId(id, code, field), code, field);
 	}
 
-	private final CodeId fieldId(String name, Code code, Data<?> field) {
-		if (name != null) {
-			return code.nameId(name);
+	private final CodeId fieldId(CodeId id, Code code, Data<?> field) {
+		if (id != null) {
+			return code.opId(id);
 		}
 		return getId().setLocal(field.getId());
 	}
 
-	private final CodeId fieldId(String name, Code code, CodeId field) {
-		if (name != null) {
-			return code.nameId(name);
+	private final CodeId fieldId(CodeId id, Code code, CodeId field) {
+		if (id != null) {
+			return code.opId(id);
 		}
 		return getId().setLocal(field);
 	}

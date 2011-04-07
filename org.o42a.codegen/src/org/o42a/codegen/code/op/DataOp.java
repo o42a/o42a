@@ -19,12 +19,13 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Type;
 
 
 public interface DataOp extends PtrOp {
 
-	<O extends StructOp> O to(String name, Code code, Type<O> type);
+	<O extends StructOp> O to(CodeId id, Code code, Type<O> type);
 
 }

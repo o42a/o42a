@@ -50,16 +50,16 @@ public final class LLVMFuncOp<F extends Func>
 	}
 
 	@Override
-	public final F load(String name, Code code) {
+	public final F load(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id = derefId(name, code);
+		final CodeId resultId = derefId(id, code);
 
 		return getSignature().op(new LLVMFunc<F>(
-				id,
+				resultId,
 				getSignature(),
 				nextPtr,
-				load(nextPtr, id.getId(), getNativePtr())));
+				load(nextPtr, resultId.getId(), getNativePtr())));
 	}
 
 	@Override

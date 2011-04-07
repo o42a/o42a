@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
@@ -26,10 +27,10 @@ public interface PtrOp extends Op {
 
 	void returnValue(Code code);
 
-	BoolOp isNull(String name, Code code);
+	BoolOp isNull(CodeId id, Code code);
 
-	BoolOp eq(String name, Code code, PtrOp other);
+	BoolOp eq(CodeId id, Code code, PtrOp other);
 
-	AnyOp toAny(String name, Code code);
+	AnyOp toAny(CodeId id, Code code);
 
 }

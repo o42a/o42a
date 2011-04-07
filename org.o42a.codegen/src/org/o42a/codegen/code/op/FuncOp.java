@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -29,7 +30,7 @@ public interface FuncOp<F extends Func> extends RecOp<F> {
 	Signature<F> getSignature();
 
 	<FF extends Func> FuncOp<FF> toFunc(
-			String name,
+			CodeId id,
 			Code code,
 			Signature<FF> signature);
 

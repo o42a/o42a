@@ -87,7 +87,8 @@ class LocalDef extends ValueDef {
 
 		final LocalScope scope = getBlock().getScope().toLocal();
 		final Obj ownerType = scope.getOwner();
-		final ObjOp ownerBody = ownerObject.cast(dirs, ownerType);
+		final ObjOp ownerBody =
+			ownerObject.cast(dirs.id("owner"), dirs, ownerType);
 		final LocalIRBase ir = scope.ir(host.getGenerator());
 
 		if (this.explicit) {

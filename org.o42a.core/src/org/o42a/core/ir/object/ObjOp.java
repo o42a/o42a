@@ -19,8 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.IRUtil.encodeMemberId;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -100,7 +102,7 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public ObjOp cast(CodeDirs dirs, Obj ascendant) {
+	public ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant) {
 		ptr().getType().getObjectIR().getObject().assertDerivedFrom(
 				ascendant);
 		if (ascendant == getAscendant()) {
@@ -116,7 +118,7 @@ public final class ObjOp extends ObjectOp {
 			// Clone shares the body with it`s origin.
 			return this;
 		}
-		return dynamicCast(dirs, ascendant);
+		return dynamicCast(id, dirs, ascendant);
 	}
 
 	@Override
@@ -125,8 +127,13 @@ public final class ObjOp extends ObjectOp {
 
 		final Code code = dirs.code();
 		final Fld fld = ptr().getType().getObjectIR().fld(memberKey);
-		final ObjOp host =
-			cast(dirs, memberKey.getOrigin().getContainer().toObject());
+		final CodeId hostId =
+			code.id("field_host")
+			.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
+		final ObjOp host = cast(
+				hostId,
+				dirs,
+				memberKey.getOrigin().getContainer().toObject());
 		final FldOp op = fld.op(code, host);
 
 		code.dumpName("Field: ", op.ptr());
@@ -141,7 +148,12 @@ public final class ObjOp extends ObjectOp {
 
 		final Code code = dirs.code();
 		final DepIR ir = ptr().getType().getObjectIR().dep(dep);
-		final ObjOp host = cast(dirs, dep.getObject());
+		final String depName = dep.getName();
+		final CodeId hostId = code.id("dep_host");
+		final ObjOp host = cast(
+				depName != null ? hostId.sub(depName) : hostId,
+				dirs,
+				dep.getObject());
 		final DepOp op = ir.op(code, host);
 
 		code.dumpName("Dep: ", op.ptr());
