@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.console.impl;
 
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
@@ -89,7 +89,7 @@ public class Print extends IntrinsicObject {
 			final MemberKey textKey =
 				memberName("text").key(getAncestor().getType().getScope());
 			final CodeBlk cantPrint = code.addBlock("cant_print");
-			final CodeDirs dirs = exitWhenUnknown(code, cantPrint.head());
+			final CodeDirs dirs = falseWhenUnknown(code, cantPrint.head());
 			final ObjectOp textObject =
 				host.field(dirs, textKey)
 				.materialize(dirs);

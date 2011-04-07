@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.ast.expression.UnaryNode;
@@ -162,7 +162,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				.target(this.res, this.res.distribute());
 
 			final ValOp operandValue = code.allocate(null, VAL_TYPE);
-			final CodeDirs dirs = exitWhenUnknown(code, failure.head());
+			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
 			final HostOp operandHost = enclosingRef.op(host).target(dirs);
 
 			final CodeBlk returnTrue = code.addBlock("return_true");

@@ -119,7 +119,7 @@ public final class RefLclOp extends LclOp {
 
 		final Code code = control.code();
 		final CodePos exit = control.exit();
-		final CodeDirs dirs = CodeDirs.exitWhenUnknown(code, exit);
+		final CodeDirs dirs = CodeDirs.falseWhenUnknown(code, exit);
 
 		final Field<?> field = getFieldIR().getField();
 		final Obj object = field.getArtifact().materialize();

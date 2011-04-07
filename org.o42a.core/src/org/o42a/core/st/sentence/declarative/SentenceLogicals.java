@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence.declarative;
 
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import java.util.ArrayList;
 
@@ -206,7 +206,7 @@ final class SentenceLogicals {
 				final Code otherwiseBlock = code.addBlock("otherwise");
 
 				this.otherwise.write(
-						exitWhenUnknown(otherwiseBlock, exit.head()),
+						falseWhenUnknown(otherwiseBlock, exit.head()),
 						host);
 
 				otherwise = otherwiseBlock.head();
@@ -226,18 +226,18 @@ final class SentenceLogicals {
 
 				if (nextIdx >= size) {
 					prerequisite.write(
-							exitWhenUnknown(prereq, otherwise),
+							falseWhenUnknown(prereq, otherwise),
 							host);
 					precondition.write(
-							exitWhenUnknown(prereq, exit.head()),
+							falseWhenUnknown(prereq, exit.head()),
 							host);
 					break;
 				}
 
 				final Code next = code.addBlock(nextIdx + "_prereq");
 
-				prerequisite.write(exitWhenUnknown(prereq, next.head()), host);
-				precondition.write(exitWhenUnknown(prereq, exit.head()), host);
+				prerequisite.write(falseWhenUnknown(prereq, next.head()), host);
+				precondition.write(falseWhenUnknown(prereq, exit.head()), host);
 
 				prereq = next;
 				idx = nextIdx;

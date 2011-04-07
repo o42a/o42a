@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
 
@@ -215,7 +215,7 @@ public abstract class ObjectValueIRValFunc
 				final ValueDef def = defs[i];
 
 				def.writePrerequisite(
-						exitWhenUnknown(block, nextPos),
+						falseWhenUnknown(block, nextPos),
 						host);
 				def.writeValue(
 						splitWhenUnknown(

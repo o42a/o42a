@@ -21,7 +21,7 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.value.DefCollector.explicitDef;
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
@@ -285,7 +285,7 @@ public abstract class ObjectValueIRCondFunc
 			if (!def.hasPrerequisite()) {
 
 				final CodeDirs defDirs =
-					exitWhenUnknown(block, condFalse.head());
+					falseWhenUnknown(block, condFalse.head());
 
 				def.write(defDirs, host);
 				block.go(collector.next(i, code.tail()));
