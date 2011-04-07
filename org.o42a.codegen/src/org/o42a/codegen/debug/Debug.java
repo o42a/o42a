@@ -106,10 +106,10 @@ public class Debug {
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(function);
 		final DebugStackFrameOp stackFrame =
-			function.allocate(DEBUG_STACK_FRAME_TYPE);
+			function.allocate(null, DEBUG_STACK_FRAME_TYPE);
 
-		stackFrame.name(function).store(function, namePtr.op(function));
-		stackFrame.prev(function).store(function, envStackFrame.load(function));
+		stackFrame.name(function).store(function, namePtr.op(null, function));
+		stackFrame.prev(function).store(function, envStackFrame.load(null, function));
 		stackFrame.comment(function).store(function, function.nullPtr());
 		stackFrame.file(function).store(function, function.nullPtr());
 		stackFrame.line(function).store(function, function.int32(0));
@@ -117,7 +117,7 @@ public class Debug {
 		envStackFrame.store(function, stackFrame);
 
 		final BoolOp execResult =
-			execCommandFunc().op(function).exec(function, debugEnv);
+			execCommandFunc().op(null, function).exec(function, debugEnv);
 		final CodeBlk commandExecuted = function.addBlock("command_executed");
 
 		execResult.go(function, commandExecuted.head());
@@ -131,7 +131,7 @@ public class Debug {
 			this.dontExitFrom = oldDontExitFrom;
 		}
 
-		enterFunc().op(function).trace(function, debugEnv);
+		enterFunc().op(null, function).trace(function, debugEnv);
 	}
 
 	public void registerType(SubData<?> typeData) {
@@ -236,7 +236,7 @@ public class Debug {
 			final Debug debug = code.getGenerator().getDebug();
 
 			if (debug.dontExitFrom != code) {
-				debug.exitFunc().op(code).trace(
+				debug.exitFunc().op(null, code).trace(
 						code,
 						code.getFunction().debugEnv(code));
 			}

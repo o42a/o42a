@@ -81,7 +81,7 @@ public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 		}
 
 		public final ObjectDataType.Op data(Code code) {
-			return struct(code, getType().data());
+			return struct(null, code, getType().data());
 		}
 
 	}

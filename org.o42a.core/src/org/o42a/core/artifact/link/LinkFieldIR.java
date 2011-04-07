@@ -64,7 +64,7 @@ final class LinkFieldIR extends FieldIR<Link> {
 
 	@Override
 	protected RefLclOp allocateLocal(LocalBuilder builder, Code code) {
-		return code.allocate(REF_LCL).op(builder, this);
+		return code.allocate(null, REF_LCL).op(builder, this);
 	}
 
 	@Override

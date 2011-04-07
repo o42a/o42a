@@ -95,7 +95,7 @@ public class ObjectType extends Type<ObjectType.Op> {
 		}
 
 		public final ObjectDataType.Op data(Code code) {
-			return struct(code, getType().data());
+			return struct(null, code, getType().data());
 		}
 
 		public final ObjectTypeOp op(

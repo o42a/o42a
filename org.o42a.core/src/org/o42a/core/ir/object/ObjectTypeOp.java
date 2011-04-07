@@ -60,15 +60,15 @@ public class ObjectTypeOp extends IROp {
 
 	public final ObjOp objectOfType(Code code, Obj type) {
 		return mainBody(code).to(
-				code,
-				type.ir(getGenerator()).getBodyType())
+				null,
+				code, type.ir(getGenerator()).getBodyType())
 				.op(this, type);
 	}
 
 	public final void writeValue(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
-			ptr().data(code).valueFunc(code).load(code);
+			ptr().data(code).valueFunc(code).load(null, code);
 
 		function.call(code, result, body(code, body));
 		code.dump("Value: ", result);
@@ -78,7 +78,7 @@ public class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectCondFunc function =
-			ptr().data(code).requirementFunc(code).load(code);
+			ptr().data(code).requirementFunc(code).load(null, code);
 
 		function.call(code, body(code, body)).go(code, dirs);
 	}
@@ -86,7 +86,7 @@ public class ObjectTypeOp extends IROp {
 	public final void writeClaim(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
-			ptr().data(code).claimFunc(code).load(code);
+			ptr().data(code).claimFunc(code).load(null, code);
 
 		function.call(code, result, body(code, body));
 	}
@@ -95,7 +95,7 @@ public class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectCondFunc function =
-			ptr().data(code).conditionFunc(code).load(code);
+			ptr().data(code).conditionFunc(code).load(null, code);
 
 		function.call(code, body(code, body)).go(code, dirs);
 	}
@@ -103,7 +103,7 @@ public class ObjectTypeOp extends IROp {
 	public final void writeProposition(Code code, ValOp result, ObjectOp body) {
 
 		final ObjectValFunc function =
-			ptr().data(code).propositionFunc(code).load(code);
+			ptr().data(code).propositionFunc(code).load(null, code);
 
 		function.call(code, result, body(code, body));
 	}

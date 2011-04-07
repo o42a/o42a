@@ -37,7 +37,7 @@ final class DebugDumpFunc extends Func {
 	}
 
 	public void call(Code code, AnyOp prefix, DataOp data, Int32op depth) {
-		invoke(code, DEBUG_DUMP.result(), prefix, data, depth);
+		invoke(null, code, DEBUG_DUMP.result(), prefix, data, depth);
 	}
 
 	public static final class DebugDump extends Signature<DebugDumpFunc> {

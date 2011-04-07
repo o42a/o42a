@@ -29,11 +29,12 @@ public abstract class CodeBase {
 
 	private boolean complete;
 
-	public <O extends StructOp> O allocate(Type<O> type) {
+	public <O extends StructOp> O allocate(String name, Type<O> type) {
 		assertIncomplete();
 
 		final Code code = (Code) this;
 		final O result = writer().allocateStruct(
+				code.nameId(name),
 				type.data(code.getGenerator()).getAllocation());
 
 		result.allocated(code, null);
@@ -41,11 +42,14 @@ public abstract class CodeBase {
 		return result;
 	}
 
-	public <O extends StructOp> RecOp<O> allocatePtr(Type<O> type) {
+	public <O extends StructOp> RecOp<O> allocatePtr(
+			String name,
+			Type<O> type) {
 		assertIncomplete();
 
 		final Code code = (Code) this;
 		final RecOp<O> result = writer().allocatePtr(
+				code.nameId(name),
 				type.data(code.getGenerator()).getAllocation());
 
 		result.allocated(code, null);

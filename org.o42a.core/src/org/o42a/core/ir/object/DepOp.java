@@ -74,7 +74,7 @@ public class DepOp extends IROp implements HostOp {
 
 		return anonymousObject(
 				getBuilder(),
-				ptr().object(code).load(code),
+				ptr().object(code).load(null, code),
 				object);
 	}
 
@@ -96,7 +96,7 @@ public class DepOp extends IROp implements HostOp {
 
 		return anonymousObject(
 				getBuilder(),
-				ptr().object(code).load(code),
+				ptr().object(code).load(null, code),
 				target.materialize());
 	}
 
@@ -110,7 +110,7 @@ public class DepOp extends IROp implements HostOp {
 
 			final LclOp field = builder.host().field(dirs, dependency.getKey());
 
-			value = field.ptr().toData(code);
+			value = field.ptr().toData(null, code);
 		} else {
 			value = builder.owner().toData(code);
 		}

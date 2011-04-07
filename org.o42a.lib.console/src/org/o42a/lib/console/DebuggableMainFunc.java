@@ -36,7 +36,7 @@ public final class DebuggableMainFunc extends Func {
 	}
 
 	public Int32op call(Code code, Int32op argc, AnyOp argv) {
-		return invoke(code, DEBUGGABLE_MAIN.result(), argc, argv);
+		return invoke(null, code, DEBUGGABLE_MAIN.result(), argc, argv);
 	}
 
 	public static final class DebuggableMain

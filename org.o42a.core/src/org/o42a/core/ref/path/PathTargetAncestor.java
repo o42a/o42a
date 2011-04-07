@@ -172,7 +172,7 @@ final class PathTargetAncestor extends Expression {
 				object.objectType(code).ptr()
 				.data(code)
 				.ancestorType(code)
-				.load(code)
+				.load(null, code)
 				.op(getBuilder(), object.getPrecision());
 
 			return ancestorData.object(code, ref.getResolution().materialize());

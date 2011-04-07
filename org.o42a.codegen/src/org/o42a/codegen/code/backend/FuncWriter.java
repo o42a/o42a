@@ -19,9 +19,7 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
@@ -30,31 +28,31 @@ public interface FuncWriter<F extends Func> extends CodeWriter {
 
 	FuncAllocation<F> getAllocation();
 
-	Int8op int8arg(Code code, int index);
+	Int8op int8arg(Code code, Arg<Int8op> arg);
 
-	Int16op int16arg(Code code, int index);
+	Int16op int16arg(Code code, Arg<Int16op> arg);
 
-	Int32op int32arg(Code code, int index);
+	Int32op int32arg(Code code, Arg<Int32op> arg);
 
-	Int64op int64arg(Code code, int index);
+	Int64op int64arg(Code code, Arg<Int64op> arg);
 
-	Fp32op fp32arg(Code code, int index);
+	Fp32op fp32arg(Code code, Arg<Fp32op> arg);
 
-	Fp64op fp64arg(Code code, int index);
+	Fp64op fp64arg(Code code, Arg<Fp64op> arg);
 
-	BoolOp boolArg(Code code, int index);
+	BoolOp boolArg(Code code, Arg<BoolOp> arg);
 
-	RelOp relPtrArg(Code code, int index);
+	RelOp relPtrArg(Code code, Arg<RelOp> arg);
 
-	AnyOp ptrArg(Code code, int index);
+	AnyOp ptrArg(Code code, Arg<AnyOp> arg);
 
-	DataOp dataArg(Code code, int index);
+	DataOp dataArg(Code code, Arg<DataOp> arg);
 
-	<O extends StructOp> O ptrArg(Code code, int index, Type<O> type);
+	<O extends StructOp> O ptrArg(Code code, Arg<O> arg, Type<O> type);
 
 	<FF extends Func> FF funcPtrArg(
 			Code code,
-			int index,
+			Arg<FF> arg,
 			Signature<FF> signature);
 
 }

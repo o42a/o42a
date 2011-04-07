@@ -114,7 +114,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return ptr(code, getType().object());
+			return ptr(null, code, getType().object());
 		}
 
 	}

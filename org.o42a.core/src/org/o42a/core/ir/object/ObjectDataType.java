@@ -164,51 +164,51 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		public final RecOp<RelOp> object(Code code) {
-			return relPtr(code, getType().object());
+			return relPtr(null, code, getType().object());
 		}
 
 		public final DataOp loadObject(Code code) {
-			return object(code).load(code).offset(code, this).toData(code);
+			return object(code).load(null, code).offset(null, code, this).toData(null, code);
 		}
 
 		public final RecOp<RelOp> start(Code code) {
-			return relPtr(code, getType().start());
+			return relPtr(null, code, getType().start());
 		}
 
 		public final DataOp loadStart(Code code) {
-			return start(code).load(code).offset(code, this).toData(code);
+			return start(code).load(null, code).offset(null, code, this).toData(null, code);
 		}
 
 		public final ValOp value(Code code) {
-			return struct(code, getType().value());
+			return struct(null, code, getType().value());
 		}
 
 		public final FuncOp<ObjectValFunc> valueFunc(Code code) {
-			return func(code, getType().valueFunc());
+			return func(null, code, getType().valueFunc());
 		}
 
 		public final FuncOp<ObjectCondFunc> requirementFunc(Code code) {
-			return func(code, getType().requirementFunc());
+			return func(null, code, getType().requirementFunc());
 		}
 
 		public final FuncOp<ObjectValFunc> claimFunc(Code code) {
-			return func(code, getType().claimFunc());
+			return func(null, code, getType().claimFunc());
 		}
 
 		public final FuncOp<ObjectCondFunc> conditionFunc(Code code) {
-			return func(code, getType().conditionFunc());
+			return func(null, code, getType().conditionFunc());
 		}
 
 		public final FuncOp<ObjectValFunc> propositionFunc(Code code) {
-			return func(code, getType().propositionFunc());
+			return func(null, code, getType().propositionFunc());
 		}
 
 		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
-			return func(code, getType().ancestorFunc());
+			return func(null, code, getType().ancestorFunc());
 		}
 
 		public final RecOp<ObjectType.Op> ancestorType(Code code) {
-			return ptr(code, getType().ancestorType());
+			return ptr(null, code, getType().ancestorType());
 		}
 
 		@Override

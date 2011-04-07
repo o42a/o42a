@@ -50,15 +50,15 @@ public class DebugEnvOp extends StructOp {
 	}
 
 	public final RecOp<DebugStackFrameOp> stackFrame(Code code) {
-		return ptr(code, getType().stackFrame());
+		return ptr(null, code, getType().stackFrame());
 	}
 
 	public final RecOp<Int8op> command(Code code) {
-		return int8(code, getType().command());
+		return int8(null, code, getType().command());
 	}
 
 	public final RecOp<Int8op> indent(Code code) {
-		return int8(code, getType().indent());
+		return int8(null, code, getType().indent());
 	}
 
 	public static final class Type

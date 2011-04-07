@@ -87,7 +87,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		public final FuncOp<AssignerFunc> assigner(Code code) {
-			return func(code, getType().assigner());
+			return func(null, code, getType().assigner());
 		}
 
 		@Override

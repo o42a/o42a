@@ -97,7 +97,7 @@ public class Print extends IntrinsicObject {
 			final CondBlk print =
 				text.loadCondition(code).branch(code, "print", "dont_print");
 			final CodeBlk dontPrint = print.otherwise();
-			final PrintFunc printFunc = printFunc().op(print);
+			final PrintFunc printFunc = printFunc().op(null, print);
 
 			printFunc.print(print, text);
 			result.storeVoid(print);

@@ -102,13 +102,13 @@ public final class RefLclOp extends LclOp {
 		final Obj ascendant = getAscendant();
 		final ObjectBodyIR ascendantBodyType =
 			ascendant.ir(getGenerator()).getBodyType();
-		final DataOp objectPtr = ptr().object(code).load(code);
+		final DataOp objectPtr = ptr().object(code).load(null, code);
 		final CodeBlk nullLocal = code.addBlock("null_local");
 
-		objectPtr.isNull(code).go(code, nullLocal.head());
+		objectPtr.isNull(null, code).go(code, nullLocal.head());
 		dirs.goWhenFalse(nullLocal);
 
-		return objectPtr.to(code, ascendantBodyType).op(
+		return objectPtr.to(null, code, ascendantBodyType).op(
 				getBuilder(),
 				ascendant,
 				DERIVED);
@@ -129,7 +129,7 @@ public final class RefLclOp extends LclOp {
 
 		ptr().object(code).store(
 				code,
-				newObject.ptr().toAny(code).toData(code));
+				newObject.ptr().toAny(null, code).toData(null, code));
 		newObject.writeLogicalValue(dirs);
 	}
 
@@ -150,7 +150,7 @@ public final class RefLclOp extends LclOp {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return ptr(code, getType().object());
+			return ptr(null, code, getType().object());
 		}
 
 	}

@@ -21,18 +21,26 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 
 
 public class LLVMBoolOp extends BoolOp implements LLVMOp {
 
+	private final CodeId id;
 	private final long blockPtr;
 	private final long nativePtr;
 
-	public LLVMBoolOp(long blockPtr, long nativePtr) {
+	public LLVMBoolOp(CodeId id, long blockPtr, long nativePtr) {
+		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
+	}
+
+	@Override
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	@Override
@@ -51,8 +59,8 @@ public class LLVMBoolOp extends BoolOp implements LLVMOp {
 	}
 
 	@Override
-	public LLVMBoolOp create(long blockPtr, long nativePtr) {
-		return new LLVMBoolOp(blockPtr, nativePtr);
+	public LLVMBoolOp create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMBoolOp(id, blockPtr, nativePtr);
 	}
 
 }

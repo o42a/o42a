@@ -39,11 +39,11 @@ public final class ParseWithRadixFunc extends Func {
 
 	public void parse(Code code, ValOp output, ValOp input, int radix) {
 		invoke(
+				null,
 				code,
 				PARSE_WITH_RADIX.result(),
 				output,
-				input,
-				code.int32(radix));
+				input, code.int32(radix));
 	}
 
 	public static final class ParseWithRadix

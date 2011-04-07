@@ -45,33 +45,33 @@ public final class ValOp extends StructOp implements CondOp {
 	}
 
 	public final RecOp<Int32op> flags(Code code) {
-		return int32(code, getType().flags());
+		return int32(null, code, getType().flags());
 	}
 
 	@Override
 	public final BoolOp loadCondition(Code code) {
-		return flags(code).load(code).lowestBit(code);
+		return flags(code).load(null, code).lowestBit(null, code);
 	}
 
 	@Override
 	public final BoolOp loadUnknown(Code code) {
-		return flags(code).load(code).lshr(code, 1).lowestBit(code);
+		return flags(code).load(null, code).lshr(null, code, 1).lowestBit(null, code);
 	}
 
 	public final BoolOp loadIndefinite(Code code) {
-		return flags(code).load(code).lshr(code, 2).lowestBit(code);
+		return flags(code).load(null, code).lshr(null, code, 2).lowestBit(null, code);
 	}
 
 	public final RecOp<Int32op> length(Code code) {
-		return int32(code, getType().length());
+		return int32(null, code, getType().length());
 	}
 
 	public final RecOp<Int64op> rawValue(Code code) {
-		return int64(code, getType().value());
+		return int64(null, code, getType().value());
 	}
 
 	public final AnyOp value(Code code) {
-		return rawValue(code).toAny(code);
+		return rawValue(code).toAny(null, code);
 	}
 
 	public ValOp store(Code code, Val value) {
@@ -82,7 +82,7 @@ public final class ValOp extends StructOp implements CondOp {
 			final Ptr<AnyOp> pointer = value.getPointer();
 
 			if (pointer != null) {
-				value(code).toPtr(code).store(code, pointer.op(code));
+				value(code).toPtr(null, code).store(code, pointer.op(null, code));
 			} else {
 				rawValue(code).store(code, code.int64(value.getValue()));
 			}
@@ -111,9 +111,9 @@ public final class ValOp extends StructOp implements CondOp {
 	}
 
 	public final ValOp store(Code code, ValOp value) {
-		flags(code).store(code, value.flags(code).load(code));
-		length(code).store(code, value.length(code).load(code));
-		rawValue(code).store(code, value.rawValue(code).load(code));
+		flags(code).store(code, value.flags(code).load(null, code));
+		length(code).store(code, value.length(code).load(null, code));
+		rawValue(code).store(code, value.rawValue(code).load(null, code));
 		return this;
 	}
 

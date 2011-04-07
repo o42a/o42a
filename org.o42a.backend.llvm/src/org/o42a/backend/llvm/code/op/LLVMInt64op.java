@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 
@@ -29,12 +30,12 @@ import org.o42a.codegen.code.op.Int64op;
 public final class LLVMInt64op extends LLVMIntOp<Int64op, LLVMInt64op>
 		implements Int64op {
 
-	public LLVMInt64op(long blockPtr, long nativePtr) {
-		super(blockPtr, nativePtr);
+	public LLVMInt64op(CodeId id, long blockPtr, long nativePtr) {
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public LLVMInt64op toInt64(Code code) {
+	public LLVMInt64op toInt64(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -42,12 +43,12 @@ public final class LLVMInt64op extends LLVMIntOp<Int64op, LLVMInt64op>
 			return this;
 		}
 
-		return super.toInt64(code);
+		return super.toInt64(name, code);
 	}
 
 	@Override
-	public LLVMInt64op create(long blockPtr, long nativePtr) {
-		return new LLVMInt64op(blockPtr, nativePtr);
+	public LLVMInt64op create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMInt64op(id, blockPtr, nativePtr);
 	}
 
 	@Override

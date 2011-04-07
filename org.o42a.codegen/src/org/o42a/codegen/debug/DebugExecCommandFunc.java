@@ -38,7 +38,7 @@ final class DebugExecCommandFunc extends Func {
 	}
 
 	public BoolOp exec(Code code, DebugEnvOp env) {
-		return invoke(code, DEBUG_EXEC_COMMAND.result(), env);
+		return invoke(null, code, DEBUG_EXEC_COMMAND.result(), env);
 	}
 
 	public static final class DebugExecCommand

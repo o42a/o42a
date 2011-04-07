@@ -115,7 +115,7 @@ final class MainCall extends DefinedObject {
 
 		final CodeBuilder builder = codeBuilder(getContext(), main);
 
-		final ValOp result = main.allocate(VAL_TYPE).storeUnknown(main);
+		final ValOp result = main.allocate(null, VAL_TYPE).storeUnknown(main);
 		final CodeBlk exit = main.addBlock("exit");
 
 		ir.op(builder, main).writeValue(
@@ -128,8 +128,8 @@ final class MainCall extends DefinedObject {
 		}
 
 		main.debug("Execution succeed");
-		result.rawValue(main).toAny(main).toInt32(main)
-		.load(main).returnValue(main);
+		result.rawValue(main).toAny(null, main).toInt32(null, main)
+		.load(null, main).returnValue(main);
 	}
 
 	private void generateDebugMain(
@@ -145,9 +145,9 @@ final class MainCall extends DefinedObject {
 					"o42a_dbg_exec_main",
 					DEBUG_EXEC_MAIN);
 
-		executeMain.op(debugMain).call(
+		executeMain.op(null, debugMain).call(
 				debugMain,
-				main.getPointer().op(debugMain),
+				main.getPointer().op(null, debugMain),
 				debugMain.arg(debugMain, MAIN.argc()),
 				debugMain.arg(debugMain, MAIN.argv())).returnValue(debugMain);
 	}

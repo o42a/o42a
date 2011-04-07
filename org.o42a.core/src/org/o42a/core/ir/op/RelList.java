@@ -120,11 +120,11 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		}
 
 		public final RecOp<RelOp> list(Code code) {
-			return relPtr(code, getType().list());
+			return relPtr(null, code, getType().list());
 		}
 
 		public final RecOp<Int32op> size(Code code) {
-			return int32(code, getType().size());
+			return int32(null, code, getType().size());
 		}
 
 	}

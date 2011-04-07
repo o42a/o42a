@@ -24,24 +24,24 @@ import org.o42a.codegen.code.Code;
 
 public interface IntOp<O extends IntOp<O>> extends NumOp<O> {
 
-	O shl(Code code, O numBits);
+	O shl(String name, Code code, O numBits);
 
-	O shl(Code code, int numBits);
+	O shl(String name, Code code, int numBits);
 
-	O lshr(Code code, O numBits);
+	O lshr(String name, Code code, O numBits);
 
-	O lshr(Code code, int numBits);
+	O lshr(String name, Code code, int numBits);
 
-	O ashr(Code code, O numBits);
+	O ashr(String name, Code code, O numBits);
 
-	O ashr(Code code, int numBits);
+	O ashr(String name, Code code, int numBits);
 
-	O and(Code code, O operand);
+	O and(String name, Code code, O operand);
 
-	O or(Code code, O operand);
+	O or(String name, Code code, O operand);
 
-	O xor(Code code, O operand);
+	O xor(String name, Code code, O operand);
 
-	BoolOp lowestBit(Code code);
+	BoolOp lowestBit(String name, Code code);
 
 }

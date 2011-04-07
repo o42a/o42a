@@ -21,18 +21,19 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 
 
 public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
-	public LLVMAnyOp(long blockPtr, long nativePtr) {
-		super(blockPtr, nativePtr);
+	public LLVMAnyOp(CodeId id, long blockPtr, long nativePtr) {
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public LLVMAnyOp toAny(Code code) {
+	public LLVMAnyOp toAny(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -40,76 +41,100 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 			return this;
 		}
 
-		return super.toAny(code);
+		return super.toAny(name, code);
 	}
 
 	@Override
-	public LLVMRecOp<AnyOp> toPtr(Code code) {
+	public LLVMRecOp<AnyOp> toPtr(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Any(nextPtr, toPtr(nextPtr, getNativePtr()));
+		return new LLVMRecOp.Any(
+				castId(name, code, "any"),
+				nextPtr,
+				toPtr(nextPtr, getNativePtr()));
 	}
 
 	@Override
-	public LLVMRecOp<Int8op> toInt8(Code code) {
+	public LLVMRecOp<Int8op> toInt8(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMRecOp.Int8(
+				castId(name, code, "int8"),
 				nextPtr,
 				toInt(nextPtr, getNativePtr(), (byte) 8));
 	}
 
 	@Override
-	public LLVMRecOp<Int16op> toInt16(Code code) {
+	public LLVMRecOp<Int16op> toInt16(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMRecOp.Int16(
+				castId(name, code, "int16"),
 				nextPtr,
 				toInt(nextPtr, getNativePtr(), (byte) 16));
 	}
 
 	@Override
-	public LLVMRecOp<Int32op> toInt32(Code code) {
+	public LLVMRecOp<Int32op> toInt32(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMRecOp.Int32(
+				castId(name, code, "int32"),
 				nextPtr,
 				toInt(nextPtr, getNativePtr(), (byte) 32));
 	}
 
 	@Override
-	public LLVMRecOp<Int64op> toInt64(Code code) {
+	public LLVMRecOp<Int64op> toInt64(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMRecOp.Int64(
+				castId(name, code, "int64"),
 				nextPtr,
 				toInt(nextPtr, getNativePtr(), (byte) 64));
 	}
 
 	@Override
-	public LLVMRecOp<Fp64op> toFp64(Code code) {
+	public LLVMRecOp<Fp32op> toFp32(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Fp64(nextPtr, toFp64(nextPtr, getNativePtr()));
+		return new LLVMRecOp.Fp32(
+				castId(name, code, "fp32"),
+				nextPtr,
+				toFp32(nextPtr, getNativePtr()));
 	}
 
 	@Override
-	public LLVMRecOp<RelOp> toRel(Code code) {
+	public LLVMRecOp<Fp64op> toFp64(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Rel(nextPtr, toRelPtr(nextPtr, getNativePtr()));
+		return new LLVMRecOp.Fp64(
+				castId(name, code, "fp64"),
+				nextPtr,
+				toFp64(nextPtr, getNativePtr()));
 	}
 
 	@Override
-	public LLVMAnyOp create(long blockPtr, long nativePtr) {
-		return new LLVMAnyOp(blockPtr, nativePtr);
+	public LLVMRecOp<RelOp> toRel(String name, Code code) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMRecOp.Rel(
+				castId(name, code, "rel"),
+				nextPtr,
+				toRelPtr(nextPtr, getNativePtr()));
+	}
+
+	@Override
+	public LLVMAnyOp create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMAnyOp(id, blockPtr, nativePtr);
 	}
 
 }

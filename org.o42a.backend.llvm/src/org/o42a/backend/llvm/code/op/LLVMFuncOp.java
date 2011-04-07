@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -34,8 +35,12 @@ public final class LLVMFuncOp<F extends Func>
 
 	private final Signature<F> signature;
 
-	public LLVMFuncOp(long blockPtr, long nativePtr, Signature<F> signature) {
-		super(blockPtr, nativePtr);
+	public LLVMFuncOp(
+			CodeId id,
+			long blockPtr,
+			long nativePtr,
+			Signature<F> signature) {
+		super(id, blockPtr, nativePtr);
 		this.signature = signature;
 	}
 
@@ -45,11 +50,13 @@ public final class LLVMFuncOp<F extends Func>
 	}
 
 	@Override
-	public final F load(Code code) {
+	public final F load(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = derefId(name, code);
 
 		return getSignature().op(new LLVMFunc<F>(
+				id,
 				getSignature(),
 				nextPtr,
 				load(nextPtr, getNativePtr())));
@@ -61,8 +68,13 @@ public final class LLVMFuncOp<F extends Func>
 	}
 
 	@Override
-	public LLVMFuncOp<F> create(long blockPtr, long nativePtr) {
-		return new LLVMFuncOp<F>(blockPtr, nativePtr, this.signature);
+	public LLVMFuncOp<F> create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMFuncOp<F>(id, blockPtr, nativePtr, this.signature);
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.signature.getId() + "*) " + getId();
 	}
 
 }

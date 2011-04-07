@@ -42,7 +42,7 @@ public final class ObjectValFunc extends ObjectFunc {
 	}
 
 	public void call(Code code, ValOp value, DataOp object) {
-		invoke(code, OBJECT_VAL.result(), value, object);
+		invoke(null, code, OBJECT_VAL.result(), value, object);
 	}
 
 	public static final class ObjectVal extends ObjectSignature<ObjectValFunc> {

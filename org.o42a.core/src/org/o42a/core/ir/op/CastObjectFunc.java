@@ -41,10 +41,10 @@ public final class CastObjectFunc extends Func {
 
 	public DataOp cast(Code code, ObjectOp object, ObjectTypeOp type) {
 		return invoke(
+				null,
 				code,
 				CAST_OBJECT.result(),
-				object.toData(code),
-				type.ptr());
+				object.toData(code), type.ptr());
 	}
 
 	public static final class CastObject extends Signature<CastObjectFunc> {

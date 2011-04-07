@@ -41,10 +41,10 @@ public class ObjectConstructorFunc extends ObjectFunc {
 
 	public DataOp call(Code code, ObjectOp object, ObjFld.Op fld) {
 		return invoke(
+				null,
 				code,
 				OBJECT_CONSTRUCTOR.result(),
-				object.toData(code),
-				fld);
+				object.toData(code), fld);
 	}
 
 	public static final class ObjectConstructor

@@ -178,7 +178,7 @@ class LocalDef extends ValueDef {
 			dirs = dirs.begin("local_logical", "Local logical: " + this);
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
+			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			this.def.writeValue(dirs, host, result);
 

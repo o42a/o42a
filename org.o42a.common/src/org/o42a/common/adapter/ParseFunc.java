@@ -37,7 +37,7 @@ public final class ParseFunc extends Func {
 	}
 
 	public void parse(Code code, ValOp output, ValOp input) {
-		invoke(code, PARSE.result(), output, input);
+		invoke(null, code, PARSE.result(), output, input);
 	}
 
 	public static final class Parse extends Signature<ParseFunc> {

@@ -36,7 +36,7 @@ public final class MainFunc extends Func {
 	}
 
 	public Int32op call(Code code, Int32op argc, AnyOp argv) {
-		return invoke(code, MAIN.result(), argc, argv);
+		return invoke(null, code, MAIN.result(), argc, argv);
 	}
 
 	public static final class Main extends Signature<MainFunc> {

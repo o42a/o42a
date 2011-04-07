@@ -138,7 +138,7 @@ public class OverriddenEx extends Expression {
 		public void writeLogicalValue(CodeDirs dirs) {
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
+			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			writeValue(dirs, result);
 			result.go(code, dirs);

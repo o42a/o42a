@@ -49,7 +49,7 @@ public class IntegerByString extends ByString<Long> {
 
 		final Generator generator = input.getGenerator();
 		final ValOp inputValue = input.writeValue(code);
-		final ParseWithRadixFunc parseFunc = parseFunc(generator).op(code);
+		final ParseWithRadixFunc parseFunc = parseFunc(generator).op(null, code);
 
 		parseFunc.parse(code, result, inputValue, 10);
 	}

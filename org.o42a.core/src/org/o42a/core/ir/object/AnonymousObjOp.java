@@ -65,7 +65,7 @@ final class AnonymousObjOp extends ObjectOp {
 
 			final ObjectIR ir = getWellKnownType().ir(getGenerator());
 
-			return ptr().to(dirs.code(), ir.getBodyType()).op(
+			return ptr().to(null, dirs.code(), ir.getBodyType()).op(
 					getBuilder(),
 					getWellKnownType(),
 					COMPATIBLE);

@@ -75,7 +75,7 @@ public abstract class ObjectValueIRCondFunc
 			return;
 		}
 
-		get(host).op(code).call(
+		get(host).op(null, code).call(
 				code,
 				body(code, host, body)).go(code, dirs);
 
@@ -209,7 +209,7 @@ public abstract class ObjectValueIRCondFunc
 		final ObjectTypeOp ancestorType =
 			ancestorBody.methods(hasAncestor)
 			.objectType(hasAncestor)
-			.load(hasAncestor)
+			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
 		final CodeBlk ancestorFalse = hasAncestor.addBlock("ancestor_false");

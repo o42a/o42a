@@ -21,6 +21,7 @@ package org.o42a.backend.llvm.data;
 
 import static org.o42a.backend.llvm.data.LLVMId.typeId;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
@@ -46,7 +47,7 @@ public final class TypeAllocation<O extends StructOp>
 	}
 
 	@Override
-	public O op(CodeWriter writer) {
+	public O op(CodeId id, CodeWriter writer) {
 		throw new UnsupportedOperationException();
 	}
 

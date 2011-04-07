@@ -66,7 +66,7 @@ public final class LocalIRFunc extends ObjectIRFunc {
 
 		code.debug("Call");
 
-		final ObjectValFunc func = getFunction().getPointer().op(code);
+		final ObjectValFunc func = getFunction().getPointer().op(null, code);
 
 		func.call(code, result, body(code, owner, body));
 

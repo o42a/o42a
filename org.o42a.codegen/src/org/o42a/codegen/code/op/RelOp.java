@@ -24,8 +24,8 @@ import org.o42a.codegen.code.Code;
 
 public interface RelOp extends Op {
 
-	AnyOp offset(Code code, PtrOp from);
+	AnyOp offset(String name, Code code, PtrOp from);
 
-	Int32op toInt32(Code code);
+	Int32op toInt32(String name, Code code);
 
 }

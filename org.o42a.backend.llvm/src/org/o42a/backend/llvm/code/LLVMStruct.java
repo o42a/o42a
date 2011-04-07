@@ -26,9 +26,9 @@ import org.o42a.backend.llvm.code.op.LLVMPtrOp;
 import org.o42a.backend.llvm.code.op.LLVMRecOp;
 import org.o42a.backend.llvm.data.ContainerAllocation;
 import org.o42a.backend.llvm.data.LLVMDataAllocation;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -39,18 +39,21 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	private ContainerAllocation<?> type;
 
 	public LLVMStruct(
+			CodeId id,
 			ContainerAllocation<?> type,
 			long blockPtr,
 			long nativePtr) {
-		super(blockPtr, nativePtr);
+		super(id, blockPtr, nativePtr);
 		this.type = type;
 	}
 
 	public LLVMStruct(
+			CodeId id,
 			Type<?> type,
 			long blockPtr,
 			long nativePtr) {
 		this(
+				id,
 				(ContainerAllocation<?>) type.pointer(type.getGenerator())
 				.getAllocation(),
 				blockPtr,
@@ -63,128 +66,135 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<?> field(Code code, Data<?> field) {
+	public RecOp<?> field(CodeId id, Code code, Data<?> field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Any(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<Int8op> int8(Code code, Int8rec field) {
+	public RecOp<Int8op> int8(CodeId id, Code code, Int8rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int8(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int8(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<Int16op> int16(Code code, Int16rec field) {
+	public RecOp<Int16op> int16(CodeId id, Code code, Int16rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int16(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int16(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<Int32op> int32(Code code, Int32rec field) {
+	public RecOp<Int32op> int32(CodeId id, Code code, Int32rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int32(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int32(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<Int64op> int64(Code code, Int64rec field) {
+	public RecOp<Int64op> int64(CodeId id, Code code, Int64rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int64(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int64(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<Fp32op> fp32(Code code, Fp32rec field) {
+	public RecOp<Fp32op> fp32(CodeId id, Code code, Fp32rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Fp32(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Fp32(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<Fp64op> fp64(Code code, Fp64rec field) {
+	public RecOp<Fp64op> fp64(CodeId id, Code code, Fp64rec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Fp64(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Fp64(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<AnyOp> ptr(Code code, AnyPtrRec field) {
+	public RecOp<AnyOp> ptr(CodeId id, Code code, AnyPtrRec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Any(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<DataOp> ptr(Code code, DataRec field) {
+	public RecOp<DataOp> ptr(CodeId id, Code code, DataRec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Data(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Data(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
 	public <P extends StructOp> RecOp<P> ptr(
+			CodeId id,
 			Code code,
 			StructRec<P> field) {
 
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMRecOp.Struct<P>(
+				id,
 				field.getType(),
 				nextPtr,
 				field(nextPtr, field));
 	}
 
 	@Override
-	public RecOp<RelOp> relPtr(Code code, RelPtrRec field) {
+	public RecOp<RelOp> relPtr(CodeId id, Code code, RelPtrRec field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Rel(nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Rel(id, nextPtr, field(nextPtr, field));
 	}
 
 	@Override
-	public <O extends StructOp> O struct(Code code, Type<O> field) {
+	public <O extends StructOp> O struct(CodeId id, Code code, Type<O> field) {
 
 		final long nextPtr = nextPtr(code);
 
 		return field.op(new LLVMStruct(
+				id,
 				field,
 				nextPtr,
 				field(nextPtr, field.pointer(code.getGenerator()))));
 	}
 
 	@Override
-	public <F extends Func> FuncOp<F> func(Code code, FuncRec<F> field) {
+	public <F extends Func> FuncOp<F> func(
+			CodeId id,
+			Code code,
+			FuncRec<F> field) {
 
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMFuncOp<F>(
+				id,
 				nextPtr,
 				field(nextPtr, field),
 				field.getSignature());
 	}
 
 	@Override
-	public LLVMStruct create(long blockPtr, long nativePtr) {
-		return new LLVMStruct(this.type, blockPtr, nativePtr);
+	public LLVMStruct create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMStruct(id, this.type, blockPtr, nativePtr);
 	}
 
 	@Override
-	public CodeBackend backend() {
-		return this.type.getModule().codeBackend();
+	public String toString() {
+		return "(" + this.type.getType().getId() + "*) " + getId();
 	}
 
 	private final long field(long blockPtr, Data<?> field) {

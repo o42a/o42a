@@ -94,7 +94,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		}
 
 		public final RecOp<ObjectType.Op> objectType(Code code) {
-			return ptr(code, getType().objectType);
+			return ptr(null, code, getType().objectType);
 		}
 
 	}

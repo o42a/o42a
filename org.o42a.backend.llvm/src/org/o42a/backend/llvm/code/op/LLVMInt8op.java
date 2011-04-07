@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int8op;
 
@@ -29,12 +30,12 @@ import org.o42a.codegen.code.op.Int8op;
 public final class LLVMInt8op extends LLVMIntOp<Int8op, LLVMInt8op>
 		implements Int8op {
 
-	public LLVMInt8op(long blockPtr, long nativePtr) {
-		super(blockPtr, nativePtr);
+	public LLVMInt8op(CodeId id, long blockPtr, long nativePtr) {
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public LLVMInt8op toInt8(Code code) {
+	public LLVMInt8op toInt8(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -42,12 +43,12 @@ public final class LLVMInt8op extends LLVMIntOp<Int8op, LLVMInt8op>
 			return this;
 		}
 
-		return super.toInt8(code);
+		return super.toInt8(name, code);
 	}
 
 	@Override
-	public LLVMInt8op create(long blockPtr, long nativePtr) {
-		return new LLVMInt8op(blockPtr, nativePtr);
+	public LLVMInt8op create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMInt8op(id, blockPtr, nativePtr);
 	}
 
 	@Override
