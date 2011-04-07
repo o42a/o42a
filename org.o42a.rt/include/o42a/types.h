@@ -41,6 +41,14 @@ typedef int32_t o42a_rptr_t;
  */
 typedef uint8_t o42a_bool_t;
 
+
+/**
+ * Condition value.
+ *
+ * Possible values are O42A_TRUE, O42A_FALSE and O42A_UNKNOWN.
+ */
+typedef uint8_t o42a_cond_t;
+
 /**
  * Data allocation.
  *
