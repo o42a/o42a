@@ -34,7 +34,7 @@ public final class LLVMFp32op extends LLVMFpOp<Fp32op, LLVMFp32op>
 	}
 
 	@Override
-	public LLVMFp32op toFp32(String name, Code code) {
+	public LLVMFp32op toFp32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -42,7 +42,7 @@ public final class LLVMFp32op extends LLVMFpOp<Fp32op, LLVMFp32op>
 			return this;
 		}
 
-		return super.toFp32(name, code);
+		return super.toFp32(id, code);
 	}
 
 	@Override

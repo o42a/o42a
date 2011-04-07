@@ -61,40 +61,40 @@ public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
 	}
 
 	@Override
-	public abstract T neg(String name, Code code);
+	public abstract T neg(CodeId id, Code code);
 
 	@Override
-	public abstract T add(String name, Code code, O summand);
+	public abstract T add(CodeId id, Code code, O summand);
 
 	@Override
-	public abstract T sub(String name, Code code, O subtrahend);
+	public abstract T sub(CodeId id, Code code, O subtrahend);
 
 	@Override
-	public abstract T mul(String name, Code code, O multiplier);
+	public abstract T mul(CodeId id, Code code, O multiplier);
 
 	@Override
-	public abstract T div(String name, Code code, O divisor);
+	public abstract T div(CodeId id, Code code, O divisor);
 
 	@Override
-	public abstract T rem(String name, Code code, O divisor);
+	public abstract T rem(CodeId id, Code code, O divisor);
 
 	@Override
-	public abstract LLVMInt8op toInt8(String name, Code code);
+	public abstract LLVMInt8op toInt8(CodeId id, Code code);
 
 	@Override
-	public abstract LLVMInt16op toInt16(String name, Code code);
+	public abstract LLVMInt16op toInt16(CodeId id, Code code);
 
 	@Override
-	public abstract LLVMInt32op toInt32(String name, Code code);
+	public abstract LLVMInt32op toInt32(CodeId id, Code code);
 
 	@Override
-	public abstract LLVMInt64op toInt64(String name, Code code);
+	public abstract LLVMInt64op toInt64(CodeId id, Code code);
 
 	@Override
-	public abstract LLVMFp32op toFp32(String name, Code code);
+	public abstract LLVMFp32op toFp32(CodeId id, Code code);
 
 	@Override
-	public abstract LLVMFp64op toFp64(String name, Code code);
+	public abstract LLVMFp64op toFp64(CodeId id, Code code);
 
 	@Override
 	public abstract T create(CodeId id, long blockPtr, long nativePtr);
@@ -109,24 +109,24 @@ public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
 		return this.id.toString();
 	}
 
-	protected final CodeId castId(String name, Code code, String suffix) {
-		return LLVMCode.castId(this, name, code, suffix);
+	protected final CodeId castId(CodeId id, Code code, String suffix) {
+		return LLVMCode.castId(this, id, code, suffix);
 	}
 
-	protected final CodeId castId(String name, Code code, CodeId suffix) {
-		return LLVMCode.castId(this, name, code, suffix);
+	protected final CodeId castId(CodeId id, Code code, CodeId suffix) {
+		return LLVMCode.castId(this, id, code, suffix);
 	}
 
-	protected final CodeId unaryId(String name, Code code, String op) {
-		return LLVMCode.unaryId(this, name, code, op);
+	protected final CodeId unaryId(CodeId id, Code code, String op) {
+		return LLVMCode.unaryId(this, id, code, op);
 	}
 
 	protected final CodeId binaryId(
-			String name,
+			CodeId id,
 			Code code,
 			String op,
 			O operand) {
-		return LLVMCode.binaryId(this, name, code, op, operand);
+		return LLVMCode.binaryId(this, id, code, op, operand);
 	}
 
 }

@@ -19,29 +19,30 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
 public interface IntOp<O extends IntOp<O>> extends NumOp<O> {
 
-	O shl(String name, Code code, O numBits);
+	O shl(CodeId id, Code code, O numBits);
 
-	O shl(String name, Code code, int numBits);
+	O shl(CodeId id, Code code, int numBits);
 
-	O lshr(String name, Code code, O numBits);
+	O lshr(CodeId id, Code code, O numBits);
 
-	O lshr(String name, Code code, int numBits);
+	O lshr(CodeId id, Code code, int numBits);
 
-	O ashr(String name, Code code, O numBits);
+	O ashr(CodeId id, Code code, O numBits);
 
-	O ashr(String name, Code code, int numBits);
+	O ashr(CodeId id, Code code, int numBits);
 
-	O and(String name, Code code, O operand);
+	O and(CodeId id, Code code, O operand);
 
-	O or(String name, Code code, O operand);
+	O or(CodeId id, Code code, O operand);
 
-	O xor(String name, Code code, O operand);
+	O xor(CodeId id, Code code, O operand);
 
-	BoolOp lowestBit(String name, Code code);
+	BoolOp lowestBit(CodeId id, Code code);
 
 }

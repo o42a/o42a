@@ -19,9 +19,12 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.IRUtil.encodeMemberId;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -58,10 +61,10 @@ final class AnonymousObjOp extends ObjectOp {
 	}
 
 	@Override
-	public ObjOp cast(CodeDirs dirs, Obj ascendant) {
+	public ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant) {
 		getWellKnownType().assertDerivedFrom(ascendant);
 		if (ascendant == getContext().getVoid()) {
-			// anything is compatible with void
+			// Everything is compatible with void.
 
 			final ObjectIR ir = getWellKnownType().ir(getGenerator());
 
@@ -71,14 +74,19 @@ final class AnonymousObjOp extends ObjectOp {
 					COMPATIBLE);
 		}
 
-		return dynamicCast(dirs, ascendant);
+		return dynamicCast(id, dirs, ascendant);
 	}
 
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
 		dirs = dirs.begin("field", "Field " + memberKey + " of " + this);
 
+		final Code code = dirs.code();
+		final CodeId hostId =
+			code.id("field_host")
+			.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
 		final ObjOp ascendant = cast(
+				hostId,
 				dirs,
 				memberKey.getOrigin().getContainer().toObject());
 		final FldOp op = ascendant.field(dirs, memberKey);
@@ -93,7 +101,13 @@ final class AnonymousObjOp extends ObjectOp {
 	public DepOp dep(CodeDirs dirs, Dep dep) {
 		dirs = dirs.begin("dep", "Dep " + dep + " of " + this);
 
-		final ObjOp ascendant = cast(dirs, dep.getObject());
+		final Code code = dirs.code();
+		final String depName = dep.getName();
+		final CodeId hostId = code.id("dep_host");
+		final ObjOp ascendant = cast(
+				depName != null ? hostId.sub(depName) : hostId,
+				dirs,
+				dep.getObject());
 		final DepOp op = ascendant.dep(dirs, dep);
 
 		dirs.code().dumpName("Dep: ", op.ptr());

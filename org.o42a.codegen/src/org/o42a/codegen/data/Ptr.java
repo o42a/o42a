@@ -54,14 +54,14 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 				this.allocation.toData());
 	}
 
-	public final O op(String name, Code code) {
+	public final O op(CodeId id, Code code) {
 
 		final CodeBase c = code;
 
 		c.assertIncomplete();
 
 		return getAllocation().op(
-				name != null ? code.nameId(name) : getId(),
+				id != null ? code.opId(id) : getId(),
 				c.writer());
 	}
 

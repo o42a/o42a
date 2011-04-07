@@ -97,6 +97,23 @@ public class IRUtil {
 		return result.toString();
 	}
 
+	public static CodeId encodeMemberId(
+			Generator generator,
+			MemberId memberId) {
+
+		final String name = memberId.getName();
+
+		if (name != null) {
+			return generator.id(name);
+		}
+
+		final AdapterId adapterId = memberId.getAdapterId();
+		final ScopeIR adapterTypeIR =
+			adapterId.getAdapterTypeScope().ir(generator);
+
+		return generator.id().type(adapterTypeIR.getId());
+	}
+
 	public static CodeId encodeMemberId(ScopeIR enclosingIR, Member member) {
 
 		final Generator generator = enclosingIR.getGenerator();

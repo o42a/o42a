@@ -34,7 +34,7 @@ public final class LLVMFp64op extends LLVMFpOp<Fp64op, LLVMFp64op>
 	}
 
 	@Override
-	public LLVMFp64op toFp64(String name, Code code) {
+	public LLVMFp64op toFp64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -42,7 +42,7 @@ public final class LLVMFp64op extends LLVMFpOp<Fp64op, LLVMFp64op>
 			return this;
 		}
 
-		return super.toFp64(name, code);
+		return super.toFp64(id, code);
 	}
 
 	@Override

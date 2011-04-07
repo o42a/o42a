@@ -150,28 +150,28 @@ public abstract class Code extends DebugCodeBase {
 				getGenerator().getFunctions().allocate(signature)));
 	}
 
-	public final RecOp<AnyOp> allocatePtr(String name) {
+	public final RecOp<AnyOp> allocatePtr(CodeId id) {
 		assertIncomplete();
-		return writer().allocatePtr(nameId(name));
+		return writer().allocatePtr(opId(id));
 	}
 
-	public final RecOp<AnyOp> allocateNull(String name) {
+	public final RecOp<AnyOp> allocateNull(CodeId id) {
 
-		final RecOp<AnyOp> result = allocatePtr(name);
+		final RecOp<AnyOp> result = allocatePtr(id);
 
 		result.store(this, nullPtr());
 
 		return result;
 	}
 
-	public final <O extends Op> O phi(String name, O op) {
+	public final <O extends Op> O phi(CodeId id, O op) {
 		assertIncomplete();
-		return writer().phi(nameId(name), op);
+		return writer().phi(opId(id), op);
 	}
 
-	public final <O extends Op> O phi(String name, O op1, O op2) {
+	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
 		assertIncomplete();
-		return writer().phi(nameId(name), op1, op2);
+		return writer().phi(opId(id), op1, op2);
 	}
 
 	public void returnVoid() {
@@ -183,9 +183,9 @@ public abstract class Code extends DebugCodeBase {
 	@Override
 	public abstract CodeWriter writer();
 
-	public CodeId nameId(String name) {
-		if (name != null) {
-			return getGenerator().id(name);
+	public CodeId opId(CodeId id) {
+		if (id != null) {
+			return id;
 		}
 		return getId().setLocal(getGenerator().id().anonymous(++this.localSeq));
 	}

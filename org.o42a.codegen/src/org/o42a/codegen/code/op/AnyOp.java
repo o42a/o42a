@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -27,29 +28,29 @@ import org.o42a.codegen.data.Type;
 
 public interface AnyOp extends PtrOp {
 
-	RecOp<AnyOp> toPtr(String name, Code code);
+	RecOp<AnyOp> toPtr(CodeId id, Code code);
 
-	RecOp<Int8op> toInt8(String name, Code code);
+	RecOp<Int8op> toInt8(CodeId id, Code code);
 
-	RecOp<Int16op> toInt16(String name, Code code);
+	RecOp<Int16op> toInt16(CodeId id, Code code);
 
-	RecOp<Int32op> toInt32(String name, Code code);
+	RecOp<Int32op> toInt32(CodeId id, Code code);
 
-	RecOp<Int64op> toInt64(String name, Code code);
+	RecOp<Int64op> toInt64(CodeId id, Code code);
 
-	RecOp<Fp32op> toFp32(String name, Code code);
+	RecOp<Fp32op> toFp32(CodeId id, Code code);
 
-	RecOp<Fp64op> toFp64(String name, Code code);
+	RecOp<Fp64op> toFp64(CodeId id, Code code);
 
-	RecOp<RelOp> toRel(String name, Code code);
+	RecOp<RelOp> toRel(CodeId id, Code code);
 
-	DataOp toData(String name, Code code);
+	DataOp toData(CodeId id, Code code);
 
 	<F extends Func> FuncOp<F> toFunc(
-			String name,
+			CodeId id,
 			Code code,
 			Signature<F> signature);
 
-	<O extends StructOp> O to(String name, Code code, Type<O> type);
+	<O extends StructOp> O to(CodeId id, Code code, Type<O> type);
 
 }

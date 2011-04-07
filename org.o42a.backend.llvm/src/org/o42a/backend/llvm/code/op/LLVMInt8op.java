@@ -35,7 +35,7 @@ public final class LLVMInt8op extends LLVMIntOp<Int8op, LLVMInt8op>
 	}
 
 	@Override
-	public LLVMInt8op toInt8(String name, Code code) {
+	public LLVMInt8op toInt8(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -43,7 +43,7 @@ public final class LLVMInt8op extends LLVMIntOp<Int8op, LLVMInt8op>
 			return this;
 		}
 
-		return super.toInt8(name, code);
+		return super.toInt8(id, code);
 	}
 
 	@Override

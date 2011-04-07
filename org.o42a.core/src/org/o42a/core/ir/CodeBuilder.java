@@ -93,11 +93,16 @@ public class CodeBuilder {
 				.to(null, function, hostIR)
 				.op(this, hostType, hostPrecision);
 		} else {
-			this.host = anonymousObject(
+
+			final ObjectOp host = anonymousObject(
 					this,
 					function.arg(function, getObjectSignature().object()),
-					hostType)
-					.cast(exitWhenUnknown(function, exit), hostType);
+					hostType);
+
+			this.host = host.cast(
+					function.id("host"),
+					exitWhenUnknown(function, exit),
+					hostType);
 		}
 	}
 

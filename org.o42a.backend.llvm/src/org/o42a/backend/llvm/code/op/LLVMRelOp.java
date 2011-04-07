@@ -61,31 +61,31 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 	}
 
 	@Override
-	public LLVMAnyOp offset(String name, Code code, PtrOp from) {
+	public LLVMAnyOp offset(CodeId id, Code code, PtrOp from) {
 
 		final long nextPtr = nextPtr(code);
-		final CodeId id;
+		final CodeId resultId;
 
-		if (name != null) {
-			id = code.nameId(name);
+		if (id != null) {
+			resultId = code.opId(id);
 		} else {
-			id = getId().detail("offset_from").detail(from.getId());
+			resultId = getId().detail("offset_from").detail(from.getId());
 		}
 
 		return new LLVMAnyOp(
-				id,
+				resultId,
 				nextPtr,
 				offsetBy(
 						nextPtr,
-						id.getId(),
+						resultId.getId(),
 						nativePtr(from),
 						getNativePtr()));
 	}
 
 	@Override
-	public LLVMInt32op toInt32(String name, Code code) {
+	public LLVMInt32op toInt32(CodeId id, Code code) {
 		return new LLVMInt32op(
-				code.nameId(name),
+				code.opId(id),
 				getBlockPtr(),
 				getNativePtr());
 	}

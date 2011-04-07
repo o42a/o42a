@@ -35,7 +35,7 @@ public final class LLVMInt32op extends LLVMIntOp<Int32op, LLVMInt32op>
 	}
 
 	@Override
-	public LLVMInt32op toInt32(String name, Code code) {
+	public LLVMInt32op toInt32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -43,7 +43,7 @@ public final class LLVMInt32op extends LLVMIntOp<Int32op, LLVMInt32op>
 			return this;
 		}
 
-		return super.toInt32(name, code);
+		return super.toInt32(id, code);
 	}
 
 	@Override

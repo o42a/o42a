@@ -43,18 +43,19 @@ public abstract class FuncPtr<F extends Func> extends AbstractPtr {
 
 	public abstract Function<F> getFunction();
 
-	public F op(String name, Code code) {
+	public F op(CodeId id, Code code) {
 		code.assertIncomplete();
 
-		final CodeId id;
+		final CodeId resultId;
 
-		if (name != null) {
-			id = code.nameId(name);
+		if (id != null) {
+			resultId = code.opId(id);
 		} else {
-			id = getId();
+			resultId = getId();
 		}
 
-		return this.signature.op(code.writer().caller(id, this.allocation));
+		return this.signature.op(
+				code.writer().caller(resultId, this.allocation));
 	}
 
 	final FuncAllocation<F> getAllocation() {

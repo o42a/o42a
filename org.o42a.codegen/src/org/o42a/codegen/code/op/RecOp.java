@@ -19,12 +19,13 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
 public interface RecOp<O extends Op> extends PtrOp {
 
-	O load(String name, Code code);
+	O load(CodeId id, Code code);
 
 	void store(Code code, O value);
 

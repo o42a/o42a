@@ -52,14 +52,14 @@ public final class RelPtr {
 		return this.relativeTo;
 	}
 
-	public RelOp op(String name, Code code) {
+	public RelOp op(CodeId id, Code code) {
 
 		final CodeBase c = code;
 
 		c.assertIncomplete();
 
 		return allocation().op(
-				name != null ? code.nameId(name) : getId(),
+				id != null ? code.opId(id) : getId(),
 				c.writer());
 	}
 

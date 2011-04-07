@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
@@ -65,12 +67,24 @@ public class CodeDirs {
 		this.unknownPos = unknownPos;
 	}
 
+	public final Generator getGenerator() {
+		return this.code.getGenerator();
+	}
+
 	public final boolean isDebug() {
 		return this.code.isDebug();
 	}
 
 	public final Code code() {
 		return this.code;
+	}
+
+	public final CodeId id() {
+		return this.code.id();
+	}
+
+	public final CodeId id(String string) {
+		return this.code.id(string);
 	}
 
 	public CodeDirs begin(String id, String message) {
