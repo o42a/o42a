@@ -133,6 +133,7 @@ public abstract class ObjectValueIRCondFunc
 		final ObjOp host = builder.host();
 
 		function.dumpName("Host: ", host.ptr());
+
 		final CodeDirs dirs =
 			splitWhenUnknown(function, condFalse.head(), condUnknown.head());
 

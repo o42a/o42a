@@ -48,7 +48,7 @@ typedef void o42a_obj_val_ft(O42A_DECLS o42a_val_t *, o42a_obj_t *);
  *
  * \return condition.
  */
-typedef o42a_bool_t o42a_obj_cond_ft(O42A_DECLS o42a_obj_t *);
+typedef o42a_cond_t o42a_obj_cond_ft(O42A_DECLS o42a_obj_t *);
 
 /**
  * Object reference function.

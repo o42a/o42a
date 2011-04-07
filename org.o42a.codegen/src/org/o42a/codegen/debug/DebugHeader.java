@@ -116,7 +116,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			final Debug debug = generator.getDebug();
 
 			if (enclosing == null) {
-				// TODO Put the last comment here:
 				name(code).store(code, code.nullPtr());
 				enclosing(code).store(code, code.nullRelPtr());
 			} else {

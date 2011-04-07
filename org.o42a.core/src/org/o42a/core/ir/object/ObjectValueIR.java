@@ -172,10 +172,10 @@ public class ObjectValueIR {
 		}
 
 		writeClaim(code, result, host, null);
-		result.loadUnknown(code).goUnless(code, done.head());
+		result.loadIndefinite(code).goUnless(code, done.head());
 
 		writeProposition(code, result, host, null);
-		result.loadUnknown(code).goUnless(code, done.head());
+		result.loadIndefinite(code).goUnless(code, done.head());
 
 		result.storeUnknown(code);// Override indefinite value.
 		code.returnVoid();
