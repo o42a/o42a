@@ -31,7 +31,7 @@ public interface FuncCaller<F extends Func> extends PtrOp {
 
 	Signature<F> getSignature();
 
-	void call(CodeId id, Code code, Op... args);
+	void call(Code code, Op... args);
 
 	Int8op callInt8(CodeId id, Code code, Op... args);
 

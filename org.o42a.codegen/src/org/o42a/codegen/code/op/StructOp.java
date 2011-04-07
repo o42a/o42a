@@ -51,7 +51,8 @@ public abstract class StructOp implements PtrOp {
 	public void allocated(Code code, StructOp enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
-			final RecOp<?> fieldOp = getWriter().field(null, code, field);
+			final RecOp<?> fieldOp =
+				getWriter().field(getId().sub(field.getId()), code, field);
 
 			fieldOp.allocated(code, this);
 		}

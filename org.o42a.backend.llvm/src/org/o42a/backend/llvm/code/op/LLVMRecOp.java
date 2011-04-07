@@ -41,11 +41,12 @@ public abstract class LLVMRecOp<O extends Op>
 	public final O load(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = derefId(name, code);
 
 		return createLoaded(
-				derefId(name, code),
+				id,
 				nextPtr,
-				load(nextPtr, getNativePtr()));
+				load(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	@Override

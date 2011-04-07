@@ -32,14 +32,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lshr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong valuePtr,
 		jlong numBitsPtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *numBits = from_ptr<Value>(numBitsPtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateLShr(value, numBits);
+	Value *result = builder.CreateLShr(value, numBits, name);
 
 	return to_ptr(result);
 }
@@ -48,14 +50,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ashr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong valuePtr,
 		jlong numBitsPtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *numBits = from_ptr<Value>(numBitsPtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateAShr(value, numBits);
+	Value *result = builder.CreateAShr(value, numBits, name);
 
 	return to_ptr(result);
 }
@@ -64,14 +68,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_and(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateAnd(op1, op2);
+	Value *result = builder.CreateAnd(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -80,14 +86,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_or(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateOr(op1, op2);
+	Value *result = builder.CreateOr(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -96,14 +104,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_xor(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateXor(op1, op2);
+	Value *result = builder.CreateXor(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -112,12 +122,14 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_neg(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong valuePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateNeg(value);
+	Value *result = builder.CreateNeg(value, name);
 
 	return to_ptr(result);
 }
@@ -126,14 +138,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_add(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateAdd(op1, op2);
+	Value *result = builder.CreateAdd(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -142,14 +156,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_sub(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateSub(op1, op2);
+	Value *result = builder.CreateSub(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -158,14 +174,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_mul(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateMul(op1, op2);
+	Value *result = builder.CreateMul(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -174,14 +192,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_div(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateSDiv(op1, op2);
+	Value *result = builder.CreateSDiv(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -190,14 +210,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_rem(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateSRem(op1, op2);
+	Value *result = builder.CreateSRem(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -206,14 +228,16 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_eq(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateICmpEQ(op1, op2);
+	Value *result = builder.CreateICmpEQ(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -222,14 +246,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ne(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateICmpNE(op1, op2);
+	Value *result = builder.CreateICmpNE(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -238,14 +264,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_gt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateICmpSGT(op1, op2);
+	Value *result = builder.CreateICmpSGT(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -254,14 +282,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ge(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateICmpSGE(op1, op2);
+	Value *result = builder.CreateICmpSGE(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -270,14 +300,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateICmpSLT(op1, op2);
+	Value *result = builder.CreateICmpSLT(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -286,14 +318,16 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_le(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateICmpSLE(op1, op2);
+	Value *result = builder.CreateICmpSLE(op1, op2, name);
 
 	return to_ptr(result);
 }
@@ -302,16 +336,19 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int2int(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong valuePtr,
 		jbyte intBits) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
 	Value *result = builder.CreateIntCast(
 			value,
 			IntegerType::get(block->getContext(), intBits),
-			true);
+			true,
+			name);
 
 	return to_ptr(result);
 }
@@ -320,12 +357,14 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong valuePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateSIToFP(value, builder.getFloatTy());
+	Value *result = builder.CreateSIToFP(value, builder.getFloatTy(), name);
 
 	return to_ptr(result);
 }
@@ -334,12 +373,14 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp64(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong valuePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateSIToFP(value, builder.getDoubleTy());
+	Value *result = builder.CreateSIToFP(value, builder.getDoubleTy(), name);
 
 	return to_ptr(result);
 }
@@ -348,12 +389,15 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lowestBit(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong valuePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateIntCast(value, builder.getInt1Ty(), false);
+	Value *result =
+			builder.CreateIntCast(value, builder.getInt1Ty(), false, name);
 
 	return to_ptr(result);
 }

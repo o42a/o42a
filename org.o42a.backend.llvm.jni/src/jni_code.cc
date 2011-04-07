@@ -278,14 +278,16 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullFuncPtr(
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocatePtr(
 		JNIEnv *env,
 		jclass cls,
-		jlong blockPtr) {
+		jlong blockPtr,
+		jstring id) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
+	jStringRef name(env, id);
 
-	OCODE(block, "allocatePtr\n");
+	OCODE(block, "allocatePtr " << name << "\n");
 
-	Value *result = builder.CreateAlloca(builder.getInt8PtrTy());
+	Value *result = builder.CreateAlloca(builder.getInt8PtrTy(), 0, name);
 
 	ODUMP(result);
 
@@ -296,19 +298,22 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStructPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong typePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+	jStringRef name(env, id);
 
 	OCODE(
 			block,
-			"allocateStructPtr: "
+			"allocateStructPtr " << name << ": "
 			<< block->getParent()->getParent()->getTypeName(type->get())
 			<< "\n");
 
-	Value *result = builder.CreateAlloca(type->get()->getPointerTo());
+	Value *result =
+			builder.CreateAlloca(type->get()->getPointerTo(), 0, name);
 
 	ODUMP(result);
 
@@ -319,19 +324,21 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong typePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+	jStringRef name(env, id);
 
 	OCODE(
 			block,
-			"allocateStruct: "
+			"allocateStruct " << name << ": "
 			<< block->getParent()->getParent()->getTypeName(type->get())
 			<< "\n");
 
-	Value *result = builder.CreateAlloca(type->get());
+	Value *result = builder.CreateAlloca(type->get(), 0, name);
 
 	ODUMP(result);
 
@@ -342,6 +349,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong block1ptr,
 		jlong value1ptr) {
 
@@ -349,10 +357,14 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi(
 	IRBuilder<> builder(block);
 	Value *value1 = from_ptr<Value>(value1ptr);
 	BasicBlock *block1 = from_ptr<BasicBlock>(block1ptr);
+	jStringRef name(env, id);
 
-	OCODE(block, "phi: " << block1->getName() << "(" << *value1 << ")\n");
+	OCODE(
+			block,
+			"phi " << name << ": "
+			+ block1->getName() << "(" << *value1 << ")\n");
 
-	PHINode *phi = builder.CreatePHI(value1->getType());
+	PHINode *phi = builder.CreatePHI(value1->getType(), name);
 
 	phi->addIncoming(value1, block1);
 
@@ -365,6 +377,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong block1ptr,
 		jlong value1ptr,
 		jlong block2ptr,
@@ -376,13 +389,15 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
 	BasicBlock *block1 = from_ptr<BasicBlock>(block1ptr);
 	Value *value2 = from_ptr<Value>(value2ptr);
 	BasicBlock *block2 = from_ptr<BasicBlock>(block2ptr);
+	jStringRef name(env, id);
 
 	OCODE(
 			block,
-			"phi2: " << block1->getName() << "(" << *value1 << "), "
+			"phi2 " << name << ": "
+			<< block1->getName() << "(" << *value1 << "), "
 			<< block2->getName() << "(" << *value2 << ")\n");
 
-	PHINode *phi = builder.CreatePHI(value1->getType());
+	PHINode *phi = builder.CreatePHI(value1->getType(), name);
 
 	phi->addIncoming(value1, block1);
 	phi->addIncoming(value2, block2);

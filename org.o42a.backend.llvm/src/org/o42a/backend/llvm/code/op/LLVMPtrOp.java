@@ -72,33 +72,40 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	public LLVMBoolOp isNull(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = LLVMCode.unaryId(this, name, code, "is_null");
 
 		return new LLVMBoolOp(
-				code.nameId(name),
+				id,
 				nextPtr,
-				isNull(nextPtr, getNativePtr()));
+				isNull(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	@Override
 	public LLVMBoolOp eq(String name, Code code, PtrOp other) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = LLVMCode.binaryId(this, name, code, "eq", other);
 
 		return new LLVMBoolOp(
-				code.nameId(name),
+				id,
 				nextPtr,
-				LLVMIntOp.eq(nextPtr, getNativePtr(), nativePtr(other)));
+				LLVMIntOp.eq(
+						nextPtr,
+						id.toString(),
+						getNativePtr(),
+						nativePtr(other)));
 	}
 
 	@Override
 	public LLVMAnyOp toAny(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "any");
 
 		return new LLVMAnyOp(
-				castId(name, code, "any"),
+				id,
 				nextPtr,
-				toAny(nextPtr, getNativePtr()));
+				toAny(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	public final LLVMDataOp toData(String name, Code code) {
@@ -112,7 +119,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return new LLVMDataOp(
 				id,
 				nextPtr,
-				toAny(nextPtr, getNativePtr()));
+				toAny(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	public final <O extends StructOp> O to(
@@ -130,7 +137,11 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				id,
 				type,
 				nextPtr,
-				castStructTo(nextPtr, getNativePtr(), typePtr(type))));
+				castStructTo(
+						nextPtr,
+						id.toString(),
+						getNativePtr(),
+						typePtr(type))));
 	}
 
 	public final <F extends Func> LLVMFuncOp<F> toFunc(
@@ -153,6 +164,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				nextPtr,
 				castFuncTo(
 						nextPtr,
+						id.toString(),
 						getNativePtr(),
 						llvm.getModule().nativePtr(signature)),
 				signature);
@@ -180,38 +192,48 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 	protected static native long field(
 			long blockPtr,
+			String id,
 			long pointerPtr,
 			int field);
 
-	static native long load(long blockPtr, long pointerPtr);
+	static native long load(long blockPtr, String id, long pointerPtr);
 
 	static native void store(
 			long blockPtr,
 			long pointerPtr,
 			long valuePtr);
 
-	static native long toAny(long blockPtr, long pointerPtr);
+	static native long toAny(long blockPtr, String id, long pointerPtr);
 
-	static native long toPtr(long blockPtr, long pointerPtr);
+	static native long toPtr(long blockPtr, String id, long pointerPtr);
 
-	static native long toInt(long blockPtr, long pointerPtr, byte numBits);
+	static native long toInt(
+			long blockPtr,
+			String id,
+			long pointerPtr,
+			byte numBits);
 
-	static native long toFp32(long blockPtr, long pointerPtr);
+	static native long toFp32(long blockPtr, String id, long pointerPtr);
 
-	static native long toFp64(long blockPtr, long pointerPtr);
+	static native long toFp64(long blockPtr, String id, long pointerPtr);
 
-	static native long toRelPtr(long blockPtr, long pointerPtr);
+	static native long toRelPtr(long blockPtr, String id, long pointerPtr);
 
 	private static native long castStructTo(
 			long blockPtr,
+			String id,
 			long pointerPtr,
 			long typePtr);
 
 	private static native long castFuncTo(
 			long blockPtr,
+			String id,
 			long pointerPtr,
 			long funcTypePtr);
 
-	private static native long isNull(long blockPtr, long pointerPtr);
+	private static native long isNull(
+			long blockPtr,
+			String id,
+			long pointerPtr);
 
 }

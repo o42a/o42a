@@ -114,42 +114,42 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_nullFuncPtr
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    allocatePtr
- * Signature: (J)J
+ * Signature: (JLjava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_allocatePtr
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    allocateStructPtr
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_allocateStructPtr
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    allocateStruct
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    phi
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    phi2
- * Signature: (JJJJJ)J
+ * Signature: (JLjava/lang/String;JJJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode

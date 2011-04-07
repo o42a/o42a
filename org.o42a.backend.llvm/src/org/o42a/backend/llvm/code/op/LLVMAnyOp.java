@@ -48,88 +48,96 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	public LLVMRecOp<AnyOp> toPtr(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "any");
 
 		return new LLVMRecOp.Any(
-				castId(name, code, "any"),
+				id,
 				nextPtr,
-				toPtr(nextPtr, getNativePtr()));
+				toPtr(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	@Override
 	public LLVMRecOp<Int8op> toInt8(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "int8");
 
 		return new LLVMRecOp.Int8(
-				castId(name, code, "int8"),
+				id,
 				nextPtr,
-				toInt(nextPtr, getNativePtr(), (byte) 8));
+				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 8));
 	}
 
 	@Override
 	public LLVMRecOp<Int16op> toInt16(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "int16");
 
 		return new LLVMRecOp.Int16(
-				castId(name, code, "int16"),
+				id,
 				nextPtr,
-				toInt(nextPtr, getNativePtr(), (byte) 16));
+				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 16));
 	}
 
 	@Override
 	public LLVMRecOp<Int32op> toInt32(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "int32");
 
 		return new LLVMRecOp.Int32(
-				castId(name, code, "int32"),
+				id,
 				nextPtr,
-				toInt(nextPtr, getNativePtr(), (byte) 32));
+				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 32));
 	}
 
 	@Override
 	public LLVMRecOp<Int64op> toInt64(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "int64");
 
 		return new LLVMRecOp.Int64(
-				castId(name, code, "int64"),
+				id,
 				nextPtr,
-				toInt(nextPtr, getNativePtr(), (byte) 64));
+				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 64));
 	}
 
 	@Override
 	public LLVMRecOp<Fp32op> toFp32(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "fp32");
 
 		return new LLVMRecOp.Fp32(
-				castId(name, code, "fp32"),
+				id,
 				nextPtr,
-				toFp32(nextPtr, getNativePtr()));
+				toFp32(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	@Override
 	public LLVMRecOp<Fp64op> toFp64(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "fp64");
 
 		return new LLVMRecOp.Fp64(
-				castId(name, code, "fp64"),
+				id,
 				nextPtr,
-				toFp64(nextPtr, getNativePtr()));
+				toFp64(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	@Override
 	public LLVMRecOp<RelOp> toRel(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id = castId(name, code, "rel");
 
 		return new LLVMRecOp.Rel(
-				castId(name, code, "rel"),
+				id,
 				nextPtr,
-				toRelPtr(nextPtr, getNativePtr()));
+				toRelPtr(nextPtr, id.toString(), getNativePtr()));
 	}
 
 	@Override
