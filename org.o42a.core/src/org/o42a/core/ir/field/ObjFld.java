@@ -21,7 +21,7 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.field.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -100,7 +100,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final DataOp result1 = construct(
 				builder,
-				exitWhenUnknown(construct, constructionFailed.head()),
+				falseWhenUnknown(construct, constructionFailed.head()),
 				new ObjFldOp(this, host, fld)).toData(construct);
 
 		if (constructionFailed.exists()) {
@@ -113,7 +113,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			delegate.addBlock("delegation_failed");
 		final DataOp result2 = delegate(
 				builder,
-				exitWhenUnknown(delegate, delegationFailed.head()),
+				falseWhenUnknown(delegate, delegationFailed.head()),
 				previousPtr).toData(delegate);
 
 		if (delegationFailed.exists()) {

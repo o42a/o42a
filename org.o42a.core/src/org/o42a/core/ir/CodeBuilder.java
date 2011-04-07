@@ -21,7 +21,7 @@ package org.o42a.core.ir;
 
 import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -101,7 +101,7 @@ public class CodeBuilder {
 
 			this.host = host.cast(
 					function.id("host"),
-					exitWhenUnknown(function, exit),
+					falseWhenUnknown(function, exit),
 					hostType);
 		}
 	}

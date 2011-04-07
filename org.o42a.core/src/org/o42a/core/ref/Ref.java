@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.op.CodeDirs.ignoreCondition;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
@@ -36,6 +36,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.clause.Clause;
@@ -437,13 +438,31 @@ public abstract class Ref extends RefTypeBase {
 
 		@Override
 		public void writeAssignment(Control control, ValOp result) {
-			this.ref.writeValue(ignoreCondition(control.code()), result);
+
+			final Code falseVal = control.addBlock("false_st_val");
+			final CodeDirs dirs =
+				falseWhenUnknown(control.code(), falseVal.head());
+
+			this.ref.writeValue(dirs, result);
+			if (falseVal.exists()) {
+				falseVal.go(control.exit());
+			}
+
 			control.returnValue();
 		}
 
 		@Override
 		public void writeLogicalValue(Control control) {
-			this.ref.writeLogicalValue(ignoreCondition(control.code()));
+
+			final Code falseCond = control.addBlock("false_st_cond");
+			final CodeDirs dirs =
+				falseWhenUnknown(control.code(), falseCond.head());
+
+			this.ref.writeLogicalValue(dirs);
+
+			if (falseCond.exists()) {
+				falseCond.go(control.exit());
+			}
 		}
 
 	}

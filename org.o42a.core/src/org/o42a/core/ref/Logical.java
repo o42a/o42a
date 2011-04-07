@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -680,7 +680,7 @@ public abstract class Logical extends LogicalBase {
 					dirs.goWhenFalse(next);
 				}
 
-				blockDirs = exitWhenUnknown(block, next.head());
+				blockDirs = falseWhenUnknown(block, next.head());
 				this.variants[i].write(blockDirs, host);
 				block.go(code.tail());
 
@@ -797,7 +797,7 @@ public abstract class Logical extends LogicalBase {
 
 			final Code code = dirs.code();
 			final Code isFalse = code.addBlock("is_false");
-			final CodeDirs negatedDirs = exitWhenUnknown(code, isFalse.head());
+			final CodeDirs negatedDirs = falseWhenUnknown(code, isFalse.head());
 
 			negate().write(negatedDirs, host);
 			dirs = dirs.end();

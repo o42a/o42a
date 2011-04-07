@@ -29,19 +29,11 @@ import org.o42a.codegen.code.op.BoolOp;
 
 public class CodeDirs {
 
-	public static CodeDirs ignoreCondition(Code code) {
-		return new CodeDirs(code, null, null);
-	}
-
-	public static CodeDirs continueWhenUnknown(
-			Code code,
-			CodePos falsePos) {
+	public static CodeDirs continueWhenUnknown(Code code, CodePos falsePos) {
 		return new CodeDirs(code, falsePos, null);
 	}
 
-	public static CodeDirs exitWhenUnknown(
-			Code code,
-			CodePos exit) {
+	public static CodeDirs falseWhenUnknown(Code code, CodePos exit) {
 		return new CodeDirs(code, exit, exit);
 	}
 

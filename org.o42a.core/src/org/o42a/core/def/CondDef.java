@@ -22,7 +22,7 @@ package org.o42a.core.def;
 import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
@@ -132,7 +132,7 @@ public abstract class CondDef extends Def<CondDef> {
 
 			final CodeBlk prereqFailed = code.addBlock("prereq_failed");
 			final CodeDirs prereqDirs =
-				exitWhenUnknown(code, prereqFailed.head());
+				falseWhenUnknown(code, prereqFailed.head());
 
 			getPrerequisite().write(prereqDirs, rescopedHost);
 			if (prereqFailed.exists()) {
@@ -141,7 +141,7 @@ public abstract class CondDef extends Def<CondDef> {
 		}
 
 		final CodeBlk defFalse = code.addBlock("def_false");
-		final CodeDirs defDirs = exitWhenUnknown(code, defFalse.head());
+		final CodeDirs defDirs = falseWhenUnknown(code, defFalse.head());
 
 		getLogical().write(defDirs, rescopedHost);
 		if (defFalse.exists()) {

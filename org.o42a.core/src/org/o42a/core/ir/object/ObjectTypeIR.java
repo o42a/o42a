@@ -23,7 +23,7 @@ import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectDataType.*;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
-import static org.o42a.core.ir.op.CodeDirs.exitWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import java.util.HashMap;
@@ -247,7 +247,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 					.detail("ancestor"),
 					OBJECT_REF);
 		final CodeBlk failure = function.addBlock("failure");
-		final CodeDirs dirs = exitWhenUnknown(function, failure.head());
+		final CodeDirs dirs = falseWhenUnknown(function, failure.head());
 
 		final TypeRef ancestor = getObjectIR().getObject().getAncestor();
 		final CodeBuilder builder = codeBuilder(
