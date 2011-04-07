@@ -41,7 +41,7 @@ public final class AssignerFunc extends ObjectFunc {
 	}
 
 	public BoolOp assign(Code code, DataOp object, DataOp value) {
-		return invoke(code, ASSIGNER.result(), object, value);
+		return invoke(null, code, ASSIGNER.result(), object, value);
 	}
 
 	public static final class Assigner

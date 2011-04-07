@@ -37,7 +37,7 @@ public class NewObjectFunc extends Func {
 	}
 
 	public DataOp newObject(Code code, CtrOp ctr) {
-		return invoke(code, NEW_OBJECT.result(), ctr.ptr());
+		return invoke(null, code, NEW_OBJECT.result(), ctr.ptr());
 	}
 
 	public static final class NewObject extends Signature<NewObjectFunc> {

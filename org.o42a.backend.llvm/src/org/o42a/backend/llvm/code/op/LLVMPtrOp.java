@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.code.LLVMCode.*;
 
 import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.backend.llvm.code.LLVMStruct;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -35,10 +36,17 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 	private final long blockPtr;
 	private final long nativePtr;
+	private final CodeId id;
 
-	public LLVMPtrOp(long blockPtr, long nativePtr) {
+	public LLVMPtrOp(CodeId id, long blockPtr, long nativePtr) {
+		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
+	}
+
+	@Override
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	@Override
@@ -61,48 +69,79 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	}
 
 	@Override
-	public LLVMBoolOp isNull(Code code) {
-
-		final long nextPtr = nextPtr(code);
-
-		return new LLVMBoolOp(nextPtr, isNull(nextPtr, getNativePtr()));
-	}
-
-	@Override
-	public LLVMBoolOp eq(Code code, PtrOp other) {
+	public LLVMBoolOp isNull(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
 		return new LLVMBoolOp(
+				code.nameId(name),
+				nextPtr,
+				isNull(nextPtr, getNativePtr()));
+	}
+
+	@Override
+	public LLVMBoolOp eq(String name, Code code, PtrOp other) {
+
+		final long nextPtr = nextPtr(code);
+
+		return new LLVMBoolOp(
+				code.nameId(name),
 				nextPtr,
 				LLVMIntOp.eq(nextPtr, getNativePtr(), nativePtr(other)));
 	}
 
 	@Override
-	public LLVMAnyOp toAny(Code code) {
+	public LLVMAnyOp toAny(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMAnyOp(nextPtr, toAny(nextPtr, getNativePtr()));
+		return new LLVMAnyOp(
+				castId(name, code, "any"),
+				nextPtr,
+				toAny(nextPtr, getNativePtr()));
 	}
 
-	public LLVMDataOp toData(Code code) {
+	public final LLVMDataOp toData(String name, Code code) {
+		return toData(castId(name, code, "struct"), code);
+	}
+
+	public LLVMDataOp toData(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp(nextPtr, toAny(nextPtr, getNativePtr()));
+		return new LLVMDataOp(
+				id,
+				nextPtr,
+				toAny(nextPtr, getNativePtr()));
 	}
 
-	public <O extends StructOp> O to(Code code, Type<O> type) {
+	public final <O extends StructOp> O to(
+			String name,
+			Code code,
+			Type<O> type) {
+		return to(castId(name, code, type.getType().getId()), code, type);
+	}
+
+	public <O extends StructOp> O to(CodeId id, Code code, Type<O> type) {
+
 		final long nextPtr = nextPtr(code);
 
 		return type.op(new LLVMStruct(
+				id,
 				type,
 				nextPtr,
 				castStructTo(nextPtr, getNativePtr(), typePtr(type))));
 	}
 
+	public final <F extends Func> LLVMFuncOp<F> toFunc(
+			String name,
+			Code code,
+			Signature<F> signature) {
+		return toFunc(castId(name, code, signature.getId()), code, signature);
+	}
+
 	public <F extends Func> LLVMFuncOp<F> toFunc(
+			CodeId id,
 			Code code,
 			Signature<F> signature) {
 
@@ -110,12 +149,33 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		final long nextPtr = llvm.nextPtr();
 
 		return new LLVMFuncOp<F>(
+				id,
 				nextPtr,
 				castFuncTo(
 						nextPtr,
 						getNativePtr(),
 						llvm.getModule().nativePtr(signature)),
 				signature);
+	}
+
+	@Override
+	public String toString() {
+		return this.id.toString();
+	}
+
+	protected final CodeId castId(String name, Code code, String suffix) {
+		return LLVMCode.castId(this, name, code, suffix);
+	}
+
+	protected final CodeId castId(String name, Code code, CodeId suffix) {
+		return LLVMCode.castId(this, name, code, suffix);
+	}
+
+	protected final CodeId derefId(String name, Code code) {
+		if (name != null) {
+			return code.nameId(name);
+		}
+		return getId().detail("deref");
 	}
 
 	protected static native long field(

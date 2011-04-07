@@ -51,6 +51,13 @@ public abstract class Signature<F extends Func> {
 		return this.ret;
 	}
 
+	public final CodeId getId() {
+		if (this.codeId != null) {
+			return this.codeId;
+		}
+		return codeId(CodeIdFactory.DEFAULT_CODE_ID_FACTORY);
+	}
+
 	public final CodeId codeId(CodeIdFactory factory) {
 		if (this.codeId != null && this.codeId.compatibleWith(factory)) {
 			return this.codeId;
@@ -80,9 +87,6 @@ public abstract class Signature<F extends Func> {
 
 	@Override
 	public String toString() {
-		if (this.codeId == null) {
-			codeId(CodeIdFactory.DEFAULT_CODE_ID_FACTORY);
-		}
 
 		final StringBuilder out = new StringBuilder();
 
@@ -91,7 +95,7 @@ public abstract class Signature<F extends Func> {
 		} else {
 			out.append("? ");
 		}
-		out.append(this.codeId);
+		out.append(getId());
 		out.append('(');
 		for (int i = 0; i < this.args.length; ++i) {
 			if (i != 0) {

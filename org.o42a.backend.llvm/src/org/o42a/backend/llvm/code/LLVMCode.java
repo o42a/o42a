@@ -90,6 +90,43 @@ public abstract class LLVMCode implements CodeWriter {
 		return allocation.getTypePtr();
 	}
 
+	public static CodeId castId(Op op, String name, Code code, String suffix) {
+		if (name != null) {
+			return code.nameId(name);
+		}
+		return op.getId().detail(suffix);
+	}
+
+	public static CodeId castId(Op op, String name, Code code, CodeId suffix) {
+		if (name != null) {
+			return code.nameId(name);
+		}
+		return op.getId().detail(suffix);
+	}
+
+	public static CodeId unaryId(
+			Op op,
+			String name,
+			Code code,
+			String operator) {
+		if (name != null) {
+			return code.nameId(name);
+		}
+		return code.getGenerator().id(operator).detail(op.getId());
+	}
+
+	public static CodeId binaryId(
+			Op left,
+			String name,
+			Code code,
+			String operator,
+			Op right) {
+		if (name != null) {
+			return code.nameId(name);
+		}
+		return left.getId().detail(operator).detail(right.getId());
+	}
+
 	private final LLVMModule module;
 	private final LLVMFunction<?> function;
 	private final Code code;
@@ -172,12 +209,15 @@ public abstract class LLVMCode implements CodeWriter {
 		"rawtypes", "unchecked"
 	})
 	@Override
-	public <F extends Func> LLVMFunc<F> caller(FuncAllocation<F> allocation) {
+	public <F extends Func> LLVMFunc<F> caller(
+			CodeId id,
+			FuncAllocation<F> allocation) {
 
 		final LLVMFuncAllocation<?> alloc =
 			(LLVMFuncAllocation<?>) allocation;
 
 		return new LLVMFunc(
+				id,
 				allocation.getSignature(),
 				nextPtr(),
 				alloc.llvmId().expression(getModule()));
@@ -223,6 +263,7 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMInt8op int8(byte value) {
 		return new LLVMInt8op(
+				this.code.nameId(null),
 				nextPtr(),
 				int8(getModule().getNativePtr(), value));
 	}
@@ -230,6 +271,7 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMInt16op int16(short value) {
 		return new LLVMInt16op(
+				this.code.nameId(null),
 				nextPtr(),
 				int16(getModule().getNativePtr(), value));
 	}
@@ -237,6 +279,7 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMInt32op int32(int value) {
 		return new LLVMInt32op(
+				this.code.nameId(null),
 				nextPtr(),
 				int32(getModule().getNativePtr(), value));
 	}
@@ -244,6 +287,7 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMInt64op int64(long value) {
 		return new LLVMInt64op(
+				this.code.nameId(null),
 				nextPtr(),
 				int64(getModule().getNativePtr(), value));
 	}
@@ -251,6 +295,7 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMFp32op fp32(float value) {
 		return new LLVMFp32op(
+				this.code.nameId(null),
 				nextPtr(),
 				fp32(getModule().getNativePtr(), value));
 	}
@@ -258,6 +303,7 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMFp64op fp64(double value) {
 		return new LLVMFp64op(
+				this.code.nameId(null),
 				nextPtr(),
 				fp64(getModule().getNativePtr(), value));
 	}
@@ -265,23 +311,33 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMBoolOp bool(boolean value) {
 		return new LLVMBoolOp(
+				this.code.nameId(null),
 				nextPtr(),
 				bool(getModule().getNativePtr(), value));
 	}
 
 	@Override
 	public RelOp nullRelPtr() {
-		return new LLVMRelOp(nextPtr(), int32(getModule().getNativePtr(), 0));
+		return new LLVMRelOp(
+				this.code.nameId(null),
+				nextPtr(),
+				int32(getModule().getNativePtr(), 0));
 	}
 
 	@Override
 	public LLVMAnyOp nullPtr() {
-		return new LLVMAnyOp(nextPtr(), nullPtr(getModule().getNativePtr()));
+		return new LLVMAnyOp(
+				this.code.nameId(null),
+				nextPtr(),
+				nullPtr(getModule().getNativePtr()));
 	}
 
 	@Override
 	public LLVMDataOp nullDataPtr() {
-		return new LLVMDataOp(nextPtr(), nullPtr(getModule().getNativePtr()));
+		return new LLVMDataOp(
+				this.code.nameId(null),
+				nextPtr(),
+				nullPtr(getModule().getNativePtr()));
 	}
 
 	@Override
@@ -291,6 +347,7 @@ public abstract class LLVMCode implements CodeWriter {
 			(ContainerAllocation<O>) type;
 
 		return allocation.getType().op(new LLVMStruct(
+				this.code.nameId(null),
 				allocation,
 				nextPtr(),
 				nullStructPtr(allocation.getTypePtr())));
@@ -302,34 +359,39 @@ public abstract class LLVMCode implements CodeWriter {
 		final LLVMSignature<F> allocation = llvm(getModule(), signature);
 
 		return new LLVMFunc<F>(
+				this.code.nameId(null),
 				signature,
 				nextPtr(),
 				nullFuncPtr(allocation.getNativePtr()));
 	}
 
 	@Override
-	public <O extends StructOp> O allocateStruct(DataAllocation<O> allocation) {
+	public <O extends StructOp> O allocateStruct(
+			CodeId id,
+			DataAllocation<O> allocation) {
 
 		final ContainerAllocation<O> type =
 			(ContainerAllocation<O>) allocation;
 		final long nextPtr = nextPtr();
 
 		return type.getType().op(new LLVMStruct(
+				id,
 				type,
 				nextPtr,
 				allocateStruct(nextPtr, type.getTypePtr())));
 	}
 
 	@Override
-	public LLVMRecOp<AnyOp> allocatePtr() {
+	public LLVMRecOp<AnyOp> allocatePtr(CodeId id) {
 
 		final long nextPtr = nextPtr();
 
-		return new LLVMRecOp.Any(nextPtr, allocatePtr(nextPtr));
+		return new LLVMRecOp.Any(id, nextPtr, allocatePtr(nextPtr));
 	}
 
 	@Override
 	public <O extends StructOp> RecOp<O> allocatePtr(
+			CodeId id,
 			DataAllocation<O> allocation) {
 
 		final ContainerAllocation<O> alloc =
@@ -337,6 +399,7 @@ public abstract class LLVMCode implements CodeWriter {
 		final long nextPtr = nextPtr();
 
 		return new LLVMRecOp.Struct<O>(
+				id,
 				alloc.getType(),
 				nextPtr,
 				allocateStructPtr(nextPtr, alloc.getTypePtr()));
@@ -344,7 +407,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <O extends Op> O phi(O op) {
+	public <O extends Op> O phi(CodeId id, O op) {
 
 		final long nextPtr = nextPtr();
 
@@ -354,6 +417,7 @@ public abstract class LLVMCode implements CodeWriter {
 			final LLVMStruct writer = llvm(struct);
 
 			return (O) struct.getType().op(writer.create(
+					id,
 					nextPtr,
 					phi(nextPtr, writer.getBlockPtr(), writer.getNativePtr())));
 		}
@@ -361,13 +425,14 @@ public abstract class LLVMCode implements CodeWriter {
 		final LLVMOp o = llvm(op);
 
 		return (O) o.create(
+				id,
 				nextPtr,
 				phi(nextPtr, o.getBlockPtr(), o.getNativePtr()));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <O extends Op> O phi(O op1, O op2) {
+	public <O extends Op> O phi(CodeId id, O op1, O op2) {
 
 		final long nextPtr = nextPtr();
 
@@ -379,8 +444,8 @@ public abstract class LLVMCode implements CodeWriter {
 			final LLVMStruct writer2 = llvm(struct2);
 
 			return (O) struct1.getType().op(writer1.create(
-					nextPtr,
-					phi2(
+					id,
+					nextPtr, phi2(
 							nextPtr,
 							writer1.getBlockPtr(),
 							writer1.getNativePtr(),
@@ -392,8 +457,8 @@ public abstract class LLVMCode implements CodeWriter {
 		final LLVMOp o2 = llvm(op2);
 
 		return (O) o1.create(
-				nextPtr,
-				phi2(
+				id,
+				nextPtr, phi2(
 						nextPtr,
 						o1.getBlockPtr(),
 						o1.getNativePtr(),

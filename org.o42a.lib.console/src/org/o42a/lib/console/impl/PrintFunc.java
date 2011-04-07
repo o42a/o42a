@@ -37,7 +37,7 @@ public final class PrintFunc extends Func {
 	}
 
 	public void print(Code code, ValOp text) {
-		invoke(code, PRINT.result(), text);
+		invoke(null, code, PRINT.result(), text);
 	}
 
 	public static final class Print extends Signature<PrintFunc> {

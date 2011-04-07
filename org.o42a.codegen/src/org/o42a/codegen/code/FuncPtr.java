@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AbstractPtr;
@@ -30,7 +31,8 @@ public abstract class FuncPtr<F extends Func> extends AbstractPtr {
 	final Signature<F> signature;
 	final FuncAllocation<F> allocation;
 
-	FuncPtr(Signature<F> signature, FuncAllocation<F> allocation) {
+	FuncPtr(CodeId id, Signature<F> signature, FuncAllocation<F> allocation) {
+		super(id);
 		this.signature = signature;
 		this.allocation = allocation;
 	}
@@ -41,9 +43,18 @@ public abstract class FuncPtr<F extends Func> extends AbstractPtr {
 
 	public abstract Function<F> getFunction();
 
-	public F op(Code code) {
+	public F op(String name, Code code) {
 		code.assertIncomplete();
-		return this.signature.op(code.writer().caller(this.allocation));
+
+		final CodeId id;
+
+		if (name != null) {
+			id = code.nameId(name);
+		} else {
+			id = getId();
+		}
+
+		return this.signature.op(code.writer().caller(id, this.allocation));
 	}
 
 	final FuncAllocation<F> getAllocation() {

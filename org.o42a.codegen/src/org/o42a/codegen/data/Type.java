@@ -58,6 +58,13 @@ public abstract class Type<O extends StructOp>
 		return this.data.getGenerator();
 	}
 
+	public final CodeId getId() {
+		if (this.id != null) {
+			return this.id;
+		}
+		return codeId(DEFAULT_CODE_ID_FACTORY);
+	}
+
 	public boolean isPacked() {
 		return false;
 	}
@@ -119,10 +126,7 @@ public abstract class Type<O extends StructOp>
 
 	@Override
 	public String toString() {
-		if (this.id == null) {
-			return codeId(DEFAULT_CODE_ID_FACTORY).toString();
-		}
-		return this.id.toString();
+		return getId().toString();
 	}
 
 	protected abstract CodeId buildCodeId(CodeIdFactory factory);

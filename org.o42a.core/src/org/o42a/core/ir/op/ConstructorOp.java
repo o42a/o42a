@@ -55,7 +55,7 @@ public class ConstructorOp extends RefOp {
 			return builder.newObject(
 					dirs,
 					object,
-					ancestorFunc().getPointer().op(dirs.code()),
+					ancestorFunc().getPointer().op(null, dirs.code()),
 					sample,
 					CtrOp.NEW_INSTANCE);
 		}
@@ -124,7 +124,7 @@ public class ConstructorOp extends RefOp {
 		if (ancestorFailed.exists()) {
 			getRef().getContext().getFalse()
 			.ir(getGenerator()).op(getBuilder(), ancestorFailed)
-			.ptr().toAny(ancestorFailed).returnValue(ancestorFailed);
+			.ptr().toAny(null, ancestorFailed).returnValue(ancestorFailed);
 		}
 	}
 

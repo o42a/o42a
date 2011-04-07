@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -31,9 +32,11 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 	private DataAllocation<O> allocation;
 
 	Ptr(Data<?> data) {
+		super(data.getId());
 	}
 
-	Ptr(DataAllocation<O> allocation) {
+	Ptr(CodeId id, DataAllocation<O> allocation) {
+		super(id);
 		this.allocation = allocation;
 	}
 
@@ -46,16 +49,20 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 	}
 
 	public final Ptr<DataOp> toData() {
-		return new Ptr<DataOp>(this.allocation.toData());
+		return new Ptr<DataOp>(
+				getId().detail("struct"),
+				this.allocation.toData());
 	}
 
-	public final O op(Code code) {
+	public final O op(String name, Code code) {
 
 		final CodeBase c = code;
 
 		c.assertIncomplete();
 
-		return getAllocation().op(c.writer());
+		return getAllocation().op(
+				name != null ? code.nameId(name) : getId(),
+				c.writer());
 	}
 
 	@Override

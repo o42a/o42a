@@ -98,8 +98,8 @@ public abstract class RefFldOp<C extends ObjectFunc> extends FldOp {
 		}
 
 		final ObjectBodyIR.Op targetBodyPtr = ptr.to(
-				code,
-				targetAscendant.ir(getGenerator()).getBodyType());
+				null,
+				code, targetAscendant.ir(getGenerator()).getBodyType());
 
 		return targetBodyPtr.op(
 				getBuilder(),

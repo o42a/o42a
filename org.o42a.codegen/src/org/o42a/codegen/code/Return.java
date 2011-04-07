@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.DataType;
@@ -54,7 +55,32 @@ public abstract class Return<O> {
 		return "return " + typeName();
 	}
 
-	protected abstract O call(Code code, FuncCaller<?> caller, Op... args);
+	protected abstract O call(
+			String name,
+			Code code,
+			FuncCaller<?> caller,
+			Op... args);
+
+	protected final CodeId callId(
+			String name,
+			Code code,
+			FuncCaller<?> caller,
+			Op... args) {
+		if (name != null) {
+			return code.nameId(name);
+		}
+
+		final int firstArg =
+			code.isDebug() && getSignature().isDebuggable() ? 1 : 0;
+
+		if (args.length <= firstArg) {
+			return caller.getId().detail("result");
+		}
+
+		return caller.getId()
+		.detail(args[firstArg].getId())
+		.detail("return");
+	}
 
 	static final class ReturnVoid extends Return<Void> {
 
@@ -68,8 +94,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected Void call(Code code, FuncCaller<?> caller, Op... args) {
-			caller.call(code, args);
+		protected Void call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			caller.call(callId(name, code, caller, args), code, args);
 			return null;
 		}
 
@@ -87,8 +117,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected Int8op call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callInt8(code, args);
+		protected Int8op call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callInt8(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -105,8 +139,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected Int16op call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callInt16(code, args);
+		protected Int16op call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callInt16(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -123,8 +161,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected Int32op call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callInt32(code, args);
+		protected Int32op call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callInt32(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -141,8 +183,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected Int64op call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callInt64(code, args);
+		protected Int64op call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callInt64(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -159,8 +205,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected Fp32op call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callFp32(code, args);
+		protected Fp32op call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callFp32(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -177,8 +227,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected Fp64op call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callFp64(code, args);
+		protected Fp64op call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callFp64(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -195,8 +249,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected BoolOp call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callBool(code, args);
+		protected BoolOp call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callBool(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -213,8 +271,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected AnyOp call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callAny(code, args);
+		protected AnyOp call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callAny(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -231,8 +293,12 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected DataOp call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callData(code, args);
+		protected DataOp call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callData(callId(name, code, caller, args), code, args);
 		}
 
 	}
@@ -257,8 +323,16 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected O call(Code code, FuncCaller<?> caller, Op... args) {
-			return caller.callPtr(code, this.type, args);
+		protected O call(
+				String name,
+				Code code,
+				FuncCaller<?> caller,
+				Op... args) {
+			return caller.callPtr(
+					callId(name, code, caller, args),
+					code,
+					this.type,
+					args);
 		}
 
 	}

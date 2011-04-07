@@ -60,7 +60,7 @@ public abstract class Functions {
 
 		final CodeId id = getGenerator().rawId(name);
 		final ExternFuncPtr<F> extern = new ExternFuncPtr<F>(
-				name,
+				id,
 				signature,
 				codeBackend().externFunction(id, allocate(signature)));
 

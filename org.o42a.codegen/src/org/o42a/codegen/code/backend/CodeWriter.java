@@ -35,7 +35,9 @@ public interface CodeWriter {
 
 	CodeId getId();
 
-	<F extends Func> FuncCaller<F> caller(FuncAllocation<F> allocation);
+	<F extends Func> FuncCaller<F> caller(
+			CodeId id,
+			FuncAllocation<F> allocation);
 
 	CodeWriter block(Code code, CodeId id);
 
@@ -67,15 +69,19 @@ public interface CodeWriter {
 
 	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
 
-	RecOp<AnyOp> allocatePtr();
+	RecOp<AnyOp> allocatePtr(CodeId id);
 
-	<O extends StructOp> RecOp<O> allocatePtr(DataAllocation<O> allocation);
+	<O extends StructOp> RecOp<O> allocatePtr(
+			CodeId id,
+			DataAllocation<O> allocation);
 
-	<O extends StructOp> O allocateStruct(DataAllocation<O> allocation);
+	<O extends StructOp> O allocateStruct(
+			CodeId id,
+			DataAllocation<O> allocation);
 
-	<O extends Op> O phi(O op);
+	<O extends Op> O phi(CodeId id, O op);
 
-	<O extends Op> O phi(O op1, O op2);
+	<O extends Op> O phi(CodeId id, O op1, O op2);
 
 	void returnVoid();
 

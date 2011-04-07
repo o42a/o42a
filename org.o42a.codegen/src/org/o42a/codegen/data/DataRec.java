@@ -42,6 +42,7 @@ public final class DataRec extends PtrRec<DataOp> {
 	@Override
 	public void setNull() {
 		setValue(new Ptr<DataOp>(
+				getGenerator().id("struct").detail("null"),
 				getGenerator().getGlobals().dataWriter().nullDataPtr()));
 	}
 

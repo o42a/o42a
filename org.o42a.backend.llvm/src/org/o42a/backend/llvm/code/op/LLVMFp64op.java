@@ -21,6 +21,7 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
 
@@ -28,12 +29,12 @@ import org.o42a.codegen.code.op.Fp64op;
 public final class LLVMFp64op extends LLVMFpOp<Fp64op, LLVMFp64op>
 		implements Fp64op {
 
-	public LLVMFp64op(long blockPtr, long nativePtr) {
-		super(blockPtr, nativePtr);
+	public LLVMFp64op(CodeId id, long blockPtr, long nativePtr) {
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public LLVMFp64op toFp64(Code code) {
+	public LLVMFp64op toFp64(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -41,12 +42,12 @@ public final class LLVMFp64op extends LLVMFpOp<Fp64op, LLVMFp64op>
 			return this;
 		}
 
-		return super.toFp64(code);
+		return super.toFp64(name, code);
 	}
 
 	@Override
-	public LLVMFp64op create(long blockPtr, long nativePtr) {
-		return new LLVMFp64op(blockPtr, nativePtr);
+	public LLVMFp64op create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMFp64op(id, blockPtr, nativePtr);
 	}
 
 }

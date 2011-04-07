@@ -82,11 +82,11 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		}
 
 		public final RecOp<ObjectType.Op> type(Code code) {
-			return ptr(code, getType().type());
+			return ptr(null, code, getType().type());
 		}
 
 		public final RecOp<RelOp> body(Code code) {
-			return relPtr(code, getType().body());
+			return relPtr(null, code, getType().body());
 		}
 
 	}

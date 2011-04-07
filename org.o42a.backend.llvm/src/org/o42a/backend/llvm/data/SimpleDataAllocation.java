@@ -21,6 +21,7 @@ package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.backend.llvm.code.LLVMStruct;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -52,14 +53,14 @@ abstract class SimpleDataAllocation<O extends PtrOp>
 	}
 
 	@Override
-	public O op(CodeWriter writer) {
+	public O op(CodeId id, CodeWriter writer) {
 
 		final LLVMCode code = (LLVMCode) writer;
 
-		return op(code.nextPtr(), llvmId().expression(code.getModule()));
+		return op(id, code.nextPtr(), llvmId().expression(code.getModule()));
 	}
 
-	protected abstract O op(long blockPtr, long nativePtr);
+	protected abstract O op(CodeId id, long blockPtr, long nativePtr);
 
 	static final class StructPtr<O extends StructOp>
 			extends SimpleDataAllocation<O> {
@@ -79,9 +80,9 @@ abstract class SimpleDataAllocation<O extends PtrOp>
 		}
 
 		@Override
-		protected O op(long blockPtr, long nativePtr) {
+		protected O op(CodeId id, long blockPtr, long nativePtr) {
 			return this.type.op(
-					new LLVMStruct(this.type, blockPtr, nativePtr));
+					new LLVMStruct(id, this.type, blockPtr, nativePtr));
 		}
 
 	}

@@ -19,19 +19,17 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncAllocation;
 
 
 final class ExternFuncPtr<F extends Func> extends FuncPtr<F> {
 
-	private final String name;
-
 	ExternFuncPtr(
-			String name,
+			CodeId id,
 			Signature<F> signature,
 			FuncAllocation<F> allocation) {
-		super(signature, allocation);
-		this.name = name;
+		super(id, signature, allocation);
 	}
 
 	@Override
@@ -41,7 +39,7 @@ final class ExternFuncPtr<F extends Func> extends FuncPtr<F> {
 
 	@Override
 	public String toString() {
-		return "exten &" + this.name;
+		return "exten " + getId();
 	}
 
 }

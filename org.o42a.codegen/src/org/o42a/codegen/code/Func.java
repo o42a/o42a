@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.util.ArrayUtil;
@@ -30,6 +31,11 @@ public abstract class Func implements PtrOp {
 
 	public Func(FuncCaller<?> caller) {
 		this.caller = caller;
+	}
+
+	@Override
+	public final CodeId getId() {
+		return this.caller.getId();
 	}
 
 	public final Signature<?> getSignature() {
@@ -50,18 +56,18 @@ public abstract class Func implements PtrOp {
 	}
 
 	@Override
-	public final BoolOp isNull(Code code) {
-		return this.caller.isNull(code);
+	public final BoolOp isNull(String name, Code code) {
+		return this.caller.isNull(name, code);
 	}
 
 	@Override
-	public final BoolOp eq(Code code, PtrOp other) {
-		return this.caller.eq(code, other);
+	public final BoolOp eq(String name, Code code, PtrOp other) {
+		return this.caller.eq(name, code, other);
 	}
 
 	@Override
-	public final AnyOp toAny(Code code) {
-		return this.caller.toAny(code);
+	public final AnyOp toAny(String name, Code code) {
+		return this.caller.toAny(name, code);
 	}
 
 	@Override
@@ -69,7 +75,11 @@ public abstract class Func implements PtrOp {
 		return this.caller.toString();
 	}
 
-	protected final <O> O invoke(Code code, Return<O> ret, Op... args) {
+	protected final <O> O invoke(
+			String name,
+			Code code,
+			Return<O> ret,
+			Op... args) {
 
 		final boolean debuggable = getSignature().isDebuggable();
 		final Function<?> callee = code.getFunction();
@@ -78,17 +88,21 @@ public abstract class Func implements PtrOp {
 			code.getFunction() + " is not debuggable";
 
 		if (!debuggable || !code.isDebug()) {
-			return invokeFunc(code, ret, args);
+			return invokeFunc(name, code, ret, args);
 		}
 
 		final Op[] debugArgs = ArrayUtil.prepend(callee.debugEnv(code), args);
 
-		return invokeFunc(code, ret, debugArgs);
+		return invokeFunc(name, code, ret, debugArgs);
 	}
 
-	private <O> O invokeFunc(Code code, Return<O> ret, Op... args) {
+	private <O> O invokeFunc(
+			String name,
+			Code code,
+			Return<O> ret,
+			Op... args) {
 		assert validSignature(ret.getSignature(), args);
-		return ret.call(code, this.caller, args);
+		return ret.call(name, code, this.caller, args);
 	}
 
 	private boolean validSignature(Signature<?> signature, Op[] args) {

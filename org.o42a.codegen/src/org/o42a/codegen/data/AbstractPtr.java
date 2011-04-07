@@ -19,14 +19,30 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
 public abstract class AbstractPtr {
 
+	private final CodeId id;
+
+	public AbstractPtr(CodeId id) {
+		this.id = id;
+	}
+
+	public final CodeId getId() {
+		return this.id;
+	}
+
 	public final Ptr<AnyOp> toAny() {
-		return new Ptr<AnyOp>(allocationToAny());
+		return new Ptr<AnyOp>(getId().detail("any"), allocationToAny());
+	}
+
+	@Override
+	public String toString() {
+		return getId().toString();
 	}
 
 	protected abstract DataAllocation<AnyOp> allocationToAny();

@@ -73,10 +73,10 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final DataOp result = newFunc().op(code).newObject(code, this);
+		final DataOp result = newFunc().op(null, code).newObject(code, this);
 		final CodeBlk nullObject = code.addBlock("null_new_object");
 
-		result.isNull(code).go(code, nullObject.head());
+		result.isNull(null, code).go(code, nullObject.head());
 
 		if (nullObject.exists()) {
 			dirs.goWhenFalse(nullObject);
@@ -116,10 +116,10 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 		ptr().flags(code).store(code, code.int32(flags));
 
-		final DataOp result = newFunc().op(code).newObject(code, this);
+		final DataOp result = newFunc().op(null, code).newObject(code, this);
 		final CodeBlk nullObject = code.addBlock("null_new_object");
 
-		result.isNull(code).go(code, nullObject.head());
+		result.isNull(null, code).go(code, nullObject.head());
 
 		if (nullObject.exists()) {
 			dirs.goWhenFalse(nullObject);
@@ -149,23 +149,23 @@ public class CtrOp extends IROp {
 		}
 
 		public final RecOp<ObjectType.Op> scopeType(Code code) {
-			return ptr(code, getType().scopeType());
+			return ptr(null, code, getType().scopeType());
 		}
 
 		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
-			return func(code, getType().ancestorFunc());
+			return func(null, code, getType().ancestorFunc());
 		}
 
 		public final RecOp<ObjectType.Op> ancestorType(Code code) {
-			return ptr(code, getType().ancestorType());
+			return ptr(null, code, getType().ancestorType());
 		}
 
 		public final RecOp<ObjectType.Op> type(Code code) {
-			return ptr(code, getType().type());
+			return ptr(null, code, getType().type());
 		}
 
 		public final RecOp<Int32op> flags(Code code) {
-			return int32(code, getType().flags());
+			return int32(null, code, getType().flags());
 		}
 
 		public final CtrOp op(CodeBuilder builder) {

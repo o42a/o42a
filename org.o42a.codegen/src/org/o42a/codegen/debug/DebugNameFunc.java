@@ -35,7 +35,7 @@ final class DebugNameFunc extends Func {
 	}
 
 	public void call(Code code, AnyOp message, AnyOp data) {
-		invoke(code, DEBUG_NAME.result(), message, data);
+		invoke(null, code, DEBUG_NAME.result(), message, data);
 	}
 
 	public static final class DebugName extends Signature<DebugNameFunc> {

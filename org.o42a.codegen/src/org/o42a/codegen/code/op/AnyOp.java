@@ -27,24 +27,29 @@ import org.o42a.codegen.data.Type;
 
 public interface AnyOp extends PtrOp {
 
-	RecOp<AnyOp> toPtr(Code code);
+	RecOp<AnyOp> toPtr(String name, Code code);
 
-	RecOp<Int8op> toInt8(Code code);
+	RecOp<Int8op> toInt8(String name, Code code);
 
-	RecOp<Int16op> toInt16(Code code);
+	RecOp<Int16op> toInt16(String name, Code code);
 
-	RecOp<Int32op> toInt32(Code code);
+	RecOp<Int32op> toInt32(String name, Code code);
 
-	RecOp<Int64op> toInt64(Code code);
+	RecOp<Int64op> toInt64(String name, Code code);
 
-	RecOp<Fp64op> toFp64(Code code);
+	RecOp<Fp32op> toFp32(String name, Code code);
 
-	RecOp<RelOp> toRel(Code code);
+	RecOp<Fp64op> toFp64(String name, Code code);
 
-	DataOp toData(Code code);
+	RecOp<RelOp> toRel(String name, Code code);
 
-	<F extends Func> FuncOp<F> toFunc(Code code, Signature<F> signature);
+	DataOp toData(String name, Code code);
 
-	<O extends StructOp> O to(Code code, Type<O> type);
+	<F extends Func> FuncOp<F> toFunc(
+			String name,
+			Code code,
+			Signature<F> signature);
+
+	<O extends StructOp> O to(String name, Code code, Type<O> type);
 
 }

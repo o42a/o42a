@@ -74,9 +74,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return;
 		}
 
-		printFunc().op(code()).call(
+		printFunc().op(null, code()).call(
 				code(),
-				binaryMessage(nl ? message + '\n' : message).op(code()));
+				binaryMessage(nl ? message + '\n' : message).op(null, code()));
 	}
 
 	public final void begin(String comment) {
@@ -90,31 +90,31 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final DebugEnvOp debugEnv = function.debugEnv(code);
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);
-		final DebugStackFrameOp prevStackFrame = envStackFrame.load(code);
+		final DebugStackFrameOp prevStackFrame = envStackFrame.load(null, code);
 		final DebugStackFrameOp stackFrame =
-			code.allocate(DEBUG_STACK_FRAME_TYPE);
+			code.allocate(null, DEBUG_STACK_FRAME_TYPE);
 
 		prevStackFrame.comment(code).store(
 				code,
-				binaryMessage(comment).op(code));
+				binaryMessage(comment).op(null, code));
 		stackFrame.name(code).store(
 				code,
-				prevStackFrame.name(code).load(code));
+				prevStackFrame.name(code).load(null, code));
 		stackFrame.prev(code).store(code, prevStackFrame);
 		stackFrame.comment(code).store(code, code.nullPtr());
 		stackFrame.file(code).store(code, code.nullPtr());
 		stackFrame.line(code).store(code, code.int32(0));
 
-		final DebugPrintFunc printFunc = printWoPrefixFunc().op(code);
+		final DebugPrintFunc printFunc = printWoPrefixFunc().op(null, code);
 
 		debug("((( /* ", false);
-		printFunc.call(code, binaryMessage(comment).op(code));
-		printFunc.call(code, binaryMessage(" */\n").op(code));
+		printFunc.call(code, binaryMessage(comment).op(null, code));
+		printFunc.call(code, binaryMessage(" */\n").op(null, code));
 		envStackFrame.store(code, stackFrame);
 
 		final RecOp<Int8op> indent = debugEnv.indent(code);
 
-		indent.store(code, indent.load(code).add(code, code.int8((byte) 1)));
+		indent.store(code, indent.load(null, code).add(null, code, code.int8((byte) 1)));
 	}
 
 	public CodePos end(String id, CodePos codePos) {
@@ -146,27 +146,27 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);
 		final DebugStackFrameOp prevStackFrame =
-			envStackFrame.load(code).prev(code).load(code);
-		final AnyOp comment = prevStackFrame.comment(code).load(code);
+			envStackFrame.load(null, code).prev(code).load(null, code);
+		final AnyOp comment = prevStackFrame.comment(code).load(null, code);
 
 		prevStackFrame.comment(code).store(code, code.nullPtr());
 		envStackFrame.store(code, prevStackFrame);
 
 		final RecOp<Int8op> indent = debugEnv.indent(code);
 
-		indent.store(code, indent.load(code).sub(code, code.int8((byte) 1)));
+		indent.store(code, indent.load(null, code).sub(null, code, code.int8((byte) 1)));
 
-		final DebugPrintFunc printFunc = printWoPrefixFunc().op(code);
+		final DebugPrintFunc printFunc = printWoPrefixFunc().op(null, code);
 
 		debug("))) /* ", false);
 		printFunc.call(code, comment);
-		printFunc.call(code, binaryMessage(" */\n").op(code));
+		printFunc.call(code, binaryMessage(" */\n").op(null, code));
 	}
 
 	public final void dumpName(String prefix, StructOp data) {
 		assertIncomplete();
 		if (isDebug()) {
-			dumpName(prefix, data.toData(code()));
+			dumpName(prefix, data.toData(null, code()));
 		}
 	}
 
@@ -181,10 +181,10 @@ public abstract class DebugCodeBase extends OpCodeBase {
 					"o42a_dbg_mem_name",
 					DEBUG_NAME);
 
-		func.op(code()).call(
+		func.op(null, code()).call(
 				code(),
-				binaryMessage(prefix).op(code()),
-				data.toAny(code()));
+				binaryMessage(prefix).op(null, code()),
+				data.toAny(null, code()));
 	}
 
 	public void dumpName(String prefix, Func func) {
@@ -200,10 +200,10 @@ public abstract class DebugCodeBase extends OpCodeBase {
 					"o42a_dbg_func_name",
 					DEBUG_NAME);
 
-		debugFunc.op(code()).call(
+		debugFunc.op(null, code()).call(
 				code(),
-				binaryMessage(prefix).op(code()),
-				func.toAny(code()));
+				binaryMessage(prefix).op(null, code()),
+				func.toAny(null, code()));
 	}
 
 	public final void dump(String message, StructOp data) {
@@ -213,7 +213,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	public final void dump(String message, StructOp data, int depth) {
 		assertIncomplete();
 		if (isDebug()) {
-			dump(message, data.toData(code()), depth);
+			dump(message, data.toData(null, code()), depth);
 		}
 	}
 
@@ -233,9 +233,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 					DEBUG_DUMP);
 		final Code code = code();
 
-		func.op(code).call(
+		func.op(null, code).call(
 				code,
-				binaryMessage(message).op(code),
+				binaryMessage(message).op(null, code),
 				data,
 				code.int32(depth));
 	}

@@ -35,7 +35,7 @@ final class DebugPrintFunc extends Func {
 	}
 
 	public void call(Code code, AnyOp message) {
-		invoke(code, DEBUG_PRINT.result(), message);
+		invoke(null, code, DEBUG_PRINT.result(), message);
 	}
 
 	public static final class DebugPrint extends Signature<DebugPrintFunc> {

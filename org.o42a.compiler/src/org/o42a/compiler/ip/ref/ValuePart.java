@@ -52,7 +52,7 @@ enum ValuePart {
 			}
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
+			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			object.objectType(code).writeOverriddenValue(code, result);
 			result.go(code, dirs);
@@ -87,7 +87,7 @@ enum ValuePart {
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
+			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			writeValue(dirs, result, op);
 		}
@@ -213,7 +213,7 @@ enum ValuePart {
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
+			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			writeValue(dirs, result, op);
 		}
@@ -250,7 +250,7 @@ enum ValuePart {
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
+			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			writeValue(dirs, result, op);
 		}

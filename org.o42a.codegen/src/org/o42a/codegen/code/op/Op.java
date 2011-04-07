@@ -19,10 +19,13 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
 public interface Op {
+
+	CodeId getId();
 
 	void allocated(Code code, StructOp enclosing);
 

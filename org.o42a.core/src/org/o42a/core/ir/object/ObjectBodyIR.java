@@ -272,29 +272,29 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 
 		public final RecOp<RelOp> objectType(Code code) {
-			return relPtr(code, getType().objectType());
+			return relPtr(null, code, getType().objectType());
 		}
 
 		public final RecOp<RelOp> ancestorBody(Code code) {
-			return relPtr(code, getType().ancestorBody());
+			return relPtr(null, code, getType().ancestorBody());
 		}
 
 		public final RecOp<DataOp> methods(Code code) {
-			return ptr(code, getType().methods());
+			return ptr(null, code, getType().methods());
 		}
 
 		public final RecOp<Int32op> flags(Code code) {
-			return int32(code, getType().flags());
+			return int32(null, code, getType().flags());
 		}
 
 		public final <O extends Fld.Op> O field(
 				Code code,
 				Fld.Type<O> instance) {
-			return struct(code, instance);
+			return struct(null, code, instance);
 		}
 
 		public final DepIR.Op dep(Code code, DepIR.Type instance) {
-			return struct(code, instance);
+			return struct(null, code, instance);
 		}
 
 		public final ObjOp op(
@@ -307,9 +307,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		public final ObjectType.Op loadObjectType(Code code) {
 
 			final AnyOp objectTypePtr =
-				objectType(code).load(code).offset(code, this);
+				objectType(code).load(null, code).offset(null, code, this);
 
-			return objectTypePtr.to(code, OBJECT_TYPE);
+			return objectTypePtr.to(null, code, OBJECT_TYPE);
 		}
 
 		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
@@ -324,19 +324,19 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final AnyOp ancestorBodyPtr =
-				ancestorBody(code).load(code).offset(code, this);
+				ancestorBody(code).load(null, code).offset(null, code, this);
 
 			return anonymousObject(
 					builder,
-					ancestorBodyPtr.toData(code),
+					ancestorBodyPtr.toData(null, code),
 					ancestor);
 		}
 
 		public final ObjectMethodsIR.Op loadMethods(Code code) {
 
-			final DataOp methodsPtr = methods(code).load(code);
+			final DataOp methodsPtr = methods(code).load(null, code);
 
-			return methodsPtr.to(code, getType().getMethodsIR());
+			return methodsPtr.to(null, code, getType().getMethodsIR());
 		}
 
 		@Override

@@ -91,10 +91,10 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
 			builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
-		final DataOp previousPtr = fld.previous(code).load(code);
+		final DataOp previousPtr = fld.previous(code).load(null, code);
 
 		final CondBlk construct =
-			previousPtr.isNull(code).branch(code, "construct", "delegate");
+			previousPtr.isNull(null, code).branch(code, "construct", "delegate");
 		final CodeBlk constructionFailed =
 			construct.addBlock("construction_failed");
 
@@ -121,10 +121,10 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 		delegate.go(code.tail());
 
-		final DataOp result = code.phi(result1, result2);
+		final DataOp result = code.phi(null, result1, result2);
 
 		final FldOp ownFld = host.field(dirs, getField().getKey());
-		final BoolOp isOwn = ownFld.ptr().eq(code, fld);
+		final BoolOp isOwn = ownFld.ptr().eq(null, code, fld);
 		final CondBlk store = isOwn.branch(code, "store", "do_not_store");
 
 		fld.object(store).store(store, result);
@@ -141,9 +141,9 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		code.dumpName("Delegate to ", previousPtr);
 
-		final Op previous = previousPtr.to(code, getType().getType());
+		final Op previous = previousPtr.to(null, code, getType().getType());
 		final ObjectConstructorFunc constructor =
-			previous.constructor(code).load(code);
+			previous.constructor(code).load(null, code);
 		final DataOp ancestorPtr =
 			constructor.call(code, builder.host(), previous);
 		final ObjectOp ancestor =
@@ -168,7 +168,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		public final RecOp<DataOp> previous(Code code) {
-			return ptr(code, getType().previous());
+			return ptr(null, code, getType().previous());
 		}
 
 		@Override

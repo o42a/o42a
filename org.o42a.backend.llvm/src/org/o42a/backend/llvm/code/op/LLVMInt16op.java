@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int16op;
 
@@ -29,12 +30,12 @@ import org.o42a.codegen.code.op.Int16op;
 public final class LLVMInt16op extends LLVMIntOp<Int16op, LLVMInt16op>
 		implements Int16op {
 
-	public LLVMInt16op(long blockPtr, long nativePtr) {
-		super(blockPtr, nativePtr);
+	public LLVMInt16op(CodeId id, long blockPtr, long nativePtr) {
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public LLVMInt16op toInt16(Code code) {
+	public LLVMInt16op toInt16(String name, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -42,12 +43,12 @@ public final class LLVMInt16op extends LLVMIntOp<Int16op, LLVMInt16op>
 			return this;
 		}
 
-		return super.toInt16(code);
+		return super.toInt16(name, code);
 	}
 
 	@Override
-	public LLVMInt16op create(long blockPtr, long nativePtr) {
-		return new LLVMInt16op(blockPtr, nativePtr);
+	public LLVMInt16op create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMInt16op(id, blockPtr, nativePtr);
 	}
 
 	@Override

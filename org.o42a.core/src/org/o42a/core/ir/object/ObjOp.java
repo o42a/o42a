@@ -159,7 +159,7 @@ public final class ObjOp extends ObjectOp {
 		final ObjectBodyIR ascendantBodyIR =
 			ptr().getType().getObjectIR().bodyIR(ascendant);
 		final ObjectBodyIR.Op ascendantBody =
-			ascendantBodyIR.pointer(code.getGenerator()).op(code);
+			ascendantBodyIR.pointer(code.getGenerator()).op(null, code);
 
 		final ObjectTypeOp cachedData = cachedData();
 

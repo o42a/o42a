@@ -76,7 +76,7 @@ public abstract class ObjectValueIRValFunc
 			}
 		}
 
-		get(host).op(code).call(code, result, body(code, host, body));
+		get(host).op(null, code).call(code, result, body(code, host, body));
 		code.end();
 	}
 
@@ -273,7 +273,7 @@ public abstract class ObjectValueIRValFunc
 		final ObjectTypeOp ancestorType =
 			ancestorBody.methods(hasAncestor)
 			.objectType(hasAncestor)
-			.load(hasAncestor)
+			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
 		if (isClaim()) {

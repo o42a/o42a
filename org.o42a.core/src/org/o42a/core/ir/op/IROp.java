@@ -55,11 +55,11 @@ public abstract class IROp {
 	}
 
 	public final DataOp toData(Code code) {
-		return toAny(code).toData(code);
+		return toAny(code).toData(null, code);
 	}
 
 	public final AnyOp toAny(Code code) {
-		return this.ptr.toAny(code);
+		return this.ptr.toAny(null, code);
 	}
 
 }

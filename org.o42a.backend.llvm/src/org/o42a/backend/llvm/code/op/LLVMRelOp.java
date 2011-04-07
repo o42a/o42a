@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.RelOp;
@@ -30,12 +31,19 @@ import org.o42a.codegen.code.op.StructOp;
 
 public final class LLVMRelOp implements LLVMOp, RelOp {
 
+	private final CodeId id;
 	private final long blockPtr;
 	private final long nativePtr;
 
-	public LLVMRelOp(long blockPtr, long nativePtr) {
+	public LLVMRelOp(CodeId id, long blockPtr, long nativePtr) {
+		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
+	}
+
+	@Override
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	@Override
@@ -53,23 +61,34 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 	}
 
 	@Override
-	public LLVMAnyOp offset(Code code, PtrOp from) {
+	public LLVMAnyOp offset(String name, Code code, PtrOp from) {
 
 		final long nextPtr = nextPtr(code);
+		final CodeId id;
+
+		if (name != null) {
+			id = code.nameId(name);
+		} else {
+			id = getId().detail("offset_from").detail(from.getId());
+		}
 
 		return new LLVMAnyOp(
+				id,
 				nextPtr,
 				offsetBy(nextPtr, nativePtr(from), getNativePtr()));
 	}
 
 	@Override
-	public LLVMInt32op toInt32(Code code) {
-		return new LLVMInt32op(getBlockPtr(), getNativePtr());
+	public LLVMInt32op toInt32(String name, Code code) {
+		return new LLVMInt32op(
+				code.nameId(name),
+				getBlockPtr(),
+				getNativePtr());
 	}
 
 	@Override
-	public LLVMRelOp create(long blockPtr, long nativePtr) {
-		return new LLVMRelOp(blockPtr, nativePtr);
+	public LLVMRelOp create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMRelOp(id, blockPtr, nativePtr);
 	}
 
 	private static native long offsetBy(

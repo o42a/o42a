@@ -90,7 +90,7 @@ public class CodeBuilder {
 		if (hostPrecision.isCompatible()) {
 			this.host =
 				function.arg(function, getObjectSignature().object())
-				.to(function, hostIR)
+				.to(null, function, hostIR)
 				.op(this, hostType, hostPrecision);
 		} else {
 			this.host = anonymousObject(
@@ -157,7 +157,7 @@ public class CodeBuilder {
 			int flags) {
 
 		final Code code = dirs.code();
-		final CtrOp.Op ctr = code.allocate(CTR_TYPE);
+		final CtrOp.Op ctr = code.allocate(null, CTR_TYPE);
 
 		return ctr.op(this).newObject(
 				dirs,
@@ -185,7 +185,7 @@ public class CodeBuilder {
 			int flags) {
 
 		final Code code = dirs.code();
-		final CtrOp.Op ctr = code.allocate(CTR_TYPE);
+		final CtrOp.Op ctr = code.allocate(null, CTR_TYPE);
 
 		return ctr.op(this).newObject(
 				dirs,

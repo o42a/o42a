@@ -28,6 +28,9 @@ public interface FuncOp<F extends Func> extends RecOp<F> {
 
 	Signature<F> getSignature();
 
-	<FF extends Func> FuncOp<FF> toFunc(Code code, Signature<FF> signature);
+	<FF extends Func> FuncOp<FF> toFunc(
+			String name,
+			Code code,
+			Signature<FF> signature);
 
 }

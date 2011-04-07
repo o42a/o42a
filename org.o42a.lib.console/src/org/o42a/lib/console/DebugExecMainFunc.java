@@ -42,7 +42,7 @@ public final class DebugExecMainFunc extends Func {
 			DebuggableMainFunc main,
 			Int32op argc,
 			AnyOp argv) {
-		return invoke(code, DEBUG_EXEC_MAIN.result(), main, argc, argv);
+		return invoke(null, code, DEBUG_EXEC_MAIN.result(), main, argc, argv);
 	}
 
 	public static final class DebugExecMain

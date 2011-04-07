@@ -91,11 +91,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		}
 
 		public final RecOp<FieldDescIR.Op> field(Code code) {
-			return ptr(code, getType().field());
+			return ptr(null, code, getType().field());
 		}
 
 		public final RecOp<RelOp> fld(Code code) {
-			return relPtr(code, getType().body());
+			return relPtr(null, code, getType().body());
 		}
 
 	}

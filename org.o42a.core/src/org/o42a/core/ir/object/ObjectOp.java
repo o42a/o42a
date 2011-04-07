@@ -106,7 +106,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	public final void writeLogicalValue(CodeDirs dirs, ObjectOp body) {
 
 		final Code code = dirs.code();
-		final ValOp result = code.allocate(VAL_TYPE).storeIndefinite(code);
+		final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 		writeValue(dirs, result, body);
 	}
@@ -226,8 +226,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	public final BoolOp hasAncestor(Code code) {
-		return body(code).ancestorBody(code).load(code)
-		.toInt32(code).ne(code, code.int32(0));
+		return body(code).ancestorBody(code).load(null, code)
+		.toInt32(null, code).ne(null, code, code.int32(0));
 	}
 
 	public final ObjectOp ancestor(Code code) {
@@ -286,12 +286,12 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
 		final DataOp resultPtr =
-			castFunc().op(code).cast(code, this, ascendantType);
+			castFunc().op(null, code).cast(code, this, ascendantType);
 		final CodeBlk castNull = code.addBlock("cast_null");
 
-		resultPtr.isNull(code).go(code, castNull.head());
+		resultPtr.isNull(null, code).go(code, castNull.head());
 
-		final ObjOp result = resultPtr.to(code, ascendantIR.getBodyType()).op(
+		final ObjOp result = resultPtr.to(null, code, ascendantIR.getBodyType()).op(
 				getBuilder(),
 				ascendant,
 				COMPATIBLE);
@@ -345,9 +345,9 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	private final ObjectBodyIR.Op body(Code code) {
-		return ptr().toAny(code).to(
-				code,
-				getWellKnownType().ir(getGenerator()).getBodyType());
+		return ptr().toAny(null, code).to(
+				null,
+				code, getWellKnownType().ir(getGenerator()).getBodyType());
 	}
 
 }

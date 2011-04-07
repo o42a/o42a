@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.backend.llvm.code.LLVMStruct;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -36,8 +37,12 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 	private final Signature<F> signature;
 
-	public LLVMFunc(Signature<F> signature, long blockPtr, long nativePtr) {
-		super(0L, nativePtr);
+	public LLVMFunc(
+			CodeId id,
+			Signature<F> signature,
+			long blockPtr,
+			long nativePtr) {
+		super(id, 0L, nativePtr);
 		this.signature = signature;
 	}
 
@@ -47,93 +52,97 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 	}
 
 	@Override
-	public LLVMFunc<F> create(long blockPtr, long nativePtr) {
-		return new LLVMFunc<F>(this.signature, blockPtr, getNativePtr());
+	public LLVMFunc<F> create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMFunc<F>(id, this.signature, blockPtr, getNativePtr());
 	}
 
 	@Override
-	public void call(Code code, Op... args) {
+	public void call(CodeId id, Code code, Op... args) {
 		call(nextPtr(code), args);
 	}
 
 	@Override
-	public Int8op callInt8(Code code, Op... args) {
+	public Int8op callInt8(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt8op(nextPtr, call(nextPtr, args));
+		return new LLVMInt8op(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public Int16op callInt16(Code code, Op... args) {
+	public Int16op callInt16(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt16op(nextPtr, call(nextPtr, args));
+		return new LLVMInt16op(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public Int32op callInt32(Code code, Op... args) {
+	public Int32op callInt32(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt32op(nextPtr, call(nextPtr, args));
+		return new LLVMInt32op(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public Int64op callInt64(Code code, Op... args) {
+	public Int64op callInt64(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt64op(nextPtr, call(nextPtr, args));
+		return new LLVMInt64op(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public Fp32op callFp32(Code code, Op... args) {
+	public Fp32op callFp32(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMFp32op(nextPtr, call(nextPtr, args));
+		return new LLVMFp32op(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public Fp64op callFp64(Code code, Op... args) {
+	public Fp64op callFp64(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMFp64op(nextPtr, call(nextPtr, args));
+		return new LLVMFp64op(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public BoolOp callBool(Code code, Op... args) {
+	public BoolOp callBool(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMBoolOp(nextPtr, call(nextPtr, args));
+		return new LLVMBoolOp(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public AnyOp callAny(Code code, Op... args) {
+	public AnyOp callAny(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMAnyOp(nextPtr, call(nextPtr, args));
+		return new LLVMAnyOp(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public DataOp callData(Code code, Op... args) {
+	public DataOp callData(CodeId id, Code code, Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp(nextPtr, call(nextPtr, args));
+		return new LLVMDataOp(id, nextPtr, call(nextPtr, args));
 	}
 
 	@Override
-	public <O extends StructOp> O callPtr(Code code, Type<O> type, Op... args) {
+	public <O extends StructOp> O callPtr(
+			CodeId id,
+			Code code,
+			Type<O> type,
+			Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return type.op(new LLVMStruct(type, nextPtr, call(nextPtr, args)));
+		return type.op(new LLVMStruct(id, type, nextPtr, call(nextPtr, args)));
 	}
 
 	private long call(long blockPtr, Op[] args) {

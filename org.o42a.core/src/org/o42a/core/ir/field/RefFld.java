@@ -265,23 +265,23 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return ptr(code, getType().object());
+			return ptr(null, code, getType().object());
 		}
 
 		public FuncOp<C> constructor(Code code) {
-			return func(code, getType().constructor());
+			return func(null, code, getType().constructor());
 		}
 
 		public DataOp target(Code code, ObjOp host) {
 
-			final DataOp object = object(code).load(code);
-			final CondBlk noTarget = object.isNull(code).branch(
+			final DataOp object = object(code).load(null, code);
+			final CondBlk noTarget = object.isNull(null, code).branch(
 					code,
 					"no_target",
 					"has_target");
 			final CodeBlk hasTarget = noTarget.otherwise();
 
-			final DataOp object1 = hasTarget.phi(object);
+			final DataOp object1 = hasTarget.phi(null, object);
 
 			hasTarget.go(code.tail());
 
@@ -289,7 +289,7 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 			noTarget.go(code.tail());
 
-			return code.phi(object1, object2);
+			return code.phi(null, object1, object2);
 		}
 
 		protected abstract DataOp construct(
@@ -299,7 +299,7 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 		private DataOp construct(Code code, ObjOp host) {
 
-			final C constructor = constructor(code).load(code);
+			final C constructor = constructor(code).load(null, code);
 
 			code.dumpName("Constructor: ", constructor);
 			code.dumpName("Host: ", host.ptr());

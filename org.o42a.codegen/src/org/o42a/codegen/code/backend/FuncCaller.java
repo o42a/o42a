@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.backend;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -30,26 +31,30 @@ public interface FuncCaller<F extends Func> extends PtrOp {
 
 	Signature<F> getSignature();
 
-	void call(Code code, Op... args);
+	void call(CodeId id, Code code, Op... args);
 
-	Int8op callInt8(Code code, Op... args);
+	Int8op callInt8(CodeId id, Code code, Op... args);
 
-	Int16op callInt16(Code code, Op... args);
+	Int16op callInt16(CodeId id, Code code, Op... args);
 
-	Int32op callInt32(Code code, Op... args);
+	Int32op callInt32(CodeId id, Code code, Op... args);
 
-	Int64op callInt64(Code code, Op... args);
+	Int64op callInt64(CodeId id, Code code, Op... args);
 
-	Fp32op callFp32(Code code, Op... args);
+	Fp32op callFp32(CodeId id, Code code, Op... args);
 
-	Fp64op callFp64(Code code, Op... args);
+	Fp64op callFp64(CodeId id, Code code, Op... args);
 
-	BoolOp callBool(Code code, Op... args);
+	BoolOp callBool(CodeId id, Code code, Op... args);
 
-	AnyOp callAny(Code code, Op... args);
+	AnyOp callAny(CodeId id, Code code, Op... args);
 
-	DataOp callData(Code code, Op... args);
+	DataOp callData(CodeId id, Code code, Op... args);
 
-	<O extends StructOp> O callPtr(Code code, Type<O> type, Op... args);
+	<O extends StructOp> O callPtr(
+			CodeId id,
+			Code code,
+			Type<O> type,
+			Op... args);
 
 }

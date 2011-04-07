@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.backend;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.op.*;
@@ -29,36 +30,34 @@ public interface StructWriter extends PtrOp {
 
 	Type<?> getType();
 
-	RecOp<?> field(Code code, Data<?> field);
+	RecOp<?> field(CodeId id, Code code, Data<?> field);
 
-	RecOp<Int8op> int8(Code code, Int8rec field);
+	RecOp<Int8op> int8(CodeId id, Code code, Int8rec field);
 
-	RecOp<Int16op> int16(Code code, Int16rec field);
+	RecOp<Int16op> int16(CodeId id, Code code, Int16rec field);
 
-	RecOp<Int32op> int32(Code code, Int32rec field);
+	RecOp<Int32op> int32(CodeId id, Code code, Int32rec field);
 
-	RecOp<Int64op> int64(Code code, Int64rec field);
+	RecOp<Int64op> int64(CodeId id, Code code, Int64rec field);
 
-	RecOp<Fp32op> fp32(Code code, Fp32rec field);
+	RecOp<Fp32op> fp32(CodeId id, Code code, Fp32rec field);
 
-	RecOp<Fp64op> fp64(Code code, Fp64rec field);
+	RecOp<Fp64op> fp64(CodeId id, Code code, Fp64rec field);
 
-	RecOp<AnyOp> ptr(Code code, AnyPtrRec field);
+	RecOp<AnyOp> ptr(CodeId id, Code code, AnyPtrRec field);
 
-	RecOp<DataOp> ptr(Code code, DataRec field);
+	RecOp<DataOp> ptr(CodeId id, Code code, DataRec field);
 
-	<P extends StructOp> RecOp<P> ptr(Code code, StructRec<P> field);
+	<P extends StructOp> RecOp<P> ptr(CodeId id, Code code, StructRec<P> field);
 
-	RecOp<RelOp> relPtr(Code code, RelPtrRec field);
+	RecOp<RelOp> relPtr(CodeId id, Code code, RelPtrRec field);
 
-	<O extends StructOp> O struct(Code code, Type<O> field);
+	<O extends StructOp> O struct(CodeId id, Code code, Type<O> field);
 
-	<F extends Func> FuncOp<F> func(Code code, FuncRec<F> field);
+	<F extends Func> FuncOp<F> func(CodeId id, Code code, FuncRec<F> field);
 
-	DataOp toData(Code code);
+	DataOp toData(CodeId id, Code code);
 
-	<O extends StructOp> O to(Code code, Type<O> type);
-
-	CodeBackend backend();
+	<O extends StructOp> O to(CodeId id, Code code, Type<O> type);
 
 }

@@ -55,7 +55,7 @@ public class ScopeFldOp extends FldOp {
 
 		final Code code = dirs.code();
 		final ObjectBodyIR target = fld().getTarget();
-		final DataOp targetPtr = ptr().object(code).load(code);
+		final DataOp targetPtr = ptr().object(code).load(null, code);
 
 		return anonymousObject(
 				getBuilder(),

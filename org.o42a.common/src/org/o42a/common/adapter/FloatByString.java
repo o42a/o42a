@@ -250,7 +250,7 @@ public strictfp class FloatByString extends ByString<Double> {
 
 		final Generator generator = input.getGenerator();
 		final ValOp inputValue = input.writeValue(code);
-		final ParseFunc parseFunc = parseFunc(generator).op(code);
+		final ParseFunc parseFunc = parseFunc(generator).op(null, code);
 
 		parseFunc.parse(code, result, inputValue);
 	}

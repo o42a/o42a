@@ -36,7 +36,7 @@ final class DebugTraceFunc extends Func {
 	}
 
 	public void trace(Code code, DebugEnvOp env) {
-		invoke(code, DEBUG_TRACE.result(), env);
+		invoke(null, code, DEBUG_TRACE.result(), env);
 	}
 
 	public static final class DebugTrace extends Signature<DebugTraceFunc> {

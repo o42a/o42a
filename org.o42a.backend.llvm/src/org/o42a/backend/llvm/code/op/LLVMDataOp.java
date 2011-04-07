@@ -21,18 +21,19 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 
 
 public final class LLVMDataOp extends LLVMPtrOp implements DataOp {
 
-	public LLVMDataOp(long blockPtr, long nativePtr) {
-		super(blockPtr, nativePtr);
+	public LLVMDataOp(CodeId id, long blockPtr, long nativePtr) {
+		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public LLVMDataOp toData(Code code) {
+	public LLVMDataOp toData(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -40,12 +41,12 @@ public final class LLVMDataOp extends LLVMPtrOp implements DataOp {
 			return this;
 		}
 
-		return super.toData(code);
+		return super.toData(id, code);
 	}
 
 	@Override
-	public LLVMDataOp create(long blockPtr, long nativePtr) {
-		return new LLVMDataOp(blockPtr, nativePtr);
+	public LLVMDataOp create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMDataOp(id, blockPtr, nativePtr);
 	}
 
 }

@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.data.LLVMId.codeId;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.backend.FuncWriter;
@@ -67,92 +68,104 @@ public final class LLVMFunction<F extends Func>
 	}
 
 	@Override
-	public Int8op int8arg(Code code, int index) {
+	public Int8op int8arg(Code code, Arg<Int8op> arg) {
 		return new LLVMInt8op(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public Int16op int16arg(Code code, int index) {
+	public Int16op int16arg(Code code, Arg<Int16op> arg) {
 		return new LLVMInt16op(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public Int32op int32arg(Code code, int index) {
+	public Int32op int32arg(Code code, Arg<Int32op> arg) {
 		return new LLVMInt32op(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public Int64op int64arg(Code code, int index) {
+	public Int64op int64arg(Code code, Arg<Int64op> arg) {
 		return new LLVMInt64op(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public Fp32op fp32arg(Code code, int index) {
+	public Fp32op fp32arg(Code code, Arg<Fp32op> arg) {
 		return new LLVMFp32op(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public Fp64op fp64arg(Code code, int index) {
+	public Fp64op fp64arg(Code code, Arg<Fp64op> arg) {
 		return new LLVMFp64op(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public BoolOp boolArg(Code code, int index) {
+	public BoolOp boolArg(Code code, Arg<BoolOp> arg) {
 		return new LLVMBoolOp(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public RelOp relPtrArg(Code code, int index) {
+	public RelOp relPtrArg(Code code, Arg<RelOp> arg) {
 		return new LLVMRelOp(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public AnyOp ptrArg(Code code, int index) {
+	public AnyOp ptrArg(Code code, Arg<AnyOp> arg) {
 		return new LLVMAnyOp(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public DataOp dataArg(Code code, int index) {
+	public DataOp dataArg(Code code, Arg<DataOp> arg) {
 		return new LLVMDataOp(
+				argId(arg),
 				nextPtr(code),
-				arg(getFunctionPtr(), index));
+				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
 	@Override
-	public <O extends StructOp> O ptrArg(Code code, int index, Type<O> type) {
+	public <O extends StructOp> O ptrArg(Code code, Arg<O> arg, Type<O> type) {
 		return type.op(new LLVMStruct(
+				argId(arg),
 				type,
 				nextPtr(code),
-				arg(getFunctionPtr(), index)));
+				arg(getFunctionPtr(), arg.getIndex())));
 	}
 
 	@Override
 	public <FF extends Func> FF funcPtrArg(
 			Code code,
-			int index,
+			Arg<FF> arg,
 			Signature<FF> signature) {
 		return signature.op(new LLVMFunc<FF>(
+				argId(arg),
 				signature,
 				nextPtr(code),
-				arg(getFunctionPtr(), index)));
+				arg(getFunctionPtr(), arg.getIndex())));
 	}
 
 	@Override
@@ -188,6 +201,10 @@ public final class LLVMFunction<F extends Func>
 			String name,
 			long funcTypePtr,
 			boolean exported);
+
+	private final CodeId argId(Arg<?> arg) {
+		return arg.getId();
+	}
 
 	private static native long arg(long functionPtr, int index);
 

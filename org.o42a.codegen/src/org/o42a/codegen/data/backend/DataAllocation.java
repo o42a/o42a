@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data.backend;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -34,7 +35,7 @@ public interface DataAllocation<O extends PtrOp> {
 
 	RelAllocation relativeTo(DataAllocation<?> allocation);
 
-	O op(CodeWriter writer);
+	O op(CodeId id, CodeWriter writer);
 
 	DataAllocation<AnyOp> toAny();
 

@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Code;
 
 public interface RecOp<O extends Op> extends PtrOp {
 
-	O load(Code code);
+	O load(String name, Code code);
 
 	void store(Code code, O value);
 

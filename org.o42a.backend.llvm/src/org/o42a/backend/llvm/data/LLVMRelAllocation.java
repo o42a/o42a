@@ -21,6 +21,7 @@ package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.backend.llvm.code.op.LLVMRelOp;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.RelOp;
@@ -52,11 +53,12 @@ final class LLVMRelAllocation implements RelAllocation {
 	}
 
 	@Override
-	public LLVMRelOp op(CodeWriter writer) {
+	public LLVMRelOp op(CodeId id, CodeWriter writer) {
 
 		final LLVMCode code = (LLVMCode) writer;
 
 		return new LLVMRelOp(
+				id,
 				code.nextPtr(),
 				this.id.relativeExpression(
 						code.getModule(),

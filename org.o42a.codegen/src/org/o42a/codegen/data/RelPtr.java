@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.backend.RelAllocation;
@@ -28,10 +29,19 @@ public final class RelPtr {
 
 	private final Ptr<?> pointer;
 	private final Ptr<?> relativeTo;
+	private final CodeId id;
 
 	RelPtr(Ptr<?> pointer, Ptr<?> relativeTo) {
 		this.pointer = pointer;
 		this.relativeTo = relativeTo;
+		this.id =
+			this.pointer.getId()
+			.detail("relative_to")
+			.detail(relativeTo.getId());
+	}
+
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	public final Ptr<?> getPointer() {
@@ -42,13 +52,15 @@ public final class RelPtr {
 		return this.relativeTo;
 	}
 
-	public RelOp op(Code code) {
+	public RelOp op(String name, Code code) {
 
 		final CodeBase c = code;
 
 		c.assertIncomplete();
 
-		return allocation().op(c.writer());
+		return allocation().op(
+				name != null ? code.nameId(name) : getId(),
+				c.writer());
 	}
 
 	@Override

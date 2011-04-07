@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data.backend;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.RelOp;
@@ -28,6 +29,6 @@ public interface RelAllocation {
 
 	void write(DataAllocation<RecOp<RelOp>> allocation, DataWriter writer);
 
-	RelOp op(CodeWriter writer);
+	RelOp op(CodeId id, CodeWriter writer);
 
 }

@@ -83,11 +83,12 @@ public abstract class ContainerAllocation<O extends StructOp>
 	}
 
 	@Override
-	public O op(CodeWriter writer) {
+	public O op(CodeId id, CodeWriter writer) {
 
 		final LLVMCode code = (LLVMCode) writer;
 
 		return getType().op(new LLVMStruct(
+				id,
 				getType(),
 				code.nextPtr(),
 				llvmId().expression(code.getModule())));

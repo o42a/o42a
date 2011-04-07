@@ -161,7 +161,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				this.res.getScope().getEnclosingScopePath()
 				.target(this.res, this.res.distribute());
 
-			final ValOp operandValue = code.allocate(VAL_TYPE);
+			final ValOp operandValue = code.allocate(null, VAL_TYPE);
 			final CodeDirs dirs = exitWhenUnknown(code, failure.head());
 			final HostOp operandHost = enclosingRef.op(host).target(dirs);
 

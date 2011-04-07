@@ -125,7 +125,7 @@ public class ObjectIR  {
 		final ObjectBodyIR bodyType = getBodyType();
 
 		return bodyType.data(code.getGenerator())
-		.getPointer().op(code).op(builder, getObject(), EXACT);
+		.getPointer().op(null, code).op(builder, getObject(), EXACT);
 	}
 
 	public ObjectBodyIR bodyIR(Obj ascendant) {

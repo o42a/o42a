@@ -131,7 +131,7 @@ public class DepIR {
 		}
 
 		public final RecOp<DataOp> object(Code code) {
-			return ptr(code, getType().object());
+			return ptr(null, code, getType().object());
 		}
 
 	}

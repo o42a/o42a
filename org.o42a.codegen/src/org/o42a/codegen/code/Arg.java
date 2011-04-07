@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.DataType;
@@ -30,12 +31,14 @@ public abstract class Arg<O extends Op> {
 	private final Signature<?> signature;
 	private final int index;
 	private final String name;
+	private final CodeId id;
 	private final DataType dataType;
 
 	Arg(Signature<?> signature, int index, String name, DataType dataType) {
 		this.signature = signature;
 		this.index = index;
 		this.name = name;
+		this.id = signature.getGenerator().id(name);
 		this.dataType = dataType;
 	}
 
@@ -49,6 +52,10 @@ public abstract class Arg<O extends Op> {
 
 	public final String getName() {
 		return this.name;
+	}
+
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	public final DataType getDataType() {
@@ -88,7 +95,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected Int8op get(Code code, FuncWriter<?> writer) {
-			return writer.int8arg(code, getIndex());
+			return writer.int8arg(code, this);
 		}
 
 	}
@@ -106,7 +113,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected Int16op get(Code code, FuncWriter<?> writer) {
-			return writer.int16arg(code, getIndex());
+			return writer.int16arg(code, this);
 		}
 
 	}
@@ -124,7 +131,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected Int32op get(Code code, FuncWriter<?> writer) {
-			return writer.int32arg(code, getIndex());
+			return writer.int32arg(code, this);
 		}
 
 	}
@@ -142,7 +149,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected Int64op get(Code code, FuncWriter<?> writer) {
-			return writer.int64arg(code, getIndex());
+			return writer.int64arg(code, this);
 		}
 
 	}
@@ -160,7 +167,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected Fp32op get(Code code, FuncWriter<?> writer) {
-			return writer.fp32arg(code, getIndex());
+			return writer.fp32arg(code, this);
 		}
 
 	}
@@ -178,7 +185,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected Fp64op get(Code code, FuncWriter<?> writer) {
-			return writer.fp64arg(code, getIndex());
+			return writer.fp64arg(code, this);
 		}
 
 	}
@@ -196,7 +203,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected BoolOp get(Code code, FuncWriter<?> writer) {
-			return writer.boolArg(code, getIndex());
+			return writer.boolArg(code, this);
 		}
 
 	}
@@ -214,7 +221,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected RelOp get(Code code, FuncWriter<?> writer) {
-			return writer.relPtrArg(code, getIndex());
+			return writer.relPtrArg(code, this);
 		}
 
 	}
@@ -232,7 +239,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected AnyOp get(Code code, FuncWriter<?> writer) {
-			return writer.ptrArg(code, getIndex());
+			return writer.ptrArg(code, this);
 		}
 
 	}
@@ -250,7 +257,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected DataOp get(Code code, FuncWriter<?> writer) {
-			return writer.dataArg(code, getIndex());
+			return writer.dataArg(code, this);
 		}
 
 	}
@@ -286,7 +293,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected O get(Code code, FuncWriter<?> writer) {
-			return writer.ptrArg(code, getIndex(), this.type);
+			return writer.ptrArg(code, this, this.type);
 		}
 
 	}
@@ -322,7 +329,7 @@ public abstract class Arg<O extends Op> {
 
 		@Override
 		protected F get(Code code, FuncWriter<?> writer) {
-			return writer.funcPtrArg(code, getIndex(), this.targetSignature);
+			return writer.funcPtrArg(code, this, this.targetSignature);
 		}
 
 	}

@@ -20,6 +20,7 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.op.LLVMRecOp;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp32op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.DataLayout;
@@ -37,8 +38,8 @@ final class Fp32dataAlloc extends SimpleDataAllocation<RecOp<Fp32op>> {
 	}
 
 	@Override
-	protected RecOp<Fp32op> op(long blockPtr, long nativePtr) {
-		return new LLVMRecOp.Fp32(blockPtr, nativePtr);
+	protected RecOp<Fp32op> op(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMRecOp.Fp32(id, blockPtr, nativePtr);
 	}
 
 }

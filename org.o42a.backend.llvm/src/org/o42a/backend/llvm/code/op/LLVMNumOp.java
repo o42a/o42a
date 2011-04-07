@@ -21,6 +21,8 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 
+import org.o42a.backend.llvm.code.LLVMCode;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.NumOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -29,12 +31,19 @@ import org.o42a.codegen.code.op.StructOp;
 public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
 		implements LLVMOp, NumOp<O> {
 
+	private final CodeId id;
 	private final long blockPtr;
 	private final long nativePtr;
 
-	public LLVMNumOp(long blockPtr, long nativePtr) {
+	public LLVMNumOp(CodeId id, long blockPtr, long nativePtr) {
+		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
+	}
+
+	@Override
+	public final CodeId getId() {
+		return this.id;
 	}
 
 	@Override
@@ -52,47 +61,72 @@ public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
 	}
 
 	@Override
-	public abstract T neg(Code code);
+	public abstract T neg(String name, Code code);
 
 	@Override
-	public abstract T add(Code code, O summand);
+	public abstract T add(String name, Code code, O summand);
 
 	@Override
-	public abstract T sub(Code code, O subtrahend);
+	public abstract T sub(String name, Code code, O subtrahend);
 
 	@Override
-	public abstract T mul(Code code, O multiplier);
+	public abstract T mul(String name, Code code, O multiplier);
 
 	@Override
-	public abstract T div(Code code, O divisor);
+	public abstract T div(String name, Code code, O divisor);
 
 	@Override
-	public abstract T rem(Code code, O divisor);
+	public abstract T rem(String name, Code code, O divisor);
 
 	@Override
-	public abstract LLVMInt8op toInt8(Code code);
+	public abstract LLVMInt8op toInt8(String name, Code code);
 
 	@Override
-	public abstract LLVMInt16op toInt16(Code code);
+	public abstract LLVMInt16op toInt16(String name, Code code);
 
 	@Override
-	public abstract LLVMInt32op toInt32(Code code);
+	public abstract LLVMInt32op toInt32(String name, Code code);
 
 	@Override
-	public abstract LLVMInt64op toInt64(Code code);
+	public abstract LLVMInt64op toInt64(String name, Code code);
 
 	@Override
-	public abstract LLVMFp32op toFp32(Code code);
+	public abstract LLVMFp32op toFp32(String name, Code code);
 
 	@Override
-	public abstract LLVMFp64op toFp64(Code code);
+	public abstract LLVMFp64op toFp64(String name, Code code);
 
 	@Override
-	public abstract T create(long blockPtr, long nativePtr);
+	public abstract T create(CodeId id, long blockPtr, long nativePtr);
 
 	@Override
 	public void returnValue(Code code) {
 		llvm(code).returnValue(this);
+	}
+
+	@Override
+	public String toString() {
+		return this.id.toString();
+	}
+
+	protected final CodeId castId(String name, Code code, String suffix) {
+		return LLVMCode.castId(this, name, code, suffix);
+	}
+
+	protected final CodeId castId(String name, Code code, CodeId suffix) {
+		return LLVMCode.castId(this, name, code, suffix);
+	}
+
+	protected final CodeId unaryId(String name, Code code, String op) {
+		return LLVMCode.unaryId(this, name, code, op);
+	}
+
+	protected final CodeId binaryId(
+			String name,
+			Code code,
+			String op,
+			O operand) {
+		return LLVMCode.binaryId(this, name, code, op, operand);
 	}
 
 }

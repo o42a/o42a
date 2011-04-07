@@ -20,6 +20,7 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.op.LLVMDataOp;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -49,8 +50,8 @@ public final class AnyDataAlloc extends SimpleDataAllocation<DataOp> {
 	}
 
 	@Override
-	protected LLVMDataOp op(long blockPtr, long nativePtr) {
-		return new LLVMDataOp(blockPtr, nativePtr);
+	protected LLVMDataOp op(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMDataOp(id, blockPtr, nativePtr);
 	}
 
 }

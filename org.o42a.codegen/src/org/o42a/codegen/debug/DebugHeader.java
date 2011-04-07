@@ -94,19 +94,19 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		public final RecOp<Int32op> typeCode(Code code) {
-			return int32(code, getType().typeCode());
+			return int32(null, code, getType().typeCode());
 		}
 
 		public final RecOp<AnyOp> name(Code code) {
-			return ptr(code, getType().name());
+			return ptr(null, code, getType().name());
 		}
 
 		public final RecOp<AnyOp> typeInfo(Code code) {
-			return ptr(code, getType().typeInfo());
+			return ptr(null, code, getType().typeInfo());
 		}
 
 		public final RecOp<RelOp> enclosing(Code code) {
-			return relPtr(code, getType().enclosing());
+			return relPtr(null, code, getType().enclosing());
 		}
 
 		@Override
@@ -127,12 +127,12 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 						debug.allocateName(
 								generator.id("DEBUG").sub("field_name")
 								.sub(fieldName),
-								fieldName.toString()).op(code));
+								fieldName.toString()).op(null, code));
 				enclosing(code).store(
 						code,
 						getType().pointer(generator).relativeTo(
 								enclosing.getType().pointer(
-										generator)).op(code));
+										generator)).op(null, code));
 			}
 
 			final DebugTypeInfo typeInfo = debug.typeInfo(getType());
@@ -140,7 +140,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			typeCode(code).store(code, code.int32(typeInfo.getCode()));
 			typeInfo(code).store(
 					code,
-					typeInfo.pointer(generator).toAny().op(code));
+					typeInfo.pointer(generator).toAny().op(null, code));
 
 			super.allocated(code, enclosing);
 		}

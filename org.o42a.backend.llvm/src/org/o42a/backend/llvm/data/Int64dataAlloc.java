@@ -20,8 +20,9 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.op.LLVMRecOp;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int64op;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.DataLayout;
 
 
@@ -37,8 +38,8 @@ final class Int64dataAlloc extends SimpleDataAllocation<RecOp<Int64op>> {
 	}
 
 	@Override
-	protected RecOp<Int64op> op(long blockPtr, long nativePtr) {
-		return new LLVMRecOp.Int64(blockPtr, nativePtr);
+	protected RecOp<Int64op> op(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMRecOp.Int64(id, blockPtr, nativePtr);
 	}
 
 }

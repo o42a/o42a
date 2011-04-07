@@ -26,10 +26,10 @@ public interface PtrOp extends Op {
 
 	void returnValue(Code code);
 
-	BoolOp isNull(Code code);
+	BoolOp isNull(String name, Code code);
 
-	BoolOp eq(Code code, PtrOp other);
+	BoolOp eq(String name, Code code, PtrOp other);
 
-	AnyOp toAny(Code code);
+	AnyOp toAny(String name, Code code);
 
 }

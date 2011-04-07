@@ -41,7 +41,7 @@ public final class ObjectCondFunc extends ObjectFunc {
 	}
 
 	public CondOp call(Code code, DataOp object) {
-		return new Int8CondOp(invoke(code, OBJECT_COND.result(), object));
+		return new Int8CondOp(invoke(null, code, OBJECT_COND.result(), object));
 	}
 
 	public static final class ObjectCond
