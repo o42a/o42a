@@ -77,7 +77,7 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 				nextPtr,
 				offsetBy(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						nativePtr(from),
 						getNativePtr()));
 	}

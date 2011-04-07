@@ -46,7 +46,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				neg(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr()));
 	}
 
@@ -61,7 +61,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				add(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(summand)));
 	}
@@ -77,7 +77,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				sub(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(subtrahend)));
 	}
@@ -93,7 +93,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				mul(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(multiplier)));
 	}
@@ -109,7 +109,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				div(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(divisor)));
 	}
@@ -125,7 +125,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				rem(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(divisor)));
 	}
@@ -141,7 +141,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				eq(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
@@ -157,7 +157,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				ne(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
@@ -173,7 +173,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				gt(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(), nativePtr(other)));
 	}
 
@@ -188,7 +188,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				ge(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
@@ -204,7 +204,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				lt(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
@@ -220,7 +220,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				le(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
@@ -236,7 +236,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				fp2int(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						(byte) 8));
 	}
@@ -252,7 +252,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				fp2int(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						(byte) 16));
 	}
@@ -268,7 +268,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				fp2int(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						(byte) 32));
 	}
@@ -284,7 +284,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				fp2int(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						(byte) 64));
 	}
@@ -300,7 +300,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				fp2fp32(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr()));
 	}
 
@@ -315,7 +315,7 @@ public abstract class LLVMFpOp<O extends FpOp<O>, T extends O>
 				nextPtr,
 				fp2fp64(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr()));
 	}
 

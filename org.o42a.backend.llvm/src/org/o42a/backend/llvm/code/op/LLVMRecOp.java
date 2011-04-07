@@ -46,7 +46,7 @@ public abstract class LLVMRecOp<O extends Op>
 		return createLoaded(
 				id,
 				nextPtr,
-				load(nextPtr, id.toString(), getNativePtr()));
+				load(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	@Override
