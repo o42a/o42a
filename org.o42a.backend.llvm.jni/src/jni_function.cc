@@ -156,6 +156,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFunc_call(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
+		jstring id,
 		jlong functionPtr,
 		jlongArray argPtrs) {
 
@@ -174,7 +175,14 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFunc_call(
 		args[i] = from_ptr<Value>(argArray[i]);
 	}
 
-	Value *result = builder.CreateCall(callee, args.begin(), args.end());
+	Value *result;
+
+	if (id) {
+		jStringRef name(env, id);
+		result = builder.CreateCall(callee, args.begin(), args.end(), name);
+	} else {
+		result = builder.CreateCall(callee, args.begin(), args.end());
+	}
 
 	ODUMP(result);
 

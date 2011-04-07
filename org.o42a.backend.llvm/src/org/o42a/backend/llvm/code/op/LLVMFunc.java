@@ -57,8 +57,8 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 	}
 
 	@Override
-	public void call(CodeId id, Code code, Op... args) {
-		call(nextPtr(code), args);
+	public void call(Code code, Op... args) {
+		call(nextPtr(code), null, args);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt8op(id, nextPtr, call(nextPtr, args));
+		return new LLVMInt8op(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt16op(id, nextPtr, call(nextPtr, args));
+		return new LLVMInt16op(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt32op(id, nextPtr, call(nextPtr, args));
+		return new LLVMInt32op(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMInt64op(id, nextPtr, call(nextPtr, args));
+		return new LLVMInt64op(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMFp32op(id, nextPtr, call(nextPtr, args));
+		return new LLVMFp32op(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMFp64op(id, nextPtr, call(nextPtr, args));
+		return new LLVMFp64op(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMBoolOp(id, nextPtr, call(nextPtr, args));
+		return new LLVMBoolOp(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMAnyOp(id, nextPtr, call(nextPtr, args));
+		return new LLVMAnyOp(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp(id, nextPtr, call(nextPtr, args));
+		return new LLVMDataOp(id, nextPtr, call(nextPtr, id, args));
 	}
 
 	@Override
@@ -142,10 +142,11 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return type.op(new LLVMStruct(id, type, nextPtr, call(nextPtr, args)));
+		return type.op(
+				new LLVMStruct(id, type, nextPtr, call(nextPtr, id, args)));
 	}
 
-	private long call(long blockPtr, Op[] args) {
+	private long call(long blockPtr, CodeId id, Op[] args) {
 
 		final long[] argPtrs = new long[args.length];
 
@@ -153,11 +154,16 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 			argPtrs[i] = nativePtr(args[i]);
 		}
 
-		return call(blockPtr, getNativePtr(), argPtrs);
+		return call(
+				blockPtr,
+				id != null ? id.toString() : null,
+				getNativePtr(),
+				argPtrs);
 	}
 
 	private static native long call(
 			long blockPtr,
+			String id,
 			long functionPtr,
 			long[] argPtrs);
 

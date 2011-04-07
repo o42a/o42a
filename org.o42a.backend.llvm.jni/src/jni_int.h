@@ -10,178 +10,178 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    shl
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_shl
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    lshr
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lshr
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    ashr
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ashr
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    and
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_and
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    or
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_or
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    xor
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_xor
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    neg
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_neg
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    add
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_add
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    sub
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_sub
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    mul
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_mul
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    div
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_div
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    rem
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_rem
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    eq
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_eq
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    ne
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ne
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    gt
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_gt
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    ge
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ge
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    lt
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lt
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    le
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_le
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    int2int
- * Signature: (JJB)J
+ * Signature: (JLjava/lang/String;JB)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int2int
-  (JNIEnv *, jclass, jlong, jlong, jbyte);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jbyte);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    intToFp32
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp32
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    intToFp64
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp64
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
  * Method:    lowestBit
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lowestBit
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 #ifdef __cplusplus
 }

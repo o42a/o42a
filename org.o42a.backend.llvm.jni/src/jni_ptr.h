@@ -10,18 +10,18 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    field
- * Signature: (JJI)J
+ * Signature: (JLjava/lang/String;JI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_field
-  (JNIEnv *, jclass, jlong, jlong, jint);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    load
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_load
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
@@ -34,74 +34,74 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_store
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    toAny
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toAny
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    toPtr
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toPtr
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    toInt
- * Signature: (JJB)J
+ * Signature: (JLjava/lang/String;JB)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt
-  (JNIEnv *, jclass, jlong, jlong, jbyte);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jbyte);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    toFp32
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp32
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    toFp64
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp64
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    toRelPtr
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toRelPtr
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    castStructTo
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castStructTo
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    castFuncTo
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castFuncTo
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
  * Method:    isNull
- * Signature: (JJ)J
+ * Signature: (JLjava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_isNull
-  (JNIEnv *, jclass, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong);
 
 #ifdef __cplusplus
 }
@@ -117,10 +117,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLVMRelOp
  * Method:    offsetBy
- * Signature: (JJJ)J
+ * Signature: (JLjava/lang/String;JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMRelOp_offsetBy
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
 #ifdef __cplusplus
 }

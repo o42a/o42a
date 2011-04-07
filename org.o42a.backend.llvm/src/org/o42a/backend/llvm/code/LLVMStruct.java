@@ -70,7 +70,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int8(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int8(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int16(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int16(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int32(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int32(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int64(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Int64(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Fp32(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Fp32(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Fp64(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Fp64(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Data(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Data(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 				id,
 				field.getType(),
 				nextPtr,
-				field(nextPtr, field));
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Rel(id, nextPtr, field(nextPtr, field));
+		return new LLVMRecOp.Rel(id, nextPtr, field(nextPtr, id, field));
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 				id,
 				field,
 				nextPtr,
-				field(nextPtr, field.pointer(code.getGenerator()))));
+				field(nextPtr, id, field.pointer(code.getGenerator()))));
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		return new LLVMFuncOp<F>(
 				id,
 				nextPtr,
-				field(nextPtr, field),
+				field(nextPtr, id, field),
 				field.getSignature());
 	}
 
@@ -197,15 +197,15 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		return "(" + this.type.getType().getId() + "*) " + getId();
 	}
 
-	private final long field(long blockPtr, Data<?> field) {
-		return field(blockPtr, field.getPointer());
+	private final long field(long blockPtr, CodeId id, Data<?> field) {
+		return field(blockPtr, id, field.getPointer());
 	}
 
-	private final long field(long blockPtr, Ptr<?> pointer) {
+	private final long field(long blockPtr, CodeId id, Ptr<?> pointer) {
 
 		final LLVMDataAllocation<?> allocation =
 			(LLVMDataAllocation<?>) pointer.getAllocation();
-		final long field = field(blockPtr, allocation);
+		final long field = field(blockPtr, id, allocation);
 
 		assert field != 0L :
 			pointer + " is not inside of " + this.type.getType();
@@ -213,7 +213,10 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		return field;
 	}
 
-	private long field(long blockPtr, LLVMDataAllocation<?> allocation) {
+	private long field(
+			long blockPtr,
+			CodeId id,
+			LLVMDataAllocation<?> allocation) {
 
 		final ContainerAllocation<?> enclosing = allocation.getEnclosing();
 
@@ -223,17 +226,26 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		if (enclosing.getTypePtr() == this.type.getTypePtr()) {
 			return field(
 					blockPtr,
+					id.toString(),
 					getNativePtr(),
 					allocation.llvmId().getIndex());
 		}
 
-		final long enclosingField = field(blockPtr, enclosing);
+		final CodeId enclosingId =
+			id.detail("enc").detail(enclosing.getType().getId());
+		final long enclosingField = field(blockPtr, enclosingId, enclosing);
 
 		if (enclosingField == 0L) {
 			return 0L;
 		}
 
-		return field(blockPtr, enclosingField, allocation.llvmId().getIndex());
+		final int index = allocation.llvmId().getIndex();
+
+		return field(
+				blockPtr,
+				enclosingId.anonymous(index).toString(),
+				enclosingField,
+				index);
 	}
 
 }

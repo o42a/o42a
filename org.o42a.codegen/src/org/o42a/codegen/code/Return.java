@@ -69,17 +69,7 @@ public abstract class Return<O> {
 		if (name != null) {
 			return code.nameId(name);
 		}
-
-		final int firstArg =
-			code.isDebug() && getSignature().isDebuggable() ? 1 : 0;
-
-		if (args.length <= firstArg) {
-			return caller.getId().detail("result");
-		}
-
-		return caller.getId()
-		.detail(args[firstArg].getId())
-		.detail("return");
+		return caller.getId().detail("result");
 	}
 
 	static final class ReturnVoid extends Return<Void> {
@@ -99,7 +89,7 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			caller.call(callId(name, code, caller, args), code, args);
+			caller.call(code, args);
 			return null;
 		}
 
@@ -122,7 +112,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callInt8(callId(name, code, caller, args), code, args);
+			return caller.callInt8(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -144,7 +137,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callInt16(callId(name, code, caller, args), code, args);
+			return caller.callInt16(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -166,7 +162,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callInt32(callId(name, code, caller, args), code, args);
+			return caller.callInt32(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -188,7 +187,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callInt64(callId(name, code, caller, args), code, args);
+			return caller.callInt64(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -210,7 +212,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callFp32(callId(name, code, caller, args), code, args);
+			return caller.callFp32(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -232,7 +237,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callFp64(callId(name, code, caller, args), code, args);
+			return caller.callFp64(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -254,7 +262,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callBool(callId(name, code, caller, args), code, args);
+			return caller.callBool(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -276,7 +287,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callAny(callId(name, code, caller, args), code, args);
+			return caller.callAny(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}
@@ -298,7 +312,10 @@ public abstract class Return<O> {
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
-			return caller.callData(callId(name, code, caller, args), code, args);
+			return caller.callData(
+					callId(name, code, caller, args),
+					code,
+					args);
 		}
 
 	}

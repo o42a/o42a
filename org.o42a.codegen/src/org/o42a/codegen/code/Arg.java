@@ -21,6 +21,7 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncWriter;
+import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.DataType;
 import org.o42a.codegen.data.Type;
@@ -68,6 +69,8 @@ public abstract class Arg<O extends Op> {
 
 	public abstract boolean compatibleWith(Op op);
 
+	protected abstract void write(SignatureWriter<?> writer);
+
 	protected abstract O get(Code code, FuncWriter<?> writer);
 
 	@Override
@@ -94,6 +97,11 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addInt8(this);
+		}
+
+		@Override
 		protected Int8op get(Code code, FuncWriter<?> writer) {
 			return writer.int8arg(code, this);
 		}
@@ -109,6 +117,11 @@ public abstract class Arg<O extends Op> {
 		@Override
 		public boolean compatibleWith(Op op) {
 			return op instanceof Int16op;
+		}
+
+		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addInt16(this);
 		}
 
 		@Override
@@ -130,6 +143,11 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addInt32(this);
+		}
+
+		@Override
 		protected Int32op get(Code code, FuncWriter<?> writer) {
 			return writer.int32arg(code, this);
 		}
@@ -145,6 +163,11 @@ public abstract class Arg<O extends Op> {
 		@Override
 		public boolean compatibleWith(Op op) {
 			return op instanceof Int64op;
+		}
+
+		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addInt64(this);
 		}
 
 		@Override
@@ -166,6 +189,11 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addFp32(this);
+		}
+
+		@Override
 		protected Fp32op get(Code code, FuncWriter<?> writer) {
 			return writer.fp32arg(code, this);
 		}
@@ -181,6 +209,11 @@ public abstract class Arg<O extends Op> {
 		@Override
 		public boolean compatibleWith(Op op) {
 			return op instanceof Fp64op;
+		}
+
+		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addFp64(this);
 		}
 
 		@Override
@@ -202,6 +235,11 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addBool(this);
+		}
+
+		@Override
 		protected BoolOp get(Code code, FuncWriter<?> writer) {
 			return writer.boolArg(code, this);
 		}
@@ -217,6 +255,11 @@ public abstract class Arg<O extends Op> {
 		@Override
 		public boolean compatibleWith(Op op) {
 			return op instanceof RelOp;
+		}
+
+		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addRelPtr(this);
 		}
 
 		@Override
@@ -238,6 +281,11 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addPtr(this);
+		}
+
+		@Override
 		protected AnyOp get(Code code, FuncWriter<?> writer) {
 			return writer.ptrArg(code, this);
 		}
@@ -253,6 +301,11 @@ public abstract class Arg<O extends Op> {
 		@Override
 		public boolean compatibleWith(Op op) {
 			return op instanceof DataOp;
+		}
+
+		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addData(this);
 		}
 
 		@Override
@@ -292,6 +345,11 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addPtr(this, this.type);
+		}
+
+		@Override
 		protected O get(Code code, FuncWriter<?> writer) {
 			return writer.ptrArg(code, this, this.type);
 		}
@@ -325,6 +383,11 @@ public abstract class Arg<O extends Op> {
 			final Func func = (Func) op;
 
 			return func.getSignature() == this.targetSignature;
+		}
+
+		@Override
+		protected void write(SignatureWriter<?> writer) {
+			writer.addFuncPtr(this, this.targetSignature);
 		}
 
 		@Override

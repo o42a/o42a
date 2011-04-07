@@ -19,8 +19,10 @@
 */
 package org.o42a.codegen.code.backend;
 
+import org.o42a.codegen.code.Arg;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
@@ -48,29 +50,29 @@ public interface SignatureWriter<F extends Func> {
 
 	void returnPtr(Type<?> type);
 
-	void addInt8();
+	void addInt8(Arg<Int8op> arg);
 
-	void addInt16();
+	void addInt16(Arg<Int16op> arg);
 
-	void addInt32();
+	void addInt32(Arg<Int32op> arg);
 
-	void addInt64();
+	void addInt64(Arg<Int64op> arg);
 
-	void addFp32();
+	void addFp32(Arg<Fp32op> arg);
 
-	void addFp64();
+	void addFp64(Arg<Fp64op> arg);
 
-	void addBool();
+	void addBool(Arg<BoolOp> arg);
 
-	void addRelPtr();
+	void addRelPtr(Arg<RelOp> arg);
 
-	void addPtr();
+	void addPtr(Arg<AnyOp> arg);
 
-	void addData();
+	void addData(Arg<DataOp> arg);
 
-	void addPtr(Type<?> type);
+	<O extends StructOp> void addPtr(Arg<O> arg, Type<O> type);
 
-	void addFuncPtr(Signature<?> signature);
+	<FF extends Func> void addFuncPtr(Arg<FF> arg, Signature<FF> signature);
 
 	SignatureAllocation<F> done();
 

@@ -378,7 +378,7 @@ public abstract class LLVMCode implements CodeWriter {
 				id,
 				type,
 				nextPtr,
-				allocateStruct(nextPtr, type.getTypePtr())));
+				allocateStruct(nextPtr, id.toString(), type.getTypePtr())));
 	}
 
 	@Override
@@ -386,7 +386,10 @@ public abstract class LLVMCode implements CodeWriter {
 
 		final long nextPtr = nextPtr();
 
-		return new LLVMRecOp.Any(id, nextPtr, allocatePtr(nextPtr));
+		return new LLVMRecOp.Any(
+				id,
+				nextPtr,
+				allocatePtr(nextPtr, id.toString()));
 	}
 
 	@Override
@@ -402,7 +405,7 @@ public abstract class LLVMCode implements CodeWriter {
 				id,
 				alloc.getType(),
 				nextPtr,
-				allocateStructPtr(nextPtr, alloc.getTypePtr()));
+				allocateStructPtr(nextPtr, id.toString(), alloc.getTypePtr()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -419,7 +422,11 @@ public abstract class LLVMCode implements CodeWriter {
 			return (O) struct.getType().op(writer.create(
 					id,
 					nextPtr,
-					phi(nextPtr, writer.getBlockPtr(), writer.getNativePtr())));
+					phi(
+							nextPtr,
+							id.toString(),
+							writer.getBlockPtr(),
+							writer.getNativePtr())));
 		}
 
 		final LLVMOp o = llvm(op);
@@ -427,7 +434,7 @@ public abstract class LLVMCode implements CodeWriter {
 		return (O) o.create(
 				id,
 				nextPtr,
-				phi(nextPtr, o.getBlockPtr(), o.getNativePtr()));
+				phi(nextPtr, id.toString(), o.getBlockPtr(), o.getNativePtr()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -447,6 +454,7 @@ public abstract class LLVMCode implements CodeWriter {
 					id,
 					nextPtr, phi2(
 							nextPtr,
+							id.toString(),
 							writer1.getBlockPtr(),
 							writer1.getNativePtr(),
 							writer2.getBlockPtr(),
@@ -460,6 +468,7 @@ public abstract class LLVMCode implements CodeWriter {
 				id,
 				nextPtr, phi2(
 						nextPtr,
+						id.toString(),
 						o1.getBlockPtr(),
 						o1.getNativePtr(),
 						o2.getBlockPtr(),
@@ -520,19 +529,29 @@ public abstract class LLVMCode implements CodeWriter {
 
 	private static native long nullFuncPtr(long funcTypePtr);
 
-	private static native long allocatePtr(long blockPtr);
+	private static native long allocatePtr(
+			long blockPtr,
+			String id);
 
-	private static native long allocateStructPtr(long blockPtr, long typePtr);
+	private static native long allocateStructPtr(
+			long blockPtr,
+			String id,
+			long typePtr);
 
-	private static native long allocateStruct(long blockPtr, long typePtr);
+	private static native long allocateStruct(
+			long blockPtr,
+			String id,
+			long typePtr);
 
 	private static native long phi(
 			long blockPtr,
+			String id,
 			long block1ptr,
 			long value1ptr);
 
 	private static native long phi2(
 			long blockPtr,
+			String id,
 			long block1ptr,
 			long value1,
 			long block2ptr,

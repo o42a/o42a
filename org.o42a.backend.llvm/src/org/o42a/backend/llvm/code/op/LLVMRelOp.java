@@ -75,7 +75,11 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 		return new LLVMAnyOp(
 				id,
 				nextPtr,
-				offsetBy(nextPtr, nativePtr(from), getNativePtr()));
+				offsetBy(
+						nextPtr,
+						id.toString(),
+						nativePtr(from),
+						getNativePtr()));
 	}
 
 	@Override
@@ -93,6 +97,7 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 
 	private static native long offsetBy(
 			long blockPtr,
+			String id,
 			long fromPtr,
 			long byPtr);
 

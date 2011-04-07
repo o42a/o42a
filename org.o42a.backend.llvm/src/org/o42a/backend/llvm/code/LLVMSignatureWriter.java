@@ -22,9 +22,11 @@ package org.o42a.backend.llvm.code;
 import static java.lang.System.arraycopy;
 
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.codegen.code.Arg;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.SignatureWriter;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
@@ -97,63 +99,65 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
-	public void addInt8() {
-		addParam(this.module.int8type());
+	public void addInt8(Arg<Int8op> arg) {
+		addParam(arg, this.module.int8type());
 	}
 
 	@Override
-	public void addInt16() {
-		addParam(this.module.int16type());
+	public void addInt16(Arg<Int16op> arg) {
+		addParam(arg, this.module.int16type());
 	}
 
 	@Override
-	public void addInt32() {
-		addParam(this.module.int32type());
+	public void addInt32(Arg<Int32op> arg) {
+		addParam(arg, this.module.int32type());
 	}
 
 	@Override
-	public void addInt64() {
-		addParam(this.module.int64type());
+	public void addInt64(Arg<Int64op> arg) {
+		addParam(arg, this.module.int64type());
 	}
 
 	@Override
-	public void addFp32() {
-		addParam(this.module.fp32type());
+	public void addFp32(Arg<Fp32op> arg) {
+		addParam(arg, this.module.fp32type());
 	}
 
 	@Override
-	public void addFp64() {
-		addParam(this.module.fp64type());
+	public void addFp64(Arg<Fp64op> arg) {
+		addParam(arg, this.module.fp64type());
 	}
 
 	@Override
-	public void addBool() {
-		addParam(this.module.boolType());
+	public void addBool(Arg<BoolOp> arg) {
+		addParam(arg, this.module.boolType());
 	}
 
 	@Override
-	public void addRelPtr() {
-		addParam(this.module.relPtrType());
+	public void addRelPtr(Arg<RelOp> arg) {
+		addParam(arg, this.module.relPtrType());
 	}
 
 	@Override
-	public void addPtr() {
-		addParam(this.module.anyType());
+	public void addPtr(Arg<AnyOp> arg) {
+		addParam(arg, this.module.anyType());
 	}
 
 	@Override
-	public void addData() {
-		addParam(this.module.anyType());
+	public void addData(Arg<DataOp> arg) {
+		addParam(arg, this.module.anyType());
 	}
 
 	@Override
-	public void addPtr(Type<?> type) {
-		addParam(this.module.pointerTo(type));
+	public <O extends StructOp> void addPtr(Arg<O> arg, Type<O> type) {
+		addParam(arg, this.module.pointerTo(type));
 	}
 
 	@Override
-	public void addFuncPtr(Signature<?> signature) {
-		addParam(this.module.pointerTo(signature));
+	public <FF extends Func> void addFuncPtr(
+			Arg<FF> arg,
+			Signature<FF> signature) {
+		addParam(arg, this.module.pointerTo(signature));
 	}
 
 	@Override
@@ -168,7 +172,7 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 		return new LLVMSignature<F>(this.signature, signaturePtr);
 	}
 
-	private void addParam(long param) {
+	private void addParam(Arg<?> arg, long param) {
 
 		final int len = this.params.length;
 

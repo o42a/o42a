@@ -90,52 +90,42 @@ public final class SignatureBuilder {
 	}
 
 	public final Arg<Int8op> addInt8(String name) {
-		this.writer.addInt8();
 		return arg(new Arg.Int8arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Int16op> addInt16(String name) {
-		this.writer.addInt16();
 		return arg(new Arg.Int16arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Int32op> addInt32(String name) {
-		this.writer.addInt32();
 		return arg(new Arg.Int32arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Int64op> addInt64(String name) {
-		this.writer.addInt64();
 		return arg(new Arg.Int64arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Fp32op> addFp32(String name) {
-		this.writer.addFp32();
 		return arg(new Arg.Fp32arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<Fp64op> addFp64(String name) {
-		this.writer.addFp64();
 		return arg(new Arg.Fp64arg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<BoolOp> addBool(String name) {
-		this.writer.addBool();
 		return arg(new Arg.BoolArg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<RelOp> addRelPtr(String name) {
-		this.writer.addRelPtr();
 		return arg(new Arg.RelPtrArg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<AnyOp> addPtr(String name) {
-		this.writer.addPtr();
 		return arg(new Arg.AnyArg(this.signature, argIndex(), name));
 	}
 
 	public final Arg<DataOp> addData(String name) {
-		this.writer.addData();
 		return arg(new Arg.DataArg(this.signature, argIndex(), name));
 	}
 
@@ -143,7 +133,6 @@ public final class SignatureBuilder {
 			String name,
 			Type<O> type) {
 		type.pointer(this.signature.getGenerator());
-		this.writer.addPtr(type);
 		return arg(new Arg.PtrArg<O>(this.signature, argIndex(), name, type));
 	}
 
@@ -151,7 +140,6 @@ public final class SignatureBuilder {
 			String name,
 			Signature<F> signature) {
 		this.signature.getGenerator().getFunctions().allocate(signature);
-		this.writer.addFuncPtr(signature);
 		return arg(new Arg.FuncPtrArg<F>(
 				this.signature,
 				argIndex(),
@@ -174,6 +162,7 @@ public final class SignatureBuilder {
 	}
 
 	private <A extends Arg<?>> A arg(A arg) {
+		arg.write(this.writer);
 		this.signature.addArg(arg);
 		return arg;
 	}
