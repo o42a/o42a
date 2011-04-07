@@ -226,7 +226,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 		if (enclosing.getTypePtr() == this.type.getTypePtr()) {
 			return field(
 					blockPtr,
-					id.toString(),
+					id.getId(),
 					getNativePtr(),
 					allocation.llvmId().getIndex());
 		}

@@ -378,7 +378,7 @@ public abstract class LLVMCode implements CodeWriter {
 				id,
 				type,
 				nextPtr,
-				allocateStruct(nextPtr, id.toString(), type.getTypePtr())));
+				allocateStruct(nextPtr, id.getId(), type.getTypePtr())));
 	}
 
 	@Override
@@ -405,7 +405,7 @@ public abstract class LLVMCode implements CodeWriter {
 				id,
 				alloc.getType(),
 				nextPtr,
-				allocateStructPtr(nextPtr, id.toString(), alloc.getTypePtr()));
+				allocateStructPtr(nextPtr, id.getId(), alloc.getTypePtr()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -424,7 +424,7 @@ public abstract class LLVMCode implements CodeWriter {
 					nextPtr,
 					phi(
 							nextPtr,
-							id.toString(),
+							id.getId(),
 							writer.getBlockPtr(),
 							writer.getNativePtr())));
 		}
@@ -434,7 +434,7 @@ public abstract class LLVMCode implements CodeWriter {
 		return (O) o.create(
 				id,
 				nextPtr,
-				phi(nextPtr, id.toString(), o.getBlockPtr(), o.getNativePtr()));
+				phi(nextPtr, id.getId(), o.getBlockPtr(), o.getNativePtr()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -454,7 +454,7 @@ public abstract class LLVMCode implements CodeWriter {
 					id,
 					nextPtr, phi2(
 							nextPtr,
-							id.toString(),
+							id.getId(),
 							writer1.getBlockPtr(),
 							writer1.getNativePtr(),
 							writer2.getBlockPtr(),
@@ -468,7 +468,7 @@ public abstract class LLVMCode implements CodeWriter {
 				id,
 				nextPtr, phi2(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						o1.getBlockPtr(),
 						o1.getNativePtr(),
 						o2.getBlockPtr(),

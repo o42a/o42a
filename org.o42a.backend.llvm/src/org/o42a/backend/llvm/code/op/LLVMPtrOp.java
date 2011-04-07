@@ -77,7 +77,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return new LLVMBoolOp(
 				id,
 				nextPtr,
-				isNull(nextPtr, id.toString(), getNativePtr()));
+				isNull(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				nextPtr,
 				LLVMIntOp.eq(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						nativePtr(other)));
 	}
@@ -105,7 +105,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return new LLVMAnyOp(
 				id,
 				nextPtr,
-				toAny(nextPtr, id.toString(), getNativePtr()));
+				toAny(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	public final LLVMDataOp toData(String name, Code code) {
@@ -119,7 +119,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 		return new LLVMDataOp(
 				id,
 				nextPtr,
-				toAny(nextPtr, id.toString(), getNativePtr()));
+				toAny(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	public final <O extends StructOp> O to(
@@ -139,7 +139,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				nextPtr,
 				castStructTo(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						typePtr(type))));
 	}
@@ -164,7 +164,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				nextPtr,
 				castFuncTo(
 						nextPtr,
-						id.toString(),
+						id.getId(),
 						getNativePtr(),
 						llvm.getModule().nativePtr(signature)),
 				signature);

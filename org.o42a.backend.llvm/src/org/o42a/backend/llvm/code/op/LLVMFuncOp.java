@@ -59,7 +59,7 @@ public final class LLVMFuncOp<F extends Func>
 				id,
 				getSignature(),
 				nextPtr,
-				load(nextPtr, id.toString(), getNativePtr())));
+				load(nextPtr, id.getId(), getNativePtr())));
 	}
 
 	@Override

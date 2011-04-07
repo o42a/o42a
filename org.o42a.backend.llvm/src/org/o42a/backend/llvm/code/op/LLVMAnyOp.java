@@ -53,7 +53,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Any(
 				id,
 				nextPtr,
-				toPtr(nextPtr, id.toString(), getNativePtr()));
+				toPtr(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Int8(
 				id,
 				nextPtr,
-				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 8));
+				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 8));
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Int16(
 				id,
 				nextPtr,
-				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 16));
+				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 16));
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Int32(
 				id,
 				nextPtr,
-				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 32));
+				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 32));
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Int64(
 				id,
 				nextPtr,
-				toInt(nextPtr, id.toString(), getNativePtr(), (byte) 64));
+				toInt(nextPtr, id.getId(), getNativePtr(), (byte) 64));
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Fp32(
 				id,
 				nextPtr,
-				toFp32(nextPtr, id.toString(), getNativePtr()));
+				toFp32(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Fp64(
 				id,
 				nextPtr,
-				toFp64(nextPtr, id.toString(), getNativePtr()));
+				toFp64(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 		return new LLVMRecOp.Rel(
 				id,
 				nextPtr,
-				toRelPtr(nextPtr, id.toString(), getNativePtr()));
+				toRelPtr(nextPtr, id.getId(), getNativePtr()));
 	}
 
 	@Override
