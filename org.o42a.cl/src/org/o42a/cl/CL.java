@@ -141,7 +141,8 @@ public class CL {
 
 	private static String moduleName(String source) {
 
-		final int slashIdx = source.lastIndexOf('/');
+		final int slashIdx =
+			source.lastIndexOf(System.getProperty("file.separator"));
 
 		if (slashIdx >= 0) {
 			source = source.substring(slashIdx + 1);

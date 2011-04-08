@@ -18,32 +18,6 @@ JAVA=${JAVA:-java}
 CC=${CC:-gcc}
 ICU_CONFIG=${ICU_CONFIG:-icu-config}
 
-temp_fd=/dev/fd/5
-
-o42ac_args=(-o${temp_fd})
-vm_args=(-Djava.library.path="${JAVA_LIBRARY_PATH}")
-cc_args=(-x assembler -)
-append_arg="o42ac"
-
-for arg in "$@"; do
-	if [[ "${arg}" == "--" ]]; then
-		append_arg="cc"
-	elif [[ "${arg}" == "--vmargs" ]]; then
-		append_arg="vm"
-	elif [[ "${arg}" == "--nocolor" ]]; then
-		blue=""
-		green=""
-		red=""
-		white=""
-	elif [[ ${append_arg} == "cc" ]]; then
-		cc_args[${#cc_args[*]}]="${arg}"
-	elif [[ ${append_arg} == "vm" ]]; then
-		vm_args[${#vm_args[*]}]="${arg}"
-	else
-		o42ac_args[${#o42ac_args[*]}]="${arg}"
-	fi
-done
-
 pipe_if_not_empty () {
 	head=$(dd bs=1 count=1 2>/dev/null; echo a)
 	head=${head%a}
@@ -52,17 +26,56 @@ pipe_if_not_empty () {
 	fi
 }
 
+call_o42ac () {
+	${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}"
+	error=$?
+	if (( error != 0 )); then
+		if (( error > 3 )); then
+			echo "${red}ERROR${white}[${blue}${error}${white}]: o42ac failed." >&2;
+		fi
+		exit $error 
+	fi
+}
+
+o42ac_args=()
+vm_args=(-Djava.library.path="${JAVA_LIBRARY_PATH}")
+cc_args=()
+append_arg="o42ac"
+nopipe=0
+
+for arg in "$@"; do
+	case "${arg}" in
+	--) append_arg="cc";;
+	--vmargs) append_arg="vm";;
+	--nocolor)
+		blue=""
+		green=""
+		red=""
+		white="";;
+	*)
+		case "${append_arg}" in
+		cc) cc_args[${#cc_args[*]}]="${arg}";;
+		vm) vm_args[${#vm_args[*]}]="${arg}";;
+		*)
+			o42ac_args[${#o42ac_args[*]}]="${arg}"
+			case "${arg}" in
+			-o*) nopipe=1;;
+			-format[=]*) nopipe=1;;
+			esac;;
+		esac;;
+	esac
+done
+
+if (( nopipe != 0 )); then
+	call_o42ac
+	exit 0
+fi
+
+cc_args=(-x assembler - "${cc_args[@]}")
+o42ac_args=("${o42ac_args[@]}" -format s -o /dev/fd/5)
+
 { 
 	{
-		{
-			${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}"
-			error=$?
-			if (( error != 0 )) ; then
-				if (( error > 3 )); then
-					echo "${red}ERROR${white}[${blue}${error}${white}]: o42ac failed." >&2;
-				fi
-				exit $error 
-			fi
-		} > /dev/fd/6
+		call_o42ac > /dev/fd/6
 	} 5>&1 | pipe_if_not_empty ${CC} "${cc_args[@]}" >&6
 } 6>&1

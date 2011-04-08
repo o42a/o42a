@@ -19,10 +19,10 @@
 */
 package org.o42a.intrinsic;
 
-import static org.o42a.core.ir.IRUtil.canonicalName;
 import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.test.TestModule.testModule;
+import static org.o42a.util.StringCodec.canonicalName;
 
 import java.util.HashMap;
 
