@@ -19,7 +19,7 @@
 */
 package org.o42a.util;
 
-import static java.lang.Character.charCount;
+import static java.lang.Character.*;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -28,6 +28,64 @@ import java.nio.charset.CharsetEncoder;
 
 
 public class StringCodec {
+
+	public static String canonicalName(String name) {
+
+		final int len = name.length();
+		final StringBuilder result = new StringBuilder(len);
+		boolean prevDigit = false;
+		boolean prevLetter = false;
+		boolean prevSeparator = false;
+		int i = 0;
+
+		while (i < len) {
+
+			final int c = name.codePointAt(i);
+
+			i += Character.charCount(c);
+
+			if (isWhitespace(c) || isISOControl(c) || c == '_') {
+				if (prevSeparator) {
+					continue;
+				}
+				if (result.length() == 0) {
+					continue;
+				}
+				prevSeparator = true;
+				continue;
+			}
+			if (isDigit(c)) {
+				if (prevSeparator) {
+					if (prevDigit) {
+						result.append('_');
+					}
+					prevSeparator = false;
+				}
+				prevDigit = true;
+				prevLetter = false;
+				result.appendCodePoint(c);
+				continue;
+			}
+			if (isLetter(c)) {
+				if (prevSeparator) {
+					if (prevLetter) {
+						result.append('_');
+					}
+					prevSeparator = false;
+				}
+				prevDigit = false;
+				prevLetter = true;
+				result.appendCodePoint(toLowerCase(c));
+				continue;
+			}
+			prevDigit = false;
+			prevLetter = false;
+			prevSeparator = false;
+			result.appendCodePoint(toLowerCase(c));
+		}
+
+		return result.toString();
+	}
 
 	public static String escapeControlChars(String string) {
 		return escapeControlChars(null, string).toString();

@@ -20,7 +20,7 @@
 package org.o42a.core.artifact.common;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.ir.IRUtil.canonicalName;
+import static org.o42a.util.StringCodec.canonicalName;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;

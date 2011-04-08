@@ -66,6 +66,22 @@ static cl::opt<cl::boolOrDefault> Debug(
 				"Enabled if value is omitted."),
 		cl::value_desc("0/1"));
 
+enum OutputFormat {
+	OUTF_LL,
+	OUTF_ASM,
+	OUTF_OBJ,
+};
+
+static cl::opt<OutputFormat> OutFormat(
+		"format",
+		cl::ValueRequired,
+		cl::desc("Set the output format"),
+		cl::values(
+				clEnumValN(OUTF_LL, "ll", "LLVM assembly"),
+				clEnumValN(OUTF_ASM, "s", "assembly"),
+				clEnumValN(OUTF_OBJ, "o", "object (the default)"),
+				clEnumValEnd));
+
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
 		targetData(NULL),
@@ -235,10 +251,27 @@ bool BackendModule::writeCode() {
 		outPtr.reset(out);
 	}
 
-	if (machine->addPassesToEmitFile(
+	TargetMachine::CodeGenFileType fileType = TargetMachine::CGFT_ObjectFile;
+
+	if (OutFormat.getNumOccurrences()) {
+		switch (OutFormat.getValue()) {
+		case OUTF_LL:
+			fileType = TargetMachine::CGFT_Null;
+			break;
+		case OUTF_ASM:
+			fileType = TargetMachine::CGFT_AssemblyFile;
+			break;
+		case OUTF_OBJ:
+			break;
+		}
+	}
+
+	if (fileType == TargetMachine::CGFT_Null) {
+		pm.add(createPrintModulePass(out, false));
+	} else if (machine->addPassesToEmitFile(
 			pm,
 			*out,
-			TargetMachine::CGFT_AssemblyFile,
+			fileType,
 			CodeGenOpt::Default)) {
 		errs() << "Can not emit code\n";
 		return false;
