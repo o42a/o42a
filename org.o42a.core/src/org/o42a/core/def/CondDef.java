@@ -28,6 +28,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -128,6 +129,31 @@ public abstract class CondDef extends Def<CondDef> {
 			getPrerequisite().write(dirs.unknownWhenFalse(), rescopedHost);
 		}
 		getLogical().write(dirs.falseWhenUnknown(), rescopedHost);
+	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append("CondDef[");
+		if (hasPrerequisite()) {
+			out.append(getPrerequisite()).append("? ");
+		}
+
+		final Logical precondition = getPrecondition();
+
+		if (!precondition.isTrue()) {
+			out.append(precondition).append(", ");
+		}
+		out.append(getLocation());
+		if (isRequirement()) {
+			out.append("!]");
+		} else {
+			out.append(".]");
+		}
+
+		return out.toString();
 	}
 
 }

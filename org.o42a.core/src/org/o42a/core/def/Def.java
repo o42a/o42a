@@ -181,38 +181,6 @@ public abstract class Def<D extends Def<D>>
 
 	public abstract Definitions toDefinitions();
 
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		if (getKind().isValue()) {
-			out.append("ValueDef[");
-		} else {
-			out.append("CondDef[");
-		}
-		if (hasPrerequisite()) {
-			out.append(getPrerequisite()).append("? ");
-		}
-
-		final Logical precondition = getPrecondition();
-
-		if (!precondition.isTrue()) {
-			out.append(precondition).append(", ");
-		}
-		if (isValue()) {
-			out.append('=');
-		}
-		out.append(this.location);
-		if (getKind().isClaim()) {
-			out.append("!]");
-		} else {
-			out.append(".]");
-		}
-
-		return out.toString();
-	}
-
 	protected final Logical getPrerequisite() {
 		if (this.prerequisite != null) {
 			return this.prerequisite;

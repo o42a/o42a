@@ -67,6 +67,12 @@ class LocalDef extends ValueDef {
 		this.localRescoper = prototype.localRescoper;
 	}
 
+
+	@Override
+	public boolean isLocal() {
+		return true;
+	}
+
 	public final ImperativeBlock getBlock() {
 		return this.block;
 	}
@@ -74,6 +80,31 @@ class LocalDef extends ValueDef {
 	@Override
 	public ValueType<?> getValueType() {
 		return getBlock().getValueType();
+	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append("LocalDef{");
+		if (hasPrerequisite()) {
+			out.append(getPrerequisite()).append("? ");
+		}
+
+		final Logical precondition = getPrecondition();
+
+		if (!precondition.isTrue()) {
+			out.append(precondition).append(", ");
+		}
+		out.append(getLocation());
+		if (isClaim()) {
+			out.append("!}");
+		} else {
+			out.append(".}");
+		}
+
+		return out.toString();
 	}
 
 	@Override

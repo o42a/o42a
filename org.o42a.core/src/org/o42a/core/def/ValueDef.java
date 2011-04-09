@@ -31,6 +31,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -52,6 +53,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return getKind().isClaim();
 	}
 
+	public boolean isLocal() {
+		return false;
+	}
+
 	public abstract ValueType<?> getValueType();
 
 	@Override
@@ -60,7 +65,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 	}
 
 	@Override
-	public CondDef toCondition() {
+	public final CondDef toCondition() {
 		if (this.condition != null) {
 			return this.condition;
 		}
@@ -108,6 +113,9 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return unknownValue(this);
 		}
 		if (getPrerequisite().isTrue() && getPrecondition().isTrue()) {
+			if (value.isUnknown()) {
+				return alwaysIgnoredValue(this);
+			}
 			return alwaysMeaningfulValue(this, value);
 		}
 
@@ -168,6 +176,31 @@ public abstract class ValueDef extends Def<ValueDef> {
 			result.storeFalse(preconditionFailed);
 			dirs.goWhenFalse(preconditionFailed);
 		}
+	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append("ValueDef[");
+		if (hasPrerequisite()) {
+			out.append(getPrerequisite()).append("? ");
+		}
+
+		final Logical precondition = getPrecondition();
+
+		if (!precondition.isTrue()) {
+			out.append(precondition).append(", ");
+		}
+		out.append('=').append(getLocation());
+		if (isClaim()) {
+			out.append("!]");
+		} else {
+			out.append(".]");
+		}
+
+		return out.toString();
 	}
 
 	protected abstract Value<?> calculateValue(Scope scope);
