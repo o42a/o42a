@@ -22,6 +22,7 @@ package org.o42a.core.st.action;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Value;
 
 
 public class ExitLoop extends LogicalAction {
@@ -44,7 +45,12 @@ public class ExitLoop extends LogicalAction {
 
 	@Override
 	public LogicalValue getLogicalValue() {
-		return null;
+		return LogicalValue.TRUE;
+	}
+
+	@Override
+	public Value<?> getValue() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

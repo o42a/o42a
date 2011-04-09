@@ -785,27 +785,39 @@ public class Definitions extends Scoped {
 
 		for (D def : defs) {
 
+			final boolean combinableDef = combinablePrerequisite(def);
 			final Logical prerequisite = def.getPrerequisite();
 
 			for (int i = 0; i < len; ++i) {
 
 				final D c1 = claims[i];
+
+				if (!combinableDef) {
+					newClaims[idx++] = c1;
+					continue;
+				}
+				if (!combinablePrerequisite(c1)) {
+					newClaims[idx++] = c1;
+					continue;
+				}
+
 				final Logical prereq = c1.getPrerequisite();
 
-				if (hasPrerequisite(c1) && prereq.implies(prerequisite)) {
+				if (prereq.implies(prerequisite)) {
 					if (defs.length == 1) {
 						return claims;
 					}
-				} else if (hasPrerequisite(def)
-						&& prerequisite.implies(prereq)) {
+				} else if (prerequisite.implies(prereq)) {
 					++i;
 					for (; i < len; ++i) {
 
 						final D c2 = claims[i];
 
-						if (!prerequisite.implies(c2.getPrerequisite())) {
-							newClaims[idx++] = c2;
+						if (combinablePrerequisite(c2)
+								&& prerequisite.implies(c2.getPrerequisite())) {
+							continue;
 						}
+						newClaims[idx++] = c2;
 					}
 					newClaims[idx++] = def;
 					break;
@@ -868,13 +880,16 @@ public class Definitions extends Scoped {
 	}
 
 	private static boolean impliedBy(Def<?> def, Def<?>[] defs) {
-		if (!hasPrerequisite(def)) {
+		if (!combinablePrerequisite(def)) {
 			return false;
 		}
 
 		final Logical defLogical = def.getPrerequisite();
 
 		for (Def<?> claim : defs) {
+			if (!combinablePrerequisite(claim)) {
+				continue;
+			}
 			if (claim.getPrerequisite().implies(defLogical)) {
 				return true;
 			}
@@ -882,11 +897,14 @@ public class Definitions extends Scoped {
 		return false;
 	}
 
-	private static final boolean hasPrerequisite(Def<?> def) {
-		if (def.isValue()) {
-			return true;
+	private static final boolean combinablePrerequisite(Def<?> def) {
+		if (!def.isValue()) {
+			return def.hasPrerequisite();
 		}
-		return def.hasPrerequisite();
+
+		final ValueDef value = def.toValue();
+
+		return !value.isLocal();
 	}
 
 	private static LogicalValue constantValue(CondDef[] conditions) {

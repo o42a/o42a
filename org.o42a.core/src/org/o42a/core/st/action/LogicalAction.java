@@ -20,8 +20,6 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
 public abstract class LogicalAction extends Action {
@@ -33,20 +31,6 @@ public abstract class LogicalAction extends Action {
 	@Override
 	public Action toInitialLogicalValue() {
 		return this;
-	}
-
-	@Override
-	public Value<?> getValue() {
-		switch (getLogicalValue()) {
-		case TRUE:
-			return Value.voidValue();
-		case FALSE:
-			return Value.falseValue();
-		case RUNTIME:
-			return ValueType.VOID.runtimeValue();
-		}
-		throw new IllegalStateException(
-				"Unsupported logical value: " + getLogicalValue());
 	}
 
 }
