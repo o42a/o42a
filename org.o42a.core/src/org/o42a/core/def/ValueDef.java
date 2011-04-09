@@ -22,7 +22,9 @@ package org.o42a.core.def;
 import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -138,13 +140,48 @@ public abstract class ValueDef extends Def<ValueDef> {
 				defs);
 	}
 
-	public final void writePrerequisite(CodeDirs dirs, HostOp host) {
-		host = getRescoper().rescope(dirs, host);
-		getPrerequisite().write(dirs, host);
+	public final void write(CodeDirs dirs, HostOp host, ValOp result) {
+
+		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
+
+		if (hasPrerequisite()) {
+			getPrerequisite().write(dirs.unknownWhenFalse(), rescopedHost);
+		}
+
+		final Code preconditionFailed;
+
+		if (getPrecondition().isTrue()) {
+			preconditionFailed = null;
+		} else {
+
+			final Code code = dirs.code();
+
+			preconditionFailed = code.addBlock("precondition_failed");
+			getPrecondition().write(
+					falseWhenUnknown(code, preconditionFailed.head()),
+					rescopedHost);
+		}
+
+		writeDef(dirs, rescopedHost, result);
+
+		if (preconditionFailed != null && preconditionFailed.exists()) {
+			result.storeFalse(preconditionFailed);
+			dirs.goWhenFalse(preconditionFailed);
+		}
 	}
 
-	public abstract void writeValue(CodeDirs dirs, HostOp host, ValOp result);
-
 	protected abstract Value<?> calculateValue(Scope scope);
+
+	protected void writeDef(
+			CodeDirs dirs,
+			HostOp host,
+			ValOp result) {
+		writeValue(dirs.falseWhenUnknown(), host, result);
+	}
+
+	protected abstract void writeValue(
+			CodeDirs dirs,
+			HostOp host,
+			ValOp result);
 
 }

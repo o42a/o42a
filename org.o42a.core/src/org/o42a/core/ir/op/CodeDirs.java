@@ -33,8 +33,8 @@ public class CodeDirs {
 		return new CodeDirs(code, falsePos, null);
 	}
 
-	public static CodeDirs falseWhenUnknown(Code code, CodePos exit) {
-		return new CodeDirs(code, exit, exit);
+	public static CodeDirs falseWhenUnknown(Code code, CodePos falsePos) {
+		return new CodeDirs(code, falsePos, falsePos);
 	}
 
 	public static CodeDirs splitWhenUnknown(
@@ -79,6 +79,14 @@ public class CodeDirs {
 		return this.code.id(string);
 	}
 
+	public final Code addBlock(CodeId id) {
+		return this.code.addBlock(id);
+	}
+
+	public final Code addBlock(String name) {
+		return this.code.addBlock(name);
+	}
+
 	public CodeDirs begin(String id, String message) {
 		if (!isDebug()) {
 			return this;
@@ -97,6 +105,29 @@ public class CodeDirs {
 			return this;
 		}
 		throw new IllegalStateException("Not a nested code dirs: " + this);
+	}
+
+	public final CodeDirs falseWhenUnknown() {
+		if (this.falsePos == this.unknownPos) {
+			return this;
+		}
+		return new CodeDirs(this.code, this.falsePos, this.falsePos);
+	}
+
+	public final CodeDirs unknownWhenFalse() {
+		if (this.falsePos == this.unknownPos) {
+			return this;
+		}
+		return new CodeDirs(this.code, this.unknownPos, this.unknownPos);
+	}
+
+	public final CodeDirs splitWhenUnknown(
+			CodePos falsePos,
+			CodePos unknownPos) {
+		if (falsePos == unknownPos) {
+			return falseWhenUnknown();
+		}
+		return new CodeDirs(this.code, falsePos, unknownPos);
 	}
 
 	public final void goWhenFalse(Code code) {

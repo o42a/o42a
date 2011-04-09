@@ -272,6 +272,9 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 			final ValueType<?> type = statement.getValueType();
 
+			if (type == null) {
+				continue;
+			}
 			if (result == null) {
 				result = type;
 				hasResult = true;

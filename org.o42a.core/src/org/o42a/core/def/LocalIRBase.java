@@ -20,9 +20,9 @@
 package org.o42a.core.def;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
@@ -39,7 +39,7 @@ public abstract class LocalIRBase extends ScopeIR {
 	}
 
 	protected abstract void writeValue(
-			CodeDirs dirs,
+			Code code,
 			ValOp result,
 			ObjOp owner,
 			ObjOp ownerBody);

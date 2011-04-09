@@ -20,6 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
+import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
@@ -32,9 +33,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.LoopAction;
@@ -103,7 +102,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final String name;
 	private final boolean topLevel;
 	private final Trace trace;
-	private ValueType<?> valueType;
 	private StatementEnv initialEnv;
 
 	public ImperativeBlock(
@@ -185,33 +183,36 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
+	public DefinitionTargets getDefinitionTargets() {
+
+		final DefinitionTargets targets = super.getDefinitionTargets();
+
+		if (targets.haveValue()) {
+			return targets;
+		}
+
+		return targets.add(valueDefinition(this));
+	}
+
+	@Override
 	public ValueType<?> getValueType() {
-		if (this.valueType != null) {
-			return this.valueType;
+
+		final ValueType<?> valueType = super.getValueType();
+
+		if (valueType != null) {
+			return valueType;
 		}
-		if (!getDefinitionTargets().haveValue()) {
-			return this.valueType = ValueType.VOID;
-		}
-
-		ValueType<?> result = null;
-
-		for (Sentence<?> sentence : getSentences()) {
-
-			final ValueType<?> type = sentence.valueType(result);
-
-			if (type == null) {
-				continue;
-			}
-			if (result == null) {
-				result = type;
-				continue;
-			}
-			if (result != type) {
-				getLogger().incompatible(sentence, result);
-			}
+		if (!isTopLevel()) {
+			return null;
 		}
 
-		return this.valueType = result;
+		final ValueType<?> expectedType = this.initialEnv.getExpectedType();
+
+		if (expectedType != null) {
+			return expectedType;
+		}
+
+		return ValueType.VOID;
 	}
 
 	@Override

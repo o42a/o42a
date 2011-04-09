@@ -23,12 +23,8 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
 
 
@@ -115,7 +111,7 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	public final Logical fullLogical() {
-		return new FullLogical(this);
+		return getLogical().rescope(getRescoper());
 	}
 
 	public final D addPrerequisite(Logical prerequisite) {
@@ -262,51 +258,6 @@ public abstract class Def<D extends Def<D>>
 
 	private final D copy() {
 		return create(getRescoper(), transparentRescoper(getScope()));
-	}
-
-	private static final class FullLogical extends Logical {
-
-		private final Def<?> def;
-
-		FullLogical(Def<?> def) {
-			super(def, def.getScope());
-			this.def = def;
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return this.def.getPrerequisite().getConstantValue().and(
-					this.def.getLogical().getConstantValue());
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
-
-			final Scope rescoped = this.def.getRescoper().rescope(scope);
-
-			return this.def.getPrerequisite().logicalValue(rescoped).and(
-					this.def.getLogical().logicalValue(rescoped));
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			host = this.def.getRescoper().rescope(dirs, host);
-			this.def.getPrerequisite().write(dirs, host);
-			this.def.getLogical().write(dirs, host);
-		}
-
-		@Override
-		public String toString() {
-			return "(" + this.def + ")?";
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			getLogger().notReproducible(this);
-			return null;
-		}
-
 	}
 
 }

@@ -22,10 +22,7 @@ package org.o42a.core.def;
 import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -125,28 +122,12 @@ public abstract class CondDef extends Def<CondDef> {
 
 	public final void write(CodeDirs dirs, HostOp host) {
 
-		final Code code = dirs.code();
 		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
 		if (hasPrerequisite()) {
-
-			final CodeBlk prereqFailed = code.addBlock("prereq_failed");
-			final CodeDirs prereqDirs =
-				falseWhenUnknown(code, prereqFailed.head());
-
-			getPrerequisite().write(prereqDirs, rescopedHost);
-			if (prereqFailed.exists()) {
-				dirs.goWhenUnknown(prereqFailed);
-			}
+			getPrerequisite().write(dirs.unknownWhenFalse(), rescopedHost);
 		}
-
-		final CodeBlk defFalse = code.addBlock("def_false");
-		final CodeDirs defDirs = falseWhenUnknown(code, defFalse.head());
-
-		getLogical().write(defDirs, rescopedHost);
-		if (defFalse.exists()) {
-			dirs.goWhenFalse(defFalse);
-		}
+		getLogical().write(dirs.falseWhenUnknown(), rescopedHost);
 	}
 
 }
