@@ -66,6 +66,22 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	@Override
+	public boolean impliesWhenAfter(CondDef def) {
+		if (!hasPrerequisite()) {
+			return false;
+		}
+		return getPrerequisite().implies(def.getPrerequisite());
+	}
+
+	@Override
+	public boolean impliesWhenBefore(CondDef def) {
+		if (!def.hasPrerequisite()) {
+			return false;
+		}
+		return getPrerequisite().implies(def.getPrerequisite());
+	}
+
+	@Override
 	public final DefValue definitionValue(Scope scope) {
 		assertCompatible(scope);
 

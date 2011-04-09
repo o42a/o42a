@@ -29,7 +29,6 @@ import java.util.Collection;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
@@ -330,7 +329,7 @@ public class Definitions extends Scoped {
 			if (condition.isRequirement()) {
 				return refineRequirements(new CondDef[] {condition});
 			}
-			if (impliedBy(refinement, this.requirements)) {
+			if (impliedBy(condition, this.requirements)) {
 				return this;
 			}
 
@@ -343,14 +342,13 @@ public class Definitions extends Scoped {
 		if (valueType == ValueType.NONE) {
 			return this;
 		}
-
-		if (refinement.getPrerequisite().isFalse()) {
+		if (value.getPrerequisite().isFalse()) {
 			return this;
 		}
 		if (value.isClaim()) {
 			return refineClaims(valueType, new ValueDef[] {value});
 		}
-		if (impliedBy(refinement, this.claims)) {
+		if (impliedBy(value, this.claims)) {
 			return this;
 		}
 
@@ -784,37 +782,21 @@ public class Definitions extends Scoped {
 		int idx = 0;
 
 		for (D def : defs) {
-
-			final boolean combinableDef = combinablePrerequisite(def);
-			final Logical prerequisite = def.getPrerequisite();
-
 			for (int i = 0; i < len; ++i) {
 
 				final D c1 = claims[i];
 
-				if (!combinableDef) {
-					newClaims[idx++] = c1;
-					continue;
-				}
-				if (!combinablePrerequisite(c1)) {
-					newClaims[idx++] = c1;
-					continue;
-				}
-
-				final Logical prereq = c1.getPrerequisite();
-
-				if (prereq.implies(prerequisite)) {
+				if (c1.impliesWhenBefore(def)) {
 					if (defs.length == 1) {
 						return claims;
 					}
-				} else if (prerequisite.implies(prereq)) {
+				} else if (def.impliesWhenAfter(c1)) {
 					++i;
 					for (; i < len; ++i) {
 
 						final D c2 = claims[i];
 
-						if (combinablePrerequisite(c2)
-								&& prerequisite.implies(c2.getPrerequisite())) {
+						if (def.impliesWhenAfter(c2)) {
 							continue;
 						}
 						newClaims[idx++] = c2;
@@ -879,32 +861,13 @@ public class Definitions extends Scoped {
 		return ArrayUtil.clip(newDefs, idx);
 	}
 
-	private static boolean impliedBy(Def<?> def, Def<?>[] defs) {
-		if (!combinablePrerequisite(def)) {
-			return false;
-		}
-
-		final Logical defLogical = def.getPrerequisite();
-
-		for (Def<?> claim : defs) {
-			if (!combinablePrerequisite(claim)) {
-				continue;
-			}
-			if (claim.getPrerequisite().implies(defLogical)) {
+	private static <D extends Def<D>> boolean impliedBy(D def, D[] claims) {
+		for (D claim : claims) {
+			if (claim.impliesWhenBefore(def)) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	private static final boolean combinablePrerequisite(Def<?> def) {
-		if (!def.isValue()) {
-			return def.hasPrerequisite();
-		}
-
-		final ValueDef value = def.toValue();
-
-		return !value.isLocal();
 	}
 
 	private static LogicalValue constantValue(CondDef[] conditions) {

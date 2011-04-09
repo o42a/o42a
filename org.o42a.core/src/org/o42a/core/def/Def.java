@@ -173,6 +173,10 @@ public abstract class Def<D extends Def<D>>
 		return copy;
 	}
 
+	public abstract boolean impliesWhenAfter(D def);
+
+	public abstract boolean impliesWhenBefore(D def);
+
 	public abstract DefValue definitionValue(Scope scope);
 
 	public abstract ValueDef toValue();
