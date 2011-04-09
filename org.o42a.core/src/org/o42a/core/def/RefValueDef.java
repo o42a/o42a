@@ -25,7 +25,6 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
@@ -50,18 +49,6 @@ final class RefValueDef extends ValueDef {
 	@Override
 	public ValueType<?> getValueType() {
 		return this.ref.getValueType();
-	}
-
-	public RefOp ref(CodeDirs dirs, HostOp host) {
-
-		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
-
-		return this.ref.op(rescopedHost);
-	}
-
-	@Override
-	public void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
-		ref(dirs, host).writeValue(dirs, result);
 	}
 
 	@Override
@@ -89,6 +76,11 @@ final class RefValueDef extends ValueDef {
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
 		return new RefValueDef(this, rescoper);
+	}
+
+	@Override
+	protected void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
+		this.ref.op(host).writeValue(dirs, result);
 	}
 
 }

@@ -86,7 +86,7 @@ public abstract class ObjectIRFunc {
 			if (isFalse(
 					definitions.condition(definitions.getScope()),
 					body)) {
-				code.debug("Static object condition is false");
+				code.debug("Static object condition is FALSE");
 				result.storeFalse(code);
 				return true;
 			}
@@ -94,7 +94,7 @@ public abstract class ObjectIRFunc {
 			if (isFalse(
 					definitions.requirement(definitions.getScope()),
 					body)) {
-				code.debug("Run-time object requirement is false");
+				code.debug("Run-time object requirement is FALSE");
 				result.storeFalse(code);
 				return true;
 			}

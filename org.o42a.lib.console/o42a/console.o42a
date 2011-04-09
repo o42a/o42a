@@ -18,9 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 Main :=> integer(
-  = 0.
+  = 0
 
-  <*{}>
-).
+  <*> (<*{}>. = 0)
+)
 
-Print to console :=> void(Include 'print.o42a').
+Print to console :=> void(Include 'print.o42a')

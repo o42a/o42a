@@ -55,29 +55,6 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	public void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
-
-		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
-		final Code code = dirs.code();
-		final CodeBlk defFalse = code.addBlock("def_false");
-		final CodeBlk defUnknown = code.addBlock("def_unknown");
-		final CodeDirs defDirs =
-			splitWhenUnknown(code, defFalse.head(), defUnknown.head());
-
-		this.def.getLogical().write(defDirs, rescopedHost);
-		result.storeVoid(code);
-
-		if (defFalse.exists()) {
-			result.storeFalse(defFalse);
-			dirs.goWhenFalse(defFalse);
-		}
-		if (defUnknown.exists()) {
-			result.storeUnknown(defFalse);
-			dirs.goWhenFalse(defFalse);
-		}
-	}
-
-	@Override
 	protected Value<?> calculateValue(Scope scope) {
 		return this.def.getLogical().logicalValue(scope).toValue();
 	}
@@ -100,6 +77,28 @@ final class CondValueDef extends ValueDef {
 	@Override
 	protected Logical buildLogical() {
 		return this.def.buildLogical();
+	}
+
+	@Override
+	protected void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
+
+		final Code code = dirs.code();
+		final CodeBlk defFalse = code.addBlock("def_false");
+		final CodeBlk defUnknown = code.addBlock("def_unknown");
+		final CodeDirs defDirs =
+			splitWhenUnknown(code, defFalse.head(), defUnknown.head());
+
+		this.def.getLogical().write(defDirs, host);
+
+		result.storeVoid(code);
+		if (defFalse.exists()) {
+			result.storeFalse(defFalse);
+			dirs.goWhenFalse(defFalse);
+		}
+		if (defUnknown.exists()) {
+			result.storeUnknown(defFalse);
+			dirs.goWhenFalse(defFalse);
+		}
 	}
 
 }

@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
 
@@ -30,6 +29,7 @@ import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.type.TypeRef;
@@ -148,7 +148,7 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		final ValueCollector collector =
-			new ValueCollector(getObjectIR().getObject(), defs.length);
+			new ValueCollector(code, getObjectIR().getObject(), defs.length);
 
 		collector.addDefs(defs);
 		if (collector.size() == 0) {
@@ -185,61 +185,35 @@ public abstract class ObjectValueIRValFunc
 			ValueCollector collector) {
 
 		final int size = collector.size();
-		final CodeBlk falseValue = code.addBlock("val_false");
-		final CodeBlk unknownValue = code.addBlock("val_unknown");
 		final ValueDef[] defs = collector.getExplicitDefs();
 
-		int displayIdx = 0;
-		Code block = code.addBlock("0_var");
-
-		code.go(block.head());
+		code.go(collector.blocks[0].head());
 		for (int i = 0; i < size; ++i) {
 
-			final Code next;
-			final CodePos nextPos;
+			final ValueDef def = defs[i];
+			final Code block = collector.blocks[i];
 
-			if (i + 1 < size) {
-				next = code.addBlock((++displayIdx) + "_var");
-				nextPos = next.head();
-			} else {
-				next = null;
-				nextPos = code.tail();
+			if (def == null) {
+				if (i == collector.ancestorIndex) {
+					writeAncestorDef(block, result, host);
+					result.go(
+							block,
+							splitWhenUnknown(
+									block,
+									code.tail(),
+									collector.next(i)));
+					block.go(collector.next(i));
+				}
+				continue;
 			}
 
-			if (i == collector.ancestorIndex) {
-				writeAncestorDef(block, result, host);
-				result.loadIndefinite(block).go(block, nextPos, code.tail());
-			} else {
-				// Write explicit definition.
+			final CodeDirs defDirs = splitWhenUnknown(
+					block,
+					code.tail(),
+					collector.next(i));
 
-				final ValueDef def = defs[i];
-
-				def.writePrerequisite(
-						falseWhenUnknown(block, nextPos),
-						host);
-				def.writeValue(
-						splitWhenUnknown(
-								block,
-								falseValue.head(),
-								unknownValue.head()),
-						host,
-						result);
-				block.go(code.tail());
-			}
-
-			if (next == null) {
-				break;
-			}
-			block = next;
-		}
-
-		if (falseValue.exists()) {
-			result.storeFalse(falseValue);
-			falseValue.go(code.tail());
-		}
-		if (unknownValue.exists()) {
-			result.storeUnknown(unknownValue);
-			unknownValue.go(code.tail());
+			def.write(defDirs, host, result);
+			block.go(collector.next(i));
 		}
 	}
 
@@ -300,13 +274,17 @@ public abstract class ObjectValueIRValFunc
 
 	private final class ValueCollector extends DefCollector<ValueDef> {
 
+		private final Code code;
 		private final ValueDef[] explicitDefs;
+		private final Code[] blocks;
 		private int size;
 		private int ancestorIndex = -1;
 
-		ValueCollector(Obj object, int capacity) {
+		ValueCollector(Code code, Obj object, int capacity) {
 			super(object);
+			this.code = code;
 			this.explicitDefs = new ValueDef[capacity];
+			this.blocks = new Code[capacity];
 		}
 
 		public final ValueDef[] getExplicitDefs() {
@@ -319,6 +297,7 @@ public abstract class ObjectValueIRValFunc
 
 		@Override
 		protected void explicitDef(ValueDef def) {
+			this.blocks[this.size] = this.code.addBlock(this.size + "_cvar");
 			this.explicitDefs[this.size++] = def;
 		}
 
@@ -328,7 +307,19 @@ public abstract class ObjectValueIRValFunc
 				return;
 			}
 			this.ancestorIndex = this.size;
-			this.explicitDefs[this.size++] = null;
+			this.blocks[this.size] = this.code.addBlock(this.size + "_vvar");
+			++this.size;
+		}
+
+		CodePos next(int index) {
+
+			final int next = index + 1;
+
+			if (next < this.size) {
+				return this.blocks[next].head();
+			}
+
+			return this.code.tail();
 		}
 
 	}

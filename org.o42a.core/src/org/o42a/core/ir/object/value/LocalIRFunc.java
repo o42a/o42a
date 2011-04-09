@@ -27,7 +27,6 @@ import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
@@ -48,19 +47,18 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	}
 
 	public void call(
-			CodeDirs dirs,
+			Code code,
 			ValOp result,
 			ObjOp owner,
 			ObjOp body) {
 		if (body != null) {
-			dirs = dirs.begin("local_val", "Value for " + body);
+			code.begin("Value for " + body);
 		} else {
-			dirs = dirs.begin("local_val", "Value");
+			code.begin("Value");
 		}
 
-		final Code code = dirs.code();
-
 		if (writeFalseValue(code, result, body)) {
+			code.end();
 			return;
 		}
 
@@ -70,7 +68,7 @@ public final class LocalIRFunc extends ObjectIRFunc {
 
 		func.call(code, result, body(code, owner, body));
 
-		dirs.end();
+		code.end();
 	}
 
 	public final LocalScope getScope() {

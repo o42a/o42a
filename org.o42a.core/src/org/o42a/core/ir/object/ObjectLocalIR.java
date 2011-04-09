@@ -20,10 +20,10 @@
 package org.o42a.core.ir.object;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.def.LocalIRBase;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.value.LocalIRFunc;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
@@ -43,11 +43,11 @@ public abstract class ObjectLocalIR extends LocalIRBase {
 
 	@Override
 	protected void writeValue(
-			CodeDirs dirs,
+			Code code,
 			ValOp result,
 			ObjOp owner,
 			ObjOp ownerBody) {
-		this.function.call(dirs, result, owner, ownerBody);
+		this.function.call(code, result, owner, ownerBody);
 	}
 
 }

@@ -361,7 +361,7 @@ public abstract class ObjectValueIRCondFunc
 		@Override
 		protected void explicitDef(CondDef def) {
 			this.hasExplicit = true;
-			this.blocks[this.size] = this.code.addBlock(this.size + "_var");
+			this.blocks[this.size] = this.code.addBlock(this.size + "_cvar");
 			this.explicitDefs[this.size++] = def;
 		}
 
@@ -371,8 +371,8 @@ public abstract class ObjectValueIRCondFunc
 				return;
 			}
 			this.ancestorIndex = this.size;
-			this.blocks[this.size] = this.code.addBlock(this.size + "_var");
-			this.size++;
+			this.blocks[this.size] = this.code.addBlock(this.size + "_cvar");
+			++this.size;
 		}
 
 		CodePos next(int index, CodePos defaultPos) {
@@ -388,7 +388,7 @@ public abstract class ObjectValueIRCondFunc
 		}
 
 		CodePos nextRequired(int index, CodePos defaultPos) {
-			for (int i = index + 1; i < this.explicitDefs.length; ++i) {
+			for (int i = index + 1; i < this.size; ++i) {
 
 				final CondDef def = this.explicitDefs[i];
 

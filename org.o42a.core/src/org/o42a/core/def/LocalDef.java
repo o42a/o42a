@@ -77,33 +77,6 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	public void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
-
-		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
-		final ObjectOp ownerObject = rescopedHost.toObject(dirs);
-
-		assert ownerObject != null :
-			"Local scope owner expected: " + rescopedHost;
-
-		final LocalScope scope = getBlock().getScope().toLocal();
-		final Obj ownerType = scope.getOwner();
-		final ObjOp ownerBody =
-			ownerObject.cast(dirs.id("owner"), dirs, ownerType);
-		final LocalIRBase ir = scope.ir(host.getGenerator());
-
-		if (this.explicit) {
-			ir.writeValue(dirs, result, ownerBody, null);
-		} else {
-			ir.writeValue(
-					dirs,
-					result,
-					ownerType.ir(host.getGenerator())
-					.op(host.getBuilder(), dirs.code()),
-					ownerBody);
-		}
-	}
-
-	@Override
 	protected Logical buildPrerequisite() {
 		return logicalTrue(this, getOwnerScope());
 	}
@@ -132,6 +105,41 @@ class LocalDef extends ValueDef {
 	@Override
 	protected LocalDef create(Rescoper rescoper, Rescoper additionalRescoper) {
 		return new LocalDef(this, rescoper);
+	}
+
+	@Override
+	protected void writeDef(CodeDirs dirs, HostOp host, ValOp result) {
+		// Imperative block`s value CAN be UNKNOWN.
+		writeValue(dirs, host, result);
+	}
+
+	@Override
+	protected void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
+
+		final Code code = dirs.code();
+		final ObjectOp ownerObject = host.toObject(dirs);
+
+		assert ownerObject != null :
+			"Local scope owner expected: " + host;
+
+		final LocalScope scope = getBlock().getScope().toLocal();
+		final Obj ownerType = scope.getOwner();
+		final ObjOp ownerBody =
+			ownerObject.cast(dirs.id("owner"), dirs, ownerType);
+		final LocalIRBase ir = scope.ir(host.getGenerator());
+
+		if (this.explicit) {
+			ir.writeValue(code, result, ownerBody, null);
+		} else {
+			ir.writeValue(
+					code,
+					result,
+					ownerType.ir(host.getGenerator())
+					.op(host.getBuilder(), dirs.code()),
+					ownerBody);
+		}
+
+		result.go(code, dirs);
 	}
 
 	private Scope getOwnerScope() {
@@ -179,7 +187,8 @@ class LocalDef extends ValueDef {
 			dirs = dirs.begin("local_logical", "Local logical: " + this);
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
+			final ValOp result =
+				code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			this.def.writeValue(dirs, host, result);
 
