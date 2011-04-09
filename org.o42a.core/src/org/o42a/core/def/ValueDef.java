@@ -60,6 +60,22 @@ public abstract class ValueDef extends Def<ValueDef> {
 	public abstract ValueType<?> getValueType();
 
 	@Override
+	public boolean impliesWhenAfter(ValueDef def) {
+		if (isLocal() || def.isLocal()) {
+			return false;
+		}
+		return getPrerequisite().implies(def.getPrerequisite());
+	}
+
+	@Override
+	public boolean impliesWhenBefore(ValueDef def) {
+		if (isLocal() || def.isLocal()) {
+			return false;
+		}
+		return getPrerequisite().implies(def.getPrerequisite());
+	}
+
+	@Override
 	public final ValueDef toValue() {
 		return this;
 	}
