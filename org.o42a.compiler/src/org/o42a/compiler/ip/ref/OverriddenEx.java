@@ -138,10 +138,10 @@ public class OverriddenEx extends Expression {
 		public void writeLogicalValue(CodeDirs dirs) {
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
+			final ValOp result =
+				code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			writeValue(dirs, result);
-			result.go(code, dirs);
 		}
 
 		@Override
@@ -151,10 +151,12 @@ public class OverriddenEx extends Expression {
 			final RefOp hostRef = ref.host.op(host());
 			final ObjectOp object =
 				hostRef.target(dirs).toObject(dirs);
+			final Code code = dirs.code();
 
-			object.objectType(dirs.code()).writeOverriddenValue(
+			object.objectType(code).writeOverriddenValue(
 					dirs.code(),
 					result);
+			result.go(code, dirs);
 		}
 
 	}

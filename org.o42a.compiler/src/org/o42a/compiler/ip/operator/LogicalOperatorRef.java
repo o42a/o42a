@@ -21,16 +21,15 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
@@ -168,59 +167,57 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		@Override
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
-			final Code failure = code.addBlock("failure");
-
-			final ValOp operandValue =
-				code.allocate(code.id("logical_operand_value"), VAL_TYPE);
-			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
-
-			this.res.operand().op(host).writeValue(dirs, operandValue);
-
-			final CodeBlk returnTrue = code.addBlock("return_true");
-			final CodeBlk returnFalse = code.addBlock("return_false");
+			final RefOp op = this.res.operand().op(host);
+			final Code operandFalse = code.addBlock("operand_false");
+			final Code operandUnknown = code.addBlock("operand_unknown");
 
 			switch (this.res.ref.node.getOperator()) {
 			case NOT:
-				operandValue.loadCondition(code).go(
+				op.writeLogicalValue(falseWhenUnknown(
 						code,
-						returnFalse.head(),
-						returnTrue.head());
+						operandFalse.head()));
+				result.storeFalse(code);
+				if (operandFalse.exists()) {
+					result.storeVoid(operandFalse);
+					operandFalse.go(code.tail());
+				}
 				break;
 			case IS_TRUE:
-				operandValue.loadCondition(code).go(
+				op.writeLogicalValue(falseWhenUnknown(
 						code,
-						returnTrue.head(),
-						returnFalse.head());
+						operandFalse.head()));
+				result.storeVoid(code);
+				if (operandFalse.exists()) {
+					result.storeFalse(operandFalse);
+					operandFalse.go(code.tail());
+				}
 				break;
 			case KNOWN:
-				operandValue.loadUnknown(code).go(
+				op.writeLogicalValue(splitWhenUnknown(
 						code,
-						returnFalse.head(),
-						returnTrue.head());
+						null,
+						operandUnknown.head()));
+				result.storeVoid(code);
+				if (operandUnknown.exists()) {
+					result.storeFalse(operandUnknown);
+					operandUnknown.go(code.tail());
+				}
 				break;
 			case UNKNOWN:
-				operandValue.loadUnknown(code).go(
+				op.writeLogicalValue(splitWhenUnknown(
 						code,
-						returnTrue.head(),
-						returnFalse.head());
+						null,
+						operandUnknown.head()));
+				result.storeFalse(code);
+				if (operandUnknown.exists()) {
+					result.storeVoid(operandUnknown);
+					operandUnknown.go(code.tail());
+				}
 				break;
 			default:
 				throw new IllegalStateException(
 						"Unsupported logical operator: "
 						+ this.res.ref.node.getOperator().getSign());
-			}
-
-			if (returnTrue.exists()) {
-				result.storeVoid(returnTrue);
-				returnTrue.go(code.tail());
-			}
-			if (returnFalse.exists()) {
-				result.storeFalse(returnFalse);
-				returnFalse.go(code.tail());
-			}
-			if (failure.exists()) {
-				result.storeFalse(failure);
-				failure.go(code.tail());
 			}
 		}
 

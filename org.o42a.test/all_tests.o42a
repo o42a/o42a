@@ -17,19 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Use namespace 'Console'.
-Use namespace 'Test'.
+Use namespace 'Console'
+Use namespace 'Test'
 
 @Main :=> *(
-  Tests.
-).
+  Tests
+)
 
 Tests := void(
 
-  Print "Run all tests" nl.
-  Run tests.
+  Print "Run all tests" nl
+  Run tests
 
   Simple := test(
-    Include 'simple/simple.o42a'.
-  ).
-).
+    Include 'simple/simple.o42a'
+  )
+)
