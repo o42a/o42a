@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-Use object 'Print error' from 'Console'.
+Use object 'Print error' from 'Console'
 
 /*
   Test signature.
@@ -36,9 +36,9 @@ Test :=> void(
     
     Will be generated automatically if omitted.
   */
-  Name := string(False).
+  Name := string(False)
 
-).
+)
 
 /*
   Assertion.
@@ -55,23 +55,23 @@ Assert :=> void(
 
     Otherwise, an error reported.
    */
-  Condition :=< `void.
+  Condition :=< `void
 
   /*
     Error message.
 
     A message reported when condition fails.
    */
-  Message := `"Error".
+  Message := `"Error"
   
   {
-    --Condition? Print error(Text = message).
-    Void
-  }.
+    --Condition? Print error(Text = message)
+    = Void
+  }
 
-  <*[] | error message> Condition = void.
+  <*[] | error message> Condition = void
   <*Error message> (
-    <*''> Message = string().
-    <*[]> Message = string().
-  ).
-).
+    <*''> Message = string
+    <*[]> Message = string
+  )
+)

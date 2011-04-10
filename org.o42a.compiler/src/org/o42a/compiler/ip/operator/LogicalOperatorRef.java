@@ -29,7 +29,6 @@ import org.o42a.codegen.code.CodeBlk;
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
@@ -88,10 +87,17 @@ public class LogicalOperatorRef extends ObjectConstructor {
 	private static final class Res extends Result {
 
 		private final LogicalOperatorRef ref;
+		private Ref operand;
 
 		Res(LogicalOperatorRef ref) {
 			super(ref, ref.distributeIn(ref.getContainer()), ValueType.VOID);
 			this.ref = ref;
+		}
+
+		@Override
+		public void resolveAll() {
+			super.resolveAll();
+			operand();
 		}
 
 		@Override
@@ -102,8 +108,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		@Override
 		protected Value<?> calculateValue(Scope scope) {
 
-			final Value<?> value =
-				this.ref.operand.value(scope.getEnclosingScope());
+			final Value<?> value = operand().value(scope);
 
 			if (!value.isDefinite()) {
 				return ValueType.VOID.runtimeValue();
@@ -142,6 +147,13 @@ public class LogicalOperatorRef extends ObjectConstructor {
 			return new ValueIR(objectIR, this);
 		}
 
+		final Ref operand() {
+			if (this.operand != null) {
+				return this.operand;
+			}
+			return this.operand = this.ref.operand.rescope(getScope());
+		}
+
 	}
 
 	private static final class ValueIR extends ProposedValueIR {
@@ -157,18 +169,15 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
 			final Code failure = code.addBlock("failure");
-			final Ref enclosingRef =
-				this.res.getScope().getEnclosingScopePath()
-				.target(this.res, this.res.distribute());
 
-			final ValOp operandValue = code.allocate(null, VAL_TYPE);
+			final ValOp operandValue =
+				code.allocate(code.id("logical_operand_value"), VAL_TYPE);
 			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
-			final HostOp operandHost = enclosingRef.op(host).target(dirs);
+
+			this.res.operand().op(host).writeValue(dirs, operandValue);
 
 			final CodeBlk returnTrue = code.addBlock("return_true");
 			final CodeBlk returnFalse = code.addBlock("return_false");
-
-			this.res.ref.op(operandHost).writeValue(dirs, operandValue);
 
 			switch (this.res.ref.node.getOperator()) {
 			case NOT:

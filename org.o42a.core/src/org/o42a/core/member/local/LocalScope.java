@@ -31,6 +31,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalIR;
+import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -265,7 +266,13 @@ public abstract class LocalScope
 
 		@Override
 		public HostOp write(CodeDirs dirs, HostOp start) {
-			return start.toLocal().getBuilder().owner();
+
+			final LocalOp local = start.toLocal();
+
+			assert local != null :
+				start + " is not local";
+
+			return local.getBuilder().owner();
 		}
 
 		@Override
