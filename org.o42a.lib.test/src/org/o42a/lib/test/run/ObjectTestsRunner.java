@@ -19,6 +19,7 @@
 */
 package org.o42a.lib.test.run;
 
+import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
 
 import org.o42a.core.Distributor;
@@ -102,6 +103,11 @@ final class ObjectTestsRunner extends DefinedObject {
 
 			runTest(this.module, sentence, field);
 		}
+
+		final Declaratives terminator =
+			definition.propose(definition).alternative(definition);
+
+		terminator.assign(voidRef(definition, terminator.nextDistributor()));
 	}
 
 	private static final class RunObjectTests extends ObjectConstructor {

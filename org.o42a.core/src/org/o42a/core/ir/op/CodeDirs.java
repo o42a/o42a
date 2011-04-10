@@ -94,10 +94,16 @@ public class CodeDirs {
 
 		this.code.begin(message);
 
-		return new Nested(
-				this,
-				end(id + "_false", this.falsePos),
-				end(id + "_unknown", this.unknownPos));
+		final CodePos falsePos = end(id + "_false", this.falsePos);
+		final CodePos unknownPos;
+
+		if (this.falsePos == this.unknownPos) {
+			unknownPos = falsePos;
+		} else {
+			unknownPos = end(id + "_unknown", this.unknownPos);
+		}
+
+		return new Nested(this, falsePos, unknownPos);
 	}
 
 	public CodeDirs end() {

@@ -793,14 +793,15 @@ public abstract class Logical extends LogicalBase {
 
 		@Override
 		public void write(CodeDirs dirs, HostOp host) {
-			dirs = dirs.begin("not", "Logical NOT: " + this);
 
 			final Code code = dirs.code();
 			final Code isFalse = code.addBlock("is_false");
-			final CodeDirs negatedDirs = falseWhenUnknown(code, isFalse.head());
+			final CodeDirs negatedDirs =
+				falseWhenUnknown(code, isFalse.head())
+				.begin("not", "Logical NOT: " + this);
 
 			negate().write(negatedDirs, host);
-			dirs = dirs.end();
+			negatedDirs.end();
 			dirs.goWhenFalse(code);
 
 			if (isFalse.exists()) {
