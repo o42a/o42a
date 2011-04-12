@@ -45,6 +45,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.numeric.FloatObject;
 import org.o42a.intrinsic.numeric.IntegerObject;
+import org.o42a.util.log.LoggableData;
 
 
 public class Root extends Obj {
@@ -152,7 +153,9 @@ public class Root extends Obj {
 	protected Ascendants buildAscendants() {
 		return new Ascendants(getScope()).setAncestor(
 				new RootAncestor(
-						new Location(getContext(), null),
+						new Location(
+								getContext(),
+								new LoggableData(getContext())),
 						getScope().getEnclosingScope())
 				.toStaticTypeRef());
 	}

@@ -82,19 +82,19 @@ public abstract class ObjectIRFunc {
 		final Obj object = getObjectIR().getObject();
 		final Definitions definitions = object.getDefinitions();
 
-		if (!object.isRuntime()) {
+		if (isFalse(
+				definitions.requirement(definitions.getScope()),
+				body)) {
+			code.debug("Object requirement is FALSE");
+			result.storeFalse(code);
+			return true;
+		}
+
+		if (!object.getConstructionMode().isRuntime()) {
 			if (isFalse(
 					definitions.condition(definitions.getScope()),
 					body)) {
 				code.debug("Static object condition is FALSE");
-				result.storeFalse(code);
-				return true;
-			}
-		} else {
-			if (isFalse(
-					definitions.requirement(definitions.getScope()),
-					body)) {
-				code.debug("Run-time object requirement is FALSE");
 				result.storeFalse(code);
 				return true;
 			}

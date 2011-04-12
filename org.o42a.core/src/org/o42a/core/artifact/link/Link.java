@@ -22,7 +22,6 @@ package org.o42a.core.artifact.link;
 import static org.o42a.core.ref.Ref.falseRef;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -139,10 +138,12 @@ public abstract class Link extends Artifact<Link> {
 					.toTargetRef(null);
 			return;
 		}
+		this.targetRef.assertSameScope(getScope().getEnclosingScope());
 
 		this.targetRef.assertScopeIs(getScope().getEnclosingScope());
 		if (!isAbstract() && !isPrototype()) {
-			this.targetRef.getArtifact().accessBy(this).checkInstanceUse();
+			// FIXME Fix link target access check.
+			//this.targetRef.getArtifact().accessBy(this).checkInstanceUse();
 		}
 
 		final TypeRef typeRef = this.targetRef.getTypeRef();
@@ -161,10 +162,12 @@ public abstract class Link extends Artifact<Link> {
 
 	private boolean enclosingScopeIsRuntime() {
 
-		final Container enclosingContainer = getScope().getEnclosingContainer();
+		final Scope enclosingScope = getScope().getEnclosingScope();
 
-		return enclosingContainer != null
-		&& enclosingContainer.getScope().isRuntime();
+		assert enclosingScope != null :
+			"Link " + this + " should be declared inside object";
+
+		return enclosingScope.getConstructionMode().isRuntime();
 	}
 
 }

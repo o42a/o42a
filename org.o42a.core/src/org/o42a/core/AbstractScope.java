@@ -19,8 +19,12 @@
 */
 package org.o42a.core;
 
+import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
+import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
+import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
+import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
@@ -45,6 +49,36 @@ public abstract class AbstractScope implements Scope {
 		}
 
 		return enclosingContainer.getScope();
+	}
+
+	public static ConstructionMode constructionMode(Scope scope) {
+
+		final Scope enclosingScope = scope.getEnclosingScope();
+
+		if (enclosingScope == null) {
+			return FULL_CONSTRUCTION;
+		}
+
+		final ConstructionMode enclosingMode =
+			enclosingScope.getConstructionMode();
+
+		if (enclosingMode.isRuntime()) {
+			return RUNTIME_CONSTRUCTION;
+		}
+
+		final Container container = scope.getContainer();
+
+		if (container.toLocal() != null) {
+			return STRICT_CONSTRUCTION;
+		}
+
+		final Obj object = container.toObject();
+
+		if (object != null) {
+			return object.getConstructionMode();
+		}
+
+		return STRICT_CONSTRUCTION;
 	}
 
 	public static Path pathTo(Scope scope, Scope targetScope) {
@@ -174,17 +208,8 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public boolean isRuntime() {
-
-		final Container container = getContainer();
-
-		if (container.toLocal() != null) {
-			return true;
-		}
-
-		final Obj object = container.toObject();
-
-		return object != null && object.isRuntime();
+	public ConstructionMode getConstructionMode() {
+		return constructionMode(this);
 	}
 
 	@Override

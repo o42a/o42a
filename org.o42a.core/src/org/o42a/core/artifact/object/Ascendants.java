@@ -21,7 +21,6 @@ package org.o42a.core.artifact.object;
 
 import java.util.Arrays;
 
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Directive;
@@ -35,7 +34,6 @@ import org.o42a.util.ArrayUtil;
 public class Ascendants implements Cloneable {
 
 	private static final Sample[] NO_SAMPLES = new Sample[0];
-	private static final byte EXPLICIT_RUNTIME = 2;
 
 	private final Scope scope;
 	private TypeRef explicitAncestor;
@@ -43,7 +41,7 @@ public class Ascendants implements Cloneable {
 	private Directive directive;
 	private Sample[] samples = NO_SAMPLES;
 	private Sample[] discardedSamples = NO_SAMPLES;
-	private byte runtime;
+	private ConstructionMode constructionMode;
 	private boolean validated;
 
 	public Ascendants(Scope scope) {
@@ -59,7 +57,7 @@ public class Ascendants implements Cloneable {
 		this.explicitAncestor = ascendants.explicitAncestor;
 		this.samples = ascendants.samples;
 		this.discardedSamples = ascendants.discardedSamples;
-		this.runtime = ascendants.runtime;
+		this.constructionMode = ascendants.constructionMode;
 	}
 
 	public final Scope getScope() {
@@ -119,30 +117,30 @@ public class Ascendants implements Cloneable {
 		return this.discardedSamples;
 	}
 
-	public boolean isRuntime() {
-		if (this.runtime == 0) {
+	public ConstructionMode getConstructionMode() {
+		if (this.constructionMode != null) {
+			return this.constructionMode;
+		}
 
-			final TypeRef ancestor = getExplicitAncestor();
+		final ConstructionMode enclosingMode = enclosingConstructionMode();
 
-			if (ancestor != null && ancestor.getType().isRuntime()) {
-				this.runtime = 1;
-			} else if (enclosingScopeIsRuntime()) {
-				this.runtime = 1;
-			} else {
-				this.runtime = -1;
+		if (enclosingMode.isRuntime()) {
+			return enclosingMode;
+		}
+
+		final TypeRef ancestor = getExplicitAncestor();
+
+		if (ancestor != null) {
+
+			final ConstructionMode ancestorMode =
+				ancestor.getConstructionMode();
+
+			if (!ancestorMode.isProhibited()) {
+				return ancestorMode;
 			}
 		}
 
-		return this.runtime > 0;
-	}
-
-	public Ascendants runtime() {
-
-		final Ascendants clone = clone();
-
-		clone.runtime = EXPLICIT_RUNTIME;
-
-		return clone;
+		return enclosingMode;
 	}
 
 	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
@@ -225,6 +223,13 @@ public class Ascendants implements Cloneable {
 				this.explicitAncestor = null;
 			} else if (!validateUse(this.explicitAncestor.getArtifact())) {
 				this.explicitAncestor = null;
+			} else if (this.explicitAncestor
+					.getConstructionMode().isProhibited()) {
+				this.explicitAncestor.getLogger().error(
+						"cant_inherit",
+						this.explicitAncestor,
+						"Can not be inherited");
+				this.explicitAncestor = null;
 			}
 		}
 		for (int i = this.samples.length - 1; i >= 0 ; --i) {
@@ -289,12 +294,25 @@ public class Ascendants implements Cloneable {
 			if (!validateUse(sample.getType())) {
 				return false;
 			}
-			if (explicitAscendant.getType().isRuntime()) {
-				getScope().getLogger().prohibitedRuntimeSample(sample);
+
+			final ConstructionMode sampleConstructionMode =
+				explicitAscendant.getConstructionMode();
+
+			if (sampleConstructionMode.isStrict()) {
+				getScope().getLogger().error(
+						"prohibited_sample",
+						sample,
+						"Can not be used as sample");
 				return false;
 			}
-			if (isRuntime()) {
-				getScope().getLogger().prohibitedSampleAtRuntime(sample);
+
+			final ConstructionMode constructionMode = getConstructionMode();
+
+			if (constructionMode.isStrict()) {
+				getScope().getLogger().error(
+						"prohibited_strict_sample",
+						sample,
+						"Strictly constructed object can not have a sample");
 				return false;
 			}
 		}
@@ -401,12 +419,16 @@ public class Ascendants implements Cloneable {
 		return null;
 	}
 
-	private boolean enclosingScopeIsRuntime() {
+	private ConstructionMode enclosingConstructionMode() {
 
-		final Container enclosingContainer = getScope().getEnclosingContainer();
+		final Scope enclosingScope =
+			getScope().getEnclosingScope();
 
-		return enclosingContainer != null
-		&& enclosingContainer.getScope().isRuntime();
+		if (enclosingScope == null) {
+			return ConstructionMode.FULL_CONSTRUCTION;
+		}
+
+		return enclosingScope.getConstructionMode();
 	}
 
 }

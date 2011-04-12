@@ -38,6 +38,7 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.log.LoggableData;
 
 
 public class AncestorVisitor
@@ -171,7 +172,7 @@ public class AncestorVisitor
 
 		NoRef(CompilerContext context) {
 			super(
-					new Location(context, null),
+					new Location(context, new LoggableData("<noref>")),
 					declarativeDistributor(context.getRoot()));
 		}
 

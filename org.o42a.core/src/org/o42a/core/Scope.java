@@ -20,6 +20,7 @@
 package org.o42a.core;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
@@ -44,7 +45,7 @@ public interface Scope extends PlaceInfo {
 
 	LocalScope toLocal();
 
-	boolean isRuntime();
+	ConstructionMode getConstructionMode();
 
 	boolean derivedFrom(Scope other);
 

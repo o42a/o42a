@@ -19,10 +19,10 @@
 */
 package org.o42a.core.artifact.link;
 
+import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
+
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 
 
@@ -36,6 +36,11 @@ final class RuntimeLinkTarget extends Obj {
 	}
 
 	@Override
+	public ConstructionMode getConstructionMode() {
+		return RUNTIME_CONSTRUCTION;
+	}
+
+	@Override
 	public String toString() {
 		return this.link.toString();
 	}
@@ -43,7 +48,6 @@ final class RuntimeLinkTarget extends Obj {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(getScope())
-		.runtime()
 		.setAncestor(this.link.getTypeRef());
 	}
 

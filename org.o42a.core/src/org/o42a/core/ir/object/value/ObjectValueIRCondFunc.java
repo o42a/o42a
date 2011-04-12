@@ -87,7 +87,9 @@ public abstract class ObjectValueIRCondFunc
 		final DefValue condition = value(definitions);
 
 		if (condition.isUnknown()) {
-			if (!getObjectIR().getObject().isRuntime()) {
+			if (!condition.exists()
+					&& !getObjectIR().getObject()
+					.getConstructionMode().isRuntime()) {
 				set(typeIR, trueFunc());
 				return;
 			}

@@ -26,6 +26,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -122,6 +123,11 @@ public final class Top extends AbstractScope implements Container {
 	@Override
 	public Namespace toNamespace() {
 		return null;
+	}
+
+	@Override
+	public ConstructionMode getConstructionMode() {
+		return ConstructionMode.FULL_CONSTRUCTION;
 	}
 
 	@Override

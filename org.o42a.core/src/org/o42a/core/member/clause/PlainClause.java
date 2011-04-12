@@ -19,8 +19,11 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
+import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
@@ -141,8 +144,8 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final boolean isRuntime() {
-		return false;
+	public ConstructionMode getConstructionMode() {
+		return FULL_CONSTRUCTION;
 	}
 
 	@Override

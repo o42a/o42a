@@ -21,7 +21,6 @@ package org.o42a.core;
 
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableData;
 
 
 public class Location implements LocationInfo {
@@ -39,9 +38,10 @@ public class Location implements LocationInfo {
 	public Location(CompilerContext context, LogInfo logInfo) {
 		assert context != null :
 			"Compiler context not specified";
+		assert logInfo != null :
+			"Log info not specified";
 		this.context = context;
-		this.loggable =
-			logInfo != null ? logInfo.getLoggable() : new LoggableData(this);
+		this.loggable = logInfo.getLoggable();
 	}
 
 	@Override

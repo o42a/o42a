@@ -122,9 +122,9 @@ public abstract class Obj extends Artifact<Obj>
 		return this;
 	}
 
-	public boolean isRuntime() {
+	public ConstructionMode getConstructionMode() {
 		resolve();
-		return this.ascendants.isRuntime();
+		return this.ascendants.getConstructionMode();
 	}
 
 	@Override
@@ -627,7 +627,7 @@ public abstract class Obj extends Artifact<Obj>
 		final Definitions definitions =
 			overrideDefinitions(getScope(), getOverriddenDefinitions());
 
-		if (!isRuntime()) {
+		if (!getConstructionMode().isRuntime()) {
 			return this.definitions = definitions;
 		}
 
@@ -979,12 +979,10 @@ public abstract class Obj extends Artifact<Obj>
 
 			final Obj object = start.getContainer().toObject();
 
-			assert object == this.object :
-				"Wrong container: " + start
-				+ ", but " + this.object + " expected";
+			object.assertDerivedFrom(this.object);
 
 			final Container result =
-				this.object.getScope().getEnclosingContainer();
+				object.getScope().getEnclosingContainer();
 
 			walker.up(object, this, result);
 

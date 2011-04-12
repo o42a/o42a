@@ -22,9 +22,7 @@ package org.o42a.core.artifact.array;
 import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Ref;
 
@@ -41,13 +39,18 @@ final class MaterializedArray extends Obj {
 	}
 
 	@Override
+	public ConstructionMode getConstructionMode() {
+		return ConstructionMode.PROHIBITED_CONSTRUCTION;
+	}
+
+	@Override
 	public String toString() {
 		return this.array.toString();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope()).runtime();
+		return new Ascendants(getScope());
 	}
 
 	@Override

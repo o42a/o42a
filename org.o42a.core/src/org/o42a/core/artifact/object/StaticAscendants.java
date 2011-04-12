@@ -46,11 +46,6 @@ public class StaticAscendants extends Ascendants {
 	}
 
 	@Override
-	public StaticAscendants runtime() {
-		return (StaticAscendants) super.runtime();
-	}
-
-	@Override
 	public StaticAscendants addExplicitSample(StaticTypeRef explicitAscendant) {
 		return (StaticAscendants) super.addExplicitSample(
 				explicitAscendant.toStatic());

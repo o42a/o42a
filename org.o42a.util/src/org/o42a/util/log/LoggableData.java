@@ -26,6 +26,9 @@ public class LoggableData implements Loggable, Cloneable {
 	private Loggable previous;
 
 	public LoggableData(Object loggableData) {
+		if (loggableData.getClass().getSimpleName().equals("Location")) {
+			throw new NullPointerException();
+		}
 		this.loggableData = loggableData;
 	}
 
@@ -72,6 +75,7 @@ public class LoggableData implements Loggable, Cloneable {
 
 	@Override
 	public void printContent(StringBuilder out) {
+		System.err.println("(!) " + this.loggableData.getClass());
 		out.append(this.loggableData);
 	}
 
