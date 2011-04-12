@@ -37,14 +37,13 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Source;
+import org.o42a.util.log.LoggableData;
 
 
 public final class VoidObject extends Obj {
 
 	public VoidObject(Scope topScope) {
-		super(new VoidScope(
-				new Location(new VoidContext(topScope.getContext()), null),
-				topScope.distribute()));
+		super(voidScope(topScope));
 	}
 
 	@Override
@@ -89,6 +88,15 @@ public final class VoidObject extends Obj {
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 		return voidValue();
+	}
+
+	private static VoidScope voidScope(Scope topScope) {
+
+		final VoidContext context = new VoidContext(topScope.getContext());
+
+		return new VoidScope(
+				new Location(context, new LoggableData(context)),
+				topScope.distribute());
 	}
 
 	private static final class VoidContext extends CompilerContext {

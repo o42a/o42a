@@ -20,9 +20,11 @@
 package org.o42a.core.ref.type;
 
 import static org.o42a.core.artifact.Artifact.unresolvableObject;
+import static org.o42a.core.artifact.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
@@ -47,6 +49,26 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		}
 		return this.ancestor =
 			getUntachedRef().ancestor(this).rescope(getRescoper());
+	}
+
+	public ConstructionMode getConstructionMode() {
+
+		final Artifact<?> artifact = getArtifact();
+
+		if (artifact == null) {
+			return PROHIBITED_CONSTRUCTION;
+		}
+		if (!artifact.getKind().isInheritable()) {
+			return PROHIBITED_CONSTRUCTION;
+		}
+
+		final Obj object = artifact.toObject();
+
+		if (object != null) {
+			return object.getConstructionMode();
+		}
+
+		return artifact.materialize().getConstructionMode();
 	}
 
 	public Obj getType() {

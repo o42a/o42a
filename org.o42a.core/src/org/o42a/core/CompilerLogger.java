@@ -411,21 +411,6 @@ public class CompilerLogger implements Logger {
 				"Field can not be declared as prototype");
 	}
 
-	public void prohibitedRuntimeSample(LogInfo location) {
-		error(
-				"prohibited_runtime_sample",
-				location,
-				"Sample should be resolvable at compile time."
-				+ " Variable, link or local can not be used as sample");
-	}
-
-	public void prohibitedSampleAtRuntime(LogInfo location) {
-		error(
-				"prohibited_sample_at_runtime",
-				location,
-				"Run-time object can not have samples");
-	}
-
 	public void prohibitedSamples(LogInfo location) {
 		error("prohibited_samples", location, "Samples are prohibited here");
 	}

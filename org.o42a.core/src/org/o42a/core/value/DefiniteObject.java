@@ -42,12 +42,6 @@ final class DefiniteObject<T> extends Result {
 	}
 
 	@Override
-	public boolean isRuntime() {
-		super.isRuntime();
-		return false;
-	}
-
-	@Override
 	public String toString() {
 
 		@SuppressWarnings("unchecked")
