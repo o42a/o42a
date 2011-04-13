@@ -69,7 +69,7 @@ public final class Include extends IntrinsicDirective {
 		final Statements<?> statements = sentence.alternative(location);
 		final Block<?> destination = statements.parentheses(
 				location,
-				new Namespace(statements.getContainer()));
+				new Namespace(location, statements.getContainer()));
 		final BlockBuilder builder = location.getContext().compileBlock();
 
 		builder.buildBlock(destination);

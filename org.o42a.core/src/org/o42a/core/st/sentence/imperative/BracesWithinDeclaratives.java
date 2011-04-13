@@ -19,9 +19,7 @@
 */
 package org.o42a.core.st.sentence.imperative;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
@@ -94,7 +92,7 @@ public final class BracesWithinDeclaratives extends Statement {
 
 		final ImperativeReproducer imperativeReproducer =
 			new ImperativeReproducer(
-					this.block.getScope(),
+					this.block,
 					reproducedScope,
 					reproducer);
 
@@ -127,12 +125,16 @@ public final class BracesWithinDeclaratives extends Statement {
 		private final LocalRegistry localRegistry;
 
 		ImperativeReproducer(
-				LocalScope reproducingScope,
+				ImperativeBlock reproducingBlock,
 				LocalScope reproducedScope,
 				Reproducer reproducer) {
 			super(
-					reproducingScope,
-					new ImperativeBlock.BlockDistributor(reproducedScope));
+					reproducingBlock.getScope(),
+					new ImperativeBlock.BlockDistributor(
+							new Location(
+									reproducedScope.getContext(),
+									reproducingBlock),
+							reproducedScope));
 			this.reproducer = reproducer;
 			this.localRegistry = new LocalRegistry(
 					reproducedScope,

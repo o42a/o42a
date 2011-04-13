@@ -34,6 +34,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.Lambda;
+import org.o42a.util.log.Loggable;
 
 
 final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
@@ -121,10 +122,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		}
 
 		final ImperativeBlock reproduction = this.imperative.reproduce(
-				new ImperativeReproducer(
-						this.localScope,
-						reproducedScope,
-						reproducer));
+				new ImperativeReproducer(this, reproducedScope, reproducer));
 
 		if (reproduction == null) {
 			return;
@@ -155,7 +153,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 			group.getStatements().getSentenceFactory();
 		final Block<?> definition = sentenceFactory.groupParentheses(
 				group,
-				new BlockDistributor(group.distribute(), this),
+				new BlockDistributor(group, this),
 				new GroupRegistry(
 						this,
 						group.getStatements().getMemberRegistry()));
@@ -173,7 +171,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		if (group.getScope().toLocal() != null) {
 			definition = sentenceFactory.groupBraces(
 					group,
-					new BlockDistributor(group.distribute(), this),
+					new BlockDistributor(group, this),
 					name,
 					new GroupRegistry(
 							this,
@@ -181,7 +179,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		} else {
 			definition = sentenceFactory.groupBraces(
 					group,
-					new BlockDistributor(group.distribute(), this),
+					new BlockDistributor(group, this),
 					name,
 					new ImperativeRegistryBuilder(group));
 			this.localScope = definition.getScope();
@@ -236,10 +234,20 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		private final DeclaredGroupClause clause;
 
 		BlockDistributor(
-				Distributor enclosingDistributor,
+				Group group,
 				DeclaredGroupClause clause) {
-			this.enclosingDistributor = enclosingDistributor;
+			this.enclosingDistributor = group.distribute();
 			this.clause = clause;
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.clause.getContext();
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.clause.getLoggable();
 		}
 
 		@Override
@@ -365,12 +373,16 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		private final LocalRegistry localRegistry;
 
 		ImperativeReproducer(
-				LocalScope reproducingScope,
+				DeclaredGroupClause reproducingClause,
 				LocalScope reproducedScope,
 				Reproducer reproducer) {
 			super(
-					reproducingScope,
-					new ImperativeBlock.BlockDistributor(reproducedScope));
+					reproducingClause.localScope,
+					new ImperativeBlock.BlockDistributor(
+							new Location(
+									reproducedScope.getContext(),
+									reproducingClause),
+							reproducedScope));
 			this.reproducer = reproducer;
 			this.localRegistry = new LocalRegistry(
 					reproducedScope,

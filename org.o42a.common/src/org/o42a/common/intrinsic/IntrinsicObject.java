@@ -29,6 +29,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class IntrinsicObject extends PlainObject {
@@ -163,7 +164,17 @@ public abstract class IntrinsicObject extends PlainObject {
 
 		DefinitionDistributor(IntrinsicObject object) {
 			this.object = object;
-			this.namespace = new Namespace(this.object);
+			this.namespace = new Namespace(this, this.object);
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.object.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.object.getContext();
 		}
 
 		@Override

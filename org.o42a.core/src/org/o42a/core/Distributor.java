@@ -30,16 +30,6 @@ public abstract class Distributor implements PlaceInfo {
 		return new DeclarativeDistributor(container);
 	}
 
-	@Override
-	public final CompilerContext getContext() {
-		return getScope().getContext();
-	}
-
-	@Override
-	public Loggable getLoggable() {
-		return getScope().getLoggable();
-	}
-
 	public final CompilerLogger getLogger() {
 		return getContext().getLogger();
 	}
@@ -95,6 +85,16 @@ public abstract class Distributor implements PlaceInfo {
 		DeclarativeDistributor(Container container) {
 			this.container = container;
 			this.place = scopePlace(container.getScope());
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.container.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.container.getContext();
 		}
 
 		@Override

@@ -32,7 +32,7 @@ import org.o42a.intrinsic.CompilerIntrinsics;
 public class ModuleNamespace extends Namespace {
 
 	public ModuleNamespace(CompilerIntrinsics intrinsics) {
-		super(intrinsics.getTop());
+		super(intrinsics.getTop(), intrinsics.getTop());
 		useNamespace(new RootRef(intrinsics));
 	}
 

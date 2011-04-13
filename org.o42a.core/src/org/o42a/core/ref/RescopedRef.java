@@ -32,6 +32,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
+import org.o42a.util.log.Loggable;
 
 
 final class RescopedRef extends Wrap {
@@ -42,8 +43,8 @@ final class RescopedRef extends Wrap {
 		super(
 				ref,
 				new RescopedDistrubutor(
-						rescoper.getFinalScope(),
-						ref.getPlace()));
+						ref,
+						rescoper.getFinalScope()));
 		this.rescoped = new Rescoped(ref, rescoper, distribute());
 	}
 
@@ -196,12 +197,24 @@ final class RescopedRef extends Wrap {
 
 	private static final class RescopedDistrubutor extends Distributor {
 
+		private final Ref ref;
 		private final Scope scope;
 		private final ScopePlace place;
 
-		RescopedDistrubutor(Scope scope, ScopePlace place) {
+		RescopedDistrubutor(Ref ref, Scope scope) {
+			this.ref = ref;
 			this.scope = scope;
-			this.place = place;
+			this.place = ref.getPlace();
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.ref.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.ref.getContext();
 		}
 
 		@Override

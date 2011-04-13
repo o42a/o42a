@@ -39,6 +39,7 @@ import org.o42a.core.st.sentence.declarative.RefCondition;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place;
 import org.o42a.util.Place.Trace;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Statements<S extends Statements<S>> extends Placed {
@@ -53,7 +54,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			LocationInfo location,
 			Sentence<S> sentence,
 			boolean opposite) {
-		super(location, new StatementsDistributor(sentence));
+		super(location, new StatementsDistributor(location, sentence));
 		this.sentence = sentence;
 		this.opposite = opposite;
 	}
@@ -94,11 +95,17 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return this.valueType = ValueType.VOID;
 	}
 
-	public void expression(Ref expression) {
+	public final void expression(Ref expression) {
+		assert expression.getContext() == getContext() :
+			expression + " has wrong context: " + expression.getContext()
+			+ ", but " + getContext() + " expected";
 		statement(new RefCondition(expression.rescope(getScope())));
 	}
 
-	public void assign(Ref value) {
+	public final void assign(Ref value) {
+		assert value.getContext() == getContext() :
+			value + " has wrong context: " + value.getContext()
+			+ ", but " + getContext() + " expected";
 		statement(value.rescope(getScope()));
 	}
 
@@ -341,10 +348,12 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private static final class StatementsDistributor extends Distributor {
 
+		private final LocationInfo location;
 		private final Sentence<?> sentence;
 		private final ScopePlace place;
 
-		private StatementsDistributor(Sentence<?> sentence) {
+		StatementsDistributor(LocationInfo location, Sentence<?> sentence) {
+			this.location = location;
 			this.sentence = sentence;
 
 			final Trace trace = this.sentence.getBlock().getTrace();
@@ -354,6 +363,16 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			} else {
 				this.place = localPlace(getScope().toLocal(), trace.next());
 			}
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.location.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.location.getContext();
 		}
 
 		@Override
@@ -383,6 +402,16 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			this.place = localPlace(
 					Statements.this.getScope().toLocal(),
 					place);
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return Statements.this.getContext();
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return Statements.this.getLoggable();
 		}
 
 		@Override
