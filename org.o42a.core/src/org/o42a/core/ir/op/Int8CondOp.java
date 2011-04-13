@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int8op;
@@ -35,12 +36,12 @@ public final class Int8CondOp implements CondOp {
 	}
 
 	@Override
-	public final BoolOp loadCondition(Code code) {
+	public final BoolOp loadCondition(CodeId id, Code code) {
 		return this.op.lowestBit(null, code);
 	}
 
 	@Override
-	public final BoolOp loadUnknown(Code code) {
+	public final BoolOp loadUnknown(CodeId id, Code code) {
 		return this.op.lshr(null, code, 1).lowestBit(null, code);
 	}
 

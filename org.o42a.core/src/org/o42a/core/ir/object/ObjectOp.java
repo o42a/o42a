@@ -88,7 +88,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final Code code = dirs.code();
 		final ObjectTypeOp objectType = objectType(code);
 		final ValOp value = objectType.ptr().data(code).value(code);
-		final CondBlk indefinite = value.loadIndefinite(code).branch(
+		final CondBlk indefinite = value.loadIndefinite(null, code).branch(
 				code,
 				"cond_indefinite",
 				"cond_definite");
@@ -129,7 +129,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 		final Code code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code);
-		final CondBlk indefinite = value.loadIndefinite(code).branch(
+		final CondBlk indefinite = value.loadIndefinite(null, code).branch(
 				code,
 				"val_indefinite",
 				"val_definite");

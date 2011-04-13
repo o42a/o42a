@@ -146,7 +146,7 @@ public class CodeDirs {
 
 	public final void go(Code code, CondOp cond) {
 
-		final BoolOp condition = cond.loadCondition(code);
+		final BoolOp condition = cond.loadCondition(null, code);
 
 		if (this.unknownPos == this.falsePos) {
 			if (this.falsePos == null) {
@@ -160,7 +160,7 @@ public class CodeDirs {
 
 		condition.goUnless(code, condFalse.head());
 		if (condFalse.exists()) {
-			cond.loadUnknown(condFalse).go(
+			cond.loadUnknown(null, condFalse).go(
 					condFalse,
 					dir(condFalse, this.unknownPos),
 					dir(condFalse, this.falsePos));

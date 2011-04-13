@@ -44,76 +44,103 @@ public final class ValOp extends StructOp implements CondOp {
 		return (Type) super.getType();
 	}
 
-	public final RecOp<Int32op> flags(Code code) {
-		return int32(null, code, getType().flags());
+	public final RecOp<Int32op> flags(CodeId id, Code code) {
+		return int32(id, code, getType().flags());
 	}
 
 	@Override
-	public final BoolOp loadCondition(Code code) {
-		return flags(code).load(null, code).lowestBit(null, code);
+	public final BoolOp loadCondition(CodeId id, Code code) {
+
+		final Int32op flags = flags(null, code).load(null, code);
+
+		return flags.lowestBit(
+				id != null ? id : getId().sub("condition_flag"),
+				code);
 	}
 
 	@Override
-	public final BoolOp loadUnknown(Code code) {
-		return flags(code).load(null, code).lshr(null, code, 1).lowestBit(null, code);
+	public final BoolOp loadUnknown(CodeId id, Code code) {
+
+		final Int32op flags = flags(null, code).load(null, code);
+
+		return flags.lshr(null, code, 1).lowestBit(
+				id != null ? id : getId().sub("unknown_flag"),
+				code);
 	}
 
-	public final BoolOp loadIndefinite(Code code) {
-		return flags(code).load(null, code).lshr(null, code, 2).lowestBit(null, code);
+	public final BoolOp loadIndefinite(CodeId id, Code code) {
+
+		final Int32op flags = flags(null, code).load(null, code);
+
+		return flags.lshr(null, code, 2).lowestBit(
+				id != null ? id : getId().sub("indefinite_flag"),
+				code);
 	}
 
-	public final RecOp<Int32op> length(Code code) {
-		return int32(null, code, getType().length());
+	public final RecOp<Int32op> length(CodeId id, Code code) {
+		return int32(id, code, getType().length());
 	}
 
-	public final RecOp<Int64op> rawValue(Code code) {
-		return int64(null, code, getType().value());
+	public final RecOp<Int64op> rawValue(CodeId id, Code code) {
+		return int64(id, code, getType().value());
 	}
 
-	public final AnyOp value(Code code) {
-		return rawValue(code).toAny(null, code);
+	public final AnyOp value(CodeId id, Code code) {
+		return rawValue(
+				id != null ? id.detail("raw") : null,
+				code).toAny(id, code);
 	}
 
 	public ValOp store(Code code, Val value) {
-		flags(code).store(code, code.int32(value.getFlags()));
+		flags(null, code).store(code, code.int32(value.getFlags()));
 		if (value.getCondition()) {
-			length(code).store(code, code.int32(value.getLength()));
+			length(null, code).store(code, code.int32(value.getLength()));
 
 			final Ptr<AnyOp> pointer = value.getPointer();
 
 			if (pointer != null) {
-				value(code).toPtr(null, code).store(code, pointer.op(null, code));
+				value(null, code)
+				.toPtr(null, code)
+				.store(code, pointer.op(null, code));
 			} else {
-				rawValue(code).store(code, code.int64(value.getValue()));
+				rawValue(null, code).store(code, code.int64(value.getValue()));
 			}
 		}
 		return this;
 	}
 
 	public final ValOp storeVoid(Code code) {
-		flags(code).store(code, code.int32(CONDITION_FLAG));
+		flags(null, code).store(code, code.int32(CONDITION_FLAG));
 		return this;
 	}
 
 	public final ValOp storeFalse(Code code) {
-		flags(code).store(code, code.int32(0));
+		flags(null, code).store(code, code.int32(0));
 		return this;
 	}
 
 	public final ValOp storeUnknown(Code code) {
-		flags(code).store(code, code.int32(UNKNOWN_FLAG));
+		flags(null, code).store(code, code.int32(UNKNOWN_FLAG));
 		return this;
 	}
 
 	public final ValOp storeIndefinite(Code code) {
-		flags(code).store(code, code.int32(UNKNOWN_FLAG | INDEFINITE_FLAG));
+		flags(null, code).store(
+				code,
+				code.int32(UNKNOWN_FLAG | INDEFINITE_FLAG));
 		return this;
 	}
 
 	public final ValOp store(Code code, ValOp value) {
-		flags(code).store(code, value.flags(code).load(null, code));
-		length(code).store(code, value.length(code).load(null, code));
-		rawValue(code).store(code, value.rawValue(code).load(null, code));
+		flags(null, code).store(
+				code,
+				value.flags(null, code).load(null, code));
+		length(null, code).store(
+				code,
+				value.length(null, code).load(null, code));
+		rawValue(null, code).store(
+				code,
+				value.rawValue(null, code).load(null, code));
 		return this;
 	}
 

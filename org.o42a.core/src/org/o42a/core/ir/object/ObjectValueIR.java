@@ -81,7 +81,7 @@ public class ObjectValueIR {
 
 		final Code stillIndefinite = code.addBlock("still_indefinite");
 
-		result.loadIndefinite(code).go(code, stillIndefinite.head());
+		result.loadIndefinite(null, code).go(code, stillIndefinite.head());
 		result.storeUnknown(stillIndefinite);
 		stillIndefinite.go(code.tail());
 	}
@@ -172,10 +172,10 @@ public class ObjectValueIR {
 		}
 
 		writeClaim(code, result, host, null);
-		result.loadIndefinite(code).goUnless(code, done.head());
+		result.loadIndefinite(null, code).goUnless(code, done.head());
 
 		writeProposition(code, result, host, null);
-		result.loadIndefinite(code).goUnless(code, done.head());
+		result.loadIndefinite(null, code).goUnless(code, done.head());
 
 		result.storeUnknown(code);// Override indefinite value.
 		code.returnVoid();

@@ -128,8 +128,11 @@ final class MainCall extends DefinedObject {
 		}
 
 		main.debug("Execution succeed");
-		result.rawValue(main).toAny(null, main).toInt32(null, main)
-		.load(null, main).returnValue(main);
+		result.rawValue(main.id("execution_result_ptr"), main)
+		.toAny(null, main)
+		.toInt32(null, main)
+		.load(null, main)
+		.returnValue(main);
 	}
 
 	private void generateDebugMain(
