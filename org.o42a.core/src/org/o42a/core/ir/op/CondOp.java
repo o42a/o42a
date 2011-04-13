@@ -19,15 +19,16 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 
 
 public interface CondOp {
 
-	BoolOp loadCondition(Code code);
+	BoolOp loadCondition(CodeId id, Code code);
 
-	BoolOp loadUnknown(Code code);
+	BoolOp loadUnknown(CodeId id, Code code);
 
 	void go(Code code, CodeDirs dirs);
 

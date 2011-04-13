@@ -19,7 +19,14 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.Int64op;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.common.adapter.UnaryOperatorInfo;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.UnaryOpObj;
 
@@ -46,6 +53,15 @@ public abstract class IntegerUnaryOpObj extends UnaryOpObj<Long, Long> {
 			return operand;
 		}
 
+		@Override
+		protected void write(
+				CodeDirs dirs,
+				ObjectOp host,
+				RefOp operand,
+				ValOp result) {
+			operand.writeValue(dirs, result);
+		}
+
 	}
 
 	public static final class Minus extends IntegerUnaryOpObj {
@@ -57,6 +73,26 @@ public abstract class IntegerUnaryOpObj extends UnaryOpObj<Long, Long> {
 		@Override
 		protected Long calculate(Long operand) {
 			return -operand;
+		}
+
+		@Override
+		protected void write(
+				CodeDirs dirs,
+				ObjectOp host,
+				RefOp operand,
+				ValOp result) {
+			final Code code = dirs.code();
+
+			operand.writeValue(dirs, result);
+
+			final RecOp<Int64op> operandRec =
+				result.rawValue(code.id("operand_ptr"), code);
+			final Int64op operandVal =
+				operandRec.load(code.id("operand_value"), code);
+
+			operandRec.store(
+					code,
+					operandVal.neg(code.id("minus"), code));
 		}
 
 	}

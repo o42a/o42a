@@ -94,14 +94,14 @@ public abstract class LLVMCode implements CodeWriter {
 		if (id != null) {
 			return code.opId(id);
 		}
-		return op.getId().detail(suffix);
+		return op.getId().type(code.id(suffix));
 	}
 
 	public static CodeId castId(Op op, CodeId id, Code code, CodeId suffix) {
 		if (id != null) {
 			return code.opId(id);
 		}
-		return op.getId().detail(suffix);
+		return op.getId().type(suffix);
 	}
 
 	public static CodeId unaryId(

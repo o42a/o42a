@@ -20,16 +20,23 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.adapter.UnaryOperatorInfo;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
@@ -65,6 +72,7 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 	private final ValueType<O> operandType;
 	private final UnaryOperatorInfo operator;
+	private Ref operand;
 
 	public UnaryOpObj(
 			Container enclosingContainer,
@@ -95,6 +103,12 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 	}
 
 	@Override
+	public void resolveAll() {
+		super.resolveAll();
+		operand();
+	}
+
+	@Override
 	public String toString() {
 		return ("Unary " + this.operator.getSign()
 				+ "[" + getResultType() + "]");
@@ -122,8 +136,7 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 
-		final Artifact<?> operand =
-			getScope().getEnclosingScopePath().resolveArtifact(this, scope);
+		final Artifact<?> operand = operand().resolve(scope).toArtifact();
 		final O operandValue =
 			getOperandType().definiteValue(operand.materialize().getValue());
 
@@ -141,5 +154,50 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 	}
 
 	protected abstract T calculate(O operand);
+
+	@Override
+	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
+		return new ValueIR(objectIR);
+	}
+
+	protected abstract void write(
+			CodeDirs dirs,
+			ObjectOp host,
+			RefOp operand,
+			ValOp result);
+
+	final Ref operand() {
+		if (this.operand != null) {
+			return this.operand;
+		}
+
+		return this.operand =
+			getScope().getEnclosingScopePath().target(this, distribute());
+	}
+
+	private static final class ValueIR extends ProposedValueIR {
+
+		public ValueIR(ObjectIR objectIR) {
+			super(objectIR);
+		}
+
+		@Override
+		protected void proposition(Code code, ValOp result, ObjectOp host) {
+
+			final UnaryOpObj<?, ?> object =
+				(UnaryOpObj<?, ?>) getObjectIR().getObject();
+			final RefOp operand = object.operand().op(host);
+			final CodeBlk falseOperand = code.addBlock("false_operand");
+			final CodeDirs dirs = falseWhenUnknown(code, falseOperand.head());
+
+			object.write(dirs, host, operand, result);
+
+			if (falseOperand.exists()) {
+				result.storeFalse(falseOperand);
+				falseOperand.go(code.tail());
+			}
+		}
+
+	}
 
 }
