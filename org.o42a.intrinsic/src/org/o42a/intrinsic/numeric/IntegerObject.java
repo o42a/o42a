@@ -26,9 +26,7 @@ import org.o42a.common.intrinsic.IntrinsicType;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.operator.UnaryOpObj;
 
 
 public class IntegerObject extends IntrinsicType {
@@ -50,12 +48,10 @@ public class IntegerObject extends IntrinsicType {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 
-		final UnaryOpObj.Plus<Long> plus = new UnaryOpObj.Plus<Long>(
-				this,
-				getAncestor().toStatic(),
-				ValueType.INTEGER);
-		final UnaryOpObj.Minus<Long> minus =
-			new Minus(this, getAncestor().toStatic(), ValueType.INTEGER);
+		final IntegerUnaryOpObj.Plus plus =
+			new IntegerUnaryOpObj.Plus(this);
+		final IntegerUnaryOpObj.Minus minus =
+			new IntegerUnaryOpObj.Minus(this);
 		final IntegerBinaryOpObj.Add add =
 			new IntegerBinaryOpObj.Add(this);
 		final IntegerBinaryOpObj.Subtract subtract =
@@ -81,22 +77,6 @@ public class IntegerObject extends IntrinsicType {
 		members.addMember(byString.toMember());
 
 		super.declareMembers(members);
-	}
-
-	private static final class Minus extends UnaryOpObj.Minus<Long> {
-
-		Minus(
-				Container enclosingContainer,
-				StaticTypeRef declaredIn,
-				ValueType<Long> operandType) {
-			super(enclosingContainer, declaredIn, operandType);
-		}
-
-		@Override
-		protected Long calculate(Long operand) {
-			return -operand;
-		}
-
 	}
 
 }

@@ -142,42 +142,4 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 	protected abstract T calculate(O operand);
 
-	public static class Plus<O extends Number> extends UnaryOpObj<O, O> {
-
-		public Plus(
-				Container enclosingContainer,
-				StaticTypeRef declaredIn,
-				ValueType<O> operandType) {
-			super(
-					enclosingContainer,
-					UnaryOperatorInfo.PLUS,
-					declaredIn,
-					operandType,
-					operandType);
-		}
-
-		@Override
-		protected O calculate(O operand) {
-			return operand;
-		}
-
-	}
-
-	public static abstract class Minus<O extends Number>
-			extends UnaryOpObj<O, O> {
-
-		public Minus(
-				Container enclosingContainer,
-				StaticTypeRef declaredIn,
-				ValueType<O> operandType) {
-			super(
-					enclosingContainer,
-					UnaryOperatorInfo.MINUS,
-					declaredIn,
-					operandType,
-					operandType);
-		}
-
-	}
-
 }
