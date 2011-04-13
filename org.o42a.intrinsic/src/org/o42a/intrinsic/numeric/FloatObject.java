@@ -27,7 +27,6 @@ import org.o42a.core.Container;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.operator.UnaryOpObj;
 
 
 public class FloatObject extends IntrinsicType {
@@ -49,19 +48,8 @@ public class FloatObject extends IntrinsicType {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 
-		final UnaryOpObj.Plus<Double> plus = new UnaryOpObj.Plus<Double>(
-				this,
-				getAncestor().toStatic(),
-				ValueType.FLOAT);
-		final UnaryOpObj.Minus<Double> minus = new UnaryOpObj.Minus<Double>(
-				this,
-				getAncestor().toStatic(),
-				ValueType.FLOAT) {
-			@Override
-			protected Double calculate(Double operand) {
-				return -operand;
-			}
-		};
+		final FloatUnaryOpObj.Plus plus = new FloatUnaryOpObj.Plus(this);
+		final FloatUnaryOpObj.Minus minus = new FloatUnaryOpObj.Minus(this);
 		final FloatBinaryOpObj.Add add =
 			new FloatBinaryOpObj.Add(this);
 		final FloatBinaryOpObj.Subtract subtract =

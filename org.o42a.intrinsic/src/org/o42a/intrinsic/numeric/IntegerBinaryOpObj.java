@@ -27,7 +27,9 @@ import org.o42a.intrinsic.operator.BinaryOpObj;
 
 public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 
-	public IntegerBinaryOpObj(IntegerObject owner, BinaryOperatorInfo operator) {
+	public IntegerBinaryOpObj(
+			IntegerObject owner,
+			BinaryOperatorInfo operator) {
 		super(
 				owner.getContainer(),
 				operator,
