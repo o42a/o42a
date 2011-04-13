@@ -301,6 +301,16 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		}
 
 		@Override
+		public Loggable getLoggable() {
+			return this.placed.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.placed.getContext();
+		}
+
+		@Override
 		public ScopePlace getPlace() {
 			return this.placed.getPlace();
 		}

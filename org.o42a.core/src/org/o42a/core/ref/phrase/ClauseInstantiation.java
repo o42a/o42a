@@ -20,6 +20,7 @@
 package org.o42a.core.ref.phrase;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Location;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
@@ -40,7 +41,9 @@ final class ClauseInstantiation extends Wrap {
 	ClauseInstantiation(
 			ClauseInstance instance,
 			Distributor distributor) {
-		super(instance.getLocation(), distributor);
+		super(
+				new Location(distributor.getContext(), instance.getLocation()),
+				distributor);
 		this.instance = instance;
 	}
 

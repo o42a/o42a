@@ -39,8 +39,8 @@ public class Namespace extends AbstractContainer {
 	private final Container enclosing;
 	private final ArrayList<NsUse> uses = new ArrayList<NsUse>();
 
-	public Namespace(Container enclosing) {
-		super(enclosing);
+	public Namespace(LocationInfo location, Container enclosing) {
+		super(location);
 		this.enclosing = enclosing;
 	}
 

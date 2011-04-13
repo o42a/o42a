@@ -31,6 +31,7 @@ import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Sentence<S extends Statements<S>> extends Placed {
@@ -45,7 +46,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 			LocationInfo location,
 			Block<S> block,
 			SentenceFactory<S, ?, ?> sentenceFactory) {
-		super(location, new SentenceDistributor(block));
+		super(location, new SentenceDistributor(location, block));
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
 	}
@@ -211,10 +212,12 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 
 	private static final class SentenceDistributor extends Distributor {
 
+		private final LocationInfo location;
 		private final Block<?> block;
 		private final ScopePlace place;
 
-		SentenceDistributor(Block<?> block) {
+		SentenceDistributor(LocationInfo location, Block<?> block) {
+			this.location = location;
 			this.block = block;
 
 			final Trace trace = this.block.getTrace();
@@ -224,6 +227,16 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 			} else {
 				this.place = localPlace(getScope().toLocal(), trace.next());
 			}
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.location.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.location.getContext();
 		}
 
 		@Override

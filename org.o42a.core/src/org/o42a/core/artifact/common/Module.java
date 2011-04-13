@@ -74,7 +74,7 @@ public class Module extends PlainObject {
 			final BlockBuilder compiled = getContext().compileBlock();
 			final DeclarativeBlock definition = new DeclarativeBlock(
 					this,
-					new Namespace(this),
+					new Namespace(this, this),
 					this.memberRegistry);
 
 			definition.setEnv(StatementEnv.objectEnv(this));

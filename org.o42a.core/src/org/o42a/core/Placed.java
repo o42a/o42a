@@ -20,6 +20,7 @@
 package org.o42a.core;
 
 import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
 
 
 public class Placed extends Scoped implements PlaceInfo {
@@ -89,6 +90,16 @@ public class Placed extends Scoped implements PlaceInfo {
 		}
 
 		@Override
+		public Loggable getLoggable() {
+			return this.placed.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.placed.getContext();
+		}
+
+		@Override
 		public Scope getScope() {
 			return this.placed.getScope();
 		}
@@ -115,6 +126,16 @@ public class Placed extends Scoped implements PlaceInfo {
 				PlaceInfo placed) {
 			this.container = container;
 			this.placed = placed;
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.placed.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.placed.getContext();
 		}
 
 		@Override

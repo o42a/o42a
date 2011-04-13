@@ -43,6 +43,7 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
+import org.o42a.util.log.Loggable;
 
 
 public final class ImperativeBlock extends Block<Imperatives> {
@@ -111,7 +112,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 			ImperativeFactory sentenceFactory) {
 		this(
 				location,
-				new BlockDistributor(scope),
+				new BlockDistributor(location, scope),
 				memberRegistry,
 				sentenceFactory);
 	}
@@ -322,10 +323,22 @@ public final class ImperativeBlock extends Block<Imperatives> {
 
 	public static final class BlockDistributor extends Distributor {
 
+		private final LocationInfo location;
 		private final LocalScope scope;
 
-		public BlockDistributor(LocalScope scope) {
+		public BlockDistributor(LocationInfo location, LocalScope scope) {
+			this.location = location;
 			this.scope = scope;
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.location.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.location.getContext();
 		}
 
 		@Override
