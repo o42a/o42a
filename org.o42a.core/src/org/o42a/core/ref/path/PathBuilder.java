@@ -126,7 +126,7 @@ public final class PathBuilder {
 		return field;
 	}
 
-	public Field<?> fieldOf(Scope scope) {
+	public final Field<?> fieldOf(Scope scope) {
 		return fieldOf(scope.getContainer());
 	}
 

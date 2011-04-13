@@ -177,7 +177,7 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 	private static final class ValueIR extends ProposedValueIR {
 
-		public ValueIR(ObjectIR objectIR) {
+		ValueIR(ObjectIR objectIR) {
 			super(objectIR);
 		}
 

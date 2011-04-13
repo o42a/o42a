@@ -19,10 +19,17 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
+import org.o42a.codegen.code.CondBlk;
+import org.o42a.codegen.code.op.*;
 import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryOpObj;
 
@@ -79,6 +86,43 @@ public abstract class NumericCompareOpObj<L extends Number>
 			return left.compareTo(right.longValue());
 		}
 
+		@Override
+		protected void calculate(
+				CodeDirs dirs,
+				ObjectOp host,
+				ValOp leftVal,
+				ValOp rightVal) {
+
+			final Code code = dirs.code();
+			final RecOp<Int64op> leftPtr =
+				leftVal.rawValue(code.id("left_int_ptr"), code);
+			final Int64op left = leftPtr.load(code.id("left"), code);
+
+			final RecOp<Int64op> rightPtr =
+				rightVal.rawValue(code.id("right_int_ptr"), code);
+			final Int64op right = rightPtr.load(code.id("right"), code);
+
+			final BoolOp gt = left.gt(code.id("gt"), code, right);
+			final CondBlk greater =
+				gt.branch(code, "greater", "not_greater");
+			final CodeBlk notGreater = greater.otherwise();
+
+			leftPtr.store(greater, greater.int64(1));
+			greater.go(code.tail());
+
+			final BoolOp eq =
+				left.eq(notGreater.id("eq"), notGreater, right);
+
+			final CondBlk equals = eq.branch(notGreater, "equals", "lesser");
+			final CodeBlk lesser = equals.otherwise();
+
+			leftPtr.store(equals, equals.int64(0));
+			equals.go(code.tail());
+
+			leftPtr.store(lesser, lesser.int64(-1));
+			lesser.go(code.tail());
+		}
+
 	}
 
 	public static class FloatCompare extends NumericCompareOpObj<Double> {
@@ -90,6 +134,47 @@ public abstract class NumericCompareOpObj<L extends Number>
 		@Override
 		protected long compare(Double left, Number right) {
 			return left.compareTo(right.doubleValue());
+		}
+
+		@Override
+		protected void calculate(
+				CodeDirs dirs,
+				ObjectOp host,
+				ValOp leftVal,
+				ValOp rightVal) {
+
+			final Code code = dirs.code();
+			final RecOp<Int64op> result =
+				leftVal.rawValue(code.id("cmp"), code);
+			final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
+			final RecOp<Fp64op> leftPtr =
+				leftRec.toFp64(code.id("float_left_ptr"), code);
+			final Fp64op left = leftPtr.load(code.id("left"), code);
+
+			final AnyOp rightRec = rightVal.value(code.id("right_ptr"), code);
+			final RecOp<Fp64op> rightPtr =
+				rightRec.toFp64(code.id("float_left_ptr"), code);
+			final Fp64op right = rightPtr.load(code.id("right"), code);
+
+			final BoolOp gt = left.gt(code.id("gt"), code, right);
+			final CondBlk greater =
+				gt.branch(code, "greater", "not_greater");
+			final CodeBlk notGreater = greater.otherwise();
+
+			result.store(greater, greater.int64(1));
+			greater.go(code.tail());
+
+			final BoolOp eq =
+				left.eq(notGreater.id("eq"), notGreater, right);
+
+			final CondBlk equals = eq.branch(notGreater, "equals", "lesser");
+			final CodeBlk lesser = equals.otherwise();
+
+			result.store(equals, equals.int64(0));
+			equals.go(code.tail());
+
+			result.store(lesser, lesser.int64(-1));
+			lesser.go(code.tail());
 		}
 
 	}
