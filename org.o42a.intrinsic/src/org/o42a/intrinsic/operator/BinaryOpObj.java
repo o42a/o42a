@@ -20,16 +20,25 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -66,6 +75,7 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 
 	private final ValueType<L> leftOperandType;
 	private final BinaryOperatorInfo operator;
+	private Ref left;
 
 	public BinaryOpObj(
 			Container enclosingContainer,
@@ -90,6 +100,12 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 
 	public final BinaryOperatorInfo getOperator() {
 		return this.operator;
+	}
+
+	@Override
+	public void resolveAll() {
+		super.resolveAll();
+		left();
 	}
 
 	@Override
@@ -121,8 +137,7 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 
-		final Artifact<?> leftOperand =
-			getScope().getEnclosingScopePath().resolveArtifact(this, scope);
+		final Artifact<?> leftOperand = left().resolve(scope).toArtifact();
 		final Field<?> rightOperand =
 			getOperator().getRightOperand().fieldOf(scope);
 		final Value<?> leftValue =
@@ -195,5 +210,61 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 			L left,
 			ValueType<R> rightType,
 			R right);
+
+	@Override
+	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
+		return new ValueIR(objectIR);
+	}
+
+	protected abstract void calculate(
+			CodeDirs dirs,
+			ObjectOp host,
+			ValOp leftVal,
+			ValOp rightVal);
+
+	final Ref left() {
+		if (this.left != null) {
+			return this.left;
+		}
+		return this.left =
+			getScope().getEnclosingScopePath().target(this, distribute());
+	}
+
+	private static final class ValueIR extends ProposedValueIR {
+
+		ValueIR(ObjectIR objectIR) {
+			super(objectIR);
+		}
+
+		@Override
+		protected void proposition(Code code, ValOp result, ObjectOp host) {
+
+			final BinaryOpObj<?, ?> object =
+				(BinaryOpObj<?, ?>) getObjectIR().getObject();
+			final RefOp left = object.left().op(host);
+			final CodeBlk failure = code.addBlock("binary_failure");
+			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
+			final ValOp rightVal =
+				code.allocate(code.id("right_val"), VAL_TYPE);
+
+			left.writeValue(dirs, result);
+
+			final FldOp right = host.field(
+					dirs,
+					object.getOperator().getRightOperand().memberKey(
+							object.getContext()));
+
+			rightVal.storeIndefinite(code);
+			right.materialize(dirs).writeValue(dirs, rightVal);
+
+			object.calculate(dirs, host, result, rightVal);
+
+			if (failure.exists()) {
+				result.storeFalse(failure);
+				failure.go(code.tail());
+			}
+		}
+
+	}
 
 }

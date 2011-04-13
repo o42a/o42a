@@ -144,6 +144,13 @@ public class CodeDirs {
 		go(code, this.unknownPos);
 	}
 
+	public final void go(Code code, BoolOp bool) {
+		if (this.falsePos == null) {
+			return;
+		}
+		bool.goUnless(code, dir(code, this.falsePos));
+	}
+
 	public final void go(Code code, CondOp cond) {
 
 		final BoolOp condition = cond.loadCondition(null, code);

@@ -19,8 +19,14 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.Int64op;
+import org.o42a.codegen.code.op.RecOp;
 import org.o42a.common.adapter.BinaryOperatorInfo;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryOpObj;
 
@@ -62,6 +68,31 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 
 	protected abstract long calculate(long left, long right);
 
+
+	@Override
+	protected final void calculate(
+			CodeDirs dirs,
+			ObjectOp host,
+			ValOp leftVal,
+			ValOp rightVal) {
+
+		final Code code = dirs.code();
+		final RecOp<Int64op> leftPtr =
+			leftVal.rawValue(code.id("left_int_ptr"), code);
+		final Int64op left = leftPtr.load(code.id("left"), code);
+
+		final RecOp<Int64op> rightPtr =
+			rightVal.rawValue(code.id("right_int_ptr"), code);
+		final Int64op right = rightPtr.load(code.id("right"), code);
+
+		leftPtr.store(code, calculate(code, left, right));
+	}
+
+	protected abstract Int64op calculate(
+			Code code,
+			Int64op left,
+			Int64op right);
+
 	public static class Add extends IntegerBinaryOpObj {
 
 		public Add(IntegerObject owner) {
@@ -71,6 +102,11 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 		@Override
 		protected long calculate(long left, long right) {
 			return left + right;
+		}
+
+		@Override
+		protected Int64op calculate(Code code, Int64op left, Int64op right) {
+			return left.add(code.id("add"), code, right);
 		}
 
 	}
@@ -86,6 +122,11 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 			return left - right;
 		}
 
+		@Override
+		protected Int64op calculate(Code code, Int64op left, Int64op right) {
+			return left.sub(code.id("sub"), code, right);
+		}
+
 	}
 
 	public static class Multiply extends IntegerBinaryOpObj {
@@ -99,6 +140,11 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 			return left * right;
 		}
 
+		@Override
+		protected Int64op calculate(Code code, Int64op left, Int64op right) {
+			return left.mul(code.id("mul"), code, right);
+		}
+
 	}
 
 	public static class Divide extends IntegerBinaryOpObj {
@@ -110,6 +156,11 @@ public abstract class IntegerBinaryOpObj extends BinaryOpObj<Long, Long> {
 		@Override
 		protected long calculate(long left, long right) {
 			return left / right;
+		}
+
+		@Override
+		protected Int64op calculate(Code code, Int64op left, Int64op right) {
+			return left.div(code.id("div"), code, right);
 		}
 
 	}
