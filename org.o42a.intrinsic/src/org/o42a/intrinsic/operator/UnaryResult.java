@@ -21,72 +21,70 @@ package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.common.adapter.UnaryOperatorInfo;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.log.LoggableData;
 
 
-public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
+public abstract class UnaryResult<T, O> extends IntrinsicObject {
 
 	private static FieldDeclaration declaration(
 			Container enclosingContainer,
-			UnaryOperatorInfo operator,
-			StaticTypeRef declaredIn) {
+			String name,
+			String sourcePath) {
 
-		final Location location = new Location(
-						enclosingContainer.getContext(),
-						new LoggableData("<ROOT>"));
-		final Distributor distributor =
-			declarativeDistributor(enclosingContainer);
-		final AdapterId adapterId =
-			operator.getPath().toAdapterId(location, distributor);
-		final FieldDeclaration declaration =
-			fieldDeclaration(location, distributor, adapterId).prototype();
+		final CompilerContext context;
 
-		if (declaredIn == null) {
-			return declaration;
+		try {
+			context = enclosingContainer.getContext().contextFor(sourcePath);
+		} catch (Exception e) {
+			throw new ExceptionInInitializerError(e);
 		}
 
-		return declaration.override().setDeclaredIn(declaredIn);
+		final Location location = new Location(context, context.getSource());
+		final Distributor distributor =
+			declarativeDistributor(enclosingContainer);
+
+		return fieldDeclaration(
+				location,
+				distributor,
+				memberName(name)).prototype();
 	}
 
 	private final ValueType<O> operandType;
-	private final UnaryOperatorInfo operator;
-	private Ref operand;
+	private final String operandName;
+	private MemberKey operandKey;
 
-	public UnaryOpObj(
+	public UnaryResult(
 			Container enclosingContainer,
-			UnaryOperatorInfo operator,
-			StaticTypeRef declaredIn,
+			String name,
 			ValueType<T> resultType,
-			ValueType<O> operandType) {
-		super(declaration(
-				enclosingContainer,
-				operator,
-				declaredIn));
-		setValueType(resultType);
+			String operandName,
+			ValueType<O> operandType,
+			String sourcePath) {
+		super(declaration(enclosingContainer, name, sourcePath));
+		this.operandName = operandName;
 		this.operandType = operandType;
-		this.operator = operator;
+		setValueType(resultType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -98,22 +96,6 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 		return this.operandType;
 	}
 
-	public final UnaryOperatorInfo getOperator() {
-		return this.operator;
-	}
-
-	@Override
-	public void resolveAll() {
-		super.resolveAll();
-		operand();
-	}
-
-	@Override
-	public String toString() {
-		return ("Unary " + this.operator.getSign()
-				+ "[" + getResultType() + "]");
-	}
-
 	@Override
 	protected Ascendants createAscendants() {
 
@@ -121,6 +103,12 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 		return new Ascendants(this).setAncestor(
 				SELF_PATH.target(this, enclosing.distribute()).toTypeRef());
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
 	}
 
 	@Override
@@ -136,9 +124,14 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 
-		final Artifact<?> operand = operand().resolve(scope).toArtifact();
+		final Obj operand =
+			scope.getContainer()
+			.member(operandKey())
+			.getSubstance()
+			.toArtifact()
+			.materialize();
 		final O operandValue =
-			getOperandType().definiteValue(operand.materialize().getValue());
+			getOperandType().definiteValue(operand.getValue());
 
 		if (operandValue == null) {
 			return getResultType().runtimeValue();
@@ -160,19 +153,17 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 		return new ValueIR(objectIR);
 	}
 
-	protected abstract void write(
-			CodeDirs dirs,
-			ObjectOp host,
-			RefOp operand,
-			ValOp result);
+	protected abstract void write(CodeDirs dirs, ValOp result, ValOp operand);
 
-	final Ref operand() {
-		if (this.operand != null) {
-			return this.operand;
+	final MemberKey operandKey() {
+		if (this.operandKey != null) {
+			return this.operandKey;
 		}
 
-		return this.operand =
-			getScope().getEnclosingScopePath().target(this, distribute());
+		final Member operandMember =
+			member(memberName(this.operandName), Accessor.DECLARATION);
+
+		return this.operandKey = operandMember.getKey();
 	}
 
 	private static final class ValueIR extends ProposedValueIR {
@@ -184,15 +175,15 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 		@Override
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
-			final UnaryOpObj<?, ?> object =
-				(UnaryOpObj<?, ?>) getObjectIR().getObject();
-			// FIXME Operand calculation is wrong, as it's sticked to declaration.
-			final RefOp operand = object.operand().op(host);
-
+			final UnaryResult<?, ?> object =
+				(UnaryResult<?, ?>) getObjectIR().getObject();
 			final CodeBlk falseOperand = code.addBlock("false_operand");
 			final CodeDirs dirs = falseWhenUnknown(code, falseOperand.head());
+			final ObjectOp operand =
+				host.field(dirs, object.operandKey()).materialize(dirs);
+			final ValOp operandValue = operand.writeValue(dirs);
 
-			object.write(dirs, host, operand, result);
+			object.write(dirs, operandValue, result);
 
 			if (falseOperand.exists()) {
 				result.storeFalse(falseOperand);

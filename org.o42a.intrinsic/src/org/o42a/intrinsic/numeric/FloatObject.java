@@ -19,20 +19,46 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.absolutePath;
 
 import org.o42a.common.adapter.FloatByString;
 import org.o42a.common.intrinsic.IntrinsicType;
-import org.o42a.core.Container;
+import org.o42a.core.*;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
 
 
 public class FloatObject extends IntrinsicType {
 
+	private static FieldDeclaration declaration(
+			Container enclosingContainer) {
+
+		final CompilerContext context;
+
+		try {
+			context = enclosingContainer.getContext().contextFor(
+					"floats/float.o42a");
+		} catch (Exception e) {
+			throw new ExceptionInInitializerError(e);
+		}
+
+		final Location location = new Location(context, context.getSource());
+		final Distributor distributor =
+			declarativeDistributor(enclosingContainer);
+
+		return fieldDeclaration(
+				location,
+				distributor,
+				memberName("float")).prototype();
+	}
+
 	public FloatObject(Container enclosingContainer) {
-		super(enclosingContainer, "float", ValueType.FLOAT);
+		super(declaration(enclosingContainer), ValueType.FLOAT);
 	}
 
 	@Override
@@ -46,10 +72,14 @@ public class FloatObject extends IntrinsicType {
 	}
 
 	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
+	}
+
+	@Override
 	protected void declareMembers(ObjectMembers members) {
 
-		final FloatUnaryOpObj.Plus plus = new FloatUnaryOpObj.Plus(this);
-		final FloatUnaryOpObj.Minus minus = new FloatUnaryOpObj.Minus(this);
 		final FloatBinaryOpObj.Add add =
 			new FloatBinaryOpObj.Add(this);
 		final FloatBinaryOpObj.Subtract subtract =
@@ -64,8 +94,6 @@ public class FloatObject extends IntrinsicType {
 			new NumericEqualsOpObj.FloatEquals(this);
 		final FloatByString byString = new FloatByString(this);
 
-		members.addMember(plus.toMember());
-		members.addMember(minus.toMember());
 		members.addMember(add.toMember());
 		members.addMember(subtract.toMember());
 		members.addMember(multiply.toMember());

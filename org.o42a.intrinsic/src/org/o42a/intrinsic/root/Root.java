@@ -43,8 +43,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.numeric.FloatObject;
-import org.o42a.intrinsic.numeric.IntegerObject;
+import org.o42a.intrinsic.numeric.*;
 import org.o42a.util.log.LoggableData;
 
 
@@ -132,7 +131,9 @@ public class Root extends Obj {
 		members.addMember(getVoidField().toMember());
 		members.addMember(getFalse().toMember());
 		members.addMember(getInteger().toMember());
+		members.addMember(new Integers(this).toMember());
 		members.addMember(getFloat().toMember());
+		members.addMember(new Floats(this).toMember());
 		members.addMember(getString().toMember());
 		members.addMember(this.include.toMember());
 		members.addMember(this.useNamespace.toMember());
