@@ -277,7 +277,6 @@ public final class ImperativeBlockOp extends StOp {
 
 	private void endPrereq(Control control, Code prereqFailed) {
 		if (prereqFailed != null && prereqFailed.exists()) {
-			prereqFailed.debug("(!) ---------------- Prerequisite failed");
 			// prerequisite failed - continue execution
 			prereqFailed.go(control.code().tail());
 		}

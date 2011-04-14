@@ -108,6 +108,7 @@ public abstract class Value<T> {
 
 		return out.toString();
 	}
+
 	private static final class NoValue extends Value<java.lang.Void> {
 
 		NoValue() {
