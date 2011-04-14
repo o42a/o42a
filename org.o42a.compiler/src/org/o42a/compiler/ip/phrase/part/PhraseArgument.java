@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,8 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
+import org.o42a.compiler.ip.phrase.NextClause;
+import org.o42a.compiler.ip.phrase.PhraseContext;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
@@ -48,12 +50,12 @@ public class PhraseArgument extends ValuedPhrasePart {
 	}
 
 	@Override
-	protected NextClause nextClause(PhraseContext context) {
+	public NextClause nextClause(PhraseContext context) {
 		return context.clauseById(this, ClauseId.ARGUMENT);
 	}
 
 	@Override
-	protected void define(Block<?> definition) {
+	public void define(Block<?> definition) {
 		if (this.value == null) {
 			return;// do not provide any value
 		}

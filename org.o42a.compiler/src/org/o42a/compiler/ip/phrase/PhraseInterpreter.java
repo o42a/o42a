@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip;
+package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.AncestorVisitor.*;
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
@@ -29,13 +29,13 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.compiler.ip.StatementVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.phrase.Phrase;
 import org.o42a.core.ref.type.TypeRef;
 
 
-final class PhraseInterpreter {
+public final class PhraseInterpreter {
 
 	private static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 		new PhrasePrefixVisitor();
