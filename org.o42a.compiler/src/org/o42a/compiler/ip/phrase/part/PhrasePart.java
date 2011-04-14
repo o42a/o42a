@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import org.o42a.ast.expression.UnaryNode;
+import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Location;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
@@ -27,12 +29,21 @@ import org.o42a.core.st.sentence.BlockBuilder;
 
 public abstract class PhrasePart extends Location {
 
+	private final Phrase phrase;
 	private final PhrasePart preceding;
 	private PhraseContinuation following;
 
-	PhrasePart(LocationInfo location, PhrasePart preceding) {
+	PhrasePart(
+			LocationInfo location,
+			Phrase phrase,
+			PhrasePart preceding) {
 		super(location);
+		this.phrase = phrase;
 		this.preceding = preceding;
+	}
+
+	public final Phrase getPhrase() {
+		return this.phrase;
 	}
 
 	public final PhrasePart getPreceding() {
@@ -61,6 +72,10 @@ public abstract class PhrasePart extends Location {
 
 	public final PhraseImperative imperative(BlockBuilder imperatives) {
 		return setFollowing(new PhraseImperative(this, imperatives));
+	}
+
+	public final UnaryPhrasePart plus(UnaryNode node) {
+		return setFollowing(new UnaryPhrasePart(node, this));
 	}
 
 	private <P extends PhraseContinuation> P setFollowing(P following) {

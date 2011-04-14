@@ -41,14 +41,6 @@ public class PhraseArgument extends PhraseContinuation {
 	}
 
 	@Override
-	public String toString() {
-		if (this.value == null) {
-			return "[]";
-		}
-		return '[' + this.value.toString() + ']';
-	}
-
-	@Override
 	public NextClause nextClause(PhraseContext context) {
 		return context.clauseById(this, ClauseId.ARGUMENT);
 	}
@@ -56,13 +48,21 @@ public class PhraseArgument extends PhraseContinuation {
 	@Override
 	public void define(Block<?> definition) {
 		if (this.value == null) {
-			return;// do not provide any value
+			return;// Do not assign any value.
 		}
 
 		final Statements<?> statements =
 			definition.propose(this).alternative(this);
 
 		statements.assign(this.value);
+	}
+
+	@Override
+	public String toString() {
+		if (this.value == null) {
+			return "[]";
+		}
+		return '[' + this.value.toString() + ']';
 	}
 
 }

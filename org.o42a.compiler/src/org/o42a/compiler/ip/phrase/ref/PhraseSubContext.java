@@ -68,7 +68,8 @@ class PhraseSubContext extends PhraseContext {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
-				memberName(name));
+				memberName(name),
+				name);
 	}
 
 	@Override
@@ -76,7 +77,8 @@ class PhraseSubContext extends PhraseContext {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
-				clauseId(location, clauseId));
+				clauseId(location, clauseId),
+				clauseId);
 	}
 
 	@Override

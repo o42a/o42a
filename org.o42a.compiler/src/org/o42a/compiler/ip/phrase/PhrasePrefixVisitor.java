@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.AncestorVisitor.impliedAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.noAncestor;
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefix;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.AscendantsNode;
@@ -45,7 +46,7 @@ final class PhrasePrefixVisitor
 
 	@Override
 	public Phrase visitAscendants(AscendantsNode ascendants, Phrase p) {
-		return PhraseInterpreter.prefix(p, ascendants);
+		return prefix(p, ascendants);
 	}
 
 	@Override

@@ -29,8 +29,6 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.TypeNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.compiler.ip.phrase.PhraseInterpreter;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -45,14 +43,6 @@ public class Interpreter {
 			StatementVisitor statementVisitor,
 			BlockNode<?> node) {
 		return new ContentBuilder(statementVisitor, node);
-	}
-
-	public static Phrase phrase(PhraseNode node, Distributor distributor) {
-		return PhraseInterpreter.phrase(node, distributor);
-	}
-
-	public static Phrase phrase(AscendantsNode node, Distributor distributor) {
-		return PhraseInterpreter.phrase(node, distributor);
 	}
 
 	public static ArrayInitializer arrayInitializer(

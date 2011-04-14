@@ -86,12 +86,15 @@ final class MainPhraseContext extends PhraseContext {
 
 	@Override
 	public NextClause clauseByName(LocationInfo location, String name) {
-		return findObjectClause(location, memberName(name));
+		return findObjectClause(location, memberName(name), name);
 	}
 
 	@Override
 	public NextClause clauseById(LocationInfo location, ClauseId clauseId) {
-		return findObjectClause(location, clauseId(location, clauseId));
+		return findObjectClause(
+				location,
+				clauseId(location, clauseId),
+				clauseId);
 	}
 
 	@Override
@@ -136,7 +139,10 @@ final class MainPhraseContext extends PhraseContext {
 		this.implicitAscendants = implicitAscendants;
 	}
 
-	NextClause findObjectClause(LocationInfo location, MemberId memberId) {
+	NextClause findObjectClause(
+			LocationInfo location,
+			MemberId memberId,
+			Object what) {
 		assert this.createsObject >= 0 :
 			"Object won't be constructed, so resolution of \"" + location
 			+ "\" is impossible";
@@ -144,7 +150,7 @@ final class MainPhraseContext extends PhraseContext {
 		for (StaticTypeRef sample : getAscendants().getSamples()) {
 
 			final NextClause found =
-				findClause(sample.getType(), location, memberId);
+				findClause(sample.getType(), location, memberId, what);
 
 			if (found.found()) {
 				return found;
@@ -155,7 +161,7 @@ final class MainPhraseContext extends PhraseContext {
 			for (Sample sample : this.implicitAscendants.getSamples()) {
 
 				final NextClause found =
-					findClause(sample.getType(), location, memberId);
+					findClause(sample.getType(), location, memberId, what);
 
 				if (found != null) {
 					return found;
@@ -168,7 +174,7 @@ final class MainPhraseContext extends PhraseContext {
 		if (ancestor != null) {
 
 			final NextClause found =
-				findClause(ancestor.getType(), location, memberId);
+				findClause(ancestor.getType(), location, memberId, what);
 
 			if (found.found()) {
 				return found;
@@ -180,8 +186,11 @@ final class MainPhraseContext extends PhraseContext {
 
 			if (implicitAncestor != null) {
 
-				final NextClause found =
-					findClause(implicitAncestor.getType(), location, memberId);
+				final NextClause found = findClause(
+						implicitAncestor.getType(),
+						location,
+						memberId,
+						what);
 
 				if (found != null) {
 					return found;
@@ -189,7 +198,7 @@ final class MainPhraseContext extends PhraseContext {
 			}
 		}
 
-		return clauseNotFound(memberId);
+		return clauseNotFound(what);
 	}
 
 	private void build() {
@@ -203,11 +212,20 @@ final class MainPhraseContext extends PhraseContext {
 
 			final NextClause nextClause = continuation.nextClause(context);
 
+			if (nextClause.isError()) {
+				break;
+			}
 			if (!nextClause.found()) {
 				if (stack.isEmpty()) {
 					this.createsObject = 1;
 				}
-				getLogger().unresolved(continuation, nextClause.getMemberId());
+				if (!nextClause.isError()) {
+					getLogger().error(
+							"unresolved_clause",
+							continuation,
+							"Unsupported clause: %s",
+							nextClause.what());
+				}
 				break;
 			}
 

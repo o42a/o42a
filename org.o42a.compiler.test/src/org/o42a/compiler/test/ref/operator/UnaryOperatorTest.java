@@ -32,7 +32,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	@Test
 	public void plus() {
 		compile(
-				"A := void(@$$Operators: plus :=> 1).",
+				"A :=> integer(<@Operators: plus> = 1)",
 				"B := + a");
 
 		final Obj b = field("b").getArtifact().materialize();
@@ -44,13 +44,25 @@ public class UnaryOperatorTest extends CompilerTestCase {
 	@Test
 	public void minus() {
 		compile(
-				"A := void(@Operators: minus :=> 1).",
+				"A :=> integer(<@Operators: minus> = 1)",
 				"B := - a");
 
 		final Obj b = field("b").getArtifact().materialize();
 
 		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
 		assertEquals(1L, definiteValue(b));
+	}
+
+	@Test
+	public void remainSamePlus() {
+		compile(
+				"A := integer(= 2. <@Operators: plus>)",
+				"B := + a");
+
+		final Obj b = field("b").getArtifact().materialize();
+
+		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
+		assertEquals(2L, definiteValue(b));
 	}
 
 }

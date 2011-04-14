@@ -143,12 +143,14 @@ public abstract class PhraseContext {
 	NextClause findClause(
 			ClauseContainer container,
 			LocationInfo location,
-			MemberId memberId) {
+			MemberId memberId,
+			Object what) {
 		if (container == null) {
-			return clauseNotFound(memberId);
+			return clauseNotFound(what);
 		}
 
-		final NextClause found = findClauseIn(container, location, memberId);
+		final NextClause found =
+			findClauseIn(container, location, memberId, what);
 
 		if (found.found()) {
 			return found;
@@ -160,7 +162,7 @@ public abstract class PhraseContext {
 			return found;
 		}
 
-		return findReusedClause(clause, location, memberId);
+		return findReusedClause(clause, location, memberId, what);
 	}
 
 	final AscendantsDefinition ascendants(
@@ -175,7 +177,8 @@ public abstract class PhraseContext {
 	private NextClause findClauseIn(
 			ClauseContainer container,
 			LocationInfo location,
-			MemberId memberId) {
+			MemberId memberId,
+			Object what) {
 
 		final Clause found = container.clause(memberId, null);
 
@@ -185,8 +188,11 @@ public abstract class PhraseContext {
 
 		for (Clause implicit : container.getImplicitClauses()) {
 
-			final NextClause foundInImplicit =
-				findClause(implicit.getClauseContainer(), location, memberId);
+			final NextClause foundInImplicit = findClause(
+					implicit.getClauseContainer(),
+					location,
+					memberId,
+					what);
 
 			if (foundInImplicit.found()) {
 				return foundInImplicit.setImplicit(
@@ -203,7 +209,8 @@ public abstract class PhraseContext {
 	private NextClause findReusedClause(
 			Clause clause,
 			LocationInfo location,
-			MemberId memberId) {
+			MemberId memberId,
+			Object what) {
 
 		final ReusedClause[] reused = clause.getReusedClauses();
 
@@ -215,12 +222,14 @@ public abstract class PhraseContext {
 			if (reusedClause.isObject()) {
 				found = getMainContext().findObjectClause(
 						location,
-						memberId);
+						memberId,
+						what);
 			} else {
 				found = findClause(
 						reusedClause.getClause().getClauseContainer(),
 						location,
-						memberId).setContainer(reusedClause.getContainer());
+						memberId,
+						what).setContainer(reusedClause.getContainer());
 			}
 
 			if (found.found()) {
@@ -228,7 +237,7 @@ public abstract class PhraseContext {
 			}
 		}
 
-		return clauseNotFound(memberId);
+		return clauseNotFound(what);
 	}
 
 	private final ClauseInstance lastInstance() {
