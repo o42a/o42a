@@ -41,6 +41,20 @@ public class ClauseTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void name() {
+		compile(
+				"A :=> void(",
+				"  Foo :=< integer ",
+				"  <Name> Foo = *",
+				")",
+				"B := a_name(=2)");
+
+		final Field<?> bFoo = field("b", "foo");
+
+		assertThat(definiteValue(bFoo, Long.class), is(2L));
+	}
+
+	@Test
 	public void string() {
 		compile(
 				"A := void(<*'arg'>).",

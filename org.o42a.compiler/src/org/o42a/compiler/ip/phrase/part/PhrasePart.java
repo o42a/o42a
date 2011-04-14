@@ -43,35 +43,31 @@ public abstract class PhrasePart extends Location {
 		return this.following;
 	}
 
-	public PhraseName name(LocationInfo location, String name) {
+	public final PhraseName name(LocationInfo location, String name) {
 		return setFollowing(new PhraseName(location, this, name));
 	}
 
-	public PhraseArgument argument(LocationInfo location, Ref value) {
-		return setValue(new PhraseArgument(this, location, value));
+	public final PhraseArgument argument(LocationInfo location, Ref value) {
+		return setFollowing(new PhraseArgument(this, location, value));
 	}
 
-	public PhraseString string(LocationInfo location, String string) {
-		return setValue(new PhraseString(location, this, string));
+	public final PhraseString string(LocationInfo location, String string) {
+		return setFollowing(new PhraseString(location, this, string));
 	}
 
-	public PhraseDeclarations declarations(BlockBuilder declarations) {
-		return setValue(new PhraseDeclarations(this, declarations));
+	public final PhraseDeclarations declarations(BlockBuilder declarations) {
+		return setFollowing(new PhraseDeclarations(this, declarations));
 	}
 
-	public PhraseImperative imperative(BlockBuilder imperatives) {
-		return setValue(new PhraseImperative(this, imperatives));
+	public final PhraseImperative imperative(BlockBuilder imperatives) {
+		return setFollowing(new PhraseImperative(this, imperatives));
 	}
 
-	protected <P extends PhraseContinuation> P setFollowing(P following) {
+	private <P extends PhraseContinuation> P setFollowing(P following) {
 		assert this.following == null :
 			this + " already followed by " + this.following;
 		this.following = following;
 		return following;
-	}
-
-	protected <P extends ValuedPhrasePart> P setValue(P following) {
-		return setFollowing(following);
 	}
 
 }

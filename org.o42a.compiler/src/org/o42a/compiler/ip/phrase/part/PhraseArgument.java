@@ -28,7 +28,7 @@ import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class PhraseArgument extends ValuedPhrasePart {
+public class PhraseArgument extends PhraseContinuation {
 
 	private final Ref value;
 
