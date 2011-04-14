@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,20 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
+import org.o42a.compiler.ip.phrase.NextClause;
+import org.o42a.compiler.ip.phrase.PhraseContext;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 
 
-public abstract class PhraseContinuation extends PhrasePart {
+public class PhraseName extends PhraseContinuation {
 
-	public PhraseContinuation(LocationInfo location, PhrasePart preceding) {
-		super(location, preceding);
+	private final String name;
+
+	PhraseName(LocationInfo location, PhrasePart prev, String name) {
+		super(location, prev);
+		this.name = name;
 	}
 
-	protected abstract NextClause nextClause(PhraseContext context);
+	public final String getName() {
+		return this.name;
+	}
 
-	protected abstract void define(Block<?> definition);
+	@Override
+	public NextClause nextClause(PhraseContext context) {
+		return context.clauseByName(this, getName());
+	}
+
+	@Override
+	public void define(Block<?> definition) {
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
 
 }

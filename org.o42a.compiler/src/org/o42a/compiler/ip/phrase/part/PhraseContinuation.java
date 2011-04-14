@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,15 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
+import org.o42a.compiler.ip.phrase.NextClause;
+import org.o42a.compiler.ip.phrase.PhraseContext;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.st.sentence.Block;
 
 
-public abstract class ValuedPhrasePart extends PhraseContinuation {
+public abstract class PhraseContinuation extends PhrasePart {
 
-	ValuedPhrasePart(LocationInfo location, PhrasePart preceding) {
+	public PhraseContinuation(LocationInfo location, PhrasePart preceding) {
 		super(location, preceding);
 	}
+
+	public abstract NextClause nextClause(PhraseContext context);
+
+	public abstract void define(Block<?> definition);
 
 }

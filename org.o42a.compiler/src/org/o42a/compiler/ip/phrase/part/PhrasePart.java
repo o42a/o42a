@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
 import org.o42a.core.Location;
 import org.o42a.core.LocationInfo;
@@ -43,23 +43,23 @@ public abstract class PhrasePart extends Location {
 		return this.following;
 	}
 
-	protected PhraseName name(LocationInfo location, String name) {
+	public PhraseName name(LocationInfo location, String name) {
 		return setFollowing(new PhraseName(location, this, name));
 	}
 
-	protected PhraseArgument argument(LocationInfo location, Ref value) {
+	public PhraseArgument argument(LocationInfo location, Ref value) {
 		return setValue(new PhraseArgument(this, location, value));
 	}
 
-	protected PhraseString string(LocationInfo location, String string) {
+	public PhraseString string(LocationInfo location, String string) {
 		return setValue(new PhraseString(location, this, string));
 	}
 
-	protected PhraseDeclarations declarations(BlockBuilder declarations) {
+	public PhraseDeclarations declarations(BlockBuilder declarations) {
 		return setValue(new PhraseDeclarations(this, declarations));
 	}
 
-	protected PhraseImperative imperative(BlockBuilder imperatives) {
+	public PhraseImperative imperative(BlockBuilder imperatives) {
 		return setValue(new PhraseImperative(this, imperatives));
 	}
 
