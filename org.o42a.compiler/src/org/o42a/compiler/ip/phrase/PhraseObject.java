@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,64 +17,78 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Location;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
-import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-final class ClauseInstantiation extends Wrap {
+class PhraseObject extends DefinedObject {
 
-	private final ClauseInstance instance;
+	private final MainPhraseContext mainContext;
+	private final AscendantsDefinition ascendants;
 
-	ClauseInstantiation(
-			ClauseInstance instance,
-			Distributor distributor) {
-		super(
-				new Location(distributor.getContext(), instance.getLocation()),
-				distributor);
-		this.instance = instance;
+	private PhraseObject(
+			MainPhraseContext mainContext,
+			Distributor distributor,
+			AscendantsDefinition ascendants) {
+		super(mainContext.getPhrase(), distributor);
+		this.mainContext = mainContext;
+		this.ascendants = ascendants;
 	}
 
 	@Override
 	public String toString() {
-		return this.instance.toString();
+		return this.mainContext.getPhrase().toString();
 	}
 
 	@Override
-	protected Ref resolveWrapped() {
-
-		final AscendantsDefinition ascendants =
-			this.instance.getContext().ascendants(this, distribute());
-
-		return new ClauseConstructor(
-				this.instance,
-				distribute(),
-				ascendants);
+	protected Ascendants buildAscendants() {
+		return this.ascendants.updateAscendants(new Ascendants(this));
 	}
 
-	private static final class ClauseConstructor extends ObjectConstructor {
+	@Override
+	protected void buildDefinition(DeclarativeBlock definition) {
 
-		private final ClauseInstance instance;
+		final BlockBuilder definitionBuilder =
+			this.mainContext.getInstances()[0].getDefinition();
+
+		definitionBuilder.buildBlock(definition);
+	}
+
+	static final class Ex extends ObjectConstructor {
+
+		private final PhraseEx phrase;
 		private final AscendantsDefinition ascendants;
 
-		ClauseConstructor(
-				ClauseInstance instance,
+		Ex(PhraseEx phrase) {
+			super(
+					phrase.getPhrase(),
+					phrase.distribute());
+			this.phrase = phrase;
+			this.ascendants =
+				phrase.getPhrase().getMainContext().getAscendants();
+			this.ascendants.assertCompatibleScope(this);
+		}
+
+		private Ex(
+				LocationInfo location,
 				Distributor distributor,
+				PhraseEx phrase,
 				AscendantsDefinition ascendants) {
-			super(instance.getLocation(), distributor);
-			this.instance = instance;
+			super(location, distributor);
+			this.phrase = phrase;
 			this.ascendants = ascendants;
 		}
 
@@ -84,9 +98,14 @@ final class ClauseInstantiation extends Wrap {
 		}
 
 		@Override
+		public FieldDefinition toFieldDefinition() {
+			return new PhraseFieldDefinition(this.phrase);
+		}
+
+		@Override
 		protected Obj createObject() {
-			return new InstantiationObject(
-					this.instance,
+			return new PhraseObject(
+					this.phrase.getPhrase().getMainContext(),
 					distribute(),
 					this.ascendants);
 		}
@@ -102,41 +121,11 @@ final class ClauseInstantiation extends Wrap {
 				return null;
 			}
 
-			return new ClauseConstructor(
-					this.instance,
+			return new Ex(
+					this,
 					reproducer.distribute(),
+					this.phrase,
 					ascendants);
-		}
-
-	}
-
-	private static final class InstantiationObject extends DefinedObject {
-
-		private final ClauseInstance instance;
-		private final AscendantsDefinition ascendants;
-
-		InstantiationObject(
-				ClauseInstance instance,
-				Distributor enclosing,
-				AscendantsDefinition ascendants) {
-			super(instance.getLocation(), enclosing);
-			this.instance = instance;
-			this.ascendants = ascendants;
-		}
-
-		@Override
-		public String toString() {
-			return this.instance.toString();
-		}
-
-		@Override
-		protected Ascendants buildAscendants() {
-			return this.ascendants.updateAscendants(new Ascendants(this));
-		}
-
-		@Override
-		protected void buildDefinition(DeclarativeBlock definition) {
-			this.instance.getDefinition().buildBlock(definition);
 		}
 
 	}

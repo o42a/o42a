@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,8 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
+import org.o42a.compiler.ip.phrase.Phrase;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -29,7 +30,7 @@ public class PhrasePrefix extends PhrasePart {
 
 	private AscendantsDefinition ascendants;
 
-	PhrasePrefix(LocationInfo location, Phrase phrase) {
+	public PhrasePrefix(LocationInfo location, Phrase phrase) {
 		super(location, null);
 		this.ascendants = new AscendantsDefinition(this, phrase.distribute());
 	}
@@ -38,8 +39,17 @@ public class PhrasePrefix extends PhrasePart {
 		return getAscendants().getAncestor();
 	}
 
+	public PhrasePrefix setAncestor(TypeRef ancestor) {
+		this.ascendants = this.ascendants.setAncestor(ancestor);
+		return this;
+	}
+
 	public final StaticTypeRef[] getSamples() {
 		return getAscendants().getSamples();
+	}
+
+	public void addSamples(StaticTypeRef... samples) {
+		this.ascendants = this.ascendants.addSamples(samples);
 	}
 
 	public final AscendantsDefinition getAscendants() {
@@ -66,21 +76,6 @@ public class PhrasePrefix extends PhrasePart {
 	@Override
 	public String toString() {
 		return this.ascendants.toString();
-	}
-
-	@Override
-	protected PhraseName name(LocationInfo location, String name) {
-		getLogger().prohibitedPhraseName(location);
-		return null;
-	}
-
-	PhrasePrefix setAncestor(TypeRef ancestor) {
-		this.ascendants = this.ascendants.setAncestor(ancestor);
-		return this;
-	}
-
-	void addSamples(StaticTypeRef... samples) {
-		this.ascendants = this.ascendants.addSamples(samples);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,12 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase;
 
+import static org.o42a.compiler.ip.phrase.NextClause.clauseNotFound;
+import static org.o42a.compiler.ip.phrase.NextClause.nextClause;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.ref.phrase.NextClause.clauseNotFound;
-import static org.o42a.core.ref.phrase.NextClause.nextClause;
 
+import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.*;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;

@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,54 +17,53 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
+import org.o42a.compiler.ip.phrase.NextClause;
+import org.o42a.compiler.ip.phrase.PhraseContext;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.ValueType;
 
 
-public class PhraseImperative extends ValuedPhrasePart {
+public class PhraseString extends ValuedPhrasePart {
 
-	private final BlockBuilder imperatives;
+	private final String string;
 
-	PhraseImperative(PhrasePart preceding, BlockBuilder imperatives) {
-		super(imperatives, preceding);
-		this.imperatives = imperatives;
+	PhraseString(
+			LocationInfo location,
+			PhrasePart preceding,
+			String string) {
+		super(location, preceding);
+		this.string = string;
 	}
 
-	public final BlockBuilder getImperatives() {
-		return this.imperatives;
-	}
-
-	@Override
-	public String toString() {
-		if (this.imperatives == null) {
-			return "{}";
-		}
-
-		final String string = this.imperatives.toString();
-
-		if (string.startsWith("{")) {
-			return string;
-		}
-
-		return '{' + string + '}';
+	public final String getString() {
+		return this.string;
 	}
 
 	@Override
-	protected NextClause nextClause(PhraseContext context) {
-		return context.clauseById(this, ClauseId.IMPERATIVE);
+	public NextClause nextClause(PhraseContext context) {
+		return context.clauseById(this, ClauseId.STRING);
 	}
 
 	@Override
-	protected void define(Block<?> definition) {
+	public void define(Block<?> definition) {
 
 		final Statements<?> statements =
 			definition.propose(this).alternative(this);
 
-		this.imperatives.buildBlock(statements.braces(this));
+		statements.assign(ValueType.STRING.definiteRef(
+				this,
+				statements.nextDistributor(),
+				this.string));
+	}
+
+	@Override
+	public String toString() {
+		return '\'' + this.string + '\'';
 	}
 
 }
