@@ -20,16 +20,22 @@
 Use namespace 'Test'
 
 
-Name = "Simple tests"
+Name = "Integers"
 
 Run tests
 
-Assertion := test(
-  Assert [void] 'Void is not true' 
-  Assert [rt-void] 'Rt-void is not true'
-  Assert [--rt-false] 'Rt-false is not false'
+Equal := test(
+  //Assert [2 == 2] 'Integer constants not equal'
+  //Assert [4 == rt-integer '4'] 'Integers not equal'
+  //Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
 )
 
-Integers := test(
-  Include 'integers.o42a'
+Not equal := test(
+  //Assert [rt-integer '5' <> rt-integer '6'] 'Integers equal'
+  //Assert [--(rt-integer '9' == rt-integer '7')] 'Integers equal' 
+)
+
+Plus := test(
+  //Assert [+5 == 5] 'Plus failed on constant integer'
+  //Assert [+rt-integer '5' == 5] 'Plus failed on run-time integer'
 )
