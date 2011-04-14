@@ -17,13 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.phrase;
+package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 
+import org.o42a.compiler.ip.phrase.part.NextClause;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;

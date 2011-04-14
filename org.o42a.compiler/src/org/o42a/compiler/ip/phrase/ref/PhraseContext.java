@@ -17,12 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.phrase;
+package org.o42a.compiler.ip.phrase.ref;
 
-import static org.o42a.compiler.ip.phrase.NextClause.clauseNotFound;
-import static org.o42a.compiler.ip.phrase.NextClause.nextClause;
+import static org.o42a.compiler.ip.phrase.part.NextClause.clauseNotFound;
+import static org.o42a.compiler.ip.phrase.part.NextClause.nextClause;
 import static org.o42a.core.member.AdapterId.adapterId;
 
+import org.o42a.compiler.ip.phrase.part.NextClause;
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.*;
 import org.o42a.core.member.AdapterId;
