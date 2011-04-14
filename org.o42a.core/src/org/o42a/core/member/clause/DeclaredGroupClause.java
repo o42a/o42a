@@ -59,6 +59,9 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 			DeclaredGroupClause overridden) {
 		super(enclosingContainer, overridden);
 		this.builder = overridden.builder;
+		this.definition = overridden.definition;
+		this.imperative = overridden.imperative;
+		this.localScope = overridden.localScope;
 	}
 
 	@Override
@@ -98,7 +101,8 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	public void define(Reproducer reproducer) {
 		if (this.localScope == null) {
 
-			final Statement reproduction = this.definition.reproduce(reproducer);
+			final Statement reproduction =
+				this.definition.reproduce(reproducer);
 
 			if (reproduction != null) {
 
