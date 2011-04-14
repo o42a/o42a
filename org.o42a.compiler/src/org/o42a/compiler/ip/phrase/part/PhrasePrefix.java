@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import org.o42a.compiler.ip.phrase.Phrase;
+import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
