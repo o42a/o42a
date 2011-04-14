@@ -26,6 +26,7 @@ import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.type.StaticTypeRef;
 
@@ -39,6 +40,14 @@ public enum ClauseId {
 			return null;
 		}
 
+		@Override
+		public String toString(MemberId memberId, String name) {
+			if (memberId == null) {
+				return "<anonymous>";
+			}
+			return memberId.toString();
+		}
+
 	},
 
 	ARGUMENT() {
@@ -46,6 +55,14 @@ public enum ClauseId {
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
 			return absolutePath(context, "clauses", "argument");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			if (name == null) {
+				return "[]";
+			}
+			return '[' + name + ']';
 		}
 
 	},
@@ -57,6 +74,14 @@ public enum ClauseId {
 			return absolutePath(context, "clauses", "imperative");
 		}
 
+		@Override
+		public String toString(MemberId memberId, String name) {
+			if (name == null) {
+				return "{}";
+			}
+			return '{' + name + '}';
+		}
+
 	},
 
 	STRING() {
@@ -64,6 +89,112 @@ public enum ClauseId {
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
 			return absolutePath(context, "clauses", "string");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			if (name == null) {
+				return "''";
+			}
+			return '\'' + name + '\'';
+		}
+
+	},
+
+	PLUS() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "plus");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "+_";
+		}
+
+	},
+
+	MINUS() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "minus");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "-_";
+		}
+
+	},
+
+	ADD() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "add");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "_+_";
+		}
+
+	},
+
+	SUBTRACT() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "subtract");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "_-_";
+		}
+
+	},
+
+	MULTIPLY() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "multiply");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "_*_";
+		}
+
+	},
+
+	DIVIDE() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "divide");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "_/_";
+		}
+
+	},
+
+	OPERAND() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "operand");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "<operand>";
 		}
 
 	};
@@ -85,6 +216,8 @@ public enum ClauseId {
 	}
 
 	public abstract AbsolutePath adapterPath(CompilerContext context);
+
+	public abstract String toString(MemberId memberId, String name);
 
 	public static ClauseId byAdapterType(StaticTypeRef adapterType) {
 

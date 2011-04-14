@@ -31,7 +31,7 @@ public class PhrasePrefix extends PhrasePart {
 	private AscendantsDefinition ascendants;
 
 	public PhrasePrefix(LocationInfo location, Phrase phrase) {
-		super(location, null);
+		super(location, phrase, null);
 		this.ascendants = new AscendantsDefinition(this, phrase.distribute());
 	}
 

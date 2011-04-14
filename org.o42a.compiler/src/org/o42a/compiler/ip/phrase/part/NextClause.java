@@ -28,10 +28,16 @@ public class NextClause implements Cloneable {
 
 	private static final NextClause[] NO_IMPLIED = new NextClause[0];
 
-	public static NextClause clauseNotFound(MemberId memberId) {
-		assert memberId != null :
-			"Member identifier not specified";
-		return new ClauseNotFound(memberId);
+	public static NextClause errorClause(Object reason) {
+		assert reason != null :
+			"Error reason not specified";
+		return new ErrorClause(reason);
+	}
+
+	public static NextClause clauseNotFound(Object what) {
+		assert what != null :
+			"What is not found not specified";
+		return new ClauseNotFound(what);
 	}
 
 	public static NextClause declarationsClause(Clause clause) {
@@ -71,6 +77,14 @@ public class NextClause implements Cloneable {
 
 	public boolean found() {
 		return true;
+	}
+
+	public boolean isError() {
+		return false;
+	}
+
+	public Object what() {
+		return this.memberId;
 	}
 
 	public final MemberId getMemberId() {
@@ -127,8 +141,16 @@ public class NextClause implements Cloneable {
 
 	private static final class ClauseNotFound extends NextClause {
 
-		ClauseNotFound(MemberId memberId) {
-			super(memberId, null, null);
+		private final Object what;
+
+		ClauseNotFound(Object what) {
+			super(null, null, null);
+			this.what = what;
+		}
+
+		@Override
+		public Object what() {
+			return this.what;
 		}
 
 		@Override
@@ -138,7 +160,33 @@ public class NextClause implements Cloneable {
 
 		@Override
 		public String toString() {
-			return getMemberId() + "(NOT FOUND)";
+			return this.what + "(NOT FOUND)";
+		}
+
+	}
+
+	private static final class ErrorClause extends NextClause {
+
+		private final Object what;
+
+		ErrorClause(Object what) {
+			super(null, null, null);
+			this.what = what;
+		}
+
+		@Override
+		public boolean isError() {
+			return true;
+		}
+
+		@Override
+		public Object what() {
+			return this.what;
+		}
+
+		@Override
+		public String toString() {
+			return "ERROR(" + this.what + ")";
 		}
 
 	}

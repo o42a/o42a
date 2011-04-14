@@ -27,7 +27,7 @@ import org.o42a.core.st.sentence.Block;
 public abstract class PhraseContinuation extends PhrasePart {
 
 	public PhraseContinuation(LocationInfo location, PhrasePart preceding) {
-		super(location, preceding);
+		super(location, preceding.getPhrase(), preceding);
 	}
 
 	public abstract NextClause nextClause(PhraseContext context);

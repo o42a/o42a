@@ -105,21 +105,6 @@ final class ClauseKeyVisitor
 	public ClauseDeclaration visitDeclarableAdapter(
 			DeclarableAdapterNode adapter,
 			Distributor p) {
-
-		final MemberRefNode member = adapter.getMember();
-
-		if (member == null) {
-			p.getLogger().invalidDeclaration(member);
-			return null;
-		}
-		if (member.getDeclaredIn() != null) {
-			p.getLogger().prohibitedDeclaredIn(member.getDeclaredIn());
-		}
-		if (member.getOwner() != null) {
-			p.getLogger().invalidDeclaration(member);
-			return null;
-		}
-
 		return clauseDeclaration(
 				location(p, adapter),
 				p,

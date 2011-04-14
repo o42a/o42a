@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.phrase;
 import static org.o42a.compiler.ip.AncestorVisitor.impliedAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.noAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.parseAncestor;
+import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
@@ -48,13 +49,30 @@ public final class PhraseInterpreter {
 		return addClauses(prefixed, node);
 	}
 
-	public static Phrase phrase(AscendantsNode node, Distributor distributor) {
+	public static Phrase ascendants(
+			AscendantsNode node,
+			Distributor distributor) {
 
 		final Phrase phrase =
 			new Phrase(location(distributor, node), distributor);
 		final Phrase prefixed = prefix(phrase, node);
 
 		return prefixed.declarations(emptyBlock(phrase));
+	}
+
+	public static Phrase unary(UnaryNode node, Distributor distributor) {
+
+		final Ref operand =
+			node.getOperand().accept(EXPRESSION_VISITOR, distributor);
+
+		if (operand == null) {
+			return null;
+		}
+
+		final Phrase phrase =
+			new Phrase(location(distributor, node), distributor);
+
+		return phrase.setAncestor(operand.toTypeRef()).plus(node);
 	}
 
 	static Phrase prefix(Phrase phrase, AscendantsNode node) {
