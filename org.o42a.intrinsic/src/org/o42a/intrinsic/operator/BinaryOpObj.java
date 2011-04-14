@@ -244,8 +244,6 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 			final RefOp left = object.left().op(host);
 			final CodeBlk failure = code.addBlock("binary_failure");
 			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
-			final ValOp rightVal =
-				code.allocate(code.id("right_val"), VAL_TYPE);
 
 			left.writeValue(dirs, result);
 
@@ -253,6 +251,8 @@ public abstract class BinaryOpObj<T, L> extends IntrinsicObject {
 					dirs,
 					object.getOperator().getRightOperand().memberKey(
 							object.getContext()));
+			final ValOp rightVal =
+				code.allocate(code.id("right_val"), VAL_TYPE);
 
 			rightVal.storeIndefinite(code);
 			right.materialize(dirs).writeValue(dirs, rightVal);

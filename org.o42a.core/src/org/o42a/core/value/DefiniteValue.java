@@ -19,9 +19,6 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.Val.FALSE_VAL;
-import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.op.Val;
 
@@ -47,20 +44,7 @@ final class DefiniteValue<T> extends Value<T> {
 
 	@Override
 	public Val val(Generator generator) {
-		if (!getLogicalValue().isConstant()) {
-			return UNKNOWN_VAL;
-		}
-		if (getLogicalValue().isFalse()) {
-			return FALSE_VAL;
-		}
-
-		final T definiteValue = getDefiniteValue();
-
-		if (definiteValue == null) {
-			return UNKNOWN_VAL;
-		}
-
-		return getValueType().val(generator, definiteValue);
+		return getValueType().val(generator, this.value);
 	}
 
 	@Override

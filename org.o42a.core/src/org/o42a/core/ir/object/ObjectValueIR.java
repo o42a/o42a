@@ -252,11 +252,7 @@ public class ObjectValueIR {
 		final Value<?> realValue = value.getRealValue();
 
 		if (realValue != null) {
-			if (realValue.isDefinite()) {
-				val = realValue.val(getGenerator());
-			} else {
-				val = INDEFINITE_VAL;
-			}
+			val = realValue.val(getGenerator());
 		} else if (!value.isDefinite()) {
 			val = INDEFINITE_VAL;
 		} else if (value.isUnknown()) {

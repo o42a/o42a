@@ -35,11 +35,9 @@ import org.o42a.core.artifact.*;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
@@ -48,7 +46,8 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -767,6 +766,43 @@ public abstract class Obj extends Artifact<Obj>
 		return definitions;
 	}
 
+	Dep addDep(MemberKey memberKey) {
+
+		final Dep found = this.deps.get(memberKey);
+
+		if (found != null) {
+			return found;
+		}
+
+		final Dep dep = fieldDep(this, memberKey);
+
+		this.deps.put(memberKey, dep);
+
+		return dep;
+	}
+
+	Dep addEnclosingOwnerDep(Obj owner) {
+
+		final Dep found = this.deps.get(null);
+
+		if (found != null) {
+			return found;
+		}
+
+		final LocalScope enclosingLocal =
+			getScope().getEnclosingContainer().toLocal();
+
+		assert enclosingLocal.getOwner() == owner :
+			owner + " is not owner of " + this
+			+ " enclosing local scope " + enclosingLocal;
+
+		final Dep dep = enclosingOwnerDep(this);
+
+		this.deps.put(null, dep);
+
+		return dep;
+	}
+
 	private final boolean resolve(boolean skipIfResolving) {
 		if (this.resolution == Resolution.NOT_RESOLVED) {
 			try {
@@ -835,43 +871,6 @@ public abstract class Obj extends Artifact<Obj>
 		}
 	}
 
-	private Dep addDep(MemberKey memberKey) {
-
-		final Dep found = this.deps.get(memberKey);
-
-		if (found != null) {
-			return found;
-		}
-
-		final Dep dep = fieldDep(this, memberKey);
-
-		this.deps.put(memberKey, dep);
-
-		return dep;
-	}
-
-	private Dep addEnclosingOwnerDep(Obj owner) {
-
-		final Dep found = this.deps.get(null);
-
-		if (found != null) {
-			return found;
-		}
-
-		final LocalScope enclosingLocal =
-			getScope().getEnclosingContainer().toLocal();
-
-		assert enclosingLocal.getOwner() == owner :
-			owner + " is not owner of " + this
-			+ " enclosing local scope " + enclosingLocal;
-
-		final Dep dep = enclosingOwnerDep(this);
-
-		this.deps.put(null, dep);
-
-		return dep;
-	}
-
 	private Symbol memberById(MemberId memberId) {
 		resolveMembers(memberId.containsAdapterId());
 		return this.symbols.get(memberId);
@@ -890,152 +889,6 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return ancestorDefinitions;
-	}
-
-	private static final class ParentObjectFragment extends MemberFragment {
-
-		ParentObjectFragment(MemberKey memberKey) {
-			super(memberKey);
-		}
-
-		@Override
-		public Container resolve(
-				LocationInfo location,
-				Path path,
-				int index,
-				Scope start,
-				PathWalker walker) {
-
-			final Obj object = start.getContainer().toObject();
-
-			if (!object.membersResolved()) {
-
-				final Scope self = getMemberKey().getOrigin();
-
-				if (start == self) {
-
-					final Container result = self.getEnclosingContainer();
-
-					walker.up(object, this, result);
-
-					return result;
-				}
-			}
-
-			final Member member = resolveMember(location, path, index, start);
-
-			if (member == null) {
-				return null;
-			}
-
-			final Container result = member.getSubstance();
-
-			walker.up(object, this, result);
-
-			return result;
-		}
-
-		@Override
-		protected Reproduction reproduce(
-				LocationInfo location,
-				Scope origin,
-				Scope scope) {
-
-			final Clause fromClause = origin.getContainer().toClause();
-
-			if (fromClause == null) {
-				// Walked out of object, containing clauses.
-				return outOfClause(scope.getScope().getEnclosingScopePath());
-			}
-
-			final Clause enclosingClause = fromClause.getEnclosingClause();
-
-			if (enclosingClause == null && !fromClause.requiresInstance()) {
-				// Left stand-alone clause without enclosing object.
-				return outOfClause(scope.getScope().getEnclosingScopePath());
-			}
-
-			// Update to actual enclosing scope path.
-			return reproduced(scope.getScope().getEnclosingScopePath());
-		}
-
-	}
-
-	private static final class ParentLocalFragment extends PathFragment {
-
-		private final Obj object;
-
-		ParentLocalFragment(Obj object) {
-			this.object = object;
-		}
-
-		@Override
-		public Container resolve(
-				LocationInfo location,
-				Path path,
-				int index,
-				Scope start,
-				PathWalker walker) {
-
-			final Obj object = start.getContainer().toObject();
-
-			object.assertDerivedFrom(this.object);
-
-			final Container result =
-				object.getScope().getEnclosingContainer();
-
-			walker.up(object, this, result);
-
-			return result;
-		}
-
-		@Override
-		public HostOp write(CodeDirs dirs, HostOp start) {
-			return start;
-		}
-
-		@Override
-		public PathFragment combineWithMember(MemberKey memberKey) {
-			return this.object.addDep(memberKey);
-		}
-
-		@Override
-		public PathFragment combineWithLocalOwner(Obj owner) {
-			return this.object.addEnclosingOwnerDep(owner);
-		}
-
-		@Override
-		public Reproduction reproduce(LocationInfo location, Scope scope) {
-			return reproduced(scope.getScope().getEnclosingScopePath());
-		}
-
-		@Override
-		public int hashCode() {
-			return this.object.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-
-			final ParentLocalFragment other = (ParentLocalFragment) obj;
-
-			return this.object == other.object;
-		}
-
-		@Override
-		public String toString() {
-			return "ParentLocal[" + this.object + ']';
-		}
-
 	}
 
 	private enum Resolution {

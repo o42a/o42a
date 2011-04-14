@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.op.Val;
 
@@ -46,7 +48,7 @@ final class UnknownValue<T> extends Value<T> {
 
 	@Override
 	public Val val(Generator generator) {
-		return Val.UNKNOWN_VAL;
+		return UNKNOWN_VAL;
 	}
 
 	@Override

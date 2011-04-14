@@ -186,7 +186,9 @@ public abstract class UnaryOpObj<T, O> extends IntrinsicObject {
 
 			final UnaryOpObj<?, ?> object =
 				(UnaryOpObj<?, ?>) getObjectIR().getObject();
+			// FIXME Operand calculation is wrong, as it's sticked to declaration.
 			final RefOp operand = object.operand().op(host);
+
 			final CodeBlk falseOperand = code.addBlock("false_operand");
 			final CodeDirs dirs = falseWhenUnknown(code, falseOperand.head());
 
