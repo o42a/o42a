@@ -27,7 +27,7 @@ import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class PhraseImperative extends ValuedPhrasePart {
+public class PhraseImperative extends PhraseContinuation {
 
 	private final BlockBuilder imperatives;
 

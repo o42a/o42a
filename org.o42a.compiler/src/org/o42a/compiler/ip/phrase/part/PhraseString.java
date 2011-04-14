@@ -28,7 +28,7 @@ import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueType;
 
 
-public class PhraseString extends ValuedPhrasePart {
+public class PhraseString extends PhraseContinuation {
 
 	private final String string;
 

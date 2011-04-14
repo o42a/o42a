@@ -27,7 +27,7 @@ import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-public class PhraseDeclarations extends ValuedPhrasePart {
+public class PhraseDeclarations extends PhraseContinuation {
 
 	private final BlockBuilder declarations;
 
