@@ -29,11 +29,12 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.TypeNode;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.phrase.Phrase;
+import org.o42a.compiler.ip.phrase.PhraseInterpreter;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.phrase.Phrase;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.*;
 

@@ -389,13 +389,6 @@ public class CompilerLogger implements Logger {
 				"Overrider clause is prohibited here");
 	}
 
-	public void prohibitedPhraseName(LogInfo location) {
-		error(
-				"prohibited_phrase_name",
-				location,
-				"Name can not follow another name or phrase prefix");
-	}
-
 	public void prohibitedPrivateAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_private_abstract",

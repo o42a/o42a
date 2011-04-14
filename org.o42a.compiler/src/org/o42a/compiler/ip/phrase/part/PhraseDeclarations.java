@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,10 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.core.ref.phrase.NextClause.declarationsClause;
+import static org.o42a.compiler.ip.phrase.NextClause.declarationsClause;
 
+import org.o42a.compiler.ip.phrase.NextClause;
+import org.o42a.compiler.ip.phrase.PhraseContext;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -39,6 +41,17 @@ public class PhraseDeclarations extends ValuedPhrasePart {
 	}
 
 	@Override
+	public NextClause nextClause(PhraseContext context) {
+		// Next clause is the same one.
+		return declarationsClause(context.getClause());
+	}
+
+	@Override
+	public void define(Block<?> definition) {
+		this.declarations.buildBlock(definition);
+	}
+
+	@Override
 	public String toString() {
 		if (this.declarations == null) {
 			return "()";
@@ -51,17 +64,6 @@ public class PhraseDeclarations extends ValuedPhrasePart {
 		}
 
 		return '(' + string + ')';
-	}
-
-	@Override
-	protected NextClause nextClause(PhraseContext context) {
-		// next clause is the same one
-		return declarationsClause(context.getClause());
-	}
-
-	@Override
-	protected void define(Block<?> definition) {
-		this.declarations.buildBlock(definition);
 	}
 
 }
