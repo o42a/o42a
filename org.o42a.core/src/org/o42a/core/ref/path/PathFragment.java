@@ -47,7 +47,9 @@ public abstract class PathFragment {
 			Scope start,
 			PathWalker walker);
 
-	public abstract Reproduction reproduce(LocationInfo location, Scope scope);
+	public abstract PathReproduction reproduce(
+			LocationInfo location,
+			Scope scope);
 
 	public PathFragment combineWithMember(MemberKey memberKey) {
 		return null;
@@ -73,56 +75,6 @@ public abstract class PathFragment {
 
 	protected PathFragment rebuild(PathFragment prev) {
 		return null;
-	}
-
-	protected final Reproduction reproduced(Path path) {
-		return new Reproduction(path, false, false);
-	}
-
-	protected final Reproduction reproduced(PathFragment fragment) {
-		return new Reproduction(fragment.toPath(), false, false);
-	}
-
-	protected final Reproduction unchanged() {
-		return new Reproduction(toPath(), true, false);
-	}
-
-	protected final Reproduction outOfClause(Path path) {
-		return new Reproduction(path, false, true);
-	}
-
-	public static final class Reproduction {
-
-		private final Path path;
-		private final boolean unchanged;
-		private final boolean outOfClause;
-
-		private Reproduction(
-				Path path,
-				boolean unchanged,
-				boolean outOfClause) {
-			this.path = path;
-			this.unchanged = unchanged;
-			this.outOfClause = outOfClause;
-		}
-
-		public final boolean isUnchanged() {
-			return this.unchanged;
-		}
-
-		public final boolean isOutOfClause() {
-			return this.outOfClause;
-		}
-
-		public final Path getPath() {
-			return this.path;
-		}
-
-		@Override
-		public String toString() {
-			return "" + this.path;
-		}
-
 	}
 
 }

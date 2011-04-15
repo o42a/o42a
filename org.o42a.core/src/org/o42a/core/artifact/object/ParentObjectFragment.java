@@ -19,15 +19,17 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.ref.path.MemberFragment;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.*;
 
 
 final class ParentObjectFragment extends MemberFragment {
@@ -74,7 +76,7 @@ final class ParentObjectFragment extends MemberFragment {
 	}
 
 	@Override
-	protected Reproduction reproduce(
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			Scope origin,
 			Scope scope) {
@@ -83,18 +85,22 @@ final class ParentObjectFragment extends MemberFragment {
 
 		if (fromClause == null) {
 			// Walked out of object, containing clauses.
-			return outOfClause(scope.getScope().getEnclosingScopePath());
+			return outOfClausePath(
+					scope.getEnclosingScopePath(),
+					toPath());
 		}
 
 		final Clause enclosingClause = fromClause.getEnclosingClause();
 
 		if (enclosingClause == null && !fromClause.requiresInstance()) {
 			// Left stand-alone clause without enclosing object.
-			return outOfClause(scope.getScope().getEnclosingScopePath());
+			return outOfClausePath(
+					scope.getEnclosingScopePath(),
+					SELF_PATH);
 		}
 
 		// Update to actual enclosing scope path.
-		return reproduced(scope.getScope().getEnclosingScopePath());
+		return reproducedPath(scope.getEnclosingScopePath());
 	}
 
 }
