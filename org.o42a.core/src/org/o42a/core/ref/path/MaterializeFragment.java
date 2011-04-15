@@ -29,6 +29,7 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.st.Reproducer;
 
 
 final class MaterializeFragment extends PathFragment {
@@ -56,7 +57,10 @@ final class MaterializeFragment extends PathFragment {
 	}
 
 	@Override
-	public PathReproduction reproduce(LocationInfo location, Scope scope) {
+	public PathReproduction reproduce(
+			LocationInfo location,
+			Reproducer reproducer,
+			Scope scope) {
 		return reproducedPath(toPath());
 	}
 

@@ -30,6 +30,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.Reproducer;
 
 
 final class ParentLocalFragment extends PathFragment {
@@ -76,7 +77,10 @@ final class ParentLocalFragment extends PathFragment {
 	}
 
 	@Override
-	public PathReproduction reproduce(LocationInfo location, Scope scope) {
+	public PathReproduction reproduce(
+			LocationInfo location,
+			Reproducer reproducer,
+			Scope scope) {
 		return reproducedPath(scope.getScope().getEnclosingScopePath());
 	}
 

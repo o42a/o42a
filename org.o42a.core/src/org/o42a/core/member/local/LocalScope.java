@@ -39,6 +39,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
@@ -259,7 +260,10 @@ public abstract class LocalScope
 		}
 
 		@Override
-		public PathReproduction reproduce(LocationInfo location, Scope scope) {
+		public PathReproduction reproduce(
+				LocationInfo location,
+				Reproducer reproducer,
+				Scope scope) {
 			return reproducedPath(scope.toLocal().getEnclosingScopePath());
 		}
 

@@ -32,6 +32,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.Reproducer;
 
 
 public final class Dep extends PathFragment {
@@ -148,7 +149,11 @@ public final class Dep extends PathFragment {
 	}
 
 	@Override
-	public PathReproduction reproduce(LocationInfo location, Scope scope) {
+	public PathReproduction reproduce(
+			LocationInfo location,
+			Reproducer reproducer,
+			Scope scope) {
+
 		final Dep dep;
 
 		if (dependencyOnEnclosingOwner()) {

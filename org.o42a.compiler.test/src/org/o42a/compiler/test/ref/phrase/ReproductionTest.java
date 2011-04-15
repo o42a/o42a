@@ -43,7 +43,7 @@ public class ReproductionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void referFromNestedOutsideObject() {
+	public void ancestorRefersOutsideObject() {
 		compile(
 				"Container := void(",
 				"  Referred := 2",
@@ -55,6 +55,20 @@ public class ReproductionTest extends CompilerTestCase {
 				"Result := object_refer");
 
 		assertThat(definiteValue(field("result", "value"), Long.class), is(2L));
+	}
+
+	@Test
+	public void expressionRefersOutsideObject() {
+		compile(
+				"Container := void(",
+				"  Referred := False",
+				")",
+				"Object :=> void(",
+				"  <Refer> Container: referred",
+				")",
+				"Result := object_refer");
+
+		assertFalseVoid(field("result"));
 	}
 
 }

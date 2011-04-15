@@ -27,6 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.st.Reproducer;
 
 
 final class ModuleFragment extends PathFragment {
@@ -77,7 +78,10 @@ final class ModuleFragment extends PathFragment {
 	}
 
 	@Override
-	public PathReproduction reproduce(LocationInfo location, Scope scope) {
+	public PathReproduction reproduce(
+			LocationInfo location,
+			Reproducer reproducer,
+			Scope scope) {
 		return unchangedPath(toPath());
 	}
 

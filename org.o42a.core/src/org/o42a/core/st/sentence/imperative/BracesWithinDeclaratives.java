@@ -142,6 +142,11 @@ public final class BracesWithinDeclaratives extends Statement {
 		}
 
 		@Override
+		public boolean phraseCreatesObject() {
+			return this.reproducer.phraseCreatesObject();
+		}
+
+		@Override
 		public Ref getPhrasePrefix() {
 			return this.reproducer.getPhrasePrefix();
 		}
