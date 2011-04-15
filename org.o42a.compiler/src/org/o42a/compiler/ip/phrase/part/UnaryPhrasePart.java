@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,50 +19,74 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
+
+import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.ValueType;
 
 
-public class PhraseString extends PhraseContinuation {
+public class UnaryPhrasePart extends PhraseContinuation {
 
-	private final String string;
+	private final UnaryNode node;
 
-	PhraseString(
-			LocationInfo location,
-			PhrasePart preceding,
-			String string) {
-		super(location, preceding);
-		this.string = string;
-	}
-
-	public final String getString() {
-		return this.string;
+	public UnaryPhrasePart(UnaryNode node, PhrasePart preceding) {
+		super(preceding, preceding);
+		this.node = node;
 	}
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
-		return context.clauseById(this, ClauseId.STRING);
+
+		final ClauseId clauseId = clauseId();
+
+		if (clauseId == null) {
+			return errorClause(this.node);
+		}
+
+		return context.clauseById(this, clauseId);
+	}
+
+	private ClauseId clauseId() {
+
+		switch (this.node.getOperator()) {
+		case PLUS:
+			return ClauseId.PLUS;
+		case MINUS:
+			return ClauseId.MINUS;
+		case IS_TRUE:
+		case NOT:
+		case KNOWN:
+		case UNKNOWN:
+		}
+
+		getLogger().error(
+				"unsupported_unary",
+				this.node.getSign(),
+				"Unary operator '%s' not supported",
+				this.node.getOperator().getSign());
+
+		return null;
 	}
 
 	@Override
 	public void define(Block<?> definition) {
+		if (getPhrase().createsObject()) {
+			// Phrase constructs object. No need to put an argument.
+			return;
+		}
 
 		final Statements<?> statements =
 			definition.propose(this).alternative(this);
 
-		statements.assign(ValueType.STRING.definiteRef(
-				this,
-				statements.nextDistributor(),
-				this.string));
+		statements.assign(getPhrase().getAncestor().getRef());
 	}
 
 	@Override
 	public String toString() {
-		return '\'' + this.string + '\'';
+		return this.node.getOperator().getSign() + getPreceding();
 	}
 
 }

@@ -17,8 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.phrase;
+package org.o42a.compiler.ip.phrase.ref;
 
+import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.phrase.part.PhrasePart;
 import org.o42a.compiler.ip.phrase.part.PhrasePrefix;
 import org.o42a.core.Distributor;
@@ -100,8 +101,16 @@ public class Phrase extends Placed {
 		return append(this.last.imperative(imperatives));
 	}
 
+	public final Phrase plus(UnaryNode node) {
+		return append(this.last.plus(node));
+	}
+
 	public final Ref toRef() {
 		return new PhraseEx(this);
+	}
+
+	public final boolean createsObject() {
+		return getMainContext().createsObject();
 	}
 
 	@Override

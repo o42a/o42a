@@ -17,14 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.phrase;
+package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -66,24 +65,6 @@ final class ClauseAscendantsReproducer extends Reproducer {
 				}
 
 				ascendants = ascendants.setAncestor(newAncestor);
-			}
-		}
-
-		if (context.getClause().getKind() == ClauseKind.EXPRESSION) {
-
-			final StaticTypeRef adapterType =
-				context.getClause().getDeclaration().getAdapterType();
-
-			if (adapterType != null) {
-
-				final StaticTypeRef newAdapterType =
-					adapterType.reproduce(ascendantsReproducer);
-
-				if (newAdapterType == null) {
-					return null;
-				}
-
-				ascendants = ascendants.addSample(newAdapterType);
 			}
 		}
 

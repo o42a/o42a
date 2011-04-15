@@ -19,8 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import org.o42a.compiler.ip.phrase.NextClause;
-import org.o42a.compiler.ip.phrase.PhraseContext;
+import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
@@ -42,14 +41,6 @@ public class PhraseArgument extends PhraseContinuation {
 	}
 
 	@Override
-	public String toString() {
-		if (this.value == null) {
-			return "[]";
-		}
-		return '[' + this.value.toString() + ']';
-	}
-
-	@Override
 	public NextClause nextClause(PhraseContext context) {
 		return context.clauseById(this, ClauseId.ARGUMENT);
 	}
@@ -57,13 +48,21 @@ public class PhraseArgument extends PhraseContinuation {
 	@Override
 	public void define(Block<?> definition) {
 		if (this.value == null) {
-			return;// do not provide any value
+			return;// Do not assign any value.
 		}
 
 		final Statements<?> statements =
 			definition.propose(this).alternative(this);
 
 		statements.assign(this.value);
+	}
+
+	@Override
+	public String toString() {
+		if (this.value == null) {
+			return "[]";
+		}
+		return '[' + this.value.toString() + ']';
 	}
 
 }

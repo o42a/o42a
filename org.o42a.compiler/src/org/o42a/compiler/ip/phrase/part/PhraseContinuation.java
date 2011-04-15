@@ -19,8 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import org.o42a.compiler.ip.phrase.NextClause;
-import org.o42a.compiler.ip.phrase.PhraseContext;
+import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 
@@ -28,7 +27,7 @@ import org.o42a.core.st.sentence.Block;
 public abstract class PhraseContinuation extends PhrasePart {
 
 	public PhraseContinuation(LocationInfo location, PhrasePart preceding) {
-		super(location, preceding);
+		super(location, preceding.getPhrase(), preceding);
 	}
 
 	public abstract NextClause nextClause(PhraseContext context);

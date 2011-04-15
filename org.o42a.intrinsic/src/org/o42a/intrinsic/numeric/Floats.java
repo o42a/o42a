@@ -1,6 +1,6 @@
 /*
-    Modules Commons
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Intrinsics
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.intrinsic;
+package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
+import org.o42a.intrinsic.root.Root;
 
 
-public class IntrinsicType extends IntrinsicObject {
+public class Floats extends IntrinsicObject {
 
-	public IntrinsicType(
-			Container enclosingContainer,
-			String name,
-			ValueType<?> valueType) {
-		super(
-				fieldDeclaration(
-						enclosingContainer,
-						enclosingContainer.getScope().distribute(),
-						memberName(name))
-				.prototype());
-		setValueType(valueType);
-	}
-
-	public IntrinsicType(FieldDeclaration declaration, ValueType<?> valueType) {
-		super(declaration);
-		setValueType(valueType);
+	public Floats(Root root) {
+		super(fieldDeclaration(
+				root,
+				root.distribute(),
+				memberName("floats")));
+		setValueType(ValueType.VOID);
 	}
 
 	@Override
@@ -57,15 +47,14 @@ public class IntrinsicType extends IntrinsicObject {
 	}
 
 	@Override
-	protected Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ancestorDefinitions) {
-		return getValueType().noValueDefinitions(this, scope);
+	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
+		members.addMember(new FloatMinus(this).toMember());
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getValueType().noValueDefinitions(this, getScope());
+		return null;
 	}
 
 }

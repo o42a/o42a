@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.phrase;
+package org.o42a.compiler.ip.phrase.part;
 
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
@@ -28,10 +28,16 @@ public class NextClause implements Cloneable {
 
 	private static final NextClause[] NO_IMPLIED = new NextClause[0];
 
-	public static NextClause clauseNotFound(MemberId memberId) {
-		assert memberId != null :
-			"Member identifier not specified";
-		return new ClauseNotFound(memberId);
+	public static NextClause errorClause(Object reason) {
+		assert reason != null :
+			"Error reason not specified";
+		return new ErrorClause(reason);
+	}
+
+	public static NextClause clauseNotFound(Object what) {
+		assert what != null :
+			"What is not found not specified";
+		return new ClauseNotFound(what);
 	}
 
 	public static NextClause declarationsClause(Clause clause) {
@@ -71,6 +77,14 @@ public class NextClause implements Cloneable {
 
 	public boolean found() {
 		return true;
+	}
+
+	public boolean isError() {
+		return false;
+	}
+
+	public Object what() {
+		return this.memberId;
 	}
 
 	public final MemberId getMemberId() {
@@ -127,8 +141,16 @@ public class NextClause implements Cloneable {
 
 	private static final class ClauseNotFound extends NextClause {
 
-		ClauseNotFound(MemberId memberId) {
-			super(memberId, null, null);
+		private final Object what;
+
+		ClauseNotFound(Object what) {
+			super(null, null, null);
+			this.what = what;
+		}
+
+		@Override
+		public Object what() {
+			return this.what;
 		}
 
 		@Override
@@ -138,7 +160,33 @@ public class NextClause implements Cloneable {
 
 		@Override
 		public String toString() {
-			return getMemberId() + "(NOT FOUND)";
+			return this.what + "(NOT FOUND)";
+		}
+
+	}
+
+	private static final class ErrorClause extends NextClause {
+
+		private final Object what;
+
+		ErrorClause(Object what) {
+			super(null, null, null);
+			this.what = what;
+		}
+
+		@Override
+		public boolean isError() {
+			return true;
+		}
+
+		@Override
+		public Object what() {
+			return this.what;
+		}
+
+		@Override
+		public String toString() {
+			return "ERROR(" + this.what + ")";
 		}
 
 	}

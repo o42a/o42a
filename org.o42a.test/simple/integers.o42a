@@ -1,6 +1,6 @@
 /*
-    Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Tests
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,27 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-// Unary + does not modify number.
-<@Operators: plus>
+Use namespace 'Test'
 
-@Operators: add :=> ::(
-  Right operand =< `&number
-).
-@Operators: subtract :=> ::(
-  Right operand =< `&number
-).
-@Operators: multiply :=> ::(
-  Right operand =< `&number
-).
-@Operators: divide :=> ::(
-  Right operand =< `&number
-).
-@Operators: compare :=> *(
-  With =< `&number
-).
-@Operators: equals :=> *(
-  To =< `&number
-).
-@Adapters: by string :=<> *().
 
-<*By string> = ::@@adapters: by string(<*''> Input = string).
+Name = "Integers"
+
+Run tests
+
+Equal := test(
+  //Assert [2 == 2] 'Integer constants not equal'
+  //Assert [4 == rt-integer '4'] 'Integers not equal'
+  //Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
+)
+
+Not equal := test(
+  //Assert [rt-integer '5' <> rt-integer '6'] 'Integers equal'
+  //Assert [--(rt-integer '9' == rt-integer '7')] 'Integers equal' 
+)
+
+Plus := test(
+  //Assert [+5 == 5] 'Plus failed on constant integer'
+  //Assert [+rt-integer '5' == 5] 'Plus failed on run-time integer'
+)
