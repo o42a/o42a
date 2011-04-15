@@ -23,11 +23,11 @@ package org.o42a.core.ref.path;
 public final class PathReproduction {
 
 	public static PathReproduction unchangedPath(Path unchangedPath) {
-		return new PathReproduction(Path.SELF_PATH, unchangedPath);
+		return new PathReproduction(Path.SELF_PATH, unchangedPath, true);
 	}
 
 	public static PathReproduction reproducedPath(Path reproducedPath) {
-		return new PathReproduction(reproducedPath, null);
+		return new PathReproduction(reproducedPath, null, false);
 	}
 
 	public static PathReproduction outOfClausePath(
@@ -36,21 +36,29 @@ public final class PathReproduction {
 		assert !externalPath.isAbsolute() :
 			"Unchanged path should not be absolute after clause left: "
 			+ externalPath;
-		return new PathReproduction(reproducedPath, externalPath);
+		return new PathReproduction(reproducedPath, externalPath, false);
 	}
 
 	private final Path reproducedPath;
 	private final Path externalPath;
+	private final boolean unchanged;
 
-	PathReproduction(Path reproducedPath, Path externalPath) {
+	PathReproduction(
+			Path reproducedPath,
+			Path externalPath,
+			boolean unchanged) {
 		assert reproducedPath != null :
 			"Reproduced path not specified";
 		this.reproducedPath = reproducedPath;
 		this.externalPath = externalPath;
+		this.unchanged = unchanged;
+		assert (!unchanged
+				|| externalPath != null && this.reproducedPath.isSelf()) :
+					"Wrong unchanged path reproduction";
 	}
 
 	public final boolean isUnchanged() {
-		return this.externalPath != null && this.reproducedPath.isSelf();
+		return this.unchanged;
 	}
 
 	public final boolean isOutOfClause() {

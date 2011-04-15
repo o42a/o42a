@@ -88,7 +88,7 @@ final class ParentObjectFragment extends MemberFragment {
 		if (fromClause == null) {
 			// Walked out of object, containing clauses.
 			if (!reproducer.phraseCreatesObject()) {
-				return reproducedPath(SELF_PATH);
+				return outOfClausePath(SELF_PATH, toPath());
 			}
 			return outOfClausePath(
 					scope.getEnclosingScopePath(),
