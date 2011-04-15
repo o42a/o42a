@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import org.o42a.core.CompilerLogger;
 import org.o42a.core.Scope;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.DefinitionKey;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.DefinitionTargets;
@@ -30,7 +31,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
-public abstract class SentenceCollector {
+public final class SentencePrecondition {
 
 	private final DeclarativeBlock block;
 	private final Scope scope;
@@ -38,9 +39,16 @@ public abstract class SentenceCollector {
 	private final HashMap<DefinitionKey, DefinitionTarget> unconditionalValues =
 		new HashMap<DefinitionKey, DefinitionTarget>();
 
-	public SentenceCollector(DeclarativeBlock block, Scope scope) {
+	private final SentenceLogicals requirements;
+	private final SentenceLogicals conditions;
+
+	private Logical precondition;
+
+	public SentencePrecondition(DeclarativeBlock block, Scope scope) {
 		this.block = block;
 		this.scope = scope;
+		this.requirements = new SentenceLogicals(block, scope);
+		this.conditions = new SentenceLogicals(block, scope);
 	}
 
 	public final DeclarativeBlock getBlock() {
@@ -55,10 +63,20 @@ public abstract class SentenceCollector {
 		return getBlock().getLogger();
 	}
 
-	protected void collect() {
+	public Logical precondition() {
 		for (DeclarativeSentence setence : getBlock().getSentences()) {
 			addSentence(setence);
 		}
+
+		final Logical precondition = Logical.and(
+				Logical.and(requirement(), condition()),
+				this.precondition);
+
+		if (precondition != null) {
+			return precondition;
+		}
+
+		return getBlock().getInitialEnv().precondition(getScope());
 	}
 
 	protected void addSentence(DeclarativeSentence sentence) {
@@ -82,13 +100,37 @@ public abstract class SentenceCollector {
 		}
 	}
 
-	protected abstract void addCondition(
+	protected void addCondition(
 			DeclarativeSentence sentence,
-			DefinitionTargets targets);
+			DefinitionTargets targets) {
+		if (sentence.isClaim()) {
+			this.requirements.addSentence(sentence);
+		} else {
+			this.conditions.addSentence(sentence);
+		}
+	}
 
-	protected abstract void addDeclaration(
+	protected void addDeclaration(
 			DeclarativeSentence sentence,
-			DefinitionTargets targets);
+			DefinitionTargets targets) {
+
+		final Logical logical =
+			sentence.getEnv().fullLogical(getScope());
+
+		if (!targets.haveValue()) {
+			return;
+		}
+
+		this.precondition = Logical.or(this.precondition, logical);
+	}
+
+	protected final Logical requirement() {
+		return this.requirements.build();
+	}
+
+	protected final Logical condition() {
+		return this.conditions.build();
+	}
 
 	private boolean checkAmbiguity(
 			DeclarativeSentence sentence,
