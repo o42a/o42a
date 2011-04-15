@@ -199,6 +199,40 @@ public class PhraseTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void argumentAfterName() {
+
+		final PhraseNode result = parse("foo _ bar [baz]");
+
+		assertName("foo", result.getPrefix());
+
+		final NameNode name = clause(NameNode.class, result, 0, 2);
+
+		assertEquals("bar", name.getName());
+
+		final ArgumentNode[] arguments =
+			clause(BracketsNode.class, result, 1, 2).getArguments();
+
+		assertEquals(1, arguments.length);
+		assertName("baz", arguments[0].getValue());
+	}
+
+	@Test
+	public void names() {
+
+		final PhraseNode result = parse("foo_bar_baz");
+
+		assertName("foo", result.getPrefix());
+
+		final NameNode name1 = clause(NameNode.class, result, 0, 2);
+
+		assertEquals("bar", name1.getName());
+
+		final NameNode name2 = clause(NameNode.class, result, 1, 2);
+
+		assertEquals("baz", name2.getName());
+	}
+
+	@Test
 	public void nlAfterName() {
 
 		final PhraseNode result = parse(

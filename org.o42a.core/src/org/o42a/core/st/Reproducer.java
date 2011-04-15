@@ -50,6 +50,8 @@ public abstract class Reproducer {
 
 	public abstract Ref getPhrasePrefix();
 
+	public abstract boolean phraseCreatesObject();
+
 	public abstract MemberRegistry getMemberRegistry();
 
 	public abstract Statements<?> getStatements();
@@ -95,6 +97,11 @@ public abstract class Reproducer {
 			super(reproducer.getReproducingScope(), distributor);
 			this.statements = statements;
 			this.reproducer = reproducer;
+		}
+
+		@Override
+		public boolean phraseCreatesObject() {
+			return this.reproducer.phraseCreatesObject();
 		}
 
 		@Override

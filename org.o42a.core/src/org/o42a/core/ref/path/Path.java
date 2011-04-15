@@ -25,6 +25,7 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.PathFragment.MATERIALIZE;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import java.util.Arrays;
 
@@ -37,7 +38,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.path.PathFragment.Reproduction;
 import org.o42a.core.st.Reproducer;
 
 
@@ -298,7 +298,7 @@ public class Path {
 				return outOfClausePath(SELF_PATH, SELF_PATH);
 			}
 
-			return reproducedPath(SELF_PATH);
+			return unchangedPath(SELF_PATH);
 		}
 
 		Path reproduced = SELF_PATH;
@@ -306,36 +306,40 @@ public class Path {
 		for (int i = 0; i < len; ++i) {
 
 			final PathFragment fragment = this.fragments[i];
-			final Reproduction reproduction =
-				fragment.reproduce(location, toScope);
+			final PathReproduction reproduction =
+				fragment.reproduce(location, reproducer, toScope);
 
 			if (reproduction == null) {
 				return null;
 			}
+			if (reproduction.isUnchanged()) {
+				// Left the rest of the path unchanged too.
+				return partiallyReproducedPath(
+						reproduced.append(reproduction.getExternalPath()),
+						i + 1);
+			}
 
-			final Path path = reproduction.getPath();
-			final Container resolution = path.resolve(location, toScope);
+			final Path reproducedPath = reproduction.getReproducedPath();
+			final Container resolution =
+				reproducedPath.resolve(location, toScope);
 
 			if (resolution == null) {
 				return null;
 			}
 
-			if (reproduction.isUnchanged()) {
-				// Left the rest of the path unchanged too.
-				return partiallyReproducedPath(reproduced, i);
-			}
-
-			toScope = resolution.getScope();
-			reproduced = reproduced.append(path);
+			reproduced = reproduced.append(reproducedPath);
 
 			if (reproduction.isOutOfClause()) {
 				return outOfClausePath(
 						reproduced,
-						new Path(copyOfRange(
-								this.fragments,
-								i + 1,
-								this.fragments.length)));
+						reproduction.getExternalPath().append(
+								new Path(copyOfRange(
+										this.fragments,
+										i + 1,
+										this.fragments.length))));
 			}
+
+			toScope = resolution.getScope();
 		}
 
 		return reproducedPath(reproduced);
@@ -536,7 +540,7 @@ public class Path {
 			Path reproduced,
 			int firstUnchangedIdx) {
 		if (firstUnchangedIdx == 0) {
-			return reproducedPath(this);
+			return unchangedPath(this);
 		}
 
 		final int fragmentsLeft = this.fragments.length - firstUnchangedIdx;

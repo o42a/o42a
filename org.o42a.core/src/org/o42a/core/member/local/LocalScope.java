@@ -21,6 +21,7 @@ package org.o42a.core.member.local;
 
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import java.util.Collection;
 
@@ -37,9 +38,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
-import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.*;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
@@ -260,8 +260,11 @@ public abstract class LocalScope
 		}
 
 		@Override
-		public Reproduction reproduce(LocationInfo location, Scope scope) {
-			return reproduced(scope.toLocal().getEnclosingScopePath());
+		public PathReproduction reproduce(
+				LocationInfo location,
+				Reproducer reproducer,
+				Scope scope) {
+			return reproducedPath(scope.toLocal().getEnclosingScopePath());
 		}
 
 		@Override

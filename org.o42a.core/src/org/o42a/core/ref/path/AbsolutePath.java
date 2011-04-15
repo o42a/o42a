@@ -20,7 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -120,7 +120,7 @@ public final class AbsolutePath extends Path {
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer) {
-		return reproducedPath(this);
+		return unchangedPath(this);
 	}
 
 	@Override
