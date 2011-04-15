@@ -50,7 +50,7 @@ public class ReproductionTest extends CompilerTestCase {
 				")",
 				"Object :=> void(",
 				"  Value :=< integer",
-				"  <Refer> value = Container: referred",
+				"  <Refer> Value = container: referred",
 				")",
 				"Result := object_refer");
 
@@ -69,6 +69,43 @@ public class ReproductionTest extends CompilerTestCase {
 				"Result := object_refer");
 
 		assertFalseVoid(field("result"));
+	}
+
+	@Test
+	public void nestedExpressionRefersOutsideObject() {
+		compile(
+				"Container := void(",
+				"  Referred := False",
+				")",
+				"Object :=> void(",
+				"  <Construct> Container(",
+				"    <Refer> Referred",
+				"  )",
+				")",
+				"Result := object_construct_refer");
+
+		assertFalseVoid(field("result"));
+	}
+
+	@Test
+	public void nestedAncestorRefersOutsideObject() {
+		compile(
+				"Container := void(",
+				"  Referred := 2",
+				")",
+				"Object :=> void(",
+				"  Foo := void(",
+				"    Value := 1",
+				"  )",
+				"  <*> Foo = *(",
+				"    <Refer> Value = container: referred",
+				"  )",
+				")",
+				"Result := object_refer");
+
+		assertThat(
+				definiteValue(field("result", "foo", "value"), Long.class),
+				is(2L));
 	}
 
 }
