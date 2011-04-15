@@ -28,6 +28,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.st.Reproducer;
 
 
 public class MemberFragment extends PathFragment {
@@ -72,11 +73,12 @@ public class MemberFragment extends PathFragment {
 	@Override
 	public final PathReproduction reproduce(
 			LocationInfo location,
+			Reproducer reproducer,
 			Scope scope) {
 
 		final Scope origin = this.memberKey.getOrigin();
 
-		return reproduce(location, origin, scope);
+		return reproduce(location, reproducer, origin, scope);
 	}
 
 	@Override
@@ -147,6 +149,7 @@ public class MemberFragment extends PathFragment {
 
 	protected PathReproduction reproduce(
 			LocationInfo location,
+			Reproducer reproducer,
 			Scope origin,
 			Scope scope) {
 

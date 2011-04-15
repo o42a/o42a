@@ -112,6 +112,11 @@ final class ClauseAscendantsReproducer extends Reproducer {
 	}
 
 	@Override
+	public boolean phraseCreatesObject() {
+		return this.context.getMainContext().createsObject();
+	}
+
+	@Override
 	public Ref getPhrasePrefix() {
 		return this.context.getMainContext().getPhrase().getAncestor()
 		.getRescopedRef();

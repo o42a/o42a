@@ -26,6 +26,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.st.Reproducer;
 
 
 public abstract class PathFragment {
@@ -49,6 +50,7 @@ public abstract class PathFragment {
 
 	public abstract PathReproduction reproduce(
 			LocationInfo location,
+			Reproducer reproducer,
 			Scope scope);
 
 	public PathFragment combineWithMember(MemberKey memberKey) {

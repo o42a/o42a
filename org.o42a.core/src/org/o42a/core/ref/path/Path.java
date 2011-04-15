@@ -307,7 +307,7 @@ public class Path {
 
 			final PathFragment fragment = this.fragments[i];
 			final PathReproduction reproduction =
-				fragment.reproduce(location, toScope);
+				fragment.reproduce(location, reproducer, toScope);
 
 			if (reproduction == null) {
 				return null;

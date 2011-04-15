@@ -30,6 +30,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.st.Reproducer;
 
 
 final class ParentObjectFragment extends MemberFragment {
@@ -78,6 +79,7 @@ final class ParentObjectFragment extends MemberFragment {
 	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
+			Reproducer reproducer,
 			Scope origin,
 			Scope scope) {
 
@@ -85,9 +87,13 @@ final class ParentObjectFragment extends MemberFragment {
 
 		if (fromClause == null) {
 			// Walked out of object, containing clauses.
+			if (!reproducer.phraseCreatesObject()) {
+				return reproducedPath(SELF_PATH);
+			}
 			return outOfClausePath(
 					scope.getEnclosingScopePath(),
 					toPath());
+
 		}
 
 		final Clause enclosingClause = fromClause.getEnclosingClause();

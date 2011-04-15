@@ -239,6 +239,11 @@ class PhraseSubContext extends PhraseContext {
 		}
 
 		@Override
+		public boolean phraseCreatesObject() {
+			return this.instance.getContext().getMainContext().createsObject();
+		}
+
+		@Override
 		public Ref getPhrasePrefix() {
 			return this.instance.getContext().getPhrase().getPrefix()
 			.getAncestor().getRescopedRef();
