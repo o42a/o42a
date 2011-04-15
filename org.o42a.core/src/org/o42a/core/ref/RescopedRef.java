@@ -124,7 +124,8 @@ final class RescopedRef extends Wrap {
 		public Ref reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 
-			final Scope rescoped = this.rescoper.rescope(getScope());
+			final Scope rescoped =
+				this.rescoper.rescope(reproducer.getReproducingScope());
 			final Reproducer rescopedReproducer =
 				reproducer.reproducerOf(rescoped);
 
