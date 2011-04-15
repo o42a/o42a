@@ -35,22 +35,21 @@ import org.o42a.parser.ParserContext;
 public class PhraseParser implements Parser<PhraseNode> {
 
 	private final ExpressionNode prefix;
-	private final Grammar grammar;
+	private final ClauseParser clauseParser;
 
 	public PhraseParser(Grammar grammar, ExpressionNode prefix) {
-		this.grammar = grammar;
 		this.prefix = prefix;
+		this.clauseParser = new ClauseParser(grammar);
 	}
 
 	@Override
 	public PhraseNode parse(ParserContext context) {
 
-		final ClauseParser clauseParser = new ClauseParser(this.grammar);
 		final ArrayList<ClauseNode> clauses = new ArrayList<ClauseNode>();
 
 		for (;;) {
 
-			final ClauseNode clause = context.parse(clauseParser);
+			final ClauseNode clause = context.parse(this.clauseParser);
 
 			if (clause == null) {
 				break;
@@ -73,7 +72,6 @@ public class PhraseParser implements Parser<PhraseNode> {
 	private static final class ClauseParser implements Parser<ClauseNode> {
 
 		private final Grammar grammar;
-		private boolean precedingName;
 
 		ClauseParser(Grammar grammar) {
 			this.grammar = grammar;
@@ -86,31 +84,22 @@ public class PhraseParser implements Parser<PhraseNode> {
 
 			switch (c) {
 			case '[':
-				this.precedingName = false;
 				return context.parse(this.grammar.brackets());
 			case '(':
-				this.precedingName = false;
 				return context.parse(DECLARATIVE.parentheses());
 			case '{':
-				this.precedingName = false;
 				return context.parse(braces());
 			case '\\':
 			case '\'':
 			case '"':
-				this.precedingName = false;
 				return context.parse(text());
 			default:
-				if (this.precedingName) {
-					return null;
-				}
 
 				final NameNode name = context.parse(name());
 
 				if (name == null) {
 					return null;
 				}
-
-				this.precedingName = true;
 
 				return context.acceptComments(false, name);
 			}
