@@ -24,7 +24,14 @@ Name = "Integers"
 
 Run tests
 
-Equal := test(
+Unary conditions := test(
+  Assert [+5] 'Unary integer constant plus is not true'
+  Assert [-5] 'Unary integer constant minus is not true'
+  Assert [+rt-integer '3'] 'Unary integer plus is not true'
+  Assert [-rt-integer '3'] 'Unary integer minus is not true'
+)
+
+/*Equal := test(
   //Assert [2 == 2] 'Integer constants not equal'
   //Assert [4 == rt-integer '4'] 'Integers not equal'
   //Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
@@ -38,4 +45,4 @@ Not equal := test(
 Plus := test(
   //Assert [+5 == 5] 'Plus failed on constant integer'
   //Assert [+rt-integer '5' == 5] 'Plus failed on run-time integer'
-)
+)*/
