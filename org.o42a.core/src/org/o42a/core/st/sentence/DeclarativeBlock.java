@@ -36,7 +36,7 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.st.sentence.declarative.SentencePreconditionCollector;
+import org.o42a.core.st.sentence.declarative.SentencePrecondition;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -252,8 +252,8 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		@Override
 		public Logical precondition(Scope scope) {
 
-			final SentencePreconditionCollector collector =
-				new SentencePreconditionCollector(this.block, scope);
+			final SentencePrecondition collector =
+				new SentencePrecondition(this.block, scope);
 
 			return collector.precondition();
 		}

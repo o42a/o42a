@@ -27,23 +27,17 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
 import org.o42a.core.value.Value;
 
 
 public abstract class RescopableRef<R extends RescopableRef<R>>
-		extends RescopableStatement<R> {
+		extends Rescopable<R> {
 
 	private Resolution resolution;
 	private Ref rescopedRef;
 
 	public RescopableRef(Rescoper rescoper) {
 		super(rescoper);
-	}
-
-	@Override
-	public final Statement getStatement() {
-		return getRef();
 	}
 
 	public abstract Ref getRef();
@@ -81,24 +75,41 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		return getRef().value(getRescoper().rescope(scope));
 	}
 
+	public R reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
+
+		final Scope rescoped = getRescoper().rescope(getScope());
+		final Reproducer rescopedReproducer = reproducer.reproducerOf(rescoped);
+
+		if (rescopedReproducer == null) {
+			reproducer.getLogger().notReproducible(this);
+			return null;
+		}
+
+		final Rescoper rescoper = getRescoper().reproduce(this, reproducer);
+
+		if (rescoper == null) {
+			return null;
+		}
+
+		final Ref ref = getRef().reproduce(rescopedReproducer);
+
+		if (ref == null) {
+			return null;
+		}
+
+		return createReproduction(
+				reproducer,
+				rescopedReproducer,
+				ref,
+				rescoper);
+	}
+
 	public RefOp op(CodeDirs dirs, HostOp host) {
 
 		final HostOp rescoped = getRescoper().rescope(dirs, host);
 
 		return getRef().op(rescoped);
-	}
-
-	@Override
-	protected final R createReproduction(
-			Reproducer reproducer,
-			Reproducer rescopedReproducer,
-			Statement statement,
-			Rescoper rescoper) {
-		return createReproduction(
-				reproducer,
-				rescopedReproducer,
-				(Ref) statement,
-				rescoper);
 	}
 
 	protected abstract R createReproduction(
