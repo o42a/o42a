@@ -160,41 +160,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	}
 
 	public final String getDisplayName() {
-
-		final StringBuilder out = new StringBuilder();
-
-		switch (getClauseId()) {
-		case NAME:
-			if (this.memberId == null) {
-				out.append("<anonymous>");
-				break;
-			}
-			out.append(this.memberId);
-			break;
-		case ARGUMENT:
-			if (this.name == null) {
-				out.append("[]");
-				break;
-			}
-			out.append('[').append(this.name).append(']');
-			break;
-		case IMPERATIVE:
-			if (this.name == null) {
-				out.append("{}");
-				break;
-			}
-			out.append('{').append(this.name).append('}');
-			break;
-		case STRING:
-			if (this.name == null) {
-				out.append("''");
-				break;
-			}
-			out.append('\'').append(this.name).append('\'');
-			break;
-		}
-
-		return out.toString();
+		return getClauseId().toString(this.memberId, this.name);
 	}
 
 	public final StaticTypeRef getAdapterType() {

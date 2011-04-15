@@ -20,9 +20,11 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.Interpreter.phrase;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.ascendants;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.phrase;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.unary;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.ValueType.FLOAT;
 import static org.o42a.core.value.ValueType.INTEGER;
@@ -35,7 +37,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.operator.BinaryOperatorRef;
 import org.o42a.compiler.ip.operator.LogicalOperatorRef;
-import org.o42a.compiler.ip.operator.UnaryOperatorRef;
+import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
 import org.o42a.core.Location;
 import org.o42a.core.ref.Ref;
@@ -101,7 +103,14 @@ public class ExpressionVisitor
 		switch (expression.getOperator()) {
 		case PLUS:
 		case MINUS:
-			return new UnaryOperatorRef(p.getContext(), expression, p);
+
+			final Phrase phrase = unary(expression, p);
+
+			if (phrase == null) {
+				return null;
+			}
+
+			return phrase.toRef();
 		case IS_TRUE:
 		case NOT:
 		case KNOWN:
@@ -136,7 +145,7 @@ public class ExpressionVisitor
 					REF_VISITOR,
 					p).toStatic();
 		}
-		return phrase(ascendants, p).toRef();
+		return ascendants(ascendants, p).toRef();
 	}
 
 	@Override

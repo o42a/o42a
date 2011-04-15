@@ -1,6 +1,6 @@
 /*
     Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,27 +17,4 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-// Unary + does not modify number.
-<@Operators: plus>
-
-@Operators: add :=> ::(
-  Right operand =< `&number
-).
-@Operators: subtract :=> ::(
-  Right operand =< `&number
-).
-@Operators: multiply :=> ::(
-  Right operand =< `&number
-).
-@Operators: divide :=> ::(
-  Right operand =< `&number
-).
-@Operators: compare :=> *(
-  With =< `&number
-).
-@Operators: equals :=> *(
-  To =< `&number
-).
-@Adapters: by string :=<> *().
-
-<*By string> = ::@@adapters: by string(<*''> Input = string).
+<@Operators: minus> Floats: minus()

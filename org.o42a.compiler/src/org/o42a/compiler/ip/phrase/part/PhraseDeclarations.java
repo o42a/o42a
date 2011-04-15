@@ -19,10 +19,9 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.compiler.ip.phrase.NextClause.declarationsClause;
+import static org.o42a.compiler.ip.phrase.part.NextClause.declarationsClause;
 
-import org.o42a.compiler.ip.phrase.NextClause;
-import org.o42a.compiler.ip.phrase.PhraseContext;
+import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 

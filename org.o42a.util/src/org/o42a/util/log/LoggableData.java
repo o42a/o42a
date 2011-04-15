@@ -75,7 +75,6 @@ public class LoggableData implements Loggable, Cloneable {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		System.err.println("(!) " + this.loggableData.getClass());
 		out.append(this.loggableData);
 	}
 
