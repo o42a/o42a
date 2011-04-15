@@ -51,6 +51,8 @@ final class DeclaredPlainClause extends PlainClause {
 			DeclaredPlainClause overridden) {
 		super(enclosingContainer, overridden);
 		this.builder = overridden.builder;
+		this.definition = overridden.getDefinition();
+		this.overridden = overridden.getOverridden();
 	}
 
 	public final ClauseDefinition getDefinition() {
