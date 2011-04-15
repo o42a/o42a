@@ -177,9 +177,9 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 			final CodeDirs dirs = falseWhenUnknown(code, falseOperand.head());
 			final ObjectOp operand =
 				host.field(dirs, object.operandKey()).materialize(dirs);
-			final ValOp operandValue = operand.writeValue(dirs);
+			final ValOp operandVal = operand.writeValue(dirs);
 
-			object.write(dirs, operandValue, result);
+			object.write(dirs, result, operandVal);
 
 			if (falseOperand.exists()) {
 				result.storeFalse(falseOperand);
