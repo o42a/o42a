@@ -18,12 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /*
-  Unary operator interface.
-  Returns a reference to result.
-*/
-Unary operator :=> void.
-
-/*
   Binary operator interface.
   Applies operator to object and parameter.
   Returns a reference to result.
@@ -34,11 +28,11 @@ Binary operator :=> void (
 ).
 
 
-/* Adapter to implement an unary plus ('+') operator. */
-Plus :=> * & unary operator.
+/* Clause identifier of unary plus ('+') operator. */
+Plus :=> void.
 
-/* Adapter to implement an unary minus ('-') operator. */
-Minus :=> * & unary operator.
+/* Clause identifier for unary minus ('-') operator. */
+Minus :=> void.
 
 /* Adapter to implement an addition ('+') operator. */
 Add :=> * & binary operator.
