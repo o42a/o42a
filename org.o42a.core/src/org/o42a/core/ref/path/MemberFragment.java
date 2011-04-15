@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -26,6 +28,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.st.Reproducer;
 
 
 public class MemberFragment extends PathFragment {
@@ -68,19 +71,14 @@ public class MemberFragment extends PathFragment {
 	}
 
 	@Override
-	public final Reproduction reproduce(LocationInfo location, Scope scope) {
+	public final PathReproduction reproduce(
+			LocationInfo location,
+			Reproducer reproducer,
+			Scope scope) {
 
 		final Scope origin = this.memberKey.getOrigin();
-		final Member member = origin.getContainer().member(this.memberKey);
 
-		if (origin.getContainer().toClause() == null
-				&& member.toClause() == null) {
-			// Neither clause, nor member of clause.
-			// Return unchanged.
-			return unchanged();
-		}
-
-		return reproduce(location, origin, scope);
+		return reproduce(location, reproducer, origin, scope);
 	}
 
 	@Override
@@ -149,15 +147,25 @@ public class MemberFragment extends PathFragment {
 		return member;
 	}
 
-	protected Reproduction reproduce(
+	protected PathReproduction reproduce(
 			LocationInfo location,
+			Reproducer reproducer,
 			Scope origin,
 			Scope scope) {
+
+		final Member member = origin.getContainer().member(this.memberKey);
+
+		if (origin.getContainer().toClause() == null
+				&& member.toClause() == null) {
+			// Neither clause, nor member of clause.
+			// Return unchanged.
+			return unchangedPath(toPath());
+		}
 
 		final MemberKey reproductionKey =
 			this.memberKey.getMemberId().reproduceFrom(origin).key(scope);
 
-		return reproduced(reproductionKey.toPath());
+		return PathReproduction.reproducedPath(reproductionKey.toPath());
 	}
 
 	private Container unresolved(

@@ -81,7 +81,8 @@ final class PathRescoper extends Rescoper {
 				pathReproduction.getReproducedPath(),
 				scope);
 
-		if (!pathReproduction.isOutOfClause()) {
+		if (!pathReproduction.isOutOfClause()
+				|| pathReproduction.isUnchanged()) {
 			return reproducedPart;
 		}
 

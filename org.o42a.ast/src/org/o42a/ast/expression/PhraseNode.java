@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.expression;
 
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.statement.ClauseKeyNode;
 import org.o42a.ast.statement.ClauseKeyNodeVisitor;
 
@@ -51,7 +52,19 @@ public class PhraseNode
 		if (this.prefix != null) {
 			this.prefix.printContent(out);
 		}
+
+		boolean prevName = true;
+
 		for (ClauseNode clause : this.clauses) {
+			if (clause instanceof NameNode) {
+				if (prevName) {
+					out.append(" _ ");
+				} else {
+					prevName = true;
+				}
+			} else {
+				prevName = false;
+			}
 			clause.printContent(out);
 		}
 	}

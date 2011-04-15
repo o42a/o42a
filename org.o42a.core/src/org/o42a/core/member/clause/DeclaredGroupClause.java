@@ -394,6 +394,11 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		}
 
 		@Override
+		public boolean phraseCreatesObject() {
+			return this.reproducer.phraseCreatesObject();
+		}
+
+		@Override
 		public Ref getPhrasePrefix() {
 			return this.reproducer.getPhrasePrefix();
 		}

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.ir.CodeBuilder;
@@ -27,9 +29,8 @@ import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
-import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.*;
+import org.o42a.core.st.Reproducer;
 
 
 final class ParentLocalFragment extends PathFragment {
@@ -76,8 +77,11 @@ final class ParentLocalFragment extends PathFragment {
 	}
 
 	@Override
-	public Reproduction reproduce(LocationInfo location, Scope scope) {
-		return reproduced(scope.getScope().getEnclosingScopePath());
+	public PathReproduction reproduce(
+			LocationInfo location,
+			Reproducer reproducer,
+			Scope scope) {
+		return reproducedPath(scope.getScope().getEnclosingScopePath());
 	}
 
 	@Override

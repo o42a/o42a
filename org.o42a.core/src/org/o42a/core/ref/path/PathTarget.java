@@ -112,7 +112,7 @@ class PathTarget extends Expression {
 		}
 
 		final PathReproduction pathReproduction =
-			this.path.reproduce(this, reproducer);
+			path.reproduce(this, reproducer);
 
 		if (pathReproduction == null) {
 			return null;
@@ -140,7 +140,8 @@ class PathTarget extends Expression {
 					reproducedStart);
 		}
 
-		if (!pathReproduction.isOutOfClause()) {
+		if (!pathReproduction.isOutOfClause()
+				|| pathReproduction.isUnchanged()) {
 			return reproducedPart;
 		}
 
