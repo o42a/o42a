@@ -17,4 +17,4 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-<@Operators: minus> Integers: minus()
+<*Minus> Integers: minus(<@Operators: minus> Operand = integer)
