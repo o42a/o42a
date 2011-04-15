@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -54,8 +56,8 @@ final class MaterializeFragment extends PathFragment {
 	}
 
 	@Override
-	public Reproduction reproduce(LocationInfo location, Scope scope) {
-		return reproduced(this);
+	public PathReproduction reproduce(LocationInfo location, Scope scope) {
+		return reproducedPath(toPath());
 	}
 
 	@Override

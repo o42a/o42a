@@ -22,6 +22,10 @@ package org.o42a.core.ref.path;
 
 public final class PathReproduction {
 
+	public static PathReproduction unchangedPath(Path unchangedPath) {
+		return new PathReproduction(Path.SELF_PATH, unchangedPath);
+	}
+
 	public static PathReproduction reproducedPath(Path reproducedPath) {
 		return new PathReproduction(reproducedPath, null);
 	}
@@ -41,6 +45,10 @@ public final class PathReproduction {
 	PathReproduction(Path reproducedPath, Path externalPath) {
 		this.reproducedPath = reproducedPath;
 		this.externalPath = externalPath;
+	}
+
+	public final boolean isUnchanged() {
+		return this.reproducedPath.isSelf();
 	}
 
 	public final boolean isOutOfClause() {
@@ -64,7 +72,7 @@ public final class PathReproduction {
 			out.append(this.reproducedPath);
 		} else {
 			out.append(this.reproducedPath);
-			out.append("-->");
+			out.append("...");
 			out.append(this.externalPath);
 		}
 

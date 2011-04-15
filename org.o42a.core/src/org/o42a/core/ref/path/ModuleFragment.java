@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
@@ -75,8 +77,8 @@ final class ModuleFragment extends PathFragment {
 	}
 
 	@Override
-	public Reproduction reproduce(LocationInfo location, Scope scope) {
-		return unchanged();
+	public PathReproduction reproduce(LocationInfo location, Scope scope) {
+		return unchangedPath(toPath());
 	}
 
 	@Override
