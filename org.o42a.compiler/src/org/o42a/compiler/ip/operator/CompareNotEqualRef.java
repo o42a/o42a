@@ -19,35 +19,34 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
 final class CompareNotEqualRef extends CompareConstructor {
 
-	CompareNotEqualRef(Phrase phrase) {
-		super(phrase);
+	CompareNotEqualRef(BinaryNode node, Distributor distributor) {
+		super(node, distributor);
 	}
 
 	private CompareNotEqualRef(
 			CompareNotEqualRef prototype,
-			Reproducer reproducer,
-			Ref phrase) {
-		super(prototype, reproducer, phrase);
+			Reproducer reproducer) {
+		super(prototype, reproducer);
+	}
+
+	@Override
+	public CompareNotEqualRef reproduce(Reproducer reproducer) {
+		return new CompareNotEqualRef(this, reproducer);
 	}
 
 	@Override
 	protected boolean compare(long compareResult) {
 		return compareResult != 0;
-	}
-
-	@Override
-	protected CompareNotEqualRef reproduce(Reproducer reproducer, Ref phrase) {
-		return new CompareNotEqualRef(this, reproducer, phrase);
 	}
 
 	@Override

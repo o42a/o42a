@@ -21,37 +21,34 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.core.Distributor;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
 
 final class NotEqualsRef extends ComparisonConstructor {
 
-	NotEqualsRef(Phrase phrase) {
-		super(phrase);
+	public NotEqualsRef(BinaryNode node, Distributor distributor) {
+		super(node, distributor);
 	}
 
-	private NotEqualsRef(
-			NotEqualsRef prototype,
-			Reproducer reproducer,
-			Ref phrase) {
-		super(prototype, reproducer, phrase);
+	private NotEqualsRef(NotEqualsRef prototype, Reproducer reproducer) {
+		super(prototype, reproducer);
+	}
+
+	@Override
+	public NotEqualsRef reproduce(Reproducer reproducer) {
+		return new NotEqualsRef(this, reproducer);
 	}
 
 	@Override
 	protected boolean result(Value<?> value) {
 		return value.isFalse();
-	}
-
-	@Override
-	protected NotEqualsRef reproduce(Reproducer reproducer, Ref phrase) {
-		return new NotEqualsRef(this, reproducer, phrase);
 	}
 
 	@Override

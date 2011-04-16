@@ -78,6 +78,38 @@ public final class PhraseInterpreter {
 	}
 
 	public static Ref binary(BinaryNode node, Distributor distributor) {
+		switch (node.getOperator()) {
+		case ADD:
+		case SUBTRACT:
+		case MULTIPLY:
+		case DIVIDE:
+			return binaryPhrase(node, distributor).getPhrase().toRef();
+		case EQUAL:
+			return new EqualsWrap(node, distributor);
+		case NOT_EQUAL:
+			return new NotEqualsWrap(node, distributor);
+		case GREATER:
+			return new GreaterRef(node, distributor);
+		case GREATER_OR_EQUAL:
+			return new GreaterOrEqualRef(node, distributor);
+		case LESS:
+			return new LessRef(node, distributor);
+		case LESS_OR_EQUAL:
+			return new LessOrEqualRef(node, distributor);
+		}
+
+		distributor.getLogger().error(
+				"unsupported_binary",
+				node.getSign(),
+				"Binary operator '%s' is not supported",
+				node.getOperator().getSign());
+
+		return null;
+	}
+
+	public static BinaryPhrasePart binaryPhrase(
+			BinaryNode node,
+			Distributor distributor) {
 
 		final Ref left =
 			node.getLeftOperand().accept(EXPRESSION_VISITOR, distributor);
@@ -105,33 +137,7 @@ public final class PhraseInterpreter {
 
 		phrase.operand(right);
 
-		switch (node.getOperator()) {
-		case ADD:
-		case SUBTRACT:
-		case MULTIPLY:
-		case DIVIDE:
-			return phrase.toRef();
-		case EQUAL:
-			return new EqualsWrap(binary);
-		case NOT_EQUAL:
-			return new NotEqualsWrap(binary);
-		case GREATER:
-			return new GreaterRef(phrase);
-		case GREATER_OR_EQUAL:
-			return new GreaterOrEqualRef(phrase);
-		case LESS:
-			return new LessRef(phrase);
-		case LESS_OR_EQUAL:
-			return new LessOrEqualRef(phrase);
-		}
-
-		distributor.getLogger().error(
-				"unsupported_binary",
-				node.getSign(),
-				"Binary operator '%s' is not supported",
-				node.getOperator().getSign());
-
-		return null;
+		return binary;
 	}
 
 	static Phrase prefix(Phrase phrase, AscendantsNode node) {

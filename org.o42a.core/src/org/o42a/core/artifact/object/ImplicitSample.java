@@ -28,6 +28,7 @@ import org.o42a.core.ref.type.TypeRef;
 final class ImplicitSample extends Sample {
 
 	private final StaticTypeRef implicitAscendant;
+	private TypeRef ancestor;
 
 	ImplicitSample(Scope scope, StaticTypeRef implicitAscendant) {
 		super(implicitAscendant, scope);
@@ -37,7 +38,13 @@ final class ImplicitSample extends Sample {
 
 	@Override
 	public TypeRef getAncestor() {
-		return this.implicitAscendant.getAncestor();
+		if (this.ancestor != null) {
+			return this.ancestor;
+		}
+
+		final Obj type = this.implicitAscendant.getType();
+
+		return this.ancestor = type.getAncestor().upgradeScope(getScope());
 	}
 
 	@Override

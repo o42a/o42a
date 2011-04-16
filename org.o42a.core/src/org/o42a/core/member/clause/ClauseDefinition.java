@@ -26,7 +26,6 @@ import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -72,13 +71,6 @@ final class ClauseDefinition extends Obj {
 
 		if (overridden != null) {
 			ascendants = ascendants.setAncestor(overridden.toTypeRef());
-		}
-
-		final StaticTypeRef adapterType =
-			toClause().getDeclaration().getAdapterType();
-
-		if (adapterType != null) {
-			ascendants = ascendants.addExplicitSample(adapterType);
 		}
 
 		return toClause().getAscendants().updateAscendants(ascendants);

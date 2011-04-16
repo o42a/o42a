@@ -19,14 +19,13 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
@@ -37,24 +36,20 @@ public abstract class CompareConstructor extends ComparisonConstructor {
 
 	private byte error;
 
-	public CompareConstructor(Phrase phrase) {
-		super(phrase);
+	public CompareConstructor(BinaryNode node, Distributor distributor) {
+		super(node, distributor);
 	}
 
 	protected CompareConstructor(
 			CompareConstructor prototype,
-			Reproducer reproducer,
-			Ref phrase) {
-		super(prototype, reproducer, phrase);
+			Reproducer reproducer) {
+		super(prototype, reproducer);
 		prototype.checkError();
 		this.error = prototype.error;
 	}
 
 	@Override
-	protected Obj createObject() {
-		checkError();
-		return super.createObject();
-	}
+	public abstract CompareConstructor reproduce(Reproducer reproducer);
 
 	@Override
 	protected final boolean result(Value<?> value) {
@@ -71,17 +66,18 @@ public abstract class CompareConstructor extends ComparisonConstructor {
 	protected abstract boolean compare(long compareResult);
 
 	@Override
-	protected abstract CompareConstructor reproduce(
-			Reproducer reproducer,
-			Ref phrase);
-
-	@Override
 	protected final void write(
 			CodeDirs dirs,
 			ValOp result,
 			ValOp comparisonVal) {
 
 		final Code code = dirs.code();
+
+		if (checkError()) {
+			dirs.goWhenFalse(code);
+			return;
+		}
+
 		final RecOp<Int64op> comparisonPtr =
 			comparisonVal.rawValue(code.id("cmp_ptr"), code);
 		final Int64op comparisonValue =

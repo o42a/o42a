@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -26,9 +28,10 @@ import static org.o42a.core.st.StatementEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -54,23 +57,27 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 
 	private static final MemberId COMPARISON = memberName("_cmp");
 
-	private final Ref phrase;
+	private final BinaryNode node;
+	private final ComparisonConstructor prototype;
+	private final Reproducer reproducer;
+	private BinaryPhrasePart binary;
+	private Ref phrase;
 
-	public ComparisonConstructor(Phrase phrase) {
-		super(phrase, phrase.distribute());
-		this.phrase = phrase.toRef();
+	public ComparisonConstructor(BinaryNode node, Distributor distributor) {
+		super(location(distributor, node), distributor);
+		this.node = node;
+		this.prototype = null;
+		this.reproducer = null;
 	}
 
 	protected ComparisonConstructor(
 			ComparisonConstructor prototype,
-			Reproducer reproducer,
-			Ref phrase) {
+			Reproducer reproducer) {
 		super(prototype, reproducer.distribute());
-		this.phrase = prototype.phrase;
-	}
-
-	public final Ref getPhrase() {
-		return this.phrase;
+		this.node = prototype.node;
+		this.prototype = prototype;
+		this.reproducer = reproducer;
+		this.binary = prototype.getBinary();
 	}
 
 	@Override
@@ -79,21 +86,11 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public final Ref reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref phrase = this.phrase.reproduce(reproducer);
-
-		if (phrase == null) {
-			return null;
-		}
-
-		return reproduce(reproducer, phrase);
-	}
+	public abstract ComparisonConstructor reproduce(Reproducer reproducer);
 
 	@Override
 	public String toString() {
-		return this.phrase.toString();
+		return this.node.printContent();
 	}
 
 	@Override
@@ -101,11 +98,19 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 		return new ComparisonResult(this);
 	}
 
-	protected abstract boolean result(Value<?> value);
+	protected final BinaryPhrasePart getBinary() {
+		assert this.binary != null :
+			"Phrase didn't built yet";
+		return this.binary;
+	}
 
-	protected abstract ComparisonConstructor reproduce(
-			Reproducer reproducer,
-			Ref phrase);
+	protected final Ref getPhrase() {
+		assert this.phrase != null :
+			"Phrase didn't built yet";
+		return this.phrase;
+	}
+
+	protected abstract boolean result(Value<?> value);
 
 	protected ValOp writeComparison(CodeDirs dirs, ObjectOp comparison) {
 		return comparison.writeValue(dirs);
@@ -115,6 +120,21 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 			CodeDirs dirs,
 			ValOp result,
 			ValOp comparisonVal);
+
+	private final Ref phrase(Distributor distributor) {
+		if (this.phrase != null) {
+			return this.phrase;
+		}
+		if (this.prototype == null) {
+			this.binary = binaryPhrase(this.node, distributor);
+			return this.phrase = this.binary.getPhrase().toRef();
+		}
+		// Build prototype`s phrase.
+		this.prototype.getResolution().toObject().resolveMembers(false);
+		// Reproduce prototype`s phrase.
+		return this.phrase = this.prototype.getPhrase().reproduce(
+				this.reproducer.distributeBy(distributor));
+	}
 
 	private final class ComparisonResult extends Result {
 
@@ -140,11 +160,11 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 			final ObjectMemberRegistry memberRegistry =
 				new ObjectMemberRegistry(this);
 			final Distributor distributor = distribute();
+			final Ref phrase = this.ref.phrase(distributor);
 			final FieldBuilder builder = memberRegistry.newField(
 					fieldDeclaration(this, distributor, COMPARISON)
 					.setVisibility(Visibility.PRIVATE),
-					this.ref.phrase.rescope(distributor.getScope())
-					.toFieldDefinition());
+					phrase.toFieldDefinition());
 
 			if (builder == null) {
 				return;
@@ -175,6 +195,9 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 				// Value could not be determined at compile-time.
 				// Result will be determined at run time.
 				return ValueType.VOID.runtimeValue();
+			}
+			if (value.isFalse()) {
+				return ValueType.VOID.falseValue();
 			}
 
 			final boolean result = this.ref.result(value);

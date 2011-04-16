@@ -19,12 +19,11 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.object.Obj;
 
 
 public class BinaryOperatorTest extends CompilerTestCase {
@@ -32,49 +31,77 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	@Test
 	public void add() {
 		compile(
-				"A := void(@Operators: add :=> 1).",
-				"B := a + 2");
+				"Compute :=> void(",
+				"  Left :=< `void",
+				"  Right :=< `integer",
+				")",
+				"A := void(",
+				"  <*Eval> Compute(",
+				"    <@Operators: add | eval> Left = void",
+				"    <@Operators: operand> Right = integer",
+				"  )",
+				")",
+				"B := a + 3");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
-		assertEquals(1L, definiteValue(b));
+		assertTrueVoid(field("b", "left"));
+		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
 	}
 
 	@Test
 	public void subtract() {
 		compile(
-				"A := void(@Operators: subtract :=> 1).",
-				"B := a - 2");
+				"Compute :=> void(",
+				"  Left :=< `void",
+				"  Right :=< `integer",
+				")",
+				"A := void(",
+				"  <*Eval> Compute(",
+				"    <@Operators: subtract | eval> Left = void",
+				"    <@Operators: operand> Right = integer",
+				"  )",
+				")",
+				"B := a - 3");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
-		assertEquals(1L, definiteValue(b));
+		assertTrueVoid(field("b", "left"));
+		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
 	}
 
 	@Test
 	public void multiply() {
 		compile(
-				"A := void(@Operators: multiply :=> 1).",
-				"B := A * 2");
+				"Compute :=> void(",
+				"  Left :=< `void",
+				"  Right :=< `integer",
+				")",
+				"A := void(",
+				"  <*Eval> Compute(",
+				"    <@Operators: multiply | eval> Left = void",
+				"    <@Operators: operand> Right = integer",
+				"  )",
+				")",
+				"B := a * 3");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
-		assertEquals(1L, definiteValue(b));
+		assertTrueVoid(field("b", "left"));
+		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
 	}
 
 	@Test
 	public void divide() {
 		compile(
-				"A := void(@Operators: divide :=> 1).",
-				"B := A / 2");
+				"Compute :=> void(",
+				"  Left :=< `void",
+				"  Right :=< `integer",
+				")",
+				"A := void(",
+				"  <*Eval> Compute(",
+				"    <@Operators: divide | eval> Left = void",
+				"    <@Operators: operand> Right = integer",
+				"  )",
+				")",
+				"B := a / 3");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertTrue(b.derivedFrom(this.context.getIntrinsics().getInteger()));
-		assertEquals(1L, definiteValue(b));
+		assertTrueVoid(field("b", "left"));
+		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
 	}
 
 }

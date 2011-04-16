@@ -19,35 +19,34 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
 public class GreaterOrEqualRef extends CompareConstructor {
 
-	public GreaterOrEqualRef(Phrase phrase) {
-		super(phrase);
+	public GreaterOrEqualRef(BinaryNode node, Distributor distributor) {
+		super(node, distributor);
 	}
 
 	private GreaterOrEqualRef(
 			GreaterOrEqualRef prototype,
-			Reproducer reproducer,
-			Ref phrase) {
-		super(prototype, reproducer, phrase);
+			Reproducer reproducer) {
+		super(prototype, reproducer);
+	}
+
+	@Override
+	public GreaterOrEqualRef reproduce(Reproducer reproducer) {
+		return new GreaterOrEqualRef(this, reproducer);
 	}
 
 	@Override
 	protected boolean compare(long compareResult) {
 		return compareResult >= 0;
-	}
-
-	@Override
-	protected GreaterOrEqualRef reproduce(Reproducer reproducer, Ref phrase) {
-		return new GreaterOrEqualRef(this, reproducer, phrase);
 	}
 
 	@Override
