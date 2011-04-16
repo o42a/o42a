@@ -20,18 +20,9 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
 
 
@@ -66,134 +57,6 @@ final class RescopedRef extends Wrap {
 		}
 
 		return path.target(this, distribute());
-	}
-
-	private static final class Rescoped extends Ref {
-
-		private final Ref ref;
-		private final Rescoper rescoper;
-		private Path path;
-		private boolean pathBuilt;
-
-		Rescoped(Ref ref, Rescoper rescoper, Distributor distributor) {
-			super(
-					ref,
-					distributor,
-					ref.getLogical().rescope(rescoper));
-			this.ref = ref;
-			this.rescoper = rescoper;
-		}
-
-		@Override
-		public Path getPath() {
-			if (this.pathBuilt) {
-				return this.path;
-			}
-
-			final Path refPath = this.ref.getPath();
-
-			if (refPath == null) {
-				this.pathBuilt = true;
-				return null;
-			}
-
-			final Path rescoperPath = this.rescoper.getPath();
-
-			if (rescoperPath == null) {
-				this.pathBuilt = true;
-				return null;
-			}
-
-			this.path = rescoperPath.append(refPath).rebuild();
-			this.pathBuilt = true;
-
-			return this.path;
-		}
-
-		@Override
-		public Resolution resolve(Scope scope) {
-			return this.ref.resolve(this.rescoper.rescope(scope));
-		}
-
-		@Override
-		public Value<?> value(Scope scope) {
-			return this.ref.value(this.rescoper.rescope(scope));
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final Scope rescoped =
-				this.rescoper.rescope(reproducer.getReproducingScope());
-			final Reproducer rescopedReproducer =
-				reproducer.reproducerOf(rescoped);
-
-			if (rescopedReproducer == null) {
-				getLogger().notReproducible(this);
-				return null;
-			}
-
-			final Rescoper rescoper = this.rescoper.reproduce(this, reproducer);
-
-			if (rescoper == null) {
-				return null;
-			}
-
-			final Ref ref = this.ref.reproduce(rescopedReproducer);
-
-			if (ref == null) {
-				return null;
-			}
-
-			return new RescopedRef(ref, rescoper);
-		}
-
-		@Override
-		public Ref rescope(Rescoper rescoper) {
-
-			final Rescoper newRescoper = this.rescoper.and(rescoper);
-
-			if (this.rescoper.equals(newRescoper)) {
-				return this;
-			}
-
-			return new RescopedRef(this.ref, newRescoper);
-		}
-
-		@Override
-		public Rescoper toRescoper() {
-			return this.ref.toRescoper().and(this.rescoper);
-		}
-
-		@Override
-		public TypeRef toTypeRef() {
-			return this.ref.toTypeRef().rescope(this.rescoper);
-		}
-
-		@Override
-		public StaticTypeRef toStaticTypeRef() {
-			return this.ref.toStaticTypeRef().rescope(this.rescoper);
-		}
-
-		@Override
-		public TargetRef toTargetRef(TypeRef typeRef) {
-			return createTargetRef(
-					this.ref,
-					typeRef,
-					this.rescoper);
-		}
-
-		@Override
-		public String toString() {
-			return "Rescoped[" + this.rescoper + ": " + this.ref + ']';
-		}
-
-		@Override
-		protected RefOp createOp(HostOp host) {
-			return new Op(host, this);
-		}
-
 	}
 
 	private static final class RescopedDistrubutor extends Distributor {
@@ -231,38 +94,6 @@ final class RescopedRef extends Wrap {
 		@Override
 		public Scope getScope() {
 			return this.scope;
-		}
-
-	}
-
-	private static final class Op extends RefOp {
-
-		private Op(HostOp host, Rescoped ref) {
-			super(host, ref);
-		}
-
-		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
-			rescope(dirs).writeLogicalValue(dirs);
-		}
-
-		@Override
-		public void writeValue(CodeDirs dirs, ValOp result) {
-			rescope(dirs).writeValue(dirs, result);
-		}
-
-		@Override
-		public HostOp target(CodeDirs dirs) {
-			return rescope(dirs).target(dirs);
-		}
-
-
-		private RefOp rescope(CodeDirs dirs) {
-
-			final Rescoped rescoped = (Rescoped) getRef();
-			final HostOp host = rescoped.rescoper.rescope(dirs, host());
-
-			return rescoped.ref.op(host);
 		}
 
 	}

@@ -19,7 +19,9 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -32,13 +34,19 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void equals() {
 		compile(
-				"A := void(@Operators: equals :=> void).",
-				"B := A == 2");
+				"A := integer(",
+				"  = 1",
+				"  Val := 2",
+				"  <@Operators: equals> A(",
+				"    <@Operators: operand> Val = *",
+				"  )",
+				")",
+				"B := A == 3");
 
 		final Obj b = field("b").getArtifact().materialize();
 
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
+		assertThat(definiteValue(b, Long.class), is(1L));
+		assertThat(definiteValue(field(b, "foo"), Long.class), is(3L));
 	}
 
 	@Test

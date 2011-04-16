@@ -29,10 +29,11 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.StaticAscendants;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -151,13 +152,9 @@ final class StaticRef extends Ref {
 	private static final class ObjectDefinerWrap implements ObjectDefiner {
 
 		private final ObjectDefiner definer;
-		private final StaticAscendants implicitAscendants;
-		private Ascendants ascendants;
 
 		ObjectDefinerWrap(ObjectDefiner definer) {
 			this.definer = definer;
-			this.implicitAscendants =
-				new StaticAscendants(definer.getImplicitAscendants());
 		}
 
 		@Override
@@ -167,22 +164,33 @@ final class StaticRef extends Ref {
 
 		@Override
 		public Ascendants getImplicitAscendants() {
-			return this.implicitAscendants;
+			return this.definer.getImplicitAscendants();
 		}
 
 		@Override
-		public Ascendants getAscendants() {
-			if (this.ascendants != null) {
-				return this.ascendants;
-			}
-			return this.ascendants =
-				new StaticAscendants(this.definer.getAscendants());
+		public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
+			this.definer.setAncestor(explicitAncestor.toStatic());
+			return this;
 		}
 
 		@Override
-		public void setAscendants(Ascendants ascendants) {
-			this.definer.setAscendants(ascendants);
-			this.ascendants = ascendants;
+		public ObjectDefiner addExplicitSample(
+				StaticTypeRef explicitAscendant) {
+			this.definer.addExplicitSample(explicitAscendant);
+			return this;
+		}
+
+		@Override
+		public ObjectDefiner addImplicitSample(
+				StaticTypeRef implicitAscendant) {
+			this.definer.addImplicitSample(implicitAscendant);
+			return this;
+		}
+
+		@Override
+		public ObjectDefiner addMemberOverride(Member overriddenMember) {
+			this.definer.addMemberOverride(overriddenMember);
+			return this;
 		}
 
 		@Override
@@ -229,8 +237,8 @@ final class StaticRef extends Ref {
 		}
 
 		@Override
-		public void setTargetRef(TargetRef targetRef) {
-			this.definer.setTargetRef(targetRef.toStatic());
+		public void setTargetRef(Ref targetRef, TypeRef defaultType) {
+			this.definer.setTargetRef(targetRef, defaultType);
 		}
 
 	}

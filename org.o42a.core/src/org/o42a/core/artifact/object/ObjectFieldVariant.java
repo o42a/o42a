@@ -21,8 +21,11 @@ package org.o42a.core.artifact.object;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.ValueType;
@@ -64,13 +67,27 @@ final class ObjectFieldVariant
 	}
 
 	@Override
-	public Ascendants getAscendants() {
-		return this.ascendants;
+	public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
+		this.ascendants = this.ascendants.setAncestor(explicitAncestor);
+		return this;
 	}
 
 	@Override
-	public void setAscendants(Ascendants ascendants) {
-		this.ascendants = ascendants;
+	public ObjectDefiner addExplicitSample(StaticTypeRef explicitAscendant) {
+		this.ascendants = this.ascendants.addExplicitSample(explicitAscendant);
+		return this;
+	}
+
+	@Override
+	public ObjectDefiner addImplicitSample(StaticTypeRef implicitAscendant) {
+		this.ascendants = this.ascendants.addImplicitSample(implicitAscendant);
+		return this;
+	}
+
+	@Override
+	public ObjectDefiner addMemberOverride(Member overriddenMember) {
+		this.ascendants = this.ascendants.addMemberOverride(overriddenMember);
+		return this;
 	}
 
 	@Override

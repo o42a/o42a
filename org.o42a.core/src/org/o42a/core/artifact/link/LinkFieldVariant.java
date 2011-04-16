@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.link;
 
 import org.o42a.core.member.field.*;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
@@ -54,8 +55,9 @@ final class LinkFieldVariant extends FieldVariant<Link>
 	}
 
 	@Override
-	public void setTargetRef(TargetRef targetRef) {
-		this.targetRef = targetRef;
+	public void setTargetRef(Ref targetRef, TypeRef defaultType) {
+		this.targetRef = targetRef.toTargetRef(
+				this.typeRef != null ? this.typeRef : defaultType);
 	}
 
 	@Override

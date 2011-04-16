@@ -17,22 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.artifact.object;
 
-import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.member.Member;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public interface LinkDefiner extends FieldDefiner<Link> {
+public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {
 
-	TypeRef getTypeRef();
+	A setAncestor(TypeRef explicitAncestor);
 
-	TargetRef getDefaultTargetRef();
+	A addExplicitSample(StaticTypeRef explicitAscendant);
 
-	TargetRef getTargetRef();
+	A addImplicitSample(StaticTypeRef implicitAscendant);
 
-	void setTargetRef(Ref targetRef, TypeRef defaultType);
+	A addMemberOverride(Member overriddenMember);
 
 }
