@@ -31,6 +31,8 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.compiler.ip.operator.*;
+import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
@@ -57,7 +59,7 @@ public final class PhraseInterpreter {
 			new Phrase(location(distributor, node), distributor);
 		final Phrase prefixed = prefix(phrase, node);
 
-		return prefixed.declarations(emptyBlock(phrase));
+		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}
 
 	public static Phrase unary(UnaryNode node, Distributor distributor) {
@@ -72,7 +74,64 @@ public final class PhraseInterpreter {
 		final Phrase phrase =
 			new Phrase(location(distributor, node), distributor);
 
-		return phrase.setAncestor(operand.toTypeRef()).plus(node);
+		return phrase.setAncestor(operand.toTypeRef()).unary(node).getPhrase();
+	}
+
+	public static Ref binary(BinaryNode node, Distributor distributor) {
+
+		final Ref left =
+			node.getLeftOperand().accept(EXPRESSION_VISITOR, distributor);
+
+		if (left == null) {
+			return null;
+		}
+
+		final Phrase phrase =
+			new Phrase(location(distributor, node), distributor);
+		final BinaryPhrasePart binary =
+			phrase.setAncestor(left.toTypeRef()).binary(node);
+
+		final ExpressionNode rightOperand = node.getRightOperand();
+
+		if (rightOperand == null) {
+			return null;
+		}
+
+		final Ref right = rightOperand.accept(EXPRESSION_VISITOR, distributor);
+
+		if (right == null) {
+			return null;
+		}
+
+		phrase.operand(right);
+
+		switch (node.getOperator()) {
+		case ADD:
+		case SUBTRACT:
+		case MULTIPLY:
+		case DIVIDE:
+			return phrase.toRef();
+		case EQUAL:
+			return new EqualsWrap(binary);
+		case NOT_EQUAL:
+			return new NotEqualsWrap(binary);
+		case GREATER:
+			return new GreaterRef(phrase);
+		case GREATER_OR_EQUAL:
+			return new GreaterOrEqualRef(phrase);
+		case LESS:
+			return new LessRef(phrase);
+		case LESS_OR_EQUAL:
+			return new LessOrEqualRef(phrase);
+		}
+
+		distributor.getLogger().error(
+				"unsupported_binary",
+				node.getSign(),
+				"Binary operator '%s' is not supported",
+				node.getOperator().getSign());
+
+		return null;
 	}
 
 	static Phrase prefix(Phrase phrase, AscendantsNode node) {

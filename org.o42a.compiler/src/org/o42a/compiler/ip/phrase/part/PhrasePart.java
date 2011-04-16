@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Location;
@@ -74,8 +75,16 @@ public abstract class PhrasePart extends Location {
 		return setFollowing(new PhraseImperative(this, imperatives));
 	}
 
-	public final UnaryPhrasePart plus(UnaryNode node) {
+	public final UnaryPhrasePart unary(UnaryNode node) {
 		return setFollowing(new UnaryPhrasePart(node, this));
+	}
+
+	public final BinaryPhrasePart binary(BinaryNode node) {
+		return setFollowing(new BinaryPhrasePart(node, this));
+	}
+
+	public final OperandPhrasePart operand(Ref value) {
+		return setFollowing(new OperandPhrasePart(value, this));
 	}
 
 	private <P extends PhraseContinuation> P setFollowing(P following) {

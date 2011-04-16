@@ -42,7 +42,7 @@ final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 		if (text.isDoubleQuote()) {
 			return super.visitText(text, p);
 		}
-		return p.string(location(p, text), text.getText());
+		return p.string(location(p, text), text.getText()).getPhrase();
 	}
 
 	@Override
@@ -52,10 +52,10 @@ final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 			expression.accept(EXPRESSION_VISITOR, p.distribute());
 
 		if (value != null) {
-			return p.argument(value);
+			return p.argument(value).getPhrase();
 		}
 
-		return p.emptyArgument(location(p, expression));
+		return p.emptyArgument(location(p, expression)).getPhrase();
 	}
 
 }

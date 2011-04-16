@@ -29,10 +29,13 @@ Binary operator :=> void (
 
 
 /* Clause identifier of unary plus ('+') operator. */
-Plus :=> void.
+Plus :=> void
 
 /* Clause identifier for unary minus ('-') operator. */
-Minus :=> void.
+Minus :=> void
+
+/* Clause identifier representing the right operand of binary operators. */ 
+Operand :=> void
 
 /* Adapter to implement an addition ('+') operator. */
 Add :=> * & binary operator.

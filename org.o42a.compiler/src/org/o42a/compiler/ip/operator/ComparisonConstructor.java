@@ -19,19 +19,26 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
 
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.core.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodeBlk;
+import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldBuilder;
@@ -43,53 +50,27 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-abstract class CompareOperatorRef extends ObjectConstructor {
+public abstract class ComparisonConstructor extends ObjectConstructor {
 
-	private static final MemberId RESULT = memberName("_result");
+	private static final MemberId COMPARISON = memberName("_cmp");
 
-	private final BinaryNode node;
-	private final Ref leftOperand;
-	private final Ref rightOperand;
+	private final Ref phrase;
 
-	public CompareOperatorRef(
-			CompilerContext context,
-			BinaryNode node,
-			Distributor distributor) {
-		super(new Location(context, node), distributor);
-		this.node = node;
-		this.leftOperand = node.getLeftOperand().accept(
-				EXPRESSION_VISITOR,
-				distributor);
-		this.rightOperand = node.getRightOperand().accept(
-				EXPRESSION_VISITOR,
-				distributor);
+	public ComparisonConstructor(Phrase phrase) {
+		super(phrase, phrase.distribute());
+		this.phrase = phrase.toRef();
 	}
 
-	public CompareOperatorRef(
-			LocationInfo location,
-			Distributor distributor,
-			BinaryNode node,
-			Ref leftOperand,
-			Ref rightOperand) {
-		super(location, distributor);
-		this.node = node;
-		this.leftOperand = leftOperand;
-		this.rightOperand = rightOperand;
-	}
-
-	protected CompareOperatorRef(
-			CompareOperatorRef prototype,
+	protected ComparisonConstructor(
+			ComparisonConstructor prototype,
 			Reproducer reproducer,
-			Ref leftOperand,
-			Ref rightOperand) {
+			Ref phrase) {
 		super(prototype, reproducer.distribute());
-		this.node = prototype.node;
-		this.leftOperand = leftOperand;
-		this.rightOperand = rightOperand;
+		this.phrase = prototype.phrase;
 	}
 
-	public final BinaryNode getNode() {
-		return this.node;
+	public final Ref getPhrase() {
+		return this.phrase;
 	}
 
 	@Override
@@ -99,58 +80,59 @@ abstract class CompareOperatorRef extends ObjectConstructor {
 
 	@Override
 	public final Ref reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
 
-		final Ref leftOperand = this.leftOperand.reproduce(reproducer);
+		final Ref phrase = this.phrase.reproduce(reproducer);
 
-		if (leftOperand == null) {
+		if (phrase == null) {
 			return null;
 		}
 
-		final Ref rightOperand = this.rightOperand.reproduce(reproducer);
-
-		if (rightOperand == null) {
-			return null;
-		}
-
-		return reproduce(reproducer, leftOperand, rightOperand);
+		return reproduce(reproducer, phrase);
 	}
 
 	@Override
 	public String toString() {
-		if (this.rightOperand == null) {
-			return super.toString();
-		}
-
-		return this.leftOperand
-		+ this.node.getOperator().getSign()
-		+ this.rightOperand;
+		return this.phrase.toString();
 	}
 
 	@Override
 	protected Obj createObject() {
-		return new CompareResult(this);
+		return new ComparisonResult(this);
 	}
-
-	protected abstract BinaryOperatorRef createOperator(
-			Distributor distributor,
-			Ref leftOperand,
-			Ref rightOperand);
 
 	protected abstract boolean result(Value<?> value);
 
-	protected abstract CompareOperatorRef reproduce(
+	protected abstract ComparisonConstructor reproduce(
 			Reproducer reproducer,
-			final Ref leftOperand,
-			final Ref rightOperand);
+			Ref phrase);
 
-	private final class CompareResult extends Result {
+	protected ValOp writeComparison(CodeDirs dirs, ObjectOp comparison) {
+		return comparison.writeValue(dirs);
+	}
 
-		private final CompareOperatorRef compare;
-		private MemberKey resultKey;
+	protected abstract void write(
+			CodeDirs dirs,
+			ValOp result,
+			ValOp comparisonVal);
 
-		CompareResult(CompareOperatorRef compare) {
-			super(compare, compare.distribute(), ValueType.VOID);
-			this.compare = compare;
+	private final class ComparisonResult extends Result {
+
+		private final ComparisonConstructor ref;
+		private MemberKey comparisonKey;
+
+		ComparisonResult(ComparisonConstructor ref) {
+			super(ref, ref.distribute(), ValueType.VOID);
+			this.ref = ref;
+		}
+
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return "ComparisonResult";
+			}
+			return this.ref.toString();
 		}
 
 		@Override
@@ -158,16 +140,11 @@ abstract class CompareOperatorRef extends ObjectConstructor {
 
 			final ObjectMemberRegistry memberRegistry =
 				new ObjectMemberRegistry(this);
-
 			final Distributor distributor = distribute();
 			final FieldBuilder builder = memberRegistry.newField(
-					fieldDeclaration(this, distributor, RESULT)
+					fieldDeclaration(this, distributor, COMPARISON)
 					.setVisibility(Visibility.PRIVATE),
-					createOperator(
-							distributor,
-							this.compare.leftOperand.rescope(getScope()),
-							this.compare.rightOperand.rescope(getScope()))
-					.toFieldDefinition());
+					this.ref.phrase.toFieldDefinition());
 
 			if (builder == null) {
 				return;
@@ -181,19 +158,17 @@ abstract class CompareOperatorRef extends ObjectConstructor {
 
 			statement.setEnv(defaultEnv(this));
 
-			this.resultKey = statement.toMember().getKey();
+			this.comparisonKey = statement.toMember().getKey();
 
 			memberRegistry.registerMembers(members);
 		}
 
 		@Override
 		protected Value<?> calculateValue(Scope scope) {
+			resolveMembers(false);// Initialize comparisonKey.
 
-			final Obj object = scope.getContainer().toObject();
-
-			object.getMembers();// declare fields to initialize resultKey
-
-			final Field<?> field = object.member(this.resultKey).toField();
+			final Field<?> field =
+				scope.getContainer().member(this.comparisonKey).toField();
 			final Value<?> value = field.getArtifact().toObject().getValue();
 
 			if (!value.isDefinite()) {
@@ -202,17 +177,43 @@ abstract class CompareOperatorRef extends ObjectConstructor {
 				return ValueType.VOID.runtimeValue();
 			}
 
-			final boolean result = this.compare.result(value);
+			final boolean result = this.ref.result(value);
 
 			return result ? voidValue() : falseValue();
 		}
 
+
 		@Override
-		public String toString() {
-			if (this.compare == null) {
-				return "CompareResult";
+		protected ObjectValueIR createValueIR(ObjectIR objectIR) {
+			return new ValueIR(objectIR);
+		}
+
+	}
+
+	private static final class ValueIR extends ProposedValueIR {
+
+		ValueIR(ObjectIR objectIR) {
+			super(objectIR);
+		}
+
+		@Override
+		protected void proposition(Code code, ValOp result, ObjectOp host) {
+
+			final ComparisonResult object =
+				(ComparisonResult) getObjectIR().getObject();
+			final ComparisonConstructor ref = object.ref;
+			final CodeBlk failure = code.addBlock("comparison_failure");
+			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
+			final ObjectOp comparison =
+				host.field(dirs, object.comparisonKey).materialize(dirs);
+			final ValOp comparisonVal = ref.writeComparison(dirs, comparison);
+
+			ref.write(dirs, result, comparisonVal);
+
+			if (failure.exists()) {
+				result.storeFalse(failure);
+				failure.go(code.tail());
 			}
-			return this.compare.toString();
 		}
 
 	}

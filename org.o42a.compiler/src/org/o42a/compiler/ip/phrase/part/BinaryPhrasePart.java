@@ -21,20 +21,28 @@ package org.o42a.compiler.ip.phrase.part;
 
 import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
 
-import org.o42a.ast.expression.UnaryNode;
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class UnaryPhrasePart extends PhraseContinuation {
+public class BinaryPhrasePart extends PhraseContinuation {
 
-	private final UnaryNode node;
+	private final BinaryNode node;
+	private ClauseId clauseId;
 
-	public UnaryPhrasePart(UnaryNode node, PhrasePart preceding) {
+	public BinaryPhrasePart(BinaryNode node, PhrasePart preceding) {
 		super(preceding, preceding);
 		this.node = node;
+	}
+
+	public final ClauseId getClauseId() {
+		if (this.clauseId == null) {
+			getPhrase().build();
+		}
+		return this.clauseId;
 	}
 
 	@Override
@@ -46,13 +54,26 @@ public class UnaryPhrasePart extends PhraseContinuation {
 			return errorClause(this.node);
 		}
 
-		return context.clauseById(this, clauseId);
+		final NextClause first = context.clauseById(this, clauseId);
+
+		if (first.found()) {
+			this.clauseId = clauseId;
+			return first;
+		}
+
+		final NextClause second = findSecond(context);
+
+		if (second != null && second.found()) {
+			return second;
+		}
+
+		return first;
 	}
 
 	@Override
 	public void define(Block<?> definition) {
 		if (getPhrase().createsObject()) {
-			// Phrase constructs object. No need to put an argument.
+			// Phrase constructs object. No need to put the left operand.
 			return;
 		}
 
@@ -69,23 +90,42 @@ public class UnaryPhrasePart extends PhraseContinuation {
 
 	private ClauseId clauseId() {
 		switch (this.node.getOperator()) {
-		case PLUS:
-			return ClauseId.PLUS;
-		case MINUS:
-			return ClauseId.MINUS;
-		case IS_TRUE:
-		case NOT:
-		case KNOWN:
-		case UNKNOWN:
+		case ADD:
+			return ClauseId.ADD;
+		case SUBTRACT:
+			return ClauseId.SUBTRACT;
+		case MULTIPLY:
+			return ClauseId.MULTIPLY;
+		case DIVIDE:
+			return ClauseId.DIVIDE;
+		case EQUAL:
+		case NOT_EQUAL:
+			return ClauseId.EQUALS;
+		case LESS:
+		case LESS_OR_EQUAL:
+		case GREATER:
+		case GREATER_OR_EQUAL:
+			return ClauseId.COMPARE;
 		}
 
 		getLogger().error(
-				"unsupported_unary",
+				"unsupported_binary",
 				this.node.getSign(),
-				"Unary operator '%s' is not supported",
+				"Binary operator '%s' is not supported",
 				this.node.getOperator().getSign());
 
 		return null;
+	}
+
+	private NextClause findSecond(PhraseContext context) {
+		switch (this.node.getOperator()) {
+		case EQUAL:
+		case NOT_EQUAL:
+			this.clauseId = ClauseId.COMPARE;
+			return context.clauseById(this, this.clauseId);
+		default:
+			return null;
+		}
 	}
 
 }
