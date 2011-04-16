@@ -54,7 +54,10 @@ class DeclaredObject extends PlainObject {
 
 		ascendants = this.field.buildAscendants(ascendants);
 
-		if (ascendants.getAncestor() != null) {
+		if (ascendants.getExplicitAncestor() != null) {
+			return ascendants;
+		}
+		if (ascendants.getSamples().length != 0) {
 			return ascendants;
 		}
 

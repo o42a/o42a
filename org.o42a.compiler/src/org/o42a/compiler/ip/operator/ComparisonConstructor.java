@@ -126,7 +126,6 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 			this.ref = ref;
 		}
 
-
 		@Override
 		public String toString() {
 			if (this.ref == null) {
@@ -144,7 +143,8 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 			final FieldBuilder builder = memberRegistry.newField(
 					fieldDeclaration(this, distributor, COMPARISON)
 					.setVisibility(Visibility.PRIVATE),
-					this.ref.phrase.toFieldDefinition());
+					this.ref.phrase.rescope(distributor.getScope())
+					.toFieldDefinition());
 
 			if (builder == null) {
 				return;

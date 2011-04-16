@@ -62,18 +62,13 @@ final class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAscendants(
-				this.ascendants.updateAscendants(definer.getAscendants()));
+		this.ascendants.updateAscendants(definer);
 		definer.define(this.definitions);
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-
-		final TypeRef typeRef = definer.getTypeRef();
-
-		definer.setTargetRef(getValue().toTargetRef(
-				typeRef != null ? typeRef : this.ascendants.getAncestor()));
+		definer.setTargetRef(getValue(), this.ascendants.getAncestor());
 	}
 
 	@Override

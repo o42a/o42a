@@ -31,7 +31,7 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.ArrayUtil;
 
 
-public class Ascendants implements Cloneable {
+public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 
 	private static final Sample[] NO_SAMPLES = new Sample[0];
 
@@ -81,6 +81,7 @@ public class Ascendants implements Cloneable {
 		return this.explicitAncestor;
 	}
 
+	@Override
 	public Ascendants setAncestor(TypeRef explicitAncestor) {
 		getScope().getEnclosingScope().assertDerivedFrom(
 				explicitAncestor.getScope());
@@ -143,6 +144,7 @@ public class Ascendants implements Cloneable {
 		return enclosingMode;
 	}
 
+	@Override
 	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
@@ -152,6 +154,7 @@ public class Ascendants implements Cloneable {
 		return addSample(new ExplicitSample(enclosingScope, explicitAscendant));
 	}
 
+	@Override
 	public Ascendants addImplicitSample(StaticTypeRef implicitAscendant) {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
@@ -161,6 +164,7 @@ public class Ascendants implements Cloneable {
 		return addSample(new ImplicitSample(enclosingScope, implicitAscendant));
 	}
 
+	@Override
 	public Ascendants addMemberOverride(Member overriddenMember) {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();

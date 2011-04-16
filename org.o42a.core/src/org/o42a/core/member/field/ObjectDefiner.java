@@ -20,17 +20,15 @@
 package org.o42a.core.member.field;
 
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.AscendantsBuilder;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-public interface ObjectDefiner extends FieldDefiner<Obj> {
+public interface ObjectDefiner
+		extends FieldDefiner<Obj>, AscendantsBuilder<ObjectDefiner> {
 
 	Ascendants getImplicitAscendants();
-
-	Ascendants getAscendants();
-
-	void setAscendants(Ascendants ascendants);
 
 	void define(BlockBuilder definitions);
 

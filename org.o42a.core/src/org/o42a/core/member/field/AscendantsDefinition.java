@@ -19,8 +19,10 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.*;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationInfo;
+import org.o42a.core.Placed;
+import org.o42a.core.artifact.object.AscendantsBuilder;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -107,22 +109,12 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		return null;
 	}
 
-	public Ascendants updateAscendants(Ascendants ascendants) {
+	public <A extends AscendantsBuilder<A>> A updateAscendants(A ascendants) {
 		if (this.ancestor != null) {
 			ascendants = ascendants.setAncestor(this.ancestor);
 		}
 		for (StaticTypeRef sample : this.samples) {
 			ascendants = ascendants.addExplicitSample(sample);
-		}
-		return ascendants;
-	}
-
-	public Ascendants updateAscendants(Scope scope, Ascendants ascendants) {
-		if (this.ancestor != null) {
-			ascendants = ascendants.setAncestor(this.ancestor.rescope(scope));
-		}
-		for (StaticTypeRef sample : this.samples) {
-			ascendants = ascendants.addExplicitSample(sample.rescope(scope));
 		}
 		return ascendants;
 	}

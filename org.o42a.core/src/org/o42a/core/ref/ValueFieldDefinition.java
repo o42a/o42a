@@ -41,10 +41,7 @@ final class ValueFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAscendants(
-				definer.getAscendants().addImplicitSample(
-						this.value.toStaticTypeRef()));
-		//definer.define(valueBlock(this.value));
+		definer.addImplicitSample(this.value.toStaticTypeRef());
 	}
 
 	@Override
@@ -54,7 +51,7 @@ final class ValueFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(this.value.toTargetRef(definer.getTypeRef()));
+		definer.setTargetRef(this.value, null);
 	}
 
 	@Override

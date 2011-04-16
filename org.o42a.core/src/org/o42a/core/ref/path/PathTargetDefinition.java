@@ -24,7 +24,6 @@ import static org.o42a.core.artifact.array.ArrayInitializer.valueArrayInitialize
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
 
@@ -45,17 +44,12 @@ final class PathTargetDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		// TODO Use ancestor of path target as object's ancestor.
-		definer.setAscendants(
-				definer.getAscendants().setAncestor(this.target.toTypeRef()));
+		definer.setAncestor(this.target.toTypeRef());
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-
-		final TypeRef typeRef = definer.getTypeRef();
-
-		definer.setTargetRef(this.target.toTargetRef(
-				typeRef != null ? typeRef : this.target.toTypeRef()));
+		definer.setTargetRef(this.target, this.target.toTypeRef());
 	}
 
 	@Override
