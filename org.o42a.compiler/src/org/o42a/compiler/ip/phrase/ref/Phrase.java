@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip.phrase.ref;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
-import org.o42a.compiler.ip.phrase.part.PhrasePart;
-import org.o42a.compiler.ip.phrase.part.PhrasePrefix;
+import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
@@ -76,37 +76,49 @@ public class Phrase extends Placed {
 		return this;
 	}
 
-	public final Phrase name(LocationInfo location, String name) {
+	public final PhraseName name(LocationInfo location, String name) {
 		return append(this.last.name(location, name));
 	}
 
-	public final Phrase emptyArgument(LocationInfo location) {
+	public final PhraseArgument emptyArgument(LocationInfo location) {
 		return append(this.last.argument(location, null));
 	}
 
-	public final Phrase argument(Ref value) {
+	public final PhraseArgument argument(Ref value) {
 		value.assertSameScope(this);
 		return append(this.last.argument(value, value));
 	}
 
-	public final Phrase string(LocationInfo location, String string) {
+	public final PhraseString string(LocationInfo location, String string) {
 		return append(this.last.string(location, string));
 	}
 
-	public final Phrase declarations(BlockBuilder declarations) {
+	public final PhraseDeclarations declarations(BlockBuilder declarations) {
 		return append(this.last.declarations(declarations));
 	}
 
-	public final Phrase imperative(BlockBuilder imperatives) {
+	public final PhraseImperative imperative(BlockBuilder imperatives) {
 		return append(this.last.imperative(imperatives));
 	}
 
-	public final Phrase plus(UnaryNode node) {
-		return append(this.last.plus(node));
+	public final UnaryPhrasePart unary(UnaryNode node) {
+		return append(this.last.unary(node));
+	}
+
+	public final BinaryPhrasePart binary(BinaryNode node) {
+		return append(this.last.binary(node));
+	}
+
+	public final OperandPhrasePart operand(Ref value) {
+		return append(this.last.operand(value));
 	}
 
 	public final Ref toRef() {
 		return new PhraseEx(this);
+	}
+
+	public final void build() {
+		createsObject();
 	}
 
 	public final boolean createsObject() {
@@ -125,9 +137,9 @@ public class Phrase extends Placed {
 		return this.mainContext = new MainPhraseContext(this);
 	}
 
-	private final Phrase append(PhrasePart part) {
+	private final <P extends PhrasePart> P append(P part) {
 		this.last = part;
-		return this.last != null ? this : null;
+		return part;
 	}
 
 }

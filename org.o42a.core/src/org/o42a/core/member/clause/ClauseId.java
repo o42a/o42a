@@ -185,6 +185,34 @@ public enum ClauseId {
 
 	},
 
+	EQUALS() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "equals");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "==";
+		}
+
+	},
+
+	COMPARE() {
+
+		@Override
+		public AbsolutePath adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "compare");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			return "<compare>";
+		}
+
+	},
+
 	OPERAND() {
 
 		@Override

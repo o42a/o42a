@@ -40,21 +40,21 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 
 	@Override
 	public Phrase visitName(NameNode name, Phrase p) {
-		return p.name(location(p, name), name.getName());
+		return p.name(location(p, name), name.getName()).getPhrase();
 	}
 
 	@Override
 	public Phrase visitBraces(BracesNode braces, Phrase p) {
 		return p.imperative(contentBuilder(
 				new StatementVisitor(p.getContext()),
-				braces));
+				braces)).getPhrase();
 	}
 
 	@Override
 	public Phrase visitParentheses(ParenthesesNode parentheses, Phrase p) {
 		return p.declarations(contentBuilder(
 				new StatementVisitor(p.getContext()),
-				parentheses));
+				parentheses)).getPhrase();
 	}
 
 	@Override
@@ -63,7 +63,7 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 		final ArgumentNode[] arguments = brackets.getArguments();
 
 		if (arguments.length == 0) {
-			return p.emptyArgument(location(p, brackets));
+			return p.emptyArgument(location(p, brackets)).getPhrase();
 		}
 
 		for (ArgumentNode arg : arguments) {
@@ -75,9 +75,9 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 				continue;
 			}
 			if (arguments.length == 1) {
-				return p.emptyArgument(location(p, brackets));
+				return p.emptyArgument(location(p, brackets)).getPhrase();
 			}
-			p = p.emptyArgument(location(p, arg));
+			p = p.emptyArgument(location(p, arg)).getPhrase();
 		}
 
 		return p;
@@ -86,17 +86,17 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 	@Override
 	public Phrase visitText(TextNode text, Phrase p) {
 		if (!text.isDoubleQuote()) {
-			return p.string(location(p, text), text.getText());
+			return p.string(location(p, text), text.getText()).getPhrase();
 		}
 
 		final Ref value =
 			text.accept(EXPRESSION_VISITOR, p.distribute());
 
 		if (value != null) {
-			return p.argument(value);
+			return p.argument(value).getPhrase();
 		}
 
-		return p.emptyArgument(location(p, text));
+		return p.emptyArgument(location(p, text)).getPhrase();
 	}
 
 	@Override

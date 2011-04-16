@@ -19,73 +19,44 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
-
-import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.member.clause.ClauseId;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
 
-public class UnaryPhrasePart extends PhraseContinuation {
+public class OperandPhrasePart extends PhraseContinuation {
 
-	private final UnaryNode node;
+	private final Ref value;
 
-	public UnaryPhrasePart(UnaryNode node, PhrasePart preceding) {
-		super(preceding, preceding);
-		this.node = node;
+	public OperandPhrasePart(
+			Ref value,
+			PhrasePart preceding) {
+		super(value, preceding);
+		this.value = value;
 	}
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
-
-		final ClauseId clauseId = clauseId();
-
-		if (clauseId == null) {
-			return errorClause(this.node);
-		}
-
-		return context.clauseById(this, clauseId);
+		return context.clauseById(this, ClauseId.OPERAND);
 	}
 
 	@Override
 	public void define(Block<?> definition) {
-		if (getPhrase().createsObject()) {
-			// Phrase constructs object. No need to put an argument.
-			return;
+		if (this.value == null) {
+			return;// Do not assign operand value.
 		}
 
 		final Statements<?> statements =
 			definition.propose(this).alternative(this);
 
-		statements.assign(getPhrase().getAncestor().getRef());
+		statements.assign(this.value);
 	}
 
 	@Override
 	public String toString() {
-		return this.node.getOperator().getSign();
-	}
-
-	private ClauseId clauseId() {
-		switch (this.node.getOperator()) {
-		case PLUS:
-			return ClauseId.PLUS;
-		case MINUS:
-			return ClauseId.MINUS;
-		case IS_TRUE:
-		case NOT:
-		case KNOWN:
-		case UNKNOWN:
-		}
-
-		getLogger().error(
-				"unsupported_unary",
-				this.node.getSign(),
-				"Unary operator '%s' is not supported",
-				this.node.getOperator().getSign());
-
-		return null;
+		return this.value.toString();
 	}
 
 }

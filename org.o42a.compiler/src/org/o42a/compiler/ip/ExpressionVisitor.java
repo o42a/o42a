@@ -22,9 +22,7 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.ascendants;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.phrase;
-import static org.o42a.compiler.ip.phrase.PhraseInterpreter.unary;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.ValueType.FLOAT;
 import static org.o42a.core.value.ValueType.INTEGER;
@@ -35,7 +33,6 @@ import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.StringNode.Quote;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.compiler.ip.operator.BinaryOperatorRef;
 import org.o42a.compiler.ip.operator.LogicalOperatorRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
@@ -123,7 +120,7 @@ public class ExpressionVisitor
 
 	@Override
 	public Ref visitBinary(BinaryNode expression, Distributor p) {
-		return BinaryOperatorRef.binaryOp(p.getContext(), expression, p);
+		return binary(expression, p);
 	}
 
 	@Override
