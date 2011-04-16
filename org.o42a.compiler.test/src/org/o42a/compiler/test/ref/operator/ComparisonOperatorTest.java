@@ -19,14 +19,8 @@
 */
 package org.o42a.compiler.test.ref.operator;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.value.ValueType;
 
 
 public class ComparisonOperatorTest extends CompilerTestCase {
@@ -34,103 +28,137 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 	@Test
 	public void equals() {
 		compile(
-				"A := integer(",
-				"  = 1",
-				"  Val := 2",
-				"  <@Operators: equals> A(",
-				"    <@Operators: operand> Val = *",
+				"Compare :=> void(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: equals | cmp> Left = void",
+				"    <@Operators: operand>",
 				"  )",
 				")",
-				"B := A == 3");
+				"B := a == void");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertThat(definiteValue(b, Long.class), is(1L));
-		assertThat(definiteValue(field(b, "foo"), Long.class), is(3L));
+		assertTrueVoid(field("b"));
 	}
 
 	@Test
 	public void notEquals() {
 		compile(
-				"A := void(@Operators: equals :=> void()).",
-				"B := A <> 2");
+				"Compare :=> void(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: equals | cmp> Left = void",
+				"    <@Operators: operand>",
+				"  )",
+				")",
+				"B := a <> void");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
+		assertFalseVoid(field("b"));
 	}
 
 	@Test
 	public void less() {
 		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A < 2");
+				"Compare :=> integer(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: compare | cmp> Left = void",
+				"    <@Operators: operand>",
+				"  )",
+				")",
+				"B := a < 2");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
+		assertFalseVoid(field("b"));
 	}
 
 	@Test
 	public void lessOrEquals() {
 		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A <= 2");
+				"Compare :=> integer(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: compare | cmp> Left = void",
+				"    <@Operators: operand>",
+				"  )",
+				")",
+				"B := a <= 2");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
+		assertFalseVoid(field("b"));
 	}
 
 	@Test
 	public void greater() {
 		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A > 2");
+				"Compare :=> integer(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: compare | cmp> Left = void",
+				"    <@Operators: operand>",
+				"  )",
+				")",
+				"B := a > 2");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
+		assertTrueVoid(field("b"));
 	}
 
 	@Test
 	public void greaterOrEquals() {
 		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A >= 2");
+				"Compare :=> integer(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: compare | cmp> Left = void",
+				"    <@Operators: operand>",
+				"  )",
+				")",
+				"B := a >= 2");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
+		assertTrueVoid(field("b"));
 	}
 
 	@Test
 	public void compareEquals() {
 		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A == 2");
+				"Compare :=> integer(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: compare | cmp> Left = void",
+				"    <@Operators: operand>",
+				"  )",
+				")",
+				"B := a == 2");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertFalseValue(b.getValue());
+		assertFalseVoid(field("b"));
 	}
 
 	@Test
 	public void compareNotEquals() {
 		compile(
-				"A := void(@Operators: compare :=> -1).",
-				"B := A <> 2");
+				"Compare :=> integer(",
+				"  Left :=< `void",
+				")",
+				"A := void(",
+				"  <*Cmp> Compare(",
+				"    <@Operators: compare | cmp> Left = void",
+				"    <@Operators: operand>",
+				"  )",
+				")",
+				"B := a <> 2");
 
-		final Obj b = field("b").getArtifact().materialize();
-
-		assertEquals(ValueType.VOID, b.getValueType());
-		assertTrueValue(b.getValue());
+		assertTrueVoid(field("b"));
 	}
 
 }

@@ -19,35 +19,32 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.ast.expression.BinaryNode;
+import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
 
 final class EqualsRef extends ComparisonConstructor {
 
-	EqualsRef(Phrase phrase) {
-		super(phrase);
+	EqualsRef(BinaryNode node, Distributor distributor) {
+		super(node, distributor);
 	}
 
-	private EqualsRef(
-			EqualsRef prototype,
-			Reproducer reproducer,
-			Ref phrase) {
-		super(prototype, reproducer, phrase);
+	private EqualsRef(EqualsRef prototype, Reproducer reproducer) {
+		super(prototype, reproducer);
+	}
+
+	@Override
+	public EqualsRef reproduce(Reproducer reproducer) {
+		return new EqualsRef(this, reproducer);
 	}
 
 	@Override
 	protected boolean result(Value<?> value) {
 		return !value.isFalse();
-	}
-
-	@Override
-	protected EqualsRef reproduce(Reproducer reproducer, Ref phrase) {
-		return new EqualsRef(this, reproducer, phrase);
 	}
 
 	@Override

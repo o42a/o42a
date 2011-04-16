@@ -19,7 +19,12 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
+
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
+import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
@@ -27,23 +32,30 @@ import org.o42a.core.ref.common.Wrap;
 
 public class EqualsWrap extends Wrap {
 
-	private final BinaryPhrasePart binary;
+	private final BinaryNode node;
 
-	public EqualsWrap(BinaryPhrasePart binary) {
-		super(binary.getPhrase(), binary.getPhrase().distribute());
-		this.binary = binary;
+	public EqualsWrap(BinaryNode node, Distributor distributor) {
+		super(location(distributor, node), distributor);
+		this.node = node;
 	}
 
 	@Override
 	protected Ref resolveWrapped() {
 
-		final ClauseId clauseId = this.binary.getClauseId();
+		final Distributor distributor = distribute();
+		final BinaryPhrasePart binary = binaryPhrase(this.node, distributor);
+
+		if (binary == null) {
+			return null;
+		}
+
+		final ClauseId clauseId = binary.getClauseId();
 
 		if (clauseId == ClauseId.EQUALS) {
-			return new EqualsRef(this.binary.getPhrase());
+			return new EqualsRef(this.node, distributor);
 		}
 		if (clauseId == ClauseId.COMPARE) {
-			return new CompareEqualRef(this.binary.getPhrase());
+			return new CompareEqualRef(this.node, distributor);
 		}
 
 		return null;

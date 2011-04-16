@@ -19,35 +19,32 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 
 
 public class LessOrEqualRef extends CompareConstructor {
 
-	public LessOrEqualRef(Phrase phrase) {
-		super(phrase);
+	public LessOrEqualRef(BinaryNode node, Distributor distributor) {
+		super(node, distributor);
 	}
 
-	private LessOrEqualRef(
-			LessOrEqualRef prototype,
-			Reproducer reproducer,
-			Ref phrase) {
-		super(prototype, reproducer, phrase);
+	private LessOrEqualRef(LessOrEqualRef prototype, Reproducer reproducer) {
+		super(prototype, reproducer);
+	}
+
+	@Override
+	public LessOrEqualRef reproduce(Reproducer reproducer) {
+		return new LessOrEqualRef(this, reproducer);
 	}
 
 	@Override
 	protected boolean compare(long compareResult) {
 		return compareResult <= 0;
-	}
-
-	@Override
-	protected LessOrEqualRef reproduce(Reproducer reproducer, Ref phrase) {
-		return new LessOrEqualRef(this, reproducer, phrase);
 	}
 
 	@Override
