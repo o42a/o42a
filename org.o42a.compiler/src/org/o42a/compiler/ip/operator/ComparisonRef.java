@@ -53,31 +53,33 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ComparisonConstructor extends ObjectConstructor {
+public final class ComparisonRef extends ObjectConstructor {
 
 	private static final MemberId COMPARISON = memberName("_cmp");
 
 	private final BinaryNode node;
-	private final ComparisonConstructor prototype;
+	private final ComparisonRef prototype;
 	private final Reproducer reproducer;
-	private BinaryPhrasePart binary;
+	private ComparisonOperator operator;
 	private Ref phrase;
+	private byte error;
 
-	public ComparisonConstructor(BinaryNode node, Distributor distributor) {
+	public ComparisonRef(BinaryNode node, Distributor distributor) {
 		super(location(distributor, node), distributor);
 		this.node = node;
 		this.prototype = null;
 		this.reproducer = null;
 	}
 
-	protected ComparisonConstructor(
-			ComparisonConstructor prototype,
+	private ComparisonRef(
+			ComparisonRef prototype,
 			Reproducer reproducer) {
 		super(prototype, reproducer.distribute());
 		this.node = prototype.node;
 		this.prototype = prototype;
 		this.reproducer = reproducer;
-		this.binary = prototype.getBinary();
+		this.operator = prototype.getOperator();
+		this.error = prototype.error;
 	}
 
 	@Override
@@ -85,8 +87,22 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 		return ValueType.VOID.typeRef(location, getScope());
 	}
 
+	public final boolean hasError() {
+		if (this.error != 0) {
+			return this.error > 0;
+		}
+		if (this.operator.checkError(this.phrase)) {
+			this.error = 1;
+			return true;
+		}
+		this.error = -1;
+		return false;
+	}
+
 	@Override
-	public abstract ComparisonConstructor reproduce(Reproducer reproducer);
+	public ComparisonRef reproduce(Reproducer reproducer) {
+		return new ComparisonRef(this, reproducer);
+	}
 
 	@Override
 	public String toString() {
@@ -98,10 +114,10 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 		return new ComparisonResult(this);
 	}
 
-	protected final BinaryPhrasePart getBinary() {
-		assert this.binary != null :
+	protected final ComparisonOperator getOperator() {
+		assert this.operator != null :
 			"Phrase didn't built yet";
-		return this.binary;
+		return this.operator;
 	}
 
 	protected final Ref getPhrase() {
@@ -110,24 +126,22 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 		return this.phrase;
 	}
 
-	protected abstract boolean result(Value<?> value);
-
-	protected ValOp writeComparison(CodeDirs dirs, ObjectOp comparison) {
-		return comparison.writeValue(dirs);
-	}
-
-	protected abstract void write(
-			CodeDirs dirs,
-			ValOp result,
-			ValOp comparisonVal);
-
 	private final Ref phrase(Distributor distributor) {
 		if (this.phrase != null) {
 			return this.phrase;
 		}
 		if (this.prototype == null) {
-			this.binary = binaryPhrase(this.node, distributor);
-			return this.phrase = this.binary.getPhrase().toRef();
+
+			final BinaryPhrasePart binary =
+				binaryPhrase(this.node, distributor);
+
+			this.operator = binary.getComparisonOperator();
+
+			if (this.operator == null) {
+				this.error = 1;
+			}
+
+			return this.phrase = binary.getPhrase().toRef();
 		}
 		// Build prototype`s phrase.
 		this.prototype.getResolution().toObject().resolveMembers(false);
@@ -138,10 +152,10 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 
 	private final class ComparisonResult extends Result {
 
-		private final ComparisonConstructor ref;
+		private final ComparisonRef ref;
 		private MemberKey comparisonKey;
 
-		ComparisonResult(ComparisonConstructor ref) {
+		ComparisonResult(ComparisonRef ref) {
 			super(ref, ref.distribute(), ValueType.VOID);
 			this.ref = ref;
 		}
@@ -187,6 +201,10 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 		protected Value<?> calculateValue(Scope scope) {
 			resolveMembers(false);// Initialize comparisonKey.
 
+			if (hasError()) {
+				return falseValue();
+			}
+
 			final Field<?> field =
 				scope.getContainer().member(this.comparisonKey).toField();
 			final Value<?> value = field.getArtifact().toObject().getValue();
@@ -200,7 +218,7 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 				return ValueType.VOID.falseValue();
 			}
 
-			final boolean result = this.ref.result(value);
+			final boolean result = this.ref.getOperator().result(value);
 
 			return result ? voidValue() : falseValue();
 		}
@@ -224,14 +242,22 @@ public abstract class ComparisonConstructor extends ObjectConstructor {
 
 			final ComparisonResult object =
 				(ComparisonResult) getObjectIR().getObject();
-			final ComparisonConstructor ref = object.ref;
+			final ComparisonRef ref = object.ref;
+
+			if (ref.hasError()) {
+				result.storeFalse(code);
+				return;
+			}
+
+			final ComparisonOperator operator = ref.getOperator();
 			final CodeBlk failure = code.addBlock("comparison_failure");
 			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
 			final ObjectOp comparison =
 				host.field(dirs, object.comparisonKey).materialize(dirs);
-			final ValOp comparisonVal = ref.writeComparison(dirs, comparison);
+			final ValOp comparisonVal =
+				operator.writeComparison(dirs, comparison);
 
-			ref.write(dirs, result, comparisonVal);
+			operator.write(dirs, result, comparisonVal);
 
 			if (failure.exists()) {
 				result.storeFalse(failure);

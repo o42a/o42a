@@ -19,43 +19,49 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.member.clause.ClauseId;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class CompareConstructor extends ComparisonConstructor {
+abstract class CompareOperator extends ComparisonOperator {
 
-	private byte error;
-
-	public CompareConstructor(BinaryNode node, Distributor distributor) {
-		super(node, distributor);
-	}
-
-	protected CompareConstructor(
-			CompareConstructor prototype,
-			Reproducer reproducer) {
-		super(prototype, reproducer);
-		prototype.checkError();
-		this.error = prototype.error;
+	CompareOperator() {
+		super(ClauseId.COMPARE);
 	}
 
 	@Override
-	public abstract CompareConstructor reproduce(Reproducer reproducer);
+	public boolean checkError(Ref phrase) {
 
-	@Override
-	protected final boolean result(Value<?> value) {
-		if (checkError()) {
+		final Resolution resolution = phrase.getResolution();
+
+		if (resolution.isError()) {
+			return true;
+		}
+
+		final ValueType<?> valueType = phrase.getValueType();
+
+		if (valueType == ValueType.INTEGER) {
 			return false;
 		}
+
+		phrase.getLogger().error(
+				"comparison_not_integer",
+				phrase,
+				"Comparison expected to return integer value");
+
+		return true;
+	}
+
+	@Override
+	public final boolean result(Value<?> value) {
 
 		final Long compareResult =
 			ValueType.INTEGER.cast(value).getDefiniteValue();
@@ -63,21 +69,10 @@ public abstract class CompareConstructor extends ComparisonConstructor {
 		return compare(compareResult);
 	}
 
-	protected abstract boolean compare(long compareResult);
-
 	@Override
-	protected final void write(
-			CodeDirs dirs,
-			ValOp result,
-			ValOp comparisonVal) {
+	public final void write(CodeDirs dirs, ValOp result, ValOp comparisonVal) {
 
 		final Code code = dirs.code();
-
-		if (checkError()) {
-			dirs.goWhenFalse(code);
-			return;
-		}
-
 		final RecOp<Int64op> comparisonPtr =
 			comparisonVal.rawValue(code.id("cmp_ptr"), code);
 		final Int64op comparisonValue =
@@ -87,33 +82,8 @@ public abstract class CompareConstructor extends ComparisonConstructor {
 		result.storeVoid(code);
 	}
 
+	protected abstract boolean compare(long compareResult);
+
 	protected abstract void write(CodeDirs dirs, Int64op comparisonValue);
 
-	private boolean checkError() {
-		if (this.error != 0) {
-			return this.error > 0;
-		}
-
-		final Resolution resolution = getPhrase().getResolution();
-
-		if (resolution.isError()) {
-			this.error = 1;
-			return true;
-		}
-
-		final ValueType<?> valueType = getPhrase().getValueType();
-
-		if (valueType != ValueType.INTEGER) {
-			getLogger().error(
-					"comparison_not_integer",
-					this,
-					"Comparison expected to return integer value");
-			this.error = 1;
-			return true;
-		}
-
-		this.error = -1;
-
-		return false;
-	}
 }
