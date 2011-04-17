@@ -19,9 +19,13 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.compiler.ip.operator.ComparisonOperator.comparisonOperator;
+import static org.o42a.compiler.ip.operator.ComparisonOperator.equalityOperator;
 import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
 
 import org.o42a.ast.expression.BinaryNode;
+import org.o42a.ast.expression.BinaryOperator;
+import org.o42a.compiler.ip.operator.ComparisonOperator;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.st.sentence.Block;
@@ -31,33 +35,29 @@ import org.o42a.core.st.sentence.Statements;
 public class BinaryPhrasePart extends PhraseContinuation {
 
 	private final BinaryNode node;
-	private ClauseId clauseId;
+	private ComparisonOperator comparisonOperator;
 
 	public BinaryPhrasePart(BinaryNode node, PhrasePart preceding) {
 		super(preceding, preceding);
 		this.node = node;
 	}
 
-	public final ClauseId getClauseId() {
-		if (this.clauseId == null) {
+	public final ComparisonOperator getComparisonOperator() {
+		if (this.comparisonOperator == null) {
 			getPhrase().build();
 		}
-		return this.clauseId;
+		return this.comparisonOperator;
 	}
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
 
-		final ClauseId clauseId = clauseId();
+		final NextClause first = findFirst(context);
 
-		if (clauseId == null) {
+		if (first == null) {
 			return errorClause(this.node);
 		}
-
-		final NextClause first = context.clauseById(this, clauseId);
-
 		if (first.found()) {
-			this.clauseId = clauseId;
 			return first;
 		}
 
@@ -88,44 +88,75 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		return this.node.getOperator().getSign();
 	}
 
-	private ClauseId clauseId() {
-		switch (this.node.getOperator()) {
-		case ADD:
-			return ClauseId.ADD;
-		case SUBTRACT:
-			return ClauseId.SUBTRACT;
-		case MULTIPLY:
-			return ClauseId.MULTIPLY;
-		case DIVIDE:
-			return ClauseId.DIVIDE;
-		case EQUAL:
-		case NOT_EQUAL:
-			return ClauseId.EQUALS;
-		case LESS:
-		case LESS_OR_EQUAL:
-		case GREATER:
-		case GREATER_OR_EQUAL:
-			return ClauseId.COMPARE;
+	private NextClause findFirst(PhraseContext context) {
+
+		final BinaryOperator operator = this.node.getOperator();
+		final ClauseId clauseId;
+
+		if (operator.isArithmetic()) {
+			switch (operator) {
+			case ADD:
+				clauseId = ClauseId.ADD;
+				break;
+			case SUBTRACT:
+				clauseId = ClauseId.SUBTRACT;
+				break;
+			case MULTIPLY:
+				clauseId = ClauseId.MULTIPLY;
+				break;
+			case DIVIDE:
+				clauseId = ClauseId.DIVIDE;
+				break;
+			default:
+				clauseId = null;
+				break;
+			}
+		} else {
+			if (operator.isEquality()) {
+				this.comparisonOperator = equalityOperator(operator);
+			} else {
+				this.comparisonOperator = comparisonOperator(operator);
+			}
+			if (this.comparisonOperator != null) {
+				clauseId = this.comparisonOperator.getClauseId();
+			} else {
+				clauseId = null;
+			}
 		}
 
-		getLogger().error(
-				"unsupported_binary",
-				this.node.getSign(),
-				"Binary operator '%s' is not supported",
-				this.node.getOperator().getSign());
+		if (clauseId == null) {
+			getLogger().error(
+					"unsupported_binary",
+					this.node.getSign(),
+					"Binary operator '%s' is not supported",
+					this.node.getOperator().getSign());
+			return null;
+		}
 
-		return null;
+		return context.clauseById(this, clauseId);
 	}
 
 	private NextClause findSecond(PhraseContext context) {
-		switch (this.node.getOperator()) {
-		case EQUAL:
-		case NOT_EQUAL:
-			this.clauseId = ClauseId.COMPARE;
-			return context.clauseById(this, this.clauseId);
-		default:
+
+		final BinaryOperator operator = this.node.getOperator();
+
+		if (!operator.isEquality()) {
 			return null;
 		}
+
+		final ComparisonOperator comparisonOperator =
+			comparisonOperator(operator);
+
+		if (comparisonOperator == null) {
+			return null;
+		}
+
+		final NextClause found =
+			context.clauseById(this, comparisonOperator.getClauseId());
+
+		this.comparisonOperator = comparisonOperator;
+
+		return found;
 	}
 
 }

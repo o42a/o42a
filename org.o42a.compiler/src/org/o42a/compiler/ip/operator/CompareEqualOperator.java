@@ -19,38 +19,20 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.st.Reproducer;
 
 
-final class CompareEqualRef extends CompareConstructor {
-
-	CompareEqualRef(BinaryNode node, Distributor distributor) {
-		super(node, distributor);
-	}
-
-	private CompareEqualRef(
-			CompareEqualRef prototype,
-			Reproducer reproducer) {
-		super(prototype, reproducer);
-	}
+final class CompareEqualOperator extends CompareOperator {
 
 	@Override
-	public CompareEqualRef reproduce(Reproducer reproducer) {
-		return new CompareEqualRef(this, reproducer);
-	}
-
-	@Override
-	protected boolean compare(long compareResult) {
+	public boolean compare(long compareResult) {
 		return compareResult == 0;
 	}
 
 	@Override
-	protected void write(CodeDirs dirs, Int64op comparisonValue) {
+	public void write(CodeDirs dirs, Int64op comparisonValue) {
 
 		final Code code = dirs.code();
 

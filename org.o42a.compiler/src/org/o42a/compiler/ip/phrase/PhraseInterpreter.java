@@ -31,7 +31,7 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.compiler.ip.operator.*;
+import org.o42a.compiler.ip.operator.ComparisonRef;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
@@ -78,33 +78,10 @@ public final class PhraseInterpreter {
 	}
 
 	public static Ref binary(BinaryNode node, Distributor distributor) {
-		switch (node.getOperator()) {
-		case ADD:
-		case SUBTRACT:
-		case MULTIPLY:
-		case DIVIDE:
+		if (node.getOperator().isArithmetic()) {
 			return binaryPhrase(node, distributor).getPhrase().toRef();
-		case EQUAL:
-			return new EqualsWrap(node, distributor);
-		case NOT_EQUAL:
-			return new NotEqualsWrap(node, distributor);
-		case GREATER:
-			return new GreaterRef(node, distributor);
-		case GREATER_OR_EQUAL:
-			return new GreaterOrEqualRef(node, distributor);
-		case LESS:
-			return new LessRef(node, distributor);
-		case LESS_OR_EQUAL:
-			return new LessOrEqualRef(node, distributor);
 		}
-
-		distributor.getLogger().error(
-				"unsupported_binary",
-				node.getSign(),
-				"Binary operator '%s' is not supported",
-				node.getOperator().getSign());
-
-		return null;
+		return new ComparisonRef(node, distributor);
 	}
 
 	public static BinaryPhrasePart binaryPhrase(

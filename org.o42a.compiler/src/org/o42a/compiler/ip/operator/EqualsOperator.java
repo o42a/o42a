@@ -19,42 +19,26 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import org.o42a.ast.expression.BinaryNode;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Int64op;
-import org.o42a.core.Distributor;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.st.Reproducer;
+import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.member.clause.ClauseId;
+import org.o42a.core.value.Value;
 
 
-final class CompareNotEqualRef extends CompareConstructor {
+final class EqualsOperator extends ComparisonOperator {
 
-	CompareNotEqualRef(BinaryNode node, Distributor distributor) {
-		super(node, distributor);
-	}
-
-	private CompareNotEqualRef(
-			CompareNotEqualRef prototype,
-			Reproducer reproducer) {
-		super(prototype, reproducer);
+	EqualsOperator() {
+		super(ClauseId.EQUALS);
 	}
 
 	@Override
-	public CompareNotEqualRef reproduce(Reproducer reproducer) {
-		return new CompareNotEqualRef(this, reproducer);
+	public boolean result(Value<?> value) {
+		return !value.isFalse();
 	}
 
 	@Override
-	protected boolean compare(long compareResult) {
-		return compareResult != 0;
-	}
-
-	@Override
-	protected void write(CodeDirs dirs, Int64op comparisonValue) {
-
-		final Code code = dirs.code();
-
-		dirs.go(code, comparisonValue.ne(null, code, code.int64(0)));
+	public void write(CodeDirs dirs, ValOp result, ValOp comparisonVal) {
+		result.storeVoid(dirs.code());
 	}
 
 }

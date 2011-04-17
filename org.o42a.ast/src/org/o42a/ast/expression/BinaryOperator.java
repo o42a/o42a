@@ -43,6 +43,18 @@ public enum BinaryOperator implements SignType {
 		this.priority = priority;
 	}
 
+	public final boolean isArithmetic() {
+		return ordinal() >= ADD.ordinal();
+	}
+
+	public final boolean isEquality() {
+		return this == NOT_EQUAL || this == EQUAL;
+	}
+
+	public final boolean isComparison() {
+		return ordinal() <= LESS_OR_EQUAL.ordinal();
+	}
+
 	@Override
 	public String getSign() {
 		return this.sign;
@@ -51,6 +63,7 @@ public enum BinaryOperator implements SignType {
 	public int getPriority() {
 		return this.priority;
 	}
+
 
 	@Override
 	public String toString() {

@@ -21,38 +21,27 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
-import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.Distributor;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.st.Reproducer;
+import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;
 
 
-final class NotEqualsRef extends ComparisonConstructor {
+final class NotEqualsOperator extends ComparisonOperator {
 
-	public NotEqualsRef(BinaryNode node, Distributor distributor) {
-		super(node, distributor);
-	}
-
-	private NotEqualsRef(NotEqualsRef prototype, Reproducer reproducer) {
-		super(prototype, reproducer);
+	NotEqualsOperator() {
+		super(ClauseId.EQUALS);
 	}
 
 	@Override
-	public NotEqualsRef reproduce(Reproducer reproducer) {
-		return new NotEqualsRef(this, reproducer);
-	}
-
-	@Override
-	protected boolean result(Value<?> value) {
+	public boolean result(Value<?> value) {
 		return value.isFalse();
 	}
 
 	@Override
-	protected ValOp writeComparison(CodeDirs dirs, ObjectOp comparison) {
+	public ValOp writeComparison(CodeDirs dirs, ObjectOp comparison) {
 
 		final Code code = dirs.code();
 		final Code notEqual = code.addBlock("not_equal");
@@ -68,7 +57,7 @@ final class NotEqualsRef extends ComparisonConstructor {
 	}
 
 	@Override
-	protected void write(CodeDirs dirs, ValOp result, ValOp comparisonVal) {
+	public void write(CodeDirs dirs, ValOp result, ValOp comparisonVal) {
 		result.storeVoid(dirs.code());
 	}
 
