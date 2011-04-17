@@ -17,9 +17,5 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-<*Minus> Integers: minus(<@Operators: minus> Operand = integer)
-
-<*Addition> Integers: add(
-  <@Operators: add | addition> Left operand = integer
-  <@Operators: operand> Right operand = integer
-)
+What :=< `integer(False)
+To :=< `integer(False)

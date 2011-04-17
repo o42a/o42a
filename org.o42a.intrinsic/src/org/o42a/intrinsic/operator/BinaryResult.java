@@ -19,16 +19,16 @@
 */
 package org.o42a.intrinsic.operator;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
+import static org.o42a.intrinsic.operator.UnaryResult.declaration;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -38,52 +38,35 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class UnaryResult<T, O> extends IntrinsicObject {
+public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 
-	static FieldDeclaration declaration(
-			Container enclosingContainer,
-			String name,
-			String sourcePath) {
+	private final String leftOperandName;
+	private final ValueType<L> leftOperandType;
+	private MemberKey leftOperandKey;
+	private final String rightOperandName;
+	private final ValueType<R> rightOperandType;
+	private MemberKey rightOperandKey;
 
-		final CompilerContext context;
-
-		try {
-			context = enclosingContainer.getContext().contextFor(sourcePath);
-		} catch (Exception e) {
-			throw new ExceptionInInitializerError(e);
-		}
-
-		final Location location = new Location(context, context.getSource());
-		final Distributor distributor =
-			declarativeDistributor(enclosingContainer);
-
-		return fieldDeclaration(
-				location,
-				distributor,
-				memberName(name)).prototype();
-	}
-
-	private final ValueType<O> operandType;
-	private final String operandName;
-	private MemberKey operandKey;
-
-	public UnaryResult(
+	public BinaryResult(
 			Container enclosingContainer,
 			String name,
 			ValueType<T> resultType,
-			String operandName,
-			ValueType<O> operandType,
+			String leftOperandName,
+			ValueType<L> leftOperandType,
+			String rightOperandName,
+			ValueType<R> rightOperandType,
 			String sourcePath) {
 		super(declaration(enclosingContainer, name, sourcePath));
-		this.operandName = operandName;
-		this.operandType = operandType;
+		this.rightOperandName = rightOperandName;
+		this.rightOperandType = rightOperandType;
 		setValueType(resultType);
+		this.leftOperandName = leftOperandName;
+		this.leftOperandType = leftOperandType;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -91,8 +74,12 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 		return (ValueType<T>) getValueType();
 	}
 
-	public final ValueType<O> getOperandType() {
-		return this.operandType;
+	public final ValueType<L> getLeftOperandType() {
+		return this.leftOperandType;
+	}
+
+	public final ValueType<R> getRightOperandType() {
+		return this.rightOperandType;
 	}
 
 	@Override
@@ -120,24 +107,41 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 
-		final Obj operandObject =
+		final Obj leftObject =
 			scope.getContainer()
-			.member(operandKey())
+			.member(leftOperandKey())
 			.getSubstance()
 			.toArtifact()
 			.materialize();
-		final Value<?> operandValue = operandObject.getValue();
+		final Value<?> leftValue = leftObject.getValue();
 
-		if (operandValue.isFalse()) {
+		if (leftValue.isFalse()) {
 			return getResultType().falseValue();
 		}
-		if (!operandValue.isDefinite()) {
+
+		final Obj rightObject =
+			scope.getContainer()
+			.member(rightOperandKey())
+			.getSubstance()
+			.toArtifact()
+			.materialize();
+		final Value<?> rightValue = rightObject.getValue();
+
+		if (rightValue.isFalse()) {
+			return getResultType().falseValue();
+		}
+
+		if (!leftValue.isDefinite() || !rightValue.isDefinite()) {
 			return getResultType().runtimeValue();
 		}
 
-		final O operand =
-			getOperandType().cast(operandValue).getDefiniteValue();
-		final T result = calculate(operand);
+		final L left =
+			getLeftOperandType().cast(leftValue).getDefiniteValue();
+		final R right =
+			getRightOperandType().cast(rightValue).getDefiniteValue();
+
+
+		final T result = calculate(scope, left, right);
 
 		if (result == null) {
 			return getResultType().falseValue();
@@ -146,24 +150,39 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 		return getResultType().definiteValue(result);
 	}
 
-	protected abstract T calculate(O operand);
+	protected abstract T calculate(Scope scope, L left, R right);
 
 	@Override
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
 		return new ValueIR(objectIR);
 	}
 
-	protected abstract void write(CodeDirs dirs, ValOp result, ValOp operand);
+	protected abstract void write(
+			CodeDirs dirs,
+			ValOp result,
+			ValOp leftVal,
+			ValOp rightVal);
 
-	private final MemberKey operandKey() {
-		if (this.operandKey != null) {
-			return this.operandKey;
+	private final MemberKey leftOperandKey() {
+		if (this.leftOperandKey != null) {
+			return this.leftOperandKey;
 		}
 
 		final Member operandMember =
-			member(memberName(this.operandName), Accessor.DECLARATION);
+			member(memberName(this.leftOperandName), Accessor.DECLARATION);
 
-		return this.operandKey = operandMember.getKey();
+		return this.leftOperandKey = operandMember.getKey();
+	}
+
+	private final MemberKey rightOperandKey() {
+		if (this.rightOperandKey != null) {
+			return this.rightOperandKey;
+		}
+
+		final Member operandMember =
+			member(memberName(this.rightOperandName), Accessor.DECLARATION);
+
+		return this.rightOperandKey = operandMember.getKey();
 	}
 
 	private static final class ValueIR extends ProposedValueIR {
@@ -175,15 +194,18 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 		@Override
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
-			final UnaryResult<?, ?> object =
-				(UnaryResult<?, ?>) getObjectIR().getObject();
-			final CodeBlk failure = code.addBlock("unary_failure");
+			final BinaryResult<?, ?, ?> object =
+				(BinaryResult<?, ?, ?>) getObjectIR().getObject();
+			final CodeBlk failure = code.addBlock("binary_failure");
 			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
-			final ObjectOp operand =
-				host.field(dirs, object.operandKey()).materialize(dirs);
-			final ValOp operandVal = operand.writeValue(dirs);
+			final ObjectOp leftObject =
+				host.field(dirs, object.leftOperandKey()).materialize(dirs);
+			final ValOp leftVal = leftObject.writeValue(dirs);
+			final ObjectOp rightObject =
+				host.field(dirs, object.rightOperandKey()).materialize(dirs);
+			final ValOp rightVal = rightObject.writeValue(dirs);
 
-			object.write(dirs, result, operandVal);
+			object.write(dirs, result, leftVal, rightVal);
 
 			if (failure.exists()) {
 				result.storeFalse(failure);

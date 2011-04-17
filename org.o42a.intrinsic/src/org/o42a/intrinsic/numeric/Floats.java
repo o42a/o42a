@@ -50,6 +50,12 @@ public class Floats extends IntrinsicObject {
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
 		members.addMember(new FloatMinus(this).toMember());
+		members.addMember(new AddFloats(this).toMember());
+		members.addMember(new SubtractFloats(this).toMember());
+		members.addMember(new MultiplyFloats(this).toMember());
+		members.addMember(new DivideFloats(this).toMember());
+		members.addMember(new FloatsEqual(this).toMember());
+		members.addMember(new CompareFloats(this).toMember());
 	}
 
 	@Override

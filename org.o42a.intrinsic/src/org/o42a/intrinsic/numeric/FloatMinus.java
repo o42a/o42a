@@ -31,9 +31,9 @@ import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.UnaryResult;
 
 
-public class FloatMinus extends UnaryResult<Double, Double> {
+final class FloatMinus extends UnaryResult<Double, Double> {
 
-	public FloatMinus(Floats floats) {
+	FloatMinus(Floats floats) {
 		super(
 				floats,
 				"minus",

@@ -17,9 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-<*Minus> Integers: minus(<@Operators: minus> Operand = integer)
+package org.o42a.intrinsic.numeric;
 
-<*Addition> Integers: add(
-  <@Operators: add | addition> Left operand = integer
-  <@Operators: operand> Right operand = integer
-)
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.Fp64op;
+
+
+final class MultiplyFloats extends BinaryFloat {
+
+	MultiplyFloats(Floats owner) {
+		super(owner, "multiply", "left_operand", "right_operand");
+	}
+
+	@Override
+	protected double calculate(double left, double right) {
+		return left * right;
+	}
+
+	@Override
+	protected Fp64op write(Code code, Fp64op left, Fp64op right) {
+		return left.mul(code.id("mul"), code, right);
+	}
+
+}

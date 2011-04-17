@@ -79,30 +79,11 @@ public class IntegerObject extends IntrinsicType {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
 
-		final IntegerBinaryOpObj.Add add =
-			new IntegerBinaryOpObj.Add(this);
-		final IntegerBinaryOpObj.Subtract subtract =
-			new IntegerBinaryOpObj.Subtract(this);
-		final IntegerBinaryOpObj.Multiply multiply =
-			new IntegerBinaryOpObj.Multiply(this);
-		final IntegerBinaryOpObj.Divide divide =
-			new IntegerBinaryOpObj.Divide(this);
-		final NumericCompareOpObj.IntegerCompare compare =
-			new NumericCompareOpObj.IntegerCompare(this);
-		final NumericEqualsOpObj.IntegerEquals equals =
-			new NumericEqualsOpObj.IntegerEquals(this);
 		final IntegerByString byString = new IntegerByString(this);
 
-		members.addMember(add.toMember());
-		members.addMember(subtract.toMember());
-		members.addMember(multiply.toMember());
-		members.addMember(divide.toMember());
-		members.addMember(compare.toMember());
-		members.addMember(equals.toMember());
 		members.addMember(byString.toMember());
-
-		super.declareMembers(members);
 	}
 
 }

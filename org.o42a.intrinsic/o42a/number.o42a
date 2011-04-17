@@ -20,24 +20,6 @@
 // Unary + does not modify number.
 <@Operators: plus>
 
-@Operators: add :=> ::(
-  Right operand =< `&number
-).
-@Operators: subtract :=> ::(
-  Right operand =< `&number
-).
-@Operators: multiply :=> ::(
-  Right operand =< `&number
-).
-@Operators: divide :=> ::(
-  Right operand =< `&number
-).
-@Operators: compare :=> *(
-  With =< `&number
-).
-@Operators: equals :=> *(
-  To =< `&number
-).
 @Adapters: by string :=<> *().
 
 <*By string> = ::@@adapters: by string(<*''> Input = string).
