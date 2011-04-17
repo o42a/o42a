@@ -17,9 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-<*Minus> Integers: minus(<@Operators: minus> Operand = integer)
+package org.o42a.intrinsic.numeric;
 
-<*Addition> Integers: add(
-  <@Operators: add | addition> Left operand = integer
-  <@Operators: operand> Right operand = integer
-)
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.Int64op;
+
+
+final class SubtractIntegers extends BinaryInteger {
+
+	SubtractIntegers(Integers owner) {
+		super(owner, "subtract", "left_operand", "right_operand");
+	}
+
+	@Override
+	protected long calculate(long left, long right) {
+		return left - right;
+	}
+
+	@Override
+	protected Int64op write(Code code, Int64op left, Int64op right) {
+		return left.sub(code.id("sub"), code, right);
+	}
+
+}

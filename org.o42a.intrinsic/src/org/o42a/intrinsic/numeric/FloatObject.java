@@ -79,30 +79,11 @@ public class FloatObject extends IntrinsicType {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
 
-		final FloatBinaryOpObj.Add add =
-			new FloatBinaryOpObj.Add(this);
-		final FloatBinaryOpObj.Subtract subtract =
-			new FloatBinaryOpObj.Subtract(this);
-		final FloatBinaryOpObj.Multiply multiply =
-			new FloatBinaryOpObj.Multiply(this);
-		final FloatBinaryOpObj.Divide divide =
-			new FloatBinaryOpObj.Divide(this);
-		final NumericCompareOpObj.FloatCompare compare =
-			new NumericCompareOpObj.FloatCompare(this);
-		final NumericEqualsOpObj.FloatEquals equals =
-			new NumericEqualsOpObj.FloatEquals(this);
 		final FloatByString byString = new FloatByString(this);
 
-		members.addMember(add.toMember());
-		members.addMember(subtract.toMember());
-		members.addMember(multiply.toMember());
-		members.addMember(divide.toMember());
-		members.addMember(compare.toMember());
-		members.addMember(equals.toMember());
 		members.addMember(byString.toMember());
-
-		super.declareMembers(members);
 	}
 
 }

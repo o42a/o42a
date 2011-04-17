@@ -287,13 +287,22 @@ final class MainPhraseContext extends PhraseContext {
 
 			final PhraseContext top = stack.peek();
 
-			if (top.getClause() == clause) {
-				return top;
+			assert top != null :
+				"Can not find enclosing clause " + clause;
+
+			final Clause topClause = top.getClause();
+
+			if (clause == null) {
+				if (topClause == null) {
+					return top;
+				}
+			} else if (topClause != null) {
+				if (topClause.getKey().equals(clause.getKey())) {
+					return top;
+				}
 			}
 
 			stack.pop();
-
-			final Clause topClause = top.getClause();
 
 			if (topClause != null
 					&& topClause.getKind() == ClauseKind.EXPRESSION) {

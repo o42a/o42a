@@ -144,6 +144,18 @@ public final class ValOp extends StructOp implements CondOp {
 		return this;
 	}
 
+	public final ValOp store(Code code, Int64op value) {
+		rawValue(null, code).store(code, value);
+		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		return this;
+	}
+
+	public final ValOp store(Code code, Fp64op value) {
+		value(null, code).toFp64(null, code).store(code, value);
+		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		return this;
+	}
+
 	@Override
 	public final void go(Code code, CodeDirs dirs) {
 		dirs.go(code, this);

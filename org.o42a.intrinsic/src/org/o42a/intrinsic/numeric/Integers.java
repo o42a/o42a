@@ -50,6 +50,12 @@ public class Integers extends IntrinsicObject {
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
 		members.addMember(new IntegerMinus(this).toMember());
+		members.addMember(new AddIntegers(this).toMember());
+		members.addMember(new SubtractIntegers(this).toMember());
+		members.addMember(new MultiplyIntegers(this).toMember());
+		members.addMember(new DivideIntegers(this).toMember());
+		members.addMember(new IntegersEqual(this).toMember());
+		members.addMember(new CompareIntegers(this).toMember());
 	}
 
 	@Override

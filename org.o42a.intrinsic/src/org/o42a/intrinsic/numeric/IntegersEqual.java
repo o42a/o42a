@@ -19,52 +19,46 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
-
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.operator.UnaryResult;
 
 
-final class IntegerMinus extends UnaryResult<Long, Long> {
+public class IntegersEqual extends NumbersEqual<Long> {
 
-	IntegerMinus(Integers integers) {
-		super(
-				integers,
-				"minus",
-				ValueType.INTEGER,
-				"operand",
-				ValueType.INTEGER,
-				"integers/minus.o42a");
+	public IntegersEqual(Integers owner) {
+		super(owner, "equals", ValueType.INTEGER, "integers/equals.o42a");
 	}
 
 	@Override
-	protected Long calculate(Long operand) {
-		return -operand;
+	protected boolean compare(Long left, Number right) {
+		return left.longValue() == right.longValue();
 	}
 
 	@Override
-	protected void write(CodeDirs dirs, ValOp result, ValOp operand) {
+	protected void write(
+			CodeDirs dirs,
+			ValOp result,
+			ValOp leftVal,
+			ValOp rightVal) {
 
 		final Code code = dirs.code();
-		final RecOp<Int32op> resultFlagsRec =
-			result.flags(code.id("unary_flags_ptr"), code);
+		final RecOp<Int64op> leftPtr =
+			leftVal.rawValue(code.id("left_int_ptr"), code);
+		final Int64op left = leftPtr.load(code.id("left"), code);
 
-		resultFlagsRec.store(code, code.int32(CONDITION_FLAG));
+		final RecOp<Int64op> rightPtr =
+			rightVal.rawValue(code.id("right_int_ptr"), code);
+		final Int64op right = rightPtr.load(code.id("right"), code);
 
-		final RecOp<Int64op> operandPtr =
-			operand.rawValue(code.id("operand_ptr"), code);
-		final Int64op operandValue =
-			operandPtr.load(code.id("operand_value"), code);
-		final RecOp<Int64op> resultRec =
-			result.rawValue(code.id("unary_value_tr"), code);
+		final BoolOp equals = left.eq(code.id("eq"), code, right);
 
-		resultRec.store(code, operandValue.neg(null, code));
+		dirs.go(code, equals);
+		result.storeVoid(code);
 	}
 
 }
