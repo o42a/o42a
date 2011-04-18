@@ -30,9 +30,7 @@ public class OperandPhrasePart extends PhraseContinuation {
 
 	private final Ref value;
 
-	public OperandPhrasePart(
-			Ref value,
-			PhrasePart preceding) {
+	public OperandPhrasePart(Ref value, PhrasePart preceding) {
 		super(value, preceding);
 		this.value = value;
 	}

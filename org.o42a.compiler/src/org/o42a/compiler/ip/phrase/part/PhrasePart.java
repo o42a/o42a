@@ -34,10 +34,7 @@ public abstract class PhrasePart extends Location {
 	private final PhrasePart preceding;
 	private PhraseContinuation following;
 
-	PhrasePart(
-			LocationInfo location,
-			Phrase phrase,
-			PhrasePart preceding) {
+	PhrasePart(LocationInfo location, Phrase phrase, PhrasePart preceding) {
 		super(location);
 		this.phrase = phrase;
 		this.preceding = preceding;
