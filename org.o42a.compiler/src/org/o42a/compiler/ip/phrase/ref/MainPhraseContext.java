@@ -292,14 +292,8 @@ final class MainPhraseContext extends PhraseContext {
 
 			final Clause topClause = top.getClause();
 
-			if (clause == null) {
-				if (topClause == null) {
-					return top;
-				}
-			} else if (topClause != null) {
-				if (topClause.getKey().equals(clause.getKey())) {
-					return top;
-				}
+			if (sameClause(topClause, clause)) {
+				return top;
 			}
 
 			stack.pop();
@@ -316,7 +310,7 @@ final class MainPhraseContext extends PhraseContext {
 			PhraseContext containerContext,
 			PhraseContinuation continuation,
 			Clause clause) {
-		if (containerContext.getClause() == clause) {
+		if (sameClause(containerContext.getClause(), clause)) {
 			return containerContext;
 		}
 
@@ -333,6 +327,19 @@ final class MainPhraseContext extends PhraseContext {
 		stack.push(subContext);
 
 		return subContext;
+	}
+
+	private static boolean sameClause(Clause clause1, Clause clause2) {
+		if (clause1 == null) {
+			if (clause2 == null) {
+				return true;
+			}
+		} else if (clause2 != null) {
+			if (clause1.getKey().equals(clause2.getKey())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

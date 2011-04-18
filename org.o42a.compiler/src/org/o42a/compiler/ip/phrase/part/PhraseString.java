@@ -31,10 +31,7 @@ public class PhraseString extends PhraseContinuation {
 
 	private final String string;
 
-	PhraseString(
-			LocationInfo location,
-			PhrasePart preceding,
-			String string) {
+	PhraseString(LocationInfo location, PhrasePart preceding, String string) {
 		super(location, preceding);
 		this.string = string;
 	}
