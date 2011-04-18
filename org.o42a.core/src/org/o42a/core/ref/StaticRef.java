@@ -238,7 +238,9 @@ final class StaticRef extends Ref {
 
 		@Override
 		public void setTargetRef(Ref targetRef, TypeRef defaultType) {
-			this.definer.setTargetRef(targetRef, defaultType);
+			this.definer.setTargetRef(
+					targetRef.toStatic(),
+					defaultType.toStatic());
 		}
 
 	}
