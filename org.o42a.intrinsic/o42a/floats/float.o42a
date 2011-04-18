@@ -18,3 +18,45 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 <*Minus> Floats: minus(<@Operators: minus> Operand = float)
+
+<*Addition> Floats: add(
+  <@Operators: add | summand> Left operand = float
+  <Summand> (
+    <@Operators: operand> Right operand = float
+  )
+)
+
+<*Subtraction> Floats: subtract(
+  <@Operators: subtract | subtrahend> Left operand = float
+  <Subtrahend> (
+    <@Operators: operand> Right operand = float
+  )
+)
+
+<*Multiplication> Floats: multiply(
+  <@Operators: multiply | multiplier> Left operand = float
+  <Multiplier> (
+    <@Operators: operand> Right operand = float
+  )
+)
+
+<*Division> Floats: divide(
+  <@Operators: divide | divisor> Left operand = float
+  <Divisor> (
+    <@Operators: operand> Right operand = float
+  )
+)
+
+<*Equality> Floats: equals(
+  <@Operators: equals | equals to> What = float
+  <Equals to> (
+    <@Operators: operand> To = float
+  )
+)
+
+<*Comparison> Floats: compare(
+  <@Operators: compare | compare with> What = float
+  <Compare with> (
+    <@Operators: operand> With = float
+  )
+)

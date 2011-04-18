@@ -20,6 +20,43 @@
 <*Minus> Integers: minus(<@Operators: minus> Operand = integer)
 
 <*Addition> Integers: add(
-  <@Operators: add | addition> Left operand = integer
-  <@Operators: operand> Right operand = integer
+  <@Operators: add | summand> Left operand = integer
+  <Summand> (
+    <@Operators: operand> Right operand = integer
+  )
+)
+
+<*Subtraction> Integers: subtract(
+  <@Operators: subtract | subtrahend> Left operand = integer
+  <Subtrahend> (
+    <@Operators: operand> Right operand = integer
+  )
+)
+
+<*Multiplication> Integers: multiply(
+  <@Operators: multiply | multiplier> Left operand = integer
+  <Multiplier> (
+    <@Operators: operand> Right operand = integer
+  )
+)
+
+<*Division> Integers: divide(
+  <@Operators: divide | divisor> Left operand = integer
+  <Divisor> (
+    <@Operators: operand> Right operand = integer
+  )
+)
+
+<*Equality> Integers: equals(
+  <@Operators: equals | equals to> What = integer
+  <Equals to> (
+    <@Operators: operand> To = integer
+  )
+)
+
+<*Comparison> Integers: compare(
+  <@Operators: compare | compare with> What = integer
+  <Compare with> (
+    <@Operators: operand> With = integer
+  )
 )

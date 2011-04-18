@@ -62,6 +62,9 @@ abstract class CompareOperator extends ComparisonOperator {
 
 	@Override
 	public final boolean result(Value<?> value) {
+		if (value.isFalse()) {
+			return false;
+		}
 
 		final Long compareResult =
 			ValueType.INTEGER.cast(value).getDefiniteValue();
