@@ -214,9 +214,6 @@ public final class ComparisonRef extends ObjectConstructor {
 				// Result will be determined at run time.
 				return ValueType.VOID.runtimeValue();
 			}
-			if (value.isFalse()) {
-				return ValueType.VOID.falseValue();
-			}
 
 			final boolean result = this.ref.getOperator().result(value);
 
