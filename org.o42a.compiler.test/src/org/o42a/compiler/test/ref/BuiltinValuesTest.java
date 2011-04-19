@@ -61,6 +61,26 @@ public class BuiltinValuesTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void positiveIntegerByStringValue() {
+		compile("Integer value := integer '+12345678900'");
+
+		final Obj field = field("integer_value").getArtifact().materialize();
+
+		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertThat(definiteValue(field, Long.class), is(12345678900L));
+	}
+
+	@Test
+	public void negativeIntegerByStringValue() {
+		compile("Integer value := integer '-12345678900'");
+
+		final Obj field = field("integer_value").getArtifact().materialize();
+
+		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertThat(definiteValue(field, Long.class), is(-12345678900L));
+	}
+
+	@Test
 	public void floatValue() {
 		compile("Float value := float '1234567890.25'");
 
@@ -68,6 +88,26 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		assertEquals(ValueType.FLOAT, field.getValueType());
 		assertThat(definiteValue(field, Double.class), is(1234567890.25d));
+	}
+
+	@Test
+	public void positiveFloatValue() {
+		compile("Float value := float '+1234567890.25'");
+
+		final Obj field = field("float_value").getArtifact().materialize();
+
+		assertEquals(ValueType.FLOAT, field.getValueType());
+		assertThat(definiteValue(field, Double.class), is(1234567890.25d));
+	}
+
+	@Test
+	public void negativeFloatValue() {
+		compile("Float value := float '-1234567890.25'");
+
+		final Obj field = field("float_value").getArtifact().materialize();
+
+		assertEquals(ValueType.FLOAT, field.getValueType());
+		assertThat(definiteValue(field, Double.class), is(-1234567890.25d));
 	}
 
 	@Test
