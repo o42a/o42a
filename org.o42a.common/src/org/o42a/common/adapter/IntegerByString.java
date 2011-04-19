@@ -83,11 +83,12 @@ public class IntegerByString extends ByString<Long> {
 
 		do {
 
+			final boolean first = i == 0;
 			final int c = input.codePointAt(i);
 
 			i += Character.charCount(c);
 
-			if (i == 0) {
+			if (first) {
 				switch (c) {
 				case HYPHEN_MINUS:
 				case MINUS_SIGN:
