@@ -26,6 +26,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
@@ -66,14 +67,27 @@ public abstract class Fld {
 		final Field<?> field = getField();
 
 		if (!field.isOverride()) {
-			// new field declaration
-			return false;
-		}
-		if (field.isClone()) {
-			// clone does not override anything
+			// New field declaration.
 			return false;
 		}
 
+		final Scope definedIn = field.getDefinedIn();
+		final Scope enclosingScope = field.getEnclosingScope();
+
+		if (enclosingScope == definedIn) {
+			// Explicit field override.
+			return true;
+		}
+
+		final Obj definedInObject = definedIn.getContainer().toObject();
+
+		if (definedInObject.getAncestor().getType().derivedFrom(
+				definedInObject)) {
+			// Field overridden in ancestor.
+			return false;
+		}
+
+		// Field overridden in sample.
 		return true;
 	}
 

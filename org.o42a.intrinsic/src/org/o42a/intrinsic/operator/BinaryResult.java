@@ -140,7 +140,6 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 		final R right =
 			getRightOperandType().cast(rightValue).getDefiniteValue();
 
-
 		final T result = calculate(scope, left, right);
 
 		if (result == null) {
