@@ -305,9 +305,7 @@ public class DefaultCodeId extends CodeId {
 		return this.id.length() == separatorSign(Separator.TOP).length();
 	}
 
-	private void appendSeparator(
-			StringBuilder result,
-			Separator separator) {
+	private void appendSeparator(StringBuilder result, Separator separator) {
 		result.append(separatorSign(separator));
 		this.lastEncoded = false;
 	}

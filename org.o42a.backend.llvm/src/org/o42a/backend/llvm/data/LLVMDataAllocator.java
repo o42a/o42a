@@ -134,7 +134,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		if (!allocation.isTypeAllocated()) {
 			allocation.setUniqueTypePtr(refineType(
 					getModulePtr(),
-					data.getId().getId(),
+					data.getInstance().getId().getId(),
 					allocation.getTypePtr(),
 					allocation.getTypeDataPtr(),
 					data.getInstance().isPacked()));

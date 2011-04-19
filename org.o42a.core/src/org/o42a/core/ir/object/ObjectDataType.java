@@ -168,7 +168,10 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		public final DataOp loadObject(Code code) {
-			return object(code).load(null, code).offset(null, code, this).toData(null, code);
+			return object(code)
+			.load(null, code)
+			.offset(code.id("main_body").type(code.id("any")), code, this)
+			.toData(code.id("main_body"), code);
 		}
 
 		public final RecOp<RelOp> start(Code code) {
@@ -176,7 +179,10 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		public final DataOp loadStart(Code code) {
-			return start(code).load(null, code).offset(null, code, this).toData(null, code);
+			return start(code)
+			.load(null, code)
+			.offset(code.id("object_start").type(code.id("any")), code, this)
+			.toData(code.id("object_start"), code);
 		}
 
 		public final ValOp value(Code code) {
@@ -214,6 +220,11 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		@Override
 		public String toString() {
 			return getType() + " data";
+		}
+
+		@Override
+		protected CodeId fieldId(Code code, CodeId local) {
+			return code.id("object_data").setLocal(local);
 		}
 
 	}
