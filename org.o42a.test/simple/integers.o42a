@@ -31,18 +31,29 @@ Unary conditions := test(
   Assert [-rt-integer '3'] 'Unary integer minus is not true'
 )
 
-/*Equal := test(
-  //Assert [2 == 2] 'Integer constants not equal'
-  //Assert [4 == rt-integer '4'] 'Integers not equal'
-  //Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
+Equal := test(
+  Assert [2 == 2] 'Integer constants not equal'
+  Assert [4 == rt-integer '4'] 'Integers not equal'
+  Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
 )
 
 Not equal := test(
-  //Assert [rt-integer '5' <> rt-integer '6'] 'Integers equal'
-  //Assert [--(rt-integer '9' == rt-integer '7')] 'Integers equal' 
+  Assert [rt-integer '5' <> rt-integer '6'] 'Integers equal'
+  Assert [--(rt-integer '9' == rt-integer '7')] 'Integers equal' 
 )
 
 Plus := test(
-  //Assert [+5 == 5] 'Plus failed on constant integer'
-  //Assert [+rt-integer '5' == 5] 'Plus failed on run-time integer'
-)*/
+  Assert [+5 == 5] 'Plus failed on constant integer'
+  Assert [+rt-integer '5' == 5] 'Integer plus failed'
+)
+
+Minus := test(
+  Assert [-rt-integer '5' == rt-integer '-5'] 'Integer minus failed'
+)
+
+Arithmetics := test(
+  Assert [rt-integer '5' + 6 == 11] 'Addition failed'
+  Assert [rt-integer '6' - 5 == 1] 'Subtraction failed'
+  Assert [rt-integer '5' * 6 == 30] 'Multiplication failed'
+  Assert [rt-integer '7' / 2 == 3] 'Division failed'
+)

@@ -26,7 +26,6 @@ Use namespace 'Test'
 
 Tests := void(
 
-  Print "Run all tests" nl
   Run tests
 
   Simple := test(

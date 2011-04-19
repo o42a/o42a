@@ -33,3 +33,7 @@ Assertion := test(
 Integers := test(
   Include 'integers.o42a'
 )
+
+Floats := test(
+  Include 'floats.o42a'
+)
