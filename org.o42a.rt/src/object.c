@@ -720,6 +720,7 @@ static inline void propagate_samples(
 
 #endif
 
+		ctable->body_type = old_body->methods->object_type;
 		ctable->from.body = old_body;
 		ctable->to.body = new_body;
 		O42A(derive_object_body(O42A_ARGS ctable, ancestor_body, DK_PROPAGATE));
@@ -960,9 +961,9 @@ o42a_obj_t *o42a_obj_new(
 			ancestor_body,
 			sample_data));
 
+	ctable.body_type = sstype;
 	ctable.from.body = O42A(o42a_obj_by_data(O42A_ARGS sdata));
 	ctable.to.body = object;
-	ctable.body_type = sstype;
 	O42A(derive_object_body(O42A_ARGS &ctable, ancestor_body, DK_MAIN));
 
 #ifndef NDEBUG
