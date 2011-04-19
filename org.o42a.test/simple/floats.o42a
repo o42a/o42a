@@ -1,0 +1,54 @@
+/*
+    Tests
+    Copyright (C) 2011 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+Use namespace 'Test'
+
+
+Name = "Floats"
+
+Run tests
+
+Unary conditions := test(
+  Assert [+rt-float '3.25'] 'Unary float plus is not true'
+  Assert [-rt-float '3.25'] 'Unary float minus is not true'
+)
+
+Equal := test(
+  Assert [rt-float '7.25' == float '7.25'] 'Floats not equal'
+)
+
+Not equal := test(
+  Assert [rt-float '5.1' <> rt-float '5.2'] 'Floats equal'
+  Assert [--(rt-float '9.2' == rt-float '7.1')] 'Floats equal' 
+)
+
+Plus := test(
+  Assert [+rt-float '5.1' == float '5.1'] 'Float plus failed'
+)
+
+Minus := test(
+  Assert [-rt-float '5.1' == float '-5.1'] 'Float minus failed'
+)
+
+Arithmetics := test(
+  Assert [rt-float '5.5' + float '6.25' == float '11.75'] 'Addition failed'
+  Assert [rt-float '6.5' - float '5' == float '1.5'] 'Subtraction failed'
+  Assert [rt-float '5.25' * float '6' == float '31.5' ] 'Multiplication failed'
+  Assert [rt-float '7.5' / float '2.5' == float '3'] 'Division failed'
+)
