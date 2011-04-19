@@ -62,6 +62,6 @@ abstract class NumbersEqual<P extends Number>
 		return Void.VOID;
 	}
 
-	protected abstract boolean compare(P left, Number right);
+	protected abstract boolean compare(P left, P right);
 
 }

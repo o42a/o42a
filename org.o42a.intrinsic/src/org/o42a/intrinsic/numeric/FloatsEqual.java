@@ -33,7 +33,7 @@ public class FloatsEqual extends NumbersEqual<Double> {
 	}
 
 	@Override
-	protected boolean compare(Double left, Number right) {
+	protected boolean compare(Double left, Double right) {
 		return left.doubleValue() == right.doubleValue();
 	}
 

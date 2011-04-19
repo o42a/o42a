@@ -35,7 +35,7 @@ public class IntegersEqual extends NumbersEqual<Long> {
 	}
 
 	@Override
-	protected boolean compare(Long left, Number right) {
+	protected boolean compare(Long left, Long right) {
 		return left.longValue() == right.longValue();
 	}
 
