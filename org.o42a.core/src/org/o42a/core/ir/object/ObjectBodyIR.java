@@ -162,10 +162,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		final ObjectIR ascendantIR =
 			this.ascendant.ir(this.objectIRStruct.getGenerator());
-		final CodeId localId = factory.id().detail("body").detail(
-				ascendantIR.getStruct().codeId(factory));
 
-		return this.objectIRStruct.codeId(factory).setLocal(localId);
+		return ascendantIR.getId().detail("body");
 	}
 
 	@Override
@@ -206,11 +204,13 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return this.fieldList;
 	}
 
-	void allocateMetaIR(SubData<?> data) {
+	void allocateMethodsIR(SubData<?> data) {
 		if (isMain()) {
 			this.methodsIR = new ObjectMethodsIR(this);
+
 			data.addStruct(
-					this.methodsIR.codeId(data.getGenerator()).getLocal(),
+					getGenerator().id("methods").detail(
+							getAscendant().ir(getGenerator()).getId()),
 					this.methodsIR);
 			return;
 		}
@@ -305,11 +305,10 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 
 		public final ObjectType.Op loadObjectType(Code code) {
-
-			final AnyOp objectTypePtr =
-				objectType(code).load(null, code).offset(null, code, this);
-
-			return objectTypePtr.to(null, code, OBJECT_TYPE);
+			return objectType(code)
+			.load(null, code)
+			.offset(code.id("object_type").type(code.id("any")), code, this)
+			.to(code.id("object_type"), code, OBJECT_TYPE);
 		}
 
 		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
@@ -342,6 +341,11 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		@Override
 		public String toString() {
 			return "*" + getType().codeId(getType().getGenerator());
+		}
+
+		@Override
+		protected CodeId fieldId(Code code, CodeId local) {
+			return code.id("body").setLocal(local);
 		}
 
 		final ObjOp op(ObjectTypeOp data, Obj ascendant) {

@@ -1,6 +1,7 @@
 syntax: glob
 */bin
 */.settings
+**/*.ll
 **/*.s
 **/*.o
 **/*.so

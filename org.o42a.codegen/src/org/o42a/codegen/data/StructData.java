@@ -26,8 +26,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class StructData<O extends StructOp>
-		extends AbstractTypeData<O> {
+final class StructData<O extends StructOp> extends AbstractTypeData<O> {
 
 	private final Global<?, ?> global;
 	private final Type<?> enclosing;
@@ -49,8 +48,7 @@ final class StructData<O extends StructOp>
 	}
 
 	@Override
-	protected DataAllocation<O> beginTypeAllocation(
-			DataAllocator allocator) {
+	protected DataAllocation<O> beginTypeAllocation(DataAllocator allocator) {
 		return allocator.enter(
 				getEnclosing().getAllocation(),
 				getInstance().getAllocation(),

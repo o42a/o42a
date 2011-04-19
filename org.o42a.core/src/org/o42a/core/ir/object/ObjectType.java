@@ -104,6 +104,11 @@ public class ObjectType extends Type<ObjectType.Op> {
 			return new ObjectTypeOp(builder, this, precision);
 		}
 
+		@Override
+		protected CodeId fieldId(Code code, CodeId local) {
+			return code.id("object_type").setLocal(local);
+		}
+
 	}
 
 	private static final class Fields extends RelList<FieldDescIR> {

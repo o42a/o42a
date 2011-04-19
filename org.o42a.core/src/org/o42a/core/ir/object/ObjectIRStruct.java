@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
@@ -86,7 +87,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	protected final void allocate(SubData<Op> data) {
 		allocateBodyIRs(data);
 		this.typeIR.allocate(data);
-		allocateMetaIRs(data);
+		allocateMethodsIRs(data);
 	}
 
 	@Override
@@ -155,12 +156,12 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		this.bodyIRs.put(ascendant, bodyIR);
 		if (derivedFrom != null) {
 			data.addStruct(
-					bodyIR.codeId(data.getGenerator()).getLocal(),
+					bodyId(data.getGenerator(), bodyIR),
 					derivedFrom,
 					bodyIR);
 		} else {
 			data.addStruct(
-					bodyIR.codeId(data.getGenerator()).getLocal(),
+					bodyId(data.getGenerator(), bodyIR),
 					bodyIR);
 		}
 
@@ -177,10 +178,17 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		}
 	}
 
-	private void allocateMetaIRs(SubData<?> data) {
+	private void allocateMethodsIRs(SubData<?> data) {
 		for (ObjectBodyIR bodyIR : bodyIRs().values()) {
-			bodyIR.allocateMetaIR(data);
+			bodyIR.allocateMethodsIR(data);
 		}
+	}
+
+	private static CodeId bodyId(Generator generator, ObjectBodyIR bodyIR) {
+
+		final ObjectIR ascendantIR = bodyIR.getAscendant().ir(generator);
+
+		return generator.id().detail("body").detail(ascendantIR.getId());
 	}
 
 	public static final class Op extends StructOp {

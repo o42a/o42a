@@ -162,18 +162,22 @@ public abstract class StructOp implements PtrOp {
 		return getWriter().func(fieldId(id, code, field), code, field);
 	}
 
+	protected CodeId fieldId(Code code, CodeId local) {
+		return getId().setLocal(local);
+	}
+
 	private final CodeId fieldId(CodeId id, Code code, Data<?> field) {
 		if (id != null) {
 			return code.opId(id);
 		}
-		return getId().setLocal(field.getId());
+		return fieldId(code, field.getId());
 	}
 
 	private final CodeId fieldId(CodeId id, Code code, CodeId field) {
 		if (id != null) {
 			return code.opId(id);
 		}
-		return getId().setLocal(field);
+		return fieldId(code, field);
 	}
 
 }
