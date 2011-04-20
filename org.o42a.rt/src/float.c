@@ -254,7 +254,7 @@ void o42a_float_by_str(
 	} else {
 		res = fma(
 				frac_mantissa,
-				pow(10.0, -frac_mantissa_len),
+				pow(0.1, frac_mantissa_len),
 				int_mantissa);
 		if (O42A(o42a_float_error(O42A_ARGS result))) {
 			fesetenv(&env);
