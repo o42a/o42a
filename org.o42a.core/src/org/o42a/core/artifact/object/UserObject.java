@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,18 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.artifact.object;
 
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberId;
+import org.o42a.util.use.Useable;
+import org.o42a.util.use.User;
 
 
-public interface ClauseContainer {
+final class UserObject extends Useable<Obj> {
 
-	Clause[] getImplicitClauses();
+	private final Obj object;
 
-	Clause clause(MemberId memberId, Obj declaredIn);
+	UserObject(Obj object) {
+		this.object = object;
+	}
 
-	Clause toClause();
+	@Override
+	protected Obj createUsed(User user) {
+		return this.object;
+	}
+
+	@Override
+	public String toString() {
+		if (this.object == null) {
+			return super.toString();
+		}
+		return this.object.toString();
+	}
 
 }

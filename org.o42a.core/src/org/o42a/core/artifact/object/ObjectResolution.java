@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,18 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
-
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberId;
+package org.o42a.core.artifact.object;
 
 
-public interface ClauseContainer {
+enum ObjectResolution {
 
-	Clause[] getImplicitClauses();
+	NOT_RESOLVED(0),
+	RESOLVING_TYPE(-1),
+	TYPE_RESOLVED(1),
+	POST_RESOLVED(2),
+	RESOLVING_MEMBERS(-3),
+	MEMBERS_RESOLVED(3);
 
-	Clause clause(MemberId memberId, Obj declaredIn);
+	private final int code;
 
-	Clause toClause();
+	ObjectResolution(int code) {
+		this.code = code;
+	}
+
+	boolean resolved() {
+		return this.code >= POST_RESOLVED.code;
+	}
+
+	boolean membersResolved() {
+		return (this.code >= MEMBERS_RESOLVED.code
+				|| this.code < RESOLVING_MEMBERS.code);
+	}
+
+	boolean typeResolved() {
+		return this.code > 0;
+	}
 
 }

@@ -25,7 +25,7 @@ public enum Derivation {
 	NONE() {
 
 		@Override
-		boolean match(Obj object, Obj ascendant) {
+		boolean match(ObjectType type, ObjectType ascendant) {
 			return false;
 		}
 
@@ -198,8 +198,8 @@ public enum Derivation {
 
 	};
 
-	boolean match(Obj object, Obj ascendant) {
-		return object == ascendant;
+	boolean match(ObjectType type, ObjectType ascendant) {
+		return type.getObject() == ascendant.getObject();
 	}
 
 	abstract boolean acceptAncestor();

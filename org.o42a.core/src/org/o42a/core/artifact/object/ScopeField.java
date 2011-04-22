@@ -48,7 +48,7 @@ final class ScopeField extends ObjectField {
 		super(
 				fieldDeclaration(
 						owner,
-						owner.distributeIn(owner.getContainer()),
+						owner.distributeIn(owner),
 						SCOPE_MEMBER_ID)
 				.setVisibility(Visibility.PROTECTED));
 		this.overridden = null;
