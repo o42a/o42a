@@ -19,26 +19,20 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.util.use.Use;
 import org.o42a.util.use.Usable;
 
 
 abstract class ObjectUsable<U> extends Usable<U> {
 
 	private final Obj object;
-	private final Use<Obj> objectUse;
 
 	ObjectUsable(Obj object) {
 		this.object = object;
-		this.objectUse = object.toUser().useBy(this);
+		object.toUser().useBy(this);
 	}
 
 	public final Obj getObject() {
 		return this.object;
-	}
-
-	public final Use<Obj> getObjectUse() {
-		return this.objectUse;
 	}
 
 	@Override
