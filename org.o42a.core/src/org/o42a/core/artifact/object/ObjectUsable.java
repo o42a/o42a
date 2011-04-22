@@ -20,15 +20,15 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.util.use.Use;
-import org.o42a.util.use.Useable;
+import org.o42a.util.use.Usable;
 
 
-abstract class ObjectUseable<U> extends Useable<U> {
+abstract class ObjectUsable<U> extends Usable<U> {
 
 	private final Obj object;
 	private final Use<Obj> objectUse;
 
-	ObjectUseable(Obj object) {
+	ObjectUsable(Obj object) {
 		this.object = object;
 		this.objectUse = object.toUser().useBy(this);
 	}

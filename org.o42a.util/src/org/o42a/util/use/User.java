@@ -44,7 +44,7 @@ public abstract class User implements UserInfo {
 		return this.userOf != null && !this.userOf.isEmpty();
 	}
 
-	public final Set<Use<?>> userOf() {
+	public final Set<Use<?>> getUserOf() {
 		if (this.userOf == null) {
 			return emptySet();
 		}
@@ -85,9 +85,9 @@ public abstract class User implements UserInfo {
 
 	protected abstract boolean determineUseBy(UseCase useCase);
 
-	<U> Use<U> use(Useable<U> useable) {
+	<U> Use<U> use(Usable<U> usable) {
 
-		final Use<U> use = useable.useBy(this);
+		final Use<U> use = usable.useBy(this);
 
 		if (this.userOf == null) {
 			this.userOf = new HashSet<Use<?>>();

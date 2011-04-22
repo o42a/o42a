@@ -33,8 +33,8 @@ final class DummyUser extends User {
 	}
 
 	@Override
-	<U> Use<U> use(Useable<U> useable) {
-		return new Use<U>(this, useable.createUsed(this), null);
+	<U> Use<U> use(Usable<U> usable) {
+		return new Use<U>(this, usable.createUsed(this), null);
 	}
 
 	@Override

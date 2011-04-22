@@ -25,79 +25,79 @@ import static org.o42a.util.use.User.useCase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.o42a.util.use.Usable;
 import org.o42a.util.use.UseCase;
-import org.o42a.util.use.Useable;
 import org.o42a.util.use.User;
 
 
 public class UseTest {
 
-	private TestUseable useable;
+	private TestUsable usable;
 	private UseCase useCase;
 
 	@Before
 	public void createUseable() {
-		this.useable = new TestUseable();
+		this.usable = new TestUsable();
 		this.useCase = useCase("Use Case");
 	}
 
 	@Test
 	public void notUsed() {
-		assertFalse(this.useable.usedBy(this.useCase));
+		assertFalse(this.usable.usedBy(this.useCase));
 	}
 
 	@Test
 	public void used() {
-		this.useable.useBy(this.useCase);
-		assertTrue(this.useable.usedBy(this.useCase));
+		this.usable.useBy(this.useCase);
+		assertTrue(this.usable.usedBy(this.useCase));
 	}
 
 	@Test
 	public void transitiveUse() {
 
-		final TestUseable useable2 = new TestUseable();
+		final TestUsable usable2 = new TestUsable();
 
-		this.useable.useBy(useable2);
-		useable2.useBy(this.useCase);
+		this.usable.useBy(usable2);
+		usable2.useBy(this.useCase);
 
-		assertTrue(useable2.usedBy(this.useCase));
-		assertTrue(this.useable.usedBy(this.useCase));
+		assertTrue(usable2.usedBy(this.useCase));
+		assertTrue(this.usable.usedBy(this.useCase));
 	}
 
 	@Test
 	public void useIsNotBeingUsed() {
 
-		final TestUseable useable2 = new TestUseable();
+		final TestUsable usable2 = new TestUsable();
 
-		this.useable.useBy(useable2);
-		this.useable.useBy(this.useCase);
+		this.usable.useBy(usable2);
+		this.usable.useBy(this.useCase);
 
-		assertFalse(useable2.usedBy(this.useCase));
-		assertTrue(this.useable.usedBy(this.useCase));
+		assertFalse(usable2.usedBy(this.useCase));
+		assertTrue(this.usable.usedBy(this.useCase));
 	}
 
 	@Test
 	public void deepUse() {
 
-		final TestUseable useable2 = new TestUseable();
-		final TestUseable useable3 = new TestUseable();
-		final TestUseable useable4 = new TestUseable();
-		final TestUseable useable5 = new TestUseable();
+		final TestUsable usable2 = new TestUsable();
+		final TestUsable usable3 = new TestUsable();
+		final TestUsable usable4 = new TestUsable();
+		final TestUsable usable5 = new TestUsable();
 
-		this.useable.useBy(useable2);
-		useable2.useBy(useable3);
-		useable3.useBy(useable4);
-		useable4.useBy(useable5);
-		useable5.useBy(this.useCase);
+		this.usable.useBy(usable2);
+		usable2.useBy(usable3);
+		usable3.useBy(usable4);
+		usable4.useBy(usable5);
+		usable5.useBy(this.useCase);
 
-		assertTrue(useable2.usedBy(this.useCase));
-		assertTrue(useable3.usedBy(this.useCase));
-		assertTrue(useable4.usedBy(this.useCase));
-		assertTrue(useable5.usedBy(this.useCase));
-		assertTrue(this.useable.usedBy(this.useCase));
+		assertTrue(usable2.usedBy(this.useCase));
+		assertTrue(usable3.usedBy(this.useCase));
+		assertTrue(usable4.usedBy(this.useCase));
+		assertTrue(usable5.usedBy(this.useCase));
+		assertTrue(this.usable.usedBy(this.useCase));
 	}
 
-	private static final class TestUseable extends Useable<Integer> {
+	private static final class TestUsable extends Usable<Integer> {
 
 		private int counter;
 
