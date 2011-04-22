@@ -162,7 +162,7 @@ public final class ObjectType {
 	}
 
 	static final class UseableObjectType
-			extends ObjectUseable<ObjectType> {
+			extends ObjectUsable<ObjectType> {
 
 		private final ObjectType type;
 

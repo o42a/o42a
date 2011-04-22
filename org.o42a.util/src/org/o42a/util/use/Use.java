@@ -24,12 +24,12 @@ public final class Use<U> {
 
 	private final User user;
 	private final U used;
-	private Useable<U> useable;
+	private Usable<U> usable;
 
-	Use(User user, U used, Useable<U> useable) {
+	Use(User user, U used, Usable<U> usable) {
 		this.user = user;
 		this.used = used;
-		this.useable = useable;
+		this.usable = usable;
 	}
 
 	public final U get() {
@@ -41,20 +41,20 @@ public final class Use<U> {
 	}
 
 	public final boolean isUsed() {
-		return this.useable != null;
+		return this.usable != null;
 	}
 
 	public final void release() {
 
-		final Useable<U> useable = this.useable;
+		final Usable<U> usable = this.usable;
 
-		if (useable == null) {
+		if (usable == null) {
 			return;
 		}
 
-		this.useable = null;
+		this.usable = null;
 		this.user.release(this);
-		useable.released(this);
+		usable.released(this);
 	}
 
 	@Override

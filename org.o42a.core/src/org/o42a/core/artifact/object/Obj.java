@@ -54,7 +54,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.use.Useable;
+import org.o42a.util.use.Usable;
 import org.o42a.util.use.UserInfo;
 
 
@@ -127,7 +127,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	@Override
-	public final Useable<Obj> toUser() {
+	public final Usable<Obj> toUser() {
 		return this.user;
 	}
 
@@ -201,11 +201,11 @@ public abstract class Obj extends Artifact<Obj>
 		return false;
 	}
 
-	public final Useable<ObjectType> type() {
+	public final Usable<ObjectType> type() {
 		return this.type;
 	}
 
-	public final Useable<ObjectValue> value() {
+	public final Usable<ObjectValue> value() {
 		return this.value;
 	}
 

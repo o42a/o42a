@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public abstract class Useable<U> extends User {
+public abstract class Usable<U> extends User {
 
 	private HashMap<User, Use<U>> usedBy;
 
@@ -31,7 +31,7 @@ public abstract class Useable<U> extends User {
 		return user.toUser().use(this);
 	}
 
-	public final Map<User, Use<U>> usedBy() {
+	public final Map<User, Use<U>> getUsedBy() {
 		return this.usedBy;
 	}
 

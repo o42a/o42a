@@ -19,11 +19,11 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.util.use.Useable;
+import org.o42a.util.use.Usable;
 import org.o42a.util.use.User;
 
 
-final class UserObject extends Useable<Obj> {
+final class UserObject extends Usable<Obj> {
 
 	private final Obj object;
 
