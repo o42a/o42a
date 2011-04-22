@@ -37,33 +37,18 @@ public abstract class User implements UserInfo {
 		return new UseCase(name);
 	}
 
-	private HashSet<Use<?>> userOf;
+	private HashSet<Object> userOf;
 	private UseFlag useFlag;
 
 	public final boolean using() {
 		return this.userOf != null && !this.userOf.isEmpty();
 	}
 
-	public final Set<Use<?>> getUserOf() {
+	public final Set<?> getUserOf() {
 		if (this.userOf == null) {
 			return emptySet();
 		}
 		return this.userOf;
-	}
-
-	public void releaseUses() {
-
-		final HashSet<Use<?>> uses = this.userOf;
-
-		if (uses == null) {
-			return;
-		}
-
-		this.userOf = null;
-		for (Use<?> use : this.userOf) {
-			use.release();
-		}
-		uses.clear();
 	}
 
 	@Override
@@ -85,23 +70,16 @@ public abstract class User implements UserInfo {
 
 	protected abstract boolean determineUseBy(UseCase useCase);
 
-	<U> Use<U> use(Usable<U> usable) {
+	<U> U use(Usable<U> usable) {
 
-		final Use<U> use = usable.useBy(this);
+		final U use = usable.useBy(this);
 
 		if (this.userOf == null) {
-			this.userOf = new HashSet<Use<?>>();
+			this.userOf = new HashSet<Object>();
 		}
 		this.userOf.add(use);
 
 		return use;
-	}
-
-	void release(Use<?> use) {
-		if (this.userOf == null) {
-			return;
-		}
-		this.userOf.remove(use);
 	}
 
 }

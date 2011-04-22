@@ -25,13 +25,13 @@ import java.util.Map;
 
 public abstract class Usable<U> extends User {
 
-	private HashMap<User, Use<U>> usedBy;
+	private HashMap<User, U> usedBy;
 
-	public final Use<U> useBy(UserInfo user) {
+	public final U useBy(UserInfo user) {
 		return user.toUser().use(this);
 	}
 
-	public final Map<User, Use<U>> getUsedBy() {
+	public final Map<User, U> getUsedBy() {
 		return this.usedBy;
 	}
 
@@ -58,27 +58,23 @@ public abstract class Usable<U> extends User {
 		return false;
 	}
 
-	final Use<U> useBy(User user) {
+	final U useBy(User user) {
 		if (this.usedBy == null) {
-			this.usedBy = new HashMap<User, Use<U>>(1);
+			this.usedBy = new HashMap<User, U>(1);
 		} else {
 
-			final Use<U> found = this.usedBy.get(user);
+			final U found = this.usedBy.get(user);
 
 			if (found != null) {
 				return found;
 			}
 		}
 
-		final Use<U> use = new Use<U>(user, createUsed(user), this);
+		final U use = createUsed(user);
 
 		this.usedBy.put(user, use);
 
 		return use;
-	}
-
-	final void released(Use<U> use) {
-		this.usedBy.remove(use.getUser());
 	}
 
 }
