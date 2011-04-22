@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,18 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.ir.object;
 
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberId;
+import org.o42a.codegen.code.Code;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValOp;
 
 
-public interface ClauseContainer {
+public interface ObjValOp {
 
-	Clause[] getImplicitClauses();
+	void writeLogicalValue(CodeDirs dirs);
 
-	Clause clause(MemberId memberId, Obj declaredIn);
+	ValOp writeValue(Code code);
 
-	Clause toClause();
+	ValOp writeValue(CodeDirs dirs);
+
+	ValOp writeValue(CodeDirs dirs, ValOp result);
 
 }

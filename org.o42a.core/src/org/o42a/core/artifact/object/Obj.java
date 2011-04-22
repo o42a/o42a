@@ -21,6 +21,8 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
+import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
+import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
@@ -52,10 +54,12 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.use.Useable;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class Obj extends Artifact<Obj>
-		implements Container, ClauseContainer {
+		implements Container, ClauseContainer, UserInfo {
 
 	public static final MemberId SCOPE_MEMBER_ID = memberName("_scope");
 
@@ -69,7 +73,12 @@ public abstract class Obj extends Artifact<Obj>
 		return new ObjectFieldIR(generator, field);
 	}
 
-	private Resolution resolution = Resolution.NOT_RESOLVED;
+	private final UserObject user = new UserObject(this);
+
+	private final ObjectType.UseableObjectType type =
+		new ObjectType.UseableObjectType(this);
+	private final ObjectValue.UseableObjectValue value =
+		new ObjectValue.UseableObjectValue(this);
 
 	private final HashMap<MemberKey, Member> members =
 		new HashMap<MemberKey, Member>();
@@ -81,10 +90,7 @@ public abstract class Obj extends Artifact<Obj>
 	private boolean resolveAll;
 	private ValueType<?> valueType;
 
-	private Ascendants ascendants;
-
 	private Definitions definitions;
-	private Value<?> value;
 
 	private ObjectIR ir;
 	private ObjectValueIR valueIR;
@@ -116,14 +122,13 @@ public abstract class Obj extends Artifact<Obj>
 		return ArtifactKind.OBJECT;
 	}
 
-	@Override
-	public final Container getContainer() {
-		return this;
+	public ConstructionMode getConstructionMode() {
+		return objectType().getAscendants().getConstructionMode();
 	}
 
-	public ConstructionMode getConstructionMode() {
-		resolve();
-		return this.ascendants.getConstructionMode();
+	@Override
+	public final Useable<Obj> toUser() {
+		return this.user;
 	}
 
 	@Override
@@ -171,8 +176,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public Directive toDirective() {
-		resolve();
-		return this.ascendants.getDirective();
+		return objectType().getAscendants().getDirective();
 	}
 
 	public Obj getWrapped() {
@@ -197,28 +201,31 @@ public abstract class Obj extends Artifact<Obj>
 		return false;
 	}
 
+	public final Useable<ObjectType> type() {
+		return this.type;
+	}
+
+	public final Useable<ObjectValue> value() {
+		return this.value;
+	}
+
+	@Deprecated
 	public final Ascendants getAscendants() {
-		resolve();
-		return this.ascendants;
+		return objectType().getAscendants();
 	}
 
+	@Deprecated
 	public TypeRef getAncestor() {
-		return getAscendants().getAncestor();
+		return objectType().getAncestor();
 	}
 
-	/**
-	 * Object samples in descending precedence order.
-	 *
-	 * <p>This is an order reverse to their appearance in source code.</p>
-	 *
-	 * @return array of object samples.
-	 */
+	@Deprecated
 	public final Sample[] getSamples() {
-		return getAscendants().getSamples();
+		return objectType().getSamples();
 	}
 
 	public final boolean membersResolved() {
-		return this.resolution.membersResolved();
+		return objectType().getResolution().membersResolved();
 	}
 
 	public Collection<Member> getMembers() {
@@ -367,65 +374,25 @@ public abstract class Obj extends Artifact<Obj>
 		return ancestor.getType().inherits(other);
 	}
 
+	@Deprecated
 	public final boolean derivedFrom(Obj other) {
-		return derivedFrom(other, Derivation.ANY, Integer.MAX_VALUE);
+		return objectType().derivedFrom(
+				other.objectType(),
+				Derivation.ANY,
+				Integer.MAX_VALUE);
 	}
 
+	@Deprecated
 	public final boolean derivedFrom(Obj other, Derivation derivation) {
-		return derivedFrom(other, derivation, Integer.MAX_VALUE);
+		return objectType().derivedFrom(
+				other.objectType(),
+				derivation,
+				Integer.MAX_VALUE);
 	}
 
+	@Deprecated
 	public boolean derivedFrom(Obj other, Derivation derivation, int depth) {
-		if (derivation.match(this, other)) {
-			return true;
-		}
-
-		final int newDepth = depth - 1;
-
-		if (newDepth < 0) {
-			return false;
-		}
-
-		if (derivation.acceptAncestor()) {
-
-			final TypeRef ancestor = getAncestor();
-
-			if (ancestor != null) {
-				if (ancestor.getType().derivedFrom(
-						other,
-						derivation,
-						newDepth)) {
-					return true;
-				}
-			}
-		}
-
-		if (derivation.acceptsSamples()) {
-			for (Sample sample : getSamples()) {
-				if (!derivation.acceptSample(sample)) {
-					continue;
-				}
-				if (sample.getType().derivedFrom(
-						other,
-						derivation,
-						newDepth)) {
-					return true;
-				}
-			}
-			for (Sample sample : getAscendants().getDiscardedSamples()) {
-				if (!derivation.acceptSample(sample)) {
-					continue;
-				}
-				if (sample.getType().derivedFrom(
-						other,
-						derivation,
-						newDepth)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return objectType().derivedFrom(other.objectType(), derivation, depth);
 	}
 
 	public final boolean cloneOf(Obj other) {
@@ -456,24 +423,27 @@ public abstract class Obj extends Artifact<Obj>
 			this.objectMembers.registerMembers(resolveAdapters);
 			return;
 		}
-		if (!this.resolution.membersResolved()) {
+
+		final ObjectType objectType = objectType();
+
+		if (!objectType.getResolution().membersResolved()) {
 			if (!resolveIfNotResolving()) {
 				return;
 			}
 
-			final Resolution resolution = this.resolution;
+			final ObjectResolution resolution = objectType.getResolution();
 
 			if (resolution.typeResolved() && !resolution.membersResolved()) {
 				// resolution is not in progress - resolve members
 				// otherwise members are empty
-				this.resolution = Resolution.RESOLVING_MEMBERS;
+				objectType.setResolution(RESOLVING_MEMBERS);
 				try {
 					declareMembers();
 					this.objectMembers.registerMembers(resolveAdapters);
 				} finally {
-					this.resolution = resolution;
+					objectType.setResolution(resolution);
 				}
-				this.resolution = Resolution.MEMBERS_RESOLVED;
+				objectType.setResolution(MEMBERS_RESOLVED);
 				updateMembers();
 				this.objectMembers.registerMembers(resolveAdapters);
 			}
@@ -572,25 +542,14 @@ public abstract class Obj extends Artifact<Obj>
 		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
+	@Deprecated
 	public final Value<?> getValue() {
-		if (this.value == null) {
-			this.value = calculateValue(getScope());
-		}
-		return this.value;
+		return this.value.getValue().getValue();
 	}
 
+	@Deprecated
 	public final Value<?> value(Scope scope) {
-		assertCompatible(scope);
-
-		final Value<?> result;
-
-		if (scope == getScope()) {
-			result = getValue();
-		} else {
-			result = calculateValue(scope);
-		}
-
-		return result;
+		return this.value.getValue().value(scope);
 	}
 
 	@Override
@@ -675,11 +634,11 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected final void resolve() {
-		resolve(false);
+		objectType().resolve(false);
 	}
 
 	protected final boolean resolveIfNotResolving() {
-		return resolve(true);
+		return objectType().resolve(true);
 	}
 
 	protected void postResolve() {
@@ -694,7 +653,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected ValueType<?> resolveValueType() {
-		return getAncestor().getType().getValueType();
+		return objectType().getAncestor().getType().getValueType();
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
@@ -716,6 +675,10 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
 		return new ObjectValueIR(objectIR);
+	}
+
+	final ObjectType objectType() {
+		return this.type.getType();
 	}
 
 	final Map<MemberKey, Member> members() {
@@ -803,32 +766,6 @@ public abstract class Obj extends Artifact<Obj>
 		return dep;
 	}
 
-	private final boolean resolve(boolean skipIfResolving) {
-		if (this.resolution == Resolution.NOT_RESOLVED) {
-			try {
-				this.resolution = Resolution.RESOLVING_TYPE;
-				assignAscendants();
-			} finally {
-				this.resolution = Resolution.NOT_RESOLVED;
-			}
-			this.resolution = Resolution.TYPE_RESOLVED;
-			this.ascendants.validate();
-			postResolve();
-			this.resolution = Resolution.POST_RESOLVED;
-		} else if (this.resolution == Resolution.RESOLVING_TYPE) {
-			if (!skipIfResolving) {
-				getLogger().recursiveResolution(this, this);
-			}
-			return false;
-		}
-
-		return this.resolution.resolved();
-	}
-
-	private void assignAscendants() {
-		this.ascendants = buildAscendants();
-	}
-
 	private void assignValueType() {
 		if (this.valueType == null) {
 			setValueType(resolveValueType());
@@ -889,36 +826,6 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return ancestorDefinitions;
-	}
-
-	private enum Resolution {
-
-		NOT_RESOLVED(0),
-		RESOLVING_TYPE(-1),
-		TYPE_RESOLVED(1),
-		POST_RESOLVED(2),
-		RESOLVING_MEMBERS(-3),
-		MEMBERS_RESOLVED(3);
-
-		private final int code;
-
-		Resolution(int code) {
-			this.code = code;
-		}
-
-		boolean resolved() {
-			return this.code >= POST_RESOLVED.code;
-		}
-
-		boolean membersResolved() {
-			return (this.code >= MEMBERS_RESOLVED.code
-					|| this.code < RESOLVING_MEMBERS.code);
-		}
-
-		boolean typeResolved() {
-			return this.code > 0;
-		}
-
 	}
 
 }

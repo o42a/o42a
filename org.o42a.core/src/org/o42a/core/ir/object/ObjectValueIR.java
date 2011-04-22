@@ -31,6 +31,7 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.value.ObjectIRLocals;
 import org.o42a.core.ir.object.value.ObjectValueIRCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueIRValFunc;
@@ -65,6 +66,10 @@ public class ObjectValueIR {
 
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
+	}
+
+	public ObjValOp op(CodeBuilder builder, Code code) {
+		return getObjectIR().op(builder, code);
 	}
 
 	@Override
