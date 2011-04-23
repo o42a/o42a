@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -31,12 +30,14 @@ final class MemberOverride extends Sample {
 	private final TypeRef ancestor;
 	private final StaticTypeRef typeRef;
 
-	MemberOverride(final Scope scope, final Member overriddenMember) {
-		super(overriddenMember, scope);
+	MemberOverride(Member overriddenMember, Ascendants ascendants) {
+		super(overriddenMember, ascendants);
 		this.overriddenMember = overriddenMember;
-		this.ancestor = getObject().getAncestor().upgradeScope(scope);
+		this.ancestor =
+			getObject().type().useBy(getAscendants()).getAncestor()
+			.upgradeScope(getScope());
 		this.typeRef =
-			getObject().fixedRef(scope.distribute()).toStaticTypeRef();
+			getObject().fixedRef(getScope().distribute()).toStaticTypeRef();
 	}
 
 	@Override
@@ -71,7 +72,7 @@ final class MemberOverride extends Sample {
 
 	@Override
 	protected final Obj getObject() {
-		return this.overriddenMember.getSubstance().toObject();
+		return this.overriddenMember.substance(getAscendants()).toObject();
 	}
 
 }

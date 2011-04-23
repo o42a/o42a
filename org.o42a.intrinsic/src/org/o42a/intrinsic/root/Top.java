@@ -21,20 +21,12 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.ScopePlace.TOP_PLACE;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -43,16 +35,19 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableData;
+import org.o42a.util.use.User;
 
 
 public final class Top extends AbstractScope implements Container {
 
 	private final LoggableData loggableData = new LoggableData(this);
 	private final CompilerContext context;
-	private IR ir;
+	private final UsableTop user;
+	private TopIR ir;
 
 	public Top(CompilerContext context) {
 		this.context = context;
+		this.user = new UsableTop(this);
 	}
 
 	@Override
@@ -93,6 +88,11 @@ public final class Top extends AbstractScope implements Container {
 	@Override
 	public Path getEnclosingScopePath() {
 		return null;
+	}
+
+	@Override
+	public User toUser() {
+		return this.user;
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public final class Top extends AbstractScope implements Container {
 	@Override
 	public ScopeIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = new IR(generator, this);
+			this.ir = new TopIR(generator, this);
 		}
 		return this.ir;
 	}
@@ -166,82 +166,6 @@ public final class Top extends AbstractScope implements Container {
 	@Override
 	public String toString() {
 		return "TOP";
-	}
-
-	private static final class IR extends ScopeIR {
-
-		private final CodeId id;
-
-		IR(Generator generator, Top scope) {
-			super(generator, scope);
-			this.id = generator.id("TOP");
-		}
-
-		@Override
-		public CodeId getId() {
-			return this.id;
-		}
-
-		@Override
-		public void allocate() {
-		}
-
-		@Override
-		protected void targetAllocated() {
-		}
-
-		@Override
-		protected HostOp createOp(CodeBuilder builder, Code code) {
-			return new Op(builder, getScope());
-		}
-
-	}
-
-	private static final class Op implements HostOp {
-
-		private final CodeBuilder builder;
-		private final Scope scope;
-
-		public Op(CodeBuilder builder, Scope scope) {
-			this.builder = builder;
-			this.scope = scope;
-		}
-
-		@Override
-		public Generator getGenerator() {
-			return this.builder.getGenerator();
-		}
-
-		@Override
-		public CodeBuilder getBuilder() {
-			return this.builder;
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.scope.getContext();
-		}
-
-		@Override
-		public ObjectOp toObject(CodeDirs dirs) {
-			return null;
-		}
-
-		@Override
-		public LocalOp toLocal() {
-			return null;
-		}
-
-		@Override
-		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
-			return null;
-		}
-
-		@Override
-		public ObjOp materialize(CodeDirs dirs) {
-			throw new UnsupportedOperationException();
-		}
-
 	}
 
 }

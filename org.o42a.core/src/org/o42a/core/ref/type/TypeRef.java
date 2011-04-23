@@ -26,10 +26,12 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class TypeRef extends RescopableRef<TypeRef> {
@@ -71,6 +73,18 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		return artifact.materialize().getConstructionMode();
 	}
 
+	public ObjectType type(UserInfo user) {
+
+		final Obj type = getType();
+
+		if (type == null) {
+			return null;
+		}
+
+		return type.type().useBy(user);
+	}
+
+	@Deprecated
 	public Obj getType() {
 
 		final Obj type = this.type;

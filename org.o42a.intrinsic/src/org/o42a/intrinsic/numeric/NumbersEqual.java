@@ -48,7 +48,7 @@ abstract class NumbersEqual<P extends Number>
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
+		return new Ascendants(this).setAncestor(
 				getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));

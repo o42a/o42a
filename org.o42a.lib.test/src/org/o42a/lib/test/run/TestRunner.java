@@ -26,9 +26,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.common.PlainObject;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -44,6 +42,7 @@ import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
+import org.o42a.util.use.UserInfo;
 
 
 final class TestRunner extends PlainObject {
@@ -68,7 +67,10 @@ final class TestRunner extends PlainObject {
 			return;
 		}
 
-		if (test.derivedFrom(module.getTest())) {
+		final UserInfo user = sentence.getScope();
+		final ObjectType testType = module.test(user);
+
+		if (test.type().useBy(user).derivedFrom(testType)) {
 			run(
 					sentence,
 					testName(sentence, field, test),
@@ -77,14 +79,15 @@ final class TestRunner extends PlainObject {
 			return;
 		}
 
-		final Member adapterMember = test.member(adapterId(module.getTest()));
+		final Member adapterMember =
+			test.member(adapterId(testType.getObject()));
 
 		if (adapterMember == null) {
 			return;
 		}
 
 		final Artifact<?> adapterArtifact =
-			adapterMember.toField().getArtifact();
+			adapterMember.toField(user).getArtifact();
 
 		if (!adapterArtifact.isValid()) {
 			return;
@@ -126,8 +129,9 @@ final class TestRunner extends PlainObject {
 			Field<?> field,
 			Obj test) {
 
-		final Obj nameObject = test.member("name").getSubstance().toObject();
-		final Value<?> nameValue = nameObject.getValue();
+		final UserInfo user = sentence.getScope();
+		final Obj nameObject = test.member("name").substance(user).toObject();
+		final Value<?> nameValue = nameObject.value().useBy(user).getValue();
 
 		if (!nameValue.isDefinite()) {
 			sentence.getLogger().indefiniteValue(nameObject);

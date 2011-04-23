@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.compiler.ip.phrase.part.NextClause.clauseNotFound;
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.LinkedList;
 
@@ -149,8 +150,11 @@ final class MainPhraseContext extends PhraseContext {
 
 		for (StaticTypeRef sample : getAscendants().getSamples()) {
 
-			final NextClause found =
-				findClause(sample.getType(), location, memberId, what);
+			final NextClause found = findClause(
+					sample.type(dummyUser()).getObject(),
+					location,
+					memberId,
+					what);
 
 			if (found.found()) {
 				return found;
@@ -160,8 +164,11 @@ final class MainPhraseContext extends PhraseContext {
 		if (this.implicitAscendants != null) {
 			for (Sample sample : this.implicitAscendants.getSamples()) {
 
-				final NextClause found =
-					findClause(sample.getType(), location, memberId, what);
+				final NextClause found = findClause(
+						sample.type(dummyUser()).getObject(),
+						location,
+						memberId,
+						what);
 
 				if (found != null) {
 					return found;
@@ -173,8 +180,11 @@ final class MainPhraseContext extends PhraseContext {
 
 		if (ancestor != null) {
 
-			final NextClause found =
-				findClause(ancestor.getType(), location, memberId, what);
+			final NextClause found = findClause(
+					ancestor.type(dummyUser()).getObject(),
+					location,
+					memberId,
+					what);
 
 			if (found.found()) {
 				return found;
@@ -187,7 +197,7 @@ final class MainPhraseContext extends PhraseContext {
 			if (implicitAncestor != null) {
 
 				final NextClause found = findClause(
-						implicitAncestor.getType(),
+						implicitAncestor.type(dummyUser()).getObject(),
 						location,
 						memberId,
 						what);

@@ -28,6 +28,7 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
 import static org.o42a.core.member.local.Dep.fieldDep;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
 
@@ -75,8 +76,8 @@ public abstract class Obj extends Artifact<Obj>
 
 	private final UserObject user = new UserObject(this);
 
-	private final ObjectType.UseableObjectType type =
-		new ObjectType.UseableObjectType(this);
+	private final ObjectType.UsableObjectType type =
+		new ObjectType.UsableObjectType(this);
 	private final ObjectValue.UseableObjectValue value =
 		new ObjectValue.UseableObjectValue(this);
 
@@ -278,18 +279,18 @@ public abstract class Obj extends Artifact<Obj>
 			}
 		}
 
-		for (Sample sample : getSamples()) {
+		for (Sample sample : objectType().getSamples()) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					sample.getType().getImplicitClauses());
+					sample.type(dummyUser()).getObject().getImplicitClauses());
 		}
 
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor != null) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					ancestor.getType().getImplicitClauses());
+					ancestor.type(dummyUser()).getObject().getImplicitClauses());
 		}
 
 		return this.implicitClauses = implicitClauses;
@@ -360,6 +361,7 @@ public abstract class Obj extends Artifact<Obj>
 		return found.member(declaredIn, accessor);
 	}
 
+	@Deprecated
 	public boolean inherits(Artifact<?> other) {
 		if (this == other) {
 			return true;
@@ -474,7 +476,7 @@ public abstract class Obj extends Artifact<Obj>
 		final Path adapterPath = adapter.getKey().toPath();
 
 		final Artifact<?> adapterArtifact =
-			adapter.getSubstance().toArtifact();
+			adapter.substance(this).toArtifact();
 		final Obj adapterObject = adapterArtifact.toObject();
 
 		if (adapterObject != null) {
@@ -493,14 +495,14 @@ public abstract class Obj extends Artifact<Obj>
 
 		if (typeRef != null) {
 
-			final Obj type = typeRef.getType();
+			final ObjectType type = typeRef.type(this);
 
 			if (type == null) {
 				return null;
 			}
 
 			final Member foundInAdapterLink =
-				type.objectMember(user, memberId, declaredIn);
+				type.getObject().objectMember(user, memberId, declaredIn);
 
 			if (foundInAdapterLink == null) {
 				return null;
@@ -653,7 +655,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected ValueType<?> resolveValueType() {
-		return objectType().getAncestor().getType().getValueType();
+		return objectType().getAncestor().type(this).getObject().getValueType();
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
@@ -780,14 +782,14 @@ public abstract class Obj extends Artifact<Obj>
 		}
 		declareMembers(this.objectMembers);
 
-		for (Sample sample : getSamples()) {
+		for (Sample sample : objectType().getSamples()) {
 			sample.deriveMembers(this.objectMembers);
 		}
 
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor != null) {
-			this.objectMembers.deriveMembers(ancestor.getType());
+			this.objectMembers.deriveMembers(ancestor.type(this).getObject());
 		}
 	}
 
@@ -816,13 +818,14 @@ public abstract class Obj extends Artifact<Obj>
 	private Definitions getAncestorDefinitions() {
 
 		final Definitions ancestorDefinitions;
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor == null) {
 			ancestorDefinitions = null;
 		} else {
 			ancestorDefinitions =
-				ancestor.getType().getDefinitions().upgradeScope(getScope());
+				ancestor.type(this).getObject()
+				.getDefinitions().upgradeScope(getScope());
 		}
 
 		return ancestorDefinitions;

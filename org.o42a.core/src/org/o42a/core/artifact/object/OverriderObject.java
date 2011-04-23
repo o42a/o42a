@@ -42,10 +42,10 @@ final class OverriderObject extends PlainObject {
 	@Override
 	protected Ascendants buildAscendants() {
 
-		final Ascendants ascendants = new Ascendants(this.field);
+		final Ascendants ascendants = new Ascendants(this);
 
 		return this.field.buildAscendants(
-				deriveSamples(this.field, ascendants));
+				deriveSamples(this, this.field, ascendants));
 	}
 
 	@Override

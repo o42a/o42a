@@ -51,7 +51,7 @@ public abstract class Usable<U> extends User {
 			return false;
 		}
 		for (User user : this.usedBy.keySet()) {
-			if (user.usedBy(useCase)) {
+			if (user.isUsedBy(useCase)) {
 				return true;
 			}
 		}

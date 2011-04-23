@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -228,11 +229,12 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final Obj object = getObjectIR().getObject();
 
 		for (Member declared : ascendant.getMembers()) {
-			if (declared.toField() == null) {
+			if (declared.toField(dummyUser()) == null) {
 				continue;
 			}
 
-			final Field<?> field = object.member(declared.getKey()).toField();
+			final Field<?> field =
+				object.member(declared.getKey()).toField(dummyUser());
 			final FieldIRBase<?> fieldIR = field.ir(generator);
 			final Fld fld = fieldIR.allocate(data, this);
 

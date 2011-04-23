@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.def.Rescoper.wrapper;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
@@ -28,6 +29,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
@@ -55,8 +57,9 @@ public abstract class ObjectWrap extends PlainObject {
 	protected void declareMembers(ObjectMembers members) {
 
 		final Obj wrapped = getWrapped();
+		final ObjectType type = type().useBy(dummyUser());
 
-		for (Member inherited : getAncestor().getType().getMembers()) {
+		for (Member inherited : type.getAncestor().getType().getMembers()) {
 
 			// find the member from ancestor in wrapped object
 			final Member member = wrapped.member(inherited.getKey());
@@ -70,7 +73,7 @@ public abstract class ObjectWrap extends PlainObject {
 				continue;
 			}
 
-			members.addMember(member.wrap(inherited, this));
+			members.addMember(member.wrap(this, inherited, this));
 		}
 	}
 

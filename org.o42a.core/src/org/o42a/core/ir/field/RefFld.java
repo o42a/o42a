@@ -21,6 +21,7 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -176,7 +177,8 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 	protected final Obj targetType(Obj bodyType) {
 
-		final Field<?> actual = bodyType.member(getField().getKey()).toField();
+		final Field<?> actual =
+			bodyType.member(getField().getKey()).toField(dummyUser());
 		final Artifact<?> artifact = actual.getArtifact();
 		final Obj object = artifact.toObject();
 

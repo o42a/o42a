@@ -68,7 +68,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
+		return new Ascendants(this).setAncestor(
 				getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));
@@ -87,9 +87,10 @@ public abstract class ByString<T> extends IntrinsicObject {
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 
-		final Field<?> inputField = INPUT.fieldOf(scope);
+		final Field<?> inputField = INPUT.fieldOf(scope, scope);
 		final Value<?> inputValue =
-			inputField.getArtifact().materialize().getValue();
+			inputField.getArtifact().materialize()
+			.value().useBy(scope).getValue();
 
 		if (!inputValue.isDefinite()) {
 			return getValueType().runtimeValue();

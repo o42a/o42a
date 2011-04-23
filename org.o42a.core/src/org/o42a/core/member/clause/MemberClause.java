@@ -26,6 +26,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class MemberClause extends Member {
@@ -77,12 +78,12 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public final Field<?> toField() {
+	public final Field<?> toField(UserInfo user) {
 		return null;
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocal(UserInfo user) {
 		return null;
 	}
 
@@ -102,7 +103,7 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public Container getSubstance() {
+	public Container substance(UserInfo user) {
 		return toClause().getContainer();
 	}
 
@@ -117,7 +118,7 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public Member wrap(Member inherited, Container container) {
+	public Member wrap(UserInfo user, Member inherited, Container container) {
 		switch (getDeclaration().getKind()) {
 		case GROUP:
 			return new GroupClauseWrap(

@@ -152,7 +152,7 @@ public class Root extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope()).setAncestor(
+		return new Ascendants(this).setAncestor(
 				new RootAncestor(
 						new Location(
 								getContext(),

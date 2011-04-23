@@ -60,25 +60,29 @@ public abstract class IntrinsicObject extends PlainObject {
 
 		if (field.isOverride()) {
 
-			final Obj container = getScope().getEnclosingContainer().toObject();
-			final TypeRef ancestor = container.getAncestor();
+			final ObjectType containerType =
+				getScope().getEnclosingContainer().toObject()
+				.type().useBy(ascendants);
+			final TypeRef ancestor = containerType.getAncestor();
 
 			if (ancestor != null) {
 
 				final Member overridden =
-					ancestor.getType().member(field.getKey());
+					ancestor.type(ascendants)
+					.getObject().member(field.getKey());
 
 				if (overridden != null) {
 					ascendants = ascendants.addMemberOverride(overridden);
 				}
 			}
 
-			final Sample[] containerSamples = container.getSamples();
+			final Sample[] containerSamples = containerType.getSamples();
 
 			for (int i = containerSamples.length - 1; i >= 0; --i) {
 
 				final Member overridden =
-					containerSamples[i].getType().member(field.getKey());
+					containerSamples[i].type(ascendants)
+					.getObject().member(field.getKey());
 
 				if (overridden != null) {
 					ascendants = ascendants.addMemberOverride(overridden);

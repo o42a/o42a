@@ -175,7 +175,7 @@ public final class ValuePartRef extends Expression {
 		private Ascendants createAscendants(
 				final Definitions definitions,
 				final ValueType<?> valueType) {
-			return new Ascendants(getScope()).setAncestor(
+			return new Ascendants(this).setAncestor(
 					valueType.typeRef(
 							definitions,
 							getScope().getEnclosingScope()));

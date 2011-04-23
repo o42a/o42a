@@ -206,8 +206,10 @@ public final class ComparisonRef extends ObjectConstructor {
 			}
 
 			final Field<?> field =
-				scope.getContainer().member(this.comparisonKey).toField();
-			final Value<?> value = field.getArtifact().toObject().getValue();
+				scope.getContainer().member(this.comparisonKey).toField(scope);
+			final Value<?> value =
+				field.getArtifact().toObject()
+				.value().useBy(scope).getValue();
 
 			if (!value.isDefinite()) {
 				// Value could not be determined at compile-time.

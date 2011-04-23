@@ -31,6 +31,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.util.use.UserInfo;
 
 
 final class PropagatedLocalScope extends LocalScope {
@@ -147,7 +148,8 @@ final class PropagatedLocalScope extends LocalScope {
 		}
 
 		@Override
-		public LocalScope toLocal() {
+		public LocalScope toLocal(UserInfo user) {
+			this.localScope.toUser().useBy(user);
 			return this.localScope;
 		}
 

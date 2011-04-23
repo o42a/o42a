@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.Member;
 
@@ -55,7 +57,7 @@ final class DeclaredMemberField extends MemberField {
 		final Member[] overridden = getOverridden();
 
 		if (overridden.length > 0) {
-			kind = overridden[0].toField().getArtifact().getKind();
+			kind = overridden[0].toField(dummyUser()).getArtifact().getKind();
 		} else if (getDeclaration().isVariable()) {
 			kind = ArtifactKind.VARIABLE;
 		} else if (getDeclaration().isLink()) {

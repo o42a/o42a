@@ -123,10 +123,11 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 		final Obj operandObject =
 			scope.getContainer()
 			.member(operandKey())
-			.getSubstance()
+			.substance(scope)
 			.toArtifact()
 			.materialize();
-		final Value<?> operandValue = operandObject.getValue();
+		final Value<?> operandValue =
+			operandObject.value().useBy(scope).getValue();
 
 		if (operandValue.isFalse()) {
 			return getResultType().falseValue();

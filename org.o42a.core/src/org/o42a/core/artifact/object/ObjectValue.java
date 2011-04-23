@@ -19,10 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjValOp;
 import org.o42a.core.value.Value;
 import org.o42a.util.use.User;
 
@@ -59,10 +56,6 @@ public final class ObjectValue {
 		}
 
 		return result;
-	}
-
-	public final ObjValOp write(CodeBuilder builder, Code code) {
-		return this.object.valueIR(builder.getGenerator()).op(builder, code);
 	}
 
 	@Override

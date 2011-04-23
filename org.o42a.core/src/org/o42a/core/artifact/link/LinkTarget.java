@@ -59,8 +59,7 @@ class LinkTarget extends ObjectWrap {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope())
-		.setAncestor(this.link.getTypeRef());
+		return new Ascendants(this).setAncestor(this.link.getTypeRef());
 	}
 
 }

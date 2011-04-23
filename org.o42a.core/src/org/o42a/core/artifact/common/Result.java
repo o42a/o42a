@@ -47,7 +47,7 @@ public abstract class Result extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope()).setAncestor(
+		return new Ascendants(this).setAncestor(
 				getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));

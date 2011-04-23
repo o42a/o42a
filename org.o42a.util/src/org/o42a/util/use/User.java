@@ -56,7 +56,7 @@ public abstract class User implements UserInfo {
 		return this;
 	}
 
-	public boolean usedBy(UseCase useCase) {
+	public boolean isUsedBy(UseCase useCase) {
 		if (useCase.caseFlag(this.useFlag)) {
 			return this.useFlag.isUsed();
 		}

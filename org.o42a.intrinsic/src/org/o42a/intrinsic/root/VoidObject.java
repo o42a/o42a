@@ -63,7 +63,7 @@ public final class VoidObject extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope());
+		return new Ascendants(this);
 	}
 
 	@Override

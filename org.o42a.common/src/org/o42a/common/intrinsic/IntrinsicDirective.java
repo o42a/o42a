@@ -41,7 +41,7 @@ public abstract class IntrinsicDirective
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
+		return new Ascendants(this).setAncestor(
 				ValueType.VOID.typeRef(
 						this,
 						getScope().getEnclosingScope()));

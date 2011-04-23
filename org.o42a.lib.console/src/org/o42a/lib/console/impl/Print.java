@@ -22,6 +22,7 @@ package org.o42a.lib.console.impl;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
 import org.o42a.common.intrinsic.IntrinsicObject;
@@ -86,8 +87,9 @@ public class Print extends IntrinsicObject {
 		@Override
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
-			final MemberKey textKey =
-				memberName("text").key(getAncestor().getType().getScope());
+			final MemberKey textKey = memberName("text").key(
+					type().useBy(dummyUser()).getAncestor()
+					.type(dummyUser()).getObject().getScope());
 			final CodeBlk cantPrint = code.addBlock("cant_print");
 			final CodeDirs dirs = falseWhenUnknown(code, cantPrint.head());
 			final ObjectOp textObject =

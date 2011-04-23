@@ -149,12 +149,12 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		assertThat(cFoo.getKey(), is(zFoo.getKey()));
 		assertTrue(cFoo.isPropagated());
 
-		final Field<?> baFoo = this.b.member(aFoo.getKey()).toField();
+		final Field<?> baFoo = this.b.member(aFoo.getKey()).toField(USE_CASE);
 
 		assertEquals(12L, definiteValue(baFoo));
 		assertFalse(baFoo.isPropagated());
 
-		final Field<?> caFoo = this.c.member(aFoo.getKey()).toField();
+		final Field<?> caFoo = this.c.member(aFoo.getKey()).toField(USE_CASE);
 
 		assertEquals(12L, definiteValue(caFoo));
 		assertTrue(caFoo.isPropagated());

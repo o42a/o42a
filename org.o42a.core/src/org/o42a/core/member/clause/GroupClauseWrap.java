@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -85,7 +87,7 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 		}
 
 		this.localScope =
-			member(wrappedScope.toMember().getKey()).toLocal();
+			member(wrappedScope.toMember().getKey()).toLocal(dummyUser());
 
 		assert this.localScope != null :
 			"Can not wrap local scope: " + wrappedScope;

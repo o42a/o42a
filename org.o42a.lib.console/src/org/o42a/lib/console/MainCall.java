@@ -51,12 +51,16 @@ final class MainCall extends DefinedObject {
 
 	private final TypeRef adapterRef;
 
-	public static MainCall mainCall(Obj consoleModule, Obj module) {
+	public static MainCall mainCall(
+			Generator generator,
+			Obj consoleModule,
+			Obj module) {
 
 		final Obj mainObject =
-			consoleModule.member("main").getSubstance().toObject();
+			consoleModule.member("main").substance(generator).toObject();
 		final AdapterId mainAdapterId = adapterId(mainObject);
-		final Field<?> mainAdapter = module.member(mainAdapterId).toField();
+		final Field<?> mainAdapter =
+			module.member(mainAdapterId).toField(generator);
 
 		if (mainAdapter == null) {
 			return null;

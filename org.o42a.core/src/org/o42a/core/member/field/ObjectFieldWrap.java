@@ -80,7 +80,7 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 		@Override
 		protected Ascendants buildAscendants() {
 
-			final Ascendants ascendants = new Ascendants(getScope());
+			final Ascendants ascendants = new Ascendants(this);
 
 			return ascendants.setAncestor(new AncestorEx(this).toTypeRef());
 		}

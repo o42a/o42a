@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
@@ -69,7 +70,7 @@ final class ParentObjectFragment extends MemberFragment {
 			return null;
 		}
 
-		final Container result = member.getSubstance();
+		final Container result = member.substance(dummyUser());
 
 		walker.up(object, this, result);
 

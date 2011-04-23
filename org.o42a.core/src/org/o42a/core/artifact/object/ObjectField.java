@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.Field;
@@ -58,7 +60,7 @@ public abstract class ObjectField extends Field<Obj> {
 			return false;
 		}
 
-		return getArtifact().derivedFrom(otherObject);
+		return getArtifact().objectType().derivedFrom(otherObject.objectType());
 	}
 
 	@Override
@@ -78,7 +80,7 @@ public abstract class ObjectField extends Field<Obj> {
 		}
 
 		final void init(ObjectField field) {
-			setField(field);
+			setField(dummyUser(), field);
 		}
 
 	}

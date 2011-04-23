@@ -27,12 +27,20 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class Sample extends Scoped {
 
-	public Sample(LocationInfo location, Scope scope) {
-		super(location, scope);
+	private final Ascendants ascendants;
+
+	Sample(LocationInfo location, Ascendants ascendants) {
+		super(location, ascendants.getScope().getEnclosingScope());
+		this.ascendants = ascendants;
+	}
+
+	public final Ascendants getAscendants() {
+		return this.ascendants;
 	}
 
 	public abstract TypeRef getAncestor();
@@ -45,6 +53,11 @@ public abstract class Sample extends Scoped {
 
 	public abstract StaticTypeRef getExplicitAscendant();
 
+	public final ObjectType type(UserInfo user) {
+		return getTypeRef().type(user);
+	}
+
+	@Deprecated
 	public final Obj getType() {
 		return getTypeRef().getType();
 	}
