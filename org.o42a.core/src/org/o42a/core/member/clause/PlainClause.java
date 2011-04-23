@@ -20,6 +20,7 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
@@ -33,6 +34,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.use.User;
 
 
 public abstract class PlainClause
@@ -105,6 +107,11 @@ public abstract class PlainClause
 	@Override
 	public final Scope getEnclosingScope() {
 		return getEnclosingContainer().getScope();
+	}
+
+	@Override
+	public final User toUser() {
+		return dummyUser();
 	}
 
 	@Override
@@ -207,7 +214,8 @@ public abstract class PlainClause
 			final Obj object2 = other.getContainer().toObject();
 
 			if (object2 != null) {
-				return object1.derivedFrom(object2);
+				return object1.type().useBy(dummyUser()).derivedFrom(
+						object2.type().useBy(dummyUser()));
 			}
 		}
 

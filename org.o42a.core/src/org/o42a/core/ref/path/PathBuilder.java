@@ -22,6 +22,7 @@ package org.o42a.core.ref.path;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -30,6 +31,7 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.use.UserInfo;
 
 
 public final class PathBuilder {
@@ -115,10 +117,10 @@ public final class PathBuilder {
 		return memberOf(scope.getContainer());
 	}
 
-	public final Field<?> fieldOf(Container container) {
+	public final Field<?> fieldOf(UserInfo user, Container container) {
 
 		final Member member = memberOf(container);
-		final Field<?> field = member.toField();
+		final Field<?> field = member.toField(user);
 
 		assert field != null :
 			"Not a field: " + member;
@@ -126,8 +128,8 @@ public final class PathBuilder {
 		return field;
 	}
 
-	public final Field<?> fieldOf(Scope scope) {
-		return fieldOf(scope.getContainer());
+	public final Field<?> fieldOf(UserInfo user, Scope scope) {
+		return fieldOf(user, scope.getContainer());
 	}
 
 	public final boolean cacheCompatible(CompilerContext context) {
@@ -186,7 +188,7 @@ public final class PathBuilder {
 				return path;
 			}
 			i = next;
-			container = member.getSubstance();
+			container = member.substance(dummyUser());
 		}
 	}
 

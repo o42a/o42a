@@ -21,6 +21,7 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.core.LocationInfo;
@@ -54,10 +55,12 @@ public final class Include extends IntrinsicDirective {
 
 		final Block<?> block = context.getBlock();
 		final Obj object = directive.resolve(block.getScope()).materialize();
-		final Field<?> fileField = object.member(this.pathKey).toField();
+		final Field<?> fileField =
+			object.member(this.pathKey).toField(dummyUser());
 		final Sentence<?> sentence = block.propose(directive);
 		final Value<String> value = ValueType.STRING.cast(
-				fileField.getArtifact().materialize().getValue());
+				fileField.getArtifact().materialize()
+				.value().useBy(dummyUser()).getValue());
 		final String file = value.getDefiniteValue();
 
 		if (file == null) {

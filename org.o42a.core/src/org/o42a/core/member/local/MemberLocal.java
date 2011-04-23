@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.local;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -27,6 +29,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class MemberLocal extends Member {
@@ -51,18 +54,18 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final Field<?> toField() {
+	public final Field<?> toField(UserInfo user) {
 		return null;
 	}
 
 	@Override
 	public final Clause toClause() {
-		return toLocal().toClause();
+		return toLocal(dummyUser()).toClause();
 	}
 
 	@Override
-	public final Container getSubstance() {
-		return toLocal();
+	public final Container substance(UserInfo user) {
+		return toLocal(user);
 	}
 
 	@Override
@@ -95,7 +98,7 @@ public abstract class MemberLocal extends Member {
 		assert owner != null :
 			scope + " is not object";
 
-		return toLocal().propagateTo(owner).toMember();
+		return toLocal(scope).propagateTo(owner).toMember();
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public Member wrap(Member inherited, Container container) {
+	public Member wrap(UserInfo user, Member inherited, Container container) {
 		throw new UnsupportedOperationException();
 	}
 

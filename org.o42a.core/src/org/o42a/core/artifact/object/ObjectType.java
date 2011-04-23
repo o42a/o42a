@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
+
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.User;
 
@@ -26,7 +28,7 @@ import org.o42a.util.use.User;
 public final class ObjectType {
 
 	private final Obj object;
-	private ObjectResolution resolution = ObjectResolution.NOT_RESOLVED;
+	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 
 	private ObjectType(Obj object) {
@@ -57,6 +59,20 @@ public final class ObjectType {
 		return getAscendants().getSamples();
 	}
 
+	public boolean inherits(ObjectType other) {
+		if (getObject() == other.getObject()) {
+			return true;
+		}
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor == null) {
+			return false;
+		}
+
+		return ancestor.type(getObject()).inherits(other);
+	}
+
 	public final boolean derivedFrom(ObjectType other) {
 		return derivedFrom(other, Derivation.ANY, Integer.MAX_VALUE);
 	}
@@ -85,7 +101,7 @@ public final class ObjectType {
 
 			if (ancestor != null) {
 
-				final ObjectType ancestorType = ancestor.getType().objectType();
+				final ObjectType ancestorType = ancestor.type(getObject());
 
 				if (ancestorType.derivedFrom(other, derivation, newDepth)) {
 					return true;
@@ -99,7 +115,7 @@ public final class ObjectType {
 					continue;
 				}
 
-				final ObjectType sampleType = sample.getType().objectType();
+				final ObjectType sampleType = sample.type(getObject());
 
 				if (sampleType.derivedFrom(other, derivation, newDepth)) {
 					return true;
@@ -110,7 +126,7 @@ public final class ObjectType {
 					continue;
 				}
 
-				final ObjectType sampleType = sample.getType().objectType();
+				final ObjectType sampleType = sample.type(getObject());
 
 				if (sampleType.derivedFrom(other, derivation, newDepth)) {
 					return true;
@@ -161,12 +177,11 @@ public final class ObjectType {
 		return this.resolution.resolved();
 	}
 
-	static final class UseableObjectType
-			extends ObjectUsable<ObjectType> {
+	static final class UsableObjectType extends ObjectUsable<ObjectType> {
 
 		private final ObjectType type;
 
-		UseableObjectType(Obj object) {
+		UsableObjectType(Obj object) {
 			super(object);
 			this.type = new ObjectType(object);
 		}

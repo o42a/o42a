@@ -63,7 +63,7 @@ public class FloatObject extends IntrinsicType {
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
+		return new Ascendants(this).setAncestor(
 				absolutePath(getContext(), "number")
 				.target(
 						this,

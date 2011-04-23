@@ -26,6 +26,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.User;
 
 
 public abstract class ObjectScope extends AbstractScope {
@@ -74,6 +75,11 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	@Override
+	public User toUser() {
+		return this.object.toUser();
+	}
+
+	@Override
 	public final Member toMember() {
 		return null;
 	}
@@ -104,7 +110,8 @@ public abstract class ObjectScope extends AbstractScope {
 			return false;
 		}
 
-		return getContainer().toObject().derivedFrom(otherObject);
+		return getContainer().toObject().objectType().derivedFrom(
+				otherObject.objectType());
 	}
 
 	@Override

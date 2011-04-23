@@ -43,13 +43,13 @@ public class UseTest {
 
 	@Test
 	public void notUsed() {
-		assertFalse(this.usable.usedBy(this.useCase));
+		assertFalse(this.usable.isUsedBy(this.useCase));
 	}
 
 	@Test
 	public void used() {
 		this.usable.useBy(this.useCase);
-		assertTrue(this.usable.usedBy(this.useCase));
+		assertTrue(this.usable.isUsedBy(this.useCase));
 	}
 
 	@Test
@@ -60,8 +60,8 @@ public class UseTest {
 		this.usable.useBy(usable2);
 		usable2.useBy(this.useCase);
 
-		assertTrue(usable2.usedBy(this.useCase));
-		assertTrue(this.usable.usedBy(this.useCase));
+		assertTrue(usable2.isUsedBy(this.useCase));
+		assertTrue(this.usable.isUsedBy(this.useCase));
 	}
 
 	@Test
@@ -72,8 +72,8 @@ public class UseTest {
 		this.usable.useBy(usable2);
 		this.usable.useBy(this.useCase);
 
-		assertFalse(usable2.usedBy(this.useCase));
-		assertTrue(this.usable.usedBy(this.useCase));
+		assertFalse(usable2.isUsedBy(this.useCase));
+		assertTrue(this.usable.isUsedBy(this.useCase));
 	}
 
 	@Test
@@ -90,11 +90,11 @@ public class UseTest {
 		usable4.useBy(usable5);
 		usable5.useBy(this.useCase);
 
-		assertTrue(usable2.usedBy(this.useCase));
-		assertTrue(usable3.usedBy(this.useCase));
-		assertTrue(usable4.usedBy(this.useCase));
-		assertTrue(usable5.usedBy(this.useCase));
-		assertTrue(this.usable.usedBy(this.useCase));
+		assertTrue(usable2.isUsedBy(this.useCase));
+		assertTrue(usable3.isUsedBy(this.useCase));
+		assertTrue(usable4.isUsedBy(this.useCase));
+		assertTrue(usable5.isUsedBy(this.useCase));
+		assertTrue(this.usable.isUsedBy(this.useCase));
 	}
 
 	private static final class TestUsable extends Usable<Integer> {

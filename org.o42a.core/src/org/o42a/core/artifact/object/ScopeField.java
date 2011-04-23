@@ -76,19 +76,22 @@ final class ScopeField extends ObjectField {
 
 		final Obj newArtifact;
 		final Obj newOwner = getEnclosingContainer().toObject();
-		final Obj ancestor = newOwner.getAncestor().getType();
+		final ObjectType newOwnerType = newOwner.type().useBy(this);
+		final Obj ancestor = newOwnerType.getAncestor().getType();
 		final org.o42a.core.member.Member ancestorMember =
 			ancestor.member(getKey());
 
 		if (ancestorMember != null) {
 			// Scope field present in ancestor.
 			// Preserve an ancestor`s scope.
-			newArtifact = ancestorMember.getSubstance().toObject();
+			newArtifact = ancestorMember.substance(this).toObject();
 		} else {
 
-			final Obj origin = getKey().getOrigin().getContainer().toObject();
+			final ObjectType origin =
+				getKey().getOrigin().getContainer().toObject()
+				.type().useBy(this);
 
-			if (newOwner.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
+			if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
 				// Scope field declared in implicit sample.
 				// Update owner with an actual one.
 				newArtifact = newOwner.getEnclosingContainer().toObject();

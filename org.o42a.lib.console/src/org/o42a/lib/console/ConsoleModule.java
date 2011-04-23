@@ -71,7 +71,7 @@ public class ConsoleModule extends Module {
 			return;
 		}
 
-		final MainCall mainCall = mainCall(toObject(), mainModule);
+		final MainCall mainCall = mainCall(generator, toObject(), mainModule);
 
 		if (mainCall != null) {
 			mainCall.generateMain(generator);

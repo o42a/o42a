@@ -22,6 +22,7 @@ package org.o42a.codegen;
 import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
 import static org.o42a.codegen.code.backend.CodeCallback.NOOP_CODE_CALLBACK;
 import static org.o42a.codegen.debug.Debug.DEBUG_CODE_CALLBACK;
+import static org.o42a.util.use.User.useCase;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
@@ -31,11 +32,15 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
+import org.o42a.util.use.UseCase;
+import org.o42a.util.use.User;
+import org.o42a.util.use.UserInfo;
 
 
-public abstract class Generator {
+public abstract class Generator implements UserInfo {
 
 	private final String id;
+	private final UseCase useCase;
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
 	private final Debug debug;
@@ -46,13 +51,23 @@ public abstract class Generator {
 					"Generator identifier not specified");
 		}
 		this.id = id;
+		this.useCase = useCase(id);
 		this.functions = new GeneratorFunctions(this);
 		this.globals = new GeneratorGlobals(this);
 		this.debug = new Debug(this);
 	}
 
-	public String getId() {
+	public final String getId() {
 		return this.id;
+	}
+
+	public final UseCase getUseCase() {
+		return this.useCase;
+	}
+
+	@Override
+	public final User toUser() {
+		return this.useCase;
 	}
 
 	public CodeIdFactory getCodeIdFactory() {

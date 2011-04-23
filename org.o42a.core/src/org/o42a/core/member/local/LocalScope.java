@@ -22,6 +22,7 @@ package org.o42a.core.member.local;
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
 
@@ -43,6 +44,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.Usable;
 
 
 public abstract class LocalScope
@@ -77,12 +79,14 @@ public abstract class LocalScope
 	private final Loggable loggable;
 	private final Obj owner;
 	private final Path ownerScopePath;
+	private final UsableLocal user;
 
 	LocalScope(LocationInfo location, Obj owner) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.owner = owner;
 		this.ownerScopePath = new OwnerPathFragment().toPath();
+		this.user = new UsableLocal(this);
 	}
 
 	@Override
@@ -113,6 +117,11 @@ public abstract class LocalScope
 	@Override
 	public final Container getContainer() {
 		return this;
+	}
+
+	@Override
+	public final Usable<LocalScope> toUser() {
+		return this.user;
 	}
 
 	@Override
@@ -214,7 +223,8 @@ public abstract class LocalScope
 			return false;
 		}
 
-		return getOwner().derivedFrom(otherLocal.getOwner());
+		return getOwner().type().useBy(dummyUser()).derivedFrom(
+				otherLocal.getOwner().type().useBy(dummyUser()));
 	}
 
 	@Override

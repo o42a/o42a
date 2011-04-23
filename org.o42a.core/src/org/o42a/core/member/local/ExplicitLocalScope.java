@@ -20,6 +20,7 @@
 package org.o42a.core.member.local;
 
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.use.UserInfo;
 
 
 final class ExplicitLocalScope extends LocalScope {
@@ -219,7 +221,7 @@ final class ExplicitLocalScope extends LocalScope {
 
 		this.members.put(memberId, old);
 
-		final Field<?> field = old.toField();
+		final Field<?> field = old.toField(dummyUser());
 
 		if (field != null) {
 			getLogger().ambiguousMember(member, field.getDisplayName());
@@ -288,7 +290,8 @@ final class ExplicitLocalScope extends LocalScope {
 		}
 
 		@Override
-		public LocalScope toLocal() {
+		public LocalScope toLocal(UserInfo user) {
+			this.localScope.toUser().useBy(user);
 			return this.localScope;
 		}
 

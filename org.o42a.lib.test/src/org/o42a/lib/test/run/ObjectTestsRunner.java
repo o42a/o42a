@@ -95,7 +95,7 @@ final class ObjectTestsRunner extends DefinedObject {
 
 		for (Member member : object.getMembers()) {
 
-			final Field<?> field = member.toField();
+			final Field<?> field = member.toField(definition.getScope());
 
 			if (field == null) {
 				continue;

@@ -91,7 +91,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 		final Field<?> field =
 			scope.member(this.member.getKey())
-			.toField();
+			.toField(scope);
 		final LogicalValue logicalValue =
 			field.getArtifact()
 			.materialize()
@@ -138,7 +138,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 	@Override
 	protected StOp createOp(LocalBuilder builder) {
-		return new LocalFieldOp(builder, this, this.member.toField());
+		return new LocalFieldOp(builder, this, this.member.toField(getScope()));
 	}
 
 }

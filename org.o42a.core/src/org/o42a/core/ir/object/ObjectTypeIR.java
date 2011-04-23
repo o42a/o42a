@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashMap;
 
@@ -157,7 +158,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 
 		for (Member member : objectIR.getObject().getMembers()) {
 
-			final Field<?> field = member.toField();
+			final Field<?> field = member.toField(dummyUser());
 
 			if (field == null) {
 				continue;

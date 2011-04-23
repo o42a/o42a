@@ -42,6 +42,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.util.use.UserInfo;
 
 
 class PhraseSubContext extends PhraseContext {
@@ -137,7 +138,7 @@ class PhraseSubContext extends PhraseContext {
 		final Distributor distributor = statements.nextDistributor();
 		final LocationInfo location = instance.getLocation();
 		final FieldDeclaration declaration =
-			createDeclaration(location, distributor);
+			createDeclaration(location, distributor, statements.getScope());
 
 		final FieldBuilder builder = statements.field(
 				declaration,
@@ -186,7 +187,8 @@ class PhraseSubContext extends PhraseContext {
 
 	private FieldDeclaration createDeclaration(
 			LocationInfo location,
-			Distributor distributor) {
+			Distributor distributor,
+			UserInfo user) {
 
 		final MemberKey overriddenKey =
 			getClause().toPlainClause().getOverridden();
@@ -208,7 +210,7 @@ class PhraseSubContext extends PhraseContext {
 		}
 
 		final Obj origin = overriddenKey.getOrigin().getContainer().toObject();
-		final Field<?> overridden = origin.member(overriddenKey).toField();
+		final Field<?> overridden = origin.member(overriddenKey).toField(user);
 
 		declaration =
 			declaration.override()

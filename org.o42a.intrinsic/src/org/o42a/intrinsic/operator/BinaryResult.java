@@ -110,10 +110,10 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 		final Obj leftObject =
 			scope.getContainer()
 			.member(leftOperandKey())
-			.getSubstance()
+			.substance(scope)
 			.toArtifact()
 			.materialize();
-		final Value<?> leftValue = leftObject.getValue();
+		final Value<?> leftValue = leftObject.value().useBy(scope).getValue();
 
 		if (leftValue.isFalse()) {
 			return getResultType().falseValue();
@@ -122,10 +122,10 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 		final Obj rightObject =
 			scope.getContainer()
 			.member(rightOperandKey())
-			.getSubstance()
+			.substance(scope)
 			.toArtifact()
 			.materialize();
-		final Value<?> rightValue = rightObject.getValue();
+		final Value<?> rightValue = rightObject.value().useBy(scope).getValue();
 
 		if (rightValue.isFalse()) {
 			return getResultType().falseValue();

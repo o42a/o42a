@@ -47,8 +47,7 @@ final class RuntimeLinkTarget extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope())
-		.setAncestor(this.link.getTypeRef());
+		return new Ascendants(this).setAncestor(this.link.getTypeRef());
 	}
 
 	@Override

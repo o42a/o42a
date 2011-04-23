@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
@@ -67,7 +68,7 @@ public class MemberFragment extends PathFragment {
 
 		walker.member(start.getContainer(), this, member);
 
-		return member.getSubstance();
+		return member.substance(dummyUser());
 	}
 
 	@Override
@@ -87,12 +88,12 @@ public class MemberFragment extends PathFragment {
 		final Member member =
 			this.memberKey.getOrigin().getContainer().member(this.memberKey);
 
-		if (member.toLocal() != null) {
+		if (member.toLocal(dummyUser()) != null) {
 			// Member is a local scope.
 			return start;
 		}
 
-		assert member.toField() != null :
+		assert member.toField(dummyUser()) != null :
 			"Field expected: " + member;
 
 		// Member is field.

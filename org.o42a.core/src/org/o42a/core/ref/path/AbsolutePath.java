@@ -21,6 +21,7 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -56,7 +57,7 @@ public final class AbsolutePath extends Path {
 				"Member \"" + name + "\" not found in " + object;
 
 			path = path.append(member.getKey());
-			object = member.getSubstance().toObject();
+			object = member.substance(dummyUser()).toObject();
 		}
 
 		return path;

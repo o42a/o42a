@@ -21,6 +21,7 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.intrinsic.IntrinsicDirective;
 import org.o42a.core.Namespace;
@@ -60,9 +61,11 @@ public class UseNamespace extends IntrinsicDirective {
 		}
 
 		final Obj object = directive.getResolution().materialize();
-		final Field<?> moduleField = object.member(this.moduleKey).toField();
+		final Field<?> moduleField =
+			object.member(this.moduleKey).toField(dummyUser());
 		final Value<?> moduleValue =
-			moduleField.getArtifact().materialize().getValue();
+			moduleField.getArtifact().materialize()
+			.value().useBy(dummyUser()).getValue();
 
 		if (!moduleValue.isDefinite()) {
 			getLogger().unresolvedValue(
@@ -73,9 +76,11 @@ public class UseNamespace extends IntrinsicDirective {
 
 		final String moduleId = stringValue(moduleValue);
 
-		final Field<?> objectField = object.member(this.objectKey).toField();
+		final Field<?> objectField =
+			object.member(this.objectKey).toField(dummyUser());
 		final Value<?> objectValue =
-			objectField.getArtifact().materialize().getValue();
+			objectField.getArtifact().materialize()
+			.value().useBy(dummyUser()).getValue();
 
 		if (!objectValue.isDefinite()) {
 			getLogger().unresolvedValue(

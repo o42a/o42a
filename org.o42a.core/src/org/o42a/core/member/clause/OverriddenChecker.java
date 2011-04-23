@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -78,7 +80,7 @@ final class OverriddenChecker implements PathWalker {
 			return error();
 		}
 
-		final Field<?> field = member.toField();
+		final Field<?> field = member.toField(dummyUser());
 
 		if (field != null) {
 			this.overriddenKey = member.getKey();
