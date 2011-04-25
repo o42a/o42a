@@ -76,11 +76,8 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	private final Usable<Obj> user;
-
-	private final ObjectType.UsableObjectType type =
-		new ObjectType.UsableObjectType(this);
-	private final ObjectValue.UseableObjectValue value =
-		new ObjectValue.UseableObjectValue(this);
+	private final ObjectType.UsableObjectType type;
+	private final ObjectValue.UseableObjectValue value;
 
 	private final HashMap<MemberKey, Member> members =
 		new HashMap<MemberKey, Member>();
@@ -102,6 +99,8 @@ public abstract class Obj extends Artifact<Obj>
 
 	private ObjectMembers objectMembers;
 
+	private ObjectAnalysis analysis;
+
 	public Obj(LocationInfo location, Distributor enclosing) {
 		this(new ObjScope(location, enclosing));
 	}
@@ -109,17 +108,23 @@ public abstract class Obj extends Artifact<Obj>
 	public Obj(Scope scope) {
 		super(scope);
 		this.user = createUser();
+		this.type = new ObjectType.UsableObjectType(this);
+		this.value = new ObjectValue.UseableObjectValue(this);
 	}
 
 	protected Obj(ObjectScope scope) {
 		super(scope);
 		scope.setScopeObject(this);
 		this.user = createUser();
+		this.type = new ObjectType.UsableObjectType(this);
+		this.value = new ObjectValue.UseableObjectValue(this);
 	}
 
 	protected Obj(Scope scope, Obj sample) {
 		super(scope, sample);
 		this.user = createUser();
+		this.type = new ObjectType.UsableObjectType(this);
+		this.value = new ObjectValue.UseableObjectValue(this);
 	}
 
 	@Override
@@ -129,6 +134,13 @@ public abstract class Obj extends Artifact<Obj>
 
 	public ConstructionMode getConstructionMode() {
 		return objectType().getAscendants().getConstructionMode();
+	}
+
+	public final ObjectAnalysis getAnalysis() {
+		if (this.analysis != null) {
+			return this.analysis;
+		}
+		return this.analysis = new ObjectAnalysis(this);
 	}
 
 	@Override

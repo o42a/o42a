@@ -46,6 +46,11 @@ final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return getRef().isStatic();
+	}
+
+	@Override
 	public final Ref getRef() {
 		return this.ref;
 	}

@@ -36,6 +36,11 @@ public abstract class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
+	public final boolean isStatic() {
+		return true;
+	}
+
+	@Override
 	public final StaticTypeRef toStatic() {
 		return this;
 	}

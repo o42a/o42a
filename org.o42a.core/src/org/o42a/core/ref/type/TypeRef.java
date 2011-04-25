@@ -43,6 +43,8 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		super(rescoper);
 	}
 
+	public abstract boolean isStatic();
+
 	public abstract Ref getUntachedRef();
 
 	public final TypeRef getAncestor() {

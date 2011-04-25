@@ -103,6 +103,20 @@ public abstract class Ref extends RefTypeBase {
 		this.logical = logical;
 	}
 
+	public boolean isStatic() {
+		if (isKnownStatic()) {
+			return true;
+		}
+
+		final Path path = getPath();
+
+		if (path != null) {
+			return path.isAbsolute();
+		}
+
+		return false;
+	}
+
 	public Path getPath() {
 		return null;
 	}

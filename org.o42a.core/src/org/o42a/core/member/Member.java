@@ -41,6 +41,7 @@ public abstract class Member extends Placed {
 
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
+	private MemberAnalysis analysis;
 	private Member lastDefinition;
 	private Member[] overridden;
 
@@ -77,6 +78,13 @@ public abstract class Member extends Placed {
 		out.append(getDisplayName());
 
 		return out.toString();
+	}
+
+	public final MemberAnalysis getAnalysis() {
+		if (this.analysis != null) {
+			return this.analysis;
+		}
+		return this.analysis = new MemberAnalysis(this);
 	}
 
 	public abstract MemberField toMemberField();
@@ -184,6 +192,10 @@ public abstract class Member extends Placed {
 		}
 
 		return out.toString();
+	}
+
+	protected void usedBy(UserInfo user) {
+		getAnalysis().usedBy(user);
 	}
 
 	protected abstract void merge(Member member);

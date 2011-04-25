@@ -61,6 +61,14 @@ class PathTarget extends Expression {
 	}
 
 	@Override
+	public boolean isStatic() {
+		if (this.start != null) {
+			return this.start.isStatic();
+		}
+		return false;
+	}
+
+	@Override
 	public Path getPath() {
 		if (this.fullPathBuilt) {
 			return this.fullPath;

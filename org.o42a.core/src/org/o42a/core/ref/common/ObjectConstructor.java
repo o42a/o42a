@@ -42,11 +42,16 @@ public abstract class ObjectConstructor extends Expression {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return false;
+	}
+
+	@Override
 	public abstract TypeRef ancestor(LocationInfo location);
 
 	@Override
 	protected final Resolution resolveExpression(Scope scope) {
-		if (scope != getScope()) {
+		if (scope != getScope() && !isStatic()) {
 			return objectResolution(new Propagated(scope, this));
 		}
 

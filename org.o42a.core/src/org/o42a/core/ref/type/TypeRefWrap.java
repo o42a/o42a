@@ -43,6 +43,11 @@ public abstract class TypeRefWrap extends TypeRef {
 		super(rescoper);
 	}
 
+	@Override
+	public final boolean isStatic() {
+		return wrapped().isStatic();
+	}
+
 	public final TypeRef getWrapped() {
 		return this.wrapped;
 	}
