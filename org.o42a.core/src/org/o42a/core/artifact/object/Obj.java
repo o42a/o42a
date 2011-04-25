@@ -28,6 +28,7 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
 import static org.o42a.core.member.local.Dep.fieldDep;
+import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
@@ -74,7 +75,7 @@ public abstract class Obj extends Artifact<Obj>
 		return new ObjectFieldIR(generator, field);
 	}
 
-	private final UserObject user = new UserObject(this);
+	private final Usable<Obj> user;
 
 	private final ObjectType.UsableObjectType type =
 		new ObjectType.UsableObjectType(this);
@@ -107,15 +108,18 @@ public abstract class Obj extends Artifact<Obj>
 
 	public Obj(Scope scope) {
 		super(scope);
+		this.user = createUser();
 	}
 
 	protected Obj(ObjectScope scope) {
 		super(scope);
 		scope.setScopeObject(this);
+		this.user = createUser();
 	}
 
 	protected Obj(Scope scope, Obj sample) {
 		super(scope, sample);
+		this.user = createUser();
 	}
 
 	@Override
@@ -766,6 +770,15 @@ public abstract class Obj extends Artifact<Obj>
 		this.deps.put(null, dep);
 
 		return dep;
+	}
+
+	private Usable<Obj> createUser() {
+
+		final Usable<Obj> user = simpleUsable(this);
+
+		getScope().toUser().useBy(user);
+
+		return user;
 	}
 
 	private void assignValueType() {

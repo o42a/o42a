@@ -22,6 +22,7 @@ package org.o42a.core.member.local;
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
@@ -79,14 +80,14 @@ public abstract class LocalScope
 	private final Loggable loggable;
 	private final Obj owner;
 	private final Path ownerScopePath;
-	private final UsableLocal user;
+	private final Usable<LocalScope> user;
 
 	LocalScope(LocationInfo location, Obj owner) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.owner = owner;
 		this.ownerScopePath = new OwnerPathFragment().toPath();
-		this.user = new UsableLocal(this);
+		this.user = simpleUsable(this);
 	}
 
 	@Override

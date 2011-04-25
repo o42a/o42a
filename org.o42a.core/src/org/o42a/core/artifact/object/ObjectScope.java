@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.util.use.Usable.simpleUsable;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.ir.ScopeIR;
@@ -26,7 +28,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.User;
+import org.o42a.util.use.Usable;
 
 
 public abstract class ObjectScope extends AbstractScope {
@@ -35,6 +37,7 @@ public abstract class ObjectScope extends AbstractScope {
 	private final Loggable loggable;
 	private final Container enclosingContainer;
 	private final ScopePlace place;
+	private final Usable<ObjectScope> user;
 	private Path enclosingScopePath;
 	private Obj object;
 
@@ -45,6 +48,7 @@ public abstract class ObjectScope extends AbstractScope {
 		this.loggable = location.getLoggable();
 		this.enclosingContainer = enclosing.getContainer();
 		this.place = enclosing.getPlace();
+		this.user = simpleUsable(this);
 	}
 
 	@Override
@@ -75,8 +79,8 @@ public abstract class ObjectScope extends AbstractScope {
 	}
 
 	@Override
-	public User toUser() {
-		return this.object.toUser();
+	public final Usable<ObjectScope> toUser() {
+		return this.user;
 	}
 
 	@Override
