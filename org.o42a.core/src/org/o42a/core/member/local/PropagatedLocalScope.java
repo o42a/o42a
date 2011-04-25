@@ -149,8 +149,14 @@ final class PropagatedLocalScope extends LocalScope {
 
 		@Override
 		public LocalScope toLocal(UserInfo user) {
-			this.localScope.toUser().useBy(user);
+			useBy(user);
 			return this.localScope;
+		}
+
+		@Override
+		protected void useBy(UserInfo user) {
+			super.useBy(user);
+			this.localScope.toUser().useBy(user);
 		}
 
 	}

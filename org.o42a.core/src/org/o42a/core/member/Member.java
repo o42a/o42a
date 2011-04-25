@@ -194,7 +194,7 @@ public abstract class Member extends Placed {
 		return out.toString();
 	}
 
-	protected void usedBy(UserInfo user) {
+	protected void useBy(UserInfo user) {
 		getAnalysis().usedBy(user);
 	}
 
