@@ -250,7 +250,8 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		final CodeBlk failure = function.addBlock("failure");
 		final CodeDirs dirs = falseWhenUnknown(function, failure.head());
 
-		final TypeRef ancestor = getObjectIR().getObject().getAncestor();
+		final TypeRef ancestor =
+			getObjectIR().getObject().type().useBy(dummyUser()).getAncestor();
 		final CodeBuilder builder = codeBuilder(
 				function,
 				failure.head(),

@@ -22,6 +22,7 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.member.clause.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
 import org.o42a.core.member.DeclarationStatement;
@@ -277,6 +278,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		if (path.walk(
 				reusedClause,
+				dummyUser(),
 				clause.getEnclosingScope(),
 				reuser) == null) {
 			return null;

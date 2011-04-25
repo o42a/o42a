@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -135,7 +137,7 @@ final class PathTargetAncestor extends Expression {
 						object.getScope().getEnclosingScope());
 			}
 
-			return object.getAncestor();
+			return object.type().useBy(dummyUser()).getAncestor();
 		}
 
 		final TypeRef typeRef = artifact.getTypeRef();

@@ -22,7 +22,6 @@ package org.o42a.core.artifact.object;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
@@ -32,6 +31,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 final class ParentObjectFragment extends MemberFragment {
@@ -43,6 +43,7 @@ final class ParentObjectFragment extends MemberFragment {
 	@Override
 	public Container resolve(
 			LocationInfo location,
+			UserInfo user,
 			Path path,
 			int index,
 			Scope start,
@@ -64,13 +65,13 @@ final class ParentObjectFragment extends MemberFragment {
 			}
 		}
 
-		final Member member = resolveMember(location, path, index, start);
+		final Member member = resolveMember(location, user, path, index, start);
 
 		if (member == null) {
 			return null;
 		}
 
-		final Container result = member.substance(dummyUser());
+		final Container result = member.substance(user);
 
 		walker.up(object, this, result);
 

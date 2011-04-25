@@ -100,7 +100,7 @@ public class Ascendants
 			final TypeRef ancestor = getExplicitAncestor();
 
 			if (ancestor != null) {
-				this.directive = ancestor.type(this).getObject().toDirective();
+				this.directive = ancestor.typeObject(this).toDirective();
 			}
 			if (this.directive == null) {
 				this.directive = sampleDirective();

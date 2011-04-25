@@ -181,7 +181,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 			}
 
 			return objectResolution(
-					resolution.toArtifact().getTypeRef().getType());
+					resolution.toArtifact().getTypeRef().typeObject(scope));
 		}
 
 		@Override

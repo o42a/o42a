@@ -21,6 +21,7 @@ package org.o42a.compiler.test.ref.operator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -88,8 +89,9 @@ public strictfp class FloatOperatorsTest extends CompilerTestCase {
 		super.compile(source);
 		this.result = field("result").getArtifact().materialize();
 		assertEquals(ValueType.FLOAT, this.result.getValueType());
-		assertTrue(this.result.inherits(
-				this.context.getIntrinsics().getFloat()));
+		assertTrue(this.result.type().useBy(USE_CASE).inherits(
+				this.context.getIntrinsics().getFloat()
+				.type().useBy(dummyUser())));
 	}
 
 }

@@ -312,7 +312,7 @@ public abstract class MemberField extends Member {
 
 		if (declaredInRef != null) {
 
-			final Obj declaredIn = declaredInRef.type(dummyUser()).getObject();
+			final Obj declaredIn = declaredInRef.typeObject(dummyUser());
 
 			if (declaredIn == null) {
 				return null;
@@ -326,7 +326,7 @@ public abstract class MemberField extends Member {
 			for (Sample sample : containerType.getSamples()) {
 				overridden = overridden(
 						overridden,
-						sample.type(dummyUser()).getObject());
+						sample.typeObject(dummyUser()));
 			}
 
 			final TypeRef ancestor = containerType.getAncestor();
@@ -334,7 +334,7 @@ public abstract class MemberField extends Member {
 			if (ancestor != null) {
 				overridden = overridden(
 						overridden,
-						ancestor.type(dummyUser()).getObject());
+						ancestor.typeObject(dummyUser()));
 			}
 		}
 

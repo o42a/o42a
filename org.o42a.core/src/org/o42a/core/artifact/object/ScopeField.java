@@ -77,7 +77,7 @@ final class ScopeField extends ObjectField {
 		final Obj newArtifact;
 		final Obj newOwner = getEnclosingContainer().toObject();
 		final ObjectType newOwnerType = newOwner.type().useBy(this);
-		final Obj ancestor = newOwnerType.getAncestor().getType();
+		final Obj ancestor = newOwnerType.getAncestor().typeObject(this);
 		final org.o42a.core.member.Member ancestorMember =
 			ancestor.member(getKey());
 

@@ -251,7 +251,7 @@ public enum ClauseId {
 	public static ClauseId byAdapterType(StaticTypeRef adapterType) {
 
 		final Obj type =
-			adapterTypeScope(adapterType.type(dummyUser()).getObject())
+			adapterTypeScope(adapterType.typeObject(dummyUser()))
 			.getContainer().toObject();
 
 		for (ClauseId clauseId : values()) {

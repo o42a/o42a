@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
 
@@ -89,13 +90,14 @@ public class ObjectIR  {
 
 	public ObjectBodyIR getAncestorBodyIR() {
 
-		final TypeRef ancestorType = getObject().getAncestor();
+		final TypeRef ancestorType =
+			getObject().type().useBy(dummyUser()).getAncestor();
 
 		if (ancestorType == null) {
 			return null;
 		}
 
-		final Obj ancestor = ancestorType.getType();
+		final Obj ancestor = ancestorType.typeObject(dummyUser());
 
 		if (ancestor == ancestor.getContext().getVoid()) {
 			return null;

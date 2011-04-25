@@ -93,7 +93,7 @@ public class OverriddenEx extends Expression {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self =
-				selfPath.resolveArtifact(this, getScope()).toObject();
+				selfPath.resolveArtifact(this, this, getScope()).toObject();
 			final Definitions overriddenDefinitions =
 				self.getOverriddenDefinitions();
 

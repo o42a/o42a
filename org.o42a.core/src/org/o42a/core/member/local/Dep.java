@@ -34,6 +34,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 public final class Dep extends PathFragment {
@@ -117,6 +118,7 @@ public final class Dep extends PathFragment {
 	@Override
 	public Container resolve(
 			LocationInfo location,
+			UserInfo user,
 			Path path,
 			int index,
 			Scope start,

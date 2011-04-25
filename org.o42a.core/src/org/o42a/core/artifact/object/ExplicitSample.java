@@ -66,7 +66,7 @@ final class ExplicitSample extends Sample {
 
 	@Override
 	protected Obj getObject() {
-		return this.explicitAscendant.type(getAscendants()).getObject();
+		return this.explicitAscendant.typeObject(getAscendants());
 	}
 
 }

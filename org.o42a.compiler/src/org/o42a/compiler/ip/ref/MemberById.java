@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -66,7 +68,8 @@ public class MemberById extends Wrap {
 		final Distributor distributor = distribute();
 		final Container enclosing = getContainer();
 		final Obj declaredIn =
-			this.declaredIn != null ? this.declaredIn.getType() : null;
+			this.declaredIn != null
+			? this.declaredIn.typeObject(dummyUser()) : null;
 		final Path result = enclosing.findPath(this, this.memberId, declaredIn);
 
 		if (result == null) {

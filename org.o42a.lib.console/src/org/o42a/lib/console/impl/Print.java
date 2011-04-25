@@ -89,7 +89,7 @@ public class Print extends IntrinsicObject {
 
 			final MemberKey textKey = memberName("text").key(
 					type().useBy(dummyUser()).getAncestor()
-					.type(dummyUser()).getObject().getScope());
+					.typeObject(dummyUser()).getScope());
 			final CodeBlk cantPrint = code.addBlock("cant_print");
 			final CodeDirs dirs = falseWhenUnknown(code, cantPrint.head());
 			final ObjectOp textObject =

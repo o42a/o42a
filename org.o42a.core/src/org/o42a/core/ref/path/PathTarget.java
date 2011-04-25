@@ -204,9 +204,9 @@ class PathTarget extends Expression {
 		final Container resolved;
 
 		if (this.start == null) {
-			resolved = this.path.resolve(this, scope);
+			resolved = this.path.resolve(this, scope, scope);
 		} else {
-			resolved = this.path.resolve(this, scope, this.start);
+			resolved = this.path.resolve(this, scope, scope, this.start);
 		}
 
 		return containerResolution(resolved);

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -177,7 +179,11 @@ final class DeclaredPlainClause extends PlainClause {
 
 		final OverriddenChecker checker = new OverriddenChecker(overridden);
 
-		if (path.walk(overridden, getEnclosingScope(), checker) == null) {
+		if (path.walk(
+				overridden,
+				dummyUser(),
+				getEnclosingScope(),
+				checker) == null) {
 			return null;
 		}
 

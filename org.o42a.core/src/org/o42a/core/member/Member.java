@@ -230,7 +230,7 @@ public abstract class Member extends Placed {
 		for (Sample containerSample : containerSamples) {
 
 			final Member sampleMember =
-				containerSample.type(dummyUser()).getObject().member(getKey());
+				containerSample.typeObject(dummyUser()).member(getKey());
 
 			if (sampleMember == null) {
 				continue;

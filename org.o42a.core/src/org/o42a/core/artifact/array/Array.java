@@ -73,10 +73,6 @@ public abstract class Array extends Artifact<Array> {
 		return null;
 	}
 
-	public final Obj getItemType() {
-		return getArrayTypeRef().getItemTypeRef().getType();
-	}
-
 	@Override
 	public Directive toDirective() {
 		return null;

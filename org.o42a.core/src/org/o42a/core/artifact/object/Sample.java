@@ -57,9 +57,8 @@ public abstract class Sample extends Scoped {
 		return getTypeRef().type(user);
 	}
 
-	@Deprecated
-	public final Obj getType() {
-		return getTypeRef().getType();
+	public final Obj typeObject(UserInfo user) {
+		return getTypeRef().typeObject(user);
 	}
 
 	public final Directive toDirective() {

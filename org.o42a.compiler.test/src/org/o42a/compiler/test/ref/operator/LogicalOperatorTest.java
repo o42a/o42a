@@ -35,7 +35,7 @@ public class LogicalOperatorTest extends CompilerTestCase {
 
 		assertTrueVoid(a);
 		assertFalseVoid(b);
-		assertKnownValue(b.getValue());
+		assertKnownValue(b.value().useBy(USE_CASE).getValue());
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class LogicalOperatorTest extends CompilerTestCase {
 		final Obj b = field("b").getArtifact().materialize();
 
 		assertFalseVoid(a);
-		assertKnownValue(a.getValue());
+		assertKnownValue(a.value().useBy(USE_CASE).getValue());
 		assertTrueVoid(b);
 	}
 
@@ -62,10 +62,10 @@ public class LogicalOperatorTest extends CompilerTestCase {
 		final Obj c = field("c").getArtifact().materialize();
 
 		assertTrueVoid(a);
-		assertFalseValue(b.getValue());
-		assertUnknownValue(b.getValue());
+		assertFalseValue(b.value().useBy(USE_CASE).getValue());
+		assertUnknownValue(b.value().useBy(USE_CASE).getValue());
 		assertFalseVoid(c);
-		assertKnownValue(c.getValue());
+		assertKnownValue(c.value().useBy(USE_CASE).getValue());
 	}
 
 	@Test
@@ -80,9 +80,9 @@ public class LogicalOperatorTest extends CompilerTestCase {
 		final Obj c = field("c").getArtifact().materialize();
 
 		assertFalseVoid(a);
-		assertKnownValue(a.getValue());
-		assertFalseValue(b.getValue());
-		assertUnknownValue(b.getValue());
+		assertKnownValue(a.value().useBy(USE_CASE).getValue());
+		assertFalseValue(b.value().useBy(USE_CASE).getValue());
+		assertUnknownValue(b.value().useBy(USE_CASE).getValue());
 		assertTrueVoid(c);
 	}
 
