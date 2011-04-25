@@ -166,7 +166,7 @@ public abstract class Ref extends RefTypeBase {
 			final ResolutionRootFinder rootFinder =
 				new ResolutionRootFinder(this);
 
-			path.walk(this, getScope(), rootFinder);
+			path.walk(this, getScope(), getScope(), rootFinder);
 
 			return this.resolutionRoot = rootFinder.getRoot();
 		}
@@ -187,7 +187,8 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		return this.resolutionRoot =
-			object.getAncestor().getRef().getResolutionRoot();
+			object.type().useBy(getScope()).getAncestor()
+			.getRef().getResolutionRoot();
 	}
 
 	@Override
@@ -228,7 +229,7 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	public Value<?> value(Scope scope) {
-		return resolve(scope).materialize().getValue();
+		return resolve(scope).materialize().value().useBy(scope).getValue();
 	}
 
 	/**

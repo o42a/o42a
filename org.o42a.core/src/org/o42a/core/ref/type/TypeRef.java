@@ -21,6 +21,7 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.core.artifact.Artifact.unresolvableObject;
 import static org.o42a.core.artifact.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -77,23 +78,11 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 	public ObjectType type(UserInfo user) {
 
-		final Obj type = getType();
+		final Obj cached = this.type;
 
-		if (type == null) {
-			return null;
-		}
-
-		return type.type().useBy(user);
-	}
-
-	@Deprecated
-	public Obj getType() {
-
-		final Obj type = this.type;
-
-		if (type != null) {
-			if (type != unresolvableObject(getContext())) {
-				return type;
+		if (cached != null) {
+			if (cached != unresolvableObject(getContext())) {
+				return cached.type().useBy(user);
 			}
 			return null;
 		}
@@ -108,7 +97,17 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		final TypeRef typeRef = artifact.getTypeRef();
 
 		if (typeRef != null) {
-			return this.type = typeRef.getType();
+
+			final ObjectType type = typeRef.type(user);
+
+			if (type != null) {
+				this.type = type.getObject();
+				return type;
+			}
+
+			this.type = unresolvableObject(getContext());
+
+			return null;
 		}
 
 		final Obj object = artifact.toObject();
@@ -119,11 +118,20 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return null;
 		}
 
-		return this.type = object;
+		this.type = object;
+
+		return object.type().useBy(user);
+	}
+
+	public final Obj typeObject(UserInfo user) {
+
+		final ObjectType type = type(user);
+
+		return type != null ? type.getObject() : null;
 	}
 
 	public boolean validate() {
-		return getType() != null;
+		return type(dummyUser()) != null;
 	}
 
 	public final TypeRelation relationTo(TypeRef other) {
@@ -143,16 +151,18 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		final Scope root1 = getRef().getResolutionRoot().resolve(
 				this,
+				dummyUser(),
 				getRescoper().rescope(getScope())).getScope();
 		final Scope root2 = other.getRef().getResolutionRoot().resolve(
 				other,
+				dummyUser(),
 				other.getRescoper().rescope(other.getScope())).getScope();
 
-		final Obj type1 = getType();
-		final Obj type2 = other.getType();
+		final ObjectType type1 = type(dummyUser());
+		final ObjectType type2 = other.type(dummyUser());
 
 		if (root1 == root2) {
-			if (type1.getScope() == type2.getScope()) {
+			if (type1.getObject().getScope() == type2.getObject().getScope()) {
 				return TypeRelation.SAME;
 			}
 			if (type1.derivedFrom(type2)) {

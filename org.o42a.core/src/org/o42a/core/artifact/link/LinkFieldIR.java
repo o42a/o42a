@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -57,7 +58,9 @@ final class LinkFieldIR extends FieldIR<Link> {
 			fld = new LinkFld(bodyIR, field);
 		}
 
-		fld.allocate(data, getField().getArtifact().getTypeRef().getType());
+		fld.allocate(
+				data,
+				getField().getArtifact().getTypeRef().typeObject(dummyUser()));
 
 		return fld;
 	}

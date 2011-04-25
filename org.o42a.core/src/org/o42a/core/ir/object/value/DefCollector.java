@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.object.value;
 
-import org.o42a.core.artifact.object.Derivation;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.Sample;
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -36,8 +36,12 @@ abstract class DefCollector<D extends SourceInfo> {
 			return true;
 		}
 
-		for (Sample sample : object.getSamples()) {
-			if (sample.getType().derivedFrom(source, Derivation.PROPAGATION)) {
+		final ObjectType sourceType = source.type().useBy(dummyUser());
+
+		for (Sample sample : object.type().useBy(dummyUser()).getSamples()) {
+			if (sample.type(dummyUser()).derivedFrom(
+					sourceType,
+					Derivation.PROPAGATION)) {
 				return true;
 			}
 		}
@@ -51,12 +55,13 @@ abstract class DefCollector<D extends SourceInfo> {
 	public DefCollector(Obj object) {
 		this.object = object;
 
-		final TypeRef ancestorRef = object.getAncestor();
+		final TypeRef ancestorRef =
+			object.type().useBy(dummyUser()).getAncestor();
 
 		if (ancestorRef == null) {
 			this.ancestor = null;
 		} else {
-			this.ancestor = ancestorRef.getType();
+			this.ancestor = ancestorRef.typeObject(dummyUser());
 		}
 	}
 

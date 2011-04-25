@@ -73,7 +73,7 @@ final class ImplicitSample extends Sample {
 
 	@Override
 	protected Obj getObject() {
-		return this.implicitAscendant.type(getAscendants()).getObject();
+		return this.implicitAscendant.typeObject(getAscendants());
 	}
 
 }

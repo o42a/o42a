@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.PathFragment.MATERIALIZE;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
@@ -39,6 +40,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 public class Path {
@@ -99,23 +101,27 @@ public class Path {
 
 	public final Artifact<?> resolveArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope start) {
-		return walkToArtifact(location, start, DUMMY_WALKER);
+		return walkToArtifact(location, user, start, DUMMY_WALKER);
 	}
 
 	public final Artifact<?> resolveArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope scope,
 			Ref start) {
-		return walkToArtifact(location, scope, start, DUMMY_WALKER);
+		return walkToArtifact(location, user, scope, start, DUMMY_WALKER);
 	}
 
 	public Artifact<?> walkToArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
 		return walkPathToArtifact(
 				location,
+				user,
 				this.absolute
 				? start.getContext().getRoot().getScope() : start,
 				walker);
@@ -123,12 +129,14 @@ public class Path {
 
 	public Artifact<?> walkToArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope scope,
 			Ref start,
 			PathWalker walker) {
 		if (isAbsolute()) {
 			return walkPathToArtifact(
 					location,
+					user,
 					scope.getContext().getRoot().getScope(),
 					walker);
 		}
@@ -139,38 +147,50 @@ public class Path {
 			return null;
 		}
 
-		return walkPathToArtifact(location, resolution.getScope(), walker);
-	}
-
-	public final Container resolve(LocationInfo location, Scope start) {
-		return walk(location, start, DUMMY_WALKER);
+		return walkPathToArtifact(
+				location,
+				user,
+				resolution.getScope(),
+				walker);
 	}
 
 	public final Container resolve(
 			LocationInfo location,
+			UserInfo user,
+			Scope start) {
+		return walk(location, user, start, DUMMY_WALKER);
+	}
+
+	public final Container resolve(
+			LocationInfo location,
+			UserInfo user,
 			Scope scope,
 			Ref start) {
-		return walk(location, scope, start, DUMMY_WALKER);
+		return walk(location, user, scope, start, DUMMY_WALKER);
 	}
 
 	public Container walk(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
 		return walkPath(
 				location,
+				user,
 				this.absolute ? start.getContext().getRoot().getScope() : start,
 				walker);
 	}
 
 	public Container walk(
 			LocationInfo location,
+			UserInfo user,
 			Scope scope,
 			Ref start,
 			PathWalker walker) {
 		if (isAbsolute()) {
 			return walkPath(
 					location,
+					user,
 					scope.getContext().getRoot().getScope(),
 					walker);
 		}
@@ -181,7 +201,7 @@ public class Path {
 			return null;
 		}
 
-		return walkPath(location, resolution.getScope(), walker);
+		return walkPath(location, user, resolution.getScope(), walker);
 	}
 
 	public Path append(PathFragment fragment) {
@@ -321,7 +341,7 @@ public class Path {
 
 			final Path reproducedPath = reproduction.getReproducedPath();
 			final Container resolution =
-				reproducedPath.resolve(location, toScope);
+				reproducedPath.resolve(location, dummyUser(), toScope);
 
 			if (resolution == null) {
 				return null;
@@ -430,10 +450,11 @@ public class Path {
 
 	private Artifact<?> walkPathToArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
 
-		final Container found = walkPath(location, start, walker);
+		final Container found = walkPath(location, user, start, walker);
 
 		if (found == null) {
 			return null;
@@ -449,6 +470,7 @@ public class Path {
 
 	private Container walkPath(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
 		if (isAbsolute()) {
@@ -466,8 +488,13 @@ public class Path {
 		Scope prev = start;
 
 		for (int i = 0; i < this.fragments.length; ++i) {
-			result =
-				this.fragments[i].resolve(location, this, i, prev, tracker);
+			result = this.fragments[i].resolve(
+					location,
+					user,
+					this,
+					i,
+					prev,
+					tracker);
 			if (tracker.isAborted()) {
 				return null;
 			}

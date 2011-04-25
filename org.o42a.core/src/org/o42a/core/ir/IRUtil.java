@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
@@ -148,7 +150,10 @@ public class IRUtil {
 				enclosingObjectScope);
 		final DeclaredInWriter writer = new DeclaredInWriter(generator, id);
 
-		clause.pathInObject().walk(scope, enclosingObjectScope, writer);
+		clause.pathInObject().walk(
+				scope,
+				dummyUser(),
+				enclosingObjectScope, writer);
 
 		return writer.id;
 	}

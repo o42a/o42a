@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -28,6 +30,7 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.field.Field;
@@ -79,10 +82,12 @@ public abstract class Fld {
 			return true;
 		}
 
-		final Obj definedInObject = definedIn.getContainer().toObject();
+		final ObjectType definedInType =
+			definedIn.getContainer().toObject()
+			.type().useBy(dummyUser());
 
-		if (definedInObject.getAncestor().getType().derivedFrom(
-				definedInObject)) {
+		if (definedInType.getAncestor().type(dummyUser()).derivedFrom(
+				definedInType)) {
 			// Field overridden in ancestor.
 			return false;
 		}

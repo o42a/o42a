@@ -56,7 +56,7 @@ final class SelfRef extends Ref {
 	@Override
 	public Value<?> value(Scope scope) {
 		if (scope == this.self.getScope()) {
-			return this.self.materialize().getValue();
+			return this.self.materialize().value().useBy(scope).getValue();
 		}
 		return calculateValue(this.self.materialize(), scope);
 	}

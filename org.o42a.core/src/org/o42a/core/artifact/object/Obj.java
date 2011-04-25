@@ -226,21 +226,6 @@ public abstract class Obj extends Artifact<Obj>
 		return this.value;
 	}
 
-	@Deprecated
-	public final Ascendants getAscendants() {
-		return objectType().getAscendants();
-	}
-
-	@Deprecated
-	public TypeRef getAncestor() {
-		return objectType().getAncestor();
-	}
-
-	@Deprecated
-	public final Sample[] getSamples() {
-		return objectType().getSamples();
-	}
-
 	public final boolean membersResolved() {
 		return objectType().getResolution().membersResolved();
 	}
@@ -298,7 +283,7 @@ public abstract class Obj extends Artifact<Obj>
 		for (Sample sample : objectType().getSamples()) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					sample.type(dummyUser()).getObject().getImplicitClauses());
+					sample.typeObject(dummyUser()).getImplicitClauses());
 		}
 
 		final TypeRef ancestor = objectType().getAncestor();
@@ -306,7 +291,7 @@ public abstract class Obj extends Artifact<Obj>
 		if (ancestor != null) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					ancestor.type(dummyUser()).getObject().getImplicitClauses());
+					ancestor.typeObject(dummyUser()).getImplicitClauses());
 		}
 
 		return this.implicitClauses = implicitClauses;
@@ -375,42 +360,6 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return found.member(declaredIn, accessor);
-	}
-
-	@Deprecated
-	public boolean inherits(Artifact<?> other) {
-		if (this == other) {
-			return true;
-		}
-
-		final TypeRef ancestor = getAncestor();
-
-		if (ancestor == null) {
-			return false;
-		}
-
-		return ancestor.getType().inherits(other);
-	}
-
-	@Deprecated
-	public final boolean derivedFrom(Obj other) {
-		return objectType().derivedFrom(
-				other.objectType(),
-				Derivation.ANY,
-				Integer.MAX_VALUE);
-	}
-
-	@Deprecated
-	public final boolean derivedFrom(Obj other, Derivation derivation) {
-		return objectType().derivedFrom(
-				other.objectType(),
-				derivation,
-				Integer.MAX_VALUE);
-	}
-
-	@Deprecated
-	public boolean derivedFrom(Obj other, Derivation derivation, int depth) {
-		return objectType().derivedFrom(other.objectType(), derivation, depth);
 	}
 
 	public final boolean cloneOf(Obj other) {
@@ -560,16 +509,6 @@ public abstract class Obj extends Artifact<Obj>
 		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
-	@Deprecated
-	public final Value<?> getValue() {
-		return this.value.getValue().getValue();
-	}
-
-	@Deprecated
-	public final Value<?> value(Scope scope) {
-		return this.value.getValue().value(scope);
-	}
-
 	@Override
 	public void resolveAll() {
 		if (this.resolveAll) {
@@ -589,8 +528,9 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public final void assertDerivedFrom(Obj type) {
-		assert derivedFrom(type) :
-			this + " is not derived from " + type;
+		assert type().useBy(dummyUser()).derivedFrom(
+				type.type().useBy(dummyUser())) :
+					this + " is not derived from " + type;
 	}
 
 	public final Definitions getDefinitions() {
@@ -671,7 +611,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected ValueType<?> resolveValueType() {
-		return objectType().getAncestor().type(this).getObject().getValueType();
+		return objectType().getAncestor().typeObject(this).getValueType();
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
@@ -718,9 +658,10 @@ public abstract class Obj extends Artifact<Obj>
 			overriddenDefinitions.assertScopeIs(scope);
 		}
 
+		final ObjectType type = type().useBy(scope);
 		boolean hasExplicitAncestor =
-			getAscendants().getExplicitAncestor() != null;
-		final Sample[] samples = getSamples();
+			type.getAscendants().getExplicitAncestor() != null;
+		final Sample[] samples = type.getSamples();
 		Definitions definitions = overriddenDefinitions;
 
 		for (int i = samples.length - 1; i >= 0; --i) {
@@ -814,7 +755,7 @@ public abstract class Obj extends Artifact<Obj>
 		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor != null) {
-			this.objectMembers.deriveMembers(ancestor.type(this).getObject());
+			this.objectMembers.deriveMembers(ancestor.typeObject(this));
 		}
 	}
 
@@ -849,7 +790,7 @@ public abstract class Obj extends Artifact<Obj>
 			ancestorDefinitions = null;
 		} else {
 			ancestorDefinitions =
-				ancestor.type(this).getObject()
+				ancestor.typeObject(this)
 				.getDefinitions().upgradeScope(getScope());
 		}
 

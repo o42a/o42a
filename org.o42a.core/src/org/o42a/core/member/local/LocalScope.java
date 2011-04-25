@@ -46,6 +46,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.use.Usable;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class LocalScope
@@ -254,6 +255,7 @@ public abstract class LocalScope
 		@Override
 		public Container resolve(
 				LocationInfo location,
+				UserInfo user,
 				Path path,
 				int index,
 				Scope start,

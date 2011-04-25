@@ -22,6 +22,7 @@ package org.o42a.core.ir.object.value;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
@@ -228,9 +229,11 @@ public abstract class ObjectValueIRValFunc
 
 		if (object.getValueType() == ValueType.VOID) {
 
-			final TypeRef ancestor = object.getAncestor();
+			final TypeRef ancestor =
+				object.type().useBy(dummyUser()).getAncestor();
 
-			if (ancestor.getType() == ancestor.getContext().getVoid()) {
+			if (ancestor.typeObject(dummyUser()).getScope()
+					== ancestor.getContext().getVoid().getScope()) {
 				noAncestor.debug("Inherited VOID proposition: " + this);
 				result.storeVoid(noAncestor);
 			} else {

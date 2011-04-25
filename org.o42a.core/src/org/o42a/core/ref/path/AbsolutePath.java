@@ -90,11 +90,17 @@ public final class AbsolutePath extends Path {
 	}
 
 	public Container resolve(CompilerContext context) {
-		return resolve(context.getRoot(), context.getRoot().getScope());
+		return resolve(
+				context.getRoot(),
+				dummyUser(),
+				context.getRoot().getScope());
 	}
 
 	public Artifact<?> resolveArtifact(CompilerContext context) {
-		return resolveArtifact(context.getRoot(), context.getRoot().getScope());
+		return resolveArtifact(
+				context.getRoot(),
+				dummyUser(),
+				context.getRoot().getScope());
 	}
 
 	@Override

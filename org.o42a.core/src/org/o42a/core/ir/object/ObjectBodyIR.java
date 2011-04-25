@@ -315,13 +315,14 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
 
-			final TypeRef ancestorRef = getAscendant().getAncestor();
+			final TypeRef ancestorRef =
+				getAscendant().type().useBy(dummyUser()).getAncestor();
 			final Obj ancestor;
 
 			if (ancestorRef == null) {
 				ancestor = null;
 			} else {
-				ancestor = ancestorRef.getType();
+				ancestor = ancestorRef.typeObject(dummyUser());
 			}
 
 			final AnyOp ancestorBodyPtr =

@@ -47,20 +47,31 @@ public class PropagationTest extends CompilerTestCase {
 		final Obj aFoo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bFoo = field(this.b, "foo").getArtifact().toObject();
 
-		assertTrue(bFoo.derivedFrom(aFoo, Derivation.MEMBER_OVERRIDE));
+		assertTrue(bFoo.type().useBy(USE_CASE).derivedFrom(
+				aFoo.type().useBy(USE_CASE), Derivation.MEMBER_OVERRIDE));
 
 		final Obj aBar = field(this.a, "bar").getArtifact().toObject();
 		final Obj bBar = field(this.b, "bar").getArtifact().toObject();
 
 		assertThat(definiteValue(bBar, Long.class), is(3L));
-		assertTrue(bBar.derivedFrom(aBar, Derivation.MEMBER_OVERRIDE));
-		assertTrue(bBar.derivedFrom(aFoo));
-		assertFalse(bBar.derivedFrom(aFoo, Derivation.INHERITANCE));
-		assertFalse(bBar.derivedFrom(aFoo, Derivation.PROPAGATION));
-		assertTrue(bBar.getAncestor().getType().derivedFrom(
-				aFoo,
+		assertTrue(bBar.type().useBy(USE_CASE).derivedFrom(
+				aBar.type().useBy(USE_CASE),
 				Derivation.MEMBER_OVERRIDE));
-		assertThat(bBar.inherits(bFoo), is(true));
+		assertTrue(bBar.type().useBy(USE_CASE).derivedFrom(
+				aFoo.type().useBy(USE_CASE)));
+		assertFalse(bBar.type().useBy(USE_CASE).derivedFrom(
+				aFoo.type().useBy(USE_CASE),
+				Derivation.INHERITANCE));
+		assertFalse(bBar.type().useBy(USE_CASE).derivedFrom(
+				aFoo.type().useBy(USE_CASE),
+				Derivation.PROPAGATION));
+		assertTrue(
+				bBar.type().useBy(USE_CASE)
+				.getAncestor().type(USE_CASE).derivedFrom(
+						aFoo.type().useBy(USE_CASE),
+						Derivation.MEMBER_OVERRIDE));
+		assertTrue(bBar.type().useBy(USE_CASE).inherits(
+				bFoo.type().useBy(USE_CASE)));
 
 		final Field<?> aFooScope =
 			field(aFoo, "_scope", Accessor.INHERITANT);
@@ -84,13 +95,16 @@ public class PropagationTest extends CompilerTestCase {
 		final Obj aFoo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bFoo = field(this.b, "foo").getArtifact().toObject();
 
-		assertTrue(
-				bFoo.derivedFrom(aFoo, Derivation.MEMBER_OVERRIDE));
+		assertTrue(bFoo.type().useBy(USE_CASE).derivedFrom(
+				aFoo.type().useBy(USE_CASE),
+				Derivation.MEMBER_OVERRIDE));
 
 		final Obj aBar = field(aFoo, "bar").getArtifact().toObject();
 		final Obj bBar = field(bFoo, "bar").getArtifact().toObject();
 
-		assertTrue(bBar.derivedFrom(aBar, Derivation.MEMBER_OVERRIDE));
+		assertTrue(bBar.type().useBy(USE_CASE).derivedFrom(
+				aBar.type().useBy(USE_CASE),
+				Derivation.MEMBER_OVERRIDE));
 	}
 
 	@Test
@@ -106,10 +120,14 @@ public class PropagationTest extends CompilerTestCase {
 		final Obj aFoo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bFoo = field(this.b, "foo").getArtifact().toObject();
 
-		assertTrue(aFoo.inherits(foo));
-		assertFalse(aFoo.inherits(bar));
-		assertTrue(bFoo.inherits(bar));
-		assertTrue(bFoo.derivedFrom(aFoo));
+		assertTrue(aFoo.type().useBy(USE_CASE).inherits(
+				foo.type().useBy(USE_CASE)));
+		assertFalse(aFoo.type().useBy(USE_CASE).inherits(
+				bar.type().useBy(USE_CASE)));
+		assertTrue(bFoo.type().useBy(USE_CASE).inherits(
+				bar.type().useBy(USE_CASE)));
+		assertTrue(bFoo.type().useBy(USE_CASE).derivedFrom(
+				aFoo.type().useBy(USE_CASE)));
 
 		assertThat(definiteValue(foo, Long.class), is(1L));
 		assertThat(definiteValue(bar, Long.class), is(2L));
