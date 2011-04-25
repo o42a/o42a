@@ -20,6 +20,7 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
+import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
@@ -34,13 +35,14 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
-import org.o42a.util.use.User;
+import org.o42a.util.use.Usable;
 
 
 public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
 
+	private final Usable<PlainClause> user;
 	private Obj clauseObject;
 	private Path enclosingScopePath;
 
@@ -48,6 +50,7 @@ public abstract class PlainClause
 		super(member);
 		assert member.getDeclaration().getKind().isPlain() :
 			"Plain clause expected";
+		this.user = simpleUsable(this);
 	}
 
 	protected PlainClause(
@@ -62,6 +65,7 @@ public abstract class PlainClause
 			PlainClause overridden,
 			boolean propagate) {
 		super(enclosingContainer, overridden, propagate);
+		this.user = simpleUsable(this);
 	}
 
 	@Override
@@ -110,8 +114,8 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final User toUser() {
-		return dummyUser();
+	public final Usable<PlainClause> toUser() {
+		return this.user;
 	}
 
 	@Override

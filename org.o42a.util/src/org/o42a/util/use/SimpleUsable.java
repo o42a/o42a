@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Utilities
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,31 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
-
-import org.o42a.util.use.Usable;
-import org.o42a.util.use.User;
+package org.o42a.util.use;
 
 
-final class UsableLocal extends Usable<LocalScope> {
+final class SimpleUsable<U> extends Usable<U> {
 
-	private final LocalScope local;
+	private final U usable;
 
-	UsableLocal(LocalScope local) {
-		this.local = local;
+	SimpleUsable(U usable) {
+		this.usable = usable;
 	}
 
 	@Override
 	public String toString() {
-		if (this.local == null) {
+		if (this.usable == null) {
 			return super.toString();
 		}
-		return this.local.toString();
+		return this.usable.toString();
 	}
 
 	@Override
-	protected LocalScope createUsed(User user) {
-		return this.local;
+	protected U createUsed(User user) {
+		return this.usable;
 	}
 
 }

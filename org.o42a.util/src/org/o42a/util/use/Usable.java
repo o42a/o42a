@@ -25,6 +25,10 @@ import java.util.Map;
 
 public abstract class Usable<U> extends User {
 
+	public static <U> Usable<U> simpleUsable(U used) {
+		return new SimpleUsable<U>(used);
+	}
+
 	private HashMap<User, U> usedBy;
 
 	public final U useBy(UserInfo user) {

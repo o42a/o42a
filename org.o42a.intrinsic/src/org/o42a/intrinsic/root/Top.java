@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.ScopePlace.TOP_PLACE;
+import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
@@ -35,19 +36,19 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableData;
-import org.o42a.util.use.User;
+import org.o42a.util.use.Usable;
 
 
 public final class Top extends AbstractScope implements Container {
 
 	private final LoggableData loggableData = new LoggableData(this);
 	private final CompilerContext context;
-	private final UsableTop user;
+	private final Usable<Top> user;
 	private TopIR ir;
 
 	public Top(CompilerContext context) {
 		this.context = context;
-		this.user = new UsableTop(this);
+		this.user = simpleUsable(this);
 	}
 
 	@Override
@@ -91,7 +92,7 @@ public final class Top extends AbstractScope implements Container {
 	}
 
 	@Override
-	public User toUser() {
+	public final Usable<Top> toUser() {
 		return this.user;
 	}
 
