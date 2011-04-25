@@ -30,14 +30,14 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
-final class DefiniteRef<T> extends Expression {
+final class DefiniteRef<T> extends Ref {
 
 	private final ValueType<T> valueType;
 	private final T value;
+	private Resolution object;
 
 	DefiniteRef(
 			LocationInfo location,
@@ -47,6 +47,11 @@ final class DefiniteRef<T> extends Expression {
 		super(location, distributor);
 		this.valueType = valueType;
 		this.value = value;
+	}
+
+	@Override
+	public boolean isStatic() {
+		return true;
 	}
 
 	@Override
@@ -60,10 +65,14 @@ final class DefiniteRef<T> extends Expression {
 	}
 
 	@Override
-	protected Resolution resolveExpression(Scope scope) {
-		return objectResolution(new DefiniteObject<T>(
+	public Resolution resolve(Scope scope) {
+		assertCompatible(scope);
+		if (this.object != null) {
+			return this.object;
+		}
+		return this.object = objectResolution(new DefiniteObject<T>(
 				this,
-				this.distributeIn(scope.getContainer()),
+				distribute(),
 				this.valueType,
 				this.value));
 	}

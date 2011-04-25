@@ -144,6 +144,11 @@ public final class AbsolutePath extends Path {
 		}
 
 		@Override
+		public boolean isStatic() {
+			return true;
+		}
+
+		@Override
 		public Ref reproduce(Reproducer reproducer) {
 			return new AbsolutePathTarget(
 					this,

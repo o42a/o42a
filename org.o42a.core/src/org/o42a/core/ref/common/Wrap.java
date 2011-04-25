@@ -46,6 +46,11 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return wrapped().isStatic();
+	}
+
+	@Override
 	public Path getPath() {
 		return wrapped().getPath();
 	}
