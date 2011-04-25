@@ -33,7 +33,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Source;
@@ -44,11 +43,6 @@ public final class VoidObject extends Obj {
 
 	public VoidObject(Scope topScope) {
 		super(voidScope(topScope));
-	}
-
-	@Override
-	public TypeRef getAncestor() {
-		return null;
 	}
 
 	@Override

@@ -119,7 +119,7 @@ public abstract class MemberField extends Member {
 	@Override
 	public final Field<?> toField(UserInfo user) {
 		if (this.field != null) {
-			this.field.toUser().useBy(user);
+			useBy(user);
 			return this.field;
 		}
 
@@ -271,9 +271,15 @@ public abstract class MemberField extends Member {
 		return toField(dummyUser()).getArtifactKind();
 	}
 
+	@Override
+	protected void useBy(UserInfo user) {
+		this.field.toUser().useBy(user);
+		super.useBy(user);
+	}
+
 	protected final void setField(UserInfo user, Field<?> field) {
 		this.field = field;
-		field.toUser().useBy(user);
+		useBy(user);
 		for (MemberField merged : getMergedWith()) {
 			mergeField(merged);
 		}
