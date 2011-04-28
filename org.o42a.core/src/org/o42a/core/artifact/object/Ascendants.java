@@ -176,12 +176,16 @@ public class Ascendants
 		return addSample(new MemberOverride(overriddenMember, this));
 	}
 
-	@Override
-	protected Ascendants clone() {
-		try {
-			return (Ascendants) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
+	public void resolveAll() {
+		validate();
+
+		final TypeRef ancestor = getExplicitAncestor();
+
+		if (ancestor != null) {
+			ancestor.resolveAll();
+		}
+		for (Sample sample : getSamples()) {
+			sample.resolveAll();
 		}
 	}
 
@@ -215,6 +219,15 @@ public class Ascendants
 		out.append(']');
 
 		return out.toString();
+	}
+
+	@Override
+	protected Ascendants clone() {
+		try {
+			return (Ascendants) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 	void validate() {

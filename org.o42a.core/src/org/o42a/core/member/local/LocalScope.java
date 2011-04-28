@@ -229,6 +229,8 @@ public abstract class LocalScope
 				otherLocal.getOwner().type().useBy(dummyUser()));
 	}
 
+	public abstract void resolveAll();
+
 	@Override
 	public abstract LocalIR ir(Generator generator);
 

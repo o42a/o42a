@@ -75,6 +75,8 @@ public abstract class Rescopable<R extends Rescopable<R>>
 		return getScope().getLogger();
 	}
 
+	public abstract void resolveAll();
+
 	@Override
 	public final void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);

@@ -19,54 +19,55 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ref.Logical.logicalFalse;
-
-import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.common.AbstractConjunction;
 import org.o42a.core.st.Reproducer;
 
 
-public final class ErrorRef extends Ref {
+final class LogicalAnd extends AbstractConjunction {
 
-	ErrorRef(LocationInfo location, Distributor distributor) {
-		super(
-				location,
-				distributor,
-				logicalFalse(location, distributor.getScope()));
+	private final Logical[] claims;
+
+	LogicalAnd(LocationInfo location, Scope scope, Logical[] claims) {
+		super(location, scope);
+		this.claims = claims;
 	}
 
 	@Override
-	public TypeRef ancestor(LocationInfo location) {
-		return null;
+	public Logical reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
+
+		final Logical[] claims = new Logical[this.claims.length];
+
+		for (int i = 0; i < claims.length; ++i) {
+
+			final Logical reproduced =
+				this.claims[i].reproduce(reproducer);
+
+			if (reproduced == null) {
+				return null;
+			}
+
+			claims[i] = reproduced;
+		}
+
+		return new LogicalAnd(this, reproducer.getScope(), claims);
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		return noResolution();
+	protected Logical[] expandConjunction() {
+		return this.claims;
 	}
 
 	@Override
-	public Ref reproduce(Reproducer reproducer) {
-		return errorRef(this, reproducer.distribute());
+	protected int numClaims() {
+		return this.claims.length;
 	}
 
 	@Override
-	public void resolveAll() {
-	}
-
-	@Override
-	public String toString() {
-		return "ERROR";
-	}
-
-	@Override
-	protected RefOp createOp(HostOp host) {
-		throw new UnsupportedOperationException(
-				"Can not generate IR for ERROR");
+	protected Logical claim(int index) {
+		return this.claims[index];
 	}
 
 }

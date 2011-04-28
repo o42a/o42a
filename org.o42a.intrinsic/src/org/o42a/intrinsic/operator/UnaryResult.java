@@ -144,7 +144,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 			return getResultType().falseValue();
 		}
 
-		return getResultType().definiteValue(result);
+		return getResultType().constantValue(result);
 	}
 
 	protected abstract T calculate(O operand);

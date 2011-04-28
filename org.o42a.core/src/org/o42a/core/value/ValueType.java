@@ -103,8 +103,8 @@ public abstract class ValueType<T> {
 		.toStaticTypeRef();
 	}
 
-	public final Value<T> definiteValue(T value) {
-		return new DefiniteValue<T>(this, value);
+	public final Value<T> constantValue(T value) {
+		return new ConstantValue<T>(this, value);
 	}
 
 	public final Value<T> runtimeValue() {
@@ -119,11 +119,11 @@ public abstract class ValueType<T> {
 		return this.unknownValue;
 	}
 
-	public final Ref definiteRef(
+	public final Ref constantRef(
 			LocationInfo location,
 			Distributor distributor,
 			T value) {
-		return new DefiniteRef<T>(
+		return new ConstantRef<T>(
 				location,
 				distributor,
 				this,
@@ -142,11 +142,11 @@ public abstract class ValueType<T> {
 		return runtimeRef(location, distributor).toValueDef();
 	}
 
-	public final Obj definiteObject(
+	public final Obj constantObject(
 			LocationInfo location,
 			Distributor enclosing,
 			T value) {
-		return new DefiniteObject<T>(
+		return new ConstantObject<T>(
 				location,
 				enclosing,
 				this,

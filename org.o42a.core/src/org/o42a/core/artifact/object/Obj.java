@@ -86,20 +86,18 @@ public abstract class Obj extends Artifact<Obj>
 	private final LinkedHashMap<MemberKey, Dep> deps =
 		new LinkedHashMap<MemberKey, Dep>();
 
-	private boolean resolveAll;
-	private ValueType<?> valueType;
-
-	private Definitions definitions;
-
-	private ObjectIR ir;
-	private ObjectValueIR valueIR;
-
+	private ObjectMembers objectMembers;
 	private Clause[] explicitClauses;
 	private Clause[] implicitClauses;
 
-	private ObjectMembers objectMembers;
+	private ValueType<?> valueType;
+	private Definitions definitions;
 
+	private boolean allResolved;
 	private ObjectAnalysis analysis;
+
+	private ObjectIR ir;
+	private ObjectValueIR valueIR;
 
 	public Obj(LocationInfo location, Distributor enclosing) {
 		this(new ObjScope(location, enclosing));
@@ -511,26 +509,17 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public void resolveAll() {
-		if (this.resolveAll) {
+		if (this.allResolved) {
 			return;
 		}
-		this.resolveAll = true;
-		try {
-			if (!resolveIfNotResolving()) {
-				return;
-			}
-			resolveAllMembers();
-			validateImplicitSubClauses(getExplicitClauses());
-			getDefinitions();
-		} finally {
-			this.resolveAll = false;
+		this.allResolved = true;
+		if (!resolveIfNotResolving()) {
+			return;
 		}
-	}
-
-	public final void assertDerivedFrom(Obj type) {
-		assert type().useBy(dummyUser()).derivedFrom(
-				type.type().useBy(dummyUser())) :
-					this + " is not derived from " + type;
+		objectType().getAscendants().resolveAll();
+		resolveAllMembers();
+		validateImplicitSubClauses(getExplicitClauses());
+		getDefinitions().resolveAll();
 	}
 
 	public final Definitions getDefinitions() {
@@ -575,6 +564,12 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return scopePathFragment.toPath();
+	}
+
+	public final void assertDerivedFrom(Obj type) {
+		assert type().useBy(dummyUser()).derivedFrom(
+				type.type().useBy(dummyUser())) :
+					this + " is not derived from " + type;
 	}
 
 	public final ObjectIR ir(Generator generator) {

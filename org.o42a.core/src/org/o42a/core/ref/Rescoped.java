@@ -161,6 +161,12 @@ final class Rescoped extends Ref {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.ref.resolveAll();
+		this.rescoper.resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		return "Rescoped[" + this.rescoper + ": " + this.ref + ']';
 	}

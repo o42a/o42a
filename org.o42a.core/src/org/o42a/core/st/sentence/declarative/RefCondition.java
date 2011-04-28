@@ -102,6 +102,11 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.ref.resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		return this.ref.toString();
 	}

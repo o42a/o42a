@@ -79,6 +79,11 @@ final class AncestorRef extends Expression {
 	}
 
 	@Override
+	public void resolveAll() {
+		getResolution().toObject().resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();

@@ -59,6 +59,11 @@ final class FixedRef extends Ref {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.self.toArtifact().resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		return "&(" + this.self.toString() + " / " + getScope() + ')';
 	}

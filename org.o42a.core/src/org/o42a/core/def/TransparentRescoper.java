@@ -71,14 +71,18 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return host;
-	}
-
-	@Override
 	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
 		getFinalScope().assertCompatible(reproducer.getReproducingScope());
 		return new TransparentRescoper(reproducer.getScope());
+	}
+
+	@Override
+	public void resolveAll() {
+	}
+
+	@Override
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return host;
 	}
 
 	@Override

@@ -108,6 +108,10 @@ public class ArrayTypeRef implements ScopeInfo {
 		return relation.isPreferred() ? this : other;
 	}
 
+	public void resolveAll() {
+		getItemTypeRef().resolveAll();
+	}
+
 	@Override
 	public void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);

@@ -575,6 +575,13 @@ public class Definitions extends Scoped {
 				this.propositions);
 	}
 
+	public final void resolveAll() {
+		resolveAll(this.requirements);
+		resolveAll(this.conditions);
+		resolveAll(this.claims);
+		resolveAll(this.propositions);
+	}
+
 	@Override
 	public String toString() {
 
@@ -991,6 +998,12 @@ public class Definitions extends Scoped {
 		return values;
 	}
 
+	private static final void resolveAll(Def<?>[] defs) {
+		for (Def<?> def : defs) {
+			def.resolveAll();
+		}
+	}
+
 	private static final class Empty extends Definitions {
 
 		Empty(LocationInfo location, Scope scope) {
@@ -1015,5 +1028,6 @@ public class Definitions extends Scoped {
 		}
 		return true;
 	}
+
 
 }

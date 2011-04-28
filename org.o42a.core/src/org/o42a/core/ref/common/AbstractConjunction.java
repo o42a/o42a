@@ -88,6 +88,13 @@ public abstract class AbstractConjunction extends Logical {
 	}
 
 	@Override
+	public void resolveAll() {
+		for (Logical claim : expandConjunction()) {
+			claim.resolveAll();
+		}
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();

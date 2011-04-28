@@ -19,75 +19,54 @@
 */
 package org.o42a.core.ref;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
 
-final class RescopedLogical extends Logical {
+final class LogicalFalse extends Logical {
 
-	private final Logical logical;
-	private final Rescoper rescoper;
-
-	RescopedLogical(Logical logical, Rescoper rescoper) {
-		super(logical, rescoper.getFinalScope());
-		this.logical = logical;
-		this.rescoper = rescoper;
+	LogicalFalse(LocationInfo location, Scope scope) {
+		super(location, scope);
 	}
 
 	@Override
 	public LogicalValue getConstantValue() {
-		return this.logical.getConstantValue();
+		return LogicalValue.FALSE;
 	}
 
 	@Override
 	public LogicalValue logicalValue(Scope scope) {
 		assertCompatible(scope);
-		return this.logical.logicalValue(this.rescoper.rescope(scope));
+		return LogicalValue.FALSE;
 	}
 
 	@Override
 	public Logical reproduce(Reproducer reproducer) {
-		getLogger().notReproducible(this);
-		return null;
-	}
-
-	@Override
-	public void write(CodeDirs dirs, HostOp host) {
-		host = this.rescoper.rescope(dirs, host);
-		this.logical.write(dirs, host);
-	}
-
-	@Override
-	public Logical rescope(Rescoper rescoper) {
-
-		final Rescoper oldRescoper = this.rescoper;
-
-		if (rescoper.getFinalScope() == oldRescoper.getFinalScope()) {
-			return this;
-		}
-
-		final Rescoper newRescoper = oldRescoper.and(rescoper);
-
-		if (newRescoper.equals(oldRescoper)) {
-			return this;
-		}
-
-		return new RescopedLogical(this.logical, newRescoper);
+		assertCompatible(reproducer.getReproducingScope());
+		return new LogicalFalse(this, reproducer.getScope());
 	}
 
 	@Override
 	public void resolveAll() {
-		this.logical.resolveAll();
-		this.rescoper.resolveAll();
+	}
+
+	@Override
+	public void write(CodeDirs dirs, HostOp host) {
+
+		final Code code = dirs.code();
+
+		code.debug("Logical: FALSE");
+		dirs.goWhenFalse(code);
 	}
 
 	@Override
 	public String toString() {
-		return this.logical.toString();
+		return "FALSE";
 	}
 
 }

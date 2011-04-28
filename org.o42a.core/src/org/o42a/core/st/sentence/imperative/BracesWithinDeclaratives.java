@@ -110,6 +110,10 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
+	public void resolveAll() {
+	}
+
+	@Override
 	public String toString() {
 		return this.block.toString();
 	}

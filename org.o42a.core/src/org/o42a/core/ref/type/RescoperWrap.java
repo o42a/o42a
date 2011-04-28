@@ -46,13 +46,18 @@ abstract class RescoperWrap extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return wrapped().rescope(dirs, host);
+	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
+		return wrapped().reproduce(location, reproducer);
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
-		return wrapped().reproduce(location, reproducer);
+	public void resolveAll() {
+		wrapped().resolveAll();
+	}
+
+	@Override
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return wrapped().rescope(dirs, host);
 	}
 
 	@Override

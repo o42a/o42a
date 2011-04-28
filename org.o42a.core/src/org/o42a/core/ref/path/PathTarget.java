@@ -185,6 +185,11 @@ class PathTarget extends Expression {
 	}
 
 	@Override
+	public void resolveAll() {
+		getPath();
+	}
+
+	@Override
 	public String toString() {
 		if (this.fullPath != null) {
 			return this.fullPath.toString();

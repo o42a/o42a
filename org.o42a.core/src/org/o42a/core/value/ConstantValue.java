@@ -23,11 +23,11 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.op.Val;
 
 
-final class DefiniteValue<T> extends Value<T> {
+final class ConstantValue<T> extends Value<T> {
 
 	private final T value;
 
-	DefiniteValue(ValueType<T> valueType, T value) {
+	ConstantValue(ValueType<T> valueType, T value) {
 		super(valueType);
 		this.value = value;
 	}

@@ -69,6 +69,11 @@ final class SelfRef extends Ref {
 	}
 
 	@Override
+	public void resolveAll() {
+		getResolution().resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		return "&" + this.self.toString();
 	}

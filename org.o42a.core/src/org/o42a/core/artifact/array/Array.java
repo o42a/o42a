@@ -117,8 +117,8 @@ public abstract class Array extends Artifact<Array> {
 
 	@Override
 	public void resolveAll() {
-		getArrayTypeRef();
-		getInitializer();
+		getArrayTypeRef().resolveAll();
+		getInitializer().resolveAll();
 	}
 
 	protected abstract ArrayTypeRef buildTypeRef();

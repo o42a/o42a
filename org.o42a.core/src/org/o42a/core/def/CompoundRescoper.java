@@ -63,13 +63,6 @@ final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return this.first.rescope(
-				dirs,
-				this.second.rescope(dirs, host));
-	}
-
-	@Override
 	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
 		getFinalScope().assertCompatible(reproducer.getReproducingScope());
 
@@ -101,6 +94,19 @@ final class CompoundRescoper extends Rescoper {
 		}
 
 		return new CompoundRescoper(firstRescoper, secondRescoper);
+	}
+
+	@Override
+	public void resolveAll() {
+		this.first.resolveAll();
+		this.second.resolveAll();
+	}
+
+	@Override
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return this.first.rescope(
+				dirs,
+				this.second.rescope(dirs, host));
 	}
 
 	@Override

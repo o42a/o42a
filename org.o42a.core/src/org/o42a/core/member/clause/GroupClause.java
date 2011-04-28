@@ -22,6 +22,8 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 
+import java.util.Collection;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -116,9 +118,18 @@ public abstract class GroupClause extends Clause implements Container {
 		Clause[] subClauses = new Clause[0];
 
 		final MemberKey key = getKey();
-		final Obj object = getEnclosingScope().getContainer().toObject();
 
-		for (Member member : object.getMembers()) {
+		final Container enclosing = getEnclosingScope().getContainer();
+		final Collection<Member> members;
+		final Obj object = enclosing.toObject();
+
+		if (object != null) {
+			members = object.getMembers();
+		} else {
+			members = enclosing.toLocal().getMembers();
+		}
+
+		for (Member member : members) {
 
 			final Clause clause = member.toClause();
 

@@ -34,4 +34,8 @@ public abstract class DeclarationStatement extends Statement {
 
 	public abstract Member toMember();
 
+	@Override
+	public void resolveAll() {
+	}
+
 }

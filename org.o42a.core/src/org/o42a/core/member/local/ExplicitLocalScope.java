@@ -48,6 +48,7 @@ final class ExplicitLocalScope extends LocalScope {
 		new HashMap<MemberId, Member>();
 	private Clause[] implicitClauses;
 	private ImperativeBlock block;
+	private boolean allResolved;
 	private LocalIR ir;
 
 	ExplicitLocalScope(
@@ -182,6 +183,17 @@ final class ExplicitLocalScope extends LocalScope {
 			return null;
 		}
 		return this.members.get(memberKey.getMemberId());
+	}
+
+	@Override
+	public void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+		for (Member member : getMembers()) {
+			member.resolveAll();
+		}
 	}
 
 	@Override

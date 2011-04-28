@@ -35,7 +35,6 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.LoggableData;
@@ -168,7 +167,7 @@ public class AncestorVisitor
 
 	}
 
-	private static final class NoRef extends Expression {
+	private static final class NoRef extends Ref {
 
 		NoRef(CompilerContext context) {
 			super(
@@ -182,7 +181,11 @@ public class AncestorVisitor
 		}
 
 		@Override
-		protected Resolution resolveExpression(Scope scope) {
+		public void resolveAll() {
+		}
+
+		@Override
+		public Resolution resolve(Scope scope) {
 			throw new UnsupportedOperationException();
 		}
 

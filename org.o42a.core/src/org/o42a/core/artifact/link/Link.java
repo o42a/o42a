@@ -119,7 +119,7 @@ public abstract class Link extends Artifact<Link> {
 
 	@Override
 	public void resolveAll() {
-		getTargetRef();
+		getTargetRef().resolveAll();
 		materialize().resolveAll();
 	}
 
