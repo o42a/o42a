@@ -19,20 +19,9 @@
 */
 package org.o42a.lib.test.rt;
 
-import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
-import org.o42a.codegen.code.Code;
-import org.o42a.common.adapter.ByString;
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
 
@@ -41,10 +30,10 @@ public class RtString extends IntrinsicObject {
 
 	public RtString(TestModule module) {
 		super(
-				fieldDeclaration(
-						module.locationFor("rt-string.o42a"),
-						module.distribute(),
-						memberName("rt-string"))
+				sourcedDeclaration(
+						module,
+						"rt-string",
+						"rt-string.o42a")
 				.prototype());
 		setValueType(ValueType.STRING);
 	}
@@ -57,56 +46,13 @@ public class RtString extends IntrinsicObject {
 
 	@Override
 	protected void postResolve() {
-		includeSource();
 		super.postResolve();
-	}
-
-	@Override
-	protected void declareMembers(ObjectMembers members) {
-		members.addMember(new Parse(this).toMember());
-		super.declareMembers(members);
+		includeSource();
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
 		return null;
-	}
-
-	private static final class Parse extends ByString<String> {
-
-		Parse(RtString owner) {
-			super(
-					fieldDeclaration(
-							owner,
-							owner.distribute(),
-							BY_STRING.toAdapterId(owner, owner.distribute()))
-					.prototype(),
-					ValueType.STRING);
-		}
-
-		@Override
-		protected Value<?> calculateValue(Scope scope) {
-
-			final Value<?> value = super.calculateValue(scope);
-
-			if (!value.getLogicalValue().isTrue()) {
-				return value;
-			}
-
-			return getValueType().runtimeValue();
-		}
-
-		@Override
-		protected String byString(LocationInfo location, String input) {
-			return input;
-		}
-
-		@Override
-		protected void parse(Code code, ValOp result, ObjectOp input) {
-			code.debug("Run-time string");
-			result.store(code, input.writeValue(code));
-		}
-
 	}
 
 }

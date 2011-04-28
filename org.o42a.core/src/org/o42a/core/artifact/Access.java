@@ -301,9 +301,9 @@ public abstract class Access {
 				return false;
 			}
 
-			final Role actualUse = getRole();
+			final Role actualRole = getRole();
 
-			if (actualUse.ordinal() < expectedRole.ordinal()) {
+			if (actualRole.ordinal() < expectedRole.ordinal()) {
 				expectedRole.reportMisuse(this.to, this.from);
 				return false;
 			}

@@ -200,6 +200,10 @@ public class Ascendants
 			out.append("ancestor=");
 			out.append(this.ancestor);
 			comma = true;
+		} else if (this.explicitAncestor != null) {
+			out.append("ancestor=");
+			out.append(this.explicitAncestor);
+			comma = true;
 		}
 		if (this.samples.length != 0) {
 			if (comma) {

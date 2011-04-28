@@ -20,44 +20,42 @@
 package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
+import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathBuilder;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
 public abstract class ByString<T> extends IntrinsicObject {
 
-	public static final PathBuilder BY_STRING =
-		pathBuilder("adapters", "by_string");
-	public static final PathBuilder INPUT =
-		BY_STRING.appendName("input");
+	private MemberKey inputKey;
 
-	public ByString(Obj owner, ValueType<T> valueType) {
+	public ByString(
+			Container enclosingContainer,
+			ValueType<T> valueType,
+			String name,
+			String sourcePath) {
 		this(
-				fieldDeclaration(
-						owner,
-						owner.distribute(),
-						BY_STRING.toAdapterId(owner, owner.distribute()))
-				.prototype()
-				.override(),
+				sourcedDeclaration(enclosingContainer, name, sourcePath)
+				.prototype(),
 				valueType);
 	}
 
@@ -69,9 +67,13 @@ public abstract class ByString<T> extends IntrinsicObject {
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
+				getValueType().typeRef(this, getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
 	}
 
 	@Override
@@ -87,10 +89,14 @@ public abstract class ByString<T> extends IntrinsicObject {
 	@Override
 	protected Value<?> calculateValue(Scope scope) {
 
-		final Field<?> inputField = INPUT.fieldOf(scope, scope);
+		final Obj inputObject =
+			scope.getContainer()
+			.member(inputKey())
+			.substance(scope)
+			.toArtifact()
+			.materialize();
 		final Value<?> inputValue =
-			inputField.getArtifact().materialize()
-			.value().useBy(scope).getValue();
+			inputObject.value().useBy(scope).getValue();
 
 		if (!inputValue.isDefinite()) {
 			return getValueType().runtimeValue();
@@ -101,7 +107,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 
 		final String input =
 			ValueType.STRING.cast(inputValue).getDefiniteValue();
-		final T result = byString(inputField, input);
+		final T result = byString(inputObject, input);
 
 		if (result == null) {
 			return getValueType().falseValue();
@@ -122,6 +128,17 @@ public abstract class ByString<T> extends IntrinsicObject {
 
 	protected abstract void parse(Code code, ValOp result, ObjectOp input);
 
+	private final MemberKey inputKey() {
+		if (this.inputKey != null) {
+			return this.inputKey;
+		}
+
+		final Member operandMember =
+			member(memberName("input"), Accessor.DECLARATION);
+
+		return this.inputKey = operandMember.getKey();
+	}
+
 	private final class ValueIR extends ProposedValueIR {
 
 		public ValueIR(ObjectIR objectIR) {
@@ -134,8 +151,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 			final CodeBlk cantParse = code.addBlock("cant_parse");
 			final CodeDirs dirs = falseWhenUnknown(code, cantParse.head());
 			final ObjectOp input =
-				host.field(dirs, INPUT.memberOf(getScope()).getKey())
-				.materialize(dirs);
+				host.field(dirs, inputKey()).materialize(dirs);
 
 			parse(code, result, input);
 			if (cantParse.exists()) {
