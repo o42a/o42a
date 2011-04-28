@@ -268,7 +268,20 @@ public abstract class CompilerTestCase {
 		compile(new Src(buildCode(line, lines)));
 	}
 
+	protected void compile(Source source) {
+		((Context) this.context).setSource(source);
+		this.module = new Module(this.context, this.moduleName);
+		INTRINSICS.setMainModule(this.module);
+		this.module.resolveAll();
+	}
+
+	protected void generateCode(Generator generator) {
+		this.module.resolveAll();
+		INTRINSICS.generateAll(generator);
+	}
+
 	private String buildCode(String line, String... lines) {
+
 		final String code;
 
 		if (lines.length == 0) {
@@ -284,19 +297,8 @@ public abstract class CompilerTestCase {
 
 			code = text.toString();
 		}
+
 		return code;
-	}
-
-	protected void compile(Source source) {
-		((Context) this.context).setSource(source);
-		this.module = new Module(this.context, this.moduleName);
-		INTRINSICS.setMainModule(this.module);
-		this.module.resolveAll();
-	}
-
-	protected void generateCode(Generator generator) {
-		this.module.resolveAll();
-		INTRINSICS.generateAll(generator);
 	}
 
 	protected final class Src extends Source {

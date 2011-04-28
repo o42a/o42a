@@ -30,7 +30,10 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
-import org.o42a.lib.test.rt.*;
+import org.o42a.lib.test.rt.RtFalse;
+import org.o42a.lib.test.rt.RtInteger;
+import org.o42a.lib.test.rt.RtVoid;
+import org.o42a.lib.test.rt.parser.Parser;
 import org.o42a.lib.test.run.RunTests;
 import org.o42a.util.use.UserInfo;
 
@@ -72,11 +75,12 @@ public class TestModule extends Module {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		members.addMember(new RunTests(this).toMember());
+		members.addMember(new Parser(this).toMember());
 		members.addMember(new RtVoid(this).toMember());
 		members.addMember(new RtFalse(this).toMember());
-		members.addMember(new RtString(this).toMember());
+		//members.addMember(new RtString(this).toMember());
 		members.addMember(new RtInteger(this).toMember());
-		members.addMember(new RtFloat(this).toMember());
+		//members.addMember(new RtFloat(this).toMember());
 		super.declareMembers(members);
 	}
 

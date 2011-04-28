@@ -22,6 +22,7 @@ package org.o42a.intrinsic.numeric;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
+import org.o42a.common.adapter.IntegerByString;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
@@ -49,6 +50,10 @@ public class Integers extends IntrinsicObject {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
+
+		final IntegerByString byString =
+			new IntegerByString(this, "by_string", "integers/by_string.o42a");
+
 		members.addMember(new IntegerMinus(this).toMember());
 		members.addMember(new AddIntegers(this).toMember());
 		members.addMember(new SubtractIntegers(this).toMember());
@@ -56,6 +61,7 @@ public class Integers extends IntrinsicObject {
 		members.addMember(new DivideIntegers(this).toMember());
 		members.addMember(new IntegersEqual(this).toMember());
 		members.addMember(new CompareIntegers(this).toMember());
+		members.addMember(byString.toMember());
 	}
 
 	@Override

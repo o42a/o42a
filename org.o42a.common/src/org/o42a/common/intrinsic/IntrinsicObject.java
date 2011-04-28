@@ -19,6 +19,10 @@
 */
 package org.o42a.common.intrinsic;
 
+import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
@@ -33,6 +37,29 @@ import org.o42a.util.log.Loggable;
 
 
 public abstract class IntrinsicObject extends PlainObject {
+
+	public static FieldDeclaration sourcedDeclaration(
+			Container enclosingContainer,
+			String name,
+			String sourcePath) {
+
+		final CompilerContext context;
+
+		try {
+			context = enclosingContainer.getContext().contextFor(sourcePath);
+		} catch (Exception e) {
+			throw new ExceptionInInitializerError(e);
+		}
+
+		final Location location = new Location(context, context.getSource());
+		final Distributor distributor =
+			declarativeDistributor(enclosingContainer);
+
+		return fieldDeclaration(
+				location,
+				distributor,
+				memberName(name));
+	}
 
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;

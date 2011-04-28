@@ -17,25 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.test.rt;
+package org.o42a.lib.test.rt.parser;
+
+import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
 
 
-public class RtInteger extends IntrinsicObject {
+public class Parser extends IntrinsicObject {
 
-	public RtInteger(TestModule module) {
-		super(
-				sourcedDeclaration(
-						module,
-						"rt-integer",
-						"rt-integer.o42a")
-				.prototype());
-		setValueType(ValueType.INTEGER);
+	public Parser(TestModule module) {
+		super(fieldDeclaration(
+				module,
+				module.distribute(),
+				memberName("parser")));
+		setValueType(ValueType.VOID);
 	}
 
 	@Override
@@ -45,9 +47,11 @@ public class RtInteger extends IntrinsicObject {
 	}
 
 	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
+	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
+		//members.addMember(new ParseString(this).toMember());
+		members.addMember(new ParseInteger(this).toMember());
+		//members.addMember(new ParseFloat(this).toMember());
 	}
 
 	@Override

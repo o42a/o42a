@@ -24,11 +24,9 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.absolutePath;
 
-import org.o42a.common.adapter.FloatByString;
 import org.o42a.common.intrinsic.IntrinsicType;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
 
@@ -75,15 +73,6 @@ public class FloatObject extends IntrinsicType {
 	protected void postResolve() {
 		super.postResolve();
 		includeSource();
-	}
-
-	@Override
-	protected void declareMembers(ObjectMembers members) {
-		super.declareMembers(members);
-
-		final FloatByString byString = new FloatByString(this);
-
-		members.addMember(byString.toMember());
 	}
 
 }
