@@ -99,6 +99,10 @@ public final class EllipsisSt extends Statement {
 	}
 
 	@Override
+	public void resolveAll() {
+	}
+
+	@Override
 	protected StOp createOp(LocalBuilder builder) {
 		if (this.exit) {
 			return new ExitOp(builder, this);

@@ -77,6 +77,11 @@ final class StaticRef extends Ref {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.ref.resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();

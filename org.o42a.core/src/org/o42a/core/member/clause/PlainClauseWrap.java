@@ -179,6 +179,10 @@ final class PlainClauseWrap extends PlainClause {
 		}
 
 		@Override
+		public void resolveAll() {
+		}
+
+		@Override
 		protected Resolution resolveExpression(Scope scope) {
 			assertScopeIs(scope);
 			return artifactResolution(field().getInterface().getObject());

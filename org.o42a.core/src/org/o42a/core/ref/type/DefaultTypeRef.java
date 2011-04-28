@@ -69,6 +69,13 @@ final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
+	public void resolveAll() {
+		validate();
+		this.ref.resolveAll();
+		getRescoper().resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();

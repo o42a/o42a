@@ -110,7 +110,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 		@SuppressWarnings("unchecked")
 		final ValueType<T> valueType = (ValueType<T>) getValueType();
 
-		return valueType.definiteValue(result);
+		return valueType.constantValue(result);
 	}
 
 	@Override

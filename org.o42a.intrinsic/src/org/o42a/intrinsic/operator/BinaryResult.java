@@ -146,7 +146,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 			return getResultType().falseValue();
 		}
 
-		return getResultType().definiteValue(result);
+		return getResultType().constantValue(result);
 	}
 
 	protected abstract T calculate(Scope scope, L left, R right);

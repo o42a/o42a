@@ -35,13 +35,12 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
-public class OverriddenEx extends Expression {
+public class OverriddenEx extends Ref {
 
 	private final Ref host;
 	private Resolution resolution;
@@ -68,7 +67,12 @@ public class OverriddenEx extends Expression {
 	}
 
 	@Override
-	protected Resolution resolveExpression(Scope scope) {
+	public void resolveAll() {
+		getResolution().resolveAll();
+	}
+
+	@Override
+	public Resolution resolve(Scope scope) {
 		if (this.resolution != null) {
 			return this.resolution;
 		}

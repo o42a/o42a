@@ -104,6 +104,8 @@ final class SentenceLogicals {
 
 		private LogicalValue constantValue;
 
+		private boolean allResolved;
+
 		private Result(LocationInfo location, Scope scope) {
 			super(location, scope);
 		}
@@ -156,10 +158,10 @@ final class SentenceLogicals {
 				return this.otherwise.logicalValue(scope);
 			}
 
-			for (StatementEnv conditions : this.variants) {
+			for (StatementEnv env : this.variants) {
 
 				final LogicalValue prerequisite =
-					conditions.prerequisite(getScope()).logicalValue(scope);
+					env.prerequisite(getScope()).logicalValue(scope);
 
 				if (!prerequisite.isConstant()) {
 					return prerequisite;
@@ -168,7 +170,7 @@ final class SentenceLogicals {
 					continue;
 				}
 
-				return conditions.precondition(getScope()).logicalValue(scope);
+				return env.precondition(getScope()).logicalValue(scope);
 			}
 
 			if (this.otherwise == null) {
@@ -181,6 +183,18 @@ final class SentenceLogicals {
 		@Override
 		public Logical reproduce(Reproducer reproducer) {
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void resolveAll() {
+			if (this.allResolved) {
+				return;
+			}
+			this.allResolved = true;
+			for (StatementEnv env : this.variants) {
+				env.precondition(getScope()).resolveAll();
+				env.precondition(getScope()).resolveAll();
+			}
 		}
 
 		@Override

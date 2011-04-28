@@ -64,6 +64,8 @@ public abstract class Statement extends Placed {
 
 	public abstract Statement reproduce(Reproducer reproducer);
 
+	public abstract void resolveAll();
+
 	public final StOp op(LocalBuilder builder) {
 
 		final StOp op = this.op;

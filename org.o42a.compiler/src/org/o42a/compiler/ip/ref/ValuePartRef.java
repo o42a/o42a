@@ -97,6 +97,11 @@ public final class ValuePartRef extends Expression {
 	}
 
 	@Override
+	public void resolveAll() {
+		getResolution().resolveAll();
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();

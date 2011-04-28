@@ -28,7 +28,7 @@ public abstract class Value<T> {
 	public static final Value<java.lang.Void> NO_VALUE = new NoValue();
 
 	public static final Value<Void> voidValue() {
-		return ValueType.VOID.definiteValue(Void.VOID);
+		return ValueType.VOID.constantValue(Void.VOID);
 	}
 
 	public static final Value<Void> falseValue() {
@@ -84,7 +84,7 @@ public abstract class Value<T> {
 		case FALSE:
 			return getValueType().falseValue();
 		case TRUE:
-			return getValueType().definiteValue(getDefiniteValue());
+			return getValueType().constantValue(getDefiniteValue());
 		case RUNTIME:
 		}
 

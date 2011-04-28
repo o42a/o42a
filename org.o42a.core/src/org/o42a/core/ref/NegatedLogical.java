@@ -19,75 +19,72 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+
+import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
 
-final class RescopedLogical extends Logical {
+final class NegatedLogical extends Logical {
 
-	private final Logical logical;
-	private final Rescoper rescoper;
-
-	RescopedLogical(Logical logical, Rescoper rescoper) {
-		super(logical, rescoper.getFinalScope());
-		this.logical = logical;
-		this.rescoper = rescoper;
+	NegatedLogical(Logical original) {
+		super(original, original.getScope());
 	}
 
 	@Override
 	public LogicalValue getConstantValue() {
-		return this.logical.getConstantValue();
+		return negate().getConstantValue().negate();
 	}
 
 	@Override
 	public LogicalValue logicalValue(Scope scope) {
 		assertCompatible(scope);
-		return this.logical.logicalValue(this.rescoper.rescope(scope));
+		return negate().logicalValue(scope).negate();
 	}
 
 	@Override
 	public Logical reproduce(Reproducer reproducer) {
-		getLogger().notReproducible(this);
-		return null;
-	}
+		assertCompatible(reproducer.getReproducingScope());
 
-	@Override
-	public void write(CodeDirs dirs, HostOp host) {
-		host = this.rescoper.rescope(dirs, host);
-		this.logical.write(dirs, host);
-	}
+		final Logical reproduced = negate().reproduce(reproducer);
 
-	@Override
-	public Logical rescope(Rescoper rescoper) {
-
-		final Rescoper oldRescoper = this.rescoper;
-
-		if (rescoper.getFinalScope() == oldRescoper.getFinalScope()) {
-			return this;
+		if (reproduced == null) {
+			return null;
 		}
 
-		final Rescoper newRescoper = oldRescoper.and(rescoper);
-
-		if (newRescoper.equals(oldRescoper)) {
-			return this;
-		}
-
-		return new RescopedLogical(this.logical, newRescoper);
+		return reproduced.negate();
 	}
 
 	@Override
 	public void resolveAll() {
-		this.logical.resolveAll();
-		this.rescoper.resolveAll();
+		negate().resolveAll();
+	}
+
+	@Override
+	public void write(CodeDirs dirs, HostOp host) {
+
+		final Code code = dirs.code();
+		final Code isFalse = code.addBlock("is_false");
+		final CodeDirs negatedDirs =
+			falseWhenUnknown(code, isFalse.head())
+			.begin("not", "Logical NOT: " + this);
+
+		negate().write(negatedDirs, host);
+		negatedDirs.end();
+		dirs.goWhenFalse(code);
+
+		if (isFalse.exists()) {
+			isFalse.go(code.tail());
+		}
 	}
 
 	@Override
 	public String toString() {
-		return this.logical.toString();
+		return "--" + negate();
 	}
 
 }

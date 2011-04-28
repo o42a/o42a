@@ -59,6 +59,13 @@ final class DefaultStaticTypeRef extends StaticTypeRef {
 	}
 
 	@Override
+	public void resolveAll() {
+		validate();
+		this.untouchedRef.resolveAll();
+		getRescoper().resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		if (this.fixedRef == null) {
 			return super.toString();

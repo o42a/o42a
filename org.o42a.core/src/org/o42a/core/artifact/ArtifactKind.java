@@ -209,6 +209,11 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
+		public void resolveAll() {
+			this.ref.resolveAll();
+		}
+
+		@Override
 		protected RefOp createOp(HostOp host) {
 			return new LinkTypeOp(host, this);
 		}

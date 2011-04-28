@@ -50,6 +50,11 @@ public abstract class ObjectConstructor extends Expression {
 	public abstract TypeRef ancestor(LocationInfo location);
 
 	@Override
+	public void resolveAll() {
+		getResolution().toObject().resolveAll();
+	}
+
+	@Override
 	protected final Resolution resolveExpression(Scope scope) {
 		if (scope != getScope() && !isStatic()) {
 			return objectResolution(new Propagated(scope, this));

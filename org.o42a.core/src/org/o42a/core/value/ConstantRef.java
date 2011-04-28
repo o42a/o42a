@@ -33,13 +33,13 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
 
 
-final class DefiniteRef<T> extends Ref {
+final class ConstantRef<T> extends Ref {
 
 	private final ValueType<T> valueType;
 	private final T value;
 	private Resolution object;
 
-	DefiniteRef(
+	ConstantRef(
 			LocationInfo location,
 			Distributor distributor,
 			ValueType<T> valueType,
@@ -57,7 +57,7 @@ final class DefiniteRef<T> extends Ref {
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		return new DefiniteRef<T>(
+		return new ConstantRef<T>(
 				this,
 				reproducer.distribute(),
 				this.valueType,
@@ -70,11 +70,15 @@ final class DefiniteRef<T> extends Ref {
 		if (this.object != null) {
 			return this.object;
 		}
-		return this.object = objectResolution(new DefiniteObject<T>(
+		return this.object = objectResolution(new ConstantObject<T>(
 				this,
 				distribute(),
 				this.valueType,
 				this.value));
+	}
+
+	@Override
+	public void resolveAll() {
 	}
 
 	@Override
@@ -84,7 +88,7 @@ final class DefiniteRef<T> extends Ref {
 
 	private static final class Op<T> extends RefOp {
 
-		Op(HostOp host, DefiniteRef<T> ref) {
+		Op(HostOp host, ConstantRef<T> ref) {
 			super(host, ref);
 		}
 
@@ -96,7 +100,7 @@ final class DefiniteRef<T> extends Ref {
 		public void writeValue(CodeDirs dirs, ValOp result) {
 
 			@SuppressWarnings("unchecked")
-			final DefiniteRef<T> ref = (DefiniteRef<T>) getRef();
+			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
 			final Code code = dirs.code();
 
 			result.store(
@@ -109,7 +113,7 @@ final class DefiniteRef<T> extends Ref {
 		public HostOp target(CodeDirs dirs) {
 
 			@SuppressWarnings("unchecked")
-			final DefiniteRef<T> ref = (DefiniteRef<T>) getRef();
+			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
 			final ObjectIR ir =
 				ref.getResolution().toObject().ir(getGenerator());
 

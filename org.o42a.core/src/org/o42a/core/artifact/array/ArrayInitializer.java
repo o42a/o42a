@@ -58,6 +58,7 @@ public class ArrayInitializer extends Placed {
 
 	TypeRef itemType;
 	Ref[] items;
+	private boolean allResolved;
 
 	private ArrayInitializer(
 			LocationInfo location,
@@ -199,6 +200,27 @@ public class ArrayInitializer extends Placed {
 		}
 
 		return result;
+	}
+
+	public void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+
+		final TypeRef itemType = getItemType();
+
+		if (itemType != null) {
+			itemType.resolveAll();
+		}
+
+		final Ref[] items = getItems();
+
+		if (items != null) {
+			for (Ref item : items) {
+				item.resolveAll();
+			}
+		}
 	}
 
 	@Override

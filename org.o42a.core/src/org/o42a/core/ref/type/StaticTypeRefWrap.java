@@ -69,6 +69,11 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.wrapped.resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		if (this.wrapped == null) {
 			return super.toString();

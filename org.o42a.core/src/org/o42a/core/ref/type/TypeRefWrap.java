@@ -92,6 +92,11 @@ public abstract class TypeRefWrap extends TypeRef {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.wrapped.resolveAll();
+	}
+
+	@Override
 	public String toString() {
 
 		final TypeRef wrapped = getWrapped();

@@ -43,6 +43,12 @@ final class LogicalCondDef extends CondDef {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.logical.resolveAll();
+		getRescoper().resolveAll();
+	}
+
+	@Override
 	protected Logical buildPrerequisite() {
 		return logicalTrue(this, this.logical.getScope());
 	}

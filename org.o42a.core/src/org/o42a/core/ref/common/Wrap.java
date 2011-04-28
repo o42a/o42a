@@ -129,6 +129,11 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
+	public void resolveAll() {
+		wrapped().resolveAll();
+	}
+
+	@Override
 	public String toString() {
 		if (this.wrapped != null) {
 			return this.wrapped.toString();

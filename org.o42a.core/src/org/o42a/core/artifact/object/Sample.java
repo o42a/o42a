@@ -83,6 +83,16 @@ public abstract class Sample extends Scoped {
 		return object.overrideDefinitions(scope, definitions);
 	}
 
+	public void resolveAll() {
+		getTypeRef().resolveAll();
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor != null) {
+			ancestor.resolveAll();
+		}
+	}
+
 	protected abstract Obj getObject();
 
 }

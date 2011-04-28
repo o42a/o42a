@@ -187,6 +187,11 @@ public class Root extends Obj {
 		}
 
 		@Override
+		public void resolveAll() {
+			getResolution().resolveAll();
+		}
+
+		@Override
 		protected Resolution resolveExpression(Scope scope) {
 			return objectResolution(getContext().getVoid());
 		}

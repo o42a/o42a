@@ -103,6 +103,7 @@ public abstract class MemberLocal extends Member {
 
 	@Override
 	public void resolveAll() {
+		toLocal(dummyUser()).resolveAll();
 	}
 
 	@Override

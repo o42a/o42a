@@ -96,6 +96,11 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.explicit.resolveAll();
+	}
+
+	@Override
 	public LocalIR ir(Generator generator) {
 		return explicit().ir(generator);
 	}

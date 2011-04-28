@@ -62,6 +62,11 @@ final class RefLogical extends Logical {
 	}
 
 	@Override
+	public void resolveAll() {
+		this.ref.resolveAll();
+	}
+
+	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		dirs = dirs.begin("ref_logical", "Logical of ref " + this);
 		this.ref.op(host).writeLogicalValue(dirs);

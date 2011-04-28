@@ -69,6 +69,10 @@ final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
+	public void resolveAll() {
+	}
+
+	@Override
 	public HostOp rescope(CodeDirs dirs, HostOp host) {
 		dirs = dirs.begin(
 				"upgrade_scope",

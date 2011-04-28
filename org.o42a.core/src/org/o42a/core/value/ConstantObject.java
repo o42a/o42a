@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.value.DefiniteValue.valueString;
+import static org.o42a.core.value.ConstantValue.valueString;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -27,11 +27,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Result;
 
 
-final class DefiniteObject<T> extends Result {
+final class ConstantObject<T> extends Result {
 
 	private final T value;
 
-	DefiniteObject(
+	ConstantObject(
 			LocationInfo location,
 			Distributor enclosing,
 			ValueType<T> valueType,
@@ -56,7 +56,7 @@ final class DefiniteObject<T> extends Result {
 		@SuppressWarnings("unchecked")
 		final ValueType<T> valueType = (ValueType<T>) getValueType();
 
-		return valueType.definiteValue(this.value);
+		return valueType.constantValue(this.value);
 	}
 
 }
