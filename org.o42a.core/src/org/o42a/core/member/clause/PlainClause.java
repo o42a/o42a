@@ -19,9 +19,12 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.AbstractScope.enclosingScopes;
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
+
+import java.util.Set;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
@@ -45,6 +48,7 @@ public abstract class PlainClause
 	private final Usable<PlainClause> user;
 	private Obj clauseObject;
 	private Path enclosingScopePath;
+	private Set<Scope> enclosingScopes;
 
 	public PlainClause(MemberClause member) {
 		super(member);
@@ -111,6 +115,14 @@ public abstract class PlainClause
 	@Override
 	public final Scope getEnclosingScope() {
 		return getEnclosingContainer().getScope();
+	}
+
+	@Override
+	public final Set<? extends Scope> getEnclosingScopes() {
+		if (this.enclosingScopes != null) {
+			return this.enclosingScopes;
+		}
+		return this.enclosingScopes = enclosingScopes(this);
 	}
 
 	@Override
