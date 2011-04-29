@@ -31,6 +31,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -79,11 +80,6 @@ final class AncestorRef extends Expression {
 	}
 
 	@Override
-	public void resolveAll() {
-		getResolution().toObject().resolveAll();
-	}
-
-	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();
@@ -101,6 +97,16 @@ final class AncestorRef extends Expression {
 		}
 
 		return artifactResolution(ancestor.getArtifact());
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		getResolution().resolveAll();
 	}
 
 	@Override

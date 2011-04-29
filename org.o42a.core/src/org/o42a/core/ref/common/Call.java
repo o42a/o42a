@@ -64,14 +64,6 @@ public class Call extends ObjectConstructor {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		return fieldDefinition(
-				this,
-				this.ascendants,
-				this.definitions);
-	}
-
-	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
@@ -86,6 +78,14 @@ public class Call extends ObjectConstructor {
 				this,
 				reproducer.distribute(),
 				ascendants,
+				this.definitions);
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return fieldDefinition(
+				this,
+				this.ascendants,
 				this.definitions);
 	}
 

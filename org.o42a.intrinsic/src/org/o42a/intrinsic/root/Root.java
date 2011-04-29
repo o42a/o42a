@@ -30,21 +30,13 @@ import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.numeric.*;
-import org.o42a.util.log.LoggableData;
 
 
 public class Root extends Obj {
@@ -153,12 +145,9 @@ public class Root extends Obj {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
-				new RootAncestor(
-						new Location(
-								getContext(),
-								new LoggableData(getContext())),
-						getScope().getEnclosingScope())
-				.toStaticTypeRef());
+				getContext().getVoid().fixedRef(
+						getScope().getEnclosingScope().distribute())
+						.toStaticTypeRef());
 	}
 
 	@Override
@@ -171,58 +160,6 @@ public class Root extends Obj {
 	@Override
 	protected ObjectIR createIR(Generator generator) {
 		return new IR(generator, this);
-	}
-
-	private static final class RootAncestor extends Expression {
-
-		RootAncestor(LocationInfo location, Scope scope) {
-			super(location, scope.distribute());
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-			getLogger().notReproducible(this);
-			return null;
-		}
-
-		@Override
-		public void resolveAll() {
-			getResolution().resolveAll();
-		}
-
-		@Override
-		protected Resolution resolveExpression(Scope scope) {
-			return objectResolution(getContext().getVoid());
-		}
-
-		@Override
-		protected RefOp createOp(HostOp host) {
-			return new VoidOp(host, this);
-		}
-
-	}
-
-	private static final class VoidOp extends RefOp {
-
-		VoidOp(HostOp host, Ref ref) {
-			super(host, ref);
-		}
-
-		@Override
-		public HostOp target(CodeDirs dirs) {
-
-			final ObjectIR ir =
-				getRef().getContext().getVoid().ir(getGenerator());
-
-			return ir.op(getBuilder(), dirs.code());
-		}
-
-		@Override
-		public String toString() {
-			return "void";
-		}
-
 	}
 
 	private static final class IR extends ObjectIR {

@@ -72,16 +72,6 @@ final class StaticRef extends Ref {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new FixedFieldDefinition(this.ref.toFieldDefinition());
-	}
-
-	@Override
-	public void resolveAll() {
-		this.ref.resolveAll();
-	}
-
-	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();
@@ -92,6 +82,16 @@ final class StaticRef extends Ref {
 	@Override
 	protected boolean isKnownStatic() {
 		return true;
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return new FixedFieldDefinition(this.ref.toFieldDefinition());
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.ref.resolveAll();
 	}
 
 	@Override

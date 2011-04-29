@@ -26,6 +26,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.TypeRef;
@@ -69,11 +70,6 @@ final class SelfRef extends Ref {
 	}
 
 	@Override
-	public void resolveAll() {
-		getResolution().resolveAll();
-	}
-
-	@Override
 	public String toString() {
 		return "&" + this.self.toString();
 	}
@@ -81,6 +77,16 @@ final class SelfRef extends Ref {
 	@Override
 	protected boolean isKnownStatic() {
 		return true;
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		getResolution().resolveAll();
 	}
 
 	@Override

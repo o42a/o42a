@@ -31,6 +31,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Expression;
@@ -179,13 +180,18 @@ final class PlainClauseWrap extends PlainClause {
 		}
 
 		@Override
-		public void resolveAll() {
-		}
-
-		@Override
 		protected Resolution resolveExpression(Scope scope) {
 			assertScopeIs(scope);
 			return artifactResolution(field().getInterface().getObject());
+		}
+
+		@Override
+		protected FieldDefinition createFieldDefinition() {
+			return defaultFieldDefinition();
+		}
+
+		@Override
+		protected void fullyResolve() {
 		}
 
 		@Override
