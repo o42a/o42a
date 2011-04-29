@@ -19,6 +19,8 @@
 */
 package org.o42a.core;
 
+import java.util.Set;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.def.Rescoper;
@@ -36,6 +38,13 @@ public interface Scope extends PlaceInfo, UserInfo {
 	boolean isTopScope();
 
 	Scope getEnclosingScope();
+
+	/**
+	 * All scopes enclosing this one, including scope itself.
+	 *
+	 * @return a set of enclosing scopes.
+	 */
+	Set<? extends Scope> getEnclosingScopes();
 
 	Container getEnclosingContainer();
 
