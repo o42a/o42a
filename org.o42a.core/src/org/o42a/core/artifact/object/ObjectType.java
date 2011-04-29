@@ -22,7 +22,8 @@ package org.o42a.core.artifact.object;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.type.TypeRef;
@@ -34,7 +35,7 @@ public final class ObjectType {
 	private final Obj object;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
-	private Map<Scope, ? extends Set<Derivation>> allAscendants;
+	private Map<Scope, Derivation> allAscendants;
 
 	private ObjectType(Obj object) {
 		this.object = object;
@@ -78,7 +79,7 @@ public final class ObjectType {
 		return ancestor.type(getObject()).inherits(other);
 	}
 
-	public final Map<Scope, ? extends Set<Derivation>> allAscendants() {
+	public final Map<Scope, Derivation> allAscendants() {
 		if (this.allAscendants != null) {
 			return this.allAscendants;
 		}
@@ -91,10 +92,10 @@ public final class ObjectType {
 
 	public final boolean derivedFrom(ObjectType other, Derivation derivation) {
 
-		final Set<Derivation> derivations =
+		final Derivation derivations =
 			allAscendants().get(other.getObject().getScope());
 
-		return derivations != null && derivations.contains(derivation);
+		return derivations != null && derivations.is(derivation);
 	}
 
 	@Override
@@ -137,14 +138,12 @@ public final class ObjectType {
 		return this.resolution.resolved();
 	}
 
-	private HashMap<Scope, EnumSet<Derivation>> buildAllAscendants() {
+	private HashMap<Scope, Derivation> buildAllAscendants() {
 
-		final HashMap<Scope, EnumSet<Derivation>> allAscendants =
-			new HashMap<Scope, EnumSet<Derivation>>();
+		final HashMap<Scope, Derivation> allAscendants =
+			new HashMap<Scope, Derivation>();
 
-		allAscendants.put(
-				getObject().getScope(),
-				EnumSet.of(Derivation.SAME));
+		allAscendants.put(getObject().getScope(), Derivation.SAME);
 
 		final TypeRef ancestor = getAncestor();
 
@@ -153,9 +152,7 @@ public final class ObjectType {
 			final ObjectType type = ancestor.type(getObject());
 
 			for (Scope scope : type.allAscendants().keySet()) {
-				allAscendants.put(
-						scope,
-						EnumSet.of(Derivation.INHERITANCE));
+				allAscendants.put(scope, Derivation.INHERITANCE);
 			}
 		}
 
@@ -168,34 +165,25 @@ public final class ObjectType {
 	}
 
 	private void addSamplesAscendants(
-			HashMap<Scope, EnumSet<Derivation>> allAscendants,
+			HashMap<Scope, Derivation> allAscendants,
 			Sample[] samples) {
 		for (Sample sample : samples) {
 
 			final ObjectType type = sample.type(getObject());
 
-			for (Map.Entry<Scope, ? extends Set<Derivation>> e
+			for (Map.Entry<Scope, Derivation> e
 					: type.allAscendants().entrySet()) {
 
 				final Scope scope = e.getKey();
+				final Derivation traversed =
+					e.getValue().traverseSample(sample);
+				final Derivation derivations = allAscendants.get(scope);
 
-				for (Derivation derivation : e.getValue()) {
-
-					final Derivation traversed =
-						derivation.traverseSample(sample);
-					EnumSet<Derivation> derivations =
-						allAscendants.get(scope);
-
-					if (derivations != null) {
-						derivations.add(traversed);
-					} else {
-						derivations = EnumSet.of(traversed);
-						allAscendants.put(scope, derivations);
-					}
-					for (Derivation implied : traversed.implied()) {
-						derivations.add(implied);
-					}
+				if (derivations == null) {
+					allAscendants.put(scope, traversed);
+					continue;
 				}
+				allAscendants.put(scope, derivations.union(traversed));
 			}
 		}
 	}
