@@ -58,8 +58,6 @@ public class PropagationTest extends CompilerTestCase {
 				aBar.type().useBy(USE_CASE),
 				Derivation.MEMBER_OVERRIDE));
 		assertTrue(bBar.type().useBy(USE_CASE).derivedFrom(
-				aFoo.type().useBy(USE_CASE)));
-		assertFalse(bBar.type().useBy(USE_CASE).derivedFrom(
 				aFoo.type().useBy(USE_CASE),
 				Derivation.INHERITANCE));
 		assertFalse(bBar.type().useBy(USE_CASE).derivedFrom(
