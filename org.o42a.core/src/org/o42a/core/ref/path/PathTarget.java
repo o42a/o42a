@@ -125,31 +125,19 @@ class PathTarget extends Expression {
 		if (pathReproduction == null) {
 			return null;
 		}
-
-		final PathTarget reproducedPart;
-
-		if (start == null) {
-			reproducedPart = new PathTarget(
-					this,
-					reproducer.distribute(),
-					pathReproduction.getReproducedPath());
-		} else {
-
-			final Ref reproducedStart = start.reproduce(reproducer);
-
-			if (reproducedStart == null) {
-				return null;
-			}
-
-			reproducedPart = new PathTarget(
-					this,
-					reproducer.distribute(),
-					pathReproduction.getReproducedPath(),
-					reproducedStart);
+		if (pathReproduction.isUnchanged()) {
+			return reproducePart(
+					reproducer,
+					start,
+					pathReproduction.getExternalPath());
 		}
 
-		if (!pathReproduction.isOutOfClause()
-				|| pathReproduction.isUnchanged()) {
+		final PathTarget reproducedPart = reproducePart(
+				reproducer,
+				start,
+				pathReproduction.getReproducedPath());
+
+		if (!pathReproduction.isOutOfClause()) {
 			return reproducedPart;
 		}
 
@@ -220,6 +208,23 @@ class PathTarget extends Expression {
 	@Override
 	protected RefOp createOp(HostOp host) {
 		return new Op(host, this);
+	}
+
+	private PathTarget reproducePart(
+			Reproducer reproducer,
+			Ref start,
+			Path path) {
+		if (start == null) {
+			return new PathTarget(this, reproducer.distribute(), path);
+		}
+
+		final Ref newStart = start.reproduce(reproducer);
+
+		if (newStart == null) {
+			return null;
+		}
+
+		return new PathTarget(this, reproducer.distribute(), path, newStart);
 	}
 
 	private static final class Op extends RefOp {
