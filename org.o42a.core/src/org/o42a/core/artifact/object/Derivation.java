@@ -22,45 +22,22 @@ package org.o42a.core.artifact.object;
 
 public enum Derivation {
 
-	NONE() {
-
-		@Override
-		boolean match(ObjectType type, ObjectType ascendant) {
-			return false;
-		}
-
-		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return false;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return false;
-		}
-
-	},
-
 	SAME() {
 
 		@Override
-		boolean acceptAncestor() {
-			return false;
+		Derivation[] implied() {
+			return IMPLIED_NONE;
 		}
 
 		@Override
-		boolean acceptsSamples() {
-			return false;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return false;
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return EXPLICIT_SAMPLE;
+			}
+			if (sample.getOverriddenMember() != null) {
+				return MEMBER_OVERRIDE;
+			}
+			return IMPLICIT_SAMPLE;
 		}
 
 	},
@@ -68,18 +45,13 @@ public enum Derivation {
 	INHERITANCE() {
 
 		@Override
-		boolean acceptAncestor() {
-			return true;
+		Derivation[] implied() {
+			return IMPLIED_NONE;
 		}
 
 		@Override
-		boolean acceptsSamples() {
-			return false;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return false;
+		Derivation traverseSample(Sample sample) {
+			return this;
 		}
 
 	},
@@ -87,18 +59,19 @@ public enum Derivation {
 	MEMBER_OVERRIDE() {
 
 		@Override
-		boolean acceptAncestor() {
-			return false;
+		Derivation[] implied() {
+			return IMPLIED_BY_IMPLICIT;
 		}
 
 		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return sample.getOverriddenMember() != null;
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return PROPAGATION;
+			}
+			if (sample.getOverriddenMember() != null) {
+				return this;
+			}
+			return IMPLICIT_PROPAGATION;
 		}
 
 	},
@@ -106,18 +79,13 @@ public enum Derivation {
 	EXPLICIT_SAMPLE() {
 
 		@Override
-		boolean acceptAncestor() {
-			return false;
+		Derivation[] implied() {
+			return IMPLIED_BY_SAMPLE;
 		}
 
 		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return sample.isExplicit();
+		Derivation traverseSample(Sample sample) {
+			return PROPAGATION;
 		}
 
 	},
@@ -125,18 +93,16 @@ public enum Derivation {
 	IMPLICIT_SAMPLE() {
 
 		@Override
-		boolean acceptAncestor() {
-			return false;
+		Derivation[] implied() {
+			return IMPLIED_BY_IMPLICIT;
 		}
 
 		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return !sample.isExplicit() && sample.getOverriddenMember() == null;
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return PROPAGATION;
+			}
+			return IMPLICIT_PROPAGATION;
 		}
 
 	},
@@ -144,18 +110,16 @@ public enum Derivation {
 	IMPLICIT_PROPAGATION() {
 
 		@Override
-		boolean acceptAncestor() {
-			return false;
+		Derivation[] implied() {
+			return IMPLIED_BY_SAMPLE;
 		}
 
 		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return !sample.isExplicit();
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return PROPAGATION;
+			}
+			return IMPLICIT_PROPAGATION;
 		}
 
 	},
@@ -163,49 +127,34 @@ public enum Derivation {
 	PROPAGATION() {
 
 		@Override
-		boolean acceptAncestor() {
-			return false;
+		Derivation[] implied() {
+			return IMPLIED_NONE;
 		}
 
 		@Override
-		boolean acceptsSamples() {
-			return true;
+		Derivation traverseSample(Sample sample) {
+			return this;
 		}
 
-		@Override
-		boolean acceptSample(Sample sample) {
-			return true;
-		}
+	};
 
-	},
+	private static final Derivation[] IMPLIED_NONE = new Derivation[0];
 
-	ANY() {
+	private static final Derivation[] IMPLIED_BY_IMPLICIT = {
+		IMPLICIT_PROPAGATION,
+		PROPAGATION,
+	};
 
-		@Override
-		boolean acceptAncestor() {
-			return true;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return true;
-		}
-
+	private static final Derivation[] IMPLIED_BY_SAMPLE = {
+		PROPAGATION,
 	};
 
 	boolean match(ObjectType type, ObjectType ascendant) {
 		return type.getObject() == ascendant.getObject();
 	}
 
-	abstract boolean acceptAncestor();
+	abstract Derivation[] implied();
 
-	abstract boolean acceptsSamples();
-
-	abstract boolean acceptSample(Sample sample);
+	abstract Derivation traverseSample(Sample sample);
 
 }

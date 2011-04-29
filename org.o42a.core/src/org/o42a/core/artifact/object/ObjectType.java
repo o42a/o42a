@@ -19,8 +19,12 @@
 */
 package org.o42a.core.artifact.object;
 
+import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
 
+import java.util.*;
+
+import org.o42a.core.Scope;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.User;
 
@@ -30,6 +34,7 @@ public final class ObjectType {
 	private final Obj object;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
+	private Map<Scope, ? extends Set<Derivation>> allAscendants;
 
 	private ObjectType(Obj object) {
 		this.object = object;
@@ -73,68 +78,23 @@ public final class ObjectType {
 		return ancestor.type(getObject()).inherits(other);
 	}
 
+	public final Map<Scope, ? extends Set<Derivation>> allAscendants() {
+		if (this.allAscendants != null) {
+			return this.allAscendants;
+		}
+		return this.allAscendants = unmodifiableMap(buildAllAscendants());
+	}
+
 	public final boolean derivedFrom(ObjectType other) {
-		return derivedFrom(other, Derivation.ANY, Integer.MAX_VALUE);
+		return allAscendants().containsKey(other.getObject().getScope());
 	}
 
 	public final boolean derivedFrom(ObjectType other, Derivation derivation) {
-		return derivedFrom(other, derivation, Integer.MAX_VALUE);
-	}
 
-	public boolean derivedFrom(
-			ObjectType other,
-			Derivation derivation,
-			int depth) {
-		if (derivation.match(this, other)) {
-			return true;
-		}
+		final Set<Derivation> derivations =
+			allAscendants().get(other.getObject().getScope());
 
-		final int newDepth = depth - 1;
-
-		if (newDepth < 0) {
-			return false;
-		}
-
-		if (derivation.acceptAncestor()) {
-
-			final TypeRef ancestor = getAncestor();
-
-			if (ancestor != null) {
-
-				final ObjectType ancestorType = ancestor.type(getObject());
-
-				if (ancestorType.derivedFrom(other, derivation, newDepth)) {
-					return true;
-				}
-			}
-		}
-
-		if (derivation.acceptsSamples()) {
-			for (Sample sample : getSamples()) {
-				if (!derivation.acceptSample(sample)) {
-					continue;
-				}
-
-				final ObjectType sampleType = sample.type(getObject());
-
-				if (sampleType.derivedFrom(other, derivation, newDepth)) {
-					return true;
-				}
-			}
-			for (Sample sample : getAscendants().getDiscardedSamples()) {
-				if (!derivation.acceptSample(sample)) {
-					continue;
-				}
-
-				final ObjectType sampleType = sample.type(getObject());
-
-				if (sampleType.derivedFrom(other, derivation, newDepth)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return derivations != null && derivations.contains(derivation);
 	}
 
 	@Override
@@ -175,6 +135,69 @@ public final class ObjectType {
 		}
 
 		return this.resolution.resolved();
+	}
+
+	private HashMap<Scope, EnumSet<Derivation>> buildAllAscendants() {
+
+		final HashMap<Scope, EnumSet<Derivation>> allAscendants =
+			new HashMap<Scope, EnumSet<Derivation>>();
+
+		allAscendants.put(
+				getObject().getScope(),
+				EnumSet.of(Derivation.SAME));
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor != null) {
+
+			final ObjectType type = ancestor.type(getObject());
+
+			for (Scope scope : type.allAscendants().keySet()) {
+				allAscendants.put(
+						scope,
+						EnumSet.of(Derivation.INHERITANCE));
+			}
+		}
+
+		addSamplesAscendants(allAscendants, getSamples());
+		addSamplesAscendants(
+				allAscendants,
+				getAscendants().getDiscardedSamples());
+
+		return allAscendants;
+	}
+
+	private void addSamplesAscendants(
+			HashMap<Scope, EnumSet<Derivation>> allAscendants,
+			Sample[] samples) {
+		for (Sample sample : samples) {
+
+			final ObjectType type = sample.type(getObject());
+
+			for (Map.Entry<Scope, ? extends Set<Derivation>> e
+					: type.allAscendants().entrySet()) {
+
+				final Scope scope = e.getKey();
+
+				for (Derivation derivation : e.getValue()) {
+
+					final Derivation traversed =
+						derivation.traverseSample(sample);
+					EnumSet<Derivation> derivations =
+						allAscendants.get(scope);
+
+					if (derivations != null) {
+						derivations.add(traversed);
+					} else {
+						derivations = EnumSet.of(traversed);
+						allAscendants.put(scope, derivations);
+					}
+					for (Derivation implied : traversed.implied()) {
+						derivations.add(implied);
+					}
+				}
+			}
+		}
 	}
 
 	static final class UsableObjectType extends ObjectUsable<ObjectType> {
