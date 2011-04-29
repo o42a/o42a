@@ -90,7 +90,6 @@ public abstract class Ref extends RefTypeBase {
 
 	private Ref expectedTypeAdapter;
 	private RefEnvWrap env;
-	private FieldDefinition fieldDefinition;
 	private Logical logical;
 	private Path resolutionRoot;
 	private RefOp op;
@@ -213,10 +212,6 @@ public abstract class Ref extends RefTypeBase {
 		assert this.env == null :
 			"Environment already assigned fro: " + env;
 		return this.env = new RefEnvWrap(this, env);
-	}
-
-	public final boolean isFieldDefinition() {
-		return this.fieldDefinition != null;
 	}
 
 	@Override
@@ -396,10 +391,7 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	public final FieldDefinition toFieldDefinition() {
-		if (this.fieldDefinition != null) {
-			return this.fieldDefinition;
-		}
-		return this.fieldDefinition = createFieldDefinition();
+		return createFieldDefinition();
 	}
 
 	@Override
@@ -408,9 +400,6 @@ public abstract class Ref extends RefTypeBase {
 			return;
 		}
 		this.allResolved = true;
-		if (isFieldDefinition()) {
-			return;
-		}
 		fullyResolve();
 	}
 
