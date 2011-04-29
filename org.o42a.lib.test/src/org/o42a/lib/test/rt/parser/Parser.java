@@ -49,9 +49,9 @@ public class Parser extends IntrinsicObject {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
-		//members.addMember(new ParseString(this).toMember());
+		members.addMember(new ParseString(this).toMember());
 		members.addMember(new ParseInteger(this).toMember());
-		//members.addMember(new ParseFloat(this).toMember());
+		members.addMember(new ParseFloat(this).toMember());
 	}
 
 	@Override
