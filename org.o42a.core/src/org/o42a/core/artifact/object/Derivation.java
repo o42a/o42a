@@ -20,13 +20,16 @@
 package org.o42a.core.artifact.object;
 
 
-public enum Derivation {
+public abstract class Derivation {
 
-	SAME() {
+	private static final int PROPAGATION_MASK = 0x40;
+	private static final int IMPLICIT_MASK = 0x80 | PROPAGATION_MASK;
+
+	public static final Derivation SAME = new Derivation(0x10) {
 
 		@Override
-		Derivation[] implied() {
-			return IMPLIED_NONE;
+		public String toString() {
+			return "SAME";
 		}
 
 		@Override
@@ -40,13 +43,13 @@ public enum Derivation {
 			return IMPLICIT_SAMPLE;
 		}
 
-	},
+	};
 
-	INHERITANCE() {
+	public static final Derivation INHERITANCE = new Derivation(0x20) {
 
 		@Override
-		Derivation[] implied() {
-			return IMPLIED_NONE;
+		public String toString() {
+			return "INHERITANCE";
 		}
 
 		@Override
@@ -54,13 +57,14 @@ public enum Derivation {
 			return this;
 		}
 
-	},
+	};
 
-	MEMBER_OVERRIDE() {
+	public static final Derivation MEMBER_OVERRIDE =
+		new Derivation(IMPLICIT_MASK | 0x01) {
 
 		@Override
-		Derivation[] implied() {
-			return IMPLIED_BY_IMPLICIT;
+		public String toString() {
+			return "MEMBER_OVERRIDE";
 		}
 
 		@Override
@@ -74,13 +78,32 @@ public enum Derivation {
 			return IMPLICIT_PROPAGATION;
 		}
 
-	},
+	};
 
-	EXPLICIT_SAMPLE() {
+	public static final Derivation IMPLICIT_SAMPLE =
+		new Derivation(IMPLICIT_MASK | 0x04) {
 
 		@Override
-		Derivation[] implied() {
-			return IMPLIED_BY_SAMPLE;
+		public String toString() {
+			return "IMPLICIT_SAMPLE";
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return PROPAGATION;
+			}
+			return IMPLICIT_PROPAGATION;
+		}
+
+	};
+
+	public static final Derivation EXPLICIT_SAMPLE =
+		new Derivation(PROPAGATION_MASK | 0x02) {
+
+		@Override
+		public String toString() {
+			return "EXPLICIT_SAMPLE";
 		}
 
 		@Override
@@ -88,13 +111,14 @@ public enum Derivation {
 			return PROPAGATION;
 		}
 
-	},
+	};
 
-	IMPLICIT_SAMPLE() {
+	public static final Derivation IMPLICIT_PROPAGATION =
+		new Derivation(IMPLICIT_MASK) {
 
 		@Override
-		Derivation[] implied() {
-			return IMPLIED_BY_IMPLICIT;
+		public String toString() {
+			return "IMPLICIT_PROPAGATION";
 		}
 
 		@Override
@@ -105,30 +129,14 @@ public enum Derivation {
 			return IMPLICIT_PROPAGATION;
 		}
 
-	},
+	};
 
-	IMPLICIT_PROPAGATION() {
-
-		@Override
-		Derivation[] implied() {
-			return IMPLIED_BY_SAMPLE;
-		}
+	public static final Derivation PROPAGATION =
+		new Derivation(PROPAGATION_MASK) {
 
 		@Override
-		Derivation traverseSample(Sample sample) {
-			if (sample.isExplicit()) {
-				return PROPAGATION;
-			}
-			return IMPLICIT_PROPAGATION;
-		}
-
-	},
-
-	PROPAGATION() {
-
-		@Override
-		Derivation[] implied() {
-			return IMPLIED_NONE;
+		public String toString() {
+			return "PROPAGATION";
 		}
 
 		@Override
@@ -138,23 +146,120 @@ public enum Derivation {
 
 	};
 
-	private static final Derivation[] IMPLIED_NONE = new Derivation[0];
-
-	private static final Derivation[] IMPLIED_BY_IMPLICIT = {
+	private static final Derivation[] ATOMS = {
+		SAME,
+		INHERITANCE,
+		MEMBER_OVERRIDE,
+		IMPLICIT_SAMPLE,
+		EXPLICIT_SAMPLE,
 		IMPLICIT_PROPAGATION,
 		PROPAGATION,
 	};
 
-	private static final Derivation[] IMPLIED_BY_SAMPLE = {
-		PROPAGATION,
-	};
+	final int mask;
 
-	boolean match(ObjectType type, ObjectType ascendant) {
-		return type.getObject() == ascendant.getObject();
+	Derivation(int mask) {
+		this.mask = mask;
 	}
 
-	abstract Derivation[] implied();
+	@Override
+	public int hashCode() {
+		return this.mask;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Derivation)) {
+			return false;
+		}
+
+		final Derivation other = (Derivation) obj;
+
+		return this.mask != other.mask;
+	}
 
 	abstract Derivation traverseSample(Sample sample);
+
+	final Derivation union(Derivation other) {
+
+		final int mask = this.mask & other.mask;
+
+		if (mask == this.mask) {
+			return this;
+		}
+		if (mask == other.mask) {
+			return other;
+		}
+
+		return new Derivations(mask);
+	}
+
+	final boolean is(Derivation other) {
+		return (this.mask & other.mask) == other.mask;
+	}
+
+	private static final class Derivations extends Derivation {
+
+		Derivations(int mask) {
+			super(mask);
+		}
+
+		@Override
+		public String toString() {
+
+			final StringBuilder out = new StringBuilder();
+			int mask = 0;
+			boolean comma = false;
+
+			out.append("Derivation[");
+
+			for (Derivation atom : ATOMS) {
+				if (!is(atom)) {
+					continue;
+				}
+				if (comma) {
+					out.append(',');
+				} else {
+					comma = true;
+				}
+				out.append(atom);
+				mask |= atom.mask;
+				if (this.mask == mask) {
+					break;
+				}
+			}
+			out.append(']');
+
+			return out.toString();
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+
+			Derivation derivation = null;
+			int mask = 0;
+
+			for (Derivation atom : ATOMS) {
+				if (!is(atom)) {
+					continue;
+				}
+				if (derivation == null) {
+					derivation = atom.traverseSample(sample);
+					continue;
+				}
+				derivation = derivation.union(atom.traverseSample(sample));
+				mask |= atom.mask;
+				if (mask == this.mask) {
+					break;
+				}
+			}
+
+			return derivation;
+		}
+
+	}
 
 }
