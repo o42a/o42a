@@ -28,6 +28,7 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
@@ -78,7 +79,12 @@ final class ConstantRef<T> extends Ref {
 	}
 
 	@Override
-	public void resolveAll() {
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve() {
 	}
 
 	@Override

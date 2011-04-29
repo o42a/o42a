@@ -92,11 +92,6 @@ final class Rescoped extends Ref {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new RescopedDefinition(this, this.ref.toFieldDefinition());
-	}
-
-	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
@@ -161,14 +156,20 @@ final class Rescoped extends Ref {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.ref.resolveAll();
-		this.rescoper.resolveAll();
+	public String toString() {
+		return "Rescoped[" + this.rescoper + ": " + this.ref + ']';
 	}
 
 	@Override
-	public String toString() {
-		return "Rescoped[" + this.rescoper + ": " + this.ref + ']';
+	protected FieldDefinition createFieldDefinition() {
+		return new RescopedDefinition(this, this.ref.toFieldDefinition());
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.ref.resolveAll();
+		this.rescoper.resolveAll();
+		getResolution().resolveAll();
 	}
 
 	@Override

@@ -33,6 +33,7 @@ import org.o42a.core.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.TypeRef;
@@ -181,11 +182,17 @@ public class AncestorVisitor
 		}
 
 		@Override
-		public void resolveAll() {
+		public Resolution resolve(Scope scope) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Resolution resolve(Scope scope) {
+		protected FieldDefinition createFieldDefinition() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolve() {
 			throw new UnsupportedOperationException();
 		}
 

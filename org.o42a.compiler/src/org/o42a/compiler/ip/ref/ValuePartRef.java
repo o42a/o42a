@@ -32,6 +32,7 @@ import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Expression;
@@ -97,11 +98,6 @@ public final class ValuePartRef extends Expression {
 	}
 
 	@Override
-	public void resolveAll() {
-		getResolution().resolveAll();
-	}
-
-	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -124,6 +120,16 @@ public final class ValuePartRef extends Expression {
 		}
 		return this.resolution = objectResolution(
 				new ValuePartObj(this, distributeIn(scope.getContainer())));
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		getResolution().resolveAll();
 	}
 
 	@Override

@@ -180,16 +180,6 @@ class PathTarget extends Expression {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new PathTargetDefinition(this);
-	}
-
-	@Override
-	public void resolveAll() {
-		getPath();
-	}
-
-	@Override
 	public String toString() {
 		if (this.fullPath != null) {
 			return this.fullPath.toString();
@@ -215,6 +205,16 @@ class PathTarget extends Expression {
 		}
 
 		return containerResolution(resolved);
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return new PathTargetDefinition(this);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		getPath();
 	}
 
 	@Override

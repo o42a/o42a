@@ -121,19 +121,6 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		if (this.wrapped != null) {
-			return this.wrapped.toFieldDefinition();
-		}
-		return new DefinitionWrap();
-	}
-
-	@Override
-	public void resolveAll() {
-		wrapped().resolveAll();
-	}
-
-	@Override
 	public String toString() {
 		if (this.wrapped != null) {
 			return this.wrapped.toString();
@@ -145,6 +132,19 @@ public abstract class Wrap extends Ref {
 
 	protected final Ref errorRef(LocationInfo location) {
 		return errorRef(location, distribute());
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		if (this.wrapped != null) {
+			return this.wrapped.toFieldDefinition();
+		}
+		return new DefinitionWrap();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		wrapped().resolveAll();
 	}
 
 	@Override

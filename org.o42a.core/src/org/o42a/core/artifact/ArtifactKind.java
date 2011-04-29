@@ -30,9 +30,7 @@ import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.field.DeclaredField;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.Reproducer;
@@ -209,7 +207,12 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public void resolveAll() {
+		protected FieldDefinition createFieldDefinition() {
+			return defaultFieldDefinition();
+		}
+
+		@Override
+		protected void fullyResolve() {
 			this.ref.resolveAll();
 		}
 

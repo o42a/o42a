@@ -90,9 +90,11 @@ public abstract class Ref extends RefTypeBase {
 
 	private Ref expectedTypeAdapter;
 	private RefEnvWrap env;
+	private FieldDefinition fieldDefinition;
 	private Logical logical;
-	private RefOp op;
 	private Path resolutionRoot;
+	private RefOp op;
+	private boolean allResolved;
 
 	public Ref(LocationInfo location, Distributor distributor) {
 		this(location, distributor, null);
@@ -211,6 +213,10 @@ public abstract class Ref extends RefTypeBase {
 		assert this.env == null :
 			"Environment already assigned fro: " + env;
 		return this.env = new RefEnvWrap(this, env);
+	}
+
+	public final boolean isFieldDefinition() {
+		return this.fieldDefinition != null;
 	}
 
 	@Override
@@ -389,8 +395,23 @@ public abstract class Ref extends RefTypeBase {
 		return new RefRescoper(this);
 	}
 
-	public FieldDefinition toFieldDefinition() {
-		return new ValueFieldDefinition(this);
+	public final FieldDefinition toFieldDefinition() {
+		if (this.fieldDefinition != null) {
+			return this.fieldDefinition;
+		}
+		return this.fieldDefinition = createFieldDefinition();
+	}
+
+	@Override
+	public final void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+		if (isFieldDefinition()) {
+			return;
+		}
+		fullyResolve();
 	}
 
 	public final RefOp op(HostOp host) {
@@ -407,6 +428,14 @@ public abstract class Ref extends RefTypeBase {
 	protected boolean isKnownStatic() {
 		return false;
 	}
+
+	protected abstract FieldDefinition createFieldDefinition();
+
+	protected final FieldDefinition defaultFieldDefinition() {
+		return new ValueFieldDefinition(this);
+	}
+
+	protected abstract void fullyResolve();
 
 	protected abstract RefOp createOp(HostOp host);
 

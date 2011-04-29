@@ -33,6 +33,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
@@ -67,11 +68,6 @@ public class OverriddenEx extends Ref {
 	}
 
 	@Override
-	public void resolveAll() {
-		getResolution().resolveAll();
-	}
-
-	@Override
 	public Resolution resolve(Scope scope) {
 		if (this.resolution != null) {
 			return this.resolution;
@@ -79,6 +75,16 @@ public class OverriddenEx extends Ref {
 		return this.resolution = objectResolution(new Overridden(
 				this,
 				distributeIn(scope.getContainer())));
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		getResolution().resolveAll();
 	}
 
 	@Override
