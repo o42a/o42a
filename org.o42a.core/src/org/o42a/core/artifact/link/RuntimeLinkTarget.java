@@ -36,6 +36,11 @@ final class RuntimeLinkTarget extends Obj {
 	}
 
 	@Override
+	public Link getMaterializationOf() {
+		return this.link;
+	}
+
+	@Override
 	public ConstructionMode getConstructionMode() {
 		return RUNTIME_CONSTRUCTION;
 	}

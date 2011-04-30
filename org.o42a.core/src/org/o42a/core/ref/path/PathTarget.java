@@ -202,6 +202,9 @@ class PathTarget extends Expression {
 
 	@Override
 	protected void fullyResolve() {
+		if (this.start != null) {
+			this.start.resolveAll();
+		}
 		getPath();
 	}
 

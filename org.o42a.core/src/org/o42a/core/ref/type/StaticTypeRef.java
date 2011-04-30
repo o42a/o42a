@@ -69,7 +69,7 @@ public abstract class StaticTypeRef extends TypeRef {
 
 	@Override
 	public final RefOp op(CodeDirs dirs, HostOp host) {
-		return type(dummyUser()).getObject().selfRef().op(host);
+		return ref().op(host);
 	}
 
 	public final TypeRelation relationTo(StaticTypeRef other) {
@@ -117,5 +117,15 @@ public abstract class StaticTypeRef extends TypeRef {
 			Ref ref,
 			Ref untouchedRef,
 			Rescoper rescoper);
+
+	@Override
+	protected void fullyResolve() {
+		ref().resolveAll();
+		validate();
+	}
+
+	private final Ref ref() {
+		return typeObject(dummyUser()).selfRef();
+	}
 
 }

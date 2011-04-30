@@ -62,12 +62,8 @@ final class RefLogical extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.ref.resolveAll();
-	}
-
-	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 		dirs = dirs.begin("ref_logical", "Logical of ref " + this);
 		this.ref.op(host).writeLogicalValue(dirs);
 		dirs.end();
@@ -76,6 +72,11 @@ final class RefLogical extends Logical {
 	@Override
 	public String toString() {
 		return "(" + this.ref + "?)";
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.ref.resolveAll();
 	}
 
 }

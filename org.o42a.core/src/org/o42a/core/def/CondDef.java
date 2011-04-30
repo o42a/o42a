@@ -138,6 +138,7 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	public final void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 
 		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
@@ -171,5 +172,15 @@ public abstract class CondDef extends Def<CondDef> {
 
 		return out.toString();
 	}
+
+	@Override
+	protected final void fullyResolve() {
+		getPrerequisite().resolveAll();
+		getLogical().resolveAll();
+		getRescoper().resolveAll();
+		fullyResolveDef();
+	}
+
+	protected abstract void fullyResolveDef();
 
 }

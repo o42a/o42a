@@ -79,9 +79,8 @@ final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolveDef() {
 		this.ref.resolveAll();
-		getRescoper().resolveAll();
 	}
 
 	@Override

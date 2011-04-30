@@ -93,7 +93,6 @@ public abstract class Obj extends Artifact<Obj>
 	private ValueType<?> valueType;
 	private Definitions definitions;
 
-	private boolean allResolved;
 	private ObjectAnalysis analysis;
 
 	private ObjectIR ir;
@@ -128,6 +127,10 @@ public abstract class Obj extends Artifact<Obj>
 	@Override
 	public final ArtifactKind<Obj> getKind() {
 		return ArtifactKind.OBJECT;
+	}
+
+	public Artifact<?> getMaterializationOf() {
+		return this;
 	}
 
 	public ConstructionMode getConstructionMode() {
@@ -198,11 +201,22 @@ public abstract class Obj extends Artifact<Obj>
 		return this;
 	}
 
-	public final boolean isClone() {
+	@Override
+	public boolean isClone() {
 
 		final Field<?> field = getScope().toField();
 
-		return field != null && field.isClone();
+		if (field != null) {
+			return field.isClone();
+		}
+
+		final Artifact<?> materializationOf = getMaterializationOf();
+
+		if (materializationOf == this) {
+			return false;
+		}
+
+		return materializationOf.isClone();
 	}
 
 	public final ValueType<?> getValueType() {
@@ -507,24 +521,6 @@ public abstract class Obj extends Artifact<Obj>
 		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
-	@Override
-	public void resolveAll() {
-		if (this.allResolved) {
-			return;
-		}
-		this.allResolved = true;
-		getContext().fullResolution().start();
-		try {
-			resolve();
-			objectType().getAscendants().resolveAll();
-			resolveAllMembers();
-			validateImplicitSubClauses(getExplicitClauses());
-			getDefinitions().resolveAll();
-		} finally {
-			getContext().fullResolution().end();
-		}
-	}
-
 	public final Definitions getDefinitions() {
 		if (this.definitions != null) {
 			return this.definitions;
@@ -576,10 +572,14 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public final ObjectIR ir(Generator generator) {
-		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = createIR(generator);
+
+		final ObjectIR ir = this.ir;
+
+		if (ir != null && ir.getGenerator() == generator) {
+			return ir;
 		}
-		return this.ir;
+
+		return this.ir = createIR(generator);
 	}
 
 	public final ObjectValueIR valueIR(Generator generator) {
@@ -623,6 +623,17 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected Value<?> calculateValue(Scope scope) {
 		return getDefinitions().value(scope).getValue();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		resolve();
+		objectType().getAscendants().resolveAll();
+		if (!isClone()) {
+			resolveAllMembers();
+		}
+		validateImplicitSubClauses(getExplicitClauses());
+		getDefinitions().resolveAll();
 	}
 
 	protected ObjectIR createIR(Generator generator) {

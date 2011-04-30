@@ -248,6 +248,7 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	private Logical negated;
+	private boolean allResolved;
 
 	public Logical(LocationInfo location, Scope scope) {
 		super(location, scope);
@@ -399,9 +400,26 @@ public abstract class Logical extends LogicalBase {
 		return new RescopedLogical(this, rescoper);
 	}
 
-	public abstract void resolveAll();
+	public final void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			fullyResolve();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
 
 	public abstract void write(CodeDirs dirs, HostOp host);
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
+	}
 
 	protected boolean runtimeImplies(Logical other) {
 
@@ -442,5 +460,7 @@ public abstract class Logical extends LogicalBase {
 	protected Logical[] expandDisjunction() {
 		return null;
 	}
+
+	protected abstract void fullyResolve();
 
 }

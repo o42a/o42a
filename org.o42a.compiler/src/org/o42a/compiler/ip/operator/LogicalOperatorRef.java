@@ -94,12 +94,6 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		}
 
 		@Override
-		public void resolveAll() {
-			operand().resolveAll();
-			super.resolveAll();
-		}
-
-		@Override
 		public String toString() {
 			return this.ref != null ? this.ref.toString() : "LogicalOp";
 		}
@@ -139,6 +133,12 @@ public class LogicalOperatorRef extends ObjectConstructor {
 						"Unsupported logical operator: "
 						+ this.ref.node.getOperator().getSign());
 			}
+		}
+
+		@Override
+		protected void fullyResolve() {
+			operand().resolveAll();
+			super.resolveAll();
 		}
 
 		@Override

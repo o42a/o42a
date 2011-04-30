@@ -165,12 +165,7 @@ public abstract class MemberField extends Member {
 
 	@Override
 	public void resolveAll() {
-
-		final Field<?> field = toField(dummyUser());
-
-		if (!field.isClone()) {
-			field.getArtifact().resolveAll();
-		}
+		toField(dummyUser()).getArtifact().resolveAll();
 	}
 
 	@Override

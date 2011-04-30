@@ -51,17 +51,18 @@ final class RuntimeLogicalTrue extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-	}
-
-	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 		dirs.code().debug("Logical: " + this);
 	}
 
 	@Override
 	public String toString() {
 		return "RUN-TIME TRUE";
+	}
+
+	@Override
+	protected void fullyResolve() {
 	}
 
 }

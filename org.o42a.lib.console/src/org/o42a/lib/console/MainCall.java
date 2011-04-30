@@ -40,11 +40,13 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.util.use.UserInfo;
 
 
 final class MainCall extends DefinedObject {
@@ -52,15 +54,20 @@ final class MainCall extends DefinedObject {
 	private final TypeRef adapterRef;
 
 	public static MainCall mainCall(
-			Generator generator,
+			UserInfo user,
 			Obj consoleModule,
 			Obj module) {
 
 		final Obj mainObject =
-			consoleModule.member("main").substance(generator).toObject();
+			consoleModule.member("main").substance(user).toObject();
 		final AdapterId mainAdapterId = adapterId(mainObject);
-		final Field<?> mainAdapter =
-			module.member(mainAdapterId).toField(generator);
+		final Member mainMember = module.member(mainAdapterId);
+
+		if (mainMember == null) {
+			return null;
+		}
+
+		final Field<?> mainAdapter = mainMember.toField(user);
 
 		if (mainAdapter == null) {
 			return null;

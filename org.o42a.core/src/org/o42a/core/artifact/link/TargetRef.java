@@ -168,12 +168,8 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		}
 
 		@Override
-		public void resolveAll() {
-			this.targetRef.resolveAll();
-		}
-
-		@Override
 		public void write(CodeDirs dirs, HostOp host) {
+			assert assertFullyResolved();
 			this.targetRef.getRef().getLogical().write(
 					dirs,
 					this.targetRef.getRescoper().rescope(dirs, host));
@@ -182,6 +178,11 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		@Override
 		public String toString() {
 			return "(" + this.targetRef + ")?";
+		}
+
+		@Override
+		protected void fullyResolve() {
+			this.targetRef.resolveAll();
 		}
 
 	}

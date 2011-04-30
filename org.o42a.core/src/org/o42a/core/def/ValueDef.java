@@ -221,6 +221,16 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected abstract Value<?> calculateValue(Scope scope);
 
+	@Override
+	protected final void fullyResolve() {
+		getPrerequisite().resolveAll();
+		getPrecondition().resolveAll();
+		getRescoper().resolveAll();
+		fullyResolveDef();
+	}
+
+	protected abstract void fullyResolveDef();
+
 	protected void writeDef(
 			CodeDirs dirs,
 			HostOp host,

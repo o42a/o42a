@@ -37,19 +37,25 @@ class LinkTarget extends ObjectWrap {
 	}
 
 	@Override
+	public final Link getMaterializationOf() {
+		return this.link;
+	}
+
+	@Override
 	public ConstructionMode getConstructionMode() {
 		return STRICT_CONSTRUCTION;
 	}
 
 	@Override
 	public Obj getWrapped() {
-		if (this.wrapped == null) {
-			this.wrapped = this.link.getTargetRef()
+		if (this.wrapped != null) {
+			return this.wrapped;
+		}
+		return this.wrapped =
+			this.link.getTargetRef()
 			.resolve(getScope().getEnclosingScope())
 			.materialize()
 			.getWrapped();
-		}
-		return this.wrapped;
 	}
 
 	@Override

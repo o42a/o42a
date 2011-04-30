@@ -26,6 +26,7 @@ public abstract class Rescopable<R extends Rescopable<R>>
 		implements ScopeInfo {
 
 	private final Rescoper rescoper;
+	private boolean allResolved;
 
 	public Rescopable(Rescoper rescoper) {
 		this.rescoper = rescoper;
@@ -76,6 +77,10 @@ public abstract class Rescopable<R extends Rescopable<R>>
 	}
 
 	public final void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
 			fullyResolve();
@@ -83,6 +88,7 @@ public abstract class Rescopable<R extends Rescopable<R>>
 			getContext().fullResolution().end();
 		}
 	}
+
 
 	@Override
 	public final void assertScopeIs(Scope scope) {
@@ -102,6 +108,12 @@ public abstract class Rescopable<R extends Rescopable<R>>
 	@Override
 	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertSameScope(this, other);
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")

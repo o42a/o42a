@@ -60,9 +60,8 @@ final class ValueCondDef extends CondDef {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolveDef() {
 		this.def.resolveAll();
-		getRescoper().resolveAll();
 	}
 
 }

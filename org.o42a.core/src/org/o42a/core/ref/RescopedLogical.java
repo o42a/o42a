@@ -56,12 +56,6 @@ final class RescopedLogical extends Logical {
 	}
 
 	@Override
-	public void write(CodeDirs dirs, HostOp host) {
-		host = this.rescoper.rescope(dirs, host);
-		this.logical.write(dirs, host);
-	}
-
-	@Override
 	public Logical rescope(Rescoper rescoper) {
 
 		final Rescoper oldRescoper = this.rescoper;
@@ -80,14 +74,21 @@ final class RescopedLogical extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.logical.resolveAll();
-		this.rescoper.resolveAll();
+	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
+		host = this.rescoper.rescope(dirs, host);
+		this.logical.write(dirs, host);
 	}
 
 	@Override
 	public String toString() {
 		return this.logical.toString();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.logical.resolveAll();
+		this.rescoper.resolveAll();
 	}
 
 }

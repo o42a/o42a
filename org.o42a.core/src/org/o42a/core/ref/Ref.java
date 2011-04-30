@@ -401,6 +401,8 @@ public abstract class Ref extends RefTypeBase {
 			return op;
 		}
 
+		assert assertFullyResolved();
+
 		return this.op = createOp(host);
 	}
 

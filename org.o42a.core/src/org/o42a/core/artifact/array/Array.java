@@ -115,17 +115,17 @@ public abstract class Array extends Artifact<Array> {
 		return this.initializer;
 	}
 
-	@Override
-	public void resolveAll() {
-		getArrayTypeRef().resolveAll();
-		getInitializer().resolveAll();
-	}
-
 	protected abstract ArrayTypeRef buildTypeRef();
 
 	protected abstract TypeRef buildItemTypeRef();
 
 	protected abstract ArrayInitializer buildInitializer();
+
+	@Override
+	protected void fullyResolve() {
+		getArrayTypeRef().resolveAll();
+		getInitializer().resolveAll();
+	}
 
 	private void define() {
 

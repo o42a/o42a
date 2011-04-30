@@ -176,6 +176,8 @@ public class ObjectIR  {
 			return this.struct;
 		}
 
+		assert getObject().assertFullyResolved();
+
 		this.struct = new ObjectIRStruct(this);
 
 		getGenerator().newGlobal().struct(this.struct);

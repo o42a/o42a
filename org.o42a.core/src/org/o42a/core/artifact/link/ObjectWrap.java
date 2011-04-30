@@ -51,9 +51,6 @@ public abstract class ObjectWrap extends PlainObject {
 	}
 
 	@Override
-	public abstract Obj getWrapped();
-
-	@Override
 	protected void declareMembers(ObjectMembers members) {
 
 		final Obj wrapped = getWrapped();
@@ -82,6 +79,12 @@ public abstract class ObjectWrap extends PlainObject {
 	protected Definitions explicitDefinitions() {
 		return wrapper(getScope(), getWrapped().getScope())
 		.update(getWrapped().getDefinitions());
+	}
+
+	@Override
+	protected void fullyResolve() {
+		super.fullyResolve();
+		getWrapped().resolveAll();
 	}
 
 	@Override
