@@ -55,12 +55,6 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.def.resolveAll();
-		getRescoper().resolveAll();
-	}
-
-	@Override
 	protected Value<?> calculateValue(Scope scope) {
 		return this.def.getLogical().logicalValue(scope).toValue();
 	}
@@ -83,6 +77,12 @@ final class CondValueDef extends ValueDef {
 	@Override
 	protected Logical buildLogical() {
 		return this.def.buildLogical();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.def.resolveAll();
+		getRescoper().resolveAll();
 	}
 
 	@Override

@@ -69,13 +69,6 @@ final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
-	public void resolveAll() {
-		validate();
-		this.ref.resolveAll();
-		getRescoper().resolveAll();
-	}
-
-	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();
@@ -100,6 +93,13 @@ final class DefaultTypeRef extends TypeRef {
 		assert ref == untouchedRef :
 			ref + " should be the same as " + untouchedRef;
 		return new DefaultTypeRef(ref, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		validate();
+		this.ref.resolveAll();
+		getRescoper().resolveAll();
 	}
 
 }

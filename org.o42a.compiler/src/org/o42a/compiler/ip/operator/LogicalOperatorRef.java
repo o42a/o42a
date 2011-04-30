@@ -95,8 +95,8 @@ public class LogicalOperatorRef extends ObjectConstructor {
 
 		@Override
 		public void resolveAll() {
+			operand().resolveAll();
 			super.resolveAll();
-			operand();
 		}
 
 		@Override

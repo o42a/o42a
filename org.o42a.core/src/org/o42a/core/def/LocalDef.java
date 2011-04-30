@@ -83,12 +83,6 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	public void resolveAll() {
-		getBlock().resolveAll();
-		getRescoper().resolveAll();
-	}
-
-	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -142,6 +136,12 @@ class LocalDef extends ValueDef {
 	@Override
 	protected LocalDef create(Rescoper rescoper, Rescoper additionalRescoper) {
 		return new LocalDef(this, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		getBlock().resolveAll();
+		getRescoper().resolveAll();
 	}
 
 	@Override

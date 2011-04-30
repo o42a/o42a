@@ -93,7 +93,6 @@ public abstract class Ref extends RefTypeBase {
 	private Logical logical;
 	private Path resolutionRoot;
 	private RefOp op;
-	private boolean allResolved;
 
 	public Ref(LocationInfo location, Distributor distributor) {
 		this(location, distributor, null);
@@ -394,15 +393,6 @@ public abstract class Ref extends RefTypeBase {
 		return createFieldDefinition();
 	}
 
-	@Override
-	public final void resolveAll() {
-		if (this.allResolved) {
-			return;
-		}
-		this.allResolved = true;
-		fullyResolve();
-	}
-
 	public final RefOp op(HostOp host) {
 
 		final RefOp op = this.op;
@@ -423,8 +413,6 @@ public abstract class Ref extends RefTypeBase {
 	protected final FieldDefinition defaultFieldDefinition() {
 		return new ValueFieldDefinition(this);
 	}
-
-	protected abstract void fullyResolve();
 
 	protected abstract RefOp createOp(HostOp host);
 

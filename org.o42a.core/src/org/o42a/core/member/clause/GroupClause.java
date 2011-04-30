@@ -228,7 +228,7 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	protected void doResolveAll() {
+	protected void fullyResolve() {
 	}
 
 	@Override

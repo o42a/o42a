@@ -513,13 +513,16 @@ public abstract class Obj extends Artifact<Obj>
 			return;
 		}
 		this.allResolved = true;
-		if (!resolveIfNotResolving()) {
-			return;
+		getContext().fullResolution().start();
+		try {
+			resolve();
+			objectType().getAscendants().resolveAll();
+			resolveAllMembers();
+			validateImplicitSubClauses(getExplicitClauses());
+			getDefinitions().resolveAll();
+		} finally {
+			getContext().fullResolution().end();
 		}
-		objectType().getAscendants().resolveAll();
-		resolveAllMembers();
-		validateImplicitSubClauses(getExplicitClauses());
-		getDefinitions().resolveAll();
 	}
 
 	public final Definitions getDefinitions() {
@@ -684,6 +687,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	Dep addDep(MemberKey memberKey) {
+		assert getContext().fullResolution().assertIncomplete();
 
 		final Dep found = this.deps.get(memberKey);
 
@@ -699,6 +703,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	Dep addEnclosingOwnerDep(Obj owner) {
+		assert getContext().fullResolution().assertIncomplete();
 
 		final Dep found = this.deps.get(null);
 

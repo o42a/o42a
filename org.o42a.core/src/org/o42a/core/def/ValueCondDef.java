@@ -40,12 +40,6 @@ final class ValueCondDef extends CondDef {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.def.resolveAll();
-		getRescoper().resolveAll();
-	}
-
-	@Override
 	protected Logical buildPrerequisite() {
 		return this.def.getPrerequisite();
 	}
@@ -63,6 +57,12 @@ final class ValueCondDef extends CondDef {
 	@Override
 	protected CondDef create(Rescoper rescoper, Rescoper additionalRescoper) {
 		return new ValueCondDef(this, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.def.resolveAll();
+		getRescoper().resolveAll();
 	}
 
 }

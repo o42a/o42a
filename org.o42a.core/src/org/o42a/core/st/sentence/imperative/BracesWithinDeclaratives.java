@@ -110,7 +110,7 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public void resolveAll() {
+	protected void fullyResolve() {
 	}
 
 	@Override

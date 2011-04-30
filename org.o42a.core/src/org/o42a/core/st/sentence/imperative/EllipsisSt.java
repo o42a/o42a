@@ -99,7 +99,7 @@ public final class EllipsisSt extends Statement {
 	}
 
 	@Override
-	public void resolveAll() {
+	protected void fullyResolve() {
 	}
 
 	@Override

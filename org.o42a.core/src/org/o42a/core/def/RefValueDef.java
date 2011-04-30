@@ -52,12 +52,6 @@ final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.ref.resolveAll();
-		getRescoper().resolveAll();
-	}
-
-	@Override
 	protected Logical buildPrerequisite() {
 		return logicalTrue(this, this.ref.getScope());
 	}
@@ -82,6 +76,12 @@ final class RefValueDef extends ValueDef {
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
 		return new RefValueDef(this, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.ref.resolveAll();
+		getRescoper().resolveAll();
 	}
 
 	@Override

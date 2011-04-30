@@ -69,11 +69,6 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.wrapped.resolveAll();
-	}
-
-	@Override
 	public String toString() {
 		if (this.wrapped == null) {
 			return super.toString();
@@ -98,6 +93,11 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 			Ref untouchedRef,
 			Rescoper rescoper) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.wrapped.resolveAll();
 	}
 
 	private static final class WrapRescoper extends RescoperWrap {

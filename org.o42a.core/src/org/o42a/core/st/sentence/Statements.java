@@ -316,6 +316,12 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 	}
 
+	final void resolveAll() {
+		for (Statement statement : getStatements()) {
+			statement.resolveAll();
+		}
+	}
+
 	private Block<S> parentheses(
 			int index,
 			LocationInfo location,
