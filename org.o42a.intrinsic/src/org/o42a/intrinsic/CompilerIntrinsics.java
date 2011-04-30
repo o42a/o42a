@@ -38,7 +38,7 @@ import org.o42a.lib.console.ConsoleModule;
 import org.o42a.util.use.Usable;
 
 
-public class CompilerIntrinsics implements Intrinsics {
+public class CompilerIntrinsics extends Intrinsics {
 
 	private final Usable<CompilerIntrinsics> user = simpleUsable(this);
 	private final BlockCompiler compiler;

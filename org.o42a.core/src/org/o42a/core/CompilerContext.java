@@ -21,6 +21,7 @@ package org.o42a.core;
 
 import java.net.URL;
 
+import org.o42a.core.artifact.common.FullResolution;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -30,8 +31,6 @@ import org.o42a.util.log.Logger;
 
 
 public abstract class CompilerContext {
-
-	private static final FullResolution fullResolution = new FullResolution();
 
 	private final BlockCompiler compiler;
 	private final Intrinsics intrinsics;
@@ -124,7 +123,7 @@ public abstract class CompilerContext {
 	}
 
 	public final FullResolution fullResolution() {
-		return fullResolution;
+		return this.intrinsics.fullResolution();
 	}
 
 	@Override
