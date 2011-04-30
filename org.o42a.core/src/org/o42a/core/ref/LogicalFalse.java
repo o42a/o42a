@@ -52,11 +52,8 @@ final class LogicalFalse extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-	}
-
-	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 
 		final Code code = dirs.code();
 
@@ -67,6 +64,10 @@ final class LogicalFalse extends Logical {
 	@Override
 	public String toString() {
 		return "FALSE";
+	}
+
+	@Override
+	protected void fullyResolve() {
 	}
 
 }

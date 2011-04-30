@@ -60,12 +60,8 @@ final class NegatedLogical extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-		negate().resolveAll();
-	}
-
-	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 
 		final Code code = dirs.code();
 		final Code isFalse = code.addBlock("is_false");
@@ -85,6 +81,11 @@ final class NegatedLogical extends Logical {
 	@Override
 	public String toString() {
 		return "--" + negate();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		negate().resolveAll();
 	}
 
 }

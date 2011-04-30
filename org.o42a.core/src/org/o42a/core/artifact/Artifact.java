@@ -57,6 +57,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	private Obj enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;
+	private boolean allResolved;
 
 	public Artifact(Scope scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
@@ -80,6 +81,13 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public TypeRef getTypeRef() {
 		return null;
+	}
+
+	public boolean isClone() {
+
+		final Field<?> field = getScope().toField();
+
+		return field != null && field.isClone();
 	}
 
 	public abstract Obj toObject();
@@ -195,7 +203,24 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return artifactAccess(user, this);
 	}
 
-	public abstract void resolveAll();
+	public final void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			fullyResolve();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved || isClone() :
+			this + " is not fully resolved";
+		return true;
+	}
 
 	@Override
 	public String toString() {
@@ -215,6 +240,8 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 		return out.toString();
 	}
+
+	protected abstract void fullyResolve();
 
 	private static final class Unresolvable<A extends Artifact<A>>
 			extends Artifact<A> {
@@ -259,7 +286,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		}
 
 		@Override
-		public void resolveAll() {
+		protected void fullyResolve() {
 			throw new UnsupportedOperationException();
 		}
 

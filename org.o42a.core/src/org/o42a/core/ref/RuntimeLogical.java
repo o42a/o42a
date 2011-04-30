@@ -51,10 +51,6 @@ final class RuntimeLogical extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-	}
-
-	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		throw new UnsupportedOperationException(
 				"Abstract run-time logical should not generate any code");
@@ -63,6 +59,10 @@ final class RuntimeLogical extends Logical {
 	@Override
 	public String toString() {
 		return "RUN-TIME";
+	}
+
+	@Override
+	protected void fullyResolve() {
 	}
 
 }

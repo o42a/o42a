@@ -100,14 +100,8 @@ final class LogicalOr extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-		for (Logical variant : this.variants) {
-			variant.resolveAll();
-		}
-	}
-
-	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 		dirs = dirs.begin("or", "Logical OR: " + this);
 
 		final Code code = dirs.code();
@@ -158,6 +152,13 @@ final class LogicalOr extends Logical {
 	@Override
 	protected Logical[] expandDisjunction() {
 		return this.variants;
+	}
+
+	@Override
+	protected void fullyResolve() {
+		for (Logical variant : this.variants) {
+			variant.resolveAll();
+		}
 	}
 
 }

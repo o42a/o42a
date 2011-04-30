@@ -76,6 +76,7 @@ public abstract class AbstractConjunction extends Logical {
 
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 		dirs = dirs.begin("and", "Logical AND: " + this);
 
 		final int numClaims = numClaims();
@@ -85,13 +86,6 @@ public abstract class AbstractConjunction extends Logical {
 		}
 
 		dirs.end();
-	}
-
-	@Override
-	public void resolveAll() {
-		for (Logical claim : expandConjunction()) {
-			claim.resolveAll();
-		}
 	}
 
 	@Override
@@ -130,5 +124,12 @@ public abstract class AbstractConjunction extends Logical {
 	protected abstract int numClaims();
 
 	protected abstract Logical claim(int index);
+
+	@Override
+	protected void fullyResolve() {
+		for (Logical claim : expandConjunction()) {
+			claim.resolveAll();
+		}
+	}
 
 }

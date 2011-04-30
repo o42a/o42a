@@ -65,9 +65,8 @@ final class LogicalCondDef extends CondDef {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolveDef() {
 		this.logical.resolveAll();
-		getRescoper().resolveAll();
 	}
 
 }

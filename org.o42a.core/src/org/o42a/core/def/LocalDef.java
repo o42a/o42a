@@ -139,9 +139,8 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolveDef() {
 		getBlock().resolveAll();
-		getRescoper().resolveAll();
 	}
 
 	@Override
@@ -152,6 +151,7 @@ class LocalDef extends ValueDef {
 
 	@Override
 	protected void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
+		assert assertFullyResolved();
 
 		final Code code = dirs.code();
 		final ObjectOp ownerObject = host.toObject(dirs);
@@ -220,12 +220,8 @@ class LocalDef extends ValueDef {
 		}
 
 		@Override
-		public void resolveAll() {
-			this.def.resolveAll();
-		}
-
-		@Override
 		public void write(CodeDirs dirs, HostOp host) {
+			assert assertFullyResolved();
 			dirs = dirs.begin("local_logical", "Local logical: " + this);
 
 			final Code code = dirs.code();
@@ -240,6 +236,11 @@ class LocalDef extends ValueDef {
 		@Override
 		public String toString() {
 			return this.def + "?";
+		}
+
+		@Override
+		protected void fullyResolve() {
+			this.def.resolveAll();
 		}
 
 	}

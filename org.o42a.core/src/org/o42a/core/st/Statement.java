@@ -86,7 +86,15 @@ public abstract class Statement extends Placed {
 			return op;
 		}
 
+		assert assertFullyResolved();
+
 		return this.op = createOp(builder);
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
 	}
 
 	protected abstract void fullyResolve();

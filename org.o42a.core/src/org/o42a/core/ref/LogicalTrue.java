@@ -51,17 +51,18 @@ final class LogicalTrue extends Logical {
 	}
 
 	@Override
-	public void resolveAll() {
-	}
-
-	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 		dirs.code().debug("Logical: TRUE");
 	}
 
 	@Override
 	public String toString() {
 		return "TRUE";
+	}
+
+	@Override
+	protected void fullyResolve() {
 	}
 
 }

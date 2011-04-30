@@ -107,23 +107,22 @@ public abstract class Link extends Artifact<Link> {
 
 	@Override
 	public Obj materialize() {
-		if (this.target == null) {
-			if (isVariable() || enclosingScopeIsRuntime()) {
-				this.target = new RuntimeLinkTarget(this);
-			} else {
-				this.target = new LinkTarget(this);
-			}
+		if (this.target != null) {
+			return this.target;
 		}
-		return this.target;
-	}
-
-	@Override
-	public void resolveAll() {
-		getTargetRef().resolveAll();
-		materialize().resolveAll();
+		if (isVariable() || enclosingScopeIsRuntime()) {
+			return this.target = new RuntimeLinkTarget(this);
+		}
+		return this.target = new LinkTarget(this);
 	}
 
 	protected abstract TargetRef buildTargetRef();
+
+	@Override
+	protected void fullyResolve() {
+		getTargetRef().resolveAll();
+		materialize().resolveAll();
+	}
 
 	private void define() {
 		this.targetRef = buildTargetRef();

@@ -104,8 +104,6 @@ final class SentenceLogicals {
 
 		private LogicalValue constantValue;
 
-		private boolean allResolved;
-
 		private Result(LocationInfo location, Scope scope) {
 			super(location, scope);
 		}
@@ -186,19 +184,8 @@ final class SentenceLogicals {
 		}
 
 		@Override
-		public void resolveAll() {
-			if (this.allResolved) {
-				return;
-			}
-			this.allResolved = true;
-			for (StatementEnv env : this.variants) {
-				env.precondition(getScope()).resolveAll();
-				env.precondition(getScope()).resolveAll();
-			}
-		}
-
-		@Override
 		public void write(CodeDirs dirs, HostOp host) {
+			assert assertFullyResolved();
 
 			final int size = this.variants.size();
 
@@ -284,6 +271,17 @@ final class SentenceLogicals {
 			}
 
 			return out.toString();
+		}
+
+		@Override
+		protected void fullyResolve() {
+			for (StatementEnv env : this.variants) {
+				env.precondition(getScope()).resolveAll();
+				env.precondition(getScope()).resolveAll();
+			}
+			if (this.otherwise != null) {
+				this.otherwise.resolveAll();
+			}
 		}
 
 		private final boolean otherwisePresent() {

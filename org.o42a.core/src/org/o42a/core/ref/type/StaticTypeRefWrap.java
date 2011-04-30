@@ -97,6 +97,7 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 
 	@Override
 	protected void fullyResolve() {
+		super.fullyResolve();
 		this.wrapped.resolveAll();
 	}
 
