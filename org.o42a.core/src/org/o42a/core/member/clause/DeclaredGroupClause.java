@@ -141,8 +141,8 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	}
 
 	@Override
-	protected void doResolveAll() {
-		super.doResolveAll();
+	protected void fullyResolve() {
+		super.fullyResolve();
 		validate();
 	}
 

@@ -59,13 +59,6 @@ final class DefaultStaticTypeRef extends StaticTypeRef {
 	}
 
 	@Override
-	public void resolveAll() {
-		validate();
-		this.untouchedRef.resolveAll();
-		getRescoper().resolveAll();
-	}
-
-	@Override
 	public String toString() {
 		if (this.fixedRef == null) {
 			return super.toString();
@@ -88,6 +81,13 @@ final class DefaultStaticTypeRef extends StaticTypeRef {
 			Ref untouchedRef,
 			Rescoper rescoper) {
 		return new DefaultStaticTypeRef(ref, untouchedRef, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		validate();
+		this.untouchedRef.resolveAll();
+		getRescoper().resolveAll();
 	}
 
 }

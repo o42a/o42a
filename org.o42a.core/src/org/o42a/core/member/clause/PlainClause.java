@@ -278,7 +278,7 @@ public abstract class PlainClause
 	}
 
 	@Override
-	protected void doResolveAll() {
+	protected void fullyResolve() {
 		getObject().resolveAll();
 	}
 

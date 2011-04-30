@@ -92,12 +92,6 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		return getRef().op(rescopedHost);
 	}
 
-	@Override
-	public void resolveAll() {
-		this.typeRef.resolveAll();
-		this.ref.resolveAll();
-	}
-
 	public HostOp target(CodeDirs dirs, ObjOp host) {
 		return ref(dirs, host).target(dirs);
 	}
@@ -132,6 +126,12 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		}
 
 		return new TargetRef(ref, typeRef, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.typeRef.resolveAll();
+		this.ref.resolveAll();
 	}
 
 	private static final class FullLogical extends Logical {

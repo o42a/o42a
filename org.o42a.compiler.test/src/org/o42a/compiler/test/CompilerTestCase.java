@@ -273,6 +273,8 @@ public abstract class CompilerTestCase {
 		this.module = new Module(this.context, this.moduleName);
 		INTRINSICS.setMainModule(this.module);
 		this.module.resolveAll();
+		assert this.module.getContext().fullResolution().isComplete() :
+			"Full resolution is incomplete";
 	}
 
 	protected void generateCode(Generator generator) {

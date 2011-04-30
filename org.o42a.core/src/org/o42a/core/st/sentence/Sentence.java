@@ -210,6 +210,18 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 	}
 
+	final void resolveAll() {
+
+		final Sentence<S> prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+			prerequisite.resolveAll();
+		}
+		for (S alt : getAlternatives()) {
+			alt.resolveAll();
+		}
+	}
+
 	private static final class SentenceDistributor extends Distributor {
 
 		private final LocationInfo location;

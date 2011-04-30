@@ -42,12 +42,6 @@ final class RefCondDef extends CondDef {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.ref.resolveAll();
-		getRescoper().resolveAll();
-	}
-
-	@Override
 	protected Logical buildPrerequisite() {
 		return logicalTrue(this, this.ref.getScope());
 	}
@@ -67,6 +61,12 @@ final class RefCondDef extends CondDef {
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
 		return new RefCondDef(this, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		this.ref.resolveAll();
+		getRescoper().resolveAll();
 	}
 
 }

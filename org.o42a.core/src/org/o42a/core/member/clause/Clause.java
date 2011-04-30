@@ -91,7 +91,7 @@ public abstract class Clause implements PlaceInfo {
 	private Obj enclosingObject;
 	private Path pathInObject;
 	private Clause[] implicitClauses;
-	private byte resolution;
+	private boolean allResolved;
 
 	public Clause(MemberClause member) {
 		this.member = member;
@@ -255,14 +255,15 @@ public abstract class Clause implements PlaceInfo {
 	public abstract void define(Reproducer reproducer);
 
 	public final void resolveAll() {
-		if (this.resolution != 0) {
+		if (this.allResolved) {
 			return;
 		}
+		this.allResolved = true;
+		getContext().fullResolution().start();
 		try {
-			this.resolution = -1;
-			doResolveAll();
+			fullyResolve();
 		} finally {
-			this.resolution = 1;
+			getContext().fullResolution().end();
 		}
 	}
 
@@ -303,7 +304,7 @@ public abstract class Clause implements PlaceInfo {
 
 	protected abstract Clause propagate(Scope enclosingScope);
 
-	protected abstract void doResolveAll();
+	protected abstract void fullyResolve();
 
 	protected void validate() {
 		getReusedClauses();

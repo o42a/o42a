@@ -118,7 +118,7 @@ final class PlainClauseWrap extends PlainClause {
 	}
 
 	@Override
-	protected void doResolveAll() {
+	protected void fullyResolve() {
 	}
 
 	@Override

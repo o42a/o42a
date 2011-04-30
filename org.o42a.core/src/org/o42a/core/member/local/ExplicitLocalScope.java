@@ -191,8 +191,13 @@ final class ExplicitLocalScope extends LocalScope {
 			return;
 		}
 		this.allResolved = true;
-		for (Member member : getMembers()) {
-			member.resolveAll();
+		getContext().fullResolution().start();
+		try {
+			for (Member member : getMembers()) {
+				member.resolveAll();
+			}
+		} finally {
+			getContext().fullResolution().end();
 		}
 	}
 

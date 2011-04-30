@@ -32,6 +32,7 @@ import org.o42a.core.value.ValueType;
 
 public abstract class Statement extends Placed {
 
+	private boolean allResolved;
 	private StOp op;
 
 	public Statement(LocationInfo location, Distributor distributor) {
@@ -64,7 +65,18 @@ public abstract class Statement extends Placed {
 
 	public abstract Statement reproduce(Reproducer reproducer);
 
-	public abstract void resolveAll();
+	public final void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			fullyResolve();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
 
 	public final StOp op(LocalBuilder builder) {
 
@@ -76,6 +88,8 @@ public abstract class Statement extends Placed {
 
 		return this.op = createOp(builder);
 	}
+
+	protected abstract void fullyResolve();
 
 	protected abstract StOp createOp(LocalBuilder builder);
 

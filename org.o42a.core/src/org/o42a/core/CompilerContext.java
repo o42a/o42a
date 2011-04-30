@@ -31,6 +31,8 @@ import org.o42a.util.log.Logger;
 
 public abstract class CompilerContext {
 
+	private static final FullResolution fullResolution = new FullResolution();
+
 	private final BlockCompiler compiler;
 	private final Intrinsics intrinsics;
 	private final CompilerLogger logger;
@@ -119,6 +121,10 @@ public abstract class CompilerContext {
 
 	public final BlockBuilder compileBlock() {
 		return getCompiler().compileBlock(this);
+	}
+
+	public final FullResolution fullResolution() {
+		return fullResolution;
 	}
 
 	@Override

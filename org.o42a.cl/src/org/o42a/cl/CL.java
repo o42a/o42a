@@ -64,6 +64,8 @@ public class CL {
 
 		intrinsics.setMainModule(module);
 		module.resolveAll();
+		assert context.fullResolution().isComplete() :
+			"Full resolution is incomplete";
 
 		logger.abortOnError();
 

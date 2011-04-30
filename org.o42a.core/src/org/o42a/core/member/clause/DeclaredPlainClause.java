@@ -118,7 +118,7 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	protected void doResolveAll() {
+	protected void fullyResolve() {
 
 		final ClauseDefinition definition = getDefinition();
 

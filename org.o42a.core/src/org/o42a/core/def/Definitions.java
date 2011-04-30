@@ -576,10 +576,15 @@ public class Definitions extends Scoped {
 	}
 
 	public final void resolveAll() {
-		resolveAll(this.requirements);
-		resolveAll(this.conditions);
-		resolveAll(this.claims);
-		resolveAll(this.propositions);
+		getContext().fullResolution().start();
+		try {
+			resolveAll(this.requirements);
+			resolveAll(this.conditions);
+			resolveAll(this.claims);
+			resolveAll(this.propositions);
+		} finally {
+			getContext().fullResolution().end();
+		}
 	}
 
 	@Override

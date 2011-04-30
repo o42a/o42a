@@ -76,7 +76,7 @@ public final class ObjectType {
 			return false;
 		}
 
-		return ancestor.type(getObject()).inherits(other);
+		return ancestor.type(getObject().type()).inherits(other);
 	}
 
 	public final Map<Scope, Derivation> allAscendants() {
@@ -149,7 +149,7 @@ public final class ObjectType {
 
 		if (ancestor != null) {
 
-			final ObjectType type = ancestor.type(getObject());
+			final ObjectType type = ancestor.type(getObject().type());
 
 			for (Scope scope : type.allAscendants().keySet()) {
 				allAscendants.put(scope, Derivation.INHERITANCE);
@@ -169,7 +169,7 @@ public final class ObjectType {
 			Sample[] samples) {
 		for (Sample sample : samples) {
 
-			final ObjectType type = sample.type(getObject());
+			final ObjectType type = sample.type(getObject().type());
 
 			for (Map.Entry<Scope, Derivation> e
 					: type.allAscendants().entrySet()) {

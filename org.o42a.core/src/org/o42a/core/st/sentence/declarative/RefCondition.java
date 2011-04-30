@@ -102,7 +102,7 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public void resolveAll() {
+	protected void fullyResolve() {
 		this.ref.resolveAll();
 	}
 

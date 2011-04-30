@@ -45,7 +45,6 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	private DefinitionTargets definitionTargets;
 	private ValueType<?> valueType;
 	private boolean instructionsExecuted;
-	private boolean allResolved;
 
 	protected Block(
 			LocationInfo location,
@@ -217,21 +216,6 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	public abstract Block<?> reproduce(Reproducer reproducer);
 
 	@Override
-	public void resolveAll() {
-		if (this.allResolved) {
-			return;
-		}
-		this.allResolved = true;
-		for (Sentence<S> sentence : getSentences()) {
-			for (S statements : sentence.getAlternatives()) {
-				for (Statement statement : statements.getStatements()) {
-					statement.resolveAll();
-				}
-			}
-		}
-	}
-
-	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -250,6 +234,14 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		out.append(parentheses ? ')' : '}');
 
 		return out.toString();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		getDefinitionTargets();
+		for (Sentence<S> sentence : getSentences()) {
+			sentence.resolveAll();
+		}
 	}
 
 	abstract Trace getTrace();
