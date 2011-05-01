@@ -23,17 +23,23 @@ package org.o42a.util.use;
 public final class UseCase extends User {
 
 	private final String name;
+	private final UseFlag checkUseFlag;
 	private final UseFlag usedFlag;
 	private final UseFlag unusedFlag;
 
 	UseCase(String name) {
 		this.name = name;
-		this.usedFlag = new UseFlag(this, true);
-		this.unusedFlag = new UseFlag(this, false);
+		this.checkUseFlag = new UseFlag(this, (byte) 0);
+		this.usedFlag = new UseFlag(this, (byte) 1);
+		this.unusedFlag = new UseFlag(this, (byte) -1);
 	}
 
 	public final boolean caseFlag(UseFlag flag) {
 		return flag != null && flag.getUseCase() == this;
+	}
+
+	public final UseFlag checkUseFlag() {
+		return this.checkUseFlag;
 	}
 
 	public final UseFlag useFlag(boolean used) {
