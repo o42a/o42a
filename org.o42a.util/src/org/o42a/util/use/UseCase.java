@@ -26,6 +26,7 @@ public final class UseCase extends User {
 	private final UseFlag checkUseFlag;
 	private final UseFlag usedFlag;
 	private final UseFlag unusedFlag;
+	private User topLevel;
 
 	UseCase(String name) {
 		this.name = name;
@@ -36,6 +37,14 @@ public final class UseCase extends User {
 
 	public final boolean caseFlag(UseFlag flag) {
 		return flag != null && flag.getUseCase() == this;
+	}
+
+	public final UseFlag usedFlag() {
+		return this.usedFlag;
+	}
+
+	public final UseFlag unusedFlag() {
+		return this.unusedFlag;
 	}
 
 	public final UseFlag checkUseFlag() {
@@ -52,8 +61,22 @@ public final class UseCase extends User {
 	}
 
 	@Override
-	protected boolean determineUseBy(UseCase useCase) {
-		return useCase == this;
+	protected UseFlag determineUseBy(UseCase useCase) {
+		return useCase == this ? usedFlag() : unusedFlag();
+	}
+
+	final void start(User user) {
+		if (this.topLevel == null) {
+			this.topLevel = user;
+		}
+	}
+
+	final boolean end(User user) {
+		if (this.topLevel != user) {
+			return false;
+		}
+		this.topLevel = null;
+		return true;
 	}
 
 }

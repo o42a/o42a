@@ -67,7 +67,6 @@ public class ObjectAnalysis {
 		if (useCase.caseFlag(this.fieldsAccessed)) {
 			return this.fieldsAccessed.isUsed();
 		}
-		this.fieldsAccessed = useCase.checkUseFlag();
 
 		final boolean result = determineFieldsAccessedBy(useCase);
 
