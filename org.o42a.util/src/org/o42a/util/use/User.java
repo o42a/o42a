@@ -60,6 +60,7 @@ public abstract class User implements UserInfo {
 		if (useCase.caseFlag(this.useFlag)) {
 			return this.useFlag.isUsed();
 		}
+		this.useFlag = useCase.checkUseFlag();
 
 		final boolean result = determineUseBy(useCase);
 

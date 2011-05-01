@@ -97,6 +97,59 @@ public class UseTest {
 		assertTrue(this.usable.isUsedBy(this.useCase));
 	}
 
+	@Test
+	public void selfNotUsed() {
+		this.usable.useBy(this.usable);
+
+		assertFalse(this.usable.isUsedBy(this.useCase));
+	}
+
+	@Test
+	public void selfUse() {
+		this.usable.useBy(this.usable);
+		this.usable.useBy(this.useCase);
+
+		assertTrue(this.usable.isUsedBy(this.useCase));
+	}
+
+	@Test
+	public void recurrentNotUsed() {
+
+		final TestUsable usable2 = new TestUsable();
+
+		this.usable.useBy(usable2);
+		usable2.useBy(this.usable);
+
+		assertFalse(this.usable.isUsedBy(this.useCase));
+		assertFalse(usable2.isUsedBy(this.useCase));
+	}
+
+	@Test
+	public void recurrentUse() {
+
+		final TestUsable usable2 = new TestUsable();
+
+		this.usable.useBy(usable2);
+		usable2.useBy(this.usable);
+		usable2.useBy(this.useCase);
+
+		assertTrue(this.usable.isUsedBy(this.useCase));
+		assertTrue(usable2.isUsedBy(this.useCase));
+	}
+
+	@Test
+	public void recurrentUse2() {
+
+		final TestUsable usable2 = new TestUsable();
+
+		this.usable.useBy(usable2);
+		usable2.useBy(this.usable);
+		this.usable.useBy(this.useCase);
+
+		assertTrue(this.usable.isUsedBy(this.useCase));
+		assertTrue(usable2.isUsedBy(this.useCase));
+	}
+
 	private static final class TestUsable extends Usable<Integer> {
 
 		private int counter;
