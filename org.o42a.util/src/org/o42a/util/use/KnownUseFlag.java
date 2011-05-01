@@ -20,42 +20,31 @@
 package org.o42a.util.use;
 
 
-public final class UseCase extends User {
+final class KnownUseFlag extends UseFlag {
 
-	private final String name;
-	private final UseFlag usedFlag;
-	private final UseFlag unusedFlag;
+	private final boolean used;
 
-	UseCase(String name) {
-		this.name = name;
-		this.usedFlag = new KnownUseFlag(this, true);
-		this.unusedFlag = new KnownUseFlag(this, false);
-	}
-
-	public final boolean caseFlag(UseFlag flag) {
-		return flag != null && flag.getUseCase() == this;
-	}
-
-	public final UseFlag usedFlag() {
-		return this.usedFlag;
-	}
-
-	public final UseFlag unusedFlag() {
-		return this.unusedFlag;
-	}
-
-	public final UseFlag useFlag(boolean used) {
-		return used ? this.usedFlag : this.unusedFlag;
+	KnownUseFlag(UseCase useCase, boolean used) {
+		super(useCase);
+		this.used = used;
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCase useCase) {
-		return useCase == this ? usedFlag() : unusedFlag();
+	public boolean isUsed() {
+		return this.used;
 	}
 
 	@Override
 	public String toString() {
-		return this.name;
+		if (this.used) {
+			return "UsedBy[" + getUseCase() + ']';
+		}
+		return "UnusedBy[" + getUseCase() + ']';
+	}
+
+	@Override
+	UnknownUseFlag toUnknown() {
+		return null;
 	}
 
 }

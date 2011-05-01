@@ -28,7 +28,7 @@ final class DummyUser extends User {
 	}
 
 	@Override
-	protected UseFlag determineUseBy(UseCase useCase) {
+	UseFlag getUseBy(UseCase useCase) {
 		return useCase.unusedFlag();
 	}
 
