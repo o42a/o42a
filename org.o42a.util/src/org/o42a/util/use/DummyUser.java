@@ -28,8 +28,8 @@ final class DummyUser extends User {
 	}
 
 	@Override
-	protected boolean determineUseBy(UseCase useCase) {
-		return false;
+	protected UseFlag determineUseBy(UseCase useCase) {
+		return useCase.unusedFlag();
 	}
 
 	@Override

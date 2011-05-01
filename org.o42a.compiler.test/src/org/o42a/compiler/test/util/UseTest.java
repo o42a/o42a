@@ -34,9 +34,11 @@ public class UseTest {
 
 	private TestUsable usable;
 	private UseCase useCase;
+	private int usableIdSeq;
 
 	@Before
 	public void createUseable() {
+		this.usableIdSeq = 0;
 		this.usable = new TestUsable();
 		this.useCase = useCase("Use Case");
 	}
@@ -150,9 +152,19 @@ public class UseTest {
 		assertTrue(usable2.isUsedBy(this.useCase));
 	}
 
-	private static final class TestUsable extends Usable<Integer> {
+	private final class TestUsable extends Usable<Integer> {
 
+		private final String id;
 		private int counter;
+
+		TestUsable() {
+			this.id = "Usable" + (++UseTest.this.usableIdSeq);
+		}
+
+		@Override
+		public String toString() {
+			return this.id;
+		}
 
 		@Override
 		protected Integer createUsed(User user) {

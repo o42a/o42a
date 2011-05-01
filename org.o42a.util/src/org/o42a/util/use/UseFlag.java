@@ -38,6 +38,14 @@ public final class UseFlag {
 		return this.used > 0;
 	}
 
+	public final boolean isUnused() {
+		return this.used < 0;
+	}
+
+	public final boolean isUnknown() {
+		return this.used == 0;
+	}
+
 	@Override
 	public String toString() {
 		if (this.used > 0) {

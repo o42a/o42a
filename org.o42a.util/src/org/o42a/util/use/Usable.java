@@ -50,16 +50,27 @@ public abstract class Usable<U> extends User {
 	protected abstract U createUsed(User user);
 
 	@Override
-	protected boolean determineUseBy(UseCase useCase) {
+	protected UseFlag determineUseBy(UseCase useCase) {
 		if (this.usedBy == null) {
-			return false;
+			return useCase.useFlag(false);
 		}
+
+		boolean inProgress = false;
+
 		for (User user : this.usedBy.keySet()) {
-			if (user.isUsedBy(useCase)) {
-				return true;
+
+			final UseFlag flag = user.getUseBy(useCase);
+
+			if (flag.isUsed()) {
+				return flag;
 			}
+			if (flag.isUnused()) {
+				continue;
+			}
+			inProgress = true;
 		}
-		return false;
+
+		return inProgress ? useCase.checkUseFlag() : useCase.unusedFlag();
 	}
 
 	final U useBy(User user) {

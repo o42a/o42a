@@ -56,20 +56,48 @@ public abstract class User implements UserInfo {
 		return this;
 	}
 
-	public boolean isUsedBy(UseCase useCase) {
+	public final boolean isUsedBy(UseCase useCase) {
+
+		final UseFlag flag = getUseBy(useCase);
+
+		assert !flag.isUnknown() :
+			"Can not determine whether " + this + " used by " + useCase;
+
+		return flag.isUsed();
+	}
+
+	public final UseFlag getUseBy(UseCase useCase) {
 		if (useCase.caseFlag(this.useFlag)) {
-			return this.useFlag.isUsed();
+			return this.useFlag;
 		}
-		this.useFlag = useCase.checkUseFlag();
 
-		final boolean result = determineUseBy(useCase);
+		useCase.start(this);
 
-		this.useFlag = useCase.useFlag(result);
+		boolean ok = false;
+		UseFlag result = this.useFlag = useCase.checkUseFlag();
+
+		try {
+			result = determineUseBy(useCase);
+			ok = true;
+		} finally {
+
+			final boolean topLevel = useCase.end(this);
+
+			if (!ok) {
+				this.useFlag = null;
+			} else if (!result.isUnknown()) {
+				this.useFlag = result;
+			} else if (topLevel) {
+				this.useFlag = result = useCase.unusedFlag();
+			} else {
+				this.useFlag = null;
+			}
+		}
 
 		return result;
 	}
 
-	protected abstract boolean determineUseBy(UseCase useCase);
+	protected abstract UseFlag determineUseBy(UseCase useCase);
 
 	<U> U use(Usable<U> usable) {
 
