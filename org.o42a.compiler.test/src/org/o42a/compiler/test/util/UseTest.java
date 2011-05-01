@@ -152,6 +152,34 @@ public class UseTest {
 		assertTrue(usable2.isUsedBy(this.useCase));
 	}
 
+	@Test
+	public void recurrentUse7() {
+
+		final TestUsable usable2 = new TestUsable();
+		final TestUsable usable3 = new TestUsable();
+		final TestUsable usable4 = new TestUsable();
+		final TestUsable usable5 = new TestUsable();
+		final TestUsable usable6 = new TestUsable();
+		final TestUsable usable7 = new TestUsable();
+
+		this.usable.useBy(usable2);
+		usable2.useBy(usable3);
+		usable3.useBy(usable4);
+		usable4.useBy(usable5);
+		usable5.useBy(usable6);
+		usable6.useBy(usable7);
+		usable7.useBy(this.usable);
+		usable4.useBy(this.useCase);
+
+		assertTrue(this.usable.isUsedBy(this.useCase));
+		assertTrue(usable2.isUsedBy(this.useCase));
+		assertTrue(usable3.isUsedBy(this.useCase));
+		assertTrue(usable4.isUsedBy(this.useCase));
+		assertTrue(usable5.isUsedBy(this.useCase));
+		assertTrue(usable6.isUsedBy(this.useCase));
+		assertTrue(usable7.isUsedBy(this.useCase));
+	}
+
 	private final class TestUsable extends Usable<Integer> {
 
 		private final String id;
