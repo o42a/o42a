@@ -58,22 +58,13 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 	public ConstructionMode getConstructionMode() {
 
-		final Artifact<?> artifact = getArtifact();
+		final Obj object = typeObject(dummyUser());
 
-		if (artifact == null) {
-			return PROHIBITED_CONSTRUCTION;
-		}
-		if (!artifact.getKind().isInheritable()) {
+		if (object == null) {
 			return PROHIBITED_CONSTRUCTION;
 		}
 
-		final Obj object = artifact.toObject();
-
-		if (object != null) {
-			return object.getConstructionMode();
-		}
-
-		return artifact.materialize().getConstructionMode();
+		return object.getConstructionMode();
 	}
 
 	public ObjectType type(UserInfo user) {
@@ -87,7 +78,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return null;
 		}
 
-		final Artifact<?> artifact = getArtifact();
+		final Artifact<?> artifact = artifact(user);
 
 		if (artifact == null) {
 			this.type = unresolvableObject(getContext());
@@ -101,6 +92,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			final ObjectType type = typeRef.type(user);
 
 			if (type != null) {
+				assert type.getObject() != getScope().getContainer();
 				this.type = type.getObject();
 				return type;
 			}

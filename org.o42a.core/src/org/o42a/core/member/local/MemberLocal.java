@@ -98,7 +98,8 @@ public abstract class MemberLocal extends Member {
 		assert owner != null :
 			scope + " is not object";
 
-		return toLocal(scope).propagateTo(owner).toMember();
+		return toLocal(scope.newResolver(dummyUser()))
+		.propagateTo(owner).toMember();
 	}
 
 	@Override

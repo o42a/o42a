@@ -84,7 +84,7 @@ final class PropagatedObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(this, field(), new Ascendants(this));
+		return deriveSamples(type(), field(), new Ascendants(this));
 	}
 
 	@Override

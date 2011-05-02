@@ -39,6 +39,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.use.UserInfo;
 
@@ -106,12 +107,11 @@ public class Path {
 		return walkToArtifact(location, user, start, DUMMY_WALKER);
 	}
 
-	public final Artifact<?> resolveArtifact(
+	public final Artifact<?> resolveArtifactFrom(
 			LocationInfo location,
-			UserInfo user,
-			Scope scope,
+			Resolver resolver,
 			Ref start) {
-		return walkToArtifact(location, user, scope, start, DUMMY_WALKER);
+		return walkToArtifactFrom(location, resolver, start, DUMMY_WALKER);
 	}
 
 	public Artifact<?> walkToArtifact(
@@ -127,21 +127,20 @@ public class Path {
 				walker);
 	}
 
-	public Artifact<?> walkToArtifact(
+	public Artifact<?> walkToArtifactFrom(
 			LocationInfo location,
-			UserInfo user,
-			Scope scope,
+			Resolver resolver,
 			Ref start,
 			PathWalker walker) {
 		if (isAbsolute()) {
 			return walkPathToArtifact(
 					location,
-					user,
-					scope.getContext().getRoot().getScope(),
+					resolver,
+					resolver.getScope().getContext().getRoot().getScope(),
 					walker);
 		}
 
-		final Resolution resolution = start.resolve(scope);
+		final Resolution resolution = start.resolve(resolver);
 
 		if (resolution.isError()) {
 			return null;
@@ -149,7 +148,7 @@ public class Path {
 
 		return walkPathToArtifact(
 				location,
-				user,
+				resolver,
 				resolution.getScope(),
 				walker);
 	}
@@ -161,12 +160,11 @@ public class Path {
 		return walk(location, user, start, DUMMY_WALKER);
 	}
 
-	public final Container resolve(
+	public final Container resolveFrom(
 			LocationInfo location,
-			UserInfo user,
-			Scope scope,
+			Resolver resolver,
 			Ref start) {
-		return walk(location, user, scope, start, DUMMY_WALKER);
+		return walkFrom(location, resolver, start, DUMMY_WALKER);
 	}
 
 	public Container walk(
@@ -181,27 +179,26 @@ public class Path {
 				walker);
 	}
 
-	public Container walk(
+	public Container walkFrom(
 			LocationInfo location,
-			UserInfo user,
-			Scope scope,
+			Resolver resolver,
 			Ref start,
 			PathWalker walker) {
 		if (isAbsolute()) {
 			return walkPath(
 					location,
-					user,
-					scope.getContext().getRoot().getScope(),
+					resolver,
+					resolver.getScope().getContext().getRoot().getScope(),
 					walker);
 		}
 
-		final Resolution resolution = start.resolve(scope);
+		final Resolution resolution = start.resolve(resolver);
 
 		if (resolution.isError()) {
 			return null;
 		}
 
-		return walkPath(location, user, resolution.getScope(), walker);
+		return walkPath(location, resolver, resolution.getScope(), walker);
 	}
 
 	public Path append(PathFragment fragment) {

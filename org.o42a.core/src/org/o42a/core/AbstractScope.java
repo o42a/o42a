@@ -35,7 +35,10 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class AbstractScope implements Scope {
@@ -198,7 +201,12 @@ public abstract class AbstractScope implements Scope {
 		return pathToMember.append(member.getKey());
 	}
 
+	private final ResolverFactory<?> resolverFactory;
 	private Set<Scope> enclosingScopes;
+
+	public AbstractScope() {
+		this.resolverFactory = createResolverFactory();
+	}
 
 	@Override
 	public final Scope getScope() {
@@ -221,6 +229,11 @@ public abstract class AbstractScope implements Scope {
 			return this.enclosingScopes;
 		}
 		return this.enclosingScopes = enclosingScopes(this);
+	}
+
+	@Override
+	public Resolver newResolver(UserInfo user) {
+		return this.resolverFactory.newResolver(user);
 	}
 
 	@Override
@@ -291,6 +304,14 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
+	}
+
+	protected ResolverFactory<?> createResolverFactory() {
+		return Resolver.resolverFactory(this);
+	}
+
+	protected final ResolverFactory<?> resolverFactory() {
+		return this.resolverFactory;
 	}
 
 }

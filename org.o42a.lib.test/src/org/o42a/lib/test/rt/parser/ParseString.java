@@ -28,6 +28,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -59,9 +60,9 @@ final class ParseString extends ByString<String> {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	protected Value<?> calculateValue(Resolver resolver) {
 
-		final Value<?> value = super.calculateValue(scope);
+		final Value<?> value = super.calculateValue(resolver);
 
 		if (!value.getLogicalValue().isTrue()) {
 			return value;

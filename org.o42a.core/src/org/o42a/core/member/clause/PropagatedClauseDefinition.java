@@ -97,7 +97,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(this, this.clause, new Ascendants(this));
+		return deriveSamples(type(), this.clause, new Ascendants(this));
 	}
 
 	@Override

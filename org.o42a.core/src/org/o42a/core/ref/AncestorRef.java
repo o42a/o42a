@@ -23,7 +23,6 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -55,9 +54,9 @@ final class AncestorRef extends Expression {
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
+	public Value<?> value(Resolver resolver) {
 
-		final TypeRef ancestor = ancestor(scope);
+		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
 			return Value.unknownValue();
@@ -88,15 +87,15 @@ final class AncestorRef extends Expression {
 	}
 
 	@Override
-	protected Resolution resolveExpression(Scope scope) {
+	protected Resolution resolveExpression(Resolver resolver) {
 
-		final TypeRef ancestor = ancestor(scope);
+		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
 			return null;
 		}
 
-		return artifactResolution(ancestor.getArtifact());
+		return artifactResolution(ancestor.artifact(resolver));
 	}
 
 	@Override
@@ -114,12 +113,12 @@ final class AncestorRef extends Expression {
 		return new AncestorOp(host, this);
 	}
 
-	private TypeRef ancestor(Scope scope) {
+	private TypeRef resolveAncestor(Resolver resolver) {
 		if (this.error) {
 			return null;
 		}
 
-		final Resolution resolution = this.ref.resolve(scope);
+		final Resolution resolution = this.ref.resolve(resolver);
 
 		if (resolution.isError()) {
 			this.error = true;

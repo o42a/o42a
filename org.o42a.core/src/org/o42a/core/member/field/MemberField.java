@@ -160,7 +160,8 @@ public abstract class MemberField extends Member {
 
 	@Override
 	public MemberField propagateTo(Scope scope) {
-		return toField(scope).propagateTo(scope).toMember();
+		return toField(scope.newResolver(dummyUser()))
+		.propagateTo(scope).toMember();
 	}
 
 	@Override
@@ -268,8 +269,8 @@ public abstract class MemberField extends Member {
 
 	@Override
 	protected void useBy(UserInfo user) {
-		this.field.toUser().useBy(user);
 		super.useBy(user);
+		this.field.newResolver(user);
 	}
 
 	protected final void setField(UserInfo user, Field<?> field) {
@@ -369,7 +370,7 @@ public abstract class MemberField extends Member {
 	}
 
 	private void mergeField(MemberField member) {
-		this.field.merge(member.toField(this.field));
+		this.field.merge(member.toField(dummyUser()));
 	}
 
 	static final class Overridden extends MemberField {

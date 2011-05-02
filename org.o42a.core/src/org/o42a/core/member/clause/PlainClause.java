@@ -21,7 +21,6 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.AbstractScope.enclosingScopes;
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
-import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Set;
@@ -37,15 +36,18 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
-import org.o42a.util.use.Usable;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
 
-	private final Usable<PlainClause> user;
+	private final ResolverFactory<Resolver> resolverFactory =
+		Resolver.resolverFactory(this);
 	private Obj clauseObject;
 	private Path enclosingScopePath;
 	private Set<Scope> enclosingScopes;
@@ -54,7 +56,6 @@ public abstract class PlainClause
 		super(member);
 		assert member.getDeclaration().getKind().isPlain() :
 			"Plain clause expected";
-		this.user = simpleUsable(this);
 	}
 
 	protected PlainClause(
@@ -69,7 +70,6 @@ public abstract class PlainClause
 			PlainClause overridden,
 			boolean propagate) {
 		super(enclosingContainer, overridden, propagate);
-		this.user = simpleUsable(this);
 	}
 
 	@Override
@@ -93,6 +93,11 @@ public abstract class PlainClause
 	@Override
 	public final Scope getScope() {
 		return this;
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user) {
+		return this.resolverFactory.newResolver(user);
 	}
 
 	@Override
@@ -123,11 +128,6 @@ public abstract class PlainClause
 			return this.enclosingScopes;
 		}
 		return this.enclosingScopes = enclosingScopes(this);
-	}
-
-	@Override
-	public final Usable<PlainClause> toUser() {
-		return this.user;
 	}
 
 	@Override

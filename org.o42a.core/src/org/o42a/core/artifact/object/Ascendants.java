@@ -61,7 +61,7 @@ public class Ascendants
 
 	@Override
 	public final User toUser() {
-		return this.object.toUser();
+		return this.object.type();
 	}
 
 	public TypeRef getAncestor() {
@@ -242,7 +242,7 @@ public class Ascendants
 		if (this.explicitAncestor != null) {
 			if (!this.explicitAncestor.validate()) {
 				this.explicitAncestor = null;
-			} else if (!validateUse(this.explicitAncestor.getArtifact())) {
+			} else if (!validateUse(this.explicitAncestor.artifact(this))) {
 				this.explicitAncestor = null;
 			} else if (this.explicitAncestor
 					.getConstructionMode().isProhibited()) {

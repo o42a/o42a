@@ -34,7 +34,6 @@ import org.o42a.codegen.code.CodeBlk;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMemberRegistry;
@@ -46,6 +45,7 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -198,7 +198,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		}
 
 		@Override
-		protected Value<?> calculateValue(Scope scope) {
+		protected Value<?> calculateValue(Resolver resolver) {
 			resolveMembers(false);// Initialize comparisonKey.
 
 			if (hasError()) {
@@ -206,10 +206,10 @@ public final class ComparisonRef extends ObjectConstructor {
 			}
 
 			final Field<?> field =
-				scope.getContainer().member(this.comparisonKey).toField(scope);
+				resolver.getContainer().member(this.comparisonKey).toField(resolver);
 			final Value<?> value =
 				field.getArtifact().toObject()
-				.value().useBy(scope).getValue();
+				.value().useBy(resolver).getValue();
 
 			if (!value.isDefinite()) {
 				// Value could not be determined at compile-time.

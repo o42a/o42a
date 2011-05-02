@@ -36,6 +36,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.LoggableData;
@@ -182,7 +183,7 @@ public class AncestorVisitor
 		}
 
 		@Override
-		public Resolution resolve(Scope scope) {
+		public Resolution resolve(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

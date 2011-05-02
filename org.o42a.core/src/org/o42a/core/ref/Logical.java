@@ -268,7 +268,7 @@ public abstract class Logical extends LogicalBase {
 
 	public abstract LogicalValue getConstantValue();
 
-	public abstract LogicalValue logicalValue(Scope scope);
+	public abstract LogicalValue logicalValue(Resolver resolver);
 
 	public abstract Logical reproduce(Reproducer reproducer);
 

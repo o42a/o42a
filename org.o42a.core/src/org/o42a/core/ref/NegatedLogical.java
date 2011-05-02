@@ -22,7 +22,6 @@ package org.o42a.core.ref;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
@@ -41,9 +40,9 @@ final class NegatedLogical extends Logical {
 	}
 
 	@Override
-	public LogicalValue logicalValue(Scope scope) {
-		assertCompatible(scope);
-		return negate().logicalValue(scope).negate();
+	public LogicalValue logicalValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
+		return negate().logicalValue(resolver).negate();
 	}
 
 	@Override

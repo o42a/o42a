@@ -27,6 +27,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
@@ -102,6 +103,8 @@ public abstract class Rescoper {
 	}
 
 	public abstract Scope rescope(Scope scope);
+
+	public abstract Resolver rescope(Resolver resolver);
 
 	public abstract Scope updateScope(Scope scope);
 

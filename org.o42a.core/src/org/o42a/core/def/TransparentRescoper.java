@@ -25,6 +25,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
@@ -53,6 +54,11 @@ final class TransparentRescoper extends Rescoper {
 	@Override
 	public Scope rescope(Scope scope) {
 		return scope;
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+		return resolver;
 	}
 
 	@Override

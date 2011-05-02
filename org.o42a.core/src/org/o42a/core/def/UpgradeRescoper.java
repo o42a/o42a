@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -40,6 +41,12 @@ final class UpgradeRescoper extends Rescoper {
 	public Scope rescope(Scope scope) {
 		scope.assertDerivedFrom(getFinalScope());
 		return scope;
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+		resolver.getScope().assertDerivedFrom(getFinalScope());
+		return resolver;
 	}
 
 	@Override

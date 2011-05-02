@@ -19,7 +19,9 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.core.Scope;
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.util.use.User;
 
@@ -39,20 +41,21 @@ public final class ObjectValue {
 
 	public final Value<?> getValue() {
 		if (this.value == null) {
-			this.value = getObject().calculateValue(getObject().getScope());
+			this.value = getObject().calculateValue(
+					getObject().getScope().newResolver(dummyUser()));
 		}
 		return this.value;
 	}
 
-	public Value<?> value(Scope scope) {
-		getObject().assertCompatible(scope);
+	public Value<?> value(Resolver resolver) {
+		getObject().assertCompatible(resolver.getScope());
 
 		final Value<?> result;
 
-		if (scope == getObject().getScope()) {
+		if (resolver == getObject().getScope()) {
 			result = getValue();
 		} else {
-			result = getObject().calculateValue(scope);
+			result = getObject().calculateValue(resolver);
 		}
 
 		return result;

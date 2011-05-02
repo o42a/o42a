@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
@@ -156,7 +158,7 @@ final class ObjectFieldVariant
 		@Override
 		protected ValueType<?> expectedType() {
 			return this.variant.getField().getArtifact().toObject().objectType()
-			.getAncestor().typeObject(this.variant.getScope()).getValueType();
+			.getAncestor().typeObject(dummyUser()).getValueType();
 		}
 
 	}

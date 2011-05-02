@@ -30,7 +30,7 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
@@ -80,7 +80,7 @@ public final class EllipsisSt extends Statement {
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
+	public Action initialValue(LocalResolver resolver) {
 		if (this.exit) {
 			return new ExitLoop(this, this.name);
 		}
@@ -88,8 +88,8 @@ public final class EllipsisSt extends Statement {
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
-		return initialValue(scope);
+	public Action initialLogicalValue(LocalResolver resolver) {
+		return initialValue(resolver);
 	}
 
 	@Override

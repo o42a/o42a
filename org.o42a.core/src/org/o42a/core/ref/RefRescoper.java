@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
@@ -39,7 +41,12 @@ final class RefRescoper extends Rescoper {
 
 	@Override
 	public Scope rescope(Scope scope) {
-		return this.ref.resolve(scope).getScope();
+		return this.ref.resolve(scope.newResolver(dummyUser())).getScope();
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+		return this.ref.resolve(resolver).getScope().newResolver(resolver);
 	}
 
 	@Override

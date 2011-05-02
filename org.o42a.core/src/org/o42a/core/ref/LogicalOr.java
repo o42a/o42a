@@ -59,14 +59,14 @@ final class LogicalOr extends Logical {
 	}
 
 	@Override
-	public LogicalValue logicalValue(Scope scope) {
-		assertCompatible(scope);
+	public LogicalValue logicalValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
 		LogicalValue result = null;
 
 		for (Logical variant : this.variants) {
 
-			final LogicalValue value = variant.logicalValue(scope);
+			final LogicalValue value = variant.logicalValue(resolver);
 
 			if (value.isTrue()) {
 				return value;

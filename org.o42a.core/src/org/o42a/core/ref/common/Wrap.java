@@ -28,6 +28,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -68,13 +69,13 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final Resolution resolve(Scope scope) {
-		return wrapped().resolve(scope);
+	public final Resolution resolve(Resolver resolver) {
+		return wrapped().resolve(resolver);
 	}
 
 	@Override
-	public final Value<?> value(Scope scope) {
-		return wrapped().value(scope);
+	public final Value<?> value(Resolver resolver) {
+		return wrapped().value(resolver);
 	}
 
 	@Override

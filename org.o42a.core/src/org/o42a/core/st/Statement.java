@@ -23,7 +23,8 @@ import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -39,7 +40,7 @@ public abstract class Statement extends Placed {
 		super(location, distributor);
 	}
 
-	public Instruction toInstruction(Scope scope, boolean assignment) {
+	public Instruction toInstruction(Resolver resolver, boolean assignment) {
 		return null;
 	}
 
@@ -59,9 +60,9 @@ public abstract class Statement extends Placed {
 
 	public abstract Definitions define(Scope scope);
 
-	public abstract Action initialValue(LocalScope scope);
+	public abstract Action initialValue(LocalResolver resolver);
 
-	public abstract Action initialLogicalValue(LocalScope scope);
+	public abstract Action initialLogicalValue(LocalResolver resolver);
 
 	public abstract Statement reproduce(Reproducer reproducer);
 

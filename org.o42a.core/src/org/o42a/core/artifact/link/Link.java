@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -34,6 +35,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class Link extends Artifact<Link> {
@@ -146,8 +148,9 @@ public abstract class Link extends Artifact<Link> {
 		}
 
 		final TypeRef typeRef = this.targetRef.getTypeRef();
+		final UserInfo user = getScope().newResolver(dummyUser());
 
-		typeRef.getArtifact().accessBy(this).checkPrototypeUse();
+		typeRef.artifact(user).accessBy(this).checkPrototypeUse();
 
 		final TypeRelation relation =
 			typeRef.relationTo(this.targetRef.toTypeRef());

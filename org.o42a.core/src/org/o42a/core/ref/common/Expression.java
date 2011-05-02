@@ -26,6 +26,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.util.log.Loggable;
 
 
@@ -39,12 +40,15 @@ public abstract class Expression extends Ref {
 	}
 
 	@Override
-	public final Resolution resolve(Scope scope) {
+	public final Resolution resolve(Resolver resolver) {
+
+		final Scope scope = resolver.getScope();
+
 		if (scope == getScope()) {
 			if (this.resolved != null) {
 				return this.resolved;
 			}
-			return this.resolved = doResolveExpression(getScope());
+			return this.resolved = doResolveExpression(resolver);
 		}
 
 		assertCompatible(scope);
@@ -60,7 +64,7 @@ public abstract class Expression extends Ref {
 			}
 		}
 
-		final Resolution resolution = doResolveExpression(scope);
+		final Resolution resolution = doResolveExpression(resolver);
 
 		this.cache.put(scope, resolution);
 
@@ -96,11 +100,11 @@ public abstract class Expression extends Ref {
 		return getClass().getSimpleName();
 	}
 
-	protected abstract Resolution resolveExpression(Scope scope);
+	protected abstract Resolution resolveExpression(Resolver resolver);
 
-	private final Resolution doResolveExpression(Scope scope) {
+	private final Resolution doResolveExpression(Resolver resolver) {
 
-		final Resolution resolution = resolveExpression(scope);
+		final Resolution resolution = resolveExpression(resolver);
 
 		if (resolution != null) {
 			return resolution;

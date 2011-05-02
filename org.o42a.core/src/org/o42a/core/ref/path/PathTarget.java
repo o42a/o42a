@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
@@ -28,6 +30,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
@@ -162,7 +165,8 @@ class PathTarget extends Expression {
 			return this.path.rescoper(getScope());
 		}
 
-		final Scope start = this.start.resolve(getScope()).getScope();
+		final Scope start =
+			this.start.resolve(getScope().newResolver(dummyUser())).getScope();
 
 		return this.path.rescoper(start).and(this.start.toRescoper());
 	}
@@ -182,14 +186,14 @@ class PathTarget extends Expression {
 	}
 
 	@Override
-	protected Resolution resolveExpression(Scope scope) {
+	protected Resolution resolveExpression(Resolver resolver) {
 
 		final Container resolved;
 
 		if (this.start == null) {
-			resolved = this.path.resolve(this, scope, scope);
+			resolved = this.path.resolve(this, resolver, resolver.getScope());
 		} else {
-			resolved = this.path.resolve(this, scope, scope, this.start);
+			resolved = this.path.resolveFrom(this, resolver, this.start);
 		}
 
 		return containerResolution(resolved);

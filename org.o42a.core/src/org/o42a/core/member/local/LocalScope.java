@@ -22,7 +22,6 @@ package org.o42a.core.member.local;
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
@@ -40,12 +39,12 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.Usable;
 import org.o42a.util.use.UserInfo;
 
 
@@ -81,14 +80,12 @@ public abstract class LocalScope
 	private final Loggable loggable;
 	private final Obj owner;
 	private final Path ownerScopePath;
-	private final Usable<LocalScope> user;
 
 	LocalScope(LocationInfo location, Obj owner) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.owner = owner;
 		this.ownerScopePath = new OwnerPathFragment().toPath();
-		this.user = simpleUsable(this);
 	}
 
 	@Override
@@ -122,8 +119,8 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Usable<LocalScope> toUser() {
-		return this.user;
+	public LocalResolver newResolver(UserInfo user) {
+		return localResolverFactory().newResolver(user);
 	}
 
 	@Override
@@ -246,6 +243,16 @@ public abstract class LocalScope
 		}
 		owner.assertDerivedFrom(getOwner());
 		return new PropagatedLocalScope(this, owner);
+	}
+
+	@Override
+	protected final ResolverFactory<LocalResolver> createResolverFactory() {
+		return new LocalResolver.Factory(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected final ResolverFactory<LocalResolver> localResolverFactory() {
+		return (ResolverFactory<LocalResolver>) resolverFactory();
 	}
 
 	abstract boolean addMember(Member member);

@@ -20,7 +20,6 @@
 package org.o42a.core.artifact;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
@@ -33,6 +32,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
@@ -170,22 +170,22 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public Resolution resolve(Scope scope) {
+		public Resolution resolve(Resolver resolver) {
 
-			final Resolution resolution = this.ref.resolve(scope);
+			final Resolution resolution = this.ref.resolve(resolver);
 
 			if (resolution.isError()) {
 				return resolution;
 			}
 
 			return objectResolution(
-					resolution.toArtifact().getTypeRef().typeObject(scope));
+					resolution.toArtifact().getTypeRef().typeObject(resolver));
 		}
 
 		@Override
-		public Value<?> value(Scope scope) {
+		public Value<?> value(Resolver resolver) {
 
-			final Resolution resolution = this.ref.resolve(scope);
+			final Resolution resolution = this.ref.resolve(resolver);
 
 			if (resolution.isError()) {
 				return Value.falseValue();

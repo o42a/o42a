@@ -28,7 +28,7 @@ abstract class ObjectUsable<U> extends Usable<U> {
 
 	ObjectUsable(Obj object) {
 		this.object = object;
-		object.toUser().useBy(this);
+		object.getScope().newResolver(this);
 	}
 
 	public final Obj getObject() {

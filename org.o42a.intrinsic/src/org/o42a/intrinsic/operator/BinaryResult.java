@@ -28,7 +28,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -39,6 +38,7 @@ import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -105,27 +105,29 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	protected Value<?> calculateValue(Resolver resolver) {
 
 		final Obj leftObject =
-			scope.getContainer()
+			resolver.getScope().getContainer()
 			.member(leftOperandKey())
-			.substance(scope)
+			.substance(resolver)
 			.toArtifact()
 			.materialize();
-		final Value<?> leftValue = leftObject.value().useBy(scope).getValue();
+		final Value<?> leftValue =
+			leftObject.value().useBy(resolver).getValue();
 
 		if (leftValue.isFalse()) {
 			return getResultType().falseValue();
 		}
 
 		final Obj rightObject =
-			scope.getContainer()
+			resolver.getScope().getContainer()
 			.member(rightOperandKey())
-			.substance(scope)
+			.substance(resolver)
 			.toArtifact()
 			.materialize();
-		final Value<?> rightValue = rightObject.value().useBy(scope).getValue();
+		final Value<?> rightValue =
+			rightObject.value().useBy(resolver).getValue();
 
 		if (rightValue.isFalse()) {
 			return getResultType().falseValue();
@@ -140,7 +142,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 		final R right =
 			getRightOperandType().cast(rightValue).getDefiniteValue();
 
-		final T result = calculate(scope, left, right);
+		final T result = calculate(resolver, left, right);
 
 		if (result == null) {
 			return getResultType().falseValue();
@@ -149,7 +151,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 		return getResultType().constantValue(result);
 	}
 
-	protected abstract T calculate(Scope scope, L left, R right);
+	protected abstract T calculate(Resolver resolver, L left, R right);
 
 	@Override
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {

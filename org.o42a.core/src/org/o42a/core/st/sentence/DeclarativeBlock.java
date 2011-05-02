@@ -31,7 +31,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.DeclaredField;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
@@ -176,12 +176,12 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
+	public Action initialValue(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
+	public Action initialLogicalValue(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

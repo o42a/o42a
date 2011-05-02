@@ -22,9 +22,9 @@ package org.o42a.intrinsic.numeric;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
@@ -48,11 +48,13 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 	}
 
 	@Override
-	protected Long calculate(Scope scope, Long left, Long right) {
+	protected Long calculate(Resolver resolver, Long left, Long right) {
 		try {
 			return calculate(left.longValue(), ((Number) right).longValue());
 		} catch (ArithmeticException e) {
-			scope.getLogger().arithmeticError(scope, e.getMessage());
+			resolver.getLogger().arithmeticError(
+					resolver.getScope(),
+					e.getMessage());
 			return null;
 		}
 	}

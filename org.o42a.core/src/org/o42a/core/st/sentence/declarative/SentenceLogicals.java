@@ -31,6 +31,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
@@ -147,19 +148,19 @@ final class SentenceLogicals {
 		}
 
 		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
+		public LogicalValue logicalValue(Resolver resolver) {
+			assertCompatible(resolver.getScope());
 			if (this.variants.isEmpty()) {
 				if (this.otherwise == null) {
 					return LogicalValue.TRUE;
 				}
-				return this.otherwise.logicalValue(scope);
+				return this.otherwise.logicalValue(resolver);
 			}
 
 			for (StatementEnv env : this.variants) {
 
 				final LogicalValue prerequisite =
-					env.prerequisite(getScope()).logicalValue(scope);
+					env.prerequisite(getScope()).logicalValue(resolver);
 
 				if (!prerequisite.isConstant()) {
 					return prerequisite;
@@ -168,14 +169,14 @@ final class SentenceLogicals {
 					continue;
 				}
 
-				return env.precondition(getScope()).logicalValue(scope);
+				return env.precondition(getScope()).logicalValue(resolver);
 			}
 
 			if (this.otherwise == null) {
 				return LogicalValue.FALSE;
 			}
 
-			return this.otherwise.logicalValue(scope);
+			return this.otherwise.logicalValue(resolver);
 		}
 
 		@Override

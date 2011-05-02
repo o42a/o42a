@@ -20,10 +20,12 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.Resolver;
 
 
 class LinkTarget extends ObjectWrap {
@@ -51,9 +53,13 @@ class LinkTarget extends ObjectWrap {
 		if (this.wrapped != null) {
 			return this.wrapped;
 		}
+
+		final Resolver resolver =
+			getScope().getEnclosingScope().newResolver(dummyUser());
+
 		return this.wrapped =
 			this.link.getTargetRef()
-			.resolve(getScope().getEnclosingScope())
+			.resolve(resolver)
 			.materialize()
 			.getWrapped();
 	}

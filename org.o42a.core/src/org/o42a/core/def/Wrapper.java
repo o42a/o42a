@@ -23,6 +23,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -38,6 +39,11 @@ final class Wrapper extends Rescoper {
 	@Override
 	public Scope rescope(Scope scope) {
 		return this.wrapped;
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+		return this.wrapped.newResolver(resolver);
 	}
 
 	@Override

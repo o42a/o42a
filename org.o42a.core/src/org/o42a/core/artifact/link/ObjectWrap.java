@@ -57,7 +57,7 @@ public abstract class ObjectWrap extends PlainObject {
 		final ObjectType type = type().useBy(dummyUser());
 
 		for (Member inherited
-				: type.getAncestor().typeObject(this).getMembers()) {
+				: type.getAncestor().typeObject(type()).getMembers()) {
 
 			// find the member from ancestor in wrapped object
 			final Member member = wrapped.member(inherited.getKey());
@@ -71,7 +71,7 @@ public abstract class ObjectWrap extends PlainObject {
 				continue;
 			}
 
-			members.addMember(member.wrap(this, inherited, this));
+			members.addMember(member.wrap(type(), inherited, this));
 		}
 	}
 

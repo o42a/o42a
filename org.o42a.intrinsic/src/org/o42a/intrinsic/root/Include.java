@@ -53,10 +53,11 @@ public final class Include extends IntrinsicDirective {
 	@Override
 	public void apply(Ref directive, InstructionContext context) {
 
-		final Block<?> block = context.getBlock();
-		final Obj object = directive.resolve(block.getScope()).materialize();
+		final Obj object =
+			directive.resolve(context.getResolver()).materialize();
 		final Field<?> fileField =
 			object.member(this.pathKey).toField(dummyUser());
+		final Block<?> block = context.getBlock();
 		final Sentence<?> sentence = block.propose(directive);
 		final Value<String> value = ValueType.STRING.cast(
 				fileField.getArtifact().materialize()

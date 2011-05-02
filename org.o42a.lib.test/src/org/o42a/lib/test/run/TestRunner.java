@@ -20,6 +20,7 @@
 package org.o42a.lib.test.run;
 
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -49,6 +50,7 @@ final class TestRunner extends PlainObject {
 
 	public static void runTest(
 			TestModule module,
+			UserInfo user,
 			ImperativeSentence sentence,
 			Field<?> field) {
 		if (field.getVisibility() != Visibility.PUBLIC) {
@@ -67,7 +69,6 @@ final class TestRunner extends PlainObject {
 			return;
 		}
 
-		final UserInfo user = sentence.getScope();
 		final ObjectType testType = module.test(user);
 
 		if (test.type().useBy(user).derivedFrom(testType)) {
@@ -129,9 +130,10 @@ final class TestRunner extends PlainObject {
 			Field<?> field,
 			Obj test) {
 
-		final UserInfo user = sentence.getScope();
-		final Obj nameObject = test.member("name").substance(user).toObject();
-		final Value<?> nameValue = nameObject.value().useBy(user).getValue();
+		final Obj nameObject =
+			test.member("name").substance(dummyUser()).toObject();
+		final Value<?> nameValue =
+			nameObject.value().useBy(dummyUser()).getValue();
 
 		if (!nameValue.isDefinite()) {
 			sentence.getLogger().indefiniteValue(nameObject);

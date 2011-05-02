@@ -22,7 +22,6 @@ package org.o42a.core.value;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -31,6 +30,7 @@ import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -66,8 +66,8 @@ final class ConstantRef<T> extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		assertCompatible(scope);
+	public Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 		if (this.object != null) {
 			return this.object;
 		}

@@ -146,7 +146,8 @@ public abstract class Access {
 		if (by == object) {
 			return Accessor.OWNER;
 		}
-		if (by.type().useBy(dummyUser()).derivedFrom(object.type().useBy(by))) {
+		if (by.type().useBy(dummyUser()).derivedFrom(
+				object.type().useBy(dummyUser()))) {
 			return Accessor.INHERITANT;
 		}
 

@@ -38,6 +38,7 @@ import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.use.UserInfo;
 
 
 final class ScopeField extends ObjectField {
@@ -74,22 +75,23 @@ final class ScopeField extends ObjectField {
 			return artifact;
 		}
 
+		final UserInfo user = resolverFactory();
 		final Obj newArtifact;
 		final Obj newOwner = getEnclosingContainer().toObject();
-		final ObjectType newOwnerType = newOwner.type().useBy(this);
-		final Obj ancestor = newOwnerType.getAncestor().typeObject(this);
+		final ObjectType newOwnerType = newOwner.type().useBy(user);
+		final Obj ancestor = newOwnerType.getAncestor().typeObject(user);
 		final org.o42a.core.member.Member ancestorMember =
 			ancestor.member(getKey());
 
 		if (ancestorMember != null) {
 			// Scope field present in ancestor.
 			// Preserve an ancestor`s scope.
-			newArtifact = ancestorMember.substance(this).toObject();
+			newArtifact = ancestorMember.substance(user).toObject();
 		} else {
 
 			final ObjectType origin =
 				getKey().getOrigin().getContainer().toObject()
-				.type().useBy(this);
+				.type().useBy(user);
 
 			if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
 				// Scope field declared in implicit sample.

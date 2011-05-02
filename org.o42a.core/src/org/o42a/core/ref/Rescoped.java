@@ -82,13 +82,13 @@ final class Rescoped extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		return this.ref.resolve(this.rescoper.rescope(scope));
+	public Resolution resolve(Resolver resolver) {
+		return this.ref.resolve(this.rescoper.rescope(resolver));
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
-		return this.ref.value(this.rescoper.rescope(scope));
+	public Value<?> value(Resolver resolver) {
+		return this.ref.value(this.rescoper.rescope(resolver));
 	}
 
 	@Override
