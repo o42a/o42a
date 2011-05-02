@@ -45,7 +45,7 @@ final class OverriderObject extends PlainObject {
 		final Ascendants ascendants = new Ascendants(this);
 
 		return this.field.buildAscendants(
-				deriveSamples(this, this.field, ascendants));
+				deriveSamples(type(), this.field, ascendants));
 	}
 
 	@Override

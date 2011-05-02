@@ -25,9 +25,9 @@ import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -60,7 +60,7 @@ public final class False extends IntrinsicObject {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	protected Value<?> calculateValue(Resolver resolver) {
 		return falseValue();
 	}
 

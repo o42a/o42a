@@ -23,8 +23,8 @@ import static org.o42a.core.value.ConstantValue.valueString;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Result;
+import org.o42a.core.ref.Resolver;
 
 
 final class ConstantObject<T> extends Result {
@@ -51,7 +51,7 @@ final class ConstantObject<T> extends Result {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	protected Value<?> calculateValue(Resolver resolver) {
 
 		@SuppressWarnings("unchecked")
 		final ValueType<T> valueType = (ValueType<T>) getValueType();

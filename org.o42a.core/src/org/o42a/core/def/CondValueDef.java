@@ -23,11 +23,11 @@ import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -55,8 +55,8 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
-		return this.def.getLogical().logicalValue(scope).toValue();
+	protected Value<?> calculateValue(Resolver resolver) {
+		return this.def.getLogical().logicalValue(resolver).toValue();
 	}
 
 	@Override

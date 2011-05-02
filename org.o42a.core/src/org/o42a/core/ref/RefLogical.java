@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
@@ -44,9 +43,9 @@ final class RefLogical extends Logical {
 	}
 
 	@Override
-	public LogicalValue logicalValue(Scope scope) {
-		assertCompatible(scope);
-		return this.ref.value(scope).getLogicalValue();
+	public LogicalValue logicalValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
+		return this.ref.value(resolver).getLogicalValue();
 	}
 
 	@Override

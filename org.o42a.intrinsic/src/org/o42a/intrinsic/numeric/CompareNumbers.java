@@ -20,8 +20,8 @@
 package org.o42a.intrinsic.numeric;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
@@ -54,7 +54,7 @@ abstract class CompareNumbers<P extends Number>
 	}
 
 	@Override
-	protected final Long calculate(Scope scope, P left, P right) {
+	protected final Long calculate(Resolver resolver, P left, P right) {
 		return compare(left, right);
 	}
 

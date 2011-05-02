@@ -24,7 +24,7 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import java.util.List;
 
 import org.o42a.core.LocationInfo;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -91,13 +91,13 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 		return alternatives.get(nextIdx + 1).isOpposite();
 	}
 
-	protected Action initialValue(LocalScope scope) {
+	protected Action initialValue(LocalResolver resolver) {
 
 		final ImperativeSentence prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
 
-			final Action action = prerequisite.initialValue(scope);
+			final Action action = prerequisite.initialValue(resolver);
 
 			assert !action.isAbort() :
 				"Prerequisite can not abort execution";
@@ -121,7 +121,7 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 		for (int i = 0; i < size; ++i) {
 
 			final Imperatives alt = alternatives.get(i);
-			final Action action = alt.initialValue(scope);
+			final Action action = alt.initialValue(resolver);
 
 			if (action.isAbort()) {
 				return action;

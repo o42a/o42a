@@ -28,7 +28,6 @@ import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -40,6 +39,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -87,16 +87,16 @@ public abstract class ByString<T> extends IntrinsicObject {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	protected Value<?> calculateValue(Resolver resolver) {
 
 		final Obj inputObject =
-			scope.getContainer()
+			resolver.getScope().getContainer()
 			.member(inputKey())
-			.substance(scope)
+			.substance(resolver)
 			.toArtifact()
 			.materialize();
 		final Value<?> inputValue =
-			inputObject.value().useBy(scope).getValue();
+			inputObject.value().useBy(resolver).getValue();
 
 		if (!inputValue.isDefinite()) {
 			return getValueType().runtimeValue();

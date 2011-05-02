@@ -26,6 +26,7 @@ import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalRegistry;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
@@ -68,12 +69,12 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
+	public Action initialValue(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
+	public Action initialLogicalValue(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -24,7 +24,6 @@ import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -36,6 +35,7 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
@@ -68,13 +68,13 @@ public class OverriddenEx extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
+	public Resolution resolve(Resolver resolver) {
 		if (this.resolution != null) {
 			return this.resolution;
 		}
 		return this.resolution = objectResolution(new Overridden(
 				this,
-				distributeIn(scope.getContainer())));
+				distributeIn(resolver.getScope().getContainer())));
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class OverriddenEx extends Ref {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self =
-				selfPath.resolveArtifact(this, this, getScope()).toObject();
+				selfPath.resolveArtifact(this, value(), getScope()).toObject();
 			final Definitions overriddenDefinitions =
 				self.getOverriddenDefinitions();
 

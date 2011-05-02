@@ -32,12 +32,10 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.Usable;
 
 
 public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
-	private final UsableField<A> user = new UsableField<A>(this);
 	private final MemberField member;
 	private A artifact;
 	private Path enclosingScopePath;
@@ -146,7 +144,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		final MemberKey key = getKey();
 		final Member member = key.getOrigin().getContainer().member(key);
 		final Field<A> original =
-			member.toField(this).toKind(getArtifactKind());
+			member.toField(resolverFactory()).toKind(getArtifactKind());
 
 		assert original.getArtifact().getKind() == getArtifact().getKind() :
 			"Wrong " + this + " artifact kind: " + getArtifact().getKind()
@@ -198,11 +196,6 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	public abstract A getArtifact();
-
-	@Override
-	public final Usable<Field<A>> toUser() {
-		return this.user;
-	}
 
 	@Override
 	public final MemberField toMember() {
@@ -326,7 +319,8 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		final Field<A>[] overridden = new Field[overriddenMembers.length];
 
 		for (int i = 0; i < overridden.length; ++i) {
-			overridden[i] = (Field<A>) overriddenMembers[i].toField(this);
+			overridden[i] =
+				(Field<A>) overriddenMembers[i].toField(resolverFactory());
 		}
 
 		return overridden;

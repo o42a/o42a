@@ -161,7 +161,7 @@ final class PropagatedLocalScope extends LocalScope {
 		@Override
 		protected void useBy(UserInfo user) {
 			super.useBy(user);
-			this.localScope.toUser().useBy(user);
+			this.localScope.newResolver(user);
 		}
 
 	}

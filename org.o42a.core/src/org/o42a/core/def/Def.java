@@ -25,6 +25,7 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.util.log.Loggable;
 
 
@@ -177,7 +178,7 @@ public abstract class Def<D extends Def<D>>
 
 	public abstract boolean impliesWhenBefore(D def);
 
-	public abstract DefValue definitionValue(Scope scope);
+	public abstract DefValue definitionValue(Resolver resolver);
 
 	public abstract ValueDef toValue();
 

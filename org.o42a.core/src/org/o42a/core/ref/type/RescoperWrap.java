@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -38,6 +39,11 @@ abstract class RescoperWrap extends Rescoper {
 	@Override
 	public Scope rescope(Scope scope) {
 		return wrapped().rescope(scope);
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+		return wrapped().rescope(resolver);
 	}
 
 	@Override

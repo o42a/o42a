@@ -23,7 +23,6 @@ import static org.o42a.core.ref.Logical.logicalFalse;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -46,7 +45,7 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
+	public Resolution resolve(Resolver resolver) {
 		return noResolution();
 	}
 

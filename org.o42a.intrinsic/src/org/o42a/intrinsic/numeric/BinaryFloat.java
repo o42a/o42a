@@ -23,9 +23,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
@@ -49,13 +49,15 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 	}
 
 	@Override
-	protected Double calculate(Scope scope, Double left, Double right) {
+	protected Double calculate(Resolver resolver, Double left, Double right) {
 		try {
 			return calculate(
 					left.doubleValue(),
 					((Number) right).doubleValue());
 		} catch (ArithmeticException e) {
-			scope.getLogger().arithmeticError(scope, e.getMessage());
+			resolver.getLogger().arithmeticError(
+					resolver.getScope(),
+					e.getMessage());
 			return null;
 		}
 	}

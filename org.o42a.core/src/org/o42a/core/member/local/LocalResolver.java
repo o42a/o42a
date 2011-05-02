@@ -17,32 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
+package org.o42a.core.member.local;
 
-import org.o42a.util.use.Usable;
-import org.o42a.util.use.User;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ResolverFactory;
+import org.o42a.util.use.UserInfo;
 
 
-final class UsableObject extends Usable<Obj> {
+public final class LocalResolver extends Resolver {
 
-	private final Obj object;
-
-	UsableObject(Obj object) {
-		this.object = object;
-		object.getScope().toUser().useBy(this);
+	LocalResolver(LocalScope scope, UserInfo user) {
+		super(scope, user);
 	}
 
-	@Override
-	protected Obj createUsed(User user) {
-		return this.object;
+	public final LocalScope getLocal() {
+		return getScope().toLocal();
 	}
 
-	@Override
-	public String toString() {
-		if (this.object == null) {
-			return super.toString();
+	static final class Factory extends ResolverFactory<LocalResolver> {
+
+		Factory(LocalScope scope) {
+			super(scope);
 		}
-		return this.object.toString();
+
+		@Override
+		protected LocalResolver createResolver() {
+			return new LocalResolver(getScope().toLocal(), this);
+		}
+
 	}
 
 }

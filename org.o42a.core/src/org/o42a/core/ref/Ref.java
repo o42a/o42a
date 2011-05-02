@@ -22,6 +22,7 @@ package org.o42a.core.ref;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
@@ -43,6 +44,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
@@ -134,7 +136,7 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	public final Resolution getResolution() {
-		return resolve(getScope());
+		return resolve(getScope().newResolver(dummyUser()));
 	}
 
 	/**
@@ -166,7 +168,7 @@ public abstract class Ref extends RefTypeBase {
 			final ResolutionRootFinder rootFinder =
 				new ResolutionRootFinder(this);
 
-			path.walk(this, getScope(), getScope(), rootFinder);
+			path.walk(getScope(), dummyUser(), getScope(), rootFinder);
 
 			return this.resolutionRoot = rootFinder.getRoot();
 		}
@@ -187,18 +189,18 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		return this.resolutionRoot =
-			object.type().useBy(getScope()).getAncestor()
+			object.type().useBy(dummyUser()).getAncestor()
 			.getRef().getResolutionRoot();
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
-		return new ReturnValue(this, value(scope));
+	public Action initialValue(LocalResolver resolver) {
+		return new ReturnValue(this, resolver, value(resolver));
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
-		return new ExecuteCommand(this, value(scope).getLogicalValue());
+	public Action initialLogicalValue(LocalResolver resolver) {
+		return new ExecuteCommand(this, value(resolver).getLogicalValue());
 	}
 
 	@Override
@@ -222,14 +224,15 @@ public abstract class Ref extends RefTypeBase {
 		return initialEnv.apply(def).toDefinitions();
 	}
 
-	public abstract Resolution resolve(Scope scope);
+	public abstract Resolution resolve(Resolver resolver);
 
 	public final Value<?> getValue() {
-		return value(getScope());
+		return value(getScope().newResolver(dummyUser()));
 	}
 
-	public Value<?> value(Scope scope) {
-		return resolve(scope).materialize().value().useBy(scope).getValue();
+	public Value<?> value(Resolver resolver) {
+		return resolve(resolver).materialize().value()
+		.useBy(resolver).getValue();
 	}
 
 	/**
@@ -356,18 +359,18 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	@Override
-	public Instruction toInstruction(Scope scope, boolean assignment) {
+	public Instruction toInstruction(Resolver resolver, boolean assignment) {
 		if (assignment) {
 			return null;
 		}
 
-		final Directive directive = resolve(scope).toDirective();
+		final Directive directive = resolve(resolver).toDirective();
 
 		if (directive == null) {
 			return null;
 		}
 
-		return new ApplyDirective(this, directive);
+		return new ApplyDirective(this, resolver, directive);
 	}
 
 	public TypeRef toTypeRef() {

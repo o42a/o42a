@@ -40,6 +40,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -118,16 +119,16 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	protected Value<?> calculateValue(Resolver resolver) {
 
 		final Obj operandObject =
-			scope.getContainer()
+			resolver.getScope().getContainer()
 			.member(operandKey())
-			.substance(scope)
+			.substance(resolver)
 			.toArtifact()
 			.materialize();
 		final Value<?> operandValue =
-			operandObject.value().useBy(scope).getValue();
+			operandObject.value().useBy(resolver).getValue();
 
 		if (operandValue.isFalse()) {
 			return getResultType().falseValue();

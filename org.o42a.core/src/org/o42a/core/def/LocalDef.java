@@ -33,6 +33,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -113,14 +114,15 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	protected Value<?> calculateValue(Resolver resolver) {
 
-		final LocalScope local = this.localRescoper.rescope(scope).toLocal();
+		final LocalScope local =
+			this.localRescoper.rescope(resolver).getScope().toLocal();
 
 		assert local != null :
-			"Not a local scope: " + scope;
+			"Not a local scope: " + resolver;
 
-		return getBlock().initialValue(local).getValue();
+		return getBlock().initialValue(local.newResolver(resolver)).getValue();
 	}
 
 	@Override
@@ -198,17 +200,17 @@ class LocalDef extends ValueDef {
 		}
 
 		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
+		public LogicalValue logicalValue(Resolver resolver) {
+			assertCompatible(resolver.getScope());
 
 			final LocalScope local =
-				this.def.localRescoper.rescope(scope).toLocal();
+				this.def.localRescoper.rescope(resolver).getScope().toLocal();
 
 			assert local != null :
-				"Not a local scope: " + scope;
+				"Not a local scope: " + resolver;
 
-			final Action action =
-				this.def.getBlock().initialLogicalValue(local);
+			final Action action = this.def.getBlock().initialLogicalValue(
+					local.newResolver(resolver));
 
 			return action.getLogicalValue();
 		}

@@ -28,7 +28,6 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
 import static org.o42a.core.member.local.Dep.fieldDep;
-import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
@@ -50,6 +49,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
@@ -57,11 +57,10 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.Usable;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class Obj extends Artifact<Obj>
-		implements Container, ClauseContainer, UserInfo {
+		implements Container, ClauseContainer {
 
 	public static final MemberId SCOPE_MEMBER_ID = memberName("_scope");
 
@@ -75,7 +74,6 @@ public abstract class Obj extends Artifact<Obj>
 		return new ObjectFieldIR(generator, field);
 	}
 
-	private final Usable<Obj> user;
 	private final ObjectType.UsableObjectType type;
 	private final ObjectValue.UseableObjectValue value;
 
@@ -104,7 +102,6 @@ public abstract class Obj extends Artifact<Obj>
 
 	public Obj(Scope scope) {
 		super(scope);
-		this.user = createUser();
 		this.type = new ObjectType.UsableObjectType(this);
 		this.value = new ObjectValue.UseableObjectValue(this);
 	}
@@ -112,14 +109,12 @@ public abstract class Obj extends Artifact<Obj>
 	protected Obj(ObjectScope scope) {
 		super(scope);
 		scope.setScopeObject(this);
-		this.user = createUser();
 		this.type = new ObjectType.UsableObjectType(this);
 		this.value = new ObjectValue.UseableObjectValue(this);
 	}
 
 	protected Obj(Scope scope, Obj sample) {
 		super(scope, sample);
-		this.user = createUser();
 		this.type = new ObjectType.UsableObjectType(this);
 		this.value = new ObjectValue.UseableObjectValue(this);
 	}
@@ -142,11 +137,6 @@ public abstract class Obj extends Artifact<Obj>
 			return this.analysis;
 		}
 		return this.analysis = new ObjectAnalysis(this);
-	}
-
-	@Override
-	public final Usable<Obj> toUser() {
-		return this.user;
 	}
 
 	@Override
@@ -453,7 +443,7 @@ public abstract class Obj extends Artifact<Obj>
 		final Path adapterPath = adapter.getKey().toPath();
 
 		final Artifact<?> adapterArtifact =
-			adapter.substance(this).toArtifact();
+			adapter.substance(dummyUser()).toArtifact();
 		final Obj adapterObject = adapterArtifact.toObject();
 
 		if (adapterObject != null) {
@@ -472,7 +462,7 @@ public abstract class Obj extends Artifact<Obj>
 
 		if (typeRef != null) {
 
-			final ObjectType type = typeRef.type(this);
+			final ObjectType type = typeRef.type(dummyUser());
 
 			if (type == null) {
 				return null;
@@ -609,7 +599,8 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected ValueType<?> resolveValueType() {
-		return objectType().getAncestor().typeObject(this).getValueType();
+		return objectType().getAncestor().typeObject(
+				getScope().newResolver(dummyUser())).getValueType();
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
@@ -621,8 +612,9 @@ public abstract class Obj extends Artifact<Obj>
 			Scope scope,
 			Definitions ascendantDefinitions);
 
-	protected Value<?> calculateValue(Scope scope) {
-		return getDefinitions().value(scope).getValue();
+	protected Value<?> calculateValue(Resolver resolver) {
+		value().useBy(resolver);
+		return getDefinitions().value(resolver).getValue();
 	}
 
 	@Override
@@ -667,7 +659,9 @@ public abstract class Obj extends Artifact<Obj>
 			overriddenDefinitions.assertScopeIs(scope);
 		}
 
-		final ObjectType type = type().useBy(scope);
+		final Usable<ObjectValue> user =
+			scope.getContainer().toObject().value();
+		final ObjectType type = type().useBy(user);
 		boolean hasExplicitAncestor =
 			type.getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = type.getSamples();
@@ -736,15 +730,6 @@ public abstract class Obj extends Artifact<Obj>
 		return dep;
 	}
 
-	private Usable<Obj> createUser() {
-
-		final Usable<Obj> user = simpleUsable(this);
-
-		getScope().toUser().useBy(user);
-
-		return user;
-	}
-
 	private void assignValueType() {
 		if (this.valueType == null) {
 			setValueType(resolveValueType());
@@ -766,7 +751,7 @@ public abstract class Obj extends Artifact<Obj>
 		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor != null) {
-			this.objectMembers.deriveMembers(ancestor.typeObject(this));
+			this.objectMembers.deriveMembers(ancestor.typeObject(type()));
 		}
 	}
 
@@ -801,7 +786,7 @@ public abstract class Obj extends Artifact<Obj>
 			ancestorDefinitions = null;
 		} else {
 			ancestorDefinitions =
-				ancestor.typeObject(this)
+				ancestor.typeObject(value())
 				.getDefinitions().upgradeScope(getScope());
 		}
 

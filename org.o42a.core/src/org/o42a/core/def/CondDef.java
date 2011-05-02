@@ -24,11 +24,11 @@ import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
 
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -82,10 +82,10 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	@Override
-	public final DefValue definitionValue(Scope scope) {
-		assertCompatible(scope);
+	public final DefValue definitionValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
-		final Scope rescoped = getRescoper().rescope(scope);
+		final Resolver rescoped = getRescoper().rescope(resolver);
 
 		if (!hasPrerequisite() || getPrerequisite().isTrue()) {
 

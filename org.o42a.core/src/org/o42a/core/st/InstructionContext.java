@@ -19,10 +19,13 @@
 */
 package org.o42a.core.st;
 
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.sentence.Block;
 
 
 public interface InstructionContext {
+
+	Resolver getResolver();
 
 	Block<?> getBlock();
 

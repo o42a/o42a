@@ -32,6 +32,7 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -101,9 +102,9 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		}
 
 		@Override
-		protected Value<?> calculateValue(Scope scope) {
+		protected Value<?> calculateValue(Resolver resolver) {
 
-			final Value<?> value = operand().value(scope);
+			final Value<?> value = operand().value(resolver);
 
 			if (!value.isDefinite()) {
 				return ValueType.VOID.runtimeValue();

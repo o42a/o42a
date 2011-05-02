@@ -20,8 +20,8 @@
 package org.o42a.intrinsic.numeric;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
 import org.o42a.intrinsic.operator.BinaryResult;
@@ -55,7 +55,7 @@ abstract class NumbersEqual<P extends Number>
 	}
 
 	@Override
-	protected Void calculate(Scope scope, P left, P right) {
+	protected Void calculate(Resolver resolver, P left, P right) {
 		if (!compare(left, right)) {
 			return null;
 		}

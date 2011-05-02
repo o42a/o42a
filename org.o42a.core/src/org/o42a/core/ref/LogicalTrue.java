@@ -39,8 +39,8 @@ final class LogicalTrue extends Logical {
 	}
 
 	@Override
-	public LogicalValue logicalValue(Scope scope) {
-		assertCompatible(scope);
+	public LogicalValue logicalValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 		return LogicalValue.TRUE;
 	}
 

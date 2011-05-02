@@ -26,12 +26,12 @@ import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -89,10 +89,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 	}
 
 	@Override
-	public final DefValue definitionValue(Scope scope) {
-		assertCompatible(scope);
+	public final DefValue definitionValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
-		final Scope rescoped = getRescoper().rescope(scope);
+		final Resolver rescoped = getRescoper().rescope(resolver);
 
 		if (hasPrerequisite()) {
 
@@ -219,7 +219,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return out.toString();
 	}
 
-	protected abstract Value<?> calculateValue(Scope scope);
+	protected abstract Value<?> calculateValue(Resolver resolver);
 
 	@Override
 	protected final void fullyResolve() {

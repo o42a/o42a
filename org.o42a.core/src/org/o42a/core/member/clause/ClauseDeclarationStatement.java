@@ -27,7 +27,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
@@ -72,12 +72,12 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
+	public Action initialValue(LocalResolver resolver) {
 		return null;
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
+	public Action initialLogicalValue(LocalResolver resolver) {
 		return null;
 	}
 

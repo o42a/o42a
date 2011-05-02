@@ -23,11 +23,11 @@ import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -68,6 +68,6 @@ public abstract class Result extends PlainObject {
 	}
 
 	@Override
-	protected abstract Value<?> calculateValue(Scope scope);
+	protected abstract Value<?> calculateValue(Resolver resolver);
 
 }

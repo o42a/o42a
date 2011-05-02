@@ -19,12 +19,15 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -45,9 +48,22 @@ final class PathRescoper extends Rescoper {
 	@Override
 	public Scope rescope(Scope scope) {
 
-		final Container found = this.path.resolve(scope, scope, scope);
+		final Container found = this.path.resolve(scope, dummyUser(), scope);
 
 		return found != null ? found.getScope() : null;
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+
+		final Scope scope = resolver.getScope();
+		final Container found = this.path.resolve(scope, resolver, scope);
+
+		if (found == null) {
+			return null;
+		}
+
+		return found.getScope().newResolver(resolver);
 	}
 
 	@Override

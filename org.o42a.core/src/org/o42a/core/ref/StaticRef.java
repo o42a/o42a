@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.Array;
@@ -50,12 +49,13 @@ final class StaticRef extends Ref {
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
-		return calculateValue(getResolution().materialize(), scope);
+	public Value<?> value(Resolver resolver) {
+		assertCompatible(resolver.getScope());
+		return calculateValue(getResolution().materialize(), resolver);
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
+	public Resolution resolve(Resolver resolver) {
 		return this.ref.getResolution();
 	}
 

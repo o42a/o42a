@@ -24,6 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.util.use.UserInfo;
 
 
 abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
@@ -52,12 +53,13 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 		super(enclosingContainer, overridden, false);
 
 		final Obj inherited = enclosingContainer.toObject();
+		final UserInfo user = resolverFactory();
 
 		this.iface = inherited.member(
-				overridden.iface.getKey()).toField(this).toKind(
+				overridden.iface.getKey()).toField(user).toKind(
 						overridden.iface.getArtifactKind());
 		this.wrapped = inherited.getWrapped().member(
-				overridden.iface.getKey()).toField(this).toKind(
+				overridden.iface.getKey()).toField(user).toKind(
 						overridden.iface.getArtifactKind());
 		setScopeArtifact(overridden.getArtifact());
 	}

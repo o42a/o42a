@@ -21,15 +21,15 @@ package org.o42a.core.artifact.object;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.def.RefDefBase;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 
 
 public abstract class RefObjectBase extends RefDefBase {
 
-	protected static Value<?> calculateValue(Obj object, Scope scope) {
-		return object.calculateValue(scope);
+	protected static Value<?> calculateValue(Obj object, Resolver resolver) {
+		return object.calculateValue(resolver);
 	}
 
 	public RefObjectBase(LocationInfo location, Distributor distributor) {

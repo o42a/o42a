@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.ScopePlace.scopePlace;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.declarative.RefCondition;
 import org.o42a.core.value.ValueType;
@@ -439,10 +441,16 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private final class InstructionCtx implements InstructionContext {
 
+		private final Resolver resolver = getScope().newResolver(dummyUser());
 		private int index;
 		private Statement statement;
 		private Block<?> block;
 		private boolean doNotRemove;
+
+		@Override
+		public final Resolver getResolver() {
+			return this.resolver;
+		}
 
 		@Override
 		public Block<?> getBlock() {
@@ -481,7 +489,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		private final void execute(Statement statement) {
 
 			final Instruction instruction =
-				statement.toInstruction(getScope(), true);
+				statement.toInstruction(getResolver(), true);
 
 			if (instruction == null) {
 				++this.index;
