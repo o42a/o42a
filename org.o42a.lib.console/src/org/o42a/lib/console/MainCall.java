@@ -83,10 +83,14 @@ final class MainCall extends DefinedObject {
 		final Ref adapterRef =
 			adapterPath.target(mainAdapter, module.distribute());
 
-		return new MainCall(
+		final MainCall result = new MainCall(
 				main,
 				module.distribute(),
 				adapterRef.toStaticTypeRef());
+
+		result.value().useBy(user);
+
+		return result;
 	}
 
 	private MainCall(
