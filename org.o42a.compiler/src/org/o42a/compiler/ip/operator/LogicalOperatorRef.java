@@ -54,10 +54,12 @@ public class LogicalOperatorRef extends ObjectConstructor {
 			this.node.getOperand().accept(EXPRESSION_VISITOR, distribute());
 	}
 
-	private LogicalOperatorRef(LogicalOperatorRef sample, Reproducer reproducer) {
-		super(sample, reproducer.distribute());
-		this.node = sample.node;
-		this.operand = sample.operand.reproduce(reproducer);
+	private LogicalOperatorRef(
+			LogicalOperatorRef prototype,
+			Reproducer reproducer) {
+		super(prototype, reproducer.distribute());
+		this.node = prototype.node;
+		this.operand = prototype.operand.reproduce(reproducer);
 	}
 
 	@Override

@@ -161,7 +161,6 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void generateAll(Generator generator) {
-		getMainModule().ir(generator).allocate();
 		if (consoleUsed()) {
 			this.user.useBy(generator);
 			this.consoleModule.generateMain(generator);

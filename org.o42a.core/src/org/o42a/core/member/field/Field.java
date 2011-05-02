@@ -172,7 +172,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	 */
 	@SuppressWarnings("unchecked")
 	public final Field<A> getLastDefinition() {
-		return (Field<A>) this.member.getLastDefinition().toField(this);
+		return (Field<A>) this.member.getLastDefinition().toField(dummyUser());
 	}
 
 	/**

@@ -232,6 +232,16 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			if (declared.toField(dummyUser()) == null) {
 				continue;
 			}
+			if (declared.isOverride()) {
+				continue;
+			}
+			// TODO Skip never used field IR generation.
+			/*
+			if (!declared.getAnalysis().accessedBy(
+					getGenerator().getUseCase())) {
+				continue;
+			}
+			*/
 
 			final Field<?> field =
 				object.member(declared.getKey()).toField(dummyUser());
