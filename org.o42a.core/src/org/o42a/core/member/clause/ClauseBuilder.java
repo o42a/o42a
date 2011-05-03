@@ -26,6 +26,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
 import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -55,6 +56,10 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 			ClauseDeclaration declaration) {
 		this.memberRegistry = memberRegistry;
 		this.declaration = declaration;
+	}
+
+	public final MemberOwner getMemberOwner() {
+		return this.memberRegistry.getMemberOwner();
 	}
 
 	@Override

@@ -21,9 +21,7 @@ package org.o42a.core.member.clause;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
@@ -55,9 +53,9 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	}
 
 	private DeclaredGroupClause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			DeclaredGroupClause overridden) {
-		super(enclosingContainer, overridden);
+		super(owner, overridden);
 		this.builder = overridden.builder;
 		this.definition = overridden.definition;
 		this.imperative = overridden.imperative;
@@ -147,8 +145,8 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	}
 
 	@Override
-	protected GroupClause propagate(Scope enclosingScope) {
-		return new DeclaredGroupClause(enclosingScope.getContainer(), this);
+	protected GroupClause propagate(MemberOwner owner) {
+		return new DeclaredGroupClause(owner, this);
 	}
 
 	Block<?> parentheses(Group group) {
@@ -208,7 +206,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		private final DeclaredGroupClause clause;
 
 		GroupMember(ClauseBuilder builder) {
-			super(builder.getDeclaration());
+			super(builder.getMemberOwner(), builder.getDeclaration());
 			this.clause = new DeclaredGroupClause(this, builder);
 		}
 
@@ -281,6 +279,11 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		GroupRegistry(DeclaredGroupClause group, MemberRegistry registry) {
 			this.group = group;
 			this.registry = registry;
+		}
+
+		@Override
+		public MemberOwner getMemberOwner() {
+			return this.registry.getMemberOwner();
 		}
 
 		@Override

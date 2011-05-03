@@ -38,6 +38,7 @@ public class RunTests extends IntrinsicDirective {
 
 	public RunTests(TestModule module) {
 		super(
+				module.toMemberOwner(),
 				fieldDeclaration(
 						new Location(
 								module.getContext(),

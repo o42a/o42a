@@ -51,6 +51,11 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
+	public OwningObject getMemberOwner() {
+		return getOwner().toMemberOwner();
+	}
+
+	@Override
 	public Obj getOwner() {
 		return this.owner;
 	}

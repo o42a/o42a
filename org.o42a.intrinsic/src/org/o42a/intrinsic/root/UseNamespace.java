@@ -41,6 +41,7 @@ public class UseNamespace extends IntrinsicDirective {
 
 	public UseNamespace(Root root) {
 		super(
+				root.toMemberOwner(),
 				fieldDeclaration(
 						root.locationFor("use_namespace.o42a"),
 						root.distribute(),

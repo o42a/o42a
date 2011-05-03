@@ -132,7 +132,7 @@ final class PropagatedLocalScope extends LocalScope {
 			super(
 					localScope,
 					localScope.getOwner().distribute(),
-					localScope.getOwner());
+					localScope.getOwner().toMemberOwner());
 			this.localScope = localScope;
 			this.overridden = overridden;
 		}

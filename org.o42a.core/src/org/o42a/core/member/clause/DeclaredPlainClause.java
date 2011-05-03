@@ -21,11 +21,10 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -49,9 +48,9 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	private DeclaredPlainClause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			DeclaredPlainClause overridden) {
-		super(enclosingContainer, overridden);
+		super(owner, overridden);
 		this.builder = overridden.builder;
 		this.definition = overridden.getDefinition();
 		this.overridden = overridden.getOverridden();
@@ -129,8 +128,8 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	protected PlainClause propagate(Scope enclosingScope) {
-		return new DeclaredPlainClause(enclosingScope.getContainer(), this);
+	protected PlainClause propagate(MemberOwner owner) {
+		return new DeclaredPlainClause(owner, this);
 	}
 
 	@Override
@@ -195,7 +194,7 @@ final class DeclaredPlainClause extends PlainClause {
 		private final DeclaredPlainClause clause;
 
 		PlainMember(ClauseBuilder builder) {
-			super(builder.getDeclaration());
+			super(builder.getMemberOwner(), builder.getDeclaration());
 			this.clause = new DeclaredPlainClause(this, builder);
 		}
 

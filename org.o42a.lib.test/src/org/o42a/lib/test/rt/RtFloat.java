@@ -30,6 +30,7 @@ public class RtFloat extends IntrinsicObject {
 
 	public RtFloat(TestModule module) {
 		super(
+				module.toMemberOwner(),
 				sourcedDeclaration(
 						module,
 						"rt-float",

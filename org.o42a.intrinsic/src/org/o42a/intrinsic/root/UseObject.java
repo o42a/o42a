@@ -42,6 +42,7 @@ public class UseObject extends IntrinsicDirective {
 
 	public UseObject(Root root) {
 		super(
+				root.toMemberOwner(),
 				fieldDeclaration(
 						root.locationFor("use_object.o42a"),
 						root.distribute(),

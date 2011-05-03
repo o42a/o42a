@@ -26,8 +26,6 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.ScopeFld;
 import org.o42a.core.ir.field.ScopeFldOp;
@@ -35,6 +33,7 @@ import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
@@ -47,6 +46,7 @@ final class ScopeField extends ObjectField {
 
 	ScopeField(Obj owner) {
 		super(
+				owner.toMemberOwner(),
 				fieldDeclaration(
 						owner,
 						owner.distributeIn(owner),
@@ -56,8 +56,8 @@ final class ScopeField extends ObjectField {
 		setScopeArtifact(owner.getScope().getEnclosingContainer().toObject());
 	}
 
-	private ScopeField(Container enclosingContainer, ScopeField overridden) {
-		super(enclosingContainer, overridden, true);
+	private ScopeField(MemberOwner owner, ScopeField overridden) {
+		super(owner, overridden, true);
 		this.overridden = overridden;
 	}
 
@@ -109,8 +109,8 @@ final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	protected ScopeField propagate(Scope enclosingScope) {
-		return new ScopeField(enclosingScope.getContainer(), this);
+	protected ScopeField propagate(MemberOwner owner) {
+		return new ScopeField(owner, this);
 	}
 
 	@Override

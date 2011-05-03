@@ -33,6 +33,7 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
@@ -58,18 +59,16 @@ public abstract class PlainClause
 			"Plain clause expected";
 	}
 
-	protected PlainClause(
-			Container enclosingContainer,
-			PlainClause overridden) {
-		this(enclosingContainer, overridden, true);
+	protected PlainClause(MemberOwner owner, PlainClause overridden) {
+		this(owner, overridden, true);
 		setClauseObject(propagateClauseObject(overridden));
 	}
 
 	protected PlainClause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			PlainClause overridden,
 			boolean propagate) {
-		super(enclosingContainer, overridden, propagate);
+		super(owner, overridden, propagate);
 	}
 
 	@Override
@@ -283,7 +282,7 @@ public abstract class PlainClause
 	}
 
 	@Override
-	protected abstract PlainClause propagate(Scope enclosingScope);
+	protected abstract PlainClause propagate(MemberOwner owner);
 
 	protected abstract Obj propagateClauseObject(PlainClause overridden);
 

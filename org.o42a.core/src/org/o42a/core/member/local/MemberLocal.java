@@ -21,9 +21,12 @@ package org.o42a.core.member.local;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.OwningObject;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
@@ -34,8 +37,19 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class MemberLocal extends Member {
 
-	MemberLocal(LocationInfo location, Distributor distributor, Obj owner) {
-		super(location, distributor);
+	MemberLocal(
+			LocationInfo location,
+			Distributor distributor,
+			OwningObject owner) {
+		super(location, distributor, owner);
+	}
+
+	public final Obj getOwner() {
+		return getOwningObject().getObject();
+	}
+
+	public final OwningObject getOwningObject() {
+		return (OwningObject) getMemberOwner();
 	}
 
 	@Override
@@ -91,15 +105,15 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final Member propagateTo(Scope scope) {
+	public final Member propagateTo(MemberOwner owner) {
 
-		final Obj owner = scope.getContainer().toObject();
+		final Obj ownerObject = owner.getContainer().toObject();
 
-		assert owner != null :
-			scope + " is not object";
+		assert ownerObject != null :
+			ownerObject + " is not object";
 
-		return toLocal(scope.newResolver(dummyUser()))
-		.propagateTo(owner).toMember();
+		return toLocal(owner.getScope().newResolver(dummyUser()))
+		.propagateTo(ownerObject).toMember();
 	}
 
 	@Override
@@ -108,7 +122,7 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public Member wrap(UserInfo user, Member inherited, Container container) {
+	public Member wrap(MemberOwner owner, UserInfo user, Member inherited) {
 		throw new UnsupportedOperationException();
 	}
 

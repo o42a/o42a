@@ -22,6 +22,7 @@ package org.o42a.common.intrinsic;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
 
@@ -30,8 +31,8 @@ public abstract class IntrinsicDirective
 		extends IntrinsicObject
 		implements Directive {
 
-	public IntrinsicDirective(FieldDeclaration declarator) {
-		super(declarator);
+	public IntrinsicDirective(MemberOwner owner, FieldDeclaration declarator) {
+		super(owner, declarator);
 	}
 
 	@Override

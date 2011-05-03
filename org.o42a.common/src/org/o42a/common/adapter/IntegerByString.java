@@ -37,7 +37,7 @@ public class IntegerByString extends ByString<Long> {
 	private static final int MINUS_SIGN = 0x2212;
 
 	public IntegerByString(Obj owner, String name, String sourcePath) {
-		super(owner, ValueType.INTEGER, name, sourcePath);
+		super(owner.toMemberOwner(), ValueType.INTEGER, name, sourcePath);
 	}
 
 	@Override

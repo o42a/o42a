@@ -258,7 +258,7 @@ final class ExplicitLocalScope extends LocalScope {
 		private final MemberKey key;
 
 		ExplicitMember(LocalScope localScope, Distributor distributor) {
-			super(localScope, distributor, localScope.getOwner());
+			super(localScope, distributor, localScope.getOwner().toMemberOwner());
 			this.localScope = localScope;
 
 			final MemberId localId =
@@ -283,7 +283,7 @@ final class ExplicitLocalScope extends LocalScope {
 				LocalScope localScope,
 				Distributor distributor,
 				LocalScope reproducedFrom) {
-			super(localScope, distributor, localScope.getOwner());
+			super(localScope, distributor, localScope.getOwner().toMemberOwner());
 			this.localScope = localScope;
 			this.id =
 				reproducedFrom.toMember().getKey().getMemberId()

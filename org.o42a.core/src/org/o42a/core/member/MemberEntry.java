@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.Scope;
 
 
 final class MemberEntry {
@@ -61,12 +60,12 @@ final class MemberEntry {
 		return this.propagated || this.member.isOverride();
 	}
 
-	public final Member createMember(Scope scope) {
+	public final Member createMember(MemberOwner owner) {
 		if (!this.propagated) {
 			return this.member;
 		}
 
-		final Member propagated = this.member.propagateTo(scope);
+		final Member propagated = this.member.propagateTo(owner);
 
 		assert propagated.getPropagatedFrom() == this.member :
 			propagated + " is not propagated from " + this.member;
@@ -110,8 +109,7 @@ final class MemberEntry {
 	private Member registerNew(ContainerMembers members, MemberKey key) {
 
 		final Member existing = members.members().get(key);
-		final Member member =
-			createMember(members.getContainer().getScope());
+		final Member member = createMember(members.getOwner());
 
 		if (existing != null) {
 			// Merge with existing member.
@@ -132,8 +130,7 @@ final class MemberEntry {
 		if (existing == null) {
 			// Member is not registered yet.
 
-			final Member member =
-				createMember(members.getContainer().getScope());
+			final Member member = createMember(members.getOwner());
 
 			return members.register(member) ? member : null;
 		}
@@ -147,8 +144,7 @@ final class MemberEntry {
 			}
 
 			// Merge explicit member definitions.
-			final Member member =
-				createMember(members.getContainer().getScope());
+			final Member member = createMember(members.getOwner());
 
 			existing.merge(member);
 
@@ -159,8 +155,7 @@ final class MemberEntry {
 		if (!isPropagated()) {
 			// Explicit member takes precedence over propagated one.
 
-			final Member member =
-				createMember(members.getContainer().getScope());
+			final Member member = createMember(members.getOwner());
 
 			return members.register(member) ? member : null;
 		}
@@ -177,8 +172,7 @@ final class MemberEntry {
 		if (getMember().definedAfter(propagatedFrom)) {
 			// New member is defined after the already registered one.
 			// Update the registry with the new member.
-			final Member member =
-				createMember(members.getContainer().getScope());
+			final Member member = createMember(members.getOwner());
 
 			return members.register(member) ? member : null;
 		}

@@ -21,23 +21,22 @@ package org.o42a.core.member.field;
 
 import static org.o42a.core.def.Rescoper.wrapper;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.member.MemberOwner;
 
 
 final class LinkFieldWrap extends FieldWrap<Link> {
 
 	LinkFieldWrap(
-			Container enclosingContainer,
+			MemberOwner owner,
 			Field<?> type,
 			Field<?> wrapped) {
-		super(enclosingContainer, type, wrapped);
+		super(owner, type, wrapped);
 	}
 
-	private LinkFieldWrap(Container enclosingContainer, FieldWrap<Link> overridden) {
-		super(enclosingContainer, overridden);
+	private LinkFieldWrap(MemberOwner owner, FieldWrap<Link> overridden) {
+		super(owner, overridden);
 	}
 
 	@Override
@@ -46,8 +45,8 @@ final class LinkFieldWrap extends FieldWrap<Link> {
 	}
 
 	@Override
-	protected Field<Link> propagate(Scope enclosingScope) {
-		return new LinkFieldWrap(enclosingScope.getContainer(), this);
+	protected Field<Link> propagate(MemberOwner owner) {
+		return new LinkFieldWrap(owner, this);
 	}
 
 	@Override

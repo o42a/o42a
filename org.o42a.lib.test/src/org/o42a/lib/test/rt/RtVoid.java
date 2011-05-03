@@ -35,10 +35,12 @@ import org.o42a.lib.test.TestModule;
 public class RtVoid extends IntrinsicObject {
 
 	public RtVoid(TestModule module) {
-		super(fieldDeclaration(
-				module,
-				module.distribute(),
-				memberName("rt-void")));
+		super(
+				module.toMemberOwner(),
+				fieldDeclaration(
+						module,
+						module.distribute(),
+						memberName("rt-void")));
 		setValueType(ValueType.VOID);
 	}
 

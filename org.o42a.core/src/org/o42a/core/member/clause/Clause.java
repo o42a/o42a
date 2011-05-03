@@ -23,9 +23,7 @@ import java.util.HashMap;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
@@ -98,18 +96,18 @@ public abstract class Clause implements PlaceInfo {
 		this.declaration = member.getDeclaration();
 	}
 
-	protected Clause(Container enclosingContainer, Clause overridden) {
-		this(enclosingContainer, overridden, true);
+	protected Clause(MemberOwner owner, Clause overridden) {
+		this(owner, overridden, true);
 	}
 
 	protected Clause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			Clause overridden,
 			boolean propagate) {
 
 		final MemberClause.Overridden member =
 			new MemberClause.Overridden(
-						enclosingContainer,
+						owner,
 						this,
 						(MemberClause) overridden.toMember(),
 						propagate);
@@ -302,7 +300,7 @@ public abstract class Clause implements PlaceInfo {
 		return this.member.toString();
 	}
 
-	protected abstract Clause propagate(Scope enclosingScope);
+	protected abstract Clause propagate(MemberOwner owner);
 
 	protected abstract void fullyResolve();
 

@@ -35,7 +35,7 @@ final class FloatMinus extends UnaryResult<Double, Double> {
 
 	FloatMinus(Floats floats) {
 		super(
-				floats,
+				floats.toMemberOwner(),
 				"minus",
 				ValueType.FLOAT,
 				"operand",

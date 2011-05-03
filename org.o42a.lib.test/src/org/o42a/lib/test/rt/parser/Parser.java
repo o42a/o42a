@@ -33,10 +33,12 @@ import org.o42a.lib.test.TestModule;
 public class Parser extends IntrinsicObject {
 
 	public Parser(TestModule module) {
-		super(fieldDeclaration(
-				module,
-				module.distribute(),
-				memberName("parser")));
+		super(
+				module.toMemberOwner(),
+				fieldDeclaration(
+						module,
+						module.distribute(),
+						memberName("parser")));
 		setValueType(ValueType.VOID);
 	}
 

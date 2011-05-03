@@ -19,27 +19,25 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectField;
-import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberOwner;
 
 
 final class VoidField extends ObjectField {
 
 	VoidField(Root root) {
-		super(fieldDeclaration(
-				root,
-				root.distribute(),
-				MemberId.memberName("void")));
+		super(
+				root.toMemberOwner(),
+				fieldDeclaration(root, root.distribute(), memberName("void")));
 		setScopeArtifact(getContext().getVoid());
 	}
 
-	private VoidField(Container enclosingContainer, VoidField sample) {
-		super(enclosingContainer, sample);
+	private VoidField(MemberOwner owner, VoidField sample) {
+		super(owner, sample);
 	}
 
 	@Override
@@ -53,8 +51,8 @@ final class VoidField extends ObjectField {
 	}
 
 	@Override
-	protected VoidField propagate(Scope enclosingScope) {
-		return new VoidField(enclosingScope.getContainer(), this);
+	protected VoidField propagate(MemberOwner owner) {
+		return new VoidField(owner, this);
 	}
 
 }

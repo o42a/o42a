@@ -47,7 +47,7 @@ public strictfp class FloatByString extends ByString<Double> {
 	private static final byte PARSE_EXPONENT = 4;
 
 	public FloatByString(Obj owner, String name, String sourcePath) {
-		super(owner, ValueType.FLOAT, name, sourcePath);
+		super(owner.toMemberOwner(), ValueType.FLOAT, name, sourcePath);
 	}
 
 	@Override

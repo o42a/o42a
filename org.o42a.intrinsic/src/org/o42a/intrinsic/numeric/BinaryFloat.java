@@ -38,7 +38,7 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 			String leftOperandName,
 			String rightOperandName) {
 		super(
-				owner,
+				owner.toMemberOwner(),
 				name,
 				ValueType.FLOAT,
 				leftOperandName,

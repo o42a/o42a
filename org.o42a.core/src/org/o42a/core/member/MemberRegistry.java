@@ -35,6 +35,8 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		return new NoDeclarations();
 	}
 
+	public abstract MemberOwner getMemberOwner();
+
 	public abstract FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition);
@@ -44,6 +46,11 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 	}
 
 	private static class NoDeclarations extends MemberRegistry {
+
+		@Override
+		public MemberOwner getMemberOwner() {
+			return null;
+		}
 
 		@Override
 		public Obj getOwner() {

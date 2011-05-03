@@ -19,16 +19,13 @@
 */
 package org.o42a.intrinsic.operator;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -38,7 +35,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -47,41 +44,20 @@ import org.o42a.core.value.ValueType;
 
 public abstract class UnaryResult<T, O> extends IntrinsicObject {
 
-	static FieldDeclaration declaration(
-			Container enclosingContainer,
-			String name,
-			String sourcePath) {
-
-		final CompilerContext context;
-
-		try {
-			context = enclosingContainer.getContext().contextFor(sourcePath);
-		} catch (Exception e) {
-			throw new ExceptionInInitializerError(e);
-		}
-
-		final Location location = new Location(context, context.getSource());
-		final Distributor distributor =
-			declarativeDistributor(enclosingContainer);
-
-		return fieldDeclaration(
-				location,
-				distributor,
-				memberName(name)).prototype();
-	}
-
 	private final ValueType<O> operandType;
 	private final String operandName;
 	private MemberKey operandKey;
 
 	public UnaryResult(
-			Container enclosingContainer,
+			MemberOwner owner,
 			String name,
 			ValueType<T> resultType,
 			String operandName,
 			ValueType<O> operandType,
 			String sourcePath) {
-		super(declaration(enclosingContainer, name, sourcePath));
+		super(
+				owner,
+				sourcedDeclaration(owner, name, sourcePath).prototype());
 		this.operandName = operandName;
 		this.operandType = operandType;
 		setValueType(resultType);

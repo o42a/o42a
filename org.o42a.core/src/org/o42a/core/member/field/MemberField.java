@@ -23,7 +23,6 @@ import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
@@ -50,16 +49,16 @@ public abstract class MemberField extends Member {
 	private Visibility visibility;
 	private MemberField[] mergedWith = NO_MERGED;
 
-	public MemberField(FieldDeclaration declaration) {
-		super(declaration, declaration.distribute());
+	public MemberField(MemberOwner owner, FieldDeclaration declaration) {
+		super(declaration, declaration.distribute(), owner);
 		this.declaration = declaration;
 	}
 
 	private MemberField(
-			Container container,
+			MemberOwner owner,
 			Field<?> field,
 			MemberField overridden) {
-		super(overridden, overridden.distributeIn(container));
+		super(overridden, overridden.distributeIn(owner.getContainer()), owner);
 		this.field = field;
 		this.key = overridden.getKey();
 		this.visibility = overridden.getVisibility();
@@ -159,9 +158,12 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public MemberField propagateTo(Scope scope) {
-		return toField(scope.newResolver(dummyUser()))
-		.propagateTo(scope).toMember();
+	public MemberField propagateTo(MemberOwner owner) {
+
+		final Field<?> field =
+			toField(owner.getScope().newResolver(dummyUser()));
+
+		return field.propagateTo(owner).toMember();
 	}
 
 	@Override
@@ -171,28 +173,28 @@ public abstract class MemberField extends Member {
 
 	@Override
 	public MemberField wrap(
+			MemberOwner owner,
 			UserInfo user,
-			Member inherited,
-			Container container) {
+			Member inherited) {
 
 		final ArtifactKind<?> artifactKind = toField(user).getArtifactKind();
 
 		if (artifactKind == ArtifactKind.OBJECT) {
 			return new ObjectFieldWrap(
-					container,
+					owner,
 					inherited.toField(user),
 					toField(user)).toMember();
 		}
 		if (artifactKind == ArtifactKind.LINK
 				|| artifactKind == ArtifactKind.VARIABLE) {
 			return new LinkFieldWrap(
-					getContainer(),
+					getMemberOwner(),
 					inherited.toField(user),
 					toField(user)).toMember();
 		}
 		if (artifactKind == ArtifactKind.ARRAY) {
 			return new ArrayFieldWrap(
-					getContainer(),
+					getMemberOwner(),
 					inherited.toField(user),
 					toField(user)).toMember();
 		}
@@ -378,11 +380,11 @@ public abstract class MemberField extends Member {
 		private final MemberField propagatedFrom;
 
 		Overridden(
-				Container container,
+				MemberOwner owner,
 				Field<?> field,
 				MemberField overridden,
 				boolean propagated) {
-			super(container, field, overridden);
+			super(owner, field, overridden);
 			this.propagatedFrom = propagated ? overridden : null;
 		}
 

@@ -32,7 +32,7 @@ final class DeclaredMemberField extends MemberField {
 	private FieldDeclarationStatement statement;
 
 	public DeclaredMemberField(FieldBuilder builder) {
-		super(builder.getDeclaration());
+		super(builder.getMemberOwner(), builder.getDeclaration());
 		this.builder = builder;
 	}
 

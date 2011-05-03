@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,35 +19,17 @@
 */
 package org.o42a.core.artifact.object;
 
-import java.util.Map;
-
-import org.o42a.core.member.*;
+import org.o42a.core.member.MemberOwner;
 
 
-public class ObjectMembers extends ContainerMembers {
+public class OwningObject extends MemberOwner {
 
-	ObjectMembers(Obj object) {
-		super(object.toMemberOwner());
+	OwningObject(Obj object) {
+		super(object);
 	}
 
 	public final Obj getObject() {
-		return (Obj) getContainer();
-	}
-
-	public void deriveMembers(Obj ascendant) {
-		for (Member member : ascendant.getMembers()) {
-			propagateMember(member);
-		}
-	}
-
-	@Override
-	protected final Map<MemberKey, Member> members() {
-		return getObject().members();
-	}
-
-	@Override
-	protected final Map<MemberId, Symbol> symbols() {
-		return getObject().symbols();
+		return getContainer().toObject();
 	}
 
 }
