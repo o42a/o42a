@@ -26,6 +26,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 
 
@@ -40,8 +41,11 @@ public class IntegerByString extends ByString<Long> {
 	}
 
 	@Override
-	protected Long byString(LocationInfo location, String input) {
-		return integerByString(location, input, 10);
+	protected Long byString(
+			LocationInfo location,
+			Resolver resolver,
+			String input) {
+		return integerByString(location, resolver, input, 10);
 	}
 
 	@Override
@@ -63,16 +67,19 @@ public class IntegerByString extends ByString<Long> {
 
 	private Long integerByString(
 			LocationInfo location,
+			Resolver resolver,
 			String input,
 			int radix) {
 
 		final int len = input.length();
 
 		if (len == 0) {
-			getLogger().error(
-					"empty_input",
-					location,
-					"Empty string can not be converted to integer");
+			if (reportError(resolver)) {
+				getLogger().error(
+						"empty_input",
+						location,
+						"Empty string can not be converted to integer");
+			}
 			return null;
 		}
 
@@ -100,11 +107,14 @@ public class IntegerByString extends ByString<Long> {
 				}
 			} else if (Character.getType(c) == Character.SPACE_SEPARATOR) {
 				if (space) {
-					getLogger().error(
-							"invalid_input",
-							location,
-							"Two subsequent spaces in number at position %d",
-							i);
+					if (reportError(resolver)) {
+						getLogger().error(
+								"invalid_input",
+								location,
+								"Two subsequent spaces in number"
+								+ " at position %d",
+								i);
+					}
 					return null;
 				}
 				space = true;
@@ -114,30 +124,36 @@ public class IntegerByString extends ByString<Long> {
 			final int digit = Character.digit(c, radix);
 
 			if (digit < 0) {
-				getLogger().error(
-						"invalid_input",
-						location,
-						"Illegal character in number at position %d",
-						i);
+				if (reportError(resolver)) {
+					getLogger().error(
+							"invalid_input",
+							location,
+							"Illegal character in number at position %d",
+							i);
+				}
 				return null;
 			}
 
 			if (negative) {
 				value = value * radix - digit;
 				if (value > 0) {
-					getLogger().error(
-							"integer_overflow",
-							location,
-							"Integer overflow");
+					if (reportError(resolver)) {
+						getLogger().error(
+								"integer_overflow",
+								location,
+								"Integer overflow");
+					}
 					return null;
 				}
 			} else {
 				value = value * radix + digit;
 				if (value < 0) {
-					getLogger().error(
-							"integer_overflow",
-							location,
-							"Integer overflow");
+					if (reportError(resolver)) {
+						getLogger().error(
+								"integer_overflow",
+								location,
+								"Integer overflow");
+					}
 					return null;
 				}
 			}
@@ -147,18 +163,22 @@ public class IntegerByString extends ByString<Long> {
 		} while (i < len);
 
 		if (space) {
-			getLogger().error(
-					"invalid_input",
-					location,
-					"Unexpected space after number at position %d",
-					len - 1);
+			if (reportError(resolver)) {
+				getLogger().error(
+						"invalid_input",
+						location,
+						"Unexpected space after number at position %d",
+						len - 1);
+			}
 			return null;
 		}
 		if (!hasValue) {
-			getLogger().error(
-					"empty_input",
-					location,
-					"Unexpected end of integer input");
+			if (reportError(resolver)) {
+				getLogger().error(
+						"empty_input",
+						location,
+						"Unexpected end of integer input");
+			}
 			return null;
 		}
 

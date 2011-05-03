@@ -115,11 +115,6 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 			.materialize();
 		final Value<?> leftValue =
 			leftObject.value().useBy(resolver).getValue();
-
-		if (leftValue.isFalse()) {
-			return getResultType().falseValue();
-		}
-
 		final Obj rightObject =
 			resolver.getScope().getContainer()
 			.member(rightOperandKey())
@@ -129,10 +124,9 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 		final Value<?> rightValue =
 			rightObject.value().useBy(resolver).getValue();
 
-		if (rightValue.isFalse()) {
+		if (leftValue.isFalse() || rightValue.isFalse()) {
 			return getResultType().falseValue();
 		}
-
 		if (!leftValue.isDefinite() || !rightValue.isDefinite()) {
 			return getResultType().runtimeValue();
 		}

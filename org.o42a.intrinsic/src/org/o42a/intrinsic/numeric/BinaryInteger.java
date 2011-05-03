@@ -52,9 +52,11 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 		try {
 			return calculate(left.longValue(), ((Number) right).longValue());
 		} catch (ArithmeticException e) {
-			resolver.getLogger().arithmeticError(
-					resolver.getScope(),
-					e.getMessage());
+			if (reportError(resolver)) {
+				resolver.getLogger().arithmeticError(
+						resolver.getScope(),
+						e.getMessage());
+			}
 			return null;
 		}
 	}

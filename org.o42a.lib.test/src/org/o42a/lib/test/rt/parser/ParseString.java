@@ -72,7 +72,7 @@ final class ParseString extends ByString<String> {
 	}
 
 	@Override
-	protected String byString(LocationInfo location, String input) {
+	protected String byString(LocationInfo location, Resolver resolver, String input) {
 		return input;
 	}
 
