@@ -59,6 +59,19 @@ public class ObjectAnalysis {
 		return false;
 	}
 
+	public final boolean accessedBy(UseCase useCase) {
+		if (typeAccessedBy(useCase)) {
+			return true;
+		}
+		if (fieldsAccessedBy(useCase)) {
+			return true;
+		}
+		if (valueAccessedBy(useCase)) {
+			return true;
+		}
+		return false;
+	}
+
 	public final boolean typeAccessedBy(UseCase useCase) {
 		return getObject().type().isUsedBy(useCase);
 	}

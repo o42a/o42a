@@ -33,6 +33,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.field.Field;
 
 
@@ -45,6 +46,14 @@ public abstract class Fld {
 	Fld(ObjectBodyIR bodyIR, Field<?> field) {
 		this.field = field;
 		this.bodyIR = bodyIR;
+
+		final MemberAnalysis declarationAnalysis =
+			getField().toMember().getAnalysis().getDeclarationAnalysis();
+
+		assert (!getGenerator().isUseAnalysed()
+				|| declarationAnalysis.accessedBy(
+						getGenerator().getUseCase())) :
+			"Attempt to generate never accessed field " + getField();
 	}
 
 	public final Generator getGenerator() {

@@ -209,7 +209,7 @@ class PathTarget extends Expression {
 		if (this.start != null) {
 			this.start.resolveAll();
 		}
-		getPath();
+		resolve(getScope().newResolver(dummyUser()));
 	}
 
 	@Override

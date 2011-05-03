@@ -35,14 +35,17 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectAnalysis;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UseCase;
 
 
 public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
@@ -133,14 +136,18 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return new ObjectBodyIR(inheritantIR, getAscendant());
 	}
 
-	public Fld fld(MemberKey memberKey) {
+	public final Fld fld(MemberKey memberKey) {
 
-		final Fld fld = this.fieldMap.get(memberKey);
+		final Fld fld = findFld(memberKey);
 
 		assert fld != null :
 			"Field " + memberKey + " not found in " + this;
 
 		return fld;
+	}
+
+	public final Fld findFld(MemberKey memberKey) {
+		return this.fieldMap.get(memberKey);
 	}
 
 	public DepIR dep(Dep dep) {
@@ -229,22 +236,23 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final Obj object = getObjectIR().getObject();
 
 		for (Member declared : ascendant.getMembers()) {
-			if (declared.toField(dummyUser()) == null) {
+
+			final Field<?> declaredField = declared.toField(dummyUser());
+
+			if (declaredField == null) {
 				continue;
 			}
 			if (declared.isOverride()) {
 				continue;
 			}
-			// TODO Skip never used field IR generation.
-			/*
-			if (!declared.getAnalysis().accessedBy(
-					getGenerator().getUseCase())) {
-				continue;
-			}
-			*/
 
 			final Field<?> field =
-				object.member(declared.getKey()).toField(dummyUser());
+				object.member(declaredField.getKey()).toField(dummyUser());
+
+			if (!generateField(declaredField, field)) {
+				continue;
+			}
+
 			final FieldIRBase<?> fieldIR = field.ir(generator);
 			final Fld fld = fieldIR.allocate(data, this);
 
@@ -253,6 +261,44 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				this.fieldMap.put(field.getKey(), fld);
 			}
 		}
+	}
+
+	private boolean generateField(Field<?> declaredField, Field<?> field) {
+
+		final Generator generator = getGenerator();
+
+		if (!generator.isUseAnalysed()) {
+			return true;
+		}
+
+		final UseCase useCase = generator.getUseCase();
+		final MemberAnalysis declarationAnalysis =
+			declaredField.toMember().getAnalysis();
+
+		if (!declarationAnalysis.accessedBy(useCase)) {
+
+			final Obj target = field.getArtifact().materialize();
+			final ObjectAnalysis targetAnalysis = target.getAnalysis();
+
+			// Field is never accessed. Do not allocate it.
+			if (targetAnalysis.typeAccessedBy(useCase)) {
+				// Nevertheless, an artifact is accessed.
+				// Allocate it.
+				target.ir(generator).allocate();
+			}
+
+			return false;
+		}
+
+		final Obj declaration =
+			declaredField.getArtifact().materialize();
+
+		if (!declaration.getAnalysis().accessedBy(useCase)) {
+			// Declaration is never accessed
+			return false;
+		}
+
+		return true;
 	}
 
 	private final void allocateDeps(SubData<Op> data) {
