@@ -107,7 +107,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 
 		final String input =
 			ValueType.STRING.cast(inputValue).getDefiniteValue();
-		final T result = byString(inputObject, input);
+		final T result = byString(inputObject, resolver, input);
 
 		if (result == null) {
 			return getValueType().falseValue();
@@ -124,7 +124,10 @@ public abstract class ByString<T> extends IntrinsicObject {
 		return new ValueIR(objectIR);
 	}
 
-	protected abstract T byString(LocationInfo location, String input);
+	protected abstract T byString(
+			LocationInfo location,
+			Resolver resolver,
+			String input);
 
 	protected abstract void parse(Code code, ValOp result, ObjectOp input);
 

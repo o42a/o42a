@@ -55,9 +55,11 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 					left.doubleValue(),
 					((Number) right).doubleValue());
 		} catch (ArithmeticException e) {
-			resolver.getLogger().arithmeticError(
-					resolver.getScope(),
-					e.getMessage());
+			if (reportError(resolver)) {
+				resolver.getLogger().arithmeticError(
+						resolver.getScope(),
+						e.getMessage());
+			}
 			return null;
 		}
 	}

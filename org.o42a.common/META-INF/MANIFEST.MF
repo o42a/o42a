@@ -6,6 +6,7 @@ Bundle-Version: 0.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.o42a.core;bundle-version="0.1.0";visibility:=reexport,
  org.o42a.codegen;bundle-version="0.1.0";visibility:=reexport
-Export-Package: org.o42a.common.adapter,
+Export-Package: org.o42a.common,
+ org.o42a.common.adapter,
  org.o42a.common.intrinsic
 Bundle-ActivationPolicy: lazy

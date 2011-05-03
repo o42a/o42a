@@ -81,6 +81,12 @@ final class RefValueDef extends ValueDef {
 	@Override
 	protected void fullyResolveDef() {
 		this.ref.resolveAll();
+
+		final Resolver resolver =
+			getRescoper().rescope(getScope().newResolver(
+					getScope().getContainer().toObject().value()));
+
+		this.ref.value(resolver);
 	}
 
 	@Override

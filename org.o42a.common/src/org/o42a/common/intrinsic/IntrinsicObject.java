@@ -23,6 +23,7 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
+import org.o42a.common.ScopeSet;
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
@@ -30,6 +31,7 @@ import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -63,6 +65,7 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
+	private ScopeSet errorReportedAt;
 
 	public IntrinsicObject(FieldDeclaration declaration) {
 		super(new IntrinsicField(declaration));
@@ -158,6 +161,19 @@ public abstract class IntrinsicObject extends PlainObject {
 
 		compiled.buildBlock(this.definition);
 		this.definition.executeInstructions();
+	}
+
+	protected final boolean reportError(Resolver resolver) {
+		return reportError(resolver.getScope());
+	}
+
+	protected final boolean reportError(Scope scope) {
+		if (this.errorReportedAt == null) {
+			this.errorReportedAt = new ScopeSet();
+			this.errorReportedAt.add(scope);
+			return true;
+		}
+		return this.errorReportedAt.add(scope);
 	}
 
 	private static final class IntrinsicField extends ObjectField {
