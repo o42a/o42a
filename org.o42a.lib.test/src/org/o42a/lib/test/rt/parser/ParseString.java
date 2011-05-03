@@ -38,6 +38,7 @@ final class ParseString extends ByString<String> {
 
 	ParseString(Parser parser) {
 		super(
+				parser.toMemberOwner(),
 				sourcedDeclaration(
 						parser,
 						"string",

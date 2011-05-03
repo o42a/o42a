@@ -21,6 +21,7 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.*;
 import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.util.log.Loggable;
 
@@ -39,6 +40,10 @@ public final class FieldBuilder implements PlaceInfo {
 		this.declaration = declaration;
 		this.definition = definition;
 		declaration.assertSameScope(definition);
+	}
+
+	public final MemberOwner getMemberOwner() {
+		return this.memberRegistry.getMemberOwner();
 	}
 
 	public final FieldDeclaration getDeclaration() {

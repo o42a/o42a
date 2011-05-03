@@ -30,6 +30,7 @@ public class RtInteger extends IntrinsicObject {
 
 	public RtInteger(TestModule module) {
 		super(
+				module.toMemberOwner(),
 				sourcedDeclaration(
 						module,
 						"rt-integer",

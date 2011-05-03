@@ -34,7 +34,7 @@ final class CompareIntegers extends CompareNumbers<Long> {
 
 	CompareIntegers(Integers owner) {
 		super(
-				owner,
+				owner.toMemberOwner(),
 				"compare",
 				ValueType.INTEGER,
 				"integers/compare.o42a");

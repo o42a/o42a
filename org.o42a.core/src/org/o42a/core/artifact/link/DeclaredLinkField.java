@@ -23,9 +23,8 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import java.util.List;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -39,10 +38,8 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 		super(member, artifactKind);
 	}
 
-	private DeclaredLinkField(
-			Container enclosingContainer,
-			DeclaredLinkField sample) {
-		super(enclosingContainer, sample);
+	private DeclaredLinkField(MemberOwner owner, DeclaredLinkField sample) {
+		super(owner, sample);
 	}
 
 	@Override
@@ -68,9 +65,8 @@ final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
 	}
 
 	@Override
-	protected DeclaredField<Link, LinkFieldVariant> propagate(
-			Scope enclosingScope) {
-		return new DeclaredLinkField(enclosingScope.getContainer(), this);
+	protected DeclaredLinkField propagate(MemberOwner owner) {
+		return new DeclaredLinkField(owner, this);
 	}
 
 	@Override

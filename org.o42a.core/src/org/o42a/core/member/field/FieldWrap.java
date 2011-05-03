@@ -21,9 +21,9 @@ package org.o42a.core.member.field;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Container;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.util.use.UserInfo;
 
 
@@ -33,14 +33,12 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 	private final Field<A> wrapped;
 
 	@SuppressWarnings("unchecked")
-	public FieldWrap(
-			Container enclosingContainer,
-			Field<?> type,
-			Field<?> wrapped) {
+	public FieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
 		super(new Member(
+				owner,
 				new FieldDeclaration(
 						wrapped,
-						wrapped.distributeIn(enclosingContainer),
+						wrapped.distributeIn(owner.getContainer()),
 						wrapped.getDeclaration())
 				.override()));
 		((Member) toMember()).init(this);
@@ -49,10 +47,10 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 		setScopeArtifact(wrapArtifact());
 	}
 
-	protected FieldWrap(Container enclosingContainer, FieldWrap<A> overridden) {
-		super(enclosingContainer, overridden, false);
+	protected FieldWrap(MemberOwner owner, FieldWrap<A> overridden) {
+		super(owner, overridden, false);
 
-		final Obj inherited = enclosingContainer.toObject();
+		final Obj inherited = owner.getContainer().toObject();
 		final UserInfo user = resolverFactory();
 
 		this.iface = inherited.member(
@@ -81,8 +79,8 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 
 	private static final class Member extends MemberField {
 
-		public Member(FieldDeclaration declaration) {
-			super(declaration);
+		public Member(MemberOwner owner, FieldDeclaration declaration) {
+			super(owner, declaration);
 		}
 
 		@Override

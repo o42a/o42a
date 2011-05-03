@@ -35,10 +35,9 @@ import org.o42a.core.value.ValueType;
 public final class False extends IntrinsicObject {
 
 	public False(Root root) {
-		super(fieldDeclaration(
-				root,
-				root.distribute(),
-				memberName("false")));
+		super(
+				root.toMemberOwner(),
+				fieldDeclaration(root, root.distribute(), memberName("false")));
 	}
 
 	@Override

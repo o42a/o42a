@@ -41,12 +41,22 @@ public abstract class Member extends Placed {
 
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
+	private final MemberOwner owner;
+
 	private MemberAnalysis analysis;
 	private Member lastDefinition;
 	private Member[] overridden;
 
-	public Member(LocationInfo location, Distributor distributor) {
+	public Member(
+			LocationInfo location,
+			Distributor distributor,
+			MemberOwner owner) {
 		super(location, distributor);
+		this.owner = owner;
+	}
+
+	public final MemberOwner getMemberOwner() {
+		return this.owner;
 	}
 
 	public abstract MemberId getId();
@@ -156,14 +166,14 @@ public abstract class Member extends Placed {
 		return getScope().derivedFrom(other.getDefinedIn());
 	}
 
-	public abstract Member propagateTo(Scope scope);
+	public abstract Member propagateTo(MemberOwner owner);
 
 	public abstract void resolveAll();
 
 	public abstract Member wrap(
+			MemberOwner owner,
 			UserInfo user,
-			Member inherited,
-			Container container);
+			Member inherited);
 
 	@Override
 	public String toString() {

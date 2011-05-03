@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
-
-import java.util.Map;
-
-import org.o42a.core.member.*;
+package org.o42a.core.member.local;
 
 
-public class ObjectMembers extends ContainerMembers {
-
-	ObjectMembers(Obj object) {
-		super(object.toMemberOwner());
-	}
-
-	public final Obj getObject() {
-		return (Obj) getContainer();
-	}
-
-	public void deriveMembers(Obj ascendant) {
-		for (Member member : ascendant.getMembers()) {
-			propagateMember(member);
-		}
-	}
-
-	@Override
-	protected final Map<MemberKey, Member> members() {
-		return getObject().members();
-	}
-
-	@Override
-	protected final Map<MemberId, Symbol> symbols() {
-		return getObject().symbols();
-	}
+public class LocalOwner {
 
 }

@@ -27,9 +27,7 @@ import java.util.Collection;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.ArrayUtil;
@@ -47,19 +45,17 @@ public abstract class GroupClause extends Clause implements Container {
 		this.enclosingContainer = member.getContainer();
 	}
 
-	protected GroupClause(
-			Container enclosingContainer,
-			GroupClause overridden) {
-		super(enclosingContainer, overridden);
-		this.enclosingContainer = enclosingContainer;
+	protected GroupClause(MemberOwner owner, GroupClause overridden) {
+		super(owner, overridden);
+		this.enclosingContainer = owner.getContainer();
 	}
 
 	protected GroupClause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			GroupClause overridden,
 			boolean propagate) {
-		super(enclosingContainer, overridden, propagate);
-		this.enclosingContainer = enclosingContainer;
+		super(owner, overridden, propagate);
+		this.enclosingContainer = owner.getContainer();
 	}
 
 	@Override
@@ -232,7 +228,7 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	protected abstract GroupClause propagate(Scope enclosingScope);
+	protected abstract GroupClause propagate(MemberOwner owner);
 
 	@Override
 	protected Path buildPathInObject() {

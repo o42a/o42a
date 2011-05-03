@@ -30,6 +30,7 @@ public class RtString extends IntrinsicObject {
 
 	public RtString(TestModule module) {
 		super(
+				module.toMemberOwner(),
 				sourcedDeclaration(
 						module,
 						"rt-string",

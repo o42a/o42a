@@ -74,6 +74,7 @@ public abstract class Obj extends Artifact<Obj>
 		return new ObjectFieldIR(generator, field);
 	}
 
+	private final OwningObject owningObject = new OwningObject(this);
 	private final ObjectType.UsableObjectType type;
 	private final ObjectValue.UseableObjectValue value;
 
@@ -137,6 +138,10 @@ public abstract class Obj extends Artifact<Obj>
 			return this.analysis;
 		}
 		return this.analysis = new ObjectAnalysis(this);
+	}
+
+	public final OwningObject toMemberOwner() {
+		return this.owningObject;
 	}
 
 	@Override

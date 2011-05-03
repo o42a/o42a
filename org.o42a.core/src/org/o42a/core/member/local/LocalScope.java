@@ -79,6 +79,7 @@ public abstract class LocalScope
 	private final CompilerContext context;
 	private final Loggable loggable;
 	private final Obj owner;
+	private final OwningLocal owningLocal = new OwningLocal(this);
 	private final Path ownerScopePath;
 
 	LocalScope(LocationInfo location, Obj owner) {
@@ -253,6 +254,10 @@ public abstract class LocalScope
 	@SuppressWarnings("unchecked")
 	protected final ResolverFactory<LocalResolver> localResolverFactory() {
 		return (ResolverFactory<LocalResolver>) resolverFactory();
+	}
+
+	final OwningLocal toOwner() {
+		return this.owningLocal;
 	}
 
 	abstract boolean addMember(Member member);

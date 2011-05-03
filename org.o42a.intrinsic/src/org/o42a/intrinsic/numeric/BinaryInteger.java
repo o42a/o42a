@@ -37,7 +37,7 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 			String leftOperandName,
 			String rightOperandName) {
 		super(
-				owner,
+				owner.toMemberOwner(),
 				name,
 				ValueType.INTEGER,
 				leftOperandName,

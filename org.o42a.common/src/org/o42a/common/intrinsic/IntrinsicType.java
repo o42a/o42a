@@ -22,10 +22,10 @@ package org.o42a.common.intrinsic;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
 
@@ -33,20 +33,21 @@ import org.o42a.core.value.ValueType;
 public class IntrinsicType extends IntrinsicObject {
 
 	public IntrinsicType(
-			Container enclosingContainer,
+			MemberOwner owner,
 			String name,
 			ValueType<?> valueType) {
 		super(
-				fieldDeclaration(
-						enclosingContainer,
-						enclosingContainer.getScope().distribute(),
-						memberName(name))
+				owner,
+				fieldDeclaration(owner, owner.distribute(), memberName(name))
 				.prototype());
 		setValueType(valueType);
 	}
 
-	public IntrinsicType(FieldDeclaration declaration, ValueType<?> valueType) {
-		super(declaration);
+	public IntrinsicType(
+			MemberOwner owner,
+			FieldDeclaration declaration,
+			ValueType<?> valueType) {
+		super(owner, declaration);
 		setValueType(valueType);
 	}
 

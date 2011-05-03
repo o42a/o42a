@@ -27,9 +27,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.Visibility;
+import org.o42a.core.member.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
 
@@ -48,17 +46,17 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		this.member = member;
 	}
 
-	protected Field(Container enclosingContainer, Field<A> overridden) {
-		this(enclosingContainer, overridden, true);
+	protected Field(MemberOwner owner, Field<A> overridden) {
+		this(owner, overridden, true);
 		setScopeArtifact(propagateArtifact(overridden));
 	}
 
 	protected Field(
-			Container enclosingContainer,
+			MemberOwner owner,
 			Field<A> overridden,
 			boolean propagate) {
 		this.member = new MemberField.Overridden(
-				enclosingContainer,
+				owner,
 				this,
 				overridden.toMember(),
 				propagate);
@@ -243,12 +241,12 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.member.isOverride();
 	}
 
-	public final Field<A> propagateTo(Scope scope) {
-		if (getEnclosingScope() == scope) {
+	public final Field<A> propagateTo(MemberOwner owner) {
+		if (getEnclosingScope() == owner.getScope()) {
 			return this;
 		}
-		scope.assertDerivedFrom(getEnclosingScope());
-		return propagate(scope);
+		owner.getScope().assertDerivedFrom(getEnclosingScope());
+		return propagate(owner);
 	}
 
 	@Override
@@ -299,7 +297,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.artifact;
 	}
 
-	protected abstract Field<A> propagate(Scope enclosingScope);
+	protected abstract Field<A> propagate(MemberOwner owner);
 
 	protected abstract A propagateArtifact(Field<A> overridden);
 

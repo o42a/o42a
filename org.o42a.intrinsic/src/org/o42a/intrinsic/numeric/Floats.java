@@ -34,10 +34,12 @@ import org.o42a.intrinsic.root.Root;
 public class Floats extends IntrinsicObject {
 
 	public Floats(Root root) {
-		super(fieldDeclaration(
-				root,
-				root.distribute(),
-				memberName("floats")));
+		super(
+				root.toMemberOwner(),
+				fieldDeclaration(
+						root,
+						root.distribute(),
+						memberName("floats")));
 		setValueType(ValueType.VOID);
 	}
 

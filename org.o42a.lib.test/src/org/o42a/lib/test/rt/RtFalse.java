@@ -35,10 +35,12 @@ import org.o42a.lib.test.TestModule;
 public class RtFalse extends IntrinsicObject {
 
 	public RtFalse(TestModule module) {
-		super(fieldDeclaration(
-				module,
-				module.distribute(),
-				memberName("rt-false")));
+		super(
+				module.toMemberOwner(),
+				fieldDeclaration(
+						module,
+						module.distribute(),
+						memberName("rt-false")));
 		setValueType(ValueType.VOID);
 	}
 

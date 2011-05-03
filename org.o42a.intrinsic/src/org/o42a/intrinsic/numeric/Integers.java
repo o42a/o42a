@@ -34,10 +34,12 @@ import org.o42a.intrinsic.root.Root;
 public class Integers extends IntrinsicObject {
 
 	public Integers(Root root) {
-		super(fieldDeclaration(
-				root,
-				root.distribute(),
-				memberName("integers")));
+		super(
+				root.toMemberOwner(),
+				fieldDeclaration(
+						root,
+						root.distribute(),
+						memberName("integers")));
 		setValueType(ValueType.VOID);
 	}
 

@@ -22,12 +22,10 @@ package org.o42a.intrinsic.operator;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
-import static org.o42a.intrinsic.operator.UnaryResult.declaration;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.Container;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -37,6 +35,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -53,7 +52,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 	private MemberKey rightOperandKey;
 
 	public BinaryResult(
-			Container enclosingContainer,
+			MemberOwner owner,
 			String name,
 			ValueType<T> resultType,
 			String leftOperandName,
@@ -61,7 +60,9 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicObject {
 			String rightOperandName,
 			ValueType<R> rightOperandType,
 			String sourcePath) {
-		super(declaration(enclosingContainer, name, sourcePath));
+		super(
+				owner,
+				sourcedDeclaration(owner, name, sourcePath).prototype());
 		this.rightOperandName = rightOperandName;
 		this.rightOperandType = rightOperandType;
 		setValueType(resultType);

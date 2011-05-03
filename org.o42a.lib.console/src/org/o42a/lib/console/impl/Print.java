@@ -46,6 +46,7 @@ public class Print extends IntrinsicObject {
 			String name,
 			String funcName) {
 		super(
+				module.toMemberOwner(),
 				fieldDeclaration(
 						module,
 						module.distribute(),

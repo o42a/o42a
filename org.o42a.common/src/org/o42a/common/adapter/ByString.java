@@ -26,7 +26,6 @@ import static org.o42a.core.st.StatementEnv.defaultEnv;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
@@ -37,6 +36,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -49,18 +49,21 @@ public abstract class ByString<T> extends IntrinsicObject {
 	private MemberKey inputKey;
 
 	public ByString(
-			Container enclosingContainer,
+			MemberOwner owner,
 			ValueType<T> valueType,
 			String name,
 			String sourcePath) {
 		this(
-				sourcedDeclaration(enclosingContainer, name, sourcePath)
-				.prototype(),
+				owner,
+				sourcedDeclaration(owner, name, sourcePath).prototype(),
 				valueType);
 	}
 
-	public ByString(FieldDeclaration declaration, ValueType<T> valueType) {
-		super(declaration);
+	public ByString(
+			MemberOwner owner,
+			FieldDeclaration declaration,
+			ValueType<T> valueType) {
+		super(owner, declaration);
 		setValueType(valueType);
 	}
 

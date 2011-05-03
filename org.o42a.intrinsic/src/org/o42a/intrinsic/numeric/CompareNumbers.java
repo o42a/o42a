@@ -19,8 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import org.o42a.core.Container;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
@@ -30,12 +30,12 @@ abstract class CompareNumbers<P extends Number>
 		extends BinaryResult<Long, P, P> {
 
 	CompareNumbers(
-			Container enclosingContainer,
+			MemberOwner owner,
 			String name,
 			ValueType<P> operandType,
 			String sourcePath) {
 		super(
-				enclosingContainer,
+				owner,
 				name,
 				ValueType.INTEGER,
 				"what",

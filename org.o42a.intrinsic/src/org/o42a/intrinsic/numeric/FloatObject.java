@@ -19,44 +19,22 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.path.Path.absolutePath;
 
 import org.o42a.common.intrinsic.IntrinsicType;
-import org.o42a.core.*;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
+import org.o42a.intrinsic.root.Root;
 
 
 public class FloatObject extends IntrinsicType {
 
-	private static FieldDeclaration declaration(
-			Container enclosingContainer) {
-
-		final CompilerContext context;
-
-		try {
-			context = enclosingContainer.getContext().contextFor(
-					"floats/float.o42a");
-		} catch (Exception e) {
-			throw new ExceptionInInitializerError(e);
-		}
-
-		final Location location = new Location(context, context.getSource());
-		final Distributor distributor =
-			declarativeDistributor(enclosingContainer);
-
-		return fieldDeclaration(
-				location,
-				distributor,
-				memberName("float")).prototype();
-	}
-
-	public FloatObject(Container enclosingContainer) {
-		super(declaration(enclosingContainer), ValueType.FLOAT);
+	public FloatObject(Root root) {
+		super(
+				root.toMemberOwner(),
+				sourcedDeclaration(root, "float", "floats/float.o42a")
+				.prototype(),
+				ValueType.FLOAT);
 	}
 
 	@Override

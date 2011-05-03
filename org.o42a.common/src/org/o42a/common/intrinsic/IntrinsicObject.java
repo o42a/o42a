@@ -29,6 +29,7 @@ import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Resolver;
@@ -39,6 +40,13 @@ import org.o42a.util.log.Loggable;
 
 
 public abstract class IntrinsicObject extends PlainObject {
+
+	public static final FieldDeclaration sourcedDeclaration(
+			MemberOwner owner,
+			String name,
+			String sourcePath) {
+		return sourcedDeclaration(owner.getContainer(), name, sourcePath);
+	}
 
 	public static FieldDeclaration sourcedDeclaration(
 			Container enclosingContainer,
@@ -67,8 +75,8 @@ public abstract class IntrinsicObject extends PlainObject {
 	private DeclarativeBlock definition;
 	private ScopeSet errorReportedAt;
 
-	public IntrinsicObject(FieldDeclaration declaration) {
-		super(new IntrinsicField(declaration));
+	public IntrinsicObject(MemberOwner owner, FieldDeclaration declaration) {
+		super(new IntrinsicField(owner, declaration));
 		((IntrinsicField) getScope()).init(this);
 	}
 
@@ -178,14 +186,12 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	private static final class IntrinsicField extends ObjectField {
 
-		IntrinsicField(FieldDeclaration declaration) {
-			super(declaration);
+		IntrinsicField(MemberOwner owner, FieldDeclaration declaration) {
+			super(owner, declaration);
 		}
 
-		private IntrinsicField(
-				Container enclosingContainer,
-				IntrinsicField sample) {
-			super(enclosingContainer, sample);
+		private IntrinsicField(MemberOwner owner, IntrinsicField sample) {
+			super(owner, sample);
 		}
 
 		@Override
@@ -194,8 +200,8 @@ public abstract class IntrinsicObject extends PlainObject {
 		}
 
 		@Override
-		protected IntrinsicField propagate(Scope enclosingScope) {
-			return new IntrinsicField(enclosingScope.getContainer(), this);
+		protected IntrinsicField propagate(MemberOwner owner) {
+			return new IntrinsicField(owner, this);
 		}
 
 		private final void init(IntrinsicObject object) {
