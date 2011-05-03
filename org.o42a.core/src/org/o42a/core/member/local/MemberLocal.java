@@ -64,7 +64,7 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final Container substance(UserInfo user) {
+	public final LocalScope substance(UserInfo user) {
 		return toLocal(user);
 	}
 

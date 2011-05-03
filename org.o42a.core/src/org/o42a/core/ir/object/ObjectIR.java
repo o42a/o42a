@@ -130,13 +130,9 @@ public class ObjectIR  {
 		.getPointer().op(null, code).op(builder, getObject(), EXACT);
 	}
 
-	public ObjectBodyIR bodyIR(Obj ascendant) {
+	public final ObjectBodyIR bodyIR(Obj ascendant) {
 
-		if (ascendant == ascendant.getContext().getVoid()) {
-			return getMainBodyIR();
-		}
-
-		final ObjectBodyIR bodyIR = getStruct().bodyIRs().get(ascendant);
+		final ObjectBodyIR bodyIR = findBodyIR(ascendant);
 
 		assert bodyIR != null :
 			"Can not find ascendant body for " + ascendant + " in " + this;
@@ -144,12 +140,27 @@ public class ObjectIR  {
 		return bodyIR;
 	}
 
-	public Fld fld(MemberKey memberKey) {
+	public final ObjectBodyIR findBodyIR(Obj ascendant) {
+		if (ascendant == ascendant.getContext().getVoid()) {
+			return getMainBodyIR();
+		}
+		return getStruct().bodyIRs().get(ascendant);
+	}
+
+	public final Fld fld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().getContainer().toObject();
 		final ObjectBodyIR bodyIR = bodyIR(origin);
 
 		return bodyIR.fld(memberKey);
+	}
+
+	public final Fld findFld(MemberKey memberKey) {
+
+		final Obj origin = memberKey.getOrigin().getContainer().toObject();
+		final ObjectBodyIR bodyIR = findBodyIR(origin);
+
+		return bodyIR.findFld(memberKey);
 	}
 
 	public DepIR dep(Dep dep) {
