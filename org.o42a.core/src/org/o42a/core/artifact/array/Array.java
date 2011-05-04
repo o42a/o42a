@@ -27,9 +27,9 @@ import static org.o42a.core.ref.Ref.voidRef;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.Directive;
+import org.o42a.core.artifact.MaterializableArtifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
@@ -39,7 +39,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public abstract class Array extends Artifact<Array> {
+public abstract class Array extends MaterializableArtifact<Array> {
 
 	public static DeclaredField<Array, ?> declareField(MemberField member) {
 		return new DeclaredArrayField(member);
@@ -51,7 +51,6 @@ public abstract class Array extends Artifact<Array> {
 		return new ArrayFieldIR(generator, field);
 	}
 
-	private MaterializedArray materialized;
 	private ArrayTypeRef typeRef;
 	private ArrayInitializer initializer;
 
@@ -93,14 +92,6 @@ public abstract class Array extends Artifact<Array> {
 		return null;
 	}
 
-	@Override
-	public final Obj materialize() {
-		if (this.materialized == null) {
-			this.materialized = new MaterializedArray(this);
-		}
-		return this.materialized;
-	}
-
 	public final ArrayTypeRef getArrayTypeRef() {
 		if (this.typeRef == null) {
 			define();
@@ -122,7 +113,12 @@ public abstract class Array extends Artifact<Array> {
 	protected abstract ArrayInitializer buildInitializer();
 
 	@Override
-	protected void fullyResolve() {
+	protected Obj createMaterialization() {
+		return new MaterializedArray(this);
+	}
+
+	@Override
+	protected void fullyResolveArtifact() {
 		getArrayTypeRef().resolveAll();
 		getInitializer().resolveAll();
 	}

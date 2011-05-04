@@ -53,7 +53,7 @@ final class ScopeField extends ObjectField {
 						SCOPE_MEMBER_ID)
 				.setVisibility(Visibility.PROTECTED));
 		this.overridden = null;
-		setScopeArtifact(owner.getScope().getEnclosingContainer().toObject());
+		setFieldArtifact(owner.getScope().getEnclosingContainer().toObject());
 	}
 
 	private ScopeField(MemberOwner owner, ScopeField overridden) {
@@ -69,7 +69,7 @@ final class ScopeField extends ObjectField {
 	@Override
 	public Obj getArtifact() {
 
-		final Obj artifact = getScopeArtifact();
+		final Obj artifact = getFieldArtifact();
 
 		if (artifact != null) {
 			return artifact;
@@ -103,7 +103,7 @@ final class ScopeField extends ObjectField {
 			}
 		}
 
-		setScopeArtifact(newArtifact);
+		setFieldArtifact(newArtifact);
 
 		return newArtifact;
 	}

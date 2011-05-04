@@ -20,6 +20,7 @@
 package org.o42a.core.artifact;
 
 import static org.o42a.core.artifact.Access.artifactAccess;
+import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.Array;
@@ -32,20 +33,12 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.Usable;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
-	private static Unresolvable<?> unresolvable;
 	private static UnresolvableObject unresolvableObject;
-
-	@SuppressWarnings("rawtypes")
-	public static Artifact<?> unresolvableArtifact(CompilerContext context) {
-		if (unresolvable == null) {
-			unresolvable = new Unresolvable(context);
-		}
-		return unresolvable;
-	}
 
 	public static Obj unresolvableObject(CompilerContext context) {
 		if (unresolvableObject == null) {
@@ -54,6 +47,8 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return unresolvableObject;
 	}
 
+	@SuppressWarnings("unchecked")
+	private final Usable<A> content = simpleUsable((A) this);
 	private Obj enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;
@@ -61,10 +56,12 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public Artifact(Scope scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
+		scope.newResolver(content());
 	}
 
 	protected Artifact(Scope scope, A sample) {
 		super(scope, new ArtifactDistributor(scope, sample));
+		scope.newResolver(content());
 	}
 
 	public abstract ArtifactKind<A> getKind();
@@ -203,6 +200,10 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return artifactAccess(user, this);
 	}
 
+	public final Usable<A> content() {
+		return this.content;
+	}
+
 	public final void resolveAll() {
 		if (this.allResolved) {
 			return;
@@ -242,55 +243,6 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	protected abstract void fullyResolve();
-
-	private static final class Unresolvable<A extends Artifact<A>>
-			extends Artifact<A> {
-
-		Unresolvable(CompilerContext context) {
-			super(context.getRoot().getScope());
-		}
-
-		@Override
-		public ArtifactKind<A> getKind() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Scope getScope() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Obj toObject() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Array toArray() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Directive toDirective() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Link toLink() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Obj materialize() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void fullyResolve() {
-			throw new UnsupportedOperationException();
-		}
-
-	}
 
 	private static final class UnresolvableObject extends Obj {
 

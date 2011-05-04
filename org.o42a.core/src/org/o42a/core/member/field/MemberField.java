@@ -24,6 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.artifact.Accessor;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
@@ -284,6 +285,10 @@ public abstract class MemberField extends Member {
 
 	final MemberField[] getMergedWith() {
 		return this.mergedWith;
+	}
+
+	final void setArtifact(Artifact<?> artifact) {
+		useSubstanceBy(artifact.content());
 	}
 
 	private MemberKey overrideField() {
