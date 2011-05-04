@@ -17,32 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.clause;
 
-import org.o42a.core.artifact.Artifact;
-import org.o42a.util.use.Usable;
-import org.o42a.util.use.User;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 
 
-final class UsableField<A extends Artifact<A>> extends Usable<Field<A>> {
+final class OverriddenMemberClause extends MemberClause {
 
-	private final Field<A> field;
+	private final Clause clause;
+	private final MemberClause propagatedFrom;
 
-	UsableField(Field<A> field) {
-		this.field = field;
+	OverriddenMemberClause(
+			MemberOwner owner,
+			Clause clause,
+			MemberClause overridden,
+			boolean propagated) {
+		super(owner, overridden);
+		this.clause = clause;
+		this.propagatedFrom = propagated ? overridden : null;
 	}
 
 	@Override
-	public String toString() {
-		if (this.field == null) {
-			return super.toString();
-		}
-		return this.field.toString();
+	public Clause toClause() {
+		return this.clause;
 	}
 
 	@Override
-	protected Field<A> createUsed(User user) {
-		return this.field;
+	public Member getPropagatedFrom() {
+		return this.propagatedFrom;
 	}
 
 }

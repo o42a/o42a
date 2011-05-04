@@ -55,7 +55,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 			MemberOwner owner,
 			Field<A> overridden,
 			boolean propagate) {
-		this.member = new MemberField.Overridden(
+		this.member = new OverriddenMemberField(
 				owner,
 				this,
 				overridden.toMember(),

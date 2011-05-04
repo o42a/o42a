@@ -146,31 +146,4 @@ public abstract class MemberClause extends Member {
 		throw new IllegalStateException();
 	}
 
-	static final class Overridden extends MemberClause {
-
-		private final Clause clause;
-		private final MemberClause propagatedFrom;
-
-		Overridden(
-				MemberOwner owner,
-				Clause clause,
-				MemberClause overridden,
-				boolean propagated) {
-			super(owner, overridden);
-			this.clause = clause;
-			this.propagatedFrom = propagated ? overridden : null;
-		}
-
-		@Override
-		public Clause toClause() {
-			return this.clause;
-		}
-
-		@Override
-		public Member getPropagatedFrom() {
-			return this.propagatedFrom;
-		}
-
-	}
-
 }

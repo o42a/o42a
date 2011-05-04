@@ -54,10 +54,7 @@ public abstract class MemberField extends Member {
 		this.declaration = declaration;
 	}
 
-	private MemberField(
-			MemberOwner owner,
-			Field<?> field,
-			MemberField overridden) {
+	MemberField(MemberOwner owner, Field<?> field, MemberField overridden) {
 		super(overridden, overridden.distributeIn(owner.getContainer()), owner);
 		this.field = field;
 		this.key = overridden.getKey();
@@ -373,31 +370,6 @@ public abstract class MemberField extends Member {
 
 	private void mergeField(MemberField member) {
 		this.field.merge(member.toField(dummyUser()));
-	}
-
-	static final class Overridden extends MemberField {
-
-		private final MemberField propagatedFrom;
-
-		Overridden(
-				MemberOwner owner,
-				Field<?> field,
-				MemberField overridden,
-				boolean propagated) {
-			super(owner, field, overridden);
-			this.propagatedFrom = propagated ? overridden : null;
-		}
-
-		@Override
-		public Member getPropagatedFrom() {
-			return this.propagatedFrom;
-		}
-
-		@Override
-		protected Field<?> createField() {
-			throw new UnsupportedOperationException();
-		}
-
 	}
 
 }

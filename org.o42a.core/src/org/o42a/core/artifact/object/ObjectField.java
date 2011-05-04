@@ -19,20 +19,18 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.MemberField;
 
 
 public abstract class ObjectField extends Field<Obj> {
 
 	public ObjectField(MemberOwner owner, FieldDeclaration declaration) {
-		super(new Member(owner, declaration));
-		((Member) toMember()).init(this);
+		super(new MemberObjectField(owner, declaration));
+		((MemberObjectField) toMember()).init(this);
 	}
 
 	protected ObjectField(MemberOwner owner, ObjectField overridden) {
@@ -64,23 +62,6 @@ public abstract class ObjectField extends Field<Obj> {
 	@Override
 	protected Obj propagateArtifact(Field<Obj> overridden) {
 		return new PropagatedObject(this);
-	}
-
-	private static final class Member extends MemberField {
-
-		Member(MemberOwner owner, FieldDeclaration declaration) {
-			super(owner, declaration);
-		}
-
-		@Override
-		protected Field<?> createField() {
-			throw new UnsupportedOperationException();
-		}
-
-		final void init(ObjectField field) {
-			setField(dummyUser(), field);
-		}
-
 	}
 
 }
