@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.common;
 
+import static org.o42a.util.use.Usable.simpleUsable;
+
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Distributor;
@@ -28,10 +30,12 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.Usable;
 
 
 public abstract class Expression extends Ref {
 
+	private final Usable<?> usable = simpleUsable(this);
 	private Resolution resolved;
 	private IdentityHashMap<Scope, Resolution> cache;
 
@@ -41,9 +45,11 @@ public abstract class Expression extends Ref {
 
 	@Override
 	public final Resolution resolve(Resolver resolver) {
+		usable().useBy(resolver);
 
 		final Scope scope = resolver.getScope();
 
+		resolver = resolver.newResolver(usable());
 		if (scope == getScope()) {
 			if (this.resolved != null) {
 				return this.resolved;
@@ -101,6 +107,10 @@ public abstract class Expression extends Ref {
 	}
 
 	protected abstract Resolution resolveExpression(Resolver resolver);
+
+	protected final Usable<?> usable() {
+		return this.usable;
+	}
 
 	private final Resolution doResolveExpression(Resolver resolver) {
 

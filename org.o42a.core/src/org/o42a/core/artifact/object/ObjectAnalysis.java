@@ -21,17 +21,13 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseFlag;
 
 
 public class ObjectAnalysis {
 
 	private final Obj object;
-	private UseFlag fieldsAccessed;
 	private byte staticAncestor;
 
 	ObjectAnalysis(Obj object) {
@@ -60,32 +56,11 @@ public class ObjectAnalysis {
 	}
 
 	public final boolean accessedBy(UseCase useCase) {
-		if (typeAccessedBy(useCase)) {
-			return true;
-		}
-		if (fieldsAccessedBy(useCase)) {
-			return true;
-		}
-		if (valueAccessedBy(useCase)) {
-			return true;
-		}
-		return false;
+		return getObject().content().isUsedBy(useCase);
 	}
 
 	public final boolean typeAccessedBy(UseCase useCase) {
 		return getObject().type().isUsedBy(useCase);
-	}
-
-	public final boolean fieldsAccessedBy(UseCase useCase) {
-		if (useCase.caseFlag(this.fieldsAccessed)) {
-			return this.fieldsAccessed.isUsed();
-		}
-
-		final boolean result = determineFieldsAccessedBy(useCase);
-
-		this.fieldsAccessed = useCase.useFlag(result);
-
-		return result;
 	}
 
 	public final boolean valueAccessedBy(UseCase useCase) {
@@ -100,19 +75,4 @@ public class ObjectAnalysis {
 		return "ObjectAnalysis[" + this.object + ']';
 	}
 
-	private boolean determineFieldsAccessedBy(UseCase useCase) {
-		for (Member member : getObject().getMembers()) {
-
-			final Field<?> field = member.toField(dummyUser());
-
-			if (field == null) {
-				continue;
-			}
-			if (member.getAnalysis().accessedBy(useCase)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 }

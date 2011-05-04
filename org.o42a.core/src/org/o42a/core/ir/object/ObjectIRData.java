@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
@@ -37,7 +37,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.core.ir.op.*;
 
 
-public final class ObjectDataType extends Type<ObjectDataType.Op> {
+public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 	public static final int OBJ_FLAG_RT = 0x1;
 	public static final int OBJ_FLAG_ABSTRACT = 0x2;
@@ -45,7 +45,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	public static final int OBJ_FLAG_VOID = 0x80000000;
 	public static final int OBJ_FLAG_FALSE = 0x40000000;
 
-	public static final ObjectDataType OBJECT_DATA_TYPE = new ObjectDataType();
+	public static final ObjectIRData OBJECT_DATA_TYPE = new ObjectIRData();
 
 	private RelPtrRec object;
 	private Int32rec flags;
@@ -57,12 +57,12 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	private FuncRec<ObjectCondFunc> conditionFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
 	private FuncRec<ObjectRefFunc> ancestorFunc;
-	private StructRec<ObjectType.Op> ancestorType;
-	private StructRec<ObjectType.Op> ownerType;
+	private StructRec<ObjectIRType.Op> ancestorType;
+	private StructRec<ObjectIRType.Op> ownerType;
 	private RelList<ObjectBodyIR> ascendants;
 	private RelList<ObjectBodyIR> samples;
 
-	private ObjectDataType() {
+	private ObjectIRData() {
 	}
 
 	public final RelPtrRec object() {
@@ -101,7 +101,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		return this.propositionFunc;
 	}
 
-	public final StructRec<ObjectType.Op> ownerType() {
+	public final StructRec<ObjectIRType.Op> ownerType() {
 		return this.ownerType;
 	}
 
@@ -109,7 +109,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		return this.ancestorFunc;
 	}
 
-	public final StructRec<ObjectType.Op> ancestorType() {
+	public final StructRec<ObjectIRType.Op> ancestorType() {
 		return this.ancestorType;
 	}
 
@@ -122,8 +122,8 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	}
 
 	@Override
-	public ObjectDataType.Op op(StructWriter writer) {
-		return new ObjectDataType.Op(writer);
+	public ObjectIRData.Op op(StructWriter writer) {
+		return new ObjectIRData.Op(writer);
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 	}
 
 	@Override
-	protected void allocate(SubData<ObjectDataType.Op> data) {
+	protected void allocate(SubData<ObjectIRData.Op> data) {
 
 		final Generator generator = data.getGenerator();
 
@@ -159,8 +159,8 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 		}
 
 		@Override
-		public final ObjectDataType getType() {
-			return (ObjectDataType) super.getType();
+		public final ObjectIRData getType() {
+			return (ObjectIRData) super.getType();
 		}
 
 		public final RecOp<RelOp> object(Code code) {
@@ -213,7 +213,7 @@ public final class ObjectDataType extends Type<ObjectDataType.Op> {
 			return func(null, code, getType().ancestorFunc());
 		}
 
-		public final RecOp<ObjectType.Op> ancestorType(Code code) {
+		public final RecOp<ObjectIRType.Op> ancestorType(Code code) {
 			return ptr(null, code, getType().ancestorType());
 		}
 

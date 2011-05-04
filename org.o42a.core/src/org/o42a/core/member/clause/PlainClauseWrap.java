@@ -144,7 +144,7 @@ final class PlainClauseWrap extends PlainClause {
 		}
 
 		@Override
-		public Obj getWrapped() {
+		protected Obj createWrapped() {
 			return toClause().getWrapped().getObject();
 		}
 

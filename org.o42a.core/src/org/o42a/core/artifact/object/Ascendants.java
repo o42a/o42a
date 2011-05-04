@@ -182,9 +182,11 @@ public class Ascendants
 		final TypeRef ancestor = getExplicitAncestor();
 
 		if (ancestor != null) {
+			ancestor.type(this);
 			ancestor.resolveAll();
 		}
 		for (Sample sample : getSamples()) {
+			sample.type(this);
 			sample.resolveAll();
 		}
 	}

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public abstract class Usable<U> extends User {
+public abstract class Usable<U> extends AbstractUser {
 
 	public static <U> Usable<U> simpleUsable(U used) {
 		return new SimpleUsable<U>(used);

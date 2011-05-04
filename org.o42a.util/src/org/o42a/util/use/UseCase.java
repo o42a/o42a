@@ -20,7 +20,7 @@
 package org.o42a.util.use;
 
 
-public final class UseCase extends User {
+public final class UseCase extends AbstractUser {
 
 	private final String name;
 	private final UseFlag usedFlag;

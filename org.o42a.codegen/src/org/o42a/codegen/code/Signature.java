@@ -160,7 +160,6 @@ public abstract class Signature<F extends Func> {
 		return this.args;
 	}
 
-	@SuppressWarnings("unchecked")
 	final void addArg(Arg<?> arg) {
 		this.args = ArrayUtil.append(this.args, arg);
 	}

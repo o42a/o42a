@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.FieldDescIR.FIELD_DESC_IR;
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -104,7 +104,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			extends org.o42a.codegen.data.Type<OverriderDescIR.Op> {
 
 		private StructRec<FieldDescIR.Op> field;
-		private StructRec<ObjectType.Op> definedIn;
+		private StructRec<ObjectIRType.Op> definedIn;
 		private RelPtrRec body;
 
 		private Type() {
@@ -114,7 +114,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			return this.field;
 		}
 
-		public final StructRec<ObjectType.Op> definedIn() {
+		public final StructRec<ObjectIRType.Op> definedIn() {
 			return this.definedIn;
 		}
 

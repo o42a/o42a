@@ -19,36 +19,29 @@
 */
 package org.o42a.util.use;
 
-import static java.util.Collections.emptySet;
-
-import java.util.HashSet;
 import java.util.Set;
 
 
 public abstract class User implements UserInfo {
 
-	private static final DummyUser DUMMY_USER = new DummyUser();
+	private static final DummyUser DUMMY_USER = new DummyUser("DummyUser");
 
 	public static User dummyUser() {
 		return DUMMY_USER;
+	}
+
+	public static User dummyUser(String name) {
+		return new DummyUser(name);
 	}
 
 	public static UseCase useCase(String name) {
 		return new UseCase(name);
 	}
 
-	private HashSet<Object> userOf;
-
-	public final boolean using() {
-		return this.userOf != null && !this.userOf.isEmpty();
+	User() {
 	}
 
-	public final Set<?> getUserOf() {
-		if (this.userOf == null) {
-			return emptySet();
-		}
-		return this.userOf;
-	}
+	public abstract Set<?> getUserOf();
 
 	@Override
 	public final User toUser() {
@@ -61,16 +54,6 @@ public abstract class User implements UserInfo {
 
 	abstract UseFlag getUseBy(UseCase useCase);
 
-	<U> U use(Usable<U> usable) {
-
-		final U use = usable.useBy(this);
-
-		if (this.userOf == null) {
-			this.userOf = new HashSet<Object>();
-		}
-		this.userOf.add(use);
-
-		return use;
-	}
+	abstract <U> U use(Usable<U> usable);
 
 }
