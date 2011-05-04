@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.type;
 
-import static org.o42a.core.artifact.Artifact.unresolvableObject;
 import static org.o42a.core.artifact.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -32,13 +31,14 @@ import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.Holder;
 import org.o42a.util.use.UserInfo;
 
 
 public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 	private TypeRef ancestor;
-	private Obj type;
+	private Holder<ObjectType> type;
 
 	TypeRef(Rescoper rescoper) {
 		super(rescoper);
@@ -68,20 +68,14 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	}
 
 	public ObjectType type(UserInfo user) {
-
-		final Obj cached = this.type;
-
-		if (cached != null) {
-			if (cached != unresolvableObject(getContext())) {
-				return cached.type().useBy(user);
-			}
-			return null;
+		if (this.type != null) {
+			return this.type.get();
 		}
 
 		final Artifact<?> artifact = artifact(user);
 
 		if (artifact == null) {
-			this.type = unresolvableObject(getContext());
+			this.type = new Holder<ObjectType>(null);
 			return null;
 		}
 
@@ -91,28 +85,24 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 			final ObjectType type = typeRef.type(user);
 
-			if (type != null) {
-				assert type.getObject() != getScope().getContainer();
-				this.type = type.getObject();
-				return type;
-			}
+			this.type = new Holder<ObjectType>(type);
 
-			this.type = unresolvableObject(getContext());
-
-			return null;
+			return type;
 		}
 
 		final Obj object = artifact.toObject();
 
 		if (object == null) {
 			getScope().getLogger().notTypeRef(this);
-			this.type = unresolvableObject(getContext());
+			this.type = new Holder<ObjectType>(null);
 			return null;
 		}
 
-		this.type = object;
+		final ObjectType result = object.type().useBy(user);
 
-		return object.type().useBy(user);
+		this.type = new Holder<ObjectType>(result);
+
+		return result;
 	}
 
 	public final Obj typeObject(UserInfo user) {
