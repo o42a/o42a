@@ -25,31 +25,20 @@ import static org.o42a.util.use.Usable.simpleUsable;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.Holder;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.use.Usable;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
-	private static UnresolvableObject unresolvableObject;
-
-	public static Obj unresolvableObject(CompilerContext context) {
-		if (unresolvableObject == null) {
-			unresolvableObject = new UnresolvableObject(context);
-		}
-		return unresolvableObject;
-	}
-
 	@SuppressWarnings("unchecked")
 	private final Usable<A> content = simpleUsable((A) this);
-	private Obj enclosingPrototype;
+	private Holder<Obj> enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;
 	private boolean allResolved;
@@ -128,32 +117,20 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public Obj getEnclosingPrototype() {
 		if (this.enclosingPrototype != null) {
-
-			if (this.enclosingPrototype != unresolvableObject(getContext())) {
-				return this.enclosingPrototype;
-			}
-
-			return null;
+			return this.enclosingPrototype.get();
 		}
 
 		final Obj enclosingObject =
 			getScope().getEnclosingContainer().toObject();
 
-		if (enclosingObject == null) {
-			this.enclosingPrototype = unresolvableObject(getContext());
-			return null;
-		}
-		if (enclosingObject.isPrototype()) {
-			return this.enclosingPrototype = enclosingObject;
+		if (enclosingObject == null || enclosingObject.isPrototype()) {
+			this.enclosingPrototype = new Holder<Obj>(enclosingObject);
+			return enclosingObject;
 		}
 
 		final Obj enclosingPrototype = enclosingObject.getEnclosingPrototype();
 
-		if (enclosingPrototype != null) {
-			this.enclosingPrototype = enclosingPrototype;
-		} else {
-			this.enclosingPrototype = unresolvableObject(getContext());
-		}
+		this.enclosingPrototype = new Holder<Obj>(enclosingPrototype);
 
 		return enclosingPrototype;
 	}
@@ -243,31 +220,6 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	protected abstract void fullyResolve();
-
-	private static final class UnresolvableObject extends Obj {
-
-		UnresolvableObject(CompilerContext context) {
-			super(context.getRoot().getScope());
-		}
-
-		@Override
-		protected Ascendants buildAscendants() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void declareMembers(ObjectMembers members) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected Definitions overrideDefinitions(
-				Scope scope,
-				Definitions ascendantDefinitions) {
-			throw new UnsupportedOperationException();
-		}
-
-	}
 
 	private static final class ArtifactDistributor extends Distributor {
 
