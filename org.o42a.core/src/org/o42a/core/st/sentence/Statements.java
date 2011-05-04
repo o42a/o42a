@@ -21,7 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.ScopePlace.scopePlace;
-import static org.o42a.util.use.User.dummyUser;
+import static org.o42a.core.ref.Resolver.dummyResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -441,7 +441,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private final class InstructionCtx implements InstructionContext {
 
-		private final Resolver resolver = getScope().newResolver(dummyUser());
+		private final Resolver resolver = dummyResolver(getScope());
 		private int index;
 		private Statement statement;
 		private Block<?> block;

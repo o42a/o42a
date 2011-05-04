@@ -20,9 +20,9 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
-import static org.o42a.core.ir.object.ObjectDataType.*;
+import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 import static org.o42a.util.use.User.dummyUser;
@@ -48,12 +48,12 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public final class ObjectTypeIR implements Content<ObjectType> {
+public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 	private final ObjectIRStruct objectIRStruct;
 	private final HashMap<MemberKey, FieldDescIR> fieldDescs =
 		new HashMap<MemberKey, FieldDescIR>();
-	private ObjectType instance;
+	private ObjectIRType instance;
 
 	ObjectTypeIR(ObjectIRStruct objectIRStruct) {
 		this.objectIRStruct = objectIRStruct;
@@ -67,11 +67,11 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		return this.objectIRStruct.getObjectIR();
 	}
 
-	public final ObjectType getObjectType() {
+	public final ObjectIRType getObjectType() {
 		return this.instance;
 	}
 
-	public final ObjectDataType getObjectData() {
+	public final ObjectIRData getObjectData() {
 		return this.instance.data();
 	}
 
@@ -86,15 +86,15 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 	}
 
 	@Override
-	public void allocated(ObjectType instance) {
+	public void allocated(ObjectIRType instance) {
 		this.instance = instance;
 	}
 
 	@Override
-	public void fill(ObjectType instance) {
+	public void fill(ObjectIRType instance) {
 
 		final Generator generator = instance.getGenerator();
-		final ObjectDataType data = instance.data();
+		final ObjectIRData data = instance.data();
 
 		data.object().setValue(
 				getObjectIR().getMainBodyIR().data(generator).getPointer()
@@ -200,7 +200,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 		return flags;
 	}
 
-	private void fillOwnerTypePointer(ObjectDataType instance) {
+	private void fillOwnerTypePointer(ObjectIRData instance) {
 
 		final Obj owner =
 			getObjectIR().getObject().getScope()
@@ -211,14 +211,14 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 			return;
 		}
 
-		final ObjectType ownerType =
+		final ObjectIRType ownerType =
 			owner.ir(getGenerator()).getTypeIR().getObjectType();
 
 		instance.ownerType().setValue(
 				ownerType.pointer(instance.getGenerator()));
 	}
 
-	private void fillAncestor(ObjectDataType instance) {
+	private void fillAncestor(ObjectIRData instance) {
 
 		final ObjectIR objectIR = getObjectIR();
 		final ObjectBodyIR ancestorBodyIR = objectIR.getAncestorBodyIR();
@@ -242,7 +242,7 @@ public final class ObjectTypeIR implements Content<ObjectType> {
 				OBJECT_REF);
 	}
 
-	private FuncPtr<ObjectRefFunc> createAncestorFunc(ObjectDataType instance) {
+	private FuncPtr<ObjectRefFunc> createAncestorFunc(ObjectIRData instance) {
 
 		final Function<ObjectRefFunc> function =
 			getGenerator().newFunction().create(

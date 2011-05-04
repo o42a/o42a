@@ -325,7 +325,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
 			return data.valueFunc();
 		}
 
@@ -375,7 +375,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected FuncRec<ObjectCondFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectCondFunc> func(ObjectIRData data) {
 			return data.requirementFunc();
 		}
 
@@ -415,7 +415,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
 			return data.claimFunc();
 		}
 
@@ -456,7 +456,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected FuncRec<ObjectCondFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectCondFunc> func(ObjectIRData data) {
 			return data.conditionFunc();
 		}
 
@@ -496,7 +496,7 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
 			return data.propositionFunc();
 		}
 

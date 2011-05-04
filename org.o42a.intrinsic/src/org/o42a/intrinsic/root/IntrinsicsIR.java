@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -28,19 +28,19 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectType;
+import org.o42a.core.ir.object.ObjectIRType;
 
 
 final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
 	private final Root root;
 
-	private StructRec<ObjectType.Op> rootType;
-	private StructRec<ObjectType.Op> voidType;
-	private StructRec<ObjectType.Op> falseType;
-	private StructRec<ObjectType.Op> integerType;
-	private StructRec<ObjectType.Op> floatType;
-	private StructRec<ObjectType.Op> stringType;
+	private StructRec<ObjectIRType.Op> rootType;
+	private StructRec<ObjectIRType.Op> voidType;
+	private StructRec<ObjectIRType.Op> falseType;
+	private StructRec<ObjectIRType.Op> integerType;
+	private StructRec<ObjectIRType.Op> floatType;
+	private StructRec<ObjectIRType.Op> stringType;
 
 	IntrinsicsIR(Root root) {
 		this.root = root;
@@ -77,7 +77,7 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 		this.stringType.setValue(typePtr(this.root.getString()));
 	}
 
-	private Ptr<ObjectType.Op> typePtr(Obj object) {
+	private Ptr<ObjectIRType.Op> typePtr(Obj object) {
 
 		final ObjectIR ir = object.ir(getGenerator());
 

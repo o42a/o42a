@@ -23,7 +23,6 @@ import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOf;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -34,7 +33,6 @@ public class ArrayUtil {
 		if (array.length <= length) {
 			return array;
 		}
-
 		return Arrays.copyOf(array, length);
 	}
 
@@ -42,11 +40,19 @@ public class ArrayUtil {
 		if (array.length >= length) {
 			return array;
 		}
-
 		return Arrays.copyOf(array, length);
 	}
 
-	public static <T> T[] append(T[] array, T... items) {
+	public static <T> T[] append(T[] array, T item) {
+
+		final T[] newArray = copyOf(array, array.length + 1);
+
+		newArray[array.length] = item;
+
+		return newArray;
+	}
+
+	public static <T> T[] append(T[] array, T[] items) {
 		if (items.length == 0) {
 			return array;
 		}
@@ -90,13 +96,6 @@ public class ArrayUtil {
 		arraycopy(array, 0, newArray, 1, array.length);
 
 		return newArray;
-	}
-
-	public static <T> void append(ArrayList<T> list, T... items) {
-		list.ensureCapacity(list.size() + items.length);
-		for (T item : items) {
-			list.add(item);
-		}
 	}
 
 	public static <T> T[] remove(T[] array, int index) {

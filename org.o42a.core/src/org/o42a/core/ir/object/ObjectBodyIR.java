@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectAnalysis;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
@@ -188,7 +187,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	protected void fill() {
 
 		final Generator generator = getGenerator();
-		final ObjectType objectType = getObjectIR().getTypeIR().getObjectType();
+		final ObjectIRType objectType = getObjectIR().getTypeIR().getObjectType();
 
 		this.objectType.setValue(
 				objectType.data(generator).getPointer().relativeTo(
@@ -276,25 +275,13 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			declaredField.toMember().getAnalysis();
 
 		if (!declarationAnalysis.accessedBy(useCase)) {
-
-			final Obj target = field.getArtifact().materialize();
-			final ObjectAnalysis targetAnalysis = target.getAnalysis();
-
-			// Field is never accessed. Do not allocate it.
-			if (targetAnalysis.typeAccessedBy(useCase)) {
-				// Nevertheless, an artifact is accessed.
-				// Allocate it.
-				target.ir(generator).allocate();
-			}
-
+			// Field is never accessed.
+			// Skip generation.
 			return false;
 		}
-
-		final Obj declaration =
-			declaredField.getArtifact().materialize();
-
-		if (!declaration.getAnalysis().accessedBy(useCase)) {
-			// Declaration is never accessed
+		if (!declarationAnalysis.substanceAccessedBy(useCase)) {
+			// Field`s substance (artifact) never used.
+			// Skip generation.
 			return false;
 		}
 
@@ -362,7 +349,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return new ObjOp(builder, this, ascendant, precision);
 		}
 
-		public final ObjectType.Op loadObjectType(Code code) {
+		public final ObjectIRType.Op loadObjectType(Code code) {
 			return objectType(code)
 			.load(null, code)
 			.offset(code.id("object_type").type(code.id("any")), code, this)

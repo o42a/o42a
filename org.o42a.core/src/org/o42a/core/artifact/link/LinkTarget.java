@@ -31,7 +31,6 @@ import org.o42a.core.ref.Resolver;
 class LinkTarget extends ObjectWrap {
 
 	private final Link link;
-	private Obj wrapped;
 
 	LinkTarget(Link link) {
 		super(link, link.distributeIn(link.getScope().getEnclosingContainer()));
@@ -49,24 +48,20 @@ class LinkTarget extends ObjectWrap {
 	}
 
 	@Override
-	public Obj getWrapped() {
-		if (this.wrapped != null) {
-			return this.wrapped;
-		}
+	public String toString() {
+		return this.link.toString();
+	}
+
+	@Override
+	protected Obj createWrapped() {
 
 		final Resolver resolver =
 			getScope().getEnclosingScope().newResolver(dummyUser());
 
-		return this.wrapped =
-			this.link.getTargetRef()
+		return this.link.getTargetRef()
 			.resolve(resolver)
 			.materialize()
 			.getWrapped();
-	}
-
-	@Override
-	public String toString() {
-		return this.link.toString();
 	}
 
 	@Override

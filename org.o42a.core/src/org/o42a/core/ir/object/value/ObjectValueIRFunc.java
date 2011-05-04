@@ -57,7 +57,7 @@ public abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 		final ObjectIR objectIR = host.getAscendant().ir(getGenerator());
 		final ObjectTypeIR typeIR =
 			objectIR.getBodyType().getObjectIR().getTypeIR();
-		final ObjectDataType data = typeIR.getObjectData();
+		final ObjectIRData data = typeIR.getObjectData();
 
 		return func(data).getValue();
 	}
@@ -125,6 +125,6 @@ public abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
 		this.func.setValue(ptr);
 	}
 
-	protected abstract FuncRec<F> func(ObjectDataType data);
+	protected abstract FuncRec<F> func(ObjectIRData data);
 
 }

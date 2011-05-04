@@ -68,7 +68,7 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 		}
 
 		@Override
-		public Obj getWrapped() {
+		protected Obj createWrapped() {
 			return field().getWrapped().getArtifact();
 		}
 

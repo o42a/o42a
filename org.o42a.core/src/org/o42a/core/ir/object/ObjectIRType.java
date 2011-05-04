@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.FieldDescIR.FIELD_DESC_IR;
-import static org.o42a.core.ir.object.ObjectDataType.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.OverriderDescIR.OVERRIDER_DESC_IR;
 
 import org.o42a.codegen.CodeId;
@@ -35,19 +35,19 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.op.RelList;
 
 
-public class ObjectType extends Type<ObjectType.Op> {
+public class ObjectIRType extends Type<ObjectIRType.Op> {
 
-	public static final ObjectType OBJECT_TYPE = new ObjectType();
+	public static final ObjectIRType OBJECT_TYPE = new ObjectIRType();
 
-	private ObjectDataType data;
+	private ObjectIRData data;
 	private RelList<FieldDescIR> fields;
 	private RelList<OverriderDescIR> overriders;
 	private Int32rec mainBodyLayout;
 
-	private ObjectType() {
+	private ObjectIRType() {
 	}
 
-	public final ObjectDataType data() {
+	public final ObjectIRData data() {
 		return this.data;
 	}
 
@@ -90,11 +90,11 @@ public class ObjectType extends Type<ObjectType.Op> {
 		}
 
 		@Override
-		public final ObjectType getType() {
-			return (ObjectType) super.getType();
+		public final ObjectIRType getType() {
+			return (ObjectIRType) super.getType();
 		}
 
-		public final ObjectDataType.Op data(Code code) {
+		public final ObjectIRData.Op data(Code code) {
 			return struct(null, code, getType().data());
 		}
 

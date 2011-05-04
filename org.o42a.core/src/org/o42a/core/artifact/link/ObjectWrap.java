@@ -38,6 +38,8 @@ import org.o42a.core.member.Member;
 
 public abstract class ObjectWrap extends PlainObject {
 
+	private Obj wrapped;
+
 	public ObjectWrap(Scope scope) {
 		super(scope);
 	}
@@ -49,6 +51,23 @@ public abstract class ObjectWrap extends PlainObject {
 	protected ObjectWrap(Scope scope, Obj sample) {
 		super(scope, sample);
 	}
+
+	@Override
+	public final Obj getWrapped() {
+		if (this.wrapped != null) {
+			return this.wrapped;
+		}
+		this.wrapped = createWrapped();
+
+		type().useBy(this.wrapped.type());
+		this.wrapped.type().useBy(type());
+		value().useBy(this.wrapped.value());
+		this.wrapped.value().useBy(value());
+
+		return this.wrapped;
+	}
+
+	protected abstract Obj createWrapped();
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {

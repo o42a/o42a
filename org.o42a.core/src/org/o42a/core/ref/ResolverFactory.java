@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ref.Resolver.isDummyResolver;
+
 import org.o42a.core.Scope;
 import org.o42a.util.use.Usable;
 import org.o42a.util.use.User;
@@ -45,6 +47,9 @@ public abstract class ResolverFactory<R extends Resolver> implements UserInfo {
 	}
 
 	public final R newResolver(UserInfo user) {
+		if (isDummyResolver(user)) {
+			return dummyResolver();
+		}
 		return usable().useBy(user);
 	}
 
@@ -59,6 +64,8 @@ public abstract class ResolverFactory<R extends Resolver> implements UserInfo {
 	protected final Usable<R> usable() {
 		return this.usable;
 	}
+
+	protected abstract R dummyResolver();
 
 	protected abstract R createResolver();
 

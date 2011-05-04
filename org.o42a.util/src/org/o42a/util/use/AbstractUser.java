@@ -21,35 +21,33 @@ package org.o42a.util.use;
 
 import static java.util.Collections.emptySet;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
-final class DummyUser extends User {
+public abstract class AbstractUser extends User {
 
-	private final String name;
-
-	DummyUser(String name) {
-		this.name = name;
-	}
+	private HashSet<Object> userOf;
 
 	@Override
-	public Set<?> getUserOf() {
-		return emptySet();
-	}
-
-	@Override
-	public String toString() {
-		return this.name;
-	}
-
-	@Override
-	UseFlag getUseBy(UseCase useCase) {
-		return useCase.unusedFlag();
+	public final Set<?> getUserOf() {
+		if (this.userOf == null) {
+			return emptySet();
+		}
+		return this.userOf;
 	}
 
 	@Override
 	<U> U use(Usable<U> usable) {
-		return usable.createUsed(this);
+
+		final U use = usable.useBy(this);
+
+		if (this.userOf == null) {
+			this.userOf = new HashSet<Object>();
+		}
+		this.userOf.add(use);
+
+		return use;
 	}
 
 }
