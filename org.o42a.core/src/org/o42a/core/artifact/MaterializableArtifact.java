@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Compiler Core
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,42 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.root;
+package org.o42a.core.artifact;
 
-import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectField;
-import org.o42a.core.member.MemberOwner;
 
 
-final class VoidField extends ObjectField {
+public abstract class MaterializableArtifact<
+		A extends MaterializableArtifact<A>>
+		extends Artifact<A> {
 
-	VoidField(Root root) {
-		super(
-				root.toMemberOwner(),
-				fieldDeclaration(root, root.distribute(), memberName("void")));
-		setFieldArtifact(getContext().getVoid());
+	private Obj materialization;
+
+	public MaterializableArtifact(Scope scope) {
+		super(scope);
 	}
 
-	private VoidField(MemberOwner owner, VoidField sample) {
-		super(owner, sample);
-	}
-
-	@Override
-	public Obj getArtifact() {
-		return getFieldArtifact();
+	protected MaterializableArtifact(Scope scope, A sample) {
+		super(scope, sample);
 	}
 
 	@Override
-	public String toString() {
-		return "$$void";
+	public final Obj materialize() {
+		if (this.materialization != null) {
+			return this.materialization;
+		}
+
+		this.materialization = createMaterialization();
+
+		content().useBy(this.materialization.content());
+
+		return this.materialization;
 	}
 
+	protected abstract Obj createMaterialization();
+
 	@Override
-	protected VoidField propagate(MemberOwner owner) {
-		return new VoidField(owner, this);
+	protected final void fullyResolve() {
+		fullyResolveArtifact();
+		materialize().resolveAll();
 	}
+
+	protected abstract void fullyResolveArtifact();
 
 }

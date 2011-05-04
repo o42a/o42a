@@ -92,7 +92,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 	@Override
 	protected void useBy(UserInfo user) {
 		super.useBy(user);
-		this.localScope.newResolver(user);
+		useSubstanceBy(this.localScope.newResolver(user));
 	}
 
 }

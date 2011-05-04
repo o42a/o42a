@@ -43,7 +43,7 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 		((MemberFieldWrap) toMember()).init(this);
 		this.iface = (Field<A>) type;
 		this.wrapped = (Field<A>) wrapped;
-		setScopeArtifact(wrapArtifact());
+		setFieldArtifact(wrapArtifact());
 	}
 
 	protected FieldWrap(MemberOwner owner, FieldWrap<A> overridden) {
@@ -58,7 +58,7 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 		this.wrapped = inherited.getWrapped().member(
 				overridden.iface.getKey()).toField(user).toKind(
 						overridden.iface.getArtifactKind());
-		setScopeArtifact(overridden.getArtifact());
+		setFieldArtifact(overridden.getArtifact());
 	}
 
 	public final Field<A> getInterface() {
@@ -71,7 +71,7 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 
 	@Override
 	public final A getArtifact() {
-		return getScopeArtifact();
+		return getFieldArtifact();
 	}
 
 	protected abstract A wrapArtifact();

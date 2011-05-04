@@ -196,7 +196,7 @@ public abstract class IntrinsicObject extends PlainObject {
 
 		@Override
 		public Obj getArtifact() {
-			return getScopeArtifact();
+			return getFieldArtifact();
 		}
 
 		@Override
@@ -205,7 +205,7 @@ public abstract class IntrinsicObject extends PlainObject {
 		}
 
 		private final void init(IntrinsicObject object) {
-			setScopeArtifact(object);
+			setFieldArtifact(object);
 		}
 
 	}

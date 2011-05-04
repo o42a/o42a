@@ -48,7 +48,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
 	protected Field(MemberOwner owner, Field<A> overridden) {
 		this(owner, overridden, true);
-		setScopeArtifact(propagateArtifact(overridden));
+		setFieldArtifact(propagateArtifact(overridden));
 	}
 
 	protected Field(
@@ -89,7 +89,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 				return null;
 			}
 
-			final Obj object = getScopeArtifact().toObject();
+			final Obj object = getFieldArtifact().toObject();
 
 			if (object == null) {
 				return null;
@@ -289,11 +289,13 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.member.toString();
 	}
 
-	protected void setScopeArtifact(A artifact) {
+	protected final A setFieldArtifact(A artifact) {
 		this.artifact = artifact;
+		toMember().setArtifact(artifact);
+		return artifact;
 	}
 
-	protected A getScopeArtifact() {
+	protected final A getFieldArtifact() {
 		return this.artifact;
 	}
 

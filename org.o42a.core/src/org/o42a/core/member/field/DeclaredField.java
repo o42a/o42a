@@ -53,23 +53,23 @@ public abstract class DeclaredField<
 	@SuppressWarnings("unchecked")
 	@Override
 	public A getArtifact() {
-		if (getScopeArtifact() == null) {
+		if (getFieldArtifact() == null) {
 			if (!getKey().isValid()) {
 
 				final Artifact<?> falseObject = getContext().getFalse();
 
-				setScopeArtifact((A) falseObject);
+				setFieldArtifact((A) falseObject);
 			} else if (isOverride()) {
-				setScopeArtifact(overrideArtifact());
+				setFieldArtifact(overrideArtifact());
 			} else {
-				setScopeArtifact(declareArtifact());
+				setFieldArtifact(declareArtifact());
 			}
 			for (FieldVariant<A> variant : getVariants()) {
 				variant.init();
 			}
 		}
 
-		return getScopeArtifact();
+		return getFieldArtifact();
 	}
 
 	public final List<V> getVariants() {

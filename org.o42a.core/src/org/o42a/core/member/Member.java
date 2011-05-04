@@ -205,7 +205,11 @@ public abstract class Member extends Placed {
 	}
 
 	protected void useBy(UserInfo user) {
-		getAnalysis().usedBy(user);
+		getAnalysis().member().useBy(user);
+	}
+
+	protected void useSubstanceBy(UserInfo user) {
+		getAnalysis().substance().useBy(user);
 	}
 
 	protected abstract void merge(Member member);
