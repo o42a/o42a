@@ -31,18 +31,17 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.util.use.UserInfo;
 
 
 final class PropagatedLocalScope extends LocalScope {
 
-	private final ExplicitLocalScope explicit;
-	private final PropagatedMember member;
+	final ExplicitLocalScope explicit;
+	private final PropagatedMemberLocal member;
 
 	PropagatedLocalScope(LocalScope overridden, Obj owner) {
 		super(overridden, owner);
 		this.explicit = overridden.explicit();
-		this.member = new PropagatedMember(this, overridden);
+		this.member = new PropagatedMemberLocal(this, overridden);
 	}
 
 	@Override
@@ -119,51 +118,6 @@ final class PropagatedLocalScope extends LocalScope {
 	boolean addMember(Member member) {
 		throw new UnsupportedOperationException(
 				"Can not register field in propagated local scope " + this);
-	}
-
-	private static final class PropagatedMember extends MemberLocal {
-
-		private final PropagatedLocalScope localScope;
-		private final LocalScope overridden;
-
-		PropagatedMember(
-				PropagatedLocalScope localScope,
-				LocalScope overridden) {
-			super(
-					localScope,
-					localScope.getOwner().distribute(),
-					localScope.getOwner().toMemberOwner());
-			this.localScope = localScope;
-			this.overridden = overridden;
-		}
-
-		@Override
-		public MemberId getId() {
-			return this.localScope.explicit.toMember().getId();
-		}
-
-		@Override
-		public MemberKey getKey() {
-			return this.localScope.explicit.toMember().getKey();
-		}
-
-		@Override
-		public Member getPropagatedFrom() {
-			return this.overridden.toMember();
-		}
-
-		@Override
-		public LocalScope toLocal(UserInfo user) {
-			useBy(user);
-			return this.localScope;
-		}
-
-		@Override
-		protected void useBy(UserInfo user) {
-			super.useBy(user);
-			this.localScope.newResolver(user);
-		}
-
 	}
 
 }

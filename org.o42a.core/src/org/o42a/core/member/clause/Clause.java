@@ -83,7 +83,7 @@ public abstract class Clause implements PlaceInfo {
 		return result;
 	}
 
-	private final Member member;
+	private final MemberClause member;
 	private final ClauseDeclaration declaration;
 	private Clause enclosingClause;
 	private Obj enclosingObject;
@@ -105,11 +105,11 @@ public abstract class Clause implements PlaceInfo {
 			Clause overridden,
 			boolean propagate) {
 
-		final MemberClause.Overridden member =
-			new MemberClause.Overridden(
+		final OverriddenMemberClause member =
+			new OverriddenMemberClause(
 						owner,
 						this,
-						(MemberClause) overridden.toMember(),
+						overridden.toMember(),
 						propagate);
 
 		this.member = member;
@@ -195,7 +195,7 @@ public abstract class Clause implements PlaceInfo {
 		return this.member.getDisplayName();
 	}
 
-	public final Member toMember() {
+	public final MemberClause toMember() {
 		return this.member;
 	}
 

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
@@ -37,12 +36,11 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.use.UserInfo;
 
 
 final class ExplicitLocalScope extends LocalScope {
 
-	private final ExplicitMember member;
+	private final ExplicitMemberLocal member;
 	private final String name;
 	private final HashMap<MemberId, Member> members =
 		new HashMap<MemberId, Member>();
@@ -58,7 +56,7 @@ final class ExplicitLocalScope extends LocalScope {
 			String name) {
 		super(location, owner);
 		this.name = name;
-		this.member = new ExplicitMember(this, distributor);
+		this.member = new ExplicitMemberLocal(this, distributor);
 	}
 
 	ExplicitLocalScope(
@@ -68,7 +66,7 @@ final class ExplicitLocalScope extends LocalScope {
 			ExplicitLocalScope reproducedFrom) {
 		super(location, owner);
 		this.name = reproducedFrom.getName();
-		this.member = new ExplicitMember(this, distributor, reproducedFrom);
+		this.member = new ExplicitMemberLocal(this, distributor, reproducedFrom);
 	}
 
 	@Override
@@ -249,75 +247,6 @@ final class ExplicitLocalScope extends LocalScope {
 		}
 
 		return false;
-	}
-
-	private static final class ExplicitMember extends MemberLocal {
-
-		private final LocalScope localScope;
-		private final MemberId id;
-		private final MemberKey key;
-
-		ExplicitMember(LocalScope localScope, Distributor distributor) {
-			super(localScope, distributor, localScope.getOwner().toMemberOwner());
-			this.localScope = localScope;
-
-			final MemberId localId =
-				memberName("_local_" + this.localScope.getName());
-			final Member member = getContainer().toMember();
-
-			if (member != null
-					&& member.getContainer().getScope() == getScope()) {
-				this.id = member.getId().append(localId);
-			} else {
-
-				assert getContainer().toObject() == this.localScope.getOwner() :
-					"Wrong local scope container: " + getContainer();
-
-				this.id = localId;
-			}
-
-			this.key = this.id.key(getScope());
-		}
-
-		ExplicitMember(
-				LocalScope localScope,
-				Distributor distributor,
-				LocalScope reproducedFrom) {
-			super(localScope, distributor, localScope.getOwner().toMemberOwner());
-			this.localScope = localScope;
-			this.id =
-				reproducedFrom.toMember().getKey().getMemberId()
-				.reproduceFrom(reproducedFrom);
-			this.key = this.id.key(getScope());
-		}
-
-		@Override
-		public final MemberId getId() {
-			return this.id;
-		}
-
-		@Override
-		public final MemberKey getKey() {
-			return this.key;
-		}
-
-		@Override
-		public Member getPropagatedFrom() {
-			return null;
-		}
-
-		@Override
-		public LocalScope toLocal(UserInfo user) {
-			useBy(user);
-			return this.localScope;
-		}
-
-		@Override
-		protected void useBy(UserInfo user) {
-			super.useBy(user);
-			this.localScope.newResolver(user);
-		}
-
 	}
 
 }

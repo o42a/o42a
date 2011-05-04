@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -34,14 +33,14 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 
 	@SuppressWarnings("unchecked")
 	public FieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
-		super(new Member(
+		super(new MemberFieldWrap(
 				owner,
 				new FieldDeclaration(
 						wrapped,
 						wrapped.distributeIn(owner.getContainer()),
 						wrapped.getDeclaration())
 				.override()));
-		((Member) toMember()).init(this);
+		((MemberFieldWrap) toMember()).init(this);
 		this.iface = (Field<A>) type;
 		this.wrapped = (Field<A>) wrapped;
 		setScopeArtifact(wrapArtifact());
@@ -76,22 +75,5 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 	}
 
 	protected abstract A wrapArtifact();
-
-	private static final class Member extends MemberField {
-
-		public Member(MemberOwner owner, FieldDeclaration declaration) {
-			super(owner, declaration);
-		}
-
-		@Override
-		protected Field<?> createField() {
-			throw new UnsupportedOperationException();
-		}
-
-		final void init(FieldWrap<?> field) {
-			setField(dummyUser(), field);
-		}
-
-	}
 
 }
