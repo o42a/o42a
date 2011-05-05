@@ -201,11 +201,11 @@ public abstract class AbstractScope implements Scope {
 		return pathToMember.append(member.getKey());
 	}
 
-	private final ResolverFactory<?> resolverFactory;
+	private final ResolverFactory<Resolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
 
 	public AbstractScope() {
-		this.resolverFactory = createResolverFactory();
+		this.resolverFactory = Resolver.resolverFactory(this);
 	}
 
 	@Override
@@ -232,8 +232,18 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public Resolver newResolver(UserInfo user) {
-		return this.resolverFactory.newResolver(user);
+	public final Resolver dummyResolver() {
+		return resolverFactory().dummyResolver();
+	}
+
+	@Override
+	public final Resolver newResolver() {
+		return resolverFactory().newResolver();
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user) {
+		return resolverFactory().newResolver(user);
 	}
 
 	@Override
@@ -242,7 +252,7 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public LocalScope toLocal() {
+	public final LocalScope toLocal() {
 		return null;
 	}
 
@@ -262,12 +272,12 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public Distributor distributeIn(Container container) {
+	public final Distributor distributeIn(Container container) {
 		return Placed.distributeIn(this, container);
 	}
 
 	@Override
-	public Path pathTo(Scope targetScope) {
+	public final Path pathTo(Scope targetScope) {
 		return pathTo(this, targetScope);
 	}
 
@@ -306,11 +316,7 @@ public abstract class AbstractScope implements Scope {
 		Scoped.assertCompatibleScope(this, other);
 	}
 
-	protected ResolverFactory<?> createResolverFactory() {
-		return Resolver.resolverFactory(this);
-	}
-
-	protected final ResolverFactory<?> resolverFactory() {
+	protected final ResolverFactory<Resolver> resolverFactory() {
 		return this.resolverFactory;
 	}
 

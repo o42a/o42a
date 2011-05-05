@@ -112,7 +112,7 @@ public abstract class MemberLocal extends Member {
 		assert ownerObject != null :
 			ownerObject + " is not object";
 
-		return toLocal(owner.getScope().newResolver(dummyUser()))
+		return toLocal(owner.getScope().newResolver())
 		.propagateTo(ownerObject).toMember();
 	}
 

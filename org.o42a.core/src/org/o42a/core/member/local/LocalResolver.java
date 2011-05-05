@@ -69,7 +69,7 @@ public class LocalResolver extends Resolver {
 		}
 
 		@Override
-		protected LocalResolver dummyResolver() {
+		public LocalResolver dummyResolver() {
 			return new DummyLocalResolver(getScope().toLocal());
 		}
 

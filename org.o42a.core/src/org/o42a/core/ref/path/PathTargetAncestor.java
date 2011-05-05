@@ -53,8 +53,7 @@ final class PathTargetAncestor extends Expression {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return resolveAncestor(
-				getScope().newResolver(dummyUser())).getAncestor();
+		return resolveAncestor(getScope().dummyResolver()).getAncestor();
 	}
 
 	@Override

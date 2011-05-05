@@ -95,6 +95,16 @@ public abstract class PlainClause
 	}
 
 	@Override
+	public final Resolver dummyResolver() {
+		return this.resolverFactory.dummyResolver();
+	}
+
+	@Override
+	public final Resolver newResolver() {
+		return this.resolverFactory.newResolver();
+	}
+
+	@Override
 	public final Resolver newResolver(UserInfo user) {
 		return this.resolverFactory.newResolver(user);
 	}

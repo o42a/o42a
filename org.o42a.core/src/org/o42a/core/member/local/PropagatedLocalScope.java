@@ -70,7 +70,7 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Member toMember() {
+	public MemberLocal toMember() {
 		return this.member;
 	}
 
