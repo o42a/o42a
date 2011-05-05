@@ -23,7 +23,6 @@ import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -254,8 +253,7 @@ public class ObjectValueIR {
 	private void assignValue(ObjectTypeIR typeIR, Definitions definitions) {
 
 		final Val val;
-		final Resolver resolver =
-			definitions.getScope().newResolver(dummyUser());
+		final Resolver resolver = definitions.getScope().dummyResolver();
 		final DefValue value = definitions.value(resolver);
 		final Value<?> realValue = value.getRealValue();
 
@@ -332,8 +330,7 @@ public class ObjectValueIR {
 		@Override
 		protected DefValue value(Definitions definitions) {
 
-			final Resolver resolver =
-				definitions.getScope().newResolver(dummyUser());
+			final Resolver resolver = definitions.getScope().dummyResolver();
 
 			return definitions.value(resolver);
 		}
@@ -368,8 +365,7 @@ public class ObjectValueIR {
 		@Override
 		protected DefValue value(Definitions definitions) {
 
-			final Resolver resolver =
-				definitions.getScope().newResolver(dummyUser());
+			final Resolver resolver = definitions.getScope().dummyResolver();
 
 			return definitions.requirement(resolver);
 		}
@@ -408,8 +404,7 @@ public class ObjectValueIR {
 		@Override
 		protected DefValue value(Definitions definitions) {
 
-			final Resolver resolver =
-				definitions.getScope().newResolver(dummyUser());
+			final Resolver resolver = definitions.getScope().dummyResolver();
 
 			return definitions.claim(resolver);
 		}
@@ -449,8 +444,7 @@ public class ObjectValueIR {
 		@Override
 		protected DefValue value(Definitions definitions) {
 
-			final Resolver resolver =
-				definitions.getScope().newResolver(dummyUser());
+			final Resolver resolver = definitions.getScope().dummyResolver();
 
 			return definitions.condition(resolver);
 		}
@@ -489,8 +483,7 @@ public class ObjectValueIR {
 		@Override
 		protected DefValue value(Definitions definitions) {
 
-			final Resolver resolver =
-				definitions.getScope().newResolver(dummyUser());
+			final Resolver resolver = definitions.getScope().dummyResolver();
 
 			return definitions.proposition(resolver);
 		}

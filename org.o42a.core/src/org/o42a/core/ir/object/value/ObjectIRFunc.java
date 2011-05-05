@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
@@ -84,8 +82,7 @@ public abstract class ObjectIRFunc {
 
 		final Obj object = getObjectIR().getObject();
 		final Definitions definitions = object.getDefinitions();
-		final Resolver resolver =
-			definitions.getScope().newResolver(dummyUser());
+		final Resolver resolver = definitions.getScope().newResolver();
 
 		if (isFalse(definitions.requirement(resolver), body)) {
 			code.debug("Object requirement is FALSE");

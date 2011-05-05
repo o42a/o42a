@@ -50,6 +50,10 @@ public interface Scope extends PlaceInfo {
 
     Path getEnclosingScopePath();
 
+    Resolver dummyResolver();
+
+    Resolver newResolver();
+
     Resolver newResolver(UserInfo user);
 
     Member toMember();
@@ -73,5 +77,6 @@ public interface Scope extends PlaceInfo {
 	ScopeIR ir(Generator generator);
 
 	void assertDerivedFrom(Scope other);
+
 
 }

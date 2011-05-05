@@ -34,10 +34,6 @@ public class Resolver implements UserInfo {
 	private static final User DUMMY_RESOLVER_USER =
 		dummyUser("DummyResolverUser");
 
-	public static Resolver dummyResolver(Scope scope) {
-		return new DummyResolver(scope);
-	}
-
 	public static boolean isDummyResolver(User user) {
 		return user == DUMMY_RESOLVER_USER;
 	}
@@ -113,7 +109,7 @@ public class Resolver implements UserInfo {
 		}
 
 		@Override
-		protected Resolver dummyResolver() {
+		public Resolver dummyResolver() {
 			return new DummyResolver(getScope());
 		}
 

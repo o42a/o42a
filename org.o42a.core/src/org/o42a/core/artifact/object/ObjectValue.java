@@ -19,8 +19,6 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.util.use.User;
@@ -42,7 +40,7 @@ public final class ObjectValue {
 	public final Value<?> getValue() {
 		if (this.value == null) {
 			this.value = getObject().calculateValue(
-					getObject().getScope().newResolver(dummyUser()));
+					getObject().getScope().newResolver());
 		}
 		return this.value;
 	}

@@ -605,7 +605,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected ValueType<?> resolveValueType() {
 		return objectType().getAncestor().typeObject(
-				getScope().newResolver(dummyUser())).getValueType();
+				getScope().newResolver()).getValueType();
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);

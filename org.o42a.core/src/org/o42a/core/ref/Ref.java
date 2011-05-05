@@ -136,7 +136,7 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	public final Resolution getResolution() {
-		return resolve(getScope().newResolver(dummyUser()));
+		return resolve(getScope().newResolver());
 	}
 
 	/**
@@ -227,7 +227,7 @@ public abstract class Ref extends RefTypeBase {
 	public abstract Resolution resolve(Resolver resolver);
 
 	public final Value<?> getValue() {
-		return value(getScope().newResolver(dummyUser()));
+		return value(getScope().newResolver());
 	}
 
 	public Value<?> value(Resolver resolver) {

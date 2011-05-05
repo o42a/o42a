@@ -19,12 +19,12 @@
 */
 package org.o42a.core.member.clause;
 
-import org.o42a.core.AbstractScope;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 
 
-public abstract class LocalScopeClauseBase extends AbstractScope {
+public abstract class LocalScopeClauseBase implements Scope {
 
 	private GroupClause clause;
 

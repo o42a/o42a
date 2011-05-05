@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -49,7 +47,7 @@ final class PathRescoper extends Rescoper {
 	public Scope rescope(Scope scope) {
 
 		final Container found =
-			this.path.resolve(scope, scope.newResolver(dummyUser()), scope);
+			this.path.resolve(scope, scope.newResolver(), scope);
 
 		return found != null ? found.getScope() : null;
 	}

@@ -19,8 +19,6 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
@@ -68,7 +66,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 	}
 
 	public final Value<?> getValue() {
-		return value(getScope().newResolver(dummyUser()));
+		return value(getScope().newResolver());
 	}
 
 	public final Value<?> value(Resolver resolver) {

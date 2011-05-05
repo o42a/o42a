@@ -31,7 +31,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableData;
@@ -104,11 +103,6 @@ public final class Top extends AbstractScope implements Container {
 
 	@Override
 	public Clause toClause() {
-		return null;
-	}
-
-	@Override
-	public LocalScope toLocal() {
 		return null;
 	}
 

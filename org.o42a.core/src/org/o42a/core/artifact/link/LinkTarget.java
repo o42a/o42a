@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ConstructionMode;
@@ -55,8 +54,7 @@ class LinkTarget extends ObjectWrap {
 	@Override
 	protected Obj createWrapped() {
 
-		final Resolver resolver =
-			getScope().getEnclosingScope().newResolver(dummyUser());
+		final Resolver resolver = getScope().getEnclosingScope().newResolver();
 
 		return this.link.getTargetRef()
 			.resolve(resolver)

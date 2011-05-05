@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
@@ -166,7 +164,7 @@ class PathTarget extends Expression {
 		}
 
 		final Scope start =
-			this.start.resolve(getScope().newResolver(dummyUser())).getScope();
+			this.start.resolve(getScope().dummyResolver()).getScope();
 
 		return this.path.rescoper(start).and(this.start.toRescoper());
 	}
@@ -209,7 +207,7 @@ class PathTarget extends Expression {
 		if (this.start != null) {
 			this.start.resolveAll();
 		}
-		resolve(getScope().newResolver(dummyUser()));
+		resolve(getScope().newResolver());
 	}
 
 	@Override
