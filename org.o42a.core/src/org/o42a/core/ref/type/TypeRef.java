@@ -39,7 +39,7 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class TypeRef extends RescopableRef<TypeRef> {
 
-	private final Usable<?> usable = simpleUsable(this);
+	private final Usable<TypeRef> usable = simpleUsable("UsableTypeRef", this);
 	private TypeRef ancestor;
 	private Holder<ObjectType> type;
 

@@ -40,7 +40,7 @@ import org.o42a.util.use.Usable;
 
 public class CompilerIntrinsics extends Intrinsics {
 
-	private final Usable<CompilerIntrinsics> user = simpleUsable(this);
+	private final Usable<?> user = simpleUsable("MainUser");
 	private final BlockCompiler compiler;
 	private final Top top;
 	private final CompilerContext topContext;

@@ -62,7 +62,7 @@ final class ParentObjectFragment extends MemberFragment {
 			if (start == self) {
 				// Create proxy to not forget the user.
 				if (this.proxyUser == null) {
-					this.proxyUser = simpleUsable(this);
+					this.proxyUser = simpleUsable("Proxy", this);
 				}
 				this.proxyUser.useBy(user);
 

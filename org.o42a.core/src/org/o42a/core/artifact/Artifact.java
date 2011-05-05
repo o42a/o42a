@@ -37,7 +37,7 @@ import org.o42a.util.use.Usable;
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	@SuppressWarnings("unchecked")
-	private final Usable<A> content = simpleUsable((A) this);
+	private final Usable<A> content = simpleUsable("Content", (A) this);
 	private Holder<Obj> enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;

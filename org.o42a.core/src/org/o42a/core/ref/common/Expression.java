@@ -35,7 +35,8 @@ import org.o42a.util.use.Usable;
 
 public abstract class Expression extends Ref {
 
-	private final Usable<?> usable = simpleUsable(this);
+	private final Usable<Expression> usable =
+		simpleUsable("UsableExpression", this);
 	private Resolution resolved;
 	private IdentityHashMap<Scope, Resolution> cache;
 
