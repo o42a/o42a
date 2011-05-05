@@ -34,8 +34,8 @@ public class MemberAnalysis {
 
 	MemberAnalysis(Member member) {
 		this.member = member;
-		this.usableMember = simpleUsable(member);
-		this.usableSubstance = simpleUsable(member);
+		this.usableMember = simpleUsable("Member", member);
+		this.usableSubstance = simpleUsable("Substance", member);
 		if (member.isOverride()) {
 			// Member declaration should be used when overridden member used.
 			getDeclarationAnalysis().member().useBy(member());

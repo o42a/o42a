@@ -22,18 +22,26 @@ package org.o42a.util.use;
 
 final class SimpleUsable<U> extends Usable<U> {
 
+	private final String name;
 	private final U usable;
 
-	SimpleUsable(U usable) {
+	SimpleUsable(String name, U usable) {
+		this.name = name;
 		this.usable = usable;
 	}
 
 	@Override
 	public String toString() {
 		if (this.usable == null) {
-			return super.toString();
+			if (this.name == null) {
+				return super.toString();
+			}
+			return this.name;
 		}
-		return this.usable.toString();
+		if (this.name == null) {
+			return this.usable.toString();
+		}
+		return this.name + '[' + this.usable + ']';
 	}
 
 	@Override
