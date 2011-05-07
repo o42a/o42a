@@ -57,10 +57,11 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.Usable;
+import org.o42a.util.use.UseInfo;
 
 
 public abstract class Obj extends Artifact<Obj>
-		implements Container, ClauseContainer {
+		implements MemberContainer, ClauseContainer {
 
 	public static final MemberId SCOPE_MEMBER_ID = memberName("_scope");
 
@@ -237,7 +238,8 @@ public abstract class Obj extends Artifact<Obj>
 		return objectType().getResolution().membersResolved();
 	}
 
-	public Collection<Member> getMembers() {
+	@Override
+	public Collection<? extends Member> getMembers() {
 		resolveMembers(true);
 		return this.members.values();
 	}
@@ -558,6 +560,11 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return scopePathFragment.toPath();
+	}
+
+	@Override
+	public UseInfo fieldUses() {
+		return getAnalysis().fieldUses();
 	}
 
 	public final void assertDerivedFrom(Obj type) {

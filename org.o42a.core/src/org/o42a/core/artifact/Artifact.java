@@ -32,6 +32,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.Holder;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.use.Usable;
+import org.o42a.util.use.UseInfo;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
@@ -180,6 +181,8 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	public final Usable<A> content() {
 		return this.content;
 	}
+
+	public abstract UseInfo fieldUses();
 
 	public final void resolveAll() {
 		if (this.allResolved) {

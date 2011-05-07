@@ -85,14 +85,13 @@ final class ExplicitMemberLocal extends MemberLocal {
 
 	@Override
 	public LocalScope toLocal(UserInfo user) {
-		useBy(user);
+		use(user);
 		return this.localScope;
 	}
 
-	@Override
-	protected void useBy(UserInfo user) {
-		super.useBy(user);
-		useSubstanceBy(this.localScope.newResolver(user));
+	private void use(UserInfo user) {
+		useBy(user.toUser());
+		useSubstanceBy(this.localScope.newResolver(user).toUser());
 	}
 
 }

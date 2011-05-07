@@ -114,16 +114,8 @@ public abstract class GroupClause extends Clause implements Container {
 		Clause[] subClauses = new Clause[0];
 
 		final MemberKey key = getKey();
-
-		final Container enclosing = getEnclosingScope().getContainer();
-		final Collection<Member> members;
-		final Obj object = enclosing.toObject();
-
-		if (object != null) {
-			members = object.getMembers();
-		} else {
-			members = enclosing.toLocal().getMembers();
-		}
+		final Collection<? extends Member> members =
+			getEnclosingScope().getContainer().getMembers();
 
 		for (Member member : members) {
 

@@ -51,8 +51,7 @@ public abstract class Fld {
 			getField().toMember().getAnalysis().getDeclarationAnalysis();
 
 		assert (!getGenerator().isUseAnalysed()
-				|| declarationAnalysis.accessedBy(
-						getGenerator().getUseCase())) :
+				|| declarationAnalysis.isUsedBy(getGenerator().getUseCase())) :
 			"Attempt to generate never accessed field " + getField();
 	}
 

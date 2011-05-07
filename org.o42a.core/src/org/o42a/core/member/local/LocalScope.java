@@ -24,7 +24,6 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.use.User.dummyUser;
 
-import java.util.Collection;
 import java.util.Set;
 
 import org.o42a.codegen.Generator;
@@ -39,6 +38,7 @@ import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
@@ -53,7 +53,7 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class LocalScope
 		extends LocalScopeBase
-		implements Container, ClauseContainer, SourceInfo {
+		implements MemberContainer, ClauseContainer, SourceInfo {
 
 	static ExplicitLocalScope explicitScope(
 			LocationInfo location,
@@ -94,7 +94,7 @@ public abstract class LocalScope
 		this.ownerScopePath = new OwnerPathFragment().toPath();
 		this.resolverFactory = new LocalResolver.Factory(this);
 	}
-	
+
 	public final Obj getOwner() {
 		return this.owner;
 	}
@@ -121,10 +121,10 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Container getContainer() {
+	public final MemberContainer getContainer() {
 		return this;
 	}
-	
+
 	@Override
 	public final ScopePlace getPlace() {
 		return toMember().getPlace();
@@ -169,8 +169,6 @@ public abstract class LocalScope
 	}
 
 	public abstract ImperativeBlock getBlock();
-
-	public abstract Collection<Member> getMembers();
 
 	@Override
 	public final ConstructionMode getConstructionMode() {

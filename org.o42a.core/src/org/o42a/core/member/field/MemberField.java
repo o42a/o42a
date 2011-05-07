@@ -116,7 +116,7 @@ public abstract class MemberField extends Member {
 	@Override
 	public final Field<?> toField(UserInfo user) {
 		if (this.field != null) {
-			useBy(user);
+			use(user);
 			return this.field;
 		}
 
@@ -266,15 +266,9 @@ public abstract class MemberField extends Member {
 		return toField(dummyUser()).getArtifactKind();
 	}
 
-	@Override
-	protected void useBy(UserInfo user) {
-		super.useBy(user);
-		this.field.newResolver(user);
-	}
-
 	protected final void setField(UserInfo user, Field<?> field) {
 		this.field = field;
-		useBy(user);
+		use(user);
 		for (MemberField merged : getMergedWith()) {
 			mergeField(merged);
 		}
@@ -288,6 +282,7 @@ public abstract class MemberField extends Member {
 
 	final void setArtifact(Artifact<?> artifact) {
 		useSubstanceBy(artifact.content());
+		useNestedBy(artifact.fieldUses());
 	}
 
 	private MemberKey overrideField() {
@@ -374,6 +369,11 @@ public abstract class MemberField extends Member {
 
 	private void mergeField(MemberField member) {
 		this.field.merge(member.toField(dummyUser()));
+	}
+
+	private void use(UserInfo user) {
+		useBy(user.toUser());
+		this.field.newResolver(user);
 	}
 
 }

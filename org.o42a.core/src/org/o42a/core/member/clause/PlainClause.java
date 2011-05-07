@@ -31,9 +31,7 @@ import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
@@ -117,7 +115,7 @@ public abstract class PlainClause
 	public abstract Obj getObject();
 
 	@Override
-	public final Container getContainer() {
+	public final MemberContainer getContainer() {
 		return getObject();
 	}
 

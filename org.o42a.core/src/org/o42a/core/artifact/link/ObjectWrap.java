@@ -34,11 +34,13 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.Member;
+import org.o42a.util.use.UseInfo;
 
 
 public abstract class ObjectWrap extends PlainObject {
 
 	private Obj wrapped;
+	private ObjectWrapFieldUses fieldUses;
 
 	public ObjectWrap(Scope scope) {
 		super(scope);
@@ -65,6 +67,14 @@ public abstract class ObjectWrap extends PlainObject {
 		this.wrapped.value().useBy(value());
 
 		return this.wrapped;
+	}
+
+	@Override
+	public UseInfo fieldUses() {
+		if (this.fieldUses != null) {
+			return this.fieldUses;
+		}
+		return this.fieldUses = new ObjectWrapFieldUses(this);
 	}
 
 	protected abstract Obj createWrapped();
@@ -114,6 +124,10 @@ public abstract class ObjectWrap extends PlainObject {
 	@Override
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
 		return getWrapped().valueIR(objectIR.getGenerator());
+	}
+
+	final UseInfo superFieldUses() {
+		return super.fieldUses();
 	}
 
 }

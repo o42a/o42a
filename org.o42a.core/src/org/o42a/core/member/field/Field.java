@@ -39,7 +39,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	private Path enclosingScopePath;
 	private Field<A>[] overridden;
 
-	private Container container;
+	private MemberContainer container;
 	private FieldIR<A> ir;
 
 	public Field(MemberField member) {
@@ -102,7 +102,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	@Override
-	public final Container getContainer() {
+	public final MemberContainer getContainer() {
 		if (this.container != null) {
 			return this.container;
 		}

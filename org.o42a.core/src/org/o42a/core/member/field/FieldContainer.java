@@ -19,18 +19,22 @@
 */
 package org.o42a.core.member.field;
 
+import static java.util.Collections.emptyList;
+
+import java.util.Collection;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 
 
-final class FieldContainer extends AbstractContainer {
+final class FieldContainer
+		extends AbstractContainer
+		implements MemberContainer {
 
 	private final Field<?> field;
 
@@ -47,6 +51,11 @@ final class FieldContainer extends AbstractContainer {
 	@Override
 	public Container getEnclosingContainer() {
 		return this.field.getEnclosingContainer();
+	}
+
+	@Override
+	public Collection<? extends Member> getMembers() {
+		return emptyList();
 	}
 
 	@Override

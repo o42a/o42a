@@ -19,42 +19,9 @@
 */
 package org.o42a.util.use;
 
-import java.util.Set;
 
+public interface UseInfo {
 
-public abstract class User implements UserInfo, UseInfo {
-
-	private static final DummyUser DUMMY_USER = new DummyUser("DummyUser");
-
-	public static User dummyUser() {
-		return DUMMY_USER;
-	}
-
-	public static User dummyUser(String name) {
-		return new DummyUser(name);
-	}
-
-	public static UseCase useCase(String name) {
-		return new UseCase(name);
-	}
-
-	User() {
-	}
-
-	public abstract Set<?> getUserOf();
-
-	@Override
-	public final User toUser() {
-		return this;
-	}
-
-	@Override
-	public final boolean isUsedBy(UseCase useCase) {
-		return getUseBy(useCase).isUsed();
-	}
-
-	abstract UseFlag getUseBy(UseCase useCase);
-
-	abstract <U> U use(Usable<U> usable);
+	boolean isUsedBy(UseCase useCase);
 
 }
