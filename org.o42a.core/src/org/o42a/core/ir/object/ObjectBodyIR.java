@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
@@ -274,14 +274,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final MemberAnalysis declarationAnalysis =
 			declaredField.toMember().getAnalysis();
 
-		if (!declarationAnalysis.accessedBy(useCase)) {
-			// Field is never accessed.
-			// Skip generation.
-			return false;
-		}
-		if (!declarationAnalysis.substanceAccessedBy(useCase)) {
-			// Field`s substance (artifact) never used.
-			// Skip generation.
+		if (!declarationAnalysis.isUsedBy(useCase)) {
+			// Field is never used. Skip generation.
 			return false;
 		}
 

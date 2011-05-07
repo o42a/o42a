@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Compiler Core
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,44 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.use;
+package org.o42a.core.member;
 
-import java.util.Set;
+import java.util.Collection;
+
+import org.o42a.core.Container;
 
 
-public abstract class User implements UserInfo, UseInfo {
+public interface MemberContainer extends Container {
 
-	private static final DummyUser DUMMY_USER = new DummyUser("DummyUser");
-
-	public static User dummyUser() {
-		return DUMMY_USER;
-	}
-
-	public static User dummyUser(String name) {
-		return new DummyUser(name);
-	}
-
-	public static UseCase useCase(String name) {
-		return new UseCase(name);
-	}
-
-	User() {
-	}
-
-	public abstract Set<?> getUserOf();
-
-	@Override
-	public final User toUser() {
-		return this;
-	}
-
-	@Override
-	public final boolean isUsedBy(UseCase useCase) {
-		return getUseBy(useCase).isUsed();
-	}
-
-	abstract UseFlag getUseBy(UseCase useCase);
-
-	abstract <U> U use(Usable<U> usable);
+	Collection<? extends Member> getMembers();
 
 }

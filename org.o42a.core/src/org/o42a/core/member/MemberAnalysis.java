@@ -19,27 +19,28 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.util.use.Usable.simpleUsable;
-
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.util.use.Usable;
 import org.o42a.util.use.UseCase;
+import org.o42a.util.use.UseInfo;
 
 
-public class MemberAnalysis {
+public class MemberAnalysis implements UseInfo {
 
 	private final Member member;
-	private final Usable<Member> usableMember;
-	private final Usable<Member> usableSubstance;
+	private final MemberUses memberUses;
+	private final MemberUses substanceUses;
+	private final MemberUses nestedUses;
 
 	MemberAnalysis(Member member) {
 		this.member = member;
-		this.usableMember = simpleUsable("Member", member);
-		this.usableSubstance = simpleUsable("Substance", member);
+		this.memberUses = new MemberUses("MemberUses", member);
+		this.substanceUses = new MemberUses("SubstanceUses", member);
+		this.nestedUses = new MemberUses("NestedUses", member);
 		if (member.isOverride()) {
 			// Member declaration should be used when overridden member used.
-			getDeclarationAnalysis().member().useBy(member());
-			getDeclarationAnalysis().substance().useBy(substance());
+			getDeclarationAnalysis().useBy(this.memberUses);
+			getDeclarationAnalysis().useSubstanceBy(this.substanceUses);
+			getDeclarationAnalysis().useNestedBy(this.nestedUses);
 		}
 	}
 
@@ -59,12 +60,30 @@ public class MemberAnalysis {
 		return declaration.getAnalysis();
 	}
 
+	@Override
+	public boolean isUsedBy(UseCase useCase) {
+		if (!accessedBy(useCase)) {
+			return false;
+		}
+		if (substanceAccessedBy(useCase)) {
+			return true;
+		}
+		if (nestedAccessedBy(useCase)) {
+			return true;
+		}
+		return false;
+	}
+
 	public final boolean accessedBy(UseCase useCase) {
-		return member().isUsedBy(useCase);
+		return this.memberUses.isUsedBy(useCase);
 	}
 
 	public final boolean substanceAccessedBy(UseCase useCase) {
-		return substance().isUsedBy(useCase);
+		return this.substanceUses.isUsedBy(useCase);
+	}
+
+	public final boolean nestedAccessedBy(UseCase useCase) {
+		return this.nestedUses.isUsedBy(useCase);
 	}
 
 	@Override
@@ -75,12 +94,16 @@ public class MemberAnalysis {
 		return "MemberAnalysis[" + this.member + ']';
 	}
 
-	final Usable<?> member() {
-		return this.usableMember;
+	final void useBy(UseInfo user) {
+		this.memberUses.useBy(user);
 	}
 
-	final Usable<?> substance() {
-		return this.usableSubstance;
+	final void useSubstanceBy(UseInfo user) {
+		this.substanceUses.useBy(user);
+	}
+
+	final void useNestedBy(UseInfo user) {
+		this.nestedUses.useBy(user);
 	}
 
 }

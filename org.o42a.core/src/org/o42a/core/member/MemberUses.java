@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Compiler Core
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,44 +17,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.use;
+package org.o42a.core.member;
 
-import java.util.Set;
+import java.util.HashSet;
+
+import org.o42a.util.use.UseCase;
+import org.o42a.util.use.UseInfo;
 
 
-public abstract class User implements UserInfo, UseInfo {
+final class MemberUses implements UseInfo {
 
-	private static final DummyUser DUMMY_USER = new DummyUser("DummyUser");
+	private final String name;
+	private final Member member;
+	private final HashSet<UseInfo> uses = new HashSet<UseInfo>();
 
-	public static User dummyUser() {
-		return DUMMY_USER;
+	MemberUses(String name, Member member) {
+		this.name = name;
+		this.member = member;
 	}
 
-	public static User dummyUser(String name) {
-		return new DummyUser(name);
-	}
-
-	public static UseCase useCase(String name) {
-		return new UseCase(name);
-	}
-
-	User() {
-	}
-
-	public abstract Set<?> getUserOf();
-
-	@Override
-	public final User toUser() {
-		return this;
+	public void useBy(UseInfo use) {
+		this.uses.add(use);
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCase useCase) {
-		return getUseBy(useCase).isUsed();
+	public boolean isUsedBy(UseCase useCase) {
+		for (UseInfo used : this.uses) {
+			if (used.isUsedBy(useCase)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	abstract UseFlag getUseBy(UseCase useCase);
-
-	abstract <U> U use(Usable<U> usable);
+	@Override
+	public String toString() {
+		if (this.member == null) {
+			return super.toString();
+		}
+		return this.name + '[' + this.member + ']';
+	}
 
 }

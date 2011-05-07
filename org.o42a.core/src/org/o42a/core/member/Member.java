@@ -34,6 +34,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UseInfo;
 import org.o42a.util.use.UserInfo;
 
 
@@ -204,12 +205,16 @@ public abstract class Member extends Placed {
 		return out.toString();
 	}
 
-	protected void useBy(UserInfo user) {
-		getAnalysis().member().useBy(user);
+	protected final void useBy(UseInfo user) {
+		getAnalysis().useBy(user);
 	}
 
-	protected void useSubstanceBy(UserInfo user) {
-		getAnalysis().substance().useBy(user);
+	protected final void useSubstanceBy(UseInfo user) {
+		getAnalysis().useSubstanceBy(user);
+	}
+
+	protected final void useNestedBy(UseInfo user) {
+		getAnalysis().useNestedBy(user);
 	}
 
 	protected abstract void merge(Member member);

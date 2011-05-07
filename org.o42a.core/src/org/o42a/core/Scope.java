@@ -26,6 +26,7 @@ import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Resolver;
@@ -36,6 +37,9 @@ import org.o42a.util.use.UserInfo;
 public interface Scope extends PlaceInfo {
 
 	boolean isTopScope();
+
+	@Override
+	MemberContainer getContainer();
 
 	Scope getEnclosingScope();
 

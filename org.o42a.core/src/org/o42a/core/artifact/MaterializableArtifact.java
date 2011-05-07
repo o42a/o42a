@@ -21,6 +21,7 @@ package org.o42a.core.artifact;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.util.use.UseInfo;
 
 
 public abstract class MaterializableArtifact<
@@ -48,6 +49,11 @@ public abstract class MaterializableArtifact<
 		content().useBy(this.materialization.content());
 
 		return this.materialization;
+	}
+
+	@Override
+	public UseInfo fieldUses() {
+		return materialize().fieldUses();
 	}
 
 	protected abstract Obj createMaterialization();

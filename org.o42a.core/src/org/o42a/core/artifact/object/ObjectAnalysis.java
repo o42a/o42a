@@ -21,21 +21,29 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.member.FieldUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.UseCase;
+import org.o42a.util.use.UseInfo;
 
 
 public class ObjectAnalysis {
 
 	private final Obj object;
+	private final FieldUses fieldUses;
 	private byte staticAncestor;
 
 	ObjectAnalysis(Obj object) {
 		this.object = object;
+		this.fieldUses = new FieldUses(object);
 	}
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	public final UseInfo fieldUses() {
+		return this.fieldUses;
 	}
 
 	public final boolean hasStaticAncestor() {
