@@ -116,6 +116,10 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.container = new FieldContainer(this);
 	}
 
+	public boolean isScopeField() {
+		return false;
+	}
+
 	public final boolean isLocal() {
 		return getEnclosingContainer().toLocal() != null;
 	}

@@ -187,7 +187,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	protected void fill() {
 
 		final Generator generator = getGenerator();
-		final ObjectIRType objectType = getObjectIR().getTypeIR().getObjectType();
+		final ObjectIRType objectType =
+			getObjectIR().getTypeIR().getObjectType();
 
 		this.objectType.setValue(
 				objectType.data(generator).getPointer().relativeTo(
