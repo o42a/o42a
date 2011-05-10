@@ -82,6 +82,23 @@ public class Call extends ObjectConstructor {
 	}
 
 	@Override
+	public String toString() {
+		if (this.ascendants == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append(this.ascendants).append('(');
+		if (this.definitions != null) {
+			out.append(this.definitions);
+		}
+		out.append(')');
+
+		return out.toString();
+	}
+
+	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return fieldDefinition(
 				this,
@@ -101,16 +118,33 @@ public class Call extends ObjectConstructor {
 	private static final class CallObject extends DefinedObject {
 
 		private final AscendantsDefinition ascendants;
-		private final BlockBuilder declarations;
+		private final BlockBuilder definitions;
 
 		CallObject(
 				LocationInfo location,
 				Distributor enclosing,
 				AscendantsDefinition ascendants,
-				BlockBuilder declarations) {
+				BlockBuilder definitions) {
 			super(location, enclosing);
 			this.ascendants = ascendants;
-			this.declarations = declarations;
+			this.definitions = definitions;
+		}
+
+		@Override
+		public String toString() {
+			if (this.ascendants == null) {
+				return super.toString();
+			}
+
+			final StringBuilder out = new StringBuilder();
+
+			out.append(this.ascendants).append('(');
+			if (this.definitions != null) {
+				out.append(this.definitions);
+			}
+			out.append(')');
+
+			return out.toString();
 		}
 
 		@Override
@@ -120,7 +154,7 @@ public class Call extends ObjectConstructor {
 
 		@Override
 		protected void buildDefinition(DeclarativeBlock definition) {
-			this.declarations.buildBlock(definition);
+			this.definitions.buildBlock(definition);
 		}
 
 	}

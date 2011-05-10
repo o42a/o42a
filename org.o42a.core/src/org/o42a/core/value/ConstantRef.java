@@ -79,12 +79,22 @@ final class ConstantRef<T> extends Ref {
 	}
 
 	@Override
+	public String toString() {
+		if (this.value == null) {
+			return super.toString();
+		}
+		return this.valueType.valueString(this.value);
+	}
+
+	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return defaultFieldDefinition();
 	}
 
 	@Override
 	protected void fullyResolve() {
+		getResolution().resolveAll();
+		getScope().newResolver(getResolution().toObject().content());
 	}
 
 	@Override

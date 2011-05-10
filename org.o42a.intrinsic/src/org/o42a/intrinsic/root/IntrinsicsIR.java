@@ -25,7 +25,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Struct;
+import org.o42a.codegen.data.StructRec;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRType;
@@ -68,20 +70,22 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
 	@Override
 	protected void fill() {
-		this.rootType.setValue(typePtr(this.root));
-		this.voidType.setValue(
-				typePtr(this.root.getVoidField().getArtifact().materialize()));
-		this.falseType.setValue(typePtr(this.root.getFalse()));
-		this.integerType.setValue(typePtr(this.root.getInteger()));
-		this.floatType.setValue(typePtr(this.root.getFloat()));
-		this.stringType.setValue(typePtr(this.root.getString()));
+		set(this.rootType, this.root);
+		set(this.voidType, this.root.getContext().getVoid());
+		set(this.falseType, this.root.getFalse());
+		set(this.integerType, this.root.getInteger());
+		set(this.floatType, this.root.getFloat());
+		set(this.stringType, this.root.getString());
 	}
 
-	private Ptr<ObjectIRType.Op> typePtr(Obj object) {
+	private void set(StructRec<ObjectIRType.Op> ptr, Obj object) {
+		if (!object.getAnalysis().accessedBy(getGenerator().getUseCase())) {
+			ptr.setNull();
+		}
 
 		final ObjectIR ir = object.ir(getGenerator());
 
-		return ir.getTypeIR().getObjectType().pointer(getGenerator());
+		ptr.setValue(ir.getTypeIR().getObjectType().pointer(getGenerator()));
 	}
 
 	static final class Op extends StructOp {
