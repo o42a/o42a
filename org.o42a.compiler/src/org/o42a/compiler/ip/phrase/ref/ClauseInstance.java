@@ -149,6 +149,14 @@ public final class ClauseInstance {
 			}
 		}
 
+		@Override
+		public String toString() {
+			if (this.instance == null) {
+				return super.toString();
+			}
+			return this.instance.location.toString();
+		}
+
 	}
 
 }

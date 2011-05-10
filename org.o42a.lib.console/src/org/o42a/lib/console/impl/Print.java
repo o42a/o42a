@@ -27,6 +27,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.code.*;
 import org.o42a.common.intrinsic.IntrinsicObject;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
@@ -58,7 +59,11 @@ public class Print extends IntrinsicObject {
 	@Override
 	protected void fullyResolve() {
 		super.fullyResolve();
-		textKey().toPath().resolve(this, value(), getScope());
+
+		final Artifact<?> textPath =
+			textKey().toPath().resolveArtifact(this, value(), getScope());
+
+		textPath.materialize().value().useBy(value());
 	}
 
 	@Override
