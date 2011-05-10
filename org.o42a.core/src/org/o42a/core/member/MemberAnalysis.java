@@ -30,6 +30,7 @@ public class MemberAnalysis implements UseInfo {
 	private final MemberUses memberUses;
 	private final MemberUses substanceUses;
 	private final MemberUses nestedUses;
+	private Status status = Status.NOT_ANALYSED;
 
 	MemberAnalysis(Member member) {
 		this.member = member;
@@ -83,7 +84,12 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	public final boolean nestedAccessedBy(UseCase useCase) {
-		return this.nestedUses.isUsedBy(useCase);
+		this.status = Status.ANALYSING;
+		try {
+			return this.nestedUses.isUsedBy(useCase);
+		} finally {
+			this.status = Status.ANALYSED;
+		}
 	}
 
 	@Override
@@ -92,6 +98,10 @@ public class MemberAnalysis implements UseInfo {
 			return super.toString();
 		}
 		return "MemberAnalysis[" + this.member + ']';
+	}
+
+	final Status getStatus() {
+		return this.status;
 	}
 
 	final void useBy(UseInfo user) {
@@ -104,6 +114,14 @@ public class MemberAnalysis implements UseInfo {
 
 	final void useNestedBy(UseInfo user) {
 		this.nestedUses.useBy(user);
+	}
+
+	enum Status {
+
+		NOT_ANALYSED,
+		ANALYSING,
+		ANALYSED
+
 	}
 
 }

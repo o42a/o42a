@@ -62,6 +62,11 @@ final class ScopeField extends ObjectField {
 	}
 
 	@Override
+	public final boolean isScopeField() {
+		return true;
+	}
+
+	@Override
 	public Path getEnclosingScopePath() {
 		return null;
 	}

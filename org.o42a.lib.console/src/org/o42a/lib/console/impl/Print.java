@@ -56,6 +56,12 @@ public class Print extends IntrinsicObject {
 	}
 
 	@Override
+	protected void fullyResolve() {
+		super.fullyResolve();
+		textKey().toPath().resolve(this, value(), getScope());
+	}
+
+	@Override
 	protected Ascendants createAscendants() {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
@@ -79,6 +85,12 @@ public class Print extends IntrinsicObject {
 		return new ValueIR(objectIR);
 	}
 
+	private MemberKey textKey() {
+		return memberName("text").key(
+				type().useBy(dummyUser()).getAncestor()
+				.typeObject(dummyUser()).getScope());
+	}
+
 	private final class ValueIR extends ProposedValueIR {
 
 		ValueIR(ObjectIR objectIR) {
@@ -88,14 +100,10 @@ public class Print extends IntrinsicObject {
 		@Override
 		protected void proposition(Code code, ValOp result, ObjectOp host) {
 
-			final MemberKey textKey = memberName("text").key(
-					type().useBy(dummyUser()).getAncestor()
-					.typeObject(dummyUser()).getScope());
 			final CodeBlk cantPrint = code.addBlock("cant_print");
 			final CodeDirs dirs = falseWhenUnknown(code, cantPrint.head());
 			final ObjectOp textObject =
-				host.field(dirs, textKey)
-				.materialize(dirs);
+				host.field(dirs, textKey()).materialize(dirs);
 			final ValOp text = textObject.writeValue(code);
 			final CondBlk print =
 				text.loadCondition(null, code)
