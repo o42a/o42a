@@ -20,20 +20,30 @@
 package org.o42a.util.use;
 
 
-public abstract class UseFlag {
+public final class UseFlag {
 
 	private final UseCase useCase;
+	private final boolean used;
 
-	UseFlag(UseCase useCase) {
+	UseFlag(UseCase useCase, boolean used) {
 		this.useCase = useCase;
+		this.used = used;
 	}
 
 	public final UseCase getUseCase() {
 		return this.useCase;
 	}
 
-	public abstract boolean isUsed();
+	public final boolean isUsed() {
+		return this.used;
+	}
 
-	abstract UnknownUseFlag toUnknown();
+	@Override
+	public String toString() {
+		if (this.used) {
+			return "UsedBy[" + getUseCase() + ']';
+		}
+		return "UnusedBy[" + getUseCase() + ']';
+	}
 
 }
