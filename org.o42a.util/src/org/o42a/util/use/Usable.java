@@ -35,6 +35,7 @@ public abstract class Usable<U> extends AbstractUser {
 
 	private HashMap<User, U> usedBy;
 	private UseFlag useFlag;
+	private int rev;
 
 	public final U useBy(UserInfo user) {
 		return user.toUser().use(this);
@@ -63,25 +64,30 @@ public abstract class Usable<U> extends AbstractUser {
 			return useCase.unusedFlag();
 		}
 
-		UnknownUseFlag result = new UnknownUseFlag(useCase, this);
+		final int rev = useCase.start(this);
+		boolean skipped = false;
 
-		this.useFlag = result;
+		if (this.rev == rev) {
+			return null;
+		}
+		this.rev = rev;
 		for (User user : this.usedBy.keySet()) {
 
 			final UseFlag flag = user.getUseBy(useCase);
-			final UnknownUseFlag unknown = flag.toUnknown();
 
-			if (unknown == null) {
-				if (flag.isUsed()) {
-					return this.useFlag = result.setTrue();
-				}
+			if (flag == null) {
+				skipped = true;
 				continue;
 			}
-
-			this.useFlag = result = result.dependsOn(unknown);
+			if (flag.isUsed()) {
+				useCase.end(this);
+				return this.useFlag = flag;
+			}
 		}
-
-		return this.useFlag = result.end(this);
+		if (useCase.end(this) || !skipped) {
+			return this.useFlag = useCase.unusedFlag();
+		}
+		return null;
 	}
 
 	final U useBy(User user) {
