@@ -24,21 +24,26 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.Value;
 import org.o42a.lib.console.ConsoleModule;
+import org.o42a.util.use.UserInfo;
 
 
-public class Print extends IntrinsicObject {
+public class Print extends IntrinsicBuiltin {
 
 	private final String funcName;
 
@@ -57,13 +62,49 @@ public class Print extends IntrinsicObject {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		super.fullyResolve();
+	public Value<?> calculateBuiltin(Resolver resolver) {
+		return getValueType().runtimeValue();
+	}
 
-		final Artifact<?> textPath =
-			textKey().toPath().resolveArtifact(this, value(), getScope());
+	@Override
+	public void resolveBuiltin(Obj object) {
 
-		textPath.materialize().value().useBy(value());
+		final UserInfo user = object.value();
+		final Artifact<?> textPath = textKey().toPath().resolveArtifact(
+				object,
+				user,
+				object.getScope());
+
+		textPath.materialize().value().useBy(user);
+	}
+
+	@Override
+	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+
+		final CodeBlk cantPrint = code.addBlock("cant_print");
+		final CodeDirs dirs = falseWhenUnknown(code, cantPrint.head());
+		final ObjectOp textObject =
+			host.field(dirs, textKey()).materialize(dirs);
+		final ValOp text = textObject.writeValue(code);
+		final CondBlk print =
+			text.loadCondition(null, code)
+			.branch(code, "print", "dont_print");
+		final CodeBlk dontPrint = print.otherwise();
+		final PrintFunc printFunc =
+			printFunc(host.getGenerator()).op(null, print);
+
+		printFunc.print(print, text);
+		result.storeVoid(print);
+		print.go(code.tail());
+
+		if (cantPrint.exists()) {
+			result.storeFalse(cantPrint);
+			cantPrint.go(code.tail());
+		}
+		if (dontPrint.exists()) {
+			result.storeFalse(dontPrint);
+			dontPrint.go(code.tail());
+		}
 	}
 
 	@Override
@@ -80,62 +121,16 @@ public class Print extends IntrinsicObject {
 				.toTypeRef());
 	}
 
-	@Override
-	protected Definitions explicitDefinitions() {
-		return getValueType().runtimeDef(this, distribute()).toDefinitions();
-	}
-
-	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
-	}
-
 	private MemberKey textKey() {
 		return memberName("text").key(
 				type().useBy(dummyUser()).getAncestor()
 				.typeObject(dummyUser()).getScope());
 	}
 
-	private final class ValueIR extends ProposedValueIR {
-
-		ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-
-			final CodeBlk cantPrint = code.addBlock("cant_print");
-			final CodeDirs dirs = falseWhenUnknown(code, cantPrint.head());
-			final ObjectOp textObject =
-				host.field(dirs, textKey()).materialize(dirs);
-			final ValOp text = textObject.writeValue(code);
-			final CondBlk print =
-				text.loadCondition(null, code)
-				.branch(code, "print", "dont_print");
-			final CodeBlk dontPrint = print.otherwise();
-			final PrintFunc printFunc = printFunc().op(null, print);
-
-			printFunc.print(print, text);
-			result.storeVoid(print);
-			print.go(code.tail());
-
-			if (cantPrint.exists()) {
-				result.storeFalse(cantPrint);
-				cantPrint.go(code.tail());
-			}
-			if (dontPrint.exists()) {
-				result.storeFalse(dontPrint);
-				dontPrint.go(code.tail());
-			}
-		}
-
-		private FuncPtr<PrintFunc> printFunc() {
-			return getGenerator().externalFunction(
-					Print.this.funcName,
-					PrintFunc.PRINT);
-		}
-
+	private FuncPtr<PrintFunc> printFunc(Generator generator) {
+		return generator.externalFunction(
+				Print.this.funcName,
+				PrintFunc.PRINT);
 	}
 
 }

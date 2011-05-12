@@ -21,7 +21,7 @@ package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.ref.path.Path.absolutePath;
 
-import org.o42a.common.intrinsic.IntrinsicType;
+import org.o42a.common.object.IntrinsicType;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;

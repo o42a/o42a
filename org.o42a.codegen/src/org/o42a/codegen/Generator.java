@@ -44,7 +44,7 @@ public abstract class Generator implements UserInfo {
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
 	private final Debug debug;
-	private boolean useAnalysed;
+	private boolean useAnalysed = true;
 
 	public Generator(String id) {
 		if (id == null) {

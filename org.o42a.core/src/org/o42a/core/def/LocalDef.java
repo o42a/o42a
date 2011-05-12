@@ -152,13 +152,13 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected void writeDef(CodeDirs dirs, HostOp host, ValOp result) {
+	protected void writeDef(CodeDirs dirs, ValOp result, HostOp host) {
 		// Imperative block`s value CAN be UNKNOWN.
-		writeValue(dirs, host, result);
+		writeValue(dirs, result, host);
 	}
 
 	@Override
-	protected void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
+	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
 		assert assertFullyResolved();
 
 		final Code code = dirs.code();
@@ -236,7 +236,7 @@ class LocalDef extends ValueDef {
 			final ValOp result =
 				code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
-			this.def.writeValue(dirs, host, result);
+			this.def.writeValue(dirs, result, host);
 
 			dirs.end();
 		}

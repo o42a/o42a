@@ -99,7 +99,7 @@ public abstract class Value<T> {
 		final LogicalValue logicalValue = getLogicalValue();
 
 		if (logicalValue.isTrue()) {
-			out.append(getDefiniteValue());
+			out.append(getValueType().valueString(getDefiniteValue()));
 		} else {
 			out.append(logicalValue);
 		}

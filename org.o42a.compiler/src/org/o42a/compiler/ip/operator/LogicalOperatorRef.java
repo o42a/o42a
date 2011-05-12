@@ -25,10 +25,10 @@ import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
+import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.*;
-import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
@@ -86,7 +86,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		return new Res(this);
 	}
 
-	private static final class Res extends Result {
+	private static final class Res extends BuiltinObject {
 
 		private final LogicalOperatorRef ref;
 		private Ref operand;
@@ -97,12 +97,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		}
 
 		@Override
-		public String toString() {
-			return this.ref != null ? this.ref.toString() : "LogicalOp";
-		}
-
-		@Override
-		protected Value<?> calculateValue(Resolver resolver) {
+		public Value<?> calculateBuiltin(Resolver resolver) {
 
 			final Value<?> value = operand().value(resolver);
 
@@ -139,42 +134,13 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		}
 
 		@Override
-		protected void fullyResolve() {
-			operand().resolveAll();
-			super.resolveAll();
-		}
+		public void writeBuiltin(Code code, ValOp result, HostOp host) {
 
-		@Override
-		protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-			return new ValueIR(objectIR, this);
-		}
-
-		final Ref operand() {
-			if (this.operand != null) {
-				return this.operand;
-			}
-			return this.operand = this.ref.operand.rescope(getScope());
-		}
-
-	}
-
-	private static final class ValueIR extends ProposedValueIR {
-
-		private final Res res;
-
-		ValueIR(ObjectIR objectIR, Res res) {
-			super(objectIR);
-			this.res = res;
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-
-			final RefOp op = this.res.operand().op(host);
+			final RefOp op = operand().op(host);
 			final Code operandFalse = code.addBlock("operand_false");
 			final Code operandUnknown = code.addBlock("operand_unknown");
 
-			switch (this.res.ref.node.getOperator()) {
+			switch (this.ref.node.getOperator()) {
 			case NOT:
 				op.writeLogicalValue(falseWhenUnknown(
 						code,
@@ -220,8 +186,25 @@ public class LogicalOperatorRef extends ObjectConstructor {
 			default:
 				throw new IllegalStateException(
 						"Unsupported logical operator: "
-						+ this.res.ref.node.getOperator().getSign());
+						+ this.ref.node.getOperator().getSign());
 			}
+		}
+
+		@Override
+		public void resolveBuiltin(Obj object) {
+			operand().resolveValues(object.getScope().newResolver());
+		}
+
+		@Override
+		public String toString() {
+			return this.ref != null ? this.ref.toString() : "LogicalOp";
+		}
+
+		final Ref operand() {
+			if (this.operand != null) {
+				return this.operand;
+			}
+			return this.operand = this.ref.operand.rescope(getScope());
 		}
 
 	}

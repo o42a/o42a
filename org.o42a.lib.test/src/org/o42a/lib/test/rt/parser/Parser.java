@@ -22,7 +22,7 @@ package org.o42a.lib.test.rt.parser;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.object.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;

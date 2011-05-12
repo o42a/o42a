@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.intrinsic;
+package org.o42a.common.object;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.MemberId.memberName;

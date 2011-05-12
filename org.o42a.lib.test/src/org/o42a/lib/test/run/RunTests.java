@@ -22,7 +22,7 @@ package org.o42a.lib.test.run;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
 
-import org.o42a.common.intrinsic.IntrinsicDirective;
+import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.core.Location;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;

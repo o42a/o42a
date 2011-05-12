@@ -17,94 +17,86 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
+import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
+import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.use.UserInfo;
 
 
-final class CondValueDef extends ValueDef {
+final class ConstantValueDef<T> extends ValueDef {
 
-	private final CondDef def;
+	private final ConstantObject<T> source;
 
-	CondValueDef(CondDef def) {
-		super(def.getSource(), def.getLocation(), def.getRescoper());
-		this.def = def;
-		update(
-				def.isRequirement() ? DefKind.CLAIM : DefKind.PROPOSITION,
-				def.hasPrerequisite());
+	ConstantValueDef(ConstantObject<T> source) {
+		super(source, source, transparentRescoper(source.getScope()));
+		this.source = source;
 	}
 
-	private CondValueDef(CondValueDef prototype, Rescoper rescoper) {
+	private ConstantValueDef(ConstantValueDef<T> prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
-		this.def = prototype.def;
+		this.source = prototype.source;
 	}
 
 	@Override
 	public ValueType<?> getValueType() {
-		return ValueType.VOID;
+		return this.source.getValueType();
 	}
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return this.def.getLogical().logicalValue(resolver).toValue();
-	}
-
-	@Override
-	protected ValueDef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new CondValueDef(this, rescoper);
-	}
-
-	@Override
-	protected Logical buildPrerequisite() {
-		return this.def.getPrerequisite();
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return this.def.getPrecondition();
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return this.def.buildLogical();
+		return this.source.getValue();
 	}
 
 	@Override
 	protected void fullyResolveDef(UserInfo user) {
-		this.def.resolveAll();
+		this.source.resolveAll();
+		this.source.value().useBy(user);
+	}
+
+	@Override
+	protected Logical buildPrerequisite() {
+		return logicalTrue(this, this.source.getScope());
+	}
+
+	@Override
+	protected Logical buildPrecondition() {
+		return logicalTrue(this, this.source.getScope());
+	}
+
+	@Override
+	protected Logical buildLogical() {
+		return logicalTrue(this, this.source.getScope());
+	}
+
+	@Override
+	protected ValueDef create(Rescoper rescoper, Rescoper additionalRescoper) {
+		return new ConstantValueDef<T>(this, rescoper);
 	}
 
 	@Override
 	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
 
 		final Code code = dirs.code();
-		final CodeBlk defFalse = code.addBlock("def_false");
-		final CodeBlk defUnknown = code.addBlock("def_unknown");
-		final CodeDirs defDirs =
-			splitWhenUnknown(code, defFalse.head(), defUnknown.head());
 
-		this.def.getLogical().write(defDirs, host);
+		result.store(
+				code,
+				this.source.getValue().val(host.getGenerator()));
+		result.go(code, dirs);
+	}
 
-		result.storeVoid(code);
-		if (defFalse.exists()) {
-			result.storeFalse(defFalse);
-			dirs.goWhenFalse(defFalse);
-		}
-		if (defUnknown.exists()) {
-			result.storeUnknown(defFalse);
-			dirs.goWhenFalse(defFalse);
-		}
+	@Override
+	protected String name() {
+		return "ConstantValueDef";
 	}
 
 }

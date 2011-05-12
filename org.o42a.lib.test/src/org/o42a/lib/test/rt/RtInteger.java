@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test.rt;
 
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.object.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.value.ValueType;

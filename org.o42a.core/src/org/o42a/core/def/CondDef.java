@@ -27,7 +27,6 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.util.use.UserInfo;
@@ -150,31 +149,6 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append("CondDef[");
-		if (hasPrerequisite()) {
-			out.append(getPrerequisite()).append("? ");
-		}
-
-		final Logical precondition = getPrecondition();
-
-		if (!precondition.isTrue()) {
-			out.append(precondition).append(", ");
-		}
-		out.append(getLocation());
-		if (isRequirement()) {
-			out.append("!]");
-		} else {
-			out.append(".]");
-		}
-
-		return out.toString();
-	}
-
-	@Override
 	protected final void fullyResolve() {
 
 		final UserInfo user = getScope().getContainer().toObject().value();
@@ -186,5 +160,10 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	protected abstract void fullyResolveDef(UserInfo user);
+
+	@Override
+	protected String name() {
+		return "CondDef";
+	}
 
 }

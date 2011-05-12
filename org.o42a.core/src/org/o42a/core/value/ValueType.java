@@ -28,7 +28,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.op.Val;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -128,18 +127,6 @@ public abstract class ValueType<T> {
 				distributor,
 				this,
 				value);
-	}
-
-	public final Ref runtimeRef(
-			LocationInfo location,
-			Distributor distributor) {
-		return Ref.runtimeRef(location, distributor, this);
-	}
-
-	public final ValueDef runtimeDef(
-			LocationInfo location,
-			Distributor distributor) {
-		return runtimeRef(location, distributor).toValueDef();
 	}
 
 	public final Obj constantObject(
