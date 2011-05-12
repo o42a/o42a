@@ -69,6 +69,11 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		resolveAll();
+	}
+
+	@Override
 	protected RefOp createOp(HostOp host) {
 		throw new UnsupportedOperationException(
 				"Can not generate IR for ERROR");

@@ -33,6 +33,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.UserInfo;
 
 
 public final class TargetRef extends RescopableRef<TargetRef> {
@@ -181,8 +182,11 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		}
 
 		@Override
-		protected void fullyResolve() {
+		protected void fullyResolve(UserInfo user) {
 			this.targetRef.resolveAll();
+			this.targetRef.getRef().resolveValues(
+					this.targetRef.getRescoper().rescope(
+							this.targetRef.getScope().newResolver(user)));
 		}
 
 	}

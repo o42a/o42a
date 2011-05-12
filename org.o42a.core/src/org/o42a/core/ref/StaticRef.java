@@ -95,6 +95,12 @@ final class StaticRef extends Ref {
 	}
 
 	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		resolveAll();
+		value(resolver);
+	}
+
+	@Override
 	protected RefOp createOp(HostOp host) {
 
 		final Artifact<?> artifact = this.ref.getResolution().toArtifact();

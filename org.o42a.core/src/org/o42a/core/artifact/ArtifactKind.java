@@ -217,6 +217,12 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
+		protected void fullyResolveValues(Resolver resolver) {
+			resolveAll();
+			value(resolver);
+		}
+
+		@Override
 		protected RefOp createOp(HostOp host) {
 			return new LinkTypeOp(host, this);
 		}

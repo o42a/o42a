@@ -36,6 +36,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.UserInfo;
 
 
 final class SentenceLogicals {
@@ -275,13 +276,13 @@ final class SentenceLogicals {
 		}
 
 		@Override
-		protected void fullyResolve() {
+		protected void fullyResolve(UserInfo user) {
 			for (StatementEnv env : this.variants) {
-				env.precondition(getScope()).resolveAll();
-				env.precondition(getScope()).resolveAll();
+				env.prerequisite(getScope()).resolveAll(user);
+				env.precondition(getScope()).resolveAll(user);
 			}
 			if (this.otherwise != null) {
-				this.otherwise.resolveAll();
+				this.otherwise.resolveAll(user);
 			}
 		}
 

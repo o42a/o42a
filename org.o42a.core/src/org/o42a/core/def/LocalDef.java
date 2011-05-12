@@ -40,6 +40,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
 class LocalDef extends ValueDef {
@@ -67,7 +68,6 @@ class LocalDef extends ValueDef {
 		this.explicit = prototype.explicit;
 		this.localRescoper = prototype.localRescoper;
 	}
-
 
 	@Override
 	public boolean isLocal() {
@@ -141,8 +141,14 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef() {
-		getBlock().resolveAll();
+	protected void fullyResolveDef(UserInfo user) {
+
+		final Resolver ownerResolver =
+			getRescoper().rescope(getScope().newResolver(user));
+		final Resolver localResolver =
+			this.localRescoper.rescope(ownerResolver);
+
+		getBlock().resolveValues(localResolver);
 	}
 
 	@Override
@@ -241,7 +247,8 @@ class LocalDef extends ValueDef {
 		}
 
 		@Override
-		protected void fullyResolve() {
+		protected void fullyResolve(UserInfo user) {
+			getScope().getContainer().toObject().value().useBy(user);
 			this.def.resolveAll();
 		}
 

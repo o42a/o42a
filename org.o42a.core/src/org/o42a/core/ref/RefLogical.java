@@ -23,6 +23,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.UserInfo;
 
 
 final class RefLogical extends Logical {
@@ -74,8 +75,8 @@ final class RefLogical extends Logical {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		this.ref.resolveAll();
+	protected void fullyResolve(UserInfo user) {
+		this.ref.resolveValues(this.ref.getScope().newResolver(user));
 	}
 
 }

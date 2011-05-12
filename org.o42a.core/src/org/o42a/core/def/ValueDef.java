@@ -35,6 +35,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class ValueDef extends Def<ValueDef> {
@@ -223,13 +224,17 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	@Override
 	protected final void fullyResolve() {
-		getPrerequisite().resolveAll();
-		getPrecondition().resolveAll();
+
+		final UserInfo user =
+			getScope().getContainer().toObject().value();
+
+		getPrerequisite().resolveAll(user);
+		getPrecondition().resolveAll(user);
 		getRescoper().resolveAll();
-		fullyResolveDef();
+		fullyResolveDef(user);
 	}
 
-	protected abstract void fullyResolveDef();
+	protected abstract void fullyResolveDef(UserInfo user);
 
 	protected void writeDef(
 			CodeDirs dirs,

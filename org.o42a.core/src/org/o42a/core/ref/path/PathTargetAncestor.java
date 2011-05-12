@@ -112,6 +112,12 @@ final class PathTargetAncestor extends Expression {
 	}
 
 	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		resolveAll();
+		value(resolver);
+	}
+
+	@Override
 	protected RefOp createOp(HostOp host) {
 		return new AncestorOp(host, this);
 	}
