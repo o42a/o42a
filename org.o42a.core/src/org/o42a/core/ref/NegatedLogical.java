@@ -26,6 +26,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.UserInfo;
 
 
 final class NegatedLogical extends Logical {
@@ -83,8 +84,8 @@ final class NegatedLogical extends Logical {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		negate().resolveAll();
+	protected void fullyResolve(UserInfo user) {
+		negate().resolveAll(user);
 	}
 
 }

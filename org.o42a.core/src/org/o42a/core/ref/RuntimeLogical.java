@@ -25,6 +25,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.UserInfo;
 
 
 final class RuntimeLogical extends Logical {
@@ -62,7 +63,7 @@ final class RuntimeLogical extends Logical {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolve(UserInfo user) {
 	}
 
 }

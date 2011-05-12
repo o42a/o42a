@@ -88,6 +88,12 @@ public class OverriddenEx extends Ref {
 	}
 
 	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		resolveAll();
+		value(resolver);
+	}
+
+	@Override
 	protected RefOp createOp(HostOp host) {
 		return new Op(host, this);
 	}

@@ -31,6 +31,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
@@ -100,6 +101,11 @@ public final class EllipsisSt extends Statement {
 
 	@Override
 	protected void fullyResolve() {
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		resolveAll();
 	}
 
 	@Override

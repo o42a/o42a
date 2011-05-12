@@ -30,6 +30,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class CondDef extends Def<CondDef> {
@@ -175,12 +176,15 @@ public abstract class CondDef extends Def<CondDef> {
 
 	@Override
 	protected final void fullyResolve() {
-		getPrerequisite().resolveAll();
-		getLogical().resolveAll();
+
+		final UserInfo user = getScope().getContainer().toObject().value();
+
+		getPrerequisite().resolveAll(user);
+		getLogical().resolveAll(user);
 		getRescoper().resolveAll();
-		fullyResolveDef();
+		fullyResolveDef(user);
 	}
 
-	protected abstract void fullyResolveDef();
+	protected abstract void fullyResolveDef(UserInfo user);
 
 }

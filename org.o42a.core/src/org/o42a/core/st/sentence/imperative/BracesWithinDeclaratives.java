@@ -29,6 +29,7 @@ import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -111,12 +112,17 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
+	public String toString() {
+		return this.block.toString();
+	}
+
+	@Override
 	protected void fullyResolve() {
 	}
 
 	@Override
-	public String toString() {
-		return this.block.toString();
+	protected void fullyResolveValues(Resolver resolver) {
+		resolveAll();
 	}
 
 	@Override

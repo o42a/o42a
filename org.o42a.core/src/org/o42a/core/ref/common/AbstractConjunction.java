@@ -26,6 +26,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class AbstractConjunction extends Logical {
@@ -127,9 +128,9 @@ public abstract class AbstractConjunction extends Logical {
 	protected abstract Logical claim(int index);
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolve(UserInfo user) {
 		for (Logical claim : expandConjunction()) {
-			claim.resolveAll();
+			claim.resolveAll(user);
 		}
 	}
 

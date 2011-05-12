@@ -29,7 +29,9 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.core.*;
+import org.o42a.core.CompilerContext;
+import org.o42a.core.Distributor;
+import org.o42a.core.Location;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.AscendantsDefinition;
@@ -194,6 +196,11 @@ public class AncestorVisitor
 
 		@Override
 		protected void fullyResolve() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolveValues(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

@@ -103,13 +103,18 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
+	public String toString() {
+		return this.ref.toString();
+	}
+
+	@Override
 	protected void fullyResolve() {
 		this.ref.resolveAll();
 	}
 
 	@Override
-	public String toString() {
-		return this.ref.toString();
+	protected void fullyResolveValues(Resolver resolver) {
+		this.ref.resolveValues(resolver);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Statement;
 
 
@@ -36,6 +37,11 @@ public abstract class DeclarationStatement extends Statement {
 
 	@Override
 	protected void fullyResolve() {
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		resolveAll();
 	}
 
 }

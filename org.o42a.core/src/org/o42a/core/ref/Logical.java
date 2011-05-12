@@ -20,6 +20,8 @@
 package org.o42a.core.ref;
 
 
+import static org.o42a.util.use.Usable.simpleUsable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,6 +34,8 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.Usable;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class Logical extends LogicalBase {
@@ -248,7 +252,7 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	private Logical negated;
-	private boolean allResolved;
+	private Usable<?> fullResolution;
 
 	public Logical(LocationInfo location, Scope scope) {
 		super(location, scope);
@@ -400,14 +404,16 @@ public abstract class Logical extends LogicalBase {
 		return new RescopedLogical(this, rescoper);
 	}
 
-	public final void resolveAll() {
-		if (this.allResolved) {
+	public final void resolveAll(UserInfo user) {
+		if (this.fullResolution != null) {
+			this.fullResolution.useBy(user);
 			return;
 		}
-		this.allResolved = true;
+		this.fullResolution = simpleUsable("FullResolution", this);
+		this.fullResolution.useBy(user);
 		getContext().fullResolution().start();
 		try {
-			fullyResolve();
+			fullyResolve(this.fullResolution);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -416,7 +422,7 @@ public abstract class Logical extends LogicalBase {
 	public abstract void write(CodeDirs dirs, HostOp host);
 
 	public final boolean assertFullyResolved() {
-		assert this.allResolved :
+		assert this.fullResolution != null :
 			this + " is not fully resolved";
 		return true;
 	}
@@ -461,6 +467,6 @@ public abstract class Logical extends LogicalBase {
 		return null;
 	}
 
-	protected abstract void fullyResolve();
+	protected abstract void fullyResolve(UserInfo user);
 
 }

@@ -19,7 +19,9 @@
 */
 package org.o42a.core.ref.common;
 
-import org.o42a.core.*;
+import org.o42a.core.CompilerContext;
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
@@ -146,6 +148,11 @@ public abstract class Wrap extends Ref {
 	@Override
 	protected void fullyResolve() {
 		wrapped().resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		wrapped().resolveValues(resolver);
 	}
 
 	@Override

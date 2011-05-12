@@ -20,6 +20,7 @@
 package org.o42a.core.def;
 
 import org.o42a.core.ref.Logical;
+import org.o42a.util.use.UserInfo;
 
 
 final class ValueCondDef extends CondDef {
@@ -60,7 +61,7 @@ final class ValueCondDef extends CondDef {
 	}
 
 	@Override
-	protected void fullyResolveDef() {
+	protected void fullyResolveDef(UserInfo user) {
 		this.def.resolveAll();
 	}
 
