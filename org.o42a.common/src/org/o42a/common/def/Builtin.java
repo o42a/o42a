@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,38 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.common.def;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.LocationInfo;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
 
 
-public abstract class ProposedValueIR extends ObjectValueIR {
+public interface Builtin extends LocationInfo {
 
-	public ProposedValueIR(ObjectIR objectIR) {
-		super(objectIR);
-	}
+	Obj toObject();
 
-	@Override
-	protected void writeProposition(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		proposition(code, result, body != null ? body : host);
-	}
+	Value<?> calculateBuiltin(Resolver resolver);
 
-	@Override
-	protected void buildProposition(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			Definitions definitions) {
-		proposition(code, result, host);
-		code.returnVoid();
-	}
+	void resolveBuiltin(Obj object);
 
-	protected abstract void proposition(Code code, ValOp result, ObjectOp host);
+	void writeBuiltin(Code code, ValOp result, HostOp host);
 
 }

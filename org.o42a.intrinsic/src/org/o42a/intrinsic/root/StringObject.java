@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import org.o42a.common.intrinsic.IntrinsicType;
+import org.o42a.common.object.IntrinsicType;
 import org.o42a.core.value.ValueType;
 
 

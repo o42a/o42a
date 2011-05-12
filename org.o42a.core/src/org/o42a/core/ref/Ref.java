@@ -83,13 +83,6 @@ public abstract class Ref extends RefTypeBase {
 		return new ErrorRef(location, distributor);
 	}
 
-	public static Ref runtimeRef(
-			LocationInfo location,
-			Distributor distributor,
-			ValueType<?> valueType) {
-		return new RuntimeRef(location, distributor, valueType);
-	}
-
 	private Ref expectedTypeAdapter;
 	private RefEnvWrap env;
 	private Logical logical;

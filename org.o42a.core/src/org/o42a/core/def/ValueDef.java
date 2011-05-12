@@ -30,7 +30,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -165,7 +164,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 				defs);
 	}
 
-	public final void write(CodeDirs dirs, HostOp host, ValOp result) {
+	public void write(CodeDirs dirs, HostOp host, ValOp result) {
 
 		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
@@ -187,37 +186,12 @@ public abstract class ValueDef extends Def<ValueDef> {
 					rescopedHost);
 		}
 
-		writeDef(dirs, rescopedHost, result);
+		writeDef(dirs, result, rescopedHost);
 
 		if (preconditionFailed != null && preconditionFailed.exists()) {
 			result.storeFalse(preconditionFailed);
 			dirs.goWhenFalse(preconditionFailed);
 		}
-	}
-
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append("ValueDef[");
-		if (hasPrerequisite()) {
-			out.append(getPrerequisite()).append("? ");
-		}
-
-		final Logical precondition = getPrecondition();
-
-		if (!precondition.isTrue()) {
-			out.append(precondition).append(", ");
-		}
-		out.append('=').append(getLocation());
-		if (isClaim()) {
-			out.append("!]");
-		} else {
-			out.append(".]");
-		}
-
-		return out.toString();
 	}
 
 	protected abstract Value<?> calculateValue(Resolver resolver);
@@ -238,14 +212,19 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected void writeDef(
 			CodeDirs dirs,
-			HostOp host,
-			ValOp result) {
-		writeValue(dirs.falseWhenUnknown(), host, result);
+			ValOp result,
+			HostOp host) {
+		writeValue(dirs.falseWhenUnknown(), result, host);
 	}
 
 	protected abstract void writeValue(
 			CodeDirs dirs,
-			HostOp host,
-			ValOp result);
+			ValOp result,
+			HostOp host);
+
+	@Override
+	protected String name() {
+		return "ValueDef";
+	}
 
 }

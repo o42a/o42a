@@ -186,6 +186,34 @@ public abstract class Def<D extends Def<D>>
 
 	public abstract Definitions toDefinitions();
 
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append(name()).append('[');
+		if (hasPrerequisite()) {
+			out.append(getPrerequisite()).append("? ");
+		}
+
+		final Logical precondition = getPrecondition();
+
+		if (!precondition.isTrue()) {
+			out.append(precondition).append(", ");
+		}
+		if (isValue()) {
+			out.append('=');
+		}
+		out.append(getLocation());
+		if (getKind().isClaim()) {
+			out.append("!]");
+		} else {
+			out.append(".]");
+		}
+
+		return out.toString();
+	}
+
 	protected final Logical getPrerequisite() {
 		if (this.prerequisite != null) {
 			return this.prerequisite;
@@ -219,6 +247,8 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	protected abstract Logical buildLogical();
+
+	protected abstract String name();
 
 	final LocationInfo getLocation() {
 		return this.location;

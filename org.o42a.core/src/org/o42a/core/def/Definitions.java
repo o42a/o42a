@@ -557,21 +557,12 @@ public class Definitions extends Scoped {
 	}
 
 	public Definitions runtime() {
-
-		final RefCondDef runtimeDef = new RefCondDef(
-				/* The source should differ from scope,
-				 * as this definition is not explicit. */
-				getScope().getContext().getVoid(),
-				ValueType.VOID.runtimeRef(
-						this,
-						getScope().distribute()));
-
 		return new Definitions(
 				this,
 				getScope(),
 				getValueType(),
 				this.requirements,
-				ArrayUtil.prepend(runtimeDef, this.conditions),
+				ArrayUtil.prepend(new RuntimeCondDef(this), this.conditions),
 				this.claims,
 				this.propositions);
 	}

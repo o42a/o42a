@@ -1,5 +1,5 @@
 /*
-    Test Framework
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,43 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.test.rt;
+package org.o42a.common.object;
 
-import org.o42a.common.object.IntrinsicObject;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.def.Builtin;
+import org.o42a.common.def.BuiltinValueDef;
+import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.value.ValueType;
-import org.o42a.lib.test.TestModule;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.FieldDeclaration;
 
 
-public class RtFloat extends IntrinsicObject {
+public abstract class IntrinsicBuiltin
+		extends IntrinsicObject
+		implements Builtin {
 
-	public RtFloat(TestModule module) {
-		super(
-				module.toMemberOwner(),
-				sourcedDeclaration(
-						module,
-						"rt-float",
-						"rt-float.o42a")
-				.prototype());
-		setValueType(ValueType.FLOAT);
+	public IntrinsicBuiltin(MemberOwner owner, FieldDeclaration declaration) {
+		super(owner, declaration);
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
+	protected final Definitions explicitDefinitions() {
+		return new BuiltinValueDef(this).toDefinitions();
 	}
 
 	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
-	}
-
-	@Override
-	protected Definitions explicitDefinitions() {
-		return null;
+	protected final ObjectValueIR createValueIR(ObjectIR objectIR) {
+		return new BuiltinValueIR(this, objectIR);
 	}
 
 }

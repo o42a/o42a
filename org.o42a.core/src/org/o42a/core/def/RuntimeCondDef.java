@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,73 +21,60 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.Logical.runtimeLogical;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.use.UserInfo;
 
 
-final class RefValueDef extends ValueDef {
+final class RuntimeCondDef extends CondDef {
 
-	private final Ref ref;
+	private final Definitions definitions;
 
-	RefValueDef(Ref ref) {
-		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
-		this.ref = ref;
+	RuntimeCondDef(Definitions definitions) {
+		super(
+				/* The source should differ from scope,
+				 * as this definition is not explicit. */
+				definitions.getContext().getVoid(),
+				definitions,
+				transparentRescoper(definitions.getScope()));
+		this.definitions = definitions;
 	}
 
-	RefValueDef(RefValueDef prototype, Rescoper rescoper) {
+	private RuntimeCondDef(RuntimeCondDef prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
-		this.ref = prototype.ref;
-	}
-
-	@Override
-	public ValueType<?> getValueType() {
-		return this.ref.getValueType();
+		this.definitions = prototype.definitions;
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.definitions.getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.definitions.getScope());
 	}
 
 	@Override
 	protected Logical buildLogical() {
-		return this.ref.getLogical();
-	}
-
-	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return this.ref.value(resolver);
-	}
-
-	@Override
-	protected RefValueDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new RefValueDef(this, rescoper);
+		return runtimeLogical(this, this.definitions.getScope());
 	}
 
 	@Override
 	protected void fullyResolveDef(UserInfo user) {
-		this.ref.resolveValues(
-				getRescoper().rescope(getScope().newResolver(user)));
 	}
 
 	@Override
-	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
-		this.ref.op(host).writeValue(dirs, result);
+	protected RuntimeCondDef create(
+			Rescoper rescoper,
+			Rescoper additionalRescoper) {
+		return new RuntimeCondDef(this, rescoper);
+	}
+
+	@Override
+	protected String name() {
+		return "RuntimeCondDef";
 	}
 
 }

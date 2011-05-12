@@ -1,6 +1,6 @@
 /*
-    Compiler LLVM Back-end Tests
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,23 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.llvm.test.simple;
+package org.o42a.common.ir;
 
-import org.junit.Test;
-import org.o42a.backend.llvm.test.GeneratorTestCase;
+import org.o42a.codegen.code.Code;
+import org.o42a.common.def.Builtin;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValOp;
 
 
-public class HelloWorldTest extends GeneratorTestCase {
+public class BuiltinValueIR extends ProposedValueIR {
 
-	@Test
-	public void helloWorld() {
-		setModuleName("hello_world");
-		compile(
-				"Use namespace 'Console'.",
-				"@Main :=> *{",
-				"  Print \"Hello, World!\" nl",
-				"}");
+	private final Builtin builtin;
 
+	public BuiltinValueIR(Builtin builtin, ObjectIR objectIR) {
+		super(objectIR);
+		this.builtin = builtin;
+	}
+
+	@Override
+	protected void proposition(Code code, ValOp result, ObjectOp host) {
+		this.builtin.writeBuiltin(code, result, host);
 	}
 
 }

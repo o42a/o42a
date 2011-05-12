@@ -17,9 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.intrinsic;
+package org.o42a.common.object;
 
-import org.o42a.core.artifact.Directive;
+import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
@@ -27,30 +30,43 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class IntrinsicDirective
-		extends IntrinsicObject
-		implements Directive {
+public class IntrinsicType extends IntrinsicObject {
 
-	public IntrinsicDirective(MemberOwner owner, FieldDeclaration declarator) {
-		super(owner, declarator);
+	public IntrinsicType(
+			MemberOwner owner,
+			String name,
+			ValueType<?> valueType) {
+		super(
+				owner,
+				fieldDeclaration(owner, owner.distribute(), memberName(name))
+				.prototype());
+		setValueType(valueType);
 	}
 
-	@Override
-	public final Directive toDirective() {
-		return this;
+	public IntrinsicType(
+			MemberOwner owner,
+			FieldDeclaration declaration,
+			ValueType<?> valueType) {
+		super(owner, declaration);
+		setValueType(valueType);
 	}
 
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				ValueType.VOID.typeRef(
-						this,
-						getScope().getEnclosingScope()));
+				ValueType.VOID.typeRef(this, getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected Definitions overrideDefinitions(
+			Scope scope,
+			Definitions ancestorDefinitions) {
+		return getValueType().noValueDefinitions(this, scope);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return Definitions.emptyDefinitions(this, getScope());
+		return getValueType().noValueDefinitions(this, getScope());
 	}
 
 }

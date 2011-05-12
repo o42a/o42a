@@ -25,8 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.Generator;
-import org.o42a.common.intrinsic.IntrinsicDirective;
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.object.IntrinsicDirective;
+import org.o42a.common.object.IntrinsicObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;

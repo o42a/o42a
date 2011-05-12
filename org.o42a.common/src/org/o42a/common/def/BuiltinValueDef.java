@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,77 +17,97 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.common.def;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.Logical.runtimeLogical;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.use.UserInfo;
 
 
-final class RefValueDef extends ValueDef {
+public class BuiltinValueDef extends ValueDef {
 
-	private final Ref ref;
+	private final Builtin builtin;
 
-	RefValueDef(Ref ref) {
-		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
-		this.ref = ref;
+	public BuiltinValueDef(Builtin builtin) {
+		super(
+				builtin.toObject(),
+				builtin,
+				transparentRescoper(builtin.toObject().getScope()));
+		this.builtin = builtin;
 	}
 
-	RefValueDef(RefValueDef prototype, Rescoper rescoper) {
+	private BuiltinValueDef(BuiltinValueDef prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
-		this.ref = prototype.ref;
+		this.builtin = prototype.builtin;
 	}
 
 	@Override
 	public ValueType<?> getValueType() {
-		return this.ref.getValueType();
+		return this.builtin.toObject().getValueType();
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.builtin.toObject().getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.builtin.toObject().getScope());
 	}
 
 	@Override
 	protected Logical buildLogical() {
-		return this.ref.getLogical();
+		return runtimeLogical(this, this.builtin.toObject().getScope());
+	}
+
+	@Override
+	protected BuiltinValueDef create(
+			Rescoper rescoper,
+			Rescoper additionalRescoper) {
+		return new BuiltinValueDef(this, rescoper);
 	}
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return this.ref.value(resolver);
-	}
-
-	@Override
-	protected RefValueDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new RefValueDef(this, rescoper);
+		return this.builtin.calculateBuiltin(resolver);
 	}
 
 	@Override
 	protected void fullyResolveDef(UserInfo user) {
-		this.ref.resolveValues(
-				getRescoper().rescope(getScope().newResolver(user)));
+
+		final Obj object =
+			getRescoper().rescope(getScope()).getContainer().toObject();
+
+		object.resolveAll();
+		this.builtin.resolveBuiltin(object);
 	}
 
 	@Override
 	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
-		this.ref.op(host).writeValue(dirs, result);
+
+		final Code code = dirs.code();
+
+		this.builtin.writeBuiltin(code, result, host);
+		result.go(code, dirs);
+	}
+
+	@Override
+	protected String name() {
+		return "BuiltinValueDef";
 	}
 
 }

@@ -25,7 +25,8 @@ import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.ir.ProposedValueIR;
+import org.o42a.common.object.IntrinsicObject;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;

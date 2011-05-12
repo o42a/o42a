@@ -8,5 +8,7 @@ Require-Bundle: org.o42a.core;bundle-version="0.1.0";visibility:=reexport,
  org.o42a.codegen;bundle-version="0.1.0";visibility:=reexport
 Export-Package: org.o42a.common,
  org.o42a.common.adapter,
- org.o42a.common.intrinsic
+ org.o42a.common.def,
+ org.o42a.common.ir,
+ org.o42a.common.object
 Bundle-ActivationPolicy: lazy
