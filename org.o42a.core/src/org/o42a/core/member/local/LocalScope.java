@@ -181,11 +181,6 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final LocalResolver newResolver() {
-		return resolverFactory().newResolver();
-	}
-
-	@Override
 	public final LocalResolver newResolver(UserInfo user) {
 		return resolverFactory().newResolver(user);
 	}

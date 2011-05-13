@@ -41,6 +41,10 @@ public abstract class User implements UserInfo, UseInfo {
 	User() {
 	}
 
+	public boolean isDummy() {
+		return false;
+	}
+
 	public abstract Set<?> getUserOf();
 
 	@Override

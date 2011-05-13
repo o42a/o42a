@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object;
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
 import static org.o42a.core.artifact.object.Obj.SCOPE_MEMBER_ID;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -80,7 +81,7 @@ final class ScopeField extends ObjectField {
 			return artifact;
 		}
 
-		final UserInfo user = resolverFactory();
+		final UserInfo user = dummyUser();
 		final Obj newArtifact;
 		final Obj newOwner = getEnclosingContainer().toObject();
 		final ObjectType newOwnerType = newOwner.type().useBy(user);

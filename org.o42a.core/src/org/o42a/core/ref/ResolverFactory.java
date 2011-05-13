@@ -19,45 +19,29 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ref.Resolver.isDummyResolver;
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.Scope;
-import org.o42a.util.use.Usable;
-import org.o42a.util.use.User;
 import org.o42a.util.use.UserInfo;
 
 
-public abstract class ResolverFactory<R extends Resolver> implements UserInfo {
+public abstract class ResolverFactory<R extends Resolver> {
 
 	private final Scope scope;
-	private final UsableResolver<R> usable;
 
 	public ResolverFactory(Scope scope) {
 		this.scope = scope;
-		this.usable = new UsableResolver<R>(this);
 	}
 
 	public final Scope getScope() {
 		return this.scope;
 	}
 
-	@Override
-	public final User toUser() {
-		return this.usable;
-	}
-
 	public abstract R dummyResolver();
 
-	public final R newResolver() {
-		return this.usable.createUsed(dummyUser());
-	}
-
 	public final R newResolver(UserInfo user) {
-		if (isDummyResolver(user)) {
+		if (user.toUser().isDummy()) {
 			return dummyResolver();
 		}
-		return usable().useBy(user);
+		return createResolver(user);
 	}
 
 	@Override
@@ -68,39 +52,6 @@ public abstract class ResolverFactory<R extends Resolver> implements UserInfo {
 		return "ResolverFactory[" + this.scope + ']';
 	}
 
-	protected final Usable<R> usable() {
-		return this.usable;
-	}
-
-
-	protected abstract R createResolver();
-
-	private static final class UsableResolver<R extends Resolver>
-			extends Usable<R> {
-
-		private final ResolverFactory<R> factory;
-		private R resolver;
-
-		UsableResolver(ResolverFactory<R> factory) {
-			this.factory = factory;
-		}
-
-		@Override
-		public String toString() {
-			if (this.factory == null) {
-				return super.toString();
-			}
-			return "UsableResolver[" + this.factory.getScope() + ']';
-		}
-
-		@Override
-		protected R createUsed(User user) {
-			if (this.resolver != null) {
-				return this.resolver;
-			}
-			return this.resolver = this.factory.createResolver();
-		}
-
-	}
+	protected abstract R createResolver(UserInfo user);
 
 }

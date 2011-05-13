@@ -198,6 +198,14 @@ public final class ObjectType {
 		}
 
 		@Override
+		public String toString() {
+			if (getObject() == null) {
+				return super.toString();
+			}
+			return "ObjectType[" + getObject() + ']';
+		}
+
+		@Override
 		protected ObjectType createUsed(User user) {
 			return this.type;
 		}

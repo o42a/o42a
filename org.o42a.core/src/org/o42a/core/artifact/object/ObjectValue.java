@@ -40,7 +40,7 @@ public final class ObjectValue {
 	public final Value<?> getValue() {
 		if (this.value == null) {
 			this.value = getObject().calculateValue(
-					getObject().getScope().newResolver());
+					getObject().getScope().dummyResolver());
 		}
 		return this.value;
 	}
@@ -74,6 +74,14 @@ public final class ObjectValue {
 		UsableObjectValue(Obj object) {
 			super(object);
 			this.value = new ObjectValue(object);
+		}
+
+		@Override
+		public String toString() {
+			if (getObject() == null) {
+				return super.toString();
+			}
+			return "ObjectValue[" + getObject() + ']';
 		}
 
 		@Override

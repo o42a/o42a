@@ -19,11 +19,11 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.util.use.UserInfo;
 
 
 abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
@@ -50,13 +50,12 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 		super(owner, overridden, false);
 
 		final Obj inherited = owner.getContainer().toObject();
-		final UserInfo user = resolverFactory();
 
 		this.iface = inherited.member(
-				overridden.iface.getKey()).toField(user).toKind(
+				overridden.iface.getKey()).toField(dummyUser()).toKind(
 						overridden.iface.getArtifactKind());
 		this.wrapped = inherited.getWrapped().member(
-				overridden.iface.getKey()).toField(user).toKind(
+				overridden.iface.getKey()).toField(dummyUser()).toKind(
 						overridden.iface.getArtifactKind());
 		setFieldArtifact(overridden.getArtifact());
 	}

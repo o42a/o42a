@@ -76,6 +76,7 @@ public abstract class Statement extends Placed {
 			return;
 		}
 		this.fullResolution = simpleUsable("FullResolution", this);
+		this.fullResolution.useBy(resolver);
 		resolver = resolver.newResolver(this.fullResolution);
 		getContext().fullResolution().start();
 		try {
@@ -92,6 +93,7 @@ public abstract class Statement extends Placed {
 			return;
 		}
 		this.valueResolution = simpleUsable("ValueResolution", this);
+		this.valueResolution.useBy(resolver);
 		resolver = resolver.newResolver(this.valueResolution);
 		getContext().fullResolution().start();
 		try {

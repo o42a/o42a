@@ -111,6 +111,7 @@ final class MainCall extends DefinedObject {
 	}
 
 	public void generateMain(Generator generator) {
+		assertFullyResolved();
 
 		final ObjectIR ir = ir(generator);
 		final Function<DebuggableMainFunc> main;
@@ -129,7 +130,6 @@ final class MainCall extends DefinedObject {
 		main.debug("Start execution");
 
 		final CodeBuilder builder = codeBuilder(getContext(), main);
-
 		final ValOp result = main.allocate(null, VAL_TYPE).storeUnknown(main);
 		final CodeBlk exit = main.addBlock("exit");
 

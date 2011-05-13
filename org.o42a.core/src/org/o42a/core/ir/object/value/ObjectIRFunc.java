@@ -82,7 +82,7 @@ public abstract class ObjectIRFunc {
 
 		final Obj object = getObjectIR().getObject();
 		final Definitions definitions = object.getDefinitions();
-		final Resolver resolver = definitions.getScope().newResolver();
+		final Resolver resolver = definitions.getScope().dummyResolver();
 
 		if (isFalse(definitions.requirement(resolver), body)) {
 			code.debug("Object requirement is FALSE");

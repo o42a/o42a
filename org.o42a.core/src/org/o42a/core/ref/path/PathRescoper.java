@@ -47,7 +47,7 @@ final class PathRescoper extends Rescoper {
 	public Scope rescope(Scope scope) {
 
 		final Container found =
-			this.path.resolve(scope, scope.newResolver(), scope);
+			this.path.resolve(scope, scope.dummyResolver(), scope);
 
 		return found != null ? found.getScope() : null;
 	}

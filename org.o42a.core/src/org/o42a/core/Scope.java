@@ -56,8 +56,6 @@ public interface Scope extends PlaceInfo {
 
     Resolver dummyResolver();
 
-    Resolver newResolver();
-
     Resolver newResolver(UserInfo user);
 
     Member toMember();
