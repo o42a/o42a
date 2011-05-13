@@ -40,7 +40,6 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 class LocalDef extends ValueDef {
@@ -244,9 +243,8 @@ class LocalDef extends ValueDef {
 		}
 
 		@Override
-		protected void fullyResolve(UserInfo user) {
-			getScope().getContainer().toObject().value().useBy(user);
-			this.def.resolveAll(getScope().newResolver(user));
+		protected void fullyResolve(Resolver resolver) {
+			this.def.resolveAll(resolver);
 		}
 
 	}
