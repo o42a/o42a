@@ -36,12 +36,11 @@ public abstract class DeclarationStatement extends Statement {
 	public abstract Member toMember();
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolve(Resolver resolver) {
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 	}
 
 }

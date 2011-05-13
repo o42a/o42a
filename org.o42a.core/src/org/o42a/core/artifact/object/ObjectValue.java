@@ -67,11 +67,11 @@ public final class ObjectValue {
 		return "ValueOf[" + this.object + ']';
 	}
 
-	static final class UseableObjectValue extends ObjectUsable<ObjectValue> {
+	static final class UsableObjectValue extends ObjectUsable<ObjectValue> {
 
 		private final ObjectValue value;
 
-		UseableObjectValue(Obj object) {
+		UsableObjectValue(Obj object) {
 			super(object);
 			this.value = new ObjectValue(object);
 		}

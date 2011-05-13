@@ -30,7 +30,6 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 final class CondValueDef extends ValueDef {
@@ -81,8 +80,8 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(UserInfo user) {
-		this.def.resolveAll();
+	protected void fullyResolveDef(Resolver resolver) {
+		this.def.fullyResolve(resolver);
 	}
 
 	@Override

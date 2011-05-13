@@ -100,12 +100,11 @@ public final class EllipsisSt extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolve(Resolver resolver) {
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 	}
 
 	@Override

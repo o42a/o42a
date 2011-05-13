@@ -141,12 +141,9 @@ class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(UserInfo user) {
+	protected void fullyResolveDef(Resolver resolver) {
 
-		final Resolver ownerResolver =
-			getRescoper().rescope(getScope().newResolver(user));
-		final Resolver localResolver =
-			this.localRescoper.rescope(ownerResolver);
+		final Resolver localResolver = this.localRescoper.rescope(resolver);
 
 		getBlock().resolveValues(localResolver);
 	}
@@ -249,7 +246,7 @@ class LocalDef extends ValueDef {
 		@Override
 		protected void fullyResolve(UserInfo user) {
 			getScope().getContainer().toObject().value().useBy(user);
-			this.def.resolveAll();
+			this.def.resolveAll(getScope().newResolver(user));
 		}
 
 	}

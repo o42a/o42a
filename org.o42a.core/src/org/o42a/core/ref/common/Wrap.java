@@ -146,8 +146,8 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		wrapped().resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		wrapped().resolveAll(resolver);
 	}
 
 	@Override

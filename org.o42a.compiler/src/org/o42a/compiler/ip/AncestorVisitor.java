@@ -195,7 +195,7 @@ public class AncestorVisitor
 		}
 
 		@Override
-		protected void fullyResolve() {
+		protected void fullyResolve(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

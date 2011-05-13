@@ -104,13 +104,13 @@ final class AncestorRef extends Expression {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		getResolution().resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		this.ref.resolveAll(resolver);
+		resolve(resolver).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 		value(resolver);
 	}
 

@@ -77,7 +77,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	private final OwningObject owningObject = new OwningObject(this);
 	private final ObjectType.UsableObjectType type;
-	private final ObjectValue.UseableObjectValue value;
+	private final ObjectValue.UsableObjectValue value;
 
 	private final HashMap<MemberKey, Member> members =
 		new HashMap<MemberKey, Member>();
@@ -105,20 +105,20 @@ public abstract class Obj extends Artifact<Obj>
 	public Obj(Scope scope) {
 		super(scope);
 		this.type = new ObjectType.UsableObjectType(this);
-		this.value = new ObjectValue.UseableObjectValue(this);
+		this.value = new ObjectValue.UsableObjectValue(this);
 	}
 
 	protected Obj(ObjectScope scope) {
 		super(scope);
 		scope.setScopeObject(this);
 		this.type = new ObjectType.UsableObjectType(this);
-		this.value = new ObjectValue.UseableObjectValue(this);
+		this.value = new ObjectValue.UsableObjectValue(this);
 	}
 
 	protected Obj(Scope scope, Obj sample) {
 		super(scope, sample);
 		this.type = new ObjectType.UsableObjectType(this);
-		this.value = new ObjectValue.UseableObjectValue(this);
+		this.value = new ObjectValue.UsableObjectValue(this);
 	}
 
 	@Override

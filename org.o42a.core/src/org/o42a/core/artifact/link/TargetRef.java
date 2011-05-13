@@ -98,6 +98,12 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 	}
 
 	@Override
+	public void resolveAll(Resolver resolver) {
+		this.typeRef.resolveAll(resolver);
+		super.resolveAll(resolver);
+	}
+
+	@Override
 	public String toString() {
 		if (this.typeRef == null) {
 			return super.toString();
@@ -130,9 +136,8 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		this.typeRef.resolveAll();
-		this.ref.resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		this.ref.resolveAll(resolver);
 	}
 
 	private static final class FullLogical extends Logical {
@@ -183,10 +188,11 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 		@Override
 		protected void fullyResolve(UserInfo user) {
-			this.targetRef.resolveAll();
-			this.targetRef.getRef().resolveValues(
-					this.targetRef.getRescoper().rescope(
-							this.targetRef.getScope().newResolver(user)));
+			final Resolver resolver = this.targetRef.getRescoper().rescope(
+					this.targetRef.getScope().newResolver(user));
+
+			this.targetRef.resolveAll(resolver);
+			this.targetRef.getRef().resolveValues(resolver);
 		}
 
 	}

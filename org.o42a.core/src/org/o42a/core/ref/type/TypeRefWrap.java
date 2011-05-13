@@ -23,6 +23,7 @@ import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 
@@ -123,8 +124,8 @@ public abstract class TypeRefWrap extends TypeRef {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		this.wrapped.resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		this.wrapped.resolveAll(resolver);
 	}
 
 	private static final class WrapRescoper extends RescoperWrap {

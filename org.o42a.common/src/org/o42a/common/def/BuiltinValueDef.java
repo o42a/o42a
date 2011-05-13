@@ -34,7 +34,6 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 public class BuiltinValueDef extends ValueDef {
@@ -87,10 +86,13 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(UserInfo user) {
+	protected void fullyResolveDef(Resolver resolver) {
 
 		final Obj object =
-			getRescoper().rescope(getScope()).getContainer().toObject();
+			getRescoper()
+			.rescope(resolver.getScope())
+			.getContainer()
+			.toObject();
 
 		object.resolveAll();
 		this.builtin.resolveBuiltin(object);

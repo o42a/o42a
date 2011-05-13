@@ -36,6 +36,7 @@ import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -119,8 +120,12 @@ public abstract class Array extends MaterializableArtifact<Array> {
 
 	@Override
 	protected void fullyResolveArtifact() {
-		getArrayTypeRef().resolveAll();
-		getInitializer().resolveAll();
+
+		final Resolver resolver =
+			getScope().getEnclosingScope().newResolver(content());
+
+		getArrayTypeRef().resolveAll(resolver);
+		getInitializer().resolveAll(resolver);
 	}
 
 	private void define() {

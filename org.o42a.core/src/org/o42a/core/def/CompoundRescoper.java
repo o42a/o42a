@@ -103,9 +103,9 @@ final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll() {
-		this.first.resolveAll();
-		this.second.resolveAll();
+	public void resolveAll(Resolver resolver) {
+		this.first.resolveAll(resolver);
+		this.second.resolveAll(resolver);
 	}
 
 	@Override

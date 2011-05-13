@@ -131,13 +131,12 @@ public final class ValuePartRef extends Expression {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		getResolution().resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 		value(resolver);
 	}
 

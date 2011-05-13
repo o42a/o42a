@@ -30,7 +30,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.util.use.UserInfo;
 
 
 final class ConstantValueDef<T> extends ValueDef {
@@ -58,9 +57,9 @@ final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(UserInfo user) {
+	protected void fullyResolveDef(Resolver resolver) {
 		this.source.resolveAll();
-		this.source.value().useBy(user);
+		this.source.value().useBy(resolver);
 	}
 
 	@Override

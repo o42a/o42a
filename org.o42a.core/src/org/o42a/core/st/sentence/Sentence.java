@@ -211,15 +211,15 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void resolveAll(Resolver resolver) {
+	final void resolveValues(Resolver resolver) {
 
 		final Sentence<S> prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
-			prerequisite.resolveAll(resolver);
+			prerequisite.resolveValues(resolver);
 		}
 		for (S alt : getAlternatives()) {
-			alt.resolveAll(resolver);
+			alt.resolveValues(resolver);
 		}
 	}
 

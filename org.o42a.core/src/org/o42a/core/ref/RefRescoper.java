@@ -30,7 +30,6 @@ import org.o42a.core.st.Reproducer;
 final class RefRescoper extends Rescoper {
 
 	private final Ref ref;
-	private boolean allResolved;
 
 	RefRescoper(Ref ref) {
 		super(ref.getScope());
@@ -70,12 +69,8 @@ final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll() {
-		if (this.allResolved) {
-			return;
-		}
-		this.allResolved = true;
-		this.ref.resolveAll();
+	public void resolveAll(Resolver resolver) {
+		this.ref.resolveAll(resolver);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.UserInfo;
@@ -83,13 +84,13 @@ public abstract class Sample extends Scoped {
 		return object.overrideDefinitions(scope, definitions);
 	}
 
-	public void resolveAll() {
-		getTypeRef().resolveAll();
+	public void resolveAll(Resolver resolver) {
+		getTypeRef().resolveAll(resolver);
 
 		final TypeRef ancestor = getAncestor();
 
 		if (ancestor != null) {
-			ancestor.resolveAll();
+			ancestor.resolveAll(resolver);
 		}
 	}
 

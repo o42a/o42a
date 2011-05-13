@@ -65,12 +65,11 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolve(Resolver resolver) {
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 	}
 
 	@Override

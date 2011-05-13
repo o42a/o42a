@@ -212,13 +212,13 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		protected void fullyResolve() {
-			this.ref.resolveAll();
+		protected void fullyResolve(Resolver resolver) {
+			this.ref.resolveAll(resolver);
+			resolve(resolver).resolveAll();
 		}
 
 		@Override
 		protected void fullyResolveValues(Resolver resolver) {
-			resolveAll();
 			value(resolver);
 		}
 

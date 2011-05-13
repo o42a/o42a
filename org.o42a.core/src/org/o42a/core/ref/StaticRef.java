@@ -50,13 +50,13 @@ final class StaticRef extends Ref {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		assertCompatible(resolver.getScope());
-		return calculateValue(getResolution().materialize(), resolver);
+		return calculateValue(resolve(resolver).materialize(), resolver);
 	}
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
-		return this.ref.getResolution();
+		assertCompatible(resolver.getScope());
+		return this.ref.resolve(this.ref.getScope().newResolver(resolver));
 	}
 
 	@Override
@@ -90,13 +90,12 @@ final class StaticRef extends Ref {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		this.ref.resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 		value(resolver);
 	}
 

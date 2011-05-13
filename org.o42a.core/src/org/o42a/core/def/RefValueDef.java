@@ -30,7 +30,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 final class RefValueDef extends ValueDef {
@@ -80,9 +79,8 @@ final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(UserInfo user) {
-		this.ref.resolveValues(
-				getRescoper().rescope(getScope().newResolver(user)));
+	protected void fullyResolveDef(Resolver resolver) {
+		this.ref.resolveValues(resolver);
 	}
 
 	@Override

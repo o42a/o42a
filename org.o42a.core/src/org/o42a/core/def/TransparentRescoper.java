@@ -83,7 +83,7 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll() {
+	public void resolveAll(Resolver resolver) {
 	}
 
 	@Override
