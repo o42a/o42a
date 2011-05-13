@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.value.Value.unknownValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
@@ -59,10 +60,10 @@ final class AncestorRef extends Expression {
 		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
-			return Value.unknownValue();
+			return unknownValue();
 		}
 
-		return ancestor.getValue();
+		return ancestor.value(ancestor.getScope().newResolver(resolver));
 	}
 
 	@Override

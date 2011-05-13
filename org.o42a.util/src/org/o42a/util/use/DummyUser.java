@@ -33,6 +33,11 @@ final class DummyUser extends User {
 	}
 
 	@Override
+	public boolean isDummy() {
+		return true;
+	}
+
+	@Override
 	public Set<?> getUserOf() {
 		return emptySet();
 	}

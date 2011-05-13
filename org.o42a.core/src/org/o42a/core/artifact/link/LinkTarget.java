@@ -54,7 +54,8 @@ class LinkTarget extends ObjectWrap {
 	@Override
 	protected Obj createWrapped() {
 
-		final Resolver resolver = getScope().getEnclosingScope().newResolver();
+		final Resolver resolver =
+			getScope().getEnclosingScope().newResolver(content());
 
 		return this.link.getTargetRef()
 			.resolve(resolver)

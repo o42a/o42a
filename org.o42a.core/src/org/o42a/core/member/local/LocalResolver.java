@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.local;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.util.use.UserInfo;
@@ -47,7 +49,7 @@ public class LocalResolver extends Resolver {
 	private static final class DummyLocalResolver extends LocalResolver {
 
 		DummyLocalResolver(LocalScope scope) {
-			super(scope, dummyResolverUser());
+			super(scope, dummyUser());
 		}
 
 		@Override
@@ -64,18 +66,24 @@ public class LocalResolver extends Resolver {
 
 	static final class Factory extends ResolverFactory<LocalResolver> {
 
+		private DummyLocalResolver dummyResolver;
+
 		Factory(LocalScope scope) {
 			super(scope);
 		}
 
 		@Override
 		public LocalResolver dummyResolver() {
-			return new DummyLocalResolver(getScope().toLocal());
+			if (this.dummyResolver != null) {
+				return this.dummyResolver;
+			}
+			return this.dummyResolver =
+				new DummyLocalResolver(getScope().toLocal());
 		}
 
 		@Override
-		protected LocalResolver createResolver() {
-			return new LocalResolver(getScope().toLocal(), this);
+		protected LocalResolver createResolver(UserInfo user) {
+			return new LocalResolver(getScope().toLocal(), user);
 		}
 
 	}

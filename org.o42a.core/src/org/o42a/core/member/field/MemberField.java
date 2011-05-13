@@ -158,7 +158,7 @@ public abstract class MemberField extends Member {
 	@Override
 	public MemberField propagateTo(MemberOwner owner) {
 
-		final Field<?> field = toField(owner.getScope().newResolver());
+		final Field<?> field = toField(owner.getScope().dummyResolver());
 
 		return field.propagateTo(owner).toMember();
 	}

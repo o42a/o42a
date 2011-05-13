@@ -33,6 +33,7 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
@@ -191,7 +192,9 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 				return Value.falseValue();
 			}
 
-			return resolution.toArtifact().getTypeRef().getValue();
+			final TypeRef typeRef = resolution.toArtifact().getTypeRef();
+
+			return typeRef.value(typeRef.getScope().newResolver(resolver));
 		}
 
 		@Override

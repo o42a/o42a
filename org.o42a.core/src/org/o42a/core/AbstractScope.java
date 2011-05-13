@@ -233,17 +233,12 @@ public abstract class AbstractScope implements Scope {
 
 	@Override
 	public final Resolver dummyResolver() {
-		return resolverFactory().dummyResolver();
-	}
-
-	@Override
-	public final Resolver newResolver() {
-		return resolverFactory().newResolver();
+		return this.resolverFactory.dummyResolver();
 	}
 
 	@Override
 	public final Resolver newResolver(UserInfo user) {
-		return resolverFactory().newResolver(user);
+		return this.resolverFactory.newResolver(user);
 	}
 
 	@Override
@@ -314,10 +309,6 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public final void assertCompatibleScope(ScopeInfo other) {
 		Scoped.assertCompatibleScope(this, other);
-	}
-
-	protected final ResolverFactory<Resolver> resolverFactory() {
-		return this.resolverFactory;
 	}
 
 }

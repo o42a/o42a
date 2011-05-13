@@ -192,7 +192,8 @@ public class LogicalOperatorRef extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Obj object) {
-			operand().resolveValues(object.getScope().newResolver());
+			operand().resolveValues(
+					object.getScope().newResolver(object.value()));
 		}
 
 		@Override

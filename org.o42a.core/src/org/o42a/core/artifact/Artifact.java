@@ -46,12 +46,10 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public Artifact(Scope scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
-		content().useBy(scope.newResolver());
 	}
 
 	protected Artifact(Scope scope, A sample) {
 		super(scope, new ArtifactDistributor(scope, sample));
-		content().useBy(scope.newResolver());
 	}
 
 	public abstract ArtifactKind<A> getKind();

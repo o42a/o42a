@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref;
 
-
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.CompilerLogger;
@@ -31,23 +30,8 @@ import org.o42a.util.use.UserInfo;
 
 public class Resolver implements UserInfo {
 
-	private static final User DUMMY_RESOLVER_USER =
-		dummyUser("DummyResolverUser");
-
-	public static boolean isDummyResolver(User user) {
-		return user == DUMMY_RESOLVER_USER;
-	}
-
-	public static boolean isDummyResolver(UserInfo user) {
-		return isDummyResolver(user.toUser());
-	}
-
 	public static ResolverFactory<Resolver> resolverFactory(Scope scope) {
 		return new Factory(scope);
-	}
-
-	protected static User dummyResolverUser() {
-		return DUMMY_RESOLVER_USER;
 	}
 
 	private final Scope scope;
@@ -56,6 +40,10 @@ public class Resolver implements UserInfo {
 	protected Resolver(Scope scope, UserInfo user) {
 		this.scope = scope;
 		this.user = user.toUser();
+	}
+
+	public final boolean isDummy() {
+		return this.user.isDummy();
 	}
 
 	public final Container getContainer() {
@@ -79,6 +67,12 @@ public class Resolver implements UserInfo {
 		return getScope().newResolver(user);
 	}
 
+	public final boolean assertNotDummy() {
+		assert !isDummy() :
+			this + " is dummy";
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "Resolver[" + this.scope + ']';
@@ -87,7 +81,7 @@ public class Resolver implements UserInfo {
 	static final class DummyResolver extends Resolver {
 
 		DummyResolver(Scope scope) {
-			super(scope, dummyResolverUser());
+			super(scope, dummyUser());
 		}
 
 		@Override
@@ -104,18 +98,23 @@ public class Resolver implements UserInfo {
 
 	private static final class Factory extends ResolverFactory<Resolver> {
 
+		private DummyResolver dummyResolver;
+
 		Factory(Scope scope) {
 			super(scope);
 		}
 
 		@Override
 		public Resolver dummyResolver() {
-			return new DummyResolver(getScope());
+			if (this.dummyResolver != null) {
+				return this.dummyResolver;
+			}
+			return this.dummyResolver = new DummyResolver(getScope());
 		}
 
 		@Override
-		protected Resolver createResolver() {
-			return new Resolver(getScope(), this);
+		protected Resolver createResolver(UserInfo user) {
+			return new Resolver(getScope(), user);
 		}
 
 	}

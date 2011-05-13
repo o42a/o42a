@@ -404,11 +404,13 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	public final void resolveAll(Resolver resolver) {
+		assert resolver.assertNotDummy();
 		if (this.fullResolution != null) {
 			this.fullResolution.useBy(resolver);
 			return;
 		}
 		this.fullResolution = simpleUsable("FullResolution", this);
+		this.fullResolution.useBy(resolver);
 		resolver = resolver.newResolver(this.fullResolution);
 		getContext().fullResolution().start();
 		try {
