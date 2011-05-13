@@ -166,15 +166,14 @@ final class Rescoped extends Ref {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		this.ref.resolveAll();
-		this.rescoper.resolveAll();
-		getResolution().resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		this.ref.resolveAll(this.rescoper.rescope(resolver));
+		this.rescoper.resolveAll(resolver);
+		resolve(resolver).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 		value(resolver);
 	}
 

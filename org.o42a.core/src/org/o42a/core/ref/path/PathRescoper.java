@@ -118,8 +118,8 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll() {
-		rescope(getFinalScope());
+	public void resolveAll(Resolver resolver) {
+		rescope(resolver);
 	}
 
 	@Override

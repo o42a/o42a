@@ -119,7 +119,7 @@ public abstract class Rescoper {
 		return new CompoundRescoper(this, other);
 	}
 
-	public abstract void resolveAll();
+	public abstract void resolveAll(Resolver resolver);
 
 	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
 

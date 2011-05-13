@@ -20,6 +20,7 @@
 package org.o42a.core.def;
 
 import org.o42a.core.*;
+import org.o42a.core.ref.Resolver;
 
 
 public abstract class Rescopable<R extends Rescopable<R>>
@@ -76,14 +77,12 @@ public abstract class Rescopable<R extends Rescopable<R>>
 		return getScope().getLogger();
 	}
 
-	public final void resolveAll() {
-		if (this.allResolved) {
-			return;
-		}
+	public void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			fullyResolve();
+			getRescoper().resolveAll(resolver);
+			fullyResolve(getRescoper().rescope(resolver));
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -125,6 +124,6 @@ public abstract class Rescopable<R extends Rescopable<R>>
 			Rescoper rescoper,
 			Rescoper additionalRescoper);
 
-	protected abstract void fullyResolve();
+	protected abstract void fullyResolve(Resolver resolver);
 
 }

@@ -25,6 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -180,14 +181,16 @@ public class Ascendants
 		validate();
 
 		final TypeRef ancestor = getExplicitAncestor();
+		final Resolver resolver =
+			getScope().getEnclosingScope().newResolver(this);
 
 		if (ancestor != null) {
 			ancestor.type(this);
-			ancestor.resolveAll();
+			ancestor.resolveAll(resolver);
 		}
 		for (Sample sample : getSamples()) {
 			sample.type(this);
-			sample.resolveAll();
+			sample.resolveAll(resolver);
 		}
 	}
 

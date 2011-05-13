@@ -203,16 +203,15 @@ class PathTarget extends Expression {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolve(Resolver resolver) {
 		if (this.start != null) {
-			this.start.resolveAll();
+			this.start.resolveAll(resolver);
 		}
-		resolve(getScope().newResolver());
+		resolve(resolver).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll();
 		value(resolver);
 	}
 

@@ -237,13 +237,15 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		resolveAll(null);
+	protected void fullyResolve(Resolver resolver) {
+		getDefinitionTargets();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolveAll(resolver);
+		for (Sentence<S> sentence : getSentences()) {
+			sentence.resolveValues(resolver);
+		}
 	}
 
 	abstract Trace getTrace();
@@ -263,13 +265,6 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 			this.sentences.add(sentence);
 		}
 		return sentence;
-	}
-
-	private void resolveAll(Resolver resolver) {
-		getDefinitionTargets();
-		for (Sentence<S> sentence : getSentences()) {
-			sentence.resolveAll(resolver);
-		}
 	}
 
 	private final class ExecuteInstructions implements Instruction {

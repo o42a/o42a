@@ -28,6 +28,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -119,12 +120,15 @@ public abstract class StaticTypeRef extends TypeRef {
 			Rescoper rescoper);
 
 	@Override
-	protected void fullyResolve() {
-		ref().resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+
+		final Ref ref = ref();
+
+		ref.resolveAll(ref.getScope().dummyResolver());
 		validate();
 	}
 
-	private final Ref ref() {
+	private Ref ref() {
 		return typeObject(dummyUser()).selfRef();
 	}
 

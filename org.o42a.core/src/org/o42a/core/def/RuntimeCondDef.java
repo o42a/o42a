@@ -24,7 +24,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 
 import org.o42a.core.ref.Logical;
-import org.o42a.util.use.UserInfo;
+import org.o42a.core.ref.Resolver;
 
 
 final class RuntimeCondDef extends CondDef {
@@ -62,7 +62,7 @@ final class RuntimeCondDef extends CondDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(UserInfo user) {
+	protected void fullyResolveDef(Resolver resolver) {
 	}
 
 	@Override

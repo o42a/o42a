@@ -995,9 +995,13 @@ public class Definitions extends Scoped {
 		return values;
 	}
 
-	private static final void resolveAll(Def<?>[] defs) {
+	private final void resolveAll(Def<?>[] defs) {
+
+		final Resolver resolver = getScope().newResolver(
+				getScope().getContainer().toObject().value());
+
 		for (Def<?> def : defs) {
-			def.resolveAll();
+			def.resolveAll(resolver);
 		}
 	}
 

@@ -317,13 +317,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void resolveAll(Resolver resolver) {
-		if (resolver == null) {
-			for (Statement statement : getStatements()) {
-				statement.resolveAll();
-			}
-			return;
-		}
+	final void resolveValues(Resolver resolver) {
 		for (Statement statement : getStatements()) {
 			statement.resolveValues(resolver);
 		}

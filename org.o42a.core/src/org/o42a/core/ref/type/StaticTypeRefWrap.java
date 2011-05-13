@@ -22,6 +22,7 @@ package org.o42a.core.ref.type;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -96,9 +97,8 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 	}
 
 	@Override
-	protected void fullyResolve() {
-		super.fullyResolve();
-		this.wrapped.resolveAll();
+	protected void fullyResolve(Resolver resolver) {
+		this.wrapped.resolveAll(resolver);
 	}
 
 	private static final class WrapRescoper extends RescoperWrap {

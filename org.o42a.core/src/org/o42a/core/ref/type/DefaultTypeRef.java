@@ -22,6 +22,7 @@ package org.o42a.core.ref.type;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 
@@ -96,10 +97,9 @@ final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
-	protected void fullyResolve() {
+	protected void fullyResolve(Resolver resolver) {
 		validate();
-		this.ref.resolveAll();
-		getRescoper().resolveAll();
+		this.ref.resolveAll(resolver);
 	}
 
 }

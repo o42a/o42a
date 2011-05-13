@@ -117,7 +117,8 @@ public abstract class Link extends MaterializableArtifact<Link> {
 
 	@Override
 	protected void fullyResolveArtifact() {
-		getTargetRef().resolveAll();
+		getTargetRef().resolveAll(
+				getScope().getEnclosingScope().newResolver(content()));
 	}
 
 	private void define() {

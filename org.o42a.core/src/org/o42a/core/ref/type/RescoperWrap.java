@@ -57,8 +57,8 @@ abstract class RescoperWrap extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll() {
-		wrapped().resolveAll();
+	public void resolveAll(Resolver resolver) {
+		wrapped().resolveAll(resolver);
 	}
 
 	@Override

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st;
 
+import static org.o42a.util.use.Usable.simpleUsable;
+
 import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -29,12 +31,14 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.Usable;
 
 
 public abstract class Statement extends Placed {
 
 	private StOp op;
-	private byte allResolved;
+	private Usable<?> fullResolution;
+	private Usable<?> valueResolution;
 
 	public Statement(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
@@ -66,22 +70,35 @@ public abstract class Statement extends Placed {
 
 	public abstract Statement reproduce(Reproducer reproducer);
 
-	public final void resolveAll() {
-		if (this.allResolved != 0) {
+	public final void resolveAll(Resolver resolver) {
+		if (this.fullResolution != null) {
+			this.fullResolution.useBy(resolver);
 			return;
 		}
-		this.allResolved = 1;
+		this.fullResolution = simpleUsable("FullResolution", this);
+		resolver = resolver.newResolver(this.fullResolution);
 		getContext().fullResolution().start();
 		try {
-			fullyResolve();
+			fullyResolve(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}
 	}
 
 	public final void resolveValues(Resolver resolver) {
-		fullyResolveValues(resolver);
-		this.allResolved = 2;
+		resolveAll(resolver);
+		if (this.valueResolution != null) {
+			this.valueResolution.useBy(resolver);
+			return;
+		}
+		this.valueResolution = simpleUsable("ValueResolution", this);
+		resolver = resolver.newResolver(this.valueResolution);
+		getContext().fullResolution().start();
+		try {
+			fullyResolveValues(resolver);
+		} finally {
+			getContext().fullResolution().end();
+		}
 	}
 
 	public final StOp op(LocalBuilder builder) {
@@ -98,12 +115,12 @@ public abstract class Statement extends Placed {
 	}
 
 	public final boolean assertFullyResolved() {
-		assert this.allResolved != 0 :
+		assert this.fullResolution != null :
 			this + " is not fully resolved";
 		return true;
 	}
 
-	protected abstract void fullyResolve();
+	protected abstract void fullyResolve(Resolver resolver);
 
 	protected abstract void fullyResolveValues(Resolver resolver);
 

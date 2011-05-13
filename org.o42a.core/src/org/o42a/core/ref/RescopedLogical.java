@@ -88,7 +88,8 @@ final class RescopedLogical extends Logical {
 	@Override
 	protected void fullyResolve(UserInfo user) {
 		this.logical.resolveAll(user);
-		this.rescoper.resolveAll();
+		this.rescoper.resolveAll(
+				this.rescoper.getFinalScope().newResolver(user));
 	}
 
 }
