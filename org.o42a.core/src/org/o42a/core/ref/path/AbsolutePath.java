@@ -26,15 +26,23 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.log.LoggableData;
+import org.o42a.util.use.UserInfo;
 
 
 public final class AbsolutePath extends Path {
+
+	private CompilerContext context;
+	private Obj startObject;
+	private int startIndex;
 
 	AbsolutePath() {
 		super(true, new PathFragment[0]);
@@ -131,42 +139,63 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
-	HostOp write(CodeDirs dirs, HostOp start) {
-
-		final Container target = resolve(start.getContext());
-
-		return target.getScope().ir(start.getGenerator()).op(
-				start.getBuilder(),
-				dirs.code());
+	PathTracker startWalk(UserInfo user, Scope start, PathWalker walker) {
+		if (!walker.root(this, start)) {
+			return null;
+		}
+		if (user.toUser().isDummy()) {
+			return new PathTracker(user, walker);
+		}
+		return new AbsolutePathTracker(
+				user,
+				walker,
+				startIndex(start.getContext()));
 	}
 
-	private static final class AbsolutePathTarget extends PathTarget {
+	HostOp write(CodeDirs dirs, CodeBuilder builder) {
 
-		AbsolutePathTarget(
-				LocationInfo location,
-				Distributor distributor,
-				Path path) {
-			super(location, distributor, path);
+		final CompilerContext context = builder.getContext();
+		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
+		HostOp found = start.op(builder, dirs.code());
+		final PathFragment[] fragments = getFragments();
+
+		for (int i = startIndex(context); i < fragments.length; ++i) {
+			found = fragments[i].write(dirs, found);
+			if (found == null) {
+				throw new IllegalStateException(toString(i + 1) + " not found");
+			}
 		}
 
-		@Override
-		public boolean isStatic() {
-			return true;
-		}
+		return found;
+	}
 
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			return new AbsolutePathTarget(
-					this,
-					reproducer.distribute(),
-					getPath());
+	Obj startObject(CompilerContext context) {
+		if (this.startObject == null || !this.context.compatible(context)) {
+			findStart(context);
 		}
+		return this.startObject;
+	}
 
-		@Override
-		protected boolean isKnownStatic() {
-			return true;
+	int startIndex(CompilerContext context) {
+		if (this.startObject == null || !this.context.compatible(context)) {
+			findStart(context);
 		}
+		return this.startIndex;
+	}
 
+	private void findStart(CompilerContext context) {
+
+		final AbsolutePathStartFinder walker = new AbsolutePathStartFinder();
+
+		walk(
+				new Location(context, new LoggableData(this)),
+				dummyUser(),
+				context.getRoot().getScope(),
+				walker);
+
+		this.context = context;
+		this.startIndex = walker.getStartIndex();
+		this.startObject = walker.getStartObject();
 	}
 
 }
