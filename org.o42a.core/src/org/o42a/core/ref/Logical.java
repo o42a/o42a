@@ -35,7 +35,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.util.use.Usable;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class Logical extends LogicalBase {
@@ -404,16 +403,16 @@ public abstract class Logical extends LogicalBase {
 		return new RescopedLogical(this, rescoper);
 	}
 
-	public final void resolveAll(UserInfo user) {
+	public final void resolveAll(Resolver resolver) {
 		if (this.fullResolution != null) {
-			this.fullResolution.useBy(user);
+			this.fullResolution.useBy(resolver);
 			return;
 		}
 		this.fullResolution = simpleUsable("FullResolution", this);
-		this.fullResolution.useBy(user);
+		resolver = resolver.newResolver(this.fullResolution);
 		getContext().fullResolution().start();
 		try {
-			fullyResolve(this.fullResolution);
+			fullyResolve(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -467,6 +466,6 @@ public abstract class Logical extends LogicalBase {
 		return null;
 	}
 
-	protected abstract void fullyResolve(UserInfo user);
+	protected abstract void fullyResolve(Resolver resolver);
 
 }

@@ -28,7 +28,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.util.use.UserInfo;
 
 
 final class LogicalOr extends Logical {
@@ -156,9 +155,9 @@ final class LogicalOr extends Logical {
 	}
 
 	@Override
-	protected void fullyResolve(UserInfo user) {
+	protected void fullyResolve(Resolver resolver) {
 		for (Logical variant : this.variants) {
-			variant.resolveAll(user);
+			variant.resolveAll(resolver);
 		}
 	}
 

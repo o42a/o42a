@@ -24,7 +24,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.util.use.UserInfo;
 
 
 final class RescopedLogical extends Logical {
@@ -86,10 +85,9 @@ final class RescopedLogical extends Logical {
 	}
 
 	@Override
-	protected void fullyResolve(UserInfo user) {
-		this.logical.resolveAll(user);
-		this.rescoper.resolveAll(
-				this.rescoper.getFinalScope().newResolver(user));
+	protected void fullyResolve(Resolver resolver) {
+		this.rescoper.resolveAll(resolver);
+		this.logical.resolveAll(this.rescoper.rescope(resolver));
 	}
 
 }
