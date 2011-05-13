@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -183,6 +182,10 @@ class PathTarget extends Expression {
 		return super.toString();
 	}
 
+	protected final Path path() {
+		return this.path;
+	}
+
 	@Override
 	protected Resolution resolveExpression(Resolver resolver) {
 
@@ -249,12 +252,7 @@ class PathTarget extends Expression {
 			final PathTarget ref = (PathTarget) getRef();
 			final HostOp start;
 
-			if (ref.path.isAbsolute()) {
-
-				final Obj root = host().getContext().getRoot();
-
-				start = root.ir(getGenerator()).op(getBuilder(), dirs.code());
-			} else if (ref.start != null) {
+			if (ref.start != null) {
 				start = ref.start.op(host()).target(dirs);
 			} else {
 				start = host();

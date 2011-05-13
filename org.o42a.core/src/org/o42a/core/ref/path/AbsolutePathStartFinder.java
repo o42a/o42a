@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -27,32 +29,37 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 
 
-final class PathWalkTracker implements PathWalker {
+class AbsolutePathStartFinder implements PathWalker {
 
-	private final PathWalker walker;
-	private boolean aborted;
+	private int index;
+	private Obj startObject;
+	private int startIndex;
+	private boolean unreachable;
 
-	PathWalkTracker(PathWalker walker) {
-		this.walker = walker;
+	public final Obj getStartObject() {
+		return this.startObject;
 	}
 
-	public final boolean isAborted() {
-		return this.aborted;
+	public final int getStartIndex() {
+		return this.startIndex;
 	}
 
 	@Override
 	public boolean root(Path path, Scope root) {
-		return walk(this.walker.root(path, root));
+		this.startObject = root.getContainer().toObject();
+		return false;
 	}
 
 	@Override
 	public boolean start(Path path, Scope start) {
-		return walk(this.walker.start(path, start));
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean module(PathFragment fragment, Obj module) {
-		return walk(this.walker.module(fragment, module));
+		this.startObject = module;
+		this.startIndex = ++this.index;
+		return true;
 	}
 
 	@Override
@@ -60,7 +67,7 @@ final class PathWalkTracker implements PathWalker {
 			Container enclosed,
 			PathFragment fragment,
 			Container enclosing) {
-		return walk(this.walker.up(enclosed, fragment, enclosing));
+		return set(enclosing.toObject());
 	}
 
 	@Override
@@ -68,15 +75,19 @@ final class PathWalkTracker implements PathWalker {
 			Container container,
 			PathFragment fragment,
 			Member member) {
-		return walk(this.walker.member(container, fragment, member));
+
+		final Field<?> field = member.toField(dummyUser());
+
+		if (field == null) {
+			return unreachable();
+		}
+
+		return set(field.getContainer().toObject());
 	}
 
 	@Override
-	public boolean dep(
-			Obj object,
-			PathFragment fragment,
-			Field<?> dependency) {
-		return walk(this.walker.dep(object, fragment, dependency));
+	public boolean dep(Obj object, PathFragment fragment, Field<?> dependency) {
+		return unreachable();
 	}
 
 	@Override
@@ -84,21 +95,32 @@ final class PathWalkTracker implements PathWalker {
 			Artifact<?> artifact,
 			PathFragment fragment,
 			Obj result) {
-		return walk(this.walker.materialize(artifact, fragment, result));
+		return set(result);
 	}
 
 	@Override
 	public void abortedAt(Scope last, PathFragment brokenFragment) {
-		this.walker.abortedAt(last, brokenFragment);
 	}
 
 	@Override
 	public boolean done(Container result) {
-		return walk(this.walker.done(result));
+		return false;
 	}
 
-	private final boolean walk(boolean succeed) {
-		return this.aborted = !succeed;
+	private final boolean set(Obj object) {
+		if (object == null || this.unreachable) {
+			++this.index;
+			return true;
+		}
+		this.startObject = object;
+		this.startIndex = ++this.index;
+		return true;
+	}
+
+	private final boolean unreachable() {
+		this.unreachable = true;
+		++this.index;
+		return true;
 	}
 
 }

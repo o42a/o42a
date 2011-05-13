@@ -431,7 +431,14 @@ public class Path {
 		return out.toString();
 	}
 
-	HostOp write(CodeDirs dirs, HostOp start) {
+	PathTracker startWalk(UserInfo user, Scope start, PathWalker walker) {
+		if (!walker.start(this, start)) {
+			return null;
+		}
+		return new PathTracker(user, walker);
+	}
+
+	final HostOp write(CodeDirs dirs, HostOp start) {
 
 		HostOp found = start;
 
@@ -470,24 +477,20 @@ public class Path {
 			UserInfo user,
 			Scope start,
 			PathWalker walker) {
-		if (isAbsolute()) {
-			if (!walker.root(this, start)) {
-				return null;
-			}
-		} else {
-			if (!walker.start(this, start)) {
-				return null;
-			}
+
+		final PathTracker tracker = startWalk(user, start, walker);
+
+		if (tracker == null) {
+			return null;
 		}
 
-		final PathWalkTracker tracker = new PathWalkTracker(walker);
 		Container result = start.getContainer();
 		Scope prev = start;
 
 		for (int i = 0; i < this.fragments.length; ++i) {
 			result = this.fragments[i].resolve(
 					location,
-					user,
+					tracker.nextUser(),
 					this,
 					i,
 					prev,
@@ -496,13 +499,13 @@ public class Path {
 				return null;
 			}
 			if (result == null) {
-				walker.abortedAt(prev, this.fragments[i]);
+				tracker.abortedAt(prev, this.fragments[i]);
 				return null;
 			}
 			prev = result.getScope();
 		}
 
-		if (!walker.done(result)) {
+		if (!tracker.done(result)) {
 			return null;
 		}
 
