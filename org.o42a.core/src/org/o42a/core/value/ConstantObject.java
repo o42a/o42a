@@ -32,7 +32,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Resolver;
 
 
 final class ConstantObject<T> extends PlainObject {
@@ -79,11 +78,6 @@ final class ConstantObject<T> extends PlainObject {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return getValue();
-	}
-
-	@Override
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
 		return new ValueIR(objectIR);
 	}
@@ -108,7 +102,8 @@ final class ConstantObject<T> extends PlainObject {
 		@Override
 		public ValOp writeValue(Code code) {
 
-			final ValOp result = code.allocate(null, VAL_TYPE);
+			final ValOp result =
+				code.allocate(null, VAL_TYPE).storeIndefinite(code);
 
 			result.store(code, value().val(getGenerator()));
 
@@ -119,9 +114,8 @@ final class ConstantObject<T> extends PlainObject {
 		public ValOp writeValue(CodeDirs dirs) {
 
 			final Code code = dirs.code();
-			final ValOp result = code.allocate(null, VAL_TYPE);
+			final ValOp result = writeValue(code);
 
-			result.store(code, value().val(getGenerator()));
 			result.go(code, dirs);
 
 			return result;

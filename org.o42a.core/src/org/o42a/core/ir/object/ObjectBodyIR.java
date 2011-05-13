@@ -267,7 +267,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		final Generator generator = getGenerator();
 
-		if (!generator.isUseAnalysed()) {
+		if (!generator.isUsesAnalysed()) {
 			return true;
 		}
 

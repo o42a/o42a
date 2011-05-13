@@ -21,29 +21,27 @@ package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.common.ir.ProposedValueIR;
-import org.o42a.common.object.IntrinsicObject;
+import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
-public abstract class UnaryResult<T, O> extends IntrinsicObject {
+public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 	private final ValueType<O> operandType;
 	private final String operandName;
@@ -74,29 +72,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
-	}
-
-	@Override
-	protected Definitions explicitDefinitions() {
-
-		final Ref self = selfRef();
-
-		self.setEnv(defaultEnv(this));
-
-		return self.define(getScope());
-	}
-
-	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
+	public Value<?> calculateBuiltin(Resolver resolver) {
 
 		final Obj operandObject =
 			resolver.getScope().getContainer()
@@ -125,12 +101,49 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 		return getResultType().constantValue(result);
 	}
 
-	protected abstract T calculate(O operand);
+	@Override
+	public void resolveBuiltin(Obj object) {
+
+		final UserInfo user = object.value();
+		final Obj operandObject =
+			object.member(operandKey())
+			.substance(object.getScope().newResolver(user))
+			.toArtifact()
+			.materialize();
+
+		operandObject.value().useBy(user).getValue();
+	}
 
 	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
+	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+
+		final CodeBlk failure = code.addBlock("unary_failure");
+		final CodeDirs dirs = falseWhenUnknown(code, failure.head());
+		final ObjectOp operand =
+			host.field(dirs, operandKey()).materialize(dirs);
+		final ValOp operandVal = operand.writeValue(dirs);
+
+		write(dirs, result, operandVal);
+
+		if (failure.exists()) {
+			result.storeFalse(failure);
+			failure.go(code.tail());
+		}
 	}
+
+	@Override
+	protected Ascendants createAscendants() {
+		return new Ascendants(this).setAncestor(
+				getValueType().typeRef(this, getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
+	}
+
+	protected abstract T calculate(O operand);
 
 	protected abstract void write(CodeDirs dirs, ValOp result, ValOp operand);
 
@@ -143,33 +156,6 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 			member(memberName(this.operandName), Accessor.DECLARATION);
 
 		return this.operandKey = operandMember.getKey();
-	}
-
-	private static final class ValueIR extends ProposedValueIR {
-
-		ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-
-			final UnaryResult<?, ?> object =
-				(UnaryResult<?, ?>) getObjectIR().getObject();
-			final CodeBlk failure = code.addBlock("unary_failure");
-			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
-			final ObjectOp operand =
-				host.field(dirs, object.operandKey()).materialize(dirs);
-			final ValOp operandVal = operand.writeValue(dirs);
-
-			object.write(dirs, result, operandVal);
-
-			if (failure.exists()) {
-				result.storeFalse(failure);
-				failure.go(code.tail());
-			}
-		}
-
 	}
 
 }

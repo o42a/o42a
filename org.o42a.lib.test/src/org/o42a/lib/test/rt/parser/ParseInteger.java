@@ -39,6 +39,18 @@ final class ParseInteger extends IntegerByString {
 	}
 
 	@Override
+	public Value<?> calculateBuiltin(Resolver resolver) {
+
+		final Value<?> value = super.calculateBuiltin(resolver);
+
+		if (!value.getLogicalValue().isTrue()) {
+			return value;
+		}
+
+		return getValueType().runtimeValue();
+	}
+
+	@Override
 	protected Ascendants createAscendants() {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
@@ -49,18 +61,6 @@ final class ParseInteger extends IntegerByString {
 		return new Ascendants(this).setAncestor(
 				ancestorPath.target(this, enclosingScope.distribute())
 				.toTypeRef());
-	}
-
-	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-
-		final Value<?> value = super.calculateValue(resolver);
-
-		if (!value.getLogicalValue().isTrue()) {
-			return value;
-		}
-
-		return getValueType().runtimeValue();
 	}
 
 	@Override

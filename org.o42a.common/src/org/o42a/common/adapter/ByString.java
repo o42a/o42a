@@ -21,31 +21,29 @@ package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.common.ir.ProposedValueIR;
-import org.o42a.common.object.IntrinsicObject;
+import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
-public abstract class ByString<T> extends IntrinsicObject {
+public abstract class ByString<T> extends IntrinsicBuiltin {
 
 	private MemberKey inputKey;
 
@@ -69,29 +67,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
-	}
-
-	@Override
-	protected Definitions explicitDefinitions() {
-
-		final Ref self = selfRef();
-
-		self.setEnv(defaultEnv(this));
-
-		return self.define(getScope());
-	}
-
-	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
+	public Value<?> calculateBuiltin(Resolver resolver) {
 
 		final Obj inputObject =
 			resolver.getScope().getContainer()
@@ -124,8 +100,43 @@ public abstract class ByString<T> extends IntrinsicObject {
 	}
 
 	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
+	public void resolveBuiltin(Obj object) {
+
+		final UserInfo user = object.value();
+		final Obj inputObject =
+			object.member(inputKey())
+			.substance(object.getScope().newResolver(user))
+			.toArtifact()
+			.materialize();
+
+		inputObject.value().useBy(user);
+	}
+
+	@Override
+	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+
+		final CodeBlk cantParse = code.addBlock("cant_parse");
+		final CodeDirs dirs = falseWhenUnknown(code, cantParse.head());
+		final ObjectOp input =
+			host.field(dirs, inputKey()).materialize(dirs);
+
+		parse(code, result, input);
+		if (cantParse.exists()) {
+			result.storeFalse(cantParse);
+			cantParse.go(code.tail());
+		}
+	}
+
+	@Override
+	protected Ascendants createAscendants() {
+		return new Ascendants(this).setAncestor(
+				getValueType().typeRef(this, getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
 	}
 
 	protected abstract T byString(
@@ -144,29 +155,6 @@ public abstract class ByString<T> extends IntrinsicObject {
 			member(memberName("input"), Accessor.DECLARATION);
 
 		return this.inputKey = operandMember.getKey();
-	}
-
-	private final class ValueIR extends ProposedValueIR {
-
-		public ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-
-			final CodeBlk cantParse = code.addBlock("cant_parse");
-			final CodeDirs dirs = falseWhenUnknown(code, cantParse.head());
-			final ObjectOp input =
-				host.field(dirs, inputKey()).materialize(dirs);
-
-			parse(code, result, input);
-			if (cantParse.exists()) {
-				result.storeFalse(cantParse);
-				cantParse.go(code.tail());
-			}
-		}
-
 	}
 
 }
