@@ -19,19 +19,29 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.ref.Ref.voidRef;
+import static org.o42a.core.ir.op.Val.VOID_VAL;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.Global;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.common.ir.BuiltinValueIR;
+import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.*;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ir.object.ObjValOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
@@ -40,15 +50,28 @@ import org.o42a.util.Source;
 import org.o42a.util.log.LoggableData;
 
 
-public final class VoidObject extends Obj {
+public final class VoidObject extends BuiltinObject {
 
 	public VoidObject(Scope topScope) {
-		super(voidScope(topScope));
+		super(voidScope(topScope), ValueType.VOID);
 	}
 
 	@Override
 	public Path scopePath() {
 		return null;
+	}
+
+	@Override
+	public Value<?> calculateBuiltin(Resolver resolver) {
+		return voidValue();
+	}
+
+	@Override
+	public void resolveBuiltin(Obj object) {
+	}
+
+	@Override
+	public void writeBuiltin(Code code, ValOp result, HostOp host) {
 	}
 
 	@Override
@@ -62,27 +85,8 @@ public final class VoidObject extends Obj {
 	}
 
 	@Override
-	protected ValueType<?> resolveValueType() {
-		return ValueType.VOID;
-	}
-
-	@Override
-	protected void declareMembers(ObjectMembers members) {
-	}
-
-	@Override
-	protected Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ascendantDefinitions) {
-		if (ascendantDefinitions != null) {
-			return ascendantDefinitions;
-		}
-		return voidRef(this, scope.distribute()).toValueDef().toDefinitions();
-	}
-
-	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return voidValue();
+	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
+		return new ValueIR(this, objectIR);
 	}
 
 	private static VoidScope voidScope(Scope topScope) {
@@ -163,6 +167,61 @@ public final class VoidObject extends Obj {
 			final Obj object = getScope().getContainer().toObject();
 
 			return object.ir(getGenerator()).op(builder, code);
+		}
+
+	}
+
+	private static final class ValueIR
+			extends BuiltinValueIR
+			implements ObjValOp {
+
+		private Ptr<ValOp> truePtr;
+
+		ValueIR(VoidObject builtin, ObjectIR objectIR) {
+			super(builtin, objectIR);
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs) {
+		}
+
+		@Override
+		public ValOp writeValue(Code code) {
+			return trueVal(code);
+		}
+
+		@Override
+		public ValOp writeValue(CodeDirs dirs) {
+			return trueVal(dirs.code());
+		}
+
+		@Override
+		public ValOp writeValue(CodeDirs dirs, ValOp result) {
+			result.storeVoid(dirs.code());
+			return result;
+		}
+
+		@Override
+		public ObjValOp op(CodeBuilder builder, Code code) {
+			return this;
+		}
+
+		private final ValOp trueVal(Code code) {
+			return truePtr().op(code.id("TRUE"), code);
+		}
+
+		private final Ptr<ValOp> truePtr() {
+			if (this.truePtr != null) {
+				return this.truePtr;
+			}
+
+			final Global<ValOp, ValOp.Type> instance =
+				getGenerator().newGlobal().setConstant().newInstance(
+						getGenerator().topId().sub("TRUE"),
+						VAL_TYPE,
+						VOID_VAL);
+
+			return this.truePtr = instance.getPointer();
 		}
 
 	}

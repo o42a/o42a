@@ -44,7 +44,7 @@ public abstract class Generator implements UserInfo {
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
 	private final Debug debug;
-	private boolean useAnalysed = true;
+	private boolean usesAnalysed = true;
 
 	public Generator(String id) {
 		if (id == null) {
@@ -95,12 +95,12 @@ public abstract class Generator implements UserInfo {
 		this.debug.setDebug(debug);
 	}
 
-	public final boolean isUseAnalysed() {
-		return this.useAnalysed;
+	public final boolean isUsesAnalysed() {
+		return this.usesAnalysed;
 	}
 
-	public final void setUeAnalysed(boolean useAnalysed) {
-		this.useAnalysed = useAnalysed;
+	public final void setUsesAnalysed(boolean usesAnalysed) {
+		this.usesAnalysed = usesAnalysed;
 	}
 
 	public final CodeId id() {

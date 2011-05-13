@@ -24,7 +24,6 @@ import org.o42a.common.def.BuiltinValueDef;
 import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 
@@ -43,7 +42,7 @@ public abstract class IntrinsicBuiltin
 	}
 
 	@Override
-	protected final ObjectValueIR createValueIR(ObjectIR objectIR) {
+	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
 		return new BuiltinValueIR(this, objectIR);
 	}
 

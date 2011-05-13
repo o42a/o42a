@@ -24,12 +24,13 @@ import org.o42a.common.def.BuiltinValueDef;
 import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.value.ValueType;
 
 
@@ -40,6 +41,16 @@ public abstract class BuiltinObject extends PlainObject implements Builtin {
 			Distributor enclosing,
 			ValueType<?> valueType) {
 		super(location, enclosing);
+		setValueType(valueType);
+	}
+
+	protected BuiltinObject(ObjectScope scope, ValueType<?> valueType) {
+		super(scope);
+		setValueType(valueType);
+	}
+
+	protected BuiltinObject(Scope scope, ValueType<?> valueType) {
+		super(scope);
 		setValueType(valueType);
 	}
 
@@ -64,7 +75,7 @@ public abstract class BuiltinObject extends PlainObject implements Builtin {
 	}
 
 	@Override
-	protected final ObjectValueIR createValueIR(ObjectIR objectIR) {
+	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
 		return new BuiltinValueIR(this, objectIR);
 	}
 

@@ -48,6 +48,18 @@ final class ParseString extends ByString<String> {
 	}
 
 	@Override
+	public Value<?> calculateBuiltin(Resolver resolver) {
+
+		final Value<?> value = super.calculateBuiltin(resolver);
+
+		if (!value.getLogicalValue().isTrue()) {
+			return value;
+		}
+
+		return getValueType().runtimeValue();
+	}
+
+	@Override
 	protected Ascendants createAscendants() {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
@@ -61,19 +73,10 @@ final class ParseString extends ByString<String> {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-
-		final Value<?> value = super.calculateValue(resolver);
-
-		if (!value.getLogicalValue().isTrue()) {
-			return value;
-		}
-
-		return getValueType().runtimeValue();
-	}
-
-	@Override
-	protected String byString(LocationInfo location, Resolver resolver, String input) {
+	protected String byString(
+			LocationInfo location,
+			Resolver resolver,
+			String input) {
 		return input;
 	}
 
