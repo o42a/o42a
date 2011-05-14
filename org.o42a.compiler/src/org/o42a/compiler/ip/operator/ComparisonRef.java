@@ -52,6 +52,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
 public final class ComparisonRef extends ObjectConstructor {
@@ -170,7 +171,9 @@ public final class ComparisonRef extends ObjectConstructor {
 			}
 
 			final Field<?> field =
-				resolver.getContainer().member(this.comparisonKey).toField(resolver);
+				resolver.getContainer()
+				.member(this.comparisonKey)
+				.toField(resolver);
 			final Value<?> value =
 				field.getArtifact().toObject()
 				.value().useBy(resolver).getValue();
@@ -188,6 +191,12 @@ public final class ComparisonRef extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Obj object) {
+
+			final UserInfo user = object.value();
+			final Field<?> field =
+				object.member(this.comparisonKey).toField(user);
+
+			field.getArtifact().toObject().value().useBy(user);
 		}
 
 		@Override
