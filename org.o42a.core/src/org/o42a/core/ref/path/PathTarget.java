@@ -115,6 +115,8 @@ class PathTarget extends Expression {
 		if (path == null) {
 			start = this.start;
 			path = this.path;
+		} else if (path.isAbsolute()) {
+			return path.target(this, reproducer.distribute());
 		} else {
 			start = null;
 		}

@@ -74,18 +74,14 @@ public class Path {
 	private final boolean absolute;
 	private final PathFragment[] fragments;
 
-	Path(PathFragment fragment) {
-		this.absolute = false;
-		this.fragments = new PathFragment[] {fragment};
-	}
-
-	private Path(PathFragment[] fragments) {
-		this(false, fragments);
-	}
-
-	Path(boolean absolute, PathFragment[] fragments) {
-		this.fragments = fragments;
+	Path(boolean absolute, PathFragment... fragments) {
 		this.absolute = absolute;
+		this.fragments = fragments;
+	}
+
+	Path(PathFragment... fragments) {
+		this.absolute = false;
+		this.fragments = fragments;
 	}
 
 	public final boolean isAbsolute() {
@@ -93,7 +89,7 @@ public class Path {
 	}
 
 	public final boolean isSelf() {
-		return this.fragments.length == 0 && !this.absolute;
+		return this.fragments.length == 0 && !isAbsolute();
 	}
 
 	public PathFragment[] getFragments() {
@@ -122,8 +118,7 @@ public class Path {
 		return walkPathToArtifact(
 				location,
 				user,
-				this.absolute
-				? start.getContext().getRoot().getScope() : start,
+				isAbsolute() ? start.getContext().getRoot().getScope() : start,
 				walker);
 	}
 
@@ -175,7 +170,7 @@ public class Path {
 		return walkPath(
 				location,
 				user,
-				this.absolute ? start.getContext().getRoot().getScope() : start,
+				isAbsolute() ? start.getContext().getRoot().getScope() : start,
 				walker);
 	}
 
@@ -274,10 +269,6 @@ public class Path {
 
 		start.assertCompatibleScope(distributor);
 
-		if (isAbsolute()) {
-			return target(location, distributor);
-		}
-
 		return new PathTarget(location, distributor, this, start);
 	}
 
@@ -364,14 +355,7 @@ public class Path {
 
 	@Override
 	public int hashCode() {
-
-		final int prime = 31;
-		int result = 1;
-
-		result = prime * result + (this.absolute ? 1231 : 1237);
-		result = prime * result + Arrays.hashCode(this.fragments);
-
-		return result;
+		return Arrays.hashCode(this.fragments);
 	}
 
 	@Override
@@ -388,14 +372,7 @@ public class Path {
 
 		final Path other = (Path) obj;
 
-		if (this.absolute != other.absolute) {
-			return false;
-		}
-		if (!Arrays.equals(this.fragments, other.fragments)) {
-			return false;
-		}
-
-		return true;
+		return Arrays.equals(this.fragments, other.fragments);
 	}
 
 	@Override

@@ -44,10 +44,6 @@ public final class AbsolutePath extends Path {
 	private Obj startObject;
 	private int startIndex;
 
-	AbsolutePath() {
-		super(true, new PathFragment[0]);
-	}
-
 	AbsolutePath(PathFragment... fragments) {
 		super(true, fragments);
 	}
@@ -90,6 +86,14 @@ public final class AbsolutePath extends Path {
 		final Artifact<?> target = resolveArtifact(container.getContext());
 
 		return target(target, declarativeDistributor(container));
+	}
+
+	@Override
+	public Ref target(
+			LocationInfo location,
+			Distributor distributor,
+			Ref start) {
+		return new AbsolutePathTarget(location, distributor, this);
 	}
 
 	@Override
