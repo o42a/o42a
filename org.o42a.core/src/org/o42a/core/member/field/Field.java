@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -26,8 +28,6 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.*;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
 
@@ -39,24 +39,24 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	private Path enclosingScopePath;
 	private Field<A>[] overridden;
 
-	private Container container;
+	private MemberContainer container;
 	private FieldIR<A> ir;
 
 	public Field(MemberField member) {
 		this.member = member;
 	}
 
-	protected Field(Container enclosingContainer, Field<A> overridden) {
-		this(enclosingContainer, overridden, true);
-		setScopeArtifact(propagateArtifact(overridden));
+	protected Field(MemberOwner owner, Field<A> overridden) {
+		this(owner, overridden, true);
+		setFieldArtifact(propagateArtifact(overridden));
 	}
 
 	protected Field(
-			Container enclosingContainer,
+			MemberOwner owner,
 			Field<A> overridden,
 			boolean propagate) {
-		this.member = new MemberField.Overridden(
-				enclosingContainer,
+		this.member = new OverriddenMemberField(
+				owner,
 				this,
 				overridden.toMember(),
 				propagate);
@@ -89,7 +89,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 				return null;
 			}
 
-			final Obj object = getScopeArtifact().toObject();
+			final Obj object = getFieldArtifact().toObject();
 
 			if (object == null) {
 				return null;
@@ -102,7 +102,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	@Override
-	public final Container getContainer() {
+	public final MemberContainer getContainer() {
 		if (this.container != null) {
 			return this.container;
 		}
@@ -114,6 +114,10 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		}
 
 		return this.container = new FieldContainer(this);
+	}
+
+	public boolean isScopeField() {
+		return false;
 	}
 
 	public final boolean isLocal() {
@@ -141,7 +145,8 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
 		final MemberKey key = getKey();
 		final Member member = key.getOrigin().getContainer().member(key);
-		final Field<A> original = member.toField().toKind(getArtifactKind());
+		final Field<A> original =
+			member.toField(dummyUser()).toKind(getArtifactKind());
 
 		assert original.getArtifact().getKind() == getArtifact().getKind() :
 			"Wrong " + this + " artifact kind: " + getArtifact().getKind()
@@ -167,7 +172,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	 */
 	@SuppressWarnings("unchecked")
 	public final Field<A> getLastDefinition() {
-		return (Field<A>) this.member.getLastDefinition().toField();
+		return (Field<A>) this.member.getLastDefinition().toField(dummyUser());
 	}
 
 	/**
@@ -240,12 +245,12 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.member.isOverride();
 	}
 
-	public final Field<A> propagateTo(Scope scope) {
-		if (getEnclosingScope() == scope) {
+	public final Field<A> propagateTo(MemberOwner owner) {
+		if (getEnclosingScope() == owner.getScope()) {
 			return this;
 		}
-		scope.assertDerivedFrom(getEnclosingScope());
-		return propagate(scope);
+		owner.getScope().assertDerivedFrom(getEnclosingScope());
+		return propagate(owner);
 	}
 
 	@Override
@@ -261,7 +266,8 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 			final Obj object2 = other.getContainer().toObject();
 
 			if (object2 != null) {
-				return object1.derivedFrom(object2);
+				return object1.type().useBy(dummyUser()).derivedFrom(
+						object2.type().useBy(dummyUser()));
 			}
 		}
 
@@ -287,15 +293,17 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.member.toString();
 	}
 
-	protected void setScopeArtifact(A artifact) {
+	protected final A setFieldArtifact(A artifact) {
 		this.artifact = artifact;
+		toMember().setArtifact(artifact);
+		return artifact;
 	}
 
-	protected A getScopeArtifact() {
+	protected final A getFieldArtifact() {
 		return this.artifact;
 	}
 
-	protected abstract Field<A> propagate(Scope enclosingScope);
+	protected abstract Field<A> propagate(MemberOwner owner);
 
 	protected abstract A propagateArtifact(Field<A> overridden);
 
@@ -315,79 +323,11 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		final Field<A>[] overridden = new Field[overriddenMembers.length];
 
 		for (int i = 0; i < overridden.length; ++i) {
-			overridden[i] = (Field<A>) overriddenMembers[i].toField();
+			overridden[i] =
+				(Field<A>) overriddenMembers[i].toField(dummyUser());
 		}
 
 		return overridden;
-	}
-
-	private static final class FieldContainer extends AbstractContainer {
-
-		private final Field<?> field;
-
-		FieldContainer(Field<?> field) {
-			super(field);
-			this.field = field;
-		}
-
-		@Override
-		public Scope getScope() {
-			return this.field;
-		}
-
-		@Override
-		public Container getEnclosingContainer() {
-			return this.field.getEnclosingContainer();
-		}
-
-		@Override
-		public Member toMember() {
-			return this.field.toMember();
-		}
-
-		@Override
-		public Artifact<?> toArtifact() {
-			return this.field.getArtifact();
-		}
-
-		@Override
-		public Obj toObject() {
-			return null;
-		}
-
-		@Override
-		public Clause toClause() {
-			return null;
-		}
-
-		@Override
-		public LocalScope toLocal() {
-			return null;
-		}
-
-		@Override
-		public Namespace toNamespace() {
-			return null;
-		}
-
-		@Override
-		public Member member(MemberKey memberKey) {
-			return null;
-		}
-
-		@Override
-		public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
-			return null;
-		}
-
-		@Override
-		public Path findMember(
-				ScopeInfo user,
-				MemberId memberId,
-				Obj declaredIn) {
-			return null;
-		}
-
 	}
 
 }

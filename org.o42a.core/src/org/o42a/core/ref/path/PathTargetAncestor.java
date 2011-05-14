@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.value.Value.unknownValue;
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -29,8 +31,10 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -50,19 +54,19 @@ final class PathTargetAncestor extends Expression {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return ancestor(getScope()).getAncestor();
+		return resolveAncestor(getScope().dummyResolver()).getAncestor();
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
+	public Value<?> value(Resolver resolver) {
 
-		final TypeRef ancestor = ancestor(scope);
+		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
-			return Value.unknownValue();
+			return unknownValue();
 		}
 
-		return ancestor.getValue();
+		return ancestor.value(ancestor.getScope().newResolver(resolver));
 	}
 
 	@Override
@@ -87,15 +91,30 @@ final class PathTargetAncestor extends Expression {
 	}
 
 	@Override
-	protected Resolution resolveExpression(Scope scope) {
+	protected Resolution resolveExpression(Resolver resolver) {
 
-		final TypeRef ancestor = ancestor(scope);
+		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
 			return null;
 		}
 
-		return artifactResolution(ancestor.getArtifact());
+		return artifactResolution(ancestor.artifact(resolver));
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
 	}
 
 	@Override
@@ -103,12 +122,12 @@ final class PathTargetAncestor extends Expression {
 		return new AncestorOp(host, this);
 	}
 
-	private TypeRef ancestor(Scope scope) {
+	private TypeRef resolveAncestor(Resolver resolver) {
 		if (this.error) {
 			return null;
 		}
 
-		final Resolution resolution = this.ref.resolve(scope);
+		final Resolution resolution = this.ref.resolve(resolver);
 
 		if (resolution.isError()) {
 			this.error = true;
@@ -135,7 +154,7 @@ final class PathTargetAncestor extends Expression {
 						object.getScope().getEnclosingScope());
 			}
 
-			return object.getAncestor();
+			return object.type().useBy(dummyUser()).getAncestor();
 		}
 
 		final TypeRef typeRef = artifact.getTypeRef();

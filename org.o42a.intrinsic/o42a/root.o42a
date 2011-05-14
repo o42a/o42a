@@ -18,13 +18,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 Clauses := void(
-  Argument :=> void.
-  Imperative :=> void.
-  String :=> $$string.
-).
+  Argument :=> void
+  Imperative :=> void
+  String :=> $$string
+)
 
-Adapters := void(Include 'adapters.o42a').
+Operators := void(Include 'operators.o42a')
 
-Operators := void(Include 'operators.o42a').
-
-Number :=> void(Include 'number.o42a').
+Number :=> void(Include 'number.o42a')

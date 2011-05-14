@@ -26,14 +26,15 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class RescopableRef<R extends RescopableRef<R>>
 		extends Rescopable<R> {
 
-	private Resolution resolution;
 	private Ref rescopedRef;
 
 	public RescopableRef(Rescoper rescoper) {
@@ -49,30 +50,23 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		return this.rescopedRef = getRef().rescope(getRescoper());
 	}
 
-	public final Artifact<?> getArtifact() {
+	public final Artifact<?> artifact(UserInfo user) {
 
-		final Resolution resolution = getResolution();
+		final Resolution resolution = resolve(user);
 
 		return resolution.isError() ? null : resolution.toArtifact();
 	}
 
-	public final Resolution getResolution() {
-		if (this.resolution != null) {
-			return this.resolution;
-		}
-		return this.resolution = resolve(getScope());
+	public final Resolution resolve(UserInfo user) {
+		return resolve(getScope().newResolver(user));
 	}
 
-	public final Resolution resolve(Scope scope) {
-		return getRef().resolve(getRescoper().rescope(scope));
+	public final Resolution resolve(Resolver resolver) {
+		return getRef().resolve(getRescoper().rescope(resolver));
 	}
 
-	public final Value<?> getValue() {
-		return value(getScope());
-	}
-
-	public final Value<?> value(Scope scope) {
-		return getRef().value(getRescoper().rescope(scope));
+	public final Value<?> value(Resolver resolver) {
+		return getRef().value(getRescoper().rescope(resolver));
 	}
 
 	public R reproduce(Reproducer reproducer) {

@@ -19,11 +19,13 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
@@ -32,17 +34,30 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class Member extends Placed {
 
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
+	private final MemberOwner owner;
+
+	private MemberAnalysis analysis;
 	private Member lastDefinition;
 	private Member[] overridden;
 
-	public Member(LocationInfo location, Distributor distributor) {
+	public Member(
+			LocationInfo location,
+			Distributor distributor,
+			MemberOwner owner) {
 		super(location, distributor);
+		this.owner = owner;
+	}
+
+	public final MemberOwner getMemberOwner() {
+		return this.owner;
 	}
 
 	public abstract MemberId getId();
@@ -76,19 +91,26 @@ public abstract class Member extends Placed {
 		return out.toString();
 	}
 
+	public final MemberAnalysis getAnalysis() {
+		if (this.analysis != null) {
+			return this.analysis;
+		}
+		return this.analysis = new MemberAnalysis(this);
+	}
+
 	public abstract MemberField toMemberField();
 
 	public abstract MemberClause toMemberClause();
 
 	public abstract MemberLocal toMemberLocal();
 
-	public abstract Field<?> toField();
+	public abstract Field<?> toField(UserInfo user);
 
-	public abstract LocalScope toLocal();
+	public abstract LocalScope toLocal(UserInfo user);
 
 	public abstract Clause toClause();
 
-	public abstract Container getSubstance();
+	public abstract Container substance(UserInfo user);
 
 	public abstract Visibility getVisibility();
 
@@ -145,11 +167,14 @@ public abstract class Member extends Placed {
 		return getScope().derivedFrom(other.getDefinedIn());
 	}
 
-	public abstract Member propagateTo(Scope scope);
+	public abstract Member propagateTo(MemberOwner owner);
 
 	public abstract void resolveAll();
 
-	public abstract Member wrap(Member inherited, Container container);
+	public abstract Member wrap(
+			MemberOwner owner,
+			UserInfo user,
+			Member inherited);
 
 	@Override
 	public String toString() {
@@ -180,6 +205,18 @@ public abstract class Member extends Placed {
 		return out.toString();
 	}
 
+	protected final void useBy(UseInfo user) {
+		getAnalysis().useBy(user);
+	}
+
+	protected final void useSubstanceBy(UseInfo user) {
+		getAnalysis().useSubstanceBy(user);
+	}
+
+	protected final void useNestedBy(UseInfo user) {
+		getAnalysis().useNestedBy(user);
+	}
+
 	protected abstract void merge(Member member);
 
 	private Member[] overriddenMembers() {
@@ -187,15 +224,17 @@ public abstract class Member extends Placed {
 			return NOTHING_OVERRIDDEN;
 		}
 
-		final Obj container = getContainer().toObject();
-		final Sample[] containerSamples = container.getSamples();
+		final ObjectType containerType =
+			getContainer().toObject().type().useBy(dummyUser());
+		final Sample[] containerSamples = containerType.getSamples();
 		final ArrayList<Member> overridden;
-		final TypeRef containerAncestor = container.getAncestor();
+		final TypeRef containerAncestor = containerType.getAncestor();
 
 		if (containerAncestor != null) {
 
 			final Member ancestorMember =
-				containerAncestor.getType().member(getKey());
+				containerAncestor.type(dummyUser())
+				.getObject().member(getKey());
 
 			if (ancestorMember != null) {
 				overridden = new ArrayList<Member>(containerSamples.length + 1);
@@ -210,7 +249,7 @@ public abstract class Member extends Placed {
 		for (Sample containerSample : containerSamples) {
 
 			final Member sampleMember =
-				containerSample.getType().member(getKey());
+				containerSample.typeObject(dummyUser()).member(getKey());
 
 			if (sampleMember == null) {
 				continue;

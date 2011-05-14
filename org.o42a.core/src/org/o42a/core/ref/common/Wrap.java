@@ -19,7 +19,9 @@
 */
 package org.o42a.core.ref.common;
 
-import org.o42a.core.*;
+import org.o42a.core.CompilerContext;
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
@@ -28,6 +30,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -43,6 +46,11 @@ public abstract class Wrap extends Ref {
 
 	public Wrap(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
+	}
+
+	@Override
+	public boolean isStatic() {
+		return wrapped().isStatic();
 	}
 
 	@Override
@@ -63,13 +71,13 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final Resolution resolve(Scope scope) {
-		return wrapped().resolve(scope);
+	public final Resolution resolve(Resolver resolver) {
+		return wrapped().resolve(resolver);
 	}
 
 	@Override
-	public final Value<?> value(Scope scope) {
-		return wrapped().value(scope);
+	public final Value<?> value(Resolver resolver) {
+		return wrapped().value(resolver);
 	}
 
 	@Override
@@ -116,14 +124,6 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		if (this.wrapped != null) {
-			return this.wrapped.toFieldDefinition();
-		}
-		return new DefinitionWrap();
-	}
-
-	@Override
 	public String toString() {
 		if (this.wrapped != null) {
 			return this.wrapped.toString();
@@ -135,6 +135,24 @@ public abstract class Wrap extends Ref {
 
 	protected final Ref errorRef(LocationInfo location) {
 		return errorRef(location, distribute());
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		if (this.wrapped != null) {
+			return this.wrapped.toFieldDefinition();
+		}
+		return new DefinitionWrap();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		wrapped().resolveAll(resolver);
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		wrapped().resolveValues(resolver);
 	}
 
 	@Override

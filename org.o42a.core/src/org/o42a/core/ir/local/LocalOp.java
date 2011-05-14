@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.local;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.HostOp;
@@ -77,7 +79,8 @@ public final class LocalOp implements HostOp {
 	@Override
 	public LclOp field(CodeDirs dirs, MemberKey memberKey) {
 
-		final Field<?> field = getScope().member(memberKey).toField();
+		final Field<?> field =
+			getScope().member(memberKey).toField(dummyUser());
 		final FieldIR<?> fieldIR = field.ir(getGenerator());
 
 		return fieldIR.getLocal();

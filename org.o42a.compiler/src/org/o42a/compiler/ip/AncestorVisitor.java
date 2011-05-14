@@ -29,13 +29,16 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.core.*;
+import org.o42a.core.CompilerContext;
+import org.o42a.core.Distributor;
+import org.o42a.core.Location;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Expression;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.LoggableData;
@@ -168,7 +171,7 @@ public class AncestorVisitor
 
 	}
 
-	private static final class NoRef extends Expression {
+	private static final class NoRef extends Ref {
 
 		NoRef(CompilerContext context) {
 			super(
@@ -182,7 +185,22 @@ public class AncestorVisitor
 		}
 
 		@Override
-		protected Resolution resolveExpression(Scope scope) {
+		public Resolution resolve(Resolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected FieldDefinition createFieldDefinition() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolve(Resolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolveValues(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

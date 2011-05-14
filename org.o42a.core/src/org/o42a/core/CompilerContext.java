@@ -21,6 +21,7 @@ package org.o42a.core;
 
 import java.net.URL;
 
+import org.o42a.core.artifact.common.FullResolution;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -119,6 +120,10 @@ public abstract class CompilerContext {
 
 	public final BlockBuilder compileBlock() {
 		return getCompiler().compileBlock(this);
+	}
+
+	public final FullResolution fullResolution() {
+		return this.intrinsics.fullResolution();
 	}
 
 	@Override

@@ -19,56 +19,30 @@
 */
 package org.o42a.core.ref.common;
 
-import java.util.IdentityHashMap;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.util.log.Loggable;
 
 
 public abstract class Expression extends Ref {
 
-	private Resolution resolved;
-	private IdentityHashMap<Scope, Resolution> cache;
+	private final ExpressionCache cache =
+		new ExpressionCache(this);
 
 	public Expression(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
-	@Override
-	public final Resolution resolve(Scope scope) {
-		if (scope == getScope()) {
-			if (this.resolved != null) {
-				return this.resolved;
-			}
-			return this.resolved = doResolveExpression(getScope());
-		}
-
-		assertCompatible(scope);
-
-		if (this.cache == null) {
-			this.cache = new IdentityHashMap<Scope, Resolution>(2);
-		} else {
-
-			final Resolution cached = this.cache.get(scope);
-
-			if (cached != null) {
-				return cached;
-			}
-		}
-
-		final Resolution resolution = doResolveExpression(scope);
-
-		this.cache.put(scope, resolution);
-
-		return resolution;
+	public final Resolution getResolved() {
+		return this.cache.getResolution();
 	}
 
-	public final Resolution getResolved() {
-		return this.resolved;
+	@Override
+	public final Resolution resolve(Resolver resolver) {
+		return this.cache.resolve(resolver);
 	}
 
 	@Override
@@ -96,11 +70,11 @@ public abstract class Expression extends Ref {
 		return getClass().getSimpleName();
 	}
 
-	protected abstract Resolution resolveExpression(Scope scope);
+	protected abstract Resolution resolveExpression(Resolver resolver);
 
-	private final Resolution doResolveExpression(Scope scope) {
+	final Resolution resolveBy(Resolver resolver) {
 
-		final Resolution resolution = resolveExpression(scope);
+		final Resolution resolution = resolveExpression(resolver);
 
 		if (resolution != null) {
 			return resolution;

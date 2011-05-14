@@ -20,6 +20,7 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
@@ -27,7 +28,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -82,21 +83,20 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
-		return initialLogicalValue(scope);
+	public Action initialValue(LocalResolver resolver) {
+		return initialLogicalValue(resolver);
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
+	public Action initialLogicalValue(LocalResolver resolver) {
 
 		final Field<?> field =
-			scope.member(this.member.getKey())
-			.toField();
+			resolver.getLocal().member(this.member.getKey()).toField(resolver);
 		final LogicalValue logicalValue =
 			field.getArtifact()
 			.materialize()
 			.getDefinitions()
-			.value(scope)
+			.value(resolver)
 			.getLogicalValue();
 
 		return new ExecuteCommand(this, logicalValue);
@@ -138,7 +138,10 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 	@Override
 	protected StOp createOp(LocalBuilder builder) {
-		return new LocalFieldOp(builder, this, this.member.toField());
+		return new LocalFieldOp(
+				builder,
+				this,
+				this.member.toField(dummyUser()));
 	}
 
 }

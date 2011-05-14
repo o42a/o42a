@@ -19,7 +19,11 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.AbstractScope.enclosingScopes;
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
+import static org.o42a.util.use.User.dummyUser;
+
+import java.util.Set;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
@@ -27,20 +31,25 @@ import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class PlainClause
 		extends Clause
 		implements Scope, ClauseContainer {
 
+	private final ResolverFactory<Resolver> resolverFactory =
+		Resolver.resolverFactory(this);
 	private Obj clauseObject;
 	private Path enclosingScopePath;
+	private Set<Scope> enclosingScopes;
 
 	public PlainClause(MemberClause member) {
 		super(member);
@@ -48,18 +57,16 @@ public abstract class PlainClause
 			"Plain clause expected";
 	}
 
-	protected PlainClause(
-			Container enclosingContainer,
-			PlainClause overridden) {
-		this(enclosingContainer, overridden, true);
+	protected PlainClause(MemberOwner owner, PlainClause overridden) {
+		this(owner, overridden, true);
 		setClauseObject(propagateClauseObject(overridden));
 	}
 
 	protected PlainClause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			PlainClause overridden,
 			boolean propagate) {
-		super(enclosingContainer, overridden, propagate);
+		super(owner, overridden, propagate);
 	}
 
 	@Override
@@ -86,6 +93,16 @@ public abstract class PlainClause
 	}
 
 	@Override
+	public final Resolver dummyResolver() {
+		return this.resolverFactory.dummyResolver();
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user) {
+		return this.resolverFactory.newResolver(user);
+	}
+
+	@Override
 	public final boolean isTopScope() {
 		return false;
 	}
@@ -93,7 +110,7 @@ public abstract class PlainClause
 	public abstract Obj getObject();
 
 	@Override
-	public final Container getContainer() {
+	public final MemberContainer getContainer() {
 		return getObject();
 	}
 
@@ -105,6 +122,14 @@ public abstract class PlainClause
 	@Override
 	public final Scope getEnclosingScope() {
 		return getEnclosingContainer().getScope();
+	}
+
+	@Override
+	public final Set<? extends Scope> getEnclosingScopes() {
+		if (this.enclosingScopes != null) {
+			return this.enclosingScopes;
+		}
+		return this.enclosingScopes = enclosingScopes(this);
 	}
 
 	@Override
@@ -207,7 +232,8 @@ public abstract class PlainClause
 			final Obj object2 = other.getContainer().toObject();
 
 			if (object2 != null) {
-				return object1.derivedFrom(object2);
+				return object1.type().useBy(dummyUser()).derivedFrom(
+						object2.type().useBy(dummyUser()));
 			}
 		}
 
@@ -254,12 +280,12 @@ public abstract class PlainClause
 	}
 
 	@Override
-	protected void doResolveAll() {
+	protected void fullyResolve() {
 		getObject().resolveAll();
 	}
 
 	@Override
-	protected abstract PlainClause propagate(Scope enclosingScope);
+	protected abstract PlainClause propagate(MemberOwner owner);
 
 	protected abstract Obj propagateClauseObject(PlainClause overridden);
 

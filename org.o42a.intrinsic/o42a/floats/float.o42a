@@ -60,3 +60,5 @@
     <@Operators: operand> With = float
   )
 )
+
+<*By string> Floats: by string(<*''> Input = string)

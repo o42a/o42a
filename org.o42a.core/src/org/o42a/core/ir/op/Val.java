@@ -22,10 +22,12 @@ package org.o42a.core.ir.op;
 import static java.lang.Double.doubleToRawLongBits;
 
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.op.ValOp.Type;
 
 
-public final class Val {
+public final class Val implements Content<ValOp.Type> {
 
 	public static final int CONDITION_FLAG = 0x01;
 	public static final int UNKNOWN_FLAG = 0x02;
@@ -102,6 +104,15 @@ public final class Val {
 
 	public final Ptr<AnyOp> getPointer() {
 		return this.pointer;
+	}
+
+	@Override
+	public void allocated(Type instance) {
+	}
+
+	@Override
+	public void fill(Type instance) {
+		instance.set(this);
 	}
 
 	@Override

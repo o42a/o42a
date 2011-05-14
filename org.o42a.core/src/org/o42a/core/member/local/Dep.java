@@ -20,6 +20,7 @@
 package org.o42a.core.member.local;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
@@ -33,6 +34,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 public final class Dep extends PathFragment {
@@ -76,7 +78,7 @@ public final class Dep extends PathFragment {
 		assert container.toLocal() != null :
 			object + " is not a local object";
 
-		this.dependency = container.member(dependencyKey).toField();
+		this.dependency = container.member(dependencyKey).toField(dummyUser());
 
 		assert this.dependency != null :
 			"Dependency " + dependencyKey + " of " + object + " not found";
@@ -116,6 +118,7 @@ public final class Dep extends PathFragment {
 	@Override
 	public Container resolve(
 			LocationInfo location,
+			UserInfo user,
 			Path path,
 			int index,
 			Scope start,

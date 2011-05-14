@@ -31,6 +31,7 @@ import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.lib.console.impl.Print;
+import org.o42a.util.use.UserInfo;
 
 
 public class ConsoleModule extends Module {
@@ -59,22 +60,26 @@ public class ConsoleModule extends Module {
 		return new ConsoleModule(moduleContext);
 	}
 
+	private MainCall main;
+
 	private ConsoleModule(CompilerContext context) {
 		super(context, "Console");
 	}
 
-	public void generateMain(Generator generator) {
+	public Obj createMain(UserInfo user) {
 
 		final Obj mainModule = getContext().getIntrinsics().getMainModule();
 
 		if (mainModule == null) {
-			return;
+			return null;
 		}
 
-		final MainCall mainCall = mainCall(toObject(), mainModule);
+		return this.main = mainCall(user, this, mainModule);
+	}
 
-		if (mainCall != null) {
-			mainCall.generateMain(generator);
+	public void generateMain(Generator generator) {
+		if (this.main != null) {
+			this.main.generateMain(generator);
 		}
 	}
 

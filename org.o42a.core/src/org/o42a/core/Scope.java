@@ -19,25 +19,44 @@
 */
 package org.o42a.core;
 
+import java.util.Set;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.use.UserInfo;
 
 
 public interface Scope extends PlaceInfo {
 
 	boolean isTopScope();
 
+	@Override
+	MemberContainer getContainer();
+
 	Scope getEnclosingScope();
+
+	/**
+	 * All scopes enclosing this one, including scope itself.
+	 *
+	 * @return a set of enclosing scopes.
+	 */
+	Set<? extends Scope> getEnclosingScopes();
 
 	Container getEnclosingContainer();
 
     Path getEnclosingScopePath();
+
+    Resolver dummyResolver();
+
+    Resolver newResolver(UserInfo user);
 
     Member toMember();
 
@@ -60,5 +79,6 @@ public interface Scope extends PlaceInfo {
 	ScopeIR ir(Generator generator);
 
 	void assertDerivedFrom(Scope other);
+
 
 }

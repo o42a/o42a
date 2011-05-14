@@ -21,8 +21,9 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.common.intrinsic.IntrinsicDirective;
+import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
@@ -41,6 +42,7 @@ public final class Include extends IntrinsicDirective {
 
 	public Include(Root root) {
 		super(
+				root.toMemberOwner(),
 				fieldDeclaration(
 						root.locationFor("include.o42a"),
 						root.distribute(),
@@ -52,12 +54,15 @@ public final class Include extends IntrinsicDirective {
 	@Override
 	public void apply(Ref directive, InstructionContext context) {
 
+		final Obj object =
+			directive.resolve(context.getResolver()).materialize();
+		final Field<?> fileField =
+			object.member(this.pathKey).toField(dummyUser());
 		final Block<?> block = context.getBlock();
-		final Obj object = directive.resolve(block.getScope()).materialize();
-		final Field<?> fileField = object.member(this.pathKey).toField();
 		final Sentence<?> sentence = block.propose(directive);
 		final Value<String> value = ValueType.STRING.cast(
-				fileField.getArtifact().materialize().getValue());
+				fileField.getArtifact().materialize()
+				.value().useBy(dummyUser()).getValue());
 		final String file = value.getDefiniteValue();
 
 		if (file == null) {

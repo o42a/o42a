@@ -22,6 +22,7 @@ package org.o42a.core.ir;
 import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -201,7 +202,8 @@ public class CodeBuilder {
 
 	public ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
 
-		final TypeRef ancestorType = object.getAncestor();
+		final TypeRef ancestorType =
+			object.type().useBy(dummyUser()).getAncestor();
 
 		if (ancestorType == null) {
 			return null;

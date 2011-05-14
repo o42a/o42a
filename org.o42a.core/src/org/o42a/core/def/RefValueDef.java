@@ -22,12 +22,12 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -67,8 +67,8 @@ final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Scope scope) {
-		return this.ref.value(scope);
+	protected Value<?> calculateValue(Resolver resolver) {
+		return this.ref.value(resolver);
 	}
 
 	@Override
@@ -79,7 +79,12 @@ final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void writeValue(CodeDirs dirs, HostOp host, ValOp result) {
+	protected void fullyResolveDef(Resolver resolver) {
+		this.ref.resolveValues(resolver);
+	}
+
+	@Override
+	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
 		this.ref.op(host).writeValue(dirs, result);
 	}
 

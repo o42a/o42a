@@ -104,7 +104,8 @@ public abstract class ObjectScope extends AbstractScope {
 			return false;
 		}
 
-		return getContainer().toObject().derivedFrom(otherObject);
+		return getContainer().toObject().objectType().derivedFrom(
+				otherObject.objectType());
 	}
 
 	@Override

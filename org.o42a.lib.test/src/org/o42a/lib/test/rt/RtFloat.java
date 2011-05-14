@@ -19,20 +19,9 @@
 */
 package org.o42a.lib.test.rt;
 
-import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
-import org.o42a.codegen.code.Code;
-import org.o42a.common.adapter.FloatByString;
-import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.Scope;
+import org.o42a.common.object.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
 
@@ -41,10 +30,11 @@ public class RtFloat extends IntrinsicObject {
 
 	public RtFloat(TestModule module) {
 		super(
-				fieldDeclaration(
+				module.toMemberOwner(),
+				sourcedDeclaration(
 						module,
-						module.distribute(),
-						memberName("rt-float"))
+						"rt-float",
+						"rt-float.o42a")
 				.prototype());
 		setValueType(ValueType.FLOAT);
 	}
@@ -56,40 +46,14 @@ public class RtFloat extends IntrinsicObject {
 	}
 
 	@Override
-	protected void declareMembers(ObjectMembers members) {
-		members.addMember(new Parse(this).toMember());
-		super.declareMembers(members);
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
 		return null;
-	}
-
-	private static final class Parse extends FloatByString {
-
-		Parse(Obj owner) {
-			super(owner);
-		}
-
-		@Override
-		protected Value<?> calculateValue(Scope scope) {
-
-			final Value<?> value = super.calculateValue(scope);
-
-			if (!value.getLogicalValue().isTrue()) {
-				return value;
-			}
-
-			return getValueType().runtimeValue();
-		}
-
-		@Override
-		protected strictfp void parse(Code code, ValOp result, ObjectOp input) {
-			code.debug("Run-time float");
-			super.parse(code, result, input);
-		}
-
 	}
 
 }

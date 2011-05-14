@@ -26,12 +26,11 @@ import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -89,10 +88,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 	}
 
 	@Override
-	public final DefValue definitionValue(Scope scope) {
-		assertCompatible(scope);
+	public final DefValue definitionValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
-		final Scope rescoped = getRescoper().rescope(scope);
+		final Resolver rescoped = getRescoper().rescope(resolver);
 
 		if (hasPrerequisite()) {
 
@@ -164,7 +163,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 				defs);
 	}
 
-	public final void write(CodeDirs dirs, HostOp host, ValOp result) {
+	public void write(CodeDirs dirs, HostOp host, ValOp result) {
 
 		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
@@ -186,7 +185,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 					rescopedHost);
 		}
 
-		writeDef(dirs, rescopedHost, result);
+		writeDef(dirs, result, rescopedHost);
 
 		if (preconditionFailed != null && preconditionFailed.exists()) {
 			result.storeFalse(preconditionFailed);
@@ -194,43 +193,32 @@ public abstract class ValueDef extends Def<ValueDef> {
 		}
 	}
 
+	protected abstract Value<?> calculateValue(Resolver resolver);
+
 	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append("ValueDef[");
-		if (hasPrerequisite()) {
-			out.append(getPrerequisite()).append("? ");
-		}
-
-		final Logical precondition = getPrecondition();
-
-		if (!precondition.isTrue()) {
-			out.append(precondition).append(", ");
-		}
-		out.append('=').append(getLocation());
-		if (isClaim()) {
-			out.append("!]");
-		} else {
-			out.append(".]");
-		}
-
-		return out.toString();
+	protected final void fullyResolve(Resolver resolver) {
+		getPrerequisite().resolveAll(resolver);
+		getPrecondition().resolveAll(resolver);
+		fullyResolveDef(resolver);
 	}
 
-	protected abstract Value<?> calculateValue(Scope scope);
+	protected abstract void fullyResolveDef(Resolver resolver);
 
 	protected void writeDef(
 			CodeDirs dirs,
-			HostOp host,
-			ValOp result) {
-		writeValue(dirs.falseWhenUnknown(), host, result);
+			ValOp result,
+			HostOp host) {
+		writeValue(dirs.falseWhenUnknown(), result, host);
 	}
 
 	protected abstract void writeValue(
 			CodeDirs dirs,
-			HostOp host,
-			ValOp result);
+			ValOp result,
+			HostOp host);
+
+	@Override
+	protected String name() {
+		return "ValueDef";
+	}
 
 }

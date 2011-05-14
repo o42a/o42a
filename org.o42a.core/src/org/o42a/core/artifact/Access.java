@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
@@ -144,7 +146,8 @@ public abstract class Access {
 		if (by == object) {
 			return Accessor.OWNER;
 		}
-		if (by.derivedFrom(object)) {
+		if (by.type().useBy(dummyUser()).derivedFrom(
+				object.type().useBy(dummyUser()))) {
 			return Accessor.INHERITANT;
 		}
 
@@ -299,9 +302,9 @@ public abstract class Access {
 				return false;
 			}
 
-			final Role actualUse = getRole();
+			final Role actualRole = getRole();
 
-			if (actualUse.ordinal() < expectedRole.ordinal()) {
+			if (actualRole.ordinal() < expectedRole.ordinal()) {
 				expectedRole.reportMisuse(this.to, this.from);
 				return false;
 			}

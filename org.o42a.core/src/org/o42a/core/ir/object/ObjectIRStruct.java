@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -101,22 +103,22 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	private void allocateBodyIRs(SubData<?> data) {
 
-		final Obj object = getObject();
-		final TypeRef ancestorRef = object.getAncestor();
+		final ObjectType objectType = getObject().type().useBy(dummyUser());
+		final TypeRef ancestorRef = objectType.getAncestor();
 
 		if (ancestorRef != null) {
 
-			final Obj ancestor = ancestorRef.getType();
+			final Obj ancestor = ancestorRef.typeObject(dummyUser());
 
 			if (ancestor != ancestor.getContext().getVoid()) {
 				deriveBodyIRs(data, ancestor, true);
 			}
 		}
 
-		final Sample[] samples = object.getSamples();
+		final Sample[] samples = objectType.getSamples();
 
 		for (int i = samples.length - 1; i >= 0; --i) {
-			deriveBodyIRs(data, samples[i].getType(), false);
+			deriveBodyIRs(data, samples[i].typeObject(dummyUser()), false);
 		}
 
 		allocateBodyIR(data, this.mainBodyIR, null, false);
@@ -169,8 +171,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			bodyIR.setKind(ObjectBodyIR.Kind.INHERITED);
 		} else if (bodyIR.isMain()) {
 			bodyIR.setKind(ObjectBodyIR.Kind.MAIN);
-		} else if (getObject().derivedFrom(
-				bodyIR.getAscendant(),
+		} else if (getObject().type().useBy(dummyUser()).derivedFrom(
+				bodyIR.getAscendant().type().useBy(dummyUser()),
 				IMPLICIT_PROPAGATION)) {
 			bodyIR.setKind(ObjectBodyIR.Kind.PROPAGATED);
 		} else {

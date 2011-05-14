@@ -20,76 +20,63 @@
 package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.ref.path.PathBuilder.pathBuilder;
-import static org.o42a.core.st.StatementEnv.defaultEnv;
+import static org.o42a.core.member.MemberId.memberName;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathBuilder;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
-public abstract class ByString<T> extends IntrinsicObject {
+public abstract class ByString<T> extends IntrinsicBuiltin {
 
-	public static final PathBuilder BY_STRING =
-		pathBuilder("adapters", "by_string");
-	public static final PathBuilder INPUT =
-		BY_STRING.appendName("input");
+	private MemberKey inputKey;
 
-	public ByString(Obj owner, ValueType<T> valueType) {
+	public ByString(
+			MemberOwner owner,
+			ValueType<T> valueType,
+			String name,
+			String sourcePath) {
 		this(
-				fieldDeclaration(
-						owner,
-						owner.distribute(),
-						BY_STRING.toAdapterId(owner, owner.distribute()))
-				.prototype()
-				.override(),
+				owner,
+				sourcedDeclaration(owner, name, sourcePath).prototype(),
 				valueType);
 	}
 
-	public ByString(FieldDeclaration declaration, ValueType<T> valueType) {
-		super(declaration);
+	public ByString(
+			MemberOwner owner,
+			FieldDeclaration declaration,
+			ValueType<T> valueType) {
+		super(owner, declaration);
 		setValueType(valueType);
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
-				getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
-	}
+	public Value<?> calculateBuiltin(Resolver resolver) {
 
-	@Override
-	protected Definitions explicitDefinitions() {
-
-		final Ref self = selfRef();
-
-		self.setEnv(defaultEnv(this));
-
-		return self.define(getScope());
-	}
-
-	@Override
-	protected Value<?> calculateValue(Scope scope) {
-
-		final Field<?> inputField = INPUT.fieldOf(scope);
+		final Obj inputObject =
+			resolver.getScope().getContainer()
+			.member(inputKey())
+			.substance(resolver)
+			.toArtifact()
+			.materialize();
 		final Value<?> inputValue =
-			inputField.getArtifact().materialize().getValue();
+			inputObject.value().useBy(resolver).getValue();
 
 		if (!inputValue.isDefinite()) {
 			return getValueType().runtimeValue();
@@ -100,7 +87,7 @@ public abstract class ByString<T> extends IntrinsicObject {
 
 		final String input =
 			ValueType.STRING.cast(inputValue).getDefiniteValue();
-		final T result = byString(inputField, input);
+		final T result = byString(inputObject, resolver, input);
 
 		if (result == null) {
 			return getValueType().falseValue();
@@ -109,40 +96,65 @@ public abstract class ByString<T> extends IntrinsicObject {
 		@SuppressWarnings("unchecked")
 		final ValueType<T> valueType = (ValueType<T>) getValueType();
 
-		return valueType.definiteValue(result);
+		return valueType.constantValue(result);
 	}
 
 	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
+	public void resolveBuiltin(Obj object) {
+
+		final UserInfo user = object.value();
+		final Obj inputObject =
+			object.member(inputKey())
+			.substance(object.getScope().newResolver(user))
+			.toArtifact()
+			.materialize();
+
+		inputObject.value().useBy(user);
 	}
 
-	protected abstract T byString(LocationInfo location, String input);
+	@Override
+	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+
+		final CodeBlk cantParse = code.addBlock("cant_parse");
+		final CodeDirs dirs = falseWhenUnknown(code, cantParse.head());
+		final ObjectOp input =
+			host.field(dirs, inputKey()).materialize(dirs);
+
+		parse(code, result, input);
+		if (cantParse.exists()) {
+			result.storeFalse(cantParse);
+			cantParse.go(code.tail());
+		}
+	}
+
+	@Override
+	protected Ascendants createAscendants() {
+		return new Ascendants(this).setAncestor(
+				getValueType().typeRef(this, getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
+	}
+
+	protected abstract T byString(
+			LocationInfo location,
+			Resolver resolver,
+			String input);
 
 	protected abstract void parse(Code code, ValOp result, ObjectOp input);
 
-	private final class ValueIR extends ProposedValueIR {
-
-		public ValueIR(ObjectIR objectIR) {
-			super(objectIR);
+	private final MemberKey inputKey() {
+		if (this.inputKey != null) {
+			return this.inputKey;
 		}
 
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
+		final Member operandMember =
+			member(memberName("input"), Accessor.DECLARATION);
 
-			final CodeBlk cantParse = code.addBlock("cant_parse");
-			final CodeDirs dirs = falseWhenUnknown(code, cantParse.head());
-			final ObjectOp input =
-				host.field(dirs, INPUT.memberOf(getScope()).getKey())
-				.materialize(dirs);
-
-			parse(code, result, input);
-			if (cantParse.exists()) {
-				result.storeFalse(cantParse);
-				cantParse.go(code.tail());
-			}
-		}
-
+		return this.inputKey = operandMember.getKey();
 	}
 
 }

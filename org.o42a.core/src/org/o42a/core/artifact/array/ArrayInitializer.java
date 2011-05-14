@@ -24,6 +24,7 @@ import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.core.*;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -199,6 +200,23 @@ public class ArrayInitializer extends Placed {
 		}
 
 		return result;
+	}
+
+	public void resolveAll(Resolver resolver) {
+
+		final TypeRef itemType = getItemType();
+
+		if (itemType != null) {
+			itemType.resolveAll(resolver);
+		}
+
+		final Ref[] items = getItems();
+
+		if (items != null) {
+			for (Ref item : items) {
+				item.resolveAll(resolver);
+			}
+		}
 	}
 
 	@Override

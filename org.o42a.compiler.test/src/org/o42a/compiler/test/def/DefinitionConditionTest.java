@@ -41,12 +41,16 @@ public class DefinitionConditionTest extends CompilerTestCase {
 
 		final Field<?> a = field("a");
 
-		assertTrueValue(a.getArtifact().materialize().getValue());
+		assertTrueValue(
+				a.getArtifact().materialize()
+				.value().useBy(USE_CASE).getValue());
 		assertThat(definiteValue(a, Long.class), is(1L));
 
 		final Field<?> b = field("b");
 
-		assertTrueValue(b.getArtifact().materialize().getValue());
+		assertTrueValue(
+				b.getArtifact().materialize()
+				.value().useBy(USE_CASE).getValue());
 		assertThat(definiteValue(b, Long.class), is(1L));
 	}
 
@@ -58,12 +62,16 @@ public class DefinitionConditionTest extends CompilerTestCase {
 
 		final Field<?> a = field("a");
 
-		assertTrueValue(a.getArtifact().materialize().getValue());
+		assertTrueValue(
+				a.getArtifact().materialize()
+				.value().useBy(USE_CASE).getValue());
 		assertThat(definiteValue(a, Long.class), is(1L));
 
 		final Field<?> b = field("b");
 
-		assertTrueValue(b.getArtifact().materialize().getValue());
+		assertTrueValue(
+				b.getArtifact().materialize()
+				.value().useBy(USE_CASE).getValue());
 		assertThat(definiteValue(b, Long.class), is(1L));
 	}
 
@@ -74,13 +82,17 @@ public class DefinitionConditionTest extends CompilerTestCase {
 				"B := A().");
 
 		final Field<?> a = field("a");
-		final Value<?> aValue = a.getArtifact().materialize().getValue();
+		final Value<?> aValue =
+			a.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalseValue(aValue);
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
 		final Field<?> b = field("b");
-		final Value<?> bValue = b.getArtifact().materialize().getValue();
+		final Value<?> bValue =
+			b.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalseValue(bValue);
 		assertThat(bValue.getDefiniteValue(), nullValue());
@@ -93,13 +105,17 @@ public class DefinitionConditionTest extends CompilerTestCase {
 				"B := A().");
 
 		final Field<?> a = field("a");
-		final Value<?> aValue = a.getArtifact().materialize().getValue();
+		final Value<?> aValue =
+			a.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalseValue(aValue);
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
 		final Field<?> b = field("b");
-		final Value<?> bValue = b.getArtifact().materialize().getValue();
+		final Value<?> bValue =
+			b.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalseValue(bValue);
 		assertThat(bValue.getDefiniteValue(), nullValue());
@@ -113,7 +129,9 @@ public class DefinitionConditionTest extends CompilerTestCase {
 				"B := A().");
 
 		final Field<?> a = field("a");
-		final Value<?> aValue = a.getArtifact().materialize().getValue();
+		final Value<?> aValue =
+			a.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalse(aValue.isDefinite());
 		assertThat(aValue.getLogicalValue(), is(LogicalValue.RUNTIME));
@@ -121,7 +139,9 @@ public class DefinitionConditionTest extends CompilerTestCase {
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
 		final Field<?> b = field("b");
-		final Value<?> bValue = b.getArtifact().materialize().getValue();
+		final Value<?> bValue =
+			b.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalse(bValue.isDefinite());
 		assertThat(bValue.getLogicalValue(), is(LogicalValue.RUNTIME));
@@ -137,7 +157,9 @@ public class DefinitionConditionTest extends CompilerTestCase {
 				"B := A().");
 
 		final Field<?> a = field("a");
-		final Value<?> aValue = a.getArtifact().materialize().getValue();
+		final Value<?> aValue =
+			a.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalse(aValue.isDefinite());
 		assertThat(aValue.getLogicalValue(), is(LogicalValue.RUNTIME));
@@ -145,7 +167,9 @@ public class DefinitionConditionTest extends CompilerTestCase {
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
 		final Field<?> b = field("b");
-		final Value<?> bValue = b.getArtifact().materialize().getValue();
+		final Value<?> bValue =
+			b.getArtifact().materialize()
+			.value().useBy(USE_CASE).getValue();
 
 		assertFalse(bValue.isDefinite());
 		assertThat(bValue.getLogicalValue(), is(LogicalValue.RUNTIME));

@@ -96,6 +96,8 @@ public abstract class Resolution implements ScopeInfo {
 			MemberId memberId,
 			Obj declaredIn);
 
+	public abstract void resolveAll();
+
 	@Override
 	public final void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);
@@ -167,6 +169,10 @@ public abstract class Resolution implements ScopeInfo {
 		}
 
 		@Override
+		public void resolveAll() {
+		}
+
+		@Override
 		public String toString() {
 			return "ERROR";
 		}
@@ -213,6 +219,11 @@ public abstract class Resolution implements ScopeInfo {
 			return materializationPath().append(found);
 		}
 
+		@Override
+		public void resolveAll() {
+			toArtifact().resolveAll();
+		}
+
 	}
 
 	static final class ObjectResolution extends Resolution {
@@ -253,6 +264,11 @@ public abstract class Resolution implements ScopeInfo {
 			}
 
 			return found;
+		}
+
+		@Override
+		public void resolveAll() {
+			toArtifact().resolveAll();
 		}
 
 	}
@@ -297,6 +313,11 @@ public abstract class Resolution implements ScopeInfo {
 			return found;
 		}
 
+		@Override
+		public void resolveAll() {
+			toContainer().resolveAll();
+		}
+
 	}
 
 	static final class LocalResolution extends Resolution {
@@ -337,6 +358,11 @@ public abstract class Resolution implements ScopeInfo {
 			}
 
 			return found;
+		}
+
+		@Override
+		public void resolveAll() {
+			toContainer().resolveAll();
 		}
 
 	}

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -81,7 +81,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<ObjectType.Op> type(Code code) {
+		public final RecOp<ObjectIRType.Op> type(Code code) {
 			return ptr(null, code, getType().type());
 		}
 
@@ -94,13 +94,13 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<AscendantDescIR.Op> {
 
-		private StructRec<ObjectType.Op> type;
+		private StructRec<ObjectIRType.Op> type;
 		private RelPtrRec body;
 
 		private Type() {
 		}
 
-		public final StructRec<ObjectType.Op> type() {
+		public final StructRec<ObjectIRType.Op> type() {
 			return this.type;
 		}
 

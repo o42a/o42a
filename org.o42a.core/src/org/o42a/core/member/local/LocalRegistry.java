@@ -22,6 +22,7 @@ package org.o42a.core.member.local;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -41,7 +42,12 @@ public class LocalRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public Obj getOwner() {
+	public final MemberOwner getMemberOwner() {
+		return this.scope.toOwner();
+	}
+
+	@Override
+	public final Obj getOwner() {
 		return null;
 	}
 

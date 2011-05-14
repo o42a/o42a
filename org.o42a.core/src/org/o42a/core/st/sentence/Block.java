@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.def.BlockBase;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
@@ -142,7 +142,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	}
 
 	@Override
-	public Instruction toInstruction(Scope scope, boolean assignment) {
+	public Instruction toInstruction(Resolver resolver, boolean assignment) {
 		if (!assignment) {
 			return null;
 		}
@@ -234,6 +234,18 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		out.append(parentheses ? ')' : '}');
 
 		return out.toString();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getDefinitionTargets();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		for (Sentence<S> sentence : getSentences()) {
+			sentence.resolveValues(resolver);
+		}
 	}
 
 	abstract Trace getTrace();

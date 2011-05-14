@@ -25,8 +25,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
 
-final class LinkFieldVariant extends FieldVariant<Link>
-		implements LinkDefiner {
+final class LinkFieldVariant extends FieldVariant<Link> implements LinkDefiner {
 
 	private TypeRef typeRef;
 	private TargetRef defaultTargetRef;

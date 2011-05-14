@@ -19,15 +19,14 @@
 */
 package org.o42a.intrinsic.root;
 
-import org.o42a.common.intrinsic.IntrinsicType;
-import org.o42a.core.Container;
+import org.o42a.common.object.IntrinsicType;
 import org.o42a.core.value.ValueType;
 
 
 public class StringObject extends IntrinsicType {
 
-	StringObject(Container enclosingContainer) {
-		super(enclosingContainer, "string", ValueType.STRING);
+	StringObject(Root root) {
+		super(root.toMemberOwner(), "string", ValueType.STRING);
 	}
 
 }

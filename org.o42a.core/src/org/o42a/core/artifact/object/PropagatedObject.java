@@ -26,33 +26,36 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UserInfo;
 
 
 final class PropagatedObject extends PlainObject {
 
 	public static Ascendants deriveSamples(
+			UserInfo user,
 			Field<Obj> field,
 			Ascendants ascendants) {
 
 		final Obj container = field.getEnclosingContainer().toObject();
-		final TypeRef containerAncestor = container.getAncestor();
+		final ObjectType type = container.type().useBy(user);
+		final TypeRef containerAncestor = type.getAncestor();
 
 		if (containerAncestor != null) {
 
 			final Member overridden =
-				containerAncestor.getType().member(field.getKey());
+				containerAncestor.typeObject(user).member(field.getKey());
 
 			if (overridden != null) {
 				ascendants = ascendants.addMemberOverride(overridden);
 			}
 		}
 
-		final Sample[] containerSamples = container.getSamples();
+		final Sample[] containerSamples = type.getSamples();
 
 		for (int i = containerSamples.length - 1; i >= 0; --i) {
 
 			final Member overridden =
-				containerSamples[i].getType().member(field.getKey());
+				containerSamples[i].typeObject(user).member(field.getKey());
 
 			if (overridden != null) {
 				ascendants = ascendants.addMemberOverride(overridden);
@@ -81,7 +84,7 @@ final class PropagatedObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(field(), new Ascendants(getScope()));
+		return deriveSamples(type(), field(), new Ascendants(this));
 	}
 
 	@Override

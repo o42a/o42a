@@ -23,6 +23,7 @@ import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.test.TestModule.testModule;
 import static org.o42a.util.StringCodec.canonicalName;
+import static org.o42a.util.use.Usable.simpleUsable;
 
 import java.util.HashMap;
 
@@ -34,10 +35,12 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
+import org.o42a.util.use.Usable;
 
 
-public class CompilerIntrinsics implements Intrinsics {
+public class CompilerIntrinsics extends Intrinsics {
 
+	private final Usable<?> user = simpleUsable("MainUser");
 	private final BlockCompiler compiler;
 	private final Top top;
 	private final CompilerContext topContext;
@@ -50,6 +53,7 @@ public class CompilerIntrinsics implements Intrinsics {
 		new HashMap<String, ModuleUse>();
 	private ModuleUse mainModule;
 	private ConsoleModule consoleModule;
+	private Obj main;
 
 	public static CompilerIntrinsics intrinsics(BlockCompiler compiler) {
 		return new CompilerIntrinsics(compiler);
@@ -140,11 +144,25 @@ public class CompilerIntrinsics implements Intrinsics {
 
 	public void setMainModule(Module module) {
 		this.mainModule = registerModule(module.getModuleId(), module);
+		this.main = this.consoleModule.createMain(this.user);
+	}
+
+	public void resolveAll() {
+		this.root.resolveAll();
+		if (this.mainModule != null) {
+			this.mainModule.resolveAll();
+			if (this.main != null) {
+				this.main.resolveAll();
+			}
+		}
+		for (ModuleUse module : this.modules.values()) {
+			module.resolveAll();
+		}
 	}
 
 	public void generateAll(Generator generator) {
-		getMainModule().ir(generator).allocate();
-		if (this.modules.get(this.consoleModule.getModuleId()).isUsed()) {
+		if (consoleUsed()) {
+			this.user.useBy(generator);
 			this.consoleModule.generateMain(generator);
 		}
 	}
@@ -156,6 +174,10 @@ public class CompilerIntrinsics implements Intrinsics {
 		this.modules.put(moduleId, use);
 
 		return use;
+	}
+
+	private final boolean consoleUsed() {
+		return this.modules.get(this.consoleModule.getModuleId()).isUsed();
 	}
 
 	private static final class ModuleUse {
@@ -176,6 +198,12 @@ public class CompilerIntrinsics implements Intrinsics {
 		public Module use() {
 			this.used = true;
 			return this.module;
+		}
+
+		public void resolveAll() {
+			if (isUsed()) {
+				this.module.resolveAll();
+			}
 		}
 
 		@Override

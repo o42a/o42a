@@ -19,10 +19,15 @@
 */
 package org.o42a.core;
 
+import static java.util.Collections.singleton;
+import static java.util.Collections.unmodifiableSet;
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
 import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
@@ -30,7 +35,10 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class AbstractScope implements Scope {
@@ -49,6 +57,25 @@ public abstract class AbstractScope implements Scope {
 		}
 
 		return enclosingContainer.getScope();
+	}
+
+	public static Set<Scope> enclosingScopes(Scope scope) {
+
+		final Scope enclosingScope = scope.getEnclosingScope();
+
+		if (enclosingScope == null) {
+			return singleton(scope);
+		}
+
+		final Set<? extends Scope> enclosingScopes =
+			enclosingScope.getEnclosingScopes();
+		final HashSet<Scope> result =
+			new HashSet<Scope>(enclosingScopes.size() + 1);
+
+		result.addAll(enclosingScopes);
+		result.add(scope);
+
+		return unmodifiableSet(result);
 	}
 
 	public static ConstructionMode constructionMode(Scope scope) {
@@ -109,18 +136,10 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	public static boolean contains(Scope scope, Scope other) {
-		for (;;) {
-			if (other == scope) {
-				return true;
-			}
-
-			final Container otherContainer = other.getEnclosingContainer();
-
-			if (otherContainer == null) {
-				return false;
-			}
-			other = otherContainer.getScope();
+		if (other == scope) {
+			return true;
 		}
+		return other.getEnclosingScopes().contains(scope);
 	}
 
 	private static Path pathToEnclosing(Scope scope, Scope targetScope) {
@@ -182,6 +201,13 @@ public abstract class AbstractScope implements Scope {
 		return pathToMember.append(member.getKey());
 	}
 
+	private final ResolverFactory<Resolver> resolverFactory;
+	private Set<Scope> enclosingScopes;
+
+	public AbstractScope() {
+		this.resolverFactory = Resolver.resolverFactory(this);
+	}
+
 	@Override
 	public final Scope getScope() {
 		return this;
@@ -198,12 +224,30 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
+	public final Set<Scope> getEnclosingScopes() {
+		if (this.enclosingScopes != null) {
+			return this.enclosingScopes;
+		}
+		return this.enclosingScopes = enclosingScopes(this);
+	}
+
+	@Override
+	public final Resolver dummyResolver() {
+		return this.resolverFactory.dummyResolver();
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user) {
+		return this.resolverFactory.newResolver(user);
+	}
+
+	@Override
 	public Field<?> toField() {
 		return null;
 	}
 
 	@Override
-	public LocalScope toLocal() {
+	public final LocalScope toLocal() {
 		return null;
 	}
 
@@ -223,12 +267,12 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public Distributor distributeIn(Container container) {
+	public final Distributor distributeIn(Container container) {
 		return Placed.distributeIn(this, container);
 	}
 
 	@Override
-	public Path pathTo(Scope targetScope) {
+	public final Path pathTo(Scope targetScope) {
 		return pathTo(this, targetScope);
 	}
 

@@ -20,6 +20,7 @@
 package org.o42a.core.def;
 
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -122,7 +123,7 @@ public abstract class DefValue {
 	 *
 	 * <p>This may happen e.g. when {@link Def#getPrerequisite() definition
 	 * prerequisite} not satisfied or {@link Def#definitionValue(
-	 * org.o42a.core.Scope) definition value} can not be calculated, which is
+	 * Resolver) definition value} can not be calculated, which is
 	 * possible for imperative blocks.</p>
 	 *
 	 * <p>Value is always unknown if it does not {@link #exists() exist} or

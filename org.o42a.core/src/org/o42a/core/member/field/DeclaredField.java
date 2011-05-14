@@ -22,10 +22,9 @@ package org.o42a.core.member.field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.MemberOwner;
 
 
 public abstract class DeclaredField<
@@ -41,10 +40,8 @@ public abstract class DeclaredField<
 		this.artifactKind = artifactKind;
 	}
 
-	protected DeclaredField(
-			Container enclosingContainer,
-			DeclaredField<A, V> sample) {
-		super(enclosingContainer, sample);
+	protected DeclaredField(MemberOwner owner, DeclaredField<A, V> sample) {
+		super(owner, sample);
 		this.artifactKind = sample.artifactKind;
 	}
 
@@ -56,23 +53,23 @@ public abstract class DeclaredField<
 	@SuppressWarnings("unchecked")
 	@Override
 	public A getArtifact() {
-		if (getScopeArtifact() == null) {
+		if (getFieldArtifact() == null) {
 			if (!getKey().isValid()) {
 
 				final Artifact<?> falseObject = getContext().getFalse();
 
-				setScopeArtifact((A) falseObject);
+				setFieldArtifact((A) falseObject);
 			} else if (isOverride()) {
-				setScopeArtifact(overrideArtifact());
+				setFieldArtifact(overrideArtifact());
 			} else {
-				setScopeArtifact(declareArtifact());
+				setFieldArtifact(declareArtifact());
 			}
 			for (FieldVariant<A> variant : getVariants()) {
 				variant.init();
 			}
 		}
 
-		return getScopeArtifact();
+		return getFieldArtifact();
 	}
 
 	public final List<V> getVariants() {
@@ -119,7 +116,7 @@ public abstract class DeclaredField<
 	protected abstract void merge(DeclaredField<A, V> other);
 
 	@Override
-	protected abstract DeclaredField<A, V> propagate(Scope enclosingScope);
+	protected abstract DeclaredField<A, V> propagate(MemberOwner owner);
 
 	FieldVariant<A> variant(
 			FieldDeclaration declaration,

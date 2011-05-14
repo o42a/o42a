@@ -20,43 +20,29 @@
 package org.o42a.core.artifact;
 
 import static org.o42a.core.artifact.Access.artifactAccess;
+import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.Holder;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.Usable;
+import org.o42a.util.use.UseInfo;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
-	private static Unresolvable<?> unresolvable;
-	private static UnresolvableObject unresolvableObject;
-
-	@SuppressWarnings("rawtypes")
-	public static Artifact<?> unresolvableArtifact(CompilerContext context) {
-		if (unresolvable == null) {
-			unresolvable = new Unresolvable(context);
-		}
-		return unresolvable;
-	}
-
-	public static Obj unresolvableObject(CompilerContext context) {
-		if (unresolvableObject == null) {
-			unresolvableObject = new UnresolvableObject(context);
-		}
-		return unresolvableObject;
-	}
-
-	private Obj enclosingPrototype;
+	@SuppressWarnings("unchecked")
+	private final Usable<A> content = simpleUsable("Content", (A) this);
+	private Holder<Obj> enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;
+	private boolean allResolved;
 
 	public Artifact(Scope scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
@@ -80,6 +66,13 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public TypeRef getTypeRef() {
 		return null;
+	}
+
+	public boolean isClone() {
+
+		final Field<?> field = getScope().toField();
+
+		return field != null && field.isClone();
 	}
 
 	public abstract Obj toObject();
@@ -123,32 +116,20 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public Obj getEnclosingPrototype() {
 		if (this.enclosingPrototype != null) {
-
-			if (this.enclosingPrototype != unresolvableObject(getContext())) {
-				return this.enclosingPrototype;
-			}
-
-			return null;
+			return this.enclosingPrototype.get();
 		}
 
 		final Obj enclosingObject =
 			getScope().getEnclosingContainer().toObject();
 
-		if (enclosingObject == null) {
-			this.enclosingPrototype = unresolvableObject(getContext());
-			return null;
-		}
-		if (enclosingObject.isPrototype()) {
-			return this.enclosingPrototype = enclosingObject;
+		if (enclosingObject == null || enclosingObject.isPrototype()) {
+			this.enclosingPrototype = new Holder<Obj>(enclosingObject);
+			return enclosingObject;
 		}
 
 		final Obj enclosingPrototype = enclosingObject.getEnclosingPrototype();
 
-		if (enclosingPrototype != null) {
-			this.enclosingPrototype = enclosingPrototype;
-		} else {
-			this.enclosingPrototype = unresolvableObject(getContext());
-		}
+		this.enclosingPrototype = new Holder<Obj>(enclosingPrototype);
 
 		return enclosingPrototype;
 	}
@@ -195,7 +176,30 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return artifactAccess(user, this);
 	}
 
-	public abstract void resolveAll();
+	public final Usable<A> content() {
+		return this.content;
+	}
+
+	public abstract UseInfo fieldUses();
+
+	public final void resolveAll() {
+		if (this.allResolved) {
+			return;
+		}
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			fullyResolve();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved || isClone() :
+			this + " is not fully resolved";
+		return true;
+	}
 
 	@Override
 	public String toString() {
@@ -216,79 +220,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return out.toString();
 	}
 
-	private static final class Unresolvable<A extends Artifact<A>>
-			extends Artifact<A> {
-
-		Unresolvable(CompilerContext context) {
-			super(context.getRoot().getScope());
-		}
-
-		@Override
-		public ArtifactKind<A> getKind() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Scope getScope() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Obj toObject() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Array toArray() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Directive toDirective() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Link toLink() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Obj materialize() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void resolveAll() {
-			throw new UnsupportedOperationException();
-		}
-
-	}
-
-	private static final class UnresolvableObject extends Obj {
-
-		UnresolvableObject(CompilerContext context) {
-			super(context.getRoot().getScope());
-		}
-
-		@Override
-		protected Ascendants buildAscendants() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void declareMembers(ObjectMembers members) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected Definitions overrideDefinitions(
-				Scope scope,
-				Definitions ascendantDefinitions) {
-			throw new UnsupportedOperationException();
-		}
-
-	}
+	protected abstract void fullyResolve();
 
 	private static final class ArtifactDistributor extends Distributor {
 

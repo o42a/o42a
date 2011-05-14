@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -30,8 +29,8 @@ final class ImplicitSample extends Sample {
 	private final StaticTypeRef implicitAscendant;
 	private TypeRef ancestor;
 
-	ImplicitSample(Scope scope, StaticTypeRef implicitAscendant) {
-		super(implicitAscendant, scope);
+	ImplicitSample(StaticTypeRef implicitAscendant, Ascendants ascendants) {
+		super(implicitAscendant, ascendants);
 		this.implicitAscendant = implicitAscendant;
 		assertSameScope(implicitAscendant);
 	}
@@ -42,7 +41,7 @@ final class ImplicitSample extends Sample {
 			return this.ancestor;
 		}
 
-		final Obj type = this.implicitAscendant.getType();
+		final ObjectType type = this.implicitAscendant.type(getAscendants());
 
 		return this.ancestor = type.getAncestor().upgradeScope(getScope());
 	}
@@ -74,7 +73,7 @@ final class ImplicitSample extends Sample {
 
 	@Override
 	protected Obj getObject() {
-		return this.implicitAscendant.getType();
+		return this.implicitAscendant.typeObject(getAscendants());
 	}
 
 }

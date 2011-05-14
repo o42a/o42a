@@ -19,68 +19,44 @@
 */
 package org.o42a.intrinsic.operator;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.st.StatementEnv.defaultEnv;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
-import org.o42a.common.intrinsic.IntrinsicObject;
-import org.o42a.core.*;
+import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
-public abstract class UnaryResult<T, O> extends IntrinsicObject {
-
-	static FieldDeclaration declaration(
-			Container enclosingContainer,
-			String name,
-			String sourcePath) {
-
-		final CompilerContext context;
-
-		try {
-			context = enclosingContainer.getContext().contextFor(sourcePath);
-		} catch (Exception e) {
-			throw new ExceptionInInitializerError(e);
-		}
-
-		final Location location = new Location(context, context.getSource());
-		final Distributor distributor =
-			declarativeDistributor(enclosingContainer);
-
-		return fieldDeclaration(
-				location,
-				distributor,
-				memberName(name)).prototype();
-	}
+public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 	private final ValueType<O> operandType;
 	private final String operandName;
 	private MemberKey operandKey;
 
 	public UnaryResult(
-			Container enclosingContainer,
+			MemberOwner owner,
 			String name,
 			ValueType<T> resultType,
 			String operandName,
 			ValueType<O> operandType,
 			String sourcePath) {
-		super(declaration(enclosingContainer, name, sourcePath));
+		super(
+				owner,
+				sourcedDeclaration(owner, name, sourcePath).prototype());
 		this.operandName = operandName;
 		this.operandType = operandType;
 		setValueType(resultType);
@@ -96,37 +72,16 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
-	}
-
-	@Override
-	protected Definitions explicitDefinitions() {
-
-		final Ref self = selfRef();
-
-		self.setEnv(defaultEnv(this));
-
-		return self.define(getScope());
-	}
-
-	@Override
-	protected Value<?> calculateValue(Scope scope) {
+	public Value<?> calculateBuiltin(Resolver resolver) {
 
 		final Obj operandObject =
-			scope.getContainer()
+			resolver.getScope().getContainer()
 			.member(operandKey())
-			.getSubstance()
+			.substance(resolver)
 			.toArtifact()
 			.materialize();
-		final Value<?> operandValue = operandObject.getValue();
+		final Value<?> operandValue =
+			operandObject.value().useBy(resolver).getValue();
 
 		if (operandValue.isFalse()) {
 			return getResultType().falseValue();
@@ -143,15 +98,52 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 			return getResultType().falseValue();
 		}
 
-		return getResultType().definiteValue(result);
+		return getResultType().constantValue(result);
+	}
+
+	@Override
+	public void resolveBuiltin(Obj object) {
+
+		final UserInfo user = object.value();
+		final Obj operandObject =
+			object.member(operandKey())
+			.substance(object.getScope().newResolver(user))
+			.toArtifact()
+			.materialize();
+
+		operandObject.value().useBy(user).getValue();
+	}
+
+	@Override
+	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+
+		final CodeBlk failure = code.addBlock("unary_failure");
+		final CodeDirs dirs = falseWhenUnknown(code, failure.head());
+		final ObjectOp operand =
+			host.field(dirs, operandKey()).materialize(dirs);
+		final ValOp operandVal = operand.writeValue(dirs);
+
+		write(dirs, result, operandVal);
+
+		if (failure.exists()) {
+			result.storeFalse(failure);
+			failure.go(code.tail());
+		}
+	}
+
+	@Override
+	protected Ascendants createAscendants() {
+		return new Ascendants(this).setAncestor(
+				getValueType().typeRef(this, getScope().getEnclosingScope()));
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
 	}
 
 	protected abstract T calculate(O operand);
-
-	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
-	}
 
 	protected abstract void write(CodeDirs dirs, ValOp result, ValOp operand);
 
@@ -164,33 +156,6 @@ public abstract class UnaryResult<T, O> extends IntrinsicObject {
 			member(memberName(this.operandName), Accessor.DECLARATION);
 
 		return this.operandKey = operandMember.getKey();
-	}
-
-	private static final class ValueIR extends ProposedValueIR {
-
-		ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-
-			final UnaryResult<?, ?> object =
-				(UnaryResult<?, ?>) getObjectIR().getObject();
-			final CodeBlk failure = code.addBlock("unary_failure");
-			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
-			final ObjectOp operand =
-				host.field(dirs, object.operandKey()).materialize(dirs);
-			final ValOp operandVal = operand.writeValue(dirs);
-
-			object.write(dirs, result, operandVal);
-
-			if (failure.exists()) {
-				result.storeFalse(failure);
-				failure.go(code.tail());
-			}
-		}
-
 	}
 
 }

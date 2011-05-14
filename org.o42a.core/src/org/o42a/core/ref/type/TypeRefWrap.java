@@ -23,6 +23,7 @@ import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 
@@ -41,6 +42,11 @@ public abstract class TypeRefWrap extends TypeRef {
 
 	protected TypeRefWrap(Rescoper rescoper) {
 		super(rescoper);
+	}
+
+	@Override
+	public final boolean isStatic() {
+		return wrapped().isStatic();
 	}
 
 	public final TypeRef getWrapped() {
@@ -115,6 +121,11 @@ public abstract class TypeRefWrap extends TypeRef {
 			Ref untouchedRef,
 			Rescoper rescoper) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		this.wrapped.resolveAll(resolver);
 	}
 
 	private static final class WrapRescoper extends RescoperWrap {

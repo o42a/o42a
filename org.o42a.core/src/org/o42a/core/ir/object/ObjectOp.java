@@ -38,7 +38,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 
 
-public abstract class ObjectOp extends IROp implements HostOp {
+public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
@@ -83,6 +83,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	public abstract ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant);
 
+	@Override
 	public final void writeLogicalValue(CodeDirs dirs) {
 
 		final Code code = dirs.code();
@@ -112,6 +113,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		writeValue(dirs, result, body);
 	}
 
+	@Override
 	public final ValOp writeValue(Code code) {
 
 		final ValOp value = objectType(code).ptr().data(code).value(code);
@@ -121,10 +123,12 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return value;
 	}
 
+	@Override
 	public final ValOp writeValue(CodeDirs dirs) {
 		return writeValue(dirs, null);
 	}
 
+	@Override
 	public final ValOp writeValue(CodeDirs dirs, ValOp result) {
 
 		final Code code = dirs.code();

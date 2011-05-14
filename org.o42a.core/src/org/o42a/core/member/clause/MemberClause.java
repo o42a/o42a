@@ -20,12 +20,12 @@
 package org.o42a.core.member.clause;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class MemberClause extends Member {
@@ -33,13 +33,13 @@ public abstract class MemberClause extends Member {
 	private final ClauseDeclaration declaration;
 	private MemberKey key;
 
-	public MemberClause(ClauseDeclaration declaration) {
-		super(declaration, declaration.distribute());
+	public MemberClause(MemberOwner owner, ClauseDeclaration declaration) {
+		super(declaration, declaration.distribute(), owner);
 		this.declaration = declaration;
 	}
 
-	MemberClause(Container container, MemberClause overridden) {
-		super(overridden, overridden.distributeIn(container));
+	MemberClause(MemberOwner owner, MemberClause overridden) {
+		super(overridden, overridden.distributeIn(owner.getContainer()), owner);
 		this.key = overridden.getKey();
 		this.declaration = overridden.declaration.overrideBy(this);
 	}
@@ -77,12 +77,12 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public final Field<?> toField() {
+	public final Field<?> toField(UserInfo user) {
 		return null;
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocal(UserInfo user) {
 		return null;
 	}
 
@@ -102,7 +102,7 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public Container getSubstance() {
+	public Container substance(UserInfo user) {
 		return toClause().getContainer();
 	}
 
@@ -112,22 +112,22 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public Member propagateTo(Scope scope) {
-		return toClause().propagate(scope).toMember();
+	public Member propagateTo(MemberOwner owner) {
+		return toClause().propagate(owner).toMember();
 	}
 
 	@Override
-	public Member wrap(Member inherited, Container container) {
+	public Member wrap(MemberOwner owner, UserInfo user, Member inherited) {
 		switch (getDeclaration().getKind()) {
 		case GROUP:
 			return new GroupClauseWrap(
-					container,
+					owner,
 					inherited.toClause().toGroupClause(),
 					toClause().toGroupClause()).toMember();
 		case EXPRESSION:
 		case OVERRIDER:
 			return new PlainClauseWrap(
-					container,
+					owner,
 					inherited.toClause().toPlainClause(),
 					toClause().toPlainClause()).toMember();
 		}
@@ -144,33 +144,6 @@ public abstract class MemberClause extends Member {
 	@Override
 	protected void merge(Member member) {
 		throw new IllegalStateException();
-	}
-
-	static final class Overridden extends MemberClause {
-
-		private final Clause clause;
-		private final MemberClause propagatedFrom;
-
-		Overridden(
-				Container container,
-				Clause clause,
-				MemberClause overridden,
-				boolean propagated) {
-			super(container, overridden);
-			this.clause = clause;
-			this.propagatedFrom = propagated ? overridden : null;
-		}
-
-		@Override
-		public Clause toClause() {
-			return this.clause;
-		}
-
-		@Override
-		public Member getPropagatedFrom() {
-			return this.propagatedFrom;
-		}
-
 	}
 
 }

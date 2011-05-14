@@ -27,19 +27,20 @@ import static org.o42a.core.ref.Ref.voidRef;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.Directive;
+import org.o42a.core.artifact.MaterializableArtifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public abstract class Array extends Artifact<Array> {
+public abstract class Array extends MaterializableArtifact<Array> {
 
 	public static DeclaredField<Array, ?> declareField(MemberField member) {
 		return new DeclaredArrayField(member);
@@ -51,7 +52,6 @@ public abstract class Array extends Artifact<Array> {
 		return new ArrayFieldIR(generator, field);
 	}
 
-	private MaterializedArray materialized;
 	private ArrayTypeRef typeRef;
 	private ArrayInitializer initializer;
 
@@ -71,10 +71,6 @@ public abstract class Array extends Artifact<Array> {
 	@Override
 	public ArtifactKind<Array> getKind() {
 		return null;
-	}
-
-	public final Obj getItemType() {
-		return getArrayTypeRef().getItemTypeRef().getType();
 	}
 
 	@Override
@@ -97,14 +93,6 @@ public abstract class Array extends Artifact<Array> {
 		return null;
 	}
 
-	@Override
-	public final Obj materialize() {
-		if (this.materialized == null) {
-			this.materialized = new MaterializedArray(this);
-		}
-		return this.materialized;
-	}
-
 	public final ArrayTypeRef getArrayTypeRef() {
 		if (this.typeRef == null) {
 			define();
@@ -119,17 +107,26 @@ public abstract class Array extends Artifact<Array> {
 		return this.initializer;
 	}
 
-	@Override
-	public void resolveAll() {
-		getArrayTypeRef();
-		getInitializer();
-	}
-
 	protected abstract ArrayTypeRef buildTypeRef();
 
 	protected abstract TypeRef buildItemTypeRef();
 
 	protected abstract ArrayInitializer buildInitializer();
+
+	@Override
+	protected Obj createMaterialization() {
+		return new MaterializedArray(this);
+	}
+
+	@Override
+	protected void fullyResolveArtifact() {
+
+		final Resolver resolver =
+			getScope().getEnclosingScope().newResolver(content());
+
+		getArrayTypeRef().resolveAll(resolver);
+		getInitializer().resolveAll(resolver);
+	}
 
 	private void define() {
 

@@ -26,6 +26,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 
 
@@ -45,20 +46,25 @@ public strictfp class FloatByString extends ByString<Double> {
 	private static final byte PARSE_EXPONENT_SIGN = 3;
 	private static final byte PARSE_EXPONENT = 4;
 
-	public FloatByString(Obj owner) {
-		super(owner, ValueType.FLOAT);
+	public FloatByString(Obj owner, String name, String sourcePath) {
+		super(owner.toMemberOwner(), ValueType.FLOAT, name, sourcePath);
 	}
 
 	@Override
-	protected Double byString(LocationInfo location, String input) {
+	protected Double byString(
+			LocationInfo location,
+			Resolver resolver,
+			String input) {
 
 		final int len = input.length();
 
 		if (len == 0) {
-			getLogger().error(
-					"empty_input",
-					location,
-					"Empty string can not be converted to float");
+			if (reportError(resolver)) {
+				getLogger().error(
+						"empty_input",
+						location,
+						"Empty string can not be converted to float");
+			}
 			return null;
 		}
 
@@ -100,11 +106,13 @@ public strictfp class FloatByString extends ByString<Double> {
 					break;
 				}
 				if (space) {
-					getLogger().error(
-							"invalid_input",
-							location,
-							"Unexpected space in number at position %d",
-							i);
+					if (reportError(resolver)) {
+						getLogger().error(
+								"invalid_input",
+								location,
+								"Unexpected space in number at position %d",
+								i);
+					}
 					return null;
 				}
 				int_mantissa = negative ? -value : value;
@@ -118,11 +126,13 @@ public strictfp class FloatByString extends ByString<Double> {
 					break;
 				}
 				if (space) {
-					getLogger().error(
-							"invalid_input",
-							location,
-							"Unexpected space in number at position %d",
-							i);
+					if (reportError(resolver)) {
+						getLogger().error(
+								"invalid_input",
+								location,
+								"Unexpected space in number at position %d",
+								i);
+					}
 					return null;
 				}
 				if (stage == PARSE_FRAC_MATISSA) {
@@ -138,23 +148,27 @@ public strictfp class FloatByString extends ByString<Double> {
 			default:
 				if (Character.getType(c) == Character.SPACE_SEPARATOR) {
 					if (space) {
-						getLogger().error(
-								"invalid_input",
-								location,
-								"Two subsequent spaces in number"
-								+ " at position %d",
-								i);
+						if (reportError(resolver)) {
+							getLogger().error(
+									"invalid_input",
+									location,
+									"Two subsequent spaces in number"
+									+ " at position %d",
+									i);
+						}
 						return null;
 					}
 					if (stage == PARSE_SIGN
 							|| stage == PARSE_EXPONENT_SIGN
 							|| (stage == PARSE_FRAC_MATISSA
 									&& frac_mantissa_len == 0)) {
-						getLogger().error(
-								"invalid_input",
-								location,
-								"Unexpected space in number at position %d",
-								i);
+						if (reportError(resolver)) {
+							getLogger().error(
+									"invalid_input",
+									location,
+									"Unexpected space in number at position %d",
+									i);
+						}
 						return null;
 					}
 					space = true;
@@ -165,16 +179,18 @@ public strictfp class FloatByString extends ByString<Double> {
 			final int digit = Character.digit(c, 10);
 
 			if (digit < 0) {
-				getLogger().error(
-						"invalid_input",
-						location,
-						"Illegal character in number at position %d",
-						i);
+				if (reportError(resolver)) {
+					getLogger().error(
+							"invalid_input",
+							location,
+							"Illegal character in number at position %d",
+							i);
+				}
 				return null;
 			}
 
 			value = value * 10.0 + digit;
-			if (hasError(location, value)) {
+			if (hasError(location, resolver, value)) {
 				return null;
 			}
 			if (stage == PARSE_FRAC_MATISSA) {
@@ -187,11 +203,13 @@ public strictfp class FloatByString extends ByString<Double> {
 		} while (i < len);
 
 		if (space) {
-			getLogger().error(
-					"invalid_input",
-					location,
-					"Unexpected space after number at position %d",
-					len - 1);
+			if (reportError(resolver)) {
+				getLogger().error(
+						"invalid_input",
+						location,
+						"Unexpected space after number at position %d",
+						len - 1);
+			}
 			return null;
 		}
 
@@ -206,10 +224,12 @@ public strictfp class FloatByString extends ByString<Double> {
 			exponent = negative ? -value : value;
 			break;
 		default:
-			getLogger().error(
-					"empty_input",
-					location,
-					"Unexpected end of floating-point number input");
+			if (reportError(resolver)) {
+				getLogger().error(
+						"empty_input",
+						location,
+						"Unexpected end of floating-point number input");
+			}
 			return null;
 		}
 
@@ -221,11 +241,11 @@ public strictfp class FloatByString extends ByString<Double> {
 
 			final double pow = Math.pow(10.0, -frac_mantissa_len);
 
-			if (hasError(location, pow)) {
+			if (hasError(location, resolver, pow)) {
 				return null;
 			}
 			res = frac_mantissa * pow + int_mantissa;
-			if (hasError(location, res)) {
+			if (hasError(location, resolver, res)) {
 				return null;
 			}
 		}
@@ -233,11 +253,11 @@ public strictfp class FloatByString extends ByString<Double> {
 
 			final double pow = Math.pow(10.0, exponent);
 
-			if (hasError(location, pow)) {
+			if (hasError(location, resolver, pow)) {
 				return null;
 			}
 			res = res * pow;
-			if (hasError(location, res)) {
+			if (hasError(location, resolver, res)) {
 				return null;
 			}
 		}
@@ -261,26 +281,35 @@ public strictfp class FloatByString extends ByString<Double> {
 				ParseFunc.PARSE);
 	}
 
-	private boolean hasError(LocationInfo location, double x) {
+	private boolean hasError(
+			LocationInfo location,
+			Resolver resolver,
+			double x) {
 		if (Double.isNaN(x)) {
-			getLogger().error("nan", location, "Not a number");
+			if (reportError(resolver)) {
+				getLogger().error("nan", location, "Not a number");
+			}
 			return true;
 		}
 		if (Double.isInfinite(x)) {
-			getLogger().error(
-					"float_overflow",
-					location,
-					"Floating point number overflow");
+			if (reportError(resolver)) {
+				getLogger().error(
+						"float_overflow",
+						location,
+						"Floating point number overflow");
+			}
 			return true;
 		}
 
 		final double abs = Math.abs(x);
 
 		if (abs < Double.MIN_NORMAL && x > 0.0) {
-			getLogger().error(
-					"float_underflow",
-					location,
-					"Floating point number underflow");
+			if (reportError(resolver)) {
+				getLogger().error(
+						"float_underflow",
+						location,
+						"Floating point number underflow");
+			}
 			return true;
 		}
 		return false;

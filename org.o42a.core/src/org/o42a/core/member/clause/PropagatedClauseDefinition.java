@@ -26,6 +26,7 @@ import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UserInfo;
 
 
 final class PropagatedClauseDefinition extends PlainObject {
@@ -33,29 +34,33 @@ final class PropagatedClauseDefinition extends PlainObject {
 	private final PlainClause clause;
 
 	public static Ascendants deriveSamples(
+			UserInfo user,
 			Clause clause,
 			Ascendants ascendants) {
 
-		final Obj container =
-			clause.getScope().getEnclosingContainer().toObject();
-		final TypeRef containerAncestor = container.getAncestor();
+		final ObjectType containerType =
+			clause.getScope().getEnclosingContainer().toObject()
+			.type().useBy(user);
+		final TypeRef containerAncestor = containerType.getAncestor();
 
 		if (containerAncestor != null) {
 
 			final Member overriddenMember =
-				containerAncestor.getType().member(clause.getKey());
+				containerAncestor.type(user)
+				.getObject().member(clause.getKey());
 
 			if (overriddenMember != null) {
 				ascendants = ascendants.addMemberOverride(overriddenMember);
 			}
 		}
 
-		final Sample[] containerSamples = container.getSamples();
+		final Sample[] containerSamples = containerType.getSamples();
 
 		for (int i = containerSamples.length - 1; i >= 0; --i) {
 
 			final Member overriddenMember =
-				containerSamples[i].getType().member(clause.getKey());
+				containerSamples[i].type(user)
+				.getObject().member(clause.getKey());
 
 			if (overriddenMember != null) {
 				ascendants = ascendants.addMemberOverride(overriddenMember);
@@ -92,7 +97,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(this.clause, new Ascendants(getScope()));
+		return deriveSamples(type(), this.clause, new Ascendants(this));
 	}
 
 	@Override

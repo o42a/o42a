@@ -22,32 +22,38 @@ package org.o42a.core.member.local;
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.User.dummyUser;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class LocalScope
 		extends LocalScopeBase
-		implements Container, ClauseContainer, SourceInfo {
+		implements MemberContainer, ClauseContainer, SourceInfo {
 
 	static ExplicitLocalScope explicitScope(
 			LocationInfo location,
@@ -76,13 +82,27 @@ public abstract class LocalScope
 	private final CompilerContext context;
 	private final Loggable loggable;
 	private final Obj owner;
+	private final OwningLocal owningLocal = new OwningLocal(this);
 	private final Path ownerScopePath;
+	private final ResolverFactory<LocalResolver> resolverFactory;
+	private Set<Scope> enclosingScopes;
 
 	LocalScope(LocationInfo location, Obj owner) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.owner = owner;
 		this.ownerScopePath = new OwnerPathFragment().toPath();
+		this.resolverFactory = new LocalResolver.Factory(this);
+	}
+
+	public final Obj getOwner() {
+		return this.owner;
+	}
+
+	public abstract String getName();
+
+	public final boolean isExplicit() {
+		return getOwner() == getSource();
 	}
 
 	@Override
@@ -96,6 +116,31 @@ public abstract class LocalScope
 	}
 
 	@Override
+	public final CompilerLogger getLogger() {
+		return this.context.getLogger();
+	}
+
+	@Override
+	public final MemberContainer getContainer() {
+		return this;
+	}
+
+	@Override
+	public final ScopePlace getPlace() {
+		return toMember().getPlace();
+	}
+
+	@Override
+	public final Scope getScope() {
+		return this;
+	}
+
+	@Override
+	public boolean isTopScope() {
+		return false;
+	}
+
+	@Override
 	public final Container getParentContainer() {
 		return parentContainer(this);
 	}
@@ -106,14 +151,42 @@ public abstract class LocalScope
 	}
 
 	@Override
+	public final Scope getEnclosingScope() {
+		return AbstractScope.enclosingScope(this);
+	}
+
+	@Override
+	public final Set<Scope> getEnclosingScopes() {
+		if (this.enclosingScopes != null) {
+			return this.enclosingScopes;
+		}
+		return this.enclosingScopes = AbstractScope.enclosingScopes(this);
+	}
+
+	@Override
 	public final Path getEnclosingScopePath() {
 		return this.ownerScopePath;
 	}
 
+	public abstract ImperativeBlock getBlock();
+
 	@Override
-	public final Container getContainer() {
-		return this;
+	public final ConstructionMode getConstructionMode() {
+		return AbstractScope.constructionMode(this);
 	}
+
+	@Override
+	public final LocalResolver dummyResolver() {
+		return resolverFactory().dummyResolver();
+	}
+
+	@Override
+	public final LocalResolver newResolver(UserInfo user) {
+		return resolverFactory().newResolver(user);
+	}
+
+	@Override
+	public abstract MemberLocal toMember();
 
 	@Override
 	public final Artifact<?> toArtifact() {
@@ -139,25 +212,6 @@ public abstract class LocalScope
 	public final Field<?> toField() {
 		return null;
 	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return toMember().getPlace();
-	}
-
-	public final Obj getOwner() {
-		return this.owner;
-	}
-
-	public abstract String getName();
-
-	public final boolean isExplicit() {
-		return getOwner() == getSource();
-	}
-
-	public abstract ImperativeBlock getBlock();
-
-	public abstract Collection<Member> getMembers();
 
 	public final LocalPlace placeOf(ScopeInfo other) {
 
@@ -203,6 +257,11 @@ public abstract class LocalScope
 	}
 
 	@Override
+	public final boolean contains(Scope other) {
+		return AbstractScope.contains(this, other);
+	}
+
+	@Override
 	public boolean derivedFrom(Scope other) {
 		if (this == other) {
 			return true;
@@ -214,7 +273,55 @@ public abstract class LocalScope
 			return false;
 		}
 
-		return getOwner().derivedFrom(otherLocal.getOwner());
+		return getOwner().type().useBy(dummyUser()).derivedFrom(
+				otherLocal.getOwner().type().useBy(dummyUser()));
+	}
+
+	@Override
+	public final Path pathTo(Scope targetScope) {
+		return AbstractScope.pathTo(this, targetScope);
+	}
+
+	@Override
+	public final Rescoper rescoperTo(Scope toScope) {
+		return AbstractScope.rescoperTo(this, toScope);
+	}
+
+	@Override
+	public final Distributor distribute() {
+		return Placed.distribute(this);
+	}
+
+	@Override
+	public final Distributor distributeIn(Container container) {
+		return Placed.distributeIn(this, container);
+	}
+
+	public abstract void resolveAll();
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	@Override
+	public final void assertDerivedFrom(Scope other) {
+		AbstractScope.assertDerivedFrom(this, other);
 	}
 
 	@Override
@@ -234,6 +341,14 @@ public abstract class LocalScope
 		return new PropagatedLocalScope(this, owner);
 	}
 
+	protected final ResolverFactory<LocalResolver> resolverFactory() {
+		return this.resolverFactory;
+	}
+
+	final OwningLocal toOwner() {
+		return this.owningLocal;
+	}
+
 	abstract boolean addMember(Member member);
 
 	abstract ExplicitLocalScope explicit();
@@ -243,6 +358,7 @@ public abstract class LocalScope
 		@Override
 		public Container resolve(
 				LocationInfo location,
+				UserInfo user,
 				Path path,
 				int index,
 				Scope start,

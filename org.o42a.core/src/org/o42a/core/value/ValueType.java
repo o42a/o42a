@@ -28,7 +28,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.op.Val;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -103,8 +102,8 @@ public abstract class ValueType<T> {
 		.toStaticTypeRef();
 	}
 
-	public final Value<T> definiteValue(T value) {
-		return new DefiniteValue<T>(this, value);
+	public final Value<T> constantValue(T value) {
+		return new ConstantValue<T>(this, value);
 	}
 
 	public final Value<T> runtimeValue() {
@@ -119,34 +118,22 @@ public abstract class ValueType<T> {
 		return this.unknownValue;
 	}
 
-	public final Ref definiteRef(
+	public final Ref constantRef(
 			LocationInfo location,
 			Distributor distributor,
 			T value) {
-		return new DefiniteRef<T>(
+		return new ConstantRef<T>(
 				location,
 				distributor,
 				this,
 				value);
 	}
 
-	public final Ref runtimeRef(
-			LocationInfo location,
-			Distributor distributor) {
-		return Ref.runtimeRef(location, distributor, this);
-	}
-
-	public final ValueDef runtimeDef(
-			LocationInfo location,
-			Distributor distributor) {
-		return runtimeRef(location, distributor).toValueDef();
-	}
-
-	public final Obj definiteObject(
+	public final Obj constantObject(
 			LocationInfo location,
 			Distributor enclosing,
 			T value) {
-		return new DefiniteObject<T>(
+		return new ConstantObject<T>(
 				location,
 				enclosing,
 				this,

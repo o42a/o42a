@@ -19,20 +19,37 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.core.*;
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.core.Distributor;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.OwningObject;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class MemberLocal extends Member {
 
-	MemberLocal(LocationInfo location, Distributor distributor, Obj owner) {
-		super(location, distributor);
+	MemberLocal(
+			LocationInfo location,
+			Distributor distributor,
+			OwningObject owner) {
+		super(location, distributor, owner);
+	}
+
+	public final Obj getOwner() {
+		return getOwningObject().getObject();
+	}
+
+	public final OwningObject getOwningObject() {
+		return (OwningObject) getMemberOwner();
 	}
 
 	@Override
@@ -51,18 +68,18 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final Field<?> toField() {
+	public final Field<?> toField(UserInfo user) {
 		return null;
 	}
 
 	@Override
 	public final Clause toClause() {
-		return toLocal().toClause();
+		return toLocal(dummyUser()).toClause();
 	}
 
 	@Override
-	public final Container getSubstance() {
-		return toLocal();
+	public final LocalScope substance(UserInfo user) {
+		return toLocal(user);
 	}
 
 	@Override
@@ -88,22 +105,24 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final Member propagateTo(Scope scope) {
+	public final Member propagateTo(MemberOwner owner) {
 
-		final Obj owner = scope.getContainer().toObject();
+		final Obj ownerObject = owner.getContainer().toObject();
 
-		assert owner != null :
-			scope + " is not object";
+		assert ownerObject != null :
+			ownerObject + " is not object";
 
-		return toLocal().propagateTo(owner).toMember();
+		return toLocal(owner.getScope().dummyResolver())
+		.propagateTo(ownerObject).toMember();
 	}
 
 	@Override
 	public void resolveAll() {
+		toLocal(dummyUser()).resolveAll();
 	}
 
 	@Override
-	public Member wrap(Member inherited, Container container) {
+	public Member wrap(MemberOwner owner, UserInfo user, Member inherited) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -39,6 +39,11 @@ final class MaterializedArray extends Obj {
 	}
 
 	@Override
+	public Array getMaterializationOf() {
+		return this.array;
+	}
+
+	@Override
 	public ConstructionMode getConstructionMode() {
 		return ConstructionMode.PROHIBITED_CONSTRUCTION;
 	}
@@ -50,7 +55,7 @@ final class MaterializedArray extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope());
+		return new Ascendants(this);
 	}
 
 	@Override

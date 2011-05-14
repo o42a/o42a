@@ -20,192 +20,246 @@
 package org.o42a.core.artifact.object;
 
 
-public enum Derivation {
+public abstract class Derivation {
 
-	NONE() {
+	private static final int PROPAGATION_MASK = 0x40;
+	private static final int IMPLICIT_MASK = 0x80 | PROPAGATION_MASK;
+
+	public static final Derivation SAME = new Derivation(0x10) {
 
 		@Override
-		boolean match(Obj object, Obj ascendant) {
-			return false;
+		public String toString() {
+			return "SAME";
 		}
 
 		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return false;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return false;
-		}
-
-	},
-
-	SAME() {
-
-		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return false;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return false;
-		}
-
-	},
-
-	INHERITANCE() {
-
-		@Override
-		boolean acceptAncestor() {
-			return true;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return false;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return false;
-		}
-
-	},
-
-	MEMBER_OVERRIDE() {
-
-		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return sample.getOverriddenMember() != null;
-		}
-
-	},
-
-	EXPLICIT_SAMPLE() {
-
-		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return sample.isExplicit();
-		}
-
-	},
-
-	IMPLICIT_SAMPLE() {
-
-		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return !sample.isExplicit() && sample.getOverriddenMember() == null;
-		}
-
-	},
-
-	IMPLICIT_PROPAGATION() {
-
-		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return !sample.isExplicit();
-		}
-
-	},
-
-	PROPAGATION() {
-
-		@Override
-		boolean acceptAncestor() {
-			return false;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return true;
-		}
-
-	},
-
-	ANY() {
-
-		@Override
-		boolean acceptAncestor() {
-			return true;
-		}
-
-		@Override
-		boolean acceptsSamples() {
-			return true;
-		}
-
-		@Override
-		boolean acceptSample(Sample sample) {
-			return true;
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return EXPLICIT_SAMPLE;
+			}
+			if (sample.getOverriddenMember() != null) {
+				return MEMBER_OVERRIDE;
+			}
+			return IMPLICIT_SAMPLE;
 		}
 
 	};
 
-	boolean match(Obj object, Obj ascendant) {
-		return object == ascendant;
+	public static final Derivation INHERITANCE = new Derivation(0x20) {
+
+		@Override
+		public String toString() {
+			return "INHERITANCE";
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+			return this;
+		}
+
+	};
+
+	public static final Derivation MEMBER_OVERRIDE =
+		new Derivation(IMPLICIT_MASK | 0x01) {
+
+		@Override
+		public String toString() {
+			return "MEMBER_OVERRIDE";
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return PROPAGATION;
+			}
+			if (sample.getOverriddenMember() != null) {
+				return this;
+			}
+			return IMPLICIT_PROPAGATION;
+		}
+
+	};
+
+	public static final Derivation IMPLICIT_SAMPLE =
+		new Derivation(IMPLICIT_MASK | 0x04) {
+
+		@Override
+		public String toString() {
+			return "IMPLICIT_SAMPLE";
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return PROPAGATION;
+			}
+			return IMPLICIT_PROPAGATION;
+		}
+
+	};
+
+	public static final Derivation EXPLICIT_SAMPLE =
+		new Derivation(PROPAGATION_MASK | 0x02) {
+
+		@Override
+		public String toString() {
+			return "EXPLICIT_SAMPLE";
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+			return PROPAGATION;
+		}
+
+	};
+
+	public static final Derivation IMPLICIT_PROPAGATION =
+		new Derivation(IMPLICIT_MASK) {
+
+		@Override
+		public String toString() {
+			return "IMPLICIT_PROPAGATION";
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+			if (sample.isExplicit()) {
+				return PROPAGATION;
+			}
+			return IMPLICIT_PROPAGATION;
+		}
+
+	};
+
+	public static final Derivation PROPAGATION =
+		new Derivation(PROPAGATION_MASK) {
+
+		@Override
+		public String toString() {
+			return "PROPAGATION";
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+			return this;
+		}
+
+	};
+
+	private static final Derivation[] ATOMS = {
+		SAME,
+		INHERITANCE,
+		MEMBER_OVERRIDE,
+		IMPLICIT_SAMPLE,
+		EXPLICIT_SAMPLE,
+		IMPLICIT_PROPAGATION,
+		PROPAGATION,
+	};
+
+	final int mask;
+
+	Derivation(int mask) {
+		this.mask = mask;
 	}
 
-	abstract boolean acceptAncestor();
+	@Override
+	public int hashCode() {
+		return this.mask;
+	}
 
-	abstract boolean acceptsSamples();
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Derivation)) {
+			return false;
+		}
 
-	abstract boolean acceptSample(Sample sample);
+		final Derivation other = (Derivation) obj;
+
+		return this.mask != other.mask;
+	}
+
+	abstract Derivation traverseSample(Sample sample);
+
+	final Derivation union(Derivation other) {
+
+		final int mask = this.mask & other.mask;
+
+		if (mask == this.mask) {
+			return this;
+		}
+		if (mask == other.mask) {
+			return other;
+		}
+
+		return new Derivations(mask);
+	}
+
+	final boolean is(Derivation other) {
+		return (this.mask & other.mask) == other.mask;
+	}
+
+	private static final class Derivations extends Derivation {
+
+		Derivations(int mask) {
+			super(mask);
+		}
+
+		@Override
+		public String toString() {
+
+			final StringBuilder out = new StringBuilder();
+			int mask = 0;
+			boolean comma = false;
+
+			out.append("Derivation[");
+
+			for (Derivation atom : ATOMS) {
+				if (!is(atom)) {
+					continue;
+				}
+				if (comma) {
+					out.append(',');
+				} else {
+					comma = true;
+				}
+				out.append(atom);
+				mask |= atom.mask;
+				if (this.mask == mask) {
+					break;
+				}
+			}
+			out.append(']');
+
+			return out.toString();
+		}
+
+		@Override
+		Derivation traverseSample(Sample sample) {
+
+			Derivation derivation = null;
+			int mask = 0;
+
+			for (Derivation atom : ATOMS) {
+				if (!is(atom)) {
+					continue;
+				}
+				if (derivation == null) {
+					derivation = atom.traverseSample(sample);
+					continue;
+				}
+				derivation = derivation.union(atom.traverseSample(sample));
+				mask |= atom.mask;
+				if (mask == this.mask) {
+					break;
+				}
+			}
+
+			return derivation;
+		}
+
+	}
 
 }

@@ -19,11 +19,11 @@
 */
 package org.o42a.core.member.clause;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -33,7 +33,7 @@ import org.o42a.core.st.Reproducer;
 final class DeclaredPlainClause extends PlainClause {
 
 	static DeclaredPlainClause plainClause(ClauseBuilder builder) {
-		return new PlainMember(builder).clause;
+		return new DeclaredPlainClauseMember(builder).toClause();
 	}
 
 	private final ClauseBuilder builder;
@@ -41,15 +41,17 @@ final class DeclaredPlainClause extends PlainClause {
 	private MemberKey overridden;
 	private ReusedClause[] reused = NOTHING_REUSED;
 
-	private DeclaredPlainClause(MemberClause clause, ClauseBuilder builder) {
+	DeclaredPlainClause(
+			DeclaredPlainClauseMember clause,
+			ClauseBuilder builder) {
 		super(clause);
 		this.builder = builder;
 	}
 
 	private DeclaredPlainClause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			DeclaredPlainClause overridden) {
-		super(enclosingContainer, overridden);
+		super(owner, overridden);
 		this.builder = overridden.builder;
 		this.definition = overridden.getDefinition();
 		this.overridden = overridden.getOverridden();
@@ -116,7 +118,7 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	protected void doResolveAll() {
+	protected void fullyResolve() {
 
 		final ClauseDefinition definition = getDefinition();
 
@@ -127,8 +129,8 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	protected PlainClause propagate(Scope enclosingScope) {
-		return new DeclaredPlainClause(enclosingScope.getContainer(), this);
+	protected PlainClause propagate(MemberOwner owner) {
+		return new DeclaredPlainClause(owner, this);
 	}
 
 	@Override
@@ -177,40 +179,15 @@ final class DeclaredPlainClause extends PlainClause {
 
 		final OverriddenChecker checker = new OverriddenChecker(overridden);
 
-		if (path.walk(overridden, getEnclosingScope(), checker) == null) {
+		if (path.walk(
+				overridden,
+				dummyUser(),
+				getEnclosingScope(),
+				checker) == null) {
 			return null;
 		}
 
 		return checker.getOverriddenKey();
-	}
-
-	private static final class PlainMember extends MemberClause {
-
-		private final DeclaredPlainClause clause;
-
-		PlainMember(ClauseBuilder builder) {
-			super(builder.getDeclaration());
-			this.clause = new DeclaredPlainClause(this, builder);
-		}
-
-		@Override
-		public Clause toClause() {
-			return this.clause;
-		}
-
-		@Override
-		protected void merge(Member member) {
-
-			final Clause clause = member.toClause();
-
-			if (clause == null) {
-				getContext().getLogger().notClauseDeclaration(member);
-				return;
-			}
-
-			this.clause.merge(clause);
-		}
-
 	}
 
 }

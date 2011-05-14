@@ -19,27 +19,35 @@
 */
 package org.o42a.core.ref.type;
 
-import static org.o42a.core.artifact.Artifact.unresolvableObject;
 import static org.o42a.core.artifact.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
+import static org.o42a.util.use.Usable.simpleUsable;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.Holder;
+import org.o42a.util.use.Usable;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class TypeRef extends RescopableRef<TypeRef> {
 
+	private final Usable<TypeRef> usable = simpleUsable("UsableTypeRef", this);
 	private TypeRef ancestor;
-	private Obj type;
+	private Holder<ObjectType> type;
 
 	TypeRef(Rescoper rescoper) {
 		super(rescoper);
 	}
+
+	public abstract boolean isStatic();
 
 	public abstract Ref getUntachedRef();
 
@@ -53,61 +61,63 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 	public ConstructionMode getConstructionMode() {
 
-		final Artifact<?> artifact = getArtifact();
+		final Obj object = typeObject(dummyUser());
 
-		if (artifact == null) {
-			return PROHIBITED_CONSTRUCTION;
-		}
-		if (!artifact.getKind().isInheritable()) {
+		if (object == null) {
 			return PROHIBITED_CONSTRUCTION;
 		}
 
-		final Obj object = artifact.toObject();
-
-		if (object != null) {
-			return object.getConstructionMode();
-		}
-
-		return artifact.materialize().getConstructionMode();
+		return object.getConstructionMode();
 	}
 
-	public Obj getType() {
-
-		final Obj type = this.type;
-
-		if (type != null) {
-			if (type != unresolvableObject(getContext())) {
-				return type;
-			}
-			return null;
+	public ObjectType type(UserInfo user) {
+		usable().useBy(user);
+		if (this.type != null) {
+			return this.type.get();
 		}
 
-		final Artifact<?> artifact = getArtifact();
+		final Artifact<?> artifact = artifact(usable());
 
 		if (artifact == null) {
-			this.type = unresolvableObject(getContext());
+			this.type = new Holder<ObjectType>(null);
 			return null;
 		}
 
 		final TypeRef typeRef = artifact.getTypeRef();
 
 		if (typeRef != null) {
-			return this.type = typeRef.getType();
+
+			final ObjectType type = typeRef.type(usable());
+
+			this.type = new Holder<ObjectType>(type);
+
+			return type;
 		}
 
 		final Obj object = artifact.toObject();
 
 		if (object == null) {
 			getScope().getLogger().notTypeRef(this);
-			this.type = unresolvableObject(getContext());
+			this.type = new Holder<ObjectType>(null);
 			return null;
 		}
 
-		return this.type = object;
+		final ObjectType result = object.type().useBy(usable());
+
+		this.type = new Holder<ObjectType>(result);
+
+		return result;
+	}
+
+	public final Obj typeObject(UserInfo user) {
+
+		final ObjectType type = type(user);
+
+		return type != null ? type.getObject() : null;
 	}
 
 	public boolean validate() {
-		return getType() != null;
+		return type(dummyUser()) != null;
 	}
 
 	public final TypeRelation relationTo(TypeRef other) {
@@ -127,16 +137,18 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		final Scope root1 = getRef().getResolutionRoot().resolve(
 				this,
+				dummyUser(),
 				getRescoper().rescope(getScope())).getScope();
 		final Scope root2 = other.getRef().getResolutionRoot().resolve(
 				other,
+				dummyUser(),
 				other.getRescoper().rescope(other.getScope())).getScope();
 
-		final Obj type1 = getType();
-		final Obj type2 = other.getType();
+		final ObjectType type1 = type(dummyUser());
+		final ObjectType type2 = other.type(dummyUser());
 
 		if (root1 == root2) {
-			if (type1.getScope() == type2.getScope()) {
+			if (type1.getObject().getScope() == type2.getObject().getScope()) {
 				return TypeRelation.SAME;
 			}
 			if (type1.derivedFrom(type2)) {
@@ -214,5 +226,9 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			Ref ref,
 			Ref untouchedRef,
 			Rescoper rescoper);
+
+	protected final Usable<?> usable() {
+		return this.usable;
+	}
 
 }

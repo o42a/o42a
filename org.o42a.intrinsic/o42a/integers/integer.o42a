@@ -60,3 +60,5 @@
     <@Operators: operand> With = integer
   )
 )
+
+<*By string> Integers: by string(<*''> Input = string)

@@ -23,9 +23,9 @@ import static org.o42a.core.ref.Logical.logicalFalse;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
@@ -45,7 +45,7 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
+	public Resolution resolve(Resolver resolver) {
 		return noResolution();
 	}
 
@@ -57,6 +57,19 @@ public final class ErrorRef extends Ref {
 	@Override
 	public String toString() {
 		return "ERROR";
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
 	}
 
 	@Override

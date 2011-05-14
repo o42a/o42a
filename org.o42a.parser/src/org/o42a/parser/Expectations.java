@@ -39,7 +39,6 @@ public class Expectations {
 		this.expectations = expectations;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Expectations expect(Parser<?> expectation) {
 		assert expectation != null :
 			"Expectation not specified";

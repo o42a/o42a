@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -44,21 +43,15 @@ final class RescopedLogical extends Logical {
 	}
 
 	@Override
-	public LogicalValue logicalValue(Scope scope) {
-		assertCompatible(scope);
-		return this.logical.logicalValue(this.rescoper.rescope(scope));
+	public LogicalValue logicalValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
+		return this.logical.logicalValue(this.rescoper.rescope(resolver));
 	}
 
 	@Override
 	public Logical reproduce(Reproducer reproducer) {
 		getLogger().notReproducible(this);
 		return null;
-	}
-
-	@Override
-	public void write(CodeDirs dirs, HostOp host) {
-		host = this.rescoper.rescope(dirs, host);
-		this.logical.write(dirs, host);
 	}
 
 	@Override
@@ -80,8 +73,21 @@ final class RescopedLogical extends Logical {
 	}
 
 	@Override
+	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
+		host = this.rescoper.rescope(dirs, host);
+		this.logical.write(dirs, host);
+	}
+
+	@Override
 	public String toString() {
 		return this.logical.toString();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		this.rescoper.resolveAll(resolver);
+		this.logical.resolveAll(this.rescoper.rescope(resolver));
 	}
 
 }

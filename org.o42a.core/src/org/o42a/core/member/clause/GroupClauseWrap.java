@@ -19,10 +19,11 @@
 */
 package org.o42a.core.member.clause;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.Reproducer;
 
@@ -33,19 +34,16 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 	private final GroupClause wrapped;
 	private LocalScope localScope;
 
-	GroupClauseWrap(
-			Container container,
-			GroupClause iface,
-			GroupClause wrapped) {
-		super(container, wrapped, wrapped.toMember().isPropagated());
+	GroupClauseWrap(MemberOwner owner, GroupClause iface, GroupClause wrapped) {
+		super(owner, wrapped, wrapped.toMember().isPropagated());
 		this.iface = iface;
 		this.wrapped = wrapped;
 	}
 
-	GroupClauseWrap(Container container, GroupClauseWrap overridden) {
-		super(container, overridden);
+	GroupClauseWrap(MemberOwner owner, GroupClauseWrap overridden) {
+		super(owner, overridden);
 
-		final Obj inherited = container.toObject();
+		final Obj inherited = owner.getContainer().toObject();
 
 		this.iface = inherited.member(
 				overridden.getInterface().getKey()).toClause().toGroupClause();
@@ -85,7 +83,7 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 		}
 
 		this.localScope =
-			member(wrappedScope.toMember().getKey()).toLocal();
+			member(wrappedScope.toMember().getKey()).toLocal(dummyUser());
 
 		assert this.localScope != null :
 			"Can not wrap local scope: " + wrappedScope;
@@ -121,8 +119,8 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 	}
 
 	@Override
-	protected GroupClause propagate(Scope enclosingScope) {
-		return new GroupClauseWrap(enclosingScope.getContainer(), this);
+	protected GroupClause propagate(MemberOwner owner) {
+		return new GroupClauseWrap(owner, this);
 	}
 
 }

@@ -20,6 +20,7 @@
 package org.o42a.core.def;
 
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 
 
 final class ValueCondDef extends CondDef {
@@ -57,6 +58,11 @@ final class ValueCondDef extends CondDef {
 	@Override
 	protected CondDef create(Rescoper rescoper, Rescoper additionalRescoper) {
 		return new ValueCondDef(this, rescoper);
+	}
+
+	@Override
+	protected void fullyResolveDef(Resolver resolver) {
+		this.def.fullyResolve(resolver);
 	}
 
 }

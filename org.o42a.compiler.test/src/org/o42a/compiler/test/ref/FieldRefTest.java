@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.Source;
 
@@ -43,7 +42,8 @@ public class FieldRefTest extends CompilerTestCase {
 
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 
-		assertTrue(this.b.inherits(foo));
+		assertTrue(this.b.type().useBy(USE_CASE).inherits(
+				foo.type().useBy(USE_CASE)));
 		assertEquals(definiteValue(this.b), 1L);
 	}
 
@@ -55,7 +55,8 @@ public class FieldRefTest extends CompilerTestCase {
 
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 
-		assertTrue(this.b.inherits(foo));
+		assertTrue(this.b.type().useBy(USE_CASE).inherits(
+				foo.type().useBy(USE_CASE)));
 		assertEquals(definiteValue(this.b), 1L);
 	}
 
@@ -65,10 +66,13 @@ public class FieldRefTest extends CompilerTestCase {
 				"A := void(Foo := 1).",
 				"B := * & a: foo");
 
-		final Artifact<?> foo = field(this.a, "foo").getArtifact();
+		final Obj foo = field(this.a, "foo").getArtifact().materialize();
 
-		assertFalse(this.b.inherits(foo));
-		assertTrue(this.b.inherits(this.context.getIntrinsics().getInteger()));
+		assertFalse(this.b.type().useBy(USE_CASE).inherits(
+				foo.type().useBy(USE_CASE)));
+		assertTrue(this.b.type().useBy(USE_CASE).inherits(
+				this.context.getIntrinsics().getInteger()
+				.type().useBy(USE_CASE)));
 		assertEquals(definiteValue(this.b), 1L);
 	}
 
@@ -81,7 +85,8 @@ public class FieldRefTest extends CompilerTestCase {
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bar = field(this.b, "bar").getArtifact().toObject();
 
-		assertTrue(bar.inherits(foo));
+		assertTrue(bar.type().useBy(USE_CASE).inherits(
+				foo.type().useBy(USE_CASE)));
 		assertEquals(definiteValue(bar), 1L);
 	}
 
@@ -97,7 +102,8 @@ public class FieldRefTest extends CompilerTestCase {
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bar = field(c, "bar").getArtifact().toObject();
 
-		assertTrue(bar.derivedFrom(foo));
+		assertTrue(bar.type().useBy(USE_CASE).derivedFrom(
+				foo.type().useBy(USE_CASE)));
 		assertEquals(definiteValue(bar), 2L);
 	}
 

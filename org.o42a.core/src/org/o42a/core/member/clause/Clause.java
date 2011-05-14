@@ -23,9 +23,7 @@ import java.util.HashMap;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
@@ -85,33 +83,33 @@ public abstract class Clause implements PlaceInfo {
 		return result;
 	}
 
-	private final Member member;
+	private final MemberClause member;
 	private final ClauseDeclaration declaration;
 	private Clause enclosingClause;
 	private Obj enclosingObject;
 	private Path pathInObject;
 	private Clause[] implicitClauses;
-	private byte resolution;
+	private boolean allResolved;
 
 	public Clause(MemberClause member) {
 		this.member = member;
 		this.declaration = member.getDeclaration();
 	}
 
-	protected Clause(Container enclosingContainer, Clause overridden) {
-		this(enclosingContainer, overridden, true);
+	protected Clause(MemberOwner owner, Clause overridden) {
+		this(owner, overridden, true);
 	}
 
 	protected Clause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			Clause overridden,
 			boolean propagate) {
 
-		final MemberClause.Overridden member =
-			new MemberClause.Overridden(
-						enclosingContainer,
+		final OverriddenMemberClause member =
+			new OverriddenMemberClause(
+						owner,
 						this,
-						(MemberClause) overridden.toMember(),
+						overridden.toMember(),
 						propagate);
 
 		this.member = member;
@@ -197,7 +195,7 @@ public abstract class Clause implements PlaceInfo {
 		return this.member.getDisplayName();
 	}
 
-	public final Member toMember() {
+	public final MemberClause toMember() {
 		return this.member;
 	}
 
@@ -255,14 +253,15 @@ public abstract class Clause implements PlaceInfo {
 	public abstract void define(Reproducer reproducer);
 
 	public final void resolveAll() {
-		if (this.resolution != 0) {
+		if (this.allResolved) {
 			return;
 		}
+		this.allResolved = true;
+		getContext().fullResolution().start();
 		try {
-			this.resolution = -1;
-			doResolveAll();
+			fullyResolve();
 		} finally {
-			this.resolution = 1;
+			getContext().fullResolution().end();
 		}
 	}
 
@@ -301,9 +300,9 @@ public abstract class Clause implements PlaceInfo {
 		return this.member.toString();
 	}
 
-	protected abstract Clause propagate(Scope enclosingScope);
+	protected abstract Clause propagate(MemberOwner owner);
 
-	protected abstract void doResolveAll();
+	protected abstract void fullyResolve();
 
 	protected void validate() {
 		getReusedClauses();

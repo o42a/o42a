@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -54,8 +55,8 @@ public abstract class AbstractConjunction extends Logical {
 	}
 
 	@Override
-	public LogicalValue logicalValue(Scope scope) {
-		assertCompatible(scope);
+	public LogicalValue logicalValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
 		LogicalValue result = null;
 		final int numClaims = numClaims();
@@ -63,7 +64,7 @@ public abstract class AbstractConjunction extends Logical {
 		for (int i = 0; i < numClaims; ++i) {
 
 			final Logical claim = claim(i);
-			final LogicalValue value = claim.logicalValue(scope);
+			final LogicalValue value = claim.logicalValue(resolver);
 
 			if (value.isFalse()) {
 				return value;
@@ -76,6 +77,7 @@ public abstract class AbstractConjunction extends Logical {
 
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 		dirs = dirs.begin("and", "Logical AND: " + this);
 
 		final int numClaims = numClaims();
@@ -123,5 +125,12 @@ public abstract class AbstractConjunction extends Logical {
 	protected abstract int numClaims();
 
 	protected abstract Logical claim(int index);
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		for (Logical claim : expandConjunction()) {
+			claim.resolveAll(resolver);
+		}
+	}
 
 }

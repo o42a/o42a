@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
@@ -29,6 +30,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 public class MemberFragment extends PathFragment {
@@ -54,12 +56,13 @@ public class MemberFragment extends PathFragment {
 	@Override
 	public Container resolve(
 			LocationInfo location,
+			UserInfo user,
 			Path path,
 			int index,
 			Scope start,
 			PathWalker walker) {
 
-		final Member member = resolveMember(location, path, index, start);
+		final Member member = resolveMember(location, user, path, index, start);
 
 		if (member == null) {
 			return null;
@@ -67,7 +70,7 @@ public class MemberFragment extends PathFragment {
 
 		walker.member(start.getContainer(), this, member);
 
-		return member.getSubstance();
+		return member.substance(user);
 	}
 
 	@Override
@@ -87,12 +90,12 @@ public class MemberFragment extends PathFragment {
 		final Member member =
 			this.memberKey.getOrigin().getContainer().member(this.memberKey);
 
-		if (member.toLocal() != null) {
+		if (member.toLocal(dummyUser()) != null) {
 			// Member is a local scope.
 			return start;
 		}
 
-		assert member.toField() != null :
+		assert member.toField(dummyUser()) != null :
 			"Field expected: " + member;
 
 		// Member is field.
@@ -133,6 +136,7 @@ public class MemberFragment extends PathFragment {
 
 	protected Member resolveMember(
 			LocationInfo location,
+			UserInfo user,
 			Path path,
 			int index,
 			Scope start) {

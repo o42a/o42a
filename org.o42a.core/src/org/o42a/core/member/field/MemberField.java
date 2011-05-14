@@ -20,12 +20,14 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -35,6 +37,7 @@ import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class MemberField extends Member {
@@ -47,16 +50,13 @@ public abstract class MemberField extends Member {
 	private Visibility visibility;
 	private MemberField[] mergedWith = NO_MERGED;
 
-	public MemberField(FieldDeclaration declaration) {
-		super(declaration, declaration.distribute());
+	public MemberField(MemberOwner owner, FieldDeclaration declaration) {
+		super(declaration, declaration.distribute(), owner);
 		this.declaration = declaration;
 	}
 
-	private MemberField(
-			Container container,
-			Field<?> field,
-			MemberField overridden) {
-		super(overridden, overridden.distributeIn(container));
+	MemberField(MemberOwner owner, Field<?> field, MemberField overridden) {
+		super(overridden, overridden.distributeIn(owner.getContainer()), owner);
 		this.field = field;
 		this.key = overridden.getKey();
 		this.visibility = overridden.getVisibility();
@@ -114,18 +114,19 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public final Field<?> toField() {
+	public final Field<?> toField(UserInfo user) {
 		if (this.field != null) {
+			use(user);
 			return this.field;
 		}
 
-		setField(createField());
+		setField(user, createField());
 
 		return this.field;
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final LocalScope toLocal(UserInfo user) {
 		return null;
 	}
 
@@ -135,8 +136,8 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public final Container getSubstance() {
-		return toField().getContainer();
+	public final Container substance(UserInfo user) {
+		return toField(user).getContainer();
 	}
 
 	@Override
@@ -155,43 +156,44 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public MemberField propagateTo(Scope scope) {
-		return toField().propagateTo(scope).toMember();
+	public MemberField propagateTo(MemberOwner owner) {
+
+		final Field<?> field = toField(owner.getScope().dummyResolver());
+
+		return field.propagateTo(owner).toMember();
 	}
 
 	@Override
 	public void resolveAll() {
-
-		final Field<?> field = toField();
-
-		if (!field.isClone()) {
-			field.getArtifact().resolveAll();
-		}
+		toField(dummyUser()).getArtifact().resolveAll();
 	}
 
 	@Override
-	public MemberField wrap(Member inherited, Container container) {
+	public MemberField wrap(
+			MemberOwner owner,
+			UserInfo user,
+			Member inherited) {
 
-		final ArtifactKind<?> artifactKind = toField().getArtifact().getKind();
+		final ArtifactKind<?> artifactKind = toField(user).getArtifactKind();
 
 		if (artifactKind == ArtifactKind.OBJECT) {
 			return new ObjectFieldWrap(
-					container,
-					inherited.toField(),
-					toField()).toMember();
+					owner,
+					inherited.toField(user),
+					toField(user)).toMember();
 		}
 		if (artifactKind == ArtifactKind.LINK
 				|| artifactKind == ArtifactKind.VARIABLE) {
 			return new LinkFieldWrap(
-					getContainer(),
-					inherited.toField(),
-					toField()).toMember();
+					getMemberOwner(),
+					inherited.toField(user),
+					toField(user)).toMember();
 		}
 		if (artifactKind == ArtifactKind.ARRAY) {
 			return new ArrayFieldWrap(
-					getContainer(),
-					inherited.toField(),
-					toField()).toMember();
+					getMemberOwner(),
+					inherited.toField(user),
+					toField(user)).toMember();
 		}
 
 		throw new IllegalStateException("Can not wrap " + this);
@@ -216,7 +218,7 @@ public abstract class MemberField extends Member {
 
 		if (isPropagated()) {
 			out.append(", ");
-			if (toField().isClone()) {
+			if (toField(dummyUser()).isClone()) {
 				out.append("clone of ");
 				out.append(getLastDefinition().getDisplayPath());
 			} else {
@@ -261,11 +263,12 @@ public abstract class MemberField extends Member {
 	}
 
 	protected ArtifactKind<?> determineArtifactKind() {
-		return toField().getArtifactKind();
+		return toField(dummyUser()).getArtifactKind();
 	}
 
-	protected final void setField(Field<?> field) {
+	protected final void setField(UserInfo user, Field<?> field) {
 		this.field = field;
+		use(user);
 		for (MemberField merged : getMergedWith()) {
 			mergeField(merged);
 		}
@@ -275,6 +278,11 @@ public abstract class MemberField extends Member {
 
 	final MemberField[] getMergedWith() {
 		return this.mergedWith;
+	}
+
+	final void setArtifact(Artifact<?> artifact) {
+		useSubstanceBy(artifact.content());
+		useNestedBy(artifact.fieldUses());
 	}
 
 	private MemberKey overrideField() {
@@ -298,7 +306,7 @@ public abstract class MemberField extends Member {
 
 		if (declaredInRef != null) {
 
-			final Obj declaredIn = declaredInRef.getType();
+			final Obj declaredIn = declaredInRef.typeObject(dummyUser());
 
 			if (declaredIn == null) {
 				return null;
@@ -306,16 +314,21 @@ public abstract class MemberField extends Member {
 			overridden = declaredIn.member(getId(), Accessor.INHERITANT);
 		} else {
 
-			final Obj container = getContainer().toObject();
+			final ObjectType containerType =
+				getContainer().toObject().type().useBy(dummyUser());
 
-			for (Sample sample : container.getSamples()) {
-				overridden = overridden(overridden, sample.getType());
+			for (Sample sample : containerType.getSamples()) {
+				overridden = overridden(
+						overridden,
+						sample.typeObject(dummyUser()));
 			}
 
-			final TypeRef ancestor = container.getAncestor();
+			final TypeRef ancestor = containerType.getAncestor();
 
 			if (ancestor != null) {
-				overridden = overridden(overridden, ancestor.getType());
+				overridden = overridden(
+						overridden,
+						ancestor.typeObject(dummyUser()));
 			}
 		}
 
@@ -355,32 +368,12 @@ public abstract class MemberField extends Member {
 	}
 
 	private void mergeField(MemberField member) {
-		this.field.merge(member.toField());
+		this.field.merge(member.toField(dummyUser()));
 	}
 
-	static final class Overridden extends MemberField {
-
-		private final MemberField propagatedFrom;
-
-		Overridden(
-				Container container,
-				Field<?> field,
-				MemberField overridden,
-				boolean propagated) {
-			super(container, field, overridden);
-			this.propagatedFrom = propagated ? overridden : null;
-		}
-
-		@Override
-		public Member getPropagatedFrom() {
-			return this.propagatedFrom;
-		}
-
-		@Override
-		protected Field<?> createField() {
-			throw new UnsupportedOperationException();
-		}
-
+	private void use(UserInfo user) {
+		useBy(user.toUser());
+		this.field.newResolver(user);
 	}
 
 }

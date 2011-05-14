@@ -82,18 +82,13 @@ final class Rescoped extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		return this.ref.resolve(this.rescoper.rescope(scope));
+	public Resolution resolve(Resolver resolver) {
+		return this.ref.resolve(this.rescoper.rescope(resolver));
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
-		return this.ref.value(this.rescoper.rescope(scope));
-	}
-
-	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new RescopedDefinition(this, this.ref.toFieldDefinition());
+	public Value<?> value(Resolver resolver) {
+		return this.ref.value(this.rescoper.rescope(resolver));
 	}
 
 	@Override
@@ -163,6 +158,23 @@ final class Rescoped extends Ref {
 	@Override
 	public String toString() {
 		return "Rescoped[" + this.rescoper + ": " + this.ref + ']';
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return new RescopedDefinition(this, this.ref.toFieldDefinition());
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		this.ref.resolveAll(this.rescoper.rescope(resolver));
+		this.rescoper.resolveAll(resolver);
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
 	}
 
 	@Override

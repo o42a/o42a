@@ -22,12 +22,11 @@ package org.o42a.core.artifact.object;
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
 import static org.o42a.core.artifact.object.Obj.SCOPE_MEMBER_ID;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.ScopeFld;
 import org.o42a.core.ir.field.ScopeFldOp;
@@ -35,9 +34,11 @@ import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.use.UserInfo;
 
 
 final class ScopeField extends ObjectField {
@@ -46,18 +47,24 @@ final class ScopeField extends ObjectField {
 
 	ScopeField(Obj owner) {
 		super(
+				owner.toMemberOwner(),
 				fieldDeclaration(
 						owner,
-						owner.distributeIn(owner.getContainer()),
+						owner.distributeIn(owner),
 						SCOPE_MEMBER_ID)
 				.setVisibility(Visibility.PROTECTED));
 		this.overridden = null;
-		setScopeArtifact(owner.getScope().getEnclosingContainer().toObject());
+		setFieldArtifact(owner.getScope().getEnclosingContainer().toObject());
 	}
 
-	private ScopeField(Container enclosingContainer, ScopeField overridden) {
-		super(enclosingContainer, overridden, true);
+	private ScopeField(MemberOwner owner, ScopeField overridden) {
+		super(owner, overridden, true);
 		this.overridden = overridden;
+	}
+
+	@Override
+	public final boolean isScopeField() {
+		return true;
 	}
 
 	@Override
@@ -68,27 +75,31 @@ final class ScopeField extends ObjectField {
 	@Override
 	public Obj getArtifact() {
 
-		final Obj artifact = getScopeArtifact();
+		final Obj artifact = getFieldArtifact();
 
 		if (artifact != null) {
 			return artifact;
 		}
 
+		final UserInfo user = dummyUser();
 		final Obj newArtifact;
 		final Obj newOwner = getEnclosingContainer().toObject();
-		final Obj ancestor = newOwner.getAncestor().getType();
+		final ObjectType newOwnerType = newOwner.type().useBy(user);
+		final Obj ancestor = newOwnerType.getAncestor().typeObject(user);
 		final org.o42a.core.member.Member ancestorMember =
 			ancestor.member(getKey());
 
 		if (ancestorMember != null) {
 			// Scope field present in ancestor.
 			// Preserve an ancestor`s scope.
-			newArtifact = ancestorMember.getSubstance().toObject();
+			newArtifact = ancestorMember.substance(user).toObject();
 		} else {
 
-			final Obj origin = getKey().getOrigin().getContainer().toObject();
+			final ObjectType origin =
+				getKey().getOrigin().getContainer().toObject()
+				.type().useBy(user);
 
-			if (newOwner.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
+			if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
 				// Scope field declared in implicit sample.
 				// Update owner with an actual one.
 				newArtifact = newOwner.getEnclosingContainer().toObject();
@@ -98,14 +109,14 @@ final class ScopeField extends ObjectField {
 			}
 		}
 
-		setScopeArtifact(newArtifact);
+		setFieldArtifact(newArtifact);
 
 		return newArtifact;
 	}
 
 	@Override
-	protected ScopeField propagate(Scope enclosingScope) {
-		return new ScopeField(enclosingScope.getContainer(), this);
+	protected ScopeField propagate(MemberOwner owner) {
+		return new ScopeField(owner, this);
 	}
 
 	@Override

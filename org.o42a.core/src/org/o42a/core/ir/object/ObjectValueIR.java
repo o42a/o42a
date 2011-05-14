@@ -31,10 +31,12 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.value.ObjectIRLocals;
 import org.o42a.core.ir.object.value.ObjectValueIRCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueIRValFunc;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 
 
@@ -65,6 +67,10 @@ public class ObjectValueIR {
 
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
+	}
+
+	public ObjValOp op(CodeBuilder builder, Code code) {
+		return getObjectIR().op(builder, code);
 	}
 
 	@Override
@@ -247,8 +253,8 @@ public class ObjectValueIR {
 	private void assignValue(ObjectTypeIR typeIR, Definitions definitions) {
 
 		final Val val;
-
-		final DefValue value = definitions.value(definitions.getScope());
+		final Resolver resolver = definitions.getScope().dummyResolver();
+		final DefValue value = definitions.value(resolver);
 		final Value<?> realValue = value.getRealValue();
 
 		if (realValue != null) {
@@ -317,13 +323,16 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
 			return data.valueFunc();
 		}
 
 		@Override
 		protected DefValue value(Definitions definitions) {
-			return definitions.value(definitions.getScope());
+
+			final Resolver resolver = definitions.getScope().dummyResolver();
+
+			return definitions.value(resolver);
 		}
 
 		@Override
@@ -355,11 +364,14 @@ public class ObjectValueIR {
 
 		@Override
 		protected DefValue value(Definitions definitions) {
-			return definitions.requirement(definitions.getScope());
+
+			final Resolver resolver = definitions.getScope().dummyResolver();
+
+			return definitions.requirement(resolver);
 		}
 
 		@Override
-		protected FuncRec<ObjectCondFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectCondFunc> func(ObjectIRData data) {
 			return data.requirementFunc();
 		}
 
@@ -391,11 +403,14 @@ public class ObjectValueIR {
 
 		@Override
 		protected DefValue value(Definitions definitions) {
-			return definitions.claim(definitions.getScope());
+
+			final Resolver resolver = definitions.getScope().dummyResolver();
+
+			return definitions.claim(resolver);
 		}
 
 		@Override
-		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
 			return data.claimFunc();
 		}
 
@@ -428,11 +443,14 @@ public class ObjectValueIR {
 
 		@Override
 		protected DefValue value(Definitions definitions) {
-			return definitions.condition(definitions.getScope());
+
+			final Resolver resolver = definitions.getScope().dummyResolver();
+
+			return definitions.condition(resolver);
 		}
 
 		@Override
-		protected FuncRec<ObjectCondFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectCondFunc> func(ObjectIRData data) {
 			return data.conditionFunc();
 		}
 
@@ -464,11 +482,14 @@ public class ObjectValueIR {
 
 		@Override
 		protected DefValue value(Definitions definitions) {
-			return definitions.proposition(definitions.getScope());
+
+			final Resolver resolver = definitions.getScope().dummyResolver();
+
+			return definitions.proposition(resolver);
 		}
 
 		@Override
-		protected FuncRec<ObjectValFunc> func(ObjectDataType data) {
+		protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
 			return data.propositionFunc();
 		}
 

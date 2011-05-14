@@ -19,37 +19,29 @@
 */
 package org.o42a.intrinsic.root;
 
+import static java.util.Collections.emptyList;
 import static org.o42a.core.ScopePlace.TOP_PLACE;
 
-import org.o42a.codegen.CodeId;
+import java.util.Collection;
+
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableData;
 
 
-public final class Top extends AbstractScope implements Container {
+public final class Top extends AbstractScope implements MemberContainer {
 
 	private final LoggableData loggableData = new LoggableData(this);
 	private final CompilerContext context;
-	private IR ir;
+	private TopIR ir;
 
 	public Top(CompilerContext context) {
 		this.context = context;
@@ -66,7 +58,7 @@ public final class Top extends AbstractScope implements Container {
 	}
 
 	@Override
-	public Container getContainer() {
+	public MemberContainer getContainer() {
 		return this;
 	}
 
@@ -96,6 +88,11 @@ public final class Top extends AbstractScope implements Container {
 	}
 
 	@Override
+	public Collection<? extends Member> getMembers() {
+		return emptyList();
+	}
+
+	@Override
 	public Member toMember() {
 		return null;
 	}
@@ -112,11 +109,6 @@ public final class Top extends AbstractScope implements Container {
 
 	@Override
 	public Clause toClause() {
-		return null;
-	}
-
-	@Override
-	public LocalScope toLocal() {
 		return null;
 	}
 
@@ -158,7 +150,7 @@ public final class Top extends AbstractScope implements Container {
 	@Override
 	public ScopeIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = new IR(generator, this);
+			this.ir = new TopIR(generator, this);
 		}
 		return this.ir;
 	}
@@ -166,82 +158,6 @@ public final class Top extends AbstractScope implements Container {
 	@Override
 	public String toString() {
 		return "TOP";
-	}
-
-	private static final class IR extends ScopeIR {
-
-		private final CodeId id;
-
-		IR(Generator generator, Top scope) {
-			super(generator, scope);
-			this.id = generator.id("TOP");
-		}
-
-		@Override
-		public CodeId getId() {
-			return this.id;
-		}
-
-		@Override
-		public void allocate() {
-		}
-
-		@Override
-		protected void targetAllocated() {
-		}
-
-		@Override
-		protected HostOp createOp(CodeBuilder builder, Code code) {
-			return new Op(builder, getScope());
-		}
-
-	}
-
-	private static final class Op implements HostOp {
-
-		private final CodeBuilder builder;
-		private final Scope scope;
-
-		public Op(CodeBuilder builder, Scope scope) {
-			this.builder = builder;
-			this.scope = scope;
-		}
-
-		@Override
-		public Generator getGenerator() {
-			return this.builder.getGenerator();
-		}
-
-		@Override
-		public CodeBuilder getBuilder() {
-			return this.builder;
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.scope.getContext();
-		}
-
-		@Override
-		public ObjectOp toObject(CodeDirs dirs) {
-			return null;
-		}
-
-		@Override
-		public LocalOp toLocal() {
-			return null;
-		}
-
-		@Override
-		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
-			return null;
-		}
-
-		@Override
-		public ObjOp materialize(CodeDirs dirs) {
-			throw new UnsupportedOperationException();
-		}
-
 	}
 
 }

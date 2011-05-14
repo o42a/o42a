@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.NewObjectFunc.NEW_OBJECT;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
@@ -148,7 +148,7 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<ObjectType.Op> scopeType(Code code) {
+		public final RecOp<ObjectIRType.Op> scopeType(Code code) {
 			return ptr(null, code, getType().scopeType());
 		}
 
@@ -156,11 +156,11 @@ public class CtrOp extends IROp {
 			return func(null, code, getType().ancestorFunc());
 		}
 
-		public final RecOp<ObjectType.Op> ancestorType(Code code) {
+		public final RecOp<ObjectIRType.Op> ancestorType(Code code) {
 			return ptr(null, code, getType().ancestorType());
 		}
 
-		public final RecOp<ObjectType.Op> type(Code code) {
+		public final RecOp<ObjectIRType.Op> type(Code code) {
 			return ptr(null, code, getType().type());
 		}
 
@@ -176,10 +176,10 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectType.Op> scopeType;
+		private StructRec<ObjectIRType.Op> scopeType;
 		private FuncRec<ObjectRefFunc> ancestorFunc;
-		private StructRec<ObjectType.Op> ancestorType;
-		private StructRec<ObjectType.Op> type;
+		private StructRec<ObjectIRType.Op> ancestorType;
+		private StructRec<ObjectIRType.Op> type;
 		private Int32rec flags;
 
 		private Type() {
@@ -190,7 +190,7 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructRec<ObjectType.Op> scopeType() {
+		public final StructRec<ObjectIRType.Op> scopeType() {
 			return this.scopeType;
 		}
 
@@ -198,11 +198,11 @@ public class CtrOp extends IROp {
 			return this.ancestorFunc;
 		}
 
-		public final StructRec<ObjectType.Op> ancestorType() {
+		public final StructRec<ObjectIRType.Op> ancestorType() {
 			return this.ancestorType;
 		}
 
-		public final StructRec<ObjectType.Op> type() {
+		public final StructRec<ObjectIRType.Op> type() {
 			return this.type;
 		}
 

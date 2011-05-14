@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -107,7 +109,7 @@ final class ClauseReuser implements PathWalker {
 			final MemberKey key = member.getKey();
 
 			if (containerKey.startsWith(key)) {
-				return up(container, fragment, member.getSubstance());
+				return up(container, fragment, member.substance(dummyUser()));
 			}
 		}
 

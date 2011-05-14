@@ -29,9 +29,11 @@ final class ApplyDirective implements Instruction {
 
 	private final Ref ref;
 	private final Directive directive;
+	private final Resolver resolver;
 
-	ApplyDirective(Ref ref, Directive directive) {
+	ApplyDirective(Ref ref, Resolver resolver, Directive directive) {
 		this.ref = ref;
+		this.resolver = resolver;
 		this.directive = directive;
 	}
 
@@ -53,6 +55,11 @@ final class ApplyDirective implements Instruction {
 
 		DirectiveContext(InstructionContext context) {
 			this.context = context;
+		}
+
+		@Override
+		public Resolver getResolver() {
+			return ApplyDirective.this.resolver;
 		}
 
 		@Override

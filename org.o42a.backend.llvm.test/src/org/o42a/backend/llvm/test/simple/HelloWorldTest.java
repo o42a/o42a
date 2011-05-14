@@ -31,8 +31,8 @@ public class HelloWorldTest extends GeneratorTestCase {
 		compile(
 				"Use namespace 'Console'.",
 				"@Main :=> *{",
-				"  Print \"Hello, World!\" nl.",
-				"}.");
+				"  Print \"Hello, World!\" nl",
+				"}");
 
 	}
 

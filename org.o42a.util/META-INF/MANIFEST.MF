@@ -6,5 +6,6 @@ Bundle-Version: 0.1.0
 Import-Package: org.osgi.framework;version="1.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.o42a.util,
- org.o42a.util.log
+ org.o42a.util.log,
+ org.o42a.util.use
 Bundle-ActivationPolicy: lazy
