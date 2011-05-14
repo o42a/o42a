@@ -269,6 +269,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void compile(Source source) {
+		this.context.fullResolution().reset();
 		((Context) this.context).setSource(source);
 		this.module = new Module(this.context, this.moduleName);
 		INTRINSICS.setMainModule(this.module);
@@ -278,7 +279,6 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void generateCode(Generator generator) {
-		this.module.resolveAll();
 		INTRINSICS.generateAll(generator);
 	}
 

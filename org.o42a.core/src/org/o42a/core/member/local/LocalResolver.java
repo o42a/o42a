@@ -19,8 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.util.use.UserInfo;
@@ -37,48 +35,20 @@ public class LocalResolver extends Resolver {
 	}
 
 	@Override
-	public LocalResolver newResolver(UserInfo user) {
-		return getLocal().newResolver(user);
-	}
-
-	@Override
 	public String toString() {
-		return "LocalResolver[" + getScope() + ']';
-	}
-
-	private static final class DummyLocalResolver extends LocalResolver {
-
-		DummyLocalResolver(LocalScope scope) {
-			super(scope, dummyUser());
+		if (toUser() == null) {
+			return super.toString();
 		}
-
-		@Override
-		public LocalResolver newResolver(UserInfo user) {
-			return this;
-		}
-
-		@Override
-		public String toString() {
+		if (isDummy()) {
 			return "DummyLocalResolver[" + getScope() + ']';
 		}
-
+		return "LocalResolver[" + getScope() + " by " + toUser() + ']';
 	}
 
 	static final class Factory extends ResolverFactory<LocalResolver> {
 
-		private DummyLocalResolver dummyResolver;
-
 		Factory(LocalScope scope) {
 			super(scope);
-		}
-
-		@Override
-		public LocalResolver dummyResolver() {
-			if (this.dummyResolver != null) {
-				return this.dummyResolver;
-			}
-			return this.dummyResolver =
-				new DummyLocalResolver(getScope().toLocal());
 		}
 
 		@Override
