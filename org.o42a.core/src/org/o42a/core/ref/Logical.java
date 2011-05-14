@@ -20,8 +20,6 @@
 package org.o42a.core.ref;
 
 
-import static org.o42a.util.use.Usable.simpleUsable;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,9 +30,9 @@ import org.o42a.core.def.LogicalBase;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.common.ResolverCache;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.util.use.Usable;
 
 
 public abstract class Logical extends LogicalBase {
@@ -80,7 +78,8 @@ public abstract class Logical extends LogicalBase {
 			return claims[0];
 		}
 
-		final ArrayList<Logical> newClaims = new ArrayList<Logical>(claims.length);
+		final ArrayList<Logical> newClaims =
+			new ArrayList<Logical>(claims.length);
 
 		for (Logical claim : claims) {
 			claim.assertCompatible(scope);
@@ -251,7 +250,7 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	private Logical negated;
-	private Usable<?> fullResolution;
+	private ResolverCache fullResolution;
 
 	public Logical(LocationInfo location, Scope scope) {
 		super(location, scope);
@@ -404,14 +403,13 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	public final void resolveAll(Resolver resolver) {
-		assert resolver.assertNotDummy();
-		if (this.fullResolution != null) {
-			this.fullResolution.useBy(resolver);
+		if (this.fullResolution == null) {
+			this.fullResolution = new ResolverCache("FullResolution", this);
+		}
+		resolver = this.fullResolution.resolve(resolver);
+		if (resolver == null) {
 			return;
 		}
-		this.fullResolution = simpleUsable("FullResolution", this);
-		this.fullResolution.useBy(resolver);
-		resolver = resolver.newResolver(this.fullResolution);
 		getContext().fullResolution().start();
 		try {
 			fullyResolve(resolver);

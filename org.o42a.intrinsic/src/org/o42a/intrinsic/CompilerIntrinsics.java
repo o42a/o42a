@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
+import org.o42a.core.artifact.common.FullResolution;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
@@ -66,7 +67,6 @@ public class CompilerIntrinsics extends Intrinsics {
 		this.moduleNamespace = new ModuleNamespace(this);
 		this.voidObject = new VoidObject(this.top);
 		this.root = createRoot(this.top);
-		this.root.resolveAll();
 		this.consoleModule = consoleModule(this.root.getContext());
 		addModule(this.consoleModule);
 		addModule(testModule(this.root.getContext()));
@@ -148,15 +148,24 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void resolveAll() {
-		this.root.resolveAll();
-		if (this.mainModule != null) {
-			this.mainModule.resolveAll();
-			if (this.main != null) {
-				this.main.resolveAll();
+
+		final FullResolution fullResolution =
+			this.root.getContext().fullResolution();
+
+		fullResolution.start();
+		try {
+			this.root.resolveAll();
+			if (this.mainModule != null) {
+				this.mainModule.resolveAll();
+				if (this.main != null) {
+					this.main.resolveAll();
+				}
 			}
-		}
-		for (ModuleUse module : this.modules.values()) {
-			module.resolveAll();
+			for (ModuleUse module : this.modules.values()) {
+				module.resolveAll();
+			}
+		} finally {
+			fullResolution.end();
 		}
 	}
 

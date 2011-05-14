@@ -127,15 +127,14 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	public void resolveBuiltin(Obj object) {
 
 		final UserInfo user = object.value();
-		final Resolver resolver = object.getScope().newResolver(user);
 		final Obj leftObject =
 			object.member(leftOperandKey())
-			.substance(resolver)
+			.substance(user)
 			.toArtifact()
 			.materialize();
 		final Obj rightObject =
 			object.member(rightOperandKey())
-			.substance(resolver)
+			.substance(user)
 			.toArtifact()
 			.materialize();
 

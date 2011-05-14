@@ -111,7 +111,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 			.toArtifact()
 			.materialize();
 
-		operandObject.value().useBy(user).getValue();
+		operandObject.value().useBy(user);
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.common;
 
 
+
 public final class FullResolution {
 
 	private int started;
@@ -37,11 +38,16 @@ public final class FullResolution {
 	}
 
 	public final void start() {
+		assert assertIncomplete();
 		++this.started;
 	}
 
 	public final void end() {
 		++this.finished;
+	}
+
+	public final void reset() {
+		this.started = this.finished = 0;
 	}
 
 	public final boolean assertIncomplete() {

@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.CompilerLogger;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -63,10 +61,6 @@ public class Resolver implements UserInfo {
 		return this.user;
 	}
 
-	public Resolver newResolver(UserInfo user) {
-		return getScope().newResolver(user);
-	}
-
 	public final boolean assertNotDummy() {
 		assert !isDummy() :
 			this + " is dummy";
@@ -75,41 +69,19 @@ public class Resolver implements UserInfo {
 
 	@Override
 	public String toString() {
-		return "Resolver[" + this.scope + ']';
-	}
-
-	static final class DummyResolver extends Resolver {
-
-		DummyResolver(Scope scope) {
-			super(scope, dummyUser());
+		if (this.user == null) {
+			return super.toString();
 		}
-
-		@Override
-		public Resolver newResolver(UserInfo user) {
-			return this;
+		if (isDummy()) {
+			return "DummyResolver[" + this.scope + ']';
 		}
-
-		@Override
-		public String toString() {
-			return "DummyResolver[" + getScope() + ']';
-		}
-
+		return "Resolver[" + this.scope + " by " + this.user + ']';
 	}
 
 	private static final class Factory extends ResolverFactory<Resolver> {
 
-		private DummyResolver dummyResolver;
-
 		Factory(Scope scope) {
 			super(scope);
-		}
-
-		@Override
-		public Resolver dummyResolver() {
-			if (this.dummyResolver != null) {
-				return this.dummyResolver;
-			}
-			return this.dummyResolver = new DummyResolver(getScope());
 		}
 
 		@Override

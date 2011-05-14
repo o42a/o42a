@@ -93,7 +93,11 @@ public class BuiltinValueDef extends ValueDef {
 			.rescope(resolver.getScope())
 			.getContainer()
 			.toObject();
+		final Obj builtin = this.builtin.toObject();
 
+		if (builtin != object) {
+			builtin.value().useBy(resolver);
+		}
 		object.resolveAll();
 		this.builtin.resolveBuiltin(object);
 	}
