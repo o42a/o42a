@@ -20,6 +20,7 @@
 package org.o42a.core;
 
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -62,7 +63,7 @@ public abstract class AbstractContainer extends Location implements Container {
 		}
 
 		final Container resolved =
-			found.resolve(enclosing, enclosing.getScope());
+			found.resolve(enclosing, dummyUser(), enclosing.getScope());
 
 		if (resolved.getScope() == container.getScope()) {
 			return SELF_PATH;

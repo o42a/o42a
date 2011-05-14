@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
+import static org.o42a.util.use.User.useCase;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -48,9 +49,12 @@ import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.Source;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
+import org.o42a.util.use.UseCase;
 
 
 public abstract class CompilerTestCase {
+
+	public static final UseCase USE_CASE = useCase("test");
 
 	private static final Compiler COMPILER = compiler();
 	private static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
@@ -74,7 +78,7 @@ public abstract class CompilerTestCase {
 			Class<? extends T> type) {
 
 		final Obj object = artifact.materialize();
-		final Value<?> value = object.getValue();
+		final Value<?> value = object.value().useBy(USE_CASE).getValue();
 
 		assertTrue("Value is not definite: " + value, value.isDefinite());
 		assertFalse("Value is unknown: " + value, value.isUnknown());
@@ -129,7 +133,7 @@ public abstract class CompilerTestCase {
 				object + " is not void",
 				ValueType.VOID,
 				object.getValueType());
-		assertTrueValue(object.getValue());
+		assertTrueValue(object.value().useBy(USE_CASE).getValue());
 	}
 
 	public static void assertFalseVoid(Field<?> field) {
@@ -141,7 +145,7 @@ public abstract class CompilerTestCase {
 				object + " is not void",
 				ValueType.VOID,
 				object.getValueType());
-		assertFalseValue(object.getValue());
+		assertFalseValue(object.value().useBy(USE_CASE).getValue());
 	}
 
 	public static void assertUnknownVoid(Field<?> field) {
@@ -153,7 +157,7 @@ public abstract class CompilerTestCase {
 				object + " is not void",
 				ValueType.VOID,
 				object.getValueType());
-		assertKnownValue(object.getValue());
+		assertKnownValue(object.value().useBy(USE_CASE).getValue());
 	}
 
 	public static Field<?> field(
@@ -205,7 +209,7 @@ public abstract class CompilerTestCase {
 			return null;
 		}
 
-		final Field<?> field = member.toField();
+		final Field<?> field = member.toField(USE_CASE);
 
 		assertNotNull(member + " is not a field", field);
 
@@ -264,7 +268,22 @@ public abstract class CompilerTestCase {
 		compile(new Src(buildCode(line, lines)));
 	}
 
+	protected void compile(Source source) {
+		((Context) this.context).setSource(source);
+		this.module = new Module(this.context, this.moduleName);
+		INTRINSICS.setMainModule(this.module);
+		INTRINSICS.resolveAll();
+		assert this.module.getContext().fullResolution().isComplete() :
+			"Full resolution is incomplete";
+	}
+
+	protected void generateCode(Generator generator) {
+		this.module.resolveAll();
+		INTRINSICS.generateAll(generator);
+	}
+
 	private String buildCode(String line, String... lines) {
+
 		final String code;
 
 		if (lines.length == 0) {
@@ -280,19 +299,8 @@ public abstract class CompilerTestCase {
 
 			code = text.toString();
 		}
+
 		return code;
-	}
-
-	protected void compile(Source source) {
-		((Context) this.context).setSource(source);
-		this.module = new Module(this.context, this.moduleName);
-		INTRINSICS.setMainModule(this.module);
-		this.module.resolveAll();
-	}
-
-	protected void generateCode(Generator generator) {
-		this.module.resolveAll();
-		INTRINSICS.generateAll(generator);
 	}
 
 	protected final class Src extends Source {

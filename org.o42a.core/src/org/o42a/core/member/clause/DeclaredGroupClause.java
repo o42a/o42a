@@ -21,26 +21,22 @@ package org.o42a.core.member.clause;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.field.FieldBuilder;
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.*;
-import org.o42a.util.Lambda;
 import org.o42a.util.log.Loggable;
 
 
 final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 
 	static DeclaredGroupClause declaredGroupClause(ClauseBuilder builder) {
-		return new GroupMember(builder).clause;
+		return new DeclaredGroupClauseMember(builder).toClause();
 	}
 
 	private final ClauseBuilder builder;
@@ -49,15 +45,15 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	private ImperativeBlock imperative;
 	private LocalScope localScope;
 
-	private DeclaredGroupClause(MemberClause clause, ClauseBuilder builder) {
-		super(clause);
+	DeclaredGroupClause(DeclaredGroupClauseMember member, ClauseBuilder builder) {
+		super(member);
 		this.builder = builder;
 	}
 
 	private DeclaredGroupClause(
-			Container enclosingContainer,
+			MemberOwner owner,
 			DeclaredGroupClause overridden) {
-		super(enclosingContainer, overridden);
+		super(owner, overridden);
 		this.builder = overridden.builder;
 		this.definition = overridden.definition;
 		this.imperative = overridden.imperative;
@@ -141,14 +137,14 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	}
 
 	@Override
-	protected void doResolveAll() {
-		super.doResolveAll();
+	protected void fullyResolve() {
+		super.fullyResolve();
 		validate();
 	}
 
 	@Override
-	protected GroupClause propagate(Scope enclosingScope) {
-		return new DeclaredGroupClause(enclosingScope.getContainer(), this);
+	protected GroupClause propagate(MemberOwner owner) {
+		return new DeclaredGroupClause(owner, this);
 	}
 
 	Block<?> parentheses(Group group) {
@@ -185,7 +181,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 					group,
 					new BlockDistributor(group, this),
 					name,
-					new ImperativeRegistryBuilder(group));
+					new ImperativeGroupRegistry.Builder(group));
 			this.localScope = definition.getScope();
 
 			final LocalScopeClauseBase local = this.localScope;
@@ -201,35 +197,6 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 
 	final ClauseBuilder getBuilder() {
 		return this.builder;
-	}
-
-	private static final class GroupMember extends MemberClause {
-
-		private final DeclaredGroupClause clause;
-
-		GroupMember(ClauseBuilder builder) {
-			super(builder.getDeclaration());
-			this.clause = new DeclaredGroupClause(this, builder);
-		}
-
-		@Override
-		public DeclaredGroupClause toClause() {
-			return this.clause;
-		}
-
-		@Override
-		protected void merge(Member member) {
-
-			final Clause clause = member.toClause();
-
-			if (clause == null) {
-				getContext().getLogger().notClauseDeclaration(member);
-				return;
-			}
-
-			this.clause.merge(clause);
-		}
-
 	}
 
 	private static final class BlockDistributor extends Distributor {
@@ -267,106 +234,6 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		@Override
 		public Scope getScope() {
 			return this.enclosingDistributor.getScope();
-		}
-
-	}
-
-	private static final class GroupRegistry
-			extends MemberRegistry
-			implements Lambda<MemberRegistry, LocalScope> {
-
-		private final DeclaredGroupClause group;
-		private final MemberRegistry registry;
-
-		GroupRegistry(DeclaredGroupClause group, MemberRegistry registry) {
-			this.group = group;
-			this.registry = registry;
-		}
-
-		@Override
-		public Obj getOwner() {
-			return this.registry.getOwner();
-		}
-
-		@Override
-		public FieldBuilder newField(
-				FieldDeclaration declaration,
-				FieldDefinition definition) {
-			return this.registry.newField(
-					declaration.inGroup(getGroupId()),
-					definition);
-		}
-
-		@Override
-		public ClauseBuilder newClause(ClauseDeclaration declaration) {
-			return this.registry.newClause(declaration.inGroup(getGroupId()));
-		}
-
-		@Override
-		public boolean declareBlock(LocationInfo location, String name) {
-			return this.registry.declareBlock(location, name);
-		}
-
-		@Override
-		public void declareMember(Member member) {
-			this.registry.declareMember(member);
-		}
-
-		@Override
-		public String anonymousBlockName() {
-			return this.registry.anonymousBlockName();
-		}
-
-		@Override
-		public MemberRegistry get(LocalScope arg) {
-			return this;
-		}
-
-		private final MemberId getGroupId() {
-
-			final MemberId memberId = this.group.getDeclaration().getMemberId();
-			final MemberId[] ids = memberId.getIds();
-
-			return ids[ids.length - 1];
-		}
-
-	}
-
-	private static final class ImperativeRegistryBuilder
-			implements Lambda<MemberRegistry, LocalScope> {
-
-		private final Group group;
-
-		ImperativeRegistryBuilder(Group group) {
-			this.group = group;
-		}
-
-		@Override
-		public MemberRegistry get(LocalScope arg) {
-			return new ImperativeRegistry(
-					arg,
-					this.group.getStatements().getMemberRegistry());
-		}
-
-
-	}
-
-	private static final class ImperativeRegistry extends LocalRegistry {
-
-		ImperativeRegistry(LocalScope scope, MemberRegistry ownerRegistry) {
-			super(scope, ownerRegistry);
-		}
-
-		@Override
-		public ClauseBuilder newClause(ClauseDeclaration declaration) {
-			if (declaration.getKind() == ClauseKind.OVERRIDER) {
-				declaration.getLogger().prohibitedOverriderClause(declaration);
-				return null;
-			}
-
-			final MemberRegistryClauseBase registry = this;
-
-			return registry.createClause(declaration);
 		}
 
 	}

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -88,7 +88,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<ObjectType.Op> declaredIn(Code code) {
+		public final RecOp<ObjectIRType.Op> declaredIn(Code code) {
 			return ptr(null, code, getType().declaredIn());
 		}
 
@@ -105,14 +105,14 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<FieldDescIR.Op> {
 
-		private StructRec<ObjectType.Op> declaredIn;
+		private StructRec<ObjectIRType.Op> declaredIn;
 		private Int32rec kind;
 		private RelPtrRec fld;
 
 		private Type() {
 		}
 
-		public final StructRec<ObjectType.Op> declaredIn() {
+		public final StructRec<ObjectIRType.Op> declaredIn() {
 			return this.declaredIn;
 		}
 

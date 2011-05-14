@@ -19,32 +19,27 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
 final class ObjectFieldWrap extends FieldWrap<Obj> {
 
-	ObjectFieldWrap(
-			Container enclosingContainer,
-			Field<?> type,
-			Field<?> wrapped) {
-		super(enclosingContainer, type, wrapped);
+	ObjectFieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
+		super(owner, type, wrapped);
 	}
 
-	private ObjectFieldWrap(
-			Container enclosingContainer,
-			FieldWrap<Obj> overridden) {
-		super(enclosingContainer, overridden);
+	private ObjectFieldWrap(MemberOwner owner, FieldWrap<Obj> overridden) {
+		super(owner, overridden);
 	}
 
 	@Override
@@ -53,8 +48,8 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 	}
 
 	@Override
-	protected Field<Obj> propagate(Scope enclosingScope) {
-		return new ObjectFieldWrap(enclosingScope.getContainer(), this);
+	protected Field<Obj> propagate(MemberOwner owner) {
+		return new ObjectFieldWrap(owner, this);
 	}
 
 	@Override
@@ -73,14 +68,14 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 		}
 
 		@Override
-		public Obj getWrapped() {
+		protected Obj createWrapped() {
 			return field().getWrapped().getArtifact();
 		}
 
 		@Override
 		protected Ascendants buildAscendants() {
 
-			final Ascendants ascendants = new Ascendants(getScope());
+			final Ascendants ascendants = new Ascendants(this);
 
 			return ascendants.setAncestor(new AncestorEx(this).toTypeRef());
 		}
@@ -110,9 +105,24 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 		}
 
 		@Override
-		protected Resolution resolveExpression(Scope scope) {
-			assertScopeIs(scope);
+		protected Resolution resolveExpression(Resolver resolver) {
+			assertScopeIs(resolver.getScope());
 			return artifactResolution(field().getInterface().getArtifact());
+		}
+
+		@Override
+		protected FieldDefinition createFieldDefinition() {
+			return defaultFieldDefinition();
+		}
+
+		@Override
+		protected void fullyResolve(Resolver resolver) {
+			resolve(resolver).resolveAll();
+		}
+
+		@Override
+		protected void fullyResolveValues(Resolver resolver) {
+			value(resolver);
 		}
 
 		@Override

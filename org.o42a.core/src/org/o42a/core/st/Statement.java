@@ -23,7 +23,9 @@ import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.common.ResolverCache;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -33,12 +35,14 @@ import org.o42a.core.value.ValueType;
 public abstract class Statement extends Placed {
 
 	private StOp op;
+	private ResolverCache fullResolution;
+	private ResolverCache valueResolution;
 
 	public Statement(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
-	public Instruction toInstruction(Scope scope, boolean assignment) {
+	public Instruction toInstruction(Resolver resolver, boolean assignment) {
 		return null;
 	}
 
@@ -58,11 +62,44 @@ public abstract class Statement extends Placed {
 
 	public abstract Definitions define(Scope scope);
 
-	public abstract Action initialValue(LocalScope scope);
+	public abstract Action initialValue(LocalResolver resolver);
 
-	public abstract Action initialLogicalValue(LocalScope scope);
+	public abstract Action initialLogicalValue(LocalResolver resolver);
 
 	public abstract Statement reproduce(Reproducer reproducer);
+
+	public final void resolveAll(Resolver resolver) {
+		if (this.fullResolution == null) {
+			this.fullResolution = new ResolverCache("FullResolution", this);
+		}
+		resolver = this.fullResolution.resolve(resolver);
+		if (resolver == null) {
+			return;
+		}
+		getContext().fullResolution().start();
+		try {
+			fullyResolve(resolver);
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public final void resolveValues(Resolver resolver) {
+		resolveAll(resolver);
+		if (this.valueResolution == null) {
+			this.valueResolution = new ResolverCache("ValueResolution", this);
+		}
+		resolver = this.valueResolution.resolve(resolver);
+		if (resolver == null) {
+			return;
+		}
+		getContext().fullResolution().start();
+		try {
+			fullyResolveValues(resolver);
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
 
 	public final StOp op(LocalBuilder builder) {
 
@@ -72,8 +109,20 @@ public abstract class Statement extends Placed {
 			return op;
 		}
 
+		assert assertFullyResolved();
+
 		return this.op = createOp(builder);
 	}
+
+	public final boolean assertFullyResolved() {
+		assert this.fullResolution != null :
+			this + " is not fully resolved";
+		return true;
+	}
+
+	protected abstract void fullyResolve(Resolver resolver);
+
+	protected abstract void fullyResolveValues(Resolver resolver);
 
 	protected abstract StOp createOp(LocalBuilder builder);
 

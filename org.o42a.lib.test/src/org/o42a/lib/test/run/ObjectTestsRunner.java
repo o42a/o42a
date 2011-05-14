@@ -38,6 +38,7 @@ import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
+import org.o42a.util.use.UserInfo;
 
 
 final class ObjectTestsRunner extends DefinedObject {
@@ -92,16 +93,18 @@ final class ObjectTestsRunner extends DefinedObject {
 			definition.propose(this).alternative(this);
 		final ImperativeSentence sentence =
 			statements.braces(this, "_tests_").propose(this);
+		final UserInfo user =
+			definition.getScope().getContainer().toObject().value();
 
 		for (Member member : object.getMembers()) {
 
-			final Field<?> field = member.toField();
+			final Field<?> field = member.toField(user);
 
 			if (field == null) {
 				continue;
 			}
 
-			runTest(this.module, sentence, field);
+			runTest(this.module, user, sentence, field);
 		}
 
 		final Declaratives terminator =

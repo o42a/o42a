@@ -25,28 +25,34 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 
 
-public interface Intrinsics {
+public abstract class Intrinsics {
 
-	Obj getVoid();
+	private final FullResolution fullResolution = new FullResolution();
 
-	Field<Obj> getVoidField();
+	public abstract Obj getVoid();
 
-	Container getTop();
+	public abstract Field<Obj> getVoidField();
 
-	Namespace getModuleNamespace();
+	public abstract Container getTop();
 
-	Obj getRoot();
+	public abstract Namespace getModuleNamespace();
 
-	Obj getFalse();
+	public abstract Obj getRoot();
 
-	Obj getInteger();
+	public abstract Obj getFalse();
 
-	Obj getFloat();
+	public abstract Obj getInteger();
 
-	Obj getString();
+	public abstract Obj getFloat();
 
-	Module getModule(String moduleId);
+	public abstract Obj getString();
 
-	Module getMainModule();
+	public abstract Module getModule(String moduleId);
+
+	public abstract Module getMainModule();
+
+	public final FullResolution fullResolution() {
+		return this.fullResolution;
+	}
 
 }

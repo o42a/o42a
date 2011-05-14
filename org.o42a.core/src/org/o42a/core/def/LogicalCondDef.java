@@ -23,6 +23,7 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 
 
 final class LogicalCondDef extends CondDef {
@@ -62,6 +63,11 @@ final class LogicalCondDef extends CondDef {
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
 		return new LogicalCondDef(this, rescoper);
+	}
+
+	@Override
+	protected void fullyResolveDef(Resolver resolver) {
+		this.logical.resolveAll(resolver);
 	}
 
 }

@@ -20,14 +20,15 @@
 package org.o42a.core.artifact;
 
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
@@ -48,17 +49,17 @@ final class SelfRef extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		assertCompatible(scope);
+	public Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 		return this.self;
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
-		if (scope == this.self.getScope()) {
-			return this.self.materialize().getValue();
+	public Value<?> value(Resolver resolver) {
+		if (resolver == this.self.getScope()) {
+			return this.self.materialize().value().useBy(resolver).getValue();
 		}
-		return calculateValue(this.self.materialize(), scope);
+		return calculateValue(this.self.materialize(), resolver);
 	}
 
 	@Override
@@ -76,6 +77,21 @@ final class SelfRef extends Ref {
 	@Override
 	protected boolean isKnownStatic() {
 		return true;
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
 	}
 
 	@Override

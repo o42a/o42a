@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -41,18 +42,28 @@ abstract class RescoperWrap extends Rescoper {
 	}
 
 	@Override
+	public Resolver rescope(Resolver resolver) {
+		return wrapped().rescope(resolver);
+	}
+
+	@Override
 	public Scope updateScope(Scope scope) {
 		return wrapped().updateScope(scope);
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return wrapped().rescope(dirs, host);
+	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
+		return wrapped().reproduce(location, reproducer);
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
-		return wrapped().reproduce(location, reproducer);
+	public void resolveAll(Resolver resolver) {
+		wrapped().resolveAll(resolver);
+	}
+
+	@Override
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return wrapped().rescope(dirs, host);
 	}
 
 	@Override

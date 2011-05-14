@@ -23,9 +23,8 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
 import java.util.List;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -39,10 +38,8 @@ class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 		super(member, ArtifactKind.ARRAY);
 	}
 
-	private DeclaredArrayField(
-			Container enclosingContainer,
-			DeclaredArrayField sample) {
-		super(enclosingContainer, sample);
+	private DeclaredArrayField(MemberOwner owner, DeclaredArrayField sample) {
+		super(owner, sample);
 	}
 
 	@Override
@@ -68,8 +65,8 @@ class DeclaredArrayField extends DeclaredField<Array, ArrayFieldVariant> {
 	}
 
 	@Override
-	protected DeclaredArrayField propagate(Scope enclosingScope) {
-		return new DeclaredArrayField(enclosingScope.getContainer(), this);
+	protected DeclaredArrayField propagate(MemberOwner owner) {
+		return new DeclaredArrayField(owner, this);
 	}
 
 	@Override

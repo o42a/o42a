@@ -25,6 +25,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
@@ -56,6 +57,11 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
+	public Resolver rescope(Resolver resolver) {
+		return resolver;
+	}
+
+	@Override
 	public Scope updateScope(Scope scope) {
 		return scope;
 	}
@@ -71,14 +77,18 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return host;
-	}
-
-	@Override
 	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
 		getFinalScope().assertCompatible(reproducer.getReproducingScope());
 		return new TransparentRescoper(reproducer.getScope());
+	}
+
+	@Override
+	public void resolveAll(Resolver resolver) {
+	}
+
+	@Override
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return host;
 	}
 
 	@Override

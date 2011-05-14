@@ -32,7 +32,7 @@ public class ObjectTypeOp extends IROp {
 
 	ObjectTypeOp(
 			CodeBuilder builder,
-			ObjectType.Op ptr,
+			ObjectIRType.Op ptr,
 			ObjectPrecision precision) {
 		super(builder, ptr);
 		this.precision = precision;
@@ -43,8 +43,8 @@ public class ObjectTypeOp extends IROp {
 	}
 
 	@Override
-	public final ObjectType.Op ptr() {
-		return (ObjectType.Op) super.ptr();
+	public final ObjectIRType.Op ptr() {
+		return (ObjectIRType.Op) super.ptr();
 	}
 
 	public final ObjectOp object(Code code, Obj wellKnownType) {

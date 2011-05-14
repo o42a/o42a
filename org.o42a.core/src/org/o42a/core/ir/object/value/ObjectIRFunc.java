@@ -28,6 +28,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -81,19 +82,16 @@ public abstract class ObjectIRFunc {
 
 		final Obj object = getObjectIR().getObject();
 		final Definitions definitions = object.getDefinitions();
+		final Resolver resolver = definitions.getScope().dummyResolver();
 
-		if (isFalse(
-				definitions.requirement(definitions.getScope()),
-				body)) {
+		if (isFalse(definitions.requirement(resolver), body)) {
 			code.debug("Object requirement is FALSE");
 			result.storeFalse(code);
 			return true;
 		}
 
 		if (!object.getConstructionMode().isRuntime()) {
-			if (isFalse(
-					definitions.condition(definitions.getScope()),
-					body)) {
+			if (isFalse(definitions.condition(resolver), body)) {
 				code.debug("Static object condition is FALSE");
 				result.storeFalse(code);
 				return true;

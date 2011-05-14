@@ -72,7 +72,7 @@ public class ExpressionVisitor
 			textNode.getLiterals()[0].getOpeningQuotationMark().getType();
 
 		if (quote.isDoubleQuote()) {
-			return STRING.definiteRef(location(p, textNode), p, text);
+			return STRING.constantRef(location(p, textNode), p, text);
 		}
 
 		final long intVal;
@@ -89,10 +89,10 @@ public class ExpressionVisitor
 			floatVal = Double.parseDouble(text);
 		} catch (NumberFormatException e) {
 			p.getContext().getLogger().notFloat(textNode, text);
-			return FLOAT.definiteRef(location(p, textNode), p, 0.0);
+			return FLOAT.constantRef(location(p, textNode), p, 0.0);
 		}
 
-		return FLOAT.definiteRef(location(p, textNode), p, floatVal);
+		return FLOAT.constantRef(location(p, textNode), p, floatVal);
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class ExpressionVisitor
 
 		final Location location = location(p, node);
 
-		return INTEGER.definiteRef(location, p, value);
+		return INTEGER.constantRef(location, p, value);
 	}
 
 }

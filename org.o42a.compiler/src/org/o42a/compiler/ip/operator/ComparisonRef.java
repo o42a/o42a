@@ -31,26 +31,28 @@ import static org.o42a.core.value.Value.voidValue;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
+import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.Result;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.UserInfo;
 
 
 public final class ComparisonRef extends ObjectConstructor {
@@ -150,7 +152,7 @@ public final class ComparisonRef extends ObjectConstructor {
 				this.reproducer.distributeBy(distributor));
 	}
 
-	private final class ComparisonResult extends Result {
+	private final class ComparisonResult extends BuiltinObject {
 
 		private final ComparisonRef ref;
 		private MemberKey comparisonKey;
@@ -158,6 +160,66 @@ public final class ComparisonRef extends ObjectConstructor {
 		ComparisonResult(ComparisonRef ref) {
 			super(ref, ref.distribute(), ValueType.VOID);
 			this.ref = ref;
+		}
+
+		@Override
+		public Value<?> calculateBuiltin(Resolver resolver) {
+			resolveMembers(false);// Initialize comparisonKey.
+
+			if (hasError()) {
+				return falseValue();
+			}
+
+			final Field<?> field =
+				resolver.getContainer()
+				.member(this.comparisonKey)
+				.toField(resolver);
+			final Value<?> value =
+				field.getArtifact().toObject()
+				.value().useBy(resolver).getValue();
+
+			if (!value.isDefinite()) {
+				// Value could not be determined at compile-time.
+				// Result will be determined at run time.
+				return ValueType.VOID.runtimeValue();
+			}
+
+			final boolean result = this.ref.getOperator().result(value);
+
+			return result ? voidValue() : falseValue();
+		}
+
+		@Override
+		public void resolveBuiltin(Obj object) {
+
+			final UserInfo user = object.value();
+			final Field<?> field =
+				object.member(this.comparisonKey).toField(user);
+
+			field.getArtifact().toObject().value().useBy(user);
+		}
+
+		@Override
+		public void writeBuiltin(Code code, ValOp result, HostOp host) {
+			if (this.ref.hasError()) {
+				result.storeFalse(code);
+				return;
+			}
+
+			final ComparisonOperator operator = this.ref.getOperator();
+			final CodeBlk failure = code.addBlock("comparison_failure");
+			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
+			final ObjectOp comparison =
+				host.field(dirs, this.comparisonKey).materialize(dirs);
+			final ValOp comparisonVal =
+				operator.writeComparison(dirs, comparison);
+
+			operator.write(dirs, result, comparisonVal);
+
+			if (failure.exists()) {
+				result.storeFalse(failure);
+				failure.go(code.tail());
+			}
 		}
 
 		@Override
@@ -195,71 +257,6 @@ public final class ComparisonRef extends ObjectConstructor {
 			this.comparisonKey = statement.toMember().getKey();
 
 			memberRegistry.registerMembers(members);
-		}
-
-		@Override
-		protected Value<?> calculateValue(Scope scope) {
-			resolveMembers(false);// Initialize comparisonKey.
-
-			if (hasError()) {
-				return falseValue();
-			}
-
-			final Field<?> field =
-				scope.getContainer().member(this.comparisonKey).toField();
-			final Value<?> value = field.getArtifact().toObject().getValue();
-
-			if (!value.isDefinite()) {
-				// Value could not be determined at compile-time.
-				// Result will be determined at run time.
-				return ValueType.VOID.runtimeValue();
-			}
-
-			final boolean result = this.ref.getOperator().result(value);
-
-			return result ? voidValue() : falseValue();
-		}
-
-
-		@Override
-		protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-			return new ValueIR(objectIR);
-		}
-
-	}
-
-	private static final class ValueIR extends ProposedValueIR {
-
-		ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-
-			final ComparisonResult object =
-				(ComparisonResult) getObjectIR().getObject();
-			final ComparisonRef ref = object.ref;
-
-			if (ref.hasError()) {
-				result.storeFalse(code);
-				return;
-			}
-
-			final ComparisonOperator operator = ref.getOperator();
-			final CodeBlk failure = code.addBlock("comparison_failure");
-			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
-			final ObjectOp comparison =
-				host.field(dirs, object.comparisonKey).materialize(dirs);
-			final ValOp comparisonVal =
-				operator.writeComparison(dirs, comparison);
-
-			operator.write(dirs, result, comparisonVal);
-
-			if (failure.exists()) {
-				result.storeFalse(failure);
-				failure.go(code.tail());
-			}
 		}
 
 	}

@@ -19,31 +19,29 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.core.Container;
+
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.MemberField;
 
 
 public abstract class ObjectField extends Field<Obj> {
 
-	public ObjectField(FieldDeclaration declaration) {
-		super(new Member(declaration));
-		((Member) toMember()).init(this);
+	public ObjectField(MemberOwner owner, FieldDeclaration declaration) {
+		super(new MemberObjectField(owner, declaration));
+		((MemberObjectField) toMember()).init(this);
+	}
+
+	protected ObjectField(MemberOwner owner, ObjectField overridden) {
+		super(owner, overridden);
 	}
 
 	protected ObjectField(
-			Container enclosingContainer,
-			ObjectField overridden) {
-		super(enclosingContainer, overridden);
-	}
-
-	protected ObjectField(
-			Container enclosingContainer,
+			MemberOwner owner,
 			ObjectField overridden,
 			boolean propagate) {
-		super(enclosingContainer, overridden, propagate);
+		super(owner, overridden, propagate);
 	}
 
 	@Override
@@ -58,29 +56,12 @@ public abstract class ObjectField extends Field<Obj> {
 			return false;
 		}
 
-		return getArtifact().derivedFrom(otherObject);
+		return getArtifact().objectType().derivedFrom(otherObject.objectType());
 	}
 
 	@Override
 	protected Obj propagateArtifact(Field<Obj> overridden) {
 		return new PropagatedObject(this);
-	}
-
-	private static final class Member extends MemberField {
-
-		Member(FieldDeclaration declaration) {
-			super(declaration);
-		}
-
-		@Override
-		protected Field<?> createField() {
-			throw new UnsupportedOperationException();
-		}
-
-		final void init(ObjectField field) {
-			setField(field);
-		}
-
 	}
 
 }

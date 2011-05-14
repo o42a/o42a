@@ -20,6 +20,7 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -27,10 +28,15 @@ import org.o42a.core.value.Value;
 
 public class ReturnValue extends Action {
 
+	private final LocalResolver resolver;
 	private final Value<?> value;
 
-	public ReturnValue(ScopeInfo statement, Value<?> value) {
+	public ReturnValue(
+			ScopeInfo statement,
+			LocalResolver resolver,
+			Value<?> value) {
 		super(statement);
+		this.resolver = resolver;
 		this.value = value;
 	}
 
@@ -53,9 +59,10 @@ public class ReturnValue extends Action {
 	public Action toInitialLogicalValue() {
 		return new ReturnValue(
 				this,
+				this.resolver,
 				getValue().getLogicalValue()
 				.toLogical(this, getScope())
-				.logicalValue(getScope())
+				.logicalValue(this.resolver)
 				.toValue());
 	}
 

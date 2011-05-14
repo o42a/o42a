@@ -25,10 +25,8 @@ import org.o42a.core.ir.op.Val;
 
 public abstract class Value<T> {
 
-	public static final Value<java.lang.Void> NO_VALUE = new NoValue();
-
 	public static final Value<Void> voidValue() {
-		return ValueType.VOID.definiteValue(Void.VOID);
+		return ValueType.VOID.constantValue(Void.VOID);
 	}
 
 	public static final Value<Void> falseValue() {
@@ -84,7 +82,7 @@ public abstract class Value<T> {
 		case FALSE:
 			return getValueType().falseValue();
 		case TRUE:
-			return getValueType().definiteValue(getDefiniteValue());
+			return getValueType().constantValue(getDefiniteValue());
 		case RUNTIME:
 		}
 
@@ -101,40 +99,12 @@ public abstract class Value<T> {
 		final LogicalValue logicalValue = getLogicalValue();
 
 		if (logicalValue.isTrue()) {
-			out.append(getDefiniteValue());
+			out.append(getValueType().valueString(getDefiniteValue()));
 		} else {
 			out.append(logicalValue);
 		}
 
 		return out.toString();
-	}
-
-	private static final class NoValue extends Value<java.lang.Void> {
-
-		NoValue() {
-			super(ValueType.NONE);
-		}
-
-		@Override
-		public LogicalValue getLogicalValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public java.lang.Void getDefiniteValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Val val(Generator generator) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public String toString() {
-			return "No value";
-		}
-
 	}
 
 }

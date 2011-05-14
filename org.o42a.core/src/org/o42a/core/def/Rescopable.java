@@ -20,12 +20,14 @@
 package org.o42a.core.def;
 
 import org.o42a.core.*;
+import org.o42a.core.ref.Resolver;
 
 
 public abstract class Rescopable<R extends Rescopable<R>>
 		implements ScopeInfo {
 
 	private final Rescoper rescoper;
+	private boolean allResolved;
 
 	public Rescopable(Rescoper rescoper) {
 		this.rescoper = rescoper;
@@ -75,6 +77,18 @@ public abstract class Rescopable<R extends Rescopable<R>>
 		return getScope().getLogger();
 	}
 
+	public void resolveAll(Resolver resolver) {
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			getRescoper().resolveAll(resolver);
+			fullyResolve(getRescoper().rescope(resolver));
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+
 	@Override
 	public final void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);
@@ -95,6 +109,12 @@ public abstract class Rescopable<R extends Rescopable<R>>
 		Scoped.assertSameScope(this, other);
 	}
 
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected final R self() {
 		return (R) this;
@@ -103,5 +123,7 @@ public abstract class Rescopable<R extends Rescopable<R>>
 	protected abstract R create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper);
+
+	protected abstract void fullyResolve(Resolver resolver);
 
 }

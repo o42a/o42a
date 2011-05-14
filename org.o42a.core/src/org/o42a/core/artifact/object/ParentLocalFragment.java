@@ -31,6 +31,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 final class ParentLocalFragment extends PathFragment {
@@ -44,6 +45,7 @@ final class ParentLocalFragment extends PathFragment {
 	@Override
 	public Container resolve(
 			LocationInfo location,
+			UserInfo user,
 			Path path,
 			int index,
 			Scope start,

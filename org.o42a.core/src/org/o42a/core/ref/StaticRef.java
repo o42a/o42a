@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.Array;
@@ -50,13 +49,14 @@ final class StaticRef extends Ref {
 	}
 
 	@Override
-	public Value<?> value(Scope scope) {
-		return calculateValue(getResolution().materialize(), scope);
+	public Value<?> value(Resolver resolver) {
+		return calculateValue(resolve(resolver).materialize(), resolver);
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		return this.ref.getResolution();
+	public Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
+		return this.ref.resolve(this.ref.getScope().newResolver(resolver));
 	}
 
 	@Override
@@ -72,11 +72,6 @@ final class StaticRef extends Ref {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new FixedFieldDefinition(this.ref.toFieldDefinition());
-	}
-
-	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();
@@ -87,6 +82,21 @@ final class StaticRef extends Ref {
 	@Override
 	protected boolean isKnownStatic() {
 		return true;
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return new FixedFieldDefinition(this.ref.toFieldDefinition());
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
 	}
 
 	@Override

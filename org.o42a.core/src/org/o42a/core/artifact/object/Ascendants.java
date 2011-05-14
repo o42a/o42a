@@ -25,17 +25,21 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.use.User;
+import org.o42a.util.use.UserInfo;
 
 
-public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
+public class Ascendants
+		implements AscendantsBuilder<Ascendants>, UserInfo, Cloneable {
 
 	private static final Sample[] NO_SAMPLES = new Sample[0];
 
-	private final Scope scope;
+	private final Obj object;
 	private TypeRef explicitAncestor;
 	private TypeRef ancestor;
 	private Directive directive;
@@ -44,24 +48,21 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 	private ConstructionMode constructionMode;
 	private boolean validated;
 
-	public Ascendants(Scope scope) {
-		this.scope = scope;
-	}
-
 	public Ascendants(Obj object) {
-		this.scope = object.getScope();
+		this.object = object;
 	}
 
-	protected Ascendants(Ascendants ascendants) {
-		this.scope = ascendants.getScope();
-		this.explicitAncestor = ascendants.explicitAncestor;
-		this.samples = ascendants.samples;
-		this.discardedSamples = ascendants.discardedSamples;
-		this.constructionMode = ascendants.constructionMode;
+	public final Obj getObject() {
+		return this.object;
 	}
 
 	public final Scope getScope() {
-		return this.scope;
+		return this.object.getScope();
+	}
+
+	@Override
+	public final User toUser() {
+		return this.object.type();
 	}
 
 	public TypeRef getAncestor() {
@@ -100,7 +101,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 			final TypeRef ancestor = getExplicitAncestor();
 
 			if (ancestor != null) {
-				this.directive = ancestor.getType().toDirective();
+				this.directive = ancestor.typeObject(this).toDirective();
 			}
 			if (this.directive == null) {
 				this.directive = sampleDirective();
@@ -151,7 +152,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 
 		explicitAscendant.assertCompatible(enclosingScope);
 
-		return addSample(new ExplicitSample(enclosingScope, explicitAscendant));
+		return addSample(new ExplicitSample(explicitAscendant, this));
 	}
 
 	@Override
@@ -161,7 +162,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 
 		implicitAscendant.assertCompatible(enclosingScope);
 
-		return addSample(new ImplicitSample(enclosingScope, implicitAscendant));
+		return addSample(new ImplicitSample(implicitAscendant, this));
 	}
 
 	@Override
@@ -170,18 +171,26 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
 		enclosingScope.assertDerivedFrom(overriddenMember.getScope());
-		assert overriddenMember.getSubstance().toObject() != null :
+		assert overriddenMember.substance(this).toObject() != null :
 			"Can not override non-object member " + overriddenMember;
 
-		return addSample(new MemberOverride(enclosingScope, overriddenMember));
+		return addSample(new MemberOverride(overriddenMember, this));
 	}
 
-	@Override
-	protected Ascendants clone() {
-		try {
-			return (Ascendants) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
+	public void resolveAll() {
+		validate();
+
+		final TypeRef ancestor = getExplicitAncestor();
+		final Resolver resolver =
+			getScope().getEnclosingScope().newResolver(this);
+
+		if (ancestor != null) {
+			ancestor.type(this);
+			ancestor.resolveAll(resolver);
+		}
+		for (Sample sample : getSamples()) {
+			sample.type(this);
+			sample.resolveAll(resolver);
 		}
 	}
 
@@ -195,6 +204,10 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		if (this.ancestor != null) {
 			out.append("ancestor=");
 			out.append(this.ancestor);
+			comma = true;
+		} else if (this.explicitAncestor != null) {
+			out.append("ancestor=");
+			out.append(this.explicitAncestor);
 			comma = true;
 		}
 		if (this.samples.length != 0) {
@@ -217,6 +230,15 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		return out.toString();
 	}
 
+	@Override
+	protected Ascendants clone() {
+		try {
+			return (Ascendants) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
+
 	void validate() {
 		if (this.validated) {
 			return;
@@ -225,7 +247,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		if (this.explicitAncestor != null) {
 			if (!this.explicitAncestor.validate()) {
 				this.explicitAncestor = null;
-			} else if (!validateUse(this.explicitAncestor.getArtifact())) {
+			} else if (!validateUse(this.explicitAncestor.artifact(this))) {
 				this.explicitAncestor = null;
 			} else if (this.explicitAncestor
 					.getConstructionMode().isProhibited()) {
@@ -295,7 +317,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		final StaticTypeRef explicitAscendant = sample.getExplicitAscendant();
 
 		if (explicitAscendant != null) {
-			if (!validateUse(sample.getType())) {
+			if (!validateUse(sample.getObject())) {
 				return false;
 			}
 

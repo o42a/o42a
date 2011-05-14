@@ -27,16 +27,20 @@ import org.o42a.util.Chain;
 
 public abstract class ContainerMembers {
 
-	private final Container container;
+	private final MemberOwner owner;
 	private final MemberEntries members = new MemberEntries();
 	private final MemberEntries adapters = new MemberEntries();
 
-	public ContainerMembers(Container container) {
-		this.container = container;
+	public ContainerMembers(MemberOwner owner) {
+		this.owner = owner;
+	}
+
+	public final MemberOwner getOwner() {
+		return this.owner;
 	}
 
 	public final Container getContainer() {
-		return this.container;
+		return this.owner.getContainer();
 	}
 
 	public final void addMember(Member member) {

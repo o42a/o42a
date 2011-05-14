@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
 
@@ -89,13 +90,14 @@ public class ObjectIR  {
 
 	public ObjectBodyIR getAncestorBodyIR() {
 
-		final TypeRef ancestorType = getObject().getAncestor();
+		final TypeRef ancestorType =
+			getObject().type().useBy(dummyUser()).getAncestor();
 
 		if (ancestorType == null) {
 			return null;
 		}
 
-		final Obj ancestor = ancestorType.getType();
+		final Obj ancestor = ancestorType.typeObject(dummyUser());
 
 		if (ancestor == ancestor.getContext().getVoid()) {
 			return null;
@@ -128,13 +130,9 @@ public class ObjectIR  {
 		.getPointer().op(null, code).op(builder, getObject(), EXACT);
 	}
 
-	public ObjectBodyIR bodyIR(Obj ascendant) {
+	public final ObjectBodyIR bodyIR(Obj ascendant) {
 
-		if (ascendant == ascendant.getContext().getVoid()) {
-			return getMainBodyIR();
-		}
-
-		final ObjectBodyIR bodyIR = getStruct().bodyIRs().get(ascendant);
+		final ObjectBodyIR bodyIR = findBodyIR(ascendant);
 
 		assert bodyIR != null :
 			"Can not find ascendant body for " + ascendant + " in " + this;
@@ -142,12 +140,27 @@ public class ObjectIR  {
 		return bodyIR;
 	}
 
-	public Fld fld(MemberKey memberKey) {
+	public final ObjectBodyIR findBodyIR(Obj ascendant) {
+		if (ascendant == ascendant.getContext().getVoid()) {
+			return getMainBodyIR();
+		}
+		return getStruct().bodyIRs().get(ascendant);
+	}
+
+	public final Fld fld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().getContainer().toObject();
 		final ObjectBodyIR bodyIR = bodyIR(origin);
 
 		return bodyIR.fld(memberKey);
+	}
+
+	public final Fld findFld(MemberKey memberKey) {
+
+		final Obj origin = memberKey.getOrigin().getContainer().toObject();
+		final ObjectBodyIR bodyIR = findBodyIR(origin);
+
+		return bodyIR.findFld(memberKey);
 	}
 
 	public DepIR dep(Dep dep) {
@@ -173,6 +186,8 @@ public class ObjectIR  {
 		if (this.struct != null) {
 			return this.struct;
 		}
+
+		assert getObject().assertFullyResolved();
 
 		this.struct = new ObjectIRStruct(this);
 

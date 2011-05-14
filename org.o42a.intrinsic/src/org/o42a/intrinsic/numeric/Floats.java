@@ -22,7 +22,8 @@ package org.o42a.intrinsic.numeric;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.adapter.FloatByString;
+import org.o42a.common.object.IntrinsicObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
@@ -33,22 +34,28 @@ import org.o42a.intrinsic.root.Root;
 public class Floats extends IntrinsicObject {
 
 	public Floats(Root root) {
-		super(fieldDeclaration(
-				root,
-				root.distribute(),
-				memberName("floats")));
+		super(
+				root.toMemberOwner(),
+				fieldDeclaration(
+						root,
+						root.distribute(),
+						memberName("floats")));
 		setValueType(ValueType.VOID);
 	}
 
 	@Override
 	protected Ascendants createAscendants() {
-		return new Ascendants(getScope()).setAncestor(
+		return new Ascendants(this).setAncestor(
 				ValueType.VOID.typeRef(this, getScope().getEnclosingScope()));
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
+
+		final FloatByString byString =
+			new FloatByString(this, "by_string", "floats/by_string.o42a");
+
 		members.addMember(new FloatMinus(this).toMember());
 		members.addMember(new AddFloats(this).toMember());
 		members.addMember(new SubtractFloats(this).toMember());
@@ -56,6 +63,7 @@ public class Floats extends IntrinsicObject {
 		members.addMember(new DivideFloats(this).toMember());
 		members.addMember(new FloatsEqual(this).toMember());
 		members.addMember(new CompareFloats(this).toMember());
+		members.addMember(byString.toMember());
 	}
 
 	@Override

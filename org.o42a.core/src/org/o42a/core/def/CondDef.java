@@ -24,11 +24,10 @@ import static org.o42a.core.def.Definitions.NO_CONDITIONS;
 import static org.o42a.core.def.Definitions.NO_VALUES;
 
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -82,10 +81,10 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	@Override
-	public final DefValue definitionValue(Scope scope) {
-		assertCompatible(scope);
+	public final DefValue definitionValue(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
-		final Scope rescoped = getRescoper().rescope(scope);
+		final Resolver rescoped = getRescoper().rescope(resolver);
 
 		if (!hasPrerequisite() || getPrerequisite().isTrue()) {
 
@@ -138,6 +137,7 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	public final void write(CodeDirs dirs, HostOp host) {
+		assert assertFullyResolved();
 
 		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
 
@@ -148,28 +148,17 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	@Override
-	public String toString() {
+	protected final void fullyResolve(Resolver resolver) {
+		getPrerequisite().resolveAll(resolver);
+		getLogical().resolveAll(resolver);
+		fullyResolveDef(resolver);
+	}
 
-		final StringBuilder out = new StringBuilder();
+	protected abstract void fullyResolveDef(Resolver resolver);
 
-		out.append("CondDef[");
-		if (hasPrerequisite()) {
-			out.append(getPrerequisite()).append("? ");
-		}
-
-		final Logical precondition = getPrecondition();
-
-		if (!precondition.isTrue()) {
-			out.append(precondition).append(", ");
-		}
-		out.append(getLocation());
-		if (isRequirement()) {
-			out.append("!]");
-		} else {
-			out.append(".]");
-		}
-
-		return out.toString();
+	@Override
+	protected String name() {
+		return "CondDef";
 	}
 
 }

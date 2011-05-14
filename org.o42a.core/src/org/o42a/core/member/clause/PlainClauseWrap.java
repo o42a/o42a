@@ -22,17 +22,18 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.def.Rescoper.wrapper;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
@@ -43,11 +44,8 @@ final class PlainClauseWrap extends PlainClause {
 	private final PlainClause wrapped;
 	private final AscendantsDefinition ascendants;
 
-	PlainClauseWrap(
-			Container container,
-			PlainClause iface,
-			PlainClause wrapped) {
-		super(container, wrapped, wrapped.toMember().isPropagated());
+	PlainClauseWrap(MemberOwner owner, PlainClause iface, PlainClause wrapped) {
+		super(owner, wrapped, wrapped.toMember().isPropagated());
 		this.iface = iface;
 		this.wrapped = wrapped;
 		this.ascendants = wrapped.getAscendants().rescope(
@@ -55,10 +53,10 @@ final class PlainClauseWrap extends PlainClause {
 		setClauseObject(new Wrap(this, wrapped.getObject()));
 	}
 
-	PlainClauseWrap(Container enclosingContainer, PlainClauseWrap overridden) {
-		super(enclosingContainer, overridden);
+	PlainClauseWrap(MemberOwner owner, PlainClauseWrap overridden) {
+		super(owner, overridden);
 
-		final Obj inherited = enclosingContainer.toObject();
+		final Obj inherited = owner.getContainer().toObject();
 
 		this.ascendants = overridden.getAscendants().rescope(
 				upgradeRescoper(overridden.getScope(), getScope()));
@@ -117,12 +115,12 @@ final class PlainClauseWrap extends PlainClause {
 	}
 
 	@Override
-	protected void doResolveAll() {
+	protected void fullyResolve() {
 	}
 
 	@Override
-	protected PlainClause propagate(Scope enclosingScope) {
-		return new PlainClauseWrap(enclosingScope.getContainer(), this);
+	protected PlainClause propagate(MemberOwner owner) {
+		return new PlainClauseWrap(owner, this);
 	}
 
 	@Override
@@ -146,14 +144,14 @@ final class PlainClauseWrap extends PlainClause {
 		}
 
 		@Override
-		public Obj getWrapped() {
+		protected Obj createWrapped() {
 			return toClause().getWrapped().getObject();
 		}
 
 		@Override
 		protected Ascendants buildAscendants() {
 
-			final Ascendants ascendants = new Ascendants(getScope());
+			final Ascendants ascendants = new Ascendants(this);
 
 			return ascendants.setAncestor(new AncestorEx(this).toTypeRef());
 		}
@@ -179,9 +177,24 @@ final class PlainClauseWrap extends PlainClause {
 		}
 
 		@Override
-		protected Resolution resolveExpression(Scope scope) {
-			assertScopeIs(scope);
+		protected Resolution resolveExpression(Resolver resolver) {
+			assertScopeIs(resolver.getScope());
 			return artifactResolution(field().getInterface().getObject());
+		}
+
+		@Override
+		protected FieldDefinition createFieldDefinition() {
+			return defaultFieldDefinition();
+		}
+
+		@Override
+		protected void fullyResolve(Resolver resolver) {
+			resolve(resolver).resolveAll();
+		}
+
+		@Override
+		protected void fullyResolveValues(Resolver resolver) {
+			value(resolver);
 		}
 
 		@Override

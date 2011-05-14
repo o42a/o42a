@@ -19,27 +19,21 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.artifact.array.ArrayTypeRef;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.type.TypeRef;
 
 
 final class ArrayFieldWrap extends FieldWrap<Array> {
 
-	ArrayFieldWrap(
-			Container enclosingContainer,
-			Field<?> type,
-			Field<?> wrapped) {
-		super(enclosingContainer, type, wrapped);
+	ArrayFieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
+		super(owner, type, wrapped);
 	}
 
-	private ArrayFieldWrap(
-			Container enclosingContainer,
-			FieldWrap<Array> overridden) {
-		super(enclosingContainer, overridden);
+	private ArrayFieldWrap(MemberOwner owner, FieldWrap<Array> overridden) {
+		super(owner, overridden);
 	}
 
 	@Override
@@ -48,8 +42,8 @@ final class ArrayFieldWrap extends FieldWrap<Array> {
 	}
 
 	@Override
-	protected Field<Array> propagate(Scope enclosingScope) {
-		return new ArrayFieldWrap(enclosingScope.getContainer(), this);
+	protected Field<Array> propagate(MemberOwner owner) {
+		return new ArrayFieldWrap(owner, this);
 	}
 
 	@Override

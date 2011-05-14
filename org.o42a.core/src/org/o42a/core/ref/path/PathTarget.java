@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -28,6 +27,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
@@ -58,6 +58,14 @@ class PathTarget extends Expression {
 		this.start = null;
 		this.fullPath = this.path;
 		this.fullPathBuilt = true;
+	}
+
+	@Override
+	public boolean isStatic() {
+		if (this.start != null) {
+			return this.start.isStatic();
+		}
+		return false;
 	}
 
 	@Override
@@ -107,6 +115,8 @@ class PathTarget extends Expression {
 		if (path == null) {
 			start = this.start;
 			path = this.path;
+		} else if (path.isAbsolute()) {
+			return path.target(this, reproducer.distribute());
 		} else {
 			start = null;
 		}
@@ -117,31 +127,19 @@ class PathTarget extends Expression {
 		if (pathReproduction == null) {
 			return null;
 		}
-
-		final PathTarget reproducedPart;
-
-		if (start == null) {
-			reproducedPart = new PathTarget(
-					this,
-					reproducer.distribute(),
-					pathReproduction.getReproducedPath());
-		} else {
-
-			final Ref reproducedStart = start.reproduce(reproducer);
-
-			if (reproducedStart == null) {
-				return null;
-			}
-
-			reproducedPart = new PathTarget(
-					this,
-					reproducer.distribute(),
-					pathReproduction.getReproducedPath(),
-					reproducedStart);
+		if (pathReproduction.isUnchanged()) {
+			return reproducePart(
+					reproducer,
+					start,
+					pathReproduction.getExternalPath());
 		}
 
-		if (!pathReproduction.isOutOfClause()
-				|| pathReproduction.isUnchanged()) {
+		final PathTarget reproducedPart = reproducePart(
+				reproducer,
+				start,
+				pathReproduction.getReproducedPath());
+
+		if (!pathReproduction.isOutOfClause()) {
 			return reproducedPart;
 		}
 
@@ -166,14 +164,10 @@ class PathTarget extends Expression {
 			return this.path.rescoper(getScope());
 		}
 
-		final Scope start = this.start.resolve(getScope()).getScope();
+		final Scope start =
+			this.start.resolve(getScope().dummyResolver()).getScope();
 
 		return this.path.rescoper(start).and(this.start.toRescoper());
-	}
-
-	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new PathTargetDefinition(this);
 	}
 
 	@Override
@@ -190,23 +184,62 @@ class PathTarget extends Expression {
 		return super.toString();
 	}
 
+	protected final Path path() {
+		return this.path;
+	}
+
 	@Override
-	protected Resolution resolveExpression(Scope scope) {
+	protected Resolution resolveExpression(Resolver resolver) {
 
 		final Container resolved;
 
 		if (this.start == null) {
-			resolved = this.path.resolve(this, scope);
+			resolved = this.path.resolve(this, resolver, resolver.getScope());
 		} else {
-			resolved = this.path.resolve(this, scope, this.start);
+			resolved = this.path.resolveFrom(this, resolver, this.start);
 		}
 
 		return containerResolution(resolved);
 	}
 
 	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return new PathTargetDefinition(this);
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		if (this.start != null) {
+			this.start.resolveAll(resolver);
+		}
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
+	}
+
+	@Override
 	protected RefOp createOp(HostOp host) {
 		return new Op(host, this);
+	}
+
+	private PathTarget reproducePart(
+			Reproducer reproducer,
+			Ref start,
+			Path path) {
+		if (start == null) {
+			return new PathTarget(this, reproducer.distribute(), path);
+		}
+
+		final Ref newStart = start.reproduce(reproducer);
+
+		if (newStart == null) {
+			return null;
+		}
+
+		return new PathTarget(this, reproducer.distribute(), path, newStart);
 	}
 
 	private static final class Op extends RefOp {
@@ -221,12 +254,7 @@ class PathTarget extends Expression {
 			final PathTarget ref = (PathTarget) getRef();
 			final HostOp start;
 
-			if (ref.path.isAbsolute()) {
-
-				final Obj root = host().getContext().getRoot();
-
-				start = root.ir(getGenerator()).op(getBuilder(), dirs.code());
-			} else if (ref.start != null) {
+			if (ref.start != null) {
 				start = ref.start.op(host()).target(dirs);
 			} else {
 				start = host();

@@ -38,7 +38,12 @@ final class RefRescoper extends Rescoper {
 
 	@Override
 	public Scope rescope(Scope scope) {
-		return this.ref.resolve(scope).getScope();
+		return this.ref.resolve(scope.dummyResolver()).getScope();
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+		return this.ref.resolve(resolver).getScope().newResolver(resolver);
 	}
 
 	@Override
@@ -61,6 +66,11 @@ final class RefRescoper extends Rescoper {
 		}
 
 		return new RefRescoper(ref);
+	}
+
+	@Override
+	public void resolveAll(Resolver resolver) {
+		this.ref.resolveAll(resolver);
 	}
 
 	@Override

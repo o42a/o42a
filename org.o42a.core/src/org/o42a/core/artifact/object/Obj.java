@@ -21,11 +21,14 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
+import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
+import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
 import static org.o42a.core.member.local.Dep.fieldDep;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
 
@@ -46,16 +49,19 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.use.Usable;
+import org.o42a.util.use.UseInfo;
 
 
 public abstract class Obj extends Artifact<Obj>
-		implements Container, ClauseContainer {
+		implements MemberContainer, ClauseContainer {
 
 	public static final MemberId SCOPE_MEMBER_ID = memberName("_scope");
 
@@ -69,7 +75,9 @@ public abstract class Obj extends Artifact<Obj>
 		return new ObjectFieldIR(generator, field);
 	}
 
-	private Resolution resolution = Resolution.NOT_RESOLVED;
+	private final OwningObject owningObject = new OwningObject(this);
+	private final ObjectType.UsableObjectType type;
+	private final ObjectValue.UsableObjectValue value;
 
 	private final HashMap<MemberKey, Member> members =
 		new HashMap<MemberKey, Member>();
@@ -78,21 +86,17 @@ public abstract class Obj extends Artifact<Obj>
 	private final LinkedHashMap<MemberKey, Dep> deps =
 		new LinkedHashMap<MemberKey, Dep>();
 
-	private boolean resolveAll;
-	private ValueType<?> valueType;
-
-	private Ascendants ascendants;
-
-	private Definitions definitions;
-	private Value<?> value;
-
-	private ObjectIR ir;
-	private ObjectValueIR valueIR;
-
+	private ObjectMembers objectMembers;
 	private Clause[] explicitClauses;
 	private Clause[] implicitClauses;
 
-	private ObjectMembers objectMembers;
+	private ValueType<?> valueType;
+	private Definitions definitions;
+
+	private ObjectAnalysis analysis;
+
+	private ObjectIR ir;
+	private ObjectValueIR valueIR;
 
 	public Obj(LocationInfo location, Distributor enclosing) {
 		this(new ObjScope(location, enclosing));
@@ -100,15 +104,21 @@ public abstract class Obj extends Artifact<Obj>
 
 	public Obj(Scope scope) {
 		super(scope);
+		this.type = new ObjectType.UsableObjectType(this);
+		this.value = new ObjectValue.UsableObjectValue(this);
 	}
 
 	protected Obj(ObjectScope scope) {
 		super(scope);
 		scope.setScopeObject(this);
+		this.type = new ObjectType.UsableObjectType(this);
+		this.value = new ObjectValue.UsableObjectValue(this);
 	}
 
 	protected Obj(Scope scope, Obj sample) {
 		super(scope, sample);
+		this.type = new ObjectType.UsableObjectType(this);
+		this.value = new ObjectValue.UsableObjectValue(this);
 	}
 
 	@Override
@@ -116,14 +126,23 @@ public abstract class Obj extends Artifact<Obj>
 		return ArtifactKind.OBJECT;
 	}
 
-	@Override
-	public final Container getContainer() {
+	public Artifact<?> getMaterializationOf() {
 		return this;
 	}
 
 	public ConstructionMode getConstructionMode() {
-		resolve();
-		return this.ascendants.getConstructionMode();
+		return objectType().getAscendants().getConstructionMode();
+	}
+
+	public final ObjectAnalysis getAnalysis() {
+		if (this.analysis != null) {
+			return this.analysis;
+		}
+		return this.analysis = new ObjectAnalysis(this);
+	}
+
+	public final OwningObject toMemberOwner() {
+		return this.owningObject;
 	}
 
 	@Override
@@ -171,19 +190,29 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public Directive toDirective() {
-		resolve();
-		return this.ascendants.getDirective();
+		return objectType().getAscendants().getDirective();
 	}
 
 	public Obj getWrapped() {
 		return this;
 	}
 
-	public final boolean isClone() {
+	@Override
+	public boolean isClone() {
 
 		final Field<?> field = getScope().toField();
 
-		return field != null && field.isClone();
+		if (field != null) {
+			return field.isClone();
+		}
+
+		final Artifact<?> materializationOf = getMaterializationOf();
+
+		if (materializationOf == this) {
+			return false;
+		}
+
+		return materializationOf.isClone();
 	}
 
 	public final ValueType<?> getValueType() {
@@ -197,31 +226,20 @@ public abstract class Obj extends Artifact<Obj>
 		return false;
 	}
 
-	public final Ascendants getAscendants() {
-		resolve();
-		return this.ascendants;
+	public final Usable<ObjectType> type() {
+		return this.type;
 	}
 
-	public TypeRef getAncestor() {
-		return getAscendants().getAncestor();
-	}
-
-	/**
-	 * Object samples in descending precedence order.
-	 *
-	 * <p>This is an order reverse to their appearance in source code.</p>
-	 *
-	 * @return array of object samples.
-	 */
-	public final Sample[] getSamples() {
-		return getAscendants().getSamples();
+	public final Usable<ObjectValue> value() {
+		return this.value;
 	}
 
 	public final boolean membersResolved() {
-		return this.resolution.membersResolved();
+		return objectType().getResolution().membersResolved();
 	}
 
-	public Collection<Member> getMembers() {
+	@Override
+	public Collection<? extends Member> getMembers() {
 		resolveMembers(true);
 		return this.members.values();
 	}
@@ -271,18 +289,18 @@ public abstract class Obj extends Artifact<Obj>
 			}
 		}
 
-		for (Sample sample : getSamples()) {
+		for (Sample sample : objectType().getSamples()) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					sample.getType().getImplicitClauses());
+					sample.typeObject(dummyUser()).getImplicitClauses());
 		}
 
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor != null) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					ancestor.getType().getImplicitClauses());
+					ancestor.typeObject(dummyUser()).getImplicitClauses());
 		}
 
 		return this.implicitClauses = implicitClauses;
@@ -353,81 +371,6 @@ public abstract class Obj extends Artifact<Obj>
 		return found.member(declaredIn, accessor);
 	}
 
-	public boolean inherits(Artifact<?> other) {
-		if (this == other) {
-			return true;
-		}
-
-		final TypeRef ancestor = getAncestor();
-
-		if (ancestor == null) {
-			return false;
-		}
-
-		return ancestor.getType().inherits(other);
-	}
-
-	public final boolean derivedFrom(Obj other) {
-		return derivedFrom(other, Derivation.ANY, Integer.MAX_VALUE);
-	}
-
-	public final boolean derivedFrom(Obj other, Derivation derivation) {
-		return derivedFrom(other, derivation, Integer.MAX_VALUE);
-	}
-
-	public boolean derivedFrom(Obj other, Derivation derivation, int depth) {
-		if (derivation.match(this, other)) {
-			return true;
-		}
-
-		final int newDepth = depth - 1;
-
-		if (newDepth < 0) {
-			return false;
-		}
-
-		if (derivation.acceptAncestor()) {
-
-			final TypeRef ancestor = getAncestor();
-
-			if (ancestor != null) {
-				if (ancestor.getType().derivedFrom(
-						other,
-						derivation,
-						newDepth)) {
-					return true;
-				}
-			}
-		}
-
-		if (derivation.acceptsSamples()) {
-			for (Sample sample : getSamples()) {
-				if (!derivation.acceptSample(sample)) {
-					continue;
-				}
-				if (sample.getType().derivedFrom(
-						other,
-						derivation,
-						newDepth)) {
-					return true;
-				}
-			}
-			for (Sample sample : getAscendants().getDiscardedSamples()) {
-				if (!derivation.acceptSample(sample)) {
-					continue;
-				}
-				if (sample.getType().derivedFrom(
-						other,
-						derivation,
-						newDepth)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
 	public final boolean cloneOf(Obj other) {
 		if (other == this) {
 			return true;
@@ -456,24 +399,27 @@ public abstract class Obj extends Artifact<Obj>
 			this.objectMembers.registerMembers(resolveAdapters);
 			return;
 		}
-		if (!this.resolution.membersResolved()) {
+
+		final ObjectType objectType = objectType();
+
+		if (!objectType.getResolution().membersResolved()) {
 			if (!resolveIfNotResolving()) {
 				return;
 			}
 
-			final Resolution resolution = this.resolution;
+			final ObjectResolution resolution = objectType.getResolution();
 
 			if (resolution.typeResolved() && !resolution.membersResolved()) {
 				// resolution is not in progress - resolve members
 				// otherwise members are empty
-				this.resolution = Resolution.RESOLVING_MEMBERS;
+				objectType.setResolution(RESOLVING_MEMBERS);
 				try {
 					declareMembers();
 					this.objectMembers.registerMembers(resolveAdapters);
 				} finally {
-					this.resolution = resolution;
+					objectType.setResolution(resolution);
 				}
-				this.resolution = Resolution.MEMBERS_RESOLVED;
+				objectType.setResolution(MEMBERS_RESOLVED);
 				updateMembers();
 				this.objectMembers.registerMembers(resolveAdapters);
 			}
@@ -504,7 +450,7 @@ public abstract class Obj extends Artifact<Obj>
 		final Path adapterPath = adapter.getKey().toPath();
 
 		final Artifact<?> adapterArtifact =
-			adapter.getSubstance().toArtifact();
+			adapter.substance(dummyUser()).toArtifact();
 		final Obj adapterObject = adapterArtifact.toObject();
 
 		if (adapterObject != null) {
@@ -523,14 +469,14 @@ public abstract class Obj extends Artifact<Obj>
 
 		if (typeRef != null) {
 
-			final Obj type = typeRef.getType();
+			final ObjectType type = typeRef.type(dummyUser());
 
 			if (type == null) {
 				return null;
 			}
 
 			final Member foundInAdapterLink =
-				type.objectMember(user, memberId, declaredIn);
+				type.getObject().objectMember(user, memberId, declaredIn);
 
 			if (foundInAdapterLink == null) {
 				return null;
@@ -570,50 +516,6 @@ public abstract class Obj extends Artifact<Obj>
 			MemberId memberId,
 			Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);
-	}
-
-	public final Value<?> getValue() {
-		if (this.value == null) {
-			this.value = calculateValue(getScope());
-		}
-		return this.value;
-	}
-
-	public final Value<?> value(Scope scope) {
-		assertCompatible(scope);
-
-		final Value<?> result;
-
-		if (scope == getScope()) {
-			result = getValue();
-		} else {
-			result = calculateValue(scope);
-		}
-
-		return result;
-	}
-
-	@Override
-	public void resolveAll() {
-		if (this.resolveAll) {
-			return;
-		}
-		this.resolveAll = true;
-		try {
-			if (!resolveIfNotResolving()) {
-				return;
-			}
-			resolveAllMembers();
-			validateImplicitSubClauses(getExplicitClauses());
-			getDefinitions();
-		} finally {
-			this.resolveAll = false;
-		}
-	}
-
-	public final void assertDerivedFrom(Obj type) {
-		assert derivedFrom(type) :
-			this + " is not derived from " + type;
 	}
 
 	public final Definitions getDefinitions() {
@@ -660,11 +562,26 @@ public abstract class Obj extends Artifact<Obj>
 		return scopePathFragment.toPath();
 	}
 
+	@Override
+	public UseInfo fieldUses() {
+		return getAnalysis().fieldUses();
+	}
+
+	public final void assertDerivedFrom(Obj type) {
+		assert type().useBy(dummyUser()).derivedFrom(
+				type.type().useBy(dummyUser())) :
+					this + " is not derived from " + type;
+	}
+
 	public final ObjectIR ir(Generator generator) {
-		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = createIR(generator);
+
+		final ObjectIR ir = this.ir;
+
+		if (ir != null && ir.getGenerator() == generator) {
+			return ir;
 		}
-		return this.ir;
+
+		return this.ir = createIR(generator);
 	}
 
 	public final ObjectValueIR valueIR(Generator generator) {
@@ -675,11 +592,11 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected final void resolve() {
-		resolve(false);
+		objectType().resolve(false);
 	}
 
 	protected final boolean resolveIfNotResolving() {
-		return resolve(true);
+		return objectType().resolve(true);
 	}
 
 	protected void postResolve() {
@@ -694,7 +611,8 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected ValueType<?> resolveValueType() {
-		return getAncestor().getType().getValueType();
+		return objectType().getAncestor().typeObject(
+				getScope().dummyResolver()).getValueType();
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
@@ -706,8 +624,20 @@ public abstract class Obj extends Artifact<Obj>
 			Scope scope,
 			Definitions ascendantDefinitions);
 
-	protected Value<?> calculateValue(Scope scope) {
-		return getDefinitions().value(scope).getValue();
+	protected Value<?> calculateValue(Resolver resolver) {
+		value().useBy(resolver);
+		return getDefinitions().value(resolver).getValue();
+	}
+
+	@Override
+	protected void fullyResolve() {
+		resolve();
+		objectType().getAscendants().resolveAll();
+		if (!isClone()) {
+			resolveAllMembers();
+		}
+		validateImplicitSubClauses(getExplicitClauses());
+		getDefinitions().resolveAll();
 	}
 
 	protected ObjectIR createIR(Generator generator) {
@@ -716,6 +646,10 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
 		return new ObjectValueIR(objectIR);
+	}
+
+	final ObjectType objectType() {
+		return this.type.getType();
 	}
 
 	final Map<MemberKey, Member> members() {
@@ -737,9 +671,12 @@ public abstract class Obj extends Artifact<Obj>
 			overriddenDefinitions.assertScopeIs(scope);
 		}
 
+		final Usable<ObjectValue> user =
+			scope.getContainer().toObject().value();
+		final ObjectType type = type().useBy(user);
 		boolean hasExplicitAncestor =
-			getAscendants().getExplicitAncestor() != null;
-		final Sample[] samples = getSamples();
+			type.getAscendants().getExplicitAncestor() != null;
+		final Sample[] samples = type.getSamples();
 		Definitions definitions = overriddenDefinitions;
 
 		for (int i = samples.length - 1; i >= 0; --i) {
@@ -767,6 +704,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	Dep addDep(MemberKey memberKey) {
+		assert getContext().fullResolution().assertIncomplete();
 
 		final Dep found = this.deps.get(memberKey);
 
@@ -782,6 +720,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	Dep addEnclosingOwnerDep(Obj owner) {
+		assert getContext().fullResolution().assertIncomplete();
 
 		final Dep found = this.deps.get(null);
 
@@ -803,32 +742,6 @@ public abstract class Obj extends Artifact<Obj>
 		return dep;
 	}
 
-	private final boolean resolve(boolean skipIfResolving) {
-		if (this.resolution == Resolution.NOT_RESOLVED) {
-			try {
-				this.resolution = Resolution.RESOLVING_TYPE;
-				assignAscendants();
-			} finally {
-				this.resolution = Resolution.NOT_RESOLVED;
-			}
-			this.resolution = Resolution.TYPE_RESOLVED;
-			this.ascendants.validate();
-			postResolve();
-			this.resolution = Resolution.POST_RESOLVED;
-		} else if (this.resolution == Resolution.RESOLVING_TYPE) {
-			if (!skipIfResolving) {
-				getLogger().recursiveResolution(this, this);
-			}
-			return false;
-		}
-
-		return this.resolution.resolved();
-	}
-
-	private void assignAscendants() {
-		this.ascendants = buildAscendants();
-	}
-
 	private void assignValueType() {
 		if (this.valueType == null) {
 			setValueType(resolveValueType());
@@ -843,14 +756,14 @@ public abstract class Obj extends Artifact<Obj>
 		}
 		declareMembers(this.objectMembers);
 
-		for (Sample sample : getSamples()) {
+		for (Sample sample : objectType().getSamples()) {
 			sample.deriveMembers(this.objectMembers);
 		}
 
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor != null) {
-			this.objectMembers.deriveMembers(ancestor.getType());
+			this.objectMembers.deriveMembers(ancestor.typeObject(type()));
 		}
 	}
 
@@ -879,46 +792,17 @@ public abstract class Obj extends Artifact<Obj>
 	private Definitions getAncestorDefinitions() {
 
 		final Definitions ancestorDefinitions;
-		final TypeRef ancestor = getAncestor();
+		final TypeRef ancestor = objectType().getAncestor();
 
 		if (ancestor == null) {
 			ancestorDefinitions = null;
 		} else {
 			ancestorDefinitions =
-				ancestor.getType().getDefinitions().upgradeScope(getScope());
+				ancestor.typeObject(value())
+				.getDefinitions().upgradeScope(getScope());
 		}
 
 		return ancestorDefinitions;
-	}
-
-	private enum Resolution {
-
-		NOT_RESOLVED(0),
-		RESOLVING_TYPE(-1),
-		TYPE_RESOLVED(1),
-		POST_RESOLVED(2),
-		RESOLVING_MEMBERS(-3),
-		MEMBERS_RESOLVED(3);
-
-		private final int code;
-
-		Resolution(int code) {
-			this.code = code;
-		}
-
-		boolean resolved() {
-			return this.code >= POST_RESOLVED.code;
-		}
-
-		boolean membersResolved() {
-			return (this.code >= MEMBERS_RESOLVED.code
-					|| this.code < RESOLVING_MEMBERS.code);
-		}
-
-		boolean typeResolved() {
-			return this.code > 0;
-		}
-
 	}
 
 }

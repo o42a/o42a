@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
@@ -74,7 +76,8 @@ public class MemberRef extends Wrap {
 		final Path memberPath = ownerResolution.member(
 				this,
 				this.memberId,
-				this.declaredIn != null ? this.declaredIn.getType() : null);
+				this.declaredIn != null
+				? this.declaredIn.typeObject(dummyUser()) : null);
 
 		if (memberPath == null) {
 			return errorRef(this);

@@ -25,6 +25,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 
 
 final class RefCondDef extends CondDef {
@@ -61,6 +62,11 @@ final class RefCondDef extends CondDef {
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
 		return new RefCondDef(this, rescoper);
+	}
+
+	@Override
+	protected void fullyResolveDef(Resolver resolver) {
+		this.ref.resolveValues(resolver);
 	}
 
 }

@@ -31,6 +31,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.*;
@@ -250,10 +251,10 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
+	public Action initialValue(LocalResolver resolver) {
 		for (ImperativeSentence sentence : getSentences()) {
 
-			final Action action = sentence.initialValue(scope);
+			final Action action = sentence.initialValue(resolver);
 			final LoopAction loopAction = action.toLoopAction(this);
 
 			switch (loopAction) {
@@ -275,8 +276,8 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
-		return initialValue(scope).toInitialLogicalValue();
+	public Action initialLogicalValue(LocalResolver resolver) {
+		return initialValue(resolver).toInitialLogicalValue();
 	}
 
 	@Override

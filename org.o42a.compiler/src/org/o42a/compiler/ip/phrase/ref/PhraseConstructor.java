@@ -65,19 +65,6 @@ class PhraseConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new PhraseFieldDefinition(this.phrase);
-	}
-
-	@Override
-	protected Obj createObject() {
-		return new PhraseObject(
-				this.phrase.getPhrase().getMainContext(),
-				distribute(),
-				this.ascendants);
-	}
-
-	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
@@ -93,6 +80,20 @@ class PhraseConstructor extends ObjectConstructor {
 				reproducer.distribute(),
 				this.phrase,
 				ascendants);
+	}
+
+	@Override
+	protected Obj createObject() {
+		return new PhraseObject(
+				this.phrase.getPhrase().getMainContext(),
+				distribute(),
+				this.ascendants);
+	}
+
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return new PhraseFieldDefinition(this.phrase);
 	}
 
 	private static final class PhraseObject extends DefinedObject {

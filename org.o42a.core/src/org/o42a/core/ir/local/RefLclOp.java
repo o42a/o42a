@@ -20,6 +20,7 @@
 package org.o42a.core.ir.local;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -59,7 +60,7 @@ public final class RefLclOp extends LclOp {
 			return object;
 		}
 
-		return artifact.getTypeRef().getType();
+		return artifact.getTypeRef().typeObject(dummyUser());
 	}
 
 	@Override

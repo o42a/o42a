@@ -25,6 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -45,9 +46,23 @@ final class PathRescoper extends Rescoper {
 	@Override
 	public Scope rescope(Scope scope) {
 
-		final Container found = this.path.resolve(scope, scope);
+		final Container found =
+			this.path.resolve(scope, scope.dummyResolver(), scope);
 
 		return found != null ? found.getScope() : null;
+	}
+
+	@Override
+	public Resolver rescope(Resolver resolver) {
+
+		final Scope scope = resolver.getScope();
+		final Container found = this.path.resolve(scope, resolver, scope);
+
+		if (found == null) {
+			return null;
+		}
+
+		return found.getScope().newResolver(resolver);
 	}
 
 	@Override
@@ -56,14 +71,16 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		dirs = dirs.begin("rescope_by_path", "Resccope to " + this.path);
+	public Rescoper and(Rescoper other) {
+		if (other instanceof PathRescoper) {
 
-		final HostOp result = this.path.write(dirs, host);
+			final PathRescoper pathRescoper = (PathRescoper) other;
+			final Path newPath = pathRescoper.path.append(this.path);
 
-		dirs.end();
+			return new PathRescoper(newPath, other.getFinalScope());
+		}
 
-		return result;
+		return super.and(other);
 	}
 
 	@Override
@@ -101,16 +118,19 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public Rescoper and(Rescoper other) {
-		if (other instanceof PathRescoper) {
+	public void resolveAll(Resolver resolver) {
+		rescope(resolver);
+	}
 
-			final PathRescoper pathRescoper = (PathRescoper) other;
-			final Path newPath = pathRescoper.path.append(this.path);
+	@Override
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		dirs = dirs.begin("rescope_by_path", "Resccope to " + this.path);
 
-			return new PathRescoper(newPath, other.getFinalScope());
-		}
+		final HostOp result = this.path.write(dirs, host);
 
-		return super.and(other);
+		dirs.end();
+
+		return result;
 	}
 
 	@Override

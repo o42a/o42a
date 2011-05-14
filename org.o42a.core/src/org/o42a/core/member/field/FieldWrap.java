@@ -19,9 +19,11 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.Container;
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.MemberOwner;
 
 
 abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
@@ -30,34 +32,32 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 	private final Field<A> wrapped;
 
 	@SuppressWarnings("unchecked")
-	public FieldWrap(
-			Container enclosingContainer,
-			Field<?> type,
-			Field<?> wrapped) {
-		super(new Member(
+	public FieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
+		super(new MemberFieldWrap(
+				owner,
 				new FieldDeclaration(
 						wrapped,
-						wrapped.distributeIn(enclosingContainer),
+						wrapped.distributeIn(owner.getContainer()),
 						wrapped.getDeclaration())
 				.override()));
-		((Member) toMember()).init(this);
+		((MemberFieldWrap) toMember()).init(this);
 		this.iface = (Field<A>) type;
 		this.wrapped = (Field<A>) wrapped;
-		setScopeArtifact(wrapArtifact());
+		setFieldArtifact(wrapArtifact());
 	}
 
-	protected FieldWrap(Container enclosingContainer, FieldWrap<A> overridden) {
-		super(enclosingContainer, overridden, false);
+	protected FieldWrap(MemberOwner owner, FieldWrap<A> overridden) {
+		super(owner, overridden, false);
 
-		final Obj inherited = enclosingContainer.toObject();
+		final Obj inherited = owner.getContainer().toObject();
 
 		this.iface = inherited.member(
-				overridden.iface.getKey()).toField().toKind(
+				overridden.iface.getKey()).toField(dummyUser()).toKind(
 						overridden.iface.getArtifactKind());
 		this.wrapped = inherited.getWrapped().member(
-				overridden.iface.getKey()).toField().toKind(
+				overridden.iface.getKey()).toField(dummyUser()).toKind(
 						overridden.iface.getArtifactKind());
-		setScopeArtifact(overridden.getArtifact());
+		setFieldArtifact(overridden.getArtifact());
 	}
 
 	public final Field<A> getInterface() {
@@ -70,26 +70,9 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 
 	@Override
 	public final A getArtifact() {
-		return getScopeArtifact();
+		return getFieldArtifact();
 	}
 
 	protected abstract A wrapArtifact();
-
-	private static final class Member extends MemberField {
-
-		public Member(FieldDeclaration declaration) {
-			super(declaration);
-		}
-
-		@Override
-		protected Field<?> createField() {
-			throw new UnsupportedOperationException();
-		}
-
-		final void init(FieldWrap<?> field) {
-			setField(field);
-		}
-
-	}
 
 }

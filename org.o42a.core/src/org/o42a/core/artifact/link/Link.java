@@ -20,12 +20,13 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.Directive;
+import org.o42a.core.artifact.MaterializableArtifact;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
@@ -36,7 +37,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
 
-public abstract class Link extends Artifact<Link> {
+public abstract class Link extends MaterializableArtifact<Link> {
 
 	public static DeclaredField<Link, ?> declareField(
 			MemberField member,
@@ -51,7 +52,6 @@ public abstract class Link extends Artifact<Link> {
 	}
 
 	private final ArtifactKind<Link> kind;
-	private Obj target;
 	private TargetRef targetRef;
 
 	public Link(Scope scope, ArtifactKind<Link> kind) {
@@ -105,25 +105,21 @@ public abstract class Link extends Artifact<Link> {
 		return this.targetRef;
 	}
 
-	@Override
-	public Obj materialize() {
-		if (this.target == null) {
-			if (isVariable() || enclosingScopeIsRuntime()) {
-				this.target = new RuntimeLinkTarget(this);
-			} else {
-				this.target = new LinkTarget(this);
-			}
-		}
-		return this.target;
-	}
-
-	@Override
-	public void resolveAll() {
-		getTargetRef();
-		materialize().resolveAll();
-	}
-
 	protected abstract TargetRef buildTargetRef();
+
+	@Override
+	protected Obj createMaterialization() {
+		if (isVariable() || enclosingScopeIsRuntime()) {
+			return new RuntimeLinkTarget(this);
+		}
+		return new LinkTarget(this);
+	}
+
+	@Override
+	protected void fullyResolveArtifact() {
+		getTargetRef().resolveAll(
+				getScope().getEnclosingScope().newResolver(content()));
+	}
 
 	private void define() {
 		this.targetRef = buildTargetRef();
@@ -148,7 +144,7 @@ public abstract class Link extends Artifact<Link> {
 
 		final TypeRef typeRef = this.targetRef.getTypeRef();
 
-		typeRef.getArtifact().accessBy(this).checkPrototypeUse();
+		typeRef.artifact(dummyUser()).accessBy(this).checkPrototypeUse();
 
 		final TypeRelation relation =
 			typeRef.relationTo(this.targetRef.toTypeRef());

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -74,7 +76,7 @@ final class ResolutionRootFinder implements PathWalker {
 			PathFragment fragment,
 			Member member) {
 
-		final Container substance = member.getSubstance();
+		final Container substance = member.substance(dummyUser());
 
 		if (substance.getScope() != this.container.getScope()) {
 			// Member access - root already reached.

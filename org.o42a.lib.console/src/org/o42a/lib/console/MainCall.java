@@ -40,23 +40,34 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.util.use.UserInfo;
 
 
 final class MainCall extends DefinedObject {
 
 	private final TypeRef adapterRef;
 
-	public static MainCall mainCall(Obj consoleModule, Obj module) {
+	public static MainCall mainCall(
+			UserInfo user,
+			Obj consoleModule,
+			Obj module) {
 
 		final Obj mainObject =
-			consoleModule.member("main").getSubstance().toObject();
+			consoleModule.member("main").substance(user).toObject();
 		final AdapterId mainAdapterId = adapterId(mainObject);
-		final Field<?> mainAdapter = module.member(mainAdapterId).toField();
+		final Member mainMember = module.member(mainAdapterId);
+
+		if (mainMember == null) {
+			return null;
+		}
+
+		final Field<?> mainAdapter = mainMember.toField(user);
 
 		if (mainAdapter == null) {
 			return null;
@@ -72,10 +83,14 @@ final class MainCall extends DefinedObject {
 		final Ref adapterRef =
 			adapterPath.target(mainAdapter, module.distribute());
 
-		return new MainCall(
+		final MainCall result = new MainCall(
 				main,
 				module.distribute(),
 				adapterRef.toStaticTypeRef());
+
+		result.value().useBy(user);
+
+		return result;
 	}
 
 	private MainCall(
@@ -96,6 +111,7 @@ final class MainCall extends DefinedObject {
 	}
 
 	public void generateMain(Generator generator) {
+		assertFullyResolved();
 
 		final ObjectIR ir = ir(generator);
 		final Function<DebuggableMainFunc> main;
@@ -114,7 +130,6 @@ final class MainCall extends DefinedObject {
 		main.debug("Start execution");
 
 		final CodeBuilder builder = codeBuilder(getContext(), main);
-
 		final ValOp result = main.allocate(null, VAL_TYPE).storeUnknown(main);
 		final CodeBlk exit = main.addBlock("exit");
 

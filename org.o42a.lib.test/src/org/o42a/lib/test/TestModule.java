@@ -28,9 +28,12 @@ import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
 import org.o42a.lib.test.rt.*;
+import org.o42a.lib.test.rt.parser.Parser;
 import org.o42a.lib.test.run.RunTests;
+import org.o42a.util.use.UserInfo;
 
 
 public class TestModule extends Module {
@@ -59,25 +62,18 @@ public class TestModule extends Module {
 		return new TestModule(moduleContext);
 	}
 
-	private Obj test;
-
 	private TestModule(CompilerContext context) {
 		super(context, "Test");
 	}
 
-	public Obj getTest() {
-		if (this.test == null) {
-			this.test = objectByName("test");
-		}
-		if (this.test == getContext().getFalse()) {
-			return null;
-		}
-		return this.test;
+	public ObjectType test(UserInfo user) {
+		return objectByName(user, "test").type().useBy(user);
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		members.addMember(new RunTests(this).toMember());
+		members.addMember(new Parser(this).toMember());
 		members.addMember(new RtVoid(this).toMember());
 		members.addMember(new RtFalse(this).toMember());
 		members.addMember(new RtString(this).toMember());
@@ -86,7 +82,7 @@ public class TestModule extends Module {
 		super.declareMembers(members);
 	}
 
-	private Obj objectByName(String name) {
+	private Obj objectByName(UserInfo user, String name) {
 
 		final Member member = member(name);
 
@@ -95,7 +91,7 @@ public class TestModule extends Module {
 			return getContext().getFalse();
 		}
 
-		final Obj object = member.getSubstance().toObject();
+		final Obj object = member.substance(user).toObject();
 
 		if (object == null) {
 			getLogger().notObject(this, toString() + ':' + name);

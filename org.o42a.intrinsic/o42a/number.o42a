@@ -19,7 +19,3 @@
 */
 // Unary + does not modify number.
 <@Operators: plus>
-
-@Adapters: by string :=<> *().
-
-<*By string> = ::@@adapters: by string(<*''> Input = string).

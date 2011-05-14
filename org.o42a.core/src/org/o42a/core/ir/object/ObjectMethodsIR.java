@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -36,7 +36,7 @@ import org.o42a.core.artifact.object.Obj;
 public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 
 	private final ObjectBodyIR bodyIR;
-	private StructRec<ObjectType.Op> objectType;
+	private StructRec<ObjectIRType.Op> objectType;
 
 	ObjectMethodsIR(ObjectBodyIR bodyIR) {
 		this.bodyIR = bodyIR;
@@ -99,7 +99,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 			return (ObjectMethodsIR) super.getType();
 		}
 
-		public final RecOp<ObjectType.Op> objectType(Code code) {
+		public final RecOp<ObjectIRType.Op> objectType(Code code) {
 			return ptr(null, code, getType().objectType);
 		}
 

@@ -31,7 +31,11 @@ import org.o42a.core.value.ValueType;
 public class IntegersEqual extends NumbersEqual<Long> {
 
 	public IntegersEqual(Integers owner) {
-		super(owner, "equals", ValueType.INTEGER, "integers/equals.o42a");
+		super(
+				owner.toMemberOwner(),
+				"equals",
+				ValueType.INTEGER,
+				"integers/equals.o42a");
 	}
 
 	@Override

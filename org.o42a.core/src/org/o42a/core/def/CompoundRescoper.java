@@ -23,6 +23,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -48,6 +49,11 @@ final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
+	public Resolver rescope(Resolver resolver) {
+		return this.first.rescope(this.second.rescope(resolver));
+	}
+
+	@Override
 	public Scope updateScope(Scope scope) {
 		return this.second.updateScope(this.first.updateScope(scope));
 	}
@@ -60,13 +66,6 @@ final class CompoundRescoper extends Rescoper {
 	@Override
 	public Rescoper and(Rescoper filter) {
 		return this.first.and(this.second.and(filter));
-	}
-
-	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return this.first.rescope(
-				dirs,
-				this.second.rescope(dirs, host));
 	}
 
 	@Override
@@ -101,6 +100,19 @@ final class CompoundRescoper extends Rescoper {
 		}
 
 		return new CompoundRescoper(firstRescoper, secondRescoper);
+	}
+
+	@Override
+	public void resolveAll(Resolver resolver) {
+		this.second.resolveAll(resolver);
+		this.first.resolveAll(this.second.rescope(resolver));
+	}
+
+	@Override
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return this.first.rescope(
+				dirs,
+				this.second.rescope(dirs, host));
 	}
 
 	@Override

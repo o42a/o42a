@@ -21,6 +21,7 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.AdapterId.adapterTypeScope;
 import static org.o42a.core.ref.path.Path.absolutePath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
@@ -250,7 +251,8 @@ public enum ClauseId {
 	public static ClauseId byAdapterType(StaticTypeRef adapterType) {
 
 		final Obj type =
-			adapterTypeScope(adapterType.getType()).getContainer().toObject();
+			adapterTypeScope(adapterType.typeObject(dummyUser()))
+			.getContainer().toObject();
 
 		for (ClauseId clauseId : values()) {
 			if (clauseId.hasAdapterType()) {

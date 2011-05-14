@@ -21,13 +21,14 @@ package org.o42a.core.artifact;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
@@ -47,8 +48,8 @@ final class FixedRef extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Scope scope) {
-		assertCompatible(scope);
+	public Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 		return this.self;
 	}
 
@@ -66,6 +67,21 @@ final class FixedRef extends Ref {
 	@Override
 	protected boolean isKnownStatic() {
 		return true;
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
 	}
 
 	@Override

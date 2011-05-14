@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -27,7 +27,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectType.Op;
+import org.o42a.core.ir.object.ObjectIRType.Op;
 import org.o42a.core.ir.object.ObjectTypeOp;
 
 

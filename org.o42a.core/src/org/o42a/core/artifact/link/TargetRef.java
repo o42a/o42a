@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.link;
 
 import org.o42a.core.CompilerContext;
-import org.o42a.core.Scope;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -29,6 +28,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -97,6 +97,12 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 	}
 
 	@Override
+	public void resolveAll(Resolver resolver) {
+		this.typeRef.resolveAll(resolver);
+		super.resolveAll(resolver);
+	}
+
+	@Override
 	public String toString() {
 		if (this.typeRef == null) {
 			return super.toString();
@@ -128,6 +134,11 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		return new TargetRef(ref, typeRef, rescoper);
 	}
 
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		this.ref.resolveAll(resolver);
+	}
+
 	private static final class FullLogical extends Logical {
 
 		private final TargetRef targetRef;
@@ -143,10 +154,10 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		}
 
 		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
+		public LogicalValue logicalValue(Resolver resolver) {
+			assertCompatible(resolver.getScope());
 			return this.targetRef.getRef().getLogical().logicalValue(
-					this.targetRef.getRescoper().rescope(scope));
+					this.targetRef.getRescoper().rescope(resolver));
 		}
 
 		@Override
@@ -163,6 +174,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 		@Override
 		public void write(CodeDirs dirs, HostOp host) {
+			assert assertFullyResolved();
 			this.targetRef.getRef().getLogical().write(
 					dirs,
 					this.targetRef.getRescoper().rescope(dirs, host));
@@ -171,6 +183,13 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		@Override
 		public String toString() {
 			return "(" + this.targetRef + ")?";
+		}
+
+		@Override
+		protected void fullyResolve(Resolver resolver) {
+			this.targetRef.resolveAll(resolver);
+			this.targetRef.getRef().resolveValues(
+					this.targetRef.getRescoper().rescope(resolver));
 		}
 
 	}

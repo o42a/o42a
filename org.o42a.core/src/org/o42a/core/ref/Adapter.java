@@ -20,9 +20,10 @@
 package org.o42a.core.ref;
 
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.LocationInfo;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
@@ -49,14 +50,15 @@ final class Adapter extends Wrap {
 			return errorRef(resolution);
 		}
 
-		final Obj objectType = resolution.materialize();
+		final ObjectType objectType =
+			resolution.materialize().type().useBy(dummyUser());
 
-		if (objectType.derivedFrom(this.adapterType.getType())) {
+		if (objectType.derivedFrom(this.adapterType.type(dummyUser()))) {
 			return this.ref;
 		}
 
 		final Member adapterMember =
-			objectType.member(adapterId(this.adapterType));
+			objectType.getObject().member(adapterId(this.adapterType));
 
 		if (adapterMember == null) {
 			getLogger().incompatible(this.ref, this.adapterType);

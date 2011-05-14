@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
@@ -31,9 +32,13 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.Usable;
+import org.o42a.util.use.UserInfo;
 
 
 final class ParentObjectFragment extends MemberFragment {
+
+	private Usable<?> proxyUser;
 
 	ParentObjectFragment(MemberKey memberKey) {
 		super(memberKey);
@@ -42,6 +47,7 @@ final class ParentObjectFragment extends MemberFragment {
 	@Override
 	public Container resolve(
 			LocationInfo location,
+			UserInfo user,
 			Path path,
 			int index,
 			Scope start,
@@ -54,6 +60,11 @@ final class ParentObjectFragment extends MemberFragment {
 			final Scope self = getMemberKey().getOrigin();
 
 			if (start == self) {
+				// Create proxy to not forget the user.
+				if (this.proxyUser == null) {
+					this.proxyUser = simpleUsable("Proxy", this);
+				}
+				this.proxyUser.useBy(user);
 
 				final Container result = self.getEnclosingContainer();
 
@@ -62,14 +73,19 @@ final class ParentObjectFragment extends MemberFragment {
 				return result;
 			}
 		}
+		if (this.proxyUser != null) {
+			// Proxy exists. Use it instead of user.
+			this.proxyUser.useBy(user);
+			user = this.proxyUser;
+		}
 
-		final Member member = resolveMember(location, path, index, start);
+		final Member member = resolveMember(location, user, path, index, start);
 
 		if (member == null) {
 			return null;
 		}
 
-		final Container result = member.getSubstance();
+		final Container result = member.substance(user);
 
 		walker.up(object, this, result);
 

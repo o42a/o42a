@@ -19,40 +19,40 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+
+import static org.o42a.util.use.Usable.simpleUsable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.LogicalBase;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.common.AbstractConjunction;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.use.Usable;
 
 
 public abstract class Logical extends LogicalBase {
 
 	public static Logical logicalTrue(LocationInfo location, Scope scope) {
-		return new True(location, scope);
+		return new LogicalTrue(location, scope);
 	}
 
 	public static Logical logicalFalse(LocationInfo location, Scope scope) {
-		return new False(location, scope);
+		return new LogicalFalse(location, scope);
 	}
 
 	public static Logical runtimeTrue(LocationInfo location, Scope scope) {
-		return new RuntimeTrue(location, scope);
+		return new RuntimeLogicalTrue(location, scope);
 	}
 
 	public static Logical runtimeLogical(LocationInfo location, Scope scope) {
-		return new Runtime(location, scope);
+		return new RuntimeLogical(location, scope);
 	}
 
 	public static Logical and(Logical cond1, Logical cond2) {
@@ -111,7 +111,7 @@ public abstract class Logical extends LogicalBase {
 			return newClaims.get(0);
 		}
 
-		return new And(
+		return new LogicalAnd(
 				location,
 				scope,
 				newClaims.toArray(new Logical[size]));
@@ -169,7 +169,7 @@ public abstract class Logical extends LogicalBase {
 			return newVariants.get(0);
 		}
 
-		return new Or(
+		return new LogicalOr(
 				location,
 				scope,
 				newVariants.toArray(new Logical[size]));
@@ -251,6 +251,7 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	private Logical negated;
+	private Usable<?> fullResolution;
 
 	public Logical(LocationInfo location, Scope scope) {
 		super(location, scope);
@@ -270,7 +271,7 @@ public abstract class Logical extends LogicalBase {
 
 	public abstract LogicalValue getConstantValue();
 
-	public abstract LogicalValue logicalValue(Scope scope);
+	public abstract LogicalValue logicalValue(Resolver resolver);
 
 	public abstract Logical reproduce(Reproducer reproducer);
 
@@ -296,7 +297,7 @@ public abstract class Logical extends LogicalBase {
 		array[0] = this;
 		array[1] = other;
 
-		return new Or(this, getScope(), array);
+		return new LogicalOr(this, getScope(), array);
 	}
 
 	public final Logical and(Logical other) {
@@ -321,7 +322,7 @@ public abstract class Logical extends LogicalBase {
 		array[0] = this;
 		array[1] = other;
 
-		return new And(this, getScope(), array);
+		return new LogicalAnd(this, getScope(), array);
 	}
 
 	public final Logical negate() {
@@ -336,7 +337,7 @@ public abstract class Logical extends LogicalBase {
 					this.negated = logicalFalse(this, getScope());
 				}
 			} else {
-				this.negated = new Negated(this);
+				this.negated = new NegatedLogical(this);
 				this.negated.negated = this;
 			}
 		}
@@ -402,7 +403,30 @@ public abstract class Logical extends LogicalBase {
 		return new RescopedLogical(this, rescoper);
 	}
 
+	public final void resolveAll(Resolver resolver) {
+		assert resolver.assertNotDummy();
+		if (this.fullResolution != null) {
+			this.fullResolution.useBy(resolver);
+			return;
+		}
+		this.fullResolution = simpleUsable("FullResolution", this);
+		this.fullResolution.useBy(resolver);
+		resolver = resolver.newResolver(this.fullResolution);
+		getContext().fullResolution().start();
+		try {
+			fullyResolve(resolver);
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
 	public abstract void write(CodeDirs dirs, HostOp host);
+
+	public final boolean assertFullyResolved() {
+		assert this.fullResolution != null :
+			this + " is not fully resolved";
+		return true;
+	}
 
 	protected boolean runtimeImplies(Logical other) {
 
@@ -444,376 +468,6 @@ public abstract class Logical extends LogicalBase {
 		return null;
 	}
 
-	private static final class True extends Logical {
-
-		True(LocationInfo location, Scope scope) {
-			super(location, scope);
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return LogicalValue.TRUE;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
-			return LogicalValue.TRUE;
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-			return new True(this, reproducer.getScope());
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			dirs.code().debug("Logical: TRUE");
-		}
-
-		@Override
-		public String toString() {
-			return "TRUE";
-		}
-
-	}
-
-	private static final class False extends Logical {
-
-		False(LocationInfo location, Scope scope) {
-			super(location, scope);
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return LogicalValue.FALSE;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
-			return LogicalValue.FALSE;
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-			return new False(this, reproducer.getScope());
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-
-			final Code code = dirs.code();
-
-			code.debug("Logical: FALSE");
-			dirs.goWhenFalse(code);
-		}
-
-		@Override
-		public String toString() {
-			return "FALSE";
-		}
-
-	}
-
-	private static final class Runtime extends Logical {
-
-		Runtime(LocationInfo location, Scope scope) {
-			super(location, scope);
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return LogicalValue.RUNTIME;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
-			return LogicalValue.RUNTIME;
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-			return new Runtime(this, reproducer.getScope());
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			throw new UnsupportedOperationException(
-					"Abstract run-time logical should not generate any code");
-		}
-
-		@Override
-		public String toString() {
-			return "RUN-TIME";
-		}
-
-	}
-
-	private static final class RuntimeTrue extends Logical {
-
-		RuntimeTrue(LocationInfo location, Scope scope) {
-			super(location, scope);
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return LogicalValue.RUNTIME;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
-			return LogicalValue.RUNTIME;
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-			return new Runtime(this, reproducer.getScope());
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			dirs.code().debug("Logical: " + this);
-		}
-
-		@Override
-		public String toString() {
-			return "RUN-TIME TRUE";
-		}
-
-	}
-
-	private static final class Or extends Logical {
-
-		private final Logical[] variants;
-
-		Or(LocationInfo location, Scope scope, Logical[] variants) {
-			super(location, scope);
-			this.variants = variants;
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-
-			LogicalValue result = null;
-
-			for (Logical variant : this.variants) {
-
-				final LogicalValue value = variant.getConstantValue();
-
-				if (value.isTrue()) {
-					return value;
-				}
-
-				result = value.or(result);
-			}
-
-			return result;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
-
-			LogicalValue result = null;
-
-			for (Logical variant : this.variants) {
-
-				final LogicalValue value = variant.logicalValue(scope);
-
-				if (value.isTrue()) {
-					return value;
-				}
-
-				result = value.or(result);
-			}
-
-			return result;
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final Logical[] variants = new Logical[this.variants.length];
-
-			for (int i = 0; i < variants.length; ++i) {
-
-				final Logical reproduced =
-					this.variants[i].reproduce(reproducer);
-
-				if (reproduced == null) {
-					return null;
-				}
-
-				variants[i] = reproduced;
-			}
-
-			return new Or(this, reproducer.getScope(), variants);
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			dirs = dirs.begin("or", "Logical OR: " + this);
-
-			final Code code = dirs.code();
-
-			Code block = code.addBlock("0_disj");
-
-			code.go(block.head());
-
-			for (int i = 0; i < this.variants.length; ++i) {
-
-				final Code next;
-				final CodeDirs blockDirs;
-
-				if (i + 1 < this.variants.length) {
-					next = code.addBlock((i + 1) + "_disj");
-				} else {
-					next = code.addBlock("all_false");
-					dirs.goWhenFalse(next);
-				}
-
-				blockDirs = falseWhenUnknown(block, next.head());
-				this.variants[i].write(blockDirs, host);
-				block.go(code.tail());
-
-				block = next;
-			}
-
-			dirs.end();
-		}
-
-		@Override
-		public String toString() {
-
-			final StringBuilder out = new StringBuilder();
-
-			out.append('(');
-			for (Logical variant : this.variants) {
-				if (out.length() > 1) {
-					out.append(" | ");
-				}
-				out.append(variant);
-			}
-			out.append(')');
-
-			return out.toString();
-		}
-
-		@Override
-		protected Logical[] expandDisjunction() {
-			return this.variants;
-		}
-
-	}
-
-	private static final class And extends AbstractConjunction {
-
-		private final Logical[] claims;
-
-		And(LocationInfo location, Scope scope, Logical[] claims) {
-			super(location, scope);
-			this.claims = claims;
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final Logical[] claims = new Logical[this.claims.length];
-
-			for (int i = 0; i < claims.length; ++i) {
-
-				final Logical reproduced =
-					this.claims[i].reproduce(reproducer);
-
-				if (reproduced == null) {
-					return null;
-				}
-
-				claims[i] = reproduced;
-			}
-
-			return new And(this, reproducer.getScope(), claims);
-		}
-
-		@Override
-		protected Logical[] expandConjunction() {
-			return this.claims;
-		}
-
-		@Override
-		protected int numClaims() {
-			return this.claims.length;
-		}
-
-		@Override
-		protected Logical claim(int index) {
-			return this.claims[index];
-		}
-
-	}
-
-	private static final class Negated extends Logical {
-
-		Negated(Logical original) {
-			super(original, original.getScope());
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return negate().getConstantValue().negate();
-		}
-
-		@Override
-		public LogicalValue logicalValue(Scope scope) {
-			assertCompatible(scope);
-			return negate().logicalValue(scope).negate();
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final Logical reproduced = negate().reproduce(reproducer);
-
-			if (reproduced == null) {
-				return null;
-			}
-
-			return reproduced.negate();
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-
-			final Code code = dirs.code();
-			final Code isFalse = code.addBlock("is_false");
-			final CodeDirs negatedDirs =
-				falseWhenUnknown(code, isFalse.head())
-				.begin("not", "Logical NOT: " + this);
-
-			negate().write(negatedDirs, host);
-			negatedDirs.end();
-			dirs.goWhenFalse(code);
-
-			if (isFalse.exists()) {
-				isFalse.go(code.tail());
-			}
-		}
-
-		@Override
-		public String toString() {
-			return "--" + negate();
-		}
-
-	}
+	protected abstract void fullyResolve(Resolver resolver);
 
 }

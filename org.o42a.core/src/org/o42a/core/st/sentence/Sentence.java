@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
@@ -207,6 +208,18 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 
 		for (S alt : getAlternatives()) {
 			alt.reproduce(reproduction, reproducer);
+		}
+	}
+
+	final void resolveValues(Resolver resolver) {
+
+		final Sentence<S> prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+			prerequisite.resolveValues(resolver);
+		}
+		for (S alt : getAlternatives()) {
+			alt.resolveValues(resolver);
 		}
 	}
 

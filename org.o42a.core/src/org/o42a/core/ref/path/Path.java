@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.PathFragment.MATERIALIZE;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
@@ -38,7 +39,9 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.use.UserInfo;
 
 
 public class Path {
@@ -71,18 +74,14 @@ public class Path {
 	private final boolean absolute;
 	private final PathFragment[] fragments;
 
-	Path(PathFragment fragment) {
-		this.absolute = false;
-		this.fragments = new PathFragment[] {fragment};
-	}
-
-	private Path(PathFragment[] fragments) {
-		this(false, fragments);
-	}
-
-	Path(boolean absolute, PathFragment[] fragments) {
-		this.fragments = fragments;
+	Path(boolean absolute, PathFragment... fragments) {
 		this.absolute = absolute;
+		this.fragments = fragments;
+	}
+
+	Path(PathFragment... fragments) {
+		this.absolute = false;
+		this.fragments = fragments;
 	}
 
 	public final boolean isAbsolute() {
@@ -90,7 +89,7 @@ public class Path {
 	}
 
 	public final boolean isSelf() {
-		return this.fragments.length == 0 && !this.absolute;
+		return this.fragments.length == 0 && !isAbsolute();
 	}
 
 	public PathFragment[] getFragments() {
@@ -99,89 +98,102 @@ public class Path {
 
 	public final Artifact<?> resolveArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope start) {
-		return walkToArtifact(location, start, DUMMY_WALKER);
+		return walkToArtifact(location, user, start, DUMMY_WALKER);
 	}
 
-	public final Artifact<?> resolveArtifact(
+	public final Artifact<?> resolveArtifactFrom(
 			LocationInfo location,
-			Scope scope,
+			Resolver resolver,
 			Ref start) {
-		return walkToArtifact(location, scope, start, DUMMY_WALKER);
+		return walkToArtifactFrom(location, resolver, start, DUMMY_WALKER);
 	}
 
 	public Artifact<?> walkToArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
 		return walkPathToArtifact(
 				location,
-				this.absolute
-				? start.getContext().getRoot().getScope() : start,
+				user,
+				isAbsolute() ? start.getContext().getRoot().getScope() : start,
 				walker);
 	}
 
-	public Artifact<?> walkToArtifact(
+	public Artifact<?> walkToArtifactFrom(
 			LocationInfo location,
-			Scope scope,
+			Resolver resolver,
 			Ref start,
 			PathWalker walker) {
 		if (isAbsolute()) {
 			return walkPathToArtifact(
 					location,
-					scope.getContext().getRoot().getScope(),
+					resolver,
+					resolver.getScope().getContext().getRoot().getScope(),
 					walker);
 		}
 
-		final Resolution resolution = start.resolve(scope);
+		final Resolution resolution = start.resolve(resolver);
 
 		if (resolution.isError()) {
 			return null;
 		}
 
-		return walkPathToArtifact(location, resolution.getScope(), walker);
-	}
-
-	public final Container resolve(LocationInfo location, Scope start) {
-		return walk(location, start, DUMMY_WALKER);
+		return walkPathToArtifact(
+				location,
+				resolver,
+				resolution.getScope(),
+				walker);
 	}
 
 	public final Container resolve(
 			LocationInfo location,
-			Scope scope,
+			UserInfo user,
+			Scope start) {
+		return walk(location, user, start, DUMMY_WALKER);
+	}
+
+	public final Container resolveFrom(
+			LocationInfo location,
+			Resolver resolver,
 			Ref start) {
-		return walk(location, scope, start, DUMMY_WALKER);
+		return walkFrom(location, resolver, start, DUMMY_WALKER);
 	}
 
 	public Container walk(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
 		return walkPath(
 				location,
-				this.absolute ? start.getContext().getRoot().getScope() : start,
+				user,
+				isAbsolute() ? start.getContext().getRoot().getScope() : start,
 				walker);
 	}
 
-	public Container walk(
+	public Container walkFrom(
 			LocationInfo location,
-			Scope scope,
+			Resolver resolver,
 			Ref start,
 			PathWalker walker) {
 		if (isAbsolute()) {
 			return walkPath(
 					location,
-					scope.getContext().getRoot().getScope(),
+					resolver,
+					resolver.getScope().getContext().getRoot().getScope(),
 					walker);
 		}
 
-		final Resolution resolution = start.resolve(scope);
+		final Resolution resolution = start.resolve(resolver);
 
 		if (resolution.isError()) {
 			return null;
 		}
 
-		return walkPath(location, resolution.getScope(), walker);
+		return walkPath(location, resolver, resolution.getScope(), walker);
 	}
 
 	public Path append(PathFragment fragment) {
@@ -257,10 +269,6 @@ public class Path {
 
 		start.assertCompatibleScope(distributor);
 
-		if (isAbsolute()) {
-			return target(location, distributor);
-		}
-
 		return new PathTarget(location, distributor, this, start);
 	}
 
@@ -321,7 +329,7 @@ public class Path {
 
 			final Path reproducedPath = reproduction.getReproducedPath();
 			final Container resolution =
-				reproducedPath.resolve(location, toScope);
+				reproducedPath.resolve(location, dummyUser(), toScope);
 
 			if (resolution == null) {
 				return null;
@@ -347,14 +355,7 @@ public class Path {
 
 	@Override
 	public int hashCode() {
-
-		final int prime = 31;
-		int result = 1;
-
-		result = prime * result + (this.absolute ? 1231 : 1237);
-		result = prime * result + Arrays.hashCode(this.fragments);
-
-		return result;
+		return Arrays.hashCode(this.fragments);
 	}
 
 	@Override
@@ -371,14 +372,7 @@ public class Path {
 
 		final Path other = (Path) obj;
 
-		if (this.absolute != other.absolute) {
-			return false;
-		}
-		if (!Arrays.equals(this.fragments, other.fragments)) {
-			return false;
-		}
-
-		return true;
+		return Arrays.equals(this.fragments, other.fragments);
 	}
 
 	@Override
@@ -414,7 +408,14 @@ public class Path {
 		return out.toString();
 	}
 
-	HostOp write(CodeDirs dirs, HostOp start) {
+	PathTracker startWalk(UserInfo user, Scope start, PathWalker walker) {
+		if (!walker.start(this, start)) {
+			return null;
+		}
+		return new PathTracker(user, walker);
+	}
+
+	final HostOp write(CodeDirs dirs, HostOp start) {
 
 		HostOp found = start;
 
@@ -430,10 +431,11 @@ public class Path {
 
 	private Artifact<?> walkPathToArtifact(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
 
-		final Container found = walkPath(location, start, walker);
+		final Container found = walkPath(location, user, start, walker);
 
 		if (found == null) {
 			return null;
@@ -449,36 +451,38 @@ public class Path {
 
 	private Container walkPath(
 			LocationInfo location,
+			UserInfo user,
 			Scope start,
 			PathWalker walker) {
-		if (isAbsolute()) {
-			if (!walker.root(this, start)) {
-				return null;
-			}
-		} else {
-			if (!walker.start(this, start)) {
-				return null;
-			}
+
+		final PathTracker tracker = startWalk(user, start, walker);
+
+		if (tracker == null) {
+			return null;
 		}
 
-		final PathWalkTracker tracker = new PathWalkTracker(walker);
 		Container result = start.getContainer();
 		Scope prev = start;
 
 		for (int i = 0; i < this.fragments.length; ++i) {
-			result =
-				this.fragments[i].resolve(location, this, i, prev, tracker);
+			result = this.fragments[i].resolve(
+					location,
+					tracker.nextUser(),
+					this,
+					i,
+					prev,
+					tracker);
 			if (tracker.isAborted()) {
 				return null;
 			}
 			if (result == null) {
-				walker.abortedAt(prev, this.fragments[i]);
+				tracker.abortedAt(prev, this.fragments[i]);
 				return null;
 			}
 			prev = result.getScope();
 		}
 
-		if (!walker.done(result)) {
+		if (!tracker.done(result)) {
 			return null;
 		}
 

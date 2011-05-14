@@ -23,6 +23,7 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.compiler.ip.phrase.part.NextClause;
 import org.o42a.core.Distributor;
@@ -208,7 +209,8 @@ class PhraseSubContext extends PhraseContext {
 		}
 
 		final Obj origin = overriddenKey.getOrigin().getContainer().toObject();
-		final Field<?> overridden = origin.member(overriddenKey).toField();
+		final Field<?> overridden =
+			origin.member(overriddenKey).toField(dummyUser());
 
 		declaration =
 			declaration.override()

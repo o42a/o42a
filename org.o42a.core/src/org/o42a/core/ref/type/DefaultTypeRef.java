@@ -22,6 +22,7 @@ package org.o42a.core.ref.type;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 
@@ -43,6 +44,11 @@ final class DefaultTypeRef extends TypeRef {
 	@Override
 	public final Loggable getLoggable() {
 		return this.ref.getLoggable();
+	}
+
+	@Override
+	public boolean isStatic() {
+		return getRef().isStatic();
 	}
 
 	@Override
@@ -88,6 +94,12 @@ final class DefaultTypeRef extends TypeRef {
 		assert ref == untouchedRef :
 			ref + " should be the same as " + untouchedRef;
 		return new DefaultTypeRef(ref, rescoper);
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		validate();
+		this.ref.resolveAll(resolver);
 	}
 
 }

@@ -24,16 +24,21 @@ import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.Resolver;
 
 
 class LinkTarget extends ObjectWrap {
 
 	private final Link link;
-	private Obj wrapped;
 
 	LinkTarget(Link link) {
 		super(link, link.distributeIn(link.getScope().getEnclosingContainer()));
 		this.link = link;
+	}
+
+	@Override
+	public final Link getMaterializationOf() {
+		return this.link;
 	}
 
 	@Override
@@ -42,25 +47,25 @@ class LinkTarget extends ObjectWrap {
 	}
 
 	@Override
-	public Obj getWrapped() {
-		if (this.wrapped == null) {
-			this.wrapped = this.link.getTargetRef()
-			.resolve(getScope().getEnclosingScope())
-			.materialize()
-			.getWrapped();
-		}
-		return this.wrapped;
-	}
-
-	@Override
 	public String toString() {
 		return this.link.toString();
 	}
 
 	@Override
+	protected Obj createWrapped() {
+
+		final Resolver resolver =
+			getScope().getEnclosingScope().newResolver(content());
+
+		return this.link.getTargetRef()
+			.resolve(resolver)
+			.materialize()
+			.getWrapped();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope())
-		.setAncestor(this.link.getTypeRef());
+		return new Ascendants(this).setAncestor(this.link.getTypeRef());
 	}
 
 }

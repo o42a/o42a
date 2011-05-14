@@ -25,6 +25,7 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.util.log.Loggable;
 
 
@@ -177,13 +178,41 @@ public abstract class Def<D extends Def<D>>
 
 	public abstract boolean impliesWhenBefore(D def);
 
-	public abstract DefValue definitionValue(Scope scope);
+	public abstract DefValue definitionValue(Resolver resolver);
 
 	public abstract ValueDef toValue();
 
 	public abstract CondDef toCondition();
 
 	public abstract Definitions toDefinitions();
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append(name()).append('[');
+		if (hasPrerequisite()) {
+			out.append(getPrerequisite()).append("? ");
+		}
+
+		final Logical precondition = getPrecondition();
+
+		if (!precondition.isTrue()) {
+			out.append(precondition).append(", ");
+		}
+		if (isValue()) {
+			out.append('=');
+		}
+		out.append(getLocation());
+		if (getKind().isClaim()) {
+			out.append("!]");
+		} else {
+			out.append(".]");
+		}
+
+		return out.toString();
+	}
 
 	protected final Logical getPrerequisite() {
 		if (this.prerequisite != null) {
@@ -219,6 +248,8 @@ public abstract class Def<D extends Def<D>>
 
 	protected abstract Logical buildLogical();
 
+	protected abstract String name();
+
 	final LocationInfo getLocation() {
 		return this.location;
 	}
@@ -231,5 +262,6 @@ public abstract class Def<D extends Def<D>>
 	private final D copy() {
 		return create(getRescoper(), transparentRescoper(getScope()));
 	}
+
 
 }

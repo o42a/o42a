@@ -29,6 +29,7 @@ import java.util.Collection;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
@@ -263,25 +264,25 @@ public class Definitions extends Scoped {
 		return this.constantCondition = constantValue(this.conditions);
 	}
 
-	public final DefValue requirement(Scope scope) {
-		return calculateCondition(scope, this.requirements);
+	public final DefValue requirement(Resolver resolver) {
+		return calculateCondition(resolver, this.requirements);
 	}
 
-	public final DefValue claim(Scope scope) {
-		return calculateValue(scope, this.claims);
+	public final DefValue condition(Resolver resolver) {
+		return calculateCondition(resolver, this.conditions);
 	}
 
-	public final DefValue proposition(Scope scope) {
-		return calculateValue(scope, this.propositions);
+	public final DefValue claim(Resolver resolver) {
+		return calculateValue(resolver, this.claims);
 	}
 
-	public final DefValue condition(Scope scope) {
-		return calculateCondition(scope, this.conditions);
+	public final DefValue proposition(Resolver resolver) {
+		return calculateValue(resolver, this.propositions);
 	}
 
-	public DefValue value(Scope scope) {
+	public DefValue value(Resolver resolver) {
 
-		final DefValue requirement = requirement(scope);
+		final DefValue requirement = requirement(resolver);
 
 		if (!requirement.isDefinite()) {
 			return requirement;
@@ -290,7 +291,7 @@ public class Definitions extends Scoped {
 			return requirement;
 		}
 
-		final DefValue condition = condition(scope);
+		final DefValue condition = condition(resolver);
 
 		if (!condition.isDefinite()) {
 			return condition;
@@ -300,12 +301,12 @@ public class Definitions extends Scoped {
 		}
 
 		final DefValue value;
-		final DefValue claim = claim(scope);
+		final DefValue claim = claim(resolver);
 
 		if (!claim.isUnknown()) {
 			value = claim;
 		} else {
-			value = proposition(scope);
+			value = proposition(resolver);
 		}
 		if (value.isFalse()) {
 			return value;
@@ -556,23 +557,26 @@ public class Definitions extends Scoped {
 	}
 
 	public Definitions runtime() {
-
-		final RefCondDef runtimeDef = new RefCondDef(
-				/* The source should differ from scope,
-				 * as this definition is not explicit. */
-				getScope().getContext().getVoid(),
-				ValueType.VOID.runtimeRef(
-						this,
-						getScope().distribute()));
-
 		return new Definitions(
 				this,
 				getScope(),
 				getValueType(),
 				this.requirements,
-				ArrayUtil.prepend(runtimeDef, this.conditions),
+				ArrayUtil.prepend(new RuntimeCondDef(this), this.conditions),
 				this.claims,
 				this.propositions);
+	}
+
+	public final void resolveAll() {
+		getContext().fullResolution().start();
+		try {
+			resolveAll(this.requirements);
+			resolveAll(this.conditions);
+			resolveAll(this.claims);
+			resolveAll(this.propositions);
+		} finally {
+			getContext().fullResolution().end();
+		}
 	}
 
 	@Override
@@ -883,7 +887,7 @@ public class Definitions extends Scoped {
 		return LogicalValue.TRUE;
 	}
 
-	private DefValue calculateCondition(Scope scope, CondDef[] defs) {
+	private DefValue calculateCondition(Resolver resolver, CondDef[] defs) {
 
 		DefValue result = null;
 		int i = 0;
@@ -891,7 +895,7 @@ public class Definitions extends Scoped {
 		while (i < defs.length) {
 
 			final CondDef def = defs[i];
-			final DefValue value = def.definitionValue(scope);
+			final DefValue value = def.definitionValue(resolver);
 
 			if (value.isUnknown()) {
 				// Prerequisite not met - try next.
@@ -946,10 +950,10 @@ public class Definitions extends Scoped {
 		return index;
 	}
 
-	private DefValue calculateValue(Scope scope, ValueDef[] defs) {
+	private DefValue calculateValue(Resolver resolver, ValueDef[] defs) {
 		for (ValueDef def : defs) {
 
-			final DefValue value = def.definitionValue(scope);
+			final DefValue value = def.definitionValue(resolver);
 
 			if (!value.isUnknown()) {
 				return value;
@@ -991,6 +995,16 @@ public class Definitions extends Scoped {
 		return values;
 	}
 
+	private final void resolveAll(Def<?>[] defs) {
+
+		final Resolver resolver = getScope().newResolver(
+				getScope().getContainer().toObject().value());
+
+		for (Def<?> def : defs) {
+			def.resolveAll(resolver);
+		}
+	}
+
 	private static final class Empty extends Definitions {
 
 		Empty(LocationInfo location, Scope scope) {
@@ -1015,5 +1029,6 @@ public class Definitions extends Scoped {
 		}
 		return true;
 	}
+
 
 }

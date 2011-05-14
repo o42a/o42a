@@ -24,7 +24,9 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import java.util.HashMap;
 
 import org.o42a.ast.ref.IntrinsicRefNode;
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Location;
+import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -32,8 +34,10 @@ import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
@@ -113,12 +117,27 @@ public final class ValuePartRef extends Expression {
 	}
 
 	@Override
-	protected Resolution resolveExpression(Scope scope) {
+	protected Resolution resolveExpression(Resolver resolver) {
 		if (this.resolution != null) {
 			return this.resolution;
 		}
 		return this.resolution = objectResolution(
-				new ValuePartObj(this, distributeIn(scope.getContainer())));
+				new ValuePartObj(this, distributeIn(resolver.getContainer())));
+	}
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
 	}
 
 	@Override
@@ -141,7 +160,7 @@ public final class ValuePartRef extends Expression {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self =
-				selfPath.resolveArtifact(this, getScope()).toObject();
+				selfPath.resolveArtifact(this, value(), getScope()).toObject();
 			final Definitions definitions;
 
 			if (!ValuePartRef.this.overridden) {
@@ -175,7 +194,7 @@ public final class ValuePartRef extends Expression {
 		private Ascendants createAscendants(
 				final Definitions definitions,
 				final ValueType<?> valueType) {
-			return new Ascendants(getScope()).setAncestor(
+			return new Ascendants(this).setAncestor(
 					valueType.typeRef(
 							definitions,
 							getScope().getEnclosingScope()));

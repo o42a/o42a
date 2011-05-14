@@ -66,7 +66,9 @@ public class DefinitionBlockTest extends CompilerTestCase {
 				").");
 
 		assertThat(definiteValue(field("a", "foo"), Long.class), is(42L));
-		assertFalseValue(field("a").getArtifact().materialize().getValue());
+		assertFalseValue(
+				field("a").getArtifact().materialize()
+				.value().useBy(USE_CASE).getValue());
 	}
 
 	@Test

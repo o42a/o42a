@@ -29,9 +29,10 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
@@ -47,8 +48,8 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public Instruction toInstruction(Scope scope, boolean assignment) {
-		return this.ref.toInstruction(scope, false);
+	public Instruction toInstruction(Resolver resolver, boolean assignment) {
+		return this.ref.toInstruction(resolver, false);
 	}
 
 	@Override
@@ -79,13 +80,13 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public Action initialValue(LocalScope scope) {
-		return initialLogicalValue(scope);
+	public Action initialValue(LocalResolver resolver) {
+		return initialLogicalValue(resolver);
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalScope scope) {
-		return this.ref.initialLogicalValue(scope);
+	public Action initialLogicalValue(LocalResolver resolver) {
+		return this.ref.initialLogicalValue(resolver);
 	}
 
 	@Override
@@ -104,6 +105,16 @@ public final class RefCondition extends Statement {
 	@Override
 	public String toString() {
 		return this.ref.toString();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		this.ref.resolveAll(resolver);
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		this.ref.resolveValues(resolver);
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.def.Rescoper.wrapper;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
@@ -28,13 +29,18 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.Member;
+import org.o42a.util.use.UseInfo;
 
 
 public abstract class ObjectWrap extends PlainObject {
+
+	private Obj wrapped;
+	private ObjectWrapFieldUses fieldUses;
 
 	public ObjectWrap(Scope scope) {
 		super(scope);
@@ -49,14 +55,38 @@ public abstract class ObjectWrap extends PlainObject {
 	}
 
 	@Override
-	public abstract Obj getWrapped();
+	public final Obj getWrapped() {
+		if (this.wrapped != null) {
+			return this.wrapped;
+		}
+		this.wrapped = createWrapped();
+
+		type().useBy(this.wrapped.type());
+		this.wrapped.type().useBy(type());
+		value().useBy(this.wrapped.value());
+		this.wrapped.value().useBy(value());
+
+		return this.wrapped;
+	}
+
+	@Override
+	public UseInfo fieldUses() {
+		if (this.fieldUses != null) {
+			return this.fieldUses;
+		}
+		return this.fieldUses = new ObjectWrapFieldUses(this);
+	}
+
+	protected abstract Obj createWrapped();
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 
 		final Obj wrapped = getWrapped();
+		final ObjectType type = type().useBy(dummyUser());
 
-		for (Member inherited : getAncestor().getType().getMembers()) {
+		for (Member inherited
+				: type.getAncestor().typeObject(type()).getMembers()) {
 
 			// find the member from ancestor in wrapped object
 			final Member member = wrapped.member(inherited.getKey());
@@ -70,7 +100,7 @@ public abstract class ObjectWrap extends PlainObject {
 				continue;
 			}
 
-			members.addMember(member.wrap(inherited, this));
+			members.addMember(member.wrap(toMemberOwner(), type(), inherited));
 		}
 	}
 
@@ -81,6 +111,12 @@ public abstract class ObjectWrap extends PlainObject {
 	}
 
 	@Override
+	protected void fullyResolve() {
+		super.fullyResolve();
+		getWrapped().resolveAll();
+	}
+
+	@Override
 	protected ObjectIR createIR(Generator generator) {
 		return getWrapped().ir(generator);
 	}
@@ -88,6 +124,10 @@ public abstract class ObjectWrap extends PlainObject {
 	@Override
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
 		return getWrapped().valueIR(objectIR.getGenerator());
+	}
+
+	final UseInfo superFieldUses() {
+		return super.fieldUses();
 	}
 
 }

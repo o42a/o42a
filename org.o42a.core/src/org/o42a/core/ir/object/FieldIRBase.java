@@ -33,7 +33,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalFieldIRBase;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 
 
@@ -97,13 +96,6 @@ public abstract class FieldIRBase<A extends Artifact<A>>
 
 	Fld allocate(SubData<?> data, ObjectBodyIR bodyIR) {
 		assertNotLocal();
-
-		final Member declaredField =
-			bodyIR.getAscendant().member(getField().getKey());
-
-		if (declaredField.isOverride()) {
-			return null;
-		}
 
 		final Fld fld = declare(data, bodyIR);
 

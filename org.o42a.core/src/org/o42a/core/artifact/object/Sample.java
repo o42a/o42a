@@ -25,14 +25,23 @@ import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Directive;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class Sample extends Scoped {
 
-	public Sample(LocationInfo location, Scope scope) {
-		super(location, scope);
+	private final Ascendants ascendants;
+
+	Sample(LocationInfo location, Ascendants ascendants) {
+		super(location, ascendants.getScope().getEnclosingScope());
+		this.ascendants = ascendants;
+	}
+
+	public final Ascendants getAscendants() {
+		return this.ascendants;
 	}
 
 	public abstract TypeRef getAncestor();
@@ -45,8 +54,12 @@ public abstract class Sample extends Scoped {
 
 	public abstract StaticTypeRef getExplicitAscendant();
 
-	public final Obj getType() {
-		return getTypeRef().getType();
+	public final ObjectType type(UserInfo user) {
+		return getTypeRef().type(user);
+	}
+
+	public final Obj typeObject(UserInfo user) {
+		return getTypeRef().typeObject(user);
 	}
 
 	public final Directive toDirective() {
@@ -69,6 +82,16 @@ public abstract class Sample extends Scoped {
 				ancestorDefinitions);
 
 		return object.overrideDefinitions(scope, definitions);
+	}
+
+	public void resolveAll(Resolver resolver) {
+		getTypeRef().resolveAll(resolver);
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor != null) {
+			ancestor.resolveAll(resolver);
+		}
 	}
 
 	protected abstract Obj getObject();

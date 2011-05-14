@@ -19,8 +19,9 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.ObjectType.OBJECT_TYPE;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,10 +39,12 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.use.UseCase;
 
 
 public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
@@ -132,14 +135,18 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return new ObjectBodyIR(inheritantIR, getAscendant());
 	}
 
-	public Fld fld(MemberKey memberKey) {
+	public final Fld fld(MemberKey memberKey) {
 
-		final Fld fld = this.fieldMap.get(memberKey);
+		final Fld fld = findFld(memberKey);
 
 		assert fld != null :
 			"Field " + memberKey + " not found in " + this;
 
 		return fld;
+	}
+
+	public final Fld findFld(MemberKey memberKey) {
+		return this.fieldMap.get(memberKey);
 	}
 
 	public DepIR dep(Dep dep) {
@@ -180,7 +187,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	protected void fill() {
 
 		final Generator generator = getGenerator();
-		final ObjectType objectType = getObjectIR().getTypeIR().getObjectType();
+		final ObjectIRType objectType =
+			getObjectIR().getTypeIR().getObjectType();
 
 		this.objectType.setValue(
 				objectType.data(generator).getPointer().relativeTo(
@@ -228,11 +236,23 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final Obj object = getObjectIR().getObject();
 
 		for (Member declared : ascendant.getMembers()) {
-			if (declared.toField() == null) {
+
+			final Field<?> declaredField = declared.toField(dummyUser());
+
+			if (declaredField == null) {
+				continue;
+			}
+			if (declared.isOverride()) {
 				continue;
 			}
 
-			final Field<?> field = object.member(declared.getKey()).toField();
+			final Field<?> field =
+				object.member(declaredField.getKey()).toField(dummyUser());
+
+			if (!generateField(declaredField, field)) {
+				continue;
+			}
+
 			final FieldIRBase<?> fieldIR = field.ir(generator);
 			final Fld fld = fieldIR.allocate(data, this);
 
@@ -241,6 +261,26 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				this.fieldMap.put(field.getKey(), fld);
 			}
 		}
+	}
+
+	private boolean generateField(Field<?> declaredField, Field<?> field) {
+
+		final Generator generator = getGenerator();
+
+		if (!generator.isUsesAnalysed()) {
+			return true;
+		}
+
+		final UseCase useCase = generator.getUseCase();
+		final MemberAnalysis declarationAnalysis =
+			declaredField.toMember().getAnalysis();
+
+		if (!declarationAnalysis.isUsedBy(useCase)) {
+			// Field is never used. Skip generation.
+			return false;
+		}
+
+		return true;
 	}
 
 	private final void allocateDeps(SubData<Op> data) {
@@ -304,7 +344,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return new ObjOp(builder, this, ascendant, precision);
 		}
 
-		public final ObjectType.Op loadObjectType(Code code) {
+		public final ObjectIRType.Op loadObjectType(Code code) {
 			return objectType(code)
 			.load(null, code)
 			.offset(code.id("object_type").type(code.id("any")), code, this)
@@ -313,13 +353,14 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
 
-			final TypeRef ancestorRef = getAscendant().getAncestor();
+			final TypeRef ancestorRef =
+				getAscendant().type().useBy(dummyUser()).getAncestor();
 			final Obj ancestor;
 
 			if (ancestorRef == null) {
 				ancestor = null;
 			} else {
-				ancestor = ancestorRef.getType();
+				ancestor = ancestorRef.typeObject(dummyUser());
 			}
 
 			final AnyOp ancestorBodyPtr =

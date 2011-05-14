@@ -21,10 +21,10 @@ package org.o42a.core.artifact.object;
 
 import java.util.List;
 
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.*;
 
 
@@ -37,10 +37,8 @@ class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
 		super(member, ArtifactKind.OBJECT);
 	}
 
-	private DeclaredObjectField(
-			Container enclosingContainer,
-			DeclaredField<Obj, ObjectFieldVariant> sample) {
-		super(enclosingContainer, sample);
+	private DeclaredObjectField(MemberOwner owner, DeclaredObjectField sample) {
+		super(owner, sample);
 	}
 
 	@Override
@@ -68,9 +66,8 @@ class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
 	}
 
 	@Override
-	protected DeclaredField<Obj, ObjectFieldVariant> propagate(
-			Scope enclosingScope) {
-		return new DeclaredObjectField(enclosingScope.getContainer(), this);
+	protected DeclaredObjectField propagate(MemberOwner owner) {
+		return new DeclaredObjectField(owner, this);
 	}
 
 	@Override

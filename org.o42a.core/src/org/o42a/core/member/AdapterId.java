@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
@@ -97,7 +99,7 @@ public final class AdapterId extends MemberId {
 			return null;
 		}
 
-		final Obj type = this.adapterType.getType();
+		final Obj type = this.adapterType.typeObject(dummyUser());
 
 		if (type != null) {
 			return this.adapterTypeScope = adapterTypeScope(type);

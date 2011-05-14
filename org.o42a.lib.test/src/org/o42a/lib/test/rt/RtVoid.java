@@ -23,53 +23,48 @@ import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.common.intrinsic.IntrinsicObject;
+import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
 
 
-public class RtVoid extends IntrinsicObject {
+public class RtVoid extends IntrinsicBuiltin {
 
 	public RtVoid(TestModule module) {
-		super(fieldDeclaration(
-				module,
-				module.distribute(),
-				memberName("rt-void")));
+		super(
+				module.toMemberOwner(),
+				fieldDeclaration(
+						module,
+						module.distribute(),
+						memberName("rt-void")));
 		setValueType(ValueType.VOID);
+	}
+
+	@Override
+	public Value<?> calculateBuiltin(Resolver resolver) {
+		return getValueType().runtimeValue();
+	}
+
+	@Override
+	public void resolveBuiltin(Obj object) {
+	}
+
+	@Override
+	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+		code.debug("Run-time void");
+		result.storeVoid(code);
 	}
 
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
 				getValueType().typeRef(this, getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected Definitions explicitDefinitions() {
-		return getValueType().runtimeDef(this, distribute()).toDefinitions();
-	}
-
-	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
-	}
-
-	private static final class ValueIR extends ProposedValueIR {
-
-		ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		protected void proposition(Code code, ValOp result, ObjectOp host) {
-			code.debug("Run-time void");
-			result.storeVoid(code);
-		}
-
 	}
 
 }

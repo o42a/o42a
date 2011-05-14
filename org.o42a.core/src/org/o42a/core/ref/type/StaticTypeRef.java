@@ -19,13 +19,16 @@
 */
 package org.o42a.core.ref.type;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
@@ -33,6 +36,11 @@ public abstract class StaticTypeRef extends TypeRef {
 
 	StaticTypeRef(Rescoper rescoper) {
 		super(rescoper);
+	}
+
+	@Override
+	public final boolean isStatic() {
+		return true;
 	}
 
 	@Override
@@ -62,7 +70,7 @@ public abstract class StaticTypeRef extends TypeRef {
 
 	@Override
 	public final RefOp op(CodeDirs dirs, HostOp host) {
-		return getType().selfRef().op(host);
+		return ref().op(host);
 	}
 
 	public final TypeRelation relationTo(StaticTypeRef other) {
@@ -80,10 +88,10 @@ public abstract class StaticTypeRef extends TypeRef {
 			return TypeRelation.INVALID;
 		}
 
-		final Obj type1 = getType();
-		final Obj type2 = other.getType();
+		final ObjectType type1 = type(dummyUser());
+		final ObjectType type2 = other.type(dummyUser());
 
-		if (type1 == type2) {
+		if (type1.getObject().getScope() == type2.getObject().getScope()) {
 			return TypeRelation.SAME;
 		}
 		if (type2.derivedFrom(type1)) {
@@ -110,5 +118,18 @@ public abstract class StaticTypeRef extends TypeRef {
 			Ref ref,
 			Ref untouchedRef,
 			Rescoper rescoper);
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+
+		final Ref ref = ref();
+
+		ref.resolveAll(ref.getScope().dummyResolver());
+		validate();
+	}
+
+	private Ref ref() {
+		return typeObject(dummyUser()).selfRef();
+	}
 
 }

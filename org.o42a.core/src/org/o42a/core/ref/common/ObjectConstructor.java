@@ -29,8 +29,10 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ConstructorOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -42,12 +44,17 @@ public abstract class ObjectConstructor extends Expression {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return false;
+	}
+
+	@Override
 	public abstract TypeRef ancestor(LocationInfo location);
 
 	@Override
-	protected final Resolution resolveExpression(Scope scope) {
-		if (scope != getScope()) {
-			return objectResolution(new Propagated(scope, this));
+	protected final Resolution resolveExpression(Resolver resolver) {
+		if (resolver.getScope() != getScope() && !isStatic()) {
+			return objectResolution(new Propagated(resolver.getScope(), this));
 		}
 
 		final Obj object = createObject();
@@ -60,6 +67,21 @@ public abstract class ObjectConstructor extends Expression {
 	}
 
 	protected abstract Obj createObject();
+
+	@Override
+	protected FieldDefinition createFieldDefinition() {
+		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+		value(resolver);
+	}
 
 	@Override
 	protected RefOp createOp(HostOp host) {

@@ -26,8 +26,8 @@ import org.o42a.core.member.*;
 
 public class ObjectMembers extends ContainerMembers {
 
-	public ObjectMembers(Obj object) {
-		super(object);
+	ObjectMembers(Obj object) {
+		super(object.toMemberOwner());
 	}
 
 	public final Obj getObject() {

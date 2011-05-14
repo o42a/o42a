@@ -35,7 +35,7 @@ final class IntegerMinus extends UnaryResult<Long, Long> {
 
 	IntegerMinus(Integers integers) {
 		super(
-				integers,
+				integers.toMemberOwner(),
 				"minus",
 				ValueType.INTEGER,
 				"operand",

@@ -29,7 +29,11 @@ import org.o42a.core.value.ValueType;
 public class FloatsEqual extends NumbersEqual<Double> {
 
 	public FloatsEqual(Floats owner) {
-		super(owner, "equals", ValueType.FLOAT, "floats/equals.o42a");
+		super(
+				owner.toMemberOwner(),
+				"equals",
+				ValueType.FLOAT,
+				"floats/equals.o42a");
 	}
 
 	@Override

@@ -40,8 +40,8 @@ class PhraseEx extends Wrap {
 	}
 
 	@Override
-	public FieldDefinition toFieldDefinition() {
-		return new Definition(this.phrase, super.toFieldDefinition());
+	public String toString() {
+		return this.phrase.toString();
 	}
 
 	@Override
@@ -57,8 +57,8 @@ class PhraseEx extends Wrap {
 	}
 
 	@Override
-	public String toString() {
-		return this.phrase.toString();
+	protected FieldDefinition createFieldDefinition() {
+		return new Definition(this.phrase, super.createFieldDefinition());
 	}
 
 	private static final class Definition extends FieldDefinition {

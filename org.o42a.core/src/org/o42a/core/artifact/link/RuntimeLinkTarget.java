@@ -36,6 +36,11 @@ final class RuntimeLinkTarget extends Obj {
 	}
 
 	@Override
+	public Link getMaterializationOf() {
+		return this.link;
+	}
+
+	@Override
 	public ConstructionMode getConstructionMode() {
 		return RUNTIME_CONSTRUCTION;
 	}
@@ -47,8 +52,7 @@ final class RuntimeLinkTarget extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(getScope())
-		.setAncestor(this.link.getTypeRef());
+		return new Ascendants(this).setAncestor(this.link.getTypeRef());
 	}
 
 	@Override
