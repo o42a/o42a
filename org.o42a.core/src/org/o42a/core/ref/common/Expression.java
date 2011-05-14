@@ -19,67 +19,30 @@
 */
 package org.o42a.core.ref.common;
 
-import static org.o42a.util.use.Usable.simpleUsable;
-
-import java.util.IdentityHashMap;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.Usable;
 
 
 public abstract class Expression extends Ref {
 
-	private final Usable<Expression> usable =
-		simpleUsable("UsableExpression", this);
-	private Resolution resolved;
-	private IdentityHashMap<Scope, Resolution> cache;
+	private final ExpressionCache cache =
+		new ExpressionCache(this);
 
 	public Expression(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
-	@Override
-	public final Resolution resolve(Resolver resolver) {
-		usable().useBy(resolver);
-
-		final Scope scope = resolver.getScope();
-
-		resolver = resolver.newResolver(usable());
-		if (scope == getScope()) {
-			if (this.resolved != null) {
-				return this.resolved;
-			}
-			return this.resolved = doResolveExpression(resolver);
-		}
-
-		assertCompatible(scope);
-
-		if (this.cache == null) {
-			this.cache = new IdentityHashMap<Scope, Resolution>(2);
-		} else {
-
-			final Resolution cached = this.cache.get(scope);
-
-			if (cached != null) {
-				return cached;
-			}
-		}
-
-		final Resolution resolution = doResolveExpression(resolver);
-
-		this.cache.put(scope, resolution);
-
-		return resolution;
+	public final Resolution getResolved() {
+		return this.cache.getResolution();
 	}
 
-	public final Resolution getResolved() {
-		return this.resolved;
+	@Override
+	public final Resolution resolve(Resolver resolver) {
+		return this.cache.resolve(resolver);
 	}
 
 	@Override
@@ -109,11 +72,7 @@ public abstract class Expression extends Ref {
 
 	protected abstract Resolution resolveExpression(Resolver resolver);
 
-	protected final Usable<?> usable() {
-		return this.usable;
-	}
-
-	private final Resolution doResolveExpression(Resolver resolver) {
+	final Resolution resolveBy(Resolver resolver) {
 
 		final Resolution resolution = resolveExpression(resolver);
 

@@ -19,26 +19,24 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.util.use.Usable.simpleUsable;
-
 import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.common.ResolverCache;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.Usable;
 
 
 public abstract class Statement extends Placed {
 
 	private StOp op;
-	private Usable<?> fullResolution;
-	private Usable<?> valueResolution;
+	private ResolverCache fullResolution;
+	private ResolverCache valueResolution;
 
 	public Statement(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
@@ -71,13 +69,13 @@ public abstract class Statement extends Placed {
 	public abstract Statement reproduce(Reproducer reproducer);
 
 	public final void resolveAll(Resolver resolver) {
-		if (this.fullResolution != null) {
-			this.fullResolution.useBy(resolver);
+		if (this.fullResolution == null) {
+			this.fullResolution = new ResolverCache("FullResolution", this);
+		}
+		resolver = this.fullResolution.resolve(resolver);
+		if (resolver == null) {
 			return;
 		}
-		this.fullResolution = simpleUsable("FullResolution", this);
-		this.fullResolution.useBy(resolver);
-		resolver = resolver.newResolver(this.fullResolution);
 		getContext().fullResolution().start();
 		try {
 			fullyResolve(resolver);
@@ -88,13 +86,13 @@ public abstract class Statement extends Placed {
 
 	public final void resolveValues(Resolver resolver) {
 		resolveAll(resolver);
-		if (this.valueResolution != null) {
-			this.valueResolution.useBy(resolver);
+		if (this.valueResolution == null) {
+			this.valueResolution = new ResolverCache("ValueResolution", this);
+		}
+		resolver = this.valueResolution.resolve(resolver);
+		if (resolver == null) {
 			return;
 		}
-		this.valueResolution = simpleUsable("ValueResolution", this);
-		this.valueResolution.useBy(resolver);
-		resolver = resolver.newResolver(this.valueResolution);
 		getContext().fullResolution().start();
 		try {
 			fullyResolveValues(resolver);
