@@ -75,11 +75,7 @@ public abstract class ObjectConstructor extends Expression {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-
-		final Resolution resolution = resolve(resolver);
-
-		resolution.resolveAll();
-		getScope().newResolver(resolution.toObject().content());
+		resolve(resolver).resolveAll();
 	}
 
 	@Override

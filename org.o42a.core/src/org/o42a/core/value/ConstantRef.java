@@ -93,11 +93,7 @@ final class ConstantRef<T> extends Ref {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-
-		final Resolution resolution = resolve(resolver);
-
-		resolution.resolveAll();
-		getScope().newResolver(resolution.toObject().content());
+		resolve(resolver).resolveAll();
 	}
 
 	@Override
