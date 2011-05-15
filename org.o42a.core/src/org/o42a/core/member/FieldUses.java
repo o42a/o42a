@@ -19,44 +19,21 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.util.use.User.dummyUser;
+import java.util.Iterator;
 
-import org.o42a.core.Scope;
-import org.o42a.core.member.MemberAnalysis.Status;
-import org.o42a.core.member.field.Field;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseFlag;
-import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.Uses;
 
 
-public class FieldUses implements UseInfo {
-
-	private static final byte LIKE_SCOPE = -2;
-	private static final byte ANALYSING = -1;
-	private static final byte ANALYSED = 1;
+public class FieldUses extends Uses {
 
 	private final MemberContainer container;
-	private UseFlag used;
-	private byte analysed;
 
 	public FieldUses(MemberContainer container) {
 		this.container = container;
 	}
 
-	@Override
-	public boolean isUsedBy(UseCase useCase) {
-		if (useCase.caseFlag(this.used)) {
-			return this.used.isUsed();
-		}
-		if (this.analysed == 0) {
-			this.analysed = ANALYSING;
-			if (fieldsUsedBy(useCase, false)) {
-				return true;
-			}
-		} else if (this.analysed != LIKE_SCOPE) {
-			return false;
-		}
-		return fieldsUsedBy(useCase, true);
+	public final MemberContainer getContainer() {
+		return this.container;
 	}
 
 	@Override
@@ -64,55 +41,9 @@ public class FieldUses implements UseInfo {
 		return "FieldUses[" + this.container + ']';
 	}
 
-	private boolean fieldsUsedBy(UseCase useCase, boolean scope) {
-
-		boolean fieldsPresent = false;
-		boolean likeScope = false;
-
-		for (Member member : this.container.getMembers()) {
-
-			final Field<?> field = member.toField(dummyUser());
-
-			if (field == null) {
-				continue;
-			}
-
-			fieldsPresent = true;
-
-			if (isScopeField(field) != scope) {
-				continue;
-			}
-
-			final MemberAnalysis analysis = member.getAnalysis();
-
-			if (analysis.getStatus() == Status.ANALYSING) {
-				assert scope :
-					member + " is analysing, but is not a scope";
-				likeScope = true;
-				continue;
-			}
-			if (analysis.isUsedBy(useCase)) {
-				this.analysed = ANALYSED;
-				this.used = useCase.usedFlag();
-				return true;
-			}
-		}
-		if (likeScope) {
-			this.analysed = LIKE_SCOPE;
-			return false;
-		}
-		return !fieldsPresent;
-	}
-
-	private boolean isScopeField(Field<?> field) {
-		if (field.isScopeField()) {
-			return false;
-		}
-
-		final Scope enclosingScope =
-			this.container.getScope().getEnclosingScope();
-
-		return field.getArtifact().getScope() == enclosingScope;
+	@Override
+	protected Iterator<MemberAnalysis> usedBy() {
+		return new FieldsAnalysisIterator(this.container);
 	}
 
 }

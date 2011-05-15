@@ -43,13 +43,13 @@ final class DummyUser extends User {
 	}
 
 	@Override
-	public String toString() {
-		return this.name;
+	public final UseFlag getUseBy(UseCase useCase) {
+		return useCase.unusedFlag();
 	}
 
 	@Override
-	UseFlag getUseBy(UseCase useCase) {
-		return useCase.unusedFlag();
+	public String toString() {
+		return this.name;
 	}
 
 	@Override

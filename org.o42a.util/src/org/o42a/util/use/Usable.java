@@ -19,7 +19,10 @@
 */
 package org.o42a.util.use;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -33,16 +36,23 @@ public abstract class Usable<U> extends AbstractUser {
 		return new SimpleUsable<U>(name, used);
 	}
 
+	private final UsableUses uses = new UsableUses();
 	private HashMap<User, U> usedBy;
-	private UseFlag useFlag;
-	private int rev;
 
 	public final U useBy(UserInfo user) {
 		return user.toUser().use(this);
 	}
 
 	public final Map<User, U> getUsedBy() {
+		if (this.usedBy == null) {
+			return emptyMap();
+		}
 		return this.usedBy;
+	}
+
+	@Override
+	public UseFlag getUseBy(UseCase useCase) {
+		return this.uses.getUseBy(useCase);
 	}
 
 	@Override
@@ -54,41 +64,6 @@ public abstract class Usable<U> extends AbstractUser {
 	}
 
 	protected abstract U createUsed(User user);
-
-	@Override
-	UseFlag getUseBy(UseCase useCase) {
-		if (useCase.caseFlag(this.useFlag)) {
-			return this.useFlag;
-		}
-		if (this.usedBy == null) {
-			return useCase.unusedFlag();
-		}
-
-		final int rev = useCase.start(this);
-		boolean skipped = false;
-
-		if (this.rev == rev) {
-			return null;
-		}
-		this.rev = rev;
-		for (User user : this.usedBy.keySet()) {
-
-			final UseFlag flag = user.getUseBy(useCase);
-
-			if (flag == null) {
-				skipped = true;
-				continue;
-			}
-			if (flag.isUsed()) {
-				useCase.end(this);
-				return this.useFlag = flag;
-			}
-		}
-		if (useCase.end(this) || !skipped) {
-			return this.useFlag = useCase.unusedFlag();
-		}
-		return null;
-	}
 
 	final U useBy(User user) {
 		if (this.usedBy == null) {
@@ -107,6 +82,23 @@ public abstract class Usable<U> extends AbstractUser {
 		this.usedBy.put(user, use);
 
 		return use;
+	}
+
+	private final class UsableUses extends Uses {
+
+		@Override
+		public String toString() {
+			return Usable.this.toString();
+		}
+
+		@Override
+		protected Iterator<? extends UseInfo> usedBy() {
+			if (Usable.this.usedBy == null) {
+				return null;
+			}
+			return Usable.this.usedBy.keySet().iterator();
+		}
+
 	}
 
 }

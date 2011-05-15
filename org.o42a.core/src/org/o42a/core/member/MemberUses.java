@@ -20,12 +20,13 @@
 package org.o42a.core.member;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
-import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.Uses;
 
 
-final class MemberUses implements UseInfo {
+final class MemberUses extends Uses {
 
 	private final String name;
 	private final Member member;
@@ -41,21 +42,16 @@ final class MemberUses implements UseInfo {
 	}
 
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
-		for (UseInfo used : this.uses) {
-			if (used.isUsedBy(useCase)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public String toString() {
 		if (this.member == null) {
 			return super.toString();
 		}
 		return this.name + '[' + this.member + ']';
+	}
+
+	@Override
+	protected Iterator<? extends UseInfo> usedBy() {
+		return this.uses.iterator();
 	}
 
 }

@@ -19,27 +19,22 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.util.use.UseCase;
+import static java.util.Arrays.asList;
+
+import java.util.Iterator;
+import java.util.List;
+
 import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.Uses;
 
 
-final class ObjectWrapFieldUses implements UseInfo {
+final class ObjectWrapFieldUses extends Uses {
 
 	private final ObjectWrap objectWrap;
-	private UseInfo[] uses;
+	private List<UseInfo> uses;
 
 	ObjectWrapFieldUses(ObjectWrap objectWrap) {
 		this.objectWrap = objectWrap;
-	}
-
-	@Override
-	public boolean isUsedBy(UseCase useCase) {
-		for (UseInfo use : getUses()) {
-			if (use.isUsedBy(useCase)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -50,15 +45,17 @@ final class ObjectWrapFieldUses implements UseInfo {
 		return "FieldUses[" + this.objectWrap + ']';
 	}
 
-	private final UseInfo[] getUses() {
+	@Override
+	protected Iterator<? extends UseInfo> usedBy() {
 		if (this.uses != null) {
-			return this.uses;
+			return this.uses.iterator();
 		}
-		this.uses = new UseInfo[] {
-			this.objectWrap.getWrapped().fieldUses(),
-			this.objectWrap.superFieldUses(),
-		};
-		return this.uses;
+
+		this.uses = asList(
+				this.objectWrap.getWrapped().fieldUses(),
+				this.objectWrap.superFieldUses());
+
+		return this.uses.iterator();
 	}
 
 }

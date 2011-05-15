@@ -52,12 +52,9 @@ public abstract class User implements UserInfo, UseInfo {
 		return this;
 	}
 
-	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return getUseBy(useCase).isUsed();
 	}
-
-	abstract UseFlag getUseBy(UseCase useCase);
 
 	abstract <U> U use(Usable<U> usable);
 
