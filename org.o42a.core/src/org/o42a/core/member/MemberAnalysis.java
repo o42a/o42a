@@ -21,6 +21,7 @@ package org.o42a.core.member;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.use.UseCase;
+import org.o42a.util.use.UseFlag;
 import org.o42a.util.use.UseInfo;
 
 
@@ -30,7 +31,8 @@ public class MemberAnalysis implements UseInfo {
 	private final MemberUses memberUses;
 	private final MemberUses substanceUses;
 	private final MemberUses nestedUses;
-	private Status status = Status.NOT_ANALYSED;
+	private UseFlag useFlag;
+	private int rev;
 
 	MemberAnalysis(Member member) {
 		this.member = member;
@@ -61,18 +63,54 @@ public class MemberAnalysis implements UseInfo {
 		return declaration.getAnalysis();
 	}
 
+	public final boolean isUsedBy(UseCase useCase) {
+		return getUseBy(useCase).isUsed();
+	}
+
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
-		if (!accessedBy(useCase)) {
-			return false;
+	public UseFlag getUseBy(UseCase useCase) {
+		if (useCase.caseFlag(this.useFlag)) {
+			return this.useFlag;
 		}
-		if (substanceAccessedBy(useCase)) {
-			return true;
+
+		final int rev = useCase.start(this);
+
+		if (this.rev == rev) {
+			return null;
 		}
-		if (nestedAccessedBy(useCase)) {
-			return true;
+		this.rev = rev;
+
+		final UseFlag memberUsed = this.memberUses.getUseBy(useCase);
+
+		if (memberUsed == null) {
+			if (!useCase.end(this)) {
+				return null;
+			}
+			return this.useFlag = useCase.unusedFlag();
 		}
-		return false;
+		if (!memberUsed.isUsed()) {
+			useCase.end(this);
+			return this.useFlag = memberUsed;
+		}
+
+		final UseFlag substanceUsed = this.substanceUses.getUseBy(useCase);
+
+		if (substanceUsed != null && substanceUsed.isUsed()) {
+			useCase.end(this);
+			return this.useFlag = substanceUsed;
+		}
+
+		final UseFlag nestedUsed = this.nestedUses.getUseBy(useCase);
+		final boolean topLevel = useCase.end(this);
+
+		if (nestedUsed != null) {
+			return this.useFlag = nestedUsed;
+		}
+		if (topLevel) {
+			return this.useFlag = useCase.unusedFlag();
+		}
+
+		return null;
 	}
 
 	public final boolean accessedBy(UseCase useCase) {
@@ -84,12 +122,7 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	public final boolean nestedAccessedBy(UseCase useCase) {
-		this.status = Status.ANALYSING;
-		try {
-			return this.nestedUses.isUsedBy(useCase);
-		} finally {
-			this.status = Status.ANALYSED;
-		}
+		return this.nestedUses.isUsedBy(useCase);
 	}
 
 	@Override
@@ -98,10 +131,6 @@ public class MemberAnalysis implements UseInfo {
 			return super.toString();
 		}
 		return "MemberAnalysis[" + this.member + ']';
-	}
-
-	final Status getStatus() {
-		return this.status;
 	}
 
 	final void useBy(UseInfo user) {
@@ -114,14 +143,6 @@ public class MemberAnalysis implements UseInfo {
 
 	final void useNestedBy(UseInfo user) {
 		this.nestedUses.useBy(user);
-	}
-
-	enum Status {
-
-		NOT_ANALYSED,
-		ANALYSING,
-		ANALYSED
-
 	}
 
 }

@@ -25,7 +25,7 @@ public final class UseCase extends AbstractUser {
 	private final String name;
 	private final UseFlag usedFlag;
 	private final UseFlag unusedFlag;
-	private User topLevel;
+	private UseInfo topLevelUse;
 	private int rev;
 
 	UseCase(String name) {
@@ -50,30 +50,30 @@ public final class UseCase extends AbstractUser {
 		return used ? this.usedFlag : this.unusedFlag;
 	}
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
-
-	@Override
-	UseFlag getUseBy(UseCase useCase) {
-		return useCase == this ? usedFlag() : unusedFlag();
-	}
-
-	final int start(User user) {
-		if (this.topLevel != null) {
+	public final int start(UseInfo use) {
+		if (this.topLevelUse != null) {
 			return this.rev;
 		}
-		this.topLevel = user;
+		this.topLevelUse = use;
 		return ++this.rev;
 	}
 
-	final boolean end(User user) {
-		if (this.topLevel != user) {
+	public final boolean end(UseInfo use) {
+		if (this.topLevelUse != use) {
 			return false;
 		}
-		this.topLevel = null;
+		this.topLevelUse = null;
 		return true;
+	}
+
+	@Override
+	public final UseFlag getUseBy(UseCase useCase) {
+		return useCase == this ? usedFlag() : unusedFlag();
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
 	}
 
 }

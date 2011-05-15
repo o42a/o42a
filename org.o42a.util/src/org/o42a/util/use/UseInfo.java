@@ -22,6 +22,6 @@ package org.o42a.util.use;
 
 public interface UseInfo {
 
-	boolean isUsedBy(UseCase useCase);
+	UseFlag getUseBy(UseCase useCase);
 
 }
