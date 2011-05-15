@@ -19,13 +19,15 @@
 */
 package org.o42a.core.member;
 
-import java.util.Iterator;
+import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.util.use.Uses;
+import org.o42a.core.member.field.Field;
+import org.o42a.util.use.*;
 
 
-public class FieldUses extends Uses {
+public class FieldUses implements UseInfo {
 
+	private final UseTracker tracker = new UseTracker();
 	private final MemberContainer container;
 
 	public FieldUses(MemberContainer container) {
@@ -37,13 +39,29 @@ public class FieldUses extends Uses {
 	}
 
 	@Override
-	public String toString() {
-		return "FieldUses[" + this.container + ']';
+	public UseFlag getUseBy(UseCase useCase) {
+		if (!this.tracker.start(useCase)) {
+			return this.tracker.getUseFlag();
+		}
+
+		for (Member member : getContainer().getMembers()) {
+
+			final Field<?> field = member.toField(dummyUser());
+
+			if (field == null) {
+				continue;
+			}
+			if (this.tracker.useBy(member.getAnalysis())) {
+				return this.tracker.getUseFlag();
+			}
+		}
+
+		return this.tracker.done();
 	}
 
 	@Override
-	protected Iterator<MemberAnalysis> usedBy() {
-		return new FieldsAnalysisIterator(this.container);
+	public String toString() {
+		return "FieldUses[" + this.container + ']';
 	}
 
 }

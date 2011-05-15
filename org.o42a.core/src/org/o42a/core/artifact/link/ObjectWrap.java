@@ -126,7 +126,7 @@ public abstract class ObjectWrap extends PlainObject {
 		return getWrapped().valueIR(objectIR.getGenerator());
 	}
 
-	final UseInfo superFieldUses() {
+	final UseInfo ownFieldUses() {
 		return super.fieldUses();
 	}
 

@@ -79,7 +79,7 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 	}
 
 	private void set(StructRec<ObjectIRType.Op> ptr, Obj object) {
-		if (!object.getAnalysis().accessedBy(getGenerator().getUseCase())) {
+		if (!object.getAnalysis().accessedBy(getGenerator())) {
 			ptr.setNull();
 			return;
 		}

@@ -25,17 +25,15 @@ public final class UseCase extends AbstractUser {
 	private final String name;
 	private final UseFlag usedFlag;
 	private final UseFlag unusedFlag;
-	private UseInfo topLevelUse;
+	private final UseFlag checkUseFlag;
+	private UseTracker topLevelTracker;
 	private int rev;
 
 	UseCase(String name) {
 		this.name = name;
-		this.usedFlag = new UseFlag(this, true);
-		this.unusedFlag = new UseFlag(this, false);
-	}
-
-	public final boolean caseFlag(UseFlag flag) {
-		return flag != null && flag.getUseCase() == this;
+		this.usedFlag = new UseFlag(this, (byte) 1);
+		this.unusedFlag = new UseFlag(this, (byte) -1);
+		this.checkUseFlag = new UseFlag(this, (byte) 0);
 	}
 
 	public final UseFlag usedFlag() {
@@ -46,24 +44,12 @@ public final class UseCase extends AbstractUser {
 		return this.unusedFlag;
 	}
 
+	public final UseFlag checkUseFlag() {
+		return this.checkUseFlag;
+	}
+
 	public final UseFlag useFlag(boolean used) {
 		return used ? this.usedFlag : this.unusedFlag;
-	}
-
-	public final int start(UseInfo use) {
-		if (this.topLevelUse != null) {
-			return this.rev;
-		}
-		this.topLevelUse = use;
-		return ++this.rev;
-	}
-
-	public final boolean end(UseInfo use) {
-		if (this.topLevelUse != use) {
-			return false;
-		}
-		this.topLevelUse = null;
-		return true;
 	}
 
 	@Override
@@ -74,6 +60,22 @@ public final class UseCase extends AbstractUser {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	final int start(UseTracker tracker) {
+		if (this.topLevelTracker != null) {
+			return this.rev;
+		}
+		this.topLevelTracker = tracker;
+		return ++this.rev;
+	}
+
+	final boolean end(UseTracker tracker) {
+		if (this.topLevelTracker != tracker) {
+			return false;
+		}
+		this.topLevelTracker = null;
+		return true;
 	}
 
 }

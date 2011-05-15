@@ -20,16 +20,15 @@
 package org.o42a.core.member;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
-import org.o42a.util.use.UseInfo;
-import org.o42a.util.use.Uses;
+import org.o42a.util.use.*;
 
 
-final class MemberUses extends Uses {
+final class MemberUses implements UseInfo {
 
 	private final String name;
 	private final Member member;
+	private final UseTracker tracker = new UseTracker();
 	private final HashSet<UseInfo> uses = new HashSet<UseInfo>();
 
 	MemberUses(String name, Member member) {
@@ -37,8 +36,25 @@ final class MemberUses extends Uses {
 		this.member = member;
 	}
 
-	public void useBy(UseInfo use) {
+	public final void useBy(UseInfo use) {
 		this.uses.add(use);
+	}
+
+	public final boolean isUsedBy(UseCase useCase) {
+		return getUseBy(useCase).isUsed();
+	}
+
+	@Override
+	public UseFlag getUseBy(UseCase useCase) {
+		if (!this.tracker.start(useCase)) {
+			return this.tracker.getUseFlag();
+		}
+		for (UseInfo use : this.uses) {
+			if (this.tracker.useBy(use)) {
+				return this.tracker.getUseFlag();
+			}
+		}
+		return this.tracker.done();
 	}
 
 	@Override
@@ -47,11 +63,6 @@ final class MemberUses extends Uses {
 			return super.toString();
 		}
 		return this.name + '[' + this.member + ']';
-	}
-
-	@Override
-	protected Iterator<? extends UseInfo> usedBy() {
-		return this.uses.iterator();
 	}
 
 }
