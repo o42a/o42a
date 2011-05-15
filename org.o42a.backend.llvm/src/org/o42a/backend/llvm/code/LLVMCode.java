@@ -452,7 +452,8 @@ public abstract class LLVMCode implements CodeWriter {
 
 			return (O) struct1.getType().op(writer1.create(
 					id,
-					nextPtr, phi2(
+					nextPtr,
+					phi2(
 							nextPtr,
 							id.getId(),
 							writer1.getBlockPtr(),
@@ -466,13 +467,30 @@ public abstract class LLVMCode implements CodeWriter {
 
 		return (O) o1.create(
 				id,
-				nextPtr, phi2(
+				nextPtr,
+				phi2(
 						nextPtr,
 						id.getId(),
 						o1.getBlockPtr(),
 						o1.getNativePtr(),
 						o2.getBlockPtr(),
 						o2.getNativePtr()));
+	}
+
+	public <O extends Op> O select(
+			CodeId id,
+			LLVMBoolOp condition,
+			O trueValue,
+			O falseValue) {
+
+		final long nextPtr = nextPtr();
+
+		return create(trueValue, id, nextPtr, select(
+				nextPtr,
+				(id != null ? id : condition.getId().sub("select")).getId(),
+				condition.getNativePtr(),
+				nativePtr(trueValue),
+				nativePtr(falseValue)));
 	}
 
 	@Override
@@ -498,6 +516,25 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	protected abstract long createFirtsBlock();
+
+	@SuppressWarnings("unchecked")
+	private static <O extends Op> O create(
+			O sample,
+			CodeId id,
+			long blockPtr,
+			long nativePtr) {
+
+		if (sample instanceof StructOp) {
+
+			final StructOp struct = (StructOp) sample;
+			final LLVMStruct writer = llvm(struct);
+
+			return (O) struct.getType().op(
+					writer.create(id, blockPtr, nativePtr));
+		}
+
+		return (O) llvm(sample).create(id, blockPtr, nativePtr);
+	}
 
 	static native long createBlock(long functionPtr, String name);
 
@@ -556,6 +593,13 @@ public abstract class LLVMCode implements CodeWriter {
 			long value1,
 			long block2ptr,
 			long value2);
+
+	private static native long select(
+			long blockPtr,
+			String id,
+			long conditionPtr,
+			long truePtr,
+			long flsePtr);
 
 	private static native void returnVoid(long blockPtr);
 

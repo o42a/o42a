@@ -62,24 +62,22 @@ final class CompareFloats extends CompareNumbers<Double> {
 		final Fp64op right = rightPtr.load(code.id("right"), code);
 
 		final BoolOp gt = left.gt(code.id("gt"), code, right);
-		final CondBlk greater =
-			gt.branch(code, "greater", "not_greater");
+		final CondBlk greater = gt.branch(code, "greater", "not_greater");
 		final CodeBlk notGreater = greater.otherwise();
 
 		result.store(greater, greater.int64(1));
 		greater.go(code.tail());
 
-		final BoolOp eq =
-			left.eq(notGreater.id("eq"), notGreater, right);
+		final BoolOp eq = left.eq(notGreater.id("eq"), notGreater, right);
 
-		final CondBlk equals = eq.branch(notGreater, "equals", "lesser");
-		final CodeBlk lesser = equals.otherwise();
-
-		result.store(equals, equals.int64(0));
-		equals.go(code.tail());
-
-		result.store(lesser, lesser.int64(-1));
-		lesser.go(code.tail());
+		result.store(
+				notGreater,
+				eq.select(
+						null,
+						notGreater,
+						notGreater.int64(0),
+						notGreater.int64(-1)));
+		notGreater.go(code.tail());
 	}
 
 }

@@ -407,6 +407,34 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
 	return to_ptr(phi);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_select(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jstring id,
+		jlong conditionPtr,
+		jlong truePtr,
+		jlong falsePtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	IRBuilder<> builder(block);
+	Value *condition = from_ptr<Value>(conditionPtr);
+	Value *value1 = from_ptr<Value>(truePtr);
+	Value *value2 = from_ptr<Value>(falsePtr);
+	jStringRef name(env, id);
+
+	OCODE(
+			block,
+			"select " << name << ": " << *condition << " ? "
+			<< *value1 << " : " << *value2 << "\n");
+
+	Value *result = builder.CreateSelect(condition, value1, value2, name);
+
+	ODUMP(result);
+
+	return to_ptr(result);
+}
+
 void Java_org_o42a_backend_llvm_code_LLVMCode_returnVoid(
 		JNIEnv *env,
 		jclass cls,
