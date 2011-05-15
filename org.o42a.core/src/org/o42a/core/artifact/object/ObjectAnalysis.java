@@ -21,13 +21,15 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.member.FieldUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.UseCase;
+import org.o42a.util.use.UseFlag;
 import org.o42a.util.use.UseInfo;
 
 
-public class ObjectAnalysis {
+public class ObjectAnalysis implements UseInfo {
 
 	private final Obj object;
 	private final FieldUses fieldUses;
@@ -63,16 +65,25 @@ public class ObjectAnalysis {
 		return false;
 	}
 
-	public final boolean accessedBy(UseCase useCase) {
-		return getObject().content().isUsedBy(useCase);
+	public final boolean isUsedBy(UseCase useCase) {
+		return getUseBy(useCase).isUsed();
 	}
 
-	public final boolean typeAccessedBy(UseCase useCase) {
-		return getObject().type().isUsedBy(useCase);
+	@Override
+	public final UseFlag getUseBy(UseCase useCase) {
+		return getObject().content().getUseBy(useCase);
 	}
 
-	public final boolean valueAccessedBy(UseCase useCase) {
-		return getObject().value().isUsedBy(useCase);
+	public final boolean accessedBy(Generator generator) {
+		return getObject().content().isUsedBy(generator.getUseCase());
+	}
+
+	public final boolean typeAccessedBy(Generator generator) {
+		return getObject().type().isUsedBy(generator.getUseCase());
+	}
+
+	public final boolean valueAccessedBy(Generator generator) {
+		return getObject().value().isUsedBy(generator.getUseCase());
 	}
 
 	@Override

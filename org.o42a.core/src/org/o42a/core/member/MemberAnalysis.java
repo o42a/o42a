@@ -19,20 +19,18 @@
 */
 package org.o42a.core.member;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseFlag;
-import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.*;
 
 
 public class MemberAnalysis implements UseInfo {
 
+	private final UseTracker tracker = new UseTracker();
 	private final Member member;
 	private final MemberUses memberUses;
 	private final MemberUses substanceUses;
 	private final MemberUses nestedUses;
-	private UseFlag useFlag;
-	private int rev;
 
 	MemberAnalysis(Member member) {
 		this.member = member;
@@ -69,60 +67,31 @@ public class MemberAnalysis implements UseInfo {
 
 	@Override
 	public UseFlag getUseBy(UseCase useCase) {
-		if (useCase.caseFlag(this.useFlag)) {
-			return this.useFlag;
+		if (!this.tracker.start(useCase)) {
+			return this.tracker.getUseFlag();
 		}
-
-		final int rev = useCase.start(this);
-
-		if (this.rev == rev) {
-			return null;
+		if (!this.tracker.require(this.memberUses)) {
+			return this.tracker.getUseFlag();
 		}
-		this.rev = rev;
-
-		final UseFlag memberUsed = this.memberUses.getUseBy(useCase);
-
-		if (memberUsed == null) {
-			if (!useCase.end(this)) {
-				return null;
-			}
-			return this.useFlag = useCase.unusedFlag();
+		if (this.tracker.useBy(this.substanceUses)) {
+			return this.tracker.getUseFlag();
 		}
-		if (!memberUsed.isUsed()) {
-			useCase.end(this);
-			return this.useFlag = memberUsed;
+		if (this.tracker.useBy(this.nestedUses)) {
+			return this.tracker.getUseFlag();
 		}
-
-		final UseFlag substanceUsed = this.substanceUses.getUseBy(useCase);
-
-		if (substanceUsed != null && substanceUsed.isUsed()) {
-			useCase.end(this);
-			return this.useFlag = substanceUsed;
-		}
-
-		final UseFlag nestedUsed = this.nestedUses.getUseBy(useCase);
-		final boolean topLevel = useCase.end(this);
-
-		if (nestedUsed != null) {
-			return this.useFlag = nestedUsed;
-		}
-		if (topLevel) {
-			return this.useFlag = useCase.unusedFlag();
-		}
-
-		return null;
+		return this.tracker.done();
 	}
 
-	public final boolean accessedBy(UseCase useCase) {
-		return this.memberUses.isUsedBy(useCase);
+	public final boolean accessedBy(Generator generator) {
+		return this.memberUses.isUsedBy(generator.getUseCase());
 	}
 
-	public final boolean substanceAccessedBy(UseCase useCase) {
-		return this.substanceUses.isUsedBy(useCase);
+	public final boolean substanceAccessedBy(Generator generator) {
+		return this.substanceUses.isUsedBy(generator.getUseCase());
 	}
 
-	public final boolean nestedAccessedBy(UseCase useCase) {
-		return this.nestedUses.isUsedBy(useCase);
+	public final boolean nestedAccessedBy(Generator generator) {
+		return this.nestedUses.isUsedBy(generator.getUseCase());
 	}
 
 	@Override
