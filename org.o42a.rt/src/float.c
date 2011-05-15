@@ -252,20 +252,14 @@ void o42a_float_by_str(
 	if (!frac_mantissa_len) {
 		res = int_mantissa;
 	} else {
-		res = fma(
-				frac_mantissa,
-				pow(0.1, frac_mantissa_len),
-				int_mantissa);
+		res = fma(frac_mantissa, pow(0.1, frac_mantissa_len), int_mantissa);
 		if (O42A(o42a_float_error(O42A_ARGS result))) {
 			fesetenv(&env);
 			O42A_RETURN;
 		}
 	}
 	if (stage == PARSE_EXPONENT) {
-		res = fma(
-				res,
-				pow(10.0, exponent),
-				0.0);
+		res = fma(res, pow(10.0, exponent), 0.0);
 		if (O42A(o42a_float_error(O42A_ARGS result))) {
 			fesetenv(&env);
 			O42A_RETURN;
@@ -286,7 +280,7 @@ inline int o42a_float_error(O42A_PARAMS o42a_val_t *const value) {
 			FE_DIVBYZERO | FE_INVALID | FE_UNDERFLOW | FE_OVERFLOW);
 
 	if (!error) {
-		return 0;
+		O42A_RETURN 0;
 	}
 	if (error & FE_UNDERFLOW) {
 		O42A(o42a_error_print(O42A_ARGS "Floating point number underflow"));

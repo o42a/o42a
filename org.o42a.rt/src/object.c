@@ -809,7 +809,7 @@ o42a_obj_t *o42a_obj_new(
 		const o42a_obj_ascendant_t *const res_consuming_ascendant =
 				res_ascendants + (consuming_ascendant - a_ascendants);
 
-		return o42a_obj_ascendant_body(O42A_ARGS res_consuming_ascendant);
+		O42A_RETURN o42a_obj_ascendant_body(O42A_ARGS res_consuming_ascendant);
 	}
 
 	// Ancestor bodies size.
