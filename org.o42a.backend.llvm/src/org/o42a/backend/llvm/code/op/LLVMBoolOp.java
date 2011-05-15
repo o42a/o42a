@@ -24,6 +24,7 @@ import static org.o42a.backend.llvm.code.LLVMCode.llvm;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.Op;
 
 
 public class LLVMBoolOp extends BoolOp implements LLVMOp {
@@ -51,6 +52,15 @@ public class LLVMBoolOp extends BoolOp implements LLVMOp {
 	@Override
 	public long getNativePtr() {
 		return this.nativePtr;
+	}
+
+	@Override
+	public <O extends Op> O select(
+			CodeId id,
+			Code code,
+			O trueValue,
+			O falseValue) {
+		return llvm(code).select(id, this, trueValue, falseValue);
 	}
 
 	@Override

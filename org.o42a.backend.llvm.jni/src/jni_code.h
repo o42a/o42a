@@ -153,6 +153,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
+ * Method:    select
+ * Signature: (JLjava/lang/String;JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_select
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    returnVoid
  * Signature: (J)V
  */

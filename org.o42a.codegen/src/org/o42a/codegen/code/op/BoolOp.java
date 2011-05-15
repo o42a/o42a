@@ -33,6 +33,12 @@ public abstract class BoolOp implements Op {
 	public void allocated(Code code, StructOp enclosing) {
 	}
 
+	public abstract <O extends Op> O select(
+			CodeId id,
+			Code code,
+			O trueValue,
+			O falseValue);
+
 	public final CondBlk branch(Code source) {
 		return branch(source, null);
 	}
