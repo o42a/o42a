@@ -19,17 +19,33 @@
 */
 package org.o42a.lib.console;
 
-import static org.o42a.lib.console.MainCall.mainCall;
+import static org.o42a.core.ir.CodeBuilder.codeBuilder;
+import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
+import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
+import static org.o42a.lib.console.MainFunc.MAIN;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.CodeBlk;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.Function;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.lib.console.impl.Print;
 import org.o42a.util.use.UserInfo;
 
@@ -60,7 +76,7 @@ public class ConsoleModule extends Module {
 		return new ConsoleModule(moduleContext);
 	}
 
-	private MainCall main;
+	private Obj main;
 
 	private ConsoleModule(CompilerContext context) {
 		super(context, "Console");
@@ -74,13 +90,86 @@ public class ConsoleModule extends Module {
 			return null;
 		}
 
-		return this.main = mainCall(user, this, mainModule);
+		final Obj mainObject = member("main").substance(user).toObject();
+		final AdapterId mainAdapterId = adapterId(mainObject);
+		final Member mainMember = mainModule.member(mainAdapterId);
+
+		if (mainMember == null) {
+			return null;
+		}
+
+		final Field<?> mainAdapter = mainMember.toField(user);
+
+		if (mainAdapter == null) {
+			return null;
+		}
+
+		final Obj main = mainAdapter.getArtifact().toObject();
+
+		if (main == null) {
+			return null;
+		}
+
+		final Path adapterPath =
+			mainAdapterId.key(mainModule.getScope()).toPath();
+		final Ref adapterRef =
+			adapterPath.target(mainAdapter, mainModule.distribute());
+
+		if (!main.isPrototype()) {
+			this.main = main;
+		} else {
+			this.main = new MainCall(
+					main,
+					mainModule.distribute(),
+					adapterRef.toStaticTypeRef());
+		}
+
+		this.main.value().useBy(user);
+
+		return this.main;
 	}
 
 	public void generateMain(Generator generator) {
-		if (this.main != null) {
-			this.main.generateMain(generator);
+		if (this.main == null) {
+			return;
 		}
+
+		this.main.assertFullyResolved();
+
+		final Function<DebuggableMainFunc> main;
+
+		if (generator.isDebug()) {
+			main = generator.newFunction().create(
+					generator.rawId("__o42a_main__"),
+					DEBUGGABLE_MAIN);
+			generateDebugMain(generator, main);
+		} else {
+			main = generator.newFunction().export().create(
+					generator.rawId("main"),
+					DEBUGGABLE_MAIN);
+		}
+
+		main.debug("Start execution");
+
+		final CodeBuilder builder = codeBuilder(getContext(), main);
+		final ValOp result = main.allocate(null, VAL_TYPE).storeUnknown(main);
+		final CodeBlk exit = main.addBlock("exit");
+
+		this.main.ir(generator).op(builder, main).writeValue(
+				falseWhenUnknown(main, exit.head()),
+				result);
+
+		if (exit.exists()) {
+			exit.debug("Execution failed");
+			exit.int32(-1).returnValue(exit);
+		}
+
+		main.debug("Execution succeed");
+		result.rawValue(main.id("execution_result_ptr"), main)
+		.toAny(null, main)
+		.toInt32(null, main)
+		.load(null, main)
+		.returnValue(main);
 	}
 
 	@Override
@@ -94,6 +183,26 @@ public class ConsoleModule extends Module {
 				"print_error",
 				"o42a_error_append_str").toMember());
 		super.declareMembers(members);
+	}
+
+	private void generateDebugMain(
+			Generator generator,
+			Function<DebuggableMainFunc> main) {
+
+		final Function<MainFunc> debugMain =
+			generator.newFunction().export().create(
+					generator.rawId("main"),
+					MAIN);
+		final FuncPtr<DebugExecMainFunc> executeMain =
+			generator.externalFunction(
+					"o42a_dbg_exec_main",
+					DEBUG_EXEC_MAIN);
+
+		executeMain.op(null, debugMain).call(
+				debugMain,
+				main.getPointer().op(null, debugMain),
+				debugMain.arg(debugMain, MAIN.argc()),
+				debugMain.arg(debugMain, MAIN.argv())).returnValue(debugMain);
 	}
 
 }
