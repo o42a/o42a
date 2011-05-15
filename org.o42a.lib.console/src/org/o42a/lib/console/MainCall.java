@@ -19,86 +19,32 @@
 */
 package org.o42a.lib.console;
 
-import static org.o42a.core.ir.CodeBuilder.codeBuilder;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
-import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
-import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
-import static org.o42a.lib.console.MainFunc.MAIN;
-
-import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.member.AdapterId;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.util.use.UserInfo;
 
 
 final class MainCall extends DefinedObject {
 
 	private final TypeRef adapterRef;
 
-	public static MainCall mainCall(
-			UserInfo user,
-			Obj consoleModule,
-			Obj module) {
-
-		final Obj mainObject =
-			consoleModule.member("main").substance(user).toObject();
-		final AdapterId mainAdapterId = adapterId(mainObject);
-		final Member mainMember = module.member(mainAdapterId);
-
-		if (mainMember == null) {
-			return null;
-		}
-
-		final Field<?> mainAdapter = mainMember.toField(user);
-
-		if (mainAdapter == null) {
-			return null;
-		}
-
-		final Obj main = mainAdapter.getArtifact().toObject();
-
-		if (main == null) {
-			return null;
-		}
-
-		final Path adapterPath = mainAdapterId.key(module.getScope()).toPath();
-		final Ref adapterRef =
-			adapterPath.target(mainAdapter, module.distribute());
-
-		final MainCall result = new MainCall(
-				main,
-				module.distribute(),
-				adapterRef.toStaticTypeRef());
-
-		result.value().useBy(user);
-
-		return result;
-	}
-
-	private MainCall(
+	MainCall(
 			LocationInfo location,
 			Distributor enclosing,
 			TypeRef adapterRef) {
 		super(location, enclosing);
 		this.adapterRef = adapterRef;
+	}
+
+	@Override
+	public String toString() {
+		if (this.adapterRef == null) {
+			return super.toString();
+		}
+		return this.adapterRef + "()";
 	}
 
 	@Override
@@ -108,66 +54,6 @@ final class MainCall extends DefinedObject {
 
 	@Override
 	protected void buildDefinition(DeclarativeBlock definition) {
-	}
-
-	public void generateMain(Generator generator) {
-		assertFullyResolved();
-
-		final ObjectIR ir = ir(generator);
-		final Function<DebuggableMainFunc> main;
-
-		if (generator.isDebug()) {
-			main = generator.newFunction().create(
-					generator.rawId("__o42a_main__"),
-					DEBUGGABLE_MAIN);
-			generateDebugMain(generator, main);
-		} else {
-			main = generator.newFunction().export().create(
-					generator.rawId("main"),
-					DEBUGGABLE_MAIN);
-		}
-
-		main.debug("Start execution");
-
-		final CodeBuilder builder = codeBuilder(getContext(), main);
-		final ValOp result = main.allocate(null, VAL_TYPE).storeUnknown(main);
-		final CodeBlk exit = main.addBlock("exit");
-
-		ir.op(builder, main).writeValue(
-				falseWhenUnknown(main, exit.head()),
-				result);
-
-		if (exit.exists()) {
-			exit.debug("Execution failed");
-			exit.int32(-1).returnValue(exit);
-		}
-
-		main.debug("Execution succeed");
-		result.rawValue(main.id("execution_result_ptr"), main)
-		.toAny(null, main)
-		.toInt32(null, main)
-		.load(null, main)
-		.returnValue(main);
-	}
-
-	private void generateDebugMain(
-			Generator generator,
-			Function<DebuggableMainFunc> main) {
-
-		final Function<MainFunc> debugMain =
-			generator.newFunction().export().create(
-					generator.rawId("main"),
-					MAIN);
-		final FuncPtr<DebugExecMainFunc> executeMain =
-			generator.externalFunction(
-					"o42a_dbg_exec_main",
-					DEBUG_EXEC_MAIN);
-
-		executeMain.op(null, debugMain).call(
-				debugMain,
-				main.getPointer().op(null, debugMain),
-				debugMain.arg(debugMain, MAIN.argc()),
-				debugMain.arg(debugMain, MAIN.argv())).returnValue(debugMain);
 	}
 
 }
