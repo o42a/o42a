@@ -34,7 +34,11 @@ import org.o42a.codegen.data.backend.DataAllocation;
 public abstract class LLVMCode implements CodeWriter {
 
 	public static final LLVMCode llvm(Code code) {
-		return (LLVMCode) code.writer();
+		return llvm(code.writer());
+	}
+
+	public static final LLVMCode llvm(CodeWriter writer) {
+		return (LLVMCode) writer;
 	}
 
 	public static final LLVMOp llvm(Op op) {
@@ -79,6 +83,10 @@ public abstract class LLVMCode implements CodeWriter {
 
 	public static final long nextPtr(Code code) {
 		return llvm(code).nextPtr();
+	}
+
+	public static final long nextPtr(CodeWriter writer) {
+		return llvm(writer).nextPtr();
 	}
 
 	public static final long typePtr(Type<?> type) {
@@ -224,8 +232,13 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public LLVMBlk block(Code code, CodeId id) {
-		return new LLVMBlk(this, code, id);
+	public LLVMBlock block(Code code, CodeId id) {
+		return new LLVMBlock(this, code, id);
+	}
+
+	@Override
+	public LLVMAllocationBlock allocationBlock(Code code, CodeId id) {
+		return new LLVMAllocationBlock(this, code, id);
 	}
 
 	@Override
@@ -537,6 +550,10 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	static native long createBlock(long functionPtr, String name);
+
+	static native long stackSave(long blockPtr);
+
+	static native void stackRestore(long blockPtr, long stackPtr);
 
 	static native void go(long sourcePtr, long targetPtr);
 

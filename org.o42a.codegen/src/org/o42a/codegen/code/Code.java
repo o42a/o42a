@@ -56,8 +56,6 @@ public abstract class Code extends DebugCodeBase {
 		return getGenerator().id(name);
 	}
 
-	public abstract boolean exists();
-
 	public final CodePos head() {
 		if (exists()) {
 			return writer().head();
@@ -66,8 +64,16 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final CodePos tail() {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().tail();
+	}
+
+	public final AllocationCode allocate() {
+		return new AllocationCode(this, null);
+	}
+
+	public final AllocationCode allocate(CodeId name) {
+		return new AllocationCode(this, name);
 	}
 
 	public final CodeBlk addBlock() {
@@ -75,107 +81,93 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final CodeBlk addBlock(String name) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return new CodeBlk(this, getGenerator().id(name));
 	}
 
 	public final CodeBlk addBlock(CodeId name) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return new CodeBlk(this, name);
 	}
 
 	public final void go(CodePos pos) {
-		assertIncomplete();
+		assert assertIncomplete();
 		writer().go(unwrapPos(pos));
 	}
 
 	public final Int8op int8(byte value) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().int8(value);
 	}
 
 	public final Int16op int16(short value) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().int16(value);
 	}
 
 	public final Int32op int32(int value) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().int32(value);
 	}
 
 	public final Int64op int64(long value) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().int64(value);
 	}
 
 	public final Fp32op fp32(float value) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().fp32(value);
 	}
 
 	public final Fp64op fp64(double value) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().fp64(value);
 	}
 
 	public final BoolOp bool(boolean value) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().bool(value);
 	}
 
 	public final RelOp nullRelPtr() {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().nullRelPtr();
 	}
 
 	public final AnyOp nullPtr() {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().nullPtr();
 	}
 
 	public final DataOp nullDataPtr() {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().nullDataPtr();
 	}
 
 	public final <O extends StructOp> O nullPtr(Type<O> type) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().nullPtr(type.pointer(getGenerator()).getAllocation());
 	}
 
 	public final <F extends Func> F nullPtr(Signature<F> signature) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return signature.op(writer().nullPtr(
 				getGenerator().getFunctions().allocate(signature)));
 	}
 
-	public final RecOp<AnyOp> allocatePtr(CodeId id) {
-		assertIncomplete();
-		return writer().allocatePtr(opId(id));
-	}
-
-	public final RecOp<AnyOp> allocateNull(CodeId id) {
-
-		final RecOp<AnyOp> result = allocatePtr(id);
-
-		result.store(this, nullPtr());
-
-		return result;
-	}
-
 	public final <O extends Op> O phi(CodeId id, O op) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().phi(opId(id), op);
 	}
 
 	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return writer().phi(opId(id), op1, op2);
 	}
 
 	public void returnVoid() {
-		assertIncomplete();
+		assert assertIncomplete();
 		writer().returnVoid();
 		complete();
 	}
@@ -196,16 +188,11 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	@Override
-	protected void assertIncomplete() {
-		super.assertIncomplete();
-	}
-
-	@Override
 	protected final CondBlk choose(
 			BoolOp condition,
 			CodeId trueName,
 			CodeId falseName) {
-		assertIncomplete();
+		assert assertIncomplete();
 		return new CondBlk(this, condition, trueName, falseName);
 	}
 

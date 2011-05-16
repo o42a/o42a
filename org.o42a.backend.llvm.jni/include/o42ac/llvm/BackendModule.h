@@ -41,6 +41,8 @@ class BackendModule : public Module {
 	mutable TargetData *targetData;
 	mutable FunctionPassManager *functionPassManager;
 	std::vector<PATypeHolder *> types;
+	Constant *stackSaveFunc;
+	Constant *stackRestoreFunc;
 
 	explicit BackendModule(StringRef ModuleID, LLVMContext &context);
 
@@ -59,6 +61,10 @@ public:
 	const TargetData &getTargetData() const;
 
 	PATypeHolder *newOpaqueType();
+
+	Constant *getStackSaveFunc();
+
+	Constant *getStackRestoreFunc();
 
 	bool validateFunction(Function*);
 

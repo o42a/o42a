@@ -41,6 +41,8 @@ public interface CodeWriter {
 
 	CodeWriter block(Code code, CodeId id);
 
+	AllocationWriter allocationBlock(Code code, CodeId id);
+
 	Int8op int8(byte value);
 
 	Int16op int16(short value);

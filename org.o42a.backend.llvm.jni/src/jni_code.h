@@ -17,6 +17,22 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_createBlock
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
+ * Method:    stackSave
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_stackSave
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLVMCode
+ * Method:    stackRestore
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_stackRestore
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    go
  * Signature: (JJ)V
  */
