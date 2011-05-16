@@ -69,7 +69,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	public void debug(String message, boolean nl) {
-		assertIncomplete();
+		assert assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
 		}
@@ -164,14 +164,14 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	public final void dumpName(String prefix, StructOp data) {
-		assertIncomplete();
+		assert assertIncomplete();
 		if (isDebug()) {
 			dumpName(prefix, data.toData(null, code()));
 		}
 	}
 
 	public final void dumpName(String prefix, DataOp data) {
-		assertIncomplete();
+		assert assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
 		}
@@ -188,7 +188,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	public void dumpName(String prefix, Func func) {
-		assertIncomplete();
+		assert assertIncomplete();
 		assert func.getSignature().isDebuggable() :
 			"Can not dump " + func + " name: it is not debuggable";
 		if (!getGenerator().isDebug()) {
@@ -211,7 +211,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	public final void dump(String message, StructOp data, int depth) {
-		assertIncomplete();
+		assert assertIncomplete();
 		if (isDebug()) {
 			dump(message, data.toData(null, code()), depth);
 		}
@@ -222,7 +222,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	}
 
 	public final void dump(String message, DataOp data, int depth) {
-		assertIncomplete();
+		assert assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
 		}

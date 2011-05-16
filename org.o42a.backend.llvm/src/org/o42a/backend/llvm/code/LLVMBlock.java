@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Compiler LLVM Back-end
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.op;
+package org.o42a.backend.llvm.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.CondBlk;
-import org.o42a.codegen.data.CodeBase;
 
 
-public abstract class OpCodeBase extends CodeBase {
+final class LLVMBlock extends LLVMCode {
 
-	protected static CodePos unwrapPos(CodePos codePos) {
-		if (codePos == null || codePos.getClass() != Head.class) {
-			return codePos;
-		}
-		return ((Head) codePos).unwrap();
+	LLVMBlock(LLVMCode enclosing, Code code, CodeId id) {
+		super(
+				enclosing.getModule(),
+				enclosing.getFunction(),
+				code,
+				id);
+		init();
 	}
 
-	protected abstract CondBlk choose(
-			BoolOp condition,
-			CodeId trueName,
-			CodeId falseName);
+	@Override
+	public void done() {
+	}
 
-	protected static final class Head implements CodePos {
-
-		private final Code code;
-
-		public Head(Code code) {
-			this.code = code;
-		}
-
-		@Override
-		public String toString() {
-			return this.code.toString();
-		}
-
-		CodePos unwrap() {
-			return this.code.writer().head();
-		}
-
+	@Override
+	protected long createFirtsBlock() {
+		return createBlock(getFunction().getFunctionPtr(), getId().getId());
 	}
 
 }

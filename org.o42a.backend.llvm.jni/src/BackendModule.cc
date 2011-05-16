@@ -86,7 +86,9 @@ BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
 		targetData(NULL),
 		functionPassManager(NULL),
-		types() {
+		types(),
+		stackSaveFunc(NULL),
+		stackRestoreFunc(NULL) {
 }
 
 BackendModule::~BackendModule() {
@@ -146,6 +148,36 @@ PATypeHolder *BackendModule::newOpaqueType() {
 	this->types.push_back(holder);
 
 	return holder;
+}
+
+Constant *BackendModule::getStackSaveFunc() {
+	if (this->stackSaveFunc) {
+		return this->stackSaveFunc;
+	}
+
+	FunctionType *type =
+			FunctionType::get(Type::getInt8PtrTy(getContext()), false);
+
+	return this->stackSaveFunc =
+			getOrInsertFunction("llvm.stacksave", type);
+}
+
+Constant *BackendModule::getStackRestoreFunc() {
+	if (this->stackRestoreFunc) {
+		return this->stackRestoreFunc;
+	}
+
+	std::vector<const Type*> args(1);
+
+	args[0] = Type::getInt8PtrTy(getContext());
+
+	FunctionType *type = FunctionType::get(
+			Type::getVoidTy(getContext()),
+			args,
+			false);
+
+	return this->stackRestoreFunc =
+			getOrInsertFunction("llvm.stackrestore", type);
 }
 
 bool BackendModule::validateFunction(Function *const function) {

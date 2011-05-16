@@ -49,6 +49,35 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_createBlock(
 	return to_ptr(block);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_stackSave(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	o42ac::BackendModule *module =
+			static_cast<o42ac::BackendModule*>(block->getParent()->getParent());
+	IRBuilder<> builder(block);
+	Value *stackState = builder.CreateCall(module->getStackSaveFunc(), "stack");
+
+	return to_ptr(stackState);
+}
+
+void Java_org_o42a_backend_llvm_code_LLVMCode_stackRestore(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jlong stackPtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	o42ac::BackendModule *module =
+			static_cast<o42ac::BackendModule*>(block->getParent()->getParent());
+	Value *stackState = from_ptr<Value>(stackPtr);
+	IRBuilder<> builder(block);
+
+	builder.CreateCall(module->getStackRestoreFunc(), stackState);
+}
+
 void Java_org_o42a_backend_llvm_code_LLVMCode_go(
 		JNIEnv *env,
 		jclass cls,
