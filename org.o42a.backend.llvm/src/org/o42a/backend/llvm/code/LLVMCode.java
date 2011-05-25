@@ -26,6 +26,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.backend.FuncAllocation;
+import org.o42a.codegen.code.backend.MultiCodePos;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -204,13 +205,7 @@ public abstract class LLVMCode implements CodeWriter {
 			return prevPtr;// block isn't fulfilled yet
 		}
 
-		final long nextPtr = createBlock(
-				getFunction().getFunctionPtr(),
-				getId().getId() + '-' + (++this.blockIdx));
-
-		this.tail = new LLVMCodePos.Tail(this, nextPtr);
-
-		return this.blockPtr = nextPtr;
+		return setNextPtr(createNextBlock());
 	}
 
 	@SuppressWarnings({
@@ -271,6 +266,45 @@ public abstract class LLVMCode implements CodeWriter {
 		}
 
 		choose(blockPtr, nativePtr(condition), truePtr, falsePtr);
+	}
+
+	@Override
+	public MultiCodePos comeFrom(CodeWriter[] alts) {
+
+		final long targetBlockPtrs[] = new long[alts.length];
+		final long blocksAndAddrs[] = new long[alts.length << 1];
+		int j = 0;
+
+		for (int i = 0; i < alts.length; ++i) {
+
+			final LLVMCode llvmAlt = llvm(alts[i]);
+			final long blockPtr = llvmAlt.nextPtr();
+			final long nextPtr = llvmAlt.createNextBlock();
+
+			blocksAndAddrs[j++] = blockPtr;
+			blocksAndAddrs[j++] = blockAddress(blockPtr, nextPtr);
+
+			go(blockPtr, nextPtr());
+			llvmAlt.setNextPtr(nextPtr);
+
+			targetBlockPtrs[i] = nextPtr;
+		}
+
+		final long targetPtr =
+			phiN(nextPtr(), this.code.opId(null).getId(), blocksAndAddrs);
+
+		return new LLVMMultiCodePos(targetPtr, targetBlockPtrs);
+	}
+
+	@Override
+	public void goToOneOf(MultiCodePos target) {
+
+		final LLVMMultiCodePos llvmTarget = (LLVMMultiCodePos) target;
+
+		indirectbr(
+				nextPtr(),
+				llvmTarget.getTargetPtr(),
+				llvmTarget.getTargetBlockPtrs());
 	}
 
 	@Override
@@ -530,6 +564,17 @@ public abstract class LLVMCode implements CodeWriter {
 
 	protected abstract long createFirtsBlock();
 
+	private long createNextBlock() {
+		return createBlock(
+				getFunction().getFunctionPtr(),
+				getId().getId() + '-' + (++this.blockIdx));
+	}
+
+	private long setNextPtr(final long nextPtr) {
+		this.tail = new LLVMCodePos.Tail(this, nextPtr);
+		return this.blockPtr = nextPtr;
+	}
+
 	@SuppressWarnings("unchecked")
 	private static <O extends Op> O create(
 			O sample,
@@ -562,6 +607,13 @@ public abstract class LLVMCode implements CodeWriter {
 			long conditionPtr,
 			long truePtr,
 			long falsePtr);
+
+	private static native long blockAddress(long blockPtr, long targetPtr);
+
+	private static native long indirectbr(
+			long blockPtr,
+			long targetPtr,
+			long[] targetBlockPtrs);
 
 	private static native long int8(long modulePtr, byte value);
 
@@ -610,6 +662,11 @@ public abstract class LLVMCode implements CodeWriter {
 			long value1,
 			long block2ptr,
 			long value2);
+
+	private static native long phiN(
+			long blockPtr,
+			String id,
+			long[] blockAndValuePtrs);
 
 	private static native long select(
 			long blockPtr,
