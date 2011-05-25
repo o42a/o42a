@@ -118,6 +118,35 @@ void Java_org_o42a_backend_llvm_code_LLVMCode_choose(
 	ODUMP(result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_blockAddress(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jlong targetPtr) {
+	return targetPtr;
+}
+
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_indirectbr(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jlong targetPtr,
+		jlongArray targetBlockPtrs) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	Value *target = from_ptr<Value>(targetPtr);
+	jInt64Array targetBlocks(env, targetBlockPtrs);
+	IRBuilder<> builder(block);
+	size_t len = targetBlocks.length();
+	IndirectBrInst *inst = builder.CreateIndirectBr(target, len);
+
+	for (size_t i = 0; i < len; ++i) {
+		inst->addDestination(from_ptr<BasicBlock>(targetBlocks[i]));
+	}
+
+	return to_ptr(inst);
+}
+
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_int8(
 		JNIEnv *env,
 		jclass cls,
@@ -402,7 +431,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi(
 	return to_ptr(phi);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
+jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -432,6 +461,32 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
 	phi->addIncoming(value2, block2);
 
 	ODUMP(phi);
+
+	return to_ptr(phi);
+}
+
+jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phiN(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jstring id,
+		jlongArray blockAndValuePtrs) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	IRBuilder<> builder(block);
+	jInt64Array blocksAndValues(env, blockAndValuePtrs);
+	size_t len = blocksAndValues.length();
+	jStringRef name(env, id);
+
+	PHINode *phi = builder.CreatePHI(
+			from_ptr<Value>(blocksAndValues[1])->getType(),
+			name);
+
+	for (size_t i = 0; i < len; i += 2) {
+		phi->addIncoming(
+				from_ptr<Value>(blocksAndValues[i + 1]),
+				from_ptr<BasicBlock>(blocksAndValues[i]));
+	}
 
 	return to_ptr(phi);
 }

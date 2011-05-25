@@ -76,10 +76,6 @@ public abstract class Code extends DebugCodeBase {
 		return new AllocationCode(this, name);
 	}
 
-	public final CodeBlk addBlock() {
-		return addBlock((CodeId) null);
-	}
-
 	public final CodeBlk addBlock(String name) {
 		assert assertIncomplete();
 		return new CodeBlk(this, getGenerator().id(name));

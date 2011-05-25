@@ -21,6 +21,9 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.AllocationWriter;
+import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.backend.MultiCodePos;
+import org.o42a.util.ArrayUtil;
 
 
 public final class AllocationCode extends Code {
@@ -28,6 +31,7 @@ public final class AllocationCode extends Code {
 	private final Code enclosing;
 	private Code destruction;
 	private AllocationWriter writer;
+	private Code alts[];
 
 	AllocationCode(Code enclosing, CodeId name) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
@@ -44,14 +48,20 @@ public final class AllocationCode extends Code {
 		return true;
 	}
 
+	public final Code alt(String name) {
+		return alt(getEnclosing().addBlock(name));
+	}
+
+	public final Code alt(CodeId name) {
+		return alt(getEnclosing().addBlock(name));
+	}
+
 	public final Code destruction() {
 		assert assertIncomplete();
 		if (this.destruction != null) {
 			return this.destruction;
 		}
-		this.destruction =
-			getEnclosing().addBlock(id().detail("destruct"));
-		writer().dispose(this.destruction.writer());
+		setDestruction(getEnclosing().addBlock(id().detail("destruct")));
 		return this.destruction;
 	}
 
@@ -61,7 +71,30 @@ public final class AllocationCode extends Code {
 			return;
 		}
 
-		if (this.destruction != null) {
+		if (this.alts != null) {
+
+			final CodeWriter alts[] = new CodeWriter[1 + this.alts.length];
+			int i = 0;
+
+			alts[0] = writer();
+			for (Code alt : this.alts) {
+				alts[++i] = alt.writer();
+			}
+
+			final Code destruct;
+			final MultiCodePos target;
+
+			if (this.destruction == null) {
+				destruct = addBlock(id().detail("destruct"));
+				target = destruct.writer().comeFrom(alts);
+				setDestruction(destruct);
+			} else {
+				destruct = addBlock(id().detail("pre-destruct"));
+				target = destruct.writer().comeFrom(alts);
+				destruct.go(this.destruction.head());
+			}
+			this.destruction.writer().goToOneOf(target);
+		} else if (this.destruction != null) {
 			go(this.destruction.head());
 			this.destruction.go(getEnclosing().tail());
 		} else {
@@ -79,6 +112,20 @@ public final class AllocationCode extends Code {
 		}
 		return this.writer =
 			getEnclosing().writer().allocationBlock(this, getId());
+	}
+
+	private Code alt(Code alt) {
+		if (this.alts == null) {
+			this.alts = new Code[] {alt};
+		} else {
+			this.alts = ArrayUtil.append(this.alts, alt);
+		}
+		return alt;
+	}
+
+	private void setDestruction(Code destruction) {
+		this.destruction = destruction;
+		writer().dispose(this.destruction.writer());
 	}
 
 }

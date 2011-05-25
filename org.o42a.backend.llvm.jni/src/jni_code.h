@@ -49,6 +49,22 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_choose
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
+ * Method:    blockAddress
+ * Signature: (JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_blockAddress
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLVMCode
+ * Method:    indirectbr
+ * Signature: (JJ[J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_indirectbr
+  (JNIEnv *, jclass, jlong, jlong, jlongArray);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    int8
  * Signature: (JB)J
  */
@@ -166,6 +182,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi2
   (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_LLVMCode
+ * Method:    phiN
+ * Signature: (JLjava/lang/String;[J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phiN
+  (JNIEnv *, jclass, jlong, jstring, jlongArray);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
