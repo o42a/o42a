@@ -123,7 +123,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_blockAddress(
 		jclass cls,
 		jlong blockPtr,
 		jlong targetPtr) {
-	return targetPtr;
+	return to_ptr(BlockAddress::get(from_ptr<BasicBlock>(targetPtr)));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_indirectbr(

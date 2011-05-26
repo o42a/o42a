@@ -26,7 +26,6 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.CompilerContext;
@@ -162,15 +161,21 @@ public class CodeBuilder {
 			Obj sample,
 			int flags) {
 
-		final Code code = dirs.code();
-		final CtrOp.Op ctr = code.allocate(null, CTR_TYPE);
+		final AllocationDirs alloc = dirs.allocate(dirs.id("new_object"));
+		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
 
-		return ctr.op(this).newObject(
+		dirs = alloc.dirs();
+
+		final ObjectOp result = ctr.op(this).newObject(
 				dirs,
 				scope,
 				ancestorFunc,
-				sample.ir(getGenerator()).op(this, code),
+				sample.ir(getGenerator()).op(this, dirs.code()),
 				flags);
+
+		alloc.done();
+
+		return result;
 	}
 
 	public final ObjectOp newObject(
@@ -190,14 +195,20 @@ public class CodeBuilder {
 			Obj sample,
 			int flags) {
 
-		final Code code = dirs.code();
-		final CtrOp.Op ctr = code.allocate(null, CTR_TYPE);
+		final AllocationDirs alloc = dirs.allocate(dirs.id("new_object"));
+		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
 
-		return ctr.op(this).newObject(
+		dirs = alloc.dirs();
+
+		final ObjectOp result = ctr.op(this).newObject(
 				dirs,
 				ancestor,
-				sample.ir(getGenerator()).op(this, code),
+				sample.ir(getGenerator()).op(this, dirs.code()),
 				flags);
+
+		alloc.done();
+
+		return result;
 	}
 
 	public ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
