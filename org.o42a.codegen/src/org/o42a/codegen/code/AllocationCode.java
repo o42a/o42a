@@ -49,11 +49,11 @@ public final class AllocationCode extends Code {
 	}
 
 	public final Code alt(String name) {
-		return alt(getEnclosing().addBlock(name));
+		return alt(addBlock(name));
 	}
 
 	public final Code alt(CodeId name) {
-		return alt(getEnclosing().addBlock(name));
+		return alt(addBlock(name));
 	}
 
 	public final Code destruction() {
@@ -94,6 +94,7 @@ public final class AllocationCode extends Code {
 				destruct.go(this.destruction.head());
 			}
 			this.destruction.writer().goToOneOf(target);
+			go(getEnclosing().tail());
 		} else if (this.destruction != null) {
 			go(this.destruction.head());
 			this.destruction.go(getEnclosing().tail());

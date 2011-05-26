@@ -113,6 +113,14 @@ public class CodeDirs {
 		throw new IllegalStateException("Not a nested code dirs: " + this);
 	}
 
+	public final AllocationDirs allocate() {
+		return new AllocationDirs(this, code().allocate());
+	}
+
+	public final AllocationDirs allocate(CodeId name) {
+		return new AllocationDirs(this, code().allocate(name));
+	}
+
 	public final CodeDirs falseWhenUnknown() {
 		if (this.falsePos == this.unknownPos) {
 			return this;
@@ -176,11 +184,23 @@ public class CodeDirs {
 
 	@Override
 	public String toString() {
+		return toString("CodeDirs");
+	}
+
+	final CodePos falsePos() {
+		return this.falsePos;
+	}
+
+	final CodePos unknownPos() {
+		return this.unknownPos;
+	}
+
+	String toString(String title) {
 
 		final StringBuilder out = new StringBuilder();
 		boolean semicolon = false;
 
-		out.append("CodeDirs[").append(this.code).append(": ");
+		out.append(title).append('[').append(this.code).append(": ");
 		if (this.falsePos != null) {
 			if (semicolon) {
 				out.append("; ");
