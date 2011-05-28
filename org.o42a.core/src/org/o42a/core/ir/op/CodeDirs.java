@@ -79,11 +79,11 @@ public class CodeDirs {
 		return this.code.id(string);
 	}
 
-	public final Code addBlock(CodeId id) {
-		return this.code.addBlock(id);
+	public final Code addBlock(String name) {
+		return this.code.addBlock(name);
 	}
 
-	public final Code addBlock(String name) {
+	public final Code addBlock(CodeId name) {
 		return this.code.addBlock(name);
 	}
 
@@ -117,8 +117,24 @@ public class CodeDirs {
 		return new AllocationDirs(this, code().allocate());
 	}
 
+	public final AllocationDirs allocate(String name) {
+		return new AllocationDirs(this, code().allocate(name));
+	}
+
 	public final AllocationDirs allocate(CodeId name) {
 		return new AllocationDirs(this, code().allocate(name));
+	}
+
+	public final ValDirs value() {
+		return new ValDirs.TopLevelValDirs(this, id("value"));
+	}
+
+	public final ValDirs value(String name) {
+		return new ValDirs.TopLevelValDirs(this, id(name));
+	}
+
+	public final ValDirs value(CodeId name) {
+		return new ValDirs.TopLevelValDirs(this, name);
 	}
 
 	public final CodeDirs falseWhenUnknown() {
@@ -184,7 +200,7 @@ public class CodeDirs {
 
 	@Override
 	public String toString() {
-		return toString("CodeDirs");
+		return toString("CodeDirs", this.code);
 	}
 
 	final CodePos falsePos() {
@@ -195,12 +211,12 @@ public class CodeDirs {
 		return this.unknownPos;
 	}
 
-	String toString(String title) {
+	String toString(String title, Code code) {
 
 		final StringBuilder out = new StringBuilder();
 		boolean semicolon = false;
 
-		out.append(title).append('[').append(this.code).append(": ");
+		out.append(title).append('[').append(code).append(": ");
 		if (this.falsePos != null) {
 			if (semicolon) {
 				out.append("; ");

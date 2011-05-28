@@ -118,7 +118,7 @@ public class AllocationDirs {
 
 	@Override
 	public String toString() {
-		return this.enclosing.toString("AllocationDirs");
+		return this.enclosing.toString("AllocationDirs", this.code);
 	}
 
 }

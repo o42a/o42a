@@ -72,6 +72,10 @@ public abstract class Code extends DebugCodeBase {
 		return new AllocationCode(this, null);
 	}
 
+	public final AllocationCode allocate(String name) {
+		return new AllocationCode(this, id(name));
+	}
+
 	public final AllocationCode allocate(CodeId name) {
 		return new AllocationCode(this, name);
 	}

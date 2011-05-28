@@ -161,7 +161,7 @@ public class CodeBuilder {
 			Obj sample,
 			int flags) {
 
-		final AllocationDirs alloc = dirs.allocate(dirs.id("new_object"));
+		final AllocationDirs alloc = dirs.allocate("new_object");
 		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
 
 		dirs = alloc.dirs();
@@ -195,7 +195,7 @@ public class CodeBuilder {
 			Obj sample,
 			int flags) {
 
-		final AllocationDirs alloc = dirs.allocate(dirs.id("new_object"));
+		final AllocationDirs alloc = dirs.allocate("new_object");
 		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
 
 		dirs = alloc.dirs();
