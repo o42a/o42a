@@ -22,9 +22,7 @@ package org.o42a.core.artifact;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -122,11 +120,13 @@ final class SelfRef extends Ref {
 		public void writeValue(CodeDirs dirs, ValOp result) {
 
 			final HostOp target = target(dirs);
+			final ValDirs valDirs = dirs.value(dirs.id("self_val"), result);
 
 			target.materialize(dirs).writeValue(
-					dirs,
-					result,
-					host().toObject(dirs));
+					valDirs,
+					host().toObject(valDirs.dirs()));
+
+			valDirs.done();
 		}
 
 		@Override

@@ -19,9 +19,9 @@
 */
 package org.o42a.common.ir;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -32,24 +32,18 @@ public abstract class ProposedValueIR extends ObjectValueIR {
 	}
 
 	@Override
-	protected void writeProposition(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		proposition(code, result, body != null ? body : host);
+	protected ValOp writeProposition(ValDirs dirs, ObjOp host, ObjectOp body) {
+		return proposition(dirs, body != null ? body : host);
 	}
 
 	@Override
-	protected void buildProposition(
-			Code code,
-			ValOp result,
+	protected ValOp buildProposition(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
-		proposition(code, result, host);
-		code.returnVoid();
+		return proposition(dirs, host);
 	}
 
-	protected abstract void proposition(Code code, ValOp result, ObjectOp host);
+	protected abstract ValOp proposition(ValDirs dirs, ObjectOp host);
 
 }

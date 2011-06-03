@@ -125,7 +125,6 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
 		dirs = dirs.begin(
-				"eval_obj_val",
 				"Value of "
 				+ (body != null ? body + " by " + this : toString()));
 
@@ -272,7 +271,6 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 		dirs = dirs.begin(
-				"claim",
 				"Claim of "
 				+ (body != null ? body + " by " + this : toString()));
 
@@ -285,7 +283,6 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 		dirs = dirs.begin(
-				"proposition",
 				"Proposition of "
 				+ (body != null ? body + " by " + this : toString()));
 

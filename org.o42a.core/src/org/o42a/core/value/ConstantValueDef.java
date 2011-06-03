@@ -22,11 +22,10 @@ package org.o42a.core.value;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
@@ -83,14 +82,8 @@ final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
-
-		final Code code = dirs.code();
-
-		result.store(
-				code,
-				this.source.getValue().val(host.getGenerator()));
-		result.go(code, dirs);
+	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+		return this.source.getValue().op(dirs.code());
 	}
 
 	@Override

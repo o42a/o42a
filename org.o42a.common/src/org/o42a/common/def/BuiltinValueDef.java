@@ -23,12 +23,11 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
@@ -103,12 +102,8 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
-
-		final Code code = dirs.code();
-
-		this.builtin.writeBuiltin(code, result, host);
-		result.go(code, dirs);
+	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+		return this.builtin.writeBuiltin(dirs, host);
 	}
 
 	@Override

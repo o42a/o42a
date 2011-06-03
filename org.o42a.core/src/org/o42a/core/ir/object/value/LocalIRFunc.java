@@ -49,9 +49,7 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	}
 
 	public ValOp call(ValDirs dirs, ObjOp owner, ObjOp body) {
-		dirs = dirs.begin(
-				"local",
-				body != null ? "Value for " + body : "Value");
+		dirs = dirs.begin(body != null ? "Value for " + body : "Value");
 
 		final Code code = dirs.code();
 

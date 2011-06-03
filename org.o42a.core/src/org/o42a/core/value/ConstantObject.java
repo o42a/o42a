@@ -112,13 +112,11 @@ final class ConstantObject<T> extends PlainObject {
 		}
 
 		@Override
-		protected void buildProposition(
-				Code code,
-				ValOp result,
+		protected ValOp buildProposition(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			result.store(code, value().val(getGenerator()));
-			code.returnVoid();
+			return value().op(dirs.code());
 		}
 
 		private final Value<?> value() {

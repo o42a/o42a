@@ -61,8 +61,11 @@ public abstract class RefOp {
 	public void writeValue(CodeDirs dirs, ValOp result) {
 
 		final HostOp target = target(dirs);
+		final ValDirs valDirs = dirs.value(dirs.id("ref_value"), result);
 
-		target.materialize(dirs).writeValue(dirs, result);
+		target.materialize(dirs).writeValue(valDirs);
+
+		valDirs.done();
 	}
 
 	public abstract HostOp target(CodeDirs dirs);
