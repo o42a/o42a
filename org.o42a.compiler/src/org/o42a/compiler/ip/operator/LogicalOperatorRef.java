@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.operator;
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
+import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
@@ -30,6 +31,7 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -134,20 +136,20 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		}
 
 		@Override
-		public void writeBuiltin(Code code, ValOp result, HostOp host) {
+		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 			final RefOp op = operand().op(host);
-			final Code operandFalse = code.addBlock("operand_false");
-			final Code operandUnknown = code.addBlock("operand_unknown");
+			final Code code = dirs.code();
+			final Code operandFalse = dirs.addBlock("operand_false");
+			final Code operandUnknown = dirs.addBlock("operand_unknown");
 
 			switch (this.ref.node.getOperator()) {
 			case NOT:
 				op.writeLogicalValue(falseWhenUnknown(
 						code,
 						operandFalse.head()));
-				result.storeFalse(code);
+				dirs.dirs().goWhenFalse(code);
 				if (operandFalse.exists()) {
-					result.storeVoid(operandFalse);
 					operandFalse.go(code.tail());
 				}
 				break;
@@ -155,31 +157,32 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				op.writeLogicalValue(falseWhenUnknown(
 						code,
 						operandFalse.head()));
-				result.storeVoid(code);
 				if (operandFalse.exists()) {
-					result.storeFalse(operandFalse);
-					operandFalse.go(code.tail());
+					dirs.dirs().goWhenFalse(operandFalse);
 				}
 				break;
 			case KNOWN:
 				op.writeLogicalValue(splitWhenUnknown(
 						code,
-						null,
+						operandFalse.head(),
 						operandUnknown.head()));
-				result.storeVoid(code);
+				if (operandFalse.exists()) {
+					operandFalse.go(code.tail());
+				}
 				if (operandUnknown.exists()) {
-					result.storeFalse(operandUnknown);
-					operandUnknown.go(code.tail());
+					dirs.dirs().goWhenFalse(operandUnknown);
 				}
 				break;
 			case UNKNOWN:
 				op.writeLogicalValue(splitWhenUnknown(
 						code,
-						null,
+						operandFalse.head(),
 						operandUnknown.head()));
-				result.storeFalse(code);
+				dirs.dirs().goWhenFalse(code);
+				if (operandFalse.exists()) {
+					dirs.dirs().goWhenFalse(operandFalse);
+				}
 				if (operandUnknown.exists()) {
-					result.storeVoid(operandUnknown);
 					operandUnknown.go(code.tail());
 				}
 				break;
@@ -188,6 +191,8 @@ public class LogicalOperatorRef extends ObjectConstructor {
 						"Unsupported logical operator: "
 						+ this.ref.node.getOperator().getSign());
 			}
+
+			return voidValue().op(code);
 		}
 
 		@Override

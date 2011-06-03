@@ -21,9 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ConstructorOp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 
 
 final class ValuePartOp extends ConstructorOp {
@@ -47,7 +45,11 @@ final class ValuePartOp extends ConstructorOp {
 
 	@Override
 	public void writeValue(CodeDirs dirs, ValOp result) {
-		part().writeValue(dirs, result, this);
+
+		final ValDirs valDirs = dirs.value(dirs.id("value"), result);
+
+		part().writeValue(valDirs, this);
+		valDirs.done();
 	}
 
 	private final ValuePartRef getPartRef() {

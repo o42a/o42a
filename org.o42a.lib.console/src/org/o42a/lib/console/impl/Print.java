@@ -19,13 +19,13 @@
 */
 package org.o42a.lib.console.impl;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -33,7 +33,7 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Resolver;
@@ -79,32 +79,21 @@ public class Print extends IntrinsicBuiltin {
 	}
 
 	@Override
-	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final CodeBlk cantPrint = code.addBlock("cant_print");
-		final CodeDirs dirs = falseWhenUnknown(code, cantPrint.head());
+		final ValDirs textDirs = dirs.dirs().value();
 		final ObjectOp textObject =
-			host.field(dirs, textKey()).materialize(dirs);
-		final ValOp text = textObject.writeValue(code);
-		final CondBlk print =
-			text.loadCondition(null, code)
-			.branch(code, "print", "dont_print");
-		final CodeBlk dontPrint = print.otherwise();
+			host.field(textDirs.dirs(), textKey()).materialize(textDirs.dirs());
+		final ValOp text = textObject.writeValue(textDirs);
+
 		final PrintFunc printFunc =
-			printFunc(host.getGenerator()).op(null, print);
+			printFunc(dirs.getGenerator()).op(null, textDirs.code());
 
-		printFunc.print(print, text);
-		result.storeVoid(print);
-		print.go(code.tail());
+		printFunc.print(textDirs.code(), text);
 
-		if (cantPrint.exists()) {
-			result.storeFalse(cantPrint);
-			cantPrint.go(code.tail());
-		}
-		if (dontPrint.exists()) {
-			result.storeFalse(dontPrint);
-			dontPrint.go(code.tail());
-		}
+		textDirs.done();
+
+		return voidValue().op(dirs.code());
 	}
 
 	@Override

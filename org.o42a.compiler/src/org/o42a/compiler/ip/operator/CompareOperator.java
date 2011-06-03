@@ -19,10 +19,13 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import static org.o42a.core.value.Value.voidValue;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
@@ -73,7 +76,7 @@ abstract class CompareOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public final void write(CodeDirs dirs, ValOp result, ValOp comparisonVal) {
+	public ValOp write(ValDirs dirs, ValOp comparisonVal) {
 
 		final Code code = dirs.code();
 		final RecOp<Int64op> comparisonPtr =
@@ -81,8 +84,9 @@ abstract class CompareOperator extends ComparisonOperator {
 		final Int64op comparisonValue =
 			comparisonPtr.load(code.id("cmp_value"), code);
 
-		write(dirs, comparisonValue);
-		result.storeVoid(code);
+		write(dirs.dirs(), comparisonValue);
+
+		return voidValue().op(code);
 	}
 
 	protected abstract boolean compare(long compareResult);

@@ -20,10 +20,11 @@
 package org.o42a.compiler.ip.operator;
 
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;
@@ -41,24 +42,24 @@ final class NotEqualsOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public ValOp writeComparison(CodeDirs dirs, ObjectOp comparison) {
+	public ValOp writeComparison(ValDirs dirs, ObjectOp comparison) {
 
 		final Code code = dirs.code();
 		final Code notEqual = code.addBlock("not_equal");
-		final ValOp value =
-			comparison.writeValue(falseWhenUnknown(code, notEqual.head()));
 
-		dirs.goWhenFalse(code);
+		comparison.writeLogicalValue(falseWhenUnknown(code, notEqual.head()));
+
+		dirs.dirs().goWhenFalse(code);
 		if (notEqual.exists()) {
 			notEqual.go(code.tail());
 		}
 
-		return value;
+		return voidValue().op(code);
 	}
 
 	@Override
-	public void write(CodeDirs dirs, ValOp result, ValOp comparisonVal) {
-		result.storeVoid(dirs.code());
+	public ValOp write(ValDirs dirs, ValOp comparisonVal) {
+		return voidValue().op(dirs.code());
 	}
 
 }
