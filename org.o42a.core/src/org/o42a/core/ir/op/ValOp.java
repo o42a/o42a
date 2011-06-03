@@ -156,6 +156,10 @@ public final class ValOp extends StructOp implements CondOp {
 		return this;
 	}
 
+	public final void go(Code code, ValDirs dirs) {
+		dirs.dirs().go(code, this);
+	}
+
 	@Override
 	public final void go(Code code, CodeDirs dirs) {
 		dirs.go(code, this);

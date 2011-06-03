@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -28,6 +29,7 @@ import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ObjectValFunc;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
@@ -46,29 +48,26 @@ public final class LocalIRFunc extends ObjectIRFunc {
 		this.id = localIR.getId().detail("value");
 	}
 
-	public void call(
-			Code code,
-			ValOp result,
-			ObjOp owner,
-			ObjOp body) {
-		if (body != null) {
-			code.begin("Value for " + body);
-		} else {
-			code.begin("Value");
-		}
+	public ValOp call(ValDirs dirs, ObjOp owner, ObjOp body) {
+		dirs = dirs.begin(
+				"local",
+				body != null ? "Value for " + body : "Value");
 
-		if (writeFalseValue(code, result, body)) {
-			code.end();
-			return;
+		final Code code = dirs.code();
+
+		if (writeFalseValue(dirs.dirs(), body)) {
+			dirs.done();
+			return falseValue().op(code);
 		}
 
 		code.debug("Call");
 
 		final ObjectValFunc func = getFunction().getPointer().op(null, code);
+		final ValOp result = func.call(dirs, body(code, owner, body));
 
-		func.call(code, result, body(code, owner, body));
+		dirs.done();
 
-		code.end();
+		return result;
 	}
 
 	public final LocalScope getScope() {

@@ -20,7 +20,9 @@
 package org.o42a.core.value;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.op.Val;
+import org.o42a.core.ir.op.ValOp;
 
 
 final class ConstantValue<T> extends Value<T> {
@@ -45,6 +47,11 @@ final class ConstantValue<T> extends Value<T> {
 	@Override
 	public Val val(Generator generator) {
 		return getValueType().val(generator, this.value);
+	}
+
+	@Override
+	public Ptr<ValOp> valPtr(Generator generator) {
+		return getValueType().valPtr(generator, this.value);
 	}
 
 	@Override

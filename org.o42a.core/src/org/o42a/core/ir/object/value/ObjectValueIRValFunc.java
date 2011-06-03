@@ -22,6 +22,7 @@ package org.o42a.core.ir.object.value;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
@@ -30,9 +31,7 @@ import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectValFunc;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -47,17 +46,22 @@ public abstract class ObjectValueIRValFunc
 
 	public abstract boolean isClaim();
 
-	public void call(Code code, ValOp result, ObjOp host, ObjectOp body) {
-		if (code.isDebug()) {
-			code.begin("Calculate value " + this);
+	public ValOp call(ValDirs dirs, ObjOp host, ObjectOp body) {
+
+		if (dirs.isDebug()) {
+			dirs = dirs.begin("obj_val", "Calculate value " + this);
 			if (body != null) {
-				code.dumpName("For: ", body.toData(code));
+				dirs.code().dumpName("For: ", body.toData(dirs.code()));
 			}
 		}
 
-		if (writeFalseValue(code, result, body)) {
-			code.end();
-			return;
+		final Code code = dirs.code();
+
+		if (writeFalseValue(dirs.dirs(), body)) {
+			if (dirs.isDebug()) {
+				dirs.done();
+			}
+			return falseValue().op(code);
 		}
 
 		final Obj object = getObjectIR().getObject();
@@ -71,15 +75,23 @@ public abstract class ObjectValueIRValFunc
 				if (!object.getConstructionMode().isRuntime()
 						|| value.getSource() == object) {
 					code.debug(getObjectIR().getId() + " = " + realValue);
-					result.store(code, realValue.val(getGenerator()));
-					code.end();
-					return;
+					if (dirs.isDebug()) {
+						dirs.done();
+					}
+					return realValue.valPtr(getGenerator())
+					.op(code.id("const"), code);
 				}
 			}
 		}
 
-		get(host).op(null, code).call(code, result, body(code, host, body));
-		code.end();
+		final ValOp result =
+			get(host).op(null, code).call(dirs, body(code, host, body));
+
+		if (dirs.isDebug()) {
+			dirs.done();
+		}
+
+		return result;
 	}
 
 	public void create(ObjectTypeIR typeIR, Definitions definitions) {
@@ -254,26 +266,50 @@ public abstract class ObjectValueIRValFunc
 			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
-		if (isClaim()) {
-			if (hasAncestor.isDebug()) {
-				hasAncestor.begin("Ancestor claim");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
-			ancestorType.writeClaim(hasAncestor, result, ancestorBody);
-		} else {
-			if (hasAncestor.isDebug()) {
-				hasAncestor.begin("Ancestor proposition");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
-			ancestorType.writeProposition(hasAncestor, result, ancestorBody);
-		}
-		hasAncestor.end();
+		final CodeBlk unknownAncValue = hasAncestor.addBlock(
+				isClaim() ? "unknown_ancestor_claim"
+				: "unknown_ancestor_proposition");
+		final CodeBlk falseAncValue = hasAncestor.addBlock(
+				isClaim() ? "false_ancestor_claim"
+				: "false_ancestor_proposition");
+		ValDirs dirs = splitWhenUnknown(
+				hasAncestor,
+				unknownAncValue.head(),
+				falseAncValue.head())
+				.value(isClaim() ? "ancestor_claim" : "ancestor_proposition");
 
+		if (dirs.isDebug()) {
+			dirs = dirs.begin(
+					"debug",
+					isClaim() ? "Ancestor claim" : "Ancestor proposition");
+			hasAncestor.dumpName(
+					"Ancestor: ",
+					ancestorBody.toData(hasAncestor));
+		}
+
+		final ValOp res;
+
+		if (isClaim()) {
+			res = ancestorType.writeClaim(dirs, ancestorBody);
+		} else {
+			res = ancestorType.writeProposition(dirs, ancestorBody);
+		}
+
+		if (res != result) {
+			result.store(hasAncestor, res);
+		}
+		if (dirs.isDebug()) {
+			dirs.done();
+		}
 		hasAncestor.go(code.tail());
+
+		if (falseAncValue.exists()) {
+			result.storeFalse(falseAncValue);
+			falseAncValue.go(code.tail());
+		}
+		if (unknownAncValue.exists()) {
+			unknownAncValue.go(code.tail());
+		}
 	}
 
 	private final class ValueCollector extends DefCollector<ValueDef> {

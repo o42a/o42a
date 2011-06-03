@@ -21,7 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -86,50 +86,22 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	@Override
 	public final void writeLogicalValue(CodeDirs dirs) {
 
-		final Code code = dirs.code();
-		final ObjectTypeOp objectType = objectType(code);
-		final ValOp value = objectType.ptr().data(code).value(code);
-		final CondBlk indefinite = value.loadIndefinite(null, code).branch(
-				code,
-				"cond_indefinite",
-				"cond_definite");
-		final CodeBlk definite = indefinite.otherwise();
+		final ValDirs valDirs = dirs.value();
 
-		definite.dump("Definite value: ", value);
-		value.go(definite, dirs);
-		definite.go(code.tail());
-
-		writeValue(indefinite, value, null);
-		indefinite.dump("Calculated value: ", value);
-		value.go(indefinite, dirs);
-		indefinite.go(code.tail());
+		writeValue(valDirs);
+		valDirs.done();
 	}
 
 	public final void writeLogicalValue(CodeDirs dirs, ObjectOp body) {
 
-		final Code code = dirs.code();
-		final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
+		final ValDirs valDirs = dirs.value();
 
-		writeValue(dirs, result, body);
+		writeValue(valDirs, body);
+		valDirs.done();
 	}
 
 	@Override
-	public final ValOp writeValue(Code code) {
-
-		final ValOp value = objectType(code).ptr().data(code).value(code);
-
-		writeValue(code, value, null);
-
-		return value;
-	}
-
-	@Override
-	public final ValOp writeValue(CodeDirs dirs) {
-		return writeValue(dirs, null);
-	}
-
-	@Override
-	public final ValOp writeValue(CodeDirs dirs, ValOp result) {
+	public final ValOp writeValue(ValDirs dirs) {
 
 		final Code code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code);
@@ -140,34 +112,28 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		final CodeBlk definite = indefinite.otherwise();
 
 		definite.dump(this + " value is definite: ", value);
-		if (result != null) {
-			result.store(definite, value);
-		}
 		value.go(definite, dirs);
 		definite.go(code.tail());
 
-		writeValue(indefinite, value, null);
+		evaluateAndStoreValue(indefinite, value, dirs);
+
 		indefinite.dump(this + " value calculated: ", value);
-		if (result != null) {
-			result.store(indefinite, value);
-		}
-		value.go(indefinite, dirs);
 		indefinite.go(code.tail());
 
 		return value;
 	}
 
-	public final void writeValue(CodeDirs dirs, ValOp result, ObjectOp body) {
+	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
 		dirs = dirs.begin(
-				"obj_value",
-				"Write value of " + body + " by " + this);
+				"eval_obj_val",
+				"Value of "
+				+ (body != null ? body + " by " + this : toString()));
 
-		final Code code = dirs.code();
+		final ValOp result = objectType(dirs.code()).writeValue(dirs, body);
 
-		writeValue(code, result, body);
-		code.dump("Value: ", result);
-		dirs.end();
-		result.go(code, dirs);
+		dirs.done();
+
+		return result;
 	}
 
 	public final void writeRequirement(CodeDirs dirs) {
@@ -184,13 +150,8 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		dirs.end();
 	}
 
-	public final void writeClaim(CodeDirs dirs, ValOp result) {
-		writeClaim(dirs, result, null);
-	}
-
-	public final void writeClaim(CodeDirs dirs, ValOp result, ObjOp body) {
-		writeClaim(dirs.code(), result, body);
-		result.go(dirs.code(), dirs);
+	public final ValOp writeClaim(ValDirs dirs) {
+		return writeClaim(dirs, null);
 	}
 
 	public final void writeCondition(CodeDirs dirs) {
@@ -207,20 +168,8 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		dirs.end();
 	}
 
-	public final void writeProposition(Code code, ValOp result) {
-		writeProposition(code, result, null);
-	}
-
-	public final void writeProposition(CodeDirs dirs, ValOp result) {
-		writeProposition(dirs, result, null);
-	}
-
-	public final void writeProposition(
-			CodeDirs dirs,
-			ValOp result,
-			ObjOp body) {
-		writeProposition(dirs.code(), result, body);
-		result.go(dirs.code(), dirs);
+	public final ValOp writeProposition(ValDirs dirs) {
+		return writeProposition(dirs, null);
 	}
 
 	public final ObjectTypeOp objectType(Code code) {
@@ -321,38 +270,63 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		return result;
 	}
 
-	protected void writeValue(Code code, ValOp result, ObjectOp body) {
-		if (body != null) {
-			code.begin("Value of " + body + " by " + this);
-		} else {
-			code.begin("Value of " + this);
-		}
-		objectType(code).writeValue(code, result, body);
-		code.end();
+	protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
+		dirs = dirs.begin(
+				"claim",
+				"Claim of "
+				+ (body != null ? body + " by " + this : toString()));
+
+		final ValOp result = objectType(dirs.code()).writeClaim(dirs, body);
+
+		dirs.done();
+
+		return result;
 	}
 
-	protected void writeClaim(Code code, ValOp result, ObjectOp body) {
-		if (body != null) {
-			code.begin("Claim of " + body + " by " + this);
-		} else {
-			code.begin("Claim of " + this);
-		}
-		objectType(code).writeClaim(code, result, body);
-		code.end();
-	}
+	protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
+		dirs = dirs.begin(
+				"proposition",
+				"Proposition of "
+				+ (body != null ? body + " by " + this : toString()));
 
-	protected void writeProposition(Code code, ValOp result, ObjectOp body) {
-		if (body != null) {
-			code.begin("Proposition of " + body + " by " + this);
-		} else {
-			code.begin("Proposition of " + this);
-		}
-		objectType(code).writeProposition(code, result, body);
-		code.end();
+		final ValOp result =
+			objectType(dirs.code()).writeProposition(dirs, body);
+
+		dirs.done();
+
+		return result;
 	}
 
 	protected final ObjectTypeOp cachedData() {
 		return this.objectType;
+	}
+
+	private void evaluateAndStoreValue(
+			Code code,
+			ValOp value,
+			ValDirs resultDirs) {
+
+		final Code falseCode = code.addBlock("eval_false");
+		final Code unknownCode = code.addBlock("eval_unknown");
+		final ValDirs valDirs =
+			splitWhenUnknown(code, falseCode.head(), unknownCode.head())
+			.value(code.id("obj_val"), value);
+
+		writeValue(valDirs, null);
+
+		valDirs.done();
+		if (falseCode.exists()) {
+			value.storeFalse(falseCode);
+			if (!resultDirs.dirs().goWhenFalse(falseCode)) {
+				falseCode.go(code.tail());
+			}
+		}
+		if (unknownCode.exists()) {
+			value.storeUnknown(unknownCode);
+			if (!resultDirs.dirs().goWhenUnknown(unknownCode)) {
+				unknownCode.go(code.tail());
+			}
+		}
 	}
 
 	private FuncPtr<CastObjectFunc> castFunc() {

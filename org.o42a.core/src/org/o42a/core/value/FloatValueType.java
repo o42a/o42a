@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
@@ -26,6 +27,8 @@ import org.o42a.core.ir.op.Val;
 
 
 final class FloatValueType extends ValueType<Double> {
+
+	private int constSeq;
 
 	FloatValueType() {
 		super("float", Double.class);
@@ -39,6 +42,11 @@ final class FloatValueType extends ValueType<Double> {
 	@Override
 	protected Val val(Generator generator, Double value) {
 		return new Val(value);
+	}
+
+	@Override
+	protected CodeId constId(Generator generator) {
+		return generator.id("CONST").sub("FLOAT").anonymous(++this.constSeq);
 	}
 
 }
