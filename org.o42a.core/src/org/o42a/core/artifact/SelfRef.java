@@ -117,16 +117,11 @@ final class SelfRef extends Ref {
 		}
 
 		@Override
-		public void writeValue(CodeDirs dirs, ValOp result) {
+		public ValOp writeValue(ValDirs dirs) {
 
-			final HostOp target = target(dirs);
-			final ValDirs valDirs = dirs.value(dirs.id("self_val"), result);
+			final HostOp target = target(dirs.dirs());
 
-			target.materialize(dirs).writeValue(
-					valDirs,
-					host().toObject(valDirs.dirs()));
-
-			valDirs.done();
+			return target.materialize(dirs.dirs()).writeValue(dirs);
 		}
 
 		@Override

@@ -37,9 +37,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.field.Field;
@@ -459,10 +457,15 @@ public abstract class Ref extends RefTypeBase {
 		public void writeAssignment(Control control, ValOp result) {
 
 			final Code falseVal = control.addBlock("false_st_val");
-			final CodeDirs dirs =
-				falseWhenUnknown(control.code(), falseVal.head());
+			final Code code = control.code();
+			final ValDirs dirs =
+				falseWhenUnknown(code, falseVal.head())
+				.value(code.id("local_val"), result);
 
-			this.ref.writeValue(dirs, result);
+			final ValOp res = this.ref.writeValue(dirs);
+			if (res != result) {
+				result.store(code, res);
+			}
 			if (falseVal.exists()) {
 				falseVal.go(control.exit());
 			}

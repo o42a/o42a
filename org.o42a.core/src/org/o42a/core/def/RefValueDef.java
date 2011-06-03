@@ -85,12 +85,7 @@ final class RefValueDef extends ValueDef {
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-
-		final ValOp result = dirs.value();
-
-		this.ref.op(host).writeValue(dirs.dirs(), result);
-
-		return result;
+		return this.ref.op(host).writeValue(dirs);
 	}
 
 }

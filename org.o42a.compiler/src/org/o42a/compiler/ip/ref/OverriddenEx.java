@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -152,27 +150,22 @@ public class OverriddenEx extends Ref {
 		@Override
 		public void writeLogicalValue(CodeDirs dirs) {
 
-			final Code code = dirs.code();
-			final ValOp result =
-				code.allocate(null, VAL_TYPE).storeIndefinite(code);
+			final ValDirs valDirs = dirs.value();
 
-			writeValue(dirs, result);
+			writeValue(valDirs);
+			valDirs.done();
 		}
 
 		@Override
-		public void writeValue(CodeDirs dirs, ValOp result) {
+		public ValOp writeValue(ValDirs dirs) {
 
 			final OverriddenEx ref = (OverriddenEx) getRef();
 			final RefOp hostRef = ref.host.op(host());
 			final ObjectOp object =
-				hostRef.target(dirs).toObject(dirs);
+				hostRef.target(dirs.dirs()).toObject(dirs.dirs());
 			final Code code = dirs.code();
 
-			final ValDirs valDirs = dirs.value(dirs.id("overriddeb"), result);
-
-			object.objectType(code).writeOverriddenValue(valDirs);
-
-			valDirs.done();
+			return object.objectType(code).writeOverriddenValue(dirs);
 		}
 
 	}

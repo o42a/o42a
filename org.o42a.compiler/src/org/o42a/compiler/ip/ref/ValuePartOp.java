@@ -44,12 +44,8 @@ final class ValuePartOp extends ConstructorOp {
 	}
 
 	@Override
-	public void writeValue(CodeDirs dirs, ValOp result) {
-
-		final ValDirs valDirs = dirs.value(dirs.id("value"), result);
-
-		part().writeValue(valDirs, this);
-		valDirs.done();
+	public ValOp writeValue(ValDirs dirs) {
+		return part().writeValue(dirs, this);
 	}
 
 	private final ValuePartRef getPartRef() {
