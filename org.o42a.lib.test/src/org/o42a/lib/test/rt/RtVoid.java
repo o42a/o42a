@@ -21,12 +21,14 @@ package org.o42a.lib.test.rt;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -56,9 +58,13 @@ public class RtVoid extends IntrinsicBuiltin {
 	}
 
 	@Override
-	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+
+		final Code code = dirs.code();
+
 		code.debug("Run-time void");
-		result.storeVoid(code);
+
+		return voidValue().op(code);
 	}
 
 	@Override

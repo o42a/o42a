@@ -168,10 +168,11 @@ public class OverriddenEx extends Ref {
 				hostRef.target(dirs).toObject(dirs);
 			final Code code = dirs.code();
 
-			object.objectType(code).writeOverriddenValue(
-					dirs.code(),
-					result);
-			result.go(code, dirs);
+			final ValDirs valDirs = dirs.value(dirs.id("overriddeb"), result);
+
+			object.objectType(code).writeOverriddenValue(valDirs);
+
+			valDirs.done();
 		}
 
 	}

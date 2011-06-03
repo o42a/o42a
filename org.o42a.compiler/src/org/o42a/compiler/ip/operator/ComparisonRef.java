@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
@@ -29,8 +28,6 @@ import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.ast.expression.BinaryNode;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.core.Distributor;
@@ -40,7 +37,7 @@ import org.o42a.core.artifact.object.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
@@ -200,26 +197,28 @@ public final class ComparisonRef extends ObjectConstructor {
 		}
 
 		@Override
-		public void writeBuiltin(Code code, ValOp result, HostOp host) {
+		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 			if (this.ref.hasError()) {
-				result.storeFalse(code);
-				return;
+				dirs.dirs().goWhenFalse(dirs.code());
+				return falseValue().op(dirs.code());
 			}
 
+			final ValDirs cmpDirs =
+				dirs.dirs().falseWhenUnknown().value("cmp");
 			final ComparisonOperator operator = this.ref.getOperator();
-			final CodeBlk failure = code.addBlock("comparison_failure");
-			final CodeDirs dirs = falseWhenUnknown(code, failure.head());
 			final ObjectOp comparison =
-				host.field(dirs, this.comparisonKey).materialize(dirs);
+				host.field(cmpDirs.dirs(), this.comparisonKey)
+				.materialize(cmpDirs.dirs());
 			final ValOp comparisonVal =
-				operator.writeComparison(dirs, comparison);
+				operator.writeComparison(cmpDirs, comparison);
 
-			operator.write(dirs, result, comparisonVal);
+			final ValDirs resultDirs = cmpDirs.dirs().value(dirs);
+			final ValOp result = operator.write(resultDirs, comparisonVal);
 
-			if (failure.exists()) {
-				result.storeFalse(failure);
-				failure.go(code.tail());
-			}
+			resultDirs.done();
+			cmpDirs.done();
+
+			return result;
 		}
 
 		@Override

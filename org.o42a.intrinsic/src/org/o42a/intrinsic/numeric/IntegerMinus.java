@@ -25,7 +25,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.UnaryResult;
@@ -49,9 +49,10 @@ final class IntegerMinus extends UnaryResult<Long, Long> {
 	}
 
 	@Override
-	protected void write(CodeDirs dirs, ValOp result, ValOp operand) {
+	protected ValOp write(ValDirs dirs, ValOp operand) {
 
 		final Code code = dirs.code();
+		final ValOp result = dirs.value();
 		final RecOp<Int32op> resultFlagsRec =
 			result.flags(code.id("unary_flags_ptr"), code);
 
@@ -65,6 +66,8 @@ final class IntegerMinus extends UnaryResult<Long, Long> {
 			result.rawValue(code.id("unary_value_tr"), code);
 
 		resultRec.store(code, operandValue.neg(null, code));
+
+		return result;
 	}
 
 }

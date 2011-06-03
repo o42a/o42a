@@ -32,14 +32,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
@@ -154,10 +153,18 @@ public class ConsoleModule extends Module {
 		final CodeBuilder builder = codeBuilder(getContext(), main);
 		final ValOp result = main.allocate(null, VAL_TYPE).storeUnknown(main);
 		final CodeBlk exit = main.addBlock("exit");
+		final ValDirs dirs =
+			falseWhenUnknown(main, exit.head())
+			.value(main.id("exec_main"), result);
+		final Code code = dirs.code();
 
-		this.main.ir(generator).op(builder, main).writeValue(
-				falseWhenUnknown(main, exit.head()),
-				result);
+		final ValOp res =
+			this.main.ir(generator).op(builder, code).writeValue(dirs);
+
+		if (res != result) {
+			result.store(code, res);
+		}
+		dirs.done();
 
 		if (exit.exists()) {
 			exit.debug("Execution failed");

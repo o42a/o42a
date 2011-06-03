@@ -21,11 +21,11 @@ package org.o42a.lib.test.rt.parser;
 
 import static org.o42a.core.member.MemberId.memberName;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.common.adapter.IntegerByString;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -64,9 +64,9 @@ final class ParseInteger extends IntegerByString {
 	}
 
 	@Override
-	protected void parse(Code code, ValOp result, ObjectOp input) {
-		code.debug("Run-time integer");
-		super.parse(code, result, input);
+	protected ValOp parse(ValDirs dirs, ObjectOp input) {
+		dirs.code().debug("Run-time integer");
+		return super.parse(dirs, input);
 	}
 
 }

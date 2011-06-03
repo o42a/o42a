@@ -122,7 +122,7 @@ public abstract class ValDirs {
 			return this;
 		}
 
-		final NestedValDirs result = new NestedValDirs(this);
+		final DebugValDirs result = new DebugValDirs(this);
 
 		result.code().begin(message);
 
@@ -231,6 +231,37 @@ public abstract class ValDirs {
 
 	}
 
+	static final class NestedValDirs extends ValDirs {
+
+		private TopLevelValDirs topLevel;
+
+		NestedValDirs(CodeDirs enclosing, ValDirs storage) {
+			super(enclosing.code());
+			this.topLevel = storage.topLevel();
+			this.dirs = enclosing;
+		}
+
+		@Override
+		public void done() {
+		}
+
+		@Override
+		TopLevelValDirs topLevel() {
+			return this.topLevel;
+		}
+
+		@Override
+		CodeDirs createDirs() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		Code createDir(String name) {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
 	private static class SubValDirs extends ValDirs {
 
 		final ValDirs enclosing;
@@ -276,12 +307,12 @@ public abstract class ValDirs {
 
 	}
 
-	private static final class NestedValDirs extends ValDirs {
+	private static final class DebugValDirs extends ValDirs {
 
 		private final ValDirs enclosing;
 		private final TopLevelValDirs topLevel;
 
-		NestedValDirs(ValDirs enclosing) {
+		DebugValDirs(ValDirs enclosing) {
 			super(enclosing.code());
 			this.enclosing = enclosing;
 			this.topLevel = enclosing.topLevel();

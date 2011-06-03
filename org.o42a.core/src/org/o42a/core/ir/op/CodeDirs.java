@@ -141,6 +141,10 @@ public class CodeDirs {
 		return new ValDirs.TopLevelValDirs(this, name, value);
 	}
 
+	public final ValDirs value(ValDirs storage) {
+		return new ValDirs.NestedValDirs(this, storage);
+	}
+
 	public final CodeDirs falseWhenUnknown() {
 		if (this.falsePos == this.unknownPos) {
 			return this;

@@ -19,9 +19,11 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.core.value.Value.voidValue;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 
@@ -42,11 +44,7 @@ public class FloatsEqual extends NumbersEqual<Double> {
 	}
 
 	@Override
-	protected void write(
-			CodeDirs dirs,
-			ValOp result,
-			ValOp leftVal,
-			ValOp rightVal) {
+	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Code code = dirs.code();
 		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
@@ -61,8 +59,9 @@ public class FloatsEqual extends NumbersEqual<Double> {
 
 		final BoolOp equals = left.eq(code.id("eq"), code, right);
 
-		dirs.go(code, equals);
-		result.storeVoid(code);
+		dirs.dirs().go(code, equals);
+
+		return voidValue().op(code);
 	}
 
 }
