@@ -32,7 +32,7 @@ public abstract class ValDirs {
 	private final Code code;
 	private Code falseCode;
 	private Code unknownCode;
-	private CodeDirs dirs;
+	protected CodeDirs dirs;
 
 	ValDirs(Code code) {
 		this.code = code;
@@ -74,6 +74,9 @@ public abstract class ValDirs {
 			return topLevel.value;
 		}
 
+		assert topLevel.allocatable :
+			"Can not allocate value";
+
 		topLevel.allocation = topLevel.enclosing.allocate("value");
 		topLevel.value =
 			topLevel.allocation.allocate(id("value"), VAL_TYPE)
@@ -114,14 +117,16 @@ public abstract class ValDirs {
 		return new FalseWhenUnknownValDirs(this, code());
 	}
 
-	public ValDirs begin(String id, String message) {
+	public ValDirs begin(String message) {
 		if (!isDebug()) {
 			return this;
 		}
 
-		this.code.begin(message);
+		final NestedValDirs result = new NestedValDirs(this);
 
-		return new NestedValDirs(this, id(id));
+		result.code().begin(message);
+
+		return result;
 	}
 
 	@Override
@@ -174,22 +179,29 @@ public abstract class ValDirs {
 	static final class TopLevelValDirs extends ValDirs {
 
 		private final CodeDirs enclosing;
+		private final boolean allocatable;
 		private AllocationDirs allocation;
 		private ValOp value;
 
 		TopLevelValDirs(CodeDirs enclosing, CodeId name) {
 			super(enclosing.addBlock(name));
+			this.allocatable = true;
 			this.enclosing = enclosing;
 		}
 
 		public TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
-			super(enclosing.addBlock(name));
+			super(enclosing.code());
+			this.dirs = enclosing;
+			this.allocatable = false;
 			this.enclosing = enclosing;
 			this.value = value;
 		}
 
 		@Override
 		public void done() {
+			if (!this.allocatable) {
+				return;
+			}
 			if (this.allocation == null) {
 				this.enclosing.code().go(code().head());
 				code().go(this.enclosing.code().tail());
@@ -269,17 +281,15 @@ public abstract class ValDirs {
 		private final ValDirs enclosing;
 		private final TopLevelValDirs topLevel;
 
-		NestedValDirs(ValDirs enclosing, CodeId name) {
-			super(enclosing.addBlock(name));
+		NestedValDirs(ValDirs enclosing) {
+			super(enclosing.code());
 			this.enclosing = enclosing;
 			this.topLevel = enclosing.topLevel();
-			enclosing.code().go(code().head());
 		}
 
 		@Override
 		public void done() {
 			code().end();
-			code().go(this.enclosing.code().tail());
 			handleDirs(this.enclosing.dirs);
 		}
 

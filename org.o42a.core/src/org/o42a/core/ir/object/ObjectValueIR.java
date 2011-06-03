@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
@@ -124,54 +123,40 @@ public class ObjectValueIR {
 		this.value.create(typeIR, definitions);
 	}
 
-	protected void buildValue(
-			Code code,
-			ValOp result,
+	protected ValOp buildValue(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
 
-		final Code falseValue = code.addBlock("false_value");
-		final Code unknownValue = code.addBlock("unknown_condition");
-		final CodeDirs conditionDirs = splitWhenUnknown(
-				code,
-				falseValue.head(),
-				unknownValue.head());
+		final ValOp result = dirs.value();
+		final Code code = dirs.code();
 
-		writeRequirement(conditionDirs, host, null);
-		writeCondition(conditionDirs, host, null);
+		writeRequirement(dirs.dirs(), host, null);
+		writeCondition(dirs.dirs(), host, null);
 
 		final CodeBlk unknownClaim = code.addBlock("unknown_claim");
 		final ValDirs claimDirs =
-			splitWhenUnknown(code, falseValue.head(), unknownClaim.head())
-			.value("claim");
+			dirs.dirs().splitWhenUnknown(
+					dirs.dirs().falsePos(),
+					unknownClaim.head())
+			.value(code.id("claim"), result);
 		final ValOp claim = writeClaim(claimDirs, host, null);
 
-		result.store(code, claim);
+		if (claim != result) {
+			result.store(claimDirs.code(), claim);
+		}
 		claimDirs.done();
-		code.returnVoid();
 
-		final ValDirs propDirs = splitWhenUnknown(
-				unknownClaim,
-				falseValue.head(),
-				unknownValue.head())
-				.value("proposition");
+		final ValDirs propDirs = dirs.sub(unknownClaim);
 		final ValOp prop = writeProposition(propDirs, host, null);
 
-		result.store(unknownClaim, prop);
+		if (prop != result) {
+			result.store(propDirs.code(), prop);
+		}
 		propDirs.done();
-		code.returnVoid();
+		unknownClaim.go(code.tail());
 
-		if (falseValue.exists()) {
-			falseValue.debug("Object condition is FALSE");
-			result.storeFalse(falseValue);
-			falseValue.returnVoid();
-		}
-		if (unknownValue.exists()) {
-			// Override indefinite value.
-			unknownValue.debug("Object condition is UNKNOWN");
-			result.storeUnknown(unknownValue);
-			unknownValue.returnVoid();
-		}
+		return result;
 	}
 
 	protected void createRequirement(
@@ -191,12 +176,11 @@ public class ObjectValueIR {
 		this.claim.create(typeIR, definitions);
 	}
 
-	protected void buildClaim(
-			Code code,
-			ValOp result,
+	protected ValOp buildClaim(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
-		this.claim.buildFunc(code, result, host, definitions);
+		return this.claim.buildFunc(dirs, host, definitions);
 	}
 
 	protected void createCondition(
@@ -218,12 +202,11 @@ public class ObjectValueIR {
 		this.proposition.create(typeIR, definitions);
 	}
 
-	protected void buildProposition(
-			Code code,
-			ValOp result,
+	protected ValOp buildProposition(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
-		this.proposition.buildFunc(code, result, host, definitions);
+		return this.proposition.buildFunc(dirs, host, definitions);
 	}
 
 	final ObjectIRLocals getLocals() {
@@ -320,12 +303,11 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected void build(
-				Code code,
-				ValOp result,
+		protected ValOp build(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildValue(code, result, host, definitions);
+			return buildValue(dirs, host, definitions);
 		}
 
 	}
@@ -399,12 +381,11 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected void build(
-				Code code,
-				ValOp result,
+		protected ValOp build(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildClaim(code, result, host, definitions);
+			return buildClaim(dirs, host, definitions);
 		}
 
 	}
@@ -478,12 +459,11 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected void build(
-				Code code,
-				ValOp result,
+		protected ValOp build(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildProposition(code, result, host, definitions);
+			return buildProposition(dirs, host, definitions);
 		}
 
 	}

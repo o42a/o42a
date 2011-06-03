@@ -172,6 +172,14 @@ public class CodeDirs {
 		return go(code, this.unknownPos);
 	}
 
+	public final CodePos falsePos() {
+		return this.falsePos;
+	}
+
+	public final CodePos unknownPos() {
+		return this.unknownPos;
+	}
+
 	public final void go(Code code, BoolOp bool) {
 		if (this.falsePos == null) {
 			return;
@@ -205,14 +213,6 @@ public class CodeDirs {
 	@Override
 	public String toString() {
 		return toString("CodeDirs", this.code);
-	}
-
-	final CodePos falsePos() {
-		return this.falsePos;
-	}
-
-	final CodePos unknownPos() {
-		return this.unknownPos;
 	}
 
 	String toString(String title, Code code) {
