@@ -30,6 +30,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectBodyIR.Op;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
@@ -75,6 +76,17 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public final ObjectBodyIR.Op ptr() {
 		return (Op) super.ptr();
+	}
+
+	@Override
+	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
+		if (!getPrecision().isExact()) {
+			return super.writeValue(dirs, body);
+		}
+
+		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
+
+		return valueIR.writeValue(dirs, this, body);
 	}
 
 	@Override
@@ -183,39 +195,25 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	protected void writeValue(Code code, ValOp result, ObjectOp body) {
+	protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 		if (!getPrecision().isExact()) {
-			super.writeValue(code, result, body);
-			return;
+			return super.writeClaim(dirs, body);
 		}
 
 		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
 
-		valueIR.writeValue(code, result, this, body);
+		return valueIR.writeClaim(dirs, this, body);
 	}
 
 	@Override
-	protected void writeClaim(Code code, ValOp result, ObjectOp body) {
+	protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 		if (!getPrecision().isExact()) {
-			super.writeClaim(code, result, body);
-			return;
+			return super.writeProposition(dirs, body);
 		}
 
 		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
 
-		valueIR.writeClaim(code, result, this, body);
-	}
-
-	@Override
-	protected void writeProposition(Code code, ValOp result, ObjectOp body) {
-		if (!getPrecision().isExact()) {
-			super.writeProposition(code, result, body);
-			return;
-		}
-
-		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
-
-		valueIR.writeProposition(code, result, this, body);
+		return valueIR.writeProposition(dirs, this, body);
 	}
 
 }

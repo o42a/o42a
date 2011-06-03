@@ -29,10 +29,6 @@ import org.o42a.codegen.code.op.BoolOp;
 
 public class CodeDirs {
 
-	public static CodeDirs continueWhenUnknown(Code code, CodePos falsePos) {
-		return new CodeDirs(code, falsePos, null);
-	}
-
 	public static CodeDirs falseWhenUnknown(Code code, CodePos falsePos) {
 		return new CodeDirs(code, falsePos, falsePos);
 	}
@@ -87,6 +83,10 @@ public class CodeDirs {
 		return this.code.addBlock(name);
 	}
 
+	public final CodeDirs sub(Code code) {
+		return new CodeDirs(code, this.falsePos, this.unknownPos);
+	}
+
 	public CodeDirs begin(String id, String message) {
 		if (!isDebug()) {
 			return this;
@@ -137,6 +137,10 @@ public class CodeDirs {
 		return new ValDirs.TopLevelValDirs(this, name);
 	}
 
+	public final ValDirs value(CodeId name, ValOp value) {
+		return new ValDirs.TopLevelValDirs(this, name, value);
+	}
+
 	public final CodeDirs falseWhenUnknown() {
 		if (this.falsePos == this.unknownPos) {
 			return this;
@@ -160,12 +164,12 @@ public class CodeDirs {
 		return new CodeDirs(this.code, falsePos, unknownPos);
 	}
 
-	public final void goWhenFalse(Code code) {
-		go(code, this.falsePos);
+	public final boolean goWhenFalse(Code code) {
+		return go(code, this.falsePos);
 	}
 
-	public final void goWhenUnknown(Code code) {
-		go(code, this.unknownPos);
+	public final boolean goWhenUnknown(Code code) {
+		return go(code, this.unknownPos);
 	}
 
 	public final void go(Code code, BoolOp bool) {
@@ -253,13 +257,16 @@ public class CodeDirs {
 		return block.head();
 	}
 
-	private final void go(Code code, CodePos codePos) {
+	private final boolean go(Code code, CodePos codePos) {
 
 		final CodePos dir = dir(code, codePos);
 
 		if (dir != null) {
 			code.go(dir);
+			return true;
 		}
+
+		return false;
 	}
 
 	private final CodePos dir(Code code, CodePos codePos) {

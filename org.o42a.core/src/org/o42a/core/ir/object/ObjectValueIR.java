@@ -78,48 +78,24 @@ public class ObjectValueIR {
 		return this.objectIR + " Value IR";
 	}
 
-	protected void writeValue(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		this.value.call(code, result, host, body);
-
-		final Code stillIndefinite = code.addBlock("still_indefinite");
-
-		result.loadIndefinite(null, code).go(code, stillIndefinite.head());
-		result.storeUnknown(stillIndefinite);
-		stillIndefinite.go(code.tail());
+	protected ValOp writeValue(ValDirs dirs, ObjOp host, ObjectOp body) {
+		return this.value.call(dirs, host, body);
 	}
 
-	protected void writeRequirement(
-			CodeDirs dirs,
-			ObjOp host,
-			ObjectOp body) {
+	protected void writeRequirement(CodeDirs dirs, ObjOp host, ObjectOp body) {
 		this.requirement.call(dirs, host, body);
 	}
 
-	protected void writeClaim(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		this.claim.call(code, result, host, body);
+	protected ValOp writeClaim(ValDirs dirs, ObjOp host, ObjectOp body) {
+		return this.claim.call(dirs, host, body);
 	}
 
-	protected void writeCondition(
-			CodeDirs dirs,
-			ObjOp host,
-			ObjectOp body) {
+	protected void writeCondition(CodeDirs dirs, ObjOp host, ObjectOp body) {
 		this.condition.call(dirs, host, body);
 	}
 
-	protected void writeProposition(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		this.proposition.call(code, result, host, body);
+	protected ValOp writeProposition(ValDirs dirs, ObjOp host, ObjectOp body) {
+		return this.proposition.call(dirs, host, body);
 	}
 
 	protected void allocate(ObjectTypeIR typeIR) {
@@ -154,39 +130,47 @@ public class ObjectValueIR {
 			ObjOp host,
 			Definitions definitions) {
 
-		final CodeBlk done = code.addBlock("done");
-
-		final CodeBlk conditionFalse = code.addBlock("condition_false");
-		final CodeBlk conditionUnknwon = code.addBlock("condition_unknown");
+		final Code falseValue = code.addBlock("false_value");
+		final Code unknownValue = code.addBlock("unknown_condition");
 		final CodeDirs conditionDirs = splitWhenUnknown(
 				code,
-				conditionFalse.head(),
-				conditionUnknwon.head());
+				falseValue.head(),
+				unknownValue.head());
 
 		writeRequirement(conditionDirs, host, null);
 		writeCondition(conditionDirs, host, null);
-		if (conditionFalse.exists()) {
-			conditionFalse.debug("Object condition is FALSE");
-			result.storeFalse(conditionFalse);
-			conditionFalse.returnVoid();
-		}
-		if (conditionUnknwon.exists()) {
-			// Override indefinite value.
-			conditionUnknwon.debug("Object condition is UNKNOWN");
-			result.storeUnknown(conditionUnknwon);
-			conditionUnknwon.returnVoid();
-		}
 
-		writeClaim(code, result, host, null);
-		result.loadIndefinite(null, code).goUnless(code, done.head());
+		final CodeBlk unknownClaim = code.addBlock("unknown_claim");
+		final ValDirs claimDirs =
+			splitWhenUnknown(code, falseValue.head(), unknownClaim.head())
+			.value("claim");
+		final ValOp claim = writeClaim(claimDirs, host, null);
 
-		writeProposition(code, result, host, null);
-		result.loadIndefinite(null, code).goUnless(code, done.head());
-
-		result.storeUnknown(code);// Override indefinite value.
+		result.store(code, claim);
+		claimDirs.done();
 		code.returnVoid();
-		if (done.exists()) {
-			done.returnVoid();
+
+		final ValDirs propDirs = splitWhenUnknown(
+				unknownClaim,
+				falseValue.head(),
+				unknownValue.head())
+				.value("proposition");
+		final ValOp prop = writeProposition(propDirs, host, null);
+
+		result.store(unknownClaim, prop);
+		propDirs.done();
+		code.returnVoid();
+
+		if (falseValue.exists()) {
+			falseValue.debug("Object condition is FALSE");
+			result.storeFalse(falseValue);
+			falseValue.returnVoid();
+		}
+		if (unknownValue.exists()) {
+			// Override indefinite value.
+			unknownValue.debug("Object condition is UNKNOWN");
+			result.storeUnknown(unknownValue);
+			unknownValue.returnVoid();
 		}
 	}
 

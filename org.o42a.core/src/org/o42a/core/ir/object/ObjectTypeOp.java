@@ -65,13 +65,16 @@ public class ObjectTypeOp extends IROp {
 				.op(this, type);
 	}
 
-	public final void writeValue(Code code, ValOp result, ObjectOp body) {
+	public final ValOp writeValue(ValDirs dirs, ObjectOp body) {
 
+		final Code code = dirs.code();
 		final ObjectValFunc function =
 			ptr().data(code).valueFunc(code).load(null, code);
+		final ValOp result = function.call(dirs, body(code, body));
 
-		function.call(code, result, body(code, body));
 		code.dump("Value: ", result);
+
+		return result;
 	}
 
 	public final void writeRequirement(CodeDirs dirs, ObjectOp body) {
@@ -83,12 +86,13 @@ public class ObjectTypeOp extends IROp {
 		function.call(code, body(code, body)).go(code, dirs);
 	}
 
-	public final void writeClaim(Code code, ValOp result, ObjectOp body) {
+	public final ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 
+		final Code code = dirs.code();
 		final ObjectValFunc function =
 			ptr().data(code).claimFunc(code).load(null, code);
 
-		function.call(code, result, body(code, body));
+		return function.call(dirs, body(code, body));
 	}
 
 	public final void writeCondition(CodeDirs dirs, ObjectOp body) {
@@ -100,16 +104,18 @@ public class ObjectTypeOp extends IROp {
 		function.call(code, body(code, body)).go(code, dirs);
 	}
 
-	public final void writeProposition(Code code, ValOp result, ObjectOp body) {
+	public final ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 
+		final Code code = dirs.code();
 		final ObjectValFunc function =
 			ptr().data(code).propositionFunc(code).load(null, code);
 
-		function.call(code, result, body(code, body));
+		return function.call(dirs, body(code, body));
 	}
 
-	public final void writeOverriddenValue(Code code, ValOp result) {
+	public final ValOp writeOverriddenValue(ValDirs dirs) {
 		// TODO overridden value
+		return null;
 	}
 
 	public final void writeOverriddenRequirement(CodeDirs dirs) {
@@ -120,12 +126,14 @@ public class ObjectTypeOp extends IROp {
 		// TODO overridden condition
 	}
 
-	public final void writeOverriddenClaim(Code code, ValOp result) {
+	public final ValOp writeOverriddenClaim(ValDirs dirs) {
 		// TODO overridden claim
+		return null;
 	}
 
-	public final void writeOverriddenProposition(Code code, ValOp result) {
+	public final ValOp writeOverriddenProposition(ValDirs dirs) {
 		// TODO overridden definition
+		return null;
 	}
 
 	@Override

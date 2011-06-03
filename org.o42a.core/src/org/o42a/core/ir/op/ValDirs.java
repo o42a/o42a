@@ -66,7 +66,7 @@ public abstract class ValDirs {
 		return this.code.addBlock(name);
 	}
 
-	public final ValOp load() {
+	public final ValOp value() {
 
 		final TopLevelValDirs topLevel = topLevel();
 
@@ -82,63 +82,36 @@ public abstract class ValDirs {
 		return topLevel.value;
 	}
 
-	public final void store(ValOp value) {
-
-		final TopLevelValDirs topLevel = topLevel();
-
-		if (topLevel.allocation == null) {
-			topLevel.value = value;
-		} else {
-			topLevel.value.store(code(), value);
-		}
-
-		value.go(code(), dirs());
-	}
-
-	public final void store(Val value) {
-		load().store(code(), value);
-	}
-
-	public final void storeVoid() {
-		load().storeVoid(code());
-	}
-
-	public final void storeFalse() {
-		load().storeFalse(code());
-	}
-
-	public final void storeUnknown() {
-		load().storeIndefinite(code());
-	}
-
 	public abstract void done();
 
 	public final CodeDirs dirs() {
 		if (this.dirs != null) {
 			return this.dirs;
 		}
+		return this.dirs = createDirs();
+	}
 
-		final CodeDirs enclosing = topLevel().enclosing;
-		final CodePos falsePos = enclosing.falsePos();
-		final CodePos unknownPos = enclosing.unknownPos();
+	public final ValDirs sub(String name) {
+		return sub(addBlock(name));
+	}
 
-		if (falsePos == null) {
-			this.falseCode = null;
-		} else {
-			this.falseCode = codeAlt("false");
+	public final ValDirs sub(CodeId name) {
+		return sub(addBlock(name));
+	}
+
+	public final ValDirs sub(Code code) {
+		return new SubValDirs(this, code);
+	}
+
+	public final ValDirs falseWhenUnknown() {
+
+		final CodeDirs dirs = dirs();
+
+		if (dirs.falsePos() == dirs.unknownPos()) {
+			return this;
 		}
-		if (unknownPos == falsePos) {
-			this.unknownCode = this.falseCode;
-		} else if (unknownPos == null) {
-			this.unknownCode = null;
-		} else {
-			this.unknownCode = codeAlt("unknown");
-		}
 
-		return this.dirs = new CodeDirs(
-				this.code,
-				this.falseCode != null ? this.falseCode.head() : null,
-				this.unknownCode != null ? this.unknownCode.head() : null);
+		return new FalseWhenUnknownValDirs(this, code());
 	}
 
 	public ValDirs begin(String id, String message) {
@@ -151,11 +124,44 @@ public abstract class ValDirs {
 		return new NestedValDirs(this, id(id));
 	}
 
+	@Override
+	public String toString() {
+		return topLevel().enclosing.toString(
+				getClass().getSimpleName(),
+				code());
+	}
+
 	abstract TopLevelValDirs topLevel();
 
-	abstract Code codeAlt(String name);
+	abstract CodeDirs createDirs();
 
-	void handleAlts(CodeDirs enclosing) {
+	CodeDirs createDirs(CodeDirs enclosing) {
+
+		final CodePos falsePos = enclosing.falsePos();
+		final CodePos unknownPos = enclosing.unknownPos();
+
+		if (falsePos == null) {
+			this.falseCode = null;
+		} else {
+			this.falseCode = createDir("false");
+		}
+		if (unknownPos == falsePos) {
+			this.unknownCode = this.falseCode;
+		} else if (unknownPos == null) {
+			this.unknownCode = null;
+		} else {
+			this.unknownCode = createDir("unknown");
+		}
+
+		return new CodeDirs(
+				this.code,
+				this.falseCode != null ? this.falseCode.head() : null,
+				this.unknownCode != null ? this.unknownCode.head() : null);
+	}
+
+	abstract Code createDir(String name);
+
+	void handleDirs(CodeDirs enclosing) {
 		dirs();
 		if (this.falseCode != null) {
 			enclosing.goWhenFalse(this.falseCode);
@@ -176,23 +182,24 @@ public abstract class ValDirs {
 			this.enclosing = enclosing;
 		}
 
+		public TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
+			super(enclosing.addBlock(name));
+			this.enclosing = enclosing;
+			this.value = value;
+		}
+
 		@Override
 		public void done() {
 			if (this.allocation == null) {
 				this.enclosing.code().go(code().head());
 				code().go(this.enclosing.code().tail());
-				handleAlts(this.enclosing);
+				handleDirs(this.enclosing);
 			} else {
 				this.allocation.code().go(code().head());
 				code().go(this.allocation.code().tail());
-				handleAlts(this.allocation.dirs());
+				handleDirs(this.allocation.dirs());
 				this.allocation.done();
 			}
-		}
-
-		@Override
-		public String toString() {
-			return this.enclosing.toString("ValDirs", code());
 		}
 
 		@Override
@@ -201,8 +208,58 @@ public abstract class ValDirs {
 		}
 
 		@Override
-		Code codeAlt(String name) {
+		CodeDirs createDirs() {
+			return createDirs(this.enclosing);
+		}
+
+		@Override
+		Code createDir(String name) {
 			return addBlock(name);
+		}
+
+	}
+
+	private static class SubValDirs extends ValDirs {
+
+		final ValDirs enclosing;
+		private final TopLevelValDirs topLevel;
+
+		SubValDirs(ValDirs enclosing, Code code) {
+			super(code);
+			this.enclosing = enclosing;
+			this.topLevel = enclosing.topLevel();
+		}
+
+		@Override
+		public void done() {
+		}
+
+		@Override
+		final TopLevelValDirs topLevel() {
+			return this.topLevel;
+		}
+
+		@Override
+		CodeDirs createDirs() {
+			return this.enclosing.dirs().sub(code());
+		}
+
+		@Override
+		Code createDir(String name) {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
+	private static final class FalseWhenUnknownValDirs extends SubValDirs {
+
+		FalseWhenUnknownValDirs(ValDirs enclosing, Code code) {
+			super(enclosing, code);
+		}
+
+		@Override
+		CodeDirs createDirs() {
+			return this.enclosing.dirs().falseWhenUnknown();
 		}
 
 	}
@@ -223,12 +280,7 @@ public abstract class ValDirs {
 		public void done() {
 			code().end();
 			code().go(this.enclosing.code().tail());
-			handleAlts(this.enclosing.dirs);
-		}
-
-		@Override
-		public String toString() {
-			return this.topLevel.enclosing.toString("ValDirs", code());
+			handleDirs(this.enclosing.dirs);
 		}
 
 		@Override
@@ -237,13 +289,18 @@ public abstract class ValDirs {
 		}
 
 		@Override
-		Code codeAlt(String name) {
+		CodeDirs createDirs() {
+			return createDirs(this.enclosing.dirs());
+		}
 
-			final Code code = addBlock(name);
+		@Override
+		Code createDir(String name) {
 
-			code.end();
+			final Code dir = addBlock(name);
 
-			return code;
+			dir.end();
+
+			return dir;
 		}
 
 	}

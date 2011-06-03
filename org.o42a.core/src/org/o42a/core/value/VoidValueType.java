@@ -22,6 +22,7 @@ package org.o42a.core.value;
 import static org.o42a.core.ir.op.Val.VOID_VAL;
 import static org.o42a.core.ref.Ref.voidRef;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -50,6 +51,11 @@ final class VoidValueType extends ValueType<Void> {
 	@Override
 	protected Val val(Generator generator, Void value) {
 		return VOID_VAL;
+	}
+
+	@Override
+	protected CodeId constId(Generator generator) {
+		return generator.id("CONST").sub("VOID");
 	}
 
 }
