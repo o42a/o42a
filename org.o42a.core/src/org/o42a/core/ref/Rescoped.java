@@ -24,9 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -194,8 +192,8 @@ final class Rescoped extends Ref {
 		}
 
 		@Override
-		public void writeValue(CodeDirs dirs, ValOp result) {
-			rescope(dirs).writeValue(dirs, result);
+		public ValOp writeValue(ValDirs dirs) {
+			return rescope(dirs.dirs()).writeValue(dirs);
 		}
 
 		@Override
