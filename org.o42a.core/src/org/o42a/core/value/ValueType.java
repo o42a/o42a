@@ -184,7 +184,7 @@ public abstract class ValueType<T> {
 
 		final Global<ValOp, Type> global =
 			generator.newGlobal().setConstant().dontExport().newInstance(
-					constId(generator),
+					constId(generator, value),
 					VAL_TYPE,
 					val(generator, value));
 		final Ptr<ValOp> result = global.getPointer();
@@ -194,7 +194,7 @@ public abstract class ValueType<T> {
 		return result;
 	}
 
-	protected abstract CodeId constId(Generator generator);
+	protected abstract CodeId constId(Generator generator, T value);
 
 	private static final class None extends ValueType<java.lang.Void> {
 
@@ -220,7 +220,7 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		protected CodeId constId(Generator generator) {
+		protected CodeId constId(Generator generator, java.lang.Void value) {
 			throw new UnsupportedOperationException(
 					"Type NONE can not have a value");
 		}

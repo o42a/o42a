@@ -54,7 +54,7 @@ final class VoidValueType extends ValueType<Void> {
 	}
 
 	@Override
-	protected CodeId constId(Generator generator) {
+	protected CodeId constId(Generator generator, Void value) {
 		return generator.id("CONST").sub("VOID");
 	}
 

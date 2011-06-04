@@ -106,7 +106,7 @@ final class StringValueType extends ValueType<String> {
 	}
 
 	@Override
-	protected CodeId constId(Generator generator) {
+	protected CodeId constId(Generator generator, String value) {
 		return generator.id("CONST").sub("STRING").anonymous(++this.constSeq);
 	}
 
