@@ -321,7 +321,7 @@ public abstract class ValDirs {
 		@Override
 		public void done() {
 			code().end();
-			handleDirs(this.enclosing.dirs);
+			handleDirs(this.enclosing.dirs());
 		}
 
 		@Override

@@ -44,12 +44,13 @@ public class CodeDirs {
 	private final CodePos falsePos;
 	private final CodePos unknownPos;
 
-	CodeDirs(
-			Code code,
-			CodePos falsePos,
-			CodePos unknownPos) {
+	CodeDirs(Code code, CodePos falsePos, CodePos unknownPos) {
 		assert code != null :
 			"Code not specified";
+		assert falsePos != null :
+			"False direction not specified";
+		assert unknownPos != null :
+			"Unknown direction not specified";
 		this.code = code;
 		this.falsePos = falsePos;
 		this.unknownPos = unknownPos;

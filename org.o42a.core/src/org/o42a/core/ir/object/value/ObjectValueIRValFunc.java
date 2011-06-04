@@ -34,7 +34,6 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
 public abstract class ObjectValueIRValFunc
@@ -157,7 +156,7 @@ public abstract class ObjectValueIRValFunc
 			failure.returnVoid();
 		}
 		if (unknown.exists()) {
-			failure.returnVoid();
+			unknown.returnVoid();
 		}
 
 		function.returnVoid();
@@ -263,28 +262,18 @@ public abstract class ObjectValueIRValFunc
 		final CodeBlk noAncestor = hasAncestor.otherwise();
 
 		final Obj object = getObjectIR().getObject();
-
-		if (object.getValueType() != ValueType.VOID) {
-			noAncestor.debug("No ancestor, but not VOID: " + this);
-			dirs.dirs().goWhenUnknown(noAncestor);
-			return result;
-		}
-
 		final TypeRef ancestor =
 			object.type().useBy(dummyUser()).getAncestor();
 
 		if (ancestor.typeObject(dummyUser()).getScope()
-				!= ancestor.getContext().getVoid().getScope()) {
-			noAncestor.debug(
-					"No ancestor, but does not inherit VOID explicitly: "
-					+ this);
+				== ancestor.getContext().getVoid().getScope()) {
+			noAncestor.debug("Inherited VOID proposition: " + this);
+			result.storeVoid(noAncestor);
+			noAncestor.go(code.tail());
+		} else {
+			noAncestor.debug("No ancestor: " + this);
 			dirs.dirs().goWhenUnknown(noAncestor);
-			return result;
 		}
-
-		noAncestor.debug("Inherited VOID proposition: " + this);
-		result.storeVoid(noAncestor);
-		noAncestor.go(code.tail());
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
 		final ObjectTypeOp ancestorType =

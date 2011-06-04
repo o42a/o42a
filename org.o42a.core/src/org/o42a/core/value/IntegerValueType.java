@@ -28,8 +28,6 @@ import org.o42a.core.ir.op.Val;
 
 final class IntegerValueType extends ValueType<Long> {
 
-	private int constSeq;
-
 	IntegerValueType() {
 		super("integer", Long.class);
 	}
@@ -45,8 +43,8 @@ final class IntegerValueType extends ValueType<Long> {
 	}
 
 	@Override
-	protected CodeId constId(Generator generator) {
-		return generator.id("CONST").sub("INTEGER").anonymous(++this.constSeq);
+	protected CodeId constId(Generator generator, Long value) {
+		return generator.id("CONST").sub("INTEGER").sub(Long.toString(value));
 	}
 
 }

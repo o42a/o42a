@@ -45,7 +45,7 @@ final class FloatValueType extends ValueType<Double> {
 	}
 
 	@Override
-	protected CodeId constId(Generator generator) {
+	protected CodeId constId(Generator generator, Double value) {
 		return generator.id("CONST").sub("FLOAT").anonymous(++this.constSeq);
 	}
 
