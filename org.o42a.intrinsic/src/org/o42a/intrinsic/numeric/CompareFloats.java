@@ -23,7 +23,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CondBlk;
 import org.o42a.codegen.code.op.*;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 
@@ -44,11 +44,7 @@ final class CompareFloats extends CompareNumbers<Double> {
 	}
 
 	@Override
-	protected void write(
-			CodeDirs dirs,
-			ValOp result,
-			ValOp leftVal,
-			ValOp rightVal) {
+	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Code code = dirs.code();
 		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
@@ -65,19 +61,20 @@ final class CompareFloats extends CompareNumbers<Double> {
 		final CondBlk greater = gt.branch(code, "greater", "not_greater");
 		final CodeBlk notGreater = greater.otherwise();
 
-		result.store(greater, greater.int64(1));
+		final ValOp result1 = ONE.op(greater);
+
 		greater.go(code.tail());
 
 		final BoolOp eq = left.eq(notGreater.id("eq"), notGreater, right);
-
-		result.store(
+		final ValOp result2 = eq.select(
+				null,
 				notGreater,
-				eq.select(
-						null,
-						notGreater,
-						notGreater.int64(0),
-						notGreater.int64(-1)));
+				ZERO.op(notGreater),
+				MINUS_ONE.op(notGreater));
+
 		notGreater.go(code.tail());
+
+		return code.phi(null, result1, result2);
 	}
 
 }

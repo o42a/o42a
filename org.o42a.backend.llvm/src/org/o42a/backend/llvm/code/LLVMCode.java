@@ -469,19 +469,12 @@ public abstract class LLVMCode implements CodeWriter {
 			return (O) struct.getType().op(writer.create(
 					id,
 					nextPtr,
-					phi(
-							nextPtr,
-							id.getId(),
-							writer.getBlockPtr(),
-							writer.getNativePtr())));
+					writer.getNativePtr()));
 		}
 
 		final LLVMOp o = llvm(op);
 
-		return (O) o.create(
-				id,
-				nextPtr,
-				phi(nextPtr, id.getId(), o.getBlockPtr(), o.getNativePtr()));
+		return (O) o.create(id, nextPtr, o.getNativePtr());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -648,12 +641,6 @@ public abstract class LLVMCode implements CodeWriter {
 			long blockPtr,
 			String id,
 			long typePtr);
-
-	private static native long phi(
-			long blockPtr,
-			String id,
-			long block1ptr,
-			long value1ptr);
 
 	private static native long phi2(
 			long blockPtr,

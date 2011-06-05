@@ -119,7 +119,7 @@ final class LogicalOr extends Logical {
 				next = code.addBlock((i + 1) + "_disj");
 			} else {
 				next = code.addBlock("all_false");
-				dirs.goWhenFalse(next);
+				next.go(dirs.falseDir());
 			}
 
 			blockDirs = falseWhenUnknown(block, next.head());

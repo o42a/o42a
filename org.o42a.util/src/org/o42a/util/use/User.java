@@ -24,14 +24,10 @@ import java.util.Set;
 
 public abstract class User implements UserInfo, UseInfo {
 
-	private static final DummyUser DUMMY_USER = new DummyUser("DummyUser");
+	private static final DummyUser DUMMY_USER = new DummyUser();
 
 	public static User dummyUser() {
 		return DUMMY_USER;
-	}
-
-	public static User dummyUser(String name) {
-		return new DummyUser(name);
 	}
 
 	public static UseCase useCase(String name) {

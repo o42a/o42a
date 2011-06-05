@@ -20,15 +20,14 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.core.def.Definitions.definitions;
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -51,27 +50,22 @@ enum ValuePart {
 				return;
 			}
 
-			final Code code = dirs.code();
-			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
+			final ValDirs valDirs = dirs.value();
 
-			object.objectType(code).writeOverriddenValue(code, result);
-			result.go(code, dirs);
+			object.objectType(valDirs.code()).writeOverriddenValue(valDirs);
+			valDirs.done();
 		}
 
 		@Override
-		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
+		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
 
-			final ObjectOp object = op.object(dirs);
+			final ObjectOp object = op.object(dirs.dirs());
 
 			if (!op.isOverridden()) {
-				object.writeValue(dirs, result);
-				return;
+				return object.writeValue(dirs);
 			}
 
-			final Code code = dirs.code();
-
-			object.objectType(code).writeOverriddenValue(code, result);
-			result.go(code, dirs);
+			return object.objectType(dirs.code()).writeOverriddenValue(dirs);
 		}
 
 	},
@@ -86,26 +80,22 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final Code code = dirs.code();
-			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
+			final ValDirs valDirs = dirs.value();
 
-			writeValue(dirs, result, op);
+			writeValue(valDirs, op);
+			valDirs.done();
 		}
 
 		@Override
-		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
+		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
 
-			final ObjectOp object = op.object(dirs);
+			final ObjectOp object = op.object(dirs.dirs());
 
 			if (!op.isOverridden()) {
-				object.writeValue(dirs, result);
-				return;
+				return object.writeValue(dirs);
 			}
 
-			final Code code = dirs.code();
-
-			object.objectType(code).writeOverriddenValue(code, result);
-			result.go(code, dirs);
+			return object.objectType(dirs.code()).writeOverriddenValue(dirs);
 		}
 
 	},
@@ -131,26 +121,9 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
-
-			final Code code = dirs.code();
-			final CodeBlk reqFalse = code.addBlock("req_false");
-			final CodeBlk reqUnknown = code.addBlock("req_unknown");
-
-			writeLogicalValue(
-					splitWhenUnknown(
-							code,
-							reqFalse.head(),
-							reqUnknown.head()),
-					op);
-
-			result.storeVoid(code);
-			if (reqFalse.exists()) {
-				result.storeFalse(reqFalse);
-			}
-			if (reqUnknown.exists()) {
-				result.storeUnknown(reqUnknown);
-			}
+		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
+			writeLogicalValue(dirs.dirs(), op);
+			return voidValue().op(dirs.code());
 		}
 
 	},
@@ -178,26 +151,9 @@ enum ValuePart {
 		}
 
 		@Override
-		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
-
-			final Code code = dirs.code();
-			final CodeBlk reqFalse = code.addBlock("cond_false");
-			final CodeBlk reqUnknown = code.addBlock("cond_unknown");
-
-			writeLogicalValue(
-					splitWhenUnknown(
-							code,
-							reqFalse.head(),
-							reqUnknown.head()),
-					op);
-
-			result.storeVoid(code);
-			if (reqFalse.exists()) {
-				result.storeFalse(reqFalse);
-			}
-			if (reqUnknown.exists()) {
-				result.storeUnknown(reqUnknown);
-			}
+		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
+			writeLogicalValue(dirs.dirs(), op);
+			return voidValue().op(dirs.code());
 		}
 
 	},
@@ -212,26 +168,22 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final Code code = dirs.code();
-			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
+			final ValDirs valDirs = dirs.value();
 
-			writeValue(dirs, result, op);
+			writeValue(valDirs, op);
+			valDirs.done();
 		}
 
 		@Override
-		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
+		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
 
-			final ObjectOp object = op.object(dirs);
+			final ObjectOp object = op.object(dirs.dirs());
 
 			if (!op.isOverridden()) {
-				object.writeClaim(dirs, result);
-				return;
+				return object.writeClaim(dirs);
 			}
 
-			final Code code = dirs.code();
-
-			object.objectType(code).writeOverriddenClaim(code, result);
-			result.go(code, dirs);
+			return object.objectType(dirs.code()).writeOverriddenClaim(dirs);
 		}
 
 	},
@@ -249,27 +201,24 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final Code code = dirs.code();
-			final ValOp result = code.allocate(null, VAL_TYPE).storeIndefinite(code);
+			final ValDirs valDirs = dirs.value();
 
-			writeValue(dirs, result, op);
+			writeValue(valDirs, op);
+			valDirs.done();
 		}
 
 		@Override
-		void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op) {
+		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
 
-			final ObjectOp object = op.object(dirs);
+			final ObjectOp object = op.object(dirs.dirs());
 
 			if (!op.isOverridden()) {
-				object.writeProposition(dirs, result);
-				return;
+				return object.writeProposition(dirs);
 			}
 
-			final Code code = dirs.code();
-			final ObjectTypeOp data = object.objectType(code);
+			final ObjectTypeOp objectType = object.objectType(dirs.code());
 
-			data.writeOverriddenProposition(code, result);
-			result.go(code, dirs);
+			return objectType.writeOverriddenProposition(dirs);
 		}
 
 	};
@@ -289,6 +238,6 @@ enum ValuePart {
 
 	abstract void writeLogicalValue(CodeDirs dirs, ValuePartOp op);
 
-	abstract void writeValue(CodeDirs dirs, ValOp result, ValuePartOp op);
+	abstract ValOp writeValue(ValDirs dirs, ValuePartOp op);
 
 }

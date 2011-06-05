@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -31,6 +29,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -100,59 +99,24 @@ final class ConstantObject<T> extends PlainObject {
 		}
 
 		@Override
-		public ValOp writeValue(Code code) {
-
-			final ValOp result =
-				code.allocate(null, VAL_TYPE).storeIndefinite(code);
-
-			result.store(code, value().val(getGenerator()));
-
-			return result;
+		public ValOp writeValue(ValDirs dirs) {
+			return value().op(dirs.code());
 		}
 
 		@Override
-		public ValOp writeValue(CodeDirs dirs) {
-
-			final Code code = dirs.code();
-			final ValOp result = writeValue(code);
-
-			result.go(code, dirs);
-
-			return result;
-		}
-
-		@Override
-		public ValOp writeValue(CodeDirs dirs, ValOp result) {
-
-			final Code code = dirs.code();
-
-			result.store(code, value().val(getGenerator()));
-			result.go(code, dirs);
-
-			return result;
-		}
-
-		@Override
-		protected void writeProposition(
-				Code code,
-				ValOp result,
+		protected ValOp writeProposition(
+				ValDirs dirs,
 				ObjOp host,
 				ObjectOp body) {
-			proposition(code, result, body != null ? body : host);
+			return value().op(dirs.code());
 		}
 
 		@Override
-		protected void buildProposition(
-				Code code,
-				ValOp result,
+		protected ValOp buildProposition(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			proposition(code, result, host);
-			code.returnVoid();
-		}
-
-		private void proposition(Code code, ValOp result, ObjectOp host) {
-			result.store(code, value().val(getGenerator()));
+			return value().op(dirs.code());
 		}
 
 		private final Value<?> value() {

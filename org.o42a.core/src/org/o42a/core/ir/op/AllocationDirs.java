@@ -22,7 +22,6 @@ package org.o42a.core.ir.op;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -81,26 +80,17 @@ public class AllocationDirs {
 			return this.dirs;
 		}
 
-		final CodePos falsePos = this.enclosing.falsePos();
-		final CodePos unknownPos = this.enclosing.unknownPos();
-
-		if (falsePos != null) {
-			this.falseAlt = this.code.alt("false");
-		} else {
-			this.falseAlt = null;
-		}
-		if (unknownPos == falsePos) {
+		this.falseAlt = this.code.alt("false");
+		if (this.enclosing.isFalseWhenUnknown()) {
 			this.unknownAlt = this.falseAlt;
-		} else if (unknownPos != null) {
-			this.unknownAlt = this.code.alt("unknown");
 		} else {
-			this.unknownAlt = null;
+			this.unknownAlt = this.code.alt("unknown");
 		}
 
 		return this.dirs = new CodeDirs(
 				this.code,
-				this.falseAlt != null ? this.falseAlt.head() : null,
-				this.unknownAlt != null ? this.unknownAlt.head() : null);
+				this.falseAlt.head(),
+				this.unknownAlt.head());
 	}
 
 	public void done() {
@@ -108,11 +98,11 @@ public class AllocationDirs {
 			return;
 		}
 		this.code.done();
-		if (this.falseAlt != null) {
-			this.enclosing.goWhenFalse(this.falseAlt);
+		if (this.falseAlt.exists()) {
+			this.falseAlt.go(this.enclosing.falseDir());
 		}
-		if (this.unknownAlt != null && this.unknownAlt != this.falseAlt) {
-			this.enclosing.goWhenUnknown(this.unknownAlt);
+		if (this.unknownAlt.exists() && this.unknownAlt != this.falseAlt) {
+			this.unknownAlt.go(this.enclosing.unknownDir());
 		}
 	}
 

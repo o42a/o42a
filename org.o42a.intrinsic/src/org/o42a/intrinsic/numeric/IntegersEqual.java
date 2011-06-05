@@ -19,11 +19,13 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.core.value.Value.voidValue;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.value.ValueType;
 
@@ -44,11 +46,7 @@ public class IntegersEqual extends NumbersEqual<Long> {
 	}
 
 	@Override
-	protected void write(
-			CodeDirs dirs,
-			ValOp result,
-			ValOp leftVal,
-			ValOp rightVal) {
+	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Code code = dirs.code();
 		final RecOp<Int64op> leftPtr =
@@ -61,8 +59,9 @@ public class IntegersEqual extends NumbersEqual<Long> {
 
 		final BoolOp equals = left.eq(code.id("eq"), code, right);
 
-		dirs.go(code, equals);
-		result.storeVoid(code);
+		equals.goUnless(code, dirs.falseDir());
+
+		return voidValue().op(code);
 	}
 
 }

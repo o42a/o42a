@@ -26,6 +26,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int32op;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -35,6 +36,17 @@ public final class ParseWithRadixFunc extends Func {
 
 	private ParseWithRadixFunc(FuncCaller<ParseWithRadixFunc> caller) {
 		super(caller);
+	}
+
+	public ValOp parse(ValDirs dirs, ValOp input, int radix) {
+
+		final Code code = dirs.code();
+		final ValOp output = dirs.value();
+
+		parse(code, output, input, radix);
+		output.go(code, dirs);
+
+		return output;
 	}
 
 	public void parse(Code code, ValOp output, ValOp input, int radix) {

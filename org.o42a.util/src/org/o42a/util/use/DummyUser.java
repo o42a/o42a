@@ -26,10 +26,7 @@ import java.util.Set;
 
 final class DummyUser extends User {
 
-	private final String name;
-
-	DummyUser(String name) {
-		this.name = name;
+	DummyUser() {
 	}
 
 	@Override
@@ -49,7 +46,7 @@ final class DummyUser extends User {
 
 	@Override
 	public String toString() {
-		return this.name;
+		return "DummyUser";
 	}
 
 	@Override

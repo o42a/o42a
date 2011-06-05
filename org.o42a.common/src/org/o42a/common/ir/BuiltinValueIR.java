@@ -19,10 +19,10 @@
 */
 package org.o42a.common.ir;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.common.def.Builtin;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -36,8 +36,8 @@ public class BuiltinValueIR extends ProposedValueIR {
 	}
 
 	@Override
-	protected void proposition(Code code, ValOp result, ObjectOp host) {
-		this.builtin.writeBuiltin(code, result, host);
+	protected ValOp proposition(ValDirs dirs, ObjectOp host) {
+		return this.builtin.writeBuiltin(dirs, host);
 	}
 
 }

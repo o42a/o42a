@@ -19,11 +19,8 @@
 */
 package org.o42a.common.adapter;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.Accessor;
@@ -31,7 +28,7 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -113,18 +110,12 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 	}
 
 	@Override
-	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final CodeBlk cantParse = code.addBlock("cant_parse");
-		final CodeDirs dirs = falseWhenUnknown(code, cantParse.head());
 		final ObjectOp input =
-			host.field(dirs, inputKey()).materialize(dirs);
+			host.field(dirs.dirs(), inputKey()).materialize(dirs.dirs());
 
-		parse(code, result, input);
-		if (cantParse.exists()) {
-			result.storeFalse(cantParse);
-			cantParse.go(code.tail());
-		}
+		return parse(dirs, input);
 	}
 
 	@Override
@@ -144,7 +135,7 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 			Resolver resolver,
 			String input);
 
-	protected abstract void parse(Code code, ValOp result, ObjectOp input);
+	protected abstract ValOp parse(ValDirs dirs, ObjectOp input);
 
 	private final MemberKey inputKey() {
 		if (this.inputKey != null) {

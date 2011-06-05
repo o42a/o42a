@@ -19,10 +19,10 @@
 */
 package org.o42a.common.def;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -36,6 +36,6 @@ public interface Builtin extends LocationInfo {
 
 	void resolveBuiltin(Obj object);
 
-	void writeBuiltin(Code code, ValOp result, HostOp host);
+	ValOp writeBuiltin(ValDirs dirs, HostOp host);
 
 }

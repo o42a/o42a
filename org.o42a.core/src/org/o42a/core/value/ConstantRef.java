@@ -19,14 +19,12 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -117,16 +115,14 @@ final class ConstantRef<T> extends Ref {
 		}
 
 		@Override
-		public void writeValue(CodeDirs dirs, ValOp result) {
+		public ValOp writeValue(ValDirs dirs) {
 
 			@SuppressWarnings("unchecked")
 			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
-			final Code code = dirs.code();
+			final Ptr<ValOp> ptr =
+				ref.valueType.valPtr(getGenerator(), ref.value);
 
-			result.store(
-					code,
-					ref.valueType.val(getGenerator(), ref.value));
-			result.go(code, dirs);
+			return ptr.op(ptr.getId(), dirs.code());
 		}
 
 		@Override

@@ -19,9 +19,15 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
+import java.util.HashMap;
+
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.data.Global;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -29,6 +35,8 @@ import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.op.Val;
+import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.ValOp.Type;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -48,6 +56,10 @@ public abstract class ValueType<T> {
 	private final RuntimeValue<T> runtimeValue = new RuntimeValue<T>(this);
 	private final FalseValue<T> falseValue = new FalseValue<T>(this);
 	private final UnknownValue<T> unknownValue = new UnknownValue<T>(this);
+
+	private Generator cachedGenerator;
+	private final HashMap<T, Ptr<ValOp>> constCache =
+		new HashMap<T, Ptr<ValOp>>();
 
 	ValueType(String systemId, Class<? extends T> valueClass) {
 		this.systemId = systemId;
@@ -157,6 +169,33 @@ public abstract class ValueType<T> {
 
 	protected abstract Val val(Generator generator, T value);
 
+	protected Ptr<ValOp> valPtr(Generator generator, T value) {
+		if (this.cachedGenerator != generator) {
+			this.constCache.clear();
+			this.cachedGenerator = generator;
+		} else {
+
+			final Ptr<ValOp> cached = this.constCache.get(value);
+
+			if (cached != null) {
+				return cached;
+			}
+		}
+
+		final Global<ValOp, Type> global =
+			generator.newGlobal().setConstant().dontExport().newInstance(
+					constId(generator, value),
+					VAL_TYPE,
+					val(generator, value));
+		final Ptr<ValOp> result = global.getPointer();
+
+		this.constCache.put(value, result);
+
+		return result;
+	}
+
+	protected abstract CodeId constId(Generator generator, T value);
+
 	private static final class None extends ValueType<java.lang.Void> {
 
 		private None() {
@@ -170,7 +209,20 @@ public abstract class ValueType<T> {
 
 		@Override
 		protected Val val(Generator generator, java.lang.Void value) {
-			throw new IllegalStateException("Type NONE can not have a value");
+			throw new UnsupportedOperationException(
+					"Type NONE can not have a value");
+		}
+
+		@Override
+		protected Ptr<ValOp> valPtr(Generator generator, java.lang.Void value) {
+			throw new UnsupportedOperationException(
+					"Type NONE can not have a value");
+		}
+
+		@Override
+		protected CodeId constId(Generator generator, java.lang.Void value) {
+			throw new UnsupportedOperationException(
+					"Type NONE can not have a value");
 		}
 
 	}

@@ -169,14 +169,6 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLVMCode
- * Method:    phi
- * Signature: (JLjava/lang/String;JJ)J
- */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phi
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
-
-/*
- * Class:     org_o42a_backend_llvm_code_LLVMCode
  * Method:    phi2
  * Signature: (JLjava/lang/String;JJJJ)J
  */

@@ -27,6 +27,7 @@ import static org.o42a.util.StringCodec.stringToBinary;
 
 import java.util.HashMap;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
@@ -38,10 +39,10 @@ import org.o42a.util.DataAlignment;
 
 final class StringValueType extends ValueType<String> {
 
-	private static Generator cacheGenerator;
-	private static final HashMap<String, Val> cache =
-		new HashMap<String, Val>();
-	private static int seq;
+	private Generator cachedGenerator;
+	private final HashMap<String, Val> stringCache = new HashMap<String, Val>();
+	private int stringSeq;
+	private int constSeq;
 
 	StringValueType() {
 		super("string", String.class);
@@ -89,7 +90,7 @@ final class StringValueType extends ValueType<String> {
 
 			final Ptr<AnyOp> binary =
 				generator.addBinary(
-						generator.id("STRING_" + (seq++)),
+						generator.id("STRING_" + (this.stringSeq++)),
 						bytes);
 
 			val = new Val(
@@ -99,19 +100,25 @@ final class StringValueType extends ValueType<String> {
 					binary);
 		}
 
-		cache.put(value, val);
+		this.stringCache.put(value, val);
 
 		return val;
 	}
 
-	private static Val cachedVal(Generator generator, String string) {
-		if (generator == cacheGenerator) {
-			return cache.get(string);
+	@Override
+	protected CodeId constId(Generator generator, String value) {
+		return generator.id("CONST").sub("STRING").anonymous(++this.constSeq);
+	}
+
+	private Val cachedVal(Generator generator, String string) {
+		if (generator == this.cachedGenerator) {
+			return this.stringCache.get(string);
 		}
 
-		cacheGenerator = generator;
-		cache.clear();
-		seq = 0;
+		this.cachedGenerator = generator;
+		this.stringCache.clear();
+		this.stringSeq = 0;
+		this.constSeq = 0;
 
 		return null;
 	}

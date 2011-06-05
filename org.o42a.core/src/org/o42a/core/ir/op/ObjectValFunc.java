@@ -41,8 +41,23 @@ public final class ObjectValFunc extends ObjectFunc {
 		call(code, value, object.toData(code));
 	}
 
+	public ValOp call(ValDirs dirs, ObjectOp object) {
+		return call(dirs, object.toData(dirs.code()));
+	}
+
 	public void call(Code code, ValOp value, DataOp object) {
 		invoke(null, code, OBJECT_VAL.result(), value, object);
+	}
+
+	public ValOp call(ValDirs dirs, DataOp object) {
+
+		final Code code = dirs.code();
+		final ValOp value = dirs.value();
+
+		invoke(null, code, OBJECT_VAL.result(), value, object);
+		value.go(code, dirs);
+
+		return value;
 	}
 
 	public static final class ObjectVal extends ObjectSignature<ObjectValFunc> {

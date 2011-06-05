@@ -19,18 +19,15 @@
 */
 package org.o42a.intrinsic.operator;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.member.MemberId.memberName;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -143,23 +140,28 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	}
 
 	@Override
-	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final CodeBlk failure = code.addBlock("binary_failure");
-		final CodeDirs dirs = falseWhenUnknown(code, failure.head());
+		final ValDirs leftDirs = dirs.dirs().value("left");
 		final ObjectOp leftObject =
-			host.field(dirs, leftOperandKey()).materialize(dirs);
-		final ValOp leftVal = leftObject.writeValue(dirs);
+			host.field(leftDirs.dirs(), leftOperandKey())
+			.materialize(leftDirs.dirs());
+		final ValOp leftVal = leftObject.writeValue(leftDirs);
+
+		final ValDirs rightDirs = leftDirs.dirs().value("right");
 		final ObjectOp rightObject =
-			host.field(dirs, rightOperandKey()).materialize(dirs);
-		final ValOp rightVal = rightObject.writeValue(dirs);
+			host.field(rightDirs.dirs(), rightOperandKey())
+			.materialize(rightDirs.dirs());
+		final ValOp rightVal = rightObject.writeValue(rightDirs);
 
-		write(dirs, result, leftVal, rightVal);
+		final ValDirs resultDirs = rightDirs.dirs().value(dirs);
+		final ValOp result = write(resultDirs, leftVal, rightVal);
 
-		if (failure.exists()) {
-			result.storeFalse(failure);
-			failure.go(code.tail());
-		}
+		resultDirs.done();
+		rightDirs.done();
+		leftDirs.done();
+
+		return result;
 	}
 
 	@Override
@@ -176,9 +178,8 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 
 	protected abstract T calculate(Resolver resolver, L left, R right);
 
-	protected abstract void write(
-			CodeDirs dirs,
-			ValOp result,
+	protected abstract ValOp write(
+			ValDirs dirs,
 			ValOp leftVal,
 			ValOp rightVal);
 

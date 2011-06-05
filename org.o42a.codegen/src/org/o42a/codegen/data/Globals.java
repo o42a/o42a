@@ -95,6 +95,7 @@ public abstract class Globals {
 		final SubData<O> data = global.getInstance().getTypeData();
 
 		data.allocateType(false);
+		this.globals.add(data);
 
 		return global;
 	}

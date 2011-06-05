@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.op.NewObjectFunc.NEW_OBJECT;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
@@ -79,7 +79,7 @@ public class CtrOp extends IROp {
 		result.isNull(null, code).go(code, nullObject.head());
 
 		if (nullObject.exists()) {
-			dirs.goWhenFalse(nullObject);
+			nullObject.go(dirs.falseDir());
 		}
 
 		dirs.end();
@@ -122,7 +122,7 @@ public class CtrOp extends IROp {
 		result.isNull(null, code).go(code, nullObject.head());
 
 		if (nullObject.exists()) {
-			dirs.goWhenFalse(nullObject);
+			nullObject.go(dirs.falseDir());
 		}
 
 		dirs.end();

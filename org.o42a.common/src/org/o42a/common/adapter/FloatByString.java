@@ -20,11 +20,11 @@
 package org.o42a.common.adapter;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
@@ -266,13 +266,20 @@ public strictfp class FloatByString extends ByString<Double> {
 	}
 
 	@Override
-	protected void parse(Code code, ValOp result, ObjectOp input) {
+	protected ValOp parse(ValDirs dirs, ObjectOp input) {
 
-		final Generator generator = input.getGenerator();
-		final ValOp inputValue = input.writeValue(code);
-		final ParseFunc parseFunc = parseFunc(generator).op(null, code);
+		final ValDirs inputDirs = dirs.dirs().value("input");
+		final ValOp inputValue = input.writeValue(inputDirs);
 
-		parseFunc.parse(code, result, inputValue);
+		final ValDirs outputDirs = inputDirs.dirs().value(dirs);
+		final ParseFunc parseFunc =
+			parseFunc(dirs.getGenerator()).op(null, outputDirs.code());
+		final ValOp output = parseFunc.parse(outputDirs, inputValue);
+
+		outputDirs.done();
+		inputDirs.done();
+
+		return output;
 	}
 
 	private FuncPtr<ParseFunc> parseFunc(Generator generator) {
