@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -32,6 +30,7 @@ public abstract class ValDirs {
 	private final Code code;
 	private Code falseCode;
 	private Code unknownCode;
+	protected ValOp value;
 	protected CodeDirs dirs;
 
 	ValDirs(Code code) {
@@ -66,23 +65,18 @@ public abstract class ValDirs {
 		return this.code.addBlock(name);
 	}
 
-	public final ValOp value() {
+	public ValOp value() {
+		if (this.value != null) {
+			return this.value;
+		}
 
 		final TopLevelValDirs topLevel = topLevel();
 
-		if (topLevel.value != null) {
-			return topLevel.value;
+		if (code() == topLevel.code()) {
+			return this.value = topLevel.value();
 		}
 
-		assert topLevel.allocatable :
-			"Can not allocate value";
-
-		topLevel.allocation = topLevel.enclosing.allocate("value");
-		topLevel.value =
-			topLevel.allocation.allocate(id("value"), VAL_TYPE)
-			.storeIndefinite(topLevel.allocation.code());
-
-		return topLevel.value;
+		return this.value = topLevel.value();
 	}
 
 	public abstract void done();
@@ -195,6 +189,22 @@ public abstract class ValDirs {
 			this.allocatable = false;
 			this.enclosing = enclosing;
 			this.value = value;
+		}
+
+		@Override
+		public ValOp value() {
+			if (this.value != null) {
+				return this.value;
+			}
+
+			assert this.allocatable :
+				"Can not allocate value";
+
+			this.allocation = this.enclosing.allocate("value");
+
+			return this.value =
+				this.allocation.allocate(id("value"), ValOp.VAL_TYPE)
+				.storeIndefinite(this.allocation.code());
 		}
 
 		@Override

@@ -463,6 +463,7 @@ public abstract class Ref extends RefTypeBase {
 				.value(code.id("local_val"), result);
 
 			final ValOp res = this.ref.writeValue(dirs);
+
 			if (res != result) {
 				result.store(code, res);
 			}

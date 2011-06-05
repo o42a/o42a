@@ -25,7 +25,6 @@ import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
@@ -128,35 +127,30 @@ public class ObjectValueIR {
 			ObjOp host,
 			Definitions definitions) {
 
-		final ValOp result = dirs.value();
 		final Code code = dirs.code();
 
 		writeRequirement(dirs.dirs(), host, null);
 		writeCondition(dirs.dirs(), host, null);
 
-		final CodeBlk unknownClaim = code.addBlock("unknown_claim");
+		final Code unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
 			dirs.dirs().splitWhenUnknown(
 					dirs.dirs().falsePos(),
 					unknownClaim.head())
-			.value(code.id("claim"), result);
-		final ValOp claim = writeClaim(claimDirs, host, null);
+			.value(dirs);
+		final ValOp claim =
+			code.phi(null, writeClaim(claimDirs, host, null));
 
-		if (claim != result) {
-			result.store(claimDirs.code(), claim);
-		}
 		claimDirs.done();
 
 		final ValDirs propDirs = dirs.sub(unknownClaim);
-		final ValOp prop = writeProposition(propDirs, host, null);
+		final ValOp prop =
+			unknownClaim.phi(null, writeProposition(propDirs, host, null));
 
-		if (prop != result) {
-			result.store(propDirs.code(), prop);
-		}
 		propDirs.done();
 		unknownClaim.go(code.tail());
 
-		return result;
+		return code.phi(null, claim, prop);
 	}
 
 	protected void createRequirement(
