@@ -314,15 +314,11 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		valDirs.done();
 		if (falseCode.exists()) {
 			value.storeFalse(falseCode);
-			if (!resultDirs.dirs().goWhenFalse(falseCode)) {
-				falseCode.go(code.tail());
-			}
+			falseCode.go(resultDirs.falseDir());
 		}
 		if (unknownCode.exists()) {
 			value.storeUnknown(unknownCode);
-			if (!resultDirs.dirs().goWhenUnknown(unknownCode)) {
-				unknownCode.go(code.tail());
-			}
+			unknownCode.go(resultDirs.unknownDir());
 		}
 	}
 

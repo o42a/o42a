@@ -81,8 +81,8 @@ public class AllocationDirs {
 			return this.dirs;
 		}
 
-		final CodePos falsePos = this.enclosing.falsePos();
-		final CodePos unknownPos = this.enclosing.unknownPos();
+		final CodePos falsePos = this.enclosing.falseDir();
+		final CodePos unknownPos = this.enclosing.unknownDir();
 
 		if (falsePos != null) {
 			this.falseAlt = this.code.alt("false");
