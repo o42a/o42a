@@ -366,7 +366,7 @@ public abstract class ObjectValueIRValFunc
 				return this.blocks[next].head();
 			}
 
-			return this.dirs.unknownPos();
+			return this.dirs.unknownDir();
 		}
 
 	}

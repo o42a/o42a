@@ -135,7 +135,7 @@ public class ObjectValueIR {
 		final Code unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
 			dirs.dirs().splitWhenUnknown(
-					dirs.dirs().falsePos(),
+					dirs.dirs().falseDir(),
 					unknownClaim.head())
 			.value(dirs);
 		final ValOp claim =

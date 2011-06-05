@@ -65,6 +65,18 @@ public abstract class ValDirs {
 		return this.code.addBlock(name);
 	}
 
+	public final boolean isFalseWhenUnknown() {
+		return dirs().isFalseWhenUnknown();
+	}
+
+	public final CodePos falseDir() {
+		return dirs().falseDir();
+	}
+
+	public final CodePos unknownDir() {
+		return dirs().unknownDir();
+	}
+
 	public ValOp value() {
 		if (this.value != null) {
 			return this.value;
@@ -104,7 +116,7 @@ public abstract class ValDirs {
 
 		final CodeDirs dirs = dirs();
 
-		if (dirs.falsePos() == dirs.unknownPos()) {
+		if (dirs.falseDir() == dirs.unknownDir()) {
 			return this;
 		}
 
@@ -136,8 +148,8 @@ public abstract class ValDirs {
 
 	CodeDirs createDirs(CodeDirs enclosing) {
 
-		final CodePos falsePos = enclosing.falsePos();
-		final CodePos unknownPos = enclosing.unknownPos();
+		final CodePos falsePos = enclosing.falseDir();
+		final CodePos unknownPos = enclosing.unknownDir();
 
 		if (falsePos == null) {
 			this.falseCode = null;
