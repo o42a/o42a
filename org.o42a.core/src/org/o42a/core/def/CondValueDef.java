@@ -19,12 +19,8 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
-
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
@@ -85,25 +81,9 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
-
-		final Code code = dirs.code();
-		final CodeBlk defFalse = code.addBlock("def_false");
-		final CodeBlk defUnknown = code.addBlock("def_unknown");
-		final CodeDirs defDirs =
-			splitWhenUnknown(code, defFalse.head(), defUnknown.head());
-
-		this.def.getLogical().write(defDirs, host);
-
-		result.storeVoid(code);
-		if (defFalse.exists()) {
-			result.storeFalse(defFalse);
-			dirs.goWhenFalse(defFalse);
-		}
-		if (defUnknown.exists()) {
-			result.storeUnknown(defFalse);
-			dirs.goWhenFalse(defFalse);
-		}
+	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+		this.def.getLogical().write(dirs.dirs(), host);
+		return dirs.value().storeVoid(dirs.code());
 	}
 
 }

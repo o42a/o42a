@@ -58,7 +58,7 @@ final class LogicalFalse extends Logical {
 		final Code code = dirs.code();
 
 		code.debug("Logical: FALSE");
-		dirs.goWhenFalse(code);
+		code.go(dirs.falseDir());
 	}
 
 	@Override

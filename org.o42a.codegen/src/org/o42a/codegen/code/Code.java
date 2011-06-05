@@ -158,7 +158,7 @@ public abstract class Code extends DebugCodeBase {
 
 	public final <O extends Op> O phi(CodeId id, O op) {
 		assert assertIncomplete();
-		return writer().phi(opId(id), op);
+		return writer().phi(id != null ? id : op.getId(), op);
 	}
 
 	public final <O extends Op> O phi(CodeId id, O op1, O op2) {

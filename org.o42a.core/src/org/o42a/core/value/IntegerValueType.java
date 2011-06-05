@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
@@ -39,6 +40,11 @@ final class IntegerValueType extends ValueType<Long> {
 	@Override
 	protected Val val(Generator generator, Long value) {
 		return new Val(value);
+	}
+
+	@Override
+	protected CodeId constId(Generator generator, Long value) {
+		return generator.id("CONST").sub("INTEGER").sub(Long.toString(value));
 	}
 
 }

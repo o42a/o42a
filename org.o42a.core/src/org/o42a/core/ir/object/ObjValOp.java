@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -28,10 +28,6 @@ public interface ObjValOp {
 
 	void writeLogicalValue(CodeDirs dirs);
 
-	ValOp writeValue(Code code);
-
-	ValOp writeValue(CodeDirs dirs);
-
-	ValOp writeValue(CodeDirs dirs, ValOp result);
+	ValOp writeValue(ValDirs dirs);
 
 }

@@ -29,34 +29,31 @@ import org.o42a.codegen.code.op.BoolOp;
 
 public class CodeDirs {
 
-	public static CodeDirs continueWhenUnknown(Code code, CodePos falsePos) {
-		return new CodeDirs(code, falsePos, null);
-	}
-
-	public static CodeDirs falseWhenUnknown(Code code, CodePos falsePos) {
-		return new CodeDirs(code, falsePos, falsePos);
+	public static CodeDirs falseWhenUnknown(Code code, CodePos falseDir) {
+		return new CodeDirs(code, falseDir, falseDir);
 	}
 
 	public static CodeDirs splitWhenUnknown(
 			Code code,
-			CodePos falsePos,
-			CodePos unknownPos) {
-		return new CodeDirs(code, falsePos, unknownPos);
+			CodePos falseDir,
+			CodePos unknownDir) {
+		return new CodeDirs(code, falseDir, unknownDir);
 	}
 
 	private final Code code;
-	private final CodePos falsePos;
-	private final CodePos unknownPos;
+	private final CodePos falseDir;
+	private final CodePos unknownDir;
 
-	CodeDirs(
-			Code code,
-			CodePos falsePos,
-			CodePos unknownPos) {
+	CodeDirs(Code code, CodePos falseDir, CodePos unknownDir) {
 		assert code != null :
 			"Code not specified";
+		assert falseDir != null :
+			"False direction not specified";
+		assert unknownDir != null :
+			"Unknown direction not specified";
 		this.code = code;
-		this.falsePos = falsePos;
-		this.unknownPos = unknownPos;
+		this.falseDir = falseDir;
+		this.unknownDir = unknownDir;
 	}
 
 	public final Generator getGenerator() {
@@ -87,6 +84,10 @@ public class CodeDirs {
 		return this.code.addBlock(name);
 	}
 
+	public final CodeDirs sub(Code code) {
+		return new CodeDirs(code, this.falseDir, this.unknownDir);
+	}
+
 	public CodeDirs begin(String id, String message) {
 		if (!isDebug()) {
 			return this;
@@ -94,13 +95,13 @@ public class CodeDirs {
 
 		this.code.begin(message);
 
-		final CodePos falsePos = end(id + "_false", this.falsePos);
+		final CodePos falsePos = end(id + "_false", this.falseDir);
 		final CodePos unknownPos;
 
-		if (this.falsePos == this.unknownPos) {
+		if (this.falseDir == this.unknownDir) {
 			unknownPos = falsePos;
 		} else {
-			unknownPos = end(id + "_unknown", this.unknownPos);
+			unknownPos = end(id + "_unknown", this.unknownDir);
 		}
 
 		return new Nested(this, falsePos, unknownPos);
@@ -137,53 +138,52 @@ public class CodeDirs {
 		return new ValDirs.TopLevelValDirs(this, name);
 	}
 
+	public final ValDirs value(CodeId name, ValOp value) {
+		return new ValDirs.TopLevelValDirs(this, name, value);
+	}
+
+	public final ValDirs value(ValDirs storage) {
+		return new ValDirs.NestedValDirs(this, storage);
+	}
+
 	public final CodeDirs falseWhenUnknown() {
-		if (this.falsePos == this.unknownPos) {
+		if (isFalseWhenUnknown()) {
 			return this;
 		}
-		return new CodeDirs(this.code, this.falsePos, this.falsePos);
+		return new CodeDirs(this.code, this.falseDir, this.falseDir);
 	}
 
 	public final CodeDirs unknownWhenFalse() {
-		if (this.falsePos == this.unknownPos) {
+		if (isFalseWhenUnknown()) {
 			return this;
 		}
-		return new CodeDirs(this.code, this.unknownPos, this.unknownPos);
+		return new CodeDirs(this.code, this.unknownDir, this.unknownDir);
 	}
 
 	public final CodeDirs splitWhenUnknown(
-			CodePos falsePos,
-			CodePos unknownPos) {
-		if (falsePos == unknownPos) {
-			return falseWhenUnknown();
-		}
-		return new CodeDirs(this.code, falsePos, unknownPos);
+			CodePos falseDir,
+			CodePos unknownDir) {
+		return new CodeDirs(this.code, falseDir, unknownDir);
 	}
 
-	public final void goWhenFalse(Code code) {
-		go(code, this.falsePos);
+	public final boolean isFalseWhenUnknown() {
+		return this.falseDir == this.unknownDir;
 	}
 
-	public final void goWhenUnknown(Code code) {
-		go(code, this.unknownPos);
+	public final CodePos falseDir() {
+		return this.falseDir;
 	}
 
-	public final void go(Code code, BoolOp bool) {
-		if (this.falsePos == null) {
-			return;
-		}
-		bool.goUnless(code, dir(code, this.falsePos));
+	public final CodePos unknownDir() {
+		return this.unknownDir;
 	}
 
 	public final void go(Code code, CondOp cond) {
 
 		final BoolOp condition = cond.loadCondition(null, code);
 
-		if (this.unknownPos == this.falsePos) {
-			if (this.falsePos == null) {
-				return;
-			}
-			condition.goUnless(code, dir(code, this.falsePos));
+		if (isFalseWhenUnknown()) {
+			condition.goUnless(code, falseDir());
 			return;
 		}
 
@@ -193,8 +193,8 @@ public class CodeDirs {
 		if (condFalse.exists()) {
 			cond.loadUnknown(null, condFalse).go(
 					condFalse,
-					dir(condFalse, this.unknownPos),
-					dir(condFalse, this.falsePos));
+					unknownDir(),
+					falseDir());
 		}
 	}
 
@@ -203,37 +203,29 @@ public class CodeDirs {
 		return toString("CodeDirs", this.code);
 	}
 
-	final CodePos falsePos() {
-		return this.falsePos;
-	}
-
-	final CodePos unknownPos() {
-		return this.unknownPos;
-	}
-
 	String toString(String title, Code code) {
 
 		final StringBuilder out = new StringBuilder();
 		boolean semicolon = false;
 
 		out.append(title).append('[').append(code).append(": ");
-		if (this.falsePos != null) {
+		if (this.falseDir != null) {
 			if (semicolon) {
 				out.append("; ");
 			} else {
 				semicolon = true;
 			}
-			if (this.falsePos == this.unknownPos) {
-				out.append("false,unknown->").append(this.falsePos);
+			if (this.falseDir == this.unknownDir) {
+				out.append("false,unknown->").append(this.falseDir);
 			} else {
-				out.append("false->").append(this.falsePos);
+				out.append("false->").append(this.falseDir);
 			}
 		}
-		if (this.unknownPos != null && this.unknownPos != this.falsePos) {
+		if (this.unknownDir != null && this.unknownDir != this.falseDir) {
 			if (semicolon) {
 				out.append("; ");
 			}
-			out.append("unknown->").append(this.unknownPos);
+			out.append("unknown->").append(this.unknownDir);
 		}
 		out.append(']');
 
@@ -251,25 +243,6 @@ public class CodeDirs {
 		block.go(dir);
 
 		return block.head();
-	}
-
-	private final void go(Code code, CodePos codePos) {
-
-		final CodePos dir = dir(code, codePos);
-
-		if (dir != null) {
-			code.go(dir);
-		}
-	}
-
-	private final CodePos dir(Code code, CodePos codePos) {
-		if (codePos != null) {
-			return codePos;
-		}
-		if (code != this.code) {
-			return this.code.tail();
-		}
-		return null;
 	}
 
 	private static final class Nested extends CodeDirs {

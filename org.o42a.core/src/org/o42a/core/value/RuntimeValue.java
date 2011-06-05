@@ -20,12 +20,20 @@
 package org.o42a.core.value;
 
 import static org.o42a.core.ir.op.Val.INDEFINITE_VAL;
+import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.data.Global;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.op.Val;
+import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.ValOp.Type;
 
 
 final class RuntimeValue<T> extends Value<T> {
+
+	private static Ptr<ValOp> cachedPtr;
+	private static Generator cachedGenerator;
 
 	RuntimeValue(ValueType<T> valueType) {
 		super(valueType);
@@ -44,6 +52,22 @@ final class RuntimeValue<T> extends Value<T> {
 	@Override
 	public Val val(Generator generator) {
 		return INDEFINITE_VAL;
+	}
+
+	@Override
+	public Ptr<ValOp> valPtr(Generator generator) {
+		if (cachedPtr != null && cachedGenerator == generator) {
+			return cachedPtr;
+		}
+		cachedGenerator = generator;
+
+		final Global<ValOp, Type> global =
+			generator.newGlobal().setConstant().dontExport().newInstance(
+					generator.id("CONST").sub("INDEFINITE"),
+					VAL_TYPE,
+					INDEFINITE_VAL);
+
+		return cachedPtr = global.getPointer();
 	}
 
 	@Override

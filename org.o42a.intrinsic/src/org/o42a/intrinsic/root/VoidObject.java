@@ -19,16 +19,12 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.ir.op.Val.VOID_VAL;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.*;
@@ -41,6 +37,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjValOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -71,7 +68,8 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	@Override
-	public void writeBuiltin(Code code, ValOp result, HostOp host) {
+	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+		return voidValue().op(dirs.code());
 	}
 
 	@Override
@@ -175,8 +173,6 @@ public final class VoidObject extends BuiltinObject {
 			extends BuiltinValueIR
 			implements ObjValOp {
 
-		private Ptr<ValOp> truePtr;
-
 		ValueIR(VoidObject builtin, ObjectIR objectIR) {
 			super(builtin, objectIR);
 		}
@@ -186,42 +182,13 @@ public final class VoidObject extends BuiltinObject {
 		}
 
 		@Override
-		public ValOp writeValue(Code code) {
-			return trueVal(code);
-		}
-
-		@Override
-		public ValOp writeValue(CodeDirs dirs) {
-			return trueVal(dirs.code());
-		}
-
-		@Override
-		public ValOp writeValue(CodeDirs dirs, ValOp result) {
-			result.storeVoid(dirs.code());
-			return result;
+		public ValOp writeValue(ValDirs dirs) {
+			return voidValue().op(dirs.code());
 		}
 
 		@Override
 		public ObjValOp op(CodeBuilder builder, Code code) {
 			return this;
-		}
-
-		private final ValOp trueVal(Code code) {
-			return truePtr().op(code.id("TRUE"), code);
-		}
-
-		private final Ptr<ValOp> truePtr() {
-			if (this.truePtr != null) {
-				return this.truePtr;
-			}
-
-			final Global<ValOp, ValOp.Type> instance =
-				getGenerator().newGlobal().setConstant().newInstance(
-						getGenerator().topId().sub("TRUE"),
-						VAL_TYPE,
-						VOID_VAL);
-
-			return this.truePtr = instance.getPointer();
 		}
 
 	}

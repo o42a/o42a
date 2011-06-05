@@ -25,6 +25,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 
 
@@ -34,6 +35,17 @@ public final class ParseFunc extends Func {
 
 	private ParseFunc(FuncCaller<ParseFunc> caller) {
 		super(caller);
+	}
+
+	public ValOp parse(ValDirs dirs, ValOp input) {
+
+		final Code code = dirs.code();
+		final ValOp output = dirs.value();
+
+		parse(code, output, input);
+		output.go(code, dirs);
+
+		return output;
 	}
 
 	public void parse(Code code, ValOp output, ValOp input) {

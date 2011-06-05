@@ -19,7 +19,9 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import org.o42a.core.ir.op.CodeDirs;
+import static org.o42a.core.value.Value.voidValue;
+
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;
@@ -37,8 +39,8 @@ final class EqualsOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public void write(CodeDirs dirs, ValOp result, ValOp comparisonVal) {
-		result.storeVoid(dirs.code());
+	public ValOp write(ValDirs dirs, ValOp comparisonVal) {
+		return voidValue().op(dirs.code());
 	}
 
 }

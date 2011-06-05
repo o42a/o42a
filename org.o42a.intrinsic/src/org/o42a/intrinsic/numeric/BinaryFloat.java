@@ -23,7 +23,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
@@ -67,13 +67,10 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 	protected abstract double calculate(double left, double right);
 
 	@Override
-	protected void write(
-			CodeDirs dirs,
-			ValOp result,
-			ValOp leftVal,
-			ValOp rightVal) {
+	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Code code = dirs.code();
+		final ValOp result = dirs.value();
 		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
 		final RecOp<Fp64op> leftPtr = leftRec.toFp64(null, code);
 		final Fp64op left = leftPtr.load(code.id("left"), code);
@@ -83,6 +80,8 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 		final Fp64op right = rightPtr.load(code.id("right"), code);
 
 		result.store(code, write(code, left, right));
+
+		return result;
 	}
 
 	protected abstract Fp64op write(Code code, Fp64op left, Fp64op right);

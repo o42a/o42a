@@ -174,7 +174,8 @@ public class Root extends Obj {
 			final IntrinsicsIR intrinsicsIR =
 				new IntrinsicsIR((Root) getObject());
 
-			getGenerator().newGlobal().export().struct(intrinsicsIR);
+			getGenerator().newGlobal().setConstant().export().struct(
+					intrinsicsIR);
 			if (getGenerator().isDebug()) {
 				getGenerator().newGlobal().export().struct(new DebugIR());
 			}

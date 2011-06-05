@@ -22,6 +22,7 @@ package org.o42a.core.ir.object.value;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
@@ -30,12 +31,9 @@ import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectValFunc;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
 public abstract class ObjectValueIRValFunc
@@ -47,17 +45,21 @@ public abstract class ObjectValueIRValFunc
 
 	public abstract boolean isClaim();
 
-	public void call(Code code, ValOp result, ObjOp host, ObjectOp body) {
-		if (code.isDebug()) {
-			code.begin("Calculate value " + this);
+	public ValOp call(ValDirs dirs, ObjOp host, ObjectOp body) {
+		if (dirs.isDebug()) {
+			dirs = dirs.begin("Calculate value " + getObjectIR().getId());
 			if (body != null) {
-				code.dumpName("For: ", body.toData(code));
+				dirs.code().dumpName("For: ", body.toData(dirs.code()));
 			}
 		}
 
-		if (writeFalseValue(code, result, body)) {
-			code.end();
-			return;
+		final Code code = dirs.code();
+
+		if (writeFalseValue(dirs.dirs(), body)) {
+			if (dirs.isDebug()) {
+				dirs.done();
+			}
+			return falseValue().op(code);
 		}
 
 		final Obj object = getObjectIR().getObject();
@@ -71,15 +73,22 @@ public abstract class ObjectValueIRValFunc
 				if (!object.getConstructionMode().isRuntime()
 						|| value.getSource() == object) {
 					code.debug(getObjectIR().getId() + " = " + realValue);
-					result.store(code, realValue.val(getGenerator()));
-					code.end();
-					return;
+					if (dirs.isDebug()) {
+						dirs.done();
+					}
+					return realValue.op(code);
 				}
 			}
 		}
 
-		get(host).op(null, code).call(code, result, body(code, host, body));
-		code.end();
+		final ValOp result =
+			get(host).op(null, code).call(dirs, body(code, host, body));
+
+		if (dirs.isDebug()) {
+			dirs.done();
+		}
+
+		return result;
 	}
 
 	public void create(ObjectTypeIR typeIR, Definitions definitions) {
@@ -112,6 +121,7 @@ public abstract class ObjectValueIRValFunc
 		function.debug("Calculating value");
 
 		final CodeBlk failure = function.addBlock("failure");
+		final CodeBlk unknown = function.addBlock("unknown");
 		final ValOp result = function.arg(function, OBJECT_VAL.value());
 		final ObjBuilder builder = new ObjBuilder(
 				function,
@@ -119,23 +129,39 @@ public abstract class ObjectValueIRValFunc
 				getObjectIR().getMainBodyIR(),
 				getObjectIR().getObject(),
 				DERIVED);
+		final ValDirs dirs = splitWhenUnknown(
+				function,
+				failure.head(),
+				unknown.head())
+				.value(
+						function.id(
+								isClaim() ? "claim_val" : "proposition_val"),
+						result);
+		final Code code = dirs.code();
 		final ObjOp host = builder.host();
 
-		function.dumpName("Host: ", host.ptr());
-		build(function, result, host, definitions);
+		code.dumpName("Host: ", host.ptr());
+
+		final ValOp res = build(dirs, host, definitions);
+
+		if (res != result) {
+			result.store(code, res);
+		}
+
+		dirs.done();
 		if (failure.exists()) {
 			result.storeFalse(failure);
 			failure.returnVoid();
 		}
+		if (unknown.exists()) {
+			unknown.returnVoid();
+		}
 
+		function.returnVoid();
 		function.done();
 	}
 
-	public void buildFunc(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			Definitions definitions) {
+	public ValOp buildFunc(ValDirs dirs, ObjOp host, Definitions definitions) {
 
 		final ValueDef[] defs;
 
@@ -145,26 +171,25 @@ public abstract class ObjectValueIRValFunc
 			defs = definitions.getPropositions();
 		}
 		if (defs.length == 0) {
-			writeAncestorDef(code, result, host);
-			return;
+			return writeAncestorDef(dirs, host);
 		}
 
-		final ValueCollector collector =
-			new ValueCollector(code, getObjectIR().getObject(), defs.length);
+		final ValueCollector collector = new ValueCollector(
+				dirs.dirs(),
+				getObjectIR().getObject(),
+				defs.length);
 
 		collector.addDefs(defs);
+
 		if (collector.size() == 0) {
-			writeAncestorDef(code, result, host);
-		} else {
-			writeExplicitDefs(code, result, host, collector);
+			return writeAncestorDef(dirs, host);
 		}
 
-		code.returnVoid();
+		return writeExplicitDefs(dirs, host, collector);
 	}
 
-	protected abstract void build(
-			Code code,
-			ValOp result,
+	protected abstract ValOp build(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions);
 
@@ -180,12 +205,13 @@ public abstract class ObjectValueIRValFunc
 				OBJECT_VAL);
 	}
 
-	private void writeExplicitDefs(
-			Code code,
-			ValOp result,
+	private ValOp writeExplicitDefs(
+			ValDirs dirs,
 			ObjOp host,
 			ValueCollector collector) {
 
+		final ValOp result = dirs.value();
+		final Code code = dirs.code();
 		final int size = collector.size();
 		final ValueDef[] defs = collector.getExplicitDefs();
 
@@ -197,55 +223,61 @@ public abstract class ObjectValueIRValFunc
 
 			if (def == null) {
 				if (i == collector.ancestorIndex) {
-					writeAncestorDef(block, result, host);
-					result.go(
+
+					final ValDirs defDirs = splitWhenUnknown(
 							block,
-							splitWhenUnknown(
-									block,
-									code.tail(),
-									collector.next(i)));
+							code.tail(),
+							collector.next(i))
+							.value(block.id("val"), result);
+					final ValOp res = writeAncestorDef(defDirs, host);
+
+					if (res != result) {
+						result.store(defDirs.code(), res);
+					}
+					defDirs.done();
+
 					block.go(collector.next(i));
 				}
 				continue;
 			}
 
-			final CodeDirs defDirs = splitWhenUnknown(
+			final ValDirs defDirs = splitWhenUnknown(
 					block,
 					code.tail(),
-					collector.next(i));
+					collector.next(i)).value(block.id("val"), result);
+			final ValOp res = def.write(defDirs, host);
 
-			def.write(defDirs, host, result);
+			if (res != result) {
+				result.store(defDirs.code(), res);
+			}
+			defDirs.done();
 			block.go(collector.next(i));
 		}
+
+		return result;
 	}
 
-	private void writeAncestorDef(Code code, ValOp result, ObjOp host) {
+	private ValOp writeAncestorDef(ValDirs dirs, ObjOp host) {
 
+		final ValOp result = dirs.value();
+		final Code code = dirs.code();
 		final CondBlk hasAncestor =
 			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
 		final CodeBlk noAncestor = hasAncestor.otherwise();
 
 		final Obj object = getObjectIR().getObject();
+		final TypeRef ancestor =
+			object.type().useBy(dummyUser()).getAncestor();
 
-		if (object.getValueType() == ValueType.VOID) {
-
-			final TypeRef ancestor =
-				object.type().useBy(dummyUser()).getAncestor();
-
-			if (ancestor.typeObject(dummyUser()).getScope()
-					== ancestor.getContext().getVoid().getScope()) {
-				noAncestor.debug("Inherited VOID proposition: " + this);
-				result.storeVoid(noAncestor);
-			} else {
-				noAncestor.debug(
-						"No ancestor, but does not inherit VOID explicitly: "
-						+ this);
-			}
+		if (ancestor.typeObject(dummyUser()).getScope()
+				== ancestor.getContext().getVoid().getScope()) {
+			noAncestor.debug("Inherited VOID proposition: " + this);
+			result.storeVoid(noAncestor);
+			noAncestor.go(code.tail());
 		} else {
-			noAncestor.debug("No ancestor, but not VOID: " + this);
+			noAncestor.debug("No ancestor: " + this);
+			noAncestor.go(dirs.unknownDir());
 		}
-
-		noAncestor.go(code.tail());
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
 		final ObjectTypeOp ancestorType =
@@ -254,39 +286,50 @@ public abstract class ObjectValueIRValFunc
 			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
-		if (isClaim()) {
-			if (hasAncestor.isDebug()) {
-				hasAncestor.begin("Ancestor claim");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
-			ancestorType.writeClaim(hasAncestor, result, ancestorBody);
-		} else {
-			if (hasAncestor.isDebug()) {
-				hasAncestor.begin("Ancestor proposition");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
-			ancestorType.writeProposition(hasAncestor, result, ancestorBody);
-		}
-		hasAncestor.end();
+		final ValDirs subDirs = dirs.sub(hasAncestor);
+		final ValDirs defDirs;
 
+		if (!dirs.isDebug()) {
+			defDirs = subDirs;
+		} else {
+			defDirs = subDirs.begin(
+					isClaim() ? "Ancestor claim" : "Ancestor proposition");
+			defDirs.code().dumpName(
+					"Ancestor: ",
+					ancestorBody.toData(defDirs.code()));
+		}
+
+		final ValOp res;
+
+		if (isClaim()) {
+			res = ancestorType.writeClaim(defDirs, ancestorBody);
+		} else {
+			res = ancestorType.writeProposition(defDirs, ancestorBody);
+		}
+		if (res != result) {
+			result.store(defDirs.code(), res);
+		}
+
+		if (dirs.isDebug()) {
+			defDirs.done();
+		}
+		subDirs.done();
 		hasAncestor.go(code.tail());
+
+		return result;
 	}
 
 	private final class ValueCollector extends DefCollector<ValueDef> {
 
-		private final Code code;
+		private final CodeDirs dirs;
 		private final ValueDef[] explicitDefs;
 		private final Code[] blocks;
 		private int size;
 		private int ancestorIndex = -1;
 
-		ValueCollector(Code code, Obj object, int capacity) {
+		ValueCollector(CodeDirs dirs, Obj object, int capacity) {
 			super(object);
-			this.code = code;
+			this.dirs = dirs;
 			this.explicitDefs = new ValueDef[capacity];
 			this.blocks = new Code[capacity];
 		}
@@ -301,7 +344,7 @@ public abstract class ObjectValueIRValFunc
 
 		@Override
 		protected void explicitDef(ValueDef def) {
-			this.blocks[this.size] = this.code.addBlock(this.size + "_cvar");
+			this.blocks[this.size] = this.dirs.addBlock(this.size + "_cvar");
 			this.explicitDefs[this.size++] = def;
 		}
 
@@ -311,7 +354,7 @@ public abstract class ObjectValueIRValFunc
 				return;
 			}
 			this.ancestorIndex = this.size;
-			this.blocks[this.size] = this.code.addBlock(this.size + "_vvar");
+			this.blocks[this.size] = this.dirs.addBlock(this.size + "_vvar");
 			++this.size;
 		}
 
@@ -323,7 +366,7 @@ public abstract class ObjectValueIRValFunc
 				return this.blocks[next].head();
 			}
 
-			return this.code.tail();
+			return this.dirs.unknownDir();
 		}
 
 	}

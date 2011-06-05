@@ -22,12 +22,17 @@ package org.o42a.intrinsic.numeric;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
 
 abstract class CompareNumbers<P extends Number>
 		extends BinaryResult<Long, P, P> {
+
+	static final Value<Long> MINUS_ONE = ValueType.INTEGER.constantValue(-1L);
+	static final Value<Long> ZERO = ValueType.INTEGER.constantValue(0L);
+	static final Value<Long> ONE = ValueType.INTEGER.constantValue(1L);
 
 	CompareNumbers(
 			MemberOwner owner,

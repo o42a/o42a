@@ -21,12 +21,12 @@ package org.o42a.lib.test.rt.parser;
 
 import static org.o42a.core.member.MemberId.memberName;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.common.adapter.ByString;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -81,9 +81,9 @@ final class ParseString extends ByString<String> {
 	}
 
 	@Override
-	protected void parse(Code code, ValOp result, ObjectOp input) {
-		code.debug("Run-time string");
-		result.store(code, input.writeValue(code));
+	protected ValOp parse(ValDirs dirs, ObjectOp input) {
+		dirs.code().debug("Run-time string");
+		return input.writeValue(dirs);
 	}
 
 }

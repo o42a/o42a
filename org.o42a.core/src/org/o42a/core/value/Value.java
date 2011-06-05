@@ -20,7 +20,10 @@
 package org.o42a.core.value;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.op.Val;
+import org.o42a.core.ir.op.ValOp;
 
 
 public abstract class Value<T> {
@@ -68,6 +71,15 @@ public abstract class Value<T> {
 	public abstract T getDefiniteValue();
 
 	public abstract Val val(Generator generator);
+
+	public abstract Ptr<ValOp> valPtr(Generator generator);
+
+	public final ValOp op(Code code) {
+
+		final Ptr<ValOp> ptr = valPtr(code.getGenerator());
+
+		return ptr.op(ptr.getId(), code);
+	}
 
 	public Value<T> require(LogicalValue requirement) {
 

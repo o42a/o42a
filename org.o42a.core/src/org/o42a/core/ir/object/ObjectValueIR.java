@@ -19,14 +19,12 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.Val.FALSE_VAL;
 import static org.o42a.core.ir.op.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.DefValue;
@@ -78,48 +76,24 @@ public class ObjectValueIR {
 		return this.objectIR + " Value IR";
 	}
 
-	protected void writeValue(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		this.value.call(code, result, host, body);
-
-		final Code stillIndefinite = code.addBlock("still_indefinite");
-
-		result.loadIndefinite(null, code).go(code, stillIndefinite.head());
-		result.storeUnknown(stillIndefinite);
-		stillIndefinite.go(code.tail());
+	protected ValOp writeValue(ValDirs dirs, ObjOp host, ObjectOp body) {
+		return this.value.call(dirs, host, body);
 	}
 
-	protected void writeRequirement(
-			CodeDirs dirs,
-			ObjOp host,
-			ObjectOp body) {
+	protected void writeRequirement(CodeDirs dirs, ObjOp host, ObjectOp body) {
 		this.requirement.call(dirs, host, body);
 	}
 
-	protected void writeClaim(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		this.claim.call(code, result, host, body);
+	protected ValOp writeClaim(ValDirs dirs, ObjOp host, ObjectOp body) {
+		return this.claim.call(dirs, host, body);
 	}
 
-	protected void writeCondition(
-			CodeDirs dirs,
-			ObjOp host,
-			ObjectOp body) {
+	protected void writeCondition(CodeDirs dirs, ObjOp host, ObjectOp body) {
 		this.condition.call(dirs, host, body);
 	}
 
-	protected void writeProposition(
-			Code code,
-			ValOp result,
-			ObjOp host,
-			ObjectOp body) {
-		this.proposition.call(code, result, host, body);
+	protected ValOp writeProposition(ValDirs dirs, ObjOp host, ObjectOp body) {
+		return this.proposition.call(dirs, host, body);
 	}
 
 	protected void allocate(ObjectTypeIR typeIR) {
@@ -148,46 +122,35 @@ public class ObjectValueIR {
 		this.value.create(typeIR, definitions);
 	}
 
-	protected void buildValue(
-			Code code,
-			ValOp result,
+	protected ValOp buildValue(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
 
-		final CodeBlk done = code.addBlock("done");
+		final Code code = dirs.code();
 
-		final CodeBlk conditionFalse = code.addBlock("condition_false");
-		final CodeBlk conditionUnknwon = code.addBlock("condition_unknown");
-		final CodeDirs conditionDirs = splitWhenUnknown(
-				code,
-				conditionFalse.head(),
-				conditionUnknwon.head());
+		writeRequirement(dirs.dirs(), host, null);
+		writeCondition(dirs.dirs(), host, null);
 
-		writeRequirement(conditionDirs, host, null);
-		writeCondition(conditionDirs, host, null);
-		if (conditionFalse.exists()) {
-			conditionFalse.debug("Object condition is FALSE");
-			result.storeFalse(conditionFalse);
-			conditionFalse.returnVoid();
-		}
-		if (conditionUnknwon.exists()) {
-			// Override indefinite value.
-			conditionUnknwon.debug("Object condition is UNKNOWN");
-			result.storeUnknown(conditionUnknwon);
-			conditionUnknwon.returnVoid();
-		}
+		final Code unknownClaim = dirs.addBlock("unknown_claim");
+		final ValDirs claimDirs =
+			dirs.dirs().splitWhenUnknown(
+					dirs.dirs().falseDir(),
+					unknownClaim.head())
+			.value(dirs);
+		final ValOp claim =
+			code.phi(null, writeClaim(claimDirs, host, null));
 
-		writeClaim(code, result, host, null);
-		result.loadIndefinite(null, code).goUnless(code, done.head());
+		claimDirs.done();
 
-		writeProposition(code, result, host, null);
-		result.loadIndefinite(null, code).goUnless(code, done.head());
+		final ValDirs propDirs = dirs.sub(unknownClaim);
+		final ValOp prop =
+			unknownClaim.phi(null, writeProposition(propDirs, host, null));
 
-		result.storeUnknown(code);// Override indefinite value.
-		code.returnVoid();
-		if (done.exists()) {
-			done.returnVoid();
-		}
+		propDirs.done();
+		unknownClaim.go(code.tail());
+
+		return code.phi(null, claim, prop);
 	}
 
 	protected void createRequirement(
@@ -207,12 +170,11 @@ public class ObjectValueIR {
 		this.claim.create(typeIR, definitions);
 	}
 
-	protected void buildClaim(
-			Code code,
-			ValOp result,
+	protected ValOp buildClaim(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
-		this.claim.buildFunc(code, result, host, definitions);
+		return this.claim.buildFunc(dirs, host, definitions);
 	}
 
 	protected void createCondition(
@@ -234,12 +196,11 @@ public class ObjectValueIR {
 		this.proposition.create(typeIR, definitions);
 	}
 
-	protected void buildProposition(
-			Code code,
-			ValOp result,
+	protected ValOp buildProposition(
+			ValDirs dirs,
 			ObjOp host,
 			Definitions definitions) {
-		this.proposition.buildFunc(code, result, host, definitions);
+		return this.proposition.buildFunc(dirs, host, definitions);
 	}
 
 	final ObjectIRLocals getLocals() {
@@ -336,12 +297,11 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected void build(
-				Code code,
-				ValOp result,
+		protected ValOp build(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildValue(code, result, host, definitions);
+			return buildValue(dirs, host, definitions);
 		}
 
 	}
@@ -415,12 +375,11 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected void build(
-				Code code,
-				ValOp result,
+		protected ValOp build(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildClaim(code, result, host, definitions);
+			return buildClaim(dirs, host, definitions);
 		}
 
 	}
@@ -494,12 +453,11 @@ public class ObjectValueIR {
 		}
 
 		@Override
-		protected void build(
-				Code code,
-				ValOp result,
+		protected ValOp build(
+				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			buildProposition(code, result, host, definitions);
+			return buildProposition(dirs, host, definitions);
 		}
 
 	}

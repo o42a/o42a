@@ -403,34 +403,6 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi(
-		JNIEnv *env,
-		jclass cls,
-		jlong blockPtr,
-		jstring id,
-		jlong block1ptr,
-		jlong value1ptr) {
-
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
-	Value *value1 = from_ptr<Value>(value1ptr);
-	BasicBlock *block1 = from_ptr<BasicBlock>(block1ptr);
-	jStringRef name(env, id);
-
-	OCODE(
-			block,
-			"phi " << name << ": "
-			+ block1->getName() << "(" << *value1 << ")\n");
-
-	PHINode *phi = builder.CreatePHI(value1->getType(), name);
-
-	phi->addIncoming(value1, block1);
-
-	ODUMP(phi);
-
-	return to_ptr(phi);
-}
-
 jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
 		JNIEnv *env,
 		jclass cls,

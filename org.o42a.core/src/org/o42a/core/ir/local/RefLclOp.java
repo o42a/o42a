@@ -25,7 +25,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -104,10 +103,8 @@ public final class RefLclOp extends LclOp {
 		final ObjectBodyIR ascendantBodyType =
 			ascendant.ir(getGenerator()).getBodyType();
 		final DataOp objectPtr = ptr().object(code).load(null, code);
-		final CodeBlk nullLocal = code.addBlock("null_local");
 
-		objectPtr.isNull(null, code).go(code, nullLocal.head());
-		dirs.goWhenFalse(nullLocal);
+		objectPtr.isNull(null, code).go(code, dirs.falseDir());
 
 		return objectPtr.to(null, code, ascendantBodyType).op(
 				getBuilder(),

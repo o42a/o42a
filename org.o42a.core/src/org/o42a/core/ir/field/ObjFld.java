@@ -104,7 +104,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				new ObjFldOp(this, host, fld)).toData(construct);
 
 		if (constructionFailed.exists()) {
-			dirs.goWhenFalse(constructionFailed);
+			constructionFailed.go(dirs.falseDir());
 		}
 		construct.go(code.tail());
 
@@ -117,7 +117,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				previousPtr).toData(delegate);
 
 		if (delegationFailed.exists()) {
-			dirs.goWhenFalse(delegationFailed);
+			delegationFailed.go(dirs.falseDir());
 		}
 		delegate.go(code.tail());
 

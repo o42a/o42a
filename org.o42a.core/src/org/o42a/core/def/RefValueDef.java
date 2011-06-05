@@ -23,7 +23,7 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
@@ -84,8 +84,8 @@ final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void writeValue(CodeDirs dirs, ValOp result, HostOp host) {
-		this.ref.op(host).writeValue(dirs, result);
+	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+		return this.ref.op(host).writeValue(dirs);
 	}
 
 }
