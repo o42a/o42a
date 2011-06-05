@@ -147,37 +147,26 @@ public abstract class ValDirs {
 	abstract CodeDirs createDirs();
 
 	CodeDirs createDirs(CodeDirs enclosing) {
-
-		final CodePos falsePos = enclosing.falseDir();
-		final CodePos unknownPos = enclosing.unknownDir();
-
-		if (falsePos == null) {
-			this.falseCode = null;
-		} else {
-			this.falseCode = createDir("false");
-		}
-		if (unknownPos == falsePos) {
+		this.falseCode = createDir("false");
+		if (enclosing.isFalseWhenUnknown()) {
 			this.unknownCode = this.falseCode;
-		} else if (unknownPos == null) {
-			this.unknownCode = null;
 		} else {
 			this.unknownCode = createDir("unknown");
 		}
-
 		return new CodeDirs(
 				this.code,
-				this.falseCode != null ? this.falseCode.head() : null,
-				this.unknownCode != null ? this.unknownCode.head() : null);
+				this.falseCode.head(),
+				this.unknownCode.head());
 	}
 
 	abstract Code createDir(String name);
 
 	void handleDirs(CodeDirs enclosing) {
 		dirs();
-		if (this.falseCode != null) {
+		if (this.falseCode.exists()) {
 			enclosing.goWhenFalse(this.falseCode);
 		}
-		if (this.unknownCode != null) {
+		if (this.unknownCode.exists() && this.unknownCode != this.falseCode) {
 			enclosing.goWhenUnknown(this.unknownCode);
 		}
 	}
