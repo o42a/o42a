@@ -166,14 +166,6 @@ public class CodeDirs {
 		return new CodeDirs(this.code, falseDir, unknownDir);
 	}
 
-	public final void goWhenFalse(Code code) {
-		code.go(falseDir());
-	}
-
-	public final void goWhenUnknown(Code code) {
-		code.go(unknownDir());
-	}
-
 	public final boolean isFalseWhenUnknown() {
 		return this.falseDir == this.unknownDir;
 	}
@@ -184,10 +176,6 @@ public class CodeDirs {
 
 	public final CodePos unknownDir() {
 		return this.unknownDir;
-	}
-
-	public final void go(Code code, BoolOp bool) {
-		bool.goUnless(code, falseDir());
 	}
 
 	public final void go(Code code, CondOp cond) {

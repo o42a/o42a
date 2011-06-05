@@ -164,10 +164,10 @@ public abstract class ValDirs {
 	void handleDirs(CodeDirs enclosing) {
 		dirs();
 		if (this.falseCode.exists()) {
-			enclosing.goWhenFalse(this.falseCode);
+			this.falseCode.go(enclosing.falseDir());
 		}
 		if (this.unknownCode.exists() && this.unknownCode != this.falseCode) {
-			enclosing.goWhenUnknown(this.unknownCode);
+			this.unknownCode.go(enclosing.unknownDir());
 		}
 	}
 

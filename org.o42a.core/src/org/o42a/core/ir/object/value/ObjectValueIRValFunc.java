@@ -276,7 +276,7 @@ public abstract class ObjectValueIRValFunc
 			noAncestor.go(code.tail());
 		} else {
 			noAncestor.debug("No ancestor: " + this);
-			dirs.dirs().goWhenUnknown(noAncestor);
+			noAncestor.go(dirs.unknownDir());
 		}
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
