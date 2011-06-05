@@ -148,7 +148,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				op.writeLogicalValue(falseWhenUnknown(
 						code,
 						operandFalse.head()));
-				dirs.dirs().goWhenFalse(code);
+				code.go(dirs.falseDir());
 				if (operandFalse.exists()) {
 					operandFalse.go(code.tail());
 				}
@@ -158,7 +158,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 						code,
 						operandFalse.head()));
 				if (operandFalse.exists()) {
-					dirs.dirs().goWhenFalse(operandFalse);
+					operandFalse.go(dirs.falseDir());
 				}
 				break;
 			case KNOWN:
@@ -170,7 +170,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 					operandFalse.go(code.tail());
 				}
 				if (operandUnknown.exists()) {
-					dirs.dirs().goWhenFalse(operandUnknown);
+					operandUnknown.go(dirs.falseDir());
 				}
 				break;
 			case UNKNOWN:
@@ -178,9 +178,9 @@ public class LogicalOperatorRef extends ObjectConstructor {
 						code,
 						operandFalse.head(),
 						operandUnknown.head()));
-				dirs.dirs().goWhenFalse(code);
+				code.go(dirs.falseDir());
 				if (operandFalse.exists()) {
-					dirs.dirs().goWhenFalse(operandFalse);
+					operandFalse.go(dirs.falseDir());
 				}
 				if (operandUnknown.exists()) {
 					operandUnknown.go(code.tail());

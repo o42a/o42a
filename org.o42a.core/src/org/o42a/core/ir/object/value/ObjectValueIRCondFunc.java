@@ -67,7 +67,7 @@ public abstract class ObjectValueIRCondFunc
 		if (logicalValue.isConstant()) {
 			if (logicalValue.isFalse()) {
 				code.debug("False");
-				dirs.goWhenFalse(code);
+				code.go(dirs.falseDir());
 			} else {
 				code.debug("True");
 			}
@@ -204,7 +204,7 @@ public abstract class ObjectValueIRCondFunc
 		if (trueWithoutAncestor) {
 			noAncestor.go(code.tail());
 		} else {
-			dirs.goWhenUnknown(noAncestor);
+			noAncestor.go(dirs.unknownDir());
 		}
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
@@ -214,13 +214,10 @@ public abstract class ObjectValueIRCondFunc
 			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
-		final CodeBlk ancestorFalse = hasAncestor.addBlock("ancestor_false");
-		final CodeBlk ancestorUnknown =
-			hasAncestor.addBlock("ancestor_unknown");
 		CodeDirs ancestorDirs = splitWhenUnknown(
 				hasAncestor,
-				ancestorFalse.head(),
-				ancestorUnknown.head());
+				dirs.falseDir(),
+				dirs.unknownDir());
 
 		if (isRequirement()) {
 			if (hasAncestor.isDebug()) {
@@ -246,12 +243,6 @@ public abstract class ObjectValueIRCondFunc
 		ancestorDirs.end();
 
 		hasAncestor.go(code.tail());
-		if (ancestorFalse.exists()) {
-			dirs.goWhenFalse(ancestorFalse);
-		}
-		if (ancestorUnknown.exists()) {
-			dirs.goWhenUnknown(ancestorUnknown);
-		}
 	}
 
 	private void writeExplicitDefs(
@@ -260,8 +251,6 @@ public abstract class ObjectValueIRCondFunc
 			CondCollector collector) {
 
 		final Code code = dirs.code();
-		final Code condFalse = code.addBlock("cond_false");
-		final Code condUnknown = code.addBlock("cond_unknown");
 		final CondDef[] defs = collector.getExplicitDefs();
 		final int size = collector.size();
 
@@ -276,8 +265,8 @@ public abstract class ObjectValueIRCondFunc
 
 					final CodeDirs ancestorDirs = splitWhenUnknown(
 							block,
-							condFalse.head(),
-							collector.next(i, condUnknown.head()));
+							dirs.falseDir(),
+							collector.next(i, dirs.unknownDir()));
 
 					writeAncestorDef(ancestorDirs, host, false);
 					block.go(collector.next(i, code.tail()));
@@ -287,7 +276,7 @@ public abstract class ObjectValueIRCondFunc
 			if (!def.hasPrerequisite()) {
 
 				final CodeDirs defDirs =
-					falseWhenUnknown(block, condFalse.head());
+					falseWhenUnknown(block, dirs.falseDir());
 
 				def.write(defDirs, host);
 				block.go(collector.next(i, code.tail()));
@@ -296,18 +285,11 @@ public abstract class ObjectValueIRCondFunc
 
 			final CodeDirs defDirs = splitWhenUnknown(
 					block,
-					condFalse.head(),
-					collector.next(i, condUnknown.head()));
+					dirs.falseDir(),
+					collector.next(i, dirs.unknownDir()));
 
 			def.write(defDirs, host);
 			block.go(collector.nextRequired(i, code.tail()));
-		}
-
-		if (condFalse.exists()) {
-			dirs.goWhenFalse(condFalse);
-		}
-		if (condUnknown.exists()) {
-			dirs.goWhenUnknown(condUnknown);
 		}
 	}
 

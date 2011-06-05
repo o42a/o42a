@@ -59,7 +59,7 @@ public class FloatsEqual extends NumbersEqual<Double> {
 
 		final BoolOp equals = left.eq(code.id("eq"), code, right);
 
-		dirs.dirs().go(code, equals);
+		equals.goUnless(code, dirs.falseDir());
 
 		return voidValue().op(code);
 	}

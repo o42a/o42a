@@ -70,7 +70,7 @@ final class NegatedLogical extends Logical {
 
 		negate().write(negatedDirs, host);
 		negatedDirs.end();
-		dirs.goWhenFalse(code);
+		code.go(dirs.falseDir());
 
 		if (isFalse.exists()) {
 			isFalse.go(code.tail());

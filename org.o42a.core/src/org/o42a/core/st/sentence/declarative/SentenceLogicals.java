@@ -24,7 +24,6 @@ import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import java.util.ArrayList;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -198,17 +197,17 @@ final class SentenceLogicals {
 			}
 
 			final Code code = dirs.code();
-			final CodeBlk exit = code.addBlock("exit");
+			final CodePos exit = dirs.falseDir();
 			CodePos otherwise;
 
 			if (this.otherwise == null) {
-				otherwise = exit.head();
+				otherwise = exit;
 			} else {
 
 				final Code otherwiseBlock = code.addBlock("otherwise");
 
 				this.otherwise.write(
-						falseWhenUnknown(otherwiseBlock, exit.head()),
+						falseWhenUnknown(otherwiseBlock, exit),
 						host);
 
 				otherwise = otherwiseBlock.head();
@@ -231,7 +230,7 @@ final class SentenceLogicals {
 							falseWhenUnknown(prereq, otherwise),
 							host);
 					precondition.write(
-							falseWhenUnknown(prereq, exit.head()),
+							falseWhenUnknown(prereq, exit),
 							host);
 					break;
 				}
@@ -239,14 +238,10 @@ final class SentenceLogicals {
 				final Code next = code.addBlock(nextIdx + "_prereq");
 
 				prerequisite.write(falseWhenUnknown(prereq, next.head()), host);
-				precondition.write(falseWhenUnknown(prereq, exit.head()), host);
+				precondition.write(falseWhenUnknown(prereq, exit), host);
 
 				prereq = next;
 				idx = nextIdx;
-			}
-
-			if (exit.exists()) {
-				dirs.goWhenFalse(exit);
 			}
 		}
 

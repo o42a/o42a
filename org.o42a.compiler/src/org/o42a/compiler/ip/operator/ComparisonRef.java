@@ -199,7 +199,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		@Override
 		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 			if (this.ref.hasError()) {
-				dirs.dirs().goWhenFalse(dirs.code());
+				dirs.code().go(dirs.falseDir());
 				return falseValue().op(dirs.code());
 			}
 

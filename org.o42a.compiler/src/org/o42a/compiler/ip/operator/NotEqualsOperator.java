@@ -49,7 +49,7 @@ final class NotEqualsOperator extends ComparisonOperator {
 
 		comparison.writeLogicalValue(falseWhenUnknown(code, notEqual.head()));
 
-		dirs.dirs().goWhenFalse(code);
+		code.go(dirs.falseDir());
 		if (notEqual.exists()) {
 			notEqual.go(code.tail());
 		}

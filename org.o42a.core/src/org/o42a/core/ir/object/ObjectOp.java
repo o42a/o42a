@@ -261,7 +261,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 		if (castNull.exists()) {
 			castNull.debug("Cast failed");
-			dirs.goWhenFalse(castNull);
+			castNull.go(dirs.falseDir());
 		}
 
 		dirs.end();
