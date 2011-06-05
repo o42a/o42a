@@ -51,9 +51,11 @@ public final class ObjectValFunc extends ObjectFunc {
 
 	public ValOp call(ValDirs dirs, DataOp object) {
 
+		final Code code = dirs.code();
 		final ValOp value = dirs.value();
 
-		invoke(null, dirs.code(), OBJECT_VAL.result(), value, object);
+		invoke(null, code, OBJECT_VAL.result(), value, object);
+		value.go(code, dirs);
 
 		return value;
 	}

@@ -46,9 +46,8 @@ public abstract class ObjectValueIRValFunc
 	public abstract boolean isClaim();
 
 	public ValOp call(ValDirs dirs, ObjOp host, ObjectOp body) {
-
 		if (dirs.isDebug()) {
-			dirs = dirs.begin("Calculate value " + this);
+			dirs = dirs.begin("Calculate value " + getObjectIR().getId());
 			if (body != null) {
 				dirs.code().dumpName("For: ", body.toData(dirs.code()));
 			}
@@ -77,8 +76,7 @@ public abstract class ObjectValueIRValFunc
 					if (dirs.isDebug()) {
 						dirs.done();
 					}
-					return realValue.valPtr(getGenerator())
-					.op(code.id("const"), code);
+					return realValue.op(code);
 				}
 			}
 		}
@@ -231,8 +229,11 @@ public abstract class ObjectValueIRValFunc
 							code.tail(),
 							collector.next(i))
 							.value(block.id("val"), result);
+					final ValOp res = writeAncestorDef(defDirs, host);
 
-					writeAncestorDef(defDirs, host);
+					if (res != result) {
+						result.store(defDirs.code(), res);
+					}
 					defDirs.done();
 
 					block.go(collector.next(i));
@@ -244,8 +245,11 @@ public abstract class ObjectValueIRValFunc
 					block,
 					code.tail(),
 					collector.next(i)).value(block.id("val"), result);
+			final ValOp res = def.write(defDirs, host);
 
-			def.write(defDirs, host);
+			if (res != result) {
+				result.store(defDirs.code(), res);
+			}
 			defDirs.done();
 			block.go(collector.next(i));
 		}

@@ -39,9 +39,11 @@ public final class ParseFunc extends Func {
 
 	public ValOp parse(ValDirs dirs, ValOp input) {
 
+		final Code code = dirs.code();
 		final ValOp output = dirs.value();
 
-		parse(dirs.code(), output, input);
+		parse(code, output, input);
+		output.go(code, dirs);
 
 		return output;
 	}
