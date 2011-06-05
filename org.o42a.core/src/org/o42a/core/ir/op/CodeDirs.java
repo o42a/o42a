@@ -147,26 +147,23 @@ public class CodeDirs {
 	}
 
 	public final CodeDirs falseWhenUnknown() {
-		if (this.falseDir == this.unknownDir) {
+		if (isFalseWhenUnknown()) {
 			return this;
 		}
 		return new CodeDirs(this.code, this.falseDir, this.falseDir);
 	}
 
 	public final CodeDirs unknownWhenFalse() {
-		if (this.falseDir == this.unknownDir) {
+		if (isFalseWhenUnknown()) {
 			return this;
 		}
 		return new CodeDirs(this.code, this.unknownDir, this.unknownDir);
 	}
 
 	public final CodeDirs splitWhenUnknown(
-			CodePos falsePos,
-			CodePos unknownPos) {
-		if (falsePos == unknownPos) {
-			return falseWhenUnknown();
-		}
-		return new CodeDirs(this.code, falsePos, unknownPos);
+			CodePos falseDir,
+			CodePos unknownDir) {
+		return new CodeDirs(this.code, falseDir, unknownDir);
 	}
 
 	public final void goWhenFalse(Code code) {
