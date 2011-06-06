@@ -117,9 +117,6 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	private void build(LocalBuilder builder, Code code, ValOp result) {
 
 		final StOp op = getScope().getBlock().op(builder);
-
-		op.allocate(builder, code);
-
 		final CodeBlk exit = code.addBlock("exit");
 		final Control control = builder.createControl(code, exit.head());
 

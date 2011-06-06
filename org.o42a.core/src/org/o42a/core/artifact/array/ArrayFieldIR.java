@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
@@ -39,7 +40,7 @@ final class ArrayFieldIR extends FieldIR<Array> {
 	}
 
 	@Override
-	protected LclOp allocateLocal(LocalBuilder builder, Code code) {
+	protected LclOp allocateLocal(LocalBuilder builder, AllocationCode code) {
 		// TODO Auto-generated method stub
 		return null;
 	}

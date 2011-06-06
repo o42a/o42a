@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.Field;
@@ -27,7 +26,6 @@ import org.o42a.core.member.field.Field;
 
 public final class LocalFieldOp extends StOp {
 
-	private LclOp op;
 	private final Field<?> field;
 
 	public LocalFieldOp(
@@ -43,16 +41,13 @@ public final class LocalFieldOp extends StOp {
 	}
 
 	@Override
-	public void allocate(LocalBuilder builder, Code code) {
+	public void writeAssignment(Control control, ValOp result) {
 
 		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
+		final LclOp op =
+			fieldIR.allocate(control.getBuilder(), control.allocation());
 
-		this.op = fieldIR.allocate(builder, code);
-	}
-
-	@Override
-	public void writeAssignment(Control control, ValOp result) {
-		this.op.write(control, result);
+		op.write(control, result);
 	}
 
 	@Override
