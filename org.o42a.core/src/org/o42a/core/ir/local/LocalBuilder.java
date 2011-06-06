@@ -76,6 +76,7 @@ public class LocalBuilder extends CodeBuilder {
 	}
 
 	public final Control createControl(Code code, CodePos exit) {
-		return Control.createControl(this, code, exit);
+		return new MainControl(this, code, exit);
 	}
+
 }
