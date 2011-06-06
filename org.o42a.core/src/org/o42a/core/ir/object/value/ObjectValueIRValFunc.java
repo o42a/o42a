@@ -141,12 +141,7 @@ public abstract class ObjectValueIRValFunc
 		final ObjOp host = builder.host();
 
 		code.dumpName("Host: ", host.ptr());
-
-		final ValOp res = build(dirs, host, definitions);
-
-		if (res != result) {
-			result.store(code, res);
-		}
+		result.store(code, build(dirs, host, definitions));
 
 		dirs.done();
 		if (failure.exists()) {
@@ -229,11 +224,11 @@ public abstract class ObjectValueIRValFunc
 							code.tail(),
 							collector.next(i))
 							.value(block.id("val"), result);
-					final ValOp res = writeAncestorDef(defDirs, host);
-
-					if (res != result) {
-						result.store(defDirs.code(), res);
-					}
+					
+					result.store(
+							defDirs.code(),
+							writeAncestorDef(defDirs, host));
+					
 					defDirs.done();
 
 					block.go(collector.next(i));
@@ -306,9 +301,7 @@ public abstract class ObjectValueIRValFunc
 		} else {
 			res = ancestorType.writeProposition(defDirs, ancestorBody);
 		}
-		if (res != result) {
-			result.store(defDirs.code(), res);
-		}
+		result.store(defDirs.code(), res);
 
 		if (dirs.isDebug()) {
 			defDirs.done();
