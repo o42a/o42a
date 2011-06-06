@@ -125,6 +125,8 @@ public final class LocalIRFunc extends ObjectIRFunc {
 
 		op.writeAssignment(control, result);
 
+		control.end();
+
 		if (exit.exists()) {
 			result.storeFalse(exit);
 			exit.returnVoid();

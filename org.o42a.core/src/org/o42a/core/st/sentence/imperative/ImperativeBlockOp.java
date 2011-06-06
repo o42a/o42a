@@ -85,19 +85,20 @@ public final class ImperativeBlockOp extends StOp {
 
 			writeSentence(sentence, blockControl, Integer.toString(i), result);
 			if (!blockControl.mayContinue()) {
+				blockControl.end();
 				control.reachability(blockControl);
 				return;
 			}
 		}
+
+		blockControl.end();
 
 		if (code.exists()) {
 			control.code().go(code.head());
 			if (next.exists()) {
 				next.go(control.code().tail());
 			}
-			if (!blockControl.isDone()) {
-				code.go(control.code().tail());
-			}
+			code.go(control.code().tail());
 		}
 
 		control.reachability(blockControl);
@@ -139,6 +140,9 @@ public final class ImperativeBlockOp extends StOp {
 			final Control prereqControl = control.issue(prereqFailed.head());
 
 			writeSentence(prerequisite, prereqControl, index + "_prereq", null);
+
+			prereqControl.end();
+
 			control.reachability(prereqControl);
 			if (!prereqControl.mayContinue()) {
 				return;
@@ -197,13 +201,16 @@ public final class ImperativeBlockOp extends StOp {
 			writeStatements(alt, altControl, result);
 
 			if (!altControl.mayContinue()) {
+				altControl.end();
 				control.reachability(altControl);
 				break;
 			}
 			if (control.isDone()) {
+				altControl.end();
 				continue;
 			}
 			if (altControl.isDone()) {
+				altControl.end();
 				if (alt.getStatements().size() == 1) {
 					// the only statement is exit
 					if (sentence.hasOpposite(i)) {// one of the opposites
@@ -235,6 +242,7 @@ public final class ImperativeBlockOp extends StOp {
 				endPrereq(control, prereqFailed);
 				end(sentence, control, altControl);
 			}
+			altControl.end();
 		}
 
 		if (prerequisite == null) {

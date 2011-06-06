@@ -19,8 +19,10 @@
 */
 package org.o42a.core.ir.local;
 
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
@@ -34,34 +36,13 @@ public abstract class Control {
 	private static final byte VALUE_RETURNED = 3;
 	private static final byte UNREACHABLE = 4;
 
-	static Control createControl(
-			LocalBuilder builder,
-			Code code,
-			CodePos exit) {
-		return new Main(builder, code, exit);
-	}
-
-	private final Main main;
-	private final Braces braces;
-	private final Code code;
-	private final CodePos exit;
-
 	private byte reachability;
 
-	private Control(Control parent, Code code, CodePos exit) {
-		this.main = parent.main;
-		this.braces =
-			getClass() == Braces.class ? (Braces) this : parent.braces;
-		this.code = code;
-		this.exit = exit;
-		this.reachability = parent.reachability;
+	Control() {
 	}
 
-	private Control(Code code, CodePos exit) {
-		this.main = (Main) this;
-		this.braces = null;
-		this.code = code;
-		this.exit = exit;
+	Control(Control parent) {
+		this.reachability = parent.reachability;
 	}
 
 	public final Generator getGenerator() {
@@ -69,8 +50,10 @@ public abstract class Control {
 	}
 
 	public final LocalBuilder getBuilder() {
-		return this.main.builder;
+		return main().builder();
 	}
+
+	public abstract AllocationCode allocation();
 
 	public final boolean isDone() {
 		return this.reachability != REACHABLE;
@@ -80,16 +63,12 @@ public abstract class Control {
 		return this.reachability != UNREACHABLE;
 	}
 
-	public final Code code() {
-		return this.code;
-	}
+	public abstract Code code();
 
-	public final CodePos exit() {
-		return this.exit;
-	}
+	public abstract CodePos exit();
 
 	public final void returnValue() {
-		this.code.returnVoid();
+		code().go(returnDir());
 		if (!isDone()) {
 			this.reachability = VALUE_RETURNED;
 		}
@@ -104,12 +83,12 @@ public abstract class Control {
 			return;
 		}
 
-		final Braces braces = enclosingBraces(name);
+		final BracesControl braces = enclosingBraces(name);
 
 		if (braces != null) {
-			this.code.go(braces.done);
+			code().go(exitDir(braces));
 		} else {
-			location.getContext().getLogger().unresolved(location, name);
+			unresolvedBlock(location, name);
 		}
 
 		if (!isDone()) {
@@ -122,12 +101,12 @@ public abstract class Control {
 			return;
 		}
 
-		final Braces braces = enclosingBraces(name);
+		final BracesControl braces = enclosingBraces(name);
 
 		if (braces != null) {
-			this.code.go(braces.code().head());
+			code().go(repeatDir(braces));
 		} else {
-			location.getContext().getLogger().unresolved(location, name);
+			unresolvedBlock(location, name);
 		}
 
 		if (!isDone()) {
@@ -156,103 +135,80 @@ public abstract class Control {
 		if (name != null) {
 			return name;
 		}
-		return Integer.toString(++this.main.seq);
+		return main().anonymousName();
 	}
 
 	public final Code addBlock(String name) {
-		return this.code.addBlock(name);
+		return code().addBlock(name);
 	}
 
 	public final Code addBlock(CodeId name) {
-		return this.code.addBlock(name);
+		return code().addBlock(name);
 	}
 
 	public final Control braces(Code code, CodePos next, String name) {
-		return new Braces(this, code, next, name);
+		return new BracesControl(this, code, next, name);
 	}
 
 	public final Control parentheses(Code code, CodePos next) {
-		return new Parentheses(this, code, next);
+		return new NestedControl.ParenthesesControl(this, code, next);
 	}
 
 	public final Control issue(CodePos next) {
-		return new Issue(this, next);
+		return new NestedControl.IssueControl(this, next);
 	}
 
 	public final Control alt(Code code, CodePos next) {
-		return new Alt(this, code, next);
+		return new NestedControl.AltControl(this, code, next);
 	}
 
-	private Braces enclosingBraces(String name) {
-		if (name == null) {
-			return this.braces;
+	public abstract void end();
+
+	@Override
+	public String toString() {
+
+		final Code code = code();
+
+		if (code == null) {
+			return super.toString();
 		}
 
-		Braces braces = this.braces;
+		return getClass().getSimpleName() + '[' + code.getId() + ']';
+	}
+
+	abstract MainControl main();
+
+	abstract BracesControl braces();
+
+	abstract CodePos returnDir();
+
+	abstract CodePos exitDir(BracesControl braces);
+
+	abstract CodePos repeatDir(BracesControl braces);
+
+	private BracesControl enclosingBraces(String name) {
+		if (name == null) {
+			return braces();
+		}
+
+		BracesControl braces = braces();
 
 		while (braces != null) {
 			if (name.equals(braces.getName())) {
 				return braces;
 			}
-			braces = braces.enclosing;
+			braces = braces.getEnclosing();
 		}
 
 		return null;
 	}
 
-	private static final class Main extends Control {
-
-		private final LocalBuilder builder;
-		private int seq;
-
-		Main(LocalBuilder builder, Code code, CodePos exit) {
-			super(code, exit);
-			this.builder = builder;
-		}
-
-	}
-
-	private static final class Braces extends Control {
-
-		private final Braces enclosing;
-		private final String name;
-		private final CodePos done;
-
-		Braces(Control parent, Code code, CodePos next, String name) {
-			super(parent, code, next);
-			this.enclosing = parent.braces;
-			this.name = name;
-			this.done = next;
-		}
-
-		public final String getName() {
-			return this.name;
-		}
-
-	}
-
-	private static final class Parentheses extends Control {
-
-		Parentheses(Control parent, Code code, CodePos next) {
-			super(parent, code, next);
-		}
-
-	}
-
-	private static final class Issue extends Control {
-
-		Issue(Control parent, CodePos next) {
-			super(parent, parent.code, next);
-		}
-
-	}
-
-	private static final class Alt extends Control {
-
-		Alt(Control parent, Code code, CodePos next) {
-			super(parent, code, next);
-		}
-
+	private void unresolvedBlock(LocationInfo location, String name) {
+		location.getContext().getLogger().error(
+				"unresolved_block",
+				location,
+				"Block '%s' not found",
+				name);
 	}
 
 }

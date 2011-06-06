@@ -462,11 +462,7 @@ public abstract class Ref extends RefTypeBase {
 				falseWhenUnknown(code, falseVal.head())
 				.value(code.id("local_val"), result);
 
-			final ValOp res = this.ref.writeValue(dirs);
-
-			if (res != result) {
-				result.store(code, res);
-			}
+			result.store(code, this.ref.writeValue(dirs));
 			if (falseVal.exists()) {
 				falseVal.go(control.exit());
 			}
