@@ -20,7 +20,7 @@
 package org.o42a.backend.llvm.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 
@@ -29,14 +29,18 @@ final class LLVMAllocationBlock extends LLVMCode implements AllocationWriter {
 
 	private final long stackPtr;
 
-	LLVMAllocationBlock(LLVMCode enclosing, Code code, CodeId id) {
+	LLVMAllocationBlock(LLVMCode enclosing, AllocationCode code, CodeId id) {
 		super(
 				enclosing.getModule(),
 				enclosing.getFunction(),
 				code,
 				id);
 		init();
-		this.stackPtr = stackSave(nextPtr());
+		if (code.isDisposable()) {
+			this.stackPtr = stackSave(nextPtr());
+		} else {
+			this.stackPtr = 0L;
+		}
 	}
 
 	@Override

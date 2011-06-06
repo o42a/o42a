@@ -23,6 +23,7 @@ import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.CompilerContext;
@@ -66,7 +67,7 @@ final class LinkFieldIR extends FieldIR<Link> {
 	}
 
 	@Override
-	protected RefLclOp allocateLocal(LocalBuilder builder, Code code) {
+	protected RefLclOp allocateLocal(LocalBuilder builder, AllocationCode code) {
 		return code.allocate(null, REF_LCL).op(builder, this);
 	}
 

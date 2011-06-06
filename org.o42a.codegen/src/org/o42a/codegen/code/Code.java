@@ -21,7 +21,6 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.debug.DebugCodeBase;
@@ -69,25 +68,37 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final AllocationCode allocate() {
-		return new AllocationCode(this, null);
+		return new AllocationCode(this, null, true);
 	}
 
 	public final AllocationCode allocate(String name) {
-		return new AllocationCode(this, id(name));
+		return new AllocationCode(this, id(name), true);
 	}
 
 	public final AllocationCode allocate(CodeId name) {
-		return new AllocationCode(this, name);
+		return new AllocationCode(this, name, true);
 	}
 
-	public final CodeBlk addBlock(String name) {
-		assert assertIncomplete();
-		return new CodeBlk(this, getGenerator().id(name));
+	public final AllocationCode undisposable() {
+		return new AllocationCode(this, null, false);
 	}
 
-	public final CodeBlk addBlock(CodeId name) {
+	public final AllocationCode undisposable(String name) {
+		return new AllocationCode(this, id(name), false);
+	}
+
+	public final AllocationCode undisposable(CodeId name) {
+		return new AllocationCode(this, name, false);
+	}
+
+	public final Code addBlock(String name) {
 		assert assertIncomplete();
-		return new CodeBlk(this, name);
+		return new CodeBlock(this, getGenerator().id(name));
+	}
+
+	public final Code addBlock(CodeId name) {
+		assert assertIncomplete();
+		return new CodeBlock(this, name);
 	}
 
 	public final void go(CodePos pos) {
@@ -172,9 +183,6 @@ public abstract class Code extends DebugCodeBase {
 		complete();
 	}
 
-	@Override
-	public abstract CodeWriter writer();
-
 	public CodeId opId(CodeId id) {
 		if (id != null) {
 			return id;
@@ -188,12 +196,12 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	@Override
-	protected final CondBlk choose(
+	protected final CondCode choose(
 			BoolOp condition,
 			CodeId trueName,
 			CodeId falseName) {
 		assert assertIncomplete();
-		return new CondBlk(this, condition, trueName, falseName);
+		return new CondCode(this, condition, trueName, falseName);
 	}
 
 	CodeId nestedId(CodeId name) {

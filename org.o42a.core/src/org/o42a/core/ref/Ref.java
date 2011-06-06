@@ -450,10 +450,6 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		@Override
-		public void allocate(LocalBuilder builder, Code code) {
-		}
-
-		@Override
 		public void writeAssignment(Control control, ValOp result) {
 
 			final Code falseVal = control.addBlock("false_st_val");
@@ -462,11 +458,7 @@ public abstract class Ref extends RefTypeBase {
 				falseWhenUnknown(code, falseVal.head())
 				.value(code.id("local_val"), result);
 
-			final ValOp res = this.ref.writeValue(dirs);
-
-			if (res != result) {
-				result.store(code, res);
-			}
+			result.store(code, this.ref.writeValue(dirs));
 			if (falseVal.exists()) {
 				falseVal.go(control.exit());
 			}

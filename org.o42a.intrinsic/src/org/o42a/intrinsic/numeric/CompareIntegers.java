@@ -20,8 +20,7 @@
 package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CondBlk;
+import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.RecOp;
@@ -58,8 +57,8 @@ final class CompareIntegers extends CompareNumbers<Long> {
 		final Int64op right = rightPtr.load(code.id("right"), code);
 
 		final BoolOp gt = left.gt(code.id("gt"), code, right);
-		final CondBlk greater = gt.branch(code, "greater", "not_greater");
-		final CodeBlk notGreater = greater.otherwise();
+		final CondCode greater = gt.branch(code, "greater", "not_greater");
+		final Code notGreater = greater.otherwise();
 
 		final ValOp result1 = ONE.op(greater);
 

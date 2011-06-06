@@ -24,7 +24,6 @@ import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.object.ObjOp;
@@ -117,13 +116,12 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	private void build(LocalBuilder builder, Code code, ValOp result) {
 
 		final StOp op = getScope().getBlock().op(builder);
-
-		op.allocate(builder, code);
-
-		final CodeBlk exit = code.addBlock("exit");
+		final Code exit = code.addBlock("exit");
 		final Control control = builder.createControl(code, exit.head());
 
 		op.writeAssignment(control, result);
+
+		control.end();
 
 		if (exit.exists()) {
 			result.storeFalse(exit);

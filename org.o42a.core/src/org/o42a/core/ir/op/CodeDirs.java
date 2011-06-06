@@ -22,7 +22,6 @@ package org.o42a.core.ir.op;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -187,7 +186,7 @@ public class CodeDirs {
 			return;
 		}
 
-		final CodeBlk condFalse = code.addBlock("false");
+		final Code condFalse = code.addBlock("false");
 
 		condition.goUnless(code, condFalse.head());
 		if (condFalse.exists()) {
@@ -237,7 +236,7 @@ public class CodeDirs {
 			return null;
 		}
 
-		final CodeBlk block = this.code.addBlock(id);
+		final Code block = this.code.addBlock(id);
 
 		block.end();
 		block.go(dir);

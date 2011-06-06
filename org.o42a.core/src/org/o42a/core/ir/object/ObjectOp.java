@@ -24,7 +24,9 @@ import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CondCode;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
@@ -105,11 +107,11 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 		final Code code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code);
-		final CondBlk indefinite = value.loadIndefinite(null, code).branch(
+		final CondCode indefinite = value.loadIndefinite(null, code).branch(
 				code,
 				"val_indefinite",
 				"val_definite");
-		final CodeBlk definite = indefinite.otherwise();
+		final Code definite = indefinite.otherwise();
 
 		definite.dump(this + " value is definite: ", value);
 		value.go(definite, dirs);
@@ -249,7 +251,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 					code,
 					this,
 					ascendantType);
-		final CodeBlk castNull = code.addBlock("cast_null");
+		final Code castNull = code.addBlock("cast_null");
 
 		resultPtr.isNull(null, code).go(code, castNull.head());
 

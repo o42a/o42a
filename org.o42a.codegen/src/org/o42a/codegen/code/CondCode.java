@@ -24,13 +24,13 @@ import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.BoolOp;
 
 
-public class CondBlk extends CodeBlk {
+public class CondCode extends CodeBlock {
 
 	private final BoolOp condition;
 	private final CodeId falseName;
-	private CodeBlk otherwise;
+	private Code otherwise;
 
-	CondBlk(
+	CondCode(
 			Code enclosing,
 			BoolOp condition,
 			CodeId trueName,
@@ -44,7 +44,7 @@ public class CondBlk extends CodeBlk {
 		return this.condition;
 	}
 
-	public final CodeBlk otherwise() {
+	public final Code otherwise() {
 		if (this.otherwise == null) {
 			initBlocks();
 		}

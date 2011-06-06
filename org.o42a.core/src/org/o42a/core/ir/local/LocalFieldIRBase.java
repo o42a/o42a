@@ -20,7 +20,7 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.field.Field;
@@ -46,7 +46,9 @@ public abstract class LocalFieldIRBase<A extends Artifact<A>> extends ScopeIR {
 		return this.local;
 	}
 
-	protected abstract LclOp allocateLocal(LocalBuilder builder, Code code);
+	protected abstract LclOp allocateLocal(
+			LocalBuilder builder,
+			AllocationCode code);
 
 	protected final void assertNotLocal() {
 		assert !getField().isLocal() :
@@ -58,7 +60,7 @@ public abstract class LocalFieldIRBase<A extends Artifact<A>> extends ScopeIR {
 			this + " is not local";
 	}
 
-	final LclOp allocate(LocalBuilder builder, Code code) {
+	final LclOp allocate(LocalBuilder builder, AllocationCode code) {
 		assertLocal();
 		return this.local = allocateLocal(builder, code);
 	}
