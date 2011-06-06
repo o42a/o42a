@@ -24,6 +24,7 @@ import static org.o42a.codegen.debug.DebugNameFunc.DEBUG_NAME;
 import static org.o42a.codegen.debug.DebugPrintFunc.DEBUG_PRINT;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
@@ -31,6 +32,12 @@ import org.o42a.codegen.data.Ptr;
 
 
 public abstract class DebugCodeBase extends OpCodeBase {
+
+	static DebugStackFrameOp allocateStackFrame(
+			Code code,
+			CodeId id) {
+		return allocate(code, id, DEBUG_STACK_FRAME_TYPE);
+	}
 
 	private static Generator cachedGenerator;
 	private static int debugSeq;
@@ -91,8 +98,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);
 		final DebugStackFrameOp prevStackFrame = envStackFrame.load(null, code);
-		final DebugStackFrameOp stackFrame =
-			code.allocate(null, DEBUG_STACK_FRAME_TYPE);
+		final DebugStackFrameOp stackFrame = allocateStackFrame(code, null);
 
 		prevStackFrame.comment(code).store(
 				code,
@@ -114,7 +120,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		final RecOp<Int8op> indent = debugEnv.indent(code);
 
-		indent.store(code, indent.load(null, code).add(null, code, code.int8((byte) 1)));
+		indent.store(
+				code,
+				indent.load(null, code).add(null, code, code.int8((byte) 1)));
 	}
 
 	public CodePos end(String id, CodePos codePos) {
@@ -125,7 +133,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return codePos;
 		}
 
-		final CodeBlk block = code().addBlock(id);
+		final Code block = code().addBlock(id);
 
 		block.end();
 		block.go(codePos);
@@ -154,7 +162,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		final RecOp<Int8op> indent = debugEnv.indent(code);
 
-		indent.store(code, indent.load(null, code).sub(null, code, code.int8((byte) 1)));
+		indent.store(
+				code,
+				indent.load(null, code).sub(null, code, code.int8((byte) 1)));
 
 		final DebugPrintFunc printFunc = printWoPrefixFunc().op(null, code);
 

@@ -25,7 +25,6 @@ import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -91,9 +90,9 @@ public class ConstructorOp extends RefOp {
 		this.ancestorFunc = getGenerator().newFunction().create(
 				getBuilder().nextId(),
 				OBJECT_REF);
-		final CodeBlk ancestorNotFound =
-			this.ancestorFunc.addBlock("ancestor_not_found");
 
+		final Code ancestorNotFound =
+			this.ancestorFunc.addBlock("ancestor_not_found");
 		final CodeBuilder builder = codeBuilder(
 				this.ancestorFunc,
 				ancestorNotFound.head(),
@@ -110,7 +109,7 @@ public class ConstructorOp extends RefOp {
 
 	private void buildAncestorFunc(CodeBuilder builder, Code code) {
 
-		final CodeBlk ancestorFailed = code.addBlock("ancestor_failed");
+		final Code ancestorFailed = code.addBlock("ancestor_failed");
 		final ObjectOp ancestor = buildAncestor(
 				builder,
 				falseWhenUnknown(code, ancestorFailed.head()));

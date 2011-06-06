@@ -23,12 +23,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 
 
-public class CodeBlk extends Code {
+class CodeBlock extends Code {
 
 	private final Code enclosing;
 	CodeWriter writer;
 
-	CodeBlk(Code enclosing, CodeId name) {
+	CodeBlock(Code enclosing, CodeId name) {
 		super(enclosing, name);
 		this.enclosing = enclosing;
 	}

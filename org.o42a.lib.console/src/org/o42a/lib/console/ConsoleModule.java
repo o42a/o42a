@@ -151,20 +151,20 @@ public class ConsoleModule extends Module {
 		main.debug("Start execution");
 
 		final CodeBuilder builder = codeBuilder(getContext(), main);
-		final ValOp result = main.allocate(null, VAL_TYPE).storeUnknown(main);
-		final CodeBlk exit = main.addBlock("exit");
+		final Code exit = main.addBlock("exit");
+		final AllocationCode alloc = main.undisposable();
+		final ValOp result = alloc.allocate(null, VAL_TYPE).storeUnknown(main);
 		final ValDirs dirs =
-			falseWhenUnknown(main, exit.head())
+			falseWhenUnknown(alloc, exit.head())
 			.value(main.id("exec_main"), result);
 		final Code code = dirs.code();
 
-		final ValOp res =
-			this.main.ir(generator).op(builder, code).writeValue(dirs);
+		result.store(
+				code,
+				this.main.ir(generator).op(builder, code).writeValue(dirs));
 
-		if (res != result) {
-			result.store(code, res);
-		}
 		dirs.done();
+		alloc.done();
 
 		if (exit.exists()) {
 			exit.debug("Execution failed");

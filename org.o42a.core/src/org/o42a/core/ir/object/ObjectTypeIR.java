@@ -30,7 +30,7 @@ import static org.o42a.util.use.User.dummyUser;
 import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.CodeBlk;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.Content;
@@ -250,7 +250,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 					.codeId(instance.getGenerator())
 					.detail("ancestor"),
 					OBJECT_REF);
-		final CodeBlk failure = function.addBlock("failure");
+		final Code failure = function.addBlock("failure");
 		final CodeDirs dirs = falseWhenUnknown(function, failure.head());
 
 		final TypeRef ancestor =

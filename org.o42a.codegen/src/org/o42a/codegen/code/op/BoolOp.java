@@ -24,7 +24,7 @@ import static org.o42a.codegen.code.op.OpCodeBase.unwrapPos;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.CondBlk;
+import org.o42a.codegen.code.CondCode;
 
 
 public abstract class BoolOp implements Op {
@@ -39,15 +39,15 @@ public abstract class BoolOp implements Op {
 			O trueValue,
 			O falseValue);
 
-	public final CondBlk branch(Code source) {
+	public final CondCode branch(Code source) {
 		return branch(source, null);
 	}
 
-	public final CondBlk branch(Code source, String conditionName) {
+	public final CondCode branch(Code source, String conditionName) {
 		return branch(source, conditionName, null);
 	}
 
-	public final CondBlk branch(
+	public final CondCode branch(
 			Code source,
 			String trueName,
 			String falseName) {
@@ -57,7 +57,7 @@ public abstract class BoolOp implements Op {
 				falseName != null ? source.getGenerator().id(falseName) : null);
 	}
 
-	public final CondBlk branch(
+	public final CondCode branch(
 			Code source,
 			CodeId trueName,
 			CodeId falseName) {
@@ -83,10 +83,7 @@ public abstract class BoolOp implements Op {
 	}
 
 	public final void go(Code source, CodePos truePos, CodePos falsePos) {
-
-		final OpCodeBase src = source;
-
-		src.writer().go(this, unwrapPos(truePos), unwrapPos(falsePos));
+		source.writer().go(this, unwrapPos(truePos), unwrapPos(falsePos));
 	}
 
 	public abstract void returnValue(Code code);

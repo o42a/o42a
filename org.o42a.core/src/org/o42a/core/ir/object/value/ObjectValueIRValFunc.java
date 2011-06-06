@@ -120,8 +120,8 @@ public abstract class ObjectValueIRValFunc
 
 		function.debug("Calculating value");
 
-		final CodeBlk failure = function.addBlock("failure");
-		final CodeBlk unknown = function.addBlock("unknown");
+		final Code failure = function.addBlock("failure");
+		final Code unknown = function.addBlock("unknown");
 		final ValOp result = function.arg(function, OBJECT_VAL.value());
 		final ObjBuilder builder = new ObjBuilder(
 				function,
@@ -224,11 +224,11 @@ public abstract class ObjectValueIRValFunc
 							code.tail(),
 							collector.next(i))
 							.value(block.id("val"), result);
-					
+
 					result.store(
 							defDirs.code(),
 							writeAncestorDef(defDirs, host));
-					
+
 					defDirs.done();
 
 					block.go(collector.next(i));
@@ -256,9 +256,9 @@ public abstract class ObjectValueIRValFunc
 
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
-		final CondBlk hasAncestor =
+		final CondCode hasAncestor =
 			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
-		final CodeBlk noAncestor = hasAncestor.otherwise();
+		final Code noAncestor = hasAncestor.otherwise();
 
 		final Obj object = getObjectIR().getObject();
 		final TypeRef ancestor =
