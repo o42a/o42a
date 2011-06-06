@@ -22,7 +22,8 @@ package org.o42a.codegen.data;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
@@ -33,58 +34,27 @@ public abstract class CodeBase {
 		return data.getAllocation();
 	}
 
+	protected static <O extends StructOp> O allocate(
+			Code code,
+			CodeId id,
+			Type<O> type) {
+		assert code.assertIncomplete();
+
+		final O result = code.writer().allocateStruct(
+				code.opId(id),
+				dataAllocation(type.data(code.getGenerator())));
+
+		result.allocated(code, null);
+
+		return result;
+	}
+
 	private boolean complete;
 
 	public abstract boolean exists();
 
 	public final boolean isComplete() {
 		return this.complete;
-	}
-
-	public final RecOp<AnyOp> allocatePtr(CodeId id) {
-		assert assertIncomplete();
-
-		final Code code = (Code) this;
-
-		return writer().allocatePtr(code.opId(id));
-	}
-
-	public final RecOp<AnyOp> allocateNull(CodeId id) {
-
-		final RecOp<AnyOp> result = allocatePtr(id);
-		final Code code = (Code) this;
-
-		result.store(code, code.nullPtr());
-
-		return result;
-	}
-
-	public <O extends StructOp> O allocate(CodeId id, Type<O> type) {
-		assert assertIncomplete();
-
-		final Code code = (Code) this;
-		final O result = writer().allocateStruct(
-				code.opId(id),
-				type.data(code.getGenerator()).getAllocation());
-
-		result.allocated(code, null);
-
-		return result;
-	}
-
-	public <O extends StructOp> RecOp<O> allocatePtr(
-			CodeId id,
-			Type<O> type) {
-		assert assertIncomplete();
-
-		final Code code = (Code) this;
-		final RecOp<O> result = writer().allocatePtr(
-				code.opId(id),
-				type.data(code.getGenerator()).getAllocation());
-
-		result.allocated(code, null);
-
-		return result;
 	}
 
 	public void done() {

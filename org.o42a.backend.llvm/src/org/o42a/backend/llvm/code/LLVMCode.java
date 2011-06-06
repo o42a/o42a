@@ -232,7 +232,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public LLVMAllocationBlock allocationBlock(Code code, CodeId id) {
+	public LLVMAllocationBlock allocationBlock(AllocationCode code, CodeId id) {
 		return new LLVMAllocationBlock(this, code, id);
 	}
 

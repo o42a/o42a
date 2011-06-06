@@ -41,7 +41,7 @@ public interface CodeWriter {
 
 	CodeWriter block(Code code, CodeId id);
 
-	AllocationWriter allocationBlock(Code code, CodeId id);
+	AllocationWriter allocationBlock(AllocationCode code, CodeId id);
 
 	Int8op int8(byte value);
 
