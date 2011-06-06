@@ -25,6 +25,7 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.FieldIR;
@@ -149,7 +150,7 @@ final class ScopeField extends ObjectField {
 		}
 
 		@Override
-		protected LclOp allocateLocal(LocalBuilder builder, Code code) {
+		protected LclOp allocateLocal(LocalBuilder builder, AllocationCode code) {
 			throw new UnsupportedOperationException();
 		}
 

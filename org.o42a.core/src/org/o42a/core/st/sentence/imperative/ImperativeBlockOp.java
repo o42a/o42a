@@ -41,13 +41,6 @@ public final class ImperativeBlockOp extends StOp {
 	}
 
 	@Override
-	public void allocate(LocalBuilder builder, Code code) {
-		for (ImperativeSentence sentence : getBlock().getSentences()) {
-			allocateSentence(sentence, builder, code);
-		}
-	}
-
-	@Override
 	public void writeAssignment(Control control, ValOp result) {
 		writeSentences(control, result);
 	}
@@ -102,24 +95,6 @@ public final class ImperativeBlockOp extends StOp {
 		}
 
 		control.reachability(blockControl);
-	}
-
-	private void allocateSentence(
-			ImperativeSentence sentence,
-			LocalBuilder builder,
-			Code code) {
-		for (Imperatives alt : sentence.getAlternatives()) {
-			allocateStatements(alt, builder, code);
-		}
-	}
-
-	private void allocateStatements(
-			Imperatives statements,
-			LocalBuilder builder,
-			Code code) {
-		for (Statement statement : statements.getStatements()) {
-			statement.op(builder).allocate(builder, code);
-		}
 	}
 
 	private void writeSentence(

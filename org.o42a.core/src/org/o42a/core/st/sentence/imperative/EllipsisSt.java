@@ -21,7 +21,6 @@ package org.o42a.core.st.sentence.imperative;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -122,10 +121,6 @@ public final class EllipsisSt extends Statement {
 		}
 
 		@Override
-		public void allocate(LocalBuilder builder, Code code) {
-		}
-
-		@Override
 		public void writeAssignment(Control control, ValOp result) {
 
 			final EllipsisSt st = (EllipsisSt) getStatement();
@@ -143,10 +138,6 @@ public final class EllipsisSt extends Statement {
 
 		RepeatOp(LocalBuilder builder, EllipsisSt statement) {
 			super(builder, statement);
-		}
-
-		@Override
-		public void allocate(LocalBuilder builder, Code code) {
 		}
 
 		@Override

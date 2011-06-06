@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object;
 import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
@@ -59,7 +60,7 @@ final class ObjectFieldIR extends FieldIR<Obj> {
 	}
 
 	@Override
-	protected RefLclOp allocateLocal(LocalBuilder builder, Code code) {
+	protected RefLclOp allocateLocal(LocalBuilder builder, AllocationCode code) {
 		return code.allocate(null, REF_LCL).op(builder, this);
 	}
 

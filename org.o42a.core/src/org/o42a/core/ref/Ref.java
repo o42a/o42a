@@ -450,10 +450,6 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		@Override
-		public void allocate(LocalBuilder builder, Code code) {
-		}
-
-		@Override
 		public void writeAssignment(Control control, ValOp result) {
 
 			final Code falseVal = control.addBlock("false_st_val");
