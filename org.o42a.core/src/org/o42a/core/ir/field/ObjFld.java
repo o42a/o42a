@@ -26,8 +26,7 @@ import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
-import org.o42a.codegen.code.CondBlk;
+import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -93,9 +92,10 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
 		final DataOp previousPtr = fld.previous(code).load(null, code);
 
-		final CondBlk construct =
-			previousPtr.isNull(null, code).branch(code, "construct", "delegate");
-		final CodeBlk constructionFailed =
+		final CondCode construct =
+			previousPtr.isNull(null, code)
+			.branch(code, "construct", "delegate");
+		final Code constructionFailed =
 			construct.addBlock("construction_failed");
 
 		final DataOp result1 = construct(
@@ -108,8 +108,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 		construct.go(code.tail());
 
-		final CodeBlk delegate = construct.otherwise();
-		final CodeBlk delegationFailed =
+		final Code delegate = construct.otherwise();
+		final Code delegationFailed =
 			delegate.addBlock("delegation_failed");
 		final DataOp result2 = delegate(
 				builder,
@@ -125,7 +125,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final FldOp ownFld = host.field(dirs, getField().getKey());
 		final BoolOp isOwn = ownFld.ptr().eq(null, code, fld);
-		final CondBlk store = isOwn.branch(code, "store", "do_not_store");
+		final CondCode store = isOwn.branch(code, "store", "do_not_store");
 
 		fld.object(store).store(store, result);
 		result.returnValue(store);

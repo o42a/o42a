@@ -22,7 +22,6 @@ package org.o42a.core.st.sentence.declarative;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.Control;
@@ -126,10 +125,6 @@ public final class RefCondition extends Statement {
 
 		Op(LocalBuilder builder, Statement statement) {
 			super(builder, statement);
-		}
-
-		@Override
-		public void allocate(LocalBuilder builder, Code code) {
 		}
 
 		@Override

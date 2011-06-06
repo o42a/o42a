@@ -27,7 +27,6 @@ import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodeBlk;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -74,7 +73,7 @@ public class CtrOp extends IROp {
 		ptr().flags(code).store(code, code.int32(flags));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
-		final CodeBlk nullObject = code.addBlock("null_new_object");
+		final Code nullObject = code.addBlock("null_new_object");
 
 		result.isNull(null, code).go(code, nullObject.head());
 
@@ -117,7 +116,7 @@ public class CtrOp extends IROp {
 		ptr().flags(code).store(code, code.int32(flags));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
-		final CodeBlk nullObject = code.addBlock("null_new_object");
+		final Code nullObject = code.addBlock("null_new_object");
 
 		result.isNull(null, code).go(code, nullObject.head());
 

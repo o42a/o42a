@@ -22,7 +22,7 @@ package org.o42a.codegen.code.op;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.CondBlk;
+import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.data.CodeBase;
 
 
@@ -35,7 +35,7 @@ public abstract class OpCodeBase extends CodeBase {
 		return ((Head) codePos).unwrap();
 	}
 
-	protected abstract CondBlk choose(
+	protected abstract CondCode choose(
 			BoolOp condition,
 			CodeId trueName,
 			CodeId falseName);

@@ -41,13 +41,6 @@ public final class ImperativeBlockOp extends StOp {
 	}
 
 	@Override
-	public void allocate(LocalBuilder builder, Code code) {
-		for (ImperativeSentence sentence : getBlock().getSentences()) {
-			allocateSentence(sentence, builder, code);
-		}
-	}
-
-	@Override
 	public void writeAssignment(Control control, ValOp result) {
 		writeSentences(control, result);
 	}
@@ -85,40 +78,23 @@ public final class ImperativeBlockOp extends StOp {
 
 			writeSentence(sentence, blockControl, Integer.toString(i), result);
 			if (!blockControl.mayContinue()) {
+				blockControl.end();
 				control.reachability(blockControl);
 				return;
 			}
 		}
+
+		blockControl.end();
 
 		if (code.exists()) {
 			control.code().go(code.head());
 			if (next.exists()) {
 				next.go(control.code().tail());
 			}
-			if (!blockControl.isDone()) {
-				code.go(control.code().tail());
-			}
+			code.go(control.code().tail());
 		}
 
 		control.reachability(blockControl);
-	}
-
-	private void allocateSentence(
-			ImperativeSentence sentence,
-			LocalBuilder builder,
-			Code code) {
-		for (Imperatives alt : sentence.getAlternatives()) {
-			allocateStatements(alt, builder, code);
-		}
-	}
-
-	private void allocateStatements(
-			Imperatives statements,
-			LocalBuilder builder,
-			Code code) {
-		for (Statement statement : statements.getStatements()) {
-			statement.op(builder).allocate(builder, code);
-		}
 	}
 
 	private void writeSentence(
@@ -139,6 +115,9 @@ public final class ImperativeBlockOp extends StOp {
 			final Control prereqControl = control.issue(prereqFailed.head());
 
 			writeSentence(prerequisite, prereqControl, index + "_prereq", null);
+
+			prereqControl.end();
+
 			control.reachability(prereqControl);
 			if (!prereqControl.mayContinue()) {
 				return;
@@ -197,13 +176,16 @@ public final class ImperativeBlockOp extends StOp {
 			writeStatements(alt, altControl, result);
 
 			if (!altControl.mayContinue()) {
+				altControl.end();
 				control.reachability(altControl);
 				break;
 			}
 			if (control.isDone()) {
+				altControl.end();
 				continue;
 			}
 			if (altControl.isDone()) {
+				altControl.end();
 				if (alt.getStatements().size() == 1) {
 					// the only statement is exit
 					if (sentence.hasOpposite(i)) {// one of the opposites
@@ -235,6 +217,7 @@ public final class ImperativeBlockOp extends StOp {
 				endPrereq(control, prereqFailed);
 				end(sentence, control, altControl);
 			}
+			altControl.end();
 		}
 
 		if (prerequisite == null) {

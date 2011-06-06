@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.DebugCodeBase.allocateStackFrame;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
-import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
 import static org.o42a.util.StringCodec.nullTermASCIIString;
 import static org.o42a.util.StringCodec.nullTermString;
@@ -106,7 +106,7 @@ public class Debug {
 		final RecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(function);
 		final DebugStackFrameOp stackFrame =
-			function.allocate(null, DEBUG_STACK_FRAME_TYPE);
+			allocateStackFrame(function, null);
 
 		stackFrame.name(function).store(function, namePtr.op(null, function));
 		stackFrame.prev(function).store(function, envStackFrame.load(null, function));
@@ -118,7 +118,7 @@ public class Debug {
 
 		final BoolOp execResult =
 			execCommandFunc().op(null, function).exec(function, debugEnv);
-		final CodeBlk commandExecuted = function.addBlock("command_executed");
+		final Code commandExecuted = function.addBlock("command_executed");
 
 		execResult.go(function, commandExecuted.head());
 

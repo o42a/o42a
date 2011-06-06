@@ -23,7 +23,9 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CondCode;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.FuncOp;
@@ -121,7 +123,7 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 			return;
 		}
 
-		final CodeBlk failure = this.constructor.addBlock("failure");
+		final Code failure = this.constructor.addBlock("failure");
 		final ObjBuilder builder = new ObjBuilder(
 				this.constructor,
 				failure.head(),
@@ -277,11 +279,11 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 		public DataOp target(Code code, ObjOp host) {
 
 			final DataOp object = object(code).load(null, code);
-			final CondBlk noTarget = object.isNull(null, code).branch(
+			final CondCode noTarget = object.isNull(null, code).branch(
 					code,
 					"no_target",
 					"has_target");
-			final CodeBlk hasTarget = noTarget.otherwise();
+			final Code hasTarget = noTarget.otherwise();
 
 			final DataOp object1 = hasTarget.phi(null, object);
 

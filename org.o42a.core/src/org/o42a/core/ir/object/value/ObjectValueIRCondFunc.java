@@ -124,8 +124,8 @@ public abstract class ObjectValueIRCondFunc
 				isRequirement()
 				? "Calculating requirement" : "Calculating condition");
 
-		final CodeBlk condFalse = function.addBlock("false");
-		final CodeBlk condUnknown = function.addBlock("unknown");
+		final Code condFalse = function.addBlock("false");
+		final Code condUnknown = function.addBlock("unknown");
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				condFalse.head(),
@@ -194,9 +194,9 @@ public abstract class ObjectValueIRCondFunc
 			boolean trueWithoutAncestor) {
 
 		final Code code = dirs.code();
-		final CondBlk hasAncestor =
+		final CondCode hasAncestor =
 			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
-		final CodeBlk noAncestor = hasAncestor.otherwise();
+		final Code noAncestor = hasAncestor.otherwise();
 
 		noAncestor.debug(
 				isRequirement()

@@ -20,7 +20,6 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.op.ValOp;
 import org.o42a.core.st.Statement;
 
@@ -46,8 +45,6 @@ public abstract class StOp {
 	public final Statement getStatement() {
 		return this.statement;
 	}
-
-	public abstract void allocate(LocalBuilder builder, Code code);
 
 	public abstract void writeAssignment(Control control, ValOp result);
 
