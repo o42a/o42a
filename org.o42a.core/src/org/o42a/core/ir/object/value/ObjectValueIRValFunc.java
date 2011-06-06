@@ -240,11 +240,8 @@ public abstract class ObjectValueIRValFunc
 					block,
 					code.tail(),
 					collector.next(i)).value(block.id("val"), result);
-			final ValOp res = def.write(defDirs, host);
 
-			if (res != result) {
-				result.store(defDirs.code(), res);
-			}
+			result.store(defDirs.code(), def.write(defDirs, host));
 			defDirs.done();
 			block.go(collector.next(i));
 		}
