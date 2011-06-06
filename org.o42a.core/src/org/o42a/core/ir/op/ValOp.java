@@ -132,6 +132,9 @@ public final class ValOp extends StructOp implements CondOp {
 	}
 
 	public final ValOp store(Code code, ValOp value) {
+		if (this == value) {
+			return this;
+		}
 		flags(null, code).store(
 				code,
 				value.flags(null, code).load(null, code));
