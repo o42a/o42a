@@ -21,9 +21,9 @@
 
 #include "o42a/error.h"
 #include "o42a/field.h"
+#include "o42a/memory.h"
 
 #include <assert.h>
-#include <malloc.h>
 #include <stdlib.h>
 
 
@@ -543,13 +543,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 #endif
 
-	void *mem = O42A(malloc(size));
-
-	if (!mem) {
-		O42A(o42a_error_print(O42A_ARGS "Can not allocate memory\n"));
-		exit(EXIT_FAILURE);
-	}
-
+	void *const mem = O42A(o42a_mem_alloc_gc(O42A_ARGS size));
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
 	o42a_obj_rtype_t *const type = (o42a_obj_rtype_t*) (mem + type_start);
 	o42a_obj_data_t *const data = &type->data;
@@ -866,13 +860,7 @@ o42a_obj_t *o42a_obj_new(
 
 #endif
 
-	void *mem = O42A(malloc(size));
-
-	if (!mem) {
-		O42A(o42a_error_print(O42A_ARGS "Can not allocate memory\n"));
-		exit(EXIT_FAILURE);
-	}
-
+	void *const mem = O42A(o42a_mem_alloc_gc(O42A_ARGS size));
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
 	o42a_obj_rtype_t *const type = (o42a_obj_rtype_t*) (mem + type_start);
 	o42a_obj_data_t *const data = &type->data;
