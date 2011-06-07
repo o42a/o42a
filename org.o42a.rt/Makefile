@@ -60,6 +60,7 @@ includes += -I include
 CFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused $(includes)
 
 objects = $(srcdir)/types.o
+objects += $(srcdir)/memory.o
 objects += $(srcdir)/string.o
 objects += $(srcdir)/error.o
 objects += $(srcdir)/integer.o
@@ -115,6 +116,12 @@ $(srcdir)/types.*.o : $(headersdir)/debug.h
 $(srcdir)/types.%.o : $(srcdir)/types.c
 	$(call compile)
 
+$(srcdir)/memory.*.o : $(headersdir)/types.h
+$(srcdir)/memory.*.o : $(headersdir)/debug.h
+$(srcdir)/memory.*.o : $(headersdir)/memory.h
+$(srcdir)/memory.%.o : $(srcdir)/memory.c
+	$(call compile)
+
 $(srcdir)/string.*.o : $(common_deps)
 $(srcdir)/string.*.o : $(headersdir)/string.h
 $(srcdir)/string.%.o : $(srcdir)/string.c
@@ -138,6 +145,7 @@ $(srcdir)/float.%.o : $(srcdir)/float.c
 	$(call compile)
 
 $(srcdir)/object.*.o : $(common_deps)
+$(srcdir)/object.*.o : $(headersdir)/memory.h
 $(srcdir)/object.*.o : $(headersdir)/field.h
 $(srcdir)/object.*.o : $(headersdir)/object.h
 $(srcdir)/object.%.o : $(srcdir)/object.c
