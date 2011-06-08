@@ -23,24 +23,38 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class ValDirs {
 
+	private final CodeBuilder builder;
 	private final Code code;
+	private final ValueType<?> valueType;
 	private Code falseCode;
 	private Code unknownCode;
 	protected ValOp value;
 	protected CodeDirs dirs;
 
-	ValDirs(Code code) {
+	ValDirs(CodeBuilder builder, Code code, ValueType<?> valueType) {
+		this.builder = builder;
 		this.code = code;
+		this.valueType = valueType;
 	}
 
 	public final Generator getGenerator() {
 		return this.code.getGenerator();
+	}
+
+	public final CodeBuilder getBuilder() {
+		return this.builder;
+	}
+
+	public final ValueType<?> getValueType() {
+		return this.valueType;
 	}
 
 	public final boolean isDebug() {
@@ -156,7 +170,8 @@ public abstract class ValDirs {
 			this.unknownCode = createDir("unknown");
 		}
 		return new CodeDirs(
-				this.code,
+				getBuilder(),
+				code(),
 				this.falseCode.head(),
 				this.unknownCode.head());
 	}
@@ -180,14 +195,23 @@ public abstract class ValDirs {
 		private AllocationDirs allocation;
 		private ValOp value;
 
-		TopLevelValDirs(CodeDirs enclosing, CodeId name) {
-			super(enclosing.addBlock(name));
+		TopLevelValDirs(
+				CodeDirs enclosing,
+				CodeId name,
+				ValueType<?> valueType) {
+			super(
+					enclosing.getBuilder(),
+					enclosing.addBlock(name),
+					valueType);
 			this.allocatable = true;
 			this.enclosing = enclosing;
 		}
 
 		public TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
-			super(enclosing.code());
+			super(
+					enclosing.getBuilder(),
+					enclosing.code(),
+					value.getValueType());
 			this.dirs = enclosing;
 			this.allocatable = false;
 			this.enclosing = enclosing;
@@ -207,7 +231,8 @@ public abstract class ValDirs {
 
 			return this.value =
 				this.allocation.allocate(id("value"), ValType.VAL_TYPE)
-				.storeIndefinite(this.allocation.code());
+				.storeIndefinite(this.allocation.code())
+				.op(getBuilder(), getValueType());
 		}
 
 		@Override
@@ -249,7 +274,10 @@ public abstract class ValDirs {
 		private TopLevelValDirs topLevel;
 
 		NestedValDirs(CodeDirs enclosing, ValDirs storage) {
-			super(enclosing.code());
+			super(
+					enclosing.getBuilder(),
+					enclosing.code(),
+					storage.getValueType());
 			this.topLevel = storage.topLevel();
 			this.dirs = enclosing;
 		}
@@ -281,7 +309,7 @@ public abstract class ValDirs {
 		private final TopLevelValDirs topLevel;
 
 		SubValDirs(ValDirs enclosing, Code code) {
-			super(code);
+			super(enclosing.getBuilder(), code, enclosing.getValueType());
 			this.enclosing = enclosing;
 			this.topLevel = enclosing.topLevel();
 		}
@@ -326,7 +354,10 @@ public abstract class ValDirs {
 		private final TopLevelValDirs topLevel;
 
 		DebugValDirs(ValDirs enclosing) {
-			super(enclosing.code());
+			super(
+					enclosing.getBuilder(),
+					enclosing.code(),
+					enclosing.getValueType());
 			this.enclosing = enclosing;
 			this.topLevel = enclosing.topLevel();
 		}

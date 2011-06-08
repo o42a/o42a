@@ -61,7 +61,7 @@ public class FloatsEqual extends NumbersEqual<Double> {
 
 		equals.goUnless(code, dirs.falseDir());
 
-		return voidValue().op(code);
+		return voidValue().op(dirs.getBuilder(), code);
 	}
 
 }

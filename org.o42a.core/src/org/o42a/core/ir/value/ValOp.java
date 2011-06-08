@@ -19,143 +19,101 @@
 */
 package org.o42a.core.ir.value;
 
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.value.Val.INDEFINITE_FLAG;
-import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.CondOp;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.value.ValueType;
 
 
-public final class ValOp extends StructOp implements CondOp {
+public final class ValOp extends IROp implements CondOp {
 
-	ValOp(StructWriter writer) {
-		super(writer);
+	private final ValueType<?> valueType;
+
+	ValOp(CodeBuilder builder, ValType.Op ptr, ValueType<?> valueType) {
+		super(builder, ptr);
+		this.valueType = valueType;
+	}
+
+	public final ValueType<?> getValueType() {
+		return this.valueType;
 	}
 
 	@Override
-	public final ValType getType() {
-		return (ValType) super.getType();
+	public final ValType.Op ptr() {
+		return (ValType.Op) super.ptr();
 	}
 
 	public final RecOp<Int32op> flags(CodeId id, Code code) {
-		return int32(id, code, getType().flags());
+		return ptr().flags(id, code);
 	}
 
 	@Override
 	public final BoolOp loadCondition(CodeId id, Code code) {
-
-		final Int32op flags = flags(null, code).load(null, code);
-
-		return flags.lowestBit(
-				id != null ? id : getId().sub("condition_flag"),
-				code);
+		return ptr().loadCondition(id, code);
 	}
 
 	@Override
 	public final BoolOp loadUnknown(CodeId id, Code code) {
-
-		final Int32op flags = flags(null, code).load(null, code);
-
-		return flags.lshr(null, code, 1).lowestBit(
-				id != null ? id : getId().sub("unknown_flag"),
-				code);
+		return ptr().loadUnknown(id, code);
 	}
 
 	public final BoolOp loadIndefinite(CodeId id, Code code) {
-
-		final Int32op flags = flags(null, code).load(null, code);
-
-		return flags.lshr(null, code, 2).lowestBit(
-				id != null ? id : getId().sub("indefinite_flag"),
-				code);
+		return ptr().loadIndefinite(id, code);
 	}
 
 	public final RecOp<Int32op> length(CodeId id, Code code) {
-		return int32(id, code, getType().length());
+		return ptr().length(id, code);
 	}
 
 	public final RecOp<Int64op> rawValue(CodeId id, Code code) {
-		return int64(id, code, getType().value());
+		return ptr().rawValue(id, code);
 	}
 
 	public final AnyOp value(CodeId id, Code code) {
-		return rawValue(
-				id != null ? id.detail("raw") : null,
-				code).toAny(id, code);
+		return ptr().value(id, code);
 	}
 
 	public ValOp store(Code code, Val value) {
-		flags(null, code).store(code, code.int32(value.getFlags()));
-		if (value.getCondition()) {
-			length(null, code).store(code, code.int32(value.getLength()));
-
-			final Ptr<AnyOp> pointer = value.getPointer();
-
-			if (pointer != null) {
-				value(null, code)
-				.toPtr(null, code)
-				.store(code, pointer.op(null, code));
-			} else {
-				rawValue(null, code).store(code, code.int64(value.getValue()));
-			}
-		}
+		ptr().store(code, value);
 		return this;
 	}
 
 	public final ValOp storeVoid(Code code) {
-		flags(null, code).store(code, code.int32(CONDITION_FLAG));
+		ptr().storeVoid(code);
 		return this;
 	}
 
 	public final ValOp storeFalse(Code code) {
-		flags(null, code).store(code, code.int32(0));
+		ptr().storeFalse(code);
 		return this;
 	}
 
 	public final ValOp storeUnknown(Code code) {
-		flags(null, code).store(code, code.int32(UNKNOWN_FLAG));
+		ptr().storeUnknown(code);
 		return this;
 	}
 
 	public final ValOp storeIndefinite(Code code) {
-		flags(null, code).store(
-				code,
-				code.int32(UNKNOWN_FLAG | INDEFINITE_FLAG));
+		ptr().storeIndefinite(code);
 		return this;
 	}
 
 	public final ValOp store(Code code, ValOp value) {
-		if (this == value) {
-			return this;
+		if (this != value) {
+			ptr().store(code, value.ptr());
 		}
-		flags(null, code).store(
-				code,
-				value.flags(null, code).load(null, code));
-		length(null, code).store(
-				code,
-				value.length(null, code).load(null, code));
-		rawValue(null, code).store(
-				code,
-				value.rawValue(null, code).load(null, code));
 		return this;
 	}
 
 	public final ValOp store(Code code, Int64op value) {
-		rawValue(null, code).store(code, value);
-		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		ptr().store(code, value);
 		return this;
 	}
 
 	public final ValOp store(Code code, Fp64op value) {
-		value(null, code).toFp64(null, code).store(code, value);
-		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		ptr().store(code, value);
 		return this;
 	}
 

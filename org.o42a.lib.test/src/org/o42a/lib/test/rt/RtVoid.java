@@ -64,7 +64,7 @@ public class RtVoid extends IntrinsicBuiltin {
 
 		code.debug("Run-time void");
 
-		return voidValue().op(code);
+		return voidValue().op(dirs.getBuilder(), code);
 	}
 
 	@Override

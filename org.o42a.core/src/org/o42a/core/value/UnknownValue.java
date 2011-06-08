@@ -25,13 +25,12 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
 final class UnknownValue<T> extends Value<T> {
 
-	private static Ptr<ValOp> cachedPtr;
+	private static Ptr<ValType.Op> cachedPtr;
 	private static Generator cachedGenerator;
 
 	UnknownValue(ValueType<T> valueType) {
@@ -59,13 +58,13 @@ final class UnknownValue<T> extends Value<T> {
 	}
 
 	@Override
-	public Ptr<ValOp> valPtr(Generator generator) {
+	public Ptr<ValType.Op> valPtr(Generator generator) {
 		if (cachedPtr != null && cachedGenerator == generator) {
 			return cachedPtr;
 		}
 		cachedGenerator = generator;
 
-		final Global<ValOp, ValType> global =
+		final Global<ValType.Op, ValType> global =
 			generator.newGlobal().setConstant().dontExport().newInstance(
 					generator.id("CONST").sub("UNKNOWN"),
 					ValType.VAL_TYPE,

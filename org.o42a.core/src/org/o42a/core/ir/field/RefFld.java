@@ -20,7 +20,6 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
@@ -130,7 +129,8 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 				getBodyIR(),
 				getBodyIR().getAscendant(),
 				COMPATIBLE);
-		final CodeDirs dirs = falseWhenUnknown(this.constructor, failure.head());
+		final CodeDirs dirs =
+			builder.falseWhenUnknown(this.constructor, failure.head());
 
 		buildConstructor(builder, dirs);
 

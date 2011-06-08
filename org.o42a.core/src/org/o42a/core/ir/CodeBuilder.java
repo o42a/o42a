@@ -21,11 +21,11 @@ package org.o42a.core.ir;
 
 import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.CompilerContext;
@@ -152,6 +152,19 @@ public class CodeBuilder {
 
 	public final CodeId nextId() {
 		return getFunction().getId().anonymous(++this.nameSeq);
+	}
+
+	public final CodeDirs falseWhenUnknown(
+			Code code,
+			CodePos falseDir) {
+		return CodeDirs.falseWhenUnknown(this, code, falseDir);
+	}
+
+	public final CodeDirs splitWhenUnknown(
+			Code code,
+			CodePos falseDir,
+			CodePos unknownDir) {
+		return CodeDirs.splitWhenUnknown(this, code, falseDir, unknownDir);
 	}
 
 	public ObjectOp newObject(

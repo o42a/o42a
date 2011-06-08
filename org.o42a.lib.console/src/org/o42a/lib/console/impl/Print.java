@@ -39,6 +39,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 import org.o42a.lib.console.ConsoleModule;
 import org.o42a.util.use.UserInfo;
 
@@ -81,7 +82,7 @@ public class Print extends IntrinsicBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ValDirs textDirs = dirs.dirs().value();
+		final ValDirs textDirs = dirs.dirs().value(ValueType.STRING, "text");
 		final ObjectOp textObject =
 			host.field(textDirs.dirs(), textKey()).materialize(textDirs.dirs());
 		final ValOp text = textObject.writeValue(textDirs);
@@ -93,7 +94,7 @@ public class Print extends IntrinsicBuiltin {
 
 		textDirs.done();
 
-		return voidValue().op(dirs.code());
+		return voidValue().op(dirs.getBuilder(), dirs.code());
 	}
 
 	@Override

@@ -100,7 +100,7 @@ final class ConstantObject<T> extends PlainObject {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			return value().op(dirs.code());
+			return value().op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override
@@ -108,7 +108,7 @@ final class ConstantObject<T> extends PlainObject {
 				ValDirs dirs,
 				ObjOp host,
 				ObjectOp body) {
-			return value().op(dirs.code());
+			return value().op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override
@@ -116,7 +116,7 @@ final class ConstantObject<T> extends PlainObject {
 				ValDirs dirs,
 				ObjOp host,
 				Definitions definitions) {
-			return value().op(dirs.code());
+			return value().op(dirs.getBuilder(), dirs.code());
 		}
 
 		private final Value<?> value() {

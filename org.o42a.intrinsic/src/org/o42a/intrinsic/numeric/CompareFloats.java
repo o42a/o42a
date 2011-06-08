@@ -24,6 +24,7 @@ import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueType;
 
 
@@ -60,20 +61,22 @@ final class CompareFloats extends CompareNumbers<Double> {
 		final CondCode greater = gt.branch(code, "greater", "not_greater");
 		final Code notGreater = greater.otherwise();
 
-		final ValOp result1 = ONE.op(greater);
+		final ValType.Op result1 = ONE.op(dirs.getBuilder(), greater).ptr();
 
 		greater.go(code.tail());
 
 		final BoolOp eq = left.eq(notGreater.id("eq"), notGreater, right);
-		final ValOp result2 = eq.select(
+		final ValType.Op result2 = eq.select(
 				null,
 				notGreater,
-				ZERO.op(notGreater),
-				MINUS_ONE.op(notGreater));
+				ZERO.op(dirs.getBuilder(), notGreater).ptr(),
+				MINUS_ONE.op(dirs.getBuilder(), notGreater).ptr());
 
 		notGreater.go(code.tail());
 
-		return code.phi(null, result1, result2);
+		final ValType.Op result = code.phi(null, result1, result2);
+
+		return result.op(dirs.getBuilder(), getValueType());
 	}
 
 }

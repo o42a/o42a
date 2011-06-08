@@ -74,7 +74,7 @@ public class ObjectTypeOp extends IROp {
 			ptr().data(code).valueFunc(code).load(null, code);
 		final ValOp result = function.call(dirs, body(code, body));
 
-		code.dump("Value: ", result);
+		code.dump("Value: ", result.ptr());
 
 		return result;
 	}

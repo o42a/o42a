@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -65,7 +63,7 @@ final class NegatedLogical extends Logical {
 		final Code code = dirs.code();
 		final Code isFalse = code.addBlock("is_false");
 		final CodeDirs negatedDirs =
-			falseWhenUnknown(code, isFalse.head())
+			dirs.getBuilder().falseWhenUnknown(code, isFalse.head())
 			.begin("not", "Logical NOT: " + this);
 
 		negate().write(negatedDirs, host);

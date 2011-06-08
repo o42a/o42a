@@ -34,7 +34,6 @@ import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -57,8 +56,8 @@ public abstract class ValueType<T> {
 	private final UnknownValue<T> unknownValue = new UnknownValue<T>(this);
 
 	private Generator cachedGenerator;
-	private final HashMap<T, Ptr<ValOp>> constCache =
-		new HashMap<T, Ptr<ValOp>>();
+	private final HashMap<T, Ptr<ValType.Op>> constCache =
+		new HashMap<T, Ptr<ValType.Op>>();
 
 	ValueType(String systemId, Class<? extends T> valueClass) {
 		this.systemId = systemId;
@@ -161,6 +160,16 @@ public abstract class ValueType<T> {
 		return value.toString();
 	}
 
+	public boolean assignableFrom(ValueType<?> other) {
+		return this == other;
+	}
+
+	public final boolean assertAssignableFrom(ValueType<?> other) {
+		assert assignableFrom(other) :
+			this + " is not assignable from " + other;
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return getSystemId();
@@ -168,25 +177,25 @@ public abstract class ValueType<T> {
 
 	protected abstract Val val(Generator generator, T value);
 
-	protected Ptr<ValOp> valPtr(Generator generator, T value) {
+	protected Ptr<ValType.Op> valPtr(Generator generator, T value) {
 		if (this.cachedGenerator != generator) {
 			this.constCache.clear();
 			this.cachedGenerator = generator;
 		} else {
 
-			final Ptr<ValOp> cached = this.constCache.get(value);
+			final Ptr<ValType.Op> cached = this.constCache.get(value);
 
 			if (cached != null) {
 				return cached;
 			}
 		}
 
-		final Global<ValOp, ValType> global =
+		final Global<ValType.Op, ValType> global =
 			generator.newGlobal().setConstant().dontExport().newInstance(
 					constId(generator, value),
 					ValType.VAL_TYPE,
 					val(generator, value));
-		final Ptr<ValOp> result = global.getPointer();
+		final Ptr<ValType.Op> result = global.getPointer();
 
 		this.constCache.put(value, result);
 
@@ -213,7 +222,9 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		protected Ptr<ValOp> valPtr(Generator generator, java.lang.Void value) {
+		protected Ptr<ValType.Op> valPtr(
+				Generator generator,
+				java.lang.Void value) {
 			throw new UnsupportedOperationException(
 					"Type NONE can not have a value");
 		}

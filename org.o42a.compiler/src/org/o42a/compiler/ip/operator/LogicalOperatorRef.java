@@ -20,8 +20,6 @@
 package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.ast.expression.UnaryNode;
@@ -29,6 +27,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -138,6 +137,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		@Override
 		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
+			final CodeBuilder builder = dirs.getBuilder();
 			final RefOp op = operand().op(host);
 			final Code code = dirs.code();
 			final Code operandFalse = dirs.addBlock("operand_false");
@@ -145,7 +145,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 
 			switch (this.ref.node.getOperator()) {
 			case NOT:
-				op.writeLogicalValue(falseWhenUnknown(
+				op.writeLogicalValue(builder.falseWhenUnknown(
 						code,
 						operandFalse.head()));
 				code.go(dirs.falseDir());
@@ -154,7 +154,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				}
 				break;
 			case IS_TRUE:
-				op.writeLogicalValue(falseWhenUnknown(
+				op.writeLogicalValue(builder.falseWhenUnknown(
 						code,
 						operandFalse.head()));
 				if (operandFalse.exists()) {
@@ -162,7 +162,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				}
 				break;
 			case KNOWN:
-				op.writeLogicalValue(splitWhenUnknown(
+				op.writeLogicalValue(builder.splitWhenUnknown(
 						code,
 						operandFalse.head(),
 						operandUnknown.head()));
@@ -174,7 +174,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				}
 				break;
 			case UNKNOWN:
-				op.writeLogicalValue(splitWhenUnknown(
+				op.writeLogicalValue(builder.splitWhenUnknown(
 						code,
 						operandFalse.head(),
 						operandUnknown.head()));
@@ -192,7 +192,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 						+ this.ref.node.getOperator().getSign());
 			}
 
-			return voidValue().op(code);
+			return voidValue().op(builder, code);
 		}
 
 		@Override

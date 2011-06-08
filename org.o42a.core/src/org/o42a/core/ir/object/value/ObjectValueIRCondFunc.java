@@ -21,8 +21,6 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.value.DefCollector.explicitDef;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
@@ -136,8 +134,10 @@ public abstract class ObjectValueIRCondFunc
 
 		function.dumpName("Host: ", host.ptr());
 
-		final CodeDirs dirs =
-			splitWhenUnknown(function, condFalse.head(), condUnknown.head());
+		final CodeDirs dirs = builder.splitWhenUnknown(
+				function,
+				condFalse.head(),
+				condUnknown.head());
 
 		build(dirs, host, definitions);
 
@@ -214,7 +214,7 @@ public abstract class ObjectValueIRCondFunc
 			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
-		CodeDirs ancestorDirs = splitWhenUnknown(
+		CodeDirs ancestorDirs = dirs.getBuilder().splitWhenUnknown(
 				hasAncestor,
 				dirs.falseDir(),
 				dirs.unknownDir());
@@ -263,10 +263,11 @@ public abstract class ObjectValueIRCondFunc
 			if (def == null) {
 				if (i == collector.ancestorIndex) {
 
-					final CodeDirs ancestorDirs = splitWhenUnknown(
-							block,
-							dirs.falseDir(),
-							collector.next(i, dirs.unknownDir()));
+					final CodeDirs ancestorDirs =
+						dirs.getBuilder().splitWhenUnknown(
+								block,
+								dirs.falseDir(),
+								collector.next(i, dirs.unknownDir()));
 
 					writeAncestorDef(ancestorDirs, host, false);
 					block.go(collector.next(i, code.tail()));
@@ -276,14 +277,14 @@ public abstract class ObjectValueIRCondFunc
 			if (!def.hasPrerequisite()) {
 
 				final CodeDirs defDirs =
-					falseWhenUnknown(block, dirs.falseDir());
+					dirs.getBuilder().falseWhenUnknown(block, dirs.falseDir());
 
 				def.write(defDirs, host);
 				block.go(collector.next(i, code.tail()));
 				continue;
 			}
 
-			final CodeDirs defDirs = splitWhenUnknown(
+			final CodeDirs defDirs = dirs.getBuilder().splitWhenUnknown(
 					block,
 					dirs.falseDir(),
 					collector.next(i, dirs.unknownDir()));

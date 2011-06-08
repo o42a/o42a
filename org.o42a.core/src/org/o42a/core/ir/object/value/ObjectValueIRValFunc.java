@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.util.use.User.dummyUser;
@@ -31,11 +30,13 @@ import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class ObjectValueIRValFunc
@@ -43,6 +44,10 @@ public abstract class ObjectValueIRValFunc
 
 	public ObjectValueIRValFunc(ObjectIR objectIR) {
 		super(objectIR);
+	}
+
+	public final ValueType<?> getValueType() {
+		return getObject().getValueType();
 	}
 
 	public abstract boolean isClaim();
@@ -61,7 +66,7 @@ public abstract class ObjectValueIRValFunc
 			if (dirs.isDebug()) {
 				dirs.done();
 			}
-			return falseValue().op(code);
+			return falseValue().op(dirs.getBuilder(), code);
 		}
 
 		final Obj object = getObjectIR().getObject();
@@ -78,7 +83,7 @@ public abstract class ObjectValueIRValFunc
 					if (dirs.isDebug()) {
 						dirs.done();
 					}
-					return realValue.op(code);
+					return realValue.op(dirs.getBuilder(), code);
 				}
 			}
 		}
@@ -124,14 +129,16 @@ public abstract class ObjectValueIRValFunc
 
 		final Code failure = function.addBlock("failure");
 		final Code unknown = function.addBlock("unknown");
-		final ValOp result = function.arg(function, OBJECT_VAL.value());
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				failure.head(),
 				getObjectIR().getMainBodyIR(),
 				getObjectIR().getObject(),
 				DERIVED);
-		final ValDirs dirs = splitWhenUnknown(
+		final ValOp result =
+			function.arg(function, OBJECT_VAL.value())
+			.op(builder, getValueType());
+		final ValDirs dirs = builder.splitWhenUnknown(
 				function,
 				failure.head(),
 				unknown.head())
@@ -221,7 +228,7 @@ public abstract class ObjectValueIRValFunc
 			if (def == null) {
 				if (i == collector.ancestorIndex) {
 
-					final ValDirs defDirs = splitWhenUnknown(
+					final ValDirs defDirs = dirs.getBuilder().splitWhenUnknown(
 							block,
 							code.tail(),
 							collector.next(i))
@@ -238,7 +245,7 @@ public abstract class ObjectValueIRValFunc
 				continue;
 			}
 
-			final ValDirs defDirs = splitWhenUnknown(
+			final ValDirs defDirs = dirs.getBuilder().splitWhenUnknown(
 					block,
 					code.tail(),
 					collector.next(i)).value(block.id("val"), result);

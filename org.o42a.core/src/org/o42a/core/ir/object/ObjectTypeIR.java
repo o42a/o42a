@@ -23,7 +23,6 @@ import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -251,8 +250,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 					.detail("ancestor"),
 					OBJECT_REF);
 		final Code failure = function.addBlock("failure");
-		final CodeDirs dirs = falseWhenUnknown(function, failure.head());
-
 		final TypeRef ancestor =
 			getObjectIR().getObject().type().useBy(dummyUser()).getAncestor();
 		final CodeBuilder builder = codeBuilder(
@@ -260,7 +257,8 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				failure.head(),
 				ancestor.getScope(),
 				DERIVED);
-
+		final CodeDirs dirs =
+			builder.falseWhenUnknown(function, failure.head());
 		final HostOp host = builder.host();
 
 		ancestor.op(dirs, host)

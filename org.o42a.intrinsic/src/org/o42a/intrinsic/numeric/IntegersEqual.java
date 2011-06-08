@@ -61,7 +61,7 @@ public class IntegersEqual extends NumbersEqual<Long> {
 
 		equals.goUnless(code, dirs.falseDir());
 
-		return voidValue().op(code);
+		return voidValue().op(dirs.getBuilder(), code);
 	}
 
 }

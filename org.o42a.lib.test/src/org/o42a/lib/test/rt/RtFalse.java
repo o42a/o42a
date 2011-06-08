@@ -65,7 +65,7 @@ public class RtFalse extends IntrinsicBuiltin {
 		code.debug("Run-time false");
 		code.go(dirs.falseDir());
 
-		return falseValue().op(code);
+		return falseValue().op(dirs.getBuilder(), code);
 	}
 
 	@Override

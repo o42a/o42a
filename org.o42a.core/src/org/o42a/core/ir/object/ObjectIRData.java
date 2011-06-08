@@ -37,7 +37,6 @@ import org.o42a.core.ir.op.ObjectCondFunc;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
@@ -189,7 +188,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 			.toData(code.id("object_start"), code);
 		}
 
-		public final ValOp value(Code code) {
+		public final ValType.Op value(Code code) {
 			return struct(null, code, getType().value());
 		}
 

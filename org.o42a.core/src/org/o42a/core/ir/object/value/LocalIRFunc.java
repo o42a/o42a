@@ -30,6 +30,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.local.LocalScope;
 
 
@@ -54,7 +55,7 @@ public final class LocalIRFunc extends ObjectIRFunc {
 
 		if (writeFalseValue(dirs.dirs(), body)) {
 			dirs.done();
-			return falseValue().op(code);
+			return falseValue().op(dirs.getBuilder(), code);
 		}
 
 		code.debug("Call");
@@ -88,8 +89,11 @@ public final class LocalIRFunc extends ObjectIRFunc {
 
 		final LocalBuilder builder =
 			new LocalBuilder(this.function, this.localIR);
-		final ValOp result =
+		final ValType.Op value =
 			this.function.arg(this.function, OBJECT_VAL.value());
+		final ValOp result = value.op(
+				builder,
+				this.locals.getValueIR().getObject().getValueType());
 
 		build(builder, this.function, result);
 

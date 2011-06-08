@@ -151,7 +151,7 @@ public class OverriddenEx extends Ref {
 		@Override
 		public void writeLogicalValue(CodeDirs dirs) {
 
-			final ValDirs valDirs = dirs.value();
+			final ValDirs valDirs = dirs.value(ValueType.VOID);
 
 			writeValue(valDirs);
 			valDirs.done();

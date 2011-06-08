@@ -27,6 +27,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 
 
 public final class ParseFunc extends Func {
@@ -49,14 +50,14 @@ public final class ParseFunc extends Func {
 	}
 
 	public void parse(Code code, ValOp output, ValOp input) {
-		invoke(null, code, PARSE.result(), output, input);
+		invoke(null, code, PARSE.result(), output.ptr(), input.ptr());
 	}
 
 	public static final class Parse extends Signature<ParseFunc> {
 
 		private Return<Void> result;
-		private Arg<ValOp> output;
-		private Arg<ValOp> input;
+		private Arg<ValType.Op> output;
+		private Arg<ValType.Op> input;
 
 		private Parse() {
 		}
@@ -65,11 +66,11 @@ public final class ParseFunc extends Func {
 			return this.result;
 		}
 
-		public final Arg<ValOp> output() {
+		public final Arg<ValType.Op> output() {
 			return this.output;
 		}
 
-		public final Arg<ValOp> input() {
+		public final Arg<ValType.Op> input() {
 			return this.input;
 		}
 

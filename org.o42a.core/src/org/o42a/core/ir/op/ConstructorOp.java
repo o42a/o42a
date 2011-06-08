@@ -21,7 +21,6 @@ package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.code.Code;
@@ -69,7 +68,7 @@ public class ConstructorOp extends RefOp {
 
 		return builder.newObject(
 				dirs,
-				buildAncestor(builder, dirs),
+				buildAncestor(dirs),
 				sample,
 				CtrOp.NEW_INSTANCE);
 	}
@@ -78,8 +77,8 @@ public class ConstructorOp extends RefOp {
 		return getRef().getResolution().toObject();
 	}
 
-	protected ObjectOp buildAncestor(CodeBuilder builder, CodeDirs dirs) {
-		return builder.objectAncestor(dirs, sample());
+	protected ObjectOp buildAncestor(CodeDirs dirs) {
+		return dirs.getBuilder().objectAncestor(dirs, sample());
 	}
 
 	private Function<ObjectRefFunc> ancestorFunc() {
@@ -111,8 +110,7 @@ public class ConstructorOp extends RefOp {
 
 		final Code ancestorFailed = code.addBlock("ancestor_failed");
 		final ObjectOp ancestor = buildAncestor(
-				builder,
-				falseWhenUnknown(code, ancestorFailed.head()));
+				builder.falseWhenUnknown(code, ancestorFailed.head()));
 
 		if (ancestor == null) {
 			code.nullPtr().returnValue(code);
