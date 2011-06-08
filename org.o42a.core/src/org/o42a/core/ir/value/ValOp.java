@@ -17,31 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.value;
 
-import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.op.Val.INDEFINITE_FLAG;
-import static org.o42a.core.ir.op.Val.UNKNOWN_FLAG;
+import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.INDEFINITE_FLAG;
+import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.CondOp;
+import org.o42a.core.ir.op.ValDirs;
 
 
 public final class ValOp extends StructOp implements CondOp {
 
-	public static final Type VAL_TYPE = new Type();
-
-	private ValOp(StructWriter writer) {
+	ValOp(StructWriter writer) {
 		super(writer);
 	}
 
 	@Override
-	public final Type getType() {
-		return (Type) super.getType();
+	public final ValType getType() {
+		return (ValType) super.getType();
 	}
 
 	public final RecOp<Int32op> flags(CodeId id, Code code) {
@@ -168,64 +168,4 @@ public final class ValOp extends StructOp implements CondOp {
 		dirs.go(code, this);
 	}
 
-	public static final class Type extends org.o42a.codegen.data.Type<ValOp> {
-
-		private Int32rec flags;
-		private Int32rec length;
-		private Int64rec value;
-
-		private Type() {
-		}
-
-		public final Int32rec flags() {
-			return this.flags;
-		}
-
-		public final Int32rec length() {
-			return this.length;
-		}
-
-		public final Int64rec value() {
-			return this.value;
-		}
-
-		public final Type set(Val val) {
-			flags().setValue(val.getFlags());
-			length().setValue(val.getLength());
-
-			final Ptr<AnyOp> pointer = val.getPointer();
-
-			if (pointer != null) {
-				value().setNativePtr(pointer);
-			} else {
-				value().setValue(val.getValue());
-			}
-			return this;
-		}
-
-		public final Type setUnknown() {
-			flags().setValue(UNKNOWN_FLAG);
-			length().setValue(0);
-			value().setValue(0L);
-			return this;
-		}
-
-		@Override
-		public ValOp op(StructWriter writer) {
-			return new ValOp(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("Val");
-		}
-
-		@Override
-		protected void allocate(SubData<ValOp> data) {
-			this.flags = data.addInt32("flags");
-			this.length = data.addInt32("length");
-			this.value = data.addInt64("value");
-		}
-
-	}
 }

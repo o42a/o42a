@@ -24,8 +24,7 @@ import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
-import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -34,7 +33,12 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.ObjectCondFunc;
+import org.o42a.core.ir.op.ObjectRefFunc;
+import org.o42a.core.ir.op.RelList;
+import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 
 
 public final class ObjectIRData extends Type<ObjectIRData.Op> {
@@ -50,7 +54,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private RelPtrRec object;
 	private Int32rec flags;
 	private RelPtrRec start;
-	private ValOp.Type value;
+	private ValType value;
 	private FuncRec<ObjectValFunc> valueFunc;
 	private FuncRec<ObjectCondFunc> requirementFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
@@ -77,7 +81,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.start;
 	}
 
-	public final ValOp.Type value() {
+	public final ValType value() {
 		return this.value;
 	}
 
@@ -139,7 +143,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.object = data.addRelPtr("object");
 		this.flags = data.addInt32("flags");
 		this.start = data.addRelPtr("start");
-		this.value = data.addInstance(generator.id("value"), VAL_TYPE);
+		this.value = data.addInstance(generator.id("value"), ValType.VAL_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VAL);
 		this.requirementFunc = data.addFuncPtr("requirement_f", OBJECT_COND);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);

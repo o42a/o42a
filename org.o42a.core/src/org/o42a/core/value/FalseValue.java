@@ -19,15 +19,14 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.Val.FALSE_VAL;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.op.Val;
-import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ir.op.ValOp.Type;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 
 
 final class FalseValue<T> extends Value<T> {
@@ -61,10 +60,10 @@ final class FalseValue<T> extends Value<T> {
 		}
 		cachedGenerator = generator;
 
-		final Global<ValOp, Type> global =
+		final Global<ValOp, ValType> global =
 			generator.newGlobal().setConstant().dontExport().newInstance(
 					generator.id("CONST").sub("FALSE"),
-					VAL_TYPE,
+					ValType.VAL_TYPE,
 					FALSE_VAL);
 
 

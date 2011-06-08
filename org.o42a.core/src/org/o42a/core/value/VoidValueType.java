@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.Val.VOID_VAL;
+import static org.o42a.core.ir.value.Val.VOID_VAL;
 import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.codegen.CodeId;
@@ -28,7 +28,7 @@ import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.op.Val;
+import org.o42a.core.ir.value.Val;
 import org.o42a.core.ref.type.StaticTypeRef;
 
 

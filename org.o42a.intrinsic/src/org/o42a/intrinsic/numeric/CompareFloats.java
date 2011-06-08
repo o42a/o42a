@@ -23,7 +23,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
 
 

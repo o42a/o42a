@@ -26,7 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;

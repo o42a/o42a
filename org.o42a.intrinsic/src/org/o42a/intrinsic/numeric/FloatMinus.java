@@ -19,14 +19,14 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.UnaryResult;
 

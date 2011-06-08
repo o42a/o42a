@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.CodeId;
@@ -27,9 +27,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.ObjectValFunc;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
 

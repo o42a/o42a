@@ -36,6 +36,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.op.Val.EXTERNAL_FLAG;
+import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.EXTERNAL_FLAG;
 import static org.o42a.util.StringCodec.bytesPerChar;
 import static org.o42a.util.StringCodec.escapeControlChars;
 import static org.o42a.util.StringCodec.stringToBinary;
@@ -33,7 +33,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.op.Val;
+import org.o42a.core.ir.value.Val;
 import org.o42a.util.DataAlignment;
 
 

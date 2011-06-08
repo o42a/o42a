@@ -25,6 +25,7 @@ import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;

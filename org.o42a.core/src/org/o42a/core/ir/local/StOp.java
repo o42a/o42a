@@ -20,7 +20,7 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Statement;
 
 

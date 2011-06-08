@@ -31,7 +31,7 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectBodyIR.Op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 

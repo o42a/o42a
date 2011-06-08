@@ -27,7 +27,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;

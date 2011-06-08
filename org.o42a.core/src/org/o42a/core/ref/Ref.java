@@ -38,6 +38,7 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.field.Field;

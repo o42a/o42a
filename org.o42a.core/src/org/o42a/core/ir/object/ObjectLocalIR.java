@@ -24,7 +24,7 @@ import org.o42a.core.def.LocalIRBase;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.value.LocalIRFunc;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
 
