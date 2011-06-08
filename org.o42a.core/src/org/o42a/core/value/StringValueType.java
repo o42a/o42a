@@ -83,6 +83,7 @@ final class StringValueType extends ValueType<String> {
 
 		if (bytes.length <= 8) {
 			val = new Val(
+					ValueType.STRING,
 					CONDITION_FLAG | (bytesPerChar.getShift() << 8),
 					bytes.length,
 					bytesToLong(bytes));
@@ -94,6 +95,7 @@ final class StringValueType extends ValueType<String> {
 						bytes);
 
 			val = new Val(
+					ValueType.STRING,
 					CONDITION_FLAG | EXTERNAL_FLAG
 					| (bytesPerChar.getShift() << 8),
 					bytes.length,
