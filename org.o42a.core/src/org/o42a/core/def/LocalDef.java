@@ -223,7 +223,7 @@ class LocalDef extends ValueDef {
 			assert assertFullyResolved();
 			dirs = dirs.begin("local_logical", "Local logical: " + this);
 
-			final ValDirs valDirs = dirs.value("local_val");
+			final ValDirs valDirs = dirs.value(ValueType.VOID, "local_val");
 
 			this.def.writeValue(valDirs, host);
 			valDirs.done();

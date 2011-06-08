@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
-import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -39,6 +38,7 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
@@ -68,6 +68,17 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		this.precision = objectType.getPrecision();
 	}
 
+	public final ValueType<?> getValueType() {
+
+		final Obj wellKnownType = getWellKnownType();
+
+		if (wellKnownType == null) {
+			return ValueType.VOID;
+		}
+
+		return wellKnownType.getValueType();
+	}
+
 	public abstract Obj getWellKnownType();
 
 	public final ObjectPrecision getPrecision() {
@@ -89,15 +100,16 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	@Override
 	public final void writeLogicalValue(CodeDirs dirs) {
 
-		final ValDirs valDirs = dirs.value();
+		final ValDirs valDirs = dirs.value(getValueType());
 
 		writeValue(valDirs);
 		valDirs.done();
 	}
 
 	public final void writeLogicalValue(CodeDirs dirs, ObjectOp body) {
+		assert body.getValueType().assertAssignableFrom(body.getValueType());
 
-		final ValDirs valDirs = dirs.value();
+		final ValDirs valDirs = dirs.value(getValueType());
 
 		writeValue(valDirs, body);
 		valDirs.done();
@@ -105,22 +117,25 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	@Override
 	public final ValOp writeValue(ValDirs dirs) {
+		assert dirs.getValueType().assertAssignableFrom(getValueType());
 
 		final Code code = dirs.code();
-		final ValOp value = objectType(code).ptr().data(code).value(code);
+		final ValOp value = objectType(code).ptr().data(code).value(code).op(
+				getBuilder(),
+				getValueType());
 		final CondCode indefinite = value.loadIndefinite(null, code).branch(
 				code,
 				"val_indefinite",
 				"val_definite");
 		final Code definite = indefinite.otherwise();
 
-		definite.dump(this + " value is definite: ", value);
+		definite.dump(this + " value is definite: ", value.ptr());
 		value.go(definite, dirs);
 		definite.go(code.tail());
 
 		evaluateAndStoreValue(indefinite, value, dirs);
 
-		indefinite.dump(this + " value calculated: ", value);
+		indefinite.dump(this + " value calculated: ", value.ptr());
 		indefinite.go(code.tail());
 
 		return value;
@@ -309,7 +324,10 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		final Code falseCode = code.addBlock("eval_false");
 		final Code unknownCode = code.addBlock("eval_unknown");
 		final ValDirs valDirs =
-			splitWhenUnknown(code, falseCode.head(), unknownCode.head())
+			getBuilder().splitWhenUnknown(
+					code,
+					falseCode.head(),
+					unknownCode.head())
 			.value(code.id("obj_val"), value);
 
 		writeValue(valDirs, null);

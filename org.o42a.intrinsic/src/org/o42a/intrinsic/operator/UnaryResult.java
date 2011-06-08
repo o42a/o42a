@@ -114,7 +114,8 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ValDirs operandDirs = dirs.dirs().value("operand");
+		final ValDirs operandDirs =
+			dirs.dirs().value(getOperandType(), "operand");
 		final ObjectOp operand =
 			host.field(operandDirs.dirs(), operandKey())
 			.materialize(operandDirs.dirs());

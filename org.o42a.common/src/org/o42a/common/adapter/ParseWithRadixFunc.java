@@ -28,6 +28,7 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 
 
 public final class ParseWithRadixFunc extends Func {
@@ -54,16 +55,17 @@ public final class ParseWithRadixFunc extends Func {
 				null,
 				code,
 				PARSE_WITH_RADIX.result(),
-				output,
-				input, code.int32(radix));
+				output.ptr(),
+				input.ptr(),
+				code.int32(radix));
 	}
 
 	public static final class ParseWithRadix
 			extends Signature<ParseWithRadixFunc> {
 
 		private Return<Void> result;
-		private Arg<ValOp> output;
-		private Arg<ValOp> input;
+		private Arg<ValType.Op> output;
+		private Arg<ValType.Op> input;
 		private Arg<Int32op> radix;
 
 		private ParseWithRadix() {
@@ -73,11 +75,11 @@ public final class ParseWithRadixFunc extends Func {
 			return this.result;
 		}
 
-		public final Arg<ValOp> output() {
+		public final Arg<ValType.Op> output() {
 			return this.output;
 		}
 
-		public final Arg<ValOp> input() {
+		public final Arg<ValType.Op> input() {
 			return this.input;
 		}
 

@@ -29,6 +29,7 @@ import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.value.ValueType;
 
 
 enum ValuePart {
@@ -50,7 +51,7 @@ enum ValuePart {
 				return;
 			}
 
-			final ValDirs valDirs = dirs.value();
+			final ValDirs valDirs = dirs.value(ValueType.VOID);
 
 			object.objectType(valDirs.code()).writeOverriddenValue(valDirs);
 			valDirs.done();
@@ -80,7 +81,7 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValDirs valDirs = dirs.value();
+			final ValDirs valDirs = dirs.value(ValueType.VOID);
 
 			writeValue(valDirs, op);
 			valDirs.done();
@@ -123,7 +124,7 @@ enum ValuePart {
 		@Override
 		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
 			writeLogicalValue(dirs.dirs(), op);
-			return voidValue().op(dirs.code());
+			return voidValue().op(dirs.getBuilder(), dirs.code());
 		}
 
 	},
@@ -153,7 +154,7 @@ enum ValuePart {
 		@Override
 		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
 			writeLogicalValue(dirs.dirs(), op);
-			return voidValue().op(dirs.code());
+			return voidValue().op(dirs.getBuilder(), dirs.code());
 		}
 
 	},
@@ -168,7 +169,7 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValDirs valDirs = dirs.value();
+			final ValDirs valDirs = dirs.value(ValueType.VOID);
 
 			writeValue(valDirs, op);
 			valDirs.done();
@@ -201,7 +202,7 @@ enum ValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValDirs valDirs = dirs.value();
+			final ValDirs valDirs = dirs.value(ValueType.VOID);
 
 			writeValue(valDirs, op);
 			valDirs.done();

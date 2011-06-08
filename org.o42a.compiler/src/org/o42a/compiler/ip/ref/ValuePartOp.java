@@ -21,7 +21,9 @@ package org.o42a.compiler.ip.ref;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ConstructorOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
@@ -49,7 +51,7 @@ final class ValuePartOp extends ConstructorOp {
 		return part().writeValue(dirs, this);
 	}
 
-	private final ValuePartRef getPartRef() {
+	final ValuePartRef getPartRef() {
 		return (ValuePartRef) getRef();
 	}
 

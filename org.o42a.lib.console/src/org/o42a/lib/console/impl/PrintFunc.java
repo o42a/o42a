@@ -26,6 +26,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 
 
 public final class PrintFunc extends Func {
@@ -37,13 +38,13 @@ public final class PrintFunc extends Func {
 	}
 
 	public void print(Code code, ValOp text) {
-		invoke(null, code, PRINT.result(), text);
+		invoke(null, code, PRINT.result(), text.ptr());
 	}
 
 	public static final class Print extends Signature<PrintFunc> {
 
 		private Return<Void> result;
-		private Arg<ValOp> text;
+		private Arg<ValType.Op> text;
 
 		private Print() {
 		}
@@ -52,7 +53,7 @@ public final class PrintFunc extends Func {
 			return this.result;
 		}
 
-		public final Arg<ValOp> text() {
+		public final Arg<ValType.Op> text() {
 			return this.text;
 		}
 

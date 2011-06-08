@@ -33,10 +33,10 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.value.ObjectIRLocals;
 import org.o42a.core.ir.object.value.ObjectValueIRCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueIRValFunc;
-import org.o42a.core.ir.op.*;
-import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ObjectCondFunc;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.*;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 
@@ -64,6 +64,10 @@ public class ObjectValueIR {
 
 	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
+	}
+
+	public final Obj getObject() {
+		return getObjectIR().getObject();
 	}
 
 	public final ObjectIR getObjectIR() {
@@ -141,19 +145,22 @@ public class ObjectValueIR {
 					dirs.dirs().falseDir(),
 					unknownClaim.head())
 			.value(dirs);
-		final ValOp claim =
-			code.phi(null, writeClaim(claimDirs, host, null));
+		final ValType.Op claim =
+			code.phi(null, writeClaim(claimDirs, host, null).ptr());
 
 		claimDirs.done();
 
 		final ValDirs propDirs = dirs.sub(unknownClaim);
-		final ValOp prop =
-			unknownClaim.phi(null, writeProposition(propDirs, host, null));
+		final ValType.Op prop = unknownClaim.phi(
+				null,
+				writeProposition(propDirs, host, null).ptr());
 
 		propDirs.done();
 		unknownClaim.go(code.tail());
 
-		return code.phi(null, claim, prop);
+		return code.phi(null, claim, prop).op(
+				dirs.getBuilder(),
+				getObjectIR().getObject().getValueType());
 	}
 
 	protected void createRequirement(

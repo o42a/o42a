@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.sentence.declarative;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-
 import java.util.ArrayList;
 
 import org.o42a.codegen.code.Code;
@@ -207,7 +205,9 @@ final class SentenceLogicals {
 				final Code otherwiseBlock = code.addBlock("otherwise");
 
 				this.otherwise.write(
-						falseWhenUnknown(otherwiseBlock, exit),
+						dirs.getBuilder().falseWhenUnknown(
+								otherwiseBlock,
+								exit),
 						host);
 
 				otherwise = otherwiseBlock.head();
@@ -227,18 +227,24 @@ final class SentenceLogicals {
 
 				if (nextIdx >= size) {
 					prerequisite.write(
-							falseWhenUnknown(prereq, otherwise),
+							dirs.getBuilder().falseWhenUnknown(
+									prereq,
+									otherwise),
 							host);
 					precondition.write(
-							falseWhenUnknown(prereq, exit),
+							dirs.getBuilder().falseWhenUnknown(prereq, exit),
 							host);
 					break;
 				}
 
 				final Code next = code.addBlock(nextIdx + "_prereq");
 
-				prerequisite.write(falseWhenUnknown(prereq, next.head()), host);
-				precondition.write(falseWhenUnknown(prereq, exit), host);
+				prerequisite.write(
+						dirs.getBuilder().falseWhenUnknown(prereq, next.head()),
+						host);
+				precondition.write(
+						dirs.getBuilder().falseWhenUnknown(prereq, exit),
+						host);
 
 				prereq = next;
 				idx = nextIdx;

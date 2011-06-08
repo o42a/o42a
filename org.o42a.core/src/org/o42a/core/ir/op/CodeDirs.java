@@ -24,33 +24,47 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.value.ValueType;
 
 
 public class CodeDirs {
 
-	public static CodeDirs falseWhenUnknown(Code code, CodePos falseDir) {
-		return new CodeDirs(code, falseDir, falseDir);
+	public static CodeDirs falseWhenUnknown(
+			CodeBuilder builder,
+			Code code,
+			CodePos falseDir) {
+		return new CodeDirs(builder, code, falseDir, falseDir);
 	}
 
 	public static CodeDirs splitWhenUnknown(
+			CodeBuilder builder,
 			Code code,
 			CodePos falseDir,
 			CodePos unknownDir) {
-		return new CodeDirs(code, falseDir, unknownDir);
+		return new CodeDirs(builder, code, falseDir, unknownDir);
 	}
 
 	private final Code code;
 	private final CodePos falseDir;
 	private final CodePos unknownDir;
+	private final CodeBuilder builder;
 
-	CodeDirs(Code code, CodePos falseDir, CodePos unknownDir) {
+	CodeDirs(
+			CodeBuilder builder,
+			Code code,
+			CodePos falseDir,
+			CodePos unknownDir) {
+		assert builder != null :
+			"Code builder not specified";
 		assert code != null :
 			"Code not specified";
 		assert falseDir != null :
 			"False direction not specified";
 		assert unknownDir != null :
 			"Unknown direction not specified";
+		this.builder = builder;
 		this.code = code;
 		this.falseDir = falseDir;
 		this.unknownDir = unknownDir;
@@ -58,6 +72,10 @@ public class CodeDirs {
 
 	public final Generator getGenerator() {
 		return this.code.getGenerator();
+	}
+
+	public final CodeBuilder getBuilder() {
+		return this.builder;
 	}
 
 	public final boolean isDebug() {
@@ -85,7 +103,7 @@ public class CodeDirs {
 	}
 
 	public final CodeDirs sub(Code code) {
-		return new CodeDirs(code, this.falseDir, this.unknownDir);
+		return new CodeDirs(getBuilder(), code, this.falseDir, this.unknownDir);
 	}
 
 	public CodeDirs begin(String id, String message) {
@@ -126,16 +144,16 @@ public class CodeDirs {
 		return new AllocationDirs(this, code().allocate(name));
 	}
 
-	public final ValDirs value() {
-		return new ValDirs.TopLevelValDirs(this, id("value"));
+	public final ValDirs value(ValueType<?> valueType) {
+		return new ValDirs.TopLevelValDirs(this, id("value"), valueType);
 	}
 
-	public final ValDirs value(String name) {
-		return new ValDirs.TopLevelValDirs(this, id(name));
+	public final ValDirs value(ValueType<?> valueType, String name) {
+		return new ValDirs.TopLevelValDirs(this, id(name), valueType);
 	}
 
-	public final ValDirs value(CodeId name) {
-		return new ValDirs.TopLevelValDirs(this, name);
+	public final ValDirs value(ValueType<?> valueType, CodeId name) {
+		return new ValDirs.TopLevelValDirs(this, name, valueType);
 	}
 
 	public final ValDirs value(CodeId name, ValOp value) {
@@ -150,20 +168,20 @@ public class CodeDirs {
 		if (isFalseWhenUnknown()) {
 			return this;
 		}
-		return new CodeDirs(this.code, this.falseDir, this.falseDir);
+		return new CodeDirs(getBuilder(), code(), falseDir(), falseDir());
 	}
 
 	public final CodeDirs unknownWhenFalse() {
 		if (isFalseWhenUnknown()) {
 			return this;
 		}
-		return new CodeDirs(this.code, this.unknownDir, this.unknownDir);
+		return new CodeDirs(getBuilder(), code(), unknownDir(), unknownDir());
 	}
 
 	public final CodeDirs splitWhenUnknown(
 			CodePos falseDir,
 			CodePos unknownDir) {
-		return new CodeDirs(this.code, falseDir, unknownDir);
+		return new CodeDirs(getBuilder(), code(), falseDir, unknownDir);
 	}
 
 	public final boolean isFalseWhenUnknown() {
@@ -254,7 +272,11 @@ public class CodeDirs {
 				CodeDirs enclosing,
 				CodePos falsePos,
 				CodePos unknownPos) {
-			super(enclosing.code, falsePos, unknownPos);
+			super(
+					enclosing.getBuilder(),
+					enclosing.code(),
+					falsePos,
+					unknownPos);
 			this.enclosing = enclosing;
 		}
 

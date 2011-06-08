@@ -49,6 +49,11 @@ final class VoidValueType extends ValueType<Void> {
 	}
 
 	@Override
+	public boolean assignableFrom(ValueType<?> other) {
+		return true;
+	}
+
+	@Override
 	protected Val val(Generator generator, Void value) {
 		return VOID_VAL;
 	}

@@ -200,12 +200,13 @@ public final class ComparisonRef extends ObjectConstructor {
 		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 			if (this.ref.hasError()) {
 				dirs.code().go(dirs.falseDir());
-				return falseValue().op(dirs.code());
+				return falseValue().op(dirs.getBuilder(), dirs.code());
 			}
 
-			final ValDirs cmpDirs =
-				dirs.dirs().falseWhenUnknown().value("cmp");
 			final ComparisonOperator operator = this.ref.getOperator();
+			final ValDirs cmpDirs = dirs.dirs().falseWhenUnknown().value(
+					operator.getValueType(),
+					"cmp");
 			final ObjectOp comparison =
 				host.field(cmpDirs.dirs(), this.comparisonKey)
 				.materialize(cmpDirs.dirs());

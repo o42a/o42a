@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
@@ -28,12 +27,18 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 
 
 final class NotEqualsOperator extends ComparisonOperator {
 
 	NotEqualsOperator() {
 		super(ClauseId.EQUALS);
+	}
+
+	@Override
+	public ValueType<?> getValueType() {
+		return ValueType.VOID;
 	}
 
 	@Override
@@ -47,19 +52,20 @@ final class NotEqualsOperator extends ComparisonOperator {
 		final Code code = dirs.code();
 		final Code notEqual = code.addBlock("not_equal");
 
-		comparison.writeLogicalValue(falseWhenUnknown(code, notEqual.head()));
+		comparison.writeLogicalValue(
+				dirs.getBuilder().falseWhenUnknown(code, notEqual.head()));
 
 		code.go(dirs.falseDir());
 		if (notEqual.exists()) {
 			notEqual.go(code.tail());
 		}
 
-		return voidValue().op(code);
+		return voidValue().op(dirs.getBuilder(), code);
 	}
 
 	@Override
 	public ValOp write(ValDirs dirs, ValOp comparisonVal) {
-		return voidValue().op(dirs.code());
+		return voidValue().op(dirs.getBuilder(), dirs.code());
 	}
 
 }

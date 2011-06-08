@@ -35,6 +35,10 @@ public final class ObjectIRLocals {
 	private ArrayList<LocalIRFunc> locals;
 	private boolean filled;
 
+	public final ObjectValueIR getValueIR() {
+		return this.valueIR;
+	}
+
 	public void addLocal(LocalIRFunc local) {
 		if (this.locals == null) {
 			this.locals = new ArrayList<LocalIRFunc>();

@@ -268,7 +268,7 @@ public strictfp class FloatByString extends ByString<Double> {
 	@Override
 	protected ValOp parse(ValDirs dirs, ObjectOp input) {
 
-		final ValDirs inputDirs = dirs.dirs().value("input");
+		final ValDirs inputDirs = dirs.dirs().value(ValueType.STRING, "input");
 		final ValOp inputValue = input.writeValue(inputDirs);
 
 		final ValDirs outputDirs = inputDirs.dirs().value(dirs);

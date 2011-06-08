@@ -41,6 +41,11 @@ abstract class CompareOperator extends ComparisonOperator {
 	}
 
 	@Override
+	public final ValueType<?> getValueType() {
+		return ValueType.INTEGER;
+	}
+
+	@Override
 	public boolean checkError(Ref phrase) {
 
 		final Resolution resolution = phrase.getResolution();
@@ -86,7 +91,7 @@ abstract class CompareOperator extends ComparisonOperator {
 
 		write(dirs.dirs(), comparisonValue);
 
-		return voidValue().op(code);
+		return voidValue().op(dirs.getBuilder(), code);
 	}
 
 	protected abstract boolean compare(long compareResult);

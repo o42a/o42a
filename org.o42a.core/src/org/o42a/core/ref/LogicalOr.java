@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
@@ -122,7 +120,7 @@ final class LogicalOr extends Logical {
 				next.go(dirs.falseDir());
 			}
 
-			blockDirs = falseWhenUnknown(block, next.head());
+			blockDirs = dirs.getBuilder().falseWhenUnknown(block, next.head());
 			this.variants[i].write(blockDirs, host);
 			block.go(code.tail());
 

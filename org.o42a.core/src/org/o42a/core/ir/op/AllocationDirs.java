@@ -88,6 +88,7 @@ public class AllocationDirs {
 		}
 
 		return this.dirs = new CodeDirs(
+				this.enclosing.getBuilder(),
 				this.code,
 				this.falseAlt.head(),
 				this.unknownAlt.head());

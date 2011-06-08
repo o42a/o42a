@@ -52,6 +52,10 @@ public abstract class ObjectIRFunc {
 		return this.objectIR;
 	}
 
+	public final Obj getObject() {
+		return getObjectIR().getObject();
+	}
+
 	public final Definitions definitions() {
 		return getObjectIR().getObject().getDefinitions();
 	}

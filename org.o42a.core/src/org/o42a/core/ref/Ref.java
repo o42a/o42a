@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 import static org.o42a.util.use.User.dummyUser;
@@ -37,7 +36,9 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.GroupClause;
@@ -456,7 +457,7 @@ public abstract class Ref extends RefTypeBase {
 			final Code falseVal = control.addBlock("false_st_val");
 			final Code code = control.code();
 			final ValDirs dirs =
-				falseWhenUnknown(code, falseVal.head())
+				control.getBuilder().falseWhenUnknown(code, falseVal.head())
 				.value(code.id("local_val"), result);
 
 			result.store(code, this.ref.writeValue(dirs));
@@ -471,8 +472,9 @@ public abstract class Ref extends RefTypeBase {
 		public void writeLogicalValue(Control control) {
 
 			final Code falseCond = control.addBlock("false_st_cond");
-			final CodeDirs dirs =
-				falseWhenUnknown(control.code(), falseCond.head());
+			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+					control.code(),
+					falseCond.head());
 
 			this.ref.writeLogicalValue(dirs);
 

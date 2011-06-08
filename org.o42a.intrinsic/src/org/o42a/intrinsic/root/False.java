@@ -60,7 +60,7 @@ public final class False extends IntrinsicBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 		dirs.code().go(dirs.falseDir());
-		return falseValue().op(dirs.code());
+		return falseValue().op(dirs.getBuilder(), dirs.code());
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public final class False extends IntrinsicBuiltin {
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
 			dirs.code().go(dirs.falseDir());
-			return falseValue().op(dirs.code());
+			return falseValue().op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override

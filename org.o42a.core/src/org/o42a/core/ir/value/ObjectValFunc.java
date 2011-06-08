@@ -49,7 +49,7 @@ public final class ObjectValFunc extends ObjectFunc {
 	}
 
 	public void call(Code code, ValOp value, DataOp object) {
-		invoke(null, code, OBJECT_VAL.result(), value, object);
+		invoke(null, code, OBJECT_VAL.result(), value.ptr(), object);
 	}
 
 	public ValOp call(ValDirs dirs, DataOp object) {
@@ -57,7 +57,7 @@ public final class ObjectValFunc extends ObjectFunc {
 		final Code code = dirs.code();
 		final ValOp value = dirs.value();
 
-		invoke(null, code, OBJECT_VAL.result(), value, object);
+		invoke(null, code, OBJECT_VAL.result(), value.ptr(), object);
 		value.go(code, dirs);
 
 		return value;
@@ -66,7 +66,7 @@ public final class ObjectValFunc extends ObjectFunc {
 	public static final class ObjectVal extends ObjectSignature<ObjectValFunc> {
 
 		private Return<Void> result;
-		private Arg<ValOp> value;
+		private Arg<ValType.Op> value;
 		private Arg<DataOp> object;
 
 		private ObjectVal() {
@@ -76,7 +76,7 @@ public final class ObjectValFunc extends ObjectFunc {
 			return this.result;
 		}
 
-		public final Arg<ValOp> value() {
+		public final Arg<ValType.Op> value() {
 			return this.value;
 		}
 

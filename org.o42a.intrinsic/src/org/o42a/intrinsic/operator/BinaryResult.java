@@ -142,13 +142,15 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ValDirs leftDirs = dirs.dirs().value("left");
+		final ValDirs leftDirs =
+			dirs.dirs().value(getLeftOperandType(), "left");
 		final ObjectOp leftObject =
 			host.field(leftDirs.dirs(), leftOperandKey())
 			.materialize(leftDirs.dirs());
 		final ValOp leftVal = leftObject.writeValue(leftDirs);
 
-		final ValDirs rightDirs = leftDirs.dirs().value("right");
+		final ValDirs rightDirs =
+			leftDirs.dirs().value(getRightOperandType(), "right");
 		final ObjectOp rightObject =
 			host.field(rightDirs.dirs(), rightOperandKey())
 			.materialize(rightDirs.dirs());

@@ -20,7 +20,6 @@
 package org.o42a.lib.console;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
@@ -45,6 +44,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.ValueType;
 import org.o42a.lib.console.impl.Print;
 import org.o42a.util.use.UserInfo;
 
@@ -153,9 +153,12 @@ public class ConsoleModule extends Module {
 		final CodeBuilder builder = codeBuilder(getContext(), main);
 		final Code exit = main.addBlock("exit");
 		final AllocationCode alloc = main.undisposable();
-		final ValOp result = alloc.allocate(null, VAL_TYPE).storeUnknown(main);
+		final ValOp result =
+			alloc.allocate(null, VAL_TYPE)
+			.op(builder, ValueType.INTEGER)
+			.storeUnknown(main);
 		final ValDirs dirs =
-			falseWhenUnknown(alloc, exit.head())
+			builder.falseWhenUnknown(alloc, exit.head())
 			.value(main.id("exec_main"), result);
 		final Code code = dirs.code();
 

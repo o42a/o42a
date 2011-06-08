@@ -69,7 +69,7 @@ public final class VoidObject extends BuiltinObject {
 
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		return voidValue().op(dirs.code());
+		return voidValue().op(dirs.getBuilder(), dirs.code());
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public final class VoidObject extends BuiltinObject {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			return voidValue().op(dirs.code());
+			return voidValue().op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override
