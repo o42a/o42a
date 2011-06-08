@@ -24,6 +24,7 @@ import static java.lang.Double.doubleToRawLongBits;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.value.ValueType;
 
 
 public final class Val implements Content<ValType> {
@@ -34,18 +35,23 @@ public final class Val implements Content<ValType> {
 	public static final int ALIGNMENT_MASK = 0x700;
 	public static final int EXTERNAL_FLAG = 0x800;
 
-	public static final Val VOID_VAL = new Val(CONDITION_FLAG, 0, 0L);
-	public static final Val FALSE_VAL = new Val(0, 0, 0L);
-	public static final Val UNKNOWN_VAL = new Val(UNKNOWN_FLAG, 0, 0L);
+	public static final Val VOID_VAL =
+		new Val(ValueType.VOID, CONDITION_FLAG, 0, 0L);
+	public static final Val FALSE_VAL =
+		new Val(ValueType.VOID, 0, 0, 0L);
+	public static final Val UNKNOWN_VAL =
+		new Val(ValueType.VOID, UNKNOWN_FLAG, 0, 0L);
 	public static final Val INDEFINITE_VAL =
-		new Val(UNKNOWN_FLAG | INDEFINITE_FLAG, 0, 0L);
+		new Val(ValueType.VOID, UNKNOWN_FLAG | INDEFINITE_FLAG, 0, 0L);
 
+	private final ValueType<?> valueType;
 	private final int flags;
 	private final int length;
 	private final long value;
 	private final Ptr<AnyOp> pointer;
 
 	public Val(long value) {
+		this.valueType = ValueType.INTEGER;
 		this.flags = CONDITION_FLAG;
 		this.length = 0;
 		this.value = value;
@@ -53,24 +59,35 @@ public final class Val implements Content<ValType> {
 	}
 
 	public Val(double value) {
+		this.valueType = ValueType.FLOAT;
 		this.flags = CONDITION_FLAG;
 		this.length = 0;
 		this.value = doubleToRawLongBits(value);
 		this.pointer = null;
 	}
 
-	public Val(int flags, int length, long value) {
+	public Val(ValueType<?> valueType, int flags, int length, long value) {
+		this.valueType = valueType;
 		this.flags = flags;
 		this.length = length;
 		this.value = value;
 		this.pointer = null;
 	}
 
-	public Val(int flags, int length, Ptr<AnyOp> pointer) {
+	public Val(
+			ValueType<?> valueType,
+			int flags,
+			int length,
+			Ptr<AnyOp> pointer) {
+		this.valueType = valueType;
 		this.flags = flags;
 		this.length = length;
 		this.value = 0L;
 		this.pointer = pointer;
+	}
+
+	public final ValueType<?> getValueType() {
+		return this.valueType;
 	}
 
 	public final int getFlags() {
