@@ -22,8 +22,8 @@ package org.o42a.core.value;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.op.Val;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
 
 
 public abstract class Value<T> {

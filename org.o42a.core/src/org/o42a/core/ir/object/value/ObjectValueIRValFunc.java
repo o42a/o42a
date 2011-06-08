@@ -21,7 +21,7 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
-import static org.o42a.core.ir.op.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -32,6 +32,8 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 

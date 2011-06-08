@@ -24,8 +24,8 @@ import static org.o42a.core.ir.object.value.DefCollector.explicitDef;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
 import static org.o42a.core.ir.op.CodeDirs.splitWhenUnknown;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
-import static org.o42a.core.ir.op.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.op.Val.UNKNOWN_FLAG;
+import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;

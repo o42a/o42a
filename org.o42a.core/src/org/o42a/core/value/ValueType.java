@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import java.util.HashMap;
@@ -34,9 +33,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.op.Val;
-import org.o42a.core.ir.op.ValOp;
-import org.o42a.core.ir.op.ValOp.Type;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -182,10 +181,10 @@ public abstract class ValueType<T> {
 			}
 		}
 
-		final Global<ValOp, Type> global =
+		final Global<ValOp, ValType> global =
 			generator.newGlobal().setConstant().dontExport().newInstance(
 					constId(generator, value),
-					VAL_TYPE,
+					ValType.VAL_TYPE,
 					val(generator, value));
 		final Ptr<ValOp> result = global.getPointer();
 

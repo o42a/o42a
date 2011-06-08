@@ -21,7 +21,7 @@ package org.o42a.lib.console;
 
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
@@ -39,7 +39,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;

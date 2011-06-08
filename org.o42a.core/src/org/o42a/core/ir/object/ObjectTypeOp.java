@@ -24,6 +24,8 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.ValOp;
 
 
 public class ObjectTypeOp extends IROp {

@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.op.Val.FALSE_VAL;
-import static org.o42a.core.ir.op.Val.INDEFINITE_VAL;
-import static org.o42a.core.ir.op.Val.UNKNOWN_VAL;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
+import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -34,6 +34,9 @@ import org.o42a.core.ir.object.value.ObjectIRLocals;
 import org.o42a.core.ir.object.value.ObjectValueIRCondFunc;
 import org.o42a.core.ir.object.value.ObjectValueIRValFunc;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 

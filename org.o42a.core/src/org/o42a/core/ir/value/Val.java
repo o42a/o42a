@@ -17,17 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.value;
 
 import static java.lang.Double.doubleToRawLongBits;
 
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.op.ValOp.Type;
 
 
-public final class Val implements Content<ValOp.Type> {
+public final class Val implements Content<ValType> {
 
 	public static final int CONDITION_FLAG = 0x01;
 	public static final int UNKNOWN_FLAG = 0x02;
@@ -107,11 +106,11 @@ public final class Val implements Content<ValOp.Type> {
 	}
 
 	@Override
-	public void allocated(Type instance) {
+	public void allocated(ValType instance) {
 	}
 
 	@Override
-	public void fill(Type instance) {
+	public void fill(ValType instance) {
 		instance.set(this);
 	}
 

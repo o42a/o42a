@@ -23,6 +23,8 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 
 
 public abstract class ValDirs {
@@ -204,7 +206,7 @@ public abstract class ValDirs {
 			this.allocation = this.enclosing.allocate("value");
 
 			return this.value =
-				this.allocation.allocate(id("value"), ValOp.VAL_TYPE)
+				this.allocation.allocate(id("value"), ValType.VAL_TYPE)
 				.storeIndefinite(this.allocation.code());
 		}
 

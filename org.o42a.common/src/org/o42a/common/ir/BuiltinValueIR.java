@@ -23,7 +23,7 @@ import org.o42a.common.def.Builtin;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 
 
 public class BuiltinValueIR extends ProposedValueIR {

@@ -22,7 +22,7 @@ package org.o42a.common.ir;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 
 
 public abstract class ProposedValueIR extends ObjectValueIR {

@@ -19,13 +19,13 @@
 */
 package org.o42a.lib.console.impl;
 
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 
 
 public final class PrintFunc extends Func {

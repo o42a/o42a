@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.value;
 
-import static org.o42a.core.ir.op.ValOp.VAL_TYPE;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -27,6 +27,9 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ObjectFunc;
+import org.o42a.core.ir.op.ObjectSignature;
+import org.o42a.core.ir.op.ValDirs;
 
 
 public final class ObjectValFunc extends ObjectFunc {

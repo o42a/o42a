@@ -25,7 +25,7 @@ import static org.o42a.core.value.Value.voidValue;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;
 

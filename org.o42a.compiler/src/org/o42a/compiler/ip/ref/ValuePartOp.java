@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.ref;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 
 
 final class ValuePartOp extends ConstructorOp {

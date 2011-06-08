@@ -23,7 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.op.ValOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 
 
