@@ -170,6 +170,12 @@ public abstract class ValueType<T> {
 		return true;
 	}
 
+	public final boolean assertIs(ValueType<?> other) {
+		assert this == other :
+			this + " is not " + other;
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return getSystemId();

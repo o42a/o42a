@@ -25,6 +25,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ConstructorOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.value.ValueType;
 
 
 final class ValuePartOp extends ConstructorOp {
@@ -49,6 +50,10 @@ final class ValuePartOp extends ConstructorOp {
 	@Override
 	public ValOp writeValue(ValDirs dirs) {
 		return part().writeValue(dirs, this);
+	}
+
+	final ValueType<?> getValueType() {
+		return getRef().getScope().getContainer().toObject().getValueType();
 	}
 
 	final ValuePartRef getPartRef() {

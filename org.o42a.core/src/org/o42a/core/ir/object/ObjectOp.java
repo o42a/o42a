@@ -100,7 +100,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	public final void writeLogicalValue(CodeDirs dirs, ObjectOp body) {
-		assert body.getValueType().assertAssignableFrom(body.getValueType());
+		assert body == null || body.getValueType().assertIs(getValueType());
 
 		final ValDirs valDirs = dirs.value(getValueType());
 
@@ -110,7 +110,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	@Override
 	public final ValOp writeValue(ValDirs dirs) {
-		assert dirs.getValueType().assertAssignableFrom(getValueType());
+		assert dirs.getValueType().assertIs(getValueType());
 
 		final Code code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code).op(
