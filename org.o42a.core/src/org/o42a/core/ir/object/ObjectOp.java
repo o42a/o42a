@@ -69,14 +69,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	public final ValueType<?> getValueType() {
-
-		final Obj wellKnownType = getWellKnownType();
-
-		if (wellKnownType == null) {
-			return ValueType.VOID;
-		}
-
-		return wellKnownType.getValueType();
+		return getWellKnownType().getValueType();
 	}
 
 	public abstract Obj getWellKnownType();

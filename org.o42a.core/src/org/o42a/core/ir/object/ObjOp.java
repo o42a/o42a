@@ -42,6 +42,8 @@ public final class ObjOp extends ObjectOp {
 
 	ObjOp(ObjectBodyIR.Op ptr, Obj ascendant, ObjectTypeOp data) {
 		super(ptr, data);
+		assert ascendant != null :
+			"Object ascendant not specified";
 		this.ascendant = ascendant;
 		assert getPrecision().isCompatible() :
 			"Wrong object precision: " + this;
@@ -56,6 +58,8 @@ public final class ObjOp extends ObjectOp {
 			Obj ascendant,
 			ObjectPrecision precision) {
 		super(builder, ptr, precision);
+		assert ascendant != null :
+			"Object ascendant not specified";
 		this.ascendant = ascendant;
 		assert getPrecision().isCompatible() :
 			"Wrong object precision: " + this;

@@ -40,14 +40,16 @@ final class AnonymousObjOp extends ObjectOp {
 
 	AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
 		super(ptr, data);
+		assert wellKnownType != null :
+			"Object type not specified";
 		this.wellKnownType = wellKnownType;
 	}
 
 	AnonymousObjOp(CodeBuilder builder, DataOp ptr, Obj wellKnownType) {
 		super(builder, ptr, DERIVED);
-		this.wellKnownType =
-			wellKnownType != null
-			? wellKnownType : builder.getContext().getVoid();
+		assert wellKnownType != null :
+			"Object type not specified";
+		this.wellKnownType = wellKnownType;
 	}
 
 	@Override
