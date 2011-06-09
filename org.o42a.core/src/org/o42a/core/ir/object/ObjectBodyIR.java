@@ -358,7 +358,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			final Obj ancestor;
 
 			if (ancestorRef == null) {
-				ancestor = null;
+				ancestor = builder.getContext().getVoid();
 			} else {
 				ancestor = ancestorRef.typeObject(dummyUser());
 			}
