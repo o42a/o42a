@@ -72,6 +72,14 @@ final class AbsolutePathTarget extends Ref {
 	}
 
 	@Override
+	public String toString() {
+		if (this.path == null) {
+			return super.toString();
+		}
+		return this.path.toString();
+	}
+
+	@Override
 	protected boolean isKnownStatic() {
 		return true;
 	}

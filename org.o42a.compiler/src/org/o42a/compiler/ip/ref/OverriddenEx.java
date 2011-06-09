@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.ref;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -117,27 +118,16 @@ public class OverriddenEx extends Ref {
 		@Override
 		protected Ascendants buildAscendants() {
 
-			final Definitions definitions = getExplicitDefinitions();
-			final ValueType<?> valueType = definitions.getValueType();
+			final Scope enclosingScope = getScope().getEnclosingScope();
+			final ValueType<?> valueType =
+				enclosingScope.getContainer().toObject().getValueType();
 
-			if (valueType == null) {
-				return createAscendants(definitions, ValueType.VOID);
-			}
-
-			return createAscendants(definitions, valueType);
+			return new Ascendants(this).setAncestor(
+					valueType.typeRef(this, enclosingScope));
 		}
 
 		@Override
 		protected void declareMembers(ObjectMembers members) {
-		}
-
-		private Ascendants createAscendants(
-				final Definitions definitions,
-				final ValueType<?> valueType) {
-			return new Ascendants(this).setAncestor(
-					valueType.typeRef(
-							definitions,
-							getScope().getEnclosingScope()));
 		}
 
 	}
@@ -151,7 +141,9 @@ public class OverriddenEx extends Ref {
 		@Override
 		public void writeLogicalValue(CodeDirs dirs) {
 
-			final ValDirs valDirs = dirs.value(ValueType.VOID);
+			final ValueType<?> valueType =
+				getRef().getScope().getContainer().toObject().getValueType();
+			final ValDirs valDirs = dirs.value(valueType);
 
 			writeValue(valDirs);
 			valDirs.done();

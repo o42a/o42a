@@ -20,14 +20,21 @@
 package org.o42a.core.ref;
 
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.ObjectType;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.value.ValueType;
 
 
 final class Adapter extends Wrap {
@@ -68,6 +75,57 @@ final class Adapter extends Wrap {
 		final Path adapterPath = adapterMember.getKey().toPath();
 
 		return adapterPath.target(this, distribute(), this.ref);
+	}
+
+	@Override
+	protected RefOp createOp(HostOp host) {
+
+		final RefOp op = super.createOp(host);
+		final ValueType<?> adapterValueType =
+			this.adapterType.typeObject(dummyUser()).getValueType();
+
+		if (adapterValueType != ValueType.VOID) {
+			return op;
+		}
+
+		final ValueType<?> valueType =
+			this.ref.getResolution().materialize().getValueType();
+
+		if (valueType == ValueType.VOID) {
+			return op;
+		}
+
+		return new CastToVoidOp(host, this, op);
+	}
+
+	private static final class CastToVoidOp extends RefOp {
+
+		private final RefOp op;
+
+		CastToVoidOp(HostOp host, Ref ref, RefOp op) {
+			super(host, ref);
+			this.op = op;
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs) {
+			this.op.writeLogicalValue(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			assert dirs.getValueType().assertIs(ValueType.VOID);
+
+			writeLogicalValue(dirs.dirs());
+
+			return voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+			return this.op.target(dirs);
+		}
+
 	}
 
 }
