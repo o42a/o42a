@@ -183,6 +183,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp64
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lowestBit
   (JNIEnv *, jclass, jlong, jstring, jlong);
 
+/*
+ * Class:     org_o42a_backend_llvm_code_op_LLVMIntOp
+ * Method:    atomicBinary
+ * Signature: (JLjava/lang/String;Ljava/lang/String;JJI)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_atomicBinary
+  (JNIEnv *, jclass, jlong, jstring, jstring, jlong, jlong, jint);
+
 #ifdef __cplusplus
 }
 #endif

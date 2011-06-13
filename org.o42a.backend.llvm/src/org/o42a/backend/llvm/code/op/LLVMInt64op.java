@@ -31,7 +31,7 @@ public final class LLVMInt64op extends LLVMIntOp<Int64op, LLVMInt64op>
 		implements Int64op {
 
 	public LLVMInt64op(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+		super(id, 64, blockPtr, nativePtr);
 	}
 
 	@Override

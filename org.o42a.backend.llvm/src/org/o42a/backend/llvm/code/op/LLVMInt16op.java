@@ -31,7 +31,7 @@ public final class LLVMInt16op extends LLVMIntOp<Int16op, LLVMInt16op>
 		implements Int16op {
 
 	public LLVMInt16op(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+		super(id, 16, blockPtr, nativePtr);
 	}
 
 	@Override
