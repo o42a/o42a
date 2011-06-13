@@ -22,17 +22,26 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
+import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.IntOp;
+import org.o42a.codegen.code.op.RecOp;
 
 
 public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 		extends LLVMNumOp< O, T>
 		implements IntOp<O> {
 
-	public LLVMIntOp(CodeId id, long blockPtr, long nativePtr) {
+	private final int bits;
+
+	public LLVMIntOp(CodeId id, int bits, long blockPtr, long nativePtr) {
 		super(id, blockPtr, nativePtr);
+		this.bits = bits;
+	}
+
+	public final int getBits() {
+		return this.bits;
 	}
 
 	@Override
@@ -175,6 +184,27 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 	}
 
 	@Override
+	public O atomicAdd(CodeId id, Code code, RecOp<O> to) {
+
+		final long nextPtr = nextPtr(code);
+		final CodeId resultId =
+			LLVMCode.binaryId(to, id, code, "atomic_add", this);
+		final String op =
+			"llvm.atomic.load.add.i" + getBits() + ".p0i" + getBits();
+
+		return create(
+				resultId,
+				nextPtr,
+				atomicBinary(
+						nextPtr,
+						resultId.getId(),
+						op,
+						nativePtr(to),
+						getNativePtr(),
+						getBits()));
+	}
+
+	@Override
 	public T sub(CodeId id, Code code, O subtrahend) {
 
 		final long nextPtr = nextPtr(code);
@@ -188,6 +218,27 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 						resultId.getId(),
 						getNativePtr(),
 						nativePtr(subtrahend)));
+	}
+
+	@Override
+	public O atomicSub(CodeId id, Code code, RecOp<O> from) {
+
+		final long nextPtr = nextPtr(code);
+		final CodeId resultId =
+			LLVMCode.binaryId(from, id, code, "atomic_sub", this);
+		final String op =
+			"llvm.atomic.load.sub.i" + getBits() + ".p0i" + getBits();
+
+		return create(
+				resultId,
+				nextPtr,
+				atomicBinary(
+						nextPtr,
+						resultId.getId(),
+						op,
+						nativePtr(from),
+						getNativePtr(),
+						getBits()));
 	}
 
 	@Override
@@ -571,5 +622,13 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 			long blockPtr,
 			String id,
 			long valuePtr);
+
+	private static native long atomicBinary(
+			long blockPtr,
+			String id,
+			String op,
+			long targetPtr,
+			long operandPtr,
+			int bits);
 
 }

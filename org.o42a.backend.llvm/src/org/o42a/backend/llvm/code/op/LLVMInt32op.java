@@ -31,7 +31,7 @@ public final class LLVMInt32op extends LLVMIntOp<Int32op, LLVMInt32op>
 		implements Int32op {
 
 	public LLVMInt32op(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+		super(id, 32, blockPtr, nativePtr);
 	}
 
 	@Override

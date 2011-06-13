@@ -31,7 +31,7 @@ public final class LLVMInt8op extends LLVMIntOp<Int8op, LLVMInt8op>
 		implements Int8op {
 
 	public LLVMInt8op(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+		super(id, 8, blockPtr, nativePtr);
 	}
 
 	@Override

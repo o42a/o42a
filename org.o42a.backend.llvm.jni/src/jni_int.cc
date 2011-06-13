@@ -22,6 +22,7 @@
 #include "o42ac/llvm/util.h"
 
 #include "llvm/BasicBlock.h"
+#include "llvm/Module.h"
 #include "llvm/Value.h"
 #include "llvm/Support/IRBuilder.h"
 
@@ -398,6 +399,35 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lowestBit(
 	IRBuilder<> builder(block);
 	Value *result =
 			builder.CreateIntCast(value, builder.getInt1Ty(), false, name);
+
+	return to_ptr(result);
+}
+
+jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_atomicBinary(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jstring id,
+		jstring op,
+		jlong targetPtr,
+		jlong operandPtr,
+		jint bits) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
+	jStringRef funcName(env, op);
+	Value *target = from_ptr<Value>(targetPtr);
+	Value *operand = from_ptr<Value>(operandPtr);
+	IRBuilder<> builder(block);
+
+	const Type* intType = IntegerType::get(block->getContext(), bits);
+	Constant *const func = block->getParent()->getParent()->getOrInsertFunction(
+			funcName,
+			intType,
+			intType->getPointerTo(),
+			intType,
+			NULL);
+	Value *result = builder.CreateCall2(func, target, operand, name);
 
 	return to_ptr(result);
 }
