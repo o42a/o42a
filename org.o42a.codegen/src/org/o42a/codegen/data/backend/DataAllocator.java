@@ -30,7 +30,12 @@ import org.o42a.codegen.data.Type;
 
 public interface DataAllocator {
 
-	DataAllocation<AnyOp> addBinary(CodeId id, byte[] data, int start, int end);
+	DataAllocation<AnyOp> addBinary(
+			CodeId id,
+			boolean isConstant,
+			byte[] data,
+			int start,
+			int end);
 
 	<O extends StructOp> DataAllocation<O> begin(Type<O> type);
 

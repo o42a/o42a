@@ -32,7 +32,7 @@ public abstract class FuncPtr<F extends Func> extends AbstractPtr {
 	final FuncAllocation<F> allocation;
 
 	FuncPtr(CodeId id, Signature<F> signature, FuncAllocation<F> allocation) {
-		super(id);
+		super(id, true);
 		this.signature = signature;
 		this.allocation = allocation;
 	}

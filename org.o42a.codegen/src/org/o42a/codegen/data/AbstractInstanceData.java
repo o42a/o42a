@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.data.Type.emptyContent;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
@@ -37,8 +39,7 @@ abstract class AbstractInstanceData<O extends StructOp>
 			Type<O> instance,
 			Content<?> content) {
 		super(generator, id, instance);
-		getPointer().copyAllocation(instance.getType().getTypeData());
-		this.content = content != null ? content : Type.emptyContent();
+		this.content = content != null ? content : emptyContent();
 		this.next = instance.type.data.data().getFirst();
 	}
 
@@ -55,6 +56,16 @@ abstract class AbstractInstanceData<O extends StructOp>
 		this.next = this.next.getNext();
 
 		return super.add(data);
+	}
+
+	@Override
+	Ptr<O> createPointer() {
+
+		final Ptr<O> pointer = super.createPointer();
+
+		pointer.copyAllocation(getInstance().getType().getTypeData());
+
+		return pointer;
 	}
 
 }

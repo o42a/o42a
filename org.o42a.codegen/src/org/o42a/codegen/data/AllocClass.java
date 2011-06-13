@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,23 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.op;
-
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.AllocClass;
+package org.o42a.codegen.data;
 
 
-public interface PtrOp extends Op {
+public enum AllocClass {
 
-	AllocClass getAllocClass();
-
-	void returnValue(Code code);
-
-	BoolOp isNull(CodeId id, Code code);
-
-	BoolOp eq(CodeId id, Code code, PtrOp other);
-
-	AnyOp toAny(CodeId id, Code code);
+	AUTO_ALLOC_CLASS,
+	STATIC_ALLOC_CLASS,
+	CONSTANT_ALLOC_CLASS,
 
 }

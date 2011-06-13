@@ -25,6 +25,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.AllocClass;
 
 
 public interface DataAllocation<O extends PtrOp> {
@@ -35,7 +36,7 @@ public interface DataAllocation<O extends PtrOp> {
 
 	RelAllocation relativeTo(DataAllocation<?> allocation);
 
-	O op(CodeId id, CodeWriter writer);
+	O op(CodeId id, AllocClass allocClass, CodeWriter writer);
 
 	DataAllocation<AnyOp> toAny();
 

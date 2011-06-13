@@ -24,12 +24,17 @@ import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.data.AllocClass;
 
 
 public final class LLVMDataOp extends LLVMPtrOp implements DataOp {
 
-	public LLVMDataOp(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+	public LLVMDataOp(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
+		super(id, allocClass, blockPtr, nativePtr);
 	}
 
 	@Override
@@ -46,7 +51,7 @@ public final class LLVMDataOp extends LLVMPtrOp implements DataOp {
 
 	@Override
 	public LLVMDataOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMDataOp(id, blockPtr, nativePtr);
+		return new LLVMDataOp(id, getAllocClass(), blockPtr, nativePtr);
 	}
 
 }

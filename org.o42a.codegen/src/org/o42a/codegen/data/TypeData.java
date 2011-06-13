@@ -39,6 +39,11 @@ final class TypeData<O extends StructOp>
 	}
 
 	@Override
+	public boolean isConstant() {
+		return true;
+	}
+
+	@Override
 	public Type<?> getEnclosing() {
 		return null;
 	}

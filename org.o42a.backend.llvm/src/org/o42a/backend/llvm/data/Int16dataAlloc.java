@@ -24,6 +24,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int16op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.AllocClass;
 
 
 final class Int16dataAlloc extends SimpleDataAllocation<RecOp<Int16op>> {
@@ -38,8 +39,12 @@ final class Int16dataAlloc extends SimpleDataAllocation<RecOp<Int16op>> {
 	}
 
 	@Override
-	protected RecOp<Int16op> op(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMRecOp.Int16(id, blockPtr, nativePtr);
+	protected RecOp<Int16op> op(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
+		return new LLVMRecOp.Int16(id, allocClass, blockPtr, nativePtr);
 	}
 
 }

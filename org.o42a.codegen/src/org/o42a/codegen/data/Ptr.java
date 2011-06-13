@@ -19,6 +19,9 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
@@ -31,12 +34,12 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 
 	private DataAllocation<O> allocation;
 
-	Ptr(Data<?> data) {
-		super(data.getId());
+	Ptr(Data<?> data, boolean ptrToConstant) {
+		super(data.getId(), ptrToConstant);
 	}
 
-	Ptr(CodeId id, DataAllocation<O> allocation) {
-		super(id);
+	Ptr(CodeId id, DataAllocation<O> allocation, boolean ptrToConstant) {
+		super(id, ptrToConstant);
 		this.allocation = allocation;
 	}
 
@@ -51,7 +54,8 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 	public final Ptr<DataOp> toData() {
 		return new Ptr<DataOp>(
 				getId().detail("struct"),
-				this.allocation.toData());
+				this.allocation.toData(),
+				isPtrToConstant());
 	}
 
 	public final O op(CodeId id, Code code) {
@@ -62,6 +66,7 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 
 		return getAllocation().op(
 				id != null ? code.opId(id) : getId(),
+				isPtrToConstant() ? CONSTANT_ALLOC_CLASS : STATIC_ALLOC_CLASS,
 				c.writer());
 	}
 

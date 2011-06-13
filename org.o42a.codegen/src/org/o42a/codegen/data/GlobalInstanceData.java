@@ -47,6 +47,11 @@ final class GlobalInstanceData<O extends StructOp>
 	}
 
 	@Override
+	public final boolean isConstant() {
+		return this.global.isConstant();
+	}
+
+	@Override
 	public Type<?> getEnclosing() {
 		return null;
 	}

@@ -21,11 +21,13 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
 
 
@@ -33,8 +35,12 @@ public abstract class LLVMRecOp<O extends Op>
 		extends LLVMPtrOp
 		implements RecOp<O> {
 
-	public LLVMRecOp(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+	public LLVMRecOp(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
+		super(id, allocClass, blockPtr, nativePtr);
 	}
 
 	@Override
@@ -58,31 +64,39 @@ public abstract class LLVMRecOp<O extends Op>
 
 	public static final class Any extends LLVMRecOp<AnyOp> {
 
-		public Any(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Any(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Any create(CodeId id, long blockPtr, long nativePtr) {
-			return new Any(id, blockPtr, nativePtr);
+			return new Any(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
 		protected AnyOp createLoaded(CodeId id, long blockPtr, long nativePtr) {
-			return new LLVMAnyOp(id, blockPtr, nativePtr);
+			return new LLVMAnyOp(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 	}
 
 	public static final class Data extends LLVMRecOp<DataOp> {
 
-		public Data(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Data(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Data create(CodeId id, long blockPtr, long nativePtr) {
-			return new Data(id, blockPtr, nativePtr);
+			return new Data(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
@@ -90,20 +104,28 @@ public abstract class LLVMRecOp<O extends Op>
 				CodeId id,
 				long blockPtr,
 				long nativePtr) {
-			return new LLVMDataOp(id, blockPtr, nativePtr);
+			return new LLVMDataOp(
+					id,
+					AUTO_ALLOC_CLASS,
+					blockPtr,
+					nativePtr);
 		}
 
 	}
 
 	public static final class Int8 extends LLVMRecOp<Int8op> {
 
-		public Int8(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Int8(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Int8 create(CodeId id, long blockPtr, long nativePtr) {
-			return new Int8(id, blockPtr, nativePtr);
+			return new Int8(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
@@ -115,13 +137,17 @@ public abstract class LLVMRecOp<O extends Op>
 
 	public static final class Int16 extends LLVMRecOp<Int16op> {
 
-		public Int16(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Int16(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Int16 create(CodeId id, long blockPtr, long nativePtr) {
-			return new Int16(id, blockPtr, nativePtr);
+			return new Int16(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
@@ -136,13 +162,17 @@ public abstract class LLVMRecOp<O extends Op>
 
 	public static final class Int32 extends LLVMRecOp<Int32op> {
 
-		public Int32(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Int32(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Int32 create(CodeId id, long blockPtr, long nativePtr) {
-			return new Int32(id, blockPtr, nativePtr);
+			return new Int32(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
@@ -157,13 +187,17 @@ public abstract class LLVMRecOp<O extends Op>
 
 	public static final class Int64 extends LLVMRecOp<Int64op> {
 
-		public Int64(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Int64(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Int64 create(CodeId id, long blockPtr, long nativePtr) {
-			return new Int64(id, blockPtr, nativePtr);
+			return new Int64(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
@@ -178,13 +212,17 @@ public abstract class LLVMRecOp<O extends Op>
 
 	public static final class Fp32 extends LLVMRecOp<Fp32op> {
 
-		public Fp32(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Fp32(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Fp32 create(CodeId id, long blockPtr, long nativePtr) {
-			return new Fp32(id, blockPtr, nativePtr);
+			return new Fp32(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
@@ -199,17 +237,24 @@ public abstract class LLVMRecOp<O extends Op>
 
 	public static final class Fp64 extends LLVMRecOp<Fp64op> {
 
-		public Fp64(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Fp64(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Fp64 create(CodeId id, long blockPtr, long nativePtr) {
-			return new Fp64(id, blockPtr, nativePtr);
+			return new Fp64(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
-		protected Fp64op createLoaded(CodeId id, long blockPtr, long nativePtr) {
+		protected Fp64op createLoaded(
+				CodeId id,
+				long blockPtr,
+				long nativePtr) {
 			return new LLVMFp64op(id, blockPtr, nativePtr);
 		}
 
@@ -217,13 +262,17 @@ public abstract class LLVMRecOp<O extends Op>
 
 	public static final class Rel extends LLVMRecOp<RelOp> {
 
-		public Rel(CodeId id, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Rel(
+				CodeId id,
+				AllocClass allocClass,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 		}
 
 		@Override
 		public Rel create(CodeId id, long blockPtr, long nativePtr) {
-			return new Rel(id, blockPtr, nativePtr);
+			return new Rel(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
 		}
 
 		@Override
@@ -237,20 +286,34 @@ public abstract class LLVMRecOp<O extends Op>
 
 		private final Type<O> type;
 
-		public Struct(CodeId id, Type<O> type, long blockPtr, long nativePtr) {
-			super(id, blockPtr, nativePtr);
+		public Struct(
+				CodeId id,
+				AllocClass allocClass,
+				Type<O> type,
+				long blockPtr,
+				long nativePtr) {
+			super(id, allocClass, blockPtr, nativePtr);
 			this.type = type;
 		}
 
 		@Override
 		public Struct<O> create(CodeId id, long blockPtr, long nativePtr) {
-			return new Struct<O>(id, this.type, blockPtr, nativePtr);
+			return new Struct<O>(
+					id,
+					AUTO_ALLOC_CLASS,
+					this.type,
+					blockPtr,
+					nativePtr);
 		}
 
 		@Override
 		protected O createLoaded(CodeId id, long blockPtr, long nativePtr) {
-			return this.type.op(
-					new LLVMStruct(id, this.type, blockPtr, nativePtr));
+			return this.type.op(new LLVMStruct(
+					id,
+					AUTO_ALLOC_CLASS,
+					this.type,
+					blockPtr,
+					nativePtr));
 		}
 
 	}

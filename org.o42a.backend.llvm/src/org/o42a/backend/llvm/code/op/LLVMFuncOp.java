@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.data.AllocClass;
 
 
 public final class LLVMFuncOp<F extends Func>
@@ -37,10 +38,11 @@ public final class LLVMFuncOp<F extends Func>
 
 	public LLVMFuncOp(
 			CodeId id,
+			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr,
 			Signature<F> signature) {
-		super(id, blockPtr, nativePtr);
+		super(id, allocClass, blockPtr, nativePtr);
 		this.signature = signature;
 	}
 
@@ -69,7 +71,12 @@ public final class LLVMFuncOp<F extends Func>
 
 	@Override
 	public LLVMFuncOp<F> create(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMFuncOp<F>(id, blockPtr, nativePtr, this.signature);
+		return new LLVMFuncOp<F>(
+				id,
+				getAllocClass(),
+				blockPtr,
+				nativePtr,
+				getSignature());
 	}
 
 	@Override

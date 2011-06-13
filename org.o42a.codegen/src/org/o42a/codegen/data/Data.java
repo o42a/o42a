@@ -32,7 +32,7 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 
 	private final Generator generator;
 	private final CodeId id;
-	private final Ptr<O> pointer;
+	private Ptr<O> pointer;
 	private Data<?> next;
 
 	Data(Generator generator, CodeId id) {
@@ -42,12 +42,13 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 			"Data identifier not specified";
 		this.generator = generator;
 		this.id = id;
-		this.pointer = new Ptr<O>(this);
 	}
 
 	public final Generator getGenerator() {
 		return this.generator;
 	}
+
+	public abstract boolean isConstant();
 
 	public abstract Global<?, ?> getGlobal();
 
@@ -62,7 +63,10 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 	public abstract DataType getDataType();
 
 	public final Ptr<O> getPointer() {
-		return this.pointer;
+		if (this.pointer != null) {
+			return this.pointer;
+		}
+		return this.pointer = createPointer();
 	}
 
 	public final DataLayout getLayout() {
@@ -84,6 +88,10 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 
 	protected void setAllocation(DataAllocation<O> allocation) {
 		getPointer().setAllocation(allocation);
+	}
+
+	Ptr<O> createPointer() {
+		return new Ptr<O>(this, isConstant());
 	}
 
 	final void allocateData() {

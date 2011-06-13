@@ -21,6 +21,8 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.CodeId;
@@ -42,7 +44,7 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 			Signature<F> signature,
 			long blockPtr,
 			long nativePtr) {
-		super(id, 0L, nativePtr);
+		super(id, CONSTANT_ALLOC_CLASS, 0L, nativePtr);
 		this.signature = signature;
 	}
 
@@ -122,7 +124,11 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMAnyOp(id, nextPtr, call(nextPtr, id, args));
+		return new LLVMAnyOp(
+				id,
+				getAllocClass(),
+				nextPtr,
+				call(nextPtr, id, args));
 	}
 
 	@Override
@@ -130,7 +136,11 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMDataOp(id, nextPtr, call(nextPtr, id, args));
+		return new LLVMDataOp(
+				id,
+				getAllocClass(),
+				nextPtr,
+				call(nextPtr, id, args));
 	}
 
 	@Override
@@ -142,8 +152,12 @@ public class LLVMFunc<F extends Func> extends LLVMPtrOp
 
 		final long nextPtr = nextPtr(code);
 
-		return type.op(
-				new LLVMStruct(id, type, nextPtr, call(nextPtr, id, args)));
+		return type.op(new LLVMStruct(
+				id,
+				AUTO_ALLOC_CLASS,
+				type,
+				nextPtr,
+				call(nextPtr, id, args)));
 	}
 
 	private long call(long blockPtr, CodeId id, Op[] args) {

@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    binaryConstant
- * Signature: (JLjava/lang/String;[BII)J
+ * Signature: (JLjava/lang/String;[BIIZ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant
-  (JNIEnv *, jclass, jlong, jstring, jbyteArray, jint, jint);
+  (JNIEnv *, jclass, jlong, jstring, jbyteArray, jint, jint, jboolean);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator

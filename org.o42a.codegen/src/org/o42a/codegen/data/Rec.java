@@ -44,6 +44,11 @@ public abstract class Rec<O extends PtrOp, T> extends Data<O> {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return this.enclosing.isConstant();
+	}
+
+	@Override
 	public final Type<?> getEnclosing() {
 		return this.enclosing.getInstance();
 	}

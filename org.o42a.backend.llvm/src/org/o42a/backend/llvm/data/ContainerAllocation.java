@@ -28,6 +28,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
 
 
@@ -83,12 +84,13 @@ public abstract class ContainerAllocation<O extends StructOp>
 	}
 
 	@Override
-	public O op(CodeId id, CodeWriter writer) {
+	public O op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 
 		final LLVMCode code = (LLVMCode) writer;
 
 		return getType().op(new LLVMStruct(
 				id,
+				allocClass,
 				getType(),
 				code.nextPtr(),
 				llvmId().expression(code.getModule())));

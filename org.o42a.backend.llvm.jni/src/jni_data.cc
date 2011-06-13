@@ -38,7 +38,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 		jstring id,
 		jbyteArray data,
 		jint start,
-		jint end) {
+		jint end,
+		jboolean isConstant) {
 
 	Module *const module = from_ptr<Module>(modulePtr);
 	jStringRef name(env, id);
@@ -52,7 +53,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 	GlobalVariable *const global =
 			cast<GlobalVariable>(module->getOrInsertGlobal(name, type));
 
-	global->setConstant(true);
+	global->setConstant(isConstant);
 	global->setLinkage(GlobalValue::InternalLinkage);
 
 	Constant *values[length];
