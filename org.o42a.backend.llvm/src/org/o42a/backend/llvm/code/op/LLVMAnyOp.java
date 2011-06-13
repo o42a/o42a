@@ -24,12 +24,17 @@ import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.AllocClass;
 
 
 public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
-	public LLVMAnyOp(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+	public LLVMAnyOp(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
+		super(id, allocClass, blockPtr, nativePtr);
 	}
 
 	@Override
@@ -52,6 +57,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Any(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toPtr(nextPtr, resultId.getId(), getNativePtr()));
 	}
@@ -64,6 +70,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Int8(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 8));
 	}
@@ -76,6 +83,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Int16(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 16));
 	}
@@ -88,6 +96,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Int32(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 32));
 	}
@@ -100,6 +109,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Int64(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 64));
 	}
@@ -112,6 +122,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Fp32(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toFp32(nextPtr, resultId.getId(), getNativePtr()));
 	}
@@ -124,6 +135,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Fp64(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toFp64(nextPtr, resultId.getId(), getNativePtr()));
 	}
@@ -136,13 +148,18 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 
 		return new LLVMRecOp.Rel(
 				resultId,
+				getAllocClass(),
 				nextPtr,
 				toRelPtr(nextPtr, resultId.getId(), getNativePtr()));
 	}
 
 	@Override
 	public LLVMAnyOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMAnyOp(id, blockPtr, nativePtr);
+		return new LLVMAnyOp(
+				id,
+				getAllocClass(),
+				blockPtr,
+				nativePtr);
 	}
 
 }

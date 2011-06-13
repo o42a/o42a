@@ -25,6 +25,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.AllocClass;
 
 
 final class FuncPtrAlloc<F extends Func>
@@ -45,9 +46,14 @@ final class FuncPtrAlloc<F extends Func>
 	}
 
 	@Override
-	protected FuncOp<F> op(CodeId id, long blockPtr, long nativePtr) {
+	protected FuncOp<F> op(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
 		return new LLVMFuncOp<F>(
 				id,
+				allocClass,
 				blockPtr,
 				nativePtr,
 				this.signature);

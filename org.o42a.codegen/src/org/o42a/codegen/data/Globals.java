@@ -50,14 +50,23 @@ public abstract class Globals {
 		return new GlobalSettings(this);
 	}
 
-	public final Ptr<AnyOp> addBinary(CodeId id, byte[] data) {
-		return addBinary(id, data, 0, data.length);
+	public final Ptr<AnyOp> addBinary(
+			CodeId id,
+			boolean isConstant,
+			byte[] data) {
+		return addBinary(id, isConstant, data, 0, data.length);
 	}
 
-	public Ptr<AnyOp> addBinary(CodeId id, byte[] data, int start, int end) {
+	public Ptr<AnyOp> addBinary(
+			CodeId id,
+			boolean isConstant,
+			byte[] data,
+			int start,
+			int end) {
 		return new Ptr<AnyOp>(
 				id,
-				dataAllocator().addBinary(id, data, start, end));
+				dataAllocator().addBinary(id, isConstant, data, start, end),
+				isConstant);
 	}
 
 	public void write() {

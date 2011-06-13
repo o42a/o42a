@@ -21,6 +21,7 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -74,6 +75,7 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 
 		return new LLVMAnyOp(
 				resultId,
+				AUTO_ALLOC_CLASS,
 				nextPtr,
 				offsetBy(
 						nextPtr,

@@ -20,6 +20,8 @@
 package org.o42a.backend.llvm.code;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.LLVMFuncOp;
 import org.o42a.backend.llvm.code.op.LLVMPtrOp;
@@ -40,20 +42,23 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 	public LLVMStruct(
 			CodeId id,
+			AllocClass allocClass,
 			ContainerAllocation<?> type,
 			long blockPtr,
 			long nativePtr) {
-		super(id, blockPtr, nativePtr);
+		super(id, allocClass, blockPtr, nativePtr);
 		this.type = type;
 	}
 
 	public LLVMStruct(
 			CodeId id,
+			AllocClass allocClass,
 			Type<?> type,
 			long blockPtr,
 			long nativePtr) {
 		this(
 				id,
+				allocClass,
 				(ContainerAllocation<?>) type.pointer(type.getGenerator())
 				.getAllocation(),
 				blockPtr,
@@ -70,7 +75,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Any(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -78,7 +87,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int8(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Int8(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -86,7 +99,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int16(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Int16(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -94,7 +111,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int32(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Int32(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -102,7 +123,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Int64(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Int64(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -110,7 +135,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Fp32(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Fp32(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -118,7 +147,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Fp64(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Fp64(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -126,7 +159,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Any(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Any(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -134,7 +171,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Data(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Data(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -147,6 +188,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		return new LLVMRecOp.Struct<P>(
 				id,
+				AUTO_ALLOC_CLASS,
 				field.getType(),
 				nextPtr,
 				field(nextPtr, id, field));
@@ -157,7 +199,11 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Rel(id, nextPtr, field(nextPtr, id, field));
+		return new LLVMRecOp.Rel(
+				id,
+				getAllocClass(),
+				nextPtr,
+				field(nextPtr, id, field));
 	}
 
 	@Override
@@ -167,6 +213,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		return field.op(new LLVMStruct(
 				id,
+				getAllocClass(),
 				field,
 				nextPtr,
 				field(nextPtr, id, field.pointer(code.getGenerator()))));
@@ -182,6 +229,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 		return new LLVMFuncOp<F>(
 				id,
+				CONSTANT_ALLOC_CLASS,
 				nextPtr,
 				field(nextPtr, id, field),
 				field.getSignature());
@@ -189,7 +237,12 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 
 	@Override
 	public LLVMStruct create(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMStruct(id, this.type, blockPtr, nativePtr);
+		return new LLVMStruct(
+				id,
+				AUTO_ALLOC_CLASS,
+				this.type,
+				blockPtr,
+				nativePtr);
 	}
 
 	@Override

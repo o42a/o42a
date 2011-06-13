@@ -43,6 +43,11 @@ final class StructData<O extends StructOp> extends AbstractTypeData<O> {
 	}
 
 	@Override
+	public final boolean isConstant() {
+		return this.global.isConstant();
+	}
+
+	@Override
 	public Type<?> getEnclosing() {
 		return this.enclosing;
 	}

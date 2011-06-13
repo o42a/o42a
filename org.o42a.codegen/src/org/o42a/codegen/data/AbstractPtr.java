@@ -27,17 +27,26 @@ import org.o42a.codegen.data.backend.DataAllocation;
 public abstract class AbstractPtr {
 
 	private final CodeId id;
+	private final boolean ptrToConstant;
 
-	public AbstractPtr(CodeId id) {
+	public AbstractPtr(CodeId id, boolean ptrToConstant) {
 		this.id = id;
+		this.ptrToConstant = ptrToConstant;
 	}
 
 	public final CodeId getId() {
 		return this.id;
 	}
 
+	public final boolean isPtrToConstant() {
+		return this.ptrToConstant;
+	}
+
 	public final Ptr<AnyOp> toAny() {
-		return new Ptr<AnyOp>(getId().detail("any"), allocationToAny());
+		return new Ptr<AnyOp>(
+				getId().detail("any"),
+				allocationToAny(),
+				isPtrToConstant());
 	}
 
 	@Override

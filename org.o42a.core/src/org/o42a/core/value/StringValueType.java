@@ -92,6 +92,7 @@ final class StringValueType extends ValueType<String> {
 			final Ptr<AnyOp> binary =
 				generator.addBinary(
 						generator.id("STRING_" + (this.stringSeq++)),
+						true,
 						bytes);
 
 			val = new Val(

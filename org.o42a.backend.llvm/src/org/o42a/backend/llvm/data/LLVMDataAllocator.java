@@ -58,12 +58,18 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<AnyOp> addBinary(
 			CodeId id,
+			boolean isConstant,
 			byte[] data,
 			int start,
 			int end) {
 
-		final long nativePtr =
-			binaryConstant(getModulePtr(), id.getId(), data, start, end);
+		final long nativePtr = binaryConstant(
+				getModulePtr(),
+				id.getId(),
+				data,
+				start,
+				end,
+				isConstant);
 
 		return new AnyAlloc(getModule(), dataId(id, nativePtr), null);
 	}
@@ -408,7 +414,8 @@ public class LLVMDataAllocator implements DataAllocator {
 			String id,
 			byte[] data,
 			int start,
-			int end);
+			int end,
+			boolean isConstant);
 
 	private static native long createType(long modulePtr);
 

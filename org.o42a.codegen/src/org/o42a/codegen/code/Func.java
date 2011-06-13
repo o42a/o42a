@@ -22,6 +22,7 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.util.ArrayUtil;
 
 
@@ -36,6 +37,11 @@ public abstract class Func implements PtrOp {
 	@Override
 	public final CodeId getId() {
 		return this.caller.getId();
+	}
+
+	@Override
+	public final AllocClass getAllocClass() {
+		return AllocClass.CONSTANT_ALLOC_CLASS;
 	}
 
 	public final Signature<?> getSignature() {

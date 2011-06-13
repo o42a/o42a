@@ -164,7 +164,7 @@ public class Debug {
 		}
 
 		final Ptr<AnyOp> binary =
-			getGenerator().addBinary(id, nullTermASCIIString(value));
+			getGenerator().addBinary(id, true, nullTermASCIIString(value));
 
 		this.names.put(value, binary);
 
@@ -181,6 +181,7 @@ public class Debug {
 
 		final Ptr<AnyOp> binary =  getGenerator().addBinary(
 				id,
+				true,
 				nullTermString(Charset.defaultCharset(), value));
 
 		this.messages.put(value, binary);

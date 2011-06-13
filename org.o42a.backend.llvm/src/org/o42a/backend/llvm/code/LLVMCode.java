@@ -19,6 +19,9 @@
 */
 package org.o42a.backend.llvm.code;
 
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
+
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.ContainerAllocation;
 import org.o42a.backend.llvm.data.LLVMModule;
@@ -375,6 +378,7 @@ public abstract class LLVMCode implements CodeWriter {
 	public LLVMAnyOp nullPtr() {
 		return new LLVMAnyOp(
 				this.code.opId(null),
+				CONSTANT_ALLOC_CLASS,
 				nextPtr(),
 				nullPtr(getModule().getNativePtr()));
 	}
@@ -383,6 +387,7 @@ public abstract class LLVMCode implements CodeWriter {
 	public LLVMDataOp nullDataPtr() {
 		return new LLVMDataOp(
 				this.code.opId(null),
+				CONSTANT_ALLOC_CLASS,
 				nextPtr(),
 				nullPtr(getModule().getNativePtr()));
 	}
@@ -395,6 +400,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 		return allocation.getType().op(new LLVMStruct(
 				this.code.opId(null),
+				CONSTANT_ALLOC_CLASS,
 				allocation,
 				nextPtr(),
 				nullStructPtr(allocation.getTypePtr())));
@@ -423,6 +429,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 		return type.getType().op(new LLVMStruct(
 				id,
+				AUTO_ALLOC_CLASS,
 				type,
 				nextPtr,
 				allocateStruct(nextPtr, id.getId(), type.getTypePtr())));
@@ -435,6 +442,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 		return new LLVMRecOp.Any(
 				id,
+				AUTO_ALLOC_CLASS,
 				nextPtr,
 				allocatePtr(nextPtr, id.toString()));
 	}
@@ -450,6 +458,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 		return new LLVMRecOp.Struct<O>(
 				id,
+				AUTO_ALLOC_CLASS,
 				alloc.getType(),
 				nextPtr,
 				allocateStructPtr(nextPtr, id.getId(), alloc.getTypePtr()));
@@ -574,7 +583,6 @@ public abstract class LLVMCode implements CodeWriter {
 			CodeId id,
 			long blockPtr,
 			long nativePtr) {
-
 		if (sample instanceof StructOp) {
 
 			final StructOp struct = (StructOp) sample;

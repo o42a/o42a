@@ -29,6 +29,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
 
 
@@ -37,9 +38,15 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	private final long blockPtr;
 	private final long nativePtr;
 	private final CodeId id;
+	private final AllocClass allocClass;
 
-	public LLVMPtrOp(CodeId id, long blockPtr, long nativePtr) {
+	public LLVMPtrOp(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
 		this.id = id;
+		this.allocClass = allocClass;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
 	}
@@ -47,6 +54,11 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	@Override
 	public final CodeId getId() {
 		return this.id;
+	}
+
+	@Override
+	public final AllocClass getAllocClass() {
+		return this.allocClass;
 	}
 
 	@Override
@@ -105,6 +117,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 		return new LLVMAnyOp(
 				castId,
+				getAllocClass(),
 				nextPtr,
 				toAny(nextPtr, castId.getId(), getNativePtr()));
 	}
@@ -116,6 +129,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 		return new LLVMDataOp(
 				castId,
+				getAllocClass(),
 				nextPtr,
 				toAny(nextPtr, castId.getId(), getNativePtr()));
 	}
@@ -127,6 +141,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 		return type.op(new LLVMStruct(
 				castId,
+				getAllocClass(),
 				type,
 				nextPtr,
 				castStructTo(
@@ -146,6 +161,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 
 		return new LLVMFuncOp<F>(
 				id,
+				getAllocClass(),
 				nextPtr,
 				castFuncTo(
 						nextPtr,

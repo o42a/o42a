@@ -133,16 +133,20 @@ public abstract class Generator implements UserInfo {
 		return this.globals.newGlobal();
 	}
 
-	public final Ptr<AnyOp> addBinary(CodeId id, byte[] data) {
-		return this.globals.addBinary(id, data);
+	public final Ptr<AnyOp> addBinary(
+			CodeId id,
+			boolean isContant,
+			byte[] data) {
+		return this.globals.addBinary(id, isContant, data);
 	}
 
 	public final Ptr<AnyOp> addBinary(
 			CodeId id,
+			boolean isConstant,
 			byte[] data,
 			int start,
 			int end) {
-		return this.globals.addBinary(id, data, start, end);
+		return this.globals.addBinary(id, isConstant, data, start, end);
 	}
 
 	public final void write() {

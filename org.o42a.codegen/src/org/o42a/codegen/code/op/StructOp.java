@@ -39,6 +39,11 @@ public abstract class StructOp implements PtrOp {
 		return this.writer.getId();
 	}
 
+	@Override
+	public final AllocClass getAllocClass() {
+		return getWriter().getAllocClass();
+	}
+
 	public Type<?> getType() {
 		return getWriter().getType();
 	}
