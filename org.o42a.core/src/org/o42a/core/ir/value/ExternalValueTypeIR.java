@@ -98,12 +98,8 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 
 	@Override
 	protected void assign(Code code, ValOp target, ValOp value) {
-		store(code, target, value);
 		unuse(code, target);
-		if (value.ptr().getAllocClass().isStatic()) {
-			return;
-		}
-		use(code, target);
+		initialize(code, target, value);
 	}
 
 	private static long bytesToLong(byte[] bytes) {
