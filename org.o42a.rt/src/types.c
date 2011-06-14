@@ -160,9 +160,9 @@ inline void o42a_val_use(O42A_PARAMS o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	o42a_mem_block_t *const block = o42a_mem_block(val);
+	o42a_mem_block_t *const block = O42A(o42a_mem_block(val->value.v_ptr));
 
-	__sync_fetch_and_add(&block->hdr.rc.ref_count, 1);
+	O42A(__sync_fetch_and_add(&block->hdr.rc.ref_count, 1));
 
 	O42A_RETURN;
 }
@@ -179,9 +179,11 @@ inline void o42a_val_unuse(O42A_PARAMS o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	o42a_mem_block_t *const block = o42a_mem_block(val);
+	o42a_mem_block_t *const block = O42A(o42a_mem_block(val->value.v_ptr));
 
-	__sync_fetch_and_sub(&block->hdr.rc.ref_count, 1);
+	if (!O42A(__sync_sub_and_fetch(&block->hdr.rc.ref_count, 1))) {
+		O42A(o42a_mem_free_block(O42A_ARGS block));
+	}
 
 	O42A_RETURN;
 }
