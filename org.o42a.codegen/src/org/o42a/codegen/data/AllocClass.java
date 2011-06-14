@@ -24,6 +24,10 @@ public enum AllocClass {
 
 	AUTO_ALLOC_CLASS,
 	STATIC_ALLOC_CLASS,
-	CONSTANT_ALLOC_CLASS,
+	CONSTANT_ALLOC_CLASS;
+
+	public final boolean isStatic() {
+		return this != AUTO_ALLOC_CLASS;
+	}
 
 }

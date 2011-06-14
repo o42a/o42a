@@ -25,6 +25,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValStoreMode;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueType;
 
@@ -43,6 +44,30 @@ public abstract class ValDirs {
 		this.builder = builder;
 		this.code = code;
 		this.valueType = valueType;
+	}
+
+	public final ValStoreMode getStoreMode() {
+
+		final TopLevelValDirs topLevel = topLevel();
+		final ValOp value = topLevel.value;
+
+		if (value != null) {
+			return value.getStoreMode();
+		}
+
+		return topLevel.storeMode;
+	}
+
+	public final void setStoreMode(ValStoreMode storeMode) {
+
+		final TopLevelValDirs topLevel = topLevel();
+		final ValOp value = topLevel.value;
+
+		if (value != null) {
+			value.setStoreMode(storeMode);
+		} else {
+			topLevel.storeMode = storeMode;
+		}
 	}
 
 	public final Generator getGenerator() {
@@ -194,6 +219,7 @@ public abstract class ValDirs {
 		private final boolean allocatable;
 		private AllocationDirs allocation;
 		private ValOp value;
+		private ValStoreMode storeMode;
 
 		TopLevelValDirs(
 				CodeDirs enclosing,
@@ -228,11 +254,13 @@ public abstract class ValDirs {
 				"Can not allocate value";
 
 			this.allocation = this.enclosing.allocate("value");
-
-			return this.value =
+			this.value =
 				this.allocation.allocate(id("value"), ValType.VAL_TYPE)
 				.storeIndefinite(this.allocation.code())
 				.op(getBuilder(), getValueType());
+			this.value.setStoreMode(this.storeMode);
+
+			return this.value;
 		}
 
 		@Override

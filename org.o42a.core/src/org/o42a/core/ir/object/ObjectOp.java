@@ -36,6 +36,7 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValStoreMode;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.value.ValueType;
@@ -323,7 +324,9 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 					unknownCode.head())
 			.value(code.id("obj_val"), value);
 
+		value.setStoreMode(ValStoreMode.INITIAL_VAL_STORE);
 		writeValue(valDirs, null);
+		value.setStoreMode(ValStoreMode.ASSIGNMENT_VAL_STORE);
 
 		valDirs.done();
 		if (falseCode.exists()) {

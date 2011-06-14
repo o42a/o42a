@@ -23,12 +23,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.value.AbstractValueTypeIR;
 import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValueTypeIR;
 
 
 final class FloatValueType extends ValueType<Double> {
-
-	private int constSeq;
 
 	FloatValueType() {
 		super("float", Double.class);
@@ -40,13 +40,29 @@ final class FloatValueType extends ValueType<Double> {
 	}
 
 	@Override
-	protected Val val(Generator generator, Double value) {
-		return new Val(value);
+	protected ValueTypeIR<Double> createIR(Generator generator) {
+		return new IR(generator, this);
 	}
 
-	@Override
-	protected CodeId constId(Generator generator, Double value) {
-		return generator.id("CONST").sub("FLOAT").anonymous(++this.constSeq);
+	private static final class IR extends AbstractValueTypeIR<Double> {
+
+		private int constSeq;
+
+		IR(Generator generator, ValueType<Double> valueType) {
+			super(generator, valueType);
+		}
+
+		@Override
+		public Val val(Double value) {
+			return new Val(value);
+		}
+
+		@Override
+		protected CodeId constId(Double value) {
+			return getGenerator().id("CONST").sub("FLOAT")
+			.anonymous(++this.constSeq);
+		}
+
 	}
 
 }

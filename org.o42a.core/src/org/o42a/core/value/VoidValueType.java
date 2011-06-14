@@ -22,13 +22,16 @@ package org.o42a.core.value;
 import static org.o42a.core.ir.value.Val.VOID_VAL;
 import static org.o42a.core.ref.Ref.voidRef;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.data.Global;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.ValueTypeIR;
 import org.o42a.core.ref.type.StaticTypeRef;
 
 
@@ -54,13 +57,39 @@ final class VoidValueType extends ValueType<Void> {
 	}
 
 	@Override
-	protected Val val(Generator generator, Void value) {
-		return VOID_VAL;
+	protected ValueTypeIR<Void> createIR(Generator generator) {
+		return new IR(generator, this);
 	}
 
-	@Override
-	protected CodeId constId(Generator generator, Void value) {
-		return generator.id("CONST").sub("VOID");
+	private static final class IR extends ValueTypeIR<Void> {
+
+		private Ptr<ValType.Op> valPtr;
+
+		IR(Generator generator, ValueType<Void> valueType) {
+			super(generator, valueType);
+		}
+
+		@Override
+		public Val val(Void value) {
+			return VOID_VAL;
+		}
+
+		@Override
+		public Ptr<ValType.Op> valPtr(Void value) {
+			if (this.valPtr != null) {
+				return this.valPtr;
+			}
+
+			final Global<ValType.Op, ValType> global =
+				getGenerator().newGlobal().setConstant()
+				.dontExport().newInstance(
+						getGenerator().id("CONST").sub("VOID"),
+						ValType.VAL_TYPE,
+						val(value));
+
+			return this.valPtr = global.getPointer();
+		}
+
 	}
 
 }
