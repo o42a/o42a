@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "o42a/memory.h"
 #include "o42a/types.h"
 
 /**
@@ -144,4 +145,43 @@ inline void *o42a_val_data(O42A_PARAMS const o42a_val_t *const val) {
 		return val->value.v_ptr;
 	}
 	return (void*) &val->value;
+}
+
+
+inline void o42a_val_use(O42A_PARAMS o42a_val_t *const val) {
+	O42A_ENTER(return);
+
+	const uint32_t flags = val->flags;
+
+	if (!(flags & O42A_VAL_EXTERNAL)) {
+		O42A_RETURN;
+	}
+	if (flags & O42A_VAL_STATIC) {
+		O42A_RETURN;
+	}
+
+	o42a_mem_block_t *const block = o42a_mem_block(val);
+
+	__sync_fetch_and_add(&block->hdr.rc.ref_count, 1);
+
+	O42A_RETURN;
+}
+
+inline void o42a_val_unuse(O42A_PARAMS o42a_val_t *const val) {
+	O42A_ENTER(return);
+
+	const uint32_t flags = val->flags;
+
+	if (!(flags & O42A_VAL_EXTERNAL)) {
+		O42A_RETURN;
+	}
+	if (flags & O42A_VAL_STATIC) {
+		O42A_RETURN;
+	}
+
+	o42a_mem_block_t *const block = o42a_mem_block(val);
+
+	__sync_fetch_and_sub(&block->hdr.rc.ref_count, 1);
+
+	O42A_RETURN;
 }

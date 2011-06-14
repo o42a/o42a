@@ -124,7 +124,7 @@ final class ConstantRef<T> extends Ref {
 			@SuppressWarnings("unchecked")
 			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
 			final Ptr<ValType.Op> ptr =
-				ref.valueType.valPtr(getGenerator(), ref.value);
+				ref.valueType.ir(getGenerator()).valPtr(ref.value);
 			final ValType.Op op = ptr.op(ptr.getId(), dirs.code());
 
 			return op.op(dirs.getBuilder(), ref.valueType);

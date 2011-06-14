@@ -46,12 +46,12 @@ final class ConstantValue<T> extends Value<T> {
 
 	@Override
 	public Val val(Generator generator) {
-		return getValueType().val(generator, this.value);
+		return getValueType().ir(generator).val(this.value);
 	}
 
 	@Override
 	public Ptr<ValType.Op> valPtr(Generator generator) {
-		return getValueType().valPtr(generator, this.value);
+		return getValueType().ir(generator).valPtr(this.value);
 	}
 
 	@Override

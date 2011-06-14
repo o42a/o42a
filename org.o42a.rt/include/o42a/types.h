@@ -326,6 +326,17 @@ enum o42a_val_flags {
 	 */
 	O42A_VAL_EXTERNAL = 0x800,
 
+	/**
+	 * Value is statically allocated.
+	 *
+	 * This is meaningful when value is stored externally.
+	 *
+	 * When value is stored externally, but this flag isn't set, the value
+	 * is allocated with o42a_mem_alloc_* function and is part of memory block
+	 * (o42a_mem_block_t).
+	 */
+	O42A_VAL_STATIC = 0x1000,
+
 };
 
 
@@ -401,11 +412,16 @@ o42a_layout_t o42a_layout_both(O42A_DECLS o42a_layout_t, o42a_layout_t);
 o42a_layout_t o42a_layout(O42A_DECLS uint8_t, size_t);
 
 
-size_t o42a_val_ashift(O42A_DECLS const o42a_val_t*);
+size_t o42a_val_ashift(O42A_DECLS const o42a_val_t *);
 
-size_t o42a_val_alignment(O42A_DECLS const o42a_val_t*);
+size_t o42a_val_alignment(O42A_DECLS const o42a_val_t *);
 
-void *o42a_val_data(O42A_DECLS const o42a_val_t*);
+void *o42a_val_data(O42A_DECLS const o42a_val_t *);
+
+
+void o42a_val_use(O42A_DECLS o42a_val_t *);
+
+void o42a_val_unuse(O42A_DECLS o42a_val_t *);
 
 
 #ifdef __cplusplus

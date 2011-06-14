@@ -19,30 +19,20 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.value.Val.EXTERNAL_FLAG;
 import static org.o42a.util.StringCodec.bytesPerChar;
 import static org.o42a.util.StringCodec.escapeControlChars;
 import static org.o42a.util.StringCodec.stringToBinary;
 
-import java.util.HashMap;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ExternalValueTypeIR;
+import org.o42a.core.ir.value.ValueTypeIR;
 import org.o42a.util.DataAlignment;
 
 
 final class StringValueType extends ValueType<String> {
-
-	private Generator cachedGenerator;
-	private final HashMap<String, Val> stringCache = new HashMap<String, Val>();
-	private int stringSeq;
-	private int constSeq;
 
 	StringValueType() {
 		super("string", String.class);
@@ -66,78 +56,46 @@ final class StringValueType extends ValueType<String> {
 	}
 
 	@Override
-	protected Val val(Generator generator, String value) {
-
-		final Val cachedVal = cachedVal(generator, value);
-
-		if (cachedVal != null) {
-			return cachedVal;
-		}
-
-		final DataAlignment bytesPerChar = bytesPerChar(value);
-		final byte[] bytes = new byte[bytesPerChar.getBytes() * value.length()];
-
-		stringToBinary(value, bytes, bytesPerChar);
-
-		final Val val;
-
-		if (bytes.length <= 8) {
-			val = new Val(
-					ValueType.STRING,
-					CONDITION_FLAG | (bytesPerChar.getShift() << 8),
-					bytes.length,
-					bytesToLong(bytes));
-		} else {
-
-			final Ptr<AnyOp> binary =
-				generator.addBinary(
-						generator.id("STRING_" + (this.stringSeq++)),
-						true,
-						bytes);
-
-			val = new Val(
-					ValueType.STRING,
-					CONDITION_FLAG | EXTERNAL_FLAG
-					| (bytesPerChar.getShift() << 8),
-					bytes.length,
-					binary);
-		}
-
-		this.stringCache.put(value, val);
-
-		return val;
+	protected ValueTypeIR<String> createIR(Generator generator) {
+		return new IR(generator, this);
 	}
 
-	@Override
-	protected CodeId constId(Generator generator, String value) {
-		return generator.id("CONST").sub("STRING").anonymous(++this.constSeq);
-	}
+	private static final class IR extends ExternalValueTypeIR<String> {
 
-	private Val cachedVal(Generator generator, String string) {
-		if (generator == this.cachedGenerator) {
-			return this.stringCache.get(string);
+		private int stringSeq;
+		private int constSeq;
+
+		IR(Generator generator, ValueType<String> valueType) {
+			super(generator, valueType);
 		}
 
-		this.cachedGenerator = generator;
-		this.stringCache.clear();
-		this.stringSeq = 0;
-		this.constSeq = 0;
-
-		return null;
-	}
-
-	private static long bytesToLong(byte[] bytes) {
-
-		long result = 0;
-
-		for (int i = 0; i < bytes.length; ++i) {
-
-			final byte b = bytes[i];
-
-			result |= (b & 0xFFL) << (i << 3);
+		@Override
+		protected CodeId valueId(String value) {
+			return getGenerator().id("STRING_" + (this.stringSeq++));
 		}
 
-		return result;
+		@Override
+		protected DataAlignment alignment(String value) {
+			return bytesPerChar(value);
+		}
+
+		@Override
+		protected byte[] toBinary(String value, DataAlignment alignment) {
+
+			final byte[] bytes =
+				new byte[alignment.getBytes() * value.length()];
+
+			stringToBinary(value, bytes, alignment);
+
+			return bytes;
+		}
+
+		@Override
+		protected CodeId constId(String value) {
+			return getGenerator().id("CONST").sub("STRING")
+			.anonymous(++this.constSeq);
+		}
+
 	}
 
 }

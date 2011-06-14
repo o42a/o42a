@@ -96,6 +96,8 @@ public final class ValType extends Type<ValType.Op> {
 
 	public static final class Op extends StructOp {
 
+		private boolean allocatedOnStack;
+
 		private Op(StructWriter writer) {
 			super(writer);
 		}
@@ -140,6 +142,24 @@ public final class ValType extends Type<ValType.Op> {
 					code);
 		}
 
+		public final BoolOp loadExternal(CodeId id, Code code) {
+
+			final Int32op flags = flags(null, code).load(null, code);
+
+			return flags.lshr(null, code, 11).lowestBit(
+					id != null ? id : getId().sub("external_flag"),
+					code);
+		}
+
+		public final BoolOp loadStatic(CodeId id, Code code) {
+
+			final Int32op flags = flags(null, code).load(null, code);
+
+			return flags.lshr(null, code, 12).lowestBit(
+					id != null ? id : getId().sub("static_flag"),
+					code);
+		}
+
 		public final RecOp<Int32op> length(CodeId id, Code code) {
 			return int32(id, code, getType().length());
 		}
@@ -171,35 +191,41 @@ public final class ValType extends Type<ValType.Op> {
 			return this;
 		}
 
-		final Op storeVoid(Code code) {
+		@Override
+		public void allocated(Code code, StructOp enclosing) {
+			this.allocatedOnStack = true;
+			super.allocated(code, enclosing);
+		}
+
+		final boolean isAllocatedOnStack() {
+			return this.allocatedOnStack;
+		}
+
+		final void storeVoid(Code code) {
 			flags(null, code).store(code, code.int32(CONDITION_FLAG));
-			return this;
 		}
 
-		final Op store(Code code, Val value) {
+		final void store(Code code, Val value) {
 			flags(null, code).store(code, code.int32(value.getFlags()));
-			if (value.getCondition()) {
-				length(null, code).store(code, code.int32(value.getLength()));
-
-				final Ptr<AnyOp> pointer = value.getPointer();
-
-				if (pointer != null) {
-					value(null, code)
-					.toPtr(null, code)
-					.store(code, pointer.op(null, code));
-				} else {
-					rawValue(null, code).store(
-							code,
-							code.int64(value.getValue()));
-				}
+			if (!value.getCondition()) {
+				return;
 			}
-			return this;
+			length(null, code).store(code, code.int32(value.getLength()));
+
+			final Ptr<AnyOp> pointer = value.getPointer();
+
+			if (pointer != null) {
+				value(null, code)
+				.toPtr(null, code)
+				.store(code, pointer.op(null, code));
+			} else {
+				rawValue(null, code).store(
+						code,
+						code.int64(value.getValue()));
+			}
 		}
 
-		final Op store(Code code, Op value) {
-			if (this == value) {
-				return this;
-			}
+		final void store(Code code, Op value) {
 			flags(null, code).store(
 					code,
 					value.flags(null, code).load(null, code));
@@ -209,19 +235,16 @@ public final class ValType extends Type<ValType.Op> {
 			rawValue(null, code).store(
 					code,
 					value.rawValue(null, code).load(null, code));
-			return this;
 		}
 
-		final Op store(Code code, Int64op value) {
+		final void store(Code code, Int64op value) {
 			rawValue(null, code).store(code, value);
 			flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
-			return this;
 		}
 
-		final Op store(Code code, Fp64op value) {
+		final void store(Code code, Fp64op value) {
 			value(null, code).toFp64(null, code).store(code, value);
 			flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
-			return this;
 		}
 
 	}

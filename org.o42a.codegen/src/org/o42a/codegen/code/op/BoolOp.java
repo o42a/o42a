@@ -70,7 +70,7 @@ public abstract class BoolOp implements Op {
 				falseName != null
 				? falseName
 				: (trueName != null
-						? source.getGenerator().id("not").sub(trueName)
+						? source.getGenerator().id("not_" + trueName)
 						: source.getGenerator().id("false")));
 	}
 

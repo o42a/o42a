@@ -79,7 +79,7 @@ public abstract class Usable<U> extends AbstractUser {
 
 	final U useBy(User user) {
 		if (this.usedBy == null) {
-			this.usedBy = new HashMap<User, U>(1);
+			this.usedBy = new HashMap<User, U>();
 		} else {
 
 			final U found = this.usedBy.get(user);

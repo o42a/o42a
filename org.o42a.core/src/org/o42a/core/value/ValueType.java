@@ -21,20 +21,14 @@ package org.o42a.core.value;
 
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
-import java.util.HashMap;
-
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.ValueTypeIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -55,9 +49,7 @@ public abstract class ValueType<T> {
 	private final FalseValue<T> falseValue = new FalseValue<T>(this);
 	private final UnknownValue<T> unknownValue = new UnknownValue<T>(this);
 
-	private Generator cachedGenerator;
-	private final HashMap<T, Ptr<ValType.Op>> constCache =
-		new HashMap<T, Ptr<ValType.Op>>();
+	private ValueTypeIR<T> ir;
 
 	ValueType(String systemId, Class<? extends T> valueClass) {
 		this.systemId = systemId;
@@ -164,6 +156,17 @@ public abstract class ValueType<T> {
 		return this == other;
 	}
 
+	public final ValueTypeIR<T> ir(Generator generator) {
+
+		final ValueTypeIR<T> ir = this.ir;
+
+		if (ir != null && ir.getGenerator() == generator) {
+			return ir;
+		}
+
+		return this.ir = createIR(generator);
+	}
+
 	public final boolean assertAssignableFrom(ValueType<?> other) {
 		assert assignableFrom(other) :
 			this + " is not assignable from " + other;
@@ -181,34 +184,7 @@ public abstract class ValueType<T> {
 		return getSystemId();
 	}
 
-	protected abstract Val val(Generator generator, T value);
-
-	protected Ptr<ValType.Op> valPtr(Generator generator, T value) {
-		if (this.cachedGenerator != generator) {
-			this.constCache.clear();
-			this.cachedGenerator = generator;
-		} else {
-
-			final Ptr<ValType.Op> cached = this.constCache.get(value);
-
-			if (cached != null) {
-				return cached;
-			}
-		}
-
-		final Global<ValType.Op, ValType> global =
-			generator.newGlobal().setConstant().dontExport().newInstance(
-					constId(generator, value),
-					ValType.VAL_TYPE,
-					val(generator, value));
-		final Ptr<ValType.Op> result = global.getPointer();
-
-		this.constCache.put(value, result);
-
-		return result;
-	}
-
-	protected abstract CodeId constId(Generator generator, T value);
+	protected abstract ValueTypeIR<T> createIR(Generator generator);
 
 	private static final class None extends ValueType<java.lang.Void> {
 
@@ -222,23 +198,9 @@ public abstract class ValueType<T> {
 		}
 
 		@Override
-		protected Val val(Generator generator, java.lang.Void value) {
+		protected ValueTypeIR<java.lang.Void> createIR(Generator generator) {
 			throw new UnsupportedOperationException(
-					"Type NONE can not have a value");
-		}
-
-		@Override
-		protected Ptr<ValType.Op> valPtr(
-				Generator generator,
-				java.lang.Void value) {
-			throw new UnsupportedOperationException(
-					"Type NONE can not have a value");
-		}
-
-		@Override
-		protected CodeId constId(Generator generator, java.lang.Void value) {
-			throw new UnsupportedOperationException(
-					"Type NONE can not have a value");
+					"Type NONE can not have IR");
 		}
 
 	}

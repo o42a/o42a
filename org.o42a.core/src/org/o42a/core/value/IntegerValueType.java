@@ -23,7 +23,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.value.AbstractValueTypeIR;
 import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValueTypeIR;
 
 
 final class IntegerValueType extends ValueType<Long> {
@@ -38,13 +40,27 @@ final class IntegerValueType extends ValueType<Long> {
 	}
 
 	@Override
-	protected Val val(Generator generator, Long value) {
-		return new Val(value);
+	protected ValueTypeIR<Long> createIR(Generator generator) {
+		return new IR(generator, this);
 	}
 
-	@Override
-	protected CodeId constId(Generator generator, Long value) {
-		return generator.id("CONST").sub("INTEGER").sub(Long.toString(value));
+	private static final class IR extends AbstractValueTypeIR<Long> {
+
+		IR(Generator generator, ValueType<Long> valueType) {
+			super(generator, valueType);
+		}
+
+		@Override
+		public Val val(Long value) {
+			return new Val(value);
+		}
+
+		@Override
+		protected CodeId constId(Long value) {
+			return getGenerator().id("CONST").sub("INTEGER")
+			.sub(Long.toString(value));
+		}
+
 	}
 
 }

@@ -111,8 +111,9 @@ $(srcdir)/debug.o : $(headersdir)/debug.h
 $(srcdir)/debug.o : $(srcdir)/debug.c
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(debug_flags) -o $@ $<
 
-$(srcdir)/types.*.o : $(headersdir)/types.h
 $(srcdir)/types.*.o : $(headersdir)/debug.h
+$(srcdir)/types.*.o : $(headersdir)/memory.h
+$(srcdir)/types.*.o : $(headersdir)/types.h
 $(srcdir)/types.%.o : $(srcdir)/types.c
 	$(call compile)
 
