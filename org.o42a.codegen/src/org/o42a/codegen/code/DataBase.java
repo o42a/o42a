@@ -20,14 +20,14 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
 
 
 public abstract class DataBase {
 
-	protected static <F extends Func> FuncRec<F> codePtrRecord(
+	protected static <F extends Func<F>> FuncRec<F> codePtrRecord(
 			SubData<?> enclosing,
 			CodeId id,
 			Signature<F> signature,

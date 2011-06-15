@@ -27,13 +27,13 @@ import org.o42a.codegen.code.Signature;
 
 public interface CodeBackend {
 
-	<F extends Func> SignatureWriter<F> addSignature(Signature<F> signature);
+	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
 
-	<F extends Func> FuncWriter<F> addFunction(
+	<F extends Func<F>> FuncWriter<F> addFunction(
 			Function<F> function,
 			CodeCallback callback);
 
-	<F extends Func> FuncAllocation<F> externFunction(
+	<F extends Func<F>> FuncAllocation<F> externFunction(
 			CodeId id,
 			Signature<F> signature);
 

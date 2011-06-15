@@ -75,7 +75,7 @@ public class Debug {
 		this.debug = debug;
 	}
 
-	public <F extends Func> void addFunction(
+	public <F extends Func<F>> void addFunction(
 			CodeId id,
 			FuncPtr<F> functionPtr) {
 		if (!isDebug()) {

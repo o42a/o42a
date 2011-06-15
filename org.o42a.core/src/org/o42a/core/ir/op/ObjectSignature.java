@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.DataOp;
 
 
-public abstract class ObjectSignature<F extends ObjectFunc>
+public abstract class ObjectSignature<F extends ObjectFunc<F>>
 		extends Signature<F> {
 
 	public abstract Arg<DataOp> object();

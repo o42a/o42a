@@ -202,7 +202,7 @@ public final class LLVMModule {
 		return pointerToFunc(allocation.getNativePtr());
 	}
 
-	public final <F extends Func> LLVMSignature<F> llvm(
+	public final <F extends Func<F>> LLVMSignature<F> llvm(
 			Signature<F> signature) {
 		return (LLVMSignature<F>) signature.allocation(getGenerator());
 	}

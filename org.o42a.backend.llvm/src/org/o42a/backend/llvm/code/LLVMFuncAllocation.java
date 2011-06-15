@@ -28,7 +28,7 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class LLVMFuncAllocation<F extends Func>
+public final class LLVMFuncAllocation<F extends Func<F>>
 		implements FuncAllocation<F>, LLVMAllocation {
 
 	private final LLVMModule module;

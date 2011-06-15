@@ -22,7 +22,7 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.code.backend.FuncAllocation;
 
 
-final class NullFuncPtr<F extends Func> extends FuncPtr<F> {
+final class NullFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 
 	NullFuncPtr(Signature<F> signature, FuncAllocation<F> allocation) {
 		super(signature.getId().detail("null"), signature, allocation);

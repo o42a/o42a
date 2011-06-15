@@ -25,7 +25,7 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.debug.DebugEnvOp;
 
 
-public final class Function<F extends Func> extends Code {
+public final class Function<F extends Func<F>> extends Code {
 
 	private final FunctionSettings settings;
 	private final Signature<F> signature;

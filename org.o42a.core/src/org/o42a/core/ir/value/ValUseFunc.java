@@ -28,7 +28,7 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.value.ValType.Op;
 
 
-public class ValUseFunc extends Func {
+public class ValUseFunc extends Func<ValUseFunc> {
 
 	public static final ValUse VAL_USE = new ValUse();
 

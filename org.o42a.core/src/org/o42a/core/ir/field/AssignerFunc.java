@@ -30,9 +30,9 @@ import org.o42a.core.ir.op.ObjectSignature;
 
 
 /**
- * Link or variable assignment function.
+ * Variable assignment function.
  */
-public final class AssignerFunc extends ObjectFunc {
+public final class AssignerFunc extends ObjectFunc<AssignerFunc> {
 
 	public static Assigner ASSIGNER = new Assigner();
 

@@ -28,7 +28,7 @@ import org.o42a.core.ir.object.CtrOp;
 import org.o42a.core.ir.object.CtrOp.Op;
 
 
-public class NewObjectFunc extends Func {
+public class NewObjectFunc extends Func<NewObjectFunc> {
 
 	public static final NewObject NEW_OBJECT = new NewObject();
 

@@ -32,7 +32,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public final class LLVMFunction<F extends Func>
+public final class LLVMFunction<F extends Func<F>>
 		extends LLVMCode
 		implements FuncWriter<F> {
 
@@ -161,7 +161,7 @@ public final class LLVMFunction<F extends Func>
 	}
 
 	@Override
-	public <FF extends Func> FF funcPtrArg(
+	public <FF extends Func<FF>> FF funcPtrArg(
 			Code code,
 			Arg<FF> arg,
 			Signature<FF> signature) {

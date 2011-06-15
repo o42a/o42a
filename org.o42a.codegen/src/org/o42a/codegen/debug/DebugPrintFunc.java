@@ -26,7 +26,7 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 
 
-final class DebugPrintFunc extends Func {
+final class DebugPrintFunc extends Func<DebugPrintFunc> {
 
 	public static final DebugPrint DEBUG_PRINT = new DebugPrint();
 

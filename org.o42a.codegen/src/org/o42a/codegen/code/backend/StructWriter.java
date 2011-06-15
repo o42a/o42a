@@ -57,7 +57,7 @@ public interface StructWriter extends PtrOp {
 
 	<S extends StructOp> S struct(CodeId id, Code code, Type<S> field);
 
-	<F extends Func> FuncOp<F> func(CodeId id, Code code, FuncRec<F> field);
+	<F extends Func<F>> FuncOp<F> func(CodeId id, Code code, FuncRec<F> field);
 
 	DataOp toData(CodeId id, Code code);
 

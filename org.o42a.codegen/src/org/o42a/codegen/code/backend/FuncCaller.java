@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public interface FuncCaller<F extends Func> extends PtrOp {
+public interface FuncCaller<F extends Func<F>> extends PtrOp {
 
 	Signature<F> getSignature();
 

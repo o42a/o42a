@@ -42,7 +42,7 @@ import org.o42a.core.ref.type.TypeRef;
 public class CodeBuilder {
 
 	public static CodeBuilder codeBuilder(
-			Function<? extends ObjectFunc> function,
+			Function<? extends ObjectFunc<?>> function,
 			CodePos exit,
 			Scope scope,
 			ObjectPrecision hostPrecision) {
@@ -80,7 +80,7 @@ public class CodeBuilder {
 	private int nameSeq;
 
 	protected CodeBuilder(
-			Function<? extends ObjectFunc> function,
+			Function<? extends ObjectFunc<?>> function,
 			CodePos exit,
 			ObjectBodyIR hostIR,
 			Obj hostType,
@@ -107,7 +107,7 @@ public class CodeBuilder {
 	}
 
 	protected CodeBuilder(
-			Function<? extends ObjectFunc> function,
+			Function<? extends ObjectFunc<?>> function,
 			LocalIR scopeIR) {
 		this.context = scopeIR.getScope().getContext();
 		this.function = function;
@@ -115,7 +115,7 @@ public class CodeBuilder {
 	}
 
 	private CodeBuilder(
-			Function<? extends ObjectFunc> function,
+			Function<? extends ObjectFunc<?>> function,
 			Scope scope) {
 		this.context = scope.getContext();
 		this.function = function;

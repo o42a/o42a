@@ -25,11 +25,11 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 
 
-public interface FuncOp<F extends Func> extends RecOp<F> {
+public interface FuncOp<F extends Func<F>> extends RecOp<F> {
 
 	Signature<F> getSignature();
 
-	<FF extends Func> FuncOp<FF> toFunc(
+	<FF extends Func<FF>> FuncOp<FF> toFunc(
 			CodeId id,
 			Code code,
 			Signature<FF> signature);

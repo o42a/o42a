@@ -51,7 +51,7 @@ public final class FunctionSettings {
 		return this;
 	}
 
-	public <F extends Func> Function<F> create(
+	public <F extends Func<F>> Function<F> create(
 			CodeId id,
 			Signature<F> signature) {
 

@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
 
 
-public final class LLVMFuncOp<F extends Func>
+public final class LLVMFuncOp<F extends Func<F>>
 		extends LLVMPtrOp
 		implements FuncOp<F> {
 

@@ -22,6 +22,6 @@ package org.o42a.codegen.code.backend;
 import org.o42a.codegen.code.Func;
 
 
-public interface SignatureAllocation<F extends Func> {
+public interface SignatureAllocation<F extends Func<F>> {
 
 }

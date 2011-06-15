@@ -47,7 +47,7 @@ final class GeneratorFunctions extends Functions {
 	}
 
 	@Override
-	protected <F extends Func> void addFunction(
+	protected <F extends Func<F>> void addFunction(
 			CodeId id,
 			Signature<F> signature,
 			FuncPtr<F> function) {

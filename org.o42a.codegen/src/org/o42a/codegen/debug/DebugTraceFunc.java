@@ -27,7 +27,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 
 
-final class DebugTraceFunc extends Func {
+final class DebugTraceFunc extends Func<DebugTraceFunc> {
 
 	public static final DebugTrace DEBUG_TRACE = new DebugTrace();
 

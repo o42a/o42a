@@ -23,7 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncAllocation;
 
 
-final class ExternFuncPtr<F extends Func> extends FuncPtr<F> {
+final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 
 	ExternFuncPtr(
 			CodeId id,

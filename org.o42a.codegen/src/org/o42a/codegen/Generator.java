@@ -123,7 +123,7 @@ public abstract class Generator implements UserInfo {
 		return this.functions.newFunction();
 	}
 
-	public final <F extends Func> FuncPtr<F> externalFunction(
+	public final <F extends Func<F>> FuncPtr<F> externalFunction(
 			String name,
 			Signature<F> signature) {
 		return this.functions.externalFunction(name, signature);
@@ -175,7 +175,7 @@ public abstract class Generator implements UserInfo {
 
 	protected abstract DataWriter dataWriter();
 
-	protected <F extends Func> void addFunction(
+	protected <F extends Func<F>> void addFunction(
 			CodeId id,
 			FuncPtr<F> functionPtr) {
 		this.debug.addFunction(id, functionPtr);

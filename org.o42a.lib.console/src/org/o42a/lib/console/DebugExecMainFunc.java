@@ -29,7 +29,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 
 
-public final class DebugExecMainFunc extends Func {
+public final class DebugExecMainFunc extends Func<DebugExecMainFunc> {
 
 	public static final DebugExecMain DEBUG_EXEC_MAIN = new DebugExecMain();
 

@@ -31,7 +31,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
 
 
-public final class CastObjectFunc extends Func {
+public final class CastObjectFunc extends Func<CastObjectFunc> {
 
 	public static final CastObject CAST_OBJECT = new CastObject();
 

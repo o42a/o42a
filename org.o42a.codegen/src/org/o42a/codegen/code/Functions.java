@@ -47,7 +47,7 @@ public abstract class Functions {
 		return new FunctionSettings(this);
 	}
 
-	public <F extends Func> FuncPtr<F> externalFunction(
+	public <F extends Func<F>> FuncPtr<F> externalFunction(
 			String name,
 			Signature<F> signature) {
 
@@ -70,7 +70,7 @@ public abstract class Functions {
 		return extern;
 	}
 
-	public final <F extends Func> Signature<F> allocate(
+	public final <F extends Func<F>> Signature<F> allocate(
 			Signature<F> signature) {
 		return signature.allocate(getGenerator());
 	}
@@ -81,7 +81,7 @@ public abstract class Functions {
 
 	protected abstract CodeCallback createCodeCallback(Function<?> function);
 
-	protected abstract <F extends Func> void addFunction(
+	protected abstract <F extends Func<F>> void addFunction(
 			CodeId id,
 			Signature<F> signature,
 			FuncPtr<F> function);

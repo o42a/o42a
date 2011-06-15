@@ -38,7 +38,7 @@ public class LocalBuilder extends CodeBuilder {
 	private final ObjectOp owner;
 
 	public LocalBuilder(
-			Function<? extends ObjectFunc> function,
+			Function<? extends ObjectFunc<?>> function,
 			LocalIR scopeIR) {
 		super(function, scopeIR);
 

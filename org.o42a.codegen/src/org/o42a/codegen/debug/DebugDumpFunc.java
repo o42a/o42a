@@ -28,7 +28,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
 
 
-final class DebugDumpFunc extends Func {
+final class DebugDumpFunc extends Func<DebugDumpFunc> {
 
 	public static final DebugDump DEBUG_DUMP = new DebugDump();
 

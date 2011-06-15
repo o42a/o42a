@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.SignatureAllocation;
 
 
-public class LLVMSignature<F extends Func>
+public class LLVMSignature<F extends Func<F>>
 		implements SignatureAllocation<F> {
 
 	private final long nativePtr;

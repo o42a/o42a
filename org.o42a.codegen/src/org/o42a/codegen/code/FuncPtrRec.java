@@ -27,7 +27,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class FuncPtrRec<F extends Func> extends FuncRec<F> {
+final class FuncPtrRec<F extends Func<F>> extends FuncRec<F> {
 
 	FuncPtrRec(
 			SubData<?> enclosing,

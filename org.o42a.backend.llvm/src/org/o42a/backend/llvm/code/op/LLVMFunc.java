@@ -21,8 +21,8 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.CodeId;
@@ -34,7 +34,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public class LLVMFunc<F extends Func> extends LLVMPtrOp
+public class LLVMFunc<F extends Func<F>> extends LLVMPtrOp
 		implements FuncCaller<F> {
 
 	private final Signature<F> signature;

@@ -26,7 +26,7 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 
 
-public abstract class FuncRec<F extends Func>
+public abstract class FuncRec<F extends Func<F>>
 		extends Rec<FuncOp<F>, FuncPtr<F>> {
 
 	private final Signature<F> signature;

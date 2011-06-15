@@ -26,7 +26,7 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public interface FuncAllocation<F extends Func> {
+public interface FuncAllocation<F extends Func<F>> {
 
 	Signature<F> getSignature();
 

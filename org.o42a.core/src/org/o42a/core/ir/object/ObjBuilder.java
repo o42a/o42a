@@ -29,7 +29,7 @@ import org.o42a.core.ir.op.ObjectFunc;
 public final class ObjBuilder extends CodeBuilder {
 
 	public ObjBuilder(
-			Function<? extends ObjectFunc> function,
+			Function<? extends ObjectFunc<?>> function,
 			CodePos exit,
 			ObjectBodyIR hostIR,
 			Obj hostType,

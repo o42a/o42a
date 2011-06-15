@@ -160,7 +160,7 @@ public abstract class StructOp implements PtrOp {
 				field);
 	}
 
-	protected final <F extends Func> FuncOp<F> func(
+	protected final <F extends Func<F>> FuncOp<F> func(
 			CodeId id,
 			Code code,
 			FuncRec<F> field) {

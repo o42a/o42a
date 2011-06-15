@@ -24,7 +24,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public interface FuncWriter<F extends Func> extends CodeWriter {
+public interface FuncWriter<F extends Func<F>> extends CodeWriter {
 
 	FuncAllocation<F> getAllocation();
 
@@ -50,7 +50,7 @@ public interface FuncWriter<F extends Func> extends CodeWriter {
 
 	<O extends StructOp> O ptrArg(Code code, Arg<O> arg, Type<O> type);
 
-	<FF extends Func> FF funcPtrArg(
+	<FF extends Func<FF>> FF funcPtrArg(
 			Code code,
 			Arg<FF> arg,
 			Signature<FF> signature);

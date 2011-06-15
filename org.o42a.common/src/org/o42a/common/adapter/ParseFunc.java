@@ -30,7 +30,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
-public final class ParseFunc extends Func {
+public final class ParseFunc extends Func<ParseFunc> {
 
 	public static final Parse PARSE = new Parse();
 
