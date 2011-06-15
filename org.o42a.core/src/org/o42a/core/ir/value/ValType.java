@@ -110,7 +110,7 @@ public final class ValType extends Type<ValType.Op> {
 			return new ValOp(builder, this, valueType);
 		}
 
-		public final RecOp<Int32op> flags(CodeId id, Code code) {
+		public final Int32recOp flags(CodeId id, Code code) {
 			return int32(id, code, getType().flags());
 		}
 
@@ -156,7 +156,7 @@ public final class ValType extends Type<ValType.Op> {
 					numberOfTrailingZeros(ALIGNMENT_MASK));
 		}
 
-		public final RecOp<Int32op> length(CodeId id, Code code) {
+		public final Int32recOp length(CodeId id, Code code) {
 			return int32(id, code, getType().length());
 		}
 
@@ -175,7 +175,7 @@ public final class ValType extends Type<ValType.Op> {
 					alignmentShift);
 		}
 
-		public final RecOp<Int64op> rawValue(CodeId id, Code code) {
+		public final Int64recOp rawValue(CodeId id, Code code) {
 			return int64(id, code, getType().value());
 		}
 

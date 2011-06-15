@@ -25,7 +25,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.Int32recOp;
+import org.o42a.codegen.code.op.RelRecOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
 
@@ -119,11 +121,11 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<RelOp> list(Code code) {
+		public final RelRecOp list(Code code) {
 			return relPtr(null, code, getType().list());
 		}
 
-		public final RecOp<Int32op> size(Code code) {
+		public final Int32recOp size(Code code) {
 			return int32(null, code, getType().size());
 		}
 

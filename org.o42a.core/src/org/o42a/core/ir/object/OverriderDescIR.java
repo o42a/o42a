@@ -27,9 +27,9 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.Fld;
@@ -90,11 +90,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<FieldDescIR.Op> field(Code code) {
+		public final StructRecOp<FieldDescIR.Op> field(Code code) {
 			return ptr(null, code, getType().field());
 		}
 
-		public final RecOp<RelOp> fld(Code code) {
+		public final RelRecOp fld(Code code) {
 			return relPtr(null, code, getType().body());
 		}
 

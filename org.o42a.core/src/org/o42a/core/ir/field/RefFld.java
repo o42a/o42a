@@ -27,8 +27,8 @@ import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
@@ -268,7 +268,7 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 			return (Type<?, C>) super.getType();
 		}
 
-		public final RecOp<DataOp> object(Code code) {
+		public final DataRecOp object(Code code) {
 			return ptr(null, code, getType().object());
 		}
 

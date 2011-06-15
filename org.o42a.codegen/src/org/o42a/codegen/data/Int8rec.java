@@ -20,13 +20,12 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.Int8op;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class Int8rec extends Rec<RecOp<Int8op>, Byte> {
+public final class Int8rec extends Rec<Int8recOp, Byte> {
 
 	Int8rec(SubData<?> enclosing, CodeId id, Content<Int8rec> content) {
 		super(enclosing, id, content);

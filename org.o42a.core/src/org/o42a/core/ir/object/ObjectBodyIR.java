@@ -311,19 +311,19 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return getType().getAscendant();
 		}
 
-		public final RecOp<RelOp> objectType(Code code) {
+		public final RelRecOp objectType(Code code) {
 			return relPtr(null, code, getType().objectType());
 		}
 
-		public final RecOp<RelOp> ancestorBody(Code code) {
+		public final RelRecOp ancestorBody(Code code) {
 			return relPtr(null, code, getType().ancestorBody());
 		}
 
-		public final RecOp<DataOp> methods(Code code) {
+		public final DataRecOp methods(Code code) {
 			return ptr(null, code, getType().methods());
 		}
 
-		public final RecOp<Int32op> flags(Code code) {
+		public final Int32recOp flags(Code code) {
 			return int32(null, code, getType().flags());
 		}
 

@@ -20,13 +20,12 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.codegen.code.op.Fp64recOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class Fp64rec extends Rec<RecOp<Fp64op>, Double> {
+public final class Fp64rec extends Rec<Fp64recOp, Double> {
 
 	Fp64rec(SubData<?> enclosing, CodeId id, Content<Fp64rec> content) {
 		super(enclosing, id, content);

@@ -121,35 +121,35 @@ public class LLVMDataWriter implements DataWriter {
 
 	@Override
 	public void writeInt8(
-			DataAllocation<RecOp<Int8op>> allocation,
+			DataAllocation<Int8recOp> allocation,
 			byte value) {
 		writeInt8(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeInt16(
-			DataAllocation<RecOp<Int16op>> allocation,
+			DataAllocation<Int16recOp> allocation,
 			short value) {
 		writeInt16(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeInt32(
-			DataAllocation<RecOp<Int32op>> allocation,
+			DataAllocation<Int32recOp> allocation,
 			int value) {
 		writeInt32(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeInt64(
-			DataAllocation<RecOp<Int64op>> allocation,
+			DataAllocation<Int64recOp> allocation,
 			long value) {
 		writeInt64(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeNativePtrAsInt64(
-			DataAllocation<RecOp<Int64op>> allocation,
+			DataAllocation<Int64recOp> allocation,
 			DataAllocation<AnyOp> valueAllocation) {
 
 		final LLVMDataAllocation<?> alloc =
@@ -162,14 +162,14 @@ public class LLVMDataWriter implements DataWriter {
 
 	@Override
 	public void writeFp32(
-			DataAllocation<RecOp<Fp32op>> allocation,
+			DataAllocation<Fp32recOp> allocation,
 			float value) {
 		writeFp32(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeFp64(
-			DataAllocation<RecOp<Fp64op>> allocation,
+			DataAllocation<Fp64recOp> allocation,
 			double value) {
 		writeFp64(getModule().getNativePtr(), getStructPtr(), value);
 	}

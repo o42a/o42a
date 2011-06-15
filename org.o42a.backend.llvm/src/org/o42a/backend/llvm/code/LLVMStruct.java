@@ -20,8 +20,8 @@
 package org.o42a.backend.llvm.code;
 
 import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.LLVMFuncOp;
 import org.o42a.backend.llvm.code.op.LLVMPtrOp;
@@ -32,7 +32,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
 
@@ -83,7 +85,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<Int8op> int8(CodeId id, Code code, Int8rec field) {
+	public LLVMRecOp.Int8 int8(CodeId id, Code code, Int8rec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -95,7 +97,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<Int16op> int16(CodeId id, Code code, Int16rec field) {
+	public LLVMRecOp.Int16 int16(CodeId id, Code code, Int16rec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -107,7 +109,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<Int32op> int32(CodeId id, Code code, Int32rec field) {
+	public LLVMRecOp.Int32 int32(CodeId id, Code code, Int32rec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -119,7 +121,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<Int64op> int64(CodeId id, Code code, Int64rec field) {
+	public LLVMRecOp.Int64 int64(CodeId id, Code code, Int64rec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -131,7 +133,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<Fp32op> fp32(CodeId id, Code code, Fp32rec field) {
+	public LLVMRecOp.Fp32 fp32(CodeId id, Code code, Fp32rec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -143,7 +145,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<Fp64op> fp64(CodeId id, Code code, Fp64rec field) {
+	public LLVMRecOp.Fp64 fp64(CodeId id, Code code, Fp64rec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -155,7 +157,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<AnyOp> ptr(CodeId id, Code code, AnyPtrRec field) {
+	public LLVMRecOp.Any ptr(CodeId id, Code code, AnyPtrRec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -167,7 +169,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<DataOp> ptr(CodeId id, Code code, DataRec field) {
+	public LLVMRecOp.Data ptr(CodeId id, Code code, DataRec field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -179,7 +181,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public <P extends StructOp> RecOp<P> ptr(
+	public <P extends StructOp> LLVMRecOp.Struct<P> ptr(
 			CodeId id,
 			Code code,
 			StructRec<P> field) {
@@ -195,7 +197,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public RecOp<RelOp> relPtr(CodeId id, Code code, RelPtrRec field) {
+	public LLVMRecOp.Rel relPtr(CodeId id, Code code, RelPtrRec field) {
 
 		final long nextPtr = nextPtr(code);
 

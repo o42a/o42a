@@ -75,11 +75,11 @@ public interface CodeWriter {
 
 	void goToOneOf(MultiCodePos target);
 
-	RecOp<AnyOp> allocatePtr(CodeId id);
+	AnyRecOp allocatePtr(CodeId id);
 
-	<O extends StructOp> RecOp<O> allocatePtr(
+	<S extends StructOp> StructRecOp<S> allocatePtr(
 			CodeId id,
-			DataAllocation<O> allocation);
+			DataAllocation<S> allocation);
 
 	<O extends StructOp> O allocateStruct(
 			CodeId id,

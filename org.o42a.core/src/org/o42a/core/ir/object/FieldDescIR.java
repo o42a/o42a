@@ -88,15 +88,15 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<ObjectIRType.Op> declaredIn(Code code) {
+		public final StructRecOp<ObjectIRType.Op> declaredIn(Code code) {
 			return ptr(null, code, getType().declaredIn());
 		}
 
-		public final RecOp<Int32op> kind(Code code) {
+		public final Int32recOp kind(Code code) {
 			return int32(null, code, getType().kind());
 		}
 
-		public final RecOp<RelOp> fld(Code code) {
+		public final RelRecOp fld(Code code) {
 			return relPtr(null, code, getType().fld());
 		}
 

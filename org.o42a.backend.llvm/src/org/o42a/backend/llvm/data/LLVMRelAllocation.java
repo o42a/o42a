@@ -23,8 +23,7 @@ import org.o42a.backend.llvm.code.LLVMCode;
 import org.o42a.backend.llvm.code.op.LLVMRelOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
@@ -41,9 +40,7 @@ final class LLVMRelAllocation implements RelAllocation {
 	}
 
 	@Override
-	public void write(
-			DataAllocation<RecOp<RelOp>> allocation,
-			DataWriter writer) {
+	public void write(DataAllocation<RelRecOp> allocation, DataWriter writer) {
 
 		final LLVMDataWriter llvmWriter = (LLVMDataWriter) writer;
 

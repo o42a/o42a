@@ -25,9 +25,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.Int8op;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Int8rec;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
@@ -49,15 +49,15 @@ public class DebugEnvOp extends StructOp {
 		return (Type) super.getType();
 	}
 
-	public final RecOp<DebugStackFrameOp> stackFrame(Code code) {
+	public final StructRecOp<DebugStackFrameOp> stackFrame(Code code) {
 		return ptr(null, code, getType().stackFrame());
 	}
 
-	public final RecOp<Int8op> command(Code code) {
+	public final Int8recOp command(Code code) {
 		return int8(null, code, getType().command());
 	}
 
-	public final RecOp<Int8op> indent(Code code) {
+	public final Int8recOp indent(Code code) {
 		return int8(null, code, getType().indent());
 	}
 

@@ -32,7 +32,7 @@ import org.o42a.codegen.debug.DebugHeader;
 import org.o42a.codegen.debug.TypeDebugBase;
 
 
-public abstract class Type<O extends StructOp>
+public abstract class Type<S extends StructOp>
 		extends TypeDebugBase
 		implements Cloneable {
 
@@ -45,8 +45,8 @@ public abstract class Type<O extends StructOp>
 	}
 
 	private CodeId id;
-	Type<O> type;
-	SubData<O> data;
+	Type<S> type;
+	SubData<S> data;
 	private Generator allocated;
 	private Generator allocating;
 
@@ -81,7 +81,7 @@ public abstract class Type<O extends StructOp>
 		return !isDebugInfo();
 	}
 
-	public final Type<O> getType() {
+	public final Type<S> getType() {
 		return this.type;
 	}
 
@@ -100,11 +100,11 @@ public abstract class Type<O extends StructOp>
 		return this.id = buildCodeId(factory);
 	}
 
-	public final Ptr<O> pointer(Generator generator) {
+	public final Ptr<S> pointer(Generator generator) {
 		return data(generator, false).getPointer();
 	}
 
-	public final Data<O> data(Generator generator) {
+	public final Data<S> data(Generator generator) {
 		return data(generator, true);
 	}
 
@@ -117,7 +117,7 @@ public abstract class Type<O extends StructOp>
 		return data(generator, true).getLayout();
 	}
 
-	public abstract O op(StructWriter writer);
+	public abstract S op(StructWriter writer);
 
 	public Iterable<Data<?>> iterate(Generator generator) {
 		ensureTypeAllocated(generator, true);
@@ -131,13 +131,13 @@ public abstract class Type<O extends StructOp>
 
 	protected abstract CodeId buildCodeId(CodeIdFactory factory);
 
-	protected abstract void allocate(SubData<O> data);
+	protected abstract void allocate(SubData<S> data);
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Type<O> clone() {
+	protected Type<S> clone() {
 		try {
-			return (Type<O>) super.clone();
+			return (Type<S>) super.clone();
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
@@ -159,7 +159,7 @@ public abstract class Type<O extends StructOp>
 		this.type.allocated = generator;
 	}
 
-	final void allocateInstance(SubData<O> data) {
+	final void allocateInstance(SubData<S> data) {
 
 		final Generator generator = data.getGenerator();
 
@@ -175,12 +175,12 @@ public abstract class Type<O extends StructOp>
 		allocate(data);
 	}
 
-	final DataAllocation<O> getAllocation() {
+	final DataAllocation<S> getAllocation() {
 		return this.data.getPointer().getAllocation();
 	}
 
 	@SuppressWarnings("unchecked")
-	final <I extends Type<O>> I instantiate(
+	final <I extends Type<S>> I instantiate(
 			SubData<?> enclosing,
 			CodeId id,
 			I instance,
@@ -193,14 +193,14 @@ public abstract class Type<O extends StructOp>
 		}
 
 		instance.data =
-			new TypeInstanceData<O>(enclosing, id, instance, content);
+			new TypeInstanceData<S>(enclosing, id, instance, content);
 
 		return instance;
 	}
 
 	@SuppressWarnings("unchecked")
-	final <I extends Type<O>> I instantiate(
-			Global<O, ?> global,
+	final <I extends Type<S>> I instantiate(
+			Global<S, ?> global,
 			I instance,
 			Content<?> content) {
 		ensureTypeAllocated(global.getGenerator(), true);
@@ -210,16 +210,16 @@ public abstract class Type<O extends StructOp>
 			instance.type = this.type;
 		}
 
-		instance.data = new GlobalInstanceData<O>(global, instance, content);
+		instance.data = new GlobalInstanceData<S>(global, instance, content);
 
 		return instance;
 	}
 
-	final SubData<O> getTypeData() {
+	final SubData<S> getTypeData() {
 		return this.data;
 	}
 
-	private final Data<O> data(Generator generator, boolean fullyAllocated) {
+	private final Data<S> data(Generator generator, boolean fullyAllocated) {
 		ensureTypeAllocated(generator, fullyAllocated);
 		return this.data;
 	}
@@ -232,12 +232,12 @@ public abstract class Type<O extends StructOp>
 			return;
 		}
 		if (this.data == null) {
-			this.data = new TypeData<O>(generator, this);
+			this.data = new TypeData<S>(generator, this);
 		} else if (this.data.getGenerator() != generator) {
 			assert this.data instanceof TypeData :
 				"Wrong data type of " + codeId(generator) + ": "
 				+ this.data.getClass().getName();
-			this.data = new TypeData<O>(generator, this);
+			this.data = new TypeData<S>(generator, this);
 		}
 		this.data.allocateType(fullyAllocated);
 		if (fullyAllocated) {

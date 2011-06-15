@@ -28,21 +28,21 @@ import org.o42a.codegen.data.Type;
 
 public interface AnyOp extends PtrOp {
 
-	RecOp<AnyOp> toPtr(CodeId id, Code code);
+	AnyRecOp toPtr(CodeId id, Code code);
 
-	RecOp<Int8op> toInt8(CodeId id, Code code);
+	Int8recOp toInt8(CodeId id, Code code);
 
-	RecOp<Int16op> toInt16(CodeId id, Code code);
+	Int16recOp toInt16(CodeId id, Code code);
 
-	RecOp<Int32op> toInt32(CodeId id, Code code);
+	Int32recOp toInt32(CodeId id, Code code);
 
-	RecOp<Int64op> toInt64(CodeId id, Code code);
+	Int64recOp toInt64(CodeId id, Code code);
 
-	RecOp<Fp32op> toFp32(CodeId id, Code code);
+	Fp32recOp toFp32(CodeId id, Code code);
 
-	RecOp<Fp64op> toFp64(CodeId id, Code code);
+	Fp64recOp toFp64(CodeId id, Code code);
 
-	RecOp<RelOp> toRel(CodeId id, Code code);
+	RelRecOp toRel(CodeId id, Code code);
 
 	DataOp toData(CodeId id, Code code);
 
@@ -51,6 +51,6 @@ public interface AnyOp extends PtrOp {
 			Code code,
 			Signature<F> signature);
 
-	<O extends StructOp> O to(CodeId id, Code code, Type<O> type);
+	<S extends StructOp> S to(CodeId id, Code code, Type<S> type);
 
 }

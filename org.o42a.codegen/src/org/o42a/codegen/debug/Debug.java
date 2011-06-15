@@ -34,7 +34,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
 
 
@@ -103,13 +103,15 @@ public class Debug {
 					id.getId());
 
 		final DebugEnvOp debugEnv = function.debugEnv(function);
-		final RecOp<DebugStackFrameOp> envStackFrame =
+		final StructRecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(function);
 		final DebugStackFrameOp stackFrame =
 			allocateStackFrame(function, null);
 
 		stackFrame.name(function).store(function, namePtr.op(null, function));
-		stackFrame.prev(function).store(function, envStackFrame.load(null, function));
+		stackFrame.prev(function).store(
+				function,
+				envStackFrame.load(null, function));
 		stackFrame.comment(function).store(function, function.nullPtr());
 		stackFrame.file(function).store(function, function.nullPtr());
 		stackFrame.line(function).store(function, function.int32(0));

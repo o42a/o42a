@@ -166,7 +166,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 			return (ObjectIRData) super.getType();
 		}
 
-		public final RecOp<RelOp> object(Code code) {
+		public final RelRecOp object(Code code) {
 			return relPtr(null, code, getType().object());
 		}
 
@@ -177,7 +177,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 			.toData(code.id("main_body"), code);
 		}
 
-		public final RecOp<RelOp> start(Code code) {
+		public final RelRecOp start(Code code) {
 			return relPtr(null, code, getType().start());
 		}
 
@@ -216,7 +216,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 			return func(null, code, getType().ancestorFunc());
 		}
 
-		public final RecOp<ObjectIRType.Op> ancestorType(Code code) {
+		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {
 			return ptr(null, code, getType().ancestorType());
 		}
 

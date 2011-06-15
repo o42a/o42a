@@ -21,13 +21,12 @@ package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.op.LLVMRecOp;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.RelOp;
-import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.DataLayout;
 
 
-final class RelDataAlloc extends SimpleDataAllocation<RecOp<RelOp>> {
+final class RelDataAlloc extends SimpleDataAllocation<RelRecOp> {
 
 	public RelDataAlloc(ContainerAllocation<?> enclosing) {
 		super(enclosing);
@@ -39,7 +38,7 @@ final class RelDataAlloc extends SimpleDataAllocation<RecOp<RelOp>> {
 	}
 
 	@Override
-	protected RecOp<RelOp> op(
+	protected LLVMRecOp.Rel op(
 			CodeId id,
 			AllocClass allocClass,
 			long blockPtr,

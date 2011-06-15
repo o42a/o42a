@@ -95,7 +95,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final Function<?> function = code.getFunction();
 
 		final DebugEnvOp debugEnv = function.debugEnv(code);
-		final RecOp<DebugStackFrameOp> envStackFrame =
+		final StructRecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);
 		final DebugStackFrameOp prevStackFrame = envStackFrame.load(null, code);
 		final DebugStackFrameOp stackFrame = allocateStackFrame(code, null);
@@ -118,7 +118,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		printFunc.call(code, binaryMessage(" */\n").op(null, code));
 		envStackFrame.store(code, stackFrame);
 
-		final RecOp<Int8op> indent = debugEnv.indent(code);
+		final Int8recOp indent = debugEnv.indent(code);
 
 		indent.store(
 				code,
@@ -151,7 +151,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		final DebugEnvOp debugEnv = function.debugEnv(code);
 
-		final RecOp<DebugStackFrameOp> envStackFrame =
+		final StructRecOp<DebugStackFrameOp> envStackFrame =
 			debugEnv.stackFrame(code);
 		final DebugStackFrameOp prevStackFrame =
 			envStackFrame.load(null, code).prev(code).load(null, code);
@@ -160,7 +160,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		prevStackFrame.comment(code).store(code, code.nullPtr());
 		envStackFrame.store(code, prevStackFrame);
 
-		final RecOp<Int8op> indent = debugEnv.indent(code);
+		final Int8recOp indent = debugEnv.indent(code);
 
 		indent.store(
 				code,

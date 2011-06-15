@@ -62,7 +62,7 @@ public abstract class LLVMRecOp<O extends Op>
 
 	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);
 
-	public static final class Any extends LLVMRecOp<AnyOp> {
+	public static final class Any extends LLVMRecOp<AnyOp> implements AnyRecOp {
 
 		public Any(
 				CodeId id,
@@ -84,7 +84,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Data extends LLVMRecOp<DataOp> {
+	public static final class Data
+			extends LLVMRecOp<DataOp>
+			implements DataRecOp {
 
 		public Data(
 				CodeId id,
@@ -113,7 +115,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Int8 extends LLVMRecOp<Int8op> {
+	public static final class Int8
+			extends LLVMRecOp<Int8op>
+			implements Int8recOp {
 
 		public Int8(
 				CodeId id,
@@ -129,13 +133,18 @@ public abstract class LLVMRecOp<O extends Op>
 		}
 
 		@Override
-		protected Int8op createLoaded(CodeId id, long blockPtr, long nativePtr) {
+		protected Int8op createLoaded(
+				CodeId id,
+				long blockPtr,
+				long nativePtr) {
 			return new LLVMInt8op(id, blockPtr, nativePtr);
 		}
 
 	}
 
-	public static final class Int16 extends LLVMRecOp<Int16op> {
+	public static final class Int16
+			extends LLVMRecOp<Int16op>
+			implements Int16recOp {
 
 		public Int16(
 				CodeId id,
@@ -160,7 +169,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Int32 extends LLVMRecOp<Int32op> {
+	public static final class Int32
+			extends LLVMRecOp<Int32op>
+			implements Int32recOp {
 
 		public Int32(
 				CodeId id,
@@ -185,7 +196,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Int64 extends LLVMRecOp<Int64op> {
+	public static final class Int64
+			extends LLVMRecOp<Int64op>
+			implements Int64recOp {
 
 		public Int64(
 				CodeId id,
@@ -210,7 +223,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Fp32 extends LLVMRecOp<Fp32op> {
+	public static final class Fp32
+			extends LLVMRecOp<Fp32op>
+			implements Fp32recOp {
 
 		public Fp32(
 				CodeId id,
@@ -235,7 +250,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Fp64 extends LLVMRecOp<Fp64op> {
+	public static final class Fp64
+			extends LLVMRecOp<Fp64op>
+			implements Fp64recOp {
 
 		public Fp64(
 				CodeId id,
@@ -260,7 +277,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Rel extends LLVMRecOp<RelOp> {
+	public static final class Rel
+			extends LLVMRecOp<RelOp>
+			implements RelRecOp {
 
 		public Rel(
 				CodeId id,
@@ -282,14 +301,16 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Struct<O extends StructOp> extends LLVMRecOp<O> {
+	public static final class Struct<S extends StructOp>
+			extends LLVMRecOp<S>
+			implements StructRecOp<S> {
 
-		private final Type<O> type;
+		private final Type<S> type;
 
 		public Struct(
 				CodeId id,
 				AllocClass allocClass,
-				Type<O> type,
+				Type<S> type,
 				long blockPtr,
 				long nativePtr) {
 			super(id, allocClass, blockPtr, nativePtr);
@@ -297,8 +318,8 @@ public abstract class LLVMRecOp<O extends Op>
 		}
 
 		@Override
-		public Struct<O> create(CodeId id, long blockPtr, long nativePtr) {
-			return new Struct<O>(
+		public Struct<S> create(CodeId id, long blockPtr, long nativePtr) {
+			return new Struct<S>(
 					id,
 					AUTO_ALLOC_CLASS,
 					this.type,
@@ -307,7 +328,7 @@ public abstract class LLVMRecOp<O extends Op>
 		}
 
 		@Override
-		protected O createLoaded(CodeId id, long blockPtr, long nativePtr) {
+		protected S createLoaded(CodeId id, long blockPtr, long nativePtr) {
 			return this.type.op(new LLVMStruct(
 					id,
 					AUTO_ALLOC_CLASS,

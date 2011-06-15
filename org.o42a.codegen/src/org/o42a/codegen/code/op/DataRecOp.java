@@ -17,35 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.data;
-
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.Fp32recOp;
-import org.o42a.codegen.data.backend.DataAllocator;
-import org.o42a.codegen.data.backend.DataWriter;
+package org.o42a.codegen.code.op;
 
 
-public class Fp32rec extends Rec<Fp32recOp, Float> {
+public interface DataRecOp extends RecOp<DataOp> {
 
-	Fp32rec(SubData<?> enclosing, CodeId id, Content<Fp32rec> content) {
-		super(enclosing, id, content);
-	}
-
-	@Override
-	public DataType getDataType() {
-		return DataType.FP32;
-	}
-
-	@Override
-	protected void allocate(DataAllocator allocator) {
-		setAllocation(allocator.allocateFp32(
-				getEnclosing().getAllocation(),
-				getAllocation()));
-	}
-
-	@Override
-	protected void write(DataWriter writer) {
-		fill(writer);
-		writer.writeFp32(getAllocation(), getValue());
-	}
 }
