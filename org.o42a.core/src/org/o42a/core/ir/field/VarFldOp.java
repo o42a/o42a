@@ -23,7 +23,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ObjectRefFunc;
 
 
-public class VarFldOp extends RefFldOp<ObjectRefFunc> {
+public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 	VarFldOp(VarFld fld, ObjOp host, VarFld.Op ptr) {
 		super(fld, host, ptr);
@@ -32,11 +32,6 @@ public class VarFldOp extends RefFldOp<ObjectRefFunc> {
 	@Override
 	public VarFld fld() {
 		return (VarFld) super.fld();
-	}
-
-	@Override
-	public VarFld.Op ptr() {
-		return (VarFld.Op) super.ptr();
 	}
 
 }

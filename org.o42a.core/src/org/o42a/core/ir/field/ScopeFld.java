@@ -101,9 +101,9 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		return this;
 	}
 
-	public static final class Op extends Fld.Op {
+	public static final class Op extends Fld.Op<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -130,7 +130,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		}
 
 		@Override
-		public Op op(StructWriter writer) {
+		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

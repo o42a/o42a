@@ -60,9 +60,9 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 		return this.bodyIR.toString();
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -78,7 +78,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 	}
 
 	public static final class Type
-			extends org.o42a.codegen.data.Type<SampleDescIR.Op> {
+			extends org.o42a.codegen.data.Type<Op> {
 
 		private RelPtrRec body;
 
@@ -90,7 +90,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 		}
 
 		@Override
-		public final Op op(StructWriter writer) {
+		public final Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

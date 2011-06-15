@@ -27,15 +27,15 @@ import org.o42a.backend.llvm.code.LLVMStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class ContainerAllocation<O extends StructOp>
-		extends LLVMDataAllocation<O> {
+public abstract class ContainerAllocation<S extends StructOp<S>>
+		extends LLVMDataAllocation<S> {
 
-	private final Type<O> type;
+	private final Type<S> type;
 	private final long typePtr;
 	private long uniqueTypePtr;
 	private long nativePtr;
@@ -46,7 +46,7 @@ public abstract class ContainerAllocation<O extends StructOp>
 			long typePtr,
 			long typeDataPtr,
 			ContainerAllocation<?> enclosing,
-			Type<O> type) {
+			Type<S> type) {
 		super(module, enclosing);
 		this.typePtr = typePtr;
 		this.nativePtr = typeDataPtr;
@@ -74,7 +74,7 @@ public abstract class ContainerAllocation<O extends StructOp>
 		return this.uniqueTypePtr;
 	}
 
-	public final Type<O> getType() {
+	public final Type<S> getType() {
 		return this.type;
 	}
 
@@ -84,11 +84,11 @@ public abstract class ContainerAllocation<O extends StructOp>
 	}
 
 	@Override
-	public O op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 
 		final LLVMCode code = (LLVMCode) writer;
 
-		return getType().op(new LLVMStruct(
+		return getType().op(new LLVMStruct<S>(
 				id,
 				allocClass,
 				getType(),
@@ -128,11 +128,12 @@ public abstract class ContainerAllocation<O extends StructOp>
 		return llvmId().addIndex(this.nextIndex++);
 	}
 
-	static final class Null<O extends StructOp> extends ContainerAllocation<O> {
+	static final class Null<S extends StructOp<S>>
+			extends ContainerAllocation<S> {
 
 		private final LLVMId llvmId;
 
-		Null(LLVMModule module, long nativePtr, Type<O> type) {
+		Null(LLVMModule module, long nativePtr, Type<S> type) {
 			super(
 					module,
 					((ContainerAllocation<?>)
@@ -151,8 +152,8 @@ public abstract class ContainerAllocation<O extends StructOp>
 
 	}
 
-	static final class Global<O extends StructOp>
-			extends ContainerAllocation<O> {
+	static final class Global<S extends StructOp<S>>
+			extends ContainerAllocation<S> {
 
 		private final LLVMId llvmId;
 
@@ -161,7 +162,7 @@ public abstract class ContainerAllocation<O extends StructOp>
 				long typePtr,
 				long typeDataPtr,
 				CodeId id,
-				Type<O> type) {
+				Type<S> type) {
 			super(module, typePtr, typeDataPtr, null, type);
 			this.llvmId = dataId(id, this);
 		}
@@ -173,8 +174,8 @@ public abstract class ContainerAllocation<O extends StructOp>
 
 	}
 
-	static final class Struct<O extends StructOp>
-			extends ContainerAllocation<O> {
+	static final class Struct<S extends StructOp<S>>
+			extends ContainerAllocation<S> {
 
 		private final LLVMId llvmId;
 
@@ -182,7 +183,7 @@ public abstract class ContainerAllocation<O extends StructOp>
 				long typePtr,
 				long nativePtr,
 				ContainerAllocation<?> enclosing,
-				Type<O> type) {
+				Type<S> type) {
 			super(
 					enclosing.getModule(),
 					typePtr,

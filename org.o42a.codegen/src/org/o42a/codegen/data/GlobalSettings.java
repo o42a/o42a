@@ -68,33 +68,36 @@ public final class GlobalSettings {
 	}
 
 	public final
-	<O extends StructOp, T extends Type<O>> Global<O, T> newInstance(
+	<S extends StructOp<S>, T extends Type<S>> Global<S, T> newInstance(
 			CodeId id,
 			T type) {
 		return newInstance(id, type, null);
 	}
 
 	public final
-	<O extends StructOp, T extends Type<O>> Global<O, T> newInstance(
+	<S extends StructOp<S>, T extends Type<S>> Global<S, T> newInstance(
 			CodeId id,
 			T type,
 			Content<T> content) {
 		return this.globals.addGlobal(this, id, type, null, content);
 	}
 
-	public final <O extends StructOp, S extends Struct<O>> Global<O, S> struct(
-			S struct) {
+	public final
+	<S extends StructOp<S>, ST extends Struct<S>> Global<S, ST> struct(
+			ST struct) {
 		return this.globals.addGlobal(this, struct);
 	}
 
-	public final <O extends StructOp, T extends Type<O>> Global<O, T> instance(
+	public final
+	<S extends StructOp<S>, T extends Type<S>> Global<S, T> instance(
 			CodeId id,
 			T type,
 			T instance) {
 		return instance(id, type, instance, null);
 	}
 
-	public final <O extends StructOp, T extends Type<O>> Global<O, T> instance(
+	public final
+	<S extends StructOp<S>, T extends Type<S>> Global<S, T> instance(
 			CodeId id,
 			T type,
 			T instance,
@@ -102,11 +105,12 @@ public final class GlobalSettings {
 		return this.globals.addGlobal(this, id, type, instance, content);
 	}
 
-	public final <O extends StructOp, S extends Struct<O>> Global<O, S> struct(
-			S type,
-			S instance) {
+	public final
+	<S extends StructOp<S>, ST extends Struct<S>> Global<S, ST> struct(
+			ST type,
+			ST instance) {
 
-		final Content<S> content = Struct.structContent();
+		final Content<ST> content = Struct.structContent();
 
 		return instance(
 				instance.codeId(getGenerator()),

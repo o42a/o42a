@@ -25,8 +25,8 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
 
 
@@ -71,14 +71,14 @@ abstract class SimpleDataAllocation<O extends PtrOp>
 			long blockPtr,
 			long nativePtr);
 
-	static final class StructPtr<O extends StructOp>
-			extends SimpleDataAllocation<O> {
+	static final class StructPtr<S extends StructOp<S>>
+			extends SimpleDataAllocation<S> {
 
-		private final Type<O> type;
+		private final Type<S> type;
 
 		public StructPtr(
 				ContainerAllocation<?> enclosing,
-				Type<O> type) {
+				Type<S> type) {
 			super(enclosing);
 			this.type = type;
 		}
@@ -89,12 +89,12 @@ abstract class SimpleDataAllocation<O extends PtrOp>
 		}
 
 		@Override
-		protected O op(
+		protected S op(
 				CodeId id,
 				AllocClass allocClass,
 				long blockPtr,
 				long nativePtr) {
-			return this.type.op(new LLVMStruct(
+			return this.type.op(new LLVMStruct<S>(
 					id,
 					allocClass,
 					this.type,

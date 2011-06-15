@@ -24,7 +24,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.field.RefFld.Op;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -32,9 +31,12 @@ import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
 
 
-public abstract class RefFldOp<C extends ObjectFunc<C>> extends FldOp {
+public abstract class RefFldOp<
+		S extends RefFld.Op<S, C>,
+		C extends ObjectFunc<C>>
+			extends FldOp {
 
-	RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<C> ptr) {
+	RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<S, C> ptr) {
 		super(fld, host, ptr);
 	}
 
@@ -46,8 +48,8 @@ public abstract class RefFldOp<C extends ObjectFunc<C>> extends FldOp {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Op<C> ptr() {
-		return (Op<C>) super.ptr();
+	public S ptr() {
+		return (S) super.ptr();
 	}
 
 	@Override
@@ -99,7 +101,8 @@ public abstract class RefFldOp<C extends ObjectFunc<C>> extends FldOp {
 
 		final ObjectBodyIR.Op targetBodyPtr = ptr.to(
 				null,
-				code, targetAscendant.ir(getGenerator()).getBodyType());
+				code,
+				targetAscendant.ir(getGenerator()).getBodyType());
 
 		return targetBodyPtr.op(
 				getBuilder(),

@@ -144,15 +144,15 @@ public class LLVMFunc<F extends Func<F>> extends LLVMPtrOp
 	}
 
 	@Override
-	public <O extends StructOp> O callPtr(
+	public <S extends StructOp<S>> S callPtr(
 			CodeId id,
 			Code code,
-			Type<O> type,
+			Type<S> type,
 			Op... args) {
 
 		final long nextPtr = nextPtr(code);
 
-		return type.op(new LLVMStruct(
+		return type.op(new LLVMStruct<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				type,

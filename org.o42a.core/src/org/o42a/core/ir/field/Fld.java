@@ -139,21 +139,21 @@ public abstract class Fld {
 		return null;
 	}
 
-	public static abstract class Op extends StructOp {
+	public static abstract class Op<S extends Op<S>> extends StructOp<S> {
 
-		public Op(StructWriter writer) {
+		public Op(StructWriter<S> writer) {
 			super(writer);
 		}
 
 		@Override
-		public Type<?> getType() {
-			return (Type<?>) super.getType();
+		public Type<S> getType() {
+			return (Type<S>) super.getType();
 		}
 
 	}
 
-	public static abstract class Type<O extends Op>
-			extends org.o42a.codegen.data.Type<O> {
+	public static abstract class Type<S extends Op<S>>
+			extends org.o42a.codegen.data.Type<S> {
 
 	}
 

@@ -24,15 +24,15 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class GlobalInstanceData<O extends StructOp>
-		extends AbstractInstanceData<O> {
+final class GlobalInstanceData<S extends StructOp<S>>
+		extends AbstractInstanceData<S> {
 
-	private final Global<O, ?> global;
+	private final Global<S, ?> global;
 
 	GlobalInstanceData(
-			Global<O, ?> global,
-			Type<O> instance,
-			Content<?> content) {
+			Global<S, ?> global,
+			Type<S> instance,
+			Content<? extends Type<S>> content) {
 		super(
 				global.getGenerator(),
 				global.getId().removeLocal(),

@@ -136,9 +136,9 @@ public class CtrOp extends IROp {
 		return getGenerator().externalFunction("o42a_obj_new", NEW_OBJECT);
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -185,7 +185,7 @@ public class CtrOp extends IROp {
 		}
 
 		@Override
-		public Op op(StructWriter writer) {
+		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

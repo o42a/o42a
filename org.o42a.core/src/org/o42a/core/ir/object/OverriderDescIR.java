@@ -79,9 +79,9 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		return this.fld.toString();
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -101,7 +101,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 	}
 
 	public static final class Type
-			extends org.o42a.codegen.data.Type<OverriderDescIR.Op> {
+			extends org.o42a.codegen.data.Type<Op> {
 
 		private StructRec<FieldDescIR.Op> field;
 		private StructRec<ObjectIRType.Op> definedIn;
@@ -123,7 +123,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		}
 
 		@Override
-		public final Op op(StructWriter writer) {
+		public final Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

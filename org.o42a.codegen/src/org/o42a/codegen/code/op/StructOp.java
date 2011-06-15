@@ -26,11 +26,11 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 
 
-public abstract class StructOp implements PtrOp {
+public abstract class StructOp<S extends StructOp<S>> implements PtrOp {
 
-	private final StructWriter writer;
+	private final StructWriter<S> writer;
 
-	public StructOp(StructWriter writer) {
+	public StructOp(StructWriter<S> writer) {
 		this.writer = writer;
 	}
 
@@ -44,16 +44,16 @@ public abstract class StructOp implements PtrOp {
 		return getWriter().getAllocClass();
 	}
 
-	public Type<?> getType() {
+	public Type<S> getType() {
 		return getWriter().getType();
 	}
 
-	public final StructWriter getWriter() {
+	public final StructWriter<S> getWriter() {
 		return this.writer;
 	}
 
 	@Override
-	public void allocated(Code code, StructOp enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
 			final RecOp<?> fieldOp =
@@ -87,7 +87,10 @@ public abstract class StructOp implements PtrOp {
 		return getWriter().toData(code.opId(id), code);
 	}
 
-	public <O extends StructOp> O to(CodeId id, Code code, Type<O> type) {
+	public <SS extends StructOp<SS>> SS to(
+			CodeId id,
+			Code code,
+			Type<SS> type) {
 		return getWriter().to(code.opId(id), code, type);
 	}
 
@@ -136,10 +139,10 @@ public abstract class StructOp implements PtrOp {
 		return getWriter().ptr(fieldId(id, code, field), code, field);
 	}
 
-	protected final <S extends StructOp> StructRecOp<S> ptr(
+	protected final <SS extends StructOp<SS>> StructRecOp<SS> ptr(
 			CodeId id,
 			Code code,
-			StructRec<S> field) {
+			StructRec<SS> field) {
 		return getWriter().ptr(fieldId(id, code, field), code, field);
 	}
 
@@ -150,10 +153,10 @@ public abstract class StructOp implements PtrOp {
 		return getWriter().relPtr(fieldId(id, code, field), code, field);
 	}
 
-	protected final <S extends StructOp> S struct(
+	protected final <SS extends StructOp<SS>> SS struct(
 			CodeId id,
 			Code code,
-			Type<S> field) {
+			Type<SS> field) {
 		return getWriter().struct(
 				fieldId(id, code, field.getId()),
 				code,

@@ -47,7 +47,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 	public static final LLVMOp llvm(Op op) {
 		if (op instanceof StructOp) {
-			return llvm((StructOp) op);
+			return llvm((StructOp<?>) op);
 		}
 		if (op instanceof Func) {
 			return llvm((Func<?>) op);
@@ -55,8 +55,9 @@ public abstract class LLVMCode implements CodeWriter {
 		return (LLVMOp) op;
 	}
 
-	public static final LLVMStruct llvm(StructOp op) {
-		return (LLVMStruct) op.getWriter();
+	public static final <S extends StructOp<S>> LLVMStruct<S> llvm(
+			StructOp<S> op) {
+		return (LLVMStruct<S>) op.getWriter();
 	}
 
 	public static final <F extends Func<F>> LLVMFunc<F> llvm(Func<F> func) {
@@ -77,7 +78,7 @@ public abstract class LLVMCode implements CodeWriter {
 		return llvm(op).getNativePtr();
 	}
 
-	public static final long nativePtr(StructOp op) {
+	public static final long nativePtr(StructOp<?> op) {
 		return llvm(op).getNativePtr();
 	}
 
@@ -393,12 +394,12 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends StructOp> O nullPtr(DataAllocation<O> type) {
+	public <S extends StructOp<S>> S nullPtr(DataAllocation<S> type) {
 
-		final ContainerAllocation<O> allocation =
-			(ContainerAllocation<O>) type;
+		final ContainerAllocation<S> allocation =
+			(ContainerAllocation<S>) type;
 
-		return allocation.getType().op(new LLVMStruct(
+		return allocation.getType().op(new LLVMStruct<S>(
 				this.code.opId(null),
 				CONSTANT_ALLOC_CLASS,
 				allocation,
@@ -419,15 +420,15 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends StructOp> O allocateStruct(
+	public <S extends StructOp<S>> S allocateStruct(
 			CodeId id,
-			DataAllocation<O> allocation) {
+			DataAllocation<S> allocation) {
 
-		final ContainerAllocation<O> type =
-			(ContainerAllocation<O>) allocation;
+		final ContainerAllocation<S> type =
+			(ContainerAllocation<S>) allocation;
 		final long nextPtr = nextPtr();
 
-		return type.getType().op(new LLVMStruct(
+		return type.getType().op(new LLVMStruct<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				type,
@@ -448,15 +449,15 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends StructOp> LLVMRecOp.Struct<O> allocatePtr(
+	public <S extends StructOp<S>> LLVMRecOp.Struct<S> allocatePtr(
 			CodeId id,
-			DataAllocation<O> allocation) {
+			DataAllocation<S> allocation) {
 
-		final ContainerAllocation<O> alloc =
-			(ContainerAllocation<O>) allocation;
+		final ContainerAllocation<S> alloc =
+			(ContainerAllocation<S>) allocation;
 		final long nextPtr = nextPtr();
 
-		return new LLVMRecOp.Struct<O>(
+		return new LLVMRecOp.Struct<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				alloc.getType(),
@@ -472,7 +473,8 @@ public abstract class LLVMCode implements CodeWriter {
 
 		if (op instanceof StructOp) {
 
-			final StructOp struct = (StructOp) op;
+			final StructOp<?> struct = (StructOp<?>) op;
+			@SuppressWarnings("rawtypes")
 			final LLVMStruct writer = llvm(struct);
 
 			return (O) struct.getType().op(writer.create(
@@ -494,10 +496,11 @@ public abstract class LLVMCode implements CodeWriter {
 
 		if (op1 instanceof StructOp) {
 
-			final StructOp struct1 = (StructOp) op1;
-			final StructOp struct2 = (StructOp) op2;
+			final StructOp<?> struct1 = (StructOp<?>) op1;
+			final StructOp<?> struct2 = (StructOp<?>) op2;
+			@SuppressWarnings("rawtypes")
 			final LLVMStruct writer1 = llvm(struct1);
-			final LLVMStruct writer2 = llvm(struct2);
+			final LLVMStruct<?> writer2 = llvm(struct2);
 
 			return (O) struct1.getType().op(writer1.create(
 					id,
@@ -585,7 +588,8 @@ public abstract class LLVMCode implements CodeWriter {
 			long nativePtr) {
 		if (sample instanceof StructOp) {
 
-			final StructOp struct = (StructOp) sample;
+			final StructOp<?> struct = (StructOp<?>) sample;
+			@SuppressWarnings("rawtypes")
 			final LLVMStruct writer = llvm(struct);
 
 			return (O) struct.getType().op(

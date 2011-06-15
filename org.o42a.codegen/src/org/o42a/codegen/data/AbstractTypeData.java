@@ -26,11 +26,11 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 
 
-abstract class AbstractTypeData<O extends StructOp> extends SubData<O> {
+abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 
 	private boolean scheduled;
 
-	AbstractTypeData(Generator generator, CodeId id, Type<O> instance) {
+	AbstractTypeData(Generator generator, CodeId id, Type<S> instance) {
 		super(generator, id, instance);
 	}
 
@@ -46,7 +46,7 @@ abstract class AbstractTypeData<O extends StructOp> extends SubData<O> {
 		}
 	}
 
-	protected abstract DataAllocation<O> beginTypeAllocation(
+	protected abstract DataAllocation<S> beginTypeAllocation(
 			DataAllocator allocator);
 
 	protected abstract void endTypeAllocation(DataAllocator allocator);

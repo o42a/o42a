@@ -70,7 +70,7 @@ public interface SignatureWriter<F extends Func<F>> {
 
 	void addData(Arg<DataOp> arg);
 
-	<S extends StructOp> void addPtr(Arg<S> arg, Type<S> type);
+	<S extends StructOp<S>> void addPtr(Arg<S> arg, Type<S> type);
 
 	<FF extends Func<FF>> void addFuncPtr(Arg<FF> arg, Signature<FF> signature);
 

@@ -320,11 +320,11 @@ public abstract class Return<O> {
 
 	}
 
-	static final class ReturnPtr<O extends StructOp> extends Return<O> {
+	static final class ReturnPtr<S extends StructOp<S>> extends Return<S> {
 
-		private final Type<O> type;
+		private final Type<S> type;
 
-		ReturnPtr(Signature<?> signature, Type<O> type) {
+		ReturnPtr(Signature<?> signature, Type<S> type) {
 			super(signature, DataType.DATA_PTR);
 			this.type = type;
 		}
@@ -340,7 +340,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		protected O call(
+		protected S call(
 				CodeId id,
 				Code code,
 				FuncCaller<?> caller,

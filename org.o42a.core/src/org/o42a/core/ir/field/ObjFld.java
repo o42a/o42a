@@ -155,9 +155,9 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				CtrOp.PROPAGATION);
 	}
 
-	public static final class Op extends RefFld.Op<ObjectConstructorFunc> {
+	public static final class Op extends RefFld.Op<Op, ObjectConstructorFunc> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -199,7 +199,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		public Op op(StructWriter writer) {
+		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

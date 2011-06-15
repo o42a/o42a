@@ -38,14 +38,16 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
 
-public class LLVMStruct extends LLVMPtrOp implements StructWriter {
+public class LLVMStruct<S extends StructOp<S>>
+		extends LLVMPtrOp
+		implements StructWriter<S> {
 
-	private ContainerAllocation<?> type;
+	private ContainerAllocation<S> type;
 
 	public LLVMStruct(
 			CodeId id,
 			AllocClass allocClass,
-			ContainerAllocation<?> type,
+			ContainerAllocation<S> type,
 			long blockPtr,
 			long nativePtr) {
 		super(id, allocClass, blockPtr, nativePtr);
@@ -55,20 +57,20 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	public LLVMStruct(
 			CodeId id,
 			AllocClass allocClass,
-			Type<?> type,
+			Type<S> type,
 			long blockPtr,
 			long nativePtr) {
 		this(
 				id,
 				allocClass,
-				(ContainerAllocation<?>) type.pointer(type.getGenerator())
+				(ContainerAllocation<S>) type.pointer(type.getGenerator())
 				.getAllocation(),
 				blockPtr,
 				nativePtr);
 	}
 
 	@Override
-	public Type<? extends StructOp> getType() {
+	public Type<S> getType() {
 		return this.type.getType();
 	}
 
@@ -181,14 +183,14 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public <P extends StructOp> LLVMRecOp.Struct<P> ptr(
+	public <SS extends StructOp<SS>> LLVMRecOp.Struct<SS> ptr(
 			CodeId id,
 			Code code,
-			StructRec<P> field) {
+			StructRec<SS> field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return new LLVMRecOp.Struct<P>(
+		return new LLVMRecOp.Struct<SS>(
 				id,
 				AUTO_ALLOC_CLASS,
 				field.getType(),
@@ -209,11 +211,14 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public <O extends StructOp> O struct(CodeId id, Code code, Type<O> field) {
+	public <SS extends StructOp<SS>> SS struct(
+			CodeId id,
+			Code code,
+			Type<SS> field) {
 
 		final long nextPtr = nextPtr(code);
 
-		return field.op(new LLVMStruct(
+		return field.op(new LLVMStruct<SS>(
 				id,
 				getAllocClass(),
 				field,
@@ -238,8 +243,8 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public LLVMStruct create(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMStruct(
+	public LLVMStruct<S> create(CodeId id, long blockPtr, long nativePtr) {
+		return new LLVMStruct<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				this.type,

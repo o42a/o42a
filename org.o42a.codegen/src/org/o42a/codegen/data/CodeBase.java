@@ -34,13 +34,13 @@ public abstract class CodeBase {
 		return data.getAllocation();
 	}
 
-	protected static <O extends StructOp> O allocate(
+	protected static <S extends StructOp<S>> S allocate(
 			Code code,
 			CodeId id,
-			Type<O> type) {
+			Type<S> type) {
 		assert code.assertIncomplete();
 
-		final O result = code.writer().allocateStruct(
+		final S result = code.writer().allocateStruct(
 				code.opId(id),
 				dataAllocation(type.data(code.getGenerator())));
 

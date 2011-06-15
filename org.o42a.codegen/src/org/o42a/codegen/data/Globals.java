@@ -92,16 +92,16 @@ public abstract class Globals {
 
 	protected abstract void addGlobal(SubData<?> global);
 
-	<O extends StructOp, T extends Type<O>> Global<O, T> addGlobal(
+	<S extends StructOp<S>, T extends Type<S>> Global<S, T> addGlobal(
 			GlobalSettings settings,
 			CodeId id,
 			T type,
 			T instance,
 			Content<T> content) {
 
-		final Global<O, T> global =
-			new Global<O, T>(settings, id, type, instance, content);
-		final SubData<O> data = global.getInstance().getTypeData();
+		final Global<S, T> global =
+			new Global<S, T>(settings, id, type, instance, content);
+		final SubData<S> data = global.getInstance().getTypeData();
 
 		data.allocateType(false);
 		this.globals.add(data);
@@ -109,15 +109,15 @@ public abstract class Globals {
 		return global;
 	}
 
-	<O extends StructOp, S extends Struct<O>> Global<O, S> addGlobal(
+	<S extends StructOp<S>, ST extends Struct<S>> Global<S, ST> addGlobal(
 			GlobalSettings settings,
-			S struct) {
+			ST struct) {
 
-		final Global<O, S> global = new Global<O, S>(settings, struct);
+		final Global<S, ST> global = new Global<S, ST>(settings, struct);
 
 		struct.setGlobal(global);
 
-		final SubData<O> data = global.getInstance().getTypeData();
+		final SubData<S> data = global.getInstance().getTypeData();
 
 		data.allocateType(false);
 

@@ -110,9 +110,9 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 			int index,
 			T item);
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -148,7 +148,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		}
 
 		@Override
-		public final Op op(StructWriter writer) {
+		public final Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

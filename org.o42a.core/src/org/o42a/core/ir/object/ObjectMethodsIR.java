@@ -51,7 +51,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 	}
 
 	@Override
-	public final Op op(StructWriter writer) {
+	public final Op op(StructWriter<Op> writer) {
 		return new Op(writer);
 	}
 
@@ -88,9 +88,9 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 				.data(getGenerator()).getPointer());
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 

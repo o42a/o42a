@@ -77,7 +77,7 @@ public final class ValType extends Type<ValType.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter writer) {
+	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
 	}
 
@@ -93,11 +93,11 @@ public final class ValType extends Type<ValType.Op> {
 		this.value = data.addInt64("value");
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
 		private boolean allocatedOnStack;
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -203,7 +203,7 @@ public final class ValType extends Type<ValType.Op> {
 		}
 
 		@Override
-		public void allocated(Code code, StructOp enclosing) {
+		public void allocated(Code code, StructOp<?> enclosing) {
 			this.allocatedOnStack = true;
 			super.allocated(code, enclosing);
 		}

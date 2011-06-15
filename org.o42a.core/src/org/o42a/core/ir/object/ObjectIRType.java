@@ -64,7 +64,7 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter writer) {
+	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
 	}
 
@@ -83,9 +83,9 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 		this.mainBodyLayout = data.addInt32("main_body_layout");
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 

@@ -34,7 +34,7 @@ public abstract class LclOp extends IROp implements HostOp {
 
 	private final FieldIR<?> fieldIR;
 
-	LclOp(LocalBuilder builder, FieldIR<?> fieldIR, Op ptr) {
+	LclOp(LocalBuilder builder, FieldIR<?> fieldIR, Op<?> ptr) {
 		super(builder, ptr);
 		this.fieldIR = fieldIR;
 	}
@@ -44,8 +44,8 @@ public abstract class LclOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public Op ptr() {
-		return (Op) super.ptr();
+	public Op<?> ptr() {
+		return (Op<?>) super.ptr();
 	}
 
 	@Override
@@ -69,23 +69,23 @@ public abstract class LclOp extends IROp implements HostOp {
 		return null;
 	}
 
-	public static abstract class Op extends StructOp {
+	public static abstract class Op<S extends Op<S>> extends StructOp<S> {
 
-		Op(StructWriter writer) {
+		Op(StructWriter<S> writer) {
 			super(writer);
 		}
 
 		@Override
-		public Type<?> getType() {
-			return (Type<?>) super.getType();
+		public Type<S> getType() {
+			return (Type<S>) super.getType();
 		}
 
 		public abstract LclOp op(LocalBuilder builder, FieldIR<?> fieldIR);
 
 	}
 
-	public static abstract class Type<O extends Op>
-			extends org.o42a.codegen.data.Type<O> {
+	public static abstract class Type<S extends Op<S>>
+			extends org.o42a.codegen.data.Type<S> {
 
 	}
 

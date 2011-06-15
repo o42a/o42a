@@ -72,7 +72,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 	}
 
 	@Override
@@ -134,12 +134,15 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 				toAny(nextPtr, castId.getId(), getNativePtr()));
 	}
 
-	public <O extends StructOp> O to(CodeId id, Code code, Type<O> type) {
+	public <SS extends StructOp<SS>> SS to(
+			CodeId id,
+			Code code,
+			Type<SS> type) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId castId = castId(id, code, type.getId());
 
-		return type.op(new LLVMStruct(
+		return type.op(new LLVMStruct<SS>(
 				castId,
 				getAllocClass(),
 				type,

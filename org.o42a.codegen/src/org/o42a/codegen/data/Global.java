@@ -24,7 +24,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public final class Global<O extends StructOp, T extends Type<O>> {
+public final class Global<S extends StructOp<S>, T extends Type<S>> {
 
 	private final GlobalSettings settings;
 	private final CodeId id;
@@ -42,7 +42,7 @@ public final class Global<O extends StructOp, T extends Type<O>> {
 	}
 
 	@SuppressWarnings("unchecked")
-	<S extends Struct<O>> Global(GlobalSettings settings, S struct) {
+	<ST extends Struct<S>> Global(GlobalSettings settings, ST struct) {
 		this.settings = settings;
 		this.id = struct.codeId(settings.getGenerator());
 		this.instance = (T) struct;
@@ -64,7 +64,7 @@ public final class Global<O extends StructOp, T extends Type<O>> {
 		return this.settings.isConstant();
 	}
 
-	public final Ptr<O> getPointer() {
+	public final Ptr<S> getPointer() {
 		return getInstance().pointer(getGenerator());
 	}
 

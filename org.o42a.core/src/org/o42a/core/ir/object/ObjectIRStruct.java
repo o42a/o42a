@@ -81,7 +81,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter writer) {
+	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
 	}
 
@@ -193,9 +193,9 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		return generator.id().detail("body").detail(ascendantIR.getId());
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		public Op(StructWriter writer) {
+		public Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 

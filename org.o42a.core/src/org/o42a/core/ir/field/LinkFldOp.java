@@ -23,7 +23,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ObjectRefFunc;
 
 
-public class LinkFldOp extends RefFldOp<ObjectRefFunc> {
+public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 
 	LinkFldOp(LinkFld fld, ObjOp host, LinkFld.Op ptr) {
 		super(fld, host, ptr);
@@ -32,11 +32,6 @@ public class LinkFldOp extends RefFldOp<ObjectRefFunc> {
 	@Override
 	public LinkFld fld() {
 		return (LinkFld) super.fld();
-	}
-
-	@Override
-	public LinkFld.Op ptr() {
-		return (LinkFld.Op) super.ptr();
 	}
 
 }

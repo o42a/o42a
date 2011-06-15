@@ -22,7 +22,7 @@ package org.o42a.core.ir.field;
 import org.o42a.core.ir.object.ObjOp;
 
 
-public class ObjFldOp extends RefFldOp<ObjectConstructorFunc> {
+public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 
 	ObjFldOp(ObjFld fld, ObjOp host, ObjFld.Op ptr) {
 		super(fld, host, ptr);
@@ -31,11 +31,6 @@ public class ObjFldOp extends RefFldOp<ObjectConstructorFunc> {
 	@Override
 	public ObjFld fld() {
 		return (ObjFld) super.fld();
-	}
-
-	@Override
-	public ObjFld.Op ptr() {
-		return (ObjFld.Op) super.ptr();
 	}
 
 }

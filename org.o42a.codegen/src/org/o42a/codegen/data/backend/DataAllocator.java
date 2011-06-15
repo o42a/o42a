@@ -37,16 +37,16 @@ public interface DataAllocator {
 			int start,
 			int end);
 
-	<O extends StructOp> DataAllocation<O> begin(Type<O> type);
+	<S extends StructOp<S>> DataAllocation<S> begin(Type<S> type);
 
-	<O extends StructOp> DataAllocation<O> begin(
-			DataAllocation<O> type,
-			Global<O, ?> global);
+	<S extends StructOp<S>> DataAllocation<S> begin(
+			DataAllocation<S> type,
+			Global<S, ?> global);
 
-	<O extends StructOp> DataAllocation<O> enter(
+	<S extends StructOp<S>> DataAllocation<S> enter(
 			DataAllocation<?> enclosing,
-			DataAllocation<O> type,
-			SubData<O> data);
+			DataAllocation<S> type,
+			SubData<S> data);
 
 	void exit(DataAllocation<?> enclosing, SubData<?> data);
 
@@ -91,7 +91,7 @@ public interface DataAllocator {
 			DataAllocation<?> enclosing,
 			DataAllocation<DataOp> type);
 
-	<S extends StructOp> DataAllocation<S> allocatePtr(
+	<S extends StructOp<S>> DataAllocation<S> allocatePtr(
 			DataAllocation<?> enclosing,
 			DataAllocation<S> type,
 			DataAllocation<S> struct);

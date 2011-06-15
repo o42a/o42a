@@ -57,7 +57,7 @@ public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
 	}
 
 	@Override
-	public void allocated(Code code, StructOp enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 	}
 
 	@Override

@@ -151,8 +151,11 @@ public final class LLVMFunction<F extends Func<F>>
 	}
 
 	@Override
-	public <O extends StructOp> O ptrArg(Code code, Arg<O> arg, Type<O> type) {
-		return type.op(new LLVMStruct(
+	public <S extends StructOp<S>> S ptrArg(
+			Code code,
+			Arg<S> arg,
+			Type<S> type) {
+		return type.op(new LLVMStruct<S>(
 				argId(arg),
 				AUTO_ALLOC_CLASS,
 				type,

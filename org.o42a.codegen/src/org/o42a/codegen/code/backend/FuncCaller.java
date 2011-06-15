@@ -51,10 +51,10 @@ public interface FuncCaller<F extends Func<F>> extends PtrOp {
 
 	DataOp callData(CodeId id, Code code, Op... args);
 
-	<O extends StructOp> O callPtr(
+	<S extends StructOp<S>> S callPtr(
 			CodeId id,
 			Code code,
-			Type<O> type,
+			Type<S> type,
 			Op... args);
 
 }

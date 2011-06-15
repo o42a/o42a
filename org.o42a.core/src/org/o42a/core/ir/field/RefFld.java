@@ -93,7 +93,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	protected abstract Type<?, C> getType();
 
 	@Override
-	public abstract RefFldOp<C> op(Code code, ObjOp host);
+	public abstract RefFldOp<?, C> op(Code code, ObjOp host);
 
 	protected void allocateMethods() {
 
@@ -146,7 +146,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Code code = dirs.code();
-		final RefFldOp<C> fld = op(code, builder.host());
+		final RefFldOp<?, C> fld = op(code, builder.host());
 
 		final ObjectOp result = construct(builder, dirs, fld);
 		final DataOp res = result.toData(code);
@@ -158,7 +158,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	protected ObjectOp construct(
 			ObjBuilder builder,
 			CodeDirs dirs,
-			RefFldOp<C> fld) {
+			RefFldOp<?, C> fld) {
 
 		final Artifact<?> artifact = getField().getArtifact();
 		final Obj object = artifact.toObject();
@@ -256,16 +256,17 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		return overriddenFld.constructor;
 	}
 
-	public static abstract class Op<C extends ObjectFunc<C>> extends Fld.Op {
+	public static abstract class Op<S extends Op<S, C>, C extends ObjectFunc<C>>
+			extends Fld.Op<S> {
 
-		Op(StructWriter writer) {
+		Op(StructWriter<S> writer) {
 			super(writer);
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public Type<?, C> getType() {
-			return (Type<?, C>) super.getType();
+		public Type<S, C> getType() {
+			return (Type<S, C>) super.getType();
 		}
 
 		public final DataRecOp object(Code code) {
@@ -313,8 +314,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 	}
 
-	public static abstract class Type<O extends Op<C>, C extends ObjectFunc<C>>
-			extends Fld.Type<O> {
+	public static abstract class Type<
+			S extends Op<S, C>,
+			C extends ObjectFunc<C>>
+					extends Fld.Type<S> {
 
 		private DataRec object;
 		private FuncRec<C> constructor;
@@ -331,7 +334,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		}
 
 		@Override
-		public void allocate(SubData<O> data) {
+		public void allocate(SubData<S> data) {
 			this.object = data.addDataPtr("object");
 			this.constructor = data.addFuncPtr(
 					"constructor",

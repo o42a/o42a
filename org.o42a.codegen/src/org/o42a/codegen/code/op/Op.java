@@ -27,6 +27,6 @@ public interface Op {
 
 	CodeId getId();
 
-	void allocated(Code code, StructOp enclosing);
+	void allocated(Code code, StructOp<?> enclosing);
 
 }
