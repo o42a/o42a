@@ -27,6 +27,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AllocClass;
@@ -34,7 +35,7 @@ import org.o42a.codegen.data.Type;
 
 
 public abstract class LLVMPtrOp<P extends PtrOp<P>>
-		implements LLVMOp, PtrOp<P> {
+		implements LLVMOp<P>, PtrOp<P> {
 
 	private final long blockPtr;
 	private final long nativePtr;
@@ -108,6 +109,23 @@ public abstract class LLVMPtrOp<P extends PtrOp<P>>
 						resultId.getId(),
 						getNativePtr(),
 						nativePtr(other)));
+	}
+
+	@Override
+	public P offset(CodeId id, Code code, IntOp<?> index) {
+
+		final long nextPtr = nextPtr(code);
+		final CodeId offsetId =
+			id != null ? id : getId().detail("offset_by").detail(index.getId());
+
+		return create(
+				offsetId,
+				nextPtr,
+				offset(
+						nextPtr,
+						offsetId.getId(),
+						getNativePtr(),
+						nativePtr(index)));
 	}
 
 	@Override
@@ -240,5 +258,11 @@ public abstract class LLVMPtrOp<P extends PtrOp<P>>
 			long blockPtr,
 			String id,
 			long pointerPtr);
+
+	private static native long offset(
+			long blockPtr,
+			String id,
+			long pointerPtr,
+			long indexPtr);
 
 }

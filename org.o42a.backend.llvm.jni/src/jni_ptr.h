@@ -103,6 +103,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castFuncTo
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_isNull
   (JNIEnv *, jclass, jlong, jstring, jlong);
 
+/*
+ * Class:     org_o42a_backend_llvm_code_op_LLVMPtrOp
+ * Method:    offset
+ * Signature: (JLjava/lang/String;JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_offset
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif

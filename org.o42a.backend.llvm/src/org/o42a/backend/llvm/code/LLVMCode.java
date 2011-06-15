@@ -45,14 +45,15 @@ public abstract class LLVMCode implements CodeWriter {
 		return (LLVMCode) writer;
 	}
 
-	public static final LLVMOp llvm(Op op) {
+	@SuppressWarnings("unchecked")
+	public static final <O extends Op> LLVMOp<O> llvm(O op) {
 		if (op instanceof StructOp) {
-			return llvm((StructOp<?>) op);
+			return (LLVMOp<O>) llvm((StructOp<?>) op);
 		}
 		if (op instanceof Func) {
-			return llvm((Func<?>) op);
+			return (LLVMOp<O>) llvm((Func<?>) op);
 		}
-		return (LLVMOp) op;
+		return (LLVMOp<O>) op;
 	}
 
 	public static final <S extends StructOp<S>> LLVMStruct<S> llvm(
@@ -465,59 +466,22 @@ public abstract class LLVMCode implements CodeWriter {
 				allocateStructPtr(nextPtr, id.getId(), alloc.getTypePtr()));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <O extends Op> O phi(CodeId id, O op) {
 
-		final long nextPtr = nextPtr();
+		final LLVMOp<O> o = llvm(op);
 
-		if (op instanceof StructOp) {
-
-			final StructOp<?> struct = (StructOp<?>) op;
-			@SuppressWarnings("rawtypes")
-			final LLVMStruct writer = llvm(struct);
-
-			return (O) struct.getType().op(writer.create(
-					id,
-					nextPtr,
-					writer.getNativePtr()));
-		}
-
-		final LLVMOp o = llvm(op);
-
-		return (O) o.create(id, nextPtr, o.getNativePtr());
+		return o.create(id, nextPtr(), o.getNativePtr());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <O extends Op> O phi(CodeId id, O op1, O op2) {
 
 		final long nextPtr = nextPtr();
+		final LLVMOp<O> o1 = llvm(op1);
+		final LLVMOp<O> o2 = llvm(op2);
 
-		if (op1 instanceof StructOp) {
-
-			final StructOp<?> struct1 = (StructOp<?>) op1;
-			final StructOp<?> struct2 = (StructOp<?>) op2;
-			@SuppressWarnings("rawtypes")
-			final LLVMStruct writer1 = llvm(struct1);
-			final LLVMStruct<?> writer2 = llvm(struct2);
-
-			return (O) struct1.getType().op(writer1.create(
-					id,
-					nextPtr,
-					phi2(
-							nextPtr,
-							id.getId(),
-							writer1.getBlockPtr(),
-							writer1.getNativePtr(),
-							writer2.getBlockPtr(),
-							writer2.getNativePtr())));
-		}
-
-		final LLVMOp o1 = llvm(op1);
-		final LLVMOp o2 = llvm(op2);
-
-		return (O) o1.create(
+		return o1.create(
 				id,
 				nextPtr,
 				phi2(
@@ -535,14 +499,21 @@ public abstract class LLVMCode implements CodeWriter {
 			O trueValue,
 			O falseValue) {
 
+		final LLVMOp<O> trueOp = llvm(trueValue);
+		final LLVMOp<O> falseOp = llvm(falseValue);
 		final long nextPtr = nextPtr();
+		final CodeId selectId =
+			id != null ? id : condition.getId().sub("select");
 
-		return create(trueValue, id, nextPtr, select(
+		return trueOp.create(
+				id,
 				nextPtr,
-				(id != null ? id : condition.getId().sub("select")).getId(),
-				condition.getNativePtr(),
-				nativePtr(trueValue),
-				nativePtr(falseValue)));
+				select(
+						nextPtr,
+						selectId.getId(),
+						condition.getNativePtr(),
+						trueOp.getNativePtr(),
+						falseOp.getNativePtr()));
 	}
 
 	@Override
@@ -551,7 +522,7 @@ public abstract class LLVMCode implements CodeWriter {
 		returnVoid(nextPtr());
 	}
 
-	public void returnValue(LLVMOp result) {
+	public void returnValue(LLVMOp<?> result) {
 		this.function.getCallback().beforeReturn(this.code);
 		returnValue(nextPtr(), result.getNativePtr());
 	}
@@ -578,25 +549,6 @@ public abstract class LLVMCode implements CodeWriter {
 	private long setNextPtr(final long nextPtr) {
 		this.tail = new LLVMCodePos.Tail(this, nextPtr);
 		return this.blockPtr = nextPtr;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <O extends Op> O create(
-			O sample,
-			CodeId id,
-			long blockPtr,
-			long nativePtr) {
-		if (sample instanceof StructOp) {
-
-			final StructOp<?> struct = (StructOp<?>) sample;
-			@SuppressWarnings("rawtypes")
-			final LLVMStruct writer = llvm(struct);
-
-			return (O) struct.getType().op(
-					writer.create(id, blockPtr, nativePtr));
-		}
-
-		return (O) llvm(sample).create(id, blockPtr, nativePtr);
 	}
 
 	static native long createBlock(long functionPtr, String name);

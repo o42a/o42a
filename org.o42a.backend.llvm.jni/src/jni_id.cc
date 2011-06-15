@@ -64,7 +64,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMId_expression(
 	ODEBUG_WITH_TYPE("trace", llvm::errs() << "\n");
 
 	Constant *result =
-			ConstantExpr::getGetElementPtr(global, indexList, len + 1);
+			ConstantExpr::getInBoundsGetElementPtr(global, indexList, len + 1);
 
 	ODUMP(result);
 

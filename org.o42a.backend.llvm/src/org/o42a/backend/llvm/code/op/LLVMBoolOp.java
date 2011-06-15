@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Op;
 
 
-public class LLVMBoolOp extends BoolOp implements LLVMOp {
+public class LLVMBoolOp extends BoolOp implements LLVMOp<BoolOp> {
 
 	private final CodeId id;
 	private final long blockPtr;

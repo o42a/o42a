@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public final class LLVMRelOp implements LLVMOp, RelOp {
+public final class LLVMRelOp implements LLVMOp<RelOp>, RelOp {
 
 	private final CodeId id;
 	private final long blockPtr;

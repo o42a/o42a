@@ -72,6 +72,11 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	@Override
+	public final F offset(CodeId id, Code code, IntOp<?> index) {
+		return this.caller.offset(id, code, index);
+	}
+
+	@Override
 	public final AnyOp toAny(CodeId id, Code code) {
 		return this.caller.toAny(id, code);
 	}

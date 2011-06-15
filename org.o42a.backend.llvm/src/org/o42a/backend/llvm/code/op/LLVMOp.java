@@ -23,12 +23,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
 
 
-public interface LLVMOp extends Op {
+public interface LLVMOp<O extends Op> extends Op {
 
 	long getBlockPtr();
 
 	long getNativePtr();
 
-	Op create(CodeId id, long blockPtr, long nativePtr);
+	O create(CodeId id, long blockPtr, long nativePtr);
 
 }
