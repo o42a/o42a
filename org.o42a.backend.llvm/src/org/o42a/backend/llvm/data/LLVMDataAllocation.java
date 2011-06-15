@@ -27,8 +27,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
 
 
-public abstract class LLVMDataAllocation<O extends PtrOp>
-		implements DataAllocation<O>, LLVMAllocation {
+public abstract class LLVMDataAllocation<P extends PtrOp<P>>
+		implements DataAllocation<P>, LLVMAllocation {
 
 	private final LLVMModule module;
 	private final ContainerAllocation<?> enclosing;

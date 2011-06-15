@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.RecOp;
 
 
 public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
-		extends LLVMNumOp< O, T>
+		extends LLVMNumOp<O, T>
 		implements IntOp<O> {
 
 	private final int bits;
@@ -184,7 +184,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 	}
 
 	@Override
-	public O atomicAdd(CodeId id, Code code, RecOp<O> to) {
+	public O atomicAdd(CodeId id, Code code, RecOp<?, O> to) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId =
@@ -221,7 +221,7 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 	}
 
 	@Override
-	public O atomicSub(CodeId id, Code code, RecOp<O> from) {
+	public O atomicSub(CodeId id, Code code, RecOp<?, O> from) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId =

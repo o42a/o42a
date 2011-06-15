@@ -30,10 +30,10 @@ import org.o42a.core.ir.CodeBuilder;
 
 public abstract class IROp {
 
-	final PtrOp ptr;
+	final PtrOp<?> ptr;
 	private final CodeBuilder builder;
 
-	public IROp(CodeBuilder builder, PtrOp ptr) {
+	public IROp(CodeBuilder builder, PtrOp<?> ptr) {
 		this.builder = builder;
 		this.ptr = ptr;
 	}
@@ -50,7 +50,7 @@ public abstract class IROp {
 		return this.builder;
 	}
 
-	public PtrOp ptr() {
+	public PtrOp<?> ptr() {
 		return this.ptr;
 	}
 

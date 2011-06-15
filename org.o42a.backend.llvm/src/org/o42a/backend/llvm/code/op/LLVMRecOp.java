@@ -31,9 +31,9 @@ import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class LLVMRecOp<O extends Op>
-		extends LLVMPtrOp
-		implements RecOp<O> {
+public abstract class LLVMRecOp<R extends RecOp<R, O>, O extends Op>
+		extends LLVMPtrOp<R>
+		implements RecOp<R, O> {
 
 	public LLVMRecOp(
 			CodeId id,
@@ -62,7 +62,9 @@ public abstract class LLVMRecOp<O extends Op>
 
 	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);
 
-	public static final class Any extends LLVMRecOp<AnyOp> implements AnyRecOp {
+	public static final class Any
+			extends LLVMRecOp<AnyRecOp, AnyOp>
+			implements AnyRecOp {
 
 		public Any(
 				CodeId id,
@@ -85,7 +87,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Data
-			extends LLVMRecOp<DataOp>
+			extends LLVMRecOp<DataRecOp, DataOp>
 			implements DataRecOp {
 
 		public Data(
@@ -116,7 +118,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Int8
-			extends LLVMRecOp<Int8op>
+			extends LLVMRecOp<Int8recOp, Int8op>
 			implements Int8recOp {
 
 		public Int8(
@@ -143,7 +145,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Int16
-			extends LLVMRecOp<Int16op>
+			extends LLVMRecOp<Int16recOp, Int16op>
 			implements Int16recOp {
 
 		public Int16(
@@ -170,7 +172,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Int32
-			extends LLVMRecOp<Int32op>
+			extends LLVMRecOp<Int32recOp, Int32op>
 			implements Int32recOp {
 
 		public Int32(
@@ -197,7 +199,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Int64
-			extends LLVMRecOp<Int64op>
+			extends LLVMRecOp<Int64recOp, Int64op>
 			implements Int64recOp {
 
 		public Int64(
@@ -224,7 +226,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Fp32
-			extends LLVMRecOp<Fp32op>
+			extends LLVMRecOp<Fp32recOp, Fp32op>
 			implements Fp32recOp {
 
 		public Fp32(
@@ -251,7 +253,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Fp64
-			extends LLVMRecOp<Fp64op>
+			extends LLVMRecOp<Fp64recOp, Fp64op>
 			implements Fp64recOp {
 
 		public Fp64(
@@ -278,7 +280,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Rel
-			extends LLVMRecOp<RelOp>
+			extends LLVMRecOp<RelRecOp, RelOp>
 			implements RelRecOp {
 
 		public Rel(
@@ -302,7 +304,7 @@ public abstract class LLVMRecOp<O extends Op>
 	}
 
 	public static final class Struct<S extends StructOp<S>>
-			extends LLVMRecOp<S>
+			extends LLVMRecOp<StructRecOp<S>, S>
 			implements StructRecOp<S> {
 
 		private final Type<S> type;

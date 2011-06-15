@@ -39,7 +39,7 @@ import org.o42a.codegen.data.*;
 
 
 public class LLVMStruct<S extends StructOp<S>>
-		extends LLVMPtrOp
+		extends LLVMPtrOp<S>
 		implements StructWriter<S> {
 
 	private ContainerAllocation<S> type;
@@ -75,7 +75,7 @@ public class LLVMStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public RecOp<?> field(CodeId id, Code code, Data<?> field) {
+	public RecOp<?, ?> field(CodeId id, Code code, Data<?> field) {
 
 		final long nextPtr = nextPtr(code);
 

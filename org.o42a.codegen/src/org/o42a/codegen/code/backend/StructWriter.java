@@ -26,11 +26,11 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public interface StructWriter<S extends StructOp<S>> extends PtrOp {
+public interface StructWriter<S extends StructOp<S>> extends PtrOp<S> {
 
 	Type<S> getType();
 
-	RecOp<?> field(CodeId id, Code code, Data<?> field);
+	RecOp<?, ?> field(CodeId id, Code code, Data<?> field);
 
 	Int8recOp int8(CodeId id, Code code, Int8rec field);
 

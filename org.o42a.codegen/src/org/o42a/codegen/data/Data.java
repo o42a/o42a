@@ -28,11 +28,11 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Data<O extends PtrOp> extends DataBase {
+public abstract class Data<P extends PtrOp<P>> extends DataBase {
 
 	private final Generator generator;
 	private final CodeId id;
-	private Ptr<O> pointer;
+	private Ptr<P> pointer;
 	private Data<?> next;
 
 	Data(Generator generator, CodeId id) {
@@ -62,7 +62,7 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 
 	public abstract DataType getDataType();
 
-	public final Ptr<O> getPointer() {
+	public final Ptr<P> getPointer() {
 		if (this.pointer != null) {
 			return this.pointer;
 		}
@@ -82,16 +82,16 @@ public abstract class Data<O extends PtrOp> extends DataBase {
 
 	protected abstract void write(DataWriter writer);
 
-	protected final DataAllocation<O> getAllocation() {
+	protected final DataAllocation<P> getAllocation() {
 		return getPointer().getAllocation();
 	}
 
-	protected void setAllocation(DataAllocation<O> allocation) {
+	protected void setAllocation(DataAllocation<P> allocation) {
 		getPointer().setAllocation(allocation);
 	}
 
-	Ptr<O> createPointer() {
-		return new Ptr<O>(this, isConstant());
+	Ptr<P> createPointer() {
+		return new Ptr<P>(this, isConstant());
 	}
 
 	final void allocateData() {

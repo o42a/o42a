@@ -26,7 +26,7 @@ import org.o42a.codegen.data.AllocClass;
 import org.o42a.util.ArrayUtil;
 
 
-public abstract class Func<F extends Func<F>> implements PtrOp {
+public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 
 	private final FuncCaller<F> caller;
 
@@ -67,7 +67,7 @@ public abstract class Func<F extends Func<F>> implements PtrOp {
 	}
 
 	@Override
-	public final BoolOp eq(CodeId id, Code code, PtrOp other) {
+	public final BoolOp eq(CodeId id, Code code, F other) {
 		return this.caller.eq(id, code, other);
 	}
 

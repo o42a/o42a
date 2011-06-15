@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.AllocClass;
 
 
-public final class LLVMDataOp extends LLVMPtrOp implements DataOp {
+public final class LLVMDataOp extends LLVMPtrOp<DataOp> implements DataOp {
 
 	public LLVMDataOp(
 			CodeId id,

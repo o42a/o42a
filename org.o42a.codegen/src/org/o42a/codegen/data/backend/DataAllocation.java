@@ -24,11 +24,11 @@ import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.DataLayout;
 
 
-public interface DataAllocation<O extends PtrOp> {
+public interface DataAllocation<P extends PtrOp<P>> {
 
 	void write(DataWriter writer);
 
@@ -36,7 +36,7 @@ public interface DataAllocation<O extends PtrOp> {
 
 	RelAllocation relativeTo(DataAllocation<?> allocation);
 
-	O op(CodeId id, AllocClass allocClass, CodeWriter writer);
+	P op(CodeId id, AllocClass allocClass, CodeWriter writer);
 
 	DataAllocation<AnyOp> toAny();
 

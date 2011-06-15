@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface Fp32recOp extends RecOp<Fp32op> {
+public interface Fp32recOp extends RecOp<Fp32recOp, Fp32op> {
 
 }

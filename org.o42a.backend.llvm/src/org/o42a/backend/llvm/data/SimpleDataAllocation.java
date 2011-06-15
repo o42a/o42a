@@ -30,8 +30,8 @@ import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
 
 
-abstract class SimpleDataAllocation<O extends PtrOp>
-		extends LLVMDataAllocation<O> {
+abstract class SimpleDataAllocation<P extends PtrOp<P>>
+		extends LLVMDataAllocation<P> {
 
 	private final LLVMId llvmId;
 
@@ -54,7 +54,7 @@ abstract class SimpleDataAllocation<O extends PtrOp>
 	}
 
 	@Override
-	public O op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public P op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 
 		final LLVMCode code = (LLVMCode) writer;
 
@@ -65,7 +65,7 @@ abstract class SimpleDataAllocation<O extends PtrOp>
 				llvmId().expression(code.getModule()));
 	}
 
-	protected abstract O op(
+	protected abstract P op(
 			CodeId id,
 			AllocClass allocClass,
 			long blockPtr,

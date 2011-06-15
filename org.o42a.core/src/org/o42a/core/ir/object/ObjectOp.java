@@ -57,13 +57,13 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	private final ObjectPrecision precision;
 	private final ObjectTypeOp objectType;
 
-	ObjectOp(CodeBuilder builder, PtrOp ptr, ObjectPrecision precision) {
+	ObjectOp(CodeBuilder builder, PtrOp<?> ptr, ObjectPrecision precision) {
 		super(builder, ptr);
 		this.precision = precision;
 		this.objectType = null;
 	}
 
-	ObjectOp(PtrOp ptr, ObjectTypeOp objectType) {
+	ObjectOp(PtrOp<?> ptr, ObjectTypeOp objectType) {
 		super(objectType.getBuilder(), ptr);
 		this.objectType = objectType;
 		this.precision = objectType.getPrecision();
