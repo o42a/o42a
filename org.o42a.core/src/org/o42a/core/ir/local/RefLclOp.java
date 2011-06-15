@@ -131,9 +131,9 @@ public final class RefLclOp extends LclOp {
 		newObject.writeLogicalValue(dirs);
 	}
 
-	public static final class Op extends LclOp.Op {
+	public static final class Op extends LclOp.Op<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -165,7 +165,7 @@ public final class RefLclOp extends LclOp {
 		}
 
 		@Override
-		public Op op(StructWriter writer) {
+		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

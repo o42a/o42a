@@ -34,25 +34,25 @@ public interface DataWriter {
 
 	DataAllocation<DataOp> nullDataPtr();
 
-	<O extends StructOp> DataAllocation<O> nullPtr(Type<O> type);
+	<S extends StructOp<S>> DataAllocation<S> nullPtr(Type<S> type);
 
 	<F extends Func<F>> FuncAllocation<F> nullPtr(Signature<F> signature);
 
-	<O extends StructOp> void begin(
-			DataAllocation<O> allocation,
-			Global<O, ?> global);
+	<S extends StructOp<S>> void begin(
+			DataAllocation<S> allocation,
+			Global<S, ?> global);
 
-	<O extends StructOp> void enter(
-			DataAllocation<O> allocation,
-			SubData<O> data);
+	<S extends StructOp<S>> void enter(
+			DataAllocation<S> allocation,
+			SubData<S> data);
 
-	<O extends StructOp> void exit(
-			DataAllocation<O> allocation,
-			SubData<O> data);
+	<S extends StructOp<S>> void exit(
+			DataAllocation<S> allocation,
+			SubData<S> data);
 
-	<O extends StructOp> void end(
-			DataAllocation<O> allocation,
-			Global<O, ?> global);
+	<S extends StructOp<S>> void end(
+			DataAllocation<S> allocation,
+			Global<S, ?> global);
 
 	void writeInt8(DataAllocation<Int8recOp> allocation, byte value);
 

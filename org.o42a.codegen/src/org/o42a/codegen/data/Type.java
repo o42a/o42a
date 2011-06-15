@@ -32,7 +32,7 @@ import org.o42a.codegen.debug.DebugHeader;
 import org.o42a.codegen.debug.TypeDebugBase;
 
 
-public abstract class Type<S extends StructOp>
+public abstract class Type<S extends StructOp<S>>
 		extends TypeDebugBase
 		implements Cloneable {
 
@@ -117,7 +117,7 @@ public abstract class Type<S extends StructOp>
 		return data(generator, true).getLayout();
 	}
 
-	public abstract S op(StructWriter writer);
+	public abstract S op(StructWriter<S> writer);
 
 	public Iterable<Data<?>> iterate(Generator generator) {
 		ensureTypeAllocated(generator, true);
@@ -184,7 +184,7 @@ public abstract class Type<S extends StructOp>
 			SubData<?> enclosing,
 			CodeId id,
 			I instance,
-			Content<?> content) {
+			Content<I> content) {
 		ensureTypeAllocated(enclosing.getGenerator(), true);
 		if (instance == null) {
 			instance = (I) clone();
@@ -202,7 +202,7 @@ public abstract class Type<S extends StructOp>
 	final <I extends Type<S>> I instantiate(
 			Global<S, ?> global,
 			I instance,
-			Content<?> content) {
+			Content<I> content) {
 		ensureTypeAllocated(global.getGenerator(), true);
 		if (instance == null) {
 			instance = (I) clone();

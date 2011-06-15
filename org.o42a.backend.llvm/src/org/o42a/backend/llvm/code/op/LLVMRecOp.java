@@ -301,7 +301,7 @@ public abstract class LLVMRecOp<O extends Op>
 
 	}
 
-	public static final class Struct<S extends StructOp>
+	public static final class Struct<S extends StructOp<S>>
 			extends LLVMRecOp<S>
 			implements StructRecOp<S> {
 
@@ -329,7 +329,7 @@ public abstract class LLVMRecOp<O extends Op>
 
 		@Override
 		protected S createLoaded(CodeId id, long blockPtr, long nativePtr) {
-			return this.type.op(new LLVMStruct(
+			return this.type.op(new LLVMStruct<S>(
 					id,
 					AUTO_ALLOC_CLASS,
 					this.type,

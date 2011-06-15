@@ -26,10 +26,10 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class TypeData<O extends StructOp>
-		extends AbstractTypeData<O> {
+final class TypeData<S extends StructOp<S>>
+		extends AbstractTypeData<S> {
 
-	TypeData(Generator generator, Type<O> type) {
+	TypeData(Generator generator, Type<S> type) {
 		super(generator, type.codeId(generator).removeLocal(), type);
 	}
 
@@ -49,7 +49,7 @@ final class TypeData<O extends StructOp>
 	}
 
 	@Override
-	protected DataAllocation<O> beginTypeAllocation(
+	protected DataAllocation<S> beginTypeAllocation(
 			DataAllocator allocator) {
 		return allocator.begin(getInstance());
 	}

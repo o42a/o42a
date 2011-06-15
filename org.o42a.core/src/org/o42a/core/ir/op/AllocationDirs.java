@@ -61,11 +61,11 @@ public class AllocationDirs {
 		return this.code.allocateNull(id);
 	}
 
-	public final <O extends StructOp> O allocate(CodeId id, Type<O> type) {
+	public final <S extends StructOp<S>> S allocate(CodeId id, Type<S> type) {
 		return this.code.allocate(id, type);
 	}
 
-	public final <S extends StructOp> StructRecOp<S> allocatePtr(
+	public final <S extends StructOp<S>> StructRecOp<S> allocatePtr(
 			CodeId id,
 			Type<S> type) {
 		return this.code.allocatePtr(id, type);

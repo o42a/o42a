@@ -25,8 +25,8 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class TypeInstanceData<O extends StructOp>
-		extends AbstractInstanceData<O> {
+final class TypeInstanceData<S extends StructOp<S>>
+		extends AbstractInstanceData<S> {
 
 	private final Global<?, ?> global;
 	private final Type<?> enclosing;
@@ -34,8 +34,8 @@ final class TypeInstanceData<O extends StructOp>
 	TypeInstanceData(
 			SubData<?> enclosing,
 			CodeId id,
-			Type<O> instance,
-			Content<?> content) {
+			Type<S> instance,
+			Content<? extends Type<S>> content) {
 		super(enclosing.getGenerator(), id, instance, content);
 		this.global = enclosing.getGlobal();
 		this.enclosing = enclosing.getInstance();

@@ -71,9 +71,9 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		return LINK_FLD;
 	}
 
-	public static final class Op extends RefFld.Op<ObjectRefFunc> {
+	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -98,7 +98,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		public Op op(StructWriter writer) {
+		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

@@ -33,14 +33,14 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 
 
-public class DebugEnvOp extends StructOp {
+public class DebugEnvOp extends StructOp<DebugEnvOp> {
 
 	public static final Type DEBUG_ENV_TYPE = new Type();
 
 	public static int DEBUG_CMD_EXEC = 0;
 	public static int DEBUG_CMD_REPORT = 1;
 
-	private DebugEnvOp(StructWriter writer) {
+	private DebugEnvOp(StructWriter<DebugEnvOp> writer) {
 		super(writer);
 	}
 
@@ -89,7 +89,7 @@ public class DebugEnvOp extends StructOp {
 		}
 
 		@Override
-		public DebugEnvOp op(StructWriter writer) {
+		public DebugEnvOp op(StructWriter<DebugEnvOp> writer) {
 			return new DebugEnvOp(writer);
 		}
 

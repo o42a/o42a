@@ -26,12 +26,12 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class StructData<O extends StructOp> extends AbstractTypeData<O> {
+final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 
 	private final Global<?, ?> global;
 	private final Type<?> enclosing;
 
-	StructData(SubData<?> enclosing, Struct<O> instance, CodeId name) {
+	StructData(SubData<?> enclosing, Struct<S> instance, CodeId name) {
 		super(enclosing.getGenerator(), name, instance);
 		this.global = enclosing.getGlobal();
 		this.enclosing = enclosing.getInstance();
@@ -53,7 +53,7 @@ final class StructData<O extends StructOp> extends AbstractTypeData<O> {
 	}
 
 	@Override
-	protected DataAllocation<O> beginTypeAllocation(DataAllocator allocator) {
+	protected DataAllocation<S> beginTypeAllocation(DataAllocator allocator) {
 		return allocator.enter(
 				getEnclosing().getAllocation(),
 				getInstance().getAllocation(),
@@ -68,7 +68,7 @@ final class StructData<O extends StructOp> extends AbstractTypeData<O> {
 	@Override
 	protected void write(DataWriter writer) {
 		writer.enter(getPointer().getAllocation(), this);
-		((Struct<O>) getInstance()).fill();
+		((Struct<S>) getInstance()).fill();
 		writeIncluded(writer);
 		writer.exit(getPointer().getAllocation(), this);
 	}

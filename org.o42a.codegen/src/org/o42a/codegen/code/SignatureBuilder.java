@@ -84,9 +84,9 @@ public final class SignatureBuilder {
 		return ret(new Return.ReturnData(this.signature));
 	}
 
-	public final <O extends StructOp> Return<O> returnPtr(Type<O> type) {
+	public final <S extends StructOp<S>> Return<S> returnPtr(Type<S> type) {
 		this.writer.returnPtr(type);
-		return new Return.ReturnPtr<O>(this.signature, type);
+		return new Return.ReturnPtr<S>(this.signature, type);
 	}
 
 	public final Arg<Int8op> addInt8(String name) {
@@ -129,11 +129,11 @@ public final class SignatureBuilder {
 		return arg(new Arg.DataArg(this.signature, argIndex(), name));
 	}
 
-	public final <O extends StructOp> Arg<O> addPtr(
+	public final <S extends StructOp<S>> Arg<S> addPtr(
 			String name,
-			Type<O> type) {
+			Type<S> type) {
 		type.pointer(this.signature.getGenerator());
-		return arg(new Arg.PtrArg<O>(this.signature, argIndex(), name, type));
+		return arg(new Arg.PtrArg<S>(this.signature, argIndex(), name, type));
 	}
 
 	public final <F extends Func<F>> Arg<F> addFuncPtr(

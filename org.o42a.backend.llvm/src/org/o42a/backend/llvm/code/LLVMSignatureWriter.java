@@ -150,7 +150,7 @@ final class LLVMSignatureWriter<F extends Func<F>>
 	}
 
 	@Override
-	public <O extends StructOp> void addPtr(Arg<O> arg, Type<O> type) {
+	public <S extends StructOp<S>> void addPtr(Arg<S> arg, Type<S> type) {
 		addParam(arg, this.module.pointerTo(type));
 	}
 

@@ -156,7 +156,7 @@ public abstract class Code extends DebugCodeBase {
 		return writer().nullDataPtr();
 	}
 
-	public final <S extends StructOp> S nullPtr(Type<S> type) {
+	public final <S extends StructOp<S>> S nullPtr(Type<S> type) {
 		assert assertIncomplete();
 		return writer().nullPtr(type.pointer(getGenerator()).getAllocation());
 	}

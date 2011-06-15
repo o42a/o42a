@@ -315,15 +315,15 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	static final class PtrArg<O extends StructOp> extends Arg<O> {
+	static final class PtrArg<S extends StructOp<S>> extends Arg<S> {
 
-		private final Type<O> type;
+		private final Type<S> type;
 
 		PtrArg(
 				Signature<?> signature,
 				int index,
 				String name,
-				Type<O> type) {
+				Type<S> type) {
 			super(signature, index, name, DataType.DATA_PTR);
 			this.type = type;
 		}
@@ -339,7 +339,7 @@ public abstract class Arg<O extends Op> {
 				return false;
 			}
 
-			final StructOp struct = (StructOp) op;
+			final StructOp<?> struct = (StructOp<?>) op;
 
 			return struct.getType().getType() == this.type.getType();
 		}
@@ -350,7 +350,7 @@ public abstract class Arg<O extends Op> {
 		}
 
 		@Override
-		protected O get(Code code, FuncWriter<?> writer) {
+		protected S get(Code code, FuncWriter<?> writer) {
 			return writer.ptrArg(code, this, this.type);
 		}
 

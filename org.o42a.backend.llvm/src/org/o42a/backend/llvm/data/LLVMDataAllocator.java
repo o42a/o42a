@@ -75,8 +75,8 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <O extends StructOp> DataAllocation<O> begin(Type<O> type) {
-		return new TypeAllocation<O>(
+	public <S extends StructOp<S>> DataAllocation<S> begin(Type<S> type) {
+		return new TypeAllocation<S>(
 				getModule(),
 				createType(getModulePtr()),
 				createTypeData(getModulePtr()),
@@ -84,9 +84,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <O extends StructOp> DataAllocation<O> begin(
-			DataAllocation<O> type,
-			Global<O, ?> global) {
+	public <S extends StructOp<S>> DataAllocation<S> begin(
+			DataAllocation<S> type,
+			Global<S, ?> global) {
 
 		final long typePtr;
 		final long typeDataPtr;
@@ -99,7 +99,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			typeDataPtr = createTypeData(getModulePtr());
 		}
 
-		return new ContainerAllocation.Global<O>(
+		return new ContainerAllocation.Global<S>(
 				getModule(),
 				typePtr,
 				typeDataPtr,
@@ -108,10 +108,10 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <O extends StructOp> DataAllocation<O> enter(
+	public <S extends StructOp<S>> DataAllocation<S> enter(
 			DataAllocation<?> enclosing,
-			DataAllocation<O> type,
-			SubData<O> data) {
+			DataAllocation<S> type,
+			SubData<S> data) {
 
 		final long typePtr;
 		final long typeDataPtr;
@@ -124,7 +124,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			typeDataPtr = createTypeData(getModulePtr());
 		}
 
-		return new ContainerAllocation.Struct<O>(
+		return new ContainerAllocation.Struct<S>(
 				typePtr,
 				typeDataPtr,
 				container(enclosing),
@@ -295,13 +295,13 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <P extends StructOp> DataAllocation<P> allocatePtr(
+	public <S extends StructOp<S>> DataAllocation<S> allocatePtr(
 			DataAllocation<?> enclosing,
-			DataAllocation<P> type,
-			DataAllocation<P> struct) {
+			DataAllocation<S> type,
+			DataAllocation<S> struct) {
 
-		final ContainerAllocation<P> llvmStruct =
-			(ContainerAllocation<P>) struct;
+		final ContainerAllocation<S> llvmStruct =
+			(ContainerAllocation<S>) struct;
 
 		if (allocate(enclosing)) {
 			allocateStructPtr(
@@ -309,7 +309,7 @@ public class LLVMDataAllocator implements DataAllocator {
 					llvmStruct.getTypePtr());
 		}
 
-		return new SimpleDataAllocation.StructPtr<P>(
+		return new SimpleDataAllocation.StructPtr<S>(
 				container(enclosing),
 				llvmStruct.getType());
 	}

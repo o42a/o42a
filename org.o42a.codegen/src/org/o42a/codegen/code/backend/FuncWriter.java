@@ -48,7 +48,7 @@ public interface FuncWriter<F extends Func<F>> extends CodeWriter {
 
 	DataOp dataArg(Code code, Arg<DataOp> arg);
 
-	<O extends StructOp> O ptrArg(Code code, Arg<O> arg, Type<O> type);
+	<S extends StructOp<S>> S ptrArg(Code code, Arg<S> arg, Type<S> type);
 
 	<FF extends Func<FF>> FF funcPtrArg(
 			Code code,

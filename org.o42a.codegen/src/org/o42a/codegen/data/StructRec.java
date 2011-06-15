@@ -25,15 +25,15 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class StructRec<O extends StructOp> extends PtrRec<O> {
+public final class StructRec<S extends StructOp<S>> extends PtrRec<S> {
 
-	private final Type<O> type;
+	private final Type<S> type;
 
 	StructRec(
 			SubData<?> enclosing,
 			CodeId id,
-			Type<O> type,
-			Content<StructRec<O>> content) {
+			Type<S> type,
+			Content<StructRec<S>> content) {
 		super(enclosing, id, content);
 		this.type = type;
 	}
@@ -43,13 +43,13 @@ public final class StructRec<O extends StructOp> extends PtrRec<O> {
 		return DataType.DATA_PTR;
 	}
 
-	public final Type<O> getType() {
+	public final Type<S> getType() {
 		return this.type;
 	}
 
 	@Override
 	public void setNull() {
-		setValue(new Ptr<O>(
+		setValue(new Ptr<S>(
 				getType().getId().detail("null"),
 				getGenerator().getGlobals().dataWriter().nullPtr(getType()),
 				true));

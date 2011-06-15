@@ -82,9 +82,9 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -110,7 +110,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		@Override
-		public void allocated(Code code, StructOp enclosing) {
+		public void allocated(Code code, StructOp<?> enclosing) {
 
 			final Generator generator = code.getGenerator();
 			final Debug debug = generator.getDebug();
@@ -184,7 +184,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		@Override
-		public Op op(StructWriter writer) {
+		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

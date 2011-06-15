@@ -51,6 +51,6 @@ public interface AnyOp extends PtrOp {
 			Code code,
 			Signature<F> signature);
 
-	<S extends StructOp> S to(CodeId id, Code code, Type<S> type);
+	<S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type);
 
 }

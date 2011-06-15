@@ -28,8 +28,8 @@ import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
 
 
-public final class TypeAllocation<O extends StructOp>
-		extends ContainerAllocation<O> {
+public final class TypeAllocation<S extends StructOp<S>>
+		extends ContainerAllocation<S> {
 
 	private final LLVMId llvmId;
 
@@ -37,7 +37,7 @@ public final class TypeAllocation<O extends StructOp>
 			LLVMModule module,
 			long typePtr,
 			long typeDataPtr,
-			Type<O> type) {
+			Type<S> type) {
 		super(module, typePtr, typeDataPtr, null, type);
 		this.llvmId = typeId(this);
 	}
@@ -48,7 +48,7 @@ public final class TypeAllocation<O extends StructOp>
 	}
 
 	@Override
-	public O op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 		throw new UnsupportedOperationException();
 	}
 

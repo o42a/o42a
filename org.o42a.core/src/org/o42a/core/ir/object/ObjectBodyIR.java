@@ -160,7 +160,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter writer) {
+	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
 	}
 
@@ -296,9 +296,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -327,7 +327,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return int32(null, code, getType().flags());
 		}
 
-		public final <O extends Fld.Op> O field(
+		public final <O extends Fld.Op<O>> O field(
 				Code code,
 				Fld.Type<O> instance) {
 			return struct(null, code, instance);

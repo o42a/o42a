@@ -53,7 +53,7 @@ public abstract class Func<F extends Func<F>> implements PtrOp {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 	}
 
 	@Override

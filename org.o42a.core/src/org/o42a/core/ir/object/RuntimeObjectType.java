@@ -52,7 +52,7 @@ public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter writer) {
+	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
 	}
 
@@ -69,9 +69,9 @@ public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 		this.sample = data.addPtr("sample", OBJECT_TYPE);
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 

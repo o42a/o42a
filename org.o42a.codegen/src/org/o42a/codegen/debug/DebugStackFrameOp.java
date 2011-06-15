@@ -27,12 +27,12 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public final class DebugStackFrameOp extends StructOp {
+public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 
 	public static final DebugStackFrameType DEBUG_STACK_FRAME_TYPE =
 		new DebugStackFrameType();
 
-	private DebugStackFrameOp(StructWriter writer) {
+	private DebugStackFrameOp(StructWriter<DebugStackFrameOp> writer) {
 		super(writer);
 	}
 
@@ -99,7 +99,7 @@ public final class DebugStackFrameOp extends StructOp {
 		}
 
 		@Override
-		public DebugStackFrameOp op(StructWriter writer) {
+		public DebugStackFrameOp op(StructWriter<DebugStackFrameOp> writer) {
 			return new DebugStackFrameOp(writer);
 		}
 

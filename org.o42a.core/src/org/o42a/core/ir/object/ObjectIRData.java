@@ -125,8 +125,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	}
 
 	@Override
-	public ObjectIRData.Op op(StructWriter writer) {
-		return new ObjectIRData.Op(writer);
+	public Op op(StructWriter<Op> writer) {
+		return new Op(writer);
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	}
 
 	@Override
-	protected void allocate(SubData<ObjectIRData.Op> data) {
+	protected void allocate(SubData<Op> data) {
 
 		final Generator generator = data.getGenerator();
 
@@ -155,9 +155,9 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.samples = new Samples().allocate(data, "samples");
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 

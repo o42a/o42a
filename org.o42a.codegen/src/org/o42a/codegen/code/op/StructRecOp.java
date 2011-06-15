@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface StructRecOp<S extends StructOp> extends RecOp<S> {
+public interface StructRecOp<S extends StructOp<S>> extends RecOp<S> {
 
 }

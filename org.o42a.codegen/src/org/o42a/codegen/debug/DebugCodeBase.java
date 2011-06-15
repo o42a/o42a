@@ -173,7 +173,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		printFunc.call(code, binaryMessage(" */\n").op(null, code));
 	}
 
-	public final void dumpName(String prefix, StructOp data) {
+	public final void dumpName(String prefix, StructOp<?> data) {
 		assert assertIncomplete();
 		if (isDebug()) {
 			dumpName(prefix, data.toData(null, code()));
@@ -216,11 +216,11 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				func.toAny(null, code()));
 	}
 
-	public final void dump(String message, StructOp data) {
+	public final void dump(String message, StructOp<?> data) {
 		dump(message, data, Integer.MAX_VALUE);
 	}
 
-	public final void dump(String message, StructOp data, int depth) {
+	public final void dump(String message, StructOp<?> data, int depth) {
 		assert assertIncomplete();
 		if (isDebug()) {
 			dump(message, data.toData(null, code()), depth);

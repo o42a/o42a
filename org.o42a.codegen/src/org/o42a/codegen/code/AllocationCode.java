@@ -89,11 +89,11 @@ public final class AllocationCode extends Code {
 		return result;
 	}
 
-	public <S extends StructOp> S allocate(CodeId id, Type<S> type) {
+	public <S extends StructOp<S>> S allocate(CodeId id, Type<S> type) {
 		return allocate(this, id, type);
 	}
 
-	public <S extends StructOp> StructRecOp<S> allocatePtr(
+	public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
 			CodeId id,
 			Type<S> type) {
 		assert assertIncomplete();

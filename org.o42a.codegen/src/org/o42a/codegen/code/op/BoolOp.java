@@ -30,7 +30,7 @@ import org.o42a.codegen.code.CondCode;
 public abstract class BoolOp implements Op {
 
 	@Override
-	public void allocated(Code code, StructOp enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 	}
 
 	public abstract <O extends Op> O select(

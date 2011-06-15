@@ -31,15 +31,15 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class SubData<O extends StructOp>
-		extends Data<O>
+public abstract class SubData<S extends StructOp<S>>
+		extends Data<S>
 		implements Iterable<Data<?>> {
 
-	private final Type<O> instance;
+	private final Type<S> instance;
 	private final DataChain data = new DataChain();
 	private int size;
 
-	SubData(Generator generator, CodeId id, Type<O> instance) {
+	SubData(Generator generator, CodeId id, Type<S> instance) {
 		super(generator, id);
 		this.instance = instance;
 	}
@@ -50,7 +50,7 @@ public abstract class SubData<O extends StructOp>
 	}
 
 	@Override
-	public final Type<O> getInstance() {
+	public final Type<S> getInstance() {
 		return this.instance;
 	}
 
@@ -139,17 +139,17 @@ public abstract class SubData<O extends StructOp>
 		return add(new DataRec(this, id(name), content));
 	}
 
-	public final <P extends StructOp> StructRec<P> addPtr(
+	public final <SS extends StructOp<SS>> StructRec<SS> addPtr(
 			String name,
-			Type<P> type) {
-		return add(new StructRec<P>(this, id(name), type, null));
+			Type<SS> type) {
+		return add(new StructRec<SS>(this, id(name), type, null));
 	}
 
-	public final <P extends StructOp> StructRec<P> addPtr(
+	public final <SS extends StructOp<SS>> StructRec<SS> addPtr(
 			String name,
-			Type<P> type,
-			Content<StructRec<P>> content) {
-		return add(new StructRec<P>(
+			Type<SS> type,
+			Content<StructRec<SS>> content) {
+		return add(new StructRec<SS>(
 				this,
 				id(name),
 				type,
@@ -164,27 +164,27 @@ public abstract class SubData<O extends StructOp>
 		return add(new RelPtrRec(this, id(name), content));
 	}
 
-	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
+	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
 			CodeId name,
 			T type) {
 		return addInstance(name, type, null, null);
 	}
 
-	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
+	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
 			CodeId name,
 			T type,
 			Content<T> content) {
 		return addInstance(name, type, null, content);
 	}
 
-	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
+	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
 			CodeId name,
 			T type,
 			T instance) {
 		return addInstance(name, type, instance, null);
 	}
 
-	public final <OP extends StructOp, T extends Type<OP>> T addInstance(
+	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
 			CodeId name,
 			T type,
 			T instance,
@@ -198,7 +198,7 @@ public abstract class SubData<O extends StructOp>
 		return instance;
 	}
 
-	public final <OP extends StructOp, T extends Struct<OP>> T addStruct(
+	public final <SS extends StructOp<SS>, T extends Struct<SS>> T addStruct(
 			CodeId name,
 			T type,
 			T instance) {
@@ -208,7 +208,7 @@ public abstract class SubData<O extends StructOp>
 		return addInstance(name, type, instance, content);
 	}
 
-	public final <S extends Struct<?>> S addStruct(CodeId name, S struct) {
+	public final <SS extends Struct<?>> SS addStruct(CodeId name, SS struct) {
 		struct.setStruct(this, name);
 		add(struct.getTypeData());
 		return struct;

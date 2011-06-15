@@ -60,14 +60,14 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <O extends StructOp> DataAllocation<O> nullPtr(Type<O> type) {
+	public <S extends StructOp<S>> DataAllocation<S> nullPtr(Type<S> type) {
 
-		final ContainerAllocation<O> typeAlloc =
-			(ContainerAllocation<O>) type.pointer(type.getGenerator())
+		final ContainerAllocation<S> typeAlloc =
+			(ContainerAllocation<S>) type.pointer(type.getGenerator())
 			.getAllocation();
 		final long nativePtr = nullStructPtr(typeAlloc.getTypePtr());
 
-		return new ContainerAllocation.Null<O>(
+		return new ContainerAllocation.Null<S>(
 				getModule(),
 				nativePtr,
 				type);
@@ -83,37 +83,37 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <O extends StructOp> void begin(
-			DataAllocation<O> allocation,
-			Global<O, ?> global) {
+	public <S extends StructOp<S>> void begin(
+			DataAllocation<S> allocation,
+			Global<S, ?> global) {
 		push(createStruct(global.getInstance().size(global.getGenerator())));
 	}
 
 	@Override
-	public <O extends StructOp> void enter(
-			DataAllocation<O> allocation,
-			SubData<O> data) {
+	public <S extends StructOp<S>> void enter(
+			DataAllocation<S> allocation,
+			SubData<S> data) {
 		push(createStruct(data.size()));
 	}
 
 	@Override
-	public <O extends StructOp> void exit(
-			DataAllocation<O> allocation,
-			SubData<O> data) {
+	public <S extends StructOp<S>> void exit(
+			DataAllocation<S> allocation,
+			SubData<S> data) {
 
-		ContainerAllocation<O> alloc = (ContainerAllocation<O>) allocation;
+		ContainerAllocation<S> alloc = (ContainerAllocation<S>) allocation;
 		final long dataPtr = pull().getNativePtr();
 
 		writeStruct(getStructPtr(), alloc.getTypePtr(), dataPtr);
 	}
 
 	@Override
-	public <O extends StructOp> void end(
-			DataAllocation<O> allocation,
-			Global<O, ?> global) {
+	public <S extends StructOp<S>> void end(
+			DataAllocation<S> allocation,
+			Global<S, ?> global) {
 
-		ContainerAllocation.Global<O> alloc =
-			(ContainerAllocation.Global<O>) allocation;
+		ContainerAllocation.Global<S> alloc =
+			(ContainerAllocation.Global<S>) allocation;
 		final long dataPtr = pull().getNativePtr();
 
 		writeGlobal(alloc.getNativePtr(), dataPtr);

@@ -44,7 +44,8 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 				null,
 				code,
 				OBJECT_CONSTRUCTOR.result(),
-				object.toData(code), fld);
+				object.toData(code),
+				fld);
 	}
 
 	public static final class ObjectConstructor

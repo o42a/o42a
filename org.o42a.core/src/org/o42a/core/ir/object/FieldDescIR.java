@@ -77,9 +77,9 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		return this.fld.toString();
 	}
 
-	public static final class Op extends StructOp {
+	public static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
@@ -103,7 +103,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	}
 
 	public static final class Type
-			extends org.o42a.codegen.data.Type<FieldDescIR.Op> {
+			extends org.o42a.codegen.data.Type<Op> {
 
 		private StructRec<ObjectIRType.Op> declaredIn;
 		private Int32rec kind;
@@ -125,7 +125,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		}
 
 		@Override
-		public final Op op(StructWriter writer) {
+		public final Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
 

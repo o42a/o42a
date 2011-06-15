@@ -43,7 +43,7 @@ class DebugIR extends Struct<DebugIR.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter writer) {
+	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
 	}
 
@@ -65,9 +65,9 @@ class DebugIR extends Struct<DebugIR.Op> {
 				.toAny());
 	}
 
-	static final class Op extends StructOp {
+	static final class Op extends StructOp<Op> {
 
-		private Op(StructWriter writer) {
+		private Op(StructWriter<Op> writer) {
 			super(writer);
 		}
 
