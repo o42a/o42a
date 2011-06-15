@@ -37,6 +37,7 @@ import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.numeric.*;
+import org.o42a.intrinsic.string.StringObject;
 
 
 public class Root extends Obj {

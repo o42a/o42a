@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.object.ConstructionMode;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
@@ -61,6 +62,8 @@ public interface Scope extends PlaceInfo {
     Member toMember();
 
     Field<?> toField();
+
+    Obj toObject();
 
 	LocalScope toLocal();
 

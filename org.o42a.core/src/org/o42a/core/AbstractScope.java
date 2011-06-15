@@ -247,6 +247,11 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
+	public Obj toObject() {
+		return getContainer().toObject();
+	}
+
+	@Override
 	public final LocalScope toLocal() {
 		return null;
 	}
