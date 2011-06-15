@@ -29,7 +29,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
-public final class PrintFunc extends Func {
+public final class PrintFunc extends Func<PrintFunc> {
 
 	public static final Print PRINT = new Print();
 

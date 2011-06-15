@@ -33,7 +33,8 @@ import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.object.*;
 
 
-public abstract class ObjectValueIRFunc<F extends Func> extends ObjectIRFunc {
+public abstract class ObjectValueIRFunc<F extends Func<F>>
+		extends ObjectIRFunc {
 
 	private final CodeId id;
 	private FuncRec<F> func;

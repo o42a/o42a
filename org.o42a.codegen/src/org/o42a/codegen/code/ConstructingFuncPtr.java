@@ -22,7 +22,7 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.code.backend.FuncAllocation;
 
 
-final class ConstructingFuncPtr<F extends Func> extends FuncPtr<F> {
+final class ConstructingFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 
 	private final Function<F> function;
 

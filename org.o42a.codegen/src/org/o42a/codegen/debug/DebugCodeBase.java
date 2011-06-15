@@ -197,7 +197,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 				data.toAny(null, code()));
 	}
 
-	public void dumpName(String prefix, Func func) {
+	public void dumpName(String prefix, Func<?> func) {
 		assert assertIncomplete();
 		assert func.getSignature().isDebuggable() :
 			"Can not dump " + func + " name: it is not debuggable";

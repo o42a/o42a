@@ -24,11 +24,11 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.DataLayout;
 
 
-final class FuncPtrAlloc<F extends Func>
+final class FuncPtrAlloc<F extends Func<F>>
 		extends SimpleDataAllocation<FuncOp<F>> {
 
 	private final Signature<F> signature;

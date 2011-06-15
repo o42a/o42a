@@ -31,7 +31,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
-public final class ParseWithRadixFunc extends Func {
+public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 
 	public static final ParseWithRadix PARSE_WITH_RADIX = new ParseWithRadix();
 

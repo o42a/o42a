@@ -36,7 +36,7 @@ public interface DataWriter {
 
 	<O extends StructOp> DataAllocation<O> nullPtr(Type<O> type);
 
-	<F extends Func> FuncAllocation<F> nullPtr(Signature<F> signature);
+	<F extends Func<F>> FuncAllocation<F> nullPtr(Signature<F> signature);
 
 	<O extends StructOp> void begin(
 			DataAllocation<O> allocation,

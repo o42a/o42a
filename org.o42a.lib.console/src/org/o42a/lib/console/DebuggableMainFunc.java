@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 
 
-public final class DebuggableMainFunc extends Func {
+public final class DebuggableMainFunc extends Func<DebuggableMainFunc> {
 
 	public static final DebuggableMain DEBUGGABLE_MAIN = new DebuggableMain();
 

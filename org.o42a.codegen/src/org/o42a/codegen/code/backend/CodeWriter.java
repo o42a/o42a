@@ -35,7 +35,7 @@ public interface CodeWriter {
 
 	CodeId getId();
 
-	<F extends Func> FuncCaller<F> caller(
+	<F extends Func<F>> FuncCaller<F> caller(
 			CodeId id,
 			FuncAllocation<F> allocation);
 
@@ -65,7 +65,7 @@ public interface CodeWriter {
 
 	<O extends StructOp> O nullPtr(DataAllocation<O> type);
 
-	<F extends Func> FuncCaller<F> nullPtr(Signature<F> signature);
+	<F extends Func<F>> FuncCaller<F> nullPtr(Signature<F> signature);
 
 	void go(CodePos pos);
 
@@ -81,9 +81,9 @@ public interface CodeWriter {
 			CodeId id,
 			DataAllocation<S> allocation);
 
-	<O extends StructOp> O allocateStruct(
+	<S extends StructOp> S allocateStruct(
 			CodeId id,
-			DataAllocation<O> allocation);
+			DataAllocation<S> allocation);
 
 	<O extends Op> O phi(CodeId id, O op);
 

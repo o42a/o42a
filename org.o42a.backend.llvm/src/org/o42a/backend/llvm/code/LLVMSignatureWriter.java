@@ -30,7 +30,8 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
+final class LLVMSignatureWriter<F extends Func<F>>
+		implements SignatureWriter<F> {
 
 	private final Signature<F> signature;
 	private final LLVMModule module;
@@ -154,7 +155,7 @@ final class LLVMSignatureWriter<F extends Func> implements SignatureWriter<F> {
 	}
 
 	@Override
-	public <FF extends Func> void addFuncPtr(
+	public <FF extends Func<FF>> void addFuncPtr(
 			Arg<FF> arg,
 			Signature<FF> signature) {
 		addParam(arg, this.module.pointerTo(signature));

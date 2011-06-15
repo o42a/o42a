@@ -28,7 +28,7 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 
 
-final class DebugExecCommandFunc extends Func {
+final class DebugExecCommandFunc extends Func<DebugExecCommandFunc> {
 
 	public static final DebugExecCommand DEBUG_EXEC_COMMAND =
 		new DebugExecCommand();

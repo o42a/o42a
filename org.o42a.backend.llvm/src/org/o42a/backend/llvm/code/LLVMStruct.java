@@ -222,7 +222,7 @@ public class LLVMStruct extends LLVMPtrOp implements StructWriter {
 	}
 
 	@Override
-	public <F extends Func> FuncOp<F> func(
+	public <F extends Func<F>> FuncOp<F> func(
 			CodeId id,
 			Code code,
 			FuncRec<F> field) {

@@ -50,7 +50,7 @@ public abstract class LLVMCode implements CodeWriter {
 			return llvm((StructOp) op);
 		}
 		if (op instanceof Func) {
-			return llvm((Func) op);
+			return llvm((Func<?>) op);
 		}
 		return (LLVMOp) op;
 	}
@@ -59,11 +59,11 @@ public abstract class LLVMCode implements CodeWriter {
 		return (LLVMStruct) op.getWriter();
 	}
 
-	public static final LLVMFunc<?> llvm(Func func) {
-		return (LLVMFunc<?>) func.getCaller();
+	public static final <F extends Func<F>> LLVMFunc<F> llvm(Func<F> func) {
+		return (LLVMFunc<F>) func.getCaller();
 	}
 
-	public static final <F extends Func> LLVMSignature<F> llvm(
+	public static final <F extends Func<F>> LLVMSignature<F> llvm(
 			LLVMModule module,
 			Signature<F> signature) {
 		return (LLVMSignature<F>) signature.allocation(module.getGenerator());
@@ -215,7 +215,7 @@ public abstract class LLVMCode implements CodeWriter {
 		"rawtypes", "unchecked"
 	})
 	@Override
-	public <F extends Func> LLVMFunc<F> caller(
+	public <F extends Func<F>> LLVMFunc<F> caller(
 			CodeId id,
 			FuncAllocation<F> allocation) {
 
@@ -407,7 +407,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public <F extends Func> LLVMFunc<F> nullPtr(Signature<F> signature) {
+	public <F extends Func<F>> LLVMFunc<F> nullPtr(Signature<F> signature) {
 
 		final LLVMSignature<F> allocation = llvm(getModule(), signature);
 

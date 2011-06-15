@@ -23,14 +23,14 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.FuncCaller;
 
 
-public abstract class ObjectFunc extends Func {
+public abstract class ObjectFunc<F extends ObjectFunc<F>> extends Func<F> {
 
-	public ObjectFunc(FuncCaller<? extends ObjectFunc> caller) {
+	public ObjectFunc(FuncCaller<F> caller) {
 		super(caller);
 	}
 
-	public final ObjectSignature<?> getObjectSignature() {
-		return (ObjectSignature<?>) getSignature();
+	public final ObjectSignature<F> getObjectSignature() {
+		return (ObjectSignature<F>) getSignature();
 	}
 
 }

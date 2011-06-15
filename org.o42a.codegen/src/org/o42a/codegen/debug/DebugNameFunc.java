@@ -26,7 +26,7 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 
 
-final class DebugNameFunc extends Func {
+final class DebugNameFunc extends Func<DebugNameFunc> {
 
 	public static final DebugName DEBUG_NAME = new DebugName();
 

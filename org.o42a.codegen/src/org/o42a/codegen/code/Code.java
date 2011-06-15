@@ -156,12 +156,12 @@ public abstract class Code extends DebugCodeBase {
 		return writer().nullDataPtr();
 	}
 
-	public final <O extends StructOp> O nullPtr(Type<O> type) {
+	public final <S extends StructOp> S nullPtr(Type<S> type) {
 		assert assertIncomplete();
 		return writer().nullPtr(type.pointer(getGenerator()).getAllocation());
 	}
 
-	public final <F extends Func> F nullPtr(Signature<F> signature) {
+	public final <F extends Func<F>> F nullPtr(Signature<F> signature) {
 		assert assertIncomplete();
 		return signature.op(writer().nullPtr(
 				getGenerator().getFunctions().allocate(signature)));

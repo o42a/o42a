@@ -31,7 +31,7 @@ import org.o42a.codegen.debug.DebugEnvOp;
 import org.o42a.util.ArrayUtil;
 
 
-public abstract class Signature<F extends Func> {
+public abstract class Signature<F extends Func<F>> {
 
 	private static final Arg<?>[] NO_ARGS = new Arg<?>[0];
 

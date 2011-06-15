@@ -32,7 +32,7 @@ import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.ir.op.ValDirs;
 
 
-public final class ObjectValFunc extends ObjectFunc {
+public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 
 	public static final ObjectVal OBJECT_VAL = new ObjectVal();
 

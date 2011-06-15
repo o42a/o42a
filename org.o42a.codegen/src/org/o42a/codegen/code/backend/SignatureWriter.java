@@ -26,7 +26,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public interface SignatureWriter<F extends Func> {
+public interface SignatureWriter<F extends Func<F>> {
 
 	void returnVoid();
 
@@ -70,9 +70,9 @@ public interface SignatureWriter<F extends Func> {
 
 	void addData(Arg<DataOp> arg);
 
-	<O extends StructOp> void addPtr(Arg<O> arg, Type<O> type);
+	<S extends StructOp> void addPtr(Arg<S> arg, Type<S> type);
 
-	<FF extends Func> void addFuncPtr(Arg<FF> arg, Signature<FF> signature);
+	<FF extends Func<FF>> void addFuncPtr(Arg<FF> arg, Signature<FF> signature);
 
 	SignatureAllocation<F> done();
 

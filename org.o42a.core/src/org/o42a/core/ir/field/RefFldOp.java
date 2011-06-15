@@ -32,7 +32,7 @@ import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
 
 
-public abstract class RefFldOp<C extends ObjectFunc> extends FldOp {
+public abstract class RefFldOp<C extends ObjectFunc<C>> extends FldOp {
 
 	RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<C> ptr) {
 		super(fld, host, ptr);

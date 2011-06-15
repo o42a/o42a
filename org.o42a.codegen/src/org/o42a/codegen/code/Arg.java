@@ -356,7 +356,7 @@ public abstract class Arg<O extends Op> {
 
 	}
 
-	static final class FuncPtrArg<F extends Func> extends Arg<F> {
+	static final class FuncPtrArg<F extends Func<F>> extends Arg<F> {
 
 		private final Signature<F> targetSignature;
 
@@ -380,7 +380,7 @@ public abstract class Arg<O extends Op> {
 				return false;
 			}
 
-			final Func func = (Func) op;
+			final Func<?> func = (Func<?>) op;
 
 			return func.getSignature() == this.targetSignature;
 		}

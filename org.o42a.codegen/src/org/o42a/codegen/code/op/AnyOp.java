@@ -46,7 +46,7 @@ public interface AnyOp extends PtrOp {
 
 	DataOp toData(CodeId id, Code code);
 
-	<F extends Func> FuncOp<F> toFunc(
+	<F extends Func<F>> FuncOp<F> toFunc(
 			CodeId id,
 			Code code,
 			Signature<F> signature);

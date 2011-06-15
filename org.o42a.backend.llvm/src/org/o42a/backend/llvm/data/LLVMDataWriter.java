@@ -74,7 +74,7 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <F extends Func> LLVMFuncAllocation<F> nullPtr(
+	public <F extends Func<F>> LLVMFuncAllocation<F> nullPtr(
 			Signature<F> signature) {
 		return new LLVMFuncAllocation<F>(
 				this.module,

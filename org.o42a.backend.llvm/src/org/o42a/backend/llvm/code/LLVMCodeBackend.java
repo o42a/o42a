@@ -42,20 +42,20 @@ public class LLVMCodeBackend implements CodeBackend {
 	}
 
 	@Override
-	public <F extends Func> SignatureWriter<F> addSignature(
+	public <F extends Func<F>> SignatureWriter<F> addSignature(
 			Signature<F> signature) {
 		return new LLVMSignatureWriter<F>(this.module, signature);
 	}
 
 	@Override
-	public <F extends Func> LLVMFunction<F> addFunction(
+	public <F extends Func<F>> LLVMFunction<F> addFunction(
 			Function<F> function,
 			CodeCallback callback) {
 		return new LLVMFunction<F>(this.module, function, callback);
 	}
 
 	@Override
-	public <F extends Func> FuncAllocation<F> externFunction(
+	public <F extends Func<F>> FuncAllocation<F> externFunction(
 			CodeId id,
 			Signature<F> signature) {
 

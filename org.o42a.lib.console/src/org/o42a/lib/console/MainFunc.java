@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 
 
-public final class MainFunc extends Func {
+public final class MainFunc extends Func<MainFunc> {
 
 	public static final Main MAIN = new Main();
 

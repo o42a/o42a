@@ -102,13 +102,13 @@ public abstract class SubData<O extends StructOp>
 		return add(new Fp64rec(this, id(name), content));
 	}
 
-	public final <F extends Func> FuncRec<F> addFuncPtr(
+	public final <F extends Func<F>> FuncRec<F> addFuncPtr(
 			String name,
 			Signature<F> signature) {
 		return addFuncPtr(name, signature, null);
 	}
 
-	public final <F extends Func> FuncRec<F> addFuncPtr(
+	public final <F extends Func<F>> FuncRec<F> addFuncPtr(
 			String name,
 			Signature<F> signature,
 			Content<FuncRec<F>> content) {

@@ -151,7 +151,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 						typePtr(type))));
 	}
 
-	public <F extends Func> LLVMFuncOp<F> toFunc(
+	public <F extends Func<F>> LLVMFuncOp<F> toFunc(
 			CodeId id,
 			Code code,
 			Signature<F> signature) {

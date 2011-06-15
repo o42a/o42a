@@ -26,11 +26,11 @@ import org.o42a.codegen.data.AllocClass;
 import org.o42a.util.ArrayUtil;
 
 
-public abstract class Func implements PtrOp {
+public abstract class Func<F extends Func<F>> implements PtrOp {
 
-	private final FuncCaller<?> caller;
+	private final FuncCaller<F> caller;
 
-	public Func(FuncCaller<?> caller) {
+	public Func(FuncCaller<F> caller) {
 		this.caller = caller;
 	}
 
@@ -44,11 +44,11 @@ public abstract class Func implements PtrOp {
 		return AllocClass.CONSTANT_ALLOC_CLASS;
 	}
 
-	public final Signature<?> getSignature() {
+	public final Signature<F> getSignature() {
 		return this.caller.getSignature();
 	}
 
-	public final FuncCaller<?> getCaller() {
+	public final FuncCaller<F> getCaller() {
 		return this.caller;
 	}
 

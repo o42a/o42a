@@ -26,7 +26,7 @@ import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public abstract class FuncPtr<F extends Func> extends AbstractPtr {
+public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {
 
 	final Signature<F> signature;
 	final FuncAllocation<F> allocation;

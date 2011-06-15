@@ -41,7 +41,7 @@ import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.member.field.Field;
 
 
-public abstract class RefFld<C extends ObjectFunc> extends Fld {
+public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 	private final ObjectIR targetIR;
 	private Obj targetAscendant;
@@ -256,7 +256,7 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 		return overriddenFld.constructor;
 	}
 
-	public static abstract class Op<C extends ObjectFunc> extends Fld.Op {
+	public static abstract class Op<C extends ObjectFunc<C>> extends Fld.Op {
 
 		Op(StructWriter writer) {
 			super(writer);
@@ -313,7 +313,7 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 	}
 
-	public static abstract class Type<O extends Op<C>, C extends ObjectFunc>
+	public static abstract class Type<O extends Op<C>, C extends ObjectFunc<C>>
 			extends Fld.Type<O> {
 
 		private DataRec object;
@@ -342,8 +342,10 @@ public abstract class RefFld<C extends ObjectFunc> extends Fld {
 
 	}
 
-	private static class FldContent<T extends Type<?, C>, C extends ObjectFunc>
-			implements Content<T> {
+	private static class FldContent<
+			T extends Type<?, C>,
+			C extends ObjectFunc<C>>
+					implements Content<T> {
 
 		private final RefFld<C> fld;
 

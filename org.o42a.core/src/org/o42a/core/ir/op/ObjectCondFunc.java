@@ -28,7 +28,7 @@ import org.o42a.codegen.code.op.Int8op;
 import org.o42a.core.ir.object.ObjectOp;
 
 
-public final class ObjectCondFunc extends ObjectFunc {
+public final class ObjectCondFunc extends ObjectFunc<ObjectCondFunc> {
 
 	public static final ObjectCond OBJECT_COND = new ObjectCond();
 

@@ -30,7 +30,7 @@ import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
 
 
-public class ObjectConstructorFunc extends ObjectFunc {
+public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 
 	public static final ObjectConstructor OBJECT_CONSTRUCTOR =
 		new ObjectConstructor();
