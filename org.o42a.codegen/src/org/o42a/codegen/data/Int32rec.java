@@ -20,13 +20,12 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class Int32rec extends Rec<RecOp<Int32op>, Integer> {
+public final class Int32rec extends Rec<Int32recOp, Integer> {
 
 	Int32rec(SubData<?> enclosing, CodeId id, Content<Int32rec> content) {
 		super(enclosing, id, content);

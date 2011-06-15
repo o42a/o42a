@@ -32,32 +32,35 @@ public interface StructWriter extends PtrOp {
 
 	RecOp<?> field(CodeId id, Code code, Data<?> field);
 
-	RecOp<Int8op> int8(CodeId id, Code code, Int8rec field);
+	Int8recOp int8(CodeId id, Code code, Int8rec field);
 
-	RecOp<Int16op> int16(CodeId id, Code code, Int16rec field);
+	Int16recOp int16(CodeId id, Code code, Int16rec field);
 
-	RecOp<Int32op> int32(CodeId id, Code code, Int32rec field);
+	Int32recOp int32(CodeId id, Code code, Int32rec field);
 
-	RecOp<Int64op> int64(CodeId id, Code code, Int64rec field);
+	Int64recOp int64(CodeId id, Code code, Int64rec field);
 
-	RecOp<Fp32op> fp32(CodeId id, Code code, Fp32rec field);
+	Fp32recOp fp32(CodeId id, Code code, Fp32rec field);
 
-	RecOp<Fp64op> fp64(CodeId id, Code code, Fp64rec field);
+	Fp64recOp fp64(CodeId id, Code code, Fp64rec field);
 
-	RecOp<AnyOp> ptr(CodeId id, Code code, AnyPtrRec field);
+	AnyRecOp ptr(CodeId id, Code code, AnyPtrRec field);
 
-	RecOp<DataOp> ptr(CodeId id, Code code, DataRec field);
+	DataRecOp ptr(CodeId id, Code code, DataRec field);
 
-	<P extends StructOp> RecOp<P> ptr(CodeId id, Code code, StructRec<P> field);
+	<S extends StructOp> StructRecOp<S> ptr(
+			CodeId id,
+			Code code,
+			StructRec<S> field);
 
-	RecOp<RelOp> relPtr(CodeId id, Code code, RelPtrRec field);
+	RelRecOp relPtr(CodeId id, Code code, RelPtrRec field);
 
-	<O extends StructOp> O struct(CodeId id, Code code, Type<O> field);
+	<S extends StructOp> S struct(CodeId id, Code code, Type<S> field);
 
 	<F extends Func> FuncOp<F> func(CodeId id, Code code, FuncRec<F> field);
 
 	DataOp toData(CodeId id, Code code);
 
-	<O extends StructOp> O to(CodeId id, Code code, Type<O> type);
+	<S extends StructOp> S to(CodeId id, Code code, Type<S> type);
 
 }

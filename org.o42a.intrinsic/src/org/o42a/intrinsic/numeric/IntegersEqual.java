@@ -24,7 +24,7 @@ import static org.o42a.core.value.Value.voidValue;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
@@ -49,11 +49,11 @@ public class IntegersEqual extends NumbersEqual<Long> {
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Code code = dirs.code();
-		final RecOp<Int64op> leftPtr =
+		final Int64recOp leftPtr =
 			leftVal.rawValue(code.id("left_int_ptr"), code);
 		final Int64op left = leftPtr.load(code.id("left"), code);
 
-		final RecOp<Int64op> rightPtr =
+		final Int64recOp rightPtr =
 			rightVal.rawValue(code.id("right_int_ptr"), code);
 		final Int64op right = rightPtr.load(code.id("right"), code);
 

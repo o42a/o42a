@@ -23,7 +23,7 @@ import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -84,7 +84,7 @@ abstract class CompareOperator extends ComparisonOperator {
 	public ValOp write(ValDirs dirs, ValOp comparisonVal) {
 
 		final Code code = dirs.code();
-		final RecOp<Int64op> comparisonPtr =
+		final Int64recOp comparisonPtr =
 			comparisonVal.rawValue(code.id("cmp_ptr"), code);
 		final Int64op comparisonValue =
 			comparisonPtr.load(code.id("cmp_value"), code);

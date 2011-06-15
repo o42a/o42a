@@ -48,12 +48,12 @@ public class FloatsEqual extends NumbersEqual<Double> {
 
 		final Code code = dirs.code();
 		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
-		final RecOp<Fp64op> leftPtr =
+		final Fp64recOp leftPtr =
 			leftRec.toFp64(code.id("float_left_ptr"), code);
 		final Fp64op left = leftPtr.load(code.id("left"), code);
 
 		final AnyOp rightRec = rightVal.value(code.id("right_ptr"), code);
-		final RecOp<Fp64op> rightPtr =
+		final Fp64recOp rightPtr =
 			rightRec.toFp64(code.id("float_left_ptr"), code);
 		final Fp64op right = rightPtr.load(code.id("right"), code);
 

@@ -22,9 +22,9 @@ package org.o42a.core.ir.op;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
 
 
@@ -53,11 +53,11 @@ public class AllocationDirs {
 		return code().id(name);
 	}
 
-	public final RecOp<AnyOp> allocatePtr(CodeId id) {
+	public final AnyRecOp allocatePtr(CodeId id) {
 		return this.code.allocatePtr(id);
 	}
 
-	public final RecOp<AnyOp> allocateNull(CodeId id) {
+	public final AnyRecOp allocateNull(CodeId id) {
 		return this.code.allocateNull(id);
 	}
 
@@ -65,9 +65,9 @@ public class AllocationDirs {
 		return this.code.allocate(id, type);
 	}
 
-	public final <O extends StructOp> RecOp<O> allocatePtr(
+	public final <S extends StructOp> StructRecOp<S> allocatePtr(
 			CodeId id,
-			Type<O> type) {
+			Type<S> type) {
 		return this.code.allocatePtr(id, type);
 	}
 

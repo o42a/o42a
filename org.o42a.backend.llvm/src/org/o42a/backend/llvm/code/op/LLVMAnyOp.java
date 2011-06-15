@@ -23,7 +23,7 @@ import static org.o42a.backend.llvm.code.LLVMCode.nextPtr;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AllocClass;
 
 
@@ -50,7 +50,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<AnyOp> toPtr(CodeId id, Code code) {
+	public LLVMRecOp.Any toPtr(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "any");
@@ -63,7 +63,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<Int8op> toInt8(CodeId id, Code code) {
+	public LLVMRecOp.Int8 toInt8(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "int8");
@@ -76,7 +76,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<Int16op> toInt16(CodeId id, Code code) {
+	public LLVMRecOp.Int16 toInt16(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "int16");
@@ -89,7 +89,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<Int32op> toInt32(CodeId id, Code code) {
+	public LLVMRecOp.Int32 toInt32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "int32");
@@ -102,7 +102,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<Int64op> toInt64(CodeId id, Code code) {
+	public LLVMRecOp.Int64 toInt64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "int64");
@@ -115,7 +115,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<Fp32op> toFp32(CodeId id, Code code) {
+	public LLVMRecOp.Fp32 toFp32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "fp32");
@@ -128,7 +128,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<Fp64op> toFp64(CodeId id, Code code) {
+	public LLVMRecOp.Fp64 toFp64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "fp64");
@@ -141,7 +141,7 @@ public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
 	}
 
 	@Override
-	public LLVMRecOp<RelOp> toRel(CodeId id, Code code) {
+	public LLVMRecOp.Rel toRel(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId = castId(id, code, "rel");

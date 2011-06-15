@@ -22,7 +22,7 @@ package org.o42a.intrinsic.numeric;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Fp64op;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.Fp64recOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -72,11 +72,11 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 		final Code code = dirs.code();
 		final ValOp result = dirs.value();
 		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
-		final RecOp<Fp64op> leftPtr = leftRec.toFp64(null, code);
+		final Fp64recOp leftPtr = leftRec.toFp64(null, code);
 		final Fp64op left = leftPtr.load(code.id("left"), code);
 
 		final AnyOp rightRec = rightVal.value(code.id("right_ptr"), code);
-		final RecOp<Fp64op> rightPtr = rightRec.toFp64(null, code);
+		final Fp64recOp rightPtr = rightRec.toFp64(null, code);
 		final Fp64op right = rightPtr.load(code.id("right"), code);
 
 		result.store(code, write(code, left, right));

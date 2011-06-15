@@ -62,7 +62,7 @@ public final class ValOp extends IROp implements CondOp {
 		this.storeMode = storeMode;
 	}
 
-	public final RecOp<Int32op> flags(CodeId id, Code code) {
+	public final Int32recOp flags(CodeId id, Code code) {
 		return ptr().flags(id, code);
 	}
 
@@ -92,7 +92,7 @@ public final class ValOp extends IROp implements CondOp {
 		return ptr().loadAlignmentShift(id, code);
 	}
 
-	public final RecOp<Int32op> length(CodeId id, Code code) {
+	public final Int32recOp length(CodeId id, Code code) {
 		return ptr().length(id, code);
 	}
 
@@ -100,7 +100,7 @@ public final class ValOp extends IROp implements CondOp {
 		return ptr().loadDataLength(id, code);
 	}
 
-	public final RecOp<Int64op> rawValue(CodeId id, Code code) {
+	public final Int64recOp rawValue(CodeId id, Code code) {
 		return ptr().rawValue(id, code);
 	}
 

@@ -29,7 +29,7 @@ import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
@@ -166,7 +166,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<DataOp> previous(Code code) {
+		public final DataRecOp previous(Code code) {
 			return ptr(null, code, getType().previous());
 		}
 

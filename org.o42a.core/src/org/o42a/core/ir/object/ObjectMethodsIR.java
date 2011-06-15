@@ -25,8 +25,8 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
@@ -99,7 +99,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 			return (ObjectMethodsIR) super.getType();
 		}
 
-		public final RecOp<ObjectIRType.Op> objectType(Code code) {
+		public final StructRecOp<ObjectIRType.Op> objectType(Code code) {
 			return ptr(null, code, getType().objectType);
 		}
 

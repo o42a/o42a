@@ -21,7 +21,7 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -68,11 +68,11 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 
 		final Code code = dirs.code();
 		final ValOp result = dirs.value();
-		final RecOp<Int64op> leftPtr =
+		final Int64recOp leftPtr =
 			leftVal.rawValue(code.id("left_int_ptr"), code);
 		final Int64op left = leftPtr.load(code.id("left"), code);
 
-		final RecOp<Int64op> rightPtr =
+		final Int64recOp rightPtr =
 			rightVal.rawValue(code.id("right_int_ptr"), code);
 		final Int64op right = rightPtr.load(code.id("right"), code);
 

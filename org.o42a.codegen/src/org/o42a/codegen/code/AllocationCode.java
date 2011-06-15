@@ -23,9 +23,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.backend.MultiCodePos;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.util.ArrayUtil;
 
@@ -75,31 +75,31 @@ public final class AllocationCode extends Code {
 		return this.destruction;
 	}
 
-	public final RecOp<AnyOp> allocatePtr(CodeId id) {
+	public final AnyRecOp allocatePtr(CodeId id) {
 		assert assertIncomplete();
 		return writer().allocatePtr(opId(id));
 	}
 
-	public final RecOp<AnyOp> allocateNull(CodeId id) {
+	public final AnyRecOp allocateNull(CodeId id) {
 
-		final RecOp<AnyOp> result = allocatePtr(id);
+		final AnyRecOp result = allocatePtr(id);
 
 		result.store(this, nullPtr());
 
 		return result;
 	}
 
-	public <O extends StructOp> O allocate(CodeId id, Type<O> type) {
+	public <S extends StructOp> S allocate(CodeId id, Type<S> type) {
 		return allocate(this, id, type);
 	}
 
-	public <O extends StructOp> RecOp<O> allocatePtr(
+	public <S extends StructOp> StructRecOp<S> allocatePtr(
 			CodeId id,
-			Type<O> type) {
+			Type<S> type) {
 		assert assertIncomplete();
 
 		final Code code = this;
-		final RecOp<O> result = writer().allocatePtr(
+		final StructRecOp<S> result = writer().allocatePtr(
 				code.opId(id),
 				dataAllocation(type.data(code.getGenerator())));
 

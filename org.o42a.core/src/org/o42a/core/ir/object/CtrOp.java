@@ -147,7 +147,7 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<ObjectIRType.Op> scopeType(Code code) {
+		public final StructRecOp<ObjectIRType.Op> scopeType(Code code) {
 			return ptr(null, code, getType().scopeType());
 		}
 
@@ -155,15 +155,15 @@ public class CtrOp extends IROp {
 			return func(null, code, getType().ancestorFunc());
 		}
 
-		public final RecOp<ObjectIRType.Op> ancestorType(Code code) {
+		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {
 			return ptr(null, code, getType().ancestorType());
 		}
 
-		public final RecOp<ObjectIRType.Op> type(Code code) {
+		public final StructRecOp<ObjectIRType.Op> type(Code code) {
 			return ptr(null, code, getType().type());
 		}
 
-		public final RecOp<Int32op> flags(Code code) {
+		public final Int32recOp flags(Code code) {
 			return int32(null, code, getType().flags());
 		}
 

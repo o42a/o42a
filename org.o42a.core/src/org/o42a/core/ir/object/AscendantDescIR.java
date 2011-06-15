@@ -26,9 +26,9 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
 
 
@@ -81,11 +81,11 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<ObjectIRType.Op> type(Code code) {
+		public final StructRecOp<ObjectIRType.Op> type(Code code) {
 			return ptr(null, code, getType().type());
 		}
 
-		public final RecOp<RelOp> body(Code code) {
+		public final RelRecOp body(Code code) {
 			return relPtr(null, code, getType().body());
 		}
 

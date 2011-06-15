@@ -28,7 +28,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.Artifact;
@@ -147,7 +147,7 @@ public final class RefLclOp extends LclOp {
 			return new RefLclOp(builder, fieldIR, this);
 		}
 
-		public final RecOp<DataOp> object(Code code) {
+		public final DataRecOp object(Code code) {
 			return ptr(null, code, getType().object());
 		}
 

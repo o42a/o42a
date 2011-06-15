@@ -54,29 +54,29 @@ public interface DataAllocator {
 
 	void end(Type<?> type);
 
-	DataAllocation<RecOp<Int8op>> allocateInt8(
+	DataAllocation<Int8recOp> allocateInt8(
 			DataAllocation<?> enclosing,
-			DataAllocation<RecOp<Int8op>> type);
+			DataAllocation<Int8recOp> type);
 
-	DataAllocation<RecOp<Int16op>> allocateInt16(
+	DataAllocation<Int16recOp> allocateInt16(
 			DataAllocation<?> enclosing,
-			DataAllocation<RecOp<Int16op>> type);
+			DataAllocation<Int16recOp> type);
 
-	DataAllocation<RecOp<Int32op>> allocateInt32(
+	DataAllocation<Int32recOp> allocateInt32(
 			DataAllocation<?> enclosing,
-			DataAllocation<RecOp<Int32op>> type);
+			DataAllocation<Int32recOp> type);
 
-	DataAllocation<RecOp<Int64op>> allocateInt64(
+	DataAllocation<Int64recOp> allocateInt64(
 			DataAllocation<?> enclosing,
-			DataAllocation<RecOp<Int64op>> type);
+			DataAllocation<Int64recOp> type);
 
-	DataAllocation<RecOp<Fp32op>> allocateFp32(
+	DataAllocation<Fp32recOp> allocateFp32(
 			DataAllocation<?> enclosing,
-			DataAllocation<RecOp<Fp32op>> allocation);
+			DataAllocation<Fp32recOp> allocation);
 
-	DataAllocation<RecOp<Fp64op>> allocateFp64(
+	DataAllocation<Fp64recOp> allocateFp64(
 			DataAllocation<?> enclosing,
-			DataAllocation<RecOp<Fp64op>> allocation);
+			DataAllocation<Fp64recOp> allocation);
 
 	<F extends Func> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
@@ -91,13 +91,13 @@ public interface DataAllocator {
 			DataAllocation<?> enclosing,
 			DataAllocation<DataOp> type);
 
-	<P extends StructOp> DataAllocation<P> allocatePtr(
+	<S extends StructOp> DataAllocation<S> allocatePtr(
 			DataAllocation<?> enclosing,
-			DataAllocation<P> type,
-			DataAllocation<P> struct);
+			DataAllocation<S> type,
+			DataAllocation<S> struct);
 
-	DataAllocation<RecOp<RelOp>> allocateRelPtr(
+	DataAllocation<RelRecOp> allocateRelPtr(
 			DataAllocation<?> enclosing,
-			DataAllocation<RecOp<RelOp>> type);
+			DataAllocation<RelRecOp> type);
 
 }

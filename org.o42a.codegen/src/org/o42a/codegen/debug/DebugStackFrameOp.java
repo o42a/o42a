@@ -41,23 +41,23 @@ public final class DebugStackFrameOp extends StructOp {
 		return (DebugStackFrameType) super.getType();
 	}
 
-	public final RecOp<AnyOp> name(Code code) {
+	public final AnyRecOp name(Code code) {
 		return ptr(null, code, getType().name());
 	}
 
-	public final RecOp<DebugStackFrameOp> prev(Code code) {
+	public final StructRecOp<DebugStackFrameOp> prev(Code code) {
 		return ptr(null, code, getType().prev());
 	}
 
-	public final RecOp<AnyOp> comment(Code code) {
+	public final AnyRecOp comment(Code code) {
 		return ptr(null, code, getType().comment());
 	}
 
-	public final RecOp<AnyOp> file(Code code) {
+	public final AnyRecOp file(Code code) {
 		return ptr(null, code, getType().file());
 	}
 
-	public final RecOp<Int32op> line(Code code) {
+	public final Int32recOp line(Code code) {
 		return int32(null, code, getType().line());
 	}
 

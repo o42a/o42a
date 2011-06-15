@@ -23,8 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.RelPtrRec;
@@ -72,7 +71,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final RecOp<RelOp> body(Code code) {
+		public final RelRecOp body(Code code) {
 			return relPtr(null, code, getType().body());
 		}
 

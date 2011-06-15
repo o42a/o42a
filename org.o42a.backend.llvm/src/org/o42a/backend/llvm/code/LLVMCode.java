@@ -19,8 +19,8 @@
 */
 package org.o42a.backend.llvm.code;
 
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.ContainerAllocation;
@@ -436,7 +436,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public LLVMRecOp<AnyOp> allocatePtr(CodeId id) {
+	public LLVMRecOp.Any allocatePtr(CodeId id) {
 
 		final long nextPtr = nextPtr();
 
@@ -448,7 +448,7 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends StructOp> RecOp<O> allocatePtr(
+	public <O extends StructOp> LLVMRecOp.Struct<O> allocatePtr(
 			CodeId id,
 			DataAllocation<O> allocation) {
 
