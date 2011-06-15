@@ -320,6 +320,25 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_isNull(
 	return to_ptr(result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_offset(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jstring id,
+		jlong pointerPtr,
+		jlong indexPtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
+	IRBuilder<> builder(block);
+	Value *pointer = from_ptr<Value>(pointerPtr);
+	Value *index = from_ptr<Value>(indexPtr);
+
+	Value *result = builder.CreateGEP(pointer, index, name);
+
+	return to_ptr(result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_op_LLVMRelOp_offsetBy(
 		JNIEnv *env,
 		jclass cls,

@@ -79,6 +79,11 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 	}
 
 	@Override
+	public final S offset(CodeId id, Code code, IntOp<?> index) {
+		return getWriter().offset(id, code, index);
+	}
+
+	@Override
 	public final AnyOp toAny(CodeId id, Code code) {
 		return getWriter().toAny(id, code);
 	}

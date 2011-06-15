@@ -34,6 +34,8 @@ public interface PtrOp<P extends PtrOp<P>> extends Op {
 
 	BoolOp eq(CodeId id, Code code, P other);
 
+	P offset(CodeId id, Code code, IntOp<?> index);
+
 	AnyOp toAny(CodeId id, Code code);
 
 }

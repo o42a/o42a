@@ -243,13 +243,13 @@ public class LLVMStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public LLVMStruct<S> create(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMStruct<S>(
+	public S create(CodeId id, long blockPtr, long nativePtr) {
+		return getType().op(new LLVMStruct<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				this.type,
 				blockPtr,
-				nativePtr);
+				nativePtr));
 	}
 
 	@Override

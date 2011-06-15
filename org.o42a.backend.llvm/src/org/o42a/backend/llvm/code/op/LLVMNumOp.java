@@ -29,7 +29,7 @@ import org.o42a.codegen.code.op.StructOp;
 
 
 public abstract class LLVMNumOp<O extends NumOp<O>, T extends O>
-		implements LLVMOp, NumOp<O> {
+		implements LLVMOp<O>, NumOp<O> {
 
 	private final CodeId id;
 	private final long blockPtr;

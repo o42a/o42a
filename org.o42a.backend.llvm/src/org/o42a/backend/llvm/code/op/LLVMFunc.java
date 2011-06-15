@@ -54,8 +54,9 @@ public class LLVMFunc<F extends Func<F>> extends LLVMPtrOp<F>
 	}
 
 	@Override
-	public LLVMFunc<F> create(CodeId id, long blockPtr, long nativePtr) {
-		return new LLVMFunc<F>(id, this.signature, blockPtr, getNativePtr());
+	public F create(CodeId id, long blockPtr, long nativePtr) {
+		return getSignature().op(
+				new LLVMFunc<F>(id, this.signature, blockPtr, getNativePtr()));
 	}
 
 	@Override
