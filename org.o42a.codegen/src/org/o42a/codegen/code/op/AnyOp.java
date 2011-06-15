@@ -26,7 +26,7 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
 
 
-public interface AnyOp extends PtrOp {
+public interface AnyOp extends PtrOp<AnyOp> {
 
 	AnyRecOp toPtr(CodeId id, Code code);
 

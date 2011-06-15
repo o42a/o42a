@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AllocClass;
 
 
-public final class LLVMAnyOp extends LLVMPtrOp implements AnyOp {
+public final class LLVMAnyOp extends LLVMPtrOp<AnyOp> implements AnyOp {
 
 	public LLVMAnyOp(
 			CodeId id,

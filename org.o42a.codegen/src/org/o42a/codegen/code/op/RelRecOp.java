@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface RelRecOp extends RecOp<RelOp> {
+public interface RelRecOp extends RecOp<RelRecOp, RelOp> {
 
 }

@@ -31,7 +31,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class LLVMFuncOp<F extends Func<F>>
-		extends LLVMPtrOp
+		extends LLVMPtrOp<FuncOp<F>>
 		implements FuncOp<F> {
 
 	private final Signature<F> signature;

@@ -26,7 +26,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 
 
-public abstract class StructOp<S extends StructOp<S>> implements PtrOp {
+public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 
 	private final StructWriter<S> writer;
 
@@ -56,7 +56,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp {
 	public void allocated(Code code, StructOp<?> enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
-			final RecOp<?> fieldOp =
+			final RecOp<?, ?> fieldOp =
 				getWriter().field(getId().sub(field.getId()), code, field);
 
 			fieldOp.allocated(code, this);
@@ -74,7 +74,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp {
 	}
 
 	@Override
-	public BoolOp eq(CodeId id, Code code, PtrOp other) {
+	public BoolOp eq(CodeId id, Code code, S other) {
 		return getWriter().eq(id, code, other);
 	}
 
@@ -94,7 +94,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp {
 		return getWriter().to(code.opId(id), code, type);
 	}
 
-	protected final RecOp<?> field(CodeId id, Code code, Data<?> field) {
+	protected final RecOp<?, ?> field(CodeId id, Code code, Data<?> field) {
 		return getWriter().field(fieldId(id, code, field), code, field);
 	}
 

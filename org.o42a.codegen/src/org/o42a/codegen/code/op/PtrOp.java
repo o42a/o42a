@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.AllocClass;
 
 
-public interface PtrOp extends Op {
+public interface PtrOp<P extends PtrOp<P>> extends Op {
 
 	AllocClass getAllocClass();
 
@@ -32,7 +32,7 @@ public interface PtrOp extends Op {
 
 	BoolOp isNull(CodeId id, Code code);
 
-	BoolOp eq(CodeId id, Code code, PtrOp other);
+	BoolOp eq(CodeId id, Code code, P other);
 
 	AnyOp toAny(CodeId id, Code code);
 

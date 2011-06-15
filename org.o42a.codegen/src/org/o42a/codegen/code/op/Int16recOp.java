@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface Int16recOp extends RecOp<Int16op> {
+public interface Int16recOp extends RecOp<Int16recOp, Int16op> {
 
 }

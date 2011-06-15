@@ -29,8 +29,8 @@ import org.o42a.codegen.data.backend.DataAllocation;
 
 public abstract class CodeBase {
 
-	protected static <O extends PtrOp> DataAllocation<O> dataAllocation(
-			Data<O> data) {
+	protected static <P extends PtrOp<P>> DataAllocation<P> dataAllocation(
+			Data<P> data) {
 		return data.getAllocation();
 	}
 

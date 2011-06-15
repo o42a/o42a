@@ -23,7 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
-public interface RecOp<O extends Op> extends PtrOp {
+public interface RecOp<R extends RecOp<R, O>, O extends Op> extends PtrOp<R> {
 
 	O load(CodeId id, Code code);
 

@@ -34,7 +34,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public class LLVMFunc<F extends Func<F>> extends LLVMPtrOp
+public class LLVMFunc<F extends Func<F>> extends LLVMPtrOp<F>
 		implements FuncCaller<F> {
 
 	private final Signature<F> signature;

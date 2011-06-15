@@ -25,7 +25,7 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Rec<O extends PtrOp, T> extends Data<O> {
+public abstract class Rec<P extends PtrOp<P>, T> extends Data<P> {
 
 	private final SubData<?> enclosing;
 	@SuppressWarnings("rawtypes")
@@ -83,7 +83,7 @@ public abstract class Rec<O extends PtrOp, T> extends Data<O> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void setAllocation(DataAllocation<O> allocation) {
+	protected void setAllocation(DataAllocation<P> allocation) {
 		super.setAllocation(allocation);
 		this.content.allocated(this);
 	}

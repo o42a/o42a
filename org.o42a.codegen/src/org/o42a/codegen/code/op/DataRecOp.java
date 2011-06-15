@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface DataRecOp extends RecOp<DataOp> {
+public interface DataRecOp extends RecOp<DataRecOp, DataOp> {
 
 }

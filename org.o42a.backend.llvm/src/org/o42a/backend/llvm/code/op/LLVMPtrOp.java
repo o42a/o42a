@@ -33,7 +33,8 @@ import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
+public abstract class LLVMPtrOp<P extends PtrOp<P>>
+		implements LLVMOp, PtrOp<P> {
 
 	private final long blockPtr;
 	private final long nativePtr;
@@ -93,7 +94,7 @@ public abstract class LLVMPtrOp implements LLVMOp, PtrOp {
 	}
 
 	@Override
-	public LLVMBoolOp eq(CodeId id, Code code, PtrOp other) {
+	public LLVMBoolOp eq(CodeId id, Code code, P other) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId =

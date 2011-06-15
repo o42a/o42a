@@ -30,20 +30,20 @@ import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public class Ptr<O extends PtrOp> extends AbstractPtr {
+public class Ptr<P extends PtrOp<P>> extends AbstractPtr {
 
-	private DataAllocation<O> allocation;
+	private DataAllocation<P> allocation;
 
 	Ptr(Data<?> data, boolean ptrToConstant) {
 		super(data.getId(), ptrToConstant);
 	}
 
-	Ptr(CodeId id, DataAllocation<O> allocation, boolean ptrToConstant) {
+	Ptr(CodeId id, DataAllocation<P> allocation, boolean ptrToConstant) {
 		super(id, ptrToConstant);
 		this.allocation = allocation;
 	}
 
-	public final DataAllocation<O> getAllocation() {
+	public final DataAllocation<P> getAllocation() {
 		return this.allocation;
 	}
 
@@ -58,7 +58,7 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 				isPtrToConstant());
 	}
 
-	public final O op(CodeId id, Code code) {
+	public final P op(CodeId id, Code code) {
 
 		final CodeBase c = code;
 
@@ -80,13 +80,13 @@ public class Ptr<O extends PtrOp> extends AbstractPtr {
 		return this.allocation.toAny();
 	}
 
-	final void setAllocation(DataAllocation<O> allocation) {
+	final void setAllocation(DataAllocation<P> allocation) {
 		this.allocation = allocation;
 	}
 
 	@SuppressWarnings("unchecked")
 	final void copyAllocation(Data<?> data) {
-		this.allocation = (DataAllocation<O>) data.getAllocation();
+		this.allocation = (DataAllocation<P>) data.getAllocation();
 	}
 
 }

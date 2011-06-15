@@ -62,7 +62,7 @@ public final class LLVMRelOp implements LLVMOp, RelOp {
 	}
 
 	@Override
-	public LLVMAnyOp offset(CodeId id, Code code, PtrOp from) {
+	public LLVMAnyOp offset(CodeId id, Code code, PtrOp<?> from) {
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId;

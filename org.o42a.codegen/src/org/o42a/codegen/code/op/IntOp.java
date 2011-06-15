@@ -25,9 +25,9 @@ import org.o42a.codegen.code.Code;
 
 public interface IntOp<O extends IntOp<O>> extends NumOp<O> {
 
-	O atomicAdd(CodeId id, Code code, RecOp<O> to);
+	O atomicAdd(CodeId id, Code code, RecOp<?, O> to);
 
-	O atomicSub(CodeId id, Code code, RecOp<O> from);
+	O atomicSub(CodeId id, Code code, RecOp<?, O> from);
 
 	O shl(CodeId id, Code code, O numBits);
 

@@ -23,7 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.PtrOp;
 
 
-public abstract class PtrRec<O extends PtrOp> extends Rec<O, Ptr<O>> {
+public abstract class PtrRec<P extends PtrOp<P>> extends Rec<P, Ptr<P>> {
 
 	PtrRec(SubData<?> enclosing, CodeId id, Content<?> content) {
 		super(enclosing, id, content);

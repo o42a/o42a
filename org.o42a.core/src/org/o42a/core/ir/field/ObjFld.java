@@ -123,7 +123,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final DataOp result = code.phi(null, result1, result2);
 
 		final FldOp ownFld = host.field(dirs, getField().getKey());
-		final BoolOp isOwn = ownFld.ptr().eq(null, code, fld);
+		final BoolOp isOwn =
+			ownFld.toAny(code).eq(null, code, fld.toAny(null, code));
 		final CondCode store = isOwn.branch(code, "store", "do_not_store");
 
 		fld.object(store).store(store, result);
