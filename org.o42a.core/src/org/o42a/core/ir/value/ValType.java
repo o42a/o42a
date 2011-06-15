@@ -19,9 +19,8 @@
 */
 package org.o42a.core.ir.value;
 
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.value.Val.INDEFINITE_FLAG;
-import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
+import static java.lang.Integer.numberOfTrailingZeros;
+import static org.o42a.core.ir.value.Val.*;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -125,43 +124,55 @@ public final class ValType extends Type<ValType.Op> {
 		}
 
 		public final BoolOp loadUnknown(CodeId id, Code code) {
-
-			final Int32op flags = flags(null, code).load(null, code);
-
-			return flags.lshr(null, code, 1).lowestBit(
-					id != null ? id : getId().sub("unknown_flag"),
-					code);
+			return loadFlag(id, "unknown_flag", code, UNKNOWN_FLAG);
 		}
 
 		public final BoolOp loadIndefinite(CodeId id, Code code) {
-
-			final Int32op flags = flags(null, code).load(null, code);
-
-			return flags.lshr(null, code, 2).lowestBit(
-					id != null ? id : getId().sub("indefinite_flag"),
-					code);
+			return loadFlag(id, "indefinite_flag", code, INDEFINITE_FLAG);
 		}
 
 		public final BoolOp loadExternal(CodeId id, Code code) {
-
-			final Int32op flags = flags(null, code).load(null, code);
-
-			return flags.lshr(null, code, 11).lowestBit(
-					id != null ? id : getId().sub("external_flag"),
-					code);
+			return loadFlag(id, "external_flag", code, EXTERNAL_FLAG);
 		}
 
 		public final BoolOp loadStatic(CodeId id, Code code) {
+			return loadFlag(id, "static_flag", code, STATIC_FLAG);
+		}
+
+		public Int32op loadAlignmentShift(CodeId id, Code code) {
+			if (id == null) {
+				id = getId().sub("alignment_shift");
+			}
 
 			final Int32op flags = flags(null, code).load(null, code);
+			final Int32op ualignment = flags.and(
+					id.detail("ush"),
+					code,
+					code.int32(ALIGNMENT_MASK));
 
-			return flags.lshr(null, code, 12).lowestBit(
-					id != null ? id : getId().sub("static_flag"),
-					code);
+			return ualignment.lshr(
+					id,
+					code,
+					numberOfTrailingZeros(ALIGNMENT_MASK));
 		}
 
 		public final RecOp<Int32op> length(CodeId id, Code code) {
 			return int32(id, code, getType().length());
+		}
+
+		public Int32op loadDataLength(CodeId id, Code code) {
+
+			final Int32op byteLength = length(
+					id != null ? id.detail("length") : null,
+					code).load(null, code);
+			final Int32op alignmentShift = loadAlignmentShift(
+						id != null ? id.detail("alignment_shift") : null,
+						code);
+
+			return byteLength.lshr(
+					id != null ? id : getId().sub("data_len"),
+					code,
+					alignmentShift);
 		}
 
 		public final RecOp<Int64op> rawValue(CodeId id, Code code) {
@@ -245,6 +256,24 @@ public final class ValType extends Type<ValType.Op> {
 		final void store(Code code, Fp64op value) {
 			value(null, code).toFp64(null, code).store(code, value);
 			flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		}
+
+		private BoolOp loadFlag(
+				CodeId id,
+				String defaultId,
+				Code code,
+				int mask) {
+			if (id == null) {
+				id = getId().sub(defaultId);
+			}
+
+			final Int32op flags = flags(null, code).load(null, code);
+			final Int32op uexternal = flags.lshr(
+					id.detail("ush"),
+					code,
+					numberOfTrailingZeros(mask));
+
+			return uexternal.lowestBit(id, code);
 		}
 
 	}

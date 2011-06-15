@@ -17,16 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.root;
+package org.o42a.intrinsic.string;
 
 import org.o42a.common.object.IntrinsicType;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.value.ValueType;
+import org.o42a.intrinsic.root.Root;
 
 
 public class StringObject extends IntrinsicType {
 
-	StringObject(Root root) {
+	public StringObject(Root root) {
 		super(root.toMemberOwner(), "string", ValueType.STRING);
+	}
+
+	@Override
+	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
+
+		members.addMember(new StringLength(this).toMember());
 	}
 
 }

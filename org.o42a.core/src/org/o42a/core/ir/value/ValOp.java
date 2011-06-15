@@ -88,8 +88,16 @@ public final class ValOp extends IROp implements CondOp {
 		return ptr().loadStatic(id, code);
 	}
 
+	public final Int32op loadAlignmentShift(CodeId id, Code code) {
+		return ptr().loadAlignmentShift(id, code);
+	}
+
 	public final RecOp<Int32op> length(CodeId id, Code code) {
 		return ptr().length(id, code);
+	}
+
+	public final Int32op loadDataLength(CodeId id, Code code) {
+		return ptr().loadDataLength(id, code);
 	}
 
 	public final RecOp<Int64op> rawValue(CodeId id, Code code) {

@@ -205,6 +205,11 @@ public abstract class PlainClause
 	}
 
 	@Override
+	public final Obj toObject() {
+		return getContainer().toObject();
+	}
+
+	@Override
 	public final LocalScope toLocal() {
 		return null;
 	}
