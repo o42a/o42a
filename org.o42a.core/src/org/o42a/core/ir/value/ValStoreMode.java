@@ -27,6 +27,15 @@ public enum ValStoreMode {
 	TEMP_VAL_STORE() {
 
 		@Override
+		void store(Code code, ValOp target, Val value) {
+
+			final ValueTypeIR<?> ir =
+				target.getValueType().ir(code.getGenerator());
+
+			ir.store(code, target, value);
+		}
+
+		@Override
 		void store(Code code, ValOp target, ValOp value) {
 
 			final ValueTypeIR<?> ir =
@@ -38,6 +47,15 @@ public enum ValStoreMode {
 	},
 
 	INITIAL_VAL_STORE() {
+
+		@Override
+		void store(Code code, ValOp target, Val value) {
+
+			final ValueTypeIR<?> ir =
+				target.getValueType().ir(code.getGenerator());
+
+			ir.initialize(code, target, value);
+		}
 
 		@Override
 		void store(Code code, ValOp target, ValOp value) {
@@ -53,6 +71,15 @@ public enum ValStoreMode {
 	ASSIGNMENT_VAL_STORE() {
 
 		@Override
+		void store(Code code, ValOp target, Val value) {
+
+			final ValueTypeIR<?> ir =
+				target.getValueType().ir(code.getGenerator());
+
+			ir.assign(code, target, value);
+		}
+
+		@Override
 		void store(Code code, ValOp target, ValOp value) {
 
 			final ValueTypeIR<?> ir =
@@ -62,6 +89,8 @@ public enum ValStoreMode {
 		}
 
 	};
+
+	abstract void store(Code code, ValOp target, Val value);
 
 	abstract void store(Code code, ValOp target, ValOp value);
 

@@ -82,13 +82,6 @@ public abstract class ValueType<T> {
 		return getValueClass().cast(value);
 	}
 
-	public final T definiteValue(Value<?> value) {
-		if (value.isVoid() && !isVoid()) {
-			return null;
-		}
-		return cast(value).getDefiniteValue();
-	}
-
 	public abstract Obj wrapper(Intrinsics intrinsics);
 
 	public StaticTypeRef typeRef(LocationInfo location, Scope scope) {

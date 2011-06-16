@@ -52,34 +52,27 @@ final class StringLength extends IntrinsicBuiltin {
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.INTEGER.typeRef(
-						this,
-						getScope().getEnclosingScope()));
-	}
-
-	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
-		final Value<?> string = string().value(resolver);
+		final Value<?> stringValue = string().value(resolver);
 
-		if (!string.isDefinite()) {
-			return ValueType.INTEGER.runtimeValue();
-		}
-		if (string.isFalse()) {
+		if (stringValue.isFalse()) {
 			return ValueType.INTEGER.falseValue();
 		}
+		if (!stringValue.isDefinite()) {
+			return ValueType.INTEGER.runtimeValue();
+		}
 
-		final int length =
-			ValueType.STRING.cast(string).getDefiniteValue().length();
+		final String string =
+			ValueType.STRING.cast(stringValue).getDefiniteValue();
+		final int length = string.length();
 
 		return ValueType.INTEGER.constantValue(Long.valueOf(length));
 	}
 
 	@Override
 	public void resolveBuiltin(Obj object) {
-		string().resolve(object.getScope().newResolver(value()));
+		string().resolveValues(object.getScope().newResolver(value()));
 	}
 
 	@Override
@@ -97,6 +90,14 @@ final class StringLength extends IntrinsicBuiltin {
 		stringDirs.done();
 
 		return result;
+	}
+
+	@Override
+	protected Ascendants createAscendants() {
+		return new Ascendants(this).setAncestor(
+				ValueType.INTEGER.typeRef(
+						this,
+						getScope().getEnclosingScope()));
 	}
 
 	private Ref string() {

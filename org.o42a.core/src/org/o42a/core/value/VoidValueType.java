@@ -20,6 +20,7 @@
 package org.o42a.core.value;
 
 import static org.o42a.core.ir.value.Val.VOID_VAL;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.codegen.Generator;
@@ -70,6 +71,11 @@ final class VoidValueType extends ValueType<Void> {
 		}
 
 		@Override
+		public boolean hasValue() {
+			return false;
+		}
+
+		@Override
 		public Val val(Void value) {
 			return VOID_VAL;
 		}
@@ -84,7 +90,7 @@ final class VoidValueType extends ValueType<Void> {
 				getGenerator().newGlobal().setConstant()
 				.dontExport().newInstance(
 						getGenerator().id("CONST").sub("VOID"),
-						ValType.VAL_TYPE,
+						VAL_TYPE,
 						val(value));
 
 			return this.valPtr = global.getPointer();

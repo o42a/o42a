@@ -19,8 +19,7 @@
 */
 package org.o42a.core.ir.value;
 
-import static java.lang.Integer.numberOfTrailingZeros;
-import static org.o42a.core.ir.value.Val.*;
+import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -114,92 +113,15 @@ public final class ValType extends Type<ValType.Op> {
 			return int32(id, code, getType().flags());
 		}
 
-		public final BoolOp loadCondition(CodeId id, Code code) {
-
-			final Int32op flags = flags(null, code).load(null, code);
-
-			return flags.lowestBit(
-					id != null ? id : getId().sub("condition_flag"),
-					code);
-		}
-
-		public final BoolOp loadUnknown(CodeId id, Code code) {
-			return loadFlag(id, "unknown_flag", code, UNKNOWN_FLAG);
-		}
-
-		public final BoolOp loadIndefinite(CodeId id, Code code) {
-			return loadFlag(id, "indefinite_flag", code, INDEFINITE_FLAG);
-		}
-
-		public final BoolOp loadExternal(CodeId id, Code code) {
-			return loadFlag(id, "external_flag", code, EXTERNAL_FLAG);
-		}
-
-		public final BoolOp loadStatic(CodeId id, Code code) {
-			return loadFlag(id, "static_flag", code, STATIC_FLAG);
-		}
-
-		public Int32op loadAlignmentShift(CodeId id, Code code) {
-			if (id == null) {
-				id = getId().sub("alignment_shift");
-			}
-
-			final Int32op flags = flags(null, code).load(null, code);
-			final Int32op ualignment = flags.and(
-					id.detail("ush"),
-					code,
-					code.int32(ALIGNMENT_MASK));
-
-			return ualignment.lshr(
-					id,
-					code,
-					numberOfTrailingZeros(ALIGNMENT_MASK));
-		}
-
 		public final Int32recOp length(CodeId id, Code code) {
 			return int32(id, code, getType().length());
 		}
 
-		public Int32op loadDataLength(CodeId id, Code code) {
-
-			final Int32op byteLength = length(
-					id != null ? id.detail("length") : null,
-					code).load(null, code);
-			final Int32op alignmentShift = loadAlignmentShift(
-						id != null ? id.detail("alignment_shift") : null,
-						code);
-
-			return byteLength.lshr(
-					id != null ? id : getId().sub("data_len"),
-					code,
-					alignmentShift);
-		}
-
 		public final Int64recOp rawValue(CodeId id, Code code) {
-			return int64(id, code, getType().value());
-		}
-
-		public final AnyOp value(CodeId id, Code code) {
-			return rawValue(
-					id != null ? id.detail("raw") : null,
-					code).toAny(id, code);
-		}
-
-		public final Op storeFalse(Code code) {
-			flags(null, code).store(code, code.int32(0));
-			return this;
-		}
-
-		public final Op storeUnknown(Code code) {
-			flags(null, code).store(code, code.int32(UNKNOWN_FLAG));
-			return this;
-		}
-
-		public final Op storeIndefinite(Code code) {
-			flags(null, code).store(
+			return int64(
+					id != null ? id : getId().sub("raw_value"),
 					code,
-					code.int32(UNKNOWN_FLAG | INDEFINITE_FLAG));
-			return this;
+					getType().value());
 		}
 
 		@Override
@@ -210,70 +132,6 @@ public final class ValType extends Type<ValType.Op> {
 
 		final boolean isAllocatedOnStack() {
 			return this.allocatedOnStack;
-		}
-
-		final void storeVoid(Code code) {
-			flags(null, code).store(code, code.int32(CONDITION_FLAG));
-		}
-
-		final void store(Code code, Val value) {
-			flags(null, code).store(code, code.int32(value.getFlags()));
-			if (!value.getCondition()) {
-				return;
-			}
-			length(null, code).store(code, code.int32(value.getLength()));
-
-			final Ptr<AnyOp> pointer = value.getPointer();
-
-			if (pointer != null) {
-				value(null, code)
-				.toPtr(null, code)
-				.store(code, pointer.op(null, code));
-			} else {
-				rawValue(null, code).store(
-						code,
-						code.int64(value.getValue()));
-			}
-		}
-
-		final void store(Code code, Op value) {
-			flags(null, code).store(
-					code,
-					value.flags(null, code).load(null, code));
-			length(null, code).store(
-					code,
-					value.length(null, code).load(null, code));
-			rawValue(null, code).store(
-					code,
-					value.rawValue(null, code).load(null, code));
-		}
-
-		final void store(Code code, Int64op value) {
-			rawValue(null, code).store(code, value);
-			flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
-		}
-
-		final void store(Code code, Fp64op value) {
-			value(null, code).toFp64(null, code).store(code, value);
-			flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
-		}
-
-		private BoolOp loadFlag(
-				CodeId id,
-				String defaultId,
-				Code code,
-				int mask) {
-			if (id == null) {
-				id = getId().sub(defaultId);
-			}
-
-			final Int32op flags = flags(null, code).load(null, code);
-			final Int32op uexternal = flags.lshr(
-					id.detail("ush"),
-					code,
-					numberOfTrailingZeros(mask));
-
-			return uexternal.lowestBit(id, code);
 		}
 
 	}
