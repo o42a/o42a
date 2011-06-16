@@ -35,6 +35,11 @@ public final class LLVMInt8op extends LLVMIntOp<Int8op, LLVMInt8op>
 	}
 
 	@Override
+	public Int8op comp(CodeId id, Code code) {
+		return xor(unaryId(id, code, "comp"), code, code.int8((byte) -1));
+	}
+
+	@Override
 	public LLVMInt8op toInt8(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);

@@ -35,6 +35,11 @@ public final class LLVMInt16op extends LLVMIntOp<Int16op, LLVMInt16op>
 	}
 
 	@Override
+	public Int16op comp(CodeId id, Code code) {
+		return xor(unaryId(id, code, "comp"), code, code.int16((short) -1));
+	}
+
+	@Override
 	public LLVMInt16op toInt16(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
