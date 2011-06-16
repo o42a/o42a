@@ -635,9 +635,9 @@ public abstract class Obj extends Artifact<Obj>
 		objectType().getAscendants().resolveAll();
 		if (!isClone()) {
 			resolveAllMembers();
+			validateImplicitSubClauses(getExplicitClauses());
+			getDefinitions().resolveAll();
 		}
-		validateImplicitSubClauses(getExplicitClauses());
-		getDefinitions().resolveAll();
 	}
 
 	protected ObjectIR createIR(Generator generator) {
