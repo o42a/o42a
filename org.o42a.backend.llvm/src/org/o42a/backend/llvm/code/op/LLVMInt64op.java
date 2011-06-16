@@ -35,6 +35,11 @@ public final class LLVMInt64op extends LLVMIntOp<Int64op, LLVMInt64op>
 	}
 
 	@Override
+	public Int64op comp(CodeId id, Code code) {
+		return xor(unaryId(id, code, "comp"), code, code.int64(-1L));
+	}
+
+	@Override
 	public LLVMInt64op toInt64(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);

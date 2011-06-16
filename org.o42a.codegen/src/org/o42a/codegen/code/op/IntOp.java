@@ -47,6 +47,8 @@ public interface IntOp<O extends IntOp<O>> extends NumOp<O> {
 
 	O xor(CodeId id, Code code, O operand);
 
+	O comp(CodeId id, Code code);
+
 	BoolOp lowestBit(CodeId id, Code code);
 
 }

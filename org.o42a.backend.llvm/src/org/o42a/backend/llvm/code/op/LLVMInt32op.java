@@ -35,6 +35,11 @@ public final class LLVMInt32op extends LLVMIntOp<Int32op, LLVMInt32op>
 	}
 
 	@Override
+	public Int32op comp(CodeId id, Code code) {
+		return xor(unaryId(id, code, "comp"), code, code.int32(-1));
+	}
+
+	@Override
 	public LLVMInt32op toInt32(CodeId id, Code code) {
 
 		final long nextPtr = nextPtr(code);
