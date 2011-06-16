@@ -45,6 +45,11 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 	}
 
 	@Override
+	public boolean hasLength() {
+		return true;
+	}
+
+	@Override
 	public Val val(T value) {
 
 		final Val cachedVal = this.valueCache.get(value);
@@ -94,6 +99,12 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 			return;
 		}
 		use(code, target);
+	}
+
+	@Override
+	protected void assign(Code code, ValOp target, Val value) {
+		unuse(code, target);
+		initialize(code, target, value);
 	}
 
 	@Override

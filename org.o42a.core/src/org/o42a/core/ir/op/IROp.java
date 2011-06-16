@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
@@ -48,6 +49,10 @@ public abstract class IROp {
 
 	public final CodeBuilder getBuilder() {
 		return this.builder;
+	}
+
+	public final CodeId getId() {
+		return ptr().getId();
 	}
 
 	public PtrOp<?> ptr() {

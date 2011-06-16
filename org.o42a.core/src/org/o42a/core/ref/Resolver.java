@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.CompilerLogger;
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
+import org.o42a.util.log.Loggable;
 import org.o42a.util.use.User;
 import org.o42a.util.use.UserInfo;
 
 
-public class Resolver implements UserInfo {
+public class Resolver implements UserInfo, LocationInfo {
 
 	public static ResolverFactory<Resolver> resolverFactory(Scope scope) {
 		return new Factory(scope);
@@ -38,6 +37,16 @@ public class Resolver implements UserInfo {
 	protected Resolver(Scope scope, UserInfo user) {
 		this.scope = scope;
 		this.user = user.toUser();
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return this.scope.getLoggable();
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.scope.getContext();
 	}
 
 	public final boolean isDummy() {

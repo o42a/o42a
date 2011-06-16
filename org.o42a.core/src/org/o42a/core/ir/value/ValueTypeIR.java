@@ -21,6 +21,7 @@ package org.o42a.core.ir.value;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.value.ValueType;
 
@@ -43,6 +44,14 @@ public abstract class ValueTypeIR<T> {
 		return this.valueType;
 	}
 
+	public boolean hasValue() {
+		return true;
+	}
+
+	public boolean hasLength() {
+		return false;
+	}
+
 	public abstract Val val(T value);
 
 	public abstract Ptr<ValType.Op> valPtr(T value);
@@ -55,11 +64,56 @@ public abstract class ValueTypeIR<T> {
 		return this.valueType + " IR";
 	}
 
+	protected void store(Code code, ValOp target, Val value) {
+		target.flags(null, code).store(code, code.int32(value.getFlags()));
+		if (!value.getCondition()) {
+			return;
+		}
+		if (hasLength()) {
+			target.length(null, code)
+			.store(code, code.int32(value.getLength()));
+		}
+		if (hasValue()) {
+
+			final Ptr<AnyOp> pointer = value.getPointer();
+
+			if (pointer != null) {
+				target.value(null, code)
+				.toPtr(null, code)
+				.store(code, pointer.op(null, code));
+			} else {
+				target.rawValue(null, code).store(
+						code,
+						code.int64(value.getValue()));
+			}
+		}
+	}
+
 	protected void store(Code code, ValOp target, ValOp value) {
-		target.ptr().store(code, value.ptr());
+		target.flags(null, code).store(
+				code,
+				value.flags(null, code).load(null, code));
+		if (hasLength()) {
+			target.length(null, code).store(
+					code,
+					value.length(null, code).load(null, code));
+		}
+		if (hasValue()) {
+			target.rawValue(null, code).store(
+					code,
+					value.rawValue(null, code).load(null, code));
+		}
+	}
+
+	protected void initialize(Code code, ValOp target, Val value) {
+		store(code, target, value);
 	}
 
 	protected void initialize(Code code, ValOp target, ValOp value) {
+		store(code, target, value);
+	}
+
+	protected void assign(Code code, ValOp target, Val value) {
 		store(code, target, value);
 	}
 

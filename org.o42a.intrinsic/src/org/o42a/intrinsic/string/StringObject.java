@@ -28,7 +28,20 @@ import org.o42a.intrinsic.root.Root;
 public class StringObject extends IntrinsicType {
 
 	public StringObject(Root root) {
-		super(root.toMemberOwner(), "string", ValueType.STRING);
+		super(
+				root.toMemberOwner(),
+				sourcedDeclaration(
+						root,
+						"string",
+						"string/string.o42a")
+				.prototype(),
+				ValueType.STRING);
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+		includeSource();
 	}
 
 	@Override
@@ -36,6 +49,7 @@ public class StringObject extends IntrinsicType {
 		super.declareMembers(members);
 
 		members.addMember(new StringLength(this).toMember());
+		members.addMember(new StringChar(this).toMember());
 	}
 
 }
