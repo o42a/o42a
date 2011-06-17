@@ -34,6 +34,13 @@ size_t o42a_str_len(O42A_DECLS const o42a_val_t *);
 
 UChar32 o42a_str_cmask(O42A_DECLS const o42a_val_t *);
 
+void o42a_str_sub(
+		O42A_DECLS
+		o42a_val_t *,
+		const o42a_val_t *,
+		int64_t,
+		int64_t);
+
 
 #ifdef __cplusplus
 }

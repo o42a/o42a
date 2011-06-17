@@ -124,6 +124,7 @@ $(srcdir)/memory.%.o : $(srcdir)/memory.c
 	$(call compile)
 
 $(srcdir)/string.*.o : $(common_deps)
+$(srcdir)/string.*.o : $(headersdir)/memory.h
 $(srcdir)/string.*.o : $(headersdir)/string.h
 $(srcdir)/string.%.o : $(srcdir)/string.c
 	$(call compile)
