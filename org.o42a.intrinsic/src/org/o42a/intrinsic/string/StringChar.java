@@ -70,8 +70,8 @@ final class StringChar extends IntrinsicBuiltin {
 
 		final String string =
 			ValueType.STRING.cast(stringValue).getDefiniteValue();
-		final int index =
-			ValueType.INTEGER.cast(indexValue).getDefiniteValue().intValue();
+		final long index =
+			ValueType.INTEGER.cast(indexValue).getDefiniteValue();
 
 		if (index < 0 || index >= string.length()) {
 			getLogger().error(
@@ -83,7 +83,7 @@ final class StringChar extends IntrinsicBuiltin {
 		}
 
 		return ValueType.STRING.constantValue(
-				Character.toString(string.charAt(index)));
+				Character.toString(string.charAt((int) index)));
 	}
 
 	@Override
@@ -99,11 +99,11 @@ final class StringChar extends IntrinsicBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs stringDirs =
-			dirs.dirs().value(ValueType.STRING, "string_val");
+			dirs.dirs().value(ValueType.STRING, "string");
 		final ValOp stringVal = string().op(host).writeValue(stringDirs);
 
 		final ValDirs indexDirs =
-			stringDirs.dirs().value(ValueType.STRING, "index_val");
+			stringDirs.dirs().value(ValueType.INTEGER, "index");
 		final ValOp indexVal = index().op(host).writeValue(indexDirs);
 
 		final Code code = indexDirs.code();

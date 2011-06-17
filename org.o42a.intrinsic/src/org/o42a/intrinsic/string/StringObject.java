@@ -50,6 +50,7 @@ public class StringObject extends IntrinsicType {
 
 		members.addMember(new StringLength(this).toMember());
 		members.addMember(new StringChar(this).toMember());
+		members.addMember(new SubString(this).toMember());
 	}
 
 }
