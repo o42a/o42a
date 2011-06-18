@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class ConditionalDefinitionTest extends CompilerTestCase {
@@ -38,9 +39,15 @@ public class ConditionalDefinitionTest extends CompilerTestCase {
 				"B := a(Condition = false).",
 				"C := b.");
 
-		assertThat(definiteValue(field("a", "value"), Long.class), is(1L));
-		assertThat(definiteValue(field("b", "value"), Long.class), is(0L));
-		assertThat(definiteValue(field("c", "value"), Long.class), is(0L));
+		assertThat(
+				definiteValue(field("a", "value"), ValueType.INTEGER),
+				is(1L));
+		assertThat(
+				definiteValue(field("b", "value"), ValueType.INTEGER),
+				is(0L));
+		assertThat(
+				definiteValue(field("c", "value"), ValueType.INTEGER),
+				is(0L));
 	}
 
 	@Test
@@ -58,11 +65,21 @@ public class ConditionalDefinitionTest extends CompilerTestCase {
 				"B := sign(Arg = -10).",
 				"C := sign(Arg = 0).");
 
-		assertThat(definiteValue(field("a"), Long.class), is(1L));
-		assertThat(definiteValue(field("a1"), Long.class), is(-1L));
-		assertThat(definiteValue(field("a2"), Long.class), is(-1L));
-		assertThat(definiteValue(field("b"), Long.class), is(-1L));
-		assertThat(definiteValue(field("c"), Long.class), is(0L));
+		assertThat(
+				definiteValue(field("a"), ValueType.INTEGER),
+				is(1L));
+		assertThat(
+				definiteValue(field("a1"), ValueType.INTEGER),
+				is(-1L));
+		assertThat(
+				definiteValue(field("a2"), ValueType.INTEGER),
+				is(-1L));
+		assertThat(
+				definiteValue(field("b"), ValueType.INTEGER),
+				is(-1L));
+		assertThat(
+				definiteValue(field("c"), ValueType.INTEGER),
+				is(0L));
 	}
 
 	@Test
@@ -75,9 +92,15 @@ public class ConditionalDefinitionTest extends CompilerTestCase {
 				"B := a(Condition = false).",
 				"C := b.");
 
-		assertThat(definiteValue(field("a", "value"), Long.class), is(1L));
-		assertThat(definiteValue(field("b", "value"), Long.class), is(0L));
-		assertThat(definiteValue(field("c", "value"), Long.class), is(0L));
+		assertThat(
+				definiteValue(field("a", "value"), ValueType.INTEGER),
+				is(1L));
+		assertThat(
+				definiteValue(field("b", "value"), ValueType.INTEGER),
+				is(0L));
+		assertThat(
+				definiteValue(field("c", "value"), ValueType.INTEGER),
+				is(0L));
 	}
 
 }

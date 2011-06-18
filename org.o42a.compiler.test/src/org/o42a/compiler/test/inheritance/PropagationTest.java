@@ -30,6 +30,7 @@ import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.Source;
 
 
@@ -53,7 +54,7 @@ public class PropagationTest extends CompilerTestCase {
 		final Obj aBar = field(this.a, "bar").getArtifact().toObject();
 		final Obj bBar = field(this.b, "bar").getArtifact().toObject();
 
-		assertThat(definiteValue(bBar, Long.class), is(3L));
+		assertThat(definiteValue(bBar, ValueType.INTEGER), is(3L));
 		assertTrue(bBar.type().useBy(USE_CASE).derivedFrom(
 				aBar.type().useBy(USE_CASE),
 				Derivation.MEMBER_OVERRIDE));
@@ -127,10 +128,10 @@ public class PropagationTest extends CompilerTestCase {
 		assertTrue(bFoo.type().useBy(USE_CASE).derivedFrom(
 				aFoo.type().useBy(USE_CASE)));
 
-		assertThat(definiteValue(foo, Long.class), is(1L));
-		assertThat(definiteValue(bar, Long.class), is(2L));
-		assertThat(definiteValue(aFoo, Long.class), is(3L));
-		assertThat(definiteValue(bFoo, Long.class), is(2L));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(bar, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(3L));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
 	}
 
 	@Override

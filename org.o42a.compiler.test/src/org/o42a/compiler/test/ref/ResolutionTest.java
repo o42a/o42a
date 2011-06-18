@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class ResolutionTest extends CompilerTestCase {
@@ -69,8 +70,8 @@ public class ResolutionTest extends CompilerTestCase {
 		final Field<?> a = field("a");
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(a, Long.class), is(24L));
-		assertThat(definiteValue(b, Long.class), is(44L));
+		assertThat(definiteValue(a, ValueType.INTEGER), is(24L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(44L));
 	}
 
 	@Test
@@ -85,8 +86,8 @@ public class ResolutionTest extends CompilerTestCase {
 		final Field<?> a = field("a");
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(a, Long.class), is(24L));
-		assertThat(definiteValue(b, Long.class), is(44L));
+		assertThat(definiteValue(a, ValueType.INTEGER), is(24L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(44L));
 	}
 
 }

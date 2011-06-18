@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class ReproductionTest extends CompilerTestCase {
@@ -39,7 +40,7 @@ public class ReproductionTest extends CompilerTestCase {
 				")",
 				"Result := object_refer");
 
-		assertThat(definiteValue(field("result"), Long.class), is(2L));
+		assertThat(definiteValue(field("result"), ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -54,7 +55,7 @@ public class ReproductionTest extends CompilerTestCase {
 				"Descendant :=> object",
 				"Result := descendant_refer");
 
-		assertThat(definiteValue(field("result"), Long.class), is(2L));
+		assertThat(definiteValue(field("result"), ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -69,7 +70,9 @@ public class ReproductionTest extends CompilerTestCase {
 				")",
 				"Result := object_refer");
 
-		assertThat(definiteValue(field("result", "value"), Long.class), is(2L));
+		assertThat(
+				definiteValue(field("result", "value"), ValueType.INTEGER),
+				is(2L));
 	}
 
 	@Test
@@ -85,7 +88,9 @@ public class ReproductionTest extends CompilerTestCase {
 				"Descendant :=> object",
 				"Result := descendant_refer");
 
-		assertThat(definiteValue(field("result", "value"), Long.class), is(2L));
+		assertThat(
+				definiteValue(field("result", "value"), ValueType.INTEGER),
+				is(2L));
 	}
 
 	@Test
@@ -167,7 +172,9 @@ public class ReproductionTest extends CompilerTestCase {
 				"Result := object_refer");
 
 		assertThat(
-				definiteValue(field("result", "foo", "value"), Long.class),
+				definiteValue(
+						field("result", "foo", "value"),
+						ValueType.INTEGER),
 				is(2L));
 	}
 
@@ -189,7 +196,9 @@ public class ReproductionTest extends CompilerTestCase {
 				"Result := descendant_refer");
 
 		assertThat(
-				definiteValue(field("result", "foo", "value"), Long.class),
+				definiteValue(
+						field("result", "foo", "value"),
+						ValueType.INTEGER),
 				is(2L));
 	}
 

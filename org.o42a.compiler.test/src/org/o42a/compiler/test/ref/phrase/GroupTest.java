@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class GroupTest extends CompilerTestCase {
@@ -39,7 +40,7 @@ public class GroupTest extends CompilerTestCase {
 
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(b, Long.class), is(2L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -56,7 +57,7 @@ public class GroupTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(foo, Long.class), is(2L));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -73,7 +74,7 @@ public class GroupTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(foo, Long.class), is(2L));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -88,7 +89,7 @@ public class GroupTest extends CompilerTestCase {
 
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(b, Long.class), is(2L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -105,7 +106,7 @@ public class GroupTest extends CompilerTestCase {
 
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(b, Long.class), is(2L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -122,7 +123,7 @@ public class GroupTest extends CompilerTestCase {
 
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(b, Long.class), is(2L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -137,7 +138,7 @@ public class GroupTest extends CompilerTestCase {
 
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(b, Long.class), is(2L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
 
 }

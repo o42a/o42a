@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class PhraseTest extends CompilerTestCase {
@@ -42,8 +43,8 @@ public class PhraseTest extends CompilerTestCase {
 		final Field<?> foo = field(b, "foo");
 		final Field<?> bar = field(foo, "bar");
 
-		assertThat(definiteValue(foo, Long.class), is(2L));
-		assertThat(definiteValue(bar, String.class), is("b"));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(bar, ValueType.STRING), is("b"));
 	}
 
 	@Test
@@ -58,8 +59,8 @@ public class PhraseTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(b, Long.class), is(2L));
-		assertThat(definiteValue(foo, String.class), is("b"));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(foo, ValueType.STRING), is("b"));
 	}
 
 }

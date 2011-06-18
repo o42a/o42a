@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.Source;
 
 
@@ -44,9 +45,9 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 				"B := a(Foo = 2).",
 				"C := b.");
 
-		assertThat(definiteValue(this.aBar, Long.class), is(1L));
-		assertThat(definiteValue(this.bBar, Long.class), is(2L));
-		assertThat(definiteValue(this.cBar, Long.class), is(2L));
+		assertThat(definiteValue(this.aBar, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.bBar, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(this.cBar, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -59,9 +60,9 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 				"B := a(Foo = 2).",
 				"C := b.");
 
-		assertThat(definiteValue(this.aBar, Long.class), is(-1L));
-		assertThat(definiteValue(this.bBar, Long.class), is(-2L));
-		assertThat(definiteValue(this.cBar, Long.class), is(-2L));
+		assertThat(definiteValue(this.aBar, ValueType.INTEGER), is(-1L));
+		assertThat(definiteValue(this.bBar, ValueType.INTEGER), is(-2L));
+		assertThat(definiteValue(this.cBar, ValueType.INTEGER), is(-2L));
 	}
 
 	@Override

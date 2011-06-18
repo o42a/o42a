@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.Source;
 
 
@@ -47,10 +48,10 @@ public class BinaryInheritanceTest extends CompilerTestCase {
 				"C := b.",
 				"D := b()");
 
-		assertThat(definiteValue(this.aResult, Long.class), is(5L));
-		assertThat(definiteValue(this.bResult, Long.class), is(-3L));
-		assertThat(definiteValue(this.cResult, Long.class), is(-3L));
-		assertThat(definiteValue(this.dResult, Long.class), is(-3L));
+		assertThat(definiteValue(this.aResult, ValueType.INTEGER), is(5L));
+		assertThat(definiteValue(this.bResult, ValueType.INTEGER), is(-3L));
+		assertThat(definiteValue(this.cResult, ValueType.INTEGER), is(-3L));
+		assertThat(definiteValue(this.dResult, ValueType.INTEGER), is(-3L));
 	}
 
 	@Test
@@ -65,10 +66,10 @@ public class BinaryInheritanceTest extends CompilerTestCase {
 				"C := b.",
 				"D := b()");
 
-		assertThat(definiteValue(this.aResult, Long.class), is(-1L));
-		assertThat(definiteValue(this.bResult, Long.class), is(11L));
-		assertThat(definiteValue(this.cResult, Long.class), is(11L));
-		assertThat(definiteValue(this.dResult, Long.class), is(11L));
+		assertThat(definiteValue(this.aResult, ValueType.INTEGER), is(-1L));
+		assertThat(definiteValue(this.bResult, ValueType.INTEGER), is(11L));
+		assertThat(definiteValue(this.cResult, ValueType.INTEGER), is(11L));
+		assertThat(definiteValue(this.dResult, ValueType.INTEGER), is(11L));
 	}
 
 	@Test
@@ -83,10 +84,10 @@ public class BinaryInheritanceTest extends CompilerTestCase {
 				"C := b.",
 				"D := b()");
 
-		assertThat(definiteValue(this.aResult, Long.class), is(6L));
-		assertThat(definiteValue(this.bResult, Long.class), is(-28L));
-		assertThat(definiteValue(this.cResult, Long.class), is(-28L));
-		assertThat(definiteValue(this.dResult, Long.class), is(-28L));
+		assertThat(definiteValue(this.aResult, ValueType.INTEGER), is(6L));
+		assertThat(definiteValue(this.bResult, ValueType.INTEGER), is(-28L));
+		assertThat(definiteValue(this.cResult, ValueType.INTEGER), is(-28L));
+		assertThat(definiteValue(this.dResult, ValueType.INTEGER), is(-28L));
 	}
 
 	@Test
@@ -101,10 +102,10 @@ public class BinaryInheritanceTest extends CompilerTestCase {
 				"C := b.",
 				"D := b()");
 
-		assertThat(definiteValue(this.aResult, Long.class), is(1L));
-		assertThat(definiteValue(this.bResult, Long.class), is(-10L));
-		assertThat(definiteValue(this.cResult, Long.class), is(-10L));
-		assertThat(definiteValue(this.dResult, Long.class), is(-10L));
+		assertThat(definiteValue(this.aResult, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.bResult, ValueType.INTEGER), is(-10L));
+		assertThat(definiteValue(this.cResult, ValueType.INTEGER), is(-10L));
+		assertThat(definiteValue(this.dResult, ValueType.INTEGER), is(-10L));
 	}
 
 	@Override

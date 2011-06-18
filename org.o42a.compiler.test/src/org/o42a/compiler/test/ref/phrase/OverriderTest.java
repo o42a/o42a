@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class OverriderTest extends CompilerTestCase {
@@ -41,7 +42,7 @@ public class OverriderTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(foo, Long.class), is(2L));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -56,7 +57,7 @@ public class OverriderTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(foo, String.class), is("b"));
+		assertThat(definiteValue(foo, ValueType.STRING), is("b"));
 	}
 
 	@Test
@@ -71,7 +72,7 @@ public class OverriderTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(foo, String.class), is("b"));
+		assertThat(definiteValue(foo, ValueType.STRING), is("b"));
 	}
 
 	@Test
@@ -86,7 +87,7 @@ public class OverriderTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(foo, String.class), is("b"));
+		assertThat(definiteValue(foo, ValueType.STRING), is("b"));
 	}
 
 }

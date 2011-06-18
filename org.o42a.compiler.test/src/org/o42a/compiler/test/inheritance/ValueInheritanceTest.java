@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.Source;
 
 
@@ -36,24 +37,24 @@ public class ValueInheritanceTest extends CompilerTestCase {
 	@Test
 	public void inheritValue() {
 		compile("A := 1; b := a");
-		assertThat(definiteValue(this.a, Long.class), is(1L));
-		assertThat(definiteValue(this.b, Long.class), is(1L));
+		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
 	public void propagateValue() {
 		compile("A := 1; b := a");
-		assertThat(definiteValue(this.a, Long.class), is(1L));
-		assertThat(definiteValue(this.b, Long.class), is(1L));
+		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
 	public void overrideValue() {
 		compile(
-				"A := 1;",
-				"b := a(=2)");
-		assertThat(definiteValue(this.a, Long.class), is(1L));
-		assertThat(definiteValue(this.b, Long.class), is(2L));
+				"A := 1",
+				"B := a(=2)");
+		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -61,8 +62,8 @@ public class ValueInheritanceTest extends CompilerTestCase {
 		compile(
 				"A := 1;",
 				"b := &a(=2)");
-		assertThat(definiteValue(this.a, Long.class), is(1L));
-		assertThat(definiteValue(this.b, Long.class), is(2L));
+		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(2L));
 	}
 
 	@Override

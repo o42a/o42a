@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class BinaryOperatorTest extends CompilerTestCase {
@@ -44,7 +45,9 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"B := a + 3");
 
 		assertTrueVoid(field("b", "left"));
-		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
+		assertThat(
+				definiteValue(field("b", "right"), ValueType.INTEGER),
+				is(3L));
 	}
 
 	@Test
@@ -63,7 +66,9 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"B := a - 3");
 
 		assertTrueVoid(field("b", "left"));
-		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
+		assertThat(
+				definiteValue(field("b", "right"), ValueType.INTEGER),
+				is(3L));
 	}
 
 	@Test
@@ -82,7 +87,9 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"B := a * 3");
 
 		assertTrueVoid(field("b", "left"));
-		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
+		assertThat(
+				definiteValue(field("b", "right"), ValueType.INTEGER),
+				is(3L));
 	}
 
 	@Test
@@ -101,7 +108,9 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				"B := a / 3");
 
 		assertTrueVoid(field("b", "left"));
-		assertThat(definiteValue(field("b", "right"), Long.class), is(3L));
+		assertThat(
+				definiteValue(field("b", "right"), ValueType.INTEGER),
+				is(3L));
 	}
 
 }
