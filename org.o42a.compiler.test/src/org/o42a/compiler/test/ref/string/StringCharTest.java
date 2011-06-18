@@ -56,7 +56,7 @@ public class StringCharTest extends CompilerTestCase {
 
 		compile("Chr := \"abc\": char[-1]");
 
-		assertFalseValue(valueOf(field("chr")));
+		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
 
 	@Test
@@ -65,7 +65,7 @@ public class StringCharTest extends CompilerTestCase {
 
 		compile("Chr := \"abc\": char[3]");
 
-		assertFalseValue(valueOf(field("chr")));
+		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class StringCharTest extends CompilerTestCase {
 				"Str := string(False)",
 				"Chr := str: char[0]");
 
-		assertFalseValue(valueOf(field("chr")));
+		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
 
 	@Test
@@ -83,14 +83,14 @@ public class StringCharTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Chr := rt-string 'abc': char[0]");
 
-		assertRuntimeValue(valueOf(field("chr")));
+		assertRuntimeValue(valueOf(field("chr"), ValueType.STRING));
 	}
 
 	@Test
 	public void falseIndex() {
 		compile("Chr := \"abc\": char[integer(False)]");
 
-		assertFalseValue(valueOf(field("chr")));
+		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class StringCharTest extends CompilerTestCase {
 				"Use namespace 'Test'",
 				"Chr := \"abc\": char[rt-integer '1']");
 
-		assertRuntimeValue(valueOf(field("chr")));
+		assertRuntimeValue(valueOf(field("chr"), ValueType.STRING));
 	}
 
 }
