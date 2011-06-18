@@ -90,7 +90,7 @@ public abstract class AbstractContainer extends Location implements Container {
 		final MemberKey enclosingKey = member.getKey().getEnclosingKey();
 
 		if (enclosingKey == null) {
-			return scope.getEnclosingContainer();
+			return scope.getContainer();
 		}
 
 		final Member parent = scope.getContainer().member(enclosingKey);

@@ -19,3 +19,9 @@
 */
 From :=< `integer
 To :=< `integer
+
+<*Range> (
+  <*[] | range> Substring:: from = integer
+  <From | range> Substring:: from = integer
+  <To | range> Substring:: to = integer
+)

@@ -43,6 +43,14 @@ public class ParentRef extends Wrap {
 	}
 
 	@Override
+	public String toString() {
+		if (this.name == null) {
+			return super.toString();
+		}
+		return this.name + "::";
+	}
+
+	@Override
 	protected Ref resolveWrapped() {
 
 		Path path = SELF_PATH;

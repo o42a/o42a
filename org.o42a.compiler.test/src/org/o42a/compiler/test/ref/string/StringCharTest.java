@@ -1,0 +1,104 @@
+/*
+    Compiler Tests
+    Copyright (C) 2011 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.compiler.test.ref.string;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+import org.o42a.compiler.test.CompilerTestCase;
+
+
+public class StringCharTest extends CompilerTestCase {
+
+	@Test
+	public void firstChar() {
+		compile("Chr := \"abc\": char[0]");
+
+		assertThat(definiteValue(field("chr"), String.class), is("a"));
+	}
+
+	@Test
+	public void lastChar() {
+		compile("Chr := \"abc\": char[2]");
+
+		assertThat(definiteValue(field("chr"), String.class), is("c"));
+	}
+
+	@Test
+	public void someChar() {
+		compile("Chr := \"abc\": char[1]");
+
+		assertThat(definiteValue(field("chr"), String.class), is("b"));
+	}
+
+	@Test
+	public void negativeCharIndex() {
+		expectError("compiler.invalid_char_index");
+
+		compile("Chr := \"abc\": char[-1]");
+
+		assertFalseValue(valueOf(field("chr")));
+	}
+
+	@Test
+	public void invalidCharIndex() {
+		expectError("compiler.invalid_char_index");
+
+		compile("Chr := \"abc\": char[3]");
+
+		assertFalseValue(valueOf(field("chr")));
+	}
+
+	@Test
+	public void falseString() {
+		compile(
+				"Str := string(False)",
+				"Chr := str: char[0]");
+
+		assertFalseValue(valueOf(field("chr")));
+	}
+
+	@Test
+	public void runtimeString() {
+		compile(
+				"Use namespace 'Test'",
+				"Chr := rt-string 'abc': char[0]");
+
+		assertRuntimeValue(valueOf(field("chr")));
+	}
+
+	@Test
+	public void falseIndex() {
+		compile("Chr := \"abc\": char[integer(False)]");
+
+		assertFalseValue(valueOf(field("chr")));
+	}
+
+	@Test
+	public void runtimeIndex() {
+		compile(
+				"Use namespace 'Test'",
+				"Chr := \"abc\": char[rt-integer '1']");
+
+		assertRuntimeValue(valueOf(field("chr")));
+	}
+
+}

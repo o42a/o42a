@@ -518,7 +518,7 @@ public class CompilerLogger implements Logger {
 		error(
 				"unresolved_parent",
 				location,
-				"Enclosing field '%s' can be found",
+				"Enclosing field '%s' can not be found",
 				fieldName);
 	}
 
