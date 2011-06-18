@@ -55,7 +55,28 @@ public class MemberRef extends Wrap {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.owner).append(':');
+		out.append(this.owner);
+
+		final int len = out.length();
+
+		if (len != 0) {
+
+			final char last = out.charAt(len - 1);
+
+			switch (last) {
+			case ':':
+			case '$':
+				break;
+			case '*':
+				if (len != 1) {
+					out.append(':');
+				}
+				break;
+			default:
+				out.append(':');
+			}
+		}
+
 		out.append(this.memberId);
 		if (this.declaredIn != null) {
 			out.append("@<").append(this.declaredIn).append('>');

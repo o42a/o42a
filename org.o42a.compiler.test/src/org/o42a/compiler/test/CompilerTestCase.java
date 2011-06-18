@@ -59,6 +59,30 @@ public abstract class CompilerTestCase {
 	private static final Compiler COMPILER = compiler();
 	private static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
 
+	public static Value<?> valueOf(Obj object) {
+		return object.value().useBy(USE_CASE).getValue();
+	}
+
+	public static Value<?> valueOf(Field<?> field) {
+		return valueOf(field.getArtifact().materialize());
+	}
+
+	public static <T> Value<T> valueOf(Field<?> field, ValueType<T> type) {
+		return valueOf(field.getArtifact().materialize(), type);
+	}
+
+	public static <T> Value<T> valueOf(Obj object, ValueType<T> type) {
+
+		final Value<?> value = object.value().useBy(USE_CASE).getValue();
+
+		assertEquals(
+				value + " has wrong type",
+				type,
+				value.getValueType());
+
+		return type.cast(value);
+	}
+
 	public static Obj toObject(Artifact<?> artifact) {
 
 		final Obj object = artifact.toObject();
@@ -118,6 +142,11 @@ public abstract class CompilerTestCase {
 
 	public static void assertKnownValue(Value<?> value) {
 		assertFalse(value + " is unknown", value.isUnknown());
+	}
+
+	public static void assertRuntimeValue(Value<?> value) {
+		assertKnownValue(value);
+		assertTrue(value + " is definite", !value.isDefinite());
 	}
 
 	public static void assertUnknownValue(Value<?> value) {

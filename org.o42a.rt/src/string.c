@@ -95,7 +95,7 @@ void o42a_str_sub(
 		sub->value.v_ptr = substr = O42A(o42a_mem_alloc_rc(O42A_ARGS sublen));
 	}
 
-	memcpy(substr, str + bfrom, sublen);
+	O42A(memcpy(substr, str + bfrom, sublen));
 
 	O42A_RETURN;
 }

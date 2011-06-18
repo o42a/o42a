@@ -185,7 +185,7 @@ public abstract class Derivation {
 
 	final Derivation union(Derivation other) {
 
-		final int mask = this.mask & other.mask;
+		final int mask = this.mask | other.mask;
 
 		if (mask == this.mask) {
 			return this;
@@ -205,6 +205,8 @@ public abstract class Derivation {
 
 		Derivations(int mask) {
 			super(mask);
+			assert mask != 0 :
+				"Incorrect derivation";
 		}
 
 		@Override

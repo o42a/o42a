@@ -21,15 +21,15 @@ Module := string(False, = "").
 Object := string(False, = "").
 Alias := string(False, = "").
 
-<*'Object path' | use object> object = *.
-<*[Object path] | use object> object = *.
+<*'Object path' | use object> Object = *.
+<*[Object path] | use object> Object = *.
 
 <From> (
-  <*'Module id' | use object> module = *.
-  <*[Module id] | use object> module = *.
+  <*'Module id' | use object> Module = *.
+  <*[Module id] | use object> Module = *.
 ).
 
 <As> (
-  <*'Object alias' | use object> alias = *.
-  <*[Object alias] | use object> alias = *.
+  <*'Object alias' | use object> Alias = *.
+  <*[Object alias] | use object> Alias = *.
 ).

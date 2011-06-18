@@ -81,7 +81,7 @@ final class SubString extends IntrinsicBuiltin {
 		if (fromValue.isDefinite()) {
 			from = ValueType.INTEGER.cast(fromValue).getDefiniteValue();
 			if (from < 0 || from >= length) {
-				getLogger().error(
+				resolver.getLogger().error(
 						"invalid_substr_from",
 						resolver,
 						"Invalid substring range start: %d",
@@ -94,7 +94,7 @@ final class SubString extends IntrinsicBuiltin {
 		if (toValue.isDefinite()) {
 			to = ValueType.INTEGER.cast(toValue).getDefiniteValue();
 			if (to < 0 || to >= length) {
-				getLogger().error(
+				resolver.getLogger().error(
 						"invalid_substr_to",
 						resolver,
 						"Invalid substring range end: %d",
@@ -112,7 +112,7 @@ final class SubString extends IntrinsicBuiltin {
 			return ValueType.STRING.runtimeValue();
 		}
 		if (from > to) {
-			getLogger().error(
+			resolver.getLogger().error(
 					"invalid_substr_range",
 					resolver,
 					"Invalid substring range: %d - %d",

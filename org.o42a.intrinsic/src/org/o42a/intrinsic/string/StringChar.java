@@ -74,7 +74,7 @@ final class StringChar extends IntrinsicBuiltin {
 			ValueType.INTEGER.cast(indexValue).getDefiniteValue();
 
 		if (index < 0 || index >= string.length()) {
-			getLogger().error(
+			resolver.getLogger().error(
 					"invalid_char_index",
 					resolver,
 					"Invalid charater index: %d",
