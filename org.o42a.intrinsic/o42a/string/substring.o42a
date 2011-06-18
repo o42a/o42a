@@ -17,11 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-From :=< `integer
-To :=< `integer
+From := 0
+To := (`integer) string:: length
 
 <*Range> (
-  <*[] | range> Substring:: from = integer
-  <From | range> Substring:: from = integer
-  <To | range> Substring:: to = integer
+  <From | range> Substring:: from = integer(
+    <*[] | range>
+  )
+  <To | range> Substring:: to = integer(
+    <*[] | range>
+  )
 )

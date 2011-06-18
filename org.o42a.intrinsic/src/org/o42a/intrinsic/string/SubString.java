@@ -80,7 +80,7 @@ final class SubString extends IntrinsicBuiltin {
 
 		if (fromValue.isDefinite()) {
 			from = ValueType.INTEGER.cast(fromValue).getDefiniteValue();
-			if (from < 0 || from >= length) {
+			if (from < 0 || from > length) {
 				resolver.getLogger().error(
 						"invalid_substr_from",
 						resolver,
@@ -93,7 +93,7 @@ final class SubString extends IntrinsicBuiltin {
 		}
 		if (toValue.isDefinite()) {
 			to = ValueType.INTEGER.cast(toValue).getDefiniteValue();
-			if (to < 0 || to >= length) {
+			if (to < 0 || to > length) {
 				resolver.getLogger().error(
 						"invalid_substr_to",
 						resolver,

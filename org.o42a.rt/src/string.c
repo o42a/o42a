@@ -61,7 +61,7 @@ void o42a_str_sub(
 	const size_t bto = to << ashift;
 	const size_t len = string->length;
 
-	if (bto >= len) {
+	if (bto > len) {
 		// Invalid char index.
 		sub->flags = O42A_FALSE;
 		O42A_RETURN;
@@ -75,7 +75,7 @@ void o42a_str_sub(
 		sub->length = 0;
 		O42A_RETURN;
 	}
-	if (!bfrom && bto == len - 1) {
+	if (!bfrom && bto == len) {
 		// Full string requested.
 		*sub = *string;
 		O42A_RETURN;
