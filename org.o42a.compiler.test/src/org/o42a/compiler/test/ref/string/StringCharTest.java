@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class StringCharTest extends CompilerTestCase {
@@ -32,21 +33,21 @@ public class StringCharTest extends CompilerTestCase {
 	public void firstChar() {
 		compile("Chr := \"abc\": char[0]");
 
-		assertThat(definiteValue(field("chr"), String.class), is("a"));
+		assertThat(definiteValue(field("chr"), ValueType.STRING), is("a"));
 	}
 
 	@Test
 	public void lastChar() {
 		compile("Chr := \"abc\": char[2]");
 
-		assertThat(definiteValue(field("chr"), String.class), is("c"));
+		assertThat(definiteValue(field("chr"), ValueType.STRING), is("c"));
 	}
 
 	@Test
 	public void someChar() {
 		compile("Chr := \"abc\": char[1]");
 
-		assertThat(definiteValue(field("chr"), String.class), is("b"));
+		assertThat(definiteValue(field("chr"), ValueType.STRING), is("b"));
 	}
 
 	@Test

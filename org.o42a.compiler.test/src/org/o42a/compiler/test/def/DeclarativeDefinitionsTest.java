@@ -29,6 +29,7 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 
 
 public class DeclarativeDefinitionsTest extends CompilerTestCase {
@@ -44,14 +45,14 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 		assertTrueValue(
 				a.getArtifact().materialize()
 				.value().useBy(USE_CASE).getValue());
-		assertThat(definiteValue(a, Long.class), is(1L));
+		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
 
 		final Field<?> b = field("b");
 
 		assertTrueValue(
 				b.getArtifact().materialize()
 				.value().useBy(USE_CASE).getValue());
-		assertThat(definiteValue(b, Long.class), is(1L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test

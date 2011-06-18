@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class LinkInheritanceTest extends CompilerTestCase {
@@ -41,8 +42,8 @@ public class LinkInheritanceTest extends CompilerTestCase {
 		final Field<?> aBar = field(field("a"), "bar");
 		final Field<?> bBar = field(field("b"), "bar");
 
-		assertThat(definiteValue(aBar, Long.class), is(1L));
-		assertThat(definiteValue(bBar, Long.class), is(2L));
+		assertThat(definiteValue(aBar, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(bBar, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -60,9 +61,9 @@ public class LinkInheritanceTest extends CompilerTestCase {
 		final Field<?> cBar = field(field("c"), "bar");
 		final Field<?> dBar = field(field("d"), "bar");
 
-		assertThat(definiteValue(bBar, Long.class), is(2L));
-		assertThat(definiteValue(cBar, Long.class), is(2L));
-		assertThat(definiteValue(dBar, Long.class), is(2L));
+		assertThat(definiteValue(bBar, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(cBar, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(dBar, ValueType.INTEGER), is(2L));
 	}
 
 }

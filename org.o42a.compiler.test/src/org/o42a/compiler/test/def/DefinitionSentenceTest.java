@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
 public class DefinitionSentenceTest extends CompilerTestCase {
@@ -34,7 +35,7 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 				"A := 42.",
 				"False.");
 
-		assertThat(definiteValue(field("a"), Long.class), is(42L));
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
 		assertFalseVoid(this.module);
 	}
 
@@ -46,8 +47,12 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 				"  = \"value\".",
 				").");
 
-		assertThat(definiteValue(field("a", "foo"), Long.class), is(42L));
-		assertThat(definiteValue(field("a"), String.class), is("value"));
+		assertThat(
+				definiteValue(field("a", "foo"), ValueType.INTEGER),
+				is(42L));
+		assertThat(
+				definiteValue(field("a"), ValueType.STRING),
+				is("value"));
 	}
 
 	@Test
@@ -59,10 +64,10 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 				"  False.",
 				").");
 
-		assertThat(definiteValue(field("a", "foo"), Long.class), is(42L));
-		assertFalseValue(
-				field("a").getArtifact().materialize()
-				.value().useBy(USE_CASE).getValue());
+		assertThat(
+				definiteValue(field("a", "foo"), ValueType.INTEGER),
+				is(42L));
+		assertFalseValue(valueOf(field("a")));
 	}
 
 	@Test
@@ -72,9 +77,9 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 				"False.",
 				"B := 34.");
 
-		assertThat(definiteValue(field("a"), Long.class), is(42L));
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
 		assertFalseVoid(this.module);
-		assertThat(definiteValue(field("b"), Long.class), is(34L));
+		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(34L));
 	}
 
 }

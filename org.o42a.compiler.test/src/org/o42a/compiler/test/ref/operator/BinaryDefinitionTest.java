@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.Source;
 
 
@@ -43,9 +44,9 @@ public class BinaryDefinitionTest extends CompilerTestCase {
 				"D := c.",
 				"E := c().");
 
-		assertThat(definiteValue(this.c, Long.class), is(5L));
-		assertThat(definiteValue(this.d, Long.class), is(5L));
-		assertThat(definiteValue(this.e, Long.class), is(5L));
+		assertThat(definiteValue(this.c, ValueType.INTEGER), is(5L));
+		assertThat(definiteValue(this.d, ValueType.INTEGER), is(5L));
+		assertThat(definiteValue(this.e, ValueType.INTEGER), is(5L));
 	}
 
 	@Test
@@ -57,9 +58,9 @@ public class BinaryDefinitionTest extends CompilerTestCase {
 				"D := c.",
 				"E := c().");
 
-		assertThat(definiteValue(this.c, Long.class), is(-1L));
-		assertThat(definiteValue(this.d, Long.class), is(-1L));
-		assertThat(definiteValue(this.e, Long.class), is(-1L));
+		assertThat(definiteValue(this.c, ValueType.INTEGER), is(-1L));
+		assertThat(definiteValue(this.d, ValueType.INTEGER), is(-1L));
+		assertThat(definiteValue(this.e, ValueType.INTEGER), is(-1L));
 	}
 
 	@Test
@@ -71,9 +72,9 @@ public class BinaryDefinitionTest extends CompilerTestCase {
 				"D := c.",
 				"E := c().");
 
-		assertThat(definiteValue(this.c, Long.class), is(6L));
-		assertThat(definiteValue(this.d, Long.class), is(6L));
-		assertThat(definiteValue(this.e, Long.class), is(6L));
+		assertThat(definiteValue(this.c, ValueType.INTEGER), is(6L));
+		assertThat(definiteValue(this.d, ValueType.INTEGER), is(6L));
+		assertThat(definiteValue(this.e, ValueType.INTEGER), is(6L));
 	}
 
 	@Test
@@ -85,9 +86,9 @@ public class BinaryDefinitionTest extends CompilerTestCase {
 				"D := c.",
 				"E := c().");
 
-		assertThat(definiteValue(this.c, Long.class), is(4L));
-		assertThat(definiteValue(this.d, Long.class), is(4L));
-		assertThat(definiteValue(this.e, Long.class), is(4L));
+		assertThat(definiteValue(this.c, ValueType.INTEGER), is(4L));
+		assertThat(definiteValue(this.d, ValueType.INTEGER), is(4L));
+		assertThat(definiteValue(this.e, ValueType.INTEGER), is(4L));
 	}
 
 	@Override

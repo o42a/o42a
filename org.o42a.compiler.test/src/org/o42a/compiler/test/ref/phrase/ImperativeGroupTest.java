@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class ImperativeGroupTest extends CompilerTestCase {
@@ -41,7 +42,7 @@ public class ImperativeGroupTest extends CompilerTestCase {
 
 		final Field<?> b = field("b");
 
-		assertThat(definiteValue(b, Long.class), is(5L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(5L));
 	}
 
 }

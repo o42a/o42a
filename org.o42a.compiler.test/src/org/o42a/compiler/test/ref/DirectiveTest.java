@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class DirectiveTest extends CompilerTestCase {
@@ -38,7 +39,7 @@ public class DirectiveTest extends CompilerTestCase {
 
 		final Field<?> a = field("a");
 
-		assertThat(definiteValue(a, Long.class), is(42L));
+		assertThat(definiteValue(a, ValueType.INTEGER), is(42L));
 	}
 
 	@Test
@@ -50,7 +51,7 @@ public class DirectiveTest extends CompilerTestCase {
 
 		final Field<?> a = field("a");
 
-		assertThat(definiteValue(a, Long.class), is(42L));
+		assertThat(definiteValue(a, ValueType.INTEGER), is(42L));
 	}
 
 	@Test
@@ -65,7 +66,7 @@ public class DirectiveTest extends CompilerTestCase {
 
 		final Field<?> a = field("a");
 
-		assertThat(definiteValue(a, Long.class), is(42L));
+		assertThat(definiteValue(a, ValueType.INTEGER), is(42L));
 	}
 
 }

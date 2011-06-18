@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class InheritanceTest extends CompilerTestCase {
@@ -73,9 +74,9 @@ public class InheritanceTest extends CompilerTestCase {
 
 	@Test
 	public void value() {
-		assertThat(definiteValue(this.a, Long.class), is(1L));
-		assertThat(definiteValue(this.b, Long.class), is(2L));
-		assertThat(definiteValue(this.c, Long.class), is(2L));
+		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(this.c, ValueType.INTEGER), is(2L));
 	}
 
 	@Test

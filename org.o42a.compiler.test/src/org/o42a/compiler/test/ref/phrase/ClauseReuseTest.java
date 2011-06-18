@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class ClauseReuseTest extends CompilerTestCase {
@@ -42,8 +43,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(b, String.class), is("b"));
-		assertThat(definiteValue(foo, Long.class), is(2L));
+		assertThat(definiteValue(b, ValueType.STRING), is("b"));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -61,8 +62,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
 
-		assertThat(definiteValue(b, String.class), is("b"));
-		assertThat(definiteValue(foo, Long.class), is(2L));
+		assertThat(definiteValue(b, ValueType.STRING), is("b"));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -81,8 +82,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 		final Field<?> foo = field(b, "foo");
 		final Field<?> bar = field(b, "bar");
 
-		assertThat(definiteValue(foo, String.class), is("a"));
-		assertThat(definiteValue(bar, String.class), is("c"));
+		assertThat(definiteValue(foo, ValueType.STRING), is("a"));
+		assertThat(definiteValue(bar, ValueType.STRING), is("c"));
 	}
 
 	@Test
@@ -102,8 +103,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 		final Field<?> foo = field(b, "foo");
 		final Field<?> bar = field(b, "bar");
 
-		assertThat(definiteValue(foo, String.class), is("c"));
-		assertThat(definiteValue(bar, String.class), is("d"));
+		assertThat(definiteValue(foo, ValueType.STRING), is("c"));
+		assertThat(definiteValue(bar, ValueType.STRING), is("d"));
 	}
 
 }

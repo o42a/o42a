@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.value.ValueType;
 
 
 public class ExpressionPropagationTest extends CompilerTestCase {
@@ -51,9 +52,9 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 		final Field<?> bFoo = field(b, "foo");
 		final Field<?> cFoo = field(c, "foo");
 
-		assertThat(definiteValue(aFoo, Long.class), is(1L));
-		assertThat(definiteValue(bFoo, Long.class), is(2L));
-		assertThat(definiteValue(cFoo, Long.class), is(2L));
+		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -82,9 +83,9 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 		final Field<?> bFoo = field(b, "foo");
 		final Field<?> cFoo = field(c, "foo");
 
-		assertThat(definiteValue(aFoo, Long.class), is(1L));
-		assertThat(definiteValue(bFoo, Long.class), is(2L));
-		assertThat(definiteValue(cFoo, Long.class), is(2L));
+		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -110,9 +111,9 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 		final Field<?> bFoo = field(b, "foo");
 		final Field<?> cFoo = field(c, "foo");
 
-		assertThat(definiteValue(aFoo, Long.class), is(1L));
-		assertThat(definiteValue(bFoo, Long.class), is(2L));
-		assertThat(definiteValue(cFoo, Long.class), is(2L));
+		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(2L));
 	}
 
 	@Test
@@ -140,9 +141,9 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 		final Field<?> bFoo = field(b, "foo");
 		final Field<?> cFoo = field(c, "foo");
 
-		assertThat(definiteValue(aFoo, Long.class), is(1L));
-		assertThat(definiteValue(bFoo, Long.class), is(2L));
-		assertThat(definiteValue(cFoo, Long.class), is(2L));
+		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
+		assertThat(definiteValue(cFoo, ValueType.INTEGER), is(2L));
 	}
 
 }

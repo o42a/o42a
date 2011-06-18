@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
@@ -59,28 +58,32 @@ public abstract class CompilerTestCase {
 	private static final Compiler COMPILER = compiler();
 	private static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
 
-	public static Value<?> valueOf(Obj object) {
-		return object.value().useBy(USE_CASE).getValue();
+	public static Value<?> valueOf(Artifact<?> artifact) {
+		return artifact.materialize().value().useBy(USE_CASE).getValue();
 	}
 
 	public static Value<?> valueOf(Field<?> field) {
-		return valueOf(field.getArtifact().materialize());
+		return valueOf(field.getArtifact());
 	}
 
-	public static <T> Value<T> valueOf(Field<?> field, ValueType<T> type) {
-		return valueOf(field.getArtifact().materialize(), type);
+	public static <T> Value<T> valueOf(
+			Field<?> field,
+			ValueType<T> valueType) {
+		return valueOf(field.getArtifact(), valueType);
 	}
 
-	public static <T> Value<T> valueOf(Obj object, ValueType<T> type) {
+	public static <T> Value<T> valueOf(
+			Artifact<?> artifact,
+			ValueType<T> valueType) {
 
-		final Value<?> value = object.value().useBy(USE_CASE).getValue();
+		final Value<?> value = valueOf(artifact);
 
 		assertEquals(
 				value + " has wrong type",
-				type,
+				valueType,
 				value.getValueType());
 
-		return type.cast(value);
+		return valueType.cast(value);
 	}
 
 	public static Obj toObject(Artifact<?> artifact) {
@@ -92,17 +95,9 @@ public abstract class CompilerTestCase {
 		return object;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T definiteValue(Artifact<?> value) {
-		return (T) definiteValue(value, Object.class);
-	}
+	public static Object definiteValue(Artifact<?> artifact) {
 
-	public static <T> T definiteValue(
-			Artifact<?> artifact,
-			Class<? extends T> type) {
-
-		final Obj object = artifact.materialize();
-		final Value<?> value = object.value().useBy(USE_CASE).getValue();
+		final Value<?> value = valueOf(artifact);
 
 		assertTrue("Value is not definite: " + value, value.isDefinite());
 		assertFalse("Value is unknown: " + value, value.isUnknown());
@@ -110,18 +105,37 @@ public abstract class CompilerTestCase {
 
 		final Object definiteValue = value.getDefiniteValue();
 
-		assertThat("Wrong value type", definiteValue, instanceOf(type));
+		assertNotNull(artifact + " has not definite value", definiteValue);
 
-		return type.cast(definiteValue);
+		return definiteValue;
+	}
+
+	public static <T> T definiteValue(
+			Artifact<?> artifact,
+			ValueType<T> valueType) {
+
+		final Value<?> value = valueOf(artifact, valueType);
+
+		assertTrue("Value is not definite: " + value, value.isDefinite());
+		assertFalse("Value is unknown: " + value, value.isUnknown());
+		assertFalse("Value is false: " + value, value.isFalse());
+
+		final Object definiteValue = value.getDefiniteValue();
+
+		assertNotNull(artifact + " has not definite value", definiteValue);
+
+		return valueType.cast(definiteValue);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T definiteValue(Field<?> field) {
-		return (T) definiteValue(field, Object.class);
+		return (T) definiteValue(field.getArtifact());
 	}
 
-	public static <T> T definiteValue(Field<?> field, Class<? extends T> type) {
-		return definiteValue(field.getArtifact(), type);
+	public static <T> T definiteValue(
+			Field<?> field,
+			ValueType<T> valueType) {
+		return definiteValue(field.getArtifact(), valueType);
 	}
 
 	public static void assertTrueValue(LogicalValue condition) {
