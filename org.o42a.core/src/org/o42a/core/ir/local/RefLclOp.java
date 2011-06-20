@@ -122,8 +122,12 @@ public final class RefLclOp extends LclOp {
 		final Field<?> field = getFieldIR().getField();
 		final Obj object = field.getArtifact().materialize();
 
-		final ObjectOp newObject =
-			getBuilder().newObject(dirs, object, CtrOp.NEW_INSTANCE);
+		final ObjectOp newObject = getBuilder().newObject(
+				dirs,
+				null,
+				getBuilder().objectAncestor(dirs, object),
+				object,
+				CtrOp.NEW_INSTANCE);
 
 		ptr().object(code).store(
 				code,

@@ -68,6 +68,7 @@ public class ConstructorOp extends RefOp {
 
 		return builder.newObject(
 				dirs,
+				null,
 				buildAncestor(dirs),
 				sample,
 				CtrOp.NEW_INSTANCE);

@@ -18,4 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-<*By string> Parser: string(<*''> Input = $$string).
+<*By string> Parser: string(
+  <*''> Input = $$string
+  <*[]> Input = $$string
+)

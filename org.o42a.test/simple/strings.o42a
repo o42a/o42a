@@ -19,25 +19,16 @@
 */
 Use namespace 'Test'
 
-
-Name = "Simple tests"
+Name = "Strings"
 
 Run tests
 
-Assertion := test(
-  Assert [void] 'Void is not true' 
-  Assert [rt-void] 'Rt-void is not true'
-  Assert [--rt-false] 'Rt-false is not false'
+Input := test(
+  Assert [rt-string ""] "Empty string input is false"
+  Assert [rt-string "abc"] "String input is false"
 )
 
-Integers := test(
-  Include 'integers.o42a'
-)
-
-Floats := test(
-  Include 'floats.o42a'
-)
-
-Strings := test(
-  Include 'strings.o42a'
+Length := test(
+  Assert [rt-string "": length == 0] "Wrong empty string length"
+  Assert [rt-string "abc": length == 3] "Wrong string length"
 )
