@@ -71,7 +71,7 @@ public strictfp class FloatOperatorsTest extends CompilerTestCase {
 
 	@Test
 	public void divide() {
-		compile("Result := float '6.12' / '2.34'");
+		compile("Result := float '6.12' / float '2.34'");
 
 		assertEquals(6.12 / 2.34, definiteValue(this.result));
 	}
