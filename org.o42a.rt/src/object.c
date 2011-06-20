@@ -597,7 +597,6 @@ static o42a_obj_rtype_t *propagate_object(
 		ancestor_type: atype,
 		sample_type: sstype,
 		object_type: type,
-		flags: ctr->flags,
 	};
 
 	O42A(derive_ancestor_bodies(O42A_ARGS &ctable, DK_COPY));
@@ -935,7 +934,6 @@ o42a_obj_t *o42a_obj_new(
 		ancestor_type: atype,
 		sample_type: sstype,
 		object_type: type,
-		flags: ctr->flags,
 	};
 
 	o42a_obj_body_t *const ancestor_body =

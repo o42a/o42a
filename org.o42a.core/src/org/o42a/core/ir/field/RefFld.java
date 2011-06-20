@@ -171,8 +171,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 					dirs,
 					host,
 					builder.objectAncestor(dirs, object),
-					object,
-					CtrOp.PROPAGATION);
+					object);
 		}
 
 		final Link link = artifact.toLink();

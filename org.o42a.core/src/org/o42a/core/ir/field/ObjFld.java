@@ -153,8 +153,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				dirs,
 				builder.host(),
 				ancestor,
-				getField().getArtifact().toObject(),
-				CtrOp.PROPAGATION);
+				getField().getArtifact().toObject());
 	}
 
 	public static final class Op extends RefFld.Op<Op, ObjectConstructorFunc> {

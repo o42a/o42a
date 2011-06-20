@@ -29,7 +29,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.object.CtrOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ref.Ref;
 
@@ -54,8 +53,7 @@ public class ConstructorOp extends RefOp {
 					dirs,
 					object,
 					ancestorFunc().getPointer().op(null, dirs.code()),
-					sample,
-					CtrOp.NEW_INSTANCE);
+					sample);
 		}
 
 		final LocalOp local = host().toLocal();
@@ -70,8 +68,7 @@ public class ConstructorOp extends RefOp {
 				dirs,
 				null,
 				buildAncestor(dirs),
-				sample,
-				CtrOp.NEW_INSTANCE);
+				sample);
 	}
 
 	protected Obj sample() {
