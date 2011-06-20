@@ -30,7 +30,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.FuncRec;
+import org.o42a.codegen.data.StructRec;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
 
@@ -38,9 +40,6 @@ import org.o42a.core.ir.op.*;
 public class CtrOp extends IROp {
 
 	public static final Type CTR_TYPE = new Type();
-
-	public static final int NEW_INSTANCE = 0;
-	public static final int PROPAGATION = 1;
 
 	private CtrOp(CodeBuilder builder, Op ptr) {
 		super(builder, ptr);
@@ -55,8 +54,7 @@ public class CtrOp extends IROp {
 			CodeDirs dirs,
 			ObjectOp scope,
 			ObjectRefFunc ancestorFunc,
-			ObjectOp sample,
-			int flags) {
+			ObjectOp sample) {
 
 		final Code code = dirs.code();
 
@@ -64,13 +62,11 @@ public class CtrOp extends IROp {
 				"new_object",
 				"New object: sample=" + sample
 				+ ", ancestorFunc=" + ancestorFunc
-				+ ", scope=" + scope
-				+ ", flags=" + Integer.toHexString(flags));
+				+ ", scope=" + scope);
 
 		ptr().scopeType(code).store(code, scope.objectType(code).ptr());
 		ptr().ancestorFunc(code).store(code, ancestorFunc);
 		ptr().type(code).store(code, sample.objectType(code).ptr());
-		ptr().flags(code).store(code, code.int32(flags));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 		final Code nullObject = code.addBlock("null_new_object");
@@ -93,17 +89,14 @@ public class CtrOp extends IROp {
 			CodeDirs dirs,
 			ObjectOp scope,
 			ObjectOp ancestor,
-			ObjectOp sample,
-			int flags) {
+			ObjectOp sample) {
 
 		final Code code = dirs.code();
 
 		dirs = dirs.begin(
 				"new_object",
 				"New object: sample=" + sample
-				+ ", ancestor=" + ancestor
-				+ ", scope=" + scope
-				+ ", flags=" + Integer.toHexString(flags));
+				+ ", ancestor=" + ancestor);
 
 		if (scope != null) {
 			ptr().scopeType(code).store(code, scope.objectType(code).ptr());
@@ -119,7 +112,6 @@ public class CtrOp extends IROp {
 				? ancestor.objectType(code).ptr()
 				: code.nullPtr(OBJECT_TYPE));
 		ptr().type(code).store(code, sample.objectType(code).ptr());
-		ptr().flags(code).store(code, code.int32(flags));
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
 		final Code nullObject = code.addBlock("null_new_object");
@@ -169,10 +161,6 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().type());
 		}
 
-		public final Int32recOp flags(Code code) {
-			return int32(null, code, getType().flags());
-		}
-
 		public final CtrOp op(CodeBuilder builder) {
 			return new CtrOp(builder, this);
 		}
@@ -185,7 +173,6 @@ public class CtrOp extends IROp {
 		private FuncRec<ObjectRefFunc> ancestorFunc;
 		private StructRec<ObjectIRType.Op> ancestorType;
 		private StructRec<ObjectIRType.Op> type;
-		private Int32rec flags;
 
 		private Type() {
 		}
@@ -211,10 +198,6 @@ public class CtrOp extends IROp {
 			return this.type;
 		}
 
-		public final Int32rec flags() {
-			return this.flags;
-		}
-
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
 			return factory.id("Ctr");
@@ -226,7 +209,6 @@ public class CtrOp extends IROp {
 			this.ancestorFunc = data.addFuncPtr("ancestor_f", OBJECT_REF);
 			this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 			this.type = data.addPtr("type", OBJECT_TYPE);
-			this.flags = data.addInt32("flags");
 		}
 
 	}

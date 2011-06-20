@@ -86,23 +86,6 @@ typedef o42a_obj_t *o42a_obj_assigner_ft(O42A_DECLS o42a_obj_t *, o42a_obj_t *);
 
 
 /**
- * Object constructor flags.
- *
- * Used in o42a_obj_ctr.flags.
- */
-enum o42a_obj_ctr_flags {
-
-	/**
-	 * Field propagation.
-	 *
-	 * If set, then object is constructed as a part of field propagation
-	 * process. Otherwise a new object instantiation occurs.
-	 */
-	O42A_OBJ_CTR_FIELD_PROPAGATION = 0x01,
-
-};
-
-/**
  * Object type flags.
  *
  * Used in o42a_obj_data.flags.
@@ -534,13 +517,6 @@ typedef struct o42a_obj_ctr {
 	 */
 	o42a_obj_type_t *type;
 
-	/**
-	 * Constructor flags bit mask.
-	 *
-	 * \see o42a_obj_ctr_flags enumeration for possible values.
-	 */
-	uint32_t flags;
-
 } o42a_obj_ctr_t;
 
 typedef struct o42a_obj_ctable {
@@ -566,8 +542,6 @@ typedef struct o42a_obj_ctable {
 	} from;
 
 	struct o42a_obj_cside to;
-
-	uint32_t flags;
 
 } o42a_obj_ctable_t;
 

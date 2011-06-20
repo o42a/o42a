@@ -171,8 +171,7 @@ public class CodeBuilder {
 			CodeDirs dirs,
 			ObjectOp scope,
 			ObjectRefFunc ancestorFunc,
-			Obj sample,
-			int flags) {
+			Obj sample) {
 
 		final AllocationDirs alloc = dirs.allocate("new_object");
 		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
@@ -183,8 +182,7 @@ public class CodeBuilder {
 				dirs,
 				scope,
 				ancestorFunc,
-				sample.ir(getGenerator()).op(this, dirs.code()),
-				flags);
+				sample.ir(getGenerator()).op(this, dirs.code()));
 
 		alloc.done();
 
@@ -195,8 +193,7 @@ public class CodeBuilder {
 			CodeDirs dirs,
 			ObjectOp scope,
 			ObjectOp ancestor,
-			Obj sample,
-			int flags) {
+			Obj sample) {
 
 		final AllocationDirs alloc = dirs.allocate("new_object");
 		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
@@ -207,8 +204,7 @@ public class CodeBuilder {
 				dirs,
 				scope,
 				ancestor,
-				sample.ir(getGenerator()).op(this, dirs.code()),
-				flags);
+				sample.ir(getGenerator()).op(this, dirs.code()));
 
 		alloc.done();
 

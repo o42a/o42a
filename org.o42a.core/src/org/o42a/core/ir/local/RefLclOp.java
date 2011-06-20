@@ -35,7 +35,9 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
@@ -126,8 +128,7 @@ public final class RefLclOp extends LclOp {
 				dirs,
 				null,
 				getBuilder().objectAncestor(dirs, object),
-				object,
-				CtrOp.NEW_INSTANCE);
+				object);
 
 		ptr().object(code).store(
 				code,
