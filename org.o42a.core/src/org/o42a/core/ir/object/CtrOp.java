@@ -91,6 +91,7 @@ public class CtrOp extends IROp {
 
 	public ObjectOp newObject(
 			CodeDirs dirs,
+			ObjectOp scope,
 			ObjectOp ancestor,
 			ObjectOp sample,
 			int flags) {
@@ -101,9 +102,14 @@ public class CtrOp extends IROp {
 				"new_object",
 				"New object: sample=" + sample
 				+ ", ancestor=" + ancestor
+				+ ", scope=" + scope
 				+ ", flags=" + Integer.toHexString(flags));
 
-		ptr().scopeType(code).store(code, code.nullPtr(OBJECT_TYPE));
+		if (scope != null) {
+			ptr().scopeType(code).store(code, scope.objectType(code).ptr());
+		} else {
+			ptr().scopeType(code).store(code, code.nullPtr(OBJECT_TYPE));
+		}
 		ptr().ancestorFunc(code).store(
 				code,
 				code.nullPtr(OBJECT_REF));

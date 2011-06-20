@@ -611,7 +611,14 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected ValueType<?> resolveValueType() {
-		return objectType().getAncestor().typeObject(
+
+		final TypeRef ancestor = objectType().getAncestor();
+
+		if (ancestor == null) {
+			return ValueType.VOID;
+		}
+
+		return ancestor.typeObject(
 				getScope().dummyResolver()).getValueType();
 	}
 
@@ -636,8 +643,8 @@ public abstract class Obj extends Artifact<Obj>
 		if (!isClone()) {
 			resolveAllMembers();
 			validateImplicitSubClauses(getExplicitClauses());
-			getDefinitions().resolveAll();
 		}
+		getDefinitions().resolveAll();
 	}
 
 	protected ObjectIR createIR(Generator generator) {

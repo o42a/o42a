@@ -75,11 +75,11 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 		final Value<?> inputValue =
 			inputObject.value().useBy(resolver).getValue();
 
-		if (!inputValue.isDefinite()) {
-			return getValueType().runtimeValue();
-		}
 		if (inputValue.isFalse()) {
 			return getValueType().falseValue();
+		}
+		if (!inputValue.isDefinite()) {
+			return getValueType().runtimeValue();
 		}
 
 		final String input =

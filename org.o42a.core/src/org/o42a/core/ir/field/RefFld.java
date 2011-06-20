@@ -164,8 +164,13 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		final Obj object = artifact.toObject();
 
 		if (object != null) {
+
+			final ObjOp host = builder.host();
+
 			return builder.newObject(
 					dirs,
+					host,
+					builder.objectAncestor(dirs, object),
 					object,
 					CtrOp.PROPAGATION);
 		}

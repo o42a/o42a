@@ -191,19 +191,9 @@ public class CodeBuilder {
 		return result;
 	}
 
-	public final ObjectOp newObject(
-			CodeDirs dirs,
-			Obj sample,
-			int flags) {
-		return newObject(
-				dirs,
-				objectAncestor(dirs, sample),
-				sample,
-				flags);
-	}
-
 	public ObjectOp newObject(
 			CodeDirs dirs,
+			ObjectOp scope,
 			ObjectOp ancestor,
 			Obj sample,
 			int flags) {
@@ -215,6 +205,7 @@ public class CodeBuilder {
 
 		final ObjectOp result = ctr.op(this).newObject(
 				dirs,
+				scope,
 				ancestor,
 				sample.ir(getGenerator()).op(this, dirs.code()),
 				flags);

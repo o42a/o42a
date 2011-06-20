@@ -61,12 +61,13 @@ public class LocalBuilder extends CodeBuilder {
 	@Override
 	public ObjectOp newObject(
 			CodeDirs dirs,
+			ObjectOp scope,
 			ObjectOp ancestor,
 			Obj sample,
 			int flags) {
 
 		final ObjectOp newObject =
-			super.newObject(dirs, ancestor, sample, flags);
+			super.newObject(dirs, scope, ancestor, sample, flags);
 
 		for (Dep dep : sample.getDeps()) {
 			newObject.dep(dirs, dep).fill(this, dirs);

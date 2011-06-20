@@ -151,6 +151,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		return builder.newObject(
 				dirs,
+				builder.host(),
 				ancestor,
 				getField().getArtifact().toObject(),
 				CtrOp.PROPAGATION);
