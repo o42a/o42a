@@ -24,13 +24,11 @@ import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
 import static org.o42a.core.ref.Ref.voidRef;
-import static org.o42a.core.value.ValueType.FLOAT;
 import static org.o42a.core.value.ValueType.INTEGER;
 import static org.o42a.core.value.ValueType.STRING;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.DecimalNode;
-import org.o42a.ast.atom.StringNode.Quote;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.operator.LogicalOperatorRef;
@@ -68,31 +66,12 @@ public class ExpressionVisitor
 	public Ref visitText(TextNode textNode, Distributor p) {
 
 		final String text = textNode.getText();
-		final Quote quote =
-			textNode.getLiterals()[0].getOpeningQuotationMark().getType();
 
-		if (quote.isDoubleQuote()) {
+		if (textNode.isDoubleQuote()) {
 			return STRING.constantRef(location(p, textNode), p, text);
 		}
 
-		final long intVal;
-
-		try {
-			intVal = Long.parseLong(text);
-			return integer(p, intVal, textNode);
-		} catch (NumberFormatException e) {
-		}
-
-		final double floatVal;
-
-		try {
-			floatVal = Double.parseDouble(text);
-		} catch (NumberFormatException e) {
-			p.getContext().getLogger().notFloat(textNode, text);
-			return FLOAT.constantRef(location(p, textNode), p, 0.0);
-		}
-
-		return FLOAT.constantRef(location(p, textNode), p, floatVal);
+		return super.visitText(textNode, p);
 	}
 
 	@Override
