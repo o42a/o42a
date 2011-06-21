@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicDirective;
@@ -42,10 +41,10 @@ public class UseNamespace extends IntrinsicDirective {
 	public UseNamespace(Root root) {
 		super(
 				root.toMemberOwner(),
-				fieldDeclaration(
-						root.locationFor("use_namespace.o42a"),
-						root.distribute(),
-						memberName("use_namespace"))
+				sourcedDeclaration(
+						root,
+						"use_namespace",
+						"root/use_namespace.o42a")
 				.prototype());
 		this.moduleKey = memberName("module").key(getScope());
 		this.objectKey = memberName("object").key(getScope());

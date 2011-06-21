@@ -33,7 +33,7 @@ public class StringObject extends IntrinsicType {
 				sourcedDeclaration(
 						root,
 						"string",
-						"string/string.o42a")
+						"root/string.o42a")
 				.prototype(),
 				ValueType.STRING);
 	}

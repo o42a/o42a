@@ -53,8 +53,10 @@ public class Integers extends IntrinsicObject {
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
 
-		final IntegerByString byString =
-			new IntegerByString(this, "by_string", "integers/by_string.o42a");
+		final IntegerByString byString = new IntegerByString(
+				this,
+				"by_string",
+				"root/integers/by_string.o42a");
 
 		members.addMember(new IntegerMinus(this).toMember());
 		members.addMember(new AddIntegers(this).toMember());

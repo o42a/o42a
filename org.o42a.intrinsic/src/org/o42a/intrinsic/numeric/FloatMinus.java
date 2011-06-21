@@ -40,7 +40,7 @@ final class FloatMinus extends UnaryResult<Double, Double> {
 				ValueType.FLOAT,
 				"operand",
 				ValueType.FLOAT,
-				"floats/minus.o42a");
+				"root/floats/minus.o42a");
 	}
 
 	@Override

@@ -35,7 +35,7 @@ final class CompareFloats extends CompareNumbers<Double> {
 				owner.toMemberOwner(),
 				"compare",
 				ValueType.FLOAT,
-				"floats/compare.o42a");
+				"root/floats/compare.o42a");
 	}
 
 	@Override

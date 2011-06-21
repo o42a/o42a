@@ -35,7 +35,7 @@ public class FloatsEqual extends NumbersEqual<Double> {
 				owner.toMemberOwner(),
 				"equals",
 				ValueType.FLOAT,
-				"floats/equals.o42a");
+				"root/floats/equals.o42a");
 	}
 
 	@Override

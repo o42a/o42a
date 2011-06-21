@@ -50,7 +50,7 @@ final class StringChar extends IntrinsicBuiltin {
 	StringChar(StringObject string) {
 		super(
 				string.toMemberOwner(),
-				sourcedDeclaration(string, "char", "char.o42a")
+				sourcedDeclaration(string, "char", "string/char.o42a")
 				.prototype());
 		setValueType(ValueType.STRING);
 	}

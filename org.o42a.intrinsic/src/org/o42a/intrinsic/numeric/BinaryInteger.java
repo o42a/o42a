@@ -44,7 +44,7 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 				ValueType.INTEGER,
 				rightOperandName,
 				ValueType.INTEGER,
-				"integers/" + name + ".o42a");
+				"root/integers/" + name + ".o42a");
 	}
 
 	@Override
