@@ -38,6 +38,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.numeric.*;
 import org.o42a.intrinsic.string.StringObject;
+import org.o42a.intrinsic.string.Strings;
 
 
 public class Root extends Obj {
@@ -131,6 +132,7 @@ public class Root extends Obj {
 		members.addMember(this.include.toMember());
 		members.addMember(this.useNamespace.toMember());
 		members.addMember(this.useObject.toMember());
+		members.addMember(new Strings(this).toMember());
 
 		final ObjectMemberRegistry memberRegistry =
 			new ObjectMemberRegistry(this);
