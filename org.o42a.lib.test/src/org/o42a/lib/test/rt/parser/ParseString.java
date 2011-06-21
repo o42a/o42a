@@ -42,7 +42,7 @@ final class ParseString extends ByString<String> {
 				sourcedDeclaration(
 						parser,
 						"string",
-						"parser/string.o42a")
+						"test/parser/string.o42a")
 				.prototype(),
 				ValueType.STRING);
 	}

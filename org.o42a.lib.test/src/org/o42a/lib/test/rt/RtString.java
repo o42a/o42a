@@ -34,7 +34,7 @@ public class RtString extends IntrinsicObject {
 				sourcedDeclaration(
 						module,
 						"rt-string",
-						"rt-string.o42a")
+						"test/rt-string.o42a")
 				.prototype());
 		setValueType(ValueType.STRING);
 	}

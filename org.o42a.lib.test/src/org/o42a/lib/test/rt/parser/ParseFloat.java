@@ -35,7 +35,7 @@ import org.o42a.core.value.Value;
 final class ParseFloat extends FloatByString {
 
 	ParseFloat(Parser parser) {
-		super(parser, "float", "parser/float.o42a");
+		super(parser, "float", "test/parser/float.o42a");
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class RtFloat extends IntrinsicObject {
 				sourcedDeclaration(
 						module,
 						"rt-float",
-						"rt-float.o42a")
+						"test/rt-float.o42a")
 				.prototype());
 		setValueType(ValueType.FLOAT);
 	}
