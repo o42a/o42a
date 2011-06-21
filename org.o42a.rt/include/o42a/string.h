@@ -41,6 +41,8 @@ void o42a_str_sub(
 		int64_t,
 		int64_t);
 
+int64_t o42a_str_compare(O42A_DECLS const o42a_val_t *, const o42a_val_t *);
+
 
 #ifdef __cplusplus
 }

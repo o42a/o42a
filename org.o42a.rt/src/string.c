@@ -99,3 +99,47 @@ void o42a_str_sub(
 
 	O42A_RETURN;
 }
+
+int64_t o42a_str_compare(
+		O42A_PARAMS
+		const o42a_val_t *const what,
+		const o42a_val_t *const with) {
+	O42A_ENTER(return 0);
+
+	const void *str1 = O42A(o42a_val_data(O42A_ARGS what));
+	const UChar32 cmask1 = O42A(o42a_str_cmask(O42A_ARGS what));
+	const size_t step1 = O42A(o42a_val_alignment(O42A_ARGS what));
+	const size_t len1 = what->length;
+	const void *const end1 = str1 + len1;
+
+	const void *str2 = O42A(o42a_val_data(O42A_ARGS with));
+	const UChar32 cmask2 = O42A(o42a_str_cmask(O42A_ARGS with));
+	const size_t step2 = O42A(o42a_val_alignment(O42A_ARGS with));
+	const size_t len2 = with->length;
+	const void *const end2 = str2 + len2;
+
+	while (str1 < end1 && str2 < end2) {
+
+		const UChar32 c1 = cmask1 & *((UChar32*) str1);
+		const UChar32 c2 = cmask1 & *((UChar32*) str2);
+
+		if (c1 < c2) {
+			O42A_RETURN -1;
+		}
+		if (c1 > c2) {
+			O42A_RETURN 1;
+		}
+
+		str1 += step1;
+		str2 += step2;
+	}
+
+	if (len1 == len2) {
+		O42A_RETURN 0;
+	}
+	if (len1 < len2) {
+		O42A_RETURN -1;
+	}
+
+	O42A_RETURN 1;
+}

@@ -32,3 +32,43 @@ Length := test(
   Assert [rt-string "": length == 0] "Wrong empty string length"
   Assert [rt-string "abc": length == 3] "Wrong string length"
 )
+
+Equality := test(
+  Assert [rt-string "" == ""] "Empty strings not equal"
+  Assert [rt-string "abc" == "abc"] "Short strings equality failed"
+  Assert [rt-string "Hello, World!" == "Hello, World!"] "Strings equality failed"
+  Assert [--(rt-string "abc" == "c")] "Non-equal strings are equal"
+)
+
+Non-equality := test(
+  Assert [rt-string "abc" <> "b"] "Strings non-equality failed"
+  Assert [--(rt-string "abc" <> "abc")] "Equal strings are not equal"
+)
+
+Less := test(
+  Assert ["a" < "ab"] "Shorter string is not less"
+  Assert ["a" < "b"] "String is not less"
+  Assert [--("b" < "a")] "String is less"
+  Assert [--("a" < "a")] "String is less than itself"
+)
+
+Less or equal := test(
+  Assert ["a" <= "ab"] "Shorter string is not less or equal"
+  Assert ["a" <= "a"] "String is not less or equal than itself"
+  Assert ["a" <= "b"] "String is not less or equal"
+  Assert [--("b" <= "a")] "String is less or equal"
+)
+
+Greater := test(
+  Assert ["ab" > "a"] "Longer string is not greater"
+  Assert ["b" > "a"] "String is not greater"
+  Assert [--("a" > "b")] "String is greater"
+  Assert [--("a" > "a")] "String is greater than itself"
+)
+
+Greater or equal := test(
+  Assert ["ab" >= "a"] "Longer string is not greater or equal"
+  Assert ["a" >= "a"] "String is not greater or equal than itself"
+  Assert ["b" >= "a"] "String is not greater or equal"
+  Assert [--("a" >= "b")] "String is greater or equal"
+)
