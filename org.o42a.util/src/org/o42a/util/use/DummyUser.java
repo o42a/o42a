@@ -19,10 +19,6 @@
 */
 package org.o42a.util.use;
 
-import static java.util.Collections.emptySet;
-
-import java.util.Set;
-
 
 final class DummyUser extends User {
 
@@ -32,11 +28,6 @@ final class DummyUser extends User {
 	@Override
 	public boolean isDummy() {
 		return true;
-	}
-
-	@Override
-	public Set<?> getUserOf() {
-		return emptySet();
 	}
 
 	@Override
