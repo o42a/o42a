@@ -34,7 +34,7 @@ public class RtInteger extends IntrinsicObject {
 				sourcedDeclaration(
 						module,
 						"rt-integer",
-						"rt-integer.o42a")
+						"test/rt-integer.o42a")
 				.prototype());
 		setValueType(ValueType.INTEGER);
 	}

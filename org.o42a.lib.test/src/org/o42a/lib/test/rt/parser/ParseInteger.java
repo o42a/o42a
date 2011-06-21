@@ -35,7 +35,7 @@ import org.o42a.core.value.Value;
 final class ParseInteger extends IntegerByString {
 
 	ParseInteger(Parser parser) {
-		super(parser, "integer", "parser/integer.o42a");
+		super(parser, "integer", "test/parser/integer.o42a");
 	}
 
 	@Override
