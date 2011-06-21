@@ -29,6 +29,6 @@ Tests := void(
   Run tests
 
   Simple := test(
-    Include 'simple/simple.o42a'
+    Include 'all_tests/simple.o42a'
   )
 )

@@ -31,13 +31,13 @@ Assertion := test(
 )
 
 Integers := test(
-  Include 'integers.o42a'
+  Include 'simple/integers.o42a'
 )
 
 Floats := test(
-  Include 'floats.o42a'
+  Include 'simple/floats.o42a'
 )
 
 Strings := test(
-  Include 'strings.o42a'
+  Include 'simple/strings.o42a'
 )
