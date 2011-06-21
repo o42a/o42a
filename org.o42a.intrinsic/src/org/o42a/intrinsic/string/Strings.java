@@ -54,6 +54,7 @@ public class Strings extends IntrinsicObject {
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
 		members.addMember(new CompareStrings(this).toMember());
+		members.addMember(new ConcatStrings(this).toMember());
 	}
 
 	@Override
