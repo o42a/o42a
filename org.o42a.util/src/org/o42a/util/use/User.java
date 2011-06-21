@@ -19,8 +19,6 @@
 */
 package org.o42a.util.use;
 
-import java.util.Set;
-
 
 public abstract class User implements UserInfo, UseInfo {
 
@@ -40,8 +38,6 @@ public abstract class User implements UserInfo, UseInfo {
 	public boolean isDummy() {
 		return false;
 	}
-
-	public abstract Set<?> getUserOf();
 
 	@Override
 	public final User toUser() {

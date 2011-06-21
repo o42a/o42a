@@ -19,35 +19,12 @@
 */
 package org.o42a.util.use;
 
-import static java.util.Collections.emptySet;
-
-import java.util.HashSet;
-import java.util.Set;
-
 
 public abstract class AbstractUser extends User {
 
-	private HashSet<Object> userOf;
-
-	@Override
-	public final Set<?> getUserOf() {
-		if (this.userOf == null) {
-			return emptySet();
-		}
-		return this.userOf;
-	}
-
 	@Override
 	<U> U use(Usable<U> usable) {
-
-		final U use = usable.useBy(this);
-
-		if (this.userOf == null) {
-			this.userOf = new HashSet<Object>();
-		}
-		this.userOf.add(use);
-
-		return use;
+		return usable.useBy(this);
 	}
 
 }
