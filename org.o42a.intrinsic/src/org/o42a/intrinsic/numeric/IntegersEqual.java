@@ -37,7 +37,7 @@ public class IntegersEqual extends NumbersEqual<Long> {
 				owner.toMemberOwner(),
 				"equals",
 				ValueType.INTEGER,
-				"integers/equals.o42a");
+				"root/integers/equals.o42a");
 	}
 
 	@Override

@@ -37,7 +37,7 @@ final class CompareIntegers extends CompareNumbers<Long> {
 				owner.toMemberOwner(),
 				"compare",
 				ValueType.INTEGER,
-				"integers/compare.o42a");
+				"root/integers/compare.o42a");
 	}
 
 	@Override

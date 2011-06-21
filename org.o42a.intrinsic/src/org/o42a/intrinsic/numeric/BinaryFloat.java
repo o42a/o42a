@@ -45,7 +45,7 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 				ValueType.FLOAT,
 				rightOperandName,
 				ValueType.FLOAT,
-				"floats/" + name + ".o42a");
+				"root/floats/" + name + ".o42a");
 	}
 
 	@Override

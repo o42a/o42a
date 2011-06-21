@@ -23,6 +23,6 @@ Clauses := void(
   String :=> $$string
 )
 
-Operators := void(Include 'operators.o42a')
+Operators := void(Include 'root/operators.o42a')
 
-Number :=> void(Include 'number.o42a')
+Number :=> void(Include 'root/number.o42a')

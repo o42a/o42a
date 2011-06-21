@@ -54,7 +54,7 @@ public class Floats extends IntrinsicObject {
 		super.declareMembers(members);
 
 		final FloatByString byString =
-			new FloatByString(this, "by_string", "floats/by_string.o42a");
+			new FloatByString(this, "by_string", "root/floats/by_string.o42a");
 
 		members.addMember(new FloatMinus(this).toMember());
 		members.addMember(new AddFloats(this).toMember());

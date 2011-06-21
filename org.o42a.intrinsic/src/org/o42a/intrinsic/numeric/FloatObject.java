@@ -32,7 +32,7 @@ public class FloatObject extends IntrinsicType {
 	public FloatObject(Root root) {
 		super(
 				root.toMemberOwner(),
-				sourcedDeclaration(root, "float", "floats/float.o42a")
+				sourcedDeclaration(root, "float", "root/float.o42a")
 				.prototype(),
 				ValueType.FLOAT);
 	}

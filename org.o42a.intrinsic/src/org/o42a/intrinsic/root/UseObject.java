@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicDirective;
@@ -43,10 +42,10 @@ public class UseObject extends IntrinsicDirective {
 	public UseObject(Root root) {
 		super(
 				root.toMemberOwner(),
-				fieldDeclaration(
-						root.locationFor("use_object.o42a"),
-						root.distribute(),
-						memberName("use_object"))
+				sourcedDeclaration(
+						root,
+						"use_object",
+						"root/use_object.o42a")
 				.prototype());
 		this.moduleKey = memberName("module").key(getScope());
 		this.objectKey = memberName("object").key(getScope());

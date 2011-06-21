@@ -32,7 +32,7 @@ public class IntegerObject extends IntrinsicType {
 	public IntegerObject(Root root) {
 		super(
 				root.toMemberOwner(),
-				sourcedDeclaration(root, "integer", "integers/integer.o42a")
+				sourcedDeclaration(root, "integer", "root/integer.o42a")
 				.prototype(),
 				ValueType.INTEGER);
 	}

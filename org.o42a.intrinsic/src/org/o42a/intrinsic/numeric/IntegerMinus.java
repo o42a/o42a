@@ -40,7 +40,7 @@ final class IntegerMinus extends UnaryResult<Long, Long> {
 				ValueType.INTEGER,
 				"operand",
 				ValueType.INTEGER,
-				"integers/minus.o42a");
+				"root/integers/minus.o42a");
 	}
 
 	@Override

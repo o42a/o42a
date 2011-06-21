@@ -50,7 +50,7 @@ final class SubString extends IntrinsicBuiltin {
 				sourcedDeclaration(
 						owner,
 						"substring",
-						"substring.o42a")
+						"string/substring.o42a")
 				.prototype());
 		setValueType(ValueType.STRING);
 	}
