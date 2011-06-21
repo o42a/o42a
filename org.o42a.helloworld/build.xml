@@ -80,7 +80,7 @@
 			failonerror="true">
 			<arg line="--nocolor"/>
 			<arg line="-rt-debug=${_compile.debug}"/>
-			<arg line="hello_world.o42a"/>
+			<arg line="o42a/hello_world.o42a"/>
 			
 			<arg line="--vmargs"/>
 			<arg line="-ea:org.o42a..."/>
