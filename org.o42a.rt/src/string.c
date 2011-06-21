@@ -143,3 +143,76 @@ int64_t o42a_str_compare(
 
 	O42A_RETURN 1;
 }
+
+void o42a_str_concat(
+		O42A_PARAMS
+		o42a_val_t *result,
+		const o42a_val_t *str1,
+		const o42a_val_t *str2) {
+	O42A_ENTER(return);
+
+	const size_t ashift1 = O42A(o42a_val_ashift(O42A_ARGS str1));
+	const size_t len1 = str1->length;
+	const void *data1 = O42A(o42a_val_data(O42A_ARGS str1));
+
+	const size_t ashift2 = O42A(o42a_val_ashift(O42A_ARGS str1));
+	const size_t len2 = str2->length;
+	const void *data2 = O42A(o42a_val_data(O42A_ARGS str2));
+
+	size_t ashift;
+	size_t len;
+
+	if (ashift1 >= ashift2) {
+		ashift = ashift1;
+		len = len1 + ((len2 >> ashift2) << ashift1);
+	} else {
+		ashift = ashift2;
+		len = len2 + ((len1 >> ashift1) << ashift2);
+	}
+
+	void *data;
+
+	if (len <= 8) {
+		result->flags = O42A_TRUE;
+		data = &result->value;
+	} else {
+		result->flags = O42A_TRUE | O42A_VAL_EXTERNAL | (ashift << 8);
+		data = O42A(o42a_mem_alloc_rc(O42A_ARGS len));
+	}
+
+	int8_t* copy_to;
+	const int8_t* copy_from;
+	const int8_t* copy_from_end;
+	size_t copy_bytes;
+
+	if (ashift1 >= ashift2) {
+		O42A(memcpy(data, data1, len1));
+		if (ashift1 == ashift2) {
+			O42A(memcpy(data + len1, str2, len2));
+			O42A_RETURN;
+		}
+		copy_to = (int8_t*) data + len1;
+		copy_from = (int8_t*) str2;
+		copy_from_end = copy_from + len2;
+		copy_bytes = 1 << ashift2;
+	} else {
+		O42A(memcpy(data + len - len2, str2, len2));
+		copy_to = (int8_t*) data;
+		copy_from = (int8_t*) data1;
+		copy_from_end = copy_from + len1;
+		copy_bytes = 1 << ashift1;
+	}
+
+	const size_t skip_bytes = (1 << ashift) - copy_bytes;
+
+	while (copy_from < copy_from_end) {
+		for (size_t i = 0; i < copy_bytes; ++i) {
+			*(copy_to++) = *(copy_from++);
+		}
+		for (size_t i = 0; i < skip_bytes; ++i) {
+			*(copy_to++) = 0;
+		}
+	}
+
+	O42A_RETURN;
+}
