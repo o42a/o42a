@@ -20,13 +20,14 @@
 package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.Usable.simpleUsable;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue extends AbstractUser {
+public final class ObjectValue implements UserInfo, UseInfo {
 
 	private final Obj object;
 	private Usable<?> usable;
@@ -38,6 +39,15 @@ public final class ObjectValue extends AbstractUser {
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	@Override
+	public final User toUser() {
+		return usable().toUser();
+	}
+
+	public final boolean isUsedBy(UseCase useCase) {
+		return usable().isUsedBy(useCase);
 	}
 
 	@Override
