@@ -162,22 +162,27 @@ final class FieldDeclarableVisitor
 			return null;
 		}
 
+		FieldDeclaration result;
 		final TypeNode node = declarator.getDefinitionType();
 
-		if (node != null) {
+		if (node == null) {
+			result = declaration;
+		} else {
 
 			final TypeRef type =
 				node.accept(TYPE_VISITOR, declaration.distribute());
 
 			if (type != null) {
-				declaration = declaration.setType(type);
+				result = declaration.setType(type);
+			} else {
+				result = declaration;
 			}
 		}
 
 		final DeclarationTarget target = declarator.getTarget();
 
 		if (target.isOverride()) {
-			declaration = declaration.override();
+			result = result.override();
 		}
 		if (target.isAbstract()) {
 			if (declaration.getScope().toLocal() != null) {
@@ -192,10 +197,10 @@ final class FieldDeclarableVisitor
 						declaration.getDisplayName());
 				return null;
 			}
-			declaration = declaration.setAbstract();
+			result = result.setAbstract();
 		}
 		if (target.isPrototype()) {
-			declaration = declaration.prototype();
+			result = result.prototype();
 		}
 
 		final DefinitionKind definitionKind = declarator.getDefinitionKind();
@@ -203,20 +208,20 @@ final class FieldDeclarableVisitor
 		if (definitionKind != null) {
 			switch (definitionKind) {
 			case VARIABLE:
-				if (declaration.isPrototype()) {
+				if (result.isPrototype()) {
 					this.context.getLogger().prohibitedPrototype(
 							declarator.getDefinitionAssignment());
 					return null;
 				}
-				declaration = declaration.variable();
+				result = result.variable();
 				break;
 			case LINK:
-				if (declaration.isPrototype()) {
+				if (result.isPrototype()) {
 					this.context.getLogger().prohibitedPrototype(
 							declarator.getDefinitionAssignment());
 					return null;
 				}
-				declaration = declaration.link();
+				result = result.link();
 				break;
 			default:
 				throw new IllegalArgumentException(
@@ -224,7 +229,7 @@ final class FieldDeclarableVisitor
 			}
 		}
 
-		return declaration;
+		return result;
 	}
 
 	private FieldDeclaration update(
@@ -237,15 +242,16 @@ final class FieldDeclarableVisitor
 		final StaticTypeRef declaredIn =
 			declaredIn(memberRef, declaration.distribute());
 
-		if (declaredIn != null) {
-			if (!declaration.isOverride()) {
-				declaration.getLogger().prohibitedDeclaredIn(declaredIn);
-			} else {
-				declaration = declaration.setDeclaredIn(declaredIn);
-			}
+		if (declaredIn == null) {
+			return declaration;
 		}
 
-		return declaration;
+		if (!declaration.isOverride()) {
+			declaration.getLogger().prohibitedDeclaredIn(declaredIn);
+			return declaration;
+		}
+
+		return declaration.setDeclaredIn(declaredIn);
 	}
 
 	private static final class VisibilityVisitor

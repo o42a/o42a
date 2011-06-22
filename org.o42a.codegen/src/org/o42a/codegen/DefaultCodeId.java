@@ -233,13 +233,14 @@ public class DefaultCodeId extends CodeId {
 	protected void appendEncoded(StringBuilder result, int c) {
 		result.append('X');
 
+		int ch = c;
 		char[] digits = new char[32];
 		int i = 32;
 
 		do {
-		    digits[--i] = HEX_DIGITS[c & 0xF];
-		    c >>>= 4;
-		} while (c != 0);
+		    digits[--i] = HEX_DIGITS[ch & 0xF];
+		    ch >>>= 4;
+		} while (ch != 0);
 
 		result.append(digits, i, 32 - i);
 	}

@@ -300,9 +300,8 @@ public class ParserWorker {
 					if (this.current.lastChar == '\r') {// \r\n
 						this.current.move('\n');
 						continue;// handle \r\n as one \n
-					} else {
-						c = ch;
 					}
+					c = ch;
 				} else if (ch == '\r') {
 					c = '\n';// always handle \r as \n
 				} else {

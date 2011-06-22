@@ -78,15 +78,15 @@ public abstract class AbstractConjunction extends Logical {
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		dirs = dirs.begin("and", "Logical AND: " + this);
 
+		final CodeDirs subDirs = dirs.begin("and", "Logical AND: " + this);
 		final int numClaims = numClaims();
 
 		for (int i = 0; i < numClaims; ++i) {
-			claim(i).write(dirs, host);
+			claim(i).write(subDirs, host);
 		}
 
-		dirs.end();
+		subDirs.end();
 	}
 
 	@Override

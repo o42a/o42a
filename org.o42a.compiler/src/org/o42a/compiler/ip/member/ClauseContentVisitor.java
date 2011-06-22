@@ -193,11 +193,15 @@ final class ClauseContentVisitor
 	private Statement buildExpression(
 			ClauseBuilder builder,
 			ExpressionNode expression) {
-		builder = expression.accept(CLAUSE_EXPRESSION_VISITOR, builder);
-		if (builder == null) {
+
+		final ClauseBuilder result =
+				expression.accept(CLAUSE_EXPRESSION_VISITOR, builder);
+
+		if (result == null) {
 			return null;
 		}
-		return builder.build();
+
+		return result.build();
 	}
 
 }

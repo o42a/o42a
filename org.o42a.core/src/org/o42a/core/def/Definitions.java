@@ -610,15 +610,19 @@ public class Definitions extends Scoped {
 			StringBuilder out,
 			boolean comma,
 			Def<?>[] defs) {
+
+		boolean hasComma = comma;
+
 		for (Def<?> def : defs) {
-			if (comma) {
+			if (hasComma) {
 				out.append(", ");
 			} else {
-				comma = true;
+				hasComma = true;
 			}
 			out.append(def);
 		}
-		return comma;
+
+		return hasComma;
 	}
 
 	private void assertEmptyWithoutValues() {
@@ -931,23 +935,31 @@ public class Definitions extends Scoped {
 		return result;
 	}
 
-	private int nextNonPrereq(CondDef[] defs, int index) {
+	private int nextNonPrereq(CondDef[] defs, int start) {
+
+		int index = start;
+
 		while (index < defs.length) {
 			if (!defs[index].hasPrerequisite()) {
 				return index;
 			}
 			++index;
 		}
+
 		return index;
 	}
 
-	private int nextPrereq(CondDef[] defs, int index) {
+	private int nextPrereq(CondDef[] defs, int start) {
+
+		int index = start;
+
 		while (index < defs.length) {
 			if (defs[index].hasPrerequisite()) {
 				return index;
 			}
 			++index;
 		}
+
 		return index;
 	}
 

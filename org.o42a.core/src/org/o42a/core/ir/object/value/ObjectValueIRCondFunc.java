@@ -45,19 +45,22 @@ public abstract class ObjectValueIRCondFunc
 
 	public void call(CodeDirs dirs, ObjOp host, ObjectOp body) {
 
-		final Code code = dirs.code();
+		final CodeDirs subDirs;
 
-		if (dirs.isDebug()) {
-			dirs = dirs.begin(
+		if (!dirs.isDebug()) {
+			subDirs = dirs;
+		} else {
+			subDirs = dirs.begin(
 					"calc_cond",
 					(isRequirement()
 							? "Calculate requirement "
 							: "Calculate condition ") + this);
 			if (body != null) {
-				code.dumpName("For: ", body.toData(code));
+				subDirs.code().dumpName("For: ", body.toData(subDirs.code()));
 			}
 		}
 
+		final Code code = subDirs.code();
 		final Obj object = getObjectIR().getObject();
 		final DefValue condition = value(object.getDefinitions());
 		final LogicalValue logicalValue = logicalValue(condition, body);
@@ -65,19 +68,19 @@ public abstract class ObjectValueIRCondFunc
 		if (logicalValue.isConstant()) {
 			if (logicalValue.isFalse()) {
 				code.debug("False");
-				code.go(dirs.falseDir());
+				code.go(subDirs.falseDir());
 			} else {
 				code.debug("True");
 			}
-			dirs.end();
+			subDirs.end();
 			return;
 		}
 
 		get(host).op(null, code).call(
 				code,
-				body(code, host, body)).go(code, dirs);
+				body(code, host, body)).go(code, subDirs);
 
-		dirs.end();
+		subDirs.end();
 	}
 
 	public void create(ObjectTypeIR typeIR, Definitions definitions) {

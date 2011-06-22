@@ -189,13 +189,13 @@ public abstract class SubData<S extends StructOp<S>>
 			T type,
 			T instance,
 			Content<T> content) {
-		instance = type.instantiate(this, name, instance, content);
 
-		final SubData<?> data = instance.getTypeData();
+		final T typeInstance = type.instantiate(this, name, instance, content);
+		final SubData<?> data = typeInstance.getTypeData();
 
 		add(data);
 
-		return instance;
+		return typeInstance;
 	}
 
 	public final <SS extends StructOp<SS>, T extends Struct<SS>> T addStruct(

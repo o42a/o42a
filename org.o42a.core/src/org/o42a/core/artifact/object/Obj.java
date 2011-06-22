@@ -23,6 +23,7 @@ import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
+import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
@@ -706,8 +707,14 @@ public abstract class Obj extends Artifact<Obj>
 		if (ancestorDefinitions != null) {
 			ancestorDefinitions.assertScopeIs(scope);
 		}
+
+		Definitions definitions = overriddenDefinitions;
+
 		if (overriddenDefinitions != null) {
 			overriddenDefinitions.assertScopeIs(scope);
+			definitions = overriddenDefinitions;
+		} else {
+			definitions = emptyDefinitions(this, getScope());
 		}
 
 		final ObjectValue user = scope.toObject().value(dummyUser());
@@ -715,7 +722,6 @@ public abstract class Obj extends Artifact<Obj>
 		boolean hasExplicitAncestor =
 			type.getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = type.getSamples();
-		Definitions definitions = overriddenDefinitions;
 
 		for (int i = samples.length - 1; i >= 0; --i) {
 

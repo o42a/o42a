@@ -100,9 +100,9 @@ final class LogicalOr extends Logical {
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		dirs = dirs.begin("or", "Logical OR: " + this);
 
-		final Code code = dirs.code();
+		final CodeDirs subDirs = dirs.begin("or", "Logical OR: " + this);
+		final Code code = subDirs.code();
 
 		Code block = code.addBlock("0_disj");
 
@@ -117,7 +117,7 @@ final class LogicalOr extends Logical {
 				next = code.addBlock((i + 1) + "_disj");
 			} else {
 				next = code.addBlock("all_false");
-				next.go(dirs.falseDir());
+				next.go(subDirs.falseDir());
 			}
 
 			blockDirs = dirs.getBuilder().falseWhenUnknown(block, next.head());
@@ -127,7 +127,7 @@ final class LogicalOr extends Logical {
 			block = next;
 		}
 
-		dirs.end();
+		subDirs.end();
 	}
 
 	@Override

@@ -40,6 +40,7 @@ final class PropagatedObject extends PlainObject {
 		final Obj container = field.getEnclosingContainer().toObject();
 		final ObjectType type = container.type(user);
 		final TypeRef containerAncestor = type.getAncestor();
+		Ascendants result = ascendants;
 
 		if (containerAncestor != null) {
 
@@ -47,7 +48,7 @@ final class PropagatedObject extends PlainObject {
 				containerAncestor.typeObject(user).member(field.getKey());
 
 			if (overridden != null) {
-				ascendants = ascendants.addMemberOverride(overridden);
+				result = result.addMemberOverride(overridden);
 			}
 		}
 
@@ -59,11 +60,11 @@ final class PropagatedObject extends PlainObject {
 				containerSamples[i].typeObject(user).member(field.getKey());
 
 			if (overridden != null) {
-				ascendants = ascendants.addMemberOverride(overridden);
+				result = result.addMemberOverride(overridden);
 			}
 		}
 
-		return ascendants;
+		return result;
 	}
 
 	PropagatedObject(Field<Obj> field) {

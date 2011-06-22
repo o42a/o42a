@@ -95,10 +95,11 @@ public class StringCodec {
 			StringBuilder builder,
 			String string) {
 
+		StringBuilder out = builder;
 		final int len = string.length();
 
-		if (builder != null) {
-			builder.ensureCapacity(builder.length() + len);
+		if (out != null) {
+			out.ensureCapacity(out.length() + len);
 		}
 		for (int i = 0; i < len;) {
 
@@ -107,44 +108,44 @@ public class StringCodec {
 			i += Character.charCount(c);
 
 			if (!Character.isISOControl(c)) {
-				if (builder != null) {
-					builder.appendCodePoint(c);
+				if (out != null) {
+					out.appendCodePoint(c);
 				}
 				continue;
 			}
 
 			switch (c) {
 			case '\r':
-				if (builder == null) {
-					builder = builder(string, i, len + 2);
+				if (out == null) {
+					out = builder(string, i, len + 2);
 				}
-				builder.append("\\r");
+				out.append("\\r");
 				continue;
 			case '\n':
-				if (builder == null) {
-					builder = builder(string, i, len + 2);
+				if (out == null) {
+					out = builder(string, i, len + 2);
 				}
-				builder.append("\\n");
+				out.append("\\n");
 				continue;
 			case '\t':
-				if (builder == null) {
-					builder = builder(string, i, len + 2);
+				if (out == null) {
+					out = builder(string, i, len + 2);
 				}
-				builder.append("\\t");
+				out.append("\\t");
 				continue;
 			}
 
 			final String hex = Integer.toHexString(c);
 
-			if (builder == null) {
-				builder = builder(string, i, len + 2 + hex.length());
+			if (out == null) {
+				out = builder(string, i, len + 2 + hex.length());
 			}
 
-			builder.append(hex);
+			out.append(hex);
 		}
 
-		if (builder != null) {
-			return builder;
+		if (out != null) {
+			return out;
 		}
 
 		return string;

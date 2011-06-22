@@ -97,18 +97,23 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public Int32op loadAlignmentShift(CodeId id, Code code) {
+
+		final CodeId ashiftId;
+
 		if (id == null) {
-			id = getId().sub("alignment_shift");
+			ashiftId = getId().sub("alignment_shift");
+		} else {
+			ashiftId = id;
 		}
 
 		final Int32op flags = flags(null, code).load(null, code);
 		final Int32op ualignment = flags.and(
-				id.detail("ush"),
+				ashiftId.detail("ush"),
 				code,
 				code.int32(ALIGNMENT_MASK));
 
 		return ualignment.lshr(
-				id,
+				ashiftId,
 				code,
 				numberOfTrailingZeros(ALIGNMENT_MASK));
 	}
@@ -178,10 +183,16 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public final AnyOp value(CodeId id, Code code) {
+
+		final CodeId valueId;
+
 		if (id == null) {
-			id = getId().sub("value");
+			valueId = getId().sub("value");
+		} else {
+			valueId = id;
 		}
-		return rawValue(id.detail("raw"), code).toAny(id, code);
+
+		return rawValue(valueId.detail("raw"), code).toAny(valueId, code);
 	}
 
 	public final AnyOp loadData(CodeId id, Code code) {
@@ -290,17 +301,22 @@ public final class ValOp extends IROp implements CondOp {
 			String defaultId,
 			Code code,
 			int mask) {
+
+		final CodeId flagId;
+
 		if (id == null) {
-			id = getId().sub(defaultId);
+			flagId = getId().sub(defaultId);
+		} else {
+			flagId = id;
 		}
 
 		final Int32op flags = flags(null, code).load(null, code);
 		final Int32op uexternal = flags.lshr(
-				id.detail("ush"),
+				flagId.detail("ush"),
 				code,
 				numberOfTrailingZeros(mask));
 
-		return uexternal.lowestBit(id, code);
+		return uexternal.lowestBit(flagId, code);
 	}
 
 }

@@ -186,16 +186,20 @@ public abstract class Type<S extends StructOp<S>>
 			I instance,
 			Content<I> content) {
 		ensureTypeAllocated(enclosing.getGenerator(), true);
+
+		final I typeInstance;
+
 		if (instance == null) {
-			instance = (I) clone();
+			typeInstance = (I) clone();
 		} else {
-			instance.type = this.type;
+			typeInstance = instance;
+			typeInstance.type = this.type;
 		}
 
-		instance.data =
-			new TypeInstanceData<S>(enclosing, id, instance, content);
+		typeInstance.data =
+			new TypeInstanceData<S>(enclosing, id, typeInstance, content);
 
-		return instance;
+		return typeInstance;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -204,15 +208,20 @@ public abstract class Type<S extends StructOp<S>>
 			I instance,
 			Content<I> content) {
 		ensureTypeAllocated(global.getGenerator(), true);
+
+		final I typeInstance;
+
 		if (instance == null) {
-			instance = (I) clone();
+			typeInstance = (I) clone();
 		} else {
-			instance.type = this.type;
+			typeInstance = instance;
+			typeInstance.type = this.type;
 		}
 
-		instance.data = new GlobalInstanceData<S>(global, instance, content);
+		typeInstance.data =
+				new GlobalInstanceData<S>(global, typeInstance, content);
 
-		return instance;
+		return typeInstance;
 	}
 
 	final SubData<S> getTypeData() {

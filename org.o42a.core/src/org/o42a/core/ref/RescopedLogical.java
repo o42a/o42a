@@ -75,8 +75,7 @@ final class RescopedLogical extends Logical {
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		host = this.rescoper.rescope(dirs, host);
-		this.logical.write(dirs, host);
+		this.logical.write(dirs, this.rescoper.rescope(dirs, host));
 	}
 
 	@Override

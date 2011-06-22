@@ -110,13 +110,19 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	}
 
 	public <A extends AscendantsBuilder<A>> A updateAscendants(A ascendants) {
-		if (this.ancestor != null) {
-			ascendants = ascendants.setAncestor(this.ancestor);
+
+		A result;
+
+		if (this.ancestor == null) {
+			result = ascendants;
+		} else {
+			result = ascendants.setAncestor(this.ancestor);
 		}
 		for (StaticTypeRef sample : this.samples) {
-			ascendants = ascendants.addExplicitSample(sample);
+			result = result.addExplicitSample(sample);
 		}
-		return ascendants;
+
+		return result;
 	}
 
 	public final AscendantsDefinition toStatic() {

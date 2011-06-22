@@ -123,18 +123,19 @@ public final class PhraseInterpreter {
 		final AscendantNode[] ascendantNodes = node.getAscendants();
 		final TypeRef ancestor = parseAncestor(node, distributor);
 		final int samplesFrom;
+		Phrase result;
 
 		if (ancestor == noAncestor(distributor.getContext())) {
 			samplesFrom = 0;
-			phrase = phrase.setImpliedAncestor(
+			result = phrase.setImpliedAncestor(
 					location(phrase, ascendantNodes[0]));
 		} else {
 			samplesFrom = 1;
 			if (ancestor == impliedAncestor(distributor.getContext())) {
-				phrase = phrase.setImpliedAncestor(
+				result = phrase.setImpliedAncestor(
 						location(phrase, ascendantNodes[0]));
 			} else {
-				phrase = phrase.setAncestor(ancestor);
+				result = phrase.setAncestor(ancestor);
 			}
 		}
 
@@ -148,19 +149,23 @@ public final class PhraseInterpreter {
 					sampleNode.accept(REF_VISITOR, distributor);
 
 				if (sampleRef != null) {
-					phrase = phrase.addSamples(sampleRef.toStaticTypeRef());
+					result = result.addSamples(sampleRef.toStaticTypeRef());
 				}
 			}
 		}
 
-		return phrase;
+		return result;
 	}
 
 	private static Phrase addClauses(Phrase phrase, PhraseNode node) {
+
+		Phrase result = phrase;
+
 		for (ClauseNode clause : node.getClauses()) {
-			phrase = clause.accept(CLAUSE_VISITOR, phrase);
+			result = clause.accept(CLAUSE_VISITOR, result);
 		}
-		return phrase;
+
+		return result;
 	}
 
 	private PhraseInterpreter() {

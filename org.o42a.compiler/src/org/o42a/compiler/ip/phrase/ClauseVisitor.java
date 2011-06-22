@@ -66,21 +66,24 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 			return p.emptyArgument(location(p, brackets)).getPhrase();
 		}
 
+		Phrase phrase = p;
+
 		for (ArgumentNode arg : arguments) {
 
 			final ExpressionNode value = arg.getValue();
 
 			if (value != null) {
-				p = value.accept(ARGUMENT_VISITOR, p);
+				phrase = value.accept(ARGUMENT_VISITOR, phrase);
 				continue;
 			}
 			if (arguments.length == 1) {
-				return p.emptyArgument(location(p, brackets)).getPhrase();
+				return phrase.emptyArgument(
+						location(phrase, brackets)).getPhrase();
 			}
-			p = p.emptyArgument(location(p, arg)).getPhrase();
+			phrase = phrase.emptyArgument(location(phrase, arg)).getPhrase();
 		}
 
-		return p;
+		return phrase;
 	}
 
 	@Override

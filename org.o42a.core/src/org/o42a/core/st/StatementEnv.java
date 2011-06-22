@@ -79,10 +79,16 @@ public abstract class StatementEnv {
 	}
 
 	public <D extends Def<D>> D apply(D def) {
+
+		final D prereqDef;
+
 		if (hasPrerequisite()) {
-			def = def.addPrerequisite(prerequisite(def.getScope()));
+			prereqDef = def.addPrerequisite(prerequisite(def.getScope()));
+		} else {
+			prereqDef = def;
 		}
-		return def.addPrecondition(precondition(def.getScope()));
+
+		return prereqDef.addPrecondition(precondition(def.getScope()));
 	}
 
 	protected abstract ValueType<?> expectedType();

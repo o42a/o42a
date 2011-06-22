@@ -124,11 +124,12 @@ final class PathRescoper extends Rescoper {
 
 	@Override
 	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		dirs = dirs.begin("rescope_by_path", "Resccope to " + this.path);
 
-		final HostOp result = this.path.write(dirs, host);
+		final CodeDirs subDirs =
+				dirs.begin("rescope_by_path", "Resccope to " + this.path);
+		final HostOp result = this.path.write(subDirs, host);
 
-		dirs.end();
+		subDirs.end();
 
 		return result;
 	}
