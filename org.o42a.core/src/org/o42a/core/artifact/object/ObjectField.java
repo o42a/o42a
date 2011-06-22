@@ -50,7 +50,7 @@ public abstract class ObjectField extends Field<Obj> {
 			return true;
 		}
 
-		final Obj otherObject = other.getContainer().toObject();
+		final Obj otherObject = other.toObject();
 
 		if (otherObject == null) {
 			return false;

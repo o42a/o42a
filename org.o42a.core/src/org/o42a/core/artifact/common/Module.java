@@ -150,10 +150,7 @@ public class Module extends PlainObject {
 
 		@Override
 		public void allocate() {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			object.ir(getGenerator()).allocate();
+			getScope().toObject().ir(getGenerator()).allocate();
 		}
 
 		@Override
@@ -162,10 +159,7 @@ public class Module extends PlainObject {
 
 		@Override
 		protected HostOp createOp(CodeBuilder builder, Code code) {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			return object.ir(getGenerator()).op(builder, code);
+			return getScope().toObject().ir(getGenerator()).op(builder, code);
 		}
 
 	}

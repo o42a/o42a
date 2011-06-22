@@ -699,8 +699,7 @@ public abstract class Obj extends Artifact<Obj>
 			overriddenDefinitions.assertScopeIs(scope);
 		}
 
-		final ObjectValue user =
-			scope.getContainer().toObject().value(dummyUser());
+		final ObjectValue user = scope.toObject().value(dummyUser());
 		final ObjectType type = type(user);
 		boolean hasExplicitAncestor =
 			type.getAscendants().getExplicitAncestor() != null;

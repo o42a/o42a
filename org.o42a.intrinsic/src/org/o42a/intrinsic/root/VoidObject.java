@@ -149,10 +149,7 @@ public final class VoidObject extends BuiltinObject {
 
 		@Override
 		public void allocate() {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			object.ir(getGenerator()).allocate();
+			getScope().toObject().ir(getGenerator()).allocate();
 		}
 
 		@Override
@@ -161,10 +158,7 @@ public final class VoidObject extends BuiltinObject {
 
 		@Override
 		protected HostOp createOp(CodeBuilder builder, Code code) {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			return object.ir(getGenerator()).op(builder, code);
+			return getScope().toObject().ir(getGenerator()).op(builder, code);
 		}
 
 	}

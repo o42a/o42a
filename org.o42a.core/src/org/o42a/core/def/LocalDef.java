@@ -223,7 +223,7 @@ class LocalDef extends ValueDef {
 			assert assertFullyResolved();
 			dirs = dirs.begin("local_logical", "Local logical: " + this);
 
-			final Obj owner = this.def.getOwnerScope().getContainer().toObject();
+			final Obj owner = this.def.getOwnerScope().toObject();
 			final ValueType<?> valueType = owner.getValueType();
 			final ValDirs valDirs = dirs.value(valueType, "local_val");
 

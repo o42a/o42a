@@ -71,7 +71,7 @@ public class ScopeSet {
 
 		for (Scope s : this.scopes) {
 
-			final Obj obj = s.getContainer().toObject();
+			final Obj obj = s.toObject();
 
 			if (obj == null) {
 				continue;

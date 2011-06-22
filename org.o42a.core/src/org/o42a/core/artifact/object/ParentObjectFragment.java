@@ -53,7 +53,7 @@ final class ParentObjectFragment extends MemberFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj object = start.getContainer().toObject();
+		final Obj object = start.toObject();
 
 		if (!object.membersResolved()) {
 

@@ -54,7 +54,7 @@ public class CodeBuilder {
 			return new LocalBuilder(function, local.ir(generator));
 		}
 
-		final Obj scopeObject = scope.getContainer().toObject();
+		final Obj scopeObject = scope.toObject();
 
 		if (scopeObject != null) {
 			return new CodeBuilder(

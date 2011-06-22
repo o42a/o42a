@@ -52,7 +52,7 @@ public final class ObjectScopeIR extends ScopeIR {
 
 	@Override
 	public void allocate() {
-		getScope().getContainer().toObject().ir(getGenerator()).getData();
+		getScope().toObject().ir(getGenerator()).getData();
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public final class ObjectScopeIR extends ScopeIR {
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
 
-		final Obj object = getScope().getContainer().toObject();
+		final Obj object = getScope().toObject();
 		final ObjectIR objectIR = object.ir(getGenerator());
 
 		return objectIR.op(builder, code);

@@ -149,7 +149,7 @@ public class ObjectIR  {
 
 	public final Fld fld(MemberKey memberKey) {
 
-		final Obj origin = memberKey.getOrigin().getContainer().toObject();
+		final Obj origin = memberKey.getOrigin().toObject();
 		final ObjectBodyIR bodyIR = bodyIR(origin);
 
 		return bodyIR.fld(memberKey);
@@ -157,7 +157,7 @@ public class ObjectIR  {
 
 	public final Fld findFld(MemberKey memberKey) {
 
-		final Obj origin = memberKey.getOrigin().getContainer().toObject();
+		final Obj origin = memberKey.getOrigin().toObject();
 		final ObjectBodyIR bodyIR = findBodyIR(origin);
 
 		return bodyIR.findFld(memberKey);

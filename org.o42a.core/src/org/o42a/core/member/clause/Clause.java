@@ -235,7 +235,7 @@ public abstract class Clause implements PlaceInfo {
 			return this.enclosingObject = clause.getEnclosingObject();
 		}
 
-		this.enclosingObject = enclosingScope.getContainer().toObject();
+		this.enclosingObject = enclosingScope.toObject();
 
 		assert this.enclosingObject != null :
 			"Enclosing object not found: " + this;
@@ -318,7 +318,7 @@ public abstract class Clause implements PlaceInfo {
 		final Clause enclosingClause = enclosingScope.getContainer().toClause();
 
 		if (enclosingClause == null) {
-			assert enclosingScope.getContainer().toObject() != null :
+			assert enclosingScope.toObject() != null :
 				this + " is not inside of object";
 			return member.getKey().toPath();
 		}
