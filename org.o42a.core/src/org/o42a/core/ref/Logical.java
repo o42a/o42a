@@ -406,13 +406,15 @@ public abstract class Logical extends LogicalBase {
 		if (this.fullResolution == null) {
 			this.fullResolution = new ResolverCache("FullResolution", this);
 		}
-		resolver = this.fullResolution.resolve(resolver);
-		if (resolver == null) {
+
+		final Resolver fullResolver = this.fullResolution.resolve(resolver);
+
+		if (fullResolver == null) {
 			return;
 		}
 		getContext().fullResolution().start();
 		try {
-			fullyResolve(resolver);
+			fullyResolve(fullResolver);
 		} finally {
 			getContext().fullResolution().end();
 		}

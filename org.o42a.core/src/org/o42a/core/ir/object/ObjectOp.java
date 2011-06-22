@@ -136,13 +136,14 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
-		dirs = dirs.begin(
+
+		final ValDirs dubDirs = dirs.begin(
 				"Value of "
 				+ (body != null ? body + " by " + this : toString()));
+		final ValOp result =
+				objectType(dubDirs.code()).writeValue(dubDirs, body);
 
-		final ValOp result = objectType(dirs.code()).writeValue(dirs, body);
-
-		dirs.done();
+		dubDirs.done();
 
 		return result;
 	}
@@ -152,13 +153,18 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	public void writeRequirement(CodeDirs dirs, ObjectOp body) {
+
+		final CodeDirs subDirs;
+
 		if (body != null) {
-			dirs = dirs.begin("obj_req", "Requirement of " + body);
+			subDirs = dirs.begin("obj_req", "Requirement of " + body);
 		} else {
-			dirs = dirs.begin("obj_req", "Requirement");
+			subDirs = dirs.begin("obj_req", "Requirement");
 		}
-		objectType(dirs.code()).writeRequirement(dirs, body);
-		dirs.end();
+
+		objectType(subDirs.code()).writeRequirement(subDirs, body);
+
+		subDirs.end();
 	}
 
 	public final ValOp writeClaim(ValDirs dirs) {
@@ -170,13 +176,18 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	public void writeCondition(CodeDirs dirs, ObjOp body) {
+
+		final CodeDirs subDirs;
+
 		if (body != null) {
-			dirs = dirs.begin("obj_cond", "Condition of " + body);
+			subDirs = dirs.begin("obj_cond", "Condition of " + body);
 		} else {
-			dirs = dirs.begin("obj_cond", "Condition");
+			subDirs = dirs.begin("obj_cond", "Condition");
 		}
-		objectType(dirs.code()).writeCondition(dirs, body);
-		dirs.end();
+
+		objectType(subDirs.code()).writeCondition(subDirs, body);
+
+		subDirs.end();
 	}
 
 	public final ValOp writeProposition(ValDirs dirs) {
@@ -244,12 +255,11 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 			Obj ascendant) {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
-
-		dirs = dirs.begin(
+		final CodeDirs subDirs = dirs.begin(
 				id != null ? id.getId() : "cast",
 				"Dynamic cast " + this + " to " + ascendantIR.getId());
 
-		final Code code = dirs.code();
+		final Code code = subDirs.code();
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
@@ -273,35 +283,36 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 		if (castNull.exists()) {
 			castNull.debug("Cast failed");
-			castNull.go(dirs.falseDir());
+			castNull.go(subDirs.falseDir());
 		}
 
-		dirs.end();
+		subDirs.end();
 
 		return result;
 	}
 
 	protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
-		dirs = dirs.begin(
+
+		final ValDirs subDirs = dirs.begin(
 				"Claim of "
 				+ (body != null ? body + " by " + this : toString()));
+		final ValOp result =
+				objectType(subDirs.code()).writeClaim(subDirs, body);
 
-		final ValOp result = objectType(dirs.code()).writeClaim(dirs, body);
-
-		dirs.done();
+		subDirs.done();
 
 		return result;
 	}
 
 	protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
-		dirs = dirs.begin(
+
+		final ValDirs subDirs = dirs.begin(
 				"Proposition of "
 				+ (body != null ? body + " by " + this : toString()));
-
 		final ValOp result =
-			objectType(dirs.code()).writeProposition(dirs, body);
+			objectType(subDirs.code()).writeProposition(subDirs, body);
 
-		dirs.done();
+		subDirs.done();
 
 		return result;
 	}

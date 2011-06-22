@@ -72,13 +72,16 @@ public abstract class Statement extends Placed {
 		if (this.fullResolution == null) {
 			this.fullResolution = new ResolverCache("FullResolution", this);
 		}
-		resolver = this.fullResolution.resolve(resolver);
-		if (resolver == null) {
+
+		final Resolver fullResolver =
+				this.fullResolution.resolve(resolver);
+
+		if (fullResolver == null) {
 			return;
 		}
 		getContext().fullResolution().start();
 		try {
-			fullyResolve(resolver);
+			fullyResolve(fullResolver);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -89,13 +92,15 @@ public abstract class Statement extends Placed {
 		if (this.valueResolution == null) {
 			this.valueResolution = new ResolverCache("ValueResolution", this);
 		}
-		resolver = this.valueResolution.resolve(resolver);
-		if (resolver == null) {
+
+		final Resolver valueResolver = this.valueResolution.resolve(resolver);
+
+		if (valueResolver == null) {
 			return;
 		}
 		getContext().fullResolution().start();
 		try {
-			fullyResolveValues(resolver);
+			fullyResolveValues(valueResolver);
 		} finally {
 			getContext().fullResolution().end();
 		}

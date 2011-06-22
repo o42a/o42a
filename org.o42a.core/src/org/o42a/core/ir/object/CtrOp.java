@@ -56,13 +56,12 @@ public class CtrOp extends IROp {
 			ObjectRefFunc ancestorFunc,
 			ObjectOp sample) {
 
-		final Code code = dirs.code();
-
-		dirs = dirs.begin(
+		final CodeDirs subDirs = dirs.begin(
 				"new_object",
 				"New object: sample=" + sample
 				+ ", ancestorFunc=" + ancestorFunc
 				+ ", scope=" + scope);
+		final Code code = subDirs.code();
 
 		ptr().scopeType(code).store(code, scope.objectType(code).ptr());
 		ptr().ancestorFunc(code).store(code, ancestorFunc);
@@ -74,10 +73,10 @@ public class CtrOp extends IROp {
 		result.isNull(null, code).go(code, nullObject.head());
 
 		if (nullObject.exists()) {
-			nullObject.go(dirs.falseDir());
+			nullObject.go(subDirs.falseDir());
 		}
 
-		dirs.end();
+		subDirs.end();
 
 		return anonymousObject(
 				sample.getBuilder(),
@@ -91,12 +90,11 @@ public class CtrOp extends IROp {
 			ObjectOp ancestor,
 			ObjectOp sample) {
 
-		final Code code = dirs.code();
-
-		dirs = dirs.begin(
+		final CodeDirs subDirs = dirs.begin(
 				"new_object",
 				"New object: sample=" + sample
 				+ ", ancestor=" + ancestor);
+		final Code code = subDirs.code();
 
 		if (scope != null) {
 			ptr().scopeType(code).store(code, scope.objectType(code).ptr());
@@ -119,10 +117,10 @@ public class CtrOp extends IROp {
 		result.isNull(null, code).go(code, nullObject.head());
 
 		if (nullObject.exists()) {
-			nullObject.go(dirs.falseDir());
+			nullObject.go(subDirs.falseDir());
 		}
 
-		dirs.end();
+		subDirs.end();
 
 		return anonymousObject(
 				sample.getBuilder(),

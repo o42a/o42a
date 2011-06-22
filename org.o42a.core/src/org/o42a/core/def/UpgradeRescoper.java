@@ -81,16 +81,16 @@ final class UpgradeRescoper extends Rescoper {
 
 	@Override
 	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		dirs = dirs.begin(
+
+		final CodeDirs subDirs = dirs.begin(
 				"upgrade_scope",
 				"Upgrade scope " + host + " to " + this.fromScope);
-
-		final ObjOp result = host.toObject(dirs).cast(
-				dirs.id("rescoped"),
-				dirs,
+		final ObjOp result = host.toObject(subDirs).cast(
+				subDirs.id("rescoped"),
+				subDirs,
 				this.fromScope.toObject());
 
-		dirs.end();
+		subDirs.end();
 
 		return result;
 	}

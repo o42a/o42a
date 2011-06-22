@@ -190,7 +190,7 @@ public class Compiler implements BlockCompiler {
 				worker.close();
 			} catch (IOException e) {
 				worker.getParserLogger().ioError(
-						worker != null ? worker.position() : source,
+						worker.position(),
 						e.getLocalizedMessage());
 			}
 		}

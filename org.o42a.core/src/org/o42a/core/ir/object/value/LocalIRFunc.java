@@ -49,21 +49,22 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	}
 
 	public ValOp call(ValDirs dirs, ObjOp owner, ObjOp body) {
-		dirs = dirs.begin(body != null ? "Value for " + body : "Value");
 
-		final Code code = dirs.code();
+		final ValDirs subDirs =
+				dirs.begin(body != null ? "Value for " + body : "Value");
+		final Code code = subDirs.code();
 
-		if (writeFalseValue(dirs.dirs(), body)) {
-			dirs.done();
-			return falseValue().op(dirs.getBuilder(), code);
+		if (writeFalseValue(subDirs.dirs(), body)) {
+			subDirs.done();
+			return falseValue().op(subDirs.getBuilder(), code);
 		}
 
 		code.debug("Call");
 
 		final ObjectValFunc func = getFunction().getPointer().op(null, code);
-		final ValOp result = func.call(dirs, body(code, owner, body));
+		final ValOp result = func.call(subDirs, body(code, owner, body));
 
-		dirs.done();
+		subDirs.done();
 
 		return result;
 	}

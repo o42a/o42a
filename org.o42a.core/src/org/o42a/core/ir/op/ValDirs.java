@@ -37,7 +37,6 @@ public abstract class ValDirs {
 	private final ValueType<?> valueType;
 	private Code falseCode;
 	private Code unknownCode;
-	protected ValOp value;
 	protected CodeDirs dirs;
 
 	ValDirs(CodeBuilder builder, Code code, ValueType<?> valueType) {
@@ -119,17 +118,7 @@ public abstract class ValDirs {
 	}
 
 	public ValOp value() {
-		if (this.value != null) {
-			return this.value;
-		}
-
-		final TopLevelValDirs topLevel = topLevel();
-
-		if (code() == topLevel.code()) {
-			return this.value = topLevel.value();
-		}
-
-		return this.value = topLevel.value();
+		return topLevel().value();
 	}
 
 	public abstract void done();

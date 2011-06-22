@@ -146,18 +146,21 @@ public class CL {
 
 		final int slashIdx =
 			source.lastIndexOf(System.getProperty("file.separator"));
+		final String fileName;
 
 		if (slashIdx >= 0) {
-			source = source.substring(slashIdx + 1);
+			fileName = source.substring(slashIdx + 1);
+		} else {
+			fileName = source;
 		}
 
-		final int dotIdx = source.lastIndexOf('.');
+		final int dotIdx = fileName.lastIndexOf('.');
 
 		if (dotIdx > 0) {
-			source = source.substring(0, dotIdx);
+			return fileName.substring(0, dotIdx);
 		}
 
-		return source;
+		return fileName;
 	}
 
 	private static final class Log implements Logger {

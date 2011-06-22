@@ -81,39 +81,41 @@ final class AnonymousObjOp extends ObjectOp {
 
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
-		dirs = dirs.begin("field", "Field " + memberKey + " of " + this);
 
-		final Code code = dirs.code();
+		final CodeDirs subDirs =
+				dirs.begin("field", "Field " + memberKey + " of " + this);
+		final Code code = subDirs.code();
 		final CodeId hostId =
 			code.id("field_host")
 			.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
 		final ObjOp ascendant = cast(
 				hostId,
-				dirs,
+				subDirs,
 				memberKey.getOrigin().toObject());
-		final FldOp op = ascendant.field(dirs, memberKey);
+		final FldOp op = ascendant.field(subDirs, memberKey);
 
-		dirs.code().dumpName("Field: ", op.ptr());
-		dirs.end();
+		subDirs.code().dumpName("Field: ", op.ptr());
+		subDirs.end();
 
 		return op;
 	}
 
 	@Override
 	public DepOp dep(CodeDirs dirs, Dep dep) {
-		dirs = dirs.begin("dep", "Dep " + dep + " of " + this);
 
-		final Code code = dirs.code();
+		final CodeDirs subDirs =
+				dirs.begin("dep", "Dep " + dep + " of " + this);
+		final Code code = subDirs.code();
 		final String depName = dep.getName();
 		final CodeId hostId = code.id("dep_host");
 		final ObjOp ascendant = cast(
 				depName != null ? hostId.sub(depName) : hostId,
-				dirs,
+				subDirs,
 				dep.getObject());
-		final DepOp op = ascendant.dep(dirs, dep);
+		final DepOp op = ascendant.dep(subDirs, dep);
 
-		dirs.code().dumpName("Dep: ", op.ptr());
-		dirs.end();
+		subDirs.code().dumpName("Dep: ", op.ptr());
+		subDirs.end();
 
 		return op;
 	}

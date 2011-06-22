@@ -175,14 +175,12 @@ public class CodeBuilder {
 
 		final AllocationDirs alloc = dirs.allocate("new_object");
 		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
-
-		dirs = alloc.dirs();
-
+		final CodeDirs subDirs = alloc.dirs();
 		final ObjectOp result = ctr.op(this).newObject(
-				dirs,
+				subDirs,
 				scope,
 				ancestorFunc,
-				sample.ir(getGenerator()).op(this, dirs.code()));
+				sample.ir(getGenerator()).op(this, subDirs.code()));
 
 		alloc.done();
 
@@ -197,14 +195,12 @@ public class CodeBuilder {
 
 		final AllocationDirs alloc = dirs.allocate("new_object");
 		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
-
-		dirs = alloc.dirs();
-
+		final CodeDirs subDirs = alloc.dirs();
 		final ObjectOp result = ctr.op(this).newObject(
-				dirs,
+				subDirs,
 				scope,
 				ancestor,
-				sample.ir(getGenerator()).op(this, dirs.code()));
+				sample.ir(getGenerator()).op(this, subDirs.code()));
 
 		alloc.done();
 

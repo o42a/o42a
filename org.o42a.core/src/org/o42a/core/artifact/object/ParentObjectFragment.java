@@ -73,19 +73,25 @@ final class ParentObjectFragment extends MemberFragment {
 				return result;
 			}
 		}
-		if (this.proxyUser != null) {
+
+		final UserInfo proxiedUser;
+
+		if (this.proxyUser == null) {
+			proxiedUser = user;
+		} else {
 			// Proxy exists. Use it instead of user.
 			this.proxyUser.useBy(user);
-			user = this.proxyUser;
+			proxiedUser = this.proxyUser;
 		}
 
-		final Member member = resolveMember(location, user, path, index, start);
+		final Member member =
+				resolveMember(location, proxiedUser, path, index, start);
 
 		if (member == null) {
 			return null;
 		}
 
-		final Container result = member.substance(user);
+		final Container result = member.substance(proxiedUser);
 
 		walker.up(object, this, result);
 

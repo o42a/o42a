@@ -73,8 +73,11 @@ final class ExpressionCache
 		UsableExpression(Expression expression, Resolver resolver) {
 			this.expression = expression;
 			this.user = new UsableUser(this);
-			resolver = resolver.getScope().newResolver(this);
-			this.resolution = expression.resolveBy(resolver);
+
+			final Resolver expressionResolver =
+					resolver.getScope().newResolver(this);
+
+			this.resolution = expression.resolveBy(expressionResolver);
 		}
 
 		public final Resolution getResolution() {

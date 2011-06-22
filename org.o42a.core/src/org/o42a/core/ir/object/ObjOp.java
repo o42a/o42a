@@ -139,41 +139,45 @@ public final class ObjOp extends ObjectOp {
 
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
-		dirs = dirs.begin("field", "Field " + memberKey + " of " + this);
 
-		final Code code = dirs.code();
+		final CodeDirs subDirs =
+				dirs.begin("field", "Field " + memberKey + " of " + this);
+		final Code code = subDirs.code();
 		final Fld fld = ptr().getType().getObjectIR().fld(memberKey);
 		final CodeId hostId =
 			code.id("field_host")
 			.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
 		final ObjOp host = cast(
 				hostId,
-				dirs,
+				subDirs,
 				memberKey.getOrigin().toObject());
 		final FldOp op = fld.op(code, host);
 
 		code.dumpName("Field: ", op.ptr());
-		dirs.end();
+
+		subDirs.end();
 
 		return op;
 	}
 
 	@Override
 	public DepOp dep(CodeDirs dirs, Dep dep) {
-		dirs = dirs.begin("dep", "Dep " + dep + " of " + this);
 
-		final Code code = dirs.code();
+		final CodeDirs subDirs =
+				dirs.begin("dep", "Dep " + dep + " of " + this);
+		final Code code = subDirs.code();
 		final DepIR ir = ptr().getType().getObjectIR().dep(dep);
 		final String depName = dep.getName();
 		final CodeId hostId = code.id("dep_host");
 		final ObjOp host = cast(
 				depName != null ? hostId.sub(depName) : hostId,
-				dirs,
+				subDirs,
 				dep.getObject());
 		final DepOp op = ir.op(code, host);
 
 		code.dumpName("Dep: ", op.ptr());
-		dirs.end();
+
+		subDirs.end();
 
 		return op;
 	}

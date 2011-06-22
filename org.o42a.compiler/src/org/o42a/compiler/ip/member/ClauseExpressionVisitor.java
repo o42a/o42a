@@ -72,21 +72,23 @@ final class ClauseExpressionVisitor
 	}
 
 	@Override
-	public ClauseBuilder visitPhrase(PhraseNode phrase, ClauseBuilder p) {
+	public ClauseBuilder visitPhrase(PhraseNode node, ClauseBuilder p) {
 
-		final ClauseNode[] clauses = phrase.getClauses();
+		final ClauseNode[] clauses = node.getClauses();
 
 		if (clauses.length != 1) {
-			p.getContext().getLogger().invalidClauseContent(phrase);
+			p.getContext().getLogger().invalidClauseContent(node);
 			return null;
 		}
 
-		p = phrase.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
-		if (p == null) {
+		final ClauseBuilder prefixed =
+				node.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
+
+		if (prefixed == null) {
 			return null;
 		}
 
-		return clauses[0].accept(PHRASE_DECLARATIONS_VISITOR, p);
+		return clauses[0].accept(PHRASE_DECLARATIONS_VISITOR, prefixed);
 	}
 
 	@Override

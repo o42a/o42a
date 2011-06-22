@@ -63,9 +63,13 @@ final class RefLogical extends Logical {
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		dirs = dirs.begin("ref_logical", "Logical of ref " + this);
-		this.ref.op(host).writeLogicalValue(dirs);
-		dirs.end();
+
+		final CodeDirs subDirs =
+				dirs.begin("ref_logical", "Logical of ref " + this);
+
+		this.ref.op(host).writeLogicalValue(subDirs);
+
+		subDirs.end();
 	}
 
 	@Override

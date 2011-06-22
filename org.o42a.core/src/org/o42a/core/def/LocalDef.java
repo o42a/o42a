@@ -221,16 +221,18 @@ class LocalDef extends ValueDef {
 		@Override
 		public void write(CodeDirs dirs, HostOp host) {
 			assert assertFullyResolved();
-			dirs = dirs.begin("local_logical", "Local logical: " + this);
+
+			final CodeDirs subDirs =
+					dirs.begin("local_logical", "Local logical: " + this);
 
 			final Obj owner = this.def.getOwnerScope().toObject();
 			final ValueType<?> valueType = owner.getValueType();
-			final ValDirs valDirs = dirs.value(valueType, "local_val");
+			final ValDirs valDirs = subDirs.value(valueType, "local_val");
 
 			this.def.writeValue(valDirs, host);
 			valDirs.done();
 
-			dirs.end();
+			subDirs.end();
 		}
 
 		@Override

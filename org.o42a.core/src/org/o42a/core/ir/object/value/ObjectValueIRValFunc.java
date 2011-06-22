@@ -53,20 +53,25 @@ public abstract class ObjectValueIRValFunc
 	public abstract boolean isClaim();
 
 	public ValOp call(ValDirs dirs, ObjOp host, ObjectOp body) {
+
+		final ValDirs subDirs;
+
 		if (dirs.isDebug()) {
-			dirs = dirs.begin("Calculate value " + getObjectIR().getId());
+			subDirs = dirs.begin("Calculate value " + getObjectIR().getId());
 			if (body != null) {
-				dirs.code().dumpName("For: ", body.toData(dirs.code()));
+				subDirs.code().dumpName("For: ", body.toData(subDirs.code()));
 			}
+		} else {
+			subDirs = dirs;
 		}
 
-		final Code code = dirs.code();
+		final Code code = subDirs.code();
 
-		if (writeFalseValue(dirs.dirs(), body)) {
-			if (dirs.isDebug()) {
-				dirs.done();
+		if (writeFalseValue(subDirs.dirs(), body)) {
+			if (subDirs.isDebug()) {
+				subDirs.done();
 			}
-			return falseValue().op(dirs.getBuilder(), code);
+			return falseValue().op(subDirs.getBuilder(), code);
 		}
 
 		final Obj object = getObjectIR().getObject();
@@ -80,19 +85,19 @@ public abstract class ObjectValueIRValFunc
 				if (!object.getConstructionMode().isRuntime()
 						|| value.getSource() == object) {
 					code.debug(getObjectIR().getId() + " = " + realValue);
-					if (dirs.isDebug()) {
-						dirs.done();
+					if (subDirs.isDebug()) {
+						subDirs.done();
 					}
-					return realValue.op(dirs.getBuilder(), code);
+					return realValue.op(subDirs.getBuilder(), code);
 				}
 			}
 		}
 
 		final ValOp result =
-			get(host).op(null, code).call(dirs, body(code, host, body));
+			get(host).op(null, code).call(subDirs, body(code, host, body));
 
-		if (dirs.isDebug()) {
-			dirs.done();
+		if (subDirs.isDebug()) {
+			subDirs.done();
 		}
 
 		return result;

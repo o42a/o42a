@@ -42,6 +42,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 		final ObjectType containerType =
 			clause.getScope().getEnclosingContainer().toObject().type(user);
 		final TypeRef containerAncestor = containerType.getAncestor();
+		Ascendants result = ascendants;
 
 		if (containerAncestor != null) {
 
@@ -50,7 +51,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 				.getObject().member(clause.getKey());
 
 			if (overriddenMember != null) {
-				ascendants = ascendants.addMemberOverride(overriddenMember);
+				result = result.addMemberOverride(overriddenMember);
 			}
 		}
 
@@ -63,11 +64,11 @@ final class PropagatedClauseDefinition extends PlainObject {
 				.getObject().member(clause.getKey());
 
 			if (overriddenMember != null) {
-				ascendants = ascendants.addMemberOverride(overriddenMember);
+				result = result.addMemberOverride(overriddenMember);
 			}
 		}
 
-		return ascendants;
+		return result;
 	}
 
 	PropagatedClauseDefinition(PlainClause clause, PlainClause overridden) {
