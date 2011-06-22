@@ -91,7 +91,7 @@ public class ObjectIR  {
 	public ObjectBodyIR getAncestorBodyIR() {
 
 		final TypeRef ancestorType =
-			getObject().type().useBy(dummyUser()).getAncestor();
+			getObject().type(dummyUser()).getAncestor();
 
 		if (ancestorType == null) {
 			return null;

@@ -25,9 +25,7 @@ import static org.o42a.util.use.User.useCase;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.o42a.util.use.Usable;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.User;
+import org.o42a.util.use.*;
 
 
 public class UseTest {
@@ -180,25 +178,32 @@ public class UseTest {
 		assertUsed(usable7);
 	}
 
-	public void assertUsed(User user) {
+	public void assertUsed(UseInfo use) {
 		assertTrue(
-				user + " is not used by " + this.useCase,
-				user.isUsedBy(this.useCase));
+				use + " is not used by " + this.useCase,
+				use.getUseBy(this.useCase).isUsed());
 	}
 
-	public void assertUnused(User user) {
+	public void assertUnused(UseInfo use) {
 		assertFalse(
-				user + " is used by " + this.useCase,
-				user.isUsedBy(this.useCase));
+				use + " is used by " + this.useCase,
+				use.getUseBy(this.useCase).isUsed());
 	}
 
 	private final class TestUsable extends Usable<Integer> {
 
 		private final String id;
+		private final UsableUser user;
 		private int counter;
 
 		TestUsable() {
 			this.id = "Usable" + (++UseTest.this.usableIdSeq);
+			this.user = new UsableUser(this);
+		}
+
+		@Override
+		public final User toUser() {
+			return this.user;
 		}
 
 		@Override

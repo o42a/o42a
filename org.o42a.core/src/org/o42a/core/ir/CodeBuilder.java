@@ -213,8 +213,7 @@ public class CodeBuilder {
 
 	public ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
 
-		final TypeRef ancestorType =
-			object.type().useBy(dummyUser()).getAncestor();
+		final TypeRef ancestorType = object.type(dummyUser()).getAncestor();
 
 		if (ancestorType == null) {
 			return null;

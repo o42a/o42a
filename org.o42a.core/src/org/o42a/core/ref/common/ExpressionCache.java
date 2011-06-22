@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.util.use.Usable;
+import org.o42a.util.use.UsableUser;
 import org.o42a.util.use.User;
 
 
@@ -66,16 +67,23 @@ final class ExpressionCache
 	static final class UsableExpression extends Usable<Resolution> {
 
 		private final Expression expression;
+		private final UsableUser user;
 		private final Resolution resolution;
 
 		UsableExpression(Expression expression, Resolver resolver) {
 			this.expression = expression;
+			this.user = new UsableUser(this);
 			resolver = resolver.getScope().newResolver(this);
 			this.resolution = expression.resolveBy(resolver);
 		}
 
 		public final Resolution getResolution() {
 			return this.resolution;
+		}
+
+		@Override
+		public final User toUser() {
+			return this.user;
 		}
 
 		@Override

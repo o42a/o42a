@@ -61,10 +61,10 @@ public abstract class ObjectWrap extends PlainObject {
 		}
 		this.wrapped = createWrapped();
 
-		type().useBy(this.wrapped.type());
-		this.wrapped.type().useBy(type());
-		value().useBy(this.wrapped.value());
-		this.wrapped.value().useBy(value());
+		type(this.wrapped.type(dummyUser()));
+		this.wrapped.type(type(dummyUser()));
+		value(this.wrapped.value(dummyUser()));
+		this.wrapped.value(value(dummyUser()));
 
 		return this.wrapped;
 	}
@@ -83,10 +83,11 @@ public abstract class ObjectWrap extends PlainObject {
 	protected void declareMembers(ObjectMembers members) {
 
 		final Obj wrapped = getWrapped();
-		final ObjectType type = type().useBy(dummyUser());
+		final ObjectType type = type(dummyUser());
 
 		for (Member inherited
-				: type.getAncestor().typeObject(type()).getMembers()) {
+				: type.getAncestor().typeObject(
+						type(dummyUser())).getMembers()) {
 
 			// find the member from ancestor in wrapped object
 			final Member member = wrapped.member(inherited.getKey());
@@ -100,7 +101,10 @@ public abstract class ObjectWrap extends PlainObject {
 				continue;
 			}
 
-			members.addMember(member.wrap(toMemberOwner(), type(), inherited));
+			members.addMember(member.wrap(
+					toMemberOwner(),
+					type(dummyUser()),
+					inherited));
 		}
 	}
 

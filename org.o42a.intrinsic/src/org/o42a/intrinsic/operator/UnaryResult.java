@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.Accessor;
@@ -78,7 +79,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 			.toArtifact()
 			.materialize();
 		final Value<?> operandValue =
-			operandObject.value().useBy(resolver).getValue();
+			operandObject.value(resolver).getValue();
 
 		if (operandValue.isFalse()) {
 			return getResultType().falseValue();
@@ -101,14 +102,14 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final UserInfo user = object.value();
+		final UserInfo user = object.value(dummyUser());
 		final Obj operandObject =
 			object.member(operandKey())
 			.substance(object.getScope().newResolver(user))
 			.toArtifact()
 			.materialize();
 
-		operandObject.value().useBy(user);
+		operandObject.value(user);
 	}
 
 	@Override

@@ -95,7 +95,7 @@ public class BuiltinValueDef extends ValueDef {
 		final Obj builtin = this.builtin.toObject();
 
 		if (builtin != object) {
-			builtin.value().useBy(resolver);
+			builtin.value(resolver);
 		}
 		object.resolveAll();
 		this.builtin.resolveBuiltin(object);

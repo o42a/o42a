@@ -42,8 +42,7 @@ public class FieldRefTest extends CompilerTestCase {
 
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 
-		assertTrue(this.b.type().useBy(USE_CASE).inherits(
-				foo.type().useBy(USE_CASE)));
+		assertTrue(this.b.type(USE_CASE).inherits(foo.type(USE_CASE)));
 		assertEquals(definiteValue(this.b), 1L);
 	}
 
@@ -55,8 +54,7 @@ public class FieldRefTest extends CompilerTestCase {
 
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 
-		assertTrue(this.b.type().useBy(USE_CASE).inherits(
-				foo.type().useBy(USE_CASE)));
+		assertTrue(this.b.type(USE_CASE).inherits(foo.type(USE_CASE)));
 		assertEquals(definiteValue(this.b), 1L);
 	}
 
@@ -68,11 +66,9 @@ public class FieldRefTest extends CompilerTestCase {
 
 		final Obj foo = field(this.a, "foo").getArtifact().materialize();
 
-		assertFalse(this.b.type().useBy(USE_CASE).inherits(
-				foo.type().useBy(USE_CASE)));
-		assertTrue(this.b.type().useBy(USE_CASE).inherits(
-				this.context.getIntrinsics().getInteger()
-				.type().useBy(USE_CASE)));
+		assertFalse(this.b.type(USE_CASE).inherits(foo.type(USE_CASE)));
+		assertTrue(this.b.type(USE_CASE).inherits(
+				this.context.getIntrinsics().getInteger().type(USE_CASE)));
 		assertEquals(definiteValue(this.b), 1L);
 	}
 
@@ -85,8 +81,7 @@ public class FieldRefTest extends CompilerTestCase {
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bar = field(this.b, "bar").getArtifact().toObject();
 
-		assertTrue(bar.type().useBy(USE_CASE).inherits(
-				foo.type().useBy(USE_CASE)));
+		assertTrue(bar.type(USE_CASE).inherits(foo.type(USE_CASE)));
 		assertEquals(definiteValue(bar), 1L);
 	}
 
@@ -102,8 +97,7 @@ public class FieldRefTest extends CompilerTestCase {
 		final Obj foo = field(this.a, "foo").getArtifact().toObject();
 		final Obj bar = field(c, "bar").getArtifact().toObject();
 
-		assertTrue(bar.type().useBy(USE_CASE).derivedFrom(
-				foo.type().useBy(USE_CASE)));
+		assertTrue(bar.type(USE_CASE).derivedFrom(foo.type(USE_CASE)));
 		assertEquals(definiteValue(bar), 2L);
 	}
 

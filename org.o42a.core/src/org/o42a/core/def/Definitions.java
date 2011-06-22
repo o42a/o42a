@@ -21,6 +21,7 @@ package org.o42a.core.def;
 
 import static java.lang.System.arraycopy;
 import static org.o42a.core.def.DefValue.nonExistingValue;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -998,7 +999,7 @@ public class Definitions extends Scoped {
 	private final void resolveAll(Def<?>[] defs) {
 
 		final Resolver resolver = getScope().newResolver(
-				getScope().getContainer().toObject().value());
+				getScope().getContainer().toObject().value(dummyUser()));
 
 		for (Def<?> def : defs) {
 			def.resolveAll(resolver);

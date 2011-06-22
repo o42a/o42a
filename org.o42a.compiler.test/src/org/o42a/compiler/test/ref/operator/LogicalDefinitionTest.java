@@ -65,7 +65,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 				"B := +-a.",
 				"C := b.");
 
-		assertKnownValue(this.a.value().useBy(USE_CASE).getValue());
+		assertKnownValue(valueOf(this.a));
 		assertFalseVoid(this.a);
 		assertTrueVoid(this.b);
 		assertTrueVoid(this.c);
@@ -78,7 +78,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 				"B := +-a.",
 				"C := b.");
 
-		assertUnknownValue(this.a.value().useBy(USE_CASE).getValue());
+		assertUnknownValue(valueOf(this.a));
 		assertFalseVoid(this.b);
 		assertFalseVoid(this.c);
 	}
@@ -90,7 +90,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 				"B := -+a.",
 				"C := b.");
 
-		assertKnownValue(this.a.value().useBy(USE_CASE).getValue());
+		assertKnownValue(valueOf(this.a));
 		assertTrueVoid(this.a);
 		assertFalseVoid(this.b);
 		assertFalseVoid(this.c);
@@ -103,7 +103,7 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 				"B := -+a.",
 				"C := b.");
 
-		assertUnknownValue(this.a.value().useBy(USE_CASE).getValue());
+		assertUnknownValue(valueOf(this.a));
 		assertTrueVoid(this.b);
 		assertTrueVoid(this.c);
 	}

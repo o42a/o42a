@@ -20,6 +20,7 @@
 package org.o42a.common.adapter;
 
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.LocationInfo;
@@ -73,7 +74,7 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 			.toArtifact()
 			.materialize();
 		final Value<?> inputValue =
-			inputObject.value().useBy(resolver).getValue();
+			inputObject.value(resolver).getValue();
 
 		if (inputValue.isFalse()) {
 			return getValueType().falseValue();
@@ -99,14 +100,14 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final UserInfo user = object.value();
+		final UserInfo user = object.value(dummyUser());
 		final Obj inputObject =
 			object.member(inputKey())
 			.substance(object.getScope().newResolver(user))
 			.toArtifact()
 			.materialize();
 
-		inputObject.value().useBy(user);
+		inputObject.value(user);
 	}
 
 	@Override

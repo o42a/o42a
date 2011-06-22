@@ -21,28 +21,35 @@ package org.o42a.core.artifact.object;
 
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
+import static org.o42a.util.use.Usable.simpleUsable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.use.User;
+import org.o42a.util.use.*;
 
 
-public final class ObjectType {
+public final class ObjectType extends AbstractUser {
 
 	private final Obj object;
+	private Usable<?> usable;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
 
-	private ObjectType(Obj object) {
+	ObjectType(Obj object) {
 		this.object = object;
 	}
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	@Override
+	public final UseFlag getUseBy(UseCase useCase) {
+		return usable().getUseBy(useCase);
 	}
 
 	public final Ascendants getAscendants() {
@@ -76,7 +83,7 @@ public final class ObjectType {
 			return false;
 		}
 
-		return ancestor.type(getObject().type()).inherits(other);
+		return ancestor.type(dummyUser()).inherits(other);
 	}
 
 	public final Map<Scope, Derivation> allAscendants() {
@@ -138,6 +145,20 @@ public final class ObjectType {
 		return this.resolution.resolved();
 	}
 
+	final Usable<?> usable() {
+		if (this.usable != null) {
+			return this.usable;
+		}
+
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf == null) {
+			return this.usable = simpleUsable("ObjectType", getObject());
+		}
+
+		return this.usable = cloneOf.type(dummyUser()).usable();
+	}
+
 	private HashMap<Scope, Derivation> buildAllAscendants() {
 
 		final HashMap<Scope, Derivation> allAscendants =
@@ -149,7 +170,7 @@ public final class ObjectType {
 
 		if (ancestor != null) {
 
-			final ObjectType type = ancestor.type(getObject().type());
+			final ObjectType type = ancestor.type(this);
 
 			for (Scope scope : type.allAscendants().keySet()) {
 				allAscendants.put(scope, Derivation.INHERITANCE);
@@ -169,7 +190,7 @@ public final class ObjectType {
 			Sample[] samples) {
 		for (Sample sample : samples) {
 
-			final ObjectType type = sample.type(getObject().type());
+			final ObjectType type = sample.type(this);
 
 			for (Map.Entry<Scope, Derivation> e
 					: type.allAscendants().entrySet()) {
@@ -186,34 +207,6 @@ public final class ObjectType {
 				allAscendants.put(scope, derivations.union(traversed));
 			}
 		}
-	}
-
-	static final class UsableObjectType extends ObjectUsable<ObjectType> {
-
-		private final ObjectType type;
-
-		UsableObjectType(Obj object) {
-			super(object);
-			this.type = new ObjectType(object);
-		}
-
-		@Override
-		public String toString() {
-			if (getObject() == null) {
-				return super.toString();
-			}
-			return "ObjectType[" + getObject() + ']';
-		}
-
-		@Override
-		protected ObjectType createUsed(User user) {
-			return this.type;
-		}
-
-		final ObjectType getType() {
-			return this.type;
-		}
-
 	}
 
 }

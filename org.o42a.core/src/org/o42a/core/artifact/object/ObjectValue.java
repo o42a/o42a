@@ -19,22 +19,30 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.util.use.Usable.simpleUsable;
+
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.util.use.User;
+import org.o42a.util.use.*;
 
 
-public final class ObjectValue {
+public final class ObjectValue extends AbstractUser {
 
 	private final Obj object;
+	private Usable<?> usable;
 	private Value<?> value;
 
-	private ObjectValue(Obj object) {
+	ObjectValue(Obj object) {
 		this.object = object;
 	}
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	@Override
+	public final UseFlag getUseBy(UseCase useCase) {
+		return usable().getUseBy(useCase);
 	}
 
 	public final Value<?> getValue() {
@@ -67,31 +75,18 @@ public final class ObjectValue {
 		return "ValueOf[" + this.object + ']';
 	}
 
-	static final class UsableObjectValue extends ObjectUsable<ObjectValue> {
-
-		private final ObjectValue value;
-
-		UsableObjectValue(Obj object) {
-			super(object);
-			this.value = new ObjectValue(object);
+	final Usable<?> usable() {
+		if (this.usable != null) {
+			return this.usable;
 		}
 
-		@Override
-		public String toString() {
-			if (getObject() == null) {
-				return super.toString();
-			}
-			return "ObjectValue[" + getObject() + ']';
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf == null) {
+			return this.usable = simpleUsable("ObjectValue", getObject());
 		}
 
-		@Override
-		protected ObjectValue createUsed(User user) {
-			return this.value;
-		}
-
-		final ObjectValue getValue() {
-			return this.value;
-		}
-
+		return this.usable = cloneOf.value(dummyUser()).usable();
 	}
+
 }

@@ -52,24 +52,20 @@ public class InheritanceTest extends CompilerTestCase {
 	@Test
 	public void inheritance() {
 		assertThat(
-				this.b.type().useBy(USE_CASE)
+				this.b.type(USE_CASE)
 				.getAncestor().typeObject(USE_CASE)
 				.getScope().toField().getKey().getName(),
 				is("a"));
 		assertSame(
 				this.a,
-				this.b.type().useBy(USE_CASE)
-				.getAncestor().typeObject(USE_CASE));
-		assertTrue(this.b.type().useBy(USE_CASE).inherits(
-				this.a.type().useBy(USE_CASE)));
+				this.b.type(USE_CASE).getAncestor().typeObject(USE_CASE));
+		assertTrue(this.b.type(USE_CASE).inherits(
+				this.a.type(USE_CASE)));
 		assertSame(
 				this.b,
-				this.c.type().useBy(USE_CASE)
-				.getAncestor().typeObject(USE_CASE));
-		assertTrue(this.c.type().useBy(USE_CASE).inherits(
-				this.a.type().useBy(USE_CASE)));
-		assertTrue(this.c.type().useBy(USE_CASE).inherits(
-				this.b.type().useBy(USE_CASE)));
+				this.c.type(USE_CASE).getAncestor().typeObject(USE_CASE));
+		assertTrue(this.c.type(USE_CASE).inherits(this.a.type(USE_CASE)));
+		assertTrue(this.c.type(USE_CASE).inherits(this.b.type(USE_CASE)));
 	}
 
 	@Test
@@ -87,7 +83,7 @@ public class InheritanceTest extends CompilerTestCase {
 		assertThat(aFoo, notNullValue());
 		assertFalse(aFoo.isPropagated());
 		assertThat(
-				aFoo.getArtifact().toObject().type().useBy(USE_CASE)
+				aFoo.getArtifact().toObject().type(USE_CASE)
 				.getAncestor().typeObject(USE_CASE),
 				is(this.context.getIntrinsics().getInteger()));
 	}
@@ -100,9 +96,9 @@ public class InheritanceTest extends CompilerTestCase {
 
 		assertFalse(bFoo.isPropagated());
 		assertTrue(
-				bFoo.getArtifact().toObject().type().useBy(USE_CASE)
+				bFoo.getArtifact().toObject().type(USE_CASE)
 				.derivedFrom(
-						aFoo.getArtifact().toObject().type().useBy(USE_CASE),
+						aFoo.getArtifact().toObject().type(USE_CASE),
 						MEMBER_OVERRIDE));
 	}
 
@@ -115,14 +111,14 @@ public class InheritanceTest extends CompilerTestCase {
 
 		assertTrue(cFoo.isPropagated());
 		assertTrue(
-				cFoo.getArtifact().toObject().type().useBy(USE_CASE)
+				cFoo.getArtifact().toObject().type(USE_CASE)
 				.derivedFrom(
-						aFoo.getArtifact().toObject().type().useBy(USE_CASE),
+						aFoo.getArtifact().toObject().type(USE_CASE),
 						MEMBER_OVERRIDE));
 		assertTrue(
-				cFoo.getArtifact().toObject().type().useBy(USE_CASE)
+				cFoo.getArtifact().toObject().type(USE_CASE)
 				.derivedFrom(
-						bFoo.getArtifact().toObject().type().useBy(USE_CASE),
+						bFoo.getArtifact().toObject().type(USE_CASE),
 						MEMBER_OVERRIDE));
 	}
 

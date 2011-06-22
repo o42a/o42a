@@ -58,7 +58,7 @@ final class Adapter extends Wrap {
 		}
 
 		final ObjectType objectType =
-			resolution.materialize().type().useBy(dummyUser());
+			resolution.materialize().type(dummyUser());
 
 		if (objectType.derivedFrom(this.adapterType.type(dummyUser()))) {
 			return this.ref;

@@ -37,8 +37,7 @@ import org.o42a.util.use.UseInfo;
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
-	@SuppressWarnings("unchecked")
-	private final Usable<A> content = simpleUsable("Content", (A) this);
+	private Usable<A> content;
 	private Holder<Obj> enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;
@@ -73,6 +72,18 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		final Field<?> field = getScope().toField();
 
 		return field != null && field.isClone();
+	}
+
+	public final A getCloneOf() {
+
+		@SuppressWarnings("unchecked")
+		final Field<A> field = (Field<A>) getScope().toField();
+
+		if (field == null || !field.isClone()) {
+			return null;
+		}
+
+		return field.getLastDefinition().getArtifact();
 	}
 
 	public abstract Obj toObject();
@@ -177,7 +188,17 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	public final Usable<A> content() {
-		return this.content;
+		if (this.content != null) {
+			return this.content;
+		}
+
+		final A cloneOf = getCloneOf();
+
+		if (cloneOf != null) {
+			return this.content = cloneOf.content();
+		}
+
+		return this.content = simpleUsable("Content", toArtifact());
 	}
 
 	public abstract UseInfo fieldUses();

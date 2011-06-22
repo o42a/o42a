@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.Accessor;
@@ -88,16 +89,14 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 			.substance(resolver)
 			.toArtifact()
 			.materialize();
-		final Value<?> leftValue =
-			leftObject.value().useBy(resolver).getValue();
+		final Value<?> leftValue = leftObject.value(resolver).getValue();
 		final Obj rightObject =
 			resolver.getScope().getContainer()
 			.member(rightOperandKey())
 			.substance(resolver)
 			.toArtifact()
 			.materialize();
-		final Value<?> rightValue =
-			rightObject.value().useBy(resolver).getValue();
+		final Value<?> rightValue = rightObject.value(resolver).getValue();
 
 		if (leftValue.isFalse() || rightValue.isFalse()) {
 			return getResultType().falseValue();
@@ -123,7 +122,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final UserInfo user = object.value();
+		final UserInfo user = object.value(dummyUser());
 		final Obj leftObject =
 			object.member(leftOperandKey())
 			.substance(user)
@@ -135,8 +134,8 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 			.toArtifact()
 			.materialize();
 
-		leftObject.value().useBy(user);
-		rightObject.value().useBy(user);
+		leftObject.value(user);
+		rightObject.value(user);
 	}
 
 	@Override

@@ -89,9 +89,8 @@ public strictfp class FloatOperatorsTest extends CompilerTestCase {
 		super.compile(source);
 		this.result = field("result").getArtifact().materialize();
 		assertEquals(ValueType.FLOAT, this.result.getValueType());
-		assertTrue(this.result.type().useBy(USE_CASE).inherits(
-				this.context.getIntrinsics().getFloat()
-				.type().useBy(dummyUser())));
+		assertTrue(this.result.type(USE_CASE).inherits(
+				this.context.getIntrinsics().getFloat().type(dummyUser())));
 	}
 
 }

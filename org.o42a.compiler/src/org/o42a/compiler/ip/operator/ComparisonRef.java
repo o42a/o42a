@@ -26,6 +26,7 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.common.object.BuiltinObject;
@@ -172,8 +173,7 @@ public final class ComparisonRef extends ObjectConstructor {
 				.member(this.comparisonKey)
 				.toField(resolver);
 			final Value<?> value =
-				field.getArtifact().toObject()
-				.value().useBy(resolver).getValue();
+				field.getArtifact().toObject().value(resolver).getValue();
 
 			if (!value.isDefinite()) {
 				// Value could not be determined at compile-time.
@@ -189,11 +189,11 @@ public final class ComparisonRef extends ObjectConstructor {
 		@Override
 		public void resolveBuiltin(Obj object) {
 
-			final UserInfo user = object.value();
+			final UserInfo user = object.value(dummyUser());
 			final Field<?> field =
 				object.member(this.comparisonKey).toField(user);
 
-			field.getArtifact().toObject().value().useBy(user);
+			field.getArtifact().toObject().value(user);
 		}
 
 		@Override

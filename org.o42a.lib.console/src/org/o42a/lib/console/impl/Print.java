@@ -70,13 +70,13 @@ public class Print extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final UserInfo user = object.value();
+		final UserInfo user = object.value(dummyUser());
 		final Artifact<?> textPath = textKey().toPath().resolveArtifact(
 				object,
 				user,
 				object.getScope());
 
-		textPath.materialize().value().useBy(user);
+		textPath.materialize().value(user);
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class Print extends IntrinsicBuiltin {
 
 	private MemberKey textKey() {
 		return memberName("text").key(
-				type().useBy(dummyUser()).getAncestor()
+				type(dummyUser()).getAncestor()
 				.typeObject(dummyUser()).getScope());
 	}
 

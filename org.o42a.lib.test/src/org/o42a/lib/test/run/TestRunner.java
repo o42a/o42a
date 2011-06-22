@@ -71,7 +71,7 @@ final class TestRunner extends PlainObject {
 
 		final ObjectType testType = module.test(user);
 
-		if (test.type().useBy(user).derivedFrom(testType)) {
+		if (test.type(user).derivedFrom(testType)) {
 			run(
 					sentence,
 					testName(sentence, field, test),
@@ -132,8 +132,7 @@ final class TestRunner extends PlainObject {
 
 		final Obj nameObject =
 			test.member("name").substance(dummyUser()).toObject();
-		final Value<?> nameValue =
-			nameObject.value().useBy(dummyUser()).getValue();
+		final Value<?> nameValue = nameObject.value(dummyUser()).getValue();
 
 		if (!nameValue.isDefinite()) {
 			sentence.getLogger().indefiniteValue(nameObject);

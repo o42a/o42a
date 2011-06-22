@@ -273,8 +273,8 @@ public abstract class LocalScope
 			return false;
 		}
 
-		return getOwner().type().useBy(dummyUser()).derivedFrom(
-				otherLocal.getOwner().type().useBy(dummyUser()));
+		return getOwner().type(dummyUser()).derivedFrom(
+				otherLocal.getOwner().type(dummyUser()));
 	}
 
 	@Override

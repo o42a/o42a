@@ -42,16 +42,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Field<?> a = field("a");
 
-		assertTrueValue(
-				a.getArtifact().materialize()
-				.value().useBy(USE_CASE).getValue());
+		assertTrueValue(valueOf(a));
 		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
 
 		final Field<?> b = field("b");
 
-		assertTrueValue(
-				b.getArtifact().materialize()
-				.value().useBy(USE_CASE).getValue());
+		assertTrueValue(valueOf(b));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));
 	}
 
@@ -61,16 +57,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 				"A := integer(False, = 1).",
 				"B := A().");
 
-		final Field<?> a = field("a");
-		final Value<?> aValue =
-			a.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalseValue(aValue);
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = field("b");
-		final Value<?> bValue =
-			b.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalseValue(bValue);
 		assertThat(bValue.getDefiniteValue(), nullValue());
@@ -82,16 +74,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 				"A := integer(False. = 1).",
 				"B := A().");
 
-		final Field<?> a = field("a");
-		final Value<?> aValue =
-			a.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalseValue(aValue);
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = field("b");
-		final Value<?> bValue =
-			b.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalseValue(bValue);
 		assertThat(bValue.getDefiniteValue(), nullValue());
@@ -104,18 +92,14 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 				"A := integer(Rt-void, = 1).",
 				"B := A().");
 
-		final Field<?> a = field("a");
-		final Value<?> aValue =
-			a.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalse(aValue.isDefinite());
 		assertThat(aValue.getLogicalValue(), is(LogicalValue.RUNTIME));
 		assertFalse(aValue.getLogicalValue().isConstant());
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = field("b");
-		final Value<?> bValue =
-			b.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalse(bValue.isDefinite());
 		assertThat(bValue.getLogicalValue(), is(LogicalValue.RUNTIME));
@@ -130,18 +114,14 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 				"A := integer(Rt-void. = 1).",
 				"B := A().");
 
-		final Field<?> a = field("a");
-		final Value<?> aValue =
-			a.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalse(aValue.isDefinite());
 		assertThat(aValue.getLogicalValue(), is(LogicalValue.RUNTIME));
 		assertFalse(aValue.getLogicalValue().isConstant());
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
-		final Field<?> b = field("b");
-		final Value<?> bValue =
-			b.getArtifact().materialize().value().useBy(USE_CASE).getValue();
+		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalse(bValue.isDefinite());
 		assertThat(bValue.getLogicalValue(), is(LogicalValue.RUNTIME));
