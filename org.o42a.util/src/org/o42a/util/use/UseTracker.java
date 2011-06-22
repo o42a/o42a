@@ -30,7 +30,7 @@ public class UseTracker {
 	}
 
 	public final boolean start(UseCase useCase) {
-		if (this.useFlag == null || this.useFlag.getUseCase() != useCase) {
+		if (!useCase.caseFlag(this.useFlag)) {
 			this.rev = useCase.start(this);
 			this.useFlag = useCase.checkUseFlag();
 			return true;

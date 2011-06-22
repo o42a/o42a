@@ -48,6 +48,10 @@ public final class UseCase extends AbstractUser {
 		return this.checkUseFlag;
 	}
 
+	public final boolean caseFlag(UseFlag flag) {
+		return flag != null && flag.getUseCase() == this;
+	}
+
 	public final UseFlag useFlag(boolean used) {
 		return used ? this.usedFlag : this.unusedFlag;
 	}
