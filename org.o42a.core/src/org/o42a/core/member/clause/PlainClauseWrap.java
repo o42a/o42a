@@ -34,7 +34,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
@@ -153,16 +152,16 @@ final class PlainClauseWrap extends PlainClause {
 
 			final Ascendants ascendants = new Ascendants(this);
 
-			return ascendants.setAncestor(new AncestorEx(this).toTypeRef());
+			return ascendants.setAncestor(new AncestorRef(this).toTypeRef());
 		}
 
 	}
 
-	private static final class AncestorEx extends Expression {
+	private static final class AncestorRef extends Ref {
 
 		private final Wrap wrap;
 
-		AncestorEx(Wrap wrap) {
+		AncestorRef(Wrap wrap) {
 			super(
 					wrap,
 					wrap.distributeIn(wrap.getScope().getEnclosingContainer()));
@@ -170,16 +169,16 @@ final class PlainClauseWrap extends PlainClause {
 		}
 
 		@Override
+		public Resolution resolve(Resolver resolver) {
+			assertScopeIs(resolver.getScope());
+			return artifactResolution(field().getInterface().getObject());
+		}
+
+		@Override
 		public Ref reproduce(Reproducer reproducer) {
 			assertCompatible(reproducer.getReproducingScope());
 			getLogger().notReproducible(this);
 			return null;
-		}
-
-		@Override
-		protected Resolution resolveExpression(Resolver resolver) {
-			assertScopeIs(resolver.getScope());
-			return artifactResolution(field().getInterface().getObject());
 		}
 
 		@Override

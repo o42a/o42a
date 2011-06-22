@@ -29,8 +29,7 @@ import org.o42a.util.log.Loggable;
 
 public abstract class Expression extends Ref {
 
-	private final ExpressionCache cache =
-		new ExpressionCache(this);
+	private final ExpressionCache cache = new ExpressionCache(this);
 
 	public Expression(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
