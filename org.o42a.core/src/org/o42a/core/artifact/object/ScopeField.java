@@ -97,7 +97,7 @@ final class ScopeField extends ObjectField {
 		} else {
 
 			final ObjectType origin =
-				getKey().getOrigin().getContainer().toObject().type(user);
+				getKey().getOrigin().toObject().type(user);
 
 			if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
 				// Scope field declared in implicit sample.

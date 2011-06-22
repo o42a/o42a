@@ -124,7 +124,7 @@ public final class Dep extends PathFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj object = start.getContainer().toObject();
+		final Obj object = start.toObject();
 
 		assert object != null :
 			"Dependency " + path.toString(index + 1)
@@ -160,11 +160,9 @@ public final class Dep extends PathFragment {
 		final Dep dep;
 
 		if (dependencyOnEnclosingOwner()) {
-			dep = new Dep(scope.getContainer().toObject());
+			dep = new Dep(scope.toObject());
 		} else {
-			dep = new Dep(
-				scope.getContainer().toObject(),
-				getDependency().getKey());
+			dep = new Dep(scope.toObject(), getDependency().getKey());
 		}
 
 		return reproducedPath(dep.toPath());

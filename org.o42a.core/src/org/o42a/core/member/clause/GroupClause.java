@@ -237,7 +237,7 @@ public abstract class GroupClause extends Clause implements Container {
 		final Clause enclosingClause = enclosingScope.getContainer().toClause();
 
 		if (enclosingClause == null) {
-			assert enclosingScope.getContainer().toObject() != null :
+			assert enclosingScope.toObject() != null :
 				this + " is not inside of object";
 			return member.getKey().toPath();
 		}

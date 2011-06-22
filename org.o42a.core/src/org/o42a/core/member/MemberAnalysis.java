@@ -55,7 +55,7 @@ public class MemberAnalysis implements UseInfo {
 		}
 
 		final MemberKey memberKey = getMember().getKey();
-		final Obj origin = memberKey.getOrigin().getContainer().toObject();
+		final Obj origin = memberKey.getOrigin().toObject();
 		final Member declaration = origin.member(memberKey);
 
 		return declaration.getAnalysis();

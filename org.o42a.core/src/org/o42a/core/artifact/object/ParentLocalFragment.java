@@ -51,7 +51,7 @@ final class ParentLocalFragment extends PathFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj object = start.getContainer().toObject();
+		final Obj object = start.toObject();
 
 		object.assertDerivedFrom(this.object);
 

@@ -259,11 +259,11 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 			return true;
 		}
 
-		final Obj object1 = getContainer().toObject();
+		final Obj object1 = toObject();
 
 		if (object1 != null) {
 
-			final Obj object2 = other.getContainer().toObject();
+			final Obj object2 = other.toObject();
 
 			if (object2 != null) {
 				return object1.type(dummyUser()).derivedFrom(

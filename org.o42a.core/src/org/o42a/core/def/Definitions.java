@@ -999,7 +999,7 @@ public class Definitions extends Scoped {
 	private final void resolveAll(Def<?>[] defs) {
 
 		final Resolver resolver = getScope().newResolver(
-				getScope().getContainer().toObject().value(dummyUser()));
+				getScope().toObject().value(dummyUser()));
 
 		for (Def<?> def : defs) {
 			def.resolveAll(resolver);

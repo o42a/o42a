@@ -88,7 +88,7 @@ final class UpgradeRescoper extends Rescoper {
 		final ObjOp result = host.toObject(dirs).cast(
 				dirs.id("rescoped"),
 				dirs,
-				this.fromScope.getContainer().toObject());
+				this.fromScope.toObject());
 
 		dirs.end();
 

@@ -149,7 +149,7 @@ public final class ObjOp extends ObjectOp {
 		final ObjOp host = cast(
 				hostId,
 				dirs,
-				memberKey.getOrigin().getContainer().toObject());
+				memberKey.getOrigin().toObject());
 		final FldOp op = fld.op(code, host);
 
 		code.dumpName("Field: ", op.ptr());

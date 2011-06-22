@@ -46,7 +46,7 @@ class AbsolutePathStartFinder implements PathWalker {
 
 	@Override
 	public boolean root(Path path, Scope root) {
-		this.startObject = root.getContainer().toObject();
+		this.startObject = root.toObject();
 		return false;
 	}
 
@@ -82,7 +82,7 @@ class AbsolutePathStartFinder implements PathWalker {
 			return unreachable();
 		}
 
-		return set(field.getContainer().toObject());
+		return set(field.toObject());
 	}
 
 	@Override

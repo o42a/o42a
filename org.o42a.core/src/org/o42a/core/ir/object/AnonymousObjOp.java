@@ -90,7 +90,7 @@ final class AnonymousObjOp extends ObjectOp {
 		final ObjOp ascendant = cast(
 				hostId,
 				dirs,
-				memberKey.getOrigin().getContainer().toObject());
+				memberKey.getOrigin().toObject());
 		final FldOp op = ascendant.field(dirs, memberKey);
 
 		dirs.code().dumpName("Field: ", op.ptr());

@@ -25,7 +25,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -64,10 +63,7 @@ final class RootScope extends ObjectScope {
 
 		@Override
 		public void allocate() {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			object.ir(getGenerator()).allocate();
+			getScope().toObject().ir(getGenerator()).allocate();
 		}
 
 		@Override
@@ -76,10 +72,7 @@ final class RootScope extends ObjectScope {
 
 		@Override
 		protected HostOp createOp(CodeBuilder builder, Code code) {
-
-			final Obj object = getScope().getContainer().toObject();
-
-			return object.ir(getGenerator()).op(builder, code);
+			return getScope().toObject().ir(getGenerator()).op(builder, code);
 		}
 
 	}

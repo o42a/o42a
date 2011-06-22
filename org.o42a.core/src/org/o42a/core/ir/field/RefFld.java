@@ -250,7 +250,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 		final Field<?> lastDefinition = getField().getLastDefinition();
 		final Obj overriddenOwner =
-			lastDefinition.getEnclosingScope().getContainer().toObject();
+			lastDefinition.getEnclosingScope().toObject();
 		final ObjectIR overriddenOwnerIR =
 			overriddenOwner.ir(getGenerator()).getBodyType().getObjectIR();
 		@SuppressWarnings("unchecked")

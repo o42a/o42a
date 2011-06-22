@@ -123,7 +123,7 @@ public final class AdapterId extends MemberId {
 			return null;
 		}
 
-		final Obj object = adapterTypeScope.getContainer().toObject();
+		final Obj object = adapterTypeScope.toObject();
 
 		return object.fixedRef(scope.distribute()).toStaticTypeRef();
 	}

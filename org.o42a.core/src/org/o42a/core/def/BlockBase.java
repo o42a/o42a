@@ -31,7 +31,7 @@ public abstract class BlockBase extends Statement {
 
 	protected static ValueDef localDef(ImperativeBlock block, Scope scope) {
 
-		final Obj actualOwner = scope.getContainer().toObject();
+		final Obj actualOwner = scope.toObject();
 		final Obj explicitOwner = block.getScope().getOwner();
 		final boolean explicit = actualOwner == explicitOwner;
 
