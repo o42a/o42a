@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public abstract class Usable<U> extends AbstractUser {
+public abstract class Usable<U> implements UserInfo, UseInfo {
 
 	public static Usable<?> simpleUsable(String name) {
 		return new SimpleUsable<Void>(name, null);
@@ -65,6 +65,10 @@ public abstract class Usable<U> extends AbstractUser {
 		}
 
 		return this.tracker.done();
+	}
+
+	public final boolean isUsedBy(UseCase useCase) {
+		return getUseBy(useCase).isUsed();
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
@@ -37,7 +38,7 @@ final class PropagatedObject extends PlainObject {
 			Ascendants ascendants) {
 
 		final Obj container = field.getEnclosingContainer().toObject();
-		final ObjectType type = container.type().useBy(user);
+		final ObjectType type = container.type(user);
 		final TypeRef containerAncestor = type.getAncestor();
 
 		if (containerAncestor != null) {
@@ -84,7 +85,7 @@ final class PropagatedObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(type(), field(), new Ascendants(this));
+		return deriveSamples(type(dummyUser()), field(), new Ascendants(this));
 	}
 
 	@Override

@@ -67,7 +67,7 @@ public class TestModule extends Module {
 	}
 
 	public ObjectType test(UserInfo user) {
-		return objectByName(user, "test").type().useBy(user);
+		return objectByName(user, "test").type(user);
 	}
 
 	@Override

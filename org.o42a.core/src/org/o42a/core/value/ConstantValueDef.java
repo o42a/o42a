@@ -58,7 +58,7 @@ final class ConstantValueDef<T> extends ValueDef {
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.source.resolveAll();
-		this.source.value().useBy(resolver);
+		this.source.value(resolver);
 	}
 
 	@Override

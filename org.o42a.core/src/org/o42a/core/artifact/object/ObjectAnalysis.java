@@ -19,8 +19,6 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.member.FieldUses;
 import org.o42a.core.ref.type.TypeRef;
@@ -53,8 +51,7 @@ public class ObjectAnalysis implements UseInfo {
 			return this.staticAncestor > 0;
 		}
 
-		final TypeRef ancestor =
-			getObject().type().useBy(dummyUser()).getAncestor();
+		final TypeRef ancestor = getObject().objectType().getAncestor();
 
 		if (ancestor == null || ancestor.isStatic()) {
 			this.staticAncestor = 1;
@@ -79,11 +76,11 @@ public class ObjectAnalysis implements UseInfo {
 	}
 
 	public final boolean typeAccessedBy(Generator generator) {
-		return getObject().type().isUsedBy(generator.getUseCase());
+		return getObject().objectType().isUsedBy(generator.getUseCase());
 	}
 
 	public final boolean valueAccessedBy(Generator generator) {
-		return getObject().value().isUsedBy(generator.getUseCase());
+		return getObject().objectValue().isUsedBy(generator.getUseCase());
 	}
 
 	@Override

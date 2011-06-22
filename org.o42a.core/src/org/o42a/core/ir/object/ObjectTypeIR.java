@@ -251,7 +251,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 					OBJECT_REF);
 		final Code failure = function.addBlock("failure");
 		final TypeRef ancestor =
-			getObjectIR().getObject().type().useBy(dummyUser()).getAncestor();
+			getObjectIR().getObject().type(dummyUser()).getAncestor();
 		final CodeBuilder builder = codeBuilder(
 				function,
 				failure.head(),

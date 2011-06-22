@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashMap;
 
@@ -159,8 +160,10 @@ public final class ValuePartRef extends Expression {
 		protected Definitions explicitDefinitions() {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
-			final Obj self =
-				selfPath.resolveArtifact(this, value(), getScope()).toObject();
+			final Obj self = selfPath.resolveArtifact(
+					this,
+					value(dummyUser()),
+					getScope()).toObject();
 			final Definitions definitions;
 
 			if (!ValuePartRef.this.overridden) {

@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.value.Value.voidValue;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
@@ -197,8 +198,11 @@ public class LogicalOperatorRef extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Obj object) {
-			operand().resolveValues(
-					object.getScope().newResolver(object.value()));
+
+			final Resolver resolver =
+				object.getScope().newResolver(object.value(dummyUser()));
+
+			operand().resolveValues(resolver);
 		}
 
 		@Override

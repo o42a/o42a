@@ -182,7 +182,7 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		return this.resolutionRoot =
-			object.type().useBy(dummyUser()).getAncestor()
+			object.type(dummyUser()).getAncestor()
 			.getRef().getResolutionRoot();
 	}
 
@@ -224,8 +224,7 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	public Value<?> value(Resolver resolver) {
-		return resolve(resolver).materialize().value()
-		.useBy(resolver).getValue();
+		return resolve(resolver).materialize().value(resolver).getValue();
 	}
 
 	/**

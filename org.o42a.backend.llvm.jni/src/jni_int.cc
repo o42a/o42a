@@ -29,6 +29,24 @@
 using namespace llvm;
 
 
+jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_shl(
+		JNIEnv *env,
+		jclass cls,
+		jlong blockPtr,
+		jstring id,
+		jlong valuePtr,
+		jlong numBitsPtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	jStringRef name(env, id);
+	Value *value = from_ptr<Value>(valuePtr);
+	Value *numBits = from_ptr<Value>(numBitsPtr);
+	IRBuilder<> builder(block);
+	Value *result = builder.CreateShl(value, numBits, name);
+
+	return to_ptr(result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lshr(
 		JNIEnv *env,
 		jclass cls,

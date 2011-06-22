@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import static org.o42a.core.artifact.object.PropagatedObject.deriveSamples;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
@@ -45,7 +46,7 @@ final class OverriderObject extends PlainObject {
 		final Ascendants ascendants = new Ascendants(this);
 
 		return this.field.buildAscendants(
-				deriveSamples(type(), this.field, ascendants));
+				deriveSamples(type(dummyUser()), this.field, ascendants));
 	}
 
 	@Override

@@ -61,13 +61,13 @@ public class ScopeSet {
 			return true;
 		}
 
-		final Obj object = scope.getContainer().toObject();
+		final Obj object = scope.toObject();
 
 		if (object == null) {
 			return false;
 		}
 
-		final ObjectType scopeType = object.type().useBy(dummyUser());
+		final ObjectType scopeType = object.type(dummyUser());
 
 		for (Scope s : this.scopes) {
 
@@ -77,7 +77,7 @@ public class ScopeSet {
 				continue;
 			}
 
-			final ObjectType type = obj.type().useBy(dummyUser());
+			final ObjectType type = obj.type(dummyUser());
 
 			if (scopeType.derivedFrom(type, IMPLICIT_SAMPLE)
 					|| type.derivedFrom(scopeType, IMPLICIT_SAMPLE)) {

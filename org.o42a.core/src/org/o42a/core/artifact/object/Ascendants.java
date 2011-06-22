@@ -62,7 +62,7 @@ public class Ascendants
 
 	@Override
 	public final User toUser() {
-		return this.object.type();
+		return this.object.objectType();
 	}
 
 	public TypeRef getAncestor() {

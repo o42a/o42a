@@ -21,6 +21,7 @@ package org.o42a.intrinsic.string;
 
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32op;
@@ -72,7 +73,11 @@ final class StringLength extends IntrinsicBuiltin {
 
 	@Override
 	public void resolveBuiltin(Obj object) {
-		string().resolveValues(object.getScope().newResolver(value()));
+
+		final Resolver resolver =
+			object.getScope().newResolver(object.value(dummyUser()));
+
+		string().resolveValues(resolver);
 	}
 
 	@Override

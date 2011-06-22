@@ -267,8 +267,7 @@ public abstract class ObjectValueIRValFunc
 		final Code noAncestor = hasAncestor.otherwise();
 
 		final Obj object = getObjectIR().getObject();
-		final TypeRef ancestor =
-			object.type().useBy(dummyUser()).getAncestor();
+		final TypeRef ancestor = object.type(dummyUser()).getAncestor();
 
 		if (ancestor.typeObject(dummyUser()).getScope()
 				== ancestor.getContext().getVoid().getScope()) {

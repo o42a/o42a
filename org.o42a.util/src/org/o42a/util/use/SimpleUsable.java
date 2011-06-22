@@ -24,10 +24,17 @@ final class SimpleUsable<U> extends Usable<U> {
 
 	private final String name;
 	private final U usable;
+	private final UsableUser user;
 
 	SimpleUsable(String name, U usable) {
 		this.name = name;
 		this.usable = usable;
+		this.user = new UsableUser(this);
+	}
+
+	@Override
+	public final User toUser() {
+		return this.user;
 	}
 
 	@Override

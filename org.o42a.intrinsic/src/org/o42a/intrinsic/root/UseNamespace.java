@@ -65,7 +65,7 @@ public class UseNamespace extends IntrinsicDirective {
 			object.member(this.moduleKey).toField(dummyUser());
 		final Value<?> moduleValue =
 			moduleField.getArtifact().materialize()
-			.value().useBy(dummyUser()).getValue();
+			.value(dummyUser()).getValue();
 
 		if (!moduleValue.isDefinite()) {
 			getLogger().unresolvedValue(
@@ -80,7 +80,7 @@ public class UseNamespace extends IntrinsicDirective {
 			object.member(this.objectKey).toField(dummyUser());
 		final Value<?> objectValue =
 			objectField.getArtifact().materialize()
-			.value().useBy(dummyUser()).getValue();
+			.value(dummyUser()).getValue();
 
 		if (!objectValue.isDefinite()) {
 			getLogger().unresolvedValue(

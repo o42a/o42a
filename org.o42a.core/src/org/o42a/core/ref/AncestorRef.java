@@ -151,7 +151,7 @@ final class AncestorRef extends Ref {
 						object.getScope().getEnclosingScope());
 			}
 
-			return object.type().useBy(dummyUser()).getAncestor();
+			return object.type(dummyUser()).getAncestor();
 		}
 
 		final TypeRef typeRef = artifact.getTypeRef();

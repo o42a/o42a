@@ -315,7 +315,7 @@ public abstract class MemberField extends Member {
 		} else {
 
 			final ObjectType containerType =
-				getContainer().toObject().type().useBy(dummyUser());
+				getContainer().toObject().type(dummyUser());
 
 			for (Sample sample : containerType.getSamples()) {
 				overridden = overridden(

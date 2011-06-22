@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Utilities
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,30 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
-
-import org.o42a.util.use.Usable;
+package org.o42a.util.use;
 
 
-abstract class ObjectUsable<U> extends Usable<U> {
+public final class UsableUser extends AbstractUser {
 
-	private final Obj object;
+	private final UseInfo uses;
 
-	ObjectUsable(Obj object) {
-		this.object = object;
-		object.content().useBy(this);
+	public UsableUser(UseInfo uses) {
+		assert this != uses;
+		this.uses = uses;
 	}
 
-	public final Obj getObject() {
-		return this.object;
+	@Override
+	public UseFlag getUseBy(UseCase useCase) {
+		return this.uses.getUseBy(useCase);
 	}
 
 	@Override
 	public String toString() {
-		if (this.object == null) {
+		if (this.uses == null) {
 			return super.toString();
 		}
-		return getClass().getSimpleName() + '[' + this.object + ']';
+		return this.uses.toString();
 	}
 
 }

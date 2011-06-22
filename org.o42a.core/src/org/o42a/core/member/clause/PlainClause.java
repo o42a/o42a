@@ -237,8 +237,8 @@ public abstract class PlainClause
 			final Obj object2 = other.getContainer().toObject();
 
 			if (object2 != null) {
-				return object1.type().useBy(dummyUser()).derivedFrom(
-						object2.type().useBy(dummyUser()));
+				return object1.type(dummyUser()).derivedFrom(
+						object2.type(dummyUser()));
 			}
 		}
 
