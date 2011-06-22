@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
 import static org.o42a.util.use.Usable.simpleUsable;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
 
-public final class ObjectType extends AbstractUser {
+public final class ObjectType implements UserInfo, UseInfo {
 
 	private final Obj object;
 	private Usable<?> usable;
@@ -45,6 +46,15 @@ public final class ObjectType extends AbstractUser {
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	@Override
+	public final User toUser() {
+		return usable().toUser();
+	}
+
+	public final boolean isUsedBy(UseCase useCase) {
+		return usable().isUsedBy(useCase);
 	}
 
 	@Override
