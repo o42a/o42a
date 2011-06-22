@@ -121,8 +121,7 @@ final class ConstantObject<T> extends PlainObject {
 
 		private final Value<?> value() {
 
-			final ConstantObject<?> object =
-				(ConstantObject<?>) getObjectIR().getObject();
+			final ConstantObject<?> object = (ConstantObject<?>) getObject();
 
 			return object.getValue();
 		}

@@ -105,7 +105,7 @@ public class ObjectValueIR {
 
 	protected void allocate(ObjectTypeIR typeIR) {
 
-		final Obj object = getObjectIR().getObject();
+		final Obj object = getObject();
 		final Definitions definitions = object.getDefinitions();
 
 		if (definitions.getConstantRequirement().isFalse()
@@ -160,7 +160,7 @@ public class ObjectValueIR {
 
 		return code.phi(null, claim, prop).op(
 				dirs.getBuilder(),
-				getObjectIR().getObject().getValueType());
+				getObject().getValueType());
 	}
 
 	protected void createRequirement(
@@ -218,7 +218,7 @@ public class ObjectValueIR {
 	}
 
 	private final Definitions definitions() {
-		return getObjectIR().getObject().getDefinitions();
+		return getObject().getDefinitions();
 	}
 
 	private void assignValue(ObjectTypeIR typeIR, Definitions definitions) {
