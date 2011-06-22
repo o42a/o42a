@@ -28,11 +28,10 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.st.Reproducer;
 
 
-class PathTarget extends Expression {
+class PathTarget extends Ref {
 
 	private final Path path;
 	private final Ref start;
@@ -82,6 +81,20 @@ class PathTarget extends Expression {
 		}
 
 		return this.fullPath = startPath.append(this.path).rebuild();
+	}
+
+	@Override
+	public Resolution resolve(Resolver resolver) {
+
+		final Container resolved;
+
+		if (this.start == null) {
+			resolved = this.path.resolve(this, resolver, resolver.getScope());
+		} else {
+			resolved = this.path.resolveFrom(this, resolver, this.start);
+		}
+
+		return containerResolution(resolved);
 	}
 
 	@Override
@@ -186,20 +199,6 @@ class PathTarget extends Expression {
 
 	protected final Path path() {
 		return this.path;
-	}
-
-	@Override
-	protected Resolution resolveExpression(Resolver resolver) {
-
-		final Container resolved;
-
-		if (this.start == null) {
-			resolved = this.path.resolve(this, resolver, resolver.getScope());
-		} else {
-			resolved = this.path.resolveFrom(this, resolver, this.start);
-		}
-
-		return containerResolution(resolved);
 	}
 
 	@Override

@@ -35,14 +35,13 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class PathTargetAncestor extends Expression {
+final class PathTargetAncestor extends Ref {
 
 	private final Ref ref;
 	private boolean error;
@@ -50,6 +49,18 @@ final class PathTargetAncestor extends Expression {
 	PathTargetAncestor(LocationInfo location, Ref ref) {
 		super(location, ref.distribute());
 		this.ref = ref;
+	}
+
+	@Override
+	public Resolution resolve(Resolver resolver) {
+
+		final TypeRef ancestor = resolveAncestor(resolver);
+
+		if (ancestor == null) {
+			return null;
+		}
+
+		return artifactResolution(ancestor.artifact(resolver));
 	}
 
 	@Override
@@ -88,18 +99,6 @@ final class PathTargetAncestor extends Expression {
 			return super.toString();
 		}
 		return this.ref + "^^";
-	}
-
-	@Override
-	protected Resolution resolveExpression(Resolver resolver) {
-
-		final TypeRef ancestor = resolveAncestor(resolver);
-
-		if (ancestor == null) {
-			return null;
-		}
-
-		return artifactResolution(ancestor.artifact(resolver));
 	}
 
 	@Override

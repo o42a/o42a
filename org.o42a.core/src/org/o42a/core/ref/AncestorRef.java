@@ -32,14 +32,13 @@ import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class AncestorRef extends Expression {
+final class AncestorRef extends Ref {
 
 	private final Ref ref;
 	private boolean error;
@@ -52,6 +51,18 @@ final class AncestorRef extends Expression {
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Resolution resolve(Resolver resolver) {
+
+		final TypeRef ancestor = resolveAncestor(resolver);
+
+		if (ancestor == null) {
+			return null;
+		}
+
+		return artifactResolution(ancestor.artifact(resolver));
 	}
 
 	@Override
@@ -85,18 +96,6 @@ final class AncestorRef extends Expression {
 			return super.toString();
 		}
 		return this.ref + "^^";
-	}
-
-	@Override
-	protected Resolution resolveExpression(Resolver resolver) {
-
-		final TypeRef ancestor = resolveAncestor(resolver);
-
-		if (ancestor == null) {
-			return null;
-		}
-
-		return artifactResolution(ancestor.artifact(resolver));
 	}
 
 	@Override

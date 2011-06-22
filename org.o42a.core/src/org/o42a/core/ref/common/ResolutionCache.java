@@ -34,6 +34,10 @@ public abstract class ResolutionCache<T, U extends Usable<T>> {
 		return this.cache == null;
 	}
 
+	public final int size() {
+		return this.cache.size();
+	}
+
 	public final U get(Scope scope) {
 		if (isEmpty()) {
 			return null;
