@@ -192,21 +192,32 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	@Override
-	public boolean isClone() {
+	public Obj getCloneOf() {
 
-		final Field<?> field = getScope().toField();
+		@SuppressWarnings("unchecked")
+		final Field<Obj> field = (Field<Obj>) getScope().toField();
 
 		if (field != null) {
-			return field.isClone();
+			if (!field.isClone()) {
+				return null;
+			}
+			return field.getLastDefinition().getArtifact().materialize();
 		}
 
 		final Artifact<?> materializationOf = getMaterializationOf();
 
 		if (materializationOf == this) {
-			return false;
+			return null;
 		}
 
-		return materializationOf.isClone();
+		final Artifact<?> materializationClone =
+			materializationOf.getCloneOf();
+
+		if (materializationClone == null) {
+			return null;
+		}
+
+		return materializationClone.materialize();
 	}
 
 	public final ValueType<?> getValueType() {

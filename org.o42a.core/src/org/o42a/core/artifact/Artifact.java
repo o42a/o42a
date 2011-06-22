@@ -67,14 +67,11 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return null;
 	}
 
-	public boolean isClone() {
-
-		final Field<?> field = getScope().toField();
-
-		return field != null && field.isClone();
+	public final boolean isClone() {
+		return getCloneOf() != null;
 	}
 
-	public final A getCloneOf() {
+	public A getCloneOf() {
 
 		@SuppressWarnings("unchecked")
 		final Field<A> field = (Field<A>) getScope().toField();
