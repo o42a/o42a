@@ -97,6 +97,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		if (this.definitionTargets != null) {
 			return this.definitionTargets;
 		}
+		executeInstructions();
 
 		DefinitionTargets result = noDefinitions();
 
@@ -188,9 +189,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 		}
 		this.instructionsExecuted = true;
 		for (Sentence<S> sentence : getSentences()) {
-			for (S statements : sentence.getAlternatives()) {
-				statements.executeInstructions();
-			}
+			sentence.executeInstructions();
 		}
 	}
 
