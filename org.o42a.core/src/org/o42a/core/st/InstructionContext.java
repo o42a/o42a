@@ -21,9 +21,10 @@ package org.o42a.core.st;
 
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.sentence.Block;
+import org.o42a.util.use.UserInfo;
 
 
-public interface InstructionContext {
+public interface InstructionContext extends UserInfo {
 
 	Resolver getResolver();
 

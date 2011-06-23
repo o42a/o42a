@@ -41,6 +41,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.Place;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.User;
 
 
 public abstract class Statements<S extends Statements<S>> extends Placed {
@@ -318,6 +319,8 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	}
 
 	final void resolveValues(Resolver resolver) {
+		assert this.instructionsExecuted :
+			"Instructions not executed yet";
 		for (Statement statement : getStatements()) {
 			statement.resolveValues(resolver);
 		}
@@ -445,6 +448,11 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		private Statement statement;
 		private Block<?> block;
 		private boolean doNotRemove;
+
+		@Override
+		public final User toUser() {
+			return getResolver().toUser();
+		}
 
 		@Override
 		public final Resolver getResolver() {

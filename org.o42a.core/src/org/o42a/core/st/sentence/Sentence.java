@@ -42,6 +42,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 	private final ArrayList<S> alternatives = new ArrayList<S>();
 	private Sentence<S> prerequisite;
 	private ValueType<?> valueType;
+	private boolean instructionsExecuted;
 
 	Sentence(
 			LocationInfo location,
@@ -154,6 +155,22 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 
 		return out.toString();
+	}
+
+	final void executeInstructions() {
+		if (this.instructionsExecuted) {
+			return;
+		}
+		this.instructionsExecuted = true;
+
+		final Sentence<S> prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+			prerequisite.executeInstructions();
+		}
+		for (S alt : getAlternatives()) {
+			alt.executeInstructions();
+		}
 	}
 
 	final void setPrerequisite(Sentence<S> prerequisite) {

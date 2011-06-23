@@ -23,6 +23,7 @@ import org.o42a.core.artifact.Directive;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
+import org.o42a.util.use.User;
 
 
 final class ApplyDirective implements Instruction {
@@ -58,7 +59,12 @@ final class ApplyDirective implements Instruction {
 		}
 
 		@Override
-		public Resolver getResolver() {
+		public final User toUser() {
+			return getResolver().toUser();
+		}
+
+		@Override
+		public final Resolver getResolver() {
 			return ApplyDirective.this.resolver;
 		}
 
