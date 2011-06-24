@@ -54,7 +54,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
-import org.o42a.core.value.Directive;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -84,7 +83,7 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	private Ref expectedTypeAdapter;
-	private RefEnvWrap env;
+	private RefEnv env;
 	private Logical logical;
 	private Path resolutionRoot;
 	private RefOp op;
@@ -204,15 +203,15 @@ public abstract class Ref extends RefTypeBase {
 	@Override
 	public StatementEnv setEnv(StatementEnv env) {
 		assert this.env == null :
-			"Environment already assigned fro: " + env;
-		return this.env = new RefEnvWrap(this, env);
+			"Environment already assigned for: " + this;
+		return this.env = new RefEnv(this, env);
 	}
 
 	@Override
 	public Definitions define(Scope scope) {
 
 		final ValueDef def = expectedTypeAdapter().toValueDef();
-		final StatementEnv initialEnv = getEnv().getInitialEnv();
+		final StatementEnv initialEnv = this.env.getInitialEnv();
 
 		return initialEnv.apply(def).toDefinitions();
 	}
@@ -351,18 +350,8 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver, boolean assignment) {
-		if (assignment) {
-			return null;
-		}
-
-		final Directive directive = resolve(resolver).toDirective(resolver);
-
-		if (directive == null) {
-			return null;
-		}
-
-		return new ApplyDirective(this, resolver, directive);
+	public final Instruction toInstruction(Resolver resolver) {
+		return null;
 	}
 
 	public TypeRef toTypeRef() {
@@ -432,10 +421,6 @@ public abstract class Ref extends RefTypeBase {
 
 		return this.expectedTypeAdapter =
 			adapt(this, expectedType.typeRef(this, getScope()));
-	}
-
-	final RefEnvWrap getEnv() {
-		return this.env;
 	}
 
 	private static final class RefStOp extends StOp {

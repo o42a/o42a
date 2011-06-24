@@ -143,10 +143,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver, boolean assignment) {
-		if (!assignment) {
-			return null;
-		}
+	public Instruction toInstruction(Resolver resolver) {
 		return new ExecuteInstructions();
 	}
 

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence.declarative;
+package org.o42a.core.st.sentence.cond;
 
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
@@ -29,26 +29,40 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueType;
 
 
 public final class RefCondition extends Statement {
 
 	private final Ref ref;
+	private RefEnvWrap env;
+	private StatementEnv conditionalEnv;
 
 	public RefCondition(Ref ref) {
 		super(ref, ref.distribute());
 		this.ref = ref;
 	}
 
+	public final Ref getRef() {
+		return this.ref;
+	}
+
 	@Override
-	public Instruction toInstruction(Resolver resolver, boolean assignment) {
-		return this.ref.toInstruction(resolver, false);
+	public Instruction toInstruction(Resolver resolver) {
+
+		final Directive directive =
+				this.ref.resolve(resolver).toDirective(resolver);
+
+		if (directive == null) {
+			return null;
+		}
+
+		return new ApplyDirective(this, resolver, directive);
 	}
 
 	@Override
@@ -75,7 +89,10 @@ public final class RefCondition extends Statement {
 
 	@Override
 	public StatementEnv setEnv(StatementEnv env) {
-		return this.ref.setEnv(new ConditionalEnv(env));
+		assert this.env == null :
+			"Environment already assigned for: " + this;
+		this.conditionalEnv = this.ref.setEnv(new ConditionalEnv(env));
+		return this.env = new RefEnvWrap(this, env);
 	}
 
 	@Override
@@ -121,6 +138,14 @@ public final class RefCondition extends Statement {
 		return new Op(builder, this.ref);
 	}
 
+	final StatementEnv getConditionalEnv() {
+		return this.conditionalEnv;
+	}
+
+	final RefEnvWrap getEnv() {
+		return this.env;
+	}
+
 	private static final class Op extends StOp {
 
 		Op(LocalBuilder builder, Statement statement) {
@@ -135,41 +160,6 @@ public final class RefCondition extends Statement {
 		@Override
 		public void writeLogicalValue(Control control) {
 			getStatement().op(getBuilder()).writeLogicalValue(control);
-		}
-
-	}
-
-	private static final class ConditionalEnv extends StatementEnv {
-
-		private final StatementEnv env;
-
-		ConditionalEnv(StatementEnv conditions) {
-			this.env = conditions;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return this.env.hasPrerequisite();
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.env.prerequisite(scope);
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return this.env.precondition(scope);
-		}
-
-		@Override
-		public String toString() {
-			return this.env.toString();
-		}
-
-		@Override
-		protected ValueType<?> expectedType() {
-			return null;// To prevent Ref adaption.
 		}
 
 	}

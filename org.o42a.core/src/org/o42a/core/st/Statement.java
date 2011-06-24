@@ -42,7 +42,7 @@ public abstract class Statement extends Placed {
 		super(location, distributor);
 	}
 
-	public Instruction toInstruction(Resolver resolver, boolean assignment) {
+	public Instruction toInstruction(Resolver resolver) {
 		return null;
 	}
 
