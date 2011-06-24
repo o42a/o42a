@@ -36,7 +36,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.declarative.RefCondition;
+import org.o42a.core.st.sentence.cond.RefCondition;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place;
 import org.o42a.util.Place.Trace;
@@ -496,7 +496,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		private final void execute(Statement statement) {
 
 			final Instruction instruction =
-				statement.toInstruction(getResolver(), true);
+				statement.toInstruction(getResolver());
 
 			if (instruction == null) {
 				++this.index;

@@ -17,20 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.st.sentence.cond;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.ValueType;
 
 
 final class RefEnvWrap extends StatementEnv {
 
-	private final Ref ref;
+	private final RefCondition ref;
 	private final StatementEnv initialEnv;
 	private StatementEnv wrapped;
 
-	RefEnvWrap(Ref ref, StatementEnv initialEnv) {
+	RefEnvWrap(RefCondition ref, StatementEnv initialEnv) {
 		this.ref = ref;
 		this.initialEnv = initialEnv;
 	}
@@ -83,46 +84,7 @@ final class RefEnvWrap extends StatementEnv {
 		if (this.wrapped != null) {
 			return this.wrapped;
 		}
-		return this.wrapped = new RefEnv(this.ref, this.initialEnv);
-	}
-
-	private static final class RefEnv extends StatementEnv {
-
-		private final Ref ref;
-		private final StatementEnv initialEnv;
-
-		RefEnv(Ref ref, StatementEnv initialEnv) {
-			this.ref = ref;
-			this.initialEnv = initialEnv;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return this.initialEnv.hasPrerequisite();
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.initialEnv.prerequisite(scope);
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return this.initialEnv.precondition(scope).and(
-					this.ref.expectedTypeAdapter()
-					.rescope(scope).getLogical());
-		}
-
-		@Override
-		public String toString() {
-			return this.initialEnv + ", " + this.ref;
-		}
-
-		@Override
-		protected ValueType<?> expectedType() {
-			return this.initialEnv.getExpectedType();
-		}
-
+		return this.wrapped = this.ref.getConditionalEnv();
 	}
 
 }
