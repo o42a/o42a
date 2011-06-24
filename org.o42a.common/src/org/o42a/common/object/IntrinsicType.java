@@ -60,7 +60,7 @@ public class IntrinsicType extends IntrinsicObject {
 	@Override
 	protected Definitions overrideDefinitions(
 			Scope scope,
-			Definitions ancestorDefinitions) {
+			Definitions ascentantDefinitions) {
 		return getValueType().noValueDefinitions(this, scope);
 	}
 

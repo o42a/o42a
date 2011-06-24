@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.artifact.Directive;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
+import org.o42a.core.value.Directive;
 import org.o42a.util.use.User;
 
 

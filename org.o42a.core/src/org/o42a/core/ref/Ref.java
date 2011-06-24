@@ -26,7 +26,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
@@ -55,6 +54,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
+import org.o42a.core.value.Directive;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -356,7 +356,7 @@ public abstract class Ref extends RefTypeBase {
 			return null;
 		}
 
-		final Directive directive = resolve(resolver).toDirective();
+		final Directive directive = resolve(resolver).toDirective(resolver);
 
 		if (directive == null) {
 			return null;

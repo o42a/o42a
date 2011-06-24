@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.artifact.Directive.SKIP_DIRECTIVE;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.materializePath;
+import static org.o42a.core.value.Directive.SKIP_DIRECTIVE;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
@@ -33,6 +32,9 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.value.Directive;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
@@ -83,8 +85,29 @@ public abstract class Resolution implements ScopeInfo {
 		return toArtifact().toArray();
 	}
 
-	public Directive toDirective() {
-		return toArtifact().toDirective();
+	public Directive toDirective(Resolver resolver) {
+
+		final Obj materialized = materialize();
+
+		if (materialized == null) {
+			return null;
+		}
+		if (materialized.getValueType() != ValueType.DIRECTIVE) {
+			return null;
+		}
+
+		final Value<Directive> value = ValueType.DIRECTIVE.cast(
+				materialized.value(resolver).getValue());
+
+		if (!value.isDefinite()) {
+			resolver.getLogger().error(
+					"runtime_directive",
+					this,
+					"Unable to execute directive at compile time");
+			return null;
+		}
+
+		return value.getDefiniteValue();
 	}
 
 	public abstract Obj materialize();
@@ -149,7 +172,7 @@ public abstract class Resolution implements ScopeInfo {
 		}
 
 		@Override
-		public final Directive toDirective() {
+		public final Directive toDirective(Resolver resolver) {
 			return SKIP_DIRECTIVE;
 		}
 

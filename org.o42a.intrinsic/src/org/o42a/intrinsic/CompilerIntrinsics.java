@@ -122,6 +122,11 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
+	public Obj getDirective() {
+		return this.root.getDirective();
+	}
+
+	@Override
 	public Module getModule(String moduleId) {
 
 		final ModuleUse module = this.modules.get(canonicalName(moduleId));

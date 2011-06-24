@@ -17,21 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.value;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
 
 
-final class SkipDirective implements Directive {
+public interface Directive {
 
-	@Override
-	public void apply(Ref directive, InstructionContext context) {
-	}
+	Directive SKIP_DIRECTIVE = new SkipDirective();
 
-	@Override
-	public String toString() {
-		return "SKIP";
-	}
+	void apply(Ref directive, InstructionContext context);
 
 }
