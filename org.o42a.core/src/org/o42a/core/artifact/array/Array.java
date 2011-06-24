@@ -28,7 +28,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.Directive;
 import org.o42a.core.artifact.MaterializableArtifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
@@ -70,11 +69,6 @@ public abstract class Array extends MaterializableArtifact<Array> {
 
 	@Override
 	public ArtifactKind<Array> getKind() {
-		return null;
-	}
-
-	@Override
-	public Directive toDirective() {
 		return null;
 	}
 

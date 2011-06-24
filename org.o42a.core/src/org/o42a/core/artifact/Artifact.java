@@ -87,8 +87,6 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public abstract Array toArray();
 
-	public abstract Directive toDirective();
-
 	public abstract Link toLink();
 
 	public abstract Obj materialize();

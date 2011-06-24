@@ -23,7 +23,6 @@ import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.Directive;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -42,7 +41,6 @@ public class Ascendants
 	private final Obj object;
 	private TypeRef explicitAncestor;
 	private TypeRef ancestor;
-	private Directive directive;
 	private Sample[] samples = NO_SAMPLES;
 	private Sample[] discardedSamples = NO_SAMPLES;
 	private ConstructionMode constructionMode;
@@ -93,22 +91,6 @@ public class Ascendants
 			explicitAncestor.upgradeScope(getScope().getEnclosingScope());
 
 		return clone;
-	}
-
-	public final Directive getDirective() {
-		if (this.directive == null) {
-
-			final TypeRef ancestor = getExplicitAncestor();
-
-			if (ancestor != null) {
-				this.directive = ancestor.typeObject(this).toDirective();
-			}
-			if (this.directive == null) {
-				this.directive = sampleDirective();
-			}
-		}
-
-		return this.directive;
 	}
 
 	public final Sample[] getSamples() {
@@ -427,22 +409,6 @@ public class Ascendants
 	private void removeSample(int index) {
 		discardSample(this.samples[index]);
 		this.samples = ArrayUtil.remove(this.samples, index);
-	}
-
-	private Directive sampleDirective() {
-		for (Sample sample : this.samples) {
-			if (sample.isExplicit()) {
-				continue;// Directive can not be explicit.
-			}
-
-			final Directive directive = sample.toDirective();
-
-			if (directive != null) {
-				return directive;
-			}
-		}
-
-		return null;
 	}
 
 	private ConstructionMode enclosingConstructionMode() {

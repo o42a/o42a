@@ -27,6 +27,7 @@ import java.net.URL;
 import org.o42a.codegen.Generator;
 import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.common.object.IntrinsicObject;
+import org.o42a.common.object.IntrinsicType;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -73,9 +74,10 @@ public class Root extends Obj {
 	private final IntrinsicDirective include;
 	private final UseNamespace useNamespace;
 	private final UseObject useObject;
-	private final IntrinsicObject integerObject;
-	private final IntrinsicObject floatObject;
-	private final IntrinsicObject stringObject;
+	private final IntrinsicType integerObject;
+	private final IntrinsicType floatObject;
+	private final IntrinsicType stringObject;
+	private final IntrinsicType directiveObject;
 
 	private Root(LocationInfo location, Scope topScope) {
 		super(new RootScope(location, topScope.distribute()));
@@ -88,6 +90,7 @@ public class Root extends Obj {
 		this.integerObject = new IntegerObject(this);
 		this.floatObject = new FloatObject(this);
 		this.stringObject = new StringObject(this);
+		this.directiveObject = new DirectiveObject(this);
 	}
 
 	public final Field<Obj> getVoidField() {
@@ -98,16 +101,20 @@ public class Root extends Obj {
 		return this.falseObject;
 	}
 
-	public final IntrinsicObject getInteger() {
+	public final IntrinsicType getInteger() {
 		return this.integerObject;
 	}
 
-	public final IntrinsicObject getFloat() {
+	public final IntrinsicType getFloat() {
 		return this.floatObject;
 	}
 
-	public final IntrinsicObject getString() {
+	public final IntrinsicType getString() {
 		return this.stringObject;
+	}
+
+	public final IntrinsicType getDirective() {
+		return this.directiveObject;
 	}
 
 	@Override
@@ -133,6 +140,7 @@ public class Root extends Obj {
 		members.addMember(this.useNamespace.toMember());
 		members.addMember(this.useObject.toMember());
 		members.addMember(new Strings(this).toMember());
+		members.addMember(new DirectiveObject(this).toMember());
 
 		final ObjectMemberRegistry memberRegistry =
 			new ObjectMemberRegistry(this);

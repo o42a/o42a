@@ -40,6 +40,8 @@ public abstract class ValueType<T> {
 	public static final ValueType<Long> INTEGER = new IntegerValueType();
 	public static final ValueType<Double> FLOAT = new FloatValueType();
 	public static final ValueType<String> STRING = new StringValueType();
+	public static final ValueType<Directive> DIRECTIVE =
+			new DirectiveValueType();
 
 	public static final ValueType<java.lang.Void> NONE = new None();
 
@@ -117,22 +119,14 @@ public abstract class ValueType<T> {
 			LocationInfo location,
 			Distributor distributor,
 			T value) {
-		return new ConstantRef<T>(
-				location,
-				distributor,
-				this,
-				value);
+		return new ConstantRef<T>(location, distributor, this, value);
 	}
 
 	public final Obj constantObject(
 			LocationInfo location,
 			Distributor enclosing,
 			T value) {
-		return new ConstantObject<T>(
-				location,
-				enclosing,
-				this,
-				value);
+		return new ConstantObject<T>(location, enclosing, this, value);
 	}
 
 	public final Definitions noValueDefinitions(

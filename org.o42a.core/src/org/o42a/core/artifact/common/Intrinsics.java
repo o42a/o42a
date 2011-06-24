@@ -47,6 +47,8 @@ public abstract class Intrinsics {
 
 	public abstract Obj getString();
 
+	public abstract Obj getDirective();
+
 	public abstract Module getModule(String moduleId);
 
 	public abstract Module getMainModule();

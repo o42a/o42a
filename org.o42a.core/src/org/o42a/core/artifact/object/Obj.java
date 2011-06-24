@@ -183,11 +183,6 @@ public abstract class Obj extends Artifact<Obj>
 		return this;
 	}
 
-	@Override
-	public Directive toDirective() {
-		return objectType().getAscendants().getDirective();
-	}
-
 	public Obj getWrapped() {
 		return this;
 	}

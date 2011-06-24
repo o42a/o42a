@@ -1,6 +1,6 @@
 /*
-    Modules Commons
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Intrinsics
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,32 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.object;
+package org.o42a.intrinsic.root;
 
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.IntrinsicType;
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class IntrinsicDirective
-		extends IntrinsicObject
-		implements Directive {
+public class DirectiveObject extends IntrinsicType implements Directive {
 
-	public IntrinsicDirective(MemberOwner owner, FieldDeclaration declarator) {
-		super(owner, declarator);
-		setValueType(ValueType.DIRECTIVE);
+	public DirectiveObject(Root owner) {
+		super(
+				owner.toMemberOwner(),
+				"directive",
+				ValueType.DIRECTIVE);
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.DIRECTIVE.typeRef(
-						this,
-						getScope().getEnclosingScope()));
+	protected Definitions overrideDefinitions(
+			Scope scope,
+			Definitions ascendantDefinitions) {
+
+		final Definitions explicitDefinitions =
+			getExplicitDefinitions().upgradeScope(scope);
+
+		if (ascendantDefinitions == null) {
+			return explicitDefinitions;
+		}
+
+		return ascendantDefinitions.override(explicitDefinitions);
 	}
 
 	@Override
@@ -52,6 +59,14 @@ public abstract class IntrinsicDirective
 				ValueType.DIRECTIVE.constantRef(this, distribute(), this);
 
 		return ref.toValueDef().toDefinitions();
+	}
+
+	@Override
+	public void apply(Ref directive, InstructionContext context) {
+		context.getResolver().getLogger().error(
+				"indefinite_directive",
+				directive,
+				"Indefinite directive");
 	}
 
 }

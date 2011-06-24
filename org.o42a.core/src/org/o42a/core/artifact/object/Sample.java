@@ -22,7 +22,6 @@ package org.o42a.core.artifact.object;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.artifact.Directive;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Resolver;
@@ -60,10 +59,6 @@ public abstract class Sample extends Scoped {
 
 	public final Obj typeObject(UserInfo user) {
 		return getTypeRef().typeObject(user);
-	}
-
-	public final Directive toDirective() {
-		return getObject().toDirective();
 	}
 
 	public final void deriveMembers(ObjectMembers members) {
