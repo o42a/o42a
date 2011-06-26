@@ -36,6 +36,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
@@ -59,7 +60,7 @@ final class ScopeField extends ObjectField {
 	}
 
 	private ScopeField(MemberOwner owner, ScopeField overridden) {
-		super(owner, overridden, true);
+		super(owner, overridden, null, OverrideMode.PROPAGATE);
 		this.overridden = overridden;
 	}
 

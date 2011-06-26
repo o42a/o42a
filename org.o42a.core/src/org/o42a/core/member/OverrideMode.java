@@ -17,26 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
-
-import static org.o42a.util.use.User.dummyUser;
-
-import org.o42a.core.member.MemberOwner;
+package org.o42a.core.member;
 
 
-final class MemberFieldWrap extends MemberField {
+public enum OverrideMode {
 
-	MemberFieldWrap(MemberOwner owner, FieldDeclaration declaration) {
-		super(owner, declaration);
-	}
+	OVERRIDE() {
 
-	@Override
-	protected Field<?> createField() {
-		throw new UnsupportedOperationException();
-	}
+		@Override
+		public boolean propagation(Member overriddenMember) {
+			return false;
+		}
 
-	final void init(FieldWrap<?> field) {
-		setField(dummyUser(), field);
-	}
+	},
+
+	PROPAGATE() {
+
+		@Override
+		public boolean propagation(Member overriddenMember) {
+			return true;
+		}
+
+	},
+
+	WRAP() {
+
+		@Override
+		public boolean propagation(Member overriddenMember) {
+			return false;
+		}
+
+	};
+
+	public abstract boolean propagation(Member overriddenMember);
 
 }

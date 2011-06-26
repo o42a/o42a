@@ -30,8 +30,8 @@ final class LinkFieldWrap extends FieldWrap<Link> {
 
 	LinkFieldWrap(
 			MemberOwner owner,
-			Field<?> type,
-			Field<?> wrapped) {
+			Field<Link> type,
+			Field<Link> wrapped) {
 		super(owner, type, wrapped);
 	}
 

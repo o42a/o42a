@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.artifact.ArtifactKind.*;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -98,6 +99,8 @@ public abstract class MemberField extends Member {
 		return this.key = declareNewField();
 	}
 
+	public abstract MemberField getWrapped();
+
 	@Override
 	public final MemberField toMemberField() {
 		return this;
@@ -176,24 +179,29 @@ public abstract class MemberField extends Member {
 
 		final ArtifactKind<?> artifactKind = toField(user).getArtifactKind();
 
-		if (artifactKind == ArtifactKind.OBJECT) {
+		if (artifactKind == OBJECT) {
 			return new ObjectFieldWrap(
 					owner,
-					inherited.toField(user),
-					toField(user)).toMember();
+					inherited.toField(user).toKind(OBJECT),
+					toField(user).toKind(OBJECT)).toMember();
 		}
-		if (artifactKind == ArtifactKind.LINK
-				|| artifactKind == ArtifactKind.VARIABLE) {
+		if (artifactKind == LINK) {
 			return new LinkFieldWrap(
 					getMemberOwner(),
-					inherited.toField(user),
-					toField(user)).toMember();
+					inherited.toField(user).toKind(LINK),
+					toField(user).toKind(LINK)).toMember();
 		}
-		if (artifactKind == ArtifactKind.ARRAY) {
+		if (artifactKind == VARIABLE) {
+			return new LinkFieldWrap(
+					getMemberOwner(),
+					inherited.toField(user).toKind(VARIABLE),
+					toField(user).toKind(VARIABLE)).toMember();
+		}
+		if (artifactKind == ARRAY) {
 			return new ArrayFieldWrap(
 					getMemberOwner(),
-					inherited.toField(user),
-					toField(user)).toMember();
+					inherited.toField(user).toKind(ARRAY),
+					toField(user).toKind(ARRAY)).toMember();
 		}
 
 		throw new IllegalStateException("Can not wrap " + this);
