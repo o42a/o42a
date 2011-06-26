@@ -40,7 +40,6 @@ import org.o42a.util.use.UseInfo;
 public abstract class ObjectWrap extends PlainObject {
 
 	private Obj wrapped;
-	private ObjectWrapFieldUses fieldUses;
 
 	public ObjectWrap(Scope scope) {
 		super(scope);
@@ -61,20 +60,10 @@ public abstract class ObjectWrap extends PlainObject {
 		}
 		this.wrapped = createWrapped();
 
-		type(this.wrapped.type(dummyUser()));
 		this.wrapped.type(type(dummyUser()));
-		value(this.wrapped.value(dummyUser()));
 		this.wrapped.value(value(dummyUser()));
 
 		return this.wrapped;
-	}
-
-	@Override
-	public UseInfo fieldUses() {
-		if (this.fieldUses != null) {
-			return this.fieldUses;
-		}
-		return this.fieldUses = new ObjectWrapFieldUses(this);
 	}
 
 	protected abstract Obj createWrapped();
