@@ -25,6 +25,7 @@ import java.util.List;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.OverrideMode;
 
 
 public abstract class DeclaredField<
@@ -40,9 +41,10 @@ public abstract class DeclaredField<
 		this.artifactKind = artifactKind;
 	}
 
-	protected DeclaredField(MemberOwner owner, DeclaredField<A, V> sample) {
-		super(owner, sample);
-		this.artifactKind = sample.artifactKind;
+	protected DeclaredField(MemberOwner owner, DeclaredField<A, V> overridden) {
+		super(owner, overridden, null, OverrideMode.PROPAGATE);
+		this.artifactKind = overridden.artifactKind;
+		setFieldArtifact(propagateArtifact(overridden));
 	}
 
 	@Override

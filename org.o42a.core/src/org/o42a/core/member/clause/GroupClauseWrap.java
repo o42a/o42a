@@ -24,6 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.Reproducer;
 
@@ -35,21 +36,31 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 	private LocalScope localScope;
 
 	GroupClauseWrap(MemberOwner owner, GroupClause iface, GroupClause wrapped) {
-		super(owner, wrapped, wrapped.toMember().isPropagated());
+		super(owner, wrapped, wrapped, OverrideMode.WRAP);
 		this.iface = iface;
 		this.wrapped = wrapped;
 	}
 
-	GroupClauseWrap(MemberOwner owner, GroupClauseWrap overridden) {
-		super(owner, overridden);
+	private GroupClauseWrap(MemberOwner owner, GroupClauseWrap overridden) {
+		this(
+				owner,
+				overridden,
+				owner.toObject().getWrapped()
+				.member(overridden.getInterface().getKey())
+				.toClause().toGroupClause());
+	}
+
+	private GroupClauseWrap(
+			MemberOwner owner,
+			GroupClauseWrap overridden,
+			GroupClause wrapped) {
+		super(owner, overridden, wrapped, OverrideMode.WRAP);
 
 		final Obj inherited = owner.getContainer().toObject();
 
 		this.iface = inherited.member(
 				overridden.getInterface().getKey()).toClause().toGroupClause();
-		this.wrapped = inherited.getWrapped().member(
-				overridden.getInterface().getKey()).toClause().toGroupClause();
-
+		this.wrapped = wrapped;
 	}
 
 	public final GroupClause getInterface() {

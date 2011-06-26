@@ -27,25 +27,33 @@ final class OverriddenMemberClause extends MemberClause {
 
 	private final Clause clause;
 	private final MemberClause propagatedFrom;
+	private final MemberClause wrapped;
 
 	OverriddenMemberClause(
 			MemberOwner owner,
 			Clause clause,
 			MemberClause overridden,
+			MemberClause wrapped,
 			boolean propagated) {
 		super(owner, overridden);
 		this.clause = clause;
+		this.wrapped = wrapped;
 		this.propagatedFrom = propagated ? overridden : null;
+	}
+
+	@Override
+	public final Member getPropagatedFrom() {
+		return this.propagatedFrom;
+	}
+
+	@Override
+	public final MemberClause getWrapped() {
+		return this.wrapped;
 	}
 
 	@Override
 	public Clause toClause() {
 		return this.clause;
-	}
-
-	@Override
-	public Member getPropagatedFrom() {
-		return this.propagatedFrom;
 	}
 
 }

@@ -53,6 +53,11 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
+	public final Member getWrapped() {
+		return null;
+	}
+
+	@Override
 	public final MemberField toMemberField() {
 		return null;
 	}

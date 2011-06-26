@@ -29,6 +29,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
@@ -44,7 +45,7 @@ final class PlainClauseWrap extends PlainClause {
 	private final AscendantsDefinition ascendants;
 
 	PlainClauseWrap(MemberOwner owner, PlainClause iface, PlainClause wrapped) {
-		super(owner, wrapped, wrapped.toMember().isPropagated());
+		super(owner, wrapped, null, OverrideMode.WRAP);
 		this.iface = iface;
 		this.wrapped = wrapped;
 		this.ascendants = wrapped.getAscendants().rescope(
@@ -52,17 +53,27 @@ final class PlainClauseWrap extends PlainClause {
 		setClauseObject(new Wrap(this, wrapped.getObject()));
 	}
 
-	PlainClauseWrap(MemberOwner owner, PlainClauseWrap overridden) {
-		super(owner, overridden);
+	private PlainClauseWrap(MemberOwner owner, PlainClauseWrap overridden) {
+		this(
+				owner,
+				overridden,
+				owner.toObject().getWrapped()
+				.member(overridden.getInterface().getKey())
+				.toClause().toPlainClause());
+	}
 
-		final Obj inherited = owner.getContainer().toObject();
-
+	private PlainClauseWrap(
+			MemberOwner owner,
+			PlainClauseWrap overridden,
+			PlainClause wrapped) {
+		super(owner, overridden, wrapped, OverrideMode.WRAP);
+		this.iface =
+				owner.toObject()
+				.member(overridden.getInterface().getKey())
+				.toClause().toPlainClause();
+		this.wrapped = wrapped;
 		this.ascendants = overridden.getAscendants().rescope(
 				upgradeRescoper(overridden.getScope(), getScope()));
-		this.iface = inherited.member(
-				overridden.getInterface().getKey()).toClause().toPlainClause();
-		this.wrapped = inherited.getWrapped().member(
-				overridden.getInterface().getKey()).toClause().toPlainClause();
 	}
 
 	public final PlainClause getInterface() {
