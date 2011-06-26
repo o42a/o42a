@@ -91,6 +91,8 @@ public abstract class Member extends Placed {
 		return out.toString();
 	}
 
+	public abstract Member getWrapped();
+
 	public final MemberAnalysis getAnalysis() {
 		if (this.analysis != null) {
 			return this.analysis;

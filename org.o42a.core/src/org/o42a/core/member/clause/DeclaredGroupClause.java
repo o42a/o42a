@@ -21,9 +21,7 @@ package org.o42a.core.member.clause;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.*;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
@@ -45,7 +43,9 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	private ImperativeBlock imperative;
 	private LocalScope localScope;
 
-	DeclaredGroupClause(DeclaredGroupClauseMember member, ClauseBuilder builder) {
+	DeclaredGroupClause(
+			DeclaredGroupClauseMember member,
+			ClauseBuilder builder) {
 		super(member);
 		this.builder = builder;
 	}
@@ -53,7 +53,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	private DeclaredGroupClause(
 			MemberOwner owner,
 			DeclaredGroupClause overridden) {
-		super(owner, overridden);
+		super(owner, overridden, null, OverrideMode.PROPAGATE);
 		this.builder = overridden.builder;
 		this.definition = overridden.definition;
 		this.imperative = overridden.imperative;

@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.log.Loggable;
 
 
@@ -54,6 +55,10 @@ public abstract class MemberOwner implements PlaceInfo {
 	@Override
 	public final ScopePlace getPlace() {
 		return getScope().getPlace();
+	}
+
+	public final Obj toObject() {
+		return getContainer().toObject();
 	}
 
 	@Override

@@ -96,21 +96,19 @@ public abstract class Clause implements PlaceInfo {
 		this.declaration = member.getDeclaration();
 	}
 
-	protected Clause(MemberOwner owner, Clause overridden) {
-		this(owner, overridden, true);
-	}
-
 	protected Clause(
 			MemberOwner owner,
 			Clause overridden,
-			boolean propagate) {
+			Clause wrapped,
+			OverrideMode mode) {
 
 		final OverriddenMemberClause member =
 			new OverriddenMemberClause(
 						owner,
 						this,
 						overridden.toMember(),
-						propagate);
+						wrapped != null ? wrapped.toMember() : null,
+						mode.propagation(overridden.toMember()));
 
 		this.member = member;
 		this.declaration = member.getDeclaration();

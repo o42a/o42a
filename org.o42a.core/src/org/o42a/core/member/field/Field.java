@@ -46,11 +46,6 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		this.member = member;
 	}
 
-	protected Field(MemberOwner owner, Field<A> overridden) {
-		this(owner, overridden, null, OverrideMode.PROPAGATE);
-		setFieldArtifact(propagateArtifact(overridden));
-	}
-
 	protected Field(
 			MemberOwner owner,
 			Field<A> overridden,

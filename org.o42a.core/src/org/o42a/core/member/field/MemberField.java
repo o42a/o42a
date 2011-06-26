@@ -99,6 +99,7 @@ public abstract class MemberField extends Member {
 		return this.key = declareNewField();
 	}
 
+	@Override
 	public abstract MemberField getWrapped();
 
 	@Override

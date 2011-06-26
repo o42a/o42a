@@ -34,7 +34,8 @@ public abstract class ObjectField extends Field<Obj> {
 	}
 
 	protected ObjectField(MemberOwner owner, ObjectField overridden) {
-		super(owner, overridden);
+		super(owner, overridden, null, OverrideMode.PROPAGATE);
+		setFieldArtifact(propagateArtifact(overridden));
 	}
 
 	protected ObjectField(
