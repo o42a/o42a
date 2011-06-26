@@ -47,19 +47,21 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	protected Field(MemberOwner owner, Field<A> overridden) {
-		this(owner, overridden, true);
+		this(owner, overridden, null, OverrideMode.PROPAGATE);
 		setFieldArtifact(propagateArtifact(overridden));
 	}
 
 	protected Field(
 			MemberOwner owner,
 			Field<A> overridden,
-			boolean propagate) {
+			Field<A> wrapped,
+			OverrideMode mode) {
 		this.member = new OverriddenMemberField(
 				owner,
 				this,
 				overridden.toMember(),
-				propagate);
+				wrapped != null ? wrapped.toMember() : null,
+				mode.propagation(overridden.toMember()));
 	}
 
 	@Override

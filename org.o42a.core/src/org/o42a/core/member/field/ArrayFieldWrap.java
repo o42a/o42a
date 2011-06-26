@@ -28,7 +28,7 @@ import org.o42a.core.ref.type.TypeRef;
 
 final class ArrayFieldWrap extends FieldWrap<Array> {
 
-	ArrayFieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
+	ArrayFieldWrap(MemberOwner owner, Field<Array> type, Field<Array> wrapped) {
 		super(owner, type, wrapped);
 	}
 

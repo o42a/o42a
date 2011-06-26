@@ -33,7 +33,7 @@ import org.o42a.core.st.Reproducer;
 
 final class ObjectFieldWrap extends FieldWrap<Obj> {
 
-	ObjectFieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
+	ObjectFieldWrap(MemberOwner owner, Field<Obj> type, Field<Obj> wrapped) {
 		super(owner, type, wrapped);
 	}
 

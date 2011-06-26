@@ -19,9 +19,9 @@
 */
 package org.o42a.core.artifact.object;
 
-
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 
@@ -39,9 +39,10 @@ public abstract class ObjectField extends Field<Obj> {
 
 	protected ObjectField(
 			MemberOwner owner,
-			ObjectField overridden,
-			boolean propagate) {
-		super(owner, overridden, propagate);
+			Field<Obj> overridden,
+			Field<Obj> wrapped,
+			OverrideMode mode) {
+		super(owner, overridden, wrapped, mode);
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.OverrideMode;
 
 
 abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
@@ -31,32 +32,35 @@ abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
 	private final Field<A> iface;
 	private final Field<A> wrapped;
 
-	@SuppressWarnings("unchecked")
-	public FieldWrap(MemberOwner owner, Field<?> type, Field<?> wrapped) {
-		super(new MemberFieldWrap(
-				owner,
-				new FieldDeclaration(
-						wrapped,
-						wrapped.distributeIn(owner.getContainer()),
-						wrapped.getDeclaration())
-				.override()));
-		((MemberFieldWrap) toMember()).init(this);
-		this.iface = (Field<A>) type;
-		this.wrapped = (Field<A>) wrapped;
+	public FieldWrap(MemberOwner owner, Field<A> type, Field<A> wrapped) {
+		super(owner, wrapped, wrapped, OverrideMode.WRAP);
+		this.iface = type;
+		this.wrapped = wrapped;
 		setFieldArtifact(wrapArtifact());
 	}
 
 	protected FieldWrap(MemberOwner owner, FieldWrap<A> overridden) {
-		super(owner, overridden, false);
+		this(
+				owner,
+				overridden,
+				owner.getContainer().toObject().getWrapped()
+				.member(overridden.iface.getKey()).toField(dummyUser())
+				.toKind(overridden.iface.getArtifactKind()));
+	}
+
+	private FieldWrap(
+			MemberOwner owner,
+			FieldWrap<A> overridden,
+			FieldWrap<A> wrapped) {
+		super(owner, overridden, wrapped, OverrideMode.WRAP);
 
 		final Obj inherited = owner.getContainer().toObject();
 
 		this.iface = inherited.member(
 				overridden.iface.getKey()).toField(dummyUser()).toKind(
 						overridden.iface.getArtifactKind());
-		this.wrapped = inherited.getWrapped().member(
-				overridden.iface.getKey()).toField(dummyUser()).toKind(
-						overridden.iface.getArtifactKind());
+		this.wrapped = wrapped;
+
 		setFieldArtifact(overridden.getArtifact());
 	}
 
