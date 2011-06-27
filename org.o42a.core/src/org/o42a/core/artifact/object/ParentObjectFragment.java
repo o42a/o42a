@@ -30,6 +30,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.use.Usable;
@@ -53,13 +54,28 @@ final class ParentObjectFragment extends MemberFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj object = start.toObject();
+		final Obj startObject = start.toObject();
+		final Obj object;
+		final Scope begin;
 
+		if (startObject != null) {
+			begin = start;
+			object = startObject;
+		} else {
+			assert index == 0;
+
+			final Field<?> field = start.toField();
+
+			assert field != null;
+
+			object = field.getArtifact().materialize();
+			begin = object.getScope();
+		}
 		if (!object.membersResolved()) {
 
 			final Scope self = getMemberKey().getOrigin();
 
-			if (start == self) {
+			if (begin == self) {
 				// Create proxy to not forget the user.
 				if (this.proxyUser == null) {
 					this.proxyUser = simpleUsable("Proxy", this);
@@ -85,7 +101,7 @@ final class ParentObjectFragment extends MemberFragment {
 		}
 
 		final Member member =
-				resolveMember(location, proxiedUser, path, index, start);
+				resolveMember(location, proxiedUser, path, index, begin);
 
 		if (member == null) {
 			return null;
