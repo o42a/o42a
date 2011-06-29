@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.common;
+package org.o42a.common.resolution;
 
 import static org.o42a.util.use.Usable.simpleUsable;
 
@@ -55,6 +55,7 @@ public class ResolverCache {
 
 			if (cached != null) {
 				cached.useBy(resolver);
+				System.err.println("(!) " + this.cache.size());
 				return null;
 			}
 		}

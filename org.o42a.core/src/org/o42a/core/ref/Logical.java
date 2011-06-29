@@ -30,7 +30,6 @@ import org.o42a.core.def.LogicalBase;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.common.ResolverCache;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
@@ -250,7 +249,7 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	private Logical negated;
-	private ResolverCache fullResolution;
+	private boolean fullyResolved;
 
 	public Logical(LocationInfo location, Scope scope) {
 		super(location, scope);
@@ -403,18 +402,10 @@ public abstract class Logical extends LogicalBase {
 	}
 
 	public final void resolveAll(Resolver resolver) {
-		if (this.fullResolution == null) {
-			this.fullResolution = new ResolverCache("FullResolution", this);
-		}
-
-		final Resolver fullResolver = this.fullResolution.resolve(resolver);
-
-		if (fullResolver == null) {
-			return;
-		}
+		this.fullyResolved = true;
 		getContext().fullResolution().start();
 		try {
-			fullyResolve(fullResolver);
+			fullyResolve(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -423,7 +414,7 @@ public abstract class Logical extends LogicalBase {
 	public abstract void write(CodeDirs dirs, HostOp host);
 
 	public final boolean assertFullyResolved() {
-		assert this.fullResolution != null :
+		assert this.fullyResolved :
 			this + " is not fully resolved";
 		return true;
 	}

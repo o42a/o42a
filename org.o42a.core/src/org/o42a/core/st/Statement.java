@@ -25,7 +25,6 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.ResolverCache;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -35,8 +34,7 @@ import org.o42a.core.value.ValueType;
 public abstract class Statement extends Placed {
 
 	private StOp op;
-	private ResolverCache fullResolverCache;
-	private ResolverCache valueResolverCache;
+	private boolean fullyResolved;
 
 	public Statement(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
@@ -69,19 +67,10 @@ public abstract class Statement extends Placed {
 	public abstract Statement reproduce(Reproducer reproducer);
 
 	public final void resolveAll(Resolver resolver) {
-		if (this.fullResolverCache == null) {
-			this.fullResolverCache = new ResolverCache("FullResolver", this);
-		}
-
-		final Resolver fullResolver = this.fullResolverCache.resolve(resolver);
-
-		if (fullResolver == null) {
-			return;
-		}
-
+		this.fullyResolved = true;
 		getContext().fullResolution().start();
 		try {
-			fullyResolve(fullResolver);
+			fullyResolve(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -89,19 +78,9 @@ public abstract class Statement extends Placed {
 
 	public final void resolveValues(Resolver resolver) {
 		resolveAll(resolver);
-		if (this.valueResolverCache == null) {
-			this.valueResolverCache = new ResolverCache("ValueResolver", this);
-		}
-
-		final Resolver valueResolver =
-				this.valueResolverCache.resolve(resolver);
-
-		if (valueResolver == null) {
-			return;
-		}
 		getContext().fullResolution().start();
 		try {
-			fullyResolveValues(valueResolver);
+			fullyResolveValues(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -121,7 +100,7 @@ public abstract class Statement extends Placed {
 	}
 
 	public final boolean assertFullyResolved() {
-		assert this.fullResolverCache != null :
+		assert this.fullyResolved :
 			this + " is not fully resolved";
 		return true;
 	}

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common;
+package org.o42a.common.resolution;
 
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_SAMPLE;
 import static org.o42a.util.use.User.dummyUser;

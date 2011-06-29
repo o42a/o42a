@@ -22,12 +22,12 @@ package org.o42a.lib.console.impl;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.value.Value.voidValue;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.resolution.StatementResolver;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
@@ -42,12 +42,12 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.console.ConsoleModule;
-import org.o42a.util.use.UserInfo;
 
 
 public class Print extends IntrinsicBuiltin {
 
 	private final String funcName;
+	private final StatementResolver resolver = new StatementResolver();
 	private Ref text;
 
 	public Print(ConsoleModule module, String name, String funcName) {
@@ -68,11 +68,7 @@ public class Print extends IntrinsicBuiltin {
 
 	@Override
 	public void resolveBuiltin(Obj object) {
-
-		final UserInfo user = object.value(dummyUser());
-		final Resolver resolver = object.getScope().newResolver(user);
-
-		text().resolveValues(resolver);
+		this.resolver.resolveBuiltin(object, text());
 	}
 
 	@Override
