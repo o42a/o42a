@@ -159,16 +159,7 @@ public final class ObjectType implements UserInfo, UseInfo {
 		if (this.usable != null) {
 			return this.usable;
 		}
-
-		this.usable = simpleUsable("ObjectType", getObject());
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			cloneOf.type(this.usable);
-		}
-
-		return this.usable;
+		return this.usable = simpleUsable("ObjectType", getObject());
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {

@@ -88,16 +88,7 @@ public final class ObjectValue implements UserInfo, UseInfo {
 		if (this.usable != null) {
 			return this.usable;
 		}
-
-		this.usable = simpleUsable("ObjectValue", getObject());
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			cloneOf.value(this.usable);
-		}
-
-		return this.usable;
+		return this.usable = simpleUsable("ObjectValue", getObject());
 	}
 
 }
