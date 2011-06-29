@@ -23,7 +23,7 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
-import org.o42a.common.ScopeSet;
+import org.o42a.common.resolution.ScopeSet;
 import org.o42a.core.*;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;

@@ -20,30 +20,30 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.resolution.StatementResolver;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 	private final ValueType<O> operandType;
 	private final String operandName;
-	private MemberKey operandKey;
+	private final StatementResolver resolver = new StatementResolver();
+	private Ref operand;
 
 	public UnaryResult(
 			MemberOwner owner,
@@ -72,14 +72,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
-		final Obj operandObject =
-			resolver.getScope().getContainer()
-			.member(operandKey())
-			.substance(resolver)
-			.toArtifact()
-			.materialize();
-		final Value<?> operandValue =
-			operandObject.value(resolver).getValue();
+		final Value<?> operandValue = operand().value(resolver);
 
 		if (operandValue.isFalse()) {
 			return getResultType().falseValue();
@@ -101,15 +94,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 	@Override
 	public void resolveBuiltin(Obj object) {
-
-		final UserInfo user = object.value(dummyUser());
-		final Obj operandObject =
-			object.member(operandKey())
-			.substance(object.getScope().newResolver(user))
-			.toArtifact()
-			.materialize();
-
-		operandObject.value(user);
+		this.resolver.resolveBuiltin(object, operand());
 	}
 
 	@Override
@@ -117,10 +102,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 		final ValDirs operandDirs =
 			dirs.dirs().value(getOperandType(), "operand");
-		final ObjectOp operand =
-			host.field(operandDirs.dirs(), operandKey())
-			.materialize(operandDirs.dirs());
-		final ValOp operandVal = operand.writeValue(operandDirs);
+		final ValOp operandVal = operand().op(host).writeValue(operandDirs);
 
 		final ValDirs resultDirs = operandDirs.dirs().value(dirs);
 		final ValOp result = write(resultDirs, operandVal);
@@ -147,15 +129,16 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 	protected abstract ValOp write(ValDirs dirs, ValOp operand);
 
-	private final MemberKey operandKey() {
-		if (this.operandKey != null) {
-			return this.operandKey;
+	private final Ref operand() {
+		if (this.operand != null) {
+			return this.operand;
 		}
 
-		final Member operandMember =
+		final Member member =
 			member(memberName(this.operandName), Accessor.DECLARATION);
+		final Path path = member.getKey().toPath();
 
-		return this.operandKey = operandMember.getKey();
+		return this.operand = path.target(this, distribute());
 	}
 
 }
