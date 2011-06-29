@@ -186,16 +186,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		if (this.content != null) {
 			return this.content;
 		}
-
-		this.content = simpleUsable("Content", toArtifact());
-
-		final A cloneOf = getCloneOf();
-
-		if (cloneOf != null) {
-			cloneOf.content().useBy(this.content);
-		}
-
-		return this.content;
+		return this.content = simpleUsable("Content", toArtifact());
 	}
 
 	public abstract UseInfo fieldUses();
