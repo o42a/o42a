@@ -48,7 +48,7 @@ public class ResolverCache {
 		final Scope scope = resolver.getScope();
 
 		if (this.cache == null) {
-			this.cache = new IdentityHashMap<Scope, Usable<?>>(1);
+			this.cache = new IdentityHashMap<Scope, Usable<?>>();
 		} else {
 
 			final Usable<?> cached = this.cache.get(scope);

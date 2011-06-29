@@ -19,8 +19,11 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.field.Field;
 import org.o42a.util.use.*;
 
 
@@ -92,6 +95,31 @@ public class MemberAnalysis implements UseInfo {
 
 	public final boolean nestedAccessedBy(Generator generator) {
 		return this.nestedUses.isUsedBy(generator.getUseCase());
+	}
+
+	public String reasonNotFound(Generator generator) {
+
+		final Field<?> field = getMember().toField(dummyUser());
+
+		if (field == null) {
+			return "not a field";
+		}
+
+		final StringBuilder out = new StringBuilder();
+		boolean comma = false;
+
+		if (!accessedBy(generator)) {
+			out.append("never accessed");
+			comma = true;
+		}
+		if (!substanceAccessedBy(generator) && !nestedAccessedBy(generator)) {
+			if (comma) {
+				out.append(", ");
+			}
+			out.append("neither substance nor nested fields accessed");
+		}
+
+		return out.toString();
 	}
 
 	@Override

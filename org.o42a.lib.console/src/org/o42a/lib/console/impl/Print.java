@@ -25,17 +25,18 @@ import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
@@ -47,11 +48,9 @@ import org.o42a.util.use.UserInfo;
 public class Print extends IntrinsicBuiltin {
 
 	private final String funcName;
+	private Ref text;
 
-	public Print(
-			ConsoleModule module,
-			String name,
-			String funcName) {
+	public Print(ConsoleModule module, String name, String funcName) {
 		super(
 				module.toMemberOwner(),
 				fieldDeclaration(
@@ -71,26 +70,22 @@ public class Print extends IntrinsicBuiltin {
 	public void resolveBuiltin(Obj object) {
 
 		final UserInfo user = object.value(dummyUser());
-		final Artifact<?> textPath = textKey().toPath().resolveArtifact(
-				object,
-				user,
-				object.getScope());
+		final Resolver resolver = object.getScope().newResolver(user);
 
-		textPath.materialize().value(user);
+		text().resolveValues(resolver);
 	}
 
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs textDirs = dirs.dirs().value(ValueType.STRING, "text");
-		final ObjectOp textObject =
-			host.field(textDirs.dirs(), textKey()).materialize(textDirs.dirs());
-		final ValOp text = textObject.writeValue(textDirs);
+		final Code code = textDirs.code();
 
+		final ValOp text = text().op(host).writeValue(textDirs);
 		final PrintFunc printFunc =
-			printFunc(dirs.getGenerator()).op(null, textDirs.code());
+				printFunc(code.getGenerator()).op(null, code);
 
-		printFunc.print(textDirs.code(), text);
+		printFunc.print(code, text);
 
 		textDirs.done();
 
@@ -111,10 +106,15 @@ public class Print extends IntrinsicBuiltin {
 				.toTypeRef());
 	}
 
-	private MemberKey textKey() {
-		return memberName("text").key(
-				type(dummyUser()).getAncestor()
-				.typeObject(dummyUser()).getScope());
+	private Ref text() {
+		if (this.text != null) {
+			return this.text;
+		}
+
+		final MemberKey key =
+				member(memberName("text"), Accessor.OWNER).getKey();
+
+		return this.text = key.toPath().target(this, distribute());
 	}
 
 	private FuncPtr<PrintFunc> printFunc(Generator generator) {

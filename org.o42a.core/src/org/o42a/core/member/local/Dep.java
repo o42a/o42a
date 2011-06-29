@@ -148,7 +148,7 @@ public final class Dep extends PathFragment {
 
 		walker.dep(object, this, this.dependency);
 
-		return this.dependency.getContainer();
+		return enclosingLocal.member(this.dependency.getKey()).substance(user);
 	}
 
 	@Override

@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.Usable.simpleUsable;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -82,7 +81,7 @@ public final class ObjectValue implements UserInfo, UseInfo {
 		if (this.object == null) {
 			return super.toString();
 		}
-		return "ValueOf[" + this.object + ']';
+		return "ObjectValue[" + this.object + ']';
 	}
 
 	final Usable<?> usable() {
@@ -90,13 +89,15 @@ public final class ObjectValue implements UserInfo, UseInfo {
 			return this.usable;
 		}
 
+		this.usable = simpleUsable("ObjectValue", getObject());
+
 		final Obj cloneOf = getObject().getCloneOf();
 
-		if (cloneOf == null) {
-			return this.usable = simpleUsable("ObjectValue", getObject());
+		if (cloneOf != null) {
+			cloneOf.value(this.usable);
 		}
 
-		return this.usable = cloneOf.value(dummyUser()).usable();
+		return this.usable;
 	}
 
 }

@@ -140,10 +140,7 @@ class LocalDef extends ValueDef {
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-
-		final Resolver localResolver = this.localRescoper.rescope(resolver);
-
-		getBlock().resolveValues(localResolver);
+		getBlock().resolveValues(this.localRescoper.rescope(resolver));
 	}
 
 	@Override

@@ -120,7 +120,7 @@ public final class ObjectType implements UserInfo, UseInfo {
 		if (this.object == null) {
 			return super.toString();
 		}
-		return this.object.toString();
+		return "ObjectType[" + this.object + ']';
 	}
 
 	final ObjectResolution getResolution() {
@@ -160,13 +160,15 @@ public final class ObjectType implements UserInfo, UseInfo {
 			return this.usable;
 		}
 
+		this.usable = simpleUsable("ObjectType", getObject());
+
 		final Obj cloneOf = getObject().getCloneOf();
 
-		if (cloneOf == null) {
-			return this.usable = simpleUsable("ObjectType", getObject());
+		if (cloneOf != null) {
+			cloneOf.type(this.usable);
 		}
 
-		return this.usable = cloneOf.type(dummyUser()).usable();
+		return this.usable;
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {

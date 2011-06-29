@@ -140,7 +140,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final Fld fld = findFld(memberKey);
 
 		assert fld != null :
-			"Field " + memberKey + " not found in " + this;
+			fieldNotFound(memberKey);
 
 		return fld;
 	}
@@ -294,6 +294,26 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			depIR.allocate(data);
 			this.deps.put(dep, depIR);
 		}
+	}
+
+	private String fieldNotFound(MemberKey memberKey) {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append("Field ").append(memberKey);
+		out.append(" not found in ").append(this);
+
+		final Member member = getAscendant().member(memberKey);
+
+		if (member == null) {
+			return out.append(": no such member").toString();
+		}
+
+		final MemberAnalysis analysis = member.getAnalysis();
+
+		out.append(": ").append(analysis.reasonNotFound(getGenerator()));
+
+		return out.toString();
 	}
 
 	public static final class Op extends StructOp<Op> {

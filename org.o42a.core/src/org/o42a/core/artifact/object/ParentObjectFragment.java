@@ -59,14 +59,12 @@ final class ParentObjectFragment extends MemberFragment {
 		final Scope begin;
 
 		if (startObject != null) {
-			begin = start;
 			object = startObject;
+			begin = start;
 		} else {
 			assert index == 0;
 
-			final Field<?> field = start.toField();
-
-			assert field != null;
+			final Field<?> field = start.toMember().toField(user);
 
 			object = field.getArtifact().materialize();
 			begin = object.getScope();

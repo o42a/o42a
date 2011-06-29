@@ -35,8 +35,8 @@ import org.o42a.core.value.ValueType;
 public abstract class Statement extends Placed {
 
 	private StOp op;
-	private ResolverCache fullResolution;
-	private ResolverCache valueResolution;
+	private ResolverCache fullResolverCache;
+	private ResolverCache valueResolverCache;
 
 	public Statement(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
@@ -69,16 +69,16 @@ public abstract class Statement extends Placed {
 	public abstract Statement reproduce(Reproducer reproducer);
 
 	public final void resolveAll(Resolver resolver) {
-		if (this.fullResolution == null) {
-			this.fullResolution = new ResolverCache("FullResolution", this);
+		if (this.fullResolverCache == null) {
+			this.fullResolverCache = new ResolverCache("FullResolver", this);
 		}
 
-		final Resolver fullResolver =
-				this.fullResolution.resolve(resolver);
+		final Resolver fullResolver = this.fullResolverCache.resolve(resolver);
 
 		if (fullResolver == null) {
 			return;
 		}
+
 		getContext().fullResolution().start();
 		try {
 			fullyResolve(fullResolver);
@@ -89,11 +89,12 @@ public abstract class Statement extends Placed {
 
 	public final void resolveValues(Resolver resolver) {
 		resolveAll(resolver);
-		if (this.valueResolution == null) {
-			this.valueResolution = new ResolverCache("ValueResolution", this);
+		if (this.valueResolverCache == null) {
+			this.valueResolverCache = new ResolverCache("ValueResolver", this);
 		}
 
-		final Resolver valueResolver = this.valueResolution.resolve(resolver);
+		final Resolver valueResolver =
+				this.valueResolverCache.resolve(resolver);
 
 		if (valueResolver == null) {
 			return;
@@ -120,7 +121,7 @@ public abstract class Statement extends Placed {
 	}
 
 	public final boolean assertFullyResolved() {
-		assert this.fullResolution != null :
+		assert this.fullResolverCache != null :
 			this + " is not fully resolved";
 		return true;
 	}
