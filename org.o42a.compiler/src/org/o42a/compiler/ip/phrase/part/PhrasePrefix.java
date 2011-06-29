@@ -59,6 +59,7 @@ public class PhrasePrefix extends PhrasePart {
 	public String phraseString() {
 
 		final StringBuilder out = new StringBuilder();
+		out.append("<[");
 		PhrasePart part = this;
 
 		for (;;) {
@@ -69,6 +70,7 @@ public class PhrasePrefix extends PhrasePart {
 			}
 			out.append(' ');
 		}
+		out.append("]>");
 
 		return out.toString();
 	}

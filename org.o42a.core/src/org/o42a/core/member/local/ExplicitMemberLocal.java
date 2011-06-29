@@ -91,7 +91,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 
 	private void use(UserInfo user) {
 		useBy(user.toUser());
-		useSubstanceBy(this.localScope.newResolver(user).toUser());
+		useSubstanceBy(user.toUser());
 	}
 
 }

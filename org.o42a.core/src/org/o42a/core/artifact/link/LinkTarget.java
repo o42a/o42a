@@ -57,10 +57,7 @@ class LinkTarget extends ObjectWrap {
 		final Resolver resolver =
 			getScope().getEnclosingScope().newResolver(content());
 
-		return this.link.getTargetRef()
-			.resolve(resolver)
-			.materialize()
-			.getWrapped();
+		return this.link.getTargetRef().resolve(resolver).materialize();
 	}
 
 	@Override

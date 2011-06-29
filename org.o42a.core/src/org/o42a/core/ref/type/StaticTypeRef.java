@@ -124,7 +124,7 @@ public abstract class StaticTypeRef extends TypeRef {
 
 		final Ref ref = ref();
 
-		ref.resolveAll(ref.getScope().dummyResolver());
+		ref.resolveAll(ref.getScope().newResolver(resolver));
 		validate();
 	}
 
