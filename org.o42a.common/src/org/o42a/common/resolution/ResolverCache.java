@@ -32,7 +32,7 @@ public class ResolverCache {
 
 	private final String name;
 	private final Object used;
-	private IdentityHashMap<Scope, Usable<?>> cache;
+	private IdentityHashMap<Scope, Usable> cache;
 
 	public ResolverCache(String name, Object used) {
 		this.name = name;
@@ -48,10 +48,10 @@ public class ResolverCache {
 		final Scope scope = resolver.getScope();
 
 		if (this.cache == null) {
-			this.cache = new IdentityHashMap<Scope, Usable<?>>();
+			this.cache = new IdentityHashMap<Scope, Usable>();
 		} else {
 
-			final Usable<?> cached = this.cache.get(scope);
+			final Usable cached = this.cache.get(scope);
 
 			if (cached != null) {
 				cached.useBy(resolver);
@@ -59,7 +59,7 @@ public class ResolverCache {
 			}
 		}
 
-		final Usable<?> usable = simpleUsable(this.name, this.used);
+		final Usable usable = simpleUsable(this.name, this.used);
 
 		usable.useBy(resolver);
 		this.cache.put(scope, usable);

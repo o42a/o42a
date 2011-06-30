@@ -29,11 +29,12 @@ import org.o42a.util.use.*;
 public final class ObjectValue implements UserInfo, UseInfo {
 
 	private final Obj object;
-	private Usable<?> usable;
+	private final Usable usable;
 	private Value<?> value;
 
 	ObjectValue(Obj object) {
 		this.object = object;
+		this.usable = simpleUsable("ObjectValue", object);
 	}
 
 	public final Obj getObject() {
@@ -84,11 +85,8 @@ public final class ObjectValue implements UserInfo, UseInfo {
 		return "ObjectValue[" + this.object + ']';
 	}
 
-	final Usable<?> usable() {
-		if (this.usable != null) {
-			return this.usable;
-		}
-		return this.usable = simpleUsable("ObjectValue", getObject());
+	final Usable usable() {
+		return this.usable;
 	}
 
 }

@@ -20,13 +20,13 @@
 package org.o42a.util.use;
 
 
-final class SimpleUsable<U> extends Usable<U> {
+final class SimpleUsable extends Usable {
 
 	private final String name;
-	private final U usable;
+	private final Object usable;
 	private final UsableUser user;
 
-	SimpleUsable(String name, U usable) {
+	SimpleUsable(String name, Object usable) {
 		this.name = name;
 		this.usable = usable;
 		this.user = new UsableUser(this);
@@ -49,11 +49,6 @@ final class SimpleUsable<U> extends Usable<U> {
 			return this.usable.toString();
 		}
 		return this.name + '[' + this.usable + ']';
-	}
-
-	@Override
-	protected U createUsed(User user) {
-		return this.usable;
 	}
 
 }

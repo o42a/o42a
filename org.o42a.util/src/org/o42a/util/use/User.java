@@ -48,6 +48,6 @@ public abstract class User implements UserInfo, UseInfo {
 		return getUseBy(useCase).isUsed();
 	}
 
-	abstract <U> U use(Usable<U> usable);
+	abstract void use(Usable usable);
 
 }

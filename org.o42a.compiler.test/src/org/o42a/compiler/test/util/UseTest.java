@@ -190,11 +190,10 @@ public class UseTest {
 				use.getUseBy(this.useCase).isUsed());
 	}
 
-	private final class TestUsable extends Usable<Integer> {
+	private final class TestUsable extends Usable {
 
 		private final String id;
 		private final UsableUser user;
-		private int counter;
 
 		TestUsable() {
 			this.id = "Usable" + (++UseTest.this.usableIdSeq);
@@ -209,11 +208,6 @@ public class UseTest {
 		@Override
 		public String toString() {
 			return this.id;
-		}
-
-		@Override
-		protected Integer createUsed(User user) {
-			return ++this.counter;
 		}
 
 	}

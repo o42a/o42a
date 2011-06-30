@@ -88,8 +88,10 @@ public abstract class StaticTypeRef extends TypeRef {
 			return TypeRelation.INVALID;
 		}
 
-		final ObjectType type1 = type(dummyUser());
-		final ObjectType type2 = other.type(dummyUser());
+		final ObjectType type1 =
+				type(dummyUser()).getLastDefinition().type(dummyUser());
+		final ObjectType type2 =
+				other.type(dummyUser()).getLastDefinition().type(dummyUser());
 
 		if (type1.getObject().getScope() == type2.getObject().getScope()) {
 			return TypeRelation.SAME;
@@ -103,6 +105,7 @@ public abstract class StaticTypeRef extends TypeRef {
 		if (reportIncompatibility) {
 			getLogger().incompatible(other, this);
 		}
+
 		return TypeRelation.INCOMPATIBLE;
 	}
 

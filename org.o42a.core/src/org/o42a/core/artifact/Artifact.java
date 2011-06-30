@@ -37,7 +37,7 @@ import org.o42a.util.use.UseInfo;
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
-	private Usable<A> content;
+	private Usable content;
 	private Holder<Obj> enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;
@@ -182,11 +182,11 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return artifactAccess(user, this);
 	}
 
-	public final Usable<A> content() {
+	public final Usable content() {
 		if (this.content != null) {
 			return this.content;
 		}
-		return this.content = simpleUsable("Content", toArtifact());
+		return this.content = simpleUsable("Content", this);
 	}
 
 	public abstract UseInfo fieldUses();
@@ -205,7 +205,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	public final boolean assertFullyResolved() {
-		assert this.allResolved || isClone() :
+		assert this.allResolved :
 			this + " is not fully resolved";
 		return true;
 	}

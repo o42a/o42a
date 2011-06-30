@@ -39,7 +39,7 @@ import org.o42a.util.use.UserInfo;
 
 final class ParentObjectFragment extends MemberFragment {
 
-	private Usable<?> proxyUser;
+	private Usable proxyUser;
 
 	ParentObjectFragment(MemberKey memberKey) {
 		super(memberKey);
