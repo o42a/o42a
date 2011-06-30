@@ -23,8 +23,8 @@ package org.o42a.util.use;
 public abstract class AbstractUser extends User {
 
 	@Override
-	<U> U use(Usable<U> usable) {
-		return usable.useBy(this);
+	void use(Usable usable) {
+		usable.useBy(this);
 	}
 
 }

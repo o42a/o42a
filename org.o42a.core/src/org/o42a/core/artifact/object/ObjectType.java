@@ -35,17 +35,34 @@ import org.o42a.util.use.*;
 public final class ObjectType implements UserInfo, UseInfo {
 
 	private final Obj object;
-	private Usable<?> usable;
+	private Obj lastDefinition;
+	private Usable usable;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
 
 	ObjectType(Obj object) {
 		this.object = object;
+		this.usable = simpleUsable("ObjectType", object);
 	}
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	public final Obj getLastDefinition() {
+		if (this.lastDefinition != null) {
+			return this.lastDefinition;
+		}
+
+		final Obj object = getObject();
+		final Obj cloneOf = object.getCloneOf();
+
+		if (cloneOf != null) {
+			return this.lastDefinition = cloneOf;
+		}
+
+		return this.lastDefinition = object;
 	}
 
 	@Override
@@ -155,11 +172,8 @@ public final class ObjectType implements UserInfo, UseInfo {
 		return this.resolution.resolved();
 	}
 
-	final Usable<?> usable() {
-		if (this.usable != null) {
-			return this.usable;
-		}
-		return this.usable = simpleUsable("ObjectType", getObject());
+	final Usable usable() {
+		return this.usable;
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.common;
 
+import java.util.IdentityHashMap;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
@@ -27,9 +29,9 @@ import org.o42a.util.use.UsableUser;
 import org.o42a.util.use.User;
 
 
-final class ExpressionCache
-		extends ResolutionCache<Resolution, ExpressionCache.UsableExpression> {
+final class ExpressionCache {
 
+	private IdentityHashMap<Scope, UsableExpression> cache;
 	private final Expression expression;
 
 	ExpressionCache(Expression expression) {
@@ -40,13 +42,46 @@ final class ExpressionCache
 		return resolution(this.expression.getScope());
 	}
 
+	public final boolean isEmpty() {
+		return this.cache == null;
+	}
+
+	public final int size() {
+		return this.cache.size();
+	}
+
 	public final Resolution resolution(Scope scope) {
 
-		final UsableExpression usable = get(scope);
+		final UsableExpression cached = this.cache.get(scope);
 
-		if (usable == null) {
+		if (cached == null) {
 			return null;
 		}
+
+		return cached.getResolution();
+	}
+
+	public Resolution resolve(Resolver resolver) {
+
+		final Scope scope = resolver.getScope();
+
+		if (this.cache == null) {
+			this.cache = new IdentityHashMap<Scope, UsableExpression>();
+		} else {
+
+			final UsableExpression cached = this.cache.get(scope);
+
+			if (cached != null) {
+				cached.useBy(resolver);
+				return cached.getResolution();
+			}
+		}
+
+		final UsableExpression usable =
+				new UsableExpression(this.expression, resolver);
+
+		this.cache.put(scope, usable);
+		usable.useBy(resolver);
 
 		return usable.getResolution();
 	}
@@ -59,12 +94,7 @@ final class ExpressionCache
 		return getClass().getSimpleName() + '[' + this.expression + ']';
 	}
 
-	@Override
-	protected UsableExpression createUsable(Resolver resolver) {
-		return new UsableExpression(this.expression, resolver);
-	}
-
-	static final class UsableExpression extends Usable<Resolution> {
+	private static final class UsableExpression extends Usable {
 
 		private final Expression expression;
 		private final UsableUser user;
@@ -92,11 +122,6 @@ final class ExpressionCache
 		@Override
 		public String toString() {
 			return "Expression[" + this.expression + ']';
-		}
-
-		@Override
-		protected Resolution createUsed(User user) {
-			return this.resolution;
 		}
 
 	}

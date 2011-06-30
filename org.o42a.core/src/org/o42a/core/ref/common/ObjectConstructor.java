@@ -101,6 +101,11 @@ public abstract class ObjectConstructor extends Expression {
 		}
 
 		@Override
+		public boolean isPropagated() {
+			return true;
+		}
+
+		@Override
 		public String toString() {
 			return ("Propagated[" + this.propagatedFrom
 					+ " / " + getScope().getEnclosingScope() + "]");

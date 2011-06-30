@@ -19,32 +19,32 @@
 */
 package org.o42a.util.use;
 
-import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 
-public abstract class Usable<U> implements UserInfo, UseInfo {
+public abstract class Usable implements UserInfo, UseInfo {
 
-	public static Usable<?> simpleUsable(String name) {
-		return new SimpleUsable<Void>(name, null);
+	public static Usable simpleUsable(String name) {
+		return new SimpleUsable(name, null);
 	}
 
-	public static <U> Usable<U> simpleUsable(String name, U used) {
-		return new SimpleUsable<U>(name, used);
+	public static Usable simpleUsable(String name, Object used) {
+		return new SimpleUsable(name, used);
 	}
 
 	private final UseTracker tracker = new UseTracker();
-	private HashMap<User, U> usedBy;
+	private HashSet<User> usedBy;
 
-	public final U useBy(UserInfo user) {
-		return user.toUser().use(this);
+	public final void useBy(UserInfo user) {
+		user.toUser().use(this);
 	}
 
-	public final Map<User, U> getUsedBy() {
+	public final Set<User> getUsedBy() {
 		if (this.usedBy == null) {
-			return emptyMap();
+			return emptySet();
 		}
 		return this.usedBy;
 	}
@@ -58,7 +58,7 @@ public abstract class Usable<U> implements UserInfo, UseInfo {
 			return this.tracker.done();
 		}
 
-		for (User user : this.usedBy.keySet()) {
+		for (User user : this.usedBy) {
 			if (this.tracker.useBy(user)) {
 				return this.tracker.getUseFlag();
 			}
@@ -76,28 +76,14 @@ public abstract class Usable<U> implements UserInfo, UseInfo {
 		if (this.usedBy == null) {
 			return getClass().getSimpleName() + "[]";
 		}
-		return getClass().getSimpleName() + this.usedBy.values().toString();
+		return getClass().getSimpleName() + this.usedBy.toString();
 	}
 
-	protected abstract U createUsed(User user);
-
-	final U useBy(User user) {
+	final void useBy(User user) {
 		if (this.usedBy == null) {
-			this.usedBy = new HashMap<User, U>();
-		} else {
-
-			final U found = this.usedBy.get(user);
-
-			if (found != null) {
-				return found;
-			}
+			this.usedBy = new HashSet<User>();
 		}
-
-		final U use = createUsed(user);
-
-		this.usedBy.put(user, use);
-
-		return use;
+		this.usedBy.add(user);
 	}
 
 }
