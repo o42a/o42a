@@ -92,7 +92,7 @@ final class SelfRef extends Ref {
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		value(resolver);
+		resolve(resolver).resolveValues(resolver);
 	}
 
 	@Override

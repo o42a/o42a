@@ -138,7 +138,7 @@ public final class ValuePartRef extends Expression {
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		value(resolver);
+		resolve(resolver).resolveValues(resolver);
 	}
 
 	@Override

@@ -115,6 +115,12 @@ public abstract class ObjectWrap extends PlainObject {
 	}
 
 	@Override
+	protected void fullyResolveDefinitions() {
+		super.fullyResolveDefinitions();
+		getWrapped().resolveDefinitions(value(dummyUser()));
+	}
+
+	@Override
 	protected ObjectIR createIR(Generator generator) {
 		return getWrapped().ir(generator);
 	}

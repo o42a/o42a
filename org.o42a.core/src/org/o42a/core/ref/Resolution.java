@@ -36,6 +36,7 @@ import org.o42a.core.value.Directive;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.use.UserInfo;
 
 
 public abstract class Resolution implements ScopeInfo {
@@ -121,6 +122,8 @@ public abstract class Resolution implements ScopeInfo {
 
 	public abstract void resolveAll();
 
+	public abstract void resolveValues(UserInfo user);
+
 	@Override
 	public final void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);
@@ -196,6 +199,10 @@ public abstract class Resolution implements ScopeInfo {
 		}
 
 		@Override
+		public void resolveValues(UserInfo user) {
+		}
+
+		@Override
 		public String toString() {
 			return "ERROR";
 		}
@@ -247,6 +254,15 @@ public abstract class Resolution implements ScopeInfo {
 			toArtifact().resolveAll();
 		}
 
+		@Override
+		public void resolveValues(UserInfo user) {
+
+			final Obj materialized = materialize();
+
+			materialized.resolveDefinitions(user);
+			materialized.value(user);
+		}
+
 	}
 
 	static final class ObjectResolution extends Resolution {
@@ -292,6 +308,12 @@ public abstract class Resolution implements ScopeInfo {
 		@Override
 		public void resolveAll() {
 			toArtifact().resolveAll();
+		}
+
+		@Override
+		public void resolveValues(UserInfo user) {
+			toArtifact().resolveDefinitions(user);
+			toArtifact().value(user);
 		}
 
 	}
@@ -341,6 +363,17 @@ public abstract class Resolution implements ScopeInfo {
 			toContainer().resolveAll();
 		}
 
+		@Override
+		public void resolveValues(UserInfo user) {
+
+			final Obj materialized = materialize();
+
+			if (materialized != null) {
+				materialized.resolveDefinitions(user);
+				materialized.value(user);
+			}
+		}
+
 	}
 
 	static final class LocalResolution extends Resolution {
@@ -386,6 +419,10 @@ public abstract class Resolution implements ScopeInfo {
 		@Override
 		public void resolveAll() {
 			toContainer().resolveAll();
+		}
+
+		@Override
+		public void resolveValues(UserInfo user) {
 		}
 
 	}
