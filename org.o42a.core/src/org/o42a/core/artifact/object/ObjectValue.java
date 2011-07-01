@@ -77,6 +77,10 @@ public final class ObjectValue implements UserInfo, UseInfo {
 		return result;
 	}
 
+	public final Resolver valueResolver() {
+		return getObject().getScope().newResolver(usable());
+	}
+
 	@Override
 	public String toString() {
 		if (this.object == null) {

@@ -27,26 +27,25 @@ import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 
 	private final String leftOperandName;
 	private final ValueType<L> leftOperandType;
-	private MemberKey leftOperandKey;
+	private Ref leftOperand;
 	private final String rightOperandName;
 	private final ValueType<R> rightOperandType;
-	private MemberKey rightOperandKey;
+	private Ref rightOperand;
 
 	public BinaryResult(
 			MemberOwner owner,
@@ -83,20 +82,8 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
-		final Obj leftObject =
-			resolver.getScope().getContainer()
-			.member(leftOperandKey())
-			.substance(resolver)
-			.toArtifact()
-			.materialize();
-		final Value<?> leftValue = leftObject.value(resolver).getValue();
-		final Obj rightObject =
-			resolver.getScope().getContainer()
-			.member(rightOperandKey())
-			.substance(resolver)
-			.toArtifact()
-			.materialize();
-		final Value<?> rightValue = rightObject.value(resolver).getValue();
+		final Value<?> leftValue = leftOperand().value(resolver);
+		final Value<?> rightValue = rightOperand().value(resolver);
 
 		if (leftValue.isFalse() || rightValue.isFalse()) {
 			return getResultType().falseValue();
@@ -122,20 +109,10 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final UserInfo user = object.value(dummyUser());
-		final Obj leftObject =
-			object.member(leftOperandKey())
-			.substance(user)
-			.toArtifact()
-			.materialize();
-		final Obj rightObject =
-			object.member(rightOperandKey())
-			.substance(user)
-			.toArtifact()
-			.materialize();
+		final Resolver resolver = object.value(dummyUser()).valueResolver();
 
-		leftObject.value(user);
-		rightObject.value(user);
+		leftOperand().resolveValues(resolver);
+		rightOperand().resolveValues(resolver);
 	}
 
 	@Override
@@ -143,17 +120,11 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 
 		final ValDirs leftDirs =
 			dirs.dirs().value(getLeftOperandType(), "left");
-		final ObjectOp leftObject =
-			host.field(leftDirs.dirs(), leftOperandKey())
-			.materialize(leftDirs.dirs());
-		final ValOp leftVal = leftObject.writeValue(leftDirs);
+		final ValOp leftVal = leftOperand().op(host).writeValue(leftDirs);
 
 		final ValDirs rightDirs =
 			leftDirs.dirs().value(getRightOperandType(), "right");
-		final ObjectOp rightObject =
-			host.field(rightDirs.dirs(), rightOperandKey())
-			.materialize(rightDirs.dirs());
-		final ValOp rightVal = rightObject.writeValue(rightDirs);
+		final ValOp rightVal = rightOperand().op(host).writeValue(rightDirs);
 
 		final ValDirs resultDirs = rightDirs.dirs().value(dirs);
 		final ValOp result = write(resultDirs, leftVal, rightVal);
@@ -184,26 +155,28 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 			ValOp leftVal,
 			ValOp rightVal);
 
-	private final MemberKey leftOperandKey() {
-		if (this.leftOperandKey != null) {
-			return this.leftOperandKey;
+	private final Ref leftOperand() {
+		if (this.leftOperand != null) {
+			return this.leftOperand;
 		}
 
-		final Member operandMember =
+		final Member member =
 			member(memberName(this.leftOperandName), Accessor.DECLARATION);
+		final Path path = member.getKey().toPath();
 
-		return this.leftOperandKey = operandMember.getKey();
+		return this.leftOperand = path.target(this, distribute());
 	}
 
-	private final MemberKey rightOperandKey() {
-		if (this.rightOperandKey != null) {
-			return this.rightOperandKey;
+	private final Ref rightOperand() {
+		if (this.rightOperand != null) {
+			return this.rightOperand;
 		}
 
-		final Member operandMember =
+		final Member member =
 			member(memberName(this.rightOperandName), Accessor.DECLARATION);
+		final Path path = member.getKey().toPath();
 
-		return this.rightOperandKey = operandMember.getKey();
+		return this.rightOperand = path.target(this, distribute());
 	}
 
 }
