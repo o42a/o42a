@@ -28,14 +28,14 @@ import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.use.UserInfo;
@@ -43,7 +43,7 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class ByString<T> extends IntrinsicBuiltin {
 
-	private MemberKey inputKey;
+	private Ref input;
 
 	public ByString(
 			MemberOwner owner,
@@ -67,14 +67,7 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
-		final Obj inputObject =
-			resolver.getScope().getContainer()
-			.member(inputKey())
-			.substance(resolver)
-			.toArtifact()
-			.materialize();
-		final Value<?> inputValue =
-			inputObject.value(resolver).getValue();
+		final Value<?> inputValue = input().value(resolver);
 
 		if (inputValue.isFalse()) {
 			return getValueType().falseValue();
@@ -85,7 +78,7 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 
 		final String input =
 			ValueType.STRING.cast(inputValue).getDefiniteValue();
-		final T result = byString(inputObject, resolver, input);
+		final T result = byString(input(), resolver, input);
 
 		if (result == null) {
 			return getValueType().falseValue();
@@ -101,22 +94,25 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 	public void resolveBuiltin(Obj object) {
 
 		final UserInfo user = object.value(dummyUser());
-		final Obj inputObject =
-			object.member(inputKey())
-			.substance(object.getScope().newResolver(user))
-			.toArtifact()
-			.materialize();
+		final Resolver resolver = object.getScope().newResolver(user);
 
-		inputObject.value(user);
+		input().resolveValues(resolver);
 	}
 
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ObjectOp input =
-			host.field(dirs.dirs(), inputKey()).materialize(dirs.dirs());
+		final ValDirs inputDirs = dirs.dirs().value(ValueType.STRING, "input");
+		final ValOp inputValue = input().op(host).writeValue(inputDirs);
 
-		return parse(dirs, input);
+		final ValDirs parseDirs = inputDirs.dirs().value(dirs);
+
+		final ValOp result = parse(parseDirs, inputValue);
+
+		parseDirs.done();
+		inputDirs.done();
+
+		return result;
 	}
 
 	@Override
@@ -136,17 +132,18 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 			Resolver resolver,
 			String input);
 
-	protected abstract ValOp parse(ValDirs dirs, ObjectOp input);
+	protected abstract ValOp parse(ValDirs dirs, ValOp inputVal);
 
-	private final MemberKey inputKey() {
-		if (this.inputKey != null) {
-			return this.inputKey;
+	protected final Ref input() {
+		if (this.input != null) {
+			return this.input;
 		}
 
-		final Member operandMember =
+		final Member member =
 			member(memberName("input"), Accessor.DECLARATION);
+		final Path path = member.getKey().toPath();
 
-		return this.inputKey = operandMember.getKey();
+		return this.input = path.target(this, distribute());
 	}
 
 }

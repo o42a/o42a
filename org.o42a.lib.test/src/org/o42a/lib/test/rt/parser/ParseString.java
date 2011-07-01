@@ -25,7 +25,7 @@ import org.o42a.common.adapter.ByString;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -60,6 +60,11 @@ final class ParseString extends ByString<String> {
 	}
 
 	@Override
+	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+		return parse(dirs, input().op(host).writeValue(dirs));
+	}
+
+	@Override
 	protected Ascendants createAscendants() {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
@@ -81,9 +86,9 @@ final class ParseString extends ByString<String> {
 	}
 
 	@Override
-	protected ValOp parse(ValDirs dirs, ObjectOp input) {
+	protected ValOp parse(ValDirs dirs, ValOp value) {
 		dirs.code().debug("Run-time string");
-		return input.writeValue(dirs);
+		return value;
 	}
 
 }
