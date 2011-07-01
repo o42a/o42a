@@ -121,7 +121,7 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 
 		@Override
 		protected void fullyResolveValues(Resolver resolver) {
-			value(resolver);
+			resolve(resolver).resolveValues(resolver);
 		}
 
 		@Override

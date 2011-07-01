@@ -80,7 +80,7 @@ public abstract class ObjectConstructor extends Expression {
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		value(resolver);
+		resolve(resolver).resolveValues(resolver);
 	}
 
 	@Override

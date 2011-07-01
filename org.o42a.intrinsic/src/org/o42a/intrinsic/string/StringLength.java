@@ -74,8 +74,7 @@ final class StringLength extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver =
-			object.getScope().newResolver(object.value(dummyUser()));
+		final Resolver resolver = object.value(dummyUser()).valueResolver();
 
 		string().resolveValues(resolver);
 	}

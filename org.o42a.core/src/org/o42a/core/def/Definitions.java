@@ -1010,8 +1010,8 @@ public class Definitions extends Scoped {
 
 	private final void resolveAll(Def<?>[] defs) {
 
-		final Resolver resolver = getScope().newResolver(
-				getScope().toObject().value(dummyUser()));
+		final Resolver resolver =
+				getScope().toObject().value(dummyUser()).valueResolver();
 
 		for (Def<?> def : defs) {
 			def.resolveAll(resolver);

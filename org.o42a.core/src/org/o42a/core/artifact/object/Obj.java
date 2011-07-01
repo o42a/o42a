@@ -94,6 +94,7 @@ public abstract class Obj extends Artifact<Obj>
 	private ValueType<?> valueType;
 	private Definitions definitions;
 
+	private boolean definitionsResolved;
 	private ObjectAnalysis analysis;
 
 	private ObjectIR ir;
@@ -544,6 +545,22 @@ public abstract class Obj extends Artifact<Obj>
 		return scopePathFragment.toPath();
 	}
 
+	public final void resolveDefinitions(UserInfo user) {
+		if (this.definitionsResolved) {
+			value(user);
+			return;
+		}
+		this.definitionsResolved = true;
+		getContext().fullResolution().start();
+		try {
+			resolveAll();
+			value(user);
+			fullyResolveDefinitions();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
 	@Override
 	public UseInfo fieldUses() {
 		return getAnalysis().fieldUses();
@@ -613,7 +630,6 @@ public abstract class Obj extends Artifact<Obj>
 			Definitions ascendantDefinitions);
 
 	protected Value<?> calculateValue(Resolver resolver) {
-		value(resolver);
 		return getDefinitions().value(resolver).getValue();
 	}
 
@@ -684,7 +700,11 @@ public abstract class Obj extends Artifact<Obj>
 		if (!isClone()) {
 			resolveAllMembers();
 			validateImplicitSubClauses(getExplicitClauses());
+			resolveDefinitions(dummyUser());
 		}
+	}
+
+	protected void fullyResolveDefinitions() {
 		getDefinitions().resolveAll();
 	}
 

@@ -222,7 +222,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		@Override
 		protected void fullyResolveValues(Resolver resolver) {
-			value(resolver);
+			resolve(resolver).resolveValues(resolver);
 		}
 
 		@Override

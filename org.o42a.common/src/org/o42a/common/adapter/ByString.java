@@ -38,7 +38,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class ByString<T> extends IntrinsicBuiltin {
@@ -93,8 +92,7 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final UserInfo user = object.value(dummyUser());
-		final Resolver resolver = object.getScope().newResolver(user);
+		final Resolver resolver = object.value(dummyUser()).valueResolver();
 
 		input().resolveValues(resolver);
 	}
