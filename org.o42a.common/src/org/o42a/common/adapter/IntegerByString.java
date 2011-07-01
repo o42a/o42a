@@ -23,7 +23,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -49,20 +48,12 @@ public class IntegerByString extends ByString<Long> {
 	}
 
 	@Override
-	protected ValOp parse(ValDirs dirs, ObjectOp input) {
+	protected ValOp parse(ValDirs dirs, ValOp inputVal) {
 
-		final ValDirs inputDirs = dirs.dirs().value(ValueType.STRING, "input");
-		final ValOp inputValue = input.writeValue(inputDirs);
-
-		final ValDirs outputDirs = inputDirs.dirs().value(dirs);
 		final ParseWithRadixFunc parseFunc =
-			parseFunc(dirs.getGenerator()).op(null, outputDirs.code());
-		final ValOp output = parseFunc.parse(outputDirs, inputValue, 10);
+			parseFunc(dirs.getGenerator()).op(null, dirs.code());
 
-		outputDirs.done();
-		inputDirs.done();
-
-		return output;
+		return parseFunc.parse(dirs, inputVal, 10);
 	}
 
 	private FuncPtr<ParseWithRadixFunc> parseFunc(Generator generator) {

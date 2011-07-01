@@ -54,6 +54,11 @@ public abstract class ObjectWrap extends PlainObject {
 	}
 
 	@Override
+	public boolean isPropagated() {
+		return getWrapped().isPropagated();
+	}
+
+	@Override
 	public final Obj getWrapped() {
 		if (this.wrapped != null) {
 			return this.wrapped;

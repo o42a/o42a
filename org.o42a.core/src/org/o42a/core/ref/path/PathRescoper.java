@@ -55,8 +55,8 @@ final class PathRescoper extends Rescoper {
 	@Override
 	public Resolver rescope(Resolver resolver) {
 
-		final Scope scope = resolver.getScope();
-		final Container found = this.path.resolve(scope, resolver, scope);
+		final Container found =
+				this.path.resolve(resolver, resolver, resolver.getScope());
 
 		if (found == null) {
 			return null;
@@ -119,7 +119,7 @@ final class PathRescoper extends Rescoper {
 
 	@Override
 	public void resolveAll(Resolver resolver) {
-		rescope(resolver);
+		this.path.resolve(resolver, resolver, resolver.getScope());
 	}
 
 	@Override

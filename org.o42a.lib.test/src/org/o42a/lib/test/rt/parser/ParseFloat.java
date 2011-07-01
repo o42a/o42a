@@ -24,7 +24,6 @@ import static org.o42a.core.member.MemberId.memberName;
 import org.o42a.common.adapter.FloatByString;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -64,9 +63,9 @@ final class ParseFloat extends FloatByString {
 	}
 
 	@Override
-	protected strictfp ValOp parse(ValDirs dirs, ObjectOp input) {
+	protected strictfp ValOp parse(ValDirs dirs, ValOp inputVal) {
 		dirs.code().debug("Run-time float");
-		return super.parse(dirs, input);
+		return super.parse(dirs, inputVal);
 	}
 
 }

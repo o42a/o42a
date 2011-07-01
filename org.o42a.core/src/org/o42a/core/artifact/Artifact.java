@@ -42,6 +42,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	private ScopePlace localPlace;
 	private Ref self;
 	private boolean allResolved;
+	private Holder<A> cloneOf;
 
 	public Artifact(Scope scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
@@ -71,16 +72,16 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return getCloneOf() != null;
 	}
 
-	public A getCloneOf() {
-
-		@SuppressWarnings("unchecked")
-		final Field<A> field = (Field<A>) getScope().toField();
-
-		if (field == null || !field.isClone()) {
-			return null;
+	public final A getCloneOf() {
+		if (this.cloneOf != null) {
+			return this.cloneOf.get();
 		}
 
-		return field.getLastDefinition().getArtifact();
+		final A cloneOf = findCloneOf();
+
+		this.cloneOf = new Holder<A>(cloneOf);
+
+		return cloneOf;
 	}
 
 	public abstract Obj toObject();
@@ -205,7 +206,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	public final boolean assertFullyResolved() {
-		assert this.allResolved :
+		assert this.allResolved || (isClone() && getCloneOf().allResolved):
 			this + " is not fully resolved";
 		return true;
 	}
@@ -227,6 +228,17 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		out.append(']');
 
 		return out.toString();
+	}
+
+	protected A findCloneOf() {
+
+		final Field<?> field = getScope().toField();
+
+		if (field == null || !field.isClone()) {
+			return null;
+		}
+
+		return field.toKind(getKind()).getLastDefinition().getArtifact();
 	}
 
 	protected abstract void fullyResolve();

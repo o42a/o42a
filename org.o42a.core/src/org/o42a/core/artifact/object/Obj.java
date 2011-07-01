@@ -187,35 +187,6 @@ public abstract class Obj extends Artifact<Obj>
 		return this;
 	}
 
-	@Override
-	public Obj getCloneOf() {
-
-		@SuppressWarnings("unchecked")
-		final Field<Obj> field = (Field<Obj>) getScope().toField();
-
-		if (field != null) {
-			if (!field.isClone()) {
-				return null;
-			}
-			return field.getLastDefinition().getArtifact().materialize();
-		}
-
-		final Artifact<?> materializationOf = getMaterializationOf();
-
-		if (materializationOf == this) {
-			return null;
-		}
-
-		final Artifact<?> materializationClone =
-			materializationOf.getCloneOf();
-
-		if (materializationClone == null) {
-			return null;
-		}
-
-		return materializationClone.materialize();
-	}
-
 	public final ValueType<?> getValueType() {
 		if (this.valueType == null) {
 			assignValueType();
@@ -647,6 +618,66 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	@Override
+	protected Obj findCloneOf() {
+
+		final Artifact<?> materializationOf = getMaterializationOf();
+
+		if (materializationOf != this) {
+
+			final Artifact<?> cloneOfMaterialization =
+					materializationOf.getCloneOf();
+
+			if (cloneOfMaterialization == null) {
+				return null;
+			}
+
+			return cloneOfMaterialization.materialize();
+		}
+
+		final Field<?> field = getScope().toField();
+
+		if (!isPropagated()) {
+			assert field == null || !field.isClone() :
+				this + " is not propagated, but " + field + " is clone";
+			return null;
+		}
+
+		final Sample[] samples = objectType().getSamples();
+
+		assert samples.length > 0 :
+			"Propagated object has no samples: " + this;
+		assert assertImplicitSamples(samples);
+
+		if (samples.length != 1) {
+			assert field == null || !field.isClone() :
+				"Field " + field + " is clone, but "
+				+ this + " is not, because it has multipole samples: "
+				+ Arrays.toString(samples);
+			return null;
+		}
+
+		final Sample sample = samples[0];
+		final Obj sampleObject = sample.typeObject(dummyUser());
+
+		if (sampleObject == null) {
+			return null;
+		}
+
+		final Obj cloneOf;
+		final Obj sampleCloneOf = sampleObject.getCloneOf();
+
+		if (sampleCloneOf != null) {
+			cloneOf = sampleCloneOf;
+		} else {
+			cloneOf = sampleObject;
+		}
+
+		assert field == null || field.isClone();
+
+		return cloneOf;
+	}
+
+	@Override
 	protected void fullyResolve() {
 		resolve();
 		objectType().getAscendants().resolveAll();
@@ -845,6 +876,14 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return ancestorDefinitions;
+	}
+
+	private boolean assertImplicitSamples(Sample[] samples) {
+		for (Sample sample : samples) {
+			assert !sample.isExplicit() :
+				sample + " is explicit";
+		}
+		return true;
 	}
 
 }
