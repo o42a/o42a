@@ -21,6 +21,7 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -142,7 +143,8 @@ public abstract class ObjectValueIRValFunc
 				DERIVED);
 		final ValOp result =
 			function.arg(function, OBJECT_VAL.value())
-			.op(builder, getValueType());
+			.op(builder, getValueType())
+			.setStoreMode(INITIAL_VAL_STORE);
 		final ValDirs dirs = builder.splitWhenUnknown(
 				function,
 				failure.head(),

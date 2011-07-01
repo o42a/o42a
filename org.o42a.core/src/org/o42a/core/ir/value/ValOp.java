@@ -59,10 +59,11 @@ public final class ValOp extends IROp implements CondOp {
 		return this.storeMode;
 	}
 
-	public final void setStoreMode(ValStoreMode storeMode) {
+	public final ValOp setStoreMode(ValStoreMode storeMode) {
 		assert storeMode != null :
 			"Value store mode not specified";
 		this.storeMode = storeMode;
+		return this;
 	}
 
 	public final Int32recOp flags(CodeId id, Code code) {

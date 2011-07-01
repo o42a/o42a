@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
+import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -150,7 +151,9 @@ public class ObjectValueIR {
 
 		claimDirs.done();
 
-		final ValDirs propDirs = dirs.sub(unknownClaim);
+		final ValDirs propDirs =
+				dirs.sub(unknownClaim)
+				.setStoreMode(INITIAL_VAL_STORE);
 		final ValType.Op prop = unknownClaim.phi(
 				null,
 				writeProposition(propDirs, host, null).ptr());
