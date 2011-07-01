@@ -94,7 +94,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMFunction_createFunction(
 	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);
 	GlobalValue::LinkageTypes linkageType =
 			exported
-			? GlobalValue::ExternalLinkage : GlobalValue::InternalLinkage;
+			? GlobalValue::ExternalLinkage : GlobalValue::PrivateLinkage;
 
 	OTRACE("createFunction: " << funcName << "(" << *type << ")\n");
 

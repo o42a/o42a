@@ -54,7 +54,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 			cast<GlobalVariable>(module->getOrInsertGlobal(name, type));
 
 	global->setConstant(isConstant);
-	global->setLinkage(GlobalValue::InternalLinkage);
+	global->setLinkage(GlobalValue::PrivateLinkage);
 
 	Constant *values[length];
 
@@ -136,7 +136,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
 	global->setConstant(constant);
 	global->setLinkage(
 			exported
-			? GlobalValue::ExternalLinkage : GlobalValue::InternalLinkage);
+			? GlobalValue::ExternalLinkage : GlobalValue::PrivateLinkage);
 
 	OTRACE("allocateGlobal: " << name << "\n");
 	ODUMP(global);
