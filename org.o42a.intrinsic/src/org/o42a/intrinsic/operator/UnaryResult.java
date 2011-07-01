@@ -20,9 +20,9 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
-import org.o42a.common.resolution.StatementResolver;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -42,7 +42,6 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 	private final ValueType<O> operandType;
 	private final String operandName;
-	private final StatementResolver resolver = new StatementResolver();
 	private Ref operand;
 
 	public UnaryResult(
@@ -94,7 +93,10 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 
 	@Override
 	public void resolveBuiltin(Obj object) {
-		this.resolver.resolveBuiltin(object, operand());
+
+		final Resolver resolver = object.value(dummyUser()).valueResolver();
+
+		operand().resolveValues(resolver);
 	}
 
 	@Override
