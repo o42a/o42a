@@ -21,6 +21,8 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
+import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
+import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -36,7 +38,6 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValStoreMode;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.value.ValueType;
@@ -335,11 +336,12 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 					unknownCode.head())
 			.value(code.id("obj_val"), value);
 
-		value.setStoreMode(ValStoreMode.INITIAL_VAL_STORE);
+		value.setStoreMode(INITIAL_VAL_STORE);
 		writeValue(valDirs, null);
-		value.setStoreMode(ValStoreMode.ASSIGNMENT_VAL_STORE);
 
 		valDirs.done();
+		value.setStoreMode(ASSIGNMENT_VAL_STORE);
+
 		if (falseCode.exists()) {
 			value.storeFalse(falseCode);
 			falseCode.go(resultDirs.falseDir());

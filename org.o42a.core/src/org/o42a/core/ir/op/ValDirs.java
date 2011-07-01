@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.op;
 
+import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -57,16 +59,17 @@ public abstract class ValDirs {
 		return topLevel.storeMode;
 	}
 
-	public final void setStoreMode(ValStoreMode storeMode) {
+	public final ValDirs setStoreMode(ValStoreMode storeMode) {
 
 		final TopLevelValDirs topLevel = topLevel();
 		final ValOp value = topLevel.value;
 
+		topLevel.storeMode = storeMode;
 		if (value != null) {
 			value.setStoreMode(storeMode);
-		} else {
-			topLevel.storeMode = storeMode;
 		}
+
+		return this;
 	}
 
 	public final Generator getGenerator() {
@@ -220,6 +223,7 @@ public abstract class ValDirs {
 					valueType);
 			this.allocatable = true;
 			this.enclosing = enclosing;
+			this.storeMode = ASSIGNMENT_VAL_STORE;
 		}
 
 		public TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
@@ -231,6 +235,7 @@ public abstract class ValDirs {
 			this.allocatable = false;
 			this.enclosing = enclosing;
 			this.value = value;
+			this.storeMode = value.getStoreMode();
 		}
 
 		@Override
@@ -243,13 +248,12 @@ public abstract class ValDirs {
 				"Can not allocate value";
 
 			this.allocation = this.enclosing.allocate("value");
-			this.value =
+
+			return this.value =
 				this.allocation.allocate(id("value"), ValType.VAL_TYPE)
 				.op(getBuilder(), getValueType())
-				.storeIndefinite(this.allocation.code());
-			this.value.setStoreMode(this.storeMode);
-
-			return this.value;
+				.storeIndefinite(this.allocation.code())
+				.setStoreMode(this.storeMode);
 		}
 
 		@Override
