@@ -40,6 +40,7 @@ final class MemberUses implements UseInfo {
 		this.uses.add(use);
 	}
 
+	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return getUseBy(useCase).isUsed();
 	}

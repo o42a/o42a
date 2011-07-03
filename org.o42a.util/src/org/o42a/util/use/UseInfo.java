@@ -24,4 +24,6 @@ public interface UseInfo {
 
 	UseFlag getUseBy(UseCase useCase);
 
+	boolean isUsedBy(UseCase useCase);
+
 }

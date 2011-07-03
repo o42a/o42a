@@ -25,14 +25,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public abstract class Usable implements UserInfo, UseInfo {
-
-	public static Usable simpleUsable(String name) {
-		return new SimpleUsable(name, null);
-	}
+public abstract class Usable implements UserInfo {
 
 	public static Usable simpleUsable(String name, Object used) {
 		return new SimpleUsable(name, used);
+	}
+
+	public static Usable simpleUsable(Object used) {
+		return new SimpleUsable(null, used);
 	}
 
 	private final UseTracker tracker = new UseTracker();
@@ -67,6 +67,7 @@ public abstract class Usable implements UserInfo, UseInfo {
 		return this.tracker.done();
 	}
 
+	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return getUseBy(useCase).isUsed();
 	}

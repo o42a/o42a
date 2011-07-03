@@ -22,6 +22,7 @@ package org.o42a.common.object;
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.core.*;
@@ -100,13 +101,13 @@ public abstract class IntrinsicObject extends PlainObject {
 
 			final ObjectType containerType =
 				getScope().getEnclosingContainer().toObject()
-				.type(ascendants);
+				.type(dummyUser());
 			final TypeRef ancestor = containerType.getAncestor();
 
 			if (ancestor != null) {
 
 				final Member overridden =
-					ancestor.type(ascendants)
+					ancestor.type(dummyUser())
 					.getObject().member(field.getKey());
 
 				if (overridden != null) {
@@ -119,7 +120,7 @@ public abstract class IntrinsicObject extends PlainObject {
 			for (int i = containerSamples.length - 1; i >= 0; --i) {
 
 				final Member overridden =
-					containerSamples[i].type(ascendants)
+					containerSamples[i].type(dummyUser())
 					.getObject().member(field.getKey());
 
 				if (overridden != null) {

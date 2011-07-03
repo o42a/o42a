@@ -97,12 +97,6 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
-		this.typeRef.resolveAll(resolver);
-		super.resolveAll(resolver);
-	}
-
-	@Override
 	public String toString() {
 		if (this.typeRef == null) {
 			return super.toString();
@@ -136,6 +130,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
+		this.typeRef.resolveAll(resolver);
 		this.ref.resolveAll(resolver);
 	}
 

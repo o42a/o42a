@@ -17,28 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence.cond;
+package org.o42a.core.st.sentence;
+
+import java.util.List;
 
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
-import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.Statement;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseFlag;
 import org.o42a.util.use.User;
 
 
-final class DirectiveContext implements InstructionContext {
+final class InstructionExecutor implements InstructionContext {
 
-	private final ApplyDirective applyDirective;
-	private final InstructionContext context;
+	private final Statements<?> statements;
+	private final Resolver resolver;
+	private int index;
+	private Statement statement;
 	private Block<?> block;
 	private boolean doNotRemove;
 
-	DirectiveContext(
-			ApplyDirective applyDirective,
-			InstructionContext context) {
-		this.applyDirective = applyDirective;
-		this.context = context;
+	InstructionExecutor(Statements<?> statements) {
+		this.statements = statements;
+		this.resolver = statements.getScope().dummyResolver();
 	}
 
 	@Override
@@ -58,7 +61,7 @@ final class DirectiveContext implements InstructionContext {
 
 	@Override
 	public final Resolver getResolver() {
-		return this.applyDirective.getResolver();
+		return this.resolver;
 	}
 
 	@Override
@@ -67,35 +70,55 @@ final class DirectiveContext implements InstructionContext {
 			return this.block;
 		}
 
-		final RefEnvWrap env = this.applyDirective.getEnv();
-
-		this.block = this.context.getBlock();
 		this.doNotRemove = true;
-		env.setWrapped(this.block.setEnv(env.getInitialEnv()));
 
-		return this.block;
+		return this.block = this.statements.parentheses(
+				this.index,
+				this.statement,
+				this.statement.distribute(),
+				this.statements.getMemberRegistry());
 	}
 
 	@Override
 	public void doNotRemove() {
 		this.doNotRemove = true;
-		this.context.doNotRemove();
 	}
 
 	@Override
 	public String toString() {
-		if (this.context == null) {
-			return super.toString();
-		}
-		return this.context.toString();
+		return "InstructionContext[" + this.statement + ']';
 	}
 
-	void apply() {
-		this.applyDirective.getDirective().apply(
-				this.applyDirective.getRef(),
-				this);
-		if (!this.doNotRemove) {
-			this.applyDirective.getEnv().removeWrapped();
+	final void executeAll() {
+
+		final List<Statement> statements = this.statements.getStatements();
+
+		while (this.index < statements.size()) {
+			execute(statements.get(this.index));
+		}
+	}
+
+	private final void execute(Statement statement) {
+
+		final Instruction instruction =
+			statement.toInstruction(getResolver());
+
+		if (instruction == null) {
+			++this.index;
+			return;
+		}
+
+		this.statement = statement;
+		try {
+			instruction.execute(this);
+			if (!this.doNotRemove) {
+				this.statements.removeStatement(this.index);
+			} else {
+				++this.index;
+			}
+		} finally {
+			this.block = null;
+			this.doNotRemove = false;
 		}
 	}
 

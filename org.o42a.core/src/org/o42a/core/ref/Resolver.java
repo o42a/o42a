@@ -21,8 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.core.*;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.User;
-import org.o42a.util.use.UserInfo;
+import org.o42a.util.use.*;
 
 
 public class Resolver implements UserInfo, LocationInfo {
@@ -68,6 +67,16 @@ public class Resolver implements UserInfo, LocationInfo {
 	@Override
 	public final User toUser() {
 		return this.user;
+	}
+
+	@Override
+	public final UseFlag getUseBy(UseCase useCase) {
+		return toUser().getUseBy(useCase);
+	}
+
+	@Override
+	public boolean isUsedBy(UseCase useCase) {
+		return getUseBy(useCase).isUsed();
 	}
 
 	public final boolean assertNotDummy() {

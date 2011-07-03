@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.ScopePlace.localPlace;
-import static org.o42a.core.ScopePlace.scopePlace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +33,12 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.*;
+import org.o42a.core.st.DefinitionTargets;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.cond.RefCondition;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.Place;
 import org.o42a.util.Place.Trace;
-import org.o42a.util.log.Loggable;
-import org.o42a.util.use.User;
 
 
 public abstract class Statements<S extends Statements<S>> extends Placed {
@@ -201,7 +198,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			return distribute();
 		}
 
-		return new NextDistributor(getContainer(), trace.next());
+		return new NextDistributor(this, getContainer(), trace.next());
 	}
 
 	public final Distributor nextDistributor(Container container) {
@@ -212,7 +209,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			return distributeIn(container);
 		}
 
-		return new NextDistributor(container, trace.next());
+		return new NextDistributor(this, container, trace.next());
 	}
 
 	public final void statement(Statement statement) {
@@ -326,7 +323,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	private Block<S> parentheses(
+	Block<S> parentheses(
 			int index,
 			LocationInfo location,
 			Distributor distributor,
@@ -353,170 +350,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			return;
 		}
 		this.instructionsExecuted = true;
-		new InstructionCtx().executeAll();
-	}
-
-	private static final class StatementsDistributor extends Distributor {
-
-		private final LocationInfo location;
-		private final Sentence<?> sentence;
-		private final ScopePlace place;
-
-		StatementsDistributor(LocationInfo location, Sentence<?> sentence) {
-			this.location = location;
-			this.sentence = sentence;
-
-			final Trace trace = this.sentence.getBlock().getTrace();
-
-			if (trace == null) {
-				this.place = scopePlace(getScope());
-			} else {
-				this.place = localPlace(getScope().toLocal(), trace.next());
-			}
-		}
-
-		@Override
-		public Loggable getLoggable() {
-			return this.location.getLoggable();
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.location.getContext();
-		}
-
-		@Override
-		public Scope getScope() {
-			return this.sentence.getScope();
-		}
-
-		@Override
-		public Container getContainer() {
-			return this.sentence.getContainer();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.place;
-		}
-
-	}
-
-	private final class NextDistributor extends Distributor {
-
-		private final Container container;
-		private final LocalPlace place;
-
-		NextDistributor(Container container, Place place) {
-			this.container = container;
-			this.place = localPlace(
-					Statements.this.getScope().toLocal(),
-					place);
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return Statements.this.getContext();
-		}
-
-		@Override
-		public Loggable getLoggable() {
-			return Statements.this.getLoggable();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.place;
-		}
-
-		@Override
-		public Container getContainer() {
-			return this.container;
-		}
-
-		@Override
-		public Scope getScope() {
-			return this.container.getScope();
-		}
-
-	}
-
-	private final class InstructionCtx implements InstructionContext {
-
-		private final Resolver resolver = getScope().dummyResolver();
-		private int index;
-		private Statement statement;
-		private Block<?> block;
-		private boolean doNotRemove;
-
-		@Override
-		public final User toUser() {
-			return getResolver().toUser();
-		}
-
-		@Override
-		public final Resolver getResolver() {
-			return this.resolver;
-		}
-
-		@Override
-		public Block<?> getBlock() {
-			if (this.block != null) {
-				return this.block;
-			}
-
-			this.doNotRemove = true;
-
-			return this.block = parentheses(
-					this.index,
-					this.statement,
-					this.statement.distribute(),
-					getMemberRegistry());
-		}
-
-		@Override
-		public void doNotRemove() {
-			this.doNotRemove = true;
-		}
-
-		@Override
-		public String toString() {
-			return "InstructionContext[" + this.statement + ']';
-		}
-
-		final void executeAll() {
-
-			final List<Statement> statements = getStatements();
-
-			while (this.index < statements.size()) {
-				execute(statements.get(this.index));
-			}
-		}
-
-		private final void execute(Statement statement) {
-
-			final Instruction instruction =
-				statement.toInstruction(getResolver());
-
-			if (instruction == null) {
-				++this.index;
-				return;
-			}
-
-			this.statement = statement;
-			try {
-				instruction.execute(this);
-				if (!this.doNotRemove) {
-					removeStatement(this.index);
-				} else {
-					++this.index;
-				}
-			} finally {
-				this.block = null;
-				this.doNotRemove = false;
-			}
-		}
-
+		new InstructionExecutor(this).executeAll();
 	}
 
 }

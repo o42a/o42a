@@ -20,7 +20,7 @@
 package org.o42a.util.use;
 
 
-public interface UserInfo {
+public interface UserInfo extends UseInfo {
 
 	User toUser();
 
