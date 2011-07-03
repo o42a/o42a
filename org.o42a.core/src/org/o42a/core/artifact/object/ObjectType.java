@@ -32,7 +32,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
 
-public final class ObjectType implements UserInfo, UseInfo {
+public final class ObjectType implements UserInfo {
 
 	private final Obj object;
 	private Obj lastDefinition;
@@ -43,7 +43,7 @@ public final class ObjectType implements UserInfo, UseInfo {
 
 	ObjectType(Obj object) {
 		this.object = object;
-		this.usable = simpleUsable("ObjectType", object);
+		this.usable = simpleUsable(this);
 	}
 
 	public final Obj getObject() {
@@ -70,6 +70,7 @@ public final class ObjectType implements UserInfo, UseInfo {
 		return usable().toUser();
 	}
 
+	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return usable().isUsedBy(useCase);
 	}

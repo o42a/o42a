@@ -20,7 +20,7 @@
 package org.o42a.util.use;
 
 
-public abstract class User implements UserInfo, UseInfo {
+public abstract class User implements UserInfo {
 
 	private static final DummyUser DUMMY_USER = new DummyUser();
 
@@ -44,6 +44,7 @@ public abstract class User implements UserInfo, UseInfo {
 		return this;
 	}
 
+	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return getUseBy(useCase).isUsed();
 	}

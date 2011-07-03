@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.util.use.User.dummyUser;
+
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
@@ -29,12 +31,11 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.use.User;
 import org.o42a.util.use.UserInfo;
 
 
 public class Ascendants
-		implements AscendantsBuilder<Ascendants>, UserInfo, Cloneable {
+		implements AscendantsBuilder<Ascendants>, Cloneable {
 
 	private static final Sample[] NO_SAMPLES = new Sample[0];
 
@@ -56,11 +57,6 @@ public class Ascendants
 
 	public final Scope getScope() {
 		return this.object.getScope();
-	}
-
-	@Override
-	public final User toUser() {
-		return this.object.objectType().toUser();
 	}
 
 	public TypeRef getAncestor() {
@@ -153,7 +149,7 @@ public class Ascendants
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
 		enclosingScope.assertDerivedFrom(overriddenMember.getScope());
-		assert overriddenMember.substance(this).toObject() != null :
+		assert overriddenMember.substance(dummyUser()).toObject() != null :
 			"Can not override non-object member " + overriddenMember;
 
 		return addSample(new MemberOverride(overriddenMember, this));
@@ -162,16 +158,17 @@ public class Ascendants
 	public void resolveAll() {
 		validate();
 
+		final UserInfo user = getObject().objectType();
 		final TypeRef ancestor = getExplicitAncestor();
 		final Resolver resolver =
-			getScope().getEnclosingScope().newResolver(this);
+			getScope().getEnclosingScope().newResolver(user);
 
 		if (ancestor != null) {
-			ancestor.type(this);
+			ancestor.type(user);
 			ancestor.resolveAll(resolver);
 		}
 		for (Sample sample : getSamples()) {
-			sample.type(this);
+			sample.type(user);
 			sample.resolveAll(resolver);
 		}
 	}
@@ -229,7 +226,8 @@ public class Ascendants
 		if (this.explicitAncestor != null) {
 			if (!this.explicitAncestor.validate()) {
 				this.explicitAncestor = null;
-			} else if (!validateUse(this.explicitAncestor.artifact(this))) {
+			} else if (!validateUse(
+					this.explicitAncestor.artifact(dummyUser()))) {
 				this.explicitAncestor = null;
 			} else if (this.explicitAncestor
 					.getConstructionMode().isProhibited()) {

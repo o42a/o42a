@@ -26,7 +26,7 @@ import org.o42a.core.value.Value;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements UserInfo, UseInfo {
+public final class ObjectValue implements UserInfo {
 
 	private final Obj object;
 	private final Usable usable;
@@ -34,7 +34,7 @@ public final class ObjectValue implements UserInfo, UseInfo {
 
 	ObjectValue(Obj object) {
 		this.object = object;
-		this.usable = simpleUsable("ObjectValue", object);
+		this.usable = simpleUsable(this);
 	}
 
 	public final Obj getObject() {
@@ -46,6 +46,7 @@ public final class ObjectValue implements UserInfo, UseInfo {
 		return usable().toUser();
 	}
 
+	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return usable().isUsedBy(useCase);
 	}

@@ -60,6 +60,11 @@ public class FieldUses implements UseInfo {
 	}
 
 	@Override
+	public boolean isUsedBy(UseCase useCase) {
+		return getUseBy(useCase).isUsed();
+	}
+
+	@Override
 	public String toString() {
 		return "FieldUses[" + this.container + ']';
 	}

@@ -62,6 +62,7 @@ public class ObjectAnalysis implements UseInfo {
 		return false;
 	}
 
+	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return getUseBy(useCase).isUsed();
 	}

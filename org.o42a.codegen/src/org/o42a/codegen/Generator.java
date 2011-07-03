@@ -32,9 +32,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.User;
-import org.o42a.util.use.UserInfo;
+import org.o42a.util.use.*;
 
 
 public abstract class Generator implements UserInfo {
@@ -69,6 +67,16 @@ public abstract class Generator implements UserInfo {
 	@Override
 	public final User toUser() {
 		return this.useCase;
+	}
+
+	@Override
+	public final UseFlag getUseBy(UseCase useCase) {
+		return toUser().getUseBy(useCase);
+	}
+
+	@Override
+	public boolean isUsedBy(UseCase useCase) {
+		return getUseBy(useCase).isUsed();
 	}
 
 	public CodeIdFactory getCodeIdFactory() {

@@ -40,10 +40,7 @@ final class SimpleUsable extends Usable {
 	@Override
 	public String toString() {
 		if (this.usable == null) {
-			if (this.name == null) {
-				return super.toString();
-			}
-			return this.name;
+			return super.toString();
 		}
 		if (this.name == null) {
 			return this.usable.toString();

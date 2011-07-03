@@ -27,16 +27,16 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.use.UserInfo;
+import org.o42a.util.use.User;
 
 
 final class PropagatedObject extends PlainObject {
 
 	public static Ascendants deriveSamples(
-			UserInfo user,
 			Field<Obj> field,
 			Ascendants ascendants) {
 
+		final User user = dummyUser();
 		final Obj container = field.getEnclosingContainer().toObject();
 		final ObjectType type = container.type(user);
 		final TypeRef containerAncestor = type.getAncestor();
@@ -86,7 +86,7 @@ final class PropagatedObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(type(dummyUser()), field(), new Ascendants(this));
+		return deriveSamples(field(), new Ascendants(this));
 	}
 
 	@Override

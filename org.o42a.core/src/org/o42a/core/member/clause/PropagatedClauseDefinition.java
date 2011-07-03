@@ -27,7 +27,7 @@ import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.use.UserInfo;
+import org.o42a.util.use.User;
 
 
 final class PropagatedClauseDefinition extends PlainObject {
@@ -35,10 +35,10 @@ final class PropagatedClauseDefinition extends PlainObject {
 	private final PlainClause clause;
 
 	public static Ascendants deriveSamples(
-			UserInfo user,
 			Clause clause,
 			Ascendants ascendants) {
 
+		final User user = dummyUser();
 		final ObjectType containerType =
 			clause.getScope().getEnclosingContainer().toObject().type(user);
 		final TypeRef containerAncestor = containerType.getAncestor();
@@ -98,10 +98,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(
-				type(dummyUser()),
-				this.clause,
-				new Ascendants(this));
+		return deriveSamples(this.clause, new Ascendants(this));
 	}
 
 	@Override

@@ -64,6 +64,7 @@ public class MemberAnalysis implements UseInfo {
 		return declaration.getAnalysis();
 	}
 
+	@Override
 	public final boolean isUsedBy(UseCase useCase) {
 		return getUseBy(useCase).isUsed();
 	}
