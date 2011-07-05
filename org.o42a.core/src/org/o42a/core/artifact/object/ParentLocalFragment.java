@@ -159,6 +159,11 @@ final class ParentLocalFragment extends PathFragment {
 		}
 
 		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public String toString() {
 			return "OpaqueParentLocal[" + this.host + ']';
 		}

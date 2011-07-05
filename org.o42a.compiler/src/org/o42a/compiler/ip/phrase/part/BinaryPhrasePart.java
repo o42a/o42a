@@ -80,7 +80,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		final Statements<?> statements =
 			definition.propose(this).alternative(this);
 
-		statements.assign(getPhrase().getAncestor().getRef());
+		statements.selfAssign(getPhrase().getAncestor().getRef());
 	}
 
 	@Override

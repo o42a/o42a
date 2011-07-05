@@ -21,8 +21,6 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationStatement;
@@ -67,17 +65,7 @@ final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public Definitions define(Scope scope) {
-		return null;
-	}
-
-	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return null;
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
 		return null;
 	}
 

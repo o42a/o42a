@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,27 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.st.sentence.imperative;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectRefFunc;
+import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.value.ValOp;
 
 
-public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
+final class ArrayAssignmentOp extends StOp {
 
-	LinkFldOp(LinkFld fld, ObjOp host, LinkFld.Op ptr) {
-		super(fld, host, ptr);
+	ArrayAssignmentOp(LocalBuilder builder, AssignmentStatement assignment) {
+		super(builder, assignment);
 	}
 
 	@Override
-	public LinkFld fld() {
-		return (LinkFld) super.fld();
+	public void writeAssignment(Control control, ValOp result) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
+	public void writeLogicalValue(Control control) {
 		throw new UnsupportedOperationException();
 	}
 

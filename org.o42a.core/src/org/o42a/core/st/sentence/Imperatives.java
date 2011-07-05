@@ -24,11 +24,13 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import org.o42a.core.Container;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.sentence.imperative.EllipsisSt;
+import org.o42a.core.st.sentence.imperative.AssignmentStatement;
+import org.o42a.core.st.sentence.imperative.EllipsisStatement;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -71,6 +73,24 @@ public class Imperatives extends Statements<Imperatives> {
 	}
 
 	@Override
+	public void assign(LocationInfo location, Ref destination, Ref value) {
+		assert destination.getContext() == getContext() :
+			destination + " has wrong context: " + destination.getContext()
+			+ ", but " + getContext() + " expected";
+		assert value.getContext() == getContext() :
+			value + " has wrong context: " + value.getContext()
+			+ ", but " + getContext() + " expected";
+		if (getSentence().isIssue()) {
+			getLogger().error(
+					"prohibited_issue_assignment",
+					location,
+					"Assignment is prohibited within issue");
+			return;
+		}
+		statement(new AssignmentStatement(location, this, destination, value));
+	}
+
+	@Override
 	public final ImperativeBlock parentheses(LocationInfo location) {
 		return parentheses(location, getContainer());
 	}
@@ -85,7 +105,10 @@ public class Imperatives extends Statements<Imperatives> {
 	@Override
 	public void ellipsis(LocationInfo location, String name) {
 		if (getSentence().isIssue()) {
-			getLogger().prohibitedIssueEllipsis(location);
+			getLogger().error(
+					"prohibited_issue_ellipsis",
+					location,
+					"Ellipsis is prohibited within issue");
 			return;
 		}
 
@@ -94,7 +117,7 @@ public class Imperatives extends Statements<Imperatives> {
 		if (block == null) {
 			return;
 		}
-		statement(new EllipsisSt(location, this, name));
+		statement(new EllipsisStatement(location, this, name));
 	}
 
 	@Override

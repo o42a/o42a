@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st;
 
+import static org.o42a.core.ir.local.StOp.noStOp;
+
 import org.o42a.core.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -111,14 +113,8 @@ public abstract class Statement extends Placed {
 
 	protected abstract StOp createOp(LocalBuilder builder);
 
-	@Override
-	protected Statement clone() throws CloneNotSupportedException {
-
-		final Statement clone = (Statement) super.clone();
-
-		clone.op = null;
-
-		return clone;
+	protected final StOp noOp(LocalBuilder builder) {
+		return noStOp(builder, this);
 	}
 
 }

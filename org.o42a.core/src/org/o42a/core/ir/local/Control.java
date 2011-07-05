@@ -26,6 +26,7 @@ import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.LocationInfo;
+import org.o42a.core.ir.object.ObjectOp;
 
 
 public abstract class Control {
@@ -51,6 +52,14 @@ public abstract class Control {
 
 	public final LocalBuilder getBuilder() {
 		return main().builder();
+	}
+
+	public final LocalOp host() {
+		return getBuilder().host();
+	}
+
+	public final ObjectOp owner() {
+		return getBuilder().owner();
 	}
 
 	public abstract AllocationCode allocation();

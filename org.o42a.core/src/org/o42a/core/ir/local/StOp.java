@@ -26,6 +26,10 @@ import org.o42a.core.st.Statement;
 
 public abstract class StOp {
 
+	public static StOp noStOp(LocalBuilder builder, Statement statement) {
+		return new NoStOp(builder, statement);
+	}
+
 	private final LocalBuilder builder;
 	private final Statement statement;
 

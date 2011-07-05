@@ -19,7 +19,9 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.op.CodeDirs;
 
 
 public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
@@ -31,6 +33,11 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	@Override
 	public ObjFld fld() {
 		return (ObjFld) super.fld();
+	}
+
+	@Override
+	public void assign(CodeDirs dirs, HostOp value) {
+		throw new UnsupportedOperationException();
 	}
 
 }

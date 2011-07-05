@@ -359,20 +359,13 @@ public abstract class Obj extends Artifact<Obj>
 			return true;
 		}
 
-		final Field<?> field = getScope().toField();
+		final Obj cloneOf = getCloneOf();
 
-		if (field == null || !field.isClone()) {
+		if (cloneOf == null) {
 			return false;
 		}
 
-		final Obj overridden =
-			field.getOverridden()[0].getArtifact().toObject();
-
-		if (overridden == other) {
-			return true;
-		}
-
-		return overridden.cloneOf(other);
+		return cloneOf.cloneOf(other);
 	}
 
 	public void resolveMembers(boolean resolveAdapters) {

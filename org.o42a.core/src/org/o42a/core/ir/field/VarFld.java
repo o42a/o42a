@@ -21,6 +21,7 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -31,9 +32,8 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.ObjectRefFunc.ObjectRef;
 import org.o42a.core.member.field.Field;
@@ -69,6 +69,18 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 				this,
 				host,
 				host.ptr().field(code, getInstance()));
+	}
+
+	@Override
+	protected void fill() {
+		super.fill();
+
+		final Obj type =
+				getField().getArtifact().getTypeRef().typeObject(dummyUser());
+		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
+
+		getInstance().targetType().setValue(
+				typeIR.getInstance().pointer(getGenerator()));
 	}
 
 	@Override

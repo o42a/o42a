@@ -91,4 +91,9 @@ public final class LocalOp implements HostOp {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void assign(CodeDirs dirs, HostOp value) {
+		throw new UnsupportedOperationException();
+	}
+
 }

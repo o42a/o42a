@@ -33,7 +33,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -67,17 +66,10 @@ public class ObjectIR  {
 
 	public final ObjectBodyIR getBodyType() {
 
-		final Field<?> field = getObject().getScope().toField();
+		final Obj lastDefinition =
+				getObject().type(dummyUser()).getLastDefinition();
 
-		if (field == null) {
-			return getMainBodyIR();
-		}
-
-		final ObjectIR lastDefinitionIR =
-			field.getLastDefinition().getArtifact()
-			.toObject().ir(getGenerator());
-
-		return lastDefinitionIR.getMainBodyIR();
+		return lastDefinition.ir(getGenerator()).getMainBodyIR();
 	}
 
 	public final ObjectBodyIR getMainBodyIR() {
@@ -104,6 +96,14 @@ public class ObjectIR  {
 		}
 
 		return bodyIR(ancestor);
+	}
+
+	public final ObjectTypeIR getStaticTypeIR() {
+
+		final Obj lastDefinition =
+				getObject().type(dummyUser()).getLastDefinition();
+
+		return lastDefinition.ir(getGenerator()).getTypeIR();
 	}
 
 	public final ObjectTypeIR getTypeIR() {

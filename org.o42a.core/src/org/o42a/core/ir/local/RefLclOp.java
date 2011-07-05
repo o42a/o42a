@@ -32,7 +32,9 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -41,7 +43,6 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
 
 
 public final class RefLclOp extends LclOp {
@@ -52,9 +53,13 @@ public final class RefLclOp extends LclOp {
 		super(builder, fieldIR, ptr);
 	}
 
+	public final Artifact<?> getArtifact() {
+		return getFieldIR().getField().getArtifact();
+	}
+
 	public Obj getAscendant() {
 
-		final Artifact<?> artifact = getFieldIR().getField().getArtifact();
+		final Artifact<?> artifact = getArtifact();
 		final Obj object = artifact.toObject();
 
 		if (object != null) {
@@ -72,7 +77,7 @@ public final class RefLclOp extends LclOp {
 	@Override
 	public ObjOp toObject(CodeDirs dirs) {
 
-		final Obj object = getFieldIR().getField().getArtifact().toObject();
+		final Obj object = getArtifact().toObject();
 
 		if (object == null) {
 			return null;
@@ -84,7 +89,7 @@ public final class RefLclOp extends LclOp {
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
 
-		final Obj object = getFieldIR().getField().getArtifact().toObject();
+		final Obj object = getArtifact().toObject();
 
 		if (object == null) {
 			return null;
@@ -120,9 +125,7 @@ public final class RefLclOp extends LclOp {
 		final Code code = control.code();
 		final CodePos exit = control.exit();
 		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(code, exit);
-
-		final Field<?> field = getFieldIR().getField();
-		final Obj object = field.getArtifact().materialize();
+		final Obj object = getArtifact().materialize();
 
 		final ObjectOp newObject = getBuilder().newObject(
 				dirs,
@@ -130,10 +133,20 @@ public final class RefLclOp extends LclOp {
 				getBuilder().objectAncestor(dirs, object),
 				object);
 
-		ptr().object(code).store(
-				code,
-				newObject.ptr().toAny(null, code).toData(null, code));
+		ptr().object(code).store(code, newObject.toData(code));
 		newObject.writeLogicalValue(dirs);
+	}
+
+	@Override
+	public void assign(CodeDirs dirs, HostOp value) {
+		assert getArtifact().getKind() == ArtifactKind.VARIABLE :
+			"Not a variable: " + getArtifact();
+
+		final Code code = dirs.code();
+		final ObjectOp object = value.materialize(dirs);
+
+		ptr().object(code).store(code, object.toData(code));
+		object.writeLogicalValue(dirs);
 	}
 
 	public static final class Op extends LclOp.Op<Op> {

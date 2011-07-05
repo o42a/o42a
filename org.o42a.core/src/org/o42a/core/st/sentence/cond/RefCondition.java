@@ -97,12 +97,12 @@ public final class RefCondition extends Statement {
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return initialLogicalValue(resolver);
+		return this.ref.initialLogicalValue(resolver);
 	}
 
 	@Override
 	public Action initialLogicalValue(LocalResolver resolver) {
-		return this.ref.initialLogicalValue(resolver);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

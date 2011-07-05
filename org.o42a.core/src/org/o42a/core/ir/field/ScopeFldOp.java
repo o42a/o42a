@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -37,17 +38,17 @@ public class ScopeFldOp extends FldOp {
 	}
 
 	@Override
-	public ScopeFld fld() {
+	public final ScopeFld fld() {
 		return (ScopeFld) super.fld();
 	}
 
 	@Override
-	public ScopeFld.Op ptr() {
+	public final ScopeFld.Op ptr() {
 		return (ScopeFld.Op) super.ptr();
 	}
 
 	@Override
-	public ObjectOp toObject(CodeDirs dirs) {
+	public final ObjectOp toObject(CodeDirs dirs) {
 		return target(dirs);
 	}
 
@@ -71,6 +72,11 @@ public class ScopeFldOp extends FldOp {
 	@Override
 	public ObjectOp materialize(CodeDirs dirs) {
 		return target(dirs);
+	}
+
+	@Override
+	public void assign(CodeDirs dirs, HostOp value) {
+		throw new UnsupportedOperationException();
 	}
 
 }
