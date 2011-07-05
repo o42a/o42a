@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.core.ir.field.AssignerFunc.ASSIGNER;
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.CodeId;
@@ -27,12 +27,13 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.data.FuncRec;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.ObjectRefFunc.ObjectRef;
 import org.o42a.core.member.field.Field;
@@ -86,8 +87,8 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 			return (Type) super.getType();
 		}
 
-		public final FuncOp<AssignerFunc> assigner(Code code) {
-			return func(null, code, getType().assigner());
+		public final StructRecOp<ObjectIRType.Op> targetType(Code code) {
+			return ptr(null, code, getType().targetType());
 		}
 
 		@Override
@@ -102,19 +103,19 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
-		private FuncRec<AssignerFunc> assigner;
+		private StructRec<ObjectIRType.Op> targetType;
 
 		private Type() {
 		}
 
-		public final FuncRec<AssignerFunc> assigner() {
-			return this.assigner;
+		public final StructRec<ObjectIRType.Op> targetType() {
+			return this.targetType;
 		}
 
 		@Override
 		public void allocate(SubData<Op> data) {
 			super.allocate(data);
-			this.assigner = data.addFuncPtr("assigner", ASSIGNER);
+			this.targetType = data.addPtr("target_type", OBJECT_TYPE);
 		}
 
 		@Override

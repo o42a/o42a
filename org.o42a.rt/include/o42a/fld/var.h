@@ -31,7 +31,7 @@ typedef struct {
 
 	o42a_obj_ref_ft *constructor;
 
-	o42a_obj_assigner_ft *assigner;
+	o42a_obj_stype_t *target_type;
 
 } o42a_fld_var;
 

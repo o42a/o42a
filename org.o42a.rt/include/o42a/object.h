@@ -75,17 +75,6 @@ typedef o42a_obj_t *o42a_obj_constructor_ft(
 		struct o42a_fld_obj *);
 
 /**
- * Variable assigner function.
- *
- * \param object[in] object containing variable.
- * \param value[in] value to assign.
- *
- * \return assigned object of valid type or NULL if assignment failed.
- */
-typedef o42a_obj_t *o42a_obj_assigner_ft(O42A_DECLS o42a_obj_t *, o42a_obj_t *);
-
-
-/**
  * Object type flags.
  *
  * Used in o42a_obj_data.flags.

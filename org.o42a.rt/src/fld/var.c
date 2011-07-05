@@ -29,7 +29,7 @@ void o42a_fld_var_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 
 	to->object = NULL;
 	to->constructor = from->constructor;
-	to->assigner = from->assigner;
+	to->target_type = from->target_type;
 
 	O42A_RETURN;
 }
@@ -61,7 +61,7 @@ void o42a_fld_var_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 					O42A(&o42a_fld_by_overrider(O42A_ARGS overrider)->var);
 
 			to->constructor = ovr->constructor;
-			to->assigner = ovr->assigner;
+			to->target_type = ovr->target_type;
 
 			O42A_RETURN;
 		}
@@ -69,7 +69,7 @@ void o42a_fld_var_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 
 	// Use definition from ancestor.
 	to->constructor = from->constructor;
-	to->assigner = from->assigner;
+	to->target_type = from->target_type;
 
 	O42A_RETURN;
 }
