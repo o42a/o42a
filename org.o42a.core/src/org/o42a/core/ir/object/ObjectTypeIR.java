@@ -74,6 +74,10 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		return this.instance.data();
 	}
 
+	public final ObjectIRType getInstance() {
+		return this.instance;
+	}
+
 	public final FieldDescIR fieldDescIR(MemberKey key) {
 
 		final FieldDescIR fieldDesc = this.fieldDescs.get(key);

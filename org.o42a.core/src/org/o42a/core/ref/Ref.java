@@ -438,16 +438,12 @@ public abstract class Ref extends RefTypeBase {
 		@Override
 		public void writeAssignment(Control control, ValOp result) {
 
-			final Code falseVal = control.addBlock("false_st_val");
 			final Code code = control.code();
 			final ValDirs dirs =
-				control.getBuilder().falseWhenUnknown(code, falseVal.head())
+				control.getBuilder().falseWhenUnknown(code, control.exit())
 				.value(code.id("local_val"), result);
 
 			result.store(code, this.ref.writeValue(dirs));
-			if (falseVal.exists()) {
-				falseVal.go(control.exit());
-			}
 
 			control.returnValue();
 		}

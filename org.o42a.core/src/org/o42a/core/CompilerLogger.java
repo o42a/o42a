@@ -341,13 +341,6 @@ public class CompilerLogger implements Logger {
 				directiveName);
 	}
 
-	public void prohibitedIssueEllipsis(LogInfo location) {
-		error(
-				"prohibited_issue_ellipsis",
-				location,
-				"Ellipsis is prohibited within issue");
-	}
-
 	public void prohibitedLinkType(LogInfo location) {
 		error(
 				"prohibited_link_type",

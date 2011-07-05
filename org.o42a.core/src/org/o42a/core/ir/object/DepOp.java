@@ -79,7 +79,7 @@ public class DepOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public LocalOp toLocal() {
+	public final LocalOp toLocal() {
 		return null;
 	}
 
@@ -98,6 +98,11 @@ public class DepOp extends IROp implements HostOp {
 				getBuilder(),
 				ptr().object(code).load(null, code),
 				target.materialize());
+	}
+
+	@Override
+	public void assign(CodeDirs dirs, HostOp value) {
+		throw new UnsupportedOperationException();
 	}
 
 	public void fill(LocalBuilder builder, CodeDirs dirs) {

@@ -92,18 +92,48 @@ public class StatementVisitor
 	}
 
 	@Override
+	public Ref visitAssignment(AssignmentNode assignment, Statements<?> p) {
+
+		final ExpressionNode destinationNode = assignment.getDestination();
+		final ExpressionNode valueNode = assignment.getValue();
+
+		if (valueNode == null || destinationNode == null) {
+			return null;
+		}
+
+		final Distributor distributor = p.nextDistributor();
+		final Ref destination =
+				destinationNode.accept(EXPRESSION_VISITOR, distributor);
+		final Ref value = valueNode.accept(EXPRESSION_VISITOR, distributor);
+
+		if (destination == null || value == null) {
+			return null;
+		}
+
+		p.assign(location(p, assignment.getOperator()), destination, value);
+
+		return null;
+	}
+
+	@Override
 	public Ref visitSelfAssignment(
 			SelfAssignmentNode assignment,
 			Statements<?> p) {
 
-		final ExpressionNode value = assignment.getValue();
+		final ExpressionNode valueNode = assignment.getValue();
 
-		if (value != null) {
-
-			final Distributor distributor = p.nextDistributor();
-
-			p.assign(value.accept(EXPRESSION_VISITOR, distributor));
+		if (valueNode == null) {
+			return null;
 		}
+
+		final Distributor distributor = p.nextDistributor();
+		final Ref value = valueNode.accept(EXPRESSION_VISITOR, distributor);
+
+		if (value == null) {
+			return null;
+		}
+
+		p.selfAssign(location(p, assignment.getPrefix()), value);
 
 		return null;
 	}

@@ -40,10 +40,10 @@ public final class DefinitionTarget
 		extends DefinitionTargets
 		implements LogInfo {
 
-	public static DefinitionTarget conditionDefinition(Ref ref) {
+	public static DefinitionTarget conditionDefinition(Statement statement) {
 		return new DefinitionTarget(
 				CONDITION_MASK,
-				ref,
+				statement,
 				CONDITION_DEFINITION_KEY);
 	}
 

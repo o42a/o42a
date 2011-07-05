@@ -43,4 +43,6 @@ public interface HostOp {
 
 	ObjectOp materialize(CodeDirs dirs);
 
+	void assign(CodeDirs dirs, HostOp value);
+
 }

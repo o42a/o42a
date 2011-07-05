@@ -19,7 +19,15 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.codegen.code.Code;
+import org.o42a.core.artifact.link.Link;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
 
 
@@ -32,6 +40,24 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	@Override
 	public VarFld fld() {
 		return (VarFld) super.fld();
+	}
+
+	@Override
+	public void assign(CodeDirs dirs, HostOp value) {
+
+		final Link variable = fld().getField().getArtifact();
+		final Code code = dirs.code();
+		final ObjectOp object = value.materialize(dirs);
+		final ObjectOp castObject = object.dynamicCast(
+				code.id("cast_target"),
+				dirs,
+				ptr().targetType(code)
+				.load(null, code)
+				.op(getBuilder(), DERIVED),
+				variable.getTypeRef().typeObject(dummyUser()));
+
+		ptr().object(code).store(code, castObject.toData(code));
+		castObject.writeLogicalValue(dirs);
 	}
 
 }

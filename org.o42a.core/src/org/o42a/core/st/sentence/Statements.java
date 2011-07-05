@@ -101,12 +101,27 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		statement(new RefCondition(expression.rescope(getScope())));
 	}
 
-	public final void assign(Ref value) {
+	public final void selfAssign(Ref value) {
+		selfAssign(value, value);
+	}
+
+	public final void selfAssign(LocationInfo location, Ref value) {
 		assert value.getContext() == getContext() :
 			value + " has wrong context: " + value.getContext()
 			+ ", but " + getContext() + " expected";
+		if (getSentence().isIssue()) {
+			getLogger().error(
+					"porhibited_issue_assignment",
+					location,
+					"Assignment is prohibited within issue");
+		}
 		statement(value.rescope(getScope()));
 	}
+
+	public abstract void assign(
+			LocationInfo location,
+			Ref destination,
+			Ref value);
 
 	public FieldBuilder field(
 			FieldDeclaration declaration,

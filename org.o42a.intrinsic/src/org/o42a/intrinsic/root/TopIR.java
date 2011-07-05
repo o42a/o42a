@@ -106,6 +106,11 @@ final class TopIR extends ScopeIR {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

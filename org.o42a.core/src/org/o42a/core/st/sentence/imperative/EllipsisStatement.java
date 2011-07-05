@@ -39,12 +39,12 @@ import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueType;
 
 
-public final class EllipsisSt extends Statement {
+public final class EllipsisStatement extends Statement {
 
 	private final String name;
 	private final boolean exit;
 
-	public EllipsisSt(
+	public EllipsisStatement(
 			LocationInfo location,
 			Imperatives enclosing,
 			String name) {
@@ -53,7 +53,9 @@ public final class EllipsisSt extends Statement {
 		this.exit = enclosing.getSentence().isClaim();
 	}
 
-	private EllipsisSt(EllipsisSt prototype, Distributor distributor) {
+	private EllipsisStatement(
+			EllipsisStatement prototype,
+			Distributor distributor) {
 		super(prototype, distributor);
 		this.name = prototype.name;
 		this.exit = prototype.exit;
@@ -76,7 +78,7 @@ public final class EllipsisSt extends Statement {
 
 	@Override
 	public Definitions define(Scope scope) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -89,13 +91,27 @@ public final class EllipsisSt extends Statement {
 
 	@Override
 	public Action initialLogicalValue(LocalResolver resolver) {
-		return initialValue(resolver);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public EllipsisSt reproduce(Reproducer reproducer) {
+	public EllipsisStatement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
-		return new EllipsisSt(this, reproducer.distribute());
+		return new EllipsisStatement(this, reproducer.distribute());
+	}
+
+	@Override
+	public String toString() {
+		if (!this.exit) {
+			if (this.name == null) {
+				return "(...)";
+			}
+			return "(... " + this.name + ')';
+		}
+		if (this.name == null) {
+			return "(...!)";
+		}
+		return "(... " + this.name + "!)";
 	}
 
 	@Override
@@ -116,40 +132,42 @@ public final class EllipsisSt extends Statement {
 
 	private static final class ExitOp extends StOp {
 
-		ExitOp(LocalBuilder builder, EllipsisSt statement) {
+		ExitOp(LocalBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 
 		@Override
 		public void writeAssignment(Control control, ValOp result) {
 
-			final EllipsisSt st = (EllipsisSt) getStatement();
+			final EllipsisStatement st = (EllipsisStatement) getStatement();
 
 			control.exitBraces(st, st.name);
 		}
 
 		@Override
 		public void writeLogicalValue(Control control) {
+			throw new UnsupportedOperationException();
 		}
 
 	}
 
 	private static final class RepeatOp extends StOp {
 
-		RepeatOp(LocalBuilder builder, EllipsisSt statement) {
+		RepeatOp(LocalBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 
 		@Override
 		public void writeAssignment(Control control, ValOp result) {
 
-			final EllipsisSt st = (EllipsisSt) getStatement();
+			final EllipsisStatement st = (EllipsisStatement) getStatement();
 
 			control.repeat(st, st.name);
 		}
 
 		@Override
 		public void writeLogicalValue(Control control) {
+			throw new UnsupportedOperationException();
 		}
 
 	}

@@ -111,7 +111,7 @@ final class ObjectTestsRunner extends DefinedObject {
 		final Declaratives terminator =
 			definition.propose(definition).alternative(definition);
 
-		terminator.assign(voidRef(definition, terminator.nextDistributor()));
+		terminator.selfAssign(voidRef(definition, terminator.nextDistributor()));
 	}
 
 	private static final class RunObjectTests extends ObjectConstructor {

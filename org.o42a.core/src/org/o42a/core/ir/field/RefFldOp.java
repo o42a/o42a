@@ -34,7 +34,7 @@ import org.o42a.core.member.MemberKey;
 public abstract class RefFldOp<
 		S extends RefFld.Op<S, C>,
 		C extends ObjectFunc<C>>
-			extends FldOp {
+				extends FldOp {
 
 	RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<S, C> ptr) {
 		super(fld, host, ptr);

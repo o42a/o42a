@@ -54,7 +54,7 @@ public class PhraseArgument extends PhraseContinuation {
 		final Statements<?> statements =
 			definition.propose(this).alternative(this);
 
-		statements.assign(this.value);
+		statements.selfAssign(this.value);
 	}
 
 	@Override

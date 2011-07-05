@@ -92,6 +92,45 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	public abstract ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant);
 
+	public ObjectOp dynamicCast(
+			CodeId id,
+			CodeDirs dirs,
+			ObjectTypeOp type,
+			Obj wellKnownType) {
+
+		final CodeDirs subDirs = dirs.begin(
+				id != null ? id.getId() : "cast",
+				"Dynamic cast " + this + " to " + wellKnownType);
+
+		final Code code = subDirs.code();
+
+		code.dumpName("To", type.ptr());
+
+		final DataOp resultPtr =
+				castFunc()
+				.op(null, code)
+				.cast(
+						id != null ? id.detail("ptr") : null,
+						code,
+						this,
+						type);
+		final Code castNull = code.addBlock("cast_null");
+
+		resultPtr.isNull(null, code).go(code, castNull.head());
+
+		final ObjectOp result =
+				anonymousObject(getBuilder(), resultPtr, wellKnownType);
+
+		if (castNull.exists()) {
+			castNull.debug("Cast failed");
+			castNull.go(subDirs.falseDir());
+		}
+
+		subDirs.end();
+
+		return result;
+	}
+
 	@Override
 	public final void writeLogicalValue(CodeDirs dirs) {
 
@@ -226,6 +265,11 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	@Override
+	public void assign(CodeDirs dirs, HostOp value) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -250,10 +294,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		return out.toString();
 	}
 
-	protected ObjOp dynamicCast(
-			CodeId id,
-			CodeDirs dirs,
-			Obj ascendant) {
+	protected ObjOp dynamicCast(CodeId id, CodeDirs dirs, Obj ascendant) {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
 		final CodeDirs subDirs = dirs.begin(
