@@ -28,6 +28,8 @@ public abstract class MemberId {
 
 	private static final Scope[] NOT_REPRODUCED = new Scope[0];
 
+	public static final MemberId SCOPE_FIELD_ID = new MemberName("S");
+
 	public static MemberId fieldName(String name) {
 		assert name != null :
 			"Field name not specified";

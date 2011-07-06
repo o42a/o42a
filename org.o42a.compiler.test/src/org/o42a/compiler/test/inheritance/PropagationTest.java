@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -74,9 +75,9 @@ public class PropagationTest extends CompilerTestCase {
 				bFoo.type(USE_CASE)));
 
 		final Field<?> aFooScope =
-			field(aFoo, "_scope", Accessor.INHERITANT);
+			aFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT).toField(USE_CASE);
 		final Field<?> bFooScope =
-			field(bFoo, "_scope", Accessor.INHERITANT);
+			bFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT).toField(USE_CASE);
 
 		assertThat(
 				aFooScope.getArtifact(),
