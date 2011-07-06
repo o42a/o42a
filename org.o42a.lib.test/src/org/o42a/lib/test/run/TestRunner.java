@@ -131,7 +131,7 @@ final class TestRunner extends PlainObject {
 			Obj test) {
 
 		final Obj nameObject =
-			test.member("name").substance(dummyUser()).toObject();
+			test.field("name").substance(dummyUser()).toObject();
 		final Value<?> nameValue = nameObject.value(dummyUser()).getValue();
 
 		if (!nameValue.isDefinite()) {

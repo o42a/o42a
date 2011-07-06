@@ -27,7 +27,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 
 
-final class ClauseDefRefVisitor extends RefVisitor {
+final class ClauseRefVisitor extends RefVisitor {
 
 	@Override
 	protected Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {

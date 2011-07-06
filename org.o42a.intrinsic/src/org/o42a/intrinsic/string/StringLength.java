@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.string;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -48,7 +48,7 @@ final class StringLength extends IntrinsicBuiltin {
 				fieldDeclaration(
 						owner,
 						owner.distribute(),
-						memberName("length")));
+						fieldName("length")));
 		setValueType(ValueType.INTEGER);
 	}
 

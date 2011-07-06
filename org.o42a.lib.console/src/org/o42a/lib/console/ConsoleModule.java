@@ -89,7 +89,7 @@ public class ConsoleModule extends Module {
 			return null;
 		}
 
-		final Obj mainObject = member("main").substance(user).toObject();
+		final Obj mainObject = field("main").substance(user).toObject();
 		final AdapterId mainAdapterId = adapterId(mainObject);
 		final Member mainMember = mainModule.member(mainAdapterId);
 

@@ -19,7 +19,7 @@
 */
 package org.o42a.common.object;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.core.Scope;
@@ -38,7 +38,7 @@ public class IntrinsicType extends IntrinsicObject {
 			ValueType<?> valueType) {
 		super(
 				owner,
-				fieldDeclaration(owner, owner.distribute(), memberName(name))
+				fieldDeclaration(owner, owner.distribute(), fieldName(name))
 				.prototype());
 		setValueType(valueType);
 	}

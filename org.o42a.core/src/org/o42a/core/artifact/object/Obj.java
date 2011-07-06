@@ -25,7 +25,7 @@ import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
 import static org.o42a.core.member.local.Dep.fieldDep;
@@ -64,7 +64,7 @@ import org.o42a.util.use.UserInfo;
 public abstract class Obj extends Artifact<Obj>
 		implements MemberContainer, ClauseContainer {
 
-	public static final MemberId SCOPE_MEMBER_ID = memberName("_scope");
+	public static final MemberId SCOPE_MEMBER_ID = fieldName("_scope");
 
 	public static DeclaredField<Obj, ?> declareField(MemberField member) {
 		return new DeclaredObjectField(member);
@@ -323,12 +323,12 @@ public abstract class Obj extends Artifact<Obj>
 		return member(memberId, declaredIn, access.getAccessor());
 	}
 
-	public final Member member(String name) {
-		return member(memberName(name), null, Accessor.PUBLIC);
+	public final Member field(String name) {
+		return member(fieldName(name), null, Accessor.PUBLIC);
 	}
 
-	public final Member member(String name, Accessor accessor) {
-		return member(memberName(name), null, accessor);
+	public final Member field(String name, Accessor accessor) {
+		return member(fieldName(name), null, accessor);
 	}
 
 	public final Member member(MemberId memberId) {

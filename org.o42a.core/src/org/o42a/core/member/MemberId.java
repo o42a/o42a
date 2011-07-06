@@ -28,10 +28,22 @@ public abstract class MemberId {
 
 	private static final Scope[] NOT_REPRODUCED = new Scope[0];
 
-	public static MemberId memberName(String name) {
+	public static MemberId fieldName(String name) {
 		assert name != null :
-			"Member name not specified";
+			"Field name not specified";
 		return new MemberName(name);
+	}
+
+	public static MemberId clauseName(String name) {
+		assert name != null :
+			"Clause name not specified";
+		return new MemberName('C' + name);
+	}
+
+	public static MemberId localName(String name) {
+		assert name != null :
+			"Local name not specified";
+		return new MemberName('L' + name);
 	}
 
 	public abstract boolean isValid();

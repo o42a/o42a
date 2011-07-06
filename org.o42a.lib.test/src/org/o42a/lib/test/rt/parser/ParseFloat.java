@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.common.adapter.FloatByString;
 import org.o42a.core.Scope;
@@ -54,7 +54,7 @@ final class ParseFloat extends FloatByString {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 		final Path ancestorPath = enclosingScope.getEnclosingScopePath().append(
-				memberName("rt-float")
+				fieldName("rt-float")
 				.key(enclosingScope.getEnclosingScope()));
 
 		return new Ascendants(this).setAncestor(

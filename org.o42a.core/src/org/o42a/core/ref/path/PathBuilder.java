@@ -20,7 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -40,9 +40,9 @@ public final class PathBuilder {
 
 		final Fragment[] fragments = new Fragment[names.length + 1];
 
-		fragments[0] = new NameFragment(name);
+		fragments[0] = new MemberById(fieldName(name));
 		for (int i = 0; i < names.length; ++i) {
-			fragments[i + 1] = new NameFragment(names[i]);
+			fragments[i + 1] = new MemberById(fieldName(names[i]));
 		}
 
 		return new PathBuilder(fragments);
@@ -139,10 +139,10 @@ public final class PathBuilder {
 		return context.compatible(this.context);
 	}
 
-	public final PathBuilder appendName(String name) {
+	public final PathBuilder appendField(String name) {
 		return new PathBuilder(ArrayUtil.append(
 				this.fragments,
-				new NameFragment(name)));
+				new MemberById(fieldName(name))));
 	}
 
 	public final PathBuilder appendAdapter(PathBuilder adapterPath) {
@@ -214,22 +214,22 @@ public final class PathBuilder {
 
 	}
 
-	private static final class NameFragment implements Fragment {
+	private static final class MemberById implements Fragment {
 
-		private final MemberId name;
+		private final MemberId memberId;
 
-		NameFragment(String name) {
-			this.name = memberName(name);
+		MemberById(MemberId name) {
+			this.memberId = name;
 		}
 
 		@Override
 		public Member member(Container container) {
-			return container.toObject().member(this.name);
+			return container.toObject().member(this.memberId);
 		}
 
 		@Override
 		public String toString() {
-			return this.name.toString();
+			return this.memberId.toString();
 		}
 
 	}

@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.core.LocationInfo;
@@ -46,7 +46,7 @@ public final class Include extends IntrinsicDirective {
 						"include",
 						"root/include.o42a")
 				.prototype());
-		this.pathKey = memberName("path").key(getScope());
+		this.pathKey = fieldName("path").key(getScope());
 	}
 
 	@Override

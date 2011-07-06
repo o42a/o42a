@@ -19,7 +19,6 @@
 */
 package org.o42a.common.adapter;
 
-import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
@@ -137,8 +136,7 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 			return this.input;
 		}
 
-		final Member member =
-			member(memberName("input"), Accessor.DECLARATION);
+		final Member member = field("input", Accessor.DECLARATION);
 		final Path path = member.getKey().toPath();
 
 		return this.input = path.target(this, distribute());

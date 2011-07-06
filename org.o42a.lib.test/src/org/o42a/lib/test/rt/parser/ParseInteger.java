@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.common.adapter.IntegerByString;
 import org.o42a.core.Scope;
@@ -54,7 +54,7 @@ final class ParseInteger extends IntegerByString {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 		final Path ancestorPath = enclosingScope.getEnclosingScopePath().append(
-				memberName("rt-integer")
+				fieldName("rt-integer")
 				.key(enclosingScope.getEnclosingScope()));
 
 		return new Ascendants(this).setAncestor(

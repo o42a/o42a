@@ -36,7 +36,7 @@ public abstract class MemberRegistryClauseBase extends MemberRegistryFieldBase {
 			return createNewClause(declaration);
 		}
 		return createNewClause(
-				declaration.setName("_clause_" + (++this.clauseSeq)));
+				declaration.setName(Integer.toString(++this.clauseSeq)));
 	}
 
 	private final ClauseBuilder createNewClause(ClauseDeclaration declaration) {

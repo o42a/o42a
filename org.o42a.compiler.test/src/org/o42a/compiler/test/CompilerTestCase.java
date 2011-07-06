@@ -237,11 +237,11 @@ public abstract class CompilerTestCase {
 			Accessor accessor) {
 
 		final Obj object = container.materialize().toArtifact();
-		final Member member = object.member(name, accessor);
+		final Member member = object.field(name, accessor);
 
 		if (member == null) {
 
-			final Member m = object.member(name, Accessor.OWNER);
+			final Member m = object.field(name, Accessor.OWNER);
 
 			if (m == null) {
 				fail("No such field: " + name);

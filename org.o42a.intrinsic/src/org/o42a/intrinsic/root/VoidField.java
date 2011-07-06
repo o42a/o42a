@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.core.artifact.object.Obj;
@@ -32,7 +32,7 @@ final class VoidField extends ObjectField {
 	VoidField(Root root) {
 		super(
 				root.toMemberOwner(),
-				fieldDeclaration(root, root.distribute(), memberName("void")));
+				fieldDeclaration(root, root.distribute(), fieldName("void")));
 		setFieldArtifact(getContext().getVoid());
 	}
 

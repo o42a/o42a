@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.string;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.common.object.IntrinsicObject;
@@ -38,7 +38,7 @@ public class Strings extends IntrinsicObject {
 				fieldDeclaration(
 						owner,
 						owner.distribute(),
-						memberName("strings")));
+						fieldName("strings")));
 		setValueType(ValueType.VOID);
 	}
 

@@ -66,7 +66,8 @@ final class ExplicitLocalScope extends LocalScope {
 			ExplicitLocalScope reproducedFrom) {
 		super(location, owner);
 		this.name = reproducedFrom.getName();
-		this.member = new ExplicitMemberLocal(this, distributor, reproducedFrom);
+		this.member =
+				new ExplicitMemberLocal(this, distributor, reproducedFrom);
 	}
 
 	@Override

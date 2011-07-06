@@ -30,6 +30,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -187,7 +188,8 @@ final class StringChar extends IntrinsicBuiltin {
 			return this.index;
 		}
 
-		final MemberKey indexKey = member("index").getKey();
+		final MemberKey indexKey =
+				field("index", Accessor.DECLARATION).getKey();
 
 		return this.index = indexKey.toPath().target(this, distribute());
 	}

@@ -17,15 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Module := string(False).
-Object := string(False).
+Module := string(False)
+Object := string(False)
 
-<*'Module id' | use namespace> Module = *.
-<*[Module id] | use namespace> Module = *.
+<*'Module id' | $object$> Module = *.
+<*[Module id] | $object$> Module = *.
 
-<*Object path> (
-  <Object> (
-    <*'Object path'> $Object$ object = *.
-    <*[Object path]> $Object$ object = *.
-  )
-).
+<Object> (
+  <*'Object path'> $Object$ object = *.
+  <*[Object path]> $Object$ object = *.
+)
