@@ -19,13 +19,13 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.object.BuiltinObject;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -48,13 +48,14 @@ public class LogicalOperatorRef extends ObjectConstructor {
 	private Ref operand;
 
 	public LogicalOperatorRef(
+			Interpreter ip,
 			CompilerContext context,
 			UnaryNode node,
 			Distributor distributor) {
 		super(new Location(context, node), distributor);
 		this.node = node;
 		this.operand =
-			this.node.getOperand().accept(EXPRESSION_VISITOR, distribute());
+			this.node.getOperand().accept(ip.expressionVisitor(), distribute());
 	}
 
 	private LogicalOperatorRef(

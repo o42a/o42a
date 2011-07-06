@@ -19,11 +19,11 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.member.DefinitionVisitor.DEFINITION_VISITOR;
-
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.statement.DeclaratorNode;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.RefVisitor;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
@@ -41,23 +41,25 @@ public class FieldInterpreter {
 		new AdapterFieldVisitor();
 
 	public static Ref field(
+			Interpreter ip,
 			CompilerContext context,
 			DeclaratorNode declarator,
 			Statements<?> p) {
 
 		final Distributor distributor = p.nextDistributor();
 		final FieldDeclaration declaration = declarator.getDeclarable().accept(
-				new FieldDeclarableVisitor(context, declarator),
+				new FieldDeclarableVisitor(ip, context, declarator),
 				distributor);
 
 		if (declaration == null) {
 			return null;
 		}
 
-		return setDefinition(p, declarator, declaration);
+		return setDefinition(ip, p, declarator, declaration);
 	}
 
 	private static Ref setDefinition(
+			Interpreter ip,
 			Statements<?> p,
 			DeclaratorNode node,
 			FieldDeclaration declaration) {
@@ -71,8 +73,9 @@ public class FieldInterpreter {
 			return null;
 		}
 
-		final FieldDefinition definition =
-			definitionNode.accept(DEFINITION_VISITOR, declaration);
+		final FieldDefinition definition = definitionNode.accept(
+				ip.definitionVisitor(),
+				declaration);
 
 		if (definition != null) {
 
@@ -98,6 +101,11 @@ public class FieldInterpreter {
 				RefNode declaredInNode,
 				Distributor p) {
 			return null;
+		}
+
+		@Override
+		protected RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+			return Interpreter.PLAIN_IP.refVisitor();
 		}
 
 	}

@@ -50,12 +50,6 @@ public final class ValuePartRef extends Expression {
 	static final HashMap<String, ValuePart> partsById =
 		new HashMap<String, ValuePart>();
 
-	public static Ref overridden(
-			LocationInfo location,
-			Distributor distributor) {
-		return new ValuePartRef(location, distributor, ValuePart.ALL, true);
-	}
-
 	public static Ref valuePartRef(
 			IntrinsicRefNode ref,
 			Distributor distributor) {
@@ -64,9 +58,11 @@ public final class ValuePartRef extends Expression {
 		final ValuePart part = partsById.get(ref.getName().getName());
 
 		if (part == null) {
-			distributor.getContext().getLogger().unresolved(
+			distributor.getContext().getLogger().error(
+					"unknown_intrinsic",
 					ref,
-					ref.printContent());
+					"Unknown intrinsic: $%s$",
+					ref.getName());
 			return falseRef(location, distributor);
 		}
 

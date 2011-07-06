@@ -30,6 +30,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.common.object.BuiltinObject;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -57,6 +58,7 @@ public final class ComparisonRef extends ObjectConstructor {
 
 	private static final MemberId COMPARISON = memberName("_cmp");
 
+	private final Interpreter ip;
 	private final BinaryNode node;
 	private final ComparisonRef prototype;
 	private final Reproducer reproducer;
@@ -64,8 +66,13 @@ public final class ComparisonRef extends ObjectConstructor {
 	private Ref phrase;
 	private byte error;
 
-	public ComparisonRef(BinaryNode node, Distributor distributor) {
+
+	public ComparisonRef(
+			Interpreter ip,
+			BinaryNode node,
+			Distributor distributor) {
 		super(location(distributor, node), distributor);
+		this.ip = ip;
 		this.node = node;
 		this.prototype = null;
 		this.reproducer = null;
@@ -75,6 +82,7 @@ public final class ComparisonRef extends ObjectConstructor {
 			ComparisonRef prototype,
 			Reproducer reproducer) {
 		super(prototype, reproducer.distribute());
+		this.ip = prototype.ip;
 		this.node = prototype.node;
 		this.prototype = prototype;
 		this.reproducer = reproducer;
@@ -133,7 +141,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		if (this.prototype == null) {
 
 			final BinaryPhrasePart binary =
-				binaryPhrase(this.node, distributor);
+				binaryPhrase(this.ip, this.node, distributor);
 
 			this.operator = binary.getComparisonOperator();
 

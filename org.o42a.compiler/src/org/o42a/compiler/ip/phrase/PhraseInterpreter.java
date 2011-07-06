@@ -22,15 +22,14 @@ package org.o42a.compiler.ip.phrase;
 import static org.o42a.compiler.ip.AncestorVisitor.impliedAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.noAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.parseAncestor;
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.operator.ComparisonRef;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
@@ -41,10 +40,13 @@ import org.o42a.core.ref.type.TypeRef;
 
 public final class PhraseInterpreter {
 
-	public static Phrase phrase(PhraseNode node, Distributor distributor) {
+	public static Phrase phrase(
+			Interpreter ip,
+			PhraseNode node,
+			Distributor distributor) {
 
 		final Phrase phrase =
-			new Phrase(location(distributor, node), distributor);
+			new Phrase(ip, location(distributor, node), distributor);
 		final Phrase prefixed =
 			node.getPrefix().accept(PHRASE_PREFIX_VISITOR, phrase);
 
@@ -52,51 +54,59 @@ public final class PhraseInterpreter {
 	}
 
 	public static Phrase ascendants(
+			Interpreter ip,
 			AscendantsNode node,
 			Distributor distributor) {
 
 		final Phrase phrase =
-			new Phrase(location(distributor, node), distributor);
+			new Phrase(ip, location(distributor, node), distributor);
 		final Phrase prefixed = prefix(phrase, node);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}
 
-	public static Phrase unary(UnaryNode node, Distributor distributor) {
+	public static Phrase unary(
+			Interpreter ip,
+			UnaryNode node,
+			Distributor distributor) {
 
 		final Ref operand =
-			node.getOperand().accept(EXPRESSION_VISITOR, distributor);
+			node.getOperand().accept(ip.expressionVisitor(), distributor);
 
 		if (operand == null) {
 			return null;
 		}
 
 		final Phrase phrase =
-			new Phrase(location(distributor, node), distributor);
+			new Phrase(ip, location(distributor, node), distributor);
 
 		return phrase.setAncestor(operand.toTypeRef()).unary(node).getPhrase();
 	}
 
-	public static Ref binary(BinaryNode node, Distributor distributor) {
+	public static Ref binary(
+			Interpreter ip,
+			BinaryNode node,
+			Distributor distributor) {
 		if (node.getOperator().isArithmetic()) {
-			return binaryPhrase(node, distributor).getPhrase().toRef();
+			return binaryPhrase(ip, node, distributor).getPhrase().toRef();
 		}
-		return new ComparisonRef(node, distributor);
+		return new ComparisonRef(ip, node, distributor);
 	}
 
 	public static BinaryPhrasePart binaryPhrase(
+			Interpreter ip,
 			BinaryNode node,
 			Distributor distributor) {
 
 		final Ref left =
-			node.getLeftOperand().accept(EXPRESSION_VISITOR, distributor);
+			node.getLeftOperand().accept(ip.expressionVisitor(), distributor);
 
 		if (left == null) {
 			return null;
 		}
 
 		final Phrase phrase =
-			new Phrase(location(distributor, node), distributor);
+			new Phrase(ip, location(distributor, node), distributor);
 		final BinaryPhrasePart binary =
 			phrase.setAncestor(left.toTypeRef()).binary(node);
 
@@ -106,7 +116,8 @@ public final class PhraseInterpreter {
 			return null;
 		}
 
-		final Ref right = rightOperand.accept(EXPRESSION_VISITOR, distributor);
+		final Ref right =
+				rightOperand.accept(ip.expressionVisitor(), distributor);
 
 		if (right == null) {
 			return null;
@@ -121,7 +132,7 @@ public final class PhraseInterpreter {
 
 		final Distributor distributor = phrase.distribute();
 		final AscendantNode[] ascendantNodes = node.getAscendants();
-		final TypeRef ancestor = parseAncestor(node, distributor);
+		final TypeRef ancestor = parseAncestor(phrase.ip(), node, distributor);
 		final int samplesFrom;
 		Phrase result;
 
@@ -146,7 +157,7 @@ public final class PhraseInterpreter {
 			if (sampleNode != null) {
 
 				final Ref sampleRef =
-					sampleNode.accept(REF_VISITOR, distributor);
+					sampleNode.accept(phrase.ip().refVisitor(), distributor);
 
 				if (sampleRef != null) {
 					result = result.addSamples(sampleRef.toStaticTypeRef());

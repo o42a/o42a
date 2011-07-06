@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.core.ref.Ref.falseRef;
 
 import org.o42a.ast.Node;
@@ -33,10 +32,18 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public final class TypeVisitor
+final class TypeVisitor
 		extends AbstractTypeVisitor<TypeRef, Distributor> {
 
-	public static final TypeVisitor TYPE_VISITOR = new TypeVisitor();
+	private final Interpreter ip;
+
+	TypeVisitor(Interpreter ip) {
+		this.ip = ip;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
+	}
 
 	@Override
 	public TypeRef visitAscendants(AscendantsNode ascendants, Distributor p) {
@@ -54,7 +61,7 @@ public final class TypeVisitor
 		}
 
 		final RefNode ancestor = first.getAscendant();
-		final Ref ref = ancestor.accept(REF_VISITOR, p);
+		final Ref ref = ancestor.accept(ip().refVisitor(), p);
 
 		if (ref != null) {
 			return ref.toStaticTypeRef();
@@ -66,7 +73,7 @@ public final class TypeVisitor
 	@Override
 	protected TypeRef visitRef(RefNode node, Distributor p) {
 
-		final Ref ref = node.accept(REF_VISITOR, p);
+		final Ref ref = node.accept(ip().refVisitor(), p);
 
 		if (ref != null) {
 			return ref.toTypeRef();

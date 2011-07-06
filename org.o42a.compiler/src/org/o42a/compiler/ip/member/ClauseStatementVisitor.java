@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.member;
 
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 
@@ -36,7 +37,7 @@ import org.o42a.core.st.sentence.Statements;
 final class ClauseStatementVisitor extends StatementVisitor {
 
 	ClauseStatementVisitor(CompilerContext context) {
-		super(context);
+		super(CLAUSE_DEF_IP, context);
 	}
 
 	@Override

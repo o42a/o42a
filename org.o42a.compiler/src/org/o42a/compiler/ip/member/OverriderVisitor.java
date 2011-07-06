@@ -20,9 +20,8 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.AncestorVisitor.parseAscendants;
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_DECLARATIONS_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.compiler.ip.member.FieldDeclarableVisitor.declaredIn;
@@ -36,6 +35,7 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.statement.AbstractDeclarableVisitor;
 import org.o42a.ast.statement.DeclarableAdapterNode;
 import org.o42a.ast.statement.DeclarableNode;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.MemberById;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -71,7 +71,7 @@ final class OverriderVisitor
 			ClauseBuilder p) {
 
 		final AscendantsDefinition ascendantsDefinition =
-			parseAscendants(ascendants, p.distribute());
+			parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
 
 		if (ascendantsDefinition == null) {
 			return null;
@@ -106,7 +106,9 @@ final class OverriderVisitor
 			ClauseBuilder p) {
 
 		final Distributor distributor = p.distribute();
-		final Ref ref = expression.accept(EXPRESSION_VISITOR, distributor);
+		final Ref ref = expression.accept(
+				Interpreter.CLAUSE_DEF_IP.expressionVisitor(),
+				distributor);
 
 		if (ref == null) {
 			return null;
@@ -121,7 +123,7 @@ final class OverriderVisitor
 
 		@Override
 		public Ref visitMemberRef(MemberRefNode ref, Distributor p) {
-			return REF_VISITOR.visitMemberRef(ref, p);
+			return Interpreter.PLAIN_IP.refVisitor().visitMemberRef(ref, p);
 		}
 
 		@Override
@@ -140,7 +142,7 @@ final class OverriderVisitor
 					location(p, adapter),
 					p,
 					adapterId(adapterType.toStaticTypeRef()),
-					declaredIn(member, p));
+					declaredIn(Interpreter.CLAUSE_DEF_IP, member, p));
 		}
 
 		@Override

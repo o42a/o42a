@@ -19,10 +19,10 @@
 */
 package org.o42a.compiler;
 
+import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.ModuleRefVisitor.MODULE_REF_VISITOR;
 import static org.o42a.compiler.ip.ModuleRefVisitor.SAME_MODULE_REF_VISITOR;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import static org.o42a.parser.Grammar.*;
@@ -81,7 +81,7 @@ public class Compiler implements BlockCompiler {
 		}
 
 		return contentBuilder(
-				new StatementVisitor(context),
+				new StatementVisitor(PLAIN_IP, context),
 				new ParenthesesNode(null, content, null));
 	}
 
@@ -107,7 +107,7 @@ public class Compiler implements BlockCompiler {
 				return null;
 			}
 
-			return node.accept(REF_VISITOR, scope.distribute());
+			return node.accept(PLAIN_IP.refVisitor(), scope.distribute());
 		}
 
 		final FixedPosition pos =

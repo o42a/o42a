@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
+import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
@@ -75,7 +75,8 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			return null;
 		}
 
-		final Ref declaredIn = declaredInNode.accept(EXPRESSION_VISITOR, p);
+		final Ref declaredIn =
+				declaredInNode.accept(PLAIN_IP.expressionVisitor(), p);
 
 		if (declaredIn == null) {
 			return null;

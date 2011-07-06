@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.location;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
@@ -49,7 +48,7 @@ final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 	protected Phrase visitExpression(ExpressionNode expression, Phrase p) {
 
 		final Ref value =
-			expression.accept(EXPRESSION_VISITOR, p.distribute());
+				expression.accept(p.ip().expressionVisitor(), p.distribute());
 
 		if (value != null) {
 			return p.argument(value).getPhrase();

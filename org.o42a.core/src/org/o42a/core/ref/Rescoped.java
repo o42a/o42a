@@ -34,14 +34,14 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
+import org.o42a.util.Holder;
 
 
 final class Rescoped extends Ref {
 
 	private final Ref ref;
 	private final Rescoper rescoper;
-	private Path path;
-	private boolean pathBuilt;
+	private Holder<Path> path;
 
 	Rescoped(Ref ref, Rescoper rescoper, Distributor distributor) {
 		super(
@@ -58,28 +58,29 @@ final class Rescoped extends Ref {
 
 	@Override
 	public Path getPath() {
-		if (this.pathBuilt) {
-			return this.path;
+		if (this.path != null) {
+			return this.path.get();
 		}
 
 		final Path refPath = this.ref.getPath();
 
 		if (refPath == null) {
-			this.pathBuilt = true;
+			this.path = new Holder<Path>(null);
 			return null;
 		}
 
 		final Path rescoperPath = this.rescoper.getPath();
 
 		if (rescoperPath == null) {
-			this.pathBuilt = true;
+			this.path = new Holder<Path>(null);
 			return null;
 		}
 
-		this.path = rescoperPath.append(refPath).rebuild();
-		this.pathBuilt = true;
+		final Path path = rescoperPath.append(refPath).rebuild();
 
-		return this.path;
+		this.path = new Holder<Path>(path);
+
+		return path;
 	}
 
 	@Override
