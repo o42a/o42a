@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.local;
 
+import static org.o42a.core.member.MemberId.localName;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -36,8 +38,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 		super(localScope, distributor, localScope.getOwner().toMemberOwner());
 		this.localScope = localScope;
 
-		final MemberId localId =
-			MemberId.localName("_local_" + this.localScope.getName());
+		final MemberId localId = localName(this.localScope.getName());
 		final Member member = getContainer().toMember();
 
 		if (member != null

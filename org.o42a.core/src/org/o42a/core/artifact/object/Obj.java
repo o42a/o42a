@@ -25,6 +25,7 @@ import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
@@ -63,8 +64,6 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class Obj extends Artifact<Obj>
 		implements MemberContainer, ClauseContainer {
-
-	public static final MemberId SCOPE_MEMBER_ID = fieldName("_scope");
 
 	public static DeclaredField<Obj, ?> declareField(MemberField member) {
 		return new DeclaredObjectField(member);
@@ -528,7 +527,7 @@ public abstract class Obj extends Artifact<Obj>
 
 		if (enclosing.toObject() != null) {
 			scopePathFragment = new ParentObjectFragment(
-					SCOPE_MEMBER_ID.key(getScope()));
+					SCOPE_FIELD_ID.key(getScope()));
 		} else {
 			assert enclosing.toLocal() != null :
 				"Unsupported kind of enclosing scope " + enclosing;
