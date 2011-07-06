@@ -163,7 +163,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 			Code code,
 			Type<SS> field) {
 		return getWriter().struct(
-				fieldId(id, code, field.getId()),
+				fieldId(id, code, field.data(code.getGenerator()).getId()),
 				code,
 				field);
 	}
