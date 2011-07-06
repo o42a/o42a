@@ -20,12 +20,12 @@
 Module := string(False).
 Object := string(False).
 
-<*'Module id' | use namespace> module = *.
-<*[Module id] | use namespace> module = *.
+<*'Module id' | use namespace> Module = *.
+<*[Module id] | use namespace> Module = *.
 
 <*Object path> (
   <Object> (
-    <*'Object path'> Use namespace::object = *.
-    <*[Object path]> Use namespace::object = *.
+    <*'Object path'> $Object$ object = *.
+    <*[Object path]> $Object$ object = *.
   )
 ).
