@@ -35,7 +35,6 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.statement.AbstractDeclarableVisitor;
 import org.o42a.ast.statement.DeclarableAdapterNode;
 import org.o42a.ast.statement.DeclarableNode;
-import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.MemberById;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -107,7 +106,7 @@ final class OverriderVisitor
 
 		final Distributor distributor = p.distribute();
 		final Ref ref = expression.accept(
-				Interpreter.CLAUSE_DEF_IP.expressionVisitor(),
+				CLAUSE_DEF_IP.expressionVisitor(),
 				distributor);
 
 		if (ref == null) {
@@ -123,7 +122,7 @@ final class OverriderVisitor
 
 		@Override
 		public Ref visitMemberRef(MemberRefNode ref, Distributor p) {
-			return Interpreter.PLAIN_IP.refVisitor().visitMemberRef(ref, p);
+			return CLAUSE_DEF_IP.refVisitor().visitMemberRef(ref, p);
 		}
 
 		@Override
@@ -142,7 +141,7 @@ final class OverriderVisitor
 					location(p, adapter),
 					p,
 					adapterId(adapterType.toStaticTypeRef()),
-					declaredIn(Interpreter.CLAUSE_DEF_IP, member, p));
+					declaredIn(CLAUSE_DEF_IP, member, p));
 		}
 
 		@Override

@@ -21,10 +21,10 @@ From := 0
 To := (`integer) string:: length
 
 <*Range> (
-  <From | range> Substring:: from = integer(
+  <From | range> $Object$ from = integer(
     <*[] | range>
   )
-  <To | range> Substring:: to = integer(
+  <To | range> $Object$ to = integer(
     <*[] | range>
   )
 )
