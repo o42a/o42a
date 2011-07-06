@@ -22,7 +22,6 @@ package org.o42a.core.member;
 import java.util.Map;
 
 import org.o42a.core.Container;
-import org.o42a.util.Chain;
 
 
 public abstract class ContainerMembers {
@@ -44,11 +43,11 @@ public abstract class ContainerMembers {
 	}
 
 	public final void addMember(Member member) {
-		addMember(new MemberEntry(member, false));
+		addEntry(new MemberEntry(member, false));
 	}
 
 	public final void propagateMember(Member overridden) {
-		addMember(new MemberEntry(overridden, true));
+		addEntry(new MemberEntry(overridden, true));
 	}
 
 	public void registerMembers(boolean registerAdapters) {
@@ -85,113 +84,43 @@ public abstract class ContainerMembers {
 
 	protected abstract Map<MemberId, Symbol> symbols();
 
-	protected boolean register(Member member) {
-		members().put(member.getKey(), member);
-		return true;
+	protected void register(MemberKey memberKey, Member member) {
+		members().put(memberKey, member);
 	}
 
-	protected void registerSymbol(Member member) {
+	protected void registerSymbol(MemberId memberId, Member member) {
 		if (member.getVisibility() == Visibility.PRIVATE
 				&& member.isOverride()) {
 			// Only explicitly declared private members registered.
 			return;
 		}
 
-		final MemberId memberId = member.getKey().getMemberId();
 		Symbol symbol = symbols().get(memberId);
 
 		if (symbol != null) {
-			symbol.addMember(member);
+			symbol.addMember(memberId, member);
 		} else {
-			symbol = new Symbol(member);
+			symbol = new Symbol(memberId, member);
 			symbols().put(memberId, symbol);
 		}
 	}
 
-	private void addMember(MemberEntry entry) {
-		if (entry.getMember().getId().getAdapterId() != null) {
+	private void addEntry(MemberEntry entry) {
+
+		final Member member = entry.getMember();
+
+		addEntry(member.getId(), entry);
+		for (MemberId aliasId : member.getAliasIds()) {
+			addEntry(aliasId, entry);
+		}
+	}
+
+	private void addEntry(MemberId id, MemberEntry entry) {
+		if (id.getAdapterId() != null) {
 			this.adapters.add(entry);
 		} else {
 			this.members.add(entry);
 		}
-	}
-
-	private static final class MemberEntries extends Chain<MemberEntry> {
-
-		private MemberEntry registering;
-
-		@Override
-		public String toString() {
-
-			final StringBuilder out = new StringBuilder();
-
-			out.append('{');
-			if (this.registering != null) {
-				out.append("registering: [");
-
-				MemberEntry entry = this.registering;
-				boolean comma = false;
-
-				do {
-					if (comma) {
-						out.append(", ");
-					} else {
-						comma = true;
-					}
-					out.append(entry);
-					entry = entry.next;
-				} while (entry != null);
-
-				out.append(']');
-			}
-			if (!isEmpty()) {
-				if (this.registering != null) {
-					out.append(' ');
-				}
-				out.append("pending: ");
-				out.append(super.toString());
-			}
-			out.append('}');
-
-			return out.toString();
-		}
-
-		@Override
-		protected MemberEntry next(MemberEntry item) {
-			return item.next;
-		}
-
-		@Override
-		protected void setNext(MemberEntry prev, MemberEntry next) {
-			prev.next = next;
-		}
-
-		void registerMembers(ContainerMembers members) {
-
-			for (;;) {
-				if (this.registering == null) {
-					// Registration is not in progress.
-					if (isEmpty()) {
-						// No pending members to register. Exit.
-						return;
-					}
-					// Register first pending.
-					this.registering = getFirst();
-					empty();
-				} else {
-					// Register next pending.
-					this.registering = this.registering.removeNext();
-					if (this.registering == null) {
-						// Nothing to register.
-						// Try for more pending members.
-						continue;
-					}
-				}
-
-				this.registering.register(members);
-			}
-		}
-
 	}
 
 }

@@ -40,6 +40,8 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class Member extends Placed {
 
+	private static final MemberId[] NO_ALIAS_IDS = new MemberId[0];
+	private static final MemberKey[] NO_ALIAS_KEYS = new MemberKey[0];
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
 	private final MemberOwner owner;
@@ -63,6 +65,14 @@ public abstract class Member extends Placed {
 	public abstract MemberId getId();
 
 	public abstract MemberKey getKey();
+
+	public MemberId[] getAliasIds() {
+		return NO_ALIAS_IDS;
+	}
+
+	public MemberKey[] getAliasKeys() {
+		return NO_ALIAS_KEYS;
+	}
 
 	public final String getDisplayName() {
 		return getId().toString();

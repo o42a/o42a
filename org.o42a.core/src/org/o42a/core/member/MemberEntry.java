@@ -20,7 +20,6 @@
 package org.o42a.core.member;
 
 
-
 final class MemberEntry {
 
 	private final Member member;
@@ -33,7 +32,7 @@ final class MemberEntry {
 		this.propagated = propagated;
 	}
 
-	public Member getMember() {
+	public final Member getMember() {
 		return this.member;
 	}
 
@@ -94,8 +93,14 @@ final class MemberEntry {
 		if (member == null) {
 			return;
 		}
+		for (MemberKey aliasKey : member.getAliasKeys()) {
+			members.register(aliasKey, member);
+		}
 
-		members.registerSymbol(member);
+		members.registerSymbol(member.getId(), member);
+		for (MemberId aliasId : member.getAliasIds()) {
+			members.registerSymbol(aliasId, member);
+		}
 	}
 
 	@Override
@@ -118,7 +123,9 @@ final class MemberEntry {
 		}
 
 		// Register new member.
-		return members.register(member) ? member : null;
+		members.register(key, member);
+
+		return member;
 	}
 
 	private Member registerOverridden(
@@ -132,7 +139,9 @@ final class MemberEntry {
 
 			final Member member = createMember(members.getOwner());
 
-			return members.register(member) ? member : null;
+			members.register(key, member);
+
+			return member;
 		}
 
 		// Member already registered.
@@ -157,7 +166,9 @@ final class MemberEntry {
 
 			final Member member = createMember(members.getOwner());
 
-			return members.register(member) ? member : null;
+			members.register(key, member);
+
+			return member;
 		}
 
 		// Both members are propagated.
@@ -174,7 +185,9 @@ final class MemberEntry {
 			// Update the registry with the new member.
 			final Member member = createMember(members.getOwner());
 
-			return members.register(member) ? member : null;
+			members.register(key, member);
+
+			return member;
 		}
 
 		// Otherwise, leave it as is.
