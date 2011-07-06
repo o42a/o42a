@@ -19,12 +19,11 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.ValuePartRef.valuePartRef;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
-import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
@@ -42,11 +41,14 @@ import org.o42a.core.ref.type.StaticTypeRef;
 
 public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
-	public static final RefVisitor REF_VISITOR = new RefVisitor();
-
 	private final OwnerVisitor ownerVisitor = new OwnerVisitor();
+	private Interpreter ip;
 
-	public RefVisitor() {
+	protected RefVisitor() {
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
 	}
 
 	@Override
@@ -80,6 +82,9 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	@Override
 	public Ref visitIntrinsicRef(IntrinsicRefNode ref, Distributor p) {
+		if ("object".equals(ref.getName().getName())) {
+			return objectIntrinsic(ref, p);
+		}
 		return valuePartRef(ref, p);
 	}
 
@@ -102,7 +107,15 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	@Override
 	protected Ref visitRef(RefNode ref, Distributor p) {
 		p.getContext().getLogger().invalidReference(ref);
-		return falseRef(location(p, ref), p);
+		return errorRef(location(p, ref), p);
+	}
+
+	protected Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
+		p.getLogger().error(
+				"prohibited_object_intrinsic",
+				ref,
+				"$object$ intrinsic is allowed only within clauses");
+		return errorRef(location(p, ref), p);
 	}
 
 	protected StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
@@ -110,13 +123,21 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			return null;
 		}
 
-		final Ref declaredIn = declaredInNode.accept(EXPRESSION_VISITOR, p);
+		final Ref declaredIn = declaredInNode.accept(this, p);
 
 		if (declaredIn == null) {
 			return null;
 		}
 
 		return declaredIn.toStaticTypeRef();
+	}
+
+	protected RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+		return this;
+	}
+
+	final void init(Interpreter ip) {
+		this.ip = ip;
 	}
 
 	private final class OwnerVisitor
@@ -162,7 +183,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 				return null;
 			}
 
-			final Ref type = ref.getType().accept(REF_VISITOR, p);
+			final Ref type = ref.getType().accept(adapterTypeVisitor(), p);
 
 			if (type == null) {
 				return null;
@@ -207,7 +228,9 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		protected Owner visitExpression(
 				ExpressionNode expression,
 				Distributor p) {
-			return new Owner(expression.accept(EXPRESSION_VISITOR, p), false);
+			return new Owner(
+					expression.accept(ip().expressionVisitor(), p),
+					false);
 		}
 
 	}

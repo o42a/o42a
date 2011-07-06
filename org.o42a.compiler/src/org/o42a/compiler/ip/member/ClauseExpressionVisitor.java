@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.AncestorVisitor.parseAscendants;
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.Interpreter.location;
 
@@ -62,7 +62,7 @@ final class ClauseExpressionVisitor
 			ClauseBuilder p) {
 
 		final AscendantsDefinition ascendantsDefinition =
-			parseAscendants(ascendants, p.distribute());
+			parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
 
 		if (ascendantsDefinition == null) {
 			return null;
@@ -97,7 +97,7 @@ final class ClauseExpressionVisitor
 			ClauseBuilder p) {
 
 		final Ref ref = expression.accept(
-				EXPRESSION_VISITOR,
+				CLAUSE_DEF_IP.expressionVisitor(),
 				p.distribute());
 
 		if (ref == null) {
@@ -132,7 +132,7 @@ final class ClauseExpressionVisitor
 
 			final Distributor distributor = p.distribute();
 			final AscendantsDefinition ascendantsDefinition =
-				parseAscendants(ascendants, distributor);
+				parseAscendants(CLAUSE_DEF_IP, ascendants, distributor);
 
 			if (ascendantsDefinition == null) {
 				return p.setAscendants(new AscendantsDefinition(
@@ -149,8 +149,9 @@ final class ClauseExpressionVisitor
 				ClauseBuilder p) {
 
 			final Distributor distributor = p.distribute();
-			final Ref ancestor =
-				expression.accept(EXPRESSION_VISITOR, distributor);
+			final Ref ancestor = expression.accept(
+					CLAUSE_DEF_IP.expressionVisitor(),
+					distributor);
 
 			if (ancestor == null) {
 				return p.setAscendants(new AscendantsDefinition(

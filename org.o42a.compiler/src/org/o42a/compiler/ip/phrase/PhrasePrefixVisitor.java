@@ -19,10 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.AncestorVisitor.ANCESTOR_VISITOR;
 import static org.o42a.compiler.ip.AncestorVisitor.impliedAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.noAncestor;
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefix;
 
@@ -54,7 +52,7 @@ final class PhrasePrefixVisitor
 
 		final Distributor distributor = p.distribute();
 		final TypeRef ancestor =
-			expression.accept(ANCESTOR_VISITOR, distributor);
+			expression.accept(p.ip().ancestorVisitor(), distributor);
 
 		if (ancestor == null
 				|| ancestor == impliedAncestor(distributor.getContext())) {
@@ -63,7 +61,7 @@ final class PhrasePrefixVisitor
 		if (ancestor == noAncestor(distributor.getContext())) {
 
 			final Ref sampleRef =
-				expression.accept(EXPRESSION_VISITOR, distributor);
+				expression.accept(p.ip().expressionVisitor(), distributor);
 
 			if (sampleRef == null) {
 				return p.setImpliedAncestor(location(p, expression));

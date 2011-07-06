@@ -21,7 +21,6 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.ValueType.INTEGER;
@@ -31,6 +30,7 @@ import org.o42a.ast.Node;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.operator.LogicalOperatorRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
@@ -38,13 +38,21 @@ import org.o42a.core.Location;
 import org.o42a.core.ref.Ref;
 
 
-public class ExpressionVisitor
+public final class ExpressionVisitor
 		extends AbstractExpressionVisitor<Ref, Distributor> {
 
-	public static final ExpressionVisitor EXPRESSION_VISITOR =
-		new ExpressionVisitor();
+	private final Interpreter ip;
 
-	protected ExpressionVisitor() {
+	protected ExpressionVisitor(Interpreter ip) {
+		this.ip = ip;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
+	}
+
+	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
+		return ip().refVisitor();
 	}
 
 	@Override
@@ -80,7 +88,7 @@ public class ExpressionVisitor
 		case PLUS:
 		case MINUS:
 
-			final Phrase phrase = unary(expression, p);
+			final Phrase phrase = unary(ip(), expression, p);
 
 			if (phrase == null) {
 				return null;
@@ -91,7 +99,7 @@ public class ExpressionVisitor
 		case NOT:
 		case KNOWN:
 		case UNKNOWN:
-			return new LogicalOperatorRef(p.getContext(), expression, p);
+			return new LogicalOperatorRef(ip(), p.getContext(), expression, p);
 		}
 
 		return super.visitUnary(expression, p);
@@ -99,7 +107,7 @@ public class ExpressionVisitor
 
 	@Override
 	public Ref visitBinary(BinaryNode expression, Distributor p) {
-		return binary(expression, p);
+		return binary(ip(), expression, p);
 	}
 
 	@Override
@@ -118,15 +126,15 @@ public class ExpressionVisitor
 	public Ref visitAscendants(AscendantsNode ascendants, Distributor p) {
 		if (ascendants.getAscendants().length == 1) {
 			return ascendants.getAscendants()[0].getAscendant().accept(
-					REF_VISITOR,
+					refVisitor(),
 					p).toStatic();
 		}
-		return ascendants(ascendants, p).toRef();
+		return ascendants(ip(), ascendants, p).toRef();
 	}
 
 	@Override
 	public Ref visitPhrase(PhraseNode phrase, Distributor p) {
-		return phrase(phrase, p).toRef();
+		return phrase(ip(), phrase, p).toRef();
 	}
 
 	@Override
@@ -137,7 +145,7 @@ public class ExpressionVisitor
 
 	@Override
 	protected Ref visitRef(RefNode ref, Distributor p) {
-		return ref.accept(REF_VISITOR, p);
+		return ref.accept(refVisitor(), p);
 	}
 
 	@Override

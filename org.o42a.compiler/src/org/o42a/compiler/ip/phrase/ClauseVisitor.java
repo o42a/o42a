@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
@@ -46,14 +45,14 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 	@Override
 	public Phrase visitBraces(BracesNode braces, Phrase p) {
 		return p.imperative(contentBuilder(
-				new StatementVisitor(p.getContext()),
+				new StatementVisitor(p.ip(), p.getContext()),
 				braces)).getPhrase();
 	}
 
 	@Override
 	public Phrase visitParentheses(ParenthesesNode parentheses, Phrase p) {
 		return p.declarations(contentBuilder(
-				new StatementVisitor(p.getContext()),
+				new StatementVisitor(p.ip(), p.getContext()),
 				parentheses)).getPhrase();
 	}
 
@@ -93,7 +92,7 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 		}
 
 		final Ref value =
-			text.accept(EXPRESSION_VISITOR, p.distribute());
+				text.accept(p.ip().expressionVisitor(), p.distribute());
 
 		if (value != null) {
 			return p.argument(value).getPhrase();

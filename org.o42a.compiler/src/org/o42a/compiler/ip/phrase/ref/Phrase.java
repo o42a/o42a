@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -33,12 +34,21 @@ import org.o42a.core.st.sentence.BlockBuilder;
 
 public class Phrase extends Placed {
 
+	private final Interpreter ip;
 	private PhrasePrefix prefix;
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
 
-	public Phrase(LocationInfo location, Distributor distributor) {
+	public Phrase(
+			Interpreter ip,
+			LocationInfo location,
+			Distributor distributor) {
 		super(location, distributor);
+		this.ip = ip;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
 	}
 
 	public final PhrasePrefix getPrefix() {

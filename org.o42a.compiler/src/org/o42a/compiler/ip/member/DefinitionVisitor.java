@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
-import static org.o42a.compiler.ip.Interpreter.arrayInitializer;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.field.FieldDefinition.arrayDefinition;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
@@ -28,19 +26,24 @@ import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 
 
-public class DefinitionVisitor
+public final class DefinitionVisitor
 		extends AbstractExpressionVisitor<FieldDefinition, FieldDeclaration> {
 
-	public static final DefinitionVisitor DEFINITION_VISITOR =
-		new DefinitionVisitor();
+	private final Interpreter ip;
 
-	private DefinitionVisitor() {
+	public DefinitionVisitor(Interpreter ip) {
+		this.ip = ip;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
 	}
 
 	@Override
@@ -57,7 +60,7 @@ public class DefinitionVisitor
 			FieldDeclaration p) {
 
 		final ArrayInitializer arrayInitializer =
-			arrayInitializer(p.getContext(), brackets, p);
+				ip().arrayInitializer(p.getContext(), brackets, p);
 
 		if (arrayInitializer == null) {
 			return null;
@@ -72,7 +75,7 @@ public class DefinitionVisitor
 			FieldDeclaration p) {
 
 		final ArrayInitializer arrayInitializer =
-			arrayInitializer(p.getContext(), array, p);
+				ip().arrayInitializer(p.getContext(), array, p);
 
 		if (arrayInitializer == null) {
 			return null;
@@ -87,7 +90,7 @@ public class DefinitionVisitor
 			FieldDeclaration p) {
 
 		final Ref definition =
-			expression.accept(EXPRESSION_VISITOR, p.distribute());
+				expression.accept(ip().expressionVisitor(), p.distribute());
 
 		if (definition == null) {
 			return null;

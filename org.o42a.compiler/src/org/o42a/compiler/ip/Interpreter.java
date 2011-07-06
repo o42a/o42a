@@ -19,25 +19,77 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
-import static org.o42a.compiler.ip.TypeVisitor.TYPE_VISITOR;
 import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.ref.TypeNode;
+import org.o42a.ast.ref.TypeNodeVisitor;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.*;
 
 
-public class Interpreter {
+public enum Interpreter {
+
+	PLAIN_IP(new RefVisitor()),
+	CLAUSE_DEF_IP(new ClauseDefRefVisitor()),
+	CLAUSE_DECL_IP(new ClauseDefRefVisitor());
+
+	private final RefNodeVisitor<Ref, Distributor> refVisitor;
+	private final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor;
+	private final
+	ExpressionNodeVisitor<FieldDefinition, FieldDeclaration> definitionVisitor;
+	private final ExpressionNodeVisitor<TypeRef, Distributor> ancestorVisitor;
+	private final
+	ExpressionNodeVisitor<TypeRef, Distributor> staticAnncestorVisitor;
+	private final TypeNodeVisitor<TypeRef, Distributor> typeVisitor;
+
+	Interpreter(RefVisitor refVisitor) {
+		this.refVisitor = refVisitor;
+		refVisitor.init(this);
+		this.expressionVisitor = new ExpressionVisitor(this);
+		this.definitionVisitor = new DefinitionVisitor(this);
+		this.ancestorVisitor = new AncestorVisitor(this);
+		this.staticAnncestorVisitor = new StaticAncestorVisitor(this);
+		this.typeVisitor = new TypeVisitor(this);
+	}
+
+	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
+		return this.refVisitor;
+	}
+
+	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {
+		return this.expressionVisitor;
+	}
+
+
+	public final ExpressionNodeVisitor<FieldDefinition, FieldDeclaration>
+	definitionVisitor() {
+		return this.definitionVisitor;
+	}
+
+	public final ExpressionNodeVisitor<TypeRef, Distributor> ancestorVisitor() {
+		return this.ancestorVisitor;
+	}
+
+	public final ExpressionNodeVisitor<TypeRef, Distributor>
+	staticAnncestorVisitor() {
+		return this.staticAnncestorVisitor;
+	}
+
+	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor() {
+		return this.typeVisitor;
+	}
 
 	public static BlockBuilder contentBuilder(
 			StatementVisitor statementVisitor,
@@ -45,7 +97,7 @@ public class Interpreter {
 		return new ContentBuilder(statementVisitor, node);
 	}
 
-	public static ArrayInitializer arrayInitializer(
+	public ArrayInitializer arrayInitializer(
 			CompilerContext context,
 			ArrayNode node,
 			FieldDeclaration declaration) {
@@ -57,7 +109,7 @@ public class Interpreter {
 			itemType = null;
 		} else {
 			itemType =
-				itemTypeNode.accept(TYPE_VISITOR, declaration.distribute());
+				itemTypeNode.accept(typeVisitor(), declaration.distribute());
 		}
 
 		return arrayInitializer(
@@ -68,7 +120,7 @@ public class Interpreter {
 				declaration);
 	}
 
-	public static ArrayInitializer arrayInitializer(
+	public ArrayInitializer arrayInitializer(
 			CompilerContext context,
 			BracketsNode node,
 			FieldDeclaration declaration) {
@@ -120,7 +172,7 @@ public class Interpreter {
 		return conjunction[0].getStatement().accept(UNWRAP_VISITOR, null);
 	}
 
-	private static ArrayInitializer arrayInitializer(
+	private ArrayInitializer arrayInitializer(
 			CompilerContext context,
 			Node node,
 			TypeRef itemType,
@@ -141,7 +193,7 @@ public class Interpreter {
 				continue;
 			}
 
-			final Ref item = itemNode.accept(EXPRESSION_VISITOR, distributor);
+			final Ref item = itemNode.accept(expressionVisitor(), distributor);
 
 			if (item == null) {
 				ok = false;
@@ -214,9 +266,6 @@ public class Interpreter {
 				}
 			}
 		}
-	}
-
-	private Interpreter() {
 	}
 
 	private static final class ContentBuilder extends BlockBuilder {

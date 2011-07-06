@@ -19,16 +19,13 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.addContent;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.clause;
 import static org.o42a.compiler.ip.member.FieldInterpreter.field;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.expression.BracesNode;
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.statement.*;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
@@ -41,10 +38,20 @@ import org.o42a.core.st.sentence.Statements;
 public class StatementVisitor
 		extends AbstractStatementVisitor<Ref, Statements<?>> {
 
+	private final Interpreter ip;
 	private final CompilerContext context;
 
-	public StatementVisitor(CompilerContext context) {
+	public StatementVisitor(Interpreter ip, CompilerContext context) {
+		this.ip = ip;
 		this.context = context;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
+	}
+
+	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {
+		return ip().expressionVisitor();
 	}
 
 	public final CompilerContext getContext() {
@@ -103,8 +110,8 @@ public class StatementVisitor
 
 		final Distributor distributor = p.nextDistributor();
 		final Ref destination =
-				destinationNode.accept(EXPRESSION_VISITOR, distributor);
-		final Ref value = valueNode.accept(EXPRESSION_VISITOR, distributor);
+				destinationNode.accept(expressionVisitor(), distributor);
+		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
 		if (destination == null || value == null) {
 			return null;
@@ -127,7 +134,7 @@ public class StatementVisitor
 		}
 
 		final Distributor distributor = p.nextDistributor();
-		final Ref value = valueNode.accept(EXPRESSION_VISITOR, distributor);
+		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
 		if (value == null) {
 			return null;
@@ -140,7 +147,7 @@ public class StatementVisitor
 
 	@Override
 	public Ref visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
-		return field(getContext(), declarator, p);
+		return field(ip(), getContext(), declarator, p);
 	}
 
 	@Override
@@ -166,7 +173,7 @@ public class StatementVisitor
 	protected Ref visitExpression(ExpressionNode expression, Statements<?> p) {
 
 		final Distributor distributor = p.nextDistributor();
-		final Ref ref = expression.accept(EXPRESSION_VISITOR, distributor);
+		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
 		if (ref != null) {
 			p.expression(ref);

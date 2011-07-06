@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.member.ClauseKeyVisitor.CLAUSE_KEY_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderVisitor.DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderVisitor.OVERRIDER_VISITOR;
@@ -136,7 +136,7 @@ public class ClauseInterpreter {
 			}
 
 			final Ref reusedRef =
-				clause.accept(REF_VISITOR, builder.distribute());
+					clause.accept(CLAUSE_DECL_IP.refVisitor(), builder.distribute());
 
 			if (reusedRef == null) {
 				continue;

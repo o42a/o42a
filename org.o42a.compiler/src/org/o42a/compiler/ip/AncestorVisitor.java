@@ -19,10 +19,8 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.ExpressionVisitor.EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
 import static org.o42a.core.Distributor.declarativeDistributor;
 
 import org.o42a.ast.expression.*;
@@ -47,12 +45,8 @@ import org.o42a.util.log.LoggableData;
 public class AncestorVisitor
 		extends AbstractExpressionVisitor<TypeRef, Distributor> {
 
-	public static final AncestorVisitor ANCESTOR_VISITOR =
-		new AncestorVisitor();
-	public static final StaticAncestorVisitor STATIC_ANCESTOR_VISITOR =
-		new StaticAncestorVisitor();
-
 	public static TypeRef parseAncestor(
+			Interpreter ip,
 			AscendantsNode ascendants,
 			Distributor distributor) {
 
@@ -60,23 +54,24 @@ public class AncestorVisitor
 
 		if (firstAscendant.getSeparator() == null) {
 			return firstAscendant.getAscendant().accept(
-					ANCESTOR_VISITOR,
+					ip.ancestorVisitor(),
 					distributor);
 		}
 
 		return firstAscendant.getAscendant().accept(
-				STATIC_ANCESTOR_VISITOR,
+				ip.staticAnncestorVisitor(),
 				distributor);
 	}
 
 	public static AscendantsDefinition parseAscendants(
+			Interpreter ip,
 			AscendantsNode node,
 			Distributor distributor) {
 
 		AscendantsDefinition ascendants =
 			new AscendantsDefinition(location(distributor, node), distributor);
 		final AscendantNode[] ascendantNodes = node.getAscendants();
-		final TypeRef ancestor = parseAncestor(node, distributor);
+		final TypeRef ancestor = parseAncestor(ip, node, distributor);
 
 		if (ancestor != noAncestor(distributor.getContext())
 				&& ancestor == impliedAncestor(distributor.getContext())) {
@@ -90,7 +85,7 @@ public class AncestorVisitor
 			if (sampleNode != null) {
 
 				final Ref sampleRef =
-					sampleNode.accept(REF_VISITOR, distributor);
+					sampleNode.accept(ip.refVisitor(), distributor);
 
 				if (sampleRef != null) {
 					ascendants = ascendants.addSample(
@@ -104,6 +99,7 @@ public class AncestorVisitor
 
 	private static TypeRef impliedAncestor;
 	private static TypeRef noAncestor;
+	private final Interpreter ip;
 
 	public static TypeRef impliedAncestor(CompilerContext context) {
 		if (impliedAncestor == null) {
@@ -119,7 +115,12 @@ public class AncestorVisitor
 		return noAncestor;
 	}
 
-	private AncestorVisitor() {
+	AncestorVisitor(Interpreter ip) {
+		this.ip = ip;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
 	}
 
 	@Override
@@ -147,7 +148,7 @@ public class AncestorVisitor
 	@Override
 	protected TypeRef visitRef(RefNode ref, Distributor p) {
 
-		final Ref result = ref.accept(EXPRESSION_VISITOR, p);
+		final Ref result = ref.accept(ip().expressionVisitor(), p);
 
 		return result != null ? result.toTypeRef() : null;
 	}
@@ -157,18 +158,6 @@ public class AncestorVisitor
 			ExpressionNode expression,
 			Distributor p) {
 		return noAncestor(p.getContext());
-	}
-
-	private static class StaticAncestorVisitor extends AncestorVisitor {
-
-		@Override
-		protected TypeRef visitRef(RefNode ref, Distributor p) {
-
-			final Ref result = ref.accept(EXPRESSION_VISITOR, p);
-
-			return result != null ? result.toStaticTypeRef() : null;
-		}
-
 	}
 
 	private static final class NoRef extends Ref {

@@ -20,8 +20,6 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.RefVisitor.REF_VISITOR;
-import static org.o42a.compiler.ip.TypeVisitor.TYPE_VISITOR;
 import static org.o42a.compiler.ip.member.FieldInterpreter.ADAPTER_FIELD_VISITOR;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.memberName;
@@ -32,6 +30,7 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.statement.*;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
@@ -47,10 +46,15 @@ final class FieldDeclarableVisitor
 	private static final VisibilityVisitor VISIBILITY_VISITOR =
 		new VisibilityVisitor();
 
+	private final Interpreter ip;
 	private final CompilerContext context;
 	private final DeclaratorNode declarator;
 
-	FieldDeclarableVisitor(CompilerContext context, DeclaratorNode declarator) {
+	FieldDeclarableVisitor(
+			Interpreter ip,
+			CompilerContext context,
+			DeclaratorNode declarator) {
+		this.ip = ip;
 		this.context = context;
 		this.declarator = declarator;
 	}
@@ -121,6 +125,7 @@ final class FieldDeclarableVisitor
 	}
 
 	static StaticTypeRef declaredIn(
+			Interpreter ip,
 			MemberRefNode memberRef,
 			Distributor distributor) {
 
@@ -130,7 +135,7 @@ final class FieldDeclarableVisitor
 			return null;
 		}
 
-		final Ref declaredIn = node.accept(REF_VISITOR, distributor);
+		final Ref declaredIn = node.accept(ip.refVisitor(), distributor);
 
 		if (declaredIn == null) {
 			return null;
@@ -170,7 +175,7 @@ final class FieldDeclarableVisitor
 		} else {
 
 			final TypeRef type =
-				node.accept(TYPE_VISITOR, declaration.distribute());
+				node.accept(this.ip.typeVisitor(), declaration.distribute());
 
 			if (type != null) {
 				result = declaration.setType(type);
@@ -240,7 +245,7 @@ final class FieldDeclarableVisitor
 		}
 
 		final StaticTypeRef declaredIn =
-			declaredIn(memberRef, declaration.distribute());
+			declaredIn(this.ip, memberRef, declaration.distribute());
 
 		if (declaredIn == null) {
 			return declaration;
