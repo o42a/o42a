@@ -37,8 +37,8 @@ public final class Symbol {
 	private final EnumMap<Accessor, IdentityHashMap<Scope, Member>> all =
 		new EnumMap<Accessor, IdentityHashMap<Scope, Member>>(Accessor.class);
 
-	Symbol(Member member) {
-		this.memberId = member.getKey().getMemberId();
+	Symbol(MemberId memberId, Member member) {
+		this.memberId = memberId;
 		registerMember(member);
 	}
 
@@ -85,8 +85,8 @@ public final class Symbol {
 		return out.toString();
 	}
 
-	final void addMember(Member member) {
-		assert getMemberId().equals(member.getKey().getMemberId()) :
+	final void addMember(MemberId memberId, Member member) {
+		assert getMemberId().equals(memberId) :
 			"Wrong field: \"" + member.getDisplayName()
 			+ "\", but \"" + getMemberId() + "\" expected";
 		registerMember(member);

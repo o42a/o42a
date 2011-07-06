@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.member.MemberId.clauseName;
+
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
@@ -32,6 +34,8 @@ public abstract class MemberClause extends Member {
 
 	private final ClauseDeclaration declaration;
 	private MemberKey key;
+	private MemberId[] aliasIds;
+	private MemberKey[] aliasKeys;
 
 	public MemberClause(MemberOwner owner, ClauseDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -49,7 +53,12 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public MemberKey getKey() {
+	public final MemberId getId() {
+		return this.declaration.getMemberId();
+	}
+
+	@Override
+	public final MemberKey getKey() {
 		if (this.key != null) {
 			return this.key;
 		}
@@ -57,8 +66,61 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public MemberId getId() {
-		return this.declaration.getMemberId();
+	public MemberId[] getAliasIds() {
+		if (this.aliasIds != null) {
+			return this.aliasIds;
+		}
+
+		final String name = getDeclaration().getName();
+
+		if (name == null) {
+			return this.aliasIds = super.getAliasIds();
+		}
+
+		final MemberId id = getId();
+		final String memberName = id.getName();
+
+		if (memberName == null) {
+			return this.aliasIds = super.getAliasIds();
+		}
+
+		final MemberId aliasName = clauseName(name);
+
+		if (memberName.equals(aliasName.getName())) {
+			return this.aliasIds = super.getAliasIds();
+		}
+
+		final MemberId aliasId;
+		final MemberId enclosingId = id.getEnclosingId();
+
+		if (enclosingId != null) {
+			aliasId = enclosingId.append(aliasName);
+		} else {
+			aliasId = aliasName;
+		}
+
+		return this.aliasIds = new MemberId[] {aliasId};
+	}
+
+	@Override
+	public MemberKey[] getAliasKeys() {
+		if (this.aliasKeys != null) {
+			return this.aliasKeys;
+		}
+
+		final MemberId[] aliasIds = getAliasIds();
+
+		if (aliasIds.length == 0) {
+			return this.aliasKeys = super.getAliasKeys();
+		}
+
+		final MemberKey[] aliasKeys = new MemberKey[aliasIds.length];
+
+		for (int i = 0; i < aliasIds.length; ++i) {
+			aliasKeys[i] = aliasIds[i].key(getScope());
+		}
+
+		return this.aliasKeys = aliasKeys;
 	}
 
 	@Override
