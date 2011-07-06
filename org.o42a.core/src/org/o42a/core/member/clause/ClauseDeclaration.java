@@ -20,7 +20,7 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.clause.ClauseId.byAdapterType;
 
 import org.o42a.core.Distributor;
@@ -144,9 +144,9 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		clone.clauseId = ClauseId.NAME;
 		clone.name = name;
 		if (this.groupId != null) {
-			clone.memberId = this.groupId.append(memberName(name));
+			clone.memberId = this.groupId.append(clauseName(name));
 		} else {
-			clone.memberId = memberName(name);
+			clone.memberId = clauseName(name);
 		}
 
 		return clone;

@@ -35,7 +35,7 @@ public class ClauseReuseTest extends CompilerTestCase {
 		compile(
 				"A := string(",
 				"  Foo := 1.",
-				"  <*[foo value] | a> foo = *.",
+				"  <*[foo value] | $object$> foo = *.",
 				"  <bar> (<*'value'>).",
 				").",
 				"B := a[2]bar'b'.");

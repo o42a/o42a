@@ -19,7 +19,6 @@
 */
 package org.o42a.intrinsic.operator;
 
-import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
@@ -161,7 +160,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 		}
 
 		final Member member =
-			member(memberName(this.leftOperandName), Accessor.DECLARATION);
+				field(this.leftOperandName, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath();
 
 		return this.leftOperand = path.target(this, distribute());
@@ -173,7 +172,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 		}
 
 		final Member member =
-			member(memberName(this.rightOperandName), Accessor.DECLARATION);
+				field(this.rightOperandName, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath();
 
 		return this.rightOperand = path.target(this, distribute());

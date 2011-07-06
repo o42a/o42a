@@ -20,6 +20,8 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
+import static org.o42a.core.member.MemberId.clauseName;
+import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.SignNode;
@@ -32,6 +34,7 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
@@ -41,9 +44,32 @@ import org.o42a.core.st.sentence.*;
 
 public enum Interpreter {
 
-	PLAIN_IP(new RefVisitor()),
-	CLAUSE_DEF_IP(new ClauseDefRefVisitor()),
-	CLAUSE_DECL_IP(new ClauseDefRefVisitor());
+	PLAIN_IP(new RefVisitor()) {
+
+		@Override
+		public MemberId memberName(String name) {
+			return fieldName(name);
+		}
+
+	},
+
+	CLAUSE_DEF_IP(new ClauseRefVisitor()) {
+
+		@Override
+		public MemberId memberName(String name) {
+			return fieldName(name);
+		}
+
+	},
+
+	CLAUSE_DECL_IP(new ClauseRefVisitor()) {
+
+		@Override
+		public MemberId memberName(String name) {
+			return clauseName(name);
+		}
+
+	};
 
 	private final RefNodeVisitor<Ref, Distributor> refVisitor;
 	private final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor;
@@ -72,7 +98,6 @@ public enum Interpreter {
 		return this.expressionVisitor;
 	}
 
-
 	public final ExpressionNodeVisitor<FieldDefinition, FieldDeclaration>
 	definitionVisitor() {
 		return this.definitionVisitor;
@@ -96,6 +121,8 @@ public enum Interpreter {
 			BlockNode<?> node) {
 		return new ContentBuilder(statementVisitor, node);
 	}
+
+	public abstract MemberId memberName(String name);
 
 	public ArrayInitializer arrayInitializer(
 			CompilerContext context,

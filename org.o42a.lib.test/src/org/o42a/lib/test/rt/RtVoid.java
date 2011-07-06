@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test.rt;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.value.Value.voidValue;
 
@@ -44,7 +44,7 @@ public class RtVoid extends IntrinsicBuiltin {
 				fieldDeclaration(
 						module,
 						module.distribute(),
-						memberName("rt-void")));
+						fieldName("rt-void")));
 		setValueType(ValueType.VOID);
 	}
 

@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.FieldInterpreter.ADAPTER_FIELD_VISITOR;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 
@@ -91,7 +91,7 @@ final class ClauseKeyVisitor
 					location(p, ref),
 					p,
 					name.getName(),
-					memberName(name.getName()));
+					clauseName(name.getName()));
 		}
 
 		if (!implicit) {

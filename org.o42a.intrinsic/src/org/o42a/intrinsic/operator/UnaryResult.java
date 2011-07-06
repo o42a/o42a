@@ -19,7 +19,6 @@
 */
 package org.o42a.intrinsic.operator;
 
-import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.object.IntrinsicBuiltin;
@@ -137,7 +136,7 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 		}
 
 		final Member member =
-			member(memberName(this.operandName), Accessor.DECLARATION);
+				field(this.operandName, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath();
 
 		return this.operand = path.target(this, distribute());

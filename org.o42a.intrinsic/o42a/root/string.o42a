@@ -18,8 +18,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 <*Addition> Strings: concat(
-  <@Operators: add | summand> What = string
-  <Summand> (
+  <@Operators: add | concat with> What = string
+  <Concat with> (
     <@Operators: operand> With = string
   )
 )

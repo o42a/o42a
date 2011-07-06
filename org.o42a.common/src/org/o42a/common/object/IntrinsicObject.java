@@ -20,7 +20,7 @@
 package org.o42a.common.object;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -66,10 +66,7 @@ public abstract class IntrinsicObject extends PlainObject {
 		final Distributor distributor =
 			declarativeDistributor(enclosingContainer);
 
-		return fieldDeclaration(
-				location,
-				distributor,
-				memberName(name));
+		return fieldDeclaration(location, distributor, fieldName(name));
 	}
 
 	private ObjectMemberRegistry memberRegistry;

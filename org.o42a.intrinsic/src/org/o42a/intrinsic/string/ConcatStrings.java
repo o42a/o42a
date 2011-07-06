@@ -25,6 +25,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -127,7 +128,7 @@ final class ConcatStrings extends IntrinsicBuiltin {
 			return this.what;
 		}
 
-		final MemberKey fromKey = member("what").getKey();
+		final MemberKey fromKey = field("what", Accessor.DECLARATION).getKey();
 
 		return this.what = fromKey.toPath().target(this, distribute());
 	}
@@ -137,7 +138,7 @@ final class ConcatStrings extends IntrinsicBuiltin {
 			return this.with;
 		}
 
-		final MemberKey toKey = member("with").getKey();
+		final MemberKey toKey = field("with", Accessor.DECLARATION).getKey();
 
 		return this.with = toKey.toPath().target(this, distribute());
 	}

@@ -22,7 +22,6 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.ValuePartRef.valuePartRef;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.memberName;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
@@ -48,6 +47,9 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	public final Interpreter ip() {
+		if (this.ip == null) {
+			System.err.println();
+		}
 		return this.ip;
 	}
 
@@ -136,7 +138,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		return this;
 	}
 
-	final void init(Interpreter ip) {
+	protected final void init(Interpreter ip) {
 		this.ip = ip;
 	}
 
@@ -163,14 +165,14 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			if (owner != null) {
 				return owner.memberRefOwner(
 						location(p, ref),
-						memberName(ref.getName().getName()),
+						ip().memberName(ref.getName().getName()),
 						declaredIn);
 			}
 
 			return new Owner(new MemberById(
 					location(p, ref.getName()),
 					p,
-					memberName(ref.getName().getName()),
+					ip().memberName(ref.getName().getName()),
 					declaredIn));
 		}
 

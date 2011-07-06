@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.console.impl;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.use.User.dummyUser;
@@ -55,7 +55,7 @@ public class Print extends IntrinsicBuiltin {
 				fieldDeclaration(
 						module,
 						module.distribute(),
-						memberName(name))
+						fieldName(name))
 				.prototype());
 		this.funcName = funcName;
 	}
@@ -95,7 +95,7 @@ public class Print extends IntrinsicBuiltin {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 		final Path printToConsole =
-			memberName("print_to_console").key(enclosingScope).toPath();
+				fieldName("print_to_console").key(enclosingScope).toPath();
 
 		return new Ascendants(this).setAncestor(
 				printToConsole.target(
@@ -109,8 +109,7 @@ public class Print extends IntrinsicBuiltin {
 			return this.text;
 		}
 
-		final MemberKey key =
-				member(memberName("text"), Accessor.OWNER).getKey();
+		final MemberKey key = field("text", Accessor.DECLARATION).getKey();
 
 		return this.text = key.toPath().target(this, distribute());
 	}

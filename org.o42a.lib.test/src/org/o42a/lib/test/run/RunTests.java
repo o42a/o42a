@@ -19,12 +19,12 @@
 */
 package org.o42a.lib.test.run;
 
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
 
 import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.core.Location;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Statements;
@@ -44,7 +44,7 @@ public class RunTests extends IntrinsicDirective {
 								module.getContext(),
 								new LoggableData("<run tests>")),
 						module.distribute(),
-						MemberId.memberName("run_tests"))
+						fieldName("run_tests"))
 				.prototype());
 		this.module = module;
 	}

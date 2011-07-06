@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 import static org.o42a.util.use.User.dummyUser;
@@ -69,7 +69,7 @@ class PhraseSubContext extends PhraseContext {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
-				memberName(name),
+				clauseName(name),
 				name);
 	}
 

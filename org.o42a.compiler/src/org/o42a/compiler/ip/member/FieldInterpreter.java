@@ -96,6 +96,10 @@ public class FieldInterpreter {
 
 	private static final class AdapterFieldVisitor extends RefVisitor {
 
+		AdapterFieldVisitor() {
+			init(Interpreter.PLAIN_IP);
+		}
+
 		@Override
 		protected StaticTypeRef declaredIn(
 				RefNode declaredInNode,

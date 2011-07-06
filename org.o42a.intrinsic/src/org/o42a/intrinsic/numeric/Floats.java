@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.common.adapter.FloatByString;
@@ -39,7 +39,7 @@ public class Floats extends IntrinsicObject {
 				fieldDeclaration(
 						root,
 						root.distribute(),
-						memberName("floats")));
+						fieldName("floats")));
 		setValueType(ValueType.VOID);
 	}
 

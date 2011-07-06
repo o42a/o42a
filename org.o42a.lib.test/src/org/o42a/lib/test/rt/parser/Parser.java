@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.common.object.IntrinsicObject;
@@ -38,7 +38,7 @@ public class Parser extends IntrinsicObject {
 				fieldDeclaration(
 						module,
 						module.distribute(),
-						memberName("parser")));
+						fieldName("parser")));
 		setValueType(ValueType.VOID);
 	}
 

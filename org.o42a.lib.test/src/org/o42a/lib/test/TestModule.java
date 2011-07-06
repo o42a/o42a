@@ -84,7 +84,7 @@ public class TestModule extends Module {
 
 	private Obj objectByName(UserInfo user, String name) {
 
-		final Member member = member(name);
+		final Member member = field(name);
 
 		if (member == null) {
 			getLogger().unresolved(this, toString() + ':' + name);

@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.common.adapter.ByString;
 import org.o42a.core.LocationInfo;
@@ -69,7 +69,7 @@ final class ParseString extends ByString<String> {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 		final Path ancestorPath = enclosingScope.getEnclosingScopePath().append(
-				memberName("rt-string")
+				fieldName("rt-string")
 				.key(enclosingScope.getEnclosingScope()));
 
 		return new Ascendants(this).setAncestor(

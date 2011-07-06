@@ -29,32 +29,32 @@ final class MemberName extends MemberId {
 	}
 
 	@Override
-	public boolean isValid() {
+	public final boolean isValid() {
 		return true;
 	}
 
 	@Override
-	public String getName() {
+	public final String getName() {
 		return this.name;
 	}
 
 	@Override
-	public AdapterId getAdapterId() {
+	public final AdapterId getAdapterId() {
 		return null;
 	}
 
 	@Override
-	public boolean containsAdapterId() {
+	public final boolean containsAdapterId() {
 		return false;
 	}
 
 	@Override
-	public String toName() {
+	public final String toName() {
 		return this.name;
 	}
 
 	@Override
-	public AdapterId toAdapterId() {
+	public final AdapterId toAdapterId() {
 		return null;
 	}
 
@@ -74,15 +74,10 @@ final class MemberName extends MemberId {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		MemberName other = (MemberName) obj;
-		if (this.name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!this.name.equals(other.name)) {
-			return false;
-		}
-		return true;
+
+		final MemberName other = (MemberName) obj;
+
+		return this.name.equals(other.name);
 	}
 
 	@Override

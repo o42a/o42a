@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
@@ -56,7 +56,7 @@ import org.o42a.util.use.UserInfo;
 
 public final class ComparisonRef extends ObjectConstructor {
 
-	private static final MemberId COMPARISON = memberName("_cmp");
+	private static final MemberId COMPARISON = fieldName("_cmp");
 
 	private final Interpreter ip;
 	private final BinaryNode node;

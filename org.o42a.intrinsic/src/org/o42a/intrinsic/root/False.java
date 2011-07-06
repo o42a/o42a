@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.member.MemberId.memberName;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.value.Value.falseValue;
 
@@ -45,7 +45,7 @@ public final class False extends IntrinsicBuiltin {
 	public False(Root root) {
 		super(
 				root.toMemberOwner(),
-				fieldDeclaration(root, root.distribute(), memberName("false")));
+				fieldDeclaration(root, root.distribute(), fieldName("false")));
 	}
 
 	@Override

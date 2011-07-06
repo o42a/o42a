@@ -48,17 +48,17 @@ public final class AbsolutePath extends Path {
 		super(true, fragments);
 	}
 
-	public AbsolutePath append(CompilerContext context, String... names) {
+	public AbsolutePath append(CompilerContext context, String... fields) {
 
 		AbsolutePath path = this;
 		Obj object = resolveArtifact(context).toObject();
 
-		for (String name : names) {
+		for (String field : fields) {
 
-			final Member member = object.member(name);
+			final Member member = object.field(field);
 
 			assert member != null :
-				"Member \"" + name + "\" not found in " + object;
+				"Field \"" + field + "\" not found in " + object;
 
 			path = path.append(member.getKey());
 			object = member.substance(dummyUser()).toObject();
