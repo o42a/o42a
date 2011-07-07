@@ -67,7 +67,7 @@ public class ParentRefParser implements Parser<ParentRefNode> {
 					ParentRefNode.Qualifier.PARENT);
 
 		return context.acceptComments(
-				true,
+				false,
 				new ParentRefNode(name, qualifier));
 	}
 

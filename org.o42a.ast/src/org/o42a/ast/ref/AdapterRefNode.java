@@ -77,7 +77,9 @@ public class AdapterRefNode extends AbstractRefNode {
 	public void printContent(StringBuilder out) {
 		this.owner.printContent(out);
 		this.qualifier.printContent(out);
-		this.type.printContent(out);
+		if (this.type != null) {
+			this.type.printContent(out);
+		}
 		if (this.retention != null) {
 			this.retention.printContent(out);
 		}

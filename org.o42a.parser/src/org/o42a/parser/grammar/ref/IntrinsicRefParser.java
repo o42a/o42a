@@ -53,14 +53,14 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 					context.current(),
 					IntrinsicRefNode.Boundary.DOLLAR);
 
-		context.skipComments(true, prefix);
+		context.skipComments(false, prefix);
 
 		final NameNode name = context.push(NAME);
 
 		if (name == null) {
 			return null;
 		}
-		context.skipComments(true, name);
+		context.skipComments(false, name);
 		if (context.next() != '$') {
 			return null;
 		}
@@ -76,7 +76,7 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 					IntrinsicRefNode.Boundary.DOLLAR);
 
 		return context.acceptComments(
-				true,
+				false,
 				new IntrinsicRefNode(prefix, name, suffix));
 	}
 

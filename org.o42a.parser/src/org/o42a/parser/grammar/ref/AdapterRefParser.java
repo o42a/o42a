@@ -113,7 +113,7 @@ public class AdapterRefParser implements Parser<AdapterRefNode> {
 			context.acceptAll();
 
 			return context.acceptComments(
-					true,
+					false,
 					new SignNode<Qualifier>(
 							start,
 							context.current(),

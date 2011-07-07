@@ -134,7 +134,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 						context.firstUnaccepted(),
 						targetKind);
 
-			return context.acceptComments(true, result);
+			return context.acceptComments(false, result);
 		}
 
 	}

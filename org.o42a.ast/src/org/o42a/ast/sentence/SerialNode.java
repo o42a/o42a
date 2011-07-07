@@ -69,7 +69,7 @@ public class SerialNode extends AbstractNode {
 
 	public enum Separator implements SignType {
 
-		THAN;
+		THEN;
 
 		@Override
 		public String getSign() {

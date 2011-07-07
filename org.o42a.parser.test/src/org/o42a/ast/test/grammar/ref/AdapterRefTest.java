@@ -89,11 +89,12 @@ public class AdapterRefTest extends GrammarTestCase {
 
 	@Test
 	public void nlAfterQualifier() {
+		expectError("missing_type");
 
 		final AdapterRefNode ref = parse("foo@@\nbar");
 
 		assertName("foo", ref.getOwner());
-		assertName("bar", ref.getType());
+		assertNull("bar", ref.getType());
 		assertNull(ref.getDeclaredIn());
 	}
 
@@ -109,12 +110,13 @@ public class AdapterRefTest extends GrammarTestCase {
 
 	@Test
 	public void nlAfterRetention() {
+		expectError("missing_declared_in");
 
 		final AdapterRefNode ref = parse("foo @@bar @\nbaz");
 
 		assertName("foo", ref.getOwner());
 		assertName("bar", ref.getType());
-		assertName("baz", ref.getDeclaredIn());
+		assertNull(ref.getDeclaredIn());
 	}
 
 	private AdapterRefNode parse(String text) {

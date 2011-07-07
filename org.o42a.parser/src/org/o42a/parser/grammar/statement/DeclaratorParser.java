@@ -146,7 +146,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 						context.firstUnaccepted(),
 						type);
 
-			return context.acceptComments(true, assignment);
+			return context.acceptComments(false, assignment);
 		}
 
 	}
