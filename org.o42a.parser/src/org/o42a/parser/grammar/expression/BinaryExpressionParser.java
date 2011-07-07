@@ -153,7 +153,7 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 						context.current().fix(),
 						operator);
 
-			return context.acceptComments(true, result);
+			return context.acceptComments(false, result);
 		}
 
 	}

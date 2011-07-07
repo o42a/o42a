@@ -102,7 +102,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 			context.acceptAll();
 
 			return context.acceptComments(
-					true,
+					false,
 					new SignNode<Qualifier>(
 							start,
 							context.current(),
@@ -130,7 +130,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 			context.acceptButLast();
 
 			return context.acceptComments(
-					true,
+					false,
 					new SignNode<MemberRetention>(
 							start,
 							context.current(),

@@ -88,8 +88,7 @@ public class MemberRefTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("foo:\nbar");
 
-		assertName("foo", ref.getOwner());
-		assertEquals("bar", ref.getName().getName());
+		assertName("foo", ref);
 	}
 
 	@Test
@@ -104,12 +103,13 @@ public class MemberRefTest extends GrammarTestCase {
 
 	@Test
 	public void nlAfterRetention() {
+		expectError("missing_declared_in");
 
 		final MemberRefNode ref = parse("foo: bar @\nbaz");
 
 		assertName("foo", ref.getOwner());
 		assertEquals("bar", ref.getName().getName());
-		assertName("baz", ref.getDeclaredIn());
+		assertNull(ref.getDeclaredIn());
 	}
 
 	private MemberRefNode parse(String text) {

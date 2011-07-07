@@ -20,10 +20,10 @@
 Module := string(False)
 Object := string(False)
 
-<*'Module id' | $object$> Module = *.
-<*[Module id] | $object$> Module = *.
+<*'Module id' | $object$> Module = *
+<*[Module id] | $object$> Module = *
 
 <Object> (
-  <*'Object path'> $Object$ object = *.
-  <*[Object path]> $Object$ object = *.
+  <*'Object path'> $Object$ object = *
+  <*[Object path]> $Object$ object = *
 )

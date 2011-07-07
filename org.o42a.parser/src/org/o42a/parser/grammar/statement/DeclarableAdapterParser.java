@@ -54,7 +54,7 @@ public class DeclarableAdapterParser implements Parser<DeclarableAdapterNode> {
 					context.current(),
 					DeclarableAdapterNode.Prefix.ADAPTER);
 
-		context.skipComments(true, prefix);
+		context.skipComments(false, prefix);
 
 		final RefNode ref = context.push(ref());
 

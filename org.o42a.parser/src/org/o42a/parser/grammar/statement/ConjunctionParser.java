@@ -87,7 +87,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 				separator = new SignNode<Separator>(
 						separatorStart,
 						context.current(),
-						Separator.THAN);
+						Separator.THEN);
 				context.acceptAll();
 				context.acceptComments(true, separator);
 

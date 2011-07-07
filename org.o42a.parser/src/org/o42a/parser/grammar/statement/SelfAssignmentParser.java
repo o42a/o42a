@@ -53,7 +53,7 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 					context.current(),
 					AssignmentOperator.ASSIGN);
 
-		context.acceptComments(true, prefix);
+		context.acceptComments(false, prefix);
 
 		final ExpressionNode value = context.parse(this.grammar.expression());
 

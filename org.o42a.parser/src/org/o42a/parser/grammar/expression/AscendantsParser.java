@@ -102,7 +102,7 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 						context.current(),
 						AscendantType.SAMPLE);
 
-			context.acceptComments(true, separator);
+			context.acceptComments(false, separator);
 
 			final RefNode sample = context.parse(Grammar.ref());
 
