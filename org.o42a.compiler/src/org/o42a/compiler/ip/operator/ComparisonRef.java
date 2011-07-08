@@ -201,7 +201,7 @@ public final class ComparisonRef extends ObjectConstructor {
 			final Field<?> field =
 				object.member(this.comparisonKey).toField(user);
 
-			field.getArtifact().toObject().resolveDefinitions(user);
+			field.getArtifact().toObject().value().resolveAll(user);
 		}
 
 		@Override

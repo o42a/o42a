@@ -83,6 +83,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 		final LogicalValue logicalValue =
 			field.getArtifact()
 			.materialize()
+			.value()
 			.getDefinitions()
 			.value(resolver)
 			.getLogicalValue();

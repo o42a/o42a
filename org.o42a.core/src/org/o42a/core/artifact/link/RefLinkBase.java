@@ -23,13 +23,13 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
-import org.o42a.core.artifact.object.RefObjectBase;
+import org.o42a.core.def.RefDefBase;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public abstract class RefLinkBase extends RefObjectBase {
+public abstract class RefLinkBase extends RefDefBase {
 
 	protected static TargetRef createTargetRef(Ref ref, TypeRef typeRef) {
 		if (typeRef != null) {

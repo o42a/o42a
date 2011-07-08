@@ -61,8 +61,7 @@ public abstract class ObjectValueIRCondFunc
 		}
 
 		final Code code = subDirs.code();
-		final Obj object = getObjectIR().getObject();
-		final DefValue condition = value(object.getDefinitions());
+		final DefValue condition = value(definitions());
 		final LogicalValue logicalValue = logicalValue(condition, body);
 
 		if (logicalValue.isConstant()) {

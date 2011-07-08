@@ -112,7 +112,7 @@ public class OverriddenEx extends Ref {
 					value(),
 					getScope()).toObject();
 			final Definitions overriddenDefinitions =
-				self.getOverriddenDefinitions();
+				self.value().getOverriddenDefinitions();
 
 			return selfPath.rescoper(getScope()).update(overriddenDefinitions);
 		}

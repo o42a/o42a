@@ -60,7 +60,7 @@ final class SelfRef extends Ref {
 		if (resolver == this.self.getScope()) {
 			return this.self.materialize().value().useBy(resolver).getValue();
 		}
-		return calculateValue(this.self.materialize(), resolver);
+		return this.self.materialize().value().value(resolver);
 	}
 
 	@Override

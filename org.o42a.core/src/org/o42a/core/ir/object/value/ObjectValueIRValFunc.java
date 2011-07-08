@@ -75,8 +75,8 @@ public abstract class ObjectValueIRValFunc
 			return falseValue().op(subDirs.getBuilder(), code);
 		}
 
-		final Obj object = getObjectIR().getObject();
-		final DefValue value = value(object.getDefinitions());
+		final Obj object = getObject();
+		final DefValue value = value(definitions());
 
 		if (body == null || value.isAlwaysMeaningful()) {
 

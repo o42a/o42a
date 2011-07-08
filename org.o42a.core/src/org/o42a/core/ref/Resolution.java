@@ -259,7 +259,7 @@ public abstract class Resolution implements ScopeInfo {
 
 			final Obj materialized = materialize();
 
-			materialized.resolveDefinitions(user);
+			materialized.value().resolveAll(user);
 		}
 
 	}
@@ -311,7 +311,7 @@ public abstract class Resolution implements ScopeInfo {
 
 		@Override
 		public void resolveValues(UserInfo user) {
-			toArtifact().resolveDefinitions(user);
+			toArtifact().value().resolveAll(user);
 		}
 
 	}
@@ -367,7 +367,7 @@ public abstract class Resolution implements ScopeInfo {
 			final Obj materialized = materialize();
 
 			if (materialized != null) {
-				materialized.resolveDefinitions(user);
+				materialized.value().resolveAll(user);
 			}
 		}
 

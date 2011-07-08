@@ -57,7 +57,7 @@ public abstract class ObjectIRFunc {
 	}
 
 	public final Definitions definitions() {
-		return getObjectIR().getObject().getDefinitions();
+		return getObject().value().getDefinitions();
 	}
 
 	public final boolean isFalse(DefValue condition, ObjectOp body) {
@@ -85,8 +85,7 @@ public abstract class ObjectIRFunc {
 	public boolean writeFalseValue(CodeDirs dirs, ObjectOp body) {
 
 		final Code code = dirs.code();
-		final Obj object = getObjectIR().getObject();
-		final Definitions definitions = object.getDefinitions();
+		final Definitions definitions = definitions();
 		final Resolver resolver = definitions.getScope().dummyResolver();
 
 		if (isFalse(definitions.requirement(resolver), body)) {
@@ -95,7 +94,7 @@ public abstract class ObjectIRFunc {
 			return true;
 		}
 
-		if (!object.getConstructionMode().isRuntime()) {
+		if (!getObject().getConstructionMode().isRuntime()) {
 			if (isFalse(definitions.condition(resolver), body)) {
 				code.debug("Static object condition is FALSE");
 				code.go(dirs.falseDir());

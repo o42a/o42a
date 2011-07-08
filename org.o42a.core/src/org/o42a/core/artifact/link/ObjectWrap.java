@@ -103,7 +103,7 @@ public abstract class ObjectWrap extends PlainObject {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return wrapper(getScope(), getWrapped().getScope())
-		.update(getWrapped().getDefinitions());
+		.update(getWrapped().value().getDefinitions());
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public abstract class ObjectWrap extends PlainObject {
 	@Override
 	protected void fullyResolveDefinitions() {
 		super.fullyResolveDefinitions();
-		getWrapped().resolveDefinitions(value());
+		getWrapped().value().resolveAll(value());
 	}
 
 	@Override
