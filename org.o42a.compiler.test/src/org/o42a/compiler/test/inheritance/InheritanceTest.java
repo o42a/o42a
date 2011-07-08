@@ -52,20 +52,20 @@ public class InheritanceTest extends CompilerTestCase {
 	@Test
 	public void inheritance() {
 		assertThat(
-				this.b.type(USE_CASE)
+				this.b.type()
 				.getAncestor().typeObject(USE_CASE)
 				.getScope().toField().getKey().getName(),
 				is("a"));
 		assertSame(
 				this.a,
-				this.b.type(USE_CASE).getAncestor().typeObject(USE_CASE));
-		assertTrue(this.b.type(USE_CASE).inherits(
-				this.a.type(USE_CASE)));
+				this.b.type().getAncestor().typeObject(USE_CASE));
+		assertTrue(this.b.type().inherits(
+				this.a.type()));
 		assertSame(
 				this.b,
-				this.c.type(USE_CASE).getAncestor().typeObject(USE_CASE));
-		assertTrue(this.c.type(USE_CASE).inherits(this.a.type(USE_CASE)));
-		assertTrue(this.c.type(USE_CASE).inherits(this.b.type(USE_CASE)));
+				this.c.type().getAncestor().typeObject(USE_CASE));
+		assertTrue(this.c.type().inherits(this.a.type()));
+		assertTrue(this.c.type().inherits(this.b.type()));
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class InheritanceTest extends CompilerTestCase {
 		assertThat(aFoo, notNullValue());
 		assertFalse(aFoo.isPropagated());
 		assertThat(
-				aFoo.getArtifact().toObject().type(USE_CASE)
+				aFoo.getArtifact().toObject().type()
 				.getAncestor().typeObject(USE_CASE),
 				is(this.context.getIntrinsics().getInteger()));
 	}
@@ -96,9 +96,9 @@ public class InheritanceTest extends CompilerTestCase {
 
 		assertFalse(bFoo.isPropagated());
 		assertTrue(
-				bFoo.getArtifact().toObject().type(USE_CASE)
+				bFoo.getArtifact().toObject().type()
 				.derivedFrom(
-						aFoo.getArtifact().toObject().type(USE_CASE),
+						aFoo.getArtifact().toObject().type(),
 						MEMBER_OVERRIDE));
 	}
 
@@ -111,14 +111,14 @@ public class InheritanceTest extends CompilerTestCase {
 
 		assertTrue(cFoo.isPropagated());
 		assertTrue(
-				cFoo.getArtifact().toObject().type(USE_CASE)
+				cFoo.getArtifact().toObject().type()
 				.derivedFrom(
-						aFoo.getArtifact().toObject().type(USE_CASE),
+						aFoo.getArtifact().toObject().type(),
 						MEMBER_OVERRIDE));
 		assertTrue(
-				cFoo.getArtifact().toObject().type(USE_CASE)
+				cFoo.getArtifact().toObject().type()
 				.derivedFrom(
-						bFoo.getArtifact().toObject().type(USE_CASE),
+						bFoo.getArtifact().toObject().type(),
 						MEMBER_OVERRIDE));
 	}
 

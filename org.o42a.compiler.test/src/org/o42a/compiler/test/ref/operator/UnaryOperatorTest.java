@@ -37,8 +37,8 @@ public class UnaryOperatorTest extends CompilerTestCase {
 
 		final Obj b = field("b").getArtifact().materialize();
 
-		assertTrue(b.type(USE_CASE).derivedFrom(
-				this.context.getIntrinsics().getInteger().type(USE_CASE)));
+		assertTrue(b.type().derivedFrom(
+				this.context.getIntrinsics().getInteger().type()));
 		assertEquals(1L, definiteValue(b));
 	}
 
@@ -50,8 +50,8 @@ public class UnaryOperatorTest extends CompilerTestCase {
 
 		final Obj b = field("b").getArtifact().materialize();
 
-		assertTrue(b.type(USE_CASE).derivedFrom(
-				this.context.getIntrinsics().getInteger().type(USE_CASE)));
+		assertTrue(b.type().derivedFrom(
+				this.context.getIntrinsics().getInteger().type()));
 		assertEquals(1L, definiteValue(b));
 	}
 
@@ -63,8 +63,8 @@ public class UnaryOperatorTest extends CompilerTestCase {
 
 		final Obj b = field("b").getArtifact().materialize();
 
-		assertTrue(b.type(USE_CASE).derivedFrom(
-				this.context.getIntrinsics().getInteger().type(USE_CASE)));
+		assertTrue(b.type().derivedFrom(
+				this.context.getIntrinsics().getInteger().type()));
 		assertEquals(2L, definiteValue(b));
 	}
 

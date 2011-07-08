@@ -103,7 +103,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	private void allocateBodyIRs(SubData<?> data) {
 
-		final ObjectType objectType = getObject().type(dummyUser());
+		final ObjectType objectType = getObject().type();
 		final TypeRef ancestorRef = objectType.getAncestor();
 
 		if (ancestorRef != null) {
@@ -171,8 +171,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			bodyIR.setKind(ObjectBodyIR.Kind.INHERITED);
 		} else if (bodyIR.isMain()) {
 			bodyIR.setKind(ObjectBodyIR.Kind.MAIN);
-		} else if (getObject().type(dummyUser()).derivedFrom(
-				bodyIR.getAscendant().type(dummyUser()),
+		} else if (getObject().type().derivedFrom(
+				bodyIR.getAscendant().type(),
 				IMPLICIT_PROPAGATION)) {
 			bodyIR.setKind(ObjectBodyIR.Kind.PROPAGATED);
 		} else {

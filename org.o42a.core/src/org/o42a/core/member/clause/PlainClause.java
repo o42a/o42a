@@ -21,7 +21,6 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.AbstractScope.enclosingScopes;
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Set;
 
@@ -238,8 +237,7 @@ public abstract class PlainClause
 			final Obj object2 = other.toObject();
 
 			if (object2 != null) {
-				return object1.type(dummyUser()).derivedFrom(
-						object2.type(dummyUser()));
+				return object1.type().derivedFrom(object2.type());
 			}
 		}
 

@@ -51,7 +51,7 @@ public class ObjectAnalysis implements UseInfo {
 			return this.staticAncestor > 0;
 		}
 
-		final TypeRef ancestor = getObject().objectType().getAncestor();
+		final TypeRef ancestor = getObject().type().getAncestor();
 
 		if (ancestor == null || ancestor.isStatic()) {
 			this.staticAncestor = 1;
@@ -77,7 +77,7 @@ public class ObjectAnalysis implements UseInfo {
 	}
 
 	public final boolean typeAccessedBy(Generator generator) {
-		return getObject().objectType().isUsedBy(generator.getUseCase());
+		return getObject().type().isUsedBy(generator.getUseCase());
 	}
 
 	public final boolean valueAccessedBy(Generator generator) {

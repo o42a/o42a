@@ -126,7 +126,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public ConstructionMode getConstructionMode() {
-		return objectType().getAscendants().getConstructionMode();
+		return type().getAscendants().getConstructionMode();
 	}
 
 	public final ObjectAnalysis getAnalysis() {
@@ -198,13 +198,11 @@ public abstract class Obj extends Artifact<Obj>
 		return false;
 	}
 
-	public final ObjectType type(UserInfo user) {
-
-		final ObjectType objectType = objectType();
-
-		objectType.useBy(user);
-
-		return objectType;
+	public final ObjectType type() {
+		if (this.type != null) {
+			return this.type;
+		}
+		return this.type = new ObjectType(this);
 	}
 
 	public final ObjectValue value() {
@@ -215,7 +213,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public final boolean membersResolved() {
-		return objectType().getResolution().membersResolved();
+		return type().getResolution().membersResolved();
 	}
 
 	@Override
@@ -269,13 +267,13 @@ public abstract class Obj extends Artifact<Obj>
 			}
 		}
 
-		for (Sample sample : objectType().getSamples()) {
+		for (Sample sample : type().getSamples()) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
 					sample.typeObject(dummyUser()).getImplicitClauses());
 		}
 
-		final TypeRef ancestor = objectType().getAncestor();
+		final TypeRef ancestor = type().getAncestor();
 
 		if (ancestor != null) {
 			implicitClauses = ArrayUtil.append(
@@ -373,7 +371,7 @@ public abstract class Obj extends Artifact<Obj>
 			return;
 		}
 
-		final ObjectType objectType = objectType();
+		final ObjectType objectType = type();
 
 		if (!objectType.getResolution().membersResolved()) {
 			if (!resolveIfNotResolving()) {
@@ -557,7 +555,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public final void assertDerivedFrom(Obj type) {
-		assert objectType().derivedFrom(type.objectType()) :
+		assert type().derivedFrom(type.type()) :
 					this + " is not derived from " + type;
 	}
 
@@ -580,11 +578,11 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected final void resolve() {
-		objectType().resolve(false);
+		type().resolve(false);
 	}
 
 	protected final boolean resolveIfNotResolving() {
-		return objectType().resolve(true);
+		return type().resolve(true);
 	}
 
 	protected void postResolve() {
@@ -600,7 +598,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected ValueType<?> resolveValueType() {
 
-		final TypeRef ancestor = objectType().getAncestor();
+		final TypeRef ancestor = type().getAncestor();
 
 		if (ancestor == null) {
 			return ValueType.VOID;
@@ -648,7 +646,7 @@ public abstract class Obj extends Artifact<Obj>
 			return null;
 		}
 
-		final Sample[] samples = objectType().getSamples();
+		final Sample[] samples = type().getSamples();
 
 		assert samples.length > 0 :
 			"Propagated object has no samples: " + this;
@@ -685,7 +683,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	protected void fullyResolve() {
-		objectType().getAscendants().resolveAll();
+		type().getAscendants().resolveAll();
 		if (isClone()) {
 			return;
 		}
@@ -704,13 +702,6 @@ public abstract class Obj extends Artifact<Obj>
 
 	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
 		return new ObjectValueIR(objectIR);
-	}
-
-	final ObjectType objectType() {
-		if (this.type != null) {
-			return this.type;
-		}
-		return this.type = new ObjectType(this);
 	}
 
 	final Map<MemberKey, Member> members() {
@@ -738,10 +729,10 @@ public abstract class Obj extends Artifact<Obj>
 			definitions = emptyDefinitions(this, getScope());
 		}
 
-		final ObjectType type = type(scope.toObject().value());
+		final ObjectType type = type().useBy(scope.toObject().value());
 		boolean hasExplicitAncestor =
-			type.getAscendants().getExplicitAncestor() != null;
-		final Sample[] samples = type.getSamples();
+				type.getAscendants().getExplicitAncestor() != null;
+		final Sample[] samples = this.type.getSamples();
 
 		for (int i = samples.length - 1; i >= 0; --i) {
 
@@ -820,7 +811,7 @@ public abstract class Obj extends Artifact<Obj>
 		}
 		declareMembers(this.objectMembers);
 
-		final ObjectType objectType = objectType();
+		final ObjectType objectType = type();
 
 		for (Sample sample : objectType.getSamples()) {
 			sample.deriveMembers(this.objectMembers);
@@ -859,7 +850,7 @@ public abstract class Obj extends Artifact<Obj>
 	private Definitions getAncestorDefinitions() {
 
 		final Definitions ancestorDefinitions;
-		final TypeRef ancestor = objectType().getAncestor();
+		final TypeRef ancestor = type().getAncestor();
 
 		if (ancestor == null) {
 			ancestorDefinitions = null;

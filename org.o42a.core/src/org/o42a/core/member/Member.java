@@ -242,8 +242,7 @@ public abstract class Member extends Placed {
 			return NOTHING_OVERRIDDEN;
 		}
 
-		final ObjectType containerType =
-			getContainer().toObject().type(dummyUser());
+		final ObjectType containerType = getContainer().toObject().type();
 		final Sample[] containerSamples = containerType.getSamples();
 		final ArrayList<Member> overridden;
 		final TypeRef containerAncestor = containerType.getAncestor();

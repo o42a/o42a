@@ -90,8 +90,7 @@ public abstract class Fld {
 			return true;
 		}
 
-		final ObjectType definedInType =
-			definedIn.toObject().type(dummyUser());
+		final ObjectType definedInType = definedIn.toObject().type();
 
 		if (definedInType.getAncestor().type(dummyUser()).derivedFrom(
 				definedInType)) {

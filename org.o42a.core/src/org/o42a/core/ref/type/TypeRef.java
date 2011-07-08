@@ -102,7 +102,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return null;
 		}
 
-		final ObjectType result = object.type(usable());
+		final ObjectType result = object.type().useBy(usable());
 
 		this.type = new Holder<ObjectType>(result);
 

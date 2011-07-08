@@ -71,7 +71,7 @@ final class TestRunner extends PlainObject {
 
 		final ObjectType testType = module.test(user);
 
-		if (test.type(user).derivedFrom(testType)) {
+		if (test.type().useBy(user).derivedFrom(testType)) {
 			run(
 					sentence,
 					testName(sentence, field, test),

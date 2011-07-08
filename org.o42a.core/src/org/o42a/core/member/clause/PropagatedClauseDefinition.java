@@ -40,7 +40,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 
 		final User user = dummyUser();
 		final ObjectType containerType =
-			clause.getScope().getEnclosingContainer().toObject().type(user);
+			clause.getScope().getEnclosingContainer().toObject().type();
 		final TypeRef containerAncestor = containerType.getAncestor();
 		Ascendants result = ascendants;
 

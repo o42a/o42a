@@ -157,7 +157,7 @@ final class ObjectFieldVariant
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.variant.getField().getArtifact().toObject().objectType()
+			return this.variant.getField().getArtifact().toObject().type()
 			.getAncestor().typeObject(dummyUser()).getValueType();
 		}
 

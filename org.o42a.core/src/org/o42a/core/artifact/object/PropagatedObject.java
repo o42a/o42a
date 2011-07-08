@@ -38,7 +38,7 @@ final class PropagatedObject extends PlainObject {
 
 		final User user = dummyUser();
 		final Obj container = field.getEnclosingContainer().toObject();
-		final ObjectType type = container.type(user);
+		final ObjectType type = container.type();
 		final TypeRef containerAncestor = type.getAncestor();
 		Ascendants result = ascendants;
 
