@@ -20,7 +20,6 @@
 package org.o42a.core.ref;
 
 import static org.o42a.core.value.Value.unknownValue;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.LocationInfo;
@@ -151,7 +150,7 @@ final class AncestorRef extends Ref {
 						object.getScope().getEnclosingScope());
 			}
 
-			return object.type(dummyUser()).getAncestor();
+			return object.type().getAncestor();
 		}
 
 		final TypeRef typeRef = artifact.getTypeRef();

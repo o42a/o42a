@@ -36,9 +36,9 @@ abstract class DefCollector<D extends SourceInfo> {
 			return true;
 		}
 
-		final ObjectType sourceType = source.type(dummyUser());
+		final ObjectType sourceType = source.type();
 
-		for (Sample sample : object.type(dummyUser()).getSamples()) {
+		for (Sample sample : object.type().getSamples()) {
 			if (sample.type(dummyUser()).derivedFrom(
 					sourceType,
 					Derivation.PROPAGATION)) {
@@ -55,7 +55,7 @@ abstract class DefCollector<D extends SourceInfo> {
 	public DefCollector(Obj object) {
 		this.object = object;
 
-		final TypeRef ancestorRef = object.type(dummyUser()).getAncestor();
+		final TypeRef ancestorRef = object.type().getAncestor();
 
 		if (ancestorRef == null) {
 			this.ancestor = null;

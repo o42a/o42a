@@ -323,8 +323,7 @@ public abstract class MemberField extends Member {
 			overridden = declaredIn.member(getId(), Accessor.INHERITANT);
 		} else {
 
-			final ObjectType containerType =
-				getContainer().toObject().type(dummyUser());
+			final ObjectType containerType = getContainer().toObject().type();
 
 			for (Sample sample : containerType.getSamples()) {
 				overridden = overridden(

@@ -181,8 +181,7 @@ public abstract class Ref extends RefTypeBase {
 		}
 
 		return this.resolutionRoot =
-			object.type(dummyUser()).getAncestor()
-			.getRef().getResolutionRoot();
+			object.type().getAncestor().getRef().getResolutionRoot();
 	}
 
 	@Override

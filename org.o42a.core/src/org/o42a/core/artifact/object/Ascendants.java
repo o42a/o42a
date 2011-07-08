@@ -158,7 +158,7 @@ public class Ascendants
 	public void resolveAll() {
 		validate();
 
-		final UserInfo user = getObject().objectType();
+		final UserInfo user = getObject().type();
 		final TypeRef ancestor = getExplicitAncestor();
 		final Resolver resolver =
 			getScope().getEnclosingScope().newResolver(user);

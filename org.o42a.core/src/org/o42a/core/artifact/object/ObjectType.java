@@ -123,6 +123,13 @@ public final class ObjectType implements UserInfo {
 		return this.allAscendants = unmodifiableMap(buildAllAscendants());
 	}
 
+	public final ObjectType useBy(UserInfo user) {
+		if (!user.toUser().isDummy()) {
+			usable().useBy(user);
+		}
+		return this;
+	}
+
 	public final boolean derivedFrom(ObjectType other) {
 		return allAscendants().containsKey(other.getObject().getScope());
 	}
@@ -173,13 +180,6 @@ public final class ObjectType implements UserInfo {
 		}
 
 		return this.resolution.resolved();
-	}
-
-	final void useBy(UserInfo user) {
-		if (user.toUser().isDummy()) {
-			return;
-		}
-		usable().useBy(user);
 	}
 
 	private final Usable usable() {

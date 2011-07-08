@@ -97,8 +97,7 @@ public abstract class IntrinsicObject extends PlainObject {
 		if (field.isOverride()) {
 
 			final ObjectType containerType =
-				getScope().getEnclosingContainer().toObject()
-				.type(dummyUser());
+				getScope().getEnclosingContainer().toObject().type();
 			final TypeRef ancestor = containerType.getAncestor();
 
 			if (ancestor != null) {

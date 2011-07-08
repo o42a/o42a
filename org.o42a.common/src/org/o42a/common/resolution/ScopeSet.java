@@ -20,7 +20,6 @@
 package org.o42a.common.resolution;
 
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_SAMPLE;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashSet;
 
@@ -67,7 +66,7 @@ public class ScopeSet {
 			return false;
 		}
 
-		final ObjectType scopeType = object.type(dummyUser());
+		final ObjectType scopeType = object.type();
 
 		for (Scope s : this.scopes) {
 
@@ -77,7 +76,7 @@ public class ScopeSet {
 				continue;
 			}
 
-			final ObjectType type = obj.type(dummyUser());
+			final ObjectType type = obj.type();
 
 			if (scopeType.derivedFrom(type, IMPLICIT_SAMPLE)
 					|| type.derivedFrom(scopeType, IMPLICIT_SAMPLE)) {

@@ -58,7 +58,7 @@ public abstract class ObjectField extends Field<Obj> {
 			return false;
 		}
 
-		return getArtifact().objectType().derivedFrom(otherObject.objectType());
+		return getArtifact().type().derivedFrom(otherObject.type());
 	}
 
 	@Override

@@ -66,8 +66,7 @@ public class ObjectIR  {
 
 	public final ObjectBodyIR getBodyType() {
 
-		final Obj lastDefinition =
-				getObject().type(dummyUser()).getLastDefinition();
+		final Obj lastDefinition = getObject().type().getLastDefinition();
 
 		return lastDefinition.ir(getGenerator()).getMainBodyIR();
 	}
@@ -82,8 +81,7 @@ public class ObjectIR  {
 
 	public ObjectBodyIR getAncestorBodyIR() {
 
-		final TypeRef ancestorType =
-			getObject().type(dummyUser()).getAncestor();
+		final TypeRef ancestorType = getObject().type().getAncestor();
 
 		if (ancestorType == null) {
 			return null;
@@ -100,8 +98,7 @@ public class ObjectIR  {
 
 	public final ObjectTypeIR getStaticTypeIR() {
 
-		final Obj lastDefinition =
-				getObject().type(dummyUser()).getLastDefinition();
+		final Obj lastDefinition = getObject().type().getLastDefinition();
 
 		return lastDefinition.ir(getGenerator()).getTypeIR();
 	}

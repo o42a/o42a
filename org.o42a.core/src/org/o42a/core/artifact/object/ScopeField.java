@@ -86,7 +86,7 @@ final class ScopeField extends ObjectField {
 		final UserInfo user = dummyUser();
 		final Obj newArtifact;
 		final Obj newOwner = getEnclosingContainer().toObject();
-		final ObjectType newOwnerType = newOwner.type(user);
+		final ObjectType newOwnerType = newOwner.type();
 		final Obj ancestor = newOwnerType.getAncestor().typeObject(user);
 		final org.o42a.core.member.Member ancestorMember =
 			ancestor.member(getKey());
@@ -97,8 +97,7 @@ final class ScopeField extends ObjectField {
 			newArtifact = ancestorMember.substance(user).toObject();
 		} else {
 
-			final ObjectType origin =
-				getKey().getOrigin().toObject().type(user);
+			final ObjectType origin = getKey().getOrigin().toObject().type();
 
 			if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
 				// Scope field declared in implicit sample.

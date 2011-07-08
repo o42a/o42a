@@ -22,7 +22,6 @@ package org.o42a.core.st.sentence.imperative;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.sentence.imperative.AssignmentKind.ASSIGNMENT_ERROR;
 import static org.o42a.core.st.sentence.imperative.AssignmentKind.VARIABLE_ASSIGNMENT;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -212,7 +211,7 @@ public class AssignmentStatement extends Statement {
 		final TypeRef valueType;
 
 		if (objectValue != null) {
-			valueType = objectValue.type(dummyUser()).getAncestor();
+			valueType = objectValue.type().getAncestor();
 		} else {
 
 			final Artifact<?> artifactValue = valueResolution.toArtifact();

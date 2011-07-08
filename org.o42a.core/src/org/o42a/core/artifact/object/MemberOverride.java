@@ -36,8 +36,7 @@ final class MemberOverride extends Sample {
 		super(overriddenMember, ascendants);
 		this.overriddenMember = overriddenMember;
 		this.ancestor =
-				getObject().type(dummyUser()).getAncestor()
-				.upgradeScope(getScope());
+				getObject().type().getAncestor().upgradeScope(getScope());
 		this.typeRef =
 				getObject().fixedRef(getScope().distribute()).toStaticTypeRef();
 	}

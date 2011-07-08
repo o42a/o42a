@@ -89,9 +89,9 @@ public abstract class StaticTypeRef extends TypeRef {
 		}
 
 		final ObjectType type1 =
-				type(dummyUser()).getLastDefinition().type(dummyUser());
+				type(dummyUser()).getLastDefinition().type();
 		final ObjectType type2 =
-				other.type(dummyUser()).getLastDefinition().type(dummyUser());
+				other.type(dummyUser()).getLastDefinition().type();
 
 		if (type1.getObject().getScope() == type2.getObject().getScope()) {
 			return TypeRelation.SAME;

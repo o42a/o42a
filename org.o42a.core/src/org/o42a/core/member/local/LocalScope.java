@@ -22,7 +22,6 @@ package org.o42a.core.member.local;
 import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Set;
 
@@ -273,8 +272,7 @@ public abstract class LocalScope
 			return false;
 		}
 
-		return getOwner().type(dummyUser()).derivedFrom(
-				otherLocal.getOwner().type(dummyUser()));
+		return getOwner().type().derivedFrom(otherLocal.getOwner().type());
 	}
 
 	@Override
