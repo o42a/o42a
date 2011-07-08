@@ -81,7 +81,7 @@ public class ObjectAnalysis implements UseInfo {
 	}
 
 	public final boolean valueAccessedBy(Generator generator) {
-		return getObject().objectValue().isUsedBy(generator.getUseCase());
+		return getObject().value().isUsedBy(generator.getUseCase());
 	}
 
 	@Override

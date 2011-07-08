@@ -98,7 +98,7 @@ public abstract class Resolution implements ScopeInfo {
 		}
 
 		final Value<Directive> value = ValueType.DIRECTIVE.cast(
-				materialized.value(resolver).getValue());
+				materialized.value().useBy(resolver).getValue());
 
 		if (!value.isDefinite()) {
 			resolver.getLogger().error(
@@ -260,7 +260,6 @@ public abstract class Resolution implements ScopeInfo {
 			final Obj materialized = materialize();
 
 			materialized.resolveDefinitions(user);
-			materialized.value(user);
 		}
 
 	}
@@ -313,7 +312,6 @@ public abstract class Resolution implements ScopeInfo {
 		@Override
 		public void resolveValues(UserInfo user) {
 			toArtifact().resolveDefinitions(user);
-			toArtifact().value(user);
 		}
 
 	}
@@ -370,7 +368,6 @@ public abstract class Resolution implements ScopeInfo {
 
 			if (materialized != null) {
 				materialized.resolveDefinitions(user);
-				materialized.value(user);
 			}
 		}
 

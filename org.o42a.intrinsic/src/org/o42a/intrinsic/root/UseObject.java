@@ -65,7 +65,8 @@ public class UseObject extends IntrinsicDirective {
 		final Field<?> moduleField =
 			object.member(this.moduleKey).toField(context);
 		final Value<?> moduleValue =
-			moduleField.getArtifact().materialize().value(context).getValue();
+			moduleField.getArtifact().materialize()
+			.value().useBy(context).getValue();
 
 		if (!moduleValue.isDefinite()) {
 			getLogger().unresolvedValue(
@@ -79,7 +80,8 @@ public class UseObject extends IntrinsicDirective {
 		final Field<?> objectField =
 			object.member(this.objectKey).toField(context);
 		final Value<?> objectValue =
-			objectField.getArtifact().materialize().value(context).getValue();
+			objectField.getArtifact().materialize()
+			.value().useBy(context).getValue();
 
 		if (!objectValue.isDefinite()) {
 			getLogger().unresolvedValue(
@@ -98,7 +100,8 @@ public class UseObject extends IntrinsicDirective {
 		final Field<?> aliasField =
 			object.member(this.aliasKey).toField(context);
 		final Value<?> aliasValue =
-			aliasField.getArtifact().materialize().value(context).getValue();
+			aliasField.getArtifact().materialize()
+			.value().useBy(context).getValue();
 
 		if (!aliasValue.isDefinite()) {
 			getLogger().unresolvedValue(

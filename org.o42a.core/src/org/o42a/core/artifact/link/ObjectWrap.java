@@ -66,7 +66,7 @@ public abstract class ObjectWrap extends PlainObject {
 		this.wrapped = createWrapped();
 
 		this.wrapped.type(type(dummyUser()));
-		this.wrapped.value(value(dummyUser()));
+		this.wrapped.value().useBy(value());
 
 		return this.wrapped;
 	}
@@ -117,7 +117,7 @@ public abstract class ObjectWrap extends PlainObject {
 	@Override
 	protected void fullyResolveDefinitions() {
 		super.fullyResolveDefinitions();
-		getWrapped().resolveDefinitions(value(dummyUser()));
+		getWrapped().resolveDefinitions(value());
 	}
 
 	@Override

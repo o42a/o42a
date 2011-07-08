@@ -23,7 +23,6 @@ import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.ALIGNMENT_MASK;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
@@ -91,7 +90,7 @@ final class StringChar extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver = object.value(dummyUser()).valueResolver();
+		final Resolver resolver = object.value().valueResolver();
 
 		string().resolveValues(resolver);
 		index().resolveValues(resolver);
