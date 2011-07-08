@@ -687,6 +687,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	protected void fullyResolve() {
+		objectType().getAscendants().resolveAll();
 		if (isClone()) {
 			return;
 		}
@@ -696,7 +697,6 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	protected void fullyResolveDefinitions() {
-		objectType().getAscendants().resolveAll();
 		getDefinitions().resolveAll();
 	}
 

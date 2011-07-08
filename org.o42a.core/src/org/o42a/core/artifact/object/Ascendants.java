@@ -46,7 +46,6 @@ public class Ascendants
 	private Sample[] discardedSamples = NO_SAMPLES;
 	private ConstructionMode constructionMode;
 	private boolean validated;
-	private boolean fullyResolved;
 
 	public Ascendants(Obj object) {
 		this.object = object;
@@ -157,11 +156,6 @@ public class Ascendants
 	}
 
 	public void resolveAll() {
-		if (this.fullyResolved) {
-			return;
-		}
-		this.fullyResolved = true;
-
 		validate();
 
 		final UserInfo user = getObject().objectType();
