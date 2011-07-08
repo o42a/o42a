@@ -77,29 +77,17 @@ final class MemberEntry {
 			"Member already registered: " + this;
 		this.registered = true;
 
-		final MemberKey key = getKey();
+		final Member member = registerMember(members);
 
-		if (!key.isValid()) {
-			return;
-		}
-
-		final Member member;
-
-		if (!isOverride()) {
-			member = registerNew(members, key);
-		} else {
-			member = registerOverridden(members, key);
-		}
 		if (member == null) {
 			return;
 		}
-		for (MemberKey aliasKey : member.getAliasKeys()) {
-			members.register(aliasKey, member);
-		}
-
 		members.registerSymbol(member.getId(), member);
-		for (MemberId aliasId : member.getAliasIds()) {
-			members.registerSymbol(aliasId, member);
+
+		for (MemberKey aliasKey : member.getAliasKeys()) {
+			if (registerAlias(members, aliasKey, member)) {
+				members.registerSymbol(aliasKey.getMemberId(), member);
+			}
 		}
 	}
 
@@ -111,26 +99,13 @@ final class MemberEntry {
 		return this.member.toString();
 	}
 
-	private Member registerNew(ContainerMembers members, MemberKey key) {
+	private Member registerMember(ContainerMembers members) {
 
-		final Member existing = members.members().get(key);
-		final Member member = createMember(members.getOwner());
+		final MemberKey key = getKey();
 
-		if (existing != null) {
-			// Merge with existing member.
-			existing.merge(member);
+		if (!key.isValid()) {
 			return null;
 		}
-
-		// Register new member.
-		members.register(key, member);
-
-		return member;
-	}
-
-	private Member registerOverridden(
-			ContainerMembers members,
-			MemberKey key) {
 
 		final Member existing = members.members().get(key);
 
@@ -143,8 +118,44 @@ final class MemberEntry {
 
 			return member;
 		}
+		if (!isOverride()) {
+			return mergeNew(members, key, existing);
+		}
 
-		// Member already registered.
+		return mergeOverridden(members, key, existing);
+	}
+
+	private Member mergeNew(
+			ContainerMembers members,
+			MemberKey key,
+			Member existing) {
+
+		final Member member = createMember(members.getOwner());
+
+		if (!existing.getKey().equals(key)) {
+			// Conflict with an alias.
+			member.getLogger().ambiguousMember(
+					member,
+					member.getDisplayName());
+			return null;
+		}
+
+		// Merge with existing member.
+		existing.merge(member);
+
+		return null;
+	}
+
+	private Member mergeOverridden(
+			ContainerMembers members,
+			MemberKey key,
+			Member existing) {
+		if (!existing.getKey().equals(key)) {
+			existing.getLogger().ambiguousMember(
+					existing,
+					existing.getDisplayName());
+			return null;
+		}
 		if (!existing.isPropagated()) {
 			// Existing member is explicit.
 			if (isPropagated()) {
@@ -193,6 +204,91 @@ final class MemberEntry {
 		// Otherwise, leave it as is.
 		// The member should take care of issuing an error.
 		return null;
+	}
+
+	private boolean registerAlias(
+			ContainerMembers members,
+			MemberKey key,
+			Member member) {
+		if (!key.isValid()) {
+			return false;
+		}
+
+		final Member existing = members.members().get(key);
+
+		if (existing == null) {
+			members.register(key, member);
+			return true;
+		}
+		if (!isOverride()) {
+			return mergeNewAlias(members, key, member, existing);
+		}
+
+		return mergeOverriddenAlias(members, key, member, existing);
+	}
+
+	private boolean mergeNewAlias(
+			ContainerMembers members,
+			MemberKey key,
+			Member member,
+			Member existing) {
+		if (existing.isOverride()) {
+			members.register(key, member);
+			return true;
+		}
+
+		member.getLogger().ambiguousMember(
+				member,
+				key.getMemberId().toString());
+
+		return false;
+	}
+
+	private boolean mergeOverriddenAlias(
+			ContainerMembers members,
+			MemberKey key,
+			Member member,
+			Member existing) {
+		if (!existing.isPropagated()) {
+			// Existing member is explicit.
+			if (isPropagated()) {
+				// Explicit member takes precedence over propagated one.
+				return false;
+			}
+
+			member.getLogger().ambiguousMember(
+					member,
+					key.getMemberId().toString());
+
+			return false;
+		}
+
+		// Existing member is propagated.
+		if (!isPropagated()) {
+			// Explicit member takes precedence over propagated one.
+			members.register(key, member);
+			return true;
+		}
+
+		// Both members are propagated.
+		// Determine the one defined last.
+		final Member propagatedFrom = existing.getPropagatedFrom();
+
+		if (propagatedFrom.definedAfter(getMember())) {
+			// Already registered member is defined after the new one.
+			// Leave it in registry.
+			return false;
+		}
+		if (getMember().definedAfter(propagatedFrom)) {
+			// New member is defined after the already registered one.
+			// Update the registry with the new member.
+			members.register(key, member);
+			return true;
+		}
+
+		// Otherwise, leave it as is.
+		// The member should take care of issuing an error.
+		return false;
 	}
 
 }
