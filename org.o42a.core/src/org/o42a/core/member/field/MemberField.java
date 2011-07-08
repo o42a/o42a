@@ -381,8 +381,7 @@ public abstract class MemberField extends Member {
 	}
 
 	private void use(UserInfo user) {
-		useBy(user.toUser());
-		this.field.newResolver(user);
+		useBy(user);
 	}
 
 }

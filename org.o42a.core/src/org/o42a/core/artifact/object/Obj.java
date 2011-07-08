@@ -202,7 +202,7 @@ public abstract class Obj extends Artifact<Obj>
 
 		final ObjectType objectType = objectType();
 
-		objectType.usable().useBy(user);
+		objectType.useBy(user);
 
 		return objectType;
 	}
@@ -211,7 +211,7 @@ public abstract class Obj extends Artifact<Obj>
 
 		final ObjectValue objectValue = objectValue();
 
-		objectValue.usable().useBy(user);
+		objectValue.useBy(user);
 
 		return objectValue;
 	}
@@ -687,16 +687,16 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	protected void fullyResolve() {
-		resolve();
-		objectType().getAscendants().resolveAll();
-		if (!isClone()) {
-			resolveAllMembers();
-			validateImplicitSubClauses(getExplicitClauses());
-			resolveDefinitions(dummyUser());
+		if (isClone()) {
+			return;
 		}
+		resolveAllMembers();
+		validateImplicitSubClauses(getExplicitClauses());
+		resolveDefinitions(dummyUser());
 	}
 
 	protected void fullyResolveDefinitions() {
+		objectType().getAscendants().resolveAll();
 		getDefinitions().resolveAll();
 	}
 
@@ -712,22 +712,14 @@ public abstract class Obj extends Artifact<Obj>
 		if (this.type != null) {
 			return this.type;
 		}
-
-		this.type = new ObjectType(this);
-		content().useBy(this.type);
-
-		return this.type;
+		return this.type = new ObjectType(this);
 	}
 
 	final ObjectValue objectValue() {
 		if (this.value != null) {
 			return this.value;
 		}
-
-		this.value = new ObjectValue(this);
-		content().useBy(this.value);
-
-		return this.value;
+		return this.value = new ObjectValue(this);
 	}
 
 	final Map<MemberKey, Member> members() {

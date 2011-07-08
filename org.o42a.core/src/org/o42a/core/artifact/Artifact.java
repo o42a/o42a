@@ -20,7 +20,6 @@
 package org.o42a.core.artifact;
 
 import static org.o42a.core.artifact.Access.artifactAccess;
-import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.Array;
@@ -31,13 +30,12 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.Holder;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.Usable;
 import org.o42a.util.use.UseInfo;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
-	private Usable content;
+	private ArtifactContent content;
 	private Holder<Obj> enclosingPrototype;
 	private ScopePlace localPlace;
 	private Ref self;
@@ -183,11 +181,11 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return artifactAccess(user, this);
 	}
 
-	public final Usable content() {
+	public final ArtifactContent content() {
 		if (this.content != null) {
 			return this.content;
 		}
-		return this.content = simpleUsable("Content", this);
+		return this.content = new ArtifactContent(this);
 	}
 
 	public abstract UseInfo fieldUses();

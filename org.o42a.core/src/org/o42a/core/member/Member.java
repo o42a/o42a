@@ -217,11 +217,17 @@ public abstract class Member extends Placed {
 		return out.toString();
 	}
 
-	protected final void useBy(UseInfo user) {
+	protected final void useBy(UserInfo user) {
+		if (user.toUser().isDummy()) {
+			return;
+		}
 		getAnalysis().useBy(user);
 	}
 
-	protected final void useSubstanceBy(UseInfo user) {
+	protected final void useSubstanceBy(UserInfo user) {
+		if (user.toUser().isDummy()) {
+			return;
+		}
 		getAnalysis().useSubstanceBy(user);
 	}
 
