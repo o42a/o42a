@@ -223,7 +223,7 @@ class LocalDef extends ValueDef {
 					dirs.begin("local_logical", "Local logical: " + this);
 
 			final Obj owner = this.def.getOwnerScope().toObject();
-			final ValueType<?> valueType = owner.getValueType();
+			final ValueType<?> valueType = owner.value().getValueType();
 			final ValDirs valDirs = subDirs.value(valueType, "local_val");
 
 			this.def.writeValue(valDirs, host);

@@ -162,7 +162,7 @@ public class ObjectValueIR {
 
 		return code.phi(null, claim, prop).op(
 				dirs.getBuilder(),
-				getObject().getValueType());
+				getObject().value().getValueType());
 	}
 
 	protected void createRequirement(

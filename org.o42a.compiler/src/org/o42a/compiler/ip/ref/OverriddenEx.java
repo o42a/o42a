@@ -122,7 +122,7 @@ public class OverriddenEx extends Ref {
 
 			final Scope enclosingScope = getScope().getEnclosingScope();
 			final ValueType<?> valueType =
-				enclosingScope.toObject().getValueType();
+				enclosingScope.toObject().value().getValueType();
 
 			return new Ascendants(this).setAncestor(
 					valueType.typeRef(this, enclosingScope));
@@ -144,7 +144,7 @@ public class OverriddenEx extends Ref {
 		public void writeLogicalValue(CodeDirs dirs) {
 
 			final ValueType<?> valueType =
-				getRef().getScope().toObject().getValueType();
+				getRef().getScope().toObject().value().getValueType();
 			final ValDirs valDirs = dirs.value(valueType);
 
 			writeValue(valDirs);

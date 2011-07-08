@@ -42,7 +42,9 @@ public class RtString extends IntrinsicObject {
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
+				value().getValueType().typeRef(
+						this,
+						getScope().getEnclosingScope()));
 	}
 
 	@Override

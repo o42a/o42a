@@ -79,7 +79,7 @@ public strictfp class FloatOperatorsTest extends CompilerTestCase {
 	public void divideByZero() {
 		compile("Result := float '123.45' / float '0'");
 
-		assertEquals(ValueType.FLOAT, this.result.toObject().getValueType());
+		assertEquals(ValueType.FLOAT, this.result.value().getValueType());
 		assertEquals(Double.POSITIVE_INFINITY, definiteValue(this.result));
 	}
 
@@ -87,7 +87,7 @@ public strictfp class FloatOperatorsTest extends CompilerTestCase {
 	protected void compile(Source source) {
 		super.compile(source);
 		this.result = field("result").getArtifact().materialize();
-		assertEquals(ValueType.FLOAT, this.result.getValueType());
+		assertEquals(ValueType.FLOAT, this.result.value().getValueType());
 		assertTrue(this.result.type().inherits(
 				this.context.getIntrinsics().getFloat().type()));
 	}

@@ -26,6 +26,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
@@ -33,6 +34,7 @@ public final class ObjectValue implements UserInfo {
 
 	private final Obj object;
 	private Usable usable;
+	private ValueType<?> valueType;
 	private Value<?> value;
 	private Definitions definitions;
 	private boolean fullyResolved;
@@ -43,6 +45,24 @@ public final class ObjectValue implements UserInfo {
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	public final ValueType<?> getValueType() {
+		if (this.valueType != null) {
+			return this.valueType;
+		}
+
+		final Obj object = getObject();
+		final TypeRef ancestor = object.type().getAncestor();
+
+		if (ancestor == null) {
+			return ValueType.VOID;
+		}
+
+		setValueType(ancestor.typeObject(
+				object.getScope().dummyResolver()).value().getValueType());
+
+		return this.valueType;
 	}
 
 	@Override
@@ -154,6 +174,12 @@ public final class ObjectValue implements UserInfo {
 			return super.toString();
 		}
 		return "ObjectValue[" + this.object + ']';
+	}
+
+	final void setValueType(ValueType<?> valueType) {
+		if (valueType != null) {
+			this.valueType = valueType;
+		}
 	}
 
 	private Definitions getAncestorDefinitions() {

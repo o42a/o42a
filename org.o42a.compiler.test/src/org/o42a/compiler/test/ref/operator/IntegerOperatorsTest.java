@@ -81,7 +81,7 @@ public class IntegerOperatorsTest extends CompilerTestCase {
 
 		compile("Result := 1 / 0");
 
-		assertEquals(ValueType.INTEGER, this.result.toObject().getValueType());
+		assertEquals(ValueType.INTEGER, this.result.value().getValueType());
 		assertFalseValue(valueOf(this.result));
 	}
 
@@ -89,7 +89,7 @@ public class IntegerOperatorsTest extends CompilerTestCase {
 	protected void compile(Source source) {
 		super.compile(source);
 		this.result = field("result").getArtifact().materialize();
-		assertEquals(ValueType.INTEGER, this.result.getValueType());
+		assertEquals(ValueType.INTEGER, this.result.value().getValueType());
 		assertTrue(this.result.type().inherits(
 				this.context.getIntrinsics().getInteger().type()));
 	}

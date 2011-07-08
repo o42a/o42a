@@ -66,10 +66,10 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 		final Value<?> inputValue = input().value(resolver);
 
 		if (inputValue.isFalse()) {
-			return getValueType().falseValue();
+			return value().getValueType().falseValue();
 		}
 		if (!inputValue.isDefinite()) {
-			return getValueType().runtimeValue();
+			return value().getValueType().runtimeValue();
 		}
 
 		final String input =
@@ -77,11 +77,11 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 		final T result = byString(input(), resolver, input);
 
 		if (result == null) {
-			return getValueType().falseValue();
+			return value().getValueType().falseValue();
 		}
 
 		@SuppressWarnings("unchecked")
-		final ValueType<T> valueType = (ValueType<T>) getValueType();
+		final ValueType<T> valueType = (ValueType<T>) value().getValueType();
 
 		return valueType.constantValue(result);
 	}
@@ -113,7 +113,9 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
+				value().getValueType().typeRef(
+						this,
+						getScope().getEnclosingScope()));
 	}
 
 	@Override

@@ -87,8 +87,6 @@ public abstract class Obj extends Artifact<Obj>
 	private Clause[] explicitClauses;
 	private Clause[] implicitClauses;
 
-	private ValueType<?> valueType;
-
 	private ObjectAnalysis analysis;
 
 	private ObjectIR ir;
@@ -180,13 +178,6 @@ public abstract class Obj extends Artifact<Obj>
 
 	public Obj getWrapped() {
 		return this;
-	}
-
-	public final ValueType<?> getValueType() {
-		if (this.valueType == null) {
-			assignValueType();
-		}
-		return this.valueType;
 	}
 
 	public boolean isPropagated() {
@@ -543,21 +534,7 @@ public abstract class Obj extends Artifact<Obj>
 	protected abstract Ascendants buildAscendants();
 
 	protected final void setValueType(ValueType<?> valueType) {
-		if (valueType != null) {
-			this.valueType = valueType;
-		}
-	}
-
-	protected ValueType<?> resolveValueType() {
-
-		final TypeRef ancestor = type().getAncestor();
-
-		if (ancestor == null) {
-			return ValueType.VOID;
-		}
-
-		return ancestor.typeObject(
-				getScope().dummyResolver()).getValueType();
+		value().setValueType(valueType);
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);
@@ -743,12 +720,6 @@ public abstract class Obj extends Artifact<Obj>
 		this.deps.put(null, dep);
 
 		return dep;
-	}
-
-	private void assignValueType() {
-		if (this.valueType == null) {
-			setValueType(resolveValueType());
-		}
 	}
 
 	private void declareMembers() {

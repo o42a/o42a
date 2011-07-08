@@ -37,7 +37,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("void_value").getArtifact().materialize();
 
-		assertEquals(ValueType.VOID, field.getValueType());
+		assertEquals(ValueType.VOID, field.value().getValueType());
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("integer_value").getArtifact().materialize();
 
-		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertEquals(ValueType.INTEGER, field.value().getValueType());
 		assertThat(definiteValue(field, ValueType.INTEGER), is(12345678900L));
 	}
 
@@ -56,7 +56,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("integer_value").getArtifact().materialize();
 
-		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertEquals(ValueType.INTEGER, field.value().getValueType());
 		assertThat(definiteValue(field, ValueType.INTEGER), is(12345678900L));
 	}
 
@@ -66,7 +66,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("integer_value").getArtifact().materialize();
 
-		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertEquals(ValueType.INTEGER, field.value().getValueType());
 		assertThat(definiteValue(field, ValueType.INTEGER), is(12345678900L));
 	}
 
@@ -76,7 +76,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("integer_value").getArtifact().materialize();
 
-		assertEquals(ValueType.INTEGER, field.getValueType());
+		assertEquals(ValueType.INTEGER, field.value().getValueType());
 		assertThat(definiteValue(field, ValueType.INTEGER), is(-12345678900L));
 	}
 
@@ -86,7 +86,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("float_value").getArtifact().materialize();
 
-		assertEquals(ValueType.FLOAT, field.getValueType());
+		assertEquals(ValueType.FLOAT, field.value().getValueType());
 		assertThat(definiteValue(field, ValueType.FLOAT), is(1234567890.25d));
 	}
 
@@ -96,7 +96,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("float_value").getArtifact().materialize();
 
-		assertEquals(ValueType.FLOAT, field.getValueType());
+		assertEquals(ValueType.FLOAT, field.value().getValueType());
 		assertThat(definiteValue(field, ValueType.FLOAT), is(1234567890.25d));
 	}
 
@@ -106,7 +106,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("float_value").getArtifact().materialize();
 
-		assertEquals(ValueType.FLOAT, field.getValueType());
+		assertEquals(ValueType.FLOAT, field.value().getValueType());
 		assertThat(definiteValue(field, ValueType.FLOAT), is(-1234567890.25d));
 	}
 
@@ -116,7 +116,7 @@ public class BuiltinValuesTest extends CompilerTestCase {
 
 		final Obj field = field("string_value").getArtifact().materialize();
 
-		assertEquals(ValueType.STRING, field.getValueType());
+		assertEquals(ValueType.STRING, field.value().getValueType());
 		assertEquals("abc", definiteValue(field));
 	}
 

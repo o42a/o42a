@@ -144,7 +144,7 @@ final class PathTargetAncestor extends Ref {
 
 		if (object != null) {
 
-			final ValueType<?> valueType = object.getValueType();
+			final ValueType<?> valueType = object.value().getValueType();
 
 			if (valueType.wrapper(getContext().getIntrinsics()) == object) {
 				return valueType.typeRef(

@@ -66,7 +66,7 @@ final class ObjectTestsRunner extends DefinedObject {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(
+				value().getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));
 	}

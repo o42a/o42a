@@ -48,7 +48,7 @@ public abstract class ObjectValueIRValFunc
 	}
 
 	public final ValueType<?> getValueType() {
-		return getObject().getValueType();
+		return getObject().value().getValueType();
 	}
 
 	public abstract boolean isClaim();

@@ -81,14 +81,14 @@ final class Adapter extends Wrap {
 
 		final RefOp op = super.createOp(host);
 		final ValueType<?> adapterValueType =
-			this.adapterType.typeObject(dummyUser()).getValueType();
+			this.adapterType.typeObject(dummyUser()).value().getValueType();
 
 		if (adapterValueType != ValueType.VOID) {
 			return op;
 		}
 
 		final ValueType<?> valueType =
-			this.ref.getResolution().materialize().getValueType();
+			this.ref.getResolution().materialize().value().getValueType();
 
 		if (valueType == ValueType.VOID) {
 			return op;
