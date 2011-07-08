@@ -54,7 +54,7 @@ public class BuiltinValueDef extends ValueDef {
 
 	@Override
 	public ValueType<?> getValueType() {
-		return this.builtin.toObject().getValueType();
+		return this.builtin.toObject().value().getValueType();
 	}
 
 	@Override

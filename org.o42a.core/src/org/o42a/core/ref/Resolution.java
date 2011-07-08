@@ -93,7 +93,7 @@ public abstract class Resolution implements ScopeInfo {
 		if (materialized == null) {
 			return null;
 		}
-		if (materialized.getValueType() != ValueType.DIRECTIVE) {
+		if (materialized.value().getValueType() != ValueType.DIRECTIVE) {
 			return null;
 		}
 

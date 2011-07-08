@@ -117,7 +117,7 @@ public abstract class Ref extends RefTypeBase {
 
 	@Override
 	public final ValueType<?> getValueType() {
-		return getResolution().materialize().getValueType();
+		return getResolution().materialize().value().getValueType();
 	}
 
 	public final Logical getLogical() {

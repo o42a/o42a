@@ -49,7 +49,7 @@ final class CompareStrings extends BinaryResult<Long, String, String> {
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(
+				value().getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));
 	}

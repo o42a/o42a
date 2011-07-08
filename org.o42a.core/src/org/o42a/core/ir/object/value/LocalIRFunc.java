@@ -94,7 +94,7 @@ public final class LocalIRFunc extends ObjectIRFunc {
 			this.function.arg(this.function, OBJECT_VAL.value());
 		final ValOp result = value.op(
 				builder,
-				this.locals.getValueIR().getObject().getValueType());
+				this.locals.getValueIR().getObject().value().getValueType());
 
 		build(builder, this.function, result);
 

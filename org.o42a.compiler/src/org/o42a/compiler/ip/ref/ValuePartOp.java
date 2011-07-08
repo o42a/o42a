@@ -53,7 +53,7 @@ final class ValuePartOp extends ConstructorOp {
 	}
 
 	final ValueType<?> getValueType() {
-		return getRef().getScope().toObject().getValueType();
+		return getRef().getScope().toObject().value().getValueType();
 	}
 
 	final ValuePartRef getPartRef() {

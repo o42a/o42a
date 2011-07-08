@@ -53,7 +53,7 @@ abstract class CompareNumbers<P extends Number>
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(
+				value().getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));
 	}

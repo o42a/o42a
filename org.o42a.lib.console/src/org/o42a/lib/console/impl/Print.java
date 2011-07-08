@@ -61,7 +61,7 @@ public class Print extends IntrinsicBuiltin {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return getValueType().runtimeValue();
+		return value().getValueType().runtimeValue();
 	}
 
 	@Override

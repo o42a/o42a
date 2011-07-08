@@ -62,7 +62,7 @@ final class ConstantObject<T> extends PlainObject {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(
+				value().getValueType().typeRef(
 						this,
 						getScope().getEnclosingScope()));
 	}

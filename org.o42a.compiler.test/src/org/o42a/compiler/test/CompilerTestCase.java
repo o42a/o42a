@@ -175,7 +175,7 @@ public abstract class CompilerTestCase {
 		assertEquals(
 				object + " is not void",
 				ValueType.VOID,
-				object.getValueType());
+				object.value().getValueType());
 		assertTrueValue(object.value().getValue());
 	}
 
@@ -187,7 +187,7 @@ public abstract class CompilerTestCase {
 		assertEquals(
 				object + " is not void",
 				ValueType.VOID,
-				object.getValueType());
+				object.value().getValueType());
 		assertFalseValue(object.value().getValue());
 	}
 
@@ -199,7 +199,7 @@ public abstract class CompilerTestCase {
 		assertEquals(
 				object + " is not void",
 				ValueType.VOID,
-				object.getValueType());
+				object.value().getValueType());
 		assertKnownValue(object.value().getValue());
 	}
 

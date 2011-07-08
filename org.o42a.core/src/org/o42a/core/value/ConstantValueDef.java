@@ -47,7 +47,7 @@ final class ConstantValueDef<T> extends ValueDef {
 
 	@Override
 	public ValueType<?> getValueType() {
-		return this.source.getValueType();
+		return this.source.value().getValueType();
 	}
 
 	@Override

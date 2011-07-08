@@ -76,7 +76,7 @@ final class CompareFloats extends CompareNumbers<Double> {
 
 		final ValType.Op result = code.phi(null, result1, result2);
 
-		return result.op(dirs.getBuilder(), getValueType());
+		return result.op(dirs.getBuilder(), value().getValueType());
 	}
 
 }

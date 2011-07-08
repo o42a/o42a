@@ -221,7 +221,7 @@ public abstract class StatementEnv {
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.object.getValueType();
+			return this.object.value().getValueType();
 		}
 
 	}

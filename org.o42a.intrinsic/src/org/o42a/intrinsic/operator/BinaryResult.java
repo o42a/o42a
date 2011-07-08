@@ -65,7 +65,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 
 	@SuppressWarnings("unchecked")
 	public final ValueType<T> getResultType() {
-		return (ValueType<T>) getValueType();
+		return (ValueType<T>) value().getValueType();
 	}
 
 	public final ValueType<L> getLeftOperandType() {
@@ -136,7 +136,9 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
+				value().getValueType().typeRef(
+						this,
+						getScope().getEnclosingScope()));
 	}
 
 	@Override

@@ -61,12 +61,12 @@ public class IntrinsicType extends IntrinsicObject {
 	protected Definitions overrideDefinitions(
 			Scope scope,
 			Definitions ascentantDefinitions) {
-		return getValueType().noValueDefinitions(this, scope);
+		return value().getValueType().noValueDefinitions(this, scope);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getValueType().noValueDefinitions(this, getScope());
+		return value().getValueType().noValueDefinitions(this, getScope());
 	}
 
 }

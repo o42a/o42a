@@ -50,7 +50,7 @@ public class RtFalse extends IntrinsicBuiltin {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return getValueType().runtimeValue();
+		return value().getValueType().runtimeValue();
 	}
 
 	@Override
@@ -71,7 +71,9 @@ public class RtFalse extends IntrinsicBuiltin {
 	@Override
 	protected Ascendants createAscendants() {
 		return new Ascendants(this).setAncestor(
-				getValueType().typeRef(this, getScope().getEnclosingScope()));
+				value().getValueType().typeRef(
+						this,
+						getScope().getEnclosingScope()));
 	}
 
 }
