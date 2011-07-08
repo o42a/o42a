@@ -43,7 +43,6 @@ public final class ObjectType implements UserInfo {
 
 	ObjectType(Obj object) {
 		this.object = object;
-		this.usable = simpleUsable(this);
 	}
 
 	public final Obj getObject() {
@@ -72,12 +71,15 @@ public final class ObjectType implements UserInfo {
 
 	@Override
 	public final boolean isUsedBy(UseCase useCase) {
-		return usable().isUsedBy(useCase);
+		return getUseBy(useCase).isUsed();
 	}
 
 	@Override
 	public final UseFlag getUseBy(UseCase useCase) {
-		return usable().getUseBy(useCase);
+		if (this.usable == null) {
+			return useCase.unusedFlag();
+		}
+		return this.usable.getUseBy(useCase);
 	}
 
 	public final Ascendants getAscendants() {
@@ -173,7 +175,21 @@ public final class ObjectType implements UserInfo {
 		return this.resolution.resolved();
 	}
 
-	final Usable usable() {
+	final void useBy(UserInfo user) {
+		if (user.toUser().isDummy()) {
+			return;
+		}
+		usable().useBy(user);
+	}
+
+	private final Usable usable() {
+		if (this.usable != null) {
+			return this.usable;
+		}
+
+		this.usable = simpleUsable(this);
+		getObject().content().useBy(this.usable);
+
 		return this.usable;
 	}
 

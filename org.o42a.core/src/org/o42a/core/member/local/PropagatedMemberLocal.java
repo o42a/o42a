@@ -63,8 +63,8 @@ final class PropagatedMemberLocal extends MemberLocal {
 	}
 
 	private void use(UserInfo user) {
-		useBy(user.toUser());
-		useSubstanceBy(user.toUser());
+		useBy(user);
+		useSubstanceBy(user);
 	}
 
 }

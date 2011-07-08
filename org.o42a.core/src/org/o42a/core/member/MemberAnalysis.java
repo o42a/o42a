@@ -31,21 +31,12 @@ public class MemberAnalysis implements UseInfo {
 
 	private final UseTracker tracker = new UseTracker();
 	private final Member member;
-	private final MemberUses memberUses;
-	private final MemberUses substanceUses;
-	private final MemberUses nestedUses;
+	private MemberUses memberUses;
+	private MemberUses substanceUses;
+	private MemberUses nestedUses;
 
 	MemberAnalysis(Member member) {
 		this.member = member;
-		this.memberUses = new MemberUses("MemberUses", member);
-		this.substanceUses = new MemberUses("SubstanceUses", member);
-		this.nestedUses = new MemberUses("NestedUses", member);
-		if (member.isOverride()) {
-			// Member declaration should be used when overridden member used.
-			getDeclarationAnalysis().useBy(this.memberUses);
-			getDeclarationAnalysis().useSubstanceBy(this.substanceUses);
-			getDeclarationAnalysis().useNestedBy(this.nestedUses);
-		}
 	}
 
 	public final Member getMember() {
@@ -74,13 +65,18 @@ public class MemberAnalysis implements UseInfo {
 		if (!this.tracker.start(useCase)) {
 			return this.tracker.getUseFlag();
 		}
+		if (this.memberUses == null) {
+			return this.tracker.done();
+		}
 		if (!this.tracker.require(this.memberUses)) {
 			return this.tracker.getUseFlag();
 		}
-		if (this.tracker.useBy(this.substanceUses)) {
+		if (this.substanceUses != null
+				&& this.tracker.useBy(this.substanceUses)) {
 			return this.tracker.getUseFlag();
 		}
-		if (this.tracker.useBy(this.nestedUses)) {
+		if (this.nestedUses != null
+				&& this.tracker.useBy(this.nestedUses)) {
 			return this.tracker.getUseFlag();
 		}
 		return this.tracker.done();
@@ -132,14 +128,32 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	final void useBy(UseInfo user) {
+		if (this.memberUses == null) {
+			this.memberUses = new MemberUses("MemberUses", getMember());
+			if (getMember().isOverride()) {
+				getDeclarationAnalysis().useBy(this.memberUses);
+			}
+		}
 		this.memberUses.useBy(user);
 	}
 
 	final void useSubstanceBy(UseInfo user) {
+		if (this.substanceUses == null) {
+			this.substanceUses = new MemberUses("SubstanceUses", getMember());
+			if (getMember().isOverride()) {
+				getDeclarationAnalysis().useSubstanceBy(this.substanceUses);
+			}
+		}
 		this.substanceUses.useBy(user);
 	}
 
 	final void useNestedBy(UseInfo user) {
+		if (this.nestedUses == null) {
+			this.nestedUses = new MemberUses("NestedUses", getMember());
+			if (getMember().isOverride()) {
+				getDeclarationAnalysis().useNestedBy(this.nestedUses);
+			}
+		}
 		this.nestedUses.useBy(user);
 	}
 

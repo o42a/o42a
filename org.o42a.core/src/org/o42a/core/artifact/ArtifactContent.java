@@ -17,27 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
+package org.o42a.core.artifact;
 
 import static org.o42a.util.use.Usable.simpleUsable;
 
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.Value;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements UserInfo {
+public class ArtifactContent implements UserInfo {
 
-	private final Obj object;
+	private final Artifact<?> artifact;
 	private Usable usable;
-	private Value<?> value;
 
-	ObjectValue(Obj object) {
-		this.object = object;
+	ArtifactContent(Artifact<?> artifact) {
+		this.artifact = artifact;
 	}
 
-	public final Obj getObject() {
-		return this.object;
+	public final Artifact<?> getArtifact() {
+		return this.artifact;
 	}
 
 	@Override
@@ -58,45 +55,19 @@ public final class ObjectValue implements UserInfo {
 		return this.usable.getUseBy(useCase);
 	}
 
-	public final Value<?> getValue() {
-		if (this.value == null) {
-			this.value = getObject().calculateValue(
-					getObject().getScope().dummyResolver());
-		}
-		return this.value;
-	}
-
-	public Value<?> value(Resolver resolver) {
-		getObject().assertCompatible(resolver.getScope());
-
-		final Value<?> result;
-
-		if (resolver == getObject().getScope()) {
-			result = getValue();
-		} else {
-			result = getObject().calculateValue(resolver);
-		}
-
-		return result;
-	}
-
-	public final Resolver valueResolver() {
-		return getObject().getScope().newResolver(usable());
-	}
-
-	@Override
-	public String toString() {
-		if (this.object == null) {
-			return super.toString();
-		}
-		return "ObjectValue[" + this.object + ']';
-	}
-
-	final void useBy(UserInfo user) {
+	public final void useBy(UserInfo user) {
 		if (user.toUser().isDummy()) {
 			return;
 		}
 		usable().useBy(user);
+	}
+
+	@Override
+	public String toString() {
+		if (this.artifact == null) {
+			return super.toString();
+		}
+		return "Content[" + this.artifact + ']';
 	}
 
 	private final Usable usable() {
@@ -105,7 +76,6 @@ public final class ObjectValue implements UserInfo {
 		}
 
 		this.usable = simpleUsable(this);
-		getObject().content().useBy(this.usable);
 
 		return this.usable;
 	}
