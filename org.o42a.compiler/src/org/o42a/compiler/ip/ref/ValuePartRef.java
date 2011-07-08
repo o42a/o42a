@@ -162,9 +162,9 @@ public final class ValuePartRef extends Expression {
 			final Definitions definitions;
 
 			if (!ValuePartRef.this.overridden) {
-				definitions = self.getDefinitions();
+				definitions = self.value().getDefinitions();
 			} else {
-				definitions = self.getOverriddenDefinitions();
+				definitions = self.value().getOverriddenDefinitions();
 			}
 
 			return ValuePartRef.this.valuePart.valuePart(

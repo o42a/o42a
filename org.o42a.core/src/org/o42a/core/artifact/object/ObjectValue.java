@@ -21,7 +21,10 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.Usable.simpleUsable;
 
+import org.o42a.core.artifact.common.FullResolution;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.util.use.*;
 
@@ -31,6 +34,8 @@ public final class ObjectValue implements UserInfo {
 	private final Obj object;
 	private Usable usable;
 	private Value<?> value;
+	private Definitions definitions;
+	private boolean fullyResolved;
 
 	ObjectValue(Obj object) {
 		this.object = object;
@@ -60,8 +65,8 @@ public final class ObjectValue implements UserInfo {
 
 	public final Value<?> getValue() {
 		if (this.value == null) {
-			this.value = getObject().calculateValue(
-					getObject().getScope().dummyResolver());
+			this.value = getDefinitions().value(
+					getObject().getScope().dummyResolver()).getValue();
 		}
 		return this.value;
 	}
@@ -74,10 +79,41 @@ public final class ObjectValue implements UserInfo {
 		if (resolver == getObject().getScope()) {
 			result = getValue();
 		} else {
-			result = getObject().calculateValue(resolver);
+			result = getDefinitions().value(resolver).getValue();
 		}
 
 		return result;
+	}
+
+	public final Definitions getDefinitions() {
+		if (this.definitions != null) {
+			return this.definitions;
+		}
+
+		final Obj object = getObject();
+
+		object.resolve();
+
+		final Definitions definitions = object.overrideDefinitions(
+				object.getScope(),
+				getOverriddenDefinitions());
+
+		if (!object.getConstructionMode().isRuntime()) {
+			return this.definitions = definitions;
+		}
+
+		return this.definitions = definitions.runtime();
+	}
+
+	public final Definitions getOverriddenDefinitions() {
+
+		final Obj object = getObject();
+		final Definitions ancestorDefinitions = getAncestorDefinitions();
+
+		return object.overriddenDefinitions(
+				object.getScope(),
+				ancestorDefinitions,
+				ancestorDefinitions);
 	}
 
 	public final ObjectValue useBy(UserInfo user) {
@@ -91,12 +127,49 @@ public final class ObjectValue implements UserInfo {
 		return getObject().getScope().newResolver(usable());
 	}
 
+	public final void resolveAll(UserInfo user) {
+		if (this.fullyResolved) {
+			useBy(user);
+			return;
+		}
+
+		final Obj object = getObject();
+		final FullResolution fullResolution =
+				object.getContext().fullResolution();
+
+		this.fullyResolved = true;
+		fullResolution.start();
+		try {
+			object.resolveAll();
+			useBy(user);
+			object.fullyResolveDefinitions();
+		} finally {
+			fullResolution.end();
+		}
+	}
+
 	@Override
 	public String toString() {
 		if (this.object == null) {
 			return super.toString();
 		}
 		return "ObjectValue[" + this.object + ']';
+	}
+
+	private Definitions getAncestorDefinitions() {
+
+		final Definitions ancestorDefinitions;
+		final TypeRef ancestor = getObject().type().getAncestor();
+
+		if (ancestor == null) {
+			ancestorDefinitions = null;
+		} else {
+			ancestorDefinitions =
+				ancestor.typeObject(this).value()
+				.getDefinitions().upgradeScope(getObject().getScope());
+		}
+
+		return ancestorDefinitions;
 	}
 
 	private final Usable usable() {

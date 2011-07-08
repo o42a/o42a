@@ -106,8 +106,7 @@ public class ObjectValueIR {
 
 	protected void allocate(ObjectTypeIR typeIR) {
 
-		final Obj object = getObject();
-		final Definitions definitions = object.getDefinitions();
+		final Definitions definitions = definitions();
 
 		if (definitions.getConstantRequirement().isFalse()
 				|| definitions.getConstantCondition().isFalse()) {
@@ -221,7 +220,7 @@ public class ObjectValueIR {
 	}
 
 	private final Definitions definitions() {
-		return getObject().getDefinitions();
+		return getObject().value().getDefinitions();
 	}
 
 	private void assignValue(ObjectTypeIR typeIR, Definitions definitions) {

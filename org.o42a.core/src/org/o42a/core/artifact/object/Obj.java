@@ -51,15 +51,12 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UseInfo;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class Obj extends Artifact<Obj>
@@ -91,9 +88,7 @@ public abstract class Obj extends Artifact<Obj>
 	private Clause[] implicitClauses;
 
 	private ValueType<?> valueType;
-	private Definitions definitions;
 
-	private boolean definitionsResolved;
 	private ObjectAnalysis analysis;
 
 	private ObjectIR ir;
@@ -489,33 +484,6 @@ public abstract class Obj extends Artifact<Obj>
 		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
-	public final Definitions getDefinitions() {
-		if (this.definitions != null) {
-			return this.definitions;
-		}
-
-		resolve();
-
-		final Definitions definitions =
-			overrideDefinitions(getScope(), getOverriddenDefinitions());
-
-		if (!getConstructionMode().isRuntime()) {
-			return this.definitions = definitions;
-		}
-
-		return this.definitions = definitions.runtime();
-	}
-
-	public Definitions getOverriddenDefinitions() {
-
-		final Definitions ancestorDefinitions = getAncestorDefinitions();
-
-		return overriddenDefinitions(
-				getScope(),
-				ancestorDefinitions,
-				ancestorDefinitions);
-	}
-
 	public Path scopePath() {
 
 		final PathFragment scopePathFragment;
@@ -531,22 +499,6 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return scopePathFragment.toPath();
-	}
-
-	public final void resolveDefinitions(UserInfo user) {
-		if (this.definitionsResolved) {
-			value().useBy(user);
-			return;
-		}
-		this.definitionsResolved = true;
-		getContext().fullResolution().start();
-		try {
-			resolveAll();
-			value().useBy(user);
-			fullyResolveDefinitions();
-		} finally {
-			getContext().fullResolution().end();
-		}
 	}
 
 	@Override
@@ -617,10 +569,6 @@ public abstract class Obj extends Artifact<Obj>
 			Scope scope,
 			Definitions ascendantDefinitions);
 
-	protected Value<?> calculateValue(Resolver resolver) {
-		return getDefinitions().value(resolver).getValue();
-	}
-
 	@Override
 	protected Obj findCloneOf() {
 
@@ -689,11 +637,11 @@ public abstract class Obj extends Artifact<Obj>
 		}
 		resolveAllMembers();
 		validateImplicitSubClauses(getExplicitClauses());
-		resolveDefinitions(dummyUser());
+		value().resolveAll(dummyUser());
 	}
 
 	protected void fullyResolveDefinitions() {
-		getDefinitions().resolveAll();
+		value().getDefinitions().resolveAll();
 	}
 
 	protected ObjectIR createIR(Generator generator) {
@@ -845,22 +793,6 @@ public abstract class Obj extends Artifact<Obj>
 	private Symbol memberById(MemberId memberId) {
 		resolveMembers(memberId.containsAdapterId());
 		return this.symbols.get(memberId);
-	}
-
-	private Definitions getAncestorDefinitions() {
-
-		final Definitions ancestorDefinitions;
-		final TypeRef ancestor = type().getAncestor();
-
-		if (ancestor == null) {
-			ancestorDefinitions = null;
-		} else {
-			ancestorDefinitions =
-				ancestor.typeObject(value())
-				.getDefinitions().upgradeScope(getScope());
-		}
-
-		return ancestorDefinitions;
 	}
 
 	private boolean assertImplicitSamples(Sample[] samples) {

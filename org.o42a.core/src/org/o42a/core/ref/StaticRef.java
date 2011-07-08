@@ -50,7 +50,7 @@ final class StaticRef extends Ref {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return calculateValue(resolve(resolver).materialize(), resolver);
+		return resolve(resolver).materialize().value().value(resolver);
 	}
 
 	@Override
