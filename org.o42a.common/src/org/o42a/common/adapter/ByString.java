@@ -19,8 +19,6 @@
 */
 package org.o42a.common.adapter;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.Accessor;
@@ -91,7 +89,7 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver = object.value(dummyUser()).valueResolver();
+		final Resolver resolver = object.value().valueResolver();
 
 		input().resolveValues(resolver);
 	}

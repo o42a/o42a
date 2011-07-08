@@ -223,7 +223,8 @@ public abstract class Ref extends RefTypeBase {
 	}
 
 	public Value<?> value(Resolver resolver) {
-		return resolve(resolver).materialize().value(resolver).getValue();
+		return resolve(resolver).materialize()
+				.value().useBy(resolver).getValue();
 	}
 
 	/**

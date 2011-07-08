@@ -80,6 +80,13 @@ public final class ObjectValue implements UserInfo {
 		return result;
 	}
 
+	public final ObjectValue useBy(UserInfo user) {
+		if (!user.toUser().isDummy()) {
+			usable().useBy(user);
+		}
+		return this;
+	}
+
 	public final Resolver valueResolver() {
 		return getObject().getScope().newResolver(usable());
 	}
@@ -90,13 +97,6 @@ public final class ObjectValue implements UserInfo {
 			return super.toString();
 		}
 		return "ObjectValue[" + this.object + ']';
-	}
-
-	final void useBy(UserInfo user) {
-		if (user.toUser().isDummy()) {
-			return;
-		}
-		usable().useBy(user);
 	}
 
 	private final Usable usable() {

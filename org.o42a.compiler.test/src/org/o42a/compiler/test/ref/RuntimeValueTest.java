@@ -69,7 +69,7 @@ public class RuntimeValueTest extends CompilerTestCase {
 		final Obj object = field.getArtifact().materialize();
 
 		assertEquals(ValueType.INTEGER, object.getValueType());
-		assertFalse(object.value(USE_CASE).getValue().isDefinite());
+		assertFalse(object.value().getValue().isDefinite());
 	}
 
 }

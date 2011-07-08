@@ -19,8 +19,6 @@
 */
 package org.o42a.intrinsic.operator;
 
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.common.object.IntrinsicBuiltin;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
@@ -108,7 +106,7 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver = object.value(dummyUser()).valueResolver();
+		final Resolver resolver = object.value().valueResolver();
 
 		leftOperand().resolveValues(resolver);
 		rightOperand().resolveValues(resolver);

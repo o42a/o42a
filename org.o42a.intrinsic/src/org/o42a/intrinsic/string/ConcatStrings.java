@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.string;
 
 import static org.o42a.intrinsic.string.ConcatFunc.CONCAT;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -78,8 +77,7 @@ final class ConcatStrings extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver =
-			object.getScope().newResolver(object.value(dummyUser()));
+		final Resolver resolver = object.value().valueResolver();
 
 		what().resolveValues(resolver);
 		with().resolveValues(resolver);

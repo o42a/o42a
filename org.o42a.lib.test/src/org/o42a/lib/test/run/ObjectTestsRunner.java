@@ -21,7 +21,6 @@ package org.o42a.lib.test.run;
 
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.LocationInfo;
@@ -94,8 +93,7 @@ final class ObjectTestsRunner extends DefinedObject {
 			definition.propose(this).alternative(this);
 		final ImperativeSentence sentence =
 			statements.braces(this, "_tests_").propose(this);
-		final UserInfo user =
-			definition.getScope().toObject().value(dummyUser());
+		final UserInfo user = definition.getScope().toObject().value();
 
 		for (Member member : object.getMembers()) {
 

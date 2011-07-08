@@ -59,7 +59,7 @@ public abstract class CompilerTestCase {
 	private static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
 
 	public static Value<?> valueOf(Artifact<?> artifact) {
-		return artifact.materialize().value(USE_CASE).getValue();
+		return artifact.materialize().value().getValue();
 	}
 
 	public static Value<?> valueOf(Field<?> field) {
@@ -176,7 +176,7 @@ public abstract class CompilerTestCase {
 				object + " is not void",
 				ValueType.VOID,
 				object.getValueType());
-		assertTrueValue(object.value(USE_CASE).getValue());
+		assertTrueValue(object.value().getValue());
 	}
 
 	public static void assertFalseVoid(Field<?> field) {
@@ -188,7 +188,7 @@ public abstract class CompilerTestCase {
 				object + " is not void",
 				ValueType.VOID,
 				object.getValueType());
-		assertFalseValue(object.value(USE_CASE).getValue());
+		assertFalseValue(object.value().getValue());
 	}
 
 	public static void assertUnknownVoid(Field<?> field) {
@@ -200,7 +200,7 @@ public abstract class CompilerTestCase {
 				object + " is not void",
 				ValueType.VOID,
 				object.getValueType());
-		assertKnownValue(object.value(USE_CASE).getValue());
+		assertKnownValue(object.value().getValue());
 	}
 
 	public static Field<?> field(

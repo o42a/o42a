@@ -60,7 +60,7 @@ public final class Include extends IntrinsicDirective {
 		final Sentence<?> sentence = block.propose(directive);
 		final Value<String> value = ValueType.STRING.cast(
 				fileField.getArtifact().materialize()
-				.value(context).getValue());
+				.value().useBy(context).getValue());
 		final String file = value.getDefiniteValue();
 
 		if (file == null) {

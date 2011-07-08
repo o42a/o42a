@@ -132,7 +132,7 @@ final class TestRunner extends PlainObject {
 
 		final Obj nameObject =
 			test.field("name").substance(dummyUser()).toObject();
-		final Value<?> nameValue = nameObject.value(dummyUser()).getValue();
+		final Value<?> nameValue = nameObject.value().getValue();
 
 		if (!nameValue.isDefinite()) {
 			sentence.getLogger().indefiniteValue(nameObject);

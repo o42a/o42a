@@ -207,13 +207,11 @@ public abstract class Obj extends Artifact<Obj>
 		return objectType;
 	}
 
-	public final ObjectValue value(UserInfo user) {
-
-		final ObjectValue objectValue = objectValue();
-
-		objectValue.useBy(user);
-
-		return objectValue;
+	public final ObjectValue value() {
+		if (this.value != null) {
+			return this.value;
+		}
+		return this.value = new ObjectValue(this);
 	}
 
 	public final boolean membersResolved() {
@@ -539,14 +537,14 @@ public abstract class Obj extends Artifact<Obj>
 
 	public final void resolveDefinitions(UserInfo user) {
 		if (this.definitionsResolved) {
-			value(user);
+			value().useBy(user);
 			return;
 		}
 		this.definitionsResolved = true;
 		getContext().fullResolution().start();
 		try {
 			resolveAll();
-			value(user);
+			value().useBy(user);
 			fullyResolveDefinitions();
 		} finally {
 			getContext().fullResolution().end();
@@ -715,13 +713,6 @@ public abstract class Obj extends Artifact<Obj>
 		return this.type = new ObjectType(this);
 	}
 
-	final ObjectValue objectValue() {
-		if (this.value != null) {
-			return this.value;
-		}
-		return this.value = new ObjectValue(this);
-	}
-
 	final Map<MemberKey, Member> members() {
 		return Obj.this.members;
 	}
@@ -747,8 +738,7 @@ public abstract class Obj extends Artifact<Obj>
 			definitions = emptyDefinitions(this, getScope());
 		}
 
-		final ObjectValue user = scope.toObject().value(dummyUser());
-		final ObjectType type = type(user);
+		final ObjectType type = type(scope.toObject().value());
 		boolean hasExplicitAncestor =
 			type.getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = type.getSamples();
@@ -875,7 +865,7 @@ public abstract class Obj extends Artifact<Obj>
 			ancestorDefinitions = null;
 		} else {
 			ancestorDefinitions =
-				ancestor.typeObject(value(dummyUser()))
+				ancestor.typeObject(value())
 				.getDefinitions().upgradeScope(getScope());
 		}
 

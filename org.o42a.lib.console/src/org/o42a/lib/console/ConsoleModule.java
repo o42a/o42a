@@ -123,7 +123,7 @@ public class ConsoleModule extends Module {
 					adapterRef.toStaticTypeRef());
 		}
 
-		this.main.value(user);
+		this.main.value().useBy(user);
 
 		return this.main;
 	}

@@ -21,7 +21,6 @@ package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.intrinsic.string.SubStringFunc.SUB_STRING;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -131,7 +130,7 @@ final class SubString extends IntrinsicBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver = object.value(dummyUser()).valueResolver();
+		final Resolver resolver = object.value().valueResolver();
 
 		string().resolveValues(resolver);
 		from().resolveValues(resolver);

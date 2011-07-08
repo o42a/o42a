@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.operator;
 
 import static org.o42a.core.value.Value.voidValue;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
@@ -201,7 +200,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		public void resolveBuiltin(Obj object) {
 
 			final Resolver resolver =
-				object.getScope().newResolver(object.value(dummyUser()));
+				object.getScope().newResolver(object.value());
 
 			operand().resolveValues(resolver);
 		}
