@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.module;
 
-import org.o42a.ast.Node;
-import org.o42a.ast.atom.SignNode;
+import java.util.Arrays;
+
 import org.o42a.ast.atom.SignType;
-import org.o42a.ast.sentence.SentenceNode;
 
 
-public interface BlockNode<S extends SignType> extends Node {
+public abstract class LineType implements SignType {
 
-	SignNode<S> getOpening();
+	private final char lineChar;
+	private final int length;
 
-	SentenceNode[] getContent();
+	public LineType(char lineChar, int length) {
+		this.lineChar = lineChar;
+		this.length = length;
+	}
 
-	SignNode<S> getClosing();
+	public final char getLineChar() {
+		return this.lineChar;
+	}
+
+	public final int getLength() {
+		return this.length;
+	}
+
+	@Override
+	public String getSign() {
+
+		final char[] chars = new char[this.length];
+
+		Arrays.fill(chars, this.lineChar);
+
+		return new String(chars);
+	}
+
+	@Override
+	public String toString() {
+		return new String(
+				new char[] {this.lineChar, this.lineChar, this.lineChar});
+	}
 
 }

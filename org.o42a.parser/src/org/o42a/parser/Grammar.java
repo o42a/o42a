@@ -21,6 +21,8 @@ package org.o42a.parser;
 
 import org.o42a.ast.atom.*;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.module.InclusionNode;
+import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -28,6 +30,8 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
 import org.o42a.parser.grammar.atom.*;
 import org.o42a.parser.grammar.expression.*;
+import org.o42a.parser.grammar.module.InclusionParser;
+import org.o42a.parser.grammar.module.ModuleParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.statement.*;
 
@@ -41,6 +45,10 @@ public class Grammar {
 
 	public static final Grammar DECLARATIVE = new DeclarativeGrammar();
 	public static final Grammar IMPERATIVE = new ImperativeGrammar();
+
+	public static Parser<ModuleNode> module() {
+		return ModuleParser.MODULE;
+	}
 
 	public static Parser<Object> whitespace(boolean allowNewLine) {
 		if (!allowNewLine) {
@@ -146,6 +154,10 @@ public class Grammar {
 		return TextParser.TEXT;
 	}
 
+	public static Parser<InclusionNode> inclusion() {
+		return InclusionParser.INCLUSION;
+	}
+
 	public static boolean isDigit(int c) {
 		return '0' <= c && c <= '9';
 	}
@@ -178,6 +190,14 @@ public class Grammar {
 		this.sentence = new SentenceParser(this);
 		this.disjunction = new DisjunctionParser(this);
 		this.conjunction = new ConjunctionParser(this);
+	}
+
+	public final boolean isDeclarative() {
+		return this == DECLARATIVE;
+	}
+
+	public final boolean isImperative() {
+		return this == IMPERATIVE;
 	}
 
 	public final Parser<ExpressionNode> expression() {

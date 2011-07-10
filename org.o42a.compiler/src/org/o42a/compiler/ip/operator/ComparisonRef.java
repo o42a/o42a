@@ -65,7 +65,6 @@ public final class ComparisonRef extends ObjectConstructor {
 	private Ref phrase;
 	private byte error;
 
-
 	public ComparisonRef(
 			Interpreter ip,
 			BinaryNode node,
@@ -113,7 +112,12 @@ public final class ComparisonRef extends ObjectConstructor {
 
 	@Override
 	public String toString() {
-		return this.node.printContent();
+
+		final StringBuilder out = new StringBuilder();
+
+		this.node.printContent(out);
+
+		return out.toString();
 	}
 
 	@Override

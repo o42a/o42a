@@ -313,7 +313,12 @@ public enum Interpreter {
 
 		@Override
 		public String toString() {
-			return this.block.printContent();
+
+			final StringBuilder out = new StringBuilder();
+
+			this.block.printContent(out);
+
+			return out.toString();
 		}
 
 	}

@@ -70,8 +70,7 @@ public class EllipsisParser implements Parser<EllipsisNode> {
 		context.acceptComments(false, mark);
 
 		final NameNode target;
-		final StatementNode suffix =
-			context.parse(IMPERATIVE.statement());
+		final StatementNode suffix = context.parse(IMPERATIVE.statement());
 
 		if (suffix == null) {
 			target = null;

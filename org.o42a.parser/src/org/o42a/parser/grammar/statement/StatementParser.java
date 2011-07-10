@@ -107,6 +107,10 @@ public class StatementParser implements Parser<StatementNode> {
 			return context.parse(braces());
 		case '<':
 			return context.parse(this.grammar.clauseDeclarator());
+		case '*':
+			if (this.grammar.isDeclarative()) {
+				return context.parse(inclusion());
+			}
 		}
 		return null;
 	}
@@ -114,7 +118,7 @@ public class StatementParser implements Parser<StatementNode> {
 	private StatementNode startWithExpression(
 			ParserContext context,
 			ExpressionNode expression) {
-		if (this.grammar == IMPERATIVE && context.next() == '=') {
+		if (this.grammar.isImperative() && context.next() == '=') {
 
 			final AssignmentNode assignment =
 				context.parse(assignment(expression));

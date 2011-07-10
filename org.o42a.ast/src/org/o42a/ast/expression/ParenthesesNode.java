@@ -27,7 +27,7 @@ import org.o42a.ast.sentence.SentenceNode;
 
 public class ParenthesesNode
 		extends AbstractExpressionNode
-		implements BlockNode<ParenthesesNode.Parenthesis> {
+		implements BlockNode<ParenthesesNode.Parenthesis>, ClauseNode {
 
 	private final SignNode<Parenthesis> opening;
 	private final SentenceNode[] content;
@@ -77,9 +77,19 @@ public class ParenthesesNode
 
 	@Override
 	public void printContent(StringBuilder out) {
+		if (this.content.length == 0) {
+			out.append("()");
+			return;
+		}
 		out.append('(');
-		for (SentenceNode sentence : this.content) {
-			sentence.printContent(out);
+		if (this.content.length == 1) {
+			this.content[0].printContent(out);
+		} else {
+			for (SentenceNode sentence : this.content) {
+				out.append("\n  ");
+				sentence.printContent(out);
+			}
+			out.append('\n');
 		}
 		out.append(')');
 	}
@@ -87,16 +97,20 @@ public class ParenthesesNode
 	public enum Parenthesis implements SignType {
 
 		OPENING_PARENTHESIS() {
+
 			@Override
 			public String getSign() {
 				return "(";
 			}
+
 		},
 		CLOSING_PARENTHESIS() {
+
 			@Override
 			public String getSign() {
 				return ")";
 			}
+
 		}
 
 	}

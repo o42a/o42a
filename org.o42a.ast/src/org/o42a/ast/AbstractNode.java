@@ -235,22 +235,11 @@ public abstract class AbstractNode implements Node, Cloneable {
 
 	@Override
 	public void printNode(StringBuilder out) {
-
 		out.append(nodeType());
 		out.append('[');
 		printRange(out);
 		out.append("] ");
 		printContent(out);
-	}
-
-	@Override
-	public final String printContent() {
-
-		final StringBuilder out = new StringBuilder();
-
-		printContent(out);
-
-		return out.toString();
 	}
 
 	@Override

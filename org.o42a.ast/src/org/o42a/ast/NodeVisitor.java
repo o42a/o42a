@@ -22,6 +22,8 @@ package org.o42a.ast;
 import org.o42a.ast.atom.*;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.AscendantNode;
+import org.o42a.ast.module.ModuleNode;
+import org.o42a.ast.module.SectionNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
@@ -84,6 +86,14 @@ public abstract class NodeVisitor<R, P>
 
 	public R visitReusedClause(ReusedClauseNode reusedClause, P p) {
 		return visitPart(reusedClause, p);
+	}
+
+	public R visitSection(SectionNode section, P p) {
+		return visitAny(section, p);
+	}
+
+	public R visitModule(ModuleNode module, P p) {
+		return visitPart(module, p);
 	}
 
 	public R visitEmpty(EmptyNode node, P p) {

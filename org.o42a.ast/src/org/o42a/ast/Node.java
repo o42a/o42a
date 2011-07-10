@@ -47,8 +47,6 @@ public interface Node extends LoggableRange {
 
 	void printNode(StringBuilder out);
 
-	String printContent();
-
 	@Override
 	void printContent(StringBuilder out);
 

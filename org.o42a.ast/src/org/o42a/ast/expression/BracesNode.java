@@ -28,7 +28,7 @@ import org.o42a.ast.statement.StatementNodeVisitor;
 
 public class BracesNode
 		extends AbstractStatementNode
-		implements BlockNode<BracesNode.Brace> {
+		implements BlockNode<BracesNode.Brace>, ClauseNode {
 
 	private final SignNode<Brace> opening;
 	private final SentenceNode[] content;
@@ -71,9 +71,19 @@ public class BracesNode
 
 	@Override
 	public void printContent(StringBuilder out) {
+		if (this.content.length == 0) {
+			out.append("{}");
+			return;
+		}
 		out.append('{');
-		for (SentenceNode sentence : this.content) {
-			sentence.printContent(out);
+		if (this.content.length == 1) {
+			this.content[0].printContent(out);
+		} else {
+			for (SentenceNode sentence : this.content) {
+				out.append("\n  ");
+				sentence.printContent(out);
+			}
+			out.append('\n');
 		}
 		out.append('}');
 	}
@@ -81,16 +91,21 @@ public class BracesNode
 	public enum Brace implements SignType {
 
 		OPENING_BRACE() {
+
 			@Override
 			public String getSign() {
 				return "{";
 			}
+
 		},
+
 		CLOSING_BRACE() {
+
 			@Override
 			public String getSign() {
 				return "}";
 			}
+
 		}
 
 	}
