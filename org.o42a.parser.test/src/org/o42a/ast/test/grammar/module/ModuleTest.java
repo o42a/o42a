@@ -88,6 +88,30 @@ public class ModuleTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void invalidTitle() {
+		expectError("invalid_section_title");
+
+		final ModuleNode module = parse(
+				"Hello!",
+				"=====",
+				"Baz = 1");
+
+		final SectionNode[] sections = module.getSections();
+
+		assertThat(sections.length, is(2));
+
+		assertNull(sections[0].getTitle());
+		assertNull(sections[0].getSubTitle());
+		assertThat(sections[0].getContent().length, is(1));
+
+		assertNull(sections[1].getTitle());
+		assertThat(
+				sections[1].getSubTitle().getPrefix().getType().getLength(),
+				is(5));
+		assertThat(sections[1].getContent().length, is(1));
+	}
+
+	@Test
 	public void multipleSections() {
 
 		final ModuleNode module = parse(
