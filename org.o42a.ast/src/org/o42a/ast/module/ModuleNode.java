@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.module;
 
-import org.o42a.ast.Node;
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
-import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.NodeVisitor;
 
 
-public interface BlockNode<S extends SignType> extends Node {
+public class ModuleNode extends AbstractNode {
 
-	SignNode<S> getOpening();
+	private final SectionNode[] sections;
 
-	SentenceNode[] getContent();
+	public ModuleNode(SectionNode[] sections) {
+		super(sections);
+		this.sections = sections;
+	}
 
-	SignNode<S> getClosing();
+	public final SectionNode[] getSections() {
+		return this.sections;
+	}
+
+	@Override
+	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
+		return visitor.visitModule(this, p);
+	}
+
+	@Override
+	public void printContent(StringBuilder out) {
+		for (SectionNode section : this.sections) {
+			section.printContent(out);
+		}
+	}
 
 }

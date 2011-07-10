@@ -22,6 +22,8 @@ package org.o42a.ast.statement;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.module.InclusionNode;
+import org.o42a.ast.module.SubTitleNode;
 
 
 public abstract class AbstractStatementVisitor<R, P>
@@ -61,6 +63,16 @@ public abstract class AbstractStatementVisitor<R, P>
 	@Override
 	public R visitEllipsis(EllipsisNode ellipsis, P p) {
 		return visitStatement(ellipsis, p);
+	}
+
+	@Override
+	public R visitSubTitle(SubTitleNode subTitle, P p) {
+		return visitStatement(subTitle, p);
+	}
+
+	@Override
+	public R visitInclusion(InclusionNode inclusion, P p) {
+		return visitInclusion(inclusion, p);
 	}
 
 	@Override

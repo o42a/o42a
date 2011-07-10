@@ -19,11 +19,12 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import static org.o42a.parser.Grammar.IMPERATIVE;
+
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.BracesNode.Brace;
 import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 
 
@@ -37,7 +38,7 @@ public class BracesParser extends AbstractBlockParser<BracesNode, Brace> {
 
 	@Override
 	protected Parser<SentenceNode[]> getContentParser() {
-		return Grammar.IMPERATIVE.content();
+		return IMPERATIVE.content();
 	}
 
 	@Override

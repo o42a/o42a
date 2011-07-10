@@ -21,6 +21,8 @@ package org.o42a.ast.statement;
 
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.module.InclusionNode;
+import org.o42a.ast.module.SubTitleNode;
 
 
 public interface StatementNodeVisitor<R, P>
@@ -39,5 +41,9 @@ public interface StatementNodeVisitor<R, P>
 	R visitNamedBlock(NamedBlockNode block, P p);
 
 	R visitEllipsis(EllipsisNode ellipsis, P p);
+
+	R visitSubTitle(SubTitleNode subTitle, P p);
+
+	R visitInclusion(InclusionNode inclusion, P p);
 
 }

@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
-
-import org.o42a.ast.Node;
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
-import org.o42a.ast.sentence.SentenceNode;
+package org.o42a.ast.module;
 
 
-public interface BlockNode<S extends SignType> extends Node {
+public class AsteriskLine extends LineType {
 
-	SignNode<S> getOpening();
-
-	SentenceNode[] getContent();
-
-	SignNode<S> getClosing();
+	public AsteriskLine(int length) {
+		super('*', length);
+	}
 
 }

@@ -19,6 +19,8 @@
 */
 package org.o42a.parser.grammar.statement;
 
+import static org.o42a.parser.Grammar.DECLARATIVE;
+
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -26,7 +28,6 @@ import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
 import org.o42a.ast.ref.TypeNode;
 import org.o42a.ast.statement.DefinitionCastNode;
 import org.o42a.ast.statement.DefinitionKind;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -77,7 +78,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 
 		final TypeNode type;
 		final ExpressionNode expression =
-			context.parse(Grammar.DECLARATIVE.expression());
+				context.parse(DECLARATIVE.expression());
 
 		if (expression instanceof TypeNode) {
 			type = (TypeNode) expression;

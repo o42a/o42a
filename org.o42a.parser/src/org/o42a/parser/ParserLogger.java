@@ -69,6 +69,14 @@ public abstract class ParserLogger implements Logger {
 				"Invalid target: expected either block name or nothing");
 	}
 
+	public void invalidSectionTitle(LogInfo location) {
+		error(
+				"invalid_section_title",
+				location,
+				"Section title should be a proposition sentence"
+				+ " containing a single field declaration");
+	}
+
 	public void invalidSpaceInNumber(LogInfo location) {
 		warning(
 				"invalid_space_in_number",
@@ -92,6 +100,13 @@ public abstract class ParserLogger implements Logger {
 				"missing_declared_in",
 				location,
 				"Declaration reference is missing");
+	}
+
+	public void missingInclusionLabel(LogInfo location) {
+		error(
+				"missing_inclusion_label",
+				location,
+				"Inclusion label is missing");
 	}
 
 	public void missingOperand(LogInfo location, String operator) {
