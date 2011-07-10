@@ -73,8 +73,8 @@ public abstract class ParserLogger implements Logger {
 		error(
 				"invalid_section_title",
 				location,
-				"Section title should be a proposition sentence"
-				+ " containing a single field declaration");
+				"Section title should be a proposition or claim"
+				+ " with only a single field declaration");
 	}
 
 	public void invalidSpaceInNumber(LogInfo location) {

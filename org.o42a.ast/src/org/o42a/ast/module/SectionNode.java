@@ -24,7 +24,9 @@ import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.sentence.*;
+import org.o42a.ast.sentence.AlternativeNode;
+import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.ast.statement.StatementNode;
 
@@ -35,8 +37,12 @@ public class SectionNode
 
 	public static DeclaratorNode sectionDeclaratorFromTitle(
 			SentenceNode title) {
-		if (title.getType() != SentenceType.PROPOSITION) {
+		switch (title.getType()) {
+		case ISSUE:
 			return null;
+		case PROPOSITION:
+		case CLAIM:
+			break;
 		}
 
 		final AlternativeNode[] disjunction = title.getDisjunction();
