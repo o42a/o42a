@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.clause;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldBuilder;
@@ -63,11 +62,6 @@ final class GroupRegistry
 	@Override
 	public ClauseBuilder newClause(ClauseDeclaration declaration) {
 		return this.registry.newClause(declaration.inGroup(getGroupId()));
-	}
-
-	@Override
-	public boolean declareBlock(LocationInfo location, String name) {
-		return this.registry.declareBlock(location, name);
 	}
 
 	@Override
