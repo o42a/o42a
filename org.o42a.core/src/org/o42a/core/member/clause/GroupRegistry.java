@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.member.Inclusions.noInclusions;
+
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldBuilder;
@@ -36,6 +38,7 @@ final class GroupRegistry
 	private final MemberRegistry registry;
 
 	GroupRegistry(DeclaredGroupClause group, MemberRegistry registry) {
+		super(noInclusions());
 		this.group = group;
 		this.registry = registry;
 	}

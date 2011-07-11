@@ -30,8 +30,20 @@ import org.o42a.core.member.local.MemberRegistryLocalBase;
 
 public abstract class MemberRegistry extends MemberRegistryLocalBase {
 
+	private static final NoDeclarations NO_DECLARATIONS = new NoDeclarations();
+
+	private final Inclusions inclusions;
+
 	public static MemberRegistry noDeclarations() {
-		return new NoDeclarations();
+		return NO_DECLARATIONS;
+	}
+
+	public MemberRegistry(Inclusions inclusions) {
+		this.inclusions = inclusions;
+	}
+
+	public final Inclusions inclusions() {
+		return this.inclusions;
 	}
 
 	public abstract MemberOwner getMemberOwner();
@@ -45,6 +57,10 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 	}
 
 	private static class NoDeclarations extends MemberRegistry {
+
+		NoDeclarations() {
+			super(Inclusions.noDeclarations());
+		}
 
 		@Override
 		public MemberOwner getMemberOwner() {
@@ -86,6 +102,11 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
+		public String toString() {
+			return "NoDeclarations";
+		}
+
 	}
 
 	private static final class ProhibitDeclarations
@@ -100,6 +121,11 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		@Override
 		public Obj getOwner() {
 			return this.registry.getOwner();
+		}
+
+		@Override
+		public String toString() {
+			return "ProhibitDeclarations[" + this.registry + ']';
 		}
 
 	}

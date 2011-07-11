@@ -21,6 +21,7 @@ package org.o42a.core.artifact.object;
 
 import java.util.ArrayList;
 
+import org.o42a.core.member.Inclusions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.FieldBuilder;
@@ -36,15 +37,16 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	private final ArrayList<Member> pending = new ArrayList<Member>();
 	private ObjectMembers members;
 
-	public ObjectMemberRegistry(Obj owner) {
+	public ObjectMemberRegistry(Inclusions inclusions, Obj owner) {
+		super(inclusions);
 		if (owner == null) {
 			throw new NullPointerException("Owner not specified");
 		}
 		this.owner = owner;
 	}
 
-	ObjectMemberRegistry() {
-		this.owner = null;
+	ObjectMemberRegistry(Inclusions inclusions) {
+		super(inclusions);
 	}
 
 	@Override

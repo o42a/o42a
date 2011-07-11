@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
 import org.o42a.core.Scope;
@@ -84,11 +85,12 @@ final class ClauseDefinition extends Obj {
 
 		if (declarations == null) {
 			this.declarations =
-				new DeclarativeBlock(this, this, noDeclarations());
+					new DeclarativeBlock(this, this, noDeclarations());
 			return;
 		}
 
-		final ObjectMemberRegistry registry = new ObjectMemberRegistry(this);
+		final ObjectMemberRegistry registry =
+				new ObjectMemberRegistry(noInclusions(), this);
 
 		this.declarations =
 			new DeclarativeBlock(declarations, this, registry);

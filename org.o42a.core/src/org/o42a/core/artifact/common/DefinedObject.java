@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.common;
 
+import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.core.Distributor;
@@ -93,7 +94,7 @@ public abstract class DefinedObject extends PlainObject {
 		}
 
 		final DeclarativeBlock definition =
-			new DeclarativeBlock(this, this, getMemberRegistry());
+				new DeclarativeBlock(this, this, getMemberRegistry());
 
 		definition.setEnv(objectEnv(this));
 
@@ -102,7 +103,8 @@ public abstract class DefinedObject extends PlainObject {
 
 	private ObjectMemberRegistry getMemberRegistry() {
 		if (this.memberRegistry == null) {
-			this.memberRegistry = new ObjectMemberRegistry(this);
+			this.memberRegistry =
+					new ObjectMemberRegistry(noInclusions(), this);
 		}
 		return this.memberRegistry;
 	}

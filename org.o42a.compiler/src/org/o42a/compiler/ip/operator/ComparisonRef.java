@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
+import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
@@ -246,7 +247,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		protected void declareMembers(ObjectMembers members) {
 
 			final ObjectMemberRegistry memberRegistry =
-				new ObjectMemberRegistry(this);
+				new ObjectMemberRegistry(noInclusions(), this);
 			final Distributor distributor = distribute();
 			final Ref phrase = this.ref.phrase(distributor);
 			final FieldBuilder builder = memberRegistry.newField(
