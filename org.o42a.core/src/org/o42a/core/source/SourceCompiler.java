@@ -24,7 +24,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-public interface BlockCompiler {
+public interface SourceCompiler {
 
 	BlockBuilder compileBlock(CompilerContext context);
 

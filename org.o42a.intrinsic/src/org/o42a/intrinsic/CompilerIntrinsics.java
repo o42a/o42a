@@ -34,7 +34,7 @@ import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.source.BlockCompiler;
+import org.o42a.core.source.SourceCompiler;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
@@ -44,7 +44,7 @@ import org.o42a.util.use.Usable;
 public class CompilerIntrinsics extends Intrinsics {
 
 	private final Usable user = simpleUsable("MainUser");
-	private final BlockCompiler compiler;
+	private final SourceCompiler compiler;
 	private final Top top;
 	private final CompilerContext topContext;
 
@@ -58,11 +58,11 @@ public class CompilerIntrinsics extends Intrinsics {
 	private ConsoleModule consoleModule;
 	private Obj main;
 
-	public static CompilerIntrinsics intrinsics(BlockCompiler compiler) {
+	public static CompilerIntrinsics intrinsics(SourceCompiler compiler) {
 		return new CompilerIntrinsics(compiler);
 	}
 
-	private CompilerIntrinsics(BlockCompiler compiler) {
+	private CompilerIntrinsics(SourceCompiler compiler) {
 		this.compiler = compiler;
 		this.topContext = new TopContext(this);
 		this.top = new Top(this.topContext);
@@ -74,7 +74,7 @@ public class CompilerIntrinsics extends Intrinsics {
 		addModule(testModule(this.root.getContext()));
 	}
 
-	public final BlockCompiler getCompiler() {
+	public final SourceCompiler getCompiler() {
 		return this.compiler;
 	}
 

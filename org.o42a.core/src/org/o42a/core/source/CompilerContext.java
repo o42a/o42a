@@ -35,7 +35,7 @@ import org.o42a.util.log.Logger;
 
 public abstract class CompilerContext {
 
-	private final BlockCompiler compiler;
+	private final SourceCompiler compiler;
 	private final Intrinsics intrinsics;
 	private final CompilerLogger logger;
 
@@ -47,7 +47,7 @@ public abstract class CompilerContext {
 	}
 
 	protected CompilerContext(
-			BlockCompiler compiler,
+			SourceCompiler compiler,
 			Intrinsics intrinsics,
 			Logger logger) {
 		this.compiler = compiler;
@@ -59,7 +59,7 @@ public abstract class CompilerContext {
 		return DEFAULT_SECTION_TAG;
 	}
 
-	public final BlockCompiler getCompiler() {
+	public final SourceCompiler getCompiler() {
 		return this.compiler;
 	}
 
