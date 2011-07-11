@@ -30,9 +30,11 @@ public abstract class LineParser<L extends LineType>
 		implements Parser<SignNode<L>> {
 
 	private final char lineChar;
+	private final int minLength;
 
-	public LineParser(char lineChar) {
+	public LineParser(char lineChar, int minLength) {
 		this.lineChar = lineChar;
+		this.minLength = minLength;
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public abstract class LineParser<L extends LineType>
 
 		final int length = end.column() - start.column();
 
-		if (length < 3) {
+		if (length < this.minLength) {
 			return null;
 		}
 

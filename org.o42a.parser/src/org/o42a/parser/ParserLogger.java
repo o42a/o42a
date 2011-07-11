@@ -148,6 +148,10 @@ public abstract class ParserLogger implements Logger {
 		error("not_closed", location, "'%s' not closed", brace);
 	}
 
+	public void odd(LogInfo location) {
+		error("odd", location, "No expressions allowed here");
+	}
+
 	public void oppositeToEmpty(LogInfo location) {
 		warning("opposite_to_empty", location, "Opposite to empty sentence");
 	}
@@ -214,7 +218,6 @@ public abstract class ParserLogger implements Logger {
 	protected abstract Object getSource();
 
 	protected abstract Logger getLogger();
-
 
 	private final void log(
 			Severity severity,

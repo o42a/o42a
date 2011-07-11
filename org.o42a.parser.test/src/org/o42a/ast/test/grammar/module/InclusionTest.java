@@ -57,12 +57,12 @@ public class InclusionTest extends GrammarTestCase {
 	@Test
 	public void inclusionWithSuffix() {
 
-		final InclusionNode inclusion = parse("***** Label ***");
+		final InclusionNode inclusion = parse("***** Label **");
 
 		assertRange(0, 5, inclusion.getPrefix());
 		assertThat(inclusion.getPrefix().getType().getLength(), is(5));
 		assertThat(inclusion.getTag().getName(), is("label"));
-		assertThat(inclusion.getSuffix().getType().getLength(), is(3));
+		assertThat(inclusion.getSuffix().getType().getLength(), is(2));
 	}
 
 	private InclusionNode parse(String text) {
