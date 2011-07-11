@@ -23,6 +23,10 @@ import static org.o42a.core.artifact.ArtifactKind.*;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.util.use.User.dummyUser;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.o42a.core.CompilerContext;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
@@ -50,6 +54,7 @@ public abstract class MemberField extends Member {
 	private MemberKey key;
 	private Visibility visibility;
 	private MemberField[] mergedWith = NO_MERGED;
+	private HashSet<CompilerContext> allContexts;
 
 	public MemberField(MemberOwner owner, FieldDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -160,6 +165,18 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
+	public final Set<CompilerContext> getAllContexts() {
+		if (this.allContexts != null) {
+			return this.allContexts;
+		}
+
+		this.allContexts = new HashSet<CompilerContext>(1);
+		this.allContexts.add(getContext());
+
+		return this.allContexts;
+	}
+
+	@Override
 	public MemberField propagateTo(MemberOwner owner) {
 
 		final Field<?> field = toField(owner.getScope().dummyResolver());
@@ -264,6 +281,17 @@ public abstract class MemberField extends Member {
 					member.getDisplayName());
 			return;
 		}
+
+		final CompilerContext memberContext = member.getContext();
+
+		if (getContext() != memberContext) {
+			if (this.allContexts == null) {
+				this.allContexts = new HashSet<CompilerContext>(2);
+				this.allContexts.add(getContext());
+			}
+			this.allContexts.add(memberContext);
+		}
+
 		if (this.field != null) {
 			mergeField(memberField);
 		} else {

@@ -206,6 +206,8 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	public abstract void ellipsis(LocationInfo location, String name);
 
+	public abstract void include(LocationInfo location, String name);
+
 	public final Distributor nextDistributor() {
 
 		final Trace trace = getTrace();

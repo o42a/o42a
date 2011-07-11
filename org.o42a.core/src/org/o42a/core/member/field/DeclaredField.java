@@ -19,14 +19,14 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.member.Inclusions.noInclusions;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.member.Inclusions;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.OverrideMode;
+import org.o42a.core.member.*;
 
 
 public abstract class DeclaredField<
@@ -80,6 +80,20 @@ public abstract class DeclaredField<
 	}
 
 	public final Inclusions newInclusions() {
+
+		final Member enclosingMember = getEnclosingScope().toMember();
+
+		if (enclosingMember == null) {
+			// Not a member of another member.
+			// Inclusions doesn't work this way.
+			return noInclusions();
+		}
+		if (enclosingMember.getAllContexts().contains(getContext())) {
+			// Context is not created solely for this field.
+			// Can not handle inclusions.
+			return noInclusions();
+		}
+
 		return new FieldInclusions(this);
 	}
 

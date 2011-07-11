@@ -29,7 +29,17 @@ public abstract class AbstractInclusions extends Inclusions {
 	private HashMap<String, LocationInfo> inclusions;
 
 	@Override
-	public boolean registerInclusion(LocationInfo location, String tag) {
+	public boolean inclusionsSupported() {
+		return true;
+	}
+
+	@Override
+	public boolean hasInclusions() {
+		return this.inclusions != null;
+	}
+
+	@Override
+	public boolean include(LocationInfo location, String tag) {
 		if (this.inclusions == null) {
 			this.inclusions = new HashMap<String, LocationInfo>();
 		}

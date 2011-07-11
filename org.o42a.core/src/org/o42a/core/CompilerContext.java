@@ -19,12 +19,15 @@
 */
 package org.o42a.core;
 
+import static org.o42a.core.SectionTag.DEFAULT_SECTION_TAG;
+
 import java.net.URL;
 
 import org.o42a.core.artifact.common.FullResolution;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.Source;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Logger;
@@ -50,6 +53,10 @@ public abstract class CompilerContext {
 		this.compiler = compiler;
 		this.intrinsics = intrinsics;
 		this.logger = new CompilerLogger(logger, this);
+	}
+
+	public SectionTag getSectionTag() {
+		return DEFAULT_SECTION_TAG;
 	}
 
 	public final BlockCompiler getCompiler() {
@@ -86,6 +93,10 @@ public abstract class CompilerContext {
 	}
 
 	public abstract Source getSource();
+
+	public void include(DeclarativeBlock block, SectionTag tag) {
+		// TODO Inclusion.
+	}
 
 	public abstract CompilerContext contextFor(String path) throws Exception;
 
