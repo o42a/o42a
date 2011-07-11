@@ -25,10 +25,10 @@ import static org.o42a.util.StringCodec.stringToBinary;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.value.ExternalValueTypeIR;
 import org.o42a.core.ir.value.ValueTypeIR;
+import org.o42a.core.source.Intrinsics;
 import org.o42a.util.DataAlignment;
 
 

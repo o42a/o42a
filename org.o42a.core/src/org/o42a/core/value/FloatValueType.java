@@ -21,11 +21,11 @@ package org.o42a.core.value;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.value.AbstractValueTypeIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValueTypeIR;
+import org.o42a.core.source.Intrinsics;
 
 
 final class FloatValueType extends ValueType<Double> {

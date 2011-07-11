@@ -21,10 +21,6 @@ package org.o42a.core.source;
 
 import static org.o42a.core.source.SectionTag.DEFAULT_SECTION_TAG;
 
-import java.net.URL;
-
-import org.o42a.core.artifact.common.FullResolution;
-import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -119,14 +115,6 @@ public abstract class CompilerContext {
 
 	public boolean declarationsVisibleFrom(CompilerContext viewer) {
 		return getSource().equals(viewer.getSource());
-	}
-
-	public CompilerContext urlContext(
-			String name,
-			URL base,
-			String path,
-			Logger logger) {
-		return new URLContext(this, name, base, path, logger);
 	}
 
 	public final BlockBuilder compileBlock() {

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.common;
+package org.o42a.core.source;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.util.StringCodec.canonicalName;
@@ -31,9 +31,6 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;

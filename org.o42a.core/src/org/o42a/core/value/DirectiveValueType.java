@@ -21,11 +21,11 @@ package org.o42a.core.value;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.core.ir.value.ValueTypeIR;
+import org.o42a.core.source.Intrinsics;
 
 
 final class DirectiveValueType extends ValueType<Directive> {
