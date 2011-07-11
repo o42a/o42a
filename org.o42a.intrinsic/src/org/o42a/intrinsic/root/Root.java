@@ -29,7 +29,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.common.object.IntrinsicObject;
 import org.o42a.common.object.IntrinsicType;
-import org.o42a.core.*;
+import org.o42a.common.source.URLContext;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
@@ -62,8 +63,8 @@ public class Root extends Obj {
 			throw new ExceptionInInitializerError(e);
 		}
 
-		final CompilerContext context =
-			topScope.getContext().urlContext(
+		final CompilerContext context = new URLContext(
+				topScope.getContext(),
 				"ROOT",
 				base,
 				"root.o42a",

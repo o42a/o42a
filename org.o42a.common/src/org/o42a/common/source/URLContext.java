@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.source;
+package org.o42a.common.source;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,15 +25,16 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.Source;
 import org.o42a.util.log.Logger;
 
 
-final class URLContext extends CompilerContext {
+public class URLContext extends CompilerContext {
 
 	private final BaseSource source;
 
-	URLContext(
+	public URLContext(
 			CompilerContext parentContext,
 			String name,
 			URL base,
@@ -41,7 +42,7 @@ final class URLContext extends CompilerContext {
 			Logger logger) {
 		super(parentContext, logger);
 		this.source =
-			new BaseSource(dir(base), path, name != null ? name : path);
+				new BaseSource(dir(base), path, name != null ? name : path);
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.core.*;
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;

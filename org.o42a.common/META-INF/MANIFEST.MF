@@ -10,5 +10,6 @@ Export-Package: org.o42a.common.adapter,
  org.o42a.common.def,
  org.o42a.common.ir,
  org.o42a.common.object,
- org.o42a.common.resolution
+ org.o42a.common.resolution,
+ org.o42a.common.source
 Bundle-ActivationPolicy: lazy

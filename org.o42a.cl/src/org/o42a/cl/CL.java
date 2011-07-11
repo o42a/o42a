@@ -27,9 +27,10 @@ import java.net.*;
 
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.codegen.Generator;
+import org.o42a.common.source.URLContext;
 import org.o42a.compiler.Compiler;
-import org.o42a.core.artifact.common.Module;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Module;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.LogRecord;
@@ -54,11 +55,11 @@ public class CL {
 		final CompilerIntrinsics intrinsics = intrinsics(compiler);
 		final URL src = url(source);
 		final CompilerContext rootContext =
-			intrinsics.getRoot().getContext();
+				intrinsics.getRoot().getContext();
 		final Log logger = new Log();
 		final String fileName = fileName(src);
 		final CompilerContext context =
-			rootContext.urlContext(fileName, src, fileName, logger);
+				new URLContext(rootContext, fileName, src, fileName, logger);
 
 		final Module module = new Module(context, moduleName(src.getPath()));
 

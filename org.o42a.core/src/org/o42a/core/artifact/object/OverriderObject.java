@@ -21,7 +21,6 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.core.artifact.object.PropagatedObject.deriveSamples;
 
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.def.Definitions;
 
 

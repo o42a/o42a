@@ -32,7 +32,7 @@ import java.net.URL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.core.artifact.common.Module;
+import org.o42a.common.source.URLContext;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.CodeBuilder;
@@ -44,6 +44,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Module;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.console.impl.Print;
 import org.o42a.util.use.UserInfo;
@@ -65,8 +66,8 @@ public class ConsoleModule extends Module {
 			throw new ExceptionInInitializerError(e);
 		}
 
-		final CompilerContext moduleContext =
-			context.urlContext(
+		final CompilerContext moduleContext = new URLContext(
+				context,
 				"Console",
 				base,
 				"console.o42a",

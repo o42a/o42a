@@ -21,10 +21,10 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.Usable.simpleUsable;
 
-import org.o42a.core.artifact.common.FullResolution;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.FullResolution;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;

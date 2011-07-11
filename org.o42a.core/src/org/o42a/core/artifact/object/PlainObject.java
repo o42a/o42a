@@ -17,14 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.common;
+package org.o42a.core.artifact.object;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.source.LocationInfo;
 

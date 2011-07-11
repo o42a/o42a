@@ -7,7 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.o42a.core,
  org.o42a.core.artifact,
  org.o42a.core.artifact.array,
- org.o42a.core.artifact.common,
  org.o42a.core.artifact.link,
  org.o42a.core.artifact.object,
  org.o42a.core.def,
