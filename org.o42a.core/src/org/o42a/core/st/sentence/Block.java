@@ -30,6 +30,7 @@ import org.o42a.core.def.BlockBase;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.imperative.Locals;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -246,11 +247,7 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 
 	abstract Trace getTrace();
 
-	void reproduceSentences(Reproducer reproducer, Block<S> reproduction) {
-		for (Sentence<S> sentence : getSentences()) {
-			sentence.reproduce(reproduction, reproducer);
-		}
-	}
+	abstract Locals getLocals();
 
 	Sentence<S> addStatementSentence(Sentence<S> sentence) {
 		if (this.lastIssue != null) {
@@ -261,6 +258,12 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 			this.sentences.add(sentence);
 		}
 		return sentence;
+	}
+
+	void reproduceSentences(Reproducer reproducer, Block<S> reproduction) {
+		for (Sentence<S> sentence : getSentences()) {
+			sentence.reproduce(reproduction, reproducer);
+		}
 	}
 
 	private final class ExecuteInstructions implements Instruction {

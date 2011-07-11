@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -83,12 +82,6 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		}
 
 		@Override
-		public boolean declareBlock(LocationInfo location, String name) {
-			location.getContext().getLogger().prohibitedDeclaration(location);
-			return false;
-		}
-
-		@Override
 		public String anonymousBlockName() {
 			throw new UnsupportedOperationException();
 		}
@@ -107,11 +100,6 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		@Override
 		public Obj getOwner() {
 			return this.registry.getOwner();
-		}
-
-		@Override
-		public boolean declareBlock(LocationInfo location, String name) {
-			return this.registry.declareBlock(location, name);
 		}
 
 	}

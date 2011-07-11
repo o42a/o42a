@@ -98,14 +98,6 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void dublicateBlockName(LogInfo location, String blockName) {
-		error(
-				"duplicate_block_name",
-				location,
-				"Block '%s' already declared",
-				blockName);
-	}
-
 	public void expectedClauseName(LogInfo location) {
 		error("expected_clause_name", location, "Clause name expected here");
 	}

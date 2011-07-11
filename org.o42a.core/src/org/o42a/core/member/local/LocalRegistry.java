@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
@@ -82,11 +81,6 @@ public class LocalRegistry extends MemberRegistry {
 	public void declareMember(Member member) {
 		member.assertScopeIs(this.scope);
 		this.scope.addMember(member);
-	}
-
-	@Override
-	public boolean declareBlock(LocationInfo location, String name) {
-		return this.ownerRegistry.declareBlock(location, name);
 	}
 
 	@Override

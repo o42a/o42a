@@ -20,9 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.FieldBuilder;
@@ -32,7 +30,6 @@ import org.o42a.core.member.field.FieldDefinition;
 
 public class ObjectMemberRegistry extends MemberRegistry {
 
-	private final HashSet<String> blockNames = new HashSet<String>();
 	private int localScopeIndex;
 	Obj owner;
 
@@ -98,17 +95,6 @@ public class ObjectMemberRegistry extends MemberRegistry {
 			members.addMember(member);
 		}
 		this.pending.clear();
-	}
-
-	@Override
-	public boolean declareBlock(LocationInfo location, String name) {
-		if (!this.blockNames.add(name)) {
-			location.getContext().getLogger().dublicateBlockName(
-					location,
-					name);
-			return false;
-		}
-		return true;
 	}
 
 	@Override

@@ -81,8 +81,6 @@ public abstract class MemberRegistryLocalBase
 
 	public abstract void declareMember(Member member);
 
-	public abstract boolean declareBlock(LocationInfo location, String name);
-
 	public abstract String anonymousBlockName();
 
 	private Obj owner(LocationInfo location) {

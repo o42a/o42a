@@ -37,6 +37,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.declarative.SentencePrecondition;
+import org.o42a.core.st.sentence.imperative.Locals;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -56,6 +57,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	private BlockEnv env;
+	private Locals locals;
 
 	public DeclarativeBlock(
 			LocationInfo location,
@@ -227,6 +229,14 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	@Override
 	final Trace getTrace() {
 		return null;
+	}
+
+	@Override
+	Locals getLocals() {
+		if (this.locals != null) {
+			return this.locals;
+		}
+		return this.locals = new Locals(this);
 	}
 
 	private static final class BlockEnv extends StatementEnv {

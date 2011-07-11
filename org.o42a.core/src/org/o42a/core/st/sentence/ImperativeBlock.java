@@ -40,6 +40,7 @@ import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.LoopAction;
 import org.o42a.core.st.sentence.imperative.BracesWithinDeclaratives;
 import org.o42a.core.st.sentence.imperative.ImperativeBlockOp;
+import org.o42a.core.st.sentence.imperative.Locals;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Lambda;
@@ -105,6 +106,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final boolean topLevel;
 	private final Trace trace;
 	private StatementEnv initialEnv;
+	private Locals locals;
 
 	public ImperativeBlock(
 			LocationInfo location,
@@ -320,6 +322,15 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	@Override
 	Trace getTrace() {
 		return this.trace;
+	}
+
+	@Override
+	Locals getLocals() {
+		if (this.locals != null) {
+			return this.locals;
+		}
+		return this.locals =
+				getEnclosing().getSentence().getBlock().getLocals();
 	}
 
 	public static final class BlockDistributor extends Distributor {
