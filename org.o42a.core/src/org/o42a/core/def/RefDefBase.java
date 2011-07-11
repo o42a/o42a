@@ -22,8 +22,8 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Def.sourceOf;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 
 

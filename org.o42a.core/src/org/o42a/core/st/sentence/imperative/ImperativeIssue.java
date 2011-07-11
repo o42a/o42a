@@ -19,8 +19,8 @@
 */
 package org.o42a.core.st.sentence.imperative;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeFactory;
 import org.o42a.core.st.sentence.ImperativeSentence;

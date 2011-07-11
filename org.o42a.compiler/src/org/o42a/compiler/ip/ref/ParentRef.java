@@ -27,6 +27,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 
 
 public class ParentRef extends Wrap {

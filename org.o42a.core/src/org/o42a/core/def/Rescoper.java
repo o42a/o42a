@@ -23,12 +23,12 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import java.lang.reflect.Array;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 

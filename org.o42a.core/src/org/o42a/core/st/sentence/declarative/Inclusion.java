@@ -21,13 +21,13 @@ package org.o42a.core.st.sentence.declarative;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;

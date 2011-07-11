@@ -22,9 +22,9 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.sentence.ImperativeBlock.nestedImperativeBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.imperative.ImperativeClaim;
 import org.o42a.core.st.sentence.imperative.ImperativeIssue;
 import org.o42a.core.st.sentence.imperative.ImperativeProposition;

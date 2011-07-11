@@ -33,6 +33,8 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UseInfo;
 import org.o42a.util.use.UserInfo;
 

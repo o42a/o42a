@@ -23,7 +23,6 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.value.ValueTypeIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class ValueType<T> {

@@ -21,9 +21,9 @@ package org.o42a.core.st.sentence.declarative;
 
 import java.util.HashMap;
 
-import org.o42a.core.CompilerLogger;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.DefinitionKey;
 import org.o42a.core.st.DefinitionTarget;
 import org.o42a.core.st.DefinitionTargets;

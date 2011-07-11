@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -31,6 +30,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 

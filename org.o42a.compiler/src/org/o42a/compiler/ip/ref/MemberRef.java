@@ -21,13 +21,13 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.source.LocationInfo;
 
 
 public class MemberRef extends Wrap {

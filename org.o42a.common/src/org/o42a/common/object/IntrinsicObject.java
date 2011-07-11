@@ -36,6 +36,8 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.log.Loggable;

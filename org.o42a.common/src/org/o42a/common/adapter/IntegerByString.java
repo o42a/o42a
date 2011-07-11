@@ -21,11 +21,11 @@ package org.o42a.common.adapter;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;
 
 

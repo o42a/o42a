@@ -25,6 +25,8 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 

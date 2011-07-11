@@ -22,7 +22,6 @@ package org.o42a.core.ir.local;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjOp;
@@ -31,6 +30,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.source.CompilerContext;
 
 
 public final class LocalOp implements HostOp {

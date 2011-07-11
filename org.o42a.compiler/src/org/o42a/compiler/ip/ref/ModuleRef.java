@@ -24,10 +24,10 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.LocationInfo;
 
 
 public class ModuleRef extends Wrap {

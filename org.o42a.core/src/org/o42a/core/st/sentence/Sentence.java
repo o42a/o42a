@@ -28,6 +28,8 @@ import java.util.List;
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;

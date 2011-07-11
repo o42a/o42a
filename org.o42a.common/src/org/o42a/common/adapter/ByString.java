@@ -20,7 +20,6 @@
 package org.o42a.common.adapter;
 
 import org.o42a.common.object.IntrinsicBuiltin;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -33,6 +32,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 

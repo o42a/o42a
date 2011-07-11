@@ -23,10 +23,10 @@ import static org.o42a.core.member.local.LocalScope.explicitScope;
 import static org.o42a.core.member.local.LocalScope.reproducedScope;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.MemberRegistryClauseBase;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 

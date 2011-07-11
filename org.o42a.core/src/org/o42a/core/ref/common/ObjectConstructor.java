@@ -20,7 +20,6 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -35,6 +34,7 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class ObjectConstructor extends Expression {

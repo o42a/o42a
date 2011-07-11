@@ -20,12 +20,12 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.use.UserInfo;
 

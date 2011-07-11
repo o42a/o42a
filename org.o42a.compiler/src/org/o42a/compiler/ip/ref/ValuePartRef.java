@@ -25,8 +25,6 @@ import java.util.HashMap;
 
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.core.Distributor;
-import org.o42a.core.Location;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -40,6 +38,8 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.Expression;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 

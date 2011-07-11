@@ -32,6 +32,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.Directive;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;

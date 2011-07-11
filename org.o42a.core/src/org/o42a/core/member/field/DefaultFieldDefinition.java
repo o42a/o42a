@@ -20,11 +20,11 @@
 package org.o42a.core.member.field;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 

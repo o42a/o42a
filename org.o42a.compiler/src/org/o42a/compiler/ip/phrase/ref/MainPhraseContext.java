@@ -28,7 +28,6 @@ import java.util.LinkedList;
 import org.o42a.compiler.ip.phrase.part.NextClause;
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.compiler.ip.phrase.part.PhrasePrefix;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Sample;
@@ -41,6 +40,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 

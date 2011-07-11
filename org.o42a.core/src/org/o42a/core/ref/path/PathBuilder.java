@@ -30,6 +30,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UserInfo;
 

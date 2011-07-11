@@ -23,6 +23,7 @@ import org.o42a.core.*;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 

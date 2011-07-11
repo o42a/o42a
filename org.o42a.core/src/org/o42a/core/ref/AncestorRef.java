@@ -22,7 +22,6 @@ package org.o42a.core.ref;
 import static org.o42a.core.value.Value.unknownValue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;

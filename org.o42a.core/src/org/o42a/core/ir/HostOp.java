@@ -20,11 +20,11 @@
 package org.o42a.core.ir;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.source.CompilerContext;
 
 
 public interface HostOp {

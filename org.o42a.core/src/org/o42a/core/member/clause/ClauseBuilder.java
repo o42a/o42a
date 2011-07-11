@@ -31,6 +31,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;

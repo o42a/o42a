@@ -27,6 +27,9 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogInfo;
 
 

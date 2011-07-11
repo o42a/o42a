@@ -21,7 +21,6 @@ package org.o42a.core.value;
 
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -33,6 +32,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 

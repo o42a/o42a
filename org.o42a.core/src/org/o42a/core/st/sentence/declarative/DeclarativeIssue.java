@@ -19,10 +19,10 @@
 */
 package org.o42a.core.st.sentence.declarative;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeFactory;
 import org.o42a.core.st.sentence.DeclarativeSentence;

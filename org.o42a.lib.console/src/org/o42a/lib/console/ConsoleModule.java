@@ -32,7 +32,6 @@ import java.net.URL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
@@ -44,6 +43,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.console.impl.Print;
 import org.o42a.util.use.UserInfo;

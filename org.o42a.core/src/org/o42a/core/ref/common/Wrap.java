@@ -19,9 +19,7 @@
 */
 package org.o42a.core.ref.common;
 
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
@@ -35,6 +33,8 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefWrap;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;

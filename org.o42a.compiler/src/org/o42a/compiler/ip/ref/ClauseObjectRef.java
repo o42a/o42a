@@ -20,13 +20,13 @@
 package org.o42a.compiler.ip.ref;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.LocationInfo;
 
 
 public class ClauseObjectRef extends Wrap {

@@ -17,8 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core;
+package org.o42a.core.source;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.BlockBuilder;
 

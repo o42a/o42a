@@ -26,7 +26,6 @@ import static org.o42a.util.use.User.dummyUser;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
@@ -41,6 +40,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UserInfo;
 

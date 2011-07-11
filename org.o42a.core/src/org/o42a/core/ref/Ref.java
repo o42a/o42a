@@ -50,6 +50,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.RefTypeBase;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;

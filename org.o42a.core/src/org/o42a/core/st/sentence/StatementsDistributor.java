@@ -23,6 +23,8 @@ import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.ScopePlace.scopePlace;
 
 import org.o42a.core.*;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
 

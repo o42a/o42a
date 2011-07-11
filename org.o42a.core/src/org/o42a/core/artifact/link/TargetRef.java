@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact.link;
 
-import org.o42a.core.CompilerContext;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -30,6 +29,7 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;

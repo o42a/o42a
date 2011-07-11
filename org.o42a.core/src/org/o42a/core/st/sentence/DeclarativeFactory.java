@@ -23,9 +23,9 @@ import static org.o42a.core.st.sentence.DeclarativeBlock.nestedBlock;
 import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.declarative.DeclarativeClaim;
 import org.o42a.core.st.sentence.declarative.DeclarativeIssue;
 import org.o42a.core.st.sentence.declarative.DeclarativeProposition;

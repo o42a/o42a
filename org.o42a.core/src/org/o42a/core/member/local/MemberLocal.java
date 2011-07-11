@@ -22,7 +22,6 @@ package org.o42a.core.member.local;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.OwningObject;
 import org.o42a.core.member.Member;
@@ -32,6 +31,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UserInfo;
 
 

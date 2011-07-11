@@ -21,9 +21,9 @@ package org.o42a.core.artifact.object;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectScopeIR;
+import org.o42a.core.source.LocationInfo;
 
 
 final class ObjScope extends ObjectScope {

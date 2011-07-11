@@ -26,10 +26,10 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;

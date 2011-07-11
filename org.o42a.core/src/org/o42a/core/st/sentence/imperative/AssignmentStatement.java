@@ -24,7 +24,6 @@ import static org.o42a.core.st.sentence.imperative.AssignmentKind.ASSIGNMENT_ERR
 import static org.o42a.core.st.sentence.imperative.AssignmentKind.VARIABLE_ASSIGNMENT;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.Array;
@@ -38,6 +37,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;

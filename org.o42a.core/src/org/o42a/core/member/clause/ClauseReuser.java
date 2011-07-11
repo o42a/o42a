@@ -31,6 +31,8 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
 
 
 final class ClauseReuser implements PathWalker {

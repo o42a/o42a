@@ -21,7 +21,7 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
-import org.o42a.core.CompilerContext;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.Source;
 
