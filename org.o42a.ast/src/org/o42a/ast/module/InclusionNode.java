@@ -28,16 +28,16 @@ import org.o42a.ast.statement.StatementNodeVisitor;
 public class InclusionNode extends AbstractStatementNode {
 
 	private final SignNode<AsteriskLine> prefix;
-	private final NameNode label;
+	private final NameNode tag;
 	private final SignNode<AsteriskLine> suffix;
 
 	public InclusionNode(
 			SignNode<AsteriskLine> prefix,
-			NameNode label,
+			NameNode tag,
 			SignNode<AsteriskLine> suffix) {
-		super(prefix.getStart(), end(prefix, label, suffix));
+		super(prefix.getStart(), end(prefix, tag, suffix));
 		this.prefix = prefix;
-		this.label = label;
+		this.tag = tag;
 		this.suffix = suffix;
 	}
 
@@ -45,8 +45,8 @@ public class InclusionNode extends AbstractStatementNode {
 		return this.prefix;
 	}
 
-	public final NameNode getLabel() {
-		return this.label;
+	public final NameNode getTag() {
+		return this.tag;
 	}
 
 	public final SignNode<AsteriskLine> getSuffix() {
@@ -61,8 +61,8 @@ public class InclusionNode extends AbstractStatementNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		this.prefix.printContent(out);
-		if (this.label != null) {
-			this.label.printContent(out);
+		if (this.tag != null) {
+			this.tag.printContent(out);
 		}
 		if (this.suffix != null) {
 			this.suffix.printContent(out);

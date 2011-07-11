@@ -48,18 +48,18 @@ public class InclusionParser implements Parser<InclusionNode> {
 			return null;
 		}
 
-		final NameNode label = context.parse(name());
+		final NameNode tag = context.parse(name());
 
-		if (label == null) {
-			context.getLogger().missingInclusionLabel(prefix);
+		if (tag == null) {
+			context.getLogger().missingInclusionTag(prefix);
 			return new InclusionNode(prefix, null, null);
 		}
 
-		context.acceptComments(false, label);
+		context.acceptComments(false, tag);
 
 		final SignNode<AsteriskLine> suffix = context.parse(ASTERISK_LINE);
 
-		return new InclusionNode(prefix, label, suffix);
+		return new InclusionNode(prefix, tag, suffix);
 	}
 
 	private static final class AsteriskLineParser

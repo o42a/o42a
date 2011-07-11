@@ -33,13 +33,13 @@ public class InclusionTest extends GrammarTestCase {
 
 	@Test
 	public void inclusionWithoutLabel() {
-		expectError("missing_inclusion_label");
+		expectError("missing_inclusion_tag");
 
 		final InclusionNode inclusion = parse("***");
 
 		assertRange(0, 3, inclusion);
 		assertThat(inclusion.getPrefix().getType().getLength(), is(3));
-		assertNull(inclusion.getLabel());
+		assertNull(inclusion.getTag());
 		assertNull(inclusion.getSuffix());
 	}
 
@@ -50,7 +50,7 @@ public class InclusionTest extends GrammarTestCase {
 
 		assertRange(0, 5, inclusion.getPrefix());
 		assertThat(inclusion.getPrefix().getType().getLength(), is(5));
-		assertThat(inclusion.getLabel().getName(), is("label"));
+		assertThat(inclusion.getTag().getName(), is("label"));
 		assertNull(inclusion.getSuffix());
 	}
 
@@ -61,7 +61,7 @@ public class InclusionTest extends GrammarTestCase {
 
 		assertRange(0, 5, inclusion.getPrefix());
 		assertThat(inclusion.getPrefix().getType().getLength(), is(5));
-		assertThat(inclusion.getLabel().getName(), is("label"));
+		assertThat(inclusion.getTag().getName(), is("label"));
 		assertThat(inclusion.getSuffix().getType().getLength(), is(3));
 	}
 

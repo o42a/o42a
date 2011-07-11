@@ -28,16 +28,16 @@ import org.o42a.ast.statement.StatementNodeVisitor;
 public class SubTitleNode extends AbstractStatementNode {
 
 	private final SignNode<DoubleLine> prefix;
-	private final MemberRefNode label;
+	private final MemberRefNode tag;
 	private final SignNode<DoubleLine> suffix;
 
 	public SubTitleNode(
 			SignNode<DoubleLine> prefix,
-			MemberRefNode label,
+			MemberRefNode tag,
 			SignNode<DoubleLine> suffix) {
-		super(prefix.getStart(), end(prefix, label, suffix));
+		super(prefix.getStart(), end(prefix, tag, suffix));
 		this.prefix = prefix;
-		this.label = label;
+		this.tag = tag;
 		this.suffix = suffix;
 	}
 
@@ -45,8 +45,8 @@ public class SubTitleNode extends AbstractStatementNode {
 		return this.prefix;
 	}
 
-	public final MemberRefNode getLabel() {
-		return this.label;
+	public final MemberRefNode getTag() {
+		return this.tag;
 	}
 
 	public final SignNode<DoubleLine> getSuffix() {
@@ -61,8 +61,8 @@ public class SubTitleNode extends AbstractStatementNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		this.prefix.printContent(out);
-		if (this.label != null) {
-			this.label.printContent(out);
+		if (this.tag != null) {
+			this.tag.printContent(out);
 		}
 		if (this.suffix != null) {
 			this.suffix.printContent(out);
