@@ -51,7 +51,7 @@ import org.o42a.util.log.Logger;
 import org.o42a.util.log.Logs;
 
 
-public class Compiler implements BlockCompiler {
+public class Compiler implements SourceCompiler {
 
 	private static final Compiler instance = new Compiler();
 
