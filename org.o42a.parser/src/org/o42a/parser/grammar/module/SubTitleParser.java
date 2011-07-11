@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.module;
 
 import static org.o42a.parser.Grammar.memberRef;
 import static org.o42a.parser.Grammar.name;
+import static org.o42a.parser.grammar.module.OddParser.ODD;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
@@ -35,7 +36,8 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 
 	public static final SubTitleParser SUB_TITLE = new SubTitleParser();
 
-	private static final DoubleLineParser DOUBLE_LINE = new DoubleLineParser();
+	private static final DoubleLineParser PREFIX = new DoubleLineParser(3);
+	private static final DoubleLineParser SUFFIX = new DoubleLineParser(1);
 
 	private SubTitleParser() {
 	}
@@ -43,7 +45,7 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 	@Override
 	public SubTitleNode parse(ParserContext context) {
 
-		final SignNode<DoubleLine> prefix = context.parse(DOUBLE_LINE);
+		final SignNode<DoubleLine> prefix = context.parse(PREFIX);
 
 		if (prefix == null) {
 			return null;
@@ -67,15 +69,17 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 		final MemberRefNode memberRef = context.parse(memberRef(owner));
 		final MemberRefNode tag = memberRef != null ? memberRef : owner;
 
-		final SignNode<DoubleLine> suffix = context.parse(DOUBLE_LINE);
+		final SignNode<DoubleLine> suffix = context.parse(SUFFIX);
+
+		context.parse(ODD);
 
 		return new SubTitleNode(prefix, tag, suffix);
 	}
 
 	private static final class DoubleLineParser extends LineParser<DoubleLine> {
 
-		DoubleLineParser() {
-			super('=');
+		DoubleLineParser(int minLength) {
+			super('=', minLength);
 		}
 
 		@Override

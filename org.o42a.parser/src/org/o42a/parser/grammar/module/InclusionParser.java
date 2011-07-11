@@ -33,8 +33,8 @@ public class InclusionParser implements Parser<InclusionNode> {
 
 	public static final InclusionParser INCLUSION = new InclusionParser();
 
-	private static final AsteriskLineParser ASTERISK_LINE =
-			new AsteriskLineParser();
+	private static final AsteriskLineParser PREFIX = new AsteriskLineParser(3);
+	private static final AsteriskLineParser SUFFIX = new AsteriskLineParser(1);
 
 	private InclusionParser() {
 	}
@@ -42,7 +42,7 @@ public class InclusionParser implements Parser<InclusionNode> {
 	@Override
 	public InclusionNode parse(ParserContext context) {
 
-		final SignNode<AsteriskLine> prefix = context.parse(ASTERISK_LINE);
+		final SignNode<AsteriskLine> prefix = context.parse(PREFIX);
 
 		if (prefix == null) {
 			return null;
@@ -57,7 +57,7 @@ public class InclusionParser implements Parser<InclusionNode> {
 
 		context.acceptComments(false, tag);
 
-		final SignNode<AsteriskLine> suffix = context.parse(ASTERISK_LINE);
+		final SignNode<AsteriskLine> suffix = context.parse(SUFFIX);
 
 		return new InclusionNode(prefix, tag, suffix);
 	}
@@ -65,8 +65,8 @@ public class InclusionParser implements Parser<InclusionNode> {
 	private static final class AsteriskLineParser
 			extends LineParser<AsteriskLine> {
 
-		AsteriskLineParser() {
-			super('*');
+		AsteriskLineParser(int minLength) {
+			super('*', minLength);
 		}
 
 		@Override
