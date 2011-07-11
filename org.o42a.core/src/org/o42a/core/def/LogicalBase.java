@@ -19,10 +19,10 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class LogicalBase extends Scoped {

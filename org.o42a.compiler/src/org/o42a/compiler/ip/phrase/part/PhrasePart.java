@@ -22,9 +22,9 @@ package org.o42a.compiler.ip.phrase.part;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
-import org.o42a.core.Location;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 

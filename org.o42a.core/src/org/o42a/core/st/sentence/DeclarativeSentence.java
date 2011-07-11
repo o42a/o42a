@@ -21,11 +21,11 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.declarative.SentenceEnv;
 import org.o42a.core.value.ValueType;

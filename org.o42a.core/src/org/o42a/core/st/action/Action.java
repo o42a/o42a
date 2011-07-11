@@ -20,6 +20,7 @@
 package org.o42a.core.st.action;
 
 import org.o42a.core.*;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;

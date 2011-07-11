@@ -21,11 +21,11 @@ package org.o42a.core.st;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Def;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;
 
 

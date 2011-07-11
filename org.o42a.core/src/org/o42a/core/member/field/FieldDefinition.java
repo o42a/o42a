@@ -22,12 +22,12 @@ package org.o42a.core.member.field;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Placed;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 

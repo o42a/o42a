@@ -19,9 +19,9 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.core.CompilerContext;
-import org.o42a.core.Location;
-import org.o42a.core.LocationInfo;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogInfo;
 
 

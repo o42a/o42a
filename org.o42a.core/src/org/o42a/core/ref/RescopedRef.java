@@ -23,6 +23,7 @@ import org.o42a.core.*;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 

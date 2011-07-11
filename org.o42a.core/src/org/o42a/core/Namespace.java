@@ -32,6 +32,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.source.LocationInfo;
 
 
 public class Namespace extends AbstractContainer {

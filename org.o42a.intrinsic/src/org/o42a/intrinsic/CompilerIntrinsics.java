@@ -34,6 +34,8 @@ import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.source.BlockCompiler;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
 import org.o42a.util.use.Usable;

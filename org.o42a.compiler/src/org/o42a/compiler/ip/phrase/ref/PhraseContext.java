@@ -31,6 +31,8 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.util.ArrayUtil;
 

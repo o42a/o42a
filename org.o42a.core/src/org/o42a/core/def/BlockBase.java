@@ -20,9 +20,9 @@
 package org.o42a.core.def;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.ImperativeBlock;
 

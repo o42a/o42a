@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core;
+package org.o42a.core.source;
 
-import static org.o42a.core.SectionTag.DEFAULT_SECTION_TAG;
+import static org.o42a.core.source.SectionTag.DEFAULT_SECTION_TAG;
 
 import java.net.URL;
 

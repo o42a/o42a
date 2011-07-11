@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.LocationInfo;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class Inclusions {

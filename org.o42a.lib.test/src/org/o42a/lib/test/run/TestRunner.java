@@ -23,7 +23,6 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.common.PlainObject;
@@ -37,6 +36,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;

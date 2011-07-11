@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.common.AbstractConjunction;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 

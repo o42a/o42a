@@ -26,6 +26,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 

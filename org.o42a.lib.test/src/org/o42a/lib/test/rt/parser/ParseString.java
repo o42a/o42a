@@ -22,7 +22,6 @@ package org.o42a.lib.test.rt.parser;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.common.adapter.ByString;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.ir.HostOp;
@@ -30,6 +29,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 

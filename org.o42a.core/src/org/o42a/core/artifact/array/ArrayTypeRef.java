@@ -24,6 +24,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 

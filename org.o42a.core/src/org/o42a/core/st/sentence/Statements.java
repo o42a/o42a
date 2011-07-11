@@ -33,6 +33,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;

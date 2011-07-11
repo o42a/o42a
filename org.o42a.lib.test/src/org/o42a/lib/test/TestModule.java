@@ -24,12 +24,12 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.o42a.core.CompilerContext;
 import org.o42a.core.artifact.common.Module;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.lib.test.rt.*;
 import org.o42a.lib.test.rt.parser.Parser;
 import org.o42a.lib.test.run.RunTests;

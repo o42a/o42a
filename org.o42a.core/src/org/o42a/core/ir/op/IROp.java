@@ -25,8 +25,8 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.source.CompilerContext;
 
 
 public abstract class IROp {

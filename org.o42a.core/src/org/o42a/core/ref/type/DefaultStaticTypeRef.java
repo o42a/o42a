@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref.type;
 
-import org.o42a.core.CompilerContext;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 

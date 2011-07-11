@@ -24,8 +24,8 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
 
 import org.o42a.common.object.IntrinsicDirective;
-import org.o42a.core.Location;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.lib.test.TestModule;

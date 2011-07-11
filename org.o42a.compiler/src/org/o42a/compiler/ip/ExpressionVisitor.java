@@ -34,8 +34,8 @@ import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.operator.LogicalOperatorRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
-import org.o42a.core.Location;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.Location;
 
 
 public final class ExpressionVisitor

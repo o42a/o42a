@@ -22,9 +22,9 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Container;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.action.Action;

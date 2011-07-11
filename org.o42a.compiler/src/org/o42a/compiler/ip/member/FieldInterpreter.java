@@ -25,13 +25,13 @@ import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.RefVisitor;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.Statements;
 
 

@@ -31,13 +31,13 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
 
 
 final class FieldDeclarableVisitor

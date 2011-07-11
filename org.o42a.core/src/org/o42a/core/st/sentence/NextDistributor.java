@@ -22,6 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.ScopePlace.localPlace;
 
 import org.o42a.core.*;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.Place;
 import org.o42a.util.log.Loggable;
 

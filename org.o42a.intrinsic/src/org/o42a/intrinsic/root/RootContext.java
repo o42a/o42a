@@ -27,7 +27,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.o42a.core.CompilerContext;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.Source;
 
 

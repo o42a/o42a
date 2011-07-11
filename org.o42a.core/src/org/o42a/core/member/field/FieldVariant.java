@@ -21,6 +21,8 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.util.log.Loggable;
 

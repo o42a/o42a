@@ -21,6 +21,7 @@ package org.o42a.core.member;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 

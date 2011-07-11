@@ -22,7 +22,6 @@ package org.o42a.intrinsic.root;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.source.CompilerContext;
 
 
 final class TopIR extends ScopeIR {

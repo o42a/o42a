@@ -29,6 +29,8 @@ import org.o42a.core.*;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 

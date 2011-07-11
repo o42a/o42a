@@ -22,12 +22,12 @@ package org.o42a.intrinsic.root;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.common.object.IntrinsicDirective;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.Value;

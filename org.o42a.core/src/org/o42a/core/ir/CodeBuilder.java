@@ -27,7 +27,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -36,6 +35,7 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
 
 
 public class CodeBuilder {

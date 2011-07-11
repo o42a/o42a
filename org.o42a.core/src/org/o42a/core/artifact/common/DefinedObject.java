@@ -23,10 +23,10 @@ import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 

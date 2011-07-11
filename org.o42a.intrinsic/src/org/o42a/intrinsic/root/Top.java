@@ -33,6 +33,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableData;
 

@@ -41,6 +41,7 @@ import org.o42a.compiler.ip.StatementVisitor;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;

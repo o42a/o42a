@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.phrase.part;
 
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
-import org.o42a.core.LocationInfo;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 
 

@@ -21,6 +21,7 @@ package org.o42a.core.def;
 
 import org.o42a.core.*;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.CompilerLogger;
 
 
 public abstract class Rescopable<R extends Rescopable<R>>

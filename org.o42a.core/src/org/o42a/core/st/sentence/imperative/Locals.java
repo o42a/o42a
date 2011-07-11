@@ -21,7 +21,7 @@ package org.o42a.core.st.sentence.imperative;
 
 import java.util.HashMap;
 
-import org.o42a.core.LocationInfo;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 

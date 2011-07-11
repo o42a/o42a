@@ -19,11 +19,11 @@
 */
 package org.o42a.core.st.sentence.declarative;
 
-import static org.o42a.core.SectionTag.DEFAULT_SECTION_TAG;
+import static org.o42a.core.source.SectionTag.DEFAULT_SECTION_TAG;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;

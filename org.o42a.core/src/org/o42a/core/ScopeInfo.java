@@ -19,6 +19,8 @@
 */
 package org.o42a.core;
 
+import org.o42a.core.source.LocationInfo;
+
 
 public interface ScopeInfo extends LocationInfo {
 

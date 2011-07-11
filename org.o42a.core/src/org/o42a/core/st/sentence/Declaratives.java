@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Container;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.declarative.ExplicitInclusion;
 import org.o42a.core.st.sentence.imperative.BracesWithinDeclaratives;

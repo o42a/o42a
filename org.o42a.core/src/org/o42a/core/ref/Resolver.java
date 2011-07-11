@@ -20,6 +20,9 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.*;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.use.*;
 

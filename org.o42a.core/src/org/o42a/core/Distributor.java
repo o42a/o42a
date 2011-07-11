@@ -21,6 +21,8 @@ package org.o42a.core;
 
 import static org.o42a.core.ScopePlace.scopePlace;
 
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.log.Loggable;
 
 

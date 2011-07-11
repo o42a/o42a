@@ -22,9 +22,9 @@ package org.o42a.core.ref.type;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.link.RefLinkBase;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class RefTypeBase extends RefLinkBase {

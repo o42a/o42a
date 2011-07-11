@@ -31,10 +31,10 @@ import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseId;
+import org.o42a.core.source.CompilerContext;
 
 
 final class PhraseClauseKeyVisitor

@@ -22,11 +22,11 @@ package org.o42a.core.artifact.common;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class PlainObject extends Obj {

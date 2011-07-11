@@ -24,10 +24,10 @@ import java.util.HashMap;
 
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.Distributor;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.util.ArrayUtil;

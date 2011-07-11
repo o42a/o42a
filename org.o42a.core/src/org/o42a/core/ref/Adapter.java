@@ -23,7 +23,6 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.LocationInfo;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -34,6 +33,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;
 
 

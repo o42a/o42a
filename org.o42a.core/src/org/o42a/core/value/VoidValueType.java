@@ -26,7 +26,6 @@ import static org.o42a.core.ref.Ref.voidRef;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.Intrinsics;
 import org.o42a.core.artifact.object.Obj;
@@ -34,6 +33,7 @@ import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.ValueTypeIR;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.source.LocationInfo;
 
 
 final class VoidValueType extends ValueType<Void> {

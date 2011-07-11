@@ -25,8 +25,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.LocationInfo;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class Control {
