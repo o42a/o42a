@@ -98,7 +98,7 @@ public class SectionNode
 	}
 
 	public final MemberRefNode getLabel() {
-		return this.subTitle != null ? this.subTitle.getLabel() : null;
+		return this.subTitle != null ? this.subTitle.getTag() : null;
 	}
 
 	@Override

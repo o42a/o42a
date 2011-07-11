@@ -49,9 +49,9 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 			return null;
 		}
 
-		final NameNode labelFirstName = context.parse(name());
+		final NameNode tagFirstName = context.parse(name());
 
-		if (labelFirstName == null) {
+		if (tagFirstName == null) {
 			return new SubTitleNode(prefix, null, null);
 		}
 
@@ -61,15 +61,15 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 						new MemberRefNode(
 								null,
 								null,
-								labelFirstName,
+								tagFirstName,
 								null,
 								null));
 		final MemberRefNode memberRef = context.parse(memberRef(owner));
-		final MemberRefNode label = memberRef != null ? memberRef : owner;
+		final MemberRefNode tag = memberRef != null ? memberRef : owner;
 
 		final SignNode<DoubleLine> suffix = context.parse(DOUBLE_LINE);
 
-		return new SubTitleNode(prefix, label, suffix);
+		return new SubTitleNode(prefix, tag, suffix);
 	}
 
 	private static final class DoubleLineParser extends LineParser<DoubleLine> {

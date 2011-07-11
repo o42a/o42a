@@ -127,18 +127,18 @@ public class ModuleTest extends GrammarTestCase {
 		assertThat(sections.length, is(3));
 
 		assertNull(sections[0].getTitle());
-		assertName("section1", sections[0].getSubTitle().getLabel());
+		assertName("section1", sections[0].getSubTitle().getTag());
 		assertNotNull(sections[0].getSubTitle().getSuffix());
 		assertThat(sections[0].getContent().length, is(0));
 
 		assertNotNull(sections[1].getTitle());
 		assertNotNull(sections[1].getDeclarator());
-		assertName("section2", sections[1].getSubTitle().getLabel());
+		assertName("section2", sections[1].getSubTitle().getTag());
 		assertNull(sections[1].getSubTitle().getSuffix());
 		assertThat(sections[1].getContent().length, is(1));
 
 		assertNull(sections[2].getTitle());
-		assertName("section3", sections[2].getSubTitle().getLabel());
+		assertName("section3", sections[2].getSubTitle().getTag());
 		assertNotNull(sections[2].getSubTitle().getSuffix());
 		assertThat(sections[2].getContent().length, is(0));
 	}

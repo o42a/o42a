@@ -102,11 +102,11 @@ public abstract class ParserLogger implements Logger {
 				"Declaration reference is missing");
 	}
 
-	public void missingInclusionLabel(LogInfo location) {
+	public void missingInclusionTag(LogInfo location) {
 		error(
-				"missing_inclusion_label",
+				"missing_inclusion_tag",
 				location,
-				"Inclusion label is missing");
+				"Inclusion tag is missing");
 	}
 
 	public void missingOperand(LogInfo location, String operator) {
