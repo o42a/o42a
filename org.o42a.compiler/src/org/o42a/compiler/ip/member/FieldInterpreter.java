@@ -40,7 +40,7 @@ public class FieldInterpreter {
 	static final AdapterFieldVisitor ADAPTER_FIELD_VISITOR =
 		new AdapterFieldVisitor();
 
-	public static Ref field(
+	public static void field(
 			Interpreter ip,
 			CompilerContext context,
 			DeclaratorNode declarator,
@@ -52,25 +52,25 @@ public class FieldInterpreter {
 				distributor);
 
 		if (declaration == null) {
-			return null;
+			return;
 		}
 
-		return setDefinition(ip, p, declarator, declaration);
+		setDefinition(ip, p, declarator, declaration);
 	}
 
-	private static Ref setDefinition(
+	private static void setDefinition(
 			Interpreter ip,
 			Statements<?> p,
 			DeclaratorNode node,
 			FieldDeclaration declaration) {
 		if (declaration == null) {
-			return null;
+			return;
 		}
 
 		final ExpressionNode definitionNode = node.getDefinition();
 
 		if (definitionNode == null) {
-			return null;
+			return;
 		}
 
 		final FieldDefinition definition = definitionNode.accept(
@@ -82,13 +82,11 @@ public class FieldInterpreter {
 			final FieldBuilder builder = p.field(declaration, definition);
 
 			if (builder == null) {
-				return null;
+				return;
 			}
 
 			p.statement(builder.build());
 		}
-
-		return null;
 	}
 
 	private FieldInterpreter() {

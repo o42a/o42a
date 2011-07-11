@@ -31,6 +31,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.declarative.ExplicitInclusion;
 import org.o42a.core.st.sentence.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueType;
 
@@ -126,6 +127,14 @@ public class Declaratives extends Statements<Declaratives> {
 	@Override
 	public void ellipsis(LocationInfo location, String name) {
 		getLogger().prohibitedDeclarativeEllipsis(location);
+	}
+
+	@Override
+	public void include(LocationInfo location, String tag) {
+		if (!getMemberRegistry().inclusions().include(location, tag)) {
+			return;
+		}
+		statement(new ExplicitInclusion(location, this, tag));
 	}
 
 	@Override

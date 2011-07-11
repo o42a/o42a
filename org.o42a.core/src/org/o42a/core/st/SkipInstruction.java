@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,10 +20,10 @@
 package org.o42a.core.st;
 
 
-public interface Instruction {
+final class SkipInstruction implements Instruction {
 
-	Instruction SKIP_INSTRUCTION = new SkipInstruction();
-
-	void execute(InstructionContext context);
+	@Override
+	public void execute(InstructionContext context) {
+	}
 
 }

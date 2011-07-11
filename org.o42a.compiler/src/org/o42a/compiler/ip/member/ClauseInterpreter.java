@@ -39,7 +39,7 @@ import org.o42a.core.st.sentence.Statements;
 
 public class ClauseInterpreter {
 
-	public static Ref clause(
+	public static void clause(
 			CompilerContext context,
 			ClauseDeclaratorNode declarator,
 			Statements<?> statements) {
@@ -51,7 +51,7 @@ public class ClauseInterpreter {
 			declarator.getClauseKey().accept(CLAUSE_KEY_VISITOR, distributor);
 
 		if (declaration == null) {
-			return null;
+			return;
 		}
 
 		final Statement result;
@@ -68,7 +68,7 @@ public class ClauseInterpreter {
 					declaration.setKind(ClauseKind.GROUP));
 
 			if (group == null) {
-				return null;
+				return;
 			}
 
 			reuseClauses(group.getBuilder(), declarator);
@@ -78,8 +78,6 @@ public class ClauseInterpreter {
 		if (result != null) {
 			statements.statement(result);
 		}
-
-		return null;
 	}
 
 	static ClauseBuilder buildOverrider(

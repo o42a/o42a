@@ -26,6 +26,7 @@ import static org.o42a.compiler.ip.member.FieldInterpreter.field;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.module.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.core.CompilerContext;
 import org.o42a.core.Distributor;
@@ -36,7 +37,7 @@ import org.o42a.core.st.sentence.Statements;
 
 
 public class StatementVisitor
-		extends AbstractStatementVisitor<Ref, Statements<?>> {
+		extends AbstractStatementVisitor<Void, Statements<?>> {
 
 	private final Interpreter ip;
 	private final CompilerContext context;
@@ -59,7 +60,7 @@ public class StatementVisitor
 	}
 
 	@Override
-	public Ref visitParentheses(ParenthesesNode parentheses, Statements<?> p) {
+	public Void visitParentheses(ParenthesesNode parentheses, Statements<?> p) {
 
 		final Block<?> block = p.parentheses(location(p, parentheses));
 
@@ -69,7 +70,7 @@ public class StatementVisitor
 	}
 
 	@Override
-	public Ref visitBraces(BracesNode braces, Statements<?> p) {
+	public Void visitBraces(BracesNode braces, Statements<?> p) {
 
 		final Block<Imperatives> block = p.braces(location(p, braces));
 
@@ -83,7 +84,7 @@ public class StatementVisitor
 	}
 
 	@Override
-	public Ref visitNamedBlock(NamedBlockNode namedBlock, Statements<?> p) {
+	public Void visitNamedBlock(NamedBlockNode namedBlock, Statements<?> p) {
 
 		final Block<Imperatives> block = p.braces(
 				location(p, namedBlock.getName()),
@@ -99,7 +100,7 @@ public class StatementVisitor
 	}
 
 	@Override
-	public Ref visitAssignment(AssignmentNode assignment, Statements<?> p) {
+	public Void visitAssignment(AssignmentNode assignment, Statements<?> p) {
 
 		final ExpressionNode destinationNode = assignment.getDestination();
 		final ExpressionNode valueNode = assignment.getValue();
@@ -123,7 +124,7 @@ public class StatementVisitor
 	}
 
 	@Override
-	public Ref visitSelfAssignment(
+	public Void visitSelfAssignment(
 			SelfAssignmentNode assignment,
 			Statements<?> p) {
 
@@ -146,19 +147,21 @@ public class StatementVisitor
 	}
 
 	@Override
-	public Ref visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
-		return field(ip(), getContext(), declarator, p);
+	public Void visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
+		field(ip(), getContext(), declarator, p);
+		return null;
 	}
 
 	@Override
-	public Ref visitClauseDeclarator(
+	public Void visitClauseDeclarator(
 			ClauseDeclaratorNode declarator,
 			Statements<?> p) {
-		return clause(getContext(), declarator, p);
+		clause(getContext(), declarator, p);
+		return null;
 	}
 
 	@Override
-	public Ref visitEllipsis(EllipsisNode ellipsis, Statements<?> p) {
+	public Void visitEllipsis(EllipsisNode ellipsis, Statements<?> p) {
 
 		final NameNode target = ellipsis.getTarget();
 
@@ -170,7 +173,19 @@ public class StatementVisitor
 	}
 
 	@Override
-	protected Ref visitExpression(ExpressionNode expression, Statements<?> p) {
+	public Void visitInclusion(InclusionNode inclusion, Statements<?> p) {
+
+		final NameNode tag = inclusion.getTag();
+
+		if (tag != null) {
+			p.include(location(p, inclusion), tag.getName());
+		}
+
+		return null;
+	}
+
+	@Override
+	protected Void visitExpression(ExpressionNode expression, Statements<?> p) {
 
 		final Distributor distributor = p.nextDistributor();
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
@@ -183,7 +198,7 @@ public class StatementVisitor
 	}
 
 	@Override
-	protected Ref visitStatement(StatementNode statement, Statements<?> p) {
+	protected Void visitStatement(StatementNode statement, Statements<?> p) {
 		p.getLogger().invalidStatement(statement);
 		return null;
 	}

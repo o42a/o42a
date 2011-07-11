@@ -21,8 +21,7 @@ package org.o42a.core.member;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.ObjectType;
@@ -166,6 +165,10 @@ public abstract class Member extends Placed {
 		}
 
 		return this.lastDefinition = overridden[0].getLastDefinition();
+	}
+
+	public Set<CompilerContext> getAllContexts() {
+		return Collections.singleton(getContext());
 	}
 
 	public Member[] getOverridden() {

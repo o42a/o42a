@@ -35,14 +35,28 @@ public abstract class Inclusions {
 		return NO_INCLUSIONS;
 	}
 
-	public abstract boolean registerInclusion(
+	public abstract boolean inclusionsSupported();
+
+	public abstract boolean hasInclusions();
+
+	public abstract boolean include(
 			LocationInfo location,
 			String tag);
 
 	private static final class NoDeclarations extends Inclusions {
 
 		@Override
-		public boolean registerInclusion(LocationInfo location, String tag) {
+		public boolean inclusionsSupported() {
+			return false;
+		}
+
+		@Override
+		public boolean hasInclusions() {
+			return false;
+		}
+
+		@Override
+		public boolean include(LocationInfo location, String tag) {
 			location.getContext().getLogger().prohibitedDeclaration(location);
 			return false;
 		}
@@ -57,7 +71,17 @@ public abstract class Inclusions {
 	private static final class NoInclusions extends Inclusions {
 
 		@Override
-		public boolean registerInclusion(LocationInfo location, String tag) {
+		public boolean inclusionsSupported() {
+			return false;
+		}
+
+		@Override
+		public boolean hasInclusions() {
+			return false;
+		}
+
+		@Override
+		public boolean include(LocationInfo location, String tag) {
 			location.getContext().getLogger().error(
 					"prohibited_inclusion",
 					location,

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.sentence.DeclarativeBlock.declarativeBlock;
+import static org.o42a.core.st.sentence.DeclarativeBlock.nestedBlock;
 import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
 
 import org.o42a.core.Distributor;
@@ -50,7 +50,7 @@ public class DeclarativeFactory implements SentenceFactory<
 			LocationInfo location,
 			Distributor distributor,
 			Declaratives enclosing) {
-		return declarativeBlock(location, distributor, enclosing, this);
+		return nestedBlock(location, distributor, enclosing, this);
 	}
 
 	@Override

@@ -29,7 +29,6 @@ import org.o42a.core.*;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 
@@ -41,7 +40,7 @@ final class ClauseStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Ref visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
+	public Void visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
 		if (!declarator.getTarget().isOverride()) {
 			return super.visitDeclarator(declarator, p);
 		}

@@ -36,6 +36,7 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.st.sentence.declarative.ImplicitInclusion;
 import org.o42a.core.st.sentence.declarative.SentencePrecondition;
 import org.o42a.core.st.sentence.imperative.Locals;
 import org.o42a.core.value.ValueType;
@@ -44,7 +45,7 @@ import org.o42a.util.Place.Trace;
 
 public final class DeclarativeBlock extends Block<Declaratives> {
 
-	static DeclarativeBlock declarativeBlock(
+	static DeclarativeBlock nestedBlock(
 			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
@@ -53,7 +54,9 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 				location,
 				distributor,
 				enclosing,
-				sentenceFactory);
+				enclosing.getMemberRegistry(),
+				sentenceFactory,
+				false);
 	}
 
 	private BlockEnv env;
@@ -73,11 +76,13 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry) {
-		super(
+		this(
 				location,
 				distributor,
+				null,
 				memberRegistry,
-				DECLARATIVE_FACTORY);
+				DECLARATIVE_FACTORY,
+				false);
 	}
 
 	public DeclarativeBlock(
@@ -85,25 +90,31 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			DeclaredField<?, ?> field,
 			Statements<?> enclosing,
 			MemberRegistry memberRegistry) {
-		super(
+		this(
 				location,
 				declarativeDistributor(field.getContainer()),
 				enclosing,
 				memberRegistry,
-				DECLARATIVE_FACTORY);
+				DECLARATIVE_FACTORY,
+				false);
 	}
 
 	private DeclarativeBlock(
 			LocationInfo location,
 			Distributor distributor,
 			Statements<?> enclosing,
-			DeclarativeFactory sentenceFactory) {
+			MemberRegistry memberRegistry,
+			DeclarativeFactory sentenceFactory,
+			boolean reproduced) {
 		super(
 				location,
 				distributor,
 				enclosing,
-				enclosing.getMemberRegistry(),
+				memberRegistry,
 				sentenceFactory);
+		if (!reproduced) {
+			addImplicitInclusions();
+		}
 	}
 
 	@Override
@@ -196,8 +207,11 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		if (getEnclosing() == null) {
 			reproduction = new DeclarativeBlock(
 					this,
-					reproducer.getContainer(),
-					reproducer.getMemberRegistry());
+					declarativeDistributor(reproducer.getContainer()),
+					null,
+					reproducer.getMemberRegistry(),
+					DECLARATIVE_FACTORY,
+					true);
 			reproduceSentences(reproducer, reproduction);
 			return reproduction;
 		}
@@ -236,7 +250,32 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		if (this.locals != null) {
 			return this.locals;
 		}
-		return this.locals = new Locals(this);
+
+		final Statements<?> enclosing = getEnclosing();
+
+		if (enclosing == null) {
+			return this.locals = new Locals(this);
+		}
+
+		return this.locals = enclosing.getSentence().getBlock().getLocals();
+	}
+
+	private void addImplicitInclusions() {
+		if (getEnclosing() != null) {
+			return;
+		}
+		if (!getMemberRegistry().inclusions().inclusionsSupported()) {
+			return;
+		}
+		if (!getContext().getSectionTag().isDefault()) {
+			// Enclosing context is a section.
+			// Only explicit (tagged) inclusions supported.
+			return;
+		}
+
+		final Declaratives statements = propose(this).alternative(this);
+
+		statements.statement(new ImplicitInclusion(this, statements));
 	}
 
 	private static final class BlockEnv extends StatementEnv {
