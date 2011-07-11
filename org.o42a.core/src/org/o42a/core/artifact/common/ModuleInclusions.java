@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
+package org.o42a.core.artifact.common;
 
-import org.o42a.core.member.Inclusions;
+import org.o42a.core.member.AbstractInclusions;
 
 
-public abstract class OwnerMemberRegistry extends ObjectMemberRegistry {
+class ModuleInclusions extends AbstractInclusions {
 
-	public OwnerMemberRegistry(Inclusions inclusions) {
-		super(inclusions);
+	private final Module module;
+
+	ModuleInclusions(Module module) {
+		this.module = module;
 	}
 
 	@Override
-	public Obj getOwner() {
-		if (this.owner == null) {
-			this.owner = findOwner();
+	public String toString() {
+		if (this.module == null) {
+			return super.toString();
 		}
-		return super.getOwner();
+		return "ModuleInclusions[" + this.module + ']';
 	}
 
-	protected abstract Obj findOwner();
+	@Override
+	protected String includedIntoName() {
+		return this.module.getModuleName();
+	}
 
 }

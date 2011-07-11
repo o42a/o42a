@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.Inclusions;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.OverrideMode;
 
@@ -76,6 +77,10 @@ public abstract class DeclaredField<
 
 	public final List<V> getVariants() {
 		return this.variants;
+	}
+
+	public final Inclusions newInclusions() {
+		return new FieldInclusions(this);
 	}
 
 	protected void mergeVariant(FieldVariant<A> variant) {

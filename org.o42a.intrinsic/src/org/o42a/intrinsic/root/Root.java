@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import java.net.MalformedURLException;
@@ -143,10 +144,10 @@ public class Root extends Obj {
 		members.addMember(new DirectiveObject(this).toMember());
 
 		final ObjectMemberRegistry memberRegistry =
-			new ObjectMemberRegistry(this);
+				new ObjectMemberRegistry(noInclusions(), this);
 		final BlockBuilder compiled = getContext().compileBlock();
 		final DeclarativeBlock block =
-			new DeclarativeBlock(this, distribute(), memberRegistry);
+				new DeclarativeBlock(this, distribute(), memberRegistry);
 
 		compiled.buildBlock(block);
 		memberRegistry.registerMembers(members);

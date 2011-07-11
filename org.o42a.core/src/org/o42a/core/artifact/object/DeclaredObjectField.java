@@ -115,6 +115,10 @@ class DeclaredObjectField extends DeclaredField<Obj, ObjectFieldVariant> {
 
 	private final class Registry extends OwnerMemberRegistry {
 
+		Registry() {
+			super(newInclusions());
+		}
+
 		@Override
 		protected Obj findOwner() {
 			return getArtifact();

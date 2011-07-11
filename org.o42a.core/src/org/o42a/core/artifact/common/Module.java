@@ -48,7 +48,8 @@ public class Module extends PlainObject {
 				new Location(context, context.getSource()),
 				moduleName));
 		this.moduleName = moduleName;
-		this.memberRegistry = new ObjectMemberRegistry(this);
+		this.memberRegistry =
+				new ObjectMemberRegistry(new ModuleInclusions(this), this);
 	}
 
 	public final String getModuleName() {

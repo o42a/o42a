@@ -20,6 +20,7 @@
 package org.o42a.common.object;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
@@ -157,8 +158,7 @@ public abstract class IntrinsicObject extends PlainObject {
 
 		final BlockBuilder compiled = getContext().compileBlock();
 
-		this.memberRegistry = new ObjectMemberRegistry(this);
-
+		this.memberRegistry = new ObjectMemberRegistry(noInclusions(), this);
 		this.definition = new DeclarativeBlock(
 				this,
 				new DefinitionDistributor(this),

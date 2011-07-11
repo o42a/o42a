@@ -17,47 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.sentence.imperative;
+package org.o42a.core.member;
 
 import java.util.HashMap;
 
 import org.o42a.core.LocationInfo;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public class Locals {
+public abstract class AbstractInclusions extends Inclusions {
 
-	private final DeclarativeBlock block;
-	private HashMap<String, LocationInfo> blocks;
+	private HashMap<String, LocationInfo> inclusions;
 
-	public Locals(DeclarativeBlock block) {
-		this.block = block;
-	}
-
-	public final DeclarativeBlock getBlock() {
-		return this.block;
-	}
-
-	public boolean declareBlock(LocationInfo location, String name) {
-		if (this.blocks == null) {
-			this.blocks = new HashMap<String, LocationInfo>();
+	@Override
+	public boolean registerInclusion(LocationInfo location, String tag) {
+		if (this.inclusions == null) {
+			this.inclusions = new HashMap<String, LocationInfo>();
 		}
 
-		final LocationInfo previousLocation = this.blocks.put(name, location);
+		final LocationInfo previousLocation =
+				this.inclusions.put(tag, location);
 
 		if (previousLocation == null) {
 			return true;
 		}
 
-		this.blocks.put(name, previousLocation);
+		this.inclusions.put(tag, previousLocation);
 		location.getContext().getLogger().error(
-				"duplicate_block_name",
+				"duplicate_inclusion",
 				location.getLoggable().setPreviousLoggable(
 						previousLocation.getLoggable()),
-				"Imperative block with name '%s' already declared",
-				name);
+				"Section '%s' already included into '%s'",
+				tag,
+				includedIntoName());
 
 		return false;
 	}
+
+	protected abstract String includedIntoName();
 
 }

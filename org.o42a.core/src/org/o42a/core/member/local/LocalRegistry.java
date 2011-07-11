@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.local;
 
+import static org.o42a.core.member.Inclusions.noInclusions;
+
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
@@ -36,6 +38,7 @@ public class LocalRegistry extends MemberRegistry {
 	private final MemberRegistry ownerRegistry;
 
 	public LocalRegistry(LocalScope scope, MemberRegistry ownerRegistry) {
+		super(noInclusions());
 		this.scope = scope;
 		this.ownerRegistry = ownerRegistry;
 	}
