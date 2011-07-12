@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,23 +19,25 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.util.io.Source;
 
 
-public interface SourceCompiler {
+public abstract class DefinitionSource {
 
-	ObjectCompiler compileObject(ObjectSource source);
+	private final Source source;
 
-	DefinitionCompiler compileDefinition(DefinitionSource source);
+	public DefinitionSource(Source source) {
+		assert source != null :
+			"Source not specified";
+		this.source = source;
+	}
 
-	BlockBuilder compileBlock(CompilerContext context);
+	public final Source getSource() {
+		return this.source;
+	}
 
-	Ref compilePath(
-			Scope scope,
-			String moduleId,
-			LocationInfo location,
-			String string);
+	public abstract SectionFactory getSectionFactory();
+
+	public abstract CompilerLogger getLogger();
 
 }

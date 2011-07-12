@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Utilities
     Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,34 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.root;
+package org.o42a.util.io;
 
-import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Serializable;
 
-import org.o42a.core.source.CompilerContext;
-import org.o42a.intrinsic.CompilerIntrinsics;
-import org.o42a.util.io.Source;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableData;
 
 
-public final class TopContext extends CompilerContext {
+public abstract class Source implements LogInfo, Serializable {
 
-	public TopContext(CompilerIntrinsics intrinsics) {
-		super(intrinsics.getCompiler(), intrinsics, DECLARATION_LOGGER);
+	private static final long serialVersionUID = 7816617800784201972L;
+
+	private final LoggableData loggableData = new LoggableData(this);
+
+	public abstract String getName();
+
+	public String getFileName() {
+
+		final String name = getName();
+		final int idx = name.lastIndexOf('/');
+
+		if (idx < 0) {
+			return name;
+		}
+
+		return name.substring(idx + 1);
 	}
 
-	@Override
-	public Source getSource() {
-		return null;
-	}
+	public abstract Reader open() throws IOException;
 
 	@Override
-	public CompilerContext contextFor(String path) throws Exception {
-		throw new UnsupportedOperationException(this + " has no child contexts");
+	public Loggable getLoggable() {
+		return this.loggableData;
 	}
 
 	@Override
 	public String toString() {
-		return "<TOP>";
+		return getName();
 	}
 
 }

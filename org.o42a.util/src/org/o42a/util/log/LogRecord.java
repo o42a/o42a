@@ -24,7 +24,7 @@ import java.util.Formattable;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
 
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 
 
 public class LogRecord implements Formattable, Serializable {

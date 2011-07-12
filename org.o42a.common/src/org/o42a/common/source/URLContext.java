@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.core.source.CompilerContext;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 import org.o42a.util.log.Logger;
 
 
@@ -131,6 +131,11 @@ public class URLContext extends CompilerContext {
 		}
 
 		@Override
+		public String getFileName() {
+			return this.base.getFile();
+		}
+
+		@Override
 		public Reader open() throws IOException {
 
 			final URL url = new URL(this.base, this.source);
@@ -184,6 +189,11 @@ public class URLContext extends CompilerContext {
 		@Override
 		public String getName() {
 			return this.name;
+		}
+
+		@Override
+		public String getFileName() {
+			return this.url.getFile();
 		}
 
 		@Override

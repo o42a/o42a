@@ -24,9 +24,6 @@ import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import static org.o42a.util.use.User.useCase;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -45,7 +42,8 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.CompilerIntrinsics;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
+import org.o42a.util.io.StringSource;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 import org.o42a.util.use.UseCase;
@@ -300,7 +298,9 @@ public abstract class CompilerTestCase {
 			String... lines) {
 		addSource(
 				path,
-				new Src(getModuleName() + '/' + path, buildCode(line, lines)));
+				new StringSource(
+						getModuleName() + '/' + path,
+						buildCode(line, lines)));
 	}
 
 	protected void addSource(String path, Source source) {
@@ -308,7 +308,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected final void compile(String line, String... lines) {
-		compile(new Src(buildCode(line, lines)));
+		compile(new StringSource(getModuleName(), buildCode(line, lines)));
 	}
 
 	protected void compile(Source source) {
@@ -346,35 +346,6 @@ public abstract class CompilerTestCase {
 		return code;
 	}
 
-	protected final class Src extends Source {
-
-		private static final long serialVersionUID = -1127243814012269504L;
-
-		private final String name;
-		private final String code;
-
-		public Src(String code) {
-			this.code = code;
-			this.name = getModuleName();
-		}
-
-		Src(String name, String code) {
-			this.code = code;
-			this.name = name;
-		}
-
-		@Override
-		public String getName() {
-			return this.name;
-		}
-
-		@Override
-		public Reader open() throws IOException {
-			return new StringReader(this.code);
-		}
-
-	}
-
 	private class Context extends CompilerContext {
 
 		private Source source;
@@ -383,7 +354,7 @@ public abstract class CompilerTestCase {
 
 		Context() {
 			super(COMPILER, INTRINSICS, new TestLogger());
-			this.source = new Src("");
+			this.source = new StringSource(getModuleName(), "");
 		}
 
 		Context(CompilerContext parent, Source source) {

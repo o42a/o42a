@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence.declarative;
 
-import static org.o42a.core.source.SectionTag.DEFAULT_SECTION_TAG;
+import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.ref.Resolver;
@@ -56,7 +56,7 @@ public class ImplicitInclusion extends Inclusion {
 		if (!include()) {
 			return;
 		}
-		getContext().include(block, DEFAULT_SECTION_TAG);
+		getContext().include(block, IMPLICIT_SECTION_TAG);
 	}
 
 	private final boolean include() {

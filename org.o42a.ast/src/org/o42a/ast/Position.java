@@ -19,7 +19,7 @@
 */
 package org.o42a.ast;
 
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 

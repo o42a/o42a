@@ -40,7 +40,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 
 
-final class FieldDeclarableVisitor
+public final class FieldDeclarableVisitor
 		extends AbstractDeclarableVisitor<FieldDeclaration, Distributor> {
 
 	private static final VisibilityVisitor VISIBILITY_VISITOR =
@@ -50,7 +50,7 @@ final class FieldDeclarableVisitor
 	private final CompilerContext context;
 	private final DeclaratorNode declarator;
 
-	FieldDeclarableVisitor(
+	public FieldDeclarableVisitor(
 			Interpreter ip,
 			CompilerContext context,
 			DeclaratorNode declarator) {

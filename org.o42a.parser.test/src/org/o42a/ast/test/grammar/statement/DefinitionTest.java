@@ -33,6 +33,7 @@ import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.ast.statement.DefinitionKind;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.parser.ParserWorker;
+import org.o42a.util.io.StringSource;
 
 
 public class DefinitionTest extends GrammarTestCase {
@@ -112,7 +113,8 @@ public class DefinitionTest extends GrammarTestCase {
 	}
 
 	private DeclaratorNode parse(String text) {
-		this.worker = new ParserWorker(new Src(text));
+		this.worker = new ParserWorker(
+				new StringSource(getClass().getSimpleName(), text));
 
 		final MemberRefNode field =
 			to(MemberRefNode.class, this.worker.parse(ref()));

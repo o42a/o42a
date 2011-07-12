@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Utilities
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.source;
-
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.BlockBuilder;
+package org.o42a.util;
 
 
-public interface SourceCompiler {
+public final class Characters {
 
-	ObjectCompiler compileObject(ObjectSource source);
+	public static final int HYPHEN = 0x2010;
+	public static final int NON_BREAKING_HYPHEN = 0x2011;
+	public static final int HORIZONTAL_ELLIPSIS = 0x2026;
+	public static final int MINUS = 0x2212;
 
-	DefinitionCompiler compileDefinition(DefinitionSource source);
-
-	BlockBuilder compileBlock(CompilerContext context);
-
-	Ref compilePath(
-			Scope scope,
-			String moduleId,
-			LocationInfo location,
-			String string);
+	private Characters() {
+	}
 
 }

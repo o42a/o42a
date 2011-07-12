@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Compiler
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.source;
+package org.o42a.compiler.ip.module;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-public interface SourceCompiler {
+class SectionDefinition extends BlockBuilder {
 
-	ObjectCompiler compileObject(ObjectSource source);
+	private final Section section;
 
-	DefinitionCompiler compileDefinition(DefinitionSource source);
+	SectionDefinition(Section section) {
+		super(section.getLocation());
+		this.section = section;
+	}
 
-	BlockBuilder compileBlock(CompilerContext context);
-
-	Ref compilePath(
-			Scope scope,
-			String moduleId,
-			LocationInfo location,
-			String string);
+	@Override
+	public void buildBlock(Block<?> block) {
+		this.section.define(block.toDeclarativeBlock());
+	}
 
 }

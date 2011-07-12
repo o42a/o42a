@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,23 +19,11 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.artifact.object.Ascendants;
 
 
-public interface SourceCompiler {
+public interface ObjectCompiler extends LocationInfo, DefinitionCompiler {
 
-	ObjectCompiler compileObject(ObjectSource source);
-
-	DefinitionCompiler compileDefinition(DefinitionSource source);
-
-	BlockBuilder compileBlock(CompilerContext context);
-
-	Ref compilePath(
-			Scope scope,
-			String moduleId,
-			LocationInfo location,
-			String string);
+	Ascendants buildAscendants(Ascendants ascendants);
 
 }

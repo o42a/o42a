@@ -28,24 +28,27 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import static org.o42a.parser.Grammar.*;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.StatementVisitor;
-import org.o42a.core.*;
+import org.o42a.compiler.ip.module.AbstractModuleCompiler;
+import org.o42a.compiler.ip.module.DefinitionModuleCompiler;
+import org.o42a.compiler.ip.module.ObjectModuleCompiler;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
+import org.o42a.util.io.StringSource;
 import org.o42a.util.log.LoggablePosition;
 import org.o42a.util.log.Logger;
 import org.o42a.util.log.Logs;
@@ -60,6 +63,32 @@ public class Compiler implements SourceCompiler {
 	}
 
 	private Compiler() {
+	}
+
+	@Override
+	public ObjectCompiler compileObject(ObjectSource source) {
+
+		final ModuleNode node =
+				parse(module(), null, source.getLogger(), source.getSource());
+
+		if (node == null) {
+			return null;
+		}
+
+		return validate(new ObjectModuleCompiler(source, node));
+	}
+
+	@Override
+	public DefinitionCompiler compileDefinition(DefinitionSource source) {
+
+		final ModuleNode node =
+				parse(module(), null, source.getLogger(), source.getSource());
+
+		if (node == null) {
+			return null;
+		}
+
+		return validate(new DefinitionModuleCompiler(source, node));
 	}
 
 	@Override
@@ -203,8 +232,11 @@ public class Compiler implements SourceCompiler {
 			CompilerLogger logger,
 			String string) {
 
-		final RefNode node =
-			parse(parser, location, logger, new StringSrc(string));
+		final RefNode node = parse(
+				parser,
+				location,
+				logger,
+				new StringSource(string, string));
 
 		if (node == null) {
 			logger.invalidReference(location);
@@ -213,26 +245,20 @@ public class Compiler implements SourceCompiler {
 		return node;
 	}
 
-	private static final class StringSrc extends Source {
-
-		private static final long serialVersionUID = -4569448153375422856L;
-
-		private final String string;
-
-		StringSrc(String string) {
-			this.string = string;
+	private <C extends AbstractModuleCompiler<?>> C validate(C compiler) {
+		if (compiler.getFileName().isValid()) {
+			return compiler;
 		}
 
-		@Override
-		public String getName() {
-			return this.string;
-		}
+		final DefinitionSource source = compiler.getSource();
 
-		@Override
-		public Reader open() throws IOException {
-			return new StringReader(this.string);
-		}
+		source.getLogger().error(
+				"invalid_file_name",
+				new FixedPosition(source.getSource()),
+				"Invalid source file name: %s",
+				source.getSource().getFileName());
 
+		return null;
 	}
 
 }

@@ -19,8 +19,8 @@
 */
 package org.o42a.parser.grammar.statement;
 
-import static org.o42a.parser.Grammar.HORIZONTAL_ELLIPSIS;
 import static org.o42a.parser.Grammar.IMPERATIVE;
+import static org.o42a.util.Characters.HORIZONTAL_ELLIPSIS;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;

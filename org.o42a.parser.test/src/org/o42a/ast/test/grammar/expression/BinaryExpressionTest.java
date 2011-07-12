@@ -29,6 +29,7 @@ import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.parser.ParserWorker;
+import org.o42a.util.io.StringSource;
 
 
 public class BinaryExpressionTest extends GrammarTestCase {
@@ -105,7 +106,8 @@ public class BinaryExpressionTest extends GrammarTestCase {
 	}
 
 	private BinaryNode parse(String text) {
-		this.worker = new ParserWorker(new Src(text));
+		this.worker = new ParserWorker(
+				new StringSource(getClass().getSimpleName(), text));
 
 		final ExpressionNode expression =
 			this.worker.parse(DECLARATIVE.simpleExpression());

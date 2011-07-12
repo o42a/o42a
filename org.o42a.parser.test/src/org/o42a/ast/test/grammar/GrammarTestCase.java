@@ -21,9 +21,6 @@ package org.o42a.ast.test.grammar;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.LinkedList;
 
 import org.junit.After;
@@ -39,7 +36,7 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
-import org.o42a.util.Source;
+import org.o42a.util.io.StringSource;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
@@ -179,31 +176,11 @@ public class GrammarTestCase {
 	}
 
 	public <T> T parse(Parser<T> parser, String text) {
-		this.worker = new ParserWorker(new Src(text.toString()));
+		this.worker = new ParserWorker(new StringSource(
+				getClass().getSimpleName(),
+				text.toString()));
 		this.worker.setLogger(new TestLogger());
 		return this.worker.parse(parser);
-	}
-
-	protected class Src extends Source {
-
-		private static final long serialVersionUID = -369778503973033190L;
-
-		private final String text;
-
-		public Src(String text) {
-			this.text = text;
-		}
-
-		@Override
-		public String getName() {
-			return GrammarTestCase.this.getClass().getSimpleName();
-		}
-
-		@Override
-		public Reader open() throws IOException {
-			return new StringReader(this.text);
-		}
-
 	}
 
 	private final class TestLogger implements Logger {

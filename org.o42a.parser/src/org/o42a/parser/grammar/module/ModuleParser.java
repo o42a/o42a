@@ -76,8 +76,23 @@ public final class ModuleParser implements Parser<ModuleNode> {
 			return null;
 		}
 
+		final int numSections = sections.size();
+
+		if (numSections > 1) {
+
+			final SectionNode first = sections.get(0);
+
+			if (first.getSubTitle() == null) {
+				return new ModuleNode(
+						first,
+						sections.subList(1, numSections).toArray(
+								new SectionNode[numSections - 1]));
+			}
+		}
+
 		return new ModuleNode(
-				sections.toArray(new SectionNode[sections.size()]));
+				null,
+				sections.toArray(new SectionNode[numSections]));
 	}
 
 }

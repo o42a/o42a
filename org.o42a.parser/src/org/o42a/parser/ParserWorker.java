@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.o42a.ast.Position;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 import org.o42a.util.log.Severity;

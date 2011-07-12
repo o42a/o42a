@@ -22,7 +22,7 @@ package org.o42a.ast;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableVisitor;
 

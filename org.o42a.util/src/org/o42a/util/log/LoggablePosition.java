@@ -19,7 +19,7 @@
 */
 package org.o42a.util.log;
 
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 
 
 public interface LoggablePosition extends Loggable {

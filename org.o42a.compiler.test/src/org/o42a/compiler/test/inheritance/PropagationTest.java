@@ -32,7 +32,7 @@ import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 
 
 public class PropagationTest extends CompilerTestCase {
