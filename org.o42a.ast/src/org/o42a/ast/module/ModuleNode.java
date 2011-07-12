@@ -25,11 +25,17 @@ import org.o42a.ast.NodeVisitor;
 
 public class ModuleNode extends AbstractNode {
 
+	private final SectionNode header;
 	private final SectionNode[] sections;
 
-	public ModuleNode(SectionNode[] sections) {
+	public ModuleNode(SectionNode header, SectionNode[] sections) {
 		super(sections);
+		this.header = header;
 		this.sections = sections;
+	}
+
+	public final SectionNode getHeader() {
+		return this.header;
 	}
 
 	public final SectionNode[] getSections() {

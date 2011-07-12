@@ -42,6 +42,7 @@ public class ModuleTest extends GrammarTestCase {
 				"Use module 'Console'",
 				"Foo := bar");
 
+		assertNull(module.getHeader());
 		assertThat(module.getSections().length, is(1));
 
 		final SectionNode section = module.getSections()[0];
@@ -59,9 +60,41 @@ public class ModuleTest extends GrammarTestCase {
 				"=====",
 				"Baz = 1");
 
-		assertThat(module.getSections().length, is(1));
+		final SectionNode[] sections = module.getSections();
 
-		final SectionNode section = module.getSections()[0];
+		assertNull(module.getHeader());
+		assertThat(sections.length, is(1));
+
+		final SectionNode section = sections[0];
+
+		assertNotNull(section.getTitle());
+		assertNotNull(section.getDeclarator());
+		assertThat(
+				section.getSubTitle().getPrefix().getType().getLength(),
+				is(5));
+		assertThat(section.getContent().length, is(1));
+	}
+
+	@Test
+	public void header() {
+
+		final ModuleNode module = parse(
+				"Use namespace 'Console'",
+				"Foo := bar",
+				"=====",
+				"Baz = 1");
+
+		final SectionNode[] sections = module.getSections();
+		final SectionNode header = module.getHeader();
+
+		assertNotNull(header);
+		assertNull(header.getTitle());
+		assertNull(header.getSubTitle());
+		assertThat(header.getContent().length, is(1));
+
+		assertThat(sections.length, is(1));
+
+		final SectionNode section = sections[0];
 
 		assertNotNull(section.getTitle());
 		assertNotNull(section.getDeclarator());
@@ -78,9 +111,12 @@ public class ModuleTest extends GrammarTestCase {
 				"=====",
 				"Baz = 1");
 
-		assertThat(module.getSections().length, is(1));
+		final SectionNode[] sections = module.getSections();
 
-		final SectionNode section = module.getSections()[0];
+		assertNull(module.getHeader());
+		assertThat(sections.length, is(1));
+
+		final SectionNode section = sections[0];
 
 		assertNull(section.getTitle());
 		assertThat(
@@ -99,18 +135,19 @@ public class ModuleTest extends GrammarTestCase {
 				"Baz = 1");
 
 		final SectionNode[] sections = module.getSections();
+		final SectionNode header = module.getHeader();
 
-		assertThat(sections.length, is(2));
+		assertNotNull(header);
+		assertNull(header.getTitle());
+		assertNull(header.getSubTitle());
+		assertThat(header.getContent().length, is(1));
 
+		assertThat(sections.length, is(1));
 		assertNull(sections[0].getTitle());
-		assertNull(sections[0].getSubTitle());
-		assertThat(sections[0].getContent().length, is(1));
-
-		assertNull(sections[1].getTitle());
 		assertThat(
-				sections[1].getSubTitle().getPrefix().getType().getLength(),
+				sections[0].getSubTitle().getPrefix().getType().getLength(),
 				is(5));
-		assertThat(sections[1].getContent().length, is(1));
+		assertThat(sections[0].getContent().length, is(1));
 	}
 
 	@Test
@@ -126,6 +163,7 @@ public class ModuleTest extends GrammarTestCase {
 
 		final SectionNode[] sections = module.getSections();
 
+		assertNull(module.getHeader());
 		assertThat(sections.length, is(3));
 
 		assertNull(sections[0].getTitle());
@@ -165,6 +203,7 @@ public class ModuleTest extends GrammarTestCase {
 
 		final SectionNode[] sections = module.getSections();
 
+		assertNull(module.getHeader());
 		assertThat(sections.length, is(1));
 
 		final SectionNode section = sections[0];
