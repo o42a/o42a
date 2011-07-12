@@ -19,6 +19,8 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import static org.o42a.util.Characters.MINUS;
+
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BinaryNode;
@@ -91,7 +93,7 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 
 			switch (context.next()) {
 			case '-':
-			case Grammar.MINUS:
+			case MINUS:
 				operator = BinaryOperator.SUBTRACT;
 				context.acceptAll();
 				break;

@@ -20,6 +20,7 @@
 package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.*;
+import static org.o42a.util.Characters.MINUS;
 
 import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -95,7 +96,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		switch (c) {
 		case '+':
 		case '-':
-		case Grammar.MINUS:
+		case MINUS:
 			return context.parse(this.grammar.unaryExpression());
 		case '(':
 			return context.parse(this.grammar.parentheses());

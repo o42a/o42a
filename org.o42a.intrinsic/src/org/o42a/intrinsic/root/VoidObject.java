@@ -46,7 +46,7 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 import org.o42a.util.log.LoggableData;
 
 

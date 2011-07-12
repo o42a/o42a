@@ -22,7 +22,7 @@ package org.o42a.core.source;
 
 public final class SectionTag {
 
-	public static final SectionTag DEFAULT_SECTION_TAG =
+	public static final SectionTag IMPLICIT_SECTION_TAG =
 			new SectionTag(null, null);
 
 	private final SectionTag parent;
@@ -33,7 +33,7 @@ public final class SectionTag {
 		this.tag = tag;
 	}
 
-	public final boolean isDefault() {
+	public final boolean isImplicit() {
 		return this.tag == null;
 	}
 
@@ -101,7 +101,7 @@ public final class SectionTag {
 
 	@Override
 	public String toString() {
-		if (isDefault()) {
+		if (isImplicit()) {
 			return "<default section>";
 		}
 
@@ -113,7 +113,7 @@ public final class SectionTag {
 	}
 
 	private void toString(StringBuilder out) {
-		if (!this.parent.isDefault()) {
+		if (!this.parent.isImplicit()) {
 			this.parent.toString(out);
 			out.append(':');
 		}

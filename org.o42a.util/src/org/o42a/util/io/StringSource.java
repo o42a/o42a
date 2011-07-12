@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Utilities
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.source;
+package org.o42a.util.io;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.BlockBuilder;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 
-public interface SourceCompiler {
+public class StringSource extends Source {
 
-	ObjectCompiler compileObject(ObjectSource source);
+	private static final long serialVersionUID = -1835051615367609323L;
 
-	DefinitionCompiler compileDefinition(DefinitionSource source);
+	private final String name;
+	private final String string;
 
-	BlockBuilder compileBlock(CompilerContext context);
+	public StringSource(String name, String string) {
+		this.name = name;
+		this.string = string;
+	}
 
-	Ref compilePath(
-			Scope scope,
-			String moduleId,
-			LocationInfo location,
-			String string);
+	@Override
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public Reader open() throws IOException {
+		return new StringReader(this.string);
+	}
 
 }

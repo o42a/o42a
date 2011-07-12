@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
-import org.o42a.util.Source;
+import org.o42a.util.io.Source;
 
 
 public class LogiclInheritanceTest extends CompilerTestCase {

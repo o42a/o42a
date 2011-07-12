@@ -19,6 +19,8 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import static org.o42a.util.Characters.MINUS;
+
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -60,7 +62,7 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 			}
 			break;
 		case '-':
-		case Grammar.MINUS:
+		case MINUS:
 			switch (context.next()) {
 			case '+':
 				operator = UnaryOperator.UNKNOWN;
