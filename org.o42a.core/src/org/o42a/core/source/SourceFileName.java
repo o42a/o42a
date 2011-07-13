@@ -145,6 +145,14 @@ public final class SourceFileName {
 		return this.valid;
 	}
 
+	public final boolean isAdapter() {
+		return this.adaptee.length != 0;
+	}
+
+	public final boolean isOverride() {
+		return this.declaredIn.length != 0;
+	}
+
 	@Override
 	public String toString() {
 		if (this.fileName == null) {
