@@ -55,6 +55,7 @@ public class DefinitionModuleCompiler
 		for (Section section : getSections().values()) {
 			section.done();
 		}
+		this.sections = null;
 	}
 
 	private Section section(SectionTag tag) {
@@ -74,10 +75,9 @@ public class DefinitionModuleCompiler
 		}
 
 		final SectionNode[] sectionNodes = getNode().getSections();
-		SectionTitle aboveTitle = null;
-
 		final HashMap<SectionTag, Section> sections =
 				new HashMap<SectionTag, Section>(sectionNodes.length);
+		SectionTitle aboveTitle = null;
 
 		for (SectionNode sectionNode : sectionNodes) {
 

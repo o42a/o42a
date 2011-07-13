@@ -53,6 +53,12 @@ final class Section {
 
 	Section(
 			AbstractModuleCompiler<?> compiler,
+			SectionNode sectionNode) {
+		this(compiler, sectionNode, null);
+	}
+
+	Section(
+			AbstractModuleCompiler<?> compiler,
 			SectionNode sectionNode,
 			SectionTitle aboveTitle) {
 		this.compiler = compiler;
@@ -104,7 +110,7 @@ final class Section {
 		return this.location != null;
 	}
 
-	public final void use() {
+	public final Section use() {
 		assert !isUsed() :
 			"Section already used";
 
@@ -114,6 +120,8 @@ final class Section {
 						getTag());
 
 		this.location = new Location(context, getNode());
+
+		return this;
 	}
 
 	public AscendantsDefinition ascendants(Distributor distributor) {

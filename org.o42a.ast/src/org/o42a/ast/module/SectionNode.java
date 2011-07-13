@@ -20,6 +20,7 @@
 package org.o42a.ast.module;
 
 import org.o42a.ast.AbstractNode;
+import org.o42a.ast.Node;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
@@ -80,6 +81,13 @@ public class SectionNode
 		this.title = title;
 		this.subTitle = subTitle;
 		this.content = content;
+	}
+
+	public SectionNode(Node node) {
+		super(node.getStart(), node.getEnd());
+		this.title = null;
+		this.subTitle = null;
+		this.content = new SentenceNode[0];
 	}
 
 	public final SentenceNode getTitle() {
