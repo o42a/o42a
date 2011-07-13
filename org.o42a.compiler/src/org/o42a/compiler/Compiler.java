@@ -36,7 +36,7 @@ import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.compiler.ip.StatementVisitor;
+import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.module.AbstractModuleCompiler;
 import org.o42a.compiler.ip.module.DefinitionModuleCompiler;
 import org.o42a.compiler.ip.module.ObjectModuleCompiler;
@@ -111,7 +111,7 @@ public class Compiler implements SourceCompiler {
 		}
 
 		return contentBuilder(
-				new StatementVisitor(PLAIN_IP, context),
+				new DefaultStatementVisitor(PLAIN_IP, context),
 				new ParenthesesNode(null, content, null));
 	}
 

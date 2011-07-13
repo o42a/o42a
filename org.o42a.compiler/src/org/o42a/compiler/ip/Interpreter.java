@@ -24,7 +24,6 @@ import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.ref.TypeNode;
@@ -32,7 +31,8 @@ import org.o42a.ast.ref.TypeNodeVisitor;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -160,12 +160,39 @@ public enum Interpreter {
 			StatementVisitor statementVisitor,
 			Block<?> block,
 			BlockNode<?> blockNode) {
-
-		final SentenceNode[] content = blockNode.getContent();
-
-		for (SentenceNode sentence : content) {
-			addSentence(statementVisitor, block, sentence, sentence.getMark());
+		for (SentenceNode sentence : blockNode.getContent()) {
+			addSentence(statementVisitor, block, sentence, sentence.getType());
 		}
+	}
+
+	public static Sentence<?> addSentence(
+			StatementVisitor statementVisitor,
+			Block<?> block,
+			SentenceNode node,
+			SentenceType type) {
+
+		final Location location =
+			new Location(statementVisitor.getContext(), node);
+		final Sentence<?> sentence;
+
+		switch (type) {
+		case PROPOSITION:
+			sentence = block.propose(location);
+			break;
+		case CLAIM:
+			sentence = block.claim(location);
+			break;
+		case ISSUE:
+			sentence = block.issue(location);
+			break;
+		default:
+			block.getLogger().invalidExpression(node);
+			return null;
+		}
+
+		fillSentence(statementVisitor, sentence, node);
+
+		return sentence;
 	}
 
 	public static Location location(ScopeInfo p, Node node) {
@@ -242,38 +269,6 @@ public enum Interpreter {
 				declaration.distribute(),
 				itemType,
 				items);
-	}
-
-	private static Sentence<?> addSentence(
-			StatementVisitor statementVisitor,
-			Block<?> block,
-			SentenceNode node,
-			SignNode<SentenceType> mark) {
-
-		final SentenceType type =
-			mark != null ? mark.getType() : SentenceType.PROPOSITION;
-		final Location location =
-			new Location(statementVisitor.getContext(), node);
-		final Sentence<?> sentence;
-
-		switch (type) {
-		case PROPOSITION:
-			sentence = block.propose(location);
-			break;
-		case CLAIM:
-			sentence = block.claim(location);
-			break;
-		case ISSUE:
-			sentence = block.issue(location);
-			break;
-		default:
-			block.getLogger().invalidExpression(node);
-			return null;
-		}
-
-		fillSentence(statementVisitor, sentence, node);
-
-		return sentence;
 	}
 
 	private static void fillSentence(
