@@ -36,6 +36,8 @@ public abstract class DefinitionSource {
 		return this.source;
 	}
 
+	public abstract SourceFileName getFileName();
+
 	public abstract SectionFactory getSectionFactory();
 
 	public abstract CompilerLogger getLogger();

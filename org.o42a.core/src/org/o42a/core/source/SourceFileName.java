@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,11 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.module;
+package org.o42a.core.source;
 
 import static org.o42a.util.StringCodec.canonicalName;
-
-import org.o42a.util.io.Source;
 
 
 public final class SourceFileName {
@@ -29,31 +27,40 @@ public final class SourceFileName {
 	private static final String FILE_SUFFIX = ".o42a";
 	private static final String[] NO_PARTS = new String[0];
 
-	private final Source source;
 	private final String fileName;
 	private final String name;
+	private final String extension;
+	private final String fieldName;
 	private final String[] adaptee;
 	private final String[] declaredIn;
 	private final String comment;
 	private final boolean valid;
 
-	SourceFileName(Source source) {
-		this.source = source;
-		this.fileName = fileName(source);
+	public SourceFileName(String fileName) {
+		this.fileName = fileName;
+		if (!fileName.endsWith(FILE_SUFFIX)) {
+			this.name = fileName;
+			this.extension = null;
+		} else {
+			this.name = fileName.substring(
+					0,
+					fileName.length() - FILE_SUFFIX.length());
+			this.extension = "o42a";
+		}
 
 		final String meaningful;
-		final int commentIdx = this.fileName.indexOf("__");
+		final int commentIdx = this.name.indexOf("__");
 
 		if (commentIdx < 0) {
-			meaningful = this.fileName;
+			meaningful = this.name;
 			this.comment = null;
 		} else {
-			meaningful = this.fileName.substring(0, commentIdx);
-			this.comment = this.fileName.substring(commentIdx + 2);
+			meaningful = this.name.substring(0, commentIdx);
+			this.comment = this.name.substring(commentIdx + 2);
 		}
 
 		if (meaningful.isEmpty()) {
-			this.name = null;
+			this.fieldName = null;
 			this.adaptee = NO_PARTS;
 			this.declaredIn = NO_PARTS;
 			this.valid = false;
@@ -91,7 +98,7 @@ public final class SourceFileName {
 			final String[] adaptee = split(adapteeStr);
 
 			valid = canonical(adaptee) & valid;
-			this.name = null;
+			this.fieldName = null;
 			this.adaptee = adaptee;
 		} else {
 
@@ -99,15 +106,11 @@ public final class SourceFileName {
 
 			valid = canonicalName(main, name) & valid;
 
-			this.name = name.toString();
+			this.fieldName = name.toString();
 			this.adaptee = NO_PARTS;
 		}
 
 		this.valid = valid;
-	}
-
-	public final Source getSource() {
-		return this.source;
 	}
 
 	public final String getFileName() {
@@ -116,6 +119,14 @@ public final class SourceFileName {
 
 	public final String getName() {
 		return this.name;
+	}
+
+	public final String getExtension() {
+		return this.extension;
+	}
+
+	public final String getFieldName() {
+		return this.fieldName;
 	}
 
 	public final String[] getAdaptee() {
@@ -140,19 +151,6 @@ public final class SourceFileName {
 			return super.toString();
 		}
 		return this.fileName;
-	}
-
-	private static String fileName(Source source) {
-
-		final String fileName = source.getFileName();
-
-		if (!fileName.endsWith(FILE_SUFFIX)) {
-			return fileName;
-		}
-
-		return fileName.substring(
-					0,
-					fileName.length() - FILE_SUFFIX.length());
 	}
 
 	private static String[] split(String name) {

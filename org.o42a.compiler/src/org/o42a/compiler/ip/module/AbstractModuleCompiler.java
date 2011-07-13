@@ -20,22 +20,18 @@
 package org.o42a.compiler.ip.module;
 
 import org.o42a.ast.module.ModuleNode;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.DefinitionCompiler;
-import org.o42a.core.source.DefinitionSource;
+import org.o42a.core.source.*;
 
 
 public abstract class AbstractModuleCompiler<S extends DefinitionSource>
 		implements DefinitionCompiler {
 
 	private final S source;
-	private final SourceFileName fileName;
 	private final ModuleNode node;
 
 	public AbstractModuleCompiler(S source, ModuleNode node) {
 		this.source = source;
 		this.node = node;
-		this.fileName = new SourceFileName(source.getSource());
 	}
 
 	public final S getSource() {
@@ -43,7 +39,7 @@ public abstract class AbstractModuleCompiler<S extends DefinitionSource>
 	}
 
 	public final SourceFileName getFileName() {
-		return this.fileName;
+		return getSource().getFileName();
 	}
 
 	public final ModuleNode getNode() {
