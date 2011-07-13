@@ -118,7 +118,7 @@ final class SectionTitle {
 		return this.node.toString();
 	}
 
-	private static Node node(SectionNode sectionNode) {
+	static Node node(SectionNode sectionNode) {
 
 		final DeclaratorNode declaratorNode = sectionNode.getDeclarator();
 
