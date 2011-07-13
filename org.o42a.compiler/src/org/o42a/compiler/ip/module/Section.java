@@ -19,8 +19,10 @@
 */
 package org.o42a.compiler.ip.module;
 
+import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.addContent;
+import static org.o42a.compiler.ip.Interpreter.addSentence;
 import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
@@ -29,8 +31,8 @@ import org.o42a.ast.module.SectionNode;
 import org.o42a.ast.module.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.OtherContextDistributor;
-import org.o42a.compiler.ip.StatementVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -138,11 +140,11 @@ final class Section {
 		final SectionNode header = getCompiler().getNode().getHeader();
 
 		if (header != null) {
-			// TODO Add module header content.
+			addHeader(definition, header);
 		}
 
 		addContent(
-				new StatementVisitor(PLAIN_IP, getContext()),
+				new DefaultStatementVisitor(PLAIN_IP, getContext()),
 				definition,
 				getSectionNode());
 	}
@@ -226,6 +228,22 @@ final class Section {
 		return tagNode.accept(
 				new SectionTagVisitor(getLogger()),
 				IMPLICIT_SECTION_TAG);
+	}
+
+	private void addHeader(DeclarativeBlock definition, SectionNode header) {
+
+		final HeaderStatementVisitor visitor =
+				new HeaderStatementVisitor(getContext());
+
+		for (SentenceNode sentence : header.getContent()) {
+			if (sentence.getType() != PROPOSITION) {
+				getLogger().error(
+						"not_header_proposition",
+						sentence.getMark(),
+						"Only propositions allowed in module header");
+			}
+			addSentence(visitor, definition, sentence, PROPOSITION);
+		}
 	}
 
 }

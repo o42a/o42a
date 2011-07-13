@@ -19,11 +19,12 @@
 */
 package org.o42a.core.st.sentence;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;

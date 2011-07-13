@@ -26,16 +26,23 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.MemberRegistryLocalBase;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class MemberRegistry extends MemberRegistryLocalBase {
 
 	private static final NoDeclarations NO_DECLARATIONS = new NoDeclarations();
+	private static final SkipDeclarations SKIP_DECLARATIONS =
+			new SkipDeclarations();
 
 	private final Inclusions inclusions;
 
 	public static MemberRegistry noDeclarations() {
 		return NO_DECLARATIONS;
+	}
+
+	public static MemberRegistry skipDeclarations() {
+		return SKIP_DECLARATIONS;
 	}
 
 	public MemberRegistry(Inclusions inclusions) {
@@ -76,8 +83,7 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		public FieldBuilder newField(
 				FieldDeclaration declaration,
 				FieldDefinition definition) {
-			declaration.getContext().getLogger().prohibitedDeclaration(
-					declaration);
+			reportDeclaration(declaration);
 			return null;
 		}
 
@@ -88,13 +94,13 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 
 		@Override
 		public ClauseBuilder newClause(ClauseDeclaration declaration) {
-			declaration.getLogger().prohibitedDeclaration(declaration);
+			reportDeclaration(declaration);
 			return null;
 		}
 
 		@Override
 		public void declareMember(Member member) {
-			member.getLogger().prohibitedDeclaration(member);
+			reportDeclaration(member);
 		}
 
 		@Override
@@ -105,6 +111,19 @@ public abstract class MemberRegistry extends MemberRegistryLocalBase {
 		@Override
 		public String toString() {
 			return "NoDeclarations";
+		}
+
+		protected void reportDeclaration(LocationInfo location) {
+			location.getContext().getLogger().prohibitedDeclaration(
+					location);
+		}
+
+	}
+
+	private static final class SkipDeclarations extends NoDeclarations {
+
+		@Override
+		protected void reportDeclaration(LocationInfo location) {
 		}
 
 	}

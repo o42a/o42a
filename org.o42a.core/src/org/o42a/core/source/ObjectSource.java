@@ -19,15 +19,9 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.util.io.Source;
 
+public interface ObjectSource extends DefinitionSource {
 
-public abstract class ObjectSource extends DefinitionSource {
-
-	public ObjectSource(Source source) {
-		super(source);
-	}
-
-	public abstract CompilerContext getContext();
+	CompilerContext getContext();
 
 }

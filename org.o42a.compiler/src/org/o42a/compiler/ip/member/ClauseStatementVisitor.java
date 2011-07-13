@@ -24,8 +24,9 @@ import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 
 import org.o42a.ast.statement.DeclaratorNode;
-import org.o42a.compiler.ip.StatementVisitor;
-import org.o42a.core.*;
+import org.o42a.compiler.ip.DefaultStatementVisitor;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
@@ -35,7 +36,7 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 
 
-final class ClauseStatementVisitor extends StatementVisitor {
+final class ClauseStatementVisitor extends DefaultStatementVisitor {
 
 	ClauseStatementVisitor(CompilerContext context) {
 		super(CLAUSE_DEF_IP, context);

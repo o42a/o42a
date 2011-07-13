@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,48 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip;
+package org.o42a.compiler.ip.module;
 
-import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.statement.AbstractStatementVisitor;
+import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.module.HeaderStatement.notDirective;
+
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.StatementVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.Statements;
 
 
-public abstract class StatementVisitor
-		extends AbstractStatementVisitor<Void, Statements<?>> {
+final class HeaderStatementVisitor extends StatementVisitor {
 
-	private final Interpreter ip;
-	private final CompilerContext context;
-
-	public StatementVisitor(Interpreter ip, CompilerContext context) {
-		this.ip = ip;
-		this.context = context;
+	public HeaderStatementVisitor(CompilerContext context) {
+		super(PLAIN_IP, context);
 	}
 
-	public final Interpreter ip() {
-		return this.ip;
-	}
+	@Override
+	protected Void visitExpression(ExpressionNode expression, Statements<?> p) {
 
-	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {
-		return ip().expressionVisitor();
-	}
+		final Distributor distributor = p.nextDistributor();
+		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
-	public final CompilerContext getContext() {
-		return this.context;
-	}
+		if (ref == null) {
+			p.statement(new HeaderStatement(ref));
+		}
 
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
+		return null;
 	}
 
 	@Override
 	protected Void visitStatement(StatementNode statement, Statements<?> p) {
-		getLogger().invalidStatement(statement);
+		notDirective(getLogger(), statement);
 		return null;
 	}
 

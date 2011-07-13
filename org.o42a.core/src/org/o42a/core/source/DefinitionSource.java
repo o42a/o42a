@@ -22,24 +22,14 @@ package org.o42a.core.source;
 import org.o42a.util.io.Source;
 
 
-public abstract class DefinitionSource {
+public interface DefinitionSource {
 
-	private final Source source;
+	Source getSource();
 
-	public DefinitionSource(Source source) {
-		assert source != null :
-			"Source not specified";
-		this.source = source;
-	}
+	SourceFileName getFileName();
 
-	public final Source getSource() {
-		return this.source;
-	}
+	SectionFactory getSectionFactory();
 
-	public abstract SourceFileName getFileName();
-
-	public abstract SectionFactory getSectionFactory();
-
-	public abstract CompilerLogger getLogger();
+	CompilerLogger getLogger();
 
 }

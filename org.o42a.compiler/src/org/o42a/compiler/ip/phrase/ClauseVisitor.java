@@ -25,7 +25,7 @@ import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
-import org.o42a.compiler.ip.StatementVisitor;
+import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.ref.Ref;
 
@@ -45,14 +45,14 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 	@Override
 	public Phrase visitBraces(BracesNode braces, Phrase p) {
 		return p.imperative(contentBuilder(
-				new StatementVisitor(p.ip(), p.getContext()),
+				new DefaultStatementVisitor(p.ip(), p.getContext()),
 				braces)).getPhrase();
 	}
 
 	@Override
 	public Phrase visitParentheses(ParenthesesNode parentheses, Phrase p) {
 		return p.declarations(contentBuilder(
-				new StatementVisitor(p.ip(), p.getContext()),
+				new DefaultStatementVisitor(p.ip(), p.getContext()),
 				parentheses)).getPhrase();
 	}
 
