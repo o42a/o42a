@@ -21,28 +21,42 @@ package org.o42a.compiler.ip.module;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.module.SectionAscendantsVisitor.SECTION_ASCENDANTS_VISITOR;
+import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.module.SectionNode;
+import org.o42a.ast.module.SubTitleNode;
+import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.ast.statement.DeclarableAdapterNode;
+import org.o42a.ast.statement.DeclarableNode;
 import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.compiler.ip.member.FieldDeclarableVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.source.*;
 
 
 final class SectionTitle {
 
+	private final Section section;
 	private final Node node;
-	private final DeclaratorNode declarator;
+	private final DeclaratorNode declaratorNode;
 
-	SectionTitle(SectionNode sectionNode) {
-		this.declarator = sectionNode.getDeclarator();
-		if (this.declarator != null) {
-			this.node = this.declarator;
+	SectionTitle(Section section, SectionTitle aboveTitle) {
+		this.section = section;
+
+		final SectionNode sectionNode = section.getSectionNode();
+
+		this.node = node(sectionNode);
+
+		if (sectionNode.getTitle() != null) {
+			this.declaratorNode = sectionNode.getDeclarator();
 		} else {
-			this.node = sectionNode.getTitle();
+			this.declaratorNode = aboveTitle.getDeclaratorNode();
 		}
 	}
 
@@ -50,33 +64,44 @@ final class SectionTitle {
 		return this.node;
 	}
 
-	public final DeclaratorNode getDeclarator() {
-		return this.declarator;
+	public final DeclaratorNode getDeclaratorNode() {
+		return this.declaratorNode;
 	}
 
 	public final boolean isValid() {
-		return this.declarator != null;
+		if (!isImplicit()) {
+			return true;
+		}
+		// Title present, but it doesn't contain declarator.
+		return getSection().getSectionNode().getTitle() == null;
 	}
 
-	public FieldDeclaration declaration(Distributor distributor) {
-		if (!isValid()) {
-			return null;
+	public final boolean isImplicit() {
+		return this.declaratorNode == null;
+	}
+
+	public final Section getSection() {
+		return this.section;
+	}
+
+	public final DefinitionSource getSource() {
+		return getSection().getSource();
+	}
+
+	public final CompilerLogger getLogger() {
+		return getSection().getLogger();
+	}
+
+	public FieldDeclaration fieldDeclaration(Distributor distributor) {
+		if (isImplicit()) {
+			return implicitFieldDeclaration(distributor);
 		}
-
-		final FieldDeclarableVisitor visitor = new FieldDeclarableVisitor(
-				PLAIN_IP,
-				distributor.getContext(),
-				getDeclarator());
-
-		return getDeclarator().getDeclarable().accept(visitor, distributor);
+		return explicitFieldDeclaration(distributor);
 	}
 
 	public AscendantsDefinition ascendants(Distributor distributor) {
-		if (!isValid()) {
-			return null;
-		}
 
-		final ExpressionNode definition = getDeclarator().getDefinition();
+		final ExpressionNode definition = getDeclaratorNode().getDefinition();
 
 		if (definition == null) {
 			return null;
@@ -91,6 +116,170 @@ final class SectionTitle {
 			return super.toString();
 		}
 		return this.node.toString();
+	}
+
+	private static Node node(SectionNode sectionNode) {
+
+		final DeclaratorNode declaratorNode = sectionNode.getDeclarator();
+
+		if (declaratorNode != null) {
+			return declaratorNode;
+		}
+
+		final SentenceNode titleNode = sectionNode.getTitle();
+
+		if (titleNode != null) {
+			return titleNode;
+		}
+
+		final SubTitleNode subTitleNode = sectionNode.getSubTitle();
+
+		if (subTitleNode != null) {
+			return subTitleNode;
+		}
+
+		return sectionNode;
+	}
+
+	private FieldDeclaration implicitFieldDeclaration(Distributor distributor) {
+
+		final String fieldName = fieldNameByFileName();
+
+		if (fieldName == null) {
+			return null;
+		}
+
+		return FieldDeclaration.fieldDeclaration(
+				new Location(distributor.getContext(), getNode()),
+				distributor,
+				fieldName(fieldName));
+	}
+
+	private FieldDeclaration explicitFieldDeclaration(Distributor distributor) {
+
+		final FieldDeclarableVisitor visitor = new FieldDeclarableVisitor(
+				PLAIN_IP,
+				distributor.getContext(),
+				getDeclaratorNode());
+		final DeclarableNode declarableNode = getDeclaratorNode().getDeclarable();
+
+		return validate(declarableNode.accept(visitor, distributor));
+	}
+
+	private String fieldNameByFileName() {
+
+		final SourceFileName fileName = getSource().getFileName();
+
+		if (!fileName.isValid()) {
+			// Can not establish field name by invalid file name.
+			return null;
+		}
+		if (fileName.isAdapter()) {
+			getLogger().error(
+					"missing_adapter_section_title",
+					getNode(),
+					"Section title required for adapter");
+			return null;
+		}
+		if (fileName.isOverride()) {
+			getLogger().error(
+					"missing_override_section_title",
+					getNode(),
+					"Section title required when overriding field");
+			return null;
+		}
+
+		return fileName.getFieldName();
+	}
+
+	private FieldDeclaration validate(FieldDeclaration declaration) {
+		if (!getSource().getFileName().isValid()) {
+			// File name is invalid, so can't validate.
+			return declaration;
+		}
+		if (!declaration.isAdapter()) {
+			return validateField(declaration);
+		}
+		return validateAdapter(declaration);
+	}
+
+	private FieldDeclaration validateField(FieldDeclaration declaration) {
+
+		final SourceFileName fileName = getSource().getFileName();
+		final MemberRefNode fieldNode =
+				(MemberRefNode) getDeclaratorNode().getDeclarable();
+
+		if (fileName.isAdapter()) {
+			getLogger().warning(
+					"not_adapter_section_title",
+					fieldNode,
+					"Adapter declaration expected in file '%s'",
+					fileName);
+		}
+
+		return validateOverride(declaration, fieldNode.getDeclaredIn());
+	}
+
+	private FieldDeclaration validateAdapter(FieldDeclaration declaration) {
+
+		final SourceFileName fileName = getSource().getFileName();
+		final DeclarableAdapterNode adapterNode =
+				(DeclarableAdapterNode)
+				getDeclaratorNode().getDeclarable();
+		final MemberRefNode adapteeNode = adapterNode.getMember();
+
+		if (!fileName.isAdapter()) {
+			getLogger().warning(
+					"unexpected_adapter_section_title",
+					adapterNode,
+					"Adapter declaration is not expected in file '%s'",
+					fileName);
+		} else if (!validatePath(adapteeNode, fileName.getAdaptee())) {
+			getLogger().warning(
+					"unmatched_adaptee_section_title",
+					adapteeNode,
+					"Adapter declaration doen't match"
+					+ " the name of file: ",
+					fileName);
+		}
+
+		return validateOverride(declaration, adapteeNode.getDeclaredIn());
+	}
+
+	private FieldDeclaration validateOverride(
+			FieldDeclaration declaration,
+			RefNode declaredIn) {
+
+		final SourceFileName fileName = getSource().getFileName();
+
+		if (fileName.isOverride()) {
+			if (!declaration.isOverride()) {
+				getLogger().warning(
+						"not_override_section_title",
+						getDeclaratorNode().getDeclarable(),
+						"Field override expected in file '%s'",
+						fileName);
+			} else if (declaredIn != null
+					&& !validatePath(declaredIn, fileName.getDeclaredIn())) {
+				getLogger().warning(
+						"unmatched_declared-in_section_title",
+						declaredIn,
+						"Declared-in declaration doen't match"
+						+ " the name of file: ",
+						fileName);
+			}
+		}
+
+		return declaration;
+	}
+
+	private boolean validatePath(RefNode ref, String[] path) {
+
+		final SectionTitlePathValidator validator =
+				new SectionTitlePathValidator(path);
+		final Object result = ref.accept(validator, path.length - 1);
+
+		return result != null;
 	}
 
 }

@@ -48,11 +48,12 @@ public final class AdapterId extends MemberId {
 		return typeField.getOriginal();
 	}
 
-	private StaticTypeRef adapterType;
+	private final StaticTypeRef adapterType;
 	private Scope adapterTypeScope;
 	private boolean invalid;
 
 	private AdapterId(Scope adapter) {
+		this.adapterType = null;
 		this.adapterTypeScope = adapter;
 	}
 
@@ -89,6 +90,10 @@ public final class AdapterId extends MemberId {
 	@Override
 	public final AdapterId toAdapterId() {
 		return this;
+	}
+
+	public final StaticTypeRef getAdapterType() {
+		return this.adapterType;
 	}
 
 	public final Scope getAdapterTypeScope() {

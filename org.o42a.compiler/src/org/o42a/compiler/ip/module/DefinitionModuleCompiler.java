@@ -24,10 +24,8 @@ import java.util.HashMap;
 import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.module.SectionNode;
 import org.o42a.core.source.DefinitionSource;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.SectionTag;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.Declaratives;
 
 
 public class DefinitionModuleCompiler
@@ -49,11 +47,7 @@ public class DefinitionModuleCompiler
 			return;
 		}
 
-		final LocationInfo location = section.getLocation();
-		final Declaratives statements =
-				definition.propose(location).alternative(location);
-
-		section.declareField(statements);
+		section.declareField(definition);
 	}
 
 	@Override
@@ -87,22 +81,9 @@ public class DefinitionModuleCompiler
 
 		for (SectionNode sectionNode : sectionNodes) {
 
-			final SectionTitle title;
+			final Section section = new Section(this, sectionNode, aboveTitle);
 
-			if (sectionNode.getTitle() != null) {
-				title = new SectionTitle(sectionNode);
-				if (!title.isValid()) {
-					// Invalid section title. Skip the section.
-					continue;
-				}
-			} else {
-				// Section without title. Reuse the above one.
-				title = aboveTitle;
-			}
-			aboveTitle = title;
-
-			final Section section = new Section(this, title, sectionNode);
-
+			aboveTitle = section.getTitle();
 			if (!section.isValid()) {
 				continue;
 			}

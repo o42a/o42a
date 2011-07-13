@@ -53,12 +53,12 @@ final class Section {
 
 	Section(
 			AbstractModuleCompiler<?> compiler,
-			SectionTitle title,
-			SectionNode sectionNode) {
+			SectionNode sectionNode,
+			SectionTitle aboveTitle) {
 		this.compiler = compiler;
-		this.node = sectionLocation(sectionNode);
-		this.title = title;
 		this.sectionNode = sectionNode;
+		this.title = new SectionTitle(this, aboveTitle);
+		this.node = sectionLocation(sectionNode);
 		this.tag = sectionTag(sectionNode);
 	}
 
@@ -87,7 +87,7 @@ final class Section {
 	}
 
 	public final boolean isValid() {
-		return this.tag != null;
+		return getTag() != null && getTitle().isValid();
 	}
 
 	public final CompilerContext getContext() {
@@ -136,13 +136,7 @@ final class Section {
 	}
 
 	public void define(DeclarativeBlock definition) {
-
-		final SectionNode header = getCompiler().getNode().getHeader();
-
-		if (header != null) {
-			addHeader(definition, header);
-		}
-
+		addHeader(definition);
 		addContent(
 				new DefaultStatementVisitor(PLAIN_IP, getContext()),
 				definition,
@@ -162,28 +156,26 @@ final class Section {
 		return getSource().getLogger();
 	}
 
-	public void declareField(Declaratives statements) {
-		// TODO Validate declarable vs. source file name.
+	public void declareField(DeclarativeBlock definition) {
 
-		final SectionTitle title = getTitle();
+		final LocationInfo location = getLocation();
+		final Declaratives statements =
+				definition.propose(location).alternative(location);
 
-		if (title == null) {
-			getLogger().error(
-					"missing_section_title",
-					getNode(),
-					"Section title is missing");
+		final Distributor distributor = statements.nextDistributor();
+		final FieldDeclaration fieldDeclaration =
+				getTitle().fieldDeclaration(distributor);
+
+		if (fieldDeclaration == null) {
 			return;
 		}
 
-		final Distributor distributor = statements.nextDistributor();
-		final FieldDeclaration declaration = title.declaration(distributor);
-
-		final FieldDefinition definition = fieldDefinition(
+		final FieldDefinition fieldDefinition = fieldDefinition(
 				getLocation(),
 				ascendants(distributor),
 				new SectionDefinition(this));
 
-		statements.field(declaration, definition);
+		statements.field(fieldDeclaration, fieldDefinition);
 	}
 
 	@Override
@@ -230,7 +222,13 @@ final class Section {
 				IMPLICIT_SECTION_TAG);
 	}
 
-	private void addHeader(DeclarativeBlock definition, SectionNode header) {
+	private void addHeader(DeclarativeBlock definition) {
+
+		final SectionNode header = getCompiler().getNode().getHeader();
+
+		if (header == null) {
+			return;
+		}
 
 		final HeaderStatementVisitor visitor =
 				new HeaderStatementVisitor(getContext());
