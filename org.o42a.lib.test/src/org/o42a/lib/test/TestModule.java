@@ -24,7 +24,7 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.o42a.common.source.URLContext;
+import org.o42a.common.source.URLCompilerContext;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.artifact.object.ObjectType;
@@ -49,7 +49,7 @@ public class TestModule extends Module {
 					TestModule.class.getSimpleName() + ".class");
 			final URL base = new URL(self, "../../../..");
 
-			moduleContext = new URLContext(
+			moduleContext = new URLCompilerContext(
 					context,
 					"Test",
 					base,

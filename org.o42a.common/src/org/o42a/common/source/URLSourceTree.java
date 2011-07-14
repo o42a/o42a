@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,42 +22,55 @@ package org.o42a.common.source;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.SourceFileName;
 import org.o42a.util.io.URLSource;
-import org.o42a.util.log.Logger;
 
 
-public class URLContext extends CompilerContext {
+public abstract class URLSourceTree extends SourceTree<URLSource> {
 
-	private final URLSource source;
-
-	public URLContext(
-			CompilerContext parentContext,
+	public URLSourceTree(
 			String name,
 			URL base,
-			String path,
-			Logger logger)
-	throws MalformedURLException {
-		super(parentContext, logger);
-		this.source = new URLSource(name, dir(base), path);
-	}
-
-	public URLContext(
-			URLContext parent,
 			String path)
 	throws MalformedURLException {
-		super(parent, null);
-		this.source = new URLSource(parent.getSource(), path);
+		this(new URLSource(name, dir(base), path));
 	}
 
-	@Override
-	public CompilerContext contextFor(String path) throws Exception {
-		return new URLContext(this, path);
+	public URLSourceTree(
+			URLSource parent,
+			String path)
+	throws MalformedURLException {
+		this(new URLSource(parent, path));
 	}
 
-	@Override
-	public URLSource getSource() {
-		return this.source;
+	public URLSourceTree(URLSource source) {
+		super(source, new SourceFileName(fileName(source.getURL().getPath())));
+	}
+
+	private static String fileName(String path) {
+
+		final String filePath = removeTrailingSlashes(path);
+		final int slashIdx = filePath.lastIndexOf('/');
+
+		if (slashIdx < 0) {
+			return filePath;
+		}
+
+		return filePath.substring(slashIdx + 1);
+	}
+
+	private static String removeTrailingSlashes(String path) {
+
+		int last = path.length() - 1;
+
+		while (last >= 0) {
+			if (path.charAt(last) != '/') {
+				break;
+			}
+			--last;
+		}
+
+		return path.substring(0, last + 1);
 	}
 
 	private static URL dir(URL url) {

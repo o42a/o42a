@@ -32,7 +32,7 @@ import java.net.URL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.common.source.URLContext;
+import org.o42a.common.source.URLCompilerContext;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.CodeBuilder;
@@ -54,7 +54,7 @@ public class ConsoleModule extends Module {
 
 	public static ConsoleModule consoleModule(CompilerContext context) {
 
-		final URLContext moduleContext;
+		final URLCompilerContext moduleContext;
 
 		try {
 
@@ -62,7 +62,7 @@ public class ConsoleModule extends Module {
 					ConsoleModule.class.getSimpleName() + ".class");
 			final URL base = new URL(self, "../../../..");
 
-			moduleContext = new URLContext(
+			moduleContext = new URLCompilerContext(
 					context,
 					"Console",
 					base,

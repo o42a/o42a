@@ -90,10 +90,9 @@ public abstract class CompilerContext {
 
 	public abstract Source getSource();
 
-	public void include(DeclarativeBlock block, SectionTag tag) {
-		// TODO Inclusion.
-	}
+	public abstract void include(DeclarativeBlock block, SectionTag tag);
 
+	@Deprecated
 	public abstract CompilerContext contextFor(String path) throws Exception;
 
 	public final LocationInfo locationFor(LogInfo location, String path) {
