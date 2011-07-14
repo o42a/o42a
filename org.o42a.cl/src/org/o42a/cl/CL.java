@@ -28,7 +28,7 @@ import java.net.*;
 
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.codegen.Generator;
-import org.o42a.common.source.URLContext;
+import org.o42a.common.source.URLCompilerContext;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
@@ -60,7 +60,7 @@ public class CL {
 		final Log logger = new Log();
 		final String fileName = fileName(src);
 		final CompilerContext context =
-				new URLContext(rootContext, fileName, src, fileName, logger);
+				new URLCompilerContext(rootContext, fileName, src, fileName, logger);
 
 		final Module module = new Module(context, moduleName(src.getPath()));
 

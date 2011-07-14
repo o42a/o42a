@@ -27,7 +27,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.common.object.BuiltinObject;
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectScope;
@@ -41,9 +42,8 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.source.*;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.io.Source;
@@ -111,6 +111,12 @@ public final class VoidObject extends BuiltinObject {
 		}
 
 		@Override
+		public void include(DeclarativeBlock block, SectionTag tag) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		@Deprecated
 		public CompilerContext contextFor(String path) throws Exception {
 			throw new UnsupportedOperationException(
 					this + " has no child contexts");

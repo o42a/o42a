@@ -38,6 +38,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
+import org.o42a.core.source.SectionTag;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -363,6 +365,11 @@ public abstract class CompilerTestCase {
 		}
 
 		@Override
+		public void include(DeclarativeBlock block, SectionTag tag) {
+		}
+
+		@Override
+		@Deprecated
 		public CompilerContext contextFor(String path) throws Exception {
 
 			final int idx = path.indexOf('/');

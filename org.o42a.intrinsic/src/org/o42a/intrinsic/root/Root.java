@@ -29,7 +29,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.common.object.IntrinsicObject;
 import org.o42a.common.object.IntrinsicType;
-import org.o42a.common.source.URLContext;
+import org.o42a.common.source.URLCompilerContext;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -50,7 +50,7 @@ public class Root extends Obj {
 
 	public static Root createRoot(Scope topScope) {
 
-		final URLContext context;
+		final URLCompilerContext context;
 
 		try {
 
@@ -58,7 +58,7 @@ public class Root extends Obj {
 				Root.class.getResource(Root.class.getSimpleName() + ".class");
 			final URL base = new URL(self, "../../../..");
 
-			context = new URLContext(
+			context = new URLCompilerContext(
 					topScope.getContext(),
 					"ROOT",
 					base,

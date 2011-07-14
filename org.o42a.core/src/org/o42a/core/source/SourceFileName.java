@@ -72,18 +72,16 @@ public final class SourceFileName {
 
 		if (meaningful.length() > 1) {
 
-			final String declaredInStr;
+			final String[] declaredIn;
 			final int declaredInIdx = meaningful.indexOf('@', 1);
 
 			if (declaredInIdx > 0) {
 				main = meaningful.substring(0, declaredInIdx);
-				declaredInStr = meaningful.substring(declaredInIdx + 1);
+				declaredIn = split(meaningful.substring(declaredInIdx + 1));
 			} else {
 				main = meaningful;
-				declaredInStr = null;
+				declaredIn = null;
 			}
-
-			final String[] declaredIn = split(declaredInStr);
 
 			valid = canonical(declaredIn) & valid;
 			this.declaredIn = declaredIn;

@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,13 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.source;
+package org.o42a.common.source;
 
-import org.o42a.util.log.LogInfo;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.ObjectSource;
+import org.o42a.util.io.Source;
 
 
-public interface SectionFactory {
+class TreeObjectSource<S extends Source>
+		extends TreeDefinitionSource<S>
+		implements ObjectSource {
 
-	CompilerContext sectionContext(LogInfo location, SectionTag tag);
+	TreeObjectSource(TreeCompilerContext<S> context) {
+		super(context, context.getSourceTree());
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return getParentContext();
+	}
 
 }

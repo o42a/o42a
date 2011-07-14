@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,13 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.source;
+package org.o42a.common.source;
 
-import org.o42a.util.log.LogInfo;
+import static java.util.Collections.emptyList;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.o42a.util.io.URLSource;
 
 
-public interface SectionFactory {
+public final class SingleURLSource extends URLSourceTree {
 
-	CompilerContext sectionContext(LogInfo location, SectionTag tag);
+	public SingleURLSource(
+			String name,
+			URL base,
+			String path)
+	throws MalformedURLException {
+		super(name, base, path);
+	}
+
+	public SingleURLSource(
+			URLSource parent,
+			String path)
+	throws MalformedURLException {
+		super(parent, path);
+	}
+
+	public SingleURLSource(URLSource source) {
+		super(source);
+	}
+
+	@Override
+	public Iterable<? extends SourceTree<URLSource>> childTrees() {
+		return emptyList();
+	}
 
 }
