@@ -19,39 +19,44 @@
 */
 package org.o42a.common.source;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.core.source.CompilerContext;
-import org.o42a.util.io.Source;
+import org.o42a.util.io.URLSource;
 import org.o42a.util.log.Logger;
 
 
 public class URLContext extends CompilerContext {
 
-	private final BaseSource source;
+	private final URLSource source;
 
 	public URLContext(
 			CompilerContext parentContext,
 			String name,
 			URL base,
 			String path,
-			Logger logger) {
+			Logger logger)
+	throws MalformedURLException {
 		super(parentContext, logger);
-		this.source =
-				new BaseSource(dir(base), path, name != null ? name : path);
+		this.source = new URLSource(name, dir(base), path);
+	}
+
+	public URLContext(
+			URLContext parent,
+			String path)
+	throws MalformedURLException {
+		super(parent, null);
+		this.source = new URLSource(parent.getSource(), path);
 	}
 
 	@Override
 	public CompilerContext contextFor(String path) throws Exception {
-		return new ChildContext(this, path);
+		return new URLContext(this, path);
 	}
 
 	@Override
-	public Source getSource() {
+	public URLSource getSource() {
 		return this.source;
 	}
 
@@ -77,130 +82,6 @@ public class URLContext extends CompilerContext {
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
-	}
-
-	private static final class ChildContext extends CompilerContext {
-
-		private final URLSource source;
-
-		ChildContext(
-				URLContext parent,
-				String path)
-		throws IOException {
-			super(parent, null);
-			this.source = new URLSource(parent.source.base, path);
-		}
-
-		private ChildContext(
-				ChildContext parent,
-				String path)
-		throws IOException {
-			super(parent, null);
-			this.source = new URLSource(parent.source, path);
-		}
-
-		@Override
-		public CompilerContext contextFor(String path) throws Exception {
-			return new ChildContext(this, path);
-		}
-
-		@Override
-		public Source getSource() {
-			return this.source;
-		}
-
-	}
-
-	private static final class BaseSource extends Source {
-
-		private static final long serialVersionUID = -5259605489095552120L;
-
-		private final URL base;
-		private final String source;
-		private final String name;
-
-		BaseSource(URL base, String path, String name) {
-			this.base = base;
-			this.source = path;
-			this.name = name;
-		}
-
-		@Override
-		public String getName() {
-			return this.name;
-		}
-
-		@Override
-		public String getFileName() {
-			return this.base.getFile();
-		}
-
-		@Override
-		public Reader open() throws IOException {
-
-			final URL url = new URL(this.base, this.source);
-
-			return new InputStreamReader(url.openStream(), "UTF-8");
-		}
-
-	}
-
-	private static final class URLSource extends Source {
-
-		private static final long serialVersionUID = -2519270339565039100L;
-
-		private final URL base;
-		private final URL url;
-		private final String name;
-
-		URLSource(URL base, String path) throws IOException {
-			this(base, base, path);
-		}
-
-		URLSource(URLSource parent, String path) throws IOException {
-			this(parent.base, parent.url, path);
-		}
-
-		private URLSource(
-				URL base,
-				URL relativeTo,
-				String path)
-		throws IOException {
-			this.base = base;
-			this.url = new URL(relativeTo, path);
-
-			final String baseString = base.toString();
-			final String urlString = this.url.toString();
-
-			if (urlString.startsWith(baseString)) {
-				this.name = urlString.substring(baseString.length());
-			} else {
-
-				final String rootString = new URL(base, "/").toString();
-
-				if (urlString.startsWith(rootString)) {
-					this.name = urlString.substring(rootString.length());
-				} else {
-					this.name = path;
-				}
-			}
-		}
-
-		@Override
-		public String getName() {
-			return this.name;
-		}
-
-		@Override
-		public String getFileName() {
-			return this.url.getFile();
-		}
-
-		@Override
-		public Reader open() throws IOException {
-			return new InputStreamReader(this.url.openStream(), "UTF-8");
-		}
-
 	}
 
 }

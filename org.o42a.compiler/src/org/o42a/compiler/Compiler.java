@@ -256,7 +256,7 @@ public class Compiler implements SourceCompiler {
 				"invalid_file_name",
 				new FixedPosition(source.getSource()),
 				"Invalid source file name: %s",
-				source.getSource().getFileName());
+				source.getFileName());
 
 		return null;
 	}

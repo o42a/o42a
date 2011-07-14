@@ -36,7 +36,6 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -51,24 +50,24 @@ public class Root extends Obj {
 
 	public static Root createRoot(Scope topScope) {
 
-		final URL base;
+		final URLContext context;
 
 		try {
 
 			final URL self =
 				Root.class.getResource(Root.class.getSimpleName() + ".class");
+			final URL base = new URL(self, "../../../..");
 
-			base = new URL(self, "../../../..");
+			context = new URLContext(
+					topScope.getContext(),
+					"ROOT",
+					base,
+					"root.o42a",
+					DECLARATION_LOGGER);
 		} catch (MalformedURLException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 
-		final CompilerContext context = new URLContext(
-				topScope.getContext(),
-				"ROOT",
-				base,
-				"root.o42a",
-				DECLARATION_LOGGER);
 		final Location location = new Location(context, context.getSource());
 
 		return new Root(location, topScope);
