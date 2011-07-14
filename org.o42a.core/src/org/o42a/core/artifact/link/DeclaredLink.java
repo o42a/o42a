@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.link;
 
 
-
 final class DeclaredLink extends Link {
 
 	private final LinkFieldVariant variant;

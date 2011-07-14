@@ -53,6 +53,10 @@ public abstract class Inclusion extends Statement implements Instruction {
 		throw new UnsupportedOperationException();
 	}
 
+	public final StatementEnv getInitialEnv() {
+		return this.env.getInitialEnv();
+	}
+
 	@Override
 	public StatementEnv setEnv(StatementEnv env) {
 		return this.env = new InclusionEnv(env);

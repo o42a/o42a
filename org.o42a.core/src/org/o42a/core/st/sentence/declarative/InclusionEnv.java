@@ -35,6 +35,10 @@ final class InclusionEnv extends StatementEnv {
 		this.initialEnv = initialEnv;
 	}
 
+	public final StatementEnv getInitialEnv() {
+		return this.initialEnv;
+	}
+
 	@Override
 	public boolean hasPrerequisite() {
 		return this.env.hasPrerequisite();

@@ -35,9 +35,9 @@ public abstract class Inclusions {
 		return NO_INCLUSIONS;
 	}
 
-	public abstract boolean inclusionsSupported();
+	public abstract boolean implicitInclusionsSupported();
 
-	public abstract boolean hasInclusions();
+	public abstract boolean hasExplicitInclusions();
 
 	public abstract boolean include(
 			LocationInfo location,
@@ -46,12 +46,12 @@ public abstract class Inclusions {
 	private static final class NoDeclarations extends Inclusions {
 
 		@Override
-		public boolean inclusionsSupported() {
+		public boolean implicitInclusionsSupported() {
 			return false;
 		}
 
 		@Override
-		public boolean hasInclusions() {
+		public boolean hasExplicitInclusions() {
 			return false;
 		}
 
@@ -71,12 +71,12 @@ public abstract class Inclusions {
 	private static final class NoInclusions extends Inclusions {
 
 		@Override
-		public boolean inclusionsSupported() {
+		public boolean implicitInclusionsSupported() {
 			return false;
 		}
 
 		@Override
-		public boolean hasInclusions() {
+		public boolean hasExplicitInclusions() {
 			return false;
 		}
 

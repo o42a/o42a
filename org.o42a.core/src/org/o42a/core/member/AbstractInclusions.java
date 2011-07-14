@@ -29,12 +29,12 @@ public abstract class AbstractInclusions extends Inclusions {
 	private HashMap<String, LocationInfo> inclusions;
 
 	@Override
-	public boolean inclusionsSupported() {
+	public boolean implicitInclusionsSupported() {
 		return true;
 	}
 
 	@Override
-	public boolean hasInclusions() {
+	public boolean hasExplicitInclusions() {
 		return this.inclusions != null;
 	}
 

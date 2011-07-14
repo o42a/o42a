@@ -67,7 +67,7 @@ public abstract class StatementEnv {
 	public abstract Logical precondition(Scope scope);
 
 	public boolean hasConditions(Scope scope) {
-		return !prerequisite(scope).isTrue() || !precondition(scope).isTrue();
+		return hasPrerequisite() || !precondition(scope).isTrue();
 	}
 
 	public Logical fullLogical(Scope scope) {

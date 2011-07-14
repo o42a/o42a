@@ -31,6 +31,11 @@ final class FieldInclusions extends AbstractInclusions {
 	}
 
 	@Override
+	public boolean implicitInclusionsSupported() {
+		return this.field.getVariants().size() <= 1;
+	}
+
+	@Override
 	public String toString() {
 		if (this.field == null) {
 			return super.toString();
