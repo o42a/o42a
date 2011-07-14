@@ -41,24 +41,23 @@ public class TestModule extends Module {
 
 	public static Module testModule(CompilerContext context) {
 
-		final URL base;
+		final CompilerContext moduleContext;
 
 		try {
 
 			final URL self = TestModule.class.getResource(
 					TestModule.class.getSimpleName() + ".class");
+			final URL base = new URL(self, "../../../..");
 
-			base = new URL(self, "../../../..");
+			moduleContext = new URLContext(
+					context,
+					"Test",
+					base,
+					"test.o42a",
+					DECLARATION_LOGGER);
 		} catch (MalformedURLException e) {
 			throw new ExceptionInInitializerError(e);
 		}
-
-		final CompilerContext moduleContext = new URLContext(
-				context,
-				"Test",
-				base,
-				"test.o42a",
-				DECLARATION_LOGGER);
 
 		return new TestModule(moduleContext);
 	}

@@ -54,24 +54,23 @@ public class ConsoleModule extends Module {
 
 	public static ConsoleModule consoleModule(CompilerContext context) {
 
-		final URL base;
+		final URLContext moduleContext;
 
 		try {
 
 			final URL self = ConsoleModule.class.getResource(
 					ConsoleModule.class.getSimpleName() + ".class");
+			final URL base = new URL(self, "../../../..");
 
-			base = new URL(self, "../../../..");
+			moduleContext = new URLContext(
+					context,
+					"Console",
+					base,
+					"console.o42a",
+					DECLARATION_LOGGER);
 		} catch (MalformedURLException e) {
 			throw new ExceptionInInitializerError(e);
 		}
-
-		final CompilerContext moduleContext = new URLContext(
-				context,
-				"Console",
-				base,
-				"console.o42a",
-				DECLARATION_LOGGER);
 
 		return new ConsoleModule(moduleContext);
 	}

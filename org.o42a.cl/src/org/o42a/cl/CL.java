@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.LLVMGenerator.newGenerator;
 import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 
+import java.io.IOException;
 import java.net.*;
 
 import org.o42a.backend.llvm.LLVMGenerator;
@@ -49,7 +50,7 @@ public class CL {
 		this.generator = generator;
 	}
 
-	public void compile(String source) {
+	public void compile(String source) throws IOException {
 
 		final Compiler compiler = compiler();
 		final CompilerIntrinsics intrinsics = intrinsics(compiler);

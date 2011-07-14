@@ -30,23 +30,11 @@ import org.o42a.util.log.LoggableData;
 
 public abstract class Source implements LogInfo, Serializable {
 
-	private static final long serialVersionUID = 7816617800784201972L;
+	private static final long serialVersionUID = 6360433806353457998L;
 
 	private final LoggableData loggableData = new LoggableData(this);
 
 	public abstract String getName();
-
-	public String getFileName() {
-
-		final String name = getName();
-		final int idx = name.lastIndexOf('/');
-
-		if (idx < 0) {
-			return name;
-		}
-
-		return name.substring(idx + 1);
-	}
 
 	public abstract Reader open() throws IOException;
 
