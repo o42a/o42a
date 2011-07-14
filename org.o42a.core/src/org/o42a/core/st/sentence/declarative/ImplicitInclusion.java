@@ -31,11 +31,11 @@ import org.o42a.core.st.sentence.Declaratives;
 
 public class ImplicitInclusion extends Inclusion {
 
-	private Inclusions inclusions;
+	private final Declaratives statements;
 
 	public ImplicitInclusion(LocationInfo location, Declaratives statements) {
 		super(location, statements);
-		this.inclusions = statements.getMemberRegistry().inclusions();
+		this.statements = statements;
 	}
 
 	@Override
@@ -60,9 +60,28 @@ public class ImplicitInclusion extends Inclusion {
 	}
 
 	private final boolean include() {
-		// Explicit inclusions present.
-		// Implicit inclusions shouldn't be handled.
-		return !this.inclusions.hasInclusions();
+
+		final Inclusions inclusions =
+				this.statements.getMemberRegistry().inclusions();
+
+		if (!inclusions.implicitInclusionsSupported()) {
+			// Implicit inclusions support status may change
+			// as additional field variants may be added at a time
+			// after this instruction created.
+			return false;
+		}
+		if (inclusions.hasExplicitInclusions()) {
+			// Implicit inclusions won't be performed
+			// if at least one implicit inclusion present.
+			return false;
+		}
+		if (getInitialEnv().hasConditions(getScope())) {
+			// Implicit inclusions not supported
+			// inside conditional declarations.
+			return false;
+		}
+
+		return true;
 	}
 
 }
