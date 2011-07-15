@@ -28,7 +28,7 @@ import java.net.URL;
 
 public class URLSource extends Source {
 
-	private static final long serialVersionUID = -711560294197084017L;
+	private static final long serialVersionUID = 3056955736288982951L;
 
 	private final URL base;
 	private final URL url;
@@ -44,45 +44,28 @@ public class URLSource extends Source {
 		this.name = name != null ? name : path;
 	}
 
-	public URLSource(URL base, String path) {
-		this.base = base;
-		try {
-			this.url = new URL(base, path);
-		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException(e);
-		}
-		this.name = path;
+	public URLSource(URLSource parent, String path) {
+		this(parent.getBase(), parent.getURL(), path);
 	}
 
-	public URLSource(URLSource parent, String path) {
-		this.base = parent.getBase();
+	@Deprecated
+	public URLSource(URL base, URL url) {
+		this.base = base;
+		this.url = url;
+
+		final String name = name(null);
+
+		this.name = name != null ? name : url.toString();
+	}
+
+	public URLSource(URL base, URL relativeTo, String path) {
+		this.base = base;
 		try {
-			this.url = new URL(parent.getURL(), path);
+			this.url = new URL(relativeTo, path);
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
-
-		final String baseString = this.base.toString();
-		final String urlString = this.url.toString();
-
-		if (urlString.startsWith(baseString)) {
-			this.name = urlString.substring(baseString.length());
-		} else {
-
-			final String rootString;
-
-			try {
-				rootString = new URL(this.base, "/").toString();
-			} catch (MalformedURLException e) {
-				throw new IllegalArgumentException();
-			}
-
-			if (urlString.startsWith(rootString)) {
-				this.name = urlString.substring(rootString.length());
-			} else {
-				this.name = path;
-			}
-		}
+		this.name = name(path);
 	}
 
 	public final URL getBase() {
@@ -101,6 +84,30 @@ public class URLSource extends Source {
 	@Override
 	public Reader open() throws IOException {
 		return new InputStreamReader(this.url.openStream(), "UTF-8");
+	}
+
+	private String name(String path) {
+
+		final String baseString = this.base.toString();
+		final String urlString = this.url.toString();
+
+		if (urlString.startsWith(baseString)) {
+			return urlString.substring(baseString.length());
+		}
+
+		final String rootString;
+
+		try {
+			rootString = new URL(this.base, "/").toString();
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException();
+		}
+
+		if (!urlString.startsWith(rootString)) {
+			return path;
+		}
+
+		return urlString.substring(rootString.length());
 	}
 
 }

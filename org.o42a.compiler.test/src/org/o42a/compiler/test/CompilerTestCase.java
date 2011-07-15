@@ -358,7 +358,7 @@ public abstract class CompilerTestCase {
 		}
 
 		Context(CompilerContext parent, Source source) {
-			super(parent, parent.getLogger());
+			super(parent, null);
 			this.source = source;
 		}
 

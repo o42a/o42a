@@ -32,6 +32,10 @@ public final class SingleURLSource extends URLSourceTree {
 		super(name, base, path);
 	}
 
+	public SingleURLSource(URLSourceTree parent, String path) {
+		super(parent, path);
+	}
+
 	public SingleURLSource(URLSource parent, String path) {
 		super(parent, path);
 	}

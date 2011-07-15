@@ -1,6 +1,6 @@
 /*
     Modules Commons
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,17 +19,15 @@
 */
 package org.o42a.common.object;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.Inclusions.noInclusions;
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.ScopeSet;
-import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.*;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
@@ -38,54 +36,36 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
-import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.source.FieldCompiler;
+import org.o42a.core.source.ObjectCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public abstract class IntrinsicObject extends PlainObject {
+public class CompiledObject extends PlainObject {
 
-	@Deprecated
-	public static final FieldDeclaration sourcedDeclaration(
+	public static CompiledField compileField(
 			MemberOwner owner,
-			String name,
-			String sourcePath) {
-		return sourcedDeclaration(owner.getContainer(), name, sourcePath);
+			CompilerContext context) {
+
+		final FieldCompiler compiler = context.compileField();
+		final FieldDeclaration declaration = compiler.declare(owner);
+
+		return new CompiledField(owner, declaration, compiler);
 	}
 
-	@Deprecated
-	public static FieldDeclaration sourcedDeclaration(
-			Container enclosingContainer,
-			String name,
-			String sourcePath) {
-
-		final CompilerContext context;
-
-		try {
-			context = enclosingContainer.getContext().contextFor(sourcePath);
-		} catch (Exception e) {
-			throw new ExceptionInInitializerError(e);
-		}
-
-		final Location location = new Location(context, context.getSource());
-		final Distributor distributor =
-			declarativeDistributor(enclosingContainer);
-
-		return fieldDeclaration(location, distributor, fieldName(name));
-	}
-
+	private final ObjectCompiler compiler;
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private ScopeSet errorReportedAt;
 
-	public IntrinsicObject(MemberOwner owner, FieldDeclaration declaration) {
-		super(new IntrinsicField(owner, declaration));
-		((IntrinsicField) getScope()).init(this);
+	public CompiledObject(CompiledField field) {
+		super(field);
+		field.init(this);
+		this.compiler = field.getCompiler();
 	}
 
-	@SuppressWarnings("unchecked")
 	public final Field<Obj> getField() {
-		return (Field<Obj>) getScope();
+		return getScope().toField().toKind(ArtifactKind.OBJECT);
 	}
 
 	@Override
@@ -93,10 +73,15 @@ public abstract class IntrinsicObject extends PlainObject {
 		return getScope().toString();
 	}
 
+	public final ObjectCompiler getCompiler() {
+		return this.compiler;
+	}
+
 	@Override
 	protected final Ascendants buildAscendants() {
 
-		Ascendants ascendants = createAscendants();
+		Ascendants ascendants =
+				getCompiler().buildAscendants(new Ascendants(this));
 		final Field<Obj> field = getField();
 
 		if (field.isOverride()) {
@@ -141,34 +126,29 @@ public abstract class IntrinsicObject extends PlainObject {
 		return ascendants;
 	}
 
-	protected abstract Ascendants createAscendants();
-
 	@Override
-	protected void declareMembers(ObjectMembers members) {
-		if (this.definition != null) {
-			this.memberRegistry.registerMembers(members);
-		}
-	}
+	protected void postResolve() {
+		super.postResolve();
 
-	@Override
-	protected void updateMembers() {
-		if (this.definition != null) {
-			this.definition.executeInstructions();
-		}
-	}
-
-	protected void includeSource() {
-
-		final BlockBuilder compiled = getContext().compileBlock();
-
-		this.memberRegistry = new ObjectMemberRegistry(noInclusions(), this);
+		this.memberRegistry =
+				new ObjectMemberRegistry(noInclusions(), this);
 		this.definition = new DeclarativeBlock(
 				this,
 				new InclusionDistributor(this),
 				this.memberRegistry);
 
-		compiled.buildBlock(this.definition);
+		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
 		this.definition.executeInstructions();
+	}
+
+	@Override
+	protected void declareMembers(ObjectMembers members) {
+		this.memberRegistry.registerMembers(members);
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
+		return this.definition.define(getScope());
 	}
 
 	protected final boolean reportError(Resolver resolver) {
@@ -182,32 +162,6 @@ public abstract class IntrinsicObject extends PlainObject {
 			return true;
 		}
 		return this.errorReportedAt.add(scope);
-	}
-
-	private static final class IntrinsicField extends ObjectField {
-
-		IntrinsicField(MemberOwner owner, FieldDeclaration declaration) {
-			super(owner, declaration);
-		}
-
-		private IntrinsicField(MemberOwner owner, IntrinsicField sample) {
-			super(owner, sample);
-		}
-
-		@Override
-		public Obj getArtifact() {
-			return getFieldArtifact();
-		}
-
-		@Override
-		protected IntrinsicField propagate(MemberOwner owner) {
-			return new IntrinsicField(owner, this);
-		}
-
-		private final void init(IntrinsicObject object) {
-			setFieldArtifact(object);
-		}
-
 	}
 
 }

@@ -19,6 +19,8 @@
 */
 package org.o42a.common.source;
 
+import static org.o42a.core.source.SourceFileName.FILE_SUFFIX;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -29,15 +31,47 @@ import org.o42a.util.io.URLSource;
 public abstract class URLSourceTree extends SourceTree<URLSource> {
 
 	public URLSourceTree(String name, URL base, String path) {
-		this(new URLSource(name, dir(base), path));
+		this(new URLSource(name, relativeTo(base), path));
 	}
 
 	public URLSourceTree(URLSource parent, String path) {
-		this(new URLSource(parent, path));
+		this(new URLSource(
+				parent.getBase(),
+				relativeTo(parent.getURL()),
+				path));
+	}
+
+	public URLSourceTree(URLSourceTree parent, String path) {
+		this(parent.getSource(), path);
 	}
 
 	public URLSourceTree(URLSource source) {
-		super(source, new SourceFileName(fileName(source.getURL().getPath())));
+		super(
+				source,
+				new SourceFileName(fileName(source.getURL().getPath())));
+	}
+
+	private static URL relativeTo(URL url) {
+
+		final String path = url.toExternalForm();
+
+		if (path.endsWith("/")) {
+			return url;
+		}
+
+		final String dir;
+
+		if (path.endsWith(FILE_SUFFIX)) {
+			dir = path.substring(0, path.length() - FILE_SUFFIX.length());
+		} else {
+			dir = path;
+		}
+
+		try {
+			return new URL(url, dir + "/");
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	private static String fileName(String path) {
@@ -64,30 +98,6 @@ public abstract class URLSourceTree extends SourceTree<URLSource> {
 		}
 
 		return path.substring(0, last + 1);
-	}
-
-	private static URL dir(URL url) {
-
-		final String path = url.getPath();
-
-		if (path.endsWith("/")) {
-			return url;
-		}
-
-		final int slashIdx = path.lastIndexOf('/');
-
-		if (slashIdx < 0) {
-			return url;
-		}
-		if (slashIdx + 1 == path.length()) {
-			return url;
-		}
-
-		try {
-			return new URL(url, path.substring(0, slashIdx + 1));
-		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException(e);
-		}
 	}
 
 }
