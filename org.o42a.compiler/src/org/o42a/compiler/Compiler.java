@@ -37,9 +37,7 @@ import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.DefaultStatementVisitor;
-import org.o42a.compiler.ip.module.AbstractModuleCompiler;
-import org.o42a.compiler.ip.module.DefinitionModuleCompiler;
-import org.o42a.compiler.ip.module.ObjectModuleCompiler;
+import org.o42a.compiler.ip.module.*;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -66,7 +64,7 @@ public class Compiler implements SourceCompiler {
 	}
 
 	@Override
-	public ObjectCompiler compileObject(ObjectSource source) {
+	public ModuleCompiler compileModule(ObjectSource source) {
 
 		final ModuleNode node =
 				parse(module(), null, source.getLogger(), source.getSource());
@@ -76,6 +74,19 @@ public class Compiler implements SourceCompiler {
 		}
 
 		return validate(new ObjectModuleCompiler(source, node));
+	}
+
+	@Override
+	public FieldCompiler compileField(ObjectSource source) {
+
+		final ModuleNode node =
+				parse(module(), null, source.getLogger(), source.getSource());
+
+		if (node == null) {
+			return null;
+		}
+
+		return validate(new FieldModuleCompiler(source, node));
 	}
 
 	@Override
@@ -245,7 +256,7 @@ public class Compiler implements SourceCompiler {
 		return node;
 	}
 
-	private <C extends AbstractModuleCompiler<?>> C validate(C compiler) {
+	private <C extends AbstractDefinitionCompiler<?>> C validate(C compiler) {
 		if (compiler.getFileName().isValid()) {
 			return compiler;
 		}

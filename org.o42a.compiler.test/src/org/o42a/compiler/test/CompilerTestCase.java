@@ -36,9 +36,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Module;
-import org.o42a.core.source.SectionTag;
+import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -362,6 +360,16 @@ public abstract class CompilerTestCase {
 		Context(CompilerContext parent, Source source) {
 			super(parent, parent.getLogger());
 			this.source = source;
+		}
+
+		@Override
+		public ModuleCompiler compileModule() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public FieldCompiler compileField() {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

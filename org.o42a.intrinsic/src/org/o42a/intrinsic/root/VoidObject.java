@@ -111,6 +111,16 @@ public final class VoidObject extends BuiltinObject {
 		}
 
 		@Override
+		public ModuleCompiler compileModule() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public FieldCompiler compileField() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public void include(DeclarativeBlock block, SectionTag tag) {
 			throw new UnsupportedOperationException();
 		}

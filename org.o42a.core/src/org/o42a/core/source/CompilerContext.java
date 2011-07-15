@@ -90,6 +90,10 @@ public abstract class CompilerContext {
 
 	public abstract Source getSource();
 
+	public abstract ModuleCompiler compileModule();
+
+	public abstract FieldCompiler compileField();
+
 	public abstract void include(DeclarativeBlock block, SectionTag tag);
 
 	@Deprecated
