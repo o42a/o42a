@@ -21,7 +21,6 @@ package org.o42a.common.source;
 
 import static java.util.Collections.emptyList;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.util.io.URLSource;
@@ -29,18 +28,11 @@ import org.o42a.util.io.URLSource;
 
 public final class SingleURLSource extends URLSourceTree {
 
-	public SingleURLSource(
-			String name,
-			URL base,
-			String path)
-	throws MalformedURLException {
+	public SingleURLSource(String name, URL base, String path) {
 		super(name, base, path);
 	}
 
-	public SingleURLSource(
-			URLSource parent,
-			String path)
-	throws MalformedURLException {
+	public SingleURLSource(URLSource parent, String path) {
 		super(parent, path);
 	}
 

@@ -21,8 +21,6 @@ package org.o42a.common.source;
 
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
-import java.net.MalformedURLException;
-
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.Source;
@@ -39,8 +37,7 @@ public class TreeCompilerContext<S extends Source>
 	public TreeCompilerContext(
 			CompilerContext parentContext,
 			SourceTree<S> sourceTree,
-			Logger logger)
-	throws MalformedURLException {
+			Logger logger) {
 		super(parentContext, logger);
 		this.sectionTag = IMPLICIT_SECTION_TAG;
 		this.sourceTree = sourceTree;
