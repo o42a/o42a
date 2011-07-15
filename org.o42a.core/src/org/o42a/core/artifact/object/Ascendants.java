@@ -123,6 +123,13 @@ public class Ascendants
 		return enclosingMode;
 	}
 
+	public final boolean isEmpty() {
+		if (getExplicitAncestor() != null) {
+			return false;
+		}
+		return getSamples().length == 0;
+	}
+
 	@Override
 	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
 

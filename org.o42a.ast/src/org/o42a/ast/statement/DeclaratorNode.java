@@ -48,11 +48,11 @@ public class DeclaratorNode extends AbstractStatementNode {
 		this.definition = definition;
 	}
 
-	public DeclarableNode getDeclarable() {
+	public final DeclarableNode getDeclarable() {
 		return this.declarable;
 	}
 
-	public SignNode<DeclarationTarget> getDefinitionAssignment() {
+	public final SignNode<DeclarationTarget> getDefinitionAssignment() {
 		return this.definitionAssignment;
 	}
 

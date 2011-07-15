@@ -20,41 +20,37 @@
 package org.o42a.compiler.ip.module;
 
 import org.o42a.ast.FixedPosition;
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.module.SectionNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.DeclarableNode;
+import org.o42a.ast.statement.DeclarationTarget;
+import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.log.LogInfo;
-import org.o42a.util.log.Loggable;
 
 
 public final class ObjectModuleCompiler
-		extends AbstractModuleCompiler<ObjectSource>
-		implements ObjectCompiler {
+		extends AbstractObjectCompiler
+		implements ModuleCompiler {
 
-	private Section section;
-	private Loggable loggable;
+	private String moduleName;
 
 	public ObjectModuleCompiler(ObjectSource source, ModuleNode node) {
 		super(source, node);
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return getSource().getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		if (this.loggable != null) {
-			return this.loggable;
+	public String getModuleName() {
+		if (this.moduleName == null) {
+			getSection();
 		}
-		return this.loggable = getSection().getNode().getLoggable();
+		return this.moduleName;
 	}
 
 	@Override
@@ -76,28 +72,19 @@ public final class ObjectModuleCompiler
 	}
 
 	@Override
-	public void done() {
-		getLoggable();
-		this.section = null;
-	}
-
-	private Section getSection() {
-		if (this.section != null) {
-			return this.section;
-		}
-
+	protected Section createSection() {
 		validateFileName();
 
 		final SectionNode[] sectionNodes = getNode().getSections();
 
 		if (sectionNodes.length == 0) {
-			return this.section =
-					new Section(this, new SectionNode(getNode())).use();
+			this.moduleName = nameByFile();
+			return new Section(this, new SectionNode(getNode())).use();
 		}
 
 		if (sectionNodes.length > 1) {
 			getLogger().error(
-					"redundant_section",
+					"redundant_module_section",
 					SectionTitle.node(sectionNodes[1]),
 					"Module should not contain more than one section");
 		}
@@ -106,14 +93,14 @@ public final class ObjectModuleCompiler
 
 		if (!section.getTag().isImplicit()) {
 			getLogger().error(
-					"prohibited_section_tag",
+					"prohibited_module_section_tag",
 					section.getSectionNode().getSubTitle().getTag(),
 					"Module section should not be tagged");
 		}
 
-		validateTitle(section.getTitle());
+		this.moduleName = moduleName(section.getTitle());
 
-		return this.section = section.use();
+		return section;
 	}
 
 	private void validateFileName() {
@@ -126,47 +113,83 @@ public final class ObjectModuleCompiler
 		}
 		if (fileName.isAdapter() || fileName.isOverride()) {
 			getLogger().warning(
-					"invalid_module_file_name",
+					"invalid_module_file",
 					new FixedPosition(getSource().getSource()),
 					"Module file should have a module name");
 		}
 	}
 
-	private void validateTitle(SectionTitle title) {
+	private String moduleName(SectionTitle title) {
 		if (title.isImplicit() || !title.isValid()) {
-			return;
+			return nameByFile();
 		}
 
-		final DeclarableNode declarableNode =
-				title.getDeclaratorNode().getDeclarable();
+		final DeclaratorNode declaratorNode = title.getDeclaratorNode();
+
+		if (declaratorNode.getTarget() != DeclarationTarget.VALUE) {
+			getLogger().error(
+					"invalid_module_declaration",
+					declaratorNode.getDefinitionAssignment(),
+					"Module can only declare new object (':='). "
+					+ "It can't declare prototype or override something");
+		}
+		if (declaratorNode.getDefinitionKind() != null) {
+			switch (declaratorNode.getDefinitionKind()) {
+			case LINK:
+				getLogger().error(
+						"prohibited_module_link",
+						declaratorNode.getDefinitionCast(),
+						"Module is object. It can't be a link");
+				break;
+			case VARIABLE:
+				getLogger().error(
+						"prohibited_module_variable",
+						declaratorNode.getDefinitionCast(),
+						"Module is object. It can't be variable");
+				break;
+			default:
+				throw new IllegalStateException(
+						"Unknown definition kind: "
+						+ declaratorNode.getDefinitionKind());
+			}
+		}
+
+		final DeclarableNode declarableNode = declaratorNode.getDeclarable();
 
 		if (!(declarableNode instanceof MemberRefNode)) {
 			invalidDeclarable(declarableNode);
-			return;
+			return nameByFile();
 		}
 
 		final MemberRefNode fieldNode = (MemberRefNode) declarableNode;
+		final NameNode nameNode = fieldNode.getName();
 
-		if (fieldNode.getName() == null) {
+		if (nameNode == null) {
 			// Invalid field name.
-			return;
+			return nameByFile();
 		}
 		if (fieldNode.getOwner() != null) {
 			invalidDeclarable(fieldNode.getOwner());
-			return;
-		}
-		if (fieldNode.getDeclaredIn() != null) {
+		} else if (fieldNode.getDeclaredIn() != null) {
 			invalidDeclarable(fieldNode.getDeclaredIn());
-			return;
 		}
+
+		return nameNode.getName();
+	}
+
+	private final String nameByFile() {
+
+		final String fieldName = getFileName().getFieldName();
+
+		return fieldName != null ? fieldName : "module";
 	}
 
 	private void invalidDeclarable(LogInfo location) {
 		getLogger().error(
 				"invalid_module_title",
 				location,
-				"Module title should contain declaration of field, "
-				+ "which name is the same as module name");
+				"Module title should contain declaration of field "
+				+ "with module name");
 	}
 
 }

@@ -66,8 +66,14 @@ public class TreeCompilerContext<S extends Source>
 		return this.sectionTag;
 	}
 
-	public ObjectCompiler compileObject() {
-		return getCompiler().compileObject(new TreeObjectSource<S>(this));
+	@Override
+	public ModuleCompiler compileModule() {
+		return getCompiler().compileModule(new TreeObjectSource<S>(this));
+	}
+
+	@Override
+	public FieldCompiler compileField() {
+		return getCompiler().compileField(new TreeObjectSource<S>(this));
 	}
 
 	@Override

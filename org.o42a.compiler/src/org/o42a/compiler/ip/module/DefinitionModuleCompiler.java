@@ -29,7 +29,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 public class DefinitionModuleCompiler
-		extends AbstractModuleCompiler<DefinitionSource> {
+		extends AbstractDefinitionCompiler<DefinitionSource> {
 
 	private HashMap<SectionTag, Section> sections;
 

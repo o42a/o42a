@@ -44,7 +44,7 @@ import org.o42a.core.st.sentence.Declaratives;
 
 final class Section {
 
-	private final AbstractModuleCompiler<?> compiler;
+	private final AbstractDefinitionCompiler<?> compiler;
 	private final Node node;
 	private final SectionNode sectionNode;
 	private final SectionTitle title;
@@ -52,13 +52,13 @@ final class Section {
 	private LocationInfo location;
 
 	Section(
-			AbstractModuleCompiler<?> compiler,
+			AbstractDefinitionCompiler<?> compiler,
 			SectionNode sectionNode) {
 		this(compiler, sectionNode, null);
 	}
 
 	Section(
-			AbstractModuleCompiler<?> compiler,
+			AbstractDefinitionCompiler<?> compiler,
 			SectionNode sectionNode,
 			SectionTitle aboveTitle) {
 		this.compiler = compiler;
@@ -68,7 +68,7 @@ final class Section {
 		this.tag = sectionTag(sectionNode);
 	}
 
-	public final AbstractModuleCompiler<?> getCompiler() {
+	public final AbstractDefinitionCompiler<?> getCompiler() {
 		return this.compiler;
 	}
 

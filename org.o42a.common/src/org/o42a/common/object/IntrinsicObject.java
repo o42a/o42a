@@ -26,7 +26,9 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.ScopeSet;
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
@@ -39,7 +41,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class IntrinsicObject extends PlainObject {
@@ -105,8 +106,7 @@ public abstract class IntrinsicObject extends PlainObject {
 			if (ancestor != null) {
 
 				final Member overridden =
-					ancestor.type(dummyUser())
-					.getObject().member(field.getKey());
+						ancestor.typeObject(dummyUser()).member(field.getKey());
 
 				if (overridden != null) {
 					ascendants = ascendants.addMemberOverride(overridden);
@@ -162,7 +162,7 @@ public abstract class IntrinsicObject extends PlainObject {
 		this.memberRegistry = new ObjectMemberRegistry(noInclusions(), this);
 		this.definition = new DeclarativeBlock(
 				this,
-				new DefinitionDistributor(this),
+				new InclusionDistributor(this),
 				this.memberRegistry);
 
 		compiled.buildBlock(this.definition);
@@ -208,40 +208,4 @@ public abstract class IntrinsicObject extends PlainObject {
 
 	}
 
-	private static final class DefinitionDistributor extends Distributor {
-
-		private final IntrinsicObject object;
-		private final Namespace namespace;
-
-		DefinitionDistributor(IntrinsicObject object) {
-			this.object = object;
-			this.namespace = new Namespace(this, this.object);
-		}
-
-		@Override
-		public Loggable getLoggable() {
-			return this.object.getLoggable();
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.object.getContext();
-		}
-
-		@Override
-		public ScopePlace getPlace() {
-			return this.object.getPlace();
-		}
-
-		@Override
-		public Container getContainer() {
-			return this.namespace;
-		}
-
-		@Override
-		public Scope getScope() {
-			return this.object.getScope();
-		}
-
-	}
 }
