@@ -93,8 +93,6 @@ public class StringCodec {
 						out.append('_');
 					}
 					prevSeparator = false;
-				} else if (out.length() == 0) {
-					valid = false;
 				}
 				prevDigit = false;
 				prevLetter = true;
@@ -103,11 +101,8 @@ public class StringCodec {
 				continue;
 			}
 			if (c == '-' || c == HYPHEN || c == NON_BREAKING_HYPHEN) {
-				if (prevSeparator) {
+				if (prevSeparator || out.length() == 0) {
 					valid = false;
-				} else if (out.length() == 0) {
-					valid = false;
-					continue;
 				}
 				prevDigit = false;
 				prevLetter = false;

@@ -19,6 +19,13 @@
 */
 package org.o42a.common.source;
 
+import static org.o42a.common.object.CompiledObject.compileField;
+
+import org.o42a.common.object.CompiledField;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.MemberField;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.SourceFileName;
 import org.o42a.util.io.Source;
 
@@ -41,11 +48,31 @@ public abstract class SourceTree<S extends Source> {
 		return this.source;
 	}
 
-	public SourceFileName getFileName() {
+	public final SourceFileName getFileName() {
 		return this.fileName;
 	}
 
 	public abstract Iterable<? extends SourceTree<S>> childTrees();
+
+	public final TreeCompilerContext<S> context(CompilerContext parentContext) {
+		return new TreeCompilerContext<S>(parentContext, this);
+	}
+
+	public final CompiledField field(MemberOwner owner) {
+		return compileField(owner, context(owner.getContext()));
+	}
+
+	public final CompiledField field(Obj owner) {
+		return field(owner.toMemberOwner());
+	}
+
+	public final MemberField member(MemberOwner owner) {
+		return field(owner).toMember();
+	}
+
+	public final MemberField member(Obj owner) {
+		return member(owner.toMemberOwner());
+	}
 
 	@Override
 	public String toString() {

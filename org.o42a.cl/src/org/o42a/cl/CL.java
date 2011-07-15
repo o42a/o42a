@@ -59,8 +59,12 @@ public class CL {
 				intrinsics.getRoot().getContext();
 		final Log logger = new Log();
 		final String fileName = fileName(src);
-		final CompilerContext context =
-				new URLCompilerContext(rootContext, fileName, src, fileName, logger);
+		final CompilerContext context = new URLCompilerContext(
+					rootContext,
+					fileName,
+					src,
+					fileName,
+					logger);
 
 		final Module module = new Module(context, moduleName(src.getPath()));
 

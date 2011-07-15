@@ -21,6 +21,7 @@ package org.o42a.common.source;
 
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.core.source.CompilerContext;
@@ -28,6 +29,7 @@ import org.o42a.util.io.URLSource;
 import org.o42a.util.log.Logger;
 
 
+@Deprecated
 public class URLCompilerContext extends TreeCompilerContext<URLSource> {
 
 	public URLCompilerContext(
@@ -38,23 +40,57 @@ public class URLCompilerContext extends TreeCompilerContext<URLSource> {
 			Logger logger) {
 		super(
 				parentContext,
-				new SingleURLSource(name, base, path),
+				new SingleURLSource(new URLSource(name, dir(base), path)),
 				logger);
 	}
 
-	private URLCompilerContext(
-			URLCompilerContext parent,
-			String path) {
+	private URLCompilerContext(URLCompilerContext parent, String path) {
 		super(
 				parent,
-				new SingleURLSource(parent.getSource(), path),
-				IMPLICIT_SECTION_TAG);
+				new SingleURLSource(
+						nestedSource(parent, path)),
+				IMPLICIT_SECTION_TAG,
+				parent.getLogger());
+	}
+
+	private static URLSource nestedSource(
+			URLCompilerContext parent,
+			String path) {
+
+		final URL url;
+
+		try {
+			url = new URL(dir(parent.getSource().getURL()), path);
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
+
+		return new URLSource(parent.getSource().getBase(), url);
 	}
 
 	@Override
 	@Deprecated
 	public CompilerContext contextFor(String path) throws Exception {
 		return new URLCompilerContext(this, path);
+	}
+
+	private static URL dir(URL url) {
+
+		final String path = url.toExternalForm();
+		final int slashIdx = path.lastIndexOf('/');
+
+		if (slashIdx < 0) {
+			return url;
+		}
+		if (slashIdx + 1 == path.length()) {
+			return url;
+		}
+
+		try {
+			return new URL(path.substring(0, slashIdx + 1));
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 }

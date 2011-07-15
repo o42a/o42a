@@ -24,7 +24,8 @@ import static org.o42a.util.StringCodec.canonicalName;
 
 public final class SourceFileName {
 
-	private static final String FILE_SUFFIX = ".o42a";
+	public static final String FILE_SUFFIX = ".o42a";
+
 	private static final String[] NO_PARTS = new String[0];
 
 	private final String fileName;
@@ -80,7 +81,7 @@ public final class SourceFileName {
 				declaredIn = split(meaningful.substring(declaredInIdx + 1));
 			} else {
 				main = meaningful;
-				declaredIn = null;
+				declaredIn = NO_PARTS;
 			}
 
 			valid = canonical(declaredIn) & valid;
@@ -164,7 +165,7 @@ public final class SourceFileName {
 	}
 
 	private static boolean canonical(String[] parts) {
-		if (parts == null) {
+		if (parts == null || parts.length == 0) {
 			return true;
 		}
 

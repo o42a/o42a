@@ -24,14 +24,17 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.o42a.common.source.SingleURLSource;
 import org.o42a.common.source.URLCompilerContext;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.lib.test.rt.*;
+import org.o42a.lib.test.rt.RtFalse;
+import org.o42a.lib.test.rt.RtVoid;
 import org.o42a.lib.test.rt.parser.Parser;
 import org.o42a.lib.test.run.RunTests;
 import org.o42a.util.use.UserInfo;
@@ -39,27 +42,35 @@ import org.o42a.util.use.UserInfo;
 
 public class TestModule extends Module {
 
+	public static final URLSourceTree TEST =
+			new SingleURLSource("Test", base(), "test.o42a");
+
+	private static final URLSourceTree RT_STRING =
+			new SingleURLSource(TestModule.TEST, "rt-string.o42a");
+	private static final URLSourceTree RT_INTEGER =
+			new SingleURLSource(TestModule.TEST, "rt-integer.o42a");
+	private static final URLSourceTree RT_FLOAT =
+			new SingleURLSource(TestModule.TEST, "rt-float.o42a");
+
 	public static Module testModule(CompilerContext context) {
+		return new TestModule(new URLCompilerContext(
+				context,
+				"Test",
+				base(),
+				"test.o42a",
+				DECLARATION_LOGGER));
+	}
 
-		final CompilerContext moduleContext;
-
+	private static URL base() {
 		try {
 
 			final URL self = TestModule.class.getResource(
 					TestModule.class.getSimpleName() + ".class");
-			final URL base = new URL(self, "../../../..");
 
-			moduleContext = new URLCompilerContext(
-					context,
-					"Test",
-					base,
-					"test.o42a",
-					DECLARATION_LOGGER);
+			return new URL(self, "../../../..");
 		} catch (MalformedURLException e) {
 			throw new ExceptionInInitializerError(e);
 		}
-
-		return new TestModule(moduleContext);
 	}
 
 	private TestModule(CompilerContext context) {
@@ -76,9 +87,9 @@ public class TestModule extends Module {
 		members.addMember(new Parser(this).toMember());
 		members.addMember(new RtVoid(this).toMember());
 		members.addMember(new RtFalse(this).toMember());
-		members.addMember(new RtString(this).toMember());
-		members.addMember(new RtInteger(this).toMember());
-		members.addMember(new RtFloat(this).toMember());
+		members.addMember(RT_STRING.member(this));
+		members.addMember(RT_INTEGER.member(this));
+		members.addMember(RT_FLOAT.member(this));
 		super.declareMembers(members);
 	}
 

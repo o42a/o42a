@@ -36,6 +36,14 @@ public class TreeCompilerContext<S extends Source>
 
 	public TreeCompilerContext(
 			CompilerContext parentContext,
+			SourceTree<S> sourceTree) {
+		super(parentContext, null);
+		this.sectionTag = IMPLICIT_SECTION_TAG;
+		this.sourceTree = sourceTree;
+	}
+
+	public TreeCompilerContext(
+			CompilerContext parentContext,
 			SourceTree<S> sourceTree,
 			Logger logger) {
 		super(parentContext, logger);
@@ -44,10 +52,11 @@ public class TreeCompilerContext<S extends Source>
 	}
 
 	protected TreeCompilerContext(
-			TreeCompilerContext<S> parentContext,
+			CompilerContext parentContext,
 			SourceTree<S> sourceTree,
-			SectionTag sectionTag) {
-		super(parentContext, null);
+			SectionTag sectionTag,
+			Logger logger) {
+		super(parentContext, logger);
 		this.sectionTag = sectionTag;
 		this.sourceTree = sourceTree;
 	}
@@ -102,7 +111,7 @@ public class TreeCompilerContext<S extends Source>
 			LogInfo location,
 			SectionTag tag,
 			SourceTree<S> sourceTree) {
-		return new TreeCompilerContext<S>(this, sourceTree, tag);
+		return new TreeCompilerContext<S>(this, sourceTree, tag, null);
 	}
 
 }
