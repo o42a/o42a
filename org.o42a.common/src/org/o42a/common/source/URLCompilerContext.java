@@ -21,7 +21,6 @@ package org.o42a.common.source;
 
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.core.source.CompilerContext;
@@ -36,8 +35,7 @@ public class URLCompilerContext extends TreeCompilerContext<URLSource> {
 			String name,
 			URL base,
 			String path,
-			Logger logger)
-	throws MalformedURLException {
+			Logger logger) {
 		super(
 				parentContext,
 				new SingleURLSource(name, base, path),
@@ -46,8 +44,7 @@ public class URLCompilerContext extends TreeCompilerContext<URLSource> {
 
 	private URLCompilerContext(
 			URLCompilerContext parent,
-			String path)
-	throws MalformedURLException {
+			String path) {
 		super(
 				parent,
 				new SingleURLSource(parent.getSource(), path),

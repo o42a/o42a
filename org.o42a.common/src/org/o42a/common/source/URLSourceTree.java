@@ -28,18 +28,11 @@ import org.o42a.util.io.URLSource;
 
 public abstract class URLSourceTree extends SourceTree<URLSource> {
 
-	public URLSourceTree(
-			String name,
-			URL base,
-			String path)
-	throws MalformedURLException {
+	public URLSourceTree(String name, URL base, String path) {
 		this(new URLSource(name, dir(base), path));
 	}
 
-	public URLSourceTree(
-			URLSource parent,
-			String path)
-	throws MalformedURLException {
+	public URLSourceTree(URLSource parent, String path) {
 		this(new URLSource(parent, path));
 	}
 

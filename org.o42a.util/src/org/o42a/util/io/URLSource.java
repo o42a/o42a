@@ -34,28 +34,33 @@ public class URLSource extends Source {
 	private final URL url;
 	private final String name;
 
-	public URLSource(
-			String name,
-			URL base,
-			String path)
-	throws MalformedURLException {
+	public URLSource(String name, URL base, String path) {
 		this.base = base;
-		this.url = new URL(base, path);
+		try {
+			this.url = new URL(base, path);
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
 		this.name = name != null ? name : path;
 	}
 
-	public URLSource(URL base, String path) throws MalformedURLException {
+	public URLSource(URL base, String path) {
 		this.base = base;
-		this.url = new URL(base, path);
+		try {
+			this.url = new URL(base, path);
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
 		this.name = path;
 	}
 
-	public URLSource(
-			URLSource parent,
-			String path)
-	throws MalformedURLException {
+	public URLSource(URLSource parent, String path) {
 		this.base = parent.getBase();
-		this.url = new URL(parent.getURL(), path);
+		try {
+			this.url = new URL(parent.getURL(), path);
+		} catch (MalformedURLException e) {
+			throw new IllegalArgumentException(e);
+		}
 
 		final String baseString = this.base.toString();
 		final String urlString = this.url.toString();
@@ -64,7 +69,13 @@ public class URLSource extends Source {
 			this.name = urlString.substring(baseString.length());
 		} else {
 
-			final String rootString = new URL(this.base, "/").toString();
+			final String rootString;
+
+			try {
+				rootString = new URL(this.base, "/").toString();
+			} catch (MalformedURLException e) {
+				throw new IllegalArgumentException();
+			}
 
 			if (urlString.startsWith(rootString)) {
 				this.name = urlString.substring(rootString.length());
