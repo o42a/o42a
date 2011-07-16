@@ -19,34 +19,27 @@
 */
 package org.o42a.lib.test.run;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
 
-import org.o42a.common.object.IntrinsicDirective;
+import org.o42a.common.object.DirectiveObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.Location;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.lib.test.TestModule;
-import org.o42a.util.log.LoggableData;
 
 
-public class RunTests extends IntrinsicDirective {
+public class RunTests extends DirectiveObject {
+
+	private static final URLSourceTree RUN_TESTS =
+			new SingleURLSource(TestModule.TEST, "run_tests.o42a");
 
 	private final TestModule module;
 
-	public RunTests(TestModule module) {
-		super(
-				module.toMemberOwner(),
-				fieldDeclaration(
-						new Location(
-								module.getContext(),
-								new LoggableData("<run tests>")),
-						module.distribute(),
-						fieldName("run_tests"))
-				.prototype());
-		this.module = module;
+	public RunTests(TestModule owner) {
+		super(compileField(owner, RUN_TESTS));
+		this.module = owner;
 	}
 
 	@Override

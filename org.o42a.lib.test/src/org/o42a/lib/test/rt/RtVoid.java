@@ -19,33 +19,28 @@
 */
 package org.o42a.lib.test.rt;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.common.object.IntrinsicBuiltin;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.source.EmptyURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
 
 
-public class RtVoid extends IntrinsicBuiltin {
+public class RtVoid extends CompiledBuiltin {
 
-	public RtVoid(TestModule module) {
-		super(
-				module.toMemberOwner(),
-				fieldDeclaration(
-						module,
-						module.distribute(),
-						fieldName("rt-void")));
-		setValueType(ValueType.VOID);
+	private static final URLSourceTree RT_VOID =
+			new EmptyURLSource(TestModule.TEST, "rt-void");
+
+	public RtVoid(TestModule owner) {
+		super(compileField(owner, RT_VOID));
 	}
 
 	@Override
@@ -65,14 +60,6 @@ public class RtVoid extends IntrinsicBuiltin {
 		code.debug("Run-time void");
 
 		return voidValue().op(dirs.getBuilder(), code);
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
 	}
 
 }
