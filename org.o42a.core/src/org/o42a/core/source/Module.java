@@ -20,34 +20,37 @@
 package org.o42a.core.source;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.util.StringCodec.canonicalName;
+import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.*;
+import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.st.StatementEnv;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.ValueType;
 
 
 public class Module extends PlainObject {
 
+	private final ModuleCompiler compiler;
 	private final String moduleName;
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
 
 	public Module(CompilerContext context, String moduleName) {
-		super(new ModuleScope(
-				new Location(context, context.getSource()),
-				moduleName));
-		this.moduleName = moduleName;
+		this(context.compileModule(), moduleName);
+	}
+
+	public Module(ModuleCompiler compiler, String moduleName) {
+		super(new ModuleScope(compiler, moduleName));
+		this.compiler = compiler;
+		this.moduleName =
+				moduleName != null ? moduleName : compiler.getModuleName();
 		this.memberRegistry =
 				new ObjectMemberRegistry(new ModuleInclusions(this), this);
 	}
@@ -57,7 +60,11 @@ public class Module extends PlainObject {
 	}
 
 	public final String getModuleId() {
-		return ((ModuleScope) getScope()).moduleId;
+		return getCompiler().getModuleName();
+	}
+
+	public final ModuleCompiler getCompiler() {
+		return this.compiler;
 	}
 
 	public <C> C capablility(Class<? extends C> capabilityType) {
@@ -66,33 +73,29 @@ public class Module extends PlainObject {
 
 	@Override
 	public String toString() {
-		return getScope().toString();
-	}
-
-	protected DeclarativeBlock getDefinition() {
-		if (this.definition == null) {
-
-			final BlockBuilder compiled = getContext().compileBlock();
-			final DeclarativeBlock definition = new DeclarativeBlock(
-					this,
-					new Namespace(this, this),
-					this.memberRegistry);
-
-			definition.setEnv(StatementEnv.objectEnv(this));
-			compiled.buildBlock(definition);
-
-			this.definition = definition;
+		if (this.moduleName == null) {
+			return "Module";
 		}
-
-		return this.definition;
+		return '<' + this.moduleName + '>';
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.VOID.typeRef(
-						this,
-						getScope().getEnclosingScope()));
+		return getCompiler().buildAscendants(new Ascendants(this));
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+
+		this.memberRegistry =
+				new ObjectMemberRegistry(noInclusions(), this);
+		this.definition = new DeclarativeBlock(
+				this,
+				new Namespace(this, this),
+				this.memberRegistry);
+
+		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
 	}
 
 	@Override
@@ -102,30 +105,22 @@ public class Module extends PlainObject {
 
 	@Override
 	protected void updateMembers() {
-		getDefinition().executeInstructions();
+		this.definition.executeInstructions();
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getDefinition().define(getScope());
+		return this.definition.define(getScope());
 	}
 
 	private static final class ModuleScope extends ObjectScope {
 
-		private final String moduleId;
-
-		ModuleScope(LocationInfo location, String moduleId) {
+		ModuleScope(LocationInfo location, String moduleName) {
 			super(
 					location,
 					declarativeDistributor(
 							location.getContext()
 							.getIntrinsics().getModuleNamespace()));
-			this.moduleId = canonicalName(moduleId);
-		}
-
-		@Override
-		public String toString() {
-			return "<" + this.moduleId + '>';
 		}
 
 		@Override
@@ -133,6 +128,9 @@ public class Module extends PlainObject {
 			return new ModuleIR(generator, this);
 		}
 
+		final Module module() {
+			return (Module) getContainer();
+		}
 	}
 
 	private static final class ModuleIR extends ScopeIR {
@@ -141,7 +139,7 @@ public class Module extends PlainObject {
 
 		ModuleIR(Generator generator, ModuleScope scope) {
 			super(generator, scope);
-			this.id = generator.id(scope.moduleId);
+			this.id = generator.id(scope.module().getModuleId());
 		}
 
 		@Override

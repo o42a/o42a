@@ -55,8 +55,10 @@ final class SectionTitle {
 
 		if (sectionNode.getTitle() != null) {
 			this.declaratorNode = sectionNode.getDeclarator();
-		} else {
+		} else if (aboveTitle != null) {
 			this.declaratorNode = aboveTitle.getDeclaratorNode();
+		} else {
+			this.declaratorNode = null;
 		}
 	}
 
@@ -100,6 +102,11 @@ final class SectionTitle {
 	}
 
 	public AscendantsDefinition ascendants(Distributor distributor) {
+		if (isImplicit()) {
+			return new AscendantsDefinition(
+					new Location(distributor.getContext(), getNode()),
+					distributor);
+		}
 
 		final ExpressionNode definition = getDeclaratorNode().getDefinition();
 
