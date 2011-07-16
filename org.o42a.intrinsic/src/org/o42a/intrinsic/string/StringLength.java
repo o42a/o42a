@@ -19,12 +19,11 @@
 */
 package org.o42a.intrinsic.string;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32op;
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.source.EmptyURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -37,17 +36,15 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class StringLength extends IntrinsicBuiltin {
+final class StringLength extends CompiledBuiltin {
+
+	private static final URLSourceTree LENGTH =
+			new EmptyURLSource(StringValueTypeObject.STRING, "length");
 
 	private Ref string;
 
-	StringLength(StringObject owner) {
-		super(
-				owner.toMemberOwner(),
-				fieldDeclaration(
-						owner,
-						owner.distribute(),
-						fieldName("length")));
+	StringLength(StringValueTypeObject owner) {
+		super(compileField(owner, LENGTH));
 		setValueType(ValueType.INTEGER);
 	}
 
@@ -96,7 +93,7 @@ final class StringLength extends IntrinsicBuiltin {
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
+	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
 				ValueType.INTEGER.typeRef(
 						this,

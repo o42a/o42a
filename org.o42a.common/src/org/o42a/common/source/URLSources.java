@@ -56,40 +56,54 @@ public class URLSources extends URLSourceTree {
 	}
 
 	public URLSources addDirectory(String name) {
-		if (this.childTrees == null) {
-			this.childTrees = new HashMap<String, URLSources>();
-		}
+		init();
 
 		final URLSources dir = new URLSources(this, name + '/');
-		final String fileName = dir.getFileName().getName();
-		final URLSources existing = this.childTrees.put(fileName, dir);
+		final String dirName = dir.getFileName().getName();
+		final URLSources existing = this.childTrees.put(dirName, dir);
 
-		if (existing == null) {
-			return dir;
-		}
+		assert existing == null || existing.getSource().isDirectory() :
+			"File " + name + " already present in " + this;
 
-		this.childTrees.put(fileName, existing);
-
-		return existing;
+		return dir;
 	}
 
-	public URLSources addFile(String name) {
+	public URLSourceTree addFile(String name) {
+		init();
+
+		final URLSources file = new URLSources(this, name);
+		final String fileName = file.getFileName().getName();
+		final URLSources existing = this.childTrees.put(fileName, file);
+
+		assert existing == null || existing.getSource().isDirectory() :
+			"File " + name + " already present in " + this;
+
+		return file;
+	}
+
+	public URLSourceTree addEmpty(String name) {
+		init();
+
+		final URLSources file = new URLSources(
+				new EmptyURLSource.EmptySource(
+						getSource().getBase(),
+						sourceRelativeTo(getSource().getURL()),
+						name));
+		final String fileName = file.getFileName().getName();
+		final URLSources existing = this.childTrees.put(fileName, file);
+
+		assert existing == null || existing.getSource().isDirectory() :
+			"File " + name + " already present in " + this;
+
+		return file;
+	}
+
+	private void init() {
+		assert !getSource().isEmpty() || getSource().isDirectory() :
+			this + " is empty";
 		if (this.childTrees == null) {
 			this.childTrees = new HashMap<String, URLSources>();
 		}
-
-		final URLSources dir = new URLSources(this, name);
-		final String fileName = dir.getFileName().getName();
-		final URLSources existing = this.childTrees.put(fileName, dir);
-
-		if (existing == null || existing.getSource().isDirectory()) {
-			return dir;
-		}
-
-		this.childTrees.put(fileName, existing);
-
-		throw new IllegalArgumentException(
-				"File " + name + " already present in " + this);
 	}
 
 }

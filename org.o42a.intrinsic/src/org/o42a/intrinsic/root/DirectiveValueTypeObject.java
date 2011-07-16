@@ -19,7 +19,9 @@
 */
 package org.o42a.intrinsic.root;
 
-import org.o42a.common.object.IntrinsicType;
+import org.o42a.common.object.ValueTypeObject;
+import org.o42a.common.source.EmptyURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Ref;
@@ -28,13 +30,15 @@ import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueType;
 
 
-public class DirectiveObject extends IntrinsicType implements Directive {
+public class DirectiveValueTypeObject
+		extends ValueTypeObject
+		implements Directive {
 
-	public DirectiveObject(Root owner) {
-		super(
-				owner.toMemberOwner(),
-				"directive",
-				ValueType.DIRECTIVE);
+	private static final URLSourceTree DIRECTIVE =
+			new EmptyURLSource(Root.ROOT, "directive");
+
+	public DirectiveValueTypeObject(Root owner) {
+		super(compileField(owner, DIRECTIVE), ValueType.DIRECTIVE);
 	}
 
 	@Override

@@ -31,33 +31,12 @@ import org.o42a.util.io.URLSource;
 
 public abstract class URLSourceTree extends SourceTree<URLSource> {
 
-	public URLSourceTree(String name, URL base, String path) {
-		this(new URLSource(name, relativeTo(base), path));
-	}
-
-	public URLSourceTree(URLSource parent, String path) {
-		this(new URLSource(
-				parent.getBase(),
-				relativeTo(parent.getURL()),
-				path));
-	}
-
-	public URLSourceTree(URLSourceTree parent, String path) {
-		this(parent.getSource(), path);
-	}
-
-	public URLSourceTree(URLSource source) {
-		super(
-				source,
-				new SourceFileName(fileName(source.getURL().getPath())));
-	}
-
-	private static URL relativeTo(URL url) {
-		if (urlIsDirectory(url)) {
-			return url;
+	public static URL sourceRelativeTo(URL parentURL) {
+		if (urlIsDirectory(parentURL)) {
+			return parentURL;
 		}
 
-		final String path = url.toExternalForm();
+		final String path = parentURL.toExternalForm();
 		final String dir;
 
 		if (path.endsWith(FILE_SUFFIX)) {
@@ -71,6 +50,27 @@ public abstract class URLSourceTree extends SourceTree<URLSource> {
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
+	}
+
+	public URLSourceTree(String name, URL base, String path) {
+		this(new URLSource(name, sourceRelativeTo(base), path));
+	}
+
+	public URLSourceTree(URLSource parent, String path) {
+		this(new URLSource(
+				parent.getBase(),
+				sourceRelativeTo(parent.getURL()),
+				path));
+	}
+
+	public URLSourceTree(URLSourceTree parent, String path) {
+		this(parent.getSource(), path);
+	}
+
+	public URLSourceTree(URLSource source) {
+		super(
+				source,
+				new SourceFileName(fileName(source.getURL().getPath())));
 	}
 
 	private static String fileName(String path) {

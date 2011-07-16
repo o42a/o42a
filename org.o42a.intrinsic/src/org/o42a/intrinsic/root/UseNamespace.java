@@ -21,7 +21,9 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
 
-import org.o42a.common.object.IntrinsicDirective;
+import org.o42a.common.object.DirectiveObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
@@ -32,19 +34,16 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class UseNamespace extends IntrinsicDirective {
+public class UseNamespace extends DirectiveObject {
+
+	private static final URLSourceTree USE_NAMESPACE =
+			new SingleURLSource(Root.ROOT, "use_namespace.o42a");
 
 	private final MemberKey moduleKey;
 	private final MemberKey objectKey;
 
-	public UseNamespace(Root root) {
-		super(
-				root.toMemberOwner(),
-				sourcedDeclaration(
-						root,
-						"use_namespace",
-						"root/use_namespace.o42a")
-				.prototype());
+	public UseNamespace(Root owner) {
+		super(compileField(owner, USE_NAMESPACE));
 		this.moduleKey = fieldName("module").key(getScope());
 		this.objectKey = fieldName("object").key(getScope());
 	}
@@ -106,12 +105,6 @@ public class UseNamespace extends IntrinsicDirective {
 		}
 
 		namespace.useNamespace(path);
-	}
-
-	@Override
-	protected void postResolve() {
-		includeSource();
-		super.postResolve();
 	}
 
 	private static String stringValue(Value<?> value) {

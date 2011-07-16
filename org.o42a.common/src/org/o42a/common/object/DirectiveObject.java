@@ -1,6 +1,6 @@
 /*
-    Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Modules Commons
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,22 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Use object :=> directive
-========================
+package org.o42a.common.object;
 
-Module := string(False)
-Object := string(False)
-Alias := string(False)
+import static org.o42a.core.value.ValueType.DIRECTIVE;
 
-<*'Object path' | $object$> Object = *
-<*[Object path] | $object$> Object = *
+import org.o42a.core.def.Definitions;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.value.Directive;
 
-<From> (
-  <*'Module id' | $object$> Module = *
-  <*[Module id] | $object$> Module = *
-)
 
-<As> (
-  <*'Object alias' | $object$> Alias = *
-  <*[Object alias] | $object$> Alias = *
-)
+public abstract class DirectiveObject
+		extends CompiledObject
+		implements Directive {
+
+	public DirectiveObject(CompiledField field) {
+		super(field);
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
+
+		final Ref ref = DIRECTIVE.constantRef(this, distribute(), this);
+
+		return ref.toValueDef().toDefinitions();
+	}
+
+}

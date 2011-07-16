@@ -21,7 +21,9 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
 
-import org.o42a.common.object.IntrinsicDirective;
+import org.o42a.common.object.DirectiveObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
@@ -32,20 +34,17 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class UseObject extends IntrinsicDirective {
+public class UseObject extends DirectiveObject {
+
+	private static final URLSourceTree USE_OBJECT =
+			new SingleURLSource(Root.ROOT, "use_object.o42a");
 
 	private final MemberKey moduleKey;
 	private final MemberKey objectKey;
 	private final MemberKey aliasKey;
 
-	public UseObject(Root root) {
-		super(
-				root.toMemberOwner(),
-				sourcedDeclaration(
-						root,
-						"use_object",
-						"root/use_object.o42a")
-				.prototype());
+	public UseObject(Root owner) {
+		super(compileField(owner, USE_OBJECT));
 		this.moduleKey = fieldName("module").key(getScope());
 		this.objectKey = fieldName("object").key(getScope());
 		this.aliasKey = fieldName("alias").key(getScope());
@@ -122,12 +121,6 @@ public class UseObject extends IntrinsicDirective {
 		}
 
 		namespace.useObject(path, alias);
-	}
-
-	@Override
-	protected void postResolve() {
-		includeSource();
-		super.postResolve();
 	}
 
 	private static String stringValue(Value<?> value) {

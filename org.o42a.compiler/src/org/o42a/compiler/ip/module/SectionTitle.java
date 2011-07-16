@@ -111,7 +111,9 @@ final class SectionTitle {
 		final ExpressionNode definition = getDeclaratorNode().getDefinition();
 
 		if (definition == null) {
-			return null;
+			return new AscendantsDefinition(
+					new Location(distributor.getContext(), getNode()),
+					distributor);
 		}
 
 		return definition.accept(SECTION_ASCENDANTS_VISITOR, distributor);

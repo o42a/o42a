@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,17 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Substring :=> string
-=====================
+package org.o42a.common.object;
 
-From := 0
-To := (`integer) string:: length
+import org.o42a.core.Scope;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.value.ValueType;
 
-<*Range> (
-  <From | range> $Object$ from = integer(
-    <*[] | range>
-  )
-  <To | range> $Object$ to = integer(
-    <*[] | range>
-  )
-)
+
+public class ValueTypeObject extends CompiledObject {
+
+	public ValueTypeObject(CompiledField field, ValueType<?> valueType) {
+		super(field);
+		setValueType(valueType);
+	}
+
+	@Override
+	protected Definitions overrideDefinitions(
+			Scope scope,
+			Definitions ascentantDefinitions) {
+		return value().getValueType().noValueDefinitions(this, scope);
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
+		return value().getValueType().noValueDefinitions(this, getScope());
+	}
+
+}
