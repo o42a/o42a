@@ -22,7 +22,3 @@ Clauses := void(
   Imperative :=> void
   String :=> $$string
 )
-
-Operators := void(Include 'root/operators.o42a')
-
-Number :=> void(Include 'root/number.o42a')

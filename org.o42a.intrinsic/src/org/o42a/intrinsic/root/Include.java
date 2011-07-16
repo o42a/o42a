@@ -21,7 +21,9 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
 
-import org.o42a.common.object.IntrinsicDirective;
+import org.o42a.common.object.DirectiveObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
@@ -34,18 +36,16 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public final class Include extends IntrinsicDirective {
+@Deprecated
+public final class Include extends DirectiveObject {
+
+	private static final URLSourceTree INCLUDE =
+			new SingleURLSource(Root.ROOT, "include.o42a");
 
 	private final MemberKey pathKey;
 
-	public Include(Root root) {
-		super(
-				root.toMemberOwner(),
-				sourcedDeclaration(
-						root,
-						"include",
-						"root/include.o42a")
-				.prototype());
+	public Include(Root owner) {
+		super(compileField(owner, INCLUDE));
 		this.pathKey = fieldName("path").key(getScope());
 	}
 
@@ -77,12 +77,6 @@ public final class Include extends IntrinsicDirective {
 
 		builder.buildBlock(destination);
 		destination.executeInstructions();
-	}
-
-	@Override
-	protected void postResolve() {
-		includeSource();
-		super.postResolve();
 	}
 
 }
