@@ -23,6 +23,7 @@ import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.common.resolution.ScopeSet;
+import org.o42a.common.source.SourceTree;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.*;
@@ -40,10 +41,33 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 public class CompiledObject extends PlainObject {
 
 	public static CompiledField compileField(
+			Obj owner,
+			CompilerContext context) {
+		return compileField(owner.toMemberOwner(), context);
+	}
+
+	public static CompiledField compileField(
 			MemberOwner owner,
 			CompilerContext context) {
 
 		final FieldCompiler compiler = context.compileField();
+		final FieldDeclaration declaration = compiler.declare(owner);
+
+		return new CompiledField(owner, declaration, compiler);
+	}
+
+	public static CompiledField compileField(
+			Obj owner,
+			SourceTree<?> sourceTree) {
+		return compileField(owner.toMemberOwner(), sourceTree);
+	}
+
+	public static CompiledField compileField(
+			MemberOwner owner,
+			SourceTree<?> sourceTree) {
+
+		final FieldCompiler compiler =
+				sourceTree.context(owner.getContext()).compileField();
 		final FieldDeclaration declaration = compiler.declare(owner);
 
 		return new CompiledField(owner, declaration, compiler);

@@ -1,5 +1,5 @@
 /*
-    Test Framework
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Float :=> rt-float
-==================
+package org.o42a.common.object;
 
-Input :=< `$$string(False)
+import org.o42a.common.def.Builtin;
+import org.o42a.common.def.BuiltinValueDef;
+import org.o42a.common.ir.BuiltinValueIR;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.object.ObjectIR;
+
+
+public abstract class CompiledBuiltin
+		extends CompiledObject
+		implements Builtin {
+
+	public CompiledBuiltin(CompiledField field) {
+		super(field);
+	}
+
+	@Override
+	protected final Definitions explicitDefinitions() {
+		return new BuiltinValueDef(this).toDefinitions();
+	}
+
+	@Override
+	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
+		return new BuiltinValueIR(this, objectIR);
+	}
+
+}

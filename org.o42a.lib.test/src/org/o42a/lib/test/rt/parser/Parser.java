@@ -19,35 +19,20 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
-import org.o42a.common.object.IntrinsicObject;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.CompiledObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
 
 
-public class Parser extends IntrinsicObject {
+public class Parser extends CompiledObject {
+
+	public static final URLSourceTree PARSER =
+			new SingleURLSource(TestModule.TEST, "parser/");
 
 	public Parser(TestModule module) {
-		super(
-				module.toMemberOwner(),
-				fieldDeclaration(
-						module,
-						module.distribute(),
-						fieldName("parser")));
-		setValueType(ValueType.VOID);
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
+		super(compileField(module, PARSER.context(module.getContext())));
 	}
 
 	@Override
@@ -56,11 +41,6 @@ public class Parser extends IntrinsicObject {
 		members.addMember(new ParseString(this).toMember());
 		members.addMember(new ParseInteger(this).toMember());
 		members.addMember(new ParseFloat(this).toMember());
-	}
-
-	@Override
-	protected Definitions explicitDefinitions() {
-		return null;
 	}
 
 }

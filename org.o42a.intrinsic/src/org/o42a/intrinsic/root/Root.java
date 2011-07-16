@@ -29,7 +29,9 @@ import org.o42a.codegen.Generator;
 import org.o42a.common.object.IntrinsicDirective;
 import org.o42a.common.object.IntrinsicObject;
 import org.o42a.common.object.IntrinsicType;
+import org.o42a.common.source.SingleURLSource;
 import org.o42a.common.source.URLCompilerContext;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -48,29 +50,32 @@ import org.o42a.intrinsic.string.Strings;
 
 public class Root extends Obj {
 
+	public static final URLSourceTree ROOT =
+			new SingleURLSource("ROOT", base(), "root.o42a");
+
 	public static Root createRoot(Scope topScope) {
 
-		final URLCompilerContext context;
-
-		try {
-
-			final URL self =
-				Root.class.getResource(Root.class.getSimpleName() + ".class");
-			final URL base = new URL(self, "../../../..");
-
-			context = new URLCompilerContext(
-					topScope.getContext(),
-					"ROOT",
-					base,
-					"root.o42a",
-					DECLARATION_LOGGER);
-		} catch (MalformedURLException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-
+		final URLCompilerContext context = new URLCompilerContext(
+				topScope.getContext(),
+				"ROOT",
+				base(),
+				"root.o42a",
+				DECLARATION_LOGGER);
 		final Location location = new Location(context, context.getSource());
 
 		return new Root(location, topScope);
+	}
+
+	private static URL base() {
+		try {
+
+			final URL self = Root.class.getResource(
+					Root.class.getSimpleName() + ".class");
+
+			return new URL(self, "../../../..");
+		} catch (MalformedURLException e) {
+			throw new ExceptionInInitializerError(e);
+		}
 	}
 
 	private final VoidField voidField;

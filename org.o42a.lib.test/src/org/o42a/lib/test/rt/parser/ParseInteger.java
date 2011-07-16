@@ -19,22 +19,22 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.fieldName;
-
 import org.o42a.common.adapter.IntegerByString;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 
 
 final class ParseInteger extends IntegerByString {
 
+	private static final URLSourceTree PARSE_INTEGER =
+			new SingleURLSource(Parser.PARSER, "integer.o42a");
+
 	ParseInteger(Parser parser) {
-		super(parser, "integer", "test/parser/integer.o42a");
+		super(compileField(parser, PARSE_INTEGER));
 	}
 
 	@Override
@@ -47,19 +47,6 @@ final class ParseInteger extends IntegerByString {
 		}
 
 		return value().getValueType().runtimeValue();
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-		final Path ancestorPath = enclosingScope.getEnclosingScopePath().append(
-				fieldName("rt-integer")
-				.key(enclosingScope.getEnclosingScope()));
-
-		return new Ascendants(this).setAncestor(
-				ancestorPath.target(this, enclosingScope.distribute())
-				.toTypeRef());
 	}
 
 	@Override

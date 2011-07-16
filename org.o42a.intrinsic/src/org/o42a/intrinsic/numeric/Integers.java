@@ -19,44 +19,33 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
 import org.o42a.common.adapter.IntegerByString;
-import org.o42a.common.object.IntrinsicObject;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.CompiledObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 
 
-public class Integers extends IntrinsicObject {
+public class Integers extends CompiledObject {
+
+	public static final URLSourceTree INTEGERS =
+			new SingleURLSource(Root.ROOT, "integers/");
+
+	private static final URLSourceTree BY_STRING =
+			new SingleURLSource(INTEGERS, "by_string.o42a");
 
 	public Integers(Root root) {
-		super(
-				root.toMemberOwner(),
-				fieldDeclaration(
-						root,
-						root.distribute(),
-						fieldName("integers")));
-		setValueType(ValueType.VOID);
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.VOID.typeRef(this, getScope().getEnclosingScope()));
+		super(compileField(root, INTEGERS));
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
 
-		final IntegerByString byString = new IntegerByString(
-				this,
-				"by_string",
-				"root/integers/by_string.o42a");
+		final IntegerByString byString =
+				new IntegerByString(compileField(this, BY_STRING));
 
 		members.addMember(new IntegerMinus(this).toMember());
 		members.addMember(new AddIntegers(this).toMember());

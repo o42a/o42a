@@ -19,13 +19,10 @@
 */
 package org.o42a.lib.test;
 
-import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLCompilerContext;
 import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
@@ -53,12 +50,7 @@ public class TestModule extends Module {
 			new SingleURLSource(TestModule.TEST, "rt-float.o42a");
 
 	public static Module testModule(CompilerContext context) {
-		return new TestModule(new URLCompilerContext(
-				context,
-				"Test",
-				base(),
-				"test.o42a",
-				DECLARATION_LOGGER));
+		return new TestModule(TEST.context(context));
 	}
 
 	private static URL base() {
