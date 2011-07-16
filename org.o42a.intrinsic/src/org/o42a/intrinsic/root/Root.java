@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.common.object.CompiledObject.compileField;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
@@ -26,9 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.Generator;
-import org.o42a.common.object.IntrinsicDirective;
-import org.o42a.common.object.IntrinsicObject;
-import org.o42a.common.object.IntrinsicType;
+import org.o42a.common.object.ValueTypeObject;
 import org.o42a.common.source.SingleURLSource;
 import org.o42a.common.source.URLCompilerContext;
 import org.o42a.common.source.URLSourceTree;
@@ -43,8 +42,9 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.numeric.*;
-import org.o42a.intrinsic.string.StringObject;
+import org.o42a.intrinsic.numeric.Floats;
+import org.o42a.intrinsic.numeric.Integers;
+import org.o42a.intrinsic.string.StringValueTypeObject;
 import org.o42a.intrinsic.string.Strings;
 
 
@@ -52,6 +52,11 @@ public class Root extends Obj {
 
 	public static final URLSourceTree ROOT =
 			new SingleURLSource("ROOT", base(), "root.o42a");
+
+	private static final URLSourceTree INTEGER =
+			new SingleURLSource(Root.ROOT, "integer.o42a");
+	private static final URLSourceTree FLOAT =
+			new SingleURLSource(Root.ROOT, "float.o42a");
 
 	public static Root createRoot(Scope topScope) {
 
@@ -79,14 +84,14 @@ public class Root extends Obj {
 	}
 
 	private final VoidField voidField;
-	private final IntrinsicObject falseObject;
-	private final IntrinsicDirective include;
-	private final UseNamespace useNamespace;
-	private final UseObject useObject;
-	private final IntrinsicType integerObject;
-	private final IntrinsicType floatObject;
-	private final IntrinsicType stringObject;
-	private final IntrinsicType directiveObject;
+	private final Obj falseObject;
+	private final Obj include;
+	private final Obj useNamespace;
+	private final Obj useObject;
+	private final Obj integerObject;
+	private final Obj floatObject;
+	private final Obj stringObject;
+	private final Obj directiveObject;
 
 	private Root(LocationInfo location, Scope topScope) {
 		super(new RootScope(location, topScope.distribute()));
@@ -96,33 +101,37 @@ public class Root extends Obj {
 		this.include = new Include(this);
 		this.useNamespace = new UseNamespace(this);
 		this.useObject = new UseObject(this);
-		this.integerObject = new IntegerObject(this);
-		this.floatObject = new FloatObject(this);
-		this.stringObject = new StringObject(this);
-		this.directiveObject = new DirectiveObject(this);
+		this.integerObject = new ValueTypeObject(
+				compileField(this, INTEGER),
+				ValueType.INTEGER);
+		this.floatObject = new ValueTypeObject(
+				compileField(this, FLOAT),
+				ValueType.FLOAT);
+		this.stringObject = new StringValueTypeObject(this);
+		this.directiveObject = new DirectiveValueTypeObject(this);
 	}
 
 	public final Field<Obj> getVoidField() {
 		return this.voidField;
 	}
 
-	public final IntrinsicObject getFalse() {
+	public final Obj getFalse() {
 		return this.falseObject;
 	}
 
-	public final IntrinsicType getInteger() {
+	public final Obj getInteger() {
 		return this.integerObject;
 	}
 
-	public final IntrinsicType getFloat() {
+	public final Obj getFloat() {
 		return this.floatObject;
 	}
 
-	public final IntrinsicType getString() {
+	public final Obj getString() {
 		return this.stringObject;
 	}
 
-	public final IntrinsicType getDirective() {
+	public final Obj getDirective() {
 		return this.directiveObject;
 	}
 
@@ -149,7 +158,7 @@ public class Root extends Obj {
 		members.addMember(this.useNamespace.toMember());
 		members.addMember(this.useObject.toMember());
 		members.addMember(new Strings(this).toMember());
-		members.addMember(new DirectiveObject(this).toMember());
+		members.addMember(new DirectiveValueTypeObject(this).toMember());
 
 		final ObjectMemberRegistry memberRegistry =
 				new ObjectMemberRegistry(noInclusions(), this);

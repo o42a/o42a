@@ -98,7 +98,7 @@ public class CompiledObject extends PlainObject {
 	}
 
 	@Override
-	protected final Ascendants buildAscendants() {
+	protected Ascendants buildAscendants() {
 		return getCompiler().buildAscendants(new Ascendants(this));
 	}
 

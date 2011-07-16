@@ -22,15 +22,15 @@ package org.o42a.intrinsic.string;
 import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.ALIGNMENT_MASK;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
-import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -43,17 +43,16 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class StringChar extends IntrinsicBuiltin {
+final class StringChar extends CompiledBuiltin {
+
+	private static final URLSourceTree CHAR =
+			new SingleURLSource(StringValueTypeObject.STRING, "char.o42a");
 
 	private Ref string;
 	private Ref index;
 
-	StringChar(StringObject string) {
-		super(
-				string.toMemberOwner(),
-				sourcedDeclaration(string, "char", "string/char.o42a")
-				.prototype());
-		setValueType(ValueType.STRING);
+	StringChar(StringValueTypeObject owner) {
+		super(compileField(owner, CHAR));
 	}
 
 	@Override
@@ -155,21 +154,6 @@ final class StringChar extends IntrinsicBuiltin {
 		stringDirs.done();
 
 		return result;
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				SELF_PATH.target(
-						this,
-						getScope().getEnclosingScope().distribute())
-				.toTypeRef());
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
 	}
 
 	private Ref string() {

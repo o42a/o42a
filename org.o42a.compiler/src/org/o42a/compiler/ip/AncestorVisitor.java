@@ -74,7 +74,7 @@ public class AncestorVisitor
 		final TypeRef ancestor = parseAncestor(ip, node, distributor);
 
 		if (ancestor != noAncestor(distributor.getContext())
-				&& ancestor == impliedAncestor(distributor.getContext())) {
+				&& ancestor != impliedAncestor(distributor.getContext())) {
 			ascendants = ascendants.setAncestor(ancestor);
 		}
 

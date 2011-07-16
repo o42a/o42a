@@ -19,14 +19,14 @@
 */
 package org.o42a.intrinsic.string;
 
-import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.intrinsic.string.SubStringFunc.SUB_STRING;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -39,21 +39,17 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class SubString extends IntrinsicBuiltin {
+final class SubString extends CompiledBuiltin {
+
+	private static final URLSourceTree SUBSTRING =
+			new SingleURLSource(StringValueTypeObject.STRING, "substring.o42a");
 
 	private Ref string;
 	private Ref from;
 	private Ref to;
 
-	SubString(StringObject owner) {
-		super(
-				owner.toMemberOwner(),
-				sourcedDeclaration(
-						owner,
-						"substring",
-						"string/substring.o42a")
-				.prototype());
-		setValueType(ValueType.STRING);
+	SubString(StringValueTypeObject owner) {
+		super(compileField(owner, SUBSTRING));
 	}
 
 	@Override
@@ -173,21 +169,6 @@ final class SubString extends IntrinsicBuiltin {
 		stringDirs.done();
 
 		return substring;
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				SELF_PATH.target(
-						this,
-						getScope().getEnclosingScope().distribute())
-				.toTypeRef());
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
 	}
 
 	private Ref string() {

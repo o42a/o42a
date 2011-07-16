@@ -19,14 +19,13 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.common.ir.BuiltinValueIR;
-import org.o42a.common.object.IntrinsicBuiltin;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.source.EmptyURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -37,15 +36,15 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
-public final class False extends IntrinsicBuiltin {
+public final class False extends CompiledBuiltin {
 
-	public False(Root root) {
-		super(
-				root.toMemberOwner(),
-				fieldDeclaration(root, root.distribute(), fieldName("false")));
+	private static final URLSourceTree FALSE =
+			new EmptyURLSource(Root.ROOT, "false");
+
+	public False(Root owner) {
+		super(compileField(owner, FALSE));
 	}
 
 	@Override
@@ -66,14 +65,6 @@ public final class False extends IntrinsicBuiltin {
 	@Override
 	public String toString() {
 		return "false";
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.VOID.typeRef(
-						this,
-						getScope().getEnclosingScope()));
 	}
 
 	@Override

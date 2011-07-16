@@ -19,35 +19,21 @@
 */
 package org.o42a.intrinsic.string;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
-import org.o42a.common.object.IntrinsicObject;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.CompiledObject;
+import org.o42a.common.source.EmptyURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 
 
-public class Strings extends IntrinsicObject {
+public class Strings extends CompiledObject {
+
+	public static final URLSourceTree STRINGS =
+			new EmptyURLSource(Root.ROOT, "strings");
 
 	public Strings(Root owner) {
-		super(
-				owner.toMemberOwner(),
-				fieldDeclaration(
-						owner,
-						owner.distribute(),
-						fieldName("strings")));
-		setValueType(ValueType.VOID);
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.VOID.typeRef(
-						this,
-						getScope().getEnclosingScope()));
+		super(compileField(owner, STRINGS));
 	}
 
 	@Override

@@ -17,40 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.numeric;
+package org.o42a.intrinsic.string;
 
-import static org.o42a.core.ref.path.Path.absolutePath;
-
-import org.o42a.common.object.IntrinsicType;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.ValueTypeObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 
 
-public class IntegerObject extends IntrinsicType {
+public class StringValueTypeObject extends ValueTypeObject {
 
-	public IntegerObject(Root root) {
-		super(
-				root.toMemberOwner(),
-				sourcedDeclaration(root, "integer", "root/integer.o42a")
-				.prototype(),
-				ValueType.INTEGER);
+	public static final URLSourceTree STRING =
+			new SingleURLSource(Root.ROOT, "string.o42a");
+
+	public StringValueTypeObject(Root owner) {
+		super(compileField(owner, STRING), ValueType.STRING);
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				absolutePath(getContext(), "number")
-				.target(
-						this,
-						distributeIn(getScope().getEnclosingContainer()))
-				.toTypeRef());
-	}
+	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
 
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
+		members.addMember(new StringLength(this).toMember());
+		members.addMember(new StringChar(this).toMember());
+		members.addMember(new SubString(this).toMember());
 	}
 
 }
