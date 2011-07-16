@@ -22,8 +22,8 @@ package org.o42a.lib.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.o42a.common.source.SingleURLSource;
 import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.source.URLSources;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.artifact.object.ObjectType;
@@ -39,18 +39,22 @@ import org.o42a.util.use.UserInfo;
 
 public class TestModule extends Module {
 
-	public static final URLSourceTree TEST =
-			new SingleURLSource("Test", base(), "test.o42a");
-
-	private static final URLSourceTree RT_STRING =
-			new SingleURLSource(TestModule.TEST, "rt-string.o42a");
-	private static final URLSourceTree RT_INTEGER =
-			new SingleURLSource(TestModule.TEST, "rt-integer.o42a");
-	private static final URLSourceTree RT_FLOAT =
-			new SingleURLSource(TestModule.TEST, "rt-float.o42a");
+	public static final URLSourceTree TEST = tree();
 
 	public static Module testModule(CompilerContext context) {
 		return new TestModule(TEST.context(context));
+	}
+
+	private static URLSourceTree tree() {
+
+		final URLSources sources =
+				new URLSources("Test", base(), "test.o42a");
+
+		sources.addFile("rt-string.o42a");
+		sources.addFile("rt-integer.o42a");
+		sources.addFile("rt-float.o42a");
+
+		return sources;
 	}
 
 	private static URL base() {
@@ -79,9 +83,6 @@ public class TestModule extends Module {
 		members.addMember(new Parser(this).toMember());
 		members.addMember(new RtVoid(this).toMember());
 		members.addMember(new RtFalse(this).toMember());
-		members.addMember(RT_STRING.member(this));
-		members.addMember(RT_INTEGER.member(this));
-		members.addMember(RT_FLOAT.member(this));
 		super.declareMembers(members);
 	}
 

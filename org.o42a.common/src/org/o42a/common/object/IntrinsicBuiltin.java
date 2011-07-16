@@ -28,6 +28,7 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 
 
+@Deprecated
 public abstract class IntrinsicBuiltin
 		extends IntrinsicObject
 		implements Builtin {

@@ -43,9 +43,9 @@ import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
+@Deprecated
 public abstract class IntrinsicObject extends PlainObject {
 
-	@Deprecated
 	public static final FieldDeclaration sourcedDeclaration(
 			MemberOwner owner,
 			String name,

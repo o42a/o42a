@@ -34,9 +34,7 @@ import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.OtherContextDistributor;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.*;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
@@ -184,7 +182,12 @@ final class Section {
 				ascendants(distributor),
 				new SectionDefinition(this));
 
-		statements.field(fieldDeclaration, fieldDefinition);
+		final FieldBuilder fieldBuilder =
+				statements.field(fieldDeclaration, fieldDefinition);
+
+		if (fieldBuilder != null) {
+			statements.statement(fieldBuilder.build());
+		}
 	}
 
 	@Override

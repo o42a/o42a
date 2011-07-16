@@ -30,6 +30,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.value.ValueType;
 
 
+@Deprecated
 public class IntrinsicType extends IntrinsicObject {
 
 	public IntrinsicType(
