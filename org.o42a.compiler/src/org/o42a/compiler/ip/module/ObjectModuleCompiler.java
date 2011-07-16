@@ -27,9 +27,6 @@ import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.DeclarableNode;
 import org.o42a.ast.statement.DeclarationTarget;
 import org.o42a.ast.statement.DeclaratorNode;
-import org.o42a.core.Distributor;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.log.LogInfo;
@@ -51,17 +48,6 @@ public final class ObjectModuleCompiler
 			getSection();
 		}
 		return this.moduleName;
-	}
-
-	@Override
-	public Ascendants buildAscendants(Ascendants ascendants) {
-
-		final Distributor distributor =
-				ascendants.getScope().getEnclosingScope().distribute();
-		final AscendantsDefinition ascendantsDefinition =
-				getSection().getTitle().ascendants(distributor);
-
-		return ascendantsDefinition.updateAscendants(ascendants);
 	}
 
 	@Override

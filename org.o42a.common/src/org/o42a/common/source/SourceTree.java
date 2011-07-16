@@ -21,6 +21,8 @@ package org.o42a.common.source;
 
 import static org.o42a.common.object.CompiledObject.compileField;
 
+import java.util.Iterator;
+
 import org.o42a.common.object.CompiledField;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberOwner;
@@ -52,7 +54,7 @@ public abstract class SourceTree<S extends Source> {
 		return this.fileName;
 	}
 
-	public abstract Iterable<? extends SourceTree<S>> childTrees();
+	public abstract Iterator<? extends SourceTree<S>> childTrees();
 
 	public final TreeCompilerContext<S> context(CompilerContext parentContext) {
 		return new TreeCompilerContext<S>(parentContext, this);

@@ -23,6 +23,7 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 
 import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.module.SectionNode;
+import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.source.FieldCompiler;
@@ -41,6 +42,11 @@ public class FieldModuleCompiler
 	public FieldDeclaration declare(MemberOwner owner) {
 		return getSection().getTitle().fieldDeclaration(
 				declarativeDistributor(owner.getContainer()));
+	}
+
+	@Override
+	public Ascendants buildAscendants(Ascendants ascendants) {
+		return super.buildAscendants(ascendants).declareMember();
 	}
 
 	@Override

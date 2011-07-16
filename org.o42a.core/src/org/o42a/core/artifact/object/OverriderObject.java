@@ -19,8 +19,6 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.core.artifact.object.PropagatedObject.deriveSamples;
-
 import org.o42a.core.def.Definitions;
 
 
@@ -40,11 +38,7 @@ final class OverriderObject extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-
-		final Ascendants ascendants = new Ascendants(this);
-
-		return this.field.buildAscendants(
-				deriveSamples(this.field, ascendants));
+		return this.field.buildAscendants(new Ascendants(this).declareMember());
 	}
 
 	@Override

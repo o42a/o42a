@@ -28,6 +28,13 @@ import java.net.URL;
 
 public class URLSource extends Source {
 
+	public static boolean urlIsDirectory(URL url) {
+
+		final String path = url.getPath();
+
+		return path.isEmpty() || path.endsWith("/");
+	}
+
 	private final URL base;
 	private final URL url;
 	private final String name;
@@ -77,6 +84,15 @@ public class URLSource extends Source {
 	@Override
 	public String getName() {
 		return this.name;
+	}
+
+	public final boolean isDirectory() {
+		return urlIsDirectory(getURL());
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return isDirectory();
 	}
 
 	@Override

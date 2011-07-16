@@ -20,55 +20,17 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
-import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.PlainObject;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.use.User;
 
 
 final class PropagatedClauseDefinition extends PlainObject {
 
 	private final PlainClause clause;
-
-	public static Ascendants deriveSamples(
-			Clause clause,
-			Ascendants ascendants) {
-
-		final User user = dummyUser();
-		final ObjectType containerType =
-			clause.getScope().getEnclosingContainer().toObject().type();
-		final TypeRef containerAncestor = containerType.getAncestor();
-		Ascendants result = ascendants;
-
-		if (containerAncestor != null) {
-
-			final Member overriddenMember =
-				containerAncestor.type(user)
-				.getObject().member(clause.getKey());
-
-			if (overriddenMember != null) {
-				result = result.addMemberOverride(overriddenMember);
-			}
-		}
-
-		final Sample[] containerSamples = containerType.getSamples();
-
-		for (int i = containerSamples.length - 1; i >= 0; --i) {
-
-			final Member overriddenMember =
-				containerSamples[i].type(user)
-				.getObject().member(clause.getKey());
-
-			if (overriddenMember != null) {
-				result = result.addMemberOverride(overriddenMember);
-			}
-		}
-
-		return result;
-	}
 
 	PropagatedClauseDefinition(PlainClause clause, PlainClause overridden) {
 		super(clause, overridden.getObject());
@@ -97,7 +59,7 @@ final class PropagatedClauseDefinition extends PlainObject {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(this.clause, new Ascendants(this));
+		return new Ascendants(this).declareMember();
 	}
 
 	@Override

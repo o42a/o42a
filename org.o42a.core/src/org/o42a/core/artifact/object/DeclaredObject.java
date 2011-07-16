@@ -19,13 +19,12 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.core.ref.Ref.voidRef;
-
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.AdapterId;
+import org.o42a.util.Lambda;
 
 
-class DeclaredObject extends PlainObject {
+class DeclaredObject extends PlainObject
+		implements Lambda<Ascendants, Ascendants> {
 
 	private final DeclaredObjectField field;
 
@@ -35,35 +34,18 @@ class DeclaredObject extends PlainObject {
 	}
 
 	@Override
+	public Ascendants get(Ascendants ascendants) {
+		return this.field.buildAscendants(ascendants);
+	}
+
+	@Override
 	public String toString() {
 		return this.field != null ? this.field.toString() : super.toString();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-
-		Ascendants ascendants = new Ascendants(this);
-		final AdapterId adapterId =
-			this.field.getDeclaration().getMemberId().getAdapterId();
-
-		if (adapterId != null) {
-			ascendants = ascendants.addExplicitSample(
-					adapterId.adapterType(getScope().getEnclosingScope()));
-		}
-
-		ascendants = this.field.buildAscendants(ascendants);
-
-		if (ascendants.getExplicitAncestor() != null) {
-			return ascendants;
-		}
-		if (ascendants.getSamples().length != 0) {
-			return ascendants;
-		}
-
-		return ascendants.setAncestor(voidRef(
-						this,
-						getScope().getEnclosingScope().distribute())
-				.toTypeRef());
+		return new Ascendants(this).declareField(this);
 	}
 
 	@Override
