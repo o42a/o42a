@@ -24,6 +24,7 @@ import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.common.source.SourceTree;
+import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.*;
@@ -110,7 +111,7 @@ public class CompiledObject extends PlainObject {
 				new ObjectMemberRegistry(noInclusions(), this);
 		this.definition = new DeclarativeBlock(
 				this,
-				new InclusionDistributor(this),
+				new Namespace(this, this),
 				this.memberRegistry);
 
 		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
