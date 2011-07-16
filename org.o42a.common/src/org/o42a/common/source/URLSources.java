@@ -56,6 +56,9 @@ public class URLSources extends URLSourceTree {
 	}
 
 	public URLSources addDirectory(String name) {
+		if (this.childTrees == null) {
+			this.childTrees = new HashMap<String, URLSources>();
+		}
 
 		final URLSources dir = new URLSources(this, name + '/');
 		final String fileName = dir.getFileName().getName();
@@ -71,6 +74,9 @@ public class URLSources extends URLSourceTree {
 	}
 
 	public URLSources addFile(String name) {
+		if (this.childTrees == null) {
+			this.childTrees = new HashMap<String, URLSources>();
+		}
 
 		final URLSources dir = new URLSources(this, name);
 		final String fileName = dir.getFileName().getName();

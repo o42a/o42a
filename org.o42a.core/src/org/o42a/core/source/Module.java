@@ -20,7 +20,6 @@
 package org.o42a.core.source;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.codegen.CodeId;
@@ -51,8 +50,6 @@ public class Module extends PlainObject {
 		this.compiler = compiler;
 		this.moduleName =
 				moduleName != null ? moduleName : compiler.getModuleName();
-		this.memberRegistry =
-				new ObjectMemberRegistry(new ModuleInclusions(this), this);
 	}
 
 	public final String getModuleName() {
@@ -89,7 +86,7 @@ public class Module extends PlainObject {
 		super.postResolve();
 
 		this.memberRegistry =
-				new ObjectMemberRegistry(noInclusions(), this);
+				new ObjectMemberRegistry(new ModuleInclusions(this), this);
 		this.definition = new DeclarativeBlock(
 				this,
 				new Namespace(this, this),

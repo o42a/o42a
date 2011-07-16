@@ -28,6 +28,7 @@ import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueType;
 
 
+@Deprecated
 public abstract class IntrinsicDirective
 		extends IntrinsicObject
 		implements Directive {
