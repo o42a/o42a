@@ -111,13 +111,14 @@ final class Section {
 	}
 
 	public final Section use() {
+		return useBy(getSource().getSectionFactory().sectionContext(
+				getNode(),
+				getTag()));
+	}
+
+	public final Section useBy(CompilerContext context) {
 		assert !isUsed() :
 			"Section already used";
-
-		final CompilerContext context =
-				getSource().getSectionFactory().sectionContext(
-						getNode(),
-						getTag());
 
 		this.location = new Location(context, getNode());
 

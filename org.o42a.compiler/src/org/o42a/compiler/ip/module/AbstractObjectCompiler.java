@@ -56,7 +56,7 @@ public abstract class AbstractObjectCompiler
 		if (this.section != null) {
 			return this.section;
 		}
-		return createSection().use();
+		return createSection().useBy(getContext());
 	}
 
 	@Override

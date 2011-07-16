@@ -24,9 +24,6 @@ import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import static org.o42a.util.use.User.useCase;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
 import org.junit.After;
 import org.junit.Before;
 import org.o42a.codegen.Generator;
@@ -36,16 +33,14 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.source.*;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Module;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.io.Source;
 import org.o42a.util.io.StringSource;
-import org.o42a.util.log.LogRecord;
-import org.o42a.util.log.Logger;
 import org.o42a.util.use.UseCase;
 
 
@@ -53,8 +48,8 @@ public abstract class CompilerTestCase {
 
 	public static final UseCase USE_CASE = useCase("test");
 
-	private static final Compiler COMPILER = compiler();
-	private static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
+	static final Compiler COMPILER = compiler();
+	static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
 
 	public static Value<?> valueOf(Artifact<?> artifact) {
 		return artifact.materialize().value().getValue();
@@ -258,9 +253,9 @@ public abstract class CompilerTestCase {
 	}
 
 	protected CompilerContext context;
+	private final TestErrors errors = new TestErrors();
 	protected Module module;
 	private String moduleName;
-	private final LinkedList<String> expectedErrors = new LinkedList<String>();
 
 	public final String getModuleName() {
 		return this.moduleName;
@@ -273,19 +268,19 @@ public abstract class CompilerTestCase {
 	@Before
 	public void setUpCompiler() {
 		this.moduleName = getClass().getSimpleName();
-		this.expectedErrors.clear();
-		this.context = new Context();
+		this.errors.reset();
+		this.context = new TestCompilerContext(this, this.errors);
 	}
 
 	@After
 	public void ensureErrorsLogged() {
-		assertTrue(
-				"Errors expected, but not logged: " + this.expectedErrors,
-				this.expectedErrors.isEmpty());
+		assertFalse(
+				"Errors expected, but not logged: " + this.errors,
+				this.errors.errorsExpected());
 	}
 
 	public void expectError(String code) {
-		this.expectedErrors.addLast(code);
+		this.errors.expectError(code);
 	}
 
 	public Field<?> field(String name, String... names) {
@@ -304,7 +299,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void addSource(String path, Source source) {
-		((Context) this.context).addSource(path, source);
+		((TestCompilerContext) this.context).addSource(path, source);
 	}
 
 	protected final void compile(String line, String... lines) {
@@ -313,7 +308,7 @@ public abstract class CompilerTestCase {
 
 	protected void compile(Source source) {
 		this.context.fullResolution().reset();
-		((Context) this.context).setSource(source);
+		((TestCompilerContext) this.context).setSource(source);
 		this.module = new Module(this.context, this.moduleName);
 		INTRINSICS.setMainModule(this.module);
 		INTRINSICS.resolveAll();
@@ -344,112 +339,6 @@ public abstract class CompilerTestCase {
 		}
 
 		return code;
-	}
-
-	private class Context extends CompilerContext {
-
-		private Source source;
-		private final HashMap<String, Context> subContexts =
-			new HashMap<String, Context>();
-
-		Context() {
-			super(COMPILER, INTRINSICS, new TestLogger());
-			this.source = new StringSource(getModuleName(), "");
-		}
-
-		Context(CompilerContext parent, Source source) {
-			super(parent, null);
-			this.source = source;
-		}
-
-		@Override
-		public ModuleCompiler compileModule() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public FieldCompiler compileField() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void include(DeclarativeBlock block, SectionTag tag) {
-		}
-
-		@Override
-		@Deprecated
-		public CompilerContext contextFor(String path) throws Exception {
-
-			final int idx = path.indexOf('/');
-			final String src;
-
-			if (idx < 0) {
-				src = path;
-			} else {
-				src = path.substring(0, idx);
-			}
-
-			final Context context = this.subContexts.get(src);
-
-			if (context == null) {
-				throw new IllegalStateException(src + " not found in " + this);
-			}
-			if (idx < 0) {
-				return context;
-			}
-
-			return context.contextFor(path.substring(idx + 1));
-		}
-
-		@Override
-		public Source getSource() {
-			return this.source;
-		}
-
-		void setSource(Source source) {
-			this.source = source;
-		}
-
-		void addSource(String path, Source source) {
-
-			final int idx = path.indexOf('/');
-
-			if (idx < 0) {
-				this.subContexts.put(path, new Context(this, source));
-				return;
-			}
-
-			final String src = path.substring(0, idx);
-			final Context context = this.subContexts.get(src);
-
-			if (context == null) {
-				throw new IllegalStateException(src + " not found in " + this);
-			}
-
-			context.addSource(path.substring(idx + 1), source);
-		}
-
-	}
-
-	private final class TestLogger implements Logger {
-
-		@Override
-		public void log(LogRecord record) {
-
-			final String code = record.getCode();
-			final String expected =
-				CompilerTestCase.this.expectedErrors.poll();
-
-			if (expected == null) {
-				fail("Error occurred: " + record);
-			}
-
-			assertEquals(
-					"Unexpected error occurred: " + record,
-					expected,
-					code);
-		}
-
 	}
 
 }

@@ -49,7 +49,7 @@ public class CompiledObject extends PlainObject {
 		return new CompiledField(owner, declaration, compiler);
 	}
 
-	private final ObjectCompiler compiler;
+	private final FieldCompiler compiler;
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private ScopeSet errorReportedAt;
@@ -90,12 +90,16 @@ public class CompiledObject extends PlainObject {
 				this.memberRegistry);
 
 		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
-		this.definition.executeInstructions();
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		this.memberRegistry.registerMembers(members);
+	}
+
+	@Override
+	protected void updateMembers() {
+		this.definition.executeInstructions();
 	}
 
 	@Override

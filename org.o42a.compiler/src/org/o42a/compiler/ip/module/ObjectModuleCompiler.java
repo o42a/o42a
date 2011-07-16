@@ -27,8 +27,10 @@ import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.DeclarableNode;
 import org.o42a.ast.statement.DeclarationTarget;
 import org.o42a.ast.statement.DeclaratorNode;
+import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
 
 
@@ -51,6 +53,22 @@ public final class ObjectModuleCompiler
 	}
 
 	@Override
+	public Ascendants buildAscendants(Ascendants ascendants) {
+
+		final Ascendants result = super.buildAscendants(ascendants);
+
+		if (result.isEmpty()) {
+			result.setAncestor(ValueType.VOID.typeRef(
+					new Location(
+							getContext(),
+							getSection().getTitle().getNode()),
+					result.getScope().getEnclosingScope()));
+		}
+
+		return result;
+	}
+
+	@Override
 	public void define(DeclarativeBlock definition, SectionTag tag) {
 		assert tag.isImplicit() :
 			"Section tag ignored in object definition";
@@ -69,7 +87,7 @@ public final class ObjectModuleCompiler
 			final SectionNode sectionNode =
 					new SectionNode(getNode().getStart(), getNode().getEnd());
 
-			return new Section(this, sectionNode).use();
+			return new Section(this, sectionNode).useBy(getContext());
 		}
 
 		if (sectionNodes.length > 1) {
