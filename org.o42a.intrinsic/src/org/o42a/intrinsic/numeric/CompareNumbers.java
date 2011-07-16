@@ -19,8 +19,7 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -34,28 +33,13 @@ abstract class CompareNumbers<P extends Number>
 	static final Value<Long> ZERO = ValueType.INTEGER.constantValue(0L);
 	static final Value<Long> ONE = ValueType.INTEGER.constantValue(1L);
 
-	CompareNumbers(
-			MemberOwner owner,
-			String name,
-			ValueType<P> operandType,
-			String sourcePath) {
+	CompareNumbers(CompiledField field, ValueType<P> operandType) {
 		super(
-				owner,
-				name,
-				ValueType.INTEGER,
+				field,
 				"what",
 				operandType,
 				"with",
-				operandType,
-				sourcePath);
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
+				operandType);
 	}
 
 	@Override

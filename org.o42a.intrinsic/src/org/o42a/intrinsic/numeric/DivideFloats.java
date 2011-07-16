@@ -21,12 +21,17 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 
 
 final class DivideFloats extends BinaryFloat {
 
+	private static final URLSourceTree DIVIDE =
+			new SingleURLSource(Floats.FLOATS, "divide.o42a");
+
 	DivideFloats(Floats owner) {
-		super(owner, "divide", "left_operand", "right_operand");
+		super(compileField(owner, DIVIDE), "left_operand", "right_operand");
 	}
 
 	@Override

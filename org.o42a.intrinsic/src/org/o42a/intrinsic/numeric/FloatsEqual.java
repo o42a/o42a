@@ -23,19 +23,20 @@ import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
 
 
-public class FloatsEqual extends NumbersEqual<Double> {
+final class FloatsEqual extends NumbersEqual<Double> {
 
-	public FloatsEqual(Floats owner) {
-		super(
-				owner.toMemberOwner(),
-				"equals",
-				ValueType.FLOAT,
-				"root/floats/equals.o42a");
+	private static final URLSourceTree EQUALS =
+			new SingleURLSource(Floats.FLOATS, "equals.o42a");
+
+	FloatsEqual(Floats owner) {
+		super(compileField(owner, EQUALS), ValueType.FLOAT);
 	}
 
 	@Override

@@ -25,19 +25,20 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
 
 
-public class IntegersEqual extends NumbersEqual<Long> {
+final class IntegersEqual extends NumbersEqual<Long> {
 
-	public IntegersEqual(Integers owner) {
-		super(
-				owner.toMemberOwner(),
-				"equals",
-				ValueType.INTEGER,
-				"root/integers/equals.o42a");
+	private static final URLSourceTree EQUALS =
+			new SingleURLSource(Integers.INTEGERS, "equals.o42a");
+
+	IntegersEqual(Integers owner) {
+		super(compileField(owner, EQUALS), ValueType.INTEGER);
 	}
 
 	@Override

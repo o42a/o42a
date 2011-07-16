@@ -19,15 +19,14 @@
 */
 package org.o42a.intrinsic.operator;
 
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -35,7 +34,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
+public abstract class BinaryResult<T, L, R> extends CompiledBuiltin {
 
 	private final String leftOperandName;
 	private final ValueType<L> leftOperandType;
@@ -45,20 +44,14 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 	private Ref rightOperand;
 
 	public BinaryResult(
-			MemberOwner owner,
-			String name,
-			ValueType<T> resultType,
+			CompiledField field,
 			String leftOperandName,
 			ValueType<L> leftOperandType,
 			String rightOperandName,
-			ValueType<R> rightOperandType,
-			String sourcePath) {
-		super(
-				owner,
-				sourcedDeclaration(owner, name, sourcePath).prototype());
+			ValueType<R> rightOperandType) {
+		super(field);
 		this.rightOperandName = rightOperandName;
 		this.rightOperandType = rightOperandType;
-		setValueType(resultType);
 		this.leftOperandName = leftOperandName;
 		this.leftOperandType = leftOperandType;
 	}
@@ -131,20 +124,6 @@ public abstract class BinaryResult<T, L, R> extends IntrinsicBuiltin {
 		leftDirs.done();
 
 		return result;
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
 	}
 
 	protected abstract T calculate(Resolver resolver, L left, R right);

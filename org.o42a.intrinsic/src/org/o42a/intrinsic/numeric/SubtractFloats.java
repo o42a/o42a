@@ -21,12 +21,17 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 
 
 final class SubtractFloats extends BinaryFloat {
 
+	private static final URLSourceTree SUBTRACT =
+			new SingleURLSource(Floats.FLOATS, "subtract.o42a");
+
 	SubtractFloats(Floats owner) {
-		super(owner, "subtract", "left_operand", "right_operand");
+		super(compileField(owner, SUBTRACT), "left_operand", "right_operand");
 	}
 
 	@Override

@@ -19,12 +19,11 @@
 */
 package org.o42a.intrinsic.string;
 
-import static org.o42a.intrinsic.string.CompareFunc.COMPARE;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -34,24 +33,16 @@ import org.o42a.intrinsic.operator.BinaryResult;
 
 final class CompareStrings extends BinaryResult<Long, String, String> {
 
+	private static final URLSourceTree COMPARE =
+			new SingleURLSource(Strings.STRINGS, "compare.o42a");
+
 	CompareStrings(Strings owner) {
 		super(
-				owner.toMemberOwner(),
-				"compare",
-				ValueType.INTEGER,
+				compileField(owner, COMPARE),
 				"what",
 				ValueType.STRING,
 				"with",
-				ValueType.STRING,
-				"root/strings/compare.o42a");
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
+				ValueType.STRING);
 	}
 
 	@Override
@@ -64,7 +55,9 @@ final class CompareStrings extends BinaryResult<Long, String, String> {
 
 		final Code code = dirs.code();
 		final FuncPtr<CompareFunc> funcPtr =
-			code.getGenerator().externalFunction("o42a_str_compare", COMPARE);
+			code.getGenerator().externalFunction(
+					"o42a_str_compare",
+					CompareFunc.COMPARE);
 		final CompareFunc func = funcPtr.op(null, code);
 		final Int64op result = func.compare(code, leftVal, rightVal);
 

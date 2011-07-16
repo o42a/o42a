@@ -21,12 +21,17 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 
 
 final class MultiplyIntegers extends BinaryInteger {
 
+	private static final URLSourceTree MULTIPLY =
+			new SingleURLSource(Integers.INTEGERS, "multiply.o42a");
+
 	MultiplyIntegers(Integers owner) {
-		super(owner, "multiply", "left_operand", "right_operand");
+		super(compileField(owner, MULTIPLY), "left_operand", "right_operand");
 	}
 
 	@Override

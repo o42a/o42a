@@ -19,8 +19,7 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.member.MemberOwner;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
@@ -30,28 +29,8 @@ import org.o42a.intrinsic.operator.BinaryResult;
 abstract class NumbersEqual<P extends Number>
 		extends BinaryResult<org.o42a.core.value.Void, P, P> {
 
-	NumbersEqual(
-			MemberOwner owner,
-			String name,
-			ValueType<P> operandType,
-			String sourcePath) {
-		super(
-				owner,
-				name,
-				ValueType.VOID,
-				"what",
-				operandType,
-				"to",
-				operandType,
-				sourcePath);
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
+	NumbersEqual(CompiledField field, ValueType<P> operandType) {
+		super(field, "what", operandType, "to", operandType);
 	}
 
 	@Override
