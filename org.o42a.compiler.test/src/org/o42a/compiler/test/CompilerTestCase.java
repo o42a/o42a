@@ -272,9 +272,9 @@ public abstract class CompilerTestCase {
 
 	@Before
 	public void setUpCompiler() {
-		this.context = new Context();
-		this.expectedErrors.clear();
 		this.moduleName = getClass().getSimpleName();
+		this.expectedErrors.clear();
+		this.context = new Context();
 	}
 
 	@After

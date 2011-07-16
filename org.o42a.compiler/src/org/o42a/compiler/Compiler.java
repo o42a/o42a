@@ -66,12 +66,7 @@ public class Compiler implements SourceCompiler {
 	@Override
 	public ModuleCompiler compileModule(ObjectSource source) {
 
-		final ModuleNode node =
-				parse(module(), null, source.getLogger(), source.getSource());
-
-		if (node == null) {
-			return null;
-		}
+		final ModuleNode node = parseModule(source);
 
 		return validate(new ObjectModuleCompiler(source, node));
 	}
@@ -79,12 +74,7 @@ public class Compiler implements SourceCompiler {
 	@Override
 	public FieldCompiler compileField(ObjectSource source) {
 
-		final ModuleNode node =
-				parse(module(), null, source.getLogger(), source.getSource());
-
-		if (node == null) {
-			return null;
-		}
+		final ModuleNode node = parseModule(source);
 
 		return validate(new FieldModuleCompiler(source, node));
 	}
@@ -92,17 +82,13 @@ public class Compiler implements SourceCompiler {
 	@Override
 	public DefinitionCompiler compileDefinition(DefinitionSource source) {
 
-		final ModuleNode node =
-				parse(module(), null, source.getLogger(), source.getSource());
-
-		if (node == null) {
-			return null;
-		}
+		final ModuleNode node = parseModule(source);
 
 		return validate(new DefinitionModuleCompiler(source, node));
 	}
 
 	@Override
+	@Deprecated
 	public BlockBuilder compileBlock(CompilerContext context) {
 
 		final SentenceNode[] content = parse(
@@ -196,11 +182,28 @@ public class Compiler implements SourceCompiler {
 		return module.getScope().contains(scope);
 	}
 
+	private ModuleNode parseModule(DefinitionSource source) {
+
+		final ModuleNode moduleNode =
+				parse(module(), null, source.getLogger(), source.getSource());
+
+		if (moduleNode != null) {
+			return moduleNode;
+		}
+
+		final FixedPosition position = new FixedPosition(source.getSource());
+
+		return new ModuleNode(position, position);
+	}
+
 	private <T> T parse(
 			Parser<T> parser,
 			LocationInfo location,
 			Logger logger,
 			Source source) {
+		if (source.isEmpty()) {
+			return null;
+		}
 
 		final ParserWorker worker;
 

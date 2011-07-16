@@ -21,20 +21,21 @@ package org.o42a.util.io;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Serializable;
 
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableData;
 
 
-public abstract class Source implements LogInfo, Serializable {
-
-	private static final long serialVersionUID = 6360433806353457998L;
+public abstract class Source implements LogInfo {
 
 	private final LoggableData loggableData = new LoggableData(this);
 
 	public abstract String getName();
+
+	public boolean isEmpty() {
+		return false;
+	}
 
 	public abstract Reader open() throws IOException;
 

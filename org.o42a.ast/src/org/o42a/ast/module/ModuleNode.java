@@ -21,6 +21,7 @@ package org.o42a.ast.module;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
+import org.o42a.ast.Position;
 
 
 public class ModuleNode extends AbstractNode {
@@ -32,6 +33,12 @@ public class ModuleNode extends AbstractNode {
 		super(sections);
 		this.header = header;
 		this.sections = sections;
+	}
+
+	public ModuleNode(Position start, Position end) {
+		super(start, end);
+		this.header = null;
+		this.sections = new SectionNode[0];
 	}
 
 	public final SectionNode getHeader() {

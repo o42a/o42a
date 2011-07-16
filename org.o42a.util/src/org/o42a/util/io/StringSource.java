@@ -26,24 +26,35 @@ import java.io.StringReader;
 
 public class StringSource extends Source {
 
-	private static final long serialVersionUID = -1835051615367609323L;
-
 	private final String name;
 	private final String string;
 
 	public StringSource(String name, String string) {
+		assert name != null :
+			"Source name not specified";
+		assert string != null :
+			"Source text string not specified";
 		this.name = name;
 		this.string = string;
 	}
 
 	@Override
-	public String getName() {
+	public final String getName() {
 		return this.name;
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return getString().isEmpty();
+	}
+
+	public final String getString() {
+		return this.string;
+	}
+
+	@Override
 	public Reader open() throws IOException {
-		return new StringReader(this.string);
+		return new StringReader(getString());
 	}
 
 }
