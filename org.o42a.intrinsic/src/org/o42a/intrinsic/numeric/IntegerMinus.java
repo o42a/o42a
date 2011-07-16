@@ -25,6 +25,8 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
@@ -33,9 +35,12 @@ import org.o42a.intrinsic.operator.UnaryResult;
 
 final class IntegerMinus extends UnaryResult<Long, Long> {
 
-	IntegerMinus(Integers integers) {
+	private static final URLSourceTree MINUS =
+			new SingleURLSource(Integers.INTEGERS, "minus.o42a");
+
+	IntegerMinus(Integers owner) {
 		super(
-				integers.toMemberOwner(),
+				compileField(owner, MINUS),
 				"minus",
 				ValueType.INTEGER,
 				"operand",
