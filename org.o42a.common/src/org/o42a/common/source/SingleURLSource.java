@@ -19,9 +19,9 @@
 */
 package org.o42a.common.source;
 
-import static java.util.Collections.emptyList;
-
 import java.net.URL;
+import java.util.Collections;
+import java.util.Iterator;
 
 import org.o42a.util.io.URLSource;
 
@@ -45,8 +45,8 @@ public final class SingleURLSource extends URLSourceTree {
 	}
 
 	@Override
-	public Iterable<? extends SourceTree<URLSource>> childTrees() {
-		return emptyList();
+	public Iterator<? extends SourceTree<URLSource>> childTrees() {
+		return Collections.<SourceTree<URLSource>>emptyList().iterator();
 	}
 
 }

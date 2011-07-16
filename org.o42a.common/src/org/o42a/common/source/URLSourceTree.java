@@ -20,6 +20,7 @@
 package org.o42a.common.source;
 
 import static org.o42a.core.source.SourceFileName.FILE_SUFFIX;
+import static org.o42a.util.io.URLSource.urlIsDirectory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,13 +53,11 @@ public abstract class URLSourceTree extends SourceTree<URLSource> {
 	}
 
 	private static URL relativeTo(URL url) {
-
-		final String path = url.toExternalForm();
-
-		if (path.endsWith("/")) {
+		if (urlIsDirectory(url)) {
 			return url;
 		}
 
+		final String path = url.toExternalForm();
 		final String dir;
 
 		if (path.endsWith(FILE_SUFFIX)) {
@@ -68,7 +67,7 @@ public abstract class URLSourceTree extends SourceTree<URLSource> {
 		}
 
 		try {
-			return new URL(url, dir + "/");
+			return new URL(dir + "/");
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}

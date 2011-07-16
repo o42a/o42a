@@ -20,51 +20,13 @@
 package org.o42a.core.artifact.object;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
-import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.use.User;
 
 
 final class PropagatedObject extends PlainObject {
-
-	public static Ascendants deriveSamples(
-			Field<Obj> field,
-			Ascendants ascendants) {
-
-		final User user = dummyUser();
-		final Obj container = field.getEnclosingContainer().toObject();
-		final ObjectType type = container.type();
-		final TypeRef containerAncestor = type.getAncestor();
-		Ascendants result = ascendants;
-
-		if (containerAncestor != null) {
-
-			final Member overridden =
-				containerAncestor.typeObject(user).member(field.getKey());
-
-			if (overridden != null) {
-				result = result.addMemberOverride(overridden);
-			}
-		}
-
-		final Sample[] containerSamples = type.getSamples();
-
-		for (int i = containerSamples.length - 1; i >= 0; --i) {
-
-			final Member overridden =
-				containerSamples[i].typeObject(user).member(field.getKey());
-
-			if (overridden != null) {
-				result = result.addMemberOverride(overridden);
-			}
-		}
-
-		return result;
-	}
 
 	PropagatedObject(Field<Obj> field) {
 		super(field, field.getOverridden()[0].getArtifact());
@@ -78,14 +40,18 @@ final class PropagatedObject extends PlainObject {
 	@Override
 	public String toString() {
 
-		final Field<Obj> field = field();
+		final Scope scope = getScope();
 
-		return field != null ? field.toString() : super.toString();
+		if (scope == null) {
+			return super.toString();
+		}
+
+		return scope.toString();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return deriveSamples(field(), new Ascendants(this));
+		return new Ascendants(this).declareMember();
 	}
 
 	@Override
@@ -95,11 +61,6 @@ final class PropagatedObject extends PlainObject {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
-	}
-
-	@SuppressWarnings("unchecked")
-	private final Field<Obj> field() {
-		return (Field<Obj>) getScope();
 	}
 
 }

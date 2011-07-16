@@ -21,6 +21,8 @@ package org.o42a.common.source;
 
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
+import java.util.Iterator;
+
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.Source;
@@ -89,9 +91,12 @@ public class TreeCompilerContext<S extends Source>
 	public void include(DeclarativeBlock block, SectionTag tag) {
 
 		final SourceCompiler compiler = getCompiler();
+		final Iterator<? extends SourceTree<S>> childTrees =
+				getSourceTree().childTrees();
 
-		for (SourceTree<S> tree : getSourceTree().childTrees()) {
+		while (childTrees.hasNext()) {
 
+			final SourceTree<S> tree = childTrees.next();
 			final TreeDefinitionSource<S> definitionSource =
 					new TreeDefinitionSource<S>(this, tree);
 			final DefinitionCompiler definitionCompiler =

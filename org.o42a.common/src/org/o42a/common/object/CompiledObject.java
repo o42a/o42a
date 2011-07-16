@@ -21,20 +21,16 @@ package org.o42a.common.object;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.AdapterId;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ObjectCompiler;
@@ -79,51 +75,7 @@ public class CompiledObject extends PlainObject {
 
 	@Override
 	protected final Ascendants buildAscendants() {
-
-		Ascendants ascendants =
-				getCompiler().buildAscendants(new Ascendants(this));
-		final Field<Obj> field = getField();
-
-		if (field.isOverride()) {
-
-			final ObjectType containerType =
-				getScope().getEnclosingContainer().toObject().type();
-			final TypeRef ancestor = containerType.getAncestor();
-
-			if (ancestor != null) {
-
-				final Member overridden =
-						ancestor.typeObject(dummyUser()).member(field.getKey());
-
-				if (overridden != null) {
-					ascendants = ascendants.addMemberOverride(overridden);
-				}
-			}
-
-			final Sample[] containerSamples = containerType.getSamples();
-
-			for (int i = containerSamples.length - 1; i >= 0; --i) {
-
-				final Member overridden =
-					containerSamples[i].type(dummyUser())
-					.getObject().member(field.getKey());
-
-				if (overridden != null) {
-					ascendants = ascendants.addMemberOverride(overridden);
-				}
-			}
-		} else {
-
-			final AdapterId adapterId =
-				field.toMember().getId().getAdapterId();
-
-			if (adapterId != null) {
-				ascendants = ascendants.addExplicitSample(adapterId.adapterType(
-						ascendants.getScope().getEnclosingScope()));
-			}
-		}
-
-		return ascendants;
+		return getCompiler().buildAscendants(new Ascendants(this));
 	}
 
 	@Override

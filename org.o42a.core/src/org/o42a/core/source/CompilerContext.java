@@ -120,6 +120,7 @@ public abstract class CompilerContext {
 		return getSource().equals(viewer.getSource());
 	}
 
+	@Deprecated
 	public final BlockBuilder compileBlock() {
 		return getCompiler().compileBlock(this);
 	}

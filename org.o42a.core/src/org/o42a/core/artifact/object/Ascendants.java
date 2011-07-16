@@ -25,12 +25,15 @@ import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.Lambda;
 import org.o42a.util.use.UserInfo;
 
 
@@ -180,6 +183,21 @@ public class Ascendants
 		}
 	}
 
+	public final Ascendants declareMember() {
+		return declareField(null);
+	}
+
+	public Ascendants declareField(Lambda<Ascendants, Ascendants> explicit) {
+
+		final Member member = getScope().toMember();
+
+		if (member.isOverride()) {
+			return overrideMember(member, explicit);
+		}
+
+		return declareMember(member, explicit);
+	}
+
 	@Override
 	public String toString() {
 
@@ -266,6 +284,69 @@ public class Ascendants
 		clone.samples = ArrayUtil.prepend(sample, this.samples);
 
 		return clone;
+	}
+
+	private Ascendants declareMember(
+			Member member,
+			Lambda<Ascendants, Ascendants> explicit) {
+
+		Ascendants ascendants = this;
+		final Scope enclosingScope = getScope().getEnclosingScope();
+		final AdapterId adapterId = member.getId().getAdapterId();
+
+		if (adapterId != null) {
+			ascendants = ascendants.addExplicitSample(
+					adapterId.adapterType(enclosingScope));
+		}
+		if (explicit != null) {
+			ascendants = explicit.get(ascendants);
+		}
+		if (!ascendants.isEmpty()) {
+			return ascendants;
+		}
+
+		return ascendants.setAncestor(ValueType.VOID.typeRef(
+				member,
+				enclosingScope));
+	}
+
+	private Ascendants overrideMember(
+			Member member,
+			Lambda<Ascendants, Ascendants> explicit) {
+
+		Ascendants ascendants = this;
+		final ObjectType containerType =
+				member.getContainer().toObject().type();
+		final TypeRef ancestor = containerType.getAncestor();
+
+		if (ancestor != null) {
+
+			final Member overridden =
+					ancestor.typeObject(dummyUser()).member(member.getKey());
+
+			if (overridden != null) {
+				ascendants = ascendants.addMemberOverride(overridden);
+			}
+		}
+
+		final Sample[] containerSamples = containerType.getSamples();
+
+		for (int i = containerSamples.length - 1; i >= 0; --i) {
+
+			final Member overridden =
+					containerSamples[i].type(dummyUser())
+					.getObject().member(member.getKey());
+
+			if (overridden != null) {
+				ascendants = ascendants.addMemberOverride(overridden);
+			}
+		}
+
+		if (explicit == null) {
+			return ascendants;
+		}
+
+		return explicit.get(ascendants);
 	}
 
 	private boolean validateUse(Artifact<?> checkUse) {
