@@ -19,13 +19,12 @@
 */
 package org.o42a.intrinsic.string;
 
-import static org.o42a.intrinsic.string.ConcatFunc.CONCAT;
-
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -37,20 +36,16 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class ConcatStrings extends IntrinsicBuiltin {
+final class ConcatStrings extends CompiledBuiltin {
+
+	private static final URLSourceTree CONCAT =
+			new SingleURLSource(Strings.STRINGS, "concat.o42a");
 
 	private Ref what;
 	private Ref with;
 
 	ConcatStrings(Strings owner) {
-		super(
-				owner.toMemberOwner(),
-				sourcedDeclaration(
-						owner,
-						"concat",
-						"root/strings/concat.o42a")
-				.prototype());
-		setValueType(ValueType.STRING);
+		super(compileField(owner, CONCAT));
 	}
 
 	@Override
@@ -95,7 +90,9 @@ final class ConcatStrings extends IntrinsicBuiltin {
 
 		final Code code = withDirs.code();
 		final FuncPtr<ConcatFunc> funcPtr =
-			code.getGenerator().externalFunction("o42a_str_concat", CONCAT);
+			code.getGenerator().externalFunction(
+					"o42a_str_concat",
+					ConcatFunc.CONCAT);
 		final ConcatFunc func = funcPtr.op(null, code);
 		final ValOp result = dirs.value();
 
@@ -105,20 +102,6 @@ final class ConcatStrings extends IntrinsicBuiltin {
 		whatDirs.done();
 
 		return result;
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.STRING.typeRef(
-						this,
-						getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
 	}
 
 	private Ref what() {

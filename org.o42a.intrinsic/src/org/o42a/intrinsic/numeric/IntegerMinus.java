@@ -39,13 +39,7 @@ final class IntegerMinus extends UnaryResult<Long, Long> {
 			new SingleURLSource(Integers.INTEGERS, "minus.o42a");
 
 	IntegerMinus(Integers owner) {
-		super(
-				compileField(owner, MINUS),
-				"minus",
-				ValueType.INTEGER,
-				"operand",
-				ValueType.INTEGER,
-				"root/integers/minus.o42a");
+		super(compileField(owner, MINUS), "operand", ValueType.INTEGER);
 	}
 
 	@Override

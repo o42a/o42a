@@ -22,6 +22,8 @@ package org.o42a.intrinsic.numeric;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.op.*;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
@@ -30,12 +32,11 @@ import org.o42a.core.value.ValueType;
 
 final class CompareFloats extends CompareNumbers<Double> {
 
+	private static final URLSourceTree COMPARE =
+			new SingleURLSource(Floats.FLOATS, "compare.o42a");
+
 	CompareFloats(Floats owner) {
-		super(
-				owner.toMemberOwner(),
-				"compare",
-				ValueType.FLOAT,
-				"root/floats/compare.o42a");
+		super(compileField(owner, COMPARE), ValueType.FLOAT);
 	}
 
 	@Override

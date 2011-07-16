@@ -21,12 +21,17 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 
 
 final class DivideIntegers extends BinaryInteger {
 
+	private static final URLSourceTree DIVIDE =
+			new SingleURLSource(Integers.INTEGERS, "divide.o42a");
+
 	DivideIntegers(Integers owner) {
-		super(owner, "divide", "left_operand", "right_operand");
+		super(compileField(owner, DIVIDE), "left_operand", "right_operand");
 	}
 
 	@Override

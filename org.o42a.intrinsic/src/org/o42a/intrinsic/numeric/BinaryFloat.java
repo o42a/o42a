@@ -23,6 +23,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Fp64recOp;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -33,19 +34,15 @@ import org.o42a.intrinsic.operator.BinaryResult;
 abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 
 	BinaryFloat(
-			Floats owner,
-			String name,
+			CompiledField field,
 			String leftOperandName,
 			String rightOperandName) {
 		super(
-				owner.toMemberOwner(),
-				name,
-				ValueType.FLOAT,
+				field,
 				leftOperandName,
 				ValueType.FLOAT,
 				rightOperandName,
-				ValueType.FLOAT,
-				"root/floats/" + name + ".o42a");
+				ValueType.FLOAT);
 	}
 
 	@Override

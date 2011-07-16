@@ -17,31 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.numeric;
+package org.o42a.intrinsic.root;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Fp64op;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.core.member.AbstractInclusions;
 
 
-final class MultiplyFloats extends BinaryFloat {
+final class RootInclusions extends AbstractInclusions {
 
-	private static final URLSourceTree MULTIPLY =
-			new SingleURLSource(Floats.FLOATS, "multiply.o42a");
-
-	MultiplyFloats(Floats owner) {
-		super(compileField(owner, MULTIPLY), "left_operand", "right_operand");
+	RootInclusions() {
 	}
 
 	@Override
-	protected double calculate(double left, double right) {
-		return left * right;
+	public String toString() {
+		return "RootInclusions";
 	}
 
 	@Override
-	protected Fp64op write(Code code, Fp64op left, Fp64op right) {
-		return left.mul(code.id("mul"), code, right);
+	protected String includedIntoName() {
+		return "ROOT";
 	}
 
 }

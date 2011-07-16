@@ -22,6 +22,7 @@ package org.o42a.intrinsic.numeric;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -32,19 +33,15 @@ import org.o42a.intrinsic.operator.BinaryResult;
 abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 
 	BinaryInteger(
-			Integers owner,
-			String name,
+			CompiledField field,
 			String leftOperandName,
 			String rightOperandName) {
 		super(
-				owner.toMemberOwner(),
-				name,
-				ValueType.INTEGER,
+				field,
 				leftOperandName,
 				ValueType.INTEGER,
 				rightOperandName,
-				ValueType.INTEGER,
-				"root/integers/" + name + ".o42a");
+				ValueType.INTEGER);
 	}
 
 	@Override

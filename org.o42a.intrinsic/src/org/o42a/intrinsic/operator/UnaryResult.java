@@ -42,15 +42,11 @@ public abstract class UnaryResult<T, O> extends CompiledBuiltin {
 
 	public UnaryResult(
 			CompiledField field,
-			String name,
-			ValueType<T> resultType,
 			String operandName,
-			ValueType<O> operandType,
-			String sourcePath) {
+			ValueType<O> operandType) {
 		super(field);
 		this.operandName = operandName;
 		this.operandType = operandType;
-		setValueType(resultType);
 	}
 
 	@SuppressWarnings("unchecked")

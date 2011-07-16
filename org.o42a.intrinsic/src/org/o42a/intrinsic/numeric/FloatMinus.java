@@ -39,13 +39,7 @@ final class FloatMinus extends UnaryResult<Double, Double> {
 			new SingleURLSource(Floats.FLOATS, "minus.o42a");
 
 	FloatMinus(Floats owner) {
-		super(
-				compileField(owner, MINUS),
-				"minus",
-				ValueType.FLOAT,
-				"operand",
-				ValueType.FLOAT,
-				"root/floats/minus.o42a");
+		super(compileField(owner, MINUS), "operand", ValueType.FLOAT);
 	}
 
 	@Override
