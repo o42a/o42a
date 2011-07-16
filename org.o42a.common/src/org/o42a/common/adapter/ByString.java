@@ -19,16 +19,14 @@
 */
 package org.o42a.common.adapter;
 
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -37,27 +35,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ByString<T> extends IntrinsicBuiltin {
+public abstract class ByString<T> extends CompiledBuiltin {
 
 	private Ref input;
 
-	public ByString(
-			MemberOwner owner,
-			ValueType<T> valueType,
-			String name,
-			String sourcePath) {
-		this(
-				owner,
-				sourcedDeclaration(owner, name, sourcePath).prototype(),
-				valueType);
-	}
-
-	public ByString(
-			MemberOwner owner,
-			FieldDeclaration declaration,
-			ValueType<T> valueType) {
-		super(owner, declaration);
-		setValueType(valueType);
+	public ByString(CompiledField field) {
+		super(field);
 	}
 
 	@Override
@@ -108,20 +91,6 @@ public abstract class ByString<T> extends IntrinsicBuiltin {
 		inputDirs.done();
 
 		return result;
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
 	}
 
 	protected abstract T byString(

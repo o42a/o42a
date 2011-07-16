@@ -19,32 +19,24 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.fieldName;
-
 import org.o42a.common.adapter.ByString;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
 final class ParseString extends ByString<String> {
 
+	private static final URLSourceTree PARSE_STRING =
+			new SingleURLSource(Parser.PARSER, "string.o42a");
+
 	ParseString(Parser parser) {
-		super(
-				parser.toMemberOwner(),
-				sourcedDeclaration(
-						parser,
-						"string",
-						"test/parser/string.o42a")
-				.prototype(),
-				ValueType.STRING);
+		super(compileField(parser, PARSE_STRING));
 	}
 
 	@Override
@@ -62,19 +54,6 @@ final class ParseString extends ByString<String> {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 		return parse(dirs, input().op(host).writeValue(dirs));
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-		final Path ancestorPath = enclosingScope.getEnclosingScopePath().append(
-				fieldName("rt-string")
-				.key(enclosingScope.getEnclosingScope()));
-
-		return new Ascendants(this).setAncestor(
-				ancestorPath.target(this, enclosingScope.distribute())
-				.toTypeRef());
 	}
 
 	@Override

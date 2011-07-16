@@ -118,7 +118,7 @@ final class Section {
 
 	public final Section useBy(CompilerContext context) {
 		assert !isUsed() :
-			"Section already used";
+			"Section already used: " + this;
 
 		this.location = new Location(context, getNode());
 

@@ -87,7 +87,7 @@ public final class ObjectModuleCompiler
 			final SectionNode sectionNode =
 					new SectionNode(getNode().getStart(), getNode().getEnd());
 
-			return new Section(this, sectionNode).useBy(getContext());
+			return new Section(this, sectionNode);
 		}
 
 		if (sectionNodes.length > 1) {

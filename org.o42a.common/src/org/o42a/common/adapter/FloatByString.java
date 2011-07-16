@@ -21,12 +21,11 @@ package org.o42a.common.adapter;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
 
 
 public strictfp class FloatByString extends ByString<Double> {
@@ -45,8 +44,8 @@ public strictfp class FloatByString extends ByString<Double> {
 	private static final byte PARSE_EXPONENT_SIGN = 3;
 	private static final byte PARSE_EXPONENT = 4;
 
-	public FloatByString(Obj owner, String name, String sourcePath) {
-		super(owner.toMemberOwner(), ValueType.FLOAT, name, sourcePath);
+	public FloatByString(CompiledField field) {
+		super(field);
 	}
 
 	@Override

@@ -19,34 +19,25 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
 import org.o42a.common.adapter.FloatByString;
-import org.o42a.common.object.IntrinsicObject;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.CompiledObject;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 
 
-public class Floats extends IntrinsicObject {
+public class Floats extends CompiledObject {
+
+	public static final URLSourceTree FLOATS =
+			new SingleURLSource(Root.ROOT, "floats/");
+
+	private static final URLSourceTree BY_STRING =
+			new SingleURLSource(FLOATS, "by_string.o42a");
 
 	public Floats(Root root) {
-		super(
-				root.toMemberOwner(),
-				fieldDeclaration(
-						root,
-						root.distribute(),
-						fieldName("floats")));
-		setValueType(ValueType.VOID);
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.VOID.typeRef(this, getScope().getEnclosingScope()));
+		super(compileField(root, FLOATS));
 	}
 
 	@Override
@@ -54,7 +45,7 @@ public class Floats extends IntrinsicObject {
 		super.declareMembers(members);
 
 		final FloatByString byString =
-			new FloatByString(this, "by_string", "root/floats/by_string.o42a");
+				new FloatByString(compileField(this, BY_STRING));
 
 		members.addMember(new FloatMinus(this).toMember());
 		members.addMember(new AddFloats(this).toMember());

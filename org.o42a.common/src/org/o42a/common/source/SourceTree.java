@@ -30,6 +30,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.SourceFileName;
 import org.o42a.util.io.Source;
+import org.o42a.util.log.Logger;
 
 
 public abstract class SourceTree<S extends Source> {
@@ -58,6 +59,12 @@ public abstract class SourceTree<S extends Source> {
 
 	public final TreeCompilerContext<S> context(CompilerContext parentContext) {
 		return new TreeCompilerContext<S>(parentContext, this);
+	}
+
+	public final TreeCompilerContext<S> context(
+			CompilerContext parentContext,
+			Logger logger) {
+		return new TreeCompilerContext<S>(parentContext, this, logger);
 	}
 
 	public final CompiledField field(MemberOwner owner) {

@@ -19,22 +19,22 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import static org.o42a.core.member.MemberId.fieldName;
-
 import org.o42a.common.adapter.FloatByString;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 
 
 final class ParseFloat extends FloatByString {
 
+	private static final URLSourceTree PARSE_FLOAT =
+			new SingleURLSource(Parser.PARSER, "float.o42a");
+
 	ParseFloat(Parser parser) {
-		super(parser, "float", "test/parser/float.o42a");
+		super(compileField(parser, PARSE_FLOAT));
 	}
 
 	@Override
@@ -47,19 +47,6 @@ final class ParseFloat extends FloatByString {
 		}
 
 		return value().getValueType().runtimeValue();
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-		final Path ancestorPath = enclosingScope.getEnclosingScopePath().append(
-				fieldName("rt-float")
-				.key(enclosingScope.getEnclosingScope()));
-
-		return new Ascendants(this).setAncestor(
-				ancestorPath.target(this, enclosingScope.distribute())
-				.toTypeRef());
 	}
 
 	@Override
