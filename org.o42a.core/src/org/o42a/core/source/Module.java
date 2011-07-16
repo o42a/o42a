@@ -64,10 +64,6 @@ public class Module extends PlainObject {
 		return this.compiler;
 	}
 
-	public <C> C capablility(Class<? extends C> capabilityType) {
-		return null;
-	}
-
 	@Override
 	public String toString() {
 		if (this.moduleName == null) {

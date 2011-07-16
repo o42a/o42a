@@ -19,15 +19,14 @@
 */
 package org.o42a.intrinsic.operator;
 
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -35,22 +34,20 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
+public abstract class UnaryResult<T, O> extends CompiledBuiltin {
 
 	private final ValueType<O> operandType;
 	private final String operandName;
 	private Ref operand;
 
 	public UnaryResult(
-			MemberOwner owner,
+			CompiledField field,
 			String name,
 			ValueType<T> resultType,
 			String operandName,
 			ValueType<O> operandType,
 			String sourcePath) {
-		super(
-				owner,
-				sourcedDeclaration(owner, name, sourcePath).prototype());
+		super(field);
 		this.operandName = operandName;
 		this.operandType = operandType;
 		setValueType(resultType);
@@ -110,20 +107,6 @@ public abstract class UnaryResult<T, O> extends IntrinsicBuiltin {
 		operandDirs.done();
 
 		return result;
-	}
-
-	@Override
-	protected Ascendants createAscendants() {
-		return new Ascendants(this).setAncestor(
-				value().getValueType().typeRef(
-						this,
-						getScope().getEnclosingScope()));
-	}
-
-	@Override
-	protected void postResolve() {
-		super.postResolve();
-		includeSource();
 	}
 
 	protected abstract T calculate(O operand);

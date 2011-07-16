@@ -25,6 +25,8 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Fp64recOp;
 import org.o42a.codegen.code.op.Int32recOp;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
@@ -33,9 +35,12 @@ import org.o42a.intrinsic.operator.UnaryResult;
 
 final class FloatMinus extends UnaryResult<Double, Double> {
 
-	FloatMinus(Floats floats) {
+	private static final URLSourceTree MINUS =
+			new SingleURLSource(Floats.FLOATS, "minus.o42a");
+
+	FloatMinus(Floats owner) {
 		super(
-				floats.toMemberOwner(),
+				compileField(owner, MINUS),
 				"minus",
 				ValueType.FLOAT,
 				"operand",
