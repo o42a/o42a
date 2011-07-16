@@ -20,38 +20,34 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.common.object.CompiledObject.compileField;
-import static org.o42a.core.member.Inclusions.noInclusions;
-import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
+import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLCompilerContext;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.source.*;
+import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.Location;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.numeric.Floats;
 import org.o42a.intrinsic.numeric.Integers;
 import org.o42a.intrinsic.string.StringValueTypeObject;
 import org.o42a.intrinsic.string.Strings;
+import org.o42a.util.io.URLSource;
 
 
-public class Root extends Obj {
+public class Root extends PlainObject {
 
-	public static final URLSourceTree ROOT =
-			new SingleURLSource("ROOT", base(), "root.o42a");
+	public static final URLSourceTree ROOT = sourceTree();
 
 	private static final URLSourceTree INTEGER =
 			new SingleURLSource(Root.ROOT, "integer.o42a");
@@ -60,15 +56,20 @@ public class Root extends Obj {
 
 	public static Root createRoot(Scope topScope) {
 
-		final URLCompilerContext context = new URLCompilerContext(
-				topScope.getContext(),
-				"ROOT",
-				base(),
-				"root.o42a",
-				DECLARATION_LOGGER);
-		final Location location = new Location(context, context.getSource());
+		final TreeCompilerContext<URLSource> context =
+				ROOT.context(topScope.getContext());
 
-		return new Root(location, topScope);
+		return new Root(topScope, context.compileModule());
+	}
+
+	private static URLSourceTree sourceTree() {
+
+		final URLSources tree = new URLSources("ROOT", base(), "root.o42a");
+
+		tree.addFile("number.o42a");
+		tree.addFile("operators.o42a");
+
+		return tree;
 	}
 
 	private static URL base() {
@@ -83,6 +84,8 @@ public class Root extends Obj {
 		}
 	}
 
+	private final ModuleCompiler compiler;
+
 	private final VoidField voidField;
 	private final Obj falseObject;
 	private final Obj include;
@@ -93,9 +96,12 @@ public class Root extends Obj {
 	private final Obj stringObject;
 	private final Obj directiveObject;
 
-	private Root(LocationInfo location, Scope topScope) {
-		super(new RootScope(location, topScope.distribute()));
-		setValueType(ValueType.VOID);
+	private DeclarativeBlock definition;
+	private ObjectMemberRegistry memberRegistry;
+
+	private Root(Scope topScope, ModuleCompiler compiler) {
+		super(new RootScope(compiler, topScope.distribute()));
+		this.compiler = compiler;
 		this.voidField = new VoidField(this);
 		this.falseObject = new False(this);
 		this.include = new Include(this);
@@ -146,7 +152,30 @@ public class Root extends Obj {
 	}
 
 	@Override
+	protected Ascendants buildAscendants() {
+		return new Ascendants(this).setAncestor(
+				getContext().getVoid().fixedRef(
+						getScope().getEnclosingScope().distribute())
+						.toStaticTypeRef());
+	}
+
+	@Override
+	protected void postResolve() {
+		super.postResolve();
+
+		this.memberRegistry =
+				new ObjectMemberRegistry(new RootInclusions(), this);
+		this.definition = new DeclarativeBlock(
+				this,
+				new Namespace(this, this),
+				this.memberRegistry);
+
+		this.compiler.define(this.definition, IMPLICIT_SECTION_TAG);
+	}
+
+	@Override
 	protected void declareMembers(ObjectMembers members) {
+		this.memberRegistry.registerMembers(members);
 		members.addMember(getVoidField().toMember());
 		members.addMember(getFalse().toMember());
 		members.addMember(getInteger().toMember());
@@ -159,31 +188,16 @@ public class Root extends Obj {
 		members.addMember(this.useObject.toMember());
 		members.addMember(new Strings(this).toMember());
 		members.addMember(new DirectiveValueTypeObject(this).toMember());
-
-		final ObjectMemberRegistry memberRegistry =
-				new ObjectMemberRegistry(noInclusions(), this);
-		final BlockBuilder compiled = getContext().compileBlock();
-		final DeclarativeBlock block =
-				new DeclarativeBlock(this, distribute(), memberRegistry);
-
-		compiled.buildBlock(block);
-		memberRegistry.registerMembers(members);
-		block.executeInstructions();
 	}
 
 	@Override
-	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(
-				getContext().getVoid().fixedRef(
-						getScope().getEnclosingScope().distribute())
-						.toStaticTypeRef());
+	protected void updateMembers() {
+		this.definition.executeInstructions();
 	}
 
 	@Override
-	protected Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ascendantDefinitions) {
-		return ascendantDefinitions;
+	protected Definitions explicitDefinitions() {
+		return this.definition.define(getScope());
 	}
 
 	@Override
