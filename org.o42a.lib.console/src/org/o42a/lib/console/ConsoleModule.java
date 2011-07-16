@@ -19,20 +19,21 @@
 */
 package org.o42a.lib.console;
 
+import static org.o42a.common.object.CompiledObject.compileField;
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
 import static org.o42a.lib.console.MainFunc.MAIN;
-import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.common.source.URLCompilerContext;
+import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.CodeBuilder;
@@ -52,27 +53,30 @@ import org.o42a.util.use.UserInfo;
 
 public class ConsoleModule extends Module {
 
-	public static ConsoleModule consoleModule(CompilerContext context) {
+	public static final URLSourceTree CONSOLE =
+			new SingleURLSource("Console", base(), "console.o42a");
 
-		final URLCompilerContext moduleContext;
+	private static final URLSourceTree PRINT_TO_CONSOLE =
+			new SingleURLSource(ConsoleModule.CONSOLE, "print_to_console.o42a");
+	private static final URLSourceTree PRINT =
+			new SingleURLSource(ConsoleModule.CONSOLE, "print.o42a");
+	private static final URLSourceTree PRINT_ERROR =
+			new SingleURLSource(ConsoleModule.CONSOLE, "print_error.o42a");
+
+	public static ConsoleModule consoleModule(CompilerContext context) {
+		return new ConsoleModule(CONSOLE.context(context));
+	}
+
+	private static URL base() {
+
+		final URL self = ConsoleModule.class.getResource(
+				ConsoleModule.class.getSimpleName() + ".class");
 
 		try {
-
-			final URL self = ConsoleModule.class.getResource(
-					ConsoleModule.class.getSimpleName() + ".class");
-			final URL base = new URL(self, "../../../..");
-
-			moduleContext = new URLCompilerContext(
-					context,
-					"Console",
-					base,
-					"console.o42a",
-					DECLARATION_LOGGER);
+			return new URL(self, "../../../..");
 		} catch (MalformedURLException e) {
 			throw new ExceptionInInitializerError(e);
 		}
-
-		return new ConsoleModule(moduleContext);
 	}
 
 	private Obj main;
@@ -184,15 +188,15 @@ public class ConsoleModule extends Module {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
+
+		members.addMember(PRINT_TO_CONSOLE.member(this));
 		members.addMember(new Print(
-				this,
-				"print",
+				compileField(this, PRINT),
 				"o42a_io_print_str").toMember());
 		members.addMember(new Print(
-				this,
-				"print_error",
+				compileField(this, PRINT_ERROR),
 				"o42a_error_append_str").toMember());
-		super.declareMembers(members);
 	}
 
 	private void generateDebugMain(

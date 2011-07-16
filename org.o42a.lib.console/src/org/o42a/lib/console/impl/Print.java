@@ -20,13 +20,13 @@
 package org.o42a.lib.console.impl;
 
 import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.object.IntrinsicBuiltin;
+import org.o42a.common.object.CompiledBuiltin;
+import org.o42a.common.object.CompiledField;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Ascendants;
@@ -40,22 +40,15 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
-import org.o42a.lib.console.ConsoleModule;
 
 
-public class Print extends IntrinsicBuiltin {
+public class Print extends CompiledBuiltin {
 
 	private final String funcName;
 	private Ref text;
 
-	public Print(ConsoleModule module, String name, String funcName) {
-		super(
-				module.toMemberOwner(),
-				fieldDeclaration(
-						module,
-						module.distribute(),
-						fieldName(name))
-				.prototype());
+	public Print(CompiledField field, String funcName) {
+		super(field);
 		this.funcName = funcName;
 	}
 
@@ -90,7 +83,7 @@ public class Print extends IntrinsicBuiltin {
 	}
 
 	@Override
-	protected Ascendants createAscendants() {
+	protected Ascendants buildAscendants() {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 		final Path printToConsole =

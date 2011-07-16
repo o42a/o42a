@@ -22,5 +22,3 @@ Main :=> integer(
 
   <*> (<*{}>. = 0)
 )
-
-Print to console :=> void(Include 'console/print_to_console.o42a')
