@@ -53,7 +53,7 @@ inline size_t o42a_layout_array_size(
 			o42a_layout_size(O42A_ARGS_ layout),
 			layout);
 
-	return element_size * num_elements;;
+	return element_size * num_elements;
 }
 
 inline o42a_layout_t o42a_layout_array(
