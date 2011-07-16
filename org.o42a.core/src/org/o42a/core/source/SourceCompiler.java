@@ -32,6 +32,7 @@ public interface SourceCompiler {
 
 	DefinitionCompiler compileDefinition(DefinitionSource source);
 
+	@Deprecated
 	BlockBuilder compileBlock(CompilerContext context);
 
 	Ref compilePath(

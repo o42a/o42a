@@ -20,8 +20,8 @@
 package org.o42a.ast.module;
 
 import org.o42a.ast.AbstractNode;
-import org.o42a.ast.Node;
 import org.o42a.ast.NodeVisitor;
+import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -83,8 +83,8 @@ public class SectionNode
 		this.content = content;
 	}
 
-	public SectionNode(Node node) {
-		super(node.getStart(), node.getEnd());
+	public SectionNode(Position start, Position end) {
+		super(start, end);
 		this.title = null;
 		this.subTitle = null;
 		this.content = new SentenceNode[0];

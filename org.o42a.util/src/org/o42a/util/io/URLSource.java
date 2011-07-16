@@ -28,8 +28,6 @@ import java.net.URL;
 
 public class URLSource extends Source {
 
-	private static final long serialVersionUID = 3056955736288982951L;
-
 	private final URL base;
 	private final URL url;
 	private final String name;

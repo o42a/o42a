@@ -79,7 +79,11 @@ public final class ObjectModuleCompiler
 
 		if (sectionNodes.length == 0) {
 			this.moduleName = nameByFile();
-			return new Section(this, new SectionNode(getNode())).use();
+
+			final SectionNode sectionNode =
+					new SectionNode(getNode().getStart(), getNode().getEnd());
+
+			return new Section(this, sectionNode).use();
 		}
 
 		if (sectionNodes.length > 1) {

@@ -49,7 +49,11 @@ public class FieldModuleCompiler
 		final SectionNode[] sectionNodes = getNode().getSections();
 
 		if (sectionNodes.length == 0) {
-			return new Section(this, new SectionNode(getNode())).use();
+
+			final SectionNode sectionNode =
+					new SectionNode(getNode().getStart(), getNode().getEnd());
+
+			return new Section(this, sectionNode).use();
 		}
 
 		if (sectionNodes.length > 1) {
