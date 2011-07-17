@@ -72,7 +72,7 @@
 		</not>
 	</condition>
 
-	<target name="compile-deps" if="project.has_deps">
+	<target name="compile-deps" if="project.has_deps" unless="auto-build">
 		<echo
 			taskname="${ant.project.name}"
 			message="Compiling dependencies: ${project.has_deps}"/>
@@ -88,7 +88,7 @@
 	<target name="copy-resources">
 	</target>
 
-	<target name="compile" depends="compile-deps">
+	<target name="compile" depends="compile-deps" unless="auto-build">
 		<mkdir taskname="${ant.project.name}" dir="${output..}"/>
 		<javac
 			srcdir="${source.path}" 
@@ -118,9 +118,12 @@
 		</jar>
 	</target>
 
-	<target name="clean">
-		<delete taskname="${ant.project.name}" file="${jar.file}"/>
+	<target name="_clean" unless="auto-build">
 		<delete taskname="${ant.project.name}" dir="${output..}"/>
+	</target>
+
+	<target name="clean" depends="_clean">
+		<delete taskname="${ant.project.name}" file="${jar.file}"/>
 	</target>
 
 </project>

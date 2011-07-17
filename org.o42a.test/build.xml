@@ -23,7 +23,14 @@
 
 	<import file="../build/build.setup.xml"/>
 
-	<target name="package-deps">
+	<target name="auto-package-deps" if="auto-build">
+		<subant target="package" inheritall="false" inheritrefs="false">
+			<filelist dir=".." files="org.o42a.backend.llvm.jni"/>
+			<filelist dir=".." files="org.o42a.rt"/>
+		</subant>
+	</target>
+
+	<target name="package-deps" depends="auto-package-deps" unless="auto-build">
 		<subant target="package" inheritall="false" inheritrefs="false">
 			<filelist dir=".." files="org.o42a.cl"/>
 		</subant>
