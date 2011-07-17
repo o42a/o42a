@@ -123,9 +123,7 @@ public class Placed extends Scoped implements PlaceInfo {
 		private final Container container;
 		private final PlaceInfo placed;
 
-		private OtherContainerDistributor(
-				Container container,
-				PlaceInfo placed) {
+		OtherContainerDistributor(Container container, PlaceInfo placed) {
 			this.container = container;
 			this.placed = placed;
 		}

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.source;
 
-import static org.o42a.util.StringCodec.canonicalName;
+import static org.o42a.util.string.StringCodec.canonicalName;
 
 
 public final class SourceFileName {

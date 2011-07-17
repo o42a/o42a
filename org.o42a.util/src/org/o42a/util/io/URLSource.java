@@ -19,6 +19,8 @@
 */
 package org.o42a.util.io;
 
+import static org.o42a.util.string.StringUtil.removeLeadingChars;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -97,7 +99,7 @@ public class URLSource extends Source {
 
 	@Override
 	public Reader open() throws IOException {
-		return new InputStreamReader(this.url.openStream(), "UTF-8");
+		return new InputStreamReader(getURL().openStream(), "UTF-8");
 	}
 
 	private String name(String path) {
@@ -106,13 +108,15 @@ public class URLSource extends Source {
 		final String urlString = this.url.toString();
 
 		if (urlString.startsWith(baseString)) {
-			return urlString.substring(baseString.length());
+			return removeLeadingChars(
+					urlString.substring(baseString.length()),
+					'/');
 		}
 
 		final String rootString;
 
 		try {
-			rootString = new URL(this.base, "/").toString();
+			rootString = new URL(getBase(), "/").toString();
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException();
 		}
@@ -121,7 +125,9 @@ public class URLSource extends Source {
 			return path;
 		}
 
-		return urlString.substring(rootString.length());
+		return removeLeadingChars(
+				urlString.substring(rootString.length()),
+				'/');
 	}
 
 }

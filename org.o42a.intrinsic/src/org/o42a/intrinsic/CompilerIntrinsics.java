@@ -22,7 +22,7 @@ package org.o42a.intrinsic;
 import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.test.TestModule.testModule;
-import static org.o42a.util.StringCodec.canonicalName;
+import static org.o42a.util.string.StringCodec.canonicalName;
 import static org.o42a.util.use.Usable.simpleUsable;
 
 import java.util.HashMap;

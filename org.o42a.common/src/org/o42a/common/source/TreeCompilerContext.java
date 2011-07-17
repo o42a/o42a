@@ -102,7 +102,9 @@ public class TreeCompilerContext<S extends Source>
 			final DefinitionCompiler definitionCompiler =
 					compiler.compileDefinition(definitionSource);
 
-			definitionCompiler.define(block, tag);
+			if (definitionCompiler != null) {
+				definitionCompiler.define(block, tag);
+			}
 		}
 	}
 

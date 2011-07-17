@@ -21,6 +21,8 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Container;
+import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
@@ -53,10 +55,19 @@ final class ObjectFieldVariant
 			return this.content;
 		}
 
+		final Container container;
+
+		if (getField().ownsCompilerContext()) {
+			container = new Namespace(
+					getDefinition(),
+					getField().getContainer());
+		} else {
+			container = getField().getContainer();
+		}
+
 		this.content = new DeclarativeBlock(
-				getDefinition(),
-				getField(),
-				null,
+				container,
+				container,
 				getObjectField().getMemberRegistry());
 		this.content.setEnv(new VariantEnv(this));
 

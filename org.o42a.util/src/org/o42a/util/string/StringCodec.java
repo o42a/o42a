@@ -17,16 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util;
+package org.o42a.util.string;
 
 import static java.lang.Character.*;
-import static org.o42a.util.Characters.HYPHEN;
-import static org.o42a.util.Characters.NON_BREAKING_HYPHEN;
+import static org.o42a.util.string.Characters.HYPHEN;
+import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+
+import org.o42a.util.DataAlignment;
 
 
 public class StringCodec {

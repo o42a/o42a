@@ -32,7 +32,6 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
@@ -83,20 +82,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 				location,
 				distributor,
 				null,
-				memberRegistry,
-				DECLARATIVE_FACTORY,
-				false);
-	}
-
-	public DeclarativeBlock(
-			LocationInfo location,
-			DeclaredField<?, ?> field,
-			Statements<?> enclosing,
-			MemberRegistry memberRegistry) {
-		this(
-				location,
-				declarativeDistributor(field.getContainer()),
-				enclosing,
 				memberRegistry,
 				DECLARATIVE_FACTORY,
 				false);

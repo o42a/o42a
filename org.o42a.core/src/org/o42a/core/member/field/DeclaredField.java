@@ -24,6 +24,7 @@ import static org.o42a.core.member.Inclusions.noInclusions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.*;
@@ -79,21 +80,22 @@ public abstract class DeclaredField<
 		return this.variants;
 	}
 
-	public final Inclusions newInclusions() {
+	public final boolean ownsCompilerContext() {
 
-		final Member enclosingMember = getEnclosingScope().toMember();
+		final Scope enclosingScope = getEnclosingScope();
+		final Member enclosingMember = enclosingScope.toMember();
 
 		if (enclosingMember == null) {
-			// Not a member of another member.
-			// Inclusions doesn't work this way.
-			return noInclusions();
-		}
-		if (enclosingMember.getAllContexts().contains(getContext())) {
-			// Context is not created solely for this field.
-			// Can not handle inclusions.
-			return noInclusions();
+			return enclosingScope.getContext() != getContext();
 		}
 
+		return !enclosingMember.getAllContexts().contains(getContext());
+	}
+
+	public final Inclusions newInclusions() {
+		if (!ownsCompilerContext()) {
+			return noInclusions();
+		}
 		return new FieldInclusions(this);
 	}
 

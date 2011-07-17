@@ -20,7 +20,7 @@
 package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.ellipsis;
-import static org.o42a.util.Characters.HORIZONTAL_ELLIPSIS;
+import static org.o42a.util.string.Characters.HORIZONTAL_ELLIPSIS;
 
 import java.util.ArrayList;
 
