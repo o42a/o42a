@@ -20,6 +20,9 @@
 Use namespace 'Test'
 
 
+Integers := test
+================
+
 Name = "Integers"
 
 Run tests

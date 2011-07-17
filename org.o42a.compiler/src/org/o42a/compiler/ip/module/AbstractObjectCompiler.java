@@ -34,6 +34,7 @@ public abstract class AbstractObjectCompiler
 
 	private Section section;
 	private Loggable loggable;
+	private DeclarativeBlock enclosingBlock;
 
 	public AbstractObjectCompiler(ObjectSource source, ModuleNode node) {
 		super(source, node);
@@ -56,7 +57,25 @@ public abstract class AbstractObjectCompiler
 		if (this.section != null) {
 			return this.section;
 		}
-		return this.section = createSection().useBy(getContext());
+
+		this.section = createSection().useBy(getContext());
+		if (this.enclosingBlock != null) {
+			this.section.encloseInto(this.enclosingBlock);
+		}
+
+		return this.section;
+	}
+
+	public final DeclarativeBlock getEnclosingBlock() {
+		return this.enclosingBlock;
+	}
+
+	@Override
+	public void encloseInto(DeclarativeBlock enclosingBlock) {
+		this.enclosingBlock = enclosingBlock;
+		if (this.section != null) {
+			this.section.encloseInto(enclosingBlock);
+		}
 	}
 
 	@Override

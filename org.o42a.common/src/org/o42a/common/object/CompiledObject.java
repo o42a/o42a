@@ -20,6 +20,7 @@
 package org.o42a.common.object;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.common.resolution.ScopeSet;
@@ -52,6 +53,13 @@ public class CompiledObject extends PlainObject {
 			CompilerContext context) {
 
 		final FieldCompiler compiler = context.compileField();
+		final Namespace namespace =
+				new Namespace(compiler, owner.getContainer());
+		final DeclarativeBlock enclosingBlock =
+				new DeclarativeBlock(compiler, namespace, noDeclarations());
+
+		compiler.encloseInto(enclosingBlock);
+
 		final FieldDeclaration declaration = compiler.declare(owner);
 
 		return new CompiledField(owner, declaration, compiler);
@@ -66,12 +74,7 @@ public class CompiledObject extends PlainObject {
 	public static CompiledField compileField(
 			MemberOwner owner,
 			SourceTree<?> sourceTree) {
-
-		final FieldCompiler compiler =
-				sourceTree.context(owner.getContext()).compileField();
-		final FieldDeclaration declaration = compiler.declare(owner);
-
-		return new CompiledField(owner, declaration, compiler);
+		return compileField(owner, sourceTree.context(owner.getContext()));
 	}
 
 	private final FieldCompiler compiler;

@@ -32,6 +32,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
 
@@ -70,15 +71,15 @@ class HeaderStatement extends Statement {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 
-		final Instruction instruction = this.ref.toInstruction(resolver);
+		final Directive directive =
+				this.ref.resolve(resolver).toDirective(resolver);
 
-		if (instruction != null) {
-			return new HeaderInstruction(this.ref, instruction);
+		if (directive == null) {
+			notDirective(getLogger(), this);
+			return SKIP_INSTRUCTION;
 		}
 
-		notDirective(getLogger(), this);
-
-		return SKIP_INSTRUCTION;
+		return new HeaderInstruction(this.ref, directive);
 	}
 
 	@Override
