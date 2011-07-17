@@ -23,12 +23,12 @@ import static org.o42a.backend.llvm.LLVMGenerator.newGenerator;
 import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.*;
 
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.codegen.Generator;
-import org.o42a.common.source.URLCompilerContext;
+import org.o42a.common.source.FileSourceTree;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
@@ -50,23 +50,26 @@ public class CL {
 		this.generator = generator;
 	}
 
-	public void compile(String source) throws IOException {
+	public void compile(String path) throws IOException {
 
 		final Compiler compiler = compiler();
 		final CompilerIntrinsics intrinsics = intrinsics(compiler);
-		final URL src = url(source);
+		final File file = new File(path);
+
+		if (!file.isFile()) {
+			System.err.println("No such file: " + path);
+			System.exit(INVALID_INPUT);
+			return;
+		}
+
 		final CompilerContext rootContext =
 				intrinsics.getRoot().getContext();
 		final Log logger = new Log();
-		final String fileName = fileName(src);
-		final CompilerContext context = new URLCompilerContext(
-					rootContext,
-					fileName,
-					src,
-					fileName,
-					logger);
-
-		final Module module = new Module(context, moduleName(src.getPath()));
+		final FileSourceTree sourceTree =
+				new FileSourceTree(null, file.getParentFile(), file.getName());
+		final CompilerContext context =
+				sourceTree.context(rootContext, logger);
+		final Module module = new Module(context, null);
 
 		intrinsics.setMainModule(module);
 		intrinsics.resolveAll();
@@ -108,65 +111,6 @@ public class CL {
 		} finally {
 			generator.close();
 		}
-	}
-
-	private static URL url(String path) {
-
-		final URI currentDir;
-		final URI sourceURI;
-
-		try {
-			currentDir = new URI(
-					"file",
-					System.getProperty("user.dir") + "/",
-					null);
-			sourceURI = new URI(path);
-		} catch (URISyntaxException e) {
-			System.err.println("Wrong file path: " + path);
-			System.exit(INVALID_INPUT);
-			return null;
-		}
-
-		try {
-			return currentDir.resolve(sourceURI).toURL();
-		} catch (MalformedURLException e) {
-			System.err.println("Wrong file path: " + path);
-			System.exit(INVALID_INPUT);
-			return null;
-		}
-	}
-
-	private static String fileName(URL url) {
-
-		final String path = url.getPath();
-		final int slashIdx = path.lastIndexOf('/');
-
-		if (slashIdx < 0) {
-			return path;
-		}
-
-		return path.substring(slashIdx + 1);
-	}
-
-	private static String moduleName(String source) {
-
-		final int slashIdx =
-			source.lastIndexOf(System.getProperty("file.separator"));
-		final String fileName;
-
-		if (slashIdx >= 0) {
-			fileName = source.substring(slashIdx + 1);
-		} else {
-			fileName = source;
-		}
-
-		final int dotIdx = fileName.lastIndexOf('.');
-
-		if (dotIdx > 0) {
-			return fileName.substring(0, dotIdx);
-		}
-
-		return fileName;
 	}
 
 	private static final class Log implements Logger {

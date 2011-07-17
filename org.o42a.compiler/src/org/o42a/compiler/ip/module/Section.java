@@ -34,6 +34,7 @@ import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.OtherContextDistributor;
 import org.o42a.core.Distributor;
+import org.o42a.core.Namespace;
 import org.o42a.core.member.field.*;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -48,6 +49,7 @@ final class Section {
 	private final SectionTitle title;
 	private final SectionTag tag;
 	private LocationInfo location;
+	private DeclarativeBlock enclosingBlock;
 
 	Section(
 			AbstractDefinitionCompiler<?> compiler,
@@ -123,10 +125,19 @@ final class Section {
 		return this;
 	}
 
-	public AscendantsDefinition ascendants(Distributor distributor) {
+	public void encloseInto(DeclarativeBlock enclosingBlock) {
+		assert this.enclosingBlock == null :
+			"Section already enclosed into block";
+		this.enclosingBlock = enclosingBlock;
+		addHeader(enclosingBlock);
+	}
+
+	public AscendantsDefinition ascendants() {
 
 		final Distributor ascendantsDistributor =
-				new OtherContextDistributor(getContext(), distributor);
+				new OtherContextDistributor(
+						getContext(),
+						this.enclosingBlock.distribute());
 		final SectionTitle title = getTitle();
 
 		if (title != null) {
@@ -143,7 +154,6 @@ final class Section {
 	}
 
 	public void define(DeclarativeBlock definition) {
-		addHeader(definition);
 		addContent(
 				new DefaultStatementVisitor(PLAIN_IP, getContext()),
 				definition,
@@ -165,9 +175,10 @@ final class Section {
 
 	public void declareField(DeclarativeBlock definition) {
 
+		final DeclarativeBlock enclosingBlock = enclosingBlock(definition);
 		final LocationInfo location = getLocation();
 		final Declaratives statements =
-				definition.propose(location).alternative(location);
+				enclosingBlock.propose(location).alternative(location);
 
 		final Distributor distributor = statements.nextDistributor();
 		final FieldDeclaration fieldDeclaration =
@@ -179,7 +190,7 @@ final class Section {
 
 		final FieldDefinition fieldDefinition = fieldDefinition(
 				getLocation(),
-				ascendants(distributor),
+				ascendants(),
 				new SectionDefinition(this));
 
 		final FieldBuilder fieldBuilder =
@@ -188,6 +199,21 @@ final class Section {
 		if (fieldBuilder != null) {
 			statements.statement(fieldBuilder.build());
 		}
+	}
+
+	private DeclarativeBlock enclosingBlock(DeclarativeBlock definition) {
+
+		final LocationInfo location = getLocation();
+		final Declaratives statements =
+				definition.propose(location).alternative(location);
+		final Namespace namespace =
+				new Namespace(location, statements.getContainer());
+		final DeclarativeBlock enclosingBlock =
+				statements.parentheses(location, namespace);
+
+		encloseInto(enclosingBlock);
+
+		return enclosingBlock;
 	}
 
 	@Override
@@ -234,7 +260,7 @@ final class Section {
 				IMPLICIT_SECTION_TAG);
 	}
 
-	private void addHeader(DeclarativeBlock definition) {
+	private void addHeader(DeclarativeBlock enclosingBlock) {
 
 		final SectionNode header = getCompiler().getNode().getHeader();
 
@@ -252,8 +278,10 @@ final class Section {
 						sentence.getMark(),
 						"Only propositions allowed in module header");
 			}
-			addSentence(visitor, definition, sentence, PROPOSITION);
+			addSentence(visitor, enclosingBlock, sentence, PROPOSITION);
 		}
+
+		enclosingBlock.executeInstructions();
 	}
 
 }

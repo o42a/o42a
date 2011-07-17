@@ -20,6 +20,9 @@
 Use namespace 'Test'
 
 
+Floats := test
+==============
+
 Name = "Floats"
 
 Run tests

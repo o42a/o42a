@@ -20,9 +20,12 @@
 package org.o42a.core.source;
 
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 public interface ObjectCompiler extends LocationInfo, DefinitionCompiler {
+
+	void encloseInto(DeclarativeBlock enclosingBlock);
 
 	Ascendants buildAscendants(Ascendants ascendants);
 

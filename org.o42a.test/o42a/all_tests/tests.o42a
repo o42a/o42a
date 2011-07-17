@@ -19,25 +19,4 @@
 */
 Use namespace 'Test'
 
-
-Name = "Simple tests"
-
 Run tests
-
-Assertion := test(
-  Assert [void] 'Void is not true' 
-  Assert [rt-void] 'Rt-void is not true'
-  Assert [--rt-false] 'Rt-false is not false'
-)
-
-Integers := test(
-  Include 'simple/integers.o42a'
-)
-
-Floats := test(
-  Include 'simple/floats.o42a'
-)
-
-Strings := test(
-  Include 'simple/strings.o42a'
-)

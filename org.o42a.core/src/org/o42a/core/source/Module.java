@@ -20,11 +20,13 @@
 package org.o42a.core.source;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
+import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -46,7 +48,14 @@ public class Module extends PlainObject {
 	}
 
 	public Module(ModuleCompiler compiler, String moduleName) {
-		super(new ModuleScope(compiler, moduleName));
+		this(moduleScope(compiler), compiler, moduleName);
+	}
+
+	private Module(
+			ModuleScope scope,
+			ModuleCompiler compiler,
+			String moduleName) {
+		super(scope);
 		this.compiler = compiler;
 		this.moduleName =
 				moduleName != null ? moduleName : compiler.getModuleName();
@@ -106,14 +115,24 @@ public class Module extends PlainObject {
 		return this.definition.define(getScope());
 	}
 
+	private static ModuleScope moduleScope(ModuleCompiler compiler) {
+
+		final Namespace moduleNamespace =
+				compiler.getContext().getIntrinsics().getModuleNamespace();
+		final Namespace namespace = new Namespace(compiler, moduleNamespace);
+		final Distributor distributor = declarativeDistributor(namespace);
+		final DeclarativeBlock enclosingBlock =
+				new DeclarativeBlock(compiler, distributor, noDeclarations());
+
+		compiler.encloseInto(enclosingBlock);
+
+		return new ModuleScope(compiler, distributor);
+	}
+
 	private static final class ModuleScope extends ObjectScope {
 
-		ModuleScope(LocationInfo location, String moduleName) {
-			super(
-					location,
-					declarativeDistributor(
-							location.getContext()
-							.getIntrinsics().getModuleNamespace()));
+		ModuleScope(LocationInfo location, Distributor distributor) {
+			super(location, distributor);
 		}
 
 		@Override

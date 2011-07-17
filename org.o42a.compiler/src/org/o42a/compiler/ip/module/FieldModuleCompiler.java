@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.module;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
-
 import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.module.SectionNode;
 import org.o42a.core.artifact.object.Ascendants;
@@ -41,7 +39,7 @@ public class FieldModuleCompiler
 	@Override
 	public FieldDeclaration declare(MemberOwner owner) {
 		return getSection().getTitle().fieldDeclaration(
-				declarativeDistributor(owner.getContainer()));
+				getEnclosingBlock().distribute());
 	}
 
 	@Override

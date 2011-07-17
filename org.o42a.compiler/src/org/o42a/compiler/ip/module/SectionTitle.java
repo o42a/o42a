@@ -170,7 +170,8 @@ final class SectionTitle {
 				PLAIN_IP,
 				distributor.getContext(),
 				getDeclaratorNode());
-		final DeclarableNode declarableNode = getDeclaratorNode().getDeclarable();
+		final DeclarableNode declarableNode =
+				getDeclaratorNode().getDeclarable();
 
 		return validate(declarableNode.accept(visitor, distributor));
 	}

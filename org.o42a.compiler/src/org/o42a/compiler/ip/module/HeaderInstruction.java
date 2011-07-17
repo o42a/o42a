@@ -27,6 +27,7 @@ import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.Directive;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseFlag;
 import org.o42a.util.use.User;
@@ -35,18 +36,18 @@ import org.o42a.util.use.User;
 final class HeaderInstruction implements Instruction, InstructionContext {
 
 	private final Ref ref;
-	private final Instruction instruction;
+	private final Directive directive;
 	private InstructionContext context;
 
-	HeaderInstruction(Ref ref, Instruction instruction) {
+	HeaderInstruction(Ref ref, Directive instruction) {
 		this.ref = ref;
-		this.instruction = instruction;
+		this.directive = instruction;
 	}
 
 	@Override
 	public void execute(InstructionContext context) {
 		this.context = context;
-		this.instruction.execute(this);
+		this.directive.apply(this.ref, this);
 	}
 
 	@Override
