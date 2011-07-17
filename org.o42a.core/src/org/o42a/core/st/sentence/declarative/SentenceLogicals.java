@@ -294,13 +294,13 @@ final class SentenceLogicals {
 			assert !otherwisePresent() :
 				"Can not add conditional sentence"
 				+ " when otherwise condition already present";
-			this.variants.add(setence.getEnv());
+			this.variants.add(setence.getFinalEnv());
 		}
 
 		private final void otherwise(DeclarativeSentence sentence) {
 			this.otherwise = Logical.and(
 					this.otherwise,
-					sentence.getEnv().fullLogical(getScope()));
+					sentence.getFinalEnv().fullLogical(getScope()));
 		}
 
 	}

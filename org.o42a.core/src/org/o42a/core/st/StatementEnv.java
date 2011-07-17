@@ -60,15 +60,17 @@ public abstract class StatementEnv {
 		return expectedType;
 	}
 
+	public final boolean isConditional() {
+		return hasPrerequisite() || hasPrecondition();
+	}
+
 	public abstract boolean hasPrerequisite();
 
 	public abstract Logical prerequisite(Scope scope);
 
-	public abstract Logical precondition(Scope scope);
+	public abstract boolean hasPrecondition();
 
-	public boolean hasConditions(Scope scope) {
-		return hasPrerequisite() || !precondition(scope).isTrue();
-	}
+	public abstract Logical precondition(Scope scope);
 
 	public Logical fullLogical(Scope scope) {
 		return prerequisite(scope).and(precondition(scope));
@@ -109,6 +111,11 @@ public abstract class StatementEnv {
 		@Override
 		public Logical prerequisite(Scope scope) {
 			return logicalTrue(this.location, scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return false;
 		}
 
 		@Override
@@ -153,6 +160,11 @@ public abstract class StatementEnv {
 		public Logical prerequisite(Scope scope) {
 			reportError();
 			return this.env.prerequisite(scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return false;
 		}
 
 		@Override
@@ -207,6 +219,11 @@ public abstract class StatementEnv {
 		@Override
 		public Logical prerequisite(Scope scope) {
 			return logicalTrue(this.object, scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return false;
 		}
 
 		@Override

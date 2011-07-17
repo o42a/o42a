@@ -50,6 +50,11 @@ final class InclusionEnv extends StatementEnv {
 	}
 
 	@Override
+	public boolean hasPrecondition() {
+		return this.env.hasPrecondition();
+	}
+
+	@Override
 	public Logical precondition(Scope scope) {
 		return this.env.precondition(scope);
 	}

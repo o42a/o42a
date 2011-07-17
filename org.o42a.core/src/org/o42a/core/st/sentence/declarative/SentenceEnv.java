@@ -50,6 +50,11 @@ public final class SentenceEnv extends StatementEnv {
 	}
 
 	@Override
+	public boolean hasPrecondition() {
+		return true;
+	}
+
+	@Override
 	public Logical precondition(Scope scope) {
 
 		final List<Declaratives> alternatives = this.sentence.getAlternatives();
@@ -65,8 +70,7 @@ public final class SentenceEnv extends StatementEnv {
 		final Logical[] vars = new Logical[size];
 
 		for (int i = 0; i < size; ++i) {
-			vars[i] =
-				alternatives.get(i).getEnv().fullLogical(scope);
+			vars[i] = alternatives.get(i).getEnv().fullLogical(scope);
 		}
 
 		return disjunction(this.sentence, this.sentence.getScope(), vars);

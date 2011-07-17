@@ -393,6 +393,11 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		@Override
+		public boolean hasPrecondition() {
+			return true;
+		}
+
+		@Override
 		public Logical precondition(Scope scope) {
 			return this.initialEnv.precondition(scope).and(
 					localDef(this.block, scope).fullLogical());

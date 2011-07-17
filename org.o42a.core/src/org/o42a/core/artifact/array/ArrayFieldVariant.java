@@ -64,7 +64,7 @@ final class ArrayFieldVariant
 	}
 
 	void build(ArrayTypeRef typeRef, TypeRef itemTypeRef) {
-		if (getEnv().hasConditions(getField())) {
+		if (getInitialEnv().isConditional()) {
 			getLogger().error(
 					"prohibiter_conditional_declaration",
 					this,

@@ -262,6 +262,11 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 
 		@Override
+		public boolean hasPrecondition() {
+			return lastDefinitionEnv().hasPrecondition();
+		}
+
+		@Override
 		public Logical precondition(Scope scope) {
 			return lastDefinitionEnv().precondition(scope);
 		}

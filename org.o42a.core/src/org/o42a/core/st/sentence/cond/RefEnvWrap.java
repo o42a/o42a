@@ -47,6 +47,11 @@ final class RefEnvWrap extends StatementEnv {
 	}
 
 	@Override
+	public boolean hasPrecondition() {
+		return getWrapped().hasPrecondition();
+	}
+
+	@Override
 	public Logical precondition(Scope scope) {
 		return getWrapped().precondition(scope);
 	}
