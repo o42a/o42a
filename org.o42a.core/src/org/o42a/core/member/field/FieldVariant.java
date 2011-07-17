@@ -88,8 +88,8 @@ public abstract class FieldVariant<A extends Artifact<A>> implements PlaceInfo {
 		return this.definition;
 	}
 
-	public final StatementEnv getEnv() {
-		return this.statement.getEnv();
+	public final StatementEnv getInitialEnv() {
+		return this.statement.getInitialEnv();
 	}
 
 	@Override

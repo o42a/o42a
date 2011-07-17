@@ -142,22 +142,27 @@ final class ObjectFieldVariant
 
 		@Override
 		public boolean hasPrerequisite() {
-			return this.variant.getEnv().hasPrerequisite();
+			return this.variant.getInitialEnv().hasPrerequisite();
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return this.variant.getEnv().prerequisite(scope);
+			return this.variant.getInitialEnv().prerequisite(scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return this.variant.getInitialEnv().hasPrecondition();
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return this.variant.getEnv().precondition(scope);
+			return this.variant.getInitialEnv().precondition(scope);
 		}
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.variant.getField().getArtifact().toObject().type()
+			return this.variant.getField().getArtifact().type()
 			.getAncestor().typeObject(dummyUser()).value().getValueType();
 		}
 

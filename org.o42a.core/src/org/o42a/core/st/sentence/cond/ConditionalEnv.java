@@ -44,6 +44,11 @@ final class ConditionalEnv extends StatementEnv {
 	}
 
 	@Override
+	public boolean hasPrecondition() {
+		return this.initialEnv.hasPrecondition();
+	}
+
+	@Override
 	public Logical precondition(Scope scope) {
 		return this.initialEnv.precondition(scope);
 	}

@@ -115,7 +115,7 @@ public final class SentencePrecondition {
 			DefinitionTargets targets) {
 
 		final Logical logical =
-			sentence.getEnv().fullLogical(getScope());
+			sentence.getFinalEnv().fullLogical(getScope());
 
 		if (!targets.haveValue()) {
 			return;

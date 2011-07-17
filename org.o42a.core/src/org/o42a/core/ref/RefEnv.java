@@ -49,6 +49,11 @@ final class RefEnv extends StatementEnv {
 	}
 
 	@Override
+	public boolean hasPrecondition() {
+		return true;
+	}
+
+	@Override
 	public Logical precondition(Scope scope) {
 		return this.initialEnv.precondition(scope).and(
 				this.ref.expectedTypeAdapter()

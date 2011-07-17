@@ -302,6 +302,11 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		}
 
 		@Override
+		public boolean hasPrecondition() {
+			return true;
+		}
+
+		@Override
 		public Logical precondition(Scope scope) {
 
 			final SentencePrecondition collector =

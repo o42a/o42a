@@ -132,7 +132,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return this.definitionTargets = result;
 	}
 
-	public final StatementEnv getEnv() {
+	public final StatementEnv getFinalEnv() {
 		if (this.env != null) {
 			return this.env;
 		}
@@ -163,7 +163,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 		if (!targets.haveValue()) {
 
-			final Logical fullLogical = getEnv().fullLogical(scope);
+			final Logical fullLogical = getFinalEnv().fullLogical(scope);
 			final CondDef def = fullLogical.toCondDef();
 			final DeclarativeSentence prerequisite = getPrerequisite();
 
@@ -172,7 +172,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			}
 
 			final CondDef withPrereq = def.addPrerequisite(
-					prerequisite.getEnv().fullLogical(getScope()));
+					prerequisite.getFinalEnv().fullLogical(getScope()));
 
 			return withPrereq.toDefinitions();
 		}
@@ -234,7 +234,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			}
 
 			final StatementEnv initial =
-				this.sentence.getBlock().getInitialEnv();
+					this.sentence.getBlock().getInitialEnv();
 
 			return initial.hasPrerequisite();
 		}
@@ -243,29 +243,37 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		public Logical prerequisite(Scope scope) {
 
 			final DeclarativeSentence prerequisite =
-				this.sentence.getPrerequisite();
+					this.sentence.getPrerequisite();
 
 			if (prerequisite != null) {
-				return prerequisite.getEnv().fullLogical(scope);
+				return prerequisite.getFinalEnv().fullLogical(scope);
 			}
 
 			final StatementEnv initial =
-				this.sentence.getBlock().getInitialEnv();
+					this.sentence.getBlock().getInitialEnv();
 
 			return initial.prerequisite(scope);
 		}
 
 		@Override
+		public boolean hasPrecondition() {
+
+			final StatementEnv initial =
+					this.sentence.getBlock().getInitialEnv();
+
+			return initial.hasPrecondition();
+		}
+
+		@Override
 		public Logical precondition(Scope scope) {
-			return this.sentence.getBlock()
-			.getInitialEnv().precondition(scope);
+			return this.sentence.getBlock().getInitialEnv().precondition(scope);
 		}
 
 		@Override
 		public String toString() {
 
 			final DeclarativeSentence prerequisite =
-				this.sentence.getPrerequisite();
+					this.sentence.getPrerequisite();
 
 			if (prerequisite != null) {
 				return prerequisite + "? " + this.sentence;
@@ -276,8 +284,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 		@Override
 		protected ValueType<?> expectedType() {
-			return this.sentence.getBlock()
-			.getInitialEnv().getExpectedType();
+			return this.sentence.getBlock().getInitialEnv().getExpectedType();
 		}
 
 	}
