@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
-import static org.o42a.util.StringCodec.canonicalName;
+import static org.o42a.util.string.StringCodec.canonicalName;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
