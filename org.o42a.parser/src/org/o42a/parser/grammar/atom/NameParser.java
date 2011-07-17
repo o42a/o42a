@@ -22,8 +22,8 @@ package org.o42a.parser.grammar.atom;
 import static java.lang.Character.isLetter;
 import static org.o42a.parser.Grammar.isDigit;
 import static org.o42a.parser.Grammar.whitespace;
-import static org.o42a.util.Characters.HYPHEN;
-import static org.o42a.util.Characters.NON_BREAKING_HYPHEN;
+import static org.o42a.util.string.Characters.HYPHEN;
+import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
 import org.o42a.ast.EmptyNode;
 import org.o42a.ast.FixedPosition;

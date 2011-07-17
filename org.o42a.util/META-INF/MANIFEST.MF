@@ -8,5 +8,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.o42a.util,
  org.o42a.util.io,
  org.o42a.util.log,
+ org.o42a.util.string,
  org.o42a.util.use
 Bundle-ActivationPolicy: lazy

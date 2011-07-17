@@ -22,8 +22,8 @@ package org.o42a.codegen.debug;
 import static org.o42a.codegen.debug.DebugCodeBase.allocateStackFrame;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
-import static org.o42a.util.StringCodec.nullTermASCIIString;
-import static org.o42a.util.StringCodec.nullTermString;
+import static org.o42a.util.string.StringCodec.nullTermASCIIString;
+import static org.o42a.util.string.StringCodec.nullTermString;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;

@@ -19,9 +19,9 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.util.StringCodec.bytesPerChar;
-import static org.o42a.util.StringCodec.escapeControlChars;
-import static org.o42a.util.StringCodec.stringToBinary;
+import static org.o42a.util.string.StringCodec.bytesPerChar;
+import static org.o42a.util.string.StringCodec.escapeControlChars;
+import static org.o42a.util.string.StringCodec.stringToBinary;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;

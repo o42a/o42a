@@ -62,10 +62,17 @@ public class URLSources extends URLSourceTree {
 		final String dirName = dir.getFileName().getName();
 		final URLSources existing = this.childTrees.put(dirName, dir);
 
-		assert existing == null || existing.getSource().isDirectory() :
-			"File " + name + " already present in " + this;
+		if (existing == null) {
+			return dir;
+		}
 
-		return dir;
+		assert (existing.getSource().isDirectory()
+				|| !existing.getSource().isEmpty()) :
+					existing + " is empty";
+
+		this.childTrees.put(dirName, existing);
+
+		return existing;
 	}
 
 	public URLSourceTree addFile(String name) {
@@ -75,10 +82,17 @@ public class URLSources extends URLSourceTree {
 		final String fileName = file.getFileName().getName();
 		final URLSources existing = this.childTrees.put(fileName, file);
 
-		assert existing == null || existing.getSource().isDirectory() :
-			"File " + name + " already present in " + this;
+		if (existing == null) {
+			return file;
+		}
 
-		return file;
+		assert (existing.getSource().isDirectory()
+				|| !existing.getSource().isEmpty()) :
+					existing + " is empty";
+
+		this.childTrees.put(fileName, existing);
+
+		return existing;
 	}
 
 	public URLSourceTree addEmpty(String name) {
@@ -87,15 +101,22 @@ public class URLSources extends URLSourceTree {
 		final URLSources file = new URLSources(
 				new EmptyURLSource.EmptySource(
 						getSource().getBase(),
-						sourceRelativeTo(getSource().getURL()),
+						childDirURL(getSource().getURL()),
 						name));
 		final String fileName = file.getFileName().getName();
 		final URLSources existing = this.childTrees.put(fileName, file);
 
-		assert existing == null || existing.getSource().isDirectory() :
-			"File " + name + " already present in " + this;
+		if (existing == null) {
+			return file;
+		}
 
-		return file;
+		assert (!existing.getSource().isDirectory()
+				&& existing.getSource().isEmpty()) :
+					existing + " is not empty";
+
+		this.childTrees.put(fileName, existing);
+
+		return existing;
 	}
 
 	private void init() {

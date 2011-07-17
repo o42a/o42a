@@ -35,7 +35,7 @@ public final class EmptyURLSource extends URLSourceTree {
 	public EmptyURLSource(URLSource parent, String path) {
 		super(new EmptySource(
 				parent.getBase(),
-				sourceRelativeTo(parent.getURL()),
+				childDirURL(parent.getURL()),
 				path));
 	}
 

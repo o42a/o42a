@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.atom;
 
-import static org.o42a.util.StringCodec.escapeControlChars;
+import static org.o42a.util.string.StringCodec.escapeControlChars;
 
 import org.o42a.ast.Position;
 

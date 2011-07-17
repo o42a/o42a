@@ -21,6 +21,7 @@ package org.o42a.common.source;
 
 import static org.o42a.core.source.SourceFileName.FILE_SUFFIX;
 import static org.o42a.util.io.URLSource.urlIsDirectory;
+import static org.o42a.util.string.StringUtil.removeTrailingChars;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,7 +32,7 @@ import org.o42a.util.io.URLSource;
 
 public abstract class URLSourceTree extends SourceTree<URLSource> {
 
-	public static URL sourceRelativeTo(URL parentURL) {
+	public static URL childDirURL(URL parentURL) {
 		if (urlIsDirectory(parentURL)) {
 			return parentURL;
 		}
@@ -53,13 +54,13 @@ public abstract class URLSourceTree extends SourceTree<URLSource> {
 	}
 
 	public URLSourceTree(String name, URL base, String path) {
-		this(new URLSource(name, sourceRelativeTo(base), path));
+		this(new URLSource(name, childDirURL(base), path));
 	}
 
 	public URLSourceTree(URLSource parent, String path) {
 		this(new URLSource(
 				parent.getBase(),
-				sourceRelativeTo(parent.getURL()),
+				childDirURL(parent.getURL()),
 				path));
 	}
 
@@ -75,7 +76,7 @@ public abstract class URLSourceTree extends SourceTree<URLSource> {
 
 	private static String fileName(String path) {
 
-		final String filePath = removeTrailingSlashes(path);
+		final String filePath = removeTrailingChars(path, '/');
 		final int slashIdx = filePath.lastIndexOf('/');
 
 		if (slashIdx < 0) {
@@ -83,20 +84,6 @@ public abstract class URLSourceTree extends SourceTree<URLSource> {
 		}
 
 		return filePath.substring(slashIdx + 1);
-	}
-
-	private static String removeTrailingSlashes(String path) {
-
-		int last = path.length() - 1;
-
-		while (last >= 0) {
-			if (path.charAt(last) != '/') {
-				break;
-			}
-			--last;
-		}
-
-		return path.substring(0, last + 1);
 	}
 
 }
