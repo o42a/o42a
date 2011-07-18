@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.string;
+package org.o42a.common.processing;
 
 
-public final class StringUtil {
+public enum SourceKind {
 
-	public static String removeLeadingChars(String from, char what) {
+	FILE() {
 
-		int i = 0;
-		final int len = from.length();
-
-		while (i < len) {
-			if (from.charAt(i) != what) {
-				if (i == 0) {
-					return from;
-				}
-				return from.substring(i, from.length());
-			}
-			++i;
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return other == DIR;
 		}
 
-		return "";
-	}
+	},
 
-	public static String removeTrailingChars(String from, char what) {
+	DIR() {
 
-		final int fromLast = from.length() - 1;
-		int last = fromLast;
-
-		while (last >= 0 && from.charAt(last) == what) {
-			--last;
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return false;
 		}
 
-		if (fromLast == last) {
-			return from;
+	},
+
+	EMPTY() {
+
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return other == DIR;
 		}
 
-		return from.substring(0, last + 1);
-	}
+	};
 
-	private StringUtil() {
-	}
-
+	public abstract boolean preferredOver(SourceKind other);
 }

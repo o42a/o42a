@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.string;
+package org.o42a.common.processing;
+
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 
 
-public final class StringUtil {
+final class AnnotationTypeValueVisitor
+		extends SimpleAnnotationValueVisitor6<TypeMirror, Void> {
 
-	public static String removeLeadingChars(String from, char what) {
+	private static final AnnotationTypeValueVisitor VISITOR =
+			new AnnotationTypeValueVisitor();
 
-		int i = 0;
-		final int len = from.length();
-
-		while (i < len) {
-			if (from.charAt(i) != what) {
-				if (i == 0) {
-					return from;
-				}
-				return from.substring(i, from.length());
-			}
-			++i;
-		}
-
-		return "";
+	public static TypeMirror annotationTypeValue(
+			AnnotationValue annotationValue) {
+		return annotationValue.accept(VISITOR, null);
 	}
 
-	public static String removeTrailingChars(String from, char what) {
-
-		final int fromLast = from.length() - 1;
-		int last = fromLast;
-
-		while (last >= 0 && from.charAt(last) == what) {
-			--last;
-		}
-
-		if (fromLast == last) {
-			return from;
-		}
-
-		return from.substring(0, last + 1);
+	@Override
+	public TypeMirror visitType(TypeMirror t, Void p) {
+		return t;
 	}
 
-	private StringUtil() {
+	@Override
+	protected TypeMirror defaultAction(Object o, Void p) {
+		return null;
 	}
+
 
 }

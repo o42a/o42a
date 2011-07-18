@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.string;
+package org.o42a.common.source;
+
+import java.lang.annotation.*;
 
 
-public final class StringUtil {
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.TYPE})
+public @interface SourcePath {
 
-	public static String removeLeadingChars(String from, char what) {
+	Class<?> relativeTo() default Object.class;
 
-		int i = 0;
-		final int len = from.length();
-
-		while (i < len) {
-			if (from.charAt(i) != what) {
-				if (i == 0) {
-					return from;
-				}
-				return from.substring(i, from.length());
-			}
-			++i;
-		}
-
-		return "";
-	}
-
-	public static String removeTrailingChars(String from, char what) {
-
-		final int fromLast = from.length() - 1;
-		int last = fromLast;
-
-		while (last >= 0 && from.charAt(last) == what) {
-			--last;
-		}
-
-		if (fromLast == last) {
-			return from;
-		}
-
-		return from.substring(0, last + 1);
-	}
-
-	private StringUtil() {
-	}
+	String value();
 
 }
