@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.module;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.module.SectionNode;
@@ -122,7 +121,7 @@ public final class ObjectModuleCompiler
 		if (fileName.isAdapter() || fileName.isOverride()) {
 			getLogger().warning(
 					"invalid_module_file",
-					new FixedPosition(getSource().getSource()),
+					getSource().getSource(),
 					"Module file should have a module name");
 		}
 	}

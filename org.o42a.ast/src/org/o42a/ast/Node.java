@@ -19,7 +19,6 @@
 */
 package org.o42a.ast;
 
-
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.util.log.LoggableRange;
@@ -46,8 +45,5 @@ public interface Node extends LoggableRange {
 	void printRange(StringBuilder out);
 
 	void printNode(StringBuilder out);
-
-	@Override
-	void printContent(StringBuilder out);
 
 }

@@ -144,6 +144,12 @@ public class LogRecord implements Formattable, Serializable {
 			implements LoggableVisitor<Void, Formatter> {
 
 		@Override
+		public Void visitSource(LoggableSource source, Formatter p) {
+			p.format(" at %s", source.getSource());
+			return null;
+		}
+
+		@Override
 		public Void visitPosition(LoggablePosition position, Formatter p) {
 
 			final StringBuilder out = new StringBuilder();
@@ -181,7 +187,7 @@ public class LogRecord implements Formattable, Serializable {
 
 		@Override
 		public Void visitData(LoggableData data, Formatter p) {
-			p.format(" at %s", data.getLoggableData());
+			p.format(" at %s", data.getData());
 			return null;
 		}
 
