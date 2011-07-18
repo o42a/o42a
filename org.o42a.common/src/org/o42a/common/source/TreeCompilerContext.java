@@ -108,12 +108,6 @@ public class TreeCompilerContext<S extends Source>
 		}
 	}
 
-	@Override
-	@Deprecated
-	public CompilerContext contextFor(String path) throws Exception {
-		throw new UnsupportedOperationException();
-	}
-
 	protected TreeCompilerContext<S> sectionContext(
 			LogInfo location,
 			SectionTag tag,
