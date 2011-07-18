@@ -19,21 +19,15 @@
 */
 package org.o42a.compiler.test;
 
-import java.util.HashMap;
-
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.Source;
-import org.o42a.util.io.StringSource;
 import org.o42a.util.log.Logger;
 
 
 class TestCompilerContext extends CompilerContext {
 
 	private final CompilerTestCase test;
-	private Source source;
-	private final HashMap<String, TestCompilerContext> subContexts =
-			new HashMap<String, TestCompilerContext>();
 
 	TestCompilerContext(CompilerTestCase test, Logger logger) {
 		super(
@@ -41,22 +35,16 @@ class TestCompilerContext extends CompilerContext {
 				CompilerTestCase.INTRINSICS,
 				logger);
 		this.test = test;
-		this.source = new StringSource(this.test.getModuleName(), "");
 	}
 
-	TestCompilerContext(
-			CompilerTestCase test,
-			CompilerContext parent,
-			Source source) {
-		super(parent, null);
-		this.test = test;
-		this.source = source;
+	@Override
+	public Source getSource() {
+		return null;
 	}
 
 	@Override
 	public ModuleCompiler compileModule() {
-		return getCompiler().compileModule(
-				new TestModuleSource(this, getSource()));
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -71,54 +59,12 @@ class TestCompilerContext extends CompilerContext {
 	@Override
 	@Deprecated
 	public CompilerContext contextFor(String path) throws Exception {
-
-		final int idx = path.indexOf('/');
-		final String src;
-
-		if (idx < 0) {
-			src = path;
-		} else {
-			src = path.substring(0, idx);
-		}
-
-		final TestCompilerContext context = this.subContexts.get(src);
-
-		if (context == null) {
-			throw new IllegalStateException(src + " not found in " + this);
-		}
-		if (idx < 0) {
-			return context;
-		}
-
-		return context.contextFor(path.substring(idx + 1));
+		throw new UnsupportedOperationException(this + " has no child contexts");
 	}
 
 	@Override
-	public Source getSource() {
-		return this.source;
-	}
-
-	void setSource(Source source) {
-		this.source = source;
-	}
-
-	void addSource(String path, Source source) {
-
-		final int idx = path.indexOf('/');
-
-		if (idx < 0) {
-			this.subContexts.put(path, new TestCompilerContext(this.test, this, source));
-			return;
-		}
-
-		final String src = path.substring(0, idx);
-		final TestCompilerContext context = this.subContexts.get(src);
-
-		if (context == null) {
-			throw new IllegalStateException(src + " not found in " + this);
-		}
-
-		context.addSource(path.substring(idx + 1), source);
+	public String toString() {
+		return "<TOP>";
 	}
 
 }

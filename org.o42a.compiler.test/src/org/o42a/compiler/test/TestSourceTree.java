@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Compiler Tests
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,36 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.source;
+package org.o42a.compiler.test;
 
-import java.net.URL;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
-import org.o42a.util.io.URLSource;
+import org.o42a.common.source.SourceTree;
+import org.o42a.core.source.SourceFileName;
 
 
-public final class SingleURLSource extends URLSourceTree {
+public class TestSourceTree extends SourceTree<TestSource> {
 
-	public SingleURLSource(String name, URL base, String path) {
-		super(name, base, path);
-	}
+	private final ArrayList<TestSourceTree> subTrees;
 
-	public SingleURLSource(URLSourceTree parent, String path) {
-		super(parent, path);
-	}
+	public TestSourceTree(TestSource source) {
+		super(source, new SourceFileName(source.getShortName()));
 
-	public SingleURLSource(URLSource parent, String path) {
-		super(parent, path);
-	}
+		final HashMap<String, TestSource> subSources = source.getSubSources();
 
-	public SingleURLSource(URLSource source) {
-		super(source);
+		this.subTrees = new ArrayList<TestSourceTree>(subSources.size());
+		for (TestSource s : subSources.values()) {
+			this.subTrees.add(new TestSourceTree(s));
+		}
 	}
 
 	@Override
-	public Iterator<? extends SourceTree<URLSource>> subTrees() {
-		return Collections.<SourceTree<URLSource>>emptyList().iterator();
+	public Iterator<? extends TestSourceTree> subTrees() {
+		return this.subTrees.iterator();
 	}
 
 }

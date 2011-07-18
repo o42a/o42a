@@ -67,7 +67,7 @@ public class FileSourceTree extends SourceTree<FileSource> {
 	}
 
 	@Override
-	public Iterator<? extends FileSourceTree> childTrees() {
+	public Iterator<? extends FileSourceTree> subTrees() {
 
 		final File dir = childDir(getSource().getFile());
 		final File[] list = dir.listFiles();

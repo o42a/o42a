@@ -44,7 +44,7 @@ public final class EmptyURLSource extends URLSourceTree {
 	}
 
 	@Override
-	public Iterator<? extends SourceTree<URLSource>> childTrees() {
+	public Iterator<? extends SourceTree<URLSource>> subTrees() {
 		return Collections.<SourceTree<URLSource>>emptyList().iterator();
 	}
 

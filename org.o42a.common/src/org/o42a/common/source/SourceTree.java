@@ -55,7 +55,7 @@ public abstract class SourceTree<S extends Source> {
 		return this.fileName;
 	}
 
-	public abstract Iterator<? extends SourceTree<S>> childTrees();
+	public abstract Iterator<? extends SourceTree<S>> subTrees();
 
 	public final TreeCompilerContext<S> context(CompilerContext parentContext) {
 		return new TreeCompilerContext<S>(parentContext, this);

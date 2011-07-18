@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.io.Source;
 
 
 public class UnaryInheritanceTest extends CompilerTestCase {
@@ -66,12 +65,11 @@ public class UnaryInheritanceTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
-
-		this.aBar = field(field("a"), "bar");
-		this.bBar = field(field("b"), "bar");
-		this.cBar = field(field("c"), "bar");
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
+		this.aBar = field("a", "bar");
+		this.bBar = field("b", "bar");
+		this.cBar = field("c", "bar");
 	}
 
 }

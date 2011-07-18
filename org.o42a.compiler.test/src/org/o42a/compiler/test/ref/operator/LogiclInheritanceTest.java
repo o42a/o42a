@@ -22,8 +22,6 @@ package org.o42a.compiler.test.ref.operator;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
-import org.o42a.util.io.Source;
 
 
 public class LogiclInheritanceTest extends CompilerTestCase {
@@ -93,16 +91,11 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
-
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
-		final Field<?> c = field("c");
-
-		this.aBar = field(a, "bar").getArtifact().materialize();
-		this.bBar = field(b, "bar").getArtifact().materialize();
-		this.cBar = field(c, "bar").getArtifact().materialize();
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
+		this.aBar = field("a", "bar").getArtifact().materialize();
+		this.bBar = field("b", "bar").getArtifact().materialize();
+		this.cBar = field("c", "bar").getArtifact().materialize();
 	}
 
 }

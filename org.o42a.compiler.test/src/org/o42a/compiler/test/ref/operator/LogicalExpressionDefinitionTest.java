@@ -22,7 +22,6 @@ package org.o42a.compiler.test.ref.operator;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.util.io.Source;
 
 
 public class LogicalExpressionDefinitionTest extends CompilerTestCase {
@@ -109,8 +108,8 @@ public class LogicalExpressionDefinitionTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 		this.a = field("a").getArtifact().materialize();
 		this.b = field("b").getArtifact().materialize();
 		this.c = field("c").getArtifact().materialize();

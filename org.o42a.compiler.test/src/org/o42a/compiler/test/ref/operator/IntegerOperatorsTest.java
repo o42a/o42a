@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.io.Source;
 
 
 public class IntegerOperatorsTest extends CompilerTestCase {
@@ -86,8 +85,8 @@ public class IntegerOperatorsTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 		this.result = field("result").getArtifact().materialize();
 		assertEquals(ValueType.INTEGER, this.result.value().getValueType());
 		assertTrue(this.result.type().inherits(

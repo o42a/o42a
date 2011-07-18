@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
-import org.o42a.util.io.Source;
 
 
 public class FieldInheritanceTest extends CompilerTestCase {
@@ -161,8 +160,8 @@ public class FieldInheritanceTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 		this.a = field("a").getArtifact().toObject();
 		this.b = field("b").getArtifact().toObject();
 		this.c = field("c").getArtifact().toObject();

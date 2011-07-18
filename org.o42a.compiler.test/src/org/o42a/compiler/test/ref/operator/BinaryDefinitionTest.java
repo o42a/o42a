@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.io.Source;
 
 
 public class BinaryDefinitionTest extends CompilerTestCase {
@@ -92,8 +91,8 @@ public class BinaryDefinitionTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 		this.c = field("c");
 		this.d = field("d");
 		this.e = field("e");
