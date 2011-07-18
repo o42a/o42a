@@ -126,13 +126,6 @@ public final class VoidObject extends BuiltinObject {
 		}
 
 		@Override
-		@Deprecated
-		public CompilerContext contextFor(String path) throws Exception {
-			throw new UnsupportedOperationException(
-					this + " has no child contexts");
-		}
-
-		@Override
 		public String toString() {
 			return "void";
 		}

@@ -57,14 +57,11 @@ class TestCompilerContext extends CompilerContext {
 	}
 
 	@Override
-	@Deprecated
-	public CompilerContext contextFor(String path) throws Exception {
-		throw new UnsupportedOperationException(this + " has no child contexts");
-	}
-
-	@Override
 	public String toString() {
-		return "<TOP>";
+		if (this.test == null) {
+			return super.toString();
+		}
+		return this.test.getClass().getSimpleName();
 	}
 
 }

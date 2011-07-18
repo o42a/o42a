@@ -21,7 +21,6 @@ package org.o42a.core.source;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.BlockBuilder;
 
 
 public interface SourceCompiler {
@@ -31,9 +30,6 @@ public interface SourceCompiler {
 	FieldCompiler compileField(ObjectSource source);
 
 	DefinitionCompiler compileDefinition(DefinitionSource source);
-
-	@Deprecated
-	BlockBuilder compileBlock(CompilerContext context);
 
 	Ref compilePath(
 			Scope scope,

@@ -53,12 +53,6 @@ public final class TopContext extends CompilerContext {
 	}
 
 	@Override
-	@Deprecated
-	public CompilerContext contextFor(String path) throws Exception {
-		throw new UnsupportedOperationException(this + " has no child contexts");
-	}
-
-	@Override
 	public String toString() {
 		return "<TOP>";
 	}

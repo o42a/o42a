@@ -20,29 +20,23 @@
 package org.o42a.compiler;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
-import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.ModuleRefVisitor.MODULE_REF_VISITOR;
 import static org.o42a.compiler.ip.ModuleRefVisitor.SAME_MODULE_REF_VISITOR;
 import static org.o42a.core.ref.path.Path.modulePath;
-import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import static org.o42a.parser.Grammar.*;
 
 import java.io.IOException;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.module.ModuleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.module.*;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.*;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.Source;
@@ -85,25 +79,6 @@ public class Compiler implements SourceCompiler {
 		final ModuleNode node = parseModule(source);
 
 		return validate(new DefinitionModuleCompiler(source, node));
-	}
-
-	@Override
-	@Deprecated
-	public BlockBuilder compileBlock(CompilerContext context) {
-
-		final SentenceNode[] content = parse(
-				DECLARATIVE.content(),
-				null,
-				context.getLogger(),
-				context.getSource());
-
-		if (content == null) {
-			return emptyBlock(new Location(context, context.getSource()));
-		}
-
-		return contentBuilder(
-				new DefaultStatementVisitor(PLAIN_IP, context),
-				new ParenthesesNode(null, content, null));
 	}
 
 	@Override

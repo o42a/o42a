@@ -88,7 +88,6 @@ public class Root extends PlainObject {
 
 	private final VoidField voidField;
 	private final Obj falseObject;
-	private final Obj include;
 	private final Obj useNamespace;
 	private final Obj useObject;
 	private final Obj integerObject;
@@ -104,7 +103,6 @@ public class Root extends PlainObject {
 		this.compiler = compiler;
 		this.voidField = new VoidField(this);
 		this.falseObject = new False(this);
-		this.include = new Include(this);
 		this.useNamespace = new UseNamespace(this);
 		this.useObject = new UseObject(this);
 		this.integerObject = new ValueTypeObject(
@@ -183,7 +181,6 @@ public class Root extends PlainObject {
 		members.addMember(getFloat().toMember());
 		members.addMember(new Floats(this).toMember());
 		members.addMember(getString().toMember());
-		members.addMember(this.include.toMember());
 		members.addMember(this.useNamespace.toMember());
 		members.addMember(this.useObject.toMember());
 		members.addMember(new Strings(this).toMember());

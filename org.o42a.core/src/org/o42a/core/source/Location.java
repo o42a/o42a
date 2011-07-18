@@ -58,10 +58,6 @@ public class Location implements LocationInfo {
 		return getContext().getLogger();
 	}
 
-	public final LocationInfo locationFor(String path) {
-		return getContext().locationFor(this, path);
-	}
-
 	@Override
 	public String toString() {
 
