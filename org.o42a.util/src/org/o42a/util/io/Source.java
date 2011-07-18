@@ -24,12 +24,12 @@ import java.io.Reader;
 
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableData;
+import org.o42a.util.log.LoggableSource;
 
 
 public abstract class Source implements LogInfo {
 
-	private final LoggableData loggableData = new LoggableData(this);
+	private final LoggableSource loggable = new LoggableSource(this);
 
 	public abstract String getName();
 
@@ -40,8 +40,8 @@ public abstract class Source implements LogInfo {
 	public abstract Reader open() throws IOException;
 
 	@Override
-	public Loggable getLoggable() {
-		return this.loggableData;
+	public final Loggable getLoggable() {
+		return this.loggable;
 	}
 
 	@Override

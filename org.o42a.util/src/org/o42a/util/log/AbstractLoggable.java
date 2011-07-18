@@ -20,14 +20,45 @@
 package org.o42a.util.log;
 
 
-public interface LoggableVisitor<R, P> {
+public abstract class AbstractLoggable<L extends AbstractLoggable<L>>
+		implements Loggable, Cloneable {
 
-	R visitSource(LoggableSource source, P p);
+	private Loggable previous;
 
-	R visitPosition(LoggablePosition position, P p);
+	public AbstractLoggable() {
+	}
 
-	R visitRange(LoggableRange range, P p);
+	@Override
+	public Loggable getPreviousLoggable() {
+		return this.previous;
+	}
 
-	R visitData(LoggableData data, P p);
+	@SuppressWarnings("unchecked")
+	@Override
+	public L setPreviousLoggable(Loggable previous) {
+		if (previous == null) {
+			return (L) this;
+		}
+
+		final L clone = clone();
+
+		if (this.previous == null) {
+			clone.previous = previous;
+		} else {
+			clone.previous = this.previous.setPreviousLoggable(previous);
+		}
+
+		return clone;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected L clone() {
+		try {
+			return (L) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
 
 }

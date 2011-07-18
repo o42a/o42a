@@ -19,6 +19,8 @@
 */
 package org.o42a.util.log;
 
+import org.o42a.util.io.Source;
+
 
 public final class Logs {
 
@@ -28,11 +30,33 @@ public final class Logs {
 		return loggable.getLoggable().accept(START_VISITOR, null);
 	}
 
+	public static void printPosition(
+			StringBuilder out,
+			LoggablePosition position,
+			boolean withFile) {
+		if (withFile) {
+
+			final Source source = position.source();
+
+			if (source != null) {
+				out.append(source.getName()).append(':');
+			}
+		}
+
+		out.append(position.line()).append(',').append(position.column());
+		out.append('(').append(position.offset()).append(')');
+	}
+
 	private Logs() {
 	}
 
 	private static final class StartVisitor
 			implements LoggableVisitor<LoggablePosition, Void> {
+
+		@Override
+		public LoggablePosition visitSource(LoggableSource source, Void p) {
+			return null;
+		}
 
 		@Override
 		public LoggablePosition visitPosition(

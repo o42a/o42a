@@ -20,52 +20,21 @@
 package org.o42a.util.log;
 
 
-public class LoggableData implements Loggable, Cloneable {
+public final class LoggableData extends AbstractLoggable<LoggableData> {
 
-	private final Object loggableData;
-	private Loggable previous;
+	private final Object data;
 
-	public LoggableData(Object loggableData) {
-		if (loggableData.getClass().getSimpleName().equals("Location")) {
-			throw new NullPointerException();
-		}
-		this.loggableData = loggableData;
+	public LoggableData(Object data) {
+		this.data = data;
 	}
 
-	public LoggableData(Object loggableData, Loggable previous) {
-		this.loggableData = loggableData;
-		this.previous = previous;
-	}
-
-	public final Object getLoggableData() {
-		return this.loggableData;
+	public final Object getData() {
+		return this.data;
 	}
 
 	@Override
-	public Loggable getLoggable() {
+	public final Loggable getLoggable() {
 		return this;
-	}
-
-	@Override
-	public Loggable getPreviousLoggable() {
-		return this.previous;
-	}
-
-	@Override
-	public LoggableData setPreviousLoggable(Loggable previous) {
-		if (previous == null) {
-			return this;
-		}
-
-		final LoggableData clone = clone();
-
-		if (this.previous == null) {
-			clone.previous = previous;
-		} else {
-			clone.previous = this.previous.setPreviousLoggable(previous);
-		}
-
-		return clone;
 	}
 
 	@Override
@@ -75,22 +44,15 @@ public class LoggableData implements Loggable, Cloneable {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		out.append(this.loggableData);
+		out.append(this.data);
 	}
 
 	@Override
 	public String toString() {
-		return this.loggableData != null
-		? this.loggableData.toString() : "null";
-	}
-
-	@Override
-	protected LoggableData clone() {
-		try {
-			return (LoggableData) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
+		if (this.data == null) {
+			return "null";
 		}
+		return this.data.toString();
 	}
 
 }

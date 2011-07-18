@@ -98,13 +98,7 @@ public class Compiler implements SourceCompiler {
 				context.getSource());
 
 		if (content == null) {
-
-			final FixedPosition position =
-				new FixedPosition(context.getSource());
-
-			return emptyBlock(new Location(
-					context,
-					new ParenthesesNode(position, position)));
+			return emptyBlock(new Location(context, context.getSource()));
 		}
 
 		return contentBuilder(
@@ -138,7 +132,7 @@ public class Compiler implements SourceCompiler {
 		}
 
 		final FixedPosition pos =
-			new FixedPosition(location.getContext().getSource());
+				new FixedPosition(location.getContext().getSource());
 		final MemberRefNode ownerNode = new MemberRefNode(
 				null,
 				null,
@@ -173,7 +167,7 @@ public class Compiler implements SourceCompiler {
 	private static boolean insideModule(String moduleId, Scope scope) {
 
 		final Obj module =
-			scope.getContext().getIntrinsics().getModule(moduleId);
+				scope.getContext().getIntrinsics().getModule(moduleId);
 
 		if (module == null) {
 			return false;
@@ -268,7 +262,7 @@ public class Compiler implements SourceCompiler {
 
 		source.getLogger().error(
 				"invalid_file_name",
-				new FixedPosition(source.getSource()),
+				source.getSource(),
 				"Invalid source file name: %s",
 				source.getFileName());
 
