@@ -25,14 +25,13 @@ import java.util.ArrayList;
 
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.util.io.Source;
 
 
 public class GeneratorTestCase extends CompilerTestCase {
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 
 		final LLVMGenerator generator = newGenerator(
 				"test",

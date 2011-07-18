@@ -29,7 +29,7 @@ import org.o42a.util.io.URLSource;
 
 public class URLSources extends URLSourceTree {
 
-	private HashMap<String, URLSources> childTrees;
+	private HashMap<String, URLSources> subTrees;
 
 	public URLSources(String name, URL base, String path) {
 		super(name, base, path);
@@ -48,9 +48,9 @@ public class URLSources extends URLSourceTree {
 	}
 
 	@Override
-	public Iterator<? extends URLSources> childTrees() {
-		if (this.childTrees != null) {
-			return this.childTrees.values().iterator();
+	public Iterator<? extends URLSources> subTrees() {
+		if (this.subTrees != null) {
+			return this.subTrees.values().iterator();
 		}
 		return Collections.<URLSources>emptyList().iterator();
 	}
@@ -60,7 +60,7 @@ public class URLSources extends URLSourceTree {
 
 		final URLSources dir = new URLSources(this, name + '/');
 		final String dirName = dir.getFileName().getName();
-		final URLSources existing = this.childTrees.put(dirName, dir);
+		final URLSources existing = this.subTrees.put(dirName, dir);
 
 		if (existing == null) {
 			return dir;
@@ -70,7 +70,7 @@ public class URLSources extends URLSourceTree {
 				|| !existing.getSource().isEmpty()) :
 					existing + " is empty";
 
-		this.childTrees.put(dirName, existing);
+		this.subTrees.put(dirName, existing);
 
 		return existing;
 	}
@@ -80,7 +80,7 @@ public class URLSources extends URLSourceTree {
 
 		final URLSources file = new URLSources(this, name);
 		final String fileName = file.getFileName().getName();
-		final URLSources existing = this.childTrees.put(fileName, file);
+		final URLSources existing = this.subTrees.put(fileName, file);
 
 		if (existing == null) {
 			return file;
@@ -90,7 +90,7 @@ public class URLSources extends URLSourceTree {
 				|| !existing.getSource().isEmpty()) :
 					existing + " is empty";
 
-		this.childTrees.put(fileName, existing);
+		this.subTrees.put(fileName, existing);
 
 		return existing;
 	}
@@ -104,7 +104,7 @@ public class URLSources extends URLSourceTree {
 						childDirURL(getSource().getURL()),
 						name));
 		final String fileName = file.getFileName().getName();
-		final URLSources existing = this.childTrees.put(fileName, file);
+		final URLSources existing = this.subTrees.put(fileName, file);
 
 		if (existing == null) {
 			return file;
@@ -114,7 +114,7 @@ public class URLSources extends URLSourceTree {
 				&& existing.getSource().isEmpty()) :
 					existing + " is not empty";
 
-		this.childTrees.put(fileName, existing);
+		this.subTrees.put(fileName, existing);
 
 		return existing;
 	}
@@ -122,8 +122,8 @@ public class URLSources extends URLSourceTree {
 	private void init() {
 		assert !getSource().isEmpty() || getSource().isDirectory() :
 			this + " is empty";
-		if (this.childTrees == null) {
-			this.childTrees = new HashMap<String, URLSources>();
+		if (this.subTrees == null) {
+			this.subTrees = new HashMap<String, URLSources>();
 		}
 	}
 

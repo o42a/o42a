@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.io.Source;
 
 
 public class BinaryInheritanceTest extends CompilerTestCase {
@@ -109,12 +108,11 @@ public class BinaryInheritanceTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
-
-		this.aResult = field(field("a"), "result");
-		this.bResult = field(field("b"), "result");
-		this.cResult = field(field("c"), "result");
-		this.dResult = field(field("c"), "result");
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
+		this.aResult = field("a", "result");
+		this.bResult = field("b", "result");
+		this.cResult = field("c", "result");
+		this.dResult = field("c", "result");
 	}
 }

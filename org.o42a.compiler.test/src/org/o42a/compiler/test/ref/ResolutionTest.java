@@ -33,39 +33,38 @@ public class ResolutionTest extends CompilerTestCase {
 	@Test
 	public void resolveBeforeUse() {
 		compile(
-				"A := void.",
-				"A().");
+				"A := void",
+				"A()");
 	}
 
 	@Test
 	public void adapterId() {
 		compile(
-				"A := void.",
-				"@A := *().");
+				"A := void",
+				"@A := *()");
 	}
 
 	@Test
 	public void namespaceRef() {
 		compile(
-				"Use namespace 'Console'.",
-				"Print 'Hello'.");
+				"Use namespace 'Console'",
+				"Print 'Hello'");
 	}
 
 	@Test
 	public void adapterIdFromNamespace() {
 		compile(
-				"Use namespace 'Console'.",
-				"@Main :=> *().");
+				"Use namespace 'Console'",
+				"@Main :=> *()");
 	}
 
-	@Test
 	public void referIncluded() {
 		addSource(
-				"included.o42a",
-				"A := 24");
-		compile(
-				"B := a(= 44).",
-				"Include 'included.o42a'.");
+				"a",
+				"A := integer",
+				"============",
+				"= 24");
+		compile("B := a(= 44)");
 
 		final Field<?> a = field("a");
 		final Field<?> b = field("b");
@@ -77,11 +76,13 @@ public class ResolutionTest extends CompilerTestCase {
 	@Test
 	public void referIncludedIsideBlock() {
 		addSource(
-				"included.o42a",
-				"A := 24");
+				"a",
+				"A := integer",
+				"============ Inc",
+				"= 24");
 		compile(
-				"(Include 'included.o42a').",
-				"B := a(= 44).");
+				"(*** Inc ***)",
+				"B := a(= 44)");
 
 		final Field<?> a = field("a");
 		final Field<?> b = field("b");

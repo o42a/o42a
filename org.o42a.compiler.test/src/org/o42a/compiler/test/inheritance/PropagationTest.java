@@ -32,7 +32,6 @@ import org.o42a.core.artifact.object.Derivation;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.io.Source;
 
 
 public class PropagationTest extends CompilerTestCase {
@@ -133,8 +132,8 @@ public class PropagationTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 		this.a = field("a").getArtifact().toObject();
 		this.b = field("b").getArtifact().toObject();
 	}

@@ -28,45 +28,34 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
 
 
-public class DirectiveTest extends CompilerTestCase {
+public class InclusionTest extends CompilerTestCase {
 
 	@Test
-	public void include() {
+	public void implicitInclusion() {
 		addSource(
-				"included.o42a",
-				"A := 42");
-		compile("Include 'included.o42a'");
-
-		final Field<?> a = field("a");
-
-		assertThat(definiteValue(a, ValueType.INTEGER), is(42L));
-	}
-
-	@Test
-	public void includeInsideBlock() {
-		addSource(
-				"included.o42a",
-				"A := 42");
-		compile("(Include 'included.o42a')");
-
-		final Field<?> a = field("a");
-
-		assertThat(definiteValue(a, ValueType.INTEGER), is(42L));
-	}
-
-	@Test
-	public void includeDefinition() {
-		addSource(
-				"included.o42a",
+				"included",
+				"Included := integer",
+				"===================",
 				"= 42");
-		compile(
-				"A := integer(",
-				"  Include 'included.o42a'.",
-				").");
+		compile("");
 
-		final Field<?> a = field("a");
+		final Field<?> included = field("included");
 
-		assertThat(definiteValue(a, ValueType.INTEGER), is(42L));
+		assertThat(definiteValue(included, ValueType.INTEGER), is(42L));
+	}
+
+	@Test
+	public void explicitInclusion() {
+		addSource(
+				"included",
+				"Included := integer",
+				"=================== Inc",
+				"= 42");
+		compile("(*** Inc ***)");
+
+		final Field<?> included = field("included");
+
+		assertThat(definiteValue(included, ValueType.INTEGER), is(42L));
 	}
 
 }

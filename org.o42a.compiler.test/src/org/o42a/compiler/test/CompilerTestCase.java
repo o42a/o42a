@@ -39,8 +39,6 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.CompilerIntrinsics;
-import org.o42a.util.io.Source;
-import org.o42a.util.io.StringSource;
 import org.o42a.util.use.UseCase;
 
 
@@ -252,8 +250,11 @@ public abstract class CompilerTestCase {
 		return field;
 	}
 
+	private TestSource source;
 	protected CompilerContext context;
 	private final TestErrors errors = new TestErrors();
+	private final CompilerContext topContext =
+			new TestCompilerContext(this, this.errors);
 	protected Module module;
 	private String moduleName;
 
@@ -269,7 +270,7 @@ public abstract class CompilerTestCase {
 	public void setUpCompiler() {
 		this.moduleName = getClass().getSimpleName();
 		this.errors.reset();
-		this.context = new TestCompilerContext(this, this.errors);
+		this.source = new TestSource(this);
 	}
 
 	@After
@@ -291,24 +292,14 @@ public abstract class CompilerTestCase {
 			String path,
 			String line,
 			String... lines) {
-		addSource(
-				path,
-				new StringSource(
-						getModuleName() + '/' + path,
-						buildCode(line, lines)));
+		this.source.addSource(path, buildCode(line, lines));
 	}
 
-	protected void addSource(String path, Source source) {
-		((TestCompilerContext) this.context).addSource(path, source);
-	}
+	protected void compile(String line, String... lines) {
+		this.source = new TestSource(this, buildCode(line, lines), this.source);
+		this.context = new TestSourceTree(this.source).context(this.topContext);
 
-	protected final void compile(String line, String... lines) {
-		compile(new StringSource(getModuleName(), buildCode(line, lines)));
-	}
-
-	protected void compile(Source source) {
 		this.context.fullResolution().reset();
-		((TestCompilerContext) this.context).setSource(source);
 		this.module = new Module(this.context, this.moduleName);
 		INTRINSICS.setMainModule(this.module);
 		INTRINSICS.resolveAll();

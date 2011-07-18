@@ -92,7 +92,7 @@ public class TreeCompilerContext<S extends Source>
 
 		final SourceCompiler compiler = getCompiler();
 		final Iterator<? extends SourceTree<S>> childTrees =
-				getSourceTree().childTrees();
+				getSourceTree().subTrees();
 
 		while (childTrees.hasNext()) {
 

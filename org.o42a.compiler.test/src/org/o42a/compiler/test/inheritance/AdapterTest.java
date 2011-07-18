@@ -27,7 +27,6 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
-import org.o42a.util.io.Source;
 import org.o42a.util.log.LoggableData;
 
 
@@ -50,8 +49,8 @@ public class AdapterTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 		this.adapterType = field("adapter").getArtifact();
 		this.a = field("a").getArtifact();
 	}

@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.io.Source;
 
 
 public class ValueInheritanceTest extends CompilerTestCase {
@@ -67,8 +66,8 @@ public class ValueInheritanceTest extends CompilerTestCase {
 	}
 
 	@Override
-	protected void compile(Source source) {
-		super.compile(source);
+	protected void compile(String line, String... lines) {
+		super.compile(line, lines);
 		this.a = field("a");
 		this.b = field("b");
 	}
