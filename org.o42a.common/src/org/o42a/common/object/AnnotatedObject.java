@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.string;
+package org.o42a.common.object;
+
+import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.member.MemberOwner;
 
 
-public final class StringUtil {
+public abstract class AnnotatedObject extends CompiledObject {
 
-	public static String removeLeadingChars(String from, char what) {
+	private final AnnotatedSources sources;
 
-		int i = 0;
-		final int len = from.length();
-
-		while (i < len) {
-			if (from.charAt(i) != what) {
-				if (i == 0) {
-					return from;
-				}
-				return from.substring(i, from.length());
-			}
-			++i;
-		}
-
-		return "";
+	public AnnotatedObject(MemberOwner owner, AnnotatedSources sources) {
+		super(compileField(owner, sources.getSourceTree()));
+		this.sources = sources;
 	}
 
-	public static String removeTrailingChars(String from, char what) {
-
-		final int fromLast = from.length() - 1;
-		int last = fromLast;
-
-		while (last >= 0 && from.charAt(last) == what) {
-			--last;
-		}
-
-		if (fromLast == last) {
-			return from;
-		}
-
-		return from.substring(0, last + 1);
+	public final AnnotatedSources getSources() {
+		return this.sources;
 	}
 
-	private StringUtil() {
+	@Override
+	protected void declareMembers(ObjectMembers members) {
+		super.declareMembers(members);
+		for (AnnotatedObject field : getSources().fields(toMemberOwner())) {
+			members.addMember(field.toMember());
+		}
 	}
 
 }

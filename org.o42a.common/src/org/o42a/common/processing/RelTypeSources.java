@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,46 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.string;
+package org.o42a.common.processing;
 
 
-public final class StringUtil {
+interface RelTypeSources {
 
-	public static String removeLeadingChars(String from, char what) {
+	void add(RelTypeSource source);
 
-		int i = 0;
-		final int len = from.length();
+	void replaceBy(TypeWithSource other);
 
-		while (i < len) {
-			if (from.charAt(i) != what) {
-				if (i == 0) {
-					return from;
-				}
-				return from.substring(i, from.length());
-			}
-			++i;
-		}
-
-		return "";
-	}
-
-	public static String removeTrailingChars(String from, char what) {
-
-		final int fromLast = from.length() - 1;
-		int last = fromLast;
-
-		while (last >= 0 && from.charAt(last) == what) {
-			--last;
-		}
-
-		if (fromLast == last) {
-			return from;
-		}
-
-		return from.substring(0, last + 1);
-	}
-
-	private StringUtil() {
-	}
+	void validate();
 
 }

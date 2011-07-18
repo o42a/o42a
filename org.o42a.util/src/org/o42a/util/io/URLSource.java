@@ -55,16 +55,6 @@ public class URLSource extends Source {
 		this(parent.getBase(), parent.getURL(), path);
 	}
 
-	@Deprecated
-	public URLSource(URL base, URL url) {
-		this.base = base;
-		this.url = url;
-
-		final String name = name(null);
-
-		this.name = name != null ? name : url.toString();
-	}
-
 	public URLSource(URL base, URL relativeTo, String path) {
 		this.base = base;
 		try {

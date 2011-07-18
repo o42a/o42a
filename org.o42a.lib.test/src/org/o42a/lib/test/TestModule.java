@@ -41,8 +41,8 @@ public class TestModule extends Module {
 
 	public static final URLSourceTree TEST = tree();
 
-	public static Module testModule(CompilerContext context) {
-		return new TestModule(TEST.context(context));
+	public static Module testModule(CompilerContext parentContext) {
+		return new TestModule(TEST.context(parentContext));
 	}
 
 	private static URLSourceTree tree() {
