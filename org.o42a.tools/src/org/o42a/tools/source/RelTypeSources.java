@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Build Tools
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,33 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.processing;
-
-import java.util.ArrayList;
+package org.o42a.tools.source;
 
 
-final class PendingTypeSources implements RelTypeSources {
+interface RelTypeSources {
 
-	private final ArrayList<RelTypeSource> sources =
-			new ArrayList<RelTypeSource>();
+	void add(RelTypeSource source);
 
-	@Override
-	public void add(RelTypeSource source) {
-		this.sources.add(source);
-	}
+	void replaceBy(TypeWithSource other);
 
-	@Override
-	public void replaceBy(TypeWithSource other) {
-		for (RelTypeSource source : this.sources) {
-			other.add(source);
-		}
-	}
-
-	@Override
-	public void validate() {
-		for (RelTypeSource source : this.sources) {
-			source.reportUnrelated();
-		}
-	}
+	void validate();
 
 }

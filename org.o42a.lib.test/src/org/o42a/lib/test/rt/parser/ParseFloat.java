@@ -21,7 +21,6 @@ package org.o42a.lib.test.rt.parser;
 
 import org.o42a.common.adapter.FloatByString;
 import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -30,11 +29,12 @@ import org.o42a.core.value.Value;
 
 final class ParseFloat extends FloatByString {
 
-	private static final URLSourceTree PARSE_FLOAT =
-			new SingleURLSource(Parser.PARSER, "float.o42a");
-
 	ParseFloat(Parser parser) {
-		super(compileField(parser, PARSE_FLOAT));
+		super(compileField(
+				parser,
+				new SingleURLSource(
+						parser.getSourceTree(),
+						"float.o42a")));
 	}
 
 	@Override

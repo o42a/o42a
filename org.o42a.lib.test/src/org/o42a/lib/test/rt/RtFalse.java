@@ -24,7 +24,6 @@ import static org.o42a.core.value.Value.falseValue;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.object.CompiledBuiltin;
 import org.o42a.common.source.EmptyURLSource;
-import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -36,11 +35,10 @@ import org.o42a.lib.test.TestModule;
 
 public class RtFalse extends CompiledBuiltin {
 
-	public static final URLSourceTree RT_FALSE =
-			new EmptyURLSource(TestModule.TEST, "rt-false");
-
 	public RtFalse(TestModule owner) {
-		super(compileField(owner, RT_FALSE));
+		super(compileField(
+				owner,
+				new EmptyURLSource(owner.getSourceTree(), "rt-false")));
 	}
 
 	@Override

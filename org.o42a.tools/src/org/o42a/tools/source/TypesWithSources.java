@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Build Tools
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.processing;
+package org.o42a.tools.source;
 
-import static org.o42a.common.processing.AnnotationTypeValueVisitor.annotationTypeValue;
-import static org.o42a.common.processing.TypeNameVisitor.typeName;
+import static org.o42a.tools.source.AnnotationTypeValueVisitor.annotationTypeValue;
+import static org.o42a.tools.source.TypeNameVisitor.typeName;
 import static org.o42a.util.string.StringUtil.removeLeadingChars;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class TypesWithSources {
 	}
 
 	private static final String SOURCE_PATH_TYPE_NAME =
-			SourcePath.class.getCanonicalName();
+			"org.o42a.common.source.SourcePath";
 	private static final String RELATIVE_TO = "relativeTo";
 	private static final String VALUE = "value";
 
@@ -90,9 +90,10 @@ public class TypesWithSources {
 
 			final TypeElement annotationType =
 					(TypeElement) annotation.getAnnotationType().asElement();
+			final Name annotationName = annotationType.getQualifiedName();
 
-			if (SOURCE_PATH_TYPE_NAME.equals(
-					annotationType.getQualifiedName())) {
+			if (annotationName != null
+					&& annotationName.contentEquals(SOURCE_PATH_TYPE_NAME)) {
 				processAnnotation(type, annotation);
 			}
 		}
@@ -160,11 +161,11 @@ public class TypesWithSources {
 			final ExecutableElement element = e.getKey();
 			final Name simpleName = element.getSimpleName();
 
-			if (VALUE.equals(simpleName)) {
+			if (simpleName.contentEquals(VALUE)) {
 				value = e.getValue();
 				continue;
 			}
-			if (RELATIVE_TO.equals(simpleName)) {
+			if (simpleName.contentEquals(RELATIVE_TO)) {
 				relativeTo = e.getValue();
 			}
 		}
@@ -203,7 +204,7 @@ public class TypesWithSources {
 					annotation,
 					value,
 					relativeTo,
-					restPath == null);
+					restPath != null);
 			if (restPath == null) {
 				return;
 			}

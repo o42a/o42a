@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Build Tools
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,34 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.processing;
+package org.o42a.tools.source;
 
-import javax.lang.model.element.Name;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleTypeVisitor6;
+import java.util.ArrayList;
 
 
-final class TypeNameVisitor extends SimpleTypeVisitor6<Name, Void> {
+final class PendingTypeSources implements RelTypeSources {
 
-	private static final TypeNameVisitor VISITOR = new TypeNameVisitor();
+	private final ArrayList<RelTypeSource> sources =
+			new ArrayList<RelTypeSource>();
 
-	public static Name typeName(TypeMirror type) {
-		return type.accept(VISITOR, null);
+	@Override
+	public void add(RelTypeSource source) {
+		this.sources.add(source);
 	}
 
 	@Override
-	public Name visitDeclared(DeclaredType t, Void p) {
-
-		final TypeElement typeElement = (TypeElement) t.asElement();
-
-		return typeElement.getQualifiedName();
+	public void replaceBy(TypeWithSource other) {
+		for (RelTypeSource source : this.sources) {
+			other.add(source);
+		}
 	}
 
 	@Override
-	protected Name defaultAction(TypeMirror e, Void p) {
-		return null;
+	public void validate() {
+		for (RelTypeSource source : this.sources) {
+			source.reportUnrelated();
+		}
 	}
 
 }

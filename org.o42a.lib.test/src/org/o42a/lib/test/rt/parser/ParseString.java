@@ -21,7 +21,6 @@ package org.o42a.lib.test.rt.parser;
 
 import org.o42a.common.adapter.ByString;
 import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -32,11 +31,10 @@ import org.o42a.core.value.Value;
 
 final class ParseString extends ByString<String> {
 
-	private static final URLSourceTree PARSE_STRING =
-			new SingleURLSource(Parser.PARSER, "string.o42a");
-
 	ParseString(Parser parser) {
-		super(compileField(parser, PARSE_STRING));
+		super(compileField(
+				parser,
+				new SingleURLSource(parser.getSourceTree(), "string.o42a")));
 	}
 
 	@Override

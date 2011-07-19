@@ -21,6 +21,7 @@ package org.o42a.common.object;
 
 import java.util.Iterator;
 
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.source.CompilerContext;
@@ -56,6 +57,10 @@ public abstract class AnnotatedModule extends Module {
 
 	public final AnnotatedSources getSources() {
 		return this.sources;
+	}
+
+	public final URLSourceTree getSourceTree() {
+		return getSources().getSourceTree();
 	}
 
 	@Override

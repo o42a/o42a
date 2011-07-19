@@ -21,37 +21,35 @@ package org.o42a.lib.test.run;
 
 import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
 
-import org.o42a.common.object.DirectiveObject;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedDirective;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.source.SourcePath;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.lib.test.TestModule;
 
 
-public class RunTests extends DirectiveObject {
+@SourcePath(relativeTo = TestModule.class, value = "run_tests.o42a")
+public class RunTests extends AnnotatedDirective {
 
-	private static final URLSourceTree RUN_TESTS =
-			new SingleURLSource(TestModule.TEST, "run_tests.o42a");
-
-	private final TestModule module;
-
-	public RunTests(TestModule owner) {
-		super(compileField(owner, RUN_TESTS));
-		this.module = owner;
+	public RunTests(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override
 	public void apply(Ref directive, InstructionContext context) {
 
+		final TestModule module =
+				(TestModule) getField().getEnclosingScope().toObject();
 		final Statements<?> statements =
 			context.getBlock().propose(directive).alternative(directive);
 
 		statements.expression(runObjectTests(
 				directive,
 				statements.nextDistributor(),
-				this.module));
+				module));
 	}
 
 }

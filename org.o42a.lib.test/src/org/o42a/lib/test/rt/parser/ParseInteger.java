@@ -21,7 +21,6 @@ package org.o42a.lib.test.rt.parser;
 
 import org.o42a.common.adapter.IntegerByString;
 import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -30,11 +29,10 @@ import org.o42a.core.value.Value;
 
 final class ParseInteger extends IntegerByString {
 
-	private static final URLSourceTree PARSE_INTEGER =
-			new SingleURLSource(Parser.PARSER, "integer.o42a");
-
 	ParseInteger(Parser parser) {
-		super(compileField(parser, PARSE_INTEGER));
+		super(compileField(
+				parser,
+				new SingleURLSource(parser.getSourceTree(), "integer.o42a")));
 	}
 
 	@Override
