@@ -21,8 +21,8 @@ package org.o42a.parser;
 
 import org.o42a.ast.atom.*;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.module.InclusionNode;
-import org.o42a.ast.module.ModuleNode;
+import org.o42a.ast.file.InclusionNode;
+import org.o42a.ast.file.FileNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -30,8 +30,8 @@ import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
 import org.o42a.parser.grammar.atom.*;
 import org.o42a.parser.grammar.expression.*;
-import org.o42a.parser.grammar.module.InclusionParser;
-import org.o42a.parser.grammar.module.ModuleParser;
+import org.o42a.parser.grammar.file.InclusionParser;
+import org.o42a.parser.grammar.file.FileParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.statement.*;
 
@@ -41,8 +41,8 @@ public class Grammar {
 	public static final Grammar DECLARATIVE = new DeclarativeGrammar();
 	public static final Grammar IMPERATIVE = new ImperativeGrammar();
 
-	public static Parser<ModuleNode> module() {
-		return ModuleParser.MODULE;
+	public static Parser<FileNode> file() {
+		return FileParser.FILE;
 	}
 
 	public static Parser<Object> whitespace(boolean allowNewLine) {
