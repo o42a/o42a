@@ -24,7 +24,6 @@ import static org.o42a.core.value.Value.voidValue;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.object.CompiledBuiltin;
 import org.o42a.common.source.EmptyURLSource;
-import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -36,11 +35,10 @@ import org.o42a.lib.test.TestModule;
 
 public class RtVoid extends CompiledBuiltin {
 
-	private static final URLSourceTree RT_VOID =
-			new EmptyURLSource(TestModule.TEST, "rt-void");
-
 	public RtVoid(TestModule owner) {
-		super(compileField(owner, RT_VOID));
+		super(compileField(
+				owner,
+				new EmptyURLSource(owner.getSourceTree(), "rt-void")));
 	}
 
 	@Override

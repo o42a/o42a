@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Test Framework
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,37 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.processing;
+package org.o42a.lib.test.rt;
+
+import org.o42a.common.object.AnnotatedObject;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.source.SourcePath;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.lib.test.TestModule;
 
 
-public enum SourceKind {
+@SourcePath(relativeTo = TestModule.class, value = "rt-integer.o42a")
+public class RtInteger extends AnnotatedObject {
 
-	FILE() {
+	public RtInteger(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
+	}
 
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return other == DIR;
-		}
-
-	},
-
-	DIR() {
-
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return false;
-		}
-
-	},
-
-	EMPTY() {
-
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return other == DIR;
-		}
-
-	};
-
-	public abstract boolean preferredOver(SourceKind other);
 }

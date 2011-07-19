@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Build Tools
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,33 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.processing;
-
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+package org.o42a.tools.source;
 
 
-final class AnnotationTypeValueVisitor
-		extends SimpleAnnotationValueVisitor6<TypeMirror, Void> {
+public enum SourceKind {
 
-	private static final AnnotationTypeValueVisitor VISITOR =
-			new AnnotationTypeValueVisitor();
+	FILE() {
 
-	public static TypeMirror annotationTypeValue(
-			AnnotationValue annotationValue) {
-		return annotationValue.accept(VISITOR, null);
-	}
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return other == DIR;
+		}
 
-	@Override
-	public TypeMirror visitType(TypeMirror t, Void p) {
-		return t;
-	}
+	},
 
-	@Override
-	protected TypeMirror defaultAction(Object o, Void p) {
-		return null;
-	}
+	DIR() {
 
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return false;
+		}
 
+	},
+
+	EMPTY() {
+
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return other == DIR;
+		}
+
+	};
+
+	public abstract boolean preferredOver(SourceKind other);
 }

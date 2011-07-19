@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Build Tools
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,20 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.processing;
+package org.o42a.tools.source;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Set;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.*;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
 
 @SupportedAnnotationTypes("org.o42a.common.source.SourcePath")
+@SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SourcePathAnnotationProcessor extends AbstractProcessor {
 
 	@Override
@@ -38,7 +39,14 @@ public class SourcePathAnnotationProcessor extends AbstractProcessor {
 			Set<? extends TypeElement> annotations,
 			RoundEnvironment roundEnv) {
 
-		final TypeElement annotation = annotations.iterator().next();
+		final Iterator<? extends TypeElement> iterator =
+				annotations.iterator();
+
+		if (!iterator.hasNext()) {
+			return false;
+		}
+
+		final TypeElement annotation = iterator.next();
 		final TypesWithSources types =
 				new TypesWithSources(this.processingEnv);
 

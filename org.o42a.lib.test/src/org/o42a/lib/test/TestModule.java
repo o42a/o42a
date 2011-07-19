@@ -19,11 +19,8 @@
 */
 package org.o42a.lib.test;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.o42a.common.source.URLSourceTree;
-import org.o42a.common.source.URLSources;
+import org.o42a.common.object.AnnotatedModule;
+import org.o42a.common.source.SourcePath;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.artifact.object.ObjectType;
@@ -32,45 +29,18 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.lib.test.rt.RtFalse;
 import org.o42a.lib.test.rt.RtVoid;
-import org.o42a.lib.test.rt.parser.Parser;
-import org.o42a.lib.test.run.RunTests;
 import org.o42a.util.use.UserInfo;
 
 
-public class TestModule extends Module {
-
-	public static final URLSourceTree TEST = tree();
+@SourcePath("test.o42a")
+public class TestModule extends AnnotatedModule {
 
 	public static Module testModule(CompilerContext parentContext) {
-		return new TestModule(TEST.context(parentContext));
+		return new TestModule(parentContext);
 	}
 
-	private static URLSourceTree tree() {
-
-		final URLSources sources =
-				new URLSources("Test", base(), "test.o42a");
-
-		sources.addFile("rt-string.o42a");
-		sources.addFile("rt-integer.o42a");
-		sources.addFile("rt-float.o42a");
-
-		return sources;
-	}
-
-	private static URL base() {
-		try {
-
-			final URL self = TestModule.class.getResource(
-					TestModule.class.getSimpleName() + ".class");
-
-			return new URL(self, "../../../..");
-		} catch (MalformedURLException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
-
-	private TestModule(CompilerContext context) {
-		super(context, "Test");
+	private TestModule(CompilerContext parentContext) {
+		super(parentContext, moduleSources(TestModule.class));
 	}
 
 	public ObjectType test(UserInfo user) {
@@ -79,8 +49,6 @@ public class TestModule extends Module {
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		members.addMember(new RunTests(this).toMember());
-		members.addMember(new Parser(this).toMember());
 		members.addMember(new RtVoid(this).toMember());
 		members.addMember(new RtFalse(this).toMember());
 		super.declareMembers(members);

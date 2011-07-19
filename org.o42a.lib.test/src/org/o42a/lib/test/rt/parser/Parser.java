@@ -19,20 +19,19 @@
 */
 package org.o42a.lib.test.rt.parser;
 
-import org.o42a.common.object.CompiledObject;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedObject;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.source.SourcePath;
 import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.lib.test.TestModule;
 
 
-public class Parser extends CompiledObject {
+@SourcePath(relativeTo = TestModule.class, value = "parser/")
+public class Parser extends AnnotatedObject {
 
-	public static final URLSourceTree PARSER =
-			new SingleURLSource(TestModule.TEST, "parser/");
-
-	public Parser(TestModule module) {
-		super(compileField(module, PARSER.context(module.getContext())));
+	public Parser(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override
