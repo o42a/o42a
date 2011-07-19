@@ -1,7 +1,6 @@
 syntax: glob
 */bin
 */.settings
-*/.bin
 */auto-build.log
 **/*.ll
 **/*.s

@@ -38,14 +38,12 @@
 	<target name="apt" depends="compile-tools,clean-apt">
 		<delete dir="generated"/>
 		<mkdir taskname="${ant.project.name}" dir="generated"/>
-		<mkdir taskname="${ant.project.name}" dir=".bin"/>
-		<call-javac destdir=".bin" srcdir="src">
+		<call-javac destdir="" srcdir="src">
 			<compilerarg line="-proc:only"/>
 			<compilerarg line="-s generated"/>
 			<compilerarg line="-processorpath"/>
 			<compilerarg path="${root.dir}/org.o42a.util/bin:${root.dir}/org.o42a.tools/bin"/>
 		</call-javac>
-		<delete dir=".bin"/>
 	</target>
 	
 	<target name="clean-apt">
