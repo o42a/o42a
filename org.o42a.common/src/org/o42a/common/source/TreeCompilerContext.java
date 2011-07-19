@@ -39,18 +39,14 @@ public class TreeCompilerContext<S extends Source>
 	public TreeCompilerContext(
 			CompilerContext parentContext,
 			SourceTree<S> sourceTree) {
-		super(parentContext, null);
-		this.sectionTag = IMPLICIT_SECTION_TAG;
-		this.sourceTree = sourceTree;
+		this(parentContext, sourceTree, IMPLICIT_SECTION_TAG, null);
 	}
 
 	public TreeCompilerContext(
 			CompilerContext parentContext,
 			SourceTree<S> sourceTree,
 			Logger logger) {
-		super(parentContext, logger);
-		this.sectionTag = IMPLICIT_SECTION_TAG;
-		this.sourceTree = sourceTree;
+		this(parentContext, sourceTree, IMPLICIT_SECTION_TAG, logger);
 	}
 
 	protected TreeCompilerContext(
@@ -61,6 +57,13 @@ public class TreeCompilerContext<S extends Source>
 		super(parentContext, logger);
 		this.sectionTag = sectionTag;
 		this.sourceTree = sourceTree;
+		if (!sourceTree.getFileName().isValid()) {
+			getLogger().error(
+					"invalid_file_name",
+					sourceTree.getSource(),
+					"Invalid file name: %s",
+					sourceTree.getFileName());
+		}
 	}
 
 	public final SourceTree<S> getSourceTree() {
