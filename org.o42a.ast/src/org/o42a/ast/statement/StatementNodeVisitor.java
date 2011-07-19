@@ -21,8 +21,8 @@ package org.o42a.ast.statement;
 
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.module.InclusionNode;
-import org.o42a.ast.module.SubTitleNode;
+import org.o42a.ast.file.InclusionNode;
+import org.o42a.ast.file.SubTitleNode;
 
 
 public interface StatementNodeVisitor<R, P>

@@ -28,7 +28,7 @@ import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
-import org.o42a.ast.module.InclusionNode;
+import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;

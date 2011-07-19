@@ -22,8 +22,8 @@ package org.o42a.ast.statement;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.module.InclusionNode;
-import org.o42a.ast.module.SubTitleNode;
+import org.o42a.ast.file.InclusionNode;
+import org.o42a.ast.file.SubTitleNode;
 
 
 public abstract class AbstractStatementVisitor<R, P>

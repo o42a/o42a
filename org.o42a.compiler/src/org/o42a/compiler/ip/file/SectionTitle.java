@@ -1,0 +1,295 @@
+/*
+    Compiler
+    Copyright (C) 2011 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.compiler.ip.file;
+
+import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.file.SectionAscendantsVisitor.SECTION_ASCENDANTS_VISITOR;
+import static org.o42a.core.member.MemberId.fieldName;
+
+import org.o42a.ast.Node;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.file.SectionNode;
+import org.o42a.ast.file.SubTitleNode;
+import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.ast.statement.DeclarableAdapterNode;
+import org.o42a.ast.statement.DeclarableNode;
+import org.o42a.ast.statement.DeclaratorNode;
+import org.o42a.compiler.ip.member.FieldDeclarableVisitor;
+import org.o42a.core.Distributor;
+import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.source.*;
+
+
+final class SectionTitle {
+
+	private final Section section;
+	private final Node node;
+	private final DeclaratorNode declaratorNode;
+
+	SectionTitle(Section section, SectionTitle aboveTitle) {
+		this.section = section;
+
+		final SectionNode sectionNode = section.getSectionNode();
+
+		this.node = node(sectionNode);
+
+		if (sectionNode.getTitle() != null) {
+			this.declaratorNode = sectionNode.getDeclarator();
+		} else if (aboveTitle != null) {
+			this.declaratorNode = aboveTitle.getDeclaratorNode();
+		} else {
+			this.declaratorNode = null;
+		}
+	}
+
+	public final Node getNode() {
+		return this.node;
+	}
+
+	public final DeclaratorNode getDeclaratorNode() {
+		return this.declaratorNode;
+	}
+
+	public final boolean isValid() {
+		if (!isImplicit()) {
+			return true;
+		}
+		// Title present, but it doesn't contain declarator.
+		return getSection().getSectionNode().getTitle() == null;
+	}
+
+	public final boolean isImplicit() {
+		return this.declaratorNode == null;
+	}
+
+	public final Section getSection() {
+		return this.section;
+	}
+
+	public final DefinitionSource getSource() {
+		return getSection().getSource();
+	}
+
+	public final CompilerLogger getLogger() {
+		return getSection().getLogger();
+	}
+
+	public FieldDeclaration fieldDeclaration(Distributor distributor) {
+		if (isImplicit()) {
+			return implicitFieldDeclaration(distributor);
+		}
+		return explicitFieldDeclaration(distributor);
+	}
+
+	public AscendantsDefinition ascendants(Distributor distributor) {
+		if (isImplicit()) {
+			return new AscendantsDefinition(
+					new Location(distributor.getContext(), getNode()),
+					distributor);
+		}
+
+		final ExpressionNode definition = getDeclaratorNode().getDefinition();
+
+		if (definition == null) {
+			return new AscendantsDefinition(
+					new Location(distributor.getContext(), getNode()),
+					distributor);
+		}
+
+		return definition.accept(SECTION_ASCENDANTS_VISITOR, distributor);
+	}
+
+	@Override
+	public String toString() {
+		if (this.node == null) {
+			return super.toString();
+		}
+		return this.node.toString();
+	}
+
+	static Node node(SectionNode sectionNode) {
+
+		final DeclaratorNode declaratorNode = sectionNode.getDeclarator();
+
+		if (declaratorNode != null) {
+			return declaratorNode;
+		}
+
+		final SentenceNode titleNode = sectionNode.getTitle();
+
+		if (titleNode != null) {
+			return titleNode;
+		}
+
+		final SubTitleNode subTitleNode = sectionNode.getSubTitle();
+
+		if (subTitleNode != null) {
+			return subTitleNode;
+		}
+
+		return sectionNode;
+	}
+
+	private FieldDeclaration implicitFieldDeclaration(Distributor distributor) {
+
+		final String fieldName = fieldNameByFileName();
+
+		if (fieldName == null) {
+			return null;
+		}
+
+		return FieldDeclaration.fieldDeclaration(
+				new Location(distributor.getContext(), getNode()),
+				distributor,
+				fieldName(fieldName));
+	}
+
+	private FieldDeclaration explicitFieldDeclaration(Distributor distributor) {
+
+		final FieldDeclarableVisitor visitor = new FieldDeclarableVisitor(
+				PLAIN_IP,
+				distributor.getContext(),
+				getDeclaratorNode());
+		final DeclarableNode declarableNode =
+				getDeclaratorNode().getDeclarable();
+
+		return validate(declarableNode.accept(visitor, distributor));
+	}
+
+	private String fieldNameByFileName() {
+
+		final SourceFileName fileName = getSource().getFileName();
+
+		if (!fileName.isValid()) {
+			// Can not establish field name by invalid file name.
+			return null;
+		}
+		if (fileName.isAdapter()) {
+			getLogger().error(
+					"missing_adapter_section_title",
+					getNode(),
+					"Section title required for adapter");
+			return null;
+		}
+		if (fileName.isOverride()) {
+			getLogger().error(
+					"missing_override_section_title",
+					getNode(),
+					"Section title required when overriding field");
+			return null;
+		}
+
+		return fileName.getFieldName();
+	}
+
+	private FieldDeclaration validate(FieldDeclaration declaration) {
+		if (!getSource().getFileName().isValid()) {
+			// File name is invalid, so can't validate.
+			return declaration;
+		}
+		if (!declaration.isAdapter()) {
+			return validateField(declaration);
+		}
+		return validateAdapter(declaration);
+	}
+
+	private FieldDeclaration validateField(FieldDeclaration declaration) {
+
+		final SourceFileName fileName = getSource().getFileName();
+		final MemberRefNode fieldNode =
+				(MemberRefNode) getDeclaratorNode().getDeclarable();
+
+		if (fileName.isAdapter()) {
+			getLogger().warning(
+					"not_adapter_section_title",
+					fieldNode,
+					"Adapter declaration expected in file '%s'",
+					fileName);
+		}
+
+		return validateOverride(declaration, fieldNode.getDeclaredIn());
+	}
+
+	private FieldDeclaration validateAdapter(FieldDeclaration declaration) {
+
+		final SourceFileName fileName = getSource().getFileName();
+		final DeclarableAdapterNode adapterNode =
+				(DeclarableAdapterNode)
+				getDeclaratorNode().getDeclarable();
+		final MemberRefNode adapteeNode = adapterNode.getMember();
+
+		if (!fileName.isAdapter()) {
+			getLogger().warning(
+					"unexpected_adapter_section_title",
+					adapterNode,
+					"Adapter declaration is not expected in file '%s'",
+					fileName);
+		} else if (!validatePath(adapteeNode, fileName.getAdaptee())) {
+			getLogger().warning(
+					"unmatched_adaptee_section_title",
+					adapteeNode,
+					"Adapter declaration doen't match"
+					+ " the name of file: ",
+					fileName);
+		}
+
+		return validateOverride(declaration, adapteeNode.getDeclaredIn());
+	}
+
+	private FieldDeclaration validateOverride(
+			FieldDeclaration declaration,
+			RefNode declaredIn) {
+
+		final SourceFileName fileName = getSource().getFileName();
+
+		if (fileName.isOverride()) {
+			if (!declaration.isOverride()) {
+				getLogger().warning(
+						"not_override_section_title",
+						getDeclaratorNode().getDeclarable(),
+						"Field override expected in file '%s'",
+						fileName);
+			} else if (declaredIn != null
+					&& !validatePath(declaredIn, fileName.getDeclaredIn())) {
+				getLogger().warning(
+						"unmatched_declared-in_section_title",
+						declaredIn,
+						"Declared-in declaration doen't match"
+						+ " the name of file: ",
+						fileName);
+			}
+		}
+
+		return declaration;
+	}
+
+	private boolean validatePath(RefNode ref, String[] path) {
+
+		final SectionTitlePathValidator validator =
+				new SectionTitlePathValidator(path);
+		final Object result = ref.accept(validator, path.length - 1);
+
+		return result != null;
+	}
+
+}

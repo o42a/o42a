@@ -29,10 +29,10 @@ import java.io.IOException;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.module.ModuleNode;
+import org.o42a.ast.file.FileNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.compiler.ip.module.*;
+import org.o42a.compiler.ip.file.*;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -60,25 +60,25 @@ public class Compiler implements SourceCompiler {
 	@Override
 	public ModuleCompiler compileModule(ObjectSource source) {
 
-		final ModuleNode node = parseModule(source);
+		final FileNode node = parseModule(source);
 
-		return validate(new ObjectModuleCompiler(source, node));
+		return validate(new FileModuleCompiler(source, node));
 	}
 
 	@Override
 	public FieldCompiler compileField(ObjectSource source) {
 
-		final ModuleNode node = parseModule(source);
+		final FileNode node = parseModule(source);
 
-		return validate(new FieldModuleCompiler(source, node));
+		return validate(new FileFieldCompiler(source, node));
 	}
 
 	@Override
 	public DefinitionCompiler compileDefinition(DefinitionSource source) {
 
-		final ModuleNode node = parseModule(source);
+		final FileNode node = parseModule(source);
 
-		return validate(new DefinitionModuleCompiler(source, node));
+		return validate(new FileDefinitionCompiler(source, node));
 	}
 
 	@Override
@@ -151,10 +151,10 @@ public class Compiler implements SourceCompiler {
 		return module.getScope().contains(scope);
 	}
 
-	private ModuleNode parseModule(DefinitionSource source) {
+	private FileNode parseModule(DefinitionSource source) {
 
-		final ModuleNode moduleNode =
-				parse(module(), null, source.getLogger(), source.getSource());
+		final FileNode moduleNode =
+				parse(file(), null, source.getLogger(), source.getSource());
 
 		if (moduleNode != null) {
 			return moduleNode;
@@ -162,7 +162,7 @@ public class Compiler implements SourceCompiler {
 
 		final FixedPosition position = new FixedPosition(source.getSource());
 
-		return new ModuleNode(position, position);
+		return new FileNode(position, position);
 	}
 
 	private <T> T parse(

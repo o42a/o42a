@@ -22,8 +22,8 @@ package org.o42a.ast;
 import org.o42a.ast.atom.*;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.AscendantNode;
-import org.o42a.ast.module.ModuleNode;
-import org.o42a.ast.module.SectionNode;
+import org.o42a.ast.file.FileNode;
+import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
@@ -89,11 +89,11 @@ public abstract class NodeVisitor<R, P>
 	}
 
 	public R visitSection(SectionNode section, P p) {
-		return visitAny(section, p);
+		return visitPart(section, p);
 	}
 
-	public R visitModule(ModuleNode module, P p) {
-		return visitPart(module, p);
+	public R visitFile(FileNode file, P p) {
+		return visitAny(file, p);
 	}
 
 	public R visitEmpty(EmptyNode node, P p) {
