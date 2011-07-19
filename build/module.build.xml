@@ -21,11 +21,9 @@
 
 <project name="org.o42a.build.module">
 
-	<property name="source.path" value="src"/>
-
 	<import file="common.build.xml" />
 	
-	<target name="compile-tools" depends="compile-deps" unless="auto-build">
+	<target name="compile-tools" depends="compile-deps">
 		<subant
 			target="compile"
 			inheritall="false"
@@ -37,37 +35,27 @@
 		</subant>
 	</target>
 	
-	<target name="apt" depends="compile-tools" if="auto-build">
+	<target name="apt" depends="compile-tools,clean-apt">
+		<delete dir="generated"/>
 		<mkdir taskname="${ant.project.name}" dir="generated"/>
 		<mkdir taskname="${ant.project.name}" dir=".bin"/>
-		<call-javac destdir=".bin">
+		<call-javac destdir=".bin" srcdir="src">
 			<compilerarg line="-proc:only"/>
 			<compilerarg line="-s generated"/>
 			<compilerarg line="-processorpath"/>
 			<compilerarg path="${root.dir}/org.o42a.util/bin:${root.dir}/org.o42a.tools/bin"/>
 		</call-javac>
+		<delete dir=".bin"/>
 	</target>
-
-	<target name="compile" depends="apt" unless="auto-build">
-		<mkdir taskname="${ant.project.name}" dir="generated"/>
-		<mkdir taskname="${ant.project.name}" dir="${output..}"/>
-		<call-javac>
-			<compilerarg line="-s generated"/>
-			<compilerarg line="-processorpath"/>
-			<compilerarg path="${root.dir}/org.o42a.util/bin:${root.dir}/org.o42a.tools/bin"/>
-		</call-javac>
-		<antcall target="copy-resources"/>
+	
+	<target name="clean-apt">
+		<delete dir="generated"/>
 	</target>
-
+	
 	<target name="copy-resources">
 		<copy todir="${output..}" taskname="${ant.project.name}">
 			<fileset dir="o42a"/>
 		</copy>
-	</target>
-
-	<target name="_clean" unless="auto-build">
-		<delete taskname="${ant.project.name}" dir="${output..}"/>
-		<delete taskname="${ant.project.name}" dir="generated"/>
 	</target>
 
 </project>

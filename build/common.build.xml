@@ -73,6 +73,7 @@
 	</condition>
 	
 	<macrodef name="call-javac" description="Invokes javac task">
+		<attribute name="srcdir" default="${source.path}"/>
 		<attribute name="destdir" default="${output..}"/>
 		<element
 			name="javac-elements"
@@ -81,7 +82,7 @@
 			description="Nested elements of javac task"/>
 		<sequential>
 			<javac
-				srcdir="${source.path}" 
+				srcdir="@{srcdir}" 
 				destdir="@{destdir}"
 				debug="${compile.debug}"
 				debuglevel="${compile.debuglevel}"
