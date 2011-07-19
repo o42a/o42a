@@ -204,27 +204,31 @@ public class TypesWithSources {
 					value,
 					relativeTo,
 					restPath == null);
+			if (restPath == null) {
+				return;
+			}
+		} else if (!name.getKey().equals(this.module.getName().getKey())) {
+			reportDuplicateRoot(type, annotation, relativeTo);
+			if (this.module.error()) {
+				reportDuplicateRoot(
+						this.module.getType(),
+						this.module.getAnnotation(),
+						this.module.getRelativeTo());
+			}
+			return;
 		} else if (restPath == null) {
 
 			final TypeSourceName moduleName = this.module.getName();
 			final TypeSourceName preferred = name.preferred(moduleName);
 
 			if (preferred == null) {
-				getMessenger().printMessage(
-						Diagnostic.Kind.ERROR,
-						"Module should contain only one root",
-						type,
-						annotation,
-						relativeTo);
+				reportDuplicateRoot(type, annotation, relativeTo);
 				if (this.module.error()) {
-					getMessenger().printMessage(
-							Diagnostic.Kind.ERROR,
-							"Module should contain only one root",
-							type,
-							annotation,
-							relativeTo);
+					reportDuplicateRoot(
+							this.module.getType(),
+							this.module.getAnnotation(),
+							this.module.getRelativeTo());
 				}
-
 				return;
 			}
 
@@ -232,10 +236,6 @@ public class TypesWithSources {
 				this.module.override(name, type, annotation, value, relativeTo);
 			}
 
-			return;
-		}
-
-		if (restPath == null) {
 			return;
 		}
 
@@ -302,6 +302,18 @@ public class TypesWithSources {
 			}
 		}
 		return true;
+	}
+
+	private void reportDuplicateRoot(
+			TypeElement type,
+			AnnotationMirror annotation,
+			AnnotationValue relativeTo) {
+		getMessenger().printMessage(
+				Diagnostic.Kind.ERROR,
+				"Module should have only one source root",
+				type,
+				annotation,
+				relativeTo);
 	}
 
 }
