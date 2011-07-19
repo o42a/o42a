@@ -61,7 +61,7 @@
 			handledirsep="true"/>
 	</pathconvert>
 
-	<target name="package-deps" depends="compile">
+	<target name="package-deps" depends="compile" unless="auto-build">
 		<echo
 			taskname="${ant.project.name}"
 			message="Packaging dependencies"/>
