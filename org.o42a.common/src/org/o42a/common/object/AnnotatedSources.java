@@ -19,14 +19,17 @@
 */
 package org.o42a.common.object;
 
+import java.util.Iterator;
+
 import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.Field;
 
 
 public interface AnnotatedSources {
 
 	URLSourceTree getSourceTree();
 
-	AnnotatedObject[] fields(MemberOwner owner);
+	Iterator<? extends Field<?>> fields(MemberOwner owner);
 
 }

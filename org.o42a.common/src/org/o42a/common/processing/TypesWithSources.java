@@ -51,7 +51,7 @@ public class TypesWithSources {
 		final String rest =
 				removeLeadingChars(path.substring(slashIdx + 1), '/');
 
-		return new String[] {name, rest};
+		return new String[] {name, rest.isEmpty() ? null : rest};
 	}
 
 	private static final String SOURCE_PATH_TYPE_NAME =
