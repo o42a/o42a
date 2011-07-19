@@ -30,13 +30,14 @@ import java.util.HashMap;
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.*;
 import javax.lang.model.util.Elements;
+import javax.swing.text.html.HTMLDocument.Iterator;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
-import org.o42a.common.object.AnnotatedObject;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.Field;
 
 
 class TypeWithSource extends TypeSource implements RelTypeSources {
@@ -232,14 +233,13 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			out.println();
 		}
 
-		out.append("import ").append(AnnotatedSources.class.getCanonicalName())
-		.println(";");
+		printImport(out, Iterator.class);
+		out.println();
 
-		out.append("import ").append(AnnotatedObject.class.getCanonicalName())
-		.println(";");
-
-		out.append("import ")
-		.append(URLSourceTree.class.getPackage().getName()).println(".*;");
+		printImport(out, AnnotatedSources.class);
+		printImport(out, URLSourceTree.class.getPackage());
+		printImport(out, MemberOwner.class);
+		printImport(out, Field.class);
 
 		out.println();
 		out.println();
@@ -263,6 +263,14 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.println("}");
 	}
 
+	private void printImport(PrintWriter out, Class<?> cls) {
+		out.append("import ").append(cls.getCanonicalName()).println(";");
+	}
+
+	private void printImport(PrintWriter out, Package pkg) {
+		out.append("import ").append(pkg.getName()).println(".*;");
+	}
+
 	private void emitBase(PrintWriter out, String className) {
 		out.println();
 		out.println("\tprivate static java.net.URL base() {");
@@ -275,7 +283,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.println(".class.getSimpleName() + \".class\");");
 		out.println();
 
-		out.print("return new URL(\"");
+		out.print("return new java.net.URL(\"");
 		printBasePath(out);
 		out.println("\");");
 
@@ -316,7 +324,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	private void emitGetSourceTree(PrintWriter out, String className) {
 		out.println();
 		out.println("\t@Override");
-		out.println("\tpublic getSourceTree() {");
+		out.println("\tpublic URLSourceTree getSourceTree() {");
 
 		out.println("\t\t if (this.sourceTree != null) {");
 		out.println("\t\t\treturn this.sourceTree;");
@@ -351,27 +359,27 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	throws IOException {
 		out.println();
 		out.println("\t@Override");
-		out.append("\tpublic fields(");
-		out.append(MemberOwner.class.getCanonicalName());
-		out.println(" owner) {");
+		out.println(
+				"\tpublic Iterator<? extends Field<?>>"
+				+ " fields(MemberOwner owner) {");
 
 		if (getSourceKind() != SourceKind.FILE || this.subEntries == null) {
-			out.println("\t\treturn new AnnotatedObject[0];");
+			out.println(
+					"\t\treturn new java.util.Collections"
+					+ ".<Field<?>>emptyList().iterator();");
 		} else {
 
 			final int numFields = this.subEntries.size();
 
 			out.println();
 			out.append(
-					"\t\tfinal java.util.ArrayList<AnnotatedObject> fields ="
-					+ " new java.util.ArrayList<AnnotatedObject>(");
+					"\t\tfinal java.util.ArrayList<Field<?>> fields ="
+					+ " new java.util.ArrayList<Field<?>>(");
 			out.append(Integer.toString(numFields)).println(");");
 
 			printSources(out, pathPrefix);
 
-			out.append(
-					"\t\treturn fields.toArray(new AnnotatedObject["
-					+ "fields.size()]);");
+			out.append("\t\treturn fields.iterator();");
 		}
 
 		out.println("\t};");
