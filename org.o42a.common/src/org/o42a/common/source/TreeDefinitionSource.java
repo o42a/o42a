@@ -21,6 +21,7 @@ package org.o42a.common.source;
 
 import org.o42a.core.source.*;
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourceFileName;
 import org.o42a.util.log.LogInfo;
 
 

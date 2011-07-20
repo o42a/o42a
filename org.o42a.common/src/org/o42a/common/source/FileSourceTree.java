@@ -19,15 +19,15 @@
 */
 package org.o42a.common.source;
 
-import static org.o42a.core.source.SourceFileName.FILE_SUFFIX;
+import static org.o42a.util.io.SourceFileName.FILE_SUFFIX;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.o42a.core.source.SourceFileName;
 import org.o42a.util.io.FileSource;
+import org.o42a.util.io.SourceFileName;
 
 
 public class FileSourceTree extends SourceTree<FileSource> {

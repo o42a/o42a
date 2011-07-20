@@ -19,7 +19,7 @@
 */
 package org.o42a.tools.source;
 
-import static org.o42a.core.source.SourceFileName.FILE_SUFFIX;
+import static org.o42a.util.io.SourceFileName.FILE_SUFFIX;
 
 
 final class TypeSourceName {

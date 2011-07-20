@@ -28,8 +28,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.SourceFileName;
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourceFileName;
 import org.o42a.util.log.Logger;
 
 

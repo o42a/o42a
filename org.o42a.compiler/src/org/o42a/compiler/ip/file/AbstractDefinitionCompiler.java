@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.file;
 
 import org.o42a.ast.file.FileNode;
 import org.o42a.core.source.*;
+import org.o42a.util.io.SourceFileName;
 
 
 public abstract class AbstractDefinitionCompiler<S extends DefinitionSource>

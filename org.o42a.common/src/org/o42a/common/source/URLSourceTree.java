@@ -19,14 +19,14 @@
 */
 package org.o42a.common.source;
 
-import static org.o42a.core.source.SourceFileName.FILE_SUFFIX;
+import static org.o42a.util.io.SourceFileName.FILE_SUFFIX;
 import static org.o42a.util.io.URLSource.urlIsDirectory;
 import static org.o42a.util.string.StringUtil.removeTrailingChars;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.o42a.core.source.SourceFileName;
+import org.o42a.util.io.SourceFileName;
 import org.o42a.util.io.URLSource;
 
 
