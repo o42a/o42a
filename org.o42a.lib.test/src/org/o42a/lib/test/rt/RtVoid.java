@@ -35,7 +35,7 @@ import org.o42a.core.value.Value;
 import org.o42a.lib.test.TestModule;
 
 
-@SourcePath(relativeTo = TestModule.class, value = "rt-void")
+@SourcePath(relativeTo = TestModule.class, value = "rt-void.o42a")
 public class RtVoid extends AnnotatedBuiltin {
 
 	public RtVoid(MemberOwner owner, AnnotatedSources sources) {

@@ -10,25 +10,25 @@ import org.o42a.core.member.field.Field;
 /**
  * o42a sources for {@link RtVoid}.
  * 
- * Source: test/rt-void
+ * File: test/rt-void.o42a
  */
 public final class RtVoid$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private EmptyURLSource sourceTree;
+	private SingleURLSource sourceTree;
 
 	public RtVoid$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public EmptyURLSource getSourceTree() {
+	public SingleURLSource getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new EmptyURLSource(
+		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"rt-void");
+				"rt-void.o42a");
 	}
 
 	@Override

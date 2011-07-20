@@ -10,25 +10,25 @@ import org.o42a.core.member.field.Field;
 /**
  * o42a sources for {@link RtFalse}.
  * 
- * Source: test/rt-false
+ * File: test/rt-false.o42a
  */
 public final class RtFalse$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private EmptyURLSource sourceTree;
+	private SingleURLSource sourceTree;
 
 	public RtFalse$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public EmptyURLSource getSourceTree() {
+	public SingleURLSource getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new EmptyURLSource(
+		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"rt-false");
+				"rt-false.o42a");
 	}
 
 	@Override
