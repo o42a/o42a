@@ -21,7 +21,7 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
 
-import org.o42a.common.object.AnnotatedDirective;
+import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Namespace;
@@ -36,7 +36,7 @@ import org.o42a.core.value.ValueType;
 
 
 @SourcePath(relativeTo = Root.class, value = "use_namespace.o42a")
-public class UseNamespace extends AnnotatedDirective {
+public class UseNamespace extends DirectiveObject {
 
 	private final MemberKey moduleKey;
 	private final MemberKey objectKey;
