@@ -40,7 +40,7 @@
 		<mkdir taskname="${ant.project.name}" dir="generated"/>
 		<call-javac destdir="" srcdir="src">
 			<compilerarg line="-proc:only"/>
-			<compilerarg line="-s generated"/>
+			<compilerarg line="-s ${basedir}/generated"/>
 			<compilerarg line="-processorpath"/>
 			<compilerarg path="${root.dir}/org.o42a.util/bin:${root.dir}/org.o42a.tools/bin"/>
 		</call-javac>

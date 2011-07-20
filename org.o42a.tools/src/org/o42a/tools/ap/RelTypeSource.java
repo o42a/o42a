@@ -17,33 +17,41 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.tools.source;
+package org.o42a.tools.ap;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 
 
-final class AnnotationTypeValueVisitor
-		extends SimpleAnnotationValueVisitor6<TypeMirror, Void> {
+final class RelTypeSource extends TypeSource {
 
-	private static final AnnotationTypeValueVisitor VISITOR =
-			new AnnotationTypeValueVisitor();
+	private final String restPath;
 
-	public static TypeMirror annotationTypeValue(
-			AnnotationValue annotationValue) {
-		return annotationValue.accept(VISITOR, null);
+	RelTypeSource(
+			TypesWithSources types,
+			TypeSourceName name,
+			TypeElement type,
+			AnnotationMirror annotation,
+			AnnotationValue value,
+			AnnotationValue relativeTo,
+			String restPath) {
+		super(types, name, type, annotation, value, relativeTo);
+		this.restPath = restPath;
 	}
 
-	@Override
-	public TypeMirror visitType(TypeMirror t, Void p) {
-		return t;
+	public String getRestPath() {
+		return this.restPath;
 	}
 
-	@Override
-	protected TypeMirror defaultAction(Object o, Void p) {
-		return null;
+	public void reportUnrelated() {
+		getMessenger().printMessage(
+				Diagnostic.Kind.ERROR,
+				"The class this source is relative to does not have a source",
+				getType(),
+				getAnnotation(),
+				getRelativeTo());
 	}
-
 
 }

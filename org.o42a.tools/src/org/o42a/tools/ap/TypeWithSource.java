@@ -17,15 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.tools.source;
+package org.o42a.tools.ap;
 
 import static org.o42a.common.object.AnnotatedModule.SOURCES_DESCRIPTOR_SUFFIX;
-import static org.o42a.tools.source.TypesWithSources.nameAndRest;
+import static org.o42a.tools.ap.TypesWithSources.nameAndRest;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.*;
@@ -33,13 +34,20 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
+import org.o42a.util.io.SourceFileName;
+
 
 class TypeWithSource extends TypeSource implements RelTypeSources {
 
-	private boolean error;
+	private final TypeWithSource parent;
+	private final String descriptorName;
+	private final String packageName;
 
-	private HashMap<String, TypeWithSource> subEntries;
+	private TreeMap<String, TypeWithSource> subEntries;
+	private HashMap<String, Integer> usedNames;
+	private int implicitNameSeq;
 	private boolean implicit;
+	private boolean error;
 
 	TypeWithSource(
 			TypesWithSources types,
@@ -49,15 +57,71 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			AnnotationValue value,
 			AnnotationValue relativeTo,
 			boolean implicit) {
+		this(types, null, name, type, annotation, value, relativeTo, implicit);
+	}
+
+	TypeWithSource(
+			TypeWithSource parent,
+			TypeSourceName name,
+			TypeElement type,
+			AnnotationMirror annotation,
+			AnnotationValue value,
+			AnnotationValue relativeTo,
+			boolean implicit) {
+		this(
+				parent.getTypes(),
+				parent,
+				name,
+				type,
+				annotation,
+				value,
+				relativeTo,
+				implicit);
+	}
+
+	private TypeWithSource(
+			TypesWithSources types,
+			TypeWithSource parent,
+			TypeSourceName name,
+			TypeElement type,
+			AnnotationMirror annotation,
+			AnnotationValue value,
+			AnnotationValue relativeTo,
+			boolean implicit) {
 		super(types, name, type, annotation, value, relativeTo);
+		this.parent = parent;
 		this.implicit = implicit;
 		if (!implicit) {
+			this.descriptorName =
+					getType().getSimpleName() + SOURCES_DESCRIPTOR_SUFFIX;
+			this.packageName =
+					getProcessingEnv().getElementUtils()
+					.getPackageOf(getType()).getQualifiedName().toString();
 			types.registerType(this);
+		} else {
+			this.descriptorName = parent.implicitDescriptorName(name);
+			this.packageName = parent.getPackageName();
 		}
+	}
+
+	public final TypeWithSource getParent() {
+		return this.parent;
 	}
 
 	public final boolean isImplicit() {
 		return this.implicit;
+	}
+
+	public final String getDescriptorName() {
+		return this.descriptorName;
+	}
+
+	public final String getPackageName() {
+		return this.packageName;
+	}
+
+	public final String getQualifiedName() {
+		return getPackageName() + '.' + getDescriptorName();
 	}
 
 	public final boolean isModule() {
@@ -88,7 +152,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		final String key = name.getKey();
 
 		if (this.subEntries == null) {
-			this.subEntries = new HashMap<String, TypeWithSource>();
+			this.subEntries = new TreeMap<String, TypeWithSource>();
 			existing = null;
 		} else {
 			existing = this.subEntries.get(key);
@@ -96,7 +160,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 
 		if (existing == null) {
 			subEntry = new TypeWithSource(
-					getTypes(),
+					this,
 					name,
 					type,
 					annotation,
@@ -182,23 +246,71 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	public void validate() {
 	}
 
-	public String emitDescriptor(String pathPrefix) throws IOException {
+	public void emitDescriptor() throws IOException {
 
-		final String descriptorClass =
-				getType().getQualifiedName()
-				+ SOURCES_DESCRIPTOR_SUFFIX;
 		final Filer filer = getProcessingEnv().getFiler();
-		final JavaFileObject descriptor =
-				filer.createSourceFile(descriptorClass, originatingElements());
+		final JavaFileObject descriptor = filer.createSourceFile(
+				getQualifiedName(),
+				originatingElements());
 		final PrintWriter out = new PrintWriter(descriptor.openWriter());
 
 		try {
-			emit(out, pathPrefix);
+			emit(out);
 		} finally {
 			out.close();
 		}
+	}
 
-		return descriptorClass;
+	private final String implicitDescriptorName(TypeSourceName sourceName) {
+
+		final String localName = localDescriptorName(sourceName);
+
+		if (!isImplicit()) {
+			return getType().getSimpleName() + "$$" + localName;
+		}
+
+		return getParent().getDescriptorName() + "$$" + localName;
+	}
+
+	private String localDescriptorName(TypeSourceName sourceName) {
+
+		final SourceFileName fileName = new SourceFileName(sourceName.getKey());
+		final String localName;
+
+		if (!fileName.isValid()) {
+			return "_" + (++this.implicitNameSeq);
+		}
+		if (fileName.isAdapter()) {
+
+			final String[] adaptee = fileName.getAdaptee();
+
+			localName = "$" + adaptee[adaptee.length - 1];
+		} else {
+			localName = fileName.getFieldName();
+		}
+
+		final String briefName;
+
+		if (localName.length() > 13) {
+			briefName = localName.substring(0, 13);
+		} else {
+			briefName = localName;
+		}
+
+		if (this.usedNames == null) {
+			this.usedNames = new HashMap<String, Integer>();
+		}
+
+		final Integer counter =
+				this.usedNames.put(briefName, Integer.valueOf(1));
+
+		if (counter == null) {
+			return briefName;
+		}
+
+		this.usedNames.put(briefName, counter + 1);
+
+		return briefName + '_' + counter;
 	}
 
 	private Element[] originatingElements() {
@@ -227,12 +339,12 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		}
 	}
 
-	private void emit(PrintWriter out, String pathPrefix) throws IOException {
+	private void emit(PrintWriter out) throws IOException {
 
-		final String className =
-				getType().getSimpleName() + SOURCES_DESCRIPTOR_SUFFIX;
 		final Elements utils = getProcessingEnv().getElementUtils();
 		final PackageElement packageElement = utils.getPackageOf(getType());
+
+		out.println("// GENERATED FILE. DO NOT MODIFY.");
 
 		if (!packageElement.isUnnamed()) {
 			out.print("package ");
@@ -240,9 +352,6 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			out.println(";");
 			out.println();
 		}
-
-		out.println("import java.util.Iterator;");
-		out.println();
 
 		out.println("import org.o42a.common.object.AnnotatedSources;");
 		out.println("import org.o42a.common.source.*;");
@@ -252,37 +361,48 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.println();
 		out.println();
 
-		out.append("public final class ").append(className);
+		out.append("public final class ").append(getDescriptorName());
 		out.println(" implements AnnotatedSources {");
 
-		out.println();
+		if (isModule()) {
+			emitBase(out);
+			out.println();
+		} else {
+			out.println();
+			out.println("\tprivate final AnnotatedSources parent;");
+		}
 		out.println("\tprivate URLSourceTree sourceTree;");
 
-		if (isModule()) {
-			emitBase(out, className);
-		} else {
-			emitSetParent(out);
+		if (!isModule()) {
+			emitConstructor(out);
 		}
 
-		emitGetSourceTree(out, className);
-		emitFields(out, pathPrefix);
+		emitGetSourceTree(out);
+		emitFields(out);
 
 		out.println();
 		out.println("}");
 	}
 
-	private void emitBase(PrintWriter out, String className) {
+	private void emitBase(PrintWriter out) {
+
+		final Name className = getType().getSimpleName();
+
+		out.println();
+		out.append("\tprivate static final Class<? extends ");
+		out.append(className).println("> MODULE_CLASS =");
+		out.append("\t\t\t").append(className).println(".class;");
+
 		out.println();
 		out.println("\tprivate static java.net.URL base() {");
 		out.println("\t\ttry {");
 
 		out.println();
-		out.append("\t\t\tfinal java.net.URL self = ").append(className);
-		out.append(".class").println(".getResource(");
-		out.append("\t\t\t\t\t").append(className);
-		out.println(".class.getSimpleName() + \".class\");");
-		out.println();
+		out.println("\t\t\tfinal java.net.URL self ="
+				+ " MODULE_CLASS.getResource(");
+		out.println("\t\t\t\t\tMODULE_CLASS.getSimpleName() + \".class\");");
 
+		out.println();
 		out.print("\t\t\treturn new java.net.URL(self, \"");
 		printBasePath(out);
 		out.println("\");");
@@ -325,17 +445,15 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		}
 	}
 
-	private void emitSetParent(PrintWriter out) {
+	private void emitConstructor(PrintWriter out) {
 		out.println();
-		out.println("\tprivate AnnotatedSources parent;");
-
-		out.println();
-		out.println("\tpublic final void setParent(AnnotatedSources parent) {");
+		out.append("\tpublic ").append(getDescriptorName());
+		out.println("(AnnotatedSources parent) {");
 		out.println("\t\tthis.parent = parent;");
 		out.println("\t}");
 	}
 
-	private void emitGetSourceTree(PrintWriter out, String className) {
+	private void emitGetSourceTree(PrintWriter out) {
 		out.println();
 		out.println("\t@Override");
 		out.println("\tpublic URLSourceTree getSourceTree() {");
@@ -347,103 +465,64 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.append("\t\treturn this.sourceTree = new ");
 		switch (getSourceKind()) {
 		case FILE:
-			out.append("SingleURLSource(");
+			out.println("SingleURLSource(");
 			break;
 		case DIR:
-			out.append("EmptyURLSource(");
+			out.println("SingleURLSource(");
 			break;
 		case EMPTY:
-			out.append("EmptyURLSource(");
+			out.println("EmptyURLSource(");
 		}
 		if (isModule()) {
-			out.append("null, base(), ");
+			out.println("\t\t\t\tnull,");
+			out.println("\t\t\t\tbase(),");
 		} else {
-			out.append("this.parent.getSourceTree(), ");
+			out.println("\t\t\t\tthis.parent.getSourceTree(),");
 		}
-		out.append('"').append(getName().getName()).append('"');
-		out.println(");");
+		out.append("\t\t\t\t\"").append(getName().getName());
+		out.println("\");");
 
 		out.println("\t}");
 	}
 
-	private void emitFields(
-			PrintWriter out,
-			String pathPrefix)
-	throws IOException {
+	private void emitFields(PrintWriter out) throws IOException {
 		out.println();
 		out.println("\t@Override");
 		out.println(
-				"\tpublic Iterator<? extends Field<?>>"
+				"\tpublic Field<?>[]"
 				+ " fields(MemberOwner owner) {");
 
 		if (getSourceKind() != SourceKind.FILE || this.subEntries == null) {
-			out.println(
-					"\t\treturn java.util.Collections"
-					+ ".<Field<?>>emptyList().iterator();");
+			out.println("\t\treturn new Field<?>[0];");
 		} else {
-
-			final int numFields = this.subEntries.size();
-
-			out.println();
-			out.append(
-					"\t\tfinal java.util.ArrayList<Field<?>> fields ="
-					+ " new java.util.ArrayList<Field<?>>(");
-			out.append(Integer.toString(numFields)).println(");");
-
-			printSources(out, pathPrefix);
-
-			out.println();
-			out.println("\t\treturn fields.iterator();");
+			out.println("\t\treturn new Field<?>[] {");
+			printSources(out);
+			out.println("\t\t};");
 		}
 
 		out.println("\t}");
 	}
 
-	private void printSources(
-			PrintWriter out,
-			String pathPrefix)
-	throws IOException {
-
-		int i = 0;
-
+	private void printSources(PrintWriter out) throws IOException {
 		for (TypeWithSource subEntry : this.subEntries.values()) {
-			i = subEntry.printSource(out, pathPrefix, i);
+			subEntry.printSource(out);
 		}
 	}
 
-	private int printSource(
-			PrintWriter out,
-			String pathPrefix,
-			int index)
-	throws IOException {
+	private void printSource(PrintWriter out) throws IOException {
+		emitDescriptor();
+
+		out.append("\t\t\tnew ");
 		if (isImplicit()) {
-
-			int i = index;
-
-			for (TypeWithSource subEntry : this.subEntries.values()) {
-				i = subEntry.printSource(
-						out,
-						pathPrefix + getName().getName(),
-						i);
-			}
-
-			return i;
+			out.append("org.o42a.common.object.AnnotatedObject");
+		} else {
+			out.append(getType().getQualifiedName());
 		}
-
-		final String descriptorClass = emitDescriptor("");
-		final String idx = Integer.toString(index);
-
-		out.println();
-		out.append("\t\tfinal ").append(descriptorClass).append(" sources");
-		out.append(idx).append(" = new ").append(descriptorClass);
-		out.println("();");
-		out.println();
-		out.append("\t\tsources").append(idx).println(".setParent(this);");
-		out.append("\t\tfields.add(new ").append(getType().getQualifiedName());
-		out.append("(owner, sources").append(idx);
-		out.println(").getScope().toField());");
-
-		return index + 1;
+		out.println("(");
+		out.println("\t\t\t\t\towner,");
+		out.append("\t\t\t\t\tnew ").append(getQualifiedName());
+		out.println("(this))");
+		out.println("\t\t\t.getScope().toField(),");
 	}
 
 }

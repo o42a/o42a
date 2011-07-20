@@ -17,15 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.tools.source;
+package org.o42a.tools.ap;
+
+import javax.lang.model.element.Name;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleTypeVisitor6;
 
 
-interface RelTypeSources {
+final class TypeNameVisitor extends SimpleTypeVisitor6<Name, Void> {
 
-	void add(RelTypeSource source);
+	private static final TypeNameVisitor VISITOR = new TypeNameVisitor();
 
-	void replaceBy(TypeWithSource other);
+	public static Name typeName(TypeMirror type) {
+		return type.accept(VISITOR, null);
+	}
 
-	void validate();
+	@Override
+	public Name visitDeclared(DeclaredType t, Void p) {
+
+		final TypeElement typeElement = (TypeElement) t.asElement();
+
+		return typeElement.getQualifiedName();
+	}
+
+	@Override
+	protected Name defaultAction(TypeMirror e, Void p) {
+		return null;
+	}
 
 }
