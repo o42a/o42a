@@ -22,16 +22,17 @@ package org.o42a.common.object;
 import static org.o42a.core.value.ValueType.DIRECTIVE;
 
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.Directive;
 
 
 public abstract class DirectiveObject
-		extends CompiledObject
+		extends AnnotatedObject
 		implements Directive {
 
-	public DirectiveObject(CompiledField field) {
-		super(field);
+	public DirectiveObject(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override
