@@ -34,8 +34,6 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
-import org.o42a.common.source.SourcePath;
-
 
 public class TypesWithSources {
 
@@ -54,10 +52,13 @@ public class TypesWithSources {
 		return new String[] {name, rest.isEmpty() ? null : rest};
 	}
 
-	private static final String SOURCE_PATH_TYPE_NAME =
-			"org.o42a.common.source.SourcePath";
+	private static final String SOURCE_PATH =
+			"org.o42a.common.object.SourcePath";
+	private static final String RELATED_SOURCES =
+			"org.o42a.common.object.RelatedSources";
+
 	private static final String RELATIVE_TO = "relativeTo";
-	private static final String VALUE = "value";
+	static final String VALUE = "value";
 
 	private final ProcessingEnvironment processingEnv;
 
@@ -83,6 +84,8 @@ public class TypesWithSources {
 
 	public void processAnnotations(TypeElement type) {
 
+		AnnotationMirror sourcePath = null;
+		AnnotationMirror relatedSources = null;
 		final List<? extends AnnotationMirror> annotations =
 				type.getAnnotationMirrors();
 
@@ -92,10 +95,29 @@ public class TypesWithSources {
 					(TypeElement) annotation.getAnnotationType().asElement();
 			final Name annotationName = annotationType.getQualifiedName();
 
-			if (annotationName != null
-					&& annotationName.contentEquals(SOURCE_PATH_TYPE_NAME)) {
-				processAnnotation(type, annotation);
+			if (annotationName == null) {
+				continue;
 			}
+			if (annotationName.contentEquals(SOURCE_PATH)) {
+				sourcePath = annotation;
+				continue;
+			}
+			if (annotationName.contentEquals(RELATED_SOURCES)) {
+				relatedSources = annotation;
+			}
+		}
+
+		if (sourcePath == null) {
+			return;
+		}
+
+		final TypeSource typeSource = processSourcePath(type, sourcePath);
+
+		if (typeSource == null) {
+			return;
+		}
+		if (relatedSources != null) {
+			typeSource.addRelatedSources(relatedSources);
 		}
 	}
 
@@ -137,17 +159,17 @@ public class TypesWithSources {
 		}
 	}
 
-	private void processAnnotation(
+	private TypeSource processSourcePath(
 			TypeElement type,
 			AnnotationMirror annotation) {
 		if (type.getNestingKind() != NestingKind.TOP_LEVEL) {
 			getMessenger().printMessage(
 					Diagnostic.Kind.ERROR,
 					"Only top-level classes may be annotated with @"
-					+ SourcePath.class.getSimpleName() + " annotation",
+					+ SOURCE_PATH + " annotation",
 					type,
 					annotation);
-			return;
+			return null;
 		}
 
 		AnnotationValue value = null;
@@ -176,17 +198,17 @@ public class TypesWithSources {
 					"No source path specified",
 					type,
 					annotation);
-			return;
+			return null;
 		}
 
 		if (relativeTo == null) {
-			addAbsolute(type, annotation, value, relativeTo);
-		} else {
-			addRelative(type, annotation, value, relativeTo);
+			return addAbsolute(type, annotation, value, relativeTo);
 		}
+
+		return addRelative(type, annotation, value, relativeTo);
 	}
 
-	private void addAbsolute(
+	private TypeSource addAbsolute(
 			TypeElement type,
 			AnnotationMirror annotation,
 			AnnotationValue value,
@@ -206,7 +228,7 @@ public class TypesWithSources {
 					relativeTo,
 					restPath != null);
 			if (restPath == null) {
-				return;
+				return this.module;
 			}
 		} else if (!name.getKey().equals(this.module.getName().getKey())) {
 			reportDuplicateRoot(type, annotation, relativeTo);
@@ -216,7 +238,7 @@ public class TypesWithSources {
 						this.module.getAnnotation(),
 						this.module.getRelativeTo());
 			}
-			return;
+			return null;
 		} else if (restPath == null) {
 
 			final TypeSourceName moduleName = this.module.getName();
@@ -230,20 +252,22 @@ public class TypesWithSources {
 							this.module.getAnnotation(),
 							this.module.getRelativeTo());
 				}
-				return;
+				return null;
 			}
 
 			if (preferred == name) {
 				this.module.override(name, type, annotation, value, relativeTo);
 			}
 
-			return;
+			return this.module;
 		}
 
 		this.module.add(name, type, annotation, value, relativeTo, restPath);
+
+		return this.module;
 	}
 
-	private void addRelative(
+	private TypeSource addRelative(
 			TypeElement type,
 			AnnotationMirror annotation,
 			AnnotationValue value,
@@ -260,12 +284,11 @@ public class TypesWithSources {
 					type,
 					annotation,
 					relativeTo);
-			return;
+			return null;
 		}
 
 		final RelTypeSources sources;
-		final RelTypeSources existingSources =
-				this.relative.get(typeName);
+		final RelTypeSources existingSources = this.relative.get(typeName);
 
 		if (existingSources != null) {
 			sources = existingSources;
@@ -275,15 +298,18 @@ public class TypesWithSources {
 		}
 
 		final String[] path = nameAndRest(path(type, annotation, value));
-
-		sources.add(new RelTypeSource(
+		final RelTypeSource relative = new RelTypeSource(
 				this,
 				new TypeSourceName(path[0]),
 				type,
 				annotation,
 				value,
 				relativeTo,
-				path[1]));
+				path[1]);
+
+		sources.add(relative);
+
+		return relative;
 	}
 
 	private boolean validate() {

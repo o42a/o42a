@@ -1,5 +1,5 @@
 /*
-    Test Framework
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,20 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.test.rt;
+package org.o42a.common.object;
 
-import org.o42a.common.object.AnnotatedObject;
-import org.o42a.common.object.AnnotatedSources;
-import org.o42a.common.source.SourcePath;
+import org.o42a.common.def.Builtin;
+import org.o42a.common.def.BuiltinValueDef;
+import org.o42a.common.ir.BuiltinValueIR;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.lib.test.TestModule;
 
 
-@SourcePath(relativeTo = TestModule.class, value = "rt-integer.o42a")
-public class RtInteger extends AnnotatedObject {
+public abstract class AnnotatedBuiltin
+		extends AnnotatedObject
+		implements Builtin {
 
-	public RtInteger(MemberOwner owner, AnnotatedSources sources) {
+	public AnnotatedBuiltin(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
+	}
+
+	@Override
+	protected final Definitions explicitDefinitions() {
+		return new BuiltinValueDef(this).toDefinitions();
+	}
+
+	@Override
+	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
+		return new BuiltinValueIR(this, objectIR);
 	}
 
 }

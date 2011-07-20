@@ -7,23 +7,28 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 
 
-public final class RtFloat$$Sources implements AnnotatedSources {
+/**
+ * o42a sources for {@link RtVoid}.
+ * 
+ * Source: test/rt-void
+ */
+public final class RtVoid$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private URLSourceTree sourceTree;
+	private EmptyURLSource sourceTree;
 
-	public RtFloat$$Sources(AnnotatedSources parent) {
+	public RtVoid$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public URLSourceTree getSourceTree() {
+	public EmptyURLSource getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new SingleURLSource(
+		return this.sourceTree = new EmptyURLSource(
 				this.parent.getSourceTree(),
-				"rt-float.o42a");
+				"rt-void");
 	}
 
 	@Override

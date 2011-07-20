@@ -22,35 +22,63 @@ package org.o42a.util.string;
 
 public final class StringUtil {
 
-	public static String removeLeadingChars(String from, char what) {
+	public static final int indexOfDiff(String in, char what) {
+		return indexOfDiff(in, what, 0);
+	}
 
-		int i = 0;
-		final int len = from.length();
+	public static int indexOfDiff(String in, char what, int from) {
 
-		while (i < len) {
-			if (from.charAt(i) != what) {
-				if (i == 0) {
-					return from;
-				}
-				return from.substring(i, from.length());
+		int first = from;
+		final int len = in.length();
+
+		while (first < len) {
+			if (in.charAt(first) != what) {
+				return first;
 			}
-			++i;
+			++first;
 		}
 
-		return "";
+		return -1;
+	}
+
+	public static final int lastIndexOfDiff(String in, char what) {
+		return lastIndexOfDiff(in, what, in.length() - 1);
+	}
+
+	public static int lastIndexOfDiff(String in, char what, int from) {
+
+		int last = from;
+
+		while (last >= 0 && in.charAt(last) == what) {
+			--last;
+		}
+
+		return last;
+	}
+
+	public static String removeLeadingChars(String from, char what) {
+
+		final int first = indexOfDiff(from, what);
+
+		if (first == 0) {
+			return from;
+		}
+		if (first < 0) {
+			return "";
+		}
+
+		return from.substring(first + 1, from.length());
 	}
 
 	public static String removeTrailingChars(String from, char what) {
 
-		final int fromLast = from.length() - 1;
-		int last = fromLast;
+		final int last = lastIndexOfDiff(from, what);
 
-		while (last >= 0 && from.charAt(last) == what) {
-			--last;
-		}
-
-		if (fromLast == last) {
+		if (last == from.length() - 1) {
 			return from;
+		}
+		if (last < 0) {
+			return "";
 		}
 
 		return from.substring(0, last + 1);

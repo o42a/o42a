@@ -22,23 +22,24 @@ package org.o42a.lib.test.rt;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.common.object.CompiledBuiltin;
-import org.o42a.common.source.EmptyURLSource;
+import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.lib.test.TestModule;
 
 
-public class RtFalse extends CompiledBuiltin {
+@SourcePath(relativeTo = TestModule.class, value = "rt-false")
+public class RtFalse extends AnnotatedBuiltin {
 
-	public RtFalse(TestModule owner) {
-		super(compileField(
-				owner,
-				new EmptyURLSource(owner.getSourceTree(), "rt-false")));
+	public RtFalse(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

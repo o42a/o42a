@@ -19,34 +19,38 @@
 */
 package org.o42a.tools.ap;
 
+import java.util.List;
+
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 
 
-final class AnnotationTypeValueVisitor
-		extends SimpleAnnotationValueVisitor6<TypeMirror, Void> {
+final class AnnotationArrayValueVisitor
+		extends SimpleAnnotationValueVisitor6<
+				List<? extends AnnotationValue>,
+				Void> {
 
-	private static final AnnotationTypeValueVisitor VISITOR =
-			new AnnotationTypeValueVisitor();
+	private static final AnnotationArrayValueVisitor VISITOR =
+			new AnnotationArrayValueVisitor();
 
-	public static TypeMirror annotationTypeValue(
-			AnnotationValue annotationValue) {
-		return annotationValue.accept(VISITOR, null);
+	public static List<? extends AnnotationValue> annotationArrayValue(
+			AnnotationValue value) {
+		return value.accept(VISITOR, null);
 	}
 
-	private AnnotationTypeValueVisitor() {
-	}
-
-	@Override
-	public TypeMirror visitType(TypeMirror t, Void p) {
-		return t;
+	private AnnotationArrayValueVisitor() {
 	}
 
 	@Override
-	protected TypeMirror defaultAction(Object o, Void p) {
+	public List<? extends AnnotationValue> visitArray(
+			List<? extends AnnotationValue> vals,
+			Void p) {
+		return vals;
+	}
+
+	@Override
+	protected List<? extends AnnotationValue> defaultAction(Object o, Void p) {
 		return null;
 	}
-
 
 }
