@@ -17,34 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.tools.source;
-
-import javax.lang.model.element.Name;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleTypeVisitor6;
+package org.o42a.tools.ap;
 
 
-final class TypeNameVisitor extends SimpleTypeVisitor6<Name, Void> {
+public enum SourceKind {
 
-	private static final TypeNameVisitor VISITOR = new TypeNameVisitor();
+	FILE() {
 
-	public static Name typeName(TypeMirror type) {
-		return type.accept(VISITOR, null);
-	}
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return other == DIR;
+		}
 
-	@Override
-	public Name visitDeclared(DeclaredType t, Void p) {
+	},
 
-		final TypeElement typeElement = (TypeElement) t.asElement();
+	DIR() {
 
-		return typeElement.getQualifiedName();
-	}
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return false;
+		}
 
-	@Override
-	protected Name defaultAction(TypeMirror e, Void p) {
-		return null;
-	}
+	},
 
+	EMPTY() {
+
+		@Override
+		public boolean preferredOver(SourceKind other) {
+			return other == DIR;
+		}
+
+	};
+
+	public abstract boolean preferredOver(SourceKind other);
 }

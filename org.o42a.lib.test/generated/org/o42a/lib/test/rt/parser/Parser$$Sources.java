@@ -1,6 +1,5 @@
+// GENERATED FILE. DO NOT MODIFY.
 package org.o42a.lib.test.rt.parser;
-
-import java.util.Iterator;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.source.*;
@@ -10,11 +9,10 @@ import org.o42a.core.member.field.Field;
 
 public final class Parser$$Sources implements AnnotatedSources {
 
+	private final AnnotatedSources parent;
 	private URLSourceTree sourceTree;
 
-	private AnnotatedSources parent;
-
-	public final void setParent(AnnotatedSources parent) {
+	public Parser$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -23,12 +21,14 @@ public final class Parser$$Sources implements AnnotatedSources {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new EmptyURLSource(this.parent.getSourceTree(), "parser/");
+		return this.sourceTree = new SingleURLSource(
+				this.parent.getSourceTree(),
+				"parser/");
 	}
 
 	@Override
-	public Iterator<? extends Field<?>> fields(MemberOwner owner) {
-		return java.util.Collections.<Field<?>>emptyList().iterator();
+	public Field<?>[] fields(MemberOwner owner) {
+		return new Field<?>[0];
 	}
 
 }

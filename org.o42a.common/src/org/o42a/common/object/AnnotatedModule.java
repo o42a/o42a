@@ -19,8 +19,6 @@
 */
 package org.o42a.common.object;
 
-import java.util.Iterator;
-
 import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.member.field.Field;
@@ -66,12 +64,8 @@ public abstract class AnnotatedModule extends Module {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
-
-		final Iterator<? extends Field<?>> fields =
-				getSources().fields(toMemberOwner());
-
-		while (fields.hasNext()) {
-			members.addMember(fields.next().toMember());
+		for (Field<?> field : getSources().fields(toMemberOwner())) {
+			members.addMember(field.toMember());
 		}
 	}
 

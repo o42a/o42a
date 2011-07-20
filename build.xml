@@ -38,6 +38,22 @@
 		<file name="org.o42a.cl"/>
 		<file name="org.o42a.rt"/>
 	</filelist>
+	
+	<filelist id="modules" dir=".">
+		<file name="org.o42a.lib.test"/>
+	</filelist>
+
+	<target name="apt">
+		<subant target="apt" inheritall="false" inheritrefs="false">
+			<filelist refid="modules"/>
+		</subant>
+	</target>
+
+	<target name="clean-apt">
+		<subant target="clean-apt" inheritall="false" inheritrefs="false">
+			<filelist refid="modules"/>
+		</subant>
+	</target>
 
 	<target name="compile">
 		<subant target="compile" inheritall="false" inheritrefs="false">

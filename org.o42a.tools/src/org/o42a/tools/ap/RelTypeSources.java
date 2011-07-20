@@ -17,37 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.tools.source;
+package org.o42a.tools.ap;
 
 
-public enum SourceKind {
+interface RelTypeSources {
 
-	FILE() {
+	void add(RelTypeSource source);
 
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return other == DIR;
-		}
+	void replaceBy(TypeWithSource other);
 
-	},
+	void validate();
 
-	DIR() {
-
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return false;
-		}
-
-	},
-
-	EMPTY() {
-
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return other == DIR;
-		}
-
-	};
-
-	public abstract boolean preferredOver(SourceKind other);
 }

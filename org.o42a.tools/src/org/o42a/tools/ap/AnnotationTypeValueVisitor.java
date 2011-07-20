@@ -1,5 +1,5 @@
 /*
-    Modules Commons
+    Build Tools
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,17 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.object;
+package org.o42a.tools.ap;
 
-import org.o42a.common.source.URLSourceTree;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.field.Field;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 
 
-public interface AnnotatedSources {
+final class AnnotationTypeValueVisitor
+		extends SimpleAnnotationValueVisitor6<TypeMirror, Void> {
 
-	URLSourceTree getSourceTree();
+	private static final AnnotationTypeValueVisitor VISITOR =
+			new AnnotationTypeValueVisitor();
 
-	Field<?>[] fields(MemberOwner owner);
+	public static TypeMirror annotationTypeValue(
+			AnnotationValue annotationValue) {
+		return annotationValue.accept(VISITOR, null);
+	}
+
+	@Override
+	public TypeMirror visitType(TypeMirror t, Void p) {
+		return t;
+	}
+
+	@Override
+	protected TypeMirror defaultAction(Object o, Void p) {
+		return null;
+	}
+
 
 }

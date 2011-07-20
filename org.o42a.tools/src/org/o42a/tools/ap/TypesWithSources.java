@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.tools.source;
+package org.o42a.tools.ap;
 
-import static org.o42a.tools.source.AnnotationTypeValueVisitor.annotationTypeValue;
-import static org.o42a.tools.source.TypeNameVisitor.typeName;
+import static org.o42a.tools.ap.AnnotationTypeValueVisitor.annotationTypeValue;
+import static org.o42a.tools.ap.TypeNameVisitor.typeName;
 import static org.o42a.util.string.StringUtil.removeLeadingChars;
 
 import java.io.IOException;
@@ -103,7 +103,7 @@ public class TypesWithSources {
 		if (!validate()) {
 			return;
 		}
-		this.module.emitDescriptor("");
+		this.module.emitDescriptor();
 	}
 
 	final String path(

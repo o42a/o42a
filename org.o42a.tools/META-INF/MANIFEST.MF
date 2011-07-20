@@ -5,4 +5,4 @@ Bundle-SymbolicName: org.o42a.tools
 Bundle-Version: 0.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.o42a.common;bundle-version="0.1.0"
-Export-Package: org.o42a.tools.source
+Export-Package: org.o42a.tools.ap
