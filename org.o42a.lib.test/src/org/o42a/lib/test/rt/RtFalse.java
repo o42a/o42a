@@ -35,7 +35,7 @@ import org.o42a.core.value.Value;
 import org.o42a.lib.test.TestModule;
 
 
-@SourcePath(relativeTo = TestModule.class, value = "rt-false")
+@SourcePath(relativeTo = TestModule.class, value = "rt-false.o42a")
 public class RtFalse extends AnnotatedBuiltin {
 
 	public RtFalse(MemberOwner owner, AnnotatedSources sources) {
