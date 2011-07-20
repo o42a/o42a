@@ -25,11 +25,11 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.lib.console.ConsoleModule;
 
 
-@SourcePath(relativeTo = ConsoleModule.class, value = "print.o42a")
-public class Print extends AbstractPrint {
+@SourcePath(relativeTo = ConsoleModule.class, value = "print_error.o42a")
+public class PrintError extends AbstractPrint {
 
-	public Print(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources, "o42a_io_print_str");
+	public PrintError(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, "o42a_error_append_str");
 	}
 
 }
