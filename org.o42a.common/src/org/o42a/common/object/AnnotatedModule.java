@@ -30,8 +30,7 @@ public abstract class AnnotatedModule extends Module {
 
 	public static final String SOURCES_DESCRIPTOR_SUFFIX = "$$Sources";
 
-	public static AnnotatedSources moduleSources(
-			Class<? extends AnnotatedModule> moduleClass) {
+	public static AnnotatedSources moduleSources(Class<?> moduleClass) {
 		try {
 
 			final Class<?> descriptorClass =

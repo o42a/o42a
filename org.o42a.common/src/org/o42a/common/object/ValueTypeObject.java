@@ -21,13 +21,17 @@ package org.o42a.common.object;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.ValueType;
 
 
-public class ValueTypeObject extends CompiledObject {
+public abstract class ValueTypeObject extends AnnotatedObject {
 
-	public ValueTypeObject(CompiledField field, ValueType<?> valueType) {
-		super(field);
+	public ValueTypeObject(
+			MemberOwner owner,
+			AnnotatedSources sources,
+			ValueType<?> valueType) {
+		super(owner, sources);
 		setValueType(valueType);
 	}
 

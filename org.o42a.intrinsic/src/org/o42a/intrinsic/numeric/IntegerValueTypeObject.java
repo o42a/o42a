@@ -1,6 +1,6 @@
 /*
     Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,10 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Include :=> directive
-=====================
+package org.o42a.intrinsic.numeric;
 
-Path :=< `string.
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
+import org.o42a.common.object.ValueTypeObject;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.core.value.ValueType;
+import org.o42a.intrinsic.root.Root;
 
-<*[File]> Path = string.
-<*'File'> Path = string.
+
+@SourcePath(relativeTo = Root.class, value = "integer.o42a")
+public class IntegerValueTypeObject extends ValueTypeObject {
+
+	public IntegerValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, ValueType.INTEGER);
+	}
+
+}

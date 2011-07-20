@@ -19,26 +19,27 @@
 */
 package org.o42a.intrinsic.root;
 
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.common.source.EmptyURLSource;
-import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueType;
 
 
+@SourcePath(relativeTo = Root.class, value = "directive.o42a")
 public class DirectiveValueTypeObject
 		extends ValueTypeObject
 		implements Directive {
 
-	private static final URLSourceTree DIRECTIVE =
-			new EmptyURLSource(Root.ROOT, "directive");
-
-	public DirectiveValueTypeObject(Root owner) {
-		super(compileField(owner, DIRECTIVE), ValueType.DIRECTIVE);
+	public DirectiveValueTypeObject(
+			MemberOwner owner,
+			AnnotatedSources sources) {
+		super(owner, sources, ValueType.DIRECTIVE);
 	}
 
 	@Override

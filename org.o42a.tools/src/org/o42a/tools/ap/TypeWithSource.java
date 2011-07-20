@@ -40,8 +40,8 @@ import org.o42a.util.io.SourceFileName;
 class TypeWithSource extends TypeSource implements RelTypeSources {
 
 	private final TypeWithSource parent;
-	private final String descriptorName;
-	private final String packageName;
+	private String descriptorName;
+	private String packageName;
 
 	private TreeMap<String, TypeWithSource> subEntries;
 	private HashMap<String, Integer> usedNames;
@@ -93,12 +93,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		this.parent = parent;
 		this.implicit = implicit;
 		if (!implicit) {
-			this.descriptorName =
-					getType().getSimpleName() + SOURCES_DESCRIPTOR_SUFFIX;
-			this.packageName =
-					getProcessingEnv().getElementUtils()
-					.getPackageOf(getType()).getQualifiedName().toString();
-			types.registerType(this);
+			setExplicit();
 		} else {
 			this.descriptorName = parent.implicitDescriptorName(name);
 			this.packageName = parent.getPackageName();
@@ -142,7 +137,11 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			AnnotationValue value,
 			AnnotationValue relativeTo) {
 		super.override(name, type, annotation, value, relativeTo);
-		this.implicit = false;
+		if (!this.implicit) {
+			throw new IllegalStateException(
+					"Already explicit: " + this);
+		}
+		setExplicit();
 	}
 
 	public TypeWithSource add(
@@ -176,6 +175,9 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			this.subEntries.put(key, subEntry);
 		} else if (restPath != null) {
 			subEntry = existing;
+		} else if (existing.isImplicit()) {
+			existing.override(name, type, annotation, value, relativeTo);
+			return existing;
 		} else {
 
 			final TypeSourceName existingName = existing.getName();
@@ -184,17 +186,16 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			if (preferred == null) {
 				getMessenger().printMessage(
 						Diagnostic.Kind.ERROR,
-						"Two or more types refer the same source "
-						+ getName(),
+						"Two or more types refer the same source " + name,
 						type,
 						annotation);
 				if (error()) {
 					getMessenger().printMessage(
 							Diagnostic.Kind.ERROR,
 							"Two or more types refer to the same source "
-							+ getName(),
-							getType(),
-							getAnnotation());
+							+ name,
+							existing.getType(),
+							existing.getAnnotation());
 				}
 
 				return null;
@@ -211,8 +212,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			return subEntry;
 		}
 
-		final String[] path =
-				nameAndRest(getTypes().path(type, annotation, value));
+		final String[] path = nameAndRest(restPath);
 
 		return subEntry.add(
 				new TypeSourceName(path[0]),
@@ -220,7 +220,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 				annotation,
 				value,
 				relativeTo,
-				restPath);
+				path[1]);
 	}
 
 	@Override
@@ -263,6 +263,14 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	public void validate() {
 	}
 
+	@Override
+	public String toString() {
+		if (this.descriptorName == null) {
+			return super.toString();
+		}
+		return getQualifiedName();
+	}
+
 	public void emitDescriptor() throws IOException {
 
 		final Filer filer = getProcessingEnv().getFiler();
@@ -276,6 +284,16 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		} finally {
 			out.close();
 		}
+	}
+
+	private void setExplicit() {
+		this.implicit = false;
+		this.descriptorName =
+				getType().getSimpleName() + SOURCES_DESCRIPTOR_SUFFIX;
+		this.packageName =
+				getProcessingEnv().getElementUtils()
+				.getPackageOf(getType()).getQualifiedName().toString();
+		getTypes().registerType(this);
 	}
 
 	private final String implicitDescriptorName(TypeSourceName sourceName) {
@@ -357,15 +375,13 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	}
 
 	private void emit(PrintWriter out) throws IOException {
-
-		final Elements utils = getProcessingEnv().getElementUtils();
-		final PackageElement packageElement = utils.getPackageOf(getType());
-
 		out.println("// GENERATED FILE. DO NOT MODIFY.");
 
-		if (!packageElement.isUnnamed()) {
+		final String packageName = getPackageName();
+
+		if (!packageName.isEmpty()) {
 			out.print("package ");
-			out.print(packageElement.getQualifiedName());
+			out.print(packageName);
 			out.println(";");
 			out.println();
 		}
@@ -615,7 +631,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 				"\tpublic Field<?>[]"
 				+ " fields(MemberOwner owner) {");
 
-		if (getSourceKind() != SourceKind.FILE || this.subEntries == null) {
+		if (this.subEntries == null) {
 			out.println("\t\treturn new Field<?>[0];");
 		} else {
 			out.println("\t\treturn new Field<?>[] {");

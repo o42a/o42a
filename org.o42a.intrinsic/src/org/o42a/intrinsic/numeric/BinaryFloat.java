@@ -23,9 +23,10 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Fp64recOp;
-import org.o42a.common.object.CompiledField;
+import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
@@ -34,11 +35,13 @@ import org.o42a.intrinsic.operator.BinaryResult;
 abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 
 	BinaryFloat(
-			CompiledField field,
+			MemberOwner owner,
+			AnnotatedSources sources,
 			String leftOperandName,
 			String rightOperandName) {
 		super(
-				field,
+				owner,
+				sources,
 				leftOperandName,
 				ValueType.FLOAT,
 				rightOperandName,

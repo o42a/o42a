@@ -52,9 +52,9 @@ public final class TestModule$$Sources implements AnnotatedSources {
 	@Override
 	public Field<?>[] fields(MemberOwner owner) {
 		return new Field<?>[] {
-			new org.o42a.lib.test.rt.parser.Parser(
+			new org.o42a.common.object.AnnotatedObject(
 					owner,
-					new org.o42a.lib.test.rt.parser.Parser$$Sources(this))
+					new org.o42a.lib.test.TestModule$$parser(this))
 			.getScope().toField(),
 			new org.o42a.lib.test.rt.RtFalse(
 					owner,

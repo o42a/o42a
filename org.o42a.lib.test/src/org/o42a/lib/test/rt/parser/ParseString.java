@@ -20,21 +20,23 @@
 package org.o42a.lib.test.rt.parser;
 
 import org.o42a.common.adapter.ByString;
-import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
+import org.o42a.lib.test.TestModule;
 
 
-final class ParseString extends ByString<String> {
+@SourcePath(relativeTo = TestModule.class, value = "parser/string.o42a")
+public final class ParseString extends ByString<String> {
 
-	ParseString(Parser parser) {
-		super(compileField(
-				parser,
-				new SingleURLSource(parser.getSourceTree(), "string.o42a")));
+	public ParseString(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

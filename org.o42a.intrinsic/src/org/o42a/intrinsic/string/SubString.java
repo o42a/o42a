@@ -23,15 +23,16 @@ import static org.o42a.intrinsic.string.SubStringFunc.SUB_STRING;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.object.CompiledBuiltin;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -39,17 +40,15 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class SubString extends CompiledBuiltin {
-
-	private static final URLSourceTree SUBSTRING =
-			new SingleURLSource(StringValueTypeObject.STRING, "substring.o42a");
+@SourcePath(relativeTo = StringValueTypeObject.class, value = "substring.o42a")
+final class SubString extends AnnotatedBuiltin {
 
 	private Ref string;
 	private Ref from;
 	private Ref to;
 
-	SubString(StringValueTypeObject owner) {
-		super(compileField(owner, SUBSTRING));
+	public SubString(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

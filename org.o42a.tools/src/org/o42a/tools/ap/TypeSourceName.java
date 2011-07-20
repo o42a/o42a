@@ -66,7 +66,7 @@ final class TypeSourceName {
 
 	@Override
 	public String toString() {
-		if (this.name != null) {
+		if (this.name == null) {
 			return super.toString();
 		}
 		return this.name;

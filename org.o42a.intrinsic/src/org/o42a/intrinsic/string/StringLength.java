@@ -21,14 +21,14 @@ package org.o42a.intrinsic.string;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32op;
-import org.o42a.common.object.CompiledBuiltin;
-import org.o42a.common.source.EmptyURLSource;
-import org.o42a.common.source.URLSourceTree;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -36,16 +36,13 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class StringLength extends CompiledBuiltin {
-
-	private static final URLSourceTree LENGTH =
-			new EmptyURLSource(StringValueTypeObject.STRING, "length");
+@SourcePath(relativeTo = StringValueTypeObject.class, value = "length.o42a")
+final class StringLength extends AnnotatedBuiltin {
 
 	private Ref string;
 
-	StringLength(StringValueTypeObject owner) {
-		super(compileField(owner, LENGTH));
-		setValueType(ValueType.INTEGER);
+	public StringLength(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override
@@ -90,14 +87,6 @@ final class StringLength extends CompiledBuiltin {
 		stringDirs.done();
 
 		return result;
-	}
-
-	@Override
-	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(
-				ValueType.INTEGER.typeRef(
-						this,
-						getScope().getEnclosingScope()));
 	}
 
 	private Ref string() {

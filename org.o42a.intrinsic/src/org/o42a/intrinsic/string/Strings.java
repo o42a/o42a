@@ -19,28 +19,19 @@
 */
 package org.o42a.intrinsic.string;
 
-import org.o42a.common.object.CompiledObject;
-import org.o42a.common.source.EmptyURLSource;
-import org.o42a.common.source.URLSourceTree;
-import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.common.object.AnnotatedObject;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.intrinsic.root.Root;
 
 
-public class Strings extends CompiledObject {
+@SourcePath(relativeTo = Root.class, value = "strings/")
+public class Strings extends AnnotatedObject {
 
-	public static final URLSourceTree STRINGS =
-			new EmptyURLSource(Root.ROOT, "strings");
-
-	public Strings(Root owner) {
-		super(compileField(owner, STRINGS));
-	}
-
-	@Override
-	protected void declareMembers(ObjectMembers members) {
-		super.declareMembers(members);
-		members.addMember(new CompareStrings(this).toMember());
-		members.addMember(new ConcatStrings(this).toMember());
+	public Strings(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

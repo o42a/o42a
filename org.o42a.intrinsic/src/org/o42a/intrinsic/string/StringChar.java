@@ -27,15 +27,16 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.common.object.CompiledBuiltin;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -43,16 +44,14 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class StringChar extends CompiledBuiltin {
-
-	private static final URLSourceTree CHAR =
-			new SingleURLSource(StringValueTypeObject.STRING, "char.o42a");
+@SourcePath(relativeTo = StringValueTypeObject.class, value = "char.o42a")
+final class StringChar extends AnnotatedBuiltin {
 
 	private Ref string;
 	private Ref index;
 
-	StringChar(StringValueTypeObject owner) {
-		super(compileField(owner, CHAR));
+	public StringChar(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

@@ -20,19 +20,21 @@
 package org.o42a.lib.test.rt.parser;
 
 import org.o42a.common.adapter.IntegerByString;
-import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
+import org.o42a.lib.test.TestModule;
 
 
-final class ParseInteger extends IntegerByString {
+@SourcePath(relativeTo = TestModule.class, value = "parser/integer.o42a")
+public final class ParseInteger extends IntegerByString {
 
-	ParseInteger(Parser parser) {
-		super(compileField(
-				parser,
-				new SingleURLSource(parser.getSourceTree(), "integer.o42a")));
+	public ParseInteger(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

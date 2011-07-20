@@ -19,14 +19,15 @@
 */
 package org.o42a.common.adapter;
 
-import org.o42a.common.object.CompiledBuiltin;
-import org.o42a.common.object.CompiledField;
+import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -35,12 +36,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ByString<T> extends CompiledBuiltin {
+public abstract class ByString<T> extends AnnotatedBuiltin {
 
 	private Ref input;
 
-	public ByString(CompiledField field) {
-		super(field);
+	public ByString(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

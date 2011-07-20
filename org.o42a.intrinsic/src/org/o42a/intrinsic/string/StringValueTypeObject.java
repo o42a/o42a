@@ -19,30 +19,19 @@
 */
 package org.o42a.intrinsic.string;
 
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
-import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.root.Root;
 
 
+@SourcePath(relativeTo = Root.class, value = "string.o42a")
 public class StringValueTypeObject extends ValueTypeObject {
 
-	public static final URLSourceTree STRING =
-			new SingleURLSource(Root.ROOT, "string.o42a");
-
-	public StringValueTypeObject(Root owner) {
-		super(compileField(owner, STRING), ValueType.STRING);
-	}
-
-	@Override
-	protected void declareMembers(ObjectMembers members) {
-		super.declareMembers(members);
-
-		members.addMember(new StringLength(this).toMember());
-		members.addMember(new StringChar(this).toMember());
-		members.addMember(new SubString(this).toMember());
+	public StringValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, ValueType.STRING);
 	}
 
 }

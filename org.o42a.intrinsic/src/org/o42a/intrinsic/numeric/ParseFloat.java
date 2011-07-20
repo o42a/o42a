@@ -1,5 +1,5 @@
 /*
-    Test Framework
+    Intrinsics
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,29 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.test.rt.parser;
+package org.o42a.intrinsic.numeric;
 
-import org.o42a.common.object.AnnotatedObject;
+import org.o42a.common.adapter.FloatByString;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.lib.test.TestModule;
+import org.o42a.intrinsic.root.Root;
 
 
-@SourcePath(relativeTo = TestModule.class, value = "parser/")
-public class Parser extends AnnotatedObject {
+@SourcePath(relativeTo = Root.class, value = "floats/by_string.o42a")
+public class ParseFloat extends FloatByString {
 
-	public Parser(MemberOwner owner, AnnotatedSources sources) {
+	public ParseFloat(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
-	}
-
-	@Override
-	protected void declareMembers(ObjectMembers members) {
-		super.declareMembers(members);
-		members.addMember(new ParseString(this).toMember());
-		members.addMember(new ParseInteger(this).toMember());
-		members.addMember(new ParseFloat(this).toMember());
 	}
 
 }

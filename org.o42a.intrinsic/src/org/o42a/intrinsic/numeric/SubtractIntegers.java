@@ -21,17 +21,17 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.intrinsic.root.Root;
 
 
-final class SubtractIntegers extends BinaryInteger {
+@SourcePath(relativeTo = Root.class, value = "integers/subtract.o42a")
+public final class SubtractIntegers extends BinaryInteger {
 
-	private static final URLSourceTree SUBTRACT =
-			new SingleURLSource(Integers.INTEGERS, "subtract.o42a");
-
-	SubtractIntegers(Integers owner) {
-		super(compileField(owner, SUBTRACT), "left_operand", "right_operand");
+	public SubtractIntegers(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, "left_operand", "right_operand");
 	}
 
 	@Override
