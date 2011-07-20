@@ -28,6 +28,7 @@
 		<file name="org.o42a.codegen"/>
 		<file name="org.o42a.core"/>
 		<file name="org.o42a.common"/>
+		<file name="org.o42a.tools"/>
 		<file name="org.o42a.lib.console"/>
 		<file name="org.o42a.lib.test"/>
 		<file name="org.o42a.intrinsic"/>

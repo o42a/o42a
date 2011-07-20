@@ -27,7 +27,7 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 
 
-public abstract class AnnotatedObject extends CompiledObject {
+public class AnnotatedObject extends CompiledObject {
 
 	private final AnnotatedSources sources;
 

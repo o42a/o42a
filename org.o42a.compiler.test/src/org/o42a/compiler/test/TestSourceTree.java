@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.o42a.common.source.SourceTree;
-import org.o42a.core.source.SourceFileName;
+import org.o42a.util.io.SourceFileName;
 
 
 public class TestSourceTree extends SourceTree<TestSource> {

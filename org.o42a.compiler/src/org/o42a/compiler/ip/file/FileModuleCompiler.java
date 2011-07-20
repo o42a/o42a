@@ -30,6 +30,7 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.io.SourceFileName;
 import org.o42a.util.log.LogInfo;
 
 

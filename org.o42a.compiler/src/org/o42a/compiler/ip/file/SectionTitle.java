@@ -38,6 +38,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.source.*;
+import org.o42a.util.io.SourceFileName;
 
 
 final class SectionTitle {

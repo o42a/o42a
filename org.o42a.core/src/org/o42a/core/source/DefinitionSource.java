@@ -20,6 +20,7 @@
 package org.o42a.core.source;
 
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourceFileName;
 
 
 public interface DefinitionSource {
