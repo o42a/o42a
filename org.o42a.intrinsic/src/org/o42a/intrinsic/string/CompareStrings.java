@@ -22,23 +22,23 @@ package org.o42a.intrinsic.string;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
 
+@SourcePath(relativeTo = Strings.class, value = "compare.o42a")
 final class CompareStrings extends BinaryResult<Long, String, String> {
 
-	private static final URLSourceTree COMPARE =
-			new SingleURLSource(Strings.STRINGS, "compare.o42a");
-
-	CompareStrings(Strings owner) {
+	CompareStrings(MemberOwner owner, AnnotatedSources sources) {
 		super(
-				compileField(owner, COMPARE),
+				owner,
+				sources,
 				"what",
 				ValueType.STRING,
 				"with",

@@ -24,21 +24,21 @@ import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.ValueType;
+import org.o42a.intrinsic.root.Root;
 
 
-final class CompareIntegers extends CompareNumbers<Long> {
+@SourcePath(relativeTo = Root.class, value = "integers/compare.o42a")
+public final class CompareIntegers extends CompareNumbers<Long> {
 
-	private static final URLSourceTree COMPARE =
-			new SingleURLSource(Integers.INTEGERS, "compare.o42a");
-
-	CompareIntegers(Integers owner) {
-		super(compileField(owner, COMPARE), ValueType.INTEGER);
+	public CompareIntegers(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, ValueType.INTEGER);
 	}
 
 	@Override

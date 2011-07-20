@@ -25,21 +25,21 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.UnaryResult;
+import org.o42a.intrinsic.root.Root;
 
 
-final class IntegerMinus extends UnaryResult<Long, Long> {
+@SourcePath(relativeTo = Root.class, value = "integers/minus.o42a")
+public final class IntegerMinus extends UnaryResult<Long, Long> {
 
-	private static final URLSourceTree MINUS =
-			new SingleURLSource(Integers.INTEGERS, "minus.o42a");
-
-	IntegerMinus(Integers owner) {
-		super(compileField(owner, MINUS), "operand", ValueType.INTEGER);
+	public IntegerMinus(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, "operand", ValueType.INTEGER);
 	}
 
 	@Override

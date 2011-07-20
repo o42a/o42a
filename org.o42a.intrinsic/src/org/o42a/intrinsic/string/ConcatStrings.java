@@ -21,31 +21,30 @@ package org.o42a.intrinsic.string;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.object.CompiledBuiltin;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class ConcatStrings extends CompiledBuiltin {
-
-	private static final URLSourceTree CONCAT =
-			new SingleURLSource(Strings.STRINGS, "concat.o42a");
+@SourcePath(relativeTo = Strings.class, value = "concat.o42a")
+final class ConcatStrings extends AnnotatedBuiltin {
 
 	private Ref what;
 	private Ref with;
 
-	ConcatStrings(Strings owner) {
-		super(compileField(owner, CONCAT));
+	public ConcatStrings(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

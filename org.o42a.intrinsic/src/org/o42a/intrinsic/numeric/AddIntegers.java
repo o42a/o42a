@@ -21,17 +21,17 @@ package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.intrinsic.root.Root;
 
 
-final class AddIntegers extends BinaryInteger {
+@SourcePath(relativeTo = Root.class, value = "integers/add.o42a")
+public final class AddIntegers extends BinaryInteger {
 
-	private static final URLSourceTree ADD =
-			new SingleURLSource(Integers.INTEGERS, "add.o42a");
-
-	AddIntegers(Integers owner) {
-		super(compileField(owner, ADD), "left_operand", "right_operand");
+	public AddIntegers(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, "left_operand", "right_operand");
 	}
 
 	@Override

@@ -21,12 +21,13 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
 
-import org.o42a.common.object.DirectiveObject;
-import org.o42a.common.source.SingleURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedDirective;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
@@ -34,16 +35,14 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class UseNamespace extends DirectiveObject {
-
-	private static final URLSourceTree USE_NAMESPACE =
-			new SingleURLSource(Root.ROOT, "use_namespace.o42a");
+@SourcePath(relativeTo = Root.class, value = "use_namespace.o42a")
+public class UseNamespace extends AnnotatedDirective {
 
 	private final MemberKey moduleKey;
 	private final MemberKey objectKey;
 
-	public UseNamespace(Root owner) {
-		super(compileField(owner, USE_NAMESPACE));
+	public UseNamespace(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 		this.moduleKey = fieldName("module").key(getScope());
 		this.objectKey = fieldName("object").key(getScope());
 	}

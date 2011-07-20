@@ -19,7 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import org.o42a.common.object.CompiledField;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -33,13 +34,11 @@ abstract class CompareNumbers<P extends Number>
 	static final Value<Long> ZERO = ValueType.INTEGER.constantValue(0L);
 	static final Value<Long> ONE = ValueType.INTEGER.constantValue(1L);
 
-	CompareNumbers(CompiledField field, ValueType<P> operandType) {
-		super(
-				field,
-				"what",
-				operandType,
-				"with",
-				operandType);
+	CompareNumbers(
+			MemberOwner owner,
+			AnnotatedSources sources,
+			ValueType<P> operandType) {
+		super(owner, sources, "what", operandType, "with", operandType);
 	}
 
 	@Override

@@ -21,21 +21,22 @@ package org.o42a.common.adapter;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.object.CompiledField;
+import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 
 
-public class IntegerByString extends ByString<Long> {
+public abstract class IntegerByString extends ByString<Long> {
 
 	private static final int PLUS_SIGN = 0x002b;
 	private static final int HYPHEN_MINUS = 0x002d;
 	private static final int MINUS_SIGN = 0x2212;
 
-	public IntegerByString(CompiledField field) {
-		super(field);
+	public IntegerByString(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

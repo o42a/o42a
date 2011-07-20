@@ -1,5 +1,5 @@
 // GENERATED FILE. DO NOT MODIFY.
-package org.o42a.lib.test.rt.parser;
+package org.o42a.intrinsic.numeric;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.source.*;
@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link Parser}.
+ * o42a sources for {@link DivideIntegers}.
  * 
- * Directory: test/parser/
+ * File: root/integers/divide.o42a
  */
-public final class Parser$$Sources implements AnnotatedSources {
+public final class DivideIntegers$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public Parser$$Sources(AnnotatedSources parent) {
+	public DivideIntegers$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,7 +28,7 @@ public final class Parser$$Sources implements AnnotatedSources {
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"parser/");
+				"divide.o42a");
 	}
 
 	@Override

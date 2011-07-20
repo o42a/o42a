@@ -20,21 +20,21 @@
 package org.o42a.lib.test.rt.parser;
 
 import org.o42a.common.adapter.FloatByString;
-import org.o42a.common.source.SingleURLSource;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
+import org.o42a.lib.test.TestModule;
 
 
-final class ParseFloat extends FloatByString {
+@SourcePath(relativeTo = TestModule.class, value = "parser/float.o42a")
+public final class ParseFloat extends FloatByString {
 
-	ParseFloat(Parser parser) {
-		super(compileField(
-				parser,
-				new SingleURLSource(
-						parser.getSourceTree(),
-						"float.o42a")));
+	public ParseFloat(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

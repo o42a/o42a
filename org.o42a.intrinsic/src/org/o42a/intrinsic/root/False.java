@@ -23,9 +23,9 @@ import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.common.ir.BuiltinValueIR;
-import org.o42a.common.object.CompiledBuiltin;
-import org.o42a.common.source.EmptyURLSource;
-import org.o42a.common.source.URLSourceTree;
+import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -34,17 +34,16 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 
 
-public final class False extends CompiledBuiltin {
+@SourcePath(relativeTo = Root.class, value = "false.o42a")
+public final class False extends AnnotatedBuiltin {
 
-	private static final URLSourceTree FALSE =
-			new EmptyURLSource(Root.ROOT, "false");
-
-	public False(Root owner) {
-		super(compileField(owner, FALSE));
+	public False(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
 	}
 
 	@Override

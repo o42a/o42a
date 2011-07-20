@@ -19,15 +19,16 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.common.object.CompiledObject.compileField;
+import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
-import org.o42a.common.object.ValueTypeObject;
-import org.o42a.common.source.*;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.RelatedSources;
+import org.o42a.common.object.SourcePath;
+import org.o42a.common.source.TreeCompilerContext;
+import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
@@ -37,82 +38,47 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.ValueType;
-import org.o42a.intrinsic.numeric.Floats;
-import org.o42a.intrinsic.numeric.Integers;
-import org.o42a.intrinsic.string.StringValueTypeObject;
-import org.o42a.intrinsic.string.Strings;
 import org.o42a.util.io.URLSource;
 
 
+@SourcePath("root.o42a")
+@RelatedSources({"number.o42a", "operators.o42a"})
 public class Root extends PlainObject {
-
-	public static final URLSourceTree ROOT = sourceTree();
-
-	private static final URLSourceTree INTEGER =
-			new SingleURLSource(Root.ROOT, "integer.o42a");
-	private static final URLSourceTree FLOAT =
-			new SingleURLSource(Root.ROOT, "float.o42a");
 
 	public static Root createRoot(Scope topScope) {
 
+		final AnnotatedSources sources = moduleSources(Root.class);
 		final TreeCompilerContext<URLSource> context =
-				ROOT.context(topScope.getContext());
+				sources.getSourceTree().context(topScope.getContext());
 
-		return new Root(topScope, context.compileModule());
-	}
-
-	private static URLSourceTree sourceTree() {
-
-		final URLSources tree = new URLSources("ROOT", base(), "root.o42a");
-
-		tree.addFile("number.o42a");
-		tree.addFile("operators.o42a");
-
-		return tree;
-	}
-
-	private static URL base() {
-		try {
-
-			final URL self = Root.class.getResource(
-					Root.class.getSimpleName() + ".class");
-
-			return new URL(self, "../../../..");
-		} catch (MalformedURLException e) {
-			throw new ExceptionInInitializerError(e);
-		}
+		return new Root(topScope, context.compileModule(), sources);
 	}
 
 	private final ModuleCompiler compiler;
+	private final AnnotatedSources sources;
 
 	private final VoidField voidField;
-	private final Obj falseObject;
-	private final Obj useNamespace;
-	private final Obj useObject;
-	private final Obj integerObject;
-	private final Obj floatObject;
-	private final Obj stringObject;
-	private final Obj directiveObject;
+	private Obj falseObject;
+	private Obj integerObject;
+	private Obj floatObject;
+	private Obj stringObject;
+	private Obj directiveObject;
 
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
 
-	private Root(Scope topScope, ModuleCompiler compiler) {
+	private Root(
+			Scope topScope,
+			ModuleCompiler compiler,
+			AnnotatedSources sources) {
 		super(new RootScope(compiler, topScope.distribute()));
 		this.compiler = compiler;
+		this.sources = sources;
 		this.voidField = new VoidField(this);
-		this.falseObject = new False(this);
-		this.useNamespace = new UseNamespace(this);
-		this.useObject = new UseObject(this);
-		this.integerObject = new ValueTypeObject(
-				compileField(this, INTEGER),
-				ValueType.INTEGER);
-		this.floatObject = new ValueTypeObject(
-				compileField(this, FLOAT),
-				ValueType.FLOAT);
-		this.stringObject = new StringValueTypeObject(this);
-		this.directiveObject = new DirectiveValueTypeObject(this);
+	}
+
+	public final URLSourceTree getSourceTree() {
+		return this.sources.getSourceTree();
 	}
 
 	public final Field<Obj> getVoidField() {
@@ -120,23 +86,43 @@ public class Root extends PlainObject {
 	}
 
 	public final Obj getFalse() {
-		return this.falseObject;
+		if (this.falseObject != null) {
+			return this.falseObject;
+		}
+		return this.falseObject =
+				field("false").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getInteger() {
-		return this.integerObject;
+		if (this.integerObject != null) {
+			return this.integerObject;
+		}
+		return this.integerObject =
+				field("integer").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getFloat() {
-		return this.floatObject;
+		if (this.floatObject != null) {
+			return this.floatObject;
+		}
+		return this.floatObject =
+				field("float").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getString() {
-		return this.stringObject;
+		if (this.stringObject != null) {
+			return this.stringObject;
+		}
+		return this.stringObject =
+				field("string").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getDirective() {
-		return this.directiveObject;
+		if (this.directiveObject != null) {
+			return this.directiveObject;
+		}
+		return this.directiveObject =
+				field("directive").substance(dummyUser()).toObject();
 	}
 
 	@Override
@@ -175,16 +161,9 @@ public class Root extends PlainObject {
 	protected void declareMembers(ObjectMembers members) {
 		this.memberRegistry.registerMembers(members);
 		members.addMember(getVoidField().toMember());
-		members.addMember(getFalse().toMember());
-		members.addMember(getInteger().toMember());
-		members.addMember(new Integers(this).toMember());
-		members.addMember(getFloat().toMember());
-		members.addMember(new Floats(this).toMember());
-		members.addMember(getString().toMember());
-		members.addMember(this.useNamespace.toMember());
-		members.addMember(this.useObject.toMember());
-		members.addMember(new Strings(this).toMember());
-		members.addMember(new DirectiveValueTypeObject(this).toMember());
+		for (Field<?> field : this.sources.fields(toMemberOwner())) {
+			members.addMember(field.toMember());
+		}
 	}
 
 	@Override
