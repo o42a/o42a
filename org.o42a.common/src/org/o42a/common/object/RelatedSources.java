@@ -1,5 +1,5 @@
 /*
-    Test Framework
+    Modules Commons
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,20 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.test.rt;
+package org.o42a.common.object;
 
-import org.o42a.common.object.AnnotatedObject;
-import org.o42a.common.object.AnnotatedSources;
-import org.o42a.common.source.SourcePath;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.lib.test.TestModule;
+import java.lang.annotation.*;
 
 
-@SourcePath(relativeTo = TestModule.class, value = "rt-string.o42a")
-public class RtString extends AnnotatedObject {
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.TYPE})
+public @interface RelatedSources {
 
-	public RtString(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources);
-	}
+	String[] value();
 
 }

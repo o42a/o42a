@@ -7,23 +7,28 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 
 
-public final class RtInteger$$Sources implements AnnotatedSources {
+/**
+ * o42a sources for {@link RtFalse}.
+ * 
+ * Source: test/rt-false
+ */
+public final class RtFalse$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private URLSourceTree sourceTree;
+	private EmptyURLSource sourceTree;
 
-	public RtInteger$$Sources(AnnotatedSources parent) {
+	public RtFalse$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public URLSourceTree getSourceTree() {
+	public EmptyURLSource getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new SingleURLSource(
+		return this.sourceTree = new EmptyURLSource(
 				this.parent.getSourceTree(),
-				"rt-integer.o42a");
+				"rt-false");
 	}
 
 	@Override

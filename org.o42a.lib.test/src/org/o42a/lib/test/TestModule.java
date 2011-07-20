@@ -20,19 +20,18 @@
 package org.o42a.lib.test;
 
 import org.o42a.common.object.AnnotatedModule;
-import org.o42a.common.source.SourcePath;
+import org.o42a.common.object.RelatedSources;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.lib.test.rt.RtFalse;
-import org.o42a.lib.test.rt.RtVoid;
 import org.o42a.util.use.UserInfo;
 
 
 @SourcePath("test.o42a")
+@RelatedSources({"rt-float.o42a", "rt-integer.o42a", "rt-string.o42a"})
 public class TestModule extends AnnotatedModule {
 
 	public static Module testModule(CompilerContext parentContext) {
@@ -45,13 +44,6 @@ public class TestModule extends AnnotatedModule {
 
 	public ObjectType test(UserInfo user) {
 		return objectByName(user, "test").type().useBy(user);
-	}
-
-	@Override
-	protected void declareMembers(ObjectMembers members) {
-		members.addMember(new RtVoid(this).toMember());
-		members.addMember(new RtFalse(this).toMember());
-		super.declareMembers(members);
 	}
 
 	private Obj objectByName(UserInfo user, String name) {

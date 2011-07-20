@@ -86,6 +86,8 @@ abstract class TypeSource {
 		return getTypes().getMessenger();
 	}
 
+	public abstract void addRelatedSources(AnnotationMirror relatedSources);
+
 	public void override(
 			TypeSourceName name,
 			TypeElement type,

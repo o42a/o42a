@@ -19,6 +19,9 @@
 */
 package org.o42a.common.source;
 
+import static org.o42a.util.io.SourceFileName.FILE_SUFFIX;
+import static org.o42a.util.string.StringUtil.indexOfDiff;
+
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,6 +56,35 @@ public class URLSources extends URLSourceTree {
 			return this.subTrees.values().iterator();
 		}
 		return Collections.<URLSources>emptyList().iterator();
+	}
+
+	public URLSourceTree add(String path) {
+
+		URLSources dir = this;
+		int first = 0;
+
+		for (;;) {
+			first = indexOfDiff(path, '/', first);
+			if (first < 0) {
+				return dir;
+			}
+
+			final int slashIdx = path.indexOf('/', first);
+
+			if (slashIdx < 0) {
+
+				final String name = first == 0 ? path : path.substring(first);
+
+				if (name.endsWith(FILE_SUFFIX)) {
+					return dir.addFile(name);
+				}
+
+				return dir.addEmpty(name);
+			}
+
+			dir = addDirectory(path.substring(first, slashIdx));
+			first = slashIdx + 1;
+		}
 	}
 
 	public URLSources addDirectory(String name) {

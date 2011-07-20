@@ -20,13 +20,13 @@
 package org.o42a.tools.ap;
 
 import static org.o42a.common.object.AnnotatedModule.SOURCES_DESCRIPTOR_SUFFIX;
+import static org.o42a.tools.ap.AnnotationArrayValueVisitor.annotationArrayValue;
+import static org.o42a.tools.ap.TypesWithSources.VALUE;
 import static org.o42a.tools.ap.TypesWithSources.nameAndRest;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.*;
@@ -48,6 +48,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	private int implicitNameSeq;
 	private boolean implicit;
 	private boolean error;
+	private AnnotationMirror relatedSources;
 
 	TypeWithSource(
 			TypesWithSources types,
@@ -129,6 +130,11 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	}
 
 	@Override
+	public void addRelatedSources(AnnotationMirror relatedSources) {
+		this.relatedSources = relatedSources;
+	}
+
+	@Override
 	public void override(
 			TypeSourceName name,
 			TypeElement type,
@@ -139,7 +145,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		this.implicit = false;
 	}
 
-	public boolean add(
+	public TypeWithSource add(
 			TypeSourceName name,
 			TypeElement type,
 			AnnotationMirror annotation,
@@ -191,18 +197,18 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 							getAnnotation());
 				}
 
-				return false;
+				return null;
 			}
 
 			if (preferred == name) {
 				existing.override(name, type, annotation, value, relativeTo);
 			}
 
-			return true;
+			return existing;
 		}
 
 		if (restPath == null) {
-			return true;
+			return subEntry;
 		}
 
 		final String[] path =
@@ -219,13 +225,24 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 
 	@Override
 	public void add(RelTypeSource source) {
-		add(
+
+		final TypeWithSource added = add(
 				source.getName(),
 				source.getType(),
 				source.getAnnotation(),
 				source.getValue(),
 				source.getRelativeTo(),
 				source.getRestPath());
+
+		if (added == null) {
+			return;
+		}
+
+		final AnnotationMirror relatedSources = source.getRelatedSources();
+
+		if (relatedSources != null) {
+			added.addRelatedSources(relatedSources);
+		}
 	}
 
 	public final boolean error() {
@@ -361,6 +378,7 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.println();
 		out.println();
 
+		printComment(out);
 		out.append("public final class ").append(getDescriptorName());
 		out.println(" implements AnnotatedSources {");
 
@@ -371,7 +389,9 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			out.println();
 			out.println("\tprivate final AnnotatedSources parent;");
 		}
-		out.println("\tprivate URLSourceTree sourceTree;");
+
+		out.append("\tprivate ").append(urlSourceType());
+		out.println(" sourceTree;");
 
 		if (!isModule()) {
 			emitConstructor(out);
@@ -382,6 +402,46 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 
 		out.println();
 		out.println("}");
+	}
+
+	private void printComment(PrintWriter out) {
+		out.println("/**");
+		if (!isImplicit()) {
+			out.append(" * o42a sources for {@link ");
+			out.append(getType().getSimpleName());
+			out.println("}.");
+			out.println(" * ");
+		}
+
+		out.append(" * ");
+		switch (getSourceKind()) {
+		case DIR:
+			out.append("Directory: ");
+			break;
+		case FILE:
+			out.append("File: ");
+			break;
+		case EMPTY:
+			out.append("Source: ");
+		}
+		printPath(out);
+		out.println();
+
+		out.println(" */");
+	}
+
+	private void printPath(PrintWriter out) {
+		if (this.parent != null) {
+			this.parent.printDir(out);
+		}
+		out.append(getName().getName());
+	}
+
+	private void printDir(PrintWriter out) {
+		if (this.parent != null) {
+			this.parent.printDir(out);
+		}
+		out.append(getName().getKey()).append('/');
 	}
 
 	private void emitBase(PrintWriter out) {
@@ -454,25 +514,25 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 	}
 
 	private void emitGetSourceTree(PrintWriter out) {
+
+		final String urlSourceType = urlSourceType();
+
 		out.println();
 		out.println("\t@Override");
-		out.println("\tpublic URLSourceTree getSourceTree() {");
+		out.append("\tpublic ").append(urlSourceType);
+		out.println(" getSourceTree() {");
 
 		out.println("\t\tif (this.sourceTree != null) {");
 		out.println("\t\t\treturn this.sourceTree;");
 		out.println("\t\t}");
 
-		out.append("\t\treturn this.sourceTree = new ");
-		switch (getSourceKind()) {
-		case FILE:
-			out.println("SingleURLSource(");
-			break;
-		case DIR:
-			out.println("SingleURLSource(");
-			break;
-		case EMPTY:
-			out.println("EmptyURLSource(");
+		if (this.relatedSources != null) {
+			out.println();
+			out.append("\t\t");
+		} else {
+			out.append("\t\treturn ");
 		}
+		out.append("this.sourceTree = new ").append(urlSourceType).println('(');
 		if (isModule()) {
 			out.println("\t\t\t\tnull,");
 			out.println("\t\t\t\tbase(),");
@@ -482,7 +542,70 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.append("\t\t\t\t\"").append(getName().getName());
 		out.println("\");");
 
+		if (this.relatedSources != null) {
+			out.println();
+			printRelatedSources(out);
+			out.println();
+			out.println("\t\treturn this.sourceTree;");
+		}
+
 		out.println("\t}");
+	}
+
+	private String urlSourceType() {
+		if (this.relatedSources != null) {
+			return "URLSources";
+		}
+
+		switch (getSourceKind()) {
+		case FILE:
+		case DIR:
+			return "SingleURLSource";
+		case EMPTY:
+			return "EmptyURLSource";
+		}
+
+		throw new IllegalStateException(
+				"Unsupported kind of source file: " + getSourceKind());
+	}
+
+	private void printRelatedSources(PrintWriter out) {
+
+		AnnotationValue value = null;
+
+		for (Map.Entry<
+				? extends ExecutableElement,
+				? extends AnnotationValue> e
+				:this.relatedSources.getElementValues().entrySet()) {
+			if (e.getKey().getSimpleName().contentEquals(VALUE)) {
+				value = e.getValue();
+			}
+		}
+
+		if (value == null) {
+			return;
+		}
+
+		for (AnnotationValue val : annotationArrayValue(value)) {
+			printRelatedSource(out, val);
+		}
+	}
+
+	private void printRelatedSource(PrintWriter out, AnnotationValue value) {
+
+		final String path = value.getValue().toString();
+
+		if (path.startsWith("/")) {
+			getMessenger().printMessage(
+					Diagnostic.Kind.WARNING,
+					"Source path should be relative",
+					getType(),
+					this.relatedSources,
+					value);
+		}
+
+		out.append("\t\tthis.sourceTree.add(\"").append(path);
+		out.println("\");");
 	}
 
 	private void emitFields(PrintWriter out) throws IOException {
@@ -496,20 +619,20 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			out.println("\t\treturn new Field<?>[0];");
 		} else {
 			out.println("\t\treturn new Field<?>[] {");
-			printSources(out);
+			printFields(out);
 			out.println("\t\t};");
 		}
 
 		out.println("\t}");
 	}
 
-	private void printSources(PrintWriter out) throws IOException {
+	private void printFields(PrintWriter out) throws IOException {
 		for (TypeWithSource subEntry : this.subEntries.values()) {
-			subEntry.printSource(out);
+			subEntry.printField(out);
 		}
 	}
 
-	private void printSource(PrintWriter out) throws IOException {
+	private void printField(PrintWriter out) throws IOException {
 		emitDescriptor();
 
 		out.append("\t\t\tnew ");

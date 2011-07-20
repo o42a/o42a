@@ -7,6 +7,11 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 
 
+/**
+ * o42a sources for {@link TestModule}.
+ * 
+ * File: test.o42a
+ */
 public final class TestModule$$Sources implements AnnotatedSources {
 
 	private static final Class<? extends TestModule> MODULE_CLASS =
@@ -24,17 +29,24 @@ public final class TestModule$$Sources implements AnnotatedSources {
 		}
 	}
 
-	private URLSourceTree sourceTree;
+	private URLSources sourceTree;
 
 	@Override
-	public URLSourceTree getSourceTree() {
+	public URLSources getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}
-		return this.sourceTree = new SingleURLSource(
+
+		this.sourceTree = new URLSources(
 				null,
 				base(),
 				"test.o42a");
+
+		this.sourceTree.add("rt-float.o42a");
+		this.sourceTree.add("rt-integer.o42a");
+		this.sourceTree.add("rt-string.o42a");
+
+		return this.sourceTree;
 	}
 
 	@Override
@@ -44,17 +56,13 @@ public final class TestModule$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.lib.test.rt.parser.Parser$$Sources(this))
 			.getScope().toField(),
-			new org.o42a.lib.test.rt.RtFloat(
+			new org.o42a.lib.test.rt.RtFalse(
 					owner,
-					new org.o42a.lib.test.rt.RtFloat$$Sources(this))
+					new org.o42a.lib.test.rt.RtFalse$$Sources(this))
 			.getScope().toField(),
-			new org.o42a.lib.test.rt.RtInteger(
+			new org.o42a.lib.test.rt.RtVoid(
 					owner,
-					new org.o42a.lib.test.rt.RtInteger$$Sources(this))
-			.getScope().toField(),
-			new org.o42a.lib.test.rt.RtString(
-					owner,
-					new org.o42a.lib.test.rt.RtString$$Sources(this))
+					new org.o42a.lib.test.rt.RtVoid$$Sources(this))
 			.getScope().toField(),
 			new org.o42a.lib.test.run.RunTests(
 					owner,

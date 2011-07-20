@@ -23,7 +23,7 @@ import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
 
 import org.o42a.common.object.AnnotatedDirective;
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.common.source.SourcePath;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;

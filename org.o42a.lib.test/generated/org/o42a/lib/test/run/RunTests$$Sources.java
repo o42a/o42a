@@ -7,17 +7,22 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 
 
+/**
+ * o42a sources for {@link RunTests}.
+ * 
+ * File: test/run_tests.o42a
+ */
 public final class RunTests$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
-	private URLSourceTree sourceTree;
+	private SingleURLSource sourceTree;
 
 	public RunTests$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public URLSourceTree getSourceTree() {
+	public SingleURLSource getSourceTree() {
 		if (this.sourceTree != null) {
 			return this.sourceTree;
 		}

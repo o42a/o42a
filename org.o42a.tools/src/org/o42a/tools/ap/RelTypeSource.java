@@ -28,6 +28,7 @@ import javax.tools.Diagnostic;
 final class RelTypeSource extends TypeSource {
 
 	private final String restPath;
+	private AnnotationMirror relatedSources;
 
 	RelTypeSource(
 			TypesWithSources types,
@@ -43,6 +44,15 @@ final class RelTypeSource extends TypeSource {
 
 	public String getRestPath() {
 		return this.restPath;
+	}
+
+	public final AnnotationMirror getRelatedSources() {
+		return this.relatedSources;
+	}
+
+	@Override
+	public final void addRelatedSources(AnnotationMirror relatedSources) {
+		this.relatedSources = relatedSources;
 	}
 
 	public void reportUnrelated() {
