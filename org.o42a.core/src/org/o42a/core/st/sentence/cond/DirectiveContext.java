@@ -71,7 +71,10 @@ final class DirectiveContext implements InstructionContext {
 
 		this.block = this.context.getBlock();
 		this.doNotRemove = true;
-		env.setWrapped(this.block.setEnv(env.getInitialEnv()));
+		if (env != null) {
+			// May be null inside imperative block.
+			env.setWrapped(this.block.setEnv(env.getInitialEnv()));
+		}
 
 		return this.block;
 	}
