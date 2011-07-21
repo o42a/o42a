@@ -22,32 +22,8 @@ package org.o42a.tools.ap;
 
 public enum SourceKind {
 
-	FILE() {
+	FILE,
+	DIR,
+	EMPTY
 
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return other == DIR;
-		}
-
-	},
-
-	DIR() {
-
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return false;
-		}
-
-	},
-
-	EMPTY() {
-
-		@Override
-		public boolean preferredOver(SourceKind other) {
-			return other == DIR;
-		}
-
-	};
-
-	public abstract boolean preferredOver(SourceKind other);
 }

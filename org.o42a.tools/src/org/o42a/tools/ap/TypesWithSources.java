@@ -240,11 +240,7 @@ public class TypesWithSources {
 			}
 			return null;
 		} else if (restPath == null) {
-
-			final TypeSourceName moduleName = this.module.getName();
-			final TypeSourceName preferred = name.preferred(moduleName);
-
-			if (preferred == null) {
+			if (!this.module.isImplicit()) {
 				reportDuplicateRoot(type, annotation, relativeTo);
 				if (this.module.error()) {
 					reportDuplicateRoot(
@@ -255,9 +251,7 @@ public class TypesWithSources {
 				return null;
 			}
 
-			if (preferred == name) {
-				this.module.override(name, type, annotation, value, relativeTo);
-			}
+			this.module.override(name, type, annotation, value, relativeTo);
 
 			return this.module;
 		}

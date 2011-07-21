@@ -54,16 +54,6 @@ final class TypeSourceName {
 		return this.sourceKind;
 	}
 
-	public final TypeSourceName preferred(TypeSourceName other) {
-		if (getSourceKind().preferredOver(other.getSourceKind())) {
-			return this;
-		}
-		if (other.getSourceKind().preferredOver(getSourceKind())) {
-			return other;
-		}
-		return null;
-	}
-
 	@Override
 	public String toString() {
 		if (this.name == null) {

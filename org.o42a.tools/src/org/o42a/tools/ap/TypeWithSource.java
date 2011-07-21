@@ -179,33 +179,14 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			existing.override(name, type, annotation, value, relativeTo);
 			return existing;
 		} else {
-
-			final TypeSourceName existingName = existing.getName();
-			final TypeSourceName preferred = name.preferred(existingName);
-
-			if (preferred == null) {
-				getMessenger().printMessage(
-						Diagnostic.Kind.ERROR,
-						"Two or more types refer the same source " + name,
-						type,
-						annotation);
-				if (error()) {
-					getMessenger().printMessage(
-							Diagnostic.Kind.ERROR,
-							"Two or more types refer to the same source "
-							+ name,
-							existing.getType(),
-							existing.getAnnotation());
-				}
-
-				return null;
+			reportDuplicateSource(name, type, annotation);
+			if (error()) {
+				reportDuplicateSource(
+						name,
+						existing.getType(),
+						existing.getAnnotation());
 			}
-
-			if (preferred == name) {
-				existing.override(name, type, annotation, value, relativeTo);
-			}
-
-			return existing;
+			return null;
 		}
 
 		if (restPath == null) {
@@ -221,6 +202,17 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 				value,
 				relativeTo,
 				path[1]);
+	}
+
+	private void reportDuplicateSource(
+			TypeSourceName name,
+			TypeElement type,
+			AnnotationMirror annotation) {
+		getMessenger().printMessage(
+				Diagnostic.Kind.ERROR,
+				"Two or more types refer the same source " + name,
+				type,
+				annotation);
 	}
 
 	@Override
