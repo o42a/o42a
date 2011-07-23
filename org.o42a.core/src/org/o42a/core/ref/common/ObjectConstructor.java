@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.common;
 
+import java.util.IdentityHashMap;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
@@ -35,9 +37,13 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.use.*;
 
 
-public abstract class ObjectConstructor extends Expression {
+public abstract class ObjectConstructor extends Ref {
+
+	private Constructed constructed;
+	private IdentityHashMap<Scope, Constructed> propagated;
 
 	public ObjectConstructor(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
@@ -52,21 +58,25 @@ public abstract class ObjectConstructor extends Expression {
 	public abstract TypeRef ancestor(LocationInfo location);
 
 	@Override
-	protected final Resolution resolveExpression(Resolver resolver) {
-		if (resolver.getScope() != getScope() && !isStatic()) {
-			return objectResolution(new Propagated(resolver.getScope(), this));
+	public final Resolution resolve(Resolver resolver) {
+
+		final Scope scope = resolver.getScope();
+		final Constructed constructed;
+
+		if (scope == getScope()) {
+			constructed = construct();
+		} else {
+			constructed = propagate(scope);
 		}
 
-		final Obj object = createObject();
-
-		if (object == null) {
-			return noResolution();
-		}
-
-		return objectResolution(object);
+		return resolver.newObject(this, constructed.object(resolver));
 	}
 
 	protected abstract Obj createObject();
+
+	protected Obj propagateObject(Scope scope) {
+		return new Propagated(scope, this);
+	}
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
@@ -86,6 +96,65 @@ public abstract class ObjectConstructor extends Expression {
 	@Override
 	protected RefOp createOp(HostOp host) {
 		return new ConstructorOp(host, this);
+	}
+
+	private Constructed construct() {
+		if (this.constructed != null) {
+			return this.constructed;
+		}
+		return this.constructed = new Constructed(createObject());
+	}
+
+	private Constructed propagate(Scope scope) {
+		if (this.propagated == null) {
+			this.propagated =
+					new IdentityHashMap<Scope, ObjectConstructor.Constructed>();
+		} else {
+
+			final Constructed cached = this.propagated.get(scope);
+
+			if (cached != null) {
+				return cached;
+			}
+		}
+
+		final Constructed propagated = new Constructed(propagateObject(scope));
+
+		this.propagated.put(scope, propagated);
+
+		return propagated;
+	}
+
+	private static final class Constructed extends Usable {
+
+		private final Obj object;
+		private final UsableUser user;
+
+		Constructed(Obj object) {
+			this.object = object;
+			this.user = new UsableUser(this);
+		}
+
+		@Override
+		public final User toUser() {
+			return this.user;
+		}
+
+		@Override
+		public String toString() {
+			if (this.object == null) {
+				return super.toString();
+			}
+			return this.object.toString();
+		}
+
+		final Obj object(UserInfo user) {
+			if (this.object != null) {
+				useBy(user);
+			}
+			return this.object;
+		}
+
 	}
 
 	private static final class Propagated extends Obj {

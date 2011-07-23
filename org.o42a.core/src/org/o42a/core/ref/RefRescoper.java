@@ -20,6 +20,7 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -42,8 +43,15 @@ final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(Resolver resolver) {
-		return this.ref.resolve(resolver).getScope().newResolver(resolver);
+	public Resolver rescope(ScopeInfo location, Resolver resolver) {
+
+		final Resolution resolution = this.ref.resolve(resolver);
+
+		if (resolution == null) {
+			return null;
+		}
+
+		return resolution.getScope().newResolver(resolver, resolver.getWalker());
 	}
 
 	@Override
@@ -69,7 +77,7 @@ final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(ScopeInfo location, Resolver resolver) {
 		this.ref.resolveAll(resolver);
 	}
 

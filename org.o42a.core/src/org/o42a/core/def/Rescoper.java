@@ -24,6 +24,7 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 import java.lang.reflect.Array;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
@@ -104,7 +105,7 @@ public abstract class Rescoper {
 
 	public abstract Scope rescope(Scope scope);
 
-	public abstract Resolver rescope(Resolver resolver);
+	public abstract Resolver rescope(ScopeInfo location, Resolver resolver);
 
 	public abstract Scope updateScope(Scope scope);
 
@@ -119,7 +120,7 @@ public abstract class Rescoper {
 		return new CompoundRescoper(this, other);
 	}
 
-	public abstract void resolveAll(Resolver resolver);
+	public abstract void resolveAll(ScopeInfo location, Resolver resolver);
 
 	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
 

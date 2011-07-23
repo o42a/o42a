@@ -25,23 +25,22 @@ import java.util.HashMap;
 
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.Expression;
+import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
-public final class ValuePartRef extends Expression {
+public final class ValuePartRef extends ObjectConstructor {
 
 	static final HashMap<String, ValuePart> partsById =
 		new HashMap<String, ValuePart>();
@@ -67,7 +66,6 @@ public final class ValuePartRef extends Expression {
 
 	private final ValuePart valuePart;
 	private final boolean overridden;
-	private Resolution resolution;
 
 	private ValuePartRef(
 			LocationInfo location,
@@ -81,6 +79,19 @@ public final class ValuePartRef extends Expression {
 
 	public final boolean isOverridden() {
 		return this.overridden;
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location) {
+
+		final Scope scope = getScope();
+		final Obj object = scope.toObject();
+
+		if (object == null) {
+			return ValueType.VOID.typeRef(location, scope);
+		}
+
+		return this.valuePart.valueType(object).typeRef(location, scope);
 	}
 
 	@Override
@@ -110,27 +121,13 @@ public final class ValuePartRef extends Expression {
 	}
 
 	@Override
-	protected Resolution resolveExpression(Resolver resolver) {
-		if (this.resolution != null) {
-			return this.resolution;
-		}
-		return this.resolution = objectResolution(
-				new ValuePartObj(this, distributeIn(resolver.getContainer())));
+	protected Obj createObject() {
+		return new ValuePartObj(this, distribute());
 	}
 
 	@Override
-	protected FieldDefinition createFieldDefinition() {
-		return defaultFieldDefinition();
-	}
-
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver).resolveAll();
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver).resolveValues(resolver);
+	protected Obj propagateObject(Scope scope) {
+		return new ValuePartObj(this, scope.distribute());
 	}
 
 	@Override

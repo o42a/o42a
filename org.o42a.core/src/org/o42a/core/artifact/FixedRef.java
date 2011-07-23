@@ -35,11 +35,11 @@ import org.o42a.core.st.Reproducer;
 
 final class FixedRef extends Ref {
 
-	private final Resolution self;
+	private final Artifact<?> self;
 
 	FixedRef(Distributor distributor, Artifact<?> self) {
 		super(self, distributor);
-		this.self = artifactResolution(self);
+		this.self = self;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ final class FixedRef extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return this.self;
+		return resolver.staticArtifact(this, this.self);
 	}
 
 	@Override
@@ -61,6 +61,9 @@ final class FixedRef extends Ref {
 
 	@Override
 	public String toString() {
+		if (this.self == null) {
+			return super.toString();
+		}
 		return "&(" + this.self.toString() + " / " + getScope() + ')';
 	}
 

@@ -37,11 +37,11 @@ import org.o42a.core.value.Value;
 
 final class SelfRef extends Ref {
 
-	private final Resolution self;
+	private final Artifact<?> self;
 
 	SelfRef(Artifact<?> self) {
 		super(self, self.distribute());
-		this.self = artifactResolution(self);
+		this.self = self;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ final class SelfRef extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return this.self;
+		return resolver.staticArtifact(this, this.self);
 	}
 
 	@Override
@@ -72,6 +72,9 @@ final class SelfRef extends Ref {
 
 	@Override
 	public String toString() {
+		if (this.self == null) {
+			return super.toString();
+		}
 		return "&" + this.self.toString();
 	}
 

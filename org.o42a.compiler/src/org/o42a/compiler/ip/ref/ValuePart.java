@@ -23,54 +23,24 @@ import static org.o42a.core.def.Definitions.definitions;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.value.ValueType;
 
 
 enum ValuePart {
 
-	ALL("") {
-
-		@Override
-		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
-			return definitions;
-		}
-
-		@Override
-		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
-
-			final ObjectOp object = op.object(dirs);
-
-			if (!op.isOverridden()) {
-				object.writeLogicalValue(dirs);
-				return;
-			}
-
-			final ValDirs valDirs = dirs.value(op.getValueType());
-
-			object.objectType(valDirs.code()).writeOverriddenValue(valDirs);
-			valDirs.done();
-		}
-
-		@Override
-		ValOp writeValue(ValDirs dirs, ValuePartOp op) {
-
-			final ObjectOp object = op.object(dirs.dirs());
-
-			if (!op.isOverridden()) {
-				return object.writeValue(dirs);
-			}
-
-			return object.objectType(dirs.code()).writeOverriddenValue(dirs);
-		}
-
-	},
-
 	VALUE("Value", "value") {
+
+		@Override
+		ValueType<?> valueType(Obj object) {
+			return object.value().getValueType();
+		}
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
@@ -103,6 +73,11 @@ enum ValuePart {
 	REQUIREMENT("Requirement", "requirement") {
 
 		@Override
+		ValueType<?> valueType(Obj object) {
+			return ValueType.VOID;
+		}
+
+		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
 			return definitions.requirementPart(ex);
 		}
@@ -129,6 +104,11 @@ enum ValuePart {
 	},
 
 	CONDITION("Condition", "condition") {
+
+		@Override
+		ValueType<?> valueType(Obj object) {
+			return ValueType.VOID;
+		}
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
@@ -161,6 +141,11 @@ enum ValuePart {
 	CLAIM("Claim", "claim") {
 
 		@Override
+		ValueType<?> valueType(Obj object) {
+			return object.value().getValueType();
+		}
+
+		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
 			return definitions.claimPart(ex);
 		}
@@ -189,6 +174,11 @@ enum ValuePart {
 	},
 
 	PROPOSITION("Proposition", "proposition") {
+
+		@Override
+		ValueType<?> valueType(Obj object) {
+			return object.value().getValueType();
+		}
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
@@ -233,6 +223,8 @@ enum ValuePart {
 		this.partName = partName;
 		ValuePartRef.partsById.put(partId, this);
 	}
+
+	abstract ValueType<?> valueType(Obj object);
 
 	abstract Definitions valuePart(ValuePartRef ex, Definitions definitions);
 

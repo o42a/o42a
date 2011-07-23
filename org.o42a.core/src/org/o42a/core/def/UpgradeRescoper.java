@@ -20,6 +20,7 @@
 package org.o42a.core.def;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -44,7 +45,7 @@ final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(Resolver resolver) {
+	public Resolver rescope(ScopeInfo location, Resolver resolver) {
 		resolver.getScope().assertDerivedFrom(getFinalScope());
 		return resolver;
 	}
@@ -76,7 +77,7 @@ final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(ScopeInfo location, Resolver resolver) {
 	}
 
 	@Override

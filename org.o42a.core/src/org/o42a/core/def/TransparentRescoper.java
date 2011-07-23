@@ -22,6 +22,7 @@ package org.o42a.core.def;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
@@ -57,7 +58,7 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(Resolver resolver) {
+	public Resolver rescope(ScopeInfo location, Resolver resolver) {
 		return resolver;
 	}
 
@@ -83,7 +84,7 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(ScopeInfo location, Resolver resolver) {
 	}
 
 	@Override

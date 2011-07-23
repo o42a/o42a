@@ -19,7 +19,16 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
+import org.o42a.core.Scoped;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.GroupClause;
+import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -35,10 +44,12 @@ public class Resolver implements UserInfo, LocationInfo {
 
 	private final Scope scope;
 	private final User user;
+	private final ResolutionWalker walker;
 
-	protected Resolver(Scope scope, UserInfo user) {
+	protected Resolver(Scope scope, UserInfo user, ResolutionWalker walker) {
 		this.scope = scope;
 		this.user = user.toUser();
+		this.walker = walker;
 	}
 
 	@Override
@@ -61,6 +72,10 @@ public class Resolver implements UserInfo, LocationInfo {
 
 	public final Scope getScope() {
 		return this.scope;
+	}
+
+	public final ResolutionWalker getWalker() {
+		return this.walker;
 	}
 
 	public final CompilerLogger getLogger() {
@@ -88,6 +103,61 @@ public class Resolver implements UserInfo, LocationInfo {
 		return true;
 	}
 
+	public final Resolution noResolution(LocationInfo location) {
+		return new ErrorResolution(new Scoped(location, getScope()));
+	}
+
+	public final Resolution path(LocationInfo location, Path path, Scope start) {
+
+		final PathWalker pathWalker = this.walker.path(location, path);
+
+		if (pathWalker == null) {
+			return null;
+		}
+
+		final Container result = path.walk(location, this, start, pathWalker);
+
+		if (result == null) {
+			return null;
+		}
+
+		return containerResolution(location, result);
+	}
+
+	public final Resolution newObject(LocationInfo location, Obj object) {
+		if (object == null) {
+			return noResolution(location);
+		}
+		if (!this.walker.newObject(location, object)) {
+			return null;
+		}
+		return objectResolution(location, object);
+	}
+
+	public final Resolution objectPart(
+			LocationInfo location,
+			Artifact<?> part) {
+		if (part == null) {
+			return noResolution(location);
+		}
+		if (!this.walker.objectPart(location, part)) {
+			return null;
+		}
+		return artifactResolution(location, part);
+	}
+
+	public final Resolution staticArtifact(
+			LocationInfo location,
+			Artifact<?> artifact) {
+		if (artifact == null) {
+			return noResolution(location);
+		}
+		if (!this.walker.staticArtifact(location, artifact)) {
+			return null;
+		}
+		return artifactResolution(location, artifact);
+	}
+
 	@Override
 	public String toString() {
 		if (this.user == null) {
@@ -106,10 +176,84 @@ public class Resolver implements UserInfo, LocationInfo {
 		}
 
 		@Override
-		protected Resolver createResolver(UserInfo user) {
-			return new Resolver(getScope(), user);
+		protected Resolver createResolver(
+				UserInfo user,
+				ResolutionWalker walker) {
+			return new Resolver(getScope(), user, walker);
 		}
 
+	}
+
+	final Resolution containerResolution(
+			LocationInfo location,
+			Container resolved) {
+		if (resolved == null) {
+			return noResolution(location);
+		}
+
+		final LocalScope local = resolved.toLocal();
+
+		if (local != null && local == resolved.getScope().toLocal()) {
+			return localResolution(location, local);
+		}
+
+		final Clause clause = resolved.toClause();
+
+		if (clause != null) {
+			return clauseResolution(location, clause);
+		}
+
+		return artifactResolution(location, resolved.toArtifact());
+	}
+
+	final Resolution artifactResolution(
+			LocationInfo location,
+			Artifact<?> resolved) {
+		if (resolved == null) {
+			return noResolution(location);
+		}
+
+		final Obj object = resolved.toObject();
+
+		if (object != null) {
+			return new ObjectResolution(object);
+		}
+
+		return new ArtifactResolution(resolved);
+	}
+
+	final Resolution objectResolution(
+			LocationInfo location,
+			Obj resolved) {
+		if (resolved == null) {
+			return noResolution(location);
+		}
+		return new ObjectResolution(resolved);
+	}
+
+	final Resolution localResolution(
+			LocationInfo location,
+			LocalScope resolved) {
+		if (resolved == null) {
+			return noResolution(location);
+		}
+		return new LocalResolution(resolved);
+	}
+
+	final Resolution clauseResolution(
+			LocationInfo location,
+			Clause resolved) {
+		if (resolved == null) {
+			return noResolution(location);
+		}
+
+		final GroupClause group = resolved.toGroupClause();
+
+		if (group != null) {
+			return new GroupResolution(group);
+		}
+
+		return objectResolution(location, resolved.toPlainClause().getObject());
 	}
 
 }

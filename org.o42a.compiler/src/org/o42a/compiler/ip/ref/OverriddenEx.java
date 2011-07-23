@@ -28,20 +28,18 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.common.ObjectConstructor;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
-public class OverriddenEx extends Ref {
+public class OverriddenEx extends ObjectConstructor {
 
 	private final Ref host;
-	private Resolution resolution;
 
 	public OverriddenEx(
 			LocationInfo location,
@@ -49,6 +47,19 @@ public class OverriddenEx extends Ref {
 			Ref host) {
 		super(location, distributor);
 		this.host = host;
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location) {
+
+		final Scope scope = getScope();
+		final Obj object = scope.toObject();
+
+		if (object == null) {
+			return ValueType.VOID.typeRef(this, scope);
+		}
+
+		return object.value().getValueType().typeRef(this, scope);
 	}
 
 	@Override
@@ -65,28 +76,13 @@ public class OverriddenEx extends Ref {
 	}
 
 	@Override
-	public Resolution resolve(Resolver resolver) {
-		if (this.resolution != null) {
-			return this.resolution;
-		}
-		return this.resolution = objectResolution(new Overridden(
-				this,
-				distributeIn(resolver.getScope().getContainer())));
+	protected Obj createObject() {
+		return new Overridden(this, distribute());
 	}
 
 	@Override
-	protected FieldDefinition createFieldDefinition() {
-		return defaultFieldDefinition();
-	}
-
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver).resolveAll();
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver).resolveValues(resolver);
+	protected Obj propagateObject(Scope scope) {
+		return new Overridden(this, scope.distribute());
 	}
 
 	@Override

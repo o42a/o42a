@@ -21,6 +21,7 @@ package org.o42a.core.value;
 
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -40,7 +41,7 @@ final class ConstantRef<T> extends Ref {
 
 	private final ValueType<T> valueType;
 	private final T value;
-	private Resolution object;
+	private Obj object;
 
 	ConstantRef(
 			LocationInfo location,
@@ -70,14 +71,7 @@ final class ConstantRef<T> extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		if (this.object != null) {
-			return this.object;
-		}
-		return this.object = objectResolution(new ConstantObject<T>(
-				this,
-				distribute(),
-				this.valueType,
-				this.value));
+		return resolver.staticArtifact(this, object());
 	}
 
 	@Override
@@ -106,6 +100,17 @@ final class ConstantRef<T> extends Ref {
 	@Override
 	protected RefOp createOp(HostOp host) {
 		return new Op<T>(host, this);
+	}
+
+	private final Obj object() {
+		if (this.object != null) {
+			return this.object;
+		}
+		return this.object = new ConstantObject<T>(
+				this,
+				distribute(),
+				this.valueType,
+				this.value);
 	}
 
 	private static final class Op<T> extends RefOp {

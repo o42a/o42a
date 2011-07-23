@@ -19,7 +19,9 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.*;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerLogger;
 
@@ -82,8 +84,8 @@ public abstract class Rescopable<R extends Rescopable<R>>
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			getRescoper().resolveAll(resolver);
-			fullyResolve(getRescoper().rescope(resolver));
+			getRescoper().resolveAll(this, resolver);
+			fullyResolve(getRescoper().rescope(this, resolver));
 		} finally {
 			getContext().fullResolution().end();
 		}

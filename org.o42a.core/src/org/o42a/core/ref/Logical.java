@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;

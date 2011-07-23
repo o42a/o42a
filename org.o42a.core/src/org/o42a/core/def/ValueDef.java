@@ -89,7 +89,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 	public final DefValue definitionValue(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final Resolver rescoped = getRescoper().rescope(resolver);
+		final Resolver rescoped = getRescoper().rescope(this, resolver);
 
 		if (hasPrerequisite()) {
 

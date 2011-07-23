@@ -24,8 +24,8 @@ import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
@@ -39,12 +39,9 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.RefTypeBase;
@@ -258,72 +255,6 @@ public abstract class Ref extends RefTypeBase {
 
 	@Override
 	public abstract Ref reproduce(Reproducer reproducer);
-
-	public final Resolution noResolution() {
-		return new Resolution.Error(this);
-	}
-
-	public final Resolution containerResolution(Container resolved) {
-		if (resolved == null) {
-			return noResolution();
-		}
-
-		final LocalScope local = resolved.toLocal();
-
-		if (local != null && local == resolved.getScope().toLocal()) {
-			return localResolution(local);
-		}
-
-		final Clause clause = resolved.toClause();
-
-		if (clause != null) {
-			return clauseResolution(clause);
-		}
-
-		return artifactResolution(resolved.toArtifact());
-	}
-
-	public final Resolution artifactResolution(Artifact<?> resolved) {
-		if (resolved == null) {
-			return noResolution();
-		}
-
-		final Obj object = resolved.toObject();
-
-		if (object != null) {
-			return new Resolution.ObjectResolution(object);
-		}
-
-		return new Resolution.ArtifactResolution(resolved);
-	}
-
-	public final Resolution objectResolution(Obj resolved) {
-		if (resolved == null) {
-			return noResolution();
-		}
-		return new Resolution.ObjectResolution(resolved);
-	}
-
-	public final Resolution localResolution(LocalScope resolved) {
-		if (resolved == null) {
-			return noResolution();
-		}
-		return new Resolution.LocalResolution(resolved);
-	}
-
-	public final Resolution clauseResolution(Clause resolved) {
-		if (resolved == null) {
-			return noResolution();
-		}
-
-		final GroupClause group = resolved.toGroupClause();
-
-		if (group != null) {
-			return new Resolution.GroupResolution(group);
-		}
-
-		return objectResolution(resolved.toPlainClause().getObject());
-	}
 
 	public Ref toStatic() {
 		if (isKnownStatic()) {

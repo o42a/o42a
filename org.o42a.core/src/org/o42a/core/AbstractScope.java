@@ -35,6 +35,7 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
@@ -240,6 +241,11 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public final Resolver newResolver(UserInfo user) {
 		return this.resolverFactory.newResolver(user);
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user, ResolutionWalker walker) {
+		return this.resolverFactory.newResolver(user, walker);
 	}
 
 	@Override

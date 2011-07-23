@@ -41,6 +41,8 @@ import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.ResolutionWalker;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
@@ -185,6 +187,11 @@ public abstract class LocalScope
 	@Override
 	public final LocalResolver newResolver(UserInfo user) {
 		return resolverFactory().newResolver(user);
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user, ResolutionWalker walker) {
+		return resolverFactory().newResolver(user, walker);
 	}
 
 	@Override
