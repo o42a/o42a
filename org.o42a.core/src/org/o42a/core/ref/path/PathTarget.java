@@ -19,7 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -30,14 +31,14 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.Holder;
 
 
 class PathTarget extends Ref {
 
 	private final Path path;
 	private final Ref start;
-	private Path fullPath;
-	private boolean fullPathBuilt;
+	private Holder<Path> fullPath;
 
 	PathTarget(
 			LocationInfo location,
@@ -56,8 +57,7 @@ class PathTarget extends Ref {
 		super(location, distributor);
 		this.path = path.rebuild();
 		this.start = null;
-		this.fullPath = this.path;
-		this.fullPathBuilt = true;
+		this.fullPath = new Holder<Path>(path);
 	}
 
 	@Override
@@ -70,32 +70,43 @@ class PathTarget extends Ref {
 
 	@Override
 	public Path getPath() {
-		if (this.fullPathBuilt) {
-			return this.fullPath;
+		if (this.fullPath != null) {
+			return this.fullPath.get();
 		}
-		this.fullPathBuilt = true;
 
 		final Path startPath = this.start.getPath();
 
 		if (startPath == null) {
+			this.fullPath = new Holder<Path>(null);
 			return null;
 		}
 
-		return this.fullPath = startPath.append(this.path).rebuild();
+		final Path fullPath = startPath.append(this.path).rebuild();
+
+		this.fullPath = new Holder<Path>(fullPath);
+
+		return fullPath;
 	}
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
 
-		final Container resolved;
+		final Path fullPath = getPath();
 
-		if (this.start == null) {
-			resolved = this.path.resolve(this, resolver, resolver.getScope());
-		} else {
-			resolved = this.path.resolveFrom(this, resolver, this.start);
+		if (fullPath != null) {
+			return resolver.path(this, fullPath, resolver.getScope());
 		}
 
-		return containerResolution(resolved);
+		final Resolution start = this.start.resolve(resolver);
+
+		if (start == null) {
+			return null;
+		}
+		if (start.isError()) {
+			return start;
+		}
+
+		return resolver.path(this, this.path, start.getScope());
 	}
 
 	@Override

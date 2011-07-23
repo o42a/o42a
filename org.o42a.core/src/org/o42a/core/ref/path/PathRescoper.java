@@ -21,6 +21,7 @@ package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -53,16 +54,26 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(Resolver resolver) {
+	public Resolver rescope(ScopeInfo location, Resolver resolver) {
 
-		final Container found =
-				this.path.resolve(resolver, resolver, resolver.getScope());
+		final PathWalker pathWalker =
+				resolver.getWalker().path(location, this.path);
+
+		if (pathWalker == null) {
+			return null;
+		}
+
+		final Container found = this.path.walk(
+				location,
+				resolver,
+				resolver.getScope(),
+				pathWalker);
 
 		if (found == null) {
 			return null;
 		}
 
-		return found.getScope().newResolver(resolver);
+		return found.getScope().newResolver(resolver, resolver.getWalker());
 	}
 
 	@Override
@@ -118,7 +129,7 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(ScopeInfo location, Resolver resolver) {
 		this.path.resolve(resolver, resolver, resolver.getScope());
 	}
 

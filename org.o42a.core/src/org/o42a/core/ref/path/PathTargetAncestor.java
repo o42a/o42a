@@ -56,10 +56,10 @@ final class PathTargetAncestor extends Ref {
 		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
-			return null;
+			return resolver.noResolution(this);
 		}
 
-		return artifactResolution(ancestor.artifact(resolver));
+		return resolver.objectPart(this, ancestor.artifact(resolver));
 	}
 
 	@Override

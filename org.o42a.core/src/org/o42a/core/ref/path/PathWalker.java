@@ -29,6 +29,8 @@ import org.o42a.core.member.field.Field;
 
 public interface PathWalker {
 
+	DummyPathWalker DUMMY_PATH_WALKER = new DummyPathWalker();
+
 	boolean root(Path path, Scope root);
 
 	boolean start(Path path, Scope start);

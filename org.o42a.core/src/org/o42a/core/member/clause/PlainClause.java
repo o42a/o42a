@@ -25,7 +25,9 @@ import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import java.util.Set;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.*;
+import org.o42a.core.AbstractScope;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
@@ -34,6 +36,7 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
@@ -101,6 +104,11 @@ public abstract class PlainClause
 	@Override
 	public final Resolver newResolver(UserInfo user) {
 		return this.resolverFactory.newResolver(user);
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user, ResolutionWalker walker) {
+		return this.resolverFactory.newResolver(user, walker);
 	}
 
 	@Override

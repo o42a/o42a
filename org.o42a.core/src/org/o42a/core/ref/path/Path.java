@@ -26,11 +26,14 @@ import static org.o42a.core.ref.path.PathFragment.MATERIALIZE;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -43,6 +46,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UserInfo;
 
 
@@ -51,9 +55,6 @@ public class Path {
 	public static final AbsolutePath ROOT_PATH = new AbsolutePath();
 
 	public static final Path SELF_PATH = new Path(new PathFragment[0]);
-
-	private static final DummyPathWalker DUMMY_WALKER =
-		new DummyPathWalker();
 
 	public static AbsolutePath absolutePath(
 			CompilerContext context,
@@ -79,11 +80,13 @@ public class Path {
 	Path(boolean absolute, PathFragment... fragments) {
 		this.absolute = absolute;
 		this.fragments = fragments;
+		assert assertFragmentsNotNull(fragments);
 	}
 
 	Path(PathFragment... fragments) {
 		this.absolute = false;
 		this.fragments = fragments;
+		assert assertFragmentsNotNull(fragments);
 	}
 
 	public final boolean isAbsolute() {
@@ -94,7 +97,7 @@ public class Path {
 		return this.fragments.length == 0 && !isAbsolute();
 	}
 
-	public PathFragment[] getFragments() {
+	public final PathFragment[] getFragments() {
 		return this.fragments;
 	}
 
@@ -102,14 +105,14 @@ public class Path {
 			LocationInfo location,
 			UserInfo user,
 			Scope start) {
-		return walkToArtifact(location, user, start, DUMMY_WALKER);
+		return walkToArtifact(location, user, start, DUMMY_PATH_WALKER);
 	}
 
 	public final Artifact<?> resolveArtifactFrom(
 			LocationInfo location,
 			Resolver resolver,
 			Ref start) {
-		return walkToArtifactFrom(location, resolver, start, DUMMY_WALKER);
+		return walkToArtifactFrom(location, resolver, start, DUMMY_PATH_WALKER);
 	}
 
 	public Artifact<?> walkToArtifact(
@@ -154,14 +157,14 @@ public class Path {
 			LocationInfo location,
 			UserInfo user,
 			Scope start) {
-		return walk(location, user, start, DUMMY_WALKER);
+		return walk(location, user, start, DUMMY_PATH_WALKER);
 	}
 
 	public final Container resolveFrom(
 			LocationInfo location,
 			Resolver resolver,
 			Ref start) {
-		return walkFrom(location, resolver, start, DUMMY_WALKER);
+		return walkFrom(location, resolver, start, DUMMY_PATH_WALKER);
 	}
 
 	public Container walk(
@@ -206,13 +209,14 @@ public class Path {
 			return new AbsolutePath(fragment);
 		}
 
-		final PathFragment[] newKeys =
-			new PathFragment[this.fragments.length + 1];
+		final PathFragment[] newFragments =
+				ArrayUtil.append(this.fragments, fragment);
 
-		arraycopy(this.fragments, 0, newKeys, 0, this.fragments.length);
-		newKeys[this.fragments.length] = fragment;
+		if (!isAbsolute()) {
+			return new Path(newFragments);
+		}
 
-		return isAbsolute() ? new AbsolutePath(newKeys) : new Path(newKeys);
+		return new AbsolutePath(newFragments);
 	}
 
 	public Path append(MemberKey memberKey) {
@@ -235,17 +239,8 @@ public class Path {
 			return path;
 		}
 
-		final PathFragment[] fragments = path.fragments;
 		final PathFragment[] newFragments =
-			new PathFragment[this.fragments.length + fragments.length];
-
-		arraycopy(this.fragments, 0, newFragments, 0, this.fragments.length);
-		arraycopy(
-				fragments,
-				0,
-				newFragments,
-				this.fragments.length,
-				fragments.length);
+				ArrayUtil.append(this.fragments, path.fragments);
 
 		if (isAbsolute()) {
 			return new AbsolutePath(newFragments);
@@ -431,6 +426,14 @@ public class Path {
 		return found;
 	}
 
+	private static boolean assertFragmentsNotNull(PathFragment[] fragments) {
+		for (PathFragment fragment : fragments) {
+			assert fragment != null :
+				"Path fragment is null";
+		}
+		return true;
+	}
+
 	private Artifact<?> walkPathToArtifact(
 			LocationInfo location,
 			UserInfo user,
@@ -467,6 +470,9 @@ public class Path {
 		Scope prev = start;
 
 		for (int i = 0; i < this.fragments.length; ++i) {
+			if (this.fragments[i] == null) {
+				System.err.println("(!) " + this);
+			}
 			result = this.fragments[i].resolve(
 					location,
 					tracker.nextUser(),
@@ -496,50 +502,38 @@ public class Path {
 			return fragments;
 		}
 
-		int stripped = 0;
-		int prevIdx = 0;
+		final PathFragment[] rebuiltFragments =
+				new PathFragment[fragments.length];
+		PathFragment prev = rebuiltFragments[0] = fragments[0];
 		int nextIdx = 1;
+		int rebuiltIdx = 0;
 
 		for (;;) {
 
-			final PathFragment prev = fragments[prevIdx];
 			final PathFragment next = fragments[nextIdx];
 			final PathFragment rebuilt = next.rebuild(prev);
 
 			if (rebuilt != null) {
-				++stripped;
-				fragments[prevIdx] = rebuilt;
-				fragments[nextIdx] = null;
+				rebuiltFragments[rebuiltIdx] = prev = rebuilt;
 				if (++nextIdx >= fragments.length) {
 					break;
 				}
 				continue;
 			}
 
-			prevIdx = nextIdx;
+			rebuiltFragments[++rebuiltIdx] = prev = next;
 			if (++nextIdx >= fragments.length) {
 				break;
 			}
 		}
-		if (stripped == 0) {
+
+		final int rebuiltLen = rebuiltIdx + 1;
+
+		if (rebuiltLen == fragments.length) {
 			return fragments;
 		}
 
-		final PathFragment[] result =
-			new PathFragment[fragments.length - stripped];
-		int idx = 0;
-
-		for (PathFragment fragment : fragments) {
-			if (fragment != null) {
-				result[idx++] = fragment;
-			}
-		}
-
-		assert idx == result.length :
-			"Wrong path fragments count: " + idx + ", but "
-			+ result.length + " expected, when rebuilding " + this;
-
-		return rebuild(result);
+		return rebuild(ArrayUtil.clip(rebuiltFragments, rebuiltLen));
 	}
 
 	private PathReproduction partiallyReproducedPath(

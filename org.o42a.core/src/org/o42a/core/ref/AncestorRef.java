@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.value.Value.unknownValue;
+import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.Artifact;
@@ -58,10 +58,10 @@ final class AncestorRef extends Ref {
 		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
-			return null;
+			return resolver.noResolution(this);
 		}
 
-		return artifactResolution(ancestor.artifact(resolver));
+		return resolver.objectPart(this, ancestor.artifact(resolver));
 	}
 
 	@Override
@@ -70,7 +70,7 @@ final class AncestorRef extends Ref {
 		final TypeRef ancestor = resolveAncestor(resolver);
 
 		if (ancestor == null) {
-			return unknownValue();
+			return falseValue();
 		}
 
 		return ancestor.value(ancestor.getScope().newResolver(resolver));

@@ -46,7 +46,7 @@ public final class ErrorRef extends Ref {
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
-		return noResolution();
+		return resolver.noResolution(this);
 	}
 
 	@Override

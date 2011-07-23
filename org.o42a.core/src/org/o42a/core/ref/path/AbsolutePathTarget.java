@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -56,11 +55,10 @@ final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
-
-		final Container resolved =
-			this.path.resolve(this, resolver, resolver.getScope());
-
-		return containerResolution(resolved);
+		return resolver.path(
+				this,
+				this.path,
+				getContext().getRoot().getScope());
 	}
 
 	@Override

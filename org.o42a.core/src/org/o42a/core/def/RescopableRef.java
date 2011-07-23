@@ -62,11 +62,11 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 	}
 
 	public final Resolution resolve(Resolver resolver) {
-		return getRef().resolve(getRescoper().rescope(resolver));
+		return getRef().resolve(getRescoper().rescope(this, resolver));
 	}
 
 	public final Value<?> value(Resolver resolver) {
-		return getRef().value(getRescoper().rescope(resolver));
+		return getRef().value(getRescoper().rescope(this, resolver));
 	}
 
 	public R reproduce(Reproducer reproducer) {

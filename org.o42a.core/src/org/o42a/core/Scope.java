@@ -30,6 +30,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerLogger;
@@ -59,6 +60,8 @@ public interface Scope extends PlaceInfo {
     Resolver dummyResolver();
 
     Resolver newResolver(UserInfo user);
+
+    Resolver newResolver(UserInfo user, ResolutionWalker walker);
 
     Member toMember();
 

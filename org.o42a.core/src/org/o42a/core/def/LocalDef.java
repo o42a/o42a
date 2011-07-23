@@ -115,7 +115,7 @@ class LocalDef extends ValueDef {
 	protected Value<?> calculateValue(Resolver resolver) {
 
 		final LocalScope local =
-			this.localRescoper.rescope(resolver).getScope().toLocal();
+				this.localRescoper.rescope(this, resolver).getScope().toLocal();
 
 		assert local != null :
 			"Not a local scope: " + resolver;
@@ -140,7 +140,7 @@ class LocalDef extends ValueDef {
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		getBlock().resolveValues(this.localRescoper.rescope(resolver));
+		getBlock().resolveValues(this.localRescoper.rescope(this, resolver));
 	}
 
 	@Override
@@ -197,8 +197,9 @@ class LocalDef extends ValueDef {
 		public LogicalValue logicalValue(Resolver resolver) {
 			assertCompatible(resolver.getScope());
 
-			final LocalScope local =
-				this.def.localRescoper.rescope(resolver).getScope().toLocal();
+			final Resolver localResolver =
+					this.def.localRescoper.rescope(this, resolver);
+			final LocalScope local = localResolver.getScope().toLocal();
 
 			assert local != null :
 				"Not a local scope: " + resolver;
