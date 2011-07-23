@@ -43,7 +43,7 @@ final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(ScopeInfo location, Resolver resolver) {
+	public Resolver rescope(LocationInfo location, Resolver resolver) {
 
 		final Resolution resolution = this.ref.resolve(resolver);
 
@@ -51,7 +51,7 @@ final class RefRescoper extends Rescoper {
 			return null;
 		}
 
-		return resolution.getScope().newResolver(resolver, resolver.getWalker());
+		return resolution.getScope().walkingResolver(resolver);
 	}
 
 	@Override

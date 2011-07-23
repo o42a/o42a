@@ -76,7 +76,7 @@ final class PathTargetAncestor extends Ref {
 			return unknownValue();
 		}
 
-		return ancestor.value(ancestor.getScope().newResolver(resolver));
+		return ancestor.value(ancestor.getScope().walkingResolver(resolver));
 	}
 
 	@Override

@@ -54,8 +54,8 @@ public abstract class ResolverFactory<R extends Resolver> {
 		return createResolver(user, DUMMY_RESOLUTION_WALKER);
 	}
 
-	public final R newResolver(UserInfo user, ResolutionWalker walker) {
-		if (walker == null) {
+	public final R walkingResolver(UserInfo user, ResolutionWalker walker) {
+		if (walker == null || walker == DUMMY_RESOLUTION_WALKER) {
 			return newResolver(user);
 		}
 		return createResolver(user, walker);

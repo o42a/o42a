@@ -56,7 +56,7 @@ final class StaticRef extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return this.ref.resolve(this.ref.getScope().newResolver(resolver));
+		return this.ref.resolve(this.ref.getScope().walkingResolver(resolver));
 	}
 
 	@Override

@@ -105,7 +105,7 @@ public abstract class Rescoper {
 
 	public abstract Scope rescope(Scope scope);
 
-	public abstract Resolver rescope(ScopeInfo location, Resolver resolver);
+	public abstract Resolver rescope(LocationInfo location, Resolver resolver);
 
 	public abstract Scope updateScope(Scope scope);
 

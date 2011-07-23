@@ -73,7 +73,7 @@ final class AncestorRef extends Ref {
 			return falseValue();
 		}
 
-		return ancestor.value(ancestor.getScope().newResolver(resolver));
+		return ancestor.value(ancestor.getScope().walkingResolver(resolver));
 	}
 
 	@Override

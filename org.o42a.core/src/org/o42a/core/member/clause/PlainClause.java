@@ -107,8 +107,15 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final Resolver newResolver(UserInfo user, ResolutionWalker walker) {
-		return this.resolverFactory.newResolver(user, walker);
+	public final Resolver walkingResolver(Resolver user) {
+		return walkingResolver(user, user.getWalker());
+	}
+
+	@Override
+	public final Resolver walkingResolver(
+			UserInfo user,
+			ResolutionWalker walker) {
+		return this.resolverFactory.walkingResolver(user, walker);
 	}
 
 	@Override
