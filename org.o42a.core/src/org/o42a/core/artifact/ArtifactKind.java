@@ -195,7 +195,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 			final TypeRef typeRef = resolution.toArtifact().getTypeRef();
 
-			return typeRef.value(typeRef.getScope().newResolver(resolver));
+			return typeRef.value(typeRef.getScope().walkingResolver(resolver));
 		}
 
 		@Override

@@ -54,7 +54,7 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(ScopeInfo location, Resolver resolver) {
+	public Resolver rescope(LocationInfo location, Resolver resolver) {
 
 		final PathWalker pathWalker =
 				resolver.getWalker().path(location, this.path);
@@ -73,7 +73,7 @@ final class PathRescoper extends Rescoper {
 			return null;
 		}
 
-		return found.getScope().newResolver(resolver, resolver.getWalker());
+		return found.getScope().walkingResolver(resolver);
 	}
 
 	@Override

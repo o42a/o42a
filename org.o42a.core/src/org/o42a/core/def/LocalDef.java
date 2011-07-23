@@ -120,7 +120,7 @@ class LocalDef extends ValueDef {
 		assert local != null :
 			"Not a local scope: " + resolver;
 
-		return getBlock().initialValue(local.newResolver(resolver)).getValue();
+		return getBlock().initialValue(local.walkingResolver(resolver)).getValue();
 	}
 
 	@Override
@@ -205,7 +205,7 @@ class LocalDef extends ValueDef {
 				"Not a local scope: " + resolver;
 
 			final Action action = this.def.getBlock().initialLogicalValue(
-					local.newResolver(resolver));
+					local.walkingResolver(resolver));
 
 			return action.getLogicalValue();
 		}

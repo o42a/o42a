@@ -45,7 +45,7 @@ final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(ScopeInfo location, Resolver resolver) {
+	public Resolver rescope(LocationInfo location, Resolver resolver) {
 		resolver.getScope().assertDerivedFrom(getFinalScope());
 		return resolver;
 	}

@@ -43,7 +43,7 @@ abstract class RescoperWrap extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(ScopeInfo location, Resolver resolver) {
+	public Resolver rescope(LocationInfo location, Resolver resolver) {
 		return wrapped().rescope(location, resolver);
 	}
 

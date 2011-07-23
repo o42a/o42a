@@ -50,7 +50,7 @@ final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(ScopeInfo location, Resolver resolver) {
+	public Resolver rescope(LocationInfo location, Resolver resolver) {
 
 		final Resolver rescoped = this.second.rescope(location, resolver);
 

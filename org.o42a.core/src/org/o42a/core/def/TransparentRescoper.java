@@ -58,7 +58,7 @@ final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(ScopeInfo location, Resolver resolver) {
+	public Resolver rescope(LocationInfo location, Resolver resolver) {
 		return resolver;
 	}
 

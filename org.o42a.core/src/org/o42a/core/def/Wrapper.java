@@ -43,8 +43,8 @@ final class Wrapper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(ScopeInfo location, Resolver resolver) {
-		return this.wrapped.newResolver(resolver);
+	public Resolver rescope(LocationInfo location, Resolver resolver) {
+		return this.wrapped.walkingResolver(resolver);
 	}
 
 	@Override

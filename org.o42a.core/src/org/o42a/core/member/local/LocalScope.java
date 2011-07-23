@@ -190,8 +190,15 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Resolver newResolver(UserInfo user, ResolutionWalker walker) {
-		return resolverFactory().newResolver(user, walker);
+	public final LocalResolver walkingResolver(Resolver user) {
+		return walkingResolver(user, user.getWalker());
+	}
+
+	@Override
+	public final LocalResolver walkingResolver(
+			UserInfo user,
+			ResolutionWalker walker) {
+		return resolverFactory().walkingResolver(user, walker);
 	}
 
 	@Override
