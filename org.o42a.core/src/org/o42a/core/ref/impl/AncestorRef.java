@@ -128,6 +128,9 @@ public final class AncestorRef extends Ref {
 
 		final Resolution resolution = this.ref.resolve(resolver);
 
+		if (resolution == null) {
+			return null;
+		}
 		if (resolution.isError()) {
 			this.error = true;
 			return null;

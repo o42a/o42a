@@ -36,6 +36,11 @@ public class LocalResolver extends Resolver {
 	}
 
 	@Override
+	public LocalResolver newResolver() {
+		return (LocalResolver) super.newResolver();
+	}
+
+	@Override
 	public String toString() {
 		if (toUser() == null) {
 			return super.toString();

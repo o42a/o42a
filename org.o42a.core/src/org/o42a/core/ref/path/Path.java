@@ -470,9 +470,6 @@ public class Path {
 		Scope prev = start;
 
 		for (int i = 0; i < this.fragments.length; ++i) {
-			if (this.fragments[i] == null) {
-				System.err.println("(!) " + this);
-			}
 			result = this.fragments[i].resolve(
 					location,
 					tracker.nextUser(),

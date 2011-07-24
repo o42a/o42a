@@ -90,6 +90,7 @@ class PathTarget extends Ref {
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
 		final Path fullPath = getPath();
 

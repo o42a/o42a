@@ -27,23 +27,69 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.ResolutionWalker;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.LocationInfo;
 
 
-public final class ResolutionRootFinder implements PathWalker {
+public final class ResolutionRootFinder
+		implements ResolutionWalker, PathWalker {
 
-	private Container container;
-	private Path root = Path.SELF_PATH;
+	public static Scope resolutionRoot(TypeRef typeRef) {
 
-	public ResolutionRootFinder(Ref ref) {
-		this.container = ref.getContainer();
+		final Scope scope = typeRef.getRescoper().rescope(typeRef.getScope());
+		final ResolutionRootFinder finder = new ResolutionRootFinder(scope);
+		final Resolver resolver = scope.walkingResolver(dummyUser(), finder);
+
+		typeRef.getRef().resolve(resolver);
+
+		return finder.getRoot();
 	}
 
-	public final Path getRoot() {
-		return this.root;
+	private Container root;
+
+	private ResolutionRootFinder(Scope scope) {
+		this.root = scope.getContainer();
+	}
+
+	public final Scope getRoot() {
+		return this.root.getScope();
+	}
+
+	@Override
+	public PathWalker path(LocationInfo location, Path path) {
+		if (path.isAbsolute()) {
+			this.root = this.root.getContext().getRoot();
+			return null;
+		}
+		return this;
+	}
+
+	@Override
+	public boolean newObject(LocationInfo location, Obj object) {
+
+		final Resolver ancestorResolver =
+				this.root.getScope().walkingResolver(dummyUser(), this);
+		final Resolution ancestorResolution =
+				object.type().getAncestor().getRef().resolve(ancestorResolver);
+
+		return ancestorResolution != null;
+	}
+
+	@Override
+	public boolean objectPart(LocationInfo location, Artifact<?> part) {
+		return false;
+	}
+
+	@Override
+	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
+		this.root = this.root.getContext().getRoot();
+		return false;
 	}
 
 	@Override
@@ -66,8 +112,7 @@ public final class ResolutionRootFinder implements PathWalker {
 			Container enclosed,
 			PathFragment fragment,
 			Container enclosing) {
-		this.container = enclosing;
-		this.root = this.root.append(fragment);
+		this.root = enclosing;
 		return true;
 	}
 
@@ -79,12 +124,12 @@ public final class ResolutionRootFinder implements PathWalker {
 
 		final Container substance = member.substance(dummyUser());
 
-		if (substance.getScope() != this.container.getScope()) {
+		if (substance.getScope() != this.root.getScope()) {
 			// Member access - root already reached.
 			return false;
 		}
 
-		final Member oldMember = this.container.toMember();
+		final Member oldMember = this.root.toMember();
 
 		if (oldMember == null) {
 			// Member access - root already reached.
@@ -102,8 +147,7 @@ public final class ResolutionRootFinder implements PathWalker {
 	@Override
 	public boolean dep(Obj object, PathFragment fragment, Field<?> dependency) {
 		// Treat the enclosing local scope as resolution root.
-		this.root = this.root.append(object.getScope().getEnclosingScopePath());
-		this.container = object.getScope().getEnclosingScope().toLocal();
+		this.root = object.getScope().getEnclosingScope().toLocal();
 		return false;
 	}
 
@@ -112,7 +156,7 @@ public final class ResolutionRootFinder implements PathWalker {
 			Artifact<?> artifact,
 			PathFragment fragment,
 			Obj result) {
-		// Materialized object is not root.
+		// Materialized object is not a root.
 		return false;
 	}
 

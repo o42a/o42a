@@ -21,7 +21,6 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
@@ -83,7 +82,6 @@ public abstract class Ref extends RefTypeBase {
 
 	private RefEnv env;
 	private Logical logical;
-	private Path resolutionRoot;
 	private RefOp op;
 
 	public Ref(LocationInfo location, Distributor distributor) {
@@ -134,59 +132,6 @@ public abstract class Ref extends RefTypeBase {
 
 	public final Resolution getResolution() {
 		return resolve(getScope().dummyResolver());
-	}
-
-	/**
-	 * Resolution root path.
-	 *
-	 * <p>This is either upward part of {@link #getPath() path}
-	 * (if present) or resolution root of ancestor.</p>
-	 *
-	 * <p>This is used by {@link TypeRef} to check the type resolution
-	 * compatibility.</p>
-	 *
-	 * @return resolution root path, never <code>null</code>.
-	 */
-	public Path getResolutionRoot() {
-		if (this.resolutionRoot != null) {
-			return this.resolutionRoot;
-		}
-		if (isKnownStatic()) {
-			return this.resolutionRoot = Path.ROOT_PATH;
-		}
-
-		final Path path = getPath();
-
-		if (path != null) {
-			if (path.isAbsolute()) {
-				return this.resolutionRoot = Path.ROOT_PATH;
-			}
-
-			final ResolutionRootFinder rootFinder =
-				new ResolutionRootFinder(this);
-
-			path.walk(getScope(), dummyUser(), getScope(), rootFinder);
-
-			return this.resolutionRoot = rootFinder.getRoot();
-		}
-
-		if (getResolution().isFalse()) {
-			// False resolution is always absolute.
-			return this.resolutionRoot = Path.ROOT_PATH;
-		}
-
-		final Obj object = getResolution().toObject();
-
-		assert object != null :
-			"Non-object reference expected to have a path";
-
-		if (object == getContext().getIntrinsics().getVoid()) {
-			// Explicit VOID resolution is always absolute.
-			return this.resolutionRoot = Path.ROOT_PATH;
-		}
-
-		return this.resolutionRoot =
-			object.type().getAncestor().getRef().getResolutionRoot();
 	}
 
 	@Override
