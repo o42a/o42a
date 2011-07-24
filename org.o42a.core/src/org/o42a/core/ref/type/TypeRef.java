@@ -20,6 +20,7 @@
 package org.o42a.core.ref.type;
 
 import static org.o42a.core.artifact.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
+import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -135,14 +136,8 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return TypeRelation.INVALID;
 		}
 
-		final Scope root1 = getRef().getResolutionRoot().resolve(
-				this,
-				dummyUser(),
-				getRescoper().rescope(getScope())).getScope();
-		final Scope root2 = other.getRef().getResolutionRoot().resolve(
-				other,
-				dummyUser(),
-				other.getRescoper().rescope(other.getScope())).getScope();
+		final Scope root1 = resolutionRoot(this);
+		final Scope root2 = resolutionRoot(other);
 
 		final ObjectType type1 = type(dummyUser());
 		final ObjectType type2 = other.type(dummyUser());

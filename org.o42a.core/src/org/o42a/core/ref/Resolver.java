@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ref.ResolutionWalker.DUMMY_RESOLUTION_WALKER;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
@@ -88,6 +90,13 @@ public class Resolver implements UserInfo, LocationInfo {
 		return this.user;
 	}
 
+	public Resolver newResolver() {
+		if (this.walker == DUMMY_RESOLUTION_WALKER) {
+			return this;
+		}
+		return getScope().newResolver(this);
+	}
+
 	@Override
 	public final UseFlag getUseBy(UseCase useCase) {
 		return toUser().getUseBy(useCase);
@@ -96,12 +105,6 @@ public class Resolver implements UserInfo, LocationInfo {
 	@Override
 	public boolean isUsedBy(UseCase useCase) {
 		return getUseBy(useCase).isUsed();
-	}
-
-	public final boolean assertNotDummy() {
-		assert !isDummy() :
-			this + " is dummy";
-		return true;
 	}
 
 	public final Resolution noResolution(LocationInfo location) {
