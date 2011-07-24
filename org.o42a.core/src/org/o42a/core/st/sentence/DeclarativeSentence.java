@@ -27,7 +27,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.declarative.SentenceEnv;
+import org.o42a.core.st.impl.declarative.SentenceEnv;
 import org.o42a.core.value.ValueType;
 
 

@@ -42,6 +42,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.impl.*;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.RefTypeBase;
@@ -80,7 +81,6 @@ public abstract class Ref extends RefTypeBase {
 		return new ErrorRef(location, distributor);
 	}
 
-	private Ref expectedTypeAdapter;
 	private RefEnv env;
 	private Logical logical;
 	private Path resolutionRoot;
@@ -90,9 +90,16 @@ public abstract class Ref extends RefTypeBase {
 		this(location, distributor, null);
 	}
 
-	Ref(LocationInfo location, Distributor distributor, Logical logical) {
+	protected Ref(
+			LocationInfo location,
+			Distributor distributor,
+			Logical logical) {
 		super(location, distributor);
 		this.logical = logical;
+	}
+
+	public boolean isKnownStatic() {
+		return false;
 	}
 
 	public boolean isStatic() {
@@ -207,7 +214,7 @@ public abstract class Ref extends RefTypeBase {
 	@Override
 	public Definitions define(Scope scope) {
 
-		final ValueDef def = expectedTypeAdapter().toValueDef();
+		final ValueDef def = this.env.expectedTypeAdapter().toValueDef();
 		final StatementEnv initialEnv = this.env.getInitialEnv();
 
 		return initialEnv.apply(def).toDefinitions();
@@ -322,10 +329,6 @@ public abstract class Ref extends RefTypeBase {
 		return this.op = createOp(host);
 	}
 
-	protected boolean isKnownStatic() {
-		return false;
-	}
-
 	protected abstract FieldDefinition createFieldDefinition();
 
 	protected final FieldDefinition defaultFieldDefinition() {
@@ -337,22 +340,6 @@ public abstract class Ref extends RefTypeBase {
 	@Override
 	protected final StOp createOp(LocalBuilder builder) {
 		return new RefStOp(builder, this, op(builder.host()));
-	}
-
-	final Ref expectedTypeAdapter() {
-		if (this.expectedTypeAdapter != null) {
-			return this.expectedTypeAdapter;
-		}
-
-		final ValueType<?> expectedType =
-			this.env.getInitialEnv().getExpectedType();
-
-		if (expectedType == null) {
-			return this.expectedTypeAdapter = this;
-		}
-
-		return this.expectedTypeAdapter =
-			adapt(this, expectedType.typeRef(this, getScope()));
 	}
 
 	private static final class RefStOp extends StOp {

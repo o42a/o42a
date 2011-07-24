@@ -38,9 +38,9 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.st.sentence.declarative.ImplicitInclusion;
-import org.o42a.core.st.sentence.declarative.SentencePrecondition;
-import org.o42a.core.st.sentence.imperative.Locals;
+import org.o42a.core.st.impl.declarative.ImplicitInclusion;
+import org.o42a.core.st.impl.declarative.SentencePrecondition;
+import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 

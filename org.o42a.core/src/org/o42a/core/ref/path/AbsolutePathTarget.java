@@ -44,6 +44,11 @@ final class AbsolutePathTarget extends Ref {
 	}
 
 	@Override
+	public boolean isKnownStatic() {
+		return true;
+	}
+
+	@Override
 	public final AbsolutePath getPath() {
 		return this.path;
 	}
@@ -75,11 +80,6 @@ final class AbsolutePathTarget extends Ref {
 			return super.toString();
 		}
 		return this.path.toString();
-	}
-
-	@Override
-	protected boolean isKnownStatic() {
-		return true;
 	}
 
 	@Override
