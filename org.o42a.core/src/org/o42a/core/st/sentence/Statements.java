@@ -38,8 +38,10 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.sentence.cond.RefCondition;
-import org.o42a.core.st.sentence.imperative.Locals;
+import org.o42a.core.st.impl.NextDistributor;
+import org.o42a.core.st.impl.StatementsDistributor;
+import org.o42a.core.st.impl.cond.RefCondition;
+import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
@@ -56,7 +58,12 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			LocationInfo location,
 			Sentence<S> sentence,
 			boolean opposite) {
-		super(location, new StatementsDistributor(location, sentence));
+		super(
+				location,
+				new StatementsDistributor(
+						location,
+						sentence,
+						sentence.getBlock().getTrace()));
 		this.sentence = sentence;
 		this.opposite = opposite;
 	}

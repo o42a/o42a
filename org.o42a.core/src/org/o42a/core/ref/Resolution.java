@@ -38,7 +38,7 @@ public abstract class Resolution implements ScopeInfo {
 
 	private final ScopeInfo resolved;
 
-	Resolution(ScopeInfo location) {
+	public Resolution(ScopeInfo location) {
 		this.resolved = location;
 	}
 

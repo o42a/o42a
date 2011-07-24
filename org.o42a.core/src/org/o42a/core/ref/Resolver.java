@@ -27,6 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.impl.resolution.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.CompilerContext;

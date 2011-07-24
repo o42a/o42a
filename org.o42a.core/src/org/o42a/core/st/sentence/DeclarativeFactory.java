@@ -26,9 +26,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.declarative.DeclarativeClaim;
-import org.o42a.core.st.sentence.declarative.DeclarativeIssue;
-import org.o42a.core.st.sentence.declarative.DeclarativeProposition;
+import org.o42a.core.st.impl.declarative.DeclarativeClaim;
+import org.o42a.core.st.impl.declarative.DeclarativeIssue;
+import org.o42a.core.st.impl.declarative.DeclarativeProposition;
 import org.o42a.util.Lambda;
 
 

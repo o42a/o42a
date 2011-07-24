@@ -30,7 +30,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.imperative.Locals;
+import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 

@@ -29,8 +29,8 @@ import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.sentence.imperative.AssignmentStatement;
-import org.o42a.core.st.sentence.imperative.EllipsisStatement;
+import org.o42a.core.st.impl.imperative.AssignmentStatement;
+import org.o42a.core.st.impl.imperative.EllipsisStatement;
 import org.o42a.core.value.LogicalValue;
 
 

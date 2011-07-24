@@ -31,8 +31,8 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.sentence.declarative.ExplicitInclusion;
-import org.o42a.core.st.sentence.imperative.BracesWithinDeclaratives;
+import org.o42a.core.st.impl.declarative.ExplicitInclusion;
+import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueType;
 
 

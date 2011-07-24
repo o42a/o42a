@@ -45,6 +45,11 @@ final class SelfRef extends Ref {
 	}
 
 	@Override
+	public boolean isKnownStatic() {
+		return true;
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
 	}
@@ -76,11 +81,6 @@ final class SelfRef extends Ref {
 			return super.toString();
 		}
 		return "&" + this.self.toString();
-	}
-
-	@Override
-	protected boolean isKnownStatic() {
-		return true;
 	}
 
 	@Override

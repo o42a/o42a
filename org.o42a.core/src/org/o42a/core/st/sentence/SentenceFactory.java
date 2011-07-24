@@ -23,9 +23,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.declarative.DeclarativeIssueFactory;
-import org.o42a.core.st.sentence.imperative.ImperativeGroupFactory;
-import org.o42a.core.st.sentence.imperative.ImperativeIssueFactory;
+import org.o42a.core.st.impl.declarative.DeclarativeIssueFactory;
+import org.o42a.core.st.impl.imperative.ImperativeGroupFactory;
+import org.o42a.core.st.impl.imperative.ImperativeIssueFactory;
 import org.o42a.util.Lambda;
 
 
