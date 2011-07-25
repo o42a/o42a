@@ -100,12 +100,12 @@ public class Namespace extends AbstractContainer {
 	}
 
 	@Override
-	public Path member(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		return this.enclosing.member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
-	public Path findMember(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path findMember(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		if (accessibleBy(accessor)) {
 
 			final Path found = findInNs(user, accessor, memberId, declaredIn);
@@ -144,7 +144,7 @@ public class Namespace extends AbstractContainer {
 	}
 
 	private Path findInNs(
-			ScopeInfo user,
+			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -225,7 +225,7 @@ public class Namespace extends AbstractContainer {
 		}
 
 		public Path findField(
-				ScopeInfo user,
+				PlaceInfo user,
 				Accessor accessor,
 				MemberId memberId,
 				Obj declaredIn) {
@@ -285,7 +285,7 @@ public class Namespace extends AbstractContainer {
 
 		@Override
 		public Path findField(
-				ScopeInfo user,
+				PlaceInfo user,
 				Accessor accessor,
 				MemberId memberId,
 				Obj declaredIn) {

@@ -48,17 +48,17 @@ public abstract class Access {
 		return new NoAccess(from, to);
 	}
 
-	static Access artifactAccess(ScopeInfo from, Artifact<?> to) {
+	static Access artifactAccess(PlaceInfo from, Artifact<?> to) {
 		if (from == to) {
 			return accessByOwner();
 		}
 
-		final LocalPlace place = to.getLocalPlace();
+		final LocalPlace toPlace = to.getLocalPlace();
 
-		if (place != null) {
+		if (toPlace != null) {
 			// target is inside the local scope
 
-			final Access result = localArtifactAccess(from, to, place);
+			final Access result = localArtifactAccess(from, to, toPlace);
 
 			if (result != null) {
 				return result;
@@ -69,18 +69,18 @@ public abstract class Access {
 	}
 
 	private static Access localArtifactAccess(
-			ScopeInfo from,
+			PlaceInfo from,
 			Artifact<?> to,
-			LocalPlace place) {
+			LocalPlace toPlace) {
 
-		final ScopePlace fromPlace =
-			place.getAppearedIn().placeOf(from);
+		final LocalPlace fromPlace =
+				toPlace.getAppearedIn().placeOf(from);
 
 		if (fromPlace == null) {
 			// viewer is not inside the same local scope
 			return noAccess(from, to);
 		}
-		if (fromPlace == place) {
+		if (fromPlace.equals(toPlace)) {
 			// viewer is inside target
 			if (to.getContext().declarationsVisibleFrom(
 					from.getContext())) {
@@ -89,7 +89,7 @@ public abstract class Access {
 			}
 			return accessEnclosing();
 		}
-		if (!to.getPlace().getPlace().visibleBy(fromPlace.getPlace())) {
+		if (!toPlace.getPlace().visibleBy(fromPlace.getPlace())) {
 			// viewer appears before target
 			return noAccess(from, to);
 		}

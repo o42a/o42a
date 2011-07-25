@@ -124,7 +124,7 @@ final class ExplicitLocalScope extends LocalScope {
 
 	@Override
 	public Path member(
-			ScopeInfo user,
+			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
@@ -179,7 +179,7 @@ final class ExplicitLocalScope extends LocalScope {
 
 	@Override
 	public Path findMember(
-			ScopeInfo user,
+			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {

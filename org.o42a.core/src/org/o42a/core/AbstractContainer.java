@@ -38,7 +38,7 @@ public abstract class AbstractContainer extends Location implements Container {
 
 	public static Path findContainerPath(
 			Container container,
-			ScopeInfo user,
+			PlaceInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 
@@ -132,7 +132,7 @@ public abstract class AbstractContainer extends Location implements Container {
 	}
 
 	@Override
-	public Path findPath(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	public Path findPath(PlaceInfo user, MemberId memberId, Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);
 	}
 

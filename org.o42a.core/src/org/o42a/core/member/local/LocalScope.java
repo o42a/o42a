@@ -229,12 +229,12 @@ public abstract class LocalScope
 		return null;
 	}
 
-	public final LocalPlace placeOf(ScopeInfo other) {
+	public final LocalPlace placeOf(PlaceInfo other) {
 
 		Scope scope = other.getScope();
 
 		if (scope == this) {
-			return null;
+			return other.getPlace().toLocal();
 		}
 		for (;;) {
 
@@ -266,7 +266,7 @@ public abstract class LocalScope
 
 	@Override
 	public final Path findPath(
-			ScopeInfo user,
+			PlaceInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);
