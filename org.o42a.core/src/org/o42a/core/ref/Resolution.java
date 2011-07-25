@@ -20,6 +20,7 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
@@ -112,6 +113,7 @@ public abstract class Resolution implements ScopeInfo {
 
 	public abstract Path member(
 			PlaceInfo user,
+			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn);
 

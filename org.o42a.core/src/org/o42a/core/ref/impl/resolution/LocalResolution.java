@@ -22,6 +22,7 @@ package org.o42a.core.ref.impl.resolution;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.PlaceInfo;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
@@ -58,10 +59,14 @@ public final class LocalResolution extends Resolution {
 	}
 
 	@Override
-	public Path member(PlaceInfo user, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 
 		final Path found =
-			toContainer().member(user, memberId, declaredIn);
+				toContainer().member(user, accessor, memberId, declaredIn);
 
 		if (found == null) {
 			user.getContext().getLogger().unresolved(user, memberId);

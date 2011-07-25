@@ -21,6 +21,7 @@ package org.o42a.core;
 
 import java.util.ArrayList;
 
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -99,22 +100,22 @@ public class Namespace extends AbstractContainer {
 	}
 
 	@Override
-	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
-		return this.enclosing.member(user, memberId, declaredIn);
+	public Path member(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+		return this.enclosing.member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
-	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
-		if (accessibleFrom(user)) {
+	public Path findMember(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+		if (accessibleBy(accessor)) {
 
-			final Path found = findInNs(user, memberId, declaredIn);
+			final Path found = findInNs(user, accessor, memberId, declaredIn);
 
 			if (found != null) {
 				return found;
 			}
 		}
 
-		return this.enclosing.findMember(user, memberId, declaredIn);
+		return this.enclosing.findMember(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
@@ -122,8 +123,8 @@ public class Namespace extends AbstractContainer {
 		return "Namespace[" + this.enclosing + ']';
 	}
 
-	protected boolean accessibleFrom(ScopeInfo user) {
-		return user.getContext() == getContext();
+	protected boolean accessibleBy(Accessor accessor) {
+		return accessor == Accessor.DECLARATION || accessor == Accessor.OWNER;
 	}
 
 	private Container container(Ref ref) {
@@ -142,7 +143,11 @@ public class Namespace extends AbstractContainer {
 		return container;
 	}
 
-	private Path findInNs(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	private Path findInNs(
+			ScopeInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 
 		final Obj object = toObject();
 
@@ -155,7 +160,8 @@ public class Namespace extends AbstractContainer {
 
 		for (NsUse use : this.uses) {
 
-			final Path found = use.findField(user, memberId, declaredIn);
+			final Path found =
+					use.findField(user, accessor, memberId, declaredIn);
 
 			if (found == null) {
 				continue;
@@ -220,11 +226,15 @@ public class Namespace extends AbstractContainer {
 
 		public Path findField(
 				ScopeInfo user,
+				Accessor accessor,
 				MemberId memberId,
 				Obj declaredIn) {
 
-			final Path found =
-				getContainer().findMember(user, memberId, declaredIn);
+			final Path found = getContainer().findMember(
+					user,
+					accessor,
+					memberId,
+					declaredIn);
 
 			return found != null ? getPath().append(found) : null;
 		}
@@ -276,6 +286,7 @@ public class Namespace extends AbstractContainer {
 		@Override
 		public Path findField(
 				ScopeInfo user,
+				Accessor accessor,
 				MemberId memberId,
 				Obj declaredIn) {
 			if (declaredIn != null) {
