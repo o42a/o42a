@@ -37,13 +37,12 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.use.*;
 
 
 public abstract class ObjectConstructor extends Ref {
 
-	private Constructed constructed;
-	private IdentityHashMap<Scope, Constructed> propagated;
+	private Obj constructed;
+	private IdentityHashMap<Scope, Obj> propagated;
 
 	public ObjectConstructor(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
@@ -61,15 +60,15 @@ public abstract class ObjectConstructor extends Ref {
 	public final Resolution resolve(Resolver resolver) {
 
 		final Scope scope = resolver.getScope();
-		final Constructed constructed;
+		final Obj object;
 
 		if (scope == getScope()) {
-			constructed = construct();
+			object = construct();
 		} else {
-			constructed = propagate(scope);
+			object = propagate(scope);
 		}
 
-		return resolver.newObject(this, constructed.object(resolver));
+		return resolver.newObject(this, object);
 	}
 
 	protected abstract Obj createObject();
@@ -98,63 +97,30 @@ public abstract class ObjectConstructor extends Ref {
 		return new ConstructorOp(host, this);
 	}
 
-	private Constructed construct() {
+	private Obj construct() {
 		if (this.constructed != null) {
 			return this.constructed;
 		}
-		return this.constructed = new Constructed(createObject());
+		return this.constructed = createObject();
 	}
 
-	private Constructed propagate(Scope scope) {
+	private Obj propagate(Scope scope) {
 		if (this.propagated == null) {
-			this.propagated =
-					new IdentityHashMap<Scope, ObjectConstructor.Constructed>();
+			this.propagated = new IdentityHashMap<Scope, Obj>();
 		} else {
 
-			final Constructed cached = this.propagated.get(scope);
+			final Obj cached = this.propagated.get(scope);
 
 			if (cached != null) {
 				return cached;
 			}
 		}
 
-		final Constructed propagated = new Constructed(propagateObject(scope));
+		final Obj propagated = propagateObject(scope);
 
 		this.propagated.put(scope, propagated);
 
 		return propagated;
-	}
-
-	private static final class Constructed extends Usable {
-
-		private final Obj object;
-		private final UsableUser user;
-
-		Constructed(Obj object) {
-			this.object = object;
-			this.user = new UsableUser(this);
-		}
-
-		@Override
-		public final User toUser() {
-			return this.user;
-		}
-
-		@Override
-		public String toString() {
-			if (this.object == null) {
-				return super.toString();
-			}
-			return this.object.toString();
-		}
-
-		final Obj object(UserInfo user) {
-			if (this.object != null) {
-				useBy(user);
-			}
-			return this.object;
-		}
-
 	}
 
 	private static final class Propagated extends Obj {
