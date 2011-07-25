@@ -21,7 +21,6 @@ package org.o42a.core.artifact;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.local.LocalScope;
 
 
 public abstract class Access {
@@ -102,8 +101,6 @@ public abstract class Access {
 		return getRole() != Role.NONE;
 	}
 
-	public abstract Accessor getAccessor();
-
 	public abstract Role getRole();
 
 	public abstract boolean checkRole(Role use);
@@ -114,72 +111,6 @@ public abstract class Access {
 
 	public final boolean checkPrototypeUse() {
 		return checkRole(Role.PROTOTYPE);
-	}
-
-	private static Accessor accessor(Artifact<?> to, ScopeInfo by) {
-		if (to.getContext().declarationsVisibleFrom(by.getContext())) {
-			return Accessor.DECLARATION;
-		}
-
-		final Container user = by.getScope().getContainer();
-		final Obj userObject = user.toObject();
-
-		if (userObject != null) {
-			return accessorByObject(to, userObject);
-		}
-
-		final LocalScope localUser = user.toLocal();
-
-		if (localUser != null) {
-			accessByLocal(to, localUser);
-		}
-
-		return Accessor.PUBLIC;
-	}
-
-	private static Accessor accessorByObject(Artifact<?> to, Obj by) {
-
-		final Obj object = to.materialize();
-
-		if (by == object) {
-			return Accessor.OWNER;
-		}
-		if (by.type().derivedFrom(object.type())) {
-			return Accessor.INHERITANT;
-		}
-
-		final Container enclosing = by.getScope().getEnclosingContainer();
-
-		if (enclosing == null) {
-			return Accessor.PUBLIC;
-		}
-
-		return accessorByScope(to, enclosing.getScope());
-	}
-
-	private static Accessor accessByLocal(Artifact<?> to, LocalScope by) {
-		if (to.materialize().getScope().contains(by)) {
-			return Accessor.ENCLOSED;
-		}
-		return Accessor.PUBLIC;
-	}
-
-	private static Accessor accessorByScope(Artifact<?> to, Scope by) {
-
-		final Access scopeAccess = to.accessBy(by);
-
-		switch (scopeAccess.getAccessor()) {
-		case OWNER:
-		case ENCLOSED:
-			return Accessor.ENCLOSED;
-		case INHERITANT:
-			return Accessor.INHERITANT;
-		case PUBLIC:
-		case DECLARATION:
-			return Accessor.PUBLIC;
-		}
-
-		return Accessor.PUBLIC;
 	}
 
 	private static Role role(Artifact<?> to, ScopeInfo user) {
@@ -211,11 +142,6 @@ public abstract class Access {
 		}
 
 		@Override
-		public Accessor getAccessor() {
-			return Accessor.PUBLIC;
-		}
-
-		@Override
 		public Role getRole() {
 			return Role.NONE;
 		}
@@ -240,11 +166,6 @@ public abstract class Access {
 		}
 
 		@Override
-		public Accessor getAccessor() {
-			return this.accessor;
-		}
-
-		@Override
 		public Role getRole() {
 			return Role.INSTANCE;
 		}
@@ -265,20 +186,11 @@ public abstract class Access {
 
 		private final ScopeInfo from;
 		private final Artifact<?> to;
-		private Accessor accessor;
 		private Role role;
 
 		ArtifactAccess(ScopeInfo from, Artifact<?> to) {
 			this.from = from;
 			this.to = to;
-		}
-
-		@Override
-		public Accessor getAccessor() {
-			if (this.accessor == null) {
-				this.accessor = accessor(this.to, this.from);
-			}
-			return this.accessor;
 		}
 
 		@Override
@@ -315,12 +227,7 @@ public abstract class Access {
 			final StringBuilder out = new StringBuilder();
 
 			out.append("Access from ").append(this.from);
-			if (this.accessor != null) {
-				out.append('(').append(this.accessor).append(") to ");
-			} else {
-				out.append("(?) to ");
-			}
-			out.append(this.to);
+			out.append(" to ").append(this.to);
 			if (this.role != null) {
 				out.append('(').append(this.role).append(')');
 			} else {
