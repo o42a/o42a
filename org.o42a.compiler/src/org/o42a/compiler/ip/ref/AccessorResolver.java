@@ -23,6 +23,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
@@ -37,7 +38,6 @@ import org.o42a.core.source.LocationInfo;
 
 final class AccessorResolver implements ResolutionWalker, PathWalker {
 
-	private Container current;
 	private boolean owner = true;
 	private boolean declaration = true;
 	private boolean enclosed = true;
@@ -48,8 +48,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	private boolean enclosedBeforeRoot;
 	private boolean inheritantBeforeRoot;
 
-	public AccessorResolver(Scope start) {
-		this.current = start.getContainer();
+	public AccessorResolver() {
 	}
 
 	public final Accessor getAccessor() {
@@ -74,22 +73,30 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean newObject(LocationInfo location, Obj object) {
-		updateDeclaration(object);
+	public boolean newObject(ScopeInfo location, Obj object) {
+		this.owner = false;
+		this.declaration &=
+				object.getContext().declarationsVisibleFrom(
+						location.getContext());
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;
 	}
 
 	@Override
-	public boolean objectPart(LocationInfo location, Artifact<?> part) {
-		updateContainer(part.getContainer());
+	public boolean artifactPart(
+			LocationInfo location,
+			Artifact<?> artifact,
+			Artifact<?> part) {
+		updateContainer(artifact.getContainer(), part.getContainer());
 		return true;
 	}
 
 	@Override
 	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
-		return updateContainer(artifact.getContainer());
+		return updateContainer(
+				artifact.getContainer(),
+				artifact.getContainer());
 	}
 
 	@Override
@@ -97,12 +104,11 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		this.ownerBeforeRoot = this.owner;
 		this.declarationBeforeRoot = this.declaration;
 		this.enclosedBeforeRoot = this.enclosed;
-		return updateContainer(root.getContainer());
+		return updateContainer(root.getContainer(), root.getContainer());
 	}
 
 	@Override
 	public boolean start(Path path, Scope start) {
-		start.assertSameScope(this.current);
 		return true;
 	}
 
@@ -112,7 +118,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		this.declaration = this.declarationBeforeRoot;
 		this.enclosed = this.enclosedBeforeRoot;
 		this.inheritant = this.inheritantBeforeRoot;
-		return updateContainer(module);
+		return updateContainer(module, module);
 	}
 
 	@Override
@@ -120,8 +126,8 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 			Container enclosed,
 			PathFragment fragment,
 			Container enclosing) {
-		updateDeclaration(enclosing);
-		updateInheritant(enclosing);
+		updateDeclaration(enclosed, enclosing);
+		updateInheritant(enclosed, enclosing);
 		return true;
 	}
 
@@ -131,7 +137,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 			PathFragment fragment,
 			Member member) {
 		this.owner = false;
-		updateDeclaration(member.substance(dummyUser()));
+		updateDeclaration(container, member.substance(dummyUser()));
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;
@@ -153,7 +159,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		if (artifact.toObject() == result) {
 			return true;
 		}
-		updateDeclaration(result);
+		updateDeclaration(artifact.getContainer(), result);
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;
@@ -168,12 +174,12 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		return true;
 	}
 
-	private boolean updateDeclaration(Container container) {
+	private boolean updateDeclaration(Container current, Container container) {
 		if (!this.declaration) {
 			return false;
 		}
 		if (this.owner) {
-			if (this.current == container) {
+			if (current == container) {
 				return true;
 			}
 			this.owner = false;
@@ -183,19 +189,19 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 						container.getContext());
 	}
 
-	private boolean updateEnclosed(Container container) {
+	private boolean updateEnclosed(Container current, Container container) {
 		if (!this.enclosed) {
 			return false;
 		}
 
-		final Scope oldScope = this.current.getScope();
+		final Scope oldScope = current.getScope();
 		final Scope newScope = container.getScope();
 
 		if (oldScope != newScope) {
 			return this.enclosed = newScope.contains(oldScope);
 		}
 
-		final Member oldMember = this.current.toMember();
+		final Member oldMember = current.toMember();
 		final Member newMember = container.toMember();
 
 		if (oldMember != null) {
@@ -211,7 +217,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		return true;
 	}
 
-	private boolean updateInheritant(Container container) {
+	private boolean updateInheritant(Container current, Container container) {
 		if (!this.inheritant) {
 			return false;
 		}
@@ -222,16 +228,16 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 			return this.inheritant = false;
 		}
 
-		final Obj oldObject = this.current.toObject();
+		final Obj oldObject = current.toObject();
 
 		return this.inheritant =
 				oldObject.type().derivedFrom(newObject.type());
 	}
 
-	private boolean updateContainer(Container container) {
-		updateDeclaration(container);
-		updateEnclosed(container);
-		updateInheritant(container);
+	private boolean updateContainer(Container current, Container container) {
+		updateDeclaration(current, container);
+		updateEnclosed(current, container);
+		updateInheritant(current, container);
 		return true;
 	}
 

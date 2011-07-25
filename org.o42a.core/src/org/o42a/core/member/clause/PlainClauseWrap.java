@@ -182,8 +182,9 @@ final class PlainClauseWrap extends PlainClause {
 		@Override
 		public Resolution resolve(Resolver resolver) {
 			assertScopeIs(resolver.getScope());
-			return resolver.objectPart(
+			return resolver.artifactPart(
 					this,
+					this.wrap,
 					field().getInterface().getObject());
 		}
 

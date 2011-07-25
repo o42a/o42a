@@ -99,8 +99,9 @@ final class ObjectFieldWrap extends FieldWrap<Obj> {
 		@Override
 		public Resolution resolve(Resolver resolver) {
 			assertScopeIs(resolver.getScope());
-			return resolver.objectPart(
+			return resolver.artifactPart(
 					this,
+					this.wrap,
 					field().getInterface().getArtifact());
 		}
 

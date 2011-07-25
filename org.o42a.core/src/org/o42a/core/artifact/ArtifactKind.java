@@ -179,9 +179,12 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 				return resolution;
 			}
 
-			return resolver.objectPart(
+			final Artifact<?> artifact = resolution.toArtifact();
+
+			return resolver.artifactPart(
 					this,
-					resolution.toArtifact().getTypeRef().typeObject(resolver));
+					artifact,
+					artifact.getTypeRef().typeObject(resolver));
 		}
 
 		@Override

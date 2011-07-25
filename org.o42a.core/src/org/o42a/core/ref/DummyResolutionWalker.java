@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref;
 
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -34,12 +35,12 @@ public class DummyResolutionWalker implements ResolutionWalker {
 	}
 
 	@Override
-	public boolean newObject(LocationInfo location, Obj object) {
+	public boolean newObject(ScopeInfo location, Obj object) {
 		return true;
 	}
 
 	@Override
-	public boolean objectPart(LocationInfo location, Artifact<?> part) {
+	public boolean artifactPart(LocationInfo location, Artifact<?> artifact, Artifact<?> part) {
 		return true;
 	}
 

@@ -21,9 +21,7 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.ref.ResolutionWalker.DUMMY_RESOLUTION_WALKER;
 
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
-import org.o42a.core.Scoped;
+import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.Clause;
@@ -128,7 +126,7 @@ public class Resolver implements UserInfo, LocationInfo {
 		return containerResolution(location, result);
 	}
 
-	public final Resolution newObject(LocationInfo location, Obj object) {
+	public final Resolution newObject(ScopeInfo location, Obj object) {
 		if (object == null) {
 			return noResolution(location);
 		}
@@ -138,13 +136,14 @@ public class Resolver implements UserInfo, LocationInfo {
 		return objectResolution(location, object);
 	}
 
-	public final Resolution objectPart(
+	public final Resolution artifactPart(
 			LocationInfo location,
+			Artifact<?> artifact,
 			Artifact<?> part) {
 		if (part == null) {
 			return noResolution(location);
 		}
-		if (!this.walker.objectPart(location, part)) {
+		if (!this.walker.artifactPart(location, artifact, part)) {
 			return null;
 		}
 		return artifactResolution(location, part);
