@@ -24,6 +24,7 @@ import static java.util.Collections.emptyList;
 import java.util.Collection;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
@@ -94,15 +95,15 @@ final class FieldContainer
 	}
 
 	@Override
-	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	public Path member(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 
 	@Override
 	public Path findMember(
 			ScopeInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
+			Accessor accessor,
+			MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 

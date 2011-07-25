@@ -25,6 +25,7 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 import java.util.Collection;
 
 import org.o42a.core.*;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
@@ -161,7 +162,7 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	public Path member(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		if (getLocalScope() != null) {
 			return null;
 		}
@@ -169,18 +170,18 @@ public abstract class GroupClause extends Clause implements Container {
 		if (memberId.getEnclosingId() == null) {
 			return this.enclosingContainer.member(
 					user,
-					getDeclaration().getMemberId().append(memberId),
-					declaredIn);
+					accessor,
+					getDeclaration().getMemberId().append(memberId), declaredIn);
 		}
 
 		return this.enclosingContainer.member(
 				user,
-				memberId,
-				declaredIn);
+				accessor,
+				memberId, declaredIn);
 	}
 
 	@Override
-	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	public Path findMember(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		if (getLocalScope() != null) {
 			return null;
 		}
@@ -189,8 +190,8 @@ public abstract class GroupClause extends Clause implements Container {
 
 			final Path foundInGroup = this.enclosingContainer.findMember(
 					user,
-					getDeclaration().getMemberId().append(memberId),
-					declaredIn);
+					accessor,
+					getDeclaration().getMemberId().append(memberId), declaredIn);
 
 			if (foundInGroup != null) {
 				return foundInGroup;
@@ -199,8 +200,8 @@ public abstract class GroupClause extends Clause implements Container {
 
 		return this.enclosingContainer.findMember(
 				user,
-				memberId,
-				declaredIn);
+				accessor,
+				memberId, declaredIn);
 	}
 
 	@Override

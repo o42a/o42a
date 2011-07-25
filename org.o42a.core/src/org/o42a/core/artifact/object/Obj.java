@@ -36,7 +36,9 @@ import java.util.*;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.artifact.*;
+import org.o42a.core.artifact.Accessor;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.def.Definitions;
@@ -291,40 +293,26 @@ public abstract class Obj extends Artifact<Obj>
 		return members().get(memberKey);
 	}
 
-	public final Member objectMember(
-			ScopeInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
-
-		final Access access = accessBy(user);
-
-		if (!access.isAccessible()) {
-			return null;
-		}
-
-		return member(memberId, declaredIn, access.getAccessor());
-	}
-
 	public final Member field(String name) {
-		return member(fieldName(name), null, Accessor.PUBLIC);
+		return objectMember(Accessor.PUBLIC, fieldName(name), null);
 	}
 
 	public final Member field(String name, Accessor accessor) {
-		return member(fieldName(name), null, accessor);
+		return objectMember(accessor, fieldName(name), null);
 	}
 
 	public final Member member(MemberId memberId) {
-		return member(memberId, null, Accessor.PUBLIC);
+		return objectMember(Accessor.PUBLIC, memberId, null);
 	}
 
 	public final Member member(MemberId memberId, Accessor accessor) {
-		return member(memberId, null, accessor);
+		return objectMember(accessor, memberId, null);
 	}
 
-	public final Member member(
+	public final Member objectMember(
+			Accessor accessor,
 			MemberId memberId,
-			Obj declaredIn,
-			Accessor accessor) {
+			Obj declaredIn) {
 		resolveMembers(memberId.containsAdapterId());
 
 		final Symbol found = memberById(memberId);
@@ -387,10 +375,10 @@ public abstract class Obj extends Artifact<Obj>
 	@Override
 	public final Path member(
 			ScopeInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
+			Accessor accessor,
+			MemberId memberId, Obj declaredIn) {
 
-		final Member found = objectMember(user, memberId, declaredIn);
+		final Member found = objectMember(accessor, memberId, declaredIn);
 
 		if (found != null) {
 			return found.getKey().toPath();
@@ -414,7 +402,7 @@ public abstract class Obj extends Artifact<Obj>
 		if (adapterObject != null) {
 
 			final Member foundInAdapterObject =
-				adapterObject.objectMember(user, memberId, declaredIn);
+					adapterObject.objectMember(accessor, memberId, declaredIn);
 
 			if (foundInAdapterObject == null) {
 				return null;
@@ -433,8 +421,10 @@ public abstract class Obj extends Artifact<Obj>
 				return null;
 			}
 
-			final Member foundInAdapterLink =
-				type.getObject().objectMember(user, memberId, declaredIn);
+			final Member foundInAdapterLink = type.getObject().objectMember(
+					accessor,
+					memberId,
+					declaredIn);
 
 			if (foundInAdapterLink == null) {
 				return null;
@@ -451,7 +441,7 @@ public abstract class Obj extends Artifact<Obj>
 	public Clause clause(MemberId memberId, Obj declaredIn) {
 
 		// Clauses are always accessible to public.
-		final Member found = member(memberId, declaredIn, Accessor.PUBLIC);
+		final Member found = objectMember(Accessor.PUBLIC, memberId, declaredIn);
 
 		if (found == null) {
 			return null;
@@ -463,9 +453,9 @@ public abstract class Obj extends Artifact<Obj>
 	@Override
 	public final Path findMember(
 			ScopeInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
-		return member(user, memberId, declaredIn);
+			Accessor accessor,
+			MemberId memberId, Obj declaredIn) {
+		return member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override

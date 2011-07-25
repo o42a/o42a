@@ -19,6 +19,7 @@
 */
 package org.o42a.core;
 
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -54,30 +55,41 @@ public interface Container extends ScopeInfo {
 	 *
 	 * <p>This includes access to object adapter's field.</p>
 	 *
-	 * @param user user accessing the member.
+	 * @param user user accessing this container.
+	 * @param accessor accessor of this container.
 	 * @param memberId identifier of member to access.
 	 * @param declaredIn the object member declared in or <code>null</code>
 	 * if unknown.
 	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path member(ScopeInfo user, MemberId memberId, Obj declaredIn);
+	Path member(
+			ScopeInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn);
 
 	/**
 	 * Searches for the member in current container.
 	 *
-	 * <p>In contrast to {@link #member(ScopeInfo, MemberId, Obj)} the result
-	 * is not necessarily belongs to this container. For example, it may return
-	 * a path to member from used name space or to clause inside a group.</p>
+	 * <p>In contrast to {@link #member(ScopeInfo, Accessor, MemberId, Obj)}
+	 * the result is not necessarily belongs to this container. For example,
+	 * it may return a path to member from used name space or to clause inside
+	 * a group.</p>
 	 *
-	 * @param user user accessing the member.
+	 * @param user user accessing this container.
+	 * @param accessor accessor of this container.
 	 * @param memberId identifier of member to find.
 	 * @param declaredIn the object member declared in or <code>null</code>
 	 * if unknown.
 	 *
 	 * @return member path or <code>null</code> if member not found.
 	 */
-	Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn);
+	Path findMember(
+			ScopeInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn);
 
 	/**
 	 * Searches for the visible member.
@@ -86,7 +98,7 @@ public interface Container extends ScopeInfo {
 	 * this container or scope - go on in enclosing scope, until the top
 	 * reached.<p>
 	 *
-	 * @param user user accessing the member.
+	 * @param user user accessing this container.
 	 * @param memberId identifier of member to find.
 	 * @param declaredIn the object member declared in or <code>null</code>
 	 * if unknown.

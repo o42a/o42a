@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -88,16 +89,19 @@ public class MemberRef extends Wrap {
 	@Override
 	protected Ref resolveWrapped() {
 
-		final Resolution ownerResolution = this.owner.getResolution();
+		final Scope scope = getScope();
+		final AccessorResolver accessorResolver = new AccessorResolver(scope);
+		final Resolution ownerResolution = this.owner.resolve(
+				scope.walkingResolver(dummyUser(), accessorResolver));
 
-		if (ownerResolution.isError()) {
+		if (ownerResolution == null || ownerResolution.isError()) {
 			return errorRef(ownerResolution);
 		}
 
 		final Path memberPath = ownerResolution.member(
 				this,
-				this.memberId,
-				this.declaredIn != null
+				accessorResolver.getAccessor(),
+				this.memberId, this.declaredIn != null
 				? this.declaredIn.typeObject(dummyUser()) : null);
 
 		if (memberPath == null) {

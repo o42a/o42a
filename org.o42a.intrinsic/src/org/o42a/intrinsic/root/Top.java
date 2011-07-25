@@ -26,6 +26,7 @@ import java.util.Collection;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
@@ -129,12 +130,12 @@ public final class Top extends AbstractScope implements MemberContainer {
 	}
 
 	@Override
-	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	public Path member(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 
 	@Override
-	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	public Path findMember(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 

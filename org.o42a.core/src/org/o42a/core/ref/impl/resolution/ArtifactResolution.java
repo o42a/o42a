@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.Path.materializePath;
 
 import org.o42a.core.Container;
 import org.o42a.core.PlaceInfo;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
@@ -58,10 +59,14 @@ public final class ArtifactResolution extends Resolution {
 	}
 
 	@Override
-	public Path member(PlaceInfo user, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 
 		final Obj owner = materialize();
-		final Path found = owner.member(user, memberId, declaredIn);
+		final Path found = owner.member(user, accessor, memberId, declaredIn);
 
 		if (found == null) {
 			user.getContext().getLogger().unresolved(user, memberId);
@@ -78,10 +83,7 @@ public final class ArtifactResolution extends Resolution {
 
 	@Override
 	public void resolveValues(UserInfo user) {
-
-		final Obj materialized = materialize();
-
-		materialized.value().resolveAll(user);
+		materialize().value().resolveAll(user);
 	}
 
 }

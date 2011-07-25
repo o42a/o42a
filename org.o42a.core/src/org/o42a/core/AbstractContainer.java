@@ -22,6 +22,7 @@ package org.o42a.core;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -41,7 +42,19 @@ public abstract class AbstractContainer extends Location implements Container {
 			MemberId memberId,
 			Obj declaredIn) {
 
-		final Path result = container.findMember(user, memberId, declaredIn);
+		final Accessor accessor;
+
+		if (user.getScope().getContainer() == container) {
+			accessor = Accessor.OWNER;
+		} else if (container.getContext().declarationsVisibleFrom(
+				user.getContext())) {
+			accessor = Accessor.DECLARATION;
+		} else {
+			accessor = Accessor.ENCLOSED;
+		}
+
+		final Path result =
+				container.findMember(user, accessor, memberId, declaredIn);
 
 		if (result != null) {
 			return result;

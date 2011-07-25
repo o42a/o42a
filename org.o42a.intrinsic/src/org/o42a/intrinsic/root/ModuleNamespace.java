@@ -23,7 +23,7 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.Namespace;
-import org.o42a.core.ScopeInfo;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.intrinsic.CompilerIntrinsics;
@@ -37,7 +37,7 @@ public class ModuleNamespace extends Namespace {
 	}
 
 	@Override
-	protected boolean accessibleFrom(ScopeInfo user) {
+	protected boolean accessibleBy(Accessor accessor) {
 		return true;
 	}
 

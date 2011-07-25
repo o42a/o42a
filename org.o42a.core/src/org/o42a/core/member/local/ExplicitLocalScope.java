@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
@@ -122,7 +123,11 @@ final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path member(ScopeInfo user, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			ScopeInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		if (declaredIn != null) {
 			return null;
 		}
@@ -173,8 +178,12 @@ final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path findMember(ScopeInfo user, MemberId memberId, Obj declaredIn) {
-		return member(user, memberId, declaredIn);
+	public Path findMember(
+			ScopeInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
+		return member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
