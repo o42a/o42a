@@ -374,7 +374,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public final Path member(
-			ScopeInfo user,
+			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId, Obj declaredIn) {
 
@@ -452,7 +452,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public final Path findMember(
-			ScopeInfo user,
+			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId, Obj declaredIn) {
 		return member(user, accessor, memberId, declaredIn);
@@ -460,7 +460,7 @@ public abstract class Obj extends Artifact<Obj>
 
 	@Override
 	public final Path findPath(
-			ScopeInfo user,
+			PlaceInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);

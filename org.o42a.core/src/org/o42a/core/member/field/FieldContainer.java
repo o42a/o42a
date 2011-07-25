@@ -95,13 +95,13 @@ final class FieldContainer
 	}
 
 	@Override
-	public Path member(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		return null;
 	}
 
 	@Override
 	public Path findMember(
-			ScopeInfo user,
+			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId, Obj declaredIn) {
 		return null;

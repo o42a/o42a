@@ -162,7 +162,7 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Path member(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		if (getLocalScope() != null) {
 			return null;
 		}
@@ -181,7 +181,7 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Path findMember(ScopeInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path findMember(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
 		if (getLocalScope() != null) {
 			return null;
 		}
@@ -206,7 +206,7 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	public final Path findPath(
-			ScopeInfo user,
+			PlaceInfo user,
 			MemberId memberId,
 			Obj declaredIn) {
 		return findContainerPath(this, user, memberId, declaredIn);

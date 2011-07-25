@@ -178,7 +178,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return localPlace;
 	}
 
-	public final Access accessBy(ScopeInfo user) {
+	public final Access accessBy(PlaceInfo user) {
 		return artifactAccess(user, this);
 	}
 
