@@ -58,13 +58,17 @@ public final class AncestorRef extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 
-		final TypeRef ancestor = resolveAncestor(resolver);
+		final Artifact<?> artifact = resolveArtifact(resolver);
+		final TypeRef ancestor = resolveAncestor(artifact);
 
 		if (ancestor == null) {
 			return resolver.noResolution(this);
 		}
 
-		return resolver.objectPart(this, ancestor.artifact(resolver));
+		return resolver.artifactPart(
+				this,
+				artifact,
+				ancestor.artifact(resolver));
 	}
 
 	@Override
@@ -121,7 +125,11 @@ public final class AncestorRef extends Ref {
 		return new AncestorOp(host, this);
 	}
 
-	private TypeRef resolveAncestor(Resolver resolver) {
+	private final TypeRef resolveAncestor(Resolver resolver) {
+		return resolveAncestor(resolveArtifact(resolver));
+	}
+
+	private Artifact<?> resolveArtifact(Resolver resolver) {
 		if (this.error) {
 			return null;
 		}
@@ -141,6 +149,14 @@ public final class AncestorRef extends Ref {
 		if (artifact == null) {
 			this.error = true;
 			getLogger().notArtifact(resolution);
+			return null;
+		}
+
+		return artifact;
+	}
+
+	private TypeRef resolveAncestor(Artifact<?> artifact) {
+		if (artifact == null) {
 			return null;
 		}
 
@@ -174,7 +190,6 @@ public final class AncestorRef extends Ref {
 
 		return null;
 	}
-
 
 	private static final class AncestorOp extends RefOp {
 

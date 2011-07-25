@@ -90,7 +90,7 @@ public class MemberRef extends Wrap {
 	protected Ref resolveWrapped() {
 
 		final Scope scope = getScope();
-		final AccessorResolver accessorResolver = new AccessorResolver(scope);
+		final AccessorResolver accessorResolver = new AccessorResolver();
 		final Resolution ownerResolution = this.owner.resolve(
 				scope.walkingResolver(dummyUser(), accessorResolver));
 

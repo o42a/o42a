@@ -23,6 +23,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -71,7 +72,7 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean newObject(LocationInfo location, Obj object) {
+	public boolean newObject(ScopeInfo location, Obj object) {
 
 		final Resolver ancestorResolver =
 				this.root.getScope().walkingResolver(dummyUser(), this);
@@ -82,7 +83,10 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean objectPart(LocationInfo location, Artifact<?> part) {
+	public boolean artifactPart(
+			LocationInfo location,
+			Artifact<?> artifact,
+			Artifact<?> part) {
 		return false;
 	}
 
