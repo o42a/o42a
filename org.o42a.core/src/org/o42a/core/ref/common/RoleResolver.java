@@ -184,7 +184,6 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public void abortedAt(Scope last, PathFragment brokenFragment) {
 		this.insidePrototype = false;
-		this.role = NONE;
 	}
 
 	@Override

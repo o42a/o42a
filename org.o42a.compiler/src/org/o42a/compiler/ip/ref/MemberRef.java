@@ -21,10 +21,13 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.common.resolution.CompoundResolutionWalker;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Role;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.common.RoleResolver;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -91,10 +94,19 @@ public class MemberRef extends Wrap {
 
 		final Scope scope = getScope();
 		final AccessorResolver accessorResolver = new AccessorResolver();
+		final RoleResolver roleResolver = new RoleResolver(Role.INSTANCE);
+		final CompoundResolutionWalker walker =
+				new CompoundResolutionWalker(roleResolver, accessorResolver);
 		final Resolution ownerResolution = this.owner.resolve(
-				scope.walkingResolver(dummyUser(), accessorResolver));
+				scope.walkingResolver(dummyUser(), walker));
 
-		if (ownerResolution == null || ownerResolution.isError()) {
+		if (ownerResolution == null) {
+			if (!roleResolver.getRole().atLeast(Role.INSTANCE)) {
+				Role.INSTANCE.reportMisuseBy(this.owner, this.owner);
+			}
+			return errorRef(ownerResolution);
+		}
+		if (ownerResolution.isError()) {
 			return errorRef(ownerResolution);
 		}
 
