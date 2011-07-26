@@ -198,16 +198,21 @@ class PathTarget extends Ref {
 
 	@Override
 	public String toString() {
+		if (this.path == null) {
+			return super.toString();
+		}
 		if (this.fullPath != null) {
-			return this.fullPath.toString();
-		}
-		if (this.path != null) {
-			if (this.start == null) {
-				return this.path.toString();
+
+			final Path fullPath = this.fullPath.get();
+
+			if (fullPath != null) {
+				return fullPath.toString();
 			}
-			return this.start + ":" + this.path;
 		}
-		return super.toString();
+		if (this.start == null) {
+			return this.path.toString();
+		}
+		return this.start + ":" + this.path;
 	}
 
 	protected final Path path() {

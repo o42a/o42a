@@ -19,8 +19,6 @@
 */
 package org.o42a.core.artifact;
 
-import static org.o42a.core.artifact.Access.artifactAccess;
-
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
@@ -176,10 +174,6 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		}
 
 		return localPlace;
-	}
-
-	public final Access accessBy(PlaceInfo user) {
-		return artifactAccess(user, this);
 	}
 
 	public final ArtifactContent content() {
