@@ -19,58 +19,103 @@
 */
 package org.o42a.core.artifact;
 
+import static org.o42a.core.ref.common.RoleResolver.expectedRoleOf;
+
+import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 
 
+/**
+ * The role some artifact can play for another one.
+ *
+ * <p>I.e. Can it be a prototype, accessible as instance or not accessible
+ * at all.</p>
+ *
+ * <p>Enumeration values are ordered from a weakest role ({@link #NONE})
+ * to a strongest one ({@link #INSTANCE}).</p>
+ */
 public enum Role {
 
+	/**
+	 * Artifact is not accessible at all.
+	 *
+	 * <p>This can happen e.g. when accessing a member of prototype.</p>
+	 */
 	NONE() {
+
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
+		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
 		}
-		@Override
-		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
-		}
+
 	},
+
+	/**
+	 * Artifact is accessible.
+	 *
+	 * <p>This is a wildcard and is used only when checking the role.</p>
+	 */
 	ANY() {
+
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
-			artifact.getLogger().invalidArtifact(artifact);
-		}
-		@Override
-		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
+		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
 			target.getContext().getLogger().forbiddenAccess(
 					user,
 					target);
 		}
+
 	},
+
+	/**
+	 * Artifact can be used as a prototype. An instance should be constructed
+	 * prior to it's use.
+	 */
 	PROTOTYPE() {
+
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
-			artifact.getLogger().cantInherit(user, artifact);
-		}
-		@Override
-		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
+		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
 			target.getContext().getLogger().cantInherit(user, target);
 		}
+
 	},
+
+	/**
+	 * Artifact instance is accessible.
+	 */
 	INSTANCE() {
+
 		@Override
-		public void reportMisuse(Artifact<?> artifact, ScopeInfo user) {
-			if (artifact.isAbstract()) {
-				artifact.getLogger().abstractValue(user);
-			} else {
-				artifact.getLogger().indefiniteValue(user);
-			}
-		}
-		@Override
-		public void reportMisuse(ScopeInfo target, ScopeInfo user) {
+		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
 			target.getContext().getLogger().notObject(user, target);
 		}
+
 	};
 
-	public abstract void reportMisuse(Artifact<?> artifact, ScopeInfo user);
+	public final boolean atLeast(Role role) {
+		return ordinal() >= role.ordinal();
+	}
 
-	public abstract void reportMisuse(ScopeInfo target, ScopeInfo user);
+	public abstract void reportMisuseBy(LocationInfo user, ScopeInfo target);
+
+	public final boolean checkUseBy(
+			LocationInfo user,
+			Ref ref,
+			Scope scope) {
+
+		final Role role = expectedRoleOf(ref, scope, this);
+
+		if (role.atLeast(this)) {
+			return true;
+		}
+
+		reportMisuseBy(user, ref);
+
+		return false;
+	}
+
+	public final boolean checkUseBy(ScopeInfo user, Ref ref) {
+		return checkUseBy(user, ref, user.getScope());
+	}
 
 }

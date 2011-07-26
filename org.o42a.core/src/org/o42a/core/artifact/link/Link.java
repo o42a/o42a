@@ -20,12 +20,12 @@
 package org.o42a.core.artifact.link;
 
 import static org.o42a.core.ref.Ref.falseRef;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.MaterializableArtifact;
+import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
@@ -132,13 +132,19 @@ public abstract class Link extends MaterializableArtifact<Link> {
 
 		this.targetRef.assertScopeIs(getScope().getEnclosingScope());
 		if (!isAbstract() && !isPrototype()) {
-			// FIXME Fix link target access check.
-			//this.targetRef.getArtifact().accessBy(this).checkInstanceUse();
+			Role.INSTANCE.checkUseBy(
+					this,
+					this.targetRef.getRef(),
+					this.targetRef.getRescoper().rescope(
+							this.targetRef.getScope()));
 		}
 
 		final TypeRef typeRef = this.targetRef.getTypeRef();
 
-		typeRef.artifact(dummyUser()).accessBy(this).checkPrototypeUse();
+		Role.PROTOTYPE.checkUseBy(
+				this,
+				typeRef.getRef(),
+				typeRef.getRescoper().rescope(typeRef.getScope()));
 
 		final TypeRelation relation =
 			typeRef.relationTo(this.targetRef.toTypeRef());

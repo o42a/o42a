@@ -76,8 +76,14 @@ public final class ResolutionRootFinder
 
 		final Resolver ancestorResolver =
 				this.root.getScope().walkingResolver(dummyUser(), this);
+		final TypeRef ancestor = object.type().getAncestor();
+
+		if (ancestor == null) {
+			return false;
+		}
+
 		final Resolution ancestorResolution =
-				object.type().getAncestor().getRef().resolve(ancestorResolver);
+				ancestor.getRef().resolve(ancestorResolver);
 
 		return ancestorResolution != null;
 	}

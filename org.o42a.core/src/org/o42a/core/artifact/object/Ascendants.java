@@ -24,7 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.Role;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Resolver;
@@ -251,8 +251,7 @@ public class Ascendants
 		if (this.explicitAncestor != null) {
 			if (!this.explicitAncestor.validate()) {
 				this.explicitAncestor = null;
-			} else if (!validateUse(
-					this.explicitAncestor.artifact(dummyUser()))) {
+			} else if (!validateUse(this.explicitAncestor)) {
 				this.explicitAncestor = null;
 			} else if (this.explicitAncestor
 					.getConstructionMode().isProhibited()) {
@@ -349,11 +348,14 @@ public class Ascendants
 		return explicit.get(ascendants);
 	}
 
-	private boolean validateUse(Artifact<?> checkUse) {
+	private boolean validateUse(TypeRef checkUse) {
 		if (checkUse == null) {
 			return true;
 		}
-		return checkUse.accessBy(getScope()).checkPrototypeUse();
+		return Role.PROTOTYPE.checkUseBy(
+				getObject(),
+				checkUse.getRef(),
+				checkUse.getRescoper().rescope(checkUse.getScope()));
 	}
 
 	private TypeRef sampleAncestor() {
@@ -385,7 +387,7 @@ public class Ascendants
 		final StaticTypeRef explicitAscendant = sample.getExplicitAscendant();
 
 		if (explicitAscendant != null) {
-			if (!validateUse(sample.getObject())) {
+			if (!validateUse(sample.getTypeRef())) {
 				return false;
 			}
 

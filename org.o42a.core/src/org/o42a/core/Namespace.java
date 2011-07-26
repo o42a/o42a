@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
@@ -136,7 +137,7 @@ public class Namespace extends AbstractContainer {
 			getContext().getLogger().notObject(ref, resolution);
 			return getContext().getFalse();
 		}
-		if (!container.accessBy(ref).checkInstanceUse()) {
+		if (!Role.INSTANCE.checkUseBy(ref, ref)) {
 			return getContext().getFalse();
 		}
 
