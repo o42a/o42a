@@ -21,7 +21,6 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.st.Reproducer;
 
 
 final class ArrayFieldDefinition extends FieldDefinition {
@@ -57,14 +56,6 @@ final class ArrayFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineArray(ArrayDefiner definer) {
 		definer.define(this.arrayInitializer);
-	}
-
-	@Override
-	public FieldDefinition reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-		// TODO reproduce array initializer
-		getLogger().notReproducible(this);
-		return null;
 	}
 
 	@Override

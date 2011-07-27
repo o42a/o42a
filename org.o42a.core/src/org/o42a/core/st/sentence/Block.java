@@ -212,6 +212,14 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 	@Override
 	public abstract Block<?> reproduce(Reproducer reproducer);
 
+	public void reproduceSentences(
+			Reproducer reproducer,
+			Block<S> reproduction) {
+		for (Sentence<S> sentence : getSentences()) {
+			sentence.reproduce(reproduction, reproducer);
+		}
+	}
+
 	@Override
 	public String toString() {
 
@@ -258,12 +266,6 @@ public abstract class Block<S extends Statements<S>> extends BlockBase {
 			this.sentences.add(sentence);
 		}
 		return sentence;
-	}
-
-	void reproduceSentences(Reproducer reproducer, Block<S> reproduction) {
-		for (Sentence<S> sentence : getSentences()) {
-			sentence.reproduce(reproduction, reproducer);
-		}
 	}
 
 	private final class ExecuteInstructions implements Instruction {

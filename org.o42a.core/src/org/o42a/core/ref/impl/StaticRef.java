@@ -147,19 +147,6 @@ public final class StaticRef extends Ref {
 			this.definition.defineLink(new LinkDefinerWrap(definer));
 		}
 
-		@Override
-		public FieldDefinition reproduce(Reproducer reproducer) {
-
-			final FieldDefinition definition =
-				this.definition.reproduce(reproducer);
-
-			if (definition == null) {
-				return null;
-			}
-
-			return new FixedFieldDefinition(definition);
-		}
-
 	}
 
 	private static final class ObjectDefinerWrap implements ObjectDefiner {

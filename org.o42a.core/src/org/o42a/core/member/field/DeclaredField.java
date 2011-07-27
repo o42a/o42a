@@ -68,9 +68,6 @@ public abstract class DeclaredField<
 			} else {
 				setFieldArtifact(declareArtifact());
 			}
-			for (FieldVariant<A> variant : getVariants()) {
-				variant.init();
-			}
 		}
 
 		return getFieldArtifact();

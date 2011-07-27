@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
-import org.o42a.core.st.Reproducer;
 
 
 final class PhraseFieldDefinition extends FieldDefinition {
@@ -52,11 +51,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineArray(ArrayDefiner definer) {
 		getDefinition().defineArray(definer);
-	}
-
-	@Override
-	public FieldDefinition reproduce(Reproducer reproducer) {
-		return getDefinition().reproduce(reproducer);
 	}
 
 	@Override

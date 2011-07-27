@@ -23,6 +23,7 @@ import static org.o42a.core.artifact.array.ArrayInitializer.invalidArrayInitiali
 
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.Reproducer;
 
 
 final class ArrayFieldVariant
@@ -56,7 +57,9 @@ final class ArrayFieldVariant
 	}
 
 	@Override
-	protected void init() {
+	protected FieldDefinition reproduceDefinition(Reproducer reproducer) {
+		reproducer.getLogger().notReproducible(this);
+		return null;
 	}
 
 	final DeclaredArrayField getArrayField() {

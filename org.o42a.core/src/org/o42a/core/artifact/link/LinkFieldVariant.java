@@ -23,6 +23,7 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.st.Reproducer;
 
 
 final class LinkFieldVariant extends FieldVariant<Link> implements LinkDefiner {
@@ -60,7 +61,9 @@ final class LinkFieldVariant extends FieldVariant<Link> implements LinkDefiner {
 	}
 
 	@Override
-	protected void init() {
+	protected FieldDefinition reproduceDefinition(Reproducer reproducer) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	final TargetRef build(TypeRef typeRef, TargetRef defaultTargetRef) {

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -26,6 +27,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -78,15 +80,15 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	@Override
 	public Action initialValue(LocalResolver resolver) {
 
-		final Field<?> field =
-			resolver.getLocal().member(this.member.getKey()).toField(resolver);
+		final Member member = resolver.getLocal().member(this.member.getKey());
+		final Field<?> field = member.toField(resolver);
 		final LogicalValue logicalValue =
-			field.getArtifact()
-			.materialize()
-			.value()
-			.getDefinitions()
-			.value(resolver)
-			.getLogicalValue();
+				field.getArtifact()
+				.materialize()
+				.value()
+				.getDefinitions()
+				.value(resolver)
+				.getLogicalValue();
 
 		return new ExecuteCommand(this, logicalValue);
 	}
@@ -96,21 +98,20 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final FieldDeclaration declaration =
-			this.builder.getDeclaration().reproduce(reproducer);
+				this.builder.getDeclaration().reproduce(reproducer);
 
 		if (declaration == null) {
 			return null;
 		}
 
-		final FieldDefinition definition =
-			this.builder.getDefinition().reproduce(reproducer);
+		final FieldDefinition definition = reproduceDefinition(reproducer);
 
 		if (definition == null) {
 			return null;
 		}
 
 		final FieldBuilder builder =
-			reproducer.getStatements().field(declaration, definition);
+				reproducer.getStatements().field(declaration, definition);
 
 		if (builder == null) {
 			return null;
@@ -121,8 +122,9 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 	@Override
 	public String toString() {
-		return "FieldVariantSt[" + this.member + "]:"
-		+ this.builder.getDefinition();
+		return ("FieldDeclarationStatement["
+				+ this.member + "]:"
+				+ this.builder.getDefinition());
 	}
 
 	@Override
@@ -131,6 +133,19 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 				builder,
 				this,
 				this.member.toField(dummyUser()));
+	}
+
+	private FieldDefinition reproduceDefinition(Reproducer reproducer) {
+		if (!this.builder.getDefinition().isValid()) {
+			return invalidDefinition(
+					this.builder.getDefinition(),
+					reproducer.distribute());
+		}
+
+		final FieldVariant<?> variant =
+				this.member.toDeclaredField().getVariants().get(0);
+
+		return variant.reproduceDefinition(reproducer);
 	}
 
 }

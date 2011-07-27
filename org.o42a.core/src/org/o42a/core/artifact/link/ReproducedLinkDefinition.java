@@ -17,51 +17,48 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
-
-import static org.o42a.core.artifact.array.ArrayInitializer.valueArrayInitializer;
+package org.o42a.core.artifact.link;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.st.Reproducer;
 
 
-final class PathTargetDefinition extends FieldDefinition {
+final class ReproducedLinkDefinition extends FieldDefinition {
 
-	private final Ref target;
+	private final LinkFieldVariant variant;
+	private final Reproducer reproducer;
 
-	PathTargetDefinition(Ref target) {
-		super(target, target.distribute());
-		this.target = target;
+	ReproducedLinkDefinition(LinkFieldVariant variant, Reproducer reproducer) {
+		super(variant, reproducer.distribute());
+		this.variant = variant;
+		this.reproducer = reproducer;
 	}
 
 	@Override
 	public ArtifactKind<?> determineArtifactKind() {
-		return artifactKind(this.target);
+		return this.variant.getField().getArtifactKind();
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		// TODO Use ancestor of path target as object's ancestor.
-		definer.setAncestor(this.target.toTypeRef());
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(this.target, this.target.toTypeRef());
+
+		final TargetRef targetRef =
+				this.variant.getTargetRef().reproduce(this.reproducer);
+
+		if (targetRef != null) {
+			definer.setTargetRef(targetRef.getRef(), targetRef.getTypeRef());
+		}
 	}
 
 	@Override
 	public void defineArray(ArrayDefiner definer) {
-		definer.define(valueArrayInitializer(this.target));
-	}
-
-	@Override
-	public String toString() {
-		if (this.target == null) {
-			return super.toString();
-		}
-		return "FieldDefinition[" + this.target.toString() + ']';
+		throw new UnsupportedOperationException();
 	}
 
 }

@@ -19,7 +19,9 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
@@ -128,10 +130,7 @@ public abstract class Reproducer {
 
 		@Override
 		public Reproducer reproduceIn(Statements<?> statements) {
-			return new Wrap(
-					this.reproducer,
-					statements,
-					distribute());
+			return new Wrap(this.reproducer, statements, distribute());
 		}
 
 		@Override

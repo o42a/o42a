@@ -30,8 +30,10 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
-import org.o42a.core.st.sentence.*;
+import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 
 
@@ -39,7 +41,7 @@ final class ObjectFieldVariant
 		extends FieldVariant<Obj>
 		implements ObjectDefiner {
 
-	private Block<Declaratives> content;
+	private DeclarativeBlock content;
 	private Ascendants implicitAscendants;
 	private Ascendants ascendants;
 
@@ -50,7 +52,11 @@ final class ObjectFieldVariant
 		super(field, declaration, definition);
 	}
 
-	public Block<Declaratives> getContent() {
+	public final Ascendants getAscendants() {
+		return this.ascendants;
+	}
+
+	public DeclarativeBlock getContent() {
 		if (this.content != null) {
 			return this.content;
 		}
@@ -109,7 +115,8 @@ final class ObjectFieldVariant
 	}
 
 	@Override
-	protected void init() {
+	protected FieldDefinition reproduceDefinition(Reproducer reproducer) {
+		return new ReproducedObjectDefinition(this, reproducer);
 	}
 
 	Ascendants buildAscendants(

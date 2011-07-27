@@ -23,7 +23,6 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
-import org.o42a.core.st.Reproducer;
 
 
 class PhraseEx extends Wrap {
@@ -92,11 +91,6 @@ class PhraseEx extends Wrap {
 		@Override
 		public void defineArray(ArrayDefiner definer) {
 			this.definition.defineArray(definer);
-		}
-
-		@Override
-		public FieldDefinition reproduce(Reproducer reproducer) {
-			return this.definition.reproduce(reproducer);
 		}
 
 		@Override

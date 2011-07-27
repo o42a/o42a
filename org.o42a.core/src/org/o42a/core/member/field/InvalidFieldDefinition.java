@@ -22,7 +22,6 @@ package org.o42a.core.member.field;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 final class InvalidFieldDefinition extends FieldDefinition {
@@ -51,12 +50,6 @@ final class InvalidFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineArray(ArrayDefiner definer) {
-	}
-
-	@Override
-	public FieldDefinition reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-		return null;
 	}
 
 	@Override

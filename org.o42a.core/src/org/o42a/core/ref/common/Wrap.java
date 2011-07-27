@@ -249,11 +249,6 @@ public abstract class Wrap extends Ref {
 		}
 
 		@Override
-		public FieldDefinition reproduce(Reproducer reproducer) {
-			return def().reproduce(reproducer);
-		}
-
-		@Override
 		public String toString() {
 			if (this.def != null) {
 				return this.def.toString();
