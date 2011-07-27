@@ -24,6 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.Reproducer;
 
 
 final class ExplicitSample extends Sample {
@@ -59,6 +60,19 @@ final class ExplicitSample extends Sample {
 	@Override
 	public StaticTypeRef getExplicitAscendant() {
 		return this.explicitAscendant;
+	}
+
+	@Override
+	public void reproduce(
+			Reproducer reproducer,
+			AscendantsBuilder<?> ascendants) {
+
+		final StaticTypeRef explicitAscendant =
+				this.explicitAscendant.reproduce(reproducer);
+
+		if (explicitAscendant != null) {
+			ascendants.addExplicitSample(explicitAscendant);
+		}
 	}
 
 	@Override

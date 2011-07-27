@@ -94,7 +94,7 @@ public final class FieldBuilder implements PlaceInfo {
 
 		final DeclaredMemberField member = new DeclaredMemberField(this);
 		final FieldDeclarationStatement statement =
-			new FieldDeclarationStatement(this, member);
+				new FieldDeclarationStatement(this, member);
 
 		member.setStatement(statement);
 		this.memberRegistry.declareMember(member);

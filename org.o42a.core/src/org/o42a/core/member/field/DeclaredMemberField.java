@@ -31,7 +31,7 @@ final class DeclaredMemberField extends MemberField {
 	private ArtifactKind<?> artifactKind;
 	private FieldDeclarationStatement statement;
 
-	public DeclaredMemberField(FieldBuilder builder) {
+	DeclaredMemberField(FieldBuilder builder) {
 		super(builder.getMemberOwner(), builder.getDeclaration());
 		this.builder = builder;
 	}
@@ -85,8 +85,8 @@ final class DeclaredMemberField extends MemberField {
 	@Override
 	protected Field<?> createField() {
 
-		DeclaredField<?, ?> field = getArtifactKind().declareField(this);
-
+		final DeclaredField<?, ?> field =
+				getArtifactKind().declareField(this);
 		final FieldVariant<?> variant = field.variant(
 				this.builder.getDeclaration(),
 				this.builder.getDefinition());
@@ -94,6 +94,10 @@ final class DeclaredMemberField extends MemberField {
 		variant.setStatement(this.statement);
 
 		return field;
+	}
+
+	final DeclaredField<?, ?> toDeclaredField() {
+		return (DeclaredField<?, ?>) toField(dummyUser());
 	}
 
 	final void setStatement(FieldDeclarationStatement statement) {

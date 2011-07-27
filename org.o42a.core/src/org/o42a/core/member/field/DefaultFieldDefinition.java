@@ -25,7 +25,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
@@ -74,24 +73,6 @@ final class DefaultFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineArray(ArrayDefiner definer) {
 		getLogger().error("not_array", this, "Not array");
-	}
-
-	@Override
-	public FieldDefinition reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final AscendantsDefinition ascendants =
-			this.ascendants.reproduce(reproducer);
-
-		if (ascendants == null) {
-			return null;
-		}
-
-		return new DefaultFieldDefinition(
-				this,
-				reproducer.distribute(),
-				ascendants,
-				this.definitions);
 	}
 
 	@Override

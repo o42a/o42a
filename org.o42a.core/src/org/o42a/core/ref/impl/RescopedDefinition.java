@@ -30,7 +30,6 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
@@ -64,12 +63,6 @@ final class RescopedDefinition extends FieldDefinition {
 	public void defineArray(ArrayDefiner definer) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public FieldDefinition reproduce(Reproducer reproducer) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
