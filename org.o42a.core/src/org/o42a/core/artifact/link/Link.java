@@ -21,34 +21,19 @@ package org.o42a.core.artifact.link;
 
 import static org.o42a.core.ref.Ref.falseRef;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.MaterializableArtifact;
 import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.array.Array;
+import org.o42a.core.artifact.link.impl.LinkTarget;
+import org.o42a.core.artifact.link.impl.RuntimeLinkTarget;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.member.field.DeclaredField;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
 
 public abstract class Link extends MaterializableArtifact<Link> {
-
-	public static DeclaredField<Link, ?> declareField(
-			MemberField member,
-			ArtifactKind<Link> artifactKind) {
-		return new DeclaredLinkField(member, artifactKind);
-	}
-
-	public static FieldIR<Link> fieldIR(
-			Generator generator,
-			Field<Link> field) {
-		return new LinkFieldIR(generator, field);
-	}
 
 	private final ArtifactKind<Link> kind;
 	private TargetRef targetRef;

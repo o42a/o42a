@@ -20,8 +20,8 @@
 package org.o42a.lib.console;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.DefinedObject;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;

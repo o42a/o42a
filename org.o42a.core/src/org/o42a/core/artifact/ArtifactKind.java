@@ -21,11 +21,17 @@ package org.o42a.core.artifact;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.array.Array;
+import org.o42a.core.artifact.array.impl.decl.DeclaredArrayField;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.artifact.link.impl.decl.DeclaredLinkField;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.impl.decl.DeclaredObjectField;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
+import org.o42a.core.ir.field.array.ArrayFieldIR;
+import org.o42a.core.ir.field.link.LinkFieldIR;
+import org.o42a.core.ir.field.object.ObjectFieldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
@@ -85,7 +91,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		@Override
 		public DeclaredField<Obj, ?> declareField(MemberField member) {
-			return Obj.declareField(member);
+			return new DeclaredObjectField(member);
 		}
 
 		@Override
@@ -95,7 +101,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		@Override
 		public FieldIR<Obj> fieldIR(Generator generator, Field<Obj> field) {
-			return Obj.fieldIR(generator, field);
+			return new ObjectFieldIR(generator, field);
 		}
 
 		@Override
@@ -115,7 +121,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		@Override
 		public DeclaredField<Link, ?> declareField(MemberField member) {
-			return Link.declareField(member, this);
+			return new DeclaredLinkField(member, this);
 		}
 
 		@Override
@@ -125,7 +131,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		@Override
 		public FieldIR<Link> fieldIR(Generator generator, Field<Link> field) {
-			return Link.fieldIR(generator, field);
+			return new LinkFieldIR(generator, field);
 		}
 
 		@Override
@@ -139,7 +145,7 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		@Override
 		public DeclaredField<Array, ?> declareField(MemberField member) {
-			return Array.declareField(member);
+			return new DeclaredArrayField(member);
 		}
 
 		@Override
@@ -148,10 +154,8 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
-		public FieldIR<Array> fieldIR(
-				Generator generator,
-				Field<Array> field) {
-			return Array.fieldIR(generator, field);
+		public FieldIR<Array> fieldIR(Generator generator, Field<Array> field) {
+			return new ArrayFieldIR(generator, field);
 		}
 
 		@Override

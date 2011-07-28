@@ -35,7 +35,7 @@ public abstract class Sample extends Scoped {
 
 	private final Ascendants ascendants;
 
-	Sample(LocationInfo location, Ascendants ascendants) {
+	public Sample(LocationInfo location, Ascendants ascendants) {
 		super(location, ascendants.getScope().getEnclosingScope());
 		this.ascendants = ascendants;
 	}

@@ -33,7 +33,7 @@ public abstract class FldOp extends IROp implements HostOp {
 	private final Fld fld;
 	private final ObjOp host;
 
-	FldOp(Fld fld, ObjOp host, Fld.Op<?> ptr) {
+	public FldOp(Fld fld, ObjOp host, Fld.Op<?> ptr) {
 		super(host.getBuilder(), ptr);
 		this.fld = fld;
 		this.host = host;

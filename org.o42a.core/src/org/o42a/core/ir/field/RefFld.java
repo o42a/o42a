@@ -54,7 +54,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	private Function<C> constructor;
 	private boolean constructorReused;
 
-	RefFld(ObjectBodyIR bodyIR, Field<?> field) {
+	public RefFld(ObjectBodyIR bodyIR, Field<?> field) {
 		super(bodyIR, field);
 		this.targetIR = field.getArtifact().materialize().ir(getGenerator());
 	}
@@ -263,7 +263,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	public static abstract class Op<S extends Op<S, C>, C extends ObjectFunc<C>>
 			extends Fld.Op<S> {
 
-		Op(StructWriter<S> writer) {
+		public Op(StructWriter<S> writer) {
 			super(writer);
 		}
 
@@ -326,7 +326,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		private DataRec object;
 		private FuncRec<C> constructor;
 
-		Type() {
+		public Type() {
 		}
 
 		public final DataRec object() {

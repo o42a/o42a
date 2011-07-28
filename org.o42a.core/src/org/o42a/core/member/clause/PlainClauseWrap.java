@@ -22,7 +22,7 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.def.Rescoper.wrapper;
 
-import org.o42a.core.artifact.link.ObjectWrap;
+import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;

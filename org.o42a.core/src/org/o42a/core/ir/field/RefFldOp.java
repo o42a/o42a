@@ -36,7 +36,7 @@ public abstract class RefFldOp<
 		C extends ObjectFunc<C>>
 				extends FldOp {
 
-	RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<S, C> ptr) {
+	public RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<S, C> ptr) {
 		super(fld, host, ptr);
 	}
 

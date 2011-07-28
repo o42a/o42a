@@ -21,9 +21,9 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
+import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.artifact.object.PlainObject;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 
