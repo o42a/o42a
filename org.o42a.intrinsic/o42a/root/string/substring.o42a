@@ -24,10 +24,10 @@ From := 0
 To := (`integer) string:: length
 
 <*Range> (
-  <From | range> $Object$ from = integer(
+  <From | range> from = integer(
     <*[] | range>
   )
-  <To | range> $Object$ to = integer(
+  <To | range> to = integer(
     <*[] | range>
   )
 )

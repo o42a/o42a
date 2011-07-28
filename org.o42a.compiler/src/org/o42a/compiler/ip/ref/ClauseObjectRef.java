@@ -31,8 +31,14 @@ import org.o42a.core.source.LocationInfo;
 
 public class ClauseObjectRef extends Wrap {
 
-	public ClauseObjectRef(LocationInfo location, Distributor distributor) {
+	private final boolean clauseDefinition;
+
+	public ClauseObjectRef(
+			LocationInfo location,
+			Distributor distributor,
+			boolean clauseDefinition) {
 		super(location, distributor);
+		this.clauseDefinition = clauseDefinition;
 	}
 
 	@Override
@@ -42,6 +48,17 @@ public class ClauseObjectRef extends Wrap {
 
 	@Override
 	protected Ref resolveWrapped() {
+
+		final Path path = path();
+
+		if (path == null) {
+			return errorRef(this);
+		}
+
+		return path.target(this, distribute());
+	}
+
+	private Path path() {
 
 		Scope scope = getScope();
 		Path path = Path.SELF_PATH;
@@ -55,31 +72,32 @@ public class ClauseObjectRef extends Wrap {
 				final Obj object = scope.toObject();
 
 				if (object == null) {
-					return unresolved();
+					getLogger().error(
+							"unresolved_object_intrinsic",
+							this,
+							"Enclosing object not found");
+					return null;
+				}
+				if (this.clauseDefinition && object.isPrototype()) {
+					getLogger().error(
+							"prohibited_prototype_object_instrinsic",
+							this,
+							"$object$ intrinsic can not refer the prototype");
+					return null;
 				}
 
-				break;
+				return path;
 			}
 
 			final Scope enclosingScope = scope.getEnclosingScope();
 
 			if (enclosingScope == null) {
-				return unresolved();
+				return null;
 			}
 
 			path = path.append(scope.getEnclosingScopePath());
 			scope = enclosingScope;
 		}
-
-		return path.target(this, distribute());
-	}
-
-	private Ref unresolved() {
-		getLogger().error(
-				"unresolved_object_intrinsic",
-				this,
-				"Enclosing object not found");
-		return errorRef(this);
 	}
 
 }

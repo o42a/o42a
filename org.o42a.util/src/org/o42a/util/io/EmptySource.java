@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Utilities
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,27 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip;
+package org.o42a.util.io;
 
-import static org.o42a.compiler.ip.Interpreter.location;
-
-import org.o42a.ast.ref.IntrinsicRefNode;
-import org.o42a.compiler.ip.ref.ClauseObjectRef;
-import org.o42a.core.Distributor;
-import org.o42a.core.ref.Ref;
+import java.io.IOException;
+import java.io.Reader;
 
 
-final class ClauseRefVisitor extends RefVisitor {
+public class EmptySource extends Source {
 
-	private final boolean clauseDefinition;
+	private final String name;
 
-	ClauseRefVisitor(boolean clauseDefinition) {
-		this.clauseDefinition = clauseDefinition;
+	public EmptySource(String name) {
+		this.name = name;
 	}
 
 	@Override
-	protected Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
-		return new ClauseObjectRef(location(p, ref), p, this.clauseDefinition);
+	public boolean isEmpty() {
+		return true;
+	}
+
+	@Override
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public Reader open() throws IOException {
+		throw new IOException(this.name + " is empty source");
 	}
 
 }

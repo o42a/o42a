@@ -104,7 +104,14 @@ public abstract class CompilerContext {
 
 	@Override
 	public String toString() {
-		return getSource().toString();
+
+		final Source source = getSource();
+
+		if (source == null) {
+			return super.toString();
+		}
+
+		return source.toString();
 	}
 
 }

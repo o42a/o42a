@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
@@ -445,14 +444,6 @@ public abstract class Obj
 			Accessor accessor,
 			MemberId memberId, Obj declaredIn) {
 		return member(user, accessor, memberId, declaredIn);
-	}
-
-	@Override
-	public final Path findPath(
-			PlaceInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
-		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
 	public Path scopePath() {

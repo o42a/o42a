@@ -46,6 +46,7 @@ import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.LoggableData;
 
@@ -101,13 +102,15 @@ public final class VoidObject extends BuiltinObject {
 
 	private static final class VoidContext extends CompilerContext {
 
+		private final EmptySource source = new EmptySource("void");
+
 		VoidContext(CompilerContext topContext) {
 			super(topContext, DECLARATION_LOGGER);
 		}
 
 		@Override
 		public Source getSource() {
-			return null;
+			return this.source;
 		}
 
 		@Override

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -38,7 +37,6 @@ import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.ResolutionWalker;
@@ -262,14 +260,6 @@ public abstract class LocalScope
 
 			scope = enclosingScope;
 		}
-	}
-
-	@Override
-	public final Path findPath(
-			PlaceInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
-		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
 	@Override

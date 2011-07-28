@@ -19,10 +19,15 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.ast.Node;
-import org.o42a.core.*;
+import org.o42a.compiler.ip.Interpreter;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
@@ -33,14 +38,17 @@ import org.o42a.core.source.Location;
 
 public class ParentRef extends Wrap {
 
+	private final Interpreter ip;
 	private final String name;
 
 	public ParentRef(
+			Interpreter ip,
 			CompilerContext context,
 			Node node,
 			String name,
 			Distributor distributor) {
 		super(new Location(context, node), distributor);
+		this.ip = ip;
 		this.name = name;
 	}
 
@@ -57,51 +65,47 @@ public class ParentRef extends Wrap {
 
 		Path path = SELF_PATH;
 		Path parentPath = SELF_PATH;
-		Container enclosing = getContainer();
+		Container nested = null;
+		Container container = getContainer();
 
 		for (;;) {
-
-			final Member member = enclosing.toMember();
-
-			if (member != null) {
-				if (this.name == null
-						|| this.name.equals(member.getKey().getName())) {
-					return path.append(parentPath).target(this, distribute());
-				}
+			if (match(container) && !skip(nested)) {
+				return path.append(parentPath).target(this, distribute());
 			}
 
-			final Container parent = enclosing.getParentContainer();
+			nested = container;
+
+			final Container parent = container.getParentContainer();
 
 			if (parent == null) {
-				getLogger().unresolvedParent(this, this.name);
+				unresolved();
 				return errorRef(this);
 			}
 
-			final Scope enclosingScope = enclosing.getScope();
-			final Path enclosingScopePath =
-				enclosingScope.getEnclosingScopePath();
+			final Scope scope = container.getScope();
+			final Path enclosingScopePath = scope.getEnclosingScopePath();
 
 			if (enclosingScopePath == null) {
-				getLogger().unresolvedParent(this, this.name);
+				unresolved();
 				return errorRef(this);
 			}
 
-			if (enclosingScope == parent.getScope()) {
+			if (scope == parent.getScope()) {
 
 				final Member parentMember = parent.toMember();
 
 				if (parentMember == null
-						|| enclosingScope.getContainer().toMember()
+						|| scope.getContainer().toMember()
 						== parentMember) {
 					parentPath = SELF_PATH;
 				} else {
 					parentPath = parentMember.getKey().toPath();
 				}
-				enclosing = parent;
+				container = parent;
 				continue;
 			}
 
-			enclosing = parent;
+			container = parent;
 			parentPath = SELF_PATH;
 			if (path != null) {
 				path = path.append(enclosingScopePath);
@@ -109,6 +113,40 @@ public class ParentRef extends Wrap {
 				path = enclosingScopePath;
 			}
 		}
+	}
+
+	private boolean match(Container container) {
+
+		final Member member = container.toMember();
+
+		if (member == null) {
+			return false;
+		}
+		if (this.name == null) {
+			return true;
+		}
+
+		return this.name.equals(member.getKey().getName());
+	}
+
+	private boolean skip(Container nested) {
+		if (nested == null) {
+			return false;
+		}
+		if (this.ip == CLAUSE_DECL_IP) {
+			return false;
+		}
+		// Top-level expression clause
+		// shouldn't have access to enclosing prototype.
+		return prototypeExpressionClause(nested);
+	}
+
+	public void unresolved() {
+		getLogger().error(
+				"unresolved_parent",
+				this,
+				"Enclosing member '%s' can not be found",
+				this.name);
 	}
 
 }

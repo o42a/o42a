@@ -19,12 +19,18 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
@@ -34,15 +40,41 @@ import org.o42a.core.source.LocationInfo;
 
 public class MemberById extends Wrap {
 
+	public static boolean prototypeExpressionClause(Container container) {
+
+		final Clause clause = container.toClause();
+
+		if (clause == null) {
+			return false;
+		}
+
+		final PlainClause plainClause = clause.toPlainClause();
+
+		if (plainClause == null || plainClause.isAssignment()) {
+			return false;
+		}
+
+		final Container parentContainer = container.getParentContainer();
+
+		if (parentContainer.toClause() != null) {
+			return false;
+		}
+
+		return parentContainer.toObject().isPrototype();
+	}
+
+	private final Interpreter ip;
 	private final StaticTypeRef declaredIn;
 	private final MemberId memberId;
 
 	public MemberById(
+			Interpreter ip,
 			LocationInfo location,
 			Distributor distributor,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
 		super(location, distributor);
+		this.ip = ip;
 		this.memberId = memberId;
 		this.declaredIn = declaredIn;
 	}
@@ -65,19 +97,92 @@ public class MemberById extends Wrap {
 	@Override
 	protected Ref resolveWrapped() {
 
-		final Distributor distributor = distribute();
-		final Container enclosing = getContainer();
-		final Obj declaredIn =
-			this.declaredIn != null
-			? this.declaredIn.typeObject(dummyUser()) : null;
-		final Path result = enclosing.findPath(this, this.memberId, declaredIn);
+		final Obj declaredIn;
 
-		if (result == null) {
+		if (this.declaredIn != null) {
+			declaredIn = this.declaredIn.typeObject(dummyUser());
+		} else {
+			declaredIn = null;
+		}
+
+		final Path path = path(getContainer(), declaredIn, false);
+
+		if (path == null) {
 			getLogger().unresolved(this, this.memberId);
 			return errorRef(this);
 		}
 
-		return result.target(this, distributor);
+		return path.target(this, distribute());
 	}
+
+	private Path path(
+			Container container,
+			Obj declaredIn,
+			boolean excludeContainer) {
+
+		final Path memberOfContainer =
+				memberOfContainer(container, declaredIn);
+
+		if (memberOfContainer != null) {
+			return memberOfContainer;
+		}
+
+		final Container enclosing = container.getEnclosingContainer();
+
+		if (enclosing == null) {
+			return null;
+		}
+
+		// Top-level expression clause
+		// shouldn't have access to enclosing prototype.
+		final boolean excludeEnclosingContainer =
+				this.ip != CLAUSE_DECL_IP
+				&& prototypeExpressionClause(container);
+
+		final Path found =
+				path(enclosing, declaredIn, excludeEnclosingContainer);
+
+		if (found == null) {
+			return null;
+		}
+		if (found.isAbsolute()) {
+			return found;
+		}
+		if (enclosing.getScope() == container.getScope()) {
+			return found;
+		}
+
+		final Container resolved =
+				found.resolve(enclosing, dummyUser(), enclosing.getScope());
+
+		if (resolved.getScope() == container.getScope()) {
+			return SELF_PATH;
+		}
+
+		final Path enclosingScopePath =
+			container.getScope().getEnclosingScopePath();
+
+		assert enclosingScopePath != null :
+			found + " should be an absolute path";
+
+		return enclosingScopePath.append(found);
+	}
+
+	private Path memberOfContainer(Container container, Obj declaredIn) {
+
+		final Accessor accessor;
+
+		if (getScope() == container.getScope()) {
+			accessor = Accessor.OWNER;
+		} else if (container.getContext().declarationsVisibleFrom(
+				getContext())) {
+			accessor = Accessor.DECLARATION;
+		} else {
+			accessor = Accessor.ENCLOSED;
+		}
+
+		return container.findMember(this, accessor, this.memberId, declaredIn);
+	}
+
 
 }
