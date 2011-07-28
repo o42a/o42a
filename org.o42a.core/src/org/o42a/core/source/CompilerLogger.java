@@ -499,14 +499,6 @@ public class CompilerLogger implements Logger {
 				moduleId);
 	}
 
-	public void unresolvedParent(LogInfo location, String fieldName) {
-		error(
-				"unresolved_parent",
-				location,
-				"Enclosing field '%s' can not be found",
-				fieldName);
-	}
-
 	public void unresolvedScope(LogInfo location, String scope) {
 		error("unresolved_scope", location, "Unresolved scope: %s", scope);
 	}

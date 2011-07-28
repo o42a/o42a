@@ -65,7 +65,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		case SELF:
 			return SELF_PATH.target(location, p);
 		case PARENT:
-			return new ParentRef(p.getContext(), ref, null, p);
+			return new ParentRef(ip(), p.getContext(), ref, null, p);
 		case MODULE:
 			return new ModuleRef(location(p, ref), p);
 		case ROOT:
@@ -79,7 +79,12 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	@Override
 	public Ref visitParentRef(ParentRefNode ref, Distributor p) {
-		return new ParentRef(p.getContext(), ref, ref.getName().getName(), p);
+		return new ParentRef(
+				ip(),
+				p.getContext(),
+				ref,
+				ref.getName().getName(),
+				p);
 	}
 
 	@Override
@@ -170,6 +175,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			}
 
 			return new Owner(new MemberById(
+					ip(),
 					location(p, ref.getName()),
 					p,
 					ip().memberName(ref.getName().getName()),
@@ -220,8 +226,12 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		@Override
 		public Owner visitParentRef(ParentRefNode ref, Distributor p) {
 
-			final Ref parentRef =
-				new ParentRef(p.getContext(), ref, ref.getName().getName(), p);
+			final Ref parentRef = new ParentRef(
+					ip(),
+					p.getContext(),
+					ref,
+					ref.getName().getName(),
+					p);
 
 			return new Owner(parentRef, false);
 		}

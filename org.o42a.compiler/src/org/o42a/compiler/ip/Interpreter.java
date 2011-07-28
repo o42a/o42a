@@ -55,7 +55,7 @@ public enum Interpreter {
 
 	},
 
-	CLAUSE_DEF_IP(new ClauseRefVisitor()) {
+	CLAUSE_DEF_IP(new ClauseRefVisitor(true)) {
 
 		@Override
 		public MemberId memberName(String name) {
@@ -64,7 +64,7 @@ public enum Interpreter {
 
 	},
 
-	CLAUSE_DECL_IP(new ClauseRefVisitor()) {
+	CLAUSE_DECL_IP(new ClauseRefVisitor(false)) {
 
 		@Override
 		public MemberId memberName(String name) {

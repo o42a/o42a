@@ -24,10 +24,13 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.intrinsic.CompilerIntrinsics;
+import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
 
 
 public final class TopContext extends CompilerContext {
+
+	private final EmptySource source = new EmptySource("<TOP>");
 
 	public TopContext(CompilerIntrinsics intrinsics) {
 		super(intrinsics.getCompiler(), intrinsics, DECLARATION_LOGGER);
@@ -35,7 +38,7 @@ public final class TopContext extends CompilerContext {
 
 	@Override
 	public Source getSource() {
-		return null;
+		return this.source;
 	}
 
 	@Override

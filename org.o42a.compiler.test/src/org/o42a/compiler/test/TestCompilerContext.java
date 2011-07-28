@@ -21,12 +21,14 @@ package org.o42a.compiler.test;
 
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.Logger;
 
 
 class TestCompilerContext extends CompilerContext {
 
+	private final EmptySource source;
 	private final CompilerTestCase test;
 
 	TestCompilerContext(CompilerTestCase test, Logger logger) {
@@ -35,11 +37,12 @@ class TestCompilerContext extends CompilerContext {
 				CompilerTestCase.INTRINSICS,
 				logger);
 		this.test = test;
+		this.source = new EmptySource(test.getModuleName());
 	}
 
 	@Override
 	public Source getSource() {
-		return null;
+		return this.source;
 	}
 
 	@Override

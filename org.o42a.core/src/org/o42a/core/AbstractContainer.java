@@ -19,15 +19,8 @@
 */
 package org.o42a.core;
 
-import static org.o42a.core.ref.path.Path.SELF_PATH;
-import static org.o42a.util.use.User.dummyUser;
-
-import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -35,64 +28,6 @@ import org.o42a.util.log.LogInfo;
 
 
 public abstract class AbstractContainer extends Location implements Container {
-
-	public static Path findContainerPath(
-			Container container,
-			PlaceInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
-
-		final Accessor accessor;
-
-		if (user.getScope().getContainer() == container) {
-			accessor = Accessor.OWNER;
-		} else if (container.getContext().declarationsVisibleFrom(
-				user.getContext())) {
-			accessor = Accessor.DECLARATION;
-		} else {
-			accessor = Accessor.ENCLOSED;
-		}
-
-		final Path result =
-				container.findMember(user, accessor, memberId, declaredIn);
-
-		if (result != null) {
-			return result;
-		}
-
-		final Container enclosing = container.getEnclosingContainer();
-
-		if (enclosing == null) {
-			return null;
-		}
-
-		final Path found = enclosing.findPath(user, memberId, declaredIn);
-
-		if (found == null) {
-			return null;
-		}
-		if (found.isAbsolute()) {
-			return found;
-		}
-		if (enclosing.getScope() == container.getScope()) {
-			return found;
-		}
-
-		final Container resolved =
-			found.resolve(enclosing, dummyUser(), enclosing.getScope());
-
-		if (resolved.getScope() == container.getScope()) {
-			return SELF_PATH;
-		}
-
-		final Path enclosingScopePath =
-			container.getScope().getEnclosingScopePath();
-
-		assert enclosingScopePath != null :
-			found + " should be an absolute path";
-
-		return enclosingScopePath.append(found);
-	}
 
 	public static Container parentContainer(Container container) {
 
@@ -129,11 +64,6 @@ public abstract class AbstractContainer extends Location implements Container {
 	@Override
 	public Container getParentContainer() {
 		return parentContainer(this);
-	}
-
-	@Override
-	public Path findPath(PlaceInfo user, MemberId memberId, Obj declaredIn) {
-		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
 	@Override

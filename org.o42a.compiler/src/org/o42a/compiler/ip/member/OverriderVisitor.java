@@ -138,6 +138,7 @@ final class OverriderVisitor
 			}
 
 			return new MemberById(
+					CLAUSE_DEF_IP,
 					location(p, adapter),
 					p,
 					adapterId(adapterType.toStaticTypeRef()),

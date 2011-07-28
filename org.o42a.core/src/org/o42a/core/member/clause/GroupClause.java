@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.AbstractContainer.findContainerPath;
 import static org.o42a.core.AbstractContainer.parentContainer;
 
 import java.util.Collection;
@@ -212,14 +211,6 @@ public abstract class GroupClause extends Clause implements Container {
 				user,
 				accessor,
 				memberId, declaredIn);
-	}
-
-	@Override
-	public final Path findPath(
-			PlaceInfo user,
-			MemberId memberId,
-			Obj declaredIn) {
-		return findContainerPath(this, user, memberId, declaredIn);
 	}
 
 	@Override

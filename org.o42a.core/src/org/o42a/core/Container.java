@@ -91,20 +91,4 @@ public interface Container extends ScopeInfo {
 			MemberId memberId,
 			Obj declaredIn);
 
-	/**
-	 * Searches for the visible member.
-	 *
-	 * <p>This searches any member visible to {@code user}. If not found in
-	 * this container or scope - go on in enclosing scope, until the top
-	 * reached.<p>
-	 *
-	 * @param user user accessing this container.
-	 * @param memberId identifier of member to find.
-	 * @param declaredIn the object member declared in or <code>null</code>
-	 * if unknown.
-	 *
-	 * @return member path or <code>null</code> if member not found.
-	 */
-	Path findPath(PlaceInfo user, MemberId memberId, Obj declaredIn);
-
 }

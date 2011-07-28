@@ -140,11 +140,6 @@ public final class Top extends AbstractScope implements MemberContainer {
 	}
 
 	@Override
-	public Path findPath(PlaceInfo user, MemberId memberId, Obj declaredIn) {
-		return null;
-	}
-
-	@Override
 	public boolean derivedFrom(Scope other) {
 		return this == other;
 	}
