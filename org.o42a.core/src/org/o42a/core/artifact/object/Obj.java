@@ -25,7 +25,6 @@ import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
@@ -41,20 +40,18 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
+import org.o42a.core.artifact.object.impl.ObjectArtifact;
+import org.o42a.core.artifact.object.impl.ScopeField;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
-import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;
@@ -62,18 +59,9 @@ import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UseInfo;
 
 
-public abstract class Obj extends Artifact<Obj>
+public abstract class Obj
+		extends ObjectArtifact
 		implements MemberContainer, ClauseContainer {
-
-	public static DeclaredField<Obj, ?> declareField(MemberField member) {
-		return new DeclaredObjectField(member);
-	}
-
-	public static FieldIR<Obj> fieldIR(
-			Generator generator,
-			Field<Obj> field) {
-		return new ObjectFieldIR(generator, field);
-	}
 
 	private final OwningObject owningObject = new OwningObject(this);
 	private ObjectType type;
@@ -376,7 +364,8 @@ public abstract class Obj extends Artifact<Obj>
 	public final Path member(
 			PlaceInfo user,
 			Accessor accessor,
-			MemberId memberId, Obj declaredIn) {
+			MemberId memberId,
+			Obj declaredIn) {
 
 		final Member found = objectMember(accessor, memberId, declaredIn);
 
@@ -467,20 +456,7 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	public Path scopePath() {
-
-		final PathFragment scopePathFragment;
-		final Container enclosing = getScope().getEnclosingContainer();
-
-		if (enclosing.toObject() != null) {
-			scopePathFragment = new ParentObjectFragment(
-					SCOPE_FIELD_ID.key(getScope()));
-		} else {
-			assert enclosing.toLocal() != null :
-				"Unsupported kind of enclosing scope " + enclosing;
-			scopePathFragment = new ParentLocalFragment(this);
-		}
-
-		return scopePathFragment.toPath();
+		return scopePath(this);
 	}
 
 	@Override
@@ -598,6 +574,47 @@ public abstract class Obj extends Artifact<Obj>
 	}
 
 	@Override
+	protected Dep addDep(MemberKey memberKey) {
+		assert getContext().fullResolution().assertIncomplete();
+
+		final Dep found = this.deps.get(memberKey);
+
+		if (found != null) {
+			return found;
+		}
+
+		final Dep dep = fieldDep(this, memberKey);
+
+		this.deps.put(memberKey, dep);
+
+		return dep;
+	}
+
+	@Override
+	protected Dep addEnclosingOwnerDep(Obj owner) {
+		assert getContext().fullResolution().assertIncomplete();
+
+		final Dep found = this.deps.get(null);
+
+		if (found != null) {
+			return found;
+		}
+
+		final LocalScope enclosingLocal =
+			getScope().getEnclosingContainer().toLocal();
+
+		assert enclosingLocal.getOwner() == owner :
+			owner + " is not owner of " + this
+			+ " enclosing local scope " + enclosingLocal;
+
+		final Dep dep = enclosingOwnerDep(this);
+
+		this.deps.put(null, dep);
+
+		return dep;
+	}
+
+	@Override
 	protected void fullyResolve() {
 		type().getAscendants().resolveAll();
 		if (isClone()) {
@@ -672,45 +689,6 @@ public abstract class Obj extends Artifact<Obj>
 		}
 
 		return definitions;
-	}
-
-	Dep addDep(MemberKey memberKey) {
-		assert getContext().fullResolution().assertIncomplete();
-
-		final Dep found = this.deps.get(memberKey);
-
-		if (found != null) {
-			return found;
-		}
-
-		final Dep dep = fieldDep(this, memberKey);
-
-		this.deps.put(memberKey, dep);
-
-		return dep;
-	}
-
-	Dep addEnclosingOwnerDep(Obj owner) {
-		assert getContext().fullResolution().assertIncomplete();
-
-		final Dep found = this.deps.get(null);
-
-		if (found != null) {
-			return found;
-		}
-
-		final LocalScope enclosingLocal =
-			getScope().getEnclosingContainer().toLocal();
-
-		assert enclosingLocal.getOwner() == owner :
-			owner + " is not owner of " + this
-			+ " enclosing local scope " + enclosingLocal;
-
-		final Dep dep = enclosingOwnerDep(this);
-
-		this.deps.put(null, dep);
-
-		return dep;
 	}
 
 	private void declareMembers() {

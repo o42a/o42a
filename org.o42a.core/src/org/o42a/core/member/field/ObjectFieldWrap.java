@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.artifact.link.ObjectWrap;
+import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;

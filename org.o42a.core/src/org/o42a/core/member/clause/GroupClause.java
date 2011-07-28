@@ -162,7 +162,11 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		if (getLocalScope() != null) {
 			return null;
 		}
@@ -171,7 +175,8 @@ public abstract class GroupClause extends Clause implements Container {
 			return this.enclosingContainer.member(
 					user,
 					accessor,
-					getDeclaration().getMemberId().append(memberId), declaredIn);
+					getDeclaration().getMemberId().append(memberId),
+					declaredIn);
 		}
 
 		return this.enclosingContainer.member(
@@ -181,7 +186,11 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Path findMember(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path findMember(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		if (getLocalScope() != null) {
 			return null;
 		}
@@ -191,7 +200,8 @@ public abstract class GroupClause extends Clause implements Container {
 			final Path foundInGroup = this.enclosingContainer.findMember(
 					user,
 					accessor,
-					getDeclaration().getMemberId().append(memberId), declaredIn);
+					getDeclaration().getMemberId().append(memberId),
+					declaredIn);
 
 			if (foundInGroup != null) {
 				return foundInGroup;

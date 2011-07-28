@@ -28,6 +28,8 @@ import org.o42a.common.source.SourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.common.ObjectMemberRegistry;
+import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;

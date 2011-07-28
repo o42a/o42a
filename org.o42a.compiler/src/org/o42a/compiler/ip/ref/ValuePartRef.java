@@ -26,6 +26,7 @@ import java.util.HashMap;
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;

@@ -24,32 +24,18 @@ import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeObject;
 import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeRef;
 import static org.o42a.core.ref.Ref.voidRef;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.MaterializableArtifact;
+import org.o42a.core.artifact.array.impl.MaterializedArray;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.member.field.DeclaredField;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 
 
 public abstract class Array extends MaterializableArtifact<Array> {
-
-	public static DeclaredField<Array, ?> declareField(MemberField member) {
-		return new DeclaredArrayField(member);
-	}
-
-	public static FieldIR<Array> fieldIR(
-			Generator generator,
-			Field<Array> field) {
-		return new ArrayFieldIR(generator, field);
-	}
 
 	private ArrayTypeRef typeRef;
 	private ArrayInitializer initializer;

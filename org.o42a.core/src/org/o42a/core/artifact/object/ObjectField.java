@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.object;
 
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.impl.decl.PropagatedObject;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.field.Field;

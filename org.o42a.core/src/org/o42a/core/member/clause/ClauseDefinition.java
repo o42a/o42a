@@ -23,6 +23,7 @@ import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.common.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;

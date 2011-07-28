@@ -28,7 +28,7 @@ import org.o42a.core.source.LocationInfo;
 
 final class ObjScope extends ObjectScope {
 
-	protected ObjScope(LocationInfo location, Distributor enclosing) {
+	ObjScope(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
 	}
 

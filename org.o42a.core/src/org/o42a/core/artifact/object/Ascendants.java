@@ -25,6 +25,9 @@ import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Role;
+import org.o42a.core.artifact.object.impl.sample.ExplicitSample;
+import org.o42a.core.artifact.object.impl.sample.ImplicitSample;
+import org.o42a.core.artifact.object.impl.sample.MemberOverride;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Resolver;
