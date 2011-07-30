@@ -24,7 +24,9 @@ import static org.o42a.core.def.Rescoper.wrapper;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
@@ -33,7 +35,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UseInfo;
 
 
-public abstract class ObjectWrap extends PlainObject {
+public abstract class ObjectWrap extends Obj {
 
 	private Obj wrapped;
 

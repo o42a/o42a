@@ -25,7 +25,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
@@ -46,7 +45,7 @@ import org.o42a.lib.test.TestModule;
 import org.o42a.util.use.UserInfo;
 
 
-final class TestRunner extends PlainObject {
+final class TestRunner extends Obj {
 
 	public static void runTest(
 			TestModule module,

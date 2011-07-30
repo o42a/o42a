@@ -22,8 +22,9 @@ package org.o42a.compiler.ip.ref;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.PlainObject;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -91,7 +92,7 @@ public class OverriddenEx extends ObjectConstructor {
 		return new Op(host, this);
 	}
 
-	private static final class Overridden extends PlainObject {
+	private static final class Overridden extends Obj {
 
 		Overridden(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);

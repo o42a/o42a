@@ -29,8 +29,9 @@ import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
-import org.o42a.core.artifact.common.PlainObject;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
@@ -42,7 +43,7 @@ import org.o42a.core.source.ObjectCompiler;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public class CompiledObject extends PlainObject {
+public class CompiledObject extends Obj {
 
 	public static CompiledField compileField(
 			Obj owner,

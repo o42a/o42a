@@ -48,7 +48,7 @@ public class DirectiveValueTypeObject
 			Definitions ascendantDefinitions) {
 
 		final Definitions explicitDefinitions =
-			getExplicitDefinitions().upgradeScope(scope);
+				value().getExplicitDefinitions().upgradeScope(scope);
 
 		if (ascendantDefinitions == null) {
 			return explicitDefinitions;

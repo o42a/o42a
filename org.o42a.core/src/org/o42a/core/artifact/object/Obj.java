@@ -500,9 +500,21 @@ public abstract class Obj
 	protected void updateMembers() {
 	}
 
-	protected abstract Definitions overrideDefinitions(
+	protected Definitions overrideDefinitions(
 			Scope scope,
-			Definitions ascendantDefinitions);
+			Definitions ascendantDefinitions) {
+
+		final Definitions explicitDefinitions =
+				value().getExplicitDefinitions().upgradeScope(scope);
+
+		if (ascendantDefinitions == null) {
+			return explicitDefinitions;
+		}
+
+		return ascendantDefinitions.override(explicitDefinitions);
+	}
+
+	protected abstract Definitions explicitDefinitions();
 
 	@Override
 	protected Obj findCloneOf() {

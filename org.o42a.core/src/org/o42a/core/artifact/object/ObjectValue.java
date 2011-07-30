@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.core.def.Definitions;
@@ -37,6 +38,7 @@ public final class ObjectValue implements UserInfo {
 	private ValueType<?> valueType;
 	private Value<?> value;
 	private Definitions definitions;
+	private Definitions explicitDefinitions;
 	private boolean fullyResolved;
 
 	ObjectValue(Obj object) {
@@ -123,6 +125,23 @@ public final class ObjectValue implements UserInfo {
 		}
 
 		return this.definitions = definitions.runtime();
+	}
+
+	public final Definitions getExplicitDefinitions() {
+		if (this.explicitDefinitions != null) {
+			return this.explicitDefinitions;
+		}
+
+		final Obj object = getObject();
+
+		this.explicitDefinitions = object.explicitDefinitions();
+
+		if (this.explicitDefinitions != null) {
+			return this.explicitDefinitions;
+		}
+
+		return this.explicitDefinitions =
+				emptyDefinitions(object, object.getScope());
 	}
 
 	public final Definitions getOverriddenDefinitions() {

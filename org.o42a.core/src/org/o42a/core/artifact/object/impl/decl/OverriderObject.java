@@ -19,13 +19,13 @@
 */
 package org.o42a.core.artifact.object.impl.decl;
 
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 
 
-final class OverriderObject extends PlainObject {
+final class OverriderObject extends Obj {
 
 	private final DeclaredObjectField field;
 

@@ -19,15 +19,14 @@
 */
 package org.o42a.core.artifact.object.impl.decl;
 
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.util.Lambda;
 
 
-class DeclaredObject extends PlainObject
-		implements Lambda<Ascendants, Ascendants> {
+class DeclaredObject extends Obj implements Lambda<Ascendants, Ascendants> {
 
 	private final DeclaredObjectField field;
 

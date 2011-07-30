@@ -26,8 +26,9 @@ import java.util.HashMap;
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.PlainObject;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
@@ -140,7 +141,7 @@ public final class ValuePartRef extends ObjectConstructor {
 		return this.valuePart;
 	}
 
-	private final class ValuePartObj extends PlainObject {
+	private final class ValuePartObj extends Obj {
 
 		ValuePartObj(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);
@@ -170,7 +171,7 @@ public final class ValuePartRef extends ObjectConstructor {
 		@Override
 		protected Ascendants buildAscendants() {
 
-			final Definitions definitions = getExplicitDefinitions();
+			final Definitions definitions = value().getExplicitDefinitions();
 			final ValueType<?> valueType = definitions.getValueType();
 
 			if (valueType == null) {
