@@ -28,6 +28,7 @@ import java.util.Collection;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.LogicalValue;
@@ -570,10 +571,10 @@ public class Definitions extends Scoped {
 	public final void resolveAll() {
 		getContext().fullResolution().start();
 		try {
-			resolveAll(this.requirements);
-			resolveAll(this.conditions);
-			resolveAll(this.claims);
-			resolveAll(this.propositions);
+			resolveAll(ValuePart.REQUIREMENT, this.requirements);
+			resolveAll(ValuePart.CONDITION, this.conditions);
+			resolveAll(ValuePart.CLAIM, this.claims);
+			resolveAll(ValuePart.PROPOSITION, this.propositions);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -1007,9 +1008,10 @@ public class Definitions extends Scoped {
 		return values;
 	}
 
-	private final void resolveAll(Def<?>[] defs) {
+	private final void resolveAll(ValuePart part, Def<?>[] defs) {
 
-		final Resolver resolver = getScope().toObject().value().valueResolver();
+		final Resolver resolver =
+				getScope().toObject().value().partResolver(part);
 
 		for (Def<?> def : defs) {
 			def.resolveAll(resolver);

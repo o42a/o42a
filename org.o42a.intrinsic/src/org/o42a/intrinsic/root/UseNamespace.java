@@ -21,8 +21,8 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
 
-import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
@@ -59,10 +59,10 @@ public class UseNamespace extends DirectiveObject {
 
 		final Obj object = directive.getResolution().materialize();
 		final Field<?> moduleField =
-			object.member(this.moduleKey).toField(context);
+				object.member(this.moduleKey).toField(context);
 		final Value<?> moduleValue =
-			moduleField.getArtifact().materialize()
-			.value().useBy(context).getValue();
+				moduleField.getArtifact().materialize()
+				.value().explicitUseBy(context).getValue();
 
 		if (!moduleValue.isDefinite()) {
 			getLogger().unresolvedValue(
@@ -74,10 +74,10 @@ public class UseNamespace extends DirectiveObject {
 		final String moduleId = stringValue(moduleValue);
 
 		final Field<?> objectField =
-			object.member(this.objectKey).toField(context);
+				object.member(this.objectKey).toField(context);
 		final Value<?> objectValue =
-			objectField.getArtifact().materialize()
-			.value().useBy(context).getValue();
+				objectField.getArtifact().materialize()
+				.value().explicitUseBy(context).getValue();
 
 		if (!objectValue.isDefinite()) {
 			getLogger().unresolvedValue(
@@ -112,7 +112,7 @@ public class UseNamespace extends DirectiveObject {
 		}
 
 		final String string =
-			ValueType.STRING.cast(value).getDefiniteValue().trim();
+				ValueType.STRING.cast(value).getDefiniteValue().trim();
 
 		if (string.isEmpty()) {
 			return null;

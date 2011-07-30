@@ -60,7 +60,7 @@ final class ValuePartOp extends ConstructorOp {
 		return (ValuePartRef) getRef();
 	}
 
-	private final ValuePart part() {
+	private final RefValuePart part() {
 		return getPartRef().getValuePart();
 	}
 

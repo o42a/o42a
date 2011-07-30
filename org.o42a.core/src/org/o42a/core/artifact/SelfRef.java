@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact;
 
+import org.o42a.core.artifact.object.ObjectValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -63,8 +64,12 @@ final class SelfRef extends Ref {
 	@Override
 	public Value<?> value(Resolver resolver) {
 		if (resolver == this.self.getScope()) {
-			return this.self.materialize().value().useBy(resolver).getValue();
+
+			final ObjectValue value = this.self.materialize().value();
+
+			return value.explicitUseBy(resolver).getValue();
 		}
+
 		return this.self.materialize().value().value(resolver);
 	}
 
