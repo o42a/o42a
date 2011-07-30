@@ -35,8 +35,6 @@ import org.o42a.util.use.UseInfo;
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	private ArtifactContent content;
-	private Holder<Obj> enclosingPrototype;
-	private ScopePlace localPlace;
 	private Ref self;
 	private boolean allResolved;
 	private Holder<A> cloneOf;
@@ -116,64 +114,6 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public boolean isValid() {
 		return true;
-	}
-
-	public Obj getEnclosingPrototype() {
-		if (this.enclosingPrototype != null) {
-			return this.enclosingPrototype.get();
-		}
-
-		final Obj enclosingObject =
-			getScope().getEnclosingContainer().toObject();
-
-		if (enclosingObject == null || enclosingObject.isPrototype()) {
-			this.enclosingPrototype = new Holder<Obj>(enclosingObject);
-			return enclosingObject;
-		}
-
-		final Obj enclosingPrototype = enclosingObject.getEnclosingPrototype();
-
-		this.enclosingPrototype = new Holder<Obj>(enclosingPrototype);
-
-		return enclosingPrototype;
-	}
-
-	public LocalPlace getLocalPlace() {
-		if (this.localPlace != null) {
-			if (this.localPlace != ScopePlace.TOP_PLACE) {
-				return (LocalPlace) this.localPlace;
-			}
-			return null;
-		}
-
-		final LocalPlace place = getPlace().toLocal();
-
-		if (place != null) {
-			this.localPlace = place;
-			return place;
-		}
-
-		final Container enclosing = getScope().getEnclosingContainer();
-
-		assert enclosing.toLocal() == null :
-			"Enclosing scope of " + this + " is expected to be local";
-
-		final Artifact<?> enclosingArtifact = enclosing.toArtifact();
-
-		if (enclosingArtifact == null) {
-			this.localPlace = ScopePlace.TOP_PLACE;
-			return null;
-		}
-
-		final LocalPlace localPlace = enclosingArtifact.getLocalPlace();
-
-		if (localPlace != null) {
-			this.localPlace = localPlace;
-		} else {
-			this.localPlace = ScopePlace.TOP_PLACE;
-		}
-
-		return localPlace;
 	}
 
 	public final ArtifactContent content() {
