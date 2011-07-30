@@ -24,13 +24,15 @@ import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
+import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public abstract class DefinedObject extends PlainObject {
+public abstract class DefinedObject extends Obj {
 
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;

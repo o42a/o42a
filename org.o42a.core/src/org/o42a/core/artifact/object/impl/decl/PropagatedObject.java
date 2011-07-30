@@ -22,13 +22,14 @@ package org.o42a.core.artifact.object.impl.decl;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.PlainObject;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.Field;
 
 
-public final class PropagatedObject extends PlainObject {
+public final class PropagatedObject extends Obj {
 
 	public PropagatedObject(Field<Obj> field) {
 		super(field, field.getOverridden()[0].getArtifact());

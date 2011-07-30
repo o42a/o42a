@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.common;
 
+import static org.o42a.core.def.Definitions.emptyDefinitions;
+
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Distributor;
@@ -156,10 +158,8 @@ public abstract class ObjectConstructor extends Ref {
 		}
 
 		@Override
-		protected Definitions overrideDefinitions(
-				Scope scope,
-				Definitions ascendantDefinitions) {
-			return ascendantDefinitions;
+		protected Definitions explicitDefinitions() {
+			return emptyDefinitions(this, getScope());
 		}
 
 	}

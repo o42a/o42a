@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.array.impl;
 
+import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.core.Scope;
@@ -72,6 +73,11 @@ public final class MaterializedArray extends Obj {
 		final Ref error = errorRef(this, scope.distributeIn(this));
 
 		return error.toCondDef().toDefinitions();
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
+		return emptyDefinitions(this, getScope());
 	}
 
 }

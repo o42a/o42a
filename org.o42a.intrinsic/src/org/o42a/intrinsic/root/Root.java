@@ -32,8 +32,9 @@ import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
-import org.o42a.core.artifact.common.PlainObject;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
@@ -45,7 +46,7 @@ import org.o42a.util.io.URLSource;
 
 @SourcePath("root.o42a")
 @RelatedSources({"number.o42a", "operators.o42a"})
-public class Root extends PlainObject {
+public class Root extends Obj {
 
 	public static Root createRoot(Scope topScope) {
 

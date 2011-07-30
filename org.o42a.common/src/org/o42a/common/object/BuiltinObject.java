@@ -24,7 +24,6 @@ import org.o42a.common.def.BuiltinValueDef;
 import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
@@ -32,7 +31,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class BuiltinObject extends PlainObject implements Builtin {
+public abstract class BuiltinObject extends Obj implements Builtin {
 
 	public BuiltinObject(
 			LocationInfo location,

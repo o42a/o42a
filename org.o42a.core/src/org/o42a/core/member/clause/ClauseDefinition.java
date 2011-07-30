@@ -19,12 +19,14 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Ref;
@@ -100,10 +102,8 @@ final class ClauseDefinition extends Obj {
 	}
 
 	@Override
-	protected Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ascendantDefinitions) {
-		return ascendantDefinitions;
+	protected Definitions explicitDefinitions() {
+		return emptyDefinitions(this, getScope());
 	}
 
 	void define(Reproducer reproducer) {

@@ -20,8 +20,8 @@
 package org.o42a.core.artifact.link.impl;
 
 import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
+import static org.o42a.core.def.Definitions.emptyDefinitions;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -61,10 +61,8 @@ public final class RuntimeLinkTarget extends Obj {
 	}
 
 	@Override
-	protected Definitions overrideDefinitions(
-			Scope scope,
-			Definitions ascendantDefinitions) {
-		return ascendantDefinitions;
+	protected Definitions explicitDefinitions() {
+		return emptyDefinitions(this, getScope());
 	}
 
 }

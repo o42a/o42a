@@ -21,8 +21,8 @@ package org.o42a.core.value;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.common.PlainObject;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
@@ -33,7 +33,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
 
 
-final class ConstantObject<T> extends PlainObject {
+final class ConstantObject<T> extends Obj {
 
 	private final Value<T> value;
 
