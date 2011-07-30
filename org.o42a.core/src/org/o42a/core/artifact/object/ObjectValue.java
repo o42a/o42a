@@ -21,6 +21,9 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.Usable.simpleUsable;
+import static org.o42a.util.use.User.dummyUser;
+
+import java.util.EnumMap;
 
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Resolver;
@@ -31,14 +34,17 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements UserInfo {
+public final class ObjectValue implements UseInfo {
 
 	private final Obj object;
-	private Usable usable;
 	private ValueType<?> valueType;
 	private Value<?> value;
 	private Definitions definitions;
 	private Definitions explicitDefinitions;
+
+	private Usable usable;
+	private EnumMap<ValuePart, Usable> usableParts;
+
 	private boolean fullyResolved;
 
 	ObjectValue(Obj object) {
@@ -67,9 +73,8 @@ public final class ObjectValue implements UserInfo {
 		return this.valueType;
 	}
 
-	@Override
-	public final User toUser() {
-		return usable().toUser();
+	public final User partUser(ValuePart part) {
+		return usablePart(part).toUser();
 	}
 
 	@Override
@@ -155,20 +160,24 @@ public final class ObjectValue implements UserInfo {
 				ancestorDefinitions);
 	}
 
-	public final ObjectValue useBy(UserInfo user) {
+	public final ObjectValue explicitUseBy(UserInfo user) {
+		return usePart(ValuePart.ALL, user);
+	}
+
+	public final ObjectValue usePart(ValuePart part, UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			usable().useBy(user);
+			usablePart(part).useBy(user);
 		}
 		return this;
 	}
 
-	public final Resolver valueResolver() {
-		return getObject().getScope().newResolver(usable());
+	public final Resolver partResolver(ValuePart part) {
+		return getObject().getScope().newResolver(usablePart(part));
 	}
 
 	public final void resolveAll(UserInfo user) {
 		if (this.fullyResolved) {
-			useBy(user);
+			explicitUseBy(user);
 			return;
 		}
 
@@ -180,7 +189,7 @@ public final class ObjectValue implements UserInfo {
 		fullResolution.start();
 		try {
 			object.resolveAll();
-			useBy(user);
+			explicitUseBy(user);
 			object.fullyResolveDefinitions();
 		} finally {
 			fullResolution.end();
@@ -201,6 +210,17 @@ public final class ObjectValue implements UserInfo {
 		}
 	}
 
+	final Usable usable() {
+		if (this.usable != null) {
+			return this.usable;
+		}
+
+		this.usable = simpleUsable(this);
+		getObject().content().useBy(this.usable);
+
+		return this.usable;
+	}
+
 	private Definitions getAncestorDefinitions() {
 
 		final Definitions ancestorDefinitions;
@@ -210,22 +230,35 @@ public final class ObjectValue implements UserInfo {
 			ancestorDefinitions = null;
 		} else {
 			ancestorDefinitions =
-				ancestor.typeObject(this).value()
-				.getDefinitions().upgradeScope(getObject().getScope());
+					ancestor.typeObject(dummyUser()).value()
+					.getDefinitions().upgradeScope(getObject().getScope());
 		}
 
 		return ancestorDefinitions;
 	}
 
-	private final Usable usable() {
-		if (this.usable != null) {
-			return this.usable;
+	private final Usable usablePart(ValuePart part) {
+		if (this.usableParts == null) {
+			this.usableParts = new EnumMap<ValuePart, Usable>(ValuePart.class);
+		} else {
+
+			final Usable usable = this.usableParts.get(part);
+
+			if (usable != null) {
+				return usable;
+			}
 		}
 
-		this.usable = simpleUsable(this);
-		getObject().content().useBy(this.usable);
+		final Usable usable = simpleUsable(part.usableName(), this.object);
 
-		return this.usable;
+		this.usableParts.put(part, usable);
+
+		if (part != ValuePart.ALL) {
+			usable().useBy(usable);
+			usable.useBy(usablePart(ValuePart.ALL));
+		}
+
+		return usable;
 	}
 
 }

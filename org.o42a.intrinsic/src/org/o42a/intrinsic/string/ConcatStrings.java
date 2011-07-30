@@ -26,6 +26,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -71,7 +72,8 @@ final class ConcatStrings extends AnnotatedBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver = object.value().valueResolver();
+		final Resolver resolver =
+				object.value().partResolver(ValuePart.PROPOSITION);
 
 		what().resolveValues(resolver);
 		with().resolveValues(resolver);

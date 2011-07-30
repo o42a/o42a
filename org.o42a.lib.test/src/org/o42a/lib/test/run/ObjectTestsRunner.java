@@ -19,6 +19,7 @@
 */
 package org.o42a.lib.test.run;
 
+import static org.o42a.core.artifact.object.ValuePart.PROPOSITION;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
 
@@ -90,10 +91,11 @@ final class ObjectTestsRunner extends DefinedObject {
 	private void runTests(DeclarativeBlock definition, Obj object) {
 
 		final Declaratives statements =
-			definition.propose(this).alternative(this);
+				definition.propose(this).alternative(this);
 		final ImperativeSentence sentence =
-			statements.braces(this, "_tests_").propose(this);
-		final UserInfo user = definition.getScope().toObject().value();
+				statements.braces(this, "_tests_").propose(this);
+		final UserInfo user =
+				definition.getScope().toObject().value().partUser(PROPOSITION);
 
 		for (Member member : object.getMembers()) {
 
@@ -107,7 +109,7 @@ final class ObjectTestsRunner extends DefinedObject {
 		}
 
 		final Declaratives terminator =
-			definition.propose(definition).alternative(definition);
+				definition.propose(definition).alternative(definition);
 
 		terminator.selfAssign(voidRef(definition, terminator.nextDistributor()));
 	}

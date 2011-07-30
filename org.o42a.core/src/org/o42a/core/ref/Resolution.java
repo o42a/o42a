@@ -94,7 +94,7 @@ public abstract class Resolution implements ScopeInfo {
 		}
 
 		final Value<Directive> value = ValueType.DIRECTIVE.cast(
-				materialized.value().useBy(resolver).getValue());
+				materialized.value().explicitUseBy(resolver).getValue());
 
 		if (!value.isDefinite()) {
 			resolver.getLogger().error(

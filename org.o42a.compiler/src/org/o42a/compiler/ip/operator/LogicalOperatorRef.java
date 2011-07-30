@@ -19,13 +19,14 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import static org.o42a.core.artifact.object.ValuePart.PROPOSITION;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -42,6 +43,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.use.User;
 
 
 public class LogicalOperatorRef extends ObjectConstructor {
@@ -202,8 +204,8 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		@Override
 		public void resolveBuiltin(Obj object) {
 
-			final Resolver resolver =
-				object.getScope().newResolver(object.value());
+			final User user = object.value().partUser(PROPOSITION);
+			final Resolver resolver = object.getScope().newResolver(user);
 
 			operand().resolveValues(resolver);
 		}

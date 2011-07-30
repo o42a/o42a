@@ -665,7 +665,8 @@ public abstract class Obj
 			definitions = emptyDefinitions(this, getScope());
 		}
 
-		final ObjectType type = type().useBy(scope.toObject().value());
+		final ObjectType type =
+				type().useBy(scope.toObject().value().usable());
 		boolean hasExplicitAncestor =
 				type.getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = this.type.getSamples();

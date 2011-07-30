@@ -44,15 +44,15 @@ import org.o42a.core.value.ValueType;
 
 public final class ValuePartRef extends ObjectConstructor {
 
-	static final HashMap<String, ValuePart> partsById =
-		new HashMap<String, ValuePart>();
+	static final HashMap<String, RefValuePart> partsById =
+		new HashMap<String, RefValuePart>();
 
 	public static Ref valuePartRef(
 			IntrinsicRefNode ref,
 			Distributor distributor) {
 
 		final Location location = location(distributor, ref);
-		final ValuePart part = partsById.get(ref.getName().getName());
+		final RefValuePart part = partsById.get(ref.getName().getName());
 
 		if (part == null) {
 			distributor.getContext().getLogger().error(
@@ -66,13 +66,13 @@ public final class ValuePartRef extends ObjectConstructor {
 		return new ValuePartRef(location, distributor, part, false);
 	}
 
-	private final ValuePart valuePart;
+	private final RefValuePart valuePart;
 	private final boolean overridden;
 
 	private ValuePartRef(
 			LocationInfo location,
 			Distributor distributor,
-			ValuePart valuePart,
+			RefValuePart valuePart,
 			boolean overridden) {
 		super(location, distributor);
 		this.valuePart = valuePart;
@@ -111,7 +111,7 @@ public final class ValuePartRef extends ObjectConstructor {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.valuePart.partName);
+		out.append(this.valuePart.partName());
 		if (this.overridden) {
 			out.append("^[");
 		} else {
@@ -137,7 +137,7 @@ public final class ValuePartRef extends ObjectConstructor {
 		return new ValuePartOp(host, this);
 	}
 
-	final ValuePart getValuePart() {
+	final RefValuePart getValuePart() {
 		return this.valuePart;
 	}
 
@@ -153,7 +153,7 @@ public final class ValuePartRef extends ObjectConstructor {
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self = selfPath.resolveArtifact(
 					this,
-					value(),
+					value().partUser(getValuePart().part()),
 					getScope()).toObject();
 			final Definitions definitions;
 

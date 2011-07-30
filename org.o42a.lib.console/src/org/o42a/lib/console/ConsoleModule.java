@@ -90,9 +90,9 @@ public class ConsoleModule extends AnnotatedModule {
 		}
 
 		final Path adapterPath =
-			mainAdapterId.key(mainModule.getScope()).toPath();
+				mainAdapterId.key(mainModule.getScope()).toPath();
 		final Ref adapterRef =
-			adapterPath.target(mainAdapter, mainModule.distribute());
+				adapterPath.target(mainAdapter, mainModule.distribute());
 
 		if (!main.isPrototype()) {
 			this.main = main;
@@ -103,7 +103,7 @@ public class ConsoleModule extends AnnotatedModule {
 					adapterRef.toStaticTypeRef());
 		}
 
-		this.main.value().useBy(user);
+		this.main.value().explicitUseBy(user);
 
 		return this.main;
 	}
@@ -134,12 +134,12 @@ public class ConsoleModule extends AnnotatedModule {
 		final Code exit = main.addBlock("exit");
 		final AllocationCode alloc = main.undisposable();
 		final ValOp result =
-			alloc.allocate(null, VAL_TYPE)
-			.op(builder, ValueType.INTEGER)
-			.storeUnknown(main);
+				alloc.allocate(null, VAL_TYPE)
+				.op(builder, ValueType.INTEGER)
+				.storeUnknown(main);
 		final ValDirs dirs =
-			builder.falseWhenUnknown(alloc, exit.head())
-			.value(main.id("exec_main"), result);
+				builder.falseWhenUnknown(alloc, exit.head())
+				.value(main.id("exec_main"), result);
 		final Code code = dirs.code();
 
 		result.store(
@@ -167,13 +167,13 @@ public class ConsoleModule extends AnnotatedModule {
 			Function<DebuggableMainFunc> main) {
 
 		final Function<MainFunc> debugMain =
-			generator.newFunction().export().create(
-					generator.rawId("main"),
-					MAIN);
+				generator.newFunction().export().create(
+						generator.rawId("main"),
+						MAIN);
 		final FuncPtr<DebugExecMainFunc> executeMain =
-			generator.externalFunction(
-					"o42a_dbg_exec_main",
-					DEBUG_EXEC_MAIN);
+				generator.externalFunction(
+						"o42a_dbg_exec_main",
+						DEBUG_EXEC_MAIN);
 
 		executeMain.op(null, debugMain).call(
 				debugMain,

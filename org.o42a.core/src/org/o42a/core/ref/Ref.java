@@ -61,7 +61,7 @@ public abstract class Ref extends RefTypeBase {
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 
 		final Field<Obj> wrapperField =
-			location.getContext().getIntrinsics().getVoidField();
+				location.getContext().getIntrinsics().getVoidField();
 
 		return ROOT_PATH.append(
 				wrapperField.getKey()).target(location, distributor);
@@ -71,7 +71,7 @@ public abstract class Ref extends RefTypeBase {
 
 		final Obj falseObject = location.getContext().getFalse();
 		final AbsolutePath falsePath = ROOT_PATH.append(
-			falseObject.getScope().toField().toMember().getKey());
+				falseObject.getScope().toField().toMember().getKey());
 
 		return falsePath.target(location, distributor);
 	}
@@ -173,7 +173,7 @@ public abstract class Ref extends RefTypeBase {
 
 	public Value<?> value(Resolver resolver) {
 		return resolve(resolver).materialize()
-				.value().useBy(resolver).getValue();
+				.value().explicitUseBy(resolver).getValue();
 	}
 
 	/**
@@ -304,8 +304,8 @@ public abstract class Ref extends RefTypeBase {
 
 			final Code code = control.code();
 			final ValDirs dirs =
-				control.getBuilder().falseWhenUnknown(code, control.exit())
-				.value(code.id("local_val"), result);
+					control.getBuilder().falseWhenUnknown(code, control.exit())
+					.value(code.id("local_val"), result);
 
 			result.store(code, this.ref.writeValue(dirs));
 

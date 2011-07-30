@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
+import static org.o42a.core.artifact.object.ValuePart.PROPOSITION;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -145,7 +146,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		if (this.prototype == null) {
 
 			final BinaryPhrasePart binary =
-				binaryPhrase(this.ip, this.node, distributor);
+					binaryPhrase(this.ip, this.node, distributor);
 
 			this.operator = binary.getComparisonOperator();
 
@@ -181,12 +182,12 @@ public final class ComparisonRef extends ObjectConstructor {
 			}
 
 			final Field<?> field =
-				resolver.getContainer()
-				.member(this.comparisonKey)
-				.toField(resolver);
+					resolver.getContainer()
+					.member(this.comparisonKey)
+					.toField(resolver);
 			final Value<?> value =
-				field.getArtifact().toObject().value()
-				.useBy(resolver).getValue();
+					field.getArtifact().toObject().value()
+					.explicitUseBy(resolver).getValue();
 
 			if (!value.isDefinite()) {
 				// Value could not be determined at compile-time.
@@ -202,9 +203,9 @@ public final class ComparisonRef extends ObjectConstructor {
 		@Override
 		public void resolveBuiltin(Obj object) {
 
-			final UserInfo user = object.value();
+			final UserInfo user = object.value().partUser(PROPOSITION);
 			final Field<?> field =
-				object.member(this.comparisonKey).toField(user);
+					object.member(this.comparisonKey).toField(user);
 
 			field.getArtifact().toObject().value().resolveAll(user);
 		}
@@ -221,10 +222,10 @@ public final class ComparisonRef extends ObjectConstructor {
 					operator.getValueType(),
 					"cmp");
 			final ObjectOp comparison =
-				host.field(cmpDirs.dirs(), this.comparisonKey)
-				.materialize(cmpDirs.dirs());
+					host.field(cmpDirs.dirs(), this.comparisonKey)
+					.materialize(cmpDirs.dirs());
 			final ValOp comparisonVal =
-				operator.writeComparison(cmpDirs, comparison);
+					operator.writeComparison(cmpDirs, comparison);
 
 			final ValDirs resultDirs = cmpDirs.dirs().value(dirs);
 			final ValOp result = operator.write(resultDirs, comparisonVal);
@@ -247,7 +248,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		protected void declareMembers(ObjectMembers members) {
 
 			final ObjectMemberRegistry memberRegistry =
-				new ObjectMemberRegistry(noInclusions(), this);
+					new ObjectMemberRegistry(noInclusions(), this);
 			final Distributor distributor = distribute();
 			final Ref phrase = this.ref.phrase(distributor);
 			final FieldBuilder builder = memberRegistry.newField(
