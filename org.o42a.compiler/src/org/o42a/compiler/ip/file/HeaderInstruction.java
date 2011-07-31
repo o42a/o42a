@@ -28,9 +28,7 @@ import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.Directive;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseFlag;
-import org.o42a.util.use.User;
+import org.o42a.util.use.*;
 
 
 final class HeaderInstruction implements Instruction, InstructionContext {
@@ -56,12 +54,12 @@ final class HeaderInstruction implements Instruction, InstructionContext {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCase useCase) {
+	public UseFlag getUseBy(UseCaseInfo useCase) {
 		return this.context.getUseBy(useCase);
 	}
 
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
+	public boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

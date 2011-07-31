@@ -96,12 +96,12 @@ public class Resolver implements UserInfo, LocationInfo {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCase useCase) {
+	public final UseFlag getUseBy(UseCaseInfo useCase) {
 		return toUser().getUseBy(useCase);
 	}
 
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
+	public boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

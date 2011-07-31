@@ -28,7 +28,8 @@ import static org.o42a.util.use.Usable.simpleUsable;
 import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.source.*;

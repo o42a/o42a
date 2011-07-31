@@ -20,28 +20,8 @@
 package org.o42a.util.use;
 
 
-final class DummyUser extends User {
+public interface UseCaseInfo extends UserInfo {
 
-	DummyUser() {
-	}
-
-	@Override
-	public boolean isDummy() {
-		return true;
-	}
-
-	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		return useCase.toUseCase().unusedFlag();
-	}
-
-	@Override
-	public String toString() {
-		return "DummyUser";
-	}
-
-	@Override
-	void use(Usable usable) {
-	}
+	UseCase toUseCase();
 
 }

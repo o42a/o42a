@@ -39,8 +39,8 @@ public class FieldUses implements UseInfo {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCase useCase) {
-		if (!this.tracker.start(useCase)) {
+	public UseFlag getUseBy(UseCaseInfo useCase) {
+		if (!this.tracker.start(useCase.toUseCase())) {
 			return this.tracker.getUseFlag();
 		}
 
@@ -60,7 +60,7 @@ public class FieldUses implements UseInfo {
 	}
 
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
+	public boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

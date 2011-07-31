@@ -45,7 +45,7 @@ public abstract class User implements UserInfo {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCase useCase) {
+	public final boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Utilities
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,13 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir;
+package org.o42a.util.use;
 
 import java.util.ArrayList;
 
-import org.o42a.codegen.Generator;
-import org.o42a.util.use.User;
-import org.o42a.util.use.UserInfo;
 
 
 /**
@@ -43,9 +40,9 @@ public class UseDump {
 		uses.add(new Separator(what));
 	}
 
-	public static void printUses(Generator generator) {
+	public static void printUses(UseCaseInfo useCase) {
 		for (UseDump dump : uses) {
-			dump.print(generator);
+			dump.print(useCase);
 		}
 	}
 
@@ -57,8 +54,8 @@ public class UseDump {
 		this.user = user;
 	}
 
-	public void print(Generator generator) {
-		if (this.user.isUsedBy(generator.getUseCase())) {
+	public void print(UseCaseInfo useCase) {
+		if (this.user.isUsedBy(useCase)) {
 			System.err.println("(!) " + this.what);
 			System.err.println("  + " + this.user);
 		}
@@ -76,7 +73,7 @@ public class UseDump {
 		}
 
 		@Override
-		public void print(Generator generator) {
+		public void print(UseCaseInfo useCase) {
 			System.err.println("(!) " + this.what);
 		}
 
