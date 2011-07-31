@@ -30,7 +30,7 @@ public final class UsableUser extends AbstractUser {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCase useCase) {
+	public UseFlag getUseBy(UseCaseInfo useCase) {
 		return this.uses.getUseBy(useCase);
 	}
 

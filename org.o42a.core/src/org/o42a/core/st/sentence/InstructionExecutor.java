@@ -25,9 +25,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.Statement;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseFlag;
-import org.o42a.util.use.User;
+import org.o42a.util.use.*;
 
 
 final class InstructionExecutor implements InstructionContext {
@@ -50,12 +48,12 @@ final class InstructionExecutor implements InstructionContext {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCase useCase) {
+	public final UseFlag getUseBy(UseCaseInfo useCase) {
 		return toUser().getUseBy(useCase);
 	}
 
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
+	public boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

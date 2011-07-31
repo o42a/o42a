@@ -22,9 +22,7 @@ package org.o42a.core.st.impl.cond;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseFlag;
-import org.o42a.util.use.User;
+import org.o42a.util.use.*;
 
 
 final class DirectiveContext implements InstructionContext {
@@ -47,12 +45,12 @@ final class DirectiveContext implements InstructionContext {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCase useCase) {
+	public final UseFlag getUseBy(UseCaseInfo useCase) {
 		return toUser().getUseBy(useCase);
 	}
 
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
+	public boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

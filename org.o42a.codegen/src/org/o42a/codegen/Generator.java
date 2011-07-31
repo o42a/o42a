@@ -35,7 +35,7 @@ import org.o42a.codegen.debug.Debug;
 import org.o42a.util.use.*;
 
 
-public abstract class Generator implements UserInfo {
+public abstract class Generator implements UseCaseInfo {
 
 	private final String id;
 	private final UseCase useCase;
@@ -70,12 +70,17 @@ public abstract class Generator implements UserInfo {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCase useCase) {
+	public final UseCase toUseCase() {
+		return this.useCase;
+	}
+
+	@Override
+	public final UseFlag getUseBy(UseCaseInfo useCase) {
 		return toUser().getUseBy(useCase);
 	}
 
 	@Override
-	public boolean isUsedBy(UseCase useCase) {
+	public final boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

@@ -44,7 +44,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.use.UseCase;
 
 
 public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
@@ -271,11 +270,10 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return true;
 		}
 
-		final UseCase useCase = generator.getUseCase();
 		final MemberAnalysis declarationAnalysis =
-			declaredField.toMember().getAnalysis();
+				declaredField.toMember().getAnalysis();
 
-		if (!declarationAnalysis.isUsedBy(useCase)) {
+		if (!declarationAnalysis.isUsedBy(generator)) {
 			// Field is never used. Skip generation.
 			return false;
 		}

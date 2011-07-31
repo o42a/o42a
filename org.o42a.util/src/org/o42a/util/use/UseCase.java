@@ -20,7 +20,7 @@
 package org.o42a.util.use;
 
 
-public final class UseCase extends AbstractUser {
+public final class UseCase extends AbstractUser implements UseCaseInfo {
 
 	private final String name;
 	private final UseFlag usedFlag;
@@ -34,6 +34,11 @@ public final class UseCase extends AbstractUser {
 		this.usedFlag = new UseFlag(this, (byte) 1);
 		this.unusedFlag = new UseFlag(this, (byte) -1);
 		this.checkUseFlag = new UseFlag(this, (byte) 0);
+	}
+
+	@Override
+	public final UseCase toUseCase() {
+		return this;
 	}
 
 	public final UseFlag usedFlag() {
@@ -57,7 +62,7 @@ public final class UseCase extends AbstractUser {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCase useCase) {
+	public final UseFlag getUseBy(UseCaseInfo useCase) {
 		return useCase == this ? usedFlag() : unusedFlag();
 	}
 

@@ -56,13 +56,13 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCase useCase) {
+	public final boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCase useCase) {
-		if (!this.tracker.start(useCase)) {
+	public UseFlag getUseBy(UseCaseInfo useCase) {
+		if (!this.tracker.start(useCase.toUseCase())) {
 			return this.tracker.getUseFlag();
 		}
 		if (this.memberUses == null) {
@@ -82,16 +82,16 @@ public class MemberAnalysis implements UseInfo {
 		return this.tracker.done();
 	}
 
-	public final boolean accessedBy(Generator generator) {
-		return this.memberUses.isUsedBy(generator.getUseCase());
+	public final boolean accessedBy(UseCaseInfo useCase) {
+		return this.memberUses.isUsedBy(useCase);
 	}
 
-	public final boolean substanceAccessedBy(Generator generator) {
-		return this.substanceUses.isUsedBy(generator.getUseCase());
+	public final boolean substanceAccessedBy(UseCaseInfo useCase) {
+		return this.substanceUses.isUsedBy(useCase);
 	}
 
-	public final boolean nestedAccessedBy(Generator generator) {
-		return this.nestedUses.isUsedBy(generator.getUseCase());
+	public final boolean nestedAccessedBy(UseCaseInfo useCase) {
+		return this.nestedUses.isUsedBy(useCase);
 	}
 
 	public String reasonNotFound(Generator generator) {

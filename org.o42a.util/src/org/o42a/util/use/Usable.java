@@ -50,8 +50,8 @@ public abstract class Usable implements UserInfo {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCase useCase) {
-		if (!this.tracker.start(useCase)) {
+	public UseFlag getUseBy(UseCaseInfo useCase) {
+		if (!this.tracker.start(useCase.toUseCase())) {
 			return this.tracker.getUseFlag();
 		}
 		if (this.usedBy == null) {
@@ -68,7 +68,7 @@ public abstract class Usable implements UserInfo {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCase useCase) {
+	public final boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 

@@ -78,14 +78,14 @@ public final class ObjectValue implements UseInfo {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCase useCase) {
+	public final boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCase useCase) {
+	public final UseFlag getUseBy(UseCaseInfo useCase) {
 		if (this.usable == null) {
-			return useCase.unusedFlag();
+			return useCase.toUseCase().unusedFlag();
 		}
 		return this.usable.getUseBy(useCase);
 	}

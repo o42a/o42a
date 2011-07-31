@@ -41,13 +41,13 @@ final class MemberUses implements UseInfo {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCase useCase) {
+	public final boolean isUsedBy(UseCaseInfo useCase) {
 		return getUseBy(useCase).isUsed();
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCase useCase) {
-		if (!this.tracker.start(useCase)) {
+	public UseFlag getUseBy(UseCaseInfo useCase) {
+		if (!this.tracker.start(useCase.toUseCase())) {
 			return this.tracker.getUseFlag();
 		}
 		for (UseInfo use : this.uses) {
