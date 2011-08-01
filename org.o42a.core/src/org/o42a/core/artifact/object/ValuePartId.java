@@ -20,7 +20,7 @@
 package org.o42a.core.artifact.object;
 
 
-public enum ValuePart {
+public enum ValuePartId {
 
 	ALL("ValueOf"),
 	REQUIREMENT("RequirementOf"),
@@ -30,7 +30,7 @@ public enum ValuePart {
 
 	private final String usableName;
 
-	ValuePart(String usableName) {
+	ValuePartId(String usableName) {
 		this.usableName = usableName;
 	}
 

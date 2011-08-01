@@ -43,7 +43,7 @@ public final class ObjectValue implements UseInfo {
 	private Definitions explicitDefinitions;
 
 	private Usable usable;
-	private EnumMap<ValuePart, Usable> usableParts;
+	private EnumMap<ValuePartId, Usable> usableParts;
 
 	private boolean fullyResolved;
 
@@ -73,7 +73,7 @@ public final class ObjectValue implements UseInfo {
 		return this.valueType;
 	}
 
-	public final User partUser(ValuePart part) {
+	public final User partUser(ValuePartId part) {
 		return usablePart(part).toUser();
 	}
 
@@ -161,17 +161,17 @@ public final class ObjectValue implements UseInfo {
 	}
 
 	public final ObjectValue explicitUseBy(UserInfo user) {
-		return usePart(ValuePart.ALL, user);
+		return usePart(ValuePartId.ALL, user);
 	}
 
-	public final ObjectValue usePart(ValuePart part, UserInfo user) {
+	public final ObjectValue usePart(ValuePartId part, UserInfo user) {
 		if (!user.toUser().isDummy()) {
 			usablePart(part).useBy(user);
 		}
 		return this;
 	}
 
-	public final Resolver partResolver(ValuePart part) {
+	public final Resolver partResolver(ValuePartId part) {
 		return getObject().getScope().newResolver(usablePart(part));
 	}
 
@@ -237,9 +237,9 @@ public final class ObjectValue implements UseInfo {
 		return ancestorDefinitions;
 	}
 
-	private final Usable usablePart(ValuePart part) {
+	private final Usable usablePart(ValuePartId part) {
 		if (this.usableParts == null) {
-			this.usableParts = new EnumMap<ValuePart, Usable>(ValuePart.class);
+			this.usableParts = new EnumMap<ValuePartId, Usable>(ValuePartId.class);
 		} else {
 
 			final Usable usable = this.usableParts.get(part);
@@ -253,9 +253,9 @@ public final class ObjectValue implements UseInfo {
 
 		this.usableParts.put(part, usable);
 
-		if (part != ValuePart.ALL) {
+		if (part != ValuePartId.ALL) {
 			usable().useBy(usable);
-			usable.useBy(usablePart(ValuePart.ALL));
+			usable.useBy(usablePart(ValuePartId.ALL));
 		}
 
 		return usable;
