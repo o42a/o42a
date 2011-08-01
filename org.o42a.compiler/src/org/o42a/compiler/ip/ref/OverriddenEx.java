@@ -22,8 +22,9 @@ package org.o42a.compiler.ip.ref;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.artifact.object.ValuePartId;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -103,7 +104,7 @@ public class OverriddenEx extends ObjectConstructor {
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self = selfPath.resolveArtifact(
 					this,
-					value().partUser(ValuePartId.PROPOSITION),
+					value().proposition(),
 					getScope()).toObject();
 			final Definitions overriddenDefinitions =
 				self.value().getOverriddenDefinitions();

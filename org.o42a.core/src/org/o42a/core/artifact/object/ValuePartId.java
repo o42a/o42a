@@ -22,7 +22,6 @@ package org.o42a.core.artifact.object;
 
 public enum ValuePartId {
 
-	ALL("ValueOf"),
 	REQUIREMENT("RequirementOf"),
 	CONDITION("ConditionOf"),
 	CLAIM("CalimOf"),

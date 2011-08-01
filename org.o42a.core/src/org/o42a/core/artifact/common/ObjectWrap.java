@@ -113,7 +113,7 @@ public abstract class ObjectWrap extends Obj {
 		final ObjectValue wrapValue = value();
 
 		for (ValuePartId part : ValuePartId.values()) {
-			wrappedValue.usePart(part, wrapValue.partUser(part));
+			wrappedValue.part(part).useBy(wrapValue.part(part));
 		}
 	}
 

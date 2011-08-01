@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
-import static org.o42a.core.artifact.object.ValuePartId.PROPOSITION;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -203,7 +202,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		@Override
 		public void resolveBuiltin(Obj object) {
 
-			final UserInfo user = object.value().partUser(PROPOSITION);
+			final UserInfo user = object.value().proposition();
 			final Field<?> field =
 					object.member(this.comparisonKey).toField(user);
 
