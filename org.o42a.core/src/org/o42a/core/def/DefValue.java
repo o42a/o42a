@@ -40,6 +40,10 @@ public abstract class DefValue {
 		return new NonExisting(definitions);
 	}
 
+	static DefValue nonExistingValue(Defs<?, ?> defs) {
+		return new NonExisting(defs);
+	}
+
 	static DefValue defCondition(CondDef def, LogicalValue value) {
 		return new DefCondition(def, value);
 	}
@@ -229,6 +233,10 @@ public abstract class DefValue {
 	private static final class NonExisting extends AlwaysIgnored {
 
 		NonExisting(Definitions definitions) {
+			super(null);
+		}
+
+		NonExisting(Defs<?, ?> defs) {
 			super(null);
 		}
 

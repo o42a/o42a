@@ -21,7 +21,8 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;

@@ -20,8 +20,7 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefValue.*;
-import static org.o42a.core.def.Definitions.NO_CONDITIONS;
-import static org.o42a.core.def.Definitions.NO_VALUES;
+import static org.o42a.core.def.Definitions.*;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -137,28 +136,25 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	@Override
 	public final Definitions toDefinitions() {
-
-		final ValueDef[] defs = new ValueDef[] {this};
-
 		if (isClaim()) {
 			return new Definitions(
 					this,
 					getScope(),
 					getValueType(),
+					NO_REQUIREMENTS,
 					NO_CONDITIONS,
-					NO_CONDITIONS,
-					defs,
-					NO_VALUES);
+					new ValueDefs(DefKind.CLAIM, this),
+					NO_PROPOSITIONS);
 		}
 
 		return new Definitions(
 				this,
 				getScope(),
 				getValueType(),
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS,
-				NO_VALUES,
-				defs);
+				NO_CLAIMS,
+				new ValueDefs(DefKind.PROPOSITION, this));
 	}
 
 	public ValOp write(ValDirs dirs, HostOp host) {

@@ -20,8 +20,7 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefValue.*;
-import static org.o42a.core.def.Definitions.NO_CONDITIONS;
-import static org.o42a.core.def.Definitions.NO_VALUES;
+import static org.o42a.core.def.Definitions.*;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -112,28 +111,25 @@ public abstract class CondDef extends Def<CondDef> {
 
 	@Override
 	public Definitions toDefinitions() {
-
-		final CondDef[] defs = new CondDef[] {this};
-
 		if (isRequirement()) {
 			return new Definitions(
 					this,
 					getScope(),
 					null,
-					defs,
+					new CondDefs(DefKind.CLAIM, this),
 					NO_CONDITIONS,
-					NO_VALUES,
-					NO_VALUES);
+					NO_CLAIMS,
+					NO_PROPOSITIONS);
 		}
 
 		return new Definitions(
 				this,
 				getScope(),
 				null,
-				NO_CONDITIONS,
-				defs,
-				NO_VALUES,
-				NO_VALUES);
+				NO_REQUIREMENTS,
+				new CondDefs(DefKind.CONDITION, this),
+				NO_CLAIMS,
+				NO_PROPOSITIONS);
 	}
 
 	public final void write(CodeDirs dirs, HostOp host) {

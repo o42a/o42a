@@ -21,8 +21,6 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
-import java.lang.reflect.Array;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.HostOp;
@@ -74,14 +72,14 @@ public abstract class Rescoper {
 			return emptyDefinitions(definitions, resultScope);
 		}
 
-		final CondDef[] requirements = definitions.getRequirements();
-		final CondDef[] newRequirements = updateDefs(requirements);
-		final CondDef[] conditions = definitions.getConditions();
-		final CondDef[] newConditions = updateDefs(conditions);
-		final ValueDef[] claims = definitions.getClaims();
-		final ValueDef[] newClaims = updateDefs(claims);
-		final ValueDef[] propositions = definitions.getPropositions();
-		final ValueDef[] newPropositions = updateDefs(propositions);
+		final CondDefs requirements = definitions.requirements();
+		final CondDefs newRequirements = requirements.rescope(this);
+		final CondDefs conditions = definitions.conditions();
+		final CondDefs newConditions = conditions.rescope(this);
+		final ValueDefs claims = definitions.claims();
+		final ValueDefs newClaims = claims.rescope(this);
+		final ValueDefs propositions = definitions.propositions();
+		final ValueDefs newPropositions = propositions.rescope(this);
 
 		if (requirements == newRequirements
 				&& conditions == newConditions
@@ -127,34 +125,5 @@ public abstract class Rescoper {
 	public abstract Rescoper reproduce(
 			LocationInfo location,
 			Reproducer reproducer);
-
-	private <D extends Def<D>> D[] updateDefs(D[] defs) {
-
-		for (int i = 0; i < defs.length; ++i) {
-
-			final D def = defs[i];
-			final D newDef = updateDef(def);
-
-			newDef.assertScopeIs(getFinalScope());
-			if (def == newDef) {
-				continue;
-			}
-
-			@SuppressWarnings("unchecked")
-			final D[] newDefs = (D[]) Array.newInstance(
-					defs.getClass().getComponentType(),
-					defs.length);
-
-			System.arraycopy(defs, 0, newDefs, 0, i);
-			newDefs[i++] = newDef;
-			for (;i < defs.length; ++i) {
-				newDefs[i] = updateDef(defs[i]);
-			}
-
-			return newDefs;
-		}
-
-		return defs;
-	}
 
 }
