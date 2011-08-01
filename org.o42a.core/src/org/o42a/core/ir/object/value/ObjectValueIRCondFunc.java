@@ -160,9 +160,9 @@ public abstract class ObjectValueIRCondFunc
 		final CondDef[] defs;
 
 		if (isRequirement()) {
-			defs = definitions.getRequirements();
+			defs = definitions.requirements().get();
 		} else {
-			defs = definitions.getConditions();
+			defs = definitions.conditions().get();
 		}
 
 		final CondCollector collector = new CondCollector(
@@ -300,7 +300,7 @@ public abstract class ObjectValueIRCondFunc
 
 		final Obj object = getObjectIR().getObject();
 
-		for (ValueDef proposition : definitions.getPropositions()) {
+		for (ValueDef proposition : definitions.propositions().get()) {
 			if (explicitDef(object, proposition)) {
 				return true;
 			}

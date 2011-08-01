@@ -37,6 +37,10 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 			"Condition definition kind expected";
 	}
 
+	public final boolean isFalse() {
+		return getConstant().isFalse();
+	}
+
 	public final LogicalValue getConstant() {
 		if (this.constantValue != null) {
 			return this.constantValue;

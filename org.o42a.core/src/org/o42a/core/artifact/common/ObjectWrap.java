@@ -25,6 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
+import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectValueIR;
@@ -112,8 +113,8 @@ public abstract class ObjectWrap extends Obj {
 		final ObjectValue wrappedValue = getWrapped().value();
 		final ObjectValue wrapValue = value();
 
-		for (ValuePartId part : ValuePartId.values()) {
-			wrappedValue.part(part).useBy(wrapValue.part(part));
+		for (DefKind defKind : DefKind.values()) {
+			wrappedValue.part(defKind).useBy(wrapValue.part(defKind));
 		}
 	}
 

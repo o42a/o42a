@@ -25,6 +25,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import java.util.EnumMap;
 
+import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
@@ -44,7 +45,7 @@ public final class ObjectValue implements UseInfo {
 
 	private Usable usable;
 	private Usable explicitUsable;
-	private EnumMap<ValuePartId, ValuePart> parts;
+	private EnumMap<DefKind, ValuePart> parts;
 
 	private boolean fullyResolved;
 
@@ -158,38 +159,38 @@ public final class ObjectValue implements UseInfo {
 	}
 
 	public final ValuePart requirement() {
-		return part(ValuePartId.REQUIREMENT);
+		return part(DefKind.REQUIREMENT);
 	}
 
 	public final ValuePart condition() {
-		return part(ValuePartId.CONDITION);
+		return part(DefKind.CONDITION);
 	}
 
 	public final ValuePart claim() {
-		return part(ValuePartId.CLAIM);
+		return part(DefKind.CLAIM);
 	}
 
 	public final ValuePart proposition() {
-		return part(ValuePartId.PROPOSITION);
+		return part(DefKind.PROPOSITION);
 	}
 
-	public final ValuePart part(ValuePartId partId) {
-		assert partId != null :
-			"Value part identifier not specified";
+	public final ValuePart part(DefKind defKind) {
+		assert defKind != null :
+			"Definition kind not specified";
 		if (this.parts == null) {
-			this.parts = new EnumMap<ValuePartId, ValuePart>(ValuePartId.class);
+			this.parts = new EnumMap<DefKind, ValuePart>(DefKind.class);
 		} else {
 
-			final ValuePart part = this.parts.get(partId);
+			final ValuePart part = this.parts.get(defKind);
 
 			if (part != null) {
 				return part;
 			}
 		}
 
-		final ValuePart part = new ValuePart(this, partId);
+		final ValuePart part = new ValuePart(this, defKind);
 
-		this.parts.put(partId, part);
+		this.parts.put(defKind, part);
 
 		return part;
 	}

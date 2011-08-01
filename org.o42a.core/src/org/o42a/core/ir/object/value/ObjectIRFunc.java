@@ -88,14 +88,14 @@ public abstract class ObjectIRFunc {
 		final Definitions definitions = definitions();
 		final Resolver resolver = definitions.getScope().dummyResolver();
 
-		if (isFalse(definitions.requirement(resolver), body)) {
+		if (isFalse(definitions.requirements().resolve(resolver), body)) {
 			code.debug("Object requirement is FALSE");
 			code.go(dirs.falseDir());
 			return true;
 		}
 
 		if (!getObject().getConstructionMode().isRuntime()) {
-			if (isFalse(definitions.condition(resolver), body)) {
+			if (isFalse(definitions.conditions().resolve(resolver), body)) {
 				code.debug("Static object condition is FALSE");
 				code.go(dirs.falseDir());
 				return true;

@@ -26,7 +26,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.ValuePartId;
+import org.o42a.core.artifact.object.ObjectValue;
+import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.ref.Resolver;
 import org.o42a.util.ArrayUtil;
 
@@ -65,8 +66,8 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.defKind);
-		out.append("S[");
+		out.append(this.defKind.displayName());
+		out.append("s[");
 		defsToString(out, false);
 		out.append(']');
 
@@ -291,10 +292,12 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		return self();
 	}
 
-	final void resolveAll(Definitions definitions, ValuePartId part) {
+	final void resolveAll(Definitions definitions) {
 
-		final Resolver resolver =
-				definitions.getScope().toObject().value().part(part).resolver();
+		final ObjectValue objectValue =
+				definitions.getScope().toObject().value();
+		final ValuePart part = objectValue.part(getDefKind());
+		final Resolver resolver = part.resolver();
 
 		for (Def<?> def : this.defs) {
 			def.resolveAll(resolver);

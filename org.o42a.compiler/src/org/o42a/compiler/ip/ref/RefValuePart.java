@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.core.def.Definitions.definitions;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
@@ -182,10 +181,7 @@ enum RefValuePart {
 
 		@Override
 		Definitions valuePart(ValuePartRef ex, Definitions definitions) {
-			return definitions(
-					ex,
-					ex.getScope(),
-					definitions.getPropositions());
+			return definitions.propositionPart(ex);
 		}
 
 		@Override
