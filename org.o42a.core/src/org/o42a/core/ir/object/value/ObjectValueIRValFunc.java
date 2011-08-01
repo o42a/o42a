@@ -177,9 +177,9 @@ public abstract class ObjectValueIRValFunc
 		final ValueDef[] defs;
 
 		if (isClaim()) {
-			defs = definitions.getClaims();
+			defs = definitions.claims().get();
 		} else {
-			defs = definitions.getPropositions();
+			defs = definitions.propositions().get();
 		}
 		if (defs.length == 0) {
 			return writeAncestorDef(dirs, host);

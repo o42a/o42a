@@ -22,17 +22,23 @@ package org.o42a.core.def;
 
 public enum DefKind {
 
-	REQUIREMENT(true, false),
-	CONDITION(false, false),
-	CLAIM(true, true),
-	PROPOSITION(false, true);
+	REQUIREMENT("Requirement", true, false),
+	CONDITION("Condition", false, false),
+	CLAIM("Claim", true, true),
+	PROPOSITION("Proposition", false, true);
 
+	private final String displayName;
 	private final boolean claim;
 	private final boolean value;
 
-	DefKind(boolean claim, boolean value) {
+	DefKind(String displayName, boolean claim, boolean value) {
+		this.displayName = displayName;
 		this.claim = claim;
 		this.value = value;
+	}
+
+	public final String displayName() {
+		return this.displayName;
 	}
 
 	public final boolean isClaim() {

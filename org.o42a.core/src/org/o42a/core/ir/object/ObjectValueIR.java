@@ -108,8 +108,8 @@ public class ObjectValueIR {
 
 		final Definitions definitions = definitions();
 
-		if (definitions.getConstantRequirement().isFalse()
-				|| definitions.getConstantCondition().isFalse()) {
+		if (definitions.requirements().isFalse()
+				|| definitions.conditions().isFalse()) {
 			createFalseFunctions(typeIR, definitions);
 		} else {
 			createFunctions(typeIR, definitions);
@@ -247,7 +247,7 @@ public class ObjectValueIR {
 			ObjectTypeIR typeIR,
 			Definitions definitions) {
 		this.value.setFalse(typeIR);
-		if (definitions.getConstantRequirement().isFalse()) {
+		if (definitions.requirements().isFalse()) {
 			this.requirement.setFalse(typeIR);
 			this.claim.setFalse(typeIR);
 		} else {
@@ -339,7 +339,7 @@ public class ObjectValueIR {
 
 			final Resolver resolver = definitions.getScope().dummyResolver();
 
-			return definitions.requirement(resolver);
+			return definitions.requirements().resolve(resolver);
 		}
 
 		@Override
@@ -378,7 +378,7 @@ public class ObjectValueIR {
 
 			final Resolver resolver = definitions.getScope().dummyResolver();
 
-			return definitions.claim(resolver);
+			return definitions.claims().resolve(resolver);
 		}
 
 		@Override
@@ -417,7 +417,7 @@ public class ObjectValueIR {
 
 			final Resolver resolver = definitions.getScope().dummyResolver();
 
-			return definitions.condition(resolver);
+			return definitions.conditions().resolve(resolver);
 		}
 
 		@Override
@@ -456,7 +456,7 @@ public class ObjectValueIR {
 
 			final Resolver resolver = definitions.getScope().dummyResolver();
 
-			return definitions.proposition(resolver);
+			return definitions.propositions().resolve(resolver);
 		}
 
 		@Override

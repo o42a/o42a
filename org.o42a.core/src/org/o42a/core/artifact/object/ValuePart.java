@@ -21,6 +21,7 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.util.use.Usable.simpleUsable;
 
+import org.o42a.core.def.DefKind;
 import org.o42a.core.ref.Resolver;
 import org.o42a.util.use.*;
 
@@ -28,12 +29,12 @@ import org.o42a.util.use.*;
 public final class ValuePart implements UserInfo {
 
 	private final ObjectValue objectValue;
-	private final ValuePartId partId;
+	private final DefKind defKind;
 	private Usable usable;
 
-	ValuePart(ObjectValue objectValue, ValuePartId partId) {
+	ValuePart(ObjectValue objectValue, DefKind defKind) {
 		this.objectValue = objectValue;
-		this.partId = partId;
+		this.defKind = defKind;
 	}
 
 	public final Obj getObject() {
@@ -44,8 +45,8 @@ public final class ValuePart implements UserInfo {
 		return this.objectValue;
 	}
 
-	public final ValuePartId getPartId() {
-		return this.partId;
+	public final DefKind getDefKind() {
+		return this.defKind;
 	}
 
 	@Override
@@ -79,10 +80,10 @@ public final class ValuePart implements UserInfo {
 
 	@Override
 	public String toString() {
-		if (this.partId == null) {
+		if (this.defKind == null) {
 			return super.toString();
 		}
-		return this.partId.usableName() + '[' + getObject() + ']';
+		return this.defKind.displayName() + "Of[" + getObject() + ']';
 	}
 
 	final Usable usable() {

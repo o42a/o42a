@@ -25,10 +25,8 @@ import java.util.Collection;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.artifact.object.ValuePartId;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
 
@@ -209,36 +207,16 @@ public class Definitions extends Scoped {
 		return this.requirements;
 	}
 
-	@Deprecated
-	public final CondDef[] getRequirements() {
-		return requirements().get();
-	}
-
 	public final CondDefs conditions() {
 		return this.conditions;
-	}
-
-	@Deprecated
-	public final CondDef[] getConditions() {
-		return conditions().get();
 	}
 
 	public final ValueDefs claims() {
 		return this.claims;
 	}
 
-	@Deprecated
-	public final ValueDef[] getClaims() {
-		return claims().get();
-	}
-
 	public final ValueDefs propositions() {
 		return this.propositions;
-	}
-
-	@Deprecated
-	public final ValueDef[] getPropositions() {
-		return propositions().get();
 	}
 
 	public boolean isEmpty() {
@@ -251,36 +229,6 @@ public class Definitions extends Scoped {
 
 	public final boolean noClaims() {
 		return claims().isEmpty() && requirements().isEmpty();
-	}
-
-	@Deprecated
-	public final LogicalValue getConstantRequirement() {
-		return requirements().getConstant();
-	}
-
-	@Deprecated
-	public final LogicalValue getConstantCondition() {
-		return conditions().getConstant();
-	}
-
-	@Deprecated
-	public final DefValue requirement(Resolver resolver) {
-		return requirements().resolve(resolver);
-	}
-
-	@Deprecated
-	public final DefValue condition(Resolver resolver) {
-		return conditions().resolve(resolver);
-	}
-
-	@Deprecated
-	public final DefValue claim(Resolver resolver) {
-		return claims().resolve(resolver);
-	}
-
-	@Deprecated
-	public final DefValue proposition(Resolver resolver) {
-		return propositions().resolve(resolver);
 	}
 
 	public DefValue value(Resolver resolver) {
@@ -526,10 +474,10 @@ public class Definitions extends Scoped {
 	public final void resolveAll() {
 		getContext().fullResolution().start();
 		try {
-			requirements().resolveAll(this, ValuePartId.REQUIREMENT);
-			conditions().resolveAll(this, ValuePartId.CONDITION);
-			claims().resolveAll(this, ValuePartId.CLAIM);
-			propositions().resolveAll(this, ValuePartId.PROPOSITION);
+			requirements().resolveAll(this);
+			conditions().resolveAll(this);
+			claims().resolveAll(this);
+			propositions().resolveAll(this);
 		} finally {
 			getContext().fullResolution().end();
 		}
