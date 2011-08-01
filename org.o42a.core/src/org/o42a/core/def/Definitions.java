@@ -19,11 +19,8 @@
 */
 package org.o42a.core.def;
 
-import static java.lang.System.arraycopy;
-import static org.o42a.core.def.DefValue.nonExistingValue;
+import static org.o42a.core.def.DefKind.*;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.o42a.core.Scope;
@@ -33,14 +30,15 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.LogInfo;
 
 
 public class Definitions extends Scoped {
 
-	static final ValueDef[] NO_VALUES = new ValueDef[0];
-	static final CondDef[] NO_CONDITIONS = new CondDef[0];
+	static final CondDefs NO_REQUIREMENTS = new CondDefs(REQUIREMENT);
+	static final CondDefs NO_CONDITIONS = new CondDefs(CONDITION);
+	static final ValueDefs NO_CLAIMS = new ValueDefs(CLAIM);
+	static final ValueDefs NO_PROPOSITIONS = new ValueDefs(PROPOSITION);
 
 	public static Definitions emptyDefinitions(
 			LocationInfo location,
@@ -56,8 +54,10 @@ public class Definitions extends Scoped {
 				location,
 				scope,
 				valueType,
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS);
+				NO_CLAIMS,
+				NO_PROPOSITIONS);
 	}
 
 	public static Definitions definitions(
@@ -140,103 +140,105 @@ public class Definitions extends Scoped {
 				location,
 				scope,
 				valueType,
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS,
-				newClaims,
-				newPropositions);
+				new ValueDefs(CLAIM, newClaims),
+				new ValueDefs(PROPOSITION, newPropositions));
 	}
 
 	private final ValueType<?> valueType;
-	private final CondDef[] requirements;
-	private final CondDef[] conditions;
-	private final ValueDef[] claims;
-	private final ValueDef[] propositions;
-	private LogicalValue constantRequirement;
-	private LogicalValue constantCondition;
+	private final CondDefs requirements;
+	private final CondDefs conditions;
+	private final ValueDefs claims;
+	private final ValueDefs propositions;
 
 	Definitions(
 			LocationInfo location,
 			Scope scope,
 			ValueType<?> valueType,
-			CondDef[] requirements,
-			CondDef[] conditions,
-			ValueDef[] claims,
-			ValueDef[] propositions) {
+			CondDefs requirements,
+			CondDefs conditions,
+			ValueDefs claims,
+			ValueDefs propositions) {
 		super(location, scope);
+		assert requirements.assertValid(scope, REQUIREMENT);
+		assert conditions.assertValid(scope, CONDITION);
+		assert claims.assertValid(scope, CLAIM);
+		assert propositions.assertValid(scope, PROPOSITION);
 		this.valueType = valueType;
 		this.requirements = requirements;
 		this.conditions = conditions;
 		this.claims = claims;
 		this.propositions = propositions;
-		assert assertDefsScopeIs(requirements, scope);
-		assert assertDefsScopeIs(conditions, scope);
-		assert assertDefsScopeIs(claims, scope);
-		assert assertDefsScopeIs(propositions, scope);
-		assertEmptyWithoutValues();
+		assert assertEmptyWithoutValues();
 	}
 
 	private Definitions(LocationInfo location, Scope scope) {
-		super(location, scope);
-		this.valueType = null;
-		this.requirements = this.conditions = NO_CONDITIONS;
-		this.claims = this.propositions = NO_VALUES;
-		assertEmptyWithoutValues();
+		this(
+				location,
+				scope,
+				null,
+				NO_REQUIREMENTS,
+				NO_CONDITIONS,
+				NO_CLAIMS,
+				NO_PROPOSITIONS);
 	}
 
-	private Definitions(
-			LocationInfo location,
-			Scope scope,
-			ValueType<?> valueType,
-			CondDef[] requirements,
-			CondDef[] conditions) {
-		super(location, scope);
-		this.valueType = valueType;
-		this.requirements = requirements;
-		this.conditions = conditions;
-		this.claims = this.propositions = NO_VALUES;
-		assert assertDefsScopeIs(requirements, scope);
-		assert assertDefsScopeIs(conditions, scope);
-		assertEmptyWithoutValues();
-	}
-
-	private Definitions(
+	Definitions(
 			Definitions prototype,
 			ValueType<?> valueType,
-			CondDef[] requirements,
-			CondDef[] conditions,
-			ValueDef[] claims,
-			ValueDef[] propositions) {
-		super(prototype, prototype.getScope());
-		this.valueType = valueType;
-		this.requirements = requirements;
-		this.conditions = conditions;
-		this.claims = claims;
-		this.propositions = propositions;
-		assert assertDefsScopeIs(requirements, getScope());
-		assert assertDefsScopeIs(conditions, getScope());
-		assert assertDefsScopeIs(claims, getScope());
-		assert assertDefsScopeIs(propositions, getScope());
-		assertEmptyWithoutValues();
+			CondDefs requirements,
+			CondDefs conditions,
+			ValueDefs claims,
+			ValueDefs propositions) {
+		this(
+				prototype,
+				prototype.getScope(),
+				valueType,
+				requirements,
+				conditions,
+				claims,
+				propositions);
 	}
 
 	public final ValueType<?> getValueType() {
 		return this.valueType;
 	}
 
-	public final CondDef[] getRequirements() {
+	public final CondDefs requirements() {
 		return this.requirements;
 	}
 
-	public final CondDef[] getConditions() {
+	@Deprecated
+	public final CondDef[] getRequirements() {
+		return requirements().get();
+	}
+
+	public final CondDefs conditions() {
 		return this.conditions;
 	}
 
-	public final ValueDef[] getClaims() {
+	@Deprecated
+	public final CondDef[] getConditions() {
+		return conditions().get();
+	}
+
+	public final ValueDefs claims() {
 		return this.claims;
 	}
 
-	public final ValueDef[] getPropositions() {
+	@Deprecated
+	public final ValueDef[] getClaims() {
+		return claims().get();
+	}
+
+	public final ValueDefs propositions() {
 		return this.propositions;
+	}
+
+	@Deprecated
+	public final ValueDef[] getPropositions() {
+		return propositions().get();
 	}
 
 	public boolean isEmpty() {
@@ -244,46 +246,46 @@ public class Definitions extends Scoped {
 	}
 
 	public final boolean onlyClaims() {
-		return this.propositions.length == 0 && this.conditions.length == 0;
+		return propositions().isEmpty() && conditions().isEmpty();
 	}
 
 	public final boolean noClaims() {
-		return this.claims.length == 0 && this.requirements.length == 0;
+		return claims().isEmpty() && requirements().isEmpty();
 	}
 
+	@Deprecated
 	public final LogicalValue getConstantRequirement() {
-		if (this.constantRequirement != null) {
-			return this.constantRequirement;
-		}
-		return this.constantRequirement = constantValue(this.requirements);
+		return requirements().getConstant();
 	}
 
+	@Deprecated
 	public final LogicalValue getConstantCondition() {
-		if (this.constantCondition != null) {
-			return this.constantCondition;
-		}
-		return this.constantCondition = constantValue(this.conditions);
+		return conditions().getConstant();
 	}
 
+	@Deprecated
 	public final DefValue requirement(Resolver resolver) {
-		return calculateCondition(resolver, this.requirements);
+		return requirements().resolve(resolver);
 	}
 
+	@Deprecated
 	public final DefValue condition(Resolver resolver) {
-		return calculateCondition(resolver, this.conditions);
+		return conditions().resolve(resolver);
 	}
 
+	@Deprecated
 	public final DefValue claim(Resolver resolver) {
-		return calculateValue(resolver, this.claims);
+		return claims().resolve(resolver);
 	}
 
+	@Deprecated
 	public final DefValue proposition(Resolver resolver) {
-		return calculateValue(resolver, this.propositions);
+		return propositions().resolve(resolver);
 	}
 
 	public DefValue value(Resolver resolver) {
 
-		final DefValue requirement = requirement(resolver);
+		final DefValue requirement = requirements().resolve(resolver);
 
 		if (!requirement.isDefinite()) {
 			return requirement;
@@ -292,7 +294,7 @@ public class Definitions extends Scoped {
 			return requirement;
 		}
 
-		final DefValue condition = condition(resolver);
+		final DefValue condition = conditions().resolve(resolver);
 
 		if (!condition.isDefinite()) {
 			return condition;
@@ -302,12 +304,12 @@ public class Definitions extends Scoped {
 		}
 
 		final DefValue value;
-		final DefValue claim = claim(resolver);
+		final DefValue claim = claims().resolve(resolver);
 
 		if (!claim.isUnknown()) {
 			value = claim;
 		} else {
-			value = proposition(resolver);
+			value = propositions().resolve(resolver);
 		}
 		if (value.isFalse()) {
 			return value;
@@ -329,13 +331,13 @@ public class Definitions extends Scoped {
 			}
 
 			if (condition.isRequirement()) {
-				return refineRequirements(new CondDef[] {condition});
+				return refineRequirements(new CondDefs(REQUIREMENT, condition));
 			}
-			if (impliedBy(condition, this.requirements)) {
+			if (requirements().imply(condition)) {
 				return this;
 			}
 
-			return refineConditions(new CondDef[] {condition});
+			return refineConditions(new CondDefs(CONDITION, condition));
 		}
 
 		final ValueDef value = refinement.toValue();
@@ -348,13 +350,13 @@ public class Definitions extends Scoped {
 			return this;
 		}
 		if (value.isClaim()) {
-			return refineClaims(valueType, new ValueDef[] {value});
+			return refineClaims(valueType, new ValueDefs(CLAIM, value));
 		}
-		if (impliedBy(value, this.claims)) {
+		if (claims().imply(value)) {
 			return this;
 		}
 
-		return refinePropositions(valueType, new ValueDef[] {value});
+		return refinePropositions(valueType, new ValueDefs(PROPOSITION, value));
 	}
 
 	public Definitions refine(Definitions refinements) {
@@ -369,10 +371,10 @@ public class Definitions extends Scoped {
 			return this;
 		}
 
-		return refineRequirements(refinements.getRequirements())
-		.refineConditions(refinements.getConditions())
-		.refineClaims(valueType, refinements.getClaims())
-		.refinePropositions(valueType, refinements.getPropositions());
+		return refineRequirements(refinements.requirements())
+		.refineConditions(refinements.conditions())
+		.refineClaims(valueType, refinements.claims())
+		.refinePropositions(valueType, refinements.propositions());
 	}
 
 	public Definitions override(Definitions overriders) {
@@ -398,87 +400,51 @@ public class Definitions extends Scoped {
 			}
 		}
 
-		if (overriders.propositions.length == 0) {
+		if (overriders.propositions().isEmpty()) {
 			// No propositions specified.
-			if (overriders.conditions.length == 0) {
+			if (overriders.conditions().isEmpty()) {
 				// No condition specified.
-				return refineRequirements(overriders.getRequirements())
-				.refineClaims(valueType, overriders.getClaims());
+				return refineRequirements(overriders.requirements())
+				.refineClaims(valueType, overriders.claims());
 			}
 			return removeConditions()
-			.refineRequirements(overriders.getRequirements())
-			.refineConditions(overriders.getConditions())
-			.refineClaims(valueType, overriders.getClaims());
+			.refineRequirements(overriders.requirements())
+			.refineConditions(overriders.conditions())
+			.refineClaims(valueType, overriders.claims());
 		}
 
 		// Inherit claims, but not propositions.
 		return removePropositions()
-		.refineRequirements(overriders.getRequirements())
-		.refineConditions(overriders.getConditions())
-		.refineClaims(valueType, overriders.getClaims())
-		.refinePropositions(valueType, overriders.getPropositions());
+		.refineRequirements(overriders.requirements())
+		.refineConditions(overriders.conditions())
+		.refineClaims(valueType, overriders.claims())
+		.refinePropositions(valueType, overriders.propositions());
 	}
 
 	public Definitions claim() {
 		if (onlyClaims()) {
 			return this;
 		}
-
-		final CondDef[] requirements = Arrays.copyOf(
-				this.requirements,
-				this.requirements.length + this.conditions.length);
-		int idx = this.requirements.length;
-
-		for (CondDef condition : this.conditions) {
-			requirements[idx++] = condition.claim();
-		}
-
-		final ValueDef[] claims = Arrays.copyOf(
-				this.claims,
-				this.claims.length + this.propositions.length);
-
-		idx = this.claims.length;
-		for (ValueDef proposition : this.propositions) {
-			claims[idx++] = proposition.claim();
-		}
-
 		return new Definitions(
 				this,
 				getValueType(),
-				requirements,
+				conditions().claim(requirements()),
 				NO_CONDITIONS,
-				claims,
-				NO_VALUES);
+				propositions().claim(claims()),
+				NO_PROPOSITIONS);
 	}
 
 	public Definitions unclaim() {
 		if (noClaims()) {
 			return this;
 		}
-
-		final CondDef[] conditions =
-			new CondDef[this.requirements.length + this.conditions.length];
-		int idx = 0;
-		for (CondDef requirement : this.requirements) {
-			conditions[idx++] = requirement.unclaim();
-		}
-
-		arraycopy(
-				this.conditions,
-				0,
-				conditions,
-				this.requirements.length,
-				this.conditions.length);
-
-		final ValueDef[] propositions = unclaimValues();
-
 		return new Definitions(
 				this,
 				getValueType(),
-				NO_CONDITIONS,
-				conditions,
-				NO_VALUES,
-				propositions);
+				NO_REQUIREMENTS,
+				requirements().unclaim(conditions()),
+				NO_CLAIMS,
+				claims().unclaim(propositions()));
 	}
 
 	public Definitions upgradeScope(Scope scope) {
@@ -488,7 +454,7 @@ public class Definitions extends Scoped {
 		assertCompatible(scope);
 
 		final Definitions result =
-			new UpgradeRescoper(getScope(), scope).update(this);
+				new UpgradeRescoper(getScope(), scope).update(this);
 
 		result.assertScopeIs(scope);
 
@@ -500,10 +466,10 @@ public class Definitions extends Scoped {
 				location,
 				getScope(),
 				getValueType(),
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS,
-				NO_VALUES,
-				toValues(this.requirements));
+				NO_CLAIMS,
+				requirements().toValues());
 	}
 
 	public Definitions conditionPart(LocationInfo location) {
@@ -511,70 +477,59 @@ public class Definitions extends Scoped {
 				location,
 				getScope(),
 				getValueType(),
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS,
-				NO_VALUES,
-				toValues(this.conditions));
+				NO_CLAIMS,
+				conditions().toValues());
 	}
 
 	public Definitions valuePart(LocationInfo location) {
 		return new Definitions(
-				location,
-				getScope(),
+				this,
 				getValueType(),
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS,
-				NO_VALUES,
-				unclaimValues());
+				NO_CLAIMS,
+				claims().unclaim(propositions()));
 	}
 
 	public Definitions claimPart(LocationInfo location) {
-
-		final ValueDef[] propositions = new ValueDef[this.claims.length];
-
-		for (int i = 0; i < propositions.length; ++i) {
-			propositions[i] = this.claims[i].unclaim();
-		}
-
 		return new Definitions(
-				location,
-				getScope(),
+				this,
 				getValueType(),
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS,
-				NO_VALUES,
-				propositions);
+				NO_CLAIMS,
+				claims().unclaim(NO_PROPOSITIONS));
 	}
 
 	public Definitions propositionPart(LocationInfo location) {
 		return new Definitions(
-				location,
-				getScope(),
+				this,
 				getValueType(),
+				NO_REQUIREMENTS,
 				NO_CONDITIONS,
-				NO_CONDITIONS,
-				NO_VALUES,
-				this.propositions);
+				NO_CLAIMS,
+				propositions());
 	}
 
 	public Definitions runtime() {
 		return new Definitions(
 				this,
-				getScope(),
 				getValueType(),
-				this.requirements,
-				ArrayUtil.prepend(new RuntimeCondDef(this), this.conditions),
-				this.claims,
-				this.propositions);
+				requirements(),
+				conditions().runtime(this),
+				claims(),
+				propositions());
 	}
 
 	public final void resolveAll() {
 		getContext().fullResolution().start();
 		try {
-			resolveAll(ValuePartId.REQUIREMENT, this.requirements);
-			resolveAll(ValuePartId.CONDITION, this.conditions);
-			resolveAll(ValuePartId.CLAIM, this.claims);
-			resolveAll(ValuePartId.PROPOSITION, this.propositions);
+			requirements().resolveAll(this, ValuePartId.REQUIREMENT);
+			conditions().resolveAll(this, ValuePartId.CONDITION);
+			claims().resolveAll(this, ValuePartId.CLAIM);
+			propositions().resolveAll(this, ValuePartId.PROPOSITION);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -596,40 +551,21 @@ public class Definitions extends Scoped {
 
 		boolean comma = false;
 
-		comma = defsToString(out, comma, this.requirements);
-		comma = defsToString(out, comma, this.conditions);
-		comma = defsToString(out, comma, this.claims);
-		comma = defsToString(out, comma, this.propositions);
+		comma = this.requirements.defsToString(out, comma);
+		comma = this.conditions.defsToString(out, comma);
+		comma = this.claims.defsToString(out, comma);
+		comma = this.propositions.defsToString(out, comma);
 
 		out.append(']');
 
 		return out.toString();
 	}
 
-	private static boolean defsToString(
-			StringBuilder out,
-			boolean comma,
-			Def<?>[] defs) {
-
-		boolean hasComma = comma;
-
-		for (Def<?> def : defs) {
-			if (hasComma) {
-				out.append(", ");
-			} else {
-				hasComma = true;
-			}
-			out.append(def);
-		}
-
-		return hasComma;
-	}
-
-	private void assertEmptyWithoutValues() {
-		assert (this.valueType != null
-				|| (this.propositions.length == 0
-						&& this.claims.length == 0)) :
+	private boolean assertEmptyWithoutValues() {
+		assert (getValueType() != null
+				|| (propositions().isEmpty() && claims().isEmpty())) :
 				"Non-empty definitions should have a value type";
+		return true;
 	}
 
 	private ValueType<?> compatibleType(ValueDef refinement) {
@@ -658,17 +594,37 @@ public class Definitions extends Scoped {
 		return ValueType.NONE;
 	}
 
+	private final Definitions refineRequirements(CondDefs refinements) {
+		return requirements().refineRequirements(this, refinements);
+	}
+
+	private final Definitions refineConditions(CondDefs refinements) {
+		return conditions().refineConditions(this, refinements);
+	}
+
+	private final Definitions refineClaims(
+			ValueType<?> valueType,
+			ValueDefs refinements) {
+		return claims().refineClaims(this, valueType, refinements);
+	}
+
+	private final Definitions refinePropositions(
+			ValueType<?> valueType,
+			ValueDefs refinements) {
+		return propositions().refinePropositions(this, valueType, refinements);
+	}
+
 	private Definitions removeConditions() {
-		if (this.conditions.length == 0) {
+		if (conditions().isEmpty()) {
 			return this;
 		}
 		return new Definitions(
 				this,
 				this.valueType,
-				this.requirements,
+				requirements(),
 				NO_CONDITIONS,
-				this.claims,
-				this.propositions);
+				claims(),
+				propositions());
 	}
 
 	private Definitions removePropositions() {
@@ -678,344 +634,10 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				getValueType(),
-				this.requirements,
+				requirements(),
 				NO_CONDITIONS,
-				this.claims,
-				NO_VALUES);
-	}
-
-	private Definitions refineRequirements(CondDef[] requirements) {
-		if (requirements.length == 0) {
-			return this;
-		}
-
-		final CondDef[] newRequirements =
-			addClaims(this.requirements, requirements);
-		final CondDef[] newConditions =
-			removeImpliedBy(this.conditions, requirements);
-
-		if (newRequirements == this.requirements
-				&& newConditions == this.conditions) {
-			return this;
-		}
-
-		return new Definitions(
-				this,
-				this.valueType,
-				newRequirements,
-				newConditions,
-				this.claims,
-				this.propositions);
-	}
-
-	private Definitions refineConditions(CondDef[] refinements) {
-		if (refinements.length == 0) {
-			return this;
-		}
-
-		final CondDef[] newConditions =
-			addPropositions(this.requirements, this.conditions, refinements);
-
-		if (newConditions == this.conditions) {
-			return this;
-		}
-
-		return new Definitions(
-				this,
-				this.valueType,
-				this.requirements,
-				newConditions,
-				this.claims,
-				this.propositions);
-	}
-
-	private Definitions refineClaims(
-			ValueType<?> valueType,
-			ValueDef[] claims) {
-		if (claims.length == 0 && this.valueType == valueType) {
-			return this;
-		}
-
-		final ValueDef[] newClaims = addClaims(this.claims, claims);
-		final ValueDef[] newPropositions =
-			removeImpliedBy(this.propositions, claims);
-
-		if (newClaims == this.claims && newPropositions == this.propositions) {
-			return this;
-		}
-
-		return new Definitions(
-				this,
-				valueType,
-				this.requirements,
-				this.conditions,
-				newClaims,
-				newPropositions);
-	}
-
-	private Definitions refinePropositions(
-			ValueType<?> valueType,
-			ValueDef[] refinements) {
-		if (refinements.length == 0 && this.valueType == valueType) {
-			return this;
-		}
-
-		final ValueDef[] newPropositions =
-			addPropositions(this.claims, this.propositions, refinements);
-
-		if (newPropositions == this.propositions) {
-			return this;
-		}
-
-		return new Definitions(
-				this,
-				valueType,
-				this.requirements,
-				this.conditions,
-				this.claims,
-				newPropositions);
-	}
-
-	private static <D extends Def<D>> D[] addClaims(D[] claims, D[] defs) {
-
-		final int len = claims.length;
-
-		if (len == 0) {
-			return defs;
-		}
-
-		@SuppressWarnings("unchecked")
-		final D[] newClaims = (D[]) Array.newInstance(
-				claims.getClass().getComponentType(),
-				len + defs.length);
-		int idx = 0;
-
-		for (D def : defs) {
-			for (int i = 0; i < len; ++i) {
-
-				final D c1 = claims[i];
-
-				if (c1.impliesWhenBefore(def)) {
-					if (defs.length == 1) {
-						return claims;
-					}
-				} else if (def.impliesWhenAfter(c1)) {
-					++i;
-					for (; i < len; ++i) {
-
-						final D c2 = claims[i];
-
-						if (def.impliesWhenAfter(c2)) {
-							continue;
-						}
-						newClaims[idx++] = c2;
-					}
-					newClaims[idx++] = def;
-					break;
-				}
-				newClaims[idx++] = c1;
-			}
-		}
-
-		return ArrayUtil.clip(newClaims, idx);
-	}
-
-	private static <D extends Def<D>> D[] addPropositions(
-			D[] claims,
-			D[] propositions,
-			D[] defs) {
-
-		final int len = propositions.length;
-
-		if (len == 0) {
-			return defs;
-		}
-
-		final D[] newPropositions =
-			Arrays.copyOf(propositions, len + defs.length);
-		int idx = propositions.length;
-
-		for (D proposition : defs) {
-			if (impliedBy(proposition, propositions)) {
-				continue;
-			}
-			if (impliedBy(proposition, claims)) {
-				continue;
-			}
-			newPropositions[idx++] = proposition;
-		}
-
-		return ArrayUtil.clip(newPropositions, idx);
-	}
-
-	private static <D extends Def<D>> D[] removeImpliedBy(
-			D[] defs,
-			D[] existing) {
-
-		final int len = defs.length;
-		@SuppressWarnings("unchecked")
-		final D[] newDefs =
-			(D[]) Array.newInstance(defs.getClass().getComponentType(), len);
-		int idx = 0;
-
-		for (D def : defs) {
-			if (!impliedBy(def, existing)) {
-				newDefs[idx++] = def;
-			}
-		}
-		if (idx == len) {
-			return defs;
-		}
-
-		return ArrayUtil.clip(newDefs, idx);
-	}
-
-	private static <D extends Def<D>> boolean impliedBy(D def, D[] claims) {
-		for (D claim : claims) {
-			if (claim.impliesWhenBefore(def)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static LogicalValue constantValue(CondDef[] conditions) {
-		for (CondDef condition : conditions) {
-
-			final LogicalValue constantValue = condition.getConstantValue();
-
-			if (!constantValue.isTrue()) {
-				return constantValue;
-			}
-		}
-
-		return LogicalValue.TRUE;
-	}
-
-	private DefValue calculateCondition(Resolver resolver, CondDef[] defs) {
-
-		DefValue result = null;
-		int i = 0;
-
-		while (i < defs.length) {
-
-			final CondDef def = defs[i];
-			final DefValue value = def.definitionValue(resolver);
-
-			if (value.isUnknown()) {
-				// Prerequisite not met - try next.
-				++i;
-				continue;
-			}
-			if (value.isFalse()) {
-				// Value is false.
-				return value;
-			}
-			if (result == null || result.isDefinite()) {
-				// Indefinite value takes precedence.
-				// But false value may appear later, so go on.
-				result = value;
-			}
-			if (!def.hasPrerequisite()) {
-				// All conditions without prerequisite should be met.
-				++i;
-				continue;
-			}
-			// Prerequisite met.
-			// Skip the rest of alternatives and the following conditions
-			// without prerequisites ('otherwise').
-			i = nextNonPrereq(defs, i + 1);
-			i = nextPrereq(defs, i + 1);
-		}
-
-		if (result == null) {
-			return nonExistingValue(this);
-		}
-
-		return result;
-	}
-
-	private int nextNonPrereq(CondDef[] defs, int start) {
-
-		int index = start;
-
-		while (index < defs.length) {
-			if (!defs[index].hasPrerequisite()) {
-				return index;
-			}
-			++index;
-		}
-
-		return index;
-	}
-
-	private int nextPrereq(CondDef[] defs, int start) {
-
-		int index = start;
-
-		while (index < defs.length) {
-			if (defs[index].hasPrerequisite()) {
-				return index;
-			}
-			++index;
-		}
-
-		return index;
-	}
-
-	private DefValue calculateValue(Resolver resolver, ValueDef[] defs) {
-		for (ValueDef def : defs) {
-
-			final DefValue value = def.definitionValue(resolver);
-
-			if (!value.isUnknown()) {
-				return value;
-			}
-		}
-
-		return nonExistingValue(this);
-	}
-
-	private ValueDef[] unclaimValues() {
-
-		final ValueDef[] propositions =
-			new ValueDef[this.claims.length + this.propositions.length];
-
-		int idx = 0;
-
-		for (ValueDef claim : this.claims) {
-			propositions[idx++] = claim.unclaim();
-		}
-
-		arraycopy(
-				this.propositions,
-				0,
-				propositions,
-				this.claims.length,
-				this.propositions.length);
-
-		return propositions;
-	}
-
-	private static ValueDef[] toValues(CondDef[] conditions) {
-
-		final ValueDef[] values = new ValueDef[conditions.length];
-
-		for (int i = 0; i < conditions.length; ++i) {
-			values[i] = conditions[i].toValue().unclaim();
-		}
-
-		return values;
-	}
-
-	private final void resolveAll(ValuePartId part, Def<?>[] defs) {
-
-		final Resolver resolver =
-				getScope().toObject().value().part(part).resolver();
-
-		for (Def<?> def : defs) {
-			def.resolveAll(resolver);
-		}
+				claims(),
+				NO_PROPOSITIONS);
 	}
 
 	private static final class Empty extends Definitions {
@@ -1035,13 +657,5 @@ public class Definitions extends Scoped {
 		}
 
 	}
-
-	private boolean assertDefsScopeIs(Def<?>[] defs, Scope scope) {
-		for (Def<?> def : defs) {
-			def.assertScopeIs(scope);
-		}
-		return true;
-	}
-
 
 }
