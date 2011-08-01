@@ -1011,7 +1011,7 @@ public class Definitions extends Scoped {
 	private final void resolveAll(ValuePartId part, Def<?>[] defs) {
 
 		final Resolver resolver =
-				getScope().toObject().value().partResolver(part);
+				getScope().toObject().value().part(part).resolver();
 
 		for (Def<?> def : defs) {
 			def.resolveAll(resolver);

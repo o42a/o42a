@@ -19,7 +19,6 @@
 */
 package org.o42a.lib.test.run;
 
-import static org.o42a.core.artifact.object.ValuePartId.PROPOSITION;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
 
@@ -95,7 +94,7 @@ final class ObjectTestsRunner extends DefinedObject {
 		final ImperativeSentence sentence =
 				statements.braces(this, "_tests_").propose(this);
 		final UserInfo user =
-				definition.getScope().toObject().value().partUser(PROPOSITION);
+				definition.getScope().toObject().value().proposition();
 
 		for (Member member : object.getMembers()) {
 

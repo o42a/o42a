@@ -23,7 +23,6 @@ import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ValuePartId;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -87,8 +86,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	@Override
 	public void resolveBuiltin(Obj object) {
 
-		final Resolver resolver =
-				object.value().partResolver(ValuePartId.PROPOSITION);
+		final Resolver resolver = object.value().proposition().resolver();
 
 		operand().resolveValues(resolver);
 	}

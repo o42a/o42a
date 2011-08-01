@@ -43,7 +43,8 @@ public final class ObjectValue implements UseInfo {
 	private Definitions explicitDefinitions;
 
 	private Usable usable;
-	private EnumMap<ValuePartId, Usable> usableParts;
+	private Usable explicitUsable;
+	private EnumMap<ValuePartId, ValuePart> parts;
 
 	private boolean fullyResolved;
 
@@ -71,10 +72,6 @@ public final class ObjectValue implements UseInfo {
 				object.getScope().dummyResolver()).value().getValueType());
 
 		return this.valueType;
-	}
-
-	public final User partUser(ValuePartId part) {
-		return usablePart(part).toUser();
 	}
 
 	@Override
@@ -160,19 +157,48 @@ public final class ObjectValue implements UseInfo {
 				ancestorDefinitions);
 	}
 
-	public final ObjectValue explicitUseBy(UserInfo user) {
-		return usePart(ValuePartId.ALL, user);
+	public final ValuePart requirement() {
+		return part(ValuePartId.REQUIREMENT);
 	}
 
-	public final ObjectValue usePart(ValuePartId part, UserInfo user) {
+	public final ValuePart condition() {
+		return part(ValuePartId.CONDITION);
+	}
+
+	public final ValuePart claim() {
+		return part(ValuePartId.CLAIM);
+	}
+
+	public final ValuePart proposition() {
+		return part(ValuePartId.PROPOSITION);
+	}
+
+	public final ValuePart part(ValuePartId partId) {
+		assert partId != null :
+			"Value part identifier not specified";
+		if (this.parts == null) {
+			this.parts = new EnumMap<ValuePartId, ValuePart>(ValuePartId.class);
+		} else {
+
+			final ValuePart part = this.parts.get(partId);
+
+			if (part != null) {
+				return part;
+			}
+		}
+
+		final ValuePart part = new ValuePart(this, partId);
+
+		this.parts.put(partId, part);
+
+		return part;
+	}
+
+	public final ObjectValue explicitUseBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			usablePart(part).useBy(user);
+			explicitUsable().useBy(user);
 		}
 		return this;
-	}
-
-	public final Resolver partResolver(ValuePartId part) {
-		return getObject().getScope().newResolver(usablePart(part));
 	}
 
 	public final void resolveAll(UserInfo user) {
@@ -221,6 +247,16 @@ public final class ObjectValue implements UseInfo {
 		return this.usable;
 	}
 
+	final Usable explicitUsable() {
+		if (this.explicitUsable != null) {
+			return this.explicitUsable;
+		}
+
+		this.explicitUsable = simpleUsable("ValueOf", this.object);
+
+		return this.explicitUsable;
+	}
+
 	private Definitions getAncestorDefinitions() {
 
 		final Definitions ancestorDefinitions;
@@ -235,30 +271,6 @@ public final class ObjectValue implements UseInfo {
 		}
 
 		return ancestorDefinitions;
-	}
-
-	private final Usable usablePart(ValuePartId part) {
-		if (this.usableParts == null) {
-			this.usableParts = new EnumMap<ValuePartId, Usable>(ValuePartId.class);
-		} else {
-
-			final Usable usable = this.usableParts.get(part);
-
-			if (usable != null) {
-				return usable;
-			}
-		}
-
-		final Usable usable = simpleUsable(part.usableName(), this.object);
-
-		this.usableParts.put(part, usable);
-
-		if (part != ValuePartId.ALL) {
-			usable().useBy(usable);
-			usable.useBy(usablePart(ValuePartId.ALL));
-		}
-
-		return usable;
 	}
 
 }

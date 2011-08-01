@@ -26,7 +26,9 @@ import java.util.HashMap;
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.*;
+import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
@@ -151,7 +153,7 @@ public final class ValuePartRef extends ObjectConstructor {
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self = selfPath.resolveArtifact(
 					this,
-					value().partUser(ValuePartId.PROPOSITION),
+					value().proposition(),
 					getScope()).toObject();
 			final Definitions definitions;
 
