@@ -24,7 +24,6 @@ import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
@@ -36,7 +35,7 @@ import org.o42a.core.value.ValueType;
 
 enum RefValuePart {
 
-	VALUE(ValuePart.ALL, "Value", "value") {
+	VALUE("Value", "value") {
 
 		@Override
 		ValueType<?> valueType(Obj object) {
@@ -71,7 +70,7 @@ enum RefValuePart {
 
 	},
 
-	REQUIREMENT(ValuePart.REQUIREMENT, "Requirement", "requirement") {
+	REQUIREMENT("Requirement", "requirement") {
 
 		@Override
 		ValueType<?> valueType(Obj object) {
@@ -104,7 +103,7 @@ enum RefValuePart {
 
 	},
 
-	CONDITION(ValuePart.CONDITION, "Condition", "condition") {
+	CONDITION("Condition", "condition") {
 
 		@Override
 		ValueType<?> valueType(Obj object) {
@@ -139,7 +138,7 @@ enum RefValuePart {
 
 	},
 
-	CLAIM(ValuePart.CLAIM, "Claim", "claim") {
+	CLAIM("Claim", "claim") {
 
 		@Override
 		ValueType<?> valueType(Obj object) {
@@ -174,7 +173,7 @@ enum RefValuePart {
 
 	},
 
-	PROPOSITION(ValuePart.PROPOSITION, "Proposition", "proposition") {
+	PROPOSITION("Proposition", "proposition") {
 
 		@Override
 		ValueType<?> valueType(Obj object) {
@@ -214,17 +213,11 @@ enum RefValuePart {
 
 	};
 
-	private final ValuePart part;
 	private final String partName;
 
-	RefValuePart(ValuePart part, String partName, String partId) {
-		this.part = part;
+	RefValuePart(String partName, String partId) {
 		this.partName = partName;
 		ValuePartRef.partsById.put(partId, this);
-	}
-
-	final ValuePart part() {
-		return this.part;
 	}
 
 	final String partName() {

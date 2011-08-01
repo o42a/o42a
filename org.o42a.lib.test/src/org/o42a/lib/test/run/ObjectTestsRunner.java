@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test.run;
 
-import static org.o42a.core.artifact.object.ValuePart.PROPOSITION;
+import static org.o42a.core.artifact.object.ValuePartId.PROPOSITION;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
 

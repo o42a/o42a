@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import static org.o42a.core.artifact.object.ValuePart.PROPOSITION;
+import static org.o42a.core.artifact.object.ValuePartId.PROPOSITION;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.ast.expression.UnaryNode;
