@@ -26,8 +26,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.ObjectValue;
-import org.o42a.core.artifact.object.ValuePart;
+import org.o42a.core.artifact.object.*;
 import org.o42a.core.ref.Resolver;
 import org.o42a.util.ArrayUtil;
 
@@ -56,6 +55,22 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 
 	public final int length() {
 		return this.defs.length;
+	}
+
+	public final boolean updatedSince(Obj ascendant) {
+
+		final ObjectType ascendantType = ascendant.type();
+
+		for (D def : get()) {
+
+			final Obj source = def.getSource();
+
+			if (!ascendantType.derivedFrom(source.type())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override

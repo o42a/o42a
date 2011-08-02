@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object;
 import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.core.def.DefKind;
+import org.o42a.core.def.Defs;
 import org.o42a.core.ref.Resolver;
 import org.o42a.util.use.*;
 
@@ -31,6 +32,7 @@ public final class ValuePart implements UserInfo {
 	private final ObjectValue objectValue;
 	private final DefKind defKind;
 	private Usable usable;
+	private Usable ancestorDefsUpdates;
 
 	ValuePart(ObjectValue objectValue, DefKind defKind) {
 		this.objectValue = objectValue;
@@ -49,6 +51,10 @@ public final class ValuePart implements UserInfo {
 		return this.defKind;
 	}
 
+	public final Defs<?, ?> getDefs() {
+		return getObjectValue().getDefinitions().defs(getDefKind());
+	}
+
 	@Override
 	public final UseFlag getUseBy(UseCaseInfo useCase) {
 		if (this.usable == null) {
@@ -62,6 +68,17 @@ public final class ValuePart implements UserInfo {
 		return getUseBy(useCase).isUsed();
 	}
 
+	public final UseFlag ancestorDefsUpdatedBy(UseCase useCase) {
+		if (this.ancestorDefsUpdates == null) {
+			return useCase.toUseCase().unusedFlag();
+		}
+		return this.ancestorDefsUpdates.getUseBy(useCase);
+	}
+
+	public final boolean isAncestorDefsUpdatedBy(UseCase useCase) {
+		return ancestorDefsUpdatedBy(useCase).isUsed();
+	}
+
 	@Override
 	public final User toUser() {
 		return usable().toUser();
@@ -72,6 +89,12 @@ public final class ValuePart implements UserInfo {
 			usable().useBy(user);
 		}
 		return this;
+	}
+
+	public final void updateAncestorDefsBy(UserInfo user) {
+		if (!user.toUser().isDummy()) {
+			ancestorDefsUpdates().useBy(user);
+		}
 	}
 
 	public final Resolver resolver() {
@@ -96,6 +119,15 @@ public final class ValuePart implements UserInfo {
 		this.usable.useBy(getObjectValue().explicitUsable());
 
 		return this.usable;
+	}
+
+	final Usable ancestorDefsUpdates() {
+		if (this.ancestorDefsUpdates != null) {
+			return this.ancestorDefsUpdates;
+		}
+		return this.ancestorDefsUpdates = simpleUsable(
+				"Ancestor " + getDefKind().displayName() + "sUpdatesOf",
+				getObject());
 	}
 
 }

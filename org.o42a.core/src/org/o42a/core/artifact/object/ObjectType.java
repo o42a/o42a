@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.o42a.core.Scope;
+import org.o42a.core.def.DefKind;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
@@ -142,6 +143,11 @@ public final class ObjectType implements UserInfo {
 		return derivations != null && derivations.is(derivation);
 	}
 
+	public void resolveAll() {
+		getAscendants().resolveAll();
+		traceAncestorDefinitionUpdates();
+	}
+
 	@Override
 	public String toString() {
 		if (this.object == null) {
@@ -239,6 +245,45 @@ public final class ObjectType implements UserInfo {
 					continue;
 				}
 				allAscendants.put(scope, derivations.union(traversed));
+			}
+		}
+	}
+
+	private void traceAncestorDefinitionUpdates() {
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor == null) {
+			return;
+		}
+
+		final ObjectValue ancestorValue =
+				ancestor.typeObject(dummyUser()).value();
+
+		for (Sample sample : getSamples()) {
+
+			final Obj sampleObject =
+					sample.getTypeRef().typeObject(dummyUser());
+			final TypeRef sampleAncestor = sampleObject.type().getAncestor();
+
+			if (sampleAncestor == null) {
+				continue;
+			}
+
+			final Obj sampleAncestorObject =
+					sampleAncestor.typeObject(dummyUser());
+
+			for (DefKind defKind : DefKind.values()) {
+
+				final ValuePart ancestorValuePart = ancestorValue.part(defKind);
+
+				if (!ancestorValuePart.getDefs().updatedSince(
+						sampleAncestorObject)) {
+					continue;
+				}
+
+				ancestorValuePart.updateAncestorDefsBy(
+						getObject().value().part(defKind));
 			}
 		}
 	}
