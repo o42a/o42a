@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.def.BlockBase;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
@@ -35,7 +34,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.Place.Trace;
 
 
-public abstract class Block<S extends Statements<S>> extends BlockBase {
+public abstract class Block<S extends Statements<S>> extends Statement {
 
 	private final Statements<?> enclosing;
 	private Sentence<S> lastIssue;

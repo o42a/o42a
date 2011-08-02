@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl;
 
+import static org.o42a.core.artifact.link.TargetRef.targetRef;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
@@ -167,10 +169,7 @@ final class Rescoped extends Ref {
 
 	@Override
 	public TargetRef toTargetRef(TypeRef typeRef) {
-		return createTargetRef(
-				this.ref,
-				typeRef,
-				this.rescoper);
+		return targetRef(this.ref, typeRef, this.rescoper);
 	}
 
 	@Override

@@ -26,8 +26,8 @@ import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
-import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.IntrinsicRefNode;
+import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.parser.Grammar;
 

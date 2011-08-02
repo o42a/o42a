@@ -25,6 +25,7 @@ import java.util.Collection;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;

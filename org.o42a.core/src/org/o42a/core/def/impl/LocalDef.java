@@ -17,14 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.def.impl;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -41,14 +44,33 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-class LocalDef extends ValueDef {
+public class LocalDef extends ValueDef {
+
+	public static ValueDef localDef(ImperativeBlock block, Scope scope) {
+
+		final Obj actualOwner = scope.toObject();
+		final Obj explicitOwner = block.getScope().getOwner();
+		final boolean explicit = actualOwner == explicitOwner;
+
+		final LocalDef localDef = new LocalDef(scope, block, explicit);
+
+		// Rescope to explicit owner scope.
+		final ValueDef def = localDef.rescope(explicitOwner.getScope());
+
+		if (explicit) {
+			return def;
+		}
+
+		// Upgrade scope to actual owner's one.
+		return def.upgradeScope(actualOwner.getScope());
+	}
 
 	private final Scope ownerScope;
 	private final ImperativeBlock block;
 	private final boolean explicit;
 	private final Rescoper localRescoper;
 
-	LocalDef(
+	private LocalDef(
 			Scope ownerScope,
 			ImperativeBlock block,
 			boolean explicit) {
@@ -120,7 +142,8 @@ class LocalDef extends ValueDef {
 		assert local != null :
 			"Not a local scope: " + resolver;
 
-		return getBlock().initialValue(local.walkingResolver(resolver)).getValue();
+		return getBlock().initialValue(
+				local.walkingResolver(resolver)).getValue();
 	}
 
 	@Override
@@ -162,7 +185,7 @@ class LocalDef extends ValueDef {
 		final Obj ownerType = scope.getOwner();
 		final ObjOp ownerBody =
 			ownerObject.cast(dirs.id("owner"), dirs.dirs(), ownerType);
-		final LocalIRBase ir = scope.ir(host.getGenerator());
+		final LocalIR ir = scope.ir(host.getGenerator());
 
 		if (this.explicit) {
 			return ir.writeValue(dirs, ownerBody, null);

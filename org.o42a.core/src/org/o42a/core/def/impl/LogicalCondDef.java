@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,75 +17,59 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.def.impl;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
-final class RefValueDef extends ValueDef {
+public final class LogicalCondDef extends CondDef {
 
-	private final Ref ref;
+	private final Logical logical;
 
-	RefValueDef(Ref ref) {
-		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
-		this.ref = ref;
+	public LogicalCondDef(Logical logical) {
+		super(
+				sourceOf(logical),
+				logical,
+				transparentRescoper(logical.getScope()));
+		this.logical = logical;
 	}
 
-	RefValueDef(RefValueDef prototype, Rescoper rescoper) {
+	private LogicalCondDef(LogicalCondDef prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
-		this.ref = prototype.ref;
-	}
-
-	@Override
-	public ValueType<?> getValueType() {
-		return this.ref.getValueType();
+		this.logical = prototype.logical;
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.logical.getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.logical.getScope());
 	}
 
 	@Override
-	protected Logical buildLogical() {
-		return this.ref.getLogical();
+	protected final Logical buildLogical() {
+		return this.logical;
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return this.ref.value(resolver);
-	}
-
-	@Override
-	protected RefValueDef create(
+	protected CondDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new RefValueDef(this, rescoper);
+		return new LogicalCondDef(this, rescoper);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.ref.resolveValues(resolver);
-	}
-
-	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.ref.op(host).writeValue(dirs);
+		this.logical.resolveAll(resolver);
 	}
 
 }

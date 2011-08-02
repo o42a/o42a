@@ -22,7 +22,9 @@ package org.o42a.core.st.impl.cond;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.util.use.*;
+import org.o42a.util.use.UseCaseInfo;
+import org.o42a.util.use.UseFlag;
+import org.o42a.util.use.User;
 
 
 final class DirectiveContext implements InstructionContext {

@@ -36,11 +36,11 @@ public abstract class Def<D extends Def<D>>
 		extends Rescopable<D>
 		implements SourceInfo {
 
-	static final Obj sourceOf(ScopeInfo scope) {
+	public static final Obj sourceOf(ScopeInfo scope) {
 		return sourceOf(scope.getScope().getContainer());
 	}
 
-	static Obj sourceOf(Container container) {
+	public static Obj sourceOf(Container container) {
 
 		final Obj object = container.toObject();
 
@@ -253,7 +253,7 @@ public abstract class Def<D extends Def<D>>
 
 	protected abstract String name();
 
-	final LocationInfo getLocation() {
+	protected final LocationInfo getLocation() {
 		return this.location;
 	}
 
@@ -265,6 +265,5 @@ public abstract class Def<D extends Def<D>>
 	private final D copy() {
 		return create(getRescoper(), transparentRescoper(getScope()));
 	}
-
 
 }

@@ -17,29 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.def.impl;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 
 
-final class RefCondDef extends CondDef {
+public final class RefValueDef extends ValueDef {
 
 	private final Ref ref;
 
-	RefCondDef(Obj source, Ref ref) {
-		super(source, ref, transparentRescoper(ref.getScope()));
+	public RefValueDef(Ref ref) {
+		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
 		this.ref = ref;
 	}
 
-	RefCondDef(RefCondDef prototype, Rescoper rescoper) {
+	RefValueDef(RefValueDef prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
 		this.ref = prototype.ref;
+	}
+
+	@Override
+	public ValueType<?> getValueType() {
+		return this.ref.getValueType();
 	}
 
 	@Override
@@ -58,15 +69,25 @@ final class RefCondDef extends CondDef {
 	}
 
 	@Override
-	protected RefCondDef create(
+	protected Value<?> calculateValue(Resolver resolver) {
+		return this.ref.value(resolver);
+	}
+
+	@Override
+	protected RefValueDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new RefCondDef(this, rescoper);
+		return new RefValueDef(this, rescoper);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.ref.resolveValues(resolver);
+	}
+
+	@Override
+	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+		return this.ref.op(host).writeValue(dirs);
 	}
 
 }

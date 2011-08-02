@@ -17,70 +17,64 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
-
-import static org.o42a.core.ref.path.Path.SELF_PATH;
+package org.o42a.core.def.impl.rescoper;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-final class TransparentRescoper extends Rescoper {
+public final class UpgradeRescoper extends Rescoper {
 
-	TransparentRescoper(Scope finalScope) {
-		super(finalScope);
-	}
+	private final Scope fromScope;
 
-	@Override
-	public boolean isTransparent() {
-		return true;
-	}
-
-	@Override
-	public Path getPath() {
-		return SELF_PATH;
-	}
-
-	@Override
-	public Definitions update(Definitions definitions) {
-		return definitions;
+	public UpgradeRescoper(Scope fromScope, Scope toScope) {
+		super(toScope);
+		this.fromScope = fromScope;
 	}
 
 	@Override
 	public Scope rescope(Scope scope) {
+		scope.assertDerivedFrom(getFinalScope());
 		return scope;
 	}
 
 	@Override
 	public Resolver rescope(LocationInfo location, Resolver resolver) {
+		resolver.getScope().assertDerivedFrom(getFinalScope());
 		return resolver;
 	}
 
 	@Override
 	public Scope updateScope(Scope scope) {
-		return scope;
+		return getFinalScope();
 	}
 
 	@Override
-	public <D extends Def<D>> D updateDef(D def) {
-		return def;
-	}
+	public Rescoper and(Rescoper other) {
+		if (other.getClass() != UpgradeRescoper.class) {
+			return super.and(other);
+		}
 
-	@Override
-	public Rescoper and(Rescoper filter) {
-		return filter;
+		final UpgradeRescoper filter2 = (UpgradeRescoper) other;
+
+		if (filter2.fromScope != getFinalScope()) {
+			return super.and(other);
+		}
+
+		return new UpgradeRescoper(this.fromScope, other.getFinalScope());
 	}
 
 	@Override
 	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
 		getFinalScope().assertCompatible(reproducer.getReproducingScope());
-		return new TransparentRescoper(reproducer.getScope());
+		return new UpgradeRescoper(this.fromScope, reproducer.getScope());
 	}
 
 	@Override
@@ -89,12 +83,30 @@ final class TransparentRescoper extends Rescoper {
 
 	@Override
 	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return host;
+
+		final CodeDirs subDirs = dirs.begin(
+				"upgrade_scope",
+				"Upgrade scope " + host + " to " + this.fromScope);
+		final ObjOp result = host.toObject(subDirs).cast(
+				subDirs.id("rescoped"),
+				subDirs,
+				this.fromScope.toObject());
+
+		subDirs.end();
+
+		return result;
 	}
 
 	@Override
 	public int hashCode() {
-		return getFinalScope().hashCode();
+
+		final int prime = 31;
+		int result = 1;
+
+		result = prime * result + getFinalScope().hashCode();
+		result = prime * result + this.fromScope.hashCode();
+
+		return result;
 	}
 
 	@Override
@@ -105,18 +117,26 @@ final class TransparentRescoper extends Rescoper {
 		if (obj == null) {
 			return false;
 		}
-		if (obj.getClass() != getClass()) {
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 
-		final TransparentRescoper other = (TransparentRescoper) obj;
+		final UpgradeRescoper other = (UpgradeRescoper) obj;
 
-		return getFinalScope() == other.getFinalScope();
+		if (getFinalScope() != other.getFinalScope()) {
+			return false;
+		}
+		if (this.fromScope != other.fromScope) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "noop";
+		return "UpgradeScope[" + this.fromScope
+		+ " -> " + getFinalScope() + ']';
 	}
 
 }

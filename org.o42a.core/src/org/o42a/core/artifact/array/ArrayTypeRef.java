@@ -19,7 +19,9 @@
 */
 package org.o42a.core.artifact.array;
 
-import org.o42a.core.*;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;

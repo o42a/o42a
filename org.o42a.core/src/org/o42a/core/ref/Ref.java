@@ -19,6 +19,9 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.artifact.link.TargetRef.targetRef;
+import static org.o42a.core.def.Def.sourceOf;
+import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
@@ -27,9 +30,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescoper;
-import org.o42a.core.def.ValueDef;
+import org.o42a.core.def.*;
+import org.o42a.core.def.impl.RefCondDef;
+import org.o42a.core.def.impl.RefValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -42,9 +45,10 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.impl.*;
+import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
+import org.o42a.core.ref.impl.type.DefaultTypeRef;
 import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.type.RefTypeBase;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -56,7 +60,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class Ref extends RefTypeBase {
+public abstract class Ref extends Statement {
 
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 
@@ -242,15 +246,26 @@ public abstract class Ref extends RefTypeBase {
 		if (isKnownStatic()) {
 			return toStaticTypeRef();
 		}
-		return typeRef(this);
+		return new DefaultTypeRef(this, transparentRescoper(getScope()));
 	}
 
 	public StaticTypeRef toStaticTypeRef() {
-		return staticTypeRef(this);
+		return new DefaultStaticTypeRef(
+				this,
+				this,
+				transparentRescoper(getScope()));
 	}
 
 	public TargetRef toTargetRef(TypeRef typeRef) {
-		return createTargetRef(this, typeRef);
+		return targetRef(this, typeRef);
+	}
+
+	public final ValueDef toValueDef() {
+		return new RefValueDef(this);
+	}
+
+	public final CondDef toCondDef() {
+		return new RefCondDef(sourceOf(this), this);
 	}
 
 	public Rescoper toRescoper() {

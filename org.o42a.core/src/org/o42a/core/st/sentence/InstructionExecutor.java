@@ -25,7 +25,9 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.Statement;
-import org.o42a.util.use.*;
+import org.o42a.util.use.UseCaseInfo;
+import org.o42a.util.use.UseFlag;
+import org.o42a.util.use.User;
 
 
 final class InstructionExecutor implements InstructionContext {

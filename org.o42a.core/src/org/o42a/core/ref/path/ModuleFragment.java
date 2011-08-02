@@ -21,7 +21,8 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;

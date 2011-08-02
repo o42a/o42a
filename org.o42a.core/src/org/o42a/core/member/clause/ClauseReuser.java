@@ -21,7 +21,8 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;

@@ -34,7 +34,7 @@ import org.o42a.core.st.Reproducer;
 
 public abstract class StaticTypeRef extends TypeRef {
 
-	StaticTypeRef(Rescoper rescoper) {
+	public StaticTypeRef(Rescoper rescoper) {
 		super(rescoper);
 	}
 

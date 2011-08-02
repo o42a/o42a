@@ -21,6 +21,7 @@ package org.o42a.core.ref.type;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.impl.rescoper.RescoperWrap;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;

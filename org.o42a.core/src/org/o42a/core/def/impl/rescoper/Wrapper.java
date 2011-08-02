@@ -17,10 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.def.impl.rescoper;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
@@ -28,11 +29,11 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-final class Wrapper extends Rescoper {
+public final class Wrapper extends Rescoper {
 
 	private final Scope wrapped;
 
-	Wrapper(Scope scope, Scope wrapped) {
+	public Wrapper(Scope scope, Scope wrapped) {
 		super(scope);
 		this.wrapped = wrapped;
 	}

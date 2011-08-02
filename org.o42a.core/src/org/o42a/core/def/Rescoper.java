@@ -23,6 +23,7 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.def.impl.rescoper.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;

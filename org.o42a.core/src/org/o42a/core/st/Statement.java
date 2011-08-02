@@ -21,7 +21,9 @@ package org.o42a.core.st;
 
 import static org.o42a.core.ir.local.StOp.noStOp;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;

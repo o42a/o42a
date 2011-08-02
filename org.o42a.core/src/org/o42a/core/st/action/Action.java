@@ -19,7 +19,9 @@
 */
 package org.o42a.core.st.action;
 
-import org.o42a.core.*;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;

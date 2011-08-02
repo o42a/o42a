@@ -22,7 +22,8 @@ package org.o42a.core.artifact.array;
 import static org.o42a.core.artifact.array.ArrayTypeRef.arrayTypeObject;
 import static org.o42a.core.ref.Ref.voidRef;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;

@@ -44,7 +44,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	private TypeRef ancestor;
 	private Holder<ObjectType> type;
 
-	TypeRef(Rescoper rescoper) {
+	public TypeRef(Rescoper rescoper) {
 		super(rescoper);
 	}
 
