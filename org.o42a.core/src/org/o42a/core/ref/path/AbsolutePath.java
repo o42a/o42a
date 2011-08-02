@@ -23,7 +23,9 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;

@@ -41,6 +41,11 @@ public final class LocalIR extends ObjectLocalIR {
 	}
 
 	@Override
+	public final LocalScope getScope() {
+		return (LocalScope) super.getScope();
+	}
+
+	@Override
 	public CodeId getId() {
 		if (this.id != null) {
 			return this.id;

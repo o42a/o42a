@@ -19,6 +19,8 @@
 */
 package org.o42a.core.artifact.link;
 
+import static org.o42a.core.def.Rescoper.transparentRescoper;
+
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -37,11 +39,37 @@ import org.o42a.util.log.Loggable;
 
 public final class TargetRef extends RescopableRef<TargetRef> {
 
+	public static TargetRef targetRef(Ref ref, TypeRef typeRef) {
+		if (typeRef != null) {
+			return new TargetRef(
+					ref,
+					typeRef,
+					transparentRescoper(ref.getScope()));
+		}
+		return new TargetRef(
+				ref,
+				ref.ancestor(ref),
+				transparentRescoper(ref.getScope()));
+	}
+
+	public static TargetRef targetRef(
+			Ref ref,
+			TypeRef typeRef,
+			Rescoper rescoper) {
+		if (typeRef != null) {
+			return new TargetRef(ref, typeRef, rescoper);
+		}
+		return new TargetRef(
+				ref,
+				ref.ancestor(ref).rescope(rescoper),
+				rescoper);
+	}
+
 	private final Ref ref;
 	private final TypeRef typeRef;
 	private Logical fullLogical;
 
-	TargetRef(Ref ref, TypeRef typeRef, Rescoper rescoper) {
+	private TargetRef(Ref ref, TypeRef typeRef, Rescoper rescoper) {
 		super(rescoper);
 		this.ref = ref;
 		this.typeRef = typeRef;

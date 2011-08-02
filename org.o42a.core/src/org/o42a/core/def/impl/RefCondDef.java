@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,57 +17,58 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.def.impl;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 
 
-final class LogicalCondDef extends CondDef {
+public final class RefCondDef extends CondDef {
 
-	private final Logical logical;
+	private final Ref ref;
 
-	public LogicalCondDef(Logical logical) {
-		super(
-				sourceOf(logical),
-				logical,
-				transparentRescoper(logical.getScope()));
-		this.logical = logical;
+	public RefCondDef(Obj source, Ref ref) {
+		super(source, ref, transparentRescoper(ref.getScope()));
+		this.ref = ref;
 	}
 
-	private LogicalCondDef(LogicalCondDef prototype, Rescoper rescoper) {
+	RefCondDef(RefCondDef prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
-		this.logical = prototype.logical;
+		this.ref = prototype.ref;
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.logical.getScope());
+		return logicalTrue(this, this.ref.getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.logical.getScope());
+		return logicalTrue(this, this.ref.getScope());
 	}
 
 	@Override
-	protected final Logical buildLogical() {
-		return this.logical;
+	protected Logical buildLogical() {
+		return this.ref.getLogical();
 	}
 
 	@Override
-	protected CondDef create(
+	protected RefCondDef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new LogicalCondDef(this, rescoper);
+		return new RefCondDef(this, rescoper);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.logical.resolveAll(resolver);
+		this.ref.resolveValues(resolver);
 	}
 
 }

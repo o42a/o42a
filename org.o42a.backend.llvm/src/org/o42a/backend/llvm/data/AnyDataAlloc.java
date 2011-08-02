@@ -22,8 +22,8 @@ package org.o42a.backend.llvm.data;
 import org.o42a.backend.llvm.code.op.LLVMDataOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 

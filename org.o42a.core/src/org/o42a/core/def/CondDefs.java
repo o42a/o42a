@@ -22,6 +22,7 @@ package org.o42a.core.def;
 import static org.o42a.core.def.DefKind.PROPOSITION;
 import static org.o42a.core.def.DefValue.nonExistingValue;
 
+import org.o42a.core.def.impl.RuntimeCondDef;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.util.ArrayUtil;

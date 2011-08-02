@@ -17,89 +17,71 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.type;
+package org.o42a.core.ref.impl.type;
 
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 
 
-final class DefaultTypeRef extends TypeRef {
+public final class DefaultStaticTypeRef extends StaticTypeRef {
 
-	private final Ref ref;
+	private final Ref fixedRef;
+	private final Ref untouchedRef;
 
-	DefaultTypeRef(Ref ref, Rescoper rescoper) {
+	public DefaultStaticTypeRef(Ref ref, Ref untouchedRef, Rescoper rescoper) {
 		super(rescoper);
-		this.ref = ref;
+		this.fixedRef = ref.toStatic();
+		this.untouchedRef = untouchedRef;
+		ref.assertSameScope(untouchedRef);
 	}
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.ref.getContext();
+		return this.untouchedRef.getContext();
 	}
 
 	@Override
 	public final Loggable getLoggable() {
-		return this.ref.getLoggable();
-	}
-
-	@Override
-	public boolean isStatic() {
-		return getRef().isStatic();
+		return this.untouchedRef.getLoggable();
 	}
 
 	@Override
 	public final Ref getRef() {
-		return this.ref;
+		return this.fixedRef;
 	}
 
 	@Override
 	public final Ref getUntachedRef() {
-		return this.ref;
-	}
-
-	@Override
-	public StaticTypeRef toStatic() {
-		return new DefaultStaticTypeRef(
-				getRef(),
-				getUntachedRef(),
-				getRescoper());
+		return this.untouchedRef;
 	}
 
 	@Override
 	public String toString() {
-		if (this.ref == null) {
+		if (this.fixedRef == null) {
 			return super.toString();
 		}
-		return this.ref.toString();
+		return this.fixedRef.toString();
 	}
 
 	@Override
-	protected DefaultTypeRef create(
+	protected DefaultStaticTypeRef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new DefaultTypeRef(getRef(), rescoper);
+		return new DefaultStaticTypeRef(getRef(), getUntachedRef(), rescoper);
 	}
 
 	@Override
-	protected DefaultTypeRef createReproduction(
+	protected StaticTypeRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Ref ref,
 			Ref untouchedRef,
 			Rescoper rescoper) {
-		assert ref == untouchedRef :
-			ref + " should be the same as " + untouchedRef;
-		return new DefaultTypeRef(ref, rescoper);
-	}
-
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		validate();
-		this.ref.resolveAll(resolver);
+		return new DefaultStaticTypeRef(ref, untouchedRef, rescoper);
 	}
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,76 +17,109 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.type;
+package org.o42a.core.def.impl.rescoper;
+
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.def.Def;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-abstract class RescoperWrap extends Rescoper {
+public final class TransparentRescoper extends Rescoper {
 
-	private Rescoper wrapped;
-
-	RescoperWrap(Scope finalScope) {
+	public TransparentRescoper(Scope finalScope) {
 		super(finalScope);
 	}
 
 	@Override
+	public boolean isTransparent() {
+		return true;
+	}
+
+	@Override
+	public Path getPath() {
+		return SELF_PATH;
+	}
+
+	@Override
+	public Definitions update(Definitions definitions) {
+		return definitions;
+	}
+
+	@Override
 	public Scope rescope(Scope scope) {
-		return wrapped().rescope(scope);
+		return scope;
 	}
 
 	@Override
 	public Resolver rescope(LocationInfo location, Resolver resolver) {
-		return wrapped().rescope(location, resolver);
+		return resolver;
 	}
 
 	@Override
 	public Scope updateScope(Scope scope) {
-		return wrapped().updateScope(scope);
+		return scope;
+	}
+
+	@Override
+	public <D extends Def<D>> D updateDef(D def) {
+		return def;
+	}
+
+	@Override
+	public Rescoper and(Rescoper filter) {
+		return filter;
 	}
 
 	@Override
 	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
-		return wrapped().reproduce(location, reproducer);
+		getFinalScope().assertCompatible(reproducer.getReproducingScope());
+		return new TransparentRescoper(reproducer.getScope());
 	}
 
 	@Override
 	public void resolveAll(ScopeInfo location, Resolver resolver) {
-		wrapped().resolveAll(location, resolver);
 	}
 
 	@Override
 	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return wrapped().rescope(dirs, host);
+		return host;
+	}
+
+	@Override
+	public int hashCode() {
+		return getFinalScope().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+
+		final TransparentRescoper other = (TransparentRescoper) obj;
+
+		return getFinalScope() == other.getFinalScope();
 	}
 
 	@Override
 	public String toString() {
-		if (this.wrapped != null) {
-			return this.wrapped.toString();
-		}
-		return "Rescoper[" + wrappedTypeRef() + ']';
+		return "noop";
 	}
-
-	private final Rescoper wrapped() {
-		if (this.wrapped != null) {
-			return this.wrapped;
-		}
-		this.wrapped = wrappedTypeRef().getRescoper();
-		assert getFinalScope() == this.wrapped.getFinalScope() :
-			"Wrong final scope of " + this.wrapped
-			+ ": " + this.wrapped.getFinalScope()
-			+ ", but " + getFinalScope() + " expected";
-		return this.wrapped;
-	}
-
-	protected abstract TypeRef wrappedTypeRef();
 
 }

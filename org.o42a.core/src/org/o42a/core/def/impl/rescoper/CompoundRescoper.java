@@ -17,10 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.def.impl.rescoper;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.def.Def;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
@@ -28,12 +31,12 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-final class CompoundRescoper extends Rescoper {
+public final class CompoundRescoper extends Rescoper {
 
 	private final Rescoper first;
 	private final Rescoper second;
 
-	CompoundRescoper(Rescoper first, Rescoper second) {
+	public CompoundRescoper(Rescoper first, Rescoper second) {
 		super(second.getFinalScope());
 		this.first = first;
 		this.second = second;

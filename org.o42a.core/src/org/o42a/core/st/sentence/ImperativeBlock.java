@@ -20,6 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
+import static org.o42a.core.def.impl.LocalDef.localDef;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 import static org.o42a.util.Place.FIRST_PLACE;
 

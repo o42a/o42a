@@ -19,7 +19,8 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;

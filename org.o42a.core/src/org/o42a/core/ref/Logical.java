@@ -24,8 +24,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.LogicalBase;
+import org.o42a.core.Scoped;
+import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.impl.LogicalCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.impl.logical.*;
@@ -34,7 +36,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
 
-public abstract class Logical extends LogicalBase {
+public abstract class Logical extends Scoped {
 
 	public static Logical logicalTrue(LocationInfo location, Scope scope) {
 		return new LogicalTrue(location, scope);
@@ -395,6 +397,10 @@ public abstract class Logical extends LogicalBase {
 		case TRUE:
 		}
 		return other.isTrue();
+	}
+
+	public final CondDef toCondDef() {
+		return new LogicalCondDef(this);
 	}
 
 	public Logical rescope(Rescoper rescoper) {

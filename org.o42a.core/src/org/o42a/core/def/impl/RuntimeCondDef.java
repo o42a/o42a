@@ -17,21 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.def.impl;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 
 
-final class RuntimeCondDef extends CondDef {
+public final class RuntimeCondDef extends CondDef {
 
 	private final Definitions definitions;
 
-	RuntimeCondDef(Definitions definitions) {
+	public RuntimeCondDef(Definitions definitions) {
 		super(
 				/* The source should differ from scope,
 				 * as this definition is not explicit. */
