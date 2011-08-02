@@ -619,7 +619,7 @@ public abstract class Obj
 
 	@Override
 	protected void fullyResolve() {
-		type().getAscendants().resolveAll();
+		type().resolveAll();
 		if (isClone()) {
 			return;
 		}

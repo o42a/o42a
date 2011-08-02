@@ -203,6 +203,10 @@ public class Definitions extends Scoped {
 		return this.valueType;
 	}
 
+	public boolean isEmpty() {
+		return false;
+	}
+
 	public final CondDefs requirements() {
 		return this.requirements;
 	}
@@ -219,8 +223,19 @@ public class Definitions extends Scoped {
 		return this.propositions;
 	}
 
-	public boolean isEmpty() {
-		return false;
+	public final Defs<?, ?> defs(DefKind defKind) {
+		switch (defKind) {
+		case REQUIREMENT:
+			return requirements();
+		case CONDITION:
+			return conditions();
+		case CLAIM:
+			return claims();
+		case PROPOSITION:
+			return propositions();
+		}
+		throw new IllegalArgumentException(
+				"Unknown definition kind: " + defKind);
 	}
 
 	public final boolean onlyClaims() {
