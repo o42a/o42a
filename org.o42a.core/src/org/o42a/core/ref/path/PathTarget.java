@@ -69,6 +69,11 @@ class PathTarget extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return isStatic() && getResolution().isConstant();
+	}
+
+	@Override
 	public Path getPath() {
 		if (this.fullPath != null) {
 			return this.fullPath.get();

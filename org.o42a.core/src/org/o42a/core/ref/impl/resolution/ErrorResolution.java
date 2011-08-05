@@ -47,6 +47,11 @@ public final class ErrorResolution extends Resolution {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return true;
+	}
+
+	@Override
 	public final Container toContainer() {
 		return toArtifact();
 	}

@@ -39,6 +39,11 @@ public final class Wrapper extends Rescoper {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return true;
+	}
+
+	@Override
 	public Scope rescope(Scope scope) {
 		return this.wrapped;
 	}

@@ -23,15 +23,13 @@ import static org.o42a.core.def.DefKind.PROPOSITION;
 import static org.o42a.core.def.DefValue.nonExistingValue;
 
 import org.o42a.core.def.impl.RuntimeCondDef;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.util.ArrayUtil;
 
 
 public final class CondDefs extends Defs<CondDef, CondDefs> {
 
-	private CondValue constantValue;
+	private CondValue constant;
 
 	CondDefs(DefKind defKind, CondDef... defs) {
 		super(defKind, defs);
@@ -44,36 +42,20 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 	}
 
 	public final CondValue getConstant() {
-		if (this.constantValue != null) {
-			return this.constantValue;
-		}
-		if (isEmpty()) {
-			return this.constantValue = CondValue.TRUE;
+		if (this.constant != null) {
+			return this.constant;
 		}
 
-		for (CondDef condition : get()) {
-			if (!condition.hasPrerequisite()) {
-				return this.constantValue =
-						condition.getConstantValue().toCondValue();
-			}
+		for (CondDef def : get()) {
 
-			final Logical prerequisite = condition.getPrerequisite();
+			final CondValue constantValue = def.getConstantValue();
 
-			if (!prerequisite.isConstant()) {
-				return this.constantValue = CondValue.RUNTIME;
-			}
-			if (prerequisite.isFalse()) {
-				continue;
-			}
-
-			final LogicalValue constantValue = condition.getConstantValue();
-
-			if (!constantValue.isTrue()) {
-				return this.constantValue = constantValue.toCondValue();
+			if (!constantValue.isUnknown()) {
+				return this.constant = constantValue;
 			}
 		}
 
-		return this.constantValue = CondValue.UNKNOWN;
+		return this.constant = CondValue.UNKNOWN;
 	}
 
 	public DefValue resolve(Resolver resolver) {

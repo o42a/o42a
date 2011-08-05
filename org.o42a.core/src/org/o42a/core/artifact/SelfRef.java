@@ -46,6 +46,11 @@ final class SelfRef extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return getResolution().isConstant();
+	}
+
+	@Override
 	public boolean isKnownStatic() {
 		return true;
 	}

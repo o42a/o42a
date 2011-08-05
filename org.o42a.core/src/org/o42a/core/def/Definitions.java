@@ -28,6 +28,7 @@ import org.o42a.core.Scoped;
 import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
 
@@ -151,6 +152,8 @@ public class Definitions extends Scoped {
 	private final ValueDefs claims;
 	private final ValueDefs propositions;
 
+	private Value<?> constant;
+
 	Definitions(
 			LocationInfo location,
 			Scope scope,
@@ -208,6 +211,47 @@ public class Definitions extends Scoped {
 		return false;
 	}
 
+	public final boolean isConstant() {
+		return getConstant().isDefinite();
+	}
+
+	public final Value<?> getConstant() {
+		if (this.constant != null) {
+			return this.constant;
+		}
+
+		final ValueType<?> valueType =
+				isEmpty() ? ValueType.VOID : getValueType();
+
+		switch (requirements().getConstant()) {
+		case TRUE:
+			break;
+		case RUNTIME:
+			return valueType.runtimeValue();
+		case UNKNOWN:
+			switch (conditions().getConstant()) {
+			case TRUE:
+				break;
+			case RUNTIME:
+				return valueType.runtimeValue();
+			case UNKNOWN:
+			case FALSE:
+				return valueType.falseValue();
+			}
+			break;
+		case FALSE:
+			return valueType.falseValue();
+		}
+
+		final Value<?> claim = claims().getConstant();
+
+		if (!claim.isUnknown()) {
+			return claim;
+		}
+
+		return propositions().getConstant();
+	}
+
 	public final CondDefs requirements() {
 		return this.requirements;
 	}
@@ -263,7 +307,7 @@ public class Definitions extends Scoped {
 		if (!condition.isDefinite()) {
 			return condition;
 		}
-		if (condition.isFalse() && !condition.isUnknown()) {
+		if (condition.isFalse()) {
 			return condition;
 		}
 

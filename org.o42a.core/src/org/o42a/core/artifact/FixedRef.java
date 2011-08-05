@@ -48,6 +48,11 @@ final class FixedRef extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return getResolution().isConstant();
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
 	}

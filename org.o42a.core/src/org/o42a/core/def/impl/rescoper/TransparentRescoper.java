@@ -41,6 +41,11 @@ public final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return true;
+	}
+
+	@Override
 	public boolean isTransparent() {
 		return true;
 	}
