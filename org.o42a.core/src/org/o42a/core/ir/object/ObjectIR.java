@@ -42,6 +42,7 @@ public class ObjectIR  {
 	private final Generator generator;
 	private final Obj object;
 	private ObjectIRStruct struct;
+	private ObjectValueIR valueIR;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
@@ -108,7 +109,10 @@ public class ObjectIR  {
 	}
 
 	public final ObjectValueIR getValueIR() {
-		return this.object.valueIR(getGenerator());
+		if (this.valueIR != null) {
+			return this.valueIR;
+		}
+		return this.valueIR = new ObjectValueIR(this);
 	}
 
 	public final Data<?> getData() {

@@ -43,7 +43,6 @@ import org.o42a.core.artifact.object.impl.ObjectArtifact;
 import org.o42a.core.artifact.object.impl.ScopeField;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
@@ -80,7 +79,6 @@ public abstract class Obj
 	private ObjectAnalysis analysis;
 
 	private ObjectIR ir;
-	private ObjectValueIR valueIR;
 
 	public Obj(LocationInfo location, Distributor enclosing) {
 		this(new ObjScope(location, enclosing));
@@ -471,13 +469,6 @@ public abstract class Obj
 		return this.ir = createIR(generator);
 	}
 
-	public final ObjectValueIR valueIR(Generator generator) {
-		if (this.valueIR == null || this.valueIR.getGenerator() != generator) {
-			this.valueIR = createValueIR(ir(generator));
-		}
-		return this.valueIR;
-	}
-
 	protected final void resolve() {
 		type().resolve(false);
 	}
@@ -634,10 +625,6 @@ public abstract class Obj
 
 	protected ObjectIR createIR(Generator generator) {
 		return new ObjectIR(generator, this);
-	}
-
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ObjectValueIR(objectIR);
 	}
 
 	final Map<MemberKey, Member> members() {

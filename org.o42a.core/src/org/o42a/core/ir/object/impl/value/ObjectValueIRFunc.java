@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.value;
+package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
@@ -29,18 +29,25 @@ import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.impl.ObjectIRFunc;
 
 
 public abstract class ObjectValueIRFunc<F extends Func<F>>
 		extends ObjectIRFunc {
 
+	private final ObjectValueIR valueIR;
 	private final CodeId id;
 	private FuncRec<F> func;
 
-	ObjectValueIRFunc(ObjectIR objectIR) {
-		super(objectIR);
-		this.id = objectIR.getId().setLocal(
+	ObjectValueIRFunc(ObjectValueIR valueIR) {
+		super(valueIR.getObjectIR());
+		this.valueIR = valueIR;
+		this.id = getObjectIR().getId().setLocal(
 				getGenerator().id().detail(suffix()));
+	}
+
+	public final ObjectValueIR getValueIR() {
+		return this.valueIR;
 	}
 
 	public final CodeId getId() {
