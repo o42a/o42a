@@ -20,12 +20,12 @@
 package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.def.DefValue;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.artifact.object.ValuePart;
+import org.o42a.core.def.CondDefs;
+import org.o42a.core.def.CondValue;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.op.ObjectCondFunc;
-import org.o42a.core.ref.Resolver;
 
 
 public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
@@ -35,8 +35,13 @@ public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
 	}
 
 	@Override
-	public boolean isRequirement() {
-		return false;
+	public final ValuePart valuePart() {
+		return getObject().value().condition();
+	}
+
+	@Override
+	public final CondDefs defs() {
+		return definitions().conditions();
 	}
 
 	@Override
@@ -45,11 +50,16 @@ public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
 	}
 
 	@Override
-	protected DefValue value(Definitions definitions) {
+	protected CondValue determineConstant() {
 
-		final Resolver resolver = definitions.getScope().dummyResolver();
+		final CondValue constantRequirement =
+				getValueIR().getConstantRequirement();
 
-		return definitions.conditions().resolve(resolver);
+		if (constantRequirement.isKnown()) {
+			return constantRequirement;
+		}
+
+		return super.determineConstant();
 	}
 
 	@Override

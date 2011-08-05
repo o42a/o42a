@@ -17,40 +17,46 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.impl.value;
+package org.o42a.core.def;
 
-import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.def.ValueDefs;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.value.LogicalValue;
 
 
-public final class ObjectClaimFunc extends ObjectValueIRValFunc {
+public enum CondValue {
 
-	public ObjectClaimFunc(ObjectValueIR valueIR) {
-		super(valueIR);
+	TRUE(LogicalValue.TRUE),
+	RUNTIME(LogicalValue.RUNTIME),
+	UNKNOWN(LogicalValue.FALSE),
+	FALSE(LogicalValue.FALSE);
+
+	private final LogicalValue logicalValue;
+
+	CondValue(LogicalValue logicalValue) {
+		this.logicalValue = logicalValue;
 	}
 
-	@Override
-	public final ValuePart valuePart() {
-		return getObject().value().claim();
+	public final boolean isKnown() {
+		return !isUnknown();
 	}
 
-	@Override
-	public final ValueDefs defs() {
-		return definitions().claims();
+	public final boolean isUnknown() {
+		return this == UNKNOWN;
 	}
 
-	@Override
-	protected String suffix() {
-		return "claim";
+	public final boolean isConstant() {
+		return toLogicalValue().isConstant();
 	}
 
-	@Override
-	protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
-		return data.claimFunc();
+	public final boolean isTrue() {
+		return toLogicalValue().isTrue();
+	}
+
+	public final boolean isFalse() {
+		return toLogicalValue().isFalse();
+	}
+
+	public final LogicalValue toLogicalValue() {
+		return this.logicalValue;
 	}
 
 }
