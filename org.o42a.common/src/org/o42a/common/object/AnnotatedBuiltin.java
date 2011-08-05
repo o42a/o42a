@@ -21,9 +21,7 @@ package org.o42a.common.object;
 
 import org.o42a.common.def.Builtin;
 import org.o42a.common.def.BuiltinValueDef;
-import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.MemberOwner;
 
 
@@ -38,11 +36,6 @@ public abstract class AnnotatedBuiltin
 	@Override
 	protected final Definitions explicitDefinitions() {
 		return new BuiltinValueDef(this).toDefinitions();
-	}
-
-	@Override
-	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
-		return new BuiltinValueIR(this, objectIR);
 	}
 
 }
