@@ -51,6 +51,11 @@ final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return true;
+	}
+
+	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return this.source.getValue();
 	}

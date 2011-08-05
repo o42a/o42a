@@ -66,6 +66,8 @@ public abstract class Resolution implements ScopeInfo {
 		return toObject() == getContext().getFalse();
 	}
 
+	public abstract boolean isConstant();
+
 	public abstract Container toContainer();
 
 	public abstract Artifact<?> toArtifact();

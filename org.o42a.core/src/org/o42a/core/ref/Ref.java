@@ -33,6 +33,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.*;
 import org.o42a.core.def.impl.RefCondDef;
 import org.o42a.core.def.impl.RefValueDef;
+import org.o42a.core.def.impl.rescoper.RefRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -99,6 +100,8 @@ public abstract class Ref extends Statement {
 		super(location, distributor);
 		this.logical = logical;
 	}
+
+	public abstract boolean isConstant();
 
 	public boolean isKnownStatic() {
 		return false;

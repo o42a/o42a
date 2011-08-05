@@ -57,6 +57,11 @@ public final class StaticRef extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return getResolution().isConstant();
+	}
+
+	@Override
 	public Value<?> value(Resolver resolver) {
 		return resolve(resolver).materialize().value().value(resolver);
 	}

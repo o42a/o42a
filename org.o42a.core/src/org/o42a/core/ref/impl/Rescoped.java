@@ -57,6 +57,14 @@ final class Rescoped extends Ref {
 		this.rescoper = rescoper;
 	}
 
+	@Override
+	public boolean isConstant() {
+		if (!getRescoper().isStatic()) {
+			return false;
+		}
+		return getResolution().isConstant();
+	}
+
 	public final Rescoper getRescoper() {
 		return this.rescoper;
 	}

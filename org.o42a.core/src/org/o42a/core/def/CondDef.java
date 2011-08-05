@@ -25,6 +25,7 @@ import static org.o42a.core.def.Definitions.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.LogicalValue;
@@ -46,6 +47,26 @@ public abstract class CondDef extends Def<CondDef> {
 		return getKind().isClaim();
 	}
 
+	public final boolean isConstant() {
+		return getLogical().getConstantValue().isConstant();
+	}
+
+	public final CondValue getConstantValue() {
+		if (hasPrerequisite()) {
+
+			final Logical prerequisite = getPrerequisite();
+
+			if (!prerequisite.isTrue()) {
+				if (prerequisite.isFalse()) {
+					return CondValue.UNKNOWN;
+				}
+				return CondValue.RUNTIME;
+			}
+		}
+
+		return getLogical().getConstantValue().toCondValue();
+	}
+
 	@Override
 	public final ValueDef toValue() {
 		if (this.value != null) {
@@ -57,10 +78,6 @@ public abstract class CondDef extends Def<CondDef> {
 	@Override
 	public final CondDef toCondition() {
 		return this;
-	}
-
-	public final LogicalValue getConstantValue() {
-		return getLogical().getConstantValue();
 	}
 
 	@Override

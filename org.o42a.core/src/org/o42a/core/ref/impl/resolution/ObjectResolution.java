@@ -37,6 +37,11 @@ public final class ObjectResolution extends Resolution {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return toArtifact().value().getDefinitions().isConstant();
+	}
+
+	@Override
 	public final Obj toContainer() {
 		return toArtifact();
 	}

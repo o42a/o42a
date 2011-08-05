@@ -169,6 +169,11 @@ public class AncestorVisitor
 		}
 
 		@Override
+		public boolean isConstant() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public Ref reproduce(Reproducer reproducer) {
 			throw new UnsupportedOperationException();
 		}

@@ -20,17 +20,38 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefValue.nonExistingValue;
+import static org.o42a.core.value.Value.unknownValue;
 
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
 public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
+	private Value<?> constant;
+
 	ValueDefs(DefKind defKind, ValueDef... defs) {
 		super(defKind, defs);
 		assert defKind.isValue() :
 			"Value definition kind expected";
+	}
+
+	public final Value<?> getConstant() {
+		if (this.constant != null) {
+			return this.constant;
+		}
+
+		for (ValueDef def : get()) {
+
+			final Value<?> constantValue = def.getConstantValue();
+
+			if (!constantValue.isUnknown()) {
+				return this.constant = constantValue;
+			}
+		}
+
+		return this.constant = unknownValue();
 	}
 
 	public final DefValue resolve(Resolver resolver) {

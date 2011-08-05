@@ -43,6 +43,11 @@ public final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return this.first.isStatic() && this.second.isStatic();
+	}
+
+	@Override
 	public Definitions update(Definitions definitions) {
 		return this.second.update(this.first.update(definitions));
 	}

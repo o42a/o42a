@@ -180,6 +180,16 @@ final class PlainClauseWrap extends PlainClause {
 		}
 
 		@Override
+		public boolean isConstant() {
+			return getResolution().isConstant();
+		}
+
+		@Override
+		public boolean isKnownStatic() {
+			return true;
+		}
+
+		@Override
 		public Resolution resolve(Resolver resolver) {
 			assertScopeIs(resolver.getScope());
 			return resolver.artifactPart(
