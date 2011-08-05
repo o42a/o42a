@@ -23,8 +23,9 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.FuncRec;
+import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.def.DefValue;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
@@ -42,8 +43,13 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	}
 
 	@Override
-	public boolean isClaim() {
-		return false;
+	public final ValuePart valuePart() {
+		return null;
+	}
+
+	@Override
+	public final ValueDefs defs() {
+		return null;
 	}
 
 	@Override
@@ -57,18 +63,15 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	}
 
 	@Override
-	protected DefValue value(Definitions definitions) {
+	protected DefValue value() {
 
-		final Resolver resolver = definitions.getScope().dummyResolver();
+		final Resolver resolver = definitions().getScope().dummyResolver();
 
-		return definitions.value(resolver);
+		return definitions().value(resolver);
 	}
 
 	@Override
-	protected ValOp build(
-			ValDirs dirs,
-			ObjOp host,
-			Definitions definitions) {
+	protected ValOp build(ValDirs dirs, ObjOp host) {
 
 		final Code code = dirs.code();
 

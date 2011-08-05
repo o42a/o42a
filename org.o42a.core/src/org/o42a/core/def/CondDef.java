@@ -88,13 +88,13 @@ public abstract class CondDef extends Def<CondDef> {
 		if (!hasPrerequisite() || getPrerequisite().isTrue()) {
 
 			final LogicalValue logicalValue =
-				getLogical().logicalValue(rescoped);
+					getLogical().logicalValue(rescoped);
 
 			alwaysMeaningfulCondition(this, logicalValue);
 		}
 
 		final LogicalValue prerequisite =
-			getPrerequisite().logicalValue(rescoped);
+				getPrerequisite().logicalValue(rescoped);
 
 		if (!prerequisite.isTrue()) {
 			if (!prerequisite.isFalse()) {

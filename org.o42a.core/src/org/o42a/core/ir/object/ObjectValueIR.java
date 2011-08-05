@@ -26,6 +26,7 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.CondValue;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
@@ -70,6 +71,14 @@ public class ObjectValueIR {
 
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
+	}
+
+	public final CondValue getConstantRequirement() {
+		return this.requirement.getConstant();
+	}
+
+	public final CondValue getConstantCondition() {
+		return this.condition.getConstant();
 	}
 
 	public ObjValOp op(CodeBuilder builder, Code code) {
@@ -128,31 +137,28 @@ public class ObjectValueIR {
 		this.locals.build();
 	}
 
-	protected void createValue(ObjectTypeIR typeIR, Definitions definitions) {
-		this.value.create(typeIR, definitions);
+	protected void createValue(ObjectTypeIR typeIR) {
+		this.value.create(typeIR);
 	}
 
 
 	protected void createRequirement(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.requirement.create(typeIR, definitions);
+			ObjectTypeIR typeIR) {
+		this.requirement.create(typeIR);
 	}
 
-	protected void createClaim(ObjectTypeIR typeIR, Definitions definitions) {
-		this.claim.create(typeIR, definitions);
+	protected void createClaim(ObjectTypeIR typeIR) {
+		this.claim.create(typeIR);
 	}
 
 	protected void createCondition(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.condition.create(typeIR, definitions);
+			ObjectTypeIR typeIR) {
+		this.condition.create(typeIR);
 	}
 
 	protected void createProposition(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.proposition.create(typeIR, definitions);
+			ObjectTypeIR typeIR) {
+		this.proposition.create(typeIR);
 	}
 
 	final ObjectIRLocals getLocals() {
@@ -191,32 +197,31 @@ public class ObjectValueIR {
 			this.requirement.setFalse(typeIR);
 			this.claim.setFalse(typeIR);
 		} else {
-			createClaimFunctions(typeIR, definitions);
+			createClaimFunctions(typeIR);
 		}
 		this.condition.setFalse(typeIR);
 		this.proposition.setFalse(typeIR);
 	}
 
 	private void createFunctions(ObjectTypeIR typeIR, Definitions definitions) {
-		createValue(typeIR, definitions);
-		createClaimFunctions(typeIR, definitions);
-		createCondition(typeIR, definitions);
-		createProposition(typeIR, definitions);
+		createValue(typeIR);
+		createClaimFunctions(typeIR);
+		createCondition(typeIR);
+		createProposition(typeIR);
 	}
 
 	private void buildFunctions(ObjectTypeIR typeIR, Definitions definitions) {
-		this.value.build(definitions);
+		this.value.build();
 		this.requirement.build(definitions);
-		this.claim.build(definitions);
+		this.claim.build();
 		this.condition.build(definitions);
-		this.proposition.build(definitions);
+		this.proposition.build();
 	}
 
 	private void createClaimFunctions(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		createRequirement(typeIR, definitions);
-		createClaim(typeIR, definitions);
+			ObjectTypeIR typeIR) {
+		createRequirement(typeIR);
+		createClaim(typeIR);
 	}
 
 }

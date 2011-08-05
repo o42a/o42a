@@ -27,14 +27,14 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.DefValue;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.def.ValueDef;
+import org.o42a.core.artifact.object.ValuePart;
+import org.o42a.core.def.*;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -51,7 +51,36 @@ public abstract class ObjectValueIRValFunc
 		return getObject().value().getValueType();
 	}
 
-	public abstract boolean isClaim();
+	public abstract ValuePart valuePart();
+
+	public abstract ValueDefs defs();
+
+	public final boolean isClaim() {
+		return valuePart().getDefKind().isClaim();
+	}
+
+	public void create(ObjectTypeIR typeIR) {
+
+		final CondValue constantCondition =
+				getValueIR().getConstantCondition();
+
+		if (constantCondition.isFalse()) {
+			set(typeIR, falseValFunc());
+			return;
+		}
+
+		final DefValue value = value();
+
+		if (value.isUnknown()) {
+			set(typeIR, unknownValFunc());
+			return;
+		}
+
+		final Function<ObjectValFunc> function =
+				getGenerator().newFunction().create(getId(), OBJECT_VAL);
+
+		set(typeIR, function.getPointer());
+	}
 
 	public ValOp call(ValDirs dirs, ObjOp host, ObjectOp body) {
 
@@ -76,7 +105,7 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		final Obj object = getObject();
-		final DefValue value = value(definitions());
+		final DefValue value = value();
 
 		if (body == null || value.isAlwaysMeaningful()) {
 
@@ -104,26 +133,11 @@ public abstract class ObjectValueIRValFunc
 		return result;
 	}
 
-	public void create(ObjectTypeIR typeIR, Definitions definitions) {
-
-		final DefValue value = value(definitions);
-
-		if (value.isUnknown()) {
-			set(typeIR, unknownValFunc());
-		} else {
-
-			final Function<ObjectValFunc> function =
-				getGenerator().newFunction().create(getId(), OBJECT_VAL);
-
-			set(typeIR, function.getPointer());
-		}
-	}
-
 	public void setFalse(ObjectTypeIR typeIR) {
 		set(typeIR, falseValFunc());
 	}
 
-	public void build(Definitions definitions) {
+	public void build() {
 
 		final Function<ObjectValFunc> function = get().getFunction();
 
@@ -149,15 +163,12 @@ public abstract class ObjectValueIRValFunc
 				function,
 				failure.head(),
 				unknown.head())
-				.value(
-						function.id(
-								isClaim() ? "claim_val" : "proposition_val"),
-						result);
+				.value(function.id(suffix() + "_val"), result);
 		final Code code = dirs.code();
 		final ObjOp host = builder.host();
 
 		code.dumpName("Host: ", host.ptr());
-		result.store(code, build(dirs, host, definitions));
+		result.store(code, build(dirs, host));
 
 		dirs.done();
 		if (failure.exists()) {
@@ -172,23 +183,18 @@ public abstract class ObjectValueIRValFunc
 		function.done();
 	}
 
-	protected ValOp build(ValDirs dirs, ObjOp host, Definitions definitions) {
+	protected ValOp build(ValDirs dirs, ObjOp host) {
 
-		final ValueDef[] defs;
+		final ValueDefs defs = defs();
 
-		if (isClaim()) {
-			defs = definitions.claims().get();
-		} else {
-			defs = definitions.propositions().get();
-		}
-		if (defs.length == 0) {
+		if (defs.isEmpty()) {
 			return writeAncestorDef(dirs, host);
 		}
 
 		final ValueCollector collector = new ValueCollector(
 				dirs.dirs(),
 				getObjectIR().getObject(),
-				defs.length);
+				defs.length());
 
 		collector.addDefs(defs);
 
@@ -197,6 +203,14 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		return writeExplicitDefs(dirs, host, collector);
+	}
+
+	@Override
+	protected DefValue value() {
+
+		final Resolver resolver = definitions().getScope().dummyResolver();
+
+		return definitions().propositions().resolve(resolver);
 	}
 
 	private FuncPtr<ObjectValFunc> falseValFunc() {
@@ -294,8 +308,7 @@ public abstract class ObjectValueIRValFunc
 		if (!dirs.isDebug()) {
 			defDirs = subDirs;
 		} else {
-			defDirs = subDirs.begin(
-					isClaim() ? "Ancestor claim" : "Ancestor proposition");
+			defDirs = subDirs.begin("Ancestor " + suffix());
 			defDirs.code().dumpName(
 					"Ancestor: ",
 					ancestorBody.toData(defDirs.code()));
