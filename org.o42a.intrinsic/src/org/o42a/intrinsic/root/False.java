@@ -21,17 +21,11 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.value.Value.falseValue;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjValOp;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
@@ -64,37 +58,6 @@ public final class False extends AnnotatedBuiltin {
 	@Override
 	public String toString() {
 		return "false";
-	}
-
-	@Override
-	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(this, objectIR);
-	}
-
-	private static final class ValueIR
-			extends BuiltinValueIR
-			implements ObjValOp {
-
-		ValueIR(False builtin, ObjectIR objectIR) {
-			super(builtin, objectIR);
-		}
-
-		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
-			dirs.code().go(dirs.falseDir());
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs) {
-			dirs.code().go(dirs.falseDir());
-			return falseValue().op(dirs.getBuilder(), dirs.code());
-		}
-
-		@Override
-		public ObjValOp op(CodeBuilder builder, Code code) {
-			return this;
-		}
-
 	}
 
 }

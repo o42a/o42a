@@ -19,17 +19,11 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -74,58 +68,6 @@ final class ConstantObject<T> extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return new ConstantValueDef<T>(this).toDefinitions();
-	}
-
-	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(objectIR);
-	}
-
-	private static final class ValueIR
-			extends ObjectValueIR
-			implements ObjValOp {
-
-		ValueIR(ObjectIR objectIR) {
-			super(objectIR);
-		}
-
-		@Override
-		public ObjValOp op(CodeBuilder builder, Code code) {
-			return this;
-		}
-
-		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs) {
-			return value().op(dirs.getBuilder(), dirs.code());
-		}
-
-		@Override
-		protected ValOp writeProposition(
-				ValDirs dirs,
-				ObjOp host,
-				ObjectOp body) {
-			return value().op(dirs.getBuilder(), dirs.code());
-		}
-
-		@Override
-		protected ValOp buildProposition(
-				ValDirs dirs,
-				ObjOp host,
-				Definitions definitions) {
-			return value().op(dirs.getBuilder(), dirs.code());
-		}
-
-		private final Value<?> value() {
-
-			final ConstantObject<?> object = (ConstantObject<?>) getObject();
-
-			return object.getValue();
-		}
-
 	}
 
 }

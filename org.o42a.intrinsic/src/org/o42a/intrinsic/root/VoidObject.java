@@ -25,7 +25,6 @@ import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.common.ir.BuiltinValueIR;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -35,9 +34,6 @@ import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.object.ObjValOp;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
@@ -84,11 +80,6 @@ public final class VoidObject extends BuiltinObject {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this);
-	}
-
-	@Override
-	protected BuiltinValueIR createValueIR(ObjectIR objectIR) {
-		return new ValueIR(this, objectIR);
 	}
 
 	private static VoidScope voidScope(Scope topScope) {
@@ -174,30 +165,6 @@ public final class VoidObject extends BuiltinObject {
 		@Override
 		protected HostOp createOp(CodeBuilder builder, Code code) {
 			return getScope().toObject().ir(getGenerator()).op(builder, code);
-		}
-
-	}
-
-	private static final class ValueIR
-			extends BuiltinValueIR
-			implements ObjValOp {
-
-		ValueIR(VoidObject builtin, ObjectIR objectIR) {
-			super(builtin, objectIR);
-		}
-
-		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs) {
-			return voidValue().op(dirs.getBuilder(), dirs.code());
-		}
-
-		@Override
-		public ObjValOp op(CodeBuilder builder, Code code) {
-			return this;
 		}
 
 	}
