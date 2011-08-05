@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.value;
+package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.object.value.DefCollector.explicitDef;
+import static org.o42a.core.ir.object.impl.value.DefCollector.explicitDef;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
@@ -37,8 +37,8 @@ import org.o42a.core.value.LogicalValue;
 public abstract class ObjectValueIRCondFunc
 		extends ObjectValueIRFunc<ObjectCondFunc> {
 
-	public ObjectValueIRCondFunc(ObjectIR objectIR) {
-		super(objectIR);
+	public ObjectValueIRCondFunc(ObjectValueIR valueIR) {
+		super(valueIR);
 	}
 
 	public abstract boolean isRequirement();
@@ -155,7 +155,10 @@ public abstract class ObjectValueIRCondFunc
 		function.done();
 	}
 
-	public void buildFunc(CodeDirs dirs, ObjOp host, Definitions definitions) {
+	protected void build(
+			CodeDirs dirs,
+			ObjOp host,
+			Definitions definitions) {
 
 		final CondDef[] defs;
 
@@ -184,11 +187,6 @@ public abstract class ObjectValueIRCondFunc
 		}
 		writeAncestorDef(dirs, host, true);
 	}
-
-	protected abstract void build(
-			CodeDirs dirs,
-			ObjOp host,
-			Definitions definitions);
 
 	private void writeAncestorDef(
 			CodeDirs dirs,

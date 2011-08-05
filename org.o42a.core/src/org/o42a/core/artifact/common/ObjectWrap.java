@@ -28,7 +28,6 @@ import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UseInfo;
@@ -121,11 +120,6 @@ public abstract class ObjectWrap extends Obj {
 	@Override
 	protected ObjectIR createIR(Generator generator) {
 		return getWrapped().ir(generator);
-	}
-
-	@Override
-	protected ObjectValueIR createValueIR(ObjectIR objectIR) {
-		return getWrapped().valueIR(objectIR.getGenerator());
 	}
 
 	final UseInfo ownFieldUses() {

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.value;
+package org.o42a.core.ir.object.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -40,7 +40,7 @@ public abstract class ObjectIRFunc {
 
 	private final ObjectIR objectIR;
 
-	ObjectIRFunc(ObjectIR objectIR) {
+	public ObjectIRFunc(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 	}
 

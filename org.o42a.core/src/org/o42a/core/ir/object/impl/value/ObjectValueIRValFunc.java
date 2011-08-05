@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.value;
+package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
@@ -43,8 +43,8 @@ import org.o42a.core.value.ValueType;
 public abstract class ObjectValueIRValFunc
 		extends ObjectValueIRFunc<ObjectValFunc> {
 
-	public ObjectValueIRValFunc(ObjectIR objectIR) {
-		super(objectIR);
+	public ObjectValueIRValFunc(ObjectValueIR valueIR) {
+		super(valueIR);
 	}
 
 	public final ValueType<?> getValueType() {
@@ -172,7 +172,7 @@ public abstract class ObjectValueIRValFunc
 		function.done();
 	}
 
-	public ValOp buildFunc(ValDirs dirs, ObjOp host, Definitions definitions) {
+	protected ValOp build(ValDirs dirs, ObjOp host, Definitions definitions) {
 
 		final ValueDef[] defs;
 
@@ -198,11 +198,6 @@ public abstract class ObjectValueIRValFunc
 
 		return writeExplicitDefs(dirs, host, collector);
 	}
-
-	protected abstract ValOp build(
-			ValDirs dirs,
-			ObjOp host,
-			Definitions definitions);
 
 	private FuncPtr<ObjectValFunc> falseValFunc() {
 		return getGenerator().externalFunction(

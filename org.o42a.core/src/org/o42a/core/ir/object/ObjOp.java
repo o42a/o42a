@@ -88,7 +88,8 @@ public final class ObjOp extends ObjectOp {
 			return super.writeValue(dirs, body);
 		}
 
-		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
+		final ObjectValueIR valueIR =
+				getAscendant().ir(getGenerator()).getValueIR();
 
 		return valueIR.writeValue(dirs, this, body);
 	}
@@ -100,7 +101,8 @@ public final class ObjOp extends ObjectOp {
 			return;
 		}
 
-		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
+		final ObjectValueIR valueIR =
+				getAscendant().ir(getGenerator()).getValueIR();
 
 		valueIR.writeRequirement(dirs, this, body);
 	}
@@ -112,7 +114,8 @@ public final class ObjOp extends ObjectOp {
 			return;
 		}
 
-		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
+		final ObjectValueIR valueIR =
+				getAscendant().ir(getGenerator()).getValueIR();
 
 		valueIR.writeCondition(dirs, this, body);
 	}
@@ -145,8 +148,8 @@ public final class ObjOp extends ObjectOp {
 		final Code code = subDirs.code();
 		final Fld fld = ptr().getType().getObjectIR().fld(memberKey);
 		final CodeId hostId =
-			code.id("field_host")
-			.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
+				code.id("field_host")
+				.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
 		final ObjOp host = cast(
 				hostId,
 				subDirs,
@@ -189,9 +192,9 @@ public final class ObjOp extends ObjectOp {
 	private ObjOp staticCast(Code code, Obj ascendant) {
 
 		final ObjectBodyIR ascendantBodyIR =
-			ptr().getType().getObjectIR().bodyIR(ascendant);
+				ptr().getType().getObjectIR().bodyIR(ascendant);
 		final ObjectBodyIR.Op ascendantBody =
-			ascendantBodyIR.pointer(code.getGenerator()).op(null, code);
+				ascendantBodyIR.pointer(code.getGenerator()).op(null, code);
 
 		final ObjectTypeOp cachedData = cachedData();
 
@@ -208,7 +211,8 @@ public final class ObjOp extends ObjectOp {
 			return super.writeClaim(dirs, body);
 		}
 
-		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
+		final ObjectValueIR valueIR =
+				getAscendant().ir(getGenerator()).getValueIR();
 
 		return valueIR.writeClaim(dirs, this, body);
 	}
@@ -219,7 +223,8 @@ public final class ObjOp extends ObjectOp {
 			return super.writeProposition(dirs, body);
 		}
 
-		final ObjectValueIR valueIR = getAscendant().valueIR(getGenerator());
+		final ObjectValueIR valueIR =
+				getAscendant().ir(getGenerator()).getValueIR();
 
 		return valueIR.writeProposition(dirs, this, body);
 	}
