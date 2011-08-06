@@ -44,7 +44,7 @@ public final class ParseString extends ByString<String> {
 
 		final Value<?> value = super.calculateBuiltin(resolver);
 
-		if (!value.getLogicalValue().isTrue()) {
+		if (!value.getCondition().isTrue()) {
 			return value;
 		}
 

@@ -24,12 +24,13 @@ import static org.o42a.core.def.DefValue.nonExistingValue;
 
 import org.o42a.core.def.impl.RuntimeCondDef;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Condition;
 import org.o42a.util.ArrayUtil;
 
 
 public final class CondDefs extends Defs<CondDef, CondDefs> {
 
-	private CondValue constant;
+	private Condition constant;
 
 	CondDefs(DefKind defKind, CondDef... defs) {
 		super(defKind, defs);
@@ -41,19 +42,19 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		return getConstant().isFalse();
 	}
 
-	public final CondValue getConstant() {
+	public final Condition getConstant() {
 		if (this.constant != null) {
 			return this.constant;
 		}
 
 		final CondDef[] defs = get();
-		CondValue result = null;
+		Condition result = null;
 		int i = 0;
 
 		while (i < defs.length) {
 
 			final CondDef def = defs[i];
-			final CondValue constantValue = def.getConstantValue();
+			final Condition constantValue = def.getConstantValue();
 
 			if (constantValue.isUnknown()) {
 				// Prerequisite not met - try next.
@@ -82,7 +83,7 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		}
 
 		if (result == null) {
-			return this.constant = CondValue.UNKNOWN;
+			return this.constant = Condition.UNKNOWN;
 		}
 
 		return this.constant = result;

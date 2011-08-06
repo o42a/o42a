@@ -53,22 +53,22 @@ public abstract class Value<T> {
 	}
 
 	public final boolean isFalse() {
-		return getLogicalValue().isFalse();
+		return getCondition().isFalse();
 	}
 
-	public boolean isUnknown() {
-		return false;
+	public final boolean isUnknown() {
+		return getCondition().isUnknown();
 	}
 
 	public final boolean isDefinite() {
-		return getLogicalValue().isConstant();
+		return getCondition().isConstant();
 	}
 
 	public final boolean isVoid() {
 		return getValueType() == ValueType.VOID;
 	}
 
-	public abstract LogicalValue getLogicalValue();
+	public abstract Condition getCondition();
 
 	public abstract T getDefiniteValue();
 
@@ -83,35 +83,12 @@ public abstract class Value<T> {
 		return ptr.op(ptr.getId(), code).op(builder, getValueType());
 	}
 
-	public Value<T> require(LogicalValue requirement) {
-
-		final LogicalValue logicalValue = getLogicalValue();
-		final LogicalValue newLogicalValue = logicalValue.and(requirement);
-
-		if (logicalValue == newLogicalValue) {
-			return this;
-		}
-
-		switch (newLogicalValue) {
-		case FALSE:
-			return getValueType().falseValue();
-		case TRUE:
-			return getValueType().constantValue(getDefiniteValue());
-		case RUNTIME:
-		}
-
-		return getValueType().runtimeValue();
-	}
-
 	public String valueString() {
 
-		final LogicalValue logicalValue = getLogicalValue();
+		final Condition condition = getCondition();
 
-		if (!logicalValue.isTrue()) {
-			if (isUnknown()) {
-				return "UNKNOWN";
-			}
-			return logicalValue.toString();
+		if (!condition.isTrue()) {
+			return condition.toString();
 		}
 
 		return getValueType().valueString(getDefiniteValue());

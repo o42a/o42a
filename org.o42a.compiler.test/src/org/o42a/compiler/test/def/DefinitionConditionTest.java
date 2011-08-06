@@ -26,7 +26,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -97,15 +97,15 @@ public class DefinitionConditionTest extends CompilerTestCase {
 		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalse(aValue.isDefinite());
-		assertThat(aValue.getLogicalValue(), is(LogicalValue.RUNTIME));
-		assertFalse(aValue.getLogicalValue().isConstant());
+		assertThat(aValue.getCondition(), is(Condition.RUNTIME));
+		assertFalse(aValue.getCondition().isConstant());
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalse(bValue.isDefinite());
-		assertThat(bValue.getLogicalValue(), is(LogicalValue.RUNTIME));
-		assertFalse(bValue.getLogicalValue().isConstant());
+		assertThat(bValue.getCondition(), is(Condition.RUNTIME));
+		assertFalse(bValue.getCondition().isConstant());
 		assertThat(bValue.getDefiniteValue(), nullValue());
 	}
 
@@ -119,15 +119,15 @@ public class DefinitionConditionTest extends CompilerTestCase {
 		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalse(aValue.isDefinite());
-		assertThat(aValue.getLogicalValue(), is(LogicalValue.RUNTIME));
-		assertFalse(aValue.getLogicalValue().isConstant());
+		assertThat(aValue.getCondition(), is(Condition.RUNTIME));
+		assertFalse(aValue.getCondition().isConstant());
 		assertThat(aValue.getDefiniteValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalse(bValue.isDefinite());
-		assertThat(bValue.getLogicalValue(), is(LogicalValue.RUNTIME));
-		assertFalse(bValue.getLogicalValue().isConstant());
+		assertThat(bValue.getCondition(), is(Condition.RUNTIME));
+		assertFalse(bValue.getCondition().isConstant());
 		assertThat(bValue.getDefiniteValue(), nullValue());
 	}
 

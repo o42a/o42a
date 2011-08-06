@@ -28,6 +28,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -51,20 +52,20 @@ public abstract class CondDef extends Def<CondDef> {
 		return getLogical().getConstantValue().isConstant();
 	}
 
-	public final CondValue getConstantValue() {
+	public final Condition getConstantValue() {
 		if (hasPrerequisite()) {
 
 			final Logical prerequisite = getPrerequisite();
 
 			if (!prerequisite.isTrue()) {
 				if (prerequisite.isFalse()) {
-					return CondValue.UNKNOWN;
+					return Condition.UNKNOWN;
 				}
-				return CondValue.RUNTIME;
+				return Condition.RUNTIME;
 			}
 		}
 
-		return getLogical().getConstantValue().toCondValue();
+		return getLogical().getConstantValue().toCondition();
 	}
 
 	@Override

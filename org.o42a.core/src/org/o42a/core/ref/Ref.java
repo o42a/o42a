@@ -148,7 +148,9 @@ public abstract class Ref extends Statement {
 
 	@Override
 	public Action initialLogicalValue(LocalResolver resolver) {
-		return new ExecuteCommand(this, value(resolver).getLogicalValue());
+		return new ExecuteCommand(
+				this,
+				value(resolver).getCondition().toLogicalValue());
 	}
 
 	@Override

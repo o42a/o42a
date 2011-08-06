@@ -33,12 +33,13 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectCondFunc;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Condition;
 
 
 public abstract class ObjectValueIRCondFunc
 		extends ObjectValueIRFunc<ObjectCondFunc> {
 
-	private CondValue constant;
+	private Condition constant;
 
 	public ObjectValueIRCondFunc(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -52,7 +53,7 @@ public abstract class ObjectValueIRCondFunc
 		return valuePart().getDefKind().isClaim();
 	}
 
-	public final CondValue getConstant() {
+	public final Condition getConstant() {
 		if (this.constant != null) {
 			return this.constant;
 		}
@@ -144,9 +145,9 @@ public abstract class ObjectValueIRCondFunc
 		function.done();
 	}
 
-	protected CondValue determineConstant() {
+	protected Condition determineConstant() {
 
-		final CondValue constant = defs().getConstant();
+		final Condition constant = defs().getConstant();
 
 		if (!constant.isConstant() || constant.isFalse()) {
 			return constant;
@@ -155,7 +156,7 @@ public abstract class ObjectValueIRCondFunc
 			return constant;
 		}
 
-		return CondValue.RUNTIME;
+		return Condition.RUNTIME;
 	}
 
 	@Override

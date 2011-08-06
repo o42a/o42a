@@ -26,7 +26,6 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.CondValue;
 import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
@@ -37,6 +36,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
@@ -73,11 +73,11 @@ public class ObjectValueIR {
 		return this.objectIR;
 	}
 
-	public final CondValue getConstantRequirement() {
+	public final Condition getConstantRequirement() {
 		return this.requirement.getConstant();
 	}
 
-	public final CondValue getConstantCondition() {
+	public final Condition getConstantCondition() {
 		return this.condition.getConstant();
 	}
 

@@ -35,6 +35,7 @@ import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -65,7 +66,7 @@ public abstract class ObjectValueIRValFunc
 			return this.constant;
 		}
 
-		final CondValue constantCondition =
+		final Condition constantCondition =
 				getValueIR().getConstantCondition();
 
 		if (constantCondition.isFalse()) {
