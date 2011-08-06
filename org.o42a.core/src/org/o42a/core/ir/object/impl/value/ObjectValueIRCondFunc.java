@@ -20,10 +20,12 @@
 package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.DefCollector.explicitDef;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
@@ -34,6 +36,7 @@ import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectCondFunc;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Condition;
 
 
@@ -189,8 +192,35 @@ public abstract class ObjectValueIRCondFunc
 			boolean trueWithoutAncestor) {
 
 		final Code code = dirs.code();
-		final CondCode hasAncestor =
-			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
+
+		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+
+			final TypeRef ancestor = getObject().type().getAncestor();
+
+			if (ancestor == null) {
+				code.debug("No ancestor " + suffix());
+				return;
+			}
+
+			final Obj ancestorObject = ancestor.typeObject(dummyUser());
+			final ObjectOp ancestorBody = host.ancestor(code);
+			final ObjectTypeOp ancestorType =
+					ancestorObject.ir(getGenerator())
+					.getStaticTypeIR()
+					.getInstance()
+					.pointer(getGenerator())
+					.op(null, code)
+					.op(dirs.getBuilder(), EXACT);
+
+			writeAncestorDef(dirs, code, ancestorBody, ancestorType);
+
+			return;
+		}
+
+		final CondCode hasAncestor = host.hasAncestor(code).branch(
+				code,
+				"has_ancestor",
+				"no_ancestor");
 		final Code noAncestor = hasAncestor.otherwise();
 
 		noAncestor.debug("No ancestor " + suffix());
@@ -207,35 +237,37 @@ public abstract class ObjectValueIRCondFunc
 			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
+		writeAncestorDef(dirs, hasAncestor, ancestorBody, ancestorType);
+
+		hasAncestor.go(code.tail());
+	}
+
+	private void writeAncestorDef(
+			CodeDirs dirs,
+			Code code,
+			ObjectOp ancestorBody,
+			ObjectTypeOp ancestorType) {
+
 		CodeDirs ancestorDirs = dirs.getBuilder().splitWhenUnknown(
-				hasAncestor,
+				code,
 				dirs.falseDir(),
 				dirs.unknownDir());
 
+		if (code.isDebug()) {
+			ancestorDirs = ancestorDirs.begin(
+					"ancestor",
+					"Ancestor " + suffix());
+			code.dumpName(
+					"Ancestor: ",
+					ancestorBody.toData(code));
+		}
 		if (isRequirement()) {
-			if (hasAncestor.isDebug()) {
-				ancestorDirs = ancestorDirs.begin(
-						"ancestor",
-						"Ancestor requirement");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
 			ancestorType.writeRequirement(ancestorDirs, ancestorBody);
 		} else {
-			if (hasAncestor.isDebug()) {
-				ancestorDirs = ancestorDirs.begin(
-						"ancestor",
-						"Ancestor condition");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
 			ancestorType.writeCondition(ancestorDirs, ancestorBody);
 		}
-		ancestorDirs.end();
 
-		hasAncestor.go(code.tail());
+		ancestorDirs.end();
 	}
 
 	private void writeExplicitDefs(
