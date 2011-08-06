@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.util.use.User.dummyUser;
@@ -311,6 +312,32 @@ public abstract class ObjectValueIRValFunc
 
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
+
+		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+
+			final TypeRef ancestor = getObject().type().getAncestor();
+
+			if (ancestor == null) {
+				code.debug("No ancestor " + suffix());
+				code.go(dirs.unknownDir());
+				return result;
+			}
+
+			final Obj ancestorObject = ancestor.typeObject(dummyUser());
+			final ObjectOp ancestorBody = host.ancestor(code);
+			final ObjectTypeOp ancestorType =
+					ancestorObject.ir(getGenerator())
+					.getStaticTypeIR()
+					.getInstance()
+					.pointer(getGenerator())
+					.op(null, code)
+					.op(dirs.getBuilder(), EXACT);
+
+			writeAncestorDef(dirs, code, ancestorBody, ancestorType);
+
+			return result;
+		}
+
 		final CondCode hasAncestor = host.hasAncestor(code).branch(
 				code,
 				"has_ancestor",
@@ -322,11 +349,11 @@ public abstract class ObjectValueIRValFunc
 
 		if (ancestor.typeObject(dummyUser()).getScope()
 				== ancestor.getContext().getVoid().getScope()) {
-			noAncestor.debug("Inherited VOID proposition: " + this);
+			noAncestor.debug("Inherited VOID " + suffix());
 			result.storeVoid(noAncestor);
 			noAncestor.go(code.tail());
 		} else {
-			noAncestor.debug("No ancestor: " + this);
+			noAncestor.debug("No ancestor " + suffix());
 			noAncestor.go(dirs.unknownDir());
 		}
 
@@ -337,7 +364,20 @@ public abstract class ObjectValueIRValFunc
 				.load(null, hasAncestor)
 				.op(host.getBuilder(), DERIVED);
 
-		final ValDirs subDirs = dirs.sub(hasAncestor);
+		writeAncestorDef(dirs, hasAncestor, ancestorBody, ancestorType);
+
+		hasAncestor.go(code.tail());
+
+		return result;
+	}
+
+	private void writeAncestorDef(
+			ValDirs dirs,
+			Code code,
+			ObjectOp ancestorBody,
+			ObjectTypeOp ancestorType) {
+
+		final ValDirs subDirs = dirs.sub(code);
 		final ValDirs defDirs;
 
 		if (!dirs.isDebug()) {
@@ -356,15 +396,13 @@ public abstract class ObjectValueIRValFunc
 		} else {
 			res = ancestorType.writeProposition(defDirs, ancestorBody);
 		}
-		result.store(defDirs.code(), res);
+
+		subDirs.value().store(defDirs.code(), res);
 
 		if (dirs.isDebug()) {
 			defDirs.done();
 		}
 		subDirs.done();
-		hasAncestor.go(code.tail());
-
-		return result;
 	}
 
 	private final class ValueCollector extends DefCollector<ValueDef> {
