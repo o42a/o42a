@@ -59,6 +59,11 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	@Override
+	public boolean isConstantBuiltin() {
+		return true;
+	}
+
+	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 		return voidValue();
 	}

@@ -22,7 +22,6 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
-import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
@@ -43,6 +42,8 @@ import org.o42a.core.value.ValueType;
 public abstract class ObjectValueIRValFunc
 		extends ObjectValueIRFunc<ObjectValFunc> {
 
+	private Value<?> constant;
+
 	public ObjectValueIRValFunc(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
@@ -59,20 +60,31 @@ public abstract class ObjectValueIRValFunc
 		return valuePart().getDefKind().isClaim();
 	}
 
-	public void create(ObjectTypeIR typeIR) {
+	public final Value<?> getConstant() {
+		if (this.constant != null) {
+			return this.constant;
+		}
 
 		final CondValue constantCondition =
 				getValueIR().getConstantCondition();
 
 		if (constantCondition.isFalse()) {
-			set(typeIR, falseValFunc());
-			return;
+			return this.constant = getValueType().falseValue();
 		}
 
-		final DefValue value = value();
+		return this.constant = determineConstant();
+	}
 
-		if (value.isUnknown()) {
-			set(typeIR, unknownValFunc());
+	public void create(ObjectTypeIR typeIR) {
+
+		final Value<?> constant = getConstant();
+
+		if (constant.isFalse()) {
+			if (constant.isUnknown()) {
+				set(typeIR, unknownValFunc());
+			} else {
+				set(typeIR, falseValFunc());
+			}
 			return;
 		}
 
@@ -87,7 +99,8 @@ public abstract class ObjectValueIRValFunc
 		final ValDirs subDirs;
 
 		if (dirs.isDebug()) {
-			subDirs = dirs.begin("Calculate value " + getObjectIR().getId());
+			subDirs = dirs.begin(
+					"Calculate " + suffix() + " of " + getObjectIR().getId());
 			if (body != null) {
 				subDirs.code().dumpName("For: ", body.toData(subDirs.code()));
 			}
@@ -96,45 +109,31 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		final Code code = subDirs.code();
+		final Value<?> constant = getConstant();
 
-		if (writeFalseValue(subDirs.dirs(), body)) {
+		if (constant.isDefinite()) {
+			code.debug(
+					"Constant " + suffix()
+					+ " = " + constant.valueString());
+
+			final ValOp result = constant.op(subDirs.getBuilder(), code);
+
+			result.go(code, subDirs);
 			if (subDirs.isDebug()) {
 				subDirs.done();
 			}
-			return falseValue().op(subDirs.getBuilder(), code);
+
+			return result;
 		}
 
-		final Obj object = getObject();
-		final DefValue value = value();
-
-		if (body == null || value.isAlwaysMeaningful()) {
-
-			final Value<?> realValue = value.getRealValue();
-
-			if (realValue != null && realValue.isDefinite()) {
-				if (!object.getConstructionMode().isRuntime()
-						|| value.getSource() == object) {
-					code.debug(getObjectIR().getId() + " = " + realValue);
-					if (subDirs.isDebug()) {
-						subDirs.done();
-					}
-					return realValue.op(subDirs.getBuilder(), code);
-				}
-			}
-		}
-
-		final ValOp result =
-			get(host).op(null, code).call(subDirs, body(code, host, body));
+		final ObjectValFunc func = get(host).op(code.id(suffix()), code);
+		final ValOp result = func.call(subDirs, body(code, host, body));
 
 		if (subDirs.isDebug()) {
 			subDirs.done();
 		}
 
 		return result;
-	}
-
-	public void setFalse(ObjectTypeIR typeIR) {
-		set(typeIR, falseValFunc());
 	}
 
 	public void build() {
@@ -145,7 +144,7 @@ public abstract class ObjectValueIRValFunc
 			return;
 		}
 
-		function.debug("Calculating value");
+		function.debug("Calculating " + suffix());
 
 		final Code failure = function.addBlock("failure");
 		final Code unknown = function.addBlock("unknown");
@@ -156,9 +155,9 @@ public abstract class ObjectValueIRValFunc
 				getObjectIR().getObject(),
 				DERIVED);
 		final ValOp result =
-			function.arg(function, OBJECT_VAL.value())
-			.op(builder, getValueType())
-			.setStoreMode(INITIAL_VAL_STORE);
+				function.arg(function, OBJECT_VAL.value())
+				.op(builder, getValueType())
+				.setStoreMode(INITIAL_VAL_STORE);
 		final ValDirs dirs = builder.splitWhenUnknown(
 				function,
 				failure.head(),
@@ -181,6 +180,20 @@ public abstract class ObjectValueIRValFunc
 
 		function.returnVoid();
 		function.done();
+	}
+
+	protected Value<?> determineConstant() {
+
+		final Value<?> constant = defs().getConstant();
+
+		if (!constant.isDefinite()) {
+			return constant;
+		}
+		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+			return constant;
+		}
+
+		return getValueType().runtimeValue();
 	}
 
 	protected ValOp build(ValDirs dirs, ObjOp host) {
@@ -278,8 +291,10 @@ public abstract class ObjectValueIRValFunc
 
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
-		final CondCode hasAncestor =
-			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
+		final CondCode hasAncestor = host.hasAncestor(code).branch(
+				code,
+				"has_ancestor",
+				"no_ancestor");
 		final Code noAncestor = hasAncestor.otherwise();
 
 		final Obj object = getObjectIR().getObject();
@@ -297,10 +312,10 @@ public abstract class ObjectValueIRValFunc
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
 		final ObjectTypeOp ancestorType =
-			ancestorBody.methods(hasAncestor)
-			.objectType(hasAncestor)
-			.load(null, hasAncestor)
-			.op(host.getBuilder(), DERIVED);
+				ancestorBody.methods(hasAncestor)
+				.objectType(hasAncestor)
+				.load(null, hasAncestor)
+				.op(host.getBuilder(), DERIVED);
 
 		final ValDirs subDirs = dirs.sub(hasAncestor);
 		final ValDirs defDirs;

@@ -52,7 +52,7 @@ public abstract class ObjectValueIRCondFunc
 		return valuePart().getDefKind().isClaim();
 	}
 
-	public CondValue getConstant() {
+	public final CondValue getConstant() {
 		if (this.constant != null) {
 			return this.constant;
 		}
@@ -85,9 +85,11 @@ public abstract class ObjectValueIRCondFunc
 			code.debug("True");
 			break;
 		case RUNTIME:
-			get(host).op(null, code).call(
-					code,
-					body(code, host, body)).go(code, subDirs);
+
+			final ObjectCondFunc func = get(host).op(code.id(suffix()), code);
+
+			func.call(code, body(code, host, body)).go(code, subDirs);
+
 			break;
 		case UNKNOWN:
 			code.debug("Unknown");
@@ -101,11 +103,7 @@ public abstract class ObjectValueIRCondFunc
 		subDirs.end();
 	}
 
-	public void setFalse(ObjectTypeIR typeIR) {
-		set(typeIR, falseFunc());
-	}
-
-	public void build(Definitions definitions) {
+	public void build() {
 
 		final Function<ObjectCondFunc> function = get().getFunction();
 
@@ -132,7 +130,7 @@ public abstract class ObjectValueIRCondFunc
 				condFalse.head(),
 				condUnknown.head());
 
-		build(dirs, host, definitions);
+		build(dirs, host);
 
 		function.int8((byte) CONDITION_FLAG).returnValue(function);
 		if (condFalse.exists()) {
@@ -168,10 +166,7 @@ public abstract class ObjectValueIRCondFunc
 		return defs().resolve(resolver);
 	}
 
-	protected void build(
-			CodeDirs dirs,
-			ObjOp host,
-			Definitions definitions) {
+	protected void build(CodeDirs dirs, ObjOp host) {
 
 		final CondDefs defs = defs();
 		final CondCollector collector = new CondCollector(
@@ -188,7 +183,7 @@ public abstract class ObjectValueIRCondFunc
 			writeAncestorDef(dirs, host, true);
 			return;
 		}
-		if (collector.size() == 0 && hasExplicitProposition(definitions)) {
+		if (collector.size() == 0 && hasExplicitProposition()) {
 			return;
 		}
 		writeAncestorDef(dirs, host, true);
@@ -298,11 +293,11 @@ public abstract class ObjectValueIRCondFunc
 		}
 	}
 
-	private boolean hasExplicitProposition(Definitions definitions) {
+	private boolean hasExplicitProposition() {
 
 		final Obj object = getObjectIR().getObject();
 
-		for (ValueDef proposition : definitions.propositions().get()) {
+		for (ValueDef proposition : definitions().propositions().get()) {
 			if (explicitDef(object, proposition)) {
 				return true;
 			}

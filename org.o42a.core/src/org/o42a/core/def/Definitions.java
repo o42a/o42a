@@ -224,10 +224,11 @@ public class Definitions extends Scoped {
 				isEmpty() ? ValueType.VOID : getValueType();
 
 		switch (requirements().getConstant()) {
-		case TRUE:
-			break;
 		case RUNTIME:
 			return valueType.runtimeValue();
+		case FALSE:
+			return valueType.falseValue();
+		case TRUE:
 		case UNKNOWN:
 			switch (conditions().getConstant()) {
 			case TRUE:
@@ -239,8 +240,6 @@ public class Definitions extends Scoped {
 				return valueType.falseValue();
 			}
 			break;
-		case FALSE:
-			return valueType.falseValue();
 		}
 
 		final Value<?> claim = claims().getConstant();

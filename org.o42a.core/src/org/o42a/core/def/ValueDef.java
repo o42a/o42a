@@ -60,8 +60,6 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	public abstract ValueType<?> getValueType();
 
-	public abstract boolean isConstant();
-
 	public final Value<?> getConstantValue() {
 		if (this.constantValue != null) {
 			return this.constantValue;
@@ -77,7 +75,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 				return this.constantValue = getValueType().runtimeValue();
 			}
 		}
-		if (!isConstant()) {
+		if (!hasConstantValue()) {
 			return this.constantValue = getValueType().runtimeValue();
 		}
 
@@ -212,6 +210,8 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 		return writeDef(dirs, rescopedHost);
 	}
+
+	protected abstract boolean hasConstantValue();
 
 	protected abstract Value<?> calculateValue(Resolver resolver);
 

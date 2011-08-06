@@ -29,11 +29,13 @@ import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
 
 
 public final class ObjectValueFunc extends ObjectValueIRValFunc {
@@ -63,6 +65,18 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	}
 
 	@Override
+	protected Value<?> determineConstant() {
+
+		final Value<?> claim = getValueIR().getConstantClaim();
+
+		if (!claim.isUnknown()) {
+			return claim;
+		}
+
+		return getValueIR().getConstantProposition();
+	}
+
+	@Override
 	protected DefValue value() {
 
 		final Resolver resolver = definitions().getScope().dummyResolver();
@@ -75,7 +89,16 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 		final Code code = dirs.code();
 
-		getValueIR().writeRequirement(dirs.dirs(), host, null);
+		final Code unknownReq = dirs.addBlock("unknown_req");
+		final CodeDirs reqDirs = dirs.dirs().splitWhenUnknown(
+				dirs.dirs().falseDir(),
+				unknownReq.head());
+
+		getValueIR().writeRequirement(reqDirs, host, null);
+		if (unknownReq.exists()) {
+			unknownReq.go(code.tail());
+		}
+
 		getValueIR().writeCondition(dirs.dirs(), host, null);
 
 		final Code unknownClaim = dirs.addBlock("unknown_claim");
