@@ -80,13 +80,19 @@ public abstract class ObjectValueIRValFunc
 
 		final Value<?> constant = getConstant();
 
-		if (constant.isFalse()) {
-			if (constant.isUnknown()) {
-				set(typeIR, unknownValFunc());
-			} else {
-				set(typeIR, falseValFunc());
+		if (constant.isDefinite()) {
+			if (constant.isFalse()) {
+				if (constant.isUnknown()) {
+					set(typeIR, unknownValFunc());
+				} else {
+					set(typeIR, falseValFunc());
+				}
+				return;
 			}
-			return;
+			if (getValueType().isVoid()) {
+				set(typeIR, voidValFunc());
+				return;
+			}
 		}
 
 		final Function<ObjectValFunc> function =
@@ -222,6 +228,12 @@ public abstract class ObjectValueIRValFunc
 	private FuncPtr<ObjectValFunc> falseValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_false",
+				OBJECT_VAL);
+	}
+
+	private FuncPtr<ObjectValFunc> voidValFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_val_void",
 				OBJECT_VAL);
 	}
 
