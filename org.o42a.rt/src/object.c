@@ -985,6 +985,15 @@ void o42a_obj_val_false(
 	O42A_RETURN;
 }
 
+void o42a_obj_val_void(
+		O42A_PARAMS
+		o42a_val_t *const result,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	result->flags = O42A_TRUE;
+	O42A_RETURN;
+}
+
 void o42a_obj_val_unknown(
 		O42A_PARAMS
 		o42a_val_t *const result,
