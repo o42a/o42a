@@ -19,7 +19,6 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.NO_CLAIMS;
 import static org.o42a.core.def.Definitions.NO_PROPOSITIONS;
 import static org.o42a.core.def.Definitions.NO_REQUIREMENTS;
@@ -114,8 +113,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return this.condition = new ValueCondDef(this);
 	}
 
-	@Override
-	public final DefValue definitionValue(Resolver resolver) {
+	public final Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
 		final Resolver rescoped = getRescoper().rescope(this, resolver);
@@ -123,45 +121,33 @@ public abstract class ValueDef extends Def<ValueDef> {
 		if (hasPrerequisite()) {
 
 			final LogicalValue prerequisite =
-				getPrerequisite().logicalValue(rescoped);
+					getPrerequisite().logicalValue(rescoped);
 
 			if (!prerequisite.isTrue()) {
-				if (!prerequisite.isFalse()) {
-					return defValue(this, getValueType().runtimeValue());
+				if (prerequisite.isFalse()) {
+					return getValueType().unknownValue();
 				}
-				if (getPrerequisite().isFalse()) {
-					return alwaysIgnoredValue(this);
-				}
-				return unknownValue(this);
+				return getValueType().runtimeValue();
 			}
 		}
 
 		final LogicalValue precondition =
-			getPrecondition().logicalValue(rescoped);
+				getPrecondition().logicalValue(rescoped);
 
 		if (!precondition.isTrue()) {
-			if (!precondition.isFalse()) {
-				return defValue(this, getValueType().runtimeValue());
+			if (precondition.isFalse()) {
+				return getValueType().falseValue();
 			}
-			if (getPrerequisite().isTrue() && getPrecondition().isFalse()) {
-				return alwaysMeaningfulValue(this, getValueType().falseValue());
-			}
-			return defValue(this, getValueType().falseValue());
+			return getValueType().runtimeValue();
 		}
 
 		final Value<?> value = calculateValue(rescoped);
 
 		if (value == null) {
-			return unknownValue(this);
-		}
-		if (getPrerequisite().isTrue() && getPrecondition().isTrue()) {
-			if (value.isUnknown()) {
-				return alwaysIgnoredValue(this);
-			}
-			return alwaysMeaningfulValue(this, value);
+			return getValueType().unknownValue();
 		}
 
-		return defValue(this, value);
+		return value;
 	}
 
 	@Override

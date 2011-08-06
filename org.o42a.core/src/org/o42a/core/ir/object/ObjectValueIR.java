@@ -26,7 +26,6 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.impl.ObjectIRLocals;
@@ -133,7 +132,7 @@ public class ObjectValueIR {
 	}
 
 	protected void fill(ObjectTypeIR typeIR) {
-		assignValue(typeIR);
+		typeIR.getObjectData().value().set(initialValue());
 		this.value.build();
 		this.requirement.build();
 		this.claim.build();
@@ -150,25 +149,24 @@ public class ObjectValueIR {
 		return getObject().value().getDefinitions();
 	}
 
-	private void assignValue(ObjectTypeIR typeIR) {
+	private Val initialValue() {
 
 		final Definitions definitions = definitions();
 		final Resolver resolver = definitions.getScope().dummyResolver();
-		final DefValue value = definitions.value(resolver);
-		final Value<?> realValue = value.getRealValue();
-		final Val val;
+		final Value<?> value = definitions.value(resolver);
 
-		if (realValue != null) {
-			val = realValue.val(getGenerator());
-		} else if (!value.isDefinite()) {
-			val = INDEFINITE_VAL;
-		} else if (value.isUnknown()) {
-			val = UNKNOWN_VAL;
-		} else {
-			val = FALSE_VAL;
+		switch (value.getCondition()) {
+		case TRUE:
+			return value.val(getGenerator());
+		case RUNTIME:
+			return INDEFINITE_VAL;
+		case UNKNOWN:
+			return UNKNOWN_VAL;
+		case FALSE:
+			return FALSE_VAL;
 		}
 
-		typeIR.getObjectData().value().set(val);
+		throw new IllegalStateException("Unsupported value: " + value);
 	}
 
 }

@@ -28,6 +28,7 @@ import org.o42a.core.Scoped;
 import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
@@ -290,39 +291,33 @@ public class Definitions extends Scoped {
 		return claims().isEmpty() && requirements().isEmpty();
 	}
 
-	public DefValue value(Resolver resolver) {
+	public Value<?> value(Resolver resolver) {
 
-		final DefValue requirement = requirements().resolve(resolver);
+		final Condition requirement = requirements().condition(resolver);
 
-		if (!requirement.isDefinite()) {
-			return requirement;
+		if (!requirement.isConstant()) {
+			return requirement.toValue();
 		}
 		if (requirement.isFalse() && !requirement.isUnknown()) {
-			return requirement;
+			return requirement.toValue();
 		}
 
-		final DefValue condition = conditions().resolve(resolver);
+		final Condition condition = conditions().condition(resolver);
 
-		if (!condition.isDefinite()) {
-			return condition;
+		if (!condition.isConstant()) {
+			return condition.toValue();
 		}
 		if (condition.isFalse()) {
-			return condition;
+			return condition.toValue();
 		}
 
-		final DefValue value;
-		final DefValue claim = claims().resolve(resolver);
+		final Value<?> claim = claims().value(resolver);
 
 		if (!claim.isUnknown()) {
-			value = claim;
-		} else {
-			value = propositions().resolve(resolver);
-		}
-		if (value.isFalse()) {
-			return value;
+			return claim;
 		}
 
-		return value;
+		return propositions().value(resolver);
 	}
 
 	public Definitions refine(Def<?> refinement) {
