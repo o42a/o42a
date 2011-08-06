@@ -146,6 +146,8 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define o42a_debug_dump_mem(prefix, ptr, depth)
 
 
+#define __o42a_dbg_env_p__ ((o42a_dbg_env_t*) NULL)
+
 #else /* NDEBUG */
 
 
