@@ -19,13 +19,16 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.DefValue.nonExistingValue;
+import static org.o42a.core.value.Value.unknownValue;
 
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
 public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
+
+	private Value<?> constant;
 
 	ValueDefs(DefKind defKind, ValueDef... defs) {
 		super(defKind, defs);
@@ -33,17 +36,38 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			"Value definition kind expected";
 	}
 
-	public final DefValue resolve(Resolver resolver) {
+	public final ValueType<?> getValueType() {
+		return isEmpty() ? ValueType.VOID : get()[0].getValueType();
+	}
+
+	public final Value<?> getConstant() {
+		if (this.constant != null) {
+			return this.constant;
+		}
+
 		for (ValueDef def : get()) {
 
-			final DefValue value = def.definitionValue(resolver);
+			final Value<?> constantValue = def.getConstantValue();
+
+			if (!constantValue.isUnknown()) {
+				return this.constant = constantValue;
+			}
+		}
+
+		return this.constant = unknownValue();
+	}
+
+	public final Value<?> value(Resolver resolver) {
+		for (ValueDef def : get()) {
+
+			final Value<?> value = def.value(resolver);
 
 			if (!value.isUnknown()) {
 				return value;
 			}
 		}
 
-		return nonExistingValue(this);
+		return getValueType().unknownValue();
 	}
 
 	@Override

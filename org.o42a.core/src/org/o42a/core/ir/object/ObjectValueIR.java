@@ -26,7 +26,6 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.impl.ObjectIRLocals;
@@ -36,6 +35,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
@@ -70,6 +70,38 @@ public class ObjectValueIR {
 
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
+	}
+
+	public final ObjectRequirementFunc requirement() {
+		return this.requirement;
+	}
+
+	public final ObjectClaimFunc claim() {
+		return this.claim;
+	}
+
+	public final ObjectConditionFunc condition() {
+		return this.condition;
+	}
+
+	public final ObjectPropositionFunc proposition() {
+		return this.proposition;
+	}
+
+	public final Condition getConstantRequirement() {
+		return this.requirement.getConstant();
+	}
+
+	public final Condition getConstantCondition() {
+		return this.condition.getConstant();
+	}
+
+	public final Value<?> getConstantClaim() {
+		return this.claim.getConstant();
+	}
+
+	public final Value<?> getConstantProposition() {
+		return this.proposition.getConstant();
 	}
 
 	public ObjValOp op(CodeBuilder builder, Code code) {
@@ -108,51 +140,21 @@ public class ObjectValueIR {
 	}
 
 	protected void allocate(ObjectTypeIR typeIR) {
-
-		final Definitions definitions = definitions();
-
-		if (definitions.requirements().isFalse()
-				|| definitions.conditions().isFalse()) {
-			createFalseFunctions(typeIR, definitions);
-		} else {
-			createFunctions(typeIR, definitions);
-		}
+		this.requirement.create(typeIR);
+		this.claim.create(typeIR);
+		this.condition.create(typeIR);
+		this.proposition.create(typeIR);
+		this.value.create(typeIR);
 	}
 
 	protected void fill(ObjectTypeIR typeIR) {
-
-		final Definitions definitions = definitions();
-
-		assignValue(typeIR, definitions);
-		buildFunctions(typeIR, definitions);
+		typeIR.getObjectData().value().set(initialValue());
+		this.requirement.build();
+		this.claim.build();
+		this.condition.build();
+		this.proposition.build();
 		this.locals.build();
-	}
-
-	protected void createValue(ObjectTypeIR typeIR, Definitions definitions) {
-		this.value.create(typeIR, definitions);
-	}
-
-
-	protected void createRequirement(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.requirement.create(typeIR, definitions);
-	}
-
-	protected void createClaim(ObjectTypeIR typeIR, Definitions definitions) {
-		this.claim.create(typeIR, definitions);
-	}
-
-	protected void createCondition(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.condition.create(typeIR, definitions);
-	}
-
-	protected void createProposition(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.proposition.create(typeIR, definitions);
+		this.value.build();
 	}
 
 	final ObjectIRLocals getLocals() {
@@ -163,60 +165,24 @@ public class ObjectValueIR {
 		return getObject().value().getDefinitions();
 	}
 
-	private void assignValue(ObjectTypeIR typeIR, Definitions definitions) {
+	private Val initialValue() {
 
-		final Val val;
+		final Definitions definitions = definitions();
 		final Resolver resolver = definitions.getScope().dummyResolver();
-		final DefValue value = definitions.value(resolver);
-		final Value<?> realValue = value.getRealValue();
+		final Value<?> value = definitions.value(resolver);
 
-		if (realValue != null) {
-			val = realValue.val(getGenerator());
-		} else if (!value.isDefinite()) {
-			val = INDEFINITE_VAL;
-		} else if (value.isUnknown()) {
-			val = UNKNOWN_VAL;
-		} else {
-			val = FALSE_VAL;
+		switch (value.getCondition()) {
+		case TRUE:
+			return value.val(getGenerator());
+		case RUNTIME:
+			return INDEFINITE_VAL;
+		case UNKNOWN:
+			return UNKNOWN_VAL;
+		case FALSE:
+			return FALSE_VAL;
 		}
 
-		typeIR.getObjectData().value().set(val);
-	}
-
-	private void createFalseFunctions(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.value.setFalse(typeIR);
-		if (definitions.requirements().isFalse()) {
-			this.requirement.setFalse(typeIR);
-			this.claim.setFalse(typeIR);
-		} else {
-			createClaimFunctions(typeIR, definitions);
-		}
-		this.condition.setFalse(typeIR);
-		this.proposition.setFalse(typeIR);
-	}
-
-	private void createFunctions(ObjectTypeIR typeIR, Definitions definitions) {
-		createValue(typeIR, definitions);
-		createClaimFunctions(typeIR, definitions);
-		createCondition(typeIR, definitions);
-		createProposition(typeIR, definitions);
-	}
-
-	private void buildFunctions(ObjectTypeIR typeIR, Definitions definitions) {
-		this.value.build(definitions);
-		this.requirement.build(definitions);
-		this.claim.build(definitions);
-		this.condition.build(definitions);
-		this.proposition.build(definitions);
-	}
-
-	private void createClaimFunctions(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		createRequirement(typeIR, definitions);
-		createClaim(typeIR, definitions);
+		throw new IllegalStateException("Unsupported value: " + value);
 	}
 
 }

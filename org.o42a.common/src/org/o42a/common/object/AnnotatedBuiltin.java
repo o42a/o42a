@@ -34,6 +34,11 @@ public abstract class AnnotatedBuiltin
 	}
 
 	@Override
+	public boolean isConstantBuiltin() {
+		return false;
+	}
+
+	@Override
 	protected final Definitions explicitDefinitions() {
 		return new BuiltinValueDef(this).toDefinitions();
 	}

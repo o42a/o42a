@@ -54,6 +54,11 @@ final class ConstantRef<T> extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return true;
+	}
+
+	@Override
 	public boolean isStatic() {
 		return true;
 	}

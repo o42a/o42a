@@ -28,6 +28,8 @@ import org.o42a.core.Scoped;
 import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Condition;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.LogInfo;
 
@@ -151,6 +153,8 @@ public class Definitions extends Scoped {
 	private final ValueDefs claims;
 	private final ValueDefs propositions;
 
+	private Value<?> constant;
+
 	Definitions(
 			LocationInfo location,
 			Scope scope,
@@ -208,6 +212,46 @@ public class Definitions extends Scoped {
 		return false;
 	}
 
+	public final boolean isConstant() {
+		return getConstant().isDefinite();
+	}
+
+	public final Value<?> getConstant() {
+		if (this.constant != null) {
+			return this.constant;
+		}
+
+		final ValueType<?> valueType =
+				isEmpty() ? ValueType.VOID : getValueType();
+
+		switch (requirements().getConstant()) {
+		case RUNTIME:
+			return valueType.runtimeValue();
+		case FALSE:
+			return valueType.falseValue();
+		case TRUE:
+		case UNKNOWN:
+			switch (conditions().getConstant()) {
+			case TRUE:
+				break;
+			case RUNTIME:
+				return valueType.runtimeValue();
+			case UNKNOWN:
+			case FALSE:
+				return valueType.falseValue();
+			}
+			break;
+		}
+
+		final Value<?> claim = claims().getConstant();
+
+		if (!claim.isUnknown()) {
+			return claim;
+		}
+
+		return propositions().getConstant();
+	}
+
 	public final CondDefs requirements() {
 		return this.requirements;
 	}
@@ -247,39 +291,33 @@ public class Definitions extends Scoped {
 		return claims().isEmpty() && requirements().isEmpty();
 	}
 
-	public DefValue value(Resolver resolver) {
+	public Value<?> value(Resolver resolver) {
 
-		final DefValue requirement = requirements().resolve(resolver);
+		final Condition requirement = requirements().condition(resolver);
 
-		if (!requirement.isDefinite()) {
-			return requirement;
+		if (!requirement.isConstant()) {
+			return requirement.toValue();
 		}
 		if (requirement.isFalse() && !requirement.isUnknown()) {
-			return requirement;
+			return requirement.toValue();
 		}
 
-		final DefValue condition = conditions().resolve(resolver);
+		final Condition condition = conditions().condition(resolver);
 
-		if (!condition.isDefinite()) {
-			return condition;
+		if (!condition.isConstant()) {
+			return condition.toValue();
 		}
-		if (condition.isFalse() && !condition.isUnknown()) {
-			return condition;
+		if (condition.isFalse()) {
+			return condition.toValue();
 		}
 
-		final DefValue value;
-		final DefValue claim = claims().resolve(resolver);
+		final Value<?> claim = claims().value(resolver);
 
 		if (!claim.isUnknown()) {
-			value = claim;
-		} else {
-			value = propositions().resolve(resolver);
-		}
-		if (value.isFalse()) {
-			return value;
+			return claim;
 		}
 
-		return value;
+		return propositions().value(resolver);
 	}
 
 	public Definitions refine(Def<?> refinement) {

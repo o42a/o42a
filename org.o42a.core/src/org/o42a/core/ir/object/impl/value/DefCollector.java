@@ -22,11 +22,13 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.object.*;
+import org.o42a.core.def.Def;
+import org.o42a.core.def.Defs;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ref.type.TypeRef;
 
 
-abstract class DefCollector<D extends SourceInfo> {
+abstract class DefCollector<D extends Def<D>> {
 
 	public static boolean explicitDef(Obj object, SourceInfo sourceInfo) {
 
@@ -78,6 +80,12 @@ abstract class DefCollector<D extends SourceInfo> {
 			return;
 		}
 		ancestorDef(def);
+	}
+
+	public final void addDefs(Defs<D, ?> defs) {
+		for (D source : defs.get()) {
+			addDef(source);
+		}
 	}
 
 	public void addDefs(D[] sources) {

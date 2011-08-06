@@ -68,14 +68,14 @@ public final class ValuePart implements UserInfo {
 		return getUseBy(useCase).isUsed();
 	}
 
-	public final UseFlag ancestorDefsUpdatedBy(UseCase useCase) {
+	public final UseFlag ancestorDefsUpdatedBy(UseCaseInfo useCase) {
 		if (this.ancestorDefsUpdates == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
 		return this.ancestorDefsUpdates.getUseBy(useCase);
 	}
 
-	public final boolean isAncestorDefsUpdatedBy(UseCase useCase) {
+	public final boolean isAncestorDefsUpdatedBy(UseCaseInfo useCase) {
 		return ancestorDefsUpdatedBy(useCase).isUsed();
 	}
 

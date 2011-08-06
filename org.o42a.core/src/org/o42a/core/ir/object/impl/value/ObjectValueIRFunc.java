@@ -25,8 +25,6 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.def.DefValue;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.impl.ObjectIRFunc;
@@ -122,8 +120,6 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 	}
 
 	protected abstract String suffix();
-
-	protected abstract DefValue value(Definitions definitions);
 
 	protected final void set(ObjectTypeIR typeIR, FuncPtr<F> ptr) {
 		this.func = func(typeIR.getObjectData());

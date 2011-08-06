@@ -20,28 +20,53 @@
 package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.DefCollector.explicitDef;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.*;
+import org.o42a.core.artifact.object.ValuePart;
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.CondDefs;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectCondFunc;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.Condition;
 
 
 public abstract class ObjectValueIRCondFunc
 		extends ObjectValueIRFunc<ObjectCondFunc> {
 
+	private Condition constant;
+
 	public ObjectValueIRCondFunc(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
-	public abstract boolean isRequirement();
+	public abstract ValuePart valuePart();
+
+	public abstract CondDefs defs();
+
+	public final boolean isRequirement() {
+		return valuePart().getDefKind().isClaim();
+	}
+
+	public final Condition getConstant() {
+		if (this.constant != null) {
+			return this.constant;
+		}
+		return this.constant = determineConstant();
+	}
+
+	public void create(ObjectTypeIR typeIR) {
+		set(typeIR, createFunc());
+	}
 
 	public void call(CodeDirs dirs, ObjOp host, ObjectOp body) {
 
@@ -52,67 +77,38 @@ public abstract class ObjectValueIRCondFunc
 		} else {
 			subDirs = dirs.begin(
 					"calc_cond",
-					(isRequirement()
-							? "Calculate requirement "
-							: "Calculate condition ") + this);
+					"Calculate " + suffix() + " " + this);
 			if (body != null) {
 				subDirs.code().dumpName("For: ", body.toData(subDirs.code()));
 			}
 		}
 
 		final Code code = subDirs.code();
-		final DefValue condition = value(definitions());
-		final LogicalValue logicalValue = logicalValue(condition, body);
 
-		if (logicalValue.isConstant()) {
-			if (logicalValue.isFalse()) {
-				code.debug("False");
-				code.go(subDirs.falseDir());
-			} else {
-				code.debug("True");
-			}
-			subDirs.end();
-			return;
+		switch (getConstant()) {
+		case TRUE:
+			code.debug("True");
+			break;
+		case RUNTIME:
+
+			final ObjectCondFunc func = get(host).op(code.id(suffix()), code);
+
+			func.call(code, body(code, host, body)).go(code, subDirs);
+
+			break;
+		case UNKNOWN:
+			code.debug("Unknown");
+			code.go(subDirs.unknownDir());
+			break;
+		case FALSE:
+			code.debug("False");
+			code.go(subDirs.falseDir());
 		}
-
-		get(host).op(null, code).call(
-				code,
-				body(code, host, body)).go(code, subDirs);
 
 		subDirs.end();
 	}
 
-	public void create(ObjectTypeIR typeIR, Definitions definitions) {
-
-		final DefValue condition = value(definitions);
-
-		if (condition.isUnknown()) {
-			if (!condition.exists()
-					&& !getObjectIR().getObject()
-					.getConstructionMode().isRuntime()) {
-				set(typeIR, trueFunc());
-				return;
-			}
-		} else if (condition.isDefinite()) {
-			if (condition.isFalse()) {
-				set(typeIR, falseFunc());
-			} else {
-				set(typeIR, trueFunc());
-			}
-			return;
-		}
-
-		final Function<ObjectCondFunc> function =
-			getGenerator().newFunction().create(getId(), OBJECT_COND);
-
-		set(typeIR, function.getPointer());
-	}
-
-	public void setFalse(ObjectTypeIR typeIR) {
-		set(typeIR, falseFunc());
-	}
-
-	public void build(Definitions definitions) {
+	public void build() {
 
 		final Function<ObjectCondFunc> function = get().getFunction();
 
@@ -120,9 +116,7 @@ public abstract class ObjectValueIRCondFunc
 			return;
 		}
 
-		function.debug(
-				isRequirement()
-				? "Calculating requirement" : "Calculating condition");
+		function.debug("Calculating " + suffix());
 
 		final Code condFalse = function.addBlock("false");
 		final Code condUnknown = function.addBlock("unknown");
@@ -141,7 +135,7 @@ public abstract class ObjectValueIRCondFunc
 				condFalse.head(),
 				condUnknown.head());
 
-		build(dirs, host, definitions);
+		build(dirs, host);
 
 		function.int8((byte) CONDITION_FLAG).returnValue(function);
 		if (condFalse.exists()) {
@@ -155,23 +149,27 @@ public abstract class ObjectValueIRCondFunc
 		function.done();
 	}
 
-	protected void build(
-			CodeDirs dirs,
-			ObjOp host,
-			Definitions definitions) {
+	protected Condition determineConstant() {
 
-		final CondDef[] defs;
+		final Condition constant = defs().getConstant();
 
-		if (isRequirement()) {
-			defs = definitions.requirements().get();
-		} else {
-			defs = definitions.conditions().get();
+		if (!constant.isConstant() || constant.isFalse()) {
+			return constant;
+		}
+		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+			return constant;
 		}
 
+		return Condition.RUNTIME;
+	}
+
+	protected void build(CodeDirs dirs, ObjOp host) {
+
+		final CondDefs defs = defs();
 		final CondCollector collector = new CondCollector(
 				dirs.code(),
 				getObjectIR().getObject(),
-				defs.length);
+				defs.length());
 
 		collector.addDefs(defs);
 		if (collector.hasExplicit) {
@@ -182,7 +180,7 @@ public abstract class ObjectValueIRCondFunc
 			writeAncestorDef(dirs, host, true);
 			return;
 		}
-		if (collector.size() == 0 && hasExplicitProposition(definitions)) {
+		if (collector.size() == 0 && hasExplicitProposition()) {
 			return;
 		}
 		writeAncestorDef(dirs, host, true);
@@ -194,13 +192,38 @@ public abstract class ObjectValueIRCondFunc
 			boolean trueWithoutAncestor) {
 
 		final Code code = dirs.code();
-		final CondCode hasAncestor =
-			host.hasAncestor(code).branch(code, "has_ancestor", "no_ancestor");
+
+		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+
+			final TypeRef ancestor = getObject().type().getAncestor();
+
+			if (ancestor == null) {
+				code.debug("No ancestor " + suffix());
+				return;
+			}
+
+			final Obj ancestorObject = ancestor.typeObject(dummyUser());
+			final ObjectOp ancestorBody = host.ancestor(code);
+			final ObjectTypeOp ancestorType =
+					ancestorObject.ir(getGenerator())
+					.getStaticTypeIR()
+					.getInstance()
+					.pointer(getGenerator())
+					.op(null, code)
+					.op(dirs.getBuilder(), EXACT);
+
+			writeAncestorDef(dirs, code, ancestorBody, ancestorType);
+
+			return;
+		}
+
+		final CondCode hasAncestor = host.hasAncestor(code).branch(
+				code,
+				"has_ancestor",
+				"no_ancestor");
 		final Code noAncestor = hasAncestor.otherwise();
 
-		noAncestor.debug(
-				isRequirement()
-				? "No ancestor requirement" : "No ancestor condition");
+		noAncestor.debug("No ancestor " + suffix());
 		if (trueWithoutAncestor) {
 			noAncestor.go(code.tail());
 		} else {
@@ -214,35 +237,37 @@ public abstract class ObjectValueIRCondFunc
 			.load(null, hasAncestor)
 			.op(host.getBuilder(), DERIVED);
 
+		writeAncestorDef(dirs, hasAncestor, ancestorBody, ancestorType);
+
+		hasAncestor.go(code.tail());
+	}
+
+	private void writeAncestorDef(
+			CodeDirs dirs,
+			Code code,
+			ObjectOp ancestorBody,
+			ObjectTypeOp ancestorType) {
+
 		CodeDirs ancestorDirs = dirs.getBuilder().splitWhenUnknown(
-				hasAncestor,
+				code,
 				dirs.falseDir(),
 				dirs.unknownDir());
 
+		if (code.isDebug()) {
+			ancestorDirs = ancestorDirs.begin(
+					"ancestor",
+					"Ancestor " + suffix());
+			code.dumpName(
+					"Ancestor: ",
+					ancestorBody.toData(code));
+		}
 		if (isRequirement()) {
-			if (hasAncestor.isDebug()) {
-				ancestorDirs = ancestorDirs.begin(
-						"ancestor",
-						"Ancestor requirement");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
 			ancestorType.writeRequirement(ancestorDirs, ancestorBody);
 		} else {
-			if (hasAncestor.isDebug()) {
-				ancestorDirs = ancestorDirs.begin(
-						"ancestor",
-						"Ancestor condition");
-				hasAncestor.dumpName(
-						"Ancestor: ",
-						ancestorBody.toData(hasAncestor));
-			}
 			ancestorType.writeCondition(ancestorDirs, ancestorBody);
 		}
-		ancestorDirs.end();
 
-		hasAncestor.go(code.tail());
+		ancestorDirs.end();
 	}
 
 	private void writeExplicitDefs(
@@ -294,17 +319,35 @@ public abstract class ObjectValueIRCondFunc
 		}
 	}
 
-	private boolean hasExplicitProposition(Definitions definitions) {
+	private boolean hasExplicitProposition() {
 
 		final Obj object = getObjectIR().getObject();
 
-		for (ValueDef proposition : definitions.propositions().get()) {
+		for (ValueDef proposition : definitions().propositions().get()) {
 			if (explicitDef(object, proposition)) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	private FuncPtr<ObjectCondFunc> createFunc() {
+		switch (getConstant()) {
+		case TRUE:
+			return trueFunc();
+		case FALSE:
+			return falseFunc();
+		case RUNTIME:
+			return getGenerator().newFunction().create(
+					getId(),
+					OBJECT_COND).getPointer();
+		case UNKNOWN:
+			return unknownFunc();
+		}
+
+		throw new IllegalStateException(
+				"Unsupported condition value: " + getConstant());
 	}
 
 	private FuncPtr<ObjectCondFunc> trueFunc() {
@@ -316,6 +359,12 @@ public abstract class ObjectValueIRCondFunc
 	private FuncPtr<ObjectCondFunc> falseFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_cond_false",
+				OBJECT_COND);
+	}
+
+	private FuncPtr<ObjectCondFunc> unknownFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_cond_unknown",
 				OBJECT_COND);
 	}
 

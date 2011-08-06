@@ -40,6 +40,11 @@ public final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return true;
+	}
+
+	@Override
 	public Scope rescope(Scope scope) {
 		scope.assertDerivedFrom(getFinalScope());
 		return scope;

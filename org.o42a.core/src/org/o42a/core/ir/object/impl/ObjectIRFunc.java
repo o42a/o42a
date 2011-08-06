@@ -22,14 +22,12 @@ package org.o42a.core.ir.object.impl;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.DefValue;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 
 
 public abstract class ObjectIRFunc {
@@ -60,49 +58,21 @@ public abstract class ObjectIRFunc {
 		return getObject().value().getDefinitions();
 	}
 
-	public final boolean isFalse(DefValue condition, ObjectOp body) {
-		if (condition.isUnknown()) {
-			return false;
-		}
-		return logicalValue(condition, body).isFalse();
-	}
-
-	public LogicalValue logicalValue(DefValue condition, ObjectOp body) {
-		if (condition.isUnknown() || !condition.isDefinite()) {
-			return LogicalValue.RUNTIME;
-		}
-
-		if (body == null || condition.isAlwaysMeaningful()) {
-			if (condition.isRequirement() && condition.isFalse()) {
-				// requirement is false
-				return LogicalValue.FALSE;
-			}
-		}
-
-		return LogicalValue.RUNTIME;
-	}
-
 	public boolean writeFalseValue(CodeDirs dirs, ObjectOp body) {
 
+		final Condition constantCondition =
+				getObjectIR().getValueIR().getConstantCondition();
+
+		if (!constantCondition.isFalse()) {
+			return false;
+		}
+
 		final Code code = dirs.code();
-		final Definitions definitions = definitions();
-		final Resolver resolver = definitions.getScope().dummyResolver();
 
-		if (isFalse(definitions.requirements().resolve(resolver), body)) {
-			code.debug("Object requirement is FALSE");
-			code.go(dirs.falseDir());
-			return true;
-		}
+		code.debug("Object condition is FALSE");
+		code.go(dirs.falseDir());
 
-		if (!getObject().getConstructionMode().isRuntime()) {
-			if (isFalse(definitions.conditions().resolve(resolver), body)) {
-				code.debug("Static object condition is FALSE");
-				code.go(dirs.falseDir());
-				return true;
-			}
-		}
-
-		return false;
+		return true;
 	}
 
 }

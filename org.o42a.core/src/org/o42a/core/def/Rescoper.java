@@ -57,6 +57,8 @@ public abstract class Rescoper {
 		return this.finalScope;
 	}
 
+	public abstract boolean isStatic();
+
 	public boolean isTransparent() {
 		return false;
 	}

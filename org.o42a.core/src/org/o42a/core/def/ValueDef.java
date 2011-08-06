@@ -19,13 +19,16 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.DefValue.*;
-import static org.o42a.core.def.Definitions.*;
+import static org.o42a.core.def.Definitions.NO_CLAIMS;
+import static org.o42a.core.def.Definitions.NO_PROPOSITIONS;
+import static org.o42a.core.def.Definitions.NO_REQUIREMENTS;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.LogicalValue;
@@ -35,6 +38,7 @@ import org.o42a.core.value.ValueType;
 
 public abstract class ValueDef extends Def<ValueDef> {
 
+	private Value<?> constantValue;
 	private CondDef condition;
 
 	public ValueDef(Obj source, LocationInfo location, Rescoper rescoper) {
@@ -54,6 +58,31 @@ public abstract class ValueDef extends Def<ValueDef> {
 	}
 
 	public abstract ValueType<?> getValueType();
+
+	public final Value<?> getConstantValue() {
+		if (this.constantValue != null) {
+			return this.constantValue;
+		}
+		if (hasPrerequisite()) {
+
+			final Logical prerequisite = getPrerequisite();
+
+			if (!prerequisite.isTrue()) {
+				if (prerequisite.isFalse()) {
+					return this.constantValue = getValueType().unknownValue();
+				}
+				return this.constantValue = getValueType().runtimeValue();
+			}
+		}
+		if (!hasConstantValue()) {
+			return this.constantValue = getValueType().runtimeValue();
+		}
+
+		final Resolver resolver =
+				getRescoper().rescope(this, getScope().dummyResolver());
+
+		return this.constantValue = calculateValue(resolver);
+	}
 
 	@Override
 	public boolean impliesWhenAfter(ValueDef def) {
@@ -84,8 +113,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return this.condition = new ValueCondDef(this);
 	}
 
-	@Override
-	public final DefValue definitionValue(Resolver resolver) {
+	public final Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
 		final Resolver rescoped = getRescoper().rescope(this, resolver);
@@ -93,56 +121,49 @@ public abstract class ValueDef extends Def<ValueDef> {
 		if (hasPrerequisite()) {
 
 			final LogicalValue prerequisite =
-				getPrerequisite().logicalValue(rescoped);
+					getPrerequisite().logicalValue(rescoped);
 
 			if (!prerequisite.isTrue()) {
-				if (!prerequisite.isFalse()) {
-					return defValue(this, getValueType().runtimeValue());
+				if (prerequisite.isFalse()) {
+					return getValueType().unknownValue();
 				}
-				if (getPrerequisite().isFalse()) {
-					return alwaysIgnoredValue(this);
-				}
-				return unknownValue(this);
+				return getValueType().runtimeValue();
 			}
 		}
 
 		final LogicalValue precondition =
-			getPrecondition().logicalValue(rescoped);
+				getPrecondition().logicalValue(rescoped);
 
 		if (!precondition.isTrue()) {
-			if (!precondition.isFalse()) {
-				return defValue(this, getValueType().runtimeValue());
+			if (precondition.isFalse()) {
+				return getValueType().falseValue();
 			}
-			if (getPrerequisite().isTrue() && getPrecondition().isFalse()) {
-				return alwaysMeaningfulValue(this, getValueType().falseValue());
-			}
-			return defValue(this, getValueType().falseValue());
+			return getValueType().runtimeValue();
 		}
 
 		final Value<?> value = calculateValue(rescoped);
 
 		if (value == null) {
-			return unknownValue(this);
-		}
-		if (getPrerequisite().isTrue() && getPrecondition().isTrue()) {
-			if (value.isUnknown()) {
-				return alwaysIgnoredValue(this);
-			}
-			return alwaysMeaningfulValue(this, value);
+			return getValueType().unknownValue();
 		}
 
-		return defValue(this, value);
+		return value;
 	}
 
 	@Override
 	public final Definitions toDefinitions() {
+
+		final CondDefs conditions = new CondDefs(
+				DefKind.CONDITION,
+				logicalTrue(this, getScope()).toCondDef());
+
 		if (isClaim()) {
 			return new Definitions(
 					this,
 					getScope(),
 					getValueType(),
 					NO_REQUIREMENTS,
-					NO_CONDITIONS,
+					conditions,
 					new ValueDefs(DefKind.CLAIM, this),
 					NO_PROPOSITIONS);
 		}
@@ -152,7 +173,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 				getScope(),
 				getValueType(),
 				NO_REQUIREMENTS,
-				NO_CONDITIONS,
+				conditions,
 				NO_CLAIMS,
 				new ValueDefs(DefKind.PROPOSITION, this));
 	}
@@ -175,6 +196,8 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 		return writeDef(dirs, rescopedHost);
 	}
+
+	protected abstract boolean hasConstantValue();
 
 	protected abstract Value<?> calculateValue(Resolver resolver);
 

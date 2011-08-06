@@ -43,6 +43,11 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return true;
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return null;
 	}

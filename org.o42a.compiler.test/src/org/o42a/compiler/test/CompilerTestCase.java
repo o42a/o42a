@@ -134,7 +134,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public static void assertTrueValue(Value<?> value) {
-		assertTrue(value + " is not true", value.getLogicalValue().isTrue());
+		assertTrue(value + " is not true", value.getCondition().isTrue());
 	}
 
 	public static void assertFalseValue(LogicalValue condition) {

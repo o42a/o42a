@@ -42,7 +42,7 @@ public final class ParseInteger extends IntegerByString {
 
 		final Value<?> value = super.calculateBuiltin(resolver);
 
-		if (!value.getLogicalValue().isTrue()) {
+		if (!value.getCondition().isTrue()) {
 			return value;
 		}
 

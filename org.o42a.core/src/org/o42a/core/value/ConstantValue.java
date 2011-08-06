@@ -35,8 +35,8 @@ final class ConstantValue<T> extends Value<T> {
 	}
 
 	@Override
-	public LogicalValue getLogicalValue() {
-		return LogicalValue.TRUE;
+	public Condition getCondition() {
+		return Condition.TRUE;
 	}
 
 	@Override

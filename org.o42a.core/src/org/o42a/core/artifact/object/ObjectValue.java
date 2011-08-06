@@ -91,7 +91,7 @@ public final class ObjectValue implements UseInfo {
 	public final Value<?> getValue() {
 		if (this.value == null) {
 			this.value = getDefinitions().value(
-					getObject().getScope().dummyResolver()).getValue();
+					getObject().getScope().dummyResolver());
 		}
 		return this.value;
 	}
@@ -104,7 +104,7 @@ public final class ObjectValue implements UseInfo {
 		if (resolver == getObject().getScope()) {
 			result = getValue();
 		} else {
-			result = getDefinitions().value(resolver).getValue();
+			result = getDefinitions().value(resolver);
 		}
 
 		return result;

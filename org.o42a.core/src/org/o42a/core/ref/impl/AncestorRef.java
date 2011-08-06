@@ -51,6 +51,23 @@ public final class AncestorRef extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return isStatic() && getResolution().isConstant();
+	}
+
+	@Override
+	public boolean isStatic() {
+		if (!this.ref.isStatic()) {
+			return false;
+		}
+
+		final TypeRef ancestor =
+				this.ref.getResolution().materialize().type().getAncestor();
+
+		return ancestor == null || ancestor.isStatic();
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		throw new UnsupportedOperationException();
 	}

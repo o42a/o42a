@@ -40,6 +40,11 @@ final class PathRescoper extends Rescoper {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return this.path.isAbsolute();
+	}
+
+	@Override
 	public final Path getPath() {
 		return this.path;
 	}

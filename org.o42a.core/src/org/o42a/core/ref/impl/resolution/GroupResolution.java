@@ -39,6 +39,11 @@ public final class GroupResolution extends Resolution {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return materialize().value().getDefinitions().isConstant();
+	}
+
+	@Override
 	public final GroupClause toContainer() {
 		return (GroupClause) getResolved();
 	}

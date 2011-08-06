@@ -41,6 +41,11 @@ public final class False extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public boolean isConstantBuiltin() {
+		return true;
+	}
+
+	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 		return falseValue();
 	}

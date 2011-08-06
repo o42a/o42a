@@ -20,17 +20,16 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.PROPOSITION;
-import static org.o42a.core.def.DefValue.nonExistingValue;
 
 import org.o42a.core.def.impl.RuntimeCondDef;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.util.ArrayUtil;
 
 
 public final class CondDefs extends Defs<CondDef, CondDefs> {
 
-	private LogicalValue constantValue;
+	private Condition constant;
 
 	CondDefs(DefKind defKind, CondDef... defs) {
 		super(defKind, defs);
@@ -42,47 +41,33 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		return getConstant().isFalse();
 	}
 
-	public final LogicalValue getConstant() {
-		if (this.constantValue != null) {
-			return this.constantValue;
+	public final Condition getConstant() {
+		if (this.constant != null) {
+			return this.constant;
 		}
-
-		for (CondDef condition : get()) {
-
-			final LogicalValue constantValue = condition.getConstantValue();
-
-			if (!constantValue.isTrue()) {
-				return this.constantValue = constantValue;
-			}
-		}
-
-		return this.constantValue = LogicalValue.TRUE;
-	}
-
-	public DefValue resolve(Resolver resolver) {
 
 		final CondDef[] defs = get();
-		DefValue result = null;
+		Condition result = null;
 		int i = 0;
 
 		while (i < defs.length) {
 
 			final CondDef def = defs[i];
-			final DefValue value = def.definitionValue(resolver);
+			final Condition constantValue = def.getConstantValue();
 
-			if (value.isUnknown()) {
+			if (constantValue.isUnknown()) {
 				// Prerequisite not met - try next.
 				++i;
 				continue;
 			}
-			if (value.isFalse()) {
+			if (constantValue.isFalse()) {
 				// Value is false.
-				return value;
+				return this.constant = constantValue;
 			}
-			if (result == null || result.isDefinite()) {
+			if (result == null || result.isConstant()) {
 				// Indefinite value takes precedence.
 				// But false value may appear later, so go on.
-				result = value;
+				result = constantValue;
 			}
 			if (!def.hasPrerequisite()) {
 				// All conditions without prerequisite should be met.
@@ -97,7 +82,51 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		}
 
 		if (result == null) {
-			return nonExistingValue(this);
+			return this.constant = Condition.UNKNOWN;
+		}
+
+		return this.constant = result;
+	}
+
+	public Condition condition(Resolver resolver) {
+
+		final CondDef[] defs = get();
+		Condition result = null;
+		int i = 0;
+
+		while (i < defs.length) {
+
+			final CondDef def = defs[i];
+			final Condition condition = def.condition(resolver);
+
+			if (condition.isUnknown()) {
+				// Prerequisite not met - try next.
+				++i;
+				continue;
+			}
+			if (condition.isFalse()) {
+				// Value is false.
+				return condition;
+			}
+			if (result == null || result.isConstant()) {
+				// Indefinite value takes precedence.
+				// But false value may appear later, so go on.
+				result = condition;
+			}
+			if (!def.hasPrerequisite()) {
+				// All conditions without prerequisite should be met.
+				++i;
+				continue;
+			}
+			// Prerequisite met.
+			// Skip the rest of alternatives and the following conditions
+			// without prerequisites ('otherwise').
+			i = nextNonPrereq(defs, i + 1);
+			i = nextPrereq(defs, i + 1);
+		}
+
+		if (result == null) {
+			return Condition.UNKNOWN;
 		}
 
 		return result;

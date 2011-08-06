@@ -43,8 +43,8 @@ final class FalseValue<T> extends Value<T> {
 	}
 
 	@Override
-	public LogicalValue getLogicalValue() {
-		return LogicalValue.FALSE;
+	public Condition getCondition() {
+		return Condition.FALSE;
 	}
 
 	@Override

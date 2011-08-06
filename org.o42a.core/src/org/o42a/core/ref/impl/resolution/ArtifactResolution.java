@@ -39,6 +39,11 @@ public final class ArtifactResolution extends Resolution {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return materialize().value().getDefinitions().isConstant();
+	}
+
+	@Override
 	public final Container toContainer() {
 		return toArtifact().getContainer();
 	}

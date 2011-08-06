@@ -175,6 +175,23 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		}
 
 		@Override
+		public boolean isStatic() {
+			if (!this.ref.getRef().isStatic()) {
+				return false;
+			}
+
+			final Resolution resolution =
+					this.ref.resolve(getScope().dummyResolver());
+
+			return resolution.toArtifact().getTypeRef().isStatic();
+		}
+
+		@Override
+		public boolean isConstant() {
+			return isStatic() && getResolution().isConstant();
+		}
+
+		@Override
 		public Resolution resolve(Resolver resolver) {
 
 			final Resolution resolution = this.ref.resolve(resolver);

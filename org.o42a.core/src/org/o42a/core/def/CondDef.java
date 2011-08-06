@@ -19,14 +19,15 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.DefValue.*;
 import static org.o42a.core.def.Definitions.*;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.LogicalValue;
 
 
@@ -46,6 +47,26 @@ public abstract class CondDef extends Def<CondDef> {
 		return getKind().isClaim();
 	}
 
+	public final boolean isConstant() {
+		return getLogical().getConstantValue().isConstant();
+	}
+
+	public final Condition getConstantValue() {
+		if (hasPrerequisite()) {
+
+			final Logical prerequisite = getPrerequisite();
+
+			if (!prerequisite.isTrue()) {
+				if (prerequisite.isFalse()) {
+					return Condition.UNKNOWN;
+				}
+				return Condition.RUNTIME;
+			}
+		}
+
+		return getLogical().getConstantValue().toCondition();
+	}
+
 	@Override
 	public final ValueDef toValue() {
 		if (this.value != null) {
@@ -57,10 +78,6 @@ public abstract class CondDef extends Def<CondDef> {
 	@Override
 	public final CondDef toCondition() {
 		return this;
-	}
-
-	public final LogicalValue getConstantValue() {
-		return getLogical().getConstantValue();
 	}
 
 	@Override
@@ -79,34 +96,25 @@ public abstract class CondDef extends Def<CondDef> {
 		return getPrerequisite().implies(def.getPrerequisite());
 	}
 
-	@Override
-	public final DefValue definitionValue(Resolver resolver) {
+	public final Condition condition(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
 		final Resolver rescoped = getRescoper().rescope(this, resolver);
 
-		if (!hasPrerequisite() || getPrerequisite().isTrue()) {
+		if (hasPrerequisite()) {
 
-			final LogicalValue logicalValue =
-				getLogical().logicalValue(rescoped);
+			final LogicalValue prerequisite =
+					getPrerequisite().logicalValue(rescoped);
 
-			alwaysMeaningfulCondition(this, logicalValue);
+			if (!prerequisite.isTrue()) {
+				if (prerequisite.isFalse()) {
+					return Condition.UNKNOWN;
+				}
+				return Condition.RUNTIME;
+			}
 		}
 
-		final LogicalValue prerequisite =
-			getPrerequisite().logicalValue(rescoped);
-
-		if (!prerequisite.isTrue()) {
-			if (!prerequisite.isFalse()) {
-				return defCondition(this, LogicalValue.RUNTIME);
-			}
-			if (getPrerequisite().isFalse()) {
-				return alwaysIgnoredValue(this);
-			}
-			return unknownValue(this);
-		}
-
-		return defCondition(this, getLogical().logicalValue(rescoped));
+		return getLogical().logicalValue(rescoped).toCondition();
 	}
 
 	@Override

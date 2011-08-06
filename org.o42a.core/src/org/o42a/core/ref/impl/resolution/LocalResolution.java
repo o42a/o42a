@@ -39,6 +39,11 @@ public final class LocalResolution extends Resolution {
 	}
 
 	@Override
+	public boolean isConstant() {
+		return false;
+	}
+
+	@Override
 	public final LocalScope toContainer() {
 		return (LocalScope) getResolved();
 	}

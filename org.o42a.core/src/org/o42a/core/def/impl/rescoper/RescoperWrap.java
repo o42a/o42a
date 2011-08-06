@@ -39,6 +39,11 @@ public abstract class RescoperWrap extends Rescoper {
 	}
 
 	@Override
+	public final boolean isStatic() {
+		return wrapped().isStatic();
+	}
+
+	@Override
 	public Scope rescope(Scope scope) {
 		return wrapped().rescope(scope);
 	}

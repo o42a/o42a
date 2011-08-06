@@ -51,6 +51,20 @@ public abstract class ObjectConstructor extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+
+		final Resolution resolution = getResolution();
+
+		if (!resolution.isConstant()) {
+			return false;
+		}
+
+		final TypeRef ancestor = resolution.materialize().type().getAncestor();
+
+		return ancestor == null || ancestor.isStatic();
+	}
+
+	@Override
 	public boolean isStatic() {
 		return false;
 	}
