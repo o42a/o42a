@@ -403,6 +403,7 @@ static void dbg_field_value(
 	}
 	default:
 		fprintf(stderr, ": <unknown:%x>", field_info->data_type);
+		break;
 	}
 }
 
