@@ -55,7 +55,7 @@ public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
 		final CondValue constantRequirement =
 				getValueIR().getConstantRequirement();
 
-		if (constantRequirement.isKnown()) {
+		if (constantRequirement.isKnown() && !constantRequirement.isTrue()) {
 			return constantRequirement;
 		}
 

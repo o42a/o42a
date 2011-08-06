@@ -103,20 +103,27 @@ public abstract class Value<T> {
 		return getValueType().runtimeValue();
 	}
 
+	public String valueString() {
+
+		final LogicalValue logicalValue = getLogicalValue();
+
+		if (!logicalValue.isTrue()) {
+			if (isUnknown()) {
+				return "UNKNOWN";
+			}
+			return logicalValue.toString();
+		}
+
+		return getValueType().valueString(getDefiniteValue());
+	}
+
 	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
 
 		out.append('(').append(this.valueType).append(") ");
-
-		final LogicalValue logicalValue = getLogicalValue();
-
-		if (logicalValue.isTrue()) {
-			out.append(getValueType().valueString(getDefiniteValue()));
-		} else {
-			out.append(logicalValue);
-		}
+		out.append(valueString());
 
 		return out.toString();
 	}

@@ -58,8 +58,8 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
-	public boolean isConstant() {
-		return this.builtin.toObject().value().getDefinitions().isConstant();
+	protected boolean hasConstantValue() {
+		return this.builtin.isConstantBuiltin();
 	}
 
 	@Override

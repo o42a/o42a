@@ -104,11 +104,6 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	public boolean isConstant() {
-		return false;
-	}
-
-	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -136,6 +131,11 @@ public class LocalDef extends ValueDef {
 	@Override
 	protected Logical buildPrerequisite() {
 		return logicalTrue(this, getOwnerScope());
+	}
+
+	@Override
+	protected boolean hasConstantValue() {
+		return false;
 	}
 
 	@Override

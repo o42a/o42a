@@ -81,6 +81,14 @@ public class ObjectValueIR {
 		return this.condition.getConstant();
 	}
 
+	public final Value<?> getConstantClaim() {
+		return this.claim.getConstant();
+	}
+
+	public final Value<?> getConstantProposition() {
+		return this.proposition.getConstant();
+	}
+
 	public ObjValOp op(CodeBuilder builder, Code code) {
 		return getObjectIR().op(builder, code);
 	}
@@ -117,48 +125,21 @@ public class ObjectValueIR {
 	}
 
 	protected void allocate(ObjectTypeIR typeIR) {
-
-		final Definitions definitions = definitions();
-
-		if (definitions.requirements().isFalse()
-				|| definitions.conditions().isFalse()) {
-			createFalseFunctions(typeIR, definitions);
-		} else {
-			createFunctions(typeIR, definitions);
-		}
+		this.value.create(typeIR);
+		this.requirement.create(typeIR);
+		this.claim.create(typeIR);
+		this.condition.create(typeIR);
+		this.proposition.create(typeIR);
 	}
 
 	protected void fill(ObjectTypeIR typeIR) {
-
-		final Definitions definitions = definitions();
-
-		assignValue(typeIR, definitions);
-		buildFunctions(typeIR, definitions);
+		assignValue(typeIR);
+		this.value.build();
+		this.requirement.build();
+		this.claim.build();
+		this.condition.build();
+		this.proposition.build();
 		this.locals.build();
-	}
-
-	protected void createValue(ObjectTypeIR typeIR) {
-		this.value.create(typeIR);
-	}
-
-
-	protected void createRequirement(
-			ObjectTypeIR typeIR) {
-		this.requirement.create(typeIR);
-	}
-
-	protected void createClaim(ObjectTypeIR typeIR) {
-		this.claim.create(typeIR);
-	}
-
-	protected void createCondition(
-			ObjectTypeIR typeIR) {
-		this.condition.create(typeIR);
-	}
-
-	protected void createProposition(
-			ObjectTypeIR typeIR) {
-		this.proposition.create(typeIR);
 	}
 
 	final ObjectIRLocals getLocals() {
@@ -169,12 +150,13 @@ public class ObjectValueIR {
 		return getObject().value().getDefinitions();
 	}
 
-	private void assignValue(ObjectTypeIR typeIR, Definitions definitions) {
+	private void assignValue(ObjectTypeIR typeIR) {
 
-		final Val val;
+		final Definitions definitions = definitions();
 		final Resolver resolver = definitions.getScope().dummyResolver();
 		final DefValue value = definitions.value(resolver);
 		final Value<?> realValue = value.getRealValue();
+		final Val val;
 
 		if (realValue != null) {
 			val = realValue.val(getGenerator());
@@ -187,41 +169,6 @@ public class ObjectValueIR {
 		}
 
 		typeIR.getObjectData().value().set(val);
-	}
-
-	private void createFalseFunctions(
-			ObjectTypeIR typeIR,
-			Definitions definitions) {
-		this.value.setFalse(typeIR);
-		if (definitions.requirements().isFalse()) {
-			this.requirement.setFalse(typeIR);
-			this.claim.setFalse(typeIR);
-		} else {
-			createClaimFunctions(typeIR);
-		}
-		this.condition.setFalse(typeIR);
-		this.proposition.setFalse(typeIR);
-	}
-
-	private void createFunctions(ObjectTypeIR typeIR, Definitions definitions) {
-		createValue(typeIR);
-		createClaimFunctions(typeIR);
-		createCondition(typeIR);
-		createProposition(typeIR);
-	}
-
-	private void buildFunctions(ObjectTypeIR typeIR, Definitions definitions) {
-		this.value.build();
-		this.requirement.build(definitions);
-		this.claim.build();
-		this.condition.build(definitions);
-		this.proposition.build();
-	}
-
-	private void createClaimFunctions(
-			ObjectTypeIR typeIR) {
-		createRequirement(typeIR);
-		createClaim(typeIR);
 	}
 
 }

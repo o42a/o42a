@@ -51,7 +51,7 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	public boolean isConstant() {
+	protected boolean hasConstantValue() {
 		return this.def.isConstant();
 	}
 

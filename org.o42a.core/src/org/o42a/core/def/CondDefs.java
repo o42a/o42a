@@ -46,16 +46,46 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 			return this.constant;
 		}
 
-		for (CondDef def : get()) {
+		final CondDef[] defs = get();
+		CondValue result = null;
+		int i = 0;
 
+		while (i < defs.length) {
+
+			final CondDef def = defs[i];
 			final CondValue constantValue = def.getConstantValue();
 
-			if (!constantValue.isUnknown()) {
+			if (constantValue.isUnknown()) {
+				// Prerequisite not met - try next.
+				++i;
+				continue;
+			}
+			if (constantValue.isFalse()) {
+				// Value is false.
 				return this.constant = constantValue;
 			}
+			if (result == null || result.isConstant()) {
+				// Indefinite value takes precedence.
+				// But false value may appear later, so go on.
+				result = constantValue;
+			}
+			if (!def.hasPrerequisite()) {
+				// All conditions without prerequisite should be met.
+				++i;
+				continue;
+			}
+			// Prerequisite met.
+			// Skip the rest of alternatives and the following conditions
+			// without prerequisites ('otherwise').
+			i = nextNonPrereq(defs, i + 1);
+			i = nextPrereq(defs, i + 1);
 		}
 
-		return this.constant = CondValue.UNKNOWN;
+		if (result == null) {
+			return this.constant = CondValue.UNKNOWN;
+		}
+
+		return this.constant = result;
 	}
 
 	public DefValue resolve(Resolver resolver) {

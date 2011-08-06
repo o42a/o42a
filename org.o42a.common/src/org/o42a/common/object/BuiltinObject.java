@@ -50,6 +50,11 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	}
 
 	@Override
+	public boolean isConstantBuiltin() {
+		return false;
+	}
+
+	@Override
 	public abstract String toString();
 
 	@Override

@@ -54,11 +54,6 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	public boolean isConstant() {
-		return this.ref.isConstant();
-	}
-
-	@Override
 	protected Logical buildPrerequisite() {
 		return logicalTrue(this, this.ref.getScope());
 	}
@@ -71,6 +66,11 @@ public final class RefValueDef extends ValueDef {
 	@Override
 	protected Logical buildLogical() {
 		return this.ref.getLogical();
+	}
+
+	@Override
+	protected boolean hasConstantValue() {
+		return this.ref.isConstant();
 	}
 
 	@Override

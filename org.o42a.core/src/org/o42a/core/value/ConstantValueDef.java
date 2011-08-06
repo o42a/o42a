@@ -51,7 +51,7 @@ final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	public boolean isConstant() {
+	protected boolean hasConstantValue() {
 		return true;
 	}
 

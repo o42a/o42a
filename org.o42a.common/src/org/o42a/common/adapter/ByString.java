@@ -57,7 +57,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		}
 
 		final String input =
-			ValueType.STRING.cast(inputValue).getDefiniteValue();
+				ValueType.STRING.cast(inputValue).getDefiniteValue();
 		final T result = byString(input(), resolver, input);
 
 		if (result == null) {
