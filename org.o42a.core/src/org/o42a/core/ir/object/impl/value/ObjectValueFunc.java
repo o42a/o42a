@@ -22,12 +22,11 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.def.ValueDefs;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
@@ -38,6 +37,8 @@ import org.o42a.core.value.Value;
 
 
 public final class ObjectValueFunc extends ObjectValueIRValFunc {
+
+	private boolean functionReused;
 
 	public ObjectValueFunc(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -51,6 +52,28 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	@Override
 	public final ValueDefs defs() {
 		return null;
+	}
+
+	@Override
+	public void create(ObjectTypeIR typeIR) {
+
+		final FuncPtr<ObjectValFunc> knownFunc = reuseFunc();
+
+		if (knownFunc != null) {
+			set(typeIR, knownFunc);
+			this.functionReused = true;
+			return;
+		}
+
+		super.create(typeIR);
+	}
+
+	@Override
+	public void build() {
+		if (this.functionReused) {
+			return;
+		}
+		super.build();
 	}
 
 	@Override
@@ -124,6 +147,30 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		return code.phi(null, claim, prop).op(
 				dirs.getBuilder(),
 				getObject().value().getValueType());
+	}
+
+	private FuncPtr<ObjectValFunc> reuseFunc() {
+
+		final ObjectValueIR valueIR = getValueIR();
+
+		if (!valueIR.getConstantCondition().isTrue()) {
+			return null;
+		}
+
+		final Value<?> claim = valueIR.getConstantClaim();
+		final Value<?> proposition = valueIR.getConstantProposition();
+
+		if (claim.isDefinite()) {
+			if (claim.getCondition() == Condition.FALSE) {
+				return falseValFunc();
+			}
+			return valueIR.proposition().get();
+		}
+		if (proposition.isUnknown()) {
+			return valueIR.claim().get();
+		}
+
+		return null;
 	}
 
 }
