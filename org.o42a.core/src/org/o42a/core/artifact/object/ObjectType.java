@@ -143,6 +143,10 @@ public final class ObjectType implements UserInfo {
 		return derivations != null && derivations.is(derivation);
 	}
 
+	public final void wrapBy(ObjectType type) {
+		useBy(type);
+	}
+
 	public void resolveAll() {
 		getAscendants().resolveAll();
 		registerAsSample();

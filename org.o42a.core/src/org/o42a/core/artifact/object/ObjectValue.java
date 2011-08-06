@@ -202,6 +202,17 @@ public final class ObjectValue implements UseInfo {
 		return this;
 	}
 
+	public final void wrapBy(ObjectValue wrapValue) {
+		for (DefKind defKind : DefKind.values()) {
+
+			final ValuePart part = part(defKind);
+			final ValuePart wrapPart = wrapValue.part(defKind);
+
+			part.useBy(wrapPart);
+			part.updateAncestorDefsBy(wrapPart.ancestorDefsUpdates());
+		}
+	}
+
 	public final void resolveAll(UserInfo user) {
 		if (this.fullyResolved) {
 			explicitUseBy(user);
