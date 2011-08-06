@@ -270,7 +270,7 @@ bool BackendModule::writeCode() {
 
 		raw_fd_ostream *const ostream =
 				new raw_fd_ostream(
-						OutputFilename.c_str(),
+						OutputFilename.getValue().c_str(),
 						errorInfo,
 						raw_fd_ostream::F_Binary);
 
