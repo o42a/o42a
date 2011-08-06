@@ -54,12 +54,14 @@ public abstract class ObjectValueIRValFunc
 		return getObject().value().getValueType();
 	}
 
-	public abstract ValuePart valuePart();
+	public abstract ValuePart part();
 
-	public abstract ValueDefs defs();
+	public final ValueDefs defs() {
+		return part().getDefs();
+	}
 
 	public final boolean isClaim() {
-		return valuePart().getDefKind().isClaim();
+		return part().getDefKind().isClaim();
 	}
 
 	public final Value<?> getConstant() {
@@ -145,12 +147,11 @@ public abstract class ObjectValueIRValFunc
 	}
 
 	public void build() {
-
-		final Function<ObjectValFunc> function = get().getFunction();
-
-		if (function == null) {
+		if (isReused()) {
 			return;
 		}
+
+		final Function<ObjectValFunc> function = get().getFunction();
 
 		function.debug("Calculating " + suffix());
 
@@ -197,7 +198,7 @@ public abstract class ObjectValueIRValFunc
 		if (!constant.isDefinite()) {
 			return constant;
 		}
-		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
 			return constant;
 		}
 
@@ -313,7 +314,7 @@ public abstract class ObjectValueIRValFunc
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
 
-		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();
 

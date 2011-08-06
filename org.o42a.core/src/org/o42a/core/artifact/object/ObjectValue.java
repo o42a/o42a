@@ -19,11 +19,10 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
-
-import java.util.EnumMap;
 
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
@@ -43,14 +42,22 @@ public final class ObjectValue implements UseInfo {
 	private Definitions definitions;
 	private Definitions explicitDefinitions;
 
+	private final CondPart requirement;
+	private final CondPart condition;
+	private final ValuePart claim;
+	private final ValuePart proposition;
+
 	private Usable usable;
 	private Usable explicitUsable;
-	private EnumMap<DefKind, ValuePart> parts;
 
 	private boolean fullyResolved;
 
 	ObjectValue(Obj object) {
 		this.object = object;
+		this.requirement = new CondPart(this, REQUIREMENT);
+		this.condition = new CondPart(this, CONDITION);
+		this.claim = new ValuePart(this, CLAIM);
+		this.proposition = new ValuePart(this, PROPOSITION);
 	}
 
 	public final Obj getObject() {
@@ -158,41 +165,56 @@ public final class ObjectValue implements UseInfo {
 				ancestorDefinitions);
 	}
 
-	public final ValuePart requirement() {
-		return part(DefKind.REQUIREMENT);
+	public final CondPart requirement() {
+		return this.requirement;
 	}
 
-	public final ValuePart condition() {
-		return part(DefKind.CONDITION);
+	public final CondPart condition() {
+		return this.condition;
 	}
 
 	public final ValuePart claim() {
-		return part(DefKind.CLAIM);
+		return this.claim;
 	}
 
 	public final ValuePart proposition() {
-		return part(DefKind.PROPOSITION);
+		return this.proposition;
 	}
 
-	public final ValuePart part(DefKind defKind) {
-		assert defKind != null :
-			"Definition kind not specified";
-		if (this.parts == null) {
-			this.parts = new EnumMap<DefKind, ValuePart>(DefKind.class);
-		} else {
+	public final CondPart condPart(boolean requirement) {
+		return requirement ? requirement() : condition();
+	}
 
-			final ValuePart part = this.parts.get(defKind);
+	public final CondPart condPart(DefKind condKind) {
+		assert !condKind.isValue() :
+			"Condition definition kind expected: " + condKind;
+		return condPart(condKind.isClaim());
+	}
 
-			if (part != null) {
-				return part;
-			}
+	public final ValuePart valuePart(boolean claim) {
+		return claim ? claim() : proposition();
+	}
+
+	public final ValuePart valuePart(DefKind valueKind) {
+		assert valueKind.isValue() :
+			"Value definition kind expected: " + valueKind;
+		return valuePart(valueKind.isClaim());
+	}
+
+	public final ObjectValuePart<?, ?> part(DefKind defKind) {
+		switch (defKind) {
+		case REQUIREMENT:
+			return requirement();
+		case CONDITION:
+			return condition();
+		case CLAIM:
+			return claim();
+		case PROPOSITION:
+			return proposition();
 		}
 
-		final ValuePart part = new ValuePart(this, defKind);
-
-		this.parts.put(defKind, part);
-
-		return part;
+		throw new IllegalArgumentException(
+				"Unsupported definition kind: " + defKind);
 	}
 
 	public final ObjectValue explicitUseBy(UserInfo user) {
@@ -204,12 +226,7 @@ public final class ObjectValue implements UseInfo {
 
 	public final void wrapBy(ObjectValue wrapValue) {
 		for (DefKind defKind : DefKind.values()) {
-
-			final ValuePart part = part(defKind);
-			final ValuePart wrapPart = wrapValue.part(defKind);
-
-			part.useBy(wrapPart);
-			part.updateAncestorDefsBy(wrapPart.ancestorDefsUpdates());
+			part(defKind).wrapBy(wrapValue.part(defKind));
 		}
 	}
 

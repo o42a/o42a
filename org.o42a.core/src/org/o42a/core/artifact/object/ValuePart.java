@@ -19,118 +19,17 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.util.use.Usable.simpleUsable;
-
 import org.o42a.core.def.DefKind;
-import org.o42a.core.def.Defs;
-import org.o42a.core.ref.Resolver;
-import org.o42a.util.use.*;
+import org.o42a.core.def.ValueDef;
+import org.o42a.core.def.ValueDefs;
 
 
-public final class ValuePart implements UserInfo {
-
-	private final ObjectValue objectValue;
-	private final DefKind defKind;
-	private Usable usable;
-	private Usable ancestorDefsUpdates;
+public final class ValuePart extends ObjectValuePart<ValueDef, ValueDefs> {
 
 	ValuePart(ObjectValue objectValue, DefKind defKind) {
-		this.objectValue = objectValue;
-		this.defKind = defKind;
-	}
-
-	public final Obj getObject() {
-		return getObjectValue().getObject();
-	}
-
-	public final ObjectValue getObjectValue() {
-		return this.objectValue;
-	}
-
-	public final DefKind getDefKind() {
-		return this.defKind;
-	}
-
-	public final Defs<?, ?> getDefs() {
-		return getObjectValue().getDefinitions().defs(getDefKind());
-	}
-
-	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		if (this.usable == null) {
-			return useCase.toUseCase().unusedFlag();
-		}
-		return this.usable.getUseBy(useCase);
-	}
-
-	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
-	}
-
-	public final UseFlag ancestorDefsUpdatedBy(UseCaseInfo useCase) {
-		if (getObject().getConstructionMode().isRuntime()) {
-			return useCase.toUseCase().usedFlag();
-		}
-		if (this.ancestorDefsUpdates == null) {
-			return useCase.toUseCase().unusedFlag();
-		}
-		return this.ancestorDefsUpdates.getUseBy(useCase);
-	}
-
-	public final boolean isAncestorDefsUpdatedBy(UseCaseInfo useCase) {
-		return ancestorDefsUpdatedBy(useCase).isUsed();
-	}
-
-	@Override
-	public final User toUser() {
-		return usable().toUser();
-	}
-
-	public final ValuePart useBy(UserInfo user) {
-		if (!user.toUser().isDummy()) {
-			usable().useBy(user);
-		}
-		return this;
-	}
-
-	public final void updateAncestorDefsBy(UserInfo user) {
-		if (!user.toUser().isDummy()) {
-			ancestorDefsUpdates().useBy(user);
-		}
-	}
-
-	public final Resolver resolver() {
-		return getObject().getScope().newResolver(usable());
-	}
-
-	@Override
-	public String toString() {
-		if (this.defKind == null) {
-			return super.toString();
-		}
-		return this.defKind.displayName() + "Of[" + getObject() + ']';
-	}
-
-	final Usable usable() {
-		if (this.usable != null) {
-			return this.usable;
-		}
-
-		this.usable = simpleUsable(this);
-		getObjectValue().usable().useBy(this.usable);
-		this.usable.useBy(getObjectValue().explicitUsable());
-
-		return this.usable;
-	}
-
-	final Usable ancestorDefsUpdates() {
-		if (this.ancestorDefsUpdates != null) {
-			return this.ancestorDefsUpdates;
-		}
-		return this.ancestorDefsUpdates = simpleUsable(
-				"Ancestor " + getDefKind().displayName() + "sUpdatesOf",
-				getObject());
+		super(objectValue, defKind);
+		assert defKind.isValue() :
+			"Value definition kind expected, but was " + defKind;
 	}
 
 }

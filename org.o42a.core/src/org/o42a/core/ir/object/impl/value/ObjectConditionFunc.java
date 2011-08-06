@@ -20,8 +20,7 @@
 package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.def.CondDefs;
+import org.o42a.core.artifact.object.CondPart;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.op.ObjectCondFunc;
@@ -35,13 +34,8 @@ public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
 	}
 
 	@Override
-	public final ValuePart valuePart() {
+	public final CondPart part() {
 		return getObject().value().condition();
-	}
-
-	@Override
-	public final CondDefs defs() {
-		return definitions().conditions();
 	}
 
 	@Override

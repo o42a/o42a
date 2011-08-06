@@ -17,34 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.impl.value;
+package org.o42a.core.artifact.object;
 
-import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.CondDefs;
+import org.o42a.core.def.DefKind;
 
 
-public final class ObjectPropositionFunc extends ObjectValueIRValFunc {
+public class CondPart extends ObjectValuePart<CondDef, CondDefs> {
 
-	public ObjectPropositionFunc(ObjectValueIR valueIR) {
-		super(valueIR);
-	}
-
-	@Override
-	public final ValuePart part() {
-		return getObject().value().proposition();
-	}
-
-	@Override
-	protected String suffix() {
-		return "proposition";
-	}
-
-	@Override
-	protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
-		return data.propositionFunc();
+	CondPart(ObjectValue objectValue, DefKind defKind) {
+		super(objectValue, defKind);
+		assert !defKind.isValue() :
+			"Condition definition kind expected, but was " + defKind;
 	}
 
 }
