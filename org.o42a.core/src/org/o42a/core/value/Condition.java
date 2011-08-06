@@ -22,10 +22,41 @@ package org.o42a.core.value;
 
 public enum Condition {
 
-	TRUE(LogicalValue.TRUE),
-	RUNTIME(LogicalValue.RUNTIME),
-	UNKNOWN(LogicalValue.FALSE),
-	FALSE(LogicalValue.FALSE);
+	TRUE(LogicalValue.TRUE) {
+
+		@Override
+		public Value<Void> toValue() {
+			return Value.voidValue();
+		}
+
+	},
+
+	RUNTIME(LogicalValue.RUNTIME) {
+
+		@Override
+		public Value<Void> toValue() {
+			return ValueType.VOID.runtimeValue();
+		}
+
+	},
+
+	UNKNOWN(LogicalValue.FALSE) {
+
+		@Override
+		public Value<Void> toValue() {
+			return Value.unknownValue();
+		}
+
+	},
+
+	FALSE(LogicalValue.FALSE) {
+
+		@Override
+		public Value<Void> toValue() {
+			return Value.falseValue();
+		}
+
+	};
 
 	private final LogicalValue logicalValue;
 
@@ -56,5 +87,7 @@ public enum Condition {
 	public final LogicalValue toLogicalValue() {
 		return this.logicalValue;
 	}
+
+	public abstract Value<Void> toValue();
 
 }

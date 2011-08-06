@@ -19,7 +19,6 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.DefValue.nonExistingValue;
 import static org.o42a.core.value.Value.unknownValue;
 
 import org.o42a.core.ref.Resolver;
@@ -35,6 +34,10 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		super(defKind, defs);
 		assert defKind.isValue() :
 			"Value definition kind expected";
+	}
+
+	public final ValueType<?> getValueType() {
+		return isEmpty() ? ValueType.VOID : get()[0].getValueType();
 	}
 
 	public final Value<?> getConstant() {
@@ -54,17 +57,17 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		return this.constant = unknownValue();
 	}
 
-	public final DefValue resolve(Resolver resolver) {
+	public final Value<?> value(Resolver resolver) {
 		for (ValueDef def : get()) {
 
-			final DefValue value = def.definitionValue(resolver);
+			final Value<?> value = def.value(resolver);
 
 			if (!value.isUnknown()) {
 				return value;
 			}
 		}
 
-		return nonExistingValue(this);
+		return getValueType().unknownValue();
 	}
 
 	@Override

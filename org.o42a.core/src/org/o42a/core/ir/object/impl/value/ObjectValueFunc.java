@@ -24,7 +24,6 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.def.DefValue;
 import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
@@ -34,7 +33,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 
 
@@ -74,14 +72,6 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		}
 
 		return getValueIR().getConstantProposition();
-	}
-
-	@Override
-	protected DefValue value() {
-
-		final Resolver resolver = definitions().getScope().dummyResolver();
-
-		return definitions().value(resolver);
 	}
 
 	@Override

@@ -20,7 +20,6 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.PROPOSITION;
-import static org.o42a.core.def.DefValue.nonExistingValue;
 
 import org.o42a.core.def.impl.RuntimeCondDef;
 import org.o42a.core.ref.Resolver;
@@ -89,30 +88,30 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		return this.constant = result;
 	}
 
-	public DefValue resolve(Resolver resolver) {
+	public Condition condition(Resolver resolver) {
 
 		final CondDef[] defs = get();
-		DefValue result = null;
+		Condition result = null;
 		int i = 0;
 
 		while (i < defs.length) {
 
 			final CondDef def = defs[i];
-			final DefValue value = def.definitionValue(resolver);
+			final Condition condition = def.condition(resolver);
 
-			if (value.isUnknown()) {
+			if (condition.isUnknown()) {
 				// Prerequisite not met - try next.
 				++i;
 				continue;
 			}
-			if (value.isFalse()) {
+			if (condition.isFalse()) {
 				// Value is false.
-				return value;
+				return condition;
 			}
-			if (result == null || result.isDefinite()) {
+			if (result == null || result.isConstant()) {
 				// Indefinite value takes precedence.
 				// But false value may appear later, so go on.
-				result = value;
+				result = condition;
 			}
 			if (!def.hasPrerequisite()) {
 				// All conditions without prerequisite should be met.
@@ -127,7 +126,7 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		}
 
 		if (result == null) {
-			return nonExistingValue(this);
+			return Condition.UNKNOWN;
 		}
 
 		return result;

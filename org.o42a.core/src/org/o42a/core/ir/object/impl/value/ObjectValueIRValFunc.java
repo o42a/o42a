@@ -27,13 +27,13 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.def.*;
+import org.o42a.core.def.ValueDef;
+import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
@@ -217,14 +217,6 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		return writeExplicitDefs(dirs, host, collector);
-	}
-
-	@Override
-	protected DefValue value() {
-
-		final Resolver resolver = definitions().getScope().dummyResolver();
-
-		return definitions().propositions().resolve(resolver);
 	}
 
 	private FuncPtr<ObjectValFunc> falseValFunc() {

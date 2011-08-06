@@ -28,11 +28,12 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
 import org.o42a.codegen.code.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.def.*;
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.CondDefs;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectCondFunc;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Condition;
 
 
@@ -157,14 +158,6 @@ public abstract class ObjectValueIRCondFunc
 		}
 
 		return Condition.RUNTIME;
-	}
-
-	@Override
-	protected final DefValue value() {
-
-		final Resolver resolver = definitions().getScope().dummyResolver();
-
-		return defs().resolve(resolver);
 	}
 
 	protected void build(CodeDirs dirs, ObjOp host) {
