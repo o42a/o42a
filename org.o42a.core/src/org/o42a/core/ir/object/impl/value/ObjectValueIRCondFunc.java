@@ -28,8 +28,8 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
+import org.o42a.core.artifact.object.CondPart;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.CondDefs;
 import org.o42a.core.def.ValueDef;
@@ -49,12 +49,14 @@ public abstract class ObjectValueIRCondFunc
 		super(valueIR);
 	}
 
-	public abstract ValuePart valuePart();
+	public abstract CondPart part();
 
-	public abstract CondDefs defs();
+	public final CondDefs defs() {
+		return part().getDefs();
+	}
 
 	public final boolean isRequirement() {
-		return valuePart().getDefKind().isClaim();
+		return part().getDefKind().isClaim();
 	}
 
 	public final Condition getConstant() {
@@ -109,12 +111,11 @@ public abstract class ObjectValueIRCondFunc
 	}
 
 	public void build() {
-
-		final Function<ObjectCondFunc> function = get().getFunction();
-
-		if (function == null) {
+		if (isReused()) {
 			return;
 		}
+
+		final Function<ObjectCondFunc> function = get().getFunction();
 
 		function.debug("Calculating " + suffix());
 
@@ -156,7 +157,7 @@ public abstract class ObjectValueIRCondFunc
 		if (!constant.isConstant() || constant.isFalse()) {
 			return constant;
 		}
-		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
 			return constant;
 		}
 
@@ -193,7 +194,7 @@ public abstract class ObjectValueIRCondFunc
 
 		final Code code = dirs.code();
 
-		if (!valuePart().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();
 

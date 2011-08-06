@@ -21,7 +21,6 @@ package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValFunc;
@@ -34,13 +33,8 @@ public final class ObjectClaimFunc extends ObjectValueIRValFunc {
 	}
 
 	@Override
-	public final ValuePart valuePart() {
+	public final ValuePart part() {
 		return getObject().value().claim();
-	}
-
-	@Override
-	public final ValueDefs defs() {
-		return definitions().claims();
 	}
 
 	@Override

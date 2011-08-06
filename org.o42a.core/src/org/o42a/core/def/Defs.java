@@ -311,7 +311,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();
-		final ValuePart part = objectValue.part(getDefKind());
+		final ObjectValuePart<?, ?> part = objectValue.part(getDefKind());
 		final Resolver resolver = part.resolver();
 
 		for (Def<?> def : this.defs) {

@@ -288,8 +288,10 @@ public final class ObjectType implements UserInfo {
 
 		for (DefKind defKind : DefKind.values()) {
 
-			final ValuePart sampleValuePart = getObject().value().part(defKind);
-			final ValuePart sinceValuePart = since.value().part(defKind);
+			final ObjectValuePart<?, ?> sampleValuePart =
+					getObject().value().part(defKind);
+			final ObjectValuePart<?, ?> sinceValuePart =
+					since.value().part(defKind);
 
 			sampleValuePart.updateAncestorDefsBy(
 					sinceValuePart.ancestorDefsUpdates());

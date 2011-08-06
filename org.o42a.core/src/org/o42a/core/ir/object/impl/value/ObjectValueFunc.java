@@ -25,7 +25,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -38,19 +37,12 @@ import org.o42a.core.value.Value;
 
 public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
-	private boolean functionReused;
-
 	public ObjectValueFunc(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
 	@Override
-	public final ValuePart valuePart() {
-		return null;
-	}
-
-	@Override
-	public final ValueDefs defs() {
+	public final ValuePart part() {
 		return null;
 	}
 
@@ -60,20 +52,11 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		final FuncPtr<ObjectValFunc> knownFunc = reuseFunc();
 
 		if (knownFunc != null) {
-			set(typeIR, knownFunc);
-			this.functionReused = true;
+			reuse(typeIR, knownFunc);
 			return;
 		}
 
 		super.create(typeIR);
-	}
-
-	@Override
-	public void build() {
-		if (this.functionReused) {
-			return;
-		}
-		super.build();
 	}
 
 	@Override

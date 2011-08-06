@@ -36,6 +36,7 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 	private final ObjectValueIR valueIR;
 	private final CodeId id;
 	private FuncRec<F> func;
+	private boolean reused;
 
 	ObjectValueIRFunc(ObjectValueIR valueIR) {
 		super(valueIR.getObjectIR());
@@ -50,6 +51,10 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 
 	public final CodeId getId() {
 		return this.id;
+	}
+
+	public final boolean isReused() {
+		return this.reused;
 	}
 
 	public final FuncPtr<F> get() {
@@ -122,8 +127,18 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 	protected abstract String suffix();
 
 	protected final void set(ObjectTypeIR typeIR, FuncPtr<F> ptr) {
+		if (ptr.getFunction() == null) {
+			reuse(typeIR, ptr);
+			return;
+		}
 		this.func = func(typeIR.getObjectData());
 		this.func.setValue(ptr);
+	}
+
+	protected final void reuse(ObjectTypeIR typeIR, FuncPtr<F> ptr) {
+		this.func = func(typeIR.getObjectData());
+		this.func.setValue(ptr);
+		this.reused = true;
 	}
 
 	protected abstract FuncRec<F> func(ObjectIRData data);
