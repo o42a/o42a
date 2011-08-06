@@ -69,6 +69,9 @@ public final class ValuePart implements UserInfo {
 	}
 
 	public final UseFlag ancestorDefsUpdatedBy(UseCaseInfo useCase) {
+		if (getObject().getConstructionMode().isRuntime()) {
+			return useCase.toUseCase().usedFlag();
+		}
 		if (this.ancestorDefsUpdates == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
