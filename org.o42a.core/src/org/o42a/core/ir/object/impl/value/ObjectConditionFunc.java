@@ -22,10 +22,10 @@ package org.o42a.core.ir.object.impl.value;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.def.CondDefs;
-import org.o42a.core.def.CondValue;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.op.ObjectCondFunc;
+import org.o42a.core.value.Condition;
 
 
 public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
@@ -50,9 +50,9 @@ public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
 	}
 
 	@Override
-	protected CondValue determineConstant() {
+	protected Condition determineConstant() {
 
-		final CondValue constantRequirement =
+		final Condition constantRequirement =
 				getValueIR().getConstantRequirement();
 
 		if (constantRequirement.isKnown() && !constantRequirement.isTrue()) {

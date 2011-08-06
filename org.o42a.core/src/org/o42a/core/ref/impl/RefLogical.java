@@ -40,7 +40,7 @@ public final class RefLogical extends Logical {
 	@Override
 	public LogicalValue getConstantValue() {
 		if (this.ref.isKnownStatic()) {
-			return this.ref.getValue().getLogicalValue();
+			return this.ref.getValue().getCondition().toLogicalValue();
 		}
 		return LogicalValue.RUNTIME;
 	}
@@ -48,7 +48,7 @@ public final class RefLogical extends Logical {
 	@Override
 	public LogicalValue logicalValue(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return this.ref.value(resolver).getLogicalValue();
+		return this.ref.value(resolver).getCondition().toLogicalValue();
 	}
 
 	@Override

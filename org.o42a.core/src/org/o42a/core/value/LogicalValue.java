@@ -20,7 +20,6 @@
 package org.o42a.core.value;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.CondValue;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
 
@@ -30,8 +29,8 @@ public enum LogicalValue {
 	TRUE(0, 2) {
 
 		@Override
-		public CondValue toCondValue() {
-			return CondValue.TRUE;
+		public Condition toCondition() {
+			return Condition.TRUE;
 		}
 
 		@Override
@@ -49,8 +48,8 @@ public enum LogicalValue {
 	RUNTIME(1, 1) {
 
 		@Override
-		public CondValue toCondValue() {
-			return CondValue.RUNTIME;
+		public Condition toCondition() {
+			return Condition.RUNTIME;
 		}
 
 		@Override
@@ -68,8 +67,8 @@ public enum LogicalValue {
 	FALSE(2, 0) {
 
 		@Override
-		public CondValue toCondValue() {
-			return CondValue.FALSE;
+		public Condition toCondition() {
+			return Condition.FALSE;
 		}
 
 		@Override
@@ -136,7 +135,7 @@ public enum LogicalValue {
 		return this;
 	}
 
-	public abstract CondValue toCondValue();
+	public abstract Condition toCondition();
 
 	public abstract Logical toLogical(LocationInfo location, Scope scope);
 

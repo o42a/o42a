@@ -43,13 +43,8 @@ final class UnknownValue<T> extends Value<T> {
 	}
 
 	@Override
-	public boolean isUnknown() {
-		return true;
-	}
-
-	@Override
-	public LogicalValue getLogicalValue() {
-		return LogicalValue.FALSE;
+	public Condition getCondition() {
+		return Condition.UNKNOWN;
 	}
 
 	@Override

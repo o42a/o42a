@@ -177,7 +177,7 @@ public abstract class DefValue {
 	}
 
 	public final LogicalValue getLogicalValue() {
-		return this.value.getLogicalValue();
+		return this.value.getCondition().toLogicalValue();
 	}
 
 	public final <T> Value<T> value(ValueType<T> valueType) {
@@ -265,7 +265,7 @@ public abstract class DefValue {
 
 		@Override
 		public String toString() {
-			return getValue().getLogicalValue().toString();
+			return getValue().getCondition().toString();
 		}
 
 	}

@@ -17,12 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
-
-import org.o42a.core.value.LogicalValue;
+package org.o42a.core.value;
 
 
-public enum CondValue {
+public enum Condition {
 
 	TRUE(LogicalValue.TRUE),
 	RUNTIME(LogicalValue.RUNTIME),
@@ -31,7 +29,7 @@ public enum CondValue {
 
 	private final LogicalValue logicalValue;
 
-	CondValue(LogicalValue logicalValue) {
+	Condition(LogicalValue logicalValue) {
 		this.logicalValue = logicalValue;
 	}
 
