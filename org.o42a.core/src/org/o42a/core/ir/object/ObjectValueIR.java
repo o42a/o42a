@@ -72,6 +72,22 @@ public class ObjectValueIR {
 		return this.objectIR;
 	}
 
+	public final ObjectRequirementFunc requirement() {
+		return this.requirement;
+	}
+
+	public final ObjectClaimFunc claim() {
+		return this.claim;
+	}
+
+	public final ObjectConditionFunc condition() {
+		return this.condition;
+	}
+
+	public final ObjectPropositionFunc proposition() {
+		return this.proposition;
+	}
+
 	public final Condition getConstantRequirement() {
 		return this.requirement.getConstant();
 	}
@@ -124,21 +140,21 @@ public class ObjectValueIR {
 	}
 
 	protected void allocate(ObjectTypeIR typeIR) {
-		this.value.create(typeIR);
 		this.requirement.create(typeIR);
 		this.claim.create(typeIR);
 		this.condition.create(typeIR);
 		this.proposition.create(typeIR);
+		this.value.create(typeIR);
 	}
 
 	protected void fill(ObjectTypeIR typeIR) {
 		typeIR.getObjectData().value().set(initialValue());
-		this.value.build();
 		this.requirement.build();
 		this.claim.build();
 		this.condition.build();
 		this.proposition.build();
 		this.locals.build();
+		this.value.build();
 	}
 
 	final ObjectIRLocals getLocals() {

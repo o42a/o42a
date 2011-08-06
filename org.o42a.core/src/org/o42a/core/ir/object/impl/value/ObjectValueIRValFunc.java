@@ -205,6 +205,21 @@ public abstract class ObjectValueIRValFunc
 
 	protected ValOp build(ValDirs dirs, ObjOp host) {
 
+		final Value<?> constant = getConstant();
+
+		if (constant.isDefinite()) {
+
+			final Code code = dirs.code();
+			final ValOp result = constant.op(dirs.getBuilder(), code);
+
+			code.debug(
+					"Constant " + suffix()
+					+ " = " + constant.valueString());
+			result.go(code, dirs.dirs());
+
+			return result;
+		}
+
 		final ValueDefs defs = defs();
 
 		if (defs.isEmpty()) {
@@ -225,19 +240,19 @@ public abstract class ObjectValueIRValFunc
 		return writeExplicitDefs(dirs, host, collector);
 	}
 
-	private FuncPtr<ObjectValFunc> falseValFunc() {
+	final FuncPtr<ObjectValFunc> falseValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_false",
 				OBJECT_VAL);
 	}
 
-	private FuncPtr<ObjectValFunc> voidValFunc() {
+	final FuncPtr<ObjectValFunc> voidValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_void",
 				OBJECT_VAL);
 	}
 
-	private FuncPtr<ObjectValFunc> unknownValFunc() {
+	final FuncPtr<ObjectValFunc> unknownValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_unknown",
 				OBJECT_VAL);
