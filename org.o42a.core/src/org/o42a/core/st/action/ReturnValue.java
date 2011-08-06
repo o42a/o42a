@@ -52,7 +52,7 @@ public class ReturnValue extends Action {
 
 	@Override
 	public LogicalValue getLogicalValue() {
-		return getValue().getLogicalValue();
+		return getValue().getCondition().toLogicalValue();
 	}
 
 	@Override
@@ -60,10 +60,7 @@ public class ReturnValue extends Action {
 		return new ReturnValue(
 				this,
 				this.resolver,
-				getValue().getLogicalValue()
-				.toLogical(this, getScope())
-				.logicalValue(this.resolver)
-				.toValue());
+				getValue().getCondition().toLogicalValue().toValue());
 	}
 
 	@Override

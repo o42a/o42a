@@ -53,22 +53,22 @@ public abstract class Value<T> {
 	}
 
 	public final boolean isFalse() {
-		return getLogicalValue().isFalse();
+		return getCondition().isFalse();
 	}
 
-	public boolean isUnknown() {
-		return false;
+	public final boolean isUnknown() {
+		return getCondition().isUnknown();
 	}
 
 	public final boolean isDefinite() {
-		return getLogicalValue().isConstant();
+		return getCondition().isConstant();
 	}
 
 	public final boolean isVoid() {
 		return getValueType() == ValueType.VOID;
 	}
 
-	public abstract LogicalValue getLogicalValue();
+	public abstract Condition getCondition();
 
 	public abstract T getDefiniteValue();
 
@@ -83,24 +83,15 @@ public abstract class Value<T> {
 		return ptr.op(ptr.getId(), code).op(builder, getValueType());
 	}
 
-	public Value<T> require(LogicalValue requirement) {
+	public String valueString() {
 
-		final LogicalValue logicalValue = getLogicalValue();
-		final LogicalValue newLogicalValue = logicalValue.and(requirement);
+		final Condition condition = getCondition();
 
-		if (logicalValue == newLogicalValue) {
-			return this;
+		if (!condition.isTrue()) {
+			return condition.toString();
 		}
 
-		switch (newLogicalValue) {
-		case FALSE:
-			return getValueType().falseValue();
-		case TRUE:
-			return getValueType().constantValue(getDefiniteValue());
-		case RUNTIME:
-		}
-
-		return getValueType().runtimeValue();
+		return getValueType().valueString(getDefiniteValue());
 	}
 
 	@Override
@@ -109,14 +100,7 @@ public abstract class Value<T> {
 		final StringBuilder out = new StringBuilder();
 
 		out.append('(').append(this.valueType).append(") ");
-
-		final LogicalValue logicalValue = getLogicalValue();
-
-		if (logicalValue.isTrue()) {
-			out.append(getValueType().valueString(getDefiniteValue()));
-		} else {
-			out.append(logicalValue);
-		}
+		out.append(valueString());
 
 		return out.toString();
 	}

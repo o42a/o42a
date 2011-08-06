@@ -51,6 +51,24 @@ final class PathTargetAncestor extends Ref {
 	}
 
 	@Override
+	public boolean isConstant() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isStatic() {
+		if (!this.ref.isStatic()) {
+			return false;
+		}
+
+		final TypeRef ancestor =
+				this.ref.getResolution().materialize().type().getAncestor();
+
+		return ancestor == null || ancestor.isStatic();
+	}
+
+	@Override
 	public Resolution resolve(Resolver resolver) {
 
 		final Artifact<?> artifact = resolveArtifact(resolver);

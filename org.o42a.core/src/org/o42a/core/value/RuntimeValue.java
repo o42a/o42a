@@ -43,8 +43,8 @@ final class RuntimeValue<T> extends Value<T> {
 	}
 
 	@Override
-	public LogicalValue getLogicalValue() {
-		return LogicalValue.RUNTIME;
+	public Condition getCondition() {
+		return Condition.RUNTIME;
 	}
 
 	@Override

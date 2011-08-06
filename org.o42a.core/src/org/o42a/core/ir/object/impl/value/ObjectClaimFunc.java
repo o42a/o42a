@@ -20,12 +20,11 @@
 package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.def.DefValue;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.artifact.object.ValuePart;
+import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ref.Resolver;
 
 
 public final class ObjectClaimFunc extends ObjectValueIRValFunc {
@@ -35,21 +34,18 @@ public final class ObjectClaimFunc extends ObjectValueIRValFunc {
 	}
 
 	@Override
-	public boolean isClaim() {
-		return true;
+	public final ValuePart valuePart() {
+		return getObject().value().claim();
+	}
+
+	@Override
+	public final ValueDefs defs() {
+		return definitions().claims();
 	}
 
 	@Override
 	protected String suffix() {
 		return "claim";
-	}
-
-	@Override
-	protected DefValue value(Definitions definitions) {
-
-		final Resolver resolver = definitions.getScope().dummyResolver();
-
-		return definitions.claims().resolve(resolver);
 	}
 
 	@Override

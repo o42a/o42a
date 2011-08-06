@@ -51,6 +51,11 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
+	protected boolean hasConstantValue() {
+		return this.def.isConstant();
+	}
+
+	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return this.def.getLogical().logicalValue(resolver).toValue();
 	}

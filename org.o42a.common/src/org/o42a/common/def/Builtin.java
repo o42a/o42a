@@ -30,6 +30,8 @@ import org.o42a.core.value.Value;
 
 public interface Builtin extends LocationInfo {
 
+	boolean isConstantBuiltin();
+
 	Obj toObject();
 
 	Value<?> calculateBuiltin(Resolver resolver);

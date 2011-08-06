@@ -58,6 +58,11 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
+	protected boolean hasConstantValue() {
+		return this.builtin.isConstantBuiltin();
+	}
+
+	@Override
 	protected Logical buildPrerequisite() {
 		return logicalTrue(this, this.builtin.toObject().getScope());
 	}

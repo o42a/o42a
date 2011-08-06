@@ -29,13 +29,13 @@ public enum LogicalValue {
 	TRUE(0, 2) {
 
 		@Override
-		public Logical toLogical(LocationInfo location, Scope scope) {
-			return Logical.logicalTrue(location, scope);
+		public Condition toCondition() {
+			return Condition.TRUE;
 		}
 
 		@Override
-		public Value<Void> toValue() {
-			return Value.voidValue();
+		public Logical toLogical(LocationInfo location, Scope scope) {
+			return Logical.logicalTrue(location, scope);
 		}
 
 	},
@@ -43,13 +43,13 @@ public enum LogicalValue {
 	RUNTIME(1, 1) {
 
 		@Override
-		public Logical toLogical(LocationInfo location, Scope scope) {
-			return Logical.runtimeLogical(location, scope);
+		public Condition toCondition() {
+			return Condition.RUNTIME;
 		}
 
 		@Override
-		public Value<Void> toValue() {
-			return ValueType.VOID.runtimeValue();
+		public Logical toLogical(LocationInfo location, Scope scope) {
+			return Logical.runtimeLogical(location, scope);
 		}
 
 	},
@@ -57,13 +57,13 @@ public enum LogicalValue {
 	FALSE(2, 0) {
 
 		@Override
-		public Logical toLogical(LocationInfo location, Scope scope) {
-			return Logical.logicalFalse(location, scope);
+		public Condition toCondition() {
+			return Condition.FALSE;
 		}
 
 		@Override
-		public Value<Void> toValue() {
-			return Value.falseValue();
+		public Logical toLogical(LocationInfo location, Scope scope) {
+			return Logical.logicalFalse(location, scope);
 		}
 
 	};
@@ -120,8 +120,12 @@ public enum LogicalValue {
 		return this;
 	}
 
+	public abstract Condition toCondition();
+
 	public abstract Logical toLogical(LocationInfo location, Scope scope);
 
-	public abstract Value<Void> toValue();
+	public final Value<Void> toValue() {
+		return toCondition().toValue();
+	}
 
 }

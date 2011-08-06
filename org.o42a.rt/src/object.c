@@ -971,12 +971,26 @@ o42a_cond_t o42a_obj_cond_true(O42A_PARAMS o42a_obj_t *const object) {
 	O42A_RETURN O42A_TRUE;
 }
 
+o42a_cond_t o42a_obj_cond_unknown(O42A_PARAMS o42a_obj_t *const object) {
+	O42A_ENTER(return O42A_FALSE);
+	O42A_RETURN O42A_UNKNOWN;
+}
+
 void o42a_obj_val_false(
 		O42A_PARAMS
 		o42a_val_t *const result,
 		o42a_obj_t *const object) {
 	O42A_ENTER(return);
 	result->flags = O42A_FALSE;
+	O42A_RETURN;
+}
+
+void o42a_obj_val_void(
+		O42A_PARAMS
+		o42a_val_t *const result,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	result->flags = O42A_TRUE;
 	O42A_RETURN;
 }
 

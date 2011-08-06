@@ -49,12 +49,17 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public boolean isStatic() {
+	public final boolean isConstant() {
+		return wrapped().isConstant();
+	}
+
+	@Override
+	public final boolean isStatic() {
 		return wrapped().isStatic();
 	}
 
 	@Override
-	public Path getPath() {
+	public final Path getPath() {
 		return wrapped().getPath();
 	}
 

@@ -42,7 +42,7 @@ public final class ParseFloat extends FloatByString {
 
 		final Value<?> value = super.calculateBuiltin(resolver);
 
-		if (!value.getLogicalValue().isTrue()) {
+		if (!value.getCondition().isTrue()) {
 			return value;
 		}
 

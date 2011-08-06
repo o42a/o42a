@@ -134,6 +134,11 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
+	protected boolean hasConstantValue() {
+		return false;
+	}
+
+	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 
 		final LocalScope local =

@@ -69,6 +69,11 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
+	protected boolean hasConstantValue() {
+		return this.ref.isConstant();
+	}
+
+	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return this.ref.value(resolver);
 	}
