@@ -110,17 +110,16 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 		final Code code = dirs.code();
 
-		final Code unknownReq = dirs.addBlock("unknown_req");
-		final CodeDirs reqDirs = dirs.dirs().splitWhenUnknown(
-				dirs.dirs().falseDir(),
-				unknownReq.head());
-
-		getValueIR().writeRequirement(reqDirs, host, null);
-		if (unknownReq.exists()) {
-			unknownReq.go(code.tail());
-		}
-
+		writeRequirement(dirs, host);
 		getValueIR().writeCondition(dirs.dirs(), host, null);
+
+		final Value<?> constantClaim = getValueIR().getConstantClaim();
+
+		if (constantClaim.isUnknown()) {
+			code.debug("Claim is " + constantClaim);
+			return writeProposition(dirs, code, host)
+					.op(dirs.getBuilder(), getValueType());
+		}
 
 		final Code unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
@@ -134,19 +133,51 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 		claimDirs.done();
 
-		final ValDirs propDirs =
-				dirs.sub(unknownClaim)
-				.setStoreMode(INITIAL_VAL_STORE);
-		final ValType.Op prop = unknownClaim.phi(
-				null,
-				getValueIR().writeProposition(propDirs, host, null).ptr());
+		final ValType.Op prop = writeProposition(dirs, unknownClaim, host);
 
-		propDirs.done();
 		unknownClaim.go(code.tail());
 
 		return code.phi(null, claim, prop).op(
 				dirs.getBuilder(),
 				getObject().value().getValueType());
+	}
+
+	private void writeRequirement(ValDirs dirs, ObjOp host) {
+
+		final Condition constantRequirement =
+				getValueIR().getConstantRequirement();
+
+		if (constantRequirement.isTrue() || constantRequirement.isUnknown()) {
+			dirs.code().debug("Requirement is " + constantRequirement);
+			return;
+		}
+
+		final Code unknownReq = dirs.addBlock("unknown_req");
+		final CodeDirs reqDirs = dirs.dirs().splitWhenUnknown(
+				dirs.dirs().falseDir(),
+				unknownReq.head());
+
+		getValueIR().writeRequirement(reqDirs, host, null);
+		if (unknownReq.exists()) {
+			unknownReq.go(dirs.code().tail());
+		}
+	}
+
+	private ValType.Op writeProposition(
+			ValDirs dirs,
+			Code code,
+			ObjOp host) {
+
+		final ValDirs propDirs =
+				dirs.sub(code)
+				.setStoreMode(INITIAL_VAL_STORE);
+		final ValType.Op prop = code.phi(
+				null,
+				getValueIR().writeProposition(propDirs, host, null).ptr());
+
+		propDirs.done();
+
+		return prop;
 	}
 
 	private FuncPtr<ObjectValFunc> reuseFunc() {
