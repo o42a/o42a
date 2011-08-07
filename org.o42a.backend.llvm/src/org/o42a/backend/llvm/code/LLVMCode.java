@@ -147,6 +147,7 @@ public abstract class LLVMCode implements CodeWriter {
 	private final CodeId id;
 	private LLVMCodePos.Head head;
 	private LLVMCodePos.Tail tail;
+	private long firstBlockPtr;
 	private long blockPtr;
 	private int blockIdx;
 
@@ -175,6 +176,11 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
+	public boolean exists() {
+		return this.firstBlockPtr != 0L;
+	}
+
+	@Override
 	public LLVMCodePos.Head head() {
 		return this.head;
 	}
@@ -182,13 +188,13 @@ public abstract class LLVMCode implements CodeWriter {
 	@Override
 	public LLVMCodePos.Tail tail() {
 		if (this.tail != null) {
-			assert this.tail.getBlockPtr() == this.blockPtr :
+			assert this.tail.getBlockPtr() == getBlockPtr() :
 				"Wrong tail position";
 			return this.tail;
 		}
 
 		final long nextPtr;
-		final long prevPtr = this.blockPtr;
+		final long prevPtr = getBlockPtr();
 
 		if (prevPtr != 0L) {
 			endBlock();
@@ -203,7 +209,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 	public long nextPtr() {
 
-		final long prevPtr = this.blockPtr;
+		final long prevPtr = getBlockPtr();
 
 		if (prevPtr != 0) {
 			this.tail = null;
@@ -533,12 +539,25 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	protected final void init() {
-		this.blockPtr = createFirtsBlock();
-		this.head = new LLVMCodePos.Head(this, this.blockPtr);
-		this.tail = new LLVMCodePos.Tail(this, this.blockPtr);
+		this.head = new LLVMCodePos.Head(this);
+		this.tail = new LLVMCodePos.Tail(this);
 	}
 
 	protected abstract long createFirtsBlock();
+
+	final long getFirstBlockPtr() {
+		if (this.firstBlockPtr != 0L) {
+			return this.firstBlockPtr;
+		}
+		return this.firstBlockPtr = this.blockPtr = createFirtsBlock();
+	}
+
+	final long getBlockPtr() {
+		if (exists()) {
+			return this.blockPtr;
+		}
+		return getFirstBlockPtr();
+	}
 
 	private long createNextBlock() {
 		return createBlock(
@@ -549,6 +568,10 @@ public abstract class LLVMCode implements CodeWriter {
 	private long setNextPtr(final long nextPtr) {
 		this.tail = new LLVMCodePos.Tail(this, nextPtr);
 		return this.blockPtr = nextPtr;
+	}
+
+	private final void endBlock() {
+		this.blockPtr = 0;
 	}
 
 	static native long createBlock(long functionPtr, String name);
@@ -629,9 +652,5 @@ public abstract class LLVMCode implements CodeWriter {
 	private static native void returnVoid(long blockPtr);
 
 	private static native void returnValue(long blockPtr, long valuePtr);
-
-	private void endBlock() {
-		this.blockPtr = 0;
-	}
 
 }

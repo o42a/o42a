@@ -55,7 +55,7 @@ public final class AllocationCode extends Code {
 
 	@Override
 	public final boolean exists() {
-		return true;
+		return this.writer != null && this.writer.exists();
 	}
 
 	public final Code alt(String name) {

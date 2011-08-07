@@ -49,6 +49,7 @@ public final class LLVMFunction<F extends Func<F>>
 		this.function = function;
 		this.callback = callback;
 		init();
+		getBlockPtr();
 		this.allocation = new LLVMFuncAllocation<F>(
 				module,
 				codeId(this),
