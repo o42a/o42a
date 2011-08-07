@@ -106,7 +106,11 @@ public final class ValType extends Type<ValType.Op> {
 		}
 
 		public final ValOp op(CodeBuilder builder, ValueType<?> valueType) {
-			return new ValOp(builder, this, valueType);
+			return new ValOp(builder, this, valueType, null);
+		}
+
+		public final ValOp op(CodeBuilder builder, Val constant) {
+			return new ValOp(builder, this, constant.getValueType(), constant);
 		}
 
 		public final Int32recOp flags(CodeId id, Code code) {

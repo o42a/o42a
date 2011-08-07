@@ -36,15 +36,29 @@ import org.o42a.core.value.ValueType;
 public final class ValOp extends IROp implements CondOp {
 
 	private final ValueType<?> valueType;
+	private final Val constant;
 	private ValStoreMode storeMode = ASSIGNMENT_VAL_STORE;
 
-	ValOp(CodeBuilder builder, ValType.Op ptr, ValueType<?> valueType) {
+	ValOp(
+			CodeBuilder builder,
+			ValType.Op ptr,
+			ValueType<?> valueType,
+			Val constant) {
 		super(builder, ptr);
 		this.valueType = valueType;
+		this.constant = constant;
 	}
 
 	public final ValueType<?> getValueType() {
 		return this.valueType;
+	}
+
+	public final boolean isConstant() {
+		return this.constant != null;
+	}
+
+	public final Val getConstant() {
+		return this.constant;
 	}
 
 	@Override
@@ -72,6 +86,9 @@ public final class ValOp extends IROp implements CondOp {
 
 	@Override
 	public final BoolOp loadCondition(CodeId id, Code code) {
+		if (this.constant != null) {
+			return code.bool(this.constant.getCondition());
+		}
 
 		final Int32op flags = flags(null, code).load(null, code);
 
@@ -98,6 +115,9 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public Int32op loadAlignmentShift(CodeId id, Code code) {
+		if (this.constant != null) {
+			return code.int32(constAlignmentShift());
+		}
 
 		final CodeId ashiftId;
 
@@ -119,7 +139,11 @@ public final class ValOp extends IROp implements CondOp {
 				numberOfTrailingZeros(ALIGNMENT_MASK));
 	}
 
+
 	public Int32op loadAlignment(CodeId id, Code code) {
+		if (this.constant != null) {
+			return code.int32(constAlignment());
+		}
 
 		final Int32op shift = loadAlignmentShift(
 				id != null ? id.detail("shift") : null,
@@ -132,9 +156,19 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public Int32op loadCharMask(CodeId id, Code code) {
+		if (this.constant != null) {
+
+			final int alignment = constAlignment();
+
+			if (alignment == 4) {
+				return code.int32(-1);
+			}
+
+			return code.int32(-1 << (alignment << 3));
+		}
 
 		final Int32op alignment =
-			loadAlignment(id != null ? id.detail("alignment") : null, code);
+				loadAlignment(id != null ? id.detail("alignment") : null, code);
 		final BoolOp is4bytes = alignment.ge(
 				alignment.getId().detail("4bytes"),
 				code,
@@ -165,13 +199,17 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public Int32op loadDataLength(CodeId id, Code code) {
+		if (this.constant != null) {
+			return code.int32(
+					this.constant.getLength() >>> constAlignmentShift());
+		}
 
 		final Int32op byteLength = length(
 				id != null ? id.detail("length") : null,
 				code).load(null, code);
 		final Int32op alignmentShift = loadAlignmentShift(
-					id != null ? id.detail("alignment_shift") : null,
-					code);
+				id != null ? id.detail("alignment_shift") : null,
+				code);
 
 		return byteLength.lshr(
 				id != null ? id : getId().sub("data_len"),
@@ -199,15 +237,15 @@ public final class ValOp extends IROp implements CondOp {
 	public final AnyOp loadData(CodeId id, Code code) {
 
 		final AnyOp value =
-			value(id != null ? id.detail("value") : null, code);
+				value(id != null ? id.detail("value") : null, code);
 		final BoolOp external =
-			loadExternal(id != null ? id.detail("external") : null, code);
+				loadExternal(id != null ? id.detail("external") : null, code);
 
 		final CondCode whenExternal = external.branch(code, "external");
 		final Code notExternal = whenExternal.otherwise();
 
 		final AnyOp result1 =
-			value.toPtr(null, whenExternal).load(null, whenExternal);
+				value.toPtr(null, whenExternal).load(null, whenExternal);
 
 		whenExternal.go(code.tail());
 
@@ -294,7 +332,28 @@ public final class ValOp extends IROp implements CondOp {
 
 	@Override
 	public final void go(Code code, CodeDirs dirs) {
+		if (this.constant != null) {
+			if (!this.constant.getCondition()) {
+				if (this.constant.isUnknown()) {
+					code.go(dirs.unknownDir());
+				} else {
+					code.go(dirs.falseDir());
+				}
+			}
+			return;
+		}
 		dirs.go(code, this);
+	}
+
+	private int constAlignment() {
+		return 1 << constAlignmentShift();
+	}
+
+	private int constAlignmentShift() {
+
+		final int unshifted = this.constant.getFlags() & ALIGNMENT_MASK;
+
+		return unshifted >>> numberOfTrailingZeros(ALIGNMENT_MASK);
 	}
 
 	private BoolOp loadFlag(
@@ -302,6 +361,9 @@ public final class ValOp extends IROp implements CondOp {
 			String defaultId,
 			Code code,
 			int mask) {
+		if (this.constant != null) {
+			return code.bool((this.constant.getFlags() & mask) != 0);
+		}
 
 		final CodeId flagId;
 
