@@ -26,8 +26,7 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ValuePart;
+import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.def.ValueDefs;
 import org.o42a.core.ir.object.*;
@@ -80,6 +79,10 @@ public abstract class ObjectValueIRValFunc
 	}
 
 	public void create(ObjectTypeIR typeIR) {
+		reuse(typeIR);
+		if (isReused()) {
+			return;
+		}
 
 		final Value<?> constant = getConstant();
 
@@ -144,6 +147,46 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		return result;
+	}
+
+	protected void reuse(ObjectTypeIR typeIR) {
+
+		final ObjectType type = getObject().type();
+		final Sample[] samples = type.getSamples();
+
+		if (samples.length > 1) {
+			return;
+		}
+
+		final Obj reuseFrom;
+
+		if (samples.length == 1) {
+
+			final ObjectType sampleType =
+					samples[0].getTypeRef().type(dummyUser());
+
+			reuseFrom = sampleType.getLastDefinition();
+		} else {
+
+			final TypeRef ancestor = type.getAncestor();
+
+			if (ancestor == null) {
+				return;
+			}
+			if (part().isAncestorDefsUpdatedBy(getGenerator())) {
+				return;
+			}
+
+			reuseFrom = ancestor.type(dummyUser()).getLastDefinition();
+		}
+		if (defs().updatedSince(reuseFrom)) {
+			return;
+		}
+
+		final ObjectValueIR reuseFromIR =
+				reuseFrom.ir(getGenerator()).allocate().getValueIR();
+
+		reuse(typeIR, reuseFromIR.value(isClaim()).get());
 	}
 
 	public void build() {
