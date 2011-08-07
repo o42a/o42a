@@ -179,12 +179,12 @@ public abstract class ValDirs {
 
 	abstract CodeDirs createDirs();
 
-	CodeDirs createDirs(CodeDirs enclosing) {
-		this.falseCode = createDir("false");
+	final CodeDirs createDirs(CodeDirs enclosing) {
+		this.falseCode = addBlock("false");
 		if (enclosing.isFalseWhenUnknown()) {
 			this.unknownCode = this.falseCode;
 		} else {
-			this.unknownCode = createDir("unknown");
+			this.unknownCode = addBlock("unknown");
 		}
 		return new CodeDirs(
 				getBuilder(),
@@ -193,16 +193,22 @@ public abstract class ValDirs {
 				this.unknownCode.head());
 	}
 
-	abstract Code createDir(String name);
-
-	void handleDirs(CodeDirs enclosing) {
+	void endDirs(CodeDirs enclosing) {
 		dirs();
 		if (this.falseCode.exists()) {
-			this.falseCode.go(enclosing.falseDir());
+			endFalse(enclosing, this.falseCode);
 		}
 		if (this.unknownCode.exists() && this.unknownCode != this.falseCode) {
-			this.unknownCode.go(enclosing.unknownDir());
+			endUnknown(enclosing, this.unknownCode);
 		}
+	}
+
+	void endFalse(CodeDirs enclosing, Code code) {
+		code.go(enclosing.falseDir());
+	}
+
+	void endUnknown(CodeDirs enclosing, Code code) {
+		code.go(enclosing.unknownDir());
 	}
 
 	static final class TopLevelValDirs extends ValDirs {
@@ -264,11 +270,11 @@ public abstract class ValDirs {
 			if (this.allocation == null) {
 				this.enclosing.code().go(code().head());
 				code().go(this.enclosing.code().tail());
-				handleDirs(this.enclosing);
+				endDirs(this.enclosing);
 			} else {
 				this.allocation.code().go(code().head());
 				code().go(this.allocation.code().tail());
-				handleDirs(this.allocation.dirs());
+				endDirs(this.allocation.dirs());
 				this.allocation.done();
 			}
 		}
@@ -281,11 +287,6 @@ public abstract class ValDirs {
 		@Override
 		CodeDirs createDirs() {
 			return createDirs(this.enclosing);
-		}
-
-		@Override
-		Code createDir(String name) {
-			return addBlock(name);
 		}
 
 	}
@@ -317,11 +318,6 @@ public abstract class ValDirs {
 			throw new UnsupportedOperationException();
 		}
 
-		@Override
-		Code createDir(String name) {
-			throw new UnsupportedOperationException();
-		}
-
 	}
 
 	private static class SubValDirs extends ValDirs {
@@ -347,11 +343,6 @@ public abstract class ValDirs {
 		@Override
 		CodeDirs createDirs() {
 			return this.enclosing.dirs().sub(code());
-		}
-
-		@Override
-		Code createDir(String name) {
-			throw new UnsupportedOperationException();
 		}
 
 	}
@@ -386,7 +377,7 @@ public abstract class ValDirs {
 		@Override
 		public void done() {
 			code().end();
-			handleDirs(this.enclosing.dirs());
+			endDirs(this.enclosing.dirs());
 		}
 
 		@Override
@@ -400,13 +391,15 @@ public abstract class ValDirs {
 		}
 
 		@Override
-		Code createDir(String name) {
+		void endFalse(CodeDirs enclosing, Code code) {
+			code.end();
+			super.endFalse(enclosing, code);
+		}
 
-			final Code dir = addBlock(name);
-
-			dir.end();
-
-			return dir;
+		@Override
+		void endUnknown(CodeDirs enclosing, Code code) {
+			code.end();
+			super.endUnknown(enclosing, code);
 		}
 
 	}

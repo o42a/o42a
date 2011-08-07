@@ -114,15 +114,9 @@ public final class AllocationCode extends Code {
 			return;
 		}
 
-		if (this.alts != null) {
+		final CodeWriter[] alts = altWriters();
 
-			final CodeWriter alts[] = new CodeWriter[1 + this.alts.length];
-			int i = 0;
-
-			alts[0] = writer();
-			for (Code alt : this.alts) {
-				alts[++i] = alt.writer();
-			}
+		if (alts != null) {
 
 			final Code destruct;
 			final MultiCodePos target;
@@ -174,6 +168,26 @@ public final class AllocationCode extends Code {
 		if (isDisposable()) {
 			writer().dispose(this.destruction.writer());
 		}
+	}
+
+	private CodeWriter[] altWriters() {
+		if (this.alts == null) {
+			return null;
+		}
+
+		final CodeWriter alts[] = new CodeWriter[1 + this.alts.length];
+		int i = 0;
+
+		if (exists()) {
+			alts[i++] = writer();
+		}
+		for (Code alt : this.alts) {
+			if (alt.exists()) {
+				alts[i++] = alt.writer();
+			}
+		}
+
+		return i == 0 ? null : ArrayUtil.clip(alts, i);
 	}
 
 }
