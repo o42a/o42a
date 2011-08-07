@@ -24,15 +24,7 @@ import org.o42a.codegen.code.CodePos;
 
 public abstract class LLVMCodePos implements CodePos {
 
-	private final long blockPtr;
-
-	LLVMCodePos(long blockPtr) {
-		this.blockPtr = blockPtr;
-	}
-
-	public final long getBlockPtr() {
-		return this.blockPtr;
-	}
+	public abstract long getBlockPtr();
 
 	public abstract boolean tailOf(LLVMCode code);
 
@@ -40,9 +32,13 @@ public abstract class LLVMCodePos implements CodePos {
 
 		private final LLVMCode code;
 
-		Head(LLVMCode code, long blockPtr) {
-			super(blockPtr);
+		Head(LLVMCode code) {
 			this.code = code;
+		}
+
+		@Override
+		public long getBlockPtr() {
+			return this.code.getFirstBlockPtr();
 		}
 
 		@Override
@@ -60,10 +56,23 @@ public abstract class LLVMCodePos implements CodePos {
 	public static class Tail extends LLVMCodePos {
 
 		private final LLVMCode code;
+		private long blockPtr;
+
+		Tail(LLVMCode code) {
+			this.code = code;
+		}
 
 		Tail(LLVMCode code, long blockPtr) {
-			super(blockPtr);
 			this.code = code;
+			this.blockPtr = blockPtr;
+		}
+
+		@Override
+		public long getBlockPtr() {
+			if (this.blockPtr != 0L) {
+				return this.blockPtr;
+			}
+			return this.blockPtr = this.code.getBlockPtr();
 		}
 
 		@Override

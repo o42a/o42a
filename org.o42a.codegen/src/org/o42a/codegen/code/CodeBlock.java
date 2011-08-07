@@ -39,7 +39,7 @@ class CodeBlock extends Code {
 
 	@Override
 	public final boolean exists() {
-		return this.writer != null;
+		return this.writer != null && this.writer.exists();
 	}
 
 	@Override
