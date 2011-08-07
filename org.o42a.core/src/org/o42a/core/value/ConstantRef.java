@@ -29,6 +29,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.ValueTypeIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -133,11 +134,11 @@ final class ConstantRef<T> extends Ref {
 
 			@SuppressWarnings("unchecked")
 			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
-			final Ptr<ValType.Op> ptr =
-				ref.valueType.ir(getGenerator()).valPtr(ref.value);
+			final ValueTypeIR<T> typeIR = ref.valueType.ir(getGenerator());
+			final Ptr<ValType.Op> ptr = typeIR.valPtr(ref.value);
 			final ValType.Op op = ptr.op(ptr.getId(), dirs.code());
 
-			return op.op(dirs.getBuilder(), ref.valueType);
+			return op.op(dirs.getBuilder(), typeIR.val(ref.value));
 		}
 
 		@Override
