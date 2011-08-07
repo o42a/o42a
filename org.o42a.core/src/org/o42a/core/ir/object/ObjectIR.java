@@ -119,8 +119,9 @@ public class ObjectIR  {
 		return getStruct().data(getGenerator());
 	}
 
-	public final void allocate() {
+	public final ObjectIR allocate() {
 		getStruct();
+		return this;
 	}
 
 	public ObjOp op(CodeBuilder builder, Code code) {

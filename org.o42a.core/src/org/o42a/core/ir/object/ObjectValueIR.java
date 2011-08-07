@@ -104,6 +104,14 @@ public class ObjectValueIR {
 		return this.proposition.getConstant();
 	}
 
+	public final ObjectValueIRCondFunc condition(boolean requirement) {
+		return requirement ? requirement() : condition();
+	}
+
+	public final ObjectValueIRValFunc value(boolean claim) {
+		return claim ? claim() : proposition();
+	}
+
 	public ObjValOp op(CodeBuilder builder, Code code) {
 		return getObjectIR().op(builder, code);
 	}

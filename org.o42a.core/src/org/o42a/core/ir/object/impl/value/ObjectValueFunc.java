@@ -47,19 +47,6 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	}
 
 	@Override
-	public void create(ObjectTypeIR typeIR) {
-
-		final FuncPtr<ObjectValFunc> knownFunc = reuseFunc();
-
-		if (knownFunc != null) {
-			reuse(typeIR, knownFunc);
-			return;
-		}
-
-		super.create(typeIR);
-	}
-
-	@Override
 	protected String suffix() {
 		return "value";
 	}
@@ -86,6 +73,33 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		}
 
 		return getValueIR().getConstantProposition();
+	}
+
+	@Override
+	protected void reuse(ObjectTypeIR typeIR) {
+
+		final ObjectValueIR valueIR = getValueIR();
+
+		if (!valueIR.getConstantCondition().isTrue()) {
+			return;
+		}
+
+		final FuncPtr<ObjectValFunc> reused;
+		final Value<?> claim = valueIR.getConstantClaim();
+
+		if (claim.isDefinite()) {
+			if (claim.getCondition() == Condition.FALSE) {
+				reused = falseValFunc();
+			} else {
+				reused = valueIR.proposition().get();
+			}
+		} else if (!valueIR.getConstantProposition().isUnknown()) {
+			return;
+		} else {
+			reused = valueIR.claim().get();
+		}
+
+		reuse(typeIR, reused);
 	}
 
 	@Override
@@ -161,30 +175,6 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		propDirs.done();
 
 		return prop;
-	}
-
-	private FuncPtr<ObjectValFunc> reuseFunc() {
-
-		final ObjectValueIR valueIR = getValueIR();
-
-		if (!valueIR.getConstantCondition().isTrue()) {
-			return null;
-		}
-
-		final Value<?> claim = valueIR.getConstantClaim();
-		final Value<?> proposition = valueIR.getConstantProposition();
-
-		if (claim.isDefinite()) {
-			if (claim.getCondition() == Condition.FALSE) {
-				return falseValFunc();
-			}
-			return valueIR.proposition().get();
-		}
-		if (proposition.isUnknown()) {
-			return valueIR.claim().get();
-		}
-
-		return null;
 	}
 
 }
