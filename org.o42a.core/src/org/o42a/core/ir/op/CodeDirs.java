@@ -113,16 +113,16 @@ public class CodeDirs {
 
 		this.code.begin(message);
 
-		final CodePos falsePos = end(id + "_false", this.falseDir);
-		final CodePos unknownPos;
+		final Code falseCode = this.code.addBlock(id + "_false");
+		final Code unknownCode;
 
-		if (this.falseDir == this.unknownDir) {
-			unknownPos = falsePos;
+		if (isFalseWhenUnknown()) {
+			unknownCode = falseCode;
 		} else {
-			unknownPos = end(id + "_unknown", this.unknownDir);
+			unknownCode = this.code.addBlock(id + "_unknown");
 		}
 
-		return new Nested(this, falsePos, unknownPos);
+		return new Nested(this, falseCode, unknownCode);
 	}
 
 	public CodeDirs end() {
@@ -250,34 +250,25 @@ public class CodeDirs {
 		return out.toString();
 	}
 
-	private CodePos end(String id, CodePos dir) {
-		if (dir == null) {
-			return null;
-		}
-
-		final Code block = this.code.addBlock(id);
-
-		block.end();
-		block.go(dir);
-
-		return block.head();
-	}
-
 	private static final class Nested extends CodeDirs {
 
 		private final CodeDirs enclosing;
+		private final Code falseCode;
+		private final Code unknownCode;
 		private boolean ended;
 
 		Nested(
 				CodeDirs enclosing,
-				CodePos falsePos,
-				CodePos unknownPos) {
+				Code falseCode,
+				Code unknownCode) {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),
-					falsePos,
-					unknownPos);
+					falseCode.head(),
+					unknownCode.head());
 			this.enclosing = enclosing;
+			this.falseCode = falseCode;
+			this.unknownCode = unknownCode;
 		}
 
 		@Override
@@ -285,6 +276,14 @@ public class CodeDirs {
 			assert !this.ended :
 				"Already ended: " + this;
 			code().end();
+			if (this.falseCode.exists()) {
+				this.falseCode.end();
+				this.falseCode.go(this.enclosing.falseDir());
+			}
+			if (!isFalseWhenUnknown() && this.unknownCode.exists()) {
+				this.unknownCode.end();
+				this.unknownCode.go(this.enclosing.unknownDir());
+			}
 			this.ended = true;
 			return this.enclosing;
 		}
