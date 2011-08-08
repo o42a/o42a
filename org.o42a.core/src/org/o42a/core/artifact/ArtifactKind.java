@@ -23,25 +23,16 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.impl.decl.DeclaredArrayField;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.link.impl.decl.DeclaredLinkField;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.impl.decl.DeclaredObjectField;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.array.ArrayFieldIR;
 import org.o42a.core.ir.field.link.LinkFieldIR;
 import org.o42a.core.ir.field.object.ObjectFieldIR;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.field.*;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
+import org.o42a.core.member.field.DeclaredField;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 
 
 public abstract class ArtifactKind<A extends Artifact<A>> {
@@ -161,115 +152,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		@Override
 		public String toString() {
 			return "ARRAY";
-		}
-
-	}
-
-	private static final class LinkTypeRef extends Ref {
-
-		private final TargetRef ref;
-
-		LinkTypeRef(TargetRef ref) {
-			super(ref, ref.getScope().distribute());
-			this.ref = ref;
-		}
-
-		@Override
-		public boolean isStatic() {
-			if (!this.ref.getRef().isStatic()) {
-				return false;
-			}
-
-			final Resolution resolution =
-					this.ref.resolve(getScope().dummyResolver());
-
-			return resolution.toArtifact().getTypeRef().isStatic();
-		}
-
-		@Override
-		public boolean isConstant() {
-			return isStatic() && getResolution().isConstant();
-		}
-
-		@Override
-		public Resolution resolve(Resolver resolver) {
-
-			final Resolution resolution = this.ref.resolve(resolver);
-
-			if (resolution.isError()) {
-				return resolution;
-			}
-
-			final Artifact<?> artifact = resolution.toArtifact();
-
-			return resolver.artifactPart(
-					this,
-					artifact,
-					artifact.getTypeRef().typeObject(resolver));
-		}
-
-		@Override
-		public Value<?> value(Resolver resolver) {
-
-			final Resolution resolution = this.ref.resolve(resolver);
-
-			if (resolution.isError()) {
-				return Value.falseValue();
-			}
-
-			final TypeRef typeRef = resolution.toArtifact().getTypeRef();
-
-			return typeRef.value(typeRef.getScope().walkingResolver(resolver));
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-
-			final TargetRef ref = this.ref.reproduce(reproducer);
-
-			if (ref == null) {
-				return null;
-			}
-
-			return new LinkTypeRef(ref);
-		}
-
-		@Override
-		protected FieldDefinition createFieldDefinition() {
-			return defaultFieldDefinition();
-		}
-
-		@Override
-		protected void fullyResolve(Resolver resolver) {
-			this.ref.resolveAll(resolver);
-			resolve(resolver).resolveAll();
-		}
-
-		@Override
-		protected void fullyResolveValues(Resolver resolver) {
-			resolve(resolver).resolveValues(resolver);
-		}
-
-		@Override
-		protected RefOp createOp(HostOp host) {
-			return new LinkTypeOp(host, this);
-		}
-
-	}
-
-	private static final class LinkTypeOp extends RefOp {
-
-		LinkTypeOp(HostOp host, LinkTypeRef ref) {
-			super(host, ref);
-		}
-
-		@Override
-		public HostOp target(CodeDirs dirs) {
-
-			final ObjectIR ir =
-				getRef().getResolution().toObject().ir(getGenerator());
-
-			return ir.op(getBuilder(), dirs.code());
 		}
 
 	}

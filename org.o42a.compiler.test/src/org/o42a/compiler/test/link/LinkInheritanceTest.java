@@ -21,6 +21,7 @@ package org.o42a.compiler.test.link;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -29,6 +30,24 @@ import org.o42a.core.value.ValueType;
 
 
 public class LinkInheritanceTest extends CompilerTestCase {
+
+	@Test
+	public void inheritLink() {
+		compile(
+				"A := `42",
+				"B := a(= 43)");
+
+		final Field<?> a = field("a");
+		final Field<?> b = field("b");
+
+		assertThat(definiteValue(a, ValueType.INTEGER), is(42L));
+		assertThat(definiteValue(b, ValueType.INTEGER), is(43L));
+
+		assertTrue(b.getArtifact().materialize().type().inherits(
+				a.getArtifact().materialize().type()));
+		assertTrue(b.getArtifact().materialize().getWrapped().type().inherits(
+				a.getArtifact().materialize().type()));
+	}
 
 	@Test
 	public void linkPropagation() {

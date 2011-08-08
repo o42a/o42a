@@ -177,35 +177,16 @@ public final class AncestorRef extends Ref {
 			return null;
 		}
 
-		final Obj object = artifact.toObject();
+		final Obj object = artifact.materialize();
+		final ValueType<?> valueType = object.value().getValueType();
 
-		if (object != null) {
-
-			final ValueType<?> valueType = object.value().getValueType();
-
-			if (valueType.wrapper(getContext().getIntrinsics()) == object) {
-				return valueType.typeRef(
-						this,
-						object.getScope().getEnclosingScope());
-			}
-
-			return object.type().getAncestor();
+		if (valueType.wrapper(getContext().getIntrinsics()) == object) {
+			return valueType.typeRef(
+					this,
+					object.getScope().getEnclosingScope());
 		}
 
-		final TypeRef typeRef = artifact.getTypeRef();
-
-		if (typeRef != null) {
-			return typeRef;
-		}
-
-		this.error = true;
-		getLogger().error(
-				"no_ancestor",
-				this,
-				"Artifact %s has no ancestor",
-				artifact.getKind());
-
-		return null;
+		return object.type().getAncestor();
 	}
 
 	private static final class AncestorOp extends RefOp {
