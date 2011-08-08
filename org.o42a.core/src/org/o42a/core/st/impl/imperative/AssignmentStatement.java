@@ -145,8 +145,17 @@ public class AssignmentStatement extends Statement {
 		if (getAssignmentKind().isError()) {
 			return;
 		}
+
+		final Resolution value = this.value.resolve(resolver);
+		final Resolution destination = this.destination.resolve(resolver);
+
 		this.destination.resolveAll(resolver);
 		this.value.resolveAll(resolver);
+
+		if (!destination.isError() && !value.isError()) {
+			destination.materialize().type().wrapBy(
+					value.materialize().type());
+		}
 	}
 
 	@Override
@@ -154,8 +163,17 @@ public class AssignmentStatement extends Statement {
 		if (getAssignmentKind().isError()) {
 			return;
 		}
-		this.destination.resolveValues(resolver);
+
+		final Resolution value = this.value.resolve(resolver);
+		final Resolution destination = this.destination.resolve(resolver);
+
 		this.value.resolveValues(resolver);
+		this.destination.resolveValues(resolver);
+
+		if (!destination.isError() && !value.isError()) {
+			destination.materialize().value().wrapBy(
+					value.materialize().value());
+		}
 	}
 
 	@Override
