@@ -65,14 +65,6 @@ public abstract class ObjectValueIRCondFunc
 		return this.constant = determineConstant();
 	}
 
-	public void create(ObjectTypeIR typeIR) {
-		reuse(typeIR);
-		if (isReused()) {
-			return;
-		}
-		set(typeIR, createFunc());
-	}
-
 	public void call(CodeDirs dirs, ObjOp host, ObjectOp body) {
 
 		final CodeDirs subDirs;
@@ -167,7 +159,35 @@ public abstract class ObjectValueIRCondFunc
 		return Condition.RUNTIME;
 	}
 
-	protected void reuse(ObjectTypeIR typeIR) {
+	@Override
+	public void create() {
+		reuse();
+		if (isReused()) {
+			return;
+		}
+
+		switch (getConstant()) {
+		case TRUE:
+			reuse(trueFunc());
+			return;
+		case FALSE:
+			reuse(falseFunc());
+			return;
+		case RUNTIME:
+			set(getGenerator().newFunction().create(
+					getId(),
+					OBJECT_COND));
+			return;
+		case UNKNOWN:
+			reuse(unknownFunc());
+			return;
+		}
+
+		throw new IllegalStateException(
+				"Unsupported condition value: " + getConstant());
+	}
+
+	protected void reuse() {
 
 		final ObjectType type = getObject().type();
 		final Sample[] samples = type.getSamples();
@@ -204,7 +224,7 @@ public abstract class ObjectValueIRCondFunc
 		final ObjectValueIR reuseFromIR =
 				reuseFrom.ir(getGenerator()).allocate().getValueIR();
 
-		reuse(typeIR, reuseFromIR.condition(isRequirement()).get());
+		reuse(reuseFromIR.condition(isRequirement()).get());
 	}
 
 	protected void build(CodeDirs dirs, ObjOp host) {
@@ -374,24 +394,6 @@ public abstract class ObjectValueIRCondFunc
 		}
 
 		return false;
-	}
-
-	private FuncPtr<ObjectCondFunc> createFunc() {
-		switch (getConstant()) {
-		case TRUE:
-			return trueFunc();
-		case FALSE:
-			return falseFunc();
-		case RUNTIME:
-			return getGenerator().newFunction().create(
-					getId(),
-					OBJECT_COND).getPointer();
-		case UNKNOWN:
-			return unknownFunc();
-		}
-
-		throw new IllegalStateException(
-				"Unsupported condition value: " + getConstant());
 	}
 
 	private FuncPtr<ObjectCondFunc> trueFunc() {

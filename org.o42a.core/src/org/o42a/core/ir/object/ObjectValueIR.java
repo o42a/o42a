@@ -148,11 +148,11 @@ public class ObjectValueIR {
 	}
 
 	protected void allocate(ObjectTypeIR typeIR) {
-		this.requirement.create(typeIR);
-		this.claim.create(typeIR);
-		this.condition.create(typeIR);
-		this.proposition.create(typeIR);
-		this.value.create(typeIR);
+		this.value.allocate(typeIR);
+		this.requirement.allocate(typeIR);
+		this.claim.allocate(typeIR);
+		this.condition.allocate(typeIR);
+		this.proposition.allocate(typeIR);
 	}
 
 	protected void fill(ObjectTypeIR typeIR) {
