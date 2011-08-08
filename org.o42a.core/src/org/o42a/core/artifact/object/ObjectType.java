@@ -138,7 +138,7 @@ public final class ObjectType implements UserInfo {
 	public final boolean derivedFrom(ObjectType other, Derivation derivation) {
 
 		final Derivation derivations =
-			allAscendants().get(other.getObject().getScope());
+				allAscendants().get(other.getObject().getScope());
 
 		return derivations != null && derivations.is(derivation);
 	}
@@ -158,6 +158,10 @@ public final class ObjectType implements UserInfo {
 			return super.toString();
 		}
 		return "ObjectType[" + this.object + ']';
+	}
+
+	protected void useAsAncestor(Obj derived) {
+		trackAncestorDefsInheritance(derived);
 	}
 
 	protected void useAsSample(Sample sample) {
@@ -210,7 +214,7 @@ public final class ObjectType implements UserInfo {
 	private HashMap<Scope, Derivation> buildAllAscendants() {
 
 		final HashMap<Scope, Derivation> allAscendants =
-			new HashMap<Scope, Derivation>();
+				new HashMap<Scope, Derivation>();
 
 		allAscendants.put(getObject().getScope(), Derivation.SAME);
 
@@ -245,7 +249,7 @@ public final class ObjectType implements UserInfo {
 
 				final Scope scope = e.getKey();
 				final Derivation traversed =
-					e.getValue().traverseSample(sample);
+						e.getValue().traverseSample(sample);
 				final Derivation derivations = allAscendants.get(scope);
 
 				if (derivations == null) {
@@ -264,6 +268,23 @@ public final class ObjectType implements UserInfo {
 					sample.getTypeRef().typeObject(dummyUser());
 
 			sampleObject.type().useAsSample(sample);
+		}
+	}
+
+	private void trackAncestorDefsInheritance(Obj derived) {
+
+		final Obj ancestor = getObject();
+		final ObjectValue ancestorValue = getObject().value();
+		final ObjectValue derivedValue = derived.value();
+
+		for (DefKind defKind : DefKind.values()) {
+
+			final ObjectValuePart<?, ?> derivedPart =
+					derivedValue.part(defKind);
+
+			if (derivedPart.getDefs().presentIn(ancestor)) {
+				ancestorValue.part(defKind).inheritBy(derivedPart);
+			}
 		}
 	}
 
@@ -294,7 +315,7 @@ public final class ObjectType implements UserInfo {
 					since.value().part(defKind);
 
 			sampleValuePart.updateAncestorDefsBy(
-					sinceValuePart.ancestorDefsUpdates());
+					sinceValuePart.ancestorDefsUpdatedBy());
 			if (newAncestorValue.part(defKind).getDefs().updatedSince(
 					oldAncestorObject)) {
 				sampleValuePart.updateAncestorDefsBy(sinceValuePart);

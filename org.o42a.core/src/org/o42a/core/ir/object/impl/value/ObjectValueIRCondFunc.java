@@ -152,7 +152,7 @@ public abstract class ObjectValueIRCondFunc
 		if (!constant.isConstant() || constant.isFalse()) {
 			return constant;
 		}
-		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
 			return constant;
 		}
 
@@ -211,7 +211,7 @@ public abstract class ObjectValueIRCondFunc
 			if (ancestor == null) {
 				return;
 			}
-			if (part().isAncestorDefsUpdatedBy(getGenerator())) {
+			if (part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
 				return;
 			}
 
@@ -257,7 +257,7 @@ public abstract class ObjectValueIRCondFunc
 
 		final Code code = dirs.code();
 
-		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();
 
