@@ -136,10 +136,10 @@ public class ConsoleModule extends AnnotatedModule {
 		final ValOp result =
 				alloc.allocate(null, VAL_TYPE)
 				.op(builder, ValueType.INTEGER)
-				.storeUnknown(main);
+				.storeIndefinite(alloc);
 		final ValDirs dirs =
 				builder.falseWhenUnknown(alloc, exit.head())
-				.value(main.id("exec_main"), result);
+				.value(alloc.id("exec_main"), result);
 		final Code code = dirs.code();
 
 		result.store(
