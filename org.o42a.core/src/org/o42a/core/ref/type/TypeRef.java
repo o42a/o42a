@@ -84,18 +84,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return null;
 		}
 
-		final TypeRef typeRef = artifact.getTypeRef();
-
-		if (typeRef != null) {
-
-			final ObjectType type = typeRef.type(usable());
-
-			this.type = new Holder<ObjectType>(type);
-
-			return type;
-		}
-
-		final Obj object = artifact.toObject();
+		final Obj object = artifact.materialize();
 
 		if (object == null) {
 			getScope().getLogger().notTypeRef(this);
