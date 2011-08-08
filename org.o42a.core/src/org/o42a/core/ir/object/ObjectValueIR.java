@@ -35,7 +35,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
@@ -86,22 +85,6 @@ public class ObjectValueIR {
 
 	public final ObjectPropositionFunc proposition() {
 		return this.proposition;
-	}
-
-	public final Condition getConstantRequirement() {
-		return this.requirement.getConstant();
-	}
-
-	public final Condition getConstantCondition() {
-		return this.condition.getConstant();
-	}
-
-	public final Value<?> getConstantClaim() {
-		return this.claim.getConstant();
-	}
-
-	public final Value<?> getConstantProposition() {
-		return this.proposition.getConstant();
 	}
 
 	public final ObjectValueIRCondFunc condition(boolean requirement) {

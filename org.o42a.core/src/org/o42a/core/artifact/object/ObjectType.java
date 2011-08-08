@@ -149,7 +149,8 @@ public final class ObjectType implements UserInfo {
 
 	public void resolveAll() {
 		getAscendants().resolveAll();
-		registerAsSample();
+		registerInAncestor();
+		registerSamples();
 	}
 
 	@Override
@@ -261,13 +262,29 @@ public final class ObjectType implements UserInfo {
 		}
 	}
 
-	private void registerAsSample() {
+	private void registerInAncestor() {
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor != null) {
+
+			final ObjectType ancestorType = ancestor.type(dummyUser());
+
+			if (ancestorType != null) {
+				ancestorType.useAsAncestor(getObject());
+			}
+		}
+	}
+
+	private void registerSamples() {
 		for (Sample sample : getSamples()) {
 
-			final Obj sampleObject =
-					sample.getTypeRef().typeObject(dummyUser());
+			final ObjectType sampleType =
+					sample.getTypeRef().type(dummyUser());
 
-			sampleObject.type().useAsSample(sample);
+			if (sampleType != null) {
+				sampleType.useAsSample(sample);
+			}
 		}
 	}
 
@@ -283,7 +300,7 @@ public final class ObjectType implements UserInfo {
 					derivedValue.part(defKind);
 
 			if (derivedPart.getDefs().presentIn(ancestor)) {
-				ancestorValue.part(defKind).inheritBy(derivedPart);
+				ancestorValue.part(defKind).accessBy(derivedPart);
 			}
 		}
 	}

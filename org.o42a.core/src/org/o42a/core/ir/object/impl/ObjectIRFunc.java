@@ -60,10 +60,10 @@ public abstract class ObjectIRFunc {
 
 	public boolean writeFalseValue(CodeDirs dirs, ObjectOp body) {
 
-		final Condition constantCondition =
-				getObjectIR().getValueIR().getConstantCondition();
+		final Condition finalCondition =
+				getObjectIR().getValueIR().condition().getFinal();
 
-		if (!constantCondition.isFalse()) {
+		if (!finalCondition.isFalse()) {
 			return false;
 		}
 

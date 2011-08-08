@@ -47,13 +47,26 @@ public final class ObjectConditionFunc extends ObjectValueIRCondFunc {
 	protected Condition determineConstant() {
 
 		final Condition constantRequirement =
-				getValueIR().getConstantRequirement();
+				getValueIR().requirement().getConstant();
 
 		if (constantRequirement.isKnown() && !constantRequirement.isTrue()) {
 			return constantRequirement;
 		}
 
 		return super.determineConstant();
+	}
+
+	@Override
+	protected Condition determineFinal() {
+
+		final Condition finalRequirement =
+				getValueIR().requirement().getFinal();
+
+		if (finalRequirement.isKnown() && !finalRequirement.isTrue()) {
+			return finalRequirement;
+		}
+
+		return super.determineFinal();
 	}
 
 	@Override
