@@ -46,7 +46,7 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
+	public final ValueType<?> getValueType() {
 		return ValueType.VOID;
 	}
 
@@ -57,7 +57,8 @@ final class CondValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return this.def.getLogical().logicalValue(resolver).toValue();
+		return this.def.getLogical().logicalValue(resolver).toValue(
+				getValueType());
 	}
 
 	@Override

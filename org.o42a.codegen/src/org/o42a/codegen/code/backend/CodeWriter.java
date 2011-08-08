@@ -31,6 +31,8 @@ public interface CodeWriter {
 
 	CodePos tail();
 
+	boolean created();
+
 	boolean exists();
 
 	void done();

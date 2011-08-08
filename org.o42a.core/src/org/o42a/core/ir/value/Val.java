@@ -91,6 +91,10 @@ public final class Val implements Content<ValType> {
 		return this.valueType;
 	}
 
+	public final boolean isVoid() {
+		return getValueType().isVoid();
+	}
+
 	public final int getFlags() {
 		return this.flags;
 	}

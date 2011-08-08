@@ -24,6 +24,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueType;
 
 
 public class ReturnValue extends Action {
@@ -60,7 +61,8 @@ public class ReturnValue extends Action {
 		return new ReturnValue(
 				this,
 				this.resolver,
-				getValue().getCondition().toLogicalValue().toValue());
+				getValue().getCondition().toLogicalValue().toValue(
+						ValueType.VOID));
 	}
 
 	@Override

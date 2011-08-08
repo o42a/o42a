@@ -54,6 +54,11 @@ public final class AllocationCode extends Code {
 	}
 
 	@Override
+	public boolean created() {
+		return this.writer != null && this.writer.created();
+	}
+
+	@Override
 	public final boolean exists() {
 		return this.writer != null && this.writer.exists();
 	}

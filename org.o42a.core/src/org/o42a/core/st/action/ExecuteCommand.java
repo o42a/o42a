@@ -49,9 +49,9 @@ public class ExecuteCommand extends LogicalAction {
 	public Value<?> getValue() {
 		switch (getLogicalValue()) {
 		case TRUE:
-			return Value.unknownValue();
+			return ValueType.VOID.unknownValue();
 		case FALSE:
-			return Value.falseValue();
+			return ValueType.VOID.falseValue();
 		case RUNTIME:
 			return ValueType.VOID.runtimeValue();
 		}

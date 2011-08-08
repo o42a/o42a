@@ -283,8 +283,9 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public ValOp store(Code code, Val value) {
-		assert !value.getCondition() || value.getValueType() == getValueType() :
-			"Can not store " + value + " in " + getValueType() + " value";
+		assert (value.getValueType() == getValueType()
+				|| !value.getCondition() && value.isVoid()) :
+			"Can not store " + value + " in " + this;
 
 		getStoreMode().store(code, this, value);
 
@@ -296,9 +297,15 @@ public final class ValOp extends IROp implements CondOp {
 			return this;
 		}
 
+		final Val constant = value.getConstant();
+
+		if (constant != null) {
+			store(code, constant);
+			return this;
+		}
+
 		assert getValueType() == value.getValueType() :
-			"Can not store " + value.getValueType() + " value "
-			+ " in " + getValueType() + " value";
+			"Can not store " + value + " in " + this;
 
 		getStoreMode().store(code, this, value);
 
@@ -327,7 +334,7 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public final void go(Code code, ValDirs dirs) {
-		dirs.dirs().go(code, this);
+		go(code, dirs.dirs());
 	}
 
 	@Override
@@ -343,6 +350,17 @@ public final class ValOp extends IROp implements CondOp {
 			return;
 		}
 		dirs.go(code, this);
+	}
+
+	@Override
+	public String toString() {
+		if (this.constant != null) {
+			return this.constant.toString();
+		}
+		if (this.valueType == null) {
+			return super.toString();
+		}
+		return "(" + this.valueType + ") " + ptr();
 	}
 
 	private int constAlignment() {

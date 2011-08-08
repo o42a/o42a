@@ -77,10 +77,13 @@ public abstract class Value<T> {
 	public abstract Ptr<ValType.Op> valPtr(Generator generator);
 
 	public final ValOp op(CodeBuilder builder, Code code) {
+		assert isDefinite() :
+			"An attempt to create an indefinite value constant";
 
-		final Ptr<ValType.Op> ptr = valPtr(code.getGenerator());
+		final Generator generator = code.getGenerator();
+		final Ptr<ValType.Op> ptr = valPtr(generator);
 
-		return ptr.op(ptr.getId(), code).op(builder, getValueType());
+		return ptr.op(ptr.getId(), code).op(builder, val(generator));
 	}
 
 	public String valueString() {

@@ -55,8 +55,13 @@ public final class Function<F extends Func<F>> extends Code {
 	}
 
 	@Override
-	public final boolean exists() {
+	public boolean created() {
 		return this.writer != null;
+	}
+
+	@Override
+	public final boolean exists() {
+		return this.writer != null && this.writer.exists();
 	}
 
 	public final DebugEnvOp debugEnv(Code code) {

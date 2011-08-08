@@ -56,7 +56,7 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final CodePos head() {
-		if (exists()) {
+		if (created()) {
 			return writer().head();
 		}
 		return this.head;

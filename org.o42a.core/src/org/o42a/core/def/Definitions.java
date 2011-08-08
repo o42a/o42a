@@ -296,19 +296,19 @@ public class Definitions extends Scoped {
 		final Condition requirement = requirements().condition(resolver);
 
 		if (!requirement.isConstant()) {
-			return requirement.toValue();
+			return requirement.toValue(valueType());
 		}
 		if (requirement.isFalse() && !requirement.isUnknown()) {
-			return requirement.toValue();
+			return requirement.toValue(getValueType());
 		}
 
 		final Condition condition = conditions().condition(resolver);
 
 		if (!condition.isConstant()) {
-			return condition.toValue();
+			return condition.toValue(valueType());
 		}
 		if (condition.isFalse()) {
-			return condition.toValue();
+			return condition.toValue(valueType());
 		}
 
 		final Value<?> claim = claims().value(resolver);
@@ -568,6 +568,10 @@ public class Definitions extends Scoped {
 				|| (propositions().isEmpty() && claims().isEmpty())) :
 				"Non-empty definitions should have a value type";
 		return true;
+	}
+
+	private final ValueType<?> valueType() {
+		return this.valueType != null ? this.valueType : ValueType.VOID;
 	}
 
 	private ValueType<?> compatibleType(ValueDef refinement) {
