@@ -19,14 +19,18 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.value.Value.voidValue;
+
 
 public enum Condition {
 
 	TRUE(LogicalValue.TRUE) {
 
 		@Override
-		public Value<Void> toValue() {
-			return Value.voidValue();
+		public <T> Value<T> toValue(ValueType<T> valueType) {
+			assert valueType.isVoid() :
+				"Can not construct a non-void TRUE";
+			return valueType.cast(voidValue());
 		}
 
 	},
@@ -34,8 +38,8 @@ public enum Condition {
 	RUNTIME(LogicalValue.RUNTIME) {
 
 		@Override
-		public Value<Void> toValue() {
-			return ValueType.VOID.runtimeValue();
+		public <T> Value<T> toValue(ValueType<T> valueType) {
+			return valueType.runtimeValue();
 		}
 
 	},
@@ -43,8 +47,8 @@ public enum Condition {
 	UNKNOWN(LogicalValue.FALSE) {
 
 		@Override
-		public Value<Void> toValue() {
-			return Value.unknownValue();
+		public <T> Value<T> toValue(ValueType<T> valueType) {
+			return valueType.unknownValue();
 		}
 
 	},
@@ -52,8 +56,8 @@ public enum Condition {
 	FALSE(LogicalValue.FALSE) {
 
 		@Override
-		public Value<Void> toValue() {
-			return Value.falseValue();
+		public <T> Value<T> toValue(ValueType<T> valueType) {
+			return valueType.falseValue();
 		}
 
 	};
@@ -88,6 +92,6 @@ public enum Condition {
 		return this.logicalValue;
 	}
 
-	public abstract Value<Void> toValue();
+	public abstract <T> Value<T> toValue(ValueType<T> valueType);
 
 }

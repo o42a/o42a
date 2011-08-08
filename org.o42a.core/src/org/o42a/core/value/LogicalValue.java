@@ -124,8 +124,8 @@ public enum LogicalValue {
 
 	public abstract Logical toLogical(LocationInfo location, Scope scope);
 
-	public final Value<Void> toValue() {
-		return toCondition().toValue();
+	public final <T> Value<T> toValue(ValueType<T> valueType) {
+		return toCondition().toValue(valueType);
 	}
 
 }

@@ -176,8 +176,13 @@ public abstract class LLVMCode implements CodeWriter {
 	}
 
 	@Override
-	public boolean exists() {
+	public boolean created() {
 		return this.firstBlockPtr != 0L;
+	}
+
+	@Override
+	public boolean exists() {
+		return this.blockPtr != 0L;
 	}
 
 	@Override
@@ -546,14 +551,14 @@ public abstract class LLVMCode implements CodeWriter {
 	protected abstract long createFirtsBlock();
 
 	final long getFirstBlockPtr() {
-		if (this.firstBlockPtr != 0L) {
+		if (created()) {
 			return this.firstBlockPtr;
 		}
 		return this.firstBlockPtr = this.blockPtr = createFirtsBlock();
 	}
 
 	final long getBlockPtr() {
-		if (exists()) {
+		if (created()) {
 			return this.blockPtr;
 		}
 		return getFirstBlockPtr();

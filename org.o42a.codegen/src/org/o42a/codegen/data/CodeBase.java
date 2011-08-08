@@ -51,6 +51,8 @@ public abstract class CodeBase {
 
 	private boolean complete;
 
+	public abstract boolean created();
+
 	public abstract boolean exists();
 
 	public final boolean isComplete() {
@@ -61,7 +63,7 @@ public abstract class CodeBase {
 		if (!complete()) {
 			return;
 		}
-		if (exists()) {
+		if (created()) {
 			writer().done();
 		}
 	}
