@@ -33,8 +33,9 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 
 	private final ObjectValue objectValue;
 	private final DefKind defKind;
-	private Usable usable;
-	private Usable ancestorDefsUpdates;
+	private Usable usedBy;
+	private Usable inheriedBy;
+	private Usable ancestorDefsUpdatedBy;
 
 	ObjectValuePart(ObjectValue objectValue, DefKind defKind) {
 		this.objectValue = objectValue;
@@ -60,10 +61,10 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 
 	@Override
 	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		if (this.usable == null) {
+		if (this.usedBy == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.usable.getUseBy(useCase);
+		return this.usedBy.getUseBy(useCase);
 	}
 
 	@Override
@@ -71,33 +72,43 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return getUseBy(useCase).isUsed();
 	}
 
-	public final UseFlag ancestorDefsUpdatedBy(UseCaseInfo useCase) {
-		if (getObject().getConstructionMode().isRuntime()) {
-			return useCase.toUseCase().usedFlag();
+	public final UseInfo inherited() {
+		if (this.inheriedBy == null) {
+			return NEVER_USED;
 		}
-		if (this.ancestorDefsUpdates == null) {
-			return useCase.toUseCase().unusedFlag();
-		}
-		return this.ancestorDefsUpdates.getUseBy(useCase);
+		return this.inheriedBy;
 	}
 
-	public final boolean isAncestorDefsUpdatedBy(UseCaseInfo useCase) {
-		return ancestorDefsUpdatedBy(useCase).isUsed();
+	public final UseInfo ancestorDefsUpdates() {
+		if (getObject().getConstructionMode().isRuntime()) {
+			return ALWAYS_USED;
+		}
+		if (this.ancestorDefsUpdatedBy == null) {
+			return NEVER_USED;
+		}
+		return this.ancestorDefsUpdatedBy;
 	}
 
 	@Override
 	public final User toUser() {
-		return usable().toUser();
+		return uses().toUser();
+	}
+
+
+	public final void inheritBy(UserInfo user) {
+		if (!user.toUser().isDummy()) {
+			inheritedBy().useBy(user);
+		}
 	}
 
 	public final void updateAncestorDefsBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			ancestorDefsUpdates().useBy(user);
+			ancestorDefsUpdatedBy().useBy(user);
 		}
 	}
 
 	public final Resolver resolver() {
-		return getObject().getScope().newResolver(usable());
+		return getObject().getScope().newResolver(uses());
 	}
 
 	@Override
@@ -108,30 +119,45 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return this.defKind.displayName() + "Of[" + getObject() + ']';
 	}
 
-	final Usable usable() {
-		if (this.usable != null) {
-			return this.usable;
+	final Usable uses() {
+		if (this.usedBy != null) {
+			return this.usedBy;
 		}
 
-		this.usable = simpleUsable(this);
-		getObjectValue().usable().useBy(this.usable);
-		this.usable.useBy(getObjectValue().explicitUsable());
+		this.usedBy = simpleUsable(this);
+		getObjectValue().usable().useBy(this.usedBy);
+		this.usedBy.useBy(getObjectValue().explicitUsable());
 
-		return this.usable;
+		return this.usedBy;
 	}
 
-	final Usable ancestorDefsUpdates() {
-		if (this.ancestorDefsUpdates != null) {
-			return this.ancestorDefsUpdates;
+	final Usable inheritedBy() {
+		if (this.inheriedBy != null) {
+			return this.inheriedBy;
 		}
-		return this.ancestorDefsUpdates = simpleUsable(
+
+		this.inheriedBy = simpleUsable(
+				getDefKind().displayName() + "InheritantsOf",
+				getObject());
+		uses().useBy(this.inheriedBy);
+
+		return this.usedBy;
+	}
+
+	final Usable ancestorDefsUpdatedBy() {
+		if (this.ancestorDefsUpdatedBy != null) {
+			return this.ancestorDefsUpdatedBy;
+		}
+		return this.ancestorDefsUpdatedBy = simpleUsable(
 				"Ancestor " + getDefKind().displayName() + "sUpdatesOf",
 				getObject());
 	}
 
 	final void wrapBy(ObjectValuePart<?, ?> wrapPart) {
-		usable().useBy(wrapPart.usable());
-		ancestorDefsUpdates().useBy(wrapPart.ancestorDefsUpdates());
+		uses().useBy(wrapPart.uses());
+		inheritedBy().useBy(wrapPart.inheritedBy());
+		ancestorDefsUpdatedBy().useBy(
+				wrapPart.ancestorDefsUpdatedBy());
 	}
 
 }

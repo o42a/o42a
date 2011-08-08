@@ -171,7 +171,7 @@ public abstract class ObjectValueIRValFunc
 			if (ancestor == null) {
 				return;
 			}
-			if (part().isAncestorDefsUpdatedBy(getGenerator())) {
+			if (part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
 				return;
 			}
 
@@ -239,7 +239,7 @@ public abstract class ObjectValueIRValFunc
 		if (!constant.isDefinite()) {
 			return constant;
 		}
-		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
 			return constant;
 		}
 
@@ -355,7 +355,7 @@ public abstract class ObjectValueIRValFunc
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
 
-		if (!part().isAncestorDefsUpdatedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();
 

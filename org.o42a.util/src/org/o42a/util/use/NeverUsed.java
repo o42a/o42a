@@ -20,14 +20,21 @@
 package org.o42a.util.use;
 
 
-public interface UseInfo {
+final class NeverUsed implements UseInfo {
 
-	UseInfo ALWAYS_USED = new AlwaysUsed();
+	@Override
+	public UseFlag getUseBy(UseCaseInfo useCase) {
+		return useCase.toUseCase().unusedFlag();
+	}
 
-	UseInfo NEVER_USED = new NeverUsed();
+	@Override
+	public boolean isUsedBy(UseCaseInfo useCase) {
+		return false;
+	}
 
-	UseFlag getUseBy(UseCaseInfo useCase);
-
-	boolean isUsedBy(UseCaseInfo useCase);
+	@Override
+	public String toString() {
+		return "NeverUsed";
+	}
 
 }

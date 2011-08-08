@@ -62,10 +62,20 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		final ObjectType ascendantType = ascendant.type();
 
 		for (D def : get()) {
+			if (!ascendantType.derivedFrom(def.getSource().type())) {
+				return true;
+			}
+		}
 
-			final Obj source = def.getSource();
+		return false;
+	}
 
-			if (!ascendantType.derivedFrom(source.type())) {
+	public final boolean presentIn(Obj ascendant) {
+
+		final ObjectType ascendantType = ascendant.type();
+
+		for (D def : get()) {
+			if (ascendantType.derivedFrom(def.getSource().type())) {
 				return true;
 			}
 		}
