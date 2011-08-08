@@ -25,7 +25,9 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.ValuePart;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
@@ -76,7 +78,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	}
 
 	@Override
-	protected void reuse(ObjectTypeIR typeIR) {
+	protected void reuse() {
 
 		final ObjectValueIR valueIR = getValueIR();
 
@@ -99,7 +101,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 			reused = valueIR.claim().get();
 		}
 
-		reuse(typeIR, reused);
+		reuse(reused);
 	}
 
 	@Override
@@ -129,7 +131,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 			return getValueIR().writeProposition(dirs, host, null);
 		}
-		if (claim.isConstant()) {
+		if (!unknownClaim.exists()) {
 			claimDirs.done();
 			return claim;
 		}

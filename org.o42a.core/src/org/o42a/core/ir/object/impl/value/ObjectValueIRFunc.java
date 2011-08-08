@@ -22,6 +22,7 @@ package org.o42a.core.ir.object.impl.value;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
@@ -35,6 +36,7 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 
 	private final ObjectValueIR valueIR;
 	private final CodeId id;
+	private FuncPtr<F> funcPtr;
 	private FuncRec<F> func;
 	private boolean reused;
 
@@ -58,7 +60,15 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 	}
 
 	public final FuncPtr<F> get() {
-		return this.func.getValue();
+		if (this.funcPtr == null) {
+			create();
+		}
+		return this.funcPtr;
+	}
+
+	public void allocate(ObjectTypeIR typeIR) {
+		this.func = func(typeIR.getObjectData());
+		this.func.setValue(get());
 	}
 
 	public final FuncPtr<F> get(ObjOp host) {
@@ -81,6 +91,8 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 
 		return size;
 	}
+
+	protected abstract void create();
 
 	private int addSource(SourceInfo[] destination, int at, SourceInfo source) {
 
@@ -126,18 +138,13 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 
 	protected abstract String suffix();
 
-	protected final void set(ObjectTypeIR typeIR, FuncPtr<F> ptr) {
-		if (ptr.getFunction() == null) {
-			reuse(typeIR, ptr);
-			return;
-		}
-		this.func = func(typeIR.getObjectData());
-		this.func.setValue(ptr);
+	protected final void set(Function<F> function) {
+		this.funcPtr = function.getPointer();
+		this.reused = false;
 	}
 
-	protected final void reuse(ObjectTypeIR typeIR, FuncPtr<F> ptr) {
-		this.func = func(typeIR.getObjectData());
-		this.func.setValue(ptr);
+	protected final void reuse(FuncPtr<F> ptr) {
+		this.funcPtr = ptr;
 		this.reused = true;
 	}
 

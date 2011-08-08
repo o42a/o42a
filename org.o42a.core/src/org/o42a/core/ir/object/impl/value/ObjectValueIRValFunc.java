@@ -78,35 +78,6 @@ public abstract class ObjectValueIRValFunc
 		return this.constant = determineConstant();
 	}
 
-	public void create(ObjectTypeIR typeIR) {
-		reuse(typeIR);
-		if (isReused()) {
-			return;
-		}
-
-		final Value<?> constant = getConstant();
-
-		if (constant.isDefinite()) {
-			if (constant.isFalse()) {
-				if (constant.isUnknown()) {
-					set(typeIR, unknownValFunc());
-				} else {
-					set(typeIR, falseValFunc());
-				}
-				return;
-			}
-			if (getValueType().isVoid()) {
-				set(typeIR, voidValFunc());
-				return;
-			}
-		}
-
-		final Function<ObjectValFunc> function =
-				getGenerator().newFunction().create(getId(), OBJECT_VAL);
-
-		set(typeIR, function.getPointer());
-	}
-
 	public ValOp call(ValDirs dirs, ObjOp host, ObjectOp body) {
 
 		final ValDirs subDirs;
@@ -149,7 +120,34 @@ public abstract class ObjectValueIRValFunc
 		return result;
 	}
 
-	protected void reuse(ObjectTypeIR typeIR) {
+	@Override
+	protected void create() {
+		reuse();
+		if (isReused()) {
+			return;
+		}
+
+		final Value<?> constant = getConstant();
+
+		if (constant.isDefinite()) {
+			if (constant.isFalse()) {
+				if (constant.isUnknown()) {
+					reuse(unknownValFunc());
+				} else {
+					reuse(falseValFunc());
+				}
+				return;
+			}
+			if (getValueType().isVoid()) {
+				reuse(voidValFunc());
+				return;
+			}
+		}
+
+		set(getGenerator().newFunction().create(getId(), OBJECT_VAL));
+	}
+
+	protected void reuse() {
 
 		final ObjectType type = getObject().type();
 		final Sample[] samples = type.getSamples();
@@ -186,7 +184,7 @@ public abstract class ObjectValueIRValFunc
 		final ObjectValueIR reuseFromIR =
 				reuseFrom.ir(getGenerator()).allocate().getValueIR();
 
-		reuse(typeIR, reuseFromIR.value(isClaim()).get());
+		reuse(reuseFromIR.value(isClaim()).get());
 	}
 
 	public void build() {
