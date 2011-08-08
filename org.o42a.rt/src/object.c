@@ -976,6 +976,7 @@ o42a_cond_t o42a_obj_cond_unknown(O42A_PARAMS o42a_obj_t *const object) {
 	O42A_RETURN O42A_UNKNOWN;
 }
 
+
 void o42a_obj_val_false(
 		O42A_PARAMS
 		o42a_val_t *const result,
@@ -1001,6 +1002,17 @@ void o42a_obj_val_unknown(
 	O42A_ENTER(return);
 	O42A_RETURN;
 }
+
+void o42a_obj_val_stub(
+		O42A_PARAMS
+		o42a_val_t *const result,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	o42a_error_print(O42A_ARGS "Object value stub invoked");
+	result->flags = O42A_FALSE;
+	O42A_RETURN;
+}
+
 
 o42a_obj_body_t *o42a_obj_ref_null(O42A_PARAMS o42a_obj_t *scope) {
 	O42A_ENTER(return NULL);

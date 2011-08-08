@@ -38,7 +38,7 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 	private final CodeId id;
 	private FuncPtr<F> funcPtr;
 	private FuncRec<F> func;
-	private boolean reused;
+	private byte reused;
 
 	ObjectValueIRFunc(ObjectValueIR valueIR) {
 		super(valueIR.getObjectIR());
@@ -56,19 +56,40 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 	}
 
 	public final boolean isReused() {
-		return this.reused;
+		return this.reused > 0;
+	}
+
+	public final boolean isStub() {
+		return this.reused == 2;
 	}
 
 	public final FuncPtr<F> get() {
+
+		final FuncPtr<F> ptr = getNotStub();
+
+		assert ptr != null :
+			"Attempt to call a stub function: " + this;
+
+		return this.funcPtr;
+	}
+
+	public final FuncPtr<F> getNotStub() {
 		if (this.funcPtr == null) {
 			create();
 		}
-		return this.funcPtr;
+
+		assert this.funcPtr != null :
+			"Can't call " + this;
+
+		return isStub() ? null : this.funcPtr;
 	}
 
 	public void allocate(ObjectTypeIR typeIR) {
 		this.func = func(typeIR.getObjectData());
-		this.func.setValue(get());
+		if (this.funcPtr == null) {
+			create();
+		}
+		this.func.setValue(this.funcPtr);
 	}
 
 	public final FuncPtr<F> get(ObjOp host) {
@@ -140,12 +161,17 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 
 	protected final void set(Function<F> function) {
 		this.funcPtr = function.getPointer();
-		this.reused = false;
+		this.reused = -1;
 	}
 
 	protected final void reuse(FuncPtr<F> ptr) {
 		this.funcPtr = ptr;
-		this.reused = true;
+		this.reused = 1;
+	}
+
+	protected final void stub(FuncPtr<F> ptr) {
+		this.funcPtr = ptr;
+		this.reused = 2;
 	}
 
 	protected abstract FuncRec<F> func(ObjectIRData data);

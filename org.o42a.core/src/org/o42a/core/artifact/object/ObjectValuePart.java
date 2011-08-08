@@ -34,7 +34,7 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 	private final ObjectValue objectValue;
 	private final DefKind defKind;
 	private Usable usedBy;
-	private Usable inheriedBy;
+	private Usable accessedBy;
 	private Usable ancestorDefsUpdatedBy;
 
 	ObjectValuePart(ObjectValue objectValue, DefKind defKind) {
@@ -72,11 +72,11 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return getUseBy(useCase).isUsed();
 	}
 
-	public final UseInfo inherited() {
-		if (this.inheriedBy == null) {
+	public final UseInfo accessed() {
+		if (this.accessedBy == null) {
 			return NEVER_USED;
 		}
-		return this.inheriedBy;
+		return this.accessedBy;
 	}
 
 	public final UseInfo ancestorDefsUpdates() {
@@ -94,10 +94,9 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return uses().toUser();
 	}
 
-
-	public final void inheritBy(UserInfo user) {
+	public final void accessBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			inheritedBy().useBy(user);
+			accessedBy().useBy(user);
 		}
 	}
 
@@ -131,15 +130,15 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return this.usedBy;
 	}
 
-	final Usable inheritedBy() {
-		if (this.inheriedBy != null) {
-			return this.inheriedBy;
+	final Usable accessedBy() {
+		if (this.accessedBy != null) {
+			return this.accessedBy;
 		}
 
-		this.inheriedBy = simpleUsable(
-				getDefKind().displayName() + "InheritantsOf",
+		this.accessedBy = simpleUsable(
+				getDefKind().displayName() + "AccessOf",
 				getObject());
-		uses().useBy(this.inheriedBy);
+		uses().useBy(this.accessedBy);
 
 		return this.usedBy;
 	}
@@ -155,7 +154,7 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 
 	final void wrapBy(ObjectValuePart<?, ?> wrapPart) {
 		uses().useBy(wrapPart.uses());
-		inheritedBy().useBy(wrapPart.inheritedBy());
+		accessedBy().useBy(wrapPart.accessedBy());
 		ancestorDefsUpdatedBy().useBy(
 				wrapPart.ancestorDefsUpdatedBy());
 	}

@@ -62,19 +62,37 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	protected Value<?> determineConstant() {
 
 		final Condition constantCondition =
-				getValueIR().getConstantCondition();
+				getValueIR().condition().getConstant();
 
 		if (!constantCondition.isConstant()) {
 			return getValueType().runtimeValue();
 		}
 
-		final Value<?> claim = getValueIR().getConstantClaim();
+		final Value<?> claim = getValueIR().claim().getConstant();
 
 		if (!claim.isUnknown()) {
 			return claim;
 		}
 
-		return getValueIR().getConstantProposition();
+		return getValueIR().proposition().getConstant();
+	}
+
+	@Override
+	protected Value<?> determineFinal() {
+		if (!getValueIR().requirement().getFinal().isConstant()
+				|| !getValueIR().condition().getFinal().isConstant()
+				|| !getValueIR().claim().getFinal().isDefinite()
+				|| !getValueIR().proposition().getFinal().isDefinite()) {
+			return getValueType().runtimeValue();
+		}
+
+		return getObject().value().getDefinitions().value(
+				getObject().getScope().dummyResolver());
+	}
+
+	@Override
+	protected boolean canStub() {
+		return false;
 	}
 
 	@Override
@@ -82,23 +100,30 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 		final ObjectValueIR valueIR = getValueIR();
 
-		if (!valueIR.getConstantCondition().isTrue()) {
+		if (!valueIR.condition().getFinal().isTrue()) {
 			return;
 		}
 
 		final FuncPtr<ObjectValFunc> reused;
-		final Value<?> claim = valueIR.getConstantClaim();
+		final ObjectClaimFunc claim = valueIR.claim();
+		final Value<?> finalClaim = claim.getFinal();
 
-		if (claim.isDefinite()) {
-			if (claim.getCondition() == Condition.FALSE) {
+		if (finalClaim.isDefinite()) {
+			if (finalClaim.getCondition() == Condition.FALSE) {
 				reused = falseValFunc();
 			} else {
-				reused = valueIR.proposition().get();
+				reused = valueIR.proposition().getNotStub();
+				if (reused == null) {
+					return;
+				}
 			}
-		} else if (!valueIR.getConstantProposition().isUnknown()) {
+		} else if (!valueIR.proposition().getFinal().isUnknown()) {
 			return;
 		} else {
-			reused = valueIR.claim().get();
+			reused = claim.getNotStub();
+			if (reused == null) {
+				return;
+			}
 		}
 
 		reuse(reused);

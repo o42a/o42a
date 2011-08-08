@@ -44,6 +44,7 @@ public abstract class ObjectValueIRValFunc
 		extends ObjectValueIRFunc<ObjectValFunc> {
 
 	private Value<?> constant;
+	private Value<?> finalValue;
 
 	public ObjectValueIRValFunc(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -69,13 +70,34 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		final Condition constantCondition =
-				getValueIR().getConstantCondition();
+				getValueIR().condition().getConstant();
 
 		if (constantCondition.isFalse()) {
 			return this.constant = getValueType().falseValue();
 		}
 
 		return this.constant = determineConstant();
+	}
+
+	public final Value<?> getFinal() {
+		if (this.finalValue != null) {
+			return this.finalValue;
+		}
+
+		final Value<?> constant = getConstant();
+
+		if (constant.isDefinite()) {
+			return this.finalValue = constant;
+		}
+
+		final Condition finalCondition =
+				getValueIR().condition().getFinal();
+
+		if (finalCondition.isFalse()) {
+			return this.finalValue = getValueType().falseValue();
+		}
+
+		return this.finalValue = determineFinal();
 	}
 
 	public ValOp call(ValDirs dirs, ObjOp host, ObjectOp body) {
@@ -93,14 +115,12 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		final Code code = subDirs.code();
-		final Value<?> constant = getConstant();
+		final Value<?> finalValue = getFinal();
 
-		if (constant.isDefinite()) {
-			code.debug(
-					"Constant " + suffix()
-					+ " = " + constant.valueString());
+		if (finalValue.isDefinite()) {
+			code.debug(suffix() + " = " + finalValue.valueString());
 
-			final ValOp result = constant.op(subDirs.getBuilder(), code);
+			final ValOp result = finalValue.op(subDirs.getBuilder(), code);
 
 			result.go(code, subDirs);
 			if (subDirs.isDebug()) {
@@ -120,74 +140,7 @@ public abstract class ObjectValueIRValFunc
 		return result;
 	}
 
-	@Override
-	protected void create() {
-		reuse();
-		if (isReused()) {
-			return;
-		}
-
-		final Value<?> constant = getConstant();
-
-		if (constant.isDefinite()) {
-			if (constant.isFalse()) {
-				if (constant.isUnknown()) {
-					reuse(unknownValFunc());
-				} else {
-					reuse(falseValFunc());
-				}
-				return;
-			}
-			if (getValueType().isVoid()) {
-				reuse(voidValFunc());
-				return;
-			}
-		}
-
-		set(getGenerator().newFunction().create(getId(), OBJECT_VAL));
-	}
-
-	protected void reuse() {
-
-		final ObjectType type = getObject().type();
-		final Sample[] samples = type.getSamples();
-
-		if (samples.length > 1) {
-			return;
-		}
-
-		final Obj reuseFrom;
-
-		if (samples.length == 1) {
-
-			final ObjectType sampleType =
-					samples[0].getTypeRef().type(dummyUser());
-
-			reuseFrom = sampleType.getLastDefinition();
-		} else {
-
-			final TypeRef ancestor = type.getAncestor();
-
-			if (ancestor == null) {
-				return;
-			}
-			if (part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
-				return;
-			}
-
-			reuseFrom = ancestor.type(dummyUser()).getLastDefinition();
-		}
-		if (defs().updatedSince(reuseFrom)) {
-			return;
-		}
-
-		final ObjectValueIR reuseFromIR =
-				reuseFrom.ir(getGenerator()).allocate().getValueIR();
-
-		reuse(reuseFromIR.value(isClaim()).get());
-	}
-
-	public void build() {
+	public final void build() {
 		if (isReused()) {
 			return;
 		}
@@ -246,18 +199,105 @@ public abstract class ObjectValueIRValFunc
 		return getValueType().runtimeValue();
 	}
 
+	protected Value<?> determineFinal() {
+		if (!canStub()) {
+			return getValueType().runtimeValue();
+		}
+		return defs().value(getObject().getScope().dummyResolver());
+	}
+
+	@Override
+	protected void create() {
+
+		final Value<?> finalValue = getFinal();
+
+		if (finalValue.isDefinite()) {
+			if (finalValue.isFalse()) {
+				if (finalValue.isUnknown()) {
+					reuse(unknownValFunc());
+				} else {
+					reuse(falseValFunc());
+				}
+				return;
+			}
+			if (getValueType().isVoid()) {
+				reuse(voidValFunc());
+				return;
+			}
+			if (canStub()) {
+				stub(stubFunc());
+				return;
+			}
+		}
+
+		reuse();
+		if (isReused()) {
+			return;
+		}
+
+		set(getGenerator().newFunction().create(getId(), OBJECT_VAL));
+	}
+
+	protected boolean canStub() {
+		return !part().accessed().isUsedBy(getGenerator());
+	}
+
+	protected void reuse() {
+
+		final ObjectType type = getObject().type();
+		final Sample[] samples = type.getSamples();
+
+		if (samples.length > 1) {
+			return;
+		}
+
+		final Obj reuseFrom;
+
+		if (samples.length == 1) {
+
+			final ObjectType sampleType =
+					samples[0].getTypeRef().type(dummyUser());
+
+			reuseFrom = sampleType.getLastDefinition();
+		} else {
+
+			final TypeRef ancestor = type.getAncestor();
+
+			if (ancestor == null) {
+				return;
+			}
+			if (part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
+				return;
+			}
+
+			reuseFrom = ancestor.type(dummyUser()).getLastDefinition();
+		}
+		if (defs().updatedSince(reuseFrom)) {
+			return;
+		}
+
+		final ObjectValueIR reuseFromIR =
+				reuseFrom.ir(getGenerator()).allocate().getValueIR();
+		final FuncPtr<ObjectValFunc> reused =
+				reuseFromIR.value(isClaim()).getNotStub();
+
+		if (reused != null) {
+			reuse(reused);
+		}
+	}
+
 	protected ValOp build(ValDirs dirs, ObjOp host) {
 
-		final Value<?> constant = getConstant();
+		final Value<?> finalValue = getFinal();
 
-		if (constant.isDefinite()) {
+		if (finalValue.isDefinite()) {
 
 			final Code code = dirs.code();
-			final ValOp result = constant.op(dirs.getBuilder(), code);
+			final ValOp result = finalValue.op(dirs.getBuilder(), code);
 
 			code.debug(
 					"Constant " + suffix()
-					+ " = " + constant.valueString());
+					+ " = " + finalValue.valueString());
 			result.go(code, dirs.dirs());
 
 			return result;
@@ -298,6 +338,12 @@ public abstract class ObjectValueIRValFunc
 	final FuncPtr<ObjectValFunc> unknownValFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_val_unknown",
+				OBJECT_VAL);
+	}
+
+	final FuncPtr<ObjectValFunc> stubFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_val_stub",
 				OBJECT_VAL);
 	}
 
