@@ -21,10 +21,12 @@ package org.o42a.core.artifact.link.impl;
 
 import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
+import org.o42a.util.use.User;
 
 
 public final class RuntimeLinkTarget extends Obj {
@@ -63,6 +65,30 @@ public final class RuntimeLinkTarget extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
+	}
+
+	@Override
+	protected void fullyResolve() {
+		super.fullyResolve();
+
+		final ObjectType targetType =
+				this.link.getTypeRef().type(dummyUser());
+
+		if (targetType != null) {
+			targetType.wrapBy(type());
+		}
+	}
+
+	@Override
+	protected void fullyResolveDefinitions() {
+		super.fullyResolveDefinitions();
+
+		final Obj targetObject =
+				this.link.getTypeRef().typeObject(User.dummyUser());
+
+		if (targetObject != null) {
+			targetObject.value().wrapBy(value());
+		}
 	}
 
 }
