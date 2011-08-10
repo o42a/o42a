@@ -22,14 +22,16 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
+import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Container;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -72,10 +74,10 @@ final class ClauseDefinition extends Obj {
 	protected Ascendants buildAscendants() {
 
 		Ascendants ascendants = new Ascendants(this);
-		final Ref overridden = toClause().getBuilder().getOverridden();
+		final MemberKey overridden = toClause().getOverridden();
 
 		if (overridden != null) {
-			ascendants = ascendants.setAncestor(overridden.toTypeRef());
+			ascendants = overrideMember(ascendants);
 		}
 		if (!toClause().isSubstitution()) {
 			return toClause().getAscendants().updateAscendants(ascendants);
@@ -123,6 +125,28 @@ final class ClauseDefinition extends Obj {
 		if (reproduction != null) {
 			statements.statement(reproduction);
 		}
+	}
+
+	private Ascendants overrideMember(Ascendants in) {
+
+		final MemberKey memberKey = toClause().getOverridden();
+		Ascendants ascendants = in;
+		final Obj container = toMember().getContainer().toObject();
+		final Member overridden = container.member(memberKey);
+
+		if (overridden == null) {
+			return ascendants;
+		}
+
+		final Container substance = overridden.substance(dummyUser());
+
+		if (substance.toObject() == null) {
+			return ascendants.setAncestor(
+					substance.toArtifact().getTypeRef()
+					.upgradeScope(getScope().getEnclosingScope()));
+		}
+
+		return ascendants.addMemberOverride(overridden);
 	}
 
 }

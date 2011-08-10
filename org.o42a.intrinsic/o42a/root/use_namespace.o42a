@@ -20,13 +20,13 @@
 Use namespace :=> directive
 ===========================
 
-Module := string(False)
-Object := string(False)
+Module := `string(False)
+Object := `string(False)
 
-<*'Module id' | $object$> Module = *
-<*[Module id] | $object$> Module = *
+<*'Module id' | $object$> Module = ()
+<*[Module id] | $object$> Module = ()
 
 <Object> (
-  <*'Object path'> Object = *
-  <*[Object path]> Object = *
+  <*'Object path'> Object = ()
+  <*[Object path]> Object = ()
 )

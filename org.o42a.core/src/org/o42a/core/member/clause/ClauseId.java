@@ -260,16 +260,16 @@ public enum ClauseId {
 
 	public static ClauseId byAdapterType(StaticTypeRef adapterType) {
 
-		final Obj type =
-			adapterTypeScope(adapterType.typeObject(dummyUser())).toObject();
+		final Obj type = adapterTypeScope(
+				adapterType.typeObject(dummyUser())).toObject();
 
 		for (ClauseId clauseId : values()) {
-			if (clauseId.hasAdapterType()) {
+			if (!clauseId.hasAdapterType()) {
 				continue;
 			}
 
 			final AbsolutePath adapterPath =
-				clauseId.adapterPath(adapterType.getContext());
+					clauseId.adapterPath(adapterType.getContext());
 
 			if (type == adapterPath.resolveArtifact(
 					adapterType.getContext()).toObject()) {

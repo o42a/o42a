@@ -21,6 +21,6 @@ Rt-string :=> $$string
 ======================
 
 <*By string> Parser: string(
-  <*''> Input = $$string
-  <*[]> Input = $$string
+  <*''> Input = ()
+  <*[]> Input = ()
 )

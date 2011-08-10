@@ -26,9 +26,9 @@ Text :=< `""
   <*> (
     <*Content> {
       <*Invoker> Print to console (
-        <*[] | content> Text = string.
-        <*'' | content> Text = string.
-      ).
+        <*[] | content> Text = ()
+        <*'' | content> Text = ()
+      )
       <NL | content> Print to console(Text = "\n")
     }
     = Void

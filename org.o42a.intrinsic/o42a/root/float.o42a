@@ -20,7 +20,7 @@
 Float :=> &number
 =================
 
-<*Minus> Floats: minus(<@Operators: minus> Operand = float)
+<*Minus> Floats: minus(<@Operators: minus> Operand = ())
 
 <*Addition> Floats: add(
   <@Operators: add | summand> Left operand = float
@@ -30,38 +30,38 @@ Float :=> &number
 )
 
 <*Subtraction> Floats: subtract(
-  <@Operators: subtract | subtrahend> Left operand = float
+  <@Operators: subtract | subtrahend> Left operand = ()
   <Subtrahend> (
-    <@Operators: operand> Right operand = float
+    <@Operators: operand> Right operand = ()
   )
 )
 
 <*Multiplication> Floats: multiply(
-  <@Operators: multiply | multiplier> Left operand = float
+  <@Operators: multiply | multiplier> Left operand = ()
   <Multiplier> (
-    <@Operators: operand> Right operand = float
+    <@Operators: operand> Right operand = ()
   )
 )
 
 <*Division> Floats: divide(
-  <@Operators: divide | divisor> Left operand = float
+  <@Operators: divide | divisor> Left operand = ()
   <Divisor> (
-    <@Operators: operand> Right operand = float
+    <@Operators: operand> Right operand = ()
   )
 )
 
 <*Equality> Floats: equals(
-  <@Operators: equals | equals to> What = float
+  <@Operators: equals | equals to> What = ()
   <Equals to> (
-    <@Operators: operand> To = float
+    <@Operators: operand> To = ()
   )
 )
 
 <*Comparison> Floats: compare(
-  <@Operators: compare | compare with> What = float
+  <@Operators: compare | compare with> What = ()
   <Compare with> (
-    <@Operators: operand> With = float
+    <@Operators: operand> With = ()
   )
 )
 
-<*By string> Floats: by string(<*''> Input = string)
+<*By string> Floats: by string(<*''> Input = ())

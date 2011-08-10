@@ -20,48 +20,48 @@
 Integer :=> &number
 ===================
 
-<*Minus> Integers: minus(<@Operators: minus> Operand = integer)
+<*Minus> Integers: minus(<@Operators: minus> Operand = ())
 
 <*Addition> Integers: add(
-  <@Operators: add | summand> Left operand = integer
+  <@Operators: add | summand> Left operand = ()
   <Summand> (
-    <@Operators: operand> Right operand = integer
+    <@Operators: operand> Right operand = ()
   )
 )
 
 <*Subtraction> Integers: subtract(
-  <@Operators: subtract | subtrahend> Left operand = integer
+  <@Operators: subtract | subtrahend> Left operand = ()
   <Subtrahend> (
-    <@Operators: operand> Right operand = integer
+    <@Operators: operand> Right operand = ()
   )
 )
 
 <*Multiplication> Integers: multiply(
-  <@Operators: multiply | multiplier> Left operand = integer
+  <@Operators: multiply | multiplier> Left operand = ()
   <Multiplier> (
-    <@Operators: operand> Right operand = integer
+    <@Operators: operand> Right operand = ()
   )
 )
 
 <*Division> Integers: divide(
-  <@Operators: divide | divisor> Left operand = integer
+  <@Operators: divide | divisor> Left operand = ()
   <Divisor> (
-    <@Operators: operand> Right operand = integer
+    <@Operators: operand> Right operand = ()
   )
 )
 
 <*Equality> Integers: equals(
-  <@Operators: equals | equals to> What = integer
+  <@Operators: equals | equals to> What = ()
   <Equals to> (
-    <@Operators: operand> To = integer
+    <@Operators: operand> To = ()
   )
 )
 
 <*Comparison> Integers: compare(
-  <@Operators: compare | compare with> What = integer
+  <@Operators: compare | compare with> What = ()
   <Compare with> (
-    <@Operators: operand> With = integer
+    <@Operators: operand> With = ()
   )
 )
 
-<*By string> Integers: by string(<*''> Input = string)
+<*By string> Integers: by string(<*''> Input = ())

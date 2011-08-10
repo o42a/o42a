@@ -71,7 +71,7 @@ Assert :=> void(
 
   <*[] | error message> Condition = void
   <*Error message> (
-    <*''> Message = string
-    <*[]> Message = string
+    <*''> Message = ()
+    <*[]> Message = ()
   )
 )
