@@ -37,7 +37,7 @@ public final class SentencePrecondition {
 	private final Scope scope;
 
 	private final HashMap<DefinitionKey, DefinitionTarget> unconditionalValues =
-		new HashMap<DefinitionKey, DefinitionTarget>();
+			new HashMap<DefinitionKey, DefinitionTarget>();
 
 	private final SentenceLogicals requirements;
 	private final SentenceLogicals conditions;
@@ -115,7 +115,7 @@ public final class SentencePrecondition {
 			DefinitionTargets targets) {
 
 		final Logical logical =
-			sentence.getFinalEnv().fullLogical(getScope());
+				sentence.getFinalEnv().fullLogical(getScope());
 
 		if (!targets.haveValue()) {
 			return;
@@ -156,7 +156,7 @@ public final class SentencePrecondition {
 			DefinitionKey definitionKey) {
 
 		final DefinitionTarget unconditionalValue =
-			this.unconditionalValues.get(definitionKey);
+				this.unconditionalValues.get(definitionKey);
 
 		if (sentence.getPrerequisite() == null) {
 			if (unconditionalValue == null) {

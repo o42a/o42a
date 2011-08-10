@@ -47,7 +47,7 @@ public class AlternativeNode extends AbstractNode {
 
 	public boolean isOpposite() {
 		return this.separator != null
-		&& this.separator.getType() == Separator.OPPOSITE;
+				&& this.separator.getType() == Separator.OPPOSITE;
 	}
 
 	public SignNode<Separator> getSeparator() {

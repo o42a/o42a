@@ -89,7 +89,7 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 		context.acceptComments(false, sign);
 
 		final ExpressionNode parameter =
-			context.parse(this.grammar.simpleExpression());
+				context.parse(this.grammar.simpleExpression());
 
 		if (parameter == null) {
 			context.getLogger().missingOperand(

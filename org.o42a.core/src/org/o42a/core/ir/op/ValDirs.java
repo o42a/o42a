@@ -256,10 +256,10 @@ public abstract class ValDirs {
 			this.allocation = this.enclosing.allocate("value");
 
 			return this.value =
-				this.allocation.allocate(id("value"), ValType.VAL_TYPE)
-				.op(getBuilder(), getValueType())
-				.storeIndefinite(this.allocation.code())
-				.setStoreMode(this.storeMode);
+					this.allocation.allocate(id("value"), ValType.VAL_TYPE)
+					.op(getBuilder(), getValueType())
+					.storeIndefinite(this.allocation.code())
+					.setStoreMode(this.storeMode);
 		}
 
 		@Override

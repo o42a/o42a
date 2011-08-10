@@ -138,7 +138,7 @@ public enum Interpreter {
 			itemType = null;
 		} else {
 			itemType =
-				itemTypeNode.accept(typeVisitor(), declaration.distribute());
+					itemTypeNode.accept(typeVisitor(), declaration.distribute());
 		}
 
 		return arrayInitializer(
@@ -172,7 +172,7 @@ public enum Interpreter {
 			SentenceType type) {
 
 		final Location location =
-			new Location(statementVisitor.getContext(), node);
+				new Location(statementVisitor.getContext(), node);
 		final Sentence<?> sentence;
 
 		switch (type) {

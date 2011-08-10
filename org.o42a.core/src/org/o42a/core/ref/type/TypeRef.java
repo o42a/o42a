@@ -57,7 +57,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return this.ancestor;
 		}
 		return this.ancestor =
-			getUntachedRef().ancestor(this).rescope(getRescoper());
+				getUntachedRef().ancestor(this).rescope(getRescoper());
 	}
 
 	public ConstructionMode getConstructionMode() {

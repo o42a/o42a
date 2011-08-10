@@ -141,7 +141,7 @@ public final class UpgradeRescoper extends Rescoper {
 	@Override
 	public String toString() {
 		return "UpgradeScope[" + this.fromScope
-		+ " -> " + getFinalScope() + ']';
+				+ " -> " + getFinalScope() + ']';
 	}
 
 }

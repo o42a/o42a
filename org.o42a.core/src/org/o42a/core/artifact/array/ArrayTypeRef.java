@@ -107,7 +107,7 @@ public class ArrayTypeRef implements ScopeInfo {
 		}
 
 		final TypeRelation relation =
-			this.itemTypeRef.relationTo(other.itemTypeRef);
+				this.itemTypeRef.relationTo(other.itemTypeRef);
 
 		return relation.isPreferred() ? this : other;
 	}

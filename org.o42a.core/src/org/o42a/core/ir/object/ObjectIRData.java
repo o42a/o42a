@@ -172,9 +172,12 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 		public final DataOp loadObject(Code code) {
 			return object(code)
-			.load(null, code)
-			.offset(code.id("main_body").type(code.id("any")), code, this)
-			.toData(code.id("main_body"), code);
+					.load(null, code)
+					.offset(
+							code.id("main_body").type(code.id("any")),
+							code,
+							this)
+					.toData(code.id("main_body"), code);
 		}
 
 		public final RelRecOp start(Code code) {
@@ -183,9 +186,12 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 		public final DataOp loadStart(Code code) {
 			return start(code)
-			.load(null, code)
-			.offset(code.id("object_start").type(code.id("any")), code, this)
-			.toData(code.id("object_start"), code);
+					.load(null, code)
+					.offset(
+							code.id("object_start").type(code.id("any")),
+							code,
+							this)
+					.toData(code.id("object_start"), code);
 		}
 
 		public final ValType.Op value(Code code) {
@@ -242,8 +248,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 			final Generator generator = item.getGenerator();
 			final CodeId id =
-				generator.id("ascendant")
-				.detail(item.getAscendant().ir(generator).getId());
+					generator.id("ascendant")
+					.detail(item.getAscendant().ir(generator).getId());
 			final AscendantDescIR.Type desc = data.addInstance(
 					id,
 					ASCENDANT_DESC_IR,
@@ -264,8 +270,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 			final Generator generator = item.getGenerator();
 			final CodeId id =
-				generator.id("sample")
-				.detail(item.getAscendant().ir(generator).getId());
+					generator.id("sample")
+					.detail(item.getAscendant().ir(generator).getId());
 			final SampleDescIR.Type desc = data.addInstance(
 					id,
 					SAMPLE_DESC_IR,

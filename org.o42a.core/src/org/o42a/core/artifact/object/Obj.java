@@ -66,11 +66,11 @@ public abstract class Obj
 	private ObjectValue value;
 
 	private final HashMap<MemberKey, Member> members =
-		new HashMap<MemberKey, Member>();
+			new HashMap<MemberKey, Member>();
 	private final HashMap<MemberId, Symbol> symbols =
-		new HashMap<MemberId, Symbol>();
+			new HashMap<MemberId, Symbol>();
 	private final LinkedHashMap<MemberKey, Dep> deps =
-		new LinkedHashMap<MemberKey, Dep>();
+			new LinkedHashMap<MemberKey, Dep>();
 
 	private ObjectMembers objectMembers;
 	private Clause[] explicitClauses;
@@ -382,7 +382,7 @@ public abstract class Obj
 		final Path adapterPath = adapter.getKey().toPath();
 
 		final Artifact<?> adapterArtifact =
-			adapter.substance(dummyUser()).toArtifact();
+				adapter.substance(dummyUser()).toArtifact();
 		final Obj adapterObject = adapterArtifact.toObject();
 
 		if (adapterObject != null) {
@@ -595,7 +595,7 @@ public abstract class Obj
 		}
 
 		final LocalScope enclosingLocal =
-			getScope().getEnclosingContainer().toLocal();
+				getScope().getEnclosingContainer().toLocal();
 
 		assert enclosingLocal.getOwner() == owner :
 			owner + " is not owner of " + this
@@ -707,9 +707,9 @@ public abstract class Obj
 	private void resolveAllMembers() {
 
 		final boolean abstractAllowed =
-			isAbstract()
-			|| isPrototype()
-			|| toClause() != null;
+				isAbstract()
+				|| isPrototype()
+				|| toClause() != null;
 
 		for (Member member : getMembers()) {
 			if (!abstractAllowed && member.isAbstract()) {

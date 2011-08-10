@@ -89,14 +89,14 @@ public final class CompoundRescoper extends Rescoper {
 		getFinalScope().assertCompatible(reproducer.getReproducingScope());
 
 		final Rescoper firstRescoper =
-			this.first.reproduce(location, reproducer);
+				this.first.reproduce(location, reproducer);
 
 		if (firstRescoper == null) {
 			return null;
 		}
 
 		final Scope rescoped =
-			this.first.rescope(reproducer.getReproducingScope());
+				this.first.rescope(reproducer.getReproducingScope());
 
 		if (rescoped == null) {
 			return null;
@@ -109,7 +109,7 @@ public final class CompoundRescoper extends Rescoper {
 		}
 
 		final Rescoper secondRescoper =
-			this.second.reproduce(location, secondReproducer);
+				this.second.reproduce(location, secondReproducer);
 
 		if (secondRescoper == null) {
 			return null;

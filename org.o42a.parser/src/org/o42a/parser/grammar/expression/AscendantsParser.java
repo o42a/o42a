@@ -97,10 +97,10 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 			context.acceptAll();
 
 			final SignNode<AscendantType> separator =
-				new SignNode<AscendantType>(
-						start,
-						context.current(),
-						AscendantType.SAMPLE);
+					new SignNode<AscendantType>(
+							start,
+							context.current(),
+							AscendantType.SAMPLE);
 
 			context.acceptComments(false, separator);
 

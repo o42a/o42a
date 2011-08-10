@@ -75,10 +75,10 @@ public class DepIR {
 		} else {
 
 			final FieldIR<?> dependencyIR =
-				this.dep.getDependency().ir(getGenerator());
+					this.dep.getDependency().ir(getGenerator());
 
 			localId =
-				getGenerator().id("_dep").sub(dependencyIR.getId().getLocal());
+					getGenerator().id("_dep").sub(dependencyIR.getId().getLocal());
 		}
 
 		this.instance = data.addInstance(localId, DEP_IR);

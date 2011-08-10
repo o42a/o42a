@@ -31,7 +31,7 @@ import org.o42a.core.value.ValueType;
 public abstract class AbstractValueTypeIR<T> extends ValueTypeIR<T> {
 
 	private final HashMap<T, Ptr<ValType.Op>> constCache =
-		new HashMap<T, Ptr<ValType.Op>>();
+			new HashMap<T, Ptr<ValType.Op>>();
 
 	public AbstractValueTypeIR(Generator generator, ValueType<T> valueType) {
 		super(generator, valueType);
@@ -47,10 +47,11 @@ public abstract class AbstractValueTypeIR<T> extends ValueTypeIR<T> {
 		}
 
 		final Global<ValType.Op, ValType> global =
-			getGenerator().newGlobal().setConstant().dontExport().newInstance(
-					constId(value),
-					ValType.VAL_TYPE,
-					val(value));
+				getGenerator().newGlobal().setConstant().dontExport()
+				.newInstance(
+						constId(value),
+						ValType.VAL_TYPE,
+						val(value));
 		final Ptr<ValType.Op> result = global.getPointer();
 
 		this.constCache.put(value, result);

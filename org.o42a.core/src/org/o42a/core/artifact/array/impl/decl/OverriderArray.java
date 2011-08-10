@@ -88,14 +88,14 @@ final class OverriderArray extends Array {
 	private ArrayTypeRef knownTypeRef() {
 
 		final ArrayTypeRef derived =
-			this.variant.getArrayField().derivedTypeRef();
+				this.variant.getArrayField().derivedTypeRef();
 		final TypeRef declared =
-			this.variant.getArrayField().declaredItemTypeRef();
+				this.variant.getArrayField().declaredItemTypeRef();
 
 		if (declared != null) {
 
 			final TypeRelation relation =
-				derived.getItemTypeRef().relationTo(declared);
+					derived.getItemTypeRef().relationTo(declared);
 
 			if (relation.isAscendant()) {
 				return arrayTypeRef(declared, derived.getDimension());

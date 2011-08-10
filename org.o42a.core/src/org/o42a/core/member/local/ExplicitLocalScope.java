@@ -45,7 +45,7 @@ final class ExplicitLocalScope extends LocalScope {
 	private final ExplicitMemberLocal member;
 	private final String name;
 	private final HashMap<MemberId, Member> members =
-		new HashMap<MemberId, Member>();
+			new HashMap<MemberId, Member>();
 	private Clause[] implicitClauses;
 	private ImperativeBlock block;
 	private boolean allResolved;

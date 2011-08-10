@@ -37,7 +37,7 @@ public abstract class CompilerContext {
 		this.compiler = parent.compiler;
 		this.intrinsics = parent.intrinsics;
 		this.logger =
-			logger != null ? new CompilerLogger(logger, this) : parent.logger;
+				logger != null ? new CompilerLogger(logger, this) : parent.logger;
 	}
 
 	protected CompilerContext(

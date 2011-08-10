@@ -32,7 +32,7 @@ import org.o42a.parser.ParserContext;
 public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 
 	public static final IntrinsicRefParser INTRINSIC_REF =
-		new IntrinsicRefParser();
+			new IntrinsicRefParser();
 
 	private IntrinsicRefParser() {
 	}
@@ -48,10 +48,10 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 		context.skip();
 
 		final SignNode<IntrinsicRefNode.Boundary> prefix =
-			new SignNode<IntrinsicRefNode.Boundary>(
-					prefixStart,
-					context.current(),
-					IntrinsicRefNode.Boundary.DOLLAR);
+				new SignNode<IntrinsicRefNode.Boundary>(
+						prefixStart,
+						context.current(),
+						IntrinsicRefNode.Boundary.DOLLAR);
 
 		context.skipComments(false, prefix);
 
@@ -70,10 +70,10 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 		context.acceptAll();
 
 		final SignNode<IntrinsicRefNode.Boundary> suffix =
-			new SignNode<IntrinsicRefNode.Boundary>(
-					suffixStart,
-					context.current(),
-					IntrinsicRefNode.Boundary.DOLLAR);
+				new SignNode<IntrinsicRefNode.Boundary>(
+						suffixStart,
+						context.current(),
+						IntrinsicRefNode.Boundary.DOLLAR);
 
 		return context.acceptComments(
 				false,

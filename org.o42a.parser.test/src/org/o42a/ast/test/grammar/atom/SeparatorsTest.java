@@ -70,7 +70,7 @@ public class SeparatorsTest extends GrammarTestCase {
 	public void singleLineComment() {
 
 		final SeparatorNodes result =
-			parse(false, "//comment1\n//comment2");
+				parse(false, "//comment1\n//comment2");
 
 		assertFalse(result.lineContinuation());
 		assertTrue(result.haveComments());
@@ -87,7 +87,7 @@ public class SeparatorsTest extends GrammarTestCase {
 	public void singleLineCommentsWithUnderscope() {
 
 		final SeparatorNodes result =
-			parse(false, "//comment1\n  _//comment2\n  ");
+				parse(false, "//comment1\n  _//comment2\n  ");
 
 		assertTrue(result.lineContinuation());
 		assertTrue(result.haveComments());
@@ -106,7 +106,7 @@ public class SeparatorsTest extends GrammarTestCase {
 	public void singleLineCommentNL() {
 
 		final SeparatorNodes result =
-			parse(true, "//comment1\n  ");
+				parse(true, "//comment1\n  ");
 
 		assertFalse(result.lineContinuation());
 		assertTrue(result.haveComments());
@@ -123,7 +123,7 @@ public class SeparatorsTest extends GrammarTestCase {
 	public void singleLineCommentsNL() {
 
 		final SeparatorNodes result =
-			parse(true, "//comment1\n  //comment2\n  ");
+				parse(true, "//comment1\n  //comment2\n  ");
 
 		assertFalse(result.lineContinuation());
 		assertTrue(result.haveComments());
@@ -142,7 +142,7 @@ public class SeparatorsTest extends GrammarTestCase {
 	public void multiLineComment() {
 
 		final SeparatorNodes result =
-			parse(true, "/*\ncomment1\n*/ //comment2\n  ");
+				parse(true, "/*\ncomment1\n*/ //comment2\n  ");
 
 		assertFalse(result.lineContinuation());
 		assertTrue(result.haveComments());

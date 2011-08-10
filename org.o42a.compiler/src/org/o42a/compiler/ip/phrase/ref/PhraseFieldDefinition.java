@@ -64,7 +64,7 @@ final class PhraseFieldDefinition extends FieldDefinition {
 		}
 
 		final MainPhraseContext mainContext =
-			this.phrase.getPhrase().getMainContext();
+				this.phrase.getPhrase().getMainContext();
 
 		return this.definition = fieldDefinition(
 				this,

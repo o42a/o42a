@@ -130,11 +130,12 @@ public class MemberKey {
 		int result = 1;
 
 		result =
-			prime * result
-					+ ((this.memberId == null) ? 0 : this.memberId.hashCode());
+				prime * result
+				+ ((this.memberId == null) ? 0 : this.memberId.hashCode());
 		result =
-			prime * result
-					+ ((this.origin == null) ? 0 : this.origin.hashCode());
+				prime * result
+				+ ((this.origin == null) ? 0 : this.origin.hashCode());
+		
 		return result;
 	}
 

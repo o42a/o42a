@@ -38,7 +38,7 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 			DeclarativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
 		this.memberRegistry =
-			block.getMemberRegistry().prohibitDeclarations();
+				block.getMemberRegistry().prohibitDeclarations();
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import org.o42a.core.member.MemberKey;
 public abstract class DefinitionKey {
 
 	public static final DefinitionKey CONDITION_DEFINITION_KEY =
-		new ConditionKey();
+			new ConditionKey();
 	public static final DefinitionKey VALUE_DEFINITION_KEY = new ValueKey();
 
 	public static DefinitionKey fieldDefinitionKey(MemberKey fieldKey) {

@@ -60,7 +60,7 @@ final class ParentLocalFragment extends PathFragment {
 		object.assertDerivedFrom(this.object);
 
 		final Container result =
-			object.getScope().getEnclosingContainer();
+				object.getScope().getEnclosingContainer();
 
 		walker.up(object, this, result);
 

@@ -73,7 +73,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		assertCompatible(reproducer.getReproducingScope());
 
 		final Scope rescoped =
-			getRescoper().rescope(reproducer.getReproducingScope());
+				getRescoper().rescope(reproducer.getReproducingScope());
 		final Reproducer rescopedReproducer = reproducer.reproducerOf(rescoped);
 
 		if (rescopedReproducer == null) {

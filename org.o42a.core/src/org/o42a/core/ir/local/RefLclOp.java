@@ -108,7 +108,7 @@ public final class RefLclOp extends LclOp {
 		final Code code = dirs.code();
 		final Obj ascendant = getAscendant();
 		final ObjectBodyIR ascendantBodyType =
-			ascendant.ir(getGenerator()).getBodyType();
+				ascendant.ir(getGenerator()).getBodyType();
 		final DataOp objectPtr = ptr().object(code).load(null, code);
 
 		objectPtr.isNull(null, code).go(code, dirs.falseDir());

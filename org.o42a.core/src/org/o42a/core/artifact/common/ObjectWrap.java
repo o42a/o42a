@@ -96,7 +96,7 @@ public abstract class ObjectWrap extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return wrapper(getScope(), getWrapped().getScope())
-		.update(getWrapped().value().getDefinitions());
+				.update(getWrapped().value().getDefinitions());
 	}
 
 	@Override

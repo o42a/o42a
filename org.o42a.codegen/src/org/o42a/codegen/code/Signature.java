@@ -125,7 +125,7 @@ public abstract class Signature<F extends Func<F>> {
 		this.generator = generator;
 
 		final SignatureWriter<F> writer =
-			generator.getFunctions().codeBackend().addSignature(this);
+				generator.getFunctions().codeBackend().addSignature(this);
 		final SignatureBuilder builder = new SignatureBuilder(this, writer);
 
 		if (generator.isDebug() && isDebuggable()) {

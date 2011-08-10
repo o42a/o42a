@@ -36,7 +36,7 @@ public abstract class ImperativeIssue extends ImperativeSentence {
 			ImperativeFactory sentenceFactory) {
 		super(location, block, sentenceFactory);
 		this.memberRegistry =
-			block.getMemberRegistry().prohibitDeclarations();
+				block.getMemberRegistry().prohibitDeclarations();
 	}
 
 	@Override

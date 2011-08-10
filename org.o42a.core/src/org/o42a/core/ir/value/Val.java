@@ -37,13 +37,13 @@ public final class Val implements Content<ValType> {
 	public static final int STATIC_FLAG = 0x1000;
 
 	public static final Val VOID_VAL =
-		new Val(ValueType.VOID, CONDITION_FLAG, 0, 0L);
+			new Val(ValueType.VOID, CONDITION_FLAG, 0, 0L);
 	public static final Val FALSE_VAL =
-		new Val(ValueType.VOID, 0, 0, 0L);
+			new Val(ValueType.VOID, 0, 0, 0L);
 	public static final Val UNKNOWN_VAL =
-		new Val(ValueType.VOID, UNKNOWN_FLAG, 0, 0L);
+			new Val(ValueType.VOID, UNKNOWN_FLAG, 0, 0L);
 	public static final Val INDEFINITE_VAL =
-		new Val(ValueType.VOID, UNKNOWN_FLAG | INDEFINITE_FLAG, 0, 0L);
+			new Val(ValueType.VOID, UNKNOWN_FLAG | INDEFINITE_FLAG, 0, 0L);
 
 	private final ValueType<?> valueType;
 	private final int flags;

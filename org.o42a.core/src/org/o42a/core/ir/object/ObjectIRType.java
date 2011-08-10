@@ -122,10 +122,10 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 			final Fld fld = item.fld();
 			final Generator generator = fld.getGenerator();
 			final CodeId id =
-				generator.id("field")
-				.detail(fld.getField().ir(generator).getId().getLocal());
+					generator.id("field")
+					.detail(fld.getField().ir(generator).getId().getLocal());
 			final FieldDescIR.Type desc =
-				data.addInstance(id, FIELD_DESC_IR, item);
+					data.addInstance(id, FIELD_DESC_IR, item);
 
 			return desc.data(data.getGenerator()).getPointer();
 		}
@@ -143,10 +143,10 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 			final Fld fld = item.fld();
 			final Generator generator = fld.getGenerator();
 			final CodeId id =
-				generator.id("overrider")
-				.detail(fld.getField().ir(generator).getId());
+					generator.id("overrider")
+					.detail(fld.getField().ir(generator).getId());
 			final OverriderDescIR.Type desc =
-				data.addInstance(id, OVERRIDER_DESC_IR, item);
+					data.addInstance(id, OVERRIDER_DESC_IR, item);
 
 			return desc.data(data.getGenerator()).getPointer();
 		}

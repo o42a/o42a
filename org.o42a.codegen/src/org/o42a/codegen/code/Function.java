@@ -103,7 +103,7 @@ public final class Function<F extends Func<F>> extends Code {
 				this,
 				functions.createCodeCallback(this));
 		this.pointer =
-			new ConstructingFuncPtr<F>(this, this.writer.getAllocation());
+				new ConstructingFuncPtr<F>(this, this.writer.getAllocation());
 
 		return this.writer;
 	}

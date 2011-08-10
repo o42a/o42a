@@ -148,7 +148,7 @@ public abstract class ObjectConstructor extends Ref {
 					propagatedFrom,
 					propagatedFrom.distributeIn(scope.getContainer()));
 			this.propagatedFrom =
-				propagatedFrom.toStaticTypeRef().upgradeScope(scope);
+					propagatedFrom.toStaticTypeRef().upgradeScope(scope);
 		}
 
 		@Override

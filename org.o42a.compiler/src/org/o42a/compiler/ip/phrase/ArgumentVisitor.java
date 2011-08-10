@@ -31,7 +31,7 @@ import org.o42a.core.ref.Ref;
 final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 
 	public static final ArgumentVisitor ARGUMENT_VISITOR =
-		new ArgumentVisitor();
+			new ArgumentVisitor();
 
 	private ArgumentVisitor() {
 	}

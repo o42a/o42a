@@ -57,7 +57,7 @@ final class MultiLineStringLiteralParser implements Parser<StringNode> {
 		context.skip();
 
 		final SignNode<Quote> opening =
-			new SignNode<Quote>(start, context.current(), quote);
+				new SignNode<Quote>(start, context.current(), quote);
 		final SignNode<Quote> closing;
 		boolean multiline = false;
 		boolean nl = false;

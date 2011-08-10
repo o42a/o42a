@@ -150,10 +150,10 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 			}
 
 			final SignNode<BinaryOperator> result =
-				new SignNode<BinaryOperator>(
-						start,
-						context.current().fix(),
-						operator);
+					new SignNode<BinaryOperator>(
+							start,
+							context.current().fix(),
+							operator);
 
 			return context.acceptComments(false, result);
 		}

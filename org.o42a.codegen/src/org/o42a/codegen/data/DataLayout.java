@@ -56,7 +56,7 @@ public final class DataLayout {
 	@Override
 	public String toString() {
 		return "DataLayout[size=" + getSize()
-		+ ", alignment=" + getAlignment() + ']';
+				+ ", alignment=" + getAlignment() + ']';
 	}
 
 }

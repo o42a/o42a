@@ -51,7 +51,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 	private final ObjectIRStruct objectIRStruct;
 	private final HashMap<MemberKey, FieldDescIR> fieldDescs =
-		new HashMap<MemberKey, FieldDescIR>();
+			new HashMap<MemberKey, FieldDescIR>();
 	private ObjectIRType instance;
 
 	ObjectTypeIR(ObjectIRStruct objectIRStruct) {
@@ -118,7 +118,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 	@Override
 	public String toString() {
 		return this.objectIRStruct.codeId(getGenerator())
-		.sub("object_data").toString();
+				.sub("object_data").toString();
 	}
 
 	void allocate(SubData<?> data) {
@@ -157,7 +157,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		}
 
 		final RelList<OverriderDescIR> overriders =
-			getObjectType().overriders();
+				getObjectType().overriders();
 
 		for (Member member : objectIR.getObject().getMembers()) {
 
@@ -206,8 +206,8 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 	private void fillOwnerTypePointer(ObjectIRData instance) {
 
 		final Obj owner =
-			getObjectIR().getObject().getScope()
-			.getEnclosingContainer().toObject();
+				getObjectIR().getObject().getScope()
+				.getEnclosingContainer().toObject();
 
 		if (owner == null) {
 			instance.ownerType().setNull();
@@ -215,7 +215,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		}
 
 		final ObjectIRType ownerType =
-			owner.ir(getGenerator()).getTypeIR().getObjectType();
+				owner.ir(getGenerator()).getTypeIR().getObjectType();
 
 		instance.ownerType().setValue(
 				ownerType.pointer(instance.getGenerator()));
@@ -248,11 +248,11 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 	private FuncPtr<ObjectRefFunc> createAncestorFunc(ObjectIRData instance) {
 
 		final Function<ObjectRefFunc> function =
-			getGenerator().newFunction().create(
-					this.objectIRStruct
-					.codeId(instance.getGenerator())
-					.detail("ancestor"),
-					OBJECT_REF);
+				getGenerator().newFunction().create(
+						this.objectIRStruct
+						.codeId(instance.getGenerator())
+						.detail("ancestor"),
+						OBJECT_REF);
 		final Code failure = function.addBlock("failure");
 		final TypeRef ancestor = getObjectIR().getObject().type().getAncestor();
 		final CodeBuilder builder = codeBuilder(
@@ -261,7 +261,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				ancestor.getScope(),
 				DERIVED);
 		final CodeDirs dirs =
-			builder.falseWhenUnknown(function, failure.head());
+				builder.falseWhenUnknown(function, failure.head());
 		final HostOp host = builder.host();
 
 		ancestor.op(dirs, host)

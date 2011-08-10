@@ -60,7 +60,7 @@ public class BlockTest extends GrammarTestCase {
 				ParenthesesNode.class,
 				parse(DECLARATIVE.statement(), "(foo = bar)"));
 		final DeclaratorNode declarator =
-			singleStatement(DeclaratorNode.class, result);
+				singleStatement(DeclaratorNode.class, result);
 
 		assertEquals(DeclarationTarget.OVERRIDE_VALUE, declarator.getTarget());
 		assertName("foo", declarator.getDeclarable());
@@ -74,7 +74,7 @@ public class BlockTest extends GrammarTestCase {
 				ParenthesesNode.class,
 				parse(DECLARATIVE.statement(), "({  })"));
 		final BracesNode braces =
-			singleStatement(BracesNode.class, result);
+				singleStatement(BracesNode.class, result);
 
 		assertEquals(0, braces.getContent().length);
 	}
@@ -86,7 +86,7 @@ public class BlockTest extends GrammarTestCase {
 				BracesNode.class,
 				parse(IMPERATIVE.statement(), "{foo = bar}"));
 		final AssignmentNode assignment =
-			singleStatement(AssignmentNode.class, result);
+				singleStatement(AssignmentNode.class, result);
 
 		assertName("foo", assignment.getDestination());
 		assertName("bar", assignment.getValue());
@@ -99,9 +99,9 @@ public class BlockTest extends GrammarTestCase {
 				BracesNode.class,
 				parse(IMPERATIVE.statement(), "{(foo = bar)}"));
 		final ParenthesesNode parentheses =
-			singleStatement(ParenthesesNode.class, result);
+				singleStatement(ParenthesesNode.class, result);
 		final AssignmentNode assignment =
-			singleStatement(AssignmentNode.class, parentheses);
+				singleStatement(AssignmentNode.class, parentheses);
 
 		assertName("foo", assignment.getDestination());
 		assertName("bar", assignment.getValue());

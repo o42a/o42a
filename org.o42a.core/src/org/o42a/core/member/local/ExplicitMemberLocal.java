@@ -62,8 +62,8 @@ final class ExplicitMemberLocal extends MemberLocal {
 		super(localScope, distributor, localScope.getOwner().toMemberOwner());
 		this.localScope = localScope;
 		this.id =
-			reproducedFrom.toMember().getKey().getMemberId()
-			.reproduceFrom(reproducedFrom);
+				reproducedFrom.toMember().getKey().getMemberId()
+				.reproduceFrom(reproducedFrom);
 		this.key = this.id.key(getScope());
 	}
 

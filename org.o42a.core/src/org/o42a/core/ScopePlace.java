@@ -92,8 +92,8 @@ public class ScopePlace {
 
 		result = prime * result + this.appearedIn.hashCode();
 		result =
-			prime * result
-			+ ((this.place == null) ? 0 : this.place.hashCode());
+				prime * result
+				+ ((this.place == null) ? 0 : this.place.hashCode());
 
 		return result;
 	}

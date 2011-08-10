@@ -132,7 +132,7 @@ public abstract class Link extends MaterializableArtifact<Link> {
 				typeRef.getRescoper().rescope(typeRef.getScope()));
 
 		final TypeRelation relation =
-			typeRef.relationTo(this.targetRef.toTypeRef());
+				typeRef.relationTo(this.targetRef.toTypeRef());
 
 		if (!relation.isAscendant()) {
 			if (!relation.isError()) {

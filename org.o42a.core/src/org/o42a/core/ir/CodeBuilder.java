@@ -88,9 +88,9 @@ public class CodeBuilder {
 		this.function = function;
 		if (hostPrecision.isCompatible()) {
 			this.host =
-				function.arg(function, getObjectSignature().object())
-				.to(null, function, hostIR)
-				.op(this, hostType, hostPrecision);
+					function.arg(function, getObjectSignature().object())
+					.to(null, function, hostIR)
+					.op(this, hostType, hostPrecision);
 		} else {
 
 			final ObjectOp host = anonymousObject(

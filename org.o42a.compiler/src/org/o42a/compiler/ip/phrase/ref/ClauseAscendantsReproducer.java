@@ -46,10 +46,10 @@ final class ClauseAscendantsReproducer extends Reproducer {
 				distributor);
 
 		final ClauseAscendantsReproducer ascendantsReproducer =
-			new ClauseAscendantsReproducer(context, distributor);
+				new ClauseAscendantsReproducer(context, distributor);
 
 		final AscendantsDefinition oldAscendants =
-			context.getClause().toPlainClause().getAscendants();
+				context.getClause().toPlainClause().getAscendants();
 
 		if (oldAscendants != null) {
 
@@ -58,7 +58,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 			if (oldAncestor != null) {
 
 				final TypeRef newAncestor =
-					oldAncestor.reproduce(ascendantsReproducer);
+						oldAncestor.reproduce(ascendantsReproducer);
 
 				if (newAncestor == null) {
 					return null;
@@ -72,7 +72,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 			for (StaticTypeRef sample : oldAscendants.getSamples()) {
 
 				final StaticTypeRef newSample =
-					sample.reproduce(ascendantsReproducer);
+						sample.reproduce(ascendantsReproducer);
 
 				if (newSample == null) {
 					return null;
@@ -100,7 +100,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 	@Override
 	public Ref getPhrasePrefix() {
 		return this.context.getMainContext().getPhrase().getAncestor()
-		.getRescopedRef();
+				.getRescopedRef();
 	}
 
 	@Override

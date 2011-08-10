@@ -34,7 +34,7 @@ import org.o42a.parser.ParserContext;
 public class DeclaratorParser implements Parser<DeclaratorNode> {
 
 	private static final DefinitionAssignmentParser DEFINITION_ASSIGNMENT =
-		new DefinitionAssignmentParser();
+			new DefinitionAssignmentParser();
 
 	private final Grammar grammar;
 	private final DeclarableNode declarable;
@@ -48,7 +48,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 	public DeclaratorNode parse(ParserContext context) {
 
 		final SignNode<DeclarationTarget> definitionAssignment =
-			context.parse(DEFINITION_ASSIGNMENT);
+				context.parse(DEFINITION_ASSIGNMENT);
 
 		if (definitionAssignment == null) {
 			return null;
@@ -67,7 +67,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 		}
 
 		final ExpressionNode definition =
-			context.parse(this.grammar.expression());
+				context.parse(this.grammar.expression());
 
 		if (definition == null) {
 			context.getLogger().missingValue(context.current());
@@ -141,10 +141,10 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			}
 
 			final SignNode<DeclarationTarget> assignment =
-				new SignNode<DeclarationTarget>(
-						start,
-						context.firstUnaccepted(),
-						type);
+					new SignNode<DeclarationTarget>(
+							start,
+							context.firstUnaccepted(),
+							type);
 
 			return context.acceptComments(false, assignment);
 		}

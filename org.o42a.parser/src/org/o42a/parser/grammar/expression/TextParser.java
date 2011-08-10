@@ -43,7 +43,7 @@ public class TextParser implements Parser<TextNode> {
 		for (;;) {
 
 			final StringNode literal =
-				context.parse(StringLiteralParser.STRING_LITERAL);
+					context.parse(StringLiteralParser.STRING_LITERAL);
 
 			if (literal == null) {
 				break;

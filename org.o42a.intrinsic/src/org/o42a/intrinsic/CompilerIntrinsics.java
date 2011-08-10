@@ -50,7 +50,7 @@ public class CompilerIntrinsics extends Intrinsics {
 	private final Root root;
 
 	private final HashMap<String, ModuleUse> modules =
-		new HashMap<String, ModuleUse>();
+			new HashMap<String, ModuleUse>();
 	private ModuleUse mainModule;
 	private ConsoleModule consoleModule;
 	private Obj main;
@@ -154,7 +154,7 @@ public class CompilerIntrinsics extends Intrinsics {
 	public void resolveAll() {
 
 		final FullResolution fullResolution =
-			this.root.getContext().fullResolution();
+				this.root.getContext().fullResolution();
 
 		fullResolution.start();
 		try {

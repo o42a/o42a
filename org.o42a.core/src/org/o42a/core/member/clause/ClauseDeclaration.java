@@ -128,7 +128,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		}
 
 		final StaticTypeRef adapterType =
-			this.clauseId.adapterType(this, distribute());
+				this.clauseId.adapterType(this, distribute());
 
 		if (this.groupId == null) {
 			return this.memberId = adapterId(adapterType);

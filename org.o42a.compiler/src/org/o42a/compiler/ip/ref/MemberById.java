@@ -160,7 +160,7 @@ public class MemberById extends Wrap {
 		}
 
 		final Path enclosingScopePath =
-			container.getScope().getEnclosingScopePath();
+				container.getScope().getEnclosingScopePath();
 
 		assert enclosingScopePath != null :
 			found + " should be an absolute path";

@@ -87,11 +87,11 @@ final class VoidValueType extends ValueType<Void> {
 			}
 
 			final Global<ValType.Op, ValType> global =
-				getGenerator().newGlobal().setConstant()
-				.dontExport().newInstance(
-						getGenerator().id("CONST").sub("VOID"),
-						VAL_TYPE,
-						val(value));
+					getGenerator().newGlobal().setConstant()
+					.dontExport().newInstance(
+							getGenerator().id("CONST").sub("VOID"),
+							VAL_TYPE,
+							val(value));
 
 			return this.valPtr = global.getPointer();
 		}

@@ -49,8 +49,8 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 		}
 
 		final Distributor distributor =
-			new Placed(getContext(), declarator, p.nextDistributor())
-			.distribute();
+				new Placed(getContext(), declarator, p.nextDistributor())
+				.distribute();
 		final ClauseDeclaration declaration = anonymousClauseDeclaration(
 				new Location(getContext(), declarator.getDeclarable()),
 				distributor)
@@ -58,7 +58,7 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 
 
 		final ClauseBuilder builder =
-			buildOverrider(declaration, declarator, p);
+				buildOverrider(declaration, declarator, p);
 
 		if (builder == null) {
 			return null;

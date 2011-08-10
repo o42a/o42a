@@ -61,9 +61,9 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		}
 
 		final String what =
-			ValueType.STRING.cast(whatValue).getDefiniteValue();
+				ValueType.STRING.cast(whatValue).getDefiniteValue();
 		final String with =
-			ValueType.STRING.cast(withValue).getDefiniteValue();
+				ValueType.STRING.cast(withValue).getDefiniteValue();
 
 		return ValueType.STRING.constantValue(what + with);
 	}
@@ -84,14 +84,14 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		final ValOp whatVal = what().op(host).writeValue(whatDirs);
 
 		final ValDirs withDirs =
-			whatDirs.dirs().value(ValueType.STRING, "with");
+				whatDirs.dirs().value(ValueType.STRING, "with");
 		final ValOp withVal = with().op(host).writeValue(withDirs);
 
 		final Code code = withDirs.code();
 		final FuncPtr<ConcatFunc> funcPtr =
-			code.getGenerator().externalFunction(
-					"o42a_str_concat",
-					ConcatFunc.CONCAT);
+				code.getGenerator().externalFunction(
+						"o42a_str_concat",
+						ConcatFunc.CONCAT);
 		final ConcatFunc func = funcPtr.op(null, code);
 		final ValOp result = dirs.value();
 

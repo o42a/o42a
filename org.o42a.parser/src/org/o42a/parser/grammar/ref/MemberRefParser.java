@@ -35,9 +35,9 @@ import org.o42a.parser.ParserContext;
 public class MemberRefParser implements Parser<MemberRefNode> {
 
 	private static final QualifierParser QUALIFIER =
-		new QualifierParser();
+			new QualifierParser();
 	private static final RetentionParser RETENTION =
-		new RetentionParser();
+			new RetentionParser();
 
 	private final ExpressionNode owner;
 	private final boolean qualifierExpected;

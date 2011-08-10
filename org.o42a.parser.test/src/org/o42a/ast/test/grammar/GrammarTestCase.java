@@ -190,7 +190,7 @@ public class GrammarTestCase {
 
 			final String code = record.getCode();
 			final String expected =
-				GrammarTestCase.this.expectedErrors.poll();
+					GrammarTestCase.this.expectedErrors.poll();
 
 			if (expected == null) {
 				fail("Error occurred: " + record);

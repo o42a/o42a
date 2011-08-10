@@ -30,14 +30,14 @@ import org.o42a.parser.ParserContext;
 public class StringLiteralParser implements Parser<StringNode> {
 
 	public static final StringLiteralParser STRING_LITERAL =
-		new StringLiteralParser();
+			new StringLiteralParser();
 
 	private static final MultiLineStringLiteralParser MULTI_LINE =
-		new MultiLineStringLiteralParser();
+			new MultiLineStringLiteralParser();
 	private static final EscapeSequenceParser ESCAPE_SEQUENCE =
-		new EscapeSequenceParser();
+			new EscapeSequenceParser();
 	private static final UnicodeSequenceParser UNICODE_SEQUENCE =
-		new UnicodeSequenceParser();
+			new UnicodeSequenceParser();
 
 	private StringLiteralParser() {
 	}
@@ -67,7 +67,7 @@ public class StringLiteralParser implements Parser<StringNode> {
 		context.skip();
 
 		final SignNode<Quote> opening =
-			new SignNode<Quote>(start, context.current(), quote);
+				new SignNode<Quote>(start, context.current(), quote);
 		final SignNode<Quote> closing;
 		final StringBuilder text = new StringBuilder();
 

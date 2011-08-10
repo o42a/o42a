@@ -130,7 +130,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 				getBodyIR().getAscendant(),
 				COMPATIBLE);
 		final CodeDirs dirs =
-			builder.falseWhenUnknown(this.constructor, failure.head());
+				builder.falseWhenUnknown(this.constructor, failure.head());
 
 		buildConstructor(builder, dirs);
 
@@ -176,7 +176,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 		final Link link = artifact.toLink();
 		final HostOp target =
-			link.getTargetRef().target(dirs, builder.host());
+				link.getTargetRef().target(dirs, builder.host());
 
 		return target.materialize(dirs);
 	}
@@ -184,7 +184,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	protected final Obj targetType(Obj bodyType) {
 
 		final Field<?> actual =
-			bodyType.member(getField().getKey()).toField(dummyUser());
+				bodyType.member(getField().getKey()).toField(dummyUser());
 		final Artifact<?> artifact = actual.getArtifact();
 		final Obj object = artifact.toObject();
 
@@ -250,12 +250,12 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 		final Field<?> lastDefinition = getField().getLastDefinition();
 		final Obj overriddenOwner =
-			lastDefinition.getEnclosingScope().toObject();
+				lastDefinition.getEnclosingScope().toObject();
 		final ObjectIR overriddenOwnerIR =
-			overriddenOwner.ir(getGenerator()).getBodyType().getObjectIR();
+				overriddenOwner.ir(getGenerator()).getBodyType().getObjectIR();
 		@SuppressWarnings("unchecked")
 		final RefFld<C> overriddenFld =
-			(RefFld<C>) overriddenOwnerIR.fld(getField().getKey());
+				(RefFld<C>) overriddenOwnerIR.fld(getField().getKey());
 
 		return overriddenFld.constructor;
 	}

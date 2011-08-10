@@ -99,7 +99,7 @@ public abstract class DeclaredField<
 	protected void mergeVariant(FieldVariant<A> variant) {
 
 		final FieldVariant<A> newVariant =
-			variant(variant.getDeclaration(), variant.getDefinition());
+				variant(variant.getDeclaration(), variant.getDefinition());
 
 		newVariant.setStatement(variant.getStatement());
 	}
@@ -128,7 +128,7 @@ public abstract class DeclaredField<
 
 		@SuppressWarnings("unchecked")
 		final DeclaredField<A, V> declaredField =
-			(DeclaredField<A, V>) field.toKind(getArtifactKind());
+				(DeclaredField<A, V>) field.toKind(getArtifactKind());
 
 		merge(declaredField);
 	}

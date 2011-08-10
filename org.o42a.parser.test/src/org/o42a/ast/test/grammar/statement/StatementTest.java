@@ -33,7 +33,7 @@ public class StatementTest extends GrammarTestCase {
 	public void selfAssignment() {
 
 		final SelfAssignmentNode result =
-			parse(SelfAssignmentNode.class, "= foo");
+				parse(SelfAssignmentNode.class, "= foo");
 
 		assertRange(0, 1, result.getPrefix());
 		assertRange(2, 5, result.getValue());

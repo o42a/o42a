@@ -138,7 +138,7 @@ public abstract class Def<D extends Def<D>>
 
 		final Logical oldPrecondition = getPrecondition();
 		final Logical newPrecondition =
-			Logical.and(oldPrecondition, precondition);
+				Logical.and(oldPrecondition, precondition);
 
 		if (newPrecondition == oldPrecondition) {
 			return self();

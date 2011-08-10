@@ -62,7 +62,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 			final SeparatorNodes separators = context.skipComments(true);
 			final FixedPosition statementStart = context.current().fix();
 			final StatementNode stat =
-				expectations.parse(this.grammar.statement());
+					expectations.parse(this.grammar.statement());
 			final SerialNode statement;
 
 			if (stat != null || separator != null) {

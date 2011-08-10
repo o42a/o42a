@@ -98,8 +98,8 @@ public abstract class LLVMCode implements CodeWriter {
 	public static final long typePtr(Type<?> type) {
 
 		final ContainerAllocation<?> allocation =
-			(ContainerAllocation<?>) type.pointer(type.getGenerator())
-			.getAllocation();
+				(ContainerAllocation<?>) type.pointer(type.getGenerator())
+				.getAllocation();
 
 		return allocation.getTypePtr();
 	}
@@ -233,7 +233,7 @@ public abstract class LLVMCode implements CodeWriter {
 			FuncAllocation<F> allocation) {
 
 		final LLVMFuncAllocation<?> alloc =
-			(LLVMFuncAllocation<?>) allocation;
+				(LLVMFuncAllocation<?>) allocation;
 
 		return new LLVMFunc(
 				id,
@@ -307,7 +307,7 @@ public abstract class LLVMCode implements CodeWriter {
 		}
 
 		final long targetPtr =
-			phiN(nextPtr(), this.code.opId(null).getId(), blocksAndAddrs);
+				phiN(nextPtr(), this.code.opId(null).getId(), blocksAndAddrs);
 
 		return new LLVMMultiCodePos(targetPtr, targetBlockPtrs);
 	}
@@ -409,7 +409,7 @@ public abstract class LLVMCode implements CodeWriter {
 	public <S extends StructOp<S>> S nullPtr(DataAllocation<S> type) {
 
 		final ContainerAllocation<S> allocation =
-			(ContainerAllocation<S>) type;
+				(ContainerAllocation<S>) type;
 
 		return allocation.getType().op(new LLVMStruct<S>(
 				this.code.opId(null),
@@ -437,7 +437,7 @@ public abstract class LLVMCode implements CodeWriter {
 			DataAllocation<S> allocation) {
 
 		final ContainerAllocation<S> type =
-			(ContainerAllocation<S>) allocation;
+				(ContainerAllocation<S>) allocation;
 		final long nextPtr = nextPtr();
 
 		return type.getType().op(new LLVMStruct<S>(
@@ -466,7 +466,7 @@ public abstract class LLVMCode implements CodeWriter {
 			DataAllocation<S> allocation) {
 
 		final ContainerAllocation<S> alloc =
-			(ContainerAllocation<S>) allocation;
+				(ContainerAllocation<S>) allocation;
 		final long nextPtr = nextPtr();
 
 		return new LLVMRecOp.Struct<S>(
@@ -514,7 +514,7 @@ public abstract class LLVMCode implements CodeWriter {
 		final LLVMOp<O> falseOp = llvm(falseValue);
 		final long nextPtr = nextPtr();
 		final CodeId selectId =
-			id != null ? id : condition.getId().sub("select");
+				id != null ? id : condition.getId().sub("select");
 
 		return trueOp.create(
 				id,

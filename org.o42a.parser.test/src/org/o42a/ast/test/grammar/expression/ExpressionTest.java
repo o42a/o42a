@@ -33,7 +33,7 @@ public class ExpressionTest extends GrammarTestCase {
 	public void unaryExpressionOnCall() {
 
 		final UnaryNode result =
-			to(UnaryNode.class, parse("+foo()"));
+				to(UnaryNode.class, parse("+foo()"));
 
 		assertEquals(UnaryOperator.PLUS, result.getOperator());
 
@@ -46,9 +46,9 @@ public class ExpressionTest extends GrammarTestCase {
 	public void ascendantsAsLeftOperand() {
 
 		final BinaryNode result =
-			to(BinaryNode.class, parse("foo & bar + baz"));
+				to(BinaryNode.class, parse("foo & bar + baz"));
 		final AscendantsNode left =
-			to(AscendantsNode.class, result.getLeftOperand());
+				to(AscendantsNode.class, result.getLeftOperand());
 
 		assertName("foo", left.getAscendants()[0].getAscendant());
 		assertName("bar", left.getAscendants()[1].getAscendant());
@@ -59,9 +59,9 @@ public class ExpressionTest extends GrammarTestCase {
 	public void samplesAsLeftOperand() {
 
 		final BinaryNode result =
-			to(BinaryNode.class, parse("&foo & bar + baz"));
+				to(BinaryNode.class, parse("&foo & bar + baz"));
 		final AscendantsNode left =
-			to(AscendantsNode.class, result.getLeftOperand());
+				to(AscendantsNode.class, result.getLeftOperand());
 
 		assertName("foo", left.getAscendants()[0].getAscendant());
 		assertName("bar", left.getAscendants()[1].getAscendant());
@@ -72,12 +72,12 @@ public class ExpressionTest extends GrammarTestCase {
 	public void ascendantsAsRigntOperand() {
 
 		final BinaryNode result =
-			to(BinaryNode.class, parse("foo \u2212 bar & baz"));
+				to(BinaryNode.class, parse("foo \u2212 bar & baz"));
 
 		assertName("foo", result.getLeftOperand());
 
 		final AscendantsNode right =
-			to(AscendantsNode.class, result.getRightOperand());
+				to(AscendantsNode.class, result.getRightOperand());
 
 		assertName("bar", right.getAscendants()[0].getAscendant());
 		assertName("baz", right.getAscendants()[1].getAscendant());
@@ -87,9 +87,9 @@ public class ExpressionTest extends GrammarTestCase {
 	public void samplesAsRightOperand() {
 
 		final BinaryNode result =
-			to(BinaryNode.class, parse("foo  + &bar & baz"));
+				to(BinaryNode.class, parse("foo  + &bar & baz"));
 		final AscendantsNode right =
-			to(AscendantsNode.class, result.getRightOperand());
+				to(AscendantsNode.class, result.getRightOperand());
 
 		assertName("foo", result.getLeftOperand());
 		assertName("bar", right.getAscendants()[0].getAscendant());

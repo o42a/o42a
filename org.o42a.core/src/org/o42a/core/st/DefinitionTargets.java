@@ -28,7 +28,7 @@ import java.util.Map;
 public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 
 	private static final EmptyDefinitionTargets EMPTY_DEFINITION_TARGETS =
-		new EmptyDefinitionTargets();
+			new EmptyDefinitionTargets();
 
 	public static DefinitionTargets noDefinitions() {
 		return EMPTY_DEFINITION_TARGETS;

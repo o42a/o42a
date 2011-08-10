@@ -44,7 +44,7 @@ public final class FieldDeclarableVisitor
 		extends AbstractDeclarableVisitor<FieldDeclaration, Distributor> {
 
 	private static final VisibilityVisitor VISIBILITY_VISITOR =
-		new VisibilityVisitor();
+			new VisibilityVisitor();
 
 	private final Interpreter ip;
 	private final CompilerContext context;
@@ -99,7 +99,7 @@ public final class FieldDeclarableVisitor
 		}
 
 		final Ref adapter =
-			adapterNode.getMember().accept(ADAPTER_FIELD_VISITOR, p);
+				adapterNode.getMember().accept(ADAPTER_FIELD_VISITOR, p);
 
 		if (adapter == null) {
 			return null;
@@ -175,7 +175,7 @@ public final class FieldDeclarableVisitor
 		} else {
 
 			final TypeRef type =
-				node.accept(this.ip.typeVisitor(), declaration.distribute());
+					node.accept(this.ip.typeVisitor(), declaration.distribute());
 
 			if (type != null) {
 				result = declaration.setType(type);
@@ -245,7 +245,7 @@ public final class FieldDeclarableVisitor
 		}
 
 		final StaticTypeRef declaredIn =
-			declaredIn(this.ip, memberRef, declaration.distribute());
+				declaredIn(this.ip, memberRef, declaration.distribute());
 
 		if (declaredIn == null) {
 			return declaration;

@@ -41,7 +41,7 @@ import org.o42a.codegen.data.*;
 public class Debug {
 
 	public static final CodeCallback DEBUG_CODE_CALLBACK =
-		new DebugCodeCallback();
+			new DebugCodeCallback();
 
 	private final Generator generator;
 
@@ -53,11 +53,11 @@ public class Debug {
 	private FuncPtr<DebugExecCommandFunc> execCommandFunc;
 
 	private final HashMap<String, Ptr<AnyOp>> names =
-		new HashMap<String, Ptr<AnyOp>>();
+			new HashMap<String, Ptr<AnyOp>>();
 	private final HashMap<String, Ptr<AnyOp>> messages =
-		new HashMap<String, Ptr<AnyOp>>();
+			new HashMap<String, Ptr<AnyOp>>();
 	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
-		new HashMap<Ptr<?>, DebugTypeInfo>();
+			new HashMap<Ptr<?>, DebugTypeInfo>();
 
 	public Debug(Generator generator) {
 		this.generator = generator;
@@ -95,18 +95,18 @@ public class Debug {
 		}
 
 		final Ptr<AnyOp> namePtr =
-			allocateName(
-					getGenerator()
-					.id("DEBUG")
-					.sub("func_name")
-					.sub(id),
-					id.getId());
+				allocateName(
+						getGenerator()
+						.id("DEBUG")
+						.sub("func_name")
+						.sub(id),
+						id.getId());
 
 		final DebugEnvOp debugEnv = function.debugEnv(function);
 		final StructRecOp<DebugStackFrameOp> envStackFrame =
-			debugEnv.stackFrame(function);
+				debugEnv.stackFrame(function);
 		final DebugStackFrameOp stackFrame =
-			allocateStackFrame(function, null);
+				allocateStackFrame(function, null);
 
 		stackFrame.name(function).store(function, namePtr.op(null, function));
 		stackFrame.prev(function).store(
@@ -119,7 +119,7 @@ public class Debug {
 		envStackFrame.store(function, stackFrame);
 
 		final BoolOp execResult =
-			execCommandFunc().op(null, function).exec(function, debugEnv);
+				execCommandFunc().op(null, function).exec(function, debugEnv);
 		final Code commandExecuted = function.addBlock("command_executed");
 
 		execResult.go(function, commandExecuted.head());
@@ -150,7 +150,7 @@ public class Debug {
 		getGenerator().newGlobal().struct(typeInfo);
 
 		final DebugTypeInfo old =
-			this.typeInfo.put(typeData.getPointer(), typeInfo);
+				this.typeInfo.put(typeData.getPointer(), typeInfo);
 
 		assert old == null :
 			"Type info already exists: " + old;
@@ -166,7 +166,7 @@ public class Debug {
 		}
 
 		final Ptr<AnyOp> binary =
-			getGenerator().addBinary(id, true, nullTermASCIIString(value));
+				getGenerator().addBinary(id, true, nullTermASCIIString(value));
 
 		this.names.put(value, binary);
 
@@ -198,7 +198,7 @@ public class Debug {
 	DebugTypeInfo typeInfo(Type<?> instance) {
 
 		final DebugTypeInfo typeInfo =
-			this.typeInfo.get(instance.getType().pointer(getGenerator()));
+				this.typeInfo.get(instance.getType().pointer(getGenerator()));
 
 		assert typeInfo != null :
 			"Unknown debug type info of " + instance.getType();
@@ -211,7 +211,7 @@ public class Debug {
 			return this.enterFunc;
 		}
 		return this.enterFunc =
-			getGenerator().externalFunction("o42a_dbg_enter", DEBUG_TRACE);
+				getGenerator().externalFunction("o42a_dbg_enter", DEBUG_TRACE);
 	}
 
 	private FuncPtr<DebugTraceFunc> exitFunc() {
@@ -219,7 +219,7 @@ public class Debug {
 			return this.exitFunc;
 		}
 		return this.exitFunc =
-			getGenerator().externalFunction("o42a_dbg_exit", DEBUG_TRACE);
+				getGenerator().externalFunction("o42a_dbg_exit", DEBUG_TRACE);
 	}
 
 	private FuncPtr<DebugExecCommandFunc> execCommandFunc() {

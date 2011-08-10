@@ -89,14 +89,14 @@ public class DeclaredArrayField
 		for (Field<Array> field : getOverridden()) {
 
 			final ArrayTypeRef overriddenTypeRef =
-				field.getArtifact().getArrayTypeRef();
+					field.getArtifact().getArrayTypeRef();
 
 			if (typeRef == null) {
 				typeRef = overriddenTypeRef;
 			} else {
 
 				final ArrayTypeRef commonInheritant =
-					typeRef.commonDerivative(overriddenTypeRef);
+						typeRef.commonDerivative(overriddenTypeRef);
 
 				if (commonInheritant != null) {
 					typeRef = commonInheritant;
@@ -111,7 +111,7 @@ public class DeclaredArrayField
 		}
 
 		return typeRef != null
-		? typeRef.upgradeScope(getEnclosingScope()) : null;
+				? typeRef.upgradeScope(getEnclosingScope()) : null;
 	}
 
 	ArrayInitializer derivedInitializer() {

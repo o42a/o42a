@@ -44,7 +44,7 @@ public class LocalBuilder extends CodeBuilder {
 
 		final Obj owner = scopeIR.getScope().getOwner();
 		final DataOp ownerPtr =
-			getFunction().arg(function, getObjectSignature().object());
+				getFunction().arg(function, getObjectSignature().object());
 
 		this.owner = anonymousObject(this, ownerPtr, owner);
 	}
@@ -66,7 +66,7 @@ public class LocalBuilder extends CodeBuilder {
 			Obj sample) {
 
 		final ObjectOp newObject =
-			super.newObject(dirs, scope, ancestor, sample);
+				super.newObject(dirs, scope, ancestor, sample);
 
 		for (Dep dep : sample.getDeps()) {
 			newObject.dep(dirs, dep).fill(this, dirs);

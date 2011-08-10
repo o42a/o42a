@@ -94,7 +94,7 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 		}
 
 		this.localScope =
-			member(wrappedScope.toMember().getKey()).toLocal(dummyUser());
+				member(wrappedScope.toMember().getKey()).toLocal(dummyUser());
 
 		assert this.localScope != null :
 			"Can not wrap local scope: " + wrappedScope;

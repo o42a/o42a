@@ -67,12 +67,11 @@ public abstract class MemberRegistryLocalBase
 			return null;
 		}
 
-		final ExplicitLocalScope reproducedScope =
-			reproducedScope(
-					scope,
-					reproducer.distribute(),
-					owner,
-					scope.explicit());
+		final ExplicitLocalScope reproducedScope = reproducedScope(
+				scope,
+				reproducer.distribute(),
+				owner,
+				scope.explicit());
 
 		declareMember(reproducedScope.toMember());
 

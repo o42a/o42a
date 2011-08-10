@@ -102,7 +102,7 @@ public abstract class Array extends MaterializableArtifact<Array> {
 	protected void fullyResolveArtifact() {
 
 		final Resolver resolver =
-			getScope().getEnclosingScope().newResolver(content());
+				getScope().getEnclosingScope().newResolver(content());
 
 		getArrayTypeRef().resolveAll(resolver);
 		getInitializer().resolveAll(resolver);
@@ -139,7 +139,7 @@ public abstract class Array extends MaterializableArtifact<Array> {
 
 		// handle error
 		final Distributor distributor =
-			distributeIn(getScope().getEnclosingContainer());
+				distributeIn(getScope().getEnclosingContainer());
 
 		this.initializer = invalidArrayInitializer(initializer, distributor);
 		if (typeRef != null) {

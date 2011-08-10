@@ -68,7 +68,7 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		final String string =
-			ValueType.STRING.cast(stringValue).getDefiniteValue();
+				ValueType.STRING.cast(stringValue).getDefiniteValue();
 		final int length = string.length();
 		final long from;
 		final long to;
@@ -136,24 +136,24 @@ final class SubString extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs stringDirs =
-			dirs.dirs().value(ValueType.STRING, "string");
+				dirs.dirs().value(ValueType.STRING, "string");
 		final ValOp stringVal = string().op(host).writeValue(stringDirs);
 
 		final ValDirs fromDirs =
-			stringDirs.dirs().value(ValueType.INTEGER, "from");
+				stringDirs.dirs().value(ValueType.INTEGER, "from");
 		final ValOp fromVal = from().op(host).writeValue(fromDirs);
 
 		final ValDirs toDirs =
-			fromDirs.dirs().value(ValueType.INTEGER, "to");
+				fromDirs.dirs().value(ValueType.INTEGER, "to");
 		final ValOp toVal = from().op(host).writeValue(fromDirs);
 
 		final ValDirs substringDirs = toDirs.dirs().value(dirs);
 
 		final Code code = substringDirs.code();
 		final FuncPtr<SubStringFunc> funcPtr =
-			substringDirs.getGenerator().externalFunction(
-					"o42a_str_sub",
-					SUB_STRING);
+				substringDirs.getGenerator().externalFunction(
+						"o42a_str_sub",
+						SUB_STRING);
 		final SubStringFunc func = funcPtr.op(null, code);
 
 		final ValOp substring = func.substring(

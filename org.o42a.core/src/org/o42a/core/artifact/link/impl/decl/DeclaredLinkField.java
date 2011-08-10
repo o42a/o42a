@@ -95,7 +95,7 @@ public final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVarian
 			} else {
 
 				final TypeRef commonInheritant =
-					typeRef.commonDerivative(overriddenTypeRef);
+						typeRef.commonDerivative(overriddenTypeRef);
 
 				if (commonInheritant != null) {
 					typeRef = commonInheritant;
@@ -110,7 +110,7 @@ public final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVarian
 		}
 
 		return typeRef != null
-		? typeRef.upgradeScope(getEnclosingScope()) : null;
+				? typeRef.upgradeScope(getEnclosingScope()) : null;
 	}
 
 	TargetRef derivedTargetRef() {
@@ -122,7 +122,7 @@ public final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVarian
 		for (Field<Link> overridden : getOverridden()) {
 
 			final Field<Link> overriddenDefinition =
-				overridden.getLastDefinition();
+					overridden.getLastDefinition();
 
 			if (lastDefinition == null) {
 				result = overridden.getArtifact().getTargetRef();

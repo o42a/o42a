@@ -33,9 +33,9 @@ public final class Symbol {
 
 	private final MemberId memberId;
 	private final EnumMap<Accessor, Member> members =
-		new EnumMap<Accessor, Member>(Accessor.class);
+			new EnumMap<Accessor, Member>(Accessor.class);
 	private final EnumMap<Accessor, IdentityHashMap<Scope, Member>> all =
-		new EnumMap<Accessor, IdentityHashMap<Scope, Member>>(Accessor.class);
+			new EnumMap<Accessor, IdentityHashMap<Scope, Member>>(Accessor.class);
 
 	Symbol(MemberId memberId, Member member) {
 		this.memberId = memberId;

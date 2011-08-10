@@ -65,7 +65,7 @@ public class LocalRegistry extends MemberRegistry {
 			"Imperative field declaration expected: " + declaration;
 
 		final FieldBuilder variant =
-			createFieldBuilder(declaration, definition);
+				createFieldBuilder(declaration, definition);
 
 		if (variant == null) {
 			return null;

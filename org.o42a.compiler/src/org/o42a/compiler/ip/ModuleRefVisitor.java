@@ -38,9 +38,9 @@ import org.o42a.core.ref.type.StaticTypeRef;
 public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	public static final ModuleRefVisitor MODULE_REF_VISITOR =
-		new ModuleRefVisitor();
+			new ModuleRefVisitor();
 	public static final ModuleRefVisitor SAME_MODULE_REF_VISITOR =
-		new SameModuleRefVisitor();
+			new SameModuleRefVisitor();
 
 	private final OwnerVisitor ownerVisitor = new OwnerVisitor();
 

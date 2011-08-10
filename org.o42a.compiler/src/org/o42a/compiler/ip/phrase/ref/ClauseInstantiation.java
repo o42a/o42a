@@ -56,7 +56,7 @@ final class ClauseInstantiation extends Wrap {
 	protected Ref resolveWrapped() {
 
 		final AscendantsDefinition ascendants =
-			this.instance.getContext().ascendants(this, distribute());
+				this.instance.getContext().ascendants(this, distribute());
 
 		return new ClauseConstructor(
 				this.instance,
@@ -96,7 +96,7 @@ final class ClauseInstantiation extends Wrap {
 			assertCompatible(reproducer.getReproducingScope());
 
 			final AscendantsDefinition ascendants =
-				this.ascendants.reproduce(reproducer);
+					this.ascendants.reproduce(reproducer);
 
 			if (ascendants == null) {
 				return null;

@@ -71,7 +71,7 @@ public class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectValFunc function =
-			ptr().data(code).valueFunc(code).load(null, code);
+				ptr().data(code).valueFunc(code).load(null, code);
 		final ValOp result = function.call(dirs, body(code, body));
 
 		code.dump("Value: ", result.ptr());
@@ -83,7 +83,7 @@ public class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectCondFunc function =
-			ptr().data(code).requirementFunc(code).load(null, code);
+				ptr().data(code).requirementFunc(code).load(null, code);
 
 		function.call(code, body(code, body)).go(code, dirs);
 	}
@@ -92,7 +92,7 @@ public class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectValFunc function =
-			ptr().data(code).claimFunc(code).load(null, code);
+				ptr().data(code).claimFunc(code).load(null, code);
 
 		return function.call(dirs, body(code, body));
 	}
@@ -101,7 +101,7 @@ public class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectCondFunc function =
-			ptr().data(code).conditionFunc(code).load(null, code);
+				ptr().data(code).conditionFunc(code).load(null, code);
 
 		function.call(code, body(code, body)).go(code, dirs);
 	}
@@ -110,7 +110,7 @@ public class ObjectTypeOp extends IROp {
 
 		final Code code = dirs.code();
 		final ObjectValFunc function =
-			ptr().data(code).propositionFunc(code).load(null, code);
+				ptr().data(code).propositionFunc(code).load(null, code);
 
 		return function.call(dirs, body(code, body));
 	}

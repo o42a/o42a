@@ -84,7 +84,7 @@ public final class SentenceEnv extends StatementEnv {
 	@Override
 	protected ValueType<?> expectedType() {
 		return this.sentence.getBlock()
-		.getInitialEnv().getExpectedType();
+				.getInitialEnv().getExpectedType();
 	}
 
 }

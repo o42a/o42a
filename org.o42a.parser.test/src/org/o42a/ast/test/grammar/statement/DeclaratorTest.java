@@ -99,7 +99,7 @@ public class DeclaratorTest extends GrammarTestCase {
 
 		final DeclaratorNode declarator = parse("@foo " + sign + " bar ");
 		final DeclarableAdapterNode adapter =
-			to(DeclarableAdapterNode.class, declarator.getDeclarable());
+				to(DeclarableAdapterNode.class, declarator.getDeclarable());
 
 		assertRange(0, 4, adapter);
 		assertRange(0, 1, adapter.getPrefix());

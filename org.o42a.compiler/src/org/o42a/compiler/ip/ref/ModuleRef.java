@@ -50,7 +50,7 @@ public class ModuleRef extends Wrap {
 		for (;;) {
 
 			final Container enclosing =
-				container.getScope().getEnclosingContainer();
+					container.getScope().getEnclosingContainer();
 
 			if (enclosing.getScope().isTopScope()) {
 				if (path == null) {
@@ -61,7 +61,7 @@ public class ModuleRef extends Wrap {
 
 			if (path != null) {
 				path =
-					path.append(container.getScope().getEnclosingScopePath());
+						path.append(container.getScope().getEnclosingScopePath());
 			} else {
 				path = container.getScope().getEnclosingScopePath();
 			}

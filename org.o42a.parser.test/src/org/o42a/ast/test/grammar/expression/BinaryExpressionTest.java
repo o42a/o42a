@@ -110,7 +110,7 @@ public class BinaryExpressionTest extends GrammarTestCase {
 				new StringSource(getClass().getSimpleName(), text));
 
 		final ExpressionNode expression =
-			this.worker.parse(DECLARATIVE.simpleExpression());
+				this.worker.parse(DECLARATIVE.simpleExpression());
 
 		return this.worker.parse(
 				DECLARATIVE.binaryExpression(expression));

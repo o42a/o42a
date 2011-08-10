@@ -35,7 +35,7 @@ import org.o42a.codegen.data.Type;
 public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 
 	public static final RuntimeObjectType RUNTIME_OBJECT_TYPE =
-		new RuntimeObjectType();
+			new RuntimeObjectType();
 
 	private ObjectIRData data;
 	private StructRec<ObjectIRType.Op> sample;

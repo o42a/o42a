@@ -37,7 +37,7 @@ import org.o42a.util.ArrayUtil;
 public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 
 	private static final ReusedClauseParser REUSED_CLAUSE =
-		new ReusedClauseParser();
+			new ReusedClauseParser();
 
 	private final Grammar grammar;
 
@@ -52,7 +52,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		}
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
-			opening(context);
+				opening(context);
 
 		final ClauseKeyNode clauseKey = clauseKey(context);
 
@@ -62,7 +62,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 
 		final ReusedClauseNode[] reused = reused(context);
 		final SignNode<ClauseDeclaratorNode.Parenthesis> closing =
-			closing(context, opening);
+				closing(context, opening);
 		final StatementNode content = context.parse(this.grammar.statement());
 
 		return new ClauseDeclaratorNode(
@@ -81,10 +81,10 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		context.skip();
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
-			new SignNode<ClauseDeclaratorNode.Parenthesis>(
-					start,
-					context.current(),
-					ClauseDeclaratorNode.Parenthesis.OPENING);
+				new SignNode<ClauseDeclaratorNode.Parenthesis>(
+						start,
+						context.current(),
+						ClauseDeclaratorNode.Parenthesis.OPENING);
 
 		return context.skipComments(true, opening);
 	}
@@ -144,10 +144,10 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		context.acceptAll();
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> closing =
-			new SignNode<ClauseDeclaratorNode.Parenthesis>(
-					start,
-					context.current(),
-					ClauseDeclaratorNode.Parenthesis.CLOSING);
+				new SignNode<ClauseDeclaratorNode.Parenthesis>(
+						start,
+						context.current(),
+						ClauseDeclaratorNode.Parenthesis.CLOSING);
 
 		return context.acceptComments(false, closing);
 	}
@@ -166,10 +166,10 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 			context.acceptAll();
 
 			final SignNode<ReusedClauseNode.Separator> separator =
-				new SignNode<ReusedClauseNode.Separator>(
-						start,
-						context.current(),
-						ReusedClauseNode.Separator.OR);
+					new SignNode<ReusedClauseNode.Separator>(
+							start,
+							context.current(),
+							ReusedClauseNode.Separator.OR);
 
 			context.acceptComments(true, separator);
 

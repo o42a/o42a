@@ -30,7 +30,7 @@ import org.o42a.codegen.data.*;
 public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 
 	public static final DebugStackFrameType DEBUG_STACK_FRAME_TYPE =
-		new DebugStackFrameType();
+			new DebugStackFrameType();
 
 	private DebugStackFrameOp(StructWriter<DebugStackFrameOp> writer) {
 		super(writer);

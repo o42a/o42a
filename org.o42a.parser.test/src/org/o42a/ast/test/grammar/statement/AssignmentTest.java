@@ -49,7 +49,7 @@ public class AssignmentTest extends GrammarTestCase {
 		assertName("foo", assignment.getDestination());
 
 		final BinaryNode value =
-			to(BinaryNode.class, assignment.getValue());
+				to(BinaryNode.class, assignment.getValue());
 
 		assertEquals(BinaryOperator.ADD, value.getOperator());
 		assertName("bar", value.getLeftOperand());
@@ -61,7 +61,7 @@ public class AssignmentTest extends GrammarTestCase {
 
 		final AssignmentNode assignment = parse("foo + bar = baz");
 		final BinaryNode destination =
-			to(BinaryNode.class, assignment.getDestination());
+				to(BinaryNode.class, assignment.getDestination());
 
 		assertEquals(BinaryOperator.ADD, destination.getOperator());
 		assertName("foo", destination.getLeftOperand());

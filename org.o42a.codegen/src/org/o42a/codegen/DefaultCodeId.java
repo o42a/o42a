@@ -89,7 +89,7 @@ public class DefaultCodeId extends CodeId {
 		} else {
 
 			final StringBuilder newId =
-				new StringBuilder(len + localId.length() + 2);
+					new StringBuilder(len + localId.length() + 2);
 
 			newId.append(this.id);
 			clone.appendSeparator(newId, Separator.SUB, local.getStartsFrom());
@@ -136,7 +136,7 @@ public class DefaultCodeId extends CodeId {
 
 		final DefaultCodeId clone = clone();
 		final StringBuilder result =
-			new StringBuilder(this.id.length() + name.length() + 2);
+				new StringBuilder(this.id.length() + name.length() + 2);
 
 		result.append(this.id);
 		clone.appendSeparator(

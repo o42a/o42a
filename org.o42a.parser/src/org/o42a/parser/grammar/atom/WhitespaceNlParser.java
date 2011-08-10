@@ -26,7 +26,7 @@ import org.o42a.parser.ParserContext;
 public class WhitespaceNlParser implements Parser<Object> {
 
 	public static final WhitespaceNlParser WHITESPACE_NL =
-		new WhitespaceNlParser();
+			new WhitespaceNlParser();
 
 	private WhitespaceNlParser() {
 	}

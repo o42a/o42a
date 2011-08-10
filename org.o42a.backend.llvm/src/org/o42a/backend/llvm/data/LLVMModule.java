@@ -189,8 +189,8 @@ public final class LLVMModule {
 	public long pointerTo(Type<?> type) {
 
 		final ContainerAllocation<?> allocation =
-			(ContainerAllocation<?>) type.pointer(
-					getGenerator()).getAllocation();
+				(ContainerAllocation<?>) type.pointer(
+						getGenerator()).getAllocation();
 
 		return pointerTo(allocation.getTypePtr());
 	}

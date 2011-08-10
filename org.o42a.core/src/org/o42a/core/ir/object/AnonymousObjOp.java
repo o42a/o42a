@@ -86,8 +86,8 @@ final class AnonymousObjOp extends ObjectOp {
 				dirs.begin("field", "Field " + memberKey + " of " + this);
 		final Code code = subDirs.code();
 		final CodeId hostId =
-			code.id("field_host")
-			.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
+				code.id("field_host")
+				.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
 		final ObjOp ascendant = cast(
 				hostId,
 				subDirs,

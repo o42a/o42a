@@ -297,7 +297,7 @@ public class Path {
 		if (len == 0) {
 
 			final Clause clause =
-				reproducer.getReproducingScope().getContainer().toClause();
+					reproducer.getReproducingScope().getContainer().toClause();
 
 			if (clause == null) {
 				return outOfClausePath(SELF_PATH, SELF_PATH);
@@ -312,7 +312,7 @@ public class Path {
 
 			final PathFragment fragment = this.fragments[i];
 			final PathReproduction reproduction =
-				fragment.reproduce(location, reproducer, toScope);
+					fragment.reproduce(location, reproducer, toScope);
 
 			if (reproduction == null) {
 				return null;
@@ -326,7 +326,7 @@ public class Path {
 
 			final Path reproducedPath = reproduction.getReproducedPath();
 			final Container resolution =
-				reproducedPath.resolve(location, dummyUser(), toScope);
+					reproducedPath.resolve(location, dummyUser(), toScope);
 
 			if (resolution == null) {
 				return null;

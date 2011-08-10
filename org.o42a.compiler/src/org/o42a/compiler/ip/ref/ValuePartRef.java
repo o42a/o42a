@@ -45,7 +45,7 @@ import org.o42a.core.value.ValueType;
 public final class ValuePartRef extends ObjectConstructor {
 
 	static final HashMap<String, RefValuePart> partsById =
-		new HashMap<String, RefValuePart>();
+			new HashMap<String, RefValuePart>();
 
 	public static Ref valuePartRef(
 			IntrinsicRefNode ref,

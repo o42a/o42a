@@ -31,7 +31,7 @@ import org.o42a.codegen.data.backend.DataWriter;
 public abstract class Functions {
 
 	private final HashMap<String, FuncPtr<?>> externals =
-		new HashMap<String, FuncPtr<?>>();
+			new HashMap<String, FuncPtr<?>>();
 
 	private final Generator generator;
 

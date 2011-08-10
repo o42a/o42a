@@ -118,7 +118,7 @@ public abstract class MemberLocal extends Member {
 			ownerObject + " is not object";
 
 		return toLocal(owner.getScope().dummyResolver())
-		.propagateTo(ownerObject).toMember();
+				.propagateTo(ownerObject).toMember();
 	}
 
 	@Override

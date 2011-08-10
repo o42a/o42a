@@ -91,12 +91,12 @@ public abstract class ValueType<T> {
 		final Distributor distributor = scope.distribute();
 		@SuppressWarnings("unchecked")
 		final Field<Obj> wrapperField =
-			(Field<Obj>) wrapper(location.getContext().getIntrinsics())
-			.getScope().toField();
+				(Field<Obj>) wrapper(location.getContext().getIntrinsics())
+				.getScope().toField();
 
 		return ROOT_PATH.append(wrapperField.getKey())
-		.target(location, distributor)
-		.toStaticTypeRef();
+				.target(location, distributor)
+				.toStaticTypeRef();
 	}
 
 	public final Value<T> constantValue(T value) {

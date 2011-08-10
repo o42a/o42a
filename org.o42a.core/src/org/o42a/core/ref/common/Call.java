@@ -68,7 +68,7 @@ public class Call extends ObjectConstructor {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
-			this.ascendants.reproduce(reproducer);
+				this.ascendants.reproduce(reproducer);
 
 		if (ascendants == null) {
 			return null;

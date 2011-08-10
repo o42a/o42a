@@ -96,7 +96,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 		final DebugEnvOp debugEnv = function.debugEnv(code);
 		final StructRecOp<DebugStackFrameOp> envStackFrame =
-			debugEnv.stackFrame(code);
+				debugEnv.stackFrame(code);
 		final DebugStackFrameOp prevStackFrame = envStackFrame.load(null, code);
 		final DebugStackFrameOp stackFrame = allocateStackFrame(code, null);
 
@@ -152,9 +152,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		final DebugEnvOp debugEnv = function.debugEnv(code);
 
 		final StructRecOp<DebugStackFrameOp> envStackFrame =
-			debugEnv.stackFrame(code);
+				debugEnv.stackFrame(code);
 		final DebugStackFrameOp prevStackFrame =
-			envStackFrame.load(null, code).prev(code).load(null, code);
+				envStackFrame.load(null, code).prev(code).load(null, code);
 		final AnyOp comment = prevStackFrame.comment(code).load(null, code);
 
 		prevStackFrame.comment(code).store(code, code.nullPtr());
@@ -187,9 +187,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		}
 
 		final FuncPtr<DebugNameFunc> func =
-			this.generator.externalFunction(
-					"o42a_dbg_mem_name",
-					DEBUG_NAME);
+				this.generator.externalFunction(
+						"o42a_dbg_mem_name",
+						DEBUG_NAME);
 
 		func.op(null, code()).call(
 				code(),
@@ -206,9 +206,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		}
 
 		final FuncPtr<DebugNameFunc> debugFunc =
-			this.generator.externalFunction(
-					"o42a_dbg_func_name",
-					DEBUG_NAME);
+				this.generator.externalFunction(
+						"o42a_dbg_func_name",
+						DEBUG_NAME);
 
 		debugFunc.op(null, code()).call(
 				code(),
@@ -238,9 +238,9 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		}
 
 		final FuncPtr<DebugDumpFunc> func =
-			this.generator.externalFunction(
-					"o42a_dbg_dump_mem",
-					DEBUG_DUMP);
+				this.generator.externalFunction(
+						"o42a_dbg_dump_mem",
+						DEBUG_DUMP);
 		final Code code = code();
 
 		func.op(null, code).call(

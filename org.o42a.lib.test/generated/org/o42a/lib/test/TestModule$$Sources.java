@@ -68,7 +68,7 @@ public final class TestModule$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.lib.test.run.RunTests$$Sources(this))
 			.getScope().toField(),
-		};
+				};
 	}
 
 }

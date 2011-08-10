@@ -59,8 +59,8 @@ public abstract class Derivation {
 
 	};
 
-	public static final Derivation MEMBER_OVERRIDE =
-		new Derivation(IMPLICIT_MASK | 0x01) {
+	public static final Derivation MEMBER_OVERRIDE = new Derivation(
+			IMPLICIT_MASK | 0x01) {
 
 		@Override
 		public String toString() {
@@ -80,8 +80,8 @@ public abstract class Derivation {
 
 	};
 
-	public static final Derivation IMPLICIT_SAMPLE =
-		new Derivation(IMPLICIT_MASK | 0x04) {
+	public static final Derivation IMPLICIT_SAMPLE = new Derivation(
+			IMPLICIT_MASK | 0x04) {
 
 		@Override
 		public String toString() {
@@ -98,8 +98,8 @@ public abstract class Derivation {
 
 	};
 
-	public static final Derivation EXPLICIT_SAMPLE =
-		new Derivation(PROPAGATION_MASK | 0x02) {
+	public static final Derivation EXPLICIT_SAMPLE = new Derivation(
+			PROPAGATION_MASK | 0x02) {
 
 		@Override
 		public String toString() {
@@ -113,8 +113,8 @@ public abstract class Derivation {
 
 	};
 
-	public static final Derivation IMPLICIT_PROPAGATION =
-		new Derivation(IMPLICIT_MASK) {
+	public static final Derivation IMPLICIT_PROPAGATION = new Derivation(
+			IMPLICIT_MASK) {
 
 		@Override
 		public String toString() {
@@ -131,8 +131,8 @@ public abstract class Derivation {
 
 	};
 
-	public static final Derivation PROPAGATION =
-		new Derivation(PROPAGATION_MASK) {
+	public static final Derivation PROPAGATION = new Derivation(
+			PROPAGATION_MASK) {
 
 		@Override
 		public String toString() {

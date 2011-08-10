@@ -35,10 +35,10 @@ import org.o42a.parser.ParserContext;
 public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 
 	public static final DefinitionCastParser DEFINITION_CAST =
-		new DefinitionCastParser();
+			new DefinitionCastParser();
 
 	private static final DefinitionKindParser DEFINITION_KIND =
-		new DefinitionKindParser();
+			new DefinitionKindParser();
 
 	@Override
 	public DefinitionCastNode parse(ParserContext context) {
@@ -46,7 +46,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 		case '`':
 
 			final SignNode<DefinitionKind> kind =
-				context.parse(DEFINITION_KIND);
+					context.parse(DEFINITION_KIND);
 
 			if (kind == null) {
 				return null;
@@ -104,7 +104,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 				context.current(),
 				Parenthesis.CLOSING_PARENTHESIS);
 		final DefinitionCastNode result =
-			new DefinitionCastNode(opening, kind, type, closing);
+				new DefinitionCastNode(opening, kind, type, closing);
 
 		return context.acceptComments(false, result);
 	}
@@ -130,10 +130,10 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 			}
 
 			final SignNode<DefinitionKind> result =
-				new SignNode<DefinitionKind>(
-						start,
-						context.firstUnaccepted(),
-						targetKind);
+					new SignNode<DefinitionKind>(
+							start,
+							context.firstUnaccepted(),
+							targetKind);
 
 			return context.acceptComments(false, result);
 		}

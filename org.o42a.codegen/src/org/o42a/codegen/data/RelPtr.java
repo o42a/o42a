@@ -35,9 +35,9 @@ public final class RelPtr {
 		this.pointer = pointer;
 		this.relativeTo = relativeTo;
 		this.id =
-			this.pointer.getId()
-			.detail("relative_to")
-			.detail(relativeTo.getId());
+				this.pointer.getId()
+				.detail("relative_to")
+				.detail(relativeTo.getId());
 	}
 
 	public final CodeId getId() {

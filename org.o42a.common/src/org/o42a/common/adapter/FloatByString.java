@@ -268,7 +268,7 @@ public abstract strictfp class FloatByString extends ByString<Double> {
 	protected ValOp parse(ValDirs dirs, ValOp inputVal) {
 
 		final ParseFunc parseFunc =
-			parseFunc(dirs.getGenerator()).op(null, dirs.code());
+				parseFunc(dirs.getGenerator()).op(null, dirs.code());
 
 		return parseFunc.parse(dirs, inputVal);
 	}

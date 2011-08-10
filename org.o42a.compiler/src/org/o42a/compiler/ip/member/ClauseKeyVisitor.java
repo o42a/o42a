@@ -42,10 +42,10 @@ final class ClauseKeyVisitor
 		extends AbstractClauseKeyVisitor<ClauseDeclaration, Distributor> {
 
 	public static final ClauseKeyVisitor CLAUSE_KEY_VISITOR =
-		new ClauseKeyVisitor();
+			new ClauseKeyVisitor();
 
 	private static final ImpliedScopeChecker IMPLIED_SCOPE_CHECKER =
-		new ImpliedScopeChecker();
+			new ImpliedScopeChecker();
 
 	private ClauseKeyVisitor() {
 	}

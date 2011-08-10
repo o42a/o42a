@@ -87,22 +87,22 @@ public final class BracesWithinDeclaratives extends Statement {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final LocalScope reproducedScope =
-			reproducer.getMemberRegistry().reproduceLocalScope(
-					reproducer,
-					this.block.getScope());
+				reproducer.getMemberRegistry().reproduceLocalScope(
+						reproducer,
+						this.block.getScope());
 
 		if (reproducedScope == null) {
 			return null;
 		}
 
 		final ImperativeReproducer imperativeReproducer =
-			new ImperativeReproducer(
-					this.block,
-					reproducedScope,
-					reproducer);
+				new ImperativeReproducer(
+						this.block,
+						reproducedScope,
+						reproducer);
 
 		final ImperativeBlock block =
-			this.block.reproduce(imperativeReproducer);
+				this.block.reproduce(imperativeReproducer);
 
 		if (block == null) {
 			return null;

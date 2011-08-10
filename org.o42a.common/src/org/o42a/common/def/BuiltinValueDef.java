@@ -93,10 +93,10 @@ public class BuiltinValueDef extends ValueDef {
 	protected void fullyResolveDef(Resolver resolver) {
 
 		final Obj object =
-			getRescoper()
-			.rescope(resolver.getScope())
-			.getContainer()
-			.toObject();
+				getRescoper()
+				.rescope(resolver.getScope())
+				.getContainer()
+				.toObject();
 		final Obj builtin = this.builtin.toObject();
 
 		if (builtin != object) {

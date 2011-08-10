@@ -101,7 +101,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		if (this.localScope == null) {
 
 			final Statement reproduction =
-				this.definition.reproduce(reproducer);
+					this.definition.reproduce(reproducer);
 
 			if (reproduction != null) {
 
@@ -116,9 +116,9 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 		}
 
 		final LocalScope reproducedScope =
-			reproducer.getMemberRegistry().reproduceLocalScope(
-					reproducer,
-					this.localScope);
+				reproducer.getMemberRegistry().reproduceLocalScope(
+						reproducer,
+						this.localScope);
 
 		if (reproducedScope == null) {
 			return;
@@ -153,7 +153,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	Block<?> parentheses(Group group) {
 
 		final SentenceFactory<?, ?, ?> sentenceFactory =
-			group.getStatements().getSentenceFactory();
+				group.getStatements().getSentenceFactory();
 		final Block<?> definition = sentenceFactory.groupParentheses(
 				group,
 				new BlockDistributor(group, this),
@@ -168,7 +168,7 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 
 		final Statements<?> statements = group.getStatements();
 		final SentenceFactory<?, ?, ?> sentenceFactory =
-			statements.getSentenceFactory();
+				statements.getSentenceFactory();
 		final ImperativeBlock definition;
 
 		if (group.getScope().toLocal() != null) {

@@ -50,7 +50,7 @@ public class ParentRefTest extends GrammarTestCase {
 	public void parentMember() {
 
 		final MemberRefNode result =
-			to(MemberRefNode.class, parse(ref(), "foo::bar"));
+				to(MemberRefNode.class, parse(ref(), "foo::bar"));
 
 		assertThat(result.getName().getName(), is("bar"));
 

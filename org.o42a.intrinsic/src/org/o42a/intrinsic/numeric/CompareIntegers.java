@@ -51,11 +51,11 @@ public final class CompareIntegers extends CompareNumbers<Long> {
 
 		final Code code = dirs.code();
 		final Int64recOp leftPtr =
-			leftVal.rawValue(code.id("left_int_ptr"), code);
+				leftVal.rawValue(code.id("left_int_ptr"), code);
 		final Int64op left = leftPtr.load(code.id("left"), code);
 
 		final Int64recOp rightPtr =
-			rightVal.rawValue(code.id("right_int_ptr"), code);
+				rightVal.rawValue(code.id("right_int_ptr"), code);
 		final Int64op right = rightPtr.load(code.id("right"), code);
 
 		final BoolOp gt = left.gt(code.id("gt"), code, right);

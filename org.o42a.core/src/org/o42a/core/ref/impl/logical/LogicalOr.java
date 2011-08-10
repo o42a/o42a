@@ -87,7 +87,7 @@ public final class LogicalOr extends Logical {
 		for (int i = 0; i < variants.length; ++i) {
 
 			final Logical reproduced =
-				this.variants[i].reproduce(reproducer);
+					this.variants[i].reproduce(reproducer);
 
 			if (reproduced == null) {
 				return null;

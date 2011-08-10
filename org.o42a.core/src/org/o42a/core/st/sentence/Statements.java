@@ -138,7 +138,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			FieldDefinition definition) {
 
 		final FieldBuilder builder =
-			getMemberRegistry().newField(declaration, definition);
+				getMemberRegistry().newField(declaration, definition);
 
 		if (builder == null) {
 			return null;
@@ -158,7 +158,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 			"Group declaration expected: " + declaration;
 
 		final ClauseBuilder builder =
-			getMemberRegistry().newClause(declaration);
+				getMemberRegistry().newClause(declaration);
 
 		if (builder == null) {
 			return null;
@@ -328,7 +328,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 		final S reproduction = sentence.alternative(this, isOpposite());
 		final Reproducer statementsReproducer =
-			reproducer.reproduceIn(reproduction);
+				reproducer.reproduceIn(reproduction);
 
 		for (Statement statement : getStatements()) {
 
@@ -358,10 +358,10 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 		@SuppressWarnings("unchecked")
 		final Block<S> parentheses =
-			getSentence().getSentenceFactory().createParentheses(
-					location,
-					distributor,
-					(S) this);
+				getSentence().getSentenceFactory().createParentheses(
+						location,
+						distributor,
+						(S) this);
 
 		if (index < 0) {
 			addStatement(parentheses);

@@ -59,7 +59,7 @@ public final class ObjectScopeIR extends ScopeIR {
 	protected void targetAllocated() {
 
 		final Container enclosingContainer =
-			getScope().getEnclosingContainer();
+				getScope().getEnclosingContainer();
 
 		if (enclosingContainer == null) {
 			return;

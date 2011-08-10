@@ -58,7 +58,7 @@ final class IntegerValueType extends ValueType<Long> {
 		@Override
 		protected CodeId constId(Long value) {
 			return getGenerator().id("CONST").sub("INTEGER")
-			.sub(Long.toString(value));
+					.sub(Long.toString(value));
 		}
 
 	}

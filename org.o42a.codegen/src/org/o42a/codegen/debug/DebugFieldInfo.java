@@ -30,7 +30,7 @@ import org.o42a.codegen.data.*;
 public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 	public static final FieldInfoType DEBUG_FIELD_INFO_TYPE =
-		new FieldInfoType();
+			new FieldInfoType();
 
 	private final Data<?> fieldData;
 

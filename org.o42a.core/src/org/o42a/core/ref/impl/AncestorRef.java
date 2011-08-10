@@ -201,13 +201,13 @@ public final class AncestorRef extends Ref {
 			final Code code = dirs.code();
 			final AncestorRef ref = (AncestorRef) getRef();
 			final ObjectOp object =
-				ref.ref.op(host()).target(dirs).materialize(dirs);
+					ref.ref.op(host()).target(dirs).materialize(dirs);
 			final ObjectTypeOp ancestorData =
-				object.objectType(code).ptr()
-				.data(code)
-				.ancestorType(code)
-				.load(null, code)
-				.op(getBuilder(), object.getPrecision());
+					object.objectType(code).ptr()
+					.data(code)
+					.ancestorType(code)
+					.load(null, code)
+					.op(getBuilder(), object.getPrecision());
 
 			return ancestorData.object(code, ref.getResolution().materialize());
 		}

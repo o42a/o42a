@@ -33,9 +33,9 @@ import org.o42a.parser.ParserContext;
 public class SeparatorParser implements Parser<SeparatorNodes> {
 
 	public static final SeparatorParser SEPARATOR =
-		new SeparatorParser(false);
+			new SeparatorParser(false);
 	public static final SeparatorParser SEPARATOR_NL =
-		new SeparatorParser(true);
+			new SeparatorParser(true);
 
 	private final boolean allowNewLine;
 

@@ -43,7 +43,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 
 		final Expectations expectations = context.expect(';').expect('|');
 		final ArrayList<AlternativeNode> alternatives =
-			new ArrayList<AlternativeNode>();
+				new ArrayList<AlternativeNode>();
 		SignNode<Separator> separatorSign = null;
 
 		for (;;) {
@@ -51,7 +51,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 			final SeparatorNodes separators = context.skipComments(true);
 			final FixedPosition conjunctionStart = context.current().fix();
 			final SerialNode[] alt =
-				expectations.parse(this.grammar.conjunction());
+					expectations.parse(this.grammar.conjunction());
 			final AlternativeNode alternative;
 
 			if (alt != null || separatorSign != null) {

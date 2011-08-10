@@ -57,7 +57,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
 			final RecOp<?, ?> fieldOp =
-				getWriter().field(getId().sub(field.getId()), code, field);
+					getWriter().field(getId().sub(field.getId()), code, field);
 
 			fieldOp.allocated(code, this);
 		}

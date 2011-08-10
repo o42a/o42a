@@ -43,7 +43,7 @@ public class Declaratives extends Statements<Declaratives> {
 	private StatementEnv lastDefinitionEnv;
 	private DefinitionTargets definitionTargets;
 	private final ArrayList<StatementEnv> statementEnvs =
-		new ArrayList<StatementEnv>(1);
+			new ArrayList<StatementEnv>(1);
 
 	Declaratives(
 			LocationInfo location,
@@ -229,7 +229,7 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 
 		final DefinitionTarget ambiguity =
-			targets.first(declaration.getDefinitionKey());
+				targets.first(declaration.getDefinitionKey());
 
 		if (ambiguity != null) {
 			if (declaration.isValue()) {
@@ -282,7 +282,7 @@ public class Declaratives extends Statements<Declaratives> {
 		@Override
 		protected ValueType<?> expectedType() {
 			return getSentence().getBlock()
-			.getInitialEnv().getExpectedType();
+					.getInitialEnv().getExpectedType();
 		}
 
 	}

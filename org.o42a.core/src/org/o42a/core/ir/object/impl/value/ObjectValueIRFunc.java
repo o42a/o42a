@@ -96,7 +96,7 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 
 		final ObjectIR objectIR = host.getAscendant().ir(getGenerator());
 		final ObjectTypeIR typeIR =
-			objectIR.getBodyType().getObjectIR().getTypeIR();
+				objectIR.getBodyType().getObjectIR().getTypeIR();
 		final ObjectIRData data = typeIR.getObjectData();
 
 		return func(data).getValue();

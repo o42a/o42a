@@ -50,10 +50,10 @@ public class NamedBlockParser implements Parser<NamedBlockNode> {
 		context.skip();
 
 		final SignNode<NamedBlockNode.Separator> separator =
-			new SignNode<NamedBlockNode.Separator>(
-					start,
-					context.current(),
-					NamedBlockNode.Separator.COLON);
+				new SignNode<NamedBlockNode.Separator>(
+						start,
+						context.current(),
+						NamedBlockNode.Separator.COLON);
 
 		context.skipComments(true, separator);
 

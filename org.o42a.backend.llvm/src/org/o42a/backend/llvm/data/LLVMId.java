@@ -111,8 +111,8 @@ public abstract class LLVMId {
 		int result = 1;
 
 		result =
-			prime * result
-			+ ((this.globalId == null) ? 0 : this.globalId.hashCode());
+				prime * result
+				+ ((this.globalId == null) ? 0 : this.globalId.hashCode());
 		result = prime * result + this.kind.hashCode();
 
 		return result;

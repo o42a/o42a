@@ -59,7 +59,7 @@ public class DefinitionTest extends GrammarTestCase {
 		assertNull(result.getDefinitionType());
 
 		final AscendantNode[] ascendants =
-			to(AscendantsNode.class, result.getDefinition()).getAscendants();
+				to(AscendantsNode.class, result.getDefinition()).getAscendants();
 
 		assertName("bar", ascendants[0].getAscendant());
 	}
@@ -84,7 +84,7 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
 
 		final AscendantNode[] ascendants =
-			to(AscendantsNode.class, result.getDefinitionType()).getAscendants();
+				to(AscendantsNode.class, result.getDefinitionType()).getAscendants();
 
 		assertName("bar", ascendants[0].getAscendant());
 		assertName("baz", result.getDefinition());
@@ -117,7 +117,7 @@ public class DefinitionTest extends GrammarTestCase {
 				new StringSource(getClass().getSimpleName(), text));
 
 		final MemberRefNode field =
-			to(MemberRefNode.class, this.worker.parse(ref()));
+				to(MemberRefNode.class, this.worker.parse(ref()));
 
 		return this.worker.parse(DECLARATIVE.declarator(field));
 	}

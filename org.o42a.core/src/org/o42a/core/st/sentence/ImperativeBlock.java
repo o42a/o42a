@@ -61,11 +61,10 @@ public final class ImperativeBlock extends Block<Imperatives> {
 			ImperativeFactory sentenceFactory,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
 
-		final LocalScope scope =
-			enclosing.getMemberRegistry().newLocalScope(
-					location,
-					distributor,
-					name);
+		final LocalScope scope = enclosing.getMemberRegistry().newLocalScope(
+				location,
+				distributor,
+				name);
 
 		if (scope == null) {
 			return null;
@@ -292,7 +291,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		if (!isTopLevel()) {
 
 			final ImperativeBlock reproduction =
-				reproducer.getStatements().braces(this, getName());
+					reproducer.getStatements().braces(this, getName());
 
 			reproduceSentences(reproducer, reproduction);
 

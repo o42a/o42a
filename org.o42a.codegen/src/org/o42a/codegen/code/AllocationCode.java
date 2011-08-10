@@ -156,7 +156,7 @@ public final class AllocationCode extends Code {
 			return this.writer;
 		}
 		return this.writer =
-			getEnclosing().writer().allocationBlock(this, getId());
+				getEnclosing().writer().allocationBlock(this, getId());
 	}
 
 	private Code alt(Code alt) {
