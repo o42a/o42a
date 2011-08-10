@@ -21,12 +21,13 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
 
 
@@ -191,25 +192,24 @@ final class DeclaredPlainClause extends PlainClause {
 
 	private MemberKey overridden() {
 
-		final Ref overridden = getBuilder().getOverridden();
-		final Path path = overridden.getPath();
+		final Obj enclosing = getScope().getEnclosingScope().toObject();
+		final StaticTypeRef declaredIn = getBuilder().getDeclaredIn();
 
-		if (path == null) {
-			getLogger().invalidOverridden(overridden);
+		final Member member = enclosing.objectMember(
+				Accessor.INHERITANT,
+				getBuilder().getOverridden(),
+				declaredIn != null ? declaredIn.typeObject(dummyUser()) : null);
+
+		if (member == null) {
+			getLogger().error(
+					"unknown_field_overridder",
+					this,
+					"Can not override unknown field %s",
+					getBuilder().getOverridden());
 			return null;
 		}
 
-		final OverriddenChecker checker = new OverriddenChecker(overridden);
-
-		if (path.walk(
-				overridden,
-				dummyUser(),
-				getEnclosingScope(),
-				checker) == null) {
-			return null;
-		}
-
-		return checker.getOverriddenKey();
+		return member.getKey();
 	}
 
 }

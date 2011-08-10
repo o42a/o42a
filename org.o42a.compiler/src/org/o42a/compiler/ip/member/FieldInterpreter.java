@@ -20,25 +20,17 @@
 package org.o42a.compiler.ip.member;
 
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.RefVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.Statements;
 
 
 public class FieldInterpreter {
-
-	static final AdapterFieldVisitor ADAPTER_FIELD_VISITOR =
-			new AdapterFieldVisitor();
 
 	public static void field(
 			Interpreter ip,
@@ -90,26 +82,6 @@ public class FieldInterpreter {
 	}
 
 	private FieldInterpreter() {
-	}
-
-	private static final class AdapterFieldVisitor extends RefVisitor {
-
-		AdapterFieldVisitor() {
-			init(Interpreter.PLAIN_IP);
-		}
-
-		@Override
-		protected StaticTypeRef declaredIn(
-				RefNode declaredInNode,
-				Distributor p) {
-			return null;
-		}
-
-		@Override
-		protected RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
-			return Interpreter.PLAIN_IP.refVisitor();
-		}
-
 	}
 
 }

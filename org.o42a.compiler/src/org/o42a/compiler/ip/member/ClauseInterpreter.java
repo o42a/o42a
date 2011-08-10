@@ -21,8 +21,8 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.member.ClauseKeyVisitor.CLAUSE_KEY_VISITOR;
-import static org.o42a.compiler.ip.member.OverriderVisitor.DECLARABLE_VISITOR;
-import static org.o42a.compiler.ip.member.OverriderVisitor.OVERRIDER_VISITOR;
+import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
+import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
@@ -51,7 +51,9 @@ public class ClauseInterpreter {
 				new Placed(context, declarator, statements.nextDistributor())
 				.distribute();
 		final ClauseDeclaration declaration =
-				declarator.getClauseKey().accept(CLAUSE_KEY_VISITOR, distributor);
+				declarator.getClauseKey().accept(
+						CLAUSE_KEY_VISITOR,
+						distributor);
 
 		if (declaration == null) {
 			return;
@@ -102,27 +104,20 @@ public class ClauseInterpreter {
 			return null;
 		}
 
-		final Ref overridden = declarator.getDeclarable().accept(
-				DECLARABLE_VISITOR,
-				declaration.distribute());
-
-		if (overridden == null) {
-			return null;
-		}
-
-		final ClauseBuilder builder =
+		ClauseBuilder builder =
 				p.clause(declaration.setKind(ClauseKind.OVERRIDER));
 
+		builder = declarator.getDeclarable().accept(
+				OVERRIDER_DECLARABLE_VISITOR,
+				builder);
 		if (builder == null) {
 			return null;
 		}
-
 		if (target.isPrototype()) {
-			builder.prototype();
+			builder = builder.prototype();
 		}
-		builder.setOverridden(overridden);
 
-		return definition.accept(OVERRIDER_VISITOR, builder);
+		return definition.accept(OVERRIDER_DEFINITION_VISITOR, builder);
 	}
 
 	static ClauseBuilder reuseClauses(

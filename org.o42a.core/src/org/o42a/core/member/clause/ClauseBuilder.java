@@ -25,13 +25,13 @@ import static org.o42a.util.ArrayUtil.append;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
-import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;
@@ -44,12 +44,13 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private final MemberRegistry memberRegistry;
 	private final ClauseDeclaration declaration;
 
-	private boolean mandatory;
-	private Ref overridden;
-	private boolean prototype;
+	private MemberId overridden;
+	private StaticTypeRef declaredIn;
 	private AscendantsDefinition ascendants;
 	private Ref[] reusedClauses = NOTHING_REUSED;
 	private BlockBuilder declarations;
+	private boolean mandatory;
+	private boolean prototype;
 	private boolean assignment;
 	private boolean substitution;
 
@@ -89,6 +90,10 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this.declaration.getContainer();
 	}
 
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
+	}
+
 	public final ClauseDeclaration getDeclaration() {
 		return this.declaration;
 	}
@@ -102,14 +107,25 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this;
 	}
 
-	public final Ref getOverridden() {
+	public final MemberId getOverridden() {
 		return this.overridden;
 	}
 
-	public final ClauseBuilder setOverridden(Ref overridden) {
+	public final ClauseBuilder setOverridden(MemberId overridden) {
 		assert getDeclaration().getKind() == ClauseKind.OVERRIDER :
 			"Field override expected";
 		this.overridden = overridden;
+		return this;
+	}
+
+	public final StaticTypeRef getDeclaredIn() {
+		return this.declaredIn;
+	}
+
+	public final ClauseBuilder setDeclaredIn(StaticTypeRef declaredIn) {
+		assert getDeclaration().getKind() == ClauseKind.OVERRIDER :
+			"Field override expected";
+		this.declaredIn = declaredIn;
 		return this;
 	}
 
