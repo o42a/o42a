@@ -80,7 +80,7 @@ public abstract class Logical extends Scoped {
 		}
 
 		final ArrayList<Logical> newClaims =
-			new ArrayList<Logical>(claims.length);
+				new ArrayList<Logical>(claims.length);
 
 		for (Logical claim : claims) {
 			claim.assertCompatible(scope);
@@ -139,7 +139,7 @@ public abstract class Logical extends Scoped {
 		}
 
 		final ArrayList<Logical> newVariants =
-			new ArrayList<Logical>(variants.length);
+				new ArrayList<Logical>(variants.length);
 
 		for (Logical variant : variants) {
 

@@ -63,8 +63,8 @@ public class LLVMDataWriter implements DataWriter {
 	public <S extends StructOp<S>> DataAllocation<S> nullPtr(Type<S> type) {
 
 		final ContainerAllocation<S> typeAlloc =
-			(ContainerAllocation<S>) type.pointer(type.getGenerator())
-			.getAllocation();
+				(ContainerAllocation<S>) type.pointer(type.getGenerator())
+				.getAllocation();
 		final long nativePtr = nullStructPtr(typeAlloc.getTypePtr());
 
 		return new ContainerAllocation.Null<S>(
@@ -112,8 +112,8 @@ public class LLVMDataWriter implements DataWriter {
 			DataAllocation<S> allocation,
 			Global<S, ?> global) {
 
-		ContainerAllocation.Global<S> alloc =
-			(ContainerAllocation.Global<S>) allocation;
+		final ContainerAllocation.Global<S> alloc =
+				(ContainerAllocation.Global<S>) allocation;
 		final long dataPtr = pull().getNativePtr();
 
 		writeGlobal(alloc.getNativePtr(), dataPtr);
@@ -153,7 +153,7 @@ public class LLVMDataWriter implements DataWriter {
 			DataAllocation<AnyOp> valueAllocation) {
 
 		final LLVMDataAllocation<?> alloc =
-			(LLVMDataAllocation<?>) valueAllocation;
+				(LLVMDataAllocation<?>) valueAllocation;
 
 		writePtrAsInt64(
 				getModule().getNativePtr(), getStructPtr(),

@@ -51,7 +51,7 @@ public abstract class IntegerByString extends ByString<Long> {
 	protected ValOp parse(ValDirs dirs, ValOp inputVal) {
 
 		final ParseWithRadixFunc parseFunc =
-			parseFunc(dirs.getGenerator()).op(null, dirs.code());
+				parseFunc(dirs.getGenerator()).op(null, dirs.code());
 
 		return parseFunc.parse(dirs, inputVal, 10);
 	}

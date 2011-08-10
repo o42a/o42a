@@ -64,7 +64,7 @@ public class StatementParser implements Parser<StatementNode> {
 			}
 
 			final ExpressionNode expression =
-				context.parse(this.grammar.expression());
+					context.parse(this.grammar.expression());
 
 			if (expression != null) {
 				logUnexpected(context, firstUnexpected, start);
@@ -95,7 +95,7 @@ public class StatementParser implements Parser<StatementNode> {
 		case '@':
 
 			final DeclarableAdapterNode declarableAdapter =
-				context.parse(declarableAdapter());
+					context.parse(declarableAdapter());
 
 			if (declarableAdapter == null) {
 				return null;
@@ -121,7 +121,7 @@ public class StatementParser implements Parser<StatementNode> {
 		if (this.grammar.isImperative() && context.next() == '=') {
 
 			final AssignmentNode assignment =
-				context.parse(assignment(expression));
+					context.parse(assignment(expression));
 
 			if (assignment != null) {
 				return assignment;
@@ -132,14 +132,14 @@ public class StatementParser implements Parser<StatementNode> {
 			final DeclarableNode declarable = (DeclarableNode) expression;
 
 			final NamedBlockNode namedBlock =
-				parseNamedBlock(context, declarable);
+					parseNamedBlock(context, declarable);
 
 			if (namedBlock != null) {
 				return namedBlock;
 			}
 
 			final DeclaratorNode declarator =
-				context.parse(this.grammar.declarator(declarable));
+					context.parse(this.grammar.declarator(declarable));
 
 			if (declarator != null) {
 				return declarator;

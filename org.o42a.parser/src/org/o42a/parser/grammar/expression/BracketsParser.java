@@ -55,7 +55,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 		SeparatorNodes prevSeparators = null;
 
 		final Expectations expectations =
-			context.expectNothing().expect(',').expect(']');
+				context.expectNothing().expect(',').expect(']');
 
 		for (;;) {
 
@@ -69,7 +69,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 			} else if (separator != null) {
 
 				final ArgumentNode emptyArg =
-					new ArgumentNode(separator.getEnd());
+						new ArgumentNode(separator.getEnd());
 
 				arguments.add(emptyArg);
 			}
@@ -104,7 +104,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 			if (argument == null && separator == null) {
 
 				final ArgumentNode emptyArg =
-					new ArgumentNode(opening.getEnd());
+						new ArgumentNode(opening.getEnd());
 
 				emptyArg.addComments(separators);
 				arguments.add(emptyArg);
@@ -138,7 +138,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 		context.skip();
 
 		final SignNode<Bracket> opening =
-			new SignNode<Bracket>(start, context.current(), OPENING_BRACKET);
+				new SignNode<Bracket>(start, context.current(), OPENING_BRACKET);
 
 		context.skipComments(true, opening);
 

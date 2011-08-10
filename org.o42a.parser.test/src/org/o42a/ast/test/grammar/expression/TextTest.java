@@ -82,7 +82,7 @@ public class TextTest extends GrammarTestCase {
 	public void mixedLiteralsText() {
 
 		final TextNode text =
-			parse("'foo' /* comment */ \"bar\" \\' \nbaz\n  '\\ // comment");
+				parse("'foo' /* comment */ \"bar\" \\' \nbaz\n  '\\ // comment");
 
 		assertEquals(3, text.getLiterals().length);
 		assertEquals("foo", text.getLiterals()[0].getText());

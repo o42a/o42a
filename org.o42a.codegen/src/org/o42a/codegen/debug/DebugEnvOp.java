@@ -101,7 +101,7 @@ public class DebugEnvOp extends StructOp<DebugEnvOp> {
 		@Override
 		protected void allocate(SubData<DebugEnvOp> data) {
 			this.stackFrame =
-				data.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE);
+					data.addPtr("stack_frame", DEBUG_STACK_FRAME_TYPE);
 			this.command = data.addInt8("command");
 			this.indent = data.addInt8("indent");
 		}

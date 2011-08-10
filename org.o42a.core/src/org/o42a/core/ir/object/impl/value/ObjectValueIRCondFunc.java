@@ -331,10 +331,10 @@ public abstract class ObjectValueIRCondFunc
 
 		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
 		final ObjectTypeOp ancestorType =
-			ancestorBody.methods(hasAncestor)
-			.objectType(hasAncestor)
-			.load(null, hasAncestor)
-			.op(host.getBuilder(), DERIVED);
+				ancestorBody.methods(hasAncestor)
+				.objectType(hasAncestor)
+				.load(null, hasAncestor)
+				.op(host.getBuilder(), DERIVED);
 
 		writeAncestorDef(dirs, hasAncestor, ancestorBody, ancestorType);
 
@@ -388,10 +388,10 @@ public abstract class ObjectValueIRCondFunc
 				if (i == collector.ancestorIndex) {
 
 					final CodeDirs ancestorDirs =
-						dirs.getBuilder().splitWhenUnknown(
-								block,
-								dirs.falseDir(),
-								collector.next(i, dirs.unknownDir()));
+							dirs.getBuilder().splitWhenUnknown(
+									block,
+									dirs.falseDir(),
+									collector.next(i, dirs.unknownDir()));
 
 					writeAncestorDef(ancestorDirs, host, false);
 					block.go(collector.next(i, code.tail()));
@@ -401,7 +401,7 @@ public abstract class ObjectValueIRCondFunc
 			if (!def.hasPrerequisite()) {
 
 				final CodeDirs defDirs =
-					dirs.getBuilder().falseWhenUnknown(block, dirs.falseDir());
+						dirs.getBuilder().falseWhenUnknown(block, dirs.falseDir());
 
 				def.write(defDirs, host);
 				block.go(collector.next(i, code.tail()));

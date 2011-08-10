@@ -192,7 +192,7 @@ final class MainPhraseContext extends PhraseContext {
 		} else if (this.implicitAscendants != null) {
 
 			final TypeRef implicitAncestor =
-				this.implicitAscendants.getExplicitAncestor();
+					this.implicitAscendants.getExplicitAncestor();
 
 			if (implicitAncestor != null) {
 

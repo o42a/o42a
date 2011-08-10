@@ -97,7 +97,7 @@ final class SentenceLogicals {
 	private static final class Result extends Logical {
 
 		private final ArrayList<StatementEnv> variants =
-			new ArrayList<StatementEnv>();
+				new ArrayList<StatementEnv>();
 		private Logical otherwise;
 
 		private LogicalValue constantValue;
@@ -122,7 +122,7 @@ final class SentenceLogicals {
 			for (StatementEnv conditions : this.variants) {
 
 				final Logical prerequisite =
-					conditions.prerequisite(getScope());
+						conditions.prerequisite(getScope());
 
 				if (!prerequisite.isConstant()) {
 					return this.constantValue = LogicalValue.RUNTIME;
@@ -132,7 +132,7 @@ final class SentenceLogicals {
 				}
 
 				final Logical precondition =
-					conditions.precondition(getScope());
+						conditions.precondition(getScope());
 
 				return this.constantValue = precondition.getConstantValue();
 			}
@@ -157,7 +157,7 @@ final class SentenceLogicals {
 			for (StatementEnv env : this.variants) {
 
 				final LogicalValue prerequisite =
-					env.prerequisite(getScope()).logicalValue(resolver);
+						env.prerequisite(getScope()).logicalValue(resolver);
 
 				if (!prerequisite.isConstant()) {
 					return prerequisite;
@@ -220,9 +220,9 @@ final class SentenceLogicals {
 
 				final StatementEnv conditions = this.variants.get(idx);
 				final Logical prerequisite =
-					conditions.prerequisite(getScope());
+						conditions.prerequisite(getScope());
 				final Logical precondition =
-					conditions.precondition(getScope());
+						conditions.precondition(getScope());
 				final int nextIdx = idx + 1;
 
 				if (nextIdx >= size) {

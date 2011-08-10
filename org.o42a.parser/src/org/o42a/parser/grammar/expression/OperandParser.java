@@ -38,7 +38,7 @@ public class OperandParser implements Parser<ExpressionNode> {
 	public ExpressionNode parse(ParserContext context) {
 
 		final ExpressionNode expression =
-			context.parse(this.grammar.simpleExpression());
+				context.parse(this.grammar.simpleExpression());
 
 		if (expression == null) {
 			return null;
@@ -46,7 +46,7 @@ public class OperandParser implements Parser<ExpressionNode> {
 		if (!context.isEOF()) {
 
 			final BinaryNode binaryExpression =
-				context.parse(this.grammar.binaryExpression(expression));
+					context.parse(this.grammar.binaryExpression(expression));
 
 			if (binaryExpression != null) {
 				return binaryExpression;

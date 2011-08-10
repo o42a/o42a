@@ -37,10 +37,10 @@ public abstract class ComparisonOperator {
 
 	private static final ComparisonOperator EQUALS = new EqualsOperator();
 	private static final ComparisonOperator NOT_EQUALS =
-		new NotEqualsOperator();
+			new NotEqualsOperator();
 
 	private static final EnumMap<BinaryOperator, CompareOperator> operators =
-		new EnumMap<BinaryOperator, CompareOperator>(BinaryOperator.class);
+			new EnumMap<BinaryOperator, CompareOperator>(BinaryOperator.class);
 
 	static {
 		operators.put(NOT_EQUAL, new CompareNotEqualOperator());

@@ -33,7 +33,7 @@ public class LogRecord implements Formattable, Serializable {
 
 	private static final Object[] NO_ARGS = new Object[0];
 	private static final LoggableFormatter LOGGABLE_FORMATTER =
-		new LoggableFormatter();
+			new LoggableFormatter();
 
 	private final Severity severity;
 	private final Object source;

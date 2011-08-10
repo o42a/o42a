@@ -83,7 +83,7 @@ final class StringValueType extends ValueType<String> {
 		protected byte[] toBinary(String value, DataAlignment alignment) {
 
 			final byte[] bytes =
-				new byte[alignment.getBytes() * value.length()];
+					new byte[alignment.getBytes() * value.length()];
 
 			stringToBinary(value, bytes, alignment);
 
@@ -93,7 +93,7 @@ final class StringValueType extends ValueType<String> {
 		@Override
 		protected CodeId constId(String value) {
 			return getGenerator().id("CONST").sub("STRING")
-			.anonymous(++this.constSeq);
+					.anonymous(++this.constSeq);
 		}
 
 	}

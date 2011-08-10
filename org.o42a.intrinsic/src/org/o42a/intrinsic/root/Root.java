@@ -194,7 +194,7 @@ public class Root extends Obj {
 		protected void allocateData() {
 
 			final IntrinsicsIR intrinsicsIR =
-				new IntrinsicsIR((Root) getObject());
+					new IntrinsicsIR((Root) getObject());
 
 			getGenerator().newGlobal().setConstant().export().struct(
 					intrinsicsIR);

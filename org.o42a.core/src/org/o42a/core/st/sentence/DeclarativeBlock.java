@@ -205,7 +205,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		}
 
 		reproduction =
-			(DeclarativeBlock) reproducer.getStatements().parentheses(this);
+				(DeclarativeBlock) reproducer.getStatements().parentheses(this);
 		reproduceSentences(reproducer, reproduction);
 
 		return null;
@@ -295,7 +295,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		public Logical precondition(Scope scope) {
 
 			final SentencePrecondition collector =
-				new SentencePrecondition(this.block, scope);
+					new SentencePrecondition(this.block, scope);
 
 			return collector.precondition();
 		}

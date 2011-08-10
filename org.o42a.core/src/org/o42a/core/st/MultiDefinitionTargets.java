@@ -39,7 +39,7 @@ final class MultiDefinitionTargets extends DefinitionTargets {
 		final Map<DefinitionKey, Entry> t2 = targets2.targets();
 
 		this.targets =
-			new LinkedHashMap<DefinitionKey, Entry>(t1.size() + t2.size());
+				new LinkedHashMap<DefinitionKey, Entry>(t1.size() + t2.size());
 
 		for (Map.Entry<DefinitionKey, Entry> e : t1.entrySet()) {
 			this.targets.put(e.getKey(), e.getValue().add(t2.get(e.getKey())));

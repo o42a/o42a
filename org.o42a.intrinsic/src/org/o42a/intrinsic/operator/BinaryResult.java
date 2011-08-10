@@ -85,9 +85,9 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		}
 
 		final L left =
-			getLeftOperandType().cast(leftValue).getDefiniteValue();
+				getLeftOperandType().cast(leftValue).getDefiniteValue();
 		final R right =
-			getRightOperandType().cast(rightValue).getDefiniteValue();
+				getRightOperandType().cast(rightValue).getDefiniteValue();
 
 		final T result = calculate(resolver, left, right);
 
@@ -111,11 +111,11 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs leftDirs =
-			dirs.dirs().value(getLeftOperandType(), "left");
+				dirs.dirs().value(getLeftOperandType(), "left");
 		final ValOp leftVal = leftOperand().op(host).writeValue(leftDirs);
 
 		final ValDirs rightDirs =
-			leftDirs.dirs().value(getRightOperandType(), "right");
+				leftDirs.dirs().value(getRightOperandType(), "right");
 		final ValOp rightVal = rightOperand().op(host).writeValue(rightDirs);
 
 		final ValDirs resultDirs = rightDirs.dirs().value(dirs);

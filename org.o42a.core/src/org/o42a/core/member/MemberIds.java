@@ -66,7 +66,7 @@ final class MemberIds extends MemberId {
 		}
 
 		final MemberId[] groupIds =
-			Arrays.copyOf(this.ids, this.ids.length - 1);
+				Arrays.copyOf(this.ids, this.ids.length - 1);
 
 		return new MemberIds(groupIds);
 	}

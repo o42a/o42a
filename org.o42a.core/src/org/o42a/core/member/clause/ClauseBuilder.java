@@ -278,7 +278,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 			// Reuse in descending precedence order,
 			// i.e. reverse to declaration order.
 			final ReusedClause reusedClause =
-				reuseClause(reusedRefs[i], clause);
+					reuseClause(reusedRefs[i], clause);
 
 			if (reusedClause != null) {
 				reused[idx++] = reusedClause;

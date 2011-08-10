@@ -31,7 +31,7 @@ import org.o42a.parser.ParserContext;
 public class AscendantRefParser implements Parser<AscendantRefNode> {
 
 	public static final AscendantRefParser ASCENDANT_REF =
-		new AscendantRefParser(null);
+			new AscendantRefParser(null);
 
 	private final RefNode overridden;
 
@@ -50,10 +50,10 @@ public class AscendantRefParser implements Parser<AscendantRefNode> {
 		context.acceptAll();
 
 		final SignNode<AscendantRefNode.Boundary> prefix =
-			new SignNode<AscendantRefNode.Boundary>(
-					prefixStart,
-					context.current(),
-					AscendantRefNode.Boundary.CIRCUMFLEX);
+				new SignNode<AscendantRefNode.Boundary>(
+						prefixStart,
+						context.current(),
+						AscendantRefNode.Boundary.CIRCUMFLEX);
 
 		context.acceptComments(false, prefix);
 
@@ -68,10 +68,10 @@ public class AscendantRefParser implements Parser<AscendantRefNode> {
 		context.acceptAll();
 
 		final SignNode<AscendantRefNode.Boundary> suffix =
-			new SignNode<AscendantRefNode.Boundary>(
-					suffixStart,
-					context.current(),
-					AscendantRefNode.Boundary.CIRCUMFLEX);
+				new SignNode<AscendantRefNode.Boundary>(
+						suffixStart,
+						context.current(),
+						AscendantRefNode.Boundary.CIRCUMFLEX);
 
 		return context.acceptComments(
 				false,

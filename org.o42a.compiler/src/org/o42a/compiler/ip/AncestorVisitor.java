@@ -69,7 +69,7 @@ public class AncestorVisitor
 			Distributor distributor) {
 
 		AscendantsDefinition ascendants =
-			new AscendantsDefinition(location(distributor, node), distributor);
+				new AscendantsDefinition(location(distributor, node), distributor);
 		final AscendantNode[] ascendantNodes = node.getAscendants();
 		final TypeRef ancestor = parseAncestor(ip, node, distributor);
 
@@ -85,7 +85,7 @@ public class AncestorVisitor
 			if (sampleNode != null) {
 
 				final Ref sampleRef =
-					sampleNode.accept(ip.refVisitor(), distributor);
+						sampleNode.accept(ip.refVisitor(), distributor);
 
 				if (sampleRef != null) {
 					ascendants = ascendants.addSample(

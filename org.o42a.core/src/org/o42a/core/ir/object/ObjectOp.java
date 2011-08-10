@@ -243,7 +243,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	public final BoolOp hasAncestor(Code code) {
 		return body(code).ancestorBody(code).load(null, code)
-		.toInt32(null, code).ne(null, code, code.int32(0));
+				.toInt32(null, code).ne(null, code, code.int32(0));
 	}
 
 	public final ObjectOp ancestor(Code code) {
@@ -306,22 +306,24 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
 		final DataOp resultPtr =
-			castFunc()
-			.op(null, code)
-			.cast(
-					id != null ? id.detail("ptr") : null,
-					code,
-					this,
-					ascendantType);
+				castFunc()
+				.op(null, code)
+				.cast(
+						id != null ? id.detail("ptr") : null,
+						code,
+						this,
+						ascendantType);
 		final Code castNull = code.addBlock("cast_null");
 
 		resultPtr.isNull(null, code).go(code, castNull.head());
 
-		final ObjOp result =
-			resultPtr.to(id, code, ascendantIR.getBodyType()).op(
-							getBuilder(),
-							ascendant,
-							COMPATIBLE);
+		final ObjOp result = resultPtr.to(
+				id,
+				code,
+				ascendantIR.getBodyType()).op(
+						getBuilder(),
+						ascendant,
+						COMPATIBLE);
 
 		if (castNull.exists()) {
 			castNull.debug("Cast failed");
@@ -352,7 +354,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 				"Proposition of "
 				+ (body != null ? body + " by " + this : toString()));
 		final ValOp result =
-			objectType(subDirs.code()).writeProposition(subDirs, body);
+				objectType(subDirs.code()).writeProposition(subDirs, body);
 
 		subDirs.done();
 
@@ -371,11 +373,11 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		final Code falseCode = code.addBlock("eval_false");
 		final Code unknownCode = code.addBlock("eval_unknown");
 		final ValDirs valDirs =
-			getBuilder().splitWhenUnknown(
-					code,
-					falseCode.head(),
-					unknownCode.head())
-			.value(code.id("obj_val"), value);
+				getBuilder().splitWhenUnknown(
+						code,
+						falseCode.head(),
+						unknownCode.head())
+				.value(code.id("obj_val"), value);
 
 		value.setStoreMode(INITIAL_VAL_STORE);
 		writeValue(valDirs, null);

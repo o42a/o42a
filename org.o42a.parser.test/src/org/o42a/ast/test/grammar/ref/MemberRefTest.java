@@ -63,7 +63,7 @@ public class MemberRefTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("foo@bar");
 		final MemberRefNode declaredIn =
-			to(MemberRefNode.class, ref.getDeclaredIn());
+				to(MemberRefNode.class, ref.getDeclaredIn());
 
 		assertEquals("foo", ref.getName().getName());
 		assertNull(ref.getQualifier());

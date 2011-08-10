@@ -47,7 +47,7 @@ public class SyntaxErrorTest extends GrammarTestCase {
 		expectError("syntax_error");
 
 		final ParenthesesNode result =
-			parse(ParenthesesNode.class, "(\u2055\u2055)");
+				parse(ParenthesesNode.class, "(\u2055\u2055)");
 		final SentenceNode[] content = result.getContent();
 
 		assertThat(content.length, is(0));
@@ -59,7 +59,7 @@ public class SyntaxErrorTest extends GrammarTestCase {
 		expectError("syntax_error");
 
 		final ParenthesesNode result =
-			parse(ParenthesesNode.class, "(\u2055 /* comment */ \u2055)");
+				parse(ParenthesesNode.class, "(\u2055 /* comment */ \u2055)");
 		final SentenceNode[] content = result.getContent();
 
 		assertThat(content.length, is(0));
@@ -70,7 +70,7 @@ public class SyntaxErrorTest extends GrammarTestCase {
 		expectError("syntax_error");
 
 		final ParenthesesNode result =
-			parse(ParenthesesNode.class, "(\u2055 foo)");
+				parse(ParenthesesNode.class, "(\u2055 foo)");
 
 		assertName("foo", singleStatement(RefNode.class, result));
 	}
@@ -80,7 +80,7 @@ public class SyntaxErrorTest extends GrammarTestCase {
 		expectError("syntax_error");
 
 		final ParenthesesNode result =
-			parse(ParenthesesNode.class, "(foo,\u2055 bar)");
+				parse(ParenthesesNode.class, "(foo,\u2055 bar)");
 
 		assertName("foo", statement(RefNode.class, result, 0, 2));
 		assertName("bar", statement(RefNode.class, result, 1, 2));

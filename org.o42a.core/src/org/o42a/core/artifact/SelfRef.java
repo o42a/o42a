@@ -144,7 +144,7 @@ final class SelfRef extends Ref {
 		public HostOp target(CodeDirs dirs) {
 
 			final ScopeIR ir =
-				this.ref.getResolution().getScope().ir(getGenerator());
+					this.ref.getResolution().getScope().ir(getGenerator());
 
 			return ir.op(getBuilder(), dirs.code());
 		}

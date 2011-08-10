@@ -37,7 +37,7 @@ public class TextNode extends AbstractExpressionNode implements ClauseNode {
 	public final boolean isDoubleQuote() {
 
 		final SignNode<Quote> quotationMark =
-			this.literals[0].getOpeningQuotationMark();
+				this.literals[0].getOpeningQuotationMark();
 
 		return quotationMark.getType().isDoubleQuote();
 	}

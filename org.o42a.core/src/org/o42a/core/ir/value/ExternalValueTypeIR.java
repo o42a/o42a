@@ -71,7 +71,7 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 		} else {
 
 			final Ptr<AnyOp> binary =
-				getGenerator().addBinary(valueId(value), true, bytes);
+					getGenerator().addBinary(valueId(value), true, bytes);
 
 			val = new Val(
 					ValueType.STRING,
@@ -130,7 +130,7 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 	private static void use(Code code, ValOp val) {
 
 		final FuncPtr<ValUseFunc> func =
-			code.getGenerator().externalFunction("o42a_val_use", VAL_USE);
+				code.getGenerator().externalFunction("o42a_val_use", VAL_USE);
 
 		func.op(null, code).call(code, val);
 	}
@@ -138,7 +138,7 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 	private static void unuse(Code code, ValOp val) {
 
 		final FuncPtr<ValUseFunc> func =
-			code.getGenerator().externalFunction("o42a_val_unuse", VAL_USE);
+				code.getGenerator().externalFunction("o42a_val_unuse", VAL_USE);
 
 		func.op(null, code).call(code, val);
 	}

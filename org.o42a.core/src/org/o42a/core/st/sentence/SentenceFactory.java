@@ -35,15 +35,15 @@ public interface SentenceFactory<
 		B extends Block<S>> {
 
 	public static final DeclarativeFactory DECLARATIVE_FACTORY =
-		new DeclarativeFactory();
+			new DeclarativeFactory();
 	public static final ImperativeFactory IMPERATIVE_FACTORY =
-		new ImperativeFactory();
+			new ImperativeFactory();
 	public static final DeclarativeFactory DECLARATIVE_ISSUE_FACTORY =
-		new DeclarativeIssueFactory();
+			new DeclarativeIssueFactory();
 	public static final ImperativeFactory IMPERATIVE_ISSUE_FACTORY =
-		new ImperativeIssueFactory();
+			new ImperativeIssueFactory();
 	public static final ImperativeFactory IMPERATIVE_GROUP_FACTORY =
-		new ImperativeGroupFactory();
+			new ImperativeGroupFactory();
 
 	boolean isDeclarative();
 

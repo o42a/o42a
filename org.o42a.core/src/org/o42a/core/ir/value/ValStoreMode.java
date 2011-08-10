@@ -30,7 +30,7 @@ public enum ValStoreMode {
 		void store(Code code, ValOp target, Val value) {
 
 			final ValueTypeIR<?> ir =
-				target.getValueType().ir(code.getGenerator());
+					target.getValueType().ir(code.getGenerator());
 
 			ir.store(code, target, value);
 		}
@@ -39,7 +39,7 @@ public enum ValStoreMode {
 		void store(Code code, ValOp target, ValOp value) {
 
 			final ValueTypeIR<?> ir =
-				target.getValueType().ir(code.getGenerator());
+					target.getValueType().ir(code.getGenerator());
 
 			ir.store(code, target, value);
 		}
@@ -52,7 +52,7 @@ public enum ValStoreMode {
 		void store(Code code, ValOp target, Val value) {
 
 			final ValueTypeIR<?> ir =
-				target.getValueType().ir(code.getGenerator());
+					target.getValueType().ir(code.getGenerator());
 
 			ir.initialize(code, target, value);
 		}
@@ -61,7 +61,7 @@ public enum ValStoreMode {
 		void store(Code code, ValOp target, ValOp value) {
 
 			final ValueTypeIR<?> ir =
-				target.getValueType().ir(code.getGenerator());
+					target.getValueType().ir(code.getGenerator());
 
 			ir.initialize(code, target, value);
 		}
@@ -74,7 +74,7 @@ public enum ValStoreMode {
 		void store(Code code, ValOp target, Val value) {
 
 			final ValueTypeIR<?> ir =
-				target.getValueType().ir(code.getGenerator());
+					target.getValueType().ir(code.getGenerator());
 
 			ir.assign(code, target, value);
 		}
@@ -83,7 +83,7 @@ public enum ValStoreMode {
 		void store(Code code, ValOp target, ValOp value) {
 
 			final ValueTypeIR<?> ir =
-				target.getValueType().ir(code.getGenerator());
+					target.getValueType().ir(code.getGenerator());
 
 			ir.assign(code, target, value);
 		}

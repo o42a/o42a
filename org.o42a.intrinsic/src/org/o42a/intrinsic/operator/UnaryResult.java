@@ -73,7 +73,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		}
 
 		final O operand =
-			getOperandType().cast(operandValue).getDefiniteValue();
+				getOperandType().cast(operandValue).getDefiniteValue();
 		final T result = calculate(operand);
 
 		if (result == null) {
@@ -95,7 +95,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs operandDirs =
-			dirs.dirs().value(getOperandType(), "operand");
+				dirs.dirs().value(getOperandType(), "operand");
 		final ValOp operandVal = operand().op(host).writeValue(operandDirs);
 
 		final ValDirs resultDirs = operandDirs.dirs().value(dirs);

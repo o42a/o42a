@@ -57,7 +57,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	private final ArrayList<Fld> fieldList = new ArrayList<Fld>();
 	private final HashMap<MemberKey, Fld> fieldMap =
-		new HashMap<MemberKey, Fld>();
+			new HashMap<MemberKey, Fld>();
 	private final HashMap<Dep, DepIR> deps = new HashMap<Dep, DepIR>();
 
 	private RelPtrRec objectType;
@@ -167,7 +167,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	protected CodeId buildCodeId(CodeIdFactory factory) {
 
 		final ObjectIR ascendantIR =
-			this.ascendant.ir(this.objectIRStruct.getGenerator());
+				this.ascendant.ir(this.objectIRStruct.getGenerator());
 
 		return ascendantIR.getId().detail("body");
 	}
@@ -187,7 +187,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		final Generator generator = getGenerator();
 		final ObjectIRType objectType =
-			getObjectIR().getTypeIR().getObjectType();
+				getObjectIR().getTypeIR().getObjectType();
 
 		this.objectType.setValue(
 				objectType.data(generator).getPointer().relativeTo(
@@ -246,7 +246,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final Field<?> field =
-				object.member(declaredField.getKey()).toField(dummyUser());
+					object.member(declaredField.getKey()).toField(dummyUser());
 
 			if (!generateField(declaredField, field)) {
 				continue;
@@ -364,9 +364,12 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		public final ObjectIRType.Op loadObjectType(Code code) {
 			return objectType(code)
-			.load(null, code)
-			.offset(code.id("object_type").type(code.id("any")), code, this)
-			.to(code.id("object_type"), code, OBJECT_TYPE);
+					.load(null, code)
+					.offset(
+							code.id("object_type").type(code.id("any")),
+							code,
+							this)
+					.to(code.id("object_type"), code, OBJECT_TYPE);
 		}
 
 		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
@@ -381,7 +384,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final AnyOp ancestorBodyPtr =
-				ancestorBody(code).load(null, code).offset(null, code, this);
+					ancestorBody(code).load(null, code).offset(null, code, this);
 
 			return anonymousObject(
 					builder,

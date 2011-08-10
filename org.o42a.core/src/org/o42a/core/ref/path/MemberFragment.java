@@ -88,7 +88,7 @@ public class MemberFragment extends PathFragment {
 	public HostOp write(CodeDirs dirs, HostOp start) {
 
 		final Member member =
-			this.memberKey.getOrigin().getContainer().member(this.memberKey);
+				this.memberKey.getOrigin().getContainer().member(this.memberKey);
 
 		if (member.toLocal(dummyUser()) != null) {
 			// Member is a local scope.
@@ -167,7 +167,7 @@ public class MemberFragment extends PathFragment {
 		}
 
 		final MemberKey reproductionKey =
-			this.memberKey.getMemberId().reproduceFrom(origin).key(scope);
+				this.memberKey.getMemberId().reproduceFrom(origin).key(scope);
 
 		return PathReproduction.reproducedPath(reproductionKey.toPath());
 	}

@@ -68,9 +68,9 @@ final class StringChar extends AnnotatedBuiltin {
 		}
 
 		final String string =
-			ValueType.STRING.cast(stringValue).getDefiniteValue();
+				ValueType.STRING.cast(stringValue).getDefiniteValue();
 		final long index =
-			ValueType.INTEGER.cast(indexValue).getDefiniteValue();
+				ValueType.INTEGER.cast(indexValue).getDefiniteValue();
 
 		if (index < 0 || index >= string.length()) {
 			resolver.getLogger().error(
@@ -98,41 +98,41 @@ final class StringChar extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs stringDirs =
-			dirs.dirs().value(ValueType.STRING, "string");
+				dirs.dirs().value(ValueType.STRING, "string");
 		final ValOp stringVal = string().op(host).writeValue(stringDirs);
 
 		final ValDirs indexDirs =
-			stringDirs.dirs().value(ValueType.INTEGER, "index");
+				stringDirs.dirs().value(ValueType.INTEGER, "index");
 		final ValOp indexVal = index().op(host).writeValue(indexDirs);
 
 		final Code code = indexDirs.code();
 
 		final Int64op index =
-			indexVal.rawValue(code.id("index"), code)
-			.load(null, code);
+				indexVal.rawValue(code.id("index"), code)
+				.load(null, code);
 
 		index.lt(null, code, code.int64(0L)).go(code, indexDirs.falseDir());
 
 		final Int64op length =
-			stringVal.loadDataLength(code.id("str_len"), code)
-			.toInt64(null, code);
+				stringVal.loadDataLength(code.id("str_len"), code)
+				.toInt64(null, code);
 
 		index.ge(null, code, length).go(code, indexDirs.falseDir());
 
 		final Int32op cmask = stringVal.loadCharMask(code.id("cmask"), code);
 		final Int32op csizeShift =
-			stringVal.loadAlignmentShift(code.id("csizeshft"), code);
+				stringVal.loadAlignmentShift(code.id("csizeshft"), code);
 		final Int32op dataOffset =
-			index.toInt32(null, code)
-			.shl(code.id("data_offset"), code, csizeShift);
+				index.toInt32(null, code)
+				.shl(code.id("data_offset"), code, csizeShift);
 		final AnyOp begin =
-			stringVal.loadData(code.id("str_data"), code);
+				stringVal.loadData(code.id("str_data"), code);
 		final AnyOp charPtr =
-			begin.offset(code.id("char_ptr"), code, dataOffset);
+				begin.offset(code.id("char_ptr"), code, dataOffset);
 		final Int32op chr =
-			charPtr.toInt32(null, code)
-			.load(null, code)
-			.and(code.id("char"), code, cmask);
+				charPtr.toInt32(null, code)
+				.load(null, code)
+				.and(code.id("char"), code, cmask);
 
 		final ValOp result = dirs.value();
 		final Int32op flags = code.int32(CONDITION_FLAG).or(

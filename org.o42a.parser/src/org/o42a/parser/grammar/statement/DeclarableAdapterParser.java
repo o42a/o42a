@@ -33,7 +33,7 @@ import org.o42a.parser.ParserContext;
 public class DeclarableAdapterParser implements Parser<DeclarableAdapterNode> {
 
 	public static final DeclarableAdapterParser DECLARABLE_ADAPTER =
-		new DeclarableAdapterParser();
+			new DeclarableAdapterParser();
 
 	private DeclarableAdapterParser() {
 	}
@@ -49,10 +49,10 @@ public class DeclarableAdapterParser implements Parser<DeclarableAdapterNode> {
 		context.skip();
 
 		final SignNode<DeclarableAdapterNode.Prefix> prefix =
-			new SignNode<DeclarableAdapterNode.Prefix>(
-					start,
-					context.current(),
-					DeclarableAdapterNode.Prefix.ADAPTER);
+				new SignNode<DeclarableAdapterNode.Prefix>(
+						start,
+						context.current(),
+						DeclarableAdapterNode.Prefix.ADAPTER);
 
 		context.skipComments(false, prefix);
 

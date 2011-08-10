@@ -69,7 +69,7 @@ public final class ImperativeBlockOp extends StOp {
 		}
 
 		final List<ImperativeSentence> sentences =
-			getBlock().getSentences();
+				getBlock().getSentences();
 		final int len = sentences.size();
 
 		for (int i = 0; i < len; ++i) {
@@ -206,7 +206,7 @@ public final class ImperativeBlockOp extends StOp {
 
 			// skip ascending opposites
 			final int nextNonOppositeIdx =
-				nextNonOppositeIdx(sentence, nextIdx);
+					nextNonOppositeIdx(sentence, nextIdx);
 
 			if (nextNonOppositeIdx >= 0) {
 				// execute next non-opposing alternative,

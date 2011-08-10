@@ -80,7 +80,7 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
 		return factory.id("DEBUG").sub("type")
-		.sub(getTarget().codeId(factory));
+				.sub(getTarget().codeId(factory));
 	}
 
 	@Override

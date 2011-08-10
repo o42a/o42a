@@ -65,8 +65,8 @@ public final class NegatedLogical extends Logical {
 		final Code code = dirs.code();
 		final Code isFalse = code.addBlock("is_false");
 		final CodeDirs negatedDirs =
-			dirs.getBuilder().falseWhenUnknown(code, isFalse.head())
-			.begin("not", "Logical NOT: " + this);
+				dirs.getBuilder().falseWhenUnknown(code, isFalse.head())
+				.begin("not", "Logical NOT: " + this);
 
 		negate().write(negatedDirs, host);
 		negatedDirs.end();

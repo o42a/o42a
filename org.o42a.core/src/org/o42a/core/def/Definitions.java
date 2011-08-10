@@ -374,9 +374,9 @@ public class Definitions extends Scoped {
 		}
 
 		return refineRequirements(refinements.requirements())
-		.refineConditions(refinements.conditions())
-		.refineClaims(valueType, refinements.claims())
-		.refinePropositions(valueType, refinements.propositions());
+				.refineConditions(refinements.conditions())
+				.refineClaims(valueType, refinements.claims())
+				.refinePropositions(valueType, refinements.propositions());
 	}
 
 	public Definitions override(Definitions overriders) {
@@ -407,20 +407,20 @@ public class Definitions extends Scoped {
 			if (overriders.conditions().isEmpty()) {
 				// No condition specified.
 				return refineRequirements(overriders.requirements())
-				.refineClaims(valueType, overriders.claims());
+						.refineClaims(valueType, overriders.claims());
 			}
 			return removeConditions()
-			.refineRequirements(overriders.requirements())
-			.refineConditions(overriders.conditions())
-			.refineClaims(valueType, overriders.claims());
+					.refineRequirements(overriders.requirements())
+					.refineConditions(overriders.conditions())
+					.refineClaims(valueType, overriders.claims());
 		}
 
 		// Inherit claims, but not propositions.
 		return removePropositions()
-		.refineRequirements(overriders.requirements())
-		.refineConditions(overriders.conditions())
-		.refineClaims(valueType, overriders.claims())
-		.refinePropositions(valueType, overriders.propositions());
+				.refineRequirements(overriders.requirements())
+				.refineConditions(overriders.conditions())
+				.refineClaims(valueType, overriders.claims())
+				.refinePropositions(valueType, overriders.propositions());
 	}
 
 	public Definitions claim() {

@@ -58,7 +58,7 @@ final class StringLength extends AnnotatedBuiltin {
 		}
 
 		final String string =
-			ValueType.STRING.cast(stringValue).getDefiniteValue();
+				ValueType.STRING.cast(stringValue).getDefiniteValue();
 		final int length = string.length();
 
 		return ValueType.INTEGER.constantValue(Long.valueOf(length));
@@ -76,13 +76,13 @@ final class StringLength extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs stringDirs =
-			dirs.dirs().value(ValueType.STRING, "string_val");
+				dirs.dirs().value(ValueType.STRING, "string_val");
 		final Code code = stringDirs.code();
 
 		final ValOp string = string().op(host).writeValue(stringDirs);
 		final Int32op length = string.loadDataLength(code.id("str_len"), code);
 		final ValOp result =
-			dirs.value().store(code, length.toInt64(null, code));
+				dirs.value().store(code, length.toInt64(null, code));
 
 		stringDirs.done();
 

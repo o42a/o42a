@@ -144,7 +144,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		final MemberKey key = getKey();
 		final Member member = key.getOrigin().getContainer().member(key);
 		final Field<A> original =
-			member.toField(dummyUser()).toKind(getArtifactKind());
+				member.toField(dummyUser()).toKind(getArtifactKind());
 
 		assert original.getArtifact().getKind() == getArtifact().getKind() :
 			"Wrong " + this + " artifact kind: " + getArtifact().getKind()
@@ -321,7 +321,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
 		for (int i = 0; i < overridden.length; ++i) {
 			overridden[i] =
-				(Field<A>) overriddenMembers[i].toField(dummyUser());
+					(Field<A>) overriddenMembers[i].toField(dummyUser());
 		}
 
 		return overridden;

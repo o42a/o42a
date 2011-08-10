@@ -114,7 +114,7 @@ public class PhraseTest extends GrammarTestCase {
 		assertName("foo", result.getPrefix());
 
 		final ArgumentNode[] arguments =
-			singleClause(BracketsNode.class, result).getArguments();
+				singleClause(BracketsNode.class, result).getArguments();
 
 		assertEquals(1, arguments.length);
 		assertName("bar", arguments[0].getValue());
@@ -150,7 +150,7 @@ public class PhraseTest extends GrammarTestCase {
 		assertName("foo", result.getPrefix());
 
 		final StringNode[] literals =
-			singleClause(TextNode.class, result).getLiterals();
+				singleClause(TextNode.class, result).getLiterals();
 
 		assertEquals(2, literals.length);
 
@@ -188,7 +188,7 @@ public class PhraseTest extends GrammarTestCase {
 		assertName("foo", result.getPrefix());
 
 		final ArgumentNode[] arguments =
-			clause(BracketsNode.class, result, 0, 2).getArguments();
+				clause(BracketsNode.class, result, 0, 2).getArguments();
 
 		assertEquals(1, arguments.length);
 		assertName("bar", arguments[0].getValue());
@@ -210,7 +210,7 @@ public class PhraseTest extends GrammarTestCase {
 		assertEquals("bar", name.getName());
 
 		final ArgumentNode[] arguments =
-			clause(BracketsNode.class, result, 1, 2).getArguments();
+				clause(BracketsNode.class, result, 1, 2).getArguments();
 
 		assertEquals(1, arguments.length);
 		assertName("baz", arguments[0].getValue());

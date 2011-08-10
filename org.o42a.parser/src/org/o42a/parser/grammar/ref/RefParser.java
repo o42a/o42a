@@ -104,7 +104,7 @@ public class RefParser implements Parser<RefNode> {
 			}
 
 			final MemberRefParser fieldRefParser =
-				new MemberRefParser(this.owner, this.qualifierExpected);
+					new MemberRefParser(this.owner, this.qualifierExpected);
 			final MemberRefNode ref = context.parse(fieldRefParser);
 
 			if (ref == null) {

@@ -153,14 +153,14 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		}
 
 		final ComparisonOperator comparisonOperator =
-			comparisonOperator(operator);
+				comparisonOperator(operator);
 
 		if (comparisonOperator == null) {
 			return null;
 		}
 
 		final NextClause found =
-			context.clauseById(this, comparisonOperator.getClauseId());
+				context.clauseById(this, comparisonOperator.getClauseId());
 
 		this.comparisonOperator = comparisonOperator;
 

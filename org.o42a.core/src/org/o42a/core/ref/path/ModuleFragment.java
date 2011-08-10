@@ -76,7 +76,7 @@ final class ModuleFragment extends PathFragment {
 	public HostOp write(CodeDirs dirs, HostOp start) {
 
 		final Obj module =
-			start.getContext().getIntrinsics().getModule(this.moduleId);
+				start.getContext().getIntrinsics().getModule(this.moduleId);
 		final ObjectIR moduleIR = module.ir(start.getGenerator());
 
 		return moduleIR.op(start.getBuilder(), dirs.code());

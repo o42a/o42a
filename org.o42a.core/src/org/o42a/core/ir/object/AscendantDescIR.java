@@ -55,7 +55,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		final Generator generator = instance.getGenerator();
 		final ObjectIR ascendantIR =
-			this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
+				this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
 
 		instance.type().setValue(
 				ascendantIR.getTypeIR().getObjectType()

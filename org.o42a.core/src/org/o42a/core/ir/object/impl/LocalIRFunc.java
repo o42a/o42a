@@ -89,9 +89,9 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	public void build() {
 
 		final LocalBuilder builder =
-			new LocalBuilder(this.function, this.localIR);
+				new LocalBuilder(this.function, this.localIR);
 		final ValType.Op value =
-			this.function.arg(this.function, OBJECT_VAL.value());
+				this.function.arg(this.function, OBJECT_VAL.value());
 		final ValOp result = value.op(
 				builder,
 				this.locals.getValueIR().getObject().value().getValueType());
@@ -109,9 +109,9 @@ public final class LocalIRFunc extends ObjectIRFunc {
 	private void create() {
 
 		final Function<ObjectValFunc> function =
-			getGenerator().newFunction().create(
-					getId(),
-					OBJECT_VAL);
+				getGenerator().newFunction().create(
+						getId(),
+						OBJECT_VAL);
 
 		function.debug("Calculating value");
 

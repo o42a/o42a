@@ -80,14 +80,14 @@ final class TestRunner extends Obj {
 		}
 
 		final Member adapterMember =
-			test.member(adapterId(testType.getObject()));
+				test.member(adapterId(testType.getObject()));
 
 		if (adapterMember == null) {
 			return;
 		}
 
 		final Artifact<?> adapterArtifact =
-			adapterMember.toField(user).getArtifact();
+				adapterMember.toField(user).getArtifact();
 
 		if (!adapterArtifact.isValid()) {
 			return;
@@ -113,7 +113,7 @@ final class TestRunner extends Obj {
 			MemberKey adapterKey) {
 
 		final Imperatives statements =
-			sentence.alternative(sentence.getBlock());
+				sentence.alternative(sentence.getBlock());
 		final RunTest runTest = new RunTest(
 				sentence,
 				statements.nextDistributor(),
@@ -130,7 +130,7 @@ final class TestRunner extends Obj {
 			Obj test) {
 
 		final Obj nameObject =
-			test.field("name").substance(dummyUser()).toObject();
+				test.field("name").substance(dummyUser()).toObject();
 		final Value<?> nameValue = nameObject.value().getValue();
 
 		if (!nameValue.isDefinite()) {
@@ -139,7 +139,7 @@ final class TestRunner extends Obj {
 			if (!nameValue.isFalse()) {
 
 				final String name =
-					ValueType.STRING.cast(nameValue).getDefiniteValue();
+						ValueType.STRING.cast(nameValue).getDefiniteValue();
 
 				if (!name.isEmpty()) {
 					return name;
@@ -205,8 +205,8 @@ final class TestRunner extends Obj {
 
 			final Scope objectTestsScope = localScope.getEnclosingScope();
 			final Path objectPath =
-				localScope.getEnclosingScopePath().append(
-						objectTestsScope.getEnclosingScopePath());
+					localScope.getEnclosingScopePath().append(
+							objectTestsScope.getEnclosingScopePath());
 			final Path testPath = objectPath.append(this.testKey);
 
 			return testPath.target(

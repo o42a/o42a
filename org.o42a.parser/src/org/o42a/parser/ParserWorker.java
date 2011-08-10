@@ -214,10 +214,10 @@ public class ParserWorker {
 			}
 
 			final int from =
-				(int) (this.firstUnaccepted.offset()
-						- ParserWorker.this.position.offset());
+					(int) (this.firstUnaccepted.offset()
+							- ParserWorker.this.position.offset());
 			final StringBuilder unacceptedText =
-				ParserWorker.this.unacceptedText;
+					ParserWorker.this.unacceptedText;
 
 			for (int i = from, l = from + accept; i < l; ++i) {
 				this.firstUnaccepted.move(unacceptedText.charAt(i));
@@ -264,7 +264,7 @@ public class ParserWorker {
 			skip();
 
 			final StringBuilder unacceptedText =
-				ParserWorker.this.unacceptedText;
+					ParserWorker.this.unacceptedText;
 
 			for (;;) {
 

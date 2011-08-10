@@ -153,7 +153,7 @@ class PathTarget extends Ref {
 		}
 
 		final PathReproduction pathReproduction =
-			path.reproduce(this, reproducer);
+				path.reproduce(this, reproducer);
 
 		if (pathReproduction == null) {
 			return null;
@@ -175,7 +175,7 @@ class PathTarget extends Ref {
 		}
 
 		final Ref phrasePrefix =
-			reproducer.getPhrasePrefix().rescope(reproducedPart.toRescoper());
+				reproducer.getPhrasePrefix().rescope(reproducedPart.toRescoper());
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {
@@ -196,7 +196,7 @@ class PathTarget extends Ref {
 		}
 
 		final Scope start =
-			this.start.resolve(getScope().dummyResolver()).getScope();
+				this.start.resolve(getScope().dummyResolver()).getScope();
 
 		return this.path.rescoper(start).and(this.start.toRescoper());
 	}

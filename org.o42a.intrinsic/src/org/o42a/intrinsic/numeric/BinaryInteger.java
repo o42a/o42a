@@ -69,11 +69,11 @@ abstract class BinaryInteger extends BinaryResult<Long, Long, Long> {
 		final Code code = dirs.code();
 		final ValOp result = dirs.value();
 		final Int64recOp leftPtr =
-			leftVal.rawValue(code.id("left_int_ptr"), code);
+				leftVal.rawValue(code.id("left_int_ptr"), code);
 		final Int64op left = leftPtr.load(code.id("left"), code);
 
 		final Int64recOp rightPtr =
-			rightVal.rawValue(code.id("right_int_ptr"), code);
+				rightVal.rawValue(code.id("right_int_ptr"), code);
 		final Int64op right = rightPtr.load(code.id("right"), code);
 
 		result.store(code, write(code, left, right));

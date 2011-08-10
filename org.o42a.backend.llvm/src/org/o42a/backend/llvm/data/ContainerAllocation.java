@@ -56,8 +56,8 @@ public abstract class ContainerAllocation<S extends StructOp<S>>
 		} else {
 
 			final ContainerAllocation<?> typeAllocation =
-				(ContainerAllocation<?>) type.pointer(module.getGenerator())
-				.getAllocation();
+					(ContainerAllocation<?>) type.pointer(module.getGenerator())
+					.getAllocation();
 
 			this.uniqueTypePtr = typeAllocation.getUniqueTypePtr();
 		}

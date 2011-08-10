@@ -120,7 +120,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
 		final S alternative =
-			(S) sentenceFactory.createAlternative(location, this, opposite);
+				(S) sentenceFactory.createAlternative(location, this, opposite);
 
 		this.alternatives.add(alternative);
 

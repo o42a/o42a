@@ -39,7 +39,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	private final Statements<?> enclosing;
 	private Sentence<S> lastIssue;
 	private final ArrayList<Sentence<S>> sentences =
-		new ArrayList<Sentence<S>>();
+			new ArrayList<Sentence<S>>();
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<S, ?, ?> sentenceFactory;
 	private DefinitionTargets definitionTargets;

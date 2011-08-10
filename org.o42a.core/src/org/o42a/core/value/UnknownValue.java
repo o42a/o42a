@@ -60,10 +60,10 @@ final class UnknownValue<T> extends Value<T> {
 		cachedGenerator = generator;
 
 		final Global<ValType.Op, ValType> global =
-			generator.newGlobal().setConstant().dontExport().newInstance(
-					generator.id("CONST").sub("UNKNOWN"),
-					ValType.VAL_TYPE,
-					UNKNOWN_VAL);
+				generator.newGlobal().setConstant().dontExport().newInstance(
+						generator.id("CONST").sub("UNKNOWN"),
+						ValType.VAL_TYPE,
+						UNKNOWN_VAL);
 
 		return cachedPtr = global.getPointer();
 	}

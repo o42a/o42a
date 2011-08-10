@@ -75,7 +75,7 @@ abstract class CompareOperator extends ComparisonOperator {
 		}
 
 		final Long compareResult =
-			ValueType.INTEGER.cast(value).getDefiniteValue();
+				ValueType.INTEGER.cast(value).getDefiniteValue();
 
 		return compare(compareResult);
 	}
@@ -85,9 +85,9 @@ abstract class CompareOperator extends ComparisonOperator {
 
 		final Code code = dirs.code();
 		final Int64recOp comparisonPtr =
-			comparisonVal.rawValue(code.id("cmp_ptr"), code);
+				comparisonVal.rawValue(code.id("cmp_ptr"), code);
 		final Int64op comparisonValue =
-			comparisonPtr.load(code.id("cmp_value"), code);
+				comparisonPtr.load(code.id("cmp_value"), code);
 
 		write(dirs.dirs(), comparisonValue);
 

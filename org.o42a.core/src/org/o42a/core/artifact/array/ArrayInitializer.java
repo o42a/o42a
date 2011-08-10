@@ -141,8 +141,8 @@ public class ArrayInitializer extends Placed {
 		}
 
 		final TypeRef expected =
-			expectedItemType != null
-			? expectedItemType.upgradeScope(getScope()) : null;
+				expectedItemType != null
+				? expectedItemType.upgradeScope(getScope()) : null;
 		ArrayTypeRef type = null;
 
 		for (Ref item : this.items) {
@@ -158,7 +158,7 @@ public class ArrayInitializer extends Placed {
 			}
 
 			final ArrayTypeRef commonInheritant =
-				type.commonDerivative(itemType);
+					type.commonDerivative(itemType);
 
 			if (commonInheritant != null) {
 				type = commonInheritant;
@@ -192,7 +192,7 @@ public class ArrayInitializer extends Placed {
 		}
 
 		final ArrayTypeRef result =
-			arrayTypeRef(expectedTypeRef.getItemTypeRef());
+				arrayTypeRef(expectedTypeRef.getItemTypeRef());
 
 		if (result.getDimension() != expectedTypeRef.getDimension()) {
 			getLogger().unexpectedArrayDimension(

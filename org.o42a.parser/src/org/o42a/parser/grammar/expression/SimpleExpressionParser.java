@@ -55,7 +55,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			case ':':
 
 				final MemberRefNode fieldRef =
-					context.parse(memberRef(expression, true));
+						context.parse(memberRef(expression, true));
 
 				if (fieldRef != null) {
 					expression = fieldRef;
@@ -66,7 +66,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			case '@':
 
 				final AdapterRefNode adapterRef =
-					context.parse(adapterRef(expression));
+						context.parse(adapterRef(expression));
 
 				if (adapterRef != null) {
 					expression = adapterRef;
@@ -77,7 +77,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			default:
 
 				final PhraseNode phrase =
-					context.parse(this.grammar.phrase(expression));
+						context.parse(this.grammar.phrase(expression));
 
 				if (phrase != null) {
 					expression = phrase;

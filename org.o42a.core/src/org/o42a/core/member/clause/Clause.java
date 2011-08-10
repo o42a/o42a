@@ -39,7 +39,7 @@ public abstract class Clause implements PlaceInfo {
 
 		boolean result = true;
 		final HashMap<MemberId, Clause> implicitClauses =
-			new HashMap<MemberId, Clause>();
+				new HashMap<MemberId, Clause>();
 
 		for (Clause subClause : subClauses) {
 			if (!validateImplicitSubClauses(implicitClauses, subClause)) {
@@ -103,13 +103,12 @@ public abstract class Clause implements PlaceInfo {
 			Clause wrapped,
 			OverrideMode mode) {
 
-		final OverriddenMemberClause member =
-			new OverriddenMemberClause(
-						owner,
-						this,
-						overridden.toMember(),
-						wrapped != null ? wrapped.toMember() : null,
-						mode.propagation(overridden.toMember()));
+		final OverriddenMemberClause member = new OverriddenMemberClause(
+				owner,
+				this,
+				overridden.toMember(),
+				wrapped != null ? wrapped.toMember() : null,
+				mode.propagation(overridden.toMember()));
 
 		this.member = member;
 		this.declaration = member.getDeclaration();
@@ -145,7 +144,7 @@ public abstract class Clause implements PlaceInfo {
 		if (enclosingKey != null) {
 
 			final Member enclosingMember =
-				enclosingScope.getContainer().member(enclosingKey);
+					enclosingScope.getContainer().member(enclosingKey);
 
 			assert enclosingMember != null :
 				"Member " + enclosingKey + " not found in " + enclosingScope;

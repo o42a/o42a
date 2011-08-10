@@ -60,10 +60,10 @@ final class RuntimeValue<T> extends Value<T> {
 		cachedGenerator = generator;
 
 		final Global<ValType.Op, ValType> global =
-			generator.newGlobal().setConstant().dontExport().newInstance(
-					generator.id("CONST").sub("INDEFINITE"),
-					ValType.VAL_TYPE,
-					INDEFINITE_VAL);
+				generator.newGlobal().setConstant().dontExport().newInstance(
+						generator.id("CONST").sub("INDEFINITE"),
+						ValType.VAL_TYPE,
+						INDEFINITE_VAL);
 
 		return cachedPtr = global.getPointer();
 	}

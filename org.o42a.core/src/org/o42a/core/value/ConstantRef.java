@@ -147,7 +147,7 @@ final class ConstantRef<T> extends Ref {
 			@SuppressWarnings("unchecked")
 			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
 			final ObjectIR ir =
-				ref.getResolution().toObject().ir(getGenerator());
+					ref.getResolution().toObject().ir(getGenerator());
 
 			return ir.op(getBuilder(), dirs.code());
 		}

@@ -51,7 +51,7 @@ public class IRUtil {
 
 		final AdapterId adapterId = memberId.getAdapterId();
 		final ScopeIR adapterTypeIR =
-			adapterId.getAdapterTypeScope().ir(generator);
+				adapterId.getAdapterTypeScope().ir(generator);
 
 		return generator.id().type(adapterTypeIR.getId());
 	}
@@ -69,7 +69,7 @@ public class IRUtil {
 
 		final Scope enclosingScope = enclosingIR.getScope();
 		final Scope rootScope =
-			enclosingScope.getContext().getRoot().getScope();
+				enclosingScope.getContext().getRoot().getScope();
 
 		CodeId id;
 
@@ -105,7 +105,7 @@ public class IRUtil {
 		if (adapterId != null) {
 
 			final ScopeIR adapterTypeIR =
-				adapterId.getAdapterTypeScope().ir(generator);
+					adapterId.getAdapterTypeScope().ir(generator);
 
 			if (prefix == null) {
 				return generator.id().type(adapterTypeIR.getId());
@@ -143,7 +143,7 @@ public class IRUtil {
 		}
 
 		final Scope enclosingObjectScope =
-			clause.getEnclosingObject().getScope();
+				clause.getEnclosingObject().getScope();
 		final CodeId id = addDeclaredIn(
 				generator,
 				prefix,

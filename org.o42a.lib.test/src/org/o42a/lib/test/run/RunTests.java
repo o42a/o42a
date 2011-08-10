@@ -44,7 +44,7 @@ public class RunTests extends DirectiveObject {
 		final TestModule module =
 				(TestModule) getField().getEnclosingScope().toObject();
 		final Statements<?> statements =
-			context.getBlock().propose(directive).alternative(directive);
+				context.getBlock().propose(directive).alternative(directive);
 
 		statements.expression(runObjectTests(
 				directive,

@@ -66,7 +66,7 @@ public final class Adapter extends Wrap {
 		}
 
 		final Member adapterMember =
-			objectType.getObject().member(adapterId(this.adapterType));
+				objectType.getObject().member(adapterId(this.adapterType));
 
 		if (adapterMember == null) {
 			getLogger().incompatible(this.ref, this.adapterType);
@@ -83,14 +83,14 @@ public final class Adapter extends Wrap {
 
 		final RefOp op = super.createOp(host);
 		final ValueType<?> adapterValueType =
-			this.adapterType.typeObject(dummyUser()).value().getValueType();
+				this.adapterType.typeObject(dummyUser()).value().getValueType();
 
 		if (adapterValueType != ValueType.VOID) {
 			return op;
 		}
 
 		final ValueType<?> valueType =
-			this.ref.getResolution().materialize().value().getValueType();
+				this.ref.getResolution().materialize().value().getValueType();
 
 		if (valueType == ValueType.VOID) {
 			return op;

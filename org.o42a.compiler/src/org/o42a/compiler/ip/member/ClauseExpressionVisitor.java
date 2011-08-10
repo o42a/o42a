@@ -64,7 +64,7 @@ class ClauseExpressionVisitor
 			ClauseBuilder p) {
 
 		final AscendantsDefinition ascendantsDefinition =
-			parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
+				parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
 
 		if (ascendantsDefinition == null) {
 			return null;
@@ -149,7 +149,7 @@ class ClauseExpressionVisitor
 
 			final Distributor distributor = p.distribute();
 			final AscendantsDefinition ascendantsDefinition =
-				parseAscendants(CLAUSE_DEF_IP, ascendants, distributor);
+					parseAscendants(CLAUSE_DEF_IP, ascendants, distributor);
 
 			if (ascendantsDefinition == null) {
 				return p.setAscendants(new AscendantsDefinition(

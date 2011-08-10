@@ -30,9 +30,9 @@ public class StringNode extends AbstractAtomNode {
 	public static final Quote DOUBLE_QUOTE = new Quote("\"", true);
 
 	public static final Quote MULTILINE_SINGLE_QUOTE =
-		new OpeningMultilineQuote("'", false);
+			new OpeningMultilineQuote("'", false);
 	public static final Quote MULTILINE_DOUBLE_QUOTE =
-		new OpeningMultilineQuote("\"", true);
+			new OpeningMultilineQuote("\"", true);
 
 
 	private final SignNode<Quote> openingQuotationMark;

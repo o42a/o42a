@@ -264,7 +264,7 @@ public class LLVMStruct<S extends StructOp<S>>
 	private final long field(long blockPtr, CodeId id, Ptr<?> pointer) {
 
 		final LLVMDataAllocation<?> allocation =
-			(LLVMDataAllocation<?>) pointer.getAllocation();
+				(LLVMDataAllocation<?>) pointer.getAllocation();
 		final long field = field(blockPtr, id, allocation);
 
 		assert field != 0L :
@@ -292,7 +292,7 @@ public class LLVMStruct<S extends StructOp<S>>
 		}
 
 		final CodeId enclosingId =
-			id.detail("enc").detail(enclosing.getType().getId());
+				id.detail("enc").detail(enclosing.getType().getId());
 		final long enclosingField = field(blockPtr, enclosingId, enclosing);
 
 		if (enclosingField == 0L) {

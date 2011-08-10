@@ -45,7 +45,7 @@ public final class LocalFieldOp extends StOp {
 
 		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
 		final LclOp op =
-			fieldIR.allocate(control.getBuilder(), control.allocation());
+				fieldIR.allocate(control.getBuilder(), control.allocation());
 
 		op.write(control, result);
 	}

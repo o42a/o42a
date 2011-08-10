@@ -101,7 +101,7 @@ final class InstructionExecutor implements InstructionContext {
 	private final void execute(Statement statement) {
 
 		final Instruction instruction =
-			statement.toInstruction(getResolver());
+				statement.toInstruction(getResolver());
 
 		if (instruction == null) {
 			++this.index;

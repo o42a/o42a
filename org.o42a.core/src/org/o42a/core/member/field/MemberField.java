@@ -67,11 +67,11 @@ public abstract class MemberField extends Member {
 		this.key = overridden.getKey();
 		this.visibility = overridden.getVisibility();
 		this.declaration =
-			new FieldDeclaration(
-					overridden,
-					distribute(),
-					overridden.getDeclaration())
-			.override();
+				new FieldDeclaration(
+						overridden,
+						distribute(),
+						overridden.getDeclaration())
+				.override();
 	}
 
 	public final boolean isAdapter() {

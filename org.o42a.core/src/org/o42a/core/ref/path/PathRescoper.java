@@ -53,7 +53,7 @@ final class PathRescoper extends Rescoper {
 	public Scope rescope(Scope scope) {
 
 		final Container found =
-			this.path.resolve(scope, scope.dummyResolver(), scope);
+				this.path.resolve(scope, scope.dummyResolver(), scope);
 
 		return found != null ? found.getScope() : null;
 	}
@@ -104,7 +104,7 @@ final class PathRescoper extends Rescoper {
 
 		final Scope scope = reproducer.getScope();
 		final PathReproduction pathReproduction =
-			this.path.reproduce(location, reproducer);
+				this.path.reproduce(location, reproducer);
 
 		if (pathReproduction == null) {
 			return null;
@@ -120,7 +120,7 @@ final class PathRescoper extends Rescoper {
 		}
 
 		final Rescoper phraseRescoper =
-			reproducer.getPhrasePrefix().toRescoper();
+				reproducer.getPhrasePrefix().toRescoper();
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {

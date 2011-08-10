@@ -137,7 +137,7 @@ public abstract class AbstractNode implements Node, Cloneable {
 		} else {
 
 			final CommentNode[] newComments =
-				new CommentNode[this.comments.length + comments.length];
+					new CommentNode[this.comments.length + comments.length];
 
 			System.arraycopy(
 					this.comments,

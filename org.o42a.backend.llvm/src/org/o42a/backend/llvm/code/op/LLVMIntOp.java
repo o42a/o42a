@@ -188,9 +188,9 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId =
-			LLVMCode.binaryId(to, id, code, "atomic_add", this);
+				LLVMCode.binaryId(to, id, code, "atomic_add", this);
 		final String op =
-			"llvm.atomic.load.add.i" + getBits() + ".p0i" + getBits();
+				"llvm.atomic.load.add.i" + getBits() + ".p0i" + getBits();
 
 		return create(
 				resultId,
@@ -225,9 +225,9 @@ public abstract class LLVMIntOp<O extends IntOp<O>, T extends O>
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId =
-			LLVMCode.binaryId(from, id, code, "atomic_sub", this);
+				LLVMCode.binaryId(from, id, code, "atomic_sub", this);
 		final String op =
-			"llvm.atomic.load.sub.i" + getBits() + ".p0i" + getBits();
+				"llvm.atomic.load.sub.i" + getBits() + ".p0i" + getBits();
 
 		return create(
 				resultId,

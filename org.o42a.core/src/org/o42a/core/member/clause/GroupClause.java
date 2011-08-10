@@ -111,7 +111,7 @@ public abstract class GroupClause extends Clause implements Container {
 
 		final MemberKey key = getKey();
 		final Collection<? extends Member> members =
-			getEnclosingScope().getContainer().getMembers();
+				getEnclosingScope().getContainer().getMembers();
 
 		for (Member member : members) {
 

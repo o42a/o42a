@@ -124,9 +124,9 @@ final class Rescoped extends Ref {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final Scope rescoped =
-			this.rescoper.rescope(reproducer.getReproducingScope());
+				this.rescoper.rescope(reproducer.getReproducingScope());
 		final Reproducer rescopedReproducer =
-			reproducer.reproducerOf(rescoped);
+				reproducer.reproducerOf(rescoped);
 
 		if (rescopedReproducer == null) {
 			getLogger().notReproducible(this);

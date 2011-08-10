@@ -89,14 +89,14 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final Code code = dirs.code();
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
-			builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
+				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
 		final DataOp previousPtr = fld.previous(code).load(null, code);
 
 		final CondCode construct =
-			previousPtr.isNull(null, code)
-			.branch(code, "construct", "delegate");
+				previousPtr.isNull(null, code)
+				.branch(code, "construct", "delegate");
 		final Code constructionFailed =
-			construct.addBlock("construction_failed");
+				construct.addBlock("construction_failed");
 
 		final DataOp result1 = construct(
 				builder,
@@ -110,7 +110,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final Code delegate = construct.otherwise();
 		final Code delegationFailed =
-			delegate.addBlock("delegation_failed");
+				delegate.addBlock("delegation_failed");
 		final DataOp result2 = delegate(
 				builder,
 				builder.falseWhenUnknown(delegate, delegationFailed.head()),
@@ -125,7 +125,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final FldOp ownFld = host.field(dirs, getField().getKey());
 		final BoolOp isOwn =
-			ownFld.toAny(code).eq(null, code, fld.toAny(null, code));
+				ownFld.toAny(code).eq(null, code, fld.toAny(null, code));
 		final CondCode store = isOwn.branch(code, "store", "do_not_store");
 
 		fld.object(store).store(store, result);
@@ -144,11 +144,11 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final Op previous = previousPtr.to(null, code, getType().getType());
 		final ObjectConstructorFunc constructor =
-			previous.constructor(code).load(null, code);
+				previous.constructor(code).load(null, code);
 		final DataOp ancestorPtr =
-			constructor.call(code, builder.host(), previous);
+				constructor.call(code, builder.host(), previous);
 		final ObjectOp ancestor =
-			anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
+				anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
 
 		return builder.newObject(
 				dirs,

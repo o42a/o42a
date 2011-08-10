@@ -45,9 +45,9 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	private final ObjectTypeIR typeIR;
 	private final LinkedHashMap<Obj, ObjectBodyIR> bodyIRs =
-		new LinkedHashMap<Obj, ObjectBodyIR>();
+			new LinkedHashMap<Obj, ObjectBodyIR>();
 	private final ArrayList<ObjectBodyIR> sampleBodyIRs =
-		new ArrayList<ObjectBodyIR>();
+			new ArrayList<ObjectBodyIR>();
 	private final ObjectBodyIR mainBodyIR;
 
 	public ObjectIRStruct(ObjectIR objectIR) {
@@ -130,7 +130,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			boolean inherited) {
 
 		final Collection<? extends ObjectBodyIR> ascendantBodyIRs =
-			ascendant.ir(getGenerator()).getBodyIRs();
+				ascendant.ir(getGenerator()).getBodyIRs();
 
 		for (ObjectBodyIR ascendantBodyIR : ascendantBodyIRs) {
 			if (this.bodyIRs.containsKey(ascendantBodyIR.getAscendant())) {

@@ -48,7 +48,7 @@ public abstract class Fld {
 		this.bodyIR = bodyIR;
 
 		final MemberAnalysis declarationAnalysis =
-			getField().toMember().getAnalysis().getDeclarationAnalysis();
+				getField().toMember().getAnalysis().getDeclarationAnalysis();
 
 		assert (!getGenerator().isUsesAnalysed()
 				|| declarationAnalysis.isUsedBy(getGenerator())) :

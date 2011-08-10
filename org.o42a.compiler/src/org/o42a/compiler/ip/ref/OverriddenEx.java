@@ -107,7 +107,7 @@ public class OverriddenEx extends ObjectConstructor {
 					value().proposition(),
 					getScope()).toObject();
 			final Definitions overriddenDefinitions =
-				self.value().getOverriddenDefinitions();
+					self.value().getOverriddenDefinitions();
 
 			return selfPath.rescoper(getScope()).update(overriddenDefinitions);
 		}
@@ -117,7 +117,7 @@ public class OverriddenEx extends ObjectConstructor {
 
 			final Scope enclosingScope = getScope().getEnclosingScope();
 			final ValueType<?> valueType =
-				enclosingScope.toObject().value().getValueType();
+					enclosingScope.toObject().value().getValueType();
 
 			return new Ascendants(this).setAncestor(
 					valueType.typeRef(this, enclosingScope));
@@ -139,7 +139,7 @@ public class OverriddenEx extends ObjectConstructor {
 		public void writeLogicalValue(CodeDirs dirs) {
 
 			final ValueType<?> valueType =
-				getRef().getScope().toObject().value().getValueType();
+					getRef().getScope().toObject().value().getValueType();
 			final ValDirs valDirs = dirs.value(valueType);
 
 			writeValue(valDirs);
@@ -152,7 +152,7 @@ public class OverriddenEx extends ObjectConstructor {
 			final OverriddenEx ref = (OverriddenEx) getRef();
 			final RefOp hostRef = ref.host.op(host());
 			final ObjectOp object =
-				hostRef.target(dirs.dirs()).toObject(dirs.dirs());
+					hostRef.target(dirs.dirs()).toObject(dirs.dirs());
 			final Code code = dirs.code();
 
 			return object.objectType(code).writeOverriddenValue(dirs);

@@ -73,7 +73,7 @@ public class AscendantRefTest extends GrammarTestCase {
 		assertNoType(result);
 
 		final ParentRefNode overridden =
-			to(ParentRefNode.class, result.getOverridden());
+				to(ParentRefNode.class, result.getOverridden());
 
 		assertThat(overridden.getName().getName(), is("foo"));
 	}
@@ -86,7 +86,7 @@ public class AscendantRefTest extends GrammarTestCase {
 		assertWithType("bar", result);
 
 		final ParentRefNode overridden =
-			to(ParentRefNode.class, result.getOverridden());
+				to(ParentRefNode.class, result.getOverridden());
 
 		assertThat(overridden.getName().getName(), is("foo"));
 	}

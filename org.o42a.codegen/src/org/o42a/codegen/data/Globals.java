@@ -36,7 +36,7 @@ public abstract class Globals {
 	private final DataChain globals = new DataChain();
 	private int typesAllocating;
 	private final LinkedList<AbstractTypeData<?>> scheduled =
-		new LinkedList<AbstractTypeData<?>>();
+			new LinkedList<AbstractTypeData<?>>();
 
 	public Globals(Generator generator) {
 		this.generator = generator;
@@ -100,7 +100,7 @@ public abstract class Globals {
 			Content<T> content) {
 
 		final Global<S, T> global =
-			new Global<S, T>(settings, id, type, instance, content);
+				new Global<S, T>(settings, id, type, instance, content);
 		final SubData<S> data = global.getInstance().getTypeData();
 
 		data.allocateType(false);

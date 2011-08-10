@@ -45,7 +45,7 @@ class PhraseConstructor extends ObjectConstructor {
 				phrase.distribute());
 		this.phrase = phrase;
 		this.ascendants =
-			phrase.getPhrase().getMainContext().getAscendants();
+				phrase.getPhrase().getMainContext().getAscendants();
 		this.ascendants.assertCompatibleScope(this);
 	}
 
@@ -69,7 +69,7 @@ class PhraseConstructor extends ObjectConstructor {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
-			this.ascendants.reproduce(reproducer);
+				this.ascendants.reproduce(reproducer);
 
 		if (ascendants == null) {
 			return null;
@@ -124,7 +124,7 @@ class PhraseConstructor extends ObjectConstructor {
 		protected void buildDefinition(DeclarativeBlock definition) {
 
 			final BlockBuilder definitionBuilder =
-				this.mainContext.getInstances()[0].getDefinition();
+					this.mainContext.getInstances()[0].getDefinition();
 
 			definitionBuilder.buildBlock(definition);
 		}

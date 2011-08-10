@@ -37,7 +37,7 @@ import org.o42a.util.ArrayUtil;
 public final class ClauseInstance {
 
 	private static final PhraseContinuation[] NO_CONTENT =
-		new PhraseContinuation[0];
+			new PhraseContinuation[0];
 
 	private final LocationInfo location;
 	private final PhraseContext context;

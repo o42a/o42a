@@ -81,7 +81,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 	protected void fill() {
 
 		final ObjectIR ascendantIR =
-			getBodyIR().getAscendant().ir(getGenerator());
+				getBodyIR().getAscendant().ir(getGenerator());
 
 		this.objectType.setValue(
 				ascendantIR.getTypeIR().getObjectType()

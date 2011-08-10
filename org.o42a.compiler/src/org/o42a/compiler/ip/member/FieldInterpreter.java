@@ -38,7 +38,7 @@ import org.o42a.core.st.sentence.Statements;
 public class FieldInterpreter {
 
 	static final AdapterFieldVisitor ADAPTER_FIELD_VISITOR =
-		new AdapterFieldVisitor();
+			new AdapterFieldVisitor();
 
 	public static void field(
 			Interpreter ip,

@@ -73,7 +73,7 @@ public final class Dep extends PathFragment {
 		this.object = object;
 
 		final Container container =
-			object.getScope().getEnclosingContainer();
+				object.getScope().getEnclosingContainer();
 
 		assert container.toLocal() != null :
 			object + " is not a local object";
@@ -92,7 +92,7 @@ public final class Dep extends PathFragment {
 	private Dep(Obj object) {
 
 		final LocalScope local =
-			object.getScope().getEnclosingContainer().toLocal();
+				object.getScope().getEnclosingContainer().toLocal();
 
 		assert local != null :
 			object + " is not a local object";
@@ -134,7 +134,7 @@ public final class Dep extends PathFragment {
 			+ " should be resolved against object, but were not: " + start;
 
 		final LocalScope enclosingLocal =
-			object.getScope().getEnclosingContainer().toLocal();
+				object.getScope().getEnclosingContainer().toLocal();
 
 		assert enclosingLocal != null :
 			object + " is inside " + object.getScope().getEnclosingContainer()

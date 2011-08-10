@@ -135,7 +135,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	public void exit(DataAllocation<?> enclosing, SubData<?> data) {
 
 		final ContainerAllocation<?> allocation =
-			container(data.getPointer().getAllocation());
+				container(data.getPointer().getAllocation());
 
 		if (!allocation.isTypeAllocated()) {
 			allocation.setUniqueTypePtr(refineType(
@@ -159,7 +159,8 @@ public class LLVMDataAllocator implements DataAllocator {
 	public void end(Global<?, ?> global) {
 
 		final ContainerAllocation.Global<?> allocation =
-			(ContainerAllocation.Global<?>) global.getPointer().getAllocation();
+				(ContainerAllocation.Global<?>)
+				global.getPointer().getAllocation();
 
 		assert allocation.llvmId().getGlobalId().equals(global.getId()) :
 			"Error closing global data " + global;
@@ -184,8 +185,8 @@ public class LLVMDataAllocator implements DataAllocator {
 	public void end(Type<?> type) {
 
 		final TypeAllocation<?> allocation =
-			(TypeAllocation<?>) type.pointer(
-					type.getGenerator()).getAllocation();
+				(TypeAllocation<?>) type.pointer(
+						type.getGenerator()).getAllocation();
 
 		assert type.pointer(type.getGenerator()).getAllocation() == allocation :
 			"Wrong " + type + " allocation: " + allocation
@@ -301,7 +302,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			DataAllocation<S> struct) {
 
 		final ContainerAllocation<S> llvmStruct =
-			(ContainerAllocation<S>) struct;
+				(ContainerAllocation<S>) struct;
 
 		if (allocate(enclosing)) {
 			allocateStructPtr(
@@ -334,7 +335,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int8layout;
 		}
 		return this.int8layout =
-			new DataLayout(intLayout(getModulePtr(), (byte) 8));
+				new DataLayout(intLayout(getModulePtr(), (byte) 8));
 	}
 
 	final DataLayout int16layout() {
@@ -342,7 +343,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int16layout;
 		}
 		return this.int16layout =
-			new DataLayout(intLayout(getModulePtr(), (byte) 16));
+				new DataLayout(intLayout(getModulePtr(), (byte) 16));
 	}
 
 	final DataLayout int32layout() {
@@ -350,7 +351,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int32layout;
 		}
 		return this.int32layout =
-			new DataLayout(intLayout(getModulePtr(), (byte) 32));
+				new DataLayout(intLayout(getModulePtr(), (byte) 32));
 	}
 
 	final DataLayout int64layout() {
@@ -358,7 +359,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int64layout;
 		}
 		return this.int64layout =
-			new DataLayout(intLayout(getModulePtr(), (byte) 64));
+				new DataLayout(intLayout(getModulePtr(), (byte) 64));
 	}
 
 	final DataLayout fp32layout() {

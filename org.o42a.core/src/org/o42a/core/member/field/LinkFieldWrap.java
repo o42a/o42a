@@ -68,7 +68,7 @@ final class LinkFieldWrap extends FieldWrap<Link> {
 		protected TargetRef buildTargetRef() {
 
 			final TargetRef ref =
-				field().getWrapped().getArtifact().getTargetRef();
+					field().getWrapped().getArtifact().getTargetRef();
 
 			return ref.rescope(wrapper(
 					getScope().getEnclosingScope(),

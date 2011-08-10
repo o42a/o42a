@@ -99,7 +99,7 @@ public abstract class LLVMPtrOp<P extends PtrOp<P>>
 
 		final long nextPtr = nextPtr(code);
 		final CodeId resultId =
-			LLVMCode.binaryId(this, id, code, "eq", other);
+				LLVMCode.binaryId(this, id, code, "eq", other);
 
 		return new LLVMBoolOp(
 				resultId,
@@ -116,7 +116,8 @@ public abstract class LLVMPtrOp<P extends PtrOp<P>>
 
 		final long nextPtr = nextPtr(code);
 		final CodeId offsetId =
-			id != null ? id : getId().detail("offset_by").detail(index.getId());
+				id != null
+				? id : getId().detail("offset_by").detail(index.getId());
 
 		return create(
 				offsetId,

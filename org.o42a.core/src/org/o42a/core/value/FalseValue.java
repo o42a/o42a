@@ -60,10 +60,10 @@ final class FalseValue<T> extends Value<T> {
 		cachedGenerator = generator;
 
 		final Global<ValType.Op, ValType> global =
-			generator.newGlobal().setConstant().dontExport().newInstance(
-					generator.id("CONST").sub("FALSE"),
-					ValType.VAL_TYPE,
-					FALSE_VAL);
+				generator.newGlobal().setConstant().dontExport().newInstance(
+						generator.id("CONST").sub("FALSE"),
+						ValType.VAL_TYPE,
+						FALSE_VAL);
 
 		return cachedPtr = global.getPointer();
 	}

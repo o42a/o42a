@@ -49,7 +49,7 @@ public abstract class PlainClause
 		implements Scope, ClauseContainer {
 
 	private final ResolverFactory<Resolver> resolverFactory =
-		Resolver.resolverFactory(this);
+			Resolver.resolverFactory(this);
 	private Obj clauseObject;
 	private Path enclosingScopePath;
 	private Set<Scope> enclosingScopes;
@@ -163,8 +163,8 @@ public abstract class PlainClause
 
 		final MemberKey key = toMember().getKey();
 		final PlainClause original =
-			key.getOrigin().getContainer().member(key)
-			.toClause().toPlainClause();
+				key.getOrigin().getContainer().member(key)
+				.toClause().toPlainClause();
 
 		if (original.getObject().getScope()
 				!= clause.toMember().getKey().getOrigin()) {

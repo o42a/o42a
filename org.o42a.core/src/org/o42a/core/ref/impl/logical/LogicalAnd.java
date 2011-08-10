@@ -44,7 +44,7 @@ public final class LogicalAnd extends AbstractConjunction {
 		for (int i = 0; i < claims.length; ++i) {
 
 			final Logical reproduced =
-				this.claims[i].reproduce(reproducer);
+					this.claims[i].reproduce(reproducer);
 
 			if (reproduced == null) {
 				return null;

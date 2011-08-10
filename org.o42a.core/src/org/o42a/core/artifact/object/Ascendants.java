@@ -90,7 +90,7 @@ public class Ascendants
 		final Ascendants clone = clone();
 
 		clone.explicitAncestor =
-			explicitAncestor.upgradeScope(getScope().getEnclosingScope());
+				explicitAncestor.upgradeScope(getScope().getEnclosingScope());
 
 		return clone;
 	}
@@ -119,7 +119,7 @@ public class Ascendants
 		if (ancestor != null) {
 
 			final ConstructionMode ancestorMode =
-				ancestor.getConstructionMode();
+					ancestor.getConstructionMode();
 
 			if (!ancestorMode.isProhibited()) {
 				return ancestorMode;
@@ -174,7 +174,7 @@ public class Ascendants
 		final UserInfo user = getObject().type();
 		final TypeRef ancestor = getExplicitAncestor();
 		final Resolver resolver =
-			getScope().getEnclosingScope().newResolver(user);
+				getScope().getEnclosingScope().newResolver(user);
 
 		if (ancestor != null) {
 			ancestor.type(user);
@@ -395,7 +395,7 @@ public class Ascendants
 			}
 
 			final ConstructionMode sampleConstructionMode =
-				explicitAscendant.getConstructionMode();
+					explicitAscendant.getConstructionMode();
 
 			if (sampleConstructionMode.isStrict()) {
 				getScope().getLogger().error(
@@ -439,7 +439,7 @@ public class Ascendants
 			}
 
 			final TypeRelation relation =
-				first.relationTo(second).revert(!explicit);
+					first.relationTo(second).revert(!explicit);
 
 			if (!relation.isDerivative()) {
 				if (!relation.isError()) {
@@ -466,7 +466,7 @@ public class Ascendants
 			if (!explicit) {
 
 				final TypeRelation relation =
-					sample.getTypeRef().relationTo(s.getTypeRef(), false);
+						sample.getTypeRef().relationTo(s.getTypeRef(), false);
 
 				if (relation.isAscendant()) {
 					return discardSample(sample);
@@ -479,7 +479,7 @@ public class Ascendants
 			}
 
 			final TypeRelation relation =
-				s.getTypeRef().relationTo(sample.getTypeRef(), false);
+					s.getTypeRef().relationTo(sample.getTypeRef(), false);
 
 			if (relation.isDerivative()) {
 				return discardSample(sample);
@@ -505,7 +505,7 @@ public class Ascendants
 	private ConstructionMode enclosingConstructionMode() {
 
 		final Scope enclosingScope =
-			getScope().getEnclosingScope();
+				getScope().getEnclosingScope();
 
 		if (enclosingScope == null) {
 			return ConstructionMode.FULL_CONSTRUCTION;

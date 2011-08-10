@@ -34,7 +34,7 @@ import org.o42a.core.ir.op.ObjectSignature;
 public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 
 	public static final ObjectConstructor OBJECT_CONSTRUCTOR =
-		new ObjectConstructor();
+			new ObjectConstructor();
 
 	private ObjectConstructorFunc(FuncCaller<ObjectConstructorFunc> caller) {
 		super(caller);

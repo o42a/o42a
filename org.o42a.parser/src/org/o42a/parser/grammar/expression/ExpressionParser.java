@@ -31,9 +31,9 @@ import org.o42a.parser.ParserContext;
 public abstract class ExpressionParser implements Parser<ExpressionNode> {
 
 	public static final Parser<ExpressionNode> DECLARATIVE_EXPRESSION =
-		new Declarative();
+			new Declarative();
 	public static final Parser<ExpressionNode> IMPERATIVE_EXPRESSION =
-		new Imperative();
+			new Imperative();
 
 	private ExpressionParser(Grammar grammar) {
 	}
