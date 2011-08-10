@@ -20,6 +20,8 @@
 package org.o42a.compiler.ip.phrase.part;
 
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
+import org.o42a.core.Distributor;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 
@@ -31,6 +33,8 @@ public abstract class PhraseContinuation extends PhrasePart {
 	}
 
 	public abstract NextClause nextClause(PhraseContext context);
+
+	public abstract Ref substitute(Distributor distributor);
 
 	public abstract void define(Block<?> definition);
 

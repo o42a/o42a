@@ -20,7 +20,9 @@
 package org.o42a.compiler.ip.phrase.part;
 
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
+import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
@@ -46,10 +48,18 @@ public class PhraseString extends PhraseContinuation {
 	}
 
 	@Override
+	public Ref substitute(Distributor distributor) {
+		return ValueType.STRING.constantRef(
+				this,
+				distributor,
+				this.string);
+	}
+
+	@Override
 	public void define(Block<?> definition) {
 
 		final Statements<?> statements =
-			definition.propose(this).alternative(this);
+				definition.propose(this).alternative(this);
 
 		statements.selfAssign(ValueType.STRING.constantRef(
 				this,

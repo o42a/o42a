@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.addContent;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_EXPRESSION_VISITOR;
+import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_SELF_ASSIGNMENT_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
 
 import org.o42a.ast.expression.BracesNode;
@@ -51,7 +52,9 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Statement visitParentheses(ParenthesesNode parentheses, Statements<?> p) {
+	public Statement visitParentheses(
+			ParenthesesNode parentheses,
+			Statements<?> p) {
 
 		final Group group = p.group(
 				location(this.declaration, parentheses),
@@ -112,10 +115,12 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Statement visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
+	public Statement visitDeclarator(
+			DeclaratorNode declarator,
+			Statements<?> p) {
 
 		final ClauseBuilder builder =
-			buildOverrider(this.declaration, declarator, p);
+				buildOverrider(this.declaration, declarator, p);
 
 		if (builder == null) {
 			return null;
@@ -141,16 +146,23 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		return buildExpression(builder.assignment(), value);
+		return buildExpression(
+				builder.assignment(),
+				value,
+				CLAUSE_SELF_ASSIGNMENT_VISITOR);
 	}
 
 	@Override
-	protected Statement visitExpression(ExpressionNode expression, Statements<?> p) {
+	protected Statement visitExpression(
+			ExpressionNode expression,
+			Statements<?> p) {
 		return expression(expression, p, this.declaration);
 	}
 
 	@Override
-	protected Statement visitStatement(StatementNode statement, Statements<?> p) {
+	protected Statement visitStatement(
+			StatementNode statement,
+			Statements<?> p) {
 		getLogger().invalidClauseContent(statement);
 		return null;
 	}
@@ -174,7 +186,7 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		return buildExpression(builder, expression);
+		return buildExpression(builder, expression, CLAUSE_EXPRESSION_VISITOR);
 	}
 
 	private ClauseBuilder builder(
@@ -192,10 +204,10 @@ final class ClauseContentVisitor
 
 	private Statement buildExpression(
 			ClauseBuilder builder,
-			ExpressionNode expression) {
+			ExpressionNode expression,
+			ClauseExpressionVisitor visitor) {
 
-		final ClauseBuilder result =
-				expression.accept(CLAUSE_EXPRESSION_VISITOR, builder);
+		final ClauseBuilder result = expression.accept(visitor, builder);
 
 		if (result == null) {
 			return null;

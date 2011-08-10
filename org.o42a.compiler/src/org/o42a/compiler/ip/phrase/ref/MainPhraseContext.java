@@ -125,7 +125,7 @@ final class MainPhraseContext extends PhraseContext {
 
 			final LocationInfo location = instance.getLocation();
 			final Statements<?> statements =
-				definition.propose(location).alternative(location);
+					definition.propose(location).alternative(location);
 
 			subContext.applyCause(statements);
 		}
@@ -276,7 +276,7 @@ final class MainPhraseContext extends PhraseContext {
 		}
 
 		final PhraseContext containerContext =
-			popTill(stack, nextClause.getContainer());
+				popTill(stack, nextClause.getContainer());
 		final PhraseContext context = push(
 				stack,
 				containerContext,
@@ -330,9 +330,9 @@ final class MainPhraseContext extends PhraseContext {
 				continuation,
 				clause.getEnclosingClause());
 		final PhraseSubContext subContext =
-			enclosingContext.incompleteInstance().addSubContext(
-					continuation,
-					clause);
+				enclosingContext.incompleteInstance().addSubContext(
+						continuation,
+						clause);
 
 		stack.push(subContext);
 

@@ -37,7 +37,7 @@ final class PhrasePrefixVisitor
 		extends AbstractExpressionVisitor<Phrase, Phrase> {
 
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
-		new PhrasePrefixVisitor();
+			new PhrasePrefixVisitor();
 
 	private PhrasePrefixVisitor() {
 	}
@@ -52,7 +52,7 @@ final class PhrasePrefixVisitor
 
 		final Distributor distributor = p.distribute();
 		final TypeRef ancestor =
-			expression.accept(p.ip().ancestorVisitor(), distributor);
+				expression.accept(p.ip().ancestorVisitor(), distributor);
 
 		if (ancestor == null
 				|| ancestor == impliedAncestor(distributor.getContext())) {
@@ -61,7 +61,7 @@ final class PhrasePrefixVisitor
 		if (ancestor == noAncestor(distributor.getContext())) {
 
 			final Ref sampleRef =
-				expression.accept(p.ip().expressionVisitor(), distributor);
+					expression.accept(p.ip().expressionVisitor(), distributor);
 
 			if (sampleRef == null) {
 				return p.setImpliedAncestor(location(p, expression));

@@ -100,6 +100,11 @@ final class PlainClauseWrap extends PlainClause {
 	}
 
 	@Override
+	public boolean isSubstitution() {
+		return this.wrapped.isSubstitution();
+	}
+
+	@Override
 	public AscendantsDefinition getAscendants() {
 		return this.ascendants;
 	}

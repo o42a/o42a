@@ -57,11 +57,6 @@ final class DeclaredPlainClause extends PlainClause {
 		this.overridden = overridden.getOverridden();
 	}
 
-	public final ClauseDefinition getDefinition() {
-		buildDefinition();
-		return this.definition;
-	}
-
 	public final ClauseBuilder getBuilder() {
 		return this.builder;
 	}
@@ -80,6 +75,11 @@ final class DeclaredPlainClause extends PlainClause {
 	@Override
 	public boolean isAssignment() {
 		return getBuilder().isAssignment();
+	}
+
+	@Override
+	public boolean isSubstitution() {
+		return getBuilder().isSubstitution();
 	}
 
 	@Override
@@ -129,6 +129,23 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
+	protected void validate() {
+		super.validate();
+		if (isSubstitution()) {
+
+			final ClauseId clauseId = getDeclaration().getClauseId();
+
+			if (!clauseId.hasValue()) {
+				getLogger().error(
+						"incompatible_clause_substitution",
+						this,
+						"Clause substitution is not allowed in %s clause",
+						clauseId);
+			}
+		}
+	}
+
+	@Override
 	protected PlainClause propagate(MemberOwner owner) {
 		return new DeclaredPlainClause(owner, this);
 	}
@@ -136,6 +153,11 @@ final class DeclaredPlainClause extends PlainClause {
 	@Override
 	protected Obj propagateClauseObject(PlainClause overridden) {
 		return new PropagatedClauseDefinition(this, overridden);
+	}
+
+	private final ClauseDefinition getDefinition() {
+		buildDefinition();
+		return this.definition;
 	}
 
 	private void buildDefinition() {
