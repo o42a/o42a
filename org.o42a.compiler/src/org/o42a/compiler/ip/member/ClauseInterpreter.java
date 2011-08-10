@@ -27,7 +27,8 @@ import static org.o42a.compiler.ip.member.OverriderVisitor.OVERRIDER_VISITOR;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.*;
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
@@ -47,10 +48,10 @@ public class ClauseInterpreter {
 			Statements<?> statements) {
 
 		final Distributor distributor =
-			new Placed(context, declarator, statements.nextDistributor())
-			.distribute();
+				new Placed(context, declarator, statements.nextDistributor())
+				.distribute();
 		final ClauseDeclaration declaration =
-			declarator.getClauseKey().accept(CLAUSE_KEY_VISITOR, distributor);
+				declarator.getClauseKey().accept(CLAUSE_KEY_VISITOR, distributor);
 
 		if (declaration == null) {
 			return;
@@ -110,7 +111,7 @@ public class ClauseInterpreter {
 		}
 
 		final ClauseBuilder builder =
-			p.clause(declaration.setKind(ClauseKind.OVERRIDER));
+				p.clause(declaration.setKind(ClauseKind.OVERRIDER));
 
 		if (builder == null) {
 			return null;
@@ -135,8 +136,9 @@ public class ClauseInterpreter {
 				continue;
 			}
 
-			final Ref reusedRef =
-					clause.accept(CLAUSE_DECL_IP.refVisitor(), builder.distribute());
+			final Ref reusedRef = clause.accept(
+					CLAUSE_DECL_IP.refVisitor(),
+					builder.distribute());
 
 			if (reusedRef == null) {
 				continue;

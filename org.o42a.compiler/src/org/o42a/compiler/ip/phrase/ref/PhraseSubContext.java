@@ -34,9 +34,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.member.clause.PlainClause;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldBuilder;
-import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -98,7 +96,7 @@ class PhraseSubContext extends PhraseContext {
 	protected void define(ClauseInstance instance, Block<?> definition) {
 
 		final DefinitionReproducer reproducer =
-			new DefinitionReproducer(this.clause, instance, definition);
+				new DefinitionReproducer(this.clause, instance, definition);
 
 		this.clause.define(reproducer);
 	}
@@ -138,14 +136,27 @@ class PhraseSubContext extends PhraseContext {
 		final Distributor distributor = statements.nextDistributor();
 		final LocationInfo location = instance.getLocation();
 		final FieldDeclaration declaration =
-			createDeclaration(location, distributor);
+				createDeclaration(location, distributor);
+		final FieldDefinition definition;
+		final PlainClause plainClause = getClause().toPlainClause();
 
-		final FieldBuilder builder = statements.field(
-				declaration,
-				fieldDefinition(
-						location,
-						ascendants(location, distributor),
-						instance.getDefinition()));
+		if (plainClause != null && plainClause.isSubstitution()) {
+
+			final Ref substitutution = substitute(distributor);
+
+			if (substitutution == null) {
+				return;
+			}
+
+			definition = substitutution.toFieldDefinition();
+		} else {
+			definition = fieldDefinition(
+					location,
+					ascendants(location, distributor),
+					instance.getDefinition());
+		}
+
+		final FieldBuilder builder = statements.field(declaration, definition);
 
 		if (builder == null) {
 			return;
@@ -154,14 +165,19 @@ class PhraseSubContext extends PhraseContext {
 		statements.statement(builder.build());
 	}
 
-	private void groupDefinition(Statements<?> statements) {
-		for (ClauseInstance instance : getInstances()) {
+	private Ref substitute(Distributor distributor) {
 
-			final Block<?> block =
-				statements.parentheses(instance.getLocation());
+		final ClauseInstance instance = getInstances()[0];
+		final Ref substitution = instance.substitute(distributor);
 
-			instance.groupDefinition(block);
+		if (substitution == null) {
+			getLogger().error(
+					"missing_clause_substitution",
+					instance.getLocation(),
+					"Value required here");
 		}
+
+		return substitution;
 	}
 
 	private void instantiateObjects(Statements<?> statements) {
@@ -171,9 +187,14 @@ class PhraseSubContext extends PhraseContext {
 
 		for (ClauseInstance instance : getInstances()) {
 
-			final Ref ref =
-				instance.instantiateObject(statements.nextDistributor());
+			final Ref ref;
+			final PlainClause plainClause = getClause().toPlainClause();
 
+			if (plainClause != null && plainClause.isSubstitution()) {
+				ref = substitute(statements.nextDistributor());
+			} else {
+				ref = instance.instantiateObject(statements.nextDistributor());
+			}
 			if (ref == null) {
 				continue;
 			}
@@ -185,12 +206,22 @@ class PhraseSubContext extends PhraseContext {
 		}
 	}
 
+	private void groupDefinition(Statements<?> statements) {
+		for (ClauseInstance instance : getInstances()) {
+
+			final Block<?> block =
+					statements.parentheses(instance.getLocation());
+
+			instance.groupDefinition(block);
+		}
+	}
+
 	private FieldDeclaration createDeclaration(
 			LocationInfo location,
 			Distributor distributor) {
 
 		final MemberKey overriddenKey =
-			getClause().toPlainClause().getOverridden();
+				getClause().toPlainClause().getOverridden();
 		FieldDeclaration declaration;
 
 		if (overriddenKey.isAdapter()) {
@@ -210,12 +241,12 @@ class PhraseSubContext extends PhraseContext {
 
 		final Obj origin = overriddenKey.getOrigin().toObject();
 		final Field<?> overridden =
-			origin.member(overriddenKey).toField(dummyUser());
+				origin.member(overriddenKey).toField(dummyUser());
 
 		declaration =
-			declaration.override()
-			.setDeclaredIn(origin.fixedRef(distributor).toStaticTypeRef())
-			.setVisibility(overridden.getVisibility());
+				declaration.override()
+				.setDeclaredIn(origin.fixedRef(distributor).toStaticTypeRef())
+				.setVisibility(overridden.getVisibility());
 
 		if (getClause().toPlainClause().isPrototype()) {
 			declaration = declaration.override();

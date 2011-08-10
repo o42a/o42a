@@ -27,7 +27,9 @@ import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.compiler.ip.operator.ComparisonOperator;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
+import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
@@ -71,6 +73,12 @@ public class BinaryPhrasePart extends PhraseContinuation {
 	}
 
 	@Override
+	public Ref substitute(Distributor distributor) {
+		return getPhrase().getAncestor().getRef().rescope(
+				distributor.getScope());
+	}
+
+	@Override
 	public void define(Block<?> definition) {
 		if (getPhrase().createsObject()) {
 			// Phrase constructs object. No need to put the left operand.
@@ -78,7 +86,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		}
 
 		final Statements<?> statements =
-			definition.propose(this).alternative(this);
+				definition.propose(this).alternative(this);
 
 		statements.selfAssign(getPhrase().getAncestor().getRef());
 	}

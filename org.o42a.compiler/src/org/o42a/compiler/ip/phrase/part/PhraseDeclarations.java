@@ -22,6 +22,8 @@ package org.o42a.compiler.ip.phrase.part;
 import static org.o42a.compiler.ip.phrase.part.NextClause.declarationsClause;
 
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
+import org.o42a.core.Distributor;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -43,6 +45,11 @@ public class PhraseDeclarations extends PhraseContinuation {
 	public NextClause nextClause(PhraseContext context) {
 		// Next clause is the same one.
 		return declarationsClause(context.getClause());
+	}
+
+	@Override
+	public Ref substitute(Distributor distributor) {
+		return null;
 	}
 
 	@Override

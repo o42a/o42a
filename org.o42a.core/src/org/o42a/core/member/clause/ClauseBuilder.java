@@ -51,6 +51,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private Ref[] reusedClauses = NOTHING_REUSED;
 	private BlockBuilder declarations;
 	private boolean assignment;
+	private boolean substitution;
 
 	ClauseBuilder(
 			MemberRegistry memberRegistry,
@@ -134,6 +135,20 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this;
 	}
 
+	public final boolean isSubstitution() {
+		return this.substitution;
+	}
+
+	public final ClauseBuilder substitution() {
+		assert getDeclaration().getKind() == ClauseKind.EXPRESSION
+				|| getDeclaration().getKind() == ClauseKind.OVERRIDER:
+			"Can only substitute to assignment or overrider";
+		assert getDeclarations() == null :
+			"Can not provide declarations for substitution";
+		this.substitution = true;
+		return this;
+	}
+
 	public final AscendantsDefinition getAscendants() {
 		return this.ascendants;
 	}
@@ -150,6 +165,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	public final ClauseBuilder setDeclarations(BlockBuilder declarations) {
 		assert getDeclaration().getKind().isPlain() :
 			"Declarations block is only allowed for plain clause";
+		assert !isSubstitution() :
+			"Can not provide declarations for substitution";
 		this.declarations = declarations;
 		return this;
 	}

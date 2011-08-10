@@ -46,9 +46,9 @@ final class OverriderVisitor
 		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
 
 	static final DeclarableVisitor DECLARABLE_VISITOR =
-		new DeclarableVisitor();
+			new DeclarableVisitor();
 	static final OverriderVisitor OVERRIDER_VISITOR =
-		new OverriderVisitor();
+			new OverriderVisitor();
 
 	private OverriderVisitor() {
 	}
@@ -70,7 +70,7 @@ final class OverriderVisitor
 			ClauseBuilder p) {
 
 		final AscendantsDefinition ascendantsDefinition =
-			parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
+				parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
 
 		if (ascendantsDefinition == null) {
 			return null;
@@ -97,6 +97,16 @@ final class OverriderVisitor
 		}
 
 		return clauses[0].accept(PHRASE_DECLARATIONS_VISITOR, prefixed);
+	}
+
+	@Override
+	public ClauseBuilder visitParentheses(
+			ParenthesesNode parentheses,
+			ClauseBuilder p) {
+		if (parentheses.getContent().length == 0) {
+			return p.substitution();
+		}
+		return super.visitParentheses(parentheses, p);
 	}
 
 	@Override

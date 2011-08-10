@@ -53,13 +53,13 @@ public abstract class AbstractBlockParser<
 		context.skip();
 
 		final SignNode<S> opening =
-			new SignNode<S>(start, context.current(), this.opening);
+				new SignNode<S>(start, context.current(), this.opening);
 
 		context.skipComments(true, opening);
 
 		SentenceNode[] content =
-			context.expect(this.closing.getSign())
-			.parse(getContentParser());
+				context.expect(this.closing.getSign())
+				.parse(getContentParser());
 
 		if (content == null) {
 			content = new SentenceNode[0];
@@ -76,8 +76,10 @@ public abstract class AbstractBlockParser<
 
 			context.acceptAll();
 
-			final SignNode<S> closing =
-				new SignNode<S>(closingStart, context.current(), this.closing);
+			final SignNode<S> closing = new SignNode<S>(
+					closingStart,
+					context.current(),
+					this.closing);
 
 			closing.addComments(separators);
 			block = createBlock(opening, content, closing);

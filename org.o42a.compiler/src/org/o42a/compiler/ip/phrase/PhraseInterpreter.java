@@ -46,9 +46,9 @@ public final class PhraseInterpreter {
 			Distributor distributor) {
 
 		final Phrase phrase =
-			new Phrase(ip, location(distributor, node), distributor);
+				new Phrase(ip, location(distributor, node), distributor);
 		final Phrase prefixed =
-			node.getPrefix().accept(PHRASE_PREFIX_VISITOR, phrase);
+				node.getPrefix().accept(PHRASE_PREFIX_VISITOR, phrase);
 
 		return addClauses(prefixed, node);
 	}
@@ -59,7 +59,7 @@ public final class PhraseInterpreter {
 			Distributor distributor) {
 
 		final Phrase phrase =
-			new Phrase(ip, location(distributor, node), distributor);
+				new Phrase(ip, location(distributor, node), distributor);
 		final Phrase prefixed = prefix(phrase, node);
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
@@ -71,14 +71,14 @@ public final class PhraseInterpreter {
 			Distributor distributor) {
 
 		final Ref operand =
-			node.getOperand().accept(ip.expressionVisitor(), distributor);
+				node.getOperand().accept(ip.expressionVisitor(), distributor);
 
 		if (operand == null) {
 			return null;
 		}
 
 		final Phrase phrase =
-			new Phrase(ip, location(distributor, node), distributor);
+				new Phrase(ip, location(distributor, node), distributor);
 
 		return phrase.setAncestor(operand.toTypeRef()).unary(node).getPhrase();
 	}
@@ -98,17 +98,18 @@ public final class PhraseInterpreter {
 			BinaryNode node,
 			Distributor distributor) {
 
-		final Ref left =
-			node.getLeftOperand().accept(ip.expressionVisitor(), distributor);
+		final Ref left = node.getLeftOperand().accept(
+				ip.expressionVisitor(),
+				distributor);
 
 		if (left == null) {
 			return null;
 		}
 
 		final Phrase phrase =
-			new Phrase(ip, location(distributor, node), distributor);
+				new Phrase(ip, location(distributor, node), distributor);
 		final BinaryPhrasePart binary =
-			phrase.setAncestor(left.toTypeRef()).binary(node);
+				phrase.setAncestor(left.toTypeRef()).binary(node);
 
 		final ExpressionNode rightOperand = node.getRightOperand();
 
@@ -156,8 +157,9 @@ public final class PhraseInterpreter {
 
 			if (sampleNode != null) {
 
-				final Ref sampleRef =
-					sampleNode.accept(phrase.ip().refVisitor(), distributor);
+				final Ref sampleRef = sampleNode.accept(
+						phrase.ip().refVisitor(),
+						distributor);
 
 				if (sampleRef != null) {
 					result = result.addSamples(sampleRef.toStaticTypeRef());

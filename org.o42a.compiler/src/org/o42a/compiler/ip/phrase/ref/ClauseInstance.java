@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.Distributor;
@@ -41,7 +42,7 @@ public final class ClauseInstance {
 	private final LocationInfo location;
 	private final PhraseContext context;
 	private final HashMap<MemberKey, PhraseSubContext> subContexts =
-		new HashMap<MemberKey, PhraseSubContext>();
+			new HashMap<MemberKey, PhraseSubContext>();
 	private PhraseContinuation[] content = NO_CONTENT;
 	private boolean complete;
 	private Definition definition;
@@ -71,6 +72,21 @@ public final class ClauseInstance {
 		assert !isComplete() :
 			"Can not add content to complete instance: " + part;
 		this.content = ArrayUtil.append(this.content, part);
+	}
+
+	public final Ref substitute(Distributor distributor) {
+
+		final PhraseContinuation[] content = getContent();
+
+		if (content.length != 1) {
+			return null;
+		}
+
+		final PhraseContinuation continuation = content[0];
+
+		noContinuationAfterSubstitution();
+
+		return continuation.substitute(distributor);
 	}
 
 	public final BlockBuilder getDefinition() {
@@ -117,7 +133,7 @@ public final class ClauseInstance {
 		}
 
 		final PhraseSubContext context =
-			new PhraseSubContext(getContext(), location, clause);
+				new PhraseSubContext(getContext(), location, clause);
 
 		this.subContexts.put(key, context);
 
@@ -130,6 +146,19 @@ public final class ClauseInstance {
 
 	final PhraseSubContext subContext(Clause clause) {
 		return this.subContexts.get(clause.getKey());
+	}
+
+	private void noContinuationAfterSubstitution() {
+
+		final Iterator<? extends PhraseSubContext> subContexts =
+				this.context.subContexts().iterator();
+
+		if (subContexts.hasNext()) {
+			this.context.getLogger().error(
+					"prohibited_phrase_continuation_after_substitution",
+					subContexts.next().getLocation(),
+					"Substitution clause should be the last in the phrase");
+		}
 	}
 
 	private static final class Definition extends BlockBuilder {

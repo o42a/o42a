@@ -34,6 +34,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.ValueType;
 
 
 final class ClauseDefinition extends Obj {
@@ -76,15 +77,22 @@ final class ClauseDefinition extends Obj {
 		if (overridden != null) {
 			ascendants = ascendants.setAncestor(overridden.toTypeRef());
 		}
+		if (!toClause().isSubstitution()) {
+			return toClause().getAscendants().updateAscendants(ascendants);
+		}
+		if (overridden != null) {
+			return ascendants;
+		}
 
-		return toClause().getAscendants().updateAscendants(ascendants);
+		return ascendants.setAncestor(
+				ValueType.VOID.typeRef(this, getScope().getEnclosingScope()));
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 
 		final BlockBuilder declarations =
-			toClause().getBuilder().getDeclarations();
+				toClause().getBuilder().getDeclarations();
 
 		if (declarations == null) {
 			this.declarations =
@@ -96,7 +104,7 @@ final class ClauseDefinition extends Obj {
 				new ObjectMemberRegistry(noInclusions(), this);
 
 		this.declarations =
-			new DeclarativeBlock(declarations, this, registry);
+				new DeclarativeBlock(declarations, this, registry);
 		declarations.buildBlock(this.declarations);
 		registry.registerMembers(members);
 	}

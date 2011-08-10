@@ -25,7 +25,8 @@ import static org.o42a.core.member.AdapterId.adapterId;
 
 import org.o42a.compiler.ip.phrase.part.NextClause;
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.*;
@@ -152,7 +153,7 @@ public abstract class PhraseContext {
 		}
 
 		final NextClause found =
-			findClauseIn(container, location, memberId, what);
+				findClauseIn(container, location, memberId, what);
 
 		if (found.found()) {
 			return found;

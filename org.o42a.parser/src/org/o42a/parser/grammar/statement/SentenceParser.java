@@ -43,7 +43,7 @@ public class SentenceParser implements Parser<SentenceNode> {
 	public SentenceNode parse(ParserContext context) {
 
 		final AlternativeNode[] disjunction =
-			context.expect(MARK).parse(this.grammar.disjunction());
+				context.expect(MARK).parse(this.grammar.disjunction());
 
 		if (disjunction == null) {
 			return null;

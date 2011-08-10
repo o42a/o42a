@@ -34,7 +34,7 @@ import org.o42a.core.source.LocationInfo;
 
 public enum ClauseId {
 
-	NAME() {
+	NAME(false) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -51,7 +51,7 @@ public enum ClauseId {
 
 	},
 
-	ARGUMENT() {
+	ARGUMENT(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -68,7 +68,7 @@ public enum ClauseId {
 
 	},
 
-	IMPERATIVE() {
+	IMPERATIVE(false) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -85,7 +85,7 @@ public enum ClauseId {
 
 	},
 
-	STRING() {
+	STRING(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -102,7 +102,7 @@ public enum ClauseId {
 
 	},
 
-	PLUS() {
+	PLUS(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -116,7 +116,7 @@ public enum ClauseId {
 
 	},
 
-	MINUS() {
+	MINUS(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -130,7 +130,7 @@ public enum ClauseId {
 
 	},
 
-	ADD() {
+	ADD(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -144,7 +144,7 @@ public enum ClauseId {
 
 	},
 
-	SUBTRACT() {
+	SUBTRACT(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -158,7 +158,7 @@ public enum ClauseId {
 
 	},
 
-	MULTIPLY() {
+	MULTIPLY(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -172,7 +172,7 @@ public enum ClauseId {
 
 	},
 
-	DIVIDE() {
+	DIVIDE(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -186,7 +186,7 @@ public enum ClauseId {
 
 	},
 
-	EQUALS() {
+	EQUALS(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -200,7 +200,7 @@ public enum ClauseId {
 
 	},
 
-	COMPARE() {
+	COMPARE(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -214,7 +214,7 @@ public enum ClauseId {
 
 	},
 
-	OPERAND() {
+	OPERAND(true) {
 
 		@Override
 		public AbsolutePath adapterPath(CompilerContext context) {
@@ -227,6 +227,16 @@ public enum ClauseId {
 		}
 
 	};
+
+	private final boolean hasValue;
+
+	ClauseId(boolean hasValue) {
+		this.hasValue = hasValue;
+	}
+
+	public final boolean hasValue() {
+		return this.hasValue;
+	}
 
 	public final boolean hasAdapterType() {
 		return this != NAME;

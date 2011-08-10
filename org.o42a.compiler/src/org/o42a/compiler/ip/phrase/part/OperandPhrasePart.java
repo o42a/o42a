@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.phrase.part;
 
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
+import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
@@ -41,13 +42,21 @@ public class OperandPhrasePart extends PhraseContinuation {
 	}
 
 	@Override
+	public Ref substitute(Distributor distributor) {
+		if (this.value == null) {
+			return null;
+		}
+		return this.value.rescope(distributor.getScope());
+	}
+
+	@Override
 	public void define(Block<?> definition) {
 		if (this.value == null) {
 			return;// Do not assign operand value.
 		}
 
 		final Statements<?> statements =
-			definition.propose(this).alternative(this);
+				definition.propose(this).alternative(this);
 
 		statements.selfAssign(this.value);
 	}

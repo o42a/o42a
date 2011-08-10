@@ -199,6 +199,8 @@ public abstract class PlainClause
 
 	public abstract boolean isAssignment();
 
+	public abstract boolean isSubstitution();
+
 	public abstract AscendantsDefinition getAscendants();
 
 	public abstract MemberKey getOverridden();

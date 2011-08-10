@@ -33,16 +33,18 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 
 
-final class ClauseExpressionVisitor
+class ClauseExpressionVisitor
 		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
 
-	public static final ClauseExpressionVisitor CLAUSE_EXPRESSION_VISITOR =
-		new ClauseExpressionVisitor();
+	static final ClauseExpressionVisitor CLAUSE_EXPRESSION_VISITOR =
+			new ClauseExpressionVisitor();
+	static final ClauseExpressionVisitor CLAUSE_SELF_ASSIGNMENT_VISITOR =
+			new ClauseSelfAssignmentVisitor();
 
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
-		new PhrasePrefixVisitor();
+			new PhrasePrefixVisitor();
 	static final PhraseDeclarationsVisitor PHRASE_DECLARATIONS_VISITOR =
-		new PhraseDeclarationsVisitor();
+			new PhraseDeclarationsVisitor();
 
 	@Override
 	public ClauseBuilder visitArray(ArrayNode array, ClauseBuilder p) {
@@ -109,6 +111,21 @@ final class ClauseExpressionVisitor
 						location(p, expression),
 						p.distribute(),
 						ref.toTypeRef()));
+	}
+
+	private static final class ClauseSelfAssignmentVisitor
+			extends ClauseExpressionVisitor {
+
+		@Override
+		public ClauseBuilder visitParentheses(
+				ParenthesesNode parentheses,
+				ClauseBuilder p) {
+			if (parentheses.getContent().length == 0) {
+				return p.substitution();
+			}
+			return super.visitParentheses(parentheses, p);
+		}
+
 	}
 
 	private static final class PhrasePrefixVisitor
