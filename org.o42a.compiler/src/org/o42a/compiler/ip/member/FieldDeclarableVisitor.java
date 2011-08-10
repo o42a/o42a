@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.FieldInterpreter.ADAPTER_FIELD_VISITOR;
+import static org.o42a.compiler.ip.member.AdapterFieldVisitor.ADAPTER_FIELD_VISITOR;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -78,7 +78,7 @@ public final class FieldDeclarableVisitor
 
 		declaration = setVisibility(declaration, memberNode);
 		declaration = update(declaration, this.declarator);
-		declaration = update(declaration, memberNode);
+		declaration = setDeclaredIn(declaration, memberNode);
 
 		return declaration;
 	}
@@ -111,7 +111,7 @@ public final class FieldDeclarableVisitor
 				adapterId(adapter.toStaticTypeRef()));
 
 		declaration = update(declaration, this.declarator);
-		declaration = update(declaration, memberNode);
+		declaration = setDeclaredIn(declaration, memberNode);
 
 		return declaration;
 	}
@@ -174,8 +174,9 @@ public final class FieldDeclarableVisitor
 			result = declaration;
 		} else {
 
-			final TypeRef type =
-					node.accept(this.ip.typeVisitor(), declaration.distribute());
+			final TypeRef type = node.accept(
+					this.ip.typeVisitor(),
+					declaration.distribute());
 
 			if (type != null) {
 				result = declaration.setType(type);
@@ -237,7 +238,7 @@ public final class FieldDeclarableVisitor
 		return result;
 	}
 
-	private FieldDeclaration update(
+	private FieldDeclaration setDeclaredIn(
 			FieldDeclaration declaration,
 			MemberRefNode memberRef) {
 		if (declaration == null) {

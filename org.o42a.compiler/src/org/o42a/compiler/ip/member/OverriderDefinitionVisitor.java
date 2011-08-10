@@ -24,33 +24,23 @@ import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_DECLARATIONS_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.compiler.ip.member.FieldDeclarableVisitor.declaredIn;
-import static org.o42a.compiler.ip.member.FieldInterpreter.ADAPTER_FIELD_VISITOR;
-import static org.o42a.core.member.AdapterId.adapterId;
 
 import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.ast.statement.AbstractDeclarableVisitor;
-import org.o42a.ast.statement.DeclarableAdapterNode;
-import org.o42a.ast.statement.DeclarableNode;
-import org.o42a.compiler.ip.ref.MemberById;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
 
 
-final class OverriderVisitor
+final class OverriderDefinitionVisitor
 		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
 
-	static final DeclarableVisitor DECLARABLE_VISITOR =
-			new DeclarableVisitor();
-	static final OverriderVisitor OVERRIDER_VISITOR =
-			new OverriderVisitor();
+	static final OverriderDefinitionVisitor OVERRIDER_DEFINITION_VISITOR =
+			new OverriderDefinitionVisitor();
 
-	private OverriderVisitor() {
+	private OverriderDefinitionVisitor() {
 	}
 
 	@Override
@@ -125,44 +115,6 @@ final class OverriderVisitor
 
 		return p.setAscendants(
 				new AscendantsDefinition(ref, distributor, ref.toTypeRef()));
-	}
-
-	private static final class DeclarableVisitor
-			extends AbstractDeclarableVisitor<Ref, Distributor> {
-
-		@Override
-		public Ref visitMemberRef(MemberRefNode ref, Distributor p) {
-			return CLAUSE_DEF_IP.refVisitor().visitMemberRef(ref, p);
-		}
-
-		@Override
-		public Ref visitDeclarableAdapter(
-				DeclarableAdapterNode adapter,
-				Distributor p) {
-
-			final MemberRefNode member = adapter.getMember();
-			final Ref adapterType = member.accept(ADAPTER_FIELD_VISITOR, p);
-
-			if (adapterType == null) {
-				return null;
-			}
-
-			return new MemberById(
-					CLAUSE_DEF_IP,
-					location(p, adapter),
-					p,
-					adapterId(adapterType.toStaticTypeRef()),
-					declaredIn(CLAUSE_DEF_IP, member, p));
-		}
-
-		@Override
-		protected Ref visitDeclarable(
-				DeclarableNode declarable,
-				Distributor p) {
-			p.getLogger().invalidClauseContent(declarable);
-			return null;
-		}
-
 	}
 
 }

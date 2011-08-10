@@ -172,10 +172,6 @@ public class CompilerLogger implements Logger {
 				reason);
 	}
 
-	public void invalidOverridden(LogInfo location) {
-		error("invalid_overridden", location, "Only field can be overridden");
-	}
-
 	public void invalidPhrasePrefix(LogInfo location) {
 		error("invalid_phrase_prefix", location, "Invalid phrase prefix");
 	}
