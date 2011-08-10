@@ -20,14 +20,14 @@
 Substring :=> string
 ====================
 
-From := 0
+From := `0
 To := (`integer) string:: length
 
 <*Range> (
-  <From | range> from = integer(
-    <*[] | range>
+  <From | range> (
+    <*[] | range> From = ()
   )
-  <To | range> to = integer(
-    <*[] | range>
+  <To | range> (
+    <*[] | range> To = ()
   )
 )

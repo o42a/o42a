@@ -22,4 +22,4 @@ Char :=> string
 
 Index :=< `integer
 
-<*[]> Index = integer
+<*[]> Index = ()

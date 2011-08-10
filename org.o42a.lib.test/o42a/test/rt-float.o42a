@@ -20,4 +20,4 @@
 Rt-float :=> $$float
 ====================
 
-<*By string> Parser: float(<*''> Input = $$string)
+<*By string> Parser: float(<*''> Input = ())

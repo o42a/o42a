@@ -20,19 +20,19 @@
 Use object :=> directive
 ========================
 
-Module := string(False)
-Object := string(False)
-Alias := string(False)
+Module := `string(False)
+Object := `string(False)
+Alias := `string(False)
 
-<*'Object path' | $object$> Object = *
-<*[Object path] | $object$> Object = *
+<*'Object path' | $object$> Object = ()
+<*[Object path] | $object$> Object = ()
 
 <From> (
-  <*'Module id' | $object$> Module = *
-  <*[Module id] | $object$> Module = *
+  <*'Module id' | $object$> Module = ()
+  <*[Module id] | $object$> Module = ()
 )
 
 <As> (
-  <*'Object alias' | $object$> Alias = *
-  <*[Object alias] | $object$> Alias = *
+  <*'Object alias' | $object$> Alias = ()
+  <*[Object alias] | $object$> Alias = ()
 )

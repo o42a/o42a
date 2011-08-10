@@ -21,15 +21,15 @@ String :=> &void
 ================
 
 <*Addition> Strings: concat(
-  <@Operators: add | concat with> What = string
+  <@Operators: add | concat with> What = ()
   <Concat with> (
-    <@Operators: operand> With = string
+    <@Operators: operand> With = ()
   )
 )
 
 <*Comparison> Strings: compare(
-  <@Operators: compare | compare with> What = string
+  <@Operators: compare | compare with> What = ()
   <Compare with> (
-    <@Operators: operand> With = string
+    <@Operators: operand> With = ()
   )
 )
