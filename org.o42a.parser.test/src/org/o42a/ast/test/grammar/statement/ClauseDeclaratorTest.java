@@ -19,8 +19,8 @@
 */
 package org.o42a.ast.test.grammar.statement;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
@@ -38,6 +38,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<foo> bar");
 
+		assertFalse(result.requiresContinuation());
 		assertName("foo", result.getClauseKey());
 		assertName("bar", result.getContent());
 		assertNothingReused(result);
@@ -49,6 +50,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<@foo> bar");
 
+		assertFalse(result.requiresContinuation());
 		assertName(
 				"foo",
 				to(DeclarableAdapterNode.class, result.getClauseKey())
@@ -64,6 +66,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<*[foo]> bar");
 		final PhraseNode phrase = to(PhraseNode.class, result.getClauseKey());
 
+		assertFalse(result.requiresContinuation());
 		assertEquals(
 				ScopeType.IMPLIED,
 				to(ScopeRefNode.class, phrase.getPrefix()).getType());
@@ -81,6 +84,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<*> foo");
 
+		assertFalse(result.requiresContinuation());
 		assertEquals(
 				ScopeType.IMPLIED,
 				to(ScopeRefNode.class, result.getClauseKey()).getType());
@@ -93,8 +97,9 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	public void noContent() {
 
 		final ClauseDeclaratorNode result = parse("<*'foo'>");
-
 		final PhraseNode phrase = to(PhraseNode.class, result.getClauseKey());
+
+		assertFalse(result.requiresContinuation());
 		assertEquals(
 				"foo",
 				singleClause(TextNode.class, phrase).getText());
@@ -108,6 +113,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<foo|bar|baz> val");
 
+		assertFalse(result.requiresContinuation());
 		assertName("foo", result.getClauseKey());
 		assertName("val", result.getContent());
 
@@ -135,6 +141,24 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		to(DeclaratorNode.class, parse("<*> foo = bar").getContent());
 		to(SelfAssignmentNode.class, parse("<*> = foo").getContent());
 		to(PhraseNode.class, parse("<*> foo()").getContent());
+	}
+
+	@Test
+	public void continuation() {
+
+		final ClauseDeclaratorNode result = parse("<foo...> ()");
+
+		assertRange(4, 7, result.getContinuation());
+		assertThat(result.getReused().length, is(0));
+	}
+
+	@Test
+	public void reuseAndContinuation() {
+
+		final ClauseDeclaratorNode result = parse("<foo | bar ...> ()");
+
+		assertRange(11, 14, result.getContinuation());
+		assertThat(result.getReused().length, is(1));
 	}
 
 	private void assertNothingReused(ClauseDeclaratorNode declarator) {
