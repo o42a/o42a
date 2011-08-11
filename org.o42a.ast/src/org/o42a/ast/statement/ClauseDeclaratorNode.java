@@ -28,6 +28,7 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 	private final SignNode<Parenthesis> opening;
 	private final ClauseKeyNode clauseKey;
 	private final ReusedClauseNode[] reused;
+	private final SignNode<Continuation> continuation;
 	private final SignNode<Parenthesis> closing;
 	private final StatementNode content;
 
@@ -35,14 +36,22 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 			SignNode<Parenthesis> opening,
 			ClauseKeyNode clauseKey,
 			ReusedClauseNode[] reused,
+			SignNode<Continuation> continuation,
 			SignNode<Parenthesis> closing,
 			StatementNode content) {
 		super(
 				opening.getStart(),
-				end(opening, clauseKey, lastNode(reused), closing, content));
+				end(
+						opening,
+						clauseKey,
+						lastNode(reused),
+						continuation,
+						closing,
+						content));
 		this.opening = opening;
 		this.clauseKey = clauseKey;
 		this.reused = reused;
+		this.continuation = continuation;
 		this.closing = closing;
 		this.content = content;
 	}
@@ -57,6 +66,14 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 
 	public final ReusedClauseNode[] getReused() {
 		return this.reused;
+	}
+
+	public final boolean requiresContinuation() {
+		return this.continuation != null;
+	}
+
+	public final SignNode<Continuation> getContinuation() {
+		return this.continuation;
 	}
 
 	public final SignNode<Parenthesis> getClosing() {
@@ -106,6 +123,17 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 		@Override
 		public String getSign() {
 			return this.sign;
+		}
+
+	}
+
+	public enum Continuation implements SignType {
+
+		ELLIPSIS;
+
+		@Override
+		public String getSign() {
+			return "...";
 		}
 
 	}

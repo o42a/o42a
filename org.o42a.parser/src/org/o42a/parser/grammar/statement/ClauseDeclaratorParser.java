@@ -28,16 +28,20 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.*;
+import org.o42a.ast.statement.ClauseDeclaratorNode.Continuation;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.Characters;
 
 
 public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 
 	private static final ReusedClauseParser REUSED_CLAUSE =
 			new ReusedClauseParser();
+	private static final ContinuationParser CONTINUATION =
+			new ContinuationParser();
 
 	private final Grammar grammar;
 
@@ -61,6 +65,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		}
 
 		final ReusedClauseNode[] reused = reused(context);
+		final SignNode<Continuation> continuation = context.parse(CONTINUATION);
 		final SignNode<ClauseDeclaratorNode.Parenthesis> closing =
 				closing(context, opening);
 		final StatementNode content = context.parse(this.grammar.statement());
@@ -69,6 +74,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 				opening,
 				clauseKey,
 				reused,
+				continuation,
 				closing,
 				content);
 	}
@@ -182,6 +188,52 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 			return context.acceptComments(
 					true,
 					new ReusedClauseNode(separator, clause));
+		}
+
+	}
+
+	private static final class ContinuationParser
+			implements Parser<SignNode<ClauseDeclaratorNode.Continuation>> {
+
+		@Override
+		public SignNode<Continuation> parse(ParserContext context) {
+
+			final int next = context.next();
+
+			if (next == Characters.HORIZONTAL_ELLIPSIS) {
+
+				final FixedPosition start = context.current().fix();
+
+				context.acceptAll();
+
+				return context.acceptComments(
+						true,
+						new SignNode<ClauseDeclaratorNode.Continuation>(
+								start,
+								context.current(),
+								ClauseDeclaratorNode.Continuation.ELLIPSIS));
+			}
+			if (next != '.') {
+				return null;
+			}
+
+			final FixedPosition start = context.current().fix();
+
+			if (context.next() != '.') {
+				return null;
+			}
+			if (context.next() != '.') {
+				return null;
+			}
+
+			context.acceptAll();
+
+			return context.acceptComments(
+					true,
+					new SignNode<ClauseDeclaratorNode.Continuation>(
+							start,
+							context.current(),
+							ClauseDeclaratorNode.Continuation.ELLIPSIS));
 		}
 
 	}
