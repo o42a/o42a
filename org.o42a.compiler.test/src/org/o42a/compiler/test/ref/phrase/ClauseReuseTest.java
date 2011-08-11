@@ -70,12 +70,12 @@ public class ClauseReuseTest extends CompilerTestCase {
 	public void reusePrecedence() {
 		compile(
 				"A := void(",
-				"  Foo := \"a\".",
-				"  Bar := \"b\".",
-				"  <Foo group> (<*''> Foo = *).",
-				"  <Bar group> (<*''> Bar = *).",
-				" <Set | foo group | bar group> ().",
-				").",
+				"  Foo := \"a\"",
+				"  Bar := \"b\"",
+				"  <Foo group> (<*''> Foo = ())",
+				"  <Bar group> (<*''> Bar = ())",
+				" <Set | foo group* | bar group*> ()",
+				")",
 				"B := a () set 'c'");
 
 		final Field<?> b = field("b");

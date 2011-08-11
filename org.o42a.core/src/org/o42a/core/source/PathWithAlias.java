@@ -1,6 +1,6 @@
 /*
-    Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Compiler Core
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,22 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Use object :=> directive
-========================
+package org.o42a.core.source;
 
-Module := `string(False)
-Object := `string(False)
-Alias := `string(False)
+import org.o42a.core.ref.Ref;
 
-<*'Object path' | from | as> Object = ()
-<*[Object path] | from | as> Object = ()
 
-<From> (
-  <*'Module id' | as> Module = ()
-  <*[Module id] | as> Module = ()
-)
+public final class PathWithAlias {
 
-<As> (
-  <*'Object alias' | $object$> Alias = ()
-  <*[Object alias] | $object$> Alias = ()
-)
+	private final Ref path;
+	private final String alias;
+
+	public PathWithAlias(Ref path, String alias) {
+		this.path = path;
+		this.alias = alias;
+	}
+
+	public final Ref getPath() {
+		return this.path;
+	}
+
+	public final String getAlias() {
+		return this.alias;
+	}
+
+	@Override
+	public String toString() {
+		if (this.path == null) {
+			return super.toString();
+		}
+		if (this.alias == null) {
+			return this.path.toString();
+		}
+		return this.path + " as " + this.alias;
+	}
+
+}

@@ -20,7 +20,6 @@
 package org.o42a.core.source;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
 
 
 public interface SourceCompiler {
@@ -31,7 +30,7 @@ public interface SourceCompiler {
 
 	DefinitionCompiler compileDefinition(DefinitionSource source);
 
-	Ref compilePath(
+	PathWithAlias compilePath(
 			Scope scope,
 			String moduleId,
 			LocationInfo location,

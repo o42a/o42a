@@ -203,10 +203,6 @@ public class CompilerLogger implements Logger {
 				"Either module or object should be specified");
 	}
 
-	public void noName(LogInfo location) {
-		error("no_name", location, "Name not specified");
-	}
-
 	public void notAbstract(LogInfo location) {
 		error("not_abstract", location, "Abstract declaration expected");
 	}

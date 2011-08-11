@@ -30,6 +30,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.PathWithAlias;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -93,17 +94,18 @@ public class UseNamespace extends DirectiveObject {
 			return;
 		}
 
-		final Ref path = directive.getContext().getCompiler().compilePath(
-				directive.getScope(),
-				moduleId,
-				directive,
-				pathString);
+		final PathWithAlias path =
+				directive.getContext().getCompiler().compilePath(
+						directive.getScope(),
+						moduleId,
+						directive,
+						pathString);
 
 		if (path == null) {
 			return;
 		}
 
-		namespace.useNamespace(path);
+		namespace.useNamespace(path.getPath());
 	}
 
 	private static String stringValue(Value<?> value) {

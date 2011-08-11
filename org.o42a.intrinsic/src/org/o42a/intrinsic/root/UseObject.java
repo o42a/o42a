@@ -30,6 +30,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.PathWithAlias;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -108,18 +109,34 @@ public class UseObject extends DirectiveObject {
 			return;
 		}
 
-		final String alias = stringValue(aliasValue);
-		final Ref path = directive.getContext().getCompiler().compilePath(
-				directive.getScope(),
-				moduleId,
-				directive,
-				pathString);
+		final String explicitAlias = stringValue(aliasValue);
+		final PathWithAlias path =
+				directive.getContext().getCompiler().compilePath(
+						directive.getScope(),
+						moduleId,
+						directive,
+						pathString);
 
 		if (path == null) {
 			return;
 		}
 
-		namespace.useObject(path, alias);
+		final String alias;
+
+		if (explicitAlias != null) {
+			alias = explicitAlias;
+		} else {
+			alias = path.getAlias();
+			if (alias == null) {
+				directive.getLogger().error(
+						"missing_use_object_alias",
+						directive,
+						"Object alias required");
+				return;
+			}
+		}
+
+		namespace.useObject(path.getPath(), alias);
 	}
 
 	private static String stringValue(Value<?> value) {

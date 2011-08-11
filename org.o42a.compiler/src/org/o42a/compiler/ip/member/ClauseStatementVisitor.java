@@ -55,8 +55,6 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 				new Location(getContext(), declarator.getDeclarable()),
 				distributor)
 				.setKind(ClauseKind.OVERRIDER);
-
-
 		final ClauseBuilder builder =
 				buildOverrider(declaration, declarator, p);
 
@@ -64,9 +62,7 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 			return null;
 		}
 
-		builder.mandatory();
-
-		final Statement statement = builder.build();
+		final Statement statement = builder.mandatory().build();
 
 		if (statement == null) {
 			return null;

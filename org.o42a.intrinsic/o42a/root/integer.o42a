@@ -23,42 +23,42 @@ Integer :=> &number
 <*Minus> Integers: minus(<@Operators: minus> Operand = ())
 
 <*Addition> Integers: add(
-  <@Operators: add | summand> Left operand = ()
+  <@Operators: add | summand*> Left operand = ()
   <Summand> (
     <@Operators: operand> Right operand = ()
   )
 )
 
 <*Subtraction> Integers: subtract(
-  <@Operators: subtract | subtrahend> Left operand = ()
+  <@Operators: subtract | subtrahend*> Left operand = ()
   <Subtrahend> (
     <@Operators: operand> Right operand = ()
   )
 )
 
 <*Multiplication> Integers: multiply(
-  <@Operators: multiply | multiplier> Left operand = ()
+  <@Operators: multiply | multiplier*> Left operand = ()
   <Multiplier> (
     <@Operators: operand> Right operand = ()
   )
 )
 
 <*Division> Integers: divide(
-  <@Operators: divide | divisor> Left operand = ()
+  <@Operators: divide | divisor*> Left operand = ()
   <Divisor> (
     <@Operators: operand> Right operand = ()
   )
 )
 
 <*Equality> Integers: equals(
-  <@Operators: equals | equals to> What = ()
+  <@Operators: equals | equals to*> What = ()
   <Equals to> (
     <@Operators: operand> To = ()
   )
 )
 
 <*Comparison> Integers: compare(
-  <@Operators: compare | compare with> What = ()
+  <@Operators: compare | compare with*> What = ()
   <Compare with> (
     <@Operators: operand> With = ()
   )

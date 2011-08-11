@@ -26,16 +26,16 @@ public final class ReusedClause {
 	private final Clause clause;
 	private final boolean reuseContents;
 
-	ReusedClause(boolean reuseContents) {
+	ReusedClause() {
 		this.container = null;
 		this.clause = null;
-		this.reuseContents = reuseContents;
+		this.reuseContents = true;
 	}
 
 	ReusedClause(Clause container, Clause clause, boolean reuseContents) {
 		this.container = container;
 		this.clause = clause;
-		this.reuseContents = reuseContents;
+		this.reuseContents = validateContentReuse(reuseContents);
 	}
 
 	public final Clause getContainer() {
@@ -57,10 +57,7 @@ public final class ReusedClause {
 	@Override
 	public String toString() {
 		if (this.clause == null) {
-			if (this.reuseContents) {
-				return "ReusedClause[*]";
-			}
-			return "ReusedClause[$object$]";
+			return "ReusedClause[*]";
 		}
 
 		final StringBuilder out = new StringBuilder();
@@ -73,6 +70,19 @@ public final class ReusedClause {
 		}
 
 		return out.toString();
+	}
+
+	private boolean validateContentReuse(boolean reuseContents) {
+		if (this.clause.isImplicit()) {
+			return true;
+		}
+		if (reuseContents && !this.clause.hasContinuation()) {
+			this.clause.getLogger().error(
+					"empty_clause_contents_reused",
+					this.clause,
+					"Attempt to reuse contents of empty clause");
+		}
+		return reuseContents;
 	}
 
 }

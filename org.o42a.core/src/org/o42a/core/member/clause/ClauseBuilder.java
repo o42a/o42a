@@ -22,13 +22,11 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.member.clause.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -39,7 +37,7 @@ import org.o42a.util.log.Loggable;
 
 public final class ClauseBuilder extends ClauseBuilderBase {
 
-	static final Ref[] NOTHING_REUSED = new Ref[0];
+	static final ReusedClauseRef[] NOTHING_REUSED = new ReusedClauseRef[0];
 
 	private final MemberRegistry memberRegistry;
 	private final ClauseDeclaration declaration;
@@ -47,7 +45,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private MemberId overridden;
 	private StaticTypeRef declaredIn;
 	private AscendantsDefinition ascendants;
-	private Ref[] reusedClauses = NOTHING_REUSED;
+	private ReusedClauseRef[] reusedClauses = NOTHING_REUSED;
 	private BlockBuilder declarations;
 	private boolean mandatory;
 	private boolean prototype;
@@ -187,13 +185,11 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this;
 	}
 
-	public ClauseBuilder reuseClause(Ref reusedClause) {
-		this.reusedClauses = append(this.reusedClauses, reusedClause);
+	public ClauseBuilder reuseClause(Ref reusedClause, boolean reuseContents) {
+		this.reusedClauses = append(
+				this.reusedClauses,
+				new ReusedClauseRef(reusedClause, reuseContents));
 		return this;
-	}
-
-	public final Ref[] getReusedClauses() {
-		return this.reusedClauses;
 	}
 
 	public DeclarationStatement build() {
@@ -282,7 +278,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 	ReusedClause[] reuseClauses(Clause clause) {
 
-		final Ref[] reusedRefs = getReusedClauses();
+		final ReusedClauseRef[] reusedRefs = this.reusedClauses;
 
 		if (reusedRefs.length == 0) {
 			return Clause.NOTHING_REUSED;
@@ -291,11 +287,11 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		final ReusedClause[] reused = new ReusedClause[reusedRefs.length];
 		int idx = 0;
 
+		// Reuse in descending precedence order,
+		// i.e. reverse to declaration order.
 		for (int i = reusedRefs.length - 1; i >= 0; --i) {
-			// Reuse in descending precedence order,
-			// i.e. reverse to declaration order.
-			final ReusedClause reusedClause =
-					reuseClause(reusedRefs[i], clause, true);
+
+			final ReusedClause reusedClause = reusedRefs[i].reuse(clause);
 
 			if (reusedClause != null) {
 				reused[idx++] = reusedClause;
@@ -303,32 +299,6 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		}
 
 		return ArrayUtil.clip(reused, idx);
-	}
-
-	private ReusedClause reuseClause(
-			Ref reusedClause,
-			Clause clause,
-			boolean reuseContents) {
-
-		final Path path = reusedClause.getPath();
-
-		if (path == null) {
-			clause.getContext().getLogger().invalidClauseReused(reusedClause);
-			return null;
-		}
-
-		final ClauseReuser reuser =
-				new ClauseReuser(reusedClause, reuseContents);
-
-		if (path.walk(
-				reusedClause,
-				dummyUser(),
-				clause.getEnclosingScope(),
-				reuser) == null) {
-			return null;
-		}
-
-		return reuser.getReused();
 	}
 
 }

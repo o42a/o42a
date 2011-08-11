@@ -173,7 +173,7 @@ final class ClauseReuser implements PathWalker {
 		} else {
 			assert result.toObject() != null :
 				"Object expected: " + result;
-			this.reused = new ReusedClause(this.reuseContents);
+			this.reused = new ReusedClause();
 		}
 
 		return true;
