@@ -30,12 +30,20 @@ final class ReusedClauseRef {
 	private final Ref ref;
 	private boolean reuseContents;
 
+	ReusedClauseRef() {
+		this.ref = null;
+		this.reuseContents = true;
+	}
+
 	ReusedClauseRef(Ref ref, boolean reuseContents) {
 		this.ref = ref;
 		this.reuseContents = reuseContents;
 	}
 
 	public ReusedClause reuse(Clause clause) {
+		if (this.ref == null) {
+			return new ReusedClause();
+		}
 
 		final Path path = this.ref.getPath();
 
@@ -61,7 +69,7 @@ final class ReusedClauseRef {
 	@Override
 	public String toString() {
 		if (this.ref == null) {
-			return super.toString();
+			return "*";
 		}
 		if (!this.reuseContents) {
 			return this.ref.toString();

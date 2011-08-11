@@ -26,7 +26,7 @@ Object := `string(False)
 <*'Module id' | object> Module = ()
 <*[Module id] | object> Module = ()
 
-<Object> (
+<Object ...> (
   <*'Object path'> Object = ()
   <*[Object path]> Object = ()
 )

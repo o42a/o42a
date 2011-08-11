@@ -26,6 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -115,6 +116,18 @@ final class ClauseReuser implements PathWalker {
 
 			if (containerKey.startsWith(key)) {
 				return up(container, fragment, member.substance(dummyUser()));
+			}
+
+			final Scope memberScope = member.getScope();
+
+			if (this.container.getScope() == memberScope) {
+				// Clause in the same scope.
+				// Enclosing scope as a topmost container.
+
+				final MemberContainer memberContainer =
+						memberScope.getContainer();
+
+				up(this.container, fragment, memberContainer);
 			}
 		}
 

@@ -111,17 +111,17 @@ public class ClauseInterpreter {
 			return null;
 		}
 
-		ClauseBuilder builder =
+		final ClauseBuilder builder =
 				p.clause(declaration.setKind(ClauseKind.OVERRIDER));
 
-		builder = declarator.getDeclarable().accept(
+		declarator.getDeclarable().accept(
 				OVERRIDER_DECLARABLE_VISITOR,
 				builder);
 		if (builder == null) {
 			return null;
 		}
 		if (target.isPrototype()) {
-			builder = builder.prototype();
+			builder.prototype();
 		}
 
 		return definition.accept(OVERRIDER_DEFINITION_VISITOR, builder);
@@ -133,12 +133,16 @@ public class ClauseInterpreter {
 		for (ReusedClauseNode reused : declarator.getReused()) {
 
 			final RefNode clause = reused.getClause();
+			final Ref reusedRef;
 
 			if (clause == null) {
+				if (reused.getReuseContents() != null) {
+					builder.reuseObject();
+				}
 				continue;
 			}
 
-			final Ref reusedRef = clause.accept(
+			reusedRef = clause.accept(
 					CLAUSE_DECL_IP.refVisitor(),
 					builder.distribute());
 

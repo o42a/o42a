@@ -210,7 +210,8 @@ public abstract class GroupClause extends Clause implements Container {
 		return this.enclosingContainer.findMember(
 				user,
 				accessor,
-				memberId, declaredIn);
+				memberId,
+				declaredIn);
 	}
 
 	@Override
