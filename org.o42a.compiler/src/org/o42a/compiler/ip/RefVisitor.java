@@ -47,9 +47,6 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	public final Interpreter ip() {
-		if (this.ip == null) {
-			System.err.println();
-		}
 		return this.ip;
 	}
 

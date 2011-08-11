@@ -146,7 +146,7 @@ public class ClauseInterpreter {
 				continue;
 			}
 
-			builder.reuseClause(reusedRef);
+			builder.reuseClause(reusedRef, reused.getReuseContents() != null);
 		}
 
 		return builder;

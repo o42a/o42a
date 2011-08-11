@@ -29,6 +29,7 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.Holder;
 
 
 final class DeclaredPlainClause extends PlainClause {
@@ -38,9 +39,9 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	private final ClauseBuilder builder;
-	private ClauseDefinition definition;
+	private Holder<ClauseDefinition> definition;
 	private MemberKey overridden;
-	private ReusedClause[] reused = NOTHING_REUSED;
+	private ReusedClause[] reused;
 
 	DeclaredPlainClause(
 			DeclaredPlainClauseMember clause,
@@ -54,8 +55,10 @@ final class DeclaredPlainClause extends PlainClause {
 			DeclaredPlainClause overridden) {
 		super(owner, overridden);
 		this.builder = overridden.builder;
-		this.definition = overridden.getDefinition();
+		this.definition =
+				new Holder<ClauseDefinition>(overridden.getDefinition());
 		this.overridden = overridden.getOverridden();
+		this.reused = overridden.getReusedClauses();
 	}
 
 	public final ClauseBuilder getBuilder() {
@@ -69,8 +72,20 @@ final class DeclaredPlainClause extends PlainClause {
 
 	@Override
 	public Obj getObject() {
-		buildDefinition();
-		return getClauseObject();
+
+		final Obj object = getClauseObject();
+
+		if (object != null) {
+			return object;
+		}
+
+		final ClauseDefinition definition = getDefinition();
+
+		if (definition != null) {
+			return setClauseObject(definition);
+		}
+
+		return setClauseObject(getContext().getFalse());
 	}
 
 	@Override
@@ -93,7 +108,7 @@ final class DeclaredPlainClause extends PlainClause {
 		if (getKind() != ClauseKind.OVERRIDER) {
 			return null;
 		}
-		buildDefinition();
+		getDefinition();
 		return this.overridden;
 	}
 
@@ -104,8 +119,10 @@ final class DeclaredPlainClause extends PlainClause {
 
 	@Override
 	public final ReusedClause[] getReusedClauses() {
-		buildDefinition();
-		return this.reused;
+		if (this.reused != null) {
+			return this.reused;
+		}
+		return this.reused = getBuilder().reuseClauses(this);
 	}
 
 	@Override
@@ -157,25 +174,21 @@ final class DeclaredPlainClause extends PlainClause {
 	}
 
 	private final ClauseDefinition getDefinition() {
-		buildDefinition();
-		return this.definition;
-	}
+		if (this.definition != null) {
+			return this.definition.get();
+		}
 
-	private void buildDefinition() {
-		if (getClauseObject() != null) {
-			return;
-		}
+		final ClauseDefinition definition;
+
 		if (getKind() == ClauseKind.OVERRIDER) {
-			this.definition = createOverriderDefinition();
+			definition = createOverriderDefinition();
 		} else {
-			this.definition = createExpressionDefinition();
+			definition = createExpressionDefinition();
 		}
-		if (this.definition == null) {
-			setClauseObject(getContext().getFalse());
-		} else {
-			setClauseObject(this.definition);
-			this.reused = getBuilder().reuseClauses(this);
-		}
+
+		this.definition = new Holder<ClauseDefinition>(definition);
+
+		return definition;
 	}
 
 	private ClauseDefinition createOverriderDefinition() {

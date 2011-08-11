@@ -296,8 +296,8 @@ public abstract class PlainClause
 		return this.clauseObject;
 	}
 
-	protected void setClauseObject(Obj clauseObject) {
-		this.clauseObject = clauseObject;
+	protected Obj setClauseObject(Obj clauseObject) {
+		return this.clauseObject = clauseObject;
 	}
 
 	@Override

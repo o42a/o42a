@@ -23,11 +23,9 @@ Substring :=> string
 From := `0
 To := (`integer) string:: length
 
-<*Range> (
-  <From | range> (
-    <*[] | range> From = ()
-  )
-  <To | range> (
-    <*[] | range> To = ()
-  )
+<From> (
+  <*[] | to> From = ()
+)
+<To> (
+  <*[]> To = ()
 )

@@ -82,13 +82,15 @@ public class Compiler implements SourceCompiler {
 	}
 
 	@Override
-	public Ref compilePath(
+	public PathWithAlias compilePath(
 			Scope scope,
 			String moduleId,
 			LocationInfo location,
 			String string) {
 		if (string == null) {
-			return modulePath(moduleId).target(location, scope.distribute());
+			return new PathWithAlias(
+					modulePath(moduleId).target(location, scope.distribute()),
+					moduleId);
 		}
 
 		if (moduleId == null) {
@@ -103,7 +105,9 @@ public class Compiler implements SourceCompiler {
 				return null;
 			}
 
-			return node.accept(PLAIN_IP.refVisitor(), scope.distribute());
+			return pathWithAlias(
+					node,
+					node.accept(PLAIN_IP.refVisitor(), scope.distribute()));
 		}
 
 		final FixedPosition pos =
@@ -133,10 +137,28 @@ public class Compiler implements SourceCompiler {
 			return null;
 		}
 
-		return node.accept(
-				insideModule(moduleId, scope)
-				? SAME_MODULE_REF_VISITOR : MODULE_REF_VISITOR,
-				scope.distribute());
+		return pathWithAlias(
+				node,
+				node.accept(
+						insideModule(moduleId, scope)
+						? SAME_MODULE_REF_VISITOR : MODULE_REF_VISITOR,
+						scope.distribute()));
+	}
+
+	private static PathWithAlias pathWithAlias(RefNode node, Ref path) {
+		if (path == null) {
+			return null;
+		}
+		if (node instanceof MemberRefNode) {
+
+			final MemberRefNode memberRefNode = (MemberRefNode) node;
+			final NameNode name = memberRefNode.getName();
+
+			if (name != null) {
+				return new PathWithAlias(path, name.getName());
+			}
+		}
+		return new PathWithAlias(path, null);
 	}
 
 	private static boolean insideModule(String moduleId, Scope scope) {

@@ -19,9 +19,11 @@
 */
 package org.o42a.compiler.ip;
 
+import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 
 import org.o42a.ast.ref.IntrinsicRefNode;
+import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.ref.ClauseObjectRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
@@ -38,6 +40,11 @@ final class ClauseRefVisitor extends RefVisitor {
 	@Override
 	protected Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
 		return new ClauseObjectRef(location(p, ref), p, this.clauseDefinition);
+	}
+
+	@Override
+	protected RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+		return this.clauseDefinition ? this : PLAIN_IP.refVisitor();
 	}
 
 }

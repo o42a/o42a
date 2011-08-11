@@ -33,7 +33,6 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -101,12 +100,20 @@ public class Namespace extends AbstractContainer {
 	}
 
 	@Override
-	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		return this.enclosing.member(user, accessor, memberId, declaredIn);
 	}
 
 	@Override
-	public Path findMember(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path findMember(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		if (accessibleBy(accessor)) {
 
 			final Path found = findInNs(user, accessor, memberId, declaredIn);
@@ -249,7 +256,7 @@ public class Namespace extends AbstractContainer {
 
 	private final class ObjUse extends NsUse {
 
-		private String alias;
+		private final String alias;
 
 		ObjUse(Ref ref, String alias) {
 			super(ref);
@@ -262,25 +269,6 @@ public class Namespace extends AbstractContainer {
 		}
 
 		public String getAlias() {
-			if (this.alias != null) {
-				return this.alias;
-			}
-
-			final Path path = getPath();
-
-			if (path == null) {
-				return this.alias = "";
-			}
-
-			final PathFragment[] fragments = path.getFragments();
-			final PathFragment lastFragment = fragments[fragments.length - 1];
-
-			this.alias = lastFragment.getName();
-			if (this.alias == null) {
-				getContext().getLogger().noName(this.ref);
-				return this.alias = "";
-			}
-
 			return this.alias;
 		}
 
@@ -301,6 +289,9 @@ public class Namespace extends AbstractContainer {
 
 		@Override
 		public String toString() {
+			if (this.alias == null) {
+				return "Use Object: " + this.ref;
+			}
 			return "Use Object: " + this.ref + " as " + this.alias;
 		}
 
