@@ -39,11 +39,13 @@ import org.o42a.core.source.LocationInfo;
 final class ClauseReuser implements PathWalker {
 
 	private final LocationInfo location;
+	private final boolean reuseContents;
 	private Container container;
 	private ReusedClause reused;
 
-	ClauseReuser(Ref location) {
+	ClauseReuser(Ref location, boolean reuseContents) {
 		this.location = location;
+		this.reuseContents = reuseContents;
 		this.container = location.getContainer();
 	}
 
@@ -116,17 +118,6 @@ final class ClauseReuser implements PathWalker {
 			}
 		}
 
-		if (this.reused != null) {
-			if (!this.reused.isObject()
-					&& this.reused.getClause().getKind()
-					== ClauseKind.EXPRESSION) {
-				// Can only reuse (sub-) aliases or groups declared in
-				// enclosing object or clause.
-				getLogger().invalidClauseReused(this.location);
-				return false;
-			}
-		}
-
 		final Clause clause = member.toClause();
 
 		if (clause == null) {
@@ -134,7 +125,10 @@ final class ClauseReuser implements PathWalker {
 			return false;
 		}
 
-		this.reused = new ReusedClause(this.container.toClause(), clause);
+		this.reused = new ReusedClause(
+				this.container.toClause(),
+				clause,
+				this.reuseContents);
 
 		return true;
 	}
@@ -175,11 +169,11 @@ final class ClauseReuser implements PathWalker {
 		final Clause clause = result.toClause();
 
 		if (clause != null) {
-			this.reused = new ReusedClause(clause, clause);
+			this.reused = new ReusedClause(clause, clause, this.reuseContents);
 		} else {
 			assert result.toObject() != null :
 				"Object expected: " + result;
-			this.reused = new ReusedClause();
+			this.reused = new ReusedClause(this.reuseContents);
 		}
 
 		return true;

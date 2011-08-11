@@ -24,15 +24,18 @@ public final class ReusedClause {
 
 	private final Clause container;
 	private final Clause clause;
+	private final boolean reuseContents;
 
-	ReusedClause() {
+	ReusedClause(boolean reuseContents) {
 		this.container = null;
 		this.clause = null;
+		this.reuseContents = reuseContents;
 	}
 
-	ReusedClause(Clause container, Clause clause) {
+	ReusedClause(Clause container, Clause clause, boolean reuseContents) {
 		this.container = container;
 		this.clause = clause;
+		this.reuseContents = reuseContents;
 	}
 
 	public final Clause getContainer() {
@@ -47,12 +50,29 @@ public final class ReusedClause {
 		return this.clause;
 	}
 
+	public final boolean reuseContents() {
+		return this.reuseContents;
+	}
+
 	@Override
 	public String toString() {
 		if (this.clause == null) {
-			return "ReusedClause";
+			if (this.reuseContents) {
+				return "ReusedClause[*]";
+			}
+			return "ReusedClause[$object$]";
 		}
-		return "ReusedClause[" + this.clause +']';
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append("ReusedClause[").append(this.clause);
+		if (this.reuseContents) {
+			out.append("*]");
+		} else {
+			out.append(']');
+		}
+
+		return out.toString();
 	}
 
 }

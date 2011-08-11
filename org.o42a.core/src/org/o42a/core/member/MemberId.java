@@ -69,6 +69,10 @@ public abstract class MemberId {
 		return null;
 	}
 
+	public MemberId getLocalId() {
+		return this;
+	}
+
 	public abstract boolean containsAdapterId();
 
 	public abstract String toName();
