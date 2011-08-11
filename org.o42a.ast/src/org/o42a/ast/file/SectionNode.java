@@ -24,11 +24,11 @@ import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
-import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.ast.statement.StatementNode;
 
 

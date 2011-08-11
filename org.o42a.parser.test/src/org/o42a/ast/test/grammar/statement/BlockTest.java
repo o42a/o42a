@@ -26,8 +26,11 @@ import static org.o42a.parser.Grammar.IMPERATIVE;
 import org.junit.Test;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.field.DeclarationTarget;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.statement.*;
+import org.o42a.ast.statement.AssignmentNode;
+import org.o42a.ast.statement.NamedBlockNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 

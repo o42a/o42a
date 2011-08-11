@@ -24,9 +24,13 @@ import static org.o42a.compiler.ip.member.ClauseKeyVisitor.CLAUSE_KEY_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
 
+import org.o42a.ast.clause.ClauseDeclaratorNode;
+import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarationTarget;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.statement.*;
+import org.o42a.ast.statement.StatementNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;

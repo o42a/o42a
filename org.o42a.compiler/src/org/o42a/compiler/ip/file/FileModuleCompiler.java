@@ -20,12 +20,12 @@
 package org.o42a.compiler.ip.file;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarationTarget;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.statement.DeclarableNode;
-import org.o42a.ast.statement.DeclarationTarget;
-import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;

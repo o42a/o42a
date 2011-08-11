@@ -22,10 +22,10 @@ package org.o42a.ast.ref;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.ast.clause.ClauseKeyNodeVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.ClauseKeyNodeVisitor;
-import org.o42a.ast.statement.DeclarableNode;
-import org.o42a.ast.statement.DeclarableNodeVisitor;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarableNodeVisitor;
 
 
 public class MemberRefNode extends AbstractRefNode implements DeclarableNode {

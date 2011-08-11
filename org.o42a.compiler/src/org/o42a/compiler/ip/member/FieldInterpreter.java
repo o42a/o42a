@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.statement.DeclaratorNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldBuilder;

@@ -27,13 +27,13 @@ import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDecla
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.clause.AbstractClauseKeyVisitor;
+import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.ast.statement.AbstractClauseKeyVisitor;
-import org.o42a.ast.statement.ClauseKeyNode;
-import org.o42a.ast.statement.DeclarableAdapterNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
 

@@ -20,7 +20,11 @@
 package org.o42a.parser;
 
 import org.o42a.ast.atom.*;
+import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.ref.*;
@@ -29,10 +33,14 @@ import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
 import org.o42a.parser.grammar.atom.*;
+import org.o42a.parser.grammar.clause.ClauseDeclaratorParser;
 import org.o42a.parser.grammar.expression.*;
+import org.o42a.parser.grammar.field.DeclarableAdapterParser;
+import org.o42a.parser.grammar.field.DeclaratorParser;
 import org.o42a.parser.grammar.file.FileParser;
 import org.o42a.parser.grammar.file.InclusionParser;
 import org.o42a.parser.grammar.ref.*;
+import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
 
 

@@ -25,19 +25,21 @@ import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.ast.statement.DeclarableAdapterNode;
-import org.o42a.ast.statement.DeclarableNode;
-import org.o42a.ast.statement.DeclaratorNode;
 import org.o42a.compiler.ip.member.FieldDeclarableVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.source.*;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.DefinitionSource;
+import org.o42a.core.source.Location;
 import org.o42a.util.io.SourceFileName;
 
 
