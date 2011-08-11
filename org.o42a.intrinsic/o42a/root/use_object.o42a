@@ -24,15 +24,15 @@ Module := `string(False)
 Object := `string(False)
 Alias := `string(False)
 
-<*'Object path' | from | as> Object = ()
-<*[Object path] | from | as> Object = ()
+<*'Object path' | from | as ...> Object = ()
+<*[Object path] | from | as ...> Object = ()
 
-<From> (
+<From ...> (
   <*'Module id' | as> Module = ()
   <*[Module id] | as> Module = ()
 )
 
-<As> (
-  <*'Object alias' | $object$> Alias = ()
-  <*[Object alias] | $object$> Alias = ()
+<As ...> (
+  <*'Object alias' | *> Alias = ()
+  <*[Object alias] | *> Alias = ()
 )

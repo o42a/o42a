@@ -78,9 +78,6 @@ public final class Dep extends PathFragment {
 		assert container.toLocal() != null :
 			object + " is not a local object";
 
-		if (container.member(dependencyKey) == null) {
-			System.err.println("(!)");
-		}
 		this.dependency = container.member(dependencyKey).toField(dummyUser());
 
 		assert this.dependency != null :

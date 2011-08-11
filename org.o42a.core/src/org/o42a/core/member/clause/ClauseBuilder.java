@@ -185,10 +185,17 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this;
 	}
 
-	public ClauseBuilder reuseClause(Ref reusedClause, boolean reuseContents) {
+	public final ClauseBuilder reuseClause(
+			Ref reusedClause,
+			boolean reuseContents) {
 		this.reusedClauses = append(
 				this.reusedClauses,
 				new ReusedClauseRef(reusedClause, reuseContents));
+		return this;
+	}
+
+	public final ClauseBuilder reuseObject() {
+		this.reusedClauses = append(this.reusedClauses, new ReusedClauseRef());
 		return this;
 	}
 
@@ -247,7 +254,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		this.memberRegistry.declareMember(clause.toMember());
 
-		group.getStatements().statement(new ClauseDeclarationStatement(this, clause));
+		group.getStatements().statement(
+				new ClauseDeclarationStatement(this, clause));
 
 		return definition;
 	}

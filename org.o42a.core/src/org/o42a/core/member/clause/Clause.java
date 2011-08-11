@@ -173,6 +173,9 @@ public abstract class Clause implements PlaceInfo {
 	public abstract boolean requiresInstance();
 
 	public final boolean hasContinuation() {
+		if (getReusedClauses().length != 0) {
+			return true;
+		}
 		return getClauseContainer().hasSubClauses();
 	}
 

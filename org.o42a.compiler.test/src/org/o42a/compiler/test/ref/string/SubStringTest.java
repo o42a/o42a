@@ -37,6 +37,13 @@ public class SubStringTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void shortForm() {
+		compile("Sub := \"asubc\": substring [1, 4]");
+
+		assertThat(definiteValue(field("sub"), ValueType.STRING), is("sub"));
+	}
+
+	@Test
 	public void leadingSubstring() {
 		compile("Sub := \"asubc\": substring _ to [4]");
 
