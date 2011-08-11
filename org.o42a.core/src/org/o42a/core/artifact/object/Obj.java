@@ -447,7 +447,8 @@ public abstract class Obj
 	public Clause clause(MemberId memberId, Obj declaredIn) {
 
 		// Clauses are always accessible to public.
-		final Member found = objectMember(Accessor.PUBLIC, memberId, declaredIn);
+		final Member found =
+				objectMember(Accessor.PUBLIC, memberId, declaredIn);
 
 		if (found == null) {
 			return null;

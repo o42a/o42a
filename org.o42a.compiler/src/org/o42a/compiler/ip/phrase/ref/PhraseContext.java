@@ -227,12 +227,21 @@ public abstract class PhraseContext {
 						location,
 						memberId,
 						what);
-			} else {
+			} else if (reusedClause.reuseContents()) {
 				found = findClause(
 						reusedClause.getClause().getClauseContainer(),
 						location,
 						memberId,
 						what).setContainer(reusedClause.getContainer());
+			} else {
+
+				final Clause c = reusedClause.getClause();
+
+				if (c.toMember().getId().getLocalId().equals(memberId)) {
+					found = nextClause(memberId, c);
+				} else {
+					found = clauseNotFound(what);
+				}
 			}
 
 			if (found.found()) {

@@ -270,7 +270,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		this.memberRegistry.declareMember(clause.toMember());
 
-		group.getStatements().statement(new ClauseDeclarationStatement(this, clause));
+		group.getStatements().statement(
+				new ClauseDeclarationStatement(this, clause));
 
 		return definition;
 	}
@@ -294,7 +295,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 			// Reuse in descending precedence order,
 			// i.e. reverse to declaration order.
 			final ReusedClause reusedClause =
-					reuseClause(reusedRefs[i], clause);
+					reuseClause(reusedRefs[i], clause, true);
 
 			if (reusedClause != null) {
 				reused[idx++] = reusedClause;
@@ -304,7 +305,10 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return ArrayUtil.clip(reused, idx);
 	}
 
-	private ReusedClause reuseClause(Ref reusedClause, Clause clause) {
+	private ReusedClause reuseClause(
+			Ref reusedClause,
+			Clause clause,
+			boolean reuseContents) {
 
 		final Path path = reusedClause.getPath();
 
@@ -313,7 +317,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 			return null;
 		}
 
-		final ClauseReuser reuser = new ClauseReuser(reusedClause);
+		final ClauseReuser reuser =
+				new ClauseReuser(reusedClause, reuseContents);
 
 		if (path.walk(
 				reusedClause,

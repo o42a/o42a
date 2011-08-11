@@ -76,6 +76,23 @@ final class ReproducedMemberId extends MemberId {
 	}
 
 	@Override
+	public MemberId getEnclosingId() {
+
+		final MemberId enclosingId = this.memberId.getEnclosingId();
+
+		if (enclosingId == null) {
+			return null;
+		}
+
+		return new ReproducedMemberId(enclosingId, this.reproducedFrom);
+	}
+
+	@Override
+	public MemberId getLocalId() {
+		return this.memberId.getLocalId();
+	}
+
+	@Override
 	public Scope[] getReproducedFrom() {
 		return this.reproducedFrom;
 	}
