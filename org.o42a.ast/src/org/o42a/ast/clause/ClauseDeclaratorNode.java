@@ -101,6 +101,9 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 		for (ReusedClauseNode reused : this.reused) {
 			reused.printContent(out);
 		}
+		if (this.continuation != null) {
+			this.continuation.printContent(out);
+		}
 		if (this.closing != null) {
 			this.closing.printContent(out);
 		} else {
