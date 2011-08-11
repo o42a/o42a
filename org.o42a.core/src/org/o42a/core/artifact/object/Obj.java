@@ -228,6 +228,26 @@ public abstract class Obj
 	}
 
 	@Override
+	public boolean hasSubClauses() {
+		if (getExplicitClauses().length != 0) {
+			return true;
+		}
+
+		final TypeRef ancestor = type().getAncestor();
+
+		if (ancestor != null) {
+			return ancestor.typeObject(dummyUser()).hasSubClauses();
+		}
+		for (Sample sample : type().getSamples()) {
+			if (sample.typeObject(dummyUser()).hasSubClauses()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
 	public Clause[] getImplicitClauses() {
 		if (this.implicitClauses != null) {
 			return this.implicitClauses;

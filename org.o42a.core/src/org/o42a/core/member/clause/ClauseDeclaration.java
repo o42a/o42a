@@ -71,7 +71,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	private MemberId groupId;
 	private ClauseId clauseId;
 	private ClauseKind kind;
-	private boolean terminator;
+	private boolean requiresContinuation;
 	private boolean implicit;
 
 	private ClauseDeclaration(
@@ -98,7 +98,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		this.memberId = prototype.memberId;
 		this.clauseId = prototype.clauseId;
 		this.kind = prototype.kind;
-		this.terminator = prototype.terminator;
+		this.requiresContinuation = prototype.requiresContinuation;
 	}
 
 	private ClauseDeclaration(
@@ -193,15 +193,15 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		return clone;
 	}
 
-	public final boolean isTerminator() {
-		return this.terminator;
+	public final boolean requiresContinuation() {
+		return this.requiresContinuation;
 	}
 
-	public final ClauseDeclaration terminator() {
+	public final ClauseDeclaration requireContinuation() {
 
 		final ClauseDeclaration clone = clone();
 
-		clone.terminator = true;
+		clone.requiresContinuation = true;
 
 		return clone;
 	}

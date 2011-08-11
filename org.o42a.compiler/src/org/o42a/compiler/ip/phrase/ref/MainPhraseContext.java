@@ -229,6 +229,17 @@ final class MainPhraseContext extends PhraseContext {
 				if (stack.isEmpty()) {
 					this.createsObject = 1;
 				}
+
+				final Clause clause = context.getClause();
+
+				if (clause != null && clause.requiresContinuation()) {
+					getLogger().error(
+							"incomplete_phrase",
+							continuation.getLoggable().setPreviousLoggable(
+									clause.getLoggable()),
+							"Incomplete phrase");
+					break;
+				}
 				if (!nextClause.isError()) {
 					getLogger().error(
 							"unresolved_clause",

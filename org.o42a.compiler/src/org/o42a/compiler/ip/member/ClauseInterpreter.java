@@ -50,13 +50,16 @@ public class ClauseInterpreter {
 		final Distributor distributor =
 				new Placed(context, declarator, statements.nextDistributor())
 				.distribute();
-		final ClauseDeclaration declaration =
+		ClauseDeclaration declaration =
 				declarator.getClauseKey().accept(
 						CLAUSE_KEY_VISITOR,
 						distributor);
 
 		if (declaration == null) {
 			return;
+		}
+		if (declarator.requiresContinuation()) {
+			declaration = declaration.requireContinuation();
 		}
 
 		final Statement result;

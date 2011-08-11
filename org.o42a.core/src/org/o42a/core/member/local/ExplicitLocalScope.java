@@ -48,6 +48,7 @@ final class ExplicitLocalScope extends LocalScope {
 			new HashMap<MemberId, Member>();
 	private Clause[] implicitClauses;
 	private ImperativeBlock block;
+	private byte hasSubClauses;
 	private boolean allResolved;
 	private LocalIR ir;
 
@@ -107,11 +108,15 @@ final class ExplicitLocalScope extends LocalScope {
 			if (clause == null) {
 				continue;
 			}
+			this.hasSubClauses = 1;
 			if (!clause.isImplicit()) {
 				continue;
 			}
 
 			implicitClauses = ArrayUtil.append(implicitClauses, clause);
+		}
+		if (this.hasSubClauses == 0) {
+			this.hasSubClauses = -1;
 		}
 
 		return this.implicitClauses = implicitClauses;
@@ -158,6 +163,12 @@ final class ExplicitLocalScope extends LocalScope {
 		}
 
 		return member.getKey().toPath();
+	}
+
+	@Override
+	public boolean hasSubClauses() {
+		getImplicitClauses();
+		return this.hasSubClauses > 0;
 	}
 
 	@Override

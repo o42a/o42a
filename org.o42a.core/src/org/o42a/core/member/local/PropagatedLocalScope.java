@@ -86,6 +86,11 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
+	public boolean hasSubClauses() {
+		return this.explicit.hasSubClauses();
+	}
+
+	@Override
 	public Clause clause(MemberId memberId, Obj declaredIn) {
 		return this.explicit.clause(memberId, declaredIn);
 	}

@@ -25,6 +25,8 @@ import org.o42a.core.member.MemberId;
 
 public interface ClauseContainer {
 
+	boolean hasSubClauses();
+
 	Clause[] getImplicitClauses();
 
 	Clause clause(MemberId memberId, Obj declaredIn);

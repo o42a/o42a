@@ -120,6 +120,11 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 	}
 
 	@Override
+	public boolean hasSubClauses() {
+		return this.wrapped.getClauseContainer().hasSubClauses();
+	}
+
+	@Override
 	public Clause clause(MemberId memberId, Obj declaredIn) {
 		return groupClause(memberId, declaredIn);
 	}
