@@ -25,7 +25,6 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
-import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclaratorNode;
@@ -113,32 +112,6 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void reuseClause() {
-
-		final ClauseDeclaratorNode result = parse("<foo|bar|baz> val");
-
-		assertFalse(result.requiresContinuation());
-		assertName("foo", result.getClauseKey());
-		assertName("val", result.getContent());
-
-		final ReusedClauseNode[] reused = result.getReused();
-
-		assertEquals(2, reused.length);
-
-		assertEquals(
-				ReusedClauseNode.Separator.OR,
-				reused[0].getSeparator().getType());
-		assertName("bar", reused[0].getClause());
-
-		assertEquals(
-				ReusedClauseNode.Separator.OR,
-				reused[1].getSeparator().getType());
-		assertName("baz", reused[1].getClause());
-
-		checkParentheses(result);
-	}
-
-	@Test
 	public void content() {
 		to(ParenthesesNode.class, parse("<*> (foo)").getContent());
 		to(BracesNode.class, parse("<*> {foo}").getContent());
@@ -156,20 +129,11 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		assertThat(result.getReused().length, is(0));
 	}
 
-	@Test
-	public void reuseAndContinuation() {
-
-		final ClauseDeclaratorNode result = parse("<foo | bar ...> ()");
-
-		assertRange(11, 14, result.getContinuation());
-		assertThat(result.getReused().length, is(1));
-	}
-
 	private void assertNothingReused(ClauseDeclaratorNode declarator) {
 		assertEquals(0, declarator.getReused().length);
 	}
 
-	private void checkParentheses(ClauseDeclaratorNode declarator) {
+	static void checkParentheses(ClauseDeclaratorNode declarator) {
 		assertEquals(
 				ClauseDeclaratorNode.Parenthesis.OPENING,
 				declarator.getOpening().getType());

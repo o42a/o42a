@@ -54,15 +54,49 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 
 		context.acceptComments(true, separator);
 
+		if (context.next() == '*') {
+
+			final FixedPosition asteriskStart = context.current().fix();
+
+			context.acceptAll();
+
+			return context.acceptComments(
+					true,
+					new ReusedClauseNode(
+							separator,
+							null,
+							new SignNode<ReusedClauseNode.ReuseContents>(
+									asteriskStart,
+									context.current(),
+									ReusedClauseNode.ReuseContents.ASTERISK)));
+		}
+
 		final RefNode clause = context.parse(ref());
 
 		if (clause == null) {
 			context.getLogger().missingClause(separator);
 		}
 
+		if (context.next() == '*') {
+
+			final FixedPosition asteriskStart = context.current().fix();
+
+			context.acceptAll();
+
+			return context.acceptComments(
+					true,
+					new ReusedClauseNode(
+							separator,
+							clause,
+							new SignNode<ReusedClauseNode.ReuseContents>(
+									asteriskStart,
+									context.current(),
+									ReusedClauseNode.ReuseContents.ASTERISK)));
+		}
+
 		return context.acceptComments(
 				true,
-				new ReusedClauseNode(separator, clause));
+				new ReusedClauseNode(separator, clause, null));
 	}
 
 }

@@ -30,11 +30,16 @@ public class ReusedClauseNode extends AbstractNode {
 
 	private final SignNode<Separator> separator;
 	private final RefNode clause;
+	private final SignNode<ReuseContents> reuseContents;
 
-	public ReusedClauseNode(SignNode<Separator> separator, RefNode clause) {
-		super(separator.getStart(), end(separator, clause));
+	public ReusedClauseNode(
+			SignNode<Separator> separator,
+			RefNode clause,
+			SignNode<ReuseContents> reuseContents) {
+		super(separator.getStart(), end(separator, clause, reuseContents));
 		this.separator = separator;
 		this.clause = clause;
+		this.reuseContents = reuseContents;
 	}
 
 	public final SignNode<Separator> getSeparator() {
@@ -43,6 +48,10 @@ public class ReusedClauseNode extends AbstractNode {
 
 	public final RefNode getClause() {
 		return this.clause;
+	}
+
+	public final SignNode<ReuseContents> getReuseContents() {
+		return this.reuseContents;
 	}
 
 	@Override
@@ -56,6 +65,9 @@ public class ReusedClauseNode extends AbstractNode {
 		if (this.clause != null) {
 			this.clause.printContent(out);
 		}
+		if (this.reuseContents != null) {
+			this.reuseContents.printContent(out);
+		}
 	}
 
 	public enum Separator implements SignType {
@@ -68,6 +80,19 @@ public class ReusedClauseNode extends AbstractNode {
 			}
 
 		};
+
+	}
+
+	public enum ReuseContents implements SignType {
+
+		ASTERISK() {
+
+			@Override
+			public String getSign() {
+				return "*";
+			}
+
+		}
 
 	}
 
