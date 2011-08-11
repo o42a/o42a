@@ -25,9 +25,11 @@ import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_EXPRESS
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_SELF_ASSIGNMENT_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
 
+import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.statement.*;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;

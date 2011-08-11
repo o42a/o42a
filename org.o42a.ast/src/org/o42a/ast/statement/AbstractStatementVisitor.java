@@ -19,9 +19,11 @@
 */
 package org.o42a.ast.statement;
 
+import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.file.SubTitleNode;
 

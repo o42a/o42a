@@ -22,7 +22,7 @@ package org.o42a.ast.test.grammar.statement;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
-import org.o42a.ast.statement.ClauseDeclaratorNode;
+import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.statement.SelfAssignmentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 

@@ -25,11 +25,17 @@ import org.o42a.ast.EmptyNode;
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.statement.*;
+import org.o42a.ast.statement.AssignmentNode;
+import org.o42a.ast.statement.NamedBlockNode;
+import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.parser.grammar.field.DeclaratorParser;
 
 
 public class StatementParser implements Parser<StatementNode> {

@@ -20,8 +20,14 @@
 package org.o42a.ast;
 
 import org.o42a.ast.atom.*;
+import org.o42a.ast.clause.ClauseKeyNode;
+import org.o42a.ast.clause.ClauseKeyNodeVisitor;
+import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.AscendantNode;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DefinitionCastNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.sentence.AlternativeNode;

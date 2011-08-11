@@ -23,7 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
 
-import org.o42a.ast.statement.DeclaratorNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;

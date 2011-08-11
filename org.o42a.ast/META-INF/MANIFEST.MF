@@ -6,7 +6,9 @@ Bundle-Version: 0.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.o42a.ast,
  org.o42a.ast.atom,
+ org.o42a.ast.clause,
  org.o42a.ast.expression,
+ org.o42a.ast.field,
  org.o42a.ast.file,
  org.o42a.ast.ref,
  org.o42a.ast.sentence,

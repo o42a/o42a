@@ -22,9 +22,9 @@ package org.o42a.ast.ref;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.clause.ClauseKeyNode;
+import org.o42a.ast.clause.ClauseKeyNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.statement.ClauseKeyNode;
-import org.o42a.ast.statement.ClauseKeyNodeVisitor;
 import org.o42a.ast.statement.StatementNodeVisitor;
 
 

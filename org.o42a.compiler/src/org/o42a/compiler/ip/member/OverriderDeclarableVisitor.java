@@ -24,11 +24,11 @@ import static org.o42a.compiler.ip.member.AdapterFieldVisitor.ADAPTER_FIELD_VISI
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.fieldName;
 
+import org.o42a.ast.field.AbstractDeclarableVisitor;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.statement.AbstractDeclarableVisitor;
-import org.o42a.ast.statement.DeclarableAdapterNode;
-import org.o42a.ast.statement.DeclarableNode;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.ref.Ref;
 
