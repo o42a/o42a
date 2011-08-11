@@ -79,6 +79,14 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	}
 
 	@Override
+	public boolean hasSubClauses() {
+		if (this.localScope != null) {
+			return this.localScope.hasSubClauses();
+		}
+		return getSubClauses().length != 0;
+	}
+
+	@Override
 	public ClauseContainer getClauseContainer() {
 		return this.localScope != null ? this.localScope : this;
 	}

@@ -40,7 +40,6 @@ import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.use.UserInfo;
 
 
@@ -149,6 +148,11 @@ public abstract class PlainClause
 	}
 
 	@Override
+	public boolean hasSubClauses() {
+		return getSubClauses().length != 0;
+	}
+
+	@Override
 	public Clause clause(MemberId memberId, Obj declaredIn) {
 
 		final Clause clause = getObject().clause(memberId, declaredIn);
@@ -210,11 +214,6 @@ public abstract class PlainClause
 	@Override
 	public Clause[] getSubClauses() {
 		return getObject().getExplicitClauses();
-	}
-
-	@Override
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
 	}
 
 	@Override

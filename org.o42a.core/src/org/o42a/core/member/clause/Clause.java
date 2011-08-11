@@ -26,6 +26,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;
@@ -129,6 +130,10 @@ public abstract class Clause implements PlaceInfo {
 		return this.member.getPlace();
 	}
 
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
+	}
+
 	public abstract Scope getEnclosingScope();
 
 	public abstract ClauseContainer getClauseContainer();
@@ -167,8 +172,12 @@ public abstract class Clause implements PlaceInfo {
 
 	public abstract boolean requiresInstance();
 
-	public final boolean isTerminator() {
-		return getDeclaration().isTerminator();
+	public final boolean hasContinuation() {
+		return getClauseContainer().hasSubClauses();
+	}
+
+	public final boolean requiresContinuation() {
+		return isImplicit() || getDeclaration().requiresContinuation();
 	}
 
 	public final boolean isImplicit() {
@@ -306,6 +315,12 @@ public abstract class Clause implements PlaceInfo {
 		getReusedClauses();
 		if (!isImplicit()) {
 			validateImplicitSubClauses(getSubClauses());
+		}
+		if (requiresContinuation() && !hasContinuation()) {
+			getLogger().error(
+					"missing_clause_continuation",
+					this,
+					"Required clause continuation is missing");
 		}
 	}
 

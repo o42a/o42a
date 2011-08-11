@@ -63,7 +63,7 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	public NextClause clauseByName(LocationInfo location, String name) {
+	public final NextClause clauseByName(LocationInfo location, String name) {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
@@ -72,7 +72,7 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	public NextClause clauseById(LocationInfo location, ClauseId clauseId) {
+	public final NextClause clauseById(LocationInfo location, ClauseId clauseId) {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
