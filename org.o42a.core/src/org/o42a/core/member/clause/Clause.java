@@ -38,12 +38,20 @@ public abstract class Clause implements PlaceInfo {
 
 	public static boolean validateImplicitSubClauses(Clause[] subClauses) {
 
-		boolean result = true;
-		final HashMap<MemberId, Clause> implicitClauses =
+		final HashMap<MemberId, Clause> explicitClauses =
 				new HashMap<MemberId, Clause>();
 
+		return validateImplicitSubClauses(explicitClauses, subClauses);
+	}
+
+	private static boolean validateImplicitSubClauses(
+			HashMap<MemberId, Clause> explicitClauses,
+			Clause[] subClauses) {
+
+		boolean result = true;
+
 		for (Clause subClause : subClauses) {
-			if (!validateImplicitSubClauses(implicitClauses, subClause)) {
+			if (!validateClause(explicitClauses, subClause)) {
 				result = false;
 			}
 		}
@@ -51,38 +59,33 @@ public abstract class Clause implements PlaceInfo {
 		return result;
 	}
 
-	private static boolean validateImplicitSubClauses(
-			HashMap<MemberId, Clause> implicitClauses,
+	private static boolean validateClause(
+			HashMap<MemberId, Clause> explicitClauses,
 			Clause clause) {
 
-		boolean result = true;
+		final MemberId memberId = clause.getKey().getMemberId().getLocalId();
 
-		for (Clause subClause : clause.getSubClauses()) {
-			if (subClause.isImplicit()) {
-				validateImplicitSubClauses(implicitClauses, subClause);
-				continue;
-			}
-
-			final MemberId memberId = subClause.getKey().getMemberId();
-
-			if (!memberId.isValid()) {
-				continue;
-			}
-
-			final Clause conflicting = implicitClauses.put(memberId, subClause);
-
-			if (conflicting == null) {
-				continue;
-			}
-
-			result = false;
-			implicitClauses.put(memberId, conflicting);
-			clause.getContext().getLogger().ambiguousClause(
-					subClause,
-					subClause.getDisplayName());
+		if (!memberId.isValid()) {
+			return true;
+		}
+		if (clause.isImplicit()) {
+			return validateImplicitSubClauses(
+					explicitClauses,
+					clause.getSubClauses());
 		}
 
-		return result;
+		final Clause conflicting = explicitClauses.put(memberId, clause);
+
+		if (conflicting == null) {
+			return true;
+		}
+
+		explicitClauses.put(memberId, conflicting);
+		clause.getContext().getLogger().ambiguousClause(
+				clause,
+				clause.getDisplayName());
+
+		return false;
 	}
 
 	private final MemberClause member;

@@ -72,6 +72,11 @@ final class MemberIds extends MemberId {
 	}
 
 	@Override
+	public MemberId getLocalId() {
+		return this.ids[this.ids.length - 1];
+	}
+
+	@Override
 	public boolean containsAdapterId() {
 		for (int i = this.ids.length - 1; i >= 0; --i) {
 			if (this.ids[i].containsAdapterId()) {

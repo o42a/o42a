@@ -69,8 +69,8 @@ Assert :=> void(
     = Void
   }
 
-  <*[] | error message> Condition = void
-  <*Error message> (
+  <*[] | error message*> Condition = ()
+  <Error message> (
     <*''> Message = ()
     <*[]> Message = ()
   )
