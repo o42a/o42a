@@ -67,7 +67,7 @@ public final class StringUtil {
 			return "";
 		}
 
-		return from.substring(first + 1, from.length());
+		return from.substring(first, from.length());
 	}
 
 	public static String removeTrailingChars(String from, char what) {
