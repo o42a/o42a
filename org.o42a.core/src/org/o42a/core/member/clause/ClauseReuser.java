@@ -127,7 +127,9 @@ final class ClauseReuser implements PathWalker {
 				final MemberContainer memberContainer =
 						memberScope.getContainer();
 
-				up(this.container, fragment, memberContainer);
+				if (!up(this.container, fragment, memberContainer)) {
+					return false;
+				}
 			}
 		}
 
