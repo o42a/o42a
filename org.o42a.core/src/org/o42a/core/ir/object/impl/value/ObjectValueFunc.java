@@ -134,7 +134,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 		final Code code = dirs.code();
 
-		writeRequirement(dirs, host);
+		writeRequirement(dirs.dirs(), host);
 		getValueIR().writeCondition(dirs.dirs(), host, null);
 
 		final Code unknownClaim = dirs.addBlock("unknown_claim");
@@ -174,11 +174,11 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 				getObject().value().getValueType());
 	}
 
-	private void writeRequirement(ValDirs dirs, ObjOp host) {
+	private void writeRequirement(CodeDirs dirs, ObjOp host) {
 
 		final Code unknownReq = dirs.addBlock("unknown_req");
-		final CodeDirs reqDirs = dirs.dirs().splitWhenUnknown(
-				dirs.dirs().falseDir(),
+		final CodeDirs reqDirs = dirs.splitWhenUnknown(
+				dirs.falseDir(),
 				unknownReq.head());
 
 		getValueIR().writeRequirement(reqDirs, host, null);
