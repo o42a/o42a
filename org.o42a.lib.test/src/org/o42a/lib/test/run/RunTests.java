@@ -19,16 +19,23 @@
 */
 package org.o42a.lib.test.run;
 
-import static org.o42a.lib.test.run.ObjectTestsRunner.runObjectTests;
+import static org.o42a.core.ref.Ref.voidRef;
+import static org.o42a.lib.test.run.TestRunner.runTest;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.SourcePath;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
+import org.o42a.core.st.sentence.Block;
+import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.lib.test.TestModule;
+import org.o42a.util.use.UserInfo;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "run_tests.o42a")
@@ -41,15 +48,45 @@ public class RunTests extends DirectiveObject {
 	@Override
 	public void apply(Ref directive, InstructionContext context) {
 
+		final Obj object = directive.getScope().toObject();
+
+		if (object == null) {
+			directive.getLogger().error(
+					"test.not_in_object",
+					directive,
+					"Run tests directive is only allowed inside object");
+			return;
+		}
+
+		runTests(context.getBlock().toDeclarativeBlock(), object);
+	}
+
+	private void runTests(Block<?> definition, Obj object) {
+
 		final TestModule module =
 				(TestModule) getField().getEnclosingScope().toObject();
 		final Statements<?> statements =
-				context.getBlock().propose(directive).alternative(directive);
+				definition.propose(definition).alternative(definition);
+		final ImperativeSentence sentence =
+				statements.braces(definition, "_tests_").propose(definition);
+		final UserInfo user =
+				definition.getScope().toObject().value().proposition();
 
-		statements.expression(runObjectTests(
-				directive,
-				statements.nextDistributor(),
-				module));
+		for (Member member : object.getMembers()) {
+
+			final Field<?> field = member.toField(user);
+
+			if (field == null) {
+				continue;
+			}
+
+			runTest(module, user, sentence, field);
+		}
+
+		final Statements<?> terminator =
+				definition.propose(definition).alternative(definition);
+
+		terminator.selfAssign(voidRef(definition, terminator.nextDistributor()));
 	}
 
 }

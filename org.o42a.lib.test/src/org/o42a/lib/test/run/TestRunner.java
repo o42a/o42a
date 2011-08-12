@@ -25,6 +25,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
@@ -71,11 +72,7 @@ final class TestRunner extends Obj {
 		final ObjectType testType = module.test(user);
 
 		if (test.type().useBy(user).derivedFrom(testType)) {
-			run(
-					sentence,
-					testName(sentence, field, test),
-					field,
-					null);
+			run(sentence, testName(sentence, field, test), field);
 			return;
 		}
 
@@ -99,29 +96,42 @@ final class TestRunner extends Obj {
 			return;
 		}
 
-		run(
-				sentence,
-				testName(sentence, field, adapter),
-				field,
-				adapterMember.getKey());
+		run(sentence, testName(sentence, field, adapter), field);
 	}
 
 	private static void run(
 			ImperativeSentence sentence,
 			String name,
-			Field<?> field,
-			MemberKey adapterKey) {
+			Field<?> field) {
 
 		final Imperatives statements =
 				sentence.alternative(sentence.getBlock());
-		final RunTest runTest = new RunTest(
-				sentence,
-				statements.nextDistributor(),
-				name,
-				field.getKey(),
-				adapterKey);
 
-		statements.expression(runTest);
+		if (field.isPrototype()) {
+			statements.expression(new RunTest(
+					sentence,
+					statements.nextDistributor(),
+					name,
+					field.getKey()));
+			return;
+		}
+
+		final Path fieldPath = field.getKey().toPath();
+		final Path testPath;
+
+		if (field.getArtifactKind() == ArtifactKind.OBJECT) {
+			testPath = fieldPath;
+		} else {
+			testPath = fieldPath.materialize();
+		}
+
+		final Scope localScope = statements.getScope();
+		final Path pathFromLocal =
+				localScope.getEnclosingScopePath().append(testPath);
+
+		statements.expression(pathFromLocal.target(
+				sentence,
+				statements.nextDistributor()));
 	}
 
 	private static String testName(
@@ -179,18 +189,15 @@ final class TestRunner extends Obj {
 	private static final class RunTest extends ObjectConstructor {
 
 		private final MemberKey testKey;
-		private final MemberKey adapterKey;
 		private final String name;
 
 		RunTest(
 				LocationInfo location,
 				Distributor distributor,
 				String name,
-				MemberKey testKey,
-				MemberKey adapterKey) {
+				MemberKey testKey) {
 			super(location, distributor);
 			this.testKey = testKey;
-			this.adapterKey = adapterKey;
 			this.name = name;
 		}
 
@@ -203,10 +210,7 @@ final class TestRunner extends Obj {
 				this + " should be inside of local scope, but is inside of "
 				+ localScope;
 
-			final Scope objectTestsScope = localScope.getEnclosingScope();
-			final Path objectPath =
-					localScope.getEnclosingScopePath().append(
-							objectTestsScope.getEnclosingScopePath());
+			final Path objectPath = localScope.getEnclosingScopePath();
 			final Path testPath = objectPath.append(this.testKey);
 
 			return testPath.target(
@@ -220,8 +224,7 @@ final class TestRunner extends Obj {
 					this,
 					reproducer.distribute(),
 					this.name,
-					this.testKey,
-					this.adapterKey);
+					this.testKey);
 		}
 
 		@Override
