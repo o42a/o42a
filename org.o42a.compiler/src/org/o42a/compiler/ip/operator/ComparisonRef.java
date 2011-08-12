@@ -200,11 +200,12 @@ public final class ComparisonRef extends ObjectConstructor {
 		}
 
 		@Override
-		public void resolveBuiltin(Obj object) {
+		public void resolveBuiltin(Resolver resolver) {
 
-			final UserInfo user = object.value().proposition();
+			final UserInfo user = resolver;
 			final Field<?> field =
-					object.member(this.comparisonKey).toField(user);
+					resolver.getScope().toObject()
+					.member(this.comparisonKey).toField(user);
 
 			field.getArtifact().toObject().value().resolveAll(user);
 		}

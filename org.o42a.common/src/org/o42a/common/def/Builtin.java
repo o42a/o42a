@@ -36,7 +36,7 @@ public interface Builtin extends LocationInfo {
 
 	Value<?> calculateBuiltin(Resolver resolver);
 
-	void resolveBuiltin(Obj object);
+	void resolveBuiltin(Resolver resolver);
 
 	ValOp writeBuiltin(ValDirs dirs, HostOp host);
 

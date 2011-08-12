@@ -25,7 +25,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -48,7 +47,7 @@ public class RtFalse extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public void resolveBuiltin(Obj object) {
+	public void resolveBuiltin(Resolver resolver) {
 	}
 
 	@Override

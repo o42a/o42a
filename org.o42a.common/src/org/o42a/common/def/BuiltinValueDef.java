@@ -103,7 +103,8 @@ public class BuiltinValueDef extends ValueDef {
 			builtin.value().resolveAll(resolver);
 		}
 		object.resolveAll();
-		this.builtin.resolveBuiltin(object);
+		this.builtin.resolveBuiltin(
+				object.value().valuePart(isClaim()).resolver());
 	}
 
 	@Override
