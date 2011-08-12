@@ -56,7 +56,7 @@ public final class AbsolutePath extends Path {
 	public AbsolutePath append(CompilerContext context, String... fields) {
 
 		AbsolutePath path = this;
-		Obj object = resolveArtifact(context).toObject();
+		Obj object = resolve(context).getArtifact().toObject();
 
 		for (String field : fields) {
 
@@ -74,21 +74,22 @@ public final class AbsolutePath extends Path {
 
 	public final Ref target(CompilerContext context) {
 
-		final Artifact<?> target = resolveArtifact(context);
+		final Artifact<?> target = resolve(context).getArtifact();
 
 		return target(target, declarativeDistributor(target.getContainer()));
 	}
 
 	public final Ref target(Scope scope) {
 
-		final Artifact<?> target = resolveArtifact(scope.getContext());
+		final Artifact<?> target = resolve(scope.getContext()).getArtifact();
 
 		return target(target, declarativeDistributor(scope.getContainer()));
 	}
 
 	public final Ref target(Container container) {
 
-		final Artifact<?> target = resolveArtifact(container.getContext());
+		final Artifact<?> target =
+				resolve(container.getContext()).getArtifact();
 
 		return target(target, declarativeDistributor(container));
 	}
@@ -106,15 +107,8 @@ public final class AbsolutePath extends Path {
 		return new AbsolutePathTarget(location, distributor, this);
 	}
 
-	public Container resolve(CompilerContext context) {
+	public PathResolution resolve(CompilerContext context) {
 		return resolve(
-				context.getRoot(),
-				dummyUser(),
-				context.getRoot().getScope());
-	}
-
-	public Artifact<?> resolveArtifact(CompilerContext context) {
-		return resolveArtifact(
 				context.getRoot(),
 				dummyUser(),
 				context.getRoot().getScope());

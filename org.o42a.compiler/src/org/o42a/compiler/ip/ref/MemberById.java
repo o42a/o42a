@@ -34,6 +34,7 @@ import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -108,7 +109,6 @@ public class MemberById extends Wrap {
 		final Path path = path(getContainer(), declaredIn, false);
 
 		if (path == null) {
-			getLogger().unresolved(this, this.memberId);
 			return errorRef(this);
 		}
 
@@ -130,6 +130,7 @@ public class MemberById extends Wrap {
 		final Container enclosing = container.getEnclosingContainer();
 
 		if (enclosing == null) {
+			getLogger().unresolved(this, this.memberId);
 			return null;
 		}
 
@@ -152,10 +153,13 @@ public class MemberById extends Wrap {
 			return found;
 		}
 
-		final Container resolved =
+		final PathResolution pathResolution =
 				found.resolve(enclosing, dummyUser(), enclosing.getScope());
 
-		if (resolved.getScope() == container.getScope()) {
+		if (!pathResolution.isResolved()) {
+			return null;
+		}
+		if (pathResolution.getResult().getScope() == container.getScope()) {
 			return SELF_PATH;
 		}
 

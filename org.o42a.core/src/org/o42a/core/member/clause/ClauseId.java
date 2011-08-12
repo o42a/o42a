@@ -271,8 +271,8 @@ public enum ClauseId {
 			final AbsolutePath adapterPath =
 					clauseId.adapterPath(adapterType.getContext());
 
-			if (type == adapterPath.resolveArtifact(
-					adapterType.getContext()).toObject()) {
+			if (type == adapterPath.resolve(
+					adapterType.getContext()).getArtifact().toObject()) {
 				return clauseId;
 			}
 		}
