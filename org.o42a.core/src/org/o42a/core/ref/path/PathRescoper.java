@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Rescoper;
@@ -52,10 +51,10 @@ final class PathRescoper extends Rescoper {
 	@Override
 	public Scope rescope(Scope scope) {
 
-		final Container found =
+		final PathResolution found =
 				this.path.resolve(scope, scope.dummyResolver(), scope);
 
-		return found != null ? found.getScope() : null;
+		return found.isResolved() ? found.getResult().getScope() : null;
 	}
 
 	@Override
@@ -68,17 +67,17 @@ final class PathRescoper extends Rescoper {
 			return null;
 		}
 
-		final Container found = this.path.walk(
+		final PathResolution found = this.path.walk(
 				location,
 				resolver,
 				resolver.getScope(),
 				pathWalker);
 
-		if (found == null) {
+		if (!found.isResolved()) {
 			return null;
 		}
 
-		return found.getScope().walkingResolver(resolver);
+		return found.getResult().getScope().walkingResolver(resolver);
 	}
 
 	@Override

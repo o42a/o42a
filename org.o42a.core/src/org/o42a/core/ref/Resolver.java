@@ -29,6 +29,7 @@ import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.impl.resolution.*;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -109,7 +110,10 @@ public class Resolver implements UserInfo, LocationInfo {
 		return new ErrorResolution(new Scoped(location, getScope()));
 	}
 
-	public final Resolution path(LocationInfo location, Path path, Scope start) {
+	public final Resolution path(
+			LocationInfo location,
+			Path path,
+			Scope start) {
 
 		final PathWalker pathWalker = this.walker.path(location, path);
 
@@ -117,13 +121,17 @@ public class Resolver implements UserInfo, LocationInfo {
 			return null;
 		}
 
-		final Container result = path.walk(location, this, start, pathWalker);
+		final PathResolution pathResolution =
+				path.walk(location, this, start, pathWalker);
 
-		if (result == null) {
+		if (!pathResolution.isResolved()) {
+			if (pathResolution.isError()) {
+				return noResolution(location);
+			}
 			return null;
 		}
 
-		return containerResolution(location, result);
+		return containerResolution(location, pathResolution.getResult());
 	}
 
 	public final Resolution newObject(ScopeInfo location, Obj object) {

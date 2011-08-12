@@ -26,6 +26,9 @@ import static org.o42a.core.ref.path.PathFragment.MATERIALIZE;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
+import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
+import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -34,15 +37,12 @@ import java.util.Arrays;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -101,73 +101,14 @@ public class Path {
 		return this.fragments;
 	}
 
-	public final Artifact<?> resolveArtifact(
-			LocationInfo location,
-			UserInfo user,
-			Scope start) {
-		return walkToArtifact(location, user, start, DUMMY_PATH_WALKER);
-	}
-
-	public final Artifact<?> resolveArtifactFrom(
-			LocationInfo location,
-			Resolver resolver,
-			Ref start) {
-		return walkToArtifactFrom(location, resolver, start, DUMMY_PATH_WALKER);
-	}
-
-	public Artifact<?> walkToArtifact(
-			LocationInfo location,
-			UserInfo user,
-			Scope start,
-			PathWalker walker) {
-		return walkPathToArtifact(
-				location,
-				user,
-				isAbsolute() ? start.getContext().getRoot().getScope() : start,
-				walker);
-	}
-
-	public Artifact<?> walkToArtifactFrom(
-			LocationInfo location,
-			Resolver resolver,
-			Ref start,
-			PathWalker walker) {
-		if (isAbsolute()) {
-			return walkPathToArtifact(
-					location,
-					resolver,
-					resolver.getScope().getContext().getRoot().getScope(),
-					walker);
-		}
-
-		final Resolution resolution = start.resolve(resolver);
-
-		if (resolution.isError()) {
-			return null;
-		}
-
-		return walkPathToArtifact(
-				location,
-				resolver,
-				resolution.getScope(),
-				walker);
-	}
-
-	public final Container resolve(
+	public final PathResolution resolve(
 			LocationInfo location,
 			UserInfo user,
 			Scope start) {
 		return walk(location, user, start, DUMMY_PATH_WALKER);
 	}
 
-	public final Container resolveFrom(
-			LocationInfo location,
-			Resolver resolver,
-			Ref start) {
-		return walkFrom(location, resolver, start, DUMMY_PATH_WALKER);
-	}
-
-	public Container walk(
+	public PathResolution walk(
 			LocationInfo location,
 			UserInfo user,
 			Scope start,
@@ -177,28 +118,6 @@ public class Path {
 				user,
 				isAbsolute() ? start.getContext().getRoot().getScope() : start,
 				walker);
-	}
-
-	public Container walkFrom(
-			LocationInfo location,
-			Resolver resolver,
-			Ref start,
-			PathWalker walker) {
-		if (isAbsolute()) {
-			return walkPath(
-					location,
-					resolver,
-					resolver.getScope().getContext().getRoot().getScope(),
-					walker);
-		}
-
-		final Resolution resolution = start.resolve(resolver);
-
-		if (resolution.isError()) {
-			return null;
-		}
-
-		return walkPath(location, resolver, resolution.getScope(), walker);
 	}
 
 	public Path append(PathFragment fragment) {
@@ -233,6 +152,7 @@ public class Path {
 	public Path append(Path path) {
 		assert path != null :
 			"Path to append not specified";
+
 		if (path.isAbsolute()) {
 			return path;
 		}
@@ -323,10 +243,10 @@ public class Path {
 			}
 
 			final Path reproducedPath = reproduction.getReproducedPath();
-			final Container resolution =
+			final PathResolution resolution =
 					reproducedPath.resolve(location, dummyUser(), toScope);
 
-			if (resolution == null) {
+			if (!resolution.isResolved()) {
 				return null;
 			}
 
@@ -342,7 +262,7 @@ public class Path {
 										this.fragments.length))));
 			}
 
-			toScope = resolution.getScope();
+			toScope = resolution.getResult().getScope();
 		}
 
 		return reproducedPath(reproduced);
@@ -432,27 +352,7 @@ public class Path {
 		return true;
 	}
 
-	private Artifact<?> walkPathToArtifact(
-			LocationInfo location,
-			UserInfo user,
-			Scope start,
-			PathWalker walker) {
-
-		final Container found = walkPath(location, user, start, walker);
-
-		if (found == null) {
-			return null;
-		}
-
-		final Artifact<?> artifact = found.toArtifact();
-
-		assert artifact != null :
-			"Path " + this + " should lead to artifact";
-
-		return artifact;
-	}
-
-	private Container walkPath(
+	private PathResolution walkPath(
 			LocationInfo location,
 			UserInfo user,
 			Scope start,
@@ -476,11 +376,11 @@ public class Path {
 					prev,
 					tracker);
 			if (tracker.isAborted()) {
-				return null;
+				return NO_PATH_RESOLUTION;
 			}
 			if (result == null) {
 				tracker.abortedAt(prev, this.fragments[i]);
-				return null;
+				return PATH_RESOLUTION_ERROR;
 			}
 			prev = result.getScope();
 		}
@@ -489,7 +389,7 @@ public class Path {
 			return null;
 		}
 
-		return result;
+		return pathResolution(this, result);
 	}
 
 	private PathFragment[] rebuild(PathFragment[] fragments) {
