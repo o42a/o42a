@@ -30,6 +30,7 @@ import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -55,8 +56,13 @@ public final class RefCondition extends Statement {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 
-		final Directive directive =
-				this.ref.resolve(resolver).toDirective(resolver);
+		final Resolution resolution = this.ref.resolve(resolver);
+
+		if (resolution == null) {
+			return null;
+		}
+
+		final Directive directive = resolution.toDirective(resolver);
 
 		if (directive == null) {
 			return null;
