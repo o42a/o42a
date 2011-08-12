@@ -65,7 +65,7 @@ Assert :=> void(
   Message := `"Error"
   
   {
-    --Condition? Print error(Text = message)
+    --Condition? Print error [message] nl
     = Void
   }
 
