@@ -234,12 +234,22 @@ class PathTarget extends Ref {
 		if (this.start != null) {
 			this.start.resolveAll(resolver);
 		}
-		resolve(resolver).resolveAll();
+
+		final Resolution resolution = resolve(resolver);
+
+		if (resolution != null) {
+			resolution.resolveAll();
+		}
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver).resolveValues(resolver);
+
+		final Resolution resolution = resolve(resolver);
+
+		if (resolution != null) {
+			resolution.resolveValues(resolver);
+		}
 	}
 
 	@Override

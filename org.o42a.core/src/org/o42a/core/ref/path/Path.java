@@ -231,10 +231,8 @@ public class Path {
 	}
 
 	public Path append(Path path) {
-		if (path == null) {
-			throw new NullPointerException(
-					"Field path to append not specified");
-		}
+		assert path != null :
+			"Path to append not specified";
 		if (path.isAbsolute()) {
 			return path;
 		}
