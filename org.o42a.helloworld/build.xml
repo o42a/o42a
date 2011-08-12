@@ -73,6 +73,18 @@
 			<env key="LD_LIBRARY_PATH" path="../target"/>
 		</exec>
 	</target>
+	
+	<target name="jdwp" depends="package-deps">
+		<java
+			jar="${root.dir}/target/org.o42a.cl-${project.version}.jar"
+			fork="true">
+			<jvmarg line="-Djava.library.path=${root.dir}/target"/>
+			<jvmarg line="-ea:org.o42a..."/>
+			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"/>
+			<arg line="-o/dev/null"/>
+			<arg line="o42a/hello_world.o42a"/>
+		</java>
+	</target>
 
 	<target name="clean">
 		<delete file="hello_world"/>
