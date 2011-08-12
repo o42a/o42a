@@ -140,7 +140,7 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 				getObject());
 		uses().useBy(this.accessedBy);
 
-		return this.usedBy;
+		return this.accessedBy;
 	}
 
 	final Usable ancestorDefsUpdatedBy() {
