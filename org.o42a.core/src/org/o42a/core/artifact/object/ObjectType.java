@@ -162,11 +162,16 @@ public final class ObjectType implements UserInfo {
 	}
 
 	protected void useAsAncestor(Obj derived) {
-		trackAncestorDefsInheritance(derived);
+		trackAscendantDefsUsage(derived);
 	}
 
 	protected void useAsSample(Sample sample) {
-		trackAncestorDefsUpdates(sample.getAscendants().getObject());
+
+		final Obj sampleObject =
+				sample.getAscendants().getObject();
+
+		trackAscendantDefsUsage(sampleObject);
+		trackAncestorDefsUpdates(sampleObject);
 	}
 
 	final ObjectResolution getResolution() {
@@ -288,10 +293,10 @@ public final class ObjectType implements UserInfo {
 		}
 	}
 
-	private void trackAncestorDefsInheritance(Obj derived) {
+	private void trackAscendantDefsUsage(Obj derived) {
 
 		final Obj ancestor = getObject();
-		final ObjectValue ancestorValue = getObject().value();
+		final ObjectValue ascendantValue = getObject().value();
 		final ObjectValue derivedValue = derived.value();
 
 		for (DefKind defKind : DefKind.values()) {
@@ -300,7 +305,7 @@ public final class ObjectType implements UserInfo {
 					derivedValue.part(defKind);
 
 			if (derivedPart.getDefs().presentIn(ancestor)) {
-				ancestorValue.part(defKind).accessBy(derivedPart);
+				ascendantValue.part(defKind).accessBy(derivedPart);
 			}
 		}
 	}
