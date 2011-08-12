@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 
@@ -28,6 +29,9 @@ Name = "Simple tests"
 Run tests
 
 Assertion := test(
+  Print error 'NOT ERROR: 2 such messages expected' nl
+  Assert [false] 'NOT ERROR (1/2): false is false'
+  Assert [rt-false] 'NOT ERROR (2/2): rt-false is false'
   Assert [void] 'Void is not true' 
   Assert [rt-void] 'Rt-void is not true'
   Assert [--rt-false] 'Rt-false is not false'
