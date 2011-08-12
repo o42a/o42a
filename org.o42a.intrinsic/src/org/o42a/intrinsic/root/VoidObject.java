@@ -29,7 +29,6 @@ import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -69,7 +68,7 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	@Override
-	public void resolveBuiltin(Obj object) {
+	public void resolveBuiltin(Resolver resolver) {
 	}
 
 	@Override
