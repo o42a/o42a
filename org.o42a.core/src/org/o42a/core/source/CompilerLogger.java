@@ -29,14 +29,14 @@ public class CompilerLogger implements Logger {
 	public static LogReason logDeclaration(LogInfo location) {
 		return new LogReason(
 				"compiler.declaration",
-				"Declaration is ",
+				"Declaration",
 				location);
 	}
 
-	public static LogReason anotherDeclaration(LogInfo location) {
+	public static LogReason logAnother(LogInfo location) {
 		return new LogReason(
-				"compiler.declaration",
-				"Another declaration ",
+				"compiler.another",
+				"Another declaration",
 				location);
 	}
 

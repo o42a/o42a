@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
+import static org.o42a.core.source.CompilerLogger.logAnother;
 
 import java.util.HashMap;
 
@@ -170,7 +170,7 @@ public final class SentencePrecondition {
 			getLogger().error(
 					"ambiguous_value",
 					targets.firstValue().getLoggable().setReason(
-							anotherDeclaration(unconditionalValue)),
+							logAnother(unconditionalValue)),
 					"Ambigous value");
 			sentence.ignore();
 			return false;
@@ -182,7 +182,7 @@ public final class SentencePrecondition {
 		getLogger().error(
 				"ignored_value",
 				targets.firstValue().getLoggable().setReason(
-						anotherDeclaration(unconditionalValue)),
+						logAnother(unconditionalValue)),
 				"Ignored value");
 		sentence.ignore();
 

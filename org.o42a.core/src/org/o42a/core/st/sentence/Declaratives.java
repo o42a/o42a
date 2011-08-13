@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
+import static org.o42a.core.source.CompilerLogger.logAnother;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.ArrayList;
@@ -216,14 +216,14 @@ public class Declaratives extends Statements<Declaratives> {
 				getLogger().error(
 						"redundant_condition_after_value",
 						targets.firstCondition().getLoggable().setReason(
-								anotherDeclaration(declaration)),
+								logAnother(declaration)),
 						"Condition is redunant, as it follows the "
 						+ " value assignment statement");
 			} else {
 				getLogger().error(
 						"redundant_condition_after_field",
 						targets.firstCondition().getLoggable().setReason(
-								anotherDeclaration(declaration)),
+								logAnother(declaration)),
 						"Condition is redunant, as it follows the "
 						+ " field declaration");
 			}
@@ -237,13 +237,13 @@ public class Declaratives extends Statements<Declaratives> {
 				getLogger().error(
 						"ambiguous_value",
 						ambiguity.getLoggable().setReason(
-								anotherDeclaration(declaration)),
+								logAnother(declaration)),
 						"Ambiguous value declaration");
 			} else {
 				getLogger().error(
 						"ambiguous_field",
 						ambiguity.getLoggable().setReason(
-								anotherDeclaration(declaration)),
+								logAnother(declaration)),
 						"Ambiguous declaration of field '%s'",
 						declaration.getFieldKey().getMemberId());
 			}

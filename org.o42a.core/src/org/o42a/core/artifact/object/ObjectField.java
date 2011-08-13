@@ -19,12 +19,16 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
+
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.impl.decl.PropagatedObject;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 
 
 public abstract class ObjectField extends Field<Obj> {
@@ -35,16 +39,26 @@ public abstract class ObjectField extends Field<Obj> {
 	}
 
 	protected ObjectField(MemberOwner owner, ObjectField overridden) {
-		super(owner, overridden, null, OverrideMode.PROPAGATE);
+		super(
+				new Location(
+						owner.getContext(),
+						owner.getLoggable().setReason(
+								logDeclaration(
+										overridden.getLastDefinition()))),
+				owner,
+				overridden,
+				null,
+				OverrideMode.PROPAGATE);
 		setFieldArtifact(propagateArtifact(overridden));
 	}
 
 	protected ObjectField(
+			LocationInfo location,
 			MemberOwner owner,
 			Field<Obj> overridden,
 			Field<Obj> wrapped,
 			OverrideMode mode) {
-		super(owner, overridden, wrapped, mode);
+		super(location, owner, overridden, wrapped, mode);
 	}
 
 	@Override

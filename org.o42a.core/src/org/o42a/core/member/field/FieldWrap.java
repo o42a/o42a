@@ -19,48 +19,53 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.OverrideMode;
+import org.o42a.core.source.Location;
 
 
 abstract class FieldWrap<A extends Artifact<A>> extends Field<A> {
+
+	private static <A extends Artifact<A>> Field<A> wrapped(
+			MemberOwner owner,
+			FieldWrap<A> overridden) {
+		return owner.toObject().getWrapped()
+				.member(overridden.getInterface().getKey())
+				.toField(dummyUser())
+				.toKind(overridden.getInterface().getArtifactKind());
+	}
 
 	private final Field<A> iface;
 	private final Field<A> wrapped;
 
 	public FieldWrap(MemberOwner owner, Field<A> type, Field<A> wrapped) {
-		super(owner, wrapped, wrapped, OverrideMode.WRAP);
+		super(wrapped, owner, wrapped, wrapped, OverrideMode.WRAP);
 		this.iface = type;
 		this.wrapped = wrapped;
 		setFieldArtifact(wrapArtifact());
 	}
 
 	protected FieldWrap(MemberOwner owner, FieldWrap<A> overridden) {
-		this(
+		super(
+				new Location(
+						owner.getContext(),
+						owner.getLoggable().setReason(
+								logDeclaration(
+										overridden.getLastDefinition()))),
 				owner,
 				overridden,
-				owner.toObject().getWrapped()
-				.member(overridden.getInterface().getKey())
-				.toField(dummyUser())
-				.toKind(overridden.getInterface().getArtifactKind()));
-	}
-
-	private FieldWrap(
-			MemberOwner owner,
-			FieldWrap<A> overridden,
-			FieldWrap<A> wrapped) {
-		super(owner, overridden, wrapped, OverrideMode.WRAP);
-
+				wrapped(owner, overridden),
+				OverrideMode.WRAP);
 		this.iface =
 				owner.toObject()
 				.member(overridden.getInterface().getKey())
 				.toField(dummyUser())
 				.toKind(overridden.getInterface().getArtifactKind());
-		this.wrapped = wrapped;
-
+		this.wrapped = wrapped(owner, overridden);
 		setFieldArtifact(overridden.getArtifact());
 	}
 
