@@ -22,9 +22,9 @@ package org.o42a.util.log;
 
 public interface Loggable extends LogInfo {
 
-	Loggable getPreviousLoggable();
+	LogReason getReason();
 
-	Loggable setPreviousLoggable(Loggable previous);
+	Loggable setReason(LogReason reason);
 
 	<R, P> R accept(LoggableVisitor<R, P> visitor, P p);
 

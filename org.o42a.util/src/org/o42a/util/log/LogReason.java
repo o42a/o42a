@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,63 +19,70 @@
 */
 package org.o42a.util.log;
 
+import static org.o42a.util.log.LogRecord.NO_ARGS;
 import static org.o42a.util.log.LoggableFormatter.format;
 
 import java.util.Formattable;
 import java.util.Formatter;
-import java.util.IllegalFormatException;
-
-import org.o42a.util.io.Source;
 
 
-public class LogRecord implements Formattable {
+public class LogReason implements LogInfo, Formattable, Cloneable {
 
-	static final Object[] NO_ARGS = new Object[0];
-
-	private final Severity severity;
-	private final Object source;
 	private final String code;
 	private final String message;
 	private final Loggable loggable;
 	private final Object[] args;
+	private LogReason next;
 
-	public LogRecord(
-			Object source,
-			Severity severity,
+	public LogReason(
 			String code,
 			String message,
-			Loggable loggable,
+			LogInfo loggable,
 			Object... args) {
-		this.severity = severity;
-		this.source = source;
-		this.code = code != null ? code : severity.toString();
-		this.message = message != null ? message : severity.toString();
-		this.loggable = loggable;
+		assert code != null :
+			"Code not specified";
+		assert message != null :
+			"Message not specified";
+		assert loggable != null :
+			"Location not specified";
+		this.code = code;
+		this.message = message;
+		this.loggable = loggable.getLoggable();
 		this.args = args != null ? args : NO_ARGS;
 	}
 
-	public Object getSource() {
-		return this.source;
-	}
-
-	public Severity getSeverity() {
-		return this.severity;
-	}
-
-	public String getCode() {
+	public final String getCode() {
 		return this.code;
 	}
 
-	public Loggable getLoggable() {
-		return this.loggable;
-	}
-
-	public String getMessage() {
+	public final String getMessage() {
 		return this.message;
 	}
 
-	public Object[] getArgs() {
+	@Override
+	public final Loggable getLoggable() {
+		return this.loggable;
+	}
+
+	public final Object[] getArgs() {
 		return this.args;
+	}
+
+	public final LogReason getNext() {
+		return this.next;
+	}
+
+	public final LogReason setNext(LogReason next) {
+
+		final LogReason clone = clone();
+
+		if (this.next == null) {
+			clone.next = next;
+		} else {
+			clone.next = this.next.setNext(next);
+		}
+
+		return clone;
 	}
 
 	@Override
@@ -83,15 +90,7 @@ public class LogRecord implements Formattable {
 			Formatter formatter,
 			int flags,
 			int width,
-			int precision)
-	throws IllegalFormatException {
-
-		final Object source = getSource();
-
-		if (source != null) {
-			formatter.format("%s: ", source);
-		}
-
+			int precision) {
 		formatter.format(getMessage(), getArgs());
 		format(formatter, this.loggable);
 	}
@@ -107,21 +106,13 @@ public class LogRecord implements Formattable {
 		return out.toString();
 	}
 
-	public static void formatPosition(
-			StringBuilder out,
-			LoggablePosition position,
-			boolean withFile) {
-		if (withFile) {
-
-			final Source source = position.source();
-
-			if (source != null) {
-				out.append(source.getName()).append(':');
-			}
+	@Override
+	protected LogReason clone() {
+		try {
+			return (LogReason) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
 		}
-
-		out.append(position.line()).append(',').append(position.column());
-		out.append('(').append(position.offset()).append(')');
 	}
 
 }

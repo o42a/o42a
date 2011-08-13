@@ -23,29 +23,29 @@ package org.o42a.util.log;
 public abstract class AbstractLoggable<L extends AbstractLoggable<L>>
 		implements Loggable, Cloneable {
 
-	private Loggable previous;
+	private LogReason reason;
 
 	public AbstractLoggable() {
 	}
 
 	@Override
-	public Loggable getPreviousLoggable() {
-		return this.previous;
+	public LogReason getReason() {
+		return this.reason;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public L setPreviousLoggable(Loggable previous) {
-		if (previous == null) {
+	public L setReason(LogReason reason) {
+		if (reason == null) {
 			return (L) this;
 		}
 
 		final L clone = clone();
 
-		if (this.previous == null) {
-			clone.previous = previous;
+		if (this.reason == null) {
+			clone.reason = reason;
 		} else {
-			clone.previous = this.previous.setPreviousLoggable(previous);
+			clone.reason = this.reason.setNext(reason);
 		}
 
 		return clone;

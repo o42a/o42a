@@ -26,6 +26,20 @@ import org.o42a.util.log.*;
 
 public class CompilerLogger implements Logger {
 
+	public static LogReason logDeclaration(LogInfo location) {
+		return new LogReason(
+				"compiler.declaration",
+				"Declaration is ",
+				location);
+	}
+
+	public static LogReason anotherDeclaration(LogInfo location) {
+		return new LogReason(
+				"compiler.declaration",
+				"Another declaration ",
+				location);
+	}
+
 	private final Logger logger;
 	private final Object source;
 

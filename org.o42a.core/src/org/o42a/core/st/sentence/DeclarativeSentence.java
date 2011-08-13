@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
@@ -91,8 +92,8 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				if (declaration.isValue()) {
 					getLogger().error(
 							"unexpected_value_alt",
-							declaration.getLoggable().setPreviousLoggable(
-									result.lastCondition().getLoggable()),
+							declaration.getLoggable().setReason(
+									anotherDeclaration(result.lastCondition())),
 							"Alternative should not contain value assignment, "
 							+ " because previous one contains only condition");
 					continue;
@@ -100,8 +101,8 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 				getLogger().error(
 						"unexpected_field_alt",
-						declaration.getLoggable().setPreviousLoggable(
-								result.lastCondition().getLoggable()),
+						declaration.getLoggable().setReason(
+								anotherDeclaration(result.lastCondition())),
 						"Alternative should not contain field declaration, "
 						+ " because previous one contains only condition");
 				continue;
@@ -116,15 +117,15 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			if (declaration.isValue()) {
 				getLogger().error(
 						"unexpected_condition_alt_after_value",
-						targets.firstCondition().getLoggable()
-						.setPreviousLoggable(declaration.getLoggable()),
+						targets.firstCondition().getLoggable().setReason(
+								anotherDeclaration(declaration)),
 						"Alternative should contain condition, "
 						+ " because previous one contains value assignment");
 			}
 			getLogger().error(
 					"unexpected_condition_alt_after_field",
-					targets.firstCondition().getLoggable()
-					.setPreviousLoggable(declaration.getLoggable()),
+					targets.firstCondition().getLoggable().setReason(
+							anotherDeclaration(declaration)),
 					"Alternative should contain condition, "
 					+ " because previous one contains field declaration");
 		}
@@ -205,15 +206,15 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			if (key.isValue()) {
 				getLogger().error(
 						"ambiguous_value",
-						targets.first(key).getLoggable().setPreviousLoggable(
-								previousDeclaration.getLoggable()),
+						targets.first(key).getLoggable().setReason(
+								anotherDeclaration(previousDeclaration)),
 						"Ambiguous value");
 				continue;
 			}
 			getLogger().error(
 					"ambiguous_field",
-					targets.first(key).getLoggable().setPreviousLoggable(
-							previousDeclaration.getLoggable()),
+					targets.first(key).getLoggable().setReason(
+							anotherDeclaration(previousDeclaration)),
 					"Ambiguous declaration of field '%s'",
 					previousDeclaration.getFieldKey().getMemberId());
 		}
