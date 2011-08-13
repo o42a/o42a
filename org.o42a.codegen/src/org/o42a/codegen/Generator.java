@@ -22,6 +22,7 @@ package org.o42a.codegen;
 import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
 import static org.o42a.codegen.code.backend.CodeCallback.NOOP_CODE_CALLBACK;
 import static org.o42a.codegen.debug.Debug.DEBUG_CODE_CALLBACK;
+import static org.o42a.util.use.User.steadyUseCase;
 import static org.o42a.util.use.User.useCase;
 
 import org.o42a.codegen.code.*;
@@ -38,11 +39,10 @@ import org.o42a.util.use.*;
 public abstract class Generator implements UseCaseInfo {
 
 	private final String id;
-	private final UseCase useCase;
+	private UseCase useCase;
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
 	private final Debug debug;
-	private boolean usesAnalysed = true;
 
 	public Generator(String id) {
 		if (id == null) {
@@ -58,10 +58,6 @@ public abstract class Generator implements UseCaseInfo {
 
 	public final String getId() {
 		return this.id;
-	}
-
-	public final UseCase getUseCase() {
-		return this.useCase;
 	}
 
 	@Override
@@ -109,11 +105,17 @@ public abstract class Generator implements UseCaseInfo {
 	}
 
 	public final boolean isUsesAnalysed() {
-		return this.usesAnalysed;
+		return !this.useCase.isSteady();
 	}
 
 	public final void setUsesAnalysed(boolean usesAnalysed) {
-		this.usesAnalysed = usesAnalysed;
+		if (isUsesAnalysed() != usesAnalysed) {
+			if (usesAnalysed) {
+				this.useCase = useCase(getId());
+			} else {
+				this.useCase = steadyUseCase(getId());
+			}
+		}
 	}
 
 	public final CodeId id() {

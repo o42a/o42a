@@ -55,11 +55,15 @@ public class UseTracker {
 		final UseFlag used = use.getUseBy(useCase);
 
 		if (used.isUsed()) {
+			useCase.end(this);
 			return true;
 		}
 
-		useCase.end(this);
-		this.useFlag = used;
+		if (useCase.end(this)) {
+			this.useFlag = useCase.unusedFlag();
+		} else {
+			this.useFlag = used;
+		}
 
 		return false;
 	}
@@ -70,6 +74,9 @@ public class UseTracker {
 		final UseFlag used = use.getUseBy(useCase);
 
 		if (!used.isUsed()) {
+			if (useCase.end(this)) {
+				this.useFlag = useCase.unusedFlag();
+			}
 			return false;
 		}
 
