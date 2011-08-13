@@ -426,35 +426,16 @@ public abstract class ObjectValueIRValFunc
 			return result;
 		}
 
-		final CondCode hasAncestor = host.hasAncestor(code).branch(
-				code,
-				"has_ancestor",
-				"no_ancestor");
-		final Code noAncestor = hasAncestor.otherwise();
+		host.hasAncestor(code).goUnless(code, dirs.unknownDir());
 
-		final Obj object = getObjectIR().getObject();
-		final TypeRef ancestor = object.type().getAncestor();
-
-		if (ancestor.typeObject(dummyUser()).getScope()
-				== ancestor.getContext().getVoid().getScope()) {
-			noAncestor.debug("Inherited VOID " + suffix());
-			result.storeVoid(noAncestor);
-			noAncestor.go(code.tail());
-		} else {
-			noAncestor.debug("No ancestor " + suffix());
-			noAncestor.go(dirs.unknownDir());
-		}
-
-		final ObjectOp ancestorBody = host.ancestor(hasAncestor);
+		final ObjectOp ancestorBody = host.ancestor(code);
 		final ObjectTypeOp ancestorType =
-				ancestorBody.methods(hasAncestor)
-				.objectType(hasAncestor)
-				.load(null, hasAncestor)
+				ancestorBody.methods(code)
+				.objectType(code)
+				.load(null, code)
 				.op(host.getBuilder(), DERIVED);
 
-		writeAncestorDef(dirs, hasAncestor, ancestorBody, ancestorType);
-
-		hasAncestor.go(code.tail());
+		writeAncestorDef(dirs, code, ancestorBody, ancestorType);
 
 		return result;
 	}

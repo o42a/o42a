@@ -20,6 +20,7 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.*;
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import java.util.Collection;
 
@@ -51,12 +52,17 @@ public class Definitions extends Scoped {
 			LocationInfo location,
 			Scope scope,
 			ValueType<?> valueType) {
+
+		final CondDefs conditions = new CondDefs(
+				DefKind.CONDITION,
+				logicalTrue(location, scope).toCondDef());
+
 		return new Definitions(
 				location,
 				scope,
 				valueType,
 				NO_REQUIREMENTS,
-				NO_CONDITIONS,
+				conditions,
 				NO_CLAIMS,
 				NO_PROPOSITIONS);
 	}
