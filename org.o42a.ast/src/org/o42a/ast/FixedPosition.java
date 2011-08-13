@@ -22,9 +22,7 @@ package org.o42a.ast;
 import java.io.Serializable;
 
 import org.o42a.util.io.Source;
-import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggablePosition;
-import org.o42a.util.log.LoggableVisitor;
+import org.o42a.util.log.*;
 
 
 public class FixedPosition
@@ -37,7 +35,7 @@ public class FixedPosition
 	private final int line;
 	private final int column;
 	private final long offset;
-	private Loggable previous;
+	private LogReason reason;
 
 	public FixedPosition(Source source) {
 		this.source = source;
@@ -62,22 +60,22 @@ public class FixedPosition
 	}
 
 	@Override
-	public Loggable getPreviousLoggable() {
-		return this.previous;
+	public LogReason getReason() {
+		return this.reason;
 	}
 
 	@Override
-	public FixedPosition setPreviousLoggable(Loggable previous) {
-		if (previous == null) {
+	public FixedPosition setReason(LogReason reason) {
+		if (reason == null) {
 			return this;
 		}
 
 		final FixedPosition clone = clone();
 
-		if (this.previous == null) {
-			clone.previous = previous;
+		if (this.reason == null) {
+			clone.reason = reason;
 		} else {
-			clone.previous = this.previous.setPreviousLoggable(previous);
+			clone.reason = this.reason.setNext(reason);
 		}
 
 		return clone;

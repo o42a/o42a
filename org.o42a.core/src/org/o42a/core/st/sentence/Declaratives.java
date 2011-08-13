@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.ArrayList;
@@ -214,15 +215,15 @@ public class Declaratives extends Statements<Declaratives> {
 			if (declaration.isValue()) {
 				getLogger().error(
 						"redundant_condition_after_value",
-						targets.firstCondition().getLoggable()
-						.setPreviousLoggable(declaration.getLoggable()),
+						targets.firstCondition().getLoggable().setReason(
+								anotherDeclaration(declaration)),
 						"Condition is redunant, as it follows the "
 						+ " value assignment statement");
 			} else {
 				getLogger().error(
 						"redundant_condition_after_field",
-						targets.firstCondition().getLoggable()
-						.setPreviousLoggable(declaration.getLoggable()),
+						targets.firstCondition().getLoggable().setReason(
+								anotherDeclaration(declaration)),
 						"Condition is redunant, as it follows the "
 						+ " field declaration");
 			}
@@ -235,14 +236,14 @@ public class Declaratives extends Statements<Declaratives> {
 			if (declaration.isValue()) {
 				getLogger().error(
 						"ambiguous_value",
-						ambiguity.getLoggable().setPreviousLoggable(
-								declaration.getLoggable()),
+						ambiguity.getLoggable().setReason(
+								anotherDeclaration(declaration)),
 						"Ambiguous value declaration");
 			} else {
 				getLogger().error(
 						"ambiguous_field",
-						ambiguity.getLoggable().setPreviousLoggable(
-								declaration.getLoggable()),
+						ambiguity.getLoggable().setReason(
+								anotherDeclaration(declaration)),
 						"Ambiguous declaration of field '%s'",
 						declaration.getFieldKey().getMemberId());
 			}

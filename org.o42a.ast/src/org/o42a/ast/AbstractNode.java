@@ -23,6 +23,7 @@ package org.o42a.ast;
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.util.io.Source;
+import org.o42a.util.log.LogReason;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.log.LoggableVisitor;
 
@@ -69,7 +70,7 @@ public abstract class AbstractNode implements Node, Cloneable {
 	private final FixedPosition start;
 	private final FixedPosition end;
 	private CommentNode[] comments = NO_COMMENTS;
-	private Loggable previous;
+	private LogReason reason;
 
 	public AbstractNode(Position start, Position end) {
 		this.start = start.fix();
@@ -101,22 +102,22 @@ public abstract class AbstractNode implements Node, Cloneable {
 	}
 
 	@Override
-	public Loggable getPreviousLoggable() {
-		return this.previous;
+	public LogReason getReason() {
+		return this.reason;
 	}
 
 	@Override
-	public AbstractNode setPreviousLoggable(Loggable previous) {
-		if (previous == null) {
+	public AbstractNode setReason(LogReason reason) {
+		if (reason == null) {
 			return this;
 		}
 
 		final AbstractNode clone = clone();
 
-		if (this.previous == null) {
-			clone.previous = previous;
+		if (this.reason == null) {
+			clone.reason = reason;
 		} else {
-			clone.previous = this.previous.setPreviousLoggable(previous);
+			clone.reason = this.reason.setNext(reason);
 		}
 
 		return clone;

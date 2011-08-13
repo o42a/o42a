@@ -25,15 +25,10 @@ import org.o42a.util.io.Source;
 public final class LoggableSource implements Loggable, Cloneable {
 
 	private final Source source;
-	private Loggable previous;
+	private LogReason reason;
 
 	public LoggableSource(Source source) {
 		this.source = source;
-	}
-
-	public LoggableSource(Source source, Loggable previous) {
-		this.source = source;
-		this.previous = previous;
 	}
 
 	public final Source getSource() {
@@ -46,22 +41,22 @@ public final class LoggableSource implements Loggable, Cloneable {
 	}
 
 	@Override
-	public final Loggable getPreviousLoggable() {
-		return this.previous;
+	public final LogReason getReason() {
+		return this.reason;
 	}
 
 	@Override
-	public LoggableSource setPreviousLoggable(Loggable previous) {
-		if (previous == null) {
+	public LoggableSource setReason(LogReason reason) {
+		if (reason == null) {
 			return this;
 		}
 
 		final LoggableSource clone = clone();
 
-		if (this.previous == null) {
-			clone.previous = previous;
+		if (this.reason == null) {
+			clone.reason = reason;
 		} else {
-			clone.previous = this.previous.setPreviousLoggable(previous);
+			clone.reason = this.reason.setNext(reason);
 		}
 
 		return clone;

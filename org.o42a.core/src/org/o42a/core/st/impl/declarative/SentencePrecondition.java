@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
+
 import java.util.HashMap;
 
 import org.o42a.core.Scope;
@@ -167,9 +169,8 @@ public final class SentencePrecondition {
 			}
 			getLogger().error(
 					"ambiguous_value",
-					targets.firstValue().getLoggable()
-					.setPreviousLoggable(
-							unconditionalValue.getLoggable()),
+					targets.firstValue().getLoggable().setReason(
+							anotherDeclaration(unconditionalValue)),
 					"Ambigous value");
 			sentence.ignore();
 			return false;
@@ -180,8 +181,8 @@ public final class SentencePrecondition {
 
 		getLogger().error(
 				"ignored_value",
-				targets.firstValue().getLoggable().setPreviousLoggable(
-						unconditionalValue.getLoggable()),
+				targets.firstValue().getLoggable().setReason(
+						anotherDeclaration(unconditionalValue)),
 				"Ignored value");
 		sentence.ignore();
 

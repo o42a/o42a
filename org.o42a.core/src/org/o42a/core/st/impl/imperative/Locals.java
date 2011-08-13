@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
+
 import java.util.HashMap;
 
 import org.o42a.core.source.LocationInfo;
@@ -52,8 +54,8 @@ public class Locals {
 		this.blocks.put(name, previousLocation);
 		location.getContext().getLogger().error(
 				"duplicate_block_name",
-				location.getLoggable().setPreviousLoggable(
-						previousLocation.getLoggable()),
+				location.getLoggable().setReason(
+						anotherDeclaration(previousLocation)),
 				"Imperative block with name '%s' already declared",
 				name);
 
