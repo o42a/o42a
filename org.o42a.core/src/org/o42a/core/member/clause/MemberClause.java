@@ -20,6 +20,7 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.MemberId.clauseName;
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
@@ -27,6 +28,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.source.Location;
 import org.o42a.util.use.UserInfo;
 
 
@@ -43,7 +45,13 @@ public abstract class MemberClause extends Member {
 	}
 
 	MemberClause(MemberOwner owner, MemberClause overridden) {
-		super(overridden, overridden.distributeIn(owner.getContainer()), owner);
+		super(
+				new Location(
+						owner.getContext(),
+						owner.getLoggable().setReason(logDeclaration(
+								overridden.getLastDefinition()))),
+				overridden.distributeIn(owner.getContainer()),
+				owner);
 		this.key = overridden.getKey();
 		this.declaration = overridden.declaration.overrideBy(this);
 	}

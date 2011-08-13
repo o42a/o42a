@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.local;
 
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
+
 import java.util.Collection;
 
 import org.o42a.codegen.Generator;
@@ -31,6 +33,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
@@ -40,7 +43,12 @@ final class PropagatedLocalScope extends LocalScope {
 	private final PropagatedMemberLocal member;
 
 	PropagatedLocalScope(LocalScope overridden, Obj owner) {
-		super(overridden, owner);
+		super(
+				new Location(
+						owner.getContext(),
+						owner.getLoggable().setReason(
+								logDeclaration(overridden.explicit()))),
+				owner);
 		this.explicit = overridden.explicit();
 		this.member = new PropagatedMemberLocal(this, overridden);
 	}

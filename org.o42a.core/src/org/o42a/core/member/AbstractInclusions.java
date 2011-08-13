@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
+import static org.o42a.core.source.CompilerLogger.logAnother;
 
 import java.util.HashMap;
 
@@ -57,7 +57,7 @@ public abstract class AbstractInclusions extends Inclusions {
 		location.getContext().getLogger().error(
 				"duplicate_inclusion",
 				location.getLoggable().setReason(
-						anotherDeclaration(previousLocation)),
+						logAnother(previousLocation)),
 				"Section '%s' already included into '%s'",
 				tag,
 				includedIntoName());

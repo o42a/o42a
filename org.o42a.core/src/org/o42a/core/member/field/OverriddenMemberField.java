@@ -21,6 +21,7 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.source.LocationInfo;
 
 
 final class OverriddenMemberField extends MemberField {
@@ -29,12 +30,18 @@ final class OverriddenMemberField extends MemberField {
 	private final MemberField propagatedFrom;
 
 	OverriddenMemberField(
+			LocationInfo location,
 			MemberOwner owner,
 			Field<?> field,
 			MemberField overridden,
 			MemberField wrapped,
 			boolean propagated) {
-		super(owner, field, overridden);
+		super(
+				location,
+				owner,
+				field,
+				overridden,
+				propagated);
 		this.wrapped = wrapped;
 		this.propagatedFrom = propagated ? overridden : null;
 	}

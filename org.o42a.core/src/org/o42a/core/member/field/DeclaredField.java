@@ -20,6 +20,7 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.*;
+import org.o42a.core.source.Location;
 
 
 public abstract class DeclaredField<
@@ -43,8 +45,19 @@ public abstract class DeclaredField<
 		this.artifactKind = artifactKind;
 	}
 
-	protected DeclaredField(MemberOwner owner, DeclaredField<A, V> overridden) {
-		super(owner, overridden, null, OverrideMode.PROPAGATE);
+	protected DeclaredField(
+			MemberOwner owner,
+			DeclaredField<A, V> overridden) {
+		super(
+				new Location(
+						owner.getContext(),
+						owner.getLoggable().setReason(
+								logDeclaration(
+										overridden.getLastDefinition()))),
+				owner,
+				overridden,
+				null,
+				OverrideMode.PROPAGATE);
 		this.artifactKind = overridden.artifactKind;
 		setFieldArtifact(propagateArtifact(overridden));
 	}

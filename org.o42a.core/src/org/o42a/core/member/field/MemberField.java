@@ -41,6 +41,7 @@ import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UserInfo;
 
@@ -61,8 +62,15 @@ public abstract class MemberField extends Member {
 		this.declaration = declaration;
 	}
 
-	MemberField(MemberOwner owner, Field<?> field, MemberField overridden) {
-		super(overridden, overridden.distributeIn(owner.getContainer()), owner);
+	MemberField(
+			LocationInfo location,
+			MemberOwner owner,
+			Field<?> field,
+			MemberField overridden,
+			boolean propagated) {
+		super(
+				location,
+				overridden.distributeIn(owner.getContainer()), owner);
 		this.field = field;
 		this.key = overridden.getKey();
 		this.visibility = overridden.getVisibility();

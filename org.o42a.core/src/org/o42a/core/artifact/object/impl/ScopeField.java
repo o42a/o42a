@@ -63,7 +63,7 @@ public final class ScopeField extends ObjectField {
 	}
 
 	private ScopeField(MemberOwner owner, ScopeField overridden) {
-		super(owner, overridden, null, OverrideMode.PROPAGATE);
+		super(owner, owner, overridden, null, OverrideMode.PROPAGATE);
 		this.overridden = overridden;
 	}
 

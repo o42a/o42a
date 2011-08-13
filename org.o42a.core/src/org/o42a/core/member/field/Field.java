@@ -30,6 +30,7 @@ import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
@@ -48,11 +49,13 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	protected Field(
+			LocationInfo location,
 			MemberOwner owner,
 			Field<A> overridden,
 			Field<A> wrapped,
 			OverrideMode mode) {
 		this.member = new OverriddenMemberField(
+				location,
 				owner,
 				this,
 				overridden.toMember(),

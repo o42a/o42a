@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.core.source.CompilerLogger.anotherDeclaration;
+import static org.o42a.core.source.CompilerLogger.logAnother;
 
 import java.util.HashMap;
 
@@ -102,13 +102,13 @@ public class FileDefinitionCompiler
 				getLogger().error(
 						"duplicate_implicit_section",
 						section.getNode().setReason(
-								anotherDeclaration(existing.getNode())),
+								logAnother(existing.getNode())),
 						"Section without tag already present in this file");
 			} else {
 				getLogger().error(
 						"duplicate_section",
 						section.getNode().setReason(
-								anotherDeclaration(existing.getNode())),
+								logAnother(existing.getNode())),
 						"Section '%s' already present in this file",
 						tag);
 			}
