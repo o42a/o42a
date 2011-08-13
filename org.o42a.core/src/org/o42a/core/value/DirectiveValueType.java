@@ -57,7 +57,15 @@ final class DirectiveValueType extends ValueType<Directive> {
 
 		@Override
 		public Val val(Directive value) {
-			return ValueType.VOID.ir(getGenerator()).val(Void.VOID);
+
+			final Val voidValue =
+					ValueType.VOID.ir(getGenerator()).val(Void.VOID);
+
+			return new Val(
+					getValueType(),
+					voidValue.getFlags(),
+					voidValue.getLength(),
+					voidValue.getValue());
 		}
 
 		@Override

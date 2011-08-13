@@ -20,5 +20,5 @@
 Compare :=> &integer
 ====================
 
-What :=< `string(False)
-With :=< `string(False)
+What :=< `string
+With :=< `string

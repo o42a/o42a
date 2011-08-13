@@ -265,11 +265,6 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private boolean generateField(Field<?> declaredField, Field<?> field) {
 
 		final Generator generator = getGenerator();
-
-		if (!generator.isUsesAnalysed()) {
-			return true;
-		}
-
 		final MemberAnalysis declarationAnalysis =
 				declaredField.toMember().getAnalysis();
 

@@ -30,7 +30,7 @@ public class HelloWorldTest extends GeneratorTestCase {
 		setModuleName("hello_world");
 		compile(
 				"Use namespace 'Console'.",
-				"@Main :=> *{",
+				"@Main := *{",
 				"  Print \"Hello, World!\" nl",
 				"}");
 

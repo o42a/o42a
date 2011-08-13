@@ -400,8 +400,9 @@ public abstract class ObjectValueIRCondFunc
 			}
 			if (!def.hasPrerequisite()) {
 
-				final CodeDirs defDirs =
-						dirs.getBuilder().falseWhenUnknown(block, dirs.falseDir());
+				final CodeDirs defDirs = dirs.getBuilder().falseWhenUnknown(
+						block,
+						dirs.falseDir());
 
 				def.write(defDirs, host);
 				block.go(collector.next(i, code.tail()));
