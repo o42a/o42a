@@ -28,12 +28,25 @@ public final class UseCase extends AbstractUser implements UseCaseInfo {
 	private final UseFlag checkUseFlag;
 	private UseTracker topLevelTracker;
 	private int rev;
+	private final boolean steady;
 
 	UseCase(String name) {
 		this.name = name;
+		this.steady = false;
 		this.usedFlag = new UseFlag(this, (byte) 1);
 		this.unusedFlag = new UseFlag(this, (byte) -1);
 		this.checkUseFlag = new UseFlag(this, (byte) 0);
+	}
+
+	UseCase(String name, boolean steady) {
+		this.name = name;
+		this.steady = true;
+		this.unusedFlag = this.usedFlag = new UseFlag(this, (byte) 1);
+		this.checkUseFlag = new UseFlag(this, (byte) 0);
+	}
+
+	public final boolean isSteady() {
+		return this.steady;
 	}
 
 	@Override

@@ -32,6 +32,10 @@ public abstract class User implements UserInfo {
 		return new UseCase(name);
 	}
 
+	public static UseCase steadyUseCase(String name) {
+		return new UseCase(name, true);
+	}
+
 	User() {
 	}
 
