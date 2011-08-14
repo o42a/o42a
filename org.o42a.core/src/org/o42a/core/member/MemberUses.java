@@ -24,16 +24,23 @@ import java.util.HashSet;
 import org.o42a.util.use.*;
 
 
-final class MemberUses implements UseInfo {
+final class MemberUses implements UserInfo {
 
 	private final String name;
 	private final Member member;
+	private final MemberUser user;
 	private final UseTracker tracker = new UseTracker();
 	private final HashSet<UseInfo> uses = new HashSet<UseInfo>();
 
 	MemberUses(String name, Member member) {
 		this.name = name;
 		this.member = member;
+		this.user = new MemberUser();
+	}
+
+	@Override
+	public User toUser() {
+		return this.user;
 	}
 
 	public final void useBy(UseInfo use) {
@@ -64,6 +71,20 @@ final class MemberUses implements UseInfo {
 			return super.toString();
 		}
 		return this.name + '[' + this.member + ']';
+	}
+
+	private final class MemberUser extends AbstractUser {
+
+		@Override
+		public UseFlag getUseBy(UseCaseInfo useCase) {
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			return MemberUses.this.toString();
+		}
+
 	}
 
 }

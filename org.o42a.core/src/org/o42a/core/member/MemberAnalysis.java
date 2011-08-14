@@ -34,6 +34,7 @@ public class MemberAnalysis implements UseInfo {
 	private MemberUses memberUses;
 	private MemberUses substanceUses;
 	private MemberUses nestedUses;
+	private MemberUses runtimeConstructionUses;
 
 	MemberAnalysis(Member member) {
 		this.member = member;
@@ -92,6 +93,26 @@ public class MemberAnalysis implements UseInfo {
 
 	public final boolean nestedAccessedBy(UseCaseInfo useCase) {
 		return this.nestedUses.isUsedBy(useCase);
+	}
+
+	public final UserInfo runtimeConstruction() {
+
+		final MemberUses runtimeConstructionUses = runtimeConstructionUses();
+
+		if (runtimeConstructionUses == null) {
+			return dummyUser();
+		}
+
+		return runtimeConstructionUses;
+	}
+
+	public final void runtimeConstructBy(UseInfo user) {
+
+		final MemberUses uses = runtimeConstructionUses();
+
+		if (uses != null) {
+			uses.useBy(user);
+		}
 	}
 
 	public String reasonNotFound(Generator generator) {
@@ -155,6 +176,48 @@ public class MemberAnalysis implements UseInfo {
 			}
 		}
 		this.nestedUses.useBy(user);
+	}
+
+	private MemberUses runtimeConstructionUses() {
+		if (this.runtimeConstructionUses != null) {
+			return this.runtimeConstructionUses;
+		}
+
+		final Member member = getMember();
+		final Field<?> field = member.toField(dummyUser());
+
+		if (field == null) {
+			// Member is not field (e.g. it is a clause).
+			// No need to track a run-time construction.
+			return null;
+		}
+
+		this.runtimeConstructionUses =
+				new MemberUses("RuntimeConstructionOf", getMember());
+
+		final Obj owner = member.getMemberOwner().toObject();
+
+		if (owner == null) {
+			// Owner is not an object (i.e. it is local).
+			// Local objects always constructed at run time.
+			this.runtimeConstructionUses.useBy(getDeclarationAnalysis());
+		} else if (field.isClone()) {
+			// Clones are always constructed at run time.
+			this.runtimeConstructionUses.useBy(getDeclarationAnalysis());
+		} else {
+			// Run time construction status derived from owner.
+			this.runtimeConstructionUses.useBy(
+					owner.type().runtimeConstruction());
+		}
+
+		final Field<?> lastDefinition = field.getLastDefinition();
+
+		if (lastDefinition != field) {
+			lastDefinition.toMember().getAnalysis().runtimeConstructBy(
+					this.runtimeConstructionUses);
+		}
+
+		return this.runtimeConstructionUses;
 	}
 
 }
