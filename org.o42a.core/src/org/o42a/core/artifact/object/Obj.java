@@ -76,7 +76,7 @@ public abstract class Obj
 	private Clause[] explicitClauses;
 	private Clause[] implicitClauses;
 
-	private ObjectAnalysis analysis;
+	private FieldUses fieldUses;
 
 	private ObjectIR ir;
 
@@ -108,13 +108,6 @@ public abstract class Obj
 
 	public ConstructionMode getConstructionMode() {
 		return type().getAscendants().getConstructionMode();
-	}
-
-	public final ObjectAnalysis getAnalysis() {
-		if (this.analysis != null) {
-			return this.analysis;
-		}
-		return this.analysis = new ObjectAnalysis(this);
 	}
 
 	public final OwningObject toMemberOwner() {
@@ -471,7 +464,10 @@ public abstract class Obj
 
 	@Override
 	public UseInfo fieldUses() {
-		return getAnalysis().fieldUses();
+		if (this.fieldUses != null) {
+			return this.fieldUses;
+		}
+		return this.fieldUses = new FieldUses(this);
 	}
 
 	public final void assertDerivedFrom(Obj type) {
