@@ -97,13 +97,13 @@ public class MemberAnalysis implements UseInfo {
 
 	public final UserInfo runtimeConstruction() {
 
-		final MemberUses runtimeConstructionUses = runtimeConstructionUses();
+		final MemberUses uses = runtimeConstructionUses();
 
-		if (runtimeConstructionUses == null) {
+		if (uses == null) {
 			return dummyUser();
 		}
 
-		return runtimeConstructionUses;
+		return uses;
 	}
 
 	public final void runtimeConstructBy(UseInfo user) {

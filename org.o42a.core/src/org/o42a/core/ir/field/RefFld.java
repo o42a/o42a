@@ -22,9 +22,7 @@ package org.o42a.core.ir.field;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CondCode;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
@@ -38,6 +36,7 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
+import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.field.Field;
 
 
@@ -51,7 +50,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	private boolean filledFields;
 	private boolean filledAll;
 
-	private Function<C> constructor;
+	private FuncPtr<C> constructor;
 	private boolean constructorReused;
 
 	public RefFld(ObjectBodyIR bodyIR, Field<?> field) {
@@ -97,7 +96,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 	protected void allocateMethods() {
 
-		final Function<C> reusedConstructor = reusedConstructor();
+		final FuncPtr<C> reusedConstructor = reusedConstructor();
 
 		if (reusedConstructor != null) {
 			this.constructor = reusedConstructor;
@@ -105,9 +104,17 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 			return;
 		}
 
+		final MemberAnalysis analysis = getField().toMember().getAnalysis();
+
+		if (!analysis.runtimeConstruction().isUsedBy(getGenerator())) {
+			this.constructor = getType().constructorStub();
+			this.constructorReused = true;
+			return;
+		}
+
 		this.constructor = getGenerator().newFunction().create(
 				getField().ir(getGenerator()).getId().detail("constructor"),
-				getType().getSignature());
+				getType().getSignature()).getPointer();
 	}
 
 	protected void fill() {
@@ -116,21 +123,21 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	}
 
 	protected final void createConstructor() {
+		getInstance().constructor().setValue(this.constructor);
 		if (this.constructorReused) {
-			getInstance().constructor().setValue(
-					this.constructor.getPointer());
 			return;
 		}
 
-		final Code failure = this.constructor.addBlock("failure");
+		final Function<C> constructor = this.constructor.getFunction();
+		final Code failure = constructor.addBlock("failure");
 		final ObjBuilder builder = new ObjBuilder(
-				this.constructor,
+				constructor,
 				failure.head(),
 				getBodyIR(),
 				getBodyIR().getAscendant(),
 				COMPATIBLE);
 		final CodeDirs dirs =
-				builder.falseWhenUnknown(this.constructor, failure.head());
+				builder.falseWhenUnknown(constructor, failure.head());
 
 		buildConstructor(builder, dirs);
 
@@ -138,9 +145,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 			failure.nullPtr().returnValue(failure);
 		}
 
-		this.constructor.done();
-
-		getInstance().constructor().setValue(this.constructor.getPointer());
+		constructor.done();
 	}
 
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
@@ -240,7 +245,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		}
 	}
 
-	private Function<C> reusedConstructor() {
+	private FuncPtr<C> reusedConstructor() {
 		if (!getField().isClone()) {
 			return null;
 		}
@@ -346,6 +351,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		}
 
 		protected abstract ObjectSignature<C> getSignature();
+
+		protected abstract FuncPtr<C> constructorStub();
 
 	}
 
