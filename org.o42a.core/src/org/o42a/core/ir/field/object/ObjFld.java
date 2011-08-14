@@ -96,30 +96,19 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final CondCode construct =
 				previousPtr.isNull(null, code)
 				.branch(code, "construct", "delegate");
-		final Code constructionFailed =
-				construct.addBlock("construction_failed");
-
 		final DataOp result1 = construct(
 				builder,
-				builder.falseWhenUnknown(construct, constructionFailed.head()),
+				builder.falseWhenUnknown(construct, dirs.falseDir()),
 				new ObjFldOp(this, host, fld)).toData(construct);
 
-		if (constructionFailed.exists()) {
-			constructionFailed.go(dirs.falseDir());
-		}
 		construct.go(code.tail());
 
 		final Code delegate = construct.otherwise();
-		final Code delegationFailed =
-				delegate.addBlock("delegation_failed");
 		final DataOp result2 = delegate(
 				builder,
-				builder.falseWhenUnknown(delegate, delegationFailed.head()),
+				builder.falseWhenUnknown(delegate, dirs.falseDir()),
 				previousPtr).toData(delegate);
 
-		if (delegationFailed.exists()) {
-			delegationFailed.go(dirs.falseDir());
-		}
 		delegate.go(code.tail());
 
 		final DataOp result = code.phi(null, result1, result2);

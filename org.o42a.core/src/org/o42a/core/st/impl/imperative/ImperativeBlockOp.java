@@ -68,8 +68,7 @@ public final class ImperativeBlockOp extends StOp {
 			blockControl = control.braces(code, next.head(), name);
 		}
 
-		final List<ImperativeSentence> sentences =
-				getBlock().getSentences();
+		final List<ImperativeSentence> sentences = getBlock().getSentences();
 		final int len = sentences.size();
 
 		for (int i = 0; i < len; ++i) {
