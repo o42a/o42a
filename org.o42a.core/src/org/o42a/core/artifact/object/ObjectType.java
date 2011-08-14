@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
+import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
@@ -37,7 +38,8 @@ public final class ObjectType implements UserInfo {
 
 	private final Obj object;
 	private Obj lastDefinition;
-	private Usable usable;
+	private Usable uses;
+	private Usable runtimeConstructionUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
@@ -67,7 +69,7 @@ public final class ObjectType implements UserInfo {
 
 	@Override
 	public final User toUser() {
-		return usable().toUser();
+		return uses().toUser();
 	}
 
 	@Override
@@ -77,10 +79,10 @@ public final class ObjectType implements UserInfo {
 
 	@Override
 	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		if (this.usable == null) {
+		if (this.uses == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.usable.getUseBy(useCase);
+		return this.uses.getUseBy(useCase);
 	}
 
 	public final Ascendants getAscendants() {
@@ -126,9 +128,23 @@ public final class ObjectType implements UserInfo {
 
 	public final ObjectType useBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			usable().useBy(user);
+			uses().useBy(user);
 		}
 		return this;
+	}
+
+	public final ObjectType runtimeConstructBy(UserInfo user) {
+		if (!user.toUser().isDummy()) {
+			runtimeConstructionUses().useBy(user);
+		}
+		return this;
+	}
+
+	public final UserInfo runtimeConstruction() {
+		if (this.runtimeConstructionUses == null) {
+			return dummyUser();
+		}
+		return this.runtimeConstructionUses;
 	}
 
 	public final boolean derivedFrom(ObjectType other) {
@@ -148,6 +164,7 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public void resolveAll() {
+		detectRuntimeConstruction();
 		getAscendants().resolveAll();
 		registerInAncestor();
 		registerSamples();
@@ -206,15 +223,24 @@ public final class ObjectType implements UserInfo {
 		return this.resolution.resolved();
 	}
 
-	private final Usable usable() {
-		if (this.usable != null) {
-			return this.usable;
+	private final Usable uses() {
+		if (this.uses != null) {
+			return this.uses;
 		}
 
-		this.usable = simpleUsable(this);
-		getObject().content().useBy(this.usable);
+		this.uses = simpleUsable(this);
+		getObject().content().useBy(this.uses);
 
-		return this.usable;
+		return this.uses;
+	}
+
+	private final Usable runtimeConstructionUses() {
+		if (this.runtimeConstructionUses != null) {
+			return this.runtimeConstructionUses;
+		}
+
+		return this.runtimeConstructionUses =
+				simpleUsable("RuntimeConstructionOf", getObject());
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {
@@ -264,6 +290,27 @@ public final class ObjectType implements UserInfo {
 				}
 				allAscendants.put(scope, derivations.union(traversed));
 			}
+		}
+	}
+
+	private void detectRuntimeConstruction() {
+
+		final Obj object = getObject();
+		final Member member = object.toMember();
+
+		if (member != null) {
+			// Detect run time construction mode by member.
+			runtimeConstructBy(member.getAnalysis().runtimeConstruction());
+			return;
+		}
+
+		// Stand-alone object is always constructed at run time.
+		runtimeConstructBy(object.content());
+
+		final Obj cloneOf = object.getCloneOf();
+
+		if (cloneOf != null) {
+			cloneOf.type().runtimeConstructBy(runtimeConstruction());
 		}
 	}
 
