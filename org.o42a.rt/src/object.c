@@ -1018,3 +1018,19 @@ o42a_obj_body_t *o42a_obj_ref_null(O42A_PARAMS o42a_obj_t *scope) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;
 }
+
+o42a_obj_body_t *o42a_obj_ref_stub(O42A_PARAMS o42a_obj_t *scope) {
+	O42A_ENTER(return NULL);
+	o42a_error_print(O42A_ARGS "Object reference stub invoked");
+	O42A_RETURN NULL;
+}
+
+
+o42a_obj_body_t *o42a_obj_constructor_stub(
+		O42A_PARAMS
+		o42a_obj_t *scope,
+		struct o42a_fld_obj *field) {
+	O42A_ENTER(return NULL);
+	o42a_error_print(O42A_ARGS "Object constructor stub invoked");
+	O42A_RETURN NULL;
+}

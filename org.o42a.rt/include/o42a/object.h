@@ -715,6 +715,20 @@ void o42a_obj_val_stub(O42A_DECLS o42a_val_t *, o42a_obj_t *);
  */
 o42a_obj_body_t *o42a_obj_ref_null(O42A_DECLS o42a_obj_t *);
 
+/**
+ * Object reference function stub.
+ */
+o42a_obj_body_t *o42a_obj_ref_stub(O42A_DECLS o42a_obj_t *);
+
+
+/**
+ * Object constructor stub.
+ */
+o42a_obj_body_t *o42a_obj_constructor_stub(
+		O42A_DECLS
+		o42a_obj_t *,
+		struct o42a_fld_obj *);
+
 
 #ifdef __cplusplus
 }

@@ -77,7 +77,7 @@ final class MemberUses implements UserInfo {
 
 		@Override
 		public UseFlag getUseBy(UseCaseInfo useCase) {
-			return null;
+			return MemberUses.this.getUseBy(useCase);
 		}
 
 		@Override

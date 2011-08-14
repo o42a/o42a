@@ -26,6 +26,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondCode;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -213,6 +214,13 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		@Override
 		protected ObjectConstructor getSignature() {
 			return OBJECT_CONSTRUCTOR;
+		}
+
+		@Override
+		protected FuncPtr<ObjectConstructorFunc> constructorStub() {
+			return getGenerator().externalFunction(
+					"o42a_obj_constructor_stub",
+					OBJECT_CONSTRUCTOR);
 		}
 
 	}

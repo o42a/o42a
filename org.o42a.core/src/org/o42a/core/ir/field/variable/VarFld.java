@@ -26,6 +26,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -145,6 +146,13 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		@Override
 		protected ObjectRef getSignature() {
 			return OBJECT_REF;
+		}
+
+		@Override
+		protected FuncPtr<ObjectRefFunc> constructorStub() {
+			return getGenerator().externalFunction(
+					"o42a_obj_ref_stub",
+					OBJECT_REF);
 		}
 
 	}
