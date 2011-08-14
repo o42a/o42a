@@ -313,9 +313,8 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 						code,
 						this,
 						ascendantType);
-		final Code castNull = code.addBlock("cast_null");
 
-		resultPtr.isNull(null, code).go(code, castNull.head());
+		resultPtr.isNull(null, code).go(code, subDirs.falseDir());
 
 		final ObjOp result = resultPtr.to(
 				id,
@@ -324,11 +323,6 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 						getBuilder(),
 						ascendant,
 						COMPATIBLE);
-
-		if (castNull.exists()) {
-			castNull.debug("Cast failed");
-			castNull.go(subDirs.falseDir());
-		}
 
 		subDirs.end();
 

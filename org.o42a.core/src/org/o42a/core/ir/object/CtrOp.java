@@ -112,13 +112,8 @@ public class CtrOp extends IROp {
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
-		final Code nullObject = code.addBlock("null_new_object");
 
-		result.isNull(null, code).go(code, nullObject.head());
-
-		if (nullObject.exists()) {
-			nullObject.go(subDirs.falseDir());
-		}
+		result.isNull(null, code).go(code, subDirs.falseDir());
 
 		subDirs.end();
 
