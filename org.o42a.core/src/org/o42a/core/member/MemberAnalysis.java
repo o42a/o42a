@@ -46,15 +46,7 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	public final MemberAnalysis getDeclarationAnalysis() {
-		if (!getMember().isOverride()) {
-			return this;
-		}
-
-		final MemberKey memberKey = getMember().getKey();
-		final Obj origin = memberKey.getOrigin().toObject();
-		final Member declaration = origin.member(memberKey);
-
-		return declaration.getAnalysis();
+		return getMember().getFirstDeclaration().getAnalysis();
 	}
 
 	@Override
@@ -107,13 +99,15 @@ public class MemberAnalysis implements UseInfo {
 		return uses;
 	}
 
-	public final void runtimeConstructBy(UseInfo user) {
+	public final UserInfo derivation() {
 
-		final MemberUses uses = runtimeConstructionUses();
+		final MemberUses uses = derivationUses();
 
-		if (uses != null) {
-			uses.useBy(user);
+		if (uses == null) {
+			return dummyUser();
 		}
+
+		return uses;
 	}
 
 	public String reasonNotFound(Generator generator) {
@@ -211,11 +205,11 @@ public class MemberAnalysis implements UseInfo {
 					owner.type().runtimeConstruction());
 		}
 
-		final Field<?> lastDefinition = field.getLastDefinition();
+		final Member lastDefinition = member.getLastDefinition();
 
-		if (lastDefinition != field) {
-			lastDefinition.toMember().getAnalysis().runtimeConstructionUses()
-			.useBy(this.runtimeConstructionUses);
+		if (lastDefinition != member) {
+			lastDefinition.getAnalysis().runtimeConstructionUses().useBy(
+					this.runtimeConstructionUses);
 		}
 
 		derivationUses().useBy(this.runtimeConstructionUses);
@@ -229,9 +223,8 @@ public class MemberAnalysis implements UseInfo {
 		}
 
 		final Member member = getMember();
-		final Field<?> field = member.toField(dummyUser());
 
-		if (field == null) {
+		if (member.toField(dummyUser()) == null) {
 			// Member is not field (e.g. it is a clause).
 			// No need to track derivation.
 			return null;
@@ -243,13 +236,13 @@ public class MemberAnalysis implements UseInfo {
 
 		if (owner != null) {
 			// If owner derived then member derived too.
-			this.derivationUses.useBy(owner.type().runtimeConstruction());
+			this.derivationUses.useBy(owner.type().derivation());
 		}
 
-		final Field<?> lastDefinition = field.getLastDefinition();
+		final Member firstDeclaration = member.getFirstDeclaration();
 
-		if (lastDefinition != field) {
-			lastDefinition.toMember().getAnalysis().derivationUses().useBy(
+		if (firstDeclaration != member) {
+			firstDeclaration.getAnalysis().derivationUses().useBy(
 					this.derivationUses);
 		}
 

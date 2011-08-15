@@ -51,7 +51,7 @@ public abstract class IROp {
 		return this.builder;
 	}
 
-	public final CodeId getId() {
+	public CodeId getId() {
 		return ptr().getId();
 	}
 

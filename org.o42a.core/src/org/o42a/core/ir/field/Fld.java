@@ -41,6 +41,7 @@ public abstract class Fld {
 
 	private final Field<?> field;
 	private final ObjectBodyIR bodyIR;
+	private final boolean omitted;
 	private Type<?> instance;
 
 	public Fld(ObjectBodyIR bodyIR, Field<?> field) {
@@ -52,6 +53,9 @@ public abstract class Fld {
 
 		assert declarationAnalysis.isUsedBy(getGenerator()) :
 			"Attempt to generate never accessed field " + getField();
+
+		this.omitted =
+				!declarationAnalysis.derivation().isUsedBy(getGenerator());
 	}
 
 	public final Generator getGenerator() {
@@ -66,8 +70,12 @@ public abstract class Fld {
 		return this.bodyIR;
 	}
 
-	public CodeId getId() {
+	public final CodeId getId() {
 		return getField().ir(getGenerator()).getId();
+	}
+
+	public final boolean isOmitted() {
+		return this.omitted;
 	}
 
 	public abstract FldKind getKind();
@@ -124,6 +132,9 @@ public abstract class Fld {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void allocate(SubData<?> data) {
+		if (isOmitted()) {
+			return;
+		}
 		this.instance = data.addInstance(
 				getGenerator().id("fld").detail(getId().getLocal()),
 				(Type) getType(),

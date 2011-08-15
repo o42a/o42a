@@ -23,11 +23,10 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 
@@ -54,6 +53,13 @@ public class ScopeFldOp extends FldOp {
 	}
 
 	public ObjectOp target(CodeDirs dirs) {
+		if (isOmitted()) {
+
+			final Obj target = fld().getField().getArtifact().toObject();
+			final ObjectIR targetIR = target.ir(getGenerator());
+
+			return targetIR.op(getBuilder(), dirs.code());
+		}
 
 		final Code code = dirs.code();
 		final ObjectBodyIR target = fld().getTarget();

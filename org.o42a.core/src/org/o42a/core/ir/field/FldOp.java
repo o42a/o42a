@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -37,6 +38,18 @@ public abstract class FldOp extends IROp implements HostOp {
 		super(host.getBuilder(), ptr);
 		this.fld = fld;
 		this.host = host;
+	}
+
+	public final boolean isOmitted() {
+		return this.fld.isOmitted();
+	}
+
+	@Override
+	public CodeId getId() {
+		if (!isOmitted()) {
+			return super.getId();
+		}
+		return fld().getField().ir(getGenerator()).getId();
 	}
 
 	public Fld fld() {

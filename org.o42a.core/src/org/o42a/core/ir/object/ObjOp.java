@@ -156,7 +156,11 @@ public final class ObjOp extends ObjectOp {
 				memberKey.getOrigin().toObject());
 		final FldOp op = fld.op(code, host);
 
-		code.dumpName("Field: ", op.ptr());
+		if (!op.isOmitted()) {
+			code.dumpName("Field: ", op.ptr());
+		} else {
+			code.debug("Final field: " + op.getId());
+		}
 
 		subDirs.end();
 

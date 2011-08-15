@@ -55,6 +55,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 	public RefFld(ObjectBodyIR bodyIR, Field<?> field) {
 		super(bodyIR, field);
+		this.targetIRAllocated = isOmitted();
 		this.targetIR = field.getArtifact().materialize().ir(getGenerator());
 	}
 
