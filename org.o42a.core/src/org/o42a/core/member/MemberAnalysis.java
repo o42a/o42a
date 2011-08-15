@@ -35,6 +35,7 @@ public class MemberAnalysis implements UseInfo {
 	private MemberUses substanceUses;
 	private MemberUses nestedUses;
 	private MemberUses runtimeConstructionUses;
+	private MemberUses derivationUses;
 
 	MemberAnalysis(Member member) {
 		this.member = member;
@@ -213,11 +214,46 @@ public class MemberAnalysis implements UseInfo {
 		final Field<?> lastDefinition = field.getLastDefinition();
 
 		if (lastDefinition != field) {
-			lastDefinition.toMember().getAnalysis().runtimeConstructBy(
-					this.runtimeConstructionUses);
+			lastDefinition.toMember().getAnalysis().runtimeConstructionUses()
+			.useBy(this.runtimeConstructionUses);
 		}
 
+		derivationUses().useBy(this.runtimeConstructionUses);
+
 		return this.runtimeConstructionUses;
+	}
+
+	private MemberUses derivationUses() {
+		if (this.derivationUses != null) {
+			return this.derivationUses;
+		}
+
+		final Member member = getMember();
+		final Field<?> field = member.toField(dummyUser());
+
+		if (field == null) {
+			// Member is not field (e.g. it is a clause).
+			// No need to track derivation.
+			return null;
+		}
+
+		this.derivationUses = new MemberUses("DerivationOf", getMember());
+
+		final Obj owner = member.getMemberOwner().toObject();
+
+		if (owner != null) {
+			// If owner derived then member derived too.
+			this.derivationUses.useBy(owner.type().runtimeConstruction());
+		}
+
+		final Field<?> lastDefinition = field.getLastDefinition();
+
+		if (lastDefinition != field) {
+			lastDefinition.toMember().getAnalysis().derivationUses().useBy(
+					this.derivationUses);
+		}
+
+		return this.derivationUses;
 	}
 
 }
