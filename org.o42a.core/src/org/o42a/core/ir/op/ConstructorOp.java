@@ -29,6 +29,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ref.Ref;
 
@@ -45,8 +46,23 @@ public class ConstructorOp extends RefOp {
 	public ObjectOp target(CodeDirs dirs) {
 
 		final CodeBuilder builder = getBuilder();
-		final ObjectOp object = host().toObject(dirs);
 		final Obj sample = sample();
+
+		if (!sample.type().runtimeConstruction().isUsedBy(getGenerator())) {
+
+			final ObjOp target =
+					sample.ir(getGenerator()).op(builder, dirs.code());
+
+			if (dirs.isDebug()) {
+				dirs.code().dumpName(
+						"Static object: ",
+						target.toData(dirs.code()));
+			}
+
+			return target;
+		}
+
+		final ObjectOp object = host().toObject(dirs);
 
 		if (object != null) {
 			return builder.newObject(
