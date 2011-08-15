@@ -30,6 +30,7 @@ import java.util.Map;
 import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
@@ -134,13 +135,6 @@ public final class ObjectType implements UserInfo {
 		return this;
 	}
 
-	public final ObjectType runtimeConstructBy(UserInfo user) {
-		if (!user.toUser().isDummy()) {
-			runtimeConstructionUses().useBy(user);
-		}
-		return this;
-	}
-
 	public final UserInfo runtimeConstruction() {
 		return runtimeConstructionUses();
 	}
@@ -163,11 +157,10 @@ public final class ObjectType implements UserInfo {
 
 	public final void wrapBy(ObjectType type) {
 		useBy(type);
-		runtimeConstructBy(type.runtimeConstructionUses());
+		this.runtimeConstructionUses.useBy(type.runtimeConstructionUses());
 	}
 
 	public void resolveAll() {
-		detectRuntimeConstruction();
 		getAscendants().resolveAll();
 		registerInAncestor();
 		registerSamples();
@@ -183,6 +176,8 @@ public final class ObjectType implements UserInfo {
 
 	protected void useAsAncestor(Obj derived) {
 		derivationUses().useBy(derived.content());
+		runtimeConstructionUses().useBy(
+				derived.type().runtimeConstructionUses());
 		trackAscendantDefsUsage(derived);
 	}
 
@@ -192,6 +187,8 @@ public final class ObjectType implements UserInfo {
 				sample.getAscendants().getObject();
 
 		derivationUses().useBy(sampleObject.content());
+		runtimeConstructionUses().useBy(
+				sampleObject.type().runtimeConstructionUses());
 		trackAscendantDefsUsage(sampleObject);
 		trackAncestorDefsUpdates(sampleObject);
 	}
@@ -244,8 +241,48 @@ public final class ObjectType implements UserInfo {
 			return this.runtimeConstructionUses;
 		}
 
+		final Obj object = getObject();
+		final Scope enclosingScope =
+				object.getScope().getEnclosingScope();
+
 		this.runtimeConstructionUses =
 				simpleUsable("RuntimeConstructionOf", getObject());
+
+		final Member member = object.toMember();
+
+		if (member != null) {
+			// Detect run time construction mode by member.
+			this.runtimeConstructionUses.useBy(
+					member.getAnalysis().runtimeConstruction());
+		} else {
+
+			final Obj enclosingObject;
+			final LocalScope enclosingLocal = enclosingScope.toLocal();
+
+			if (enclosingLocal != null) {
+				enclosingObject = enclosingLocal.getOwner();
+			} else {
+				enclosingObject = enclosingScope.toObject();
+			}
+
+			if (enclosingObject != null) {
+				// Stand-alone object is constructed at run time,
+				// if enclosing object is ever derived.
+				this.runtimeConstructionUses.useBy(
+						enclosingObject.type().derivation());
+			} else {
+				assert enclosingScope.isTopScope() :
+					"No enclosing object of non-top-level object " + object;
+			}
+
+			final Obj cloneOf = object.getCloneOf();
+
+			if (cloneOf != null) {
+				cloneOf.type().runtimeConstructionUses().useBy(
+						this.runtimeConstructionUses);
+			}
+		}
+
 		derivationUses().useBy(this.runtimeConstructionUses);
 
 		return this.runtimeConstructionUses;
@@ -305,27 +342,6 @@ public final class ObjectType implements UserInfo {
 				}
 				allAscendants.put(scope, derivations.union(traversed));
 			}
-		}
-	}
-
-	private void detectRuntimeConstruction() {
-
-		final Obj object = getObject();
-		final Member member = object.toMember();
-
-		if (member != null) {
-			// Detect run time construction mode by member.
-			runtimeConstructBy(member.getAnalysis().runtimeConstruction());
-			return;
-		}
-
-		// Stand-alone object is always constructed at run time.
-		runtimeConstructBy(object.content());
-
-		final Obj cloneOf = object.getCloneOf();
-
-		if (cloneOf != null) {
-			cloneOf.type().runtimeConstructBy(runtimeConstructionUses());
 		}
 	}
 
