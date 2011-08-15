@@ -40,6 +40,7 @@ public final class ObjectType implements UserInfo {
 	private Obj lastDefinition;
 	private Usable uses;
 	private Usable runtimeConstructionUses;
+	private Usable derivationUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
@@ -141,10 +142,11 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public final UserInfo runtimeConstruction() {
-		if (this.runtimeConstructionUses == null) {
-			return dummyUser();
-		}
-		return this.runtimeConstructionUses;
+		return runtimeConstructionUses();
+	}
+
+	public final UserInfo derivation() {
+		return derivationUses();
 	}
 
 	public final boolean derivedFrom(ObjectType other) {
@@ -161,7 +163,7 @@ public final class ObjectType implements UserInfo {
 
 	public final void wrapBy(ObjectType type) {
 		useBy(type);
-		runtimeConstructBy(type.runtimeConstruction());
+		runtimeConstructBy(type.runtimeConstructionUses());
 	}
 
 	public void resolveAll() {
@@ -180,6 +182,7 @@ public final class ObjectType implements UserInfo {
 	}
 
 	protected void useAsAncestor(Obj derived) {
+		derivationUses().useBy(derived.content());
 		trackAscendantDefsUsage(derived);
 	}
 
@@ -188,6 +191,7 @@ public final class ObjectType implements UserInfo {
 		final Obj sampleObject =
 				sample.getAscendants().getObject();
 
+		derivationUses().useBy(sampleObject.content());
 		trackAscendantDefsUsage(sampleObject);
 		trackAncestorDefsUpdates(sampleObject);
 	}
@@ -240,8 +244,18 @@ public final class ObjectType implements UserInfo {
 			return this.runtimeConstructionUses;
 		}
 
-		return this.runtimeConstructionUses =
+		this.runtimeConstructionUses =
 				simpleUsable("RuntimeConstructionOf", getObject());
+		derivationUses().useBy(this.runtimeConstructionUses);
+
+		return this.runtimeConstructionUses;
+	}
+
+	private final Usable derivationUses() {
+		if (this.derivationUses != null) {
+			return this.derivationUses;
+		}
+		return this.derivationUses = simpleUsable("DerivationOf", getObject());
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {
@@ -311,7 +325,7 @@ public final class ObjectType implements UserInfo {
 		final Obj cloneOf = object.getCloneOf();
 
 		if (cloneOf != null) {
-			cloneOf.type().runtimeConstructBy(runtimeConstruction());
+			cloneOf.type().runtimeConstructBy(runtimeConstructionUses());
 		}
 	}
 
