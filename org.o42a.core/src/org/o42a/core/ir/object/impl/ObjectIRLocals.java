@@ -33,7 +33,6 @@ public final class ObjectIRLocals {
 	}
 
 	private ArrayList<LocalIRFunc> locals;
-	private boolean filled;
 
 	public final ObjectValueIR getValueIR() {
 		return this.valueIR;
@@ -46,18 +45,6 @@ public final class ObjectIRLocals {
 			this.valueIR.getObjectIR().allocate();
 		} else {
 			this.locals.add(local);
-		}
-		if (this.filled) {
-			local.build();
-		}
-	}
-
-	public void build() {
-		if (this.locals == null) {
-			return;
-		}
-		for (LocalIRFunc local : this.locals) {
-			local.build();
 		}
 	}
 

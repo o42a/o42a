@@ -140,12 +140,6 @@ public class ObjectValueIR {
 
 	protected void fill(ObjectTypeIR typeIR) {
 		typeIR.getObjectData().value().set(initialValue());
-		this.requirement.build();
-		this.claim.build();
-		this.condition.build();
-		this.proposition.build();
-		this.locals.build();
-		this.value.build();
 	}
 
 	final ObjectIRLocals getLocals() {

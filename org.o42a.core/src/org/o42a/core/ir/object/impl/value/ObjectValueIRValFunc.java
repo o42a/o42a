@@ -140,12 +140,11 @@ public abstract class ObjectValueIRValFunc
 		return result;
 	}
 
-	public final void build() {
+	@Override
+	public void build(Function<ObjectValFunc> function) {
 		if (isReused()) {
 			return;
 		}
-
-		final Function<ObjectValFunc> function = get().getFunction();
 
 		function.debug("Calculating " + suffix());
 
@@ -182,7 +181,6 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		function.returnVoid();
-		function.done();
 	}
 
 	protected Value<?> determineConstant() {
@@ -235,7 +233,7 @@ public abstract class ObjectValueIRValFunc
 			return;
 		}
 
-		set(getGenerator().newFunction().create(getId(), OBJECT_VAL));
+		set(getGenerator().newFunction().create(getId(), OBJECT_VAL, this));
 	}
 
 	protected boolean canStub() {
