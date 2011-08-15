@@ -48,14 +48,11 @@ public abstract class Fld {
 		this.field = field;
 		this.bodyIR = bodyIR;
 
-		final MemberAnalysis declarationAnalysis =
-				getField().toMember().getAnalysis().getDeclarationAnalysis();
-
-		assert declarationAnalysis.isUsedBy(getGenerator()) :
+		assert getField().toMember().getAnalysis().getDeclarationAnalysis()
+		.isUsedBy(getGenerator()) :
 			"Attempt to generate never accessed field " + getField();
 
-		this.omitted =
-				!declarationAnalysis.derivation().isUsedBy(getGenerator());
+		this.omitted = mayOmit();
 	}
 
 	public final Generator getGenerator() {
@@ -128,6 +125,14 @@ public abstract class Fld {
 	@Override
 	public String toString() {
 		return getField().toString();
+	}
+
+	protected boolean mayOmit() {
+
+		final MemberAnalysis declarationAnalysis =
+				getField().toMember().getAnalysis().getDeclarationAnalysis();
+
+		return !declarationAnalysis.derivation().isUsedBy(getGenerator());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
