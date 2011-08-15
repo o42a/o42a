@@ -207,7 +207,15 @@ public abstract class Generator implements UseCaseInfo {
 	}
 
 	protected void writeData() {
-		this.globals.write();
+		for (;;) {
+
+			final boolean hadGlobals = this.globals.write();
+			final boolean hadFunctions = this.functions.write();
+
+			if (!hadGlobals && !hadFunctions) {
+				return;
+			}
+		}
 	}
 
 }

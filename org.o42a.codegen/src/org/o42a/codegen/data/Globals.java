@@ -69,17 +69,22 @@ public abstract class Globals {
 				isConstant);
 	}
 
-	public void write() {
+	public boolean write() {
 
 		final DataWriter writer = dataWriter();
 		Data<?> global = this.globals.getFirst();
 
-		while (global != null) {
+		if (global == null) {
+			return false;
+		}
+		do {
 			global.write(writer);
 			global = global.getNext();
-		}
+		} while (global != null);
 
 		this.globals.empty();
+
+		return true;
 	}
 
 	protected abstract DataAllocator dataAllocator();

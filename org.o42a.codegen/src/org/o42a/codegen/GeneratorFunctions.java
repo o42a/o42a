@@ -54,4 +54,12 @@ final class GeneratorFunctions extends Functions {
 		getGenerator().addFunction(id, function);
 	}
 
+	@Override
+	protected <F extends Func<F>> void addFunction(
+			CodeId id,
+			Function<F> function) {
+		getGenerator().addFunction(id, function.getPointer());
+		super.addFunction(id, function);
+	}
+
 }

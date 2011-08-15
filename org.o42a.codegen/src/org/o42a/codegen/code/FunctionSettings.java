@@ -55,9 +55,23 @@ public final class FunctionSettings {
 			CodeId id,
 			Signature<F> signature) {
 
-		final Function<F> function = new Function<F>(this, id, signature);
+		final Function<F> function =
+				new Function<F>(this, id, signature, null);
 
 		this.functions.addFunction(id, signature, function.getPointer());
+
+		return function;
+	}
+
+	public <F extends Func<F>> Function<F> create(
+			CodeId id,
+			Signature<F> signature,
+			FunctionBuilder<F> builder) {
+
+		final Function<F> function =
+				new Function<F>(this, id, signature, builder);
+
+		this.functions.addFunction(id, function);
 
 		return function;
 	}
