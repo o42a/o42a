@@ -20,6 +20,7 @@
 package org.o42a.codegen.code;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -32,6 +33,8 @@ public abstract class Functions {
 
 	private final HashMap<String, FuncPtr<?>> externals =
 			new HashMap<String, FuncPtr<?>>();
+	private final LinkedList<Function<?>> functions =
+			new LinkedList<Function<?>>();
 
 	private final Generator generator;
 
@@ -75,6 +78,21 @@ public abstract class Functions {
 		return signature.allocate(getGenerator());
 	}
 
+	public boolean write() {
+		if (this.functions.isEmpty()) {
+			return false;
+		}
+		for (;;) {
+
+			final Function<?> function = this.functions.poll();
+
+			if (function == null) {
+				return true;
+			}
+			function.build();
+		}
+	}
+
 	protected abstract CodeBackend codeBackend();
 
 	protected abstract DataWriter dataWriter();
@@ -85,5 +103,11 @@ public abstract class Functions {
 			CodeId id,
 			Signature<F> signature,
 			FuncPtr<F> function);
+
+	protected <F extends Func<F>> void addFunction(
+			CodeId id,
+			Function<F> function) {
+		this.functions.add(function);
+	}
 
 }

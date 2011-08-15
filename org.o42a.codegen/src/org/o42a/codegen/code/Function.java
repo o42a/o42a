@@ -29,15 +29,18 @@ public final class Function<F extends Func<F>> extends Code {
 
 	private final FunctionSettings settings;
 	private final Signature<F> signature;
+	private final FunctionBuilder<F> builder;
 	private FuncWriter<F> writer;
 	private FuncPtr<F> pointer;
 
 	Function(
 			FunctionSettings settings,
 			CodeId id,
-			Signature<F> signature) {
+			Signature<F> signature,
+			FunctionBuilder<F> builder) {
 		super(settings.getGenerator(), id);
 		this.settings = settings;
+		this.builder = builder;
 		this.signature = getGenerator().getFunctions().allocate(signature);
 	}
 
@@ -119,6 +122,10 @@ public final class Function<F extends Func<F>> extends Code {
 			return name;
 		}
 		return getGenerator().id().anonymous(++this.blockSeq);
+	}
+
+	final void build() {
+		this.builder.build(this);
 	}
 
 }
