@@ -19,32 +19,25 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.object.impl.ObjectTypeIRAncestorFunc;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.type.TypeRef;
 
 
 public final class ObjectTypeIR implements Content<ObjectIRType> {
@@ -257,37 +250,12 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 	}
 
 	private FuncPtr<ObjectRefFunc> createAncestorFunc(ObjectIRData instance) {
-
-		final Function<ObjectRefFunc> function =
-				getGenerator().newFunction().create(
-						this.objectIRStruct
-						.codeId(instance.getGenerator())
-						.detail("ancestor"),
-						OBJECT_REF);
-		final Code failure = function.addBlock("failure");
-		final TypeRef ancestor = getObjectIR().getObject().type().getAncestor();
-		final CodeBuilder builder = codeBuilder(
-				function,
-				failure.head(),
-				ancestor.getScope(),
-				DERIVED);
-		final CodeDirs dirs =
-				builder.falseWhenUnknown(function, failure.head());
-		final HostOp host = builder.host();
-
-		ancestor.op(dirs, host)
-		.target(dirs)
-		.materialize(dirs)
-		.toAny(function)
-		.returnValue(function);
-
-		if (failure.exists()) {
-			failure.nullPtr().returnValue(failure);
-		}
-
-		function.done();
-
-		return function.getPointer();
+		return getGenerator().newFunction().create(
+					this.objectIRStruct
+					.codeId(instance.getGenerator())
+					.detail("ancestor"),
+					OBJECT_REF,
+					new ObjectTypeIRAncestorFunc(getObjectIR())).getPointer();
 	}
 
 }

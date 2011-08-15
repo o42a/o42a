@@ -20,9 +20,7 @@
 package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
@@ -32,7 +30,8 @@ import org.o42a.core.ir.object.impl.ObjectIRFunc;
 
 
 public abstract class ObjectValueIRFunc<F extends Func<F>>
-		extends ObjectIRFunc {
+		extends ObjectIRFunc
+		implements FunctionBuilder<F> {
 
 	private final ObjectValueIR valueIR;
 	private final CodeId id;

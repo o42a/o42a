@@ -126,6 +126,7 @@ public final class Function<F extends Func<F>> extends Code {
 
 	final void build() {
 		this.builder.build(this);
+		done();
 	}
 
 }

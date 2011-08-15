@@ -120,12 +120,11 @@ public abstract class ObjectValueIRCondFunc
 		subDirs.end();
 	}
 
-	public final void build() {
+	@Override
+	public void build(Function<ObjectCondFunc> function) {
 		if (isReused()) {
 			return;
 		}
-
-		final Function<ObjectCondFunc> function = get().getFunction();
 
 		function.debug("Calculating " + suffix());
 
@@ -193,9 +192,7 @@ public abstract class ObjectValueIRCondFunc
 			return;
 		}
 
-		set(getGenerator().newFunction().create(
-				getId(),
-				OBJECT_COND));
+		set(getGenerator().newFunction().create(getId(), OBJECT_COND, this));
 	}
 
 	protected void reuse() {

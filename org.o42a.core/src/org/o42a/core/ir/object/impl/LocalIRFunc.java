@@ -25,6 +25,7 @@ import static org.o42a.core.value.Value.falseValue;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.FunctionBuilder;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -34,7 +35,9 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.local.LocalScope;
 
 
-public final class LocalIRFunc extends ObjectIRFunc {
+public final class LocalIRFunc
+		extends ObjectIRFunc
+		implements FunctionBuilder<ObjectValFunc> {
 
 	private final LocalIR localIR;
 	private final CodeId id;
@@ -86,19 +89,18 @@ public final class LocalIRFunc extends ObjectIRFunc {
 		return this.id;
 	}
 
-	public void build() {
+	@Override
+	public void build(Function<ObjectValFunc> function) {
 
 		final LocalBuilder builder =
-				new LocalBuilder(this.function, this.localIR);
+				new LocalBuilder(function, this.localIR);
 		final ValType.Op value =
-				this.function.arg(this.function, OBJECT_VAL.value());
+				this.function.arg(function, OBJECT_VAL.value());
 		final ValOp result = value.op(
 				builder,
 				this.locals.getValueIR().getObject().value().getValueType());
 
-		build(builder, this.function, result);
-
-		this.function.done();
+		build(builder, function, result);
 	}
 
 	@Override
@@ -111,7 +113,8 @@ public final class LocalIRFunc extends ObjectIRFunc {
 		final Function<ObjectValFunc> function =
 				getGenerator().newFunction().create(
 						getId(),
-						OBJECT_VAL);
+						OBJECT_VAL,
+						this);
 
 		function.debug("Calculating value");
 
