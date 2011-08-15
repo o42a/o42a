@@ -236,12 +236,23 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
-		instance.ancestorFunc().setValue(createAncestorFunc(instance));
+		if (getObjectIR().getObject().type().runtimeConstruction().isUsedBy(
+				getGenerator())) {
+			instance.ancestorFunc().setValue(createAncestorFunc(instance));
+		} else {
+			instance.ancestorFunc().setValue(stubObjectRef());
+		}
 	}
 
 	private FuncPtr<ObjectRefFunc> nullObjectRef() {
 		return getGenerator().externalFunction(
 				"o42a_obj_ref_null",
+				OBJECT_REF);
+	}
+
+	private FuncPtr<ObjectRefFunc> stubObjectRef() {
+		return getGenerator().externalFunction(
+				"o42a_obj_ref_stub",
 				OBJECT_REF);
 	}
 
