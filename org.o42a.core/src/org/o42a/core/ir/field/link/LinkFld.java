@@ -66,7 +66,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		return new LinkFldOp(
 				this,
 				host,
-				host.ptr().field(code, getInstance()));
+				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
 	@Override

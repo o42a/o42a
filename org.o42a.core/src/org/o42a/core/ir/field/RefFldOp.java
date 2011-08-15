@@ -77,6 +77,9 @@ public abstract class RefFldOp<
 	}
 
 	public ObjOp target(CodeDirs dirs) {
+		if (isOmitted()) {
+			return fld().getTargetIR().op(getBuilder(), dirs.code());
+		}
 
 		final Code code = dirs.code();
 		final FldKind kind = fld().getKind();

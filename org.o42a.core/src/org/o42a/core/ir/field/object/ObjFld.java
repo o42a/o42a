@@ -70,7 +70,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		return new ObjFldOp(
 				this,
 				host,
-				host.ptr().field(code, getInstance()));
+				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
 	@Override

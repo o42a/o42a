@@ -165,15 +165,20 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.member.getDefinedIn();
 	}
 
+	public final Field<A> getFirstDeclaration() {
+		return this.member.getFirstDeclaration().toField(dummyUser())
+				.toKind(getArtifactKind());
+	}
+
 	/**
 	 * The last definition of this field.
 	 *
 	 * @return the last field's explicit definition or implicit definition
 	 * with multiple inheritance.
 	 */
-	@SuppressWarnings("unchecked")
 	public final Field<A> getLastDefinition() {
-		return (Field<A>) this.member.getLastDefinition().toField(dummyUser());
+		return this.member.getLastDefinition().toField(dummyUser())
+				.toKind(getArtifactKind());
 	}
 
 	/**

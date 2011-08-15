@@ -48,6 +48,7 @@ public abstract class Member extends Placed {
 	private final MemberOwner owner;
 
 	private MemberAnalysis analysis;
+	private Member firstDeclaration;
 	private Member lastDefinition;
 	private Member[] overridden;
 
@@ -145,6 +146,20 @@ public abstract class Member extends Placed {
 	}
 
 	public abstract Member getPropagatedFrom();
+
+	public Member getFirstDeclaration() {
+		if (this.firstDeclaration != null) {
+			return this.firstDeclaration;
+		}
+		if (!isOverride()) {
+			return this.firstDeclaration = this;
+		}
+
+		final MemberKey memberKey = getKey();
+		final Scope origin = memberKey.getOrigin();
+
+		return this.firstDeclaration = origin.getContainer().member(memberKey);
+	}
 
 	/**
 	 * The last definition of this member.

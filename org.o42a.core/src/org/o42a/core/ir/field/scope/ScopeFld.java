@@ -75,7 +75,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 		return new ScopeFldOp(
 				this,
 				host,
-				host.ptr().field(code, getInstance()));
+				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
 	public final void declare(SubData<?> data, ObjectBodyIR target) {

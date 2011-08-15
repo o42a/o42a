@@ -71,7 +71,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		return new VarFldOp(
 				this,
 				host,
-				host.ptr().field(code, getInstance()));
+				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
 	@Override
