@@ -75,6 +75,11 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	}
 
 	@Override
+	protected boolean mayOmit() {
+		return false;
+	}
+
+	@Override
 	protected void fill() {
 		super.fill();
 
