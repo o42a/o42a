@@ -47,6 +47,7 @@ assign_copyright() {
 }
 
 assign_copyright org.o42a.ast/src "Abstract Syntax Tree" "*.java"
+assign_copyright org.o42a.backend.constant/src "Constant Handler Compiler Back-end" "*.java"
 assign_copyright org.o42a.backend.llvm/src "Compiler LLVM Back-end" "*.java"
 assign_copyright org.o42a.backend.llvm.jni/include "Compiler JNI Bindings to LLVM" "*.h"
 assign_copyright org.o42a.backend.llvm.jni/src "Compiler JNI Bindings to LLVM" "*.cc"
