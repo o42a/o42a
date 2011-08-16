@@ -24,6 +24,7 @@
 	<filelist id="project.deps" dir="..">
 		<file name="org.o42a.compiler"/>
 		<file name="org.o42a.intrinsic"/>
+		<file name="org.o42a.backend.constant"/>
 		<file name="org.o42a.backend.llvm"/>
 		<file name="org.o42a.backend.llvm.jni"/>
 		<file name="org.o42a.rt"/>
