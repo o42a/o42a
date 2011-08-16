@@ -20,24 +20,22 @@
 package org.o42a.backend.constant;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.ProxyGenerator;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public class ConstGenerator extends Generator {
-
-	private final Generator proxiedGenerator;
+public class ConstGenerator extends ProxyGenerator {
 
 	public ConstGenerator(Generator proxiedGenerator) {
-		super(proxiedGenerator.getId());
-		this.proxiedGenerator = proxiedGenerator;
+		super(proxiedGenerator);
 	}
 
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		this.proxiedGenerator.close();
+		getProxiedGenerator().close();
 	}
 
 	@Override

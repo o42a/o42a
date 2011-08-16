@@ -20,13 +20,13 @@
 package org.o42a.backend.llvm;
 
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.AbstractGenerator;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public class LLVMGenerator extends Generator {
+public class LLVMGenerator extends AbstractGenerator {
 
 	public static LLVMGenerator newGenerator(
 			String id,
