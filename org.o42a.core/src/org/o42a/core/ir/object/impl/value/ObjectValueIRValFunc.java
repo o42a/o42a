@@ -237,6 +237,9 @@ public abstract class ObjectValueIRValFunc
 	}
 
 	protected boolean canStub() {
+		if (getObject().type().runtimeConstruction().isUsedBy(getGenerator())) {
+			return false;
+		}
 		return !part().accessed().isUsedBy(getGenerator());
 	}
 
