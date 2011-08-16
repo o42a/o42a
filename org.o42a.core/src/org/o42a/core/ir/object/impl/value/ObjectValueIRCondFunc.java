@@ -174,6 +174,9 @@ public abstract class ObjectValueIRCondFunc
 	}
 
 	protected Condition determineFinal() {
+		if (getObject().type().runtimeConstruction().isUsedBy(getGenerator())) {
+			return Condition.RUNTIME;
+		}
 		if (part().accessed().isUsedBy(getGenerator())) {
 			return Condition.RUNTIME;
 		}
