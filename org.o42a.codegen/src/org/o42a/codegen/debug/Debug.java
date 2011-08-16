@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.code.backend.CodeCallback.NOOP_CODE_CALLBACK;
 import static org.o42a.codegen.debug.DebugCodeBase.allocateStackFrame;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
@@ -28,8 +29,7 @@ import static org.o42a.util.string.StringCodec.nullTermString;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.*;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.op.AnyOp;
@@ -40,12 +40,11 @@ import org.o42a.codegen.data.*;
 
 public class Debug {
 
-	public static final CodeCallback DEBUG_CODE_CALLBACK =
+	private static final CodeCallback DEBUG_CODE_CALLBACK =
 			new DebugCodeCallback();
 
 	private final Generator generator;
-
-	private boolean debug;
+	private final DebugSettings settings;
 
 	private Code dontExitFrom;
 	private FuncPtr<DebugTraceFunc> enterFunc;
@@ -59,25 +58,38 @@ public class Debug {
 	private final HashMap<Ptr<?>, DebugTypeInfo> typeInfo =
 			new HashMap<Ptr<?>, DebugTypeInfo>();
 
-	public Debug(Generator generator) {
+	public Debug(AbstractGenerator generator) {
 		this.generator = generator;
+		this.settings = new DebugSettings();
+	}
+
+	public Debug(ProxyGenerator generator) {
+		this.generator = generator;
+		this.settings = generator.getProxiedGenerator().getDebug().settings;
 	}
 
 	public final Generator getGenerator() {
 		return this.generator;
 	}
 
+	public final boolean isProxied() {
+		return getGenerator().isProxied();
+	}
+
 	public final boolean isDebug() {
-		return this.debug;
+		return this.settings.isDebug();
 	}
 
 	public final void setDebug(boolean debug) {
-		this.debug = debug;
+		this.settings.setDebug(debug);
 	}
 
 	public <F extends Func<F>> void addFunction(
 			CodeId id,
 			FuncPtr<F> functionPtr) {
+		if (isProxied()) {
+			return;
+		}
 		if (!isDebug()) {
 			return;
 		}
@@ -136,7 +148,20 @@ public class Debug {
 		enterFunc().op(null, function).trace(function, debugEnv);
 	}
 
+	public CodeCallback createCodeCallback(Function<?> function) {
+		if (isProxied()) {
+			return NOOP_CODE_CALLBACK;
+		}
+		if (isDebug() && function.getSignature().isDebuggable()) {
+			return DEBUG_CODE_CALLBACK;
+		}
+		return NOOP_CODE_CALLBACK;
+	}
+
 	public void registerType(SubData<?> typeData) {
+		if (isProxied()) {
+			return;
+		}
 		if (!isDebug()) {
 			return;
 		}
@@ -155,7 +180,6 @@ public class Debug {
 		assert old == null :
 			"Type info already exists: " + old;
 	}
-
 
 	final Ptr<AnyOp> allocateName(CodeId id, String value) {
 

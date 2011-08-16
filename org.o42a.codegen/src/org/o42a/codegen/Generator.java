@@ -20,10 +20,6 @@
 package org.o42a.codegen;
 
 import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
-import static org.o42a.codegen.code.backend.CodeCallback.NOOP_CODE_CALLBACK;
-import static org.o42a.codegen.debug.Debug.DEBUG_CODE_CALLBACK;
-import static org.o42a.util.use.User.steadyUseCase;
-import static org.o42a.util.use.User.useCase;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
@@ -33,41 +29,37 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
-import org.o42a.util.use.*;
+import org.o42a.util.use.UseCaseInfo;
+import org.o42a.util.use.UseFlag;
+import org.o42a.util.use.User;
 
 
 public abstract class Generator implements UseCaseInfo {
 
 	private final String id;
-	private UseCase useCase;
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
-	private final Debug debug;
+	private boolean proxied;
 
-	public Generator(String id) {
-		if (id == null) {
-			throw new NullPointerException(
-					"Generator identifier not specified");
-		}
+	Generator(String id) {
+		assert id != null :
+			"Generator identifier not specified";
 		this.id = id;
-		this.useCase = useCase(id);
 		this.functions = new GeneratorFunctions(this);
 		this.globals = new GeneratorGlobals(this);
-		this.debug = new Debug(this);
 	}
 
 	public final String getId() {
 		return this.id;
 	}
 
-	@Override
-	public final User toUser() {
-		return this.useCase;
+	public final boolean isProxied() {
+		return this.proxied;
 	}
 
 	@Override
-	public final UseCase toUseCase() {
-		return this.useCase;
+	public final User toUser() {
+		return toUseCase();
 	}
 
 	@Override
@@ -92,31 +84,19 @@ public abstract class Generator implements UseCaseInfo {
 		return this.globals;
 	}
 
-	public final Debug getDebug() {
-		return this.debug;
-	}
+	public abstract Debug getDebug();
 
 	public final boolean isDebug() {
-		return this.debug.isDebug();
+		return getDebug().isDebug();
 	}
 
 	public final void setDebug(boolean debug) {
-		this.debug.setDebug(debug);
+		getDebug().setDebug(debug);
 	}
 
-	public final boolean isUsesAnalysed() {
-		return !this.useCase.isSteady();
-	}
+	public abstract boolean isUsesAnalysed();
 
-	public final void setUsesAnalysed(boolean usesAnalysed) {
-		if (isUsesAnalysed() != usesAnalysed) {
-			if (usesAnalysed) {
-				this.useCase = useCase(getId());
-			} else {
-				this.useCase = steadyUseCase(getId());
-			}
-		}
-	}
+	public abstract void setUsesAnalysed(boolean usesAnalysed);
 
 	public final CodeId id() {
 		return getCodeIdFactory().id();
@@ -135,24 +115,24 @@ public abstract class Generator implements UseCaseInfo {
 	}
 
 	public final FunctionSettings newFunction() {
-		return this.functions.newFunction();
+		return getFunctions().newFunction();
 	}
 
 	public final <F extends Func<F>> FuncPtr<F> externalFunction(
 			String name,
 			Signature<F> signature) {
-		return this.functions.externalFunction(name, signature);
+		return getFunctions().externalFunction(name, signature);
 	}
 
 	public final GlobalSettings newGlobal() {
-		return this.globals.newGlobal();
+		return getGlobals().newGlobal();
 	}
 
 	public final Ptr<AnyOp> addBinary(
 			CodeId id,
 			boolean isContant,
 			byte[] data) {
-		return this.globals.addBinary(id, isContant, data);
+		return getGlobals().addBinary(id, isContant, data);
 	}
 
 	public final Ptr<AnyOp> addBinary(
@@ -161,7 +141,7 @@ public abstract class Generator implements UseCaseInfo {
 			byte[] data,
 			int start,
 			int end) {
-		return this.globals.addBinary(id, isConstant, data, start, end);
+		return getGlobals().addBinary(id, isConstant, data, start, end);
 	}
 
 	public final void write() {
@@ -180,10 +160,7 @@ public abstract class Generator implements UseCaseInfo {
 	protected abstract CodeBackend codeBackend();
 
 	protected CodeCallback createCodeCallback(Function<?> function) {
-		if (isDebug() && function.getSignature().isDebuggable()) {
-			return DEBUG_CODE_CALLBACK;
-		}
-		return NOOP_CODE_CALLBACK;
+		return getDebug().createCodeCallback(function);
 	}
 
 	protected abstract DataAllocator dataAllocator();
@@ -193,11 +170,11 @@ public abstract class Generator implements UseCaseInfo {
 	protected <F extends Func<F>> void addFunction(
 			CodeId id,
 			FuncPtr<F> functionPtr) {
-		this.debug.addFunction(id, functionPtr);
+		getDebug().addFunction(id, functionPtr);
 	}
 
 	protected void registerType(SubData<?> type) {
-		this.debug.registerType(type);
+		getDebug().registerType(type);
 	}
 
 	protected void addType(SubData<?> type) {
@@ -209,13 +186,17 @@ public abstract class Generator implements UseCaseInfo {
 	protected void writeData() {
 		for (;;) {
 
-			final boolean hadGlobals = this.globals.write();
-			final boolean hadFunctions = this.functions.write();
+			final boolean hadGlobals = getGlobals().write();
+			final boolean hadFunctions = getFunctions().write();
 
 			if (!hadGlobals && !hadFunctions) {
 				return;
 			}
 		}
+	}
+
+	final void proxied() {
+		this.proxied = true;
 	}
 
 }
