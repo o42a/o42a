@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Constant Handler Compiler Back-end
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.code;
+
+import org.o42a.codegen.code.CodePos;
 
 
-public interface MultiCodePos {
+public final class CCodePos implements CodePos {
+
+	private final CodePos underlying;
+
+	public CCodePos(CodePos underlying) {
+		this.underlying = underlying;
+	}
+
+	public final CodePos getUnderlying() {
+		return this.underlying;
+	}
+
+	@Override
+	public String toString() {
+		if (this.underlying == null) {
+			return super.toString();
+		}
+		return this.underlying.toString();
+	}
 
 }

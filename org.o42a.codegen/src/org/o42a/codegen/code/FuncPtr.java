@@ -43,6 +43,10 @@ public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {
 
 	public abstract Function<F> getFunction();
 
+	public final FuncAllocation<F> getAllocation() {
+		return this.allocation;
+	}
+
 	public F op(CodeId id, Code code) {
 		code.assertIncomplete();
 
@@ -56,10 +60,6 @@ public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {
 
 		return this.signature.op(
 				code.writer().caller(resultId, this.allocation));
-	}
-
-	final FuncAllocation<F> getAllocation() {
-		return this.allocation;
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Constant Handler Compiler Back-end
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.data;
+
+import org.o42a.codegen.code.backend.CodeBackend;
+import org.o42a.codegen.data.backend.DataAllocator;
+import org.o42a.codegen.data.backend.DataWriter;
 
 
-public interface MultiCodePos {
+public interface UnderlyingBackend {
+
+	CodeBackend codeBackend();
+
+	DataAllocator dataAllocator();
+
+	DataWriter dataWriter();
 
 }

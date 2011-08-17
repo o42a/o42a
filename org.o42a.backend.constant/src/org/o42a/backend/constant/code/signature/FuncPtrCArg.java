@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Constant Handler Compiler Back-end
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.code.signature;
+
+import org.o42a.codegen.code.Arg;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.SignatureBuilder;
 
 
-public interface MultiCodePos {
+final class FuncPtrCArg<F extends Func<F>> extends CArg<F> {
+
+	private final CSignature<F> signature;
+
+	public FuncPtrCArg(CSignature<F> signature, Arg<F> underlying) {
+		super(underlying);
+		this.signature = signature;
+	}
+
+	@Override
+	public Arg<F> add(SignatureBuilder builder) {
+		return builder.addFuncPtr(getName(), this.signature);
+	}
 
 }
