@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Constant Handler Compiler Back-end
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.code;
+
+import static org.o42a.backend.constant.data.ConstBackend.underlying;
+
+import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.backend.AllocationWriter;
+import org.o42a.codegen.code.backend.CodeWriter;
 
 
-public interface MultiCodePos {
+final class CAllocation
+		extends CCode<AllocationCode>
+		implements AllocationWriter {
+
+	CAllocation(
+			CCode<?> enclosing,
+			AllocationCode allocation,
+			AllocationCode underlying) {
+		super(
+				enclosing.getBackend(),
+				enclosing.getFunction(),
+				allocation,
+				underlying);
+	}
+
+	@Override
+	public void dispose(CodeWriter writer) {
+		getUnderlying().writer().dispose(underlying(writer));
+	}
 
 }

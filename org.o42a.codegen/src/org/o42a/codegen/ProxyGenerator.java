@@ -19,6 +19,9 @@
 */
 package org.o42a.codegen;
 
+import org.o42a.codegen.code.backend.CodeBackend;
+import org.o42a.codegen.data.backend.DataAllocator;
+import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
 import org.o42a.util.use.UseCase;
 
@@ -62,6 +65,18 @@ public abstract class ProxyGenerator extends Generator {
 	@Override
 	public final UseCase toUseCase() {
 		return getProxiedGenerator().toUseCase();
+	}
+
+	protected final CodeBackend proxiedCodeBackend() {
+		return getProxiedGenerator().codeBackend();
+	}
+
+	protected final DataAllocator proxiedDataAllocator() {
+		return getProxiedGenerator().dataAllocator();
+	}
+
+	protected final DataWriter proxiedDataWriter() {
+		return getProxiedGenerator().dataWriter();
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Constant Handler Compiler Back-end
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.code;
+
+import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.backend.CodeCallback;
 
 
-public interface MultiCodePos {
+public class CFunction<F extends Func<F>> extends CCode<Function<F>> {
+
+	private final CodeCallback callback;
+
+	CFunction(
+			ConstBackend backend,
+			Function<F> function,
+			CodeCallback callback,
+			Function<F> underlying) {
+		super(backend, null, function, underlying);
+		this.callback = callback;
+	}
+
+	public final CodeCallback getCallback() {
+		return this.callback;
+	}
 
 }

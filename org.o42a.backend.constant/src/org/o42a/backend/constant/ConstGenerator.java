@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant;
 
+import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.data.UnderlyingBackend;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.ProxyGenerator;
 import org.o42a.codegen.code.backend.CodeBackend;
@@ -26,34 +28,52 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public class ConstGenerator extends ProxyGenerator {
+public final class ConstGenerator extends ProxyGenerator {
+
+	private final ConstBackend backend;
 
 	public ConstGenerator(Generator proxiedGenerator) {
 		super(proxiedGenerator);
+		this.backend = new ConstBackend(this, new Underlying());
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-		getProxiedGenerator().close();
+		this.backend.close();
 	}
 
 	@Override
-	protected CodeBackend codeBackend() {
-		// TODO Auto-generated method stub
-		return null;
+	protected final CodeBackend codeBackend() {
+		return this.backend.codeBackend();
 	}
 
 	@Override
-	protected DataAllocator dataAllocator() {
-		// TODO Auto-generated method stub
-		return null;
+	protected final DataAllocator dataAllocator() {
+		return this.backend.dataAllocator();
 	}
 
 	@Override
-	protected DataWriter dataWriter() {
-		// TODO Auto-generated method stub
-		return null;
+	protected final DataWriter dataWriter() {
+		return this.backend.dataWriter();
+	}
+
+	private final class Underlying implements UnderlyingBackend {
+
+		@Override
+		public CodeBackend codeBackend() {
+			return proxiedCodeBackend();
+		}
+
+		@Override
+		public DataAllocator dataAllocator() {
+			return proxiedDataAllocator();
+		}
+
+		@Override
+		public DataWriter dataWriter() {
+			return proxiedDataWriter();
+		}
+
 	}
 
 }

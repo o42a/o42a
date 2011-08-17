@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Constant Handler Compiler Back-end
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.code.signature;
+
+import org.o42a.codegen.code.Arg;
+import org.o42a.codegen.code.SignatureBuilder;
+import org.o42a.codegen.code.op.Op;
 
 
-public interface MultiCodePos {
+class SimpleCArg<O extends Op> extends CArg<O> {
+
+	private final CArgType type;
+
+	public SimpleCArg(CArgType type, Arg<O> underlying) {
+		super(underlying);
+		this.type = type;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Arg<O> add(SignatureBuilder builder) {
+		return (Arg<O>) this.type.addArg(builder, this);
+	}
 
 }
