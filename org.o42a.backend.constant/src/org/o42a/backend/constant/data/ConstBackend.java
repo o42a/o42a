@@ -77,16 +77,6 @@ public class ConstBackend {
 		return cast(funcAllocation).getUnderlyingPtr().getAllocation();
 	}
 
-	public <O extends StructOp<O>> CType<O> underlying(Type<O> type) {
-		// TODO unwrap underlying type
-		return null;
-	}
-
-	public <F extends Func<F>> CSignature<F> underlying(
-			Signature<F> signature) {
-		return (CSignature<F>) signature.allocation(getGenerator());
-	}
-
 	private final ConstGenerator generator;
 	private final ConstCodeBackend codeBackend;
 	private final ConstDataAllocator dataAllocator;
@@ -125,6 +115,16 @@ public class ConstBackend {
 
 	public final ConstDataWriter dataWriter() {
 		return this.dataWriter;
+	}
+
+	public <O extends StructOp<O>> CType<O> underlying(Type<O> type) {
+		// TODO unwrap underlying type
+		return null;
+	}
+
+	public <F extends Func<F>> CSignature<F> underlying(
+			Signature<F> signature) {
+		return (CSignature<F>) signature.allocation(getGenerator());
 	}
 
 	public void close() {

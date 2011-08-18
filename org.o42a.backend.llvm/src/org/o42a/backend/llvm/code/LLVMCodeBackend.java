@@ -70,8 +70,4 @@ public class LLVMCodeBackend implements CodeBackend {
 				signature);
 	}
 
-	@Override
-	public void done() {
-	}
-
 }

@@ -145,14 +145,7 @@ public abstract class Generator implements UseCaseInfo {
 	}
 
 	public final void write() {
-
-		final CodeBackend coder = codeBackend();
-
-		try {
-			writeData();
-		} finally {
-			coder.done();
-		}
+		writeData();
 	}
 
 	public abstract void close();

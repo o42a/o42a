@@ -37,6 +37,4 @@ public interface CodeBackend {
 			CodeId id,
 			Signature<F> signature);
 
-	void done();
-
 }

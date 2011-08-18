@@ -49,7 +49,7 @@ public final class CSignature<F extends Func<F>>
 
 	@Override
 	public F op(FuncCaller<F> caller) {
-		return getOriginal().op(new CFuncCaller<F>(this, caller));
+		return getOriginal().op(caller);
 	}
 
 	@Override

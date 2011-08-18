@@ -27,17 +27,17 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.AllocClass;
 
 
-public abstract class PtrCOp<U extends PtrOp<P>, P extends PtrOp<P>>
-		implements PtrOp<P>, COp<U> {
+public abstract class PtrCOp<P extends PtrOp<P>>
+		implements PtrOp<P>, COp<P> {
 
-	private final U underlying;
+	private final P underlying;
 
-	public PtrCOp(U underlying) {
+	public PtrCOp(P underlying) {
 		this.underlying = underlying;
 	}
 
 	@Override
-	public final U getUnderlying() {
+	public final P getUnderlying() {
 		return this.underlying;
 	}
 

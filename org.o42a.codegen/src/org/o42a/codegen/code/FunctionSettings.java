@@ -51,6 +51,11 @@ public final class FunctionSettings {
 		return this;
 	}
 
+	public final FunctionSettings set(FunctionSettings settings) {
+		this.exported = settings.exported;
+		return this;
+	}
+
 	public <F extends Func<F>> Function<F> create(
 			CodeId id,
 			Signature<F> signature) {
