@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
 
 
@@ -26,6 +27,6 @@ public interface COp<U extends Op> extends Op {
 
 	U getUnderlying();
 
-	U create(U underlying);
+	U create(CodeId id, CCode<?> code, U underlying);
 
 }

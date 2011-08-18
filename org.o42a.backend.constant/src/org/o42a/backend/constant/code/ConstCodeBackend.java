@@ -23,9 +23,7 @@ import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.code.signature.CSignatureWriter;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.*;
 
 
@@ -51,8 +49,23 @@ public class ConstCodeBackend implements CodeBackend {
 	public <F extends Func<F>> FuncWriter<F> addFunction(
 			Function<F> function,
 			CodeCallback callback) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final FunctionSettings underlyingSettings = function.update(
+				getBackend().getUnderlyingGenerator().newFunction());
+		final CSignature<F> underlyingSignature =
+				getBackend().underlying(function.getSignature());
+		final Function<F> underlyingFunction = underlyingSettings.create(
+				function.getId(),
+				underlyingSignature);
+
+		return new CFunction<F>(
+				this.backend,
+				function,
+				callback,
+				new FuncCAlloc<F>(
+						underlyingFunction.getPointer(),
+						underlyingSignature),
+				underlyingFunction);
 	}
 
 	@Override
@@ -68,12 +81,6 @@ public class ConstCodeBackend implements CodeBackend {
 						id.getId(),
 						underlyingSignature),
 				underlyingSignature);
-	}
-
-	@Override
-	public void done() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

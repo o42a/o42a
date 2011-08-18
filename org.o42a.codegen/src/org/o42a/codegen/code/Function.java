@@ -67,6 +67,10 @@ public final class Function<F extends Func<F>> extends Code {
 		return this.writer != null && this.writer.exists();
 	}
 
+	public final FunctionSettings update(FunctionSettings settings) {
+		return settings.set(this.settings);
+	}
+
 	public final DebugEnvOp debugEnv(Code code) {
 
 		final Arg<DebugEnvOp> debugEnv = getSignature().debugEnv();

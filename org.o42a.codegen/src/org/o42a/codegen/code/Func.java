@@ -81,6 +81,10 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 		return this.caller.toAny(id, code);
 	}
 
+	public final FuncCaller<F> caller() {
+		return this.caller;
+	}
+
 	@Override
 	public String toString() {
 		return this.caller.toString();

@@ -110,9 +110,12 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public <F extends Func<F>> FuncCaller<F> caller(
 			CodeId id,
 			FuncAllocation<F> allocation) {
-		return getUnderlying().writer().caller(
-				id,
-				cast(allocation).getUnderlyingPtr().getAllocation());
+
+		final FuncCAlloc<F> alloc = cast(allocation);
+		final F underlyingFunc =
+				alloc.getUnderlyingPtr().op(id, getUnderlying());
+
+		return new FuncCCaller<F>(alloc, underlyingFunc);
 	}
 
 	@Override
@@ -253,19 +256,19 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public <O extends Op> O phi(CodeId id, O op) {
 
 		final COp<O> cop = cast(op);
+		final O underlyingPHI = getUnderlying().phi(id, cop.getUnderlying());
 
-		return cop.create(getUnderlying().phi(id, cop.getUnderlying()));
+		return cop.create(id, this, underlyingPHI);
 	}
 
 	@Override
 	public <O extends Op> O phi(CodeId id, O op1, O op2) {
 
 		final COp<O> cop1 = cast(op1);
+		final O underlyingPHI =
+				getUnderlying().phi(id, cop1.getUnderlying(), underlying(op2));
 
-		return cop1.create(getUnderlying().phi(
-				id,
-				cop1.getUnderlying(),
-				underlying(op2)));
+		return cop1.create(id, this, underlyingPHI);
 	}
 
 	@Override

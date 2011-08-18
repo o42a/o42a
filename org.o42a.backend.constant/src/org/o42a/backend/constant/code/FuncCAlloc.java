@@ -34,7 +34,7 @@ public class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
 	private final FuncPtr<F> underlyingPtr;
 	private final CSignature<F> underlyingSignature;
 
-	public FuncCAlloc(
+	FuncCAlloc(
 			FuncPtr<F> underlyingPtr,
 			CSignature<F> underlyingSignature) {
 		this.underlyingPtr = underlyingPtr;

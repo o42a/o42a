@@ -17,38 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.signature;
+package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
-import org.o42a.backend.constant.code.PtrCOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-final class CFuncCaller<F extends Func<F>>
-		extends PtrCOp<FuncCaller<F>, F>
+final class FuncCCaller<F extends Func<F>>
+		extends PtrCOp<F>
 		implements FuncCaller<F> {
 
-	private final CSignature<F> signature;
+	private final FuncCAlloc<F> allocation;
 
-	CFuncCaller(CSignature<F> signature, FuncCaller<F> underlying) {
+	FuncCCaller(FuncCAlloc<F> allocation, F underlying) {
 		super(underlying);
-		this.signature = signature;
+		this.allocation = allocation;
+	}
+
+	public final FuncCAlloc<F> getAllocation() {
+		return this.allocation;
 	}
 
 	@Override
-	public final CSignature<F> getSignature() {
-		return this.signature;
+	public final Signature<F> getSignature() {
+		return getAllocation().getSignature();
 	}
 
 	@Override
 	public void call(Code code, Op... args) {
-		getUnderlying().call(code, underlyingArgs(args));
+		getUnderlying().caller().call(code, underlyingArgs(args));
 	}
 
 	@Override
@@ -115,8 +119,13 @@ final class CFuncCaller<F extends Func<F>>
 	}
 
 	@Override
-	public CFuncCaller<F> create(FuncCaller<F> underlying) {
-		return new CFuncCaller<F>(this.signature, underlying);
+	public F create(CodeId id, CCode<?> code, F underlying) {
+
+		final F underlyingFunc =
+				this.allocation.getUnderlyingPtr().op(id, code.getUnderlying());
+
+		return this.allocation.getSignature().op(
+				new FuncCCaller<F>(this.allocation, underlyingFunc));
 	}
 
 	private Op[] underlyingArgs(Op[] args) {
