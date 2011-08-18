@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.constant.code.signature;
 
+import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Func;
@@ -36,6 +37,10 @@ public final class CSignature<F extends Func<F>>
 
 	CSignature(CSignatureWriter<F> constWriter) {
 		this.constWriter = constWriter;
+	}
+
+	public final ConstBackend getBackend() {
+		return this.constWriter.getBackend();
 	}
 
 	public final Signature<F> getOriginal() {

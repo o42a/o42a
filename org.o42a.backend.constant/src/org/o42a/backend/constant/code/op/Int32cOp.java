@@ -17,34 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.op;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.code.op.Int32op;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public final class Int32cOp extends IntCOp<Int32op> implements Int32op {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+	public Int32cOp(CCode<?> code, Int32op underlying) {
+		super(code, underlying);
 	}
 
 	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
-	}
-
-	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	public Int32op create(CCode<?> code, Int32op underlying) {
+		return new Int32cOp(code, underlying);
 	}
 
 }

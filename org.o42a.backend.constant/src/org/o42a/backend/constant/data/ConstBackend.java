@@ -20,7 +20,11 @@
 package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.ConstGenerator;
-import org.o42a.backend.constant.code.*;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePos;
+import org.o42a.backend.constant.code.ConstCodeBackend;
+import org.o42a.backend.constant.code.func.FuncCAlloc;
+import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.type.CType;
 import org.o42a.codegen.Generator;
@@ -63,8 +67,18 @@ public class ConstBackend {
 		return (COp<O>) op;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <O extends Op> O underlying(O op) {
+		if (op instanceof StructOp) {
+			return (O) underlying((StructOp<?>) op);
+		}
 		return cast(op).getUnderlying();
+	}
+
+	public static <S extends StructOp<S>> StructOp<S> underlying(
+			StructOp<S> op) {
+		// TODO find underlying StructOp
+		return null;
 	}
 
 	public static <F extends Func<F>> FuncCAlloc<F> cast(
@@ -117,12 +131,12 @@ public class ConstBackend {
 		return this.dataWriter;
 	}
 
-	public <O extends StructOp<O>> CType<O> underlying(Type<O> type) {
+	public final <O extends StructOp<O>> CType<O> underlying(Type<O> type) {
 		// TODO unwrap underlying type
 		return null;
 	}
 
-	public <F extends Func<F>> CSignature<F> underlying(
+	public final <F extends Func<F>> CSignature<F> underlying(
 			Signature<F> signature) {
 		return (CSignature<F>) signature.allocation(getGenerator());
 	}

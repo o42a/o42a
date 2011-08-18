@@ -19,27 +19,40 @@
 */
 package org.o42a.backend.constant.data;
 
-import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.code.op.RecOp;
+import static org.o42a.backend.constant.data.ConstBackend.cast;
+
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Rec;
 
 
 public abstract class RecCDAlloc<
-		R extends RecOp<R, O>,
-		O extends Op,
-		D extends Rec<R, T>,
-		T> extends CDAlloc<R, D> {
+		R extends Rec<P, T>,
+		P extends PtrOp<P>,
+		T> extends CDAlloc<P, R> {
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
 
 	public RecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
-			CDAlloc<R, D> type) {
+			CDAlloc<P, R> type) {
 		super(type);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
 		enclosing.nest(this);
+	}
+
+	public RecCDAlloc(
+			ContainerCDAlloc<?> enclosing,
+			Ptr<P> underlyingPtr) {
+		super(underlyingPtr);
+		this.topLevel = enclosing.getTopLevel();
+		this.enclosing = enclosing;
 	}
 
 	@Override
@@ -51,5 +64,17 @@ public abstract class RecCDAlloc<
 	public final ContainerCDAlloc<?> getEnclosing() {
 		return this.enclosing;
 	}
+
+	@Override
+	public final P op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+
+		final CCode<?> ccode = cast(writer);
+		final P underlyingOp =
+				getUnderlyingPtr().op(id, ccode.getUnderlying());
+
+		return op(ccode, underlyingOp);
+	}
+
+	protected abstract P op(CCode<?> code, P underlying);
 
 }

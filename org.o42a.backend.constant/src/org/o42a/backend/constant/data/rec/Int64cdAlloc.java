@@ -17,34 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.data.rec;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.rec.Int64recCOp;
+import org.o42a.backend.constant.data.CDAlloc;
+import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.RecCDAlloc;
+import org.o42a.codegen.code.op.Int64recOp;
+import org.o42a.codegen.data.Int64rec;
+import org.o42a.codegen.data.SubData;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
+	public Int64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+			CDAlloc<Int64recOp, Int64rec> type) {
+		super(enclosing, type);
 	}
 
 	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
+	protected Int64recCOp op(CCode<?> code, Int64recOp underlying) {
+		return new Int64recCOp(code, underlying);
 	}
 
 	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	protected Int64rec allocateUnderlying(SubData<?> container, String name) {
+		return container.addInt64(name);
 	}
 
 }

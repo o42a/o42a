@@ -178,6 +178,10 @@ public class CSignatureWriter<F extends Func<F>>
 		return new CSignature<F>(this);
 	}
 
+	final CArg<?>[] getArgs() {
+		return this.args;
+	}
+
 	void rebuild(SignatureBuilder builder) {
 		if (this.returnType != null) {
 			builder.returnPtr(this.returnType);

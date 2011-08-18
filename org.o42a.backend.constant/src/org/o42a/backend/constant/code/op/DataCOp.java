@@ -17,34 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.op;
 
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Type;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public final class DataCOp extends PtrCOp<DataOp> implements DataOp {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+	public DataCOp(CCode<?> code, DataOp underlying) {
+		super(code, underlying);
 	}
 
 	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
+	public <S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	public DataCOp create(CCode<?> code, DataOp underlying) {
+		return new DataCOp(code, underlying);
 	}
 
 }

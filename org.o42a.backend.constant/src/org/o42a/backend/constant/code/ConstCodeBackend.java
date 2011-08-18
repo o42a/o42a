@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.code.signature.CSignatureWriter;
 import org.o42a.backend.constant.data.ConstBackend;

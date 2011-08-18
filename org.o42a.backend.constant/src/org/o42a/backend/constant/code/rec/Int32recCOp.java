@@ -17,16 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code;
+package org.o42a.backend.constant.code.rec;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.Op;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.Int32cOp;
+import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.Int32recOp;
 
 
-public interface COp<U extends Op> extends Op {
+public final class Int32recCOp
+		extends RecCOp<Int32recOp, Int32op>
+		implements Int32recOp {
 
-	U getUnderlying();
+	public Int32recCOp(CCode<?> code, Int32recOp underlying) {
+		super(code, underlying);
+	}
 
-	U create(CodeId id, CCode<?> code, U underlying);
+	@Override
+	public final Int32recCOp create(CCode<?> code, Int32recOp underlying) {
+		return new Int32recCOp(code, underlying);
+	}
+
+	@Override
+	protected final Int32cOp loaded(CCode<?> code, Int32op underlying) {
+		return new Int32cOp(code, underlying);
+	}
 
 }

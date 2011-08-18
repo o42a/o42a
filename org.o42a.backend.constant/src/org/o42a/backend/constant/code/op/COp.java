@@ -17,34 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.op;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.code.op.Op;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public interface COp<U extends Op> extends Op {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
+	CCode<?> getCode();
 
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
-	}
+	U getUnderlying();
 
-	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
-	}
-
-	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
-	}
+	U create(CCode<?> code, U underlying);
 
 }
