@@ -17,34 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.op;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.code.op.Fp32op;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public final class Fp32cOp extends FpCOp<Fp32op> implements Fp32op {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+	public Fp32cOp(CCode<?> code, Fp32op underlying) {
+		super(code, underlying);
 	}
 
 	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
-	}
-
-	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	public Fp32op create(CCode<?> code, Fp32op underlying) {
+		return new Fp32cOp(code, underlying);
 	}
 
 }

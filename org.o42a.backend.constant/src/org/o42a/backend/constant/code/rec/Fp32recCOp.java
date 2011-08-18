@@ -17,34 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.rec;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.Fp32cOp;
+import org.o42a.codegen.code.op.Fp32op;
+import org.o42a.codegen.code.op.Fp32recOp;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public final class Fp32recCOp
+		extends RecCOp<Fp32recOp, Fp32op>
+		implements Fp32recOp {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+	public Fp32recCOp(CCode<?> code, Fp32recOp underlying) {
+		super(code, underlying);
 	}
 
 	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
+	public final Fp32recCOp create(CCode<?> code, Fp32recOp underlying) {
+		return new Fp32recCOp(code, underlying);
 	}
 
 	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	protected final Fp32cOp loaded(CCode<?> code, Fp32op underlying) {
+		return new Fp32cOp(code, underlying);
 	}
 
 }

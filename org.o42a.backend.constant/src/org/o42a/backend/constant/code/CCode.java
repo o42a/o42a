@@ -22,6 +22,8 @@ package org.o42a.backend.constant.code;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
+import org.o42a.backend.constant.code.func.FuncCCaller;
+import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -111,11 +113,10 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			CodeId id,
 			FuncAllocation<F> allocation) {
 
-		final FuncCAlloc<F> alloc = cast(allocation);
 		final F underlyingFunc =
-				alloc.getUnderlyingPtr().op(id, getUnderlying());
+				cast(allocation).getUnderlyingPtr().op(id, getUnderlying());
 
-		return new FuncCCaller<F>(alloc, underlyingFunc);
+		return new FuncCCaller<F>(this, underlyingFunc);
 	}
 
 	@Override
@@ -258,7 +259,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final COp<O> cop = cast(op);
 		final O underlyingPHI = getUnderlying().phi(id, cop.getUnderlying());
 
-		return cop.create(id, this, underlyingPHI);
+		return cop.create(this, underlyingPHI);
 	}
 
 	@Override
@@ -268,13 +269,17 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final O underlyingPHI =
 				getUnderlying().phi(id, cop1.getUnderlying(), underlying(op2));
 
-		return cop1.create(id, this, underlyingPHI);
+		return cop1.create(this, underlyingPHI);
 	}
 
 	@Override
 	public void returnVoid() {
-		getFunction().getCallback().beforeReturn(code());
+		beforeReturn();
 		getUnderlying().returnVoid();
+	}
+
+	public void beforeReturn() {
+		getFunction().getCallback().beforeReturn(code());
 	}
 
 	@Override

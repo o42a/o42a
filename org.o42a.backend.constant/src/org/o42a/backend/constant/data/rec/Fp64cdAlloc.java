@@ -17,34 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.data.rec;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.rec.Fp64recCOp;
+import org.o42a.backend.constant.data.CDAlloc;
+import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.RecCDAlloc;
+import org.o42a.codegen.code.op.Fp64recOp;
+import org.o42a.codegen.data.Fp64rec;
+import org.o42a.codegen.data.SubData;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
+	public Fp64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+			CDAlloc<Fp64recOp, Fp64rec> type) {
+		super(enclosing, type);
 	}
 
 	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
+	protected Fp64recCOp op(CCode<?> code, Fp64recOp underlying) {
+		return new Fp64recCOp(code, underlying);
 	}
 
 	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	protected Fp64rec allocateUnderlying(SubData<?> container, String name) {
+		return container.addFp64(name);
 	}
 
 }

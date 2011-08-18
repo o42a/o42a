@@ -19,7 +19,14 @@
 */
 package org.o42a.backend.constant.code;
 
+import static org.o42a.backend.constant.data.ConstBackend.cast;
+
+import org.o42a.backend.constant.code.func.FuncCAlloc;
+import org.o42a.backend.constant.code.func.FuncCCaller;
+import org.o42a.backend.constant.code.op.*;
+import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
 import org.o42a.codegen.code.backend.FuncWriter;
@@ -45,6 +52,10 @@ public class CFunction<F extends Func<F>>
 		this.allocation = allocation;
 	}
 
+	public final CSignature<F> getUnderlyingSignature() {
+		return this.allocation.getUnderlyingSignature();
+	}
+
 	public final CodeCallback getCallback() {
 		return this.callback;
 	}
@@ -55,63 +66,103 @@ public class CFunction<F extends Func<F>>
 	}
 
 	@Override
-	public Int8op int8arg(Code code, Arg<Int8op> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int8cOp int8arg(Code code, Arg<Int8op> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final Int8op underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new Int8cOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public Int16op int16arg(Code code, Arg<Int16op> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int16cOp int16arg(Code code, Arg<Int16op> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final Int16op underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new Int16cOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public Int32op int32arg(Code code, Arg<Int32op> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int32cOp int32arg(Code code, Arg<Int32op> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final Int32op underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new Int32cOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public Int64op int64arg(Code code, Arg<Int64op> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int64cOp int64arg(Code code, Arg<Int64op> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final Int64op underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new Int64cOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public Fp32op fp32arg(Code code, Arg<Fp32op> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Fp32cOp fp32arg(Code code, Arg<Fp32op> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final Fp32op underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new Fp32cOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public Fp64op fp64arg(Code code, Arg<Fp64op> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Fp64cOp fp64arg(Code code, Arg<Fp64op> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final Fp64op underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new Fp64cOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public BoolOp boolArg(Code code, Arg<BoolOp> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final BoolCOp boolArg(Code code, Arg<BoolOp> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final BoolOp underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new BoolCOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public RelOp relPtrArg(Code code, Arg<RelOp> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final RelCOp relPtrArg(Code code, Arg<RelOp> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final RelOp underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new RelCOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public AnyOp ptrArg(Code code, Arg<AnyOp> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final AnyCOp ptrArg(Code code, Arg<AnyOp> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final AnyOp underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new AnyCOp(ccode, underlyingValue);
 	}
 
 	@Override
-	public DataOp dataArg(Code code, Arg<DataOp> arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public final DataCOp dataArg(Code code, Arg<DataOp> arg) {
+
+		final CCode<?> ccode = cast(code);
+		final DataOp underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return new DataCOp(ccode, underlyingValue);
 	}
 
 	@Override
@@ -128,8 +179,24 @@ public class CFunction<F extends Func<F>>
 			Code code,
 			Arg<FF> arg,
 			Signature<FF> signature) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final FF underlyingFunc =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return signature.op(new FuncCCaller<FF>(ccode, underlyingFunc));
+	}
+
+	@SuppressWarnings("unchecked")
+	private final <O extends Op> Arg<O> underlyingArg(Arg<O> arg) {
+
+		final CSignature<F> underlyingSignature = getUnderlyingSignature();
+		final Generator underlyingGenerator =
+				underlyingSignature.getBackend().getUnderlyingGenerator();
+		final Arg<?>[] underlyingArgs =
+				underlyingSignature.args(underlyingGenerator);
+
+		return (Arg<O>) underlyingArgs[arg.getIndex()];
 	}
 
 }

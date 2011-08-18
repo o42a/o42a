@@ -17,34 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.rec;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.Int8cOp;
+import org.o42a.codegen.code.op.Int8op;
+import org.o42a.codegen.code.op.Int8recOp;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public final class Int8recCOp
+		extends RecCOp<Int8recOp, Int8op>
+		implements Int8recOp {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+	public Int8recCOp(CCode<?> code, Int8recOp underlying) {
+		super(code, underlying);
 	}
 
 	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
+	public final Int8recCOp create(CCode<?> code, Int8recOp underlying) {
+		return new Int8recCOp(code, underlying);
 	}
 
 	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	protected final Int8cOp loaded(CCode<?> code, Int8op underlying) {
+		return new Int8cOp(code, underlying);
 	}
 
 }

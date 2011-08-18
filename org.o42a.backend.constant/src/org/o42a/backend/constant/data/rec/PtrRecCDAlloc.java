@@ -17,34 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.data.rec;
 
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.backend.constant.data.CDAlloc;
+import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.RecCDAlloc;
+import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.PtrRec;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public abstract class PtrRecCDAlloc<R extends PtrRec<P>, P extends PtrOp<P>>
+		extends RecCDAlloc<R, P, Ptr<P>> {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
-
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+	public PtrRecCDAlloc(ContainerCDAlloc<?> enclosing, CDAlloc<P, R> type) {
+		super(enclosing, type);
 	}
 
-	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
-	}
-
-	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	public PtrRecCDAlloc(ContainerCDAlloc<?> enclosing, Ptr<P> underlyingPtr) {
+		super(enclosing, underlyingPtr);
 	}
 
 }

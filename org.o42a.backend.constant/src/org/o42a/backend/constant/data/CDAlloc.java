@@ -19,21 +19,32 @@
 */
 package org.o42a.backend.constant.data;
 
+import org.o42a.backend.constant.data.rec.AnyCDAlloc;
+import org.o42a.backend.constant.data.rec.DataCDAlloc;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.codegen.data.Data;
-import org.o42a.codegen.data.DataLayout;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.codegen.data.backend.RelAllocation;
 
 
-public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<?>>
+public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		implements DataAllocation<P> {
 
 	private final CDAlloc<P, D> typeAllocation;
 	private D underlying;
+	private Ptr<P> underlyingPtr;
 
 	public CDAlloc(CDAlloc<P, D> typeAllocation) {
 		this.typeAllocation = typeAllocation;
+	}
+
+	public CDAlloc(Ptr<P> underlyingPtr) {
+		this.typeAllocation = null;
+		this.underlying = null;
+		this.underlyingPtr = underlyingPtr;
 	}
 
 	public CDAlloc<P, D> getTypeAllocation() {
@@ -48,15 +59,24 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<?>>
 
 	public abstract ContainerCDAlloc<?> getEnclosing();
 
-	public final D getUnderlying() {
+	public D getUnderlying() {
 		if (this.underlying == null) {
+			assert this.underlyingPtr == null :
+				"Can not allocate " + this;
 			getTopLevel().initUnderlying(null);
 		}
 		return this.underlying;
 	}
 
+	public Ptr<P> getUnderlyingPtr() {
+		if (this.underlyingPtr != null) {
+			return this.underlyingPtr;
+		}
+		return this.underlyingPtr = getUnderlying().getPointer();
+	}
+
 	@Override
-	public DataLayout getLayout() {
+	public final DataLayout getLayout() {
 
 		final CDAlloc<P, D> typeAllocation = getTypeAllocation();
 
@@ -64,13 +84,40 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<?>>
 			return typeAllocation.getLayout();
 		}
 
-		return getUnderlying().getLayout();
+		return getUnderlyingPtr().getAllocation().getLayout();
 	}
 
-	protected abstract D allocateUnderlying(SubData<?> container);
+	@Override
+	public RelAllocation relativeTo(DataAllocation<?> allocation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DataAllocation<AnyOp> toAny() {
+		return new AnyCDAlloc(getEnclosing(), getUnderlyingPtr().toAny());
+	}
+
+	@Override
+	public DataAllocation<DataOp> toData() {
+		return new DataCDAlloc(getEnclosing(), getUnderlyingPtr().toData());
+	}
+
+	@Override
+	public final void write(DataWriter writer) {
+
+		final DataWriter underlyingWriter =
+				getTopLevel().getBackend().getUnderlyingBackend().dataWriter();
+
+		getUnderlyingPtr().getAllocation().write(underlyingWriter);
+	}
+
+	protected abstract D allocateUnderlying(SubData<?> container, String name);
 
 	void initUnderlying(SubData<?> container) {
-		this.underlying = allocateUnderlying(container);
+		this.underlying = allocateUnderlying(
+				container,
+				getUnderlying().getId().getLocal().getId());
 	}
 
 }
