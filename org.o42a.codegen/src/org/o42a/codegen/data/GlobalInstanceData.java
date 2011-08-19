@@ -56,11 +56,25 @@ final class GlobalInstanceData<S extends StructOp<S>>
 		return null;
 	}
 
+	@Override
+	protected void allocateType(boolean fully) {
+		allocateData();
+	}
+
+	@Override
+	protected boolean startAllocation(DataAllocator allocator) {
+		setAllocation(allocator.begin(getAllocation(), this.global));
+		return true;
+	}
+
+	@Override
+	protected void allocateContents() {
+		getInstance().allocateInstance(this);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void allocate(DataAllocator allocator) {
-		setAllocation(allocator.begin(getAllocation(), this.global));
-		getInstance().allocateInstance(this);
+	protected void endAllocation(DataAllocator allocator) {
 		allocator.end(this.global);
 		this.content.allocated(getInstance());
 		getGenerator().getGlobals().addGlobal(this);

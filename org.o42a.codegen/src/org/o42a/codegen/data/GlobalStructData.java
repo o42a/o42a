@@ -59,7 +59,7 @@ final class GlobalStructData<S extends StructOp<S>>
 	}
 
 	@Override
-	protected DataAllocation<S> beginTypeAllocation(
+	protected DataAllocation<S> startTypeAllocation(
 			DataAllocator allocator) {
 		return allocator.begin(getInstance().getAllocation(), this.global);
 	}

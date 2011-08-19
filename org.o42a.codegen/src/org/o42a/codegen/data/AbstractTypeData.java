@@ -40,30 +40,15 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 	}
 
 	@Override
-	protected final void allocate(DataAllocator allocator) {
-		if (begin(true)) {
-			end(true);
-		}
-	}
-
-	protected abstract DataAllocation<S> beginTypeAllocation(
-			DataAllocator allocator);
-
-	protected abstract void endTypeAllocation(DataAllocator allocator);
-
-	protected void postTypeAllocation() {
-	}
-
-	@Override
-	final void allocateType(boolean fully) {
+	protected final void allocateType(boolean fully) {
 
 		final boolean immediately = fully || getInstance().isReentrant();
 
-		if (!begin(immediately)) {
+		if (!startAllocation(immediately)) {
 			return;
 		}
 		if (immediately) {
-			end(true);
+			completeAllocation(true);
 			return;
 		}
 
@@ -72,7 +57,31 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 		globals.scheduleTypeAllocation(this);
 	}
 
-	final boolean end(boolean immediately) {
+	@Override
+	protected final boolean startAllocation(DataAllocator allocator) {
+		return startAllocation(true);
+	}
+
+	@Override
+	protected final void allocateContents() {
+		this.scheduled = false; // Prevent double allocation.
+		getInstance().allocateInstance(this);
+	}
+
+	@Override
+	protected final void endAllocation(DataAllocator allocator) {
+		endAllocation(true);
+	}
+
+	protected abstract DataAllocation<S> startTypeAllocation(
+			DataAllocator allocator);
+
+	protected abstract void endTypeAllocation(DataAllocator allocator);
+
+	protected void postTypeAllocation() {
+	}
+
+	final boolean completeAllocation(boolean immediately) {
 		if (!immediately) {
 			// Request by scheduler.
 			if (!this.scheduled) {
@@ -81,24 +90,27 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 			}
 		}
 
-		this.scheduled = false; // Prevent double allocation.
-
-		final Globals globals = getGenerator().getGlobals();
-
-		getInstance().allocateInstance(this);
-		endTypeAllocation(globals.dataAllocator());
-		getInstance().setAllocated(getGenerator());
-		globals.allocatedType(this, immediately);
-		postTypeAllocation();
+		allocateContents();
+		endAllocation(immediately);
 
 		return true;
 	}
 
-	private boolean begin(boolean immediately) {
+	private void endAllocation(boolean immediately) {
+
+		final Globals globals = getGenerator().getGlobals();
+
+		endTypeAllocation(globals.dataAllocator());
+		getInstance().setAllocated(getGenerator());
+		globals.allocatedType(this, immediately);
+		postTypeAllocation();
+	}
+
+	private boolean startAllocation(boolean immediately) {
 		if (immediately && this.scheduled) {
 			// Already scheduled for allocation,
 			// but immediate allocation requested.
-			end(false);
+			completeAllocation(false);
 			return false;
 		}
 		if (!getInstance().startAllocation(getGenerator())) {
@@ -111,7 +123,7 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 		if (immediately) {
 			globals.allocatingType(this);
 		}
-		setAllocation(beginTypeAllocation(globals.dataAllocator()));
+		setAllocation(startTypeAllocation(globals.dataAllocator()));
 
 		globals.registerType(this);
 

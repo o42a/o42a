@@ -124,6 +124,10 @@ public abstract class Type<S extends StructOp<S>>
 		return this.data;
 	}
 
+	public final void done() {
+		this.data.endAllocation();
+	}
+
 	@Override
 	public String toString() {
 		return getId().toString();
@@ -224,7 +228,7 @@ public abstract class Type<S extends StructOp<S>>
 		return typeInstance;
 	}
 
-	final SubData<S> getTypeData() {
+	final SubData<S> getInstanceData() {
 		return this.data;
 	}
 
