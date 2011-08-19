@@ -33,8 +33,9 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 
 	public Int8cdAlloc(
 			ContainerCDAlloc<?> enclosing,
+			Int8rec data,
 			CDAlloc<Int8recOp, Int8rec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	@Override

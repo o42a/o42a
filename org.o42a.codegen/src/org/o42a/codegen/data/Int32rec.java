@@ -40,6 +40,7 @@ public final class Int32rec extends Rec<Int32recOp, Integer> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt32(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

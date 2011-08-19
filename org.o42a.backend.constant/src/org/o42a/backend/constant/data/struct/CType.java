@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data.type;
+package org.o42a.backend.constant.data.struct;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -27,16 +27,16 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.Type;
 
 
-public class CType<S extends StructOp<S>> extends Type<S> {
+public final class CType<S extends StructOp<S>> extends Type<S> {
 
-	private final Type<S> underlying;
+	private final Type<S> original;
 
-	public CType(Type<S> underlying) {
-		this.underlying = underlying;
+	public CType(Type<S> original) {
+		this.original = original;
 	}
 
-	public final Type<S> getUnderlying() {
-		return this.underlying;
+	public final Type<S> getOriginal() {
+		return this.original;
 	}
 
 	@Override
@@ -47,8 +47,7 @@ public class CType<S extends StructOp<S>> extends Type<S> {
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		// TODO Auto-generated method stub
-		return null;
+		return getOriginal().codeId(factory);
 	}
 
 	@Override

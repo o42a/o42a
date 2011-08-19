@@ -34,8 +34,9 @@ public final class RelCDAlloc extends RecCDAlloc<RelPtrRec, RelRecOp, RelPtr> {
 
 	public RelCDAlloc(
 			ContainerCDAlloc<?> enclosing,
+			RelPtrRec data,
 			CDAlloc<RelRecOp, RelPtrRec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public final class AnyPtrRec extends PtrRec<AnyOp> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocatePtr(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

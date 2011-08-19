@@ -20,13 +20,13 @@
 package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.data.rec.*;
+import org.o42a.backend.constant.data.struct.SubCDAlloc;
+import org.o42a.backend.constant.data.struct.TypeCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 
@@ -56,8 +56,7 @@ public class ConstDataAllocator implements DataAllocator {
 
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> begin(Type<S> type) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TypeCDAlloc<S>(getBackend(), type);
 	}
 
 	@Override
@@ -71,16 +70,21 @@ public class ConstDataAllocator implements DataAllocator {
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> enter(
 			DataAllocation<?> enclosing,
-			DataAllocation<S> type,
-			SubData<S> data) {
-		// TODO Auto-generated method stub
-		return null;
+			SubData<S> data,
+			DataAllocation<S> type) {
+		return new SubCDAlloc<S>(
+				enclosing(enclosing),
+				data,
+				(ContainerCDAlloc<S>) type);
 	}
 
 	@Override
 	public void exit(DataAllocation<?> enclosing, SubData<?> data) {
-		// TODO Auto-generated method stub
 
+		final ContainerCDAlloc<?> alloc =
+				(SubCDAlloc<?>) data.getPointer().getAllocation();
+
+		alloc.containerAllocated();
 	}
 
 	@Override
@@ -91,59 +95,85 @@ public class ConstDataAllocator implements DataAllocator {
 
 	@Override
 	public void end(Type<?> type) {
-		// TODO Auto-generated method stub
 
+		final ContainerCDAlloc<?> alloc = (TypeCDAlloc<?>) type.pointer(
+				getBackend().getGenerator()).getAllocation();
+
+		alloc.containerAllocated();
 	}
 
 	@Override
 	public final Int8cdAlloc allocateInt8(
 			DataAllocation<?> enclosing,
+			Int8rec data,
 			DataAllocation<Int8recOp> type) {
-		return new Int8cdAlloc(enclosing(enclosing), (Int8cdAlloc) type);
+		return new Int8cdAlloc(enclosing(enclosing), data, (Int8cdAlloc) type);
 	}
 
 	@Override
 	public final Int16cdAlloc allocateInt16(
 			DataAllocation<?> enclosing,
+			Int16rec data,
 			DataAllocation<Int16recOp> type) {
-		return new Int16cdAlloc(enclosing(enclosing), (Int16cdAlloc) type);
+		return new Int16cdAlloc(
+				enclosing(enclosing),
+				data,
+				(Int16cdAlloc) type);
 	}
 
 	@Override
 	public final Int32cdAlloc allocateInt32(
 			DataAllocation<?> enclosing,
+			Int32rec data,
 			DataAllocation<Int32recOp> type) {
-		return new Int32cdAlloc(enclosing(enclosing), (Int32cdAlloc) type);
+		return new Int32cdAlloc(
+				enclosing(enclosing),
+				data,
+				(Int32cdAlloc) type);
 	}
 
 	@Override
 	public final Int64cdAlloc allocateInt64(
 			DataAllocation<?> enclosing,
+			Int64rec data,
 			DataAllocation<Int64recOp> type) {
-		return new Int64cdAlloc(enclosing(enclosing), (Int64cdAlloc) type);
+		return new Int64cdAlloc(
+				enclosing(enclosing),
+				data,
+				(Int64cdAlloc) type);
 	}
 
 	@Override
 	public final Fp32cdAlloc allocateFp32(
 			DataAllocation<?> enclosing,
+			Fp32rec data,
 			DataAllocation<Fp32recOp> type) {
-		return new Fp32cdAlloc(enclosing(enclosing), (Fp32cdAlloc) type);
+		return new Fp32cdAlloc(
+				enclosing(enclosing),
+				data,
+				(Fp32cdAlloc) type);
 	}
 
 	@Override
 	public final Fp64cdAlloc allocateFp64(
 			DataAllocation<?> enclosing,
+			Fp64rec data,
 			DataAllocation<Fp64recOp> type) {
-		return new Fp64cdAlloc(enclosing(enclosing), (Fp64cdAlloc) type);
+		return new Fp64cdAlloc(
+				enclosing(enclosing),
+				data,
+				(Fp64cdAlloc) type);
 	}
 
 	@Override
 	public <F extends Func<F>> FuncPtrCDAlloc<F> allocateFuncPtr(
 			DataAllocation<?> enclosing,
+			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature) {
 		return new FuncPtrCDAlloc<F>(
 				enclosing(enclosing),
+				data,
 				(FuncPtrCDAlloc<F>) type,
 				signature);
 	}
@@ -151,22 +181,27 @@ public class ConstDataAllocator implements DataAllocator {
 	@Override
 	public final AnyCDAlloc allocatePtr(
 			DataAllocation<?> enclosing,
+			AnyPtrRec data,
 			DataAllocation<AnyOp> type) {
-		return new AnyCDAlloc(enclosing(enclosing), (AnyCDAlloc) type);
+		return new AnyCDAlloc(enclosing(enclosing), data, (AnyCDAlloc) type);
 	}
 
 	@Override
 	public final DataCDAlloc allocateDataPtr(
 			DataAllocation<?> enclosing,
+			DataRec data,
 			DataAllocation<DataOp> type) {
-		return new DataCDAlloc(enclosing(enclosing), (DataCDAlloc) type);
+		return new DataCDAlloc(
+				enclosing(enclosing),
+				data,
+				(DataCDAlloc) type);
 	}
 
 	@Override
 	public final <S extends StructOp<S>> DataAllocation<S> allocatePtr(
 			DataAllocation<?> enclosing,
-			DataAllocation<S> type,
-			DataAllocation<S> struct) {
+			StructRec<S> data,
+			DataAllocation<S> type, DataAllocation<S> struct) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -174,8 +209,12 @@ public class ConstDataAllocator implements DataAllocator {
 	@Override
 	public final RelCDAlloc allocateRelPtr(
 			DataAllocation<?> enclosing,
+			RelPtrRec data,
 			DataAllocation<RelRecOp> type) {
-		return new RelCDAlloc(enclosing(enclosing), (RelCDAlloc) type);
+		return new RelCDAlloc(
+				enclosing(enclosing),
+				data,
+				(RelCDAlloc) type);
 	}
 
 	private static ContainerCDAlloc<?> enclosing(DataAllocation<?> enclosing) {

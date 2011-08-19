@@ -124,10 +124,6 @@ public abstract class Type<S extends StructOp<S>>
 		return this.data;
 	}
 
-	public final void done() {
-		this.data.endAllocation();
-	}
-
 	@Override
 	public String toString() {
 		return getId().toString();

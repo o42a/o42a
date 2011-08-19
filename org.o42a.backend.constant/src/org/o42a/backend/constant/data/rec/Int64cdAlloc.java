@@ -33,8 +33,9 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 
 	public Int64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
+			Int64rec data,
 			CDAlloc<Int64recOp, Int64rec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	@Override

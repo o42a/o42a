@@ -40,6 +40,7 @@ public final class Int16rec extends Rec<Int16recOp, Short> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt16(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

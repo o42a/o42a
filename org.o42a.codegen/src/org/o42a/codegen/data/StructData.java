@@ -56,8 +56,8 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	protected DataAllocation<S> startTypeAllocation(DataAllocator allocator) {
 		return allocator.enter(
 				getEnclosing().getAllocation(),
-				getInstance().getAllocation(),
-				this);
+				this,
+				getInstance().getAllocation());
 	}
 
 	@Override

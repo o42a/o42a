@@ -20,7 +20,7 @@
 package org.o42a.backend.constant.code.signature;
 
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.backend.constant.data.type.CType;
+import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.SignatureAllocation;
 import org.o42a.codegen.code.backend.SignatureWriter;

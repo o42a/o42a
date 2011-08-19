@@ -72,9 +72,8 @@ public final class Global<S extends StructOp<S>, T extends Type<S>> {
 		return this.instance;
 	}
 
-	public final void done() {
-		this.instance.getInstanceData().endAllocation();
-		getGenerator().getGlobals().globalAllocated(this);
+	public final GlobalSettings update(GlobalSettings settings) {
+		return settings.set(this.settings);
 	}
 
 	@Override
