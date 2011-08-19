@@ -63,7 +63,7 @@ abstract class AbstractInstanceData<S extends StructOp<S>>
 
 		final Ptr<S> pointer = super.createPointer();
 
-		pointer.copyAllocation(getInstance().getType().getTypeData());
+		pointer.copyAllocation(getInstance().getType().getInstanceData());
 
 		return pointer;
 	}

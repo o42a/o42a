@@ -46,6 +46,11 @@ public abstract class Globals {
 		return this.generator;
 	}
 
+	public final <S extends StructOp<S>> SubData<S> allocateType(Type<S> type) {
+		type.startAllocation(getGenerator());
+		return type.getInstanceData();
+	}
+
 	public final GlobalSettings newGlobal() {
 		return new GlobalSettings(this);
 	}
@@ -97,6 +102,10 @@ public abstract class Globals {
 
 	protected abstract void addGlobal(SubData<?> global);
 
+	final void globalAllocated(Global<?, ?> global) {
+		this.globals.add(global.getInstance().getInstanceData());
+	}
+
 	<S extends StructOp<S>, T extends Type<S>> Global<S, T> addGlobal(
 			GlobalSettings settings,
 			CodeId id,
@@ -106,7 +115,7 @@ public abstract class Globals {
 
 		final Global<S, T> global =
 				new Global<S, T>(settings, id, type, instance, content);
-		final SubData<S> data = global.getInstance().getTypeData();
+		final SubData<S> data = global.getInstance().getInstanceData();
 
 		data.allocateType(false);
 		this.globals.add(data);
@@ -122,7 +131,7 @@ public abstract class Globals {
 
 		struct.setGlobal(global);
 
-		final SubData<S> data = global.getInstance().getTypeData();
+		final SubData<S> data = global.getInstance().getInstanceData();
 
 		data.allocateType(false);
 
@@ -148,7 +157,7 @@ public abstract class Globals {
 			this.scheduled.addLast(typeData);
 			return;
 		}
-		typeData.end(false);
+		typeData.completeAllocation(false);
 	}
 
 	final void globalCreated(SubData<?> global) {
@@ -170,7 +179,7 @@ public abstract class Globals {
 				return true;
 			}
 
-			scheduled.end(false);
+			scheduled.completeAllocation(false);
 		}
 	}
 

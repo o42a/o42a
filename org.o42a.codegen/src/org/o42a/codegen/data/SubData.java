@@ -28,6 +28,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -38,6 +39,7 @@ public abstract class SubData<S extends StructOp<S>>
 	private final Type<S> instance;
 	private final DataChain data = new DataChain();
 	private int size;
+	private boolean allocationComplete;
 
 	SubData(Generator generator, CodeId id, Type<S> instance) {
 		super(generator, id);
@@ -191,7 +193,7 @@ public abstract class SubData<S extends StructOp<S>>
 			Content<T> content) {
 
 		final T typeInstance = type.instantiate(this, name, instance, content);
-		final SubData<?> data = typeInstance.getTypeData();
+		final SubData<?> data = typeInstance.getInstanceData();
 
 		add(data);
 
@@ -210,8 +212,21 @@ public abstract class SubData<S extends StructOp<S>>
 
 	public final <SS extends Struct<?>> SS addStruct(CodeId name, SS struct) {
 		struct.setStruct(this, name);
-		add(struct.getTypeData());
+		add(struct.getInstanceData());
 		return struct;
+	}
+
+	public final
+	<SS extends StructOp<SS>, T extends Type<SS>> T allocate(
+			CodeId name,
+			T type) {
+
+		final T instance = type.instantiate(this, name, null, null);
+
+		instance.getInstanceData().startAllocation(
+				getGenerator().getGlobals().dataAllocator());
+
+		return instance;
 	}
 
 	public final int size() {
@@ -223,6 +238,23 @@ public abstract class SubData<S extends StructOp<S>>
 		return this.data.iterator();
 	}
 
+	@Override
+	protected final void allocate(DataAllocator allocator) {
+		if (startAllocation(allocator)) {
+			allocateContents();
+			this.allocationComplete = true;
+			endAllocation(allocator);
+		}
+	}
+
+	protected abstract void allocateType(boolean fully);
+
+	protected abstract boolean startAllocation(DataAllocator allocator);
+
+	protected abstract void allocateContents();
+
+	protected abstract void endAllocation(DataAllocator allocator);
+
 	protected <D extends Data<?>> D add(D data) {
 		data.allocateData();
 		this.size++;
@@ -231,6 +263,13 @@ public abstract class SubData<S extends StructOp<S>>
 
 	final DataChain data() {
 		return this.data;
+	}
+
+	final void endAllocation() {
+		assert !this.allocationComplete :
+			"Allocation already complete: " + this;
+		this.allocationComplete = true;
+		endAllocation(getGenerator().getGlobals().dataAllocator());
 	}
 
 	final void writeIncluded(DataWriter writer) {

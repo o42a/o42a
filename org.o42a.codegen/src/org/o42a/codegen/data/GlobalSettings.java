@@ -67,6 +67,26 @@ public final class GlobalSettings {
 		return this;
 	}
 
+	public final GlobalSettings set(GlobalSettings settings) {
+		this.exported = settings.exported;
+		this.constant = settings.constant;
+		return this;
+	}
+
+	public final
+	<S extends StructOp<S>, T extends Type<S>> Global<S, T> allocate(
+			CodeId id,
+			T type) {
+
+		final Global<S, T> global =
+				new Global<S, T>(this, id, type, null, null);
+
+		global.getInstance().getInstanceData().startAllocation(
+				this.globals.dataAllocator());
+
+		return global;
+	}
+
 	public final
 	<S extends StructOp<S>, T extends Type<S>> Global<S, T> newInstance(
 			CodeId id,

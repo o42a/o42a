@@ -59,14 +59,28 @@ final class TypeInstanceData<S extends StructOp<S>>
 		return this.enclosing;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void allocate(DataAllocator allocator) {
+	protected void allocateType(boolean fully) {
+		allocateData();
+	}
+
+	@Override
+	protected boolean startAllocation(DataAllocator allocator) {
 		setAllocation(allocator.enter(
 				getEnclosing().getAllocation(),
 				getInstance().getAllocation(),
 				this));
+		return true;
+	}
+
+	@Override
+	protected void allocateContents() {
 		getInstance().allocateInstance(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void endAllocation(DataAllocator allocator) {
 		allocator.exit(getEnclosing().getAllocation(), this);
 		this.content.allocated(getInstance());
 	}
