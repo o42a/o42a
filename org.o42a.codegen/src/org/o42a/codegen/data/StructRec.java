@@ -59,6 +59,7 @@ public final class StructRec<S extends StructOp<S>> extends PtrRec<S> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocatePtr(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation(),
 				this.type.pointer(getGenerator()).getAllocation()));
 	}

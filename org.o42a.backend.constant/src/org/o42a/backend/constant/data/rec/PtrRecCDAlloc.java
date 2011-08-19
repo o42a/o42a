@@ -30,8 +30,11 @@ import org.o42a.codegen.data.PtrRec;
 public abstract class PtrRecCDAlloc<R extends PtrRec<P>, P extends PtrOp<P>>
 		extends RecCDAlloc<R, P, Ptr<P>> {
 
-	public PtrRecCDAlloc(ContainerCDAlloc<?> enclosing, CDAlloc<P, R> type) {
-		super(enclosing, type);
+	public PtrRecCDAlloc(
+			ContainerCDAlloc<?> enclosing,
+			R data,
+			CDAlloc<P, R> type) {
+		super(enclosing, data, type);
 	}
 
 	public PtrRecCDAlloc(ContainerCDAlloc<?> enclosing, Ptr<P> underlyingPtr) {

@@ -46,9 +46,12 @@ public abstract class Globals {
 		return this.generator;
 	}
 
-	public final <S extends StructOp<S>> SubData<S> allocateType(Type<S> type) {
+	public final <
+			S extends StructOp<S>,
+			T extends Type<S>> Allocated<S, T> allocateType(
+					T type) {
 		type.startAllocation(getGenerator());
-		return type.getInstanceData();
+		return new Allocated<S, T>(type, type, type.getInstanceData());
 	}
 
 	public final GlobalSettings newGlobal() {

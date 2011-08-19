@@ -33,8 +33,9 @@ public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 
 	public Fp64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
+			Fp64rec data,
 			CDAlloc<Fp64recOp, Fp64rec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	@Override

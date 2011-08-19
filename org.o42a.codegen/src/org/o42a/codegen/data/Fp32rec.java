@@ -40,6 +40,7 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateFp32(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

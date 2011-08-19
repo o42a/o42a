@@ -34,8 +34,9 @@ public final class Int32cdAlloc
 
 	public Int32cdAlloc(
 			ContainerCDAlloc<?> enclosing,
+			Int32rec data,
 			CDAlloc<Int32recOp, Int32rec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	@Override

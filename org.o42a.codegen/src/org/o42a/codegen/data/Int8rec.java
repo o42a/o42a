@@ -40,6 +40,7 @@ public final class Int8rec extends Rec<Int8recOp, Byte> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt8(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

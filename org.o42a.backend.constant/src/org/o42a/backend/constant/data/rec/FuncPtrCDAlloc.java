@@ -40,9 +40,10 @@ public final class FuncPtrCDAlloc<F extends Func<F>>
 
 	public FuncPtrCDAlloc(
 			ContainerCDAlloc<?> enclosing,
+			FuncRec<F> data,
 			CDAlloc<FuncOp<F>, FuncRec<F>> type,
 			Signature<F> signature) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 		this.signature = signature;
 	}
 

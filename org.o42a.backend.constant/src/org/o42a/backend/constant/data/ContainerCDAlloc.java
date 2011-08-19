@@ -21,7 +21,9 @@ package org.o42a.backend.constant.data;
 
 import java.util.LinkedList;
 
+import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Allocated;
 import org.o42a.codegen.data.SubData;
 
 
@@ -30,6 +32,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 
 	private final LinkedList<CDAlloc<?, ?>> nested =
 			new LinkedList<CDAlloc<?,?>>();
+	private Allocated<S, ?> underlyingAllocated;
 
 	private boolean containerAllocated;
 
@@ -46,7 +49,22 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return this.containerAllocated;
 	}
 
-	protected abstract void endUnderlyingAllocation();
+	public final Allocated<S, ?> getUnderlyingAllocated() {
+		return this.underlyingAllocated;
+	}
+
+	public CType<S> getUnderlyingType() {
+		return (CType<S>) getUnderlyingAllocated().getType();
+	}
+
+	@Override
+	protected final SubData<S> allocateUnderlying(SubData<?> container) {
+		this.underlyingAllocated = startUnderlyingAllocation(container);
+		return this.underlyingAllocated.getData();
+	}
+
+	protected abstract Allocated<S, ?> startUnderlyingAllocation(
+			SubData<?> container);
 
 	final void nest(CDAlloc<?, ?> nested) {
 		this.nested.add(nested);
@@ -58,7 +76,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	final void containerAllocated() {
 		this.containerAllocated = true;
 		if (isUnderlyingAllocated()) {
-			endUnderlyingAllocation();
+			this.underlyingAllocated.done();
 		}
 	}
 
@@ -72,7 +90,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 			nested.initUnderlying(underlying);
 		}
 		if (isContainerAllocated()) {
-			endUnderlyingAllocation();
+			this.underlyingAllocated.done();
 		}
 	}
 

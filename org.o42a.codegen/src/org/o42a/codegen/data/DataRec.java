@@ -51,6 +51,7 @@ public final class DataRec extends PtrRec<DataOp> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateDataPtr(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

@@ -35,8 +35,9 @@ public final class AnyCDAlloc
 
 	public AnyCDAlloc(
 			ContainerCDAlloc<?> enclosing,
+			AnyPtrRec data,
 			CDAlloc<AnyOp, AnyPtrRec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	public AnyCDAlloc(ContainerCDAlloc<?> enclosing, Ptr<AnyOp> underlyingPtr) {

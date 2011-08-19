@@ -58,6 +58,7 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt64(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

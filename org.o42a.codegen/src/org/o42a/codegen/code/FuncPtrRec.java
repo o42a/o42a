@@ -49,6 +49,7 @@ final class FuncPtrRec<F extends Func<F>> extends FuncRec<F> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateFuncPtr(
 				getEnclosing().pointer(getGenerator()).getAllocation(),
+				this,
 				getAllocation(),
 				getSignature()));
 	}

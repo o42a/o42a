@@ -35,8 +35,9 @@ public final class DataCDAlloc
 
 	public DataCDAlloc(
 			ContainerCDAlloc<?> enclosing,
+			DataRec data,
 			CDAlloc<DataOp, DataRec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	public DataCDAlloc(

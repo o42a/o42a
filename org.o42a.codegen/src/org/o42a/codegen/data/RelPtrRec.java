@@ -44,6 +44,7 @@ public final class RelPtrRec extends Rec<RelRecOp, RelPtr> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateRelPtr(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

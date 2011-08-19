@@ -112,12 +112,10 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		getUnderlyingPtr().getAllocation().write(underlyingWriter);
 	}
 
-	protected abstract D allocateUnderlying(SubData<?> container, String name);
+	protected abstract D allocateUnderlying(SubData<?> container);
 
 	void initUnderlying(SubData<?> container) {
-		this.underlying = allocateUnderlying(
-				container,
-				getUnderlying().getId().getLocal().getId());
+		this.underlying = allocateUnderlying(container);
 	}
 
 }

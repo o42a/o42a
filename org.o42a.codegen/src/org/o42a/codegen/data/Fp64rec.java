@@ -40,6 +40,7 @@ public final class Fp64rec extends Rec<Fp64recOp, Double> {
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateFp64(
 				getEnclosing().getAllocation(),
+				this,
 				getAllocation()));
 	}
 

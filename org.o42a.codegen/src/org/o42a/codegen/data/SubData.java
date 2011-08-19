@@ -216,17 +216,19 @@ public abstract class SubData<S extends StructOp<S>>
 		return struct;
 	}
 
-	public final
-	<SS extends StructOp<SS>, T extends Type<SS>> T allocate(
-			CodeId name,
-			T type) {
+	public final <
+			SS extends StructOp<SS>,
+			T extends Type<SS>> Allocated<SS, T> allocate(
+					CodeId name,
+					T type) {
 
 		final T instance = type.instantiate(this, name, null, null);
+		final SubData<SS> instanceData = instance.getInstanceData();
 
-		instance.getInstanceData().startAllocation(
+		instanceData.startAllocation(
 				getGenerator().getGlobals().dataAllocator());
 
-		return instance;
+		return new Allocated<SS, T>(instance, type, instanceData);
 	}
 
 	public final int size() {

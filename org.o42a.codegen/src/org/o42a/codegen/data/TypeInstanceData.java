@@ -68,8 +68,8 @@ final class TypeInstanceData<S extends StructOp<S>>
 	protected boolean startAllocation(DataAllocator allocator) {
 		setAllocation(allocator.enter(
 				getEnclosing().getAllocation(),
-				getInstance().getAllocation(),
-				this));
+				this,
+				getInstance().getAllocation()));
 		return true;
 	}
 

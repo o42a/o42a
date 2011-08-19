@@ -25,9 +25,7 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.Rec;
+import org.o42a.codegen.data.*;
 
 
 public abstract class RecCDAlloc<
@@ -37,13 +35,16 @@ public abstract class RecCDAlloc<
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
+	private final R data;
 
 	public RecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
+			R data,
 			CDAlloc<P, R> type) {
 		super(type);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
+		this.data = data;
 		enclosing.nest(this);
 	}
 
@@ -53,6 +54,7 @@ public abstract class RecCDAlloc<
 		super(underlyingPtr);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
+		this.data = null;
 	}
 
 	@Override
@@ -65,6 +67,10 @@ public abstract class RecCDAlloc<
 		return this.enclosing;
 	}
 
+	public final R getData() {
+		return this.data;
+	}
+
 	@Override
 	public final P op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 
@@ -74,6 +80,15 @@ public abstract class RecCDAlloc<
 
 		return op(ccode, underlyingOp);
 	}
+
+	@Override
+	protected final R allocateUnderlying(SubData<?> container) {
+		return allocateUnderlying(
+				container,
+				getData().getId().getLocal().getId());
+	}
+
+	protected abstract R allocateUnderlying(SubData<?> container, String name);
 
 	protected abstract P op(CCode<?> code, P underlying);
 

@@ -33,8 +33,9 @@ public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
 
 	public Fp32cdAlloc(
 			ContainerCDAlloc<?> enclosing,
+			Fp32rec data,
 			CDAlloc<Fp32recOp, Fp32rec> type) {
-		super(enclosing, type);
+		super(enclosing, data, type);
 	}
 
 	@Override

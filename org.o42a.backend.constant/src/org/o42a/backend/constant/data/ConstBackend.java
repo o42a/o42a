@@ -26,7 +26,8 @@ import org.o42a.backend.constant.code.ConstCodeBackend;
 import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.signature.CSignature;
-import org.o42a.backend.constant.data.type.CType;
+import org.o42a.backend.constant.data.struct.CType;
+import org.o42a.backend.constant.data.struct.TypeCDAlloc;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
@@ -131,9 +132,12 @@ public class ConstBackend {
 		return this.dataWriter;
 	}
 
-	public final <O extends StructOp<O>> CType<O> underlying(Type<O> type) {
-		// TODO unwrap underlying type
-		return null;
+	public final <S extends StructOp<S>> CType<S> underlying(Type<S> type) {
+
+		final TypeCDAlloc<S> alloc =
+				(TypeCDAlloc<S>) type.pointer(getGenerator()).getAllocation();
+
+		return alloc.getUnderlyingType();
 	}
 
 	public final <F extends Func<F>> CSignature<F> underlying(

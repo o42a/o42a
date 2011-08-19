@@ -23,9 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 
 
 public interface DataAllocator {
@@ -45,8 +43,8 @@ public interface DataAllocator {
 
 	<S extends StructOp<S>> DataAllocation<S> enter(
 			DataAllocation<?> enclosing,
-			DataAllocation<S> type,
-			SubData<S> data);
+			SubData<S> data,
+			DataAllocation<S> type);
 
 	void exit(DataAllocation<?> enclosing, SubData<?> data);
 
@@ -56,48 +54,59 @@ public interface DataAllocator {
 
 	DataAllocation<Int8recOp> allocateInt8(
 			DataAllocation<?> enclosing,
+			Int8rec data,
 			DataAllocation<Int8recOp> type);
 
 	DataAllocation<Int16recOp> allocateInt16(
 			DataAllocation<?> enclosing,
+			Int16rec data,
 			DataAllocation<Int16recOp> type);
 
 	DataAllocation<Int32recOp> allocateInt32(
 			DataAllocation<?> enclosing,
+			Int32rec data,
 			DataAllocation<Int32recOp> type);
 
 	DataAllocation<Int64recOp> allocateInt64(
 			DataAllocation<?> enclosing,
+			Int64rec data,
 			DataAllocation<Int64recOp> type);
 
 	DataAllocation<Fp32recOp> allocateFp32(
 			DataAllocation<?> enclosing,
+			Fp32rec data,
 			DataAllocation<Fp32recOp> type);
 
 	DataAllocation<Fp64recOp> allocateFp64(
 			DataAllocation<?> enclosing,
+			Fp64rec data,
 			DataAllocation<Fp64recOp> type);
 
 	<F extends Func<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
+			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature);
 
 	DataAllocation<AnyOp> allocatePtr(
 			DataAllocation<?> enclosing,
+			AnyPtrRec data,
 			DataAllocation<AnyOp> type);
 
 	DataAllocation<DataOp> allocateDataPtr(
 			DataAllocation<?> enclosing,
+			DataRec data,
 			DataAllocation<DataOp> type);
 
 	<S extends StructOp<S>> DataAllocation<S> allocatePtr(
 			DataAllocation<?> enclosing,
+			StructRec<S> data,
 			DataAllocation<S> type,
 			DataAllocation<S> struct);
 
 	DataAllocation<RelRecOp> allocateRelPtr(
 			DataAllocation<?> enclosing,
+			RelPtrRec data,
 			DataAllocation<RelRecOp> type);
 
 }

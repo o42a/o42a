@@ -73,18 +73,19 @@ public final class GlobalSettings {
 		return this;
 	}
 
-	public final
-	<S extends StructOp<S>, T extends Type<S>> Global<S, T> allocate(
-			CodeId id,
-			T type) {
+	public final <
+			S extends StructOp<S>,
+			T extends Type<S>> Allocated<S, Global<S, T>> allocate(
+					CodeId id,
+					T type) {
 
 		final Global<S, T> global =
 				new Global<S, T>(this, id, type, null, null);
+		final SubData<S> instanceData = global.getInstance().getInstanceData();
 
-		global.getInstance().getInstanceData().startAllocation(
-				this.globals.dataAllocator());
+		instanceData.startAllocation(this.globals.dataAllocator());
 
-		return global;
+		return new Allocated.AllocatedGlobal<S, T>(global, type, instanceData);
 	}
 
 	public final

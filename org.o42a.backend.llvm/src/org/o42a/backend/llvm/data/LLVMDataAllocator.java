@@ -110,8 +110,8 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> enter(
 			DataAllocation<?> enclosing,
-			DataAllocation<S> type,
-			SubData<S> data) {
+			SubData<S> data,
+			DataAllocation<S> type) {
 
 		final long typePtr;
 		final long typeDataPtr;
@@ -205,6 +205,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<Int8recOp> allocateInt8(
 			DataAllocation<?> enclosing,
+			Int8rec data,
 			DataAllocation<Int8recOp> type) {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 8);
@@ -215,6 +216,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<Int16recOp> allocateInt16(
 			DataAllocation<?> enclosing,
+			Int16rec data,
 			DataAllocation<Int16recOp> type) {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 16);
@@ -225,6 +227,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<Int32recOp> allocateInt32(
 			DataAllocation<?> enclosing,
+			Int32rec data,
 			DataAllocation<Int32recOp> type) {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 32);
@@ -235,6 +238,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<Int64recOp> allocateInt64(
 			DataAllocation<?> enclosing,
+			Int64rec data,
 			DataAllocation<Int64recOp> type) {
 		if (allocate(enclosing)) {
 			allocateInt(getModulePtr(), typeDataPtr(enclosing), (byte) 64);
@@ -245,6 +249,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<Fp32recOp> allocateFp32(
 			DataAllocation<?> enclosing,
+			Fp32rec data,
 			DataAllocation<Fp32recOp> type) {
 		if (allocate(enclosing)) {
 			allocateFp32(getModulePtr(), typeDataPtr(enclosing));
@@ -255,6 +260,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<Fp64recOp> allocateFp64(
 			DataAllocation<?> enclosing,
+			Fp64rec data,
 			DataAllocation<Fp64recOp> type) {
 		if (allocate(enclosing)) {
 			allocateFp64(getModulePtr(), typeDataPtr(enclosing));
@@ -265,6 +271,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public <F extends Func<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
+			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature) {
 		if (allocate(enclosing)) {
@@ -278,6 +285,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<AnyOp> allocatePtr(
 			DataAllocation<?> enclosing,
+			AnyPtrRec data,
 			DataAllocation<AnyOp> type) {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
@@ -288,6 +296,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<DataOp> allocateDataPtr(
 			DataAllocation<?> enclosing,
+			DataRec data,
 			DataAllocation<DataOp> type) {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
@@ -298,6 +307,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> allocatePtr(
 			DataAllocation<?> enclosing,
+			StructRec<S> data,
 			DataAllocation<S> type,
 			DataAllocation<S> struct) {
 
@@ -318,6 +328,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<RelRecOp> allocateRelPtr(
 			DataAllocation<?> enclosing,
+			RelPtrRec data,
 			DataAllocation<RelRecOp> type) {
 		if (allocate(enclosing)) {
 			allocateRelPtr(getModulePtr(), typeDataPtr(enclosing));
