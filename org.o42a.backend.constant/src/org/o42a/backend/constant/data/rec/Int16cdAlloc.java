@@ -21,7 +21,6 @@ package org.o42a.backend.constant.data.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.Int16recCOp;
-import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.op.Int16recOp;
@@ -35,8 +34,8 @@ public final class Int16cdAlloc
 	public Int16cdAlloc(
 			ContainerCDAlloc<?> enclosing,
 			Int16rec data,
-			CDAlloc<Int16recOp, Int16rec> type) {
-		super(enclosing, data, type);
+			Int16cdAlloc typeAllocation) {
+		super(enclosing, data, typeAllocation);
 	}
 
 	@Override

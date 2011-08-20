@@ -40,20 +40,25 @@ public abstract class RecCDAlloc<
 	public RecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
 			R data,
-			CDAlloc<P, R> type) {
-		super(type);
+			RecCDAlloc<R, P, T> typeAllocation) {
+		super(enclosing.getBackend(), typeAllocation);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
 		this.data = data;
 		enclosing.nest(this);
 	}
 
-	public RecCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			Ptr<P> underlyingPtr) {
-		super(underlyingPtr);
+	public RecCDAlloc(ContainerCDAlloc<?> enclosing, Ptr<P> underlyingPtr) {
+		super(enclosing.getBackend(), underlyingPtr);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
+		this.data = null;
+	}
+
+	public RecCDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {
+		super(backend, underlyingPtr);
+		this.topLevel = null;
+		this.enclosing = null;
 		this.data = null;
 	}
 

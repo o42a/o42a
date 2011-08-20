@@ -22,7 +22,7 @@ package org.o42a.backend.constant.code.rec;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.func.FuncCCaller;
+import org.o42a.backend.constant.code.func.CFunc;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -70,7 +70,7 @@ public final class FuncCOp<F extends Func<F>>
 
 	@Override
 	protected F loaded(CCode<?> code, F underlying) {
-		return getSignature().op(new FuncCCaller<F>(code, underlying));
+		return getSignature().op(new CFunc<F>(code, underlying));
 	}
 
 }

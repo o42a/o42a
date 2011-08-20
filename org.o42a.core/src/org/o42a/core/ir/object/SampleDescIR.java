@@ -26,7 +26,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
-import org.o42a.codegen.data.RelPtrRec;
+import org.o42a.codegen.data.RelRec;
 import org.o42a.codegen.data.SubData;
 
 
@@ -80,12 +80,12 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private RelPtrRec body;
+		private RelRec body;
 
 		private Type() {
 		}
 
-		public final RelPtrRec body() {
+		public final RelRec body() {
 			return this.body;
 		}
 

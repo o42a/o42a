@@ -22,7 +22,6 @@ package org.o42a.backend.constant.data.rec;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.FuncCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
-import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.Func;
@@ -41,9 +40,9 @@ public final class FuncPtrCDAlloc<F extends Func<F>>
 	public FuncPtrCDAlloc(
 			ContainerCDAlloc<?> enclosing,
 			FuncRec<F> data,
-			CDAlloc<FuncOp<F>, FuncRec<F>> type,
+			FuncPtrCDAlloc<F> typeAllocation,
 			Signature<F> signature) {
-		super(enclosing, data, type);
+		super(enclosing, data, typeAllocation);
 		this.signature = signature;
 	}
 
@@ -56,7 +55,7 @@ public final class FuncPtrCDAlloc<F extends Func<F>>
 	protected FuncRec<F> allocateUnderlying(SubData<?> container, String name) {
 
 		final CSignature<F> underlyingSignature =
-				getTopLevel().getBackend().underlying(this.signature);
+				getBackend().underlying(this.signature);
 
 		return container.addFuncPtr(name, underlyingSignature);
 	}

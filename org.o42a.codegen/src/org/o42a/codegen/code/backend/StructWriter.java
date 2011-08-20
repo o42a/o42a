@@ -30,7 +30,7 @@ public interface StructWriter<S extends StructOp<S>> extends PtrOp<S> {
 
 	Type<S> getType();
 
-	RecOp<?, ?> field(CodeId id, Code code, Data<?> field);
+	AnyRecOp field(CodeId id, Code code, Data<?> field);
 
 	Int8recOp int8(CodeId id, Code code, Int8rec field);
 
@@ -53,7 +53,7 @@ public interface StructWriter<S extends StructOp<S>> extends PtrOp<S> {
 			Code code,
 			StructRec<SS> field);
 
-	RelRecOp relPtr(CodeId id, Code code, RelPtrRec field);
+	RelRecOp relPtr(CodeId id, Code code, RelRec field);
 
 	<SS extends StructOp<SS>> SS struct(CodeId id, Code code, Type<SS> field);
 

@@ -107,7 +107,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 		private StructRec<ObjectIRType.Op> declaredIn;
 		private Int32rec kind;
-		private RelPtrRec fld;
+		private RelRec fld;
 
 		private Type() {
 		}
@@ -120,7 +120,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return this.kind;
 		}
 
-		public final RelPtrRec fld() {
+		public final RelRec fld() {
 			return this.fld;
 		}
 

@@ -32,8 +32,8 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
@@ -75,7 +75,7 @@ public class LLVMStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public RecOp<?, ?> field(CodeId id, Code code, Data<?> field) {
+	public AnyRecOp field(CodeId id, Code code, Data<?> field) {
 
 		final long nextPtr = nextPtr(code);
 
@@ -199,7 +199,7 @@ public class LLVMStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public LLVMRecOp.Rel relPtr(CodeId id, Code code, RelPtrRec field) {
+	public LLVMRecOp.Rel relPtr(CodeId id, Code code, RelRec field) {
 
 		final long nextPtr = nextPtr(code);
 

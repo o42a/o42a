@@ -95,7 +95,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			extends org.o42a.codegen.data.Type<Op> {
 
 		private StructRec<ObjectIRType.Op> type;
-		private RelPtrRec body;
+		private RelRec body;
 
 		private Type() {
 		}
@@ -104,7 +104,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return this.type;
 		}
 
-		public final RelPtrRec body() {
+		public final RelRec body() {
 			return this.body;
 		}
 

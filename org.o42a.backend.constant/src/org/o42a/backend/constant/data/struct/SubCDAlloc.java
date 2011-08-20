@@ -19,13 +19,12 @@
 */
 package org.o42a.backend.constant.data.struct;
 
+import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.StructCDAlloc;
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Allocated;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 
 
@@ -41,6 +40,11 @@ public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
 		this.data = data;
 	}
 
+	public SubCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
+		super(backend, underlyingPtr);
+		this.data = null;
+	}
+
 	public final SubData<?> getData() {
 		return this.data;
 	}
@@ -48,12 +52,6 @@ public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
 	@SuppressWarnings("unchecked")
 	public final CType<S> getUnderlyingInstance() {
 		return (CType<S>) getUnderlyingAllocated().getContainer();
-	}
-
-	@Override
-	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

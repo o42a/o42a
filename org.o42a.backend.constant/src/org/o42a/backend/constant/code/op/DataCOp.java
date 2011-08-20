@@ -19,7 +19,10 @@
 */
 package org.o42a.backend.constant.code.op;
 
+import static org.o42a.backend.constant.data.ConstBackend.cast;
+
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
@@ -35,8 +38,14 @@ public final class DataCOp extends PtrCOp<DataOp> implements DataOp {
 
 	@Override
 	public <S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final S underlyingStruct = getUnderlying().to(
+				id,
+				ccode.getUnderlying(),
+				getBackend().underlying(type));
+
+		return type.op(new CStruct<S>(ccode, underlyingStruct));
 	}
 
 	@Override

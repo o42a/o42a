@@ -106,7 +106,7 @@ public interface DataAllocator {
 
 	DataAllocation<RelRecOp> allocateRelPtr(
 			DataAllocation<?> enclosing,
-			RelPtrRec data,
+			RelRec data,
 			DataAllocation<RelRecOp> type);
 
 }

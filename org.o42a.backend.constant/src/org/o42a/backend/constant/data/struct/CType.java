@@ -35,14 +35,33 @@ public final class CType<S extends StructOp<S>> extends Type<S> {
 		this.original = original;
 	}
 
+	@Override
+	public boolean isPacked() {
+		return this.original.isPacked();
+	}
+
+	@Override
+	public boolean isReentrant() {
+		return false;
+	}
+
+	@Override
+	public boolean isDebugInfo() {
+		return false;
+	}
+
+	@Override
+	public boolean isDebuggable() {
+		return false;
+	}
+
 	public final Type<S> getOriginal() {
 		return this.original;
 	}
 
 	@Override
 	public S op(StructWriter<S> writer) {
-		// TODO Auto-generated method stub
-		return null;
+		return getOriginal().op(writer);
 	}
 
 	@Override
@@ -52,8 +71,8 @@ public final class CType<S extends StructOp<S>> extends Type<S> {
 
 	@Override
 	protected void allocate(SubData<S> data) {
-		// TODO Auto-generated method stub
-
+		throw new IllegalStateException(
+				"Type should be manually constructed: " + this);
 	}
 
 }

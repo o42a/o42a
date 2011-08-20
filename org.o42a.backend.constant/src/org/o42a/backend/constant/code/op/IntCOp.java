@@ -23,6 +23,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.rec.RecCOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
@@ -40,14 +41,28 @@ public abstract class IntCOp<O extends IntOp<O>>
 
 	@Override
 	public final O atomicAdd(CodeId id, Code code, RecOp<?, O> to) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final RecCOp<?, O> cto = (RecCOp<?, O>) to;
+		final O underlyingSum = getUnderlying().atomicAdd(
+				id,
+				ccode.getUnderlying(),
+				cto.getUnderlying());
+
+		return create(ccode, underlyingSum);
 	}
 
 	@Override
 	public final O atomicSub(CodeId id, Code code, RecOp<?, O> from) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final RecCOp<?, O> cfrom = (RecCOp<?, O>) from;
+		final O underlyingDiff = getUnderlying().atomicSub(
+				id,
+				ccode.getUnderlying(),
+				cfrom.getUnderlying());
+
+		return create(ccode, underlyingDiff);
 	}
 
 	@Override

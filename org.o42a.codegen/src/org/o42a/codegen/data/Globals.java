@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -38,12 +39,42 @@ public abstract class Globals {
 	private final LinkedList<AbstractTypeData<?>> scheduled =
 			new LinkedList<AbstractTypeData<?>>();
 
+	private Ptr<AnyOp> nullPtr;
+	private Ptr<DataOp> nullDataPtr;
+
 	public Globals(Generator generator) {
 		this.generator = generator;
 	}
 
 	public final Generator getGenerator() {
 		return this.generator;
+	}
+
+	public final Ptr<AnyOp> nullPtr() {
+		if (this.nullPtr != null) {
+			return this.nullPtr;
+		}
+		return this.nullPtr = new Ptr<AnyOp>(
+				getGenerator().id("null"),
+				getGenerator().getGlobals().dataWriter().nullPtr(),
+				true);
+	}
+
+	public final Ptr<DataOp> nullDataPtr() {
+		if (this.nullDataPtr != null) {
+			return this.nullDataPtr;
+		}
+		return this.nullDataPtr = new Ptr<DataOp>(
+				getGenerator().id("null"),
+				getGenerator().getGlobals().dataWriter().nullDataPtr(),
+				true);
+	}
+
+	public final <S extends StructOp<S>> Ptr<S> nullPtr(Type<S> type) {
+		return new Ptr<S>(
+				type.getId().detail("null"),
+				getGenerator().getGlobals().dataWriter().nullPtr(type),
+				true);
 	}
 
 	public final <

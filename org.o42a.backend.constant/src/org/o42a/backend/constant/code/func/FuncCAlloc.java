@@ -20,6 +20,8 @@
 package org.o42a.backend.constant.code.func;
 
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.data.rec.AnyCDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
@@ -29,7 +31,7 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
+public final class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
 
 	private final FuncPtr<F> underlyingPtr;
 	private final CSignature<F> underlyingSignature;
@@ -39,6 +41,10 @@ public class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
 			CSignature<F> underlyingSignature) {
 		this.underlyingPtr = underlyingPtr;
 		this.underlyingSignature = underlyingSignature;
+	}
+
+	public final ConstBackend getBackend() {
+		return getUnderlyingSignature().getBackend();
 	}
 
 	public final FuncPtr<F> getUnderlyingPtr() {
@@ -56,14 +62,13 @@ public class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
 
 	@Override
 	public void write(DataWriter writer) {
-		// TODO Auto-generated method stub
-
+		getUnderlyingPtr().getAllocation().write(
+				getBackend().getUnderlyingBackend().dataWriter());
 	}
 
 	@Override
 	public DataAllocation<AnyOp> toAny() {
-		// TODO Auto-generated method stub
-		return null;
+		return new AnyCDAlloc(getBackend(), getUnderlyingPtr().toAny());
 	}
 
 }

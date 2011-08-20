@@ -25,9 +25,9 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class RelPtrRec extends Rec<RelRecOp, RelPtr> {
+public final class RelRec extends Rec<RelRecOp, RelPtr> {
 
-	RelPtrRec(SubData<?> enclosing, CodeId id, Content<RelPtrRec> content) {
+	RelRec(SubData<?> enclosing, CodeId id, Content<RelRec> content) {
 		super(enclosing, id, content);
 	}
 
@@ -51,7 +51,7 @@ public final class RelPtrRec extends Rec<RelRecOp, RelPtr> {
 	@Override
 	protected void write(DataWriter writer) {
 		fill(writer);
-		getValue().allocation().write(getAllocation(), writer);
+		getValue().getAllocation().write(getAllocation(), writer);
 	}
 
 }

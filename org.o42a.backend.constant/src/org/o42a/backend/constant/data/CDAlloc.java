@@ -33,18 +33,25 @@ import org.o42a.codegen.data.backend.RelAllocation;
 public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		implements DataAllocation<P> {
 
+	private final ConstBackend backend;
 	private final CDAlloc<P, D> typeAllocation;
 	private D underlying;
 	private Ptr<P> underlyingPtr;
 
-	public CDAlloc(CDAlloc<P, D> typeAllocation) {
+	public CDAlloc(ConstBackend backend, CDAlloc<P, D> typeAllocation) {
+		this.backend = backend;
 		this.typeAllocation = typeAllocation;
 	}
 
-	public CDAlloc(Ptr<P> underlyingPtr) {
+	public CDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {
+		this.backend = backend;
 		this.typeAllocation = null;
 		this.underlying = null;
 		this.underlyingPtr = underlyingPtr;
+	}
+
+	public final ConstBackend getBackend() {
+		return this.backend;
 	}
 
 	public CDAlloc<P, D> getTypeAllocation() {
@@ -89,8 +96,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 
 	@Override
 	public RelAllocation relativeTo(DataAllocation<?> allocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new RelCDAlloc((CDAlloc<?, ?>) allocation, this);
 	}
 
 	@Override
@@ -107,7 +113,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	public final void write(DataWriter writer) {
 
 		final DataWriter underlyingWriter =
-				getTopLevel().getBackend().getUnderlyingBackend().dataWriter();
+				getBackend().getUnderlyingBackend().dataWriter();
 
 		getUnderlyingPtr().getAllocation().write(underlyingWriter);
 	}

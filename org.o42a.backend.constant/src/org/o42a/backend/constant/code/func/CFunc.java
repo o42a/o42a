@@ -25,6 +25,7 @@ import static org.o42a.backend.constant.data.ConstBackend.underlying;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
@@ -34,11 +35,11 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
-public final class FuncCCaller<F extends Func<F>>
+public final class CFunc<F extends Func<F>>
 		extends PtrCOp<F>
 		implements FuncCaller<F> {
 
-	public FuncCCaller(CCode<?> code, F underlying) {
+	public CFunc(CCode<?> code, F underlying) {
 		super(code, underlying);
 	}
 
@@ -170,13 +171,20 @@ public final class FuncCCaller<F extends Func<F>>
 			Code code,
 			Type<S> type,
 			Op... args) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final S underlyingResult = getUnderlying().caller().callPtr(
+				id,
+				ccode.getUnderlying(),
+				getBackend().underlying(type),
+				underlyingArgs(args));
+
+		return type.op(new CStruct<S>(ccode, underlyingResult));
 	}
 
 	@Override
 	public F create(CCode<?> code, F underlying) {
-		return getSignature().op(new FuncCCaller<F>(code, underlying));
+		return getSignature().op(new CFunc<F>(code, underlying));
 	}
 
 	private Op[] underlyingArgs(Op[] args) {

@@ -50,9 +50,9 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 	public static final ObjectIRData OBJECT_DATA_TYPE = new ObjectIRData();
 
-	private RelPtrRec object;
+	private RelRec object;
 	private Int32rec flags;
-	private RelPtrRec start;
+	private RelRec start;
 	private ValType value;
 	private FuncRec<ObjectValFunc> valueFunc;
 	private FuncRec<ObjectCondFunc> requirementFunc;
@@ -68,7 +68,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private ObjectIRData() {
 	}
 
-	public final RelPtrRec object() {
+	public final RelRec object() {
 		return this.object;
 	}
 
@@ -76,7 +76,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.flags;
 	}
 
-	public final RelPtrRec start() {
+	public final RelRec start() {
 		return this.start;
 	}
 

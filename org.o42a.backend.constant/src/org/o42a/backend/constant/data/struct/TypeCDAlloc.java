@@ -21,10 +21,10 @@ package org.o42a.backend.constant.data.struct;
 
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Allocated;
+import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.Type;
 
 
 public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
@@ -39,11 +39,6 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 	@Override
 	public final CType<S> getUnderlyingType() {
 		return this.underlyingType;
-	}
-
-	@Override
-	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

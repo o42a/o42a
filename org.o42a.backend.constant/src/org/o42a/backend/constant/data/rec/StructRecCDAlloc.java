@@ -20,48 +20,51 @@
 package org.o42a.backend.constant.data.rec;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.op.DataCOp;
-import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.data.DataRec;
-import org.o42a.codegen.data.Ptr;
+import org.o42a.backend.constant.data.struct.CStruct;
+import org.o42a.backend.constant.data.struct.CType;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.codegen.data.Type;
 
 
-public final class DataCDAlloc extends PtrRecCDAlloc<DataRec, DataOp> {
+public final class StructRecCDAlloc<S extends StructOp<S>>
+		extends PtrRecCDAlloc<StructRec<S>, S> {
 
-	public DataCDAlloc(
+	private final ContainerCDAlloc<S> structAllocation;
+
+	public StructRecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
-			DataRec data,
-			DataCDAlloc typeAllocation) {
+			StructRec<S> data,
+			StructRecCDAlloc<S> typeAllocation,
+			ContainerCDAlloc<S> structAllocation) {
 		super(enclosing, data, typeAllocation);
+		this.structAllocation = structAllocation;
 	}
 
-	public DataCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			Ptr<DataOp> underlyingPtr) {
-		super(enclosing, underlyingPtr);
+	public final ContainerCDAlloc<S> getStructAllocation() {
+		return this.structAllocation;
 	}
 
-	public DataCDAlloc(ConstBackend backend, Ptr<DataOp> underlyingPtr) {
-		super(backend, underlyingPtr);
+	public final CType<S> getUnderlyingType() {
+		return getStructAllocation().getUnderlyingType();
 	}
 
-	@Override
-	public DataAllocation<DataOp> toData() {
-		return this;
-	}
-
-	@Override
-	protected DataRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addDataPtr(name);
+	public final Type<S> getType() {
+		return getUnderlyingType().getOriginal();
 	}
 
 	@Override
-	protected DataCOp op(CCode<?> code, DataOp underlyingOp) {
-		return new DataCOp(code, underlyingOp);
+	protected StructRec<S> allocateUnderlying(
+			SubData<?> container,
+			String name) {
+		return container.addPtr(name, getUnderlyingType());
+	}
+
+	@Override
+	protected S op(CCode<?> code, S underlying) {
+		return getType().op(new CStruct<S>(code, underlying));
 	}
 
 }

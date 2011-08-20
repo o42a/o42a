@@ -58,7 +58,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 	public static final <S extends StructOp<S>> LLVMStruct<S> llvm(
 			StructOp<S> op) {
-		return (LLVMStruct<S>) op.getWriter();
+		return (LLVMStruct<S>) op.writer();
 	}
 
 	public static final <F extends Func<F>> LLVMFunc<F> llvm(Func<F> func) {

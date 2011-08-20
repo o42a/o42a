@@ -27,17 +27,10 @@ import org.o42a.codegen.code.op.StructOp;
 public abstract class TopLevelCDAlloc<S extends StructOp<S>>
 		extends ContainerCDAlloc<S> {
 
-	private final ConstBackend backend;
-
 	public TopLevelCDAlloc(
 			ConstBackend backend,
 			ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
-		this.backend = backend;
-	}
-
-	public final ConstBackend getBackend() {
-		return this.backend;
+		super(backend, typeAllocation);
 	}
 
 	public final ConstGenerator getGenerator() {

@@ -17,41 +17,41 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.rec;
 
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.data.Type;
 
 
-public abstract class StructCDAlloc<S extends StructOp<S>>
-		extends ContainerCDAlloc<S> {
+public class StructRecCOp<S extends StructOp<S>>
+		extends RecCOp<StructRecOp<S>, S>
+		implements StructRecOp<S> {
 
-	private final TopLevelCDAlloc<?> topLevel;
-	private final ContainerCDAlloc<?> enclosing;
+	private final Type<S> type;
 
-	public StructCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(enclosing.getBackend(), typeAllocation);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		enclosing.nest(this);
+	public StructRecCOp(
+			CCode<?> code,
+			StructRecOp<S> underlying,
+			Type<S> type) {
+		super(code, underlying);
+		this.type = type;
 	}
 
-	public StructCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
-		super(backend, underlyingPtr);
-		this.topLevel = null;
-		this.enclosing = null;
-	}
-
-	@Override
-	public final TopLevelCDAlloc<?> getTopLevel() {
-		return this.topLevel;
+	public final Type<S> getType() {
+		return this.type;
 	}
 
 	@Override
-	public final ContainerCDAlloc<?> getEnclosing() {
-		return this.enclosing;
+	public StructRecCOp<S> create(CCode<?> code, StructRecOp<S> underlying) {
+		return new StructRecCOp<S>(code, underlying, getType());
+	}
+
+	@Override
+	protected S loaded(CCode<?> code, S underlying) {
+		return getType().op(new CStruct<S>(code, underlying));
 	}
 
 }

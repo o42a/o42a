@@ -46,6 +46,13 @@ public abstract class Functions {
 		return this.generator;
 	}
 
+	public final <F extends Func<F>> FuncPtr<F> nullPtr(
+			Signature<F> signature) {
+		return new NullFuncPtr<F>(
+				signature,
+				getGenerator().getFunctions().dataWriter().nullPtr(signature));
+	}
+
 	public final FunctionSettings newFunction() {
 		return new FunctionSettings(this);
 	}
