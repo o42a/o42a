@@ -19,18 +19,22 @@
 */
 package org.o42a.backend.constant.data;
 
+import org.o42a.backend.constant.code.func.FuncCAlloc;
+import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.rec.AnyCDAlloc;
+import org.o42a.backend.constant.data.rec.DataCDAlloc;
+import org.o42a.backend.constant.data.struct.CType;
+import org.o42a.backend.constant.data.struct.SubCDAlloc;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public class ConstDataWriter implements DataWriter {
+public final class ConstDataWriter implements DataWriter {
 
 	private final ConstBackend backend;
 
@@ -43,27 +47,47 @@ public class ConstDataWriter implements DataWriter {
 	}
 
 	@Override
-	public DataAllocation<AnyOp> nullPtr() {
-		// TODO Auto-generated method stub
-		return null;
+	public final AnyCDAlloc nullPtr() {
+
+		final Ptr<AnyOp> underlyingNull =
+				getBackend().getUnderlyingGenerator()
+				.getGlobals().nullPtr();
+
+		return new AnyCDAlloc(getBackend(), underlyingNull);
 	}
 
 	@Override
-	public DataAllocation<DataOp> nullDataPtr() {
-		// TODO Auto-generated method stub
-		return null;
+	public final DataCDAlloc nullDataPtr() {
+
+		final Ptr<DataOp> underlyingNull =
+				getBackend().getUnderlyingGenerator()
+				.getGlobals().nullDataPtr();
+
+		return new DataCDAlloc(getBackend(), underlyingNull);
 	}
 
 	@Override
-	public <S extends StructOp<S>> DataAllocation<S> nullPtr(Type<S> type) {
-		// TODO Auto-generated method stub
-		return null;
+	public final <S extends StructOp<S>> SubCDAlloc<S> nullPtr(Type<S> type) {
+
+		final CType<S> underlyingType = getBackend().underlying(type);
+		final Ptr<S> underlyingNull =
+				getBackend().getUnderlyingGenerator().getGlobals().nullPtr(
+						underlyingType);
+
+		return new SubCDAlloc<S>(getBackend(), underlyingNull);
 	}
 
 	@Override
-	public <F extends Func<F>> FuncAllocation<F> nullPtr(Signature<F> signature) {
-		// TODO Auto-generated method stub
-		return null;
+	public final <F extends Func<F>> FuncCAlloc<F> nullPtr(
+			Signature<F> signature) {
+
+		final CSignature<F> underlyingSignature =
+				getBackend().underlying(signature);
+		final FuncPtr<F> underlyingNull =
+				getBackend().getUnderlyingGenerator()
+				.getFunctions().nullPtr(underlyingSignature);
+
+		return new FuncCAlloc<F>(underlyingNull, underlyingSignature);
 	}
 
 	@Override

@@ -133,13 +133,13 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private RelPtrRec list;
+		private RelRec list;
 		private Int32rec size;
 
 		private Type() {
 		}
 
-		public final RelPtrRec list() {
+		public final RelRec list() {
 			return this.list;
 		}
 

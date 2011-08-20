@@ -22,8 +22,6 @@ package org.o42a.backend.constant.data.struct;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
@@ -44,12 +42,6 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 	@SuppressWarnings("unchecked")
 	public final Global<S, ?> getUnderlyingGlobal() {
 		return (Global<S, ?>) getUnderlyingAllocated().getContainer();
-	}
-
-	@Override
-	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

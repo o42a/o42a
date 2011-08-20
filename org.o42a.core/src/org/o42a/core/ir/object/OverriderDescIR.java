@@ -104,7 +104,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 
 		private StructRec<FieldDescIR.Op> field;
 		private StructRec<ObjectIRType.Op> definedIn;
-		private RelPtrRec body;
+		private RelRec body;
 
 		private Type() {
 		}
@@ -117,7 +117,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			return this.definedIn;
 		}
 
-		public final RelPtrRec body() {
+		public final RelRec body() {
 			return this.body;
 		}
 

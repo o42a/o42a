@@ -22,12 +22,20 @@ package org.o42a.backend.constant.code;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
-import org.o42a.backend.constant.code.func.FuncCCaller;
-import org.o42a.backend.constant.code.op.COp;
+import org.o42a.backend.constant.code.func.CFunc;
+import org.o42a.backend.constant.code.op.*;
+import org.o42a.backend.constant.code.rec.AnyRecCOp;
+import org.o42a.backend.constant.code.rec.StructRecCOp;
+import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.struct.CStruct;
+import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.*;
+import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.backend.FuncAllocation;
+import org.o42a.codegen.code.backend.MultiCodePos;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 
@@ -104,110 +112,109 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public CodeId getId() {
+	public final CodeId getId() {
 		return getUnderlying().getId();
 	}
 
 	@Override
-	public <F extends Func<F>> FuncCaller<F> caller(
+	public final <F extends Func<F>> CFunc<F> caller(
 			CodeId id,
 			FuncAllocation<F> allocation) {
 
 		final F underlyingFunc =
 				cast(allocation).getUnderlyingPtr().op(id, getUnderlying());
 
-		return new FuncCCaller<F>(this, underlyingFunc);
+		return new CFunc<F>(this, underlyingFunc);
 	}
 
 	@Override
-	public CodeWriter block(Code code, CodeId id) {
+	public final CBlock block(Code code, CodeId id) {
 		return new CBlock(this, code, getUnderlying().addBlock(id));
 	}
 
 	@Override
-	public AllocationWriter allocationBlock(AllocationCode code, CodeId id) {
+	public final CAllocation allocationBlock(AllocationCode code, CodeId id) {
 		return new CAllocation(this, code, getUnderlying().allocate(id));
 	}
 
 	@Override
-	public Int8op int8(byte value) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int8cOp int8(byte value) {
+		return new Int8cOp(this, getUnderlying().int8(value));
 	}
 
 	@Override
-	public Int16op int16(short value) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int16cOp int16(short value) {
+		return new Int16cOp(this, getUnderlying().int16(value));
 	}
 
 	@Override
-	public Int32op int32(int value) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int32cOp int32(int value) {
+		return new Int32cOp(this, getUnderlying().int32(value));
 	}
 
 	@Override
-	public Int64op int64(long value) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Int64cOp int64(long value) {
+		return new Int64cOp(this, getUnderlying().int64(value));
 	}
 
 	@Override
-	public Fp32op fp32(float value) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Fp32cOp fp32(float value) {
+		return new Fp32cOp(this, getUnderlying().fp32(value));
 	}
 
 	@Override
-	public Fp64op fp64(double value) {
-		// TODO Auto-generated method stub
-		return null;
+	public final Fp64cOp fp64(double value) {
+		return new Fp64cOp(this, getUnderlying().fp64(value));
 	}
 
 	@Override
-	public BoolOp bool(boolean value) {
-		// TODO Auto-generated method stub
-		return null;
+	public final BoolCOp bool(boolean value) {
+		return new BoolCOp(this, getUnderlying().bool(value));
 	}
 
 	@Override
-	public RelOp nullRelPtr() {
-		// TODO Auto-generated method stub
-		return null;
+	public final RelCOp nullRelPtr() {
+		return new RelCOp(this, getUnderlying().nullRelPtr());
 	}
 
 	@Override
-	public AnyOp nullPtr() {
-		// TODO Auto-generated method stub
-		return null;
+	public final AnyCOp nullPtr() {
+		return new AnyCOp(this, getUnderlying().nullPtr());
 	}
 
 	@Override
-	public DataOp nullDataPtr() {
-		// TODO Auto-generated method stub
-		return null;
+	public final DataCOp nullDataPtr() {
+		return new DataCOp(this, getUnderlying().nullDataPtr());
 	}
 
 	@Override
-	public <S extends StructOp<S>> S nullPtr(DataAllocation<S> type) {
-		// TODO Auto-generated method stub
-		return null;
+	public final <S extends StructOp<S>> S nullPtr(DataAllocation<S> type) {
+
+		final ContainerCDAlloc<S> typeAlloc = (ContainerCDAlloc<S>) type;
+		final CType<S> underlyingType = typeAlloc.getUnderlyingType();
+		final S underlyingPtr = getUnderlying().nullPtr(underlyingType);
+
+		return underlyingType.getOriginal().op(
+				new CStruct<S>(this, underlyingPtr));
 	}
 
 	@Override
-	public <F extends Func<F>> FuncCaller<F> nullPtr(Signature<F> signature) {
-		// TODO Auto-generated method stub
-		return null;
+	public final <F extends Func<F>> CFunc<F> nullPtr(Signature<F> signature) {
+
+		final CSignature<F> underlyingSignature =
+				getBackend().underlying(signature);
+		final F underlyingPtr = getUnderlying().nullPtr(underlyingSignature);
+
+		return new CFunc<F>(this, underlyingPtr);
 	}
 
 	@Override
-	public void go(CodePos pos) {
+	public final void go(CodePos pos) {
 		getUnderlying().go(underlying(pos));
 	}
 
 	@Override
-	public void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
+	public final void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
 		underlying(condition).go(
 				getUnderlying(),
 				underlying(truePos),
@@ -215,7 +222,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public MultiCodePos comeFrom(CodeWriter[] alts) {
+	public final MultiCodePos comeFrom(CodeWriter[] alts) {
 
 		final CodeWriter[] underlyingAlts = new CodeWriter[alts.length];
 
@@ -227,34 +234,49 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public void goToOneOf(MultiCodePos target) {
+	public final void goToOneOf(MultiCodePos target) {
 		getUnderlying().writer().goToOneOf(target);
 	}
 
 	@Override
-	public AnyRecOp allocatePtr(CodeId id) {
-		// TODO Auto-generated method stub
-		return null;
+	public final AnyRecCOp allocatePtr(CodeId id) {
+		return new AnyRecCOp(this, getUnderlying().writer().allocatePtr(id));
 	}
 
 	@Override
-	public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
+	public final <S extends StructOp<S>> StructRecCOp<S> allocatePtr(
 			CodeId id,
-			DataAllocation<S> allocation) {
-		// TODO Auto-generated method stub
-		return null;
+			DataAllocation<S> typeAllocation) {
+
+		final ContainerCDAlloc<S> typeAlloc =
+				(ContainerCDAlloc<S>) typeAllocation;
+		final StructRecOp<S> underlyingOp =
+				getUnderlying().writer().allocatePtr(
+						id,
+						typeAlloc.getUnderlyingPtr().getAllocation());
+
+		return new StructRecCOp<S>(
+				this,
+				underlyingOp,
+				typeAlloc.getUnderlyingType().getType());
 	}
 
 	@Override
-	public <S extends StructOp<S>> S allocateStruct(
+	public final <S extends StructOp<S>> S allocateStruct(
 			CodeId id,
-			DataAllocation<S> allocation) {
-		// TODO Auto-generated method stub
-		return null;
+			DataAllocation<S> typeAllocation) {
+
+		final ContainerCDAlloc<S> typeAlloc =
+				(ContainerCDAlloc<S>) typeAllocation;
+		final S underlyingOp = getUnderlying().writer().allocateStruct(
+				id, typeAlloc.getUnderlyingPtr().getAllocation());
+
+		return typeAlloc.getUnderlyingType().getOriginal().op(
+				new CStruct<S>(this, underlyingOp));
 	}
 
 	@Override
-	public <O extends Op> O phi(CodeId id, O op) {
+	public final <O extends Op> O phi(CodeId id, O op) {
 
 		final COp<O> cop = cast(op);
 		final O underlyingPHI = getUnderlying().phi(id, cop.getUnderlying());
@@ -263,7 +285,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public <O extends Op> O phi(CodeId id, O op1, O op2) {
+	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
 
 		final COp<O> cop1 = cast(op1);
 		final O underlyingPHI =
@@ -273,12 +295,12 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public void returnVoid() {
+	public final void returnVoid() {
 		beforeReturn();
 		getUnderlying().returnVoid();
 	}
 
-	public void beforeReturn() {
+	public final void beforeReturn() {
 		getFunction().getCallback().beforeReturn(code());
 	}
 

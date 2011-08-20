@@ -158,12 +158,12 @@ public abstract class SubData<S extends StructOp<S>>
 				content));
 	}
 
-	public final RelPtrRec addRelPtr(String name) {
-		return add(new RelPtrRec(this, id(name), null));
+	public final RelRec addRelPtr(String name) {
+		return add(new RelRec(this, id(name), null));
 	}
 
-	public final RelPtrRec addRelPtr(String name, Content<RelPtrRec> content) {
-		return add(new RelPtrRec(this, id(name), content));
+	public final RelRec addRelPtr(String name, Content<RelRec> content) {
+		return add(new RelRec(this, id(name), content));
 	}
 
 	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(

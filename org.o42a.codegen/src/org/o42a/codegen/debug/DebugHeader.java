@@ -150,7 +150,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 	public static final class HeaderType extends Type<Op> {
 
 		private Int32rec typeCode;
-		private RelPtrRec enclosing;
+		private RelRec enclosing;
 		private AnyPtrRec name;
 		private AnyPtrRec typeInfo;
 
@@ -171,7 +171,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			return this.typeCode;
 		}
 
-		public final RelPtrRec enclosing() {
+		public final RelRec enclosing() {
 			return this.enclosing;
 		}
 

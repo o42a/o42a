@@ -328,7 +328,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<RelRecOp> allocateRelPtr(
 			DataAllocation<?> enclosing,
-			RelPtrRec data,
+			RelRec data,
 			DataAllocation<RelRecOp> type) {
 		if (allocate(enclosing)) {
 			allocateRelPtr(getModulePtr(), typeDataPtr(enclosing));

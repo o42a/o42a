@@ -30,6 +30,7 @@ public final class RelPtr {
 	private final Ptr<?> pointer;
 	private final Ptr<?> relativeTo;
 	private final CodeId id;
+	private RelAllocation allocation;
 
 	RelPtr(Ptr<?> pointer, Ptr<?> relativeTo) {
 		this.pointer = pointer;
@@ -52,13 +53,21 @@ public final class RelPtr {
 		return this.relativeTo;
 	}
 
+	public final RelAllocation getAllocation() {
+		if (this.allocation != null) {
+			return this.allocation;
+		}
+		return this.allocation = getPointer().getAllocation().relativeTo(
+				getRelativeTo().getAllocation());
+	}
+
 	public RelOp op(CodeId id, Code code) {
 
 		final CodeBase c = code;
 
 		c.assertIncomplete();
 
-		return allocation().op(
+		return getAllocation().op(
 				id != null ? code.opId(id) : getId(),
 				c.writer());
 	}
@@ -66,11 +75,6 @@ public final class RelPtr {
 	@Override
 	public String toString() {
 		return this.pointer + " - " + this.relativeTo;
-	}
-
-	RelAllocation allocation() {
-		return getPointer().getAllocation().relativeTo(
-				getRelativeTo().getAllocation());
 	}
 
 }

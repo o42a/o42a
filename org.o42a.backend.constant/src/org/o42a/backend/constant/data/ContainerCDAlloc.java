@@ -19,12 +19,17 @@
 */
 package org.o42a.backend.constant.data;
 
+import static org.o42a.backend.constant.data.ConstBackend.cast;
+
 import java.util.LinkedList;
 
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Allocated;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 
 
 public abstract class ContainerCDAlloc<S extends StructOp<S>>
@@ -36,8 +41,14 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 
 	private boolean containerAllocated;
 
-	public ContainerCDAlloc(ContainerCDAlloc<S> typeAllocation) {
-		super(typeAllocation);
+	public ContainerCDAlloc(
+			ConstBackend backend,
+			ContainerCDAlloc<S> typeAllocation) {
+		super(backend, typeAllocation);
+	}
+
+	public ContainerCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
+		super(backend, underlyingPtr);
 	}
 
 	@Override
@@ -55,6 +66,17 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 
 	public CType<S> getUnderlyingType() {
 		return (CType<S>) getUnderlyingAllocated().getType();
+	}
+
+	@Override
+	public final S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+
+		final CCode<?> ccode = cast(writer);
+		final Type<S> type = getUnderlyingType().getOriginal();
+
+		return type.op(new CStruct<S>(
+				ccode,
+				getUnderlying().getPointer().op(id, ccode.getUnderlying())));
 	}
 
 	@Override

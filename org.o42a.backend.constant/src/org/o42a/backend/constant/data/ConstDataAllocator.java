@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.data.rec.*;
+import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
 import org.o42a.backend.constant.data.struct.SubCDAlloc;
 import org.o42a.backend.constant.data.struct.TypeCDAlloc;
 import org.o42a.codegen.CodeId;
@@ -50,8 +51,16 @@ public class ConstDataAllocator implements DataAllocator {
 			byte[] data,
 			int start,
 			int end) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final Ptr<AnyOp> underlyingBinary =
+				getBackend().getUnderlyingGenerator().addBinary(
+						id,
+						isConstant,
+						data,
+						start,
+						end);
+
+		return new AnyCDAlloc(getBackend(), underlyingBinary);
 	}
 
 	@Override
@@ -63,8 +72,10 @@ public class ConstDataAllocator implements DataAllocator {
 	public <S extends StructOp<S>> DataAllocation<S> begin(
 			DataAllocation<S> type,
 			Global<S, ?> global) {
-		// TODO Auto-generated method stub
-		return null;
+		return new GlobalCDAlloc<S>(
+				getBackend(),
+				(ContainerCDAlloc<S>) type,
+				global);
 	}
 
 	@Override
@@ -89,8 +100,11 @@ public class ConstDataAllocator implements DataAllocator {
 
 	@Override
 	public void end(Global<?, ?> global) {
-		// TODO Auto-generated method stub
 
+		final ContainerCDAlloc<?> alloc =
+				(GlobalCDAlloc<?>) global.getPointer().getAllocation();
+
+		alloc.containerAllocated();
 	}
 
 	@Override
@@ -198,23 +212,27 @@ public class ConstDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public final <S extends StructOp<S>> DataAllocation<S> allocatePtr(
+	public final <S extends StructOp<S>> StructRecCDAlloc<S> allocatePtr(
 			DataAllocation<?> enclosing,
 			StructRec<S> data,
-			DataAllocation<S> type, DataAllocation<S> struct) {
-		// TODO Auto-generated method stub
-		return null;
+			DataAllocation<S> type,
+			DataAllocation<S> struct) {
+		return new StructRecCDAlloc<S>(
+				enclosing(enclosing),
+				data,
+				(StructRecCDAlloc<S>) type,
+				(ContainerCDAlloc<S>) struct);
 	}
 
 	@Override
-	public final RelCDAlloc allocateRelPtr(
+	public final RelRecCDAlloc allocateRelPtr(
 			DataAllocation<?> enclosing,
-			RelPtrRec data,
+			RelRec data,
 			DataAllocation<RelRecOp> type) {
-		return new RelCDAlloc(
+		return new RelRecCDAlloc(
 				enclosing(enclosing),
 				data,
-				(RelCDAlloc) type);
+				(RelRecCDAlloc) type);
 	}
 
 	private static ContainerCDAlloc<?> enclosing(DataAllocation<?> enclosing) {

@@ -21,22 +21,21 @@ package org.o42a.backend.constant.data.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.RelRecCOp;
-import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.data.RelPtr;
-import org.o42a.codegen.data.RelPtrRec;
+import org.o42a.codegen.data.RelRec;
 import org.o42a.codegen.data.SubData;
 
 
-public final class RelCDAlloc extends RecCDAlloc<RelPtrRec, RelRecOp, RelPtr> {
+public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 
-	public RelCDAlloc(
+	public RelRecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
-			RelPtrRec data,
-			CDAlloc<RelRecOp, RelPtrRec> type) {
-		super(enclosing, data, type);
+			RelRec data,
+			RelRecCDAlloc typeAllocation) {
+		super(enclosing, data, typeAllocation);
 	}
 
 	@Override
@@ -45,7 +44,7 @@ public final class RelCDAlloc extends RecCDAlloc<RelPtrRec, RelRecOp, RelPtr> {
 	}
 
 	@Override
-	protected RelPtrRec allocateUnderlying(SubData<?> container, String name) {
+	protected RelRec allocateUnderlying(SubData<?> container, String name) {
 		return container.addRelPtr(name);
 	}
 

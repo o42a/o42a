@@ -60,8 +60,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			new HashMap<MemberKey, Fld>();
 	private final HashMap<Dep, DepIR> deps = new HashMap<Dep, DepIR>();
 
-	private RelPtrRec objectType;
-	private RelPtrRec ancestorBody;
+	private RelRec objectType;
+	private RelRec ancestorBody;
 	private DataRec methods;
 	private Int32rec flags;
 
@@ -114,11 +114,11 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return this.methodsIR;
 	}
 
-	public final RelPtrRec objectType() {
+	public final RelRec objectType() {
 		return this.objectType;
 	}
 
-	public final RelPtrRec ancestorBody() {
+	public final RelRec ancestorBody() {
 		return this.ancestorBody;
 	}
 

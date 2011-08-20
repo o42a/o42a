@@ -21,11 +21,12 @@ package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.backend.constant.code.func.CFunc;
 import org.o42a.backend.constant.code.func.FuncCAlloc;
-import org.o42a.backend.constant.code.func.FuncCCaller;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeCallback;
@@ -170,8 +171,12 @@ public class CFunction<F extends Func<F>>
 			Code code,
 			Arg<S> arg,
 			Type<S> type) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final S underlyingValue =
+				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
+
+		return type.op(new CStruct<S>(ccode, underlyingValue));
 	}
 
 	@Override
@@ -184,7 +189,7 @@ public class CFunction<F extends Func<F>>
 		final FF underlyingFunc =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return signature.op(new FuncCCaller<FF>(ccode, underlyingFunc));
+		return signature.op(new CFunc<FF>(ccode, underlyingFunc));
 	}
 
 	@SuppressWarnings("unchecked")
