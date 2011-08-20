@@ -21,8 +21,7 @@ package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.signature.CSignature;
-import org.o42a.backend.constant.data.rec.AnyCDAlloc;
-import org.o42a.backend.constant.data.rec.DataCDAlloc;
+import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.backend.constant.data.struct.SubCDAlloc;
 import org.o42a.codegen.code.Func;
@@ -92,78 +91,87 @@ public final class ConstDataWriter implements DataWriter {
 
 	@Override
 	public <S extends StructOp<S>> void begin(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			Global<S, ?> global) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public <S extends StructOp<S>> void enter(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			SubData<S> data) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public <S extends StructOp<S>> void exit(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			SubData<S> data) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public <S extends StructOp<S>> void end(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			Global<S, ?> global) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
-	public void writeInt8(DataAllocation<Int8recOp> allocation, byte value) {
-		// TODO Auto-generated method stub
+	public void writeInt8(DataAllocation<Int8recOp> destination, byte value) {
 
+		final Int8cdAlloc dest = (Int8cdAlloc) destination;
+
+		dest.setValue(value);
 	}
 
 	@Override
-	public void writeInt16(DataAllocation<Int16recOp> allocation, short value) {
-		// TODO Auto-generated method stub
+	public void writeInt16(
+			DataAllocation<Int16recOp> destination,
+			short value) {
 
+		final Int16cdAlloc dest = (Int16cdAlloc) destination;
+
+		dest.setValue(value);
 	}
 
 	@Override
-	public void writeInt32(DataAllocation<Int32recOp> allocation, int value) {
-		// TODO Auto-generated method stub
+	public void writeInt32(DataAllocation<Int32recOp> destination, int value) {
 
+		final Int32cdAlloc dest = (Int32cdAlloc) destination;
+
+		dest.setValue(value);
 	}
 
 	@Override
-	public void writeInt64(DataAllocation<Int64recOp> allocation, long value) {
-		// TODO Auto-generated method stub
+	public void writeInt64(DataAllocation<Int64recOp> destination, long value) {
 
+		final Int64cdAlloc dest = (Int64cdAlloc) destination;
+
+		dest.setValue(value);
 	}
 
 	@Override
 	public void writeNativePtrAsInt64(
-			DataAllocation<Int64recOp> allocation,
+			DataAllocation<Int64recOp> destination,
 			DataAllocation<AnyOp> valueAllocation) {
-		// TODO Auto-generated method stub
 
+		final Int64cdAlloc dest = (Int64cdAlloc) destination;
+		final AnyCDAlloc valueAlloc = (AnyCDAlloc) valueAllocation;
+
+		dest.setNativePtr(valueAlloc.getUnderlyingPtr());
 	}
 
 	@Override
-	public void writeFp32(DataAllocation<Fp32recOp> allocation, float value) {
-		// TODO Auto-generated method stub
+	public void writeFp32(DataAllocation<Fp32recOp> destination, float value) {
 
+		final Fp32cdAlloc dest = (Fp32cdAlloc) destination;
+
+		dest.setValue(value);
 	}
 
 	@Override
-	public void writeFp64(DataAllocation<Fp64recOp> allocation, double value) {
-		// TODO Auto-generated method stub
+	public void writeFp64(DataAllocation<Fp64recOp> destination, double value) {
 
+		final Fp64cdAlloc dest = (Fp64cdAlloc) destination;
+
+		dest.setValue(value);
 	}
 
 }

@@ -121,14 +121,14 @@ public abstract class SubData<S extends StructOp<S>>
 				content));
 	}
 
-	public final AnyPtrRec addPtr(String name) {
-		return add(new AnyPtrRec(this, id(name), null));
+	public final AnyRec addPtr(String name) {
+		return add(new AnyRec(this, id(name), null));
 	}
 
-	public final AnyPtrRec addPtr(
+	public final AnyRec addPtr(
 			String name,
-			Content<AnyPtrRec> content) {
-		return add(new AnyPtrRec(this, id(name), content));
+			Content<AnyRec> content) {
+		return add(new AnyRec(this, id(name), content));
 	}
 
 	public final DataRec addDataPtr(String name) {

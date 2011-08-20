@@ -195,7 +195,7 @@ public class ConstDataAllocator implements DataAllocator {
 	@Override
 	public final AnyCDAlloc allocatePtr(
 			DataAllocation<?> enclosing,
-			AnyPtrRec data,
+			AnyRec data,
 			DataAllocation<AnyOp> type) {
 		return new AnyCDAlloc(enclosing(enclosing), data, (AnyCDAlloc) type);
 	}

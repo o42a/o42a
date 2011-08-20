@@ -24,17 +24,17 @@ import org.o42a.backend.constant.code.op.AnyCOp;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.AnyPtrRec;
+import org.o42a.codegen.data.AnyRec;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public final class AnyCDAlloc extends PtrRecCDAlloc<AnyPtrRec, AnyOp> {
+public final class AnyCDAlloc extends PtrRecCDAlloc<AnyRec, AnyOp> {
 
 	public AnyCDAlloc(
 			ContainerCDAlloc<?> enclosing,
-			AnyPtrRec data,
+			AnyRec data,
 			AnyCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
 	}
@@ -53,8 +53,8 @@ public final class AnyCDAlloc extends PtrRecCDAlloc<AnyPtrRec, AnyOp> {
 	}
 
 	@Override
-	protected AnyPtrRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addPtr(name);
+	protected AnyRec allocateUnderlying(SubData<?> container, String name) {
+		return container.addPtr(name, this);
 	}
 
 	@Override

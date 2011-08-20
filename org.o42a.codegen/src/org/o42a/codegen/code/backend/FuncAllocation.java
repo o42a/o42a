@@ -22,6 +22,7 @@ package org.o42a.codegen.code.backend;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -30,7 +31,7 @@ public interface FuncAllocation<F extends Func<F>> {
 
 	Signature<F> getSignature();
 
-	void write(DataWriter writer);
+	void write(DataWriter writer, DataAllocation<FuncOp<F>> detsination);
 
 	DataAllocation<AnyOp> toAny();
 

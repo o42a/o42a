@@ -106,8 +106,8 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 		private Int32rec dataType;
 		private RelRec offset;
-		private AnyPtrRec name;
-		private AnyPtrRec typeInfo;
+		private AnyRec name;
+		private AnyRec typeInfo;
 
 		private FieldInfoType() {
 		}
@@ -125,11 +125,11 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 			return this.offset;
 		}
 
-		public final AnyPtrRec name() {
+		public final AnyRec name() {
 			return this.name;
 		}
 
-		public final AnyPtrRec typeInfo() {
+		public final AnyRec typeInfo() {
 			return this.typeInfo;
 		}
 

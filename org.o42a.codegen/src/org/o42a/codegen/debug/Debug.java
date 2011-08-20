@@ -215,7 +215,7 @@ public class Debug {
 		return binary;
 	}
 
-	final void setName(AnyPtrRec field, CodeId id, String value) {
+	final void setName(AnyRec field, CodeId id, String value) {
 		field.setValue(allocateName(id, value));
 	}
 

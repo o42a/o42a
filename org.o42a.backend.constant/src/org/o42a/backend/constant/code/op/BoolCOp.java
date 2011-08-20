@@ -23,10 +23,12 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.op.StructOp;
 
 
 public final class BoolCOp extends BoolOp implements COp<BoolOp> {
@@ -54,6 +56,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp> {
 		return getUnderlying().getId();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <O extends Op> O select(
 			CodeId id,
@@ -61,8 +64,23 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp> {
 			O trueValue,
 			O falseValue) {
 
-		final COp<O> trueVal = cast(trueValue);
 		final CCode<?> ccode = cast(code);
+
+		if (trueValue instanceof StructOp) {
+
+			final CStruct<?> trueVal = cast((StructOp<?>) trueValue);
+			final StructOp<?> underlying = getUnderlying().select(
+					id,
+					ccode.getUnderlying(),
+					trueVal.getUnderlying(),
+					underlying((StructOp<?>) falseValue));
+			@SuppressWarnings("rawtypes")
+			final CStruct res = trueVal;
+
+			return (O) res.create(ccode, underlying);
+		}
+
+		final COp<O> trueVal = cast(trueValue);
 		final O underlying = getUnderlying().select(
 				id,
 				ccode.getUnderlying(),

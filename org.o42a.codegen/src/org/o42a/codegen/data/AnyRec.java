@@ -25,9 +25,9 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class AnyPtrRec extends PtrRec<AnyOp> {
+public final class AnyRec extends PtrRec<AnyOp> {
 
-	AnyPtrRec(SubData<?> enclosing, CodeId id, Content<AnyPtrRec> content) {
+	AnyRec(SubData<?> enclosing, CodeId id, Content<AnyRec> content) {
 		super(enclosing, id, content);
 	}
 

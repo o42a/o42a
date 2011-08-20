@@ -24,6 +24,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -73,7 +74,7 @@ public final class LLVMFuncAllocation<F extends Func<F>>
 	}
 
 	@Override
-	public void write(DataWriter writer) {
+	public void write(DataWriter writer, DataAllocation<FuncOp<F>> detsination) {
 		llvmId().write(writer);
 	}
 

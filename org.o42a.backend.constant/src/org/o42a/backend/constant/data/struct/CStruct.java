@@ -19,11 +19,14 @@
 */
 package org.o42a.backend.constant.data.struct;
 
+import static org.o42a.backend.constant.data.ConstBackend.cast;
+
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.DataCOp;
 import org.o42a.backend.constant.code.op.PtrCOp;
-import org.o42a.backend.constant.code.rec.AnyRecCOp;
-import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.RecCDAlloc;
+import org.o42a.backend.constant.data.rec.*;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
@@ -32,7 +35,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public class CStruct<S extends StructOp<S>>
+public final class CStruct<S extends StructOp<S>>
 		extends PtrCOp<S>
 		implements StructWriter<S> {
 
@@ -52,7 +55,7 @@ public class CStruct<S extends StructOp<S>>
 	@Override
 	public AnyRecOp field(CodeId id, Code code, Data<?> field) {
 
-		final CCode<?> ccode = ConstBackend.cast(code);
+		final CCode<?> ccode = cast(code);
 		final RecCDAlloc<?, ?, ?> alloc =
 				(RecCDAlloc<?, ?, ?>) field.getPointer().getAllocation();
 		final AnyRecOp underlyingRec = getUnderlying().writer().field(
@@ -64,66 +67,146 @@ public class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int8recOp int8(CodeId id, Code code, Int8rec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public Int8recCOp int8(CodeId id, Code code, Int8rec field) {
+
+		final CCode<?> ccode = cast(code);
+		final Int8cdAlloc fld =
+				(Int8cdAlloc) field.getPointer().getAllocation();
+		final Int8recOp underlyingRec = getUnderlying().writer().int8(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new Int8recCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public Int16recOp int16(CodeId id, Code code, Int16rec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public Int16recCOp int16(CodeId id, Code code, Int16rec field) {
+
+		final CCode<?> ccode = cast(code);
+		final Int16cdAlloc fld =
+				(Int16cdAlloc) field.getPointer().getAllocation();
+		final Int16recOp underlyingRec = getUnderlying().writer().int16(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new Int16recCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public Int32recOp int32(CodeId id, Code code, Int32rec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public Int32recCOp int32(CodeId id, Code code, Int32rec field) {
+
+		final CCode<?> ccode = cast(code);
+		final Int32cdAlloc fld =
+				(Int32cdAlloc) field.getPointer().getAllocation();
+		final Int32recOp underlyingRec = getUnderlying().writer().int32(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new Int32recCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public Int64recOp int64(CodeId id, Code code, Int64rec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public Int64recCOp int64(CodeId id, Code code, Int64rec field) {
+
+		final CCode<?> ccode = cast(code);
+		final Int64cdAlloc fld =
+				(Int64cdAlloc) field.getPointer().getAllocation();
+		final Int64recOp underlyingRec = getUnderlying().writer().int64(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new Int64recCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public Fp32recOp fp32(CodeId id, Code code, Fp32rec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public Fp32recCOp fp32(CodeId id, Code code, Fp32rec field) {
+
+		final CCode<?> ccode = cast(code);
+		final Fp32cdAlloc fld =
+				(Fp32cdAlloc) field.getPointer().getAllocation();
+		final Fp32recOp underlyingRec = getUnderlying().writer().fp32(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new Fp32recCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public Fp64recOp fp64(CodeId id, Code code, Fp64rec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public Fp64recCOp fp64(CodeId id, Code code, Fp64rec field) {
+
+		final CCode<?> ccode = cast(code);
+		final Fp64cdAlloc fld =
+				(Fp64cdAlloc) field.getPointer().getAllocation();
+		final Fp64recOp underlyingRec = getUnderlying().writer().fp64(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new Fp64recCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public AnyRecOp ptr(CodeId id, Code code, AnyPtrRec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public AnyRecCOp ptr(CodeId id, Code code, AnyRec field) {
+
+		final CCode<?> ccode = cast(code);
+		final AnyCDAlloc fld =
+				(AnyCDAlloc) field.getPointer().getAllocation();
+		final AnyRecOp underlyingRec = getUnderlying().writer().ptr(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new AnyRecCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public DataRecOp ptr(CodeId id, Code code, DataRec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public DataRecCOp ptr(CodeId id, Code code, DataRec field) {
+
+		final CCode<?> ccode = cast(code);
+		final DataCDAlloc fld =
+				(DataCDAlloc) field.getPointer().getAllocation();
+		final DataRecOp underlyingRec = getUnderlying().writer().ptr(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new DataRecCOp(ccode, underlyingRec);
 	}
 
 	@Override
-	public <SS extends StructOp<SS>> StructRecOp<SS> ptr(
+	public <SS extends StructOp<SS>> StructRecCOp<SS> ptr(
 			CodeId id,
 			Code code,
 			StructRec<SS> field) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final StructRecCDAlloc<SS> fld =
+				(StructRecCDAlloc<SS>) field.getPointer().getAllocation();
+		final StructRecOp<SS> underlyingRec = getUnderlying().writer().ptr(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new StructRecCOp<SS>(ccode, underlyingRec, field.getType());
 	}
 
 	@Override
-	public RelRecOp relPtr(CodeId id, Code code, RelRec field) {
-		// TODO Auto-generated method stub
-		return null;
+	public RelRecCOp relPtr(CodeId id, Code code, RelRec field) {
+
+		final CCode<?> ccode = cast(code);
+		final RelRecCDAlloc fld =
+				(RelRecCDAlloc) field.getPointer().getAllocation();
+		final RelRecOp underlyingRec = getUnderlying().writer().relPtr(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new RelRecCOp(ccode, underlyingRec);
 	}
 
 	@Override
@@ -131,23 +214,42 @@ public class CStruct<S extends StructOp<S>>
 			CodeId id,
 			Code code,
 			Type<SS> field) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final CType<SS> fld = getBackend().underlying(field);
+		final SS underlyingStruct = getUnderlying().writer().struct(
+				id,
+				ccode.getUnderlying(),
+				fld);
+
+		return field.op(new CStruct<SS>(ccode, underlyingStruct));
 	}
 
 	@Override
-	public <F extends Func<F>> FuncOp<F> func(
+	public <F extends Func<F>> FuncCOp<F> func(
 			CodeId id,
 			Code code,
 			FuncRec<F> field) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final FuncPtrCDAlloc<F> fld =
+				(FuncPtrCDAlloc<F>) field.getPointer().getAllocation();
+		final FuncOp<F> underlyingRec = getUnderlying().writer().func(
+				id,
+				ccode.getUnderlying(),
+				fld.getUnderlying());
+
+		return new FuncCOp<F>(ccode, underlyingRec);
 	}
 
 	@Override
-	public DataOp toData(CodeId id, Code code) {
-		// TODO Auto-generated method stub
-		return null;
+	public DataCOp toData(CodeId id, Code code) {
+
+		final CCode<?> ccode = cast(code);
+		final DataOp underlyingData =
+				getUnderlying().toData(id, ccode.getUnderlying());
+
+		return new DataCOp(ccode, underlyingData);
 	}
 
 	@Override
@@ -155,8 +257,14 @@ public class CStruct<S extends StructOp<S>>
 			CodeId id,
 			Code code,
 			Type<SS> type) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final CCode<?> ccode = cast(code);
+		final SS underlyingStruct = getUnderlying().to(
+				id,
+				ccode.getUnderlying(),
+				getBackend().underlying(type));
+
+		return type.op(new CStruct<SS>(ccode, underlyingStruct));
 	}
 
 	@Override

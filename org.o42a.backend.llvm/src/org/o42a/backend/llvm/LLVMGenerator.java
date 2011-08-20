@@ -63,13 +63,14 @@ public class LLVMGenerator extends AbstractGenerator {
 	}
 
 	@Override
+	public void write() {
+		super.write();
+		this.module.write();
+	}
+
+	@Override
 	public void close() {
 		this.module.destroy();
 	}
 
-	@Override
-	protected void writeData() {
-		super.writeData();
-		this.module.write();
-	}
 }

@@ -45,7 +45,7 @@ public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 
 	@Override
 	protected RelRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addRelPtr(name);
+		return container.addRelPtr(name, this);
 	}
 
 }

@@ -23,12 +23,16 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.Int64recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.RecCDAlloc;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.codegen.data.Int64rec;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 
 
 public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
+
+	private Ptr<AnyOp> nativePtr;
 
 	public Int64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -38,13 +42,32 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	}
 
 	@Override
+	public void setValue(Long value) {
+		super.setValue(value);
+		this.nativePtr = null;
+	}
+
+	public void setNativePtr(Ptr<AnyOp> pointer) {
+		this.nativePtr = pointer;
+		super.setValue(null);
+	}
+
+	@Override
+	public void fill(Int64rec instance) {
+		if (this.nativePtr != null) {
+			instance.setNativePtr(this.nativePtr);
+		} else {
+			instance.setValue(getValue());
+		}
+	}
+
+	@Override
 	protected Int64recCOp op(CCode<?> code, Int64recOp underlying) {
 		return new Int64recCOp(code, underlying);
 	}
 
 	@Override
 	protected Int64rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt64(name);
+		return container.addInt64(name, this);
 	}
-
 }

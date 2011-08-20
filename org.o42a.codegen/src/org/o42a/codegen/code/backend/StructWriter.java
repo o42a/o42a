@@ -44,7 +44,7 @@ public interface StructWriter<S extends StructOp<S>> extends PtrOp<S> {
 
 	Fp64recOp fp64(CodeId id, Code code, Fp64rec field);
 
-	AnyRecOp ptr(CodeId id, Code code, AnyPtrRec field);
+	AnyRecOp ptr(CodeId id, Code code, AnyRec field);
 
 	DataRecOp ptr(CodeId id, Code code, DataRec field);
 

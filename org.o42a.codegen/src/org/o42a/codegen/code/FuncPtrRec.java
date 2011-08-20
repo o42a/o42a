@@ -53,7 +53,7 @@ final class FuncPtrRec<F extends Func<F>> extends FuncRec<F> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		getValue().getAllocation().write(writer);
+		getValue().getAllocation().write(writer, getAllocation());
 	}
 
 }
