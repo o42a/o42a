@@ -55,18 +55,14 @@ jlong Java_org_o42a_backend_llvm_data_LLVMId_expression(
 	const IntegerType *int32ty =
 			IntegerType::getInt32Ty(module->getContext());
 
-	OTRACE("llvmId(" << *global << "): " << *global->getType() << ":\n    ");
 	indexList[0] = ConstantInt::get(int32ty, 0);
 	for (int i = len - 1; i >= 0; --i) {
 		indexList[len - i] = ConstantInt::get(int32ty, indexArray[i]);
 		ODEBUG_WITH_TYPE("trace", llvm::errs() << " " << indexArray[i]);
 	}
-	ODEBUG_WITH_TYPE("trace", llvm::errs() << "\n");
 
 	Constant *result =
 			ConstantExpr::getInBoundsGetElementPtr(global, indexList, len + 1);
-
-	ODUMP(result);
 
 	return to_ptr(result);
 }
@@ -82,9 +78,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMId_relativeExpression(
 
 	Constant *id = from_ptr<Constant>(idPtr);
 	Constant *to = from_ptr<Constant>(toPtr);
-
-	OTRACE("relativeExpression: " << *id << "\n    relativeTo " << *to << "\n");
-
 	const IntegerType *int32ty =
 			IntegerType::getInt32Ty(id->getContext());
 	const IntegerType *int64ty =
@@ -96,8 +89,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMId_relativeExpression(
 					ConstantExpr::getPtrToInt(to, int64ty)),
 			int32ty,
 			true);
-
-	ODUMP(result);
 
 	return to_ptr(result);
 }

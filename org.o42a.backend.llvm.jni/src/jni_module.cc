@@ -84,7 +84,7 @@ jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputFilename(
 	return array;
 }
 
-jboolean JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
+jboolean Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
 		JNIEnv *env,
 		jclass cls) {
 	return o42ac::BackendModule::isDebugEnabled() ? JNI_TRUE : JNI_FALSE;
