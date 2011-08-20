@@ -31,11 +31,12 @@ import org.o42a.codegen.data.*;
 public abstract class RecCDAlloc<
 		R extends Rec<P, T>,
 		P extends PtrOp<P>,
-		T> extends CDAlloc<P, R> {
+		T> extends CDAlloc<P, R> implements Content<R> {
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
 	private final R data;
+	private T value;
 
 	public RecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -74,6 +75,23 @@ public abstract class RecCDAlloc<
 
 	public final R getData() {
 		return this.data;
+	}
+
+	public final T getValue() {
+		return this.value;
+	}
+
+	public void setValue(T value) {
+		this.value = value;
+	}
+
+	@Override
+	public void allocated(R instance) {
+	}
+
+	@Override
+	public void fill(R instance) {
+		getUnderlying().setValue(getValue());
 	}
 
 	@Override

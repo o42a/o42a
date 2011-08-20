@@ -57,7 +57,7 @@ public final class FuncPtrCDAlloc<F extends Func<F>>
 		final CSignature<F> underlyingSignature =
 				getBackend().underlying(this.signature);
 
-		return container.addFuncPtr(name, underlyingSignature);
+		return container.addFuncPtr(name, underlyingSignature, this);
 	}
 
 }

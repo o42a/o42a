@@ -275,8 +275,19 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				new CStruct<S>(this, underlyingOp));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public final <O extends Op> O phi(CodeId id, O op) {
+		if (op instanceof StructOp<?>) {
+
+			final CStruct<?> cop = cast((StructOp<?>) op);
+			final StructOp<?> underlyingPHI =
+					getUnderlying().phi(id, cop.getUnderlying());
+			@SuppressWarnings("rawtypes")
+			final CStruct res = cop;
+
+			return (O) res.create(this, underlyingPHI);
+		}
 
 		final COp<O> cop = cast(op);
 		final O underlyingPHI = getUnderlying().phi(id, cop.getUnderlying());
@@ -284,8 +295,21 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return cop.create(this, underlyingPHI);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
+		if (op1 instanceof StructOp) {
+
+			final CStruct<?> cop1 = cast((StructOp<?>) op1);
+			final StructOp<?> underlyingPHI = getUnderlying().phi(
+					id,
+					cop1.getUnderlying(),
+					underlying((StructOp<?>) op2));
+			@SuppressWarnings("rawtypes")
+			final CStruct res = cop1;
+
+			return (O) res.create(this, underlyingPHI);
+		}
 
 		final COp<O> cop1 = cast(op1);
 		final O underlyingPHI =

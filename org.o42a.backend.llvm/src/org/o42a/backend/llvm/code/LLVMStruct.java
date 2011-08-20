@@ -159,7 +159,7 @@ public class LLVMStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public LLVMRecOp.Any ptr(CodeId id, Code code, AnyPtrRec field) {
+	public LLVMRecOp.Any ptr(CodeId id, Code code, AnyRec field) {
 
 		final long nextPtr = nextPtr(code);
 

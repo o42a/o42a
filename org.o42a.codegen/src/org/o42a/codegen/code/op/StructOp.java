@@ -136,7 +136,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 		return writer().fp64(fieldId(id, code, field), code, field);
 	}
 
-	protected final AnyRecOp ptr(CodeId id, Code code, AnyPtrRec field) {
+	protected final AnyRecOp ptr(CodeId id, Code code, AnyRec field) {
 		return writer().ptr(fieldId(id, code, field), code, field);
 	}
 

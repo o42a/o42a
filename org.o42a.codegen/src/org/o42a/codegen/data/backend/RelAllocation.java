@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.RelRecOp;
 
 public interface RelAllocation {
 
-	void write(DataAllocation<RelRecOp> allocation, DataWriter writer);
+	void write(DataWriter writer, DataAllocation<RelRecOp> detination);
 
 	RelOp op(CodeId id, CodeWriter writer);
 

@@ -285,7 +285,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public DataAllocation<AnyOp> allocatePtr(
 			DataAllocation<?> enclosing,
-			AnyPtrRec data,
+			AnyRec data,
 			DataAllocation<AnyOp> type) {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));

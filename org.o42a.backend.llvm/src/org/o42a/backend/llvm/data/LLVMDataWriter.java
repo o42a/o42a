@@ -84,72 +84,72 @@ public class LLVMDataWriter implements DataWriter {
 
 	@Override
 	public <S extends StructOp<S>> void begin(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			Global<S, ?> global) {
 		push(createStruct(global.getInstance().size(global.getGenerator())));
 	}
 
 	@Override
 	public <S extends StructOp<S>> void enter(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			SubData<S> data) {
 		push(createStruct(data.size()));
 	}
 
 	@Override
 	public <S extends StructOp<S>> void exit(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			SubData<S> data) {
 
-		ContainerAllocation<S> alloc = (ContainerAllocation<S>) allocation;
+		ContainerAllocation<S> dest = (ContainerAllocation<S>) destination;
 		final long dataPtr = pull().getNativePtr();
 
-		writeStruct(getStructPtr(), alloc.getTypePtr(), dataPtr);
+		writeStruct(getStructPtr(), dest.getTypePtr(), dataPtr);
 	}
 
 	@Override
 	public <S extends StructOp<S>> void end(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			Global<S, ?> global) {
 
-		final ContainerAllocation.Global<S> alloc =
-				(ContainerAllocation.Global<S>) allocation;
+		final ContainerAllocation.Global<S> dest =
+				(ContainerAllocation.Global<S>) destination;
 		final long dataPtr = pull().getNativePtr();
 
-		writeGlobal(alloc.getNativePtr(), dataPtr);
+		writeGlobal(dest.getNativePtr(), dataPtr);
 	}
 
 	@Override
 	public void writeInt8(
-			DataAllocation<Int8recOp> allocation,
+			DataAllocation<Int8recOp> destination,
 			byte value) {
 		writeInt8(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeInt16(
-			DataAllocation<Int16recOp> allocation,
+			DataAllocation<Int16recOp> destination,
 			short value) {
 		writeInt16(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeInt32(
-			DataAllocation<Int32recOp> allocation,
+			DataAllocation<Int32recOp> destination,
 			int value) {
 		writeInt32(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeInt64(
-			DataAllocation<Int64recOp> allocation,
+			DataAllocation<Int64recOp> destination,
 			long value) {
 		writeInt64(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeNativePtrAsInt64(
-			DataAllocation<Int64recOp> allocation,
+			DataAllocation<Int64recOp> destination,
 			DataAllocation<AnyOp> valueAllocation) {
 
 		final LLVMDataAllocation<?> alloc =
@@ -162,14 +162,14 @@ public class LLVMDataWriter implements DataWriter {
 
 	@Override
 	public void writeFp32(
-			DataAllocation<Fp32recOp> allocation,
+			DataAllocation<Fp32recOp> destination,
 			float value) {
 		writeFp32(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
 	@Override
 	public void writeFp64(
-			DataAllocation<Fp64recOp> allocation,
+			DataAllocation<Fp64recOp> destination,
 			double value) {
 		writeFp64(getModule().getNativePtr(), getStructPtr(), value);
 	}

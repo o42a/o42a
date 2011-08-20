@@ -25,14 +25,14 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.AnyPtrRec;
+import org.o42a.codegen.data.AnyRec;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 
 
 class DebugIR extends Struct<DebugIR.Op> {
 
-	private AnyPtrRec rtypeTypeInfo;
+	private AnyRec rtypeTypeInfo;
 
 	DebugIR() {
 	}

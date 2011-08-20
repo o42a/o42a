@@ -40,7 +40,7 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 
 	private Int32rec typeCode;
 	private Int32rec fieldNum;
-	private AnyPtrRec name;
+	private AnyRec name;
 
 	public DebugTypeInfo(Type<?> target) {
 		this.target = target;
@@ -68,7 +68,7 @@ public class DebugTypeInfo extends Struct<DebugTypeInfo.Op> {
 		return this.fieldNum;
 	}
 
-	public final AnyPtrRec name() {
+	public final AnyRec name() {
 		return this.name;
 	}
 

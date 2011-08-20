@@ -39,35 +39,35 @@ public interface DataWriter {
 	<F extends Func<F>> FuncAllocation<F> nullPtr(Signature<F> signature);
 
 	<S extends StructOp<S>> void begin(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			Global<S, ?> global);
 
 	<S extends StructOp<S>> void enter(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			SubData<S> data);
 
 	<S extends StructOp<S>> void exit(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			SubData<S> data);
 
 	<S extends StructOp<S>> void end(
-			DataAllocation<S> allocation,
+			DataAllocation<S> destination,
 			Global<S, ?> global);
 
-	void writeInt8(DataAllocation<Int8recOp> allocation, byte value);
+	void writeInt8(DataAllocation<Int8recOp> destination, byte value);
 
-	void writeInt16(DataAllocation<Int16recOp> allocation, short value);
+	void writeInt16(DataAllocation<Int16recOp> destination, short value);
 
-	void writeInt32(DataAllocation<Int32recOp> allocation, int value);
+	void writeInt32(DataAllocation<Int32recOp> destination, int value);
 
-	void writeInt64(DataAllocation<Int64recOp> allocation, long value);
+	void writeInt64(DataAllocation<Int64recOp> destination, long value);
 
 	void writeNativePtrAsInt64(
-			DataAllocation<Int64recOp> allocation,
+			DataAllocation<Int64recOp> destination,
 			DataAllocation<AnyOp> valueAllocation);
 
-	void writeFp32(DataAllocation<Fp32recOp> allocation, float value);
+	void writeFp32(DataAllocation<Fp32recOp> destination, float value);
 
-	void writeFp64(DataAllocation<Fp64recOp> allocation, double value);
+	void writeFp64(DataAllocation<Fp64recOp> destination, double value);
 
 }

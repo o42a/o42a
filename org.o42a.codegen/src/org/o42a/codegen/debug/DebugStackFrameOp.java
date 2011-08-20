@@ -64,10 +64,10 @@ public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 	public static final class DebugStackFrameType
 			extends Type<DebugStackFrameOp> {
 
-		private AnyPtrRec name;
+		private AnyRec name;
 		private StructRec<DebugStackFrameOp> prev;
-		private AnyPtrRec comment;
-		private AnyPtrRec file;
+		private AnyRec comment;
+		private AnyRec file;
 		private Int32rec line;
 
 		private DebugStackFrameType() {
@@ -78,7 +78,7 @@ public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 			return false;
 		}
 
-		public final AnyPtrRec name() {
+		public final AnyRec name() {
 			return this.name;
 		}
 
@@ -86,11 +86,11 @@ public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 			return this.prev;
 		}
 
-		public final AnyPtrRec comment() {
+		public final AnyRec comment() {
 			return this.comment;
 		}
 
-		public final AnyPtrRec file() {
+		public final AnyRec file() {
 			return this.file;
 		}
 

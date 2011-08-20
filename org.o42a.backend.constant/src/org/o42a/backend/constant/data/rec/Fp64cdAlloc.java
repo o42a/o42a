@@ -44,7 +44,7 @@ public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 
 	@Override
 	protected Fp64rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addFp64(name);
+		return container.addFp64(name, this);
 	}
 
 }

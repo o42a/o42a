@@ -44,7 +44,7 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 
 	@Override
 	protected Int8rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt8(name);
+		return container.addInt8(name, this);
 	}
 
 }

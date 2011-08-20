@@ -26,6 +26,7 @@ import org.o42a.backend.constant.code.ConstCodeBackend;
 import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.backend.constant.data.struct.TypeCDAlloc;
 import org.o42a.codegen.Generator;
@@ -76,10 +77,13 @@ public class ConstBackend {
 		return cast(op).getUnderlying();
 	}
 
+	public static <S extends StructOp<S>> CStruct<S> cast(StructOp<S> op) {
+		return (CStruct<S>) op.writer();
+	}
+
 	public static <S extends StructOp<S>> StructOp<S> underlying(
 			StructOp<S> op) {
-		// TODO find underlying StructOp
-		return null;
+		return cast(op).getUnderlying();
 	}
 
 	public static <F extends Func<F>> FuncCAlloc<F> cast(
@@ -146,7 +150,6 @@ public class ConstBackend {
 	}
 
 	public void close() {
-		// TODO close constant back-end
 		getUnderlyingGenerator().close();
 	}
 

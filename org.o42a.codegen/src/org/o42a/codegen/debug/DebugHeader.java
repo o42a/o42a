@@ -151,8 +151,8 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 		private Int32rec typeCode;
 		private RelRec enclosing;
-		private AnyPtrRec name;
-		private AnyPtrRec typeInfo;
+		private AnyRec name;
+		private AnyRec typeInfo;
 
 		private HeaderType() {
 		}
@@ -175,11 +175,11 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			return this.enclosing;
 		}
 
-		public final AnyPtrRec name() {
+		public final AnyRec name() {
 			return this.name;
 		}
 
-		public final AnyPtrRec typeInfo() {
+		public final AnyRec typeInfo() {
 			return this.typeInfo;
 		}
 

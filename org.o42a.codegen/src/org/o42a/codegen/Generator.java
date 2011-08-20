@@ -144,8 +144,16 @@ public abstract class Generator implements UseCaseInfo {
 		return getGlobals().addBinary(id, isConstant, data, start, end);
 	}
 
-	public final void write() {
-		writeData();
+	public void write() {
+		for (;;) {
+
+			final boolean hadGlobals = getGlobals().write();
+			final boolean hadFunctions = getFunctions().write();
+
+			if (!hadGlobals && !hadFunctions) {
+				return;
+			}
+		}
 	}
 
 	public abstract void close();
@@ -174,18 +182,6 @@ public abstract class Generator implements UseCaseInfo {
 	}
 
 	protected void addGlobal(SubData<?> global) {
-	}
-
-	protected void writeData() {
-		for (;;) {
-
-			final boolean hadGlobals = getGlobals().write();
-			final boolean hadFunctions = getFunctions().write();
-
-			if (!hadGlobals && !hadFunctions) {
-				return;
-			}
-		}
 	}
 
 	final void proxied() {

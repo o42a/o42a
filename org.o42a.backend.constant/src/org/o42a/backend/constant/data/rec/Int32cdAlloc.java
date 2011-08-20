@@ -45,7 +45,7 @@ public final class Int32cdAlloc
 
 	@Override
 	protected Int32rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt32(name);
+		return container.addInt32(name, this);
 	}
 
 }

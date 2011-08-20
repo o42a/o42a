@@ -66,13 +66,11 @@ public final class RelCDAlloc implements RelAllocation {
 	}
 
 	@Override
-	public void write(DataAllocation<RelRecOp> allocation, DataWriter writer) {
+	public void write(DataWriter writer, DataAllocation<RelRecOp> detination) {
 
-		final RelRecCDAlloc alloc = (RelRecCDAlloc) allocation;
+		final RelRecCDAlloc dest = (RelRecCDAlloc) detination;
 
-		getUnderlying().getAllocation().write(
-				alloc.getUnderlyingPtr().getAllocation(),
-				getBackend().getUnderlyingBackend().dataWriter());
+		dest.setValue(getUnderlying());
 	}
 
 	@Override

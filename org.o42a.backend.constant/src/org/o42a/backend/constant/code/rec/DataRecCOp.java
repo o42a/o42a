@@ -17,35 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data.rec;
+package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.rec.Int16recCOp;
-import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.RecCDAlloc;
-import org.o42a.codegen.code.op.Int16recOp;
-import org.o42a.codegen.data.Int16rec;
-import org.o42a.codegen.data.SubData;
+import org.o42a.backend.constant.code.op.DataCOp;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 
 
-public final class Int16cdAlloc
-		extends RecCDAlloc<Int16rec, Int16recOp, Short> {
+public final class DataRecCOp
+		extends RecCOp<DataRecOp, DataOp>
+		implements DataRecOp {
 
-	public Int16cdAlloc(
-			ContainerCDAlloc<?> enclosing,
-			Int16rec data,
-			Int16cdAlloc typeAllocation) {
-		super(enclosing, data, typeAllocation);
+	public DataRecCOp(CCode<?> code, DataRecOp underlying) {
+		super(code, underlying);
 	}
 
 	@Override
-	protected Int16recCOp op(CCode<?> code, Int16recOp underlying) {
-		return new Int16recCOp(code, underlying);
+	public DataRecCOp create(CCode<?> code, DataRecOp underlying) {
+		return new DataRecCOp(code, underlying);
 	}
 
 	@Override
-	protected Int16rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt16(name, this);
+	protected DataCOp loaded(CCode<?> code, DataOp underlying) {
+		return new DataCOp(code, underlying);
 	}
 
 }

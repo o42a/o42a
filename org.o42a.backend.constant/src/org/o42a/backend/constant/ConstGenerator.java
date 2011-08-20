@@ -38,6 +38,28 @@ public final class ConstGenerator extends ProxyGenerator {
 	}
 
 	@Override
+	public void write() {
+		for (;;) {
+
+			final boolean hadGlobals = getGlobals().write();
+
+			if (hadGlobals) {
+				this.backend.getUnderlyingGenerator().getGlobals().write();
+			}
+
+			final boolean hadFunctions = getFunctions().write();
+
+			if (hadFunctions) {
+				this.backend.getUnderlyingGenerator().getFunctions().write();
+				continue;
+			}
+			if (!hadGlobals) {
+				return;
+			}
+		}
+	}
+
+	@Override
 	public void close() {
 		this.backend.close();
 	}

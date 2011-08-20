@@ -90,7 +90,7 @@ public interface DataAllocator {
 
 	DataAllocation<AnyOp> allocatePtr(
 			DataAllocation<?> enclosing,
-			AnyPtrRec data,
+			AnyRec data,
 			DataAllocation<AnyOp> type);
 
 	DataAllocation<DataOp> allocateDataPtr(

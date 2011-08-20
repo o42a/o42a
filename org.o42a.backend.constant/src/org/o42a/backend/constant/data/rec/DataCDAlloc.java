@@ -56,7 +56,7 @@ public final class DataCDAlloc extends PtrRecCDAlloc<DataRec, DataOp> {
 
 	@Override
 	protected DataRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addDataPtr(name);
+		return container.addDataPtr(name, this);
 	}
 
 	@Override

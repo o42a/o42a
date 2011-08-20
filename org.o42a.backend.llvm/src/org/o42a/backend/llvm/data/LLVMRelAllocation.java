@@ -40,7 +40,7 @@ final class LLVMRelAllocation implements RelAllocation {
 	}
 
 	@Override
-	public void write(DataAllocation<RelRecOp> allocation, DataWriter writer) {
+	public void write(DataWriter writer, DataAllocation<RelRecOp> detination) {
 
 		final LLVMDataWriter llvmWriter = (LLVMDataWriter) writer;
 
