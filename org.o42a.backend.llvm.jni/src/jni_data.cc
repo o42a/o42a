@@ -45,9 +45,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 	jStringRef name(env, id);
 	jArray<jbyteArray, jbyte> array(env, data);
 	const size_t length = end - start;
-
-	OTRACE("binaryConstant: " << name << "\n");
-
 	const Type *const itemType = Type::getInt8Ty(module->getContext());
 	const ArrayType *const type = ArrayType::get(itemType, length);
 	GlobalVariable *const global =
@@ -63,9 +60,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 	}
 
 	global->setInitializer(ConstantArray::get(type, values, length));
-
-	ODUMP(global);
-
 	Constant *result = ConstantExpr::getPointerCast(
 			global,
 			Type::getInt8PtrTy(module->getContext()));
@@ -81,8 +75,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createType(
 	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
 	PATypeHolder *type = module->newOpaqueType();
 
-	OTRACE("createType: " << type << "\n");
-
 	return to_ptr(type);
 }
 
@@ -92,8 +84,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createTypeData(
 		jlong modulePtr) {
 
 	std::vector<const Type*> *result = new std::vector<const Type*>();
-
-	OTRACE("createTypeData: " << result << "\n");
 
 	return to_ptr(result);
 }
@@ -111,9 +101,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
 	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
 
 	enclosing->push_back(type->get());
-
-	OTRACE("allocateStruct (" << module->getTypeName(type->get())
-			<< "): " << *type->get() << "\n");
 
 	return to_ptr(type);
 }
@@ -137,9 +124,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
 	global->setLinkage(
 			exported
 			? GlobalValue::ExternalLinkage : GlobalValue::PrivateLinkage);
-
-	OTRACE("allocateGlobal: " << name << "\n");
-	ODUMP(global);
 
 	return to_ptr(global);
 }
@@ -170,9 +154,6 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
 
 		module->addTypeName(name, newType);
 	}
-
-	OTRACE("allocateType (" << module->getTypeName(newType) << "): "
-			<< *newType << "\n");
 
 	return to_ptr(newType);
 }
@@ -404,8 +385,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt32(
 			from_ptr<std::vector<Constant*> >(structPtr);
 	ConstantInt *result = ConstantInt::getSigned(type, value);
 
-	OTRACE("writeInt32: " << *result << "\n");
-
 	data->push_back(result);
 }
 
@@ -421,8 +400,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt64(
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(structPtr);
 	ConstantInt *result = ConstantInt::getSigned(type, value);
-
-	OTRACE("writeInt64: " << *result << "\n");
 
 	data->push_back(result);
 }
@@ -441,8 +418,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 			from_ptr<Constant>(value),
 			Type::getInt64Ty(module->getContext()));
 
-	OTRACE("writePtrAsInt64: " << *result << "\n");
-
 	data->push_back(result);
 }
 
@@ -458,8 +433,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFp64(
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(structPtr);
 	Constant *result = ConstantFP::get(type, value);
-
-	OTRACE("writeFp64: " << *result << "\n");
 
 	data->push_back(result);
 }
@@ -478,8 +451,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeNativePtr(
 			from_ptr<Constant>(value),
 			Type::getInt8PtrTy(module->getContext()));
 
-	OTRACE("writeNativePtr: " << *result << "\n");
-
 	data->push_back(result);
 }
 
@@ -492,8 +463,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFuncPtr(
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(structPtr);
 	Function *function = from_ptr<Function>(funcPtr);
-
-	OTRACE("writeCodePtr: " << function->getName() << "\n");
 
 	data->push_back(function);
 }
@@ -508,8 +477,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeDataPtr(
 			from_ptr<std::vector<Constant*> >(structPtr);
 	Constant *constant = from_ptr<Constant>(dataPtr);
 
-	OTRACE("writeDataPtr: " << *constant << "\n");
-
 	data->push_back(constant);
 }
 
@@ -522,8 +489,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeRelPtr(
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(structPtr);
 	Constant *constant = from_ptr<Constant>(relPtr);
-
-	OTRACE("writeRelPtr: " << *constant << "\n");
 
 	data->push_back(constant);
 }
@@ -540,23 +505,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeStruct(
 			from_ptr<std::vector<Constant*> >(enclosingPtr);
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(dataPtr);
-
-	ODEBUG_WITH_TYPE(
-			"trace",
-			llvm::errs() << "writeStruct:\n";
-			for (size_t i = 0, s = data->size(); i < s; ++i) {
-				Constant *c = data->at(i);
-				llvm::errs() << "     ";
-				llvm::errs() << c->getName() << ": " << *c->getType();
-				llvm::errs() << "\n";
-			}
-			llvm::errs() << "**** " << *type->get() << "\n";
-	);
-
 	Constant *constant =
 			ConstantStruct::get(cast<StructType>(type->get()), *data);
-
-	ODUMP(constant);
 
     enclosing->push_back(constant);
 }
@@ -570,9 +520,6 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeGlobal(
 	GlobalVariable *global = from_ptr<GlobalVariable>(globalPtr);
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(dataPtr);
-
-	OTRACE("writeGlobal:" << *global << "\n");
-
 	Constant *initializer = ConstantStruct::get(
 			cast<const StructType>(global->getType()->getElementType()),
 			*data);

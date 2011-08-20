@@ -46,8 +46,6 @@ jlong Java_org_o42a_backend_llvm_code_LLVMSignatureWriter_createSignature(
 	const size_t numParams = paramArray.length();
 	std::vector<const Type*> params(numParams);
 
-	OTRACE("createSignature: " << signatureName << "\n");
-
 	for (size_t i = 0; i < numParams; ++i) {
 		params[i] = from_ptr<const Type>(paramArray[i]);
 	}
@@ -55,8 +53,6 @@ jlong Java_org_o42a_backend_llvm_code_LLVMSignatureWriter_createSignature(
 	FunctionType *result = FunctionType::get(returnType, params, false);
 
 	module->addTypeName(signatureName, result);
-
-	ODUMP(result);
 
 	return to_ptr(result);
 }
@@ -71,12 +67,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMFunction_externFunction(
 	Module *module = from_ptr<Module>(modulePtr);
 	jStringRef funcName(env, name);
 	FunctionType *type = from_ptr<FunctionType>(typePtr);
-
-	OTRACE("externFunction: " << funcName << "(" << *type << ")\n");
-
 	Constant *function = module->getOrInsertFunction(funcName, type);
-
-	ODUMP(function);
 
 	return to_ptr(function);
 }
@@ -95,9 +86,6 @@ jlong Java_org_o42a_backend_llvm_code_LLVMFunction_createFunction(
 	GlobalValue::LinkageTypes linkageType =
 			exported
 			? GlobalValue::ExternalLinkage : GlobalValue::PrivateLinkage;
-
-	OTRACE("createFunction: " << funcName << "(" << *type << ")\n");
-
 	Function *function = Function::Create(
 			type,
 			linkageType,
@@ -105,8 +93,6 @@ jlong Java_org_o42a_backend_llvm_code_LLVMFunction_createFunction(
 			module);
 
 	function->setDoesNotThrow(true);
-
-	ODUMP(function);
 
 	return to_ptr(function);
 }
@@ -120,8 +106,6 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMFunction_arg(
 	Function *function = from_ptr<Function>(functionPtr);
 	Value *value;
 
-	OTRACE("arg: " << function->getName() << "#" << index << "\n");
-
 	if (!index) {
 		value = &*function->arg_begin();
 	} else {
@@ -134,8 +118,6 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMFunction_arg(
 
 		value = &*args;
 	}
-
-	ODUMP(value);
 
 	return to_ptr(value);
 }
@@ -167,10 +149,6 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFunc_call(
 	const size_t numArgs = argArray.length();
 	std::vector<Value*> args(numArgs);
 
-	OCODE(
-			block,
-			"call " << callee->getName() << "(" << *callee->getType() << ")\n");
-
 	for (size_t i = 0; i < numArgs; ++i) {
 		args[i] = from_ptr<Value>(argArray[i]);
 	}
@@ -183,8 +161,6 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFunc_call(
 	} else {
 		result = builder.CreateCall(callee, args.begin(), args.end());
 	}
-
-	ODUMP(result);
 
 	return to_ptr(result);
 }
