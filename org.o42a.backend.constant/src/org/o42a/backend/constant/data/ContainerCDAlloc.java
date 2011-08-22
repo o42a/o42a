@@ -37,18 +37,22 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 
 	private final LinkedList<CDAlloc<?, ?>> nested =
 			new LinkedList<CDAlloc<?,?>>();
+	private final CType<S> underlyingStruct;
 	private Allocated<S, ?> underlyingAllocated;
 
 	private boolean containerAllocated;
 
 	public ContainerCDAlloc(
 			ConstBackend backend,
-			ContainerCDAlloc<S> typeAllocation) {
+			ContainerCDAlloc<S> typeAllocation,
+			CType<S> underlyingStruct) {
 		super(backend, typeAllocation);
+		this.underlyingStruct = underlyingStruct;
 	}
 
 	public ContainerCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
 		super(backend, underlyingPtr);
+		this.underlyingStruct = null;
 	}
 
 	@Override
@@ -61,6 +65,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	}
 
 	public final Allocated<S, ?> getUnderlyingAllocated() {
+		getUnderlying();
 		return this.underlyingAllocated;
 	}
 
@@ -68,15 +73,30 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return (CType<S>) getUnderlyingAllocated().getType();
 	}
 
+	public final boolean isStruct() {
+		return getTypeAllocation() == null;
+	}
+
+	public final CType<S> getUnderlyingStruct() {
+		return this.underlyingStruct;
+	}
+
 	@Override
 	public final S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 
 		final CCode<?> ccode = cast(writer);
-		final Type<S> type = getUnderlyingType().getOriginal();
+		final Type<S> type;
+
+		if (isStruct()) {
+			type = getUnderlyingStruct().getOriginal();
+		} else {
+			type = getTypeAllocation().getUnderlyingType().getOriginal();
+		}
 
 		return type.op(new CStruct<S>(
 				ccode,
-				getUnderlying().getPointer().op(id, ccode.getUnderlying())));
+				getUnderlying().getPointer().op(id, ccode.getUnderlying()),
+				type));
 	}
 
 	@Override

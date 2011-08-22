@@ -37,6 +37,7 @@ import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.backend.MultiCodePos;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
@@ -195,7 +196,10 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final S underlyingPtr = getUnderlying().nullPtr(underlyingType);
 
 		return underlyingType.getOriginal().op(
-				new CStruct<S>(this, underlyingPtr));
+				new CStruct<S>(
+						this,
+						underlyingPtr,
+						underlyingType.getOriginal()));
 	}
 
 	@Override
@@ -270,9 +274,9 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				(ContainerCDAlloc<S>) typeAllocation;
 		final S underlyingOp = getUnderlying().writer().allocateStruct(
 				id, typeAlloc.getUnderlyingPtr().getAllocation());
+		final Type<S> type = typeAlloc.getUnderlyingType().getOriginal();
 
-		return typeAlloc.getUnderlyingType().getOriginal().op(
-				new CStruct<S>(this, underlyingOp));
+		return type.op(new CStruct<S>(this, underlyingOp, type));
 	}
 
 	@SuppressWarnings("unchecked")

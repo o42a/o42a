@@ -41,11 +41,10 @@ public final class Global<S extends StructOp<S>, T extends Type<S>> {
 		this.instance = type.instantiate(this, instance, content);
 	}
 
-	@SuppressWarnings("unchecked")
-	<ST extends Struct<S>> Global(GlobalSettings settings, ST struct) {
+	Global(GlobalSettings settings, T struct) {
 		this.settings = settings;
 		this.id = struct.codeId(settings.getGenerator());
-		this.instance = (T) struct;
+		this.instance = struct;
 	}
 
 	public final Generator getGenerator() {

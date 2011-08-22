@@ -35,7 +35,11 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 			ConstBackend backend,
 			ContainerCDAlloc<S> typeAllocation,
 			Global<S, ?> global) {
-		super(backend, typeAllocation);
+		super(
+				backend,
+				typeAllocation,
+				typeAllocation != null
+				? null : new CType<S>(global.getInstance()));
 		this.global = global;
 	}
 
@@ -45,11 +49,24 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
+	public String toString() {
+		if (this.global == null) {
+			return super.toString();
+		}
+		return this.global.toString();
+	}
+
+	@Override
 	protected Allocated<S, ?> startUnderlyingAllocation(
 			SubData<?> container) {
 
 		final GlobalSettings globalSettings = this.global.update(
-				getBackend().getGenerator().newGlobal());
+				getBackend().getUnderlyingGenerator().newGlobal());
+
+		if (isStruct()) {
+			return globalSettings.allocateStruct(getUnderlyingStruct());
+		}
+
 		final CType<S> underlyingType = getTypeAllocation().getUnderlyingType();
 
 		return globalSettings.allocate(this.global.getId(), underlyingType);

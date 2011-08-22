@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.constant.data;
 
+import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Ptr;
 
@@ -31,8 +32,9 @@ public abstract class StructCDAlloc<S extends StructOp<S>>
 
 	public StructCDAlloc(
 			ContainerCDAlloc<?> enclosing,
-			ContainerCDAlloc<S> typeAllocation) {
-		super(enclosing.getBackend(), typeAllocation);
+			ContainerCDAlloc<S> typeAllocation,
+			CType<S> underlyingStruct) {
+		super(enclosing.getBackend(), typeAllocation, underlyingStruct);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
 		enclosing.nest(this);

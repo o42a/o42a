@@ -167,7 +167,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 				ccode.getUnderlying(),
 				getBackend().underlying(type));
 
-		return type.op(new CStruct<S>(ccode, underlyingStruct));
+		return type.op(new CStruct<S>(ccode, underlyingStruct, type));
 	}
 
 	@Override

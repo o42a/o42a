@@ -39,24 +39,30 @@ public final class ConstGenerator extends ProxyGenerator {
 
 	@Override
 	public void write() {
+
+		final Generator underlyingGenerator =
+				this.backend.getUnderlyingGenerator();
+
 		for (;;) {
 
 			final boolean hadGlobals = getGlobals().write();
 
 			if (hadGlobals) {
-				this.backend.getUnderlyingGenerator().getGlobals().write();
+				underlyingGenerator.getGlobals().write();
 			}
 
 			final boolean hadFunctions = getFunctions().write();
 
 			if (hadFunctions) {
-				this.backend.getUnderlyingGenerator().getFunctions().write();
+				underlyingGenerator.getFunctions().write();
 				continue;
 			}
 			if (!hadGlobals) {
-				return;
+				break;
 			}
 		}
+
+		underlyingGenerator.write();
 	}
 
 	@Override

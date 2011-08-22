@@ -88,6 +88,22 @@ public final class GlobalSettings {
 		return new Allocated.AllocatedGlobal<S, T>(global, type, instanceData);
 	}
 
+	public final <
+			S extends StructOp<S>,
+			T extends Type<S>> Allocated<S, Global<S, T>> allocateStruct(
+					T struct) {
+
+		final Global<S, T> global = new Global<S, T>(this, struct);
+		final SubData<S> instanceData = struct.setGlobal(global);
+
+		instanceData.startAllocation(this.globals.dataAllocator());
+
+		return new Allocated.AllocatedGlobal<S, T>(
+				global,
+				struct,
+				instanceData);
+	}
+
 	public final
 	<S extends StructOp<S>, T extends Type<S>> Global<S, T> newInstance(
 			CodeId id,

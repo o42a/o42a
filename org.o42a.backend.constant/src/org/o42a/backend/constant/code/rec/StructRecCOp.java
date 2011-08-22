@@ -51,7 +51,7 @@ public class StructRecCOp<S extends StructOp<S>>
 
 	@Override
 	protected S loaded(CCode<?> code, S underlying) {
-		return getType().op(new CStruct<S>(code, underlying));
+		return getType().op(new CStruct<S>(code, underlying, getType()));
 	}
 
 }

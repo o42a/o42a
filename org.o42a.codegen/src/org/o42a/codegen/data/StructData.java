@@ -31,7 +31,7 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	private final Global<?, ?> global;
 	private final Type<?> enclosing;
 
-	StructData(SubData<?> enclosing, Struct<S> instance, CodeId name) {
+	StructData(SubData<?> enclosing, Type<S> instance, CodeId name) {
 		super(enclosing.getGenerator(), name, instance);
 		this.global = enclosing.getGlobal();
 		this.enclosing = enclosing.getInstance();
