@@ -43,8 +43,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 
 	Module *const module = from_ptr<Module>(modulePtr);
 	jStringRef name(env, id);
-	jArray<jbyteArray, jbyte> array(env, data);
-	const size_t length = end - start;
+	jByteArray array(env, data);
+	size_t length = end - start;
 	const Type *const itemType = Type::getInt8Ty(module->getContext());
 	const ArrayType *const type = ArrayType::get(itemType, length);
 	GlobalVariable *const global =
@@ -56,10 +56,11 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 	Constant *values[length];
 
 	for (int i = start; i < end; ++i) {
-		values[i] = ConstantInt::get(itemType, array[i]);
+		values[i - start] = ConstantInt::get(itemType, array[i]);
 	}
 
 	global->setInitializer(ConstantArray::get(type, values, length));
+
 	Constant *result = ConstantExpr::getPointerCast(
 			global,
 			Type::getInt8PtrTy(module->getContext()));
