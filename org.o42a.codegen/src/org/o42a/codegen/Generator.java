@@ -178,12 +178,6 @@ public abstract class Generator implements UseCaseInfo {
 		getDebug().registerType(type);
 	}
 
-	protected void addType(SubData<?> type) {
-	}
-
-	protected void addGlobal(SubData<?> global) {
-	}
-
 	final void proxied() {
 		this.proxied = true;
 	}

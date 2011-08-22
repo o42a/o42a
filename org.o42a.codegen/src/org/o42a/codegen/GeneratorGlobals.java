@@ -46,14 +46,4 @@ final class GeneratorGlobals extends Globals {
 		getGenerator().registerType(type);
 	}
 
-	@Override
-	protected void addType(SubData<?> type) {
-		getGenerator().addType(type);
-	}
-
-	@Override
-	protected void addGlobal(SubData<?> global) {
-		getGenerator().addGlobal(global);
-	}
-
 }

@@ -69,6 +69,8 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return this.underlyingAllocated;
 	}
 
+	public abstract CType<S> getUnderlyingInstance();
+
 	public CType<S> getUnderlyingType() {
 		return (CType<S>) getUnderlyingAllocated().getType();
 	}
@@ -90,7 +92,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		if (isStruct()) {
 			type = getUnderlyingStruct().getOriginal();
 		} else {
-			type = getTypeAllocation().getUnderlyingType().getOriginal();
+			type = getTypeAllocation().getUnderlyingInstance().getOriginal();
 		}
 
 		return type.op(new CStruct<S>(

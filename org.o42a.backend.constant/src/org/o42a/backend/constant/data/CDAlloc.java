@@ -21,6 +21,7 @@ package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.data.rec.AnyCDAlloc;
 import org.o42a.backend.constant.data.rec.DataCDAlloc;
+import org.o42a.backend.constant.data.rec.PtrRecCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
@@ -110,12 +111,12 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	}
 
 	@Override
-	public final void write(DataWriter writer) {
+	public void write(DataWriter writer, DataAllocation<P> destination) {
 
-		final DataWriter underlyingWriter =
-				getBackend().getUnderlyingBackend().dataWriter();
+		@SuppressWarnings("unchecked")
+		final PtrRecCDAlloc<?, P> dest = (PtrRecCDAlloc<?, P>) destination;
 
-		getUnderlyingPtr().getAllocation().write(underlyingWriter);
+		dest.setValue(getUnderlyingPtr());
 	}
 
 	protected abstract D allocateUnderlying(SubData<?> container);

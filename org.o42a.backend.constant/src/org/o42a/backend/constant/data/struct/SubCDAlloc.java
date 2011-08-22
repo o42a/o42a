@@ -54,6 +54,7 @@ public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public final CType<S> getUnderlyingInstance() {
 		return (CType<S>) getUnderlyingAllocated().getContainer();
 	}
@@ -74,7 +75,8 @@ public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
 					getUnderlyingStruct());
 		}
 
-		final CType<S> underlyingType = getTypeAllocation().getUnderlyingType();
+		final CType<S> underlyingType =
+				getTypeAllocation().getUnderlyingInstance();
 
 		return container.allocate(getData().getId().getLocal(), underlyingType);
 	}

@@ -48,7 +48,7 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 	}
 
 	public final CType<S> getUnderlyingType() {
-		return getStructAllocation().getUnderlyingType();
+		return getStructAllocation().getUnderlyingInstance();
 	}
 
 	public final Type<S> getType() {

@@ -77,7 +77,6 @@ final class GlobalInstanceData<S extends StructOp<S>>
 	protected void endAllocation(DataAllocator allocator) {
 		allocator.end(this.global);
 		this.content.allocated(getInstance());
-		getGenerator().getGlobals().addGlobal(this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,7 +86,6 @@ final class GlobalInstanceData<S extends StructOp<S>>
 		this.content.fill(getInstance());
 		writeIncluded(writer);
 		writer.end(getPointer().getAllocation(), this.global);
-		getGenerator().getGlobals().addType(this);
 	}
 
 }

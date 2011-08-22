@@ -36,6 +36,12 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 		this.underlyingType = new CType<S>(type);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public CType<S> getUnderlyingInstance() {
+		return (CType<S>) getUnderlyingAllocated().getContainer();
+	}
+
 	@Override
 	public String toString() {
 		if (this.underlyingType == null) {

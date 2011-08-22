@@ -55,7 +55,7 @@ public final class DataRec extends PtrRec<DataOp> {
 	@Override
 	protected void write(DataWriter writer) {
 		fill(writer);
-		getValue().getAllocation().write(writer);
+		getValue().getAllocation().write(writer, getAllocation());
 	}
 
 }

@@ -577,6 +577,7 @@ public abstract class LLVMCode implements CodeWriter {
 
 	private final void endBlock() {
 		this.blockPtr = 0;
+		this.tail = null;
 	}
 
 	static native long createBlock(long functionPtr, String name);

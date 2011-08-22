@@ -47,7 +47,7 @@ public final class AnyRec extends PtrRec<AnyOp> {
 	@Override
 	protected void write(DataWriter writer) {
 		fill(writer);
-		getValue().getAllocation().write(writer);
+		getValue().getAllocation().write(writer, getAllocation());
 	}
 
 }
