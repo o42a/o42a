@@ -30,13 +30,17 @@ import org.o42a.codegen.data.SubData;
 
 public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
 
-	private final SubData<?> data;
+	private final SubData<S> data;
 
 	public SubCDAlloc(
 			ContainerCDAlloc<?> enclosing,
 			SubData<S> data,
 			ContainerCDAlloc<S> typeAllocation) {
-		super(enclosing, typeAllocation);
+		super(
+				enclosing,
+				typeAllocation,
+				typeAllocation != null
+				? null : new CType<S>(data.getInstance()));
 		this.data = data;
 	}
 
@@ -45,7 +49,7 @@ public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
 		this.data = null;
 	}
 
-	public final SubData<?> getData() {
+	public final SubData<S> getData() {
 		return this.data;
 	}
 
@@ -55,7 +59,20 @@ public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
 	}
 
 	@Override
+	public String toString() {
+		if (this.data == null) {
+			return super.toString();
+		}
+		return this.data.toString();
+	}
+
+	@Override
 	protected Allocated<S, ?> startUnderlyingAllocation(SubData<?> container) {
+		if (isStruct()) {
+			return container.allocateStruct(
+					getData().getId().getLocal(),
+					getUnderlyingStruct());
+		}
 
 		final CType<S> underlyingType = getTypeAllocation().getUnderlyingType();
 

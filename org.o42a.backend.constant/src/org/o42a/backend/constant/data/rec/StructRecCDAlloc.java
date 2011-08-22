@@ -64,7 +64,7 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 
 	@Override
 	protected S op(CCode<?> code, S underlying) {
-		return getType().op(new CStruct<S>(code, underlying));
+		return getType().op(new CStruct<S>(code, underlying, getType()));
 	}
 
 }

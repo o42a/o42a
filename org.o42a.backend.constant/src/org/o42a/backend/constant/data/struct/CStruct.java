@@ -39,17 +39,16 @@ public final class CStruct<S extends StructOp<S>>
 		extends PtrCOp<S>
 		implements StructWriter<S> {
 
-	public CStruct(CCode<?> code, S underlying) {
+	private final Type<S> type;
+
+	public CStruct(CCode<?> code, S underlying, Type<S> type) {
 		super(code, underlying);
+		this.type = type;
 	}
 
 	@Override
 	public final Type<S> getType() {
-
-		final CType<S> underlyingType =
-				getBackend().underlying(getUnderlying().getType());
-
-		return underlyingType.getOriginal();
+		return this.type;
 	}
 
 	@Override
@@ -222,7 +221,10 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld);
 
-		return field.op(new CStruct<SS>(ccode, underlyingStruct));
+		return field.op(new CStruct<SS>(
+				ccode,
+				underlyingStruct,
+				field.getType()));
 	}
 
 	@Override
@@ -264,12 +266,12 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				getBackend().underlying(type));
 
-		return type.op(new CStruct<SS>(ccode, underlyingStruct));
+		return type.op(new CStruct<SS>(ccode, underlyingStruct, type));
 	}
 
 	@Override
 	public S create(CCode<?> code, S underlying) {
-		return getType().op(new CStruct<S>(code, underlying));
+		return getType().op(new CStruct<S>(code, underlying, getType()));
 	}
 
 }

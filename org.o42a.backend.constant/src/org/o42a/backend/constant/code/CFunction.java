@@ -176,7 +176,7 @@ public class CFunction<F extends Func<F>>
 		final S underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return type.op(new CStruct<S>(ccode, underlyingValue));
+		return type.op(new CStruct<S>(ccode, underlyingValue, type));
 	}
 
 	@Override

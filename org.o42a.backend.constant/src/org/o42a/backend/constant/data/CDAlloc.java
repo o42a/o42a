@@ -122,6 +122,11 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 
 	void initUnderlying(SubData<?> container) {
 		this.underlying = allocateUnderlying(container);
+		assert this.underlying != null :
+			"Failed to allocate underlying data for " + this;
+		assert (this.underlying.getGenerator()
+				== getBackend().getUnderlyingGenerator()):
+					"Wrong underlying generator of " + this.underlying;
 	}
 
 }

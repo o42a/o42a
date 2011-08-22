@@ -179,7 +179,7 @@ public final class CFunc<F extends Func<F>>
 				getBackend().underlying(type),
 				underlyingArgs(args));
 
-		return type.op(new CStruct<S>(ccode, underlyingResult));
+		return type.op(new CStruct<S>(ccode, underlyingResult, type));
 	}
 
 	@Override

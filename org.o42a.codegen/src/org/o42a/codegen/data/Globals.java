@@ -81,7 +81,11 @@ public abstract class Globals {
 			S extends StructOp<S>,
 			T extends Type<S>> Allocated<S, T> allocateType(
 					T type) {
-		type.startAllocation(getGenerator());
+
+		final SubData<S> data = type.createTypeData(getGenerator());
+
+		data.startAllocation(dataAllocator());
+
 		return new Allocated<S, T>(type, type, type.getInstanceData());
 	}
 
@@ -162,12 +166,9 @@ public abstract class Globals {
 			ST struct) {
 
 		final Global<S, ST> global = new Global<S, ST>(settings, struct);
+		final SubData<S> instanceData = struct.setGlobal(global);
 
-		struct.setGlobal(global);
-
-		final SubData<S> data = global.getInstance().getInstanceData();
-
-		data.allocateType(false);
+		instanceData.allocateType(false);
 
 		return global;
 	}

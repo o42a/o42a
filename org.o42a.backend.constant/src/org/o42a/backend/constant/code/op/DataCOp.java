@@ -45,7 +45,7 @@ public final class DataCOp extends PtrCOp<DataOp> implements DataOp {
 				ccode.getUnderlying(),
 				getBackend().underlying(type));
 
-		return type.op(new CStruct<S>(ccode, underlyingStruct));
+		return type.op(new CStruct<S>(ccode, underlyingStruct, type));
 	}
 
 	@Override

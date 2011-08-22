@@ -105,6 +105,14 @@ public abstract class RecCDAlloc<
 	}
 
 	@Override
+	public String toString() {
+		if (this.data == null) {
+			return super.toString();
+		}
+		return this.data.toString();
+	}
+
+	@Override
 	protected final R allocateUnderlying(SubData<?> container) {
 		return allocateUnderlying(
 				container,

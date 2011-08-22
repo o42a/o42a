@@ -175,6 +175,10 @@ public abstract class Type<S extends StructOp<S>>
 		allocate(data);
 	}
 
+	final SubData<S> setGlobal(Global<S, ?> global) {
+		return this.data = new GlobalStructData<S>(global, this);
+	}
+
 	final DataAllocation<S> getAllocation() {
 		return this.data.getPointer().getAllocation();
 	}
@@ -224,8 +228,25 @@ public abstract class Type<S extends StructOp<S>>
 		return typeInstance;
 	}
 
+	final SubData<S> setStruct(SubData<?> enclosing, CodeId name) {
+		return this.data = new StructData<S>(enclosing, this, name);
+	}
+
 	final SubData<S> getInstanceData() {
 		return this.data;
+	}
+
+	final SubData<S> createTypeData(Generator generator) {
+		if (this.data == null) {
+			return this.data = new TypeData<S>(generator, this);
+		}
+		if (this.data.getGenerator() != generator) {
+			assert this.data instanceof TypeData :
+				"Wrong data type of " + codeId(generator) + ": "
+				+ this.data.getClass().getName();
+			return this.data = new TypeData<S>(generator, this);
+		}
+		return null;
 	}
 
 	private final Data<S> data(Generator generator, boolean fullyAllocated) {
@@ -233,23 +254,14 @@ public abstract class Type<S extends StructOp<S>>
 		return this.data;
 	}
 
-	private final void ensureTypeAllocated(
-			Generator generator,
-			boolean fullyAllocated) {
+	private final void ensureTypeAllocated(Generator generator, boolean fully) {
 		if (getType() != this) {
-			getType().ensureTypeAllocated(generator, fullyAllocated);
+			getType().ensureTypeAllocated(generator, fully);
 			return;
 		}
-		if (this.data == null) {
-			this.data = new TypeData<S>(generator, this);
-		} else if (this.data.getGenerator() != generator) {
-			assert this.data instanceof TypeData :
-				"Wrong data type of " + codeId(generator) + ": "
-				+ this.data.getClass().getName();
-			this.data = new TypeData<S>(generator, this);
-		}
-		this.data.allocateType(fullyAllocated);
-		if (fullyAllocated) {
+		createTypeData(generator);
+		this.data.allocateType(fully);
+		if (fully) {
 			assert isAllocated(generator) :
 				"Not allocated: " + codeId(generator);
 		}

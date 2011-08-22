@@ -19,7 +19,6 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
 
 
@@ -34,14 +33,6 @@ public abstract class Struct<S extends StructOp<S>> extends Type<S> {
 	}
 
 	protected abstract void fill();
-
-	final void setStruct(SubData<?> enclosing, CodeId name) {
-		this.data = new StructData<S>(enclosing, this, name);
-	}
-
-	final void setGlobal(Global<S, ?> global) {
-		this.data = new GlobalStructData<S>(global, this);
-	}
 
 	private static final class StructContent<T extends Struct<?>>
 			implements Content<T> {

@@ -32,13 +32,16 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 	private final CType<S> underlyingType;
 
 	public TypeCDAlloc(ConstBackend backend, Type<S> type) {
-		super(backend, null);
+		super(backend, null, null);
 		this.underlyingType = new CType<S>(type);
 	}
 
 	@Override
-	public final CType<S> getUnderlyingType() {
-		return this.underlyingType;
+	public String toString() {
+		if (this.underlyingType == null) {
+			return super.toString();
+		}
+		return this.underlyingType.toString();
 	}
 
 	@Override
