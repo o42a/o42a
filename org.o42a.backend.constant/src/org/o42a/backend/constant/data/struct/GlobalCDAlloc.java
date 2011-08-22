@@ -43,6 +43,11 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 		this.global = global;
 	}
 
+	@Override
+	public final CType<S> getUnderlyingInstance() {
+		return (CType<S>) getUnderlyingGlobal().getInstance();
+	}
+
 	@SuppressWarnings("unchecked")
 	public final Global<S, ?> getUnderlyingGlobal() {
 		return (Global<S, ?>) getUnderlyingAllocated().getContainer();
@@ -67,7 +72,8 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 			return globalSettings.allocateStruct(getUnderlyingStruct());
 		}
 
-		final CType<S> underlyingType = getTypeAllocation().getUnderlyingType();
+		final CType<S> underlyingType =
+				getTypeAllocation().getUnderlyingInstance();
 
 		return globalSettings.allocate(this.global.getId(), underlyingType);
 	}

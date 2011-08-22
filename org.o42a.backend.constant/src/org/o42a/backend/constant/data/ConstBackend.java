@@ -23,6 +23,7 @@ import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePos;
 import org.o42a.backend.constant.code.ConstCodeBackend;
+import org.o42a.backend.constant.code.func.CFunc;
 import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.signature.CSignature;
@@ -60,7 +61,7 @@ public class ConstBackend {
 	}
 
 	public static CodePos underlying(CodePos codePos) {
-		return cast(codePos).getUnderlying();
+		return codePos != null ? cast(codePos).getUnderlying() : null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -72,6 +73,9 @@ public class ConstBackend {
 	public static <O extends Op> O underlying(O op) {
 		if (op instanceof StructOp) {
 			return (O) underlying((StructOp<?>) op);
+		}
+		if (op instanceof Func) {
+			return (O) underlying((Func<?>) op);
 		}
 		return cast(op).getUnderlying();
 	}
@@ -93,6 +97,14 @@ public class ConstBackend {
 	public static <F extends Func<F>> FuncAllocation<F> underlying(
 			FuncAllocation<F> funcAllocation) {
 		return cast(funcAllocation).getUnderlyingPtr().getAllocation();
+	}
+
+	public static <F extends Func<F>> CFunc<F> cast(Func<F> func) {
+		return (CFunc<F>) func.caller();
+	}
+
+	public static <F extends Func<F>> F underlying(Func<F> func) {
+		return cast(func).getUnderlying();
 	}
 
 	private final ConstGenerator generator;
@@ -140,7 +152,7 @@ public class ConstBackend {
 		final ContainerCDAlloc<S> alloc = (ContainerCDAlloc<S>) type.pointer(
 				getGenerator()).getAllocation();
 
-		return alloc.getUnderlyingType();
+		return alloc.getUnderlyingInstance();
 	}
 
 	public final <F extends Func<F>> CSignature<F> underlying(

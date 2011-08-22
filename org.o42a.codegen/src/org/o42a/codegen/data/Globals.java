@@ -136,10 +136,6 @@ public abstract class Globals {
 
 	protected abstract void registerType(SubData<?> type);
 
-	protected abstract void addType(SubData<?> type);
-
-	protected abstract void addGlobal(SubData<?> global);
-
 	final void globalAllocated(Global<?, ?> global) {
 		this.globals.add(global.getInstance().getInstanceData());
 	}
@@ -156,7 +152,7 @@ public abstract class Globals {
 		final SubData<S> data = global.getInstance().getInstanceData();
 
 		data.allocateType(false);
-		this.globals.add(data);
+		globalAllocated(global);
 
 		return global;
 	}
@@ -180,7 +176,6 @@ public abstract class Globals {
 	final void allocatedType(
 			AbstractTypeData<?> typeData,
 			boolean immediately) {
-		addType(typeData);
 		if (immediately) {
 			--this.typesAllocating;
 		}
@@ -197,7 +192,6 @@ public abstract class Globals {
 
 	final void globalCreated(SubData<?> global) {
 		this.globals.add(global);
-		addGlobal(global);
 	}
 
 	private boolean allocateScheduled() {

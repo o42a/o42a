@@ -59,7 +59,7 @@ public abstract class LLVMDataAllocation<P extends PtrOp<P>>
 	}
 
 	@Override
-	public void write(DataWriter writer) {
+	public void write(DataWriter writer, DataAllocation<P> destination) {
 		llvmId().write(writer);
 	}
 

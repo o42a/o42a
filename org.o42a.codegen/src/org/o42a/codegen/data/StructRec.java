@@ -64,7 +64,7 @@ public final class StructRec<S extends StructOp<S>> extends PtrRec<S> {
 	@Override
 	protected void write(DataWriter writer) {
 		fill(writer);
-		getValue().getAllocation().write(writer);
+		getValue().getAllocation().write(writer, getAllocation());
 	}
 
 }

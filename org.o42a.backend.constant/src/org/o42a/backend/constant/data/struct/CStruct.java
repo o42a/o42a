@@ -25,7 +25,7 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
 import org.o42a.backend.constant.code.op.PtrCOp;
 import org.o42a.backend.constant.code.rec.*;
-import org.o42a.backend.constant.data.RecCDAlloc;
+import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -55,8 +55,8 @@ public final class CStruct<S extends StructOp<S>>
 	public AnyRecOp field(CodeId id, Code code, Data<?> field) {
 
 		final CCode<?> ccode = cast(code);
-		final RecCDAlloc<?, ?, ?> alloc =
-				(RecCDAlloc<?, ?, ?>) field.getPointer().getAllocation();
+		final CDAlloc<?, ?> alloc =
+				(CDAlloc<?, ?>) field.getPointer().getAllocation();
 		final AnyRecOp underlyingRec = getUnderlying().writer().field(
 				id,
 				ccode.getUnderlying(),

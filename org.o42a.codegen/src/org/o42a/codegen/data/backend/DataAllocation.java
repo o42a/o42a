@@ -30,7 +30,7 @@ import org.o42a.codegen.data.DataLayout;
 
 public interface DataAllocation<P extends PtrOp<P>> {
 
-	void write(DataWriter writer);
+	void write(DataWriter writer, DataAllocation<P> destination);
 
 	DataLayout getLayout();
 

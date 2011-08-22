@@ -23,11 +23,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.Type;
 
 
-public final class CType<S extends StructOp<S>> extends Type<S> {
+public final class CType<S extends StructOp<S>> extends Struct<S> {
 
 	private final Type<S> original;
 
@@ -73,6 +74,10 @@ public final class CType<S extends StructOp<S>> extends Type<S> {
 	protected void allocate(SubData<S> data) {
 		throw new IllegalStateException(
 				"Type should be manually constructed: " + this);
+	}
+
+	@Override
+	protected void fill() {
 	}
 
 }

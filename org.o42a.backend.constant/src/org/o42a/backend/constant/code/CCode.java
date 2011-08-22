@@ -192,7 +192,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public final <S extends StructOp<S>> S nullPtr(DataAllocation<S> type) {
 
 		final ContainerCDAlloc<S> typeAlloc = (ContainerCDAlloc<S>) type;
-		final CType<S> underlyingType = typeAlloc.getUnderlyingType();
+		final CType<S> underlyingType = typeAlloc.getUnderlyingInstance();
 		final S underlyingPtr = getUnderlying().nullPtr(underlyingType);
 
 		return underlyingType.getOriginal().op(
@@ -234,7 +234,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			underlyingAlts[i] = underlying(alts[i]);
 		}
 
-		return getUnderlying().writer().comeFrom(alts);
+		return getUnderlying().writer().comeFrom(underlyingAlts);
 	}
 
 	@Override
@@ -262,7 +262,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return new StructRecCOp<S>(
 				this,
 				underlyingOp,
-				typeAlloc.getUnderlyingType().getType());
+				typeAlloc.getUnderlyingInstance().getType());
 	}
 
 	@Override
@@ -274,7 +274,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				(ContainerCDAlloc<S>) typeAllocation;
 		final S underlyingOp = getUnderlying().writer().allocateStruct(
 				id, typeAlloc.getUnderlyingPtr().getAllocation());
-		final Type<S> type = typeAlloc.getUnderlyingType().getOriginal();
+		final Type<S> type = typeAlloc.getUnderlyingInstance().getOriginal();
 
 		return type.op(new CStruct<S>(this, underlyingOp, type));
 	}

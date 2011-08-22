@@ -85,7 +85,11 @@ public final class GlobalSettings {
 
 		instanceData.startAllocation(this.globals.dataAllocator());
 
-		return new Allocated.AllocatedGlobal<S, T>(global, type, instanceData);
+		return new Allocated.AllocatedGlobal<S, T>(
+				global,
+				type,
+				instanceData,
+				false);
 	}
 
 	public final <
@@ -101,7 +105,8 @@ public final class GlobalSettings {
 		return new Allocated.AllocatedGlobal<S, T>(
 				global,
 				struct,
-				instanceData);
+				instanceData,
+				true);
 	}
 
 	public final
