@@ -41,6 +41,7 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 			ContainerCDAlloc<S> structAllocation) {
 		super(enclosing, data, typeAllocation);
 		this.structAllocation = structAllocation;
+		nest();
 	}
 
 	public final ContainerCDAlloc<S> getStructAllocation() {
@@ -59,7 +60,7 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 	protected StructRec<S> allocateUnderlying(
 			SubData<?> container,
 			String name) {
-		return container.addPtr(name, getUnderlyingType());
+		return container.addPtr(name, getUnderlyingType(), this);
 	}
 
 	@Override

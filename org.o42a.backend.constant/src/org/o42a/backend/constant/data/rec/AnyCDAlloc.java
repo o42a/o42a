@@ -37,10 +37,7 @@ public final class AnyCDAlloc extends PtrRecCDAlloc<AnyRec, AnyOp> {
 			AnyRec data,
 			AnyCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
-	}
-
-	public AnyCDAlloc(ContainerCDAlloc<?> enclosing, Ptr<AnyOp> underlyingPtr) {
-		super(enclosing, underlyingPtr);
+		nest();
 	}
 
 	public AnyCDAlloc(ConstBackend backend, Ptr<AnyOp> underlyingPtr) {

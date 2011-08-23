@@ -23,7 +23,8 @@ import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.CType;
-import org.o42a.backend.constant.data.struct.SubCDAlloc;
+import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
+import org.o42a.backend.constant.data.struct.StructCDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
@@ -66,14 +67,14 @@ public final class ConstDataWriter implements DataWriter {
 	}
 
 	@Override
-	public final <S extends StructOp<S>> SubCDAlloc<S> nullPtr(Type<S> type) {
+	public final <S extends StructOp<S>> StructCDAlloc<S> nullPtr(Type<S> type) {
 
 		final CType<S> underlyingType = getBackend().underlying(type);
 		final Ptr<S> underlyingNull =
 				getBackend().getUnderlyingGenerator().getGlobals().nullPtr(
 						underlyingType);
 
-		return new SubCDAlloc<S>(getBackend(), underlyingNull);
+		return new StructCDAlloc<S>(getBackend(), underlyingNull);
 	}
 
 	@Override
@@ -111,6 +112,13 @@ public final class ConstDataWriter implements DataWriter {
 	public <S extends StructOp<S>> void end(
 			DataAllocation<S> destination,
 			Global<S, ?> global) {
+		if (!global.isExported()) {
+			return;
+		}
+
+		final GlobalCDAlloc<S> dest = (GlobalCDAlloc<S>) destination;
+
+		dest.getUnderlying();
 	}
 
 	@Override

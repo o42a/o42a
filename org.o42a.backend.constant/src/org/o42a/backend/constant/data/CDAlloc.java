@@ -102,12 +102,12 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 
 	@Override
 	public DataAllocation<AnyOp> toAny() {
-		return new AnyCDAlloc(getEnclosing(), getUnderlyingPtr().toAny());
+		return new AnyCDAlloc(getBackend(), getUnderlyingPtr().toAny());
 	}
 
 	@Override
 	public DataAllocation<DataOp> toData() {
-		return new DataCDAlloc(getEnclosing(), getUnderlyingPtr().toData());
+		return new DataCDAlloc(getBackend(), getUnderlyingPtr().toData());
 	}
 
 	@Override
@@ -117,6 +117,10 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		final PtrRecCDAlloc<?, P> dest = (PtrRecCDAlloc<?, P>) destination;
 
 		dest.setValue(getUnderlyingPtr());
+	}
+
+	protected final void nest() {
+		getEnclosing().nest(this);
 	}
 
 	protected abstract D allocateUnderlying(SubData<?> container);

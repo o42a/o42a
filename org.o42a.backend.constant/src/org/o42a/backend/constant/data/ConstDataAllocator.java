@@ -21,7 +21,7 @@ package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
-import org.o42a.backend.constant.data.struct.SubCDAlloc;
+import org.o42a.backend.constant.data.struct.StructCDAlloc;
 import org.o42a.backend.constant.data.struct.TypeCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
@@ -83,7 +83,7 @@ public class ConstDataAllocator implements DataAllocator {
 			DataAllocation<?> enclosing,
 			SubData<S> data,
 			DataAllocation<S> type) {
-		return new SubCDAlloc<S>(
+		return new StructCDAlloc<S>(
 				enclosing(enclosing),
 				data,
 				(ContainerCDAlloc<S>) type);
@@ -93,7 +93,7 @@ public class ConstDataAllocator implements DataAllocator {
 	public void exit(DataAllocation<?> enclosing, SubData<?> data) {
 
 		final ContainerCDAlloc<?> alloc =
-				(SubCDAlloc<?>) data.getPointer().getAllocation();
+				(StructCDAlloc<?>) data.getPointer().getAllocation();
 
 		alloc.containerAllocated();
 	}

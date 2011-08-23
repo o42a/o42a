@@ -21,32 +21,49 @@ package org.o42a.backend.constant.data.struct;
 
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.StructCDAlloc;
+import org.o42a.backend.constant.data.TopLevelCDAlloc;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Allocated;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 
 
-public class SubCDAlloc<S extends StructOp<S>> extends StructCDAlloc<S> {
+public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 
+	private final TopLevelCDAlloc<?> topLevel;
+	private final ContainerCDAlloc<?> enclosing;
 	private final SubData<S> data;
 
-	public SubCDAlloc(
+	public StructCDAlloc(
 			ContainerCDAlloc<?> enclosing,
 			SubData<S> data,
 			ContainerCDAlloc<S> typeAllocation) {
 		super(
-				enclosing,
+				enclosing.getBackend(),
 				typeAllocation,
 				typeAllocation != null
 				? null : new CType<S>(data.getInstance()));
+		this.topLevel = enclosing.getTopLevel();
+		this.enclosing = enclosing;
 		this.data = data;
+		nest();
 	}
 
-	public SubCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
+	public StructCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
 		super(backend, underlyingPtr);
+		this.topLevel = null;
+		this.enclosing = null;
 		this.data = null;
+	}
+
+	@Override
+	public final TopLevelCDAlloc<?> getTopLevel() {
+		return this.topLevel;
+	}
+
+	@Override
+	public final ContainerCDAlloc<?> getEnclosing() {
+		return this.enclosing;
 	}
 
 	public final SubData<S> getData() {

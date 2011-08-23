@@ -22,7 +22,6 @@ package org.o42a.backend.constant.data.rec;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.Fp32recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.data.Fp32rec;
 import org.o42a.codegen.data.SubData;
@@ -35,6 +34,7 @@ public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
 			Fp32rec data,
 			Fp32cdAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
+		nest();
 	}
 
 	@Override

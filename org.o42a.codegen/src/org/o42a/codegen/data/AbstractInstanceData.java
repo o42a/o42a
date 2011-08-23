@@ -44,7 +44,7 @@ abstract class AbstractInstanceData<S extends StructOp<S>>
 	}
 
 	@Override
-	protected <D extends Data<?>> D add(D data) {
+	protected <D extends Data<?>> D add(D data, boolean allocate) {
 		assert this.next != null :
 			"An attempt to add more fields to instance,"
 			+ " than type contains: " + data + " (" + (size() + 1) + ")";
@@ -55,7 +55,7 @@ abstract class AbstractInstanceData<S extends StructOp<S>>
 		data.getPointer().copyAllocation(this.next);
 		this.next = this.next.getNext();
 
-		return super.add(data);
+		return super.add(data, allocate);
 	}
 
 	@Override

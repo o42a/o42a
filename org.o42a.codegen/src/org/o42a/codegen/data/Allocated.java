@@ -54,15 +54,15 @@ public class Allocated<S extends StructOp<S>, C> {
 			S extends StructOp<S>,
 			T extends Type<S>> extends Allocated<S, Global<S, T>> {
 
-		private final boolean struct;
+		private final boolean reportAllocation;
 
 		public AllocatedGlobal(
 				Global<S, T> global,
 				Type<S> type,
 				SubData<S> data,
-				boolean struct) {
+				boolean reportAllocation) {
 			super(global, type, data);
-			this.struct = struct;
+			this.reportAllocation = reportAllocation;
 		}
 
 		@Override
@@ -71,8 +71,9 @@ public class Allocated<S extends StructOp<S>, C> {
 
 			final Global<S, T> global = getContainer();
 
-			if (!this.struct) {
-				global.getGenerator().getGlobals().globalAllocated(global);
+			if (this.reportAllocation) {
+				global.getGenerator().getGlobals().globalAllocated(
+						global.getInstance().getInstanceData());
 			}
 		}
 

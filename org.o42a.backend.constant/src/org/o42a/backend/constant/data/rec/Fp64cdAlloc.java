@@ -22,7 +22,6 @@ package org.o42a.backend.constant.data.rec;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.Fp64recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.op.Fp64recOp;
 import org.o42a.codegen.data.Fp64rec;
 import org.o42a.codegen.data.SubData;
@@ -35,6 +34,7 @@ public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 			Fp64rec data,
 			Fp64cdAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
+		nest();
 	}
 
 	@Override

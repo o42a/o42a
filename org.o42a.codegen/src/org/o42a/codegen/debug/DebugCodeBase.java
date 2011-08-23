@@ -39,9 +39,6 @@ public abstract class DebugCodeBase extends OpCodeBase {
 		return allocate(code, id, DEBUG_STACK_FRAME_TYPE);
 	}
 
-	private static Generator cachedGenerator;
-	private static int debugSeq;
-
 	private final Generator generator;
 	private final Function<?> function;
 
@@ -53,10 +50,6 @@ public abstract class DebugCodeBase extends OpCodeBase {
 	public DebugCodeBase(Generator generator) {
 		this.generator = generator;
 		this.function = (Function<?>) this;
-		if (cachedGenerator != generator) {
-			cachedGenerator = generator;
-			debugSeq = 0;
-		}
 	}
 
 	public final Generator getGenerator() {
@@ -262,7 +255,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 
 	private Ptr<AnyOp> binaryMessage(String message) {
 		return getGenerator().getDebug().allocateMessage(
-				getGenerator().id("DEBUG_" + (debugSeq++)),
+				getGenerator().getDebug().nextDebugId(),
 				message);
 	}
 

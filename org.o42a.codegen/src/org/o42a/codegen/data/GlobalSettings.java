@@ -89,7 +89,7 @@ public final class GlobalSettings {
 				global,
 				type,
 				instanceData,
-				false);
+				true);
 	}
 
 	public final <
@@ -106,7 +106,7 @@ public final class GlobalSettings {
 				global,
 				struct,
 				instanceData,
-				true);
+				false);
 	}
 
 	public final

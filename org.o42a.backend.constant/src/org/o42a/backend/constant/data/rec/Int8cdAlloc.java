@@ -22,7 +22,6 @@ package org.o42a.backend.constant.data.rec;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.Int8recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.codegen.data.Int8rec;
 import org.o42a.codegen.data.SubData;
@@ -35,6 +34,7 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 			Int8rec data,
 			Int8cdAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
+		nest();
 	}
 
 	@Override

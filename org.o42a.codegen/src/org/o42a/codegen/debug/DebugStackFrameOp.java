@@ -74,8 +74,13 @@ public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 		}
 
 		@Override
-		public boolean isDebuggable() {
-			return false;
+		public boolean isReentrant() {
+			return true;
+		}
+
+		@Override
+		public boolean isDebugInfo() {
+			return true;
 		}
 
 		public final AnyRec name() {

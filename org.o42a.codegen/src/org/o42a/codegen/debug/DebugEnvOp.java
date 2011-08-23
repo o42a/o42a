@@ -72,8 +72,13 @@ public class DebugEnvOp extends StructOp<DebugEnvOp> {
 		}
 
 		@Override
-		public boolean isDebuggable() {
-			return false;
+		public boolean isReentrant() {
+			return true;
+		}
+
+		@Override
+		public boolean isDebugInfo() {
+			return true;
 		}
 
 		public final StructRec<DebugStackFrameOp> stackFrame() {
