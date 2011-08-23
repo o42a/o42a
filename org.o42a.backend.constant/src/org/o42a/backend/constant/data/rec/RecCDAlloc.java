@@ -17,11 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.data.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.data.*;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
@@ -46,14 +47,6 @@ public abstract class RecCDAlloc<
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
 		this.data = data;
-		enclosing.nest(this);
-	}
-
-	public RecCDAlloc(ContainerCDAlloc<?> enclosing, Ptr<P> underlyingPtr) {
-		super(enclosing.getBackend(), underlyingPtr);
-		this.topLevel = enclosing.getTopLevel();
-		this.enclosing = enclosing;
-		this.data = null;
 	}
 
 	public RecCDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {

@@ -21,7 +21,6 @@ package org.o42a.backend.constant.data.rec;
 
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.PtrRec;
@@ -35,10 +34,6 @@ public abstract class PtrRecCDAlloc<R extends PtrRec<P>, P extends PtrOp<P>>
 			R data,
 			PtrRecCDAlloc<R, P> typeAllocation) {
 		super(enclosing, data, typeAllocation);
-	}
-
-	public PtrRecCDAlloc(ContainerCDAlloc<?> enclosing, Ptr<P> underlyingPtr) {
-		super(enclosing, underlyingPtr);
 	}
 
 	public PtrRecCDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {

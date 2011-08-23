@@ -136,10 +136,6 @@ public abstract class Globals {
 
 	protected abstract void registerType(SubData<?> type);
 
-	final void globalAllocated(Global<?, ?> global) {
-		this.globals.add(global.getInstance().getInstanceData());
-	}
-
 	<S extends StructOp<S>, T extends Type<S>> Global<S, T> addGlobal(
 			GlobalSettings settings,
 			CodeId id,
@@ -152,7 +148,7 @@ public abstract class Globals {
 		final SubData<S> data = global.getInstance().getInstanceData();
 
 		data.allocateType(false);
-		globalAllocated(global);
+		globalAllocated(data);
 
 		return global;
 	}
@@ -190,7 +186,7 @@ public abstract class Globals {
 		typeData.completeAllocation(false);
 	}
 
-	final void globalCreated(SubData<?> global) {
+	final void globalAllocated(SubData<?> global) {
 		this.globals.add(global);
 	}
 

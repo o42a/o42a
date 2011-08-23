@@ -222,7 +222,8 @@ public abstract class SubData<S extends StructOp<S>>
 					T type) {
 
 		final T instance = type.instantiate(this, name, null, null);
-		final SubData<SS> instanceData = instance.getInstanceData();
+		final SubData<SS> instanceData =
+				add(instance.getInstanceData(), false);
 
 		instanceData.startAllocation(
 				getGenerator().getGlobals().dataAllocator());
@@ -236,7 +237,8 @@ public abstract class SubData<S extends StructOp<S>>
 					CodeId name,
 					T struct) {
 
-		final SubData<SS> instanceData = struct.setStruct(this, name);
+		final SubData<SS> instanceData =
+				add(struct.setStruct(this, name), false);
 
 		instanceData.startAllocation(
 				getGenerator().getGlobals().dataAllocator());
@@ -270,10 +272,16 @@ public abstract class SubData<S extends StructOp<S>>
 
 	protected abstract void endAllocation(DataAllocator allocator);
 
-	protected <D extends Data<?>> D add(D data) {
-		data.allocateData();
+	protected <D extends Data<?>> D add(D data, boolean allocate) {
+		if (allocate) {
+			data.allocateData();
+		}
 		this.size++;
 		return this.data.add(data);
+	}
+
+	final <D extends Data<?>> D add(D data) {
+		return add(data, true);
 	}
 
 	final DataChain data() {

@@ -46,6 +46,8 @@ public class Debug {
 	private final Generator generator;
 	private final DebugSettings settings;
 
+	private int debugSeq;
+
 	private Code dontExitFrom;
 	private FuncPtr<DebugTraceFunc> enterFunc;
 	private FuncPtr<DebugTraceFunc> exitFunc;
@@ -228,6 +230,10 @@ public class Debug {
 			"Unknown debug type info of " + instance.getType();
 
 		return typeInfo;
+	}
+
+	final CodeId nextDebugId() {
+		return getGenerator().id("DEBUG_" + (this.debugSeq++));
 	}
 
 	private FuncPtr<DebugTraceFunc> enterFunc() {

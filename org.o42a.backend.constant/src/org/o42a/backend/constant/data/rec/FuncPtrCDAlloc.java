@@ -23,7 +23,6 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.FuncCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.RecCDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
@@ -44,6 +43,7 @@ public final class FuncPtrCDAlloc<F extends Func<F>>
 			Signature<F> signature) {
 		super(enclosing, data, typeAllocation);
 		this.signature = signature;
+		nest();
 	}
 
 	@Override

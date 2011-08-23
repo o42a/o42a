@@ -37,12 +37,7 @@ public final class DataCDAlloc extends PtrRecCDAlloc<DataRec, DataOp> {
 			DataRec data,
 			DataCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
-	}
-
-	public DataCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			Ptr<DataOp> underlyingPtr) {
-		super(enclosing, underlyingPtr);
+		nest();
 	}
 
 	public DataCDAlloc(ConstBackend backend, Ptr<DataOp> underlyingPtr) {

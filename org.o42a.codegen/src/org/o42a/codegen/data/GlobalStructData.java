@@ -72,7 +72,7 @@ final class GlobalStructData<S extends StructOp<S>>
 	@Override
 	protected void postTypeAllocation() {
 		super.postTypeAllocation();
-		getGenerator().getGlobals().globalCreated(this);
+		getGenerator().getGlobals().globalAllocated(this);
 	}
 
 	@Override
