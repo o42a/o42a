@@ -39,6 +39,7 @@ public final class Function<F extends Func<F>> extends Code {
 			Signature<F> signature,
 			FunctionBuilder<F> builder) {
 		super(settings.getGenerator(), id);
+		setOpNames(new OpNames.FunctionOpNames(this));
 		this.settings = settings;
 		this.builder = builder;
 		this.signature = getGenerator().getFunctions().allocate(signature);
@@ -118,14 +119,6 @@ public final class Function<F extends Func<F>> extends Code {
 	@Override
 	public String toString() {
 		return getId().getId() + '(' + this.signature + ')';
-	}
-
-	@Override
-	CodeId nestedId(CodeId name) {
-		if (name != null) {
-			return name;
-		}
-		return getGenerator().id().anonymous(++this.blockSeq);
 	}
 
 	final void build() {
