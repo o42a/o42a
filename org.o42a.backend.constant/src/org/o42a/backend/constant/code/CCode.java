@@ -79,10 +79,14 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public CodePos head() {
-		if (this.head != null) {
+
+		final CodePos underlyingHead = getUnderlying().head();
+
+		if (this.head != null && this.head.getUnderlying() == underlyingHead) {
 			return this.head;
 		}
-		return this.head = new CCodePos(getUnderlying().head());
+
+		return this.head = new CCodePos(underlyingHead);
 	}
 
 	@Override
@@ -130,12 +134,17 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final CBlock block(Code code, CodeId id) {
-		return new CBlock(this, code, getUnderlying().addBlock(id));
+		return new CBlock(this, code, getUnderlying().addBlock(id.getLocal()));
 	}
 
 	@Override
 	public final CAllocation allocationBlock(AllocationCode code, CodeId id) {
-		return new CAllocation(this, code, getUnderlying().allocate(id));
+		return new CAllocation(
+				this,
+				code,
+				code.isDisposable()
+				? getUnderlying().allocate(id.getLocal(), false)
+				: getUnderlying().undisposable(id.getLocal(), false));
 	}
 
 	@Override
