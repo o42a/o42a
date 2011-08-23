@@ -68,35 +68,27 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final AllocationCode allocate() {
-		return new AllocationCode(this, null, true, true);
+		return new AllocationCode(this, null, true);
 	}
 
 	public final AllocationCode allocate(String name) {
-		return new AllocationCode(this, id(name), true, true);
+		return new AllocationCode(this, id(name), true);
 	}
 
 	public final AllocationCode allocate(CodeId name) {
-		return new AllocationCode(this, name, true, true);
-	}
-
-	public final AllocationCode allocate(CodeId name, boolean controller) {
-		return new AllocationCode(this, name, true, controller);
+		return new AllocationCode(this, name, true);
 	}
 
 	public final AllocationCode undisposable() {
-		return new AllocationCode(this, null, false, true);
+		return new AllocationCode(this, null, false);
 	}
 
 	public final AllocationCode undisposable(String name) {
-		return new AllocationCode(this, id(name), false, true);
+		return new AllocationCode(this, id(name), false);
 	}
 
 	public final AllocationCode undisposable(CodeId name) {
-		return new AllocationCode(this, name, false, true);
-	}
-
-	public final AllocationCode undisposable(CodeId name, boolean controller) {
-		return new AllocationCode(this, name, false, controller);
+		return new AllocationCode(this, name, false);
 	}
 
 	public final Code addBlock(String name) {

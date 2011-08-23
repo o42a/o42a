@@ -34,21 +34,15 @@ public final class AllocationCode extends Code {
 
 	private final Code enclosing;
 	private final boolean disposable;
-	private final boolean controller;
 	private Code destruction;
 	private AllocationWriter writer;
 	private Code alts[];
 
-	AllocationCode(
-			Code enclosing,
-			CodeId name,
-			boolean disposable,
-			boolean controller) {
+	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
 		this.enclosing = enclosing;
 		this.disposable = disposable;
-		this.controller = controller;
-		if (this.controller) {
+		if (!getGenerator().isProxied()) {
 			enclosing.go(head());
 		}
 	}
@@ -126,7 +120,7 @@ public final class AllocationCode extends Code {
 		if (isComplete()) {
 			return;
 		}
-		if (!this.controller) {
+		if (getGenerator().isProxied()) {
 			super.done();
 			return;
 		}

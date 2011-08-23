@@ -143,8 +143,8 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				this,
 				code,
 				code.isDisposable()
-				? getUnderlying().allocate(id.getLocal(), false)
-				: getUnderlying().undisposable(id.getLocal(), false));
+				? getUnderlying().allocate(id.getLocal())
+				: getUnderlying().undisposable(id.getLocal()));
 	}
 
 	@Override
