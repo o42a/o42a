@@ -23,6 +23,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
@@ -44,7 +45,11 @@ public abstract class PtrCOp<P extends PtrOp<P>>
 
 	@Override
 	public final void returnValue(Code code) {
-		getUnderlying().returnValue(underlying(code));
+
+		final CCode<?> ccode = ConstBackend.cast(code);
+
+		ccode.beforeReturn();
+		getUnderlying().returnValue(ccode.getUnderlying());
 	}
 
 	@Override
