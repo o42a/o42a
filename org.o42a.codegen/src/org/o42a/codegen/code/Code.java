@@ -30,17 +30,24 @@ public abstract class Code extends DebugCodeBase {
 
 	private final CodeId id;
 	private final Head head = new Head(this);
-	private int localSeq;
-	int blockSeq;
+	private OpNames opNames = new OpNames(this);
 
 	Code(Code enclosing, CodeId name) {
 		super(enclosing);
-		this.id = enclosing.nestedId(name);
+		this.id = enclosing.getOpNames().nestedId(name);
 	}
 
 	Code(Generator generator, CodeId id) {
 		super(generator);
 		this.id = id;
+	}
+
+	public final OpNames getOpNames() {
+		return this.opNames;
+	}
+
+	public final void setOpNames(OpNames opNames) {
+		this.opNames = opNames;
 	}
 
 	public final CodeId getId() {
@@ -183,11 +190,8 @@ public abstract class Code extends DebugCodeBase {
 		complete();
 	}
 
-	public CodeId opId(CodeId id) {
-		if (id != null) {
-			return id;
-		}
-		return getId().setLocal(getGenerator().id().anonymous(++this.localSeq));
+	public final CodeId opId(CodeId id) {
+		return getOpNames().opId(id);
 	}
 
 	@Override
@@ -202,13 +206,6 @@ public abstract class Code extends DebugCodeBase {
 			CodeId falseName) {
 		assert assertIncomplete();
 		return new CondCode(this, condition, trueName, falseName);
-	}
-
-	CodeId nestedId(CodeId name) {
-		if (name != null) {
-			return getId().setLocal(name);
-		}
-		return getId().setLocal(getGenerator().id().anonymous(++this.blockSeq));
 	}
 
 }

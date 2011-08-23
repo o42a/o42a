@@ -59,6 +59,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		this.function = function != null ? function : (CFunction<?>) this;
 		this.code = code;
 		this.underlying = underlying;
+		underlying.setOpNames(code.getOpNames());
 	}
 
 	public final ConstBackend getBackend() {
