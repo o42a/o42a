@@ -26,6 +26,7 @@ import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import java.io.File;
 import java.io.IOException;
 
+import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.codegen.Generator;
 import org.o42a.common.source.FileSourceTree;
@@ -87,11 +88,12 @@ public class CL {
 	public static void main(String[] args) {
 
 		final String[] llvmArgs = ArrayUtil.prepend("o42ac", args);
-		final LLVMGenerator generator = newGenerator(null, llvmArgs);
+		final LLVMGenerator llvmGenerator = newGenerator(null, llvmArgs);
+		final ConstGenerator generator = new ConstGenerator(llvmGenerator);
 
 		try {
 
-			final String source = generator.getInputFilename();
+			final String source = llvmGenerator.getInputFilename();
 
 			if (source == null) {
 				System.err.println("Input file not specified");
