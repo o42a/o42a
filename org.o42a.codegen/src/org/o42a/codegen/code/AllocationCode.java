@@ -34,15 +34,23 @@ public final class AllocationCode extends Code {
 
 	private final Code enclosing;
 	private final boolean disposable;
+	private final boolean controller;
 	private Code destruction;
 	private AllocationWriter writer;
 	private Code alts[];
 
-	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
+	AllocationCode(
+			Code enclosing,
+			CodeId name,
+			boolean disposable,
+			boolean controller) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
 		this.enclosing = enclosing;
 		this.disposable = disposable;
-		enclosing.go(head());
+		this.controller = controller;
+		if (this.controller) {
+			enclosing.go(head());
+		}
 	}
 
 	public final Code getEnclosing() {
@@ -116,6 +124,10 @@ public final class AllocationCode extends Code {
 	@Override
 	public void done() {
 		if (isComplete()) {
+			return;
+		}
+		if (!this.controller) {
+			super.done();
 			return;
 		}
 
