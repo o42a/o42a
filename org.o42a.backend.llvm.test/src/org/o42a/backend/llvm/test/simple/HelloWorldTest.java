@@ -27,7 +27,6 @@ public class HelloWorldTest extends GeneratorTestCase {
 
 	@Test
 	public void helloWorld() {
-		setModuleName("hello_world");
 		compile(
 				"Use namespace 'Console'.",
 				"@Main := *{",
