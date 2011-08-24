@@ -24,8 +24,8 @@ import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import static org.o42a.util.use.User.useCase;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.artifact.Accessor;
@@ -250,34 +250,29 @@ public abstract class CompilerTestCase {
 		return field;
 	}
 
+	@Rule
+	public final TestErrors errors = new TestErrors();
+
+	@Rule
+	public final ModuleName moduleName = new ModuleName();
+
 	private TestSource source;
 	protected CompilerContext context;
-	private final TestErrors errors = new TestErrors();
 	private final CompilerContext topContext =
 			new TestCompilerContext(this, this.errors);
 	protected Module module;
-	private String moduleName;
 
 	public final String getModuleName() {
-		return this.moduleName;
+		return this.moduleName.getModuleName();
 	}
 
 	public final void setModuleName(String moduleName) {
-		this.moduleName = moduleName;
+		this.moduleName.setModuleName(moduleName);
 	}
 
 	@Before
-	public void setUpCompiler() {
-		this.moduleName = getClass().getSimpleName();
-		this.errors.reset();
+	public void createSource() {
 		this.source = new TestSource(this);
-	}
-
-	@After
-	public void ensureErrorsLogged() {
-		assertFalse(
-				"Errors expected, but not logged: " + this.errors,
-				this.errors.errorsExpected());
 	}
 
 	public void expectError(String code) {
@@ -300,7 +295,7 @@ public abstract class CompilerTestCase {
 		this.context = new TestSourceTree(this.source).context(this.topContext);
 
 		this.context.fullResolution().reset();
-		this.module = new Module(this.context, this.moduleName);
+		this.module = new Module(this.context, getModuleName());
 		INTRINSICS.setMainModule(this.module);
 		INTRINSICS.resolveAll();
 		assert this.module.getContext().fullResolution().isComplete() :

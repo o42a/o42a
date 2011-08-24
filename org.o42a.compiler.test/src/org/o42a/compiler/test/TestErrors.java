@@ -20,15 +20,18 @@
 package org.o42a.compiler.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
+import org.junit.rules.TestWatchman;
+import org.junit.runners.model.FrameworkMethod;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
 
-final class TestErrors implements Logger {
+final class TestErrors extends TestWatchman implements Logger {
 
 	private final LinkedList<String> expectedErrors =
 			new LinkedList<String>();
@@ -49,12 +52,16 @@ final class TestErrors implements Logger {
 				code);
 	}
 
-	public final boolean errorsExpected() {
-		return !this.expectedErrors.isEmpty();
+	@Override
+	public void starting(FrameworkMethod method) {
+		this.expectedErrors.clear();
 	}
 
-	public final void reset() {
-		this.expectedErrors.clear();
+	@Override
+	public void succeeded(FrameworkMethod method) {
+		assertTrue(
+				"Errors expected, but not logged: " + this,
+				this.expectedErrors.isEmpty());
 	}
 
 	public final void expectError(String code) {
