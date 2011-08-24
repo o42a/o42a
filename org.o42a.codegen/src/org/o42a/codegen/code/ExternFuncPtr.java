@@ -20,7 +20,7 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.FuncAllocation;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {

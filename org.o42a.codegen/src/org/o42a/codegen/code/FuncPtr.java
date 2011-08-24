@@ -20,10 +20,10 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {

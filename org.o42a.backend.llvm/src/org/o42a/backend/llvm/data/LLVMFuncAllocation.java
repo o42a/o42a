@@ -17,16 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.llvm.code;
+package org.o42a.backend.llvm.data;
 
-import org.o42a.backend.llvm.data.*;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public final class LLVMFuncAllocation<F extends Func<F>>
@@ -74,7 +73,9 @@ public final class LLVMFuncAllocation<F extends Func<F>>
 	}
 
 	@Override
-	public void write(DataWriter writer, DataAllocation<FuncOp<F>> detsination) {
+	public void write(
+			DataWriter writer,
+			DataAllocation<FuncOp<F>> detsination) {
 		llvmId().write(writer);
 	}
 

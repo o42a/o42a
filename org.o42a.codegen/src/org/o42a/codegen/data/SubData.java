@@ -114,7 +114,7 @@ public abstract class SubData<S extends StructOp<S>>
 			String name,
 			Signature<F> signature,
 			Content<FuncRec<F>> content) {
-		return add(codePtrRecord(
+		return add(new FuncRec<F>(
 				this,
 				id(name),
 				getGenerator().getFunctions().allocate(signature),

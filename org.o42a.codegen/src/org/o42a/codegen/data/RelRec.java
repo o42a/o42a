@@ -36,6 +36,12 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 		return DataType.REL_PTR;
 	}
 
+	@Override
+	public final RelRec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
 	public void setNull() {
 		setValue(getPointer().relativeTo(getPointer()));
 	}

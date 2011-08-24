@@ -37,6 +37,12 @@ public final class Fp64rec extends Rec<Fp64recOp, Double> {
 	}
 
 	@Override
+	public final Fp64rec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateFp64(
 				getEnclosing().getAllocation(),

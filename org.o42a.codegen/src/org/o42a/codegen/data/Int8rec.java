@@ -37,6 +37,12 @@ public final class Int8rec extends Rec<Int8recOp, Byte> {
 	}
 
 	@Override
+	public final Int8rec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt8(
 				getEnclosing().getAllocation(),

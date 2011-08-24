@@ -34,6 +34,12 @@ public abstract class PtrRec<P extends PtrOp<P>> extends Rec<P, Ptr<P>> {
 		return DataType.PTR;
 	}
 
+	@Override
+	public PtrRec<P> setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
 	public abstract void setNull();
 
 }

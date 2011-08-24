@@ -21,11 +21,10 @@ package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.func.CFunc;
-import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.data.FuncCAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;

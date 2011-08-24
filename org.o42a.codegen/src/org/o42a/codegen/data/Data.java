@@ -21,14 +21,13 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.DataBase;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Data<P extends PtrOp<P>> extends DataBase {
+public abstract class Data<P extends PtrOp<P>> {
 
 	private final Generator generator;
 	private final CodeId id;

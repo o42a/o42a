@@ -17,14 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.codegen.data.backend;
 
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.codegen.data.backend.DataWriter;
 
 
 public interface FuncAllocation<F extends Func<F>> {

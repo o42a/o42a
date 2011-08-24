@@ -24,15 +24,16 @@ import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.ContainerAllocation;
+import org.o42a.backend.llvm.data.LLVMFuncAllocation;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.backend.MultiCodePos;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public abstract class LLVMCode implements CodeWriter {

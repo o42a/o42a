@@ -24,14 +24,16 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.data.backend.DataAllocator;
+import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class FuncRec<F extends Func<F>>
+public final class FuncRec<F extends Func<F>>
 		extends Rec<FuncOp<F>, FuncPtr<F>> {
 
 	private final Signature<F> signature;
 
-	public FuncRec(
+	FuncRec(
 			SubData<?> enclosing,
 			CodeId id,
 			Signature<F> signature,
@@ -52,6 +54,29 @@ public abstract class FuncRec<F extends Func<F>>
 		return this.signature;
 	}
 
-	public abstract void setNull();
+	@Override
+	public final FuncRec<F> setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	public void setNull() {
+		setValue(getGenerator().getFunctions().nullPtr(getSignature()));
+	}
+
+	@Override
+	protected void allocate(DataAllocator allocator) {
+		setAllocation(allocator.allocateFuncPtr(
+				getEnclosing().pointer(getGenerator()).getAllocation(),
+				this,
+				getAllocation(),
+				getSignature()));
+	}
+
+	@Override
+	protected void write(DataWriter writer) {
+		fill(writer);
+		getValue().getAllocation().write(writer, getAllocation());
+	}
 
 }

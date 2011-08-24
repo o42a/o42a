@@ -21,7 +21,6 @@ package org.o42a.codegen.data.backend;
 
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.SubData;

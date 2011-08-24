@@ -22,6 +22,7 @@ package org.o42a.codegen.code.backend;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public interface FuncWriter<F extends Func<F>> extends CodeWriter {

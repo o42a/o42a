@@ -48,6 +48,12 @@ public final class StructRec<S extends StructOp<S>> extends PtrRec<S> {
 	}
 
 	@Override
+	public final StructRec<S> setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	public final void setNull() {
 		setValue(getGenerator().getGlobals().nullPtr(getType()));
 	}

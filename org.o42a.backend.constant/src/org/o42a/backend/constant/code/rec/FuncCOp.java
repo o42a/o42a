@@ -22,7 +22,7 @@ package org.o42a.backend.constant.code.rec;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.func.CFunc;
+import org.o42a.backend.constant.code.CFunc;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;

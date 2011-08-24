@@ -116,6 +116,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		@SuppressWarnings("unchecked")
 		final PtrRecCDAlloc<?, P> dest = (PtrRecCDAlloc<?, P>) destination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(getUnderlyingPtr());
 	}
 

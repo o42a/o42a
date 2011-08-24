@@ -19,7 +19,6 @@
 */
 package org.o42a.backend.llvm.data;
 
-import org.o42a.backend.llvm.code.LLVMFuncAllocation;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
