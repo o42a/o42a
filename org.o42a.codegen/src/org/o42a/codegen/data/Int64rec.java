@@ -39,6 +39,12 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 		return DataType.INT64;
 	}
 
+	@Override
+	public final Int64rec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
 	public final Ptr<AnyOp> getNativePtr() {
 		return this.nativePtr;
 	}

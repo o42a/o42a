@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.FuncAllocation;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 final class ConstructingFuncPtr<F extends Func<F>> extends FuncPtr<F> {

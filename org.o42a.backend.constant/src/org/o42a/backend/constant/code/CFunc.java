@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.func;
+package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
-import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.struct.CStruct;

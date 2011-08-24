@@ -20,11 +20,7 @@
 package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.ConstGenerator;
-import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.CCodePos;
-import org.o42a.backend.constant.code.ConstCodeBackend;
-import org.o42a.backend.constant.code.func.CFunc;
-import org.o42a.backend.constant.code.func.FuncCAlloc;
+import org.o42a.backend.constant.code.*;
 import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.struct.CStruct;
@@ -32,10 +28,10 @@ import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public class ConstBackend {

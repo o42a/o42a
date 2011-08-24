@@ -31,6 +31,7 @@ public abstract class Rec<P extends PtrOp<P>, T> extends Data<P> {
 	@SuppressWarnings("rawtypes")
 	private final Content content;
 	private T value;
+	private boolean constant;
 
 	Rec(SubData<?> enclosing, CodeId id, Content<?> content) {
 		super(enclosing.getGenerator(), id);
@@ -45,7 +46,12 @@ public abstract class Rec<P extends PtrOp<P>, T> extends Data<P> {
 
 	@Override
 	public boolean isConstant() {
-		return this.enclosing.isConstant();
+		return this.constant || this.enclosing.isConstant();
+	}
+
+	public Rec<P, T> setConstant(boolean constant) {
+		this.constant = constant;
+		return this;
 	}
 
 	@Override

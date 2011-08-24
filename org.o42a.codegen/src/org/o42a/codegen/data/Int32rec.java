@@ -37,6 +37,12 @@ public final class Int32rec extends Rec<Int32recOp, Integer> {
 	}
 
 	@Override
+	public final Int32rec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt32(
 				getEnclosing().getAllocation(),

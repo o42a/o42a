@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.data.LLVMId.codeId;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
+import org.o42a.backend.llvm.data.LLVMFuncAllocation;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;

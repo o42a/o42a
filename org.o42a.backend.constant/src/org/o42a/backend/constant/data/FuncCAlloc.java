@@ -17,20 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.func;
+package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.code.signature.CSignature;
-import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.rec.AnyCDAlloc;
 import org.o42a.backend.constant.data.rec.FuncPtrCDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.FuncAllocation;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public final class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
@@ -63,10 +62,13 @@ public final class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
 	}
 
 	@Override
-	public void write(DataWriter writer, DataAllocation<FuncOp<F>> detsination) {
+	public void write(
+			DataWriter writer,
+			DataAllocation<FuncOp<F>> detsination) {
 
 		final FuncPtrCDAlloc<F> dest = (FuncPtrCDAlloc<F>) detsination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(getUnderlyingPtr());
 	}
 

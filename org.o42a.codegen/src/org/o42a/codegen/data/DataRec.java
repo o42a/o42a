@@ -40,6 +40,12 @@ public final class DataRec extends PtrRec<DataOp> {
 	}
 
 	@Override
+	public final DataRec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	public void setNull() {
 		setValue(getGenerator().getGlobals().nullDataPtr());
 	}

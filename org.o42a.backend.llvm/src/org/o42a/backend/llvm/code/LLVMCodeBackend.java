@@ -21,12 +21,14 @@ package org.o42a.backend.llvm.code;
 
 import static org.o42a.backend.llvm.data.LLVMId.codeId;
 
+import org.o42a.backend.llvm.data.LLVMFuncAllocation;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.*;
+import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public class LLVMCodeBackend implements CodeBackend {

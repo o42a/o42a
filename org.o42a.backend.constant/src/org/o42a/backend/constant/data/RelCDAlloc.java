@@ -70,6 +70,7 @@ public final class RelCDAlloc implements RelAllocation {
 
 		final RelRecCDAlloc dest = (RelRecCDAlloc) detination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(getUnderlying());
 	}
 

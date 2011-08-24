@@ -37,6 +37,12 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 	}
 
 	@Override
+	public final Fp32rec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateFp32(
 				getEnclosing().getAllocation(),

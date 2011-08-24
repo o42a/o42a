@@ -37,6 +37,12 @@ public final class Int16rec extends Rec<Int16recOp, Short> {
 	}
 
 	@Override
+	public final Int16rec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt16(
 				getEnclosing().getAllocation(),

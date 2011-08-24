@@ -32,6 +32,12 @@ public final class AnyRec extends PtrRec<AnyOp> {
 	}
 
 	@Override
+	public final AnyRec setConstant(boolean constant) {
+		super.setConstant(constant);
+		return this;
+	}
+
+	@Override
 	public void setNull() {
 		setValue(getGenerator().getGlobals().nullPtr());
 	}

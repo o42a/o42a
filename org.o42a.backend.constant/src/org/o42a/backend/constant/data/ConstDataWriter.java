@@ -19,7 +19,6 @@
 */
 package org.o42a.backend.constant.data;
 
-import org.o42a.backend.constant.code.func.FuncCAlloc;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.CType;
@@ -126,6 +125,7 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int8cdAlloc dest = (Int8cdAlloc) destination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -136,6 +136,7 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int16cdAlloc dest = (Int16cdAlloc) destination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -144,6 +145,7 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int32cdAlloc dest = (Int32cdAlloc) destination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -152,6 +154,7 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int64cdAlloc dest = (Int64cdAlloc) destination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -163,6 +166,7 @@ public final class ConstDataWriter implements DataWriter {
 		final Int64cdAlloc dest = (Int64cdAlloc) destination;
 		final AnyCDAlloc valueAlloc = (AnyCDAlloc) valueAllocation;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setNativePtr(valueAlloc.getUnderlyingPtr());
 	}
 
@@ -171,6 +175,7 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Fp32cdAlloc dest = (Fp32cdAlloc) destination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -179,6 +184,7 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Fp64cdAlloc dest = (Fp64cdAlloc) destination;
 
+		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
