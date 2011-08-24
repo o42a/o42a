@@ -21,10 +21,7 @@ package org.o42a.ast.test.grammar;
 
 import static org.junit.Assert.*;
 
-import java.util.LinkedList;
-
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ClauseNode;
@@ -37,8 +34,6 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
-import org.o42a.util.log.LogRecord;
-import org.o42a.util.log.Logger;
 
 
 public class GrammarTestCase {
@@ -145,23 +140,13 @@ public class GrammarTestCase {
 		return to(type, clauses[index]);
 	}
 
-	private final LinkedList<String> expectedErrors = new LinkedList<String>();
+	@Rule
+	public final TestLogger logger = new TestLogger();
+
 	protected ParserWorker worker;
 
 	public void expectError(String code) {
-		this.expectedErrors.addLast("parser." + code);
-	}
-
-	@Before
-	public void clearExpectations() {
-		this.expectedErrors.clear();
-	}
-
-	@After
-	public void ensureErrorsLogged() {
-		assertTrue(
-				"Errors expected, but not logged: " + this.expectedErrors,
-				this.expectedErrors.isEmpty());
+		this.logger.expectError(code);
 	}
 
 	public <T> T parseLines(Parser<T> parser, String... lines) {
@@ -179,29 +164,8 @@ public class GrammarTestCase {
 		this.worker = new ParserWorker(new StringSource(
 				getClass().getSimpleName(),
 				text.toString()));
-		this.worker.setLogger(new TestLogger());
+		this.worker.setLogger(this.logger);
 		return this.worker.parse(parser);
-	}
-
-	private final class TestLogger implements Logger {
-
-		@Override
-		public void log(LogRecord record) {
-
-			final String code = record.getCode();
-			final String expected =
-					GrammarTestCase.this.expectedErrors.poll();
-
-			if (expected == null) {
-				fail("Error occurred: " + record);
-			}
-
-			assertEquals(
-					"Unexpected error occurred: " + record,
-					expected,
-					code);
-		}
-
 	}
 
 }
