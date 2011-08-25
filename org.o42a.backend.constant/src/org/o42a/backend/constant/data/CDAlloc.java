@@ -128,13 +128,13 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	}
 
 	@Override
-	public <R extends RecOp<R, P>> void write(
+	public <RR extends RecOp<RR, PP>, PP extends P> void write(
 			DataWriter writer,
-			DataAllocation<R> destination) {
+			DataAllocation<RR> destination) {
 
 		@SuppressWarnings("unchecked")
-		final PtrRecCDAlloc<?, P, Ptr<P>> dest =
-				(PtrRecCDAlloc<?, P, Ptr<P>>) destination;
+		final PtrRecCDAlloc<PtrRec<RR, Ptr<P>>, RR, Ptr<P>> dest =
+				(PtrRecCDAlloc<PtrRec<RR, Ptr<P>>, RR, Ptr<P>>) destination;
 
 		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(getUnderlyingPtr());

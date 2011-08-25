@@ -29,9 +29,9 @@ import org.o42a.codegen.data.RelPtr;
 
 public interface DataAllocation<P extends PtrOp<P>> {
 
-	<R extends RecOp<R, P>> void write(
+	<RR extends RecOp<RR, PP>, PP extends P> void write(
 			DataWriter writer,
-			DataAllocation<R> destination);
+			DataAllocation<RR> destination);
 
 	DataLayout getLayout();
 
