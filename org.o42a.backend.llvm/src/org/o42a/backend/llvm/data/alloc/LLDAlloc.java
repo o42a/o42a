@@ -60,7 +60,7 @@ public abstract class LLDAlloc<P extends PtrOp<P>>
 	}
 
 	@Override
-	public <R extends RecOp<R, P>> void write(
+	public <R extends RecOp<R, PP>, PP extends P> void write(
 			DataWriter writer,
 			DataAllocation<R> destination) {
 		llvmId().write(writer);
