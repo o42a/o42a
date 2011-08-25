@@ -36,7 +36,6 @@ public abstract class RecCDAlloc<
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
-	private final R data;
 	private T value;
 	private boolean constant;
 
@@ -44,17 +43,15 @@ public abstract class RecCDAlloc<
 			ContainerCDAlloc<?> enclosing,
 			R data,
 			RecCDAlloc<R, P, T> typeAllocation) {
-		super(enclosing.getBackend(), typeAllocation);
+		super(enclosing.getBackend(), data, typeAllocation);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
-		this.data = data;
 	}
 
 	public RecCDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {
 		super(backend, underlyingPtr);
 		this.topLevel = null;
 		this.enclosing = null;
-		this.data = null;
 	}
 
 	@Override
@@ -65,10 +62,6 @@ public abstract class RecCDAlloc<
 	@Override
 	public final ContainerCDAlloc<?> getEnclosing() {
 		return this.enclosing;
-	}
-
-	public final R getData() {
-		return this.data;
 	}
 
 	public final boolean isConstant() {
@@ -104,14 +97,6 @@ public abstract class RecCDAlloc<
 				getUnderlyingPtr().op(id, ccode.getUnderlying());
 
 		return op(ccode, underlyingOp);
-	}
-
-	@Override
-	public String toString() {
-		if (this.data == null) {
-			return super.toString();
-		}
-		return this.data.toString();
 	}
 
 	@Override

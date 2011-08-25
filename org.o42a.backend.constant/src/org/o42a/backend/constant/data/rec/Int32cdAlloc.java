@@ -40,7 +40,7 @@ public final class Int32cdAlloc
 
 	@Override
 	protected Int32recCOp op(CCode<?> code, Int32recOp underlying) {
-		return new Int32recCOp(code, underlying);
+		return new Int32recCOp(code, underlying, getPointer());
 	}
 
 	@Override

@@ -90,7 +90,7 @@ public abstract class Data<P extends PtrOp<P>> {
 	}
 
 	Ptr<P> createPointer() {
-		return new Ptr<P>(this, isConstant());
+		return new Ptr<P>(this, isConstant(), false);
 	}
 
 	final void allocateData() {

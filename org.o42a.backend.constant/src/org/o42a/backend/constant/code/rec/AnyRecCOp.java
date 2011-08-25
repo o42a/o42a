@@ -21,26 +21,45 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.AnyCOp;
+import org.o42a.backend.constant.data.rec.AnyCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
+import org.o42a.codegen.data.Ptr;
 
 
 public final class AnyRecCOp
-		extends RecCOp<AnyRecOp, AnyOp>
+		extends RecCOp<AnyRecOp, AnyOp, Ptr<AnyOp>>
 		implements AnyRecOp {
 
-	public AnyRecCOp(CCode<?> code, AnyRecOp underlying) {
-		super(code, underlying);
+	public AnyRecCOp(
+			CCode<?> code,
+			AnyRecOp underlying,
+			Ptr<AnyRecOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public AnyRecCOp create(CCode<?> code, AnyRecOp underlying) {
-		return new AnyRecCOp(code, underlying);
+	public AnyRecCOp create(
+			CCode<?> code,
+			AnyRecOp underlying,
+			Ptr<AnyRecOp> constant) {
+		return new AnyRecCOp(code, underlying, constant);
 	}
 
 	@Override
-	protected AnyCOp loaded(CCode<?> code, AnyOp underlying) {
-		return new AnyCOp(code, underlying);
+	protected AnyCOp loaded(
+			CCode<?> code,
+			AnyOp underlying,
+			Ptr<AnyOp> constant) {
+		return new AnyCOp(code, underlying, constant);
+	}
+
+	@Override
+	protected AnyOp underlyingConstant(CCode<?> code, Ptr<AnyOp> constant) {
+
+		final AnyCDAlloc alloc = (AnyCDAlloc) constant.getAllocation();
+
+		return alloc.getUnderlyingPtr().op(null, code.getUnderlying());
 	}
 
 }

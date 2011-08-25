@@ -26,20 +26,18 @@ import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
 public final class CFunc<F extends Func<F>>
-		extends PtrCOp<F>
+		extends PtrCOp<F, FuncPtr<F>>
 		implements FuncCaller<F> {
 
-	public CFunc(CCode<?> code, F underlying) {
-		super(code, underlying);
+	public CFunc(CCode<?> code, F underlying, FuncPtr<F> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new Int8cOp(ccode, underlyingResult);
+		return new Int8cOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -77,7 +75,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new Int16cOp(ccode, underlyingResult);
+		return new Int16cOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -89,7 +87,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new Int32cOp(ccode, underlyingResult);
+		return new Int32cOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -101,7 +99,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new Int64cOp(ccode, underlyingResult);
+		return new Int64cOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -113,7 +111,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new Fp32cOp(ccode, underlyingResult);
+		return new Fp32cOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -125,7 +123,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new Fp64cOp(ccode, underlyingResult);
+		return new Fp64cOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -137,7 +135,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new BoolCOp(ccode, underlyingResult);
+		return new BoolCOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -149,7 +147,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new AnyCOp(ccode, underlyingResult);
+		return new AnyCOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -161,7 +159,7 @@ public final class CFunc<F extends Func<F>>
 				ccode.getUnderlying(),
 				underlyingArgs(args));
 
-		return new DataCOp(ccode, underlyingResult);
+		return new DataCOp(ccode, underlyingResult, null);
 	}
 
 	@Override
@@ -178,12 +176,12 @@ public final class CFunc<F extends Func<F>>
 				getBackend().underlying(type),
 				underlyingArgs(args));
 
-		return type.op(new CStruct<S>(ccode, underlyingResult, type));
+		return type.op(new CStruct<S>(ccode, underlyingResult, type, null));
 	}
 
 	@Override
-	public F create(CCode<?> code, F underlying) {
-		return getSignature().op(new CFunc<F>(code, underlying));
+	public F create(CCode<?> code, F underlying, FuncPtr<F> constant) {
+		return getSignature().op(new CFunc<F>(code, underlying, constant));
 	}
 
 	private Op[] underlyingArgs(Op[] args) {

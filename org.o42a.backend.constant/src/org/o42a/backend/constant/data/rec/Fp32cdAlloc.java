@@ -39,7 +39,7 @@ public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
 
 	@Override
 	protected Fp32recCOp op(CCode<?> code, Fp32recOp underlying) {
-		return new Fp32recCOp(code, underlying);
+		return new Fp32recCOp(code, underlying, getPointer());
 	}
 
 	@Override

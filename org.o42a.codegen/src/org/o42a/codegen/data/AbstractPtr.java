@@ -28,10 +28,12 @@ public abstract class AbstractPtr {
 
 	private final CodeId id;
 	private final boolean ptrToConstant;
+	private final boolean isNull;
 
-	public AbstractPtr(CodeId id, boolean ptrToConstant) {
+	public AbstractPtr(CodeId id, boolean ptrToConstant, boolean isNull) {
 		this.id = id;
 		this.ptrToConstant = ptrToConstant;
+		this.isNull = isNull;
 	}
 
 	public final CodeId getId() {
@@ -42,11 +44,16 @@ public abstract class AbstractPtr {
 		return this.ptrToConstant;
 	}
 
+	public final boolean isNull() {
+		return this.isNull;
+	}
+
 	public final Ptr<AnyOp> toAny() {
 		return new Ptr<AnyOp>(
 				getId().detail("any"),
 				allocationToAny(),
-				isPtrToConstant());
+				isPtrToConstant(),
+				isNull());
 	}
 
 	@Override

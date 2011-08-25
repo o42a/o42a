@@ -27,15 +27,16 @@ import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.AllocClass;
 
 
-public abstract class PtrCOp<P extends PtrOp<P>>
-		extends AbstractCOp<P>
+public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
+		extends AbstractCOp<P, PT>
 		implements PtrOp<P> {
 
-	public PtrCOp(CCode<?> code, P underlying) {
-		super(code, underlying);
+	public PtrCOp(CCode<?> code, P underlying, PT constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
@@ -53,37 +54,70 @@ public abstract class PtrCOp<P extends PtrOp<P>>
 	}
 
 	@Override
-	public final BoolOp isNull(CodeId id, Code code) {
+	public final BoolCOp isNull(CodeId id, Code code) {
 
 		final CCode<?> ccode = cast(code);
+
+		if (isConstant()) {
+
+			final Boolean result = getConstant().isNull();
+
+			return new BoolCOp(
+					ccode,
+					ccode.getUnderlying().bool(result),
+					result);
+		}
+
 		final BoolOp underlyingIsNull =
 				getUnderlying().isNull(id, ccode.getUnderlying());
 
-		return new BoolCOp(ccode, underlyingIsNull);
+		return new BoolCOp(ccode, underlyingIsNull, null);
 	}
 
 	@Override
-	public final BoolOp eq(CodeId id, Code code, P other) {
+	public final BoolCOp eq(CodeId id, Code code, P other) {
 
 		final CCode<?> ccode = cast(code);
+		final COp<P, ?> o = cast(other);
+
+		if (isConstant() && o.isConstant()) {
+
+			final Boolean result = getConstant().equals(o.getConstant());
+
+			return new BoolCOp(
+					ccode,
+					ccode.getUnderlying().bool(result),
+					result);
+		}
+
 		final BoolOp underlyingEq = getUnderlying().eq(
 				id,
 				ccode.getUnderlying(),
 				underlying(other));
 
-		return new BoolCOp(ccode, underlyingEq);
+		return new BoolCOp(ccode, underlyingEq, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public final P offset(CodeId id, Code code, IntOp<?> index) {
 
 		final CCode<?> ccode = cast(code);
+		final IntCOp<?, ?> idx = (IntCOp<?, ?>) index;
+
+		if (idx.isConstant() && idx.getConstant().intValue() == 0) {
+			if (getCode() == ccode) {
+				return (P) this;
+			}
+			return create(ccode, getUnderlying(), getConstant());
+		}
+
 		final P underlyingOffset = getUnderlying().offset(
 				id,
 				ccode.getUnderlying(),
-				underlying(index));
+				idx.getUnderlying());
 
-		return create(ccode, underlyingOffset);
+		return create(ccode, underlyingOffset, null);
 	}
 
 	@Override
@@ -93,7 +127,7 @@ public abstract class PtrCOp<P extends PtrOp<P>>
 		final AnyOp underlyingAny =
 				getUnderlying().toAny(id, ccode.getUnderlying());
 
-		return new AnyCOp(ccode, underlyingAny);
+		return new AnyCOp(ccode, underlyingAny, null);
 	}
 
 }

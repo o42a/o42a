@@ -23,15 +23,55 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.code.op.Fp64op;
 
 
-public final class Fp64cOp extends FpCOp<Fp64op> implements Fp64op {
+public final class Fp64cOp extends FpCOp<Fp64op, Double> implements Fp64op {
 
-	public Fp64cOp(CCode<?> code, Fp64op underlying) {
-		super(code, underlying);
+	public Fp64cOp(CCode<?> code, Fp64op underlying, Double constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public Fp64op create(CCode<?> code, Fp64op underlying) {
-		return new Fp64cOp(code, underlying);
+	public Fp64cOp create(CCode<?> code, Fp64op underlying, Double constant) {
+		return new Fp64cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Fp64op underlyingConstant(CCode<?> code, Double constant) {
+		return code.getUnderlying().fp64(constant);
+	}
+
+	@Override
+	protected Double neg(Double value) {
+		return -value;
+	}
+
+	@Override
+	protected Double add(Double value1, Double value2) {
+		return value1 + value2;
+	}
+
+	@Override
+	protected Double sub(Double value1, Double value2) {
+		return value1 - value2;
+	}
+
+	@Override
+	protected Double mul(Double value1, Double value2) {
+		return value1 * value2;
+	}
+
+	@Override
+	protected Double div(Double value1, Double value2) {
+		return value1 / value2;
+	}
+
+	@Override
+	protected Double rem(Double value1, Double value2) {
+		return value1 % value2;
+	}
+
+	@Override
+	protected int cmp(Double value1, Double value2) {
+		return value1.compareTo(value2);
 	}
 
 }

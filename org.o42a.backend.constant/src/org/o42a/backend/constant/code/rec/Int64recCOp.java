@@ -23,24 +23,39 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Int64cOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
+import org.o42a.codegen.data.Ptr;
 
 
 public final class Int64recCOp
-		extends RecCOp<Int64recOp, Int64op>
+		extends RecCOp<Int64recOp, Int64op, Long>
 		implements Int64recOp {
 
-	public Int64recCOp(CCode<?> code, Int64recOp underlying) {
-		super(code, underlying);
+	public Int64recCOp(
+			CCode<?> code,
+			Int64recOp underlying,
+			Ptr<Int64recOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public final Int64recCOp create(CCode<?> code, Int64recOp underlying) {
-		return new Int64recCOp(code, underlying);
+	public Int64recCOp create(
+			CCode<?> code,
+			Int64recOp underlying,
+			Ptr<Int64recOp> constant) {
+		return new Int64recCOp(code, underlying, constant);
 	}
 
 	@Override
-	protected final Int64cOp loaded(CCode<?> code, Int64op underlying) {
-		return new Int64cOp(code, underlying);
+	protected Int64cOp loaded(
+			CCode<?> code,
+			Int64op underlying,
+			Long constant) {
+		return new Int64cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Int64op underlyingConstant(CCode<?> code, Long constant) {
+		return code.getUnderlying().int64(constant);
 	}
 
 }

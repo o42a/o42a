@@ -27,13 +27,15 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
-public final class DataCOp extends PtrCOp<DataOp> implements DataOp {
+public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
+		implements DataOp {
 
-	public DataCOp(CCode<?> code, DataOp underlying) {
-		super(code, underlying);
+	public DataCOp(CCode<?> code, DataOp underlying, Ptr<DataOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
@@ -45,12 +47,15 @@ public final class DataCOp extends PtrCOp<DataOp> implements DataOp {
 				ccode.getUnderlying(),
 				getBackend().underlying(type));
 
-		return type.op(new CStruct<S>(ccode, underlyingStruct, type));
+		return type.op(new CStruct<S>(ccode, underlyingStruct, type, null));
 	}
 
 	@Override
-	public DataCOp create(CCode<?> code, DataOp underlying) {
-		return new DataCOp(code, underlying);
+	public DataCOp create(
+			CCode<?> code,
+			DataOp underlying,
+			Ptr<DataOp> constant) {
+		return new DataCOp(code, underlying, constant);
 	}
 
 }

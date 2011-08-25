@@ -23,15 +23,90 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.code.op.Int8op;
 
 
-public final class Int8cOp extends IntCOp<Int8op> implements Int8op {
+public final class Int8cOp extends IntCOp<Int8op, Byte> implements Int8op {
 
-	public Int8cOp(CCode<?> code, Int8op underlying) {
-		super(code, underlying);
+	public Int8cOp(CCode<?> code, Int8op underlying, Byte constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public Int8op create(CCode<?> code, Int8op underlying) {
-		return new Int8cOp(code, underlying);
+	public Int8cOp create(CCode<?> code, Int8op underlying, Byte constant) {
+		return new Int8cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Int8op underlyingConstant(CCode<?> code, Byte constant) {
+		return code.getUnderlying().int8(constant);
+	}
+
+	@Override
+	protected Byte neg(Byte value) {
+		return (byte) -value;
+	}
+
+	@Override
+	protected Byte add(Byte value1, Byte value2) {
+		return (byte) (value1 + value2);
+	}
+
+	@Override
+	protected Byte sub(Byte value1, Byte value2) {
+		return (byte) (value1 - value2);
+	}
+
+	@Override
+	protected Byte mul(Byte value1, Byte value2) {
+		return (byte) (value1 * value2);
+	}
+
+	@Override
+	protected Byte div(Byte value1, Byte value2) {
+		return (byte) (value1 / value2);
+	}
+
+	@Override
+	protected Byte rem(Byte value1, Byte value2) {
+		return (byte) (value1 % value2);
+	}
+
+	@Override
+	protected int cmp(Byte value1, Byte value2) {
+		return value1.compareTo(value2);
+	}
+
+	@Override
+	protected Byte shl(Byte value, int numBits) {
+		return (byte) (value << numBits);
+	}
+
+	@Override
+	protected Byte lshr(Byte value, int numBits) {
+		return (byte) (value >>> numBits);
+	}
+
+	@Override
+	protected Byte ashr(Byte value, int numBits) {
+		return (byte) (value >> numBits);
+	}
+
+	@Override
+	protected Byte and(Byte value1, Byte value2) {
+		return (byte) (value1 & value2);
+	}
+
+	@Override
+	protected Byte or(Byte value1, Byte value2) {
+		return (byte) (value1 | value2);
+	}
+
+	@Override
+	protected Byte xor(Byte value1, Byte value2) {
+		return (byte) (value1 ^ value2);
+	}
+
+	@Override
+	protected Byte comp(Byte value) {
+		return (byte) ~value;
 	}
 
 }

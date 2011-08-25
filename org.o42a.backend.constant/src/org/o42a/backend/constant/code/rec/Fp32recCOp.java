@@ -23,24 +23,36 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Fp32cOp;
 import org.o42a.codegen.code.op.Fp32op;
 import org.o42a.codegen.code.op.Fp32recOp;
+import org.o42a.codegen.data.Ptr;
 
 
 public final class Fp32recCOp
-		extends RecCOp<Fp32recOp, Fp32op>
+		extends RecCOp<Fp32recOp, Fp32op, Float>
 		implements Fp32recOp {
 
-	public Fp32recCOp(CCode<?> code, Fp32recOp underlying) {
-		super(code, underlying);
+	public Fp32recCOp(
+			CCode<?> code,
+			Fp32recOp underlying,
+			Ptr<Fp32recOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public final Fp32recCOp create(CCode<?> code, Fp32recOp underlying) {
-		return new Fp32recCOp(code, underlying);
+	public Fp32recCOp create(
+			CCode<?> code,
+			Fp32recOp underlying,
+			Ptr<Fp32recOp> constant) {
+		return new Fp32recCOp(code, underlying, constant);
 	}
 
 	@Override
-	protected final Fp32cOp loaded(CCode<?> code, Fp32op underlying) {
-		return new Fp32cOp(code, underlying);
+	protected Fp32cOp loaded(CCode<?> code, Fp32op underlying, Float constant) {
+		return new Fp32cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Fp32op underlyingConstant(CCode<?> code, Float constant) {
+		return code.fp32(constant);
 	}
 
 }

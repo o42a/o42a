@@ -34,12 +34,16 @@ public class Ptr<P extends PtrOp<P>> extends AbstractPtr {
 
 	private DataAllocation<P> allocation;
 
-	Ptr(Data<?> data, boolean ptrToConstant) {
-		super(data.getId(), ptrToConstant);
+	Ptr(Data<?> data, boolean ptrToConstant, boolean isNull) {
+		super(data.getId(), ptrToConstant, isNull);
 	}
 
-	Ptr(CodeId id, DataAllocation<P> allocation, boolean ptrToConstant) {
-		super(id, ptrToConstant);
+	Ptr(
+			CodeId id,
+			DataAllocation<P> allocation,
+			boolean ptrToConstant,
+			boolean isNull) {
+		super(id, ptrToConstant, isNull);
 		this.allocation = allocation;
 	}
 
@@ -55,7 +59,8 @@ public class Ptr<P extends PtrOp<P>> extends AbstractPtr {
 		return new Ptr<DataOp>(
 				getId().detail("struct"),
 				this.allocation.toData(),
-				isPtrToConstant());
+				isPtrToConstant(),
+				isNull());
 	}
 
 	public final P op(CodeId id, Code code) {

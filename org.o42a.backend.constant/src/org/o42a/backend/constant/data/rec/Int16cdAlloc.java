@@ -40,7 +40,7 @@ public final class Int16cdAlloc
 
 	@Override
 	protected Int16recCOp op(CCode<?> code, Int16recOp underlying) {
-		return new Int16recCOp(code, underlying);
+		return new Int16recCOp(code, underlying, getPointer());
 	}
 
 	@Override

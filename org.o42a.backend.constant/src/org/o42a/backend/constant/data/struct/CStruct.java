@@ -26,6 +26,7 @@ import org.o42a.backend.constant.code.op.DataCOp;
 import org.o42a.backend.constant.code.op.PtrCOp;
 import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.CDAlloc;
+import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -36,13 +37,13 @@ import org.o42a.codegen.data.*;
 
 
 public final class CStruct<S extends StructOp<S>>
-		extends PtrCOp<S>
+		extends PtrCOp<S, Ptr<S>>
 		implements StructWriter<S> {
 
 	private final Type<S> type;
 
-	public CStruct(CCode<?> code, S underlying, Type<S> type) {
-		super(code, underlying);
+	public CStruct(CCode<?> code, S underlying, Type<S> type, Ptr<S> constant) {
+		super(code, underlying, constant);
 		this.type = type;
 	}
 
@@ -62,11 +63,23 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				alloc.getUnderlying());
 
-		return new AnyRecCOp(ccode, underlyingRec);
+		return new AnyRecCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
 	public Int8recCOp int8(CodeId id, Code code, Int8rec field) {
+
+		final Ptr<Int8recOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final Int8cdAlloc fld =
@@ -76,11 +89,23 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new Int8recCOp(ccode, underlyingRec);
+		return new Int8recCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
 	public Int16recCOp int16(CodeId id, Code code, Int16rec field) {
+
+		final Ptr<Int16recOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final Int16cdAlloc fld =
@@ -90,11 +115,23 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new Int16recCOp(ccode, underlyingRec);
+		return new Int16recCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
 	public Int32recCOp int32(CodeId id, Code code, Int32rec field) {
+
+		final Ptr<Int32recOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final Int32cdAlloc fld =
@@ -104,11 +141,23 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new Int32recCOp(ccode, underlyingRec);
+		return new Int32recCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
 	public Int64recCOp int64(CodeId id, Code code, Int64rec field) {
+
+		final Ptr<Int64recOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final Int64cdAlloc fld =
@@ -118,11 +167,23 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new Int64recCOp(ccode, underlyingRec);
+		return new Int64recCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
 	public Fp32recCOp fp32(CodeId id, Code code, Fp32rec field) {
+
+		final Ptr<Fp32recOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final Fp32cdAlloc fld =
@@ -132,11 +193,23 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new Fp32recCOp(ccode, underlyingRec);
+		return new Fp32recCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
 	public Fp64recCOp fp64(CodeId id, Code code, Fp64rec field) {
+
+		final Ptr<Fp64recOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final Fp64cdAlloc fld =
@@ -146,7 +219,7 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new Fp64recCOp(ccode, underlyingRec);
+		return new Fp64recCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
@@ -160,7 +233,7 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new AnyRecCOp(ccode, underlyingRec);
+		return new AnyRecCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -174,7 +247,7 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new DataRecCOp(ccode, underlyingRec);
+		return new DataRecCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -191,11 +264,27 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new StructRecCOp<SS>(ccode, underlyingRec, field.getType());
+		return new StructRecCOp<SS>(
+				ccode,
+				underlyingRec,
+				field.getType(),
+				null);
 	}
 
 	@Override
 	public RelRecCOp relPtr(CodeId id, Code code, RelRec field) {
+
+		final Ptr<RelRecOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final RelRecCDAlloc fld =
@@ -205,7 +294,7 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new RelRecCOp(ccode, underlyingRec);
+		return new RelRecCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
@@ -213,6 +302,21 @@ public final class CStruct<S extends StructOp<S>>
 			CodeId id,
 			Code code,
 			Type<SS> field) {
+
+		final Ptr<SS> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+			final ContainerCDAlloc<SS> f = 
+					(ContainerCDAlloc<SS>) field.pointer(
+							getBackend().getGenerator()).getAllocation();
+
+			pointer = constAlloc.field(f.getData()).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final CType<SS> fld = getBackend().underlying(field);
@@ -224,7 +328,8 @@ public final class CStruct<S extends StructOp<S>>
 		return field.op(new CStruct<SS>(
 				ccode,
 				underlyingStruct,
-				field.getType()));
+				field.getType(),
+				pointer));
 	}
 
 	@Override
@@ -232,6 +337,18 @@ public final class CStruct<S extends StructOp<S>>
 			CodeId id,
 			Code code,
 			FuncRec<F> field) {
+
+		final Ptr<FuncOp<F>> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final FuncPtrCDAlloc<F> fld =
@@ -241,7 +358,7 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new FuncCOp<F>(ccode, underlyingRec);
+		return new FuncCOp<F>(ccode, underlyingRec, pointer);
 	}
 
 	@Override
@@ -251,7 +368,7 @@ public final class CStruct<S extends StructOp<S>>
 		final DataOp underlyingData =
 				getUnderlying().toData(id, ccode.getUnderlying());
 
-		return new DataCOp(ccode, underlyingData);
+		return new DataCOp(ccode, underlyingData, null);
 	}
 
 	@Override
@@ -266,12 +383,16 @@ public final class CStruct<S extends StructOp<S>>
 				ccode.getUnderlying(),
 				getBackend().underlying(type));
 
-		return type.op(new CStruct<SS>(ccode, underlyingStruct, type));
+		return type.op(new CStruct<SS>(ccode, underlyingStruct, type, null));
 	}
 
 	@Override
-	public S create(CCode<?> code, S underlying) {
-		return getType().op(new CStruct<S>(code, underlying, getType()));
+	public S create(CCode<?> code, S underlying, Ptr<S> constantValue) {
+		return getType().op(new CStruct<S>(
+				code,
+				underlying,
+				getType(),
+				constantValue));
 	}
 
 }

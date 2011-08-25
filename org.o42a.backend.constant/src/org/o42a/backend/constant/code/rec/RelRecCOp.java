@@ -21,26 +21,43 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.RelCOp;
+import org.o42a.backend.constant.data.RelCDAlloc;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.code.op.RelRecOp;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.RelPtr;
 
 
 public final class RelRecCOp
-		extends RecCOp<RelRecOp, RelOp>
+		extends RecCOp<RelRecOp, RelOp, RelPtr>
 		implements RelRecOp {
 
-	public RelRecCOp(CCode<?> code, RelRecOp underlying) {
-		super(code, underlying);
+	public RelRecCOp(
+			CCode<?> code,
+			RelRecOp underlying,
+			Ptr<RelRecOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public final RelRecCOp create(CCode<?> code, RelRecOp underlying) {
-		return new RelRecCOp(code, underlying);
+	public RelRecCOp create(
+			CCode<?> code,
+			RelRecOp underlying,
+			Ptr<RelRecOp> constant) {
+		return new RelRecCOp(code, underlying, constant);
 	}
 
 	@Override
-	protected final RelCOp loaded(CCode<?> code, RelOp underlying) {
-		return new RelCOp(code, underlying);
+	protected RelCOp loaded(CCode<?> code, RelOp underlying, RelPtr constant) {
+		return new RelCOp(code, underlying, constant);
+	}
+
+	@Override
+	protected RelOp underlyingConstant(CCode<?> code, RelPtr constant) {
+
+		final RelCDAlloc alloc = (RelCDAlloc) constant.getAllocation();
+
+		return alloc.getUnderlying().op(null, code.getUnderlying());
 	}
 
 }

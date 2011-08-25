@@ -26,6 +26,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.codegen.data.RelPtr;
 
 
 public interface DataAllocation<P extends PtrOp<P>> {
@@ -34,7 +35,7 @@ public interface DataAllocation<P extends PtrOp<P>> {
 
 	DataLayout getLayout();
 
-	RelAllocation relativeTo(DataAllocation<?> allocation);
+	RelAllocation relativeTo(RelPtr pointer, DataAllocation<?> allocation);
 
 	P op(CodeId id, AllocClass allocClass, CodeWriter writer);
 

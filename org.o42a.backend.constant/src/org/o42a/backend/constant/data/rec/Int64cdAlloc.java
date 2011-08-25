@@ -63,7 +63,7 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 
 	@Override
 	protected Int64recCOp op(CCode<?> code, Int64recOp underlying) {
-		return new Int64recCOp(code, underlying);
+		return new Int64recCOp(code, underlying, getPointer());
 	}
 
 	@Override

@@ -23,24 +23,39 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Fp64cOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Fp64recOp;
+import org.o42a.codegen.data.Ptr;
 
 
 public final class Fp64recCOp
-		extends RecCOp<Fp64recOp, Fp64op>
+		extends RecCOp<Fp64recOp, Fp64op, Double>
 		implements Fp64recOp {
 
-	public Fp64recCOp(CCode<?> code, Fp64recOp underlying) {
-		super(code, underlying);
+	public Fp64recCOp(
+			CCode<?> code,
+			Fp64recOp underlying,
+			Ptr<Fp64recOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public final Fp64recCOp create(CCode<?> code, Fp64recOp underlying) {
-		return new Fp64recCOp(code, underlying);
+	public Fp64recCOp create(
+			CCode<?> code,
+			Fp64recOp underlying,
+			Ptr<Fp64recOp> constant) {
+		return new Fp64recCOp(code, underlying, constant);
 	}
 
 	@Override
-	protected final Fp64cOp loaded(CCode<?> code, Fp64op underlying) {
-		return new Fp64cOp(code, underlying);
+	protected Fp64cOp loaded(
+			CCode<?> code,
+			Fp64op underlying,
+			Double constant) {
+		return new Fp64cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Fp64op underlyingConstant(CCode<?> code, Double constant) {
+		return code.getUnderlying().fp64(constant);
 	}
 
 }

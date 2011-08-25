@@ -56,7 +56,7 @@ public final class AnyCDAlloc extends PtrRecCDAlloc<AnyRec, AnyOp> {
 
 	@Override
 	protected AnyOp op(CCode<?> code, AnyOp underlyingOp) {
-		return new AnyCOp(code, underlyingOp);
+		return new AnyCOp(code, underlyingOp, getPointer());
 	}
 
 }

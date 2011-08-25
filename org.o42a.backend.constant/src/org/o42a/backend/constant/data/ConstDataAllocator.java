@@ -64,16 +64,20 @@ public class ConstDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <S extends StructOp<S>> DataAllocation<S> begin(Type<S> type) {
-		return new TypeCDAlloc<S>(getBackend(), type);
+	public <S extends StructOp<S>> DataAllocation<S> begin(
+			SubData<S> data,
+			Type<S> type) {
+		return new TypeCDAlloc<S>(getBackend(), data, type);
 	}
 
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> begin(
+			SubData<S> data,
 			DataAllocation<S> type,
 			Global<S, ?> global) {
 		return new GlobalCDAlloc<S>(
 				getBackend(),
+				data,
 				(ContainerCDAlloc<S>) type,
 				global);
 	}

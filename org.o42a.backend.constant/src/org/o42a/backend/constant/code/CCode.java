@@ -28,6 +28,7 @@ import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
@@ -126,10 +127,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			CodeId id,
 			FuncAllocation<F> allocation) {
 
+		final CFAlloc<F> alloc = cast(allocation);
 		final F underlyingFunc =
-				cast(allocation).getUnderlyingPtr().op(id, getUnderlying());
+				alloc.getUnderlyingPtr().op(id, getUnderlying());
 
-		return new CFunc<F>(this, underlyingFunc);
+		return new CFunc<F>(this, underlyingFunc, alloc.getPointer());
 	}
 
 	@Override
@@ -149,52 +151,61 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final Int8cOp int8(byte value) {
-		return new Int8cOp(this, getUnderlying().int8(value));
+		return new Int8cOp(this, getUnderlying().int8(value), value);
 	}
 
 	@Override
 	public final Int16cOp int16(short value) {
-		return new Int16cOp(this, getUnderlying().int16(value));
+		return new Int16cOp(this, getUnderlying().int16(value), value);
 	}
 
 	@Override
 	public final Int32cOp int32(int value) {
-		return new Int32cOp(this, getUnderlying().int32(value));
+		return new Int32cOp(this, getUnderlying().int32(value), value);
 	}
 
 	@Override
 	public final Int64cOp int64(long value) {
-		return new Int64cOp(this, getUnderlying().int64(value));
+		return new Int64cOp(this, getUnderlying().int64(value), value);
 	}
 
 	@Override
 	public final Fp32cOp fp32(float value) {
-		return new Fp32cOp(this, getUnderlying().fp32(value));
+		return new Fp32cOp(this, getUnderlying().fp32(value), value);
 	}
 
 	@Override
 	public final Fp64cOp fp64(double value) {
-		return new Fp64cOp(this, getUnderlying().fp64(value));
+		return new Fp64cOp(this, getUnderlying().fp64(value), value);
 	}
 
 	@Override
 	public final BoolCOp bool(boolean value) {
-		return new BoolCOp(this, getUnderlying().bool(value));
+		return new BoolCOp(this, getUnderlying().bool(value), value);
 	}
 
 	@Override
 	public final RelCOp nullRelPtr() {
-		return new RelCOp(this, getUnderlying().nullRelPtr());
+		return new RelCOp(
+				this,
+				getUnderlying().nullRelPtr(),
+				null);
 	}
 
 	@Override
 	public final AnyCOp nullPtr() {
-		return new AnyCOp(this, getUnderlying().nullPtr());
+		return new AnyCOp(
+				this,
+				getUnderlying().nullPtr(),
+				getBackend().getGenerator().getGlobals().nullPtr());
 	}
 
 	@Override
 	public final DataCOp nullDataPtr() {
-		return new DataCOp(this, getUnderlying().nullDataPtr());
+		return new DataCOp(
+				this,
+				getUnderlying().nullDataPtr(),
+				getBackend().getGenerator().getGlobals().nullDataPtr());
 	}
 
 	@Override
@@ -203,12 +214,15 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final ContainerCDAlloc<S> typeAlloc = (ContainerCDAlloc<S>) type;
 		final CType<S> underlyingType = typeAlloc.getUnderlyingInstance();
 		final S underlyingPtr = getUnderlying().nullPtr(underlyingType);
+		final Type<S> originalType = underlyingType.getOriginal();
 
-		return underlyingType.getOriginal().op(
+		return originalType.op(
 				new CStruct<S>(
 						this,
 						underlyingPtr,
-						underlyingType.getOriginal()));
+						underlyingType.getOriginal(),
+						getBackend().getGenerator().getGlobals().nullPtr(
+								originalType)));
 	}
 
 	@Override
@@ -218,7 +232,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				getBackend().underlying(signature);
 		final F underlyingPtr = getUnderlying().nullPtr(underlyingSignature);
 
-		return new CFunc<F>(this, underlyingPtr);
+		return new CFunc<F>(
+				this,
+				underlyingPtr,
+				getBackend().getGenerator().getFunctions().nullPtr(
+						signature));
 	}
 
 	@Override
@@ -253,7 +271,10 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final AnyRecCOp allocatePtr(CodeId id) {
-		return new AnyRecCOp(this, getUnderlying().writer().allocatePtr(id));
+		return new AnyRecCOp(
+				this,
+				getUnderlying().writer().allocatePtr(id),
+				null);
 	}
 
 	@Override
@@ -271,7 +292,8 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return new StructRecCOp<S>(
 				this,
 				underlyingOp,
-				typeAlloc.getUnderlyingInstance().getType());
+				typeAlloc.getUnderlyingInstance().getType(),
+				null);
 	}
 
 	@Override
@@ -285,7 +307,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				id, typeAlloc.getUnderlyingPtr().getAllocation());
 		final Type<S> type = typeAlloc.getUnderlyingInstance().getOriginal();
 
-		return type.op(new CStruct<S>(this, underlyingOp, type));
+		return type.op(new CStruct<S>(this, underlyingOp, type, null));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -299,13 +321,15 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			@SuppressWarnings("rawtypes")
 			final CStruct res = cop;
 
-			return (O) res.create(this, underlyingPHI);
+			return (O) res.create(this, underlyingPHI, cop.getConstant());
 		}
 
-		final COp<O> cop = cast(op);
+		final COp<O, ?> cop = cast(op);
 		final O underlyingPHI = getUnderlying().phi(id, cop.getUnderlying());
+		@SuppressWarnings("rawtypes")
+		final COp res = cop;
 
-		return cop.create(this, underlyingPHI);
+		return (O) res.create(this, underlyingPHI, cop.getConstant());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -314,21 +338,39 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		if (op1 instanceof StructOp) {
 
 			final CStruct<?> cop1 = cast((StructOp<?>) op1);
+			final CStruct<?> cop2 = cast((StructOp<?>) op2);
+
+			if (cop1.isConstant() && cop2.isConstant()) {
+				if (cop1.getConstant().equals(cop2)) {
+					return phi(id, op1);
+				}
+			}
+
 			final StructOp<?> underlyingPHI = getUnderlying().phi(
 					id,
 					cop1.getUnderlying(),
-					underlying((StructOp<?>) op2));
+					cop2.getUnderlying());
 			@SuppressWarnings("rawtypes")
 			final CStruct res = cop1;
 
-			return (O) res.create(this, underlyingPHI);
+			return (O) res.create(this, underlyingPHI, null);
 		}
 
-		final COp<O> cop1 = cast(op1);
-		final O underlyingPHI =
-				getUnderlying().phi(id, cop1.getUnderlying(), underlying(op2));
+		final COp<O, ?> cop1 = cast(op1);
+		final COp<O, ?> cop2 = cast(op2);
 
-		return cop1.create(this, underlyingPHI);
+		if (cop1.isConstant() && cop2.isConstant()) {
+			if (cop1.getConstant().equals(cop2.getConstant())) {
+				return phi(id, op1);
+			}
+		}
+
+		final O underlyingPHI = getUnderlying().phi(
+				id,
+				cop1.getUnderlying(),
+				cop2.getUnderlying());
+
+		return cop1.create(this, underlyingPHI, null);
 	}
 
 	@Override

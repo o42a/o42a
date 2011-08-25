@@ -23,24 +23,36 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Int8cOp;
 import org.o42a.codegen.code.op.Int8op;
 import org.o42a.codegen.code.op.Int8recOp;
+import org.o42a.codegen.data.Ptr;
 
 
 public final class Int8recCOp
-		extends RecCOp<Int8recOp, Int8op>
+		extends RecCOp<Int8recOp, Int8op, Byte>
 		implements Int8recOp {
 
-	public Int8recCOp(CCode<?> code, Int8recOp underlying) {
-		super(code, underlying);
+	public Int8recCOp(
+			CCode<?> code,
+			Int8recOp underlying,
+			Ptr<Int8recOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public final Int8recCOp create(CCode<?> code, Int8recOp underlying) {
-		return new Int8recCOp(code, underlying);
+	public Int8recCOp create(
+			CCode<?> code,
+			Int8recOp underlying,
+			Ptr<Int8recOp> constant) {
+		return new Int8recCOp(code, underlying, constant);
 	}
 
 	@Override
-	protected final Int8cOp loaded(CCode<?> code, Int8op underlying) {
-		return new Int8cOp(code, underlying);
+	protected Int8cOp loaded(CCode<?> code, Int8op underlying, Byte constant) {
+		return new Int8cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Int8op underlyingConstant(CCode<?> code, Byte constant) {
+		return code.getUnderlying().int8(constant);
 	}
 
 }

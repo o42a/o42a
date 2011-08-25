@@ -23,6 +23,7 @@ import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.constant.code.*;
 import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.Generator;
@@ -61,8 +62,8 @@ public class ConstBackend {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <O extends Op> COp<O> cast(O op) {
-		return (COp<O>) op;
+	public static <O extends Op> COp<O, ?> cast(O op) {
+		return (COp<O, ?>) op;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,9 +86,9 @@ public class ConstBackend {
 		return cast(op).getUnderlying();
 	}
 
-	public static <F extends Func<F>> FuncCAlloc<F> cast(
+	public static <F extends Func<F>> CFAlloc<F> cast(
 			FuncAllocation<F> funcAllocation) {
-		return (FuncCAlloc<F>) funcAllocation;
+		return (CFAlloc<F>) funcAllocation;
 	}
 
 	public static <F extends Func<F>> FuncAllocation<F> underlying(

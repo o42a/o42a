@@ -23,12 +23,12 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.code.op.FpOp;
 
 
-public abstract class FpCOp<O extends FpOp<O>>
-		extends NumCOp<O>
+public abstract class FpCOp<O extends FpOp<O>, T extends Number>
+		extends NumCOp<O, T>
 		implements FpOp<O> {
 
-	public FpCOp(CCode<?> code, O underlying) {
-		super(code, underlying);
+	public FpCOp(CCode<?> code, O underlying, T constant) {
+		super(code, underlying, constant);
 	}
 
 }
