@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.llvm.data;
 
+import org.o42a.backend.llvm.data.alloc.*;
+import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
@@ -44,7 +46,7 @@ public class LLVMDataWriter implements DataWriter {
 
 	@Override
 	public DataAllocation<AnyOp> nullPtr() {
-		return new AnyAlloc(
+		return new AnyLLDAlloc(
 				getModule(),
 				LLVMId.nullId(nullPtr(getModule().getNativePtr()), false),
 				null);
@@ -52,7 +54,7 @@ public class LLVMDataWriter implements DataWriter {
 
 	@Override
 	public DataAllocation<DataOp> nullDataPtr() {
-		return new DataAlloc(
+		return new DataLLDAlloc(
 				getModule(),
 				LLVMId.nullId(nullPtr(getModule().getNativePtr()), false),
 				null);
@@ -61,21 +63,21 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> nullPtr(Type<S> type) {
 
-		final ContainerAllocation<S> typeAlloc =
-				(ContainerAllocation<S>) type.pointer(type.getGenerator())
+		final ContainerLLDAlloc<S> typeAlloc =
+				(ContainerLLDAlloc<S>) type.pointer(type.getGenerator())
 				.getAllocation();
 		final long nativePtr = nullStructPtr(typeAlloc.getTypePtr());
 
-		return new ContainerAllocation.Null<S>(
+		return new NullStructLLDAlloc<S>(
 				getModule(),
 				nativePtr,
 				type);
 	}
 
 	@Override
-	public <F extends Func<F>> LLVMFuncAllocation<F> nullPtr(
+	public <F extends Func<F>> LLFAlloc<F> nullPtr(
 			Signature<F> signature) {
-		return new LLVMFuncAllocation<F>(
+		return new LLFAlloc<F>(
 				this.module,
 				nullFuncPtr(getModule().nativePtr(signature)),
 				signature);
@@ -100,7 +102,7 @@ public class LLVMDataWriter implements DataWriter {
 			DataAllocation<S> destination,
 			SubData<S> data) {
 
-		ContainerAllocation<S> dest = (ContainerAllocation<S>) destination;
+		ContainerLLDAlloc<S> dest = (ContainerLLDAlloc<S>) destination;
 		final long dataPtr = pull().getNativePtr();
 
 		writeStruct(getStructPtr(), dest.getTypePtr(), dataPtr);
@@ -111,8 +113,8 @@ public class LLVMDataWriter implements DataWriter {
 			DataAllocation<S> destination,
 			Global<S, ?> global) {
 
-		final ContainerAllocation.Global<S> dest =
-				(ContainerAllocation.Global<S>) destination;
+		final GlobalLLDAlloc<S> dest =
+				(GlobalLLDAlloc<S>) destination;
 		final long dataPtr = pull().getNativePtr();
 
 		writeGlobal(dest.getNativePtr(), dataPtr);
@@ -151,8 +153,8 @@ public class LLVMDataWriter implements DataWriter {
 			DataAllocation<Int64recOp> destination,
 			DataAllocation<AnyOp> valueAllocation) {
 
-		final LLVMDataAllocation<?> alloc =
-				(LLVMDataAllocation<?>) valueAllocation;
+		final LLDAlloc<?> alloc =
+				(LLDAlloc<?>) valueAllocation;
 
 		writePtrAsInt64(
 				getModule().getNativePtr(), getStructPtr(),
@@ -173,27 +175,27 @@ public class LLVMDataWriter implements DataWriter {
 		writeFp64(getModule().getNativePtr(), getStructPtr(), value);
 	}
 
-	@Override
-	public String toString() {
-		return "LLVM data writer";
-	}
-
-	final void writeDataId(LLVMId llvmId) {
+	public final void writeDataId(LLVMId llvmId) {
 
 		final long ptr = llvmId.expression(getModule());
 
 		writeDataPtr(getStructPtr(), ptr);
 	}
 
-	final void writeCodeId(LLVMId llvmId) {
+	public final void writeCodeId(LLVMId llvmId) {
 
 		final long ptr = llvmId.expression(getModule());
 
 		writeFuncPtr(getStructPtr(), ptr);
 	}
 
-	final void writeRelPtr(long nativePtr) {
+	public final void writeRelPtr(long nativePtr) {
 		writeRelPtr(getStructPtr(), nativePtr);
+	}
+
+	@Override
+	public String toString() {
+		return "LLVM data writer";
 	}
 
 	private long getStructPtr() {

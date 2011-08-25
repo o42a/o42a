@@ -387,8 +387,8 @@ public final class CStruct<S extends StructOp<S>>
 		}
 
 		final CCode<?> ccode = cast(code);
-		final FuncPtrCDAlloc<F> fld =
-				(FuncPtrCDAlloc<F>) field.getPointer().getAllocation();
+		final FuncRecCDAlloc<F> fld =
+				(FuncRecCDAlloc<F>) field.getPointer().getAllocation();
 		final FuncOp<F> underlyingRec = getUnderlying().writer().func(
 				id,
 				ccode.getUnderlying(),

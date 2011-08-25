@@ -29,7 +29,7 @@
 using namespace llvm;
 
 
-jlong Java_org_o42a_backend_llvm_data_LLVMId_typeExpression(
+jlong Java_org_o42a_backend_llvm_id_LLVMId_typeExpression(
 		JNIEnv *env,
 		jclass cld,
 		jlong typePtr) {
@@ -39,7 +39,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMId_typeExpression(
 	return to_ptr(Constant::getNullValue(type->get()->getPointerTo()));
 }
 
-jlong Java_org_o42a_backend_llvm_data_LLVMId_expression(
+jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
 		JNIEnv *env,
 		jclass cld,
 		jlong modulePtr,
@@ -67,7 +67,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMId_expression(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_data_LLVMId_relativeExpression(
+jlong Java_org_o42a_backend_llvm_id_LLVMId_relativeExpression(
 		JNIEnv *env,
 		jclass cls,
 		jlong idPtr,
@@ -93,7 +93,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMId_relativeExpression(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_data_LLVMId_toAnyPtr(
+jlong Java_org_o42a_backend_llvm_id_LLVMId_toAnyPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong pointerPtr) {

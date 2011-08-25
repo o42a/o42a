@@ -27,7 +27,8 @@ import java.nio.charset.Charset;
 
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
-import org.o42a.backend.llvm.code.LLVMSignature;
+import org.o42a.backend.llvm.code.LLSignature;
+import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
@@ -188,8 +189,8 @@ public final class LLVMModule {
 
 	public long pointerTo(Type<?> type) {
 
-		final ContainerAllocation<?> allocation =
-				(ContainerAllocation<?>) type.pointer(
+		final ContainerLLDAlloc<?> allocation =
+				(ContainerLLDAlloc<?>) type.pointer(
 						getGenerator()).getAllocation();
 
 		return pointerTo(allocation.getTypePtr());
@@ -197,14 +198,14 @@ public final class LLVMModule {
 
 	public long pointerTo(Signature<?> signature) {
 
-		final LLVMSignature<?> allocation = llvm(signature);
+		final LLSignature<?> allocation = llvm(signature);
 
 		return pointerToFunc(allocation.getNativePtr());
 	}
 
-	public final <F extends Func<F>> LLVMSignature<F> llvm(
+	public final <F extends Func<F>> LLSignature<F> llvm(
 			Signature<F> signature) {
-		return (LLVMSignature<F>) signature.allocation(getGenerator());
+		return (LLSignature<F>) signature.allocation(getGenerator());
 	}
 
 	public final long nativePtr(Signature<?> signature) {

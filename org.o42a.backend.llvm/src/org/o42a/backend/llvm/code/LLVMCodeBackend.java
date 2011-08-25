@@ -19,10 +19,10 @@
 */
 package org.o42a.backend.llvm.code;
 
-import static org.o42a.backend.llvm.data.LLVMId.codeId;
+import static org.o42a.backend.llvm.id.LLVMId.codeId;
 
-import org.o42a.backend.llvm.data.LLVMFuncAllocation;
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Function;
@@ -46,14 +46,14 @@ public class LLVMCodeBackend implements CodeBackend {
 	@Override
 	public <F extends Func<F>> SignatureWriter<F> addSignature(
 			Signature<F> signature) {
-		return new LLVMSignatureWriter<F>(this.module, signature);
+		return new LLSignatureWriter<F>(this.module, signature);
 	}
 
 	@Override
-	public <F extends Func<F>> LLVMFunction<F> addFunction(
+	public <F extends Func<F>> LLFunction<F> addFunction(
 			Function<F> function,
 			CodeCallback callback) {
-		return new LLVMFunction<F>(this.module, function, callback);
+		return new LLFunction<F>(this.module, function, callback);
 	}
 
 	@Override
@@ -61,12 +61,12 @@ public class LLVMCodeBackend implements CodeBackend {
 			CodeId id,
 			Signature<F> signature) {
 
-		final long functionPtr = LLVMFunction.externFunction(
+		final long functionPtr = LLFunction.externFunction(
 				this.module.getNativePtr(),
 				id.getId(),
 				getModule().nativePtr(signature));
 
-		return new LLVMFuncAllocation<F>(
+		return new LLFAlloc<F>(
 				this.module,
 				codeId(id, functionPtr),
 				signature);

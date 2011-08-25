@@ -29,7 +29,7 @@
 using namespace llvm;
 
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_shl(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_shl(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -47,7 +47,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_shl(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lshr(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lshr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -65,7 +65,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lshr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ashr(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ashr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -83,7 +83,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ashr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_and(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_and(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -101,7 +101,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_and(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_or(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_or(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -119,7 +119,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_or(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_xor(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_xor(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -137,7 +137,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_xor(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_neg(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_neg(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -153,7 +153,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_neg(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_add(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_add(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -171,7 +171,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_add(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_sub(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_sub(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -189,7 +189,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_sub(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_mul(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_mul(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -207,7 +207,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_mul(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_div(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_div(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -225,7 +225,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_div(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_rem(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_rem(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -243,7 +243,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_rem(
 	return to_ptr(result);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_eq(
+jlong JNICALL Java_org_o42a_backend_llvm_code_op_IntLLOp_eq(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -261,7 +261,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_eq(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ne(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ne(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -279,7 +279,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ne(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_gt(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_gt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -297,7 +297,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_gt(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ge(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ge(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -315,7 +315,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_ge(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lt(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -333,7 +333,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lt(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_le(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_le(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -351,7 +351,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_le(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int2int(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_int2int(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -372,7 +372,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_int2int(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp32(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -388,7 +388,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp32(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp64(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp64(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -404,7 +404,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_intToFp64(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lowestBit(
+jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lowestBit(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -421,7 +421,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMIntOp_lowestBit(
 	return to_ptr(result);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLVMIntOp_atomicBinary(
+jlong JNICALL Java_org_o42a_backend_llvm_code_op_IntLLOp_atomicBinary(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,

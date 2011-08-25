@@ -32,7 +32,7 @@
 using namespace llvm;
 
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_createBlock(
+jlong Java_org_o42a_backend_llvm_code_LLCode_createBlock(
 		JNIEnv *env,
 		jclass cls,
 		jlong functionPtr,
@@ -47,7 +47,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_createBlock(
 	return to_ptr(block);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_stackSave(
+jlong Java_org_o42a_backend_llvm_code_LLCode_stackSave(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr) {
@@ -61,7 +61,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_stackSave(
 	return to_ptr(stackState);
 }
 
-void Java_org_o42a_backend_llvm_code_LLVMCode_stackRestore(
+void Java_org_o42a_backend_llvm_code_LLCode_stackRestore(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -76,7 +76,7 @@ void Java_org_o42a_backend_llvm_code_LLVMCode_stackRestore(
 	builder.CreateCall(module->getStackRestoreFunc(), stackState);
 }
 
-void Java_org_o42a_backend_llvm_code_LLVMCode_go(
+void Java_org_o42a_backend_llvm_code_LLCode_go(
 		JNIEnv *env,
 		jclass cls,
 		jlong sourcePtr,
@@ -89,7 +89,7 @@ void Java_org_o42a_backend_llvm_code_LLVMCode_go(
 	builder.CreateBr(target);
 }
 
-void Java_org_o42a_backend_llvm_code_LLVMCode_choose(
+void Java_org_o42a_backend_llvm_code_LLCode_choose(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -106,7 +106,7 @@ void Java_org_o42a_backend_llvm_code_LLVMCode_choose(
 	builder.CreateCondBr(condition, trueBlock, falseBlock);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_blockAddress(
+jlong Java_org_o42a_backend_llvm_code_LLCode_blockAddress(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -114,7 +114,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_blockAddress(
 	return to_ptr(BlockAddress::get(from_ptr<BasicBlock>(targetPtr)));
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_indirectbr(
+jlong Java_org_o42a_backend_llvm_code_LLCode_indirectbr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -135,7 +135,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_indirectbr(
 	return to_ptr(inst);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_int8(
+jlong Java_org_o42a_backend_llvm_code_LLCode_int8(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -150,7 +150,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_int8(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_int16(
+jlong Java_org_o42a_backend_llvm_code_LLCode_int16(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -165,7 +165,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_int16(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_int32(
+jlong Java_org_o42a_backend_llvm_code_LLCode_int32(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -180,7 +180,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_int32(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_int64(
+jlong Java_org_o42a_backend_llvm_code_LLCode_int64(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -195,7 +195,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_int64(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_fp32(
+jlong Java_org_o42a_backend_llvm_code_LLCode_fp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -209,7 +209,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_fp32(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_fp64(
+jlong Java_org_o42a_backend_llvm_code_LLCode_fp64(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -223,7 +223,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_fp64(
 	return to_ptr(result);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_bool(
+jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_bool(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -237,7 +237,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_bool(
 	return to_ptr(result);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_nullPtr(
+jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_nullPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr) {
@@ -249,7 +249,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_nullPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullStructPtr(
+jlong Java_org_o42a_backend_llvm_code_LLCode_nullStructPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong typePtr) {
@@ -260,7 +260,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullStructPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullFuncPtr(
+jlong Java_org_o42a_backend_llvm_code_LLCode_nullFuncPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong funcTypePtr) {
@@ -271,7 +271,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_nullFuncPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocatePtr(
+jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -285,7 +285,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocatePtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStructPtr(
+jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -302,7 +302,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStructPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct(
+jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -318,7 +318,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_allocateStruct(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
+jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -343,7 +343,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_phi2(
 	return to_ptr(phi);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phiN(
+jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -368,7 +368,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMCode_phiN(
 	return to_ptr(phi);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMCode_select(
+jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -388,7 +388,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMCode_select(
 	return to_ptr(result);
 }
 
-void Java_org_o42a_backend_llvm_code_LLVMCode_returnVoid(
+void Java_org_o42a_backend_llvm_code_LLCode_returnVoid(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr) {
@@ -399,7 +399,7 @@ void Java_org_o42a_backend_llvm_code_LLVMCode_returnVoid(
 	builder.CreateRetVoid();
 }
 
-void Java_org_o42a_backend_llvm_code_LLVMCode_returnValue(
+void Java_org_o42a_backend_llvm_code_LLCode_returnValue(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
