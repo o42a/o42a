@@ -107,7 +107,7 @@ $(srcdir)/BackendModule.o : $(srcdir)/BackendModule.cc
 $(srcdir)/jni_module.h : $(java_package_dir)/data/LLVMModule.class
 	$(call make_javah)
 
-$(srcdir)/jni_id.h : $(java_package_dir)/data/LLVMId.class
+$(srcdir)/jni_id.h : $(java_package_dir)/id/LLVMId.class
 	$(call make_javah)
 
 $(srcdir)/jni_data.h : $(java_package_dir)/data/LLVMDataAllocator.class
@@ -115,25 +115,25 @@ $(srcdir)/jni_data.h : $(java_package_dir)/data/LLVMDataWriter.class
 $(srcdir)/jni_data.h :
 	$(call make_javah)
 
-$(srcdir)/jni_function.h : $(java_package_dir)/code/LLVMSignatureWriter.class
-$(srcdir)/jni_function.h : $(java_package_dir)/code/LLVMFunction.class
-$(srcdir)/jni_function.h : $(java_package_dir)/code/op/LLVMFunc.class
+$(srcdir)/jni_function.h : $(java_package_dir)/code/LLSignatureWriter.class
+$(srcdir)/jni_function.h : $(java_package_dir)/code/LLFunction.class
+$(srcdir)/jni_function.h : $(java_package_dir)/code/op/LLFunc.class
 $(srcdir)/jni_function.h :
 	$(call make_javah)
 
-$(srcdir)/jni_int.h : $(java_package_dir)/code/op/LLVMIntOp.class
+$(srcdir)/jni_int.h : $(java_package_dir)/code/op/IntLLOp.class
 	$(call make_javah)
 
-$(srcdir)/jni_fp.h : $(java_package_dir)/code/op/LLVMFpOp.class
+$(srcdir)/jni_fp.h : $(java_package_dir)/code/op/FpLLOp.class
 	$(call make_javah)
 
-$(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/LLVMPtrOp.class
-$(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/LLVMRelOp.class
+$(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/PtrLLOp.class
+$(srcdir)/jni_ptr.h : $(java_package_dir)/code/op/RelLLOp.class
 $(srcdir)/jni_ptr.h :
 	$(call make_javah)
 
 
-$(srcdir)/jni_code.h : $(java_package_dir)/code/LLVMCode.class
+$(srcdir)/jni_code.h : $(java_package_dir)/code/LLCode.class
 $(srcdir)/jni_code.h :
 	$(call make_javah)
 

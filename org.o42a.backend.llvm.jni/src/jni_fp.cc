@@ -28,7 +28,7 @@
 using namespace llvm;
 
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_neg(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_neg(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -44,7 +44,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_neg(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_add(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_add(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -62,7 +62,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_add(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_sub(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_sub(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -80,7 +80,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_sub(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_mul(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_mul(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -98,7 +98,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_mul(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_div(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_div(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -116,7 +116,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_div(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_rem(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_rem(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -134,7 +134,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_rem(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_eq(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_eq(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -152,7 +152,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_eq(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_ne(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ne(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -170,7 +170,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_ne(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_gt(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_gt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -188,7 +188,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_gt(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_ge(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ge(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -206,7 +206,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_ge(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_lt(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_lt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -224,7 +224,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_lt(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_le(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_le(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -242,7 +242,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_le(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2int(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2int(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -262,7 +262,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2int(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2fp32(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -278,7 +278,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2fp32(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFpOp_fp2fp64(
+jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp64(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,

@@ -184,15 +184,15 @@ public class ConstDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <F extends Func<F>> FuncPtrCDAlloc<F> allocateFuncPtr(
+	public <F extends Func<F>> FuncRecCDAlloc<F> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			FuncRec<F> data,
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature) {
-		return new FuncPtrCDAlloc<F>(
+		return new FuncRecCDAlloc<F>(
 				enclosing(enclosing),
 				data,
-				(FuncPtrCDAlloc<F>) type,
+				(FuncRecCDAlloc<F>) type,
 				signature);
 	}
 

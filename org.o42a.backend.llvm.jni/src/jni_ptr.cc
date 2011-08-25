@@ -30,7 +30,7 @@
 #include "llvm/Support/IRBuilder.h"
 
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_field(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -47,7 +47,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_field(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_load(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -63,7 +63,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_load(
 	return to_ptr(result);
 }
 
-void Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_store(
+void Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -78,7 +78,7 @@ void Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_store(
 	builder.CreateStore(value, pointer);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toAny(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -97,7 +97,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toAny(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toPtr(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -116,7 +116,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toInt(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -136,7 +136,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toInt(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp32(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -155,7 +155,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp32(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp64(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -174,7 +174,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toFp64(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toRelPtr(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -193,7 +193,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_toRelPtr(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castStructTo(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -214,7 +214,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castStructTo(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castFuncTo(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -235,7 +235,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_castFuncTo(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_isNull(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -254,7 +254,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_isNull(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_offset(
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,
@@ -272,7 +272,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLVMPtrOp_offset(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMRelOp_offsetBy(
+jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,

@@ -31,7 +31,7 @@
 using namespace llvm;
 
 
-jlong Java_org_o42a_backend_llvm_code_LLVMSignatureWriter_createSignature(
+jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -57,7 +57,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMSignatureWriter_createSignature(
 	return to_ptr(result);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMFunction_externFunction(
+jlong Java_org_o42a_backend_llvm_code_LLFunction_externFunction(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -72,7 +72,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMFunction_externFunction(
 	return to_ptr(function);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLVMFunction_createFunction(
+jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
 		JNIEnv *env,
 		jclass cls,
 		jlong modulePtr,
@@ -97,7 +97,7 @@ jlong Java_org_o42a_backend_llvm_code_LLVMFunction_createFunction(
 	return to_ptr(function);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMFunction_arg(
+jlong JNICALL Java_org_o42a_backend_llvm_code_LLFunction_arg(
 		JNIEnv *env,
 		jclass cls,
 		jlong functionPtr,
@@ -122,7 +122,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLVMFunction_arg(
 	return to_ptr(value);
 }
 
-jboolean Java_org_o42a_backend_llvm_code_LLVMFunction_validate(
+jboolean Java_org_o42a_backend_llvm_code_LLFunction_validate(
 		JNIEnv *env,
 		jclass cls,
 		jlong functionPtr) {
@@ -134,7 +134,7 @@ jboolean Java_org_o42a_backend_llvm_code_LLVMFunction_validate(
 	return module->validateFunction(function) ? JNI_TRUE : JNI_FALSE;
 }
 
-jlong Java_org_o42a_backend_llvm_code_op_LLVMFunc_call(
+jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 		JNIEnv *env,
 		jclass cls,
 		jlong blockPtr,

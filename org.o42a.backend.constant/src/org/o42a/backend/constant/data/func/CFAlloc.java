@@ -22,7 +22,7 @@ package org.o42a.backend.constant.data.func;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.AnyCDAlloc;
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.backend.constant.data.rec.FuncPtrCDAlloc;
+import org.o42a.backend.constant.data.rec.FuncRecCDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
@@ -75,7 +75,7 @@ public abstract class CFAlloc<F extends Func<F>>
 			DataWriter writer,
 			DataAllocation<FuncOp<F>> detsination) {
 
-		final FuncPtrCDAlloc<F> dest = (FuncPtrCDAlloc<F>) detsination;
+		final FuncRecCDAlloc<F> dest = (FuncRecCDAlloc<F>) detsination;
 
 		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(getUnderlyingPtr());
