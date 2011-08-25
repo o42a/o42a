@@ -20,11 +20,12 @@
 package org.o42a.backend.constant.data.func;
 
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.AnyCDAlloc;
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.backend.constant.data.rec.AnyCDAlloc;
 import org.o42a.backend.constant.data.rec.FuncPtrCDAlloc;
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -81,7 +82,7 @@ public abstract class CFAlloc<F extends Func<F>>
 	}
 
 	@Override
-	public DataAllocation<AnyOp> toAny() {
+	public AnyCDAlloc toAny() {
 		return new AnyCDAlloc(getBackend(), getUnderlyingPtr().toAny());
 	}
 

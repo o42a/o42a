@@ -225,29 +225,53 @@ public final class CStruct<S extends StructOp<S>>
 	@Override
 	public AnyRecCOp ptr(CodeId id, Code code, AnyRec field) {
 
+		final Ptr<AnyRecOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
+
 		final CCode<?> ccode = cast(code);
-		final AnyCDAlloc fld =
-				(AnyCDAlloc) field.getPointer().getAllocation();
+		final AnyRecCDAlloc fld =
+				(AnyRecCDAlloc) field.getPointer().getAllocation();
 		final AnyRecOp underlyingRec = getUnderlying().writer().ptr(
 				id,
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new AnyRecCOp(ccode, underlyingRec, null);
+		return new AnyRecCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
 	public DataRecCOp ptr(CodeId id, Code code, DataRec field) {
 
+		final Ptr<DataRecOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
+
 		final CCode<?> ccode = cast(code);
-		final DataCDAlloc fld =
-				(DataCDAlloc) field.getPointer().getAllocation();
+		final DataRecCDAlloc fld =
+				(DataRecCDAlloc) field.getPointer().getAllocation();
 		final DataRecOp underlyingRec = getUnderlying().writer().ptr(
 				id,
 				ccode.getUnderlying(),
 				fld.getUnderlying());
 
-		return new DataRecCOp(ccode, underlyingRec, null);
+		return new DataRecCOp(ccode, underlyingRec, pointer);
 	}
 
 	@Override
@@ -255,6 +279,18 @@ public final class CStruct<S extends StructOp<S>>
 			CodeId id,
 			Code code,
 			StructRec<SS> field) {
+
+		final Ptr<StructRecOp<SS>> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
 
 		final CCode<?> ccode = cast(code);
 		final StructRecCDAlloc<SS> fld =
@@ -268,7 +304,7 @@ public final class CStruct<S extends StructOp<S>>
 				ccode,
 				underlyingRec,
 				field.getType(),
-				null);
+				pointer);
 	}
 
 	@Override
@@ -311,7 +347,7 @@ public final class CStruct<S extends StructOp<S>>
 
 			final ContainerCDAlloc<S> constAlloc =
 					(ContainerCDAlloc<S>) getConstant().getAllocation();
-			final ContainerCDAlloc<SS> f = 
+			final ContainerCDAlloc<SS> f =
 					(ContainerCDAlloc<SS>) field.pointer(
 							getBackend().getGenerator()).getAllocation();
 

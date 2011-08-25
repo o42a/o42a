@@ -19,23 +19,35 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.rec.AnyRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.AnyRecOp;
+import org.o42a.codegen.data.AnyRec;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.PtrRec;
+import org.o42a.codegen.data.SubData;
 
 
-public abstract class PtrRecCDAlloc<
-		R extends PtrRec<P, T>,
-		P extends PtrOp<P>,
-		T extends Ptr<?>>
-				extends RecCDAlloc<R, P, T> {
+public final class AnyRecCDAlloc
+		extends PtrRecCDAlloc<AnyRec, AnyRecOp, Ptr<AnyOp>> {
 
-	public PtrRecCDAlloc(
+	public AnyRecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
-			R data,
-			RecCDAlloc<R, P, T> typeAllocation) {
+			AnyRec data,
+			AnyRecCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
+		nest();
+	}
+
+	@Override
+	protected AnyRec allocateUnderlying(SubData<?> container, String name) {
+		return container.addPtr(name, this);
+	}
+
+	@Override
+	protected AnyRecOp op(CCode<?> code, AnyRecOp underlyingOp) {
+		return new AnyRecCOp(code, underlyingOp, getPointer());
 	}
 
 }

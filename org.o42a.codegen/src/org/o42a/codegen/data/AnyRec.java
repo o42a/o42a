@@ -21,11 +21,12 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class AnyRec extends PtrRec<AnyOp> {
+public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 
 	AnyRec(SubData<?> enclosing, CodeId id, Content<AnyRec> content) {
 		super(enclosing, id, content);

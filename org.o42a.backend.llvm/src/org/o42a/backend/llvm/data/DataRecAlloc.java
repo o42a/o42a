@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Compiler LLVM Back-end
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,30 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.data.backend;
+package org.o42a.backend.llvm.data;
 
+import org.o42a.backend.llvm.code.op.LLVMRecOp;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
-import org.o42a.codegen.data.RelPtr;
 
 
-public interface DataAllocation<P extends PtrOp<P>> {
+public final class DataRecAlloc extends SimpleDataAllocation<DataRecOp> {
 
-	<R extends RecOp<R, P>> void write(
-			DataWriter writer,
-			DataAllocation<R> destination);
+	DataRecAlloc(ContainerAllocation<?> enclosing) {
+		super(enclosing);
+	}
 
-	DataLayout getLayout();
+	public DataRecAlloc(
+			LLVMModule module,
+			LLVMId id,
+			ContainerAllocation<?> enclosing) {
+		super(module, id, enclosing);
+	}
 
-	RelAllocation relativeTo(RelPtr pointer, DataAllocation<?> allocation);
+	@Override
+	public DataLayout getLayout() {
+		return getModule().dataAllocator().ptrLayout();
+	}
 
-	P op(CodeId id, AllocClass allocClass, CodeWriter writer);
-
-	DataAllocation<AnyOp> toAny();
-
-	DataAllocation<DataOp> toData();
+	@Override
+	protected LLVMRecOp.Data op(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
+		return new LLVMRecOp.Data(id, allocClass, blockPtr, nativePtr);
+	}
 
 }

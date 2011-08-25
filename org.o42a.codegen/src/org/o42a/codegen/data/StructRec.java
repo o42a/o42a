@@ -21,11 +21,13 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class StructRec<S extends StructOp<S>> extends PtrRec<S> {
+public final class StructRec<S extends StructOp<S>>
+		extends PtrRec<StructRecOp<S>, Ptr<S>> {
 
 	private final Type<S> type;
 

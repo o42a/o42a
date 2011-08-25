@@ -197,29 +197,34 @@ public class ConstDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public final AnyCDAlloc allocatePtr(
+	public final AnyRecCDAlloc allocatePtr(
 			DataAllocation<?> enclosing,
 			AnyRec data,
-			DataAllocation<AnyOp> type) {
-		return new AnyCDAlloc(enclosing(enclosing), data, (AnyCDAlloc) type);
-	}
-
-	@Override
-	public final DataCDAlloc allocateDataPtr(
-			DataAllocation<?> enclosing,
-			DataRec data,
-			DataAllocation<DataOp> type) {
-		return new DataCDAlloc(
+			DataAllocation<AnyRecOp> type) {
+		return new AnyRecCDAlloc(
 				enclosing(enclosing),
 				data,
-				(DataCDAlloc) type);
+				(AnyRecCDAlloc) type);
 	}
 
 	@Override
-	public final <S extends StructOp<S>> StructRecCDAlloc<S> allocatePtr(
+	public final DataRecCDAlloc allocateDataPtr(
+			DataAllocation<?> enclosing,
+			DataRec data,
+			DataAllocation<DataRecOp> type) {
+		return new DataRecCDAlloc(
+				enclosing(enclosing),
+				data,
+				(DataRecCDAlloc) type);
+	}
+
+
+
+	@Override
+	public <S extends StructOp<S>> DataAllocation<StructRecOp<S>> allocatePtr(
 			DataAllocation<?> enclosing,
 			StructRec<S> data,
-			DataAllocation<S> type,
+			DataAllocation<StructRecOp<S>> type,
 			DataAllocation<S> struct) {
 		return new StructRecCDAlloc<S>(
 				enclosing(enclosing),

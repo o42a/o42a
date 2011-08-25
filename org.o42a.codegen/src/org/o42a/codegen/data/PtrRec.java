@@ -23,7 +23,8 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.PtrOp;
 
 
-public abstract class PtrRec<P extends PtrOp<P>> extends Rec<P, Ptr<P>> {
+public abstract class PtrRec<P extends PtrOp<P>, T extends Ptr<?>>
+		extends Rec<P, T> {
 
 	PtrRec(SubData<?> enclosing, CodeId id, Content<?> content) {
 		super(enclosing, id, content);
@@ -35,7 +36,7 @@ public abstract class PtrRec<P extends PtrOp<P>> extends Rec<P, Ptr<P>> {
 	}
 
 	@Override
-	public PtrRec<P> setConstant(boolean constant) {
+	public PtrRec<P, T> setConstant(boolean constant) {
 		super.setConstant(constant);
 		return this;
 	}

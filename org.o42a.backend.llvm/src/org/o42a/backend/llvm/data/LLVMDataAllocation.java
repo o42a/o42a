@@ -19,9 +19,7 @@
 */
 package org.o42a.backend.llvm.data;
 
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.RelPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -56,16 +54,20 @@ public abstract class LLVMDataAllocation<P extends PtrOp<P>>
 
 	@Override
 	public DataAllocation<DataOp> toData() {
-		return new AnyDataAlloc(getModule(), llvmId().toAny(), getEnclosing());
+		return new DataAlloc(getModule(), llvmId().toAny(), getEnclosing());
 	}
 
 	@Override
-	public void write(DataWriter writer, DataAllocation<P> destination) {
+	public <R extends RecOp<R, P>> void write(
+			DataWriter writer,
+			DataAllocation<R> destination) {
 		llvmId().write(writer);
 	}
 
 	@Override
-	public RelAllocation relativeTo(RelPtr pointer, DataAllocation<?> allocation) {
+	public RelAllocation relativeTo(
+			RelPtr pointer,
+			DataAllocation<?> allocation) {
 		return llvmId().relativeTo(allocation);
 	}
 
