@@ -23,15 +23,90 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.code.op.Int64op;
 
 
-public final class Int64cOp extends IntCOp<Int64op> implements Int64op {
+public final class Int64cOp extends IntCOp<Int64op, Long> implements Int64op {
 
-	public Int64cOp(CCode<?> code, Int64op underlying) {
-		super(code, underlying);
+	public Int64cOp(CCode<?> code, Int64op underlying, Long constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public Int64op create(CCode<?> code, Int64op underlying) {
-		return new Int64cOp(code, underlying);
+	public Int64cOp create(CCode<?> code, Int64op underlying, Long constant) {
+		return new Int64cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Int64op underlyingConstant(CCode<?> code, Long constant) {
+		return code.getUnderlying().int64(constant);
+	}
+
+	@Override
+	protected Long neg(Long value) {
+		return -value;
+	}
+
+	@Override
+	protected Long add(Long value1, Long value2) {
+		return value1 + value2;
+	}
+
+	@Override
+	protected Long sub(Long value1, Long value2) {
+		return value1 - value2;
+	}
+
+	@Override
+	protected Long mul(Long value1, Long value2) {
+		return value1 * value2;
+	}
+
+	@Override
+	protected Long div(Long value1, Long value2) {
+		return value1 / value2;
+	}
+
+	@Override
+	protected Long rem(Long value1, Long value2) {
+		return value1 % value2;
+	}
+
+	@Override
+	protected int cmp(Long value1, Long value2) {
+		return value1.compareTo(value2);
+	}
+
+	@Override
+	protected Long shl(Long value, int numBits) {
+		return value << numBits;
+	}
+
+	@Override
+	protected Long lshr(Long value, int numBits) {
+		return value >>> numBits;
+	}
+
+	@Override
+	protected Long ashr(Long value, int numBits) {
+		return value >> numBits;
+	}
+
+	@Override
+	protected Long and(Long value1, Long value2) {
+		return value1 & value2;
+	}
+
+	@Override
+	protected Long or(Long value1, Long value2) {
+		return value1 | value2;
+	}
+
+	@Override
+	protected Long xor(Long value1, Long value2) {
+		return value1 ^ value2;
+	}
+
+	@Override
+	protected Long comp(Long value) {
+		return ~value;
 	}
 
 }

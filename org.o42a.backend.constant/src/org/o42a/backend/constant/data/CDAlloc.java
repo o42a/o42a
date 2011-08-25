@@ -38,14 +38,21 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	private final CDAlloc<P, D> typeAllocation;
 	private D underlying;
 	private Ptr<P> underlyingPtr;
+	private final D data;
+	private int index;
 
-	public CDAlloc(ConstBackend backend, CDAlloc<P, D> typeAllocation) {
+	public CDAlloc(
+			ConstBackend backend,
+			D data,
+			CDAlloc<P, D> typeAllocation) {
 		this.backend = backend;
+		this.data = data;
 		this.typeAllocation = typeAllocation;
 	}
 
 	public CDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {
 		this.backend = backend;
+		this.data = null;
 		this.typeAllocation = null;
 		this.underlying = null;
 		this.underlyingPtr = underlyingPtr;
@@ -59,6 +66,14 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		return this.typeAllocation;
 	}
 
+	public final D getData() {
+		return this.data;
+	}
+
+	public final Ptr<P> getPointer() {
+		return this.data != null ? this.data.getPointer() : null;
+	}
+
 	public final boolean isUnderlyingAllocated() {
 		return this.underlying != null;
 	}
@@ -66,6 +81,10 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	public abstract TopLevelCDAlloc<?> getTopLevel();
 
 	public abstract ContainerCDAlloc<?> getEnclosing();
+
+	public final int getIndex() {
+		return this.index;
+	}
 
 	public D getUnderlying() {
 		if (this.underlying == null) {
@@ -96,8 +115,10 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	}
 
 	@Override
-	public RelAllocation relativeTo(DataAllocation<?> allocation) {
-		return new RelCDAlloc((CDAlloc<?, ?>) allocation, this);
+	public RelAllocation relativeTo(
+			RelPtr pointer,
+			DataAllocation<?> allocation) {
+		return new RelCDAlloc(pointer, (CDAlloc<?, ?>) allocation, this);
 	}
 
 	@Override
@@ -120,8 +141,16 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		dest.setValue(getUnderlyingPtr());
 	}
 
+	@Override
+	public String toString() {
+		if (this.data == null) {
+			return super.toString();
+		}
+		return this.data.toString();
+	}
+
 	protected final void nest() {
-		getEnclosing().nest(this);
+		this.index = getEnclosing().nest(this);
 	}
 
 	protected abstract D allocateUnderlying(SubData<?> container);

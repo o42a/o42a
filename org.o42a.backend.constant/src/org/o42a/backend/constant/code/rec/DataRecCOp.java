@@ -21,26 +21,45 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
+import org.o42a.backend.constant.data.rec.DataCDAlloc;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.data.Ptr;
 
 
 public final class DataRecCOp
-		extends RecCOp<DataRecOp, DataOp>
+		extends RecCOp<DataRecOp, DataOp, Ptr<DataOp>>
 		implements DataRecOp {
 
-	public DataRecCOp(CCode<?> code, DataRecOp underlying) {
-		super(code, underlying);
+	public DataRecCOp(
+			CCode<?> code,
+			DataRecOp underlying,
+			Ptr<DataRecOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public DataRecCOp create(CCode<?> code, DataRecOp underlying) {
-		return new DataRecCOp(code, underlying);
+	public DataRecCOp create(
+			CCode<?> code,
+			DataRecOp underlying,
+			Ptr<DataRecOp> constant) {
+		return new DataRecCOp(code, underlying, constant);
 	}
 
 	@Override
-	protected DataCOp loaded(CCode<?> code, DataOp underlying) {
-		return new DataCOp(code, underlying);
+	protected DataCOp loaded(
+			CCode<?> code,
+			DataOp underlying,
+			Ptr<DataOp> constant) {
+		return new DataCOp(code, underlying, constant);
+	}
+
+	@Override
+	protected DataOp underlyingConstant(CCode<?> code, Ptr<DataOp> constant) {
+
+		final DataCDAlloc alloc = (DataCDAlloc) constant.getAllocation();
+
+		return alloc.getUnderlyingPtr().op(null, code.getUnderlying());
 	}
 
 }

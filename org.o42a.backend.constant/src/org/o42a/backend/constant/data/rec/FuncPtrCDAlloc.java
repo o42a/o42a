@@ -48,7 +48,7 @@ public final class FuncPtrCDAlloc<F extends Func<F>>
 
 	@Override
 	protected FuncCOp<F> op(CCode<?> code, FuncOp<F> underlying) {
-		return new FuncCOp<F>(code, underlying);
+		return new FuncCOp<F>(code, underlying, getPointer());
 	}
 
 	@Override

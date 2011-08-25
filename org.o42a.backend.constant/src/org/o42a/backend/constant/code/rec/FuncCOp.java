@@ -24,19 +24,22 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CFunc;
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.data.Ptr;
 
 
 public final class FuncCOp<F extends Func<F>>
-		extends RecCOp<FuncOp<F>, F>
+		extends RecCOp<FuncOp<F>, F, FuncPtr<F>>
 		implements FuncOp<F> {
 
-	public FuncCOp(CCode<?> code, FuncOp<F> underlying) {
-		super(code, underlying);
+	public FuncCOp(
+			CCode<?> code,
+			FuncOp<F> underlying,
+			Ptr<FuncOp<F>> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
@@ -60,17 +63,28 @@ public final class FuncCOp<F extends Func<F>>
 				ccode.getUnderlying(),
 				getBackend().underlying(signature));
 
-		return new FuncCOp<FF>(ccode, underlyingFunc);
+		return new FuncCOp<FF>(ccode, underlyingFunc, null);
 	}
 
 	@Override
-	public final FuncCOp<F> create(CCode<?> code, FuncOp<F> underlying) {
-		return new FuncCOp<F>(code, underlying);
+	public FuncCOp<F> create(
+			CCode<?> code,
+			FuncOp<F> underlying,
+			Ptr<FuncOp<F>> constant) {
+		return new FuncCOp<F>(code, underlying, constant);
 	}
 
 	@Override
-	protected F loaded(CCode<?> code, F underlying) {
-		return getSignature().op(new CFunc<F>(code, underlying));
+	protected F loaded(CCode<?> code, F underlying, FuncPtr<F> constant) {
+		return getSignature().op(new CFunc<F>(code, underlying, constant));
+	}
+
+	@Override
+	protected F underlyingConstant(CCode<?> code, FuncPtr<F> constant) {
+
+		final CFAlloc<F> alloc = (CFAlloc<F>) constant.getAllocation();
+
+		return alloc.getUnderlyingPtr().op(null, code.getUnderlying());
 	}
 
 }

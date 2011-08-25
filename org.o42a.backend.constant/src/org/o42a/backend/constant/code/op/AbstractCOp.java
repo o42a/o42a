@@ -29,14 +29,16 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public abstract class AbstractCOp<O extends Op> implements COp<O> {
+public abstract class AbstractCOp<O extends Op, T> implements COp<O, T> {
 
 	private final CCode<?> code;
 	private final O underlying;
+	private final T constant;
 
-	public AbstractCOp(CCode<?> code, O underlying) {
+	public AbstractCOp(CCode<?> code, O underlying, T constant) {
 		this.code = code;
 		this.underlying = underlying;
+		this.constant = constant;
 	}
 
 	public final ConstBackend getBackend() {
@@ -56,6 +58,16 @@ public abstract class AbstractCOp<O extends Op> implements COp<O> {
 	@Override
 	public final CodeId getId() {
 		return getUnderlying().getId();
+	}
+
+	@Override
+	public final boolean isConstant() {
+		return getConstant() != null;
+	}
+
+	@Override
+	public final T getConstant() {
+		return this.constant;
 	}
 
 	@Override

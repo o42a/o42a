@@ -57,6 +57,7 @@ public abstract class Globals {
 		return this.nullPtr = new Ptr<AnyOp>(
 				getGenerator().id("null"),
 				getGenerator().getGlobals().dataWriter().nullPtr(),
+				true,
 				true);
 	}
 
@@ -67,6 +68,7 @@ public abstract class Globals {
 		return this.nullDataPtr = new Ptr<DataOp>(
 				getGenerator().id("null"),
 				getGenerator().getGlobals().dataWriter().nullDataPtr(),
+				true,
 				true);
 	}
 
@@ -74,6 +76,7 @@ public abstract class Globals {
 		return new Ptr<S>(
 				type.getId().detail("null"),
 				getGenerator().getGlobals().dataWriter().nullPtr(type),
+				true,
 				true);
 	}
 
@@ -109,7 +112,8 @@ public abstract class Globals {
 		return new Ptr<AnyOp>(
 				id,
 				dataAllocator().addBinary(id, isConstant, data, start, end),
-				isConstant);
+				isConstant,
+				false);
 	}
 
 	public boolean write() {

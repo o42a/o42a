@@ -35,9 +35,12 @@ public interface DataAllocator {
 			int start,
 			int end);
 
-	<S extends StructOp<S>> DataAllocation<S> begin(Type<S> type);
+	<S extends StructOp<S>> DataAllocation<S> begin(
+			SubData<S> data,
+			Type<S> type);
 
 	<S extends StructOp<S>> DataAllocation<S> begin(
+			SubData<S> data,
 			DataAllocation<S> type,
 			Global<S, ?> global);
 

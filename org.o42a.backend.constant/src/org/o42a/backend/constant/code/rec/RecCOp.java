@@ -24,28 +24,56 @@ import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.PtrCOp;
+import org.o42a.backend.constant.data.rec.RecCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.data.Ptr;
 
 
-public abstract class RecCOp<R extends RecOp<R, O>, O extends Op>
-		extends PtrCOp<R>
-		implements RecOp<R, O> {
+public abstract class RecCOp<
+		R extends RecOp<R, O>,
+		O extends Op,
+		T> extends PtrCOp<R, Ptr<R>> implements RecOp<R, O> {
 
-	public RecCOp(CCode<?> code, R underlying) {
-		super(code, underlying);
+	public RecCOp(CCode<?> code, R underlying, Ptr<R> constant) {
+		super(code, underlying, constant);
+	}
+
+	public final T getConstantValue() {
+		if (!isConstant()) {
+			return null;
+		}
+
+		@SuppressWarnings("unchecked")
+		final RecCDAlloc<?, ?, T> alloc =
+				(RecCDAlloc<?, ?, T>) getConstant().getAllocation();
+
+		if (!alloc.isConstant()) {
+			return null;
+		}
+
+		return alloc.getValue();
 	}
 
 	@Override
 	public final O load(CodeId id, Code code) {
 
 		final CCode<?> ccode = cast(code);
+		final T constantValue = getConstantValue();
+
+		if (constantValue != null) {
+			return loaded(
+					ccode,
+					underlyingConstant(ccode, constantValue),
+					constantValue);
+		}
+
 		final O underlyingLoaded =
 				getUnderlying().load(id, ccode.getUnderlying());
 
-		return loaded(ccode, underlyingLoaded);
+		return loaded(ccode, underlyingLoaded, null);
 	}
 
 	@Override
@@ -53,6 +81,8 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op>
 		getUnderlying().store(underlying(code), underlying(value));
 	}
 
-	protected abstract O loaded(CCode<?> code, O underlying);
+	protected abstract O loaded(CCode<?> code, O underlying, T constant);
+
+	protected abstract O underlyingConstant(CCode<?> code, T constant);
 
 }

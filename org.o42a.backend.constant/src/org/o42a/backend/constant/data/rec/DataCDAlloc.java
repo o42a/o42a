@@ -56,7 +56,7 @@ public final class DataCDAlloc extends PtrRecCDAlloc<DataRec, DataOp> {
 
 	@Override
 	protected DataCOp op(CCode<?> code, DataOp underlyingOp) {
-		return new DataCOp(code, underlyingOp);
+		return new DataCOp(code, underlyingOp, getPointer());
 	}
 
 }

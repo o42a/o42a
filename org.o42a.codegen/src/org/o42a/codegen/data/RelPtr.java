@@ -58,6 +58,7 @@ public final class RelPtr {
 			return this.allocation;
 		}
 		return this.allocation = getPointer().getAllocation().relativeTo(
+				this,
 				getRelativeTo().getAllocation());
 	}
 

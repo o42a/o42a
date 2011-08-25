@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.data;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.data.RelPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
@@ -64,7 +65,7 @@ public abstract class LLVMDataAllocation<P extends PtrOp<P>>
 	}
 
 	@Override
-	public RelAllocation relativeTo(DataAllocation<?> allocation) {
+	public RelAllocation relativeTo(RelPtr pointer, DataAllocation<?> allocation) {
 		return llvmId().relativeTo(allocation);
 	}
 

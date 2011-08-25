@@ -32,7 +32,6 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
-	private final SubData<S> data;
 
 	public StructCDAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -40,12 +39,12 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 			ContainerCDAlloc<S> typeAllocation) {
 		super(
 				enclosing.getBackend(),
+				data,
 				typeAllocation,
 				typeAllocation != null
 				? null : new CType<S>(data.getInstance()));
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
-		this.data = data;
 		nest();
 	}
 
@@ -53,7 +52,6 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 		super(backend, underlyingPtr);
 		this.topLevel = null;
 		this.enclosing = null;
-		this.data = null;
 	}
 
 	@Override
@@ -66,22 +64,10 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 		return this.enclosing;
 	}
 
-	public final SubData<S> getData() {
-		return this.data;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public final CType<S> getUnderlyingInstance() {
 		return (CType<S>) getUnderlyingAllocated().getContainer();
-	}
-
-	@Override
-	public String toString() {
-		if (this.data == null) {
-			return super.toString();
-		}
-		return this.data.toString();
 	}
 
 	@Override

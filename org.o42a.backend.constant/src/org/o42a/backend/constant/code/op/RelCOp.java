@@ -26,12 +26,13 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.RelPtr;
 
 
-public final class RelCOp extends AbstractCOp<RelOp> implements RelOp {
+public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 
-	public RelCOp(CCode<?> code, RelOp underlying) {
-		super(code, underlying);
+	public RelCOp(CCode<?> code, RelOp underlying, RelPtr constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public final class RelCOp extends AbstractCOp<RelOp> implements RelOp {
 				ccode.getUnderlying(),
 				underlying(from));
 
-		return new AnyCOp(ccode, underlyingOffset);
+		return new AnyCOp(ccode, underlyingOffset, null);
 	}
 
 	@Override
@@ -53,12 +54,12 @@ public final class RelCOp extends AbstractCOp<RelOp> implements RelOp {
 		final Int32op underlyingInt32 =
 				getUnderlying().toInt32(id, ccode.getUnderlying());
 
-		return new Int32cOp(ccode, underlyingInt32);
+		return new Int32cOp(ccode, underlyingInt32, null);
 	}
 
 	@Override
-	public final RelCOp create(CCode<?> code, RelOp underlying) {
-		return new RelCOp(code, underlying);
+	public RelCOp create(CCode<?> code, RelOp underlying, RelPtr constant) {
+		return new RelCOp(code, underlying, constant);
 	}
 
 }

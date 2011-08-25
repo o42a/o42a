@@ -23,15 +23,55 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.code.op.Fp32op;
 
 
-public final class Fp32cOp extends FpCOp<Fp32op> implements Fp32op {
+public final class Fp32cOp extends FpCOp<Fp32op, Float> implements Fp32op {
 
-	public Fp32cOp(CCode<?> code, Fp32op underlying) {
-		super(code, underlying);
+	public Fp32cOp(CCode<?> code, Fp32op underlying, Float constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
-	public Fp32op create(CCode<?> code, Fp32op underlying) {
-		return new Fp32cOp(code, underlying);
+	public Fp32cOp create(CCode<?> code, Fp32op underlying, Float constant) {
+		return new Fp32cOp(code, underlying, constant);
+	}
+
+	@Override
+	protected Fp32op underlyingConstant(CCode<?> code, Float constant) {
+		return code.getUnderlying().fp32(constant);
+	}
+
+	@Override
+	protected Float neg(Float value) {
+		return -value;
+	}
+
+	@Override
+	protected Float add(Float value1, Float value2) {
+		return value1 + value2;
+	}
+
+	@Override
+	protected Float sub(Float value1, Float value2) {
+		return value1 - value2;
+	}
+
+	@Override
+	protected Float mul(Float value1, Float value2) {
+		return value1 * value2;
+	}
+
+	@Override
+	protected Float div(Float value1, Float value2) {
+		return value1 / value2;
+	}
+
+	@Override
+	protected Float rem(Float value1, Float value2) {
+		return value1 % value2;
+	}
+
+	@Override
+	protected int cmp(Float value1, Float value2) {
+		return value1.compareTo(value2);
 	}
 
 }

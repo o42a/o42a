@@ -31,8 +31,12 @@ public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {
 	final Signature<F> signature;
 	final FuncAllocation<F> allocation;
 
-	FuncPtr(CodeId id, Signature<F> signature, FuncAllocation<F> allocation) {
-		super(id, true);
+	FuncPtr(
+			CodeId id,
+			Signature<F> signature,
+			FuncAllocation<F> allocation,
+			boolean isNull) {
+		super(id, true, isNull);
 		this.signature = signature;
 		this.allocation = allocation;
 	}

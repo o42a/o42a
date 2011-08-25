@@ -20,6 +20,8 @@
 package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.func.CFAlloc;
+import org.o42a.backend.constant.data.func.NullCFAlloc;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
@@ -77,7 +79,7 @@ public final class ConstDataWriter implements DataWriter {
 	}
 
 	@Override
-	public final <F extends Func<F>> FuncCAlloc<F> nullPtr(
+	public final <F extends Func<F>> CFAlloc<F> nullPtr(
 			Signature<F> signature) {
 
 		final CSignature<F> underlyingSignature =
@@ -86,7 +88,7 @@ public final class ConstDataWriter implements DataWriter {
 				getBackend().getUnderlyingGenerator()
 				.getFunctions().nullPtr(underlyingSignature);
 
-		return new FuncCAlloc<F>(underlyingNull, underlyingSignature);
+		return new NullCFAlloc<F>(underlyingNull, underlyingSignature);
 	}
 
 	@Override

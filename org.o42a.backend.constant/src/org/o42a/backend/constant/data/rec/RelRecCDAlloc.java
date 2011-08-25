@@ -40,7 +40,7 @@ public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 
 	@Override
 	protected RelRecCOp op(CCode<?> code, RelRecOp underlying) {
-		return new RelRecCOp(code, underlying);
+		return new RelRecCOp(code, underlying, getPointer());
 	}
 
 	@Override

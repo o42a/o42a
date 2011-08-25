@@ -23,12 +23,16 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.code.op.Op;
 
 
-public interface COp<U extends Op> extends Op {
+public interface COp<U extends Op, T> extends Op {
 
 	CCode<?> getCode();
 
 	U getUnderlying();
 
-	U create(CCode<?> code, U underlying);
+	boolean isConstant();
+
+	T getConstant();
+
+	U create(CCode<?> code, U underlying, T constant);
 
 }

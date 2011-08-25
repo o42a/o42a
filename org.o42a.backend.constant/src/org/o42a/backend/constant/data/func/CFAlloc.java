@@ -17,14 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.data.func;
 
 import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.rec.AnyCDAlloc;
 import org.o42a.backend.constant.data.rec.FuncPtrCDAlloc;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -32,12 +31,14 @@ import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
-public final class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
+public abstract class CFAlloc<F extends Func<F>>
+		implements FuncAllocation<F> {
 
 	private final FuncPtr<F> underlyingPtr;
 	private final CSignature<F> underlyingSignature;
+	private FuncPtr<F> pointer;
 
-	public FuncCAlloc(
+	public CFAlloc(
 			FuncPtr<F> underlyingPtr,
 			CSignature<F> underlyingSignature) {
 		this.underlyingPtr = underlyingPtr;
@@ -46,6 +47,13 @@ public final class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
 
 	public final ConstBackend getBackend() {
 		return getUnderlyingSignature().getBackend();
+	}
+
+	public final FuncPtr<F> getPointer() {
+		if (this.pointer != null) {
+			return this.pointer;
+		}
+		return this.pointer = pointer();
 	}
 
 	public final FuncPtr<F> getUnderlyingPtr() {
@@ -76,5 +84,7 @@ public final class FuncCAlloc<F extends Func<F>> implements FuncAllocation<F> {
 	public DataAllocation<AnyOp> toAny() {
 		return new AnyCDAlloc(getBackend(), getUnderlyingPtr().toAny());
 	}
+
+	protected abstract FuncPtr<F> pointer();
 
 }

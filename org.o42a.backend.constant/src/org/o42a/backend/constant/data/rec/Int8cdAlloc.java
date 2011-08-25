@@ -39,7 +39,7 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 
 	@Override
 	protected Int8recCOp op(CCode<?> code, Int8recOp underlying) {
-		return new Int8recCOp(code, underlying);
+		return new Int8recCOp(code, underlying, getPointer());
 	}
 
 	@Override

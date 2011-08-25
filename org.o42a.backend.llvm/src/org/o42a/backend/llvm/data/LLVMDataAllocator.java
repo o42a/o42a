@@ -75,7 +75,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <S extends StructOp<S>> DataAllocation<S> begin(Type<S> type) {
+	public <S extends StructOp<S>> DataAllocation<S> begin(SubData<S> data, Type<S> type) {
 		return new TypeAllocation<S>(
 				getModule(),
 				createType(getModulePtr()),
@@ -85,8 +85,8 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> begin(
-			DataAllocation<S> type,
-			Global<S, ?> global) {
+			SubData<S> data,
+			DataAllocation<S> type, Global<S, ?> global) {
 
 		final long typePtr;
 		final long typeDataPtr;

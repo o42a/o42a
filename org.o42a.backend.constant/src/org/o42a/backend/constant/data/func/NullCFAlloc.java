@@ -1,5 +1,5 @@
 /*
-    Compiler Code Generator
+    Constant Handler Compiler Back-end
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,29 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code;
+package org.o42a.backend.constant.data.func;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.FuncPtr;
 
 
-final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {
+public class NullCFAlloc<F extends Func<F>> extends CFAlloc<F> {
 
-	ExternFuncPtr(
-			CodeId id,
-			Signature<F> signature,
-			FuncAllocation<F> allocation) {
-		super(id, signature, allocation, false);
+	public NullCFAlloc(
+			FuncPtr<F> underlyingPtr,
+			CSignature<F> underlyingSignature) {
+		super(underlyingPtr, underlyingSignature);
 	}
 
 	@Override
-	public Function<F> getFunction() {
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		return "exten " + getId();
+	protected FuncPtr<F> pointer() {
+		return getBackend().getGenerator().getFunctions().nullPtr(
+				getSignature());
 	}
 
 }

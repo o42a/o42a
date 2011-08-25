@@ -29,13 +29,14 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
-public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
+public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
-	public AnyCOp(CCode<?> code, AnyOp underlying) {
-		super(code, underlying);
+	public AnyCOp(CCode<?> code, AnyOp underlying, Ptr<AnyOp> constant) {
+		super(code, underlying, constant);
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final AnyRecOp underlyingRec =
 				getUnderlying().toPtr(id, ccode.getUnderlying());
 
-		return new AnyRecCOp(ccode, underlyingRec);
+		return new AnyRecCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final Int8recOp underlyingRec =
 				getUnderlying().toInt8(id, ccode.getUnderlying());
 
-		return new Int8recCOp(ccode, underlyingRec);
+		return new Int8recCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final Int16recOp underlyingRec =
 				getUnderlying().toInt16(id, ccode.getUnderlying());
 
-		return new Int16recCOp(ccode, underlyingRec);
+		return new Int16recCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final Int32recOp underlyingRec =
 				getUnderlying().toInt32(id, ccode.getUnderlying());
 
-		return new Int32recCOp(ccode, underlyingRec);
+		return new Int32recCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final Int64recOp underlyingRec =
 				getUnderlying().toInt64(id, ccode.getUnderlying());
 
-		return new Int64recCOp(ccode, underlyingRec);
+		return new Int64recCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final Fp32recOp underlyingRec =
 				getUnderlying().toFp32(id, ccode.getUnderlying());
 
-		return new Fp32recCOp(ccode, underlyingRec);
+		return new Fp32recCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -105,7 +106,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final Fp64recOp underlyingRec =
 				getUnderlying().toFp64(id, ccode.getUnderlying());
 
-		return new Fp64recCOp(ccode, underlyingRec);
+		return new Fp64recCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final RelRecOp underlyingRec =
 				getUnderlying().toRel(id, ccode.getUnderlying());
 
-		return new RelRecCOp(ccode, underlyingRec);
+		return new RelRecCOp(ccode, underlyingRec, null);
 	}
 
 	@Override
@@ -125,7 +126,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 		final DataOp underlyingData =
 				getUnderlying().toData(id, ccode.getUnderlying());
 
-		return new DataCOp(ccode, underlyingData);
+		return new DataCOp(ccode, underlyingData, null);
 	}
 
 	@Override
@@ -140,7 +141,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 			return this;
 		}
 
-		return new AnyCOp(ccode, underlyingAny);
+		return new AnyCOp(ccode, underlyingAny, getConstant());
 	}
 
 	@Override
@@ -155,7 +156,7 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 				ccode.getUnderlying(),
 				getBackend().underlying(signature));
 
-		return new FuncCOp<F>(ccode, underlyingFunc);
+		return new FuncCOp<F>(ccode, underlyingFunc, null);
 	}
 
 	@Override
@@ -167,12 +168,12 @@ public final class AnyCOp extends PtrCOp<AnyOp> implements AnyOp {
 				ccode.getUnderlying(),
 				getBackend().underlying(type));
 
-		return type.op(new CStruct<S>(ccode, underlyingStruct, type));
+		return type.op(new CStruct<S>(ccode, underlyingStruct, type, null));
 	}
 
 	@Override
-	public AnyCOp create(CCode<?> code, AnyOp underlying) {
-		return new AnyCOp(code, underlying);
+	public AnyCOp create(CCode<?> code, AnyOp underlying, Ptr<AnyOp> constant) {
+		return new AnyCOp(code, underlying, constant);
 	}
 
 }

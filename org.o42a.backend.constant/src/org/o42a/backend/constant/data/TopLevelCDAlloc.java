@@ -23,6 +23,7 @@ import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.SubData;
 
 
 public abstract class TopLevelCDAlloc<S extends StructOp<S>>
@@ -30,9 +31,10 @@ public abstract class TopLevelCDAlloc<S extends StructOp<S>>
 
 	public TopLevelCDAlloc(
 			ConstBackend backend,
+			SubData<S> data,
 			ContainerCDAlloc<S> typeAllocation,
 			CType<S> underlyingStruct) {
-		super(backend, typeAllocation, underlyingStruct);
+		super(backend, data, typeAllocation, underlyingStruct);
 	}
 
 	public final ConstGenerator getGenerator() {

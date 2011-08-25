@@ -24,7 +24,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.backend.constant.data.FuncCAlloc;
+import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
@@ -39,13 +39,13 @@ public class CFunction<F extends Func<F>>
 		implements FuncWriter<F> {
 
 	private final CodeCallback callback;
-	private final FuncCAlloc<F> allocation;
+	private final CFAlloc<F> allocation;
 
 	CFunction(
 			ConstBackend backend,
 			Function<F> function,
 			CodeCallback callback,
-			FuncCAlloc<F> allocation,
+			CFAlloc<F> allocation,
 			Function<F> underlying) {
 		super(backend, null, function, underlying);
 		this.callback = callback;
@@ -61,7 +61,7 @@ public class CFunction<F extends Func<F>>
 	}
 
 	@Override
-	public final FuncCAlloc<F> getAllocation() {
+	public final CFAlloc<F> getAllocation() {
 		return this.allocation;
 	}
 
@@ -72,7 +72,7 @@ public class CFunction<F extends Func<F>>
 		final Int8op underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new Int8cOp(ccode, underlyingValue);
+		return new Int8cOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class CFunction<F extends Func<F>>
 		final Int16op underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new Int16cOp(ccode, underlyingValue);
+		return new Int16cOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class CFunction<F extends Func<F>>
 		final Int32op underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new Int32cOp(ccode, underlyingValue);
+		return new Int32cOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class CFunction<F extends Func<F>>
 		final Int64op underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new Int64cOp(ccode, underlyingValue);
+		return new Int64cOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class CFunction<F extends Func<F>>
 		final Fp32op underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new Fp32cOp(ccode, underlyingValue);
+		return new Fp32cOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class CFunction<F extends Func<F>>
 		final Fp64op underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new Fp64cOp(ccode, underlyingValue);
+		return new Fp64cOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class CFunction<F extends Func<F>>
 		final BoolOp underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new BoolCOp(ccode, underlyingValue);
+		return new BoolCOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class CFunction<F extends Func<F>>
 		final RelOp underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new RelCOp(ccode, underlyingValue);
+		return new RelCOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class CFunction<F extends Func<F>>
 		final AnyOp underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new AnyCOp(ccode, underlyingValue);
+		return new AnyCOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class CFunction<F extends Func<F>>
 		final DataOp underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return new DataCOp(ccode, underlyingValue);
+		return new DataCOp(ccode, underlyingValue, null);
 	}
 
 	@Override
@@ -175,7 +175,7 @@ public class CFunction<F extends Func<F>>
 		final S underlyingValue =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return type.op(new CStruct<S>(ccode, underlyingValue, type));
+		return type.op(new CStruct<S>(ccode, underlyingValue, type, null));
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class CFunction<F extends Func<F>>
 		final FF underlyingFunc =
 				getUnderlying().arg(ccode.getUnderlying(), underlyingArg(arg));
 
-		return signature.op(new CFunc<FF>(ccode, underlyingFunc));
+		return signature.op(new CFunc<FF>(ccode, underlyingFunc, null));
 	}
 
 	@SuppressWarnings("unchecked")

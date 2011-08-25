@@ -21,13 +21,14 @@ package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
@@ -35,18 +36,18 @@ import org.o42a.codegen.data.*;
 public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		extends CDAlloc<S, SubData<S>> {
 
-	private final LinkedList<CDAlloc<?, ?>> nested =
-			new LinkedList<CDAlloc<?,?>>();
+	private final ArrayList<CDAlloc<?, ?>> nested =
+			new ArrayList<CDAlloc<?,?>>();
 	private final CType<S> underlyingStruct;
 	private Allocated<S, ?> underlyingAllocated;
-
 	private boolean containerAllocated;
 
 	public ContainerCDAlloc(
 			ConstBackend backend,
+			SubData<S> data,
 			ContainerCDAlloc<S> typeAllocation,
 			CType<S> underlyingStruct) {
-		super(backend, typeAllocation);
+		super(backend, data, typeAllocation);
 		this.underlyingStruct = underlyingStruct;
 	}
 
@@ -83,6 +84,20 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return this.underlyingStruct;
 	}
 
+	@SuppressWarnings("unchecked")
+	public <P extends PtrOp<P>, D extends Data<P>> CDAlloc<P, D> field(
+			D field) {
+
+		final CDAlloc<?, ?> alloc =
+				(CDAlloc<?, ?>) field.getPointer().getAllocation();
+		final ContainerCDAlloc<?> container =
+				alloc.getEnclosing().findContainer(
+						getTopLevel(),
+						alloc.getEnclosing());
+
+		return (CDAlloc<P, D>) container.nested.get(alloc.getIndex());
+	}
+
 	@Override
 	public final S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 
@@ -98,7 +113,8 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return type.op(new CStruct<S>(
 				ccode,
 				getUnderlying().getPointer().op(id, ccode.getUnderlying()),
-				type));
+				type,
+				getPointer()));
 	}
 
 	@Override
@@ -110,11 +126,16 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	protected abstract Allocated<S, ?> startUnderlyingAllocation(
 			SubData<?> container);
 
-	final void nest(CDAlloc<?, ?> nested) {
+	final int nest(CDAlloc<?, ?> nested) {
+
+		final int index = this.nested.size();
+
 		this.nested.add(nested);
 		if (isUnderlyingAllocated()) {
 			nested.initUnderlying(getUnderlying());
 		}
+
+		return index;
 	}
 
 	final void containerAllocated() {
@@ -136,6 +157,22 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		if (isContainerAllocated()) {
 			this.underlyingAllocated.done();
 		}
+	}
+
+	private ContainerCDAlloc<?> findContainer(
+			TopLevelCDAlloc<?> topLevel,
+			CDAlloc<?, ?> alloc) {
+
+		final ContainerCDAlloc<?> enclosing = alloc.getEnclosing();
+
+		if (enclosing == null) {
+			return topLevel;
+		}
+
+		final ContainerCDAlloc<?> found =
+				enclosing.findContainer(topLevel, enclosing);
+
+		return (ContainerCDAlloc<?>) found.nested.get(alloc.getIndex());
 	}
 
 }

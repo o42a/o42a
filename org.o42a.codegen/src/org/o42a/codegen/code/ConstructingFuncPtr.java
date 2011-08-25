@@ -27,7 +27,11 @@ final class ConstructingFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 	private final Function<F> function;
 
 	ConstructingFuncPtr(Function<F> function, FuncAllocation<F> allocation) {
-		super(function.getId(), function.getSignature(), allocation);
+		super(
+				function.getId(),
+				function.getSignature(),
+				allocation,
+				false);
 		this.function = function;
 	}
 

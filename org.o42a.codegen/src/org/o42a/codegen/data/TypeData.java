@@ -51,7 +51,7 @@ final class TypeData<S extends StructOp<S>>
 	@Override
 	protected DataAllocation<S> startTypeAllocation(
 			DataAllocator allocator) {
-		return allocator.begin(getInstance());
+		return allocator.begin(this, getInstance());
 	}
 
 	@Override

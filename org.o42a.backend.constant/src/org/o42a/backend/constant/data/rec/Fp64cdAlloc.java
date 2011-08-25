@@ -39,7 +39,7 @@ public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 
 	@Override
 	protected Fp64recCOp op(CCode<?> code, Fp64recOp underlying) {
-		return new Fp64recCOp(code, underlying);
+		return new Fp64recCOp(code, underlying, getPointer());
 	}
 
 	@Override
