@@ -91,20 +91,20 @@ public interface DataAllocator {
 			DataAllocation<FuncOp<F>> type,
 			Signature<F> signature);
 
-	DataAllocation<AnyOp> allocatePtr(
+	DataAllocation<AnyRecOp> allocatePtr(
 			DataAllocation<?> enclosing,
 			AnyRec data,
-			DataAllocation<AnyOp> type);
+			DataAllocation<AnyRecOp> type);
 
-	DataAllocation<DataOp> allocateDataPtr(
+	DataAllocation<DataRecOp> allocateDataPtr(
 			DataAllocation<?> enclosing,
 			DataRec data,
-			DataAllocation<DataOp> type);
+			DataAllocation<DataRecOp> type);
 
-	<S extends StructOp<S>> DataAllocation<S> allocatePtr(
+	<S extends StructOp<S>> DataAllocation<StructRecOp<S>> allocatePtr(
 			DataAllocation<?> enclosing,
 			StructRec<S> data,
-			DataAllocation<S> type,
+			DataAllocation<StructRecOp<S>> type,
 			DataAllocation<S> struct);
 
 	DataAllocation<RelRecOp> allocateRelPtr(

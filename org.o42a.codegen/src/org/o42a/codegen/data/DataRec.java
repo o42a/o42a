@@ -21,11 +21,12 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public final class DataRec extends PtrRec<DataOp> {
+public final class DataRec extends PtrRec<DataRecOp, Ptr<DataOp>> {
 
 	DataRec(
 			SubData<?> enclosing,

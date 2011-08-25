@@ -21,7 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.AnyCOp;
-import org.o42a.backend.constant.data.rec.AnyCDAlloc;
+import org.o42a.backend.constant.data.AnyCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.data.Ptr;

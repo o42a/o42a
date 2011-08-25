@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,21 +19,20 @@
 */
 package org.o42a.backend.llvm.data;
 
-import org.o42a.backend.llvm.code.op.LLVMDataOp;
+import org.o42a.backend.llvm.code.op.LLVMRecOp;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
-import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public final class AnyDataAlloc extends SimpleDataAllocation<DataOp> {
+public final class AnyRecAlloc extends SimpleDataAllocation<AnyRecOp> {
 
-	AnyDataAlloc(ContainerAllocation<?> enclosing) {
+	AnyRecAlloc(ContainerAllocation<?> enclosing) {
 		super(enclosing);
 	}
 
-	public AnyDataAlloc(
+	public AnyRecAlloc(
 			LLVMModule module,
 			LLVMId id,
 			ContainerAllocation<?> enclosing) {
@@ -46,17 +45,12 @@ public final class AnyDataAlloc extends SimpleDataAllocation<DataOp> {
 	}
 
 	@Override
-	public DataAllocation<DataOp> toData() {
-		return this;
-	}
-
-	@Override
-	protected LLVMDataOp op(
+	protected LLVMRecOp.Any op(
 			CodeId id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
-		return new LLVMDataOp(id, allocClass, blockPtr, nativePtr);
+		return new LLVMRecOp.Any(id, allocClass, blockPtr, nativePtr);
 	}
 
 }

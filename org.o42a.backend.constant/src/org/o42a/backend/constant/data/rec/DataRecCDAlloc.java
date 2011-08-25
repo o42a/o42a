@@ -20,43 +20,34 @@
 package org.o42a.backend.constant.data.rec;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.op.AnyCOp;
-import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.code.rec.DataRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.AnyRec;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public final class AnyCDAlloc extends PtrRecCDAlloc<AnyRec, AnyOp> {
+public final class DataRecCDAlloc
+		extends PtrRecCDAlloc<DataRec, DataRecOp, Ptr<DataOp>> {
 
-	public AnyCDAlloc(
+	public DataRecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
-			AnyRec data,
-			AnyCDAlloc typeAllocation) {
+			DataRec data,
+			DataRecCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
 		nest();
 	}
 
-	public AnyCDAlloc(ConstBackend backend, Ptr<AnyOp> underlyingPtr) {
-		super(backend, underlyingPtr);
+	@Override
+	protected DataRec allocateUnderlying(SubData<?> container, String name) {
+		return container.addDataPtr(name, this);
 	}
 
 	@Override
-	public DataAllocation<AnyOp> toAny() {
-		return this;
-	}
-
-	@Override
-	protected AnyRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addPtr(name, this);
-	}
-
-	@Override
-	protected AnyOp op(CCode<?> code, AnyOp underlyingOp) {
-		return new AnyCOp(code, underlyingOp, getPointer());
+	protected DataRecCOp op(CCode<?> code, DataRecOp underlying) {
+		return new DataRecCOp(code, underlying, getPointer());
 	}
 
 }

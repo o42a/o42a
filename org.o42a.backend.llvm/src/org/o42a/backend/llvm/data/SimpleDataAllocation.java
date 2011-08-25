@@ -20,11 +20,12 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.backend.llvm.code.LLVMCode;
-import org.o42a.backend.llvm.code.LLVMStruct;
+import org.o42a.backend.llvm.code.op.LLVMRecOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
@@ -72,7 +73,7 @@ abstract class SimpleDataAllocation<P extends PtrOp<P>>
 			long nativePtr);
 
 	static final class StructPtr<S extends StructOp<S>>
-			extends SimpleDataAllocation<S> {
+			extends SimpleDataAllocation<StructRecOp<S>> {
 
 		private final Type<S> type;
 
@@ -89,17 +90,17 @@ abstract class SimpleDataAllocation<P extends PtrOp<P>>
 		}
 
 		@Override
-		protected S op(
+		protected StructRecOp<S> op(
 				CodeId id,
 				AllocClass allocClass,
 				long blockPtr,
 				long nativePtr) {
-			return this.type.op(new LLVMStruct<S>(
+			return new LLVMRecOp.Struct<S>(
 					id,
 					allocClass,
 					this.type,
 					blockPtr,
-					nativePtr));
+					nativePtr);
 		}
 
 	}

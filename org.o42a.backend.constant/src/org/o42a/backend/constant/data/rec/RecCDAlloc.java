@@ -22,7 +22,9 @@ package org.o42a.backend.constant.data.rec;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.data.*;
+import org.o42a.backend.constant.data.CDAlloc;
+import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.TopLevelCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
@@ -46,12 +48,6 @@ public abstract class RecCDAlloc<
 		super(enclosing.getBackend(), data, typeAllocation);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
-	}
-
-	public RecCDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {
-		super(backend, underlyingPtr);
-		this.topLevel = null;
-		this.enclosing = null;
 	}
 
 	@Override

@@ -17,31 +17,43 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data.rec;
+package org.o42a.backend.constant.data;
+
+import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
-import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.data.DataRec;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public final class DataCDAlloc extends PtrRecCDAlloc<DataRec, DataOp> {
-
-	public DataCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			DataRec data,
-			DataCDAlloc typeAllocation) {
-		super(enclosing, data, typeAllocation);
-		nest();
-	}
+public final class DataCDAlloc extends CDAlloc<DataOp, Data<DataOp>> {
 
 	public DataCDAlloc(ConstBackend backend, Ptr<DataOp> underlyingPtr) {
 		super(backend, underlyingPtr);
+	}
+
+	@Override
+	public DataCOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+
+		final CCode<?> ccode = cast(writer);
+		final DataOp underlyingOp =
+				getUnderlyingPtr().op(id, ccode.getUnderlying());
+
+		return new DataCOp(ccode, underlyingOp, null);
+	}
+
+	@Override
+	public TopLevelCDAlloc<?> getTopLevel() {
+		return null;
+	}
+
+	@Override
+	public ContainerCDAlloc<?> getEnclosing() {
+		return null;
 	}
 
 	@Override
@@ -50,13 +62,8 @@ public final class DataCDAlloc extends PtrRecCDAlloc<DataRec, DataOp> {
 	}
 
 	@Override
-	protected DataRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addDataPtr(name, this);
-	}
-
-	@Override
-	protected DataCOp op(CCode<?> code, DataOp underlyingOp) {
-		return new DataCOp(code, underlyingOp, getPointer());
+	protected Data<DataOp> allocateUnderlying(SubData<?> container) {
+		throw new UnsupportedOperationException();
 	}
 
 }

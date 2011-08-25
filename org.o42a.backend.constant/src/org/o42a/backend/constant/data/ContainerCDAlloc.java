@@ -40,6 +40,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 			new ArrayList<CDAlloc<?,?>>();
 	private final CType<S> underlyingStruct;
 	private Allocated<S, ?> underlyingAllocated;
+	private ContainerCDAlloc<S> declaringType;
 	private boolean containerAllocated;
 
 	public ContainerCDAlloc(
@@ -61,6 +62,31 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return (ContainerCDAlloc<S>) super.getTypeAllocation();
 	}
 
+	public ContainerCDAlloc<S> getDeclaringType() {
+		if (this.declaringType != null) {
+			return this.declaringType;
+		}
+
+		final ContainerCDAlloc<S> typeAlloc;
+
+		if (isStruct()) {
+			typeAlloc = (ContainerCDAlloc<S>) getUnderlyingStruct()
+					.getOriginal().pointer(
+							getBackend().getGenerator()).getAllocation();
+		} else {
+			typeAlloc = getTypeAllocation();
+			if (typeAlloc == null) {
+				return this.declaringType = this;
+			}
+		}
+
+		if (typeAlloc == this) {
+			return this.declaringType = this;
+		}
+
+		return this.declaringType = typeAlloc.getDeclaringType();
+	}
+
 	public final boolean isContainerAllocated() {
 		return this.containerAllocated;
 	}
@@ -77,7 +103,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	}
 
 	public final boolean isStruct() {
-		return getTypeAllocation() == null;
+		return getUnderlyingStruct() != null;
 	}
 
 	public final CType<S> getUnderlyingStruct() {
@@ -87,15 +113,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	@SuppressWarnings("unchecked")
 	public <P extends PtrOp<P>, D extends Data<P>> CDAlloc<P, D> field(
 			D field) {
-
-		final CDAlloc<?, ?> alloc =
-				(CDAlloc<?, ?>) field.getPointer().getAllocation();
-		final ContainerCDAlloc<?> container =
-				alloc.getEnclosing().findContainer(
-						getTopLevel(),
-						alloc.getEnclosing());
-
-		return (CDAlloc<P, D>) container.nested.get(alloc.getIndex());
+		return (CDAlloc<P, D>) field(field.getPointer());
 	}
 
 	@Override
@@ -159,18 +177,56 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		}
 	}
 
+	private final CDAlloc<?, ?> field(Ptr<?> pointer) {
+
+		final CDAlloc<?, ?> allocation =
+				(CDAlloc<?, ?>) pointer.getAllocation();
+		final CDAlloc<?, ?> field = field(allocation);
+
+		assert field != null :
+			pointer + " is not inside of " + this;
+
+		return field;
+	}
+
+	private CDAlloc<?, ?> field(CDAlloc<?, ?> alloc) {
+
+		final ContainerCDAlloc<?> enclosing = alloc.getEnclosing();
+
+		if (enclosing == null) {
+			return null;
+		}
+		if (hasSameType(enclosing)) {
+			return enclosing.nested.get(alloc.getIndex());
+		}
+
+		final ContainerCDAlloc<?> enclosingField =
+				(ContainerCDAlloc<?>) field(enclosing);
+
+		if (enclosingField == null) {
+			return null;
+		}
+
+		return enclosingField.nested.get(alloc.getIndex());
+	}
+
+	private boolean hasSameType(ContainerCDAlloc<?> alloc) {
+		return alloc.getDeclaringType() == getDeclaringType();
+	}
+
 	private ContainerCDAlloc<?> findContainer(
-			TopLevelCDAlloc<?> topLevel,
+			ContainerCDAlloc<?> correspondingContainer,
 			CDAlloc<?, ?> alloc) {
 
 		final ContainerCDAlloc<?> enclosing = alloc.getEnclosing();
 
 		if (enclosing == null) {
-			return topLevel;
+			return correspondingContainer;
 		}
 
-		final ContainerCDAlloc<?> found =
-				enclosing.findContainer(topLevel, enclosing);
+		final ContainerCDAlloc<?> found = enclosing.findContainer(
+				correspondingContainer.getEnclosing(),
+				enclosing);
 
 		return (ContainerCDAlloc<?>) found.nested.get(alloc.getIndex());
 	}

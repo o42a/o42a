@@ -21,7 +21,8 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
-import org.o42a.backend.constant.data.rec.DataCDAlloc;
+import org.o42a.backend.constant.data.DataCDAlloc;
+import org.o42a.backend.constant.data.rec.DataRecCDAlloc;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.Ptr;
@@ -36,6 +37,9 @@ public final class DataRecCOp
 			DataRecOp underlying,
 			Ptr<DataRecOp> constant) {
 		super(code, underlying, constant);
+		assert (constant == null
+				|| (constant.getAllocation() instanceof DataRecCDAlloc)) :
+					"Wrong constant: " + constant;
 	}
 
 	@Override

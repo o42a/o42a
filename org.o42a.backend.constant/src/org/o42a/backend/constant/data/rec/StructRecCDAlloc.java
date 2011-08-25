@@ -20,17 +20,16 @@
 package org.o42a.backend.constant.data.rec;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.StructRec;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.data.*;
 
 
 public final class StructRecCDAlloc<S extends StructOp<S>>
-		extends PtrRecCDAlloc<StructRec<S>, S> {
+		extends PtrRecCDAlloc<StructRec<S>, StructRecOp<S>, Ptr<S>> {
 
 	private final ContainerCDAlloc<S> structAllocation;
 
@@ -64,9 +63,8 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	protected S op(CCode<?> code, S underlying) {
-		return getType().op(
-				new CStruct<S>(code, underlying, getType(), getPointer()));
+	protected StructRecCOp<S> op(CCode<?> code, StructRecOp<S> underlying) {
+		return new StructRecCOp<S>(code, underlying, getType(), getPointer());
 	}
 
 }

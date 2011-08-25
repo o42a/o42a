@@ -283,32 +283,33 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public DataAllocation<AnyOp> allocatePtr(
+	public DataAllocation<AnyRecOp> allocatePtr(
 			DataAllocation<?> enclosing,
 			AnyRec data,
-			DataAllocation<AnyOp> type) {
+			DataAllocation<AnyRecOp> type) {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new AnyAlloc(container(enclosing));
+		return new AnyRecAlloc(container(enclosing));
 	}
 
 	@Override
-	public DataAllocation<DataOp> allocateDataPtr(
+	public DataAllocation<DataRecOp> allocateDataPtr(
 			DataAllocation<?> enclosing,
 			DataRec data,
-			DataAllocation<DataOp> type) {
+			DataAllocation<DataRecOp> type) {
 		if (allocate(enclosing)) {
 			allocatePtr(getModulePtr(), typeDataPtr(enclosing));
 		}
-		return new AnyDataAlloc(container(enclosing));
+		return new DataRecAlloc(container(enclosing));
 	}
 
+
 	@Override
-	public <S extends StructOp<S>> DataAllocation<S> allocatePtr(
+	public <S extends StructOp<S>> DataAllocation<StructRecOp<S>> allocatePtr(
 			DataAllocation<?> enclosing,
 			StructRec<S> data,
-			DataAllocation<S> type,
+			DataAllocation<StructRecOp<S>> type,
 			DataAllocation<S> struct) {
 
 		final ContainerAllocation<S> llvmStruct =
