@@ -86,9 +86,6 @@ public final class ValOp extends IROp implements CondOp {
 
 	@Override
 	public final BoolOp loadCondition(CodeId id, Code code) {
-		if (this.constant != null) {
-			return code.bool(this.constant.getCondition());
-		}
 
 		final Int32op flags = flags(null, code).load(null, code);
 
@@ -115,9 +112,6 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public Int32op loadAlignmentShift(CodeId id, Code code) {
-		if (this.constant != null) {
-			return code.int32(constAlignmentShift());
-		}
 
 		final CodeId ashiftId;
 
@@ -141,9 +135,6 @@ public final class ValOp extends IROp implements CondOp {
 
 
 	public Int32op loadAlignment(CodeId id, Code code) {
-		if (this.constant != null) {
-			return code.int32(constAlignment());
-		}
 
 		final Int32op shift = loadAlignmentShift(
 				id != null ? id.detail("shift") : null,
@@ -156,16 +147,6 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public Int32op loadCharMask(CodeId id, Code code) {
-		if (this.constant != null) {
-
-			final int alignment = constAlignment();
-
-			if (alignment == 4) {
-				return code.int32(-1);
-			}
-
-			return code.int32(-1 << (alignment << 3));
-		}
 
 		final Int32op alignment =
 				loadAlignment(id != null ? id.detail("alignment") : null, code);
@@ -199,10 +180,6 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public Int32op loadDataLength(CodeId id, Code code) {
-		if (this.constant != null) {
-			return code.int32(
-					this.constant.getLength() >>> constAlignmentShift());
-		}
 
 		final Int32op byteLength = length(
 				id != null ? id.detail("length") : null,
@@ -363,25 +340,11 @@ public final class ValOp extends IROp implements CondOp {
 		return "(" + this.valueType + ") " + ptr();
 	}
 
-	private int constAlignment() {
-		return 1 << constAlignmentShift();
-	}
-
-	private int constAlignmentShift() {
-
-		final int unshifted = this.constant.getFlags() & ALIGNMENT_MASK;
-
-		return unshifted >>> numberOfTrailingZeros(ALIGNMENT_MASK);
-	}
-
 	private BoolOp loadFlag(
 			CodeId id,
 			String defaultId,
 			Code code,
 			int mask) {
-		if (this.constant != null) {
-			return code.bool((this.constant.getFlags() & mask) != 0);
-		}
 
 		final CodeId flagId;
 

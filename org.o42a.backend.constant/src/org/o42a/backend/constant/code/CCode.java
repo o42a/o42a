@@ -246,10 +246,22 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
-		underlying(condition).go(
-				getUnderlying(),
-				underlying(truePos),
-				underlying(falsePos));
+
+		final BoolCOp cond = (BoolCOp) condition;
+
+		if (!cond.isConstant()) {
+			cond.getUnderlying().go(
+					getUnderlying(),
+					underlying(truePos),
+					underlying(falsePos));
+			return;
+		}
+
+		final CodePos pos = cond.getConstant() ? truePos : falsePos;
+
+		if (pos != null) {
+			go(pos);
+		}
 	}
 
 	@Override
