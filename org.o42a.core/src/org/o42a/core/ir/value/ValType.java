@@ -54,6 +54,13 @@ public final class ValType extends Type<ValType.Op> {
 		return this.value;
 	}
 
+	public final ValType setConstant(boolean constant) {
+		flags().setConstant(constant);
+		length().setConstant(constant);
+		value().setConstant(constant);
+		return this;
+	}
+
 	public final ValType set(Val val) {
 		flags().setValue(val.getFlags());
 		length().setValue(val.getLength());
@@ -65,6 +72,7 @@ public final class ValType extends Type<ValType.Op> {
 		} else {
 			value().setValue(val.getValue());
 		}
+
 		return this;
 	}
 

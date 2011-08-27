@@ -88,7 +88,7 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 		if (this.funcPtr == null) {
 			create();
 		}
-		this.func.setValue(this.funcPtr);
+		this.func.setConstant(true).setValue(this.funcPtr);
 	}
 
 	public final FuncPtr<F> get(ObjOp host) {

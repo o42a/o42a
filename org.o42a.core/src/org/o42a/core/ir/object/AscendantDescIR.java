@@ -57,10 +57,10 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 		final ObjectIR ascendantIR =
 				this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
 
-		instance.type().setValue(
+		instance.type().setConstant(true).setValue(
 				ascendantIR.getTypeIR().getObjectType()
 				.data(generator).getPointer());
-		instance.body().setValue(
+		instance.body().setConstant(true).setValue(
 				this.bodyIR.data(generator).getPointer().relativeTo(
 						instance.data(generator).getPointer()));
 	}

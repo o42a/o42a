@@ -92,7 +92,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final Integer value = this.flags.getValue();
 
 		if (value == null) {
-			this.flags.setValue(kind.ordinal());
+			this.flags.setConstant(true).setValue(kind.ordinal());
 			return;
 		}
 
@@ -189,21 +189,21 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final ObjectIRType objectType =
 				getObjectIR().getTypeIR().getObjectType();
 
-		this.objectType.setValue(
+		this.objectType.setConstant(true).setValue(
 				objectType.data(generator).getPointer().relativeTo(
 						data(generator).getPointer()));
 
 		final ObjectBodyIR ancestorBodyIR = getObjectIR().getAncestorBodyIR();
 
 		if (ancestorBodyIR != null) {
-			this.ancestorBody.setValue(
+			this.ancestorBody.setConstant(true).setValue(
 					ancestorBodyIR.data(generator).getPointer().relativeTo(
 							data(generator).getPointer()));
 		} else {
-			this.ancestorBody.setNull();
+			this.ancestorBody.setConstant(true).setNull();
 		}
 
-		this.methods.setValue(
+		this.methods.setConstant(true).setValue(
 				getMethodsIR().data(generator).getPointer().toData());
 	}
 

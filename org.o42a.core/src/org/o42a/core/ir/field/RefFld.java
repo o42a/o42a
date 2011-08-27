@@ -124,7 +124,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	}
 
 	protected final void createConstructor() {
-		getInstance().constructor().setValue(this.constructor);
+		getInstance().constructor().setConstant(true).setValue(
+				this.constructor);
 		if (this.constructorReused) {
 			return;
 		}
@@ -209,7 +210,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	}
 
 	private void fillTarget(ObjectBodyIR targetBodyIR) {
-		getInstance().object().setValue(
+		getInstance().object().setConstant(!getKind().isVariable()).setValue(
 				targetBodyIR.pointer(targetBodyIR.getGenerator()).toData());
 	}
 

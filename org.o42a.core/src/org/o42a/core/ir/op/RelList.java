@@ -87,16 +87,16 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 		final int size = this.content.size();
 
-		instance.size().setValue(size);
+		instance.size().setConstant(true).setValue(size);
 		if (size == 0) {
-			instance.list().setNull();
+			instance.list().setConstant(true).setNull();
 			return;
 		}
 
 		assert this.firstItem != null :
 			this + " items not allocated yet";
 
-		instance.list().setValue(this.firstItem.relativeTo(
+		instance.list().setConstant(true).setValue(this.firstItem.relativeTo(
 				instance.data(instance.getGenerator()).getPointer()));
 	}
 
