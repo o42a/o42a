@@ -60,7 +60,7 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 		if (this.global == null) {
 			return super.toString();
 		}
-		return this.global.toString();
+		return this.global.getId().toString();
 	}
 
 	@Override

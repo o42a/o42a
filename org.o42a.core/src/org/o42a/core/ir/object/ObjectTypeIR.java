@@ -92,17 +92,17 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		final Generator generator = instance.getGenerator();
 		final ObjectIRData data = instance.data();
 
-		data.object().setValue(
+		data.object().setConstant(true).setValue(
 				getObjectIR().getMainBodyIR().data(generator).getPointer()
 				.relativeTo(data.data(generator).getPointer()));
-		data.flags().setValue(objectFlags());
-		data.start().setValue(
+		data.flags().setConstant(true).setValue(objectFlags());
+		data.start().setConstant(true).setValue(
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						data.data(generator).getPointer()));
 
 		fillOwnerTypePointer(data);
 		fillAncestor(data);
-		instance.mainBodyLayout().setValue(
+		instance.mainBodyLayout().setConstant(true).setValue(
 				getObjectIR().getMainBodyIR().layout(generator).toBinaryForm());
 
 		getObjectIR().getValueIR().fill(this);
@@ -203,14 +203,14 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				.getEnclosingContainer().toObject();
 
 		if (owner == null) {
-			instance.ownerType().setNull();
+			instance.ownerType().setConstant(true).setNull();
 			return;
 		}
 
 		final ObjectIRType ownerType =
 				owner.ir(getGenerator()).getTypeIR().getObjectType();
 
-		instance.ownerType().setValue(
+		instance.ownerType().setConstant(true).setValue(
 				ownerType.pointer(instance.getGenerator()));
 	}
 
@@ -220,20 +220,22 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		final ObjectBodyIR ancestorBodyIR = objectIR.getAncestorBodyIR();
 
 		if (ancestorBodyIR == null) {
-			instance.ancestorType().setNull();
-			instance.ancestorFunc().setValue(nullObjectRef());
+			instance.ancestorType().setConstant(true).setNull();
+			instance.ancestorFunc().setConstant(true).setValue(nullObjectRef());
 			return;
 		}
 
-		instance.ancestorType().setValue(
+		instance.ancestorType().setConstant(true).setValue(
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
 		if (getObjectIR().getObject().type().runtimeConstruction().isUsedBy(
 				getGenerator())) {
-			instance.ancestorFunc().setValue(createAncestorFunc(instance));
+			instance.ancestorFunc().setConstant(true).setValue(
+					createAncestorFunc(instance));
 		} else {
-			instance.ancestorFunc().setValue(stubObjectRef());
+			instance.ancestorFunc().setConstant(true).setValue(
+					stubObjectRef());
 		}
 	}
 

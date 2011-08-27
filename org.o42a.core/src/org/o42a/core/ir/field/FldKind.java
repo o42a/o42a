@@ -22,23 +22,29 @@ package org.o42a.core.ir.field;
 
 public enum FldKind {
 
-	OBJ(0, false),
-	LINK(1, false),
-	VAR(2, false),
-	ARRAY(3, false),
-	SCOPE(4, true),
-	DEP(5, true);
+	OBJ(0, false, false),
+	LINK(1, false, false),
+	VAR(2, true, false),
+	ARRAY(3, true, false),
+	SCOPE(4, false, true),
+	DEP(5, false, true);
 
 	private final int code;
+	private final boolean variable;
 	private final boolean synthetic;
 
-	FldKind(int code, boolean generated) {
+	FldKind(int code, boolean variable, boolean synthetic) {
 		this.code = code;
-		this.synthetic = generated;
+		this.variable = variable;
+		this.synthetic = synthetic;
 	}
 
 	public final int getCode() {
 		return this.code;
+	}
+
+	public final boolean isVariable() {
+		return this.variable;
 	}
 
 	public final boolean isSynthetic() {

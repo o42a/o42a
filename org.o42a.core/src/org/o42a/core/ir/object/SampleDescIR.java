@@ -50,7 +50,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
 	@Override
 	public void fill(Type instance) {
-		instance.body().setValue(
+		instance.body().setConstant(true).setValue(
 				this.bodyIR.pointer(instance.getGenerator()).relativeTo(
 						instance.pointer(instance.getGenerator())));
 	}

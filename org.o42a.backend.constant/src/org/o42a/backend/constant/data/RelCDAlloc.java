@@ -93,4 +93,12 @@ public final class RelCDAlloc implements RelAllocation {
 		return new RelCOp(ccode, underlyingOp, getPointer());
 	}
 
+	@Override
+	public String toString() {
+		if (this.pointer == null) {
+			return super.toString();
+		}
+		return this.pointer.toString();
+	}
+
 }

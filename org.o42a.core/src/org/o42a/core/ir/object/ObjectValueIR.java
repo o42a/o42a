@@ -34,6 +34,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 
@@ -139,7 +140,12 @@ public class ObjectValueIR {
 	}
 
 	protected void fill(ObjectTypeIR typeIR) {
-		typeIR.getObjectData().value().set(initialValue());
+
+		final Val initialValue = initialValue();
+		final ValType value = typeIR.getObjectData().value();
+
+		value.setConstant(!initialValue.isIndefinite());
+		value.set(initialValue);
 	}
 
 	final ObjectIRLocals getLocals() {

@@ -89,7 +89,7 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 
 	@Override
 	public void fill(Type instance) {
-		instance.object().setValue(
+		instance.object().setConstant(true).setValue(
 				this.target.pointer(instance.getGenerator()).toData());
 	}
 

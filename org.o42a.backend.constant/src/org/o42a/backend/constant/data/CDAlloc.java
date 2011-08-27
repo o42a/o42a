@@ -145,7 +145,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		if (this.data == null) {
 			return super.toString();
 		}
-		return this.data.toString();
+		return this.data.getId().toString();
 	}
 
 	protected final void nest() {

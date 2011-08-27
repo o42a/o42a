@@ -47,7 +47,7 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 		if (this.underlyingType == null) {
 			return super.toString();
 		}
-		return this.underlyingType.toString();
+		return this.underlyingType.getId().toString();
 	}
 
 	@Override
