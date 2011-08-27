@@ -65,7 +65,7 @@ public final class LocalIRFunc
 		code.debug("Call");
 
 		final ObjectValFunc func = getFunction().getPointer().op(null, code);
-		final ValOp result = func.call(subDirs, body(code, owner, body));
+		final ValOp result = func.call(subDirs, objectArg(code, owner, body));
 
 		subDirs.done();
 
