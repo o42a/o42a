@@ -105,7 +105,7 @@ public abstract class ObjectValueIRCondFunc
 
 			final ObjectCondFunc func = get(host).op(code.id(suffix()), code);
 
-			func.call(code, body(code, host, body)).go(code, subDirs);
+			func.call(code, objectArg(code, host, body)).go(code, subDirs);
 
 			break;
 		case UNKNOWN:
@@ -135,7 +135,7 @@ public abstract class ObjectValueIRCondFunc
 				condFalse.head(),
 				getObjectIR().getMainBodyIR(),
 				getObjectIR().getObject(),
-				DERIVED);
+				getObjectIR().isExact() ? EXACT : DERIVED);
 		final ObjOp host = builder.host();
 
 		function.dumpName("Host: ", host.ptr());

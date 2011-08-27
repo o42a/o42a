@@ -26,6 +26,7 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.def.ValueDefs;
@@ -131,7 +132,7 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		final ObjectValFunc func = get(host).op(code.id(suffix()), code);
-		final ValOp result = func.call(subDirs, body(code, host, body));
+		final ValOp result = func.call(subDirs, objectArg(code, host, body));
 
 		if (subDirs.isDebug()) {
 			subDirs.done();
@@ -155,7 +156,7 @@ public abstract class ObjectValueIRValFunc
 				failure.head(),
 				getObjectIR().getMainBodyIR(),
 				getObjectIR().getObject(),
-				DERIVED);
+				getObjectIR().isExact() ? EXACT : DERIVED);
 		final ValOp result =
 				function.arg(function, OBJECT_VAL.value())
 				.op(builder, getValueType())
@@ -181,6 +182,14 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		function.returnVoid();
+	}
+
+	@Override
+	public DataOp objectArg(Code code, ObjOp host, ObjectOp body) {
+		if (isReused()) {
+			return body != null ? body.toData(code) : host.toData(code);
+		}
+		return super.objectArg(code, host, body);
 	}
 
 	protected Value<?> determineConstant() {

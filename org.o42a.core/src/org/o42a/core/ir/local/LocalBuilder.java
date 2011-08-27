@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
@@ -41,12 +42,7 @@ public class LocalBuilder extends CodeBuilder {
 			Function<? extends ObjectFunc<?>> function,
 			LocalIR scopeIR) {
 		super(function, scopeIR);
-
-		final Obj owner = scopeIR.getScope().getOwner();
-		final DataOp ownerPtr =
-				getFunction().arg(function, getObjectSignature().object());
-
-		this.owner = anonymousObject(this, ownerPtr, owner);
+		this.owner = owner(function, scopeIR);
 	}
 
 	@Override
@@ -77,6 +73,21 @@ public class LocalBuilder extends CodeBuilder {
 
 	public final Control createControl(Code code, CodePos exit) {
 		return new MainControl(this, code, exit);
+	}
+
+	private ObjectOp owner(Code code, LocalIR scopeIR) {
+
+		final Obj owner = scopeIR.getScope().getOwner();
+		final ObjectIR ownerIR = owner.ir(getGenerator());
+
+		if (ownerIR.isExact()) {
+			return ownerIR.op(this, code);
+		}
+
+		final DataOp ownerPtr =
+				getFunction().arg(code, getObjectSignature().object());
+
+		return anonymousObject(this, ownerPtr, owner);
 	}
 
 }

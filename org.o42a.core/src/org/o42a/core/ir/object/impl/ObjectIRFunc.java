@@ -21,6 +21,7 @@ package org.o42a.core.ir.object.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjOp;
@@ -31,10 +32,6 @@ import org.o42a.core.value.Condition;
 
 
 public abstract class ObjectIRFunc {
-
-	public static ObjectOp body(Code code, ObjOp host, ObjectOp body) {
-		return body != null ? body : host;
-	}
 
 	private final ObjectIR objectIR;
 
@@ -56,6 +53,24 @@ public abstract class ObjectIRFunc {
 
 	public final Definitions definitions() {
 		return getObject().value().getDefinitions();
+	}
+
+	public DataOp objectArg(Code code, ObjOp host, ObjectOp body) {
+
+		final ObjectIR objectIR = getObjectIR();
+
+		if (!objectIR.isExact()) {
+			return body != null ? body.toData(code) : host.toData(code);
+		}
+
+		assert body == null :
+			"Attempt to invoke " + this + " for object different from "
+			+ getObject() + ", while this object is exact";
+		assert host.getAscendant() == objectIR.getObject() :
+			"Attempt to invoke " + this + " for object " + host.getAscendant()
+			+ ", while " + getObject() + " expected";
+
+		return code.nullDataPtr();
 	}
 
 	public boolean writeFalseValue(CodeDirs dirs, ObjectOp body) {

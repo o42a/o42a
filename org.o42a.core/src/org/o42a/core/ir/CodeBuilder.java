@@ -86,23 +86,7 @@ public class CodeBuilder {
 			ObjectPrecision hostPrecision) {
 		this.context = hostIR.getAscendant().getContext();
 		this.function = function;
-		if (hostPrecision.isCompatible()) {
-			this.host =
-					function.arg(function, getObjectSignature().object())
-					.to(null, function, hostIR)
-					.op(this, hostType, hostPrecision);
-		} else {
-
-			final ObjectOp host = anonymousObject(
-					this,
-					function.arg(function, getObjectSignature().object()),
-					hostType);
-
-			this.host = host.cast(
-					function.id("host"),
-					falseWhenUnknown(function, exit),
-					hostType);
-		}
+		this.host = host(function, exit, hostIR, hostType, hostPrecision);
 	}
 
 	protected CodeBuilder(
@@ -217,6 +201,36 @@ public class CodeBuilder {
 		final RefOp ancestor = ancestorType.op(dirs, host());
 
 		return ancestor.target(dirs).materialize(dirs);
+	}
+
+	private ObjOp host(
+			Code code,
+			CodePos exit,
+			ObjectBodyIR hostIR,
+			Obj hostType,
+			ObjectPrecision hostPrecision) {
+		switch (hostPrecision) {
+		case EXACT:
+			return hostType.ir(getGenerator()).op(this, code);
+		case COMPATIBLE:
+			return getFunction().arg(code, getObjectSignature().object())
+					.to(null, code, hostIR)
+					.op(this, hostType, hostPrecision);
+		case DERIVED:
+
+			final ObjectOp host = anonymousObject(
+					this,
+					getFunction().arg(code, getObjectSignature().object()),
+					hostType);
+
+			return host.cast(
+					code.id("host"),
+					falseWhenUnknown(code, exit),
+					hostType);
+		}
+
+		throw new IllegalArgumentException(
+				"Unknown host precision: " + hostPrecision);
 	}
 
 }

@@ -61,6 +61,10 @@ public class ObjectIR  {
 		return getStruct().codeId(getGenerator());
 	}
 
+	public final boolean isExact() {
+		return !getObject().type().derivation().isUsedBy(getGenerator());
+	}
+
 	public final ScopeIR getScopeIR() {
 		return this.object.getScope().ir(getGenerator());
 	}
