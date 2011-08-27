@@ -20,7 +20,8 @@
 package org.o42a.backend.llvm.id;
 
 import org.o42a.backend.llvm.code.LLFunction;
-import org.o42a.backend.llvm.data.*;
+import org.o42a.backend.llvm.data.LLVMDataWriter;
+import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.alloc.*;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -31,29 +32,29 @@ import org.o42a.codegen.data.backend.RelAllocation;
 public abstract class LLVMId {
 
 	public static LLVMId nullId(long nativePtr, boolean function) {
-		return new TopLevelId.NullId(nativePtr, function);
+		return new NullLLVMId(nativePtr, function);
 	}
 
 	public static LLVMId typeId(TypeLLAlloc<?> typeAllocation) {
-		return new TopLevelId.TypeId(typeAllocation);
+		return new TypeLLVMId(typeAllocation);
 	}
 
 	public static LLVMId dataId(
 			CodeId globalId,
 			ContainerLLDAlloc<?> globalContainer) {
-		return new TopLevelId.GlobalId(globalId, globalContainer);
+		return new GlobalLLVMId(globalId, globalContainer);
 	}
 
 	public static LLVMId dataId(CodeId id, long nativePtr) {
-		return new TopLevelId.DataId(id, nativePtr);
+		return new DataLLVMId(id, nativePtr);
 	}
 
-	public static LLVMId codeId(LLFunction<?> function) {
-		return new TopLevelId.CodeId(function);
+	public static LLVMId functionId(LLFunction<?> function) {
+		return new FunctionLLVMId(function);
 	}
 
-	public static LLVMId codeId(CodeId id, long nativePtr) {
-		return new TopLevelId.ExternId(id, nativePtr);
+	public static LLVMId extenFuncId(CodeId id, long nativePtr) {
+		return new ExternFuncLLVMId(id, nativePtr);
 	}
 
 	private final CodeId globalId;
@@ -77,6 +78,8 @@ public abstract class LLVMId {
 	}
 
 	public abstract long expression(LLVMModule module);
+
+	public abstract long typeExpression(LLVMModule module);
 
 	public LLVMId toAny() {
 		return new AnyId(this);
@@ -108,8 +111,8 @@ public abstract class LLVMId {
 
 	public final long relativeExpression(LLVMModule module, LLVMId relativeTo) {
 		return relativeExpression(
-				expression(module),
-				relativeTo.expression(module));
+				typeExpression(module),
+				relativeTo.typeExpression(module));
 	}
 
 	@Override
