@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.llvm.code;
 
-import static org.o42a.backend.llvm.id.LLVMId.codeId;
+import static org.o42a.backend.llvm.id.LLVMId.extenFuncId;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
@@ -68,7 +68,7 @@ public class LLVMCodeBackend implements CodeBackend {
 
 		return new LLFAlloc<F>(
 				this.module,
-				codeId(id, functionPtr),
+				extenFuncId(id, functionPtr),
 				signature);
 	}
 

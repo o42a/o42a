@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.llvm.code;
 
-import static org.o42a.backend.llvm.id.LLVMId.codeId;
+import static org.o42a.backend.llvm.id.LLVMId.functionId;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
@@ -53,7 +53,7 @@ public final class LLFunction<F extends Func<F>>
 		getBlockPtr();
 		this.allocation = new LLFAlloc<F>(
 				module,
-				codeId(this),
+				functionId(this),
 				function.getSignature());
 	}
 

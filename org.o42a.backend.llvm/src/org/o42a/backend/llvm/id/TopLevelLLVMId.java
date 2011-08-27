@@ -19,59 +19,36 @@
 */
 package org.o42a.backend.llvm.id;
 
-import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.codegen.CodeId;
 
 
-final class AnyId extends LLVMId {
+abstract class TopLevelLLVMId extends LLVMId {
 
-	private final LLVMId prototype;
-	private long nativePtr;
-	private long typePtr;
-
-	AnyId(LLVMId prototype) {
-		super(prototype.getGlobalId(), prototype.kind);
-		this.prototype = prototype;
+	TopLevelLLVMId(CodeId globalId, LLVMIdKind kind) {
+		super(globalId, kind);
 	}
 
 	@Override
 	public LLVMId getEnclosing() {
-		return this.prototype.getEnclosing();
+		return null;
 	}
 
 	@Override
 	public int getIndex() {
-		return this.prototype.getIndex();
-	}
-
-	@Override
-	public long expression(LLVMModule module) {
-		if (this.nativePtr != 0L) {
-			return this.nativePtr;
-		}
-		return this.nativePtr = toAnyPtr(this.prototype.expression(module));
-	}
-
-	@Override
-	public long typeExpression(LLVMModule module) {
-		if (this.typePtr != 0L) {
-			return this.typePtr;
-		}
-		return this.typePtr = toAnyPtr(this.prototype.typeExpression(module));
-	}
-
-	@Override
-	public LLVMId toAny() {
-		return this;
+		return -1;
 	}
 
 	@Override
 	public String toString() {
-		return "ANY " + this.prototype;
+		return getGlobalId().toString();
 	}
 
 	@Override
 	int[] buildIndices(int len) {
-		throw new UnsupportedOperationException();
+		if (len == 0) {
+			return null;
+		}
+		return new int[len];
 	}
 
 }

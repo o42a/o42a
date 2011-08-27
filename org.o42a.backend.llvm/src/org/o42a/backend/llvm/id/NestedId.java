@@ -27,6 +27,7 @@ final class NestedId extends LLVMId {
 	private final LLVMId enclosing;
 	private final int index;
 	private long nativePtr;
+	private long typePtr;
 
 	NestedId(LLVMId enclosing, int index) {
 		super(enclosing.getGlobalId(), enclosing.kind);
@@ -58,6 +59,23 @@ final class NestedId extends LLVMId {
 		return this.nativePtr = LLVMId.expression(
 				module.getNativePtr(),
 				topLevel().expression(module),
+				indices);
+	}
+
+	@Override
+	public long typeExpression(LLVMModule module) {
+		if (this.typePtr != 0L) {
+			return this.typePtr;
+		}
+
+		final int[] indices = buildIndices(0);
+
+		assert indices != null :
+			"Top-level native pointer missing: " + this;
+
+		return this.typePtr = LLVMId.expression(
+				module.getNativePtr(),
+				topLevel().typeExpression(module),
 				indices);
 	}
 
