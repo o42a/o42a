@@ -66,7 +66,7 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 			val = new Val(
 					ValueType.STRING,
 					CONDITION_FLAG | (alignment.getShift() << 8),
-					bytes.length,
+					length(value, bytes, alignment),
 					bytesToLong(bytes));
 		} else {
 
@@ -77,7 +77,7 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 					ValueType.STRING,
 					CONDITION_FLAG | EXTERNAL_FLAG | STATIC_FLAG
 					| (alignment.getShift() << 8),
-					bytes.length,
+					length(value, bytes, alignment),
 					binary);
 		}
 
@@ -91,6 +91,11 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 	protected abstract DataAlignment alignment(T value);
 
 	protected abstract byte[] toBinary(T value, DataAlignment alignment);
+
+	protected abstract int length(
+			T value,
+			byte[] binary,
+			DataAlignment alignment);
 
 	@Override
 	protected void initialize(Code code, ValOp target, ValOp value) {

@@ -70,6 +70,12 @@ final class StringValueType extends ValueType<String> {
 		}
 
 		@Override
+		protected CodeId constId(String value) {
+			return getGenerator().id("CONST").sub("STRING")
+					.anonymous(++this.constSeq);
+		}
+
+		@Override
 		protected CodeId valueId(String value) {
 			return getGenerator().id("STRING_" + (this.stringSeq++));
 		}
@@ -91,9 +97,11 @@ final class StringValueType extends ValueType<String> {
 		}
 
 		@Override
-		protected CodeId constId(String value) {
-			return getGenerator().id("CONST").sub("STRING")
-					.anonymous(++this.constSeq);
+		protected int length(
+				String value,
+				byte[] binary,
+				DataAlignment alignment) {
+			return binary.length >>> alignment.getShift();
 		}
 
 	}

@@ -102,13 +102,13 @@ void o42a_float_by_str(
 	o42a_bool_t space = O42A_FALSE;
 	o42a_bool_t negative = O42A_FALSE;
 	double value = 0.0;
-	const size_t step = O42A(o42a_val_alignment(O42A_ARGS input));
+	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS input));
 	const UChar32 cmask = O42A(o42a_str_cmask(O42A_ARGS input));
 	const void *const str = O42A(o42a_val_data(O42A_ARGS input));
 
-	for (size_t i = 0; i < len; i += step) {
+	for (size_t i = 0; i < len; ++i) {
 
-		const UChar32 c = *((UChar32*) (str + i)) & cmask;
+		const UChar32 c = *((UChar32*) (str + (i << ashift))) & cmask;
 
 		switch (c) {
 		case HYPHEN_MINUS:
@@ -169,31 +169,32 @@ void o42a_float_by_str(
 			stage = PARSE_EXPONENT_SIGN;
 			continue;
 		default:
-			if (u_charType(c) == U_SPACE_SEPARATOR) {
-				if (space) {
-					O42A(o42a_error_printf(
-							O42A_ARGS
-							"Two subsequent spaces in number at position %zu",
-							i));
-					result->flags = O42A_FALSE;
-					fesetenv(&env);
-					O42A_RETURN;
-				}
-				if (stage == PARSE_SIGN
-						|| stage == PARSE_EXPONENT_SIGN
-						|| (stage == PARSE_FRAC_MATISSA
-								&& !frac_mantissa_len)) {
-					O42A(o42a_error_printf(
-							O42A_ARGS
-							"Unexpected space in number at position %zu",
-							i));
-					result->flags = O42A_FALSE;
-					fesetenv(&env);
-					O42A_RETURN;
-				}
-				space = O42A_TRUE;
-				continue;
+			if (u_charType(c) != U_SPACE_SEPARATOR) {
+				break;
 			}
+			if (space) {
+				O42A(o42a_error_printf(
+						O42A_ARGS
+						"Two subsequent spaces in number at position %zu",
+						i));
+				result->flags = O42A_FALSE;
+				fesetenv(&env);
+				O42A_RETURN;
+			}
+			if (stage == PARSE_SIGN
+					|| stage == PARSE_EXPONENT_SIGN
+					|| (stage == PARSE_FRAC_MATISSA
+							&& !frac_mantissa_len)) {
+				O42A(o42a_error_printf(
+						O42A_ARGS
+						"Unexpected space in number at position %zu",
+						i));
+				result->flags = O42A_FALSE;
+				fesetenv(&env);
+				O42A_RETURN;
+			}
+			space = O42A_TRUE;
+			continue;
 		}
 
 		const int32_t digit = u_digit(c, 10);

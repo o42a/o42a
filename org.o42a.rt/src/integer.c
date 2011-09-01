@@ -61,13 +61,13 @@ void o42a_int_by_str(
 	o42a_bool_t negative = O42A_FALSE;
 	o42a_bool_t has_value = O42A_FALSE;
 	int64_t value = 0;
-	const size_t step = O42A(o42a_val_alignment(O42A_ARGS input));
+	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS input));
 	const UChar32 cmask = O42A(o42a_str_cmask(O42A_ARGS input));
 	const void *const str = O42A(o42a_val_data(O42A_ARGS input));
 
-	for (size_t i = 0; i < len; i += step) {
+	for (size_t i = 0; i < len; ++i) {
 
-		const UChar32 c = *((UChar32*) (str + i)) & cmask;
+		const UChar32 c = *((UChar32*) (str + (i << ashift))) & cmask;
 
 		if (!i) {
 			switch (c) {

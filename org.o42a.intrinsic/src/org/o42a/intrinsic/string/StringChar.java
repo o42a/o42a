@@ -110,7 +110,7 @@ final class StringChar extends AnnotatedBuiltin {
 		index.lt(null, code, code.int64(0L)).go(code, indexDirs.falseDir());
 
 		final Int64op length =
-				stringVal.loadDataLength(code.id("str_len"), code)
+				stringVal.loadLength(code.id("str_len"), code)
 				.toInt64(null, code);
 
 		index.ge(null, code, length).go(code, indexDirs.falseDir());

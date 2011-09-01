@@ -24,10 +24,6 @@
 #include "o42a/memory.h"
 
 
-inline size_t o42a_str_len(O42A_PARAMS const o42a_val_t *const val) {
-	return val->length >> o42a_val_ashift(O42A_ARGS_ val);
-}
-
 inline UChar32 o42a_str_cmask(O42A_PARAMS const o42a_val_t *const val) {
 
 	const size_t char_size = o42a_val_alignment(O42A_ARGS_ val);
@@ -56,18 +52,15 @@ void o42a_str_sub(
 		O42A_RETURN;
 	}
 
-	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS string));
-	const size_t bfrom = from << ashift;
-	const size_t bto = to << ashift;
 	const size_t len = string->length;
 
-	if (bto > len) {
+	if (((uint64_t) to) > len) {
 		// Invalid char index.
 		sub->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
 
-	const size_t sublen = bto - bfrom;
+	const size_t sublen = to - from;
 
 	if (!sublen) {
 		// Empty substring requested.
@@ -75,27 +68,31 @@ void o42a_str_sub(
 		sub->length = 0;
 		O42A_RETURN;
 	}
-	if (!bfrom && bto == len) {
+	if (!from && ((uint64_t) to) == len) {
 		// Full string requested.
 		*sub = *string;
 		O42A_RETURN;
 	}
 
+	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS string));
 	const void *const str = O42A(o42a_val_data(O42A_ARGS string));
 	void *substr;
 
 	sub->length = sublen;
-	if (sublen <= 8) {
+
+	const size_t subsize = sublen << ashift;
+
+	if (subsize <= 8) {
 		sub->flags = O42A_TRUE | (string->flags & O42A_VAL_ALIGNMENT_MASK);
 		substr = &sub->value;
 	} else {
 		sub->flags =
 				O42A_TRUE | O42A_VAL_EXTERNAL
 				| (string->flags & O42A_VAL_ALIGNMENT_MASK);
-		sub->value.v_ptr = substr = O42A(o42a_mem_alloc_rc(O42A_ARGS sublen));
+		sub->value.v_ptr = substr = O42A(o42a_mem_alloc_rc(O42A_ARGS subsize));
 	}
 
-	O42A(memcpy(substr, str + bfrom, sublen));
+	O42A(memcpy(substr, str + (from << ashift), subsize));
 
 	O42A_RETURN;
 }
@@ -108,15 +105,17 @@ int64_t o42a_str_compare(
 
 	const void *str1 = O42A(o42a_val_data(O42A_ARGS what));
 	const UChar32 cmask1 = O42A(o42a_str_cmask(O42A_ARGS what));
-	const size_t step1 = O42A(o42a_val_alignment(O42A_ARGS what));
+	const size_t ashift1 = O42A(o42a_val_ashift(O42A_ARGS what));
+	const size_t step1 = 1 << ashift1;
 	const size_t len1 = what->length;
-	const void *const end1 = str1 + len1;
+	const void *const end1 = str1 + (len1 << ashift1);
 
 	const void *str2 = O42A(o42a_val_data(O42A_ARGS with));
 	const UChar32 cmask2 = O42A(o42a_str_cmask(O42A_ARGS with));
-	const size_t step2 = O42A(o42a_val_alignment(O42A_ARGS with));
+	const size_t ashift2 = O42A(o42a_val_ashift(O42A_ARGS with));
+	const size_t step2 = 1 << ashift2;
 	const size_t len2 = with->length;
-	const void *const end2 = str2 + len2;
+	const void *const end2 = str2 + (len2 << ashift2);
 
 	while (str1 < end1 && str2 < end2) {
 
@@ -153,31 +152,31 @@ void o42a_str_concat(
 
 	const size_t ashift1 = O42A(o42a_val_ashift(O42A_ARGS str1));
 	const size_t len1 = str1->length;
+	const size_t size1 = len1 << ashift1;
 	const void *data1 = O42A(o42a_val_data(O42A_ARGS str1));
 
 	const size_t ashift2 = O42A(o42a_val_ashift(O42A_ARGS str1));
 	const size_t len2 = str2->length;
+	const size_t size2 = len2 << ashift2;
 	const void *data2 = O42A(o42a_val_data(O42A_ARGS str2));
 
 	size_t ashift;
-	size_t len;
 
 	if (ashift1 >= ashift2) {
 		ashift = ashift1;
-		len = len1 + ((len2 >> ashift2) << ashift1);
 	} else {
 		ashift = ashift2;
-		len = len2 + ((len1 >> ashift1) << ashift2);
 	}
 
+	const size_t size = (len1 + len2) << ashift;
 	void *data;
 
-	if (len <= 8) {
+	if (size <= 8) {
 		result->flags = O42A_TRUE;
 		data = &result->value;
 	} else {
 		result->flags = O42A_TRUE | O42A_VAL_EXTERNAL | (ashift << 8);
-		data = O42A(o42a_mem_alloc_rc(O42A_ARGS len));
+		data = O42A(o42a_mem_alloc_rc(O42A_ARGS size));
 	}
 
 	int8_t* copy_to;
@@ -186,20 +185,20 @@ void o42a_str_concat(
 	size_t copy_bytes;
 
 	if (ashift1 >= ashift2) {
-		O42A(memcpy(data, data1, len1));
+		O42A(memcpy(data, data1, size1));
 		if (ashift1 == ashift2) {
-			O42A(memcpy(data + len1, str2, len2));
+			O42A(memcpy(data + size1, str2, size2));
 			O42A_RETURN;
 		}
-		copy_to = (int8_t*) data + len1;
+		copy_to = (int8_t*) data + size1;
 		copy_from = (int8_t*) str2;
-		copy_from_end = copy_from + len2;
+		copy_from_end = copy_from + size2;
 		copy_bytes = 1 << ashift2;
 	} else {
-		O42A(memcpy(data + len - len2, str2, len2));
+		O42A(memcpy(data + size - size2, str2, size2));
 		copy_to = (int8_t*) data;
 		copy_from = (int8_t*) data1;
-		copy_from_end = copy_from + len1;
+		copy_from_end = copy_from + size1;
 		copy_bytes = 1 << ashift1;
 	}
 
