@@ -60,14 +60,14 @@ void o42a_error_append_str(O42A_PARAMS const o42a_val_t *const message) {
 		return;
 	}
 
-	const size_t step = o42a_val_alignment(O42A_ARGS_ message);
+	const size_t ashift = o42a_val_ashift(O42A_ARGS_ message);
 	const UChar32 cmask = o42a_str_cmask(O42A_ARGS_ message);
 	const void *const str = o42a_val_data(O42A_ARGS_ message);
 
 	UFILE *const uerr = u_finit(stderr, NULL, NULL);
 
-	for (size_t i = 0; i < len; i += step) {
-		u_fputc(*((UChar32*) (str + i)) & cmask, uerr);
+	for (size_t i = 0; i < len; ++i) {
+		u_fputc(*((UChar32*) (str + (i << ashift))) & cmask, uerr);
 	}
 
 	u_fclose(uerr);

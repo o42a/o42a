@@ -179,19 +179,8 @@ public final class ValOp extends IROp implements CondOp {
 		return ptr().length(id, code);
 	}
 
-	public Int32op loadDataLength(CodeId id, Code code) {
-
-		final Int32op byteLength = length(
-				id != null ? id.detail("length") : null,
-				code).load(null, code);
-		final Int32op alignmentShift = loadAlignmentShift(
-				id != null ? id.detail("alignment_shift") : null,
-				code);
-
-		return byteLength.lshr(
-				id != null ? id : getId().sub("data_len"),
-				code,
-				alignmentShift);
+	public Int32op loadLength(CodeId id, Code code) {
+		return length(null, code).load(id, code);
 	}
 
 	public final Int64recOp rawValue(CodeId id, Code code) {

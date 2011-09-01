@@ -357,10 +357,9 @@ typedef struct o42a_val {
 	uint32_t flags;
 
 	/**
-	 * Value length in bytes.
+	 * Value length.
 	 *
-	 * This can be meaningful for externally stored values and for
-	 * variable-length value, fully contained in value field, such as string.
+	 * The length quantity depends on value type.
 	 */
 	uint32_t length;
 

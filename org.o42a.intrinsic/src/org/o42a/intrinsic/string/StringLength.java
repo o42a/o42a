@@ -76,7 +76,7 @@ final class StringLength extends AnnotatedBuiltin {
 		final Code code = stringDirs.code();
 
 		final ValOp string = string().op(host).writeValue(stringDirs);
-		final Int32op length = string.loadDataLength(code.id("str_len"), code);
+		final Int32op length = string.loadLength(code.id("str_len"), code);
 		final ValOp result =
 				dirs.value().store(code, length.toInt64(null, code));
 
