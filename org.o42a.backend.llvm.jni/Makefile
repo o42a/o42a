@@ -78,7 +78,7 @@ clean-javah :
 llvm_version = $(shell llvm-config --version)
 llvm_so = $(shell llvm-config --libdir)/libLLVM-$(llvm_version).so
 llvm_so_cflags = $(shell \
-	(stat "$(llvm_so)" 2>&1 >/dev/null && echo -l:$(llvm_so)) \
+	(stat "$(llvm_so)" >/dev/null 2>&1 && echo -l:$(llvm_so)) \
 	|| echo -lLLVM-$(llvm_version))
 
 # Build shared library.
