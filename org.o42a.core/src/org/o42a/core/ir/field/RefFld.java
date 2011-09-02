@@ -51,12 +51,11 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	private boolean filledAll;
 
 	private FuncPtr<C> constructor;
-	private boolean constructorReused;
 
 	public RefFld(ObjectBodyIR bodyIR, Field<?> field) {
 		super(bodyIR, field);
 		this.targetIRAllocated = isOmitted();
-		this.targetIR = field.getArtifact().materialize().ir(getGenerator());
+		this.targetIR = targetIR(field.getArtifact());
 	}
 
 	public final ObjectIR getTargetIR() {
@@ -101,7 +100,6 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 		if (reusedConstructor != null) {
 			this.constructor = reusedConstructor;
-			this.constructorReused = true;
 			return;
 		}
 
@@ -109,45 +107,19 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 		if (!analysis.runtimeConstruction().isUsedBy(getGenerator())) {
 			this.constructor = getType().constructorStub();
-			this.constructorReused = true;
 			return;
 		}
 
 		this.constructor = getGenerator().newFunction().create(
 				getField().ir(getGenerator()).getId().detail("constructor"),
-				getType().getSignature()).getPointer();
+				getType().getSignature(),
+				new ConstructorBuilder()).getPointer();
 	}
 
 	protected void fill() {
 		getInstance().object().setNull();
-		createConstructor();
-	}
-
-	protected final void createConstructor() {
 		getInstance().constructor().setConstant(true).setValue(
 				this.constructor);
-		if (this.constructorReused) {
-			return;
-		}
-
-		final Function<C> constructor = this.constructor.getFunction();
-		final Code failure = constructor.addBlock("failure");
-		final ObjBuilder builder = new ObjBuilder(
-				constructor,
-				failure.head(),
-				getBodyIR(),
-				getBodyIR().getAscendant(),
-				COMPATIBLE);
-		final CodeDirs dirs =
-				builder.falseWhenUnknown(constructor, failure.head());
-
-		buildConstructor(builder, dirs);
-
-		if (failure.exists()) {
-			failure.nullPtr().returnValue(failure);
-		}
-
-		constructor.done();
 	}
 
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
@@ -207,6 +179,19 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	@Override
 	protected Content<Type<?, C>> content() {
 		return new FldContent<Type<?, C>, C>(this);
+	}
+
+	private ObjectIR targetIR(Artifact<?> artifact) {
+
+		final Obj object = artifact.toObject();
+
+		if (object != null) {
+			return object.ir(getGenerator());
+		}
+
+		final Link link = artifact.toLink();
+
+		return targetIR(link.getTargetRef().artifact(dummyUser()));
 	}
 
 	private void fillTarget(ObjectBodyIR targetBodyIR) {
@@ -398,6 +383,30 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		@Override
 		public String toString() {
 			return "Decls[" + this.fld + ']';
+		}
+
+	}
+
+	private final class ConstructorBuilder implements FunctionBuilder<C> {
+
+		@Override
+		public void build(Function<C> constructor) {
+
+			final Code failure = constructor.addBlock("failure");
+			final ObjBuilder builder = new ObjBuilder(
+					constructor,
+					failure.head(),
+					getBodyIR(),
+					getBodyIR().getAscendant(),
+					COMPATIBLE);
+			final CodeDirs dirs =
+					builder.falseWhenUnknown(constructor, failure.head());
+
+			buildConstructor(builder, dirs);
+
+			if (failure.exists()) {
+				failure.nullPtr().returnValue(failure);
+			}
 		}
 
 	}

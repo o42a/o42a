@@ -23,10 +23,12 @@ import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTIO
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.util.use.User;
+import org.o42a.core.ir.object.ObjectIR;
 
 
 public final class RuntimeLinkTarget extends Obj {
@@ -71,11 +73,11 @@ public final class RuntimeLinkTarget extends Obj {
 	protected void fullyResolve() {
 		super.fullyResolve();
 
-		final ObjectType targetType =
-				this.link.getTypeRef().type(dummyUser());
+		final Artifact<?> target =
+				this.link.getTargetRef().artifact(dummyUser());
 
-		if (targetType != null) {
-			targetType.wrapBy(type());
+		if (target != null) {
+			target.materialize().type().wrapBy(type());
 		}
 	}
 
@@ -83,12 +85,18 @@ public final class RuntimeLinkTarget extends Obj {
 	protected void fullyResolveDefinitions() {
 		super.fullyResolveDefinitions();
 
-		final Obj targetObject =
-				this.link.getTypeRef().typeObject(User.dummyUser());
+		final Artifact<?> target =
+				this.link.getTargetRef().artifact(dummyUser());
 
-		if (targetObject != null) {
-			targetObject.value().wrapBy(value());
+		if (target != null) {
+			target.materialize().value().wrapBy(value());
 		}
+	}
+
+	@Override
+	protected ObjectIR createIR(Generator generator) {
+		throw new UnsupportedOperationException(
+				"Can not create IR for run-time object wrap " + this);
 	}
 
 }
