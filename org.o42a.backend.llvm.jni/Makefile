@@ -75,6 +75,12 @@ clean-javah :
 	rm -f $(srcdir)/jni_*.h
 
 
+llvm_version = $(shell llvm-config --version)
+llvm_so = $(shell llvm-config --libdir)/libLLVM-$(llvm_version).so
+llvm_so_cflags = $(shell \
+	(stat "$(llvm_so)" 2>&1 >/dev/null && echo -l:$(llvm_so)) \
+	|| echo -lLLVM-$(llvm_version))
+
 # Build shared library.
 $(so_lib) : $(srcdir)/debug.o
 $(so_lib) : $(srcdir)/BackendModule.o
@@ -88,8 +94,7 @@ $(so_lib) : $(srcdir)/jni_ptr.o
 $(so_lib) : $(srcdir)/jni_code.o
 $(so_lib) :
 	mkdir -p $(target_dir)
-	$(CXX) $(LDFLAGS) -Xlinker --no-undefined -shared -o $@ $+ \
-	$(shell llvm-config --libdir)/libLLVM-$(shell llvm-config --version).so
+	$(CXX) $(LDFLAGS) $(llvm_so_cflags) -Xlinker --no-undefined -shared -o $@ $+
 
 
 # Compile commons.
