@@ -21,7 +21,7 @@
 #
 
 CFLAGS += $(shell icu-config --cflags-dynamic)
-CFLAGS += -std=c99
+CFLAGS += -std=c99 -fPIC
 
 CPPGLAGS += $(shell icu-config --cppflags-dynamic)
 
