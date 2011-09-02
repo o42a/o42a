@@ -175,7 +175,8 @@ class PathTarget extends Ref {
 		}
 
 		final Ref phrasePrefix =
-				reproducer.getPhrasePrefix().rescope(reproducedPart.toRescoper());
+				reproducer.getPhrasePrefix().materialize().rescope(
+						reproducedPart.toRescoper());
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {
