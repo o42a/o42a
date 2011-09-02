@@ -30,7 +30,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -55,26 +54,17 @@ final class ParentObjectFragment extends MemberFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj startObject = start.toObject();
-		final Obj object;
-		final Scope begin;
+		final Obj object = start.toObject();
 
-		if (startObject != null) {
-			object = startObject;
-			begin = start;
-		} else {
-			assert index == 0;
+		assert object != null :
+			"Attempt to obtain parent of object, but "
+			+ start + " is not an object";
 
-			final Field<?> field = start.toMember().toField(user);
-
-			object = field.getArtifact().materialize();
-			begin = object.getScope();
-		}
 		if (!object.membersResolved()) {
 
 			final Scope self = getMemberKey().getOrigin();
 
-			if (begin == self) {
+			if (start == self) {
 				// Create proxy to not forget the user.
 				if (this.proxyUser == null) {
 					this.proxyUser = simpleUsable("Proxy", this);
@@ -100,7 +90,7 @@ final class ParentObjectFragment extends MemberFragment {
 		}
 
 		final Member member =
-				resolveMember(location, proxiedUser, path, index, begin);
+				resolveMember(location, proxiedUser, path, index, start);
 
 		if (member == null) {
 			return null;

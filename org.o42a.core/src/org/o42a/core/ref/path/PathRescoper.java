@@ -119,7 +119,7 @@ final class PathRescoper extends Rescoper {
 		}
 
 		final Rescoper phraseRescoper =
-				reproducer.getPhrasePrefix().toRescoper();
+				reproducer.getPhrasePrefix().materialize().toRescoper();
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {

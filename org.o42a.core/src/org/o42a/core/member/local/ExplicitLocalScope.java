@@ -231,6 +231,9 @@ final class ExplicitLocalScope extends LocalScope {
 
 	@Override
 	public String toString() {
+		if (this.member == null) {
+			return super.toString();
+		}
 		return this.member.toString();
 	}
 
