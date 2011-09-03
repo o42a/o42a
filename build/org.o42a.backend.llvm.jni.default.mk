@@ -16,9 +16,16 @@ java_ldflags = -L $(JAVA_HOME)/jre/lib/amd64 -ljava
 # Shared library name.
 so_name = libo42ac_llvm.so
 
+# llvm-config executable.
+llvm_config = llvm-config
+
 # Space-separated LLVM component names to pass to LLVM-config.
 # Invoke `llvm-config --components` to see all possible values.
 llvm_components = all
+
+# libLLVM shared object file.
+# Will be searched in predefined locations if omitted.
+llvm_so =
 
 # Uncomment this to disable debug
 #debug_cxxflags = -D O42AC_NDEBUG

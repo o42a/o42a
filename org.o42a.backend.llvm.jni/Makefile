@@ -41,8 +41,8 @@ include $(default_mk)
 
 includes += -I include
 CXXFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused
-CXXFLAGS := $(CXXFLAGS) $(shell llvm-config --cxxflags) $(debug_cxxflags) $(includes)
-LDFLAGS := $(LDFLAGS) $(java_ldflags) $(shell llvm-config --ldflags)
+CXXFLAGS := $(CXXFLAGS) $(shell $(llvm_config) --cxxflags) $(debug_cxxflags) $(includes)
+LDFLAGS := $(LDFLAGS) $(java_ldflags) $(shell $(llvm_config) --ldflags)
 
 # Make all.
 all : $(so_lib)
@@ -75,11 +75,15 @@ clean-javah :
 	rm -f $(srcdir)/jni_*.h
 
 
-llvm_version = $(shell llvm-config --version)
-llvm_so = $(shell llvm-config --libdir)/libLLVM-$(llvm_version).so
-llvm_so_cflags = $(shell \
-	(stat "$(llvm_so)" >/dev/null 2>&1 && echo -l:$(llvm_so)) \
+llvm_version = $(shell $(llvm_config) --version)
+ifeq ($(strip $(llvm_so)),)
+    llvm_so = $(ifeq $(shell $(llvm_config) --libdir)/libLLVM-$(llvm_version).so
+    llvm_so_cflags = $(shell \
+	([ -f "$(llvm_so)" ] && echo -l:$(llvm_so)) \
 	|| echo -lLLVM-$(llvm_version))
+else
+    llvm_so_cflags = -l:$(llvm_so)
+endif
 
 # Build shared library.
 $(so_lib) : $(srcdir)/debug.o

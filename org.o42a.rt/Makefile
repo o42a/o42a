@@ -20,13 +20,13 @@
 # See org.o42a.rt.default.mk for customization options.
 #
 
-CFLAGS += $(shell icu-config --cflags-dynamic)
+CFLAGS += $(shell $(icu_config) --cflags-dynamic)
 CFLAGS += -std=c99 -fPIC
 
-CPPGLAGS += $(shell icu-config --cppflags-dynamic)
+CPPGLAGS += $(shell $(icu_config) --cppflags-dynamic)
 
-LDFLAGS += $(shell icu-config --ldflags)
-LDFLAGS += $(shell icu-config --ldflags-icuio)
+LDFLAGS += $(shell $(icu_config) --ldflags)
+LDFLAGS += $(shell $(icu_config) --ldflags-icuio)
 
 headersdir = include/o42a
 srcdir = src

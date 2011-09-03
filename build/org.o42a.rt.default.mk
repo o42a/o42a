@@ -20,3 +20,6 @@ release_cflags = -O2
 
 # Debug C compiler flags.
 debug_cflags = -O0
+
+# icu-config executable.
+icu_config = icu-config
