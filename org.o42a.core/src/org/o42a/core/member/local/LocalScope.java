@@ -39,6 +39,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.impl.local.ExplicitLocalScope;
+import org.o42a.core.member.impl.local.PropagatedLocalScope;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
@@ -57,28 +59,8 @@ public abstract class LocalScope
 		extends LocalScopeBase
 		implements MemberContainer, ClauseContainer, SourceInfo {
 
-	static ExplicitLocalScope explicitScope(
-			LocationInfo location,
-			Distributor distributor,
-			Obj owner,
-			String name) {
-		return new ExplicitLocalScope(
-				location,
-				distributor,
-				owner,
-				name);
-	}
-
-	static ExplicitLocalScope reproducedScope(
-			LocationInfo location,
-			Distributor distributor,
-			Obj owner,
-			ExplicitLocalScope reproducedFrom) {
-		return new ExplicitLocalScope(
-				location,
-				distributor,
-				owner,
-				reproducedFrom);
+	protected static ExplicitLocalScope explicitLocal(LocalScope localScope) {
+		return localScope.explicit();
 	}
 
 	private final CompilerContext context;
@@ -89,7 +71,7 @@ public abstract class LocalScope
 	private final ResolverFactory<LocalResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
 
-	LocalScope(LocationInfo location, Obj owner) {
+	public LocalScope(LocationInfo location, Obj owner) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.owner = owner;
@@ -354,16 +336,15 @@ public abstract class LocalScope
 		return this.owningLocal;
 	}
 
-	abstract boolean addMember(Member member);
+	protected abstract boolean addMember(Member member);
 
-	abstract ExplicitLocalScope explicit();
+	protected abstract ExplicitLocalScope explicit();
 
 	private final class OwnerPathFragment extends PathFragment {
 
 		@Override
 		public Container resolve(
-				LocationInfo location,
-				UserInfo user,
+				PathResolver resolver,
 				Path path,
 				int index,
 				Scope start,

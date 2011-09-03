@@ -19,9 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-import static org.o42a.util.use.User.dummyUser;
-
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -29,96 +26,40 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.util.use.UserInfo;
 
 
-public final class Dep extends PathFragment {
-
-	/**
-	 * Builds dependency on the given enclosing local scope's field.
-	 *
-	 * @param object local object this dependency is built for.
-	 * @param dependency local field key the <code>object</code> depends on.
-	 *
-	 * @return new field dependency.
-	 */
-	public static Dep fieldDep(Obj object, MemberKey dependency) {
-		return new Dep(object, dependency);
-	}
-
-	/**
-	 * Builds dependency on the {@link LocalScope#getOwner() owner} of enclosing
-	 * local scope.
-	 *
-	 * @param object local object this dependency is built for.
-	 *
-	 * @return new dependency on enclosing scope's owner.
-	 */
-	public static Dep enclosingOwnerDep(Obj object) {
-		return new Dep(object);
-	}
+public abstract class Dep extends PathFragment {
 
 	private final Obj object;
-	private final Field<?> dependency;
-	private final Artifact<?> target;
+	private final DepKind kind;
 
-	private Dep(Obj object, MemberKey dependencyKey) {
-		assert object != null :
-			"Object not specified";
+	public Dep(Obj object, DepKind kind) {
 		this.object = object;
-
-		final Container container =
-				object.getScope().getEnclosingContainer();
-
-		assert container.toLocal() != null :
-			object + " is not a local object";
-
-		this.dependency = container.member(dependencyKey).toField(dummyUser());
-
-		assert this.dependency != null :
-			"Dependency " + dependencyKey + " of " + object + " not found";
-
-		this.target = this.dependency.getArtifact();
-	}
-
-	private Dep(Obj object) {
-
-		final LocalScope local =
-				object.getScope().getEnclosingContainer().toLocal();
-
-		assert local != null :
-			object + " is not a local object";
-
-		this.object = object;
-		this.dependency = null;
-		this.target = local.getOwner();
+		this.kind = kind;
 	}
 
 	public final Obj getObject() {
 		return this.object;
 	}
 
-	public final Artifact<?> getTarget() {
-		return this.target;
+	public final DepKind getKind() {
+		return this.kind;
 	}
 
-	public final Field<?> getDependency() {
-		return this.dependency;
-	}
+	public abstract Object getKey();
 
-	public final boolean dependencyOnEnclosingOwner() {
-		return this.dependency == null;
-	}
+	public abstract Artifact<?> getTarget();
+
+	public abstract Field<?> getDepField();
+
+	public abstract Ref getDepRef();
 
 	@Override
 	public Container resolve(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Path path,
 			int index,
 			Scope start,
@@ -137,35 +78,7 @@ public final class Dep extends PathFragment {
 			object + " is inside " + object.getScope().getEnclosingContainer()
 			+ ", which is not a local scope";
 
-		if (dependencyOnEnclosingOwner()) {
-
-			final Obj owner = enclosingLocal.getOwner();
-
-			walker.up(object, this, owner);
-
-			return owner;
-		}
-
-		walker.dep(object, this, this.dependency);
-
-		return enclosingLocal.member(this.dependency.getKey()).substance(user);
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-
-		final Dep dep;
-
-		if (dependencyOnEnclosingOwner()) {
-			dep = new Dep(scope.toObject());
-		} else {
-			dep = new Dep(scope.toObject(), getDependency().getKey());
-		}
-
-		return reproducedPath(dep.toPath());
+		return resolveDep(resolver, path, index, object, enclosingLocal, walker);
 	}
 
 	@Override
@@ -179,12 +92,12 @@ public final class Dep extends PathFragment {
 		return object.dep(dirs, this);
 	}
 
-	@Override
-	public String toString() {
-		if (this.dependency != null) {
-			return "Dep[" + this.dependency + " of " + this.object + ']';
-		}
-		return "Dep[<owner> of " + this.object + ']';
-	}
+	protected abstract Container resolveDep(
+			PathResolver resolver,
+			Path path,
+			int index,
+			Obj object,
+			LocalScope enclosingLocal,
+			PathWalker walker);
 
 }

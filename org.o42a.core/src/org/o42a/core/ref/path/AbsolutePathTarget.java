@@ -19,6 +19,10 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -65,10 +69,7 @@ final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
-		return resolver.path(
-				this,
-				this.path,
-				getContext().getRoot().getScope());
+		return resolve(resolver, pathResolver(this, resolver));
 	}
 
 	@Override
@@ -94,17 +95,25 @@ final class AbsolutePathTarget extends Ref {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver).resolveAll();
+		resolve(resolver, fullPathResolver(this, resolver)).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver).resolveValues(resolver);
+		resolve(resolver, valuePathResolver(this, resolver)).resolveValues(
+				resolver);
 	}
 
 	@Override
 	protected RefOp createOp(HostOp host) {
 		return new Op(host, this);
+	}
+
+	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
+		return resolver.path(
+				pathResolver,
+				this.path,
+				getContext().getRoot().getScope());
 	}
 
 	private static final class Op extends RefOp {

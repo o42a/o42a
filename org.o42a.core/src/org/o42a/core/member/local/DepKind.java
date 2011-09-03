@@ -17,35 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
-
-import static org.o42a.util.use.User.dummyUser;
+package org.o42a.core.member.local;
 
 
-final class AbsolutePathTracker extends PathTracker {
+public enum DepKind {
 
-	private int beforeStart;
-
-	AbsolutePathTracker(
-			PathResolver resolver,
-			PathWalker walker,
-			int startIndex) {
-		super(resolver, walker);
-		this.beforeStart = startIndex;
-	}
-
-	@Override
-	public PathResolver nextResolver() {
-		if (this.beforeStart > 0) {
-			return this.initialResolver.resolveBy(dummyUser());
-		}
-		return super.nextResolver();
-	}
-
-	@Override
-	boolean walk(boolean succeed) {
-		--this.beforeStart;
-		return super.walk(succeed);
-	}
+	FIELD_DEP,
+	ENCLOSING_OWNER_DEP,
+	REF_DEP
 
 }

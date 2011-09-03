@@ -214,6 +214,10 @@ public abstract class Ref extends Statement {
 		return materializationPath.target(this, distribute(), this);
 	}
 
+	public Path appendToPath(Path path) {
+		return path.rebuildWithRef(this);
+	}
+
 	@Override
 	public abstract Ref reproduce(Reproducer reproducer);
 
@@ -274,6 +278,13 @@ public abstract class Ref extends Statement {
 	}
 
 	public Rescoper toRescoper() {
+
+		final Path path = getPath();
+
+		if (path != null) {
+			return path.rescoper(getScope());
+		}
+
 		return new RefRescoper(this);
 	}
 

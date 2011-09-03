@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.ref;
 
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -103,8 +105,7 @@ public class OverriddenEx extends ObjectConstructor {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self = selfPath.resolve(
-					this,
-					value().proposition(),
+					pathResolver(this, value().proposition()),
 					getScope()).getArtifact().toObject();
 			final Definitions overriddenDefinitions =
 					self.value().getOverriddenDefinitions();

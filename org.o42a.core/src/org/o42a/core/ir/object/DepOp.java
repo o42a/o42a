@@ -34,6 +34,8 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.local.Dep;
+import org.o42a.core.ref.Ref;
 
 
 public class DepOp extends IROp implements HostOp {
@@ -45,6 +47,10 @@ public class DepOp extends IROp implements HostOp {
 		super(host.getBuilder(), ptr);
 		this.depIR = depIR;
 		this.host = host;
+	}
+
+	public final Dep getDep() {
+		return depIR().getDep();
 	}
 
 	public final ObjOp host() {
@@ -63,7 +69,7 @@ public class DepOp extends IROp implements HostOp {
 	@Override
 	public ObjectOp toObject(CodeDirs dirs) {
 
-		final Artifact<?> target = depIR().getDep().getTarget();
+		final Artifact<?> target = getDep().getTarget();
 		final Obj object = target.toObject();
 
 		if (object == null) {
@@ -92,7 +98,7 @@ public class DepOp extends IROp implements HostOp {
 	public ObjectOp materialize(CodeDirs dirs) {
 
 		final Code code = dirs.code();
-		final Artifact<?> target = depIR().getDep().getTarget();
+		final Artifact<?> target = getDep().getTarget();
 
 		return anonymousObject(
 				getBuilder(),
@@ -107,28 +113,43 @@ public class DepOp extends IROp implements HostOp {
 
 	public void fill(LocalBuilder builder, CodeDirs dirs) {
 
+		final DataOp object = object(builder, dirs);
 		final Code code = dirs.code();
-		final DataOp value;
-		final Field<?> dependency = depIR().getDep().getDependency();
 
-		if (dependency != null) {
-
-			final LclOp field = builder.host().field(dirs, dependency.getKey());
-
-			value = field.ptr().toData(null, code);
-		} else {
-			value = builder.owner().toData(code);
-		}
-
-		ptr().object(code).store(code, value);
+		ptr().object(code).store(code, object);
 		if (code.isDebug()) {
-			code.dump(this.depIR.getDep() + ": ", toData(code));
+			code.dump(getDep() + ": ", toData(code));
 		}
+	}
+
+	private DataOp object(LocalBuilder builder, CodeDirs dirs) {
+
+		final Code code = dirs.code();
+
+		switch (getDep().getKind()) {
+		case FIELD_DEP:
+
+			final Field<?> depField = getDep().getDepField();
+			final LclOp field = builder.host().field(dirs, depField.getKey());
+
+			return field.materialize(dirs).toData(code);
+		case ENCLOSING_OWNER_DEP:
+			return builder.owner().toData(code);
+		case REF_DEP:
+
+			final Ref depRef = getDep().getDepRef();
+			final HostOp refTarget = depRef.op(builder.host()).target(dirs);
+
+			return refTarget.materialize(dirs).toData(code);
+		}
+
+		throw new IllegalStateException(
+				"Dependency of unsupported kind: " + getDep()) ;
 	}
 
 	@Override
 	public String toString() {
-		return "DepOp[" + this.depIR.getDep() + '@' + host() + ']';
+		return "DepOp[" + getDep() + '@' + host() + ']';
 	}
 
 }

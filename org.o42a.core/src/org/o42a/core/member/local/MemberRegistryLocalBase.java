@@ -19,13 +19,11 @@
 */
 package org.o42a.core.member.local;
 
-import static org.o42a.core.member.local.LocalScope.explicitScope;
-import static org.o42a.core.member.local.LocalScope.reproducedScope;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.MemberRegistryClauseBase;
+import org.o42a.core.member.impl.local.ExplicitLocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -46,7 +44,7 @@ public abstract class MemberRegistryLocalBase
 			return null;
 		}
 
-		final ExplicitLocalScope explicitScope = explicitScope(
+		final ExplicitLocalScope explicitScope = new ExplicitLocalScope(
 				location,
 				distributor,
 				owner,
@@ -67,7 +65,7 @@ public abstract class MemberRegistryLocalBase
 			return null;
 		}
 
-		final ExplicitLocalScope reproducedScope = reproducedScope(
+		final ExplicitLocalScope reproducedScope = new ExplicitLocalScope(
 				scope,
 				reproducer.distribute(),
 				owner,

@@ -30,15 +30,13 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.use.UserInfo;
 
 
 final class MaterializeFragment extends PathFragment {
 
 	@Override
 	public Container resolve(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Path path,
 			int index,
 			Scope start,

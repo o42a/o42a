@@ -17,18 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member;
+package org.o42a.core.member.impl;
 
 import java.util.Arrays;
 
+import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.MemberId;
 import org.o42a.util.ArrayUtil;
 
 
-final class MemberIds extends MemberId {
+public final class MemberIds extends MemberId {
 
 	private final MemberId[] ids;
 
-	MemberIds(MemberId... ids) {
+	public MemberIds(MemberId... ids) {
 		assert ids.length >= 2 :
 			"Too few member identifiers: " + ids.length;
 		this.ids = ids;

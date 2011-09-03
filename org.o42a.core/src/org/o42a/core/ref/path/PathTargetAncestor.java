@@ -52,8 +52,7 @@ final class PathTargetAncestor extends Ref {
 
 	@Override
 	public boolean isConstant() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.ref.isConstant();
 	}
 
 	@Override
@@ -85,11 +84,6 @@ final class PathTargetAncestor extends Ref {
 	}
 
 	@Override
-	public TypeRef ancestor(LocationInfo location) {
-		return resolveAncestor(getScope().dummyResolver()).getAncestor();
-	}
-
-	@Override
 	public Value<?> value(Resolver resolver) {
 
 		final TypeRef ancestor = resolveAncestor(resolver);
@@ -99,6 +93,11 @@ final class PathTargetAncestor extends Ref {
 		}
 
 		return ancestor.value(ancestor.getScope().walkingResolver(resolver));
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location) {
+		return resolveAncestor(getScope().dummyResolver()).getAncestor();
 	}
 
 	@Override

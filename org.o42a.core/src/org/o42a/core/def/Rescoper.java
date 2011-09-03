@@ -26,8 +26,9 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.impl.rescoper.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.impl.Rescoped;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -61,10 +62,6 @@ public abstract class Rescoper {
 
 	public boolean isTransparent() {
 		return false;
-	}
-
-	public Path getPath() {
-		return null;
 	}
 
 	public Definitions update(Definitions definitions) {
@@ -124,6 +121,13 @@ public abstract class Rescoper {
 	public abstract void resolveAll(ScopeInfo location, Resolver resolver);
 
 	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
+
+	public Ref rescopeRef(Ref ref) {
+		return new Rescoped(
+				ref,
+				this,
+				ref.distributeIn(getFinalScope().getContainer()));
+	}
 
 	public abstract Rescoper reproduce(
 			LocationInfo location,

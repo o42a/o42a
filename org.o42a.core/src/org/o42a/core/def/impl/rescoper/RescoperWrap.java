@@ -24,6 +24,7 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -51,6 +52,11 @@ public abstract class RescoperWrap extends Rescoper {
 	@Override
 	public Resolver rescope(LocationInfo location, Resolver resolver) {
 		return wrapped().rescope(location, resolver);
+	}
+
+	@Override
+	public Ref rescopeRef(Ref ref) {
+		return wrapped().rescopeRef(ref);
 	}
 
 	@Override

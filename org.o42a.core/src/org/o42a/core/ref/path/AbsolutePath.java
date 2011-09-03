@@ -21,6 +21,7 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
@@ -36,11 +37,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.log.LoggableData;
-import org.o42a.util.use.UserInfo;
 
 
 public final class AbsolutePath extends Path {
@@ -109,8 +107,7 @@ public final class AbsolutePath extends Path {
 
 	public PathResolution resolve(CompilerContext context) {
 		return resolve(
-				context.getRoot(),
-				dummyUser(),
+				pathResolver(context, dummyUser()),
 				context.getRoot().getScope());
 	}
 
@@ -135,6 +132,11 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
+	public AbsolutePath rebuildWithRef(Ref followingRef) {
+		return (AbsolutePath) super.rebuildWithRef(followingRef);
+	}
+
+	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer) {
@@ -142,15 +144,18 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
-	PathTracker startWalk(UserInfo user, Scope start, PathWalker walker) {
+	PathTracker startWalk(
+			PathResolver resolver,
+			Scope start,
+			PathWalker walker) {
 		if (!walker.root(this, start)) {
 			return null;
 		}
-		if (user.toUser().isDummy()) {
-			return new PathTracker(user, walker);
+		if (resolver.toUser().isDummy()) {
+			return new PathTracker(resolver, walker);
 		}
 		return new AbsolutePathTracker(
-				user,
+				resolver,
 				walker,
 				startIndex(start.getContext()));
 	}
@@ -191,8 +196,7 @@ public final class AbsolutePath extends Path {
 		final AbsolutePathStartFinder walker = new AbsolutePathStartFinder();
 
 		walk(
-				new Location(context, new LoggableData(this)),
-				dummyUser(),
+				pathResolver(context, dummyUser()),
 				context.getRoot().getScope(),
 				walker);
 

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
@@ -32,6 +33,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.path.PathWalker;
@@ -151,8 +153,7 @@ public class IRUtil {
 		final DeclaredInWriter writer = new DeclaredInWriter(generator, id);
 
 		clause.pathInObject().walk(
-				scope,
-				dummyUser(),
+				pathResolver(scope,dummyUser()),
 				enclosingObjectScope, writer);
 
 		return writer.id;
@@ -204,10 +205,18 @@ public class IRUtil {
 		}
 
 		@Override
-		public boolean dep(
+		public boolean fieldDep(
 				Obj object,
 				PathFragment fragment,
 				Field<?> dependency) {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public boolean refDep(
+				Obj object,
+				PathFragment fragment,
+				Ref dependency) {
 			throw new IllegalStateException();
 		}
 

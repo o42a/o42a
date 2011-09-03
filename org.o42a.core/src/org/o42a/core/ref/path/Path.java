@@ -29,6 +29,7 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
 import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -47,7 +48,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.use.UserInfo;
 
 
 public class Path {
@@ -102,20 +102,17 @@ public class Path {
 	}
 
 	public final PathResolution resolve(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Scope start) {
-		return walk(location, user, start, DUMMY_PATH_WALKER);
+		return walk(resolver, start, DUMMY_PATH_WALKER);
 	}
 
 	public PathResolution walk(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
 		return walkPath(
-				location,
-				user,
+				resolver,
 				isAbsolute() ? start.getContext().getRoot().getScope() : start,
 				walker);
 	}
@@ -205,6 +202,39 @@ public class Path {
 		return new Path(rebuilt);
 	}
 
+	public Path rebuildWithRef(Ref followingRef) {
+
+		final Path path = followingRef.getPath();
+
+		if (path != null) {
+			return append(path).rebuild();
+		}
+
+		final int length = this.fragments.length;
+
+		if (length == 0) {
+			return null;
+		}
+
+		final int lastIdx = length - 1;
+		final PathFragment lastFragment = this.fragments[lastIdx];
+		final PathFragment rebuilt = lastFragment.combineWithRef(followingRef);
+
+		if (rebuilt == null) {
+			return null;
+		}
+
+		final PathFragment[] newFragments = this.fragments.clone();
+
+		newFragments[lastIdx] = rebuilt;
+
+		if (isAbsolute()) {
+			return new AbsolutePath(newFragments);
+		}
+
+		return new Path(newFragments);
+	}
+
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer) {
@@ -243,8 +273,9 @@ public class Path {
 			}
 
 			final Path reproducedPath = reproduction.getReproducedPath();
-			final PathResolution resolution =
-					reproducedPath.resolve(location, dummyUser(), toScope);
+			final PathResolution resolution = reproducedPath.resolve(
+					pathResolver(location, dummyUser()),
+					toScope);
 
 			if (!resolution.isResolved()) {
 				return null;
@@ -323,11 +354,14 @@ public class Path {
 		return out.toString();
 	}
 
-	PathTracker startWalk(UserInfo user, Scope start, PathWalker walker) {
+	PathTracker startWalk(
+			PathResolver resolver,
+			Scope start,
+			PathWalker walker) {
 		if (!walker.start(this, start)) {
 			return null;
 		}
-		return new PathTracker(user, walker);
+		return new PathTracker(resolver, walker);
 	}
 
 	final HostOp write(CodeDirs dirs, HostOp start) {
@@ -353,12 +387,11 @@ public class Path {
 	}
 
 	private PathResolution walkPath(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
 
-		final PathTracker tracker = startWalk(user, start, walker);
+		final PathTracker tracker = startWalk(resolver, start, walker);
 
 		if (tracker == null) {
 			return null;
@@ -369,8 +402,7 @@ public class Path {
 
 		for (int i = 0; i < this.fragments.length; ++i) {
 			result = this.fragments[i].resolve(
-					location,
-					tracker.nextUser(),
+					tracker.nextResolver(),
 					this,
 					i,
 					prev,

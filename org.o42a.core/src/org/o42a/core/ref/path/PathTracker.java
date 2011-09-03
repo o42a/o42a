@@ -25,22 +25,22 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.util.use.UserInfo;
+import org.o42a.core.ref.Ref;
 
 
 class PathTracker implements PathWalker {
 
-	protected final UserInfo initialUser;
+	protected final PathResolver initialResolver;
 	private final PathWalker walker;
 	private boolean aborted;
 
-	PathTracker(UserInfo user, PathWalker walker) {
-		this.initialUser = user;
+	PathTracker(PathResolver resolver, PathWalker walker) {
+		this.initialResolver = resolver;
 		this.walker = walker;
 	}
 
-	public UserInfo nextUser() {
-		return this.initialUser;
+	public PathResolver nextResolver() {
+		return this.initialResolver;
 	}
 
 	public final boolean isAborted() {
@@ -79,11 +79,16 @@ class PathTracker implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(
+	public boolean fieldDep(
 			Obj object,
 			PathFragment fragment,
 			Field<?> dependency) {
-		return walk(this.walker.dep(object, fragment, dependency));
+		return walk(this.walker.fieldDep(object, fragment, dependency));
+	}
+
+	@Override
+	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+		return walk(this.walker.refDep(object, fragment, dependency));
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import java.util.HashMap;
 
@@ -152,8 +153,7 @@ public final class ValuePartRef extends ObjectConstructor {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
 			final Obj self = selfPath.resolve(
-					this,
-					value().proposition(),
+					pathResolver(this, value().proposition()),
 					getScope()).getArtifact().toObject();
 			final Definitions definitions;
 

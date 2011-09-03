@@ -19,11 +19,15 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -43,7 +47,6 @@ final class PathRescoper extends Rescoper {
 		return this.path.isAbsolute();
 	}
 
-	@Override
 	public final Path getPath() {
 		return this.path;
 	}
@@ -51,8 +54,9 @@ final class PathRescoper extends Rescoper {
 	@Override
 	public Scope rescope(Scope scope) {
 
-		final PathResolution found =
-				this.path.resolve(scope, scope.dummyResolver(), scope);
+		final PathResolution found = this.path.resolve(
+				pathResolver(scope, scope.dummyResolver()),
+				scope);
 
 		return found.isResolved() ? found.getResult().getScope() : null;
 	}
@@ -68,8 +72,7 @@ final class PathRescoper extends Rescoper {
 		}
 
 		final PathResolution found = this.path.walk(
-				location,
-				resolver,
+				pathResolver(location, resolver),
 				resolver.getScope(),
 				pathWalker);
 
@@ -78,6 +81,20 @@ final class PathRescoper extends Rescoper {
 		}
 
 		return found.getResult().getScope().walkingResolver(resolver);
+	}
+
+	@Override
+	public Ref rescopeRef(Ref ref) {
+
+		final Path newPath = ref.appendToPath(this.path);
+
+		if (newPath != null) {
+			return newPath.target(
+					ref,
+					ref.distributeIn(getFinalScope().getContainer()));
+		}
+
+		return super.rescopeRef(ref);
 	}
 
 	@Override
@@ -134,7 +151,9 @@ final class PathRescoper extends Rescoper {
 
 	@Override
 	public void resolveAll(ScopeInfo location, Resolver resolver) {
-		this.path.resolve(resolver, resolver, resolver.getScope());
+		this.path.resolve(
+				fullPathResolver(location, resolver),
+				resolver.getScope());
 	}
 
 	@Override

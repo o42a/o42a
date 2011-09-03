@@ -71,7 +71,7 @@ public abstract class Statement extends Placed {
 
 	public abstract Statement reproduce(Reproducer reproducer);
 
-	public final void resolveAll(Resolver resolver) {
+	public void resolveAll(Resolver resolver) {
 		this.fullyResolved = true;
 		getContext().fullResolution().start();
 		try {
@@ -81,7 +81,7 @@ public abstract class Statement extends Placed {
 		}
 	}
 
-	public final void resolveValues(Resolver resolver) {
+	public void resolveValues(Resolver resolver) {
 		resolveAll(resolver);
 		getContext().fullResolution().start();
 		try {
