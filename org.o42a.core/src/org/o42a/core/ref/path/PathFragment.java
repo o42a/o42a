@@ -25,9 +25,9 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class PathFragment {
@@ -43,8 +43,7 @@ public abstract class PathFragment {
 	}
 
 	public abstract Container resolve(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Path path,
 			int index,
 			Scope start,
@@ -60,6 +59,10 @@ public abstract class PathFragment {
 	}
 
 	public PathFragment combineWithLocalOwner(Obj owner) {
+		return null;
+	}
+
+	public PathFragment combineWithRef(Ref ref) {
 		return null;
 	}
 

@@ -73,6 +73,12 @@ public final class RefRescoper extends Rescoper {
 	}
 
 	@Override
+	public Ref rescopeRef(Ref ref) {
+		// TODO Auto-generated method stub
+		return super.rescopeRef(ref);
+	}
+
+	@Override
 	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
 
 		final Ref ref = this.ref.reproduce(reproducer);

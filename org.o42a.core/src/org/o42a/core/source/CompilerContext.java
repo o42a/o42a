@@ -24,10 +24,11 @@ import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.Source;
+import org.o42a.util.log.Loggable;
 import org.o42a.util.log.Logger;
 
 
-public abstract class CompilerContext {
+public abstract class CompilerContext implements LocationInfo {
 
 	private final SourceCompiler compiler;
 	private final Intrinsics intrinsics;
@@ -37,7 +38,8 @@ public abstract class CompilerContext {
 		this.compiler = parent.compiler;
 		this.intrinsics = parent.intrinsics;
 		this.logger =
-				logger != null ? new CompilerLogger(logger, this) : parent.logger;
+				logger != null
+				? new CompilerLogger(logger, this) : parent.logger;
 	}
 
 	protected CompilerContext(
@@ -47,6 +49,16 @@ public abstract class CompilerContext {
 		this.compiler = compiler;
 		this.intrinsics = intrinsics;
 		this.logger = new CompilerLogger(logger, this);
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return getSource().getLoggable();
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this;
 	}
 
 	public SectionTag getSectionTag() {

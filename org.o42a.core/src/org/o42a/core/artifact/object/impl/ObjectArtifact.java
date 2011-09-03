@@ -27,6 +27,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 
@@ -59,8 +60,10 @@ public abstract class ObjectArtifact extends Artifact<Obj> {
 		super(scope);
 	}
 
-	protected abstract Dep addDep(MemberKey memberKey);
+	protected abstract Dep addFieldDep(MemberKey memberKey);
 
 	protected abstract Dep addEnclosingOwnerDep(Obj owner);
+
+	protected abstract Dep addRefDep(Ref ref);
 
 }

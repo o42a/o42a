@@ -31,11 +31,11 @@ import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.use.UserInfo;
 
 
 final class ParentLocalFragment extends PathFragment {
@@ -48,8 +48,7 @@ final class ParentLocalFragment extends PathFragment {
 
 	@Override
 	public Container resolve(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Path path,
 			int index,
 			Scope start,
@@ -74,12 +73,17 @@ final class ParentLocalFragment extends PathFragment {
 
 	@Override
 	public PathFragment combineWithMember(MemberKey memberKey) {
-		return ((ObjectArtifact) this.object).addDep(memberKey);
+		return ((ObjectArtifact) this.object).addFieldDep(memberKey);
 	}
 
 	@Override
 	public PathFragment combineWithLocalOwner(Obj owner) {
 		return ((ObjectArtifact) this.object).addEnclosingOwnerDep(owner);
+	}
+
+	@Override
+	public PathFragment combineWithRef(Ref ref) {
+		return ((ObjectArtifact) this.object).addRefDep(ref);
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -39,16 +40,14 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
-import org.o42a.util.Holder;
 
 
-final class Rescoped extends Ref {
+public final class Rescoped extends Ref {
 
 	private final Ref ref;
 	private final Rescoper rescoper;
-	private Holder<Path> path;
 
-	Rescoped(Ref ref, Rescoper rescoper, Distributor distributor) {
+	public Rescoped(Ref ref, Rescoper rescoper, Distributor distributor) {
 		super(
 				ref,
 				distributor,
@@ -70,39 +69,15 @@ final class Rescoped extends Ref {
 	}
 
 	@Override
-	public Path getPath() {
-		if (this.path != null) {
-			return this.path.get();
-		}
-
-		final Path refPath = this.ref.getPath();
-
-		if (refPath == null) {
-			this.path = new Holder<Path>(null);
-			return null;
-		}
-
-		final Path rescoperPath = this.rescoper.getPath();
-
-		if (rescoperPath == null) {
-			this.path = new Holder<Path>(null);
-			return null;
-		}
-
-		final Path path = rescoperPath.append(refPath).rebuild();
-
-		this.path = new Holder<Path>(path);
-
-		return path;
-	}
-
-	@Override
 	public Resolution resolve(Resolver resolver) {
 
 		final Path path = getPath();
 
 		if (path != null) {
-			return resolver.path(this, path, getScope());
+			return resolver.path(
+					pathResolver(this, resolver),
+					path,
+					getScope());
 		}
 
 		final Resolver rescoped = this.rescoper.rescope(this, resolver);
@@ -182,7 +157,7 @@ final class Rescoped extends Ref {
 
 	@Override
 	public String toString() {
-		return "Rescoped[" + this.rescoper + ": " + this.ref + ']';
+		return "Rescoped[" + this.rescoper + "](" + this.ref + ')';
 	}
 
 	@Override

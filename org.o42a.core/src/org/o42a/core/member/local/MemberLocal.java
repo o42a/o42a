@@ -37,7 +37,7 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class MemberLocal extends Member {
 
-	MemberLocal(
+	public MemberLocal(
 			LocationInfo location,
 			Distributor distributor,
 			OwningObject owner) {

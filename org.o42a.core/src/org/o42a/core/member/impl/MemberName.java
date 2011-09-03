@@ -17,14 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member;
+package org.o42a.core.member.impl;
+
+import org.o42a.core.member.AdapterId;
+import org.o42a.core.member.MemberId;
 
 
-final class MemberName extends MemberId {
+public final class MemberName extends MemberId {
 
 	private final String name;
 
-	MemberName(String name) {
+	public MemberName(String name) {
 		this.name = name;
 	}
 

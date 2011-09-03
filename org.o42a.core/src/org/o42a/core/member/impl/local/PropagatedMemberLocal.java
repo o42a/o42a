@@ -17,11 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
+package org.o42a.core.member.impl.local;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.util.use.UserInfo;
 
 

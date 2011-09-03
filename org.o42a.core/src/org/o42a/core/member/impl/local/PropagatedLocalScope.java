@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
+package org.o42a.core.member.impl.local;
 
 import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
@@ -32,24 +32,26 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
-final class PropagatedLocalScope extends LocalScope {
+public final class PropagatedLocalScope extends LocalScope {
 
 	final ExplicitLocalScope explicit;
 	private final PropagatedMemberLocal member;
 
-	PropagatedLocalScope(LocalScope overridden, Obj owner) {
+	public PropagatedLocalScope(LocalScope overridden, Obj owner) {
 		super(
 				new Location(
 						owner.getContext(),
 						owner.getLoggable().setReason(
-								logDeclaration(overridden.explicit()))),
+								logDeclaration(explicitLocal(overridden)))),
 				owner);
-		this.explicit = overridden.explicit();
+		this.explicit = explicitLocal(overridden);
 		this.member = new PropagatedMemberLocal(this, overridden);
 	}
 
@@ -104,7 +106,11 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path findMember(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path findMember(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		return this.explicit.findMember(user, accessor, memberId, declaredIn);
 	}
 
@@ -127,12 +133,12 @@ final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	final ExplicitLocalScope explicit() {
+	protected final ExplicitLocalScope explicit() {
 		return this.explicit;
 	}
 
 	@Override
-	boolean addMember(Member member) {
+	protected boolean addMember(Member member) {
 		throw new UnsupportedOperationException(
 				"Can not register field in propagated local scope " + this);
 	}

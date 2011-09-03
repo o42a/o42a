@@ -27,6 +27,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 
 
 class AbsolutePathStartFinder implements PathWalker {
@@ -86,7 +87,15 @@ class AbsolutePathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, PathFragment fragment, Field<?> dependency) {
+	public boolean fieldDep(
+			Obj object,
+			PathFragment fragment,
+			Field<?> dependency) {
+		return unreachable();
+	}
+
+	@Override
+	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
 		return unreachable();
 	}
 

@@ -25,6 +25,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.path.PathWalker;
@@ -109,12 +110,27 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, PathFragment fragment, Field<?> dependency) {
+	public boolean fieldDep(
+			Obj object,
+			PathFragment fragment,
+			Field<?> dependency) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.dep(object, fragment, dependency) & proceed;
+			proceed = walker.fieldDep(object, fragment, dependency) & proceed;
+		}
+
+		return proceed;
+	}
+
+	@Override
+	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+
+		boolean proceed = true;
+
+		for (PathWalker walker : getWalkers()) {
+			proceed = walker.refDep(object, fragment, dependency) & proceed;
 		}
 
 		return proceed;

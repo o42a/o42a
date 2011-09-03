@@ -29,6 +29,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
@@ -144,7 +145,18 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, PathFragment fragment, Field<?> dependency) {
+	public boolean fieldDep(
+			Obj object,
+			PathFragment fragment,
+			Field<?> dependency) {
+		this.owner = false;
+		this.enclosed = false;
+		this.inheritant = false;
+		return true;
+	}
+
+	@Override
+	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
 		this.owner = false;
 		this.enclosed = false;
 		this.inheritant = false;

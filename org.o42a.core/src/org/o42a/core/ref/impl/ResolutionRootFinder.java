@@ -28,9 +28,9 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.ResolutionWalker;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.path.PathWalker;
@@ -155,10 +155,27 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean dep(Obj object, PathFragment fragment, Field<?> dependency) {
+	public boolean fieldDep(
+			Obj object,
+			PathFragment fragment,
+			Field<?> dependency) {
 		// Treat the enclosing local scope as resolution root.
 		this.root = object.getScope().getEnclosingScope().toLocal();
 		return false;
+	}
+
+	@Override
+	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+
+		final LocalScope local =
+				object.getScope().getEnclosingScope().toLocal();
+
+		this.root = local;
+
+		final LocalResolver resolver = local.walkingResolver(dummyUser(), this);
+		final Resolution resolution = dependency.resolve(resolver);
+
+		return resolution != null;
 	}
 
 	@Override

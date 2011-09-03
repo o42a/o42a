@@ -17,14 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member;
+package org.o42a.core.member.impl;
 
 import java.util.HashSet;
 
+import org.o42a.core.member.Member;
 import org.o42a.util.use.*;
 
 
-final class MemberUses implements UserInfo {
+public final class MemberUses implements UserInfo {
 
 	private final String name;
 	private final Member member;
@@ -32,7 +33,7 @@ final class MemberUses implements UserInfo {
 	private final UseTracker tracker = new UseTracker();
 	private final HashSet<UseInfo> uses = new HashSet<UseInfo>();
 
-	MemberUses(String name, Member member) {
+	public MemberUses(String name, Member member) {
 		this.name = name;
 		this.member = member;
 		this.user = new MemberUser();

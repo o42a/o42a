@@ -19,6 +19,10 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
@@ -96,23 +100,7 @@ class PathTarget extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-
-		final Path fullPath = getPath();
-
-		if (fullPath != null) {
-			return resolver.path(this, fullPath, resolver.getScope());
-		}
-
-		final Resolution start = this.start.resolve(resolver);
-
-		if (start == null) {
-			return null;
-		}
-		if (start.isError()) {
-			return start;
-		}
-
-		return resolver.path(this, this.path, start.getScope());
+		return resolve(resolver, pathResolver(this, resolver));
 	}
 
 	@Override
@@ -235,17 +223,38 @@ class PathTarget extends Ref {
 		if (this.start != null) {
 			this.start.resolveAll(resolver);
 		}
-		resolve(resolver).resolveAll();
+		resolve(resolver, fullPathResolver(this, resolver)).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver).resolveValues(resolver);
+		resolve(resolver, valuePathResolver(this, resolver)).resolveValues(
+				resolver);
 	}
 
 	@Override
 	protected RefOp createOp(HostOp host) {
 		return new Op(host, this);
+	}
+
+	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
+
+		final Path fullPath = getPath();
+
+		if (fullPath != null) {
+			return resolver.path(pathResolver, fullPath, resolver.getScope());
+		}
+
+		final Resolution start = this.start.resolve(resolver);
+
+		if (start == null) {
+			return null;
+		}
+		if (start.isError()) {
+			return start;
+		}
+
+		return resolver.path(pathResolver, this.path, start.getScope());
 	}
 
 	private PathTarget reproducePart(

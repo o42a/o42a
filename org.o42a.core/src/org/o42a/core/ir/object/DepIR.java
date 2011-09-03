@@ -66,27 +66,35 @@ public class DepIR {
 				host.ptr().dep(code, getInstance()));
 	}
 
+	@Override
+	public String toString() {
+		return this.dep + " IR";
+	}
+
 	void allocate(SubData<?> data) {
 
-		final CodeId localId;
-
-		if (getDep().dependencyOnEnclosingOwner()) {
-			localId = getGenerator().id("O");
-		} else {
-
-			final FieldIR<?> depFieldIR =
-					this.dep.getDependency().ir(getGenerator());
-
-			localId = getGenerator().id("D").sub(depFieldIR.getId().getLocal());
-		}
+		final CodeId localId = localId();
 
 		this.instance = data.addInstance(localId, DEP_IR);
 		this.instance.object().setNull();
 	}
 
-	@Override
-	public String toString() {
-		return this.dep + " IR";
+	private CodeId localId() {
+		switch (getDep().getKind()) {
+		case FIELD_DEP:
+
+			final FieldIR<?> depFieldIR =
+					getDep().getDepField().ir(getGenerator());
+
+			return getGenerator().id("F").sub(depFieldIR.getId().getLocal());
+		case ENCLOSING_OWNER_DEP:
+			return getGenerator().id("O");
+		case REF_DEP:
+			return getGenerator().id("R").anonymous(getDep().getName());
+		}
+
+		throw new IllegalStateException(
+				"Dependency of unsupported kind: " + getDep());
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {

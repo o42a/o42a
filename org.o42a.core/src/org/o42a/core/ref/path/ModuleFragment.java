@@ -31,7 +31,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.use.UserInfo;
 
 
 final class ModuleFragment extends PathFragment {
@@ -53,8 +52,7 @@ final class ModuleFragment extends PathFragment {
 
 	@Override
 	public Container resolve(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Path path,
 			int index,
 			Scope start,
@@ -64,7 +62,7 @@ final class ModuleFragment extends PathFragment {
 		final Module module = context.getIntrinsics().getModule(this.moduleId);
 
 		if (module == null) {
-			context.getLogger().unresolvedModule(location, this.moduleId);
+			context.getLogger().unresolvedModule(resolver, this.moduleId);
 			return null;
 		}
 		walker.module(this, module);

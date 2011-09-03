@@ -30,6 +30,8 @@ import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
@@ -163,7 +165,10 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean dep(Obj object, PathFragment fragment, Field<?> dependency) {
+	public boolean fieldDep(
+			Obj object,
+			PathFragment fragment,
+			Field<?> dependency) {
 		if (!mayProceedInsidePrototype()) {
 			return false;
 		}
@@ -171,6 +176,20 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 			return updateRole(PROTOTYPE);
 		}
 		return true;
+	}
+
+	@Override
+	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+		if (!mayProceedInsidePrototype()) {
+			return false;
+		}
+
+		final LocalScope local =
+				object.getScope().getEnclosingScope().toLocal();
+		final LocalResolver resolver = local.walkingResolver(dummyUser(), this);
+		final Resolution resolution = dependency.resolve(resolver);
+
+		return resolution != null;
 	}
 
 	@Override

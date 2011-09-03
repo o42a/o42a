@@ -26,8 +26,6 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
-import static org.o42a.core.member.local.Dep.enclosingOwnerDep;
-import static org.o42a.core.member.local.Dep.fieldDep;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
@@ -47,8 +45,12 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.impl.local.EnclosingOwnerDep;
+import org.o42a.core.member.impl.local.FieldDep;
+import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -64,13 +66,14 @@ public abstract class Obj
 	private final OwningObject owningObject = new OwningObject(this);
 	private ObjectType type;
 	private ObjectValue value;
+	private int depNameSeq;
 
 	private final HashMap<MemberKey, Member> members =
 			new HashMap<MemberKey, Member>();
 	private final HashMap<MemberId, Symbol> symbols =
 			new HashMap<MemberId, Symbol>();
-	private final LinkedHashMap<MemberKey, Dep> deps =
-			new LinkedHashMap<MemberKey, Dep>();
+	private final LinkedHashMap<Object, Dep> deps =
+			new LinkedHashMap<Object, Dep>();
 
 	private ObjectMembers objectMembers;
 	private Clause[] explicitClauses;
@@ -585,20 +588,9 @@ public abstract class Obj
 	}
 
 	@Override
-	protected Dep addDep(MemberKey memberKey) {
+	protected final Dep addFieldDep(MemberKey memberKey) {
 		assert getContext().fullResolution().assertIncomplete();
-
-		final Dep found = this.deps.get(memberKey);
-
-		if (found != null) {
-			return found;
-		}
-
-		final Dep dep = fieldDep(this, memberKey);
-
-		this.deps.put(memberKey, dep);
-
-		return dep;
+		return addDep(new FieldDep(this, memberKey));
 	}
 
 	@Override
@@ -618,9 +610,23 @@ public abstract class Obj
 			owner + " is not owner of " + this
 			+ " enclosing local scope " + enclosingLocal;
 
-		final Dep dep = enclosingOwnerDep(this);
+		return addDep(new EnclosingOwnerDep(this));
+	}
 
-		this.deps.put(null, dep);
+	@Override
+	protected Dep addRefDep(Ref ref) {
+		assert getContext().fullResolution().assertIncomplete();
+
+		final int newDepId = this.depNameSeq + 1;
+		final RefDep newDep = new RefDep(
+				this,
+				ref,
+				Integer.toString(newDepId));
+		final Dep dep = addDep(newDep);
+
+		if (dep == newDep) {
+			this.depNameSeq = newDepId;
+		}
 
 		return dep;
 	}
@@ -743,6 +749,20 @@ public abstract class Obj
 		return this.symbols.get(memberId);
 	}
 
+	private Dep addDep(Dep dep) {
+
+		final Object key = dep.getKey();
+		final Dep found = this.deps.put(key, dep);
+
+		if (found == null) {
+			return dep;
+		}
+
+		this.deps.put(key, found);
+
+		return found;
+	}
+
 	private boolean assertImplicitSamples(Sample[] samples) {
 		for (Sample sample : samples) {
 			assert !sample.isExplicit() :
@@ -750,6 +770,5 @@ public abstract class Obj
 		}
 		return true;
 	}
-
 
 }

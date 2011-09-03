@@ -23,14 +23,14 @@ import org.o42a.core.*;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 
 public final class RescopedRef extends Wrap {
 
-	private final Rescoped rescoped;
+	private final Ref ref;
+	private final Rescoper rescoper;
 
 	public RescopedRef(Ref ref, Rescoper rescoper) {
 		super(
@@ -38,27 +38,21 @@ public final class RescopedRef extends Wrap {
 				new RescopedDistrubutor(
 						ref,
 						rescoper.getFinalScope()));
-		this.rescoped = new Rescoped(ref, rescoper, distribute());
+		this.ref = ref;
+		this.rescoper = rescoper;
 	}
 
 	@Override
 	public String toString() {
-		if (this.rescoped == null) {
+		if (this.rescoper == null) {
 			return super.toString();
 		}
-		return this.rescoped.toString();
+		return "Rescoped[" + this.rescoper + "](" + this.ref + ')';
 	}
 
 	@Override
 	protected Ref resolveWrapped() {
-
-		final Path path = this.rescoped.getPath();
-
-		if (path == null) {
-			return this.rescoped;
-		}
-
-		return path.target(this, distribute());
+		return this.rescoper.rescopeRef(this.ref);
 	}
 
 	private static final class RescopedDistrubutor extends Distributor {

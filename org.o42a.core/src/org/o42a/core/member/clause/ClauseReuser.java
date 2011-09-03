@@ -149,10 +149,16 @@ final class ClauseReuser implements PathWalker {
 	}
 
 	@Override
-	public boolean dep(
+	public boolean fieldDep(
 			Obj object,
 			PathFragment fragment,
 			Field<?> dependency) {
+		getLogger().invalidClauseReused(this.location);
+		return false;
+	}
+
+	@Override
+	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
 		getLogger().invalidClauseReused(this.location);
 		return false;
 	}

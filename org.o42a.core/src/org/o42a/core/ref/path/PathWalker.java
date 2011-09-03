@@ -25,6 +25,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 
 
 public interface PathWalker {
@@ -44,7 +45,9 @@ public interface PathWalker {
 			PathFragment fragment,
 			Member member);
 
-	boolean dep(Obj object, PathFragment fragment, Field<?> dependency);
+	boolean fieldDep(Obj object, PathFragment fragment, Field<?> dependency);
+
+	boolean refDep(Obj object, PathFragment fragment, Ref dependency);
 
 	boolean materialize(
 			Artifact<?> artifact,

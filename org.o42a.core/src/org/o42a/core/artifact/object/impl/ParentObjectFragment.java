@@ -47,8 +47,7 @@ final class ParentObjectFragment extends MemberFragment {
 
 	@Override
 	public Container resolve(
-			LocationInfo location,
-			UserInfo user,
+			PathResolver resolver,
 			Path path,
 			int index,
 			Scope start,
@@ -69,7 +68,7 @@ final class ParentObjectFragment extends MemberFragment {
 				if (this.proxyUser == null) {
 					this.proxyUser = simpleUsable("Proxy", this);
 				}
-				this.proxyUser.useBy(user);
+				this.proxyUser.useBy(resolver);
 
 				final Container result = self.getEnclosingContainer();
 
@@ -82,15 +81,15 @@ final class ParentObjectFragment extends MemberFragment {
 		final UserInfo proxiedUser;
 
 		if (this.proxyUser == null) {
-			proxiedUser = user;
+			proxiedUser = resolver;
 		} else {
 			// Proxy exists. Use it instead of user.
-			this.proxyUser.useBy(user);
+			this.proxyUser.useBy(resolver);
 			proxiedUser = this.proxyUser;
 		}
 
 		final Member member =
-				resolveMember(location, proxiedUser, path, index, start);
+				resolveMember(resolver, path, index, start);
 
 		if (member == null) {
 			return null;

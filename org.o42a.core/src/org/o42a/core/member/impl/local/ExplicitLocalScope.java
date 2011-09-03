@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
+package org.o42a.core.member.impl.local;
 
 import static org.o42a.util.use.User.dummyUser;
 
@@ -34,13 +34,15 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.util.ArrayUtil;
 
 
-final class ExplicitLocalScope extends LocalScope {
+public final class ExplicitLocalScope extends LocalScope {
 
 	private final ExplicitMemberLocal member;
 	private final String name;
@@ -52,7 +54,7 @@ final class ExplicitLocalScope extends LocalScope {
 	private boolean allResolved;
 	private LocalIR ir;
 
-	ExplicitLocalScope(
+	public ExplicitLocalScope(
 			LocationInfo location,
 			Distributor distributor,
 			Obj owner,
@@ -62,7 +64,7 @@ final class ExplicitLocalScope extends LocalScope {
 		this.member = new ExplicitMemberLocal(this, distributor);
 	}
 
-	ExplicitLocalScope(
+	public ExplicitLocalScope(
 			LocationInfo location,
 			Distributor distributor,
 			Obj owner,
@@ -245,12 +247,12 @@ final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	ExplicitLocalScope explicit() {
+	protected ExplicitLocalScope explicit() {
 		return this;
 	}
 
 	@Override
-	boolean addMember(Member member) {
+	protected boolean addMember(Member member) {
 
 		final MemberId memberId = member.getId();
 		final Member old = this.members.put(memberId, member);

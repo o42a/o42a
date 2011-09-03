@@ -58,6 +58,10 @@ public abstract class CodeId implements Cloneable {
 		return separate(Separator.ANONYMOUS, Integer.toString(index), true);
 	}
 
+	public final CodeId anonymous(String name) {
+		return separate(Separator.ANONYMOUS, name, false);
+	}
+
 	public final CodeId detail(String detail) {
 		assert detail != null :
 			"Identifier not specified";

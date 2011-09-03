@@ -20,6 +20,9 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.impl.MemberIds;
+import org.o42a.core.member.impl.MemberName;
+import org.o42a.core.member.impl.ReproducedMemberId;
 
 
 public abstract class MemberId {

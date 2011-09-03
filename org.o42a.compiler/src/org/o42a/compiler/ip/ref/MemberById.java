@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.compiler.ip.Interpreter;
@@ -153,8 +154,9 @@ public class MemberById extends Wrap {
 			return found;
 		}
 
-		final PathResolution pathResolution =
-				found.resolve(enclosing, dummyUser(), enclosing.getScope());
+		final PathResolution pathResolution = found.resolve(
+				pathResolver(enclosing, dummyUser()),
+				enclosing.getScope());
 
 		if (!pathResolution.isResolved()) {
 			return null;

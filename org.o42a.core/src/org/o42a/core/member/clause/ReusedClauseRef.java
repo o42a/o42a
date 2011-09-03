@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.ref.Ref;
@@ -56,8 +57,7 @@ final class ReusedClauseRef {
 				new ClauseReuser(this.ref, this.reuseContents);
 
 		if (path.walk(
-				this.ref,
-				dummyUser(),
+				pathResolver(this.ref, dummyUser()),
 				clause.getEnclosingScope(),
 				reuser) == null) {
 			return null;
