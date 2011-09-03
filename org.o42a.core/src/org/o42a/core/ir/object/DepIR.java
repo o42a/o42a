@@ -71,14 +71,13 @@ public class DepIR {
 		final CodeId localId;
 
 		if (getDep().dependencyOnEnclosingOwner()) {
-			localId = getGenerator().id("_owner");
+			localId = getGenerator().id("O");
 		} else {
 
-			final FieldIR<?> dependencyIR =
+			final FieldIR<?> depFieldIR =
 					this.dep.getDependency().ir(getGenerator());
 
-			localId =
-					getGenerator().id("_dep").sub(dependencyIR.getId().getLocal());
+			localId = getGenerator().id("D").sub(depFieldIR.getId().getLocal());
 		}
 
 		this.instance = data.addInstance(localId, DEP_IR);

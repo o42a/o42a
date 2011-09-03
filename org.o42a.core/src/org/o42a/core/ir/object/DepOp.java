@@ -121,6 +121,9 @@ public class DepOp extends IROp implements HostOp {
 		}
 
 		ptr().object(code).store(code, value);
+		if (code.isDebug()) {
+			code.dump(this.depIR.getDep() + ": ", toData(code));
+		}
 	}
 
 	@Override

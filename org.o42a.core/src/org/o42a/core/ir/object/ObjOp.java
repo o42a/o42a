@@ -170,8 +170,7 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public DepOp dep(CodeDirs dirs, Dep dep) {
 
-		final CodeDirs subDirs =
-				dirs.begin("dep", "Dep " + dep + " of " + this);
+		final CodeDirs subDirs = dirs.begin("dep", dep.toString());
 		final Code code = subDirs.code();
 		final DepIR ir = ptr().getType().getObjectIR().dep(dep);
 		final String depName = dep.getName();
