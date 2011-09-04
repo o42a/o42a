@@ -19,12 +19,18 @@ so_name = libo42ac_llvm.so
 # llvm-config executable.
 llvm_config = llvm-config
 
+
+# Set to non-empty value to statically link against LLVM.
+llvm_static = 
+
 # Space-separated LLVM component names to pass to LLVM-config.
 # Invoke `llvm-config --components` to see all possible values.
+# Only meaningful when llvm_static set.
 llvm_components = all
 
 # libLLVM shared object file.
 # Will be searched in predefined locations if omitted.
+# Only meaningful when llvm_static unset.
 llvm_so =
 
 # Uncomment this to disable debug

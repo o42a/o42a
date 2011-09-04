@@ -75,14 +75,27 @@ clean-javah :
 	rm -f $(srcdir)/jni_*.h
 
 
-llvm_version = $(shell $(llvm_config) --version)
-ifeq ($(strip $(llvm_so)),)
-	llvm_so = $(shell $(llvm_config) --libdir)/libLLVM-$(llvm_version).so
-	llvm_so_cflags = $(shell \
-		([ -f "$(llvm_so)" ] && echo -l:$(llvm_so)) \
-		|| echo -lLLVM-$(llvm_version))
+ifdef llvm_static
+
+llvm_ldflags = $(shell $(llvm_config) --libs $(llvm_components))
+
 else
-	llvm_so_cflags = -l:$(llvm_so)
+
+llvm_version = $(shell $(llvm_config) --version)
+
+ifeq ($(strip $(llvm_so)),)
+
+llvm_so = $(shell $(llvm_config) --libdir)/libLLVM-$(llvm_version).so
+llvm_ldflags = $(shell \
+	([ -f "$(llvm_so)" ] && echo -l:$(llvm_so)) \
+	|| echo -lLLVM-$(llvm_version))
+
+else
+
+llvm_ldflags = -l:$(llvm_so)
+
+endif
+
 endif
 
 # Build shared library.
@@ -98,7 +111,7 @@ $(so_lib) : $(srcdir)/jni_ptr.o
 $(so_lib) : $(srcdir)/jni_code.o
 $(so_lib) :
 	mkdir -p $(target_dir)
-	$(CXX) $(LDFLAGS) $(llvm_so_cflags) -Xlinker --no-undefined -shared -o $@ $+
+	$(CXX) $(LDFLAGS) -Xlinker --no-undefined -shared -o $@ $+ $(llvm_ldflags)
 
 
 # Compile commons.
