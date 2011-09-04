@@ -77,12 +77,12 @@ clean-javah :
 
 llvm_version = $(shell $(llvm_config) --version)
 ifeq ($(strip $(llvm_so)),)
-    llvm_so = $(ifeq $(shell $(llvm_config) --libdir)/libLLVM-$(llvm_version).so
-    llvm_so_cflags = $(shell \
-	([ -f "$(llvm_so)" ] && echo -l:$(llvm_so)) \
-	|| echo -lLLVM-$(llvm_version))
+	llvm_so = $(shell $(llvm_config) --libdir)/libLLVM-$(llvm_version).so
+	llvm_so_cflags = $(shell \
+		([ -f "$(llvm_so)" ] && echo -l:$(llvm_so)) \
+		|| echo -lLLVM-$(llvm_version))
 else
-    llvm_so_cflags = -l:$(llvm_so)
+	llvm_so_cflags = -l:$(llvm_so)
 endif
 
 # Build shared library.
