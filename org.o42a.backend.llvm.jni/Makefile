@@ -39,6 +39,29 @@ common_deps = $(headersdir)/*.h
 include $(default_mk)
 -include $(common_mk)
 
+
+# Determine Java LDFLAGS if not set.
+ifndef java_ldflags
+
+uname_arch = $(shell uname -m)
+
+ifeq ($(uname_arch),x86_64)
+java_arch = amd64
+else ifeq ($(uname_arch),i686)
+java_arch = i386
+else ifeq ($(uname_arch),i586)
+java_arch = i386
+else ifeq ($(uname_arch),i486)
+java_arch = i386
+else
+java_arch = $(uname_arch)
+endif
+
+java_ldflags = -L $(JAVA_HOME)/jre/lib/$(java_arch) -l java
+
+endif
+
+
 includes += -I include
 CXXFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused
 CXXFLAGS := $(CXXFLAGS) $(shell $(llvm_config) --cxxflags) $(debug_cxxflags) $(includes)
