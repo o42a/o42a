@@ -27,10 +27,12 @@ import static org.o42a.util.use.User.dummyUser;
 import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.impl.ObjectTypeIRAncestorFunc;
 import org.o42a.core.ir.op.ObjectRefFunc;
@@ -106,6 +108,13 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				getObjectIR().getMainBodyIR().layout(generator).toBinaryForm());
 
 		getObjectIR().getValueIR().fill(this);
+	}
+
+	public ObjectTypeOp op(CodeBuilder builder, Code code) {
+		return getInstance()
+				.pointer(getGenerator())
+				.op(null, code)
+				.op(builder, ObjectPrecision.EXACT);
 	}
 
 	@Override

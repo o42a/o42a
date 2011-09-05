@@ -675,9 +675,26 @@ const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
  * \param type[in] static type to cast to.
  *
  * \return object body pointer corresponding to the given type or NULL if object
- * is not derived from type.
+ * is not derived from it.
  */
 o42a_obj_body_t *o42a_obj_cast(
+		O42A_DECLS
+		o42a_obj_t *,
+		const o42a_obj_stype_t *);
+
+/**
+ * Searches for the object's body of the given type.
+ *
+ * In contrast to o42a_obj_cast this function never returns NULL and reports
+ * cast error.
+ *
+ * \param object[in] object to cast.
+ * \param type[in] static type to cast to.
+ *
+ * \return object body pointer corresponding to the given type or false if
+ * object is not derived from it.
+ */
+o42a_obj_body_t *o42a_obj_cast_or_error(
 		O42A_DECLS
 		o42a_obj_t *,
 		const o42a_obj_stype_t *);

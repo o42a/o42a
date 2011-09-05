@@ -20,7 +20,6 @@
 package org.o42a.core.ir.field.object;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.field.ObjectConstructorFunc;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;

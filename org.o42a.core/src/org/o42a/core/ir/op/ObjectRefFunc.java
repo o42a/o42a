@@ -36,7 +36,11 @@ public final class ObjectRefFunc extends ObjectFunc<ObjectRefFunc> {
 	}
 
 	public DataOp call(Code code, ObjectOp object) {
-		return invoke(null, code, OBJECT_REF.result(), object.toData(code));
+		return invoke(
+				null,
+				code,
+				OBJECT_REF.result(),
+				object != null ? object.toData(code) : code.nullDataPtr());
 	}
 
 	public static final class ObjectRef

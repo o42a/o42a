@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.field.object;
 
-import static org.o42a.core.ir.field.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
+import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
@@ -34,8 +34,10 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.field.*;
-import org.o42a.core.ir.field.ObjectConstructorFunc.ObjectConstructor;
+import org.o42a.core.ir.field.FldKind;
+import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.object.ObjectConstructorFunc.ObjectConstructor;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
@@ -91,7 +93,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
 				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
-		final DataOp previousPtr = fld.previous(code).load(null, code);
+		final DataOp previousPtr = fld.previous(null, code).load(null, code);
 
 		final CondCode construct =
 				previousPtr.isNull(null, code)
@@ -118,7 +120,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				ownFld.toAny(code).eq(null, code, fld.toAny(null, code));
 		final CondCode store = isOwn.branch(code, "store", "do_not_store");
 
-		fld.object(store).store(store, result);
+		fld.object(null, store).store(store, result);
 		result.returnValue(store);
 
 		result.returnValue(store.otherwise());
@@ -128,17 +130,20 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			ObjBuilder builder,
 			CodeDirs dirs,
 			DataOp previousPtr) {
+
 		final Code code = dirs.code();
 
 		code.dumpName("Delegate to ", previousPtr);
 
 		final Op previous = previousPtr.to(null, code, getType().getType());
 		final ObjectConstructorFunc constructor =
-				previous.constructor(code).load(null, code);
+				previous.constructor(null, code).load(null, code);
 		final DataOp ancestorPtr =
 				constructor.call(code, builder.host(), previous);
-		final ObjectOp ancestor =
-				anonymousObject(builder, ancestorPtr, getBodyIR().getAscendant());
+		final ObjectOp ancestor = anonymousObject(
+				builder,
+				ancestorPtr,
+				getBodyIR().getAscendant());
 
 		return builder.newObject(
 				dirs,
@@ -158,8 +163,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return (Type) super.getType();
 		}
 
-		public final DataRecOp previous(Code code) {
-			return ptr(null, code, getType().previous());
+		public final DataRecOp previous(CodeId id, Code code) {
+			return ptr(id, code, getType().previous());
 		}
 
 		@Override

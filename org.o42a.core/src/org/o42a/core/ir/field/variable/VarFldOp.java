@@ -23,10 +23,14 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CondCode;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
@@ -48,17 +52,45 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 		final Link variable = fld().getField().getArtifact();
 		final Code code = dirs.code();
-		final ObjectOp object = value.materialize(dirs);
-		final ObjectOp castObject = object.dynamicCast(
-				code.id("cast_target"),
-				dirs,
-				ptr().targetType(code)
-				.load(null, code)
-				.op(getBuilder(), DERIVED),
-				variable.getTypeRef().typeObject(dummyUser()));
+		final ObjectOp valueObject = value.materialize(dirs);
+		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
+		final ObjectIRType.Op knownBound = boundRec.load(null, code);
 
-		ptr().object(code).store(code, castObject.toData(code));
-		castObject.writeLogicalValue(dirs);
+		// Bound is already known.
+		final CondCode boundUnknown =
+				knownBound.isNull(null, code)
+				.branch(code, "bound_unknown", "bound_known");
+		final Code boundKnown = boundUnknown.otherwise();
+
+		if (boundKnown.isDebug()) {
+			boundKnown.dumpName(
+					"Known bound: ",
+					knownBound.toData(null, boundKnown));
+		}
+
+		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
+		final ObjectOp castObject = valueObject.dynamicCast(
+				boundKnown.id("cast_target"),
+				boundKnownDirs,
+				knownBound.op(getBuilder(), DERIVED),
+				variable.getTypeRef().typeObject(dummyUser()),
+				true);
+
+		ptr().object(null, boundKnown).store(
+				boundKnown,
+				castObject.toData(boundKnown));
+		boundKnown.dump("Assigned: ", ptr());
+		castObject.writeLogicalValue(boundKnownDirs);
+		boundKnown.go(code.tail());
+
+		// Bound is not known yet.
+		final VariableAssignerFunc assigner =
+				ptr().assigner(null, boundUnknown).load(null, boundUnknown);
+		final BoolOp assigned =
+				assigner.assign(boundUnknown, host(), valueObject);
+
+		assigned.goUnless(boundUnknown, dirs.falseDir());
+		boundUnknown.go(code.tail());
 	}
 
 }
