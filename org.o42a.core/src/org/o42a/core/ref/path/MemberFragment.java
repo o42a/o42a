@@ -85,16 +85,15 @@ public class MemberFragment extends PathFragment {
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
 
-		final Member member =
-				this.memberKey.getOrigin().getContainer().member(this.memberKey);
+		final Member firstDeclaration = firstDeclaration();
 
-		if (member.toLocal(dummyUser()) != null) {
+		if (firstDeclaration.toLocal(dummyUser()) != null) {
 			// Member is a local scope.
 			return start;
 		}
 
-		assert member.toField(dummyUser()) != null :
-			"Field expected: " + member;
+		assert firstDeclaration.toField(dummyUser()) != null :
+			"Field expected: " + firstDeclaration;
 
 		// Member is field.
 		return start.field(dirs, this.memberKey);
@@ -167,6 +166,13 @@ public class MemberFragment extends PathFragment {
 				this.memberKey.getMemberId().reproduceFrom(origin).key(scope);
 
 		return PathReproduction.reproducedPath(reproductionKey.toPath());
+	}
+
+	private final Member firstDeclaration() {
+
+		final Scope origin = this.memberKey.getOrigin();
+
+		return origin.getContainer().member(this.memberKey);
 	}
 
 	private Container unresolved(

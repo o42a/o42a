@@ -49,10 +49,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 			CodeBuilder builder,
 			DataOp ptr,
 			Obj wellKnownType) {
-		return new AnonymousObjOp(
-				builder,
-				ptr,
-				wellKnownType);
+		return new AnonymousObjOp(builder, ptr, wellKnownType);
 	}
 
 	private final ObjectPrecision precision;
@@ -96,7 +93,8 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 			CodeId id,
 			CodeDirs dirs,
 			ObjectTypeOp type,
-			Obj wellKnownType) {
+			Obj wellKnownType,
+			boolean reportError) {
 
 		final CodeDirs subDirs = dirs.begin(
 				id != null ? id.getId() : "cast",
@@ -107,24 +105,28 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		code.dumpName("To", type.ptr());
 
 		final DataOp resultPtr =
-				castFunc()
+				castFunc(reportError)
 				.op(null, code)
 				.cast(
 						id != null ? id.detail("ptr") : null,
 						code,
 						this,
 						type);
-		final Code castNull = code.addBlock("cast_null");
 
-		resultPtr.isNull(null, code).go(code, castNull.head());
+		if (!reportError) {
+
+			final Code castNull = code.addBlock("cast_null");
+
+			resultPtr.isNull(null, code).go(code, castNull.head());
+
+			if (castNull.exists()) {
+				castNull.debug("Cast failed");
+				castNull.go(subDirs.falseDir());
+			}
+		}
 
 		final ObjectOp result =
 				anonymousObject(getBuilder(), resultPtr, wellKnownType);
-
-		if (castNull.exists()) {
-			castNull.debug("Cast failed");
-			castNull.go(subDirs.falseDir());
-		}
 
 		subDirs.end();
 
@@ -306,7 +308,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
 		final DataOp resultPtr =
-				castFunc()
+				castFunc(false)
 				.op(null, code)
 				.cast(
 						id != null ? id.detail("ptr") : null,
@@ -389,14 +391,17 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		}
 	}
 
-	private FuncPtr<CastObjectFunc> castFunc() {
-		return getGenerator().externalFunction("o42a_obj_cast", CAST_OBJECT);
+	private FuncPtr<CastObjectFunc> castFunc(boolean reportError) {
+		return getGenerator().externalFunction(
+				reportError ? "o42a_obj_cast_or_error" : "o42a_obj_cast",
+				CAST_OBJECT);
 	}
 
 	private final ObjectBodyIR.Op body(Code code) {
 		return ptr().toAny(null, code).to(
 				null,
-				code, getWellKnownType().ir(getGenerator()).getBodyType());
+				code,
+				getWellKnownType().ir(getGenerator()).getBodyType());
 	}
 
 }

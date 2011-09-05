@@ -20,8 +20,10 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -130,7 +132,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		final ObjectOp result = construct(builder, dirs, fld);
 		final DataOp res = result.toData(code);
 
-		fld.ptr().object(code).store(code, res);
+		fld.ptr().object(null, code).store(code, res);
 		res.returnValue(code);
 	}
 
@@ -265,17 +267,17 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 			return (Type<S, C>) super.getType();
 		}
 
-		public final DataRecOp object(Code code) {
-			return ptr(null, code, getType().object());
+		public final DataRecOp object(CodeId id, Code code) {
+			return ptr(id, code, getType().object());
 		}
 
-		public FuncOp<C> constructor(Code code) {
-			return func(null, code, getType().constructor());
+		public FuncOp<C> constructor(CodeId id, Code code) {
+			return func(id, code, getType().constructor());
 		}
 
 		public DataOp target(Code code, ObjOp host) {
 
-			final DataOp object = object(code).load(null, code);
+			final DataOp object = object(null, code).load(null, code);
 			final CondCode noTarget = object.isNull(null, code).branch(
 					code,
 					"no_target",
@@ -300,7 +302,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 		private DataOp construct(Code code, ObjOp host) {
 
-			final C constructor = constructor(code).load(null, code);
+			final C constructor = constructor(null, code).load(null, code);
 
 			code.dumpName("Constructor: ", constructor);
 			code.dumpName("Host: ", host.ptr());
@@ -398,7 +400,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 					failure.head(),
 					getBodyIR(),
 					getBodyIR().getAscendant(),
-					COMPATIBLE);
+					getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
 			final CodeDirs dirs =
 					builder.falseWhenUnknown(constructor, failure.head());
 

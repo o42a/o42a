@@ -23,6 +23,17 @@
 #include "o42a/field.h"
 
 
+/**
+ * Variable assigner function.
+ *
+ * \param object[in] object pointer.
+ * \param value[out] value to assign.
+ *
+ * \return O42A_TRUE on success or O42A_FALSE on failure.
+ */
+typedef o42a_bool_t o42a_obj_assigner_ft(O42A_DECLS o42a_obj_t *, o42a_obj_t *);
+
+
 typedef struct {
 
 	O42A_HEADER;
@@ -31,7 +42,9 @@ typedef struct {
 
 	o42a_obj_ref_ft *constructor;
 
-	o42a_obj_stype_t *target_type;
+	o42a_obj_stype_t *bound;
+
+	o42a_obj_assigner_ft *assigner_f;
 
 } o42a_fld_var;
 

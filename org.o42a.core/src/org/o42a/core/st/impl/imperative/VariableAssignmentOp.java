@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -44,19 +43,23 @@ final class VariableAssignmentOp extends StOp {
 	@Override
 	public void writeAssignment(Control control, ValOp result) {
 
-		final Code code = control.code();
-		final CodeDirs dirs =
-				control.getBuilder().falseWhenUnknown(code, control.exit());
+		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+				control.code(),
+				control.exit());
+		final CodeDirs subDirs =
+				dirs.begin("assign", this.assignment.toString());
 
 		final HostOp destination =
 				this.assignment.getDestination()
 				.op(control.host())
-				.target(dirs);
+				.target(subDirs);
 		final HostOp value =
 				this.assignment.getValue().op(control.host())
-				.target(dirs);
+				.target(subDirs);
 
-		destination.assign(dirs, value);
+		destination.assign(subDirs, value);
+
+		subDirs.end();
 	}
 
 	@Override

@@ -22,6 +22,7 @@ package org.o42a.core.st.impl.imperative;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.impl.imperative.AssignmentKind.ASSIGNMENT_ERROR;
 import static org.o42a.core.st.impl.imperative.AssignmentKind.VARIABLE_ASSIGNMENT;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -244,11 +245,14 @@ public class AssignmentStatement extends Statement {
 				return ASSIGNMENT_ERROR;
 			}
 		}
-		if (destination.getTypeRef().relationTo(valueType).isError()) {
-			return ASSIGNMENT_ERROR;
+		if (destination.getTypeRef().type(dummyUser()).derivedFrom(
+				valueType.type(dummyUser()))) {
+			return VARIABLE_ASSIGNMENT;
 		}
 
-		return VARIABLE_ASSIGNMENT;
+		getLogger().incompatible(destination, valueType);
+
+		return ASSIGNMENT_ERROR;
 	}
 
 	private AssignmentKind arrayAssinment(

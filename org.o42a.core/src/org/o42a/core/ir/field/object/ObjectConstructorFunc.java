@@ -17,15 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.field.object;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.field.object.ObjFld;
-import org.o42a.core.ir.field.object.ObjFld.Op;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
@@ -45,7 +43,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 				null,
 				code,
 				OBJECT_CONSTRUCTOR.result(),
-				object.toData(code),
+				object != null ? object.toData(code) : code.nullDataPtr(),
 				fld);
 	}
 
@@ -54,7 +52,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
-		private Arg<Op> field;
+		private Arg<ObjFld.Op> field;
 
 		private ObjectConstructor() {
 		}
@@ -68,7 +66,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 			return this.object;
 		}
 
-		public final Arg<Op> field() {
+		public final Arg<ObjFld.Op> field() {
 			return this.field;
 		}
 
