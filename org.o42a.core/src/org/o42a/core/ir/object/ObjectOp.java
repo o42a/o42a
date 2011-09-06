@@ -380,6 +380,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 		valDirs.done();
 		value.setStoreMode(ASSIGNMENT_VAL_STORE);
+		resultDirs.value().store(code, value);
 
 		if (falseCode.exists()) {
 			value.storeFalse(falseCode);

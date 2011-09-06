@@ -32,9 +32,11 @@ abstract class NestedControl extends Control {
 	private final BracesControl braces;
 	private AllocationCode allocation;
 	private final CodePos exit;
+	private final CodePos falseDir;
 
-	NestedControl(Control parent, Code code, CodePos exit) {
+	NestedControl(Control parent, Code code, CodePos exit, CodePos falseDir) {
 		super(parent);
+		this.falseDir = falseDir;
 		this.main = parent.main();
 		this.exit = exit;
 		this.braces = parent.braces();
@@ -58,6 +60,11 @@ abstract class NestedControl extends Control {
 	@Override
 	public final CodePos exit() {
 		return this.exit;
+	}
+
+	@Override
+	public final CodePos falseDir() {
+		return this.falseDir;
 	}
 
 	@Override
@@ -92,7 +99,7 @@ abstract class NestedControl extends Control {
 	static final class ParenthesesControl extends NestedControl {
 
 		ParenthesesControl(Control parent, Code code, CodePos next) {
-			super(parent, code, next);
+			super(parent, code, next, parent.falseDir());
 		}
 
 	}
@@ -100,15 +107,15 @@ abstract class NestedControl extends Control {
 	static final class IssueControl extends NestedControl {
 
 		IssueControl(Control parent, CodePos next) {
-			super(parent, parent.code(), next);
+			super(parent, parent.code(), next, next);
 		}
 
 	}
 
 	static final class AltControl extends NestedControl {
 
-		AltControl(Control parent, Code code, CodePos next) {
-			super(parent, code, next);
+		AltControl(Control parent, Code code, CodePos falseDir) {
+			super(parent, code, parent.exit(), falseDir);
 		}
 
 	}

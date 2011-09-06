@@ -335,10 +335,14 @@ public abstract class Ref extends Statement {
 
 			final Code code = control.code();
 			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(code, control.exit())
+					control.getBuilder().falseWhenUnknown(
+							code,
+							control.falseDir())
 					.value(code.id("local_val"), result);
 
 			result.store(code, this.ref.writeValue(dirs));
+
+			dirs.done();
 
 			control.returnValue();
 		}
@@ -346,16 +350,11 @@ public abstract class Ref extends Statement {
 		@Override
 		public void writeLogicalValue(Control control) {
 
-			final Code falseCond = control.addBlock("false_st_cond");
 			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 					control.code(),
-					falseCond.head());
+					control.falseDir());
 
 			this.ref.writeLogicalValue(dirs);
-
-			if (falseCond.exists()) {
-				falseCond.go(control.exit());
-			}
 		}
 
 	}

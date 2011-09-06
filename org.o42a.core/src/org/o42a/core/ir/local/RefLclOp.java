@@ -25,7 +25,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
@@ -123,8 +122,8 @@ public final class RefLclOp extends LclOp {
 	public void write(Control control, ValOp result) {
 
 		final Code code = control.code();
-		final CodePos exit = control.exit();
-		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(code, exit);
+		final CodeDirs dirs =
+				control.getBuilder().falseWhenUnknown(code, control.falseDir());
 		final Obj object = getArtifact().materialize();
 
 		final ObjectOp newObject = getBuilder().newObject(

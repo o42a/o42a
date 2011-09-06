@@ -45,7 +45,7 @@ final class VariableAssignmentOp extends StOp {
 
 		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 				control.code(),
-				control.exit());
+				control.falseDir());
 		final CodeDirs subDirs =
 				dirs.begin("assign", this.assignment.toString());
 

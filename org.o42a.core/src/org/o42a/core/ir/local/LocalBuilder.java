@@ -71,8 +71,11 @@ public class LocalBuilder extends CodeBuilder {
 		return newObject;
 	}
 
-	public final Control createControl(Code code, CodePos exit) {
-		return new MainControl(this, code, exit);
+	public final Control createControl(
+			Code code,
+			CodePos exit,
+			CodePos falseDir) {
+		return new MainControl(this, code, exit, falseDir);
 	}
 
 	private ObjectOp owner(Code code, LocalIR scopeIR) {
