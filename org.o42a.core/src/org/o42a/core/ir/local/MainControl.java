@@ -31,11 +31,17 @@ final class MainControl extends Control {
 	private final CodePos exit;
 	private Code returnCode;
 	private int seq;
+	private final CodePos falseDir;
 
-	MainControl(LocalBuilder builder, Code code, CodePos exit) {
+	MainControl(
+			LocalBuilder builder,
+			Code code,
+			CodePos exit,
+			CodePos falseDir) {
 		this.code = code;
 		this.builder = builder;
 		this.exit = exit;
+		this.falseDir = falseDir;
 	}
 
 	@Override
@@ -52,6 +58,11 @@ final class MainControl extends Control {
 	@Override
 	public final CodePos exit() {
 		return this.exit;
+	}
+
+	@Override
+	public final CodePos falseDir() {
+		return this.falseDir;
 	}
 
 	@Override

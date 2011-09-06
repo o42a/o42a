@@ -37,6 +37,7 @@ final class BracesControl extends Control {
 	private final String name;
 	private final CodePos done;
 	private Code exitCode;
+	private Code falseCode;
 	private AllocationCode allocation;
 	private Code returnCode;
 	private IdentityHashMap<BracesControl, Code> exits;
@@ -86,6 +87,17 @@ final class BracesControl extends Control {
 	}
 
 	@Override
+	public CodePos falseDir() {
+		if (this.falseCode != null) {
+			return this.falseCode.head();
+		}
+
+		this.falseCode = allocation().alt("false");
+
+		return this.falseCode.head();
+	}
+
+	@Override
 	public void end() {
 		if (this.allocation == null) {
 			this.enclosingCode.go(this.code.head());
@@ -95,8 +107,11 @@ final class BracesControl extends Control {
 			this.code.go(this.allocation.tail());
 			this.allocation.done();
 		}
-		if (this.exitCode != null) {
+		if (this.exitCode != null && this.exitCode.exists()) {
 			this.exitCode.go(this.done);
+		}
+		if (this.falseCode != null && this.falseCode.exists()) {
+			this.falseCode.go(this.parent.falseDir());
 		}
 		if (this.returnCode != null) {
 			this.returnCode.go(this.parent.returnDir());

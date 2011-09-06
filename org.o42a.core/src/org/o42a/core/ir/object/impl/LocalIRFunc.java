@@ -125,15 +125,20 @@ public final class LocalIRFunc
 
 		final StOp op = getScope().getBlock().op(builder);
 		final Code exit = code.addBlock("exit");
-		final Control control = builder.createControl(code, exit.head());
+		final Code failure = code.addBlock("failure");
+		final Control control =
+				builder.createControl(code, exit.head(), failure.head());
 
 		op.writeAssignment(control, result);
 
 		control.end();
 
 		if (exit.exists()) {
-			result.storeFalse(exit);
 			exit.returnVoid();
+		}
+		if (failure.exists()) {
+			result.storeFalse(failure);
+			failure.returnVoid();
 		}
 
 		code.returnVoid();

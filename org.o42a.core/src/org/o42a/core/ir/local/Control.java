@@ -76,6 +76,8 @@ public abstract class Control {
 
 	public abstract CodePos exit();
 
+	public abstract CodePos falseDir();
+
 	public final void returnValue() {
 		code().go(returnDir());
 		if (!isDone()) {
