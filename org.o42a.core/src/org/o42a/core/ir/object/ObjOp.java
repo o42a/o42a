@@ -38,10 +38,16 @@ import org.o42a.core.member.local.Dep;
 
 public final class ObjOp extends ObjectOp {
 
+	private final ObjectIR objectIR;
 	private final Obj ascendant;
 
-	ObjOp(ObjectBodyIR.Op ptr, Obj ascendant, ObjectTypeOp data) {
+	ObjOp(
+			ObjectIR objectIR,
+			ObjectBodyIR.Op ptr,
+			Obj ascendant,
+			ObjectTypeOp data) {
 		super(ptr, data);
+		this.objectIR = objectIR;
 		assert ascendant != null :
 			"Object ascendant not specified";
 		this.ascendant = ascendant;
@@ -53,11 +59,13 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	ObjOp(
+			ObjectIR objectIR,
 			CodeBuilder builder,
 			ObjectBodyIR.Op ptr,
 			Obj ascendant,
 			ObjectPrecision precision) {
 		super(builder, ptr, precision);
+		this.objectIR = objectIR;
 		assert ascendant != null :
 			"Object ascendant not specified";
 		this.ascendant = ascendant;
@@ -66,6 +74,12 @@ public final class ObjOp extends ObjectOp {
 		assert (!getPrecision().isExact()
 				|| ascendant.cloneOf(ptr.getAscendant())) :
 					ascendant + " is not a clone of " + ptr.getAscendant();
+	}
+
+	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectBodyIR.Op ptr) {
+		super(builder, ptr, ObjectPrecision.EXACT);
+		this.ascendant = objectIR.getObject();
+		this.objectIR = objectIR;
 	}
 
 	public final Obj getAscendant() {
@@ -122,8 +136,7 @@ public final class ObjOp extends ObjectOp {
 
 	@Override
 	public ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant) {
-		ptr().getType().getObjectIR().getObject().assertDerivedFrom(
-				ascendant);
+		getObjectIR().getObject().assertDerivedFrom(ascendant);
 		if (ascendant == getAscendant()) {
 			return this;
 		}
@@ -146,7 +159,7 @@ public final class ObjOp extends ObjectOp {
 		final CodeDirs subDirs =
 				dirs.begin("field", "Field " + memberKey + " of " + this);
 		final Code code = subDirs.code();
-		final Fld fld = ptr().getType().getObjectIR().fld(memberKey);
+		final Fld fld = getObjectIR().fld(memberKey);
 		final CodeId hostId =
 				code.id("field_host")
 				.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
@@ -172,7 +185,7 @@ public final class ObjOp extends ObjectOp {
 
 		final CodeDirs subDirs = dirs.begin("dep", dep.toString());
 		final Code code = subDirs.code();
-		final DepIR ir = ptr().getType().getObjectIR().dep(dep);
+		final DepIR ir = getObjectIR().dep(dep);
 		final String depName = dep.getName();
 		final CodeId hostId = code.id("dep_host");
 		final ObjOp host = cast(
@@ -195,17 +208,17 @@ public final class ObjOp extends ObjectOp {
 	private ObjOp staticCast(Code code, Obj ascendant) {
 
 		final ObjectBodyIR ascendantBodyIR =
-				ptr().getType().getObjectIR().bodyIR(ascendant);
+				getObjectIR().bodyIR(ascendant);
 		final ObjectBodyIR.Op ascendantBody =
-				ascendantBodyIR.pointer(code.getGenerator()).op(null, code);
+				ascendantBodyIR.pointer(getGenerator()).op(null, code);
 
 		final ObjectTypeOp cachedData = cachedData();
 
 		if (cachedData != null) {
-			return ascendantBody.op(cachedData, ascendant);
+			return ascendantBody.op(getObjectIR(), cachedData, ascendant);
 		}
 
-		return ascendantBody.op(getBuilder(), ascendant, EXACT);
+		return ascendantBody.op(getObjectIR(), getBuilder(), ascendant, EXACT);
 	}
 
 	@Override
@@ -230,6 +243,10 @@ public final class ObjOp extends ObjectOp {
 				getAscendant().ir(getGenerator()).getValueIR();
 
 		return valueIR.writeProposition(dirs, this, body);
+	}
+
+	private final ObjectIR getObjectIR() {
+		return this.objectIR;
 	}
 
 }

@@ -46,6 +46,14 @@ public class ConstructorOp extends RefOp {
 	public ObjectOp target(CodeDirs dirs) {
 
 		final CodeBuilder builder = getBuilder();
+		final LocalOp local = host().toLocal();
+
+		if (local != null) {
+			assert local.getBuilder() == builder :
+				"Wrong builder used when instantiating local object: "
+				+ this + ", while " + local.getBuilder() + " expected";
+		}
+
 		final Obj sample = sample();
 
 		if (!sample.type().runtimeConstruction().isUsedBy(getGenerator())) {
@@ -57,6 +65,9 @@ public class ConstructorOp extends RefOp {
 				dirs.code().dumpName(
 						"Static object: ",
 						target.toData(dirs.code()));
+			}
+			if (local != null) {
+				target.fillDeps(dirs, sample);
 			}
 
 			return target;
@@ -70,14 +81,6 @@ public class ConstructorOp extends RefOp {
 					object,
 					ancestorFunc().getPointer().op(null, dirs.code()),
 					sample);
-		}
-
-		final LocalOp local = host().toLocal();
-
-		if (local != null) {
-			assert local.getBuilder() == builder :
-				"Wrong builder used when instantiating local object: "
-				+ this + ", while " + local.getBuilder() + " expected";
 		}
 
 		return builder.newObject(

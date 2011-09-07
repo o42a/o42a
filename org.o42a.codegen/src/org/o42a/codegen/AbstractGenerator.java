@@ -35,6 +35,7 @@ public abstract class AbstractGenerator extends Generator {
 		super(id);
 		this.debug = new Debug(this);
 		this.useCase = useCase(id);
+		//setUsesAnalysed(false);
 	}
 
 	@Override

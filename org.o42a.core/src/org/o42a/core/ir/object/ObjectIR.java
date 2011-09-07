@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
@@ -133,7 +132,7 @@ public class ObjectIR  {
 		final ObjectBodyIR bodyType = getBodyType();
 
 		return bodyType.data(code.getGenerator())
-				.getPointer().op(null, code).op(builder, getObject(), EXACT);
+				.getPointer().op(null, code).op(builder, this);
 	}
 
 	public final ObjectBodyIR bodyIR(Obj ascendant) {
@@ -170,10 +169,7 @@ public class ObjectIR  {
 	}
 
 	public DepIR dep(Dep dep) {
-
-		final ObjectBodyIR bodyIR = bodyIR(dep.getObject());
-
-		return bodyIR.dep(dep);
+		return bodyIR(dep.getObject()).dep(dep);
 	}
 
 	@Override

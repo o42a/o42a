@@ -31,7 +31,6 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
-import org.o42a.core.member.local.Dep;
 
 
 public class LocalBuilder extends CodeBuilder {
@@ -64,9 +63,7 @@ public class LocalBuilder extends CodeBuilder {
 		final ObjectOp newObject =
 				super.newObject(dirs, scope, ancestor, sample);
 
-		for (Dep dep : sample.getDeps()) {
-			newObject.dep(dirs, dep).fill(this, dirs);
-		}
+		newObject.fillDeps(dirs, sample);
 
 		return newObject;
 	}

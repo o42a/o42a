@@ -51,7 +51,7 @@ public final class ValueFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(this.value, null);
+		definer.setTargetRef(this.value.materialize(), null);
 	}
 
 	@Override

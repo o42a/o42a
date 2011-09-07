@@ -48,7 +48,9 @@ final class PathTargetDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(this.target, this.target.toTypeRef());
+		definer.setTargetRef(
+				this.target.materialize(),
+				this.target.toTypeRef());
 	}
 
 	@Override

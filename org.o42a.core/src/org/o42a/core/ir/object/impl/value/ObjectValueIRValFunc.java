@@ -364,7 +364,6 @@ public abstract class ObjectValueIRValFunc
 
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
-		final Code falseRes = code.addBlock("false");
 		final int size = collector.size();
 		final ValueDef[] defs = collector.getExplicitDefs();
 
@@ -379,33 +378,29 @@ public abstract class ObjectValueIRValFunc
 
 					final ValDirs defDirs = dirs.getBuilder().splitWhenUnknown(
 							block,
-							falseRes.head(),
+							dirs.falseDir(),
 							collector.next(i))
 							.value(block.id("val"), result);
 
-					result.store(
-							defDirs.code(),
-							writeAncestorDef(defDirs, host));
+					result.store(block, writeAncestorDef(defDirs, host));
 
 					defDirs.done();
 
-					block.go(collector.next(i));
+					block.go(code.tail());
 				}
 				continue;
 			}
 
 			final ValDirs defDirs = dirs.getBuilder().splitWhenUnknown(
 					block,
-					falseRes.head(),
+					dirs.falseDir(),
 					collector.next(i)).value(block.id("val"), result);
 
-			result.store(defDirs.code(), def.write(defDirs, host));
+			result.store(block, def.write(defDirs, host));
+
 			defDirs.done();
 
 			block.go(code.tail());
-		}
-		if (falseRes.exists()) {
-			falseRes.go(dirs.falseDir());
 		}
 
 		return result;
@@ -514,7 +509,7 @@ public abstract class ObjectValueIRValFunc
 
 		@Override
 		protected void explicitDef(ValueDef def) {
-			this.blocks[this.size] = this.dirs.addBlock(this.size + "_cvar");
+			this.blocks[this.size] = this.dirs.addBlock(this.size + "_vvar");
 			this.explicitDefs[this.size++] = def;
 		}
 
