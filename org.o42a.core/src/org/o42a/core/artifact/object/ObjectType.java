@@ -281,6 +281,9 @@ public final class ObjectType implements UserInfo {
 				cloneOf.type().runtimeConstructionUses().useBy(
 						this.runtimeConstructionUses);
 			}
+			if (getObject().getConstructionMode().isRuntime()) {
+				this.runtimeConstructionUses.useBy(getObject().content());
+			}
 		}
 
 		derivationUses().useBy(this.runtimeConstructionUses);

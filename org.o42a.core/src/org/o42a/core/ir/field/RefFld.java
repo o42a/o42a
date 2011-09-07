@@ -44,7 +44,7 @@ import org.o42a.core.member.field.Field;
 
 public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
-	private final ObjectIR targetIR;
+	private final Obj target;
 	private Obj targetAscendant;
 
 	private boolean targetIRAllocated;
@@ -57,11 +57,11 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	public RefFld(ObjectBodyIR bodyIR, Field<?> field) {
 		super(bodyIR, field);
 		this.targetIRAllocated = isOmitted();
-		this.targetIR = targetIR(field.getArtifact());
+		this.target = field.getArtifact().materialize();
 	}
 
-	public final ObjectIR getTargetIR() {
-		return this.targetIR;
+	public final Obj getTarget() {
+		return this.target;
 	}
 
 	public final Obj getTargetAscendant() {
@@ -75,7 +75,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	}
 
 	public final void allocate(SubData<?> data, Obj targetAscendant) {
-		getTargetIR().getObject().assertDerivedFrom(targetAscendant);
+		getTarget().assertDerivedFrom(targetAscendant);
 		this.targetAscendant = targetAscendant;
 		allocate(data);
 	}
@@ -183,22 +183,19 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		return new FldContent<Type<?, C>, C>(this);
 	}
 
-	private ObjectIR targetIR(Artifact<?> artifact) {
-
-		final Obj object = artifact.toObject();
-
-		if (object != null) {
-			return object.ir(getGenerator());
+	private void fillTarget() {
+		if (getTarget().getConstructionMode().isRuntime()) {
+			return;
 		}
 
-		final Link link = artifact.toLink();
+		final ObjectIR targetIR = getTarget().ir(getGenerator());
+		final ObjectBodyIR targetBodyIR =
+				targetIR.bodyIR(getTargetAscendant());
+		final Ptr<DataOp> targetPtr =
+				targetBodyIR.pointer(getGenerator()).toData();
+		final DataRec object = getInstance().object();
 
-		return targetIR(link.getTargetRef().artifact(dummyUser()));
-	}
-
-	private void fillTarget(ObjectBodyIR targetBodyIR) {
-		getInstance().object().setConstant(!getKind().isVariable()).setValue(
-				targetBodyIR.pointer(targetBodyIR.getGenerator()).toData());
+		object.setConstant(!getKind().isVariable()).setValue(targetPtr);
 	}
 
 	private void fill(boolean fillFields, boolean fillTarget) {
@@ -213,7 +210,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 				fill();
 			}
 			if (fillTarget) {
-				fillTarget(this.targetIR.bodyIR(getTargetAscendant()));
+				fillTarget();
 			}
 		} finally {
 			this.filling = false;

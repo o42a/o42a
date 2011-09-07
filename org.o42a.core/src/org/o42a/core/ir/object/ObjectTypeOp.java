@@ -63,8 +63,9 @@ public class ObjectTypeOp extends IROp {
 	public final ObjOp objectOfType(Code code, Obj type) {
 		return mainBody(code).to(
 				null,
-				code, type.ir(getGenerator()).getBodyType())
-				.op(this, type);
+				code,
+				type.ir(getGenerator()).getBodyType())
+				.op(null, this, type);
 	}
 
 	public final ValOp writeValue(ValDirs dirs, ObjectOp body) {

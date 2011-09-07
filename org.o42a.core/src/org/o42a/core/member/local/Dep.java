@@ -78,7 +78,13 @@ public abstract class Dep extends PathFragment {
 			object + " is inside " + object.getScope().getEnclosingContainer()
 			+ ", which is not a local scope";
 
-		return resolveDep(resolver, path, index, object, enclosingLocal, walker);
+		return resolveDep(
+				resolver,
+				path,
+				index,
+				object,
+				enclosingLocal,
+				walker);
 	}
 
 	@Override

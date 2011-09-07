@@ -87,6 +87,14 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		return null;
 	}
 
+	public void fillDeps(CodeDirs dirs, Obj sample) {
+		for (Dep dep : sample.getDeps()) {
+			dep(dirs, dep).fill(
+					getBuilder().host().toLocal().getBuilder(),
+					dirs);
+		}
+	}
+
 	public abstract ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant);
 
 	public ObjectOp dynamicCast(
@@ -380,7 +388,6 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 		valDirs.done();
 		value.setStoreMode(ASSIGNMENT_VAL_STORE);
-		resultDirs.value().store(code, value);
 
 		if (falseCode.exists()) {
 			value.storeFalse(falseCode);

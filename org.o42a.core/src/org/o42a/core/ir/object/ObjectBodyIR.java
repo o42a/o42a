@@ -354,7 +354,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				CodeBuilder builder,
 				Obj ascendant,
 				ObjectPrecision precision) {
-			return new ObjOp(builder, this, ascendant, precision);
+			return op(null, builder, ascendant, precision);
 		}
 
 		public final ObjectIRType.Op loadObjectType(Code code) {
@@ -379,7 +379,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final AnyOp ancestorBodyPtr =
-					ancestorBody(code).load(null, code).offset(null, code, this);
+					ancestorBody(code)
+					.load(null, code)
+					.offset(null, code, this);
 
 			return anonymousObject(
 					builder,
@@ -404,8 +406,29 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return code.id("body").setLocal(local);
 		}
 
-		final ObjOp op(ObjectTypeOp data, Obj ascendant) {
-			return new ObjOp(this, ascendant, data);
+		final ObjOp op(
+				ObjectIR objectIR,
+				CodeBuilder builder,
+				Obj ascendant,
+				ObjectPrecision precision) {
+			return new ObjOp(
+					objectIR != null ? objectIR : getType().getObjectIR(),
+					builder,
+					this,
+					ascendant,
+					precision);
+		}
+
+		final ObjOp op(ObjectIR objectIR, ObjectTypeOp data, Obj ascendant) {
+			return new ObjOp(
+					objectIR != null ? objectIR : getType().getObjectIR(),
+					this,
+					ascendant,
+					data);
+		}
+
+		final ObjOp op(CodeBuilder builder, ObjectIR objectIR) {
+			return new ObjOp(builder, objectIR, this);
 		}
 
 		FldOp declaredField(Code code, ObjOp host, MemberKey memberKey) {

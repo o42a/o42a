@@ -211,7 +211,10 @@ public class CodeBuilder {
 			ObjectPrecision hostPrecision) {
 		switch (hostPrecision) {
 		case EXACT:
-			return hostType.ir(getGenerator()).op(this, code);
+			return hostIR.getObjectIR().op(this, code).cast(
+					null,
+					falseWhenUnknown(code, exit),
+					hostType);
 		case COMPATIBLE:
 			return getFunction().arg(code, getObjectSignature().object())
 					.to(null, code, hostIR)

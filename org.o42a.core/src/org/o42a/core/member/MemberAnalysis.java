@@ -206,6 +206,12 @@ public class MemberAnalysis implements UseInfo {
 					owner.type().runtimeConstruction());
 		}
 
+		final Obj target = field.getArtifact().materialize();
+
+		if (target.getConstructionMode().isRuntime()) {
+			this.runtimeConstructionUses.useBy(target.content());
+		}
+
 		final Member lastDefinition = member.getLastDefinition();
 
 		if (lastDefinition != member) {

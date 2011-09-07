@@ -95,8 +95,8 @@ public final class RuntimeLinkTarget extends Obj {
 
 	@Override
 	protected ObjectIR createIR(Generator generator) {
-		throw new UnsupportedOperationException(
-				"Can not create IR for run-time object wrap " + this);
+		return this.link.getTargetRef().artifact(dummyUser())
+				.toObject().ir(generator);
 	}
 
 }

@@ -26,6 +26,7 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
@@ -78,7 +79,10 @@ public abstract class RefFldOp<
 
 	public ObjOp target(CodeDirs dirs) {
 		if (isOmitted()) {
-			return fld().getTargetIR().op(getBuilder(), dirs.code());
+
+			final ObjectIR targetIR = fld().getTarget().ir(getGenerator());
+
+			return targetIR.op(getBuilder(), dirs.code());
 		}
 
 		final Code code = dirs.code();
