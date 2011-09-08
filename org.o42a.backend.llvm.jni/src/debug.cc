@@ -29,7 +29,7 @@ using namespace llvm;
 namespace o42ac {
 
 static cl::list<std::string> DebugMode(
-		"o42ac-debug",
+		"debug-o42ac",
 		cl::ValueOptional,
 		cl::CommaSeparated,
 		cl::desc("Compiler debug mode"),
