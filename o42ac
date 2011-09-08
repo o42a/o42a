@@ -81,7 +81,6 @@ for arg in "$@"; do
 			case "${argn}" in
 			rt-debug=*) rt_debug=$(arg_is_true "${argn#rt-debug=}");; 
 			rt-debug) rt_debug_follows=1;;
-			o42a*) ;;
 			o*) nopipe=1;;
 			format=*) nopipe=1;;
 			format) nopipe=1;;
