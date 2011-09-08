@@ -11,9 +11,12 @@ red=$'\033[0;31m'
 white=$'\033[1;37m'
 
 
-JAR_DIR=${JAR_DIR:-"`dirname $0`/target"}
+JAR_DIR=${JAR_DIR:-"$(dirname $0)/target"}
+LIB_DIR=${LIB_DIR:-"$(dirname $0)/target"}
+DEBUG_LDFLAGS=${DEBUG_LDFLAGS:-"-l:${LIB_DIR}/libo42a_debug.so"}
+PROD_LDFLAGS=${PROD_LDFLAGS:-"-l:${LIB_DIR}/libo42a.so"}
 JAR=${JAR:-"${JAR_DIR}/org.o42a.cl-0.1.0.jar"}
-JAVA_LIBRARY_PATH=${JAVA_LIBRARY_PATH:-"`dirname $0`/target"}
+JAVA_LIBRARY_PATH=${JAVA_LIBRARY_PATH:-"$(dirname $0)/target"}
 JAVA=${JAVA:-java}
 CC=${CC:-gcc}
 ICU_CONFIG=${ICU_CONFIG:-icu-config}
@@ -24,6 +27,15 @@ pipe_if_not_empty () {
 	if [ "x$head" != x"" ]; then
 		{ printf %s "$head"; cat; } | "$@"
 	fi
+}
+
+arg_is_true() {
+	case "${1,,}" in
+	true) echo 1;;
+	1) echo 1;;
+	*) echo 0;;
+	esac
+	return
 }
 
 call_o42ac () {
@@ -39,9 +51,11 @@ call_o42ac () {
 
 o42ac_args=()
 vm_args=(-Djava.library.path="${JAVA_LIBRARY_PATH}")
-cc_args=()
+cc_args=(-Xlinker --no-undefined)
 append_arg="o42ac"
 nopipe=0
+rt_debug=0
+rt_debug_follows=0
 
 for arg in "$@"; do
 	case "${arg}" in
@@ -58,9 +72,19 @@ for arg in "$@"; do
 		vm) vm_args[${#vm_args[*]}]="${arg}";;
 		*)
 			o42ac_args[${#o42ac_args[*]}]="${arg}"
-			case "${arg}" in
-			-o*) nopipe=1;;
-			-format[=]*) nopipe=1;;
+			if ((rt_debug_follows)); then
+				rt_debug=$(arg_is_true "${arg}")
+				rt_debug_follows=0
+			fi
+			arg2=${arg#-}
+			argn=${arg2#-}
+			case "${argn}" in
+			rt-debug=*) rt_debug=$(arg_is_true "${argn#rt-debug=}");; 
+			rt-debug) rt_debug_follows=1;;
+			o42a*) ;;
+			o*) nopipe=1;;
+			format=*) nopipe=1;;
+			format) nopipe=1;;
 			esac;;
 		esac;;
 	esac
@@ -74,8 +98,14 @@ fi
 cc_args=(-x assembler - "${cc_args[@]}")
 o42ac_args=("${o42ac_args[@]}" -format s -o /dev/fd/5)
 
-{ 
+if ((rt_debug)); then
+	LDFLAGS="${DEBUG_LDFLAGS}"
+else
+	LDFLAGS="${PROD_LDFLAGS}"
+fi
+
+{
 	{
 		call_o42ac > /dev/fd/6
-	} 5>&1 | pipe_if_not_empty ${CC} "${cc_args[@]}" >&6
+	} 5>&1 | pipe_if_not_empty ${CC} "${cc_args[@]}" ${LDFLAGS} >&6
 } 6>&1
