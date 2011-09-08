@@ -40,7 +40,6 @@
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
 			<param name="_compile.name" value="all_tests"/>
 			<param name="_compile.debug" value="0"/>
-			<param name="_compile.lib" value="o42a"/>
 		</antcall>
 	</target>
 	
@@ -48,7 +47,6 @@
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
 			<param name="_compile.name" value="debug_all_tests"/>
 			<param name="_compile.debug" value="1"/>
-			<param name="_compile.lib" value="o42a_debug"/>
 		</antcall>
 	</target>
 
@@ -105,9 +103,6 @@
 			<arg line="-ea:org.o42a..."/>
 
 			<arg line="--"/>
-			<arg line="-Xlinker -rpath=${root.dir}/target"/>
-			<arg line="-Xlinker --no-undefined"/>
-			<arg line="-L${root.dir}/target -l${_compile.lib}"/>
 			<arg line="-o ${_compile.name}"/>
 		</exec>
 	</target>
