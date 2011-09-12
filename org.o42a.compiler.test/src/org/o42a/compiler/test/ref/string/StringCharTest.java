@@ -31,21 +31,21 @@ public class StringCharTest extends CompilerTestCase {
 
 	@Test
 	public void firstChar() {
-		compile("Chr := \"abc\": char[0]");
+		compile("Chr := \"abc\"[0]");
 
 		assertThat(definiteValue(field("chr"), ValueType.STRING), is("a"));
 	}
 
 	@Test
 	public void lastChar() {
-		compile("Chr := \"abc\": char[2]");
+		compile("Chr := \"abc\"[2]");
 
 		assertThat(definiteValue(field("chr"), ValueType.STRING), is("c"));
 	}
 
 	@Test
 	public void someChar() {
-		compile("Chr := \"abc\": char[1]");
+		compile("Chr := \"abc\"[1]");
 
 		assertThat(definiteValue(field("chr"), ValueType.STRING), is("b"));
 	}
@@ -54,7 +54,7 @@ public class StringCharTest extends CompilerTestCase {
 	public void negativeCharIndex() {
 		expectError("compiler.invalid_char_index");
 
-		compile("Chr := \"abc\": char[-1]");
+		compile("Chr := \"abc\"[-1]");
 
 		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
@@ -63,7 +63,7 @@ public class StringCharTest extends CompilerTestCase {
 	public void invalidCharIndex() {
 		expectError("compiler.invalid_char_index");
 
-		compile("Chr := \"abc\": char[3]");
+		compile("Chr := \"abc\"[3]");
 
 		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
@@ -72,7 +72,7 @@ public class StringCharTest extends CompilerTestCase {
 	public void falseString() {
 		compile(
 				"Str := string(False)",
-				"Chr := str: char[0]");
+				"Chr := str[0]");
 
 		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
@@ -88,7 +88,7 @@ public class StringCharTest extends CompilerTestCase {
 
 	@Test
 	public void falseIndex() {
-		compile("Chr := \"abc\": char[integer(False)]");
+		compile("Chr := \"abc\"[integer(False)]");
 
 		assertFalseValue(valueOf(field("chr"), ValueType.STRING));
 	}
@@ -97,7 +97,7 @@ public class StringCharTest extends CompilerTestCase {
 	public void runtimeIndex() {
 		compile(
 				"Use namespace 'Test'",
-				"Chr := \"abc\": char[rt-integer '1']");
+				"Chr := \"abc\"[rt-integer '1']");
 
 		assertRuntimeValue(valueOf(field("chr"), ValueType.STRING));
 	}

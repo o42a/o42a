@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.AncestorVisitor.impliedAncestor;
-import static org.o42a.compiler.ip.AncestorVisitor.noAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.parseAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
@@ -134,24 +133,16 @@ public final class PhraseInterpreter {
 		final Distributor distributor = phrase.distribute();
 		final AscendantNode[] ascendantNodes = node.getAscendants();
 		final TypeRef ancestor = parseAncestor(phrase.ip(), node, distributor);
-		final int samplesFrom;
 		Phrase result;
 
-		if (ancestor == noAncestor(distributor.getContext())) {
-			samplesFrom = 0;
+		if (ancestor == impliedAncestor(distributor.getContext())) {
 			result = phrase.setImpliedAncestor(
 					location(phrase, ascendantNodes[0]));
 		} else {
-			samplesFrom = 1;
-			if (ancestor == impliedAncestor(distributor.getContext())) {
-				result = phrase.setImpliedAncestor(
-						location(phrase, ascendantNodes[0]));
-			} else {
-				result = phrase.setAncestor(ancestor);
-			}
+			result = phrase.setAncestor(ancestor);
 		}
 
-		for (int i = samplesFrom; i < ascendantNodes.length; ++i) {
+		for (int i = 1; i < ascendantNodes.length; ++i) {
 
 			final RefNode sampleNode = ascendantNodes[i].getAscendant();
 

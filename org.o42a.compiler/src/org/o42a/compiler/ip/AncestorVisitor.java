@@ -68,13 +68,13 @@ public class AncestorVisitor
 			AscendantsNode node,
 			Distributor distributor) {
 
-		AscendantsDefinition ascendants =
-				new AscendantsDefinition(location(distributor, node), distributor);
+		AscendantsDefinition ascendants = new AscendantsDefinition(
+				location(distributor, node),
+				distributor);
 		final AscendantNode[] ascendantNodes = node.getAscendants();
 		final TypeRef ancestor = parseAncestor(ip, node, distributor);
 
-		if (ancestor != noAncestor(distributor.getContext())
-				&& ancestor != impliedAncestor(distributor.getContext())) {
+		if (ancestor != impliedAncestor(distributor.getContext())) {
 			ascendants = ascendants.setAncestor(ancestor);
 		}
 
@@ -98,7 +98,6 @@ public class AncestorVisitor
 	}
 
 	private static TypeRef impliedAncestor;
-	private static TypeRef noAncestor;
 	private final Interpreter ip;
 
 	public static TypeRef impliedAncestor(CompilerContext context) {
@@ -106,13 +105,6 @@ public class AncestorVisitor
 			impliedAncestor = new NoRef(context).toStaticTypeRef();
 		}
 		return impliedAncestor;
-	}
-
-	public static TypeRef noAncestor(CompilerContext context) {
-		if (noAncestor == null) {
-			noAncestor = new NoRef(context).toStaticTypeRef();
-		}
-		return noAncestor;
 	}
 
 	AncestorVisitor(Interpreter ip) {
@@ -157,7 +149,10 @@ public class AncestorVisitor
 	protected TypeRef visitExpression(
 			ExpressionNode expression,
 			Distributor p) {
-		return noAncestor(p.getContext());
+
+		final Ref result = expression.accept(ip().expressionVisitor(), p);
+
+		return result != null ? result.toTypeRef() : null;
 	}
 
 	private static final class NoRef extends Ref {
