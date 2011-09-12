@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.AncestorVisitor.impliedAncestor;
 import static org.o42a.compiler.ip.AncestorVisitor.parseAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
@@ -28,13 +27,13 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.operator.ComparisonRef;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 
 
 public final class PhraseInterpreter {
@@ -132,14 +131,15 @@ public final class PhraseInterpreter {
 
 		final Distributor distributor = phrase.distribute();
 		final AscendantNode[] ascendantNodes = node.getAscendants();
-		final TypeRef ancestor = parseAncestor(phrase.ip(), node, distributor);
+		final AncestorTypeRef ancestor =
+				parseAncestor(phrase.ip(), node, distributor);
 		Phrase result;
 
-		if (ancestor == impliedAncestor(distributor.getContext())) {
+		if (ancestor.isImplied()) {
 			result = phrase.setImpliedAncestor(
 					location(phrase, ascendantNodes[0]));
 		} else {
-			result = phrase.setAncestor(ancestor);
+			result = phrase.setAncestor(ancestor.getAncestor());
 		}
 
 		for (int i = 1; i < ascendantNodes.length; ++i) {

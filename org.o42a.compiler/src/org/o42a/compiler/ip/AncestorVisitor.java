@@ -19,33 +19,24 @@
 */
 package org.o42a.compiler.ip;
 
+import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
+import static org.o42a.compiler.ip.AncestorTypeRef.impliedAncestorTypeRef;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
-import static org.o42a.core.Distributor.declarativeDistributor;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.core.Distributor;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
-import org.o42a.core.st.Reproducer;
-import org.o42a.util.log.LoggableData;
 
 
 public class AncestorVisitor
-		extends AbstractExpressionVisitor<TypeRef, Distributor> {
+		extends AbstractExpressionVisitor<AncestorTypeRef, Distributor> {
 
-	public static TypeRef parseAncestor(
+	public static AncestorTypeRef parseAncestor(
 			Interpreter ip,
 			AscendantsNode ascendants,
 			Distributor distributor) {
@@ -59,7 +50,7 @@ public class AncestorVisitor
 		}
 
 		return firstAscendant.getAscendant().accept(
-				ip.staticAnncestorVisitor(),
+				ip.staticAncestorVisitor(),
 				distributor);
 	}
 
@@ -72,10 +63,10 @@ public class AncestorVisitor
 				location(distributor, node),
 				distributor);
 		final AscendantNode[] ascendantNodes = node.getAscendants();
-		final TypeRef ancestor = parseAncestor(ip, node, distributor);
+		final AncestorTypeRef ancestor = parseAncestor(ip, node, distributor);
 
-		if (ancestor != impliedAncestor(distributor.getContext())) {
-			ascendants = ascendants.setAncestor(ancestor);
+		if (!ancestor.isImplied()) {
+			ascendants = ascendants.setAncestor(ancestor.getAncestor());
 		}
 
 		for (int i = 1; i < ascendantNodes.length; ++i) {
@@ -97,15 +88,7 @@ public class AncestorVisitor
 		return ascendants;
 	}
 
-	private static TypeRef impliedAncestor;
 	private final Interpreter ip;
-
-	public static TypeRef impliedAncestor(CompilerContext context) {
-		if (impliedAncestor == null) {
-			impliedAncestor = new NoRef(context).toStaticTypeRef();
-		}
-		return impliedAncestor;
-	}
 
 	AncestorVisitor(Interpreter ip) {
 		this.ip = ip;
@@ -116,7 +99,7 @@ public class AncestorVisitor
 	}
 
 	@Override
-	public TypeRef visitParentheses(
+	public AncestorTypeRef visitParentheses(
 			ParenthesesNode parentheses,
 			Distributor p) {
 
@@ -130,74 +113,18 @@ public class AncestorVisitor
 	}
 
 	@Override
-	public TypeRef visitScopeRef(ScopeRefNode ref, Distributor p) {
+	public AncestorTypeRef visitScopeRef(ScopeRefNode ref, Distributor p) {
 		if (ref.getType() == ScopeType.IMPLIED) {
-			return impliedAncestor(p.getContext());
+			return impliedAncestorTypeRef();
 		}
 		return super.visitScopeRef(ref, p);
 	}
 
 	@Override
-	protected TypeRef visitRef(RefNode ref, Distributor p) {
-
-		final Ref result = ref.accept(ip().expressionVisitor(), p);
-
-		return result != null ? result.toTypeRef() : null;
-	}
-
-	@Override
-	protected TypeRef visitExpression(
+	protected AncestorTypeRef visitExpression(
 			ExpressionNode expression,
 			Distributor p) {
-
-		final Ref result = expression.accept(ip().expressionVisitor(), p);
-
-		return result != null ? result.toTypeRef() : null;
-	}
-
-	private static final class NoRef extends Ref {
-
-		NoRef(CompilerContext context) {
-			super(
-					new Location(context, new LoggableData("<noref>")),
-					declarativeDistributor(context.getRoot()));
-		}
-
-		@Override
-		public boolean isConstant() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Resolution resolve(Resolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected FieldDefinition createFieldDefinition() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void fullyResolve(Resolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void fullyResolveValues(Resolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected RefOp createOp(HostOp host) {
-			throw new UnsupportedOperationException();
-		}
-
+		return ancestorTypeRef(expression.accept(ip().expressionVisitor(), p));
 	}
 
 }

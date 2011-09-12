@@ -19,10 +19,11 @@
 */
 package org.o42a.compiler.ip;
 
-import org.o42a.ast.ref.RefNode;
+import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
+
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 
 
 final class StaticAncestorVisitor extends AncestorVisitor {
@@ -32,11 +33,17 @@ final class StaticAncestorVisitor extends AncestorVisitor {
 	}
 
 	@Override
-	protected TypeRef visitRef(RefNode ref, Distributor p) {
+	protected AncestorTypeRef visitExpression(
+			ExpressionNode expression,
+			Distributor p) {
 
-		final Ref result = ref.accept(ip().expressionVisitor(), p);
+		final Ref result = expression.accept(ip().expressionVisitor(), p);
 
-		return result != null ? result.toStaticTypeRef() : null;
+		if (result == null) {
+			return null;
+		}
+
+		return ancestorTypeRef(result.toStaticTypeRef());
 	}
 
 }
