@@ -38,6 +38,11 @@ arg_is_true() {
 	return
 }
 
+arg_name() {
+	arg="${1#-}"
+	echo "${arg#-}"
+}
+
 call_o42ac () {
 	${JAVA} "${vm_args[@]}" -jar "${JAR}" "${o42ac_args[@]}"
 	error=$?
@@ -76,9 +81,8 @@ for arg in "$@"; do
 				rt_debug=$(arg_is_true "${arg}")
 				rt_debug_follows=0
 			fi
-			arg2=${arg#-}
-			if [ "${arg}" != "${arg2}" ]; then
-				argn=${arg2#-}
+			argn=$(arg_name "${arg}")
+			if [ "${arg}" != "${argn}" ]; then
 				case "${argn}" in
 				rt-debug=*) rt_debug=$(arg_is_true "${argn#rt-debug=}");; 
 				rt-debug) rt_debug_follows=1;;
