@@ -78,10 +78,12 @@ public enum Interpreter {
 	private final ExpressionNodeVisitor<
 			FieldDefinition,
 			FieldDeclaration> definitionVisitor;
-	private final ExpressionNodeVisitor<TypeRef, Distributor> ancestorVisitor;
 	private final ExpressionNodeVisitor<
-			TypeRef,
-			Distributor> staticAnncestorVisitor;
+			AncestorTypeRef,
+			Distributor> ancestorVisitor;
+	private final ExpressionNodeVisitor<
+			AncestorTypeRef,
+			Distributor> staticAncestorVisitor;
 	private final TypeNodeVisitor<TypeRef, Distributor> typeVisitor;
 
 	Interpreter(RefVisitor refVisitor) {
@@ -90,7 +92,7 @@ public enum Interpreter {
 		this.expressionVisitor = new ExpressionVisitor(this);
 		this.definitionVisitor = new DefinitionVisitor(this);
 		this.ancestorVisitor = new AncestorVisitor(this);
-		this.staticAnncestorVisitor = new StaticAncestorVisitor(this);
+		this.staticAncestorVisitor = new StaticAncestorVisitor(this);
 		this.typeVisitor = new TypeVisitor(this);
 	}
 
@@ -107,13 +109,16 @@ public enum Interpreter {
 		return this.definitionVisitor;
 	}
 
-	public final ExpressionNodeVisitor<TypeRef, Distributor> ancestorVisitor() {
+	public final ExpressionNodeVisitor<
+			AncestorTypeRef,
+			Distributor> ancestorVisitor() {
 		return this.ancestorVisitor;
 	}
 
-	public final ExpressionNodeVisitor<TypeRef, Distributor>
-	staticAnncestorVisitor() {
-		return this.staticAnncestorVisitor;
+	public final ExpressionNodeVisitor<
+			AncestorTypeRef,
+			Distributor> staticAncestorVisitor() {
+		return this.staticAncestorVisitor;
 	}
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor() {
