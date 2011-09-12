@@ -1,5 +1,5 @@
 /*
-    Test Framework
+    Compiler Tests
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Rt-string :=> $$string
-======================
+package org.o42a.compiler.test.ref.phrase;
 
-<*By string> Parser: string(
-  <*''> Input = ()
-)
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
+
+
+public class ComplexPhraseTest extends CompilerTestCase {
+
+	@Test
+	public void phraseAsPhrasePrefix() {
+		compile("A := (integer '5') '7'");
+
+		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(7L));
+	}
+
+	@Test
+	public void phraseAsPhrasePrefix2() {
+		compile(
+				"Str :=> string(",
+				"  <*''> = ()",
+				")",
+				"A := (str 'abc')[1]");
+
+		assertThat(definiteValue(field("a"), ValueType.STRING), is("b"));
+	}
+
+}

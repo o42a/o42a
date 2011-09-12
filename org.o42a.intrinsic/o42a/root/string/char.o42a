@@ -20,6 +20,6 @@
 Char :=> string
 ===============
 
-Index :=< `integer
-
 <*[]> Index = ()
+
+Index :=< `integer

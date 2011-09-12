@@ -20,9 +20,6 @@
 Substring :=> string
 ====================
 
-From := `0
-To := (`integer) string:: length
-
 <*Range start> (
   <*[] | to*> From = ()
 )
@@ -33,3 +30,6 @@ To := (`integer) string:: length
 <To ...> (
   <*[]> To = ()
 )
+
+From := `0
+To := (`integer) string:: length

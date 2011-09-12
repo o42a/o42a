@@ -20,8 +20,6 @@
 Print to console :=> void
 ==========================
 
-Text :=< `""
-
 <*Printer> Void(
   <*> (
     <*Content> {
@@ -29,8 +27,10 @@ Text :=< `""
         <*[] | content> Text = ()
         <*'' | content> Text = ()
       )
-      <NL | content> Print to console(Text = "\n")
+      <Nl | content> Print to console(Text = "\n")
     }
     = Void
   )
 )
+
+Text :=< `""

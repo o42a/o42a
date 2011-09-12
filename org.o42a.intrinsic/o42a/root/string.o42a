@@ -20,6 +20,10 @@
 String :=> &void
 ================
 
+<*Char> Char(
+  <*[]> Index = ()
+)
+
 <*Addition> Strings: concat(
   <@Operators: add | concat with*> What = ()
   <Concat with> (

@@ -475,7 +475,7 @@ public abstract class Obj
 
 	public final void assertDerivedFrom(Obj type) {
 		assert type().derivedFrom(type.type()) :
-					this + " is not derived from " + type;
+			this + " is not derived from " + type;
 	}
 
 	public final ObjectIR ir(Generator generator) {

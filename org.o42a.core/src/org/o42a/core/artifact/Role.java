@@ -60,7 +60,7 @@ public enum Role {
 
 		@Override
 		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
-			target.getContext().getLogger().forbiddenAccess(
+			user.getContext().getLogger().forbiddenAccess(
 					user,
 					target);
 		}
@@ -75,7 +75,7 @@ public enum Role {
 
 		@Override
 		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
-			target.getContext().getLogger().cantInherit(user, target);
+			user.getContext().getLogger().cantInherit(user, target);
 		}
 
 	},
@@ -87,7 +87,7 @@ public enum Role {
 
 		@Override
 		public void reportMisuseBy(LocationInfo user, ScopeInfo target) {
-			target.getContext().getLogger().notObject(user, target);
+			user.getContext().getLogger().notObject(user, target);
 		}
 
 	};

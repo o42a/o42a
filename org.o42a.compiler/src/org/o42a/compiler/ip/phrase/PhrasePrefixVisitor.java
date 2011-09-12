@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.AncestorVisitor.impliedAncestor;
-import static org.o42a.compiler.ip.AncestorVisitor.noAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefix;
 
@@ -29,7 +28,6 @@ import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -57,17 +55,6 @@ final class PhrasePrefixVisitor
 		if (ancestor == null
 				|| ancestor == impliedAncestor(distributor.getContext())) {
 			return p.setImpliedAncestor(location(p, expression));
-		}
-		if (ancestor == noAncestor(distributor.getContext())) {
-
-			final Ref sampleRef =
-					expression.accept(p.ip().expressionVisitor(), distributor);
-
-			if (sampleRef == null) {
-				return p.setImpliedAncestor(location(p, expression));
-			}
-
-			return p.addSamples(sampleRef.toStaticTypeRef());
 		}
 
 		return p.setAncestor(ancestor);
