@@ -39,7 +39,7 @@ final class ClauseRefVisitor extends RefVisitor {
 
 	@Override
 	protected Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
-		return new ClauseObjectRef(location(p, ref), p, this.clauseDefinition);
+		return new ClauseObjectRef(location(p, ref), p);
 	}
 
 	@Override

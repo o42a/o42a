@@ -58,10 +58,7 @@ final class ClauseInstantiation extends Wrap {
 		final AscendantsDefinition ascendants =
 				this.instance.getContext().ascendants(this, distribute());
 
-		return new ClauseConstructor(
-				this.instance,
-				distribute(),
-				ascendants);
+		return new ClauseConstructor(this.instance, distribute(), ascendants);
 	}
 
 	private static final class ClauseConstructor extends ObjectConstructor {

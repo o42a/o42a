@@ -128,16 +128,18 @@ class PathTarget extends Ref {
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		Path path = getPath();
+		final Path fullPath = getPath();
 		final Ref start;
+		final Path path;
 
-		if (path == null) {
+		if (fullPath == null) {
 			start = this.start;
 			path = this.path;
-		} else if (path.isAbsolute()) {
-			return path.target(this, reproducer.distribute());
+		} else if (fullPath.isAbsolute()) {
+			return fullPath.target(this, reproducer.distribute());
 		} else {
 			start = null;
+			path = fullPath;
 		}
 
 		final PathReproduction pathReproduction =
@@ -147,10 +149,18 @@ class PathTarget extends Ref {
 			return null;
 		}
 		if (pathReproduction.isUnchanged()) {
-			return reproducePart(
+			if (!reproducer.isTopLevel()) {
+				return reproducePart(
+						reproducer,
+						start,
+						pathReproduction.getExternalPath());
+			}
+			// Top-level reproducer`s scope is not compatible with path
+			// and requires rescoping.
+			return startrWithPrefix(
 					reproducer,
-					start,
-					pathReproduction.getExternalPath());
+					pathReproduction,
+					reproducer.getPhrasePrefix().materialize());
 		}
 
 		final PathTarget reproducedPart = reproducePart(
@@ -162,20 +172,11 @@ class PathTarget extends Ref {
 			return reproducedPart;
 		}
 
-		final Ref phrasePrefix =
+		return startrWithPrefix(
+				reproducer,
+				pathReproduction,
 				reproducer.getPhrasePrefix().materialize().rescope(
-						reproducedPart.toRescoper());
-		final Path externalPath = pathReproduction.getExternalPath();
-
-		if (externalPath.isSelf()) {
-			return phrasePrefix;
-		}
-
-		return new PathTarget(
-				this,
-				reproducer.distribute(),
-				externalPath,
-				phrasePrefix);
+						reproducedPart.toRescoper()));
 	}
 
 	@Override
@@ -272,6 +273,24 @@ class PathTarget extends Ref {
 		}
 
 		return new PathTarget(this, reproducer.distribute(), path, newStart);
+	}
+
+	private Ref startrWithPrefix(
+			Reproducer reproducer,
+			PathReproduction pathReproduction,
+			Ref phrasePrefix) {
+
+		final Path externalPath = pathReproduction.getExternalPath();
+
+		if (externalPath.isSelf()) {
+			return phrasePrefix;
+		}
+
+		return new PathTarget(
+				this,
+				reproducer.distribute(),
+				externalPath,
+				phrasePrefix);
 	}
 
 	private static final class Op extends RefOp {

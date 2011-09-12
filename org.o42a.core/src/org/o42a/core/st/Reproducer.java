@@ -52,6 +52,10 @@ public abstract class Reproducer {
 		return this.distributor.getContainer();
 	}
 
+	public final boolean isTopLevel() {
+		return getScope() == getPhrasePrefix().getScope();
+	}
+
 	public abstract Ref getPhrasePrefix();
 
 	public abstract boolean phraseCreatesObject();

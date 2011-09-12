@@ -31,14 +31,8 @@ import org.o42a.core.source.LocationInfo;
 
 public class ClauseObjectRef extends Wrap {
 
-	private final boolean clauseDefinition;
-
-	public ClauseObjectRef(
-			LocationInfo location,
-			Distributor distributor,
-			boolean clauseDefinition) {
+	public ClauseObjectRef(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
-		this.clauseDefinition = clauseDefinition;
 	}
 
 	@Override
@@ -76,13 +70,6 @@ public class ClauseObjectRef extends Wrap {
 							"unresolved_object_intrinsic",
 							this,
 							"Enclosing object not found");
-					return null;
-				}
-				if (this.clauseDefinition && object.isPrototype()) {
-					getLogger().error(
-							"prohibited_prototype_object_instrinsic",
-							this,
-							"$object$ intrinsic can not refer the prototype");
 					return null;
 				}
 

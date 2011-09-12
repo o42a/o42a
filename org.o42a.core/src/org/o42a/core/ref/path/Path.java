@@ -267,9 +267,7 @@ public class Path {
 			}
 			if (reproduction.isUnchanged()) {
 				// Left the rest of the path unchanged too.
-				return partiallyReproducedPath(
-						reproduced.append(reproduction.getExternalPath()),
-						i + 1);
+				return partiallyReproducedPath(reproduced, i);
 			}
 
 			final Path reproducedPath = reproduction.getReproducedPath();
