@@ -125,27 +125,22 @@ final class PathRescoper extends Rescoper {
 		if (pathReproduction == null) {
 			return null;
 		}
+		if (pathReproduction.isUnchanged()) {
+			if (!reproducer.isTopLevel()) {
+				return new PathRescoper(
+						pathReproduction.getExternalPath(),
+						scope);
+			}
+			// Top-level reproducer`s scope is not compatible with path
+			// and requires rescoping.
+			return startWithPrefix(reproducer, pathReproduction);
+		}
 
 		final PathRescoper reproducedPart = new PathRescoper(
 				pathReproduction.getReproducedPath(),
 				scope);
 
-		if (!pathReproduction.isOutOfClause()
-				|| pathReproduction.isUnchanged()) {
-			return reproducedPart;
-		}
-
-		final Rescoper phraseRescoper =
-				reproducer.getPhrasePrefix().materialize().toRescoper();
-		final Path externalPath = pathReproduction.getExternalPath();
-
-		if (externalPath.isSelf()) {
-			return phraseRescoper.and(reproducedPart);
-		}
-
-		return externalPath.rescoper(
-				phraseRescoper.rescope(phraseRescoper.getFinalScope()))
-				.and(phraseRescoper)
+		return startWithPrefix(reproducer, pathReproduction)
 				.and(reproducedPart);
 	}
 
@@ -200,6 +195,23 @@ final class PathRescoper extends Rescoper {
 	@Override
 	public String toString() {
 		return "RescopeTo[" + this.path + ']';
+	}
+
+	private Rescoper startWithPrefix(
+			Reproducer reproducer,
+			PathReproduction pathReproduction) {
+
+		final Rescoper phraseRescoper =
+				reproducer.getPhrasePrefix().materialize().toRescoper();
+		final Path externalPath = pathReproduction.getExternalPath();
+
+		if (externalPath.isSelf()) {
+			return phraseRescoper;
+		}
+
+		return externalPath.rescoper(
+				phraseRescoper.rescope(phraseRescoper.getFinalScope()))
+				.and(phraseRescoper);
 	}
 
 }

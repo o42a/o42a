@@ -43,7 +43,7 @@ public final class PathReproduction {
 	private final Path externalPath;
 	private final boolean unchanged;
 
-	PathReproduction(
+	private PathReproduction(
 			Path reproducedPath,
 			Path externalPath,
 			boolean unchanged) {

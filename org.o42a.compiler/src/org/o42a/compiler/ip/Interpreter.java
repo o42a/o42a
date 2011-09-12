@@ -75,11 +75,13 @@ public enum Interpreter {
 
 	private final RefNodeVisitor<Ref, Distributor> refVisitor;
 	private final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor;
-	private final
-	ExpressionNodeVisitor<FieldDefinition, FieldDeclaration> definitionVisitor;
+	private final ExpressionNodeVisitor<
+			FieldDefinition,
+			FieldDeclaration> definitionVisitor;
 	private final ExpressionNodeVisitor<TypeRef, Distributor> ancestorVisitor;
-	private final
-	ExpressionNodeVisitor<TypeRef, Distributor> staticAnncestorVisitor;
+	private final ExpressionNodeVisitor<
+			TypeRef,
+			Distributor> staticAnncestorVisitor;
 	private final TypeNodeVisitor<TypeRef, Distributor> typeVisitor;
 
 	Interpreter(RefVisitor refVisitor) {
@@ -137,8 +139,9 @@ public enum Interpreter {
 		if (itemTypeNode == null) {
 			itemType = null;
 		} else {
-			itemType =
-					itemTypeNode.accept(typeVisitor(), declaration.distribute());
+			itemType = itemTypeNode.accept(
+					typeVisitor(),
+					declaration.distribute());
 		}
 
 		return arrayInitializer(
