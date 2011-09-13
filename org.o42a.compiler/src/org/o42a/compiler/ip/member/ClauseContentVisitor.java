@@ -66,7 +66,7 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		reuseClauses(group.getBuilder());
+		declare(group.getBuilder());
 		addContent(
 				new ClauseStatementVisitor(p.getContext()),
 				group.parentheses(),
@@ -86,7 +86,7 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		reuseClauses(group.getBuilder());
+		declare(group.getBuilder());
 		addContent(
 				new ClauseStatementVisitor(p.getContext()),
 				group.braces(null),
@@ -107,7 +107,7 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		reuseClauses(group.getBuilder());
+		declare(group.getBuilder());
 		addContent(
 				new ClauseStatementVisitor(p.getContext()),
 				group.braces(block.getName().getName()),
@@ -128,7 +128,7 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		return reuseClauses(builder).build();
+		return declare(builder).build();
 	}
 
 	@Override
@@ -173,8 +173,8 @@ final class ClauseContentVisitor
 		return this.declaration.getContext().getLogger();
 	}
 
-	private final ClauseBuilder reuseClauses(ClauseBuilder builder) {
-		return ClauseInterpreter.reuseClauses(builder, this.node);
+	private final ClauseBuilder declare(ClauseBuilder builder) {
+		return ClauseInterpreter.declare(builder, this.node);
 	}
 
 	private Statement expression(
@@ -201,7 +201,7 @@ final class ClauseContentVisitor
 			return null;
 		}
 
-		return reuseClauses(builder);
+		return declare(builder);
 	}
 
 	private Statement buildExpression(
