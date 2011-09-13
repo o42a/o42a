@@ -79,7 +79,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 			"Wrong container " + declaration.getContainer()
 			+ ", but " + getOwner() + " expected";
 
-		return createFieldBuilder(declaration, definition);
+		return new FieldBuilder(this, declaration, definition);
 	}
 
 	@Override

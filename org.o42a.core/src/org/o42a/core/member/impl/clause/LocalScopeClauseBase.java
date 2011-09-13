@@ -17,30 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
-import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.field.MemberRegistryFieldBase;
+import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.clause.GroupClause;
+import org.o42a.core.member.local.LocalScope;
 
 
-public abstract class MemberRegistryClauseBase extends MemberRegistryFieldBase {
+public abstract class LocalScopeClauseBase implements Scope {
 
-	private int clauseSeq;
+	private GroupClause clause;
 
-	public ClauseBuilder newClause(ClauseDeclaration declaration) {
-		return createClause(declaration);
+	public final GroupClause toClause() {
+		return this.clause;
 	}
 
-	final ClauseBuilder createClause(ClauseDeclaration declaration) {
-		if (!declaration.isAnonymous()) {
-			return createNewClause(declaration);
-		}
-		return createNewClause(
-				declaration.setName(Integer.toString(++this.clauseSeq)));
-	}
+	protected abstract LocalScope propagateTo(Obj owner);
 
-	private final ClauseBuilder createNewClause(ClauseDeclaration declaration) {
-		return new ClauseBuilder((MemberRegistry) this, declaration);
+	final void setClause(GroupClause clause) {
+		this.clause = clause;
 	}
 
 }

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import static org.o42a.util.use.User.dummyUser;
 
@@ -26,21 +26,24 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.clause.*;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.Holder;
 
 
-final class DeclaredPlainClause extends PlainClause {
+public final class DeclaredPlainClause extends PlainClause {
 
-	static DeclaredPlainClause plainClause(ClauseBuilder builder) {
+	public static DeclaredPlainClause plainClause(ClauseBuilder builder) {
 		return new DeclaredPlainClauseMember(builder).toClause();
 	}
 
 	private final ClauseBuilder builder;
 	private Holder<ClauseDefinition> definition;
 	private MemberKey overridden;
+	private Path outcome;
 	private ReusedClause[] reused;
 
 	DeclaredPlainClause(
@@ -115,6 +118,14 @@ final class DeclaredPlainClause extends PlainClause {
 	@Override
 	public boolean isPrototype() {
 		return this.builder.isPrototype();
+	}
+
+	@Override
+	public Path getOutcome() {
+		if (this.outcome != null) {
+			return this.outcome;
+		}
+		return this.outcome = this.builder.outcome(this);
 	}
 
 	@Override

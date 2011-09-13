@@ -17,18 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import org.o42a.core.member.Member;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.ClauseBuilder;
+import org.o42a.core.member.clause.MemberClause;
 
 
-final class DeclaredGroupClauseMember extends MemberClause {
+final class DeclaredPlainClauseMember extends MemberClause {
 
-	private final DeclaredGroupClause clause;
+	final DeclaredPlainClause clause;
 
-	DeclaredGroupClauseMember(ClauseBuilder builder) {
+	DeclaredPlainClauseMember(ClauseBuilder builder) {
 		super(builder.getMemberOwner(), builder.getDeclaration());
-		this.clause = new DeclaredGroupClause(this, builder);
+		this.clause = new DeclaredPlainClause(this, builder);
 	}
 
 	@Override
@@ -37,7 +40,7 @@ final class DeclaredGroupClauseMember extends MemberClause {
 	}
 
 	@Override
-	public final DeclaredGroupClause toClause() {
+	public final DeclaredPlainClause toClause() {
 		return this.clause;
 	}
 

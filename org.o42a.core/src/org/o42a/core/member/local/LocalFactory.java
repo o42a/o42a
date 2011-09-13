@@ -21,17 +21,19 @@ package org.o42a.core.member.local;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.clause.MemberRegistryClauseBase;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.impl.local.ExplicitLocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public abstract class MemberRegistryLocalBase
-		extends MemberRegistryClauseBase {
+public final class LocalFactory {
 
-	public abstract Obj getOwner();
+	private final MemberRegistry memberRegistry;
+
+	public LocalFactory(MemberRegistry memberRegistry) {
+		this.memberRegistry = memberRegistry;
+	}
 
 	public LocalScope newLocalScope(
 			LocationInfo location,
@@ -48,9 +50,9 @@ public abstract class MemberRegistryLocalBase
 				location,
 				distributor,
 				owner,
-				name != null ? name : anonymousBlockName());
+				name != null ? name : this.memberRegistry.anonymousBlockName());
 
-		declareMember(explicitScope.toMember());
+		this.memberRegistry.declareMember(explicitScope.toMember());
 
 		return explicitScope;
 	}
@@ -71,18 +73,14 @@ public abstract class MemberRegistryLocalBase
 				owner,
 				scope.explicit());
 
-		declareMember(reproducedScope.toMember());
+		this.memberRegistry.declareMember(reproducedScope.toMember());
 
 		return reproducedScope;
 	}
 
-	public abstract void declareMember(Member member);
-
-	public abstract String anonymousBlockName();
-
 	private Obj owner(LocationInfo location) {
 
-		final Obj owner = getOwner();
+		final Obj owner = this.memberRegistry.getOwner();
 
 		if (owner == null) {
 			location.getContext().getLogger().prohibitedLocal(location);

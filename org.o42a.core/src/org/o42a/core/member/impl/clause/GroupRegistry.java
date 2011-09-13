@@ -17,12 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
+import org.o42a.core.member.clause.ClauseBuilder;
+import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;

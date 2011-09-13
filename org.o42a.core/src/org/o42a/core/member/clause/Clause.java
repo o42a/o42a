@@ -216,6 +216,8 @@ public abstract class Clause implements PlaceInfo {
 
 	public abstract GroupClause toGroupClause();
 
+	public abstract Path getOutcome();
+
 	public final Clause[] getImplicitClauses() {
 		if (this.implicitClauses != null) {
 			return this.implicitClauses;

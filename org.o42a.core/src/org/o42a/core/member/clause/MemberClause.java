@@ -26,6 +26,8 @@ import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.impl.clause.GroupClauseWrap;
+import org.o42a.core.member.impl.clause.PlainClauseWrap;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.source.Location;

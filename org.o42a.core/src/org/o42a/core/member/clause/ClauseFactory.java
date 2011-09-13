@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,23 +19,29 @@
 */
 package org.o42a.core.member.clause;
 
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.member.MemberRegistry;
 
 
-public abstract class LocalScopeClauseBase implements Scope {
+public final class ClauseFactory {
 
-	private GroupClause clause;
+	private final MemberRegistry memberRegistry;
+	private int clauseSeq;
 
-	public final GroupClause toClause() {
-		return this.clause;
+	public ClauseFactory(MemberRegistry memberRegistry) {
+		this.memberRegistry = memberRegistry;
 	}
 
-	protected abstract LocalScope propagateTo(Obj owner);
+	public ClauseBuilder newClause(ClauseDeclaration declaration) {
+		if (!declaration.isAnonymous()) {
+			return createNewClause(declaration);
+		}
+		return createNewClause(
+				declaration.setName(Integer.toString(++this.clauseSeq)));
+	}
 
-	final void setClause(GroupClause clause) {
-		this.clause = clause;
+	private final ClauseBuilder createNewClause(
+			ClauseDeclaration declaration) {
+		return new ClauseBuilder(this.memberRegistry, declaration);
 	}
 
 }

@@ -244,7 +244,7 @@ public abstract class GroupClause extends Clause implements Container {
 		return enclosingClause.pathInObject().append(member.getKey());
 	}
 
-	Clause groupClause(MemberId memberId, Obj declaredIn) {
+	protected Clause groupClause(MemberId memberId, Obj declaredIn) {
 
 		final ClauseContainer clauseContainer;
 		final Container container = getEnclosingScope().getContainer();

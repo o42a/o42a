@@ -17,14 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
+import org.o42a.core.member.clause.*;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -34,13 +36,17 @@ import org.o42a.core.st.sentence.*;
 import org.o42a.util.log.Loggable;
 
 
-final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
+public final class DeclaredGroupClause
+		extends GroupClause
+		implements ClauseContainer {
 
-	static DeclaredGroupClause declaredGroupClause(ClauseBuilder builder) {
+	public static DeclaredGroupClause declaredGroupClause(
+			ClauseBuilder builder) {
 		return new DeclaredGroupClauseMember(builder).toClause();
 	}
 
 	private final ClauseBuilder builder;
+	private Path outcome;
 	private ReusedClause[] reused;
 	private Block<?> definition;
 	private ImperativeBlock imperative;
@@ -92,11 +98,67 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	}
 
 	@Override
+	public Path getOutcome() {
+		if (this.outcome != null) {
+			return this.outcome;
+		}
+		return this.outcome = this.builder.outcome(this);
+	}
+
+	@Override
 	public ReusedClause[] getReusedClauses() {
 		if (this.reused != null) {
 			return this.reused;
 		}
 		return this.reused = this.builder.reuseClauses(this);
+	}
+
+	public Block<?> parentheses(Group group) {
+
+		final SentenceFactory<?, ?, ?> sentenceFactory =
+				group.getStatements().getSentenceFactory();
+		final Block<?> definition = sentenceFactory.groupParentheses(
+				group,
+				new BlockDistributor(group, this),
+				new GroupRegistry(
+						this,
+						group.getStatements().getMemberRegistry()));
+
+		return this.definition = definition;
+	}
+
+	public ImperativeBlock braces(Group group, String name) {
+
+		final Statements<?> statements = group.getStatements();
+		final SentenceFactory<?, ?, ?> sentenceFactory =
+				statements.getSentenceFactory();
+		final ImperativeBlock definition;
+
+		if (group.getScope().toLocal() != null) {
+			definition = sentenceFactory.groupBraces(
+					group,
+					new BlockDistributor(group, this),
+					name,
+					new GroupRegistry(
+							this,
+							group.getStatements().getMemberRegistry()));
+		} else {
+			definition = sentenceFactory.groupBraces(
+					group,
+					new BlockDistributor(group, this),
+					name,
+					new ImperativeGroupRegistry.Builder(group));
+			this.localScope = definition.getScope();
+
+			final LocalScopeClauseBase local = this.localScope;
+
+			local.setClause(this);
+		}
+
+		this.imperative = definition;
+		this.definition = definition;
+
+		return definition;
 	}
 
 	@Override
@@ -156,54 +218,6 @@ final class DeclaredGroupClause extends GroupClause implements ClauseContainer {
 	@Override
 	protected GroupClause propagate(MemberOwner owner) {
 		return new DeclaredGroupClause(owner, this);
-	}
-
-	Block<?> parentheses(Group group) {
-
-		final SentenceFactory<?, ?, ?> sentenceFactory =
-				group.getStatements().getSentenceFactory();
-		final Block<?> definition = sentenceFactory.groupParentheses(
-				group,
-				new BlockDistributor(group, this),
-				new GroupRegistry(
-						this,
-						group.getStatements().getMemberRegistry()));
-
-		return this.definition = definition;
-	}
-
-	ImperativeBlock braces(Group group, String name) {
-
-		final Statements<?> statements = group.getStatements();
-		final SentenceFactory<?, ?, ?> sentenceFactory =
-				statements.getSentenceFactory();
-		final ImperativeBlock definition;
-
-		if (group.getScope().toLocal() != null) {
-			definition = sentenceFactory.groupBraces(
-					group,
-					new BlockDistributor(group, this),
-					name,
-					new GroupRegistry(
-							this,
-							group.getStatements().getMemberRegistry()));
-		} else {
-			definition = sentenceFactory.groupBraces(
-					group,
-					new BlockDistributor(group, this),
-					name,
-					new ImperativeGroupRegistry.Builder(group));
-			this.localScope = definition.getScope();
-
-			final LocalScopeClauseBase local = this.localScope;
-
-			local.setClause(this);
-		}
-
-		this.imperative = definition;
-		this.definition = definition;
-
-		return definition;
 	}
 
 	final ClauseBuilder getBuilder() {

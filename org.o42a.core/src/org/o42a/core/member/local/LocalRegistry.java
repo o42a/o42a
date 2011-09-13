@@ -63,15 +63,7 @@ public class LocalRegistry extends MemberRegistry {
 			FieldDefinition definition) {
 		assert declaration.getPlace().isImperative() :
 			"Imperative field declaration expected: " + declaration;
-
-		final FieldBuilder variant =
-				createFieldBuilder(declaration, definition);
-
-		if (variant == null) {
-			return null;
-		}
-
-		return null;
+		return new FieldBuilder(this, declaration, definition);
 	}
 
 	@Override
