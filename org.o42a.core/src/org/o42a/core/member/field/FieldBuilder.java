@@ -33,7 +33,7 @@ public final class FieldBuilder implements PlaceInfo {
 	private final FieldDeclaration declaration;
 	private final FieldDefinition definition;
 
-	FieldBuilder(
+	public FieldBuilder(
 			MemberRegistry memberRegistry,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {

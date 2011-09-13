@@ -373,13 +373,6 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void prohibitedOverriderClause(LogInfo location) {
-		error(
-				"prohibited_overrider_clause",
-				location,
-				"Overrider clause is prohibited here");
-	}
-
 	public void prohibitedPrivateAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_private_abstract",

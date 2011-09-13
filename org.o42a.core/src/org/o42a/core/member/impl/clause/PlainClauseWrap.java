@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.def.Rescoper.wrapper;
@@ -30,21 +30,27 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.OverrideMode;
+import org.o42a.core.member.clause.PlainClause;
+import org.o42a.core.member.clause.ReusedClause;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
 
-final class PlainClauseWrap extends PlainClause {
+public final class PlainClauseWrap extends PlainClause {
 
 	private final PlainClause iface;
 	private final PlainClause wrapped;
 	private final AscendantsDefinition ascendants;
 
-	PlainClauseWrap(MemberOwner owner, PlainClause iface, PlainClause wrapped) {
+	public PlainClauseWrap(
+			MemberOwner owner,
+			PlainClause iface,
+			PlainClause wrapped) {
 		super(owner, wrapped, null, OverrideMode.WRAP);
 		this.iface = iface;
 		this.wrapped = wrapped;
@@ -117,6 +123,11 @@ final class PlainClauseWrap extends PlainClause {
 	@Override
 	public boolean isPrototype() {
 		return this.wrapped.isPrototype();
+	}
+
+	@Override
+	public Path getOutcome() {
+		return this.wrapped.getOutcome();
 	}
 
 	@Override

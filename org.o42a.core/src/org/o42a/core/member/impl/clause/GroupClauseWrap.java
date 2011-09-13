@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import static org.o42a.util.use.User.dummyUser;
 
@@ -25,17 +25,24 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.OverrideMode;
+import org.o42a.core.member.clause.*;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
 
-final class GroupClauseWrap extends GroupClause implements ClauseContainer {
+public final class GroupClauseWrap
+		extends GroupClause
+		implements ClauseContainer {
 
 	private final GroupClause iface;
 	private final GroupClause wrapped;
 	private LocalScope localScope;
 
-	GroupClauseWrap(MemberOwner owner, GroupClause iface, GroupClause wrapped) {
+	public GroupClauseWrap(
+			MemberOwner owner,
+			GroupClause iface,
+			GroupClause wrapped) {
 		super(owner, wrapped, wrapped, OverrideMode.WRAP);
 		this.iface = iface;
 		this.wrapped = wrapped;
@@ -112,6 +119,11 @@ final class GroupClauseWrap extends GroupClause implements ClauseContainer {
 		final LocalScope localScope = getLocalScope();
 
 		return localScope != null ? localScope : this;
+	}
+
+	@Override
+	public Path getOutcome() {
+		return this.wrapped.getOutcome();
 	}
 
 	@Override

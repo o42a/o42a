@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
@@ -26,6 +26,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.PlainClause;
 
 
 final class PropagatedClauseDefinition extends Obj {

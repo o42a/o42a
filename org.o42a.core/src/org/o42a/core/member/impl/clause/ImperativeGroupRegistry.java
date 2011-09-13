@@ -17,9 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.clause.ClauseBuilder;
+import org.o42a.core.member.clause.ClauseDeclaration;
+import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.sentence.Group;
@@ -37,13 +40,13 @@ final class ImperativeGroupRegistry extends LocalRegistry {
 	@Override
 	public ClauseBuilder newClause(ClauseDeclaration declaration) {
 		if (declaration.getKind() == ClauseKind.OVERRIDER) {
-			declaration.getLogger().prohibitedOverriderClause(declaration);
+			declaration.getLogger().error(
+					"prohibited_overrider_clause",
+					declaration,
+					"Overrider clause is prohibited here");
 			return null;
 		}
-
-		final MemberRegistryClauseBase registry = this;
-
-		return registry.createClause(declaration);
+		return clauseFactory().newClause(declaration);
 	}
 
 	static final class Builder implements Lambda<MemberRegistry, LocalScope> {
