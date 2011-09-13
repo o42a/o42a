@@ -17,26 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
-import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.ReusedClause;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.Resolver;
 
 
-final class ReusedClauseRef {
+public final class ReusedClauseRef {
 
 	private final Ref ref;
 	private boolean reuseContents;
 
-	ReusedClauseRef() {
+	public ReusedClauseRef() {
 		this.ref = null;
 		this.reuseContents = true;
 	}
 
-	ReusedClauseRef(Ref ref, boolean reuseContents) {
+	public ReusedClauseRef(Ref ref, boolean reuseContents) {
 		this.ref = ref;
 		this.reuseContents = reuseContents;
 	}
@@ -46,20 +47,12 @@ final class ReusedClauseRef {
 			return new ReusedClause();
 		}
 
-		final Path path = this.ref.getPath();
-
-		if (path == null) {
-			clause.getContext().getLogger().invalidClauseReused(this.ref);
-			return null;
-		}
-
 		final ClauseReuser reuser =
 				new ClauseReuser(this.ref, this.reuseContents);
+		final Resolver resolver =
+				clause.getEnclosingScope().walkingResolver(dummyUser(), reuser);
 
-		if (path.walk(
-				pathResolver(this.ref, dummyUser()),
-				clause.getEnclosingScope(),
-				reuser) == null) {
+		if (this.ref.resolve(resolver) == null) {
 			return null;
 		}
 
