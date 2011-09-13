@@ -32,10 +32,6 @@ import org.o42a.ast.test.grammar.GrammarTestCase;
 
 public class ClauseReuseTest extends GrammarTestCase {
 
-	private ClauseDeclaratorNode parse(String text) {
-		return parse(DECLARATIVE.clauseDeclarator(), text);
-	}
-
 	@Test
 	public void reuseClause() {
 
@@ -107,6 +103,10 @@ public class ClauseReuseTest extends GrammarTestCase {
 		assertNull(reused[1].getReuseContents());
 
 		checkParentheses(result);
+	}
+
+	private ClauseDeclaratorNode parse(String text) {
+		return parse(DECLARATIVE.clauseDeclarator(), text);
 	}
 
 }

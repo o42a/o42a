@@ -20,9 +20,7 @@
 package org.o42a.ast;
 
 import org.o42a.ast.atom.*;
-import org.o42a.ast.clause.ClauseKeyNode;
-import org.o42a.ast.clause.ClauseKeyNodeVisitor;
-import org.o42a.ast.clause.ReusedClauseNode;
+import org.o42a.ast.clause.*;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.AscendantNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
@@ -33,7 +31,8 @@ import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
-import org.o42a.ast.statement.*;
+import org.o42a.ast.statement.AbstractStatementVisitor;
+import org.o42a.ast.statement.StatementNode;
 
 
 public abstract class NodeVisitor<R, P>
@@ -88,6 +87,10 @@ public abstract class NodeVisitor<R, P>
 
 	public R visitSentence(SentenceNode sentence, P p) {
 		return visitPart(sentence, p);
+	}
+
+	public R visitOutcome(OutcomeNode outcome, P p) {
+		return visitPart(outcome, p);
 	}
 
 	public R visitReusedClause(ReusedClauseNode reusedClause, P p) {
