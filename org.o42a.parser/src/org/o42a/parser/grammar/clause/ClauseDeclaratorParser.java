@@ -23,6 +23,7 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.declarableAdapter;
 import static org.o42a.parser.Grammar.ref;
 import static org.o42a.parser.grammar.clause.ClauseContinuationParser.CLAUSE_CONTINUATION;
+import static org.o42a.parser.grammar.clause.OutcomeParser.OUTCOME;
 import static org.o42a.parser.grammar.clause.ReusedClauseParser.REUSED_CLAUSE;
 
 import org.o42a.ast.FixedPosition;
@@ -61,6 +62,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 			return null;
 		}
 
+		final OutcomeNode outcome = context.parse(OUTCOME);
 		final ReusedClauseNode[] reused = reused(context);
 		final SignNode<Continuation> continuation =
 				context.parse(CLAUSE_CONTINUATION);
@@ -71,6 +73,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		return new ClauseDeclaratorNode(
 				opening,
 				clauseKey,
+				outcome,
 				reused,
 				continuation,
 				closing,
