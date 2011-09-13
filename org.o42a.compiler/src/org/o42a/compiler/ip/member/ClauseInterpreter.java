@@ -25,12 +25,14 @@ import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_D
 import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;
+import org.o42a.ast.clause.OutcomeNode;
 import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -83,7 +85,7 @@ public class ClauseInterpreter {
 				return;
 			}
 
-			reuseClauses(group.getBuilder(), declarator);
+			declare(group.getBuilder(), declarator);
 			result = group.parentheses();
 		}
 
@@ -127,7 +129,34 @@ public class ClauseInterpreter {
 		return definition.accept(OVERRIDER_DEFINITION_VISITOR, builder);
 	}
 
-	static ClauseBuilder reuseClauses(
+	static ClauseBuilder declare(
+			ClauseBuilder builder,
+			ClauseDeclaratorNode declarator) {
+		return reuseClauses(setOutcome(builder, declarator), declarator);
+	}
+
+	private static ClauseBuilder setOutcome(
+			ClauseBuilder builder,
+			ClauseDeclaratorNode declarator) {
+
+		final OutcomeNode outcomeNode = declarator.getOutcome();
+
+		if (outcomeNode == null) {
+			return builder;
+		}
+
+		final RefNode outcomeValueNode = outcomeNode.getValue();
+
+		if (outcomeValueNode == null) {
+			return builder;
+		}
+
+		return builder.setOutcome(outcomeValueNode.accept(
+				Interpreter.CLAUSE_DEF_IP.refVisitor(),
+				builder.distribute()));
+	}
+
+	private static ClauseBuilder reuseClauses(
 			ClauseBuilder builder,
 			ClauseDeclaratorNode declarator) {
 		for (ReusedClauseNode reused : declarator.getReused()) {
