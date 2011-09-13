@@ -17,19 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.ClauseKind;
+import org.o42a.core.member.clause.ReusedClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.path.PathWalker;
@@ -37,7 +42,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 
 
-final class ClauseReuser implements PathWalker {
+final class ClauseReuser implements ResolutionWalker, PathWalker {
 
 	private final LocationInfo location;
 	private final boolean reuseContents;
@@ -55,9 +60,31 @@ final class ClauseReuser implements PathWalker {
 	}
 
 	@Override
+	public PathWalker path(LocationInfo location, Path path) {
+		return this;
+	}
+
+	@Override
+	public boolean newObject(ScopeInfo location, Obj object) {
+		return notClause();
+	}
+
+	@Override
+	public boolean artifactPart(
+			LocationInfo location,
+			Artifact<?> artifact,
+			Artifact<?> part) {
+		return notClause();
+	}
+
+	@Override
+	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
+		return unexpectedAbsolutePath();
+	}
+
+	@Override
 	public boolean root(Path path, Scope root) {
-		getLogger().unexpectedAbsolutePath(this.location);
-		return false;
+		return unexpectedAbsolutePath();
 	}
 
 	@Override
@@ -67,8 +94,7 @@ final class ClauseReuser implements PathWalker {
 
 	@Override
 	public boolean module(PathFragment fragment, Obj module) {
-		getLogger().unexpectedAbsolutePath(this.location);
-		return false;
+		return unexpectedAbsolutePath();
 	}
 
 	@Override
@@ -77,23 +103,17 @@ final class ClauseReuser implements PathWalker {
 			PathFragment fragment,
 			Container enclosing) {
 		if (this.reused != null) {
-			// wrong path
-			getLogger().invalidClauseReused(this.location);
-			return false;
+			return invalidClauseReused();
 		}
-		if (this.container.toClause() == null) {
-			// can only reuse clauses within the same object
-			getLogger().invalidClauseReused(this.location);
-			return false;
+
+		final Clause containerClause = this.container.toClause();
+
+		if (containerClause == null) {
+			return invalidClauseReused();
 		}
-		if (enclosing.toClause() == null) {
-			if (this.container.toClause().getKind() == ClauseKind.EXPRESSION) {
-				// Topmost clause already reached.
-				getLogger().invalidClauseReused(this.location);
-				return false;
-			}
-			this.container = enclosing;
-			return true;
+		if (enclosing.toClause() == null
+				&& containerClause.getKind() == ClauseKind.EXPRESSION) {
+			return invalidClauseReused();
 		}
 
 		this.container = enclosing;
@@ -136,8 +156,7 @@ final class ClauseReuser implements PathWalker {
 		final Clause clause = member.toClause();
 
 		if (clause == null) {
-			getLogger().notClause(this.location);
-			return false;
+			return notClause();
 		}
 
 		this.reused = new ReusedClause(
@@ -153,14 +172,12 @@ final class ClauseReuser implements PathWalker {
 			Obj object,
 			PathFragment fragment,
 			Field<?> dependency) {
-		getLogger().invalidClauseReused(this.location);
-		return false;
+		return invalidClauseReused();
 	}
 
 	@Override
 	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
-		getLogger().invalidClauseReused(this.location);
-		return false;
+		return invalidClauseReused();
 	}
 
 	@Override
@@ -168,8 +185,7 @@ final class ClauseReuser implements PathWalker {
 			Artifact<?> artifact,
 			PathFragment fragment,
 			Obj result) {
-		getLogger().invalidClauseReused(this.location);
-		return false;
+		return invalidClauseReused();
 	}
 
 	@Override
@@ -202,6 +218,27 @@ final class ClauseReuser implements PathWalker {
 
 	private CompilerLogger getLogger() {
 		return this.location.getContext().getLogger();
+	}
+
+	private boolean notClause() {
+		getLogger().notClause(this.location);
+		return false;
+	}
+
+	private boolean invalidClauseReused() {
+		getLogger().error(
+				"invalid_clause_reused",
+				this.location,
+				"Attempt to reuse inaccessible clause");
+		return false;
+	}
+
+	private boolean unexpectedAbsolutePath() {
+		getLogger().error(
+				"unexpected_reused_clause_absolute_path",
+				this.location,
+				"Reused clause should have a relative path");
+		return false;
 	}
 
 }

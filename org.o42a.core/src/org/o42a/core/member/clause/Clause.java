@@ -141,6 +141,10 @@ public abstract class Clause implements PlaceInfo {
 
 	public abstract ClauseContainer getClauseContainer();
 
+	public final boolean isTopLevel() {
+		return getEnclosingClause() == null;
+	}
+
 	public final Clause getEnclosingClause() {
 		if (this.enclosingClause != null) {
 			return this.enclosingClause;
@@ -149,24 +153,23 @@ public abstract class Clause implements PlaceInfo {
 		final Scope enclosingScope = getEnclosingScope();
 		final MemberKey enclosingKey = getKey().getEnclosingKey();
 
-		if (enclosingKey != null) {
-
-			final Member enclosingMember =
-					enclosingScope.getContainer().member(enclosingKey);
-
-			assert enclosingMember != null :
-				"Member " + enclosingKey + " not found in " + enclosingScope;
-
-			this.enclosingClause = enclosingMember.toClause();
-
-			assert this.enclosingClause != null :
-				enclosingMember + " is not a clause";
-
-			return this.enclosingClause;
+		if (enclosingKey == null) {
+			// Return enclosing scope, if it's clause.
+			return enclosingScope.getContainer().toClause();
 		}
 
-		// Return enclosing scope, if it's clause.
-		return enclosingScope.getContainer().toClause();
+		final Member enclosingMember =
+				enclosingScope.getContainer().member(enclosingKey);
+
+		assert enclosingMember != null :
+			"Member " + enclosingKey + " not found in " + enclosingScope;
+
+		this.enclosingClause = enclosingMember.toClause();
+
+		assert this.enclosingClause != null :
+			enclosingMember + " is not a clause";
+
+		return this.enclosingClause;
 	}
 
 	public final ClauseKind getKind() {

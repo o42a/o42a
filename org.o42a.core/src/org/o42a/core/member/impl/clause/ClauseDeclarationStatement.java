@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
@@ -25,17 +25,19 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueType;
 
 
-final class ClauseDeclarationStatement extends DeclarationStatement {
+public final class ClauseDeclarationStatement extends DeclarationStatement {
 
 	private final Clause clause;
 
-	ClauseDeclarationStatement(ClauseBuilder builder, Clause clause) {
+	public ClauseDeclarationStatement(ClauseBuilder builder, Clause clause) {
 		super(builder, builder.distribute());
 		this.clause = clause;
 	}

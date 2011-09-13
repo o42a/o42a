@@ -159,13 +159,6 @@ public class CompilerLogger implements Logger {
 		error("invalid_clause_content", location, "Invalid clause content");
 	}
 
-	public void invalidClauseReused(LogInfo location) {
-		error(
-				"invalid_clause_reused",
-				location,
-				"Attempt to reuse inaccessible clause");
-	}
-
 	public void invalidDeclaration(LogInfo location) {
 		error("invalid_declaration", location, "Invalid declaration");
 	}
@@ -428,13 +421,6 @@ public class CompilerLogger implements Logger {
 				"unexpected_abstract",
 				location,
 				"Unexpected abstract declaration");
-	}
-
-	public void unexpectedAbsolutePath(LogInfo location) {
-		error(
-				"unexpected_absolute_path",
-				location,
-				"Relative path expected here");
 	}
 
 	public void unexpectedAdapter(LogInfo location) {

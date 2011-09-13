@@ -22,13 +22,14 @@ package org.o42a.core.member.clause;
 import static org.o42a.core.member.impl.clause.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.impl.clause.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.impl.clause.DeclaredGroupClause;
-import org.o42a.core.member.impl.clause.DeclaredPlainClause;
+import org.o42a.core.member.impl.clause.*;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -213,11 +214,23 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	}
 
 	public final Path outcome(Clause clause) {
-		if (this.outcome == null) {
+
+		final Ref outcome = getOutcome();
+
+		if (outcome == null) {
 			return Path.SELF_PATH;
 		}
-		// TODO Build clause outcome.
-		return null;
+
+		final OutcomeBuilder outcomeBuilder = new OutcomeBuilder(this.outcome);
+		final Resolver resolver = clause.getEnclosingScope().walkingResolver(
+				dummyUser(),
+				outcomeBuilder);
+
+		if (outcome.resolve(resolver) == null) {
+			return Path.SELF_PATH;
+		}
+
+		return outcomeBuilder.getOutcome();
 	}
 
 	public ReusedClause[] reuseClauses(Clause clause) {

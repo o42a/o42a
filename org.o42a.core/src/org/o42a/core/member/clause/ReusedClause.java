@@ -26,13 +26,16 @@ public final class ReusedClause {
 	private final Clause clause;
 	private final boolean reuseContents;
 
-	ReusedClause() {
+	public ReusedClause() {
 		this.container = null;
 		this.clause = null;
 		this.reuseContents = true;
 	}
 
-	ReusedClause(Clause container, Clause clause, boolean reuseContents) {
+	public ReusedClause(
+			Clause container,
+			Clause clause,
+			boolean reuseContents) {
 		this.container = container;
 		this.clause = clause;
 		this.reuseContents = validateContentReuse(reuseContents);
