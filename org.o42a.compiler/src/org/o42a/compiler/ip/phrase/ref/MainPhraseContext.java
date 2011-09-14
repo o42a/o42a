@@ -52,6 +52,7 @@ final class MainPhraseContext extends PhraseContext {
 	private boolean standaloneRef;
 	private PhraseContext nextContext;
 	private Ascendants implicitAscendants;
+	private Path outcome = Path.SELF_PATH;
 
 	MainPhraseContext(Phrase phrase) {
 		super(phrase, phrase.getPrefix());
@@ -61,10 +62,13 @@ final class MainPhraseContext extends PhraseContext {
 		return getPhrase().getPrefix().getAscendants();
 	}
 
+	public Path getOutcome() {
+		build();
+		return this.outcome;
+	}
+
 	public boolean createsObject() {
-		if (this.createsObject == 0) {
-			build();
-		}
+		build();
 		return this.createsObject > 0;
 	}
 
@@ -213,6 +217,9 @@ final class MainPhraseContext extends PhraseContext {
 	}
 
 	private void build() {
+		if (this.createsObject != 0) {
+			return;
+		}
 
 		final LinkedList<PhraseContext> stack = new LinkedList<PhraseContext>();
 		final PhrasePrefix prefix = getPhrase().getPrefix();
@@ -258,6 +265,12 @@ final class MainPhraseContext extends PhraseContext {
 			context = nextContext(stack, continuation, nextClause);
 			context.incompleteInstance().addContent(continuation);
 			continuation = continuation.getFollowing();
+
+			final Clause clause = nextClause.getClause();
+
+			if (clause != null) {
+				this.outcome = clause.getOutcome();
+			}
 		}
 	}
 

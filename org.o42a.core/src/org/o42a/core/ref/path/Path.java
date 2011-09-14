@@ -195,6 +195,10 @@ public class Path {
 
 		start.assertCompatibleScope(distributor);
 
+		if (isSelf()) {
+			return start;
+		}
+
 		return new PathTarget(location, distributor, this, start);
 	}
 
