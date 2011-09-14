@@ -23,6 +23,7 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.path.Path;
 
 
 class PhraseEx extends Wrap {
@@ -47,12 +48,17 @@ class PhraseEx extends Wrap {
 	protected Ref resolveWrapped() {
 
 		final MainPhraseContext context = this.phrase.getMainContext();
+		final Ref ref;
 
 		if (!context.createsObject()) {
-			return context.standaloneRef();
+			ref = context.standaloneRef();
+		} else {
+			ref = new PhraseConstructor(this);
 		}
 
-		return new PhraseConstructor(this);
+		final Path outcome = context.getOutcome();
+
+		return outcome.target(ref, ref.distribute(), ref);
 	}
 
 	@Override
