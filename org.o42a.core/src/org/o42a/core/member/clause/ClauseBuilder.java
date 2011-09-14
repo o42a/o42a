@@ -218,6 +218,13 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		final Ref outcome = getOutcome();
 
 		if (outcome == null) {
+
+			final Clause enclosingClause = clause.getEnclosingClause();
+
+			if (enclosingClause != null) {
+				return enclosingClause.getOutcome();
+			}
+
 			return Path.SELF_PATH;
 		}
 

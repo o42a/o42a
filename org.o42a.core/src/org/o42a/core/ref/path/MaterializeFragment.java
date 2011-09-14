@@ -35,6 +35,11 @@ import org.o42a.core.st.Reproducer;
 final class MaterializeFragment extends PathFragment {
 
 	@Override
+	public PathFragment materialize() {
+		return null;
+	}
+
+	@Override
 	public Container resolve(
 			PathResolver resolver,
 			Path path,

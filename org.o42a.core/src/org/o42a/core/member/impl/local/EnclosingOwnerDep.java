@@ -74,11 +74,38 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
+	public PathFragment materialize() {
+		return null;
+	}
+
+	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer,
 			Scope scope) {
 		return reproducedPath(new EnclosingOwnerDep(scope.toObject()).toPath());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.target.getScope().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final EnclosingOwnerDep other = (EnclosingOwnerDep) obj;
+
+		return this.target.getScope().equals(other.target.getScope());
 	}
 
 	@Override

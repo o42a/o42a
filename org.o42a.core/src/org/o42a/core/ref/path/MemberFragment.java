@@ -28,6 +28,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -50,6 +51,24 @@ public class MemberFragment extends PathFragment {
 
 	public final MemberKey getMemberKey() {
 		return this.memberKey;
+	}
+
+	@Override
+	public PathFragment materialize() {
+
+		final MemberKey memberKey = getMemberKey();
+		final Member member =
+				memberKey.getOrigin().getContainer().member(memberKey);
+		final Field<?> field = member.toField(dummyUser());
+
+		if (field == null) {
+			return null;
+		}
+		if (field.getArtifactKind().isObject()) {
+			return null;
+		}
+
+		return MATERIALIZE;
 	}
 
 	@Override

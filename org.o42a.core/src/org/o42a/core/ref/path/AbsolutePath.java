@@ -112,6 +112,11 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
+	public AbsolutePath materialize() {
+		return (AbsolutePath) super.materialize();
+	}
+
+	@Override
 	public AbsolutePath append(PathFragment fragment) {
 		return (AbsolutePath) super.append(fragment);
 	}

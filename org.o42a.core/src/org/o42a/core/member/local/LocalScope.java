@@ -343,6 +343,11 @@ public abstract class LocalScope
 	private final class OwnerPathFragment extends PathFragment {
 
 		@Override
+		public PathFragment materialize() {
+			return null;
+		}
+
+		@Override
 		public Container resolve(
 				PathResolver resolver,
 				Path path,

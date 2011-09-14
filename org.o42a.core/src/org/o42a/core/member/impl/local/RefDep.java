@@ -83,6 +83,11 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
+	public PathFragment materialize() {
+		return null;
+	}
+
+	@Override
 	public String toString() {
 		if (this.depRef == null) {
 			return super.toString();
