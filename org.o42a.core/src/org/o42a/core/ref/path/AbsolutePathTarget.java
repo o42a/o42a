@@ -73,6 +73,18 @@ final class AbsolutePathTarget extends Ref {
 	}
 
 	@Override
+	public Ref materialize() {
+
+		final AbsolutePath materialized = this.path.materialize();
+
+		if (materialized == this.path) {
+			return this;
+		}
+
+		return new AbsolutePathTarget(this, distribute(), materialized);
+	}
+
+	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		return new AbsolutePathTarget(
 				this,

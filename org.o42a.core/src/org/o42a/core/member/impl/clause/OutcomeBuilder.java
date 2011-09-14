@@ -204,14 +204,14 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 			return Path.SELF_PATH;
 		}
 
-		return pathInObject(clause).getPath();
+		return pathInObject(clause);
 	}
 
-	private PathInObject pathInObject(Clause clause) {
+	private Path pathInObject(Clause clause) {
 		switch (clause.getKind()) {
 		case EXPRESSION:
 			if (clause.isTopLevel()) {
-				return new PathInObject();
+				return Path.SELF_PATH;
 			}
 
 			invalidOutcome();
@@ -223,10 +223,10 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 
 			final MemberKey overridden =
 					clause.toPlainClause().getOverridden();
-			final PathInObject enclosingPathInObject =
+			final Path enclosingPathInObject =
 					pathInObject(clause.getEnclosingClause());
 
-			return enclosingPathInObject.append(overridden);
+			return enclosingPathInObject.materialize().append(overridden);
 		}
 
 		throw new IllegalStateException(
@@ -247,60 +247,6 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 				this.location,
 				"Clause outcome should be a relative path");
 		return false;
-	}
-
-	private static final class PathInObject {
-
-		private final Path path;
-		private final MemberKey lastFieldKey;
-
-		PathInObject() {
-			this.path = Path.SELF_PATH;
-			this.lastFieldKey = null;
-		}
-
-		PathInObject(Path path, MemberKey lastFieldKey) {
-			this.path = path;
-			this.lastFieldKey = lastFieldKey;
-		}
-
-		public Path getPath() {
-			return this.path;
-		}
-
-		public MemberKey getLastFieldKey() {
-			return this.lastFieldKey;
-		}
-
-		public Path materialize() {
-			if (this.lastFieldKey == null) {
-				return this.path;
-			}
-
-			final MemberContainer origin =
-					this.lastFieldKey.getOrigin().getContainer();
-			final Member lastMember = origin.member(getLastFieldKey());
-			final Field<?> lastField = lastMember.toField(dummyUser());
-
-			if (lastField.getArtifactKind().isObject()) {
-				return this.path;
-			}
-
-			return this.path.materialize();
-		}
-
-		public PathInObject append(MemberKey memberKey) {
-			return new PathInObject(materialize().append(memberKey), memberKey);
-		}
-
-		@Override
-		public String toString() {
-			if (this.path == null) {
-				return super.toString();
-			}
-			return this.path.toString();
-		}
-
 	}
 
 }

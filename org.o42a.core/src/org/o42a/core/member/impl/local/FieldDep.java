@@ -83,6 +83,14 @@ public final class FieldDep extends Dep {
 	}
 
 	@Override
+	public PathFragment materialize() {
+		if (getDepField().getArtifactKind().isObject()) {
+			return null;
+		}
+		return MATERIALIZE;
+	}
+
+	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer,
@@ -90,6 +98,28 @@ public final class FieldDep extends Dep {
 		return reproducedPath(
 				new FieldDep(scope.toObject(), getDepField().getKey())
 				.toPath());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.depField.getKey().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final FieldDep other = (FieldDep) obj;
+
+		return this.depField.getKey().equals(other.depField.getKey());
 	}
 
 	@Override

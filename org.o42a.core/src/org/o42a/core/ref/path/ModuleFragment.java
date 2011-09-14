@@ -51,6 +51,11 @@ final class ModuleFragment extends PathFragment {
 	}
 
 	@Override
+	public PathFragment materialize() {
+		return null;
+	}
+
+	@Override
 	public Container resolve(
 			PathResolver resolver,
 			Path path,
@@ -71,6 +76,14 @@ final class ModuleFragment extends PathFragment {
 	}
 
 	@Override
+	public PathReproduction reproduce(
+			LocationInfo location,
+			Reproducer reproducer,
+			Scope scope) {
+		return unchangedPath(toPath());
+	}
+
+	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
 
 		final Obj module =
@@ -78,14 +91,6 @@ final class ModuleFragment extends PathFragment {
 		final ObjectIR moduleIR = module.ir(start.getGenerator());
 
 		return moduleIR.op(start.getBuilder(), dirs.code());
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-		return unchangedPath(toPath());
 	}
 
 	@Override

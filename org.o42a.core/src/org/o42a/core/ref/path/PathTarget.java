@@ -104,6 +104,21 @@ class PathTarget extends Ref {
 	}
 
 	@Override
+	public Ref materialize() {
+
+		final Path materialized = this.path.materialize();
+
+		if (materialized == this.path) {
+			return this;
+		}
+		if (this.start == null) {
+			return new PathTarget(this, distribute(), materialized);
+		}
+
+		return new PathTarget(this, distribute(), materialized, this.start);
+	}
+
+	@Override
 	public Ref rescope(Rescoper rescoper) {
 		if (this.start != null) {
 			return this.path.target(

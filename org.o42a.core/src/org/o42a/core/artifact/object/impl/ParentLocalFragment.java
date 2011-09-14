@@ -47,6 +47,11 @@ final class ParentLocalFragment extends PathFragment {
 	}
 
 	@Override
+	public PathFragment materialize() {
+		return null;
+	}
+
+	@Override
 	public Container resolve(
 			PathResolver resolver,
 			Path path,
@@ -96,7 +101,7 @@ final class ParentLocalFragment extends PathFragment {
 
 	@Override
 	public int hashCode() {
-		return this.object.hashCode();
+		return this.object.getScope().hashCode();
 	}
 
 	@Override
@@ -113,7 +118,7 @@ final class ParentLocalFragment extends PathFragment {
 
 		final ParentLocalFragment other = (ParentLocalFragment) obj;
 
-		return this.object == other.object;
+		return this.object.getScope().equals(other.object.getScope());
 	}
 
 	@Override

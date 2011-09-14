@@ -143,7 +143,21 @@ public class Path {
 	}
 
 	public Path materialize() {
-		return append(MATERIALIZE);
+
+		final int length = this.fragments.length;
+
+		if (length == 0) {
+			return this;
+		}
+
+		final PathFragment lastFragment = this.fragments[length - 1];
+		final PathFragment materializer = lastFragment.materialize();
+
+		if (materializer == null) {
+			return this;
+		}
+
+		return append(materializer);
 	}
 
 	public Path append(Path path) {

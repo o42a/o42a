@@ -32,7 +32,8 @@ import org.o42a.core.st.Reproducer;
 
 public abstract class PathFragment {
 
-	static final MaterializeFragment MATERIALIZE = new MaterializeFragment();
+	public static final MaterializeFragment MATERIALIZE =
+			new MaterializeFragment();
 
 	public boolean isAbsolute() {
 		return false;
@@ -41,6 +42,8 @@ public abstract class PathFragment {
 	public String getName() {
 		return null;
 	}
+
+	public abstract PathFragment materialize();
 
 	public abstract Container resolve(
 			PathResolver resolver,
