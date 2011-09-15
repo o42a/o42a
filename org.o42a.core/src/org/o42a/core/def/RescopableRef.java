@@ -20,6 +20,8 @@
 package org.o42a.core.def;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -27,21 +29,37 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.util.use.UserInfo;
 
 
 public abstract class RescopableRef<R extends RescopableRef<R>>
-		extends Rescopable<R> {
+		implements ScopeInfo {
 
+	private final Rescoper rescoper;
+	private boolean allResolved;
 	private Ref rescopedRef;
 
 	public RescopableRef(Rescoper rescoper) {
-		super(rescoper);
+		this.rescoper = rescoper;
+	}
+
+	@Override
+	public final Scope getScope() {
+		return this.rescoper.getFinalScope();
+	}
+
+	public final Rescoper getRescoper() {
+		return this.rescoper;
 	}
 
 	public abstract Ref getRef();
+
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
+	}
 
 	public final Ref getRescopedRef() {
 		if (this.rescopedRef != null) {
@@ -52,13 +70,9 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 
 	public final Artifact<?> artifact(UserInfo user) {
 
-		final Resolution resolution = resolve(user);
+		final Resolution resolution = resolve(getScope().newResolver(user));
 
 		return resolution.isError() ? null : resolution.toArtifact();
-	}
-
-	public final Resolution resolve(UserInfo user) {
-		return resolve(getScope().newResolver(user));
 	}
 
 	public final Resolution resolve(Resolver resolver) {
@@ -67,6 +81,43 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 
 	public final Value<?> value(Resolver resolver) {
 		return getRef().value(getRescoper().rescope(this, resolver));
+	}
+
+	public R rescope(Rescoper rescoper) {
+
+		final Rescoper oldRescoper = getRescoper();
+		final Rescoper newRescoper = oldRescoper.and(rescoper);
+
+		if (newRescoper.equals(oldRescoper)) {
+			return self();
+		}
+
+		return create(newRescoper, rescoper);
+	}
+
+	public R upgradeScope(Scope scope) {
+		if (scope == getScope()) {
+			return self();
+		}
+		return rescope(Rescoper.upgradeRescoper(getScope(), scope));
+	}
+
+	public R rescope(Scope scope) {
+		if (getScope() == scope) {
+			return self();
+		}
+		return rescope(getScope().rescoperTo(scope));
+	}
+
+	public void resolveAll(Resolver resolver) {
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			getRescoper().resolveAll(this, resolver);
+			fullyResolve(getRescoper().rescope(this, resolver));
+		} finally {
+			getContext().fullResolution().end();
+		}
 	}
 
 	public R reproduce(Reproducer reproducer) {
@@ -106,6 +157,43 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 
 		return getRef().op(rescoped);
 	}
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected final R self() {
+		return (R) this;
+	}
+
+	protected abstract R create(
+			Rescoper rescoper,
+			Rescoper additionalRescoper);
+
+	protected abstract void fullyResolve(Resolver resolver);
 
 	protected abstract R createReproduction(
 			Reproducer reproducer,
