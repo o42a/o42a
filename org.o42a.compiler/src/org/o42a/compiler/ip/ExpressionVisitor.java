@@ -138,12 +138,6 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitArray(ArrayNode array, Distributor p) {
-		// TODO Auto-generated method stub
-		return super.visitArray(array, p);
-	}
-
-	@Override
 	protected Ref visitRef(RefNode ref, Distributor p) {
 		return ref.accept(refVisitor(), p);
 	}

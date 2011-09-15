@@ -19,7 +19,9 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.artifact.ArtifactKind.*;
+import static org.o42a.core.artifact.ArtifactKind.LINK;
+import static org.o42a.core.artifact.ArtifactKind.OBJECT;
+import static org.o42a.core.artifact.ArtifactKind.VARIABLE;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -222,12 +224,6 @@ public abstract class MemberField extends Member {
 					getMemberOwner(),
 					inherited.toField(user).toKind(VARIABLE),
 					toField(user).toKind(VARIABLE)).toMember();
-		}
-		if (artifactKind == ARRAY) {
-			return new ArrayFieldWrap(
-					getMemberOwner(),
-					inherited.toField(user).toKind(ARRAY),
-					toField(user).toKind(ARRAY)).toMember();
 		}
 
 		throw new IllegalStateException("Can not wrap " + this);

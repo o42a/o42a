@@ -20,8 +20,9 @@
 package org.o42a.core.ref.impl;
 
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 
 
@@ -42,11 +43,6 @@ public final class ValueFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.addImplicitSample(this.value.toStaticTypeRef());
-	}
-
-	@Override
-	public void defineArray(ArrayDefiner definer) {
-		definer.define(ArrayInitializer.valueArrayInitializer(this.value));
 	}
 
 	@Override
