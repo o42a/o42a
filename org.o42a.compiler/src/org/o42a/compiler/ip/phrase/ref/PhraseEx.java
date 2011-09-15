@@ -20,7 +20,9 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
@@ -92,11 +94,6 @@ class PhraseEx extends Wrap {
 		@Override
 		public void defineLink(LinkDefiner definer) {
 			this.definition.defineLink(definer);
-		}
-
-		@Override
-		public void defineArray(ArrayDefiner definer) {
-			this.definition.defineArray(definer);
 		}
 
 		@Override

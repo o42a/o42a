@@ -26,7 +26,9 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -77,11 +79,6 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void defineArray(ArrayDefiner definer) {
 		throw new UnsupportedOperationException();
 	}
 

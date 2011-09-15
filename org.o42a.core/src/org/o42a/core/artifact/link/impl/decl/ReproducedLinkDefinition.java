@@ -21,7 +21,9 @@ package org.o42a.core.artifact.link.impl.decl;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.st.Reproducer;
 
 
@@ -55,11 +57,6 @@ final class ReproducedLinkDefinition extends FieldDefinition {
 		if (targetRef != null) {
 			definer.setTargetRef(targetRef.getRef(), targetRef.getTypeRef());
 		}
-	}
-
-	@Override
-	public void defineArray(ArrayDefiner definer) {
-		throw new UnsupportedOperationException();
 	}
 
 }

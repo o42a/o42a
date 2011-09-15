@@ -24,22 +24,21 @@ import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.BlockNode;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.ast.ref.TypeNode;
 import org.o42a.ast.ref.TypeNodeVisitor;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
 
@@ -133,37 +132,6 @@ public enum Interpreter {
 
 	public abstract MemberId memberName(String name);
 
-	public ArrayInitializer arrayInitializer(
-			CompilerContext context,
-			ArrayNode node,
-			FieldDeclaration declaration) {
-
-		final TypeRef itemType;
-		final TypeNode itemTypeNode = node.getItemType();
-
-		if (itemTypeNode == null) {
-			itemType = null;
-		} else {
-			itemType = itemTypeNode.accept(
-					typeVisitor(),
-					declaration.distribute());
-		}
-
-		return arrayInitializer(
-				context,
-				node,
-				itemType,
-				node.getItems(),
-				declaration);
-	}
-
-	public ArrayInitializer arrayInitializer(
-			CompilerContext context,
-			BracketsNode node,
-			FieldDeclaration declaration) {
-		return arrayInitializer(context, node, null, node, declaration);
-	}
-
 	public static void addContent(
 			StatementVisitor statementVisitor,
 			Block<?> block,
@@ -234,49 +202,6 @@ public enum Interpreter {
 		}
 
 		return conjunction[0].getStatement().accept(UNWRAP_VISITOR, null);
-	}
-
-	private ArrayInitializer arrayInitializer(
-			CompilerContext context,
-			Node node,
-			TypeRef itemType,
-			BracketsNode brackets,
-			FieldDeclaration declaration) {
-
-		final Distributor distributor = declaration.distribute();
-		boolean ok = true;
-		final ArgumentNode[] arguments = brackets.getArguments();
-		final Ref[] items = new Ref[arguments.length];
-
-		for (int i = 0; i < arguments.length; ++i) {
-
-			final ExpressionNode itemNode = arguments[i].getValue();
-
-			if (itemNode == null) {
-				ok = false;
-				continue;
-			}
-
-			final Ref item = itemNode.accept(expressionVisitor(), distributor);
-
-			if (item == null) {
-				ok = false;
-				continue;
-			}
-
-			items[i] = item;
-		}
-
-		if (!ok) {
-			return null;
-		}
-
-		return ArrayInitializer.arrayInitializer(
-				context,
-				node,
-				declaration.distribute(),
-				itemType,
-				items);
 	}
 
 	private static void fillSentence(

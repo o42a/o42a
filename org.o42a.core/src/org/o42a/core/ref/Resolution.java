@@ -22,7 +22,6 @@ package org.o42a.core.ref;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
@@ -78,10 +77,6 @@ public abstract class Resolution implements ScopeInfo {
 
 	public final Link toLink() {
 		return toArtifact().toLink();
-	}
-
-	public final Array toArray() {
-		return toArtifact().toArray();
 	}
 
 	public Directive toDirective(Resolver resolver) {
