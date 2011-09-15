@@ -20,20 +20,20 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.def.Rescoper.upgradeRescoper;
 
-import org.o42a.core.Container;
-import org.o42a.core.ScopeInfo;
+import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Def<D extends Def<D>>
-		extends Rescopable<D>
-		implements SourceInfo {
+public abstract class Def<D extends Def<D>> implements SourceInfo {
 
 	public static final Obj sourceOf(ScopeInfo scope) {
 		return sourceOf(scope.getScope().getContainer());
@@ -55,10 +55,12 @@ public abstract class Def<D extends Def<D>>
 		return local.getOwner();
 	}
 
+	private final Rescoper rescoper;
 	private final Obj source;
 	private final LocationInfo location;
 	private DefKind kind;
 	private boolean hasPrerequisite;
+	private boolean allResolved;
 	private Logical precondition;
 	private Logical prerequisite;
 	private Logical logical;
@@ -68,7 +70,7 @@ public abstract class Def<D extends Def<D>>
 			LocationInfo location,
 			DefKind kind,
 			Rescoper rescoper) {
-		super(rescoper);
+		this.rescoper = rescoper;
 		this.location = location;
 		this.source = source;
 		this.kind = kind;
@@ -76,7 +78,7 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	Def(D prototype, Rescoper rescoper) {
-		super(rescoper);
+		this.rescoper = rescoper;
 		this.source = prototype.source;
 		this.location = prototype.location;
 		this.kind = prototype.kind;
@@ -87,6 +89,15 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	@Override
+	public final Scope getScope() {
+		return this.rescoper.getFinalScope();
+	}
+
+	public final Rescoper getRescoper() {
+		return this.rescoper;
+	}
+
+	@Override
 	public final Loggable getLoggable() {
 		return this.location.getLoggable();
 	}
@@ -94,6 +105,10 @@ public abstract class Def<D extends Def<D>>
 	@Override
 	public final CompilerContext getContext() {
 		return this.location.getContext();
+	}
+
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
 	}
 
 	@Override
@@ -111,6 +126,43 @@ public abstract class Def<D extends Def<D>>
 
 	public final boolean hasPrerequisite() {
 		return this.hasPrerequisite;
+	}
+
+	public D rescope(Rescoper rescoper) {
+
+		final Rescoper oldRescoper = getRescoper();
+		final Rescoper newRescoper = oldRescoper.and(rescoper);
+
+		if (newRescoper.equals(oldRescoper)) {
+			return self();
+		}
+
+		return create(newRescoper, rescoper);
+	}
+
+	public D upgradeScope(Scope scope) {
+		if (scope == getScope()) {
+			return self();
+		}
+		return rescope(upgradeRescoper(getScope(), scope));
+	}
+
+	public D rescope(Scope scope) {
+		if (getScope() == scope) {
+			return self();
+		}
+		return rescope(getScope().rescoperTo(scope));
+	}
+
+	public void resolveAll(Resolver resolver) {
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			getRescoper().resolveAll(this, resolver);
+			fullyResolve(getRescoper().rescope(this, resolver));
+		} finally {
+			getContext().fullResolution().end();
+		}
 	}
 
 	public final Logical fullLogical() {
@@ -187,6 +239,32 @@ public abstract class Def<D extends Def<D>>
 	public abstract Definitions toDefinitions();
 
 	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -213,6 +291,17 @@ public abstract class Def<D extends Def<D>>
 
 		return out.toString();
 	}
+
+	@SuppressWarnings("unchecked")
+	protected final D self() {
+		return (D) this;
+	}
+
+	protected abstract D create(
+			Rescoper rescoper,
+			Rescoper additionalRescoper);
+
+	protected abstract void fullyResolve(Resolver resolver);
 
 	protected final Logical getPrerequisite() {
 		if (this.prerequisite != null) {
