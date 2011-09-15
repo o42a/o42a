@@ -64,8 +64,7 @@ final class LinkFieldVariant extends FieldVariant<Link> implements LinkDefiner {
 
 	@Override
 	protected FieldDefinition reproduceDefinition(Reproducer reproducer) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ReproducedLinkDefinition(this, reproducer);
 	}
 
 	final TargetRef build(TypeRef typeRef, TargetRef defaultTargetRef) {

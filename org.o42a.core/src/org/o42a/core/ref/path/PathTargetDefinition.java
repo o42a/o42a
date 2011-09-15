@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.artifact.array.ArrayInitializer.valueArrayInitializer;
-
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 
 
@@ -42,7 +42,6 @@ final class PathTargetDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		// TODO Use ancestor of path target as object's ancestor.
 		definer.setAncestor(this.target.toTypeRef());
 	}
 
@@ -51,11 +50,6 @@ final class PathTargetDefinition extends FieldDefinition {
 		definer.setTargetRef(
 				this.target.materialize(),
 				this.target.toTypeRef());
-	}
-
-	@Override
-	public void defineArray(ArrayDefiner definer) {
-		definer.define(valueArrayInitializer(this.target));
 	}
 
 	@Override

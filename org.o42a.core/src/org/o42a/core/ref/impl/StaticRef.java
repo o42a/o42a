@@ -21,9 +21,6 @@ package org.o42a.core.ref.impl;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.Array;
-import org.o42a.core.artifact.array.ArrayInitializer;
-import org.o42a.core.artifact.array.ArrayTypeRef;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Ascendants;
@@ -143,11 +140,6 @@ public final class StaticRef extends Ref {
 		}
 
 		@Override
-		public void defineArray(ArrayDefiner definer) {
-			this.definition.defineArray(new ArrayDefinerWrap(definer));
-		}
-
-		@Override
 		public void defineLink(LinkDefiner definer) {
 			this.definition.defineLink(new LinkDefinerWrap(definer));
 		}
@@ -250,33 +242,4 @@ public final class StaticRef extends Ref {
 
 	}
 
-	private static final class ArrayDefinerWrap implements ArrayDefiner {
-
-		private final ArrayDefiner definer;
-
-		ArrayDefinerWrap(ArrayDefiner definer) {
-			this.definer = definer;
-		}
-
-		@Override
-		public Field<Array> getField() {
-			return this.definer.getField();
-		}
-
-		@Override
-		public ArrayTypeRef getTypeRef() {
-			return this.definer.getTypeRef();
-		}
-
-		@Override
-		public TypeRef getItemTypeRef() {
-			return this.definer.getItemTypeRef();
-		}
-
-		@Override
-		public void define(ArrayInitializer initializer) {
-			this.definer.define(initializer.toStatic());
-		}
-
-	}
 }

@@ -71,11 +71,6 @@ final class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void defineArray(ArrayDefiner definer) {
-		getLogger().error("not_array", this, "Not array");
-	}
-
-	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();

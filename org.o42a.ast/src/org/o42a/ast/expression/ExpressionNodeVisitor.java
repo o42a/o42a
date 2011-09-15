@@ -29,15 +29,11 @@ public interface ExpressionNodeVisitor<R, P> extends TypeNodeVisitor<R, P> {
 
 	R visitText(TextNode text, P p);
 
-	R visitArray(ArrayNode array, P p);
-
 	R visitUnary(UnaryNode expression, P p);
 
 	R visitBinary(BinaryNode expression, P p);
 
 	R visitParentheses(ParenthesesNode parentheses, P p);
-
-	R visitBrackets(BracketsNode brackets, P p);
 
 	R visitPhrase(PhraseNode phrase, P p);
 

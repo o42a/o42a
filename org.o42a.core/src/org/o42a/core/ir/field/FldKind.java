@@ -25,9 +25,8 @@ public enum FldKind {
 	OBJ(0, false, false),
 	LINK(1, false, false),
 	VAR(2, true, false),
-	ARRAY(3, true, false),
-	SCOPE(4, false, true),
-	DEP(5, false, true);
+	SCOPE(3, false, true),
+	DEP(4, false, true);
 
 	private final int code;
 	private final boolean variable;

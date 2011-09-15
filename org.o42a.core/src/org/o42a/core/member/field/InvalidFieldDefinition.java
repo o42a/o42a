@@ -49,10 +49,6 @@ final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void defineArray(ArrayDefiner definer) {
-	}
-
-	@Override
 	public String toString() {
 		return "INVALID DEFINITION";
 	}
