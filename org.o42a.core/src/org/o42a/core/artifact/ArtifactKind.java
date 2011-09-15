@@ -20,14 +20,11 @@
 package org.o42a.core.artifact;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.array.Array;
-import org.o42a.core.artifact.array.impl.decl.DeclaredArrayField;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.impl.decl.DeclaredLinkField;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.impl.decl.DeclaredObjectField;
 import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.ir.field.array.ArrayFieldIR;
 import org.o42a.core.ir.field.link.LinkFieldIR;
 import org.o42a.core.ir.field.object.ObjectFieldIR;
 import org.o42a.core.member.field.DeclaredField;
@@ -39,8 +36,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 	public static final ArtifactKind<Obj> OBJECT = new ObjectKind();
 
-	public static final ArtifactKind<Array> ARRAY = new ArrayKind();
-
 	public static final ArtifactKind<Link> LINK = new LinkKind(false);
 
 	public static final ArtifactKind<Link> VARIABLE = new LinkKind(true);
@@ -51,14 +46,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 	public boolean isVariable() {
 		return is(VARIABLE);
-	}
-
-	public boolean isArray() {
-		return is(ARRAY);
-	}
-
-	public boolean isInheritable() {
-		return !isArray();
 	}
 
 	public abstract A cast(Artifact<?> artifact);
@@ -128,30 +115,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		@Override
 		public String toString() {
 			return this.variable ? "VARIABLE" : "LINK";
-		}
-
-	}
-
-	private static final class ArrayKind extends ArtifactKind<Array> {
-
-		@Override
-		public DeclaredField<Array, ?> declareField(MemberField member) {
-			return new DeclaredArrayField(member);
-		}
-
-		@Override
-		public Array cast(Artifact<?> artifact) {
-			return artifact.toArray();
-		}
-
-		@Override
-		public FieldIR<Array> fieldIR(Generator generator, Field<Array> field) {
-			return new ArrayFieldIR(generator, field);
-		}
-
-		@Override
-		public String toString() {
-			return "ARRAY";
 		}
 
 	}

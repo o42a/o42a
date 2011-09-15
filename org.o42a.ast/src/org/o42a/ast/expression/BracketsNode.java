@@ -19,11 +19,13 @@
 */
 package org.o42a.ast.expression;
 
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 
 
-public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
+public class BracketsNode extends AbstractNode implements ClauseNode {
 
 	private final ArgumentNode[] arguments;
 
@@ -42,7 +44,7 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 	}
 
 	@Override
-	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
 		return visitor.visitBrackets(this, p);
 	}
 

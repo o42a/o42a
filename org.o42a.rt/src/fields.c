@@ -35,10 +35,6 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		propagate: &o42a_fld_var_propagate,
 		inherit: &o42a_fld_var_inherit,
 	},
-	{// array field
-		propagate: NULL,
-		inherit: NULL,
-	},
 	{// scope object pointer
 		propagate: &o42a_fld_scope_propagate,
 		inherit: &o42a_fld_scope_inherit,

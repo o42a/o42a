@@ -25,7 +25,9 @@ import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
@@ -251,11 +253,6 @@ public abstract class Wrap extends Ref {
 		@Override
 		public void defineLink(LinkDefiner definer) {
 			def().defineLink(definer);
-		}
-
-		@Override
-		public void defineArray(ArrayDefiner definer) {
-			def().defineArray(definer);
 		}
 
 		@Override

@@ -23,7 +23,6 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 
 
-
 final class PropagatedLink extends Link {
 
 	private final DeclaredLinkField field;
