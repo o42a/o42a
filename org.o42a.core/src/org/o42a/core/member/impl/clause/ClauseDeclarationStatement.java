@@ -30,7 +30,7 @@ import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class ClauseDeclarationStatement extends DeclarationStatement {
@@ -57,7 +57,7 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
+	public ValueStruct<?, ?> getValueStruct() {
 		return null;
 	}
 

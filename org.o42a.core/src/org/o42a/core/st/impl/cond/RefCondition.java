@@ -35,7 +35,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class RefCondition extends Statement {
@@ -84,8 +84,8 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return ValueType.VOID;
+	public ValueStruct<?, ?> getValueStruct() {
+		return ValueStruct.VOID;
 	}
 
 	@Override

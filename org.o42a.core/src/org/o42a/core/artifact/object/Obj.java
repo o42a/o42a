@@ -53,7 +53,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UseInfo;
 
@@ -496,8 +496,8 @@ public abstract class Obj
 
 	protected abstract Ascendants buildAscendants();
 
-	protected final void setValueType(ValueType<?> valueType) {
-		value().setValueType(valueType);
+	protected final void setValueStruct(ValueStruct<?, ?> valueStruct) {
+		value().setValueStruct(valueStruct);
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);

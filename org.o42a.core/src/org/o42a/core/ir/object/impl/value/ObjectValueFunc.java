@@ -65,7 +65,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 				getValueIR().condition().getConstant();
 
 		if (!constantCondition.isConstant()) {
-			return getValueType().runtimeValue();
+			return getValueStruct().runtimeValue();
 		}
 
 		final Value<?> claim = getValueIR().claim().getConstant();
@@ -83,7 +83,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 				|| !getValueIR().condition().getFinal().isConstant()
 				|| !getValueIR().claim().getFinal().isDefinite()
 				|| !getValueIR().proposition().getFinal().isDefinite()) {
-			return getValueType().runtimeValue();
+			return getValueStruct().runtimeValue();
 		}
 
 		return getObject().value().getDefinitions().value(
@@ -171,7 +171,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 		return code.phi(null, result1, result2).op(
 				dirs.getBuilder(),
-				getObject().value().getValueType());
+				getObject().value().getValueStruct());
 	}
 
 	private void writeRequirement(CodeDirs dirs, ObjOp host) {

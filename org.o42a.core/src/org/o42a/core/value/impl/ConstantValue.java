@@ -17,60 +17,59 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
-
-import static org.o42a.core.ir.value.Val.FALSE_VAL;
+package org.o42a.core.value.impl;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.Condition;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
-final class FalseValue<T> extends Value<T> {
+public final class ConstantValue<T> extends Value<T> {
 
-	private static Ptr<ValType.Op> cachedPtr;
-	private static Generator cachedGenerator;
+	private final T value;
 
-	FalseValue(ValueType<T> valueType) {
-		super(valueType);
-	}
-
-	@Override
-	public T getDefiniteValue() {
-		return null;
+	public ConstantValue(ValueStruct<?, T> valueStruct, T value) {
+		super(valueStruct);
+		this.value = value;
 	}
 
 	@Override
 	public Condition getCondition() {
-		return Condition.FALSE;
+		return Condition.TRUE;
+	}
+
+	@Override
+	public T getDefiniteValue() {
+		return this.value;
 	}
 
 	@Override
 	public Val val(Generator generator) {
-		return FALSE_VAL;
+		return getValueStruct().ir(generator).val(this.value);
 	}
 
 	@Override
 	public Ptr<ValType.Op> valPtr(Generator generator) {
-		if (cachedPtr != null && cachedGenerator == generator) {
-			return cachedPtr;
-		}
-		cachedGenerator = generator;
-
-		final Global<ValType.Op, ValType> global =
-				generator.newGlobal().setConstant().dontExport().newInstance(
-						generator.id("CONST").sub("FALSE"),
-						ValType.VAL_TYPE,
-						FALSE_VAL);
-
-		return cachedPtr = global.getPointer();
+		return getValueStruct().ir(generator).valPtr(this.value);
 	}
 
 	@Override
 	public String toString() {
-		return '(' + getValueType().toString() + ") false";
+		return valueString(getValueStruct(), this.value);
+	}
+
+	static <T> String valueString(ValueStruct<?, T> valueStruct, T value) {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('(').append(valueStruct).append(") ");
+		out.append(valueStruct.valueString(value));
+
+		return out.toString();
 	}
 
 }

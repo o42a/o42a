@@ -17,37 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.core.ir.value.ValueTypeIR;
-import org.o42a.core.source.Intrinsics;
+import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 
 
-final class DirectiveValueType extends ValueType<Directive> {
+public class DirectiveValueStruct extends SingleValueStruct<Directive> {
 
-	DirectiveValueType() {
-		super("directive", Directive.class);
+	public static final DirectiveValueStruct INSTANCE =
+			new DirectiveValueStruct();
+
+	private DirectiveValueStruct() {
+		super(ValueType.DIRECTIVE, Directive.class);
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		return intrinsics.getDirective();
-	}
-
-	@Override
-	protected ValueTypeIR<Directive> createIR(Generator generator) {
+	protected ValueStructIR<SingleValueStruct<Directive>, Directive> createIR(
+			Generator generator) {
 		return new IR(generator, this);
 	}
 
-	private static final class IR extends ValueTypeIR<Directive> {
+	private static final class IR
+			extends ValueStructIR<SingleValueStruct<Directive>, Directive> {
 
-		IR(Generator generator, DirectiveValueType valueType) {
-			super(generator, valueType);
+		IR(Generator generator, DirectiveValueStruct valueStruct) {
+			super(generator, valueStruct);
 		}
 
 		@Override
@@ -59,10 +59,10 @@ final class DirectiveValueType extends ValueType<Directive> {
 		public Val val(Directive value) {
 
 			final Val voidValue =
-					ValueType.VOID.ir(getGenerator()).val(Void.VOID);
+					ValueStruct.VOID.ir(getGenerator()).val(Void.VOID);
 
 			return new Val(
-					getValueType(),
+					getValueStruct(),
 					voidValue.getFlags(),
 					voidValue.getLength(),
 					voidValue.getValue());
@@ -70,7 +70,7 @@ final class DirectiveValueType extends ValueType<Directive> {
 
 		@Override
 		public Ptr<Op> valPtr(Directive value) {
-			return ValueType.VOID.ir(getGenerator()).valPtr(Void.VOID);
+			return ValueStruct.VOID.ir(getGenerator()).valPtr(Void.VOID);
 		}
 
 	}

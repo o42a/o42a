@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
@@ -29,6 +29,8 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
 final class ConstantValueDef<T> extends ValueDef {
@@ -46,8 +48,8 @@ final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return this.source.value().getValueType();
+	public ValueStruct<?, ?> getValueStruct() {
+		return this.source.value().getValueStruct();
 	}
 
 	@Override

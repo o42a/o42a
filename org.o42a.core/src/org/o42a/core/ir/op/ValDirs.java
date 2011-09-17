@@ -29,6 +29,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValStoreMode;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -36,15 +37,15 @@ public abstract class ValDirs {
 
 	private final CodeBuilder builder;
 	private final Code code;
-	private final ValueType<?> valueType;
+	private final ValueStruct<?, ?> valueStruct;
 	private Code falseCode;
 	private Code unknownCode;
 	protected CodeDirs dirs;
 
-	ValDirs(CodeBuilder builder, Code code, ValueType<?> valueType) {
+	ValDirs(CodeBuilder builder, Code code, ValueStruct<?, ?> valueStruct) {
 		this.builder = builder;
 		this.code = code;
-		this.valueType = valueType;
+		this.valueStruct = valueStruct;
 	}
 
 	public final ValStoreMode getStoreMode() {
@@ -81,7 +82,11 @@ public abstract class ValDirs {
 	}
 
 	public final ValueType<?> getValueType() {
-		return this.valueType;
+		return getValueStruct().getValueType();
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return this.valueStruct;
 	}
 
 	public final boolean isDebug() {
@@ -222,11 +227,11 @@ public abstract class ValDirs {
 		TopLevelValDirs(
 				CodeDirs enclosing,
 				CodeId name,
-				ValueType<?> valueType) {
+				ValueStruct<?, ?> valueStruct) {
 			super(
 					enclosing.getBuilder(),
 					enclosing.addBlock(name),
-					valueType);
+					valueStruct);
 			this.allocatable = true;
 			this.enclosing = enclosing;
 			this.storeMode = ASSIGNMENT_VAL_STORE;
@@ -236,7 +241,7 @@ public abstract class ValDirs {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),
-					value.getValueType());
+					value.getValueStruct());
 			this.dirs = enclosing;
 			this.allocatable = false;
 			this.enclosing = enclosing;
@@ -257,7 +262,7 @@ public abstract class ValDirs {
 
 			return this.value =
 					this.allocation.allocate(id("value"), ValType.VAL_TYPE)
-					.op(getBuilder(), getValueType())
+					.op(getBuilder(), getValueStruct())
 					.storeIndefinite(this.allocation.code())
 					.setStoreMode(this.storeMode);
 		}
@@ -299,7 +304,7 @@ public abstract class ValDirs {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),
-					storage.getValueType());
+					storage.getValueStruct());
 			this.topLevel = storage.topLevel();
 			this.dirs = enclosing;
 		}
@@ -326,7 +331,7 @@ public abstract class ValDirs {
 		private final TopLevelValDirs topLevel;
 
 		SubValDirs(ValDirs enclosing, Code code) {
-			super(enclosing.getBuilder(), code, enclosing.getValueType());
+			super(enclosing.getBuilder(), code, enclosing.getValueStruct());
 			this.enclosing = enclosing;
 			this.topLevel = enclosing.topLevel();
 		}
@@ -369,7 +374,7 @@ public abstract class ValDirs {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),
-					enclosing.getValueType());
+					enclosing.getValueStruct());
 			this.enclosing = enclosing;
 			this.topLevel = enclosing.topLevel();
 		}

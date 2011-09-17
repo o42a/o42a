@@ -58,7 +58,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Ref extends Statement {
@@ -126,8 +126,8 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public final ValueType<?> getValueType() {
-		return getResolution().materialize().value().getValueType();
+	public final ValueStruct<?, ?> getValueStruct() {
+		return getResolution().materialize().value().getValueStruct();
 	}
 
 	public final Logical getLogical() {

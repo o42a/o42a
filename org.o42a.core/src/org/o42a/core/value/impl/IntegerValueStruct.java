@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.value.AbstractValueTypeIR;
+import org.o42a.core.ir.value.AbstractValueStructIR;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValueTypeIR;
-import org.o42a.core.source.Intrinsics;
+import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.ValueType;
 
 
-final class IntegerValueType extends ValueType<Long> {
+public class IntegerValueStruct extends SingleValueStruct<Long> {
 
-	IntegerValueType() {
-		super("integer", Long.class);
+	public static final IntegerValueStruct INSTANCE = new IntegerValueStruct();
+
+	private IntegerValueStruct() {
+		super(ValueType.INTEGER, Long.class);
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		return intrinsics.getInteger();
-	}
-
-	@Override
-	protected ValueTypeIR<Long> createIR(Generator generator) {
+	protected ValueStructIR<SingleValueStruct<Long>, Long> createIR(
+			Generator generator) {
 		return new IR(generator, this);
 	}
 
-	private static final class IR extends AbstractValueTypeIR<Long> {
+	private static final class IR
+			extends AbstractValueStructIR<SingleValueStruct<Long>, Long> {
 
-		IR(Generator generator, ValueType<Long> valueType) {
-			super(generator, valueType);
+		IR(Generator generator, IntegerValueStruct valueStruct) {
+			super(generator, valueStruct);
 		}
 
 		@Override

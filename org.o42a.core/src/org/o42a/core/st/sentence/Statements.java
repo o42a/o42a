@@ -42,7 +42,7 @@ import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.cond.RefCondition;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -52,7 +52,6 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	private final boolean opposite;
 	private final ArrayList<Statement> statements = new ArrayList<Statement>(1);
 	private boolean instructionsExecuted;
-	private ValueType<?> valueType;
 
 	Statements(
 			LocationInfo location,
@@ -89,20 +88,6 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	}
 
 	public abstract DefinitionTargets getDefinitionTargets();
-
-	public ValueType<?> getValueType() {
-		if (this.valueType != null) {
-			return this.valueType;
-		}
-
-		this.valueType = valueType(null);
-
-		if (this.valueType != null) {
-			return this.valueType;
-		}
-
-		return this.valueType = ValueType.VOID;
-	}
 
 	public final void expression(Ref expression) {
 		assert expression.getContext() == getContext() :
@@ -293,35 +278,36 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return getSentence().getBlock().getTrace();
 	}
 
-	ValueType<?> valueType(ValueType<?> expected) {
+	ValueStruct<?, ?> valueStruct(ValueStruct<?, ?> expected) {
 
-		ValueType<?> result = expected;
-		boolean hasResult = false;
+		ValueStruct<?, ?> result = null;
 
 		for (Statement statement : getStatements()) {
 			if (!statement.getDefinitionTargets().haveValue()) {
 				continue;
 			}
 
-			final ValueType<?> type = statement.getValueType();
+			final ValueStruct<?, ?> struct = statement.getValueStruct();
 
-			if (type == null) {
+			if (struct == null) {
 				continue;
 			}
 			if (result == null) {
-				result = type;
-				hasResult = true;
+				result = struct;
 				continue;
 			}
-			if (type == result) {
-				hasResult = true;
+			if (result.assignableFrom(struct)) {
+				continue;
+			}
+			if (struct.assignableFrom(result)) {
+				result = struct;
 				continue;
 			}
 
 			getLogger().incompatible(statement, result);
 		}
 
-		return hasResult ? result : null;
+		return result;
 	}
 
 	void reproduce(Sentence<S> sentence, Reproducer reproducer) {

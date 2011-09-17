@@ -32,7 +32,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class ByString<T> extends AnnotatedBuiltin {
@@ -49,22 +49,23 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		final Value<?> inputValue = input().value(resolver);
 
 		if (inputValue.isFalse()) {
-			return value().getValueType().falseValue();
+			return value().getValueStruct().falseValue();
 		}
 		if (!inputValue.isDefinite()) {
-			return value().getValueType().runtimeValue();
+			return value().getValueStruct().runtimeValue();
 		}
 
 		final String input =
-				ValueType.STRING.cast(inputValue).getDefiniteValue();
+				ValueStruct.STRING.cast(inputValue).getDefiniteValue();
 		final T result = byString(input(), resolver, input);
 
 		if (result == null) {
-			return value().getValueType().falseValue();
+			return value().getValueStruct().falseValue();
 		}
 
 		@SuppressWarnings("unchecked")
-		final ValueType<T> valueType = (ValueType<T>) value().getValueType();
+		final ValueStruct<?, T> valueType =
+				(ValueStruct<?, T>) value().getValueStruct();
 
 		return valueType.constantValue(result);
 	}
@@ -77,7 +78,8 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ValDirs inputDirs = dirs.dirs().value(ValueType.STRING, "input");
+		final ValDirs inputDirs =
+				dirs.dirs().value(ValueStruct.STRING, "input");
 		final ValOp inputValue = input().op(host).writeValue(inputDirs);
 
 		final ValDirs parseDirs = inputDirs.dirs().value(dirs);

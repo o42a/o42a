@@ -26,7 +26,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public class CodeDirs {
@@ -144,16 +144,16 @@ public class CodeDirs {
 		return new AllocationDirs(this, code().allocate(name));
 	}
 
-	public final ValDirs value(ValueType<?> valueType) {
-		return new ValDirs.TopLevelValDirs(this, id("value"), valueType);
+	public final ValDirs value(ValueStruct<?, ?> valueStruct) {
+		return new ValDirs.TopLevelValDirs(this, id("value"), valueStruct);
 	}
 
-	public final ValDirs value(ValueType<?> valueType, String name) {
-		return new ValDirs.TopLevelValDirs(this, id(name), valueType);
+	public final ValDirs value(ValueStruct<?, ?> valueStruct, String name) {
+		return new ValDirs.TopLevelValDirs(this, id(name), valueStruct);
 	}
 
-	public final ValDirs value(ValueType<?> valueType, CodeId name) {
-		return new ValDirs.TopLevelValDirs(this, name, valueType);
+	public final ValDirs value(ValueStruct<?, ?> valueStruct, CodeId name) {
+		return new ValDirs.TopLevelValDirs(this, name, valueStruct);
 	}
 
 	public final ValDirs value(CodeId name, ValOp value) {

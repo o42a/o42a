@@ -50,6 +50,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.use.UserInfo;
 
@@ -168,7 +169,7 @@ public final class ComparisonRef extends ObjectConstructor {
 		private MemberKey comparisonKey;
 
 		ComparisonResult(ComparisonRef ref) {
-			super(ref, ref.distribute(), ValueType.VOID);
+			super(ref, ref.distribute(), ValueStruct.VOID);
 			this.ref = ref;
 		}
 
@@ -219,7 +220,7 @@ public final class ComparisonRef extends ObjectConstructor {
 
 			final ComparisonOperator operator = this.ref.getOperator();
 			final ValDirs cmpDirs = dirs.dirs().falseWhenUnknown().value(
-					operator.getValueType(),
+					operator.getValueStruct(),
 					"cmp");
 			final ObjectOp comparison =
 					host.field(cmpDirs.dirs(), this.comparisonKey)

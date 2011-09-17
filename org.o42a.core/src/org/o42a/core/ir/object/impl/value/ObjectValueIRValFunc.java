@@ -36,9 +36,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.Condition;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 
 
 public abstract class ObjectValueIRValFunc
@@ -52,7 +50,11 @@ public abstract class ObjectValueIRValFunc
 	}
 
 	public final ValueType<?> getValueType() {
-		return getObject().value().getValueType();
+		return getValueStruct().getValueType();
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return getObject().value().getValueStruct();
 	}
 
 	public abstract ValuePart part();
@@ -74,7 +76,7 @@ public abstract class ObjectValueIRValFunc
 				getValueIR().condition().getConstant();
 
 		if (constantCondition.isFalse()) {
-			return this.constant = getValueType().falseValue();
+			return this.constant = getValueStruct().falseValue();
 		}
 
 		return this.constant = determineConstant();
@@ -95,7 +97,7 @@ public abstract class ObjectValueIRValFunc
 				getValueIR().condition().getFinal();
 
 		if (finalCondition.isFalse()) {
-			return this.finalValue = getValueType().falseValue();
+			return this.finalValue = getValueStruct().falseValue();
 		}
 
 		return this.finalValue = determineFinal();
@@ -159,7 +161,7 @@ public abstract class ObjectValueIRValFunc
 				getObjectIR().isExact() ? EXACT : DERIVED);
 		final ValOp result =
 				function.arg(function, OBJECT_VAL.value())
-				.op(builder, getValueType())
+				.op(builder, getValueStruct())
 				.setStoreMode(INITIAL_VAL_STORE);
 		final ValDirs dirs = builder.splitWhenUnknown(
 				function,
@@ -203,12 +205,12 @@ public abstract class ObjectValueIRValFunc
 			return constant;
 		}
 
-		return getValueType().runtimeValue();
+		return getValueStruct().runtimeValue();
 	}
 
 	protected Value<?> determineFinal() {
 		if (!canStub()) {
-			return getValueType().runtimeValue();
+			return getValueStruct().runtimeValue();
 		}
 		return defs().value(getObject().getScope().dummyResolver());
 	}
@@ -227,7 +229,7 @@ public abstract class ObjectValueIRValFunc
 				}
 				return;
 			}
-			if (getValueType().isVoid()) {
+			if (getValueStruct().isVoid()) {
 				reuse(voidValFunc());
 				return;
 			}

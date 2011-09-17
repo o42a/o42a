@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,24 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
-import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
+import static org.o42a.core.ir.value.Val.FALSE_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.Condition;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
-final class UnknownValue<T> extends Value<T> {
+public final class FalseValue<T> extends Value<T> {
 
 	private static Ptr<ValType.Op> cachedPtr;
 	private static Generator cachedGenerator;
 
-	UnknownValue(ValueType<T> valueType) {
-		super(valueType);
+	public FalseValue(ValueStruct<?, T> valueStruct) {
+		super(valueStruct);
 	}
 
 	@Override
@@ -44,12 +47,12 @@ final class UnknownValue<T> extends Value<T> {
 
 	@Override
 	public Condition getCondition() {
-		return Condition.UNKNOWN;
+		return Condition.FALSE;
 	}
 
 	@Override
 	public Val val(Generator generator) {
-		return UNKNOWN_VAL;
+		return FALSE_VAL;
 	}
 
 	@Override
@@ -61,16 +64,16 @@ final class UnknownValue<T> extends Value<T> {
 
 		final Global<ValType.Op, ValType> global =
 				generator.newGlobal().setConstant().dontExport().newInstance(
-						generator.id("CONST").sub("UNKNOWN"),
+						generator.id("CONST").sub("FALSE"),
 						ValType.VAL_TYPE,
-						UNKNOWN_VAL);
+						FALSE_VAL);
 
 		return cachedPtr = global.getPointer();
 	}
 
 	@Override
 	public String toString() {
-		return '(' + getValueType().toString() + ") unknown";
+		return '(' + getValueType().toString() + ") false";
 	}
 
 }

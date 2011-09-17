@@ -40,6 +40,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -94,11 +95,11 @@ final class StringChar extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs stringDirs =
-				dirs.dirs().value(ValueType.STRING, "string");
+				dirs.dirs().value(ValueStruct.STRING, "string");
 		final ValOp stringVal = string().op(host).writeValue(stringDirs);
 
 		final ValDirs indexDirs =
-				stringDirs.dirs().value(ValueType.INTEGER, "index");
+				stringDirs.dirs().value(ValueStruct.INTEGER, "index");
 		final ValOp indexVal = index().op(host).writeValue(indexDirs);
 
 		final Code code = indexDirs.code();

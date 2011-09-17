@@ -36,7 +36,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
 import org.o42a.core.st.action.RepeatLoop;
 import org.o42a.core.st.sentence.Imperatives;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class EllipsisStatement extends Statement {
@@ -67,8 +67,8 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return ValueType.VOID;
+	public ValueStruct<?, ?> getValueStruct() {
+		return ValueStruct.VOID;
 	}
 
 	@Override

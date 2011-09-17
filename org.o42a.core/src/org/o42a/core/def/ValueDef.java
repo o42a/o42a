@@ -31,9 +31,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 
 
 public abstract class ValueDef extends Def<ValueDef> {
@@ -57,7 +55,11 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return false;
 	}
 
-	public abstract ValueType<?> getValueType();
+	public final ValueType<?> getValueType() {
+		return getValueStruct().getValueType();
+	}
+
+	public abstract ValueStruct<?, ?> getValueStruct();
 
 	public final Value<?> getConstantValue() {
 		if (this.constantValue != null) {
@@ -69,13 +71,13 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 			if (!prerequisite.isTrue()) {
 				if (prerequisite.isFalse()) {
-					return this.constantValue = getValueType().unknownValue();
+					return this.constantValue = getValueStruct().unknownValue();
 				}
-				return this.constantValue = getValueType().runtimeValue();
+				return this.constantValue = getValueStruct().runtimeValue();
 			}
 		}
 		if (!hasConstantValue()) {
-			return this.constantValue = getValueType().runtimeValue();
+			return this.constantValue = getValueStruct().runtimeValue();
 		}
 
 		final Resolver resolver =
@@ -125,9 +127,9 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 			if (!prerequisite.isTrue()) {
 				if (prerequisite.isFalse()) {
-					return getValueType().unknownValue();
+					return getValueStruct().unknownValue();
 				}
-				return getValueType().runtimeValue();
+				return getValueStruct().runtimeValue();
 			}
 		}
 
@@ -136,15 +138,15 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 		if (!precondition.isTrue()) {
 			if (precondition.isFalse()) {
-				return getValueType().falseValue();
+				return getValueStruct().falseValue();
 			}
-			return getValueType().runtimeValue();
+			return getValueStruct().runtimeValue();
 		}
 
 		final Value<?> value = calculateValue(rescoped);
 
 		if (value == null) {
-			return getValueType().unknownValue();
+			return getValueStruct().unknownValue();
 		}
 
 		return value;
@@ -161,7 +163,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return new Definitions(
 					this,
 					getScope(),
-					getValueType(),
+					getValueStruct(),
 					NO_REQUIREMENTS,
 					conditions,
 					new ValueDefs(DefKind.CLAIM, this),
@@ -171,7 +173,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return new Definitions(
 				this,
 				getScope(),
-				getValueType(),
+				getValueStruct(),
 				NO_REQUIREMENTS,
 				conditions,
 				NO_CLAIMS,

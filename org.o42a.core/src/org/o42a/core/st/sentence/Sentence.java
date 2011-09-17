@@ -32,7 +32,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
 
@@ -43,7 +43,6 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 	private final SentenceFactory<S, ?, ?> sentenceFactory;
 	private final ArrayList<S> alternatives = new ArrayList<S>();
 	private Sentence<S> prerequisite;
-	private ValueType<?> valueType;
 	private boolean instructionsExecuted;
 
 	Sentence(
@@ -72,20 +71,6 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 	public abstract boolean isIssue();
 
 	public abstract DefinitionTargets getDefinitionTargets();
-
-	public ValueType<?> getValueType() {
-		if (this.valueType != null) {
-			return this.valueType;
-		}
-
-		this.valueType = valueType(null);
-
-		if (this.valueType != null) {
-			return this.valueType;
-		}
-
-		return this.valueType = ValueType.VOID;
-	}
 
 	public final List<S> getAlternatives() {
 		return this.alternatives;
@@ -179,32 +164,33 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		this.prerequisite = prerequisite;
 	}
 
-	ValueType<?> valueType(ValueType<?> expected) {
+	ValueStruct<?, ?> valueStruct(ValueStruct<?, ?> expected) {
 
-		ValueType<?> result = expected;
-		boolean hasResult = false;
+		ValueStruct<?, ?> result = null;
 
 		for (Statements<?> alt : getAlternatives()) {
 
-			final ValueType<?> type = alt.valueType(result);
+			final ValueStruct<?, ?> struct = alt.valueStruct(expected);
 
-			if (type == null) {
+			if (struct == null) {
 				continue;
 			}
 			if (result == null) {
-				result = type;
-				hasResult = true;
+				result = struct;
 				continue;
 			}
-			if (type == result) {
-				hasResult = true;
+			if (result.assignableFrom(struct)) {
+				continue;
+			}
+			if (struct.assignableFrom(result)) {
+				result = struct;
 				continue;
 			}
 
 			getLogger().incompatible(alt, result);
 		}
 
-		return hasResult ? result : null;
+		return result;
 	}
 
 	void reproduce(Block<S> block, Reproducer reproducer) {

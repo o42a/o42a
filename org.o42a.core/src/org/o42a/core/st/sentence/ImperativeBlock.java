@@ -45,7 +45,7 @@ import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
 import org.o42a.core.st.impl.imperative.ImperativeBlockOp;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
@@ -108,6 +108,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final boolean topLevel;
 	private final Trace trace;
 	private StatementEnv initialEnv;
+	private ValueStruct<?, ?> valueStruct;
 	private Locals locals;
 
 	public ImperativeBlock(
@@ -201,24 +202,21 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-
-		final ValueType<?> valueType = super.getValueType();
-
-		if (valueType != null) {
-			return valueType;
-		}
-		if (!isTopLevel()) {
-			return null;
+	public ValueStruct<?, ?> getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
 		}
 
-		final ValueType<?> expectedType = this.initialEnv.getExpectedType();
+		final ValueStruct<?, ?> expected =
+				isTopLevel() ? this.initialEnv.getExpectedValueStruct() : null;
+		final ValueStruct<?, ?> valueStruct = valueStruct(expected);
 
-		if (expectedType != null) {
-			return expectedType;
+		if (valueStruct != null) {
+			return this.valueStruct = valueStruct;
 		}
 
-		return ValueType.VOID;
+		return this.valueStruct =
+				expected != null ? expected : ValueStruct.VOID;
 	}
 
 	@Override
@@ -409,8 +407,8 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
-			return this.initialEnv.getExpectedType();
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return this.initialEnv.getExpectedValueStruct();
 		}
 
 	}
