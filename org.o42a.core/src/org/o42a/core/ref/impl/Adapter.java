@@ -36,6 +36,7 @@ import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -85,14 +86,14 @@ public final class Adapter extends Wrap {
 		final ValueType<?> adapterValueType =
 				this.adapterType.typeObject(dummyUser()).value().getValueType();
 
-		if (adapterValueType != ValueType.VOID) {
+		if (!adapterValueType.isVoid()) {
 			return op;
 		}
 
 		final ValueType<?> valueType =
 				this.ref.getResolution().materialize().value().getValueType();
 
-		if (valueType == ValueType.VOID) {
+		if (valueType.isVoid()) {
 			return op;
 		}
 
@@ -115,7 +116,7 @@ public final class Adapter extends Wrap {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			assert dirs.getValueType().assertIs(ValueType.VOID);
+			assert dirs.getValueStruct().assertIs(ValueStruct.VOID);
 
 			writeLogicalValue(dirs.dirs());
 

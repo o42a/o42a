@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,39 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.value.AbstractValueTypeIR;
+import org.o42a.core.ir.value.AbstractValueStructIR;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValueTypeIR;
-import org.o42a.core.source.Intrinsics;
+import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.ValueType;
 
 
-final class FloatValueType extends ValueType<Double> {
+public class FloatValueStruct extends SingleValueStruct<Double> {
 
-	FloatValueType() {
-		super("float", Double.class);
+	public static final FloatValueStruct INSTANCE = new FloatValueStruct();
+
+	private FloatValueStruct() {
+		super(ValueType.FLOAT, Double.class);
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		return intrinsics.getFloat();
-	}
-
-	@Override
-	protected ValueTypeIR<Double> createIR(Generator generator) {
+	protected ValueStructIR<SingleValueStruct<Double>, Double> createIR(
+			Generator generator) {
 		return new IR(generator, this);
 	}
 
-	private static final class IR extends AbstractValueTypeIR<Double> {
+	private static final class IR
+			extends AbstractValueStructIR<SingleValueStruct<Double>, Double> {
 
 		private int constSeq;
 
-		IR(Generator generator, ValueType<Double> valueType) {
-			super(generator, valueType);
+		IR(Generator generator, FloatValueStruct valueStruct) {
+			super(generator, valueStruct);
 		}
 
 		@Override

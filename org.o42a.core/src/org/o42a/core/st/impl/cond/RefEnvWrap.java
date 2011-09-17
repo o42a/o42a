@@ -22,7 +22,7 @@ package org.o42a.core.st.impl.cond;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.StatementEnv;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 final class RefEnvWrap extends StatementEnv {
@@ -65,8 +65,8 @@ final class RefEnvWrap extends StatementEnv {
 	}
 
 	@Override
-	protected ValueType<?> expectedType() {
-		return getInitialEnv().getExpectedType();
+	protected ValueStruct<?, ?> expectedValueStruct() {
+		return getInitialEnv().getExpectedValueStruct();
 	}
 
 	final StatementEnv getInitialEnv() {

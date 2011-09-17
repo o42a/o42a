@@ -32,7 +32,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public class BuiltinValueDef extends ValueDef {
@@ -53,8 +53,8 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return this.builtin.toObject().value().getValueType();
+	public ValueStruct<?, ?> getValueStruct() {
+		return this.builtin.toObject().value().getValueStruct();
 	}
 
 	@Override

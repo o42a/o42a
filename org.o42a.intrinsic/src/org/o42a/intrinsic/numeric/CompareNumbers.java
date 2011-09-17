@@ -23,6 +23,7 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
 
@@ -37,8 +38,8 @@ abstract class CompareNumbers<P extends Number>
 	CompareNumbers(
 			MemberOwner owner,
 			AnnotatedSources sources,
-			ValueType<P> operandType) {
-		super(owner, sources, "what", operandType, "with", operandType);
+			ValueStruct<?, P> operandStruct) {
+		super(owner, sources, "what", operandStruct, "with", operandStruct);
 	}
 
 	@Override

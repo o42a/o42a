@@ -25,7 +25,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 final class EqualsOperator extends ComparisonOperator {
@@ -35,8 +35,8 @@ final class EqualsOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return ValueType.VOID;
+	public ValueStruct<?, ?> getValueStruct() {
+		return ValueStruct.VOID;
 	}
 
 	@Override

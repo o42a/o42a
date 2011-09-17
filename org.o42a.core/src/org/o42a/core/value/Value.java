@@ -42,14 +42,18 @@ public abstract class Value<T> {
 		return ValueType.VOID.unknownValue();
 	}
 
-	private final ValueType<T> valueType;
+	private final ValueStruct<?, T> valueStruct;
 
-	Value(ValueType<T> valueType) {
-		this.valueType = valueType;
+	public Value(ValueStruct<?, T> valueStruct) {
+		this.valueStruct = valueStruct;
 	}
 
-	public final ValueType<T> getValueType() {
-		return this.valueType;
+	public final ValueType<?> getValueType() {
+		return this.valueStruct.getValueType();
+	}
+
+	public final ValueStruct<?, T> getValueStruct() {
+		return this.valueStruct;
 	}
 
 	public final boolean isFalse() {
@@ -94,7 +98,7 @@ public abstract class Value<T> {
 			return condition.toString();
 		}
 
-		return getValueType().valueString(getDefiniteValue());
+		return getValueStruct().valueString(getDefiniteValue());
 	}
 
 	@Override
@@ -102,7 +106,7 @@ public abstract class Value<T> {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append('(').append(this.valueType).append(") ");
+		out.append('(').append(this.valueStruct).append(") ");
 		out.append(valueString());
 
 		return out.toString();

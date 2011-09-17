@@ -36,6 +36,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -132,15 +133,15 @@ final class SubString extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs stringDirs =
-				dirs.dirs().value(ValueType.STRING, "string");
+				dirs.dirs().value(ValueStruct.STRING, "string");
 		final ValOp stringVal = string().op(host).writeValue(stringDirs);
 
 		final ValDirs fromDirs =
-				stringDirs.dirs().value(ValueType.INTEGER, "from");
+				stringDirs.dirs().value(ValueStruct.INTEGER, "from");
 		final ValOp fromVal = from().op(host).writeValue(fromDirs);
 
 		final ValDirs toDirs =
-				fromDirs.dirs().value(ValueType.INTEGER, "to");
+				fromDirs.dirs().value(ValueStruct.INTEGER, "to");
 		final ValOp toVal = from().op(host).writeValue(fromDirs);
 
 		final ValDirs substringDirs = toDirs.dirs().value(dirs);

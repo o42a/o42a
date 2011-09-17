@@ -31,32 +31,32 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 	private final String operandName;
-	private final ValueType<O> operandType;
+	private final ValueStruct<?, O> operandStruct;
 	private Ref operand;
 
 	public UnaryResult(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			String operandName,
-			ValueType<O> operandType) {
+			ValueStruct<?, O> operandStruct) {
 		super(owner, sources);
 		this.operandName = operandName;
-		this.operandType = operandType;
+		this.operandStruct = operandStruct;
 	}
 
 	@SuppressWarnings("unchecked")
-	public final ValueType<T> getResultType() {
-		return (ValueType<T>) value().getValueType();
+	public final ValueStruct<?, T> getResultStruct() {
+		return (ValueStruct<?, T>) value().getValueStruct();
 	}
 
-	public final ValueType<O> getOperandType() {
-		return this.operandType;
+	public final ValueStruct<?, O> getOperandStruct() {
+		return this.operandStruct;
 	}
 
 	@Override
@@ -65,21 +65,21 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		final Value<?> operandValue = operand().value(resolver);
 
 		if (operandValue.isFalse()) {
-			return getResultType().falseValue();
+			return getResultStruct().falseValue();
 		}
 		if (!operandValue.isDefinite()) {
-			return getResultType().runtimeValue();
+			return getResultStruct().runtimeValue();
 		}
 
 		final O operand =
-				getOperandType().cast(operandValue).getDefiniteValue();
+				getOperandStruct().cast(operandValue).getDefiniteValue();
 		final T result = calculate(operand);
 
 		if (result == null) {
-			return getResultType().falseValue();
+			return getResultStruct().falseValue();
 		}
 
-		return getResultType().constantValue(result);
+		return getResultStruct().constantValue(result);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs operandDirs =
-				dirs.dirs().value(getOperandType(), "operand");
+				dirs.dirs().value(getOperandStruct(), "operand");
 		final ValOp operandVal = operand().op(host).writeValue(operandDirs);
 
 		final ValDirs resultDirs = operandDirs.dirs().value(dirs);

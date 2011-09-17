@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
@@ -29,28 +29,29 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.ValueTypeIR;
+import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 
 
-final class ConstantRef<T> extends Ref {
+public final class ConstantRef<T> extends Ref {
 
-	private final ValueType<T> valueType;
+	private final ValueStruct<?, T> valueStruct;
 	private final T value;
 	private Obj object;
 
-	ConstantRef(
+	public ConstantRef(
 			LocationInfo location,
 			Distributor distributor,
-			ValueType<T> valueType,
+			ValueStruct<?, T> valueStruct,
 			T value) {
 		super(location, distributor);
-		this.valueType = valueType;
+		this.valueStruct = valueStruct;
 		this.value = value;
 	}
 
@@ -70,7 +71,7 @@ final class ConstantRef<T> extends Ref {
 		return new ConstantRef<T>(
 				this,
 				reproducer.distribute(),
-				this.valueType,
+				this.valueStruct,
 				this.value);
 	}
 
@@ -85,7 +86,7 @@ final class ConstantRef<T> extends Ref {
 		if (this.value == null) {
 			return super.toString();
 		}
-		return this.valueType.valueString(this.value);
+		return this.valueStruct.valueString(this.value);
 	}
 
 	@Override
@@ -115,7 +116,7 @@ final class ConstantRef<T> extends Ref {
 		return this.object = new ConstantObject<T>(
 				this,
 				distribute(),
-				this.valueType,
+				this.valueStruct,
 				this.value);
 	}
 
@@ -134,7 +135,8 @@ final class ConstantRef<T> extends Ref {
 
 			@SuppressWarnings("unchecked")
 			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
-			final ValueTypeIR<T> typeIR = ref.valueType.ir(getGenerator());
+			final ValueStructIR<?, T> typeIR =
+					ref.valueStruct.ir(getGenerator());
 			final Ptr<ValType.Op> ptr = typeIR.valPtr(ref.value);
 			final ValType.Op op = ptr.op(ptr.getId(), dirs.code());
 

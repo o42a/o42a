@@ -23,25 +23,30 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ValueTypeIR<T> {
+public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	private final Generator generator;
-	private final ValueType<T> valueType;
+	private final S valueStruct;
 
-	public ValueTypeIR(Generator generator, ValueType<T> valueType) {
+	public ValueStructIR(Generator generator, S valueStruct) {
 		this.generator = generator;
-		this.valueType = valueType;
+		this.valueStruct = valueStruct;
 	}
 
 	public final Generator getGenerator() {
 		return this.generator;
 	}
 
-	public final ValueType<T> getValueType() {
-		return this.valueType;
+	public final ValueType<S> getValueType() {
+		return this.valueStruct.getValueType();
+	}
+
+	public final S getValueStruct() {
+		return this.valueStruct;
 	}
 
 	public boolean hasValue() {
@@ -58,10 +63,10 @@ public abstract class ValueTypeIR<T> {
 
 	@Override
 	public String toString() {
-		if (this.valueType == null) {
+		if (this.valueStruct == null) {
 			return super.toString();
 		}
-		return this.valueType + " IR";
+		return this.valueStruct + " IR";
 	}
 
 	protected void store(Code code, ValOp target, Val value) {

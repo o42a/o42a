@@ -17,21 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.InstructionContext;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.source.Intrinsics;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.ValueStruct;
 
 
-final class SkipDirective implements Directive {
+public final class StringValueType extends SingleValueType<String> {
 
-	@Override
-	public void apply(Ref directive, InstructionContext context) {
+	public static StringValueType INSTANCE = new StringValueType();
+
+	private StringValueType() {
+		super("string");
 	}
 
 	@Override
-	public String toString() {
-		return "SKIP";
+	public SingleValueStruct<String> struct() {
+		return ValueStruct.STRING;
+	}
+
+	@Override
+	public Obj wrapper(Intrinsics intrinsics) {
+		return intrinsics.getString();
 	}
 
 }

@@ -33,6 +33,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -59,7 +60,14 @@ public abstract class Statement extends Placed {
 
 	public abstract DefinitionTargets getDefinitionTargets();
 
-	public abstract ValueType<?> getValueType();
+	public final ValueType<?> getValueType() {
+
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+		return valueStruct != null ? valueStruct.getValueType() : null;
+	}
+
+	public abstract ValueStruct<?, ?> getValueStruct();
 
 	public abstract StatementEnv setEnv(StatementEnv env);
 

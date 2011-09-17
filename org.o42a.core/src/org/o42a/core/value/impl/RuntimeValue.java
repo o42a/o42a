@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
 
@@ -26,15 +26,18 @@ import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.Condition;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
-final class RuntimeValue<T> extends Value<T> {
+public final class RuntimeValue<T> extends Value<T> {
 
 	private static Ptr<ValType.Op> cachedPtr;
 	private static Generator cachedGenerator;
 
-	RuntimeValue(ValueType<T> valueType) {
-		super(valueType);
+	public RuntimeValue(ValueStruct<?, T> valueStruct) {
+		super(valueStruct);
 	}
 
 	@Override

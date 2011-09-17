@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import static org.o42a.util.string.StringCodec.bytesPerChar;
 import static org.o42a.util.string.StringCodec.escapeControlChars;
@@ -25,22 +25,19 @@ import static org.o42a.util.string.StringCodec.stringToBinary;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.value.ExternalValueTypeIR;
-import org.o42a.core.ir.value.ValueTypeIR;
-import org.o42a.core.source.Intrinsics;
+import org.o42a.core.ir.value.ExternalValueStructIR;
+import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
 
 
-final class StringValueType extends ValueType<String> {
+public class StringValueStruct extends SingleValueStruct<String> {
 
-	StringValueType() {
-		super("string", String.class);
-	}
+	public static final StringValueStruct INSTANCE = new StringValueStruct();
 
-	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		return intrinsics.getString();
+	private StringValueStruct() {
+		super(ValueType.STRING, String.class);
 	}
 
 	@Override
@@ -56,17 +53,19 @@ final class StringValueType extends ValueType<String> {
 	}
 
 	@Override
-	protected ValueTypeIR<String> createIR(Generator generator) {
+	protected ValueStructIR<SingleValueStruct<String>, String> createIR(
+			Generator generator) {
 		return new IR(generator, this);
 	}
 
-	private static final class IR extends ExternalValueTypeIR<String> {
+	private static final class IR
+			extends ExternalValueStructIR<SingleValueStruct<String>, String> {
 
 		private int stringSeq;
 		private int constSeq;
 
-		IR(Generator generator, ValueType<String> valueType) {
-			super(generator, valueType);
+		IR(Generator generator, StringValueStruct valueStruct) {
+			super(generator, valueStruct);
 		}
 
 		@Override

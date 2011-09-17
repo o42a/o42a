@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,57 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import static org.o42a.core.ir.value.Val.VOID_VAL;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
-import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.ValueTypeIR;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.source.Intrinsics;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.value.*;
+import org.o42a.core.value.Void;
 
 
-final class VoidValueType extends ValueType<Void> {
+public class VoidValueStruct extends SingleValueStruct<Void> {
 
-	VoidValueType() {
-		super("void", Void.class);
+	public static final VoidValueStruct INSTANCE = new VoidValueStruct();
+
+	private VoidValueStruct() {
+		super(ValueType.VOID, Void.class);
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		return intrinsics.getVoid();
-	}
-
-	@Override
-	public StaticTypeRef typeRef(LocationInfo location, Scope scope) {
-		return voidRef(location, scope.distribute()).toStaticTypeRef();
-	}
-
-	@Override
-	public boolean assignableFrom(ValueType<?> other) {
+	public boolean assignableFrom(ValueStruct<?, ?> other) {
 		return true;
 	}
 
 	@Override
-	protected ValueTypeIR<Void> createIR(Generator generator) {
+	protected ValueStructIR<SingleValueStruct<Void>, Void> createIR(
+			Generator generator) {
 		return new IR(generator, this);
 	}
 
-	private static final class IR extends ValueTypeIR<Void> {
+	private static final class IR
+			extends ValueStructIR<SingleValueStruct<Void>, Void> {
 
 		private Ptr<ValType.Op> valPtr;
 
-		IR(Generator generator, ValueType<Void> valueType) {
-			super(generator, valueType);
+		IR(Generator generator, VoidValueStruct valueStruct) {
+			super(generator, valueStruct);
 		}
 
 		@Override
@@ -97,5 +87,5 @@ final class VoidValueType extends ValueType<Void> {
 		}
 
 	}
-
 }
+

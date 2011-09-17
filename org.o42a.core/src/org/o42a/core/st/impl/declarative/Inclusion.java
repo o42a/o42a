@@ -32,7 +32,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Inclusion extends Statement implements Instruction {
@@ -49,7 +49,7 @@ public abstract class Inclusion extends Statement implements Instruction {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
+	public ValueStruct<?, ?> getValueStruct() {
 		throw new UnsupportedOperationException();
 	}
 

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Ascendants;
@@ -25,20 +25,22 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
-final class ConstantObject<T> extends Obj {
+public final class ConstantObject<T> extends Obj {
 
 	private final Value<T> value;
 
-	ConstantObject(
+	public ConstantObject(
 			LocationInfo location,
 			Distributor enclosing,
-			ValueType<T> valueType,
+			ValueStruct<?, T> valueStruct,
 			T value) {
 		super(location, enclosing);
-		setValueType(valueType);
-		this.value = valueType.constantValue(value);
+		setValueStruct(valueStruct);
+		this.value = valueStruct.constantValue(value);
 	}
 
 	public final Value<T> getValue() {

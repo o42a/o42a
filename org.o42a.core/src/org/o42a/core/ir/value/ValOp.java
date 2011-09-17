@@ -30,27 +30,35 @@ import org.o42a.codegen.code.CondCode;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
 public final class ValOp extends IROp implements CondOp {
 
-	private final ValueType<?> valueType;
+	private final ValueStruct<?, ?> valueStruct;
 	private final Val constant;
 	private ValStoreMode storeMode = ASSIGNMENT_VAL_STORE;
 
 	ValOp(
 			CodeBuilder builder,
 			ValType.Op ptr,
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			Val constant) {
 		super(builder, ptr);
-		this.valueType = valueType;
+		this.valueStruct = valueStruct;
 		this.constant = constant;
 	}
 
 	public final ValueType<?> getValueType() {
-		return this.valueType;
+
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+		return valueStruct != null ? valueStruct.getValueType() : null;
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return this.valueStruct;
 	}
 
 	public final boolean isConstant() {
@@ -223,8 +231,8 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public final ValOp storeVoid(Code code) {
-		assert getValueType() == ValueType.VOID :
-			"Can not store VOID in " + getValueType() + " value";
+		assert getValueStruct().isVoid() :
+			"Can not store VOID in " + getValueStruct() + " value";
 
 		flags(null, code).store(code, code.int32(CONDITION_FLAG));
 
@@ -249,7 +257,7 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public ValOp store(Code code, Val value) {
-		assert (value.getValueType() == getValueType()
+		assert (value.getValueStruct() == getValueStruct()
 				|| !value.getCondition() && value.isVoid()) :
 			"Can not store " + value + " in " + this;
 
@@ -270,7 +278,7 @@ public final class ValOp extends IROp implements CondOp {
 			return this;
 		}
 
-		assert getValueType() == value.getValueType() :
+		assert getValueStruct().assignableFrom(value.getValueStruct()) :
 			"Can not store " + value + " in " + this;
 
 		getStoreMode().store(code, this, value);
@@ -280,7 +288,7 @@ public final class ValOp extends IROp implements CondOp {
 
 	public final ValOp store(Code code, Int64op value) {
 		assert getValueType() == ValueType.INTEGER :
-			"Can not store integer in " + getValueType() + " value";
+			"Can not store integer in " + getValueStruct() + " value";
 
 		rawValue(null, code).store(code, value);
 		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
@@ -291,7 +299,7 @@ public final class ValOp extends IROp implements CondOp {
 	public final ValOp store(Code code, Fp64op value) {
 		assert getValueType() == ValueType.FLOAT :
 			"Can not store floating-point number in "
-			+ getValueType() + " value";
+			+ getValueStruct() + " value";
 
 		value(null, code).toFp64(null, code).store(code, value);
 		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
@@ -323,10 +331,10 @@ public final class ValOp extends IROp implements CondOp {
 		if (this.constant != null) {
 			return this.constant.toString();
 		}
-		if (this.valueType == null) {
+		if (this.valueStruct == null) {
 			return super.toString();
 		}
-		return "(" + this.valueType + ") " + ptr();
+		return "(" + this.valueStruct + ") " + ptr();
 	}
 
 	private BoolOp loadFlag(

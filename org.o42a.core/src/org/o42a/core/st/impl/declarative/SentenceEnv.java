@@ -28,7 +28,7 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class SentenceEnv extends StatementEnv {
@@ -82,9 +82,9 @@ public final class SentenceEnv extends StatementEnv {
 	}
 
 	@Override
-	protected ValueType<?> expectedType() {
+	protected ValueStruct<?, ?> expectedValueStruct() {
 		return this.sentence.getBlock()
-				.getInitialEnv().getExpectedType();
+				.getInitialEnv().getExpectedValueStruct();
 	}
 
 }

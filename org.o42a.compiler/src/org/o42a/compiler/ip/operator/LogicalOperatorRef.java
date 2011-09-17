@@ -41,6 +41,7 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -56,8 +57,9 @@ public class LogicalOperatorRef extends ObjectConstructor {
 			Distributor distributor) {
 		super(new Location(context, node), distributor);
 		this.node = node;
-		this.operand =
-				this.node.getOperand().accept(ip.expressionVisitor(), distribute());
+		this.operand = this.node.getOperand().accept(
+				ip.expressionVisitor(),
+				distribute());
 	}
 
 	private LogicalOperatorRef(
@@ -97,7 +99,7 @@ public class LogicalOperatorRef extends ObjectConstructor {
 		private Ref operand;
 
 		Res(LogicalOperatorRef ref) {
-			super(ref, ref.distributeIn(ref.getContainer()), ValueType.VOID);
+			super(ref, ref.distributeIn(ref.getContainer()), ValueStruct.VOID);
 			this.ref = ref;
 		}
 

@@ -43,7 +43,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public class AssignmentStatement extends Statement {
@@ -87,8 +87,8 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return ValueType.VOID;
+	public ValueStruct<?, ?> getValueStruct() {
+		return ValueStruct.VOID;
 	}
 
 	@Override

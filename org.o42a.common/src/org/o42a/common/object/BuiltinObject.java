@@ -26,7 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class BuiltinObject extends Obj implements Builtin {
@@ -34,19 +34,19 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	public BuiltinObject(
 			LocationInfo location,
 			Distributor enclosing,
-			ValueType<?> valueType) {
+			ValueStruct<?, ?> valueStruct) {
 		super(location, enclosing);
-		setValueType(valueType);
+		setValueStruct(valueStruct);
 	}
 
-	protected BuiltinObject(ObjectScope scope, ValueType<?> valueType) {
+	protected BuiltinObject(ObjectScope scope, ValueStruct<?, ?> valueStruct) {
 		super(scope);
-		setValueType(valueType);
+		setValueStruct(valueStruct);
 	}
 
-	protected BuiltinObject(Scope scope, ValueType<?> valueType) {
+	protected BuiltinObject(Scope scope, ValueStruct<?, ?> valueStruct) {
 		super(scope);
-		setValueType(valueType);
+		setValueStruct(valueStruct);
 	}
 
 	@Override

@@ -39,7 +39,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class AbstractPrint extends AnnotatedBuiltin {
@@ -57,7 +57,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return value().getValueType().runtimeValue();
+		return value().getValueStruct().runtimeValue();
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ValDirs textDirs = dirs.dirs().value(ValueType.STRING, "text");
+		final ValDirs textDirs = dirs.dirs().value(ValueStruct.STRING, "text");
 		final Code code = textDirs.code();
 
 		final ValOp text = text().op(host).writeValue(textDirs);

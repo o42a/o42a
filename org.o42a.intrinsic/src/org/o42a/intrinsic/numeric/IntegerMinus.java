@@ -30,7 +30,7 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.intrinsic.operator.UnaryResult;
 import org.o42a.intrinsic.root.Root;
 
@@ -39,7 +39,7 @@ import org.o42a.intrinsic.root.Root;
 public final class IntegerMinus extends UnaryResult<Long, Long> {
 
 	public IntegerMinus(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources, "operand", ValueType.INTEGER);
+		super(owner, sources, "operand", ValueStruct.INTEGER);
 	}
 
 	@Override

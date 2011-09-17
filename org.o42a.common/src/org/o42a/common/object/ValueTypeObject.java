@@ -22,7 +22,7 @@ package org.o42a.common.object;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class ValueTypeObject extends AnnotatedObject {
@@ -30,21 +30,21 @@ public abstract class ValueTypeObject extends AnnotatedObject {
 	public ValueTypeObject(
 			MemberOwner owner,
 			AnnotatedSources sources,
-			ValueType<?> valueType) {
+			ValueStruct<?, ?> valueStruct) {
 		super(owner, sources);
-		setValueType(valueType);
+		setValueStruct(valueStruct);
 	}
 
 	@Override
 	protected Definitions overrideDefinitions(
 			Scope scope,
 			Definitions ascentantDefinitions) {
-		return value().getValueType().noValueDefinitions(this, scope);
+		return value().getValueStruct().noValueDefinitions(this, scope);
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return value().getValueType().noValueDefinitions(this, getScope());
+		return value().getValueStruct().noValueDefinitions(this, getScope());
 	}
 
 }

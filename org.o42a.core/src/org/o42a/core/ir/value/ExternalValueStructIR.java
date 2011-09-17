@@ -32,16 +32,17 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.DataAlignment;
 
 
-public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
+public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
+		extends AbstractValueStructIR<S, T> {
 
 	private final HashMap<T, Val> valueCache = new HashMap<T, Val>();
 
-	public ExternalValueTypeIR(Generator generator, ValueType<T> valueType) {
-		super(generator, valueType);
+	public ExternalValueStructIR(Generator generator, S valueStruct) {
+		super(generator, valueStruct);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 
 		if (bytes.length <= 8) {
 			val = new Val(
-					ValueType.STRING,
+					ValueStruct.STRING,
 					CONDITION_FLAG | (alignment.getShift() << 8),
 					length(value, bytes, alignment),
 					bytesToLong(bytes));
@@ -74,7 +75,7 @@ public abstract class ExternalValueTypeIR<T> extends AbstractValueTypeIR<T> {
 					getGenerator().addBinary(valueId(value), true, bytes);
 
 			val = new Val(
-					ValueType.STRING,
+					ValueStruct.STRING,
 					CONDITION_FLAG | EXTERNAL_FLAG | STATIC_FLAG
 					| (alignment.getShift() << 8),
 					length(value, bytes, alignment),

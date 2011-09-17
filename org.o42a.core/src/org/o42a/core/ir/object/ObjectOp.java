@@ -40,6 +40,7 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -68,7 +69,11 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	public final ValueType<?> getValueType() {
-		return getWellKnownType().value().getValueType();
+		return getValueStruct().getValueType();
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return getWellKnownType().value().getValueStruct();
 	}
 
 	public abstract Obj getWellKnownType();
@@ -144,16 +149,16 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	@Override
 	public final void writeLogicalValue(CodeDirs dirs) {
 
-		final ValDirs valDirs = dirs.value(getValueType());
+		final ValDirs valDirs = dirs.value(getValueStruct());
 
 		writeValue(valDirs);
 		valDirs.done();
 	}
 
 	public final void writeLogicalValue(CodeDirs dirs, ObjectOp body) {
-		assert body == null || body.getValueType().assertIs(getValueType());
+		assert body == null || body.getValueStruct().assertIs(getValueStruct());
 
-		final ValDirs valDirs = dirs.value(getValueType());
+		final ValDirs valDirs = dirs.value(getValueStruct());
 
 		writeValue(valDirs, body);
 		valDirs.done();
@@ -161,12 +166,12 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	@Override
 	public final ValOp writeValue(ValDirs dirs) {
-		assert dirs.getValueType().assertIs(getValueType());
+		assert dirs.getValueStruct().assertIs(getValueStruct());
 
 		final Code code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code).op(
 				getBuilder(),
-				getValueType());
+				getValueStruct());
 		final CondCode indefinite = value.loadIndefinite(null, code).branch(
 				code,
 				"val_indefinite",

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,56 +17,63 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value;
+package org.o42a.core.value.impl;
+
+import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.Condition;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
-final class ConstantValue<T> extends Value<T> {
+public final class UnknownValue<T> extends Value<T> {
 
-	private final T value;
+	private static Ptr<ValType.Op> cachedPtr;
+	private static Generator cachedGenerator;
 
-	ConstantValue(ValueType<T> valueType, T value) {
-		super(valueType);
-		this.value = value;
-	}
-
-	@Override
-	public Condition getCondition() {
-		return Condition.TRUE;
+	public UnknownValue(ValueStruct<?, T> valueStruct) {
+		super(valueStruct);
 	}
 
 	@Override
 	public T getDefiniteValue() {
-		return this.value;
+		return null;
+	}
+
+	@Override
+	public Condition getCondition() {
+		return Condition.UNKNOWN;
 	}
 
 	@Override
 	public Val val(Generator generator) {
-		return getValueType().ir(generator).val(this.value);
+		return UNKNOWN_VAL;
 	}
 
 	@Override
 	public Ptr<ValType.Op> valPtr(Generator generator) {
-		return getValueType().ir(generator).valPtr(this.value);
+		if (cachedPtr != null && cachedGenerator == generator) {
+			return cachedPtr;
+		}
+		cachedGenerator = generator;
+
+		final Global<ValType.Op, ValType> global =
+				generator.newGlobal().setConstant().dontExport().newInstance(
+						generator.id("CONST").sub("UNKNOWN"),
+						ValType.VAL_TYPE,
+						UNKNOWN_VAL);
+
+		return cachedPtr = global.getPointer();
 	}
 
 	@Override
 	public String toString() {
-		return valueString(getValueType(), this.value);
-	}
-
-	static <T> String valueString(ValueType<T> valueType, T value) {
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append('(').append(valueType).append(") ");
-		out.append(valueType.valueString(value));
-
-		return out.toString();
+		return '(' + getValueType().toString() + ") unknown";
 	}
 
 }

@@ -25,7 +25,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 final class CondValueDef extends ValueDef {
@@ -46,8 +46,8 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	public final ValueType<?> getValueType() {
-		return ValueType.VOID;
+	public final ValueStruct<?, ?> getValueStruct() {
+		return ValueStruct.VOID;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ final class CondValueDef extends ValueDef {
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return this.def.getLogical().logicalValue(resolver).toValue(
-				getValueType());
+				getValueStruct());
 	}
 
 	@Override

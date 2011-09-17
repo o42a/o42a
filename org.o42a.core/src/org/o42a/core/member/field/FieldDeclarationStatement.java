@@ -33,7 +33,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 final class FieldDeclarationStatement extends DeclarationStatement {
@@ -56,8 +56,8 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return ValueType.VOID;
+	public ValueStruct<?, ?> getValueStruct() {
+		return ValueStruct.VOID;
 	}
 
 	@Override

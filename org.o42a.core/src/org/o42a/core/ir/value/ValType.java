@@ -28,7 +28,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class ValType extends Type<ValType.Op> {
@@ -113,12 +113,18 @@ public final class ValType extends Type<ValType.Op> {
 			return (ValType) super.getType();
 		}
 
-		public final ValOp op(CodeBuilder builder, ValueType<?> valueType) {
-			return new ValOp(builder, this, valueType, null);
+		public final ValOp op(
+				CodeBuilder builder,
+				ValueStruct<?, ?> valueStruct) {
+			return new ValOp(builder, this, valueStruct, null);
 		}
 
 		public final ValOp op(CodeBuilder builder, Val constant) {
-			return new ValOp(builder, this, constant.getValueType(), constant);
+			return new ValOp(
+					builder,
+					this,
+					constant.getValueStruct(),
+					constant);
 		}
 
 		public final Int32recOp flags(CodeId id, Code code) {
