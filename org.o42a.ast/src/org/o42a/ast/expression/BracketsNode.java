@@ -86,7 +86,7 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 
 			@Override
 			public String getSign() {
-				return "{";
+				return "[";
 			}
 
 		},
@@ -95,7 +95,7 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 
 			@Override
 			public String getSign() {
-				return "}";
+				return "]";
 			}
 
 		}
