@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.ast.expression.BracketsNode.Bracket.CLOSING_BRACKET;
 import static org.o42a.ast.expression.BracketsNode.Bracket.OPENING_BRACKET;
+import static org.o42a.parser.grammar.field.InterfaceParser.INTERFACE;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,7 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.ArgumentNode.Separator;
 import org.o42a.ast.expression.BracketsNode.Bracket;
+import org.o42a.ast.field.InterfaceNode;
 import org.o42a.parser.*;
 
 
@@ -49,6 +51,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 		}
 
 		final SignNode<Bracket> opening = opening(context);
+		final InterfaceNode iface = context.parse(INTERFACE);
 		final ArrayList<ArgumentNode> arguments = new ArrayList<ArgumentNode>();
 		SignNode<Bracket> closing = null;
 		SignNode<Separator> separator = null;
@@ -127,6 +130,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 				false,
 				new BracketsNode(
 						opening,
+						iface,
 						arguments.toArray(new ArgumentNode[arguments.size()]),
 						closing));
 	}
@@ -135,14 +139,14 @@ public class BracketsParser implements Parser<BracketsNode> {
 
 		final FixedPosition start = context.current().fix();
 
-		context.skip();
+		context.acceptAll();
 
-		final SignNode<Bracket> opening =
-				new SignNode<Bracket>(start, context.current(), OPENING_BRACKET);
-
-		context.skipComments(true, opening);
-
-		return opening;
+		return context.acceptComments(
+				true,
+				new SignNode<Bracket>(
+						start,
+						context.current(),
+						OPENING_BRACKET));
 	}
 
 	private static void logUnexpected(

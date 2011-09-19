@@ -23,7 +23,6 @@ import org.o42a.ast.atom.*;
 import org.o42a.ast.clause.*;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.AscendantNode;
-import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.InterfaceNode;
@@ -59,10 +58,6 @@ public abstract class NodeVisitor<R, P>
 	@Override
 	public R visitStringLiteral(StringNode string, P p) {
 		return visitAtom(string, p);
-	}
-
-	public R visitBrackets(BracketsNode brackets, P p) {
-		return visitPart(brackets, p);
 	}
 
 	public R visitArgument(ArgumentNode argument, P p) {

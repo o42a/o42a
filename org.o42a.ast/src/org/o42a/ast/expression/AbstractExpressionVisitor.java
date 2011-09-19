@@ -54,6 +54,11 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
+	public R visitBrackets(BracketsNode brackets, P p) {
+		return visitExpression(brackets, p);
+	}
+
+	@Override
 	public R visitParentheses(ParenthesesNode parentheses, P p) {
 		return visitExpression(parentheses, p);
 	}

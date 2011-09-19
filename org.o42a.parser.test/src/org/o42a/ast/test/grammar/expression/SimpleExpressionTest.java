@@ -143,6 +143,14 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void array() {
+		to(BracketsNode.class, parse("[`a, b, c]"));
+		to(BracketsNode.class, parse("[``a, b, c]"));
+		to(BracketsNode.class, parse("[(`foo) a, b, c]"));
+		to(BracketsNode.class, parse("[(``foo) a, b, c]"));
+	}
+
+	@Test
 	public void decimalLiteral() {
 		to(DecimalNode.class, parse("123"));
 	}
