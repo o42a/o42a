@@ -42,7 +42,7 @@ public final class Strings$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.string.ConcatStrings$$Sources(this))
 			.getScope().toField(),
-				};
+		};
 	}
 
 }
