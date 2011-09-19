@@ -26,7 +26,7 @@ import org.o42a.ast.expression.AscendantNode;
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
-import org.o42a.ast.field.DefinitionCastNode;
+import org.o42a.ast.field.InterfaceNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.sentence.AlternativeNode;
@@ -78,7 +78,7 @@ public abstract class NodeVisitor<R, P>
 		return visitDeclarable(adapter, p);
 	}
 
-	public R visitDeclarationCast(DefinitionCastNode cast, P p) {
+	public R visitDeclarationCast(InterfaceNode cast, P p) {
 		return visitPart(cast, p);
 	}
 

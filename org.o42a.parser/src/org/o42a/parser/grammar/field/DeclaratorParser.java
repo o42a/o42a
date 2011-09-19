@@ -20,7 +20,7 @@
 package org.o42a.parser.grammar.field;
 
 import static org.o42a.ast.field.DeclarationTarget.*;
-import static org.o42a.parser.grammar.field.DefinitionCastParser.DEFINITION_CAST;
+import static org.o42a.parser.grammar.field.InterfaceParser.INTERFACE;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
@@ -55,15 +55,15 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 		}
 
 		int c = context.next();
-		final DefinitionCastNode definitionCast;
+		final InterfaceNode iface;
 
 		switch (c) {
 		case '`':
 		case '(':
-			definitionCast = context.parse(DEFINITION_CAST);
+			iface = context.parse(INTERFACE);
 			break;
 		default:
-			definitionCast = null;
+			iface = null;
 		}
 
 		final ExpressionNode definition =
@@ -76,7 +76,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 		return new DeclaratorNode(
 				this.declarable,
 				definitionAssignment,
-				definitionCast,
+				iface,
 				definition);
 	}
 

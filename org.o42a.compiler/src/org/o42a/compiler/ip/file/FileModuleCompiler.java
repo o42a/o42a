@@ -146,13 +146,13 @@ public final class FileModuleCompiler
 			case LINK:
 				getLogger().error(
 						"prohibited_module_link",
-						declaratorNode.getDefinitionCast(),
+						declaratorNode.getInterface(),
 						"Module is object. It can't be a link");
 				break;
 			case VARIABLE:
 				getLogger().error(
 						"prohibited_module_variable",
-						declaratorNode.getDefinitionCast(),
+						declaratorNode.getInterface(),
 						"Module is object. It can't be variable");
 				break;
 			default:
