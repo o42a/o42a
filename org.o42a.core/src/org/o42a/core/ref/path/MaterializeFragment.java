@@ -47,7 +47,7 @@ final class MaterializeFragment extends PathFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Artifact<?> artifact = start.getContainer().toArtifact();
+		final Artifact<?> artifact = start.getArtifact();
 
 		assert artifact != null :
 			"Can not materialize " + start;

@@ -76,7 +76,7 @@ public abstract class Ref extends Statement {
 
 		final Obj falseObject = location.getContext().getFalse();
 		final AbsolutePath falsePath = ROOT_PATH.append(
-				falseObject.getScope().toField().toMember().getKey());
+				falseObject.getScope().toMember().getKey());
 
 		return falsePath.target(location, distributor);
 	}

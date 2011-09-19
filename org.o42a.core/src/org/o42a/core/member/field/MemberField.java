@@ -38,6 +38,8 @@ import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
+import org.o42a.core.member.impl.field.LinkFieldWrap;
+import org.o42a.core.member.impl.field.ObjectFieldWrap;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -317,11 +319,11 @@ public abstract class MemberField extends Member {
 
 	protected abstract Field<?> createField();
 
-	final MemberField[] getMergedWith() {
+	protected final MemberField[] getMergedWith() {
 		return this.mergedWith;
 	}
 
-	final void setArtifact(Artifact<?> artifact) {
+	protected final void setArtifact(Artifact<?> artifact) {
 		useSubstanceBy(artifact.content());
 		useNestedBy(artifact.fieldUses());
 	}

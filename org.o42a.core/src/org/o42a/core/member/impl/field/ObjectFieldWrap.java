@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.impl.field;
 
 import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
@@ -25,15 +25,20 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 
 
-final class ObjectFieldWrap extends FieldWrap<Obj> {
+public final class ObjectFieldWrap extends FieldWrap<Obj> {
 
-	ObjectFieldWrap(MemberOwner owner, Field<Obj> type, Field<Obj> wrapped) {
+	public ObjectFieldWrap(
+			MemberOwner owner,
+			Field<Obj> type,
+			Field<Obj> wrapped) {
 		super(owner, type, wrapped);
 	}
 

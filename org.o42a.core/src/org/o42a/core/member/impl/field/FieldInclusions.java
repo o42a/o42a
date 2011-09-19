@@ -17,16 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.impl.field;
 
 import org.o42a.core.member.AbstractInclusions;
+import org.o42a.core.member.field.DeclaredField;
 
 
-final class FieldInclusions extends AbstractInclusions {
+public final class FieldInclusions extends AbstractInclusions {
 
 	private final DeclaredField<?, ?> field;
 
-	FieldInclusions(DeclaredField<?, ?> field) {
+	public FieldInclusions(DeclaredField<?, ?> field) {
 		this.field = field;
 	}
 

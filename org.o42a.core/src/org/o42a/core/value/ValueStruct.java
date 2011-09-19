@@ -69,11 +69,11 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 	}
 
 	public final boolean isVoid() {
-		return this == VOID;
+		return ((ValueStruct<?, ?>) this) == VOID;
 	}
 
 	public final boolean isNone() {
-		return this == NONE;
+		return ((ValueStruct<?, ?>) this) == NONE;
 	}
 
 	public final Value<T> constantValue(T value) {

@@ -17,16 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.impl.field;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.source.LocationInfo;
 
 
-final class InvalidFieldDefinition extends FieldDefinition {
+public final class InvalidFieldDefinition extends FieldDefinition {
 
-	public InvalidFieldDefinition(LocationInfo location, Distributor distributor) {
+	public InvalidFieldDefinition(
+			LocationInfo location,
+			Distributor distributor) {
 		super(location, distributor);
 	}
 

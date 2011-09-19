@@ -96,30 +96,13 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final Resolver dummyResolver() {
-		return this.resolverFactory.dummyResolver();
-	}
-
-	@Override
-	public final Resolver newResolver(UserInfo user) {
-		return this.resolverFactory.newResolver(user);
-	}
-
-	@Override
-	public final Resolver walkingResolver(Resolver user) {
-		return walkingResolver(user, user.getWalker());
-	}
-
-	@Override
-	public final Resolver walkingResolver(
-			UserInfo user,
-			ResolutionWalker walker) {
-		return this.resolverFactory.walkingResolver(user, walker);
-	}
-
-	@Override
 	public final boolean isTopScope() {
 		return false;
+	}
+
+	@Override
+	public final Obj getArtifact() {
+		return getObject();
 	}
 
 	public abstract Obj getObject();
@@ -145,6 +128,28 @@ public abstract class PlainClause
 			return this.enclosingScopes;
 		}
 		return this.enclosingScopes = enclosingScopes(this);
+	}
+
+	@Override
+	public final Resolver dummyResolver() {
+		return this.resolverFactory.dummyResolver();
+	}
+
+	@Override
+	public final Resolver newResolver(UserInfo user) {
+		return this.resolverFactory.newResolver(user);
+	}
+
+	@Override
+	public final Resolver walkingResolver(Resolver user) {
+		return walkingResolver(user, user.getWalker());
+	}
+
+	@Override
+	public final Resolver walkingResolver(
+			UserInfo user,
+			ResolutionWalker walker) {
+		return this.resolverFactory.walkingResolver(user, walker);
 	}
 
 	@Override

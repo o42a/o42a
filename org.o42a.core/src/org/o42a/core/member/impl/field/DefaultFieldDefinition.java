@@ -17,10 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.impl.field;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
 import org.o42a.core.ref.type.TypeRef;
@@ -28,13 +29,13 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-final class DefaultFieldDefinition extends FieldDefinition {
+public final class DefaultFieldDefinition extends FieldDefinition {
 
 	private final AscendantsDefinition ascendants;
 	private final BlockBuilder definitions;
 	private Ref value;
 
-	DefaultFieldDefinition(
+	public DefaultFieldDefinition(
 			LocationInfo location,
 			Distributor scope,
 			AscendantsDefinition ascendants,
