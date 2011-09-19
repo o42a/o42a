@@ -44,7 +44,7 @@ public final class TestModule$$parser implements AnnotatedSources {
 					owner,
 					new org.o42a.lib.test.rt.parser.ParseString$$Sources(this))
 			.getScope().toField(),
-				};
+		};
 	}
 
 }

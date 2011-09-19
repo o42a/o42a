@@ -58,7 +58,7 @@ public final class ConsoleModule$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.lib.console.impl.PrintError$$Sources(this))
 			.getScope().toField(),
-				};
+		};
 	}
 
 }

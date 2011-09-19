@@ -46,7 +46,7 @@ public final class StringValueTypeObject$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.string.SubString$$Sources(this))
 			.getScope().toField(),
-				};
+		};
 	}
 
 }

@@ -91,7 +91,7 @@ public final class Root$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.root.UseObject$$Sources(this))
 			.getScope().toField(),
-				};
+		};
 	}
 
 }
