@@ -26,14 +26,14 @@ import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
 import org.o42a.ast.ref.TypeNode;
 
 
-public class DefinitionCastNode extends AbstractNode {
+public class InterfaceNode extends AbstractNode {
 
 	private final SignNode<Parenthesis> opening;
 	private final SignNode<DefinitionKind> kind;
 	private final TypeNode type;
 	private final SignNode<Parenthesis> closing;
 
-	public DefinitionCastNode(SignNode<DefinitionKind> kind) {
+	public InterfaceNode(SignNode<DefinitionKind> kind) {
 		super(kind.getStart(), kind.getEnd());
 		this.opening = null;
 		this.kind = kind;
@@ -41,7 +41,7 @@ public class DefinitionCastNode extends AbstractNode {
 		this.closing = null;
 	}
 
-	public DefinitionCastNode(
+	public InterfaceNode(
 			SignNode<Parenthesis> opening,
 			SignNode<DefinitionKind> kind,
 			TypeNode declaredType,

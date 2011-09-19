@@ -25,23 +25,23 @@ import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
-import org.o42a.ast.field.DefinitionCastNode;
+import org.o42a.ast.field.InterfaceNode;
 import org.o42a.ast.field.DefinitionKind;
 import org.o42a.ast.ref.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public class DefinitionCastParser implements Parser<DefinitionCastNode> {
+public class InterfaceParser implements Parser<InterfaceNode> {
 
-	public static final DefinitionCastParser DEFINITION_CAST =
-			new DefinitionCastParser();
+	public static final InterfaceParser INTERFACE =
+			new InterfaceParser();
 
 	private static final DefinitionKindParser DEFINITION_KIND =
 			new DefinitionKindParser();
 
 	@Override
-	public DefinitionCastNode parse(ParserContext context) {
+	public InterfaceNode parse(ParserContext context) {
 		switch (context.next()) {
 		case '`':
 
@@ -52,7 +52,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 				return null;
 			}
 
-			return new DefinitionCastNode(kind);
+			return new InterfaceNode(kind);
 		case '(':
 			return parseCast(context);
 		}
@@ -60,7 +60,7 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 		return null;
 	}
 
-	private DefinitionCastNode parseCast(ParserContext context) {
+	private InterfaceNode parseCast(ParserContext context) {
 
 		final FixedPosition start = context.current().fix();
 
@@ -103,8 +103,8 @@ public class DefinitionCastParser implements Parser<DefinitionCastNode> {
 				closingStart,
 				context.current(),
 				Parenthesis.CLOSING_PARENTHESIS);
-		final DefinitionCastNode result =
-				new DefinitionCastNode(opening, kind, type, closing);
+		final InterfaceNode result =
+				new InterfaceNode(opening, kind, type, closing);
 
 		return context.acceptComments(false, result);
 	}

@@ -30,23 +30,23 @@ public class DeclaratorNode extends AbstractStatementNode {
 
 	private final DeclarableNode declarable;
 	private final SignNode<DeclarationTarget> definitionAssignment;
-	private final DefinitionCastNode definitionCast;
+	private final InterfaceNode iface;
 	private final ExpressionNode definition;
 
 	public DeclaratorNode(
 			DeclarableNode declarable,
 			SignNode<DeclarationTarget> definitionAssignment,
-			DefinitionCastNode definitionCast,
+			InterfaceNode iface,
 			ExpressionNode definition) {
 		super(
 				declarable.getStart(),
 				end(
 						definitionAssignment,
-						definitionCast,
+						iface,
 						definition));
 		this.declarable = declarable;
 		this.definitionAssignment = definitionAssignment;
-		this.definitionCast = definitionCast;
+		this.iface = iface;
 		this.definition = definition;
 	}
 
@@ -62,22 +62,22 @@ public class DeclaratorNode extends AbstractStatementNode {
 		return this.definitionAssignment.getType();
 	}
 
-	public DefinitionCastNode getDefinitionCast() {
-		return this.definitionCast;
+	public InterfaceNode getInterface() {
+		return this.iface;
 	}
 
 	public final DefinitionKind getDefinitionKind() {
 
-		final DefinitionCastNode cast = getDefinitionCast();
+		final InterfaceNode iface = getInterface();
 
-		return cast != null ? cast.getKind().getType() : null;
+		return iface != null ? iface.getKind().getType() : null;
 	}
 
 	public final TypeNode getDefinitionType() {
 
-		final DefinitionCastNode cast = getDefinitionCast();
+		final InterfaceNode iface = getInterface();
 
-		return cast != null ? cast.getType() : null;
+		return iface != null ? iface.getType() : null;
 	}
 
 	public ExpressionNode getDefinition() {
@@ -93,8 +93,8 @@ public class DeclaratorNode extends AbstractStatementNode {
 	public void printContent(StringBuilder out) {
 		this.declarable.printContent(out);
 		this.definitionAssignment.printContent(out);
-		if (this.definitionCast != null) {
-			this.definitionCast.printContent(out);
+		if (this.iface != null) {
+			this.iface.printContent(out);
 		}
 		this.definition.printContent(out);
 	}
