@@ -24,6 +24,8 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.impl.field.DefaultFieldDefinition;
+import org.o42a.core.member.impl.field.InvalidFieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;

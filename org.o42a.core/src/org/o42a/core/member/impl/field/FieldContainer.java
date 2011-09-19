@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.impl.field;
 
 import static java.util.Collections.emptyList;
 
@@ -29,17 +29,18 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 
 
-final class FieldContainer
+public final class FieldContainer
 		extends AbstractContainer
 		implements MemberContainer {
 
 	private final Field<?> field;
 
-	FieldContainer(Field<?> field) {
+	public FieldContainer(Field<?> field) {
 		super(field);
 		this.field = field;
 	}
@@ -95,7 +96,11 @@ final class FieldContainer
 	}
 
 	@Override
-	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		return null;
 	}
 

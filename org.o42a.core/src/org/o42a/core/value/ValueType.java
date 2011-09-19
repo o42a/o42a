@@ -23,6 +23,8 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.array.ArrayValueStruct;
+import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -44,12 +46,17 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 	public static final SingleValueType<Directive> DIRECTIVE =
 			DirectiveValueType.INSTANCE;
 
+	public static final ValueType<ArrayValueStruct> ARRAY =
+			new ArrayValueType(false);
+	public static final ValueType<ArrayValueStruct> CONST_ARRAY =
+			new ArrayValueType(true);
+
 	public static final SingleValueType<java.lang.Void> NONE =
 			NoneValueType.INSTANCE;
 
 	private final String systemId;
 
-	ValueType(String systemId) {
+	public ValueType(String systemId) {
 		this.systemId = systemId;
 	}
 

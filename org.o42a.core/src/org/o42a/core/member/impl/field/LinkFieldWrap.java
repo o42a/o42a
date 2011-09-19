@@ -17,18 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.impl.field;
 
 import static org.o42a.core.def.Rescoper.wrapper;
 
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.Field;
 
 
-final class LinkFieldWrap extends FieldWrap<Link> {
+public final class LinkFieldWrap extends FieldWrap<Link> {
 
-	LinkFieldWrap(
+	public LinkFieldWrap(
 			MemberOwner owner,
 			Field<Link> type,
 			Field<Link> wrapped) {

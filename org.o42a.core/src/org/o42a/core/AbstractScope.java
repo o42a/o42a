@@ -29,6 +29,7 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
@@ -218,6 +219,11 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public boolean isTopScope() {
 		return false;
+	}
+
+	@Override
+	public Artifact<?> getArtifact() {
+		return getContainer().toArtifact();
 	}
 
 	@Override
