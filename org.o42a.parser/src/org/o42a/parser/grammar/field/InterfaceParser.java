@@ -19,15 +19,14 @@
 */
 package org.o42a.parser.grammar.field;
 
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.grammar.field.TypeParser.TYPE;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
-import org.o42a.ast.field.InterfaceNode;
 import org.o42a.ast.field.DefinitionKind;
-import org.o42a.ast.ref.TypeNode;
+import org.o42a.ast.field.InterfaceNode;
+import org.o42a.ast.field.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -54,13 +53,13 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 
 			return new InterfaceNode(kind);
 		case '(':
-			return parseCast(context);
+			return parseInterfaceWithType(context);
 		}
 
 		return null;
 	}
 
-	private InterfaceNode parseCast(ParserContext context) {
+	private InterfaceNode parseInterfaceWithType(ParserContext context) {
 
 		final FixedPosition start = context.current().fix();
 
@@ -76,37 +75,32 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			return null;
 		}
 
-		final TypeNode type;
-		final ExpressionNode expression =
-				context.parse(DECLARATIVE.expression());
+		final TypeNode type = context.parse(TYPE);
 
-		if (expression instanceof TypeNode) {
-			type = (TypeNode) expression;
-		} else if (expression == null) {
-			context.getLogger().missingType(context.current());
-			type = null;
-		} else {
-			context.getLogger().missingType(expression);
-			type = null;
-		}
-
-		if (context.next() != ')') {
-			context.getLogger().notClosed(opening, "(");
+		if (type == null) {
 			return null;
 		}
 
-		final FixedPosition closingStart = context.current().fix();
+		final SignNode<Parenthesis> closing;
 
-		context.acceptAll();
+		if (context.next() != ')') {
+			closing = null;
+			context.getLogger().notClosed(opening, "(");
+		} else {
 
-		final SignNode<Parenthesis> closing = new SignNode<Parenthesis>(
-				closingStart,
-				context.current(),
-				Parenthesis.CLOSING_PARENTHESIS);
-		final InterfaceNode result =
-				new InterfaceNode(opening, kind, type, closing);
+			final FixedPosition closingStart = context.current().fix();
 
-		return context.acceptComments(false, result);
+			context.acceptAll();
+
+			closing = new SignNode<Parenthesis>(
+					closingStart,
+					context.current(),
+					Parenthesis.CLOSING_PARENTHESIS);
+		}
+
+		return context.acceptComments(
+				false,
+				new InterfaceNode(opening, kind, type, closing));
 	}
 
 	private static final class DefinitionKindParser

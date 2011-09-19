@@ -23,9 +23,7 @@ import org.o42a.ast.atom.*;
 import org.o42a.ast.clause.*;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.AscendantNode;
-import org.o42a.ast.field.DeclarableAdapterNode;
-import org.o42a.ast.field.DeclarableNode;
-import org.o42a.ast.field.InterfaceNode;
+import org.o42a.ast.field.*;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.sentence.AlternativeNode;
@@ -37,8 +35,9 @@ import org.o42a.ast.statement.StatementNode;
 
 public abstract class NodeVisitor<R, P>
 		extends AbstractStatementVisitor<R, P>
-		implements AtomNodeVisitor<R, P>,
-		ClauseKeyNodeVisitor<R, P> {
+		implements TypeNodeVisitor<R, P>,
+				AtomNodeVisitor<R, P>,
+				ClauseKeyNodeVisitor<R, P> {
 
 	@Override
 	public <S extends SignType> R visitSign(SignNode<S> sign, P p) {
@@ -73,8 +72,13 @@ public abstract class NodeVisitor<R, P>
 		return visitDeclarable(adapter, p);
 	}
 
-	public R visitDeclarationCast(InterfaceNode cast, P p) {
-		return visitPart(cast, p);
+	public R visitInterface(InterfaceNode iface, P p) {
+		return visitPart(iface, p);
+	}
+
+	@Override
+	public R visitArrayType(ArrayTypeNode itemType, P p) {
+		return visitType(itemType, p);
 	}
 
 	public R visitSerial(SerialNode statement, P p) {
@@ -120,6 +124,10 @@ public abstract class NodeVisitor<R, P>
 
 	protected R visitPart(Node item, P p) {
 		return visitAny(item, p);
+	}
+
+	protected R visitType(TypeNode type, P p) {
+		return visitAny(type, p);
 	}
 
 	protected R visitDeclarable(DeclarableNode declarable, P p) {

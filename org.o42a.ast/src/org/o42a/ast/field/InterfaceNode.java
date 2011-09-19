@@ -23,7 +23,6 @@ import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
-import org.o42a.ast.ref.TypeNode;
 
 
 public class InterfaceNode extends AbstractNode {
@@ -71,7 +70,7 @@ public class InterfaceNode extends AbstractNode {
 
 	@Override
 	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return visitor.visitDeclarationCast(this, p);
+		return visitor.visitInterface(this, p);
 	}
 
 	@Override
