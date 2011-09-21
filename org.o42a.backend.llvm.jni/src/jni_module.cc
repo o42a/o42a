@@ -34,7 +34,7 @@ using namespace llvm;
 
 void Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jobjectArray commandLine) {
 	o42ac::BackendModule::initializeTargets();
 
@@ -63,7 +63,7 @@ void Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs(
 
 jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputFilename(
 		JNIEnv *env,
-		jclass cls) {
+		jclass) {
 
 	const std::string *filename = o42ac::BackendModule::getInputFilename();
 
@@ -85,14 +85,14 @@ jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputFilename(
 }
 
 jboolean Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
-		JNIEnv *env,
-		jclass cls) {
+		JNIEnv *,
+		jclass) {
 	return o42ac::BackendModule::isDebugEnabled() ? JNI_TRUE : JNI_FALSE;
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jstring id) {
 
 	jStringRef moduleId(env, id);
@@ -103,8 +103,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(
 }
 
 jboolean Java_org_o42a_backend_llvm_data_LLVMModule_write(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	o42ac::BackendModule &module = *from_ptr<o42ac::BackendModule>(modulePtr);
@@ -113,15 +113,15 @@ jboolean Java_org_o42a_backend_llvm_data_LLVMModule_write(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMModule_destroyModule(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 	from_ptr<o42ac::BackendModule>(modulePtr)->destroyBackend();
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_voidType(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
@@ -130,8 +130,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_voidType(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_intType(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jbyte numBits) {
 
@@ -141,8 +141,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_intType(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp32type(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
@@ -151,8 +151,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp32type(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp64type(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
@@ -161,8 +161,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp64type(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_boolType(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
@@ -171,8 +171,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_boolType(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_relPtrType(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr)  {
 
 	Module *module = from_ptr<Module>(modulePtr);
@@ -181,8 +181,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_relPtrType(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_anyType(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
@@ -191,8 +191,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_anyType(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerTo(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong typePtr) {
 
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
@@ -201,8 +201,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerTo(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerToFunc(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong funcTypePtr) {
 
 	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);

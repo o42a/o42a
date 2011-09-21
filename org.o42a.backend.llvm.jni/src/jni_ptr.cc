@@ -32,7 +32,7 @@
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr,
@@ -49,7 +49,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr) {
@@ -64,8 +64,8 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 }
 
 void Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong blockPtr,
 		jlong pointerPtr,
 		jlong valuePtr) {
@@ -80,7 +80,7 @@ void Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr) {
@@ -99,7 +99,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr) {
@@ -118,7 +118,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toInt(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr,
@@ -138,7 +138,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toInt(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr) {
@@ -157,7 +157,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr) {
@@ -176,7 +176,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr) {
@@ -195,7 +195,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr,
@@ -216,7 +216,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr,
@@ -237,7 +237,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr) {
@@ -256,7 +256,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong pointerPtr,
@@ -274,7 +274,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
 
 jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong fromPtr,

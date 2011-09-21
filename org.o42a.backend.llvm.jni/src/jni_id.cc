@@ -30,8 +30,8 @@ using namespace llvm;
 
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_typeExpression(
-		JNIEnv *env,
-		jclass cld,
+		JNIEnv *,
+		jclass,
 		jlong typePtr) {
 
 	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
@@ -41,7 +41,7 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_typeExpression(
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
 		JNIEnv *env,
-		jclass cld,
+		jclass,
 		jlong modulePtr,
 		jlong globalPtr,
 		jintArray indices) {
@@ -68,8 +68,8 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
 }
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_relativeExpression(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong idPtr,
 		jlong toPtr) {
 	if (!idPtr || !toPtr) {
@@ -94,8 +94,8 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_relativeExpression(
 }
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_toAnyPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong pointerPtr) {
 
 	Constant *pointer = from_ptr<Constant>(pointerPtr);

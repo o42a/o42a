@@ -63,7 +63,7 @@ endif
 
 
 includes += -I include
-CXXFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused
+CXXFLAGS += -Wall -Winline -W -Wwrite-strings
 CXXFLAGS := $(CXXFLAGS) $(shell $(llvm_config) --cxxflags) $(debug_cxxflags) $(includes)
 LDFLAGS := $(LDFLAGS) $(java_ldflags) $(shell $(llvm_config) --ldflags)
 
