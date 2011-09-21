@@ -33,6 +33,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.Holder;
@@ -104,18 +105,63 @@ class PathTarget extends Ref {
 	}
 
 	@Override
+	public TypeRef ancestor(LocationInfo location) {
+
+		final Path fullPath = getPath();
+		final Path path;
+		final Ref start;
+
+		if (fullPath != null) {
+			path = fullPath;
+			start = null;
+		} else {
+			path = this.path;
+			start = this.start;
+		}
+
+		final Path dematerializedPath = path.dematerialize();
+
+		if (path == dematerializedPath) {
+			return super.ancestor(location);
+		}
+
+		final Ref dematerialized;
+
+		if (start == null) {
+			dematerialized = dematerializedPath.target(this, distribute());
+		} else {
+			dematerialized =
+					dematerializedPath.target(this, distribute(), start);
+		}
+
+		return dematerialized.ancestor(location);
+	}
+
+	@Override
 	public Ref materialize() {
 
-		final Path materialized = this.path.materialize();
+		final Path fullPath = getPath();
+		final Path path;
+		final Ref start;
 
-		if (materialized == this.path) {
+		if (fullPath != null) {
+			path = fullPath;
+			start = null;
+		} else {
+			path = this.path;
+			start = this.start;
+		}
+
+		final Path materialized = path.materialize();
+
+		if (materialized == path) {
 			return this;
 		}
-		if (this.start == null) {
+		if (start == null) {
 			return new PathTarget(this, distribute(), materialized);
 		}
 
-		return new PathTarget(this, distribute(), materialized, this.start);
+		return new PathTarget(this, distribute(), materialized, start);
 	}
 
 	@Override

@@ -199,7 +199,7 @@ public abstract class Ref extends Statement {
 	 * @return ancestor reference or <code>null</code> if can not be determined.
 	 */
 	public TypeRef ancestor(LocationInfo location) {
-		return new AncestorRef(location, this).toTypeRef();
+		return new AncestorBuilder(location, this).toTypeRef();
 	}
 
 	public Ref materialize() {
