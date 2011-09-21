@@ -31,7 +31,7 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class RefValueDef extends ValueDef {
@@ -49,8 +49,8 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return this.ref.getValueType();
+	public ValueStruct<?, ?> getValueStruct() {
+		return this.ref.getValueStruct();
 	}
 
 	@Override

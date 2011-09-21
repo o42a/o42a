@@ -33,7 +33,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.LogInfo;
 
 
@@ -59,7 +59,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
+	public ValueStruct<?, ?> getValueStruct() {
 		throw new UnsupportedOperationException();
 	}
 

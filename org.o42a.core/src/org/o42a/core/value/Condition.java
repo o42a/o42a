@@ -27,10 +27,10 @@ public enum Condition {
 	TRUE(LogicalValue.TRUE) {
 
 		@Override
-		public <T> Value<T> toValue(ValueType<T> valueType) {
-			assert valueType.isVoid() :
+		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
+			assert valueStruct.isVoid() :
 				"Can not construct a non-void TRUE";
-			return valueType.cast(voidValue());
+			return valueStruct.cast(voidValue());
 		}
 
 	},
@@ -38,8 +38,8 @@ public enum Condition {
 	RUNTIME(LogicalValue.RUNTIME) {
 
 		@Override
-		public <T> Value<T> toValue(ValueType<T> valueType) {
-			return valueType.runtimeValue();
+		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
+			return valueStruct.runtimeValue();
 		}
 
 	},
@@ -47,8 +47,8 @@ public enum Condition {
 	UNKNOWN(LogicalValue.FALSE) {
 
 		@Override
-		public <T> Value<T> toValue(ValueType<T> valueType) {
-			return valueType.unknownValue();
+		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
+			return valueStruct.unknownValue();
 		}
 
 	},
@@ -56,8 +56,8 @@ public enum Condition {
 	FALSE(LogicalValue.FALSE) {
 
 		@Override
-		public <T> Value<T> toValue(ValueType<T> valueType) {
-			return valueType.falseValue();
+		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
+			return valueStruct.falseValue();
 		}
 
 	};
@@ -92,6 +92,6 @@ public enum Condition {
 		return this.logicalValue;
 	}
 
-	public abstract <T> Value<T> toValue(ValueType<T> valueType);
+	public abstract <T> Value<T> toValue(ValueStruct<?, T> valueStruct);
 
 }

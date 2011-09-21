@@ -21,41 +21,43 @@ package org.o42a.core.value;
 
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.array.ArrayValueStruct;
+import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.value.ValueTypeIR;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.impl.*;
 
 
-public abstract class ValueType<T> {
+public abstract class ValueType<S extends ValueStruct<?, ?>> {
 
-	public static final ValueType<Void> VOID = new VoidValueType();
-	public static final ValueType<Long> INTEGER = new IntegerValueType();
-	public static final ValueType<Double> FLOAT = new FloatValueType();
-	public static final ValueType<String> STRING = new StringValueType();
-	public static final ValueType<Directive> DIRECTIVE =
-			new DirectiveValueType();
+	public static final SingleValueType<Void> VOID =
+			VoidValueType.INSTANCE;
+	public static final SingleValueType<Long> INTEGER =
+			IntegerValueType.INSTANCE;
+	public static final SingleValueType<Double> FLOAT =
+			FloatValueType.INSTANCE;
+	public static final SingleValueType<String> STRING =
+			StringValueType.INSTANCE;
+	public static final SingleValueType<Directive> DIRECTIVE =
+			DirectiveValueType.INSTANCE;
 
-	public static final ValueType<java.lang.Void> NONE = new None();
+	public static final ValueType<ArrayValueStruct> ARRAY =
+			new ArrayValueType(false);
+	public static final ValueType<ArrayValueStruct> CONST_ARRAY =
+			new ArrayValueType(true);
+
+	public static final SingleValueType<java.lang.Void> NONE =
+			NoneValueType.INSTANCE;
 
 	private final String systemId;
-	private final Class<? extends T> valueClass;
-	private final RuntimeValue<T> runtimeValue = new RuntimeValue<T>(this);
-	private final FalseValue<T> falseValue = new FalseValue<T>(this);
-	private final UnknownValue<T> unknownValue = new UnknownValue<T>(this);
 
-	private ValueTypeIR<T> ir;
-
-	ValueType(String systemId, Class<? extends T> valueClass) {
+	public ValueType(String systemId) {
 		this.systemId = systemId;
-		this.valueClass = valueClass;
 	}
 
 	public final String getSystemId() {
@@ -66,22 +68,8 @@ public abstract class ValueType<T> {
 		return this == VOID;
 	}
 
-	public final Class<? extends T> getValueClass() {
-		return this.valueClass;
-	}
-
-	@SuppressWarnings("unchecked")
-	public final Value<T> cast(Value<?> value) {
-		if (value.getValueType() != this) {
-			throw new ClassCastException(
-					value + " has incompatible type: " + value.getValueType()
-					+ ", but " + this + " expected");
-		}
-		return (Value<T>) value;
-	}
-
-	public final T cast(Object value) {
-		return getValueClass().cast(value);
+	public final boolean isNone() {
+		return this == NONE;
 	}
 
 	public abstract Obj wrapper(Intrinsics intrinsics);
@@ -99,97 +87,9 @@ public abstract class ValueType<T> {
 				.toStaticTypeRef();
 	}
 
-	public final Value<T> constantValue(T value) {
-		return new ConstantValue<T>(this, value);
-	}
-
-	public final Value<T> runtimeValue() {
-		return this.runtimeValue;
-	}
-
-	public final Value<T> falseValue() {
-		return this.falseValue;
-	}
-
-	public final Value<T> unknownValue() {
-		return this.unknownValue;
-	}
-
-	public final Ref constantRef(
-			LocationInfo location,
-			Distributor distributor,
-			T value) {
-		return new ConstantRef<T>(location, distributor, this, value);
-	}
-
-	public final Obj constantObject(
-			LocationInfo location,
-			Distributor enclosing,
-			T value) {
-		return new ConstantObject<T>(location, enclosing, this, value);
-	}
-
-	public final Definitions noValueDefinitions(
-			LocationInfo location,
-			Scope scope) {
-		return Definitions.noValueDefinitions(location, scope, this);
-	}
-
-	public String valueString(T value) {
-		return value.toString();
-	}
-
-	public boolean assignableFrom(ValueType<?> other) {
-		return this == other;
-	}
-
-	public final ValueTypeIR<T> ir(Generator generator) {
-
-		final ValueTypeIR<T> ir = this.ir;
-
-		if (ir != null && ir.getGenerator() == generator) {
-			return ir;
-		}
-
-		return this.ir = createIR(generator);
-	}
-
-	public final boolean assertAssignableFrom(ValueType<?> other) {
-		assert assignableFrom(other) :
-			this + " is not assignable from " + other;
-		return true;
-	}
-
-	public final boolean assertIs(ValueType<?> other) {
-		assert this == other :
-			this + " is not " + other;
-		return true;
-	}
-
 	@Override
 	public String toString() {
 		return getSystemId();
-	}
-
-	protected abstract ValueTypeIR<T> createIR(Generator generator);
-
-	private static final class None extends ValueType<java.lang.Void> {
-
-		private None() {
-			super("none", java.lang.Void.class);
-		}
-
-		@Override
-		public Obj wrapper(Intrinsics intrinsics) {
-			return null;
-		}
-
-		@Override
-		protected ValueTypeIR<java.lang.Void> createIR(Generator generator) {
-			throw new UnsupportedOperationException(
-					"Type NONE can not have IR");
-		}
-
 	}
 
 }

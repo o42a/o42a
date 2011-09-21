@@ -160,6 +160,37 @@ public class Path {
 		return append(materializer);
 	}
 
+	public Path dematerialize() {
+
+		final int length = this.fragments.length;
+
+		if (length == 0) {
+			return this;
+		}
+
+		final int lastIdx = length - 1;
+		final PathFragment lastFragment = this.fragments[lastIdx];
+
+		if (!lastFragment.isMaterializer()) {
+			return this;
+		}
+		if (lastIdx == 0) {
+			if (!isAbsolute()) {
+				return SELF_PATH;
+			}
+			return ROOT_PATH;
+		}
+
+		final PathFragment[] newFragments =
+				Arrays.copyOf(this.fragments, lastIdx);
+
+		if (!isAbsolute()) {
+			return new Path(newFragments);
+		}
+
+		return new AbsolutePath(newFragments);
+	}
+
 	public Path append(Path path) {
 		assert path != null :
 			"Path to append not specified";

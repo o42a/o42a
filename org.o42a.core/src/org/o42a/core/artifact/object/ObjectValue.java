@@ -30,6 +30,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.FullResolution;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
@@ -37,7 +38,7 @@ import org.o42a.util.use.*;
 public final class ObjectValue implements UseInfo {
 
 	private final Obj object;
-	private ValueType<?> valueType;
+	private ValueStruct<?, ?> valueStruct;
 	private Value<?> value;
 	private Definitions definitions;
 	private Definitions explicitDefinitions;
@@ -65,21 +66,25 @@ public final class ObjectValue implements UseInfo {
 	}
 
 	public final ValueType<?> getValueType() {
-		if (this.valueType != null) {
-			return this.valueType;
+		return getValueStruct().getValueType();
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
 		}
 
 		final Obj object = getObject();
 		final TypeRef ancestor = object.type().getAncestor();
 
 		if (ancestor == null) {
-			return ValueType.VOID;
+			return ValueStruct.VOID;
 		}
 
-		setValueType(ancestor.typeObject(
-				object.getScope().dummyResolver()).value().getValueType());
+		setValueStruct(ancestor.typeObject(
+				object.getScope().dummyResolver()).value().getValueStruct());
 
-		return this.valueType;
+		return this.valueStruct;
 	}
 
 	@Override
@@ -259,9 +264,9 @@ public final class ObjectValue implements UseInfo {
 		return "ObjectValue[" + this.object + ']';
 	}
 
-	final void setValueType(ValueType<?> valueType) {
-		if (valueType != null) {
-			this.valueType = valueType;
+	final void setValueStruct(ValueStruct<?, ?> valueStruct) {
+		if (valueStruct != null) {
+			this.valueStruct = valueStruct;
 		}
 	}
 

@@ -106,6 +106,8 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '\'':
 		case '\\':
 			return context.parse(text());
+		case '[':
+			return context.parse(this.grammar.brackets());
 		default:
 			if (Grammar.isDigit(c)) {
 				return context.parse(decimal());

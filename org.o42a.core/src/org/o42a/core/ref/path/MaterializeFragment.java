@@ -35,6 +35,11 @@ import org.o42a.core.st.Reproducer;
 final class MaterializeFragment extends PathFragment {
 
 	@Override
+	public boolean isMaterializer() {
+		return true;
+	}
+
+	@Override
 	public PathFragment materialize() {
 		return null;
 	}
@@ -47,7 +52,7 @@ final class MaterializeFragment extends PathFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Artifact<?> artifact = start.getContainer().toArtifact();
+		final Artifact<?> artifact = start.getArtifact();
 
 		assert artifact != null :
 			"Can not materialize " + start;

@@ -39,11 +39,6 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
-	public R visitArray(ArrayNode array, P p) {
-		return visitExpression(array, p);
-	}
-
-	@Override
 	public R visitUnary(UnaryNode expression, P p) {
 		return visitExpression(expression, p);
 	}
@@ -59,13 +54,13 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
-	public R visitParentheses(ParenthesesNode parentheses, P p) {
-		return visitExpression(parentheses, p);
+	public R visitBrackets(BracketsNode brackets, P p) {
+		return visitExpression(brackets, p);
 	}
 
 	@Override
-	public R visitBrackets(BracketsNode brackets, P p) {
-		return visitExpression(brackets, p);
+	public R visitParentheses(ParenthesesNode parentheses, P p) {
+		return visitExpression(parentheses, p);
 	}
 
 	@Override

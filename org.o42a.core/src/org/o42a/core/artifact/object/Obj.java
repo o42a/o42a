@@ -35,7 +35,6 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.impl.ObjectArtifact;
 import org.o42a.core.artifact.object.impl.ScopeField;
@@ -54,7 +53,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UseInfo;
 
@@ -142,11 +141,6 @@ public abstract class Obj
 
 	@Override
 	public final Namespace toNamespace() {
-		return null;
-	}
-
-	@Override
-	public final Array toArray() {
 		return null;
 	}
 
@@ -502,8 +496,8 @@ public abstract class Obj
 
 	protected abstract Ascendants buildAscendants();
 
-	protected final void setValueType(ValueType<?> valueType) {
-		value().setValueType(valueType);
+	protected final void setValueStruct(ValueStruct<?, ?> valueStruct) {
+		value().setValueStruct(valueStruct);
 	}
 
 	protected abstract void declareMembers(ObjectMembers members);

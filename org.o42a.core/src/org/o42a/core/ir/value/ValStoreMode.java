@@ -29,8 +29,8 @@ public enum ValStoreMode {
 		@Override
 		void store(Code code, ValOp target, Val value) {
 
-			final ValueTypeIR<?> ir =
-					target.getValueType().ir(code.getGenerator());
+			final ValueStructIR<?, ?> ir =
+					target.getValueStruct().ir(code.getGenerator());
 
 			ir.store(code, target, value);
 		}
@@ -38,8 +38,8 @@ public enum ValStoreMode {
 		@Override
 		void store(Code code, ValOp target, ValOp value) {
 
-			final ValueTypeIR<?> ir =
-					target.getValueType().ir(code.getGenerator());
+			final ValueStructIR<?, ?> ir =
+					target.getValueStruct().ir(code.getGenerator());
 
 			ir.store(code, target, value);
 		}
@@ -51,8 +51,8 @@ public enum ValStoreMode {
 		@Override
 		void store(Code code, ValOp target, Val value) {
 
-			final ValueTypeIR<?> ir =
-					target.getValueType().ir(code.getGenerator());
+			final ValueStructIR<?, ?> ir =
+					target.getValueStruct().ir(code.getGenerator());
 
 			ir.initialize(code, target, value);
 		}
@@ -60,8 +60,8 @@ public enum ValStoreMode {
 		@Override
 		void store(Code code, ValOp target, ValOp value) {
 
-			final ValueTypeIR<?> ir =
-					target.getValueType().ir(code.getGenerator());
+			final ValueStructIR<?, ?> ir =
+					target.getValueStruct().ir(code.getGenerator());
 
 			ir.initialize(code, target, value);
 		}
@@ -73,8 +73,8 @@ public enum ValStoreMode {
 		@Override
 		void store(Code code, ValOp target, Val value) {
 
-			final ValueTypeIR<?> ir =
-					target.getValueType().ir(code.getGenerator());
+			final ValueStructIR<?, ?> ir =
+					target.getValueStruct().ir(code.getGenerator());
 
 			ir.assign(code, target, value);
 		}
@@ -82,8 +82,8 @@ public enum ValStoreMode {
 		@Override
 		void store(Code code, ValOp target, ValOp value) {
 
-			final ValueTypeIR<?> ir =
-					target.getValueType().ir(code.getGenerator());
+			final ValueStructIR<?, ?> ir =
+					target.getValueStruct().ir(code.getGenerator());
 
 			ir.assign(code, target, value);
 		}

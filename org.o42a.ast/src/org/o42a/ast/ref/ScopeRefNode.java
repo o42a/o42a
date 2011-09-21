@@ -25,6 +25,7 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.clause.ClauseKeyNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.field.TypeNodeVisitor;
 import org.o42a.ast.statement.StatementNodeVisitor;
 
 

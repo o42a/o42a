@@ -38,6 +38,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -139,9 +140,9 @@ public class OverriddenEx extends ObjectConstructor {
 		@Override
 		public void writeLogicalValue(CodeDirs dirs) {
 
-			final ValueType<?> valueType =
-					getRef().getScope().toObject().value().getValueType();
-			final ValDirs valDirs = dirs.value(valueType);
+			final ValueStruct<?, ?> valueStruct =
+					getRef().getScope().toObject().value().getValueStruct();
+			final ValDirs valDirs = dirs.value(valueStruct);
 
 			writeValue(valDirs);
 			valDirs.done();

@@ -20,14 +20,13 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.core.member.field.FieldDefinition.arrayDefinition;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.AbstractExpressionVisitor;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.core.artifact.array.ArrayInitializer;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
@@ -52,36 +51,6 @@ public final class DefinitionVisitor
 			return impliedDefinition(location(p, ref), p.distribute());
 		}
 		return super.visitScopeRef(ref, p);
-	}
-
-	@Override
-	public FieldDefinition visitBrackets(
-			BracketsNode brackets,
-			FieldDeclaration p) {
-
-		final ArrayInitializer arrayInitializer =
-				ip().arrayInitializer(p.getContext(), brackets, p);
-
-		if (arrayInitializer == null) {
-			return null;
-		}
-
-		return arrayDefinition(arrayInitializer);
-	}
-
-	@Override
-	public FieldDefinition visitArray(
-			ArrayNode array,
-			FieldDeclaration p) {
-
-		final ArrayInitializer arrayInitializer =
-				ip().arrayInitializer(p.getContext(), array, p);
-
-		if (arrayInitializer == null) {
-			return null;
-		}
-
-		return arrayDefinition(arrayInitializer);
 	}
 
 	@Override

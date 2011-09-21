@@ -19,8 +19,8 @@
 */
 package org.o42a.ast.expression;
 
-import org.o42a.ast.ref.TypeNode;
-import org.o42a.ast.ref.TypeNodeVisitor;
+import org.o42a.ast.field.TypeNode;
+import org.o42a.ast.field.TypeNodeVisitor;
 
 
 public class AscendantsNode extends AbstractExpressionNode implements TypeNode {

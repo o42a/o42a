@@ -117,6 +117,11 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
+	public AbsolutePath dematerialize() {
+		return (AbsolutePath) super.dematerialize();
+	}
+
+	@Override
 	public AbsolutePath append(PathFragment fragment) {
 		return (AbsolutePath) super.append(fragment);
 	}

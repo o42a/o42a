@@ -33,6 +33,7 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -76,11 +77,11 @@ final class ConcatStrings extends AnnotatedBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ValDirs whatDirs = dirs.dirs().value(ValueType.STRING, "what");
+		final ValDirs whatDirs = dirs.dirs().value(ValueStruct.STRING, "what");
 		final ValOp whatVal = what().op(host).writeValue(whatDirs);
 
 		final ValDirs withDirs =
-				whatDirs.dirs().value(ValueType.STRING, "with");
+				whatDirs.dirs().value(ValueStruct.STRING, "with");
 		final ValOp withVal = with().op(host).writeValue(withDirs);
 
 		final Code code = withDirs.code();

@@ -23,7 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 final class InclusionEnv extends StatementEnv {
@@ -60,8 +60,8 @@ final class InclusionEnv extends StatementEnv {
 	}
 
 	@Override
-	protected ValueType<?> expectedType() {
-		return this.env.getExpectedType();
+	protected ValueStruct<?, ?> expectedValueStruct() {
+		return this.env.getExpectedValueStruct();
 	}
 
 	void setBlock(DeclarativeBlock block) {

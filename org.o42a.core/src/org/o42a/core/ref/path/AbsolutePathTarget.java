@@ -31,6 +31,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -70,6 +71,21 @@ final class AbsolutePathTarget extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		return resolve(resolver, pathResolver(this, resolver));
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location) {
+
+		final AbsolutePath dematerializedPath = this.path.dematerialize();
+
+		if (this.path == dematerializedPath) {
+			return super.ancestor(location);
+		}
+
+		final Ref dematerialized =
+				dematerializedPath.target(this, distribute());
+
+		return dematerialized.ancestor(location);
 	}
 
 	@Override

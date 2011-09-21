@@ -31,43 +31,43 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 	private final String leftOperandName;
-	private final ValueType<L> leftOperandType;
+	private final ValueStruct<?, L> leftOperandStruct;
 	private Ref leftOperand;
 	private final String rightOperandName;
-	private final ValueType<R> rightOperandType;
+	private final ValueStruct<?, R> rightOperandStruct;
 	private Ref rightOperand;
 
 	public BinaryResult(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			String leftOperandName,
-			ValueType<L> leftOperandType,
+			ValueStruct<?, L> leftOperandType,
 			String rightOperandName,
-			ValueType<R> rightOperandType) {
+			ValueStruct<?, R> rightOperandType) {
 		super(owner, sources);
 		this.leftOperandName = leftOperandName;
-		this.leftOperandType = leftOperandType;
+		this.leftOperandStruct = leftOperandType;
 		this.rightOperandName = rightOperandName;
-		this.rightOperandType = rightOperandType;
+		this.rightOperandStruct = rightOperandType;
 	}
 
 	@SuppressWarnings("unchecked")
-	public final ValueType<T> getResultType() {
-		return (ValueType<T>) value().getValueType();
+	public final ValueStruct<?, T> getResultStruct() {
+		return (ValueStruct<?, T>) value().getValueStruct();
 	}
 
-	public final ValueType<L> getLeftOperandType() {
-		return this.leftOperandType;
+	public final ValueStruct<?, L> getLeftOperandStruct() {
+		return this.leftOperandStruct;
 	}
 
-	public final ValueType<R> getRightOperandType() {
-		return this.rightOperandType;
+	public final ValueStruct<?, R> getRightOperandStruct() {
+		return this.rightOperandStruct;
 	}
 
 	@Override
@@ -77,24 +77,24 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		final Value<?> rightValue = rightOperand().value(resolver);
 
 		if (leftValue.isFalse() || rightValue.isFalse()) {
-			return getResultType().falseValue();
+			return getResultStruct().falseValue();
 		}
 		if (!leftValue.isDefinite() || !rightValue.isDefinite()) {
-			return getResultType().runtimeValue();
+			return getResultStruct().runtimeValue();
 		}
 
 		final L left =
-				getLeftOperandType().cast(leftValue).getDefiniteValue();
+				getLeftOperandStruct().cast(leftValue).getDefiniteValue();
 		final R right =
-				getRightOperandType().cast(rightValue).getDefiniteValue();
+				getRightOperandStruct().cast(rightValue).getDefiniteValue();
 
 		final T result = calculate(resolver, left, right);
 
 		if (result == null) {
-			return getResultType().falseValue();
+			return getResultStruct().falseValue();
 		}
 
-		return getResultType().constantValue(result);
+		return getResultStruct().constantValue(result);
 	}
 
 	@Override
@@ -107,11 +107,11 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs leftDirs =
-				dirs.dirs().value(getLeftOperandType(), "left");
+				dirs.dirs().value(getLeftOperandStruct(), "left");
 		final ValOp leftVal = leftOperand().op(host).writeValue(leftDirs);
 
 		final ValDirs rightDirs =
-				leftDirs.dirs().value(getRightOperandType(), "right");
+				leftDirs.dirs().value(getRightOperandStruct(), "right");
 		final ValOp rightVal = rightOperand().op(host).writeValue(rightDirs);
 
 		final ValDirs resultDirs = rightDirs.dirs().value(dirs);

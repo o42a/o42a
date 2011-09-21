@@ -30,7 +30,7 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.intrinsic.root.Root;
 
 
@@ -38,7 +38,7 @@ import org.o42a.intrinsic.root.Root;
 public final class IntegersEqual extends NumbersEqual<Long> {
 
 	public IntegersEqual(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources, ValueType.INTEGER);
+		super(owner, sources, ValueStruct.INTEGER);
 	}
 
 	@Override

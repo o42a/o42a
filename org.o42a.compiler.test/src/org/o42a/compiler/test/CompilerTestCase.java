@@ -35,9 +35,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.use.UseCase;
 
@@ -59,22 +57,34 @@ public abstract class CompilerTestCase {
 
 	public static <T> Value<T> valueOf(
 			Field<?> field,
-			ValueType<T> valueType) {
-		return valueOf(field.getArtifact(), valueType);
+			SingleValueType<T> valueType) {
+		return valueOf(field, valueType.struct());
 	}
 
 	public static <T> Value<T> valueOf(
 			Artifact<?> artifact,
-			ValueType<T> valueType) {
+			SingleValueType<T> valueType) {
+		return valueOf(artifact, valueType.struct());
+	}
+
+	public static <T> Value<T> valueOf(
+			Field<?> field,
+			ValueStruct<?, T> valueStruct) {
+		return valueOf(field.getArtifact(), valueStruct);
+	}
+
+	public static <T> Value<T> valueOf(
+			Artifact<?> artifact,
+			ValueStruct<?, T> valueStruct) {
 
 		final Value<?> value = valueOf(artifact);
 
 		assertEquals(
 				value + " has wrong type",
-				valueType,
-				value.getValueType());
+				valueStruct,
+				value.getValueStruct());
 
-		return valueType.cast(value);
+		return valueStruct.cast(value);
 	}
 
 	public static Obj toObject(Artifact<?> artifact) {
@@ -103,9 +113,15 @@ public abstract class CompilerTestCase {
 
 	public static <T> T definiteValue(
 			Artifact<?> artifact,
-			ValueType<T> valueType) {
+			SingleValueType<T> valueType) {
+		return definiteValue(artifact, valueType.struct());
+	}
 
-		final Value<?> value = valueOf(artifact, valueType);
+	public static <T> T definiteValue(
+			Artifact<?> artifact,
+			ValueStruct<?, T> valueStruct) {
+
+		final Value<?> value = valueOf(artifact, valueStruct);
 
 		assertTrue("Value is not definite: " + value, value.isDefinite());
 		assertFalse("Value is unknown: " + value, value.isUnknown());
@@ -115,7 +131,7 @@ public abstract class CompilerTestCase {
 
 		assertNotNull(artifact + " has not definite value", definiteValue);
 
-		return valueType.cast(definiteValue);
+		return valueStruct.cast(definiteValue);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -125,8 +141,14 @@ public abstract class CompilerTestCase {
 
 	public static <T> T definiteValue(
 			Field<?> field,
-			ValueType<T> valueType) {
-		return definiteValue(field.getArtifact(), valueType);
+			SingleValueType<T> valueType) {
+		return definiteValue(field.getArtifact(), valueType.struct());
+	}
+
+	public static <T> T definiteValue(
+			Field<?> field,
+			ValueStruct<?, T> valueStruct) {
+		return definiteValue(field.getArtifact(), valueStruct);
 	}
 
 	public static void assertTrueValue(LogicalValue condition) {

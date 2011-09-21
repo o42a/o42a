@@ -34,7 +34,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
 import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public class Declaratives extends Statements<Declaratives> {
@@ -281,9 +281,9 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
+		protected ValueStruct<?, ?> expectedValueStruct() {
 			return getSentence().getBlock()
-					.getInitialEnv().getExpectedType();
+					.getInitialEnv().getExpectedValueStruct();
 		}
 
 	}

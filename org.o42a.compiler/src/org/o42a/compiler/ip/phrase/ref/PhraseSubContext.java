@@ -230,7 +230,7 @@ class PhraseSubContext extends PhraseContext {
 					distributor,
 					adapterId(
 							overriddenKey.getAdapterId().getAdapterTypeScope()
-							.getContainer().toArtifact().fixedRef(distributor)
+							.getArtifact().fixedRef(distributor)
 							.toStaticTypeRef()));
 		} else {
 			declaration = fieldDeclaration(

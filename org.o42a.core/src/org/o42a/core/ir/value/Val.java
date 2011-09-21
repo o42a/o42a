@@ -24,6 +24,7 @@ import static java.lang.Double.doubleToRawLongBits;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -37,22 +38,22 @@ public final class Val implements Content<ValType> {
 	public static final int STATIC_FLAG = 0x1000;
 
 	public static final Val VOID_VAL =
-			new Val(ValueType.VOID, CONDITION_FLAG, 0, 0L);
+			new Val(ValueStruct.VOID, CONDITION_FLAG, 0, 0L);
 	public static final Val FALSE_VAL =
-			new Val(ValueType.VOID, 0, 0, 0L);
+			new Val(ValueStruct.VOID, 0, 0, 0L);
 	public static final Val UNKNOWN_VAL =
-			new Val(ValueType.VOID, UNKNOWN_FLAG, 0, 0L);
+			new Val(ValueStruct.VOID, UNKNOWN_FLAG, 0, 0L);
 	public static final Val INDEFINITE_VAL =
-			new Val(ValueType.VOID, UNKNOWN_FLAG | INDEFINITE_FLAG, 0, 0L);
+			new Val(ValueStruct.VOID, UNKNOWN_FLAG | INDEFINITE_FLAG, 0, 0L);
 
-	private final ValueType<?> valueType;
+	private final ValueStruct<?, ?> valueStruct;
 	private final int flags;
 	private final int length;
 	private final long value;
 	private final Ptr<AnyOp> pointer;
 
 	public Val(long value) {
-		this.valueType = ValueType.INTEGER;
+		this.valueStruct = ValueStruct.INTEGER;
 		this.flags = CONDITION_FLAG;
 		this.length = 0;
 		this.value = value;
@@ -60,15 +61,19 @@ public final class Val implements Content<ValType> {
 	}
 
 	public Val(double value) {
-		this.valueType = ValueType.FLOAT;
+		this.valueStruct = ValueStruct.FLOAT;
 		this.flags = CONDITION_FLAG;
 		this.length = 0;
 		this.value = doubleToRawLongBits(value);
 		this.pointer = null;
 	}
 
-	public Val(ValueType<?> valueType, int flags, int length, long value) {
-		this.valueType = valueType;
+	public Val(
+			ValueStruct<?, ?> valueStruct,
+			int flags,
+			int length,
+			long value) {
+		this.valueStruct = valueStruct;
 		this.flags = flags;
 		this.length = length;
 		this.value = value;
@@ -76,11 +81,11 @@ public final class Val implements Content<ValType> {
 	}
 
 	public Val(
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			int flags,
 			int length,
 			Ptr<AnyOp> pointer) {
-		this.valueType = valueType;
+		this.valueStruct = valueStruct;
 		this.flags = flags;
 		this.length = length;
 		this.value = 0L;
@@ -88,11 +93,15 @@ public final class Val implements Content<ValType> {
 	}
 
 	public final ValueType<?> getValueType() {
-		return this.valueType;
+		return getValueStruct().getValueType();
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return this.valueStruct;
 	}
 
 	public final boolean isVoid() {
-		return getValueType().isVoid();
+		return getValueStruct().isVoid();
 	}
 
 	public final int getFlags() {

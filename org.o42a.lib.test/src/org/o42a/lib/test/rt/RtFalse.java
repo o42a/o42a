@@ -43,7 +43,7 @@ public class RtFalse extends AnnotatedBuiltin {
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
-		return value().getValueType().runtimeValue();
+		return value().getValueStruct().runtimeValue();
 	}
 
 	@Override

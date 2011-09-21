@@ -40,7 +40,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.LoggableData;
@@ -49,7 +49,7 @@ import org.o42a.util.log.LoggableData;
 public final class VoidObject extends BuiltinObject {
 
 	public VoidObject(Scope topScope) {
-		super(voidScope(topScope), ValueType.VOID);
+		super(voidScope(topScope), ValueStruct.VOID);
 	}
 
 	@Override

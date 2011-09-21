@@ -58,7 +58,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Ref extends Statement {
@@ -76,7 +76,7 @@ public abstract class Ref extends Statement {
 
 		final Obj falseObject = location.getContext().getFalse();
 		final AbsolutePath falsePath = ROOT_PATH.append(
-				falseObject.getScope().toField().toMember().getKey());
+				falseObject.getScope().toMember().getKey());
 
 		return falsePath.target(location, distributor);
 	}
@@ -126,8 +126,8 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public final ValueType<?> getValueType() {
-		return getResolution().materialize().value().getValueType();
+	public final ValueStruct<?, ?> getValueStruct() {
+		return getResolution().materialize().value().getValueStruct();
 	}
 
 	public final Logical getLogical() {
@@ -199,7 +199,7 @@ public abstract class Ref extends Statement {
 	 * @return ancestor reference or <code>null</code> if can not be determined.
 	 */
 	public TypeRef ancestor(LocationInfo location) {
-		return new AncestorRef(location, this).toTypeRef();
+		return new AncestorBuilder(location, this).toTypeRef();
 	}
 
 	public Ref materialize() {

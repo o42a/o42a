@@ -26,7 +26,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.MaterializableArtifact;
 import org.o42a.core.artifact.Role;
-import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.impl.LinkTarget;
 import org.o42a.core.artifact.link.impl.RuntimeLinkTarget;
 import org.o42a.core.artifact.object.Obj;
@@ -56,11 +55,6 @@ public abstract class Link extends MaterializableArtifact<Link> {
 
 	@Override
 	public final Obj toObject() {
-		return null;
-	}
-
-	@Override
-	public final Array toArray() {
 		return null;
 	}
 

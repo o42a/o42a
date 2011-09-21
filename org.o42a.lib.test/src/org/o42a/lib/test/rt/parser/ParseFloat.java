@@ -46,7 +46,7 @@ public final class ParseFloat extends FloatByString {
 			return value;
 		}
 
-		return value().getValueType().runtimeValue();
+		return value().getValueStruct().runtimeValue();
 	}
 
 	@Override
