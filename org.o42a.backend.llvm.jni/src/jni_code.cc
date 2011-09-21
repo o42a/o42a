@@ -34,7 +34,7 @@ using namespace llvm;
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_createBlock(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong functionPtr,
 		jstring id) {
 
@@ -48,8 +48,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_createBlock(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_stackSave(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong blockPtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
@@ -62,8 +62,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_stackSave(
 }
 
 void Java_org_o42a_backend_llvm_code_LLCode_stackRestore(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong blockPtr,
 		jlong stackPtr) {
 
@@ -77,8 +77,8 @@ void Java_org_o42a_backend_llvm_code_LLCode_stackRestore(
 }
 
 void Java_org_o42a_backend_llvm_code_LLCode_go(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong sourcePtr,
 		jlong targetPtr) {
 
@@ -90,8 +90,8 @@ void Java_org_o42a_backend_llvm_code_LLCode_go(
 }
 
 void Java_org_o42a_backend_llvm_code_LLCode_choose(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong blockPtr,
 		jlong conditionPtr,
 		jlong truePtr,
@@ -107,16 +107,16 @@ void Java_org_o42a_backend_llvm_code_LLCode_choose(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_blockAddress(
-		JNIEnv *env,
-		jclass cls,
-		jlong blockPtr,
+		JNIEnv *,
+		jclass,
+		jlong,
 		jlong targetPtr) {
 	return to_ptr(BlockAddress::get(from_ptr<BasicBlock>(targetPtr)));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_indirectbr(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jlong targetPtr,
 		jlongArray targetBlockPtrs) {
@@ -136,8 +136,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_indirectbr(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_int8(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jbyte value) {
 
@@ -151,8 +151,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_int8(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_int16(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jshort value) {
 
@@ -166,8 +166,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_int16(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_int32(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jint value) {
 
@@ -181,8 +181,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_int32(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_int64(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong value) {
 
@@ -196,8 +196,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_int64(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_fp32(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jfloat value) {
 
@@ -210,8 +210,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_fp32(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_fp64(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jdouble value) {
 
@@ -224,8 +224,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_fp64(
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_bool(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jboolean value) {
 
@@ -238,8 +238,8 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_bool(
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_nullPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
@@ -250,8 +250,8 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_nullPtr(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_nullStructPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong typePtr) {
 
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
@@ -261,8 +261,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_nullStructPtr(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_nullFuncPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong funcTypePtr) {
 
 	Type *type = from_ptr<Type>(funcTypePtr);
@@ -273,7 +273,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_nullFuncPtr(
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id) {
 
@@ -287,7 +287,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong typePtr) {
@@ -304,7 +304,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong typePtr) {
@@ -320,7 +320,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong block1ptr,
@@ -345,7 +345,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 
 jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlongArray blockAndValuePtrs) {
@@ -370,7 +370,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN(
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong conditionPtr,
@@ -389,8 +389,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 }
 
 void Java_org_o42a_backend_llvm_code_LLCode_returnVoid(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong blockPtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
@@ -400,8 +400,8 @@ void Java_org_o42a_backend_llvm_code_LLCode_returnVoid(
 }
 
 void Java_org_o42a_backend_llvm_code_LLCode_returnValue(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong blockPtr,
 		jlong resultPtr) {
 

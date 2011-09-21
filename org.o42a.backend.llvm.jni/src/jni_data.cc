@@ -33,7 +33,7 @@ using namespace llvm;
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong modulePtr,
 		jstring id,
 		jbyteArray data,
@@ -69,8 +69,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createType(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
@@ -80,9 +80,9 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createType(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createTypeData(
-		JNIEnv *env,
-		jclass cls,
-		jlong modulePtr) {
+		JNIEnv *,
+		jclass,
+		jlong) {
 
 	std::vector<const Type*> *result = new std::vector<const Type*>();
 
@@ -90,13 +90,12 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createTypeData(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
-		JNIEnv *env,
-		jclass cls,
-		jlong modulePtr,
+		JNIEnv *,
+		jclass,
+		jlong,
 		jlong enclosingPtr,
 		jlong typePtr) {
 
-	const Module *module = from_ptr<Module>(modulePtr);
 	std::vector<const Type*> *enclosing =
 			from_ptr<std::vector<const Type*> >(enclosingPtr);
 	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
@@ -108,7 +107,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong modulePtr,
 		jstring id,
 		jlong typePtr,
@@ -131,7 +130,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong modulePtr,
 		jstring id,
 		jlong typePtr,
@@ -160,8 +159,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong enclosingPtr,
 		jbyte intBits) {
@@ -174,8 +173,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp32(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong enclosingPtr) {
 
@@ -187,8 +186,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp32(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp64(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong enclosingPtr) {
 
@@ -200,8 +199,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp64(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFuncPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong enclosingPtr,
 		jlong funcTypePtr) {
 
@@ -213,8 +212,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFuncPtr(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocatePtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong enclosingPtr) {
 
@@ -226,8 +225,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocatePtr(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStructPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong enclosingPtr,
 		jlong typePtr) {
 
@@ -239,8 +238,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStructPtr(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateRelPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong enclosingPtr) {
 
@@ -262,8 +261,8 @@ static inline jint typeLayout(
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_intLayout(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jbyte intBits) {
 
@@ -274,8 +273,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_intLayout(
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp32layout(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	const o42ac::BackendModule *module =
@@ -285,8 +284,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp32layout(
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp64layout(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	const o42ac::BackendModule *module =
@@ -296,8 +295,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp64layout(
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_ptrLayout(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	const o42ac::BackendModule *module =
@@ -307,8 +306,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_ptrLayout(
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_relPtrLayout(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	const o42ac::BackendModule *module =
@@ -318,8 +317,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_relPtrLayout(
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_structLayout(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong typePtr) {
 
@@ -331,8 +330,8 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_structLayout(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr) {
 
 	const Module *module = from_ptr<Module>(modulePtr);
@@ -342,8 +341,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullPtr(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullStructPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong typePtr) {
 
 	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
@@ -352,8 +351,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullStructPtr(
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullFuncPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong funcTypePtr) {
 
 	const Type *type = from_ptr<Type>(funcTypePtr);
@@ -362,8 +361,8 @@ jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_nullFuncPtr(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_createStruct(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jint size) {
 
 	std::vector<Constant*> *result = new std::vector<Constant*>();
@@ -374,8 +373,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_createStruct(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt32(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong structPtr,
 		jint value) {
@@ -390,8 +389,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt32(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt64(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong structPtr,
 		jlong value) {
@@ -406,8 +405,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt64(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong structPtr,
 		jlong value) {
@@ -423,8 +422,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFp64(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong structPtr,
 		jdouble value) {
@@ -439,8 +438,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFp64(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeNativePtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong modulePtr,
 		jlong structPtr,
 		jlong value) {
@@ -456,8 +455,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeNativePtr(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFuncPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong structPtr,
 		jlong funcPtr) {
 
@@ -469,8 +468,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeFuncPtr(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeDataPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong structPtr,
 		jlong dataPtr) {
 
@@ -482,8 +481,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeDataPtr(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeRelPtr(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong structPtr,
 		jlong relPtr) {
 
@@ -495,8 +494,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeRelPtr(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeStruct(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong enclosingPtr,
 		jlong typePtr,
 		jlong dataPtr) {
@@ -513,8 +512,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeStruct(
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeGlobal(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong globalPtr,
 		jlong dataPtr) {
 

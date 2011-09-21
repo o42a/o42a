@@ -33,7 +33,7 @@ using namespace llvm;
 
 jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong modulePtr,
 		jstring name,
 		jlong returnTypePtr,
@@ -59,7 +59,7 @@ jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 
 jlong Java_org_o42a_backend_llvm_code_LLFunction_externFunction(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong modulePtr,
 		jstring name,
 		jlong typePtr) {
@@ -74,7 +74,7 @@ jlong Java_org_o42a_backend_llvm_code_LLFunction_externFunction(
 
 jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong modulePtr,
 		jstring name,
 		jlong funcTypePtr,
@@ -98,8 +98,8 @@ jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_code_LLFunction_arg(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong functionPtr,
 		jint index) {
 
@@ -123,8 +123,8 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLFunction_arg(
 }
 
 jboolean Java_org_o42a_backend_llvm_code_LLFunction_validate(
-		JNIEnv *env,
-		jclass cls,
+		JNIEnv *,
+		jclass,
 		jlong functionPtr) {
 
 	Function *function = from_ptr<Function>(functionPtr);
@@ -136,7 +136,7 @@ jboolean Java_org_o42a_backend_llvm_code_LLFunction_validate(
 
 jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 		JNIEnv *env,
-		jclass cls,
+		jclass,
 		jlong blockPtr,
 		jstring id,
 		jlong functionPtr,
