@@ -29,20 +29,24 @@ import org.o42a.core.member.MemberContainer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 
 
 public class ArrayItem extends AbstractScope {
 
-	private final Ref ref;
+	private final Ref indexRef;
+	private final Ref valueRef;
 	private final Obj owner;
 	private ArrayItemContainer container;
 
-	public ArrayItem(Ref ref) {
-		this.ref = ref;
-		this.owner = ref.getScope().toObject();
+	public ArrayItem(Ref indexRef, Ref valueRef) {
+		this.indexRef.assertSameScope(valueRef);
+		this.indexRef = indexRef;
+		this.valueRef = valueRef;
+		this.owner = valueRef.getScope().toObject();
 		assert this.owner != null :
-			"Enclosing scope is not object: " + ref.getScope();
+			"Enclosing scope is not object: " + valueRef.getScope();
 	}
 
 	@Override
@@ -52,12 +56,12 @@ public class ArrayItem extends AbstractScope {
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.ref.getContext();
+		return this.valueRef.getContext();
 	}
 
 	@Override
 	public final Loggable getLoggable() {
-		return this.ref.getLoggable();
+		return this.valueRef.getLoggable();
 	}
 
 	@Override
@@ -68,9 +72,17 @@ public class ArrayItem extends AbstractScope {
 		return this.container = new ArrayItemContainer(this);
 	}
 
+	public final Ref getIndexRef() {
+		return this.indexRef;
+	}
+
+	public final Ref getValueRef() {
+		return this.valueRef;
+	}
+
 	@Override
 	public Container getEnclosingContainer() {
-		return this.ref.getContainer();
+		return this.valueRef.getContainer();
 	}
 
 	@Override
@@ -90,6 +102,18 @@ public class ArrayItem extends AbstractScope {
 		}
 		return getArtifact().materialize().type().derivedFrom(
 				other.getArtifact().materialize().type());
+	}
+
+	public ArrayItem reproduce(Reproducer reproducer) {
+
+		final Ref indexRef = this.indexRef.reproduce(reproducer);
+		final Ref valueRef = this.valueRef.reproduce(reproducer);
+
+		if (indexRef == null || valueRef == null) {
+			return null;
+		}
+
+		return new ArrayItem(indexRef, valueRef);
 	}
 
 	@Override
