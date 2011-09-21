@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Intrinsics
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,33 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.array.impl;
+package org.o42a.intrinsic.array;
 
-import org.o42a.core.artifact.array.ArrayValueStruct;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.ValueType;
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.intrinsic.root.Root;
 
 
-public class ArrayValueType extends ValueType<ArrayValueStruct> {
+@SourcePath(relativeTo = Root.class, value = "array.o42a")
+public class ArrayValueTypeObject extends AbstractArrayValueTypeObject {
 
-	private final boolean constant;
-
-	public ArrayValueType(boolean constant) {
-		super(constant ? "const_array" : "array");
-		this.constant = constant;
-	}
-
-	public final boolean isConstant() {
-		return this.constant;
-	}
-
-	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		if (!isConstant()) {
-			return intrinsics.getArray();
-		}
-		return intrinsics.getConstantArray();
+	public ArrayValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, false);
 	}
 
 }
