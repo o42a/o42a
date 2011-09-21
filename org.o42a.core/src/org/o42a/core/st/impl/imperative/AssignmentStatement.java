@@ -27,7 +27,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
@@ -44,7 +43,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public class AssignmentStatement extends Statement {
@@ -88,8 +87,8 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return ValueType.VOID;
+	public ValueStruct<?, ?> getValueStruct() {
+		return ValueStruct.VOID;
 	}
 
 	@Override
@@ -204,13 +203,6 @@ public class AssignmentStatement extends Statement {
 					variableAssignment(link, valueResolution);
 		}
 
-		final Array array = destResolution.toArray();
-
-		if (array != null) {
-			return this.assignmentKind =
-					arrayAssinment(array, valueResolution);
-		}
-
 		return this.assignmentKind = invalidDestination();
 	}
 
@@ -252,16 +244,6 @@ public class AssignmentStatement extends Statement {
 
 		getLogger().incompatible(destination, valueType);
 
-		return ASSIGNMENT_ERROR;
-	}
-
-	private AssignmentKind arrayAssinment(
-			Array destination,
-			Resolution valueResolution) {
-		getLogger().error(
-				"not_implemented_array_assignment",
-				this,
-				"Array assignment not implemented yet");
 		return ASSIGNMENT_ERROR;
 	}
 

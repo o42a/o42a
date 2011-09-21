@@ -179,7 +179,7 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 
 		return new Definitions(
 				definitions,
-				definitions.getValueType(),
+				definitions.getValueStruct(),
 				newRequirements,
 				newConditions,
 				definitions.claims(),
@@ -203,7 +203,7 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 
 		return new Definitions(
 				definitions,
-				definitions.getValueType(),
+				definitions.getValueStruct(),
 				definitions.requirements(),
 				newConditions,
 				definitions.claims(),

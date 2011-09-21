@@ -23,7 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.StatementEnv;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class RefEnv extends StatementEnv {
@@ -67,15 +67,18 @@ public final class RefEnv extends StatementEnv {
 			return this.expectedTypeAdapter;
 		}
 
-		final ValueType<?> expectedType = getInitialEnv().getExpectedType();
+		final ValueStruct<?, ?> expectedStruct =
+				getInitialEnv().getExpectedValueStruct();
 
-		if (expectedType == null) {
+		if (expectedStruct == null) {
 			return this.expectedTypeAdapter = this.ref;
 		}
 
 		return this.expectedTypeAdapter = this.ref.adapt(
 				this.ref,
-				expectedType.typeRef(this.ref, this.ref.getScope()));
+				expectedStruct.getValueType().typeRef(
+						this.ref,
+						this.ref.getScope()));
 	}
 
 	@Override
@@ -84,8 +87,8 @@ public final class RefEnv extends StatementEnv {
 	}
 
 	@Override
-	protected ValueType<?> expectedType() {
-		return this.initialEnv.getExpectedType();
+	protected ValueStruct<?, ?> expectedValueStruct() {
+		return this.initialEnv.getExpectedValueStruct();
 	}
 
 }

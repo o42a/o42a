@@ -64,7 +64,7 @@ public final class Root$$integers implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.numeric.SubtractIntegers$$Sources(this))
 			.getScope().toField(),
-				};
+		};
 	}
 
 }

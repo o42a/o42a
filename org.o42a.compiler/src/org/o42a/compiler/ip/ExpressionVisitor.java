@@ -22,7 +22,7 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
-import static org.o42a.core.ref.Ref.voidRef;
+import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.value.ValueType.INTEGER;
 import static org.o42a.core.value.ValueType.STRING;
 
@@ -33,6 +33,7 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.operator.LogicalOperatorRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
@@ -111,6 +112,18 @@ public final class ExpressionVisitor
 	}
 
 	@Override
+	public Ref visitBrackets(BracketsNode brackets, Distributor p) {
+		if (brackets.getInterface() == null) {
+			p.getLogger().error(
+					"invalid_array_initializer",
+					brackets,
+					"Invalid array initializer. Array item type is missing");
+			return errorRef(location(p, brackets), p);
+		}
+		return new ArrayConstructor(this.ip, p.getContext(), brackets, p);
+	}
+
+	@Override
 	public Ref visitParentheses(ParenthesesNode parentheses, Distributor p) {
 
 		final ExpressionNode unwrapped = unwrap(parentheses);
@@ -138,20 +151,14 @@ public final class ExpressionVisitor
 	}
 
 	@Override
-	public Ref visitArray(ArrayNode array, Distributor p) {
-		// TODO Auto-generated method stub
-		return super.visitArray(array, p);
-	}
-
-	@Override
 	protected Ref visitRef(RefNode ref, Distributor p) {
 		return ref.accept(refVisitor(), p);
 	}
 
 	@Override
 	protected Ref visitExpression(ExpressionNode expression, Distributor p) {
-		p.getContext().getLogger().invalidExpression(expression);
-		return voidRef(location(p, expression), p);
+		p.getLogger().invalidExpression(expression);
+		return errorRef(location(p, expression), p);
 	}
 
 	private Ref integer(Distributor p, long value, Node node) {

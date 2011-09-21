@@ -32,6 +32,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -72,7 +73,7 @@ final class StringLength extends AnnotatedBuiltin {
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs stringDirs =
-				dirs.dirs().value(ValueType.STRING, "string_val");
+				dirs.dirs().value(ValueStruct.STRING, "string_val");
 		final Code code = stringDirs.code();
 
 		final ValOp string = string().op(host).writeValue(stringDirs);

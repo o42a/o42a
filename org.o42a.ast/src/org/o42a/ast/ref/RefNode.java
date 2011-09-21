@@ -19,8 +19,11 @@
 */
 package org.o42a.ast.ref;
 
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.field.TypeNode;
 
-public interface RefNode extends TypeNode {
+
+public interface RefNode extends TypeNode, ExpressionNode {
 
 	<R, P> R accept(RefNodeVisitor<R, P> visitor, P p);
 

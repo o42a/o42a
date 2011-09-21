@@ -23,6 +23,7 @@ import static org.o42a.core.value.Value.unknownValue;
 
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -37,7 +38,11 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 	}
 
 	public final ValueType<?> getValueType() {
-		return isEmpty() ? ValueType.VOID : get()[0].getValueType();
+		return getValueStruct().getValueType();
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return isEmpty() ? ValueStruct.VOID : get()[0].getValueStruct();
 	}
 
 	public final Value<?> getConstant() {
@@ -67,7 +72,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			}
 		}
 
-		return getValueType().unknownValue();
+		return getValueStruct().unknownValue();
 	}
 
 	@Override
@@ -77,9 +82,10 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 	final Definitions refineClaims(
 			Definitions definitions,
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			ValueDefs refinements) {
-		if (refinements.isEmpty() && definitions.getValueType() == valueType) {
+		if (refinements.isEmpty()
+				&& definitions.getValueStruct() == valueStruct) {
 			return definitions;
 		}
 
@@ -94,7 +100,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 		return new Definitions(
 				definitions,
-				valueType,
+				valueStruct,
 				definitions.requirements(),
 				definitions.conditions(),
 				newClaims,
@@ -103,9 +109,10 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 	final Definitions refinePropositions(
 			Definitions definitions,
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			ValueDefs refinements) {
-		if (refinements.isEmpty() && definitions.getValueType() == valueType) {
+		if (refinements.isEmpty()
+				&& definitions.getValueStruct() == valueStruct) {
 			return definitions;
 		}
 
@@ -119,7 +126,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 		return new Definitions(
 				definitions,
-				valueType,
+				valueStruct,
 				definitions.requirements(),
 				definitions.conditions(),
 				definitions.claims(),

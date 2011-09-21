@@ -49,7 +49,7 @@ enum RefValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValDirs valDirs = dirs.value(op.getValueType());
+			final ValDirs valDirs = dirs.value(op.getValueStruct());
 
 			writeValue(valDirs, op);
 			valDirs.done();
@@ -152,7 +152,7 @@ enum RefValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValDirs valDirs = dirs.value(op.getValueType());
+			final ValDirs valDirs = dirs.value(op.getValueStruct());
 
 			writeValue(valDirs, op);
 			valDirs.done();
@@ -187,7 +187,7 @@ enum RefValuePart {
 		@Override
 		void writeLogicalValue(CodeDirs dirs, ValuePartOp op) {
 
-			final ValDirs valDirs = dirs.value(op.getValueType());
+			final ValDirs valDirs = dirs.value(op.getValueStruct());
 
 			writeValue(valDirs, op);
 			valDirs.done();

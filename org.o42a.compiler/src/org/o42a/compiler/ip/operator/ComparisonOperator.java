@@ -30,7 +30,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class ComparisonOperator {
@@ -76,7 +76,7 @@ public abstract class ComparisonOperator {
 		return this.clauseId;
 	}
 
-	public abstract ValueType<?> getValueType();
+	public abstract ValueStruct<?, ?> getValueStruct();
 
 	public boolean checkError(Ref phrase) {
 		return false;

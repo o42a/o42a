@@ -20,7 +20,9 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.LinkDefiner;
+import org.o42a.core.member.field.ObjectDefiner;
 
 
 final class PhraseFieldDefinition extends FieldDefinition {
@@ -46,11 +48,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineLink(LinkDefiner definer) {
 		getDefinition().defineLink(definer);
-	}
-
-	@Override
-	public void defineArray(ArrayDefiner definer) {
-		getDefinition().defineArray(definer);
 	}
 
 	@Override

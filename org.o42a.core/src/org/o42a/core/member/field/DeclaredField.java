@@ -29,6 +29,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.*;
+import org.o42a.core.member.impl.field.FieldInclusions;
 import org.o42a.core.source.Location;
 
 

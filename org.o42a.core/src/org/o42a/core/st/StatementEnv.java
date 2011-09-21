@@ -26,7 +26,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Def;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class StatementEnv {
@@ -39,22 +39,22 @@ public abstract class StatementEnv {
 		return new ObjectEnv(object);
 	}
 
-	private ValueType<?> expectedType;
+	private ValueStruct<?, ?> expectedStruct;
 
-	public final ValueType<?> getExpectedType() {
-		if (this.expectedType != null) {
-			if (this.expectedType == ValueType.NONE) {
+	public final ValueStruct<?, ?> getExpectedValueStruct() {
+		if (this.expectedStruct != null) {
+			if (this.expectedStruct == ValueStruct.NONE) {
 				return null;
 			}
-			return this.expectedType;
+			return this.expectedStruct;
 		}
 
-		final ValueType<?> expectedType = expectedType();
+		final ValueStruct<?, ?> expectedType = expectedValueStruct();
 
 		if (expectedType == null) {
-			this.expectedType = ValueType.NONE;
+			this.expectedStruct = ValueStruct.NONE;
 		} else {
-			this.expectedType = expectedType;
+			this.expectedStruct = expectedType;
 		}
 
 		return expectedType;
@@ -93,7 +93,7 @@ public abstract class StatementEnv {
 		return prereqDef.addPrecondition(precondition(def.getScope()));
 	}
 
-	protected abstract ValueType<?> expectedType();
+	protected abstract ValueStruct<?, ?> expectedValueStruct();
 
 	private static final class DefaultEnv extends StatementEnv {
 
@@ -134,7 +134,7 @@ public abstract class StatementEnv {
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
+		protected ValueStruct<?, ?> expectedValueStruct() {
 			return null;
 		}
 
@@ -190,8 +190,8 @@ public abstract class StatementEnv {
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
-			return this.env.getExpectedType();
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return this.env.getExpectedValueStruct();
 		}
 
 		private void reportError() {
@@ -237,8 +237,8 @@ public abstract class StatementEnv {
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
-			return this.object.value().getValueType();
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return this.object.value().getValueStruct();
 		}
 
 	}

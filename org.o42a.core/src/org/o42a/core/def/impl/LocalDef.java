@@ -41,7 +41,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public class LocalDef extends ValueDef {
@@ -99,8 +99,8 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return getBlock().getValueType();
+	public ValueStruct<?, ?> getValueStruct() {
+		return getBlock().getValueStruct();
 	}
 
 	@Override
@@ -252,8 +252,8 @@ public class LocalDef extends ValueDef {
 					dirs.begin("local_logical", "Local logical: " + this);
 
 			final Obj owner = this.def.getOwnerScope().toObject();
-			final ValueType<?> valueType = owner.value().getValueType();
-			final ValDirs valDirs = subDirs.value(valueType, "local_val");
+			final ValueStruct<?, ?> valueStruct = owner.value().getValueStruct();
+			final ValDirs valDirs = subDirs.value(valueStruct, "local_val");
 
 			this.def.writeValue(valDirs, host);
 			valDirs.done();

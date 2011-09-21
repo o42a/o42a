@@ -21,24 +21,44 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.ast.field.InterfaceNode;
 
 
 public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 
+	private final SignNode<Bracket> opening;
+	private final InterfaceNode iface;
 	private final ArgumentNode[] arguments;
+	private final SignNode<Bracket> closing;
 
 	public BracketsNode(
 			SignNode<Bracket> opening,
-			ArgumentNode[] content,
+			InterfaceNode iface,
+			ArgumentNode[] arguments,
 			SignNode<Bracket> closing) {
 		super(
 				opening.getStart(),
-				end(opening, lastNode(content), closing));
-		this.arguments = content;
+				end(opening, iface, lastNode(arguments), closing));
+		this.opening = opening;
+		this.iface = iface;
+		this.arguments = arguments;
+		this.closing = closing;
 	}
 
-	public ArgumentNode[] getArguments() {
+	public final SignNode<Bracket> getOpening() {
+		return this.opening;
+	}
+
+	public final InterfaceNode getInterface() {
+		return this.iface;
+	}
+
+	public final ArgumentNode[] getArguments() {
 		return this.arguments;
+	}
+
+	public final SignNode<Bracket> getClosing() {
+		return this.closing;
 	}
 
 	@Override
@@ -63,16 +83,21 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 	public enum Bracket implements SignType {
 
 		OPENING_BRACKET() {
+
 			@Override
 			public String getSign() {
-				return "{";
+				return "[";
 			}
+
 		},
+
 		CLOSING_BRACKET() {
+
 			@Override
 			public String getSign() {
-				return "}";
+				return "]";
 			}
+
 		}
 
 	}

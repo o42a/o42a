@@ -22,15 +22,12 @@ package org.o42a.core.ref;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.value.Directive;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.use.UserInfo;
 
@@ -80,10 +77,6 @@ public abstract class Resolution implements ScopeInfo {
 		return toArtifact().toLink();
 	}
 
-	public final Array toArray() {
-		return toArtifact().toArray();
-	}
-
 	public Directive toDirective(Resolver resolver) {
 
 		final Obj materialized = materialize();
@@ -95,7 +88,7 @@ public abstract class Resolution implements ScopeInfo {
 			return null;
 		}
 
-		final Value<Directive> value = ValueType.DIRECTIVE.cast(
+		final Value<Directive> value = ValueStruct.DIRECTIVE.cast(
 				materialized.value().explicitUseBy(resolver).getValue());
 
 		if (!value.isDefinite()) {

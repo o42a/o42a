@@ -23,6 +23,7 @@ import org.o42a.ast.Node;
 import org.o42a.ast.Position;
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.field.TypeNodeVisitor;
 
 
 public abstract class AbstractRefNode

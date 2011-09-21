@@ -41,7 +41,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.declarative.SentencePrecondition;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -62,6 +62,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	private BlockEnv env;
+	private ValueStruct<?, ?> valueStruct;
 	private Locals locals;
 
 	public DeclarativeBlock(
@@ -146,6 +147,15 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		assert this.env == null :
 			"Environment already assigned to " + this;
 		return this.env = new BlockEnv(this, env);
+	}
+
+	@Override
+	public ValueStruct<?, ?> getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
+		}
+		return this.valueStruct =
+				valueStruct(getInitialEnv().getExpectedValueStruct());
 	}
 
 	@Override
@@ -306,8 +316,8 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
-			return this.initialEnv.getExpectedType();
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return this.initialEnv.getExpectedValueStruct();
 		}
 
 	}

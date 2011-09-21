@@ -25,7 +25,7 @@ import static org.o42a.core.ref.Ref.falseRef;
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.AscendantNode;
 import org.o42a.ast.expression.AscendantsNode;
-import org.o42a.ast.ref.AbstractTypeVisitor;
+import org.o42a.ast.field.AbstractTypeVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;

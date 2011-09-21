@@ -26,6 +26,7 @@ import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
@@ -36,7 +37,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 final class ObjectFieldVariant
@@ -181,9 +182,14 @@ final class ObjectFieldVariant
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
-			return this.variant.getField().getArtifact().type()
-					.getAncestor().typeObject(dummyUser()).value().getValueType();
+		protected ValueStruct<?, ?> expectedValueStruct() {
+
+			final ObjectType objectType =
+					this.variant.getField().getArtifact().type();
+			final Obj ancestorObject =
+					objectType.getAncestor().typeObject(dummyUser());
+
+			return ancestorObject.value().getValueStruct();
 		}
 
 	}

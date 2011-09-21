@@ -29,9 +29,7 @@ import org.o42a.core.Scoped;
 import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.Condition;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.util.log.LogInfo;
 
 
@@ -51,7 +49,7 @@ public class Definitions extends Scoped {
 	public static Definitions noValueDefinitions(
 			LocationInfo location,
 			Scope scope,
-			ValueType<?> valueType) {
+			ValueStruct<?, ?> valueStruct) {
 
 		final CondDefs conditions = new CondDefs(
 				DefKind.CONDITION,
@@ -60,7 +58,7 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				location,
 				scope,
-				valueType,
+				valueStruct,
 				NO_REQUIREMENTS,
 				conditions,
 				NO_CLAIMS,
@@ -92,22 +90,22 @@ public class Definitions extends Scoped {
 			return emptyDefinitions(location, scope);
 		}
 
-		ValueType<?> valueType = null;
+		ValueStruct<?, ?> valueStruct = null;
 		int claimLen = 0;
 		int defLen = 0;
 
 		for (ValueDef definition : definitions) {
 			definition.assertScopeIs(scope);
-			if (valueType == null) {
-				valueType = definition.getValueType();
+			if (valueStruct == null) {
+				valueStruct = definition.getValueStruct();
 			} else {
 
-				final ValueType<?> type = definition.getValueType();
+				final ValueStruct<?, ?> struct = definition.getValueStruct();
 
-				if (type != valueType) {
+				if (struct != valueStruct) {
 					scope.getContext().getLogger().incompatible(
 							definition,
-							valueType);
+							valueStruct);
 					continue;
 				}
 			}
@@ -130,7 +128,7 @@ public class Definitions extends Scoped {
 		int propositionIdx = 0;
 
 		for (ValueDef definition : definitions) {
-			if (valueType != definition.getValueType()) {
+			if (valueStruct != definition.getValueStruct()) {
 				continue;
 			}
 			if (definition.getPrerequisite().isFalse()) {
@@ -146,14 +144,14 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				location,
 				scope,
-				valueType,
+				valueStruct,
 				NO_REQUIREMENTS,
 				NO_CONDITIONS,
 				new ValueDefs(CLAIM, newClaims),
 				new ValueDefs(PROPOSITION, newPropositions));
 	}
 
-	private final ValueType<?> valueType;
+	private final ValueStruct<?, ?> valueStruct;
 	private final CondDefs requirements;
 	private final CondDefs conditions;
 	private final ValueDefs claims;
@@ -164,7 +162,7 @@ public class Definitions extends Scoped {
 	Definitions(
 			LocationInfo location,
 			Scope scope,
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			CondDefs requirements,
 			CondDefs conditions,
 			ValueDefs claims,
@@ -174,7 +172,7 @@ public class Definitions extends Scoped {
 		assert conditions.assertValid(scope, CONDITION);
 		assert claims.assertValid(scope, CLAIM);
 		assert propositions.assertValid(scope, PROPOSITION);
-		this.valueType = valueType;
+		this.valueStruct = valueStruct;
 		this.requirements = requirements;
 		this.conditions = conditions;
 		this.claims = claims;
@@ -195,7 +193,7 @@ public class Definitions extends Scoped {
 
 	Definitions(
 			Definitions prototype,
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			CondDefs requirements,
 			CondDefs conditions,
 			ValueDefs claims,
@@ -203,7 +201,7 @@ public class Definitions extends Scoped {
 		this(
 				prototype,
 				prototype.getScope(),
-				valueType,
+				valueStruct,
 				requirements,
 				conditions,
 				claims,
@@ -211,7 +209,18 @@ public class Definitions extends Scoped {
 	}
 
 	public final ValueType<?> getValueType() {
-		return this.valueType;
+
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+		return valueStruct != null ? valueStruct.getValueType() : null;
+	}
+
+	public final boolean hasValues() {
+		return getValueStruct() != null;
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return this.valueStruct;
 	}
 
 	public boolean isEmpty() {
@@ -227,24 +236,24 @@ public class Definitions extends Scoped {
 			return this.constant;
 		}
 
-		final ValueType<?> valueType =
-				isEmpty() ? ValueType.VOID : getValueType();
+		final ValueStruct<?, ?> valueStruct =
+				isEmpty() ? ValueStruct.VOID : getValueStruct();
 
 		switch (requirements().getConstant()) {
 		case RUNTIME:
-			return valueType.runtimeValue();
+			return valueStruct.runtimeValue();
 		case FALSE:
-			return valueType.falseValue();
+			return valueStruct.falseValue();
 		case TRUE:
 		case UNKNOWN:
 			switch (conditions().getConstant()) {
 			case TRUE:
 				break;
 			case RUNTIME:
-				return valueType.runtimeValue();
+				return valueStruct.runtimeValue();
 			case UNKNOWN:
 			case FALSE:
-				return valueType.falseValue();
+				return valueStruct.falseValue();
 			}
 			break;
 		}
@@ -302,19 +311,19 @@ public class Definitions extends Scoped {
 		final Condition requirement = requirements().condition(resolver);
 
 		if (!requirement.isConstant()) {
-			return requirement.toValue(valueType());
+			return requirement.toValue(valueStruct());
 		}
 		if (requirement.isFalse() && !requirement.isUnknown()) {
-			return requirement.toValue(getValueType());
+			return requirement.toValue(getValueStruct());
 		}
 
 		final Condition condition = conditions().condition(resolver);
 
 		if (!condition.isConstant()) {
-			return condition.toValue(valueType());
+			return condition.toValue(valueStruct());
 		}
 		if (condition.isFalse()) {
-			return condition.toValue(valueType());
+			return condition.toValue(valueStruct());
 		}
 
 		final Value<?> claim = claims().value(resolver);
@@ -349,22 +358,22 @@ public class Definitions extends Scoped {
 		}
 
 		final ValueDef value = refinement.toValue();
-		final ValueType<?> valueType = compatibleType(value);
+		final ValueStruct<?, ?> valueStruct = compatibleStruct(value);
 
-		if (valueType == ValueType.NONE) {
+		if (valueStruct.isNone()) {
 			return this;
 		}
 		if (value.getPrerequisite().isFalse()) {
 			return this;
 		}
 		if (value.isClaim()) {
-			return refineClaims(valueType, new ValueDefs(CLAIM, value));
+			return refineClaims(valueStruct, new ValueDefs(CLAIM, value));
 		}
 		if (claims().imply(value)) {
 			return this;
 		}
 
-		return refinePropositions(valueType, new ValueDefs(PROPOSITION, value));
+		return refinePropositions(valueStruct, new ValueDefs(PROPOSITION, value));
 	}
 
 	public Definitions refine(Definitions refinements) {
@@ -373,16 +382,16 @@ public class Definitions extends Scoped {
 			return this;
 		}
 
-		final ValueType<?> valueType = compatibleType(refinements);
+		final ValueStruct<?, ?> valueStruct = compatibleStruct(refinements);
 
-		if (valueType == ValueType.NONE) {
+		if (valueStruct != null && valueStruct.isNone()) {
 			return this;
 		}
 
 		return refineRequirements(refinements.requirements())
 				.refineConditions(refinements.conditions())
-				.refineClaims(valueType, refinements.claims())
-				.refinePropositions(valueType, refinements.propositions());
+				.refineClaims(valueStruct, refinements.claims())
+				.refinePropositions(valueStruct, refinements.propositions());
 	}
 
 	public Definitions override(Definitions overriders) {
@@ -390,20 +399,21 @@ public class Definitions extends Scoped {
 			return this;
 		}
 
-		final ValueType<?> valueType;
+		final ValueStruct<?, ?> valueStruct;
 
-		if (getValueType() == ValueType.VOID
-				&& overriders.getValueType() != null) {
+		if (hasValues()
+				&& getValueStruct().isVoid()
+				&& overriders.hasValues()) {
 			// void can be overridden by non-void
-			valueType = overriders.getValueType();
-		} else if (
-				overriders.getValueType() == ValueType.VOID
-				&& getValueType() != null) {
+			valueStruct = overriders.getValueStruct();
+		} else if (overriders.hasValues()
+				&& overriders.getValueStruct().isVoid()
+				&& hasValues()) {
 			// non-void can be overridden by void
-			valueType = getValueType();
+			valueStruct = getValueStruct();
 		} else {
-			valueType = compatibleType(overriders);
-			if (valueType == ValueType.NONE) {
+			valueStruct = compatibleStruct(overriders);
+			if (valueStruct != null && valueStruct.isNone()) {
 				return this;
 			}
 		}
@@ -413,20 +423,20 @@ public class Definitions extends Scoped {
 			if (overriders.conditions().isEmpty()) {
 				// No condition specified.
 				return refineRequirements(overriders.requirements())
-						.refineClaims(valueType, overriders.claims());
+						.refineClaims(valueStruct, overriders.claims());
 			}
 			return removeConditions()
 					.refineRequirements(overriders.requirements())
 					.refineConditions(overriders.conditions())
-					.refineClaims(valueType, overriders.claims());
+					.refineClaims(valueStruct, overriders.claims());
 		}
 
 		// Inherit claims, but not propositions.
 		return removePropositions()
 				.refineRequirements(overriders.requirements())
 				.refineConditions(overriders.conditions())
-				.refineClaims(valueType, overriders.claims())
-				.refinePropositions(valueType, overriders.propositions());
+				.refineClaims(valueStruct, overriders.claims())
+				.refinePropositions(valueStruct, overriders.propositions());
 	}
 
 	public Definitions claim() {
@@ -435,7 +445,7 @@ public class Definitions extends Scoped {
 		}
 		return new Definitions(
 				this,
-				getValueType(),
+				getValueStruct(),
 				conditions().claim(requirements()),
 				NO_CONDITIONS,
 				propositions().claim(claims()),
@@ -448,7 +458,7 @@ public class Definitions extends Scoped {
 		}
 		return new Definitions(
 				this,
-				getValueType(),
+				getValueStruct(),
 				NO_REQUIREMENTS,
 				requirements().unclaim(conditions()),
 				NO_CLAIMS,
@@ -473,7 +483,7 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				location,
 				getScope(),
-				getValueType(),
+				getValueStruct(),
 				NO_REQUIREMENTS,
 				NO_CONDITIONS,
 				NO_CLAIMS,
@@ -484,7 +494,7 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				location,
 				getScope(),
-				getValueType(),
+				getValueStruct(),
 				NO_REQUIREMENTS,
 				NO_CONDITIONS,
 				NO_CLAIMS,
@@ -494,7 +504,7 @@ public class Definitions extends Scoped {
 	public Definitions valuePart(LocationInfo location) {
 		return new Definitions(
 				this,
-				getValueType(),
+				getValueStruct(),
 				NO_REQUIREMENTS,
 				NO_CONDITIONS,
 				NO_CLAIMS,
@@ -504,7 +514,7 @@ public class Definitions extends Scoped {
 	public Definitions claimPart(LocationInfo location) {
 		return new Definitions(
 				this,
-				getValueType(),
+				getValueStruct(),
 				NO_REQUIREMENTS,
 				NO_CONDITIONS,
 				NO_CLAIMS,
@@ -514,7 +524,7 @@ public class Definitions extends Scoped {
 	public Definitions propositionPart(LocationInfo location) {
 		return new Definitions(
 				this,
-				getValueType(),
+				getValueStruct(),
 				NO_REQUIREMENTS,
 				NO_CONDITIONS,
 				NO_CLAIMS,
@@ -524,7 +534,7 @@ public class Definitions extends Scoped {
 	public Definitions runtime() {
 		return new Definitions(
 				this,
-				getValueType(),
+				getValueStruct(),
 				requirements(),
 				conditions().runtime(this),
 				claims(),
@@ -547,11 +557,11 @@ public class Definitions extends Scoped {
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
-		final ValueType<?> valueType = getValueType();
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
 
-		if (valueType != null) {
+		if (valueStruct != null) {
 			out.append("Definitions(");
-			out.append(valueType);
+			out.append(valueStruct);
 			out.append(")[");
 		} else {
 			out.append("Definitions[");
@@ -570,40 +580,40 @@ public class Definitions extends Scoped {
 	}
 
 	private boolean assertEmptyWithoutValues() {
-		assert (getValueType() != null
+		assert (hasValues()
 				|| (propositions().isEmpty() && claims().isEmpty())) :
 				"Non-empty definitions should have a value type";
 		return true;
 	}
 
-	private final ValueType<?> valueType() {
-		return this.valueType != null ? this.valueType : ValueType.VOID;
+	private final ValueStruct<?, ?> valueStruct() {
+		return this.valueStruct != null ? this.valueStruct : ValueStruct.VOID;
 	}
 
-	private ValueType<?> compatibleType(ValueDef refinement) {
-		return compatibleType(refinement, refinement.getValueType());
+	private ValueStruct<?, ?> compatibleStruct(ValueDef refinement) {
+		return compatibleStruct(refinement, refinement.getValueStruct());
 	}
 
-	private ValueType<?> compatibleType(Definitions refinements) {
-		return compatibleType(refinements, refinements.getValueType());
+	private ValueStruct<?, ?> compatibleStruct(Definitions refinements) {
+		return compatibleStruct(refinements, refinements.getValueStruct());
 	}
 
-	private ValueType<?> compatibleType(
+	private ValueStruct<?, ?> compatibleStruct(
 			LogInfo refinement,
-			ValueType<?> valueType) {
-		if (valueType == null) {
-			return getValueType();
+			ValueStruct<?, ?> valueStruct) {
+		if (valueStruct == null) {
+			return getValueStruct();
 		}
-		if (getValueType() == null) {
-			return valueType;
+		if (getValueStruct() == null) {
+			return valueStruct;
 		}
-		if (getValueType() == valueType) {
-			return valueType;
+		if (getValueStruct() == valueStruct) {
+			return valueStruct;
 		}
 
-		getLogger().incompatible(refinement, getValueType());
+		getLogger().incompatible(refinement, getValueStruct());
 
-		return ValueType.NONE;
+		return ValueStruct.NONE;
 	}
 
 	private final Definitions refineRequirements(CondDefs refinements) {
@@ -615,15 +625,18 @@ public class Definitions extends Scoped {
 	}
 
 	private final Definitions refineClaims(
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			ValueDefs refinements) {
-		return claims().refineClaims(this, valueType, refinements);
+		return claims().refineClaims(this, valueStruct, refinements);
 	}
 
 	private final Definitions refinePropositions(
-			ValueType<?> valueType,
+			ValueStruct<?, ?> valueStruct,
 			ValueDefs refinements) {
-		return propositions().refinePropositions(this, valueType, refinements);
+		return propositions().refinePropositions(
+				this,
+				valueStruct,
+				refinements);
 	}
 
 	private Definitions removeConditions() {
@@ -632,7 +645,7 @@ public class Definitions extends Scoped {
 		}
 		return new Definitions(
 				this,
-				this.valueType,
+				this.valueStruct,
 				requirements(),
 				NO_CONDITIONS,
 				claims(),
@@ -645,7 +658,7 @@ public class Definitions extends Scoped {
 		}
 		return new Definitions(
 				this,
-				getValueType(),
+				getValueStruct(),
 				requirements(),
 				NO_CONDITIONS,
 				claims(),

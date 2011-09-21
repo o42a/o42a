@@ -21,11 +21,12 @@ package org.o42a.core.value;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
+import org.o42a.core.value.impl.SkipDirective;
 
 
 public interface Directive {
 
-	Directive SKIP_DIRECTIVE = new SkipDirective();
+	Directive SKIP_DIRECTIVE = SkipDirective.INSTANCE;
 
 	void apply(Ref directive, InstructionContext context);
 

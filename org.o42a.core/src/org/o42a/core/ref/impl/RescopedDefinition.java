@@ -60,12 +60,6 @@ final class RescopedDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void defineArray(ArrayDefiner definer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public String toString() {
 		return this.definition.toString();
 	}

@@ -47,18 +47,6 @@ class ClauseExpressionVisitor
 			new PhraseDeclarationsVisitor();
 
 	@Override
-	public ClauseBuilder visitArray(ArrayNode array, ClauseBuilder p) {
-		p.getContext().getLogger().invalidDefinition(array);
-		return null;
-	}
-
-	@Override
-	public ClauseBuilder visitBrackets(BracketsNode brackets, ClauseBuilder p) {
-		p.getContext().getLogger().invalidClauseContent(brackets);
-		return null;
-	}
-
-	@Override
 	public ClauseBuilder visitAscendants(
 			AscendantsNode ascendants,
 			ClauseBuilder p) {

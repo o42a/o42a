@@ -40,12 +40,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public final class AncestorRef extends Ref {
+final class AncestorRef extends Ref {
 
 	private final Ref ref;
 	private boolean error;
 
-	public AncestorRef(LocationInfo location, Ref ref) {
+	AncestorRef(LocationInfo location, Ref ref) {
 		super(location, ref.distribute());
 		this.ref = ref;
 	}

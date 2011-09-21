@@ -94,7 +94,7 @@ public abstract class Rescoper {
 		return new Definitions(
 				definitions,
 				resultScope,
-				definitions.getValueType(),
+				definitions.getValueStruct(),
 				newRequirements,
 				newConditions,
 				newClaims,

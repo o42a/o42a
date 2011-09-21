@@ -43,15 +43,6 @@ enum AssignmentKind {
 			return new VariableAssignmentOp(builder, assignment);
 		}
 
-	},
-
-	ARRAY_ASSIGNMENT() {
-
-		@Override
-		public StOp op(LocalBuilder builder, AssignmentStatement assignment) {
-			return new ArrayAssignmentOp(builder, assignment);
-		}
-
 	};
 
 	public final boolean isError() {

@@ -101,6 +101,11 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
+	public Obj getDirective() {
+		return this.root.getDirective();
+	}
+
+	@Override
 	public Obj getFalse() {
 		return this.root.getFalse();
 	}
@@ -121,8 +126,15 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
-	public Obj getDirective() {
-		return this.root.getDirective();
+	public Obj getArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Obj getConstantArray() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

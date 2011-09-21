@@ -30,7 +30,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -43,7 +43,6 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<S, ?, ?> sentenceFactory;
 	private DefinitionTargets definitionTargets;
-	private ValueType<?> valueType;
 	private boolean instructionsExecuted;
 
 	protected Block(
@@ -106,36 +105,6 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		}
 
 		return this.definitionTargets = result;
-	}
-
-	@Override
-	public ValueType<?> getValueType() {
-		if (this.valueType != null) {
-			return this.valueType;
-		}
-		if (!getDefinitionTargets().haveValue()) {
-			return this.valueType = ValueType.VOID;
-		}
-
-		ValueType<?> result = null;
-
-		for (Sentence<?> sentence : getSentences()) {
-
-			final ValueType<?> type = sentence.valueType(result);
-
-			if (type == null) {
-				continue;
-			}
-			if (result == null) {
-				result = type;
-				continue;
-			}
-			if (result != type) {
-				getLogger().incompatible(sentence, result);
-			}
-		}
-
-		return this.valueType = result;
 	}
 
 	public List<? extends Sentence<S>> getSentences() {
@@ -265,6 +234,38 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			this.sentences.add(sentence);
 		}
 		return sentence;
+	}
+
+	ValueStruct<?, ?> valueStruct(ValueStruct<?, ?> expected) {
+		if (!getDefinitionTargets().haveValue()) {
+			return null;
+		}
+
+		ValueStruct<?, ?> result = null;
+
+		for (Sentence<?> sentence : getSentences()) {
+
+			final ValueStruct<?, ?> struct = sentence.valueStruct(expected);
+
+			if (struct == null) {
+				continue;
+			}
+			if (result == null) {
+				result = struct;
+				continue;
+			}
+			if (result.assignableFrom(struct)) {
+				continue;
+			}
+			if (struct.assertAssignableFrom(result)) {
+				result = struct;
+				continue;
+			}
+
+			getLogger().incompatible(sentence, result);
+		}
+
+		return result;
 	}
 
 	private final class ExecuteInstructions implements Instruction {

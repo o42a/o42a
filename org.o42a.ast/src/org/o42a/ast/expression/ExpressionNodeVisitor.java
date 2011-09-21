@@ -20,24 +20,24 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.DecimalNode;
-import org.o42a.ast.ref.TypeNodeVisitor;
+import org.o42a.ast.ref.RefNodeVisitor;
 
 
-public interface ExpressionNodeVisitor<R, P> extends TypeNodeVisitor<R, P> {
+public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
+
+	R visitAscendants(AscendantsNode ascendants, P p);
 
 	R visitDecimal(DecimalNode decimal, P p);
 
 	R visitText(TextNode text, P p);
 
-	R visitArray(ArrayNode array, P p);
-
 	R visitUnary(UnaryNode expression, P p);
 
 	R visitBinary(BinaryNode expression, P p);
 
-	R visitParentheses(ParenthesesNode parentheses, P p);
-
 	R visitBrackets(BracketsNode brackets, P p);
+
+	R visitParentheses(ParenthesesNode parentheses, P p);
 
 	R visitPhrase(PhraseNode phrase, P p);
 

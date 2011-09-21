@@ -28,6 +28,7 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.*;
+import org.o42a.core.member.impl.field.FieldContainer;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -203,6 +204,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.overridden;
 	}
 
+	@Override
 	public abstract A getArtifact();
 
 	@Override

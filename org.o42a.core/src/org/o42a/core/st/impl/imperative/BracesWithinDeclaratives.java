@@ -37,7 +37,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class BracesWithinDeclaratives extends Statement {
@@ -58,8 +58,8 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public ValueType<?> getValueType() {
-		return this.block.getValueType();
+	public ValueStruct<?, ?> getValueStruct() {
+		return this.block.getValueStruct();
 	}
 
 	@Override

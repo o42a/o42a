@@ -43,6 +43,10 @@ public abstract class PathFragment {
 		return null;
 	}
 
+	public boolean isMaterializer() {
+		return false;
+	}
+
 	public abstract PathFragment materialize();
 
 	public abstract Container resolve(

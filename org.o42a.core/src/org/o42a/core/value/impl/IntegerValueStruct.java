@@ -1,0 +1,65 @@
+/*
+    Compiler Core
+    Copyright (C) 2011 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.core.value.impl;
+
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.AbstractValueStructIR;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.ValueType;
+
+
+public class IntegerValueStruct extends SingleValueStruct<Long> {
+
+	public static final IntegerValueStruct INSTANCE = new IntegerValueStruct();
+
+	private IntegerValueStruct() {
+		super(ValueType.INTEGER, Long.class);
+	}
+
+	@Override
+	protected ValueStructIR<SingleValueStruct<Long>, Long> createIR(
+			Generator generator) {
+		return new IR(generator, this);
+	}
+
+	private static final class IR
+			extends AbstractValueStructIR<SingleValueStruct<Long>, Long> {
+
+		IR(Generator generator, IntegerValueStruct valueStruct) {
+			super(generator, valueStruct);
+		}
+
+		@Override
+		public Val val(Long value) {
+			return new Val(value);
+		}
+
+		@Override
+		protected CodeId constId(Long value) {
+			return getGenerator().id("CONST").sub("INTEGER")
+					.sub(Long.toString(value));
+		}
+
+	}
+
+}

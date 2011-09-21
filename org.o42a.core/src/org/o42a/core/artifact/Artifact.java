@@ -20,7 +20,6 @@
 package org.o42a.core.artifact;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
@@ -80,8 +79,6 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	public abstract Obj toObject();
-
-	public abstract Array toArray();
 
 	public abstract Link toLink();
 

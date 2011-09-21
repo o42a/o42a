@@ -61,11 +61,13 @@ public class Root extends Obj {
 	private final AnnotatedSources sources;
 
 	private final VoidField voidField;
+	private Obj directiveObject;
 	private Obj falseObject;
 	private Obj integerObject;
 	private Obj floatObject;
 	private Obj stringObject;
-	private Obj directiveObject;
+	private Obj arrayObject;
+	private Obj constantArrayObject;
 
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
@@ -86,6 +88,14 @@ public class Root extends Obj {
 
 	public final Field<Obj> getVoidField() {
 		return this.voidField;
+	}
+
+	public final Obj getDirective() {
+		if (this.directiveObject != null) {
+			return this.directiveObject;
+		}
+		return this.directiveObject =
+				field("directive").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getFalse() {
@@ -120,12 +130,20 @@ public class Root extends Obj {
 				field("string").substance(dummyUser()).toObject();
 	}
 
-	public final Obj getDirective() {
-		if (this.directiveObject != null) {
-			return this.directiveObject;
+	public final Obj getArray() {
+		if (this.arrayObject != null) {
+			return this.arrayObject;
 		}
-		return this.directiveObject =
-				field("directive").substance(dummyUser()).toObject();
+		return this.arrayObject =
+				field("array").substance(dummyUser()).toObject();
+	}
+
+	public final Obj getConstantArray() {
+		if (this.constantArrayObject != null) {
+			return this.constantArrayObject;
+		}
+		return this.constantArrayObject =
+				field("constant_array").substance(dummyUser()).toObject();
 	}
 
 	@Override

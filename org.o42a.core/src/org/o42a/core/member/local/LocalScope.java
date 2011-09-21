@@ -120,6 +120,11 @@ public abstract class LocalScope
 	}
 
 	@Override
+	public final Artifact<?> getArtifact() {
+		return null;
+	}
+
+	@Override
 	public boolean isTopScope() {
 		return false;
 	}

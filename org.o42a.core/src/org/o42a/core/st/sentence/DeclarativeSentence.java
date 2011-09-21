@@ -29,7 +29,7 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.SentenceEnv;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarativeSentence extends Sentence<Declaratives> {
@@ -284,8 +284,8 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 
 		@Override
-		protected ValueType<?> expectedType() {
-			return this.sentence.getBlock().getInitialEnv().getExpectedType();
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return this.sentence.getBlock().getInitialEnv().getExpectedValueStruct();
 		}
 
 	}

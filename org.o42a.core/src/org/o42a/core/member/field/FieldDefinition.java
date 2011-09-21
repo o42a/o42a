@@ -24,9 +24,9 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.ArrayInitializer;
+import org.o42a.core.member.impl.field.DefaultFieldDefinition;
+import org.o42a.core.member.impl.field.InvalidFieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -61,10 +61,6 @@ public abstract class FieldDefinition extends Placed {
 				emptyBlock(location));
 	}
 
-	public static FieldDefinition arrayDefinition(ArrayInitializer array) {
-		return new ArrayFieldDefinition(array);
-	}
-
 	public FieldDefinition(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
@@ -79,16 +75,7 @@ public abstract class FieldDefinition extends Placed {
 
 	public abstract void defineLink(LinkDefiner definer);
 
-	public abstract void defineArray(ArrayDefiner definer);
-
 	protected static ArtifactKind<?> artifactKind(Ref ref) {
-
-		final Resolution resolution = ref.getResolution();
-
-		if (resolution.toArray() != null) {
-			return ArtifactKind.ARRAY;
-		}
-
 		return ArtifactKind.OBJECT;
 	}
 

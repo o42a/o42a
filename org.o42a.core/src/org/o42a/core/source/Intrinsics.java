@@ -39,6 +39,8 @@ public abstract class Intrinsics {
 
 	public abstract Obj getRoot();
 
+	public abstract Obj getDirective();
+
 	public abstract Obj getFalse();
 
 	public abstract Obj getInteger();
@@ -47,7 +49,9 @@ public abstract class Intrinsics {
 
 	public abstract Obj getString();
 
-	public abstract Obj getDirective();
+	public abstract Obj getArray();
+
+	public abstract Obj getConstantArray();
 
 	public abstract Module getModule(String moduleId);
 

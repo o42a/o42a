@@ -25,7 +25,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ConstructorOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 final class ValuePartOp extends ConstructorOp {
@@ -52,8 +52,8 @@ final class ValuePartOp extends ConstructorOp {
 		return part().writeValue(dirs, this);
 	}
 
-	final ValueType<?> getValueType() {
-		return getRef().getScope().toObject().value().getValueType();
+	final ValueStruct<?, ?> getValueStruct() {
+		return getRef().getScope().toObject().value().getValueStruct();
 	}
 
 	final ValuePartRef getPartRef() {

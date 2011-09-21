@@ -39,7 +39,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.use.UserInfo;
 
 
@@ -135,7 +135,7 @@ public class ConsoleModule extends AnnotatedModule {
 		final AllocationCode alloc = main.undisposable();
 		final ValOp result =
 				alloc.allocate(null, VAL_TYPE)
-				.op(builder, ValueType.INTEGER)
+				.op(builder, ValueStruct.INTEGER)
 				.storeIndefinite(alloc);
 		final ValDirs dirs =
 				builder.falseWhenUnknown(alloc, exit.head())
