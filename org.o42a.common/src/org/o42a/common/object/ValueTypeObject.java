@@ -35,6 +35,10 @@ public abstract class ValueTypeObject extends AnnotatedObject {
 		setValueStruct(valueStruct);
 	}
 
+	protected ValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources);
+	}
+
 	@Override
 	protected Definitions overrideDefinitions(
 			Scope scope,
