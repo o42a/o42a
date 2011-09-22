@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
@@ -27,17 +27,18 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
 import org.o42a.core.st.Reproducer;
 
 
-final class ModuleFragment extends PathFragment {
+public final class ModuleFragment extends PathFragment {
 
 	private final String moduleId;
 
-	ModuleFragment(String moduleId) {
+	public ModuleFragment(String moduleId) {
 		this.moduleId = moduleId;
 	}
 

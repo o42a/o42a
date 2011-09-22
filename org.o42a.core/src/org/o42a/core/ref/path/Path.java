@@ -44,6 +44,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -345,6 +346,20 @@ public class Path {
 
 		return reproducedPath(reproduced);
 	}
+	
+	public final HostOp write(CodeDirs dirs, HostOp start) {
+
+		HostOp found = start;
+
+		for (int i = 0; i < this.fragments.length; ++i) {
+			found = this.fragments[i].write(dirs, found);
+			if (found == null) {
+				throw new IllegalStateException(toString(i + 1) + " not found");
+			}
+		}
+
+		return found;
+	}
 
 	@Override
 	public int hashCode() {
@@ -409,20 +424,6 @@ public class Path {
 			return null;
 		}
 		return new PathTracker(resolver, walker);
-	}
-
-	final HostOp write(CodeDirs dirs, HostOp start) {
-
-		HostOp found = start;
-
-		for (int i = 0; i < this.fragments.length; ++i) {
-			found = this.fragments[i].write(dirs, found);
-			if (found == null) {
-				throw new IllegalStateException(toString(i + 1) + " not found");
-			}
-		}
-
-		return found;
 	}
 
 	private static boolean assertFragmentsNotNull(PathFragment[] fragments) {

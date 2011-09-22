@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -26,9 +26,17 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.PathWalker;
 
 
-public class DummyPathWalker implements PathWalker {
+public final class DummyPathWalker implements PathWalker {
+
+	public static final DummyPathWalker INSTANCE = new DummyPathWalker();
+
+	private DummyPathWalker() {
+	}
 
 	@Override
 	public boolean root(Path path, Scope start) {

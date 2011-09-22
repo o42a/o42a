@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
@@ -29,15 +29,16 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-final class PathRescoper extends Rescoper {
+public final class PathRescoper extends Rescoper {
 
 	private final Path path;
 
-	PathRescoper(Path path, Scope finalScope) {
+	public PathRescoper(Path path, Scope finalScope) {
 		super(finalScope);
 		this.path = path.rebuild();
 	}

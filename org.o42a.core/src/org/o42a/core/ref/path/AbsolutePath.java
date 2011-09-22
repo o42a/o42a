@@ -36,6 +36,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -49,6 +50,10 @@ public final class AbsolutePath extends Path {
 
 	AbsolutePath(PathFragment... fragments) {
 		super(true, fragments);
+	}
+
+	public final CompilerContext getContext() {
+		return this.context;
 	}
 
 	public AbsolutePath append(CompilerContext context, String... fields) {
@@ -153,6 +158,23 @@ public final class AbsolutePath extends Path {
 		return unchangedPath(this);
 	}
 
+	public HostOp write(CodeDirs dirs, CodeBuilder builder) {
+
+		final CompilerContext context = builder.getContext();
+		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
+		HostOp found = start.op(builder, dirs.code());
+		final PathFragment[] fragments = getFragments();
+
+		for (int i = startIndex(context); i < fragments.length; ++i) {
+			found = fragments[i].write(dirs, found);
+			if (found == null) {
+				throw new IllegalStateException(toString(i + 1) + " not found");
+			}
+		}
+
+		return found;
+	}
+
 	@Override
 	PathTracker startWalk(
 			PathResolver resolver,
@@ -168,23 +190,6 @@ public final class AbsolutePath extends Path {
 				resolver,
 				walker,
 				startIndex(start.getContext()));
-	}
-
-	HostOp write(CodeDirs dirs, CodeBuilder builder) {
-
-		final CompilerContext context = builder.getContext();
-		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
-		HostOp found = start.op(builder, dirs.code());
-		final PathFragment[] fragments = getFragments();
-
-		for (int i = startIndex(context); i < fragments.length; ++i) {
-			found = fragments[i].write(dirs, found);
-			if (found == null) {
-				throw new IllegalStateException(toString(i + 1) + " not found");
-			}
-		}
-
-		return found;
 	}
 
 	Obj startObject(CompilerContext context) {

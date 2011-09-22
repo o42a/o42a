@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,9 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
-
-import static org.o42a.util.use.User.dummyUser;
+package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -28,39 +26,41 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.*;
 
 
-class AbsolutePathStartFinder implements PathWalker {
+public class PathTracker implements PathWalker {
 
-	private int index;
-	private Obj startObject;
-	private int startIndex;
-	private boolean unreachable;
+	protected final PathResolver initialResolver;
+	private final PathWalker walker;
+	private boolean aborted;
 
-	public final Obj getStartObject() {
-		return this.startObject;
+	public PathTracker(PathResolver resolver, PathWalker walker) {
+		this.initialResolver = resolver;
+		this.walker = walker;
 	}
 
-	public final int getStartIndex() {
-		return this.startIndex;
+	public PathResolver nextResolver() {
+		return this.initialResolver;
+	}
+
+	public final boolean isAborted() {
+		return this.aborted;
 	}
 
 	@Override
-	public boolean root(Path path, Scope root) {
-		this.startObject = root.toObject();
-		return false;
+	public final boolean root(Path path, Scope root) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean start(Path path, Scope start) {
+	public final boolean start(Path path, Scope start) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean module(PathFragment fragment, Obj module) {
-		this.startObject = module;
-		this.startIndex = ++this.index;
-		return true;
+		return walk(this.walker.module(fragment, module));
 	}
 
 	@Override
@@ -68,7 +68,7 @@ class AbsolutePathStartFinder implements PathWalker {
 			Container enclosed,
 			PathFragment fragment,
 			Container enclosing) {
-		return set(enclosing.toObject());
+		return walk(this.walker.up(enclosed, fragment, enclosing));
 	}
 
 	@Override
@@ -76,14 +76,7 @@ class AbsolutePathStartFinder implements PathWalker {
 			Container container,
 			PathFragment fragment,
 			Member member) {
-
-		final Field<?> field = member.toField(dummyUser());
-
-		if (field == null) {
-			return unreachable();
-		}
-
-		return set(field.toObject());
+		return walk(this.walker.member(container, fragment, member));
 	}
 
 	@Override
@@ -91,12 +84,12 @@ class AbsolutePathStartFinder implements PathWalker {
 			Obj object,
 			PathFragment fragment,
 			Field<?> dependency) {
-		return unreachable();
+		return walk(this.walker.fieldDep(object, fragment, dependency));
 	}
 
 	@Override
 	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
-		return unreachable();
+		return walk(this.walker.refDep(object, fragment, dependency));
 	}
 
 	@Override
@@ -104,32 +97,22 @@ class AbsolutePathStartFinder implements PathWalker {
 			Artifact<?> artifact,
 			PathFragment fragment,
 			Obj result) {
-		return set(result);
+		return walk(this.walker.materialize(artifact, fragment, result));
 	}
 
 	@Override
 	public void abortedAt(Scope last, PathFragment brokenFragment) {
+		this.walker.abortedAt(last, brokenFragment);
 	}
 
 	@Override
 	public boolean done(Container result) {
-		return false;
+		return walk(this.walker.done(result));
 	}
 
-	private final boolean set(Obj object) {
-		if (object == null || this.unreachable) {
-			++this.index;
-			return true;
-		}
-		this.startObject = object;
-		this.startIndex = ++this.index;
-		return true;
-	}
-
-	private final boolean unreachable() {
-		this.unreachable = true;
-		++this.index;
-		return true;
+	boolean walk(boolean succeed) {
+		this.aborted = !succeed;
+		return succeed;
 	}
 
 }

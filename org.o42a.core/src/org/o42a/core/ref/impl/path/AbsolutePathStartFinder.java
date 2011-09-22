@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,7 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
+
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -26,40 +28,42 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.PathWalker;
 
 
-class PathTracker implements PathWalker {
+public final class AbsolutePathStartFinder implements PathWalker {
 
-	protected final PathResolver initialResolver;
-	private final PathWalker walker;
-	private boolean aborted;
+	private int index;
+	private Obj startObject;
+	private int startIndex;
+	private boolean unreachable;
 
-	PathTracker(PathResolver resolver, PathWalker walker) {
-		this.initialResolver = resolver;
-		this.walker = walker;
+	public final Obj getStartObject() {
+		return this.startObject;
 	}
 
-	public PathResolver nextResolver() {
-		return this.initialResolver;
-	}
-
-	public final boolean isAborted() {
-		return this.aborted;
-	}
-
-	@Override
-	public final boolean root(Path path, Scope root) {
-		throw new UnsupportedOperationException();
+	public final int getStartIndex() {
+		return this.startIndex;
 	}
 
 	@Override
-	public final boolean start(Path path, Scope start) {
+	public boolean root(Path path, Scope root) {
+		this.startObject = root.toObject();
+		return false;
+	}
+
+	@Override
+	public boolean start(Path path, Scope start) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean module(PathFragment fragment, Obj module) {
-		return walk(this.walker.module(fragment, module));
+		this.startObject = module;
+		this.startIndex = ++this.index;
+		return true;
 	}
 
 	@Override
@@ -67,7 +71,7 @@ class PathTracker implements PathWalker {
 			Container enclosed,
 			PathFragment fragment,
 			Container enclosing) {
-		return walk(this.walker.up(enclosed, fragment, enclosing));
+		return set(enclosing.toObject());
 	}
 
 	@Override
@@ -75,7 +79,14 @@ class PathTracker implements PathWalker {
 			Container container,
 			PathFragment fragment,
 			Member member) {
-		return walk(this.walker.member(container, fragment, member));
+
+		final Field<?> field = member.toField(dummyUser());
+
+		if (field == null) {
+			return unreachable();
+		}
+
+		return set(field.toObject());
 	}
 
 	@Override
@@ -83,12 +94,12 @@ class PathTracker implements PathWalker {
 			Obj object,
 			PathFragment fragment,
 			Field<?> dependency) {
-		return walk(this.walker.fieldDep(object, fragment, dependency));
+		return unreachable();
 	}
 
 	@Override
 	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
-		return walk(this.walker.refDep(object, fragment, dependency));
+		return unreachable();
 	}
 
 	@Override
@@ -96,22 +107,32 @@ class PathTracker implements PathWalker {
 			Artifact<?> artifact,
 			PathFragment fragment,
 			Obj result) {
-		return walk(this.walker.materialize(artifact, fragment, result));
+		return set(result);
 	}
 
 	@Override
 	public void abortedAt(Scope last, PathFragment brokenFragment) {
-		this.walker.abortedAt(last, brokenFragment);
 	}
 
 	@Override
 	public boolean done(Container result) {
-		return walk(this.walker.done(result));
+		return false;
 	}
 
-	boolean walk(boolean succeed) {
-		this.aborted = !succeed;
-		return succeed;
+	private final boolean set(Obj object) {
+		if (object == null || this.unreachable) {
+			++this.index;
+			return true;
+		}
+		this.startObject = object;
+		this.startIndex = ++this.index;
+		return true;
+	}
+
+	private final boolean unreachable() {
+		this.unreachable = true;
+		++this.index;
+		return true;
 	}
 
 }

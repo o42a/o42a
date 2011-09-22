@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
@@ -33,19 +33,22 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathReproduction;
+import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.Holder;
 
 
-class PathTarget extends Ref {
+public final class PathTarget extends Ref {
 
 	private final Path path;
 	private final Ref start;
 	private Holder<Path> fullPath;
 
-	PathTarget(
+	public PathTarget(
 			LocationInfo location,
 			Distributor distributor,
 			Path path,
@@ -55,7 +58,7 @@ class PathTarget extends Ref {
 		this.start = start;
 	}
 
-	PathTarget(
+	public PathTarget(
 			LocationInfo location,
 			Distributor distributor,
 			Path path) {

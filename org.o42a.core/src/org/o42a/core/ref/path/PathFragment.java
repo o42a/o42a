@@ -26,14 +26,15 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.path.MaterializerFragment;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
 public abstract class PathFragment {
 
-	public static final MaterializeFragment MATERIALIZE =
-			new MaterializeFragment();
+	public static final MaterializerFragment MATERIALIZE =
+			MaterializerFragment.INSTANCE;
 
 	public boolean isAbsolute() {
 		return false;
