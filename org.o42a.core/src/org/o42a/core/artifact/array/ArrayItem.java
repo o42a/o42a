@@ -26,6 +26,7 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -45,6 +46,22 @@ public abstract class ArrayItem extends MaterializableArtifactScope<Link> {
 		this.owner = enclosing.getScope().toObject();
 		assert this.owner != null :
 			"Enclosing scope is not object: " + indexRef.getScope();
+	}
+
+	public final Obj getOwner() {
+		return this.owner;
+	}
+
+	public final ArrayValueStruct getArrayStruct() {
+		return (ArrayValueStruct) getOwner().value().getValueStruct();
+	}
+
+	public final boolean isConstant() {
+		return getArrayStruct().isConstant();
+	}
+
+	public final TypeRef getTypeRef() {
+		return getArrayStruct().getItemTypeRef();
 	}
 
 	public final Ref getIndexRef() {

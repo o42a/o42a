@@ -26,6 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.common.MaterializableArtifact;
+import org.o42a.core.artifact.common.MaterializableArtifactScope;
 import org.o42a.core.artifact.link.impl.LinkTarget;
 import org.o42a.core.artifact.link.impl.RuntimeLinkTarget;
 import org.o42a.core.artifact.object.Obj;
@@ -39,6 +40,13 @@ public abstract class Link extends MaterializableArtifact<Link> {
 	private TargetRef targetRef;
 
 	public Link(Scope scope, ArtifactKind<Link> kind) {
+		super(scope);
+		this.kind = kind;
+	}
+
+	protected Link(
+			MaterializableArtifactScope<Link> scope,
+			ArtifactKind<Link> kind) {
 		super(scope);
 		this.kind = kind;
 	}

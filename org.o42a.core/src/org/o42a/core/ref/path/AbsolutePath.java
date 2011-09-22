@@ -127,6 +127,11 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
+	public AbsolutePath arrayItem(Ref indexRef) {
+		return (AbsolutePath) super.arrayItem(indexRef);
+	}
+
+	@Override
 	public AbsolutePath append(PathFragment fragment) {
 		return (AbsolutePath) super.append(fragment);
 	}
