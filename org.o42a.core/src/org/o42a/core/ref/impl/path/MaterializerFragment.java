@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -28,11 +28,18 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-final class MaterializeFragment extends PathFragment {
+public final class MaterializerFragment extends PathFragment {
+
+	public static final MaterializerFragment INSTANCE =
+			new MaterializerFragment();
+
+	private MaterializerFragment() {
+	}
 
 	@Override
 	public boolean isMaterializer() {

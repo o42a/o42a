@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;

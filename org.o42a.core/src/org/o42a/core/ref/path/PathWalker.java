@@ -26,11 +26,12 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.path.DummyPathWalker;
 
 
 public interface PathWalker {
 
-	DummyPathWalker DUMMY_PATH_WALKER = new DummyPathWalker();
+	PathWalker DUMMY_PATH_WALKER = DummyPathWalker.INSTANCE;
 
 	boolean root(Path path, Scope root);
 

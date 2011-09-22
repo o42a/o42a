@@ -17,16 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.ref.path.PathResolver;
+import org.o42a.core.ref.path.PathWalker;
 
-final class AbsolutePathTracker extends PathTracker {
+
+public final class AbsolutePathTracker extends PathTracker {
 
 	private int beforeStart;
 
-	AbsolutePathTracker(
+	public AbsolutePathTracker(
 			PathResolver resolver,
 			PathWalker walker,
 			int startIndex) {
