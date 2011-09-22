@@ -38,6 +38,7 @@ import java.util.Arrays;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.array.impl.ArrayItemFragment;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -190,6 +191,10 @@ public class Path {
 		}
 
 		return new AbsolutePath(newFragments);
+	}
+
+	public Path arrayItem(Ref indexRef) {
+		return append(new ArrayItemFragment(indexRef));
 	}
 
 	public Path append(Path path) {
@@ -346,7 +351,7 @@ public class Path {
 
 		return reproducedPath(reproduced);
 	}
-	
+
 	public final HostOp write(CodeDirs dirs, HostOp start) {
 
 		HostOp found = start;

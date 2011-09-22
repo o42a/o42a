@@ -20,8 +20,10 @@
 package org.o42a.core.artifact.array.impl;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.link.Link;
+import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
@@ -29,14 +31,18 @@ import org.o42a.core.st.Reproducer;
 
 public class RuntimeArrayItem extends ArrayItem {
 
+	private ItemLink artifact;
+
 	public RuntimeArrayItem(Ref indexRef) {
 		super(indexRef, indexRef.distribute(), indexRef);
 	}
 
 	@Override
 	public Link getArtifact() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.artifact != null) {
+			return this.artifact;
+		}
+		return this.artifact = new ItemLink(this);
 	}
 
 	@Override
@@ -53,8 +59,30 @@ public class RuntimeArrayItem extends ArrayItem {
 
 	@Override
 	protected ScopeIR createIR(Generator generator) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
+	}
+
+	private static final class ItemLink extends Link {
+
+		private final ArrayItem item;
+
+		ItemLink(ArrayItem item) {
+			super(
+					item,
+					item.isConstant()
+					? ArtifactKind.LINK : ArtifactKind.VARIABLE);
+			this.item = item;
+		}
+
+		@Override
+		protected TargetRef buildTargetRef() {
+
+			final RuntimeArrayItemConstructor ref =
+					new RuntimeArrayItemConstructor(this.item);
+
+			return ref.toTargetRef(this.item.getTypeRef());
+		}
+
 	}
 
 }

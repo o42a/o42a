@@ -20,8 +20,10 @@
 package org.o42a.compiler.ip.ref.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.link.Link;
+import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
@@ -51,8 +53,7 @@ public class KnownArrayItem extends ArrayItem {
 
 	@Override
 	public Link getArtifact() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ItemLink(this);
 	}
 
 	@Override
@@ -69,8 +70,26 @@ public class KnownArrayItem extends ArrayItem {
 
 	@Override
 	protected ScopeIR createIR(Generator generator) {
-		// TODO Auto-generated method stub
-		return null;
+		return new KnownArrayItemIR(generator, this);
+	}
+
+	private static final class ItemLink extends Link {
+
+		private final KnownArrayItem item;
+
+		ItemLink(KnownArrayItem item) {
+			super(
+					item,
+					item.isConstant()
+					? ArtifactKind.LINK : ArtifactKind.VARIABLE);
+			this.item = item;
+		}
+
+		@Override
+		protected TargetRef buildTargetRef() {
+			return this.item.getValueRef().toTargetRef(this.item.getTypeRef());
+		}
+
 	}
 
 }
