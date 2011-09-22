@@ -17,9 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.artifact.common;
 
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.use.UseInfo;
 
@@ -31,6 +32,10 @@ public abstract class MaterializableArtifact<
 	private Obj materialization;
 
 	public MaterializableArtifact(Scope scope) {
+		super(scope);
+	}
+
+	protected MaterializableArtifact(MaterializableArtifactScope<A> scope) {
 		super(scope);
 	}
 

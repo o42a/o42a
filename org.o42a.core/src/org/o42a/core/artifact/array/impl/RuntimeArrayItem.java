@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,24 +17,44 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
+package org.o42a.core.artifact.array.impl;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Distributor;
+import org.o42a.core.artifact.array.ArrayItem;
+import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.object.ObjectScopeIR;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.st.Reproducer;
 
 
-final class ObjScope extends ObjectScope {
+public class RuntimeArrayItem extends ArrayItem {
 
-	ObjScope(LocationInfo location, Distributor enclosing) {
-		super(location, enclosing);
+	public RuntimeArrayItem(Ref indexRef) {
+		super(indexRef, indexRef.distribute(), indexRef);
+	}
+
+	@Override
+	public Link getArtifact() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RuntimeArrayItem reproduce(Reproducer reproducer) {
+
+		final Ref indexRef = getIndexRef().reproduce(reproducer);
+
+		if (indexRef == null) {
+			return null;
+		}
+
+		return new RuntimeArrayItem(indexRef);
 	}
 
 	@Override
 	protected ScopeIR createIR(Generator generator) {
-		return new ObjectScopeIR(generator, getArtifact());
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

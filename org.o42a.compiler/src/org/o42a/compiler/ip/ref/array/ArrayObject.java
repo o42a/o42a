@@ -33,7 +33,6 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
 
 
 final class ArrayObject extends Obj {
@@ -110,10 +109,6 @@ final class ArrayObject extends Obj {
 			final ArgumentNode argNode = argNodes[i];
 			final ExpressionNode itemNode = argNode.getValue();
 			final Location location = new Location(getContext(), itemNode);
-			final Ref indexRef = ValueStruct.INTEGER.constantRef(
-					location,
-					distributor,
-					Long.valueOf(i));
 
 			if (itemNode != null) {
 
@@ -122,12 +117,12 @@ final class ArrayObject extends Obj {
 						distributor);
 
 				if (itemRef != null) {
-					items[i] = new ArrayItem(indexRef, itemRef);
+					items[i] = new KnownArrayItem(i, itemRef);
 					continue;
 				}
 			}
 
-			items[i] = new ArrayItem(indexRef, errorRef(location, distributor));
+			items[i] = new KnownArrayItem(i, errorRef(location, distributor));
 		}
 
 		return items;
@@ -154,12 +149,7 @@ final class ArrayObject extends Obj {
 				continue;
 			}
 
-			newItems[i] = new ArrayItem(
-					ValueStruct.INTEGER.constantRef(
-							oldItem,
-							distributor,
-							Long.valueOf(i)),
-					errorRef(oldItem, distributor));
+			newItems[i] = new KnownArrayItem(i, errorRef(oldItem, distributor));
 		}
 
 		return newItems;

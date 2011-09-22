@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.array.impl;
+package org.o42a.core.artifact.common;
 
 import static java.util.Collections.emptyList;
 
@@ -26,7 +26,7 @@ import java.util.Collection;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.array.ArrayItem;
+import org.o42a.core.artifact.ArtifactScope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -34,25 +34,25 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 
 
-public final class ArrayItemContainer
+final class ArtifactContainer<A extends Artifact<A>>
 		extends AbstractContainer
 		implements MemberContainer {
 
-	private final ArrayItem arrayItem;
+	private final ArtifactScope<A> scope;
 
-	public ArrayItemContainer(ArrayItem item) {
-		super(item);
-		this.arrayItem = item;
+	ArtifactContainer(ArtifactScope<A> scope) {
+		super(scope);
+		this.scope = scope;
 	}
 
 	@Override
 	public Scope getScope() {
-		return this.arrayItem;
+		return this.scope;
 	}
 
 	@Override
 	public Container getEnclosingContainer() {
-		return this.arrayItem.getEnclosingContainer();
+		return this.scope.getEnclosingContainer();
 	}
 
 	@Override
@@ -66,9 +66,8 @@ public final class ArrayItemContainer
 	}
 
 	@Override
-	public Artifact<?> toArtifact() {
-		// TODO Auto-generated method stub
-		return null;
+	public A toArtifact() {
+		return this.scope.getArtifact();
 	}
 
 	@Override

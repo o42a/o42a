@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -184,7 +185,7 @@ public class MemberFragment extends PathFragment {
 		final MemberKey reproductionKey =
 				this.memberKey.getMemberId().reproduceFrom(origin).key(scope);
 
-		return PathReproduction.reproducedPath(reproductionKey.toPath());
+		return reproducedPath(reproductionKey.toPath());
 	}
 
 	private final Member firstDeclaration() {

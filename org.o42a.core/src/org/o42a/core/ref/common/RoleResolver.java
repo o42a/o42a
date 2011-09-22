@@ -27,6 +27,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Role;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
@@ -165,6 +166,14 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
+	public boolean arrayItem(Obj array, PathFragment fragment, ArrayItem item) {
+		if (!mayProceedInsidePrototype()) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
 	public boolean fieldDep(
 			Obj object,
 			PathFragment fragment,
@@ -173,7 +182,7 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 			return false;
 		}
 		if (dependency.isPrototype()) {
-			return updateRole(PROTOTYPE);
+			this.insidePrototype = true;
 		}
 		return true;
 	}

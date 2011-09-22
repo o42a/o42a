@@ -25,6 +25,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
@@ -165,6 +166,11 @@ final class ClauseReuser implements ResolutionWalker, PathWalker {
 				this.reuseContents);
 
 		return true;
+	}
+
+	@Override
+	public boolean arrayItem(Obj array, PathFragment fragment, ArrayItem item) {
+		return invalidClauseReused();
 	}
 
 	@Override
