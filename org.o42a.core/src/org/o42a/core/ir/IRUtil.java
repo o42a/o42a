@@ -27,6 +27,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
@@ -202,6 +203,14 @@ public class IRUtil {
 				Member member) {
 			this.id = addMemberId(this.generator, this.id, member.getId());
 			return true;
+		}
+
+		@Override
+		public boolean arrayItem(
+				Obj array,
+				PathFragment fragment,
+				ArrayItem item) {
+			throw new IllegalStateException();
 		}
 
 		@Override

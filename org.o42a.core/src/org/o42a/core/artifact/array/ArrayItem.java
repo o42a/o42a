@@ -19,79 +19,43 @@
 */
 package org.o42a.core.artifact.array;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.*;
-import org.o42a.core.artifact.array.impl.ArrayItemContainer;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
+import org.o42a.core.artifact.common.MaterializableArtifactScope;
+import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberContainer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.log.Loggable;
 
 
-public class ArrayItem extends AbstractScope {
+public abstract class ArrayItem extends MaterializableArtifactScope<Link> {
 
 	private final Ref indexRef;
-	private final Ref valueRef;
 	private final Obj owner;
-	private ArrayItemContainer container;
 
-	public ArrayItem(Ref indexRef, Ref valueRef) {
-		this.indexRef.assertSameScope(valueRef);
+	public ArrayItem(
+			LocationInfo location,
+			Distributor enclosing,
+			Ref indexRef) {
+		super(location, enclosing);
+		this.indexRef.assertScopeIs(enclosing.getScope());
 		this.indexRef = indexRef;
-		this.valueRef = valueRef;
-		this.owner = valueRef.getScope().toObject();
+		this.owner = enclosing.getScope().toObject();
 		assert this.owner != null :
-			"Enclosing scope is not object: " + valueRef.getScope();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.owner.getPlace();
-	}
-
-	@Override
-	public final CompilerContext getContext() {
-		return this.valueRef.getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.valueRef.getLoggable();
-	}
-
-	@Override
-	public MemberContainer getContainer() {
-		if (this.container != null) {
-			return this.container;
-		}
-		return this.container = new ArrayItemContainer(this);
+			"Enclosing scope is not object: " + indexRef.getScope();
 	}
 
 	public final Ref getIndexRef() {
 		return this.indexRef;
 	}
 
-	public final Ref getValueRef() {
-		return this.valueRef;
-	}
-
 	@Override
-	public Container getEnclosingContainer() {
-		return this.valueRef.getContainer();
-	}
+	public abstract Link getArtifact();
 
 	@Override
 	public Path getEnclosingScopePath() {
-		return null;
-	}
-
-	@Override
-	public Member toMember() {
 		return null;
 	}
 
@@ -104,22 +68,14 @@ public class ArrayItem extends AbstractScope {
 				other.getArtifact().materialize().type());
 	}
 
-	public ArrayItem reproduce(Reproducer reproducer) {
-
-		final Ref indexRef = this.indexRef.reproduce(reproducer);
-		final Ref valueRef = this.valueRef.reproduce(reproducer);
-
-		if (indexRef == null || valueRef == null) {
-			return null;
-		}
-
-		return new ArrayItem(indexRef, valueRef);
-	}
+	public abstract ArrayItem reproduce(Reproducer reproducer);
 
 	@Override
-	public ScopeIR ir(Generator generator) {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		if (this.indexRef == null) {
+			return super.toString();
+		}
+		return getEnclosingScope() + "[" + this.indexRef + "]";
 	}
 
 }

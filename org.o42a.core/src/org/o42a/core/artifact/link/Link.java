@@ -24,8 +24,8 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.MaterializableArtifact;
 import org.o42a.core.artifact.Role;
+import org.o42a.core.artifact.common.MaterializableArtifact;
 import org.o42a.core.artifact.link.impl.LinkTarget;
 import org.o42a.core.artifact.link.impl.RuntimeLinkTarget;
 import org.o42a.core.artifact.object.Obj;

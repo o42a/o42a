@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,39 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.object;
+package org.o42a.core.artifact.common;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactScope;
-import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.source.LocationInfo;
 
 
-public abstract class ObjectScope extends ArtifactScope<Obj> {
+public abstract class MaterializableArtifactScope<
+		A extends MaterializableArtifact<A>>
+				extends ArtifactScope<A> {
 
-	private Path enclosingScopePath;
+	private ArtifactContainer<A> container;
 
-	protected ObjectScope(LocationInfo location, Distributor enclosing) {
+	public MaterializableArtifactScope(
+			LocationInfo location,
+			Distributor enclosing) {
 		super(location, enclosing);
 	}
 
 	@Override
-	public final Obj getContainer() {
-		return getArtifact();
-	}
-
-	@Override
-	public Path getEnclosingScopePath() {
-		if (getEnclosingScope().isTopScope()) {
-			return null;
+	public MemberContainer getContainer() {
+		if (this.container != null) {
+			return this.container;
 		}
-
-		this.enclosingScopePath = getArtifact().scopePath();
-
-		return this.enclosingScopePath;
+		return this.container = new ArtifactContainer<A>(this);
 	}
 
 	@Override
@@ -58,16 +52,12 @@ public abstract class ObjectScope extends ArtifactScope<Obj> {
 			return true;
 		}
 
-		final Obj otherObject = other.toObject();
-
-		if (otherObject == null) {
-			return false;
+		if (this == other) {
+			return true;
 		}
 
-		return toObject().type().derivedFrom(otherObject.type());
+		return getArtifact().materialize().type().derivedFrom(
+				other.getArtifact().materialize().type());
 	}
-
-	@Override
-	protected abstract ScopeIR createIR(Generator generator);
 
 }

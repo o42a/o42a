@@ -22,6 +22,7 @@ package org.o42a.core.artifact;
 import org.o42a.core.*;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
@@ -42,6 +43,11 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		super(scope, new ArtifactDistributor(scope, scope));
 	}
 
+	protected Artifact(ArtifactScope<A> scope) {
+		super(scope, new ArtifactDistributor(scope, scope));
+		scope.setScopeArtifact(toArtifact());
+	}
+
 	protected Artifact(Scope scope, A sample) {
 		super(scope, new ArtifactDistributor(scope, sample));
 	}
@@ -54,7 +60,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	@Override
-	public Container getContainer() {
+	public MemberContainer getContainer() {
 		return getScope().getContainer();
 	}
 

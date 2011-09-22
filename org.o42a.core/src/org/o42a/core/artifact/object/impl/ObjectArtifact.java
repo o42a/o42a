@@ -19,45 +19,27 @@
 */
 package org.o42a.core.artifact.object.impl;
 
-import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
-
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactScope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
 
 
 public abstract class ObjectArtifact extends Artifact<Obj> {
 
-	protected static Path scopePath(Obj object) {
-
-		final Scope scope = object.getScope();
-		final PathFragment scopePathFragment;
-		final Container enclosing = scope.getEnclosingContainer();
-
-		if (enclosing.toObject() != null) {
-			scopePathFragment = new ParentObjectFragment(
-					SCOPE_FIELD_ID.key(scope));
-		} else {
-			assert enclosing.toLocal() != null :
-				"Unsupported kind of enclosing scope " + enclosing;
-			scopePathFragment = new ParentLocalFragment(object);
-		}
-
-		return scopePathFragment.toPath();
-	}
-
-	public ObjectArtifact(Scope scope, Obj sample) {
-		super(scope, sample);
-	}
-
 	public ObjectArtifact(Scope scope) {
 		super(scope);
+	}
+
+	public ObjectArtifact(ArtifactScope<Obj> scope) {
+		super(scope);
+	}
+
+	protected ObjectArtifact(Scope scope, Obj sample) {
+		super(scope, sample);
 	}
 
 	protected abstract Dep addFieldDep(MemberKey memberKey);

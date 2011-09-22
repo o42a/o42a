@@ -24,6 +24,7 @@ import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.util.use.User.dummyUser;
@@ -36,8 +37,7 @@ import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.impl.ObjectArtifact;
-import org.o42a.core.artifact.object.impl.ScopeField;
+import org.o42a.core.artifact.object.impl.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.*;
@@ -51,6 +51,7 @@ import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
@@ -92,7 +93,6 @@ public abstract class Obj
 
 	protected Obj(ObjectScope scope) {
 		super(scope);
-		scope.setScopeObject(this);
 	}
 
 	protected Obj(Scope scope, Obj sample) {
@@ -456,7 +456,21 @@ public abstract class Obj
 	}
 
 	public Path scopePath() {
-		return scopePath(this);
+
+		final Scope scope = getScope();
+		final PathFragment scopePathFragment;
+		final Container enclosing = scope.getEnclosingContainer();
+
+		if (enclosing.toObject() != null) {
+			scopePathFragment = new ParentObjectFragment(
+					SCOPE_FIELD_ID.key(scope));
+		} else {
+			assert enclosing.toLocal() != null :
+				"Unsupported kind of enclosing scope " + enclosing;
+			scopePathFragment = new ParentLocalFragment(this);
+		}
+
+		return scopePathFragment.toPath();
 	}
 
 	@Override

@@ -22,6 +22,7 @@ package org.o42a.core.ref.impl.path;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
@@ -77,6 +78,11 @@ public class PathTracker implements PathWalker {
 			PathFragment fragment,
 			Member member) {
 		return walk(this.walker.member(container, fragment, member));
+	}
+
+	@Override
+	public boolean arrayItem(Obj array, PathFragment fragment, ArrayItem item) {
+		return walk(this.walker.arrayItem(array, fragment, item));
 	}
 
 	@Override

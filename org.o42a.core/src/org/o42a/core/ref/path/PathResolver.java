@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 import org.o42a.util.use.*;
@@ -89,6 +90,10 @@ public final class PathResolver implements LocationInfo, UserInfo {
 	@Override
 	public final CompilerContext getContext() {
 		return this.location.getContext();
+	}
+
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
 	}
 
 	public final PathResolver resolveBy(UserInfo user) {

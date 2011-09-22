@@ -38,11 +38,11 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-final class ParentLocalFragment extends PathFragment {
+public final class ParentLocalFragment extends PathFragment {
 
 	private final Obj object;
 
-	ParentLocalFragment(Obj object) {
+	public ParentLocalFragment(Obj object) {
 		this.object = object;
 	}
 

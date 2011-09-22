@@ -22,6 +22,7 @@ package org.o42a.core.ref.path;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
@@ -45,6 +46,8 @@ public interface PathWalker {
 			Container container,
 			PathFragment fragment,
 			Member member);
+
+	boolean arrayItem(Obj array, PathFragment fragment, ArrayItem item);
 
 	boolean fieldDep(Obj object, PathFragment fragment, Field<?> dependency);
 
