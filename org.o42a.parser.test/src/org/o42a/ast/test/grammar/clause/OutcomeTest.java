@@ -59,7 +59,7 @@ public class OutcomeTest extends  GrammarTestCase {
 
 		assertName("foo", result.getClauseKey());
 		assertName("bar", result.getOutcome().getValue());
-		assertNotNull(result.getContinuation());
+		assertNotNull(result.getRequirement());
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class OutcomeTest extends  GrammarTestCase {
 		assertNull(result.getOutcome().getValue());
 		assertThat(result.getReused().length, is(1));
 		assertName("bar", result.getReused()[0].getClause());
-		assertNotNull(result.getContinuation());
+		assertNotNull(result.getRequirement());
 	}
 
 	private ClauseDeclaratorNode parse(String text) {

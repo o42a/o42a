@@ -125,7 +125,18 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<foo...> ()");
 
-		assertRange(4, 7, result.getContinuation());
+		assertRange(4, 7, result.getRequirement());
+		assertTrue(result.requiresContinuation());
+		assertThat(result.getReused().length, is(0));
+	}
+
+	@Test
+	public void terminator() {
+
+		final ClauseDeclaratorNode result = parse("<foo!> ()");
+
+		assertRange(4, 5, result.getRequirement());
+		assertTrue(result.isTerminator());
 		assertThat(result.getReused().length, is(0));
 	}
 

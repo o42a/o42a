@@ -65,7 +65,7 @@ public class ClauseReuseTest extends GrammarTestCase {
 
 		final ClauseDeclaratorNode result = parse("<foo | bar ...> ()");
 
-		assertRange(11, 14, result.getContinuation());
+		assertRange(11, 14, result.getRequirement());
 
 		final ReusedClauseNode[] reused = result.getReused();
 

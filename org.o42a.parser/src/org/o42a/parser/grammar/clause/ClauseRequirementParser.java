@@ -22,60 +22,60 @@ package org.o42a.parser.grammar.clause;
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
-import org.o42a.ast.clause.ClauseDeclaratorNode.Continuation;
+import org.o42a.ast.clause.ClauseDeclaratorNode.Requirement;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.string.Characters;
 
 
-final class ClauseContinuationParser
-		implements Parser<SignNode<ClauseDeclaratorNode.Continuation>> {
+final class ClauseRequirementParser
+		implements Parser<SignNode<ClauseDeclaratorNode.Requirement>> {
 
-	static final ClauseContinuationParser CLAUSE_CONTINUATION =
-			new ClauseContinuationParser();
+	static final ClauseRequirementParser CLAUSE_REQUIREMENT =
+			new ClauseRequirementParser();
 
-	private ClauseContinuationParser() {
+	private ClauseRequirementParser() {
 	}
 
 	@Override
-	public SignNode<Continuation> parse(ParserContext context) {
+	public SignNode<Requirement> parse(ParserContext context) {
 
 		final int next = context.next();
+		final FixedPosition start;
+		final ClauseDeclaratorNode.Requirement requirement;
 
-		if (next == Characters.HORIZONTAL_ELLIPSIS) {
-
-			final FixedPosition start = context.current().fix();
-
+		switch (next) {
+		case '!':
+			start = context.current().fix();
 			context.acceptAll();
-
-			return context.acceptComments(
-					true,
-					new SignNode<ClauseDeclaratorNode.Continuation>(
-							start,
-							context.current(),
-							ClauseDeclaratorNode.Continuation.ELLIPSIS));
-		}
-		if (next != '.') {
+			requirement = ClauseDeclaratorNode.Requirement.TERMINATE;
+			break;
+		case Characters.HORIZONTAL_ELLIPSIS:
+			start = context.current().fix();
+			context.acceptAll();
+			requirement = ClauseDeclaratorNode.Requirement.CONTINUE;
+			break;
+		case '.':
+			start = context.current().fix();
+			if (context.next() != '.') {
+				return null;
+			}
+			if (context.next() != '.') {
+				return null;
+			}
+			context.acceptAll();
+			requirement = ClauseDeclaratorNode.Requirement.CONTINUE;
+			break;
+		default:
 			return null;
 		}
-
-		final FixedPosition start = context.current().fix();
-
-		if (context.next() != '.') {
-			return null;
-		}
-		if (context.next() != '.') {
-			return null;
-		}
-
-		context.acceptAll();
 
 		return context.acceptComments(
 				true,
-				new SignNode<ClauseDeclaratorNode.Continuation>(
+				new SignNode<ClauseDeclaratorNode.Requirement>(
 						start,
 						context.current(),
-						ClauseDeclaratorNode.Continuation.ELLIPSIS));
+						requirement));
 	}
 
 }
