@@ -25,6 +25,7 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
+import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -86,6 +87,10 @@ public class Phrase extends Placed {
 		return this;
 	}
 
+	public final Ascendants getImplicitAscendants() {
+		return getMainContext().getImplicitAscendants();
+	}
+
 	public final PhraseName name(LocationInfo location, String name) {
 		return append(this.last.name(location, name));
 	}
@@ -124,7 +129,7 @@ public class Phrase extends Placed {
 	}
 
 	public final Ref toRef() {
-		return new PhraseEx(this);
+		return new PhraseRef(this);
 	}
 
 	public final void build() {
@@ -133,6 +138,17 @@ public class Phrase extends Placed {
 
 	public final boolean createsObject() {
 		return getMainContext().createsObject();
+	}
+
+	public Phrase asPrefix(Ref prefix, PhraseContinuation nextPart) {
+
+		final Phrase newPhrase = new Phrase(this.ip, this, distribute());
+
+		newPhrase.setAncestor(prefix.toTypeRef());
+		newPhrase.prefix.append(nextPart);
+		newPhrase.last = this.last;
+
+		return newPhrase;
 	}
 
 	@Override

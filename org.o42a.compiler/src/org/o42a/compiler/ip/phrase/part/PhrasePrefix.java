@@ -75,6 +75,10 @@ public class PhrasePrefix extends PhrasePart {
 		return out.toString();
 	}
 
+	public void append(PhraseContinuation next) {
+		setFollowing(next);
+	}
+
 	@Override
 	public String toString() {
 		return this.ascendants.toString();

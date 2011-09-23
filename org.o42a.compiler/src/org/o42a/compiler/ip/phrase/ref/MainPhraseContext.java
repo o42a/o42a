@@ -26,9 +26,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import java.util.LinkedList;
 
-import org.o42a.compiler.ip.phrase.part.NextClause;
-import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
-import org.o42a.compiler.ip.phrase.part.PhrasePrefix;
+import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Sample;
@@ -52,6 +50,8 @@ final class MainPhraseContext extends PhraseContext {
 	private boolean standaloneRef;
 	private PhraseContext nextContext;
 	private Ascendants implicitAscendants;
+	private PhraseContinuation nextPart;
+	private PhraseTerminator terminator;
 	private Path outcome = Path.SELF_PATH;
 
 	MainPhraseContext(Phrase phrase) {
@@ -60,6 +60,18 @@ final class MainPhraseContext extends PhraseContext {
 
 	public final AscendantsDefinition getAscendants() {
 		return getPhrase().getPrefix().getAscendants();
+	}
+
+	public final Ascendants getImplicitAscendants() {
+		return this.implicitAscendants;
+	}
+
+	public final PhraseContinuation getNextPart() {
+		return this.nextPart;
+	}
+
+	public final PhraseTerminator getTerminator() {
+		return this.terminator;
 	}
 
 	public Path getOutcome() {
@@ -175,7 +187,7 @@ final class MainPhraseContext extends PhraseContext {
 						memberId,
 						what);
 
-				if (found != null) {
+				if (found.found()) {
 					return found;
 				}
 			}
@@ -207,7 +219,7 @@ final class MainPhraseContext extends PhraseContext {
 						memberId,
 						what);
 
-				if (found != null) {
+				if (found.found()) {
 					return found;
 				}
 			}
@@ -258,19 +270,47 @@ final class MainPhraseContext extends PhraseContext {
 				break;
 			}
 
+			if (context.isObject()
+					&& !context.isMain()
+					&& !nextClause.requiresInstance()) {
+				// Expression clause after declaration part.
+				// Construct object and use this constructor as a new phrase
+				// prefix.
+				this.nextPart = continuation;
+				break;
+			}
+
 			for (NextClause implicit : nextClause.getImplicit()) {
 				context = nextContext(stack, continuation, implicit);
 			}
 
-			context = nextContext(stack, continuation, nextClause);
-			context.incompleteInstance().addContent(continuation);
-			continuation = continuation.getFollowing();
+			final PartsAsPrefix partsAsPrefix = nextClause.partsAsPrefix();
 
-			final Clause clause = nextClause.getClause();
+			if (partsAsPrefix.includeLast()) {
+				context = nextContext(stack, continuation, nextClause);
+				context.incompleteInstance().addContent(continuation);
 
-			if (clause != null) {
-				this.outcome = clause.getOutcome();
+				final Clause clause = nextClause.getClause();
+
+				if (clause != null) {
+					this.outcome = clause.getOutcome();
+				}
 			}
+
+			if (partsAsPrefix.isPrefix()) {
+				// Phrase terminator encountered.
+				// Use the phrase prefix with preceding parts
+				// as a new phrase prefix.
+				this.terminator = nextClause.getTerminator();
+				if (partsAsPrefix.startNewPhraseFromLast()) {
+					this.nextPart = continuation;
+				} else {
+					this.nextPart = continuation.getFollowing();
+				}
+				break;
+			}
+
+			continuation = continuation.getFollowing();
 		}
 	}
 
@@ -280,12 +320,7 @@ final class MainPhraseContext extends PhraseContext {
 			NextClause nextClause) {
 		if (stack.isEmpty()) {
 			stack.push(this);
-			if (nextClause.getClause() == null) {
-				// Next clause is an object itself.
-				// New object will be constructed.
-				this.createsObject = 1;
-			} else if (nextClause.getClause().requiresInstance()) {
-				// Next clause requires enclosing object instance to be created.
+			if (nextClause.requiresInstance()) {
 				this.createsObject = 1;
 			} else {
 				// Next clause is expression.
@@ -295,7 +330,11 @@ final class MainPhraseContext extends PhraseContext {
 				final StaticTypeRef[] samples = getPhrase().getSamples();
 
 				if (samples.length != 0) {
-					getLogger().prohibitedSamples(samples[0]);
+					getLogger().error(
+							"prohibited_phrase_samples",
+							samples[0],
+							"Samples prohibited when the first clause of phrase"
+							+ " is an expression");
 				}
 			}
 		}
