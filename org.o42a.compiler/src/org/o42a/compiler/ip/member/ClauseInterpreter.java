@@ -67,6 +67,9 @@ public class ClauseInterpreter {
 		if (declarator.requiresContinuation()) {
 			declaration = declaration.requireContinuation();
 		}
+		if (declarator.isTerminator()) {
+			declaration = declaration.terminator();
+		}
 
 		final Statement result;
 		final StatementNode content = declarator.getContent();
@@ -159,19 +162,34 @@ public class ClauseInterpreter {
 	private static ClauseBuilder reuseClauses(
 			ClauseBuilder builder,
 			ClauseDeclaratorNode declarator) {
-		for (ReusedClauseNode reused : declarator.getReused()) {
 
-			final RefNode clause = reused.getClause();
+		final ReusedClauseNode[] reusedNodes = declarator.getReused();
+
+		if (reusedNodes.length == 0) {
+			return builder;
+		}
+		if (declarator.isTerminator()) {
+			builder.getLogger().error(
+					"prohibited_terminator_clause_reuse",
+					reusedNodes[0],
+					"Terminator may not have continuations"
+					+ " and thus can not reuse other clauses");
+			return builder;
+		}
+
+		for (ReusedClauseNode reusedNode : reusedNodes) {
+
+			final RefNode clauseNode = reusedNode.getClause();
 			final Ref reusedRef;
 
-			if (clause == null) {
-				if (reused.getReuseContents() != null) {
+			if (clauseNode == null) {
+				if (reusedNode.getReuseContents() != null) {
 					builder.reuseObject();
 				}
 				continue;
 			}
 
-			reusedRef = clause.accept(
+			reusedRef = clauseNode.accept(
 					CLAUSE_DECL_IP.refVisitor(),
 					builder.distribute());
 
@@ -179,7 +197,9 @@ public class ClauseInterpreter {
 				continue;
 			}
 
-			builder.reuseClause(reusedRef, reused.getReuseContents() != null);
+			builder.reuseClause(
+					reusedRef,
+					reusedNode.getReuseContents() != null);
 		}
 
 		return builder;

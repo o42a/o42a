@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.impl.clause;
 
+import static org.o42a.core.member.impl.clause.GroupRegistry.prohibitedContinuation;
+
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -31,14 +33,19 @@ import org.o42a.util.Lambda;
 
 final class ImperativeGroupRegistry extends LocalRegistry {
 
-	private ImperativeGroupRegistry(
-			LocalScope scope,
-			MemberRegistry ownerRegistry) {
-		super(scope, ownerRegistry);
+	private final Group group;
+
+	private ImperativeGroupRegistry(LocalScope scope, Group group) {
+		super(scope, group.getStatements().getMemberRegistry());
+		this.group = group;
 	}
 
 	@Override
 	public ClauseBuilder newClause(ClauseDeclaration declaration) {
+		if (this.group.getBuilder().getDeclaration().isTerminator()) {
+			prohibitedContinuation(declaration);
+			return null;
+		}
 		if (declaration.getKind() == ClauseKind.OVERRIDER) {
 			declaration.getLogger().error(
 					"prohibited_overrider_clause",
@@ -59,9 +66,7 @@ final class ImperativeGroupRegistry extends LocalRegistry {
 
 		@Override
 		public MemberRegistry get(LocalScope arg) {
-			return new ImperativeGroupRegistry(
-					arg,
-					this.group.getStatements().getMemberRegistry());
+			return new ImperativeGroupRegistry(arg, this.group);
 		}
 
 	}
