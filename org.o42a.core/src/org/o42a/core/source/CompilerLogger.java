@@ -381,10 +381,6 @@ public class CompilerLogger implements Logger {
 				"Field can not be declared as prototype");
 	}
 
-	public void prohibitedSamples(LogInfo location) {
-		error("prohibited_samples", location, "Samples are prohibited here");
-	}
-
 	public void prohibitedVariableType(LogInfo location) {
 		error(
 				"prohibited_variable_type",

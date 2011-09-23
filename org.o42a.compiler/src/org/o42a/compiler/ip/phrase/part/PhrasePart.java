@@ -84,7 +84,7 @@ public abstract class PhrasePart extends Location {
 		return setFollowing(new OperandPhrasePart(value, this));
 	}
 
-	private <P extends PhraseContinuation> P setFollowing(P following) {
+	<P extends PhraseContinuation> P setFollowing(P following) {
 		assert this.following == null :
 			this + " already followed by " + this.following;
 		this.following = following;

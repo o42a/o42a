@@ -36,23 +36,22 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 
 class PhraseConstructor extends ObjectConstructor {
 
-	private final PhraseEx phrase;
+	private final Phrase phrase;
 	private final AscendantsDefinition ascendants;
 
-	PhraseConstructor(PhraseEx phrase) {
+	PhraseConstructor(Phrase phrase) {
 		super(
-				phrase.getPhrase(),
+				phrase,
 				phrase.distribute());
 		this.phrase = phrase;
-		this.ascendants =
-				phrase.getPhrase().getMainContext().getAscendants();
+		this.ascendants = phrase.getMainContext().getAscendants();
 		this.ascendants.assertCompatibleScope(this);
 	}
 
 	private PhraseConstructor(
 			LocationInfo location,
 			Distributor distributor,
-			PhraseEx phrase,
+			Phrase phrase,
 			AscendantsDefinition ascendants) {
 		super(location, distributor);
 		this.phrase = phrase;
@@ -85,7 +84,7 @@ class PhraseConstructor extends ObjectConstructor {
 	@Override
 	protected Obj createObject() {
 		return new PhraseObject(
-				this.phrase.getPhrase().getMainContext(),
+				this.phrase.getMainContext(),
 				distribute(),
 				this.ascendants);
 	}

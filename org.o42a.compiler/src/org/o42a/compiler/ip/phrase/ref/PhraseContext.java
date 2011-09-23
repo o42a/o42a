@@ -75,6 +75,14 @@ public abstract class PhraseContext {
 		return this.location;
 	}
 
+	public final boolean isObject() {
+		return getClause() == null;
+	}
+
+	public final boolean isMain() {
+		return this.phrase.getMainContext() == this;
+	}
+
 	public abstract Clause getClause();
 
 	public final ClauseInstance[] getInstances() {

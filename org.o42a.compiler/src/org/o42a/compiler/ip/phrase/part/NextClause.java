@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.compiler.ip.phrase.part.PartsAsPrefix.*;
+
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.util.ArrayUtil;
@@ -63,16 +65,32 @@ public class NextClause implements Cloneable {
 		return new NextClause(memberId, clause, container);
 	}
 
+	public static NextClause terminatePhrase(
+			PhraseTerminator terminator,
+			boolean ignoreLast) {
+		return new PhraseTermination(
+				ignoreLast ? PREFIX_IGNORE_LAST : PREFIX_WITHOUT_LAST,
+				terminator);
+	}
+
 	private final MemberId memberId;
 	private final Clause clause;
+	private PartsAsPrefix partsAsPrefix;
 	private Clause container;
 	private NextClause[] implicit;
 
 	private NextClause(MemberId memberId, Clause clause, Clause container) {
 		this.memberId = memberId;
 		this.clause = clause;
+		this.partsAsPrefix = NOT_PREFIX;
 		this.container = container;
 		this.implicit = NO_IMPLIED;
+	}
+
+	public NextClause(PartsAsPrefix partsAsPrefix) {
+		this.memberId = null;
+		this.clause = null;
+		this.partsAsPrefix = partsAsPrefix;
 	}
 
 	public boolean found() {
@@ -85,6 +103,14 @@ public class NextClause implements Cloneable {
 
 	public Object what() {
 		return this.memberId;
+	}
+
+	public final PartsAsPrefix partsAsPrefix() {
+		return this.partsAsPrefix;
+	}
+
+	public PhraseTerminator getTerminator() {
+		return null;
 	}
 
 	public final MemberId getMemberId() {
@@ -101,6 +127,16 @@ public class NextClause implements Cloneable {
 
 	public final NextClause[] getImplicit() {
 		return this.implicit;
+	}
+
+	public boolean requiresInstance() {
+		if (getClause() == null) {
+			// Next clause is an object itself.
+			// New object will be constructed.
+			return true;
+		}
+		// Next clause requires enclosing object instance to be created.
+		return getClause().requiresInstance();
 	}
 
 	public final NextClause setImplicit(NextClause implicit) {
@@ -121,6 +157,17 @@ public class NextClause implements Cloneable {
 		} else {
 			clone.implicit[0] = this.implicit[0].setContainer(container);
 		}
+
+		return clone;
+	}
+
+	public final NextClause terminate() {
+		assert !this.partsAsPrefix.isPrefix() :
+			"Phrase already terminated: " + this;
+
+		final NextClause clone = clone();
+
+		clone.partsAsPrefix = PREFIX_WITH_LAST;
 
 		return clone;
 	}
@@ -203,6 +250,34 @@ public class NextClause implements Cloneable {
 				return "DeclarationsClause()";
 			}
 			return "DeclarationsClause(" + getClause() + ")";
+		}
+
+	}
+
+	private static final class PhraseTermination extends NextClause {
+
+		private final PhraseTerminator terminator;
+
+		PhraseTermination(
+				PartsAsPrefix partsAsPrefix,
+				PhraseTerminator terminator) {
+			super(partsAsPrefix);
+			this.terminator = terminator;
+		}
+
+		@Override
+		public boolean requiresInstance() {
+			return this.terminator.requiresInstance();
+		}
+
+		@Override
+		public Object what() {
+			return this.terminator;
+		}
+
+		@Override
+		public PhraseTerminator getTerminator() {
+			return this.terminator;
 		}
 
 	}

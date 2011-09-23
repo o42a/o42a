@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.ref;
 
+import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
+import org.o42a.compiler.ip.phrase.part.PhraseTerminator;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
@@ -28,11 +30,11 @@ import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
 
 
-class PhraseEx extends Wrap {
+class PhraseRef extends Wrap {
 
 	private final Phrase phrase;
 
-	PhraseEx(Phrase phrase) {
+	PhraseRef(Phrase phrase) {
 		super(phrase, phrase.distribute());
 		this.phrase = phrase;
 	}
@@ -48,24 +50,43 @@ class PhraseEx extends Wrap {
 
 	@Override
 	protected Ref resolveWrapped() {
-
-		final MainPhraseContext context = this.phrase.getMainContext();
-		final Ref ref;
-
-		if (!context.createsObject()) {
-			ref = context.standaloneRef();
-		} else {
-			ref = new PhraseConstructor(this);
-		}
-
-		final Path outcome = context.getOutcome();
-
-		return outcome.target(ref, ref.distribute(), ref);
+		return buildRef(this.phrase);
 	}
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return new Definition(this.phrase, super.createFieldDefinition());
+	}
+
+	private Ref buildRef(Phrase phrase) {
+
+		final MainPhraseContext context = phrase.getMainContext();
+		final Ref ref;
+
+		if (!context.createsObject()) {
+			ref = context.standaloneRef();
+		} else {
+			ref = new PhraseConstructor(phrase);
+		}
+
+		final Path outcome = context.getOutcome();
+		final Ref result = outcome.target(ref, ref.distribute(), ref);
+		final PhraseTerminator terminator = context.getTerminator();
+		final Ref terminated;
+
+		if (terminator == null) {
+			terminated = result;
+		} else {
+			terminated = terminator.terminate(result);
+		}
+
+		final PhraseContinuation nextPart = context.getNextPart();
+
+		if (nextPart == null) {
+			return terminated;
+		}
+
+		return buildRef(phrase.asPrefix(terminated, nextPart));
 	}
 
 	private static final class Definition extends FieldDefinition {

@@ -27,10 +27,10 @@ import org.o42a.core.member.field.ObjectDefiner;
 
 final class PhraseFieldDefinition extends FieldDefinition {
 
-	private final PhraseEx phrase;
+	private final Phrase phrase;
 	private FieldDefinition definition;
 
-	PhraseFieldDefinition(PhraseEx phrase) {
+	PhraseFieldDefinition(Phrase phrase) {
 		super(phrase, phrase.distribute());
 		this.phrase = phrase;
 	}
@@ -61,7 +61,7 @@ final class PhraseFieldDefinition extends FieldDefinition {
 		}
 
 		final MainPhraseContext mainContext =
-				this.phrase.getPhrase().getMainContext();
+				this.phrase.getMainContext();
 
 		return this.definition = fieldDefinition(
 				this,
