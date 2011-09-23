@@ -22,14 +22,14 @@ package org.o42a.parser.grammar.clause;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.declarableAdapter;
 import static org.o42a.parser.Grammar.ref;
-import static org.o42a.parser.grammar.clause.ClauseContinuationParser.CLAUSE_CONTINUATION;
+import static org.o42a.parser.grammar.clause.ClauseRequirementParser.CLAUSE_REQUIREMENT;
 import static org.o42a.parser.grammar.clause.OutcomeParser.OUTCOME;
 import static org.o42a.parser.grammar.clause.ReusedClauseParser.REUSED_CLAUSE;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.*;
-import org.o42a.ast.clause.ClauseDeclaratorNode.Continuation;
+import org.o42a.ast.clause.ClauseDeclaratorNode.Requirement;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
@@ -64,8 +64,8 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 
 		final OutcomeNode outcome = context.parse(OUTCOME);
 		final ReusedClauseNode[] reused = reused(context);
-		final SignNode<Continuation> continuation =
-				context.parse(CLAUSE_CONTINUATION);
+		final SignNode<Requirement> requirement =
+				context.parse(CLAUSE_REQUIREMENT);
 		final SignNode<ClauseDeclaratorNode.Parenthesis> closing =
 				closing(context, opening);
 		final StatementNode content = context.parse(this.grammar.statement());
@@ -75,7 +75,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 				clauseKey,
 				outcome,
 				reused,
-				continuation,
+				requirement,
 				closing,
 				content);
 	}

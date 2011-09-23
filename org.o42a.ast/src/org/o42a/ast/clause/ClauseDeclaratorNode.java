@@ -32,7 +32,7 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 	private final ClauseKeyNode clauseKey;
 	private final OutcomeNode outcome;
 	private final ReusedClauseNode[] reused;
-	private final SignNode<Continuation> continuation;
+	private final SignNode<Requirement> requirement;
 	private final SignNode<Parenthesis> closing;
 	private final StatementNode content;
 
@@ -41,7 +41,7 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 			ClauseKeyNode clauseKey,
 			OutcomeNode outcome,
 			ReusedClauseNode[] reused,
-			SignNode<Continuation> continuation,
+			SignNode<Requirement> requirement,
 			SignNode<Parenthesis> closing,
 			StatementNode content) {
 		super(
@@ -51,14 +51,14 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 						clauseKey,
 						outcome,
 						lastNode(reused),
-						continuation,
+						requirement,
 						closing,
 						content));
 		this.opening = opening;
 		this.clauseKey = clauseKey;
 		this.outcome = outcome;
 		this.reused = reused;
-		this.continuation = continuation;
+		this.requirement = requirement;
 		this.closing = closing;
 		this.content = content;
 	}
@@ -80,11 +80,21 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 	}
 
 	public final boolean requiresContinuation() {
-		return this.continuation != null;
+		if (this.requirement == null) {
+			return false;
+		}
+		return this.requirement.getType() == Requirement.CONTINUE;
 	}
 
-	public final SignNode<Continuation> getContinuation() {
-		return this.continuation;
+	public final boolean isTerminator() {
+		if (this.requirement == null) {
+			return false;
+		}
+		return this.requirement.getType() == Requirement.TERMINATE;
+	}
+
+	public final SignNode<Requirement> getRequirement() {
+		return this.requirement;
 	}
 
 	public final SignNode<Parenthesis> getClosing() {
@@ -109,8 +119,8 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 		for (ReusedClauseNode reused : this.reused) {
 			reused.printContent(out);
 		}
-		if (this.continuation != null) {
-			this.continuation.printContent(out);
+		if (this.requirement != null) {
+			this.requirement.printContent(out);
 		}
 		if (this.closing != null) {
 			this.closing.printContent(out);
@@ -141,9 +151,10 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 
 	}
 
-	public enum Continuation implements SignType {
+	public enum Requirement implements SignType {
 
-		ELLIPSIS;
+		CONTINUE,
+		TERMINATE;
 
 		@Override
 		public String getSign() {
