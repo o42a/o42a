@@ -189,6 +189,10 @@ public abstract class Clause implements PlaceInfo {
 		return isImplicit() || getDeclaration().requiresContinuation();
 	}
 
+	public final boolean isTerminator() {
+		return getDeclaration().isTerminator();
+	}
+
 	public final boolean isImplicit() {
 		return getDeclaration().isImplicit();
 	}

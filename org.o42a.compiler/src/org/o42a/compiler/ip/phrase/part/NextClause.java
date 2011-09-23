@@ -75,14 +75,18 @@ public class NextClause implements Cloneable {
 
 	private final MemberId memberId;
 	private final Clause clause;
-	private PartsAsPrefix partsAsPrefix;
+	private final PartsAsPrefix partsAsPrefix;
 	private Clause container;
 	private NextClause[] implicit;
 
 	private NextClause(MemberId memberId, Clause clause, Clause container) {
 		this.memberId = memberId;
 		this.clause = clause;
-		this.partsAsPrefix = NOT_PREFIX;
+		if (clause != null && clause.isTerminator()) {
+			this.partsAsPrefix = PREFIX_WITH_LAST;
+		} else {
+			this.partsAsPrefix = NOT_PREFIX;
+		}
 		this.container = container;
 		this.implicit = NO_IMPLIED;
 	}
@@ -157,17 +161,6 @@ public class NextClause implements Cloneable {
 		} else {
 			clone.implicit[0] = this.implicit[0].setContainer(container);
 		}
-
-		return clone;
-	}
-
-	public final NextClause terminate() {
-		assert !this.partsAsPrefix.isPrefix() :
-			"Phrase already terminated: " + this;
-
-		final NextClause clone = clone();
-
-		clone.partsAsPrefix = PREFIX_WITH_LAST;
 
 		return clone;
 	}

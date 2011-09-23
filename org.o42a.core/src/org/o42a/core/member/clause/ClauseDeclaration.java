@@ -72,6 +72,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	private ClauseId clauseId;
 	private ClauseKind kind;
 	private boolean requiresContinuation;
+	private boolean terminator;
 	private boolean implicit;
 
 	private ClauseDeclaration(
@@ -202,6 +203,19 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		final ClauseDeclaration clone = clone();
 
 		clone.requiresContinuation = true;
+
+		return clone;
+	}
+
+	public final boolean isTerminator() {
+		return this.terminator;
+	}
+
+	public final ClauseDeclaration terminator() {
+
+		final ClauseDeclaration clone = clone();
+
+		clone.terminator = true;
 
 		return clone;
 	}

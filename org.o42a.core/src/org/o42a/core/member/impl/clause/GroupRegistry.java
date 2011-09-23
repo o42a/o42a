@@ -66,6 +66,10 @@ final class GroupRegistry
 
 	@Override
 	public ClauseBuilder newClause(ClauseDeclaration declaration) {
+		if (this.group.isTerminator()) {
+			prohibitedContinuation(declaration);
+			return null;
+		}
 		return this.registry.newClause(declaration.inGroup(getGroupId()));
 	}
 
@@ -90,6 +94,13 @@ final class GroupRegistry
 		final MemberId[] ids = memberId.getIds();
 
 		return ids[ids.length - 1];
+	}
+
+	static void prohibitedContinuation(ClauseDeclaration declaration) {
+		declaration.getLogger().error(
+				"prohibited_terminator_clause_continuation",
+				declaration,
+				"Terminator may not have continuations");
 	}
 
 }

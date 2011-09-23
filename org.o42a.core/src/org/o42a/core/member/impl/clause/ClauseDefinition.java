@@ -22,6 +22,7 @@ package org.o42a.core.member.impl.clause;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
+import static org.o42a.core.member.impl.clause.GroupRegistry.prohibitedContinuation;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
@@ -32,6 +33,8 @@ import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.clause.ClauseBuilder;
+import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -102,8 +105,13 @@ final class ClauseDefinition extends Obj {
 			return;
 		}
 
-		final ObjectMemberRegistry registry =
-				new ObjectMemberRegistry(noInclusions(), this);
+		final ObjectMemberRegistry registry;
+
+		if (toClause().isTerminator()) {
+			registry = new TerminatorRegistry(this);
+		} else {
+			registry = new ObjectMemberRegistry(noInclusions(), this);
+		}
 
 		this.declarations =
 				new DeclarativeBlock(declarations, this, registry);
@@ -147,6 +155,20 @@ final class ClauseDefinition extends Obj {
 		}
 
 		return ascendants.addMemberOverride(overridden);
+	}
+
+	private static final class TerminatorRegistry extends ObjectMemberRegistry {
+
+		TerminatorRegistry(ClauseDefinition owner) {
+			super(noInclusions(), owner);
+		}
+
+		@Override
+		public ClauseBuilder newClause(ClauseDeclaration declaration) {
+			prohibitedContinuation(declaration);
+			return null;
+		}
+
 	}
 
 }
