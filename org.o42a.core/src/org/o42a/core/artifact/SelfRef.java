@@ -25,8 +25,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -126,24 +124,6 @@ final class SelfRef extends Ref {
 		public Op(HostOp host, SelfRef ref) {
 			super(host, ref);
 			this.ref = ref;
-		}
-
-		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
-
-			final HostOp target = target(dirs);
-
-			target.materialize(dirs).writeLogicalValue(
-					dirs,
-					host().toObject(dirs));
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs) {
-
-			final HostOp target = target(dirs.dirs());
-
-			return target.materialize(dirs.dirs()).writeValue(dirs);
 		}
 
 		@Override
