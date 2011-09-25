@@ -77,13 +77,18 @@ public final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
-		getFinalScope().assertCompatible(reproducer.getReproducingScope());
-		return new UpgradeRescoper(this.fromScope, reproducer.getScope());
+	protected Rescoper createUpscoped(Scope toScope) {
+		return null;
 	}
 
 	@Override
 	public void resolveAll(ScopeInfo location, Resolver resolver) {
+	}
+
+	@Override
+	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
+		getFinalScope().assertCompatible(reproducer.getReproducingScope());
+		return new UpgradeRescoper(this.fromScope, reproducer.getScope());
 	}
 
 	@Override

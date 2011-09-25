@@ -64,6 +64,11 @@ public abstract class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
+	public StaticTypeRef upscope(Scope toScope) {
+		return (StaticTypeRef) super.upscope(toScope);
+	}
+
+	@Override
 	public StaticTypeRef reproduce(Reproducer reproducer) {
 		return (StaticTypeRef) super.reproduce(reproducer);
 	}
@@ -113,6 +118,11 @@ public abstract class StaticTypeRef extends TypeRef {
 	protected abstract StaticTypeRef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper);
+
+	@Override
+	protected abstract StaticTypeRef createUpscoped(
+			Ref ref,
+			Rescoper upscopedRescoper);
 
 	@Override
 	protected abstract StaticTypeRef createReproduction(

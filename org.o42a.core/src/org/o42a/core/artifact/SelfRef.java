@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact;
 
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.ObjectValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
@@ -96,6 +97,11 @@ final class SelfRef extends Ref {
 	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected Ref createUpscoped(Scope toScope) {
+		return null;
 	}
 
 	@Override

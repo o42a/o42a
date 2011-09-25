@@ -59,8 +59,12 @@ public final class Wrapper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return host;
+	protected Rescoper createUpscoped(Scope toScope) {
+		return null;
+	}
+
+	@Override
+	public void resolveAll(ScopeInfo location, Resolver resolver) {
 	}
 
 	@Override
@@ -70,7 +74,8 @@ public final class Wrapper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(ScopeInfo location, Resolver resolver) {
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return host;
 	}
 
 	@Override

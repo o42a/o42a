@@ -75,6 +75,14 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 	}
 
 	@Override
+	protected StaticTypeRef createUpscoped(Ref ref, Rescoper upscopedRescoper) {
+		return new DefaultStaticTypeRef(
+				ref,
+				getUntachedRef(),
+				upscopedRescoper);
+	}
+
+	@Override
 	protected StaticTypeRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,

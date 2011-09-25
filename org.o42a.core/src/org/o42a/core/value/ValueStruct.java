@@ -127,6 +127,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 		return (Value<T>) value;
 	}
 
+	public abstract ValueStruct<S, T> upscope(Scope toScope);
+
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :
 			this + " is not assignable from " + other;

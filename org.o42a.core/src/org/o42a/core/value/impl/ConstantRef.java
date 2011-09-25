@@ -21,6 +21,7 @@ package org.o42a.core.value.impl;
 
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -92,6 +93,23 @@ public final class ConstantRef<T> extends Ref {
 	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected Ref createUpscoped(Scope toScope) {
+
+		final ValueStruct<?, T> upscopedStruct =
+				this.valueStruct.upscope(toScope);
+
+		if (upscopedStruct == null) {
+			return null;
+		}
+
+		return new ConstantRef<T>(
+				this,
+				distributeIn(toScope.getContainer()),
+				upscopedStruct,
+				this.value);
 	}
 
 	@Override

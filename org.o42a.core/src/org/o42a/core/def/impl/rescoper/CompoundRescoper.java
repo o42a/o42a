@@ -121,7 +121,9 @@ public final class CompoundRescoper extends Rescoper {
 	@Override
 	public void resolveAll(ScopeInfo location, Resolver resolver) {
 		this.second.resolveAll(location, resolver);
-		this.first.resolveAll(location, this.second.rescope(location, resolver));
+		this.first.resolveAll(
+				location,
+				this.second.rescope(location, resolver));
 	}
 
 	@Override
@@ -170,6 +172,18 @@ public final class CompoundRescoper extends Rescoper {
 	@Override
 	public String toString() {
 		return this.first + " & " + this.second;
+	}
+
+	@Override
+	protected Rescoper createUpscoped(Scope toScope) {
+
+		final Rescoper second = this.second.upscope(toScope);
+
+		if (second == null) {
+			return null;
+		}
+
+		return new CompoundRescoper(this.first, second);
 	}
 
 }

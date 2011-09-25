@@ -68,14 +68,20 @@ public final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return this.ref.op(host).target(dirs);
+	protected Rescoper createUpscoped(Scope toScope) {
+
+		final Ref upscopedRef = this.ref.upscope(toScope);
+
+		if (upscopedRef == null) {
+			return null;
+		}
+
+		return upscopedRef.toRescoper();
 	}
 
 	@Override
-	public Ref rescopeRef(Ref ref) {
-		// TODO Auto-generated method stub
-		return super.rescopeRef(ref);
+	public void resolveAll(ScopeInfo location, Resolver resolver) {
+		this.ref.resolveAll(resolver);
 	}
 
 	@Override
@@ -91,8 +97,8 @@ public final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(ScopeInfo location, Resolver resolver) {
-		this.ref.resolveAll(resolver);
+	public HostOp rescope(CodeDirs dirs, HostOp host) {
+		return this.ref.op(host).target(dirs);
 	}
 
 	@Override

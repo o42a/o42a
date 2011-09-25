@@ -20,6 +20,7 @@
 package org.o42a.core.artifact;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -80,6 +81,11 @@ final class FixedRef extends Ref {
 	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return defaultFieldDefinition();
+	}
+
+	@Override
+	protected Ref createUpscoped(Scope toScope) {
+		return new FixedRef(distributeIn(toScope.getContainer()), this.self);
 	}
 
 	@Override
