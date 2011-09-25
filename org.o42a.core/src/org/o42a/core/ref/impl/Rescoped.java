@@ -166,6 +166,21 @@ public final class Rescoped extends Ref {
 	}
 
 	@Override
+	protected Ref createUpscoped(Scope toScope) {
+
+		final Rescoper upscopedRescoper = this.rescoper.upscope(toScope);
+
+		if (upscopedRescoper == null) {
+			return null;
+		}
+
+		return new Rescoped(
+				this.ref,
+				upscopedRescoper,
+				distributeIn(toScope.getContainer()));
+	}
+
+	@Override
 	protected void fullyResolve(Resolver resolver) {
 		this.ref.resolveAll(this.rescoper.rescope(this, resolver));
 		this.rescoper.resolveAll(this, resolver);

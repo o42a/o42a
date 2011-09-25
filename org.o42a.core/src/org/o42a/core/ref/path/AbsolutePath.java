@@ -75,6 +75,11 @@ public final class AbsolutePath extends Path {
 		return path;
 	}
 
+	@Override
+	public AbsolutePath upscope(LocationInfo location, Scope from, Scope to) {
+		return this;
+	}
+
 	public final Ref target(CompilerContext context) {
 
 		final Artifact<?> target = resolve(context).getArtifact();

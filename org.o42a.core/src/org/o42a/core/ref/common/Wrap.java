@@ -20,6 +20,7 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Rescoper;
@@ -158,6 +159,14 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
+	protected Ref createUpscoped(Scope toScope) {
+		if (this.wrapped != null) {
+			return this.wrapped.upscope(toScope);
+		}
+		return new UpscopedWrap(toScope);
+	}
+
+	@Override
 	protected void fullyResolve(Resolver resolver) {
 		wrapped().resolveAll(resolver);
 	}
@@ -221,6 +230,13 @@ public abstract class Wrap extends Ref {
 		}
 
 		@Override
+		protected TypeRefWrap createUpscoped(
+				Ref ref,
+				Rescoper upscopedRescoper) {
+			return new AncestorWrap(this.location, upscopedRescoper);
+		}
+
+		@Override
 		protected TypeRef resolveWrapped() {
 			return Wrap.this.wrapped().ancestor(this);
 		}
@@ -268,6 +284,19 @@ public abstract class Wrap extends Ref {
 				return this.def;
 			}
 			return this.def = wrapped().toFieldDefinition();
+		}
+
+	}
+
+	private final class UpscopedWrap extends Wrap {
+
+		UpscopedWrap(Scope toScope) {
+			super(Wrap.this, Wrap.this.distributeIn(toScope.getContainer()));
+		}
+
+		@Override
+		protected Ref resolveWrapped() {
+			return wrapped().upscope(getScope());
 		}
 
 	}

@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.type.TypeRef;
@@ -53,6 +54,12 @@ public class ArrayValueStruct
 	public boolean assignableFrom(ValueStruct<?, ?> other) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public ValueStruct<ArrayValueStruct, ArrayItem[]> upscope(Scope toScope) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

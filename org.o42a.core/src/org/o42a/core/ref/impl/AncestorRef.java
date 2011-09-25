@@ -22,6 +22,7 @@ package org.o42a.core.ref.impl;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -135,6 +136,21 @@ final class AncestorRef extends Ref {
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
 		resolve(resolver).resolveValues(resolver);
+	}
+
+	@Override
+	protected Ref createUpscoped(Scope toScope) {
+		if (this.error) {
+			return null;
+		}
+
+		final Ref upscopedRef = this.ref.upscope(toScope);
+
+		if (upscopedRef == null) {
+			return null;
+		}
+
+		return new AncestorRef(this, upscopedRef);
 	}
 
 	@Override

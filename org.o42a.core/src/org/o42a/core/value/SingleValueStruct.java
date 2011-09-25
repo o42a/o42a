@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.core.Scope;
+
 
 public abstract class SingleValueStruct<T>
 		extends ValueStruct<SingleValueStruct<T>, T> {
@@ -37,6 +39,11 @@ public abstract class SingleValueStruct<T>
 	@Override
 	public boolean assignableFrom(ValueStruct<?, ?> other) {
 		return getValueType() == other.getValueType();
+	}
+
+	@Override
+	public ValueStruct<SingleValueStruct<T>, T> upscope(Scope toScope) {
+		return this;
 	}
 
 	@Override

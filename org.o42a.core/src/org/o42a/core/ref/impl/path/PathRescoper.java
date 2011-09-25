@@ -198,6 +198,19 @@ public final class PathRescoper extends Rescoper {
 		return "RescopeTo[" + this.path + ']';
 	}
 
+	@Override
+	protected Rescoper createUpscoped(Scope toScope) {
+
+		final Path upscopedPath =
+				this.path.upscope(getFinalScope(), getFinalScope(), toScope);
+
+		if (upscopedPath == null) {
+			return null;
+		}
+
+		return new PathRescoper(upscopedPath, toScope);
+	}
+
 	private Rescoper startWithPrefix(
 			Reproducer reproducer,
 			PathReproduction pathReproduction) {

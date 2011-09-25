@@ -284,6 +284,36 @@ public final class PathTarget extends Ref {
 	}
 
 	@Override
+	protected Ref createUpscoped(Scope toScope) {
+		if (this.start != null) {
+
+			final Ref upscopedStart = this.start.upscope(toScope);
+
+			if (upscopedStart == null) {
+				return null;
+			}
+
+			return new PathTarget(
+					this,
+					distributeIn(toScope.getContainer()),
+					this.path,
+					upscopedStart);
+		}
+
+		final Path upscopedPath =
+				this.path.upscope(this, getScope(), toScope);
+
+		if (upscopedPath == null) {
+			return null;
+		}
+
+		return new PathTarget(
+				this,
+				distributeIn(toScope.getContainer()),
+				upscopedPath);
+	}
+
+	@Override
 	protected void fullyResolve(Resolver resolver) {
 		if (this.start != null) {
 			this.start.resolveAll(resolver);

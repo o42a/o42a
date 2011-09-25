@@ -118,9 +118,16 @@ public abstract class Rescoper {
 		return new CompoundRescoper(this, other);
 	}
 
-	public abstract void resolveAll(ScopeInfo location, Resolver resolver);
+	public final Rescoper upscope(Scope toScope) {
+		if (getFinalScope() == toScope) {
+			return this;
+		}
 
-	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
+		assert toScope.contains(getFinalScope()) :
+			toScope + " does not contain " + getFinalScope();
+
+		return createUpscoped(toScope);
+	}
 
 	public Ref rescopeRef(Ref ref) {
 		return new Rescoped(
@@ -129,8 +136,14 @@ public abstract class Rescoper {
 				ref.distributeIn(getFinalScope().getContainer()));
 	}
 
+	public abstract void resolveAll(ScopeInfo location, Resolver resolver);
+
 	public abstract Rescoper reproduce(
 			LocationInfo location,
 			Reproducer reproducer);
+
+	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
+
+	protected abstract Rescoper createUpscoped(Scope toScope);
 
 }
