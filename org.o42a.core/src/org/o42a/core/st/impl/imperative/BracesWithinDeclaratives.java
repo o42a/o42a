@@ -58,8 +58,8 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return this.block.getValueStruct();
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return this.block.valueStruct(scope);
 	}
 
 	@Override

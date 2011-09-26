@@ -108,7 +108,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final boolean topLevel;
 	private final Trace trace;
 	private StatementEnv initialEnv;
-	private ValueStruct<?, ?> valueStruct;
 	private Locals locals;
 
 	public ImperativeBlock(
@@ -202,21 +201,24 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		if (this.valueStruct != null) {
-			return this.valueStruct;
-		}
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
 
-		final ValueStruct<?, ?> expected =
-				isTopLevel() ? this.initialEnv.getExpectedValueStruct() : null;
-		final ValueStruct<?, ?> valueStruct = valueStruct(expected);
+		final ValueStruct<?, ?> valueStruct = sentencesValueStruct(scope);
 
 		if (valueStruct != null) {
-			return this.valueStruct = valueStruct;
+			return valueStruct;
+		}
+		if (isTopLevel()) {
+
+			final ValueStruct<?, ?> expected =
+					this.initialEnv.getExpectedValueStruct();
+
+			if (expected != null) {
+				return expected;
+			}
 		}
 
-		return this.valueStruct =
-				expected != null ? expected : ValueStruct.VOID;
+		return ValueStruct.VOID;
 	}
 
 	@Override

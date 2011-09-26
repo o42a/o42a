@@ -22,9 +22,7 @@ package org.o42a.core.st.sentence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.Container;
-import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
+import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -278,7 +276,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return getSentence().getBlock().getTrace();
 	}
 
-	ValueStruct<?, ?> valueStruct(ValueStruct<?, ?> expected) {
+	ValueStruct<?, ?> valueStruct(Scope scope) {
 
 		ValueStruct<?, ?> result = null;
 
@@ -287,7 +285,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				continue;
 			}
 
-			final ValueStruct<?, ?> struct = statement.getValueStruct();
+			final ValueStruct<?, ?> struct = statement.valueStruct(scope);
 
 			if (struct == null) {
 				continue;

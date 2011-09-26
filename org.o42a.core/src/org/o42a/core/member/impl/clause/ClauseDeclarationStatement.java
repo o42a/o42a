@@ -21,6 +21,7 @@ package org.o42a.core.member.impl.clause;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationStatement;
@@ -57,7 +58,7 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		return null;
 	}
 

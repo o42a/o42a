@@ -62,12 +62,12 @@ public abstract class Statement extends Placed {
 
 	public final ValueType<?> getValueType() {
 
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
+		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
 
 		return valueStruct != null ? valueStruct.getValueType() : null;
 	}
 
-	public abstract ValueStruct<?, ?> getValueStruct();
+	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
 
 	public abstract StatementEnv setEnv(StatementEnv env);
 

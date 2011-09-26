@@ -100,7 +100,14 @@ public class LocalDef extends ValueDef {
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
-		return getBlock().getValueStruct();
+
+		final Scope scope = this.localRescoper.rescope(getScope());
+		final LocalScope local = scope.toLocal();
+
+		assert local != null :
+			"Not a local scope: " + scope;
+
+		return getBlock().valueStruct(scope).rescope(this.localRescoper);
 	}
 
 	@Override

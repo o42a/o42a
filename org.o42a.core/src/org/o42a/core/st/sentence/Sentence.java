@@ -164,13 +164,13 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		this.prerequisite = prerequisite;
 	}
 
-	ValueStruct<?, ?> valueStruct(ValueStruct<?, ?> expected) {
+	ValueStruct<?, ?> valueStruct(Scope scope) {
 
 		ValueStruct<?, ?> result = null;
 
 		for (Statements<?> alt : getAlternatives()) {
 
-			final ValueStruct<?, ?> struct = alt.valueStruct(expected);
+			final ValueStruct<?, ?> struct = alt.valueStruct(scope);
 
 			if (struct == null) {
 				continue;

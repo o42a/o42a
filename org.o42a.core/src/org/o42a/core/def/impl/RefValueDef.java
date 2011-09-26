@@ -22,6 +22,7 @@ package org.o42a.core.def.impl;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -50,7 +51,10 @@ public final class RefValueDef extends ValueDef {
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
-		return this.ref.getValueStruct();
+
+		final Scope scope = getRescoper().rescope(getScope());
+
+		return this.ref.valueStruct(scope).rescope(getRescoper());
 	}
 
 	@Override
