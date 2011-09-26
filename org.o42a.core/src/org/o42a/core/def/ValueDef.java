@@ -112,7 +112,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		if (this.condition != null) {
 			return this.condition;
 		}
-		return this.condition = new ValueCondDef(this);
+		return this.condition = createCondDef();
 	}
 
 	public final Value<?> value(Resolver resolver) {
@@ -202,6 +202,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 	protected abstract boolean hasConstantValue();
 
 	protected abstract Value<?> calculateValue(Resolver resolver);
+
+	protected CondDef createCondDef() {
+		return new ValueCondDef(this);
+	}
 
 	@Override
 	protected final void fullyResolve(Resolver resolver) {
