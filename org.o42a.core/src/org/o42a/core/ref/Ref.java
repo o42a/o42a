@@ -154,7 +154,7 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public DefinitionTarget getDefinitionTargets() {
+	public DefinitionTargets getDefinitionTargets() {
 		return valueDefinition(this);
 	}
 
@@ -167,6 +167,9 @@ public abstract class Ref extends Statement {
 
 	@Override
 	public Definitions define(Scope scope) {
+		if (getDefinitionTargets().isEmpty()) {
+			return null;
+		}
 
 		final ValueDef def = this.env.expectedTypeAdapter().toValueDef();
 		final StatementEnv initialEnv = this.env.getInitialEnv();
@@ -246,25 +249,6 @@ public abstract class Ref extends Statement {
 		return new RescopedRef(this, rescoper);
 	}
 
-	public final Ref upscope(Scope toScope) {
-		if (getScope() == toScope) {
-			return this;
-		}
-
-		assert toScope.contains(getScope()) :
-			toScope + " does not contain " + getScope();
-
-		final Ref upscoped = createUpscoped(toScope);
-
-		if (upscoped != null) {
-			return upscoped;
-		}
-
-		getLogger().cantUpscope(this);
-
-		return null;
-	}
-
 	@Override
 	public final Instruction toInstruction(Resolver resolver) {
 		return null;
@@ -329,8 +313,6 @@ public abstract class Ref extends Statement {
 	protected final FieldDefinition defaultFieldDefinition() {
 		return new ValueFieldDefinition(this);
 	}
-
-	protected abstract Ref createUpscoped(Scope toScope);
 
 	protected abstract RefOp createOp(HostOp host);
 

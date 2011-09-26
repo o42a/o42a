@@ -99,11 +99,6 @@ public abstract class ObjectConstructor extends Ref {
 	}
 
 	@Override
-	protected Ref createUpscoped(Scope toScope) {
-		return null;
-	}
-
-	@Override
 	protected void fullyResolve(Resolver resolver) {
 		resolve(resolver).resolveAll();
 	}

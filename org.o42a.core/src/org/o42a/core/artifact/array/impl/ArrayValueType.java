@@ -34,6 +34,11 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 		this.constant = constant;
 	}
 
+	@Override
+	public final boolean isVariable() {
+		return !isConstant();
+	}
+
 	public final boolean isConstant() {
 		return this.constant;
 	}

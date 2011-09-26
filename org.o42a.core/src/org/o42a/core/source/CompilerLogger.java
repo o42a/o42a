@@ -112,13 +112,6 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void cantUpscope(LogInfo location) {
-		error(
-				"cant_upscope",
-				location,
-				"Can not be used in enclosing scope");
-	}
-
 	public void expectedClauseName(LogInfo location) {
 		error("expected_clause_name", location, "Clause name expected here");
 	}

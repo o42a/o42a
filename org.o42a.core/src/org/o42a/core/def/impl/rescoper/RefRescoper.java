@@ -68,18 +68,6 @@ public final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	protected Rescoper createUpscoped(Scope toScope) {
-
-		final Ref upscopedRef = this.ref.upscope(toScope);
-
-		if (upscopedRef == null) {
-			return null;
-		}
-
-		return upscopedRef.toRescoper();
-	}
-
-	@Override
 	public void resolveAll(ScopeInfo location, Resolver resolver) {
 		this.ref.resolveAll(resolver);
 	}

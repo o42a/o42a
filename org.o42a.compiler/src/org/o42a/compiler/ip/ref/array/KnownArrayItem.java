@@ -56,8 +56,8 @@ public class KnownArrayItem extends ArrayItem {
 		return new ItemLink(this);
 	}
 
-	@Override
 	public KnownArrayItem reproduce(Reproducer reproducer) {
+		getEnclosingScope().assertCompatible(reproducer.getReproducingScope());
 
 		final Ref valueRef = getValueRef().reproduce(reproducer);
 

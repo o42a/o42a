@@ -24,6 +24,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
@@ -127,7 +128,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 		return (Value<T>) value;
 	}
 
-	public abstract ValueStruct<S, T> upscope(Scope toScope);
+	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :

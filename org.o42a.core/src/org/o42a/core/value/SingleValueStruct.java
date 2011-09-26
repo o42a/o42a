@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.Scope;
+import org.o42a.core.def.Rescoper;
 
 
 public abstract class SingleValueStruct<T>
@@ -42,7 +42,7 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public ValueStruct<SingleValueStruct<T>, T> upscope(Scope toScope) {
+	public SingleValueStruct<T> rescope(Rescoper rescoper) {
 		return this;
 	}
 

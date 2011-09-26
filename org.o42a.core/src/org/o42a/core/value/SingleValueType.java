@@ -34,6 +34,11 @@ public abstract class SingleValueType<T>
 		super(systemId);
 	}
 
+	@Override
+	public boolean isVariable() {
+		return false;
+	}
+
 	public abstract SingleValueStruct<T> struct();
 
 	public final Value<T> constantValue(T value) {

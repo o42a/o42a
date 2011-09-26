@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.ref.array;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
@@ -30,15 +29,15 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Statements;
 
 
-final class ArrayItemReproducer extends Reproducer {
+final class ArrayContentReproducer extends Reproducer {
 
 	private final Reproducer arrayReproducer;
 
-	public ArrayItemReproducer(
-			ArrayItem reproducingItem,
+	ArrayContentReproducer(
+			ArrayObject array,
 			Distributor distributor,
 			Reproducer arrayReproducer) {
-		super(reproducingItem.getScope(), distributor);
+		super(array.getScope(), distributor);
 		this.arrayReproducer = arrayReproducer;
 	}
 

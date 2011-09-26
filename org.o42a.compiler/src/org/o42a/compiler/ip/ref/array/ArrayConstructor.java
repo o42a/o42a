@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.ref.array;
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.field.DefinitionKind;
 import org.o42a.ast.field.InterfaceNode;
-import org.o42a.ast.field.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
@@ -40,7 +39,6 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	private final Interpreter ip;
 	private final BracketsNode node;
-	private TypeRef itemTypeRef;
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
 
@@ -58,12 +56,10 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	private ArrayConstructor(
 			ArrayConstructor reproducedFrom,
-			Reproducer reproducer,
-			TypeRef itemTypeRef) {
+			Reproducer reproducer) {
 		super(reproducedFrom, reproducer.distribute());
 		this.ip = reproducedFrom.ip;
 		this.node = reproducedFrom.node;
-		this.itemTypeRef = itemTypeRef;
 		this.reproducer = reproducer;
 		this.reproducedFrom = reproducedFrom;
 	}
@@ -100,39 +96,6 @@ public class ArrayConstructor extends ObjectConstructor {
 		return ValueType.CONST_ARRAY.typeRef(location, getScope());
 	}
 
-	public TypeRef getItemTypeRef() {
-		if (this.itemTypeRef != null) {
-			return this.itemTypeRef;
-		}
-
-		final InterfaceNode interfaceNode = getInterfaceNode();
-
-		if (interfaceNode == null) {
-			return this.itemTypeRef = ValueType.VOID.typeRef(
-					new Location(getContext(), getNode().getOpening()),
-					getScope());
-		}
-
-		final TypeNode typeNode = interfaceNode.getType();
-
-		if (typeNode == null) {
-			return this.itemTypeRef = ValueType.VOID.typeRef(
-					new Location(getContext(), interfaceNode),
-					getScope());
-		}
-
-		final TypeRef itemTypeRef =
-				typeNode.accept(ip().typeVisitor(), distribute());
-
-		if (itemTypeRef != null) {
-			return this.itemTypeRef = itemTypeRef;
-		}
-
-		return this.itemTypeRef = ValueType.VOID.typeRef(
-				new Location(getContext(), typeNode),
-				getScope());
-	}
-
 	@Override
 	protected Obj createObject() {
 		if (this.reproducedFrom == null) {
@@ -146,14 +109,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
-
-		final TypeRef itemTypeRef = getItemTypeRef().reproduce(reproducer);
-
-		if (itemTypeRef == null) {
-			return null;
-		}
-
-		return new ArrayConstructor(this, reproducer, itemTypeRef);
+		return new ArrayConstructor(this, reproducer);
 	}
 
 }

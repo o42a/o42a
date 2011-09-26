@@ -118,17 +118,6 @@ public abstract class Rescoper {
 		return new CompoundRescoper(this, other);
 	}
 
-	public final Rescoper upscope(Scope toScope) {
-		if (getFinalScope() == toScope) {
-			return this;
-		}
-
-		assert toScope.contains(getFinalScope()) :
-			toScope + " does not contain " + getFinalScope();
-
-		return createUpscoped(toScope);
-	}
-
 	public Ref rescopeRef(Ref ref) {
 		return new Rescoped(
 				ref,
@@ -143,7 +132,5 @@ public abstract class Rescoper {
 			Reproducer reproducer);
 
 	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
-
-	protected abstract Rescoper createUpscoped(Scope toScope);
 
 }

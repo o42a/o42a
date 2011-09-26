@@ -74,9 +74,9 @@ public final class RefCondition extends Statement {
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 
-		final DefinitionTarget target = this.ref.getDefinitionTargets();
+		final DefinitionTargets targets = this.ref.getDefinitionTargets();
 
-		if (target.haveDefinition()) {
+		if (targets.haveDefinition()) {
 			return conditionDefinition(this.ref);
 		}
 

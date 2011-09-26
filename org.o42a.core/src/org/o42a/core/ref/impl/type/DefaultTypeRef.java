@@ -87,11 +87,6 @@ public final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
-	protected TypeRef createUpscoped(Ref ref, Rescoper upscopedRescoper) {
-		return new DefaultTypeRef(ref, upscopedRescoper);
-	}
-
-	@Override
 	protected DefaultTypeRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,

@@ -22,7 +22,6 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.value.Value.unknownValue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -125,21 +124,6 @@ final class PathTargetAncestor extends Ref {
 	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return defaultFieldDefinition();
-	}
-
-	@Override
-	protected Ref createUpscoped(Scope toScope) {
-		if (this.error) {
-			return null;
-		}
-
-		final Ref upscopedRef = this.ref.upscope(toScope);
-
-		if (upscopedRef == null) {
-			return null;
-		}
-
-		return new PathTargetAncestor(this, upscopedRef);
 	}
 
 	@Override

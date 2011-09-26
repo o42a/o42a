@@ -28,7 +28,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public abstract class ArrayItem extends MaterializableArtifactScope<Link> {
@@ -84,8 +83,6 @@ public abstract class ArrayItem extends MaterializableArtifactScope<Link> {
 		return getArtifact().materialize().type().derivedFrom(
 				other.getArtifact().materialize().type());
 	}
-
-	public abstract ArrayItem reproduce(Reproducer reproducer);
 
 	@Override
 	public String toString() {

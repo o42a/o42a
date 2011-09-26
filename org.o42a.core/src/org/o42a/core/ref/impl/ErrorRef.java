@@ -20,9 +20,11 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.core.ref.Logical.logicalFalse;
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -31,6 +33,7 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
 
 
@@ -49,6 +52,11 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
+	public DefinitionTargets getDefinitionTargets() {
+		return noDefinitions();
+	}
+
+	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return null;
 	}
@@ -56,6 +64,11 @@ public final class ErrorRef extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		return resolver.noResolution(this);
+	}
+
+	@Override
+	public Definitions define(Scope scope) {
+		return null;
 	}
 
 	@Override
@@ -79,11 +92,6 @@ public final class ErrorRef extends Ref {
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-	}
-
-	@Override
-	protected Ref createUpscoped(Scope toScope) {
-		return new ErrorRef(this, distributeIn(toScope.getContainer()));
 	}
 
 	@Override

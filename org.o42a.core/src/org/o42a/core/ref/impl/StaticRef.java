@@ -20,7 +20,6 @@
 package org.o42a.core.ref.impl;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
@@ -99,11 +98,6 @@ public final class StaticRef extends Ref {
 	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return new FixedFieldDefinition(this.ref.toFieldDefinition());
-	}
-
-	@Override
-	protected Ref createUpscoped(Scope toScope) {
-		return new StaticRef(this.ref, distributeIn(toScope.getContainer()));
 	}
 
 	@Override

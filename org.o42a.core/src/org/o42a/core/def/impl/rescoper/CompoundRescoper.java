@@ -174,16 +174,4 @@ public final class CompoundRescoper extends Rescoper {
 		return this.first + " & " + this.second;
 	}
 
-	@Override
-	protected Rescoper createUpscoped(Scope toScope) {
-
-		final Rescoper second = this.second.upscope(toScope);
-
-		if (second == null) {
-			return null;
-		}
-
-		return new CompoundRescoper(this.first, second);
-	}
-
 }

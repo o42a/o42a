@@ -77,11 +77,6 @@ public final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	protected Rescoper createUpscoped(Scope toScope) {
-		return null;
-	}
-
-	@Override
 	public void resolveAll(ScopeInfo location, Resolver resolver) {
 	}
 
