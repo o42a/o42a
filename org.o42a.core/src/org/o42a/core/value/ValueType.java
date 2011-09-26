@@ -72,6 +72,8 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 		return this == NONE;
 	}
 
+	public abstract boolean isVariable();
+
 	public abstract Obj wrapper(Intrinsics intrinsics);
 
 	public StaticTypeRef typeRef(LocationInfo location, Scope scope) {

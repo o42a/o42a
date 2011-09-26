@@ -26,7 +26,6 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.Reproducer;
 
 
 public class RuntimeArrayItem extends ArrayItem {
@@ -43,18 +42,6 @@ public class RuntimeArrayItem extends ArrayItem {
 			return this.artifact;
 		}
 		return this.artifact = new ItemLink(this);
-	}
-
-	@Override
-	public RuntimeArrayItem reproduce(Reproducer reproducer) {
-
-		final Ref indexRef = getIndexRef().reproduce(reproducer);
-
-		if (indexRef == null) {
-			return null;
-		}
-
-		return new RuntimeArrayItem(indexRef);
 	}
 
 	@Override

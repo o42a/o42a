@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
@@ -122,14 +121,6 @@ public final class AbsolutePathTarget extends Ref {
 	@Override
 	protected FieldDefinition createFieldDefinition() {
 		return new PathTargetDefinition(this);
-	}
-
-	@Override
-	protected Ref createUpscoped(Scope toScope) {
-		return new AbsolutePathTarget(
-				this,
-				distributeIn(toScope.getContainer()),
-				this.path);
 	}
 
 	@Override

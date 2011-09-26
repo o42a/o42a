@@ -89,11 +89,6 @@ public abstract class RescoperWrap extends Rescoper {
 
 	protected abstract TypeRef wrappedTypeRef();
 
-	@Override
-	protected Rescoper createUpscoped(Scope toScope) {
-		return wrapped().upscope(toScope);
-	}
-
 	private final Rescoper wrapped() {
 		if (this.wrapped != null) {
 			return this.wrapped;

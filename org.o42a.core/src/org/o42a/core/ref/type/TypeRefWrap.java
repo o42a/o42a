@@ -77,18 +77,6 @@ public abstract class TypeRefWrap extends TypeRef {
 	}
 
 	@Override
-	public TypeRef upscope(Scope toScope) {
-
-		final TypeRef wrapped = getWrapped();
-
-		if (wrapped != null) {
-			return wrapped.upscope(toScope);
-		}
-
-		return upscopeWrap(toScope);
-	}
-
-	@Override
 	public final TypeRef reproduce(Reproducer reproducer) {
 		return wrapped().reproduce(reproducer);
 	}
@@ -139,10 +127,6 @@ public abstract class TypeRefWrap extends TypeRef {
 	@Override
 	protected void fullyResolve(Resolver resolver) {
 		this.wrapped.resolveAll(resolver);
-	}
-
-	final TypeRefWrap upscopeWrap(Scope toScope) {
-		return (TypeRefWrap) super.upscope(toScope);
 	}
 
 	private static final class WrapRescoper extends RescoperWrap {
@@ -199,16 +183,6 @@ public abstract class TypeRefWrap extends TypeRef {
 			return new Static(this.wrap, rescoper);
 		}
 
-		@Override
-		protected StaticTypeRefWrap createUpscoped(
-				Ref ref,
-				Rescoper upscopedRescoper) {
-
-			final TypeRefWrap upscopedWrap =
-					this.wrap.upscopeWrap(upscopedRescoper.getFinalScope());
-
-			return new Static(upscopedWrap, upscopedRescoper);
-		}
 
 	}
 

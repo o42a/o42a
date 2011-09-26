@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.impl.field;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -131,11 +130,6 @@ public final class ObjectFieldWrap extends FieldWrap<Obj> {
 		@Override
 		protected FieldDefinition createFieldDefinition() {
 			return defaultFieldDefinition();
-		}
-
-		@Override
-		protected Ref createUpscoped(Scope toScope) {
-			return null;
 		}
 
 		@Override

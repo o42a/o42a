@@ -215,32 +215,6 @@ public class Path {
 		return new Path(newFragments);
 	}
 
-	public Path upscope(LocationInfo location, Scope from, Scope to) {
-		if (from == to) {
-			return this;
-		}
-
-		assert to.contains(from) :
-			to + " does not contain " + from;
-
-		final PathUpscoper upscoper = new PathUpscoper(to);
-
-		walk(pathResolver(location, dummyUser()), from, upscoper);
-
-		if (!upscoper.succeed()) {
-			return null;
-		}
-
-		final int cut = upscoper.getCut();
-
-		if (cut == this.fragments.length - 1) {
-			return SELF_PATH;
-		}
-
-		return new Path(
-				copyOfRange(this.fragments, cut, this.fragments.length));
-	}
-
 	public Rescoper rescoper(Scope finalScope) {
 		if (!isAbsolute() && getFragments().length == 0) {
 			return transparentRescoper(finalScope);

@@ -22,7 +22,6 @@ package org.o42a.core.member.impl.clause;
 import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.def.Rescoper.wrapper;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -225,11 +224,6 @@ public final class PlainClauseWrap extends PlainClause {
 		@Override
 		protected FieldDefinition createFieldDefinition() {
 			return defaultFieldDefinition();
-		}
-
-		@Override
-		protected Ref createUpscoped(Scope toScope) {
-			return null;
 		}
 
 		@Override

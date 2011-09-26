@@ -141,19 +141,6 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 	}
 
 	@Override
-	protected TargetRef createUpscoped(Ref ref, Rescoper upscopedRescoper) {
-
-		final TypeRef upscopedTypeRef =
-				getTypeRef().upscope(upscopedRescoper.getFinalScope());
-
-		if (upscopedTypeRef == null) {
-			return null;
-		}
-
-		return new TargetRef(ref, upscopedTypeRef, upscopedRescoper);
-	}
-
-	@Override
 	protected TargetRef createReproduction(
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,

@@ -125,9 +125,4 @@ public final class TransparentRescoper extends Rescoper {
 		return "noop";
 	}
 
-	@Override
-	protected Rescoper createUpscoped(Scope toScope) {
-		return null;
-	}
-
 }

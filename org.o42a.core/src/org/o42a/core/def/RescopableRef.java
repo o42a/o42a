@@ -19,8 +19,6 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
@@ -111,35 +109,6 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		return rescope(getScope().rescoperTo(scope));
 	}
 
-	public R upscope(Scope toScope) {
-		if (getScope() == toScope) {
-			return self();
-		}
-
-		assert toScope.contains(getScope()) :
-			toScope + " does not contain " + getScope();
-
-		if (getRescoper().isTransparent()) {
-
-			final Ref upscopedRef = getRef().upscope(toScope);
-
-			if (upscopedRef == null) {
-				return null;
-			}
-
-			return createUpscoped(upscopedRef, transparentRescoper(toScope));
-		}
-
-		final Rescoper upscopedRescoper = getRescoper().upscope(toScope);
-
-		if (upscopedRescoper == null) {
-			getLogger().cantUpscope(this);
-			return null;
-		}
-
-		return createUpscoped(getRef(), upscopedRescoper);
-	}
-
 	public void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
@@ -223,8 +192,6 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 	protected abstract R create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper);
-
-	protected abstract R createUpscoped(Ref ref, Rescoper upscopedRescoper);
 
 	protected abstract void fullyResolve(Resolver resolver);
 
