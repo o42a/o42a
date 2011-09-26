@@ -49,7 +49,7 @@ public abstract class Inclusion extends Statement implements Instruction {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		throw new UnsupportedOperationException();
 	}
 

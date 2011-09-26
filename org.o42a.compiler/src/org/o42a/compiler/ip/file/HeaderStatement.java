@@ -59,7 +59,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		throw new UnsupportedOperationException();
 	}
 

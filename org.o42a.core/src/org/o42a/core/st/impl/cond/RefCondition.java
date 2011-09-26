@@ -84,7 +84,7 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		return ValueStruct.VOID;
 	}
 

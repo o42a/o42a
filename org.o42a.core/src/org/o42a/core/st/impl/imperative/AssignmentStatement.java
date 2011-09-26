@@ -87,7 +87,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		return ValueStruct.VOID;
 	}
 

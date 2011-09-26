@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
@@ -236,7 +237,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return sentence;
 	}
 
-	ValueStruct<?, ?> valueStruct(ValueStruct<?, ?> expected) {
+	ValueStruct<?, ?> sentencesValueStruct(Scope scope) {
 		if (!getDefinitionTargets().haveValue()) {
 			return null;
 		}
@@ -245,7 +246,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 		for (Sentence<?> sentence : getSentences()) {
 
-			final ValueStruct<?, ?> struct = sentence.valueStruct(expected);
+			final ValueStruct<?, ?> struct = sentence.valueStruct(scope);
 
 			if (struct == null) {
 				continue;

@@ -126,8 +126,13 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public final ValueStruct<?, ?> getValueStruct() {
-		return getResolution().materialize().value().getValueStruct();
+	public final ValueStruct<?, ?> valueStruct(Scope scope) {
+
+		final Resolution resolution = resolve(scope.dummyResolver());
+		final ValueStruct<?, ?> valueStruct =
+				resolution.materialize().value().getValueStruct();
+
+		return valueStruct.rescope(toRescoper());
 	}
 
 	public final Logical getLogical() {

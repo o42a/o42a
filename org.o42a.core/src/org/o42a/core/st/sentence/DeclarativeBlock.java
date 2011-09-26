@@ -62,7 +62,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	private BlockEnv env;
-	private ValueStruct<?, ?> valueStruct;
 	private Locals locals;
 
 	public DeclarativeBlock(
@@ -150,12 +149,8 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		if (this.valueStruct != null) {
-			return this.valueStruct;
-		}
-		return this.valueStruct =
-				valueStruct(getInitialEnv().getExpectedValueStruct());
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return sentencesValueStruct(scope);
 	}
 
 	@Override
