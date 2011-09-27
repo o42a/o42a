@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.impl.cond;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
@@ -27,7 +26,6 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class RefCondition extends Statement {
@@ -42,11 +40,6 @@ public final class RefCondition extends Statement {
 
 	public final Ref getRef() {
 		return this.ref;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ValueStruct.VOID;
 	}
 
 	@Override

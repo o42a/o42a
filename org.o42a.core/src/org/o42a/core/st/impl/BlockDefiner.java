@@ -21,10 +21,13 @@ package org.o42a.core.st.impl;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Sentence;
+import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class BlockDefiner<B extends Block<?>> extends Definer {
@@ -59,6 +62,99 @@ public abstract class BlockDefiner<B extends Block<?>> extends Definer {
 		}
 
 		return this.definitionTargets = result;
+	}
+
+	protected ValueStruct<?, ?> sentencesValueStruct(Scope scope) {
+		if (!getDefinitionTargets().haveValue()) {
+			return null;
+		}
+
+		ValueStruct<?, ?> result = null;
+
+		for (Sentence<?> sentence : getBlock().getSentences()) {
+
+			final ValueStruct<?, ?> struct = valueStruct(sentence, scope);
+
+			if (struct == null) {
+				continue;
+			}
+			if (result == null) {
+				result = struct;
+				continue;
+			}
+			if (result.assignableFrom(struct)) {
+				continue;
+			}
+			if (struct.assertAssignableFrom(result)) {
+				result = struct;
+				continue;
+			}
+
+			getLogger().incompatible(sentence, result);
+		}
+
+		return result;
+	}
+
+	private ValueStruct<?, ?> valueStruct(Sentence<?> sentence, Scope scope) {
+
+		ValueStruct<?, ?> result = null;
+
+		for (Statements<?> alt : sentence.getAlternatives()) {
+
+			final ValueStruct<?, ?> struct = valueStruct(alt, scope);
+
+			if (struct == null) {
+				continue;
+			}
+			if (result == null) {
+				result = struct;
+				continue;
+			}
+			if (result.assignableFrom(struct)) {
+				continue;
+			}
+			if (struct.assignableFrom(result)) {
+				result = struct;
+				continue;
+			}
+
+			getLogger().incompatible(alt, result);
+		}
+
+		return result;
+	}
+
+	ValueStruct<?, ?> valueStruct(Statements<?> alt, Scope scope) {
+
+		ValueStruct<?, ?> result = null;
+
+		for (Definer definer : alt.getDefiners()) {
+			if (!definer.getDefinitionTargets().haveValue()) {
+				continue;
+			}
+
+			final ValueStruct<?, ?> struct = definer.valueStruct(scope);
+
+			if (struct == null) {
+				continue;
+			}
+			if (result == null) {
+				result = struct;
+				continue;
+			}
+			if (result.assignableFrom(struct)) {
+				continue;
+			}
+			if (struct.assignableFrom(result)) {
+				result = struct;
+				continue;
+			}
+
+			getLogger().incompatible(definer, result);
+		}
+
+		return result;
 	}
 
 	private final class ExecuteInstructions implements Instruction {

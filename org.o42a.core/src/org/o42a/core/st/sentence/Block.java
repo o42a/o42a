@@ -23,14 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -224,38 +222,6 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			this.sentences.add(sentence);
 		}
 		return sentence;
-	}
-
-	ValueStruct<?, ?> sentencesValueStruct(Scope scope) {
-		if (!getDefiner().getDefinitionTargets().haveValue()) {
-			return null;
-		}
-
-		ValueStruct<?, ?> result = null;
-
-		for (Sentence<?> sentence : getSentences()) {
-
-			final ValueStruct<?, ?> struct = sentence.valueStruct(scope);
-
-			if (struct == null) {
-				continue;
-			}
-			if (result == null) {
-				result = struct;
-				continue;
-			}
-			if (result.assignableFrom(struct)) {
-				continue;
-			}
-			if (struct.assertAssignableFrom(result)) {
-				result = struct;
-				continue;
-			}
-
-			getLogger().incompatible(sentence, result);
-		}
-
-		return result;
 	}
 
 	final BlockDefiner<?> getDefiner() {

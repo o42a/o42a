@@ -28,13 +28,13 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.ValueStruct;
 
 
 abstract class InclusionDefiner<I extends Inclusion>
 		extends Definer
 		implements Instruction {
 
-	private InclusionEnv inclusionEnv;
 	private Definer replacement;
 
 	InclusionDefiner(I inclusion, StatementEnv env) {
@@ -52,7 +52,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 
 	@Override
 	public StatementEnv nextEnv() {
-		return this.inclusionEnv = new InclusionEnv(this);
+		return new InclusionEnv(this);
 	}
 
 	@Override
@@ -68,17 +68,14 @@ abstract class InclusionDefiner<I extends Inclusion>
 		return this;
 	}
 
-	public InclusionEnv inclusionEnv() {
-		return this.inclusionEnv;
-	}
-
-	public void setInclusionEnv(InclusionEnv inclusionEnv) {
-		this.inclusionEnv = inclusionEnv;
-	}
-
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return noDefinitions();
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

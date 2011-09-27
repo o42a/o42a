@@ -22,7 +22,9 @@ package org.o42a.core.st.sentence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -38,7 +40,6 @@ import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.cond.RefCondition;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -274,39 +275,6 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	final Trace getTrace() {
 		return getSentence().getBlock().getTrace();
-	}
-
-	ValueStruct<?, ?> valueStruct(Scope scope) {
-
-		ValueStruct<?, ?> result = null;
-
-		for (Definer definer : getDefiners()) {
-			if (!definer.getDefinitionTargets().haveValue()) {
-				continue;
-			}
-
-			final ValueStruct<?, ?> struct =
-					definer.getStatement().valueStruct(scope);
-
-			if (struct == null) {
-				continue;
-			}
-			if (result == null) {
-				result = struct;
-				continue;
-			}
-			if (result.assignableFrom(struct)) {
-				continue;
-			}
-			if (struct.assignableFrom(result)) {
-				result = struct;
-				continue;
-			}
-
-			getLogger().incompatible(definer, result);
-		}
-
-		return result;
 	}
 
 	void reproduce(Sentence<S> sentence, Reproducer reproducer) {

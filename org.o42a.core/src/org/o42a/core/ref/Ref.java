@@ -56,6 +56,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class Ref extends Statement {
@@ -121,7 +122,13 @@ public abstract class Ref extends Statement {
 		return null;
 	}
 
-	@Override
+	public final ValueType<?> getValueType() {
+
+		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
+
+		return valueStruct != null ? valueStruct.getValueType() : null;
+	}
+
 	public final ValueStruct<?, ?> valueStruct(Scope scope) {
 
 		final Resolution resolution = resolve(scope.dummyResolver());

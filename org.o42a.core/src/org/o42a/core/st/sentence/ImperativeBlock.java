@@ -25,7 +25,9 @@ import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.ScopePlace;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
@@ -38,7 +40,6 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.*;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
@@ -178,18 +179,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	@Override
 	public final String getName() {
 		return this.name;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-
-		final ValueStruct<?, ?> valueStruct = sentencesValueStruct(scope);
-
-		if (valueStruct != null) {
-			return valueStruct;
-		}
-
-		return getDefiner().env().getExpectedValueStruct();
 	}
 
 	@Override
