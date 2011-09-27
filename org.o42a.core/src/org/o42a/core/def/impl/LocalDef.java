@@ -36,6 +36,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -46,13 +47,16 @@ import org.o42a.core.value.ValueStruct;
 
 public class LocalDef extends ValueDef {
 
-	public static ValueDef localDef(ImperativeBlock block, Scope scope) {
+	public static ValueDef localDef(
+			ImperativeBlock block,
+			Scope scope,
+			Definer definer) {
 
 		final Obj actualOwner = scope.toObject();
 		final Obj explicitOwner = block.getScope().getOwner();
 		final boolean explicit = actualOwner == explicitOwner;
 
-		final LocalDef localDef = new LocalDef(scope, block, explicit);
+		final LocalDef localDef = new LocalDef(scope, block, definer, explicit);
 
 		// Rescope to explicit owner scope.
 		final ValueDef def = localDef.rescope(explicitOwner.getScope());
@@ -67,16 +71,19 @@ public class LocalDef extends ValueDef {
 
 	private final Scope ownerScope;
 	private final ImperativeBlock block;
+	private final Definer definer;
 	private final boolean explicit;
 	private final Rescoper localRescoper;
 
 	private LocalDef(
 			Scope ownerScope,
 			ImperativeBlock block,
+			Definer definer,
 			boolean explicit) {
 		super(sourceOf(block), block, transparentRescoper(ownerScope));
 		this.ownerScope = ownerScope;
 		this.block = block;
+		this.definer = definer;
 		this.explicit = explicit;
 		this.localRescoper = block.getScope().rescoperTo(getOwnerScope());
 	}
@@ -85,6 +92,7 @@ public class LocalDef extends ValueDef {
 		super(prototype, rescoper);
 		this.ownerScope = prototype.ownerScope;
 		this.block = prototype.block;
+		this.definer = prototype.definer;
 		this.explicit = prototype.explicit;
 		this.localRescoper = prototype.localRescoper;
 	}
@@ -107,7 +115,13 @@ public class LocalDef extends ValueDef {
 		assert local != null :
 			"Not a local scope: " + scope;
 
-		return getBlock().valueStruct(scope).rescope(this.localRescoper);
+		final ValueStruct<?, ?> valueStruct = getBlock().valueStruct(scope);
+
+		if (valueStruct == null) {
+			return null;
+		}
+
+		return valueStruct.rescope(this.localRescoper);
 	}
 
 	@Override
@@ -154,7 +168,7 @@ public class LocalDef extends ValueDef {
 		assert local != null :
 			"Not a local scope: " + resolver;
 
-		return getBlock().initialValue(
+		return this.definer.initialValue(
 				local.walkingResolver(resolver)).getValue();
 	}
 
@@ -239,7 +253,7 @@ public class LocalDef extends ValueDef {
 			assert local != null :
 				"Not a local scope: " + resolver;
 
-			final Action action = this.def.getBlock().initialLogicalValue(
+			final Action action = this.def.definer.initialLogicalValue(
 					local.walkingResolver(resolver));
 
 			return action.getLogicalValue();

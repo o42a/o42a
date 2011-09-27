@@ -28,6 +28,7 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
@@ -185,7 +186,7 @@ public final class ImperativeBlockOp extends StOp {
 			}
 			if (altControl.isDone()) {
 				altControl.end();
-				if (alt.getStatements().size() == 1) {
+				if (alt.getDefiners().size() == 1) {
 					// the only statement is exit
 					if (sentence.hasOpposite(i)) {// one of the opposites
 						nextOppUnreachability = altControl;
@@ -228,7 +229,10 @@ public final class ImperativeBlockOp extends StOp {
 			Imperatives statements,
 			Control control,
 			ValOp result) {
-		for (Statement statement : statements.getStatements()) {
+		for (Definer definer : statements.getDefiners()) {
+
+			final Statement statement = definer.getStatement();
+
 			if (!control.reach(statement)) {
 				return;
 			}

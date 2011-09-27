@@ -53,9 +53,8 @@ class HeaderStatement extends Statement {
 		this.ref = ref;
 	}
 
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return noDefinitions();
+	public final Ref getRef() {
+		return this.ref;
 	}
 
 	@Override
@@ -64,37 +63,8 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		return this.ref.setEnv(env);
-	}
-
-	@Override
-	public Instruction toInstruction(Resolver resolver) {
-
-		final Directive directive =
-				this.ref.resolve(resolver).toDirective(resolver);
-
-		if (directive == null) {
-			notDirective(getLogger(), this);
-			return SKIP_INSTRUCTION;
-		}
-
-		return new HeaderInstruction(this.ref, directive);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
+	public Definer define(StatementEnv env) {
+		return new HeaderDefiner(this, env);
 	}
 
 	@Override
@@ -130,6 +100,61 @@ class HeaderStatement extends Statement {
 	@Override
 	protected StOp createOp(LocalBuilder builder) {
 		throw new UnsupportedOperationException();
+	}
+
+	private static final class HeaderDefiner extends Definer {
+
+		private Definer refDefiner;
+
+		HeaderDefiner(HeaderStatement header, StatementEnv env) {
+			super(header, env);
+			this.refDefiner = header.getRef().define(env);
+		}
+
+		public final HeaderStatement getHeader() {
+			return (HeaderStatement) getStatement();
+		}
+
+		@Override
+		public StatementEnv nextEnv() {
+			return this.refDefiner.nextEnv();
+		}
+
+		@Override
+		public Instruction toInstruction(Resolver resolver) {
+
+			final Ref ref = getHeader().getRef();
+			final Directive directive =
+					ref.resolve(resolver).toDirective(resolver);
+
+			if (directive == null) {
+				notDirective(getLogger(), this);
+				return SKIP_INSTRUCTION;
+			}
+
+			return new HeaderInstruction(ref, directive);
+		}
+
+		@Override
+		public DefinitionTargets getDefinitionTargets() {
+			return noDefinitions();
+		}
+
+		@Override
+		public Definitions define(Scope scope) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Action initialValue(LocalResolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Action initialLogicalValue(LocalResolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

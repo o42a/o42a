@@ -21,6 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.SectionTag;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
 
@@ -37,6 +38,15 @@ public class ExplicitInclusion extends Inclusion {
 		this.tag = tag;
 	}
 
+	public final String getTag() {
+		return this.tag;
+	}
+
+	@Override
+	protected ExplicitInclusionDefiner createDefiner(StatementEnv env) {
+		return new ExplicitInclusionDefiner(this, env);
+	}
+
 	@Override
 	public String toString() {
 		if (this.tag == null) {
@@ -45,12 +55,26 @@ public class ExplicitInclusion extends Inclusion {
 		return "*** " + this.tag + " ***";
 	}
 
-	@Override
-	protected void includeInto(DeclarativeBlock block) {
+	private static final class ExplicitInclusionDefiner
+			extends InclusionDefiner<ExplicitInclusion> {
 
-		final SectionTag tag = getContext().getSectionTag().append(this.tag);
+		ExplicitInclusionDefiner(
+				ExplicitInclusion inclusion,
+				StatementEnv env) {
+			super(inclusion, env);
+		}
 
-		getContext().include(block, tag);
+		@Override
+		protected void includeInto(DeclarativeBlock block) {
+
+			final SectionTag tag =
+					getContext().getSectionTag().append(
+							getInclusion().getTag());
+
+			getContext().include(block, tag);
+		}
+
+
 	}
 
 }

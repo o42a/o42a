@@ -23,14 +23,15 @@ import static org.o42a.core.artifact.link.TargetRef.targetRef;
 import static org.o42a.core.def.Def.sourceOf;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
-import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.*;
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.def.impl.RefCondDef;
 import org.o42a.core.def.impl.RefValueDef;
 import org.o42a.core.def.impl.rescoper.RefRescoper;
@@ -44,7 +45,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.impl.*;
 import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
 import org.o42a.core.ref.impl.type.DefaultTypeRef;
@@ -54,9 +54,6 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -85,7 +82,6 @@ public abstract class Ref extends Statement {
 		return new ErrorRef(location, distributor);
 	}
 
-	private RefEnv env;
 	private Logical logical;
 	private RefOp op;
 
@@ -147,39 +143,8 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public Action initialValue(LocalResolver resolver) {
-		return new ReturnValue(this, resolver, value(resolver));
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		return new ExecuteCommand(
-				this,
-				value(resolver).getCondition().toLogicalValue());
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return valueDefinition(this);
-	}
-
-	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		assert this.env == null :
-			"Environment already assigned for: " + this;
-		return this.env = new RefEnv(this, env);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		if (getDefinitionTargets().isEmpty()) {
-			return null;
-		}
-
-		final ValueDef def = this.env.expectedTypeAdapter().toValueDef();
-		final StatementEnv initialEnv = this.env.getInitialEnv();
-
-		return initialEnv.apply(def).toDefinitions();
+	public Definer define(StatementEnv env) {
+		return new RefDefiner(this, env);
 	}
 
 	public abstract Resolution resolve(Resolver resolver);
@@ -252,11 +217,6 @@ public abstract class Ref extends Statement {
 			return this;
 		}
 		return new RescopedRef(this, rescoper);
-	}
-
-	@Override
-	public final Instruction toInstruction(Resolver resolver) {
-		return null;
 	}
 
 	public TypeRef toTypeRef() {

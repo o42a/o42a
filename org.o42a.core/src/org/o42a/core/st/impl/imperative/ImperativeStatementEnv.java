@@ -17,53 +17,52 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.declarative;
+package org.o42a.core.st.impl.imperative;
+
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
 
 
-final class InclusionEnv extends StatementEnv {
+public class ImperativeStatementEnv extends StatementEnv {
 
-	private final InclusionDefiner<?> definer;
-	private StatementEnv wrapped;
+	private final Imperatives imperatives;
+	private final StatementEnv initialEnv;
 
-	InclusionEnv(InclusionDefiner<?> definer) {
-		this.definer = definer;
+	public ImperativeStatementEnv(
+			Imperatives imperatives,
+			StatementEnv initialEnv) {
+		this.imperatives = imperatives;
+		this.initialEnv = initialEnv;
 	}
 
 	@Override
 	public boolean hasPrerequisite() {
-		return getWrapped().hasPrerequisite();
+		return false;
 	}
 
 	@Override
 	public Logical prerequisite(Scope scope) {
-		return getWrapped().prerequisite(scope);
+		return logicalTrue(this.imperatives, scope);
 	}
 
 	@Override
 	public boolean hasPrecondition() {
-		return getWrapped().hasPrecondition();
+		return false;
 	}
 
 	@Override
 	public Logical precondition(Scope scope) {
-		return getWrapped().precondition(scope);
+		return logicalTrue(this.imperatives, scope);
 	}
 
 	@Override
 	protected ValueStruct<?, ?> expectedValueStruct() {
-		return getWrapped().getExpectedValueStruct();
-	}
-
-	private final StatementEnv getWrapped() {
-		if (this.wrapped != null) {
-			return this.wrapped;
-		}
-		return this.wrapped = this.definer.nextEnv();
+		return this.initialEnv.getExpectedValueStruct();
 	}
 
 }

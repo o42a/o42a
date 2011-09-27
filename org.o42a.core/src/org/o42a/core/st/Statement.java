@@ -24,13 +24,10 @@ import static org.o42a.core.ir.local.StOp.noStOp;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.ValueStruct;
@@ -46,10 +43,6 @@ public abstract class Statement extends Placed {
 		super(location, distributor);
 	}
 
-	public Instruction toInstruction(Resolver resolver) {
-		return null;
-	}
-
 	public DeclarativeBlock toDeclarativeBlock() {
 		return null;
 	}
@@ -57,8 +50,6 @@ public abstract class Statement extends Placed {
 	public ImperativeBlock toImperativeBlock() {
 		return null;
 	}
-
-	public abstract DefinitionTargets getDefinitionTargets();
 
 	public final ValueType<?> getValueType() {
 
@@ -69,13 +60,7 @@ public abstract class Statement extends Placed {
 
 	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
 
-	public abstract StatementEnv setEnv(StatementEnv env);
-
-	public abstract Definitions define(Scope scope);
-
-	public abstract Action initialValue(LocalResolver resolver);
-
-	public abstract Action initialLogicalValue(LocalResolver resolver);
+	public abstract Definer define(StatementEnv env);
 
 	public abstract Statement reproduce(Reproducer reproducer);
 

@@ -32,7 +32,6 @@ final class DirectiveContext implements InstructionContext {
 	private final ApplyDirective applyDirective;
 	private final InstructionContext context;
 	private Block<?> block;
-	private boolean doNotRemove;
 
 	DirectiveContext(
 			ApplyDirective applyDirective,
@@ -66,22 +65,11 @@ final class DirectiveContext implements InstructionContext {
 		if (this.block != null) {
 			return this.block;
 		}
-
-		final RefEnvWrap env = this.applyDirective.getEnv();
-
-		this.block = this.context.getBlock();
-		this.doNotRemove = true;
-		if (env != null) {
-			// May be null inside imperative block.
-			env.setWrapped(this.block.setEnv(env.getInitialEnv()));
-		}
-
-		return this.block;
+		return this.block = this.context.getBlock();
 	}
 
 	@Override
 	public void doNotRemove() {
-		this.doNotRemove = true;
 		this.context.doNotRemove();
 	}
 
@@ -97,9 +85,6 @@ final class DirectiveContext implements InstructionContext {
 		this.applyDirective.getDirective().apply(
 				this.applyDirective.getRef(),
 				this);
-		if (!this.doNotRemove) {
-			this.applyDirective.getEnv().removeWrapped();
-		}
 	}
 
 }

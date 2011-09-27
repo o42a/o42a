@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +28,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
+import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
@@ -43,8 +42,8 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			new ArrayList<Sentence<S>>();
 	private final MemberRegistry memberRegistry;
 	private final SentenceFactory<S, ?, ?> sentenceFactory;
-	private DefinitionTargets definitionTargets;
 	private boolean instructionsExecuted;
+	private BlockDefiner<?> definer;
 
 	protected Block(
 			LocationInfo location,
@@ -92,29 +91,8 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return enclosing != null && enclosing.getSentence().isConditional();
 	}
 
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		if (this.definitionTargets != null) {
-			return this.definitionTargets;
-		}
-		executeInstructions();
-
-		DefinitionTargets result = noDefinitions();
-
-		for (Sentence<?> sentence : getSentences()) {
-			result = result.add(sentence.getDefinitionTargets());
-		}
-
-		return this.definitionTargets = result;
-	}
-
 	public List<? extends Sentence<S>> getSentences() {
 		return this.sentences;
-	}
-
-	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return new ExecuteInstructions();
 	}
 
 	public Sentence<S> propose(LocationInfo location) {
@@ -178,8 +156,17 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return contains(sentence.getBlock());
 	}
 
+	public final StatementEnv getInitialEnv() {
+		return getDefiner().env();
+	}
+
 	@Override
-	public abstract Block<?> reproduce(Reproducer reproducer);
+	public final Definer define(StatementEnv env) {
+		return this.definer = createDefiner(env);
+	}
+
+	@Override
+	public abstract Statement reproduce(Reproducer reproducer);
 
 	public void reproduceSentences(
 			Reproducer reproducer,
@@ -212,7 +199,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		getDefinitionTargets();
+		getDefiner().getDefinitionTargets();
 	}
 
 	@Override
@@ -226,6 +213,8 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	abstract Locals getLocals();
 
+	abstract BlockDefiner<?> createDefiner(StatementEnv env);
+
 	Sentence<S> addStatementSentence(Sentence<S> sentence) {
 		if (this.lastIssue != null) {
 			this.sentences.set(this.sentences.size() - 1, sentence);
@@ -238,7 +227,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	}
 
 	ValueStruct<?, ?> sentencesValueStruct(Scope scope) {
-		if (!getDefinitionTargets().haveValue()) {
+		if (!getDefiner().getDefinitionTargets().haveValue()) {
 			return null;
 		}
 
@@ -269,19 +258,8 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return result;
 	}
 
-	private final class ExecuteInstructions implements Instruction {
-
-		@Override
-		public void execute(InstructionContext context) {
-			context.doNotRemove();
-			executeInstructions();
-		}
-
-		@Override
-		public String toString() {
-			return "ExecuteInstructions[" + Block.this + ']';
-		}
-
+	final BlockDefiner<?> getDefiner() {
+		return this.definer;
 	}
 
 }

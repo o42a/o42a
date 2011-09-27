@@ -19,33 +19,22 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class Inclusion extends Statement implements Instruction {
+public abstract class Inclusion extends Statement {
 
-	private InclusionEnv env;
+	private InclusionDefiner<?> definer;
 
 	public Inclusion(LocationInfo location, Declaratives statements) {
 		super(location, statements.nextDistributor());
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return noDefinitions();
 	}
 
 	@Override
@@ -54,49 +43,18 @@ public abstract class Inclusion extends Statement implements Instruction {
 	}
 
 	public final StatementEnv getInitialEnv() {
-		return this.env.getInitialEnv();
+		return this.definer.env();
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		return this.env = new InclusionEnv(env);
-	}
-
-	@Override
-	public final void execute(InstructionContext context) {
-
-		final DeclarativeBlock block = context.getBlock().toDeclarativeBlock();
-
-		this.env.setBlock(block);
-		includeInto(block);
-	}
-
-	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return this;
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
+	public Definer define(StatementEnv env) {
+		return this.definer = createDefiner(env);
 	}
 
 	@Override
 	public Statement reproduce(Reproducer reproducer) {
 		throw new UnsupportedOperationException();
 	}
-
-	protected abstract void includeInto(DeclarativeBlock block);
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
@@ -112,5 +70,7 @@ public abstract class Inclusion extends Statement implements Instruction {
 	protected StOp createOp(LocalBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
+
+	protected abstract InclusionDefiner<?> createDefiner(StatementEnv env);
 
 }

@@ -23,13 +23,8 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.List;
 
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.action.ExitLoop;
-import org.o42a.core.value.LogicalValue;
 
 
 public abstract class ImperativeSentence extends Sentence<Imperatives> {
@@ -89,71 +84,6 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 		}
 
 		return alternatives.get(nextIdx + 1).isOpposite();
-	}
-
-	protected Action initialValue(LocalResolver resolver) {
-
-		final ImperativeSentence prerequisite = getPrerequisite();
-
-		if (prerequisite != null) {
-
-			final Action action = prerequisite.initialValue(resolver);
-
-			assert !action.isAbort() :
-				"Prerequisite can not abort execution";
-
-			final LogicalValue logicalValue = action.getLogicalValue();
-
-			if (!logicalValue.isConstant()) {
-				// Can not go on.
-				return action;
-			}
-			if (logicalValue.isFalse()) {
-				// Skip this sentence, as it`s prerequisite not satisfied.
-				return new ExecuteCommand(this, LogicalValue.TRUE);
-			}
-		}
-
-		final List<Imperatives> alternatives = getAlternatives();
-		final int size = alternatives.size();
-		Action result = null;
-
-		for (int i = 0; i < size; ++i) {
-
-			final Imperatives alt = alternatives.get(i);
-			final Action action = alt.initialValue(resolver);
-
-			if (action.isAbort()) {
-				return action;
-			}
-
-			final LogicalValue logicalValue = action.getLogicalValue();
-
-			if (!logicalValue.isConstant()) {
-				// can not go on
-				return action;
-			}
-			if (!alt.isOpposite()) {
-				if (result != null && !result.getLogicalValue().isTrue()) {
-					return result;
-				}
-			} else if (!hasOpposite(i)) {
-				if (!action.getLogicalValue().isTrue()) {
-					return action;
-				}
-			}
-
-			result = action;
-		}
-
-		if (isClaim()) {
-			return new ExitLoop(this, null);
-		}
-		if (result != null) {
-			return result;
-		}
-
-		return new ExecuteCommand(this, LogicalValue.TRUE);
 	}
 
 }

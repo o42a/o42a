@@ -22,16 +22,14 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Container;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.impl.imperative.AssignmentStatement;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.st.impl.imperative.ImperativeStatementEnv;
 
 
 public class Imperatives extends Statements<Imperatives> {
@@ -65,8 +63,8 @@ public class Imperatives extends Statements<Imperatives> {
 
 		DefinitionTargets result = noDefinitions();
 
-		for (Statement statement : getStatements()) {
-			result = result.add(statement.getDefinitionTargets());
+		for (Definer definer : getDefiners()) {
+			result = result.add(definer.getDefinitionTargets());
 		}
 
 		return this.kinds = result;
@@ -133,29 +131,14 @@ public class Imperatives extends Statements<Imperatives> {
 		statement(braces);
 	}
 
-	Action initialValue(LocalResolver resolver) {
+	@Override
+	protected Definer define(Statement statement) {
 
-		Action result = null;
+		final ImperativeStatementEnv env = new ImperativeStatementEnv(
+				this,
+				getSentence().getBlock().getInitialEnv());
 
-		for (Statement statement : getStatements()) {
-
-			final Action action = statement.initialValue(resolver);
-
-			if (action.isAbort()) {
-				return action;
-			}
-			if (!action.getLogicalValue().isConstant()) {
-				return action;
-			}
-
-			result = action;
-		}
-
-		if (result != null) {
-			return result;
-		}
-
-		return new ExecuteCommand(this, LogicalValue.TRUE);
+		return statement.define(env);
 	}
 
 	private Block<?> blockByName(LocationInfo location, String name) {
