@@ -115,7 +115,7 @@ public class LocalDef extends ValueDef {
 		assert local != null :
 			"Not a local scope: " + scope;
 
-		final ValueStruct<?, ?> valueStruct = getBlock().valueStruct(scope);
+		final ValueStruct<?, ?> valueStruct = this.definer.valueStruct(scope);
 
 		if (valueStruct == null) {
 			return null;

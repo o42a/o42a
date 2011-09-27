@@ -23,7 +23,6 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
 import org.o42a.core.ir.local.StOp;
@@ -35,7 +34,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.ValueStruct;
 
 
 final class FieldDeclarationStatement extends DeclarationStatement {
@@ -50,11 +48,6 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 		super(builder, builder.distribute());
 		this.builder = builder;
 		this.member = member;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ValueStruct.VOID;
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.Loggable;
 
 
@@ -91,6 +92,8 @@ public abstract class Definer implements PlaceInfo {
 	public abstract Instruction toInstruction(Resolver resolver);
 
 	public abstract DefinitionTargets getDefinitionTargets();
+
+	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
 
 	public abstract Definitions define(Scope scope);
 

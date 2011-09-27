@@ -62,15 +62,8 @@ public class RefDefiner extends Definer {
 	}
 
 	@Override
-	public Action initialValue(LocalResolver resolver) {
-		return new ReturnValue(this, resolver, getRef().value(resolver));
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		return new ExecuteCommand(
-				this,
-				getRef().value(resolver).getCondition().toLogicalValue());
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return expectedTypeAdapter().valueStruct(scope);
 	}
 
 	@Override
@@ -82,6 +75,18 @@ public class RefDefiner extends Definer {
 		final ValueDef def = expectedTypeAdapter().toValueDef();
 
 		return env().apply(def).toDefinitions();
+	}
+
+	@Override
+	public Action initialValue(LocalResolver resolver) {
+		return new ReturnValue(this, resolver, getRef().value(resolver));
+	}
+
+	@Override
+	public Action initialLogicalValue(LocalResolver resolver) {
+		return new ExecuteCommand(
+				this,
+				getRef().value(resolver).getCondition().toLogicalValue());
 	}
 
 	public final Ref expectedTypeAdapter() {

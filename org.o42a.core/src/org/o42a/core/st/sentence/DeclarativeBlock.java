@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
@@ -38,7 +37,6 @@ import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.declarative.DeclarativeBlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -135,11 +133,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	@Override
 	public final DeclarativeSentence issue(LocationInfo location) {
 		return (DeclarativeSentence) super.issue(location);
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return sentencesValueStruct(scope);
 	}
 
 	@Override

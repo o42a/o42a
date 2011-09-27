@@ -23,15 +23,12 @@ import static org.o42a.core.ir.local.StOp.noStOp;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 
 
 public abstract class Statement extends Placed {
@@ -50,15 +47,6 @@ public abstract class Statement extends Placed {
 	public ImperativeBlock toImperativeBlock() {
 		return null;
 	}
-
-	public final ValueType<?> getValueType() {
-
-		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
-
-		return valueStruct != null ? valueStruct.getValueType() : null;
-	}
-
-	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
 
 	public abstract Definer define(StatementEnv env);
 

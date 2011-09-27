@@ -31,6 +31,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
+import org.o42a.core.value.ValueStruct;
 
 
 final class RefConditionDefiner extends Definer {
@@ -89,6 +90,11 @@ final class RefConditionDefiner extends Definer {
 		}
 
 		return noDefinitions();
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return null;
 	}
 
 	@Override

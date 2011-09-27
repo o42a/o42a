@@ -19,14 +19,12 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Declaratives;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Inclusion extends Statement {
@@ -35,11 +33,6 @@ public abstract class Inclusion extends Statement {
 
 	public Inclusion(LocationInfo location, Declaratives statements) {
 		super(location, statements.nextDistributor());
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		throw new UnsupportedOperationException();
 	}
 
 	public final StatementEnv getInitialEnv() {

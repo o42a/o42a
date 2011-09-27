@@ -57,11 +57,6 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.block.valueStruct(scope);
-	}
-
-	@Override
 	public Definer define(StatementEnv env) {
 		this.block.define(env);
 		return new BracesWithinDeclarativesDefiner(this, env);
@@ -141,6 +136,11 @@ public final class BracesWithinDeclaratives extends Statement {
 		@Override
 		public DefinitionTargets getDefinitionTargets() {
 			return this.blockDefiner.getDefinitionTargets();
+		}
+
+		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			return this.blockDefiner.valueStruct(scope);
 		}
 
 		@Override

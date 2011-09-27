@@ -82,11 +82,6 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ValueStruct.VOID;
-	}
-
-	@Override
 	public Definer define(StatementEnv env) {
 		return new AssignmentDefiner(this, env);
 	}
@@ -246,6 +241,11 @@ public class AssignmentStatement extends Statement {
 		@Override
 		public DefinitionTargets getDefinitionTargets() {
 			return conditionDefinition(getStatement());
+		}
+
+		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			return null;
 		}
 
 		@Override

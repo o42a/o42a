@@ -29,6 +29,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
 import org.o42a.core.st.action.RepeatLoop;
+import org.o42a.core.value.ValueStruct;
 
 
 abstract class EllipsisDefiner extends Definer {
@@ -54,6 +55,11 @@ abstract class EllipsisDefiner extends Definer {
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return noDefinitions();
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return null;
 	}
 
 	@Override

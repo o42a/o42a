@@ -32,7 +32,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
 
@@ -162,35 +161,6 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 
 	final void setPrerequisite(Sentence<S> prerequisite) {
 		this.prerequisite = prerequisite;
-	}
-
-	ValueStruct<?, ?> valueStruct(Scope scope) {
-
-		ValueStruct<?, ?> result = null;
-
-		for (Statements<?> alt : getAlternatives()) {
-
-			final ValueStruct<?, ?> struct = alt.valueStruct(scope);
-
-			if (struct == null) {
-				continue;
-			}
-			if (result == null) {
-				result = struct;
-				continue;
-			}
-			if (result.assignableFrom(struct)) {
-				continue;
-			}
-			if (struct.assignableFrom(result)) {
-				result = struct;
-				continue;
-			}
-
-			getLogger().incompatible(alt, result);
-		}
-
-		return result;
 	}
 
 	void reproduce(Block<S> block, Reproducer reproducer) {

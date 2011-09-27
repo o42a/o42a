@@ -36,6 +36,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.ValueStruct;
 
 
 public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
@@ -59,6 +60,18 @@ public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
 		}
 
 		return targets.add(valueDefinition(getBlock()));
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+
+		final ValueStruct<?, ?> valueStruct = sentencesValueStruct(scope);
+
+		if (valueStruct != null) {
+			return valueStruct;
+		}
+
+		return env().getExpectedValueStruct();
 	}
 
 	@Override

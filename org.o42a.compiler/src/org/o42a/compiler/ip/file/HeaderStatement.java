@@ -58,11 +58,6 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Definer define(StatementEnv env) {
 		return new HeaderDefiner(this, env);
 	}
@@ -138,6 +133,11 @@ class HeaderStatement extends Statement {
 		@Override
 		public DefinitionTargets getDefinitionTargets() {
 			return noDefinitions();
+		}
+
+		@Override
+		public ValueStruct<?, ?> valueStruct(Scope scope) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

@@ -27,6 +27,7 @@ import org.o42a.core.st.Definer;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationDefiner extends Definer {
@@ -43,6 +44,11 @@ public abstract class DeclarationDefiner extends Definer {
 
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
+		return null;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		return null;
 	}
 
