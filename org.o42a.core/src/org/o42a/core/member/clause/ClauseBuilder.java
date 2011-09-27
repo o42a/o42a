@@ -273,7 +273,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		this.memberRegistry.declareMember(clause.toMember());
 
-		return new ClauseDeclarationStatement(this, clause);
+		return new ClauseDeclarationStatement(this, clause, null);
 	}
 
 	@Override
@@ -321,7 +321,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		this.memberRegistry.declareMember(clause.toMember());
 
 		group.getStatements().statement(
-				new ClauseDeclarationStatement(this, clause));
+				new ClauseDeclarationStatement(this, clause, definition));
 
 		return definition;
 	}
@@ -341,7 +341,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		this.memberRegistry.declareMember(clause.toMember());
 
 		group.getStatements().statement(
-				new ClauseDeclarationStatement(this, clause));
+				new ClauseDeclarationStatement(this, clause, definition));
 
 		return definition;
 	}

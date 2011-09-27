@@ -20,11 +20,8 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.core.ref.Logical.logicalFalse;
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
@@ -33,8 +30,9 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.DefinitionTargets;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.StatementEnv;
 
 
 public final class ErrorRef extends Ref {
@@ -52,11 +50,6 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return noDefinitions();
-	}
-
-	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return null;
 	}
@@ -67,8 +60,8 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
-	public Definitions define(Scope scope) {
-		return null;
+	public Definer define(StatementEnv env) {
+		return new ErrorRefDefiner(this, env);
 	}
 
 	@Override

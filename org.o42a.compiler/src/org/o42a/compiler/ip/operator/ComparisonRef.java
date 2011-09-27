@@ -267,7 +267,7 @@ public final class ComparisonRef extends ObjectConstructor {
 				return;
 			}
 
-			statement.setEnv(defaultEnv(this));
+			statement.define(defaultEnv(this));
 
 			this.comparisonKey = statement.toMember().getKey();
 

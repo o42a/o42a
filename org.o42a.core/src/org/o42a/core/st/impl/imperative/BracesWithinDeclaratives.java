@@ -52,9 +52,8 @@ public final class BracesWithinDeclaratives extends Statement {
 		this.block = block;
 	}
 
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return this.block.getDefinitionTargets();
+	public final ImperativeBlock getBlock() {
+		return this.block;
 	}
 
 	@Override
@@ -63,23 +62,9 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		return this.block.setEnv(env);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		return this.block.define(scope);
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
+	public Definer define(StatementEnv env) {
+		this.block.define(env);
+		return new BracesWithinDeclarativesDefiner(this, env);
 	}
 
 	@Override
@@ -130,6 +115,49 @@ public final class BracesWithinDeclaratives extends Statement {
 	@Override
 	protected StOp createOp(LocalBuilder builder) {
 		throw new UnsupportedOperationException();
+	}
+
+	private static final class BracesWithinDeclarativesDefiner extends Definer {
+
+		private final Definer blockDefiner;
+
+		BracesWithinDeclarativesDefiner(
+				BracesWithinDeclaratives statement,
+				StatementEnv env) {
+			super(statement, env);
+			this.blockDefiner = statement.getBlock().define(env);
+		}
+
+		@Override
+		public StatementEnv nextEnv() {
+			return this.blockDefiner.nextEnv();
+		}
+
+		@Override
+		public Instruction toInstruction(Resolver resolver) {
+			return null;
+		}
+
+		@Override
+		public DefinitionTargets getDefinitionTargets() {
+			return this.blockDefiner.getDefinitionTargets();
+		}
+
+		@Override
+		public Definitions define(Scope scope) {
+			return this.blockDefiner.define(scope);
+		}
+
+		@Override
+		public Action initialValue(LocalResolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Action initialLogicalValue(LocalResolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 	private static final class ImperativeReproducer extends Reproducer {

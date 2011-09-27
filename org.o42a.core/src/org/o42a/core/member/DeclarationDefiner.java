@@ -19,32 +19,41 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.Definer;
+import org.o42a.core.st.Instruction;
 import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.action.Action;
 
 
-public abstract class DeclarationStatement extends Statement {
+public abstract class DeclarationDefiner extends Definer {
 
-	public DeclarationStatement(
-			LocationInfo location,
-			Distributor distributor) {
-		super(location, distributor);
+	public DeclarationDefiner(
+			DeclarationStatement statement,
+			StatementEnv env) {
+		super(statement, env);
 	}
 
-	public abstract Member toMember();
-
-	@Override
-	public abstract DeclarationDefiner define(StatementEnv env);
-
-	@Override
-	protected void fullyResolve(Resolver resolver) {
+	public final DeclarationStatement getDeclarationStatement() {
+		return (DeclarationStatement) getStatement();
 	}
 
 	@Override
-	protected void fullyResolveValues(Resolver resolver) {
+	public Instruction toInstruction(Resolver resolver) {
+		return null;
+	}
+
+	@Override
+	public final Definitions define(Scope scope) {
+		return null;
+	}
+
+	@Override
+	public final Action initialLogicalValue(LocalResolver resolver) {
+		throw new UnsupportedOperationException();
 	}
 
 }

@@ -28,18 +28,15 @@ import java.util.List;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
-import org.o42a.core.st.action.Action;
+import org.o42a.core.st.impl.BlockDefiner;
+import org.o42a.core.st.impl.declarative.DeclarativeBlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
-import org.o42a.core.st.impl.declarative.SentencePrecondition;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
@@ -61,7 +58,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 				false);
 	}
 
-	private BlockEnv env;
 	private Locals locals;
 
 	public DeclarativeBlock(
@@ -142,62 +138,18 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		assert this.env == null :
-			"Environment already assigned to " + this;
-		return this.env = new BlockEnv(this, env);
-	}
-
-	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		return sentencesValueStruct(scope);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		if (!getDefinitionTargets().haveDefinition()) {
-			return null;
-		}
-
-		Definitions result = null;
-
-		for (DeclarativeSentence sentence : getSentences()) {
-
-			final Definitions definitions = sentence.define(scope);
-
-			if (definitions == null) {
-				continue;
-			}
-			if (result == null) {
-				result = definitions;
-			} else {
-				result = result.refine(definitions);
-			}
-		}
-
-		assert result != null :
-			"Missing definitions: " + this;
-
-		return result;
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public DeclarativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
+		final Statements<?> enclosing = reproducer.getStatements();
 		final DeclarativeBlock reproduction;
 
-		if (getEnclosing() == null) {
+		if (enclosing == null) {
 			reproduction = new DeclarativeBlock(
 					this,
 					declarativeDistributor(reproducer.getContainer()),
@@ -205,27 +157,15 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 					reproducer.getMemberRegistry(),
 					DECLARATIVE_FACTORY,
 					true);
+			reproduction.define(defaultEnv(this));
 			reproduceSentences(reproducer, reproduction);
-			return reproduction;
+			return null;
 		}
 
-		reproduction =
-				(DeclarativeBlock) reproducer.getStatements().parentheses(this);
+		reproduction = (DeclarativeBlock) enclosing.parentheses(this);
 		reproduceSentences(reproducer, reproduction);
 
 		return null;
-	}
-
-	public final StatementEnv getInitialEnv() {
-		if (this.env != null) {
-			return this.env.initialEnv;
-		}
-
-		final StatementEnv initial = defaultEnv(this);
-
-		this.env = new BlockEnv(this, initial);
-
-		return initial;
 	}
 
 	@Override
@@ -253,6 +193,11 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		return this.locals = enclosing.getSentence().getBlock().getLocals();
 	}
 
+	@Override
+	BlockDefiner<?> createDefiner(StatementEnv env) {
+		return new DeclarativeBlockDefiner(this, env);
+	}
+
 	private void addImplicitInclusions() {
 		if (getEnclosing() != null) {
 			return;
@@ -269,52 +214,6 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 		final Declaratives statements = propose(this).alternative(this);
 
 		statements.statement(new ImplicitInclusion(this, statements));
-	}
-
-	private static final class BlockEnv extends StatementEnv {
-
-		private final StatementEnv initialEnv;
-		private final DeclarativeBlock block;
-
-		BlockEnv(DeclarativeBlock block, StatementEnv initialEnv) {
-			this.initialEnv = initialEnv;
-			this.block = block;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return this.initialEnv.hasPrerequisite();
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.initialEnv.prerequisite(scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-			return true;
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-
-			final SentencePrecondition collector =
-					new SentencePrecondition(this.block, scope);
-
-			return collector.precondition();
-		}
-
-		@Override
-		public String toString() {
-			return "BlockEnv[" + this.block + ']';
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.initialEnv.getExpectedValueStruct();
-		}
-
 	}
 
 }

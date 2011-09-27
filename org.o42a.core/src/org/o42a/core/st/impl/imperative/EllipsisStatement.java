@@ -19,22 +19,15 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExitLoop;
-import org.o42a.core.st.action.RepeatLoop;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
 
@@ -61,9 +54,9 @@ public final class EllipsisStatement extends Statement {
 		this.exit = prototype.exit;
 	}
 
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return noDefinitions();
+
+	public final String getName() {
+		return this.name;
 	}
 
 	@Override
@@ -72,30 +65,15 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
+	public Definer define(StatementEnv env) {
 		if (this.exit) {
-			return new ExitLoop(this, this.name);
+			return new EllipsisDefiner.ExitDefiner(this, env);
 		}
-		return new RepeatLoop(this, this.name);
+		return new EllipsisDefiner.RepeatDefiner(this, env);
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public EllipsisStatement reproduce(Reproducer reproducer) {
+	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new EllipsisStatement(this, reproducer.distribute());
 	}

@@ -22,6 +22,7 @@ package org.o42a.common.object;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
+import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.common.source.SourceTree;
@@ -40,6 +41,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ObjectCompiler;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
@@ -84,6 +86,7 @@ public class CompiledObject extends Obj {
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private ScopeSet errorReportedAt;
+	private Definer definer;
 
 	public CompiledObject(CompiledField field) {
 		super(field);
@@ -119,6 +122,7 @@ public class CompiledObject extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
+		this.definer = this.definition.define(objectEnv(this));
 
 		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
 	}
@@ -135,7 +139,7 @@ public class CompiledObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definition.define(getScope());
+		return this.definer.define(getScope());
 	}
 
 	protected final boolean reportError(Resolver resolver) {

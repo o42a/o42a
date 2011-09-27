@@ -19,50 +19,28 @@
 */
 package org.o42a.core.ref.impl;
 
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+
 import org.o42a.core.Scope;
-import org.o42a.core.ref.Logical;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.StatementEnv;
-import org.o42a.core.value.ValueStruct;
 
 
-final class RefEnv extends StatementEnv {
+final class ErrorRefDefiner extends RefDefiner {
 
-	private final RefDefiner definer;
-
-	RefEnv(RefDefiner definer) {
-		this.definer = definer;
+	ErrorRefDefiner(ErrorRef ref, StatementEnv env) {
+		super(ref, env);
 	}
 
 	@Override
-	public boolean hasPrerequisite() {
-		return this.definer.env().hasPrerequisite();
+	public DefinitionTargets getDefinitionTargets() {
+		return noDefinitions();
 	}
 
 	@Override
-	public Logical prerequisite(Scope scope) {
-		return this.definer.env().prerequisite(scope);
-	}
-
-	@Override
-	public boolean hasPrecondition() {
-		return true;
-	}
-
-	@Override
-	public Logical precondition(Scope scope) {
-		return this.definer.env().precondition(scope).and(
-				this.definer.expectedTypeAdapter()
-				.rescope(scope).getLogical());
-	}
-
-	@Override
-	public String toString() {
-		return this.definer.env() + ", " + this.definer;
-	}
-
-	@Override
-	protected ValueStruct<?, ?> expectedValueStruct() {
-		return this.definer.env().getExpectedValueStruct();
+	public Definitions define(Scope scope) {
+		return null;
 	}
 
 }

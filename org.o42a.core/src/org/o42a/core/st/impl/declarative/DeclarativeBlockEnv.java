@@ -25,45 +25,46 @@ import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-final class InclusionEnv extends StatementEnv {
+final class DeclarativeBlockEnv extends StatementEnv {
 
-	private final InclusionDefiner<?> definer;
-	private StatementEnv wrapped;
+	private final DeclarativeBlockDefiner definer;
 
-	InclusionEnv(InclusionDefiner<?> definer) {
+	DeclarativeBlockEnv(DeclarativeBlockDefiner definer) {
 		this.definer = definer;
 	}
 
 	@Override
 	public boolean hasPrerequisite() {
-		return getWrapped().hasPrerequisite();
+		return this.definer.env().hasPrerequisite();
 	}
 
 	@Override
 	public Logical prerequisite(Scope scope) {
-		return getWrapped().prerequisite(scope);
+		return this.definer.env().prerequisite(scope);
 	}
 
 	@Override
 	public boolean hasPrecondition() {
-		return getWrapped().hasPrecondition();
+		return true;
 	}
 
 	@Override
 	public Logical precondition(Scope scope) {
-		return getWrapped().precondition(scope);
+
+		final SentencePrecondition collector =
+				new SentencePrecondition(this.definer.getBlock(), scope);
+
+		return collector.precondition();
+	}
+
+	@Override
+	public String toString() {
+		return "BlockEnv[" + this.definer + ']';
 	}
 
 	@Override
 	protected ValueStruct<?, ?> expectedValueStruct() {
-		return getWrapped().getExpectedValueStruct();
-	}
-
-	private final StatementEnv getWrapped() {
-		if (this.wrapped != null) {
-			return this.wrapped;
-		}
-		return this.wrapped = this.definer.nextEnv();
+		return this.definer.env().getExpectedValueStruct();
 	}
 
 }

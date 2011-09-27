@@ -22,7 +22,6 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.source.CompilerLogger.logAnother;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Container;
@@ -40,11 +39,9 @@ import org.o42a.core.value.ValueStruct;
 public class Declaratives extends Statements<Declaratives> {
 
 	private DeclarativesEnv env;
-	private StatementEnv prevEnv;
+	private Definer prevDefiner;
 	private StatementEnv lastDefinitionEnv;
 	private DefinitionTargets definitionTargets;
-	private final ArrayList<StatementEnv> statementEnvs =
-			new ArrayList<StatementEnv>(1);
 
 	Declaratives(
 			LocationInfo location,
@@ -71,14 +68,14 @@ public class Declaratives extends Statements<Declaratives> {
 
 		executeInstructions();
 
-		final List<Statement> statements = getStatements();
+		final List<Definer> definers = getDefiners();
 		DefinitionTargets result = noDefinitions();
-		final int size = statements.size();
+		final int size = definers.size();
 
 		for (int i = size - 1; i >= 0; --i) {
 
-			final Statement statement = statements.get(i);
-			final DefinitionTargets targets = statement.getDefinitionTargets();
+			final Definer definer = definers.get(i);
+			final DefinitionTargets targets = definer.getDefinitionTargets();
 
 			if (targets.isEmpty()) {
 				continue;
@@ -87,7 +84,7 @@ public class Declaratives extends Statements<Declaratives> {
 				for (int j = i + 1; j < size; ++j) {
 					redundantDefinitions(
 							targets.lastDeclaration(),
-							statements.get(j));
+							definers.get(j));
 				}
 				result = targets;
 				continue;
@@ -147,18 +144,16 @@ public class Declaratives extends Statements<Declaratives> {
 	}
 
 	@Override
-	protected void addStatement(Statement statement) {
-		super.addStatement(statement);
-		this.prevEnv = statement.setEnv(
-				this.prevEnv != null
-				? this.prevEnv : getSentence().getAltEnv());
-		this.statementEnvs.add(this.prevEnv);
-	}
+	protected Definer define(Statement statement) {
 
-	@Override
-	protected void removeStatement(int index) {
-		super.removeStatement(index);
-		this.statementEnvs.remove(index);
+		final StatementEnv env;
+		if (this.prevDefiner != null) {
+			env = this.prevDefiner.nextEnv();
+		} else {
+			env = getSentence().getAltEnv();
+		}
+
+		return this.prevDefiner = statement.define(env);
 	}
 
 	protected Definitions define(Scope scope) {
@@ -169,12 +164,12 @@ public class Declaratives extends Statements<Declaratives> {
 			return null;
 		}
 
-		final List<Statement> statements = getStatements();
+		final List<Definer> definers = getDefiners();
 
-		for (int i = statements.size() - 1; i >= 0; --i) {
+		for (int i = definers.size() - 1; i >= 0; --i) {
 
-			final Statement statement = statements.get(i);
-			final Definitions definitions = statement.define(scope);
+			final Definer definer = definers.get(i);
+			final Definitions definitions = definer.define(scope);
 
 			if (definitions != null) {
 				return definitions;
@@ -189,17 +184,22 @@ public class Declaratives extends Statements<Declaratives> {
 			return this.lastDefinitionEnv;
 		}
 
-		final List<Statement> statements = getStatements();
+		final List<Definer> definers = getDefiners();
+		final int last = definers.size() - 1;
 
-		for (int i = statements.size() - 1; i >= 0; --i) {
+		for (int i = last; i >= 0; --i) {
 
-			final Statement statement = statements.get(i);
+			final Definer definer = definers.get(i);
 
-			if (!statement.getDefinitionTargets().haveDefinition()) {
+			if (!definer.getDefinitionTargets().haveDefinition()) {
 				continue;
 			}
 
-			return this.lastDefinitionEnv = this.statementEnvs.get(i);
+			if (i == last) {
+				return this.lastDefinitionEnv = definer.nextEnv();
+			}
+
+			return this.lastDefinitionEnv = definers.get(i + 1).env();
 		}
 
 		return this.lastDefinitionEnv = getSentence().getAltEnv();
@@ -207,9 +207,9 @@ public class Declaratives extends Statements<Declaratives> {
 
 	private void redundantDefinitions(
 			DefinitionTarget declaration,
-			Statement statement) {
+			Definer definer) {
 
-		final DefinitionTargets targets = statement.getDefinitionTargets();
+		final DefinitionTargets targets = definer.getDefinitionTargets();
 
 		if (targets.haveCondition()) {
 			if (declaration.isValue()) {
@@ -274,8 +274,8 @@ public class Declaratives extends Statements<Declaratives> {
 
 		@Override
 		public String toString() {
-			if (Declaratives.this.prevEnv != null) {
-				return Declaratives.this.prevEnv.toString();
+			if (Declaratives.this.prevDefiner != null) {
+				return Declaratives.this.prevDefiner.env().toString();
 			}
 			return Declaratives.this + "?";
 		}

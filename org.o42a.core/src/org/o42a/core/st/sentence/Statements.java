@@ -33,9 +33,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.DefinitionTargets;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.*;
 import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.cond.RefCondition;
@@ -48,7 +46,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	private final Sentence<S> sentence;
 	private final boolean opposite;
-	private final ArrayList<Statement> statements = new ArrayList<Statement>(1);
+	private final ArrayList<Definer> definers = new ArrayList<Definer>(1);
 	private boolean instructionsExecuted;
 
 	Statements(
@@ -73,8 +71,8 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return this.opposite;
 	}
 
-	public final List<Statement> getStatements() {
-		return this.statements;
+	public final List<Definer> getDefiners() {
+		return this.definers;
 	}
 
 	public SentenceFactory<S, ?, ?> getSentenceFactory() {
@@ -232,25 +230,22 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	@Override
 	public String toString() {
 
-		final List<Statement> statements = getStatements();
+		final List<Definer> definers = getDefiners();
 
-		if (statements.isEmpty()) {
+		if (definers.isEmpty()) {
 			return "<no statements>";
 		}
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		for (Statement statement : statements) {
+		for (Definer definer : definers) {
 			if (!comma) {
 				comma = true;
 			} else {
 				out.append(", ");
 			}
-			if (statement instanceof Ref) {
-				out.append('=');
-			}
-			out.append(statement);
+			out.append(definer);
 		}
 
 		return out.toString();
@@ -258,19 +253,24 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 	protected abstract void braces(ImperativeBlock braces);
 
-	protected void addStatement(Statement statement) {
+	protected final void addStatement(Statement statement) {
 		assert !this.instructionsExecuted :
 			"Instructions already executed. Can not add statement " + statement;
-		this.statements.add(statement);
+		this.definers.add(define(statement));
 	}
 
-	protected void replaceStatement(int index, Statement statement) {
-		this.statements.set(index, statement);
+	protected final void replaceStatement(int index, Statement statement) {
+
+		final Definer old = this.definers.get(index);
+
+		this.definers.set(index, old.replaceWith(statement));
 	}
 
-	protected void removeStatement(int index) {
-		this.statements.remove(index);
+	protected final void removeStatement(int index) {
+		this.definers.remove(index);
 	}
+
+	protected abstract Definer define(Statement statement);
 
 	final Trace getTrace() {
 		return getSentence().getBlock().getTrace();
@@ -280,12 +280,13 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 
 		ValueStruct<?, ?> result = null;
 
-		for (Statement statement : getStatements()) {
-			if (!statement.getDefinitionTargets().haveValue()) {
+		for (Definer definer : getDefiners()) {
+			if (!definer.getDefinitionTargets().haveValue()) {
 				continue;
 			}
 
-			final ValueStruct<?, ?> struct = statement.valueStruct(scope);
+			final ValueStruct<?, ?> struct =
+					definer.getStatement().valueStruct(scope);
 
 			if (struct == null) {
 				continue;
@@ -302,7 +303,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 				continue;
 			}
 
-			getLogger().incompatible(statement, result);
+			getLogger().incompatible(definer, result);
 		}
 
 		return result;
@@ -314,11 +315,12 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
-		for (Statement statement : getStatements()) {
+		for (Definer definer : getDefiners()) {
 
-			final Statement statementReproduction = statement.reproduce(
-					statementsReproducer.distributeBy(
-							reproduction.nextDistributor()));
+			final Statement statementReproduction =
+					definer.getStatement().reproduce(
+							statementsReproducer.distributeBy(
+									reproduction.nextDistributor()));
 
 			if (statementReproduction != null) {
 				reproduction.statement(statementReproduction);
@@ -329,8 +331,8 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	final void resolveValues(Resolver resolver) {
 		assert this.instructionsExecuted :
 			"Instructions not executed yet";
-		for (Statement statement : getStatements()) {
-			statement.resolveValues(resolver);
+		for (Definer definer : getDefiners()) {
+			definer.getStatement().resolveValues(resolver);
 		}
 	}
 

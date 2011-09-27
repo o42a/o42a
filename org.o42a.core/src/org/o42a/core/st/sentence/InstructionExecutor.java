@@ -22,9 +22,9 @@ package org.o42a.core.st.sentence;
 import java.util.List;
 
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
-import org.o42a.core.st.Statement;
 import org.o42a.util.use.UseCaseInfo;
 import org.o42a.util.use.UseFlag;
 import org.o42a.util.use.User;
@@ -35,7 +35,7 @@ final class InstructionExecutor implements InstructionContext {
 	private final Statements<?> statements;
 	private final Resolver resolver;
 	private int index;
-	private Statement statement;
+	private Definer definer;
 	private Block<?> block;
 	private boolean doNotRemove;
 
@@ -74,8 +74,8 @@ final class InstructionExecutor implements InstructionContext {
 
 		return this.block = this.statements.parentheses(
 				this.index,
-				this.statement,
-				this.statement.distribute(),
+				this.definer,
+				this.definer.distribute(),
 				this.statements.getMemberRegistry());
 	}
 
@@ -86,29 +86,29 @@ final class InstructionExecutor implements InstructionContext {
 
 	@Override
 	public String toString() {
-		return "InstructionContext[" + this.statement + ']';
+		return "InstructionContext[" + this.definer + ']';
 	}
 
 	final void executeAll() {
 
-		final List<Statement> statements = this.statements.getStatements();
+		final List<Definer> definers = this.statements.getDefiners();
 
-		while (this.index < statements.size()) {
-			execute(statements.get(this.index));
+		while (this.index < definers.size()) {
+			execute(definers.get(this.index));
 		}
 	}
 
-	private final void execute(Statement statement) {
+	private final void execute(Definer definer) {
 
 		final Instruction instruction =
-				statement.toInstruction(getResolver());
+				definer.toInstruction(getResolver());
 
 		if (instruction == null) {
 			++this.index;
 			return;
 		}
 
-		this.statement = statement;
+		this.definer = definer;
 		try {
 			instruction.execute(this);
 			if (!this.doNotRemove) {

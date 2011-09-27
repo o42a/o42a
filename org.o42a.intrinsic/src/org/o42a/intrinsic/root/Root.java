@@ -21,6 +21,7 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
+import static org.o42a.core.st.StatementEnv.objectEnv;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
@@ -40,6 +41,7 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.URLSource;
 
@@ -71,6 +73,7 @@ public class Root extends Obj {
 
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
+	private Definer definer;
 
 	private Root(
 			Scope topScope,
@@ -174,6 +177,7 @@ public class Root extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
+		this.definer = this.definition.define(objectEnv(this));
 
 		this.compiler.define(this.definition, IMPLICIT_SECTION_TAG);
 	}
@@ -194,7 +198,7 @@ public class Root extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definition.define(getScope());
+		return this.definer.define(getScope());
 	}
 
 	@Override

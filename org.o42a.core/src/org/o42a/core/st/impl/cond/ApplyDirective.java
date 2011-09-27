@@ -28,12 +28,15 @@ import org.o42a.core.value.Directive;
 
 final class ApplyDirective implements Instruction {
 
-	private final RefCondition ref;
+	private final RefConditionDefiner definer;
 	private final Directive directive;
 	private final Resolver resolver;
 
-	ApplyDirective(RefCondition ref, Resolver resolver, Directive directive) {
-		this.ref = ref;
+	ApplyDirective(
+			RefConditionDefiner definer,
+			Resolver resolver,
+			Directive directive) {
+		this.definer = definer;
 		this.resolver = resolver;
 		this.directive = directive;
 	}
@@ -49,11 +52,7 @@ final class ApplyDirective implements Instruction {
 	}
 
 	final Ref getRef() {
-		return this.ref.getRef();
-	}
-
-	final RefEnvWrap getEnv() {
-		return this.ref.getEnv();
+		return this.definer.getRef();
 	}
 
 	final Directive getDirective() {

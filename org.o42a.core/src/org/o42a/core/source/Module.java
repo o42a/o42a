@@ -22,6 +22,7 @@ package org.o42a.core.source;
 import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
+import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -34,6 +35,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
@@ -43,6 +45,7 @@ public class Module extends Obj {
 	private final String moduleName;
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
+	private Definer definer;
 
 	public Module(CompilerContext context, String moduleName) {
 		this(context.compileModule(), moduleName);
@@ -97,6 +100,7 @@ public class Module extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
+		this.definer = this.definition.define(objectEnv(this));
 
 		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
 	}
@@ -113,7 +117,7 @@ public class Module extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definition.define(getScope());
+		return this.definer.define(getScope());
 	}
 
 	private static ModuleScope moduleScope(ModuleCompiler compiler) {

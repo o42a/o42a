@@ -20,31 +20,24 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
-import static org.o42a.core.def.impl.LocalDef.localDef;
-import static org.o42a.core.st.DefinitionTarget.valueDefinition;
+import static org.o42a.core.st.StatementEnv.defaultEnv;
 import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
 import org.o42a.core.*;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.action.LoopAction;
-import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
-import org.o42a.core.st.impl.imperative.ImperativeBlockOp;
-import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.impl.BlockDefiner;
+import org.o42a.core.st.impl.imperative.*;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
@@ -107,7 +100,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final String name;
 	private final boolean topLevel;
 	private final Trace trace;
-	private StatementEnv initialEnv;
 	private Locals locals;
 
 	public ImperativeBlock(
@@ -189,18 +181,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-
-		final DefinitionTargets targets = super.getDefinitionTargets();
-
-		if (targets.haveValue()) {
-			return targets;
-		}
-
-		return targets.add(valueDefinition(this));
-	}
-
-	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
 
 		final ValueStruct<?, ?> valueStruct = sentencesValueStruct(scope);
@@ -208,17 +188,8 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		if (valueStruct != null) {
 			return valueStruct;
 		}
-		if (isTopLevel()) {
 
-			final ValueStruct<?, ?> expected =
-					this.initialEnv.getExpectedValueStruct();
-
-			if (expected != null) {
-				return expected;
-			}
-		}
-
-		return ValueStruct.VOID;
+		return getDefiner().env().getExpectedValueStruct();
 	}
 
 	@Override
@@ -242,56 +213,15 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		assert this.initialEnv == null :
-			"Environment already set for " + this;
-		this.initialEnv = env;
-		return new ImperativeEnv(this, env);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		return this.initialEnv.apply(localDef(this, scope)).toDefinitions();
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		for (ImperativeSentence sentence : getSentences()) {
-
-			final Action action = sentence.initialValue(resolver);
-			final LoopAction loopAction = action.toLoopAction(this);
-
-			switch (loopAction) {
-			case CONTINUE:
-				continue;
-			case PULL:
-				return action;
-			case EXIT:
-				return new ExecuteCommand(action, action.getLogicalValue());
-			case REPEAT:
-				// Repeating is not supported at compile time.
-				return new ExecuteCommand(this, LogicalValue.RUNTIME);
-			}
-
-			throw new IllegalStateException("Unhandled action: " + action);
-		}
-
-		return new ExecuteCommand(this, LogicalValue.TRUE);
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		return initialValue(resolver).toInitialLogicalValue();
-	}
-
-	@Override
 	public ImperativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		if (!isTopLevel()) {
+		final Statements<?> enclosing = reproducer.getStatements();
+
+		if (enclosing != null) {
 
 			final ImperativeBlock reproduction =
-					reproducer.getStatements().braces(this, getName());
+					enclosing.braces(this, getName());
 
 			reproduceSentences(reproducer, reproduction);
 
@@ -304,6 +234,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 				reproducer.getMemberRegistry(),
 				getSentenceFactory());
 
+		reproduction.define(defaultEnv(this));
 		reproduceSentences(reproducer, reproduction);
 
 		return reproduction;
@@ -333,6 +264,11 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		}
 		return this.locals =
 				getEnclosing().getSentence().getBlock().getLocals();
+	}
+
+	@Override
+	BlockDefiner<?> createDefiner(StatementEnv env) {
+		return new ImperativeBlockDefiner(this, env);
 	}
 
 	public static final class BlockDistributor extends Distributor {
@@ -368,49 +304,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		@Override
 		public ScopePlace getPlace() {
 			return localPlace(getScope(), FIRST_PLACE);
-		}
-
-	}
-
-	private static final class ImperativeEnv extends StatementEnv {
-
-		private final ImperativeBlock block;
-		private final StatementEnv initialEnv;
-
-		ImperativeEnv(ImperativeBlock block, StatementEnv initialEnv) {
-			this.initialEnv = initialEnv;
-			this.block = block;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return this.initialEnv.hasPrerequisite();
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.initialEnv.prerequisite(scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-			return true;
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return this.initialEnv.precondition(scope).and(
-					localDef(this.block, scope).fullLogical());
-		}
-
-		@Override
-		public String toString() {
-			return this.initialEnv + ", " + this.block;
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.initialEnv.getExpectedValueStruct();
 		}
 
 	}

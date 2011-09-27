@@ -27,6 +27,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
 import org.o42a.core.ir.local.StOp;
+import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.local.LocalResolver;
@@ -41,7 +42,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 
 	private final FieldBuilder builder;
 	private final DeclaredMemberField member;
-	private StatementEnv initialEnv;
+	private Definer definer;
 
 	FieldDeclarationStatement(
 			FieldBuilder builder,
@@ -49,11 +50,6 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 		super(builder, builder.distribute());
 		this.builder = builder;
 		this.member = member;
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return fieldDeclaration(this);
 	}
 
 	@Override
@@ -67,32 +63,12 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	public final StatementEnv getInitialEnv() {
-		return this.initialEnv;
+		return this.definer.env();
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		assert this.initialEnv == null :
-			"Environment already assigned to " + this;
-		this.initialEnv = env;
-		return env.notCondition(this);
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-
-		final Member member = resolver.getLocal().member(this.member.getKey());
-		final Field<?> field = member.toField(resolver);
-		final LogicalValue logicalValue =
-				field.getArtifact()
-				.materialize()
-				.value()
-				.getDefinitions()
-				.value(resolver)
-				.getCondition()
-				.toLogicalValue();
-
-		return new ExecuteCommand(this, logicalValue);
+	public DeclarationDefiner define(StatementEnv env) {
+		return this.definer = new Definer(this, env);
 	}
 
 	@Override
@@ -148,6 +124,43 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 				this.member.toDeclaredField().getVariants().get(0);
 
 		return variant.reproduceDefinition(reproducer);
+	}
+
+	private static final class Definer extends DeclarationDefiner {
+
+		Definer(FieldDeclarationStatement statement, StatementEnv env) {
+			super(statement, env);
+		}
+
+		@Override
+		public DefinitionTargets getDefinitionTargets() {
+			return fieldDeclaration(getDeclarationStatement());
+		}
+
+		@Override
+		public StatementEnv nextEnv() {
+			return env().notCondition(this);
+		}
+
+		@Override
+		public Action initialValue(LocalResolver resolver) {
+
+			final Member member =
+					resolver.getLocal().member(
+							getDeclarationStatement().toMember().getKey());
+			final Field<?> field = member.toField(resolver);
+			final LogicalValue logicalValue =
+					field.getArtifact()
+					.materialize()
+					.value()
+					.getDefinitions()
+					.value(resolver)
+					.getCondition()
+					.toLogicalValue();
+
+			return new ExecuteCommand(this, logicalValue);
+		}
+
 	}
 
 }

@@ -33,6 +33,7 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -47,6 +48,7 @@ final class ObjectFieldVariant
 	private DeclarativeBlock content;
 	private Ascendants implicitAscendants;
 	private Ascendants ascendants;
+	private Definer definer;
 
 	public ObjectFieldVariant(
 			DeclaredObjectField field,
@@ -78,7 +80,7 @@ final class ObjectFieldVariant
 				container,
 				container,
 				getObjectField().getMemberRegistry());
-		this.content.setEnv(new VariantEnv(this));
+		this.definer = this.content.define(new VariantEnv(this));
 
 		return this.content;
 	}
@@ -137,7 +139,8 @@ final class ObjectFieldVariant
 
 	Definitions define(Definitions definitions, Scope scope) {
 
-		final Definitions variantDefinitions = getContent().define(scope);
+		final Definitions variantDefinitions =
+				getContentDefiner().define(scope);
 
 		if (variantDefinitions == null) {
 			return definitions;
@@ -147,6 +150,13 @@ final class ObjectFieldVariant
 		}
 
 		return definitions.refine(variantDefinitions);
+	}
+
+	private Definer getContentDefiner() {
+		if (this.definer == null) {
+			getContent();
+		}
+		return this.definer;
 	}
 
 	private final DeclaredObjectField getObjectField() {

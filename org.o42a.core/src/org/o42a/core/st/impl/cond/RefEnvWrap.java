@@ -21,19 +21,18 @@ package org.o42a.core.st.impl.cond;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.ValueStruct;
 
 
 final class RefEnvWrap extends StatementEnv {
 
-	private final RefCondition ref;
-	private final StatementEnv initialEnv;
+	private final RefConditionDefiner definer;
 	private StatementEnv wrapped;
 
-	RefEnvWrap(RefCondition ref, StatementEnv initialEnv) {
-		this.ref = ref;
-		this.initialEnv = initialEnv;
+	RefEnvWrap(RefConditionDefiner definer) {
+		this.definer = definer;
 	}
 
 	@Override
@@ -61,7 +60,7 @@ final class RefEnvWrap extends StatementEnv {
 		if (this.wrapped != null) {
 			return this.wrapped.toString();
 		}
-		return this.initialEnv + ", " + this.ref;
+		return this.definer.env() + ", " + this.definer;
 	}
 
 	@Override
@@ -70,26 +69,22 @@ final class RefEnvWrap extends StatementEnv {
 	}
 
 	final StatementEnv getInitialEnv() {
-		return this.initialEnv;
-	}
-
-	final void setWrapped(StatementEnv wrapped) {
-		assert this.wrapped == null :
-			"Environment already assigned to " + this.ref;
-		this.wrapped = wrapped;
-	}
-
-	final void removeWrapped() {
-		assert this.wrapped == null :
-			"Environment already assigned to " + this.ref;
-		this.wrapped = this.initialEnv;
+		return this.definer.env();
 	}
 
 	private StatementEnv getWrapped() {
 		if (this.wrapped != null) {
 			return this.wrapped;
 		}
-		return this.wrapped = this.ref.getConditionalEnv();
+
+		final Definer replacement = this.definer.getReplacement();
+
+		if (replacement != null) {
+			return this.wrapped = replacement.nextEnv();
+		}
+
+		return this.wrapped = this.definer.getRefDefiner().nextEnv();
 	}
+
 
 }

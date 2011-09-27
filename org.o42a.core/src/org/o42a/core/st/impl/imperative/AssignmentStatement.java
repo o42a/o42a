@@ -82,33 +82,13 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return conditionDefinition(this);
-	}
-
-	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
 		return ValueStruct.VOID;
 	}
 
 	@Override
-	public StatementEnv setEnv(StatementEnv env) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		return new ExecuteCommand(this, LogicalValue.RUNTIME);
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
+	public Definer define(StatementEnv env) {
+		return new AssignmentDefiner(this, env);
 	}
 
 	@Override
@@ -245,6 +225,44 @@ public class AssignmentStatement extends Statement {
 		getLogger().incompatible(destination, valueType);
 
 		return ASSIGNMENT_ERROR;
+	}
+
+	private static final class AssignmentDefiner extends Definer {
+
+		AssignmentDefiner(AssignmentStatement assignment, StatementEnv env) {
+			super(assignment, env);
+		}
+
+		@Override
+		public StatementEnv nextEnv() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Instruction toInstruction(Resolver resolver) {
+			return null;
+		}
+
+		@Override
+		public DefinitionTargets getDefinitionTargets() {
+			return conditionDefinition(getStatement());
+		}
+
+		@Override
+		public Definitions define(Scope scope) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Action initialValue(LocalResolver resolver) {
+			return new ExecuteCommand(this, LogicalValue.RUNTIME);
+		}
+
+		@Override
+		public Action initialLogicalValue(LocalResolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

@@ -25,6 +25,7 @@ import org.o42a.core.member.Inclusions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Instruction;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
 
@@ -44,19 +45,8 @@ public class ImplicitInclusion extends Inclusion {
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		if (!include()) {
-			return SKIP_INSTRUCTION;
-		}
-		return super.toInstruction(resolver);
-	}
-
-	@Override
-	protected void includeInto(DeclarativeBlock block) {
-		if (!include()) {
-			return;
-		}
-		getContext().include(block, IMPLICIT_SECTION_TAG);
+	protected ImplicitInclusionDefiner createDefiner(StatementEnv env) {
+		return new ImplicitInclusionDefiner(this, env);
 	}
 
 	private final boolean include() {
@@ -82,6 +72,33 @@ public class ImplicitInclusion extends Inclusion {
 		}
 
 		return true;
+	}
+
+	private static final class ImplicitInclusionDefiner
+			extends InclusionDefiner<ImplicitInclusion> {
+
+		ImplicitInclusionDefiner(
+				ImplicitInclusion inclusion,
+				StatementEnv env) {
+			super(inclusion, env);
+		}
+
+		@Override
+		public Instruction toInstruction(Resolver resolver) {
+			if (!getInclusion().include()) {
+				return SKIP_INSTRUCTION;
+			}
+			return super.toInstruction(resolver);
+		}
+
+		@Override
+		protected void includeInto(DeclarativeBlock block) {
+			if (!getInclusion().include()) {
+				return;
+			}
+			getContext().include(block, IMPLICIT_SECTION_TAG);
+		}
+
 	}
 
 }
