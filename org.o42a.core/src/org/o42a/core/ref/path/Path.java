@@ -144,6 +144,37 @@ public class Path {
 		return append(new MemberFragment(memberKey));
 	}
 
+	public Path cutArtifact() {
+
+		final PathFragment[] fragments = dematerialize().fragments;
+		final int length = fragments.length;
+
+		if (length == 0) {
+			return this;
+		}
+
+		final int lastIdx = length - 1;
+		final PathFragment lastFragment = fragments[lastIdx];
+
+		if (!lastFragment.isArtifact()) {
+			return this;
+		}
+		if (lastIdx == 0) {
+			if (!isAbsolute()) {
+				return SELF_PATH;
+			}
+			return ROOT_PATH;
+		}
+
+		final PathFragment[] newFragments = Arrays.copyOf(fragments, lastIdx);
+
+		if (!isAbsolute()) {
+			return new Path(newFragments);
+		}
+
+		return new AbsolutePath(newFragments);
+	}
+
 	public Path materialize() {
 
 		final int length = this.fragments.length;

@@ -117,6 +117,21 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
+	public AbsolutePath append(PathFragment fragment) {
+		return (AbsolutePath) super.append(fragment);
+	}
+
+	@Override
+	public AbsolutePath append(MemberKey memberKey) {
+		return (AbsolutePath) super.append(memberKey);
+	}
+
+	@Override
+	public AbsolutePath cutArtifact() {
+		return (AbsolutePath) super.cutArtifact();
+	}
+
+	@Override
 	public AbsolutePath materialize() {
 		return (AbsolutePath) super.materialize();
 	}
@@ -129,16 +144,6 @@ public final class AbsolutePath extends Path {
 	@Override
 	public AbsolutePath arrayItem(Ref indexRef) {
 		return (AbsolutePath) super.arrayItem(indexRef);
-	}
-
-	@Override
-	public AbsolutePath append(PathFragment fragment) {
-		return (AbsolutePath) super.append(fragment);
-	}
-
-	@Override
-	public AbsolutePath append(MemberKey memberKey) {
-		return (AbsolutePath) super.append(memberKey);
 	}
 
 	@Override

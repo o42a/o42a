@@ -47,6 +47,11 @@ public final class ParentLocalFragment extends PathFragment {
 	}
 
 	@Override
+	public boolean isArtifact() {
+		return false;
+	}
+
+	@Override
 	public PathFragment materialize() {
 		return null;
 	}

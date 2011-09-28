@@ -58,6 +58,11 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
+	public boolean isArtifact() {
+		return true;
+	}
+
+	@Override
 	public Object getKey() {
 		return this.depRef;
 	}

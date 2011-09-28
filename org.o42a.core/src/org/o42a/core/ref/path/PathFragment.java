@@ -48,6 +48,8 @@ public abstract class PathFragment {
 		return false;
 	}
 
+	public abstract boolean isArtifact();
+
 	public abstract PathFragment materialize();
 
 	public abstract Container resolve(

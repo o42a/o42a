@@ -58,6 +58,11 @@ public final class FieldDep extends Dep {
 	}
 
 	@Override
+	public boolean isArtifact() {
+		return true;
+	}
+
+	@Override
 	public Object getKey() {
 		return this.depField.getKey();
 	}

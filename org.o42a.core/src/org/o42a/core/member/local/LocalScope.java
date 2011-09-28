@@ -348,6 +348,11 @@ public abstract class LocalScope
 	private final class OwnerPathFragment extends PathFragment {
 
 		@Override
+		public boolean isArtifact() {
+			return false;
+		}
+
+		@Override
 		public PathFragment materialize() {
 			return null;
 		}
