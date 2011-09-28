@@ -51,7 +51,7 @@ public final class ErrorRef extends Ref {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return null;
+		return toTypeRef();
 	}
 
 	@Override
