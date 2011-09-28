@@ -19,98 +19,24 @@
 */
 package org.o42a.core.ref.impl;
 
-import static org.o42a.core.value.Value.falseValue;
-
-import org.o42a.codegen.code.Code;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectTypeOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
-final class AncestorRef extends Ref {
+public class AncestorRef extends Wrap {
 
 	private final Ref ref;
-	private boolean error;
 
-	AncestorRef(LocationInfo location, Ref ref) {
+	public AncestorRef(LocationInfo location, Ref ref) {
 		super(location, ref.distribute());
 		this.ref = ref;
-	}
-
-	@Override
-	public boolean isConstant() {
-		return isStatic() && getResolution().isConstant();
-	}
-
-	@Override
-	public boolean isStatic() {
-		if (!this.ref.isStatic()) {
-			return false;
-		}
-
-		final TypeRef ancestor =
-				this.ref.getResolution().materialize().type().getAncestor();
-
-		return ancestor == null || ancestor.isStatic();
-	}
-
-	@Override
-	public TypeRef ancestor(LocationInfo location) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Resolution resolve(Resolver resolver) {
-
-		final Artifact<?> artifact = resolveArtifact(resolver);
-		final TypeRef ancestor = resolveAncestor(artifact);
-
-		if (ancestor == null) {
-			return resolver.noResolution(this);
-		}
-
-		return resolver.artifactPart(
-				this,
-				artifact,
-				ancestor.artifact(resolver));
-	}
-
-	@Override
-	public Value<?> value(Resolver resolver) {
-
-		final TypeRef ancestor = resolveAncestor(resolver);
-
-		if (ancestor == null) {
-			return falseValue();
-		}
-
-		return ancestor.value(ancestor.getScope().walkingResolver(resolver));
-	}
-
-	@Override
-	public Ref reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref ref = this.ref.reproduce(reproducer);
-
-		if (ref == null) {
-			return null;
-		}
-
-		return new AncestorRef(reproducer.getScope(), ref);
 	}
 
 	@Override
@@ -122,96 +48,71 @@ final class AncestorRef extends Ref {
 	}
 
 	@Override
-	protected FieldDefinition createFieldDefinition() {
-		return defaultFieldDefinition();
-	}
+	protected Ref resolveWrapped() {
 
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		this.ref.resolveAll(resolver);
-		resolve(resolver).resolveAll();
-	}
+		final Resolution resolution = this.ref.getResolution();
 
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver).resolveValues(resolver);
-	}
-
-	@Override
-	protected RefOp createOp(HostOp host) {
-		return new AncestorOp(host, this);
-	}
-
-	private final TypeRef resolveAncestor(Resolver resolver) {
-		return resolveAncestor(resolveArtifact(resolver));
-	}
-
-	private Artifact<?> resolveArtifact(Resolver resolver) {
-		if (this.error) {
-			return null;
-		}
-
-		final Resolution resolution = this.ref.resolve(resolver);
-
-		if (resolution == null) {
-			return null;
-		}
 		if (resolution.isError()) {
-			this.error = true;
-			return null;
+			return errorRef(this);
 		}
 
 		final Artifact<?> artifact = resolution.toArtifact();
 
 		if (artifact == null) {
-			this.error = true;
 			getLogger().notArtifact(resolution);
-			return null;
+			return errorRef(this);
 		}
 
-		return artifact;
-	}
+		final Path path = this.ref.getPath();
 
-	private TypeRef resolveAncestor(Artifact<?> artifact) {
-		if (artifact == null) {
-			return null;
+		if (path != null) {
+
+			final Path upPath = path.cutArtifact();
+
+			if (upPath != path) {
+
+				assert artifact != null :
+					this + " is not resolved to artifact";
+
+				final TypeRef ancestor;
+				final TypeRef typeRef = artifact.getTypeRef();
+
+				if (typeRef != null) {
+					ancestor = typeRef;
+				} else {
+					ancestor = artifact.materialize().type().getAncestor();
+				}
+
+				final TypeRef rescopedAncestor =
+						ancestor.rescope(upPath.rescoper(getScope()));
+
+				return rescopedAncestor.getRescopedRef();
+			}
 		}
 
-		final Obj object = artifact.materialize();
-		final ValueType<?> valueType = object.value().getValueType();
+		final Obj object = artifact.toObject();
 
-		if (valueType.wrapper(getContext().getIntrinsics()) == object) {
-			return valueType.typeRef(
-					this,
-					object.getScope().getEnclosingScope());
+		if (object == null) {
+			throw new UnsupportedOperationException(
+					"Can not build ancestor of " + this.ref);
 		}
 
-		return object.type().getAncestor();
-	}
+		final TypeRef ancestor = object.type().getAncestor();
+		final Rescoper rescoper;
+		final Path objectEnclosingPath =
+				object.getScope().getEnclosingScopePath();
 
-	private static final class AncestorOp extends RefOp {
+		if (path != null) {
+			rescoper = path.append(objectEnclosingPath).rescoper(getScope());
+		} else {
 
-		AncestorOp(HostOp scope, AncestorRef ref) {
-			super(scope, ref);
+			final Ref ancestorScopeRef =
+					objectEnclosingPath.target(this, distribute(), this.ref);
+
+			rescoper = ancestorScopeRef.toRescoper();
 		}
 
-		@Override
-		public HostOp target(CodeDirs dirs) {
-
-			final Code code = dirs.code();
-			final AncestorRef ref = (AncestorRef) getRef();
-			final ObjectOp object =
-					ref.ref.op(host()).target(dirs).materialize(dirs);
-			final ObjectTypeOp ancestorData =
-					object.objectType(code).ptr()
-					.data(code)
-					.ancestorType(code)
-					.load(null, code)
-					.op(getBuilder(), object.getPrecision());
-
-			return ancestorData.object(code, ref.getResolution().materialize());
-		}
-
+		return ancestor.rescope(rescoper).getRef();
 	}
 
 }

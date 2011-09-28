@@ -28,8 +28,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
@@ -50,11 +48,6 @@ final class FixedRef extends Ref {
 	@Override
 	public boolean isConstant() {
 		return getResolution().isConstant();
-	}
-
-	@Override
-	public TypeRef ancestor(LocationInfo location) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
