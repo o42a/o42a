@@ -163,30 +163,24 @@ public class AssignmentStatement extends Statement {
 
 		final Resolution destResolution = this.destination.getResolution();
 		final Resolution valueResolution = this.value.getResolution();
+		final Link link = destResolution.toLink();
 
-		if (destResolution.isError() || valueResolution.isError()) {
+		if (link == null || !link.isVariable()) {
+			getLogger().error(
+					"not_variable_assigned",
+					this.destination,
+					"Can only assign to variable");
 			return this.assignmentKind = ASSIGNMENT_ERROR;
 		}
 
-		final Link link = destResolution.toLink();
+		final TypeRef variableTypeRef =
+				this.destination.ancestor(this.destination);
 
-		if (link != null) {
-			if (!link.isVariable()) {
-				return this.assignmentKind = invalidDestination();
-			}
-			return this.assignmentKind =
-					variableAssignment(link, valueResolution);
+		if (!this.value.toTypeRef().checkDerivedFrom(variableTypeRef)) {
+			return this.assignmentKind = ASSIGNMENT_ERROR;
 		}
 
-		return this.assignmentKind = invalidDestination();
-	}
-
-	private AssignmentKind invalidDestination() {
-		getLogger().error(
-				"invalid_destination_assigned",
-				this.destination,
-				"Can only assign to variable or array");
-		return ASSIGNMENT_ERROR;
+		return this.assignmentKind = variableAssignment(link, valueResolution);
 	}
 
 	private AssignmentKind variableAssignment(

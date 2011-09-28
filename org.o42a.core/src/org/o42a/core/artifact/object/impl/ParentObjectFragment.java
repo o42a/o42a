@@ -46,6 +46,11 @@ public final class ParentObjectFragment extends MemberFragment {
 	}
 
 	@Override
+	public boolean isArtifact() {
+		return false;
+	}
+
+	@Override
 	public Container resolve(
 			PathResolver resolver,
 			Path path,

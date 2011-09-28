@@ -54,6 +54,11 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
+	public boolean isArtifact() {
+		return false;
+	}
+
+	@Override
 	public Object getKey() {
 		return null;
 	}

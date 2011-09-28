@@ -25,6 +25,7 @@ import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -110,6 +111,19 @@ public final class PathTarget extends Ref {
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 
+		final Resolution resolution = getResolution();
+
+		if (resolution.isError()) {
+			return errorRef(this, distribute()).toTypeRef();
+		}
+
+		final Artifact<?> artifact = resolution.toArtifact();
+
+		if (artifact == null) {
+			getLogger().notArtifact(resolution);
+			return errorRef(this, distribute()).toTypeRef();
+		}
+
 		final Path fullPath = getPath();
 		final Path path;
 		final Ref start;
@@ -120,6 +134,22 @@ public final class PathTarget extends Ref {
 		} else {
 			path = this.path;
 			start = this.start;
+		}
+
+		final Path upPath = path.cutArtifact();
+
+		if (upPath != path) {
+
+			final TypeRef ancestor;
+			final TypeRef typeRef = artifact.getTypeRef();
+
+			if (typeRef != null) {
+				ancestor = typeRef;
+			} else {
+				ancestor = artifact.materialize().type().getAncestor();
+			}
+
+			return ancestor.rescope(pathRescoper(start, upPath));
 		}
 
 		final Path dematerializedPath = path.dematerialize();
@@ -245,14 +275,7 @@ public final class PathTarget extends Ref {
 
 	@Override
 	public Rescoper toRescoper() {
-		if (this.start == null) {
-			return this.path.rescoper(getScope());
-		}
-
-		final Scope start =
-				this.start.resolve(getScope().dummyResolver()).getScope();
-
-		return this.path.rescoper(start).and(this.start.toRescoper());
+		return pathRescoper(this.start, this.path);
 	}
 
 	@Override
@@ -355,6 +378,17 @@ public final class PathTarget extends Ref {
 				reproducer.distribute(),
 				externalPath,
 				phrasePrefix);
+	}
+
+	private Rescoper pathRescoper(Ref start, Path path) {
+		if (start == null) {
+			return path.rescoper(getScope());
+		}
+
+		final Scope startScope =
+				start.resolve(getScope().dummyResolver()).getScope();
+
+		return path.rescoper(startScope).and(start.toRescoper());
 	}
 
 	private static final class Op extends RefOp {

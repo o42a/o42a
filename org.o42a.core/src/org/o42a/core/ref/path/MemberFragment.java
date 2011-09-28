@@ -46,6 +46,11 @@ public class MemberFragment extends PathFragment {
 	}
 
 	@Override
+	public boolean isArtifact() {
+		return firstDeclaration().toField(dummyUser()) != null;
+	}
+
+	@Override
 	public String getName() {
 		return this.memberKey.getName();
 	}
@@ -57,9 +62,7 @@ public class MemberFragment extends PathFragment {
 	@Override
 	public PathFragment materialize() {
 
-		final MemberKey memberKey = getMemberKey();
-		final Member member =
-				memberKey.getOrigin().getContainer().member(memberKey);
+		final Member member = firstDeclaration();
 		final Field<?> field = member.toField(dummyUser());
 
 		if (field == null) {

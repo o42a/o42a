@@ -47,6 +47,11 @@ public final class ModuleFragment extends PathFragment {
 		return true;
 	}
 
+	@Override
+	public boolean isArtifact() {
+		return false;
+	}
+
 	public String getModuleId() {
 		return this.moduleId;
 	}

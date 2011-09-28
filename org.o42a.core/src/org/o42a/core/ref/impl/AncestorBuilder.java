@@ -23,6 +23,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -48,11 +49,11 @@ public class AncestorBuilder extends Wrap {
 	protected Ref resolveWrapped() {
 
 		final Resolution resolution = this.ref.getResolution();
-
+		
 		if (resolution.isError()) {
 			return errorRef(this);
 		}
-
+		
 		final Artifact<?> artifact = resolution.toArtifact();
 
 		if (artifact == null) {
@@ -60,10 +61,31 @@ public class AncestorBuilder extends Wrap {
 			return errorRef(this);
 		}
 
-		final TypeRef typeRef = artifact.getTypeRef();
+		final Path path = this.ref.getPath();
 
-		if (typeRef != null) {
-			return typeRef.rescope(this.ref.toRescoper()).getRescopedRef();
+		if (path != null) {
+
+			final Path upPath = path.cutArtifact();
+
+			if (upPath != path) {
+
+				assert artifact != null :
+					this + " is not resolved to artifact";
+
+				final TypeRef ancestor;
+				final TypeRef typeRef = artifact.getTypeRef();
+
+				if (typeRef != null) {
+					ancestor = typeRef;
+				} else {
+					ancestor = artifact.materialize().type().getAncestor();
+				}
+
+				final TypeRef rescopedAncestor =
+						ancestor.rescope(upPath.rescoper(getScope()));
+
+				return rescopedAncestor.getRescopedRef();
+			}
 		}
 
 		return new AncestorRef(this, this.ref);

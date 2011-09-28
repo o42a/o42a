@@ -44,11 +44,11 @@ public final class ResolutionRootFinder
 
 	public static Scope resolutionRoot(TypeRef typeRef) {
 
-		final Scope scope = typeRef.getRescoper().rescope(typeRef.getScope());
+		final Scope scope = typeRef.getScope();
 		final ResolutionRootFinder finder = new ResolutionRootFinder(scope);
 		final Resolver resolver = scope.walkingResolver(dummyUser(), finder);
 
-		typeRef.getRef().resolve(resolver);
+		typeRef.getRescopedRef().resolve(resolver);
 
 		return finder.getRoot();
 	}

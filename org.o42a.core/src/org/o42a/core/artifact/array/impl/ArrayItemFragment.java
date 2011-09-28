@@ -49,6 +49,11 @@ public class ArrayItemFragment extends PathFragment {
 	}
 
 	@Override
+	public boolean isArtifact() {
+		return true;
+	}
+
+	@Override
 	public PathFragment materialize() {
 		return MATERIALIZE;
 	}

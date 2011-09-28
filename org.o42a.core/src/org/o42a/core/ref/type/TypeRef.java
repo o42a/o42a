@@ -111,65 +111,21 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	}
 
 	public final TypeRelation relationTo(TypeRef other) {
-		return relationTo(other, true);
+		return relationTo(other, true, false);
 	}
 
-	public TypeRelation relationTo(
+	public final TypeRelation relationTo(
 			TypeRef other,
 			boolean reportIncompatibility) {
-		assertSameScope(other);
-		if (!other.validate()) {
-			return TypeRelation.PREFERRED;
-		}
-		if (!validate()) {
-			return TypeRelation.INVALID;
-		}
+		return relationTo(other, reportIncompatibility, false);
+	}
 
-		final Scope root1 = resolutionRoot(this);
-		final Scope root2 = resolutionRoot(other);
+	public final boolean checkDerivedFrom(TypeRef other) {
+		return relationTo(other, true, true).isDerivative();
+	}
 
-		final ObjectType type1 = type(dummyUser());
-		final ObjectType type2 = other.type(dummyUser());
-
-		if (root1 == root2) {
-			if (type1.getObject().getScope() == type2.getObject().getScope()) {
-				return TypeRelation.SAME;
-			}
-			if (type1.derivedFrom(type2)) {
-				return TypeRelation.DERIVATIVE;
-			}
-			if (type2.derivedFrom(type1)) {
-				return TypeRelation.ASCENDANT;
-			}
-			if (reportIncompatibility) {
-				getLogger().incompatible(other, this);
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-
-		if (root2.contains(root1)) {
-			if (type1.derivedFrom(type2)) {
-				return TypeRelation.DERIVATIVE;
-			}
-			if (reportIncompatibility) {
-				getLogger().notDerivedFrom(this, other);
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-
-		if (root1.contains(root2)) {
-			if (type2.derivedFrom(type1)) {
-				return TypeRelation.ASCENDANT;
-			}
-			if (reportIncompatibility) {
-				getLogger().notDerivedFrom(other, this);
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-
-		getLogger().incompatible(other, this);
-
-		return TypeRelation.INCOMPATIBLE;
+	public final boolean derivedFrom(TypeRef other) {
+		return relationTo(other, false, true).isDerivative();
 	}
 
 	public abstract StaticTypeRef toStatic();
@@ -213,6 +169,77 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 	protected final Usable usable() {
 		return this.usable;
+	}
+
+	private TypeRelation relationTo(
+			TypeRef other,
+			boolean reportIncompatibility,
+			boolean checkDerivationOnly) {
+		assertSameScope(other);
+		if (!other.validate()) {
+			return TypeRelation.PREFERRED;
+		}
+		if (!validate()) {
+			return TypeRelation.INVALID;
+		}
+
+		final Scope root1 = resolutionRoot(this);
+		final Scope root2 = resolutionRoot(other);
+
+		final ObjectType type1 = type(dummyUser());
+		final ObjectType type2 = other.type(dummyUser());
+
+		if (root1 == root2) {
+			if (type1.getObject().getScope() == type2.getObject().getScope()) {
+				return TypeRelation.SAME;
+			}
+			if (type1.derivedFrom(type2)) {
+				return TypeRelation.DERIVATIVE;
+			}
+			if (checkDerivationOnly) {
+				if (reportIncompatibility) {
+					getLogger().notDerivedFrom(this, other);
+				}
+				return TypeRelation.INCOMPATIBLE;
+			}
+			if (type2.derivedFrom(type1)) {
+				return TypeRelation.ASCENDANT;
+			}
+			if (reportIncompatibility) {
+				getLogger().incompatible(other, this);
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		if (root2.contains(root1)) {
+			if (type1.derivedFrom(type2)) {
+				return TypeRelation.DERIVATIVE;
+			}
+			if (reportIncompatibility) {
+				getLogger().notDerivedFrom(this, other);
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+		if (checkDerivationOnly) {
+			if (reportIncompatibility) {
+				getLogger().notDerivedFrom(this, other);
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		if (root1.contains(root2)) {
+			if (type2.derivedFrom(type1)) {
+				return TypeRelation.ASCENDANT;
+			}
+			if (reportIncompatibility) {
+				getLogger().notDerivedFrom(other, this);
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		getLogger().incompatible(other, this);
+
+		return TypeRelation.INCOMPATIBLE;
 	}
 
 }
