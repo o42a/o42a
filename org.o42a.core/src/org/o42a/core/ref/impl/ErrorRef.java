@@ -25,12 +25,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 
@@ -60,7 +57,7 @@ public final class ErrorRef extends Ref {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
+	public RefDefiner define(StatementEnv env) {
 		return new ErrorRefDefiner(this, env);
 	}
 

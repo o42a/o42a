@@ -23,6 +23,7 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ref.RefDefiner;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.StatementEnv;
 

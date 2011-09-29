@@ -38,7 +38,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
-import org.o42a.core.st.impl.cond.RefCondition;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.util.Place.Trace;
 
@@ -90,7 +89,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		assert expression.getContext() == getContext() :
 			expression + " has wrong context: " + expression.getContext()
 			+ ", but " + getContext() + " expected";
-		statement(new RefCondition(expression.rescope(getScope())));
+		statement(expression.rescope(getScope()).toCondition());
 	}
 
 	public final void selfAssign(Ref value) {

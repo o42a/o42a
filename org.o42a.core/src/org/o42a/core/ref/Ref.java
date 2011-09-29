@@ -46,6 +46,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.impl.*;
+import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
 import org.o42a.core.ref.impl.type.DefaultTypeRef;
 import org.o42a.core.ref.path.AbsolutePath;
@@ -53,7 +54,9 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -150,7 +153,7 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
+	public RefDefiner define(StatementEnv env) {
 		return new RefDefiner(this, env);
 	}
 
@@ -261,6 +264,10 @@ public abstract class Ref extends Statement {
 		}
 
 		return new RefRescoper(this);
+	}
+
+	public final Statement toCondition() {
+		return new RefCondition(this);
 	}
 
 	public final FieldDefinition toFieldDefinition() {
