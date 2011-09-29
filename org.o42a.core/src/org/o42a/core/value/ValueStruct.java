@@ -23,10 +23,10 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.*;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.impl.*;
 
@@ -130,6 +130,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 
 	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
 
+	public abstract ValueDef valueDef(Ref ref);
+
+	public abstract CondDef condDef(Ref ref);
+
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :
 			this + " is not assignable from " + other;
@@ -156,6 +160,12 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 
 		return this.ir = createIR(generator);
 	}
+
+	protected abstract Value<T> rescope(Value<T> value, Rescoper rescoper);
+
+	protected abstract Value<T> resolveAll(
+			Value<T> value,
+			Resolver resolver);
 
 	protected abstract ValueStructIR<S, T> createIR(Generator generator);
 

@@ -22,10 +22,12 @@ package org.o42a.core.value;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ref.Resolver;
 
 
 public abstract class Value<T> {
@@ -79,6 +81,14 @@ public abstract class Value<T> {
 	public abstract Val val(Generator generator);
 
 	public abstract Ptr<ValType.Op> valPtr(Generator generator);
+
+	public final Value<T> rescope(Rescoper rescoper) {
+		return getValueStruct().rescope(this, rescoper);
+	}
+
+	public void resolveAll(Resolver resolver) {
+		getValueStruct().resolveAll(this, resolver);
+	}
 
 	public final ValOp op(CodeBuilder builder, Code code) {
 		assert isDefinite() :

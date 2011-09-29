@@ -19,9 +19,14 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.def.Def.sourceOf;
+import static org.o42a.core.ref.Logical.logicalTrue;
+
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.CondDef;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -79,6 +84,19 @@ public final class ConstantRef<T> extends Ref {
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 		return resolver.staticArtifact(this, object());
+	}
+
+	@Override
+	public ValueDef toValueDef() {
+		return new ConstantValueDef<T>(
+				sourceOf(getScope()),
+				this,
+				this.valueStruct.constantValue(this.value));
+	}
+
+	@Override
+	public CondDef toCondDef() {
+		return logicalTrue(this, getScope()).toCondDef();
 	}
 
 	@Override

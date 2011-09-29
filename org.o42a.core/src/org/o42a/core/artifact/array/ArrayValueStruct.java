@@ -21,9 +21,14 @@ package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
+import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -61,6 +66,34 @@ public class ArrayValueStruct
 		return new ArrayValueStruct(
 				this.itemTypeRef.rescope(rescoper),
 				isConstant());
+	}
+
+	@Override
+	public ValueDef valueDef(Ref ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CondDef condDef(Ref ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Value<ArrayItem[]> rescope(
+			Value<ArrayItem[]> value,
+			Rescoper rescoper) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Value<ArrayItem[]> resolveAll(
+			Value<ArrayItem[]> value,
+			Resolver resolver) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

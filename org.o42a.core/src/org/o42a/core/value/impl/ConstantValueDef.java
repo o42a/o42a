@@ -22,6 +22,7 @@ package org.o42a.core.value.impl;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -29,27 +30,38 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
 final class ConstantValueDef<T> extends ValueDef {
 
-	private final ConstantObject<T> source;
+	private final Value<T> value;
+	private ValueStruct<?, T> valueStruct;
+
+	ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
+		super(source, location, transparentRescoper(source.getScope()));
+		this.value = value;
+	}
 
 	ConstantValueDef(ConstantObject<T> source) {
 		super(source, source, transparentRescoper(source.getScope()));
-		this.source = source;
+		this.value = source.getValue();
 	}
 
 	private ConstantValueDef(ConstantValueDef<T> prototype, Rescoper rescoper) {
 		super(prototype, rescoper);
-		this.source = prototype.source;
+		this.value = prototype.value;
 	}
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
-		return this.source.value().getValueStruct();
+		if (this.valueStruct != null) {
+			return this.valueStruct;
+		}
+		return this.valueStruct =
+				this.value.getValueStruct().rescope(getRescoper());
 	}
 
 	@Override
@@ -59,27 +71,22 @@ final class ConstantValueDef<T> extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return this.source.getValue();
-	}
-
-	@Override
-	protected void fullyResolveDef(Resolver resolver) {
-		this.source.value().resolveAll(resolver);
+		return this.value;
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.source.getScope());
+		return logicalTrue(this, getSource().getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.source.getScope());
+		return logicalTrue(this, getSource().getScope());
 	}
 
 	@Override
 	protected Logical buildLogical() {
-		return logicalTrue(this, this.source.getScope());
+		return logicalTrue(this, getSource().getScope());
 	}
 
 	@Override
@@ -88,8 +95,15 @@ final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
+	protected void fullyResolveDef(Resolver resolver) {
+		this.value.resolveAll(resolver);
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.source.getValue().op(dirs.getBuilder(), dirs.code());
+		return this.value.rescope(getRescoper()).op(
+				dirs.getBuilder(),
+				dirs.code());
 	}
 
 	@Override
