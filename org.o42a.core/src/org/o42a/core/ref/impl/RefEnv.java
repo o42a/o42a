@@ -21,15 +21,16 @@ package org.o42a.core.ref.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.RefDefiner;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-final class RefEnv extends StatementEnv {
+public final class RefEnv extends StatementEnv {
 
 	private final RefDefiner definer;
 
-	RefEnv(RefDefiner definer) {
+	public RefEnv(RefDefiner definer) {
 		this.definer = definer;
 	}
 

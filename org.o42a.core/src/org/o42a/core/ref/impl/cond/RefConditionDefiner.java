@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.cond;
+package org.o42a.core.ref.impl.cond;
 
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
@@ -25,9 +25,7 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
@@ -36,7 +34,7 @@ import org.o42a.core.value.ValueStruct;
 
 final class RefConditionDefiner extends Definer {
 
-	private Definer refDefiner;
+	private RefDefiner refDefiner;
 	private Definer replacement;
 
 	RefConditionDefiner(RefCondition statement, StatementEnv env) {
@@ -45,10 +43,10 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	public final Ref getRef() {
-		return ((RefCondition) getStatement()).getRef();
+		return this.refDefiner.getRef();
 	}
 
-	public final Definer getRefDefiner() {
+	public final RefDefiner getRefDefiner() {
 		return this.refDefiner;
 	}
 
