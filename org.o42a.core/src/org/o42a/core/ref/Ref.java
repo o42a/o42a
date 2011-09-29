@@ -20,7 +20,6 @@
 package org.o42a.core.ref;
 
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
-import static org.o42a.core.def.Def.sourceOf;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
@@ -32,8 +31,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
-import org.o42a.core.def.impl.RefCondDef;
-import org.o42a.core.def.impl.RefValueDef;
 import org.o42a.core.def.impl.rescoper.RefRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
@@ -54,9 +51,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -153,7 +148,7 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public RefDefiner define(StatementEnv env) {
+	public Definer define(StatementEnv env) {
 		return new RefDefiner(this, env);
 	}
 
@@ -247,12 +242,12 @@ public abstract class Ref extends Statement {
 		return targetRef(this, typeRef);
 	}
 
-	public final ValueDef toValueDef() {
-		return new RefValueDef(this);
+	public ValueDef toValueDef() {
+		return valueStruct(getScope()).valueDef(this);
 	}
 
-	public final CondDef toCondDef() {
-		return new RefCondDef(sourceOf(this), this);
+	public CondDef toCondDef() {
+		return valueStruct(getScope()).condDef(this);
 	}
 
 	public Rescoper toRescoper() {
