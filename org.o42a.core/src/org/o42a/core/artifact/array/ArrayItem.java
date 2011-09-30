@@ -19,77 +19,81 @@
 */
 package org.o42a.core.artifact.array;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.MaterializableArtifactScope;
+import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.array.impl.ArrayItemIR;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 
 
-public abstract class ArrayItem extends MaterializableArtifactScope<Link> {
+public class ArrayItem extends ArrayElement {
 
-	private final Ref indexRef;
-	private final Obj owner;
+	private final int index;
+	private final Ref valueRef;
 
-	public ArrayItem(
-			LocationInfo location,
-			Distributor enclosing,
-			Ref indexRef) {
-		super(location, enclosing);
-		this.indexRef.assertScopeIs(enclosing.getScope());
-		this.indexRef = indexRef;
-		this.owner = enclosing.getScope().toObject();
-		assert this.owner != null :
-			"Enclosing scope is not object: " + indexRef.getScope();
+	public ArrayItem(int index, Ref valueRef) {
+		super(
+				valueRef,
+				valueRef.distribute(),
+				ValueStruct.INTEGER.constantRef(
+						valueRef,
+						valueRef.distribute(),
+						Long.valueOf(index)));
+		this.index = index;
+		this.valueRef = valueRef;
 	}
 
-	public final Obj getOwner() {
-		return this.owner;
+	public final int getIndex() {
+		return this.index;
 	}
 
-	public final ArrayValueStruct getArrayStruct() {
-		return (ArrayValueStruct) getOwner().value().getValueStruct();
-	}
-
-	public final boolean isConstant() {
-		return getArrayStruct().isConstant();
-	}
-
-	public final TypeRef getTypeRef() {
-		return getArrayStruct().getItemTypeRef();
-	}
-
-	public final Ref getIndexRef() {
-		return this.indexRef;
+	public final Ref getValueRef() {
+		return this.valueRef;
 	}
 
 	@Override
-	public abstract Link getArtifact();
-
-	@Override
-	public Path getEnclosingScopePath() {
-		return null;
+	public Link getArtifact() {
+		return new ItemLink(this);
 	}
 
-	@Override
-	public boolean derivedFrom(Scope other) {
-		if (this == other) {
-			return true;
+	protected ArrayItem reproduce(Array array, Reproducer reproducer) {
+		getEnclosingScope().assertCompatible(reproducer.getReproducingScope());
+
+		final Ref valueRef = getValueRef().reproduce(reproducer);
+
+		if (valueRef == null) {
+			return null;
 		}
-		return getArtifact().materialize().type().derivedFrom(
-				other.getArtifact().materialize().type());
+
+		return new ArrayItem(getIndex(), valueRef);
 	}
 
 	@Override
-	public String toString() {
-		if (this.indexRef == null) {
-			return super.toString();
+	protected ScopeIR createIR(Generator generator) {
+		return new ArrayItemIR(generator, this);
+	}
+
+	private static final class ItemLink extends Link {
+
+		private final ArrayItem item;
+
+		ItemLink(ArrayItem item) {
+			super(
+					item,
+					item.isConstant()
+					? ArtifactKind.LINK : ArtifactKind.VARIABLE);
+			this.item = item;
 		}
-		return getEnclosingScope() + "[" + this.indexRef + "]";
+
+		@Override
+		protected TargetRef buildTargetRef() {
+			return this.item.getValueRef().toTargetRef(this.item.getTypeRef());
+		}
+
 	}
 
 }

@@ -101,9 +101,7 @@ final class ConstantValueDef<T> extends ValueDef {
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.value.rescope(getRescoper()).op(
-				dirs.getBuilder(),
-				dirs.code());
+		return this.value.op(dirs.getBuilder(), dirs.code());
 	}
 
 	@Override

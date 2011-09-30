@@ -22,7 +22,7 @@ package org.o42a.core.ref.impl.path;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.array.ArrayItem;
+import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
@@ -71,7 +71,7 @@ public final class DummyPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean arrayItem(Obj array, PathFragment fragment, ArrayItem item) {
+	public boolean arrayElement(Obj array, PathFragment fragment, ArrayElement element) {
 		return true;
 	}
 

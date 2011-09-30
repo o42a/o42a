@@ -19,12 +19,8 @@
 */
 package org.o42a.core.artifact.array.impl;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.array.ArrayItem;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
@@ -33,18 +29,18 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-final class RuntimeArrayItemConstructor extends ObjectConstructor {
+final class RtArrayElementConstructor extends ObjectConstructor {
 
-	private final ArrayItem item;
+	private final RtArrayElement element;
 
-	RuntimeArrayItemConstructor(ArrayItem item) {
-		super(item, item.getEnclosingScope().distribute());
-		this.item = item;
+	RtArrayElementConstructor(RtArrayElement elementm) {
+		super(elementm, elementm.getEnclosingScope().distribute());
+		this.element = elementm;
 	}
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return this.item.getTypeRef();
+		return this.element.getTypeRef();
 	}
 
 	@Override
@@ -55,55 +51,20 @@ final class RuntimeArrayItemConstructor extends ObjectConstructor {
 
 	@Override
 	public String toString() {
-		if (this.item == null) {
+		if (this.element == null) {
 			return super.toString();
 		}
-		return this.item.toString();
+		return this.element.toString();
 	}
 
 	@Override
 	protected Obj createObject() {
-		return new ItemObject(this.item);
+		return new RtArrayElementObject(this.element);
 	}
 
 	@Override
 	protected RefOp createOp(HostOp host) {
-		return new RuntimeArrayItemOp(host, this);
-	}
-
-	private static final class ItemObject extends Obj {
-
-		private final ArrayItem item;
-
-		public ItemObject(ArrayItem item) {
-			super(item, item.distribute());
-			this.item = item;
-		}
-
-		@Override
-		public ConstructionMode getConstructionMode() {
-			return ConstructionMode.RUNTIME_CONSTRUCTION;
-		}
-
-		@Override
-		protected Ascendants buildAscendants() {
-			return new Ascendants(this).setAncestor(this.item.getTypeRef());
-		}
-
-		@Override
-		protected void declareMembers(ObjectMembers members) {
-		}
-
-		@Override
-		protected Definitions explicitDefinitions() {
-			return null;
-		}
-
-		@Override
-		protected ObjectIR createIR(Generator generator) {
-			throw new UnsupportedOperationException();
-		}
-
+		return new RtArrayElementOp(host, this);
 	}
 
 }

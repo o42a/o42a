@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,13 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref.array;
+package org.o42a.core.artifact.array.impl;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -36,11 +37,11 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
 
 
-final class KnownArrayItemIR extends ScopeIR {
+public final class ArrayItemIR extends ScopeIR {
 
 	private final CodeId id;
 
-	KnownArrayItemIR(Generator generator, KnownArrayItem item) {
+	public ArrayItemIR(Generator generator, ArrayItem item) {
 		super(generator, item);
 
 		final Scope enclosingScope = item.getEnclosingScope();
@@ -85,9 +86,9 @@ final class KnownArrayItemIR extends ScopeIR {
 	private static final class Op implements HostOp {
 
 		private final CodeBuilder builder;
-		private final KnownArrayItemIR ir;
+		private final ArrayItemIR ir;
 
-		Op(CodeBuilder builder, KnownArrayItemIR ir) {
+		Op(CodeBuilder builder, ArrayItemIR ir) {
 			this.builder = builder;
 			this.ir = ir;
 		}

@@ -19,11 +19,14 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.def.Def.sourceOf;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.*;
+import org.o42a.core.def.impl.RefCondDef;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -132,7 +135,9 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 
 	public abstract ValueDef valueDef(Ref ref);
 
-	public abstract CondDef condDef(Ref ref);
+	public CondDef condDef(Ref ref) {
+		return new RefCondDef(sourceOf(ref), ref);
+	}
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :
@@ -160,8 +165,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 
 		return this.ir = createIR(generator);
 	}
-
-	protected abstract Value<T> rescope(Value<T> value, Rescoper rescoper);
 
 	protected abstract Value<T> resolveAll(
 			Value<T> value,

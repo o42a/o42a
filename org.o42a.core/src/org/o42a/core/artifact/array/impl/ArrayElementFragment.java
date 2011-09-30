@@ -24,6 +24,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
@@ -39,12 +40,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class ArrayItemFragment extends PathFragment {
+public class ArrayElementFragment extends PathFragment {
 
 	private final Ref indexRef;
 	private boolean error;
 
-	public ArrayItemFragment(Ref indexRef) {
+	public ArrayElementFragment(Ref indexRef) {
 		this.indexRef = indexRef;
 	}
 
@@ -111,12 +112,13 @@ public class ArrayItemFragment extends PathFragment {
 				return null;
 			}
 
-			final Value<ArrayItem[]> arrayVal =
+			final Value<Array> arrayVal =
 					arrayStruct.cast(arrayValue.getValue());
 
 			if (arrayVal.isDefinite()) {
 
-				final ArrayItem[] items = arrayVal.getDefiniteValue();
+				final ArrayItem[] items =
+						arrayVal.getDefiniteValue().items(start);
 
 				if (items.length >= itemIdx) {
 					resolver.getLogger().error(
@@ -131,7 +133,7 @@ public class ArrayItemFragment extends PathFragment {
 
 				final ArrayItem item = items[(int) itemIdx];
 
-				walker.arrayItem(array, this, item);
+				walker.arrayElement(array, this, item);
 
 				return item.getContainer();
 			}
@@ -139,9 +141,9 @@ public class ArrayItemFragment extends PathFragment {
 
 		final Ref indexRef = this.indexRef.rescope(
 				upgradeRescoper(this.indexRef.getScope(), start));
-		final RuntimeArrayItem item = new RuntimeArrayItem(indexRef);
+		final RtArrayElement item = new RtArrayElement(indexRef);
 
-		walker.arrayItem(array, this, item);
+		walker.arrayElement(array, this, item);
 
 		return item.getContainer();
 	}
@@ -158,7 +160,7 @@ public class ArrayItemFragment extends PathFragment {
 			return null;
 		}
 
-		final ArrayItemFragment fragment = new ArrayItemFragment(indexRef);
+		final ArrayElementFragment fragment = new ArrayElementFragment(indexRef);
 
 		fragment.error = this.error;
 

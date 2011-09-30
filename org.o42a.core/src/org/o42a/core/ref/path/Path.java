@@ -38,7 +38,7 @@ import java.util.Arrays;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.array.impl.ArrayItemFragment;
+import org.o42a.core.artifact.array.impl.ArrayElementFragment;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -225,7 +225,7 @@ public class Path {
 	}
 
 	public Path arrayItem(Ref indexRef) {
-		return append(new ArrayItemFragment(indexRef));
+		return append(new ArrayElementFragment(indexRef));
 	}
 
 	public Path append(Path path) {

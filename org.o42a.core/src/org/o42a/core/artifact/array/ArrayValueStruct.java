@@ -20,30 +20,29 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.array.impl.ArrayCopyValueDef;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
-import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
 public class ArrayValueStruct
-		extends ValueStruct<ArrayValueStruct, ArrayItem[]> {
-
-	public static final ArrayItem[] NO_ITEMS = new ArrayItem[0];
+		extends ValueStruct<ArrayValueStruct, Array> {
 
 	private final TypeRef itemTypeRef;
 
 	public ArrayValueStruct(TypeRef itemTypeRef, boolean constant) {
 		super(
 				constant ? ValueType.CONST_ARRAY : ValueType.ARRAY,
-				NO_ITEMS.getClass());
+				Array.class);
 		this.itemTypeRef = itemTypeRef;
 	}
 
@@ -70,34 +69,30 @@ public class ArrayValueStruct
 
 	@Override
 	public ValueDef valueDef(Ref ref) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayCopyValueDef(ref, isConstant());
+	}
+
+	public ArrayValueStruct reproduce(Reproducer reproducer) {
+
+		final TypeRef itemTypeRef = getItemTypeRef().reproduce(reproducer);
+
+		if (itemTypeRef == null) {
+			return null;
+		}
+
+		return new ArrayValueStruct(itemTypeRef, isConstant());
 	}
 
 	@Override
-	public CondDef condDef(Ref ref) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Value<ArrayItem[]> rescope(
-			Value<ArrayItem[]> value,
-			Rescoper rescoper) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Value<ArrayItem[]> resolveAll(
-			Value<ArrayItem[]> value,
+	protected Value<Array> resolveAll(
+			Value<Array> value,
 			Resolver resolver) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected ValueStructIR<ArrayValueStruct, ArrayItem[]> createIR(
+	protected ValueStructIR<ArrayValueStruct, Array> createIR(
 			Generator generator) {
 		// TODO Auto-generated method stub
 		return null;
