@@ -607,8 +607,8 @@ public class Definitions extends Scoped {
 		if (getValueStruct() == null) {
 			return valueStruct;
 		}
-		if (getValueStruct() == valueStruct) {
-			return valueStruct;
+		if (getValueStruct().assignableFrom(valueStruct)) {
+			return getValueStruct();
 		}
 
 		getLogger().incompatible(refinement, getValueStruct());
