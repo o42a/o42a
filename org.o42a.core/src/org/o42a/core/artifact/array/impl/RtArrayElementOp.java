@@ -28,9 +28,9 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
 
 
-final class RuntimeArrayItemOp extends RefOp implements HostOp {
+final class RtArrayElementOp extends RefOp implements HostOp {
 
-	RuntimeArrayItemOp(HostOp host, RuntimeArrayItemConstructor ref) {
+	RtArrayElementOp(HostOp host, RtArrayElementConstructor ref) {
 		super(host, ref);
 	}
 

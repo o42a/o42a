@@ -19,12 +19,8 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.def.Def.sourceOf;
-
-import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
-import org.o42a.core.def.impl.RefCondDef;
 import org.o42a.core.def.impl.RefValueDef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -60,11 +56,6 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public CondDef condDef(Ref ref) {
-		return new RefCondDef(sourceOf(ref), ref);
-	}
-
-	@Override
 	public String toString() {
 
 		final ValueType<SingleValueStruct<T>> valueType = getValueType();
@@ -74,11 +65,6 @@ public abstract class SingleValueStruct<T>
 		}
 
 		return valueType.toString();
-	}
-
-	@Override
-	protected Value<T> rescope(Value<T> value, Rescoper rescoper) {
-		return value;
 	}
 
 	@Override

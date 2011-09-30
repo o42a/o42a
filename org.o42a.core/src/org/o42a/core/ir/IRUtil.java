@@ -27,7 +27,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.array.ArrayItem;
+import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
@@ -206,10 +206,10 @@ public class IRUtil {
 		}
 
 		@Override
-		public boolean arrayItem(
+		public boolean arrayElement(
 				Obj array,
 				PathFragment fragment,
-				ArrayItem item) {
+				ArrayElement element) {
 			throw new IllegalStateException();
 		}
 

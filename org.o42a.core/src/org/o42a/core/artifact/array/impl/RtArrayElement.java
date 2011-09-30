@@ -21,18 +21,18 @@ package org.o42a.core.artifact.array.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.ArrayItem;
+import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
 
 
-public class RuntimeArrayItem extends ArrayItem {
+public class RtArrayElement extends ArrayElement {
 
 	private ItemLink artifact;
 
-	public RuntimeArrayItem(Ref indexRef) {
+	public RtArrayElement(Ref indexRef) {
 		super(indexRef, indexRef.distribute(), indexRef);
 	}
 
@@ -51,23 +51,23 @@ public class RuntimeArrayItem extends ArrayItem {
 
 	private static final class ItemLink extends Link {
 
-		private final ArrayItem item;
+		private final RtArrayElement element;
 
-		ItemLink(ArrayItem item) {
+		ItemLink(RtArrayElement element) {
 			super(
-					item,
-					item.isConstant()
+					element,
+					element.isConstant()
 					? ArtifactKind.LINK : ArtifactKind.VARIABLE);
-			this.item = item;
+			this.element = element;
 		}
 
 		@Override
 		protected TargetRef buildTargetRef() {
 
-			final RuntimeArrayItemConstructor ref =
-					new RuntimeArrayItemConstructor(this.item);
+			final RtArrayElementConstructor ref =
+					new RtArrayElementConstructor(this.element);
 
-			return ref.toTargetRef(this.item.getTypeRef());
+			return ref.toTargetRef(this.element.getTypeRef());
 		}
 
 	}

@@ -149,7 +149,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return getValueStruct().unknownValue();
 		}
 
-		return value.rescope(getRescoper());
+		return value;
 	}
 
 	@Override

@@ -26,6 +26,8 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.InterfaceNode;
 import org.o42a.ast.field.TypeNode;
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.array.Array;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -43,8 +45,7 @@ final class ArrayObject extends Obj {
 	private final ArrayConstructor constructor;
 	private final Reproducer reproducer;
 	private final ArrayObject reproducedFrom;
-	private TypeRef itemTypeRef;
-	private KnownArrayItem[] items;
+	private Array array;
 
 	ArrayObject(ArrayConstructor constructor) {
 		super(constructor, constructor.distribute());
@@ -67,29 +68,14 @@ final class ArrayObject extends Obj {
 		return this.constructor;
 	}
 
-	public TypeRef getItemTypeRef() {
-		if (this.itemTypeRef != null) {
-			return this.itemTypeRef;
-		}
-
-		if (this.reproducedFrom != null) {
-			this.itemTypeRef = reproduceItemTypeRef();
-		} else {
-			this.itemTypeRef = createItemTypeRef();
-		}
-		this.itemTypeRef.assertSameScope(this);
-
-		return this.itemTypeRef;
-	}
-
-	public KnownArrayItem[] getItems() {
-		if (this.items != null) {
-			return this.items;
+	public Array getArray() {
+		if (this.array != null) {
+			return this.array;
 		}
 		if (this.reproducedFrom == null) {
-			return this.items = createItems();
+			return this.array = createArray();
 		}
-		return this.items = reproduceItems();
+		return this.array = reproduceArray();
 	}
 
 	@Override
@@ -104,14 +90,42 @@ final class ArrayObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
+		return getArray().toRef().toValueDef().toDefinitions();
+	}
+
+	private Array createArray() {
 
 		final ArrayValueStruct valueStruct = new ArrayValueStruct(
-				getItemTypeRef(),
+				createItemTypeRef(),
 				this.constructor.isConstant());
-		final Ref constantRef =
-				valueStruct.constantRef(this, distribute(), getItems());
+		final ArgumentNode[] argNodes =
+				this.constructor.getNode().getArguments();
+		final ArrayItem[] items = new ArrayItem[argNodes.length];
+		final Distributor denclosing = distributeIn(getEnclosingContainer());
 
-		return constantRef.toValueDef().toDefinitions();
+		for (int i = 0; i < argNodes.length; ++i) {
+
+			final ArgumentNode argNode = argNodes[i];
+			final ExpressionNode itemNode = argNode.getValue();
+			final Location location = new Location(getContext(), itemNode);
+
+			if (itemNode != null) {
+
+				final Ref itemRef = itemNode.accept(
+						this.constructor.ip().expressionVisitor(),
+						denclosing);
+
+				if (itemRef != null) {
+					items[i] =
+							new ArrayItem(i, itemRef.rescope(getScope()));
+					continue;
+				}
+			}
+
+			items[i] = new ArrayItem(i, errorRef(location, distribute()));
+		}
+
+		return new Array(this, distribute(), valueStruct, items);
 	}
 
 	private TypeRef createItemTypeRef() {
@@ -147,80 +161,24 @@ final class ArrayObject extends Obj {
 				distribute()).toTypeRef();
 	}
 
-	private TypeRef reproduceItemTypeRef() {
+	private Array reproduceArray() {
 
-		final ArrayContentReproducer reproducer =
-				new ArrayContentReproducer(
-						this.reproducedFrom,
-						distribute(),
-						this.reproducer);
+		final Array array = this.reproducedFrom.getArray();
+		final Array reproduced = array.reproduce(this.reproducer);
 
-		final TypeRef itemTypeRef =
-				this.reproducedFrom.getItemTypeRef().reproduce(reproducer);
-
-		if (itemTypeRef != null) {
-			return itemTypeRef;
+		if (reproduced != null) {
+			return reproduced;
 		}
 
-		return errorRef(this.itemTypeRef, distribute()).toTypeRef();
-	}
-
-	private KnownArrayItem[] createItems() {
-
-		final ArgumentNode[] argNodes =
-				this.constructor.getNode().getArguments();
-		final KnownArrayItem[] items = new KnownArrayItem[argNodes.length];
-		final Distributor distributor = distributeIn(getEnclosingContainer());
-
-		for (int i = 0; i < argNodes.length; ++i) {
-
-			final ArgumentNode argNode = argNodes[i];
-			final ExpressionNode itemNode = argNode.getValue();
-			final Location location = new Location(getContext(), itemNode);
-
-			if (itemNode != null) {
-
-				final Ref itemRef = itemNode.accept(
-						this.constructor.ip().expressionVisitor(),
-						distributor);
-
-				if (itemRef != null) {
-					items[i] =
-							new KnownArrayItem(i, itemRef.rescope(getScope()));
-					continue;
-				}
-			}
-
-			items[i] = new KnownArrayItem(i, errorRef(location, distribute()));
-		}
-
-		return items;
-	}
-
-	private KnownArrayItem[] reproduceItems() {
-
-		final Distributor distributor = distribute();
-		final ArrayContentReproducer reproducer = new ArrayContentReproducer(
-				this.reproducedFrom,
-				distributor,
-				this.reproducer);
-		final KnownArrayItem[] oldItems = this.reproducedFrom.getItems();
-		final KnownArrayItem[] newItems = new KnownArrayItem[oldItems.length];
-
-		for (int i = 0; i < oldItems.length; ++i) {
-
-			final KnownArrayItem oldItem = oldItems[i];
-			final KnownArrayItem newItem = oldItem.reproduce(reproducer);
-
-			if (newItem != null) {
-				newItems[i] = newItem;
-				continue;
-			}
-
-			newItems[i] = new KnownArrayItem(i, errorRef(oldItem, distributor));
-		}
-
-		return newItems;
+		return new Array(
+				array,
+				this.reproducer.distribute(),
+				new ArrayValueStruct(
+						errorRef(
+								array.getValueStruct().getItemTypeRef(),
+								distribute()).toTypeRef(),
+						array.isConstant()),
+				new ArrayItem[0]);
 	}
 
 }
