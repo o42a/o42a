@@ -28,7 +28,8 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.ValueStructIR;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
 
 
@@ -38,11 +39,6 @@ public class VoidValueStruct extends SingleValueStruct<Void> {
 
 	private VoidValueStruct() {
 		super(ValueType.VOID, Void.class);
-	}
-
-	@Override
-	public boolean assignableFrom(ValueStruct<?, ?> other) {
-		return true;
 	}
 
 	@Override
