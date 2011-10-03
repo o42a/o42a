@@ -22,7 +22,6 @@ package org.o42a.core.def.impl;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Logical;
@@ -34,8 +33,8 @@ public final class RefCondDef extends CondDef {
 
 	private final Ref ref;
 
-	public RefCondDef(Obj source, Ref ref) {
-		super(source, ref, transparentRescoper(ref.getScope()));
+	public RefCondDef(Ref ref) {
+		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
 		this.ref = ref;
 	}
 

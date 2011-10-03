@@ -29,9 +29,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 
 
 public class ArrayValueStruct
@@ -68,7 +66,13 @@ public class ArrayValueStruct
 	}
 
 	@Override
-	public ValueDef valueDef(Ref ref) {
+	public ValueAdapter adapter(Ref ref, ValueStruct<?, ?> expectedStruct) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ValueDef defaultValueDef(Ref ref) {
 		return new ArrayCopyValueDef(ref, isConstant());
 	}
 

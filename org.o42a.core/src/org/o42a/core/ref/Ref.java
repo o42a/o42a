@@ -243,11 +243,11 @@ public abstract class Ref extends Statement {
 	}
 
 	public ValueDef toValueDef() {
-		return valueStruct(getScope()).valueDef(this);
+		return valueStruct(getScope()).defaultValueDef(this);
 	}
 
 	public CondDef toCondDef() {
-		return valueStruct(getScope()).condDef(this);
+		return valueStruct(getScope()).defaultCondDef(this);
 	}
 
 	public Rescoper toRescoper() {
