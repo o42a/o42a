@@ -75,6 +75,19 @@ public final class ConstantRef<T> extends Ref {
 	}
 
 	@Override
+	public ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
+
+		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
+
+		if (expectedStruct != null
+				&& !expectedStruct.assignableFrom(valueStruct)) {
+			return super.valueAdapter(expectedStruct);
+		}
+
+		return new ConstantValueAdapter<T>(this);
+	}
+
+	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new ConstantRef<T>(
@@ -96,20 +109,6 @@ public final class ConstantRef<T> extends Ref {
 			return super.toString();
 		}
 		return this.valueStruct.valueString(this.constant);
-	}
-
-	@Override
-	protected ValueAdapter createValueAdapter(
-			ValueStruct<?, ?> expectedStruct) {
-
-		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
-
-		if (expectedStruct != null
-				&& !expectedStruct.assignableFrom(valueStruct)) {
-			return super.createValueAdapter(expectedStruct);
-		}
-
-		return new ConstantValueAdapter<T>(this);
 	}
 
 	@Override

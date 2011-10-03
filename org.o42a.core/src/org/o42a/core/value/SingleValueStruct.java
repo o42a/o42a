@@ -51,8 +51,10 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public ValueAdapter defaultAdapter(Ref ref, ValueStruct<?, ?> expectedStruct) {
-		if (expectedStruct == null) {
+	public ValueAdapter defaultAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct) {
+		if (expectedStruct == null || expectedStruct.assignableFrom(this)) {
 			return rawValueAdapter(ref);
 		}
 
@@ -60,7 +62,7 @@ public abstract class SingleValueStruct<T>
 				ref,
 				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
 
-		return rawValueAdapter(adapter);
+		return adapter.valueAdapter(null);
 	}
 
 	@Override
@@ -76,9 +78,7 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	protected Value<T> resolveAll(Value<T> value, Resolver resolver) {
-		// TODO Auto-generated method stub
-		return null;
+	protected void resolveAll(Value<T> value, Resolver resolver) {
 	}
 
 }

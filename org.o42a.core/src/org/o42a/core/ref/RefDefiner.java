@@ -103,7 +103,7 @@ public class RefDefiner extends Definer {
 
 		final ValueStruct<?, ?> expectedStruct = env().getExpectedValueStruct();
 
-		return this.valueAdapter = getRef().createValueAdapter(expectedStruct);
+		return this.valueAdapter = getRef().valueAdapter(expectedStruct);
 	}
 
 	@Override

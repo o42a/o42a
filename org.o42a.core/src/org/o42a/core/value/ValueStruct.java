@@ -162,9 +162,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 		return this.ir = createIR(generator);
 	}
 
-	protected abstract Value<T> resolveAll(
-			Value<T> value,
-			Resolver resolver);
+	protected abstract void resolveAll(Value<T> value, Resolver resolver);
 
 	protected abstract ValueStructIR<S, T> createIR(Generator generator);
 

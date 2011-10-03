@@ -161,6 +161,11 @@ public abstract class Ref extends Statement {
 				.value().explicitUseBy(resolver).getValue();
 	}
 
+	public ValueAdapter valueAdapter(
+			ValueStruct<?, ?> expectedStruct) {
+		return valueStruct(getScope()).defaultAdapter(this, expectedStruct);
+	}
+
 	/**
 	 * Builds ancestor reference.
 	 *
@@ -270,11 +275,6 @@ public abstract class Ref extends Statement {
 		assert assertFullyResolved();
 
 		return this.op = createOp(host);
-	}
-
-	protected ValueAdapter createValueAdapter(
-			ValueStruct<?, ?> expectedStruct) {
-		return valueStruct(getScope()).defaultAdapter(this, expectedStruct);
 	}
 
 	protected abstract FieldDefinition createFieldDefinition();
