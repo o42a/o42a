@@ -31,12 +31,13 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.st.action.ReturnValue;
+import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
 
 public class RefDefiner extends Definer {
 
-	private Ref expectedTypeAdapter;
+	private ValueAdapter valueAdapter;
 
 	public RefDefiner(Ref ref, StatementEnv env) {
 		super(ref, env);
@@ -63,7 +64,7 @@ public class RefDefiner extends Definer {
 
 	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return expectedTypeAdapter().valueStruct(scope);
+		return getValueAdapter().ref().valueStruct(scope);
 	}
 
 	@Override
@@ -72,38 +73,40 @@ public class RefDefiner extends Definer {
 			return null;
 		}
 
-		final ValueDef def = expectedTypeAdapter().toValueDef();
+		final ValueDef def = getValueAdapter().valueDef();
 
 		return env().apply(def).toDefinitions();
 	}
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return new ReturnValue(this, resolver, getRef().value(resolver));
+		return new ReturnValue(
+				this,
+				resolver,
+				getValueAdapter().ref().value(resolver));
 	}
 
 	@Override
 	public Action initialLogicalValue(LocalResolver resolver) {
 		return new ExecuteCommand(
 				this,
-				getRef().value(resolver).getCondition().toLogicalValue());
+				getValueAdapter()
+				.ref()
+				.value(resolver)
+				.getCondition()
+				.toLogicalValue());
 	}
 
-	public final Ref expectedTypeAdapter() {
-		if (this.expectedTypeAdapter != null) {
-			return this.expectedTypeAdapter;
+	public ValueAdapter getValueAdapter() {
+		if (this.valueAdapter != null) {
+			return this.valueAdapter;
 		}
 
-		final ValueStruct<?, ?> expectedStruct =
-				env().getExpectedValueStruct();
+		final Ref ref = getRef();
+		final ValueStruct<?, ?> expectedStruct = env().getExpectedValueStruct();
+		final ValueStruct<?, ?> valueStruct = ref.valueStruct(ref.getScope());
 
-		if (expectedStruct == null) {
-			return this.expectedTypeAdapter = getRef();
-		}
-
-		return this.expectedTypeAdapter = getRef().adapt(
-				this,
-				expectedStruct.getValueType().typeRef(this, getScope()));
+		return this.valueAdapter = valueStruct.adapter(ref, expectedStruct);
 	}
 
 	@Override

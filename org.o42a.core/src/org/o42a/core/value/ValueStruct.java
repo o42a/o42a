@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.def.Def.sourceOf;
-
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -133,10 +131,14 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 
 	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
 
-	public abstract ValueDef valueDef(Ref ref);
+	public abstract ValueAdapter adapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct);
 
-	public CondDef condDef(Ref ref) {
-		return new RefCondDef(sourceOf(ref), ref);
+	public abstract ValueDef defaultValueDef(Ref ref);
+
+	public CondDef defaultCondDef(Ref ref) {
+		return new RefCondDef(ref);
 	}
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {

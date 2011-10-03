@@ -51,7 +51,7 @@ public final class RefEnv extends StatementEnv {
 	@Override
 	public Logical precondition(Scope scope) {
 		return this.definer.env().precondition(scope).and(
-				this.definer.expectedTypeAdapter()
+				this.definer.getValueAdapter().ref()
 				.rescope(scope).getLogical());
 	}
 

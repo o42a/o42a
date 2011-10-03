@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
+
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.def.impl.RefValueDef;
@@ -51,7 +53,20 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public ValueDef valueDef(Ref ref) {
+	public ValueAdapter adapter(Ref ref, ValueStruct<?, ?> expectedStruct) {
+		if (expectedStruct == null) {
+			return rawValueAdapter(ref);
+		}
+
+		final Ref adapter = ref.adapt(
+				ref,
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+
+		return rawValueAdapter(adapter);
+	}
+
+	@Override
+	public ValueDef defaultValueDef(Ref ref) {
 		return new RefValueDef(ref);
 	}
 
