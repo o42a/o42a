@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.common;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
-import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -100,7 +99,7 @@ public abstract class DefinedObject extends Obj {
 		final DeclarativeBlock definition =
 				new DeclarativeBlock(this, this, getMemberRegistry());
 
-		this.definer = definition.define(objectEnv(this));
+		this.definer = definition.define(definitionEnv());
 
 		return this.definition = definition;
 	}

@@ -23,8 +23,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.*;
-import org.o42a.core.def.impl.RefCondDef;
+import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -131,15 +131,9 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 
 	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
 
-	public abstract ValueAdapter adapter(
+	public abstract ValueAdapter defaultAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct);
-
-	public abstract ValueDef defaultValueDef(Ref ref);
-
-	public CondDef defaultCondDef(Ref ref) {
-		return new RefCondDef(ref);
-	}
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :

@@ -22,7 +22,6 @@ package org.o42a.common.object;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-import static org.o42a.core.st.StatementEnv.objectEnv;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.common.source.SourceTree;
@@ -122,7 +121,7 @@ public class CompiledObject extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
-		this.definer = this.definition.define(objectEnv(this));
+		this.definer = this.definition.define(definitionEnv());
 
 		getCompiler().define(this.definition, IMPLICIT_SECTION_TAG);
 	}

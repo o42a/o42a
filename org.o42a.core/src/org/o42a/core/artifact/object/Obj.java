@@ -54,6 +54,8 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UseInfo;
@@ -479,6 +481,10 @@ public abstract class Obj
 			return this.fieldUses;
 		}
 		return this.fieldUses = new FieldUses(this);
+	}
+
+	public StatementEnv definitionEnv() {
+		return new ObjectEnv(this);
 	}
 
 	public final void assertDerivedFrom(Obj type) {

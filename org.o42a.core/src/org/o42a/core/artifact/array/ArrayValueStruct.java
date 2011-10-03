@@ -20,10 +20,8 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.array.impl.ArrayCopyValueDef;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -66,14 +64,9 @@ public class ArrayValueStruct
 	}
 
 	@Override
-	public ValueAdapter adapter(Ref ref, ValueStruct<?, ?> expectedStruct) {
+	public ValueAdapter defaultAdapter(Ref ref, ValueStruct<?, ?> expectedStruct) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public ValueDef defaultValueDef(Ref ref) {
-		return new ArrayCopyValueDef(ref, isConstant());
 	}
 
 	public ArrayValueStruct reproduce(Reproducer reproducer) {

@@ -22,7 +22,6 @@ package org.o42a.core.st;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Def;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
@@ -33,10 +32,6 @@ public abstract class StatementEnv {
 
 	public static StatementEnv defaultEnv(LocationInfo location) {
 		return new DefaultEnv(location);
-	}
-
-	public static StatementEnv objectEnv(Obj object) {
-		return new ObjectEnv(object);
 	}
 
 	private ValueStruct<?, ?> expectedStruct;
@@ -199,46 +194,6 @@ public abstract class StatementEnv {
 				return;
 			}
 			this.location.getContext().getLogger().notCondition(this.location);
-		}
-
-	}
-
-	private static final class ObjectEnv extends StatementEnv {
-
-		private final Obj object;
-
-		ObjectEnv(Obj object) {
-			this.object = object;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return false;
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return logicalTrue(this.object, scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-			return false;
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return logicalTrue(this.object, scope);
-		}
-
-		@Override
-		public String toString() {
-			return "ObjectEnv[" + this.object + ']';
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.object.value().getValueStruct();
 		}
 
 	}

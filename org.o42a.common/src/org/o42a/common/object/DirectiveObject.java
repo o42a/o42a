@@ -40,7 +40,7 @@ public abstract class DirectiveObject
 
 		final Ref ref = DIRECTIVE.constantRef(this, distribute(), this);
 
-		return ref.toValueDef().toDefinitions();
+		return ref.define(definitionEnv()).define(getScope());
 	}
 
 }

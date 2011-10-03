@@ -19,14 +19,9 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.def.Def.sourceOf;
-import static org.o42a.core.ref.Logical.logicalTrue;
-
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.CondDef;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -41,23 +36,32 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
 
 public final class ConstantRef<T> extends Ref {
 
 	private final ValueStruct<?, T> valueStruct;
-	private final T value;
+	private final T constant;
 	private Obj object;
 
 	public ConstantRef(
 			LocationInfo location,
 			Distributor distributor,
 			ValueStruct<?, T> valueStruct,
-			T value) {
+			T constant) {
 		super(location, distributor);
 		this.valueStruct = valueStruct;
-		this.value = value;
+		this.constant = constant;
+	}
+
+	public final ValueStruct<?, T> getValueStruct() {
+		return this.valueStruct;
+	}
+
+	public final T getConstant() {
+		return this.constant;
 	}
 
 	@Override
@@ -76,8 +80,8 @@ public final class ConstantRef<T> extends Ref {
 		return new ConstantRef<T>(
 				this,
 				reproducer.distribute(),
-				this.valueStruct,
-				this.value);
+				getValueStruct(),
+				getConstant());
 	}
 
 	@Override
@@ -87,24 +91,25 @@ public final class ConstantRef<T> extends Ref {
 	}
 
 	@Override
-	public ValueDef toValueDef() {
-		return new ConstantValueDef<T>(
-				sourceOf(getScope()),
-				this,
-				this.valueStruct.constantValue(this.value));
-	}
-
-	@Override
-	public CondDef toCondDef() {
-		return logicalTrue(this, getScope()).toCondDef();
-	}
-
-	@Override
 	public String toString() {
-		if (this.value == null) {
+		if (this.constant == null) {
 			return super.toString();
 		}
-		return this.valueStruct.valueString(this.value);
+		return this.valueStruct.valueString(this.constant);
+	}
+
+	@Override
+	protected ValueAdapter createValueAdapter(
+			ValueStruct<?, ?> expectedStruct) {
+
+		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
+
+		if (expectedStruct != null
+				&& !expectedStruct.assignableFrom(valueStruct)) {
+			return super.createValueAdapter(expectedStruct);
+		}
+
+		return new ConstantValueAdapter<T>(this);
 	}
 
 	@Override
@@ -134,8 +139,8 @@ public final class ConstantRef<T> extends Ref {
 		return this.object = new ConstantObject<T>(
 				this,
 				distribute(),
-				this.valueStruct,
-				this.value);
+				getValueStruct(),
+				getConstant());
 	}
 
 	private static final class Op<T> extends RefOp {
@@ -154,11 +159,11 @@ public final class ConstantRef<T> extends Ref {
 			@SuppressWarnings("unchecked")
 			final ConstantRef<T> ref = (ConstantRef<T>) getRef();
 			final ValueStructIR<?, T> typeIR =
-					ref.valueStruct.ir(getGenerator());
-			final Ptr<ValType.Op> ptr = typeIR.valPtr(ref.value);
+					ref.getValueStruct().ir(getGenerator());
+			final Ptr<ValType.Op> ptr = typeIR.valPtr(ref.getConstant());
 			final ValType.Op op = ptr.op(ptr.getId(), dirs.code());
 
-			return op.op(dirs.getBuilder(), typeIR.val(ref.value));
+			return op.op(dirs.getBuilder(), typeIR.val(ref.getConstant()));
 		}
 
 		@Override

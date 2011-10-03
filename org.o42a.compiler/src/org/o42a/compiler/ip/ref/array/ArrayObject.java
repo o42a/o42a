@@ -36,6 +36,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
@@ -90,7 +91,10 @@ final class ArrayObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getArray().toRef().toValueDef().toDefinitions();
+
+		final Definer definer = getArray().toRef().define(definitionEnv());
+
+		return definer.define(getScope());
 	}
 
 	private Array createArray() {
