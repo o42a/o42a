@@ -21,7 +21,6 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-import static org.o42a.core.st.StatementEnv.objectEnv;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
@@ -177,7 +176,7 @@ public class Root extends Obj {
 				this,
 				new Namespace(this, this),
 				this.memberRegistry);
-		this.definer = this.definition.define(objectEnv(this));
+		this.definer = this.definition.define(definitionEnv());
 
 		this.compiler.define(this.definition, IMPLICIT_SECTION_TAG);
 	}

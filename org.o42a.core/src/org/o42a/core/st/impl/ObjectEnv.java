@@ -17,53 +17,53 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl;
+package org.o42a.core.st.impl;
+
+import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.RefDefiner;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class RefEnv extends StatementEnv {
+public final class ObjectEnv extends StatementEnv {
 
-	private final RefDefiner definer;
+	private final Obj object;
 
-	public RefEnv(RefDefiner definer) {
-		this.definer = definer;
+	public ObjectEnv(Obj object) {
+		this.object = object;
 	}
 
 	@Override
 	public boolean hasPrerequisite() {
-		return this.definer.env().hasPrerequisite();
+		return false;
 	}
 
 	@Override
 	public Logical prerequisite(Scope scope) {
-		return this.definer.env().prerequisite(scope);
+		return logicalTrue(this.object, scope);
 	}
 
 	@Override
 	public boolean hasPrecondition() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public Logical precondition(Scope scope) {
-		return this.definer.env().precondition(scope).and(
-				this.definer.getValueAdapter().ref()
-				.rescope(scope).getLogical());
+		return logicalTrue(this.object, scope);
 	}
 
 	@Override
 	public String toString() {
-		return this.definer.env() + ", " + this.definer;
+		return "ObjectEnv[" + this.object + ']';
 	}
 
 	@Override
 	protected ValueStruct<?, ?> expectedValueStruct() {
-		return this.definer.env().getExpectedValueStruct();
+		return this.object.value().getValueStruct();
 	}
 
 }

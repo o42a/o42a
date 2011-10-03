@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl;
+package org.o42a.core.ref;
 
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
@@ -25,8 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.impl.RefEnv;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -102,11 +101,9 @@ public class RefDefiner extends Definer {
 			return this.valueAdapter;
 		}
 
-		final Ref ref = getRef();
 		final ValueStruct<?, ?> expectedStruct = env().getExpectedValueStruct();
-		final ValueStruct<?, ?> valueStruct = ref.valueStruct(ref.getScope());
 
-		return this.valueAdapter = valueStruct.adapter(ref, expectedStruct);
+		return this.valueAdapter = getRef().createValueAdapter(expectedStruct);
 	}
 
 	@Override

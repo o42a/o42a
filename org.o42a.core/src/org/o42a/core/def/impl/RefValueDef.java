@@ -23,7 +23,6 @@ import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -81,11 +80,6 @@ public final class RefValueDef extends ValueDef {
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return this.ref.value(resolver);
-	}
-
-	@Override
-	protected CondDef createCondDef() {
-		return this.ref.toCondDef();
 	}
 
 	@Override

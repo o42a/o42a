@@ -28,9 +28,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.def.impl.rescoper.RefRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
@@ -51,10 +49,10 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.StatementEnv;
+import org.o42a.core.value.*;
 
 
 public abstract class Ref extends Statement {
@@ -148,7 +146,7 @@ public abstract class Ref extends Statement {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
+	public RefDefiner define(StatementEnv env) {
 		return new RefDefiner(this, env);
 	}
 
@@ -242,14 +240,6 @@ public abstract class Ref extends Statement {
 		return targetRef(this, typeRef);
 	}
 
-	public ValueDef toValueDef() {
-		return valueStruct(getScope()).defaultValueDef(this);
-	}
-
-	public CondDef toCondDef() {
-		return valueStruct(getScope()).defaultCondDef(this);
-	}
-
 	public Rescoper toRescoper() {
 
 		final Path path = getPath();
@@ -280,6 +270,11 @@ public abstract class Ref extends Statement {
 		assert assertFullyResolved();
 
 		return this.op = createOp(host);
+	}
+
+	protected ValueAdapter createValueAdapter(
+			ValueStruct<?, ?> expectedStruct) {
+		return valueStruct(getScope()).defaultAdapter(this, expectedStruct);
 	}
 
 	protected abstract FieldDefinition createFieldDefinition();

@@ -25,9 +25,7 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
@@ -36,7 +34,7 @@ import org.o42a.core.value.ValueStruct;
 
 final class RefConditionDefiner extends Definer {
 
-	private Definer refDefiner;
+	private RefDefiner refDefiner;
 	private Definer replacement;
 
 	RefConditionDefiner(RefCondition statement, StatementEnv env) {
@@ -48,7 +46,7 @@ final class RefConditionDefiner extends Definer {
 		return ((RefCondition) getStatement()).getRef();
 	}
 
-	public final Definer getRefDefiner() {
+	public final RefDefiner getRefDefiner() {
 		return this.refDefiner;
 	}
 
@@ -99,7 +97,7 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public Definitions define(Scope scope) {
-		return getRef().toCondDef().toDefinitions();
+		return this.refDefiner.getValueAdapter().condDef().toDefinitions();
 	}
 
 	@Override

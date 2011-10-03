@@ -19,43 +19,40 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.def.Def.sourceOf;
+import static org.o42a.core.ref.Logical.logicalTrue;
+
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.ValueDef;
-import org.o42a.core.def.impl.RefCondDef;
-import org.o42a.core.def.impl.RefValueDef;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 
 
-public class RawValueAdapter extends ValueAdapter {
+public class ConstantValueAdapter<T> extends ValueAdapter {
 
-	private final Ref ref;
+	private ConstantRef<T> ref;
 
-	public RawValueAdapter(Ref ref) {
+	public ConstantValueAdapter(ConstantRef<T> ref) {
 		this.ref = ref;
 	}
 
 	@Override
-	public Ref ref() {
+	public final ConstantRef<T> ref() {
 		return this.ref;
 	}
 
 	@Override
 	public ValueDef valueDef() {
-		return new RefValueDef(this.ref);
+
+		final Value<T> value =
+				ref().getValueStruct().constantValue(ref().getConstant());
+
+		return new ConstantValueDef<T>(sourceOf(ref()), ref(), value);
 	}
 
 	@Override
 	public CondDef condDef() {
-		return new RefCondDef(this.ref);
-	}
-
-	@Override
-	public String toString() {
-		if (this.ref == null) {
-			return super.toString();
-		}
-		return this.ref.toString();
+		return logicalTrue(this.ref, this.ref.getScope()).toCondDef();
 	}
 
 }

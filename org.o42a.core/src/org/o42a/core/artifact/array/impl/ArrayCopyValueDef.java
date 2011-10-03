@@ -25,7 +25,6 @@ import static org.o42a.core.ref.Logical.runtimeLogical;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.ArrayValueStruct;
-import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -92,11 +91,6 @@ public final class ArrayCopyValueDef extends ValueDef {
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return getValueStruct().runtimeValue();
-	}
-
-	@Override
-	protected CondDef createCondDef() {
-		return this.ref.toCondDef();
 	}
 
 	@Override
