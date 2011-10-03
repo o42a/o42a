@@ -33,7 +33,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void argument() {
 		compile(
-				"A := void(<*[arg]> integer).",
+				"A := void(<*[arg]> integer)",
 				"B := a[2]");
 
 		final Field<?> b = field("b");
@@ -58,7 +58,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void string() {
 		compile(
-				"A := void(<*'arg'>).",
+				"A := void(<*'arg'>)",
 				"B := a'b'");
 
 		final Field<?> b = field("b");
@@ -69,7 +69,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void stringInBrackets() {
 		compile(
-				"A := void(<*'arg'>).",
+				"A := void(<*'arg'>)",
 				"B := a['b']");
 
 		final Field<?> b = field("b");
@@ -80,7 +80,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void doubleQuotedStringArgument() {
 		compile(
-				"A := void(<*[arg]>).",
+				"A := void(<*[arg]>)",
 				"B := a\"b\"");
 
 		final Field<?> b = field("b");
@@ -91,7 +91,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void implicit() {
 		compile(
-				"A := string(<*implicit> = string(<*''>)).",
+				"A := string(<*implicit> = string(<*''>))",
 				"B := a 'b'");
 
 		final Field<?> b = field("b");
@@ -103,12 +103,12 @@ public class ClauseTest extends CompilerTestCase {
 	public void abstractOverrider() {
 		compile(
 				"A :=> void(",
-				"  Foo :=< \"a\".",
+				"  Foo :=< \"a\"",
 				"  <*implicit> A(",
-				"    <*[arg]> foo = string.",
-				"  ).",
-				").",
-				"B := a \"b\".");
+				"    <*[arg]> foo = string",
+				"  )",
+				")",
+				"B := a \"b\"");
 
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");

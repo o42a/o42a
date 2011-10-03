@@ -81,11 +81,8 @@ public class ArrayValueStruct
 	}
 
 	@Override
-	protected Value<Array> resolveAll(
-			Value<Array> value,
-			Resolver resolver) {
+	protected void resolveAll(Value<Array> value, Resolver resolver) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
