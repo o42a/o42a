@@ -19,11 +19,14 @@
 */
 package org.o42a.core.artifact.array;
 
+import static org.o42a.core.def.Rescoper.upgradeRescoper;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.MaterializableArtifactScope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
@@ -44,7 +47,27 @@ public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 		this.indexRef = indexRef;
 		this.owner = enclosing.getScope().toObject();
 		assert this.owner != null :
-			"Enclosing scope is not object: " + indexRef.getScope();
+			"Enclosing scope is not object: " + enclosing.getScope();
+	}
+
+	protected ArrayElement(
+			Scope enclosing,
+			ArrayElement propagatedFrom) {
+		this(
+				enclosing,
+				propagatedFrom,
+				upgradeRescoper(propagatedFrom.getEnclosingScope(), enclosing));
+	}
+
+	ArrayElement(
+			Scope enclosing,
+			ArrayElement propagatedFrom,
+			Rescoper rescoper) {
+		super(enclosing, propagatedFrom);
+		this.indexRef = propagatedFrom.getIndexRef().rescope(rescoper);
+		this.owner = enclosing.getScope().toObject();
+		assert this.owner != null :
+			"Enclosing scope is not object: " + enclosing.getScope();
 	}
 
 	public final Obj getOwner() {
@@ -73,6 +96,21 @@ public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 	@Override
 	public Path getEnclosingScopePath() {
 		return null;
+	}
+
+	@Override
+	public ArrayElement getPropagatedFrom() {
+		return (ArrayElement) super.getPropagatedFrom();
+	}
+
+	@Override
+	public ArrayElement getFirstDeclaration() {
+		return (ArrayElement) super.getFirstDeclaration();
+	}
+
+	@Override
+	public ArrayElement getLastDefinition() {
+		return (ArrayElement) super.getLastDefinition();
 	}
 
 	@Override

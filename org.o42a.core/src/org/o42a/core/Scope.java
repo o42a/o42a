@@ -60,6 +60,32 @@ public interface Scope extends PlaceInfo {
 
     Path getEnclosingScopePath();
 
+    /**
+     * The first declaration of this scope.
+     *
+     * @return the scope, which is an origin of this one.
+     */
+	Scope getFirstDeclaration();
+
+	/**
+	 * The last definition of this scope.
+	 *
+	 * @return the last explicit definition of this scope.
+	 */
+	Scope getLastDefinition();
+
+	/**
+	 * Checks whether this scope is a clone.
+	 *
+	 * <p>Scope is clone if it is not explicitly defined.</p>
+	 *
+	 * @return <code>true</code> if scope is a clone or <code>false</code>
+	 * otherwise.
+	 *
+	 * @see #getLastDefinition()
+	 */
+	boolean isClone();
+
     Resolver dummyResolver();
 
     Resolver newResolver(UserInfo user);

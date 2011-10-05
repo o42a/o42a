@@ -101,6 +101,14 @@ public abstract class Obj
 		super(scope, sample);
 	}
 
+	public Obj(Distributor enclosing, Obj sample) {
+		this(new ObjScope(sample, enclosing), sample);
+	}
+
+	protected Obj(ObjectScope scope, Obj sample) {
+		super(scope, sample);
+	}
+
 	@Override
 	public final ArtifactKind<Obj> getKind() {
 		return ArtifactKind.OBJECT;
@@ -158,10 +166,6 @@ public abstract class Obj
 
 	public Obj getWrapped() {
 		return this;
-	}
-
-	public boolean isPropagated() {
-		return false;
 	}
 
 	public final ObjectType type() {
@@ -558,11 +562,10 @@ public abstract class Obj
 			return cloneOfMaterialization.materialize();
 		}
 
-		final Field<?> field = getScope().toField();
-
 		if (!isPropagated()) {
-			assert field == null || !field.isClone() :
-				this + " is not propagated, but " + field + " is clone";
+			assert !getScope().isClone() :
+				this + " is not propagated, but scope "
+				+ getScope() + " is clone";
 			return null;
 		}
 
@@ -573,8 +576,8 @@ public abstract class Obj
 		assert assertImplicitSamples(samples);
 
 		if (samples.length != 1) {
-			assert field == null || !field.isClone() :
-				"Field " + field + " is clone, but "
+			assert !getScope().isClone() :
+				"Scope " + getScope() + " is clone, but "
 				+ this + " is not, because it has multipole samples: "
 				+ Arrays.toString(samples);
 			return null;
@@ -596,7 +599,7 @@ public abstract class Obj
 			cloneOf = sampleObject;
 		}
 
-		assert field == null || field.isClone();
+		assert getScope().isClone();
 
 		return cloneOf;
 	}

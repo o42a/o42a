@@ -161,8 +161,7 @@ public abstract class Ref extends Statement {
 				.value().explicitUseBy(resolver).getValue();
 	}
 
-	public ValueAdapter valueAdapter(
-			ValueStruct<?, ?> expectedStruct) {
+	public ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
 		return valueStruct(getScope()).defaultAdapter(this, expectedStruct);
 	}
 

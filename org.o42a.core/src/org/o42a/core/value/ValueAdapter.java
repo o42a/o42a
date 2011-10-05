@@ -19,8 +19,11 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.ValueDef;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.impl.RawValueAdapter;
 
@@ -31,10 +34,16 @@ public abstract class ValueAdapter {
 		return new RawValueAdapter(ref);
 	}
 
-	public abstract Ref ref();
+	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
 
 	public abstract ValueDef valueDef();
 
 	public abstract CondDef condDef();
+
+	public abstract Logical logical(Scope scope);
+
+	public abstract Value<?> initialValue(LocalResolver resolver);
+
+	public abstract LogicalValue initialLogicalValue(LocalResolver resolver);
 
 }

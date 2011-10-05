@@ -20,17 +20,20 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.impl.ArrayItemIR;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 
 
-public class ArrayItem extends ArrayElement {
+public final class ArrayItem extends ArrayElement {
 
 	private final int index;
 	private final Ref valueRef;
@@ -47,6 +50,15 @@ public class ArrayItem extends ArrayElement {
 		this.valueRef = valueRef;
 	}
 
+	private ArrayItem(
+			Scope enclosing,
+			ArrayItem propagatedFrom,
+			Rescoper rescoper) {
+		super(enclosing, propagatedFrom, rescoper);
+		this.index = propagatedFrom.getIndex();
+		this.valueRef = propagatedFrom.getValueRef().rescope(rescoper);
+	}
+
 	public final int getIndex() {
 		return this.index;
 	}
@@ -58,6 +70,25 @@ public class ArrayItem extends ArrayElement {
 	@Override
 	public Link getArtifact() {
 		return new ItemLink(this);
+	}
+
+	@Override
+	public final ArrayItem getPropagatedFrom() {
+		return (ArrayItem) super.getPropagatedFrom();
+	}
+
+	@Override
+	public final ArrayItem getFirstDeclaration() {
+		return (ArrayItem) super.getFirstDeclaration();
+	}
+
+	@Override
+	public final ArrayItem getLastDefinition() {
+		return (ArrayItem) super.getLastDefinition();
+	}
+
+	public void resolveAll(Resolver resolver) {
+		getValueRef().resolveValues(resolver);
 	}
 
 	protected ArrayItem reproduce(Array array, Reproducer reproducer) {
@@ -75,6 +106,10 @@ public class ArrayItem extends ArrayElement {
 	@Override
 	protected ScopeIR createIR(Generator generator) {
 		return new ArrayItemIR(generator, this);
+	}
+
+	ArrayItem propagateTo(Scope scope, Rescoper rescoper) {
+		return new ArrayItem(scope, this, rescoper);
 	}
 
 	private static final class ItemLink extends Link {

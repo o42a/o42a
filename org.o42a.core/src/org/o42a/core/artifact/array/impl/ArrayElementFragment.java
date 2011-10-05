@@ -101,6 +101,9 @@ public class ArrayElementFragment extends PathFragment {
 				ValueType.INTEGER.cast(indexValue.getValue());
 
 		if (arrayIndexVal.isDefinite()) {
+			if (arrayIndexVal.isFalse()) {
+				return null;
+			}
 
 			final long itemIdx = arrayIndexVal.getDefiniteValue();
 
@@ -116,6 +119,9 @@ public class ArrayElementFragment extends PathFragment {
 					arrayStruct.cast(arrayValue.getValue());
 
 			if (arrayVal.isDefinite()) {
+				if (arrayVal.isFalse()) {
+					return null;
+				}
 
 				final ArrayItem[] items =
 						arrayVal.getDefiniteValue().items(start);

@@ -240,6 +240,11 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
+	public boolean isClone() {
+		return getLastDefinition() != this;
+	}
+
+	@Override
 	public final Resolver dummyResolver() {
 		return this.resolverFactory.dummyResolver();
 	}

@@ -37,19 +37,29 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	private ArtifactContent content;
 	private Ref self;
 	private boolean allResolved;
+	private final A propagatedFrom;
 	private Holder<A> cloneOf;
 
 	public Artifact(Scope scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
+		this.propagatedFrom = null;
 	}
 
 	protected Artifact(ArtifactScope<A> scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
+		this.propagatedFrom = null;
 		scope.setScopeArtifact(toArtifact());
 	}
 
 	protected Artifact(Scope scope, A sample) {
 		super(scope, new ArtifactDistributor(scope, sample));
+		this.propagatedFrom = sample;
+	}
+
+	protected Artifact(ArtifactScope<A> scope, A sample) {
+		super(scope, new ArtifactDistributor(scope, sample));
+		this.propagatedFrom = sample;
+		scope.setScopeArtifact(toArtifact());
 	}
 
 	public abstract ArtifactKind<A> getKind();
@@ -68,8 +78,16 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return null;
 	}
 
+	public A getPropagatedFrom() {
+		return this.propagatedFrom;
+	}
+
 	public final boolean isClone() {
 		return getCloneOf() != null;
+	}
+
+	public boolean isPropagated() {
+		return getPropagatedFrom() != null;
 	}
 
 	public final A getCloneOf() {
@@ -167,14 +185,10 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	protected A findCloneOf() {
-
-		final Field<?> field = getScope().toField();
-
-		if (field == null || !field.isClone()) {
+		if (getScope().isClone()) {
 			return null;
 		}
-
-		return field.toKind(getKind()).getLastDefinition().getArtifact();
+		return getKind().cast(getScope().getLastDefinition().getArtifact());
 	}
 
 	protected abstract void fullyResolve();

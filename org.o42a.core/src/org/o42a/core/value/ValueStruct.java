@@ -116,6 +116,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 
 	public abstract boolean assignableFrom(ValueStruct<?, ?> other);
 
+	public abstract boolean convertibleFrom(ValueStruct<?, ?> other);
+
 	public final T cast(Object value) {
 		return getValueClass().cast(value);
 	}

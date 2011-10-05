@@ -42,6 +42,10 @@ public abstract class ObjectArtifact extends Artifact<Obj> {
 		super(scope, sample);
 	}
 
+	protected ObjectArtifact(ArtifactScope<Obj> scope, Obj sample) {
+		super(scope, sample);
+	}
+
 	protected abstract Dep addFieldDep(MemberKey memberKey);
 
 	protected abstract Dep addEnclosingOwnerDep(Obj owner);

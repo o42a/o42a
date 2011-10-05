@@ -110,9 +110,8 @@ public class LocalDef extends ValueDef {
 	public ValueStruct<?, ?> getValueStruct() {
 
 		final Scope scope = this.localRescoper.rescope(getScope());
-		final LocalScope local = scope.toLocal();
 
-		assert local != null :
+		assert scope.toLocal() != null :
 			"Not a local scope: " + scope;
 
 		final ValueStruct<?, ?> valueStruct = this.definer.valueStruct(scope);
@@ -121,7 +120,7 @@ public class LocalDef extends ValueDef {
 			return null;
 		}
 
-		return valueStruct.rescope(this.localRescoper);
+		return valueStruct.rescope(this.localRescoper).rescope(getRescoper());
 	}
 
 	@Override

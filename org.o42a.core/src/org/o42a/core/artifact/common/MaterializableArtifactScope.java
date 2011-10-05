@@ -30,12 +30,23 @@ public abstract class MaterializableArtifactScope<
 		A extends MaterializableArtifact<A>>
 				extends ArtifactScope<A> {
 
+	private final MaterializableArtifactScope<A> propagatedFrom;
 	private ArtifactContainer<A> container;
 
 	public MaterializableArtifactScope(
 			LocationInfo location,
 			Distributor enclosing) {
 		super(location, enclosing);
+		this.propagatedFrom = null;
+	}
+
+	protected MaterializableArtifactScope(
+			Scope enclosing,
+			MaterializableArtifactScope<A> propagatedFrom) {
+		super(
+				propagatedFrom,
+				propagatedFrom.distributeIn(enclosing.getContainer()));
+		this.propagatedFrom = propagatedFrom;
 	}
 
 	@Override
@@ -44,6 +55,28 @@ public abstract class MaterializableArtifactScope<
 			return this.container;
 		}
 		return this.container = new ArtifactContainer<A>(this);
+	}
+
+	public MaterializableArtifactScope<A> getPropagatedFrom() {
+		return this.propagatedFrom;
+	}
+
+	@Override
+	public MaterializableArtifactScope<A> getFirstDeclaration() {
+
+		final MaterializableArtifactScope<A> propagatedFrom =
+				getPropagatedFrom();
+
+		if (propagatedFrom == null) {
+			return this;
+		}
+
+		return propagatedFrom.getFirstDeclaration();
+	}
+
+	@Override
+	public MaterializableArtifactScope<A> getLastDefinition() {
+		return getFirstDeclaration();
 	}
 
 	@Override

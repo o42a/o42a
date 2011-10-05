@@ -90,6 +90,16 @@ public final class Top extends AbstractScope implements MemberContainer {
 	}
 
 	@Override
+	public Scope getFirstDeclaration() {
+		return this;
+	}
+
+	@Override
+	public Scope getLastDefinition() {
+		return this;
+	}
+
+	@Override
 	public Collection<? extends Member> getMembers() {
 		return emptyList();
 	}
