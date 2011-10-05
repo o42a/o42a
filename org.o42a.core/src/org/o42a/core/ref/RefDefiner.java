@@ -63,7 +63,7 @@ public class RefDefiner extends Definer {
 
 	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return getValueAdapter().ref().valueStruct(scope);
+		return getValueAdapter().valueStruct(scope);
 	}
 
 	@Override
@@ -82,18 +82,14 @@ public class RefDefiner extends Definer {
 		return new ReturnValue(
 				this,
 				resolver,
-				getValueAdapter().ref().value(resolver));
+				getValueAdapter().initialValue(resolver));
 	}
 
 	@Override
 	public Action initialLogicalValue(LocalResolver resolver) {
 		return new ExecuteCommand(
 				this,
-				getValueAdapter()
-				.ref()
-				.value(resolver)
-				.getCondition()
-				.toLogicalValue());
+				getValueAdapter().initialLogicalValue(resolver));
 	}
 
 	public ValueAdapter getValueAdapter() {

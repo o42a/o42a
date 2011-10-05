@@ -166,6 +166,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		return this.member.getDefinedIn();
 	}
 
+	@Override
 	public final Field<A> getFirstDeclaration() {
 		return this.member.getFirstDeclaration().toField(dummyUser())
 				.toKind(getArtifactKind());
@@ -177,6 +178,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	 * @return the last field's explicit definition or implicit definition
 	 * with multiple inheritance.
 	 */
+	@Override
 	public final Field<A> getLastDefinition() {
 		return this.member.getLastDefinition().toField(dummyUser())
 				.toKind(getArtifactKind());
@@ -193,6 +195,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	 *
 	 * @see #getLastDefinition()
 	 */
+	@Override
 	public final boolean isClone() {
 		return getLastDefinition() != this;
 	}

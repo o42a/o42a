@@ -157,6 +157,21 @@ public abstract class LocalScope
 		return this.ownerScopePath;
 	}
 
+	@Override
+	public final LocalScope getFirstDeclaration() {
+		return explicit();
+	}
+
+	@Override
+	public final LocalScope getLastDefinition() {
+		return explicit();
+	}
+
+	@Override
+	public final boolean isClone() {
+		return explicit() == this;
+	}
+
 	public abstract ImperativeBlock getBlock();
 
 	@Override

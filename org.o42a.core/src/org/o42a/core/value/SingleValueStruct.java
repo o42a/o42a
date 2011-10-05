@@ -46,6 +46,11 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
+	public boolean convertibleFrom(ValueStruct<?, ?> other) {
+		return assignableFrom(other);
+	}
+
+	@Override
 	public SingleValueStruct<T> rescope(Rescoper rescoper) {
 		return this;
 	}

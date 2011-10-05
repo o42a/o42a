@@ -36,11 +36,6 @@ public final class PropagatedObject extends Obj {
 	}
 
 	@Override
-	public boolean isPropagated() {
-		return true;
-	}
-
-	@Override
 	public String toString() {
 
 		final Scope scope = getScope();

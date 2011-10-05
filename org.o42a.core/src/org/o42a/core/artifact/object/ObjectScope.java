@@ -53,6 +53,23 @@ public abstract class ObjectScope extends ArtifactScope<Obj> {
 	}
 
 	@Override
+	public ObjectScope getFirstDeclaration() {
+
+		final Obj propagatedFrom = getArtifact().getPropagatedFrom();
+
+		if (propagatedFrom == null) {
+			return this;
+		}
+
+		return (ObjectScope) propagatedFrom.getScope().getFirstDeclaration();
+	}
+
+	@Override
+	public ObjectScope getLastDefinition() {
+		return getFirstDeclaration();
+	}
+
+	@Override
 	public boolean derivedFrom(Scope other) {
 		if (this == other) {
 			return true;

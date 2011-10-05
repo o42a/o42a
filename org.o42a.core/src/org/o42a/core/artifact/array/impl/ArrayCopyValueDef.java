@@ -24,6 +24,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
@@ -36,14 +37,42 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 
 
-public final class ArrayCopyValueDef extends ValueDef {
+final class ArrayCopyValueDef extends ValueDef {
+
+	static Value<?> arrayValue(
+			Ref ref,
+			Resolver resolver,
+			boolean toConstant) {
+
+		final Value<?> value = ref.value(resolver);
+		final ArrayValueStruct sourceStruct =
+				(ArrayValueStruct) value.getValueStruct();
+		final ArrayValueStruct resultStruct =
+				sourceStruct.setConstant(toConstant);
+
+		if (value.isFalse()) {
+			return resultStruct.falseValue();
+		}
+		if (!value.isDefinite()) {
+			return resultStruct.runtimeValue();
+		}
+		if (!sourceStruct.isConstant()) {
+			// Non-constant array can not be copied at compile time.
+			return resultStruct.runtimeValue();
+		}
+
+		final Array array = sourceStruct.cast(value).getDefiniteValue();
+
+		return sourceStruct.constantValue(
+				array.propagateTo(resolver.getScope()));
+	}
 
 	private final Ref ref;
 	private final boolean toConstant;
 	private ArrayValueStruct fromStruct;
 	private ArrayValueStruct toStruct;
 
-	public ArrayCopyValueDef(Ref ref, boolean toConstant) {
+	ArrayCopyValueDef(Ref ref, boolean toConstant) {
 		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
 		this.ref = ref;
 		this.toConstant = toConstant;
@@ -60,12 +89,7 @@ public final class ArrayCopyValueDef extends ValueDef {
 		if (this.toStruct != null) {
 			return this.toStruct;
 		}
-
-		final ArrayValueStruct fromStruct = fromValueStruct();
-
-		return this.toStruct = new ArrayValueStruct(
-				fromStruct.getItemTypeRef(),
-				this.toConstant);
+		return this.toStruct = fromValueStruct().setConstant(this.toConstant);
 	}
 
 	@Override
@@ -90,7 +114,7 @@ public final class ArrayCopyValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return getValueStruct().runtimeValue();
+		return arrayValue(this.ref, resolver, this.toConstant);
 	}
 
 	@Override

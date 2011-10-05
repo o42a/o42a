@@ -131,6 +131,21 @@ public abstract class PlainClause
 	}
 
 	@Override
+	public PlainClause getFirstDeclaration() {
+		return toMember().getFirstDeclaration().toClause().toPlainClause();
+	}
+
+	@Override
+	public PlainClause getLastDefinition() {
+		return getFirstDeclaration();
+	}
+
+	@Override
+	public boolean isClone() {
+		return getLastDefinition() != this;
+	}
+
+	@Override
 	public final Resolver dummyResolver() {
 		return this.resolverFactory.dummyResolver();
 	}

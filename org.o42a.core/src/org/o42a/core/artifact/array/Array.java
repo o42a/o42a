@@ -19,23 +19,29 @@
 */
 package org.o42a.core.artifact.array;
 
+import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.Ref.errorRef;
+
+import java.util.IdentityHashMap;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayContentReproducer;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public class Array extends Placed {
+public final class Array extends Placed {
 
+	private final Obj origin;
 	private final Obj owner;
 	private final ArrayValueStruct valueStruct;
 	private final ArrayItem[] items;
+	private IdentityHashMap<Scope, Array> clones;
 
 	public Array(
 			LocationInfo location,
@@ -43,10 +49,25 @@ public class Array extends Placed {
 			ArrayValueStruct valueStruct,
 			ArrayItem[] items) {
 		super(location, distributor);
-		this.owner = owner(distributor.getScope());
+		this.origin = this.owner = owner(distributor.getScope());
 		valueStruct.getItemTypeRef().assertSameScope(distributor);
 		this.valueStruct = valueStruct;
 		this.items = items;
+	}
+
+	private Array(Array from, Obj owner) {
+		super(from, from.distributeIn(owner));
+		this.origin = from.getOrigin();
+		this.owner = owner;
+
+		final Rescoper rescoper = upgradeRescoper(from.getScope(), getScope());
+
+		this.valueStruct = from.getValueStruct().rescope(rescoper);
+		this.items = from.propagateItems(owner.getScope(), rescoper);
+	}
+
+	public final Obj getOrigin() {
+		return this.origin;
 	}
 
 	public final Obj getOwner() {
@@ -62,13 +83,36 @@ public class Array extends Placed {
 	}
 
 	public final ArrayItem[] items(Scope scope) {
-		assertCompatible(scope);
-		// TODO Construct array items for the given scope.
-		return this.items;
+		return propagateTo(scope).items;
 	}
 
 	public final Ref toRef() {
 		return getValueStruct().constantRef(this, distribute(), this);
+	}
+
+	public Array propagateTo(Scope scope) {
+		if (scope == getScope()) {
+			return this;
+		}
+
+		assertCompatible(scope);
+
+		if (this.clones != null) {
+
+			final Array clone = this.clones.get(scope);
+
+			if (clone != null) {
+				return clone;
+			}
+		} else {
+			this.clones = new IdentityHashMap<Scope, Array>();
+		}
+
+		final Array clone = new Array(this, owner(scope));
+
+		this.clones.put(scope, clone);
+
+		return clone;
 	}
 
 	public Array reproduce(Reproducer reproducer) {
@@ -103,6 +147,20 @@ public class Array extends Placed {
 			"Enclosing scope is not object: " + scope;
 
 		return owner;
+	}
+
+	private ArrayItem[] propagateItems(Scope scope, Rescoper rescoper) {
+
+		final ArrayItem[] newItems = new ArrayItem[this.items.length];
+
+		for (int i = 0; i < newItems.length; ++i) {
+
+			final ArrayItem oldItem = this.items[i];
+
+			newItems[i] = oldItem.propagateTo(scope, rescoper);
+		}
+
+		return newItems;
 	}
 
 	private ArrayItem[] reproduceItems(

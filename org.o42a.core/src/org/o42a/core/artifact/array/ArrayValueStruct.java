@@ -20,6 +20,7 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.array.impl.ArrayValueAdapter;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.value.ValueStructIR;
@@ -30,10 +31,11 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 
 
-public class ArrayValueStruct
+public final class ArrayValueStruct
 		extends ValueStruct<ArrayValueStruct, Array> {
 
 	private final TypeRef itemTypeRef;
+	private ArrayValueStruct constCounterpart;
 
 	public ArrayValueStruct(TypeRef itemTypeRef, boolean constant) {
 		super(
@@ -46,14 +48,48 @@ public class ArrayValueStruct
 		return arrayValueType().isConstant();
 	}
 
+	public ArrayValueStruct setConstant(boolean constant) {
+		if (isConstant() == constant) {
+			return this;
+		}
+		if (this.constCounterpart != null) {
+			return this.constCounterpart;
+		}
+		return this.constCounterpart =
+				new ArrayValueStruct(this.itemTypeRef, constant);
+	}
+
 	public final TypeRef getItemTypeRef() {
 		return this.itemTypeRef;
 	}
 
 	@Override
 	public boolean assignableFrom(ValueStruct<?, ?> other) {
-		// TODO Auto-generated method stub
-		return false;
+
+		final ValueType<?> valueType = other.getValueType();
+
+		if (valueType != getValueType()) {
+			return false;
+		}
+
+		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
+
+		return otherArrayStruct.getItemTypeRef().derivedFrom(getItemTypeRef());
+	}
+
+	@Override
+	public boolean convertibleFrom(ValueStruct<?, ?> other) {
+
+		final ValueType<?> valueType = other.getValueType();
+
+		if (valueType != ValueType.ARRAY
+				&& valueType != ValueType.CONST_ARRAY) {
+			return false;
+		}
+
+		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
+
+		return otherArrayStruct.getItemTypeRef().derivedFrom(getItemTypeRef());
 	}
 
 	@Override
@@ -64,9 +100,20 @@ public class ArrayValueStruct
 	}
 
 	@Override
-	public ValueAdapter defaultAdapter(Ref ref, ValueStruct<?, ?> expectedStruct) {
-		// TODO Auto-generated method stub
-		return null;
+	public ValueAdapter defaultAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct) {
+		if (expectedStruct == null || expectedStruct.convertibleFrom(this)) {
+			return new ArrayValueAdapter(
+					ref,
+					(ArrayValueStruct) expectedStruct);
+		}
+
+		final Ref adapter = ref.adapt(
+				ref,
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+
+		return adapter.valueAdapter(null);
 	}
 
 	public ArrayValueStruct reproduce(Reproducer reproducer) {
@@ -82,7 +129,16 @@ public class ArrayValueStruct
 
 	@Override
 	protected void resolveAll(Value<Array> value, Resolver resolver) {
-		// TODO Auto-generated method stub
+		getItemTypeRef().resolveAll(resolver);
+		if (value.isDefinite() && !value.isFalse()) {
+
+			final ArrayItem[] items =
+					value.getDefiniteValue().items(resolver.getScope());
+
+			for (ArrayItem item : items) {
+				item.resolveAll(resolver);
+			}
+		}
 	}
 
 	@Override
@@ -95,5 +151,6 @@ public class ArrayValueStruct
 	private final ArrayValueType arrayValueType() {
 		return (ArrayValueType) getValueType();
 	}
+
 
 }

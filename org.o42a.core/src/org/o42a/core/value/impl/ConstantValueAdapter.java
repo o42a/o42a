@@ -22,10 +22,12 @@ package org.o42a.core.value.impl;
 import static org.o42a.core.def.Def.sourceOf;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.ValueDef;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Logical;
+import org.o42a.core.value.*;
 
 
 public class ConstantValueAdapter<T> extends ValueAdapter {
@@ -36,9 +38,13 @@ public class ConstantValueAdapter<T> extends ValueAdapter {
 		this.ref = ref;
 	}
 
-	@Override
 	public final ConstantRef<T> ref() {
 		return this.ref;
+	}
+
+	@Override
+	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return ref().valueStruct(scope);
 	}
 
 	@Override
@@ -53,6 +59,21 @@ public class ConstantValueAdapter<T> extends ValueAdapter {
 	@Override
 	public CondDef condDef() {
 		return logicalTrue(this.ref, this.ref.getScope()).toCondDef();
+	}
+
+	@Override
+	public Logical logical(Scope scope) {
+		return ref().rescope(scope).getLogical();
+	}
+
+	@Override
+	public Value<?> initialValue(LocalResolver resolver) {
+		return ref().value(resolver);
+	}
+
+	@Override
+	public LogicalValue initialLogicalValue(LocalResolver resolver) {
+		return ref().value(resolver).getCondition().toLogicalValue();
 	}
 
 }

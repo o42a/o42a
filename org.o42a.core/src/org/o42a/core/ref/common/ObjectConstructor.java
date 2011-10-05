@@ -145,15 +145,10 @@ public abstract class ObjectConstructor extends Ref {
 
 		Propagated(Scope scope, Ref propagatedFrom) {
 			super(
-					propagatedFrom,
-					propagatedFrom.distributeIn(scope.getContainer()));
+					propagatedFrom.distributeIn(scope.getContainer()),
+					propagatedFrom.getResolution().toObject());
 			this.propagatedFrom =
 					propagatedFrom.toStaticTypeRef().upgradeScope(scope);
-		}
-
-		@Override
-		public boolean isPropagated() {
-			return true;
 		}
 
 		@Override
