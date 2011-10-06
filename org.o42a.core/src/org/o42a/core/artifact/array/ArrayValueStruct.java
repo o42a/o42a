@@ -93,13 +93,6 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public ArrayValueStruct rescope(Rescoper rescoper) {
-		return new ArrayValueStruct(
-				this.itemTypeRef.rescope(rescoper),
-				isConstant());
-	}
-
-	@Override
 	public ValueAdapter defaultAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct) {
@@ -116,6 +109,19 @@ public final class ArrayValueStruct
 		return adapter.valueAdapter(null);
 	}
 
+	@Override
+	public final boolean isScoped() {
+		return true;
+	}
+
+	@Override
+	public ArrayValueStruct rescope(Rescoper rescoper) {
+		return new ArrayValueStruct(
+				this.itemTypeRef.rescope(rescoper),
+				isConstant());
+	}
+
+	@Override
 	public ArrayValueStruct reproduce(Reproducer reproducer) {
 
 		final TypeRef itemTypeRef = getItemTypeRef().reproduce(reproducer);

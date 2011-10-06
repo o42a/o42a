@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl.type;
 
+import static org.o42a.core.ref.impl.type.DefaultValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
+
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -26,16 +28,30 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.util.Lambda;
 import org.o42a.util.log.Loggable;
 
 
 public final class DefaultTypeRef extends TypeRef {
 
 	private final Ref ref;
+	private final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder;
+	private ValueStruct<?, ?> valueStruct;
 
-	public DefaultTypeRef(Ref ref, Rescoper rescoper) {
+	public DefaultTypeRef(
+			Ref ref,
+			Rescoper rescoper,
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
+			ValueStruct<?, ?> valueStruct) {
 		super(rescoper);
 		this.ref = ref;
+		if (valueStructFinder != null) {
+			this.valueStructFinder = valueStructFinder;
+		} else {
+			this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+		}
+		this.valueStruct = valueStruct;
 	}
 
 	@Override
@@ -64,11 +80,26 @@ public final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
+	public ValueStruct<?, ?> getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
+		}
+
+		final ValueStruct<?, ?> valueStruct =
+				this.valueStructFinder.get(getRef());
+
+		return this.valueStruct =
+				valueStruct.rescope(getRef().toRescoper().and(getRescoper()));
+	}
+
+	@Override
 	public StaticTypeRef toStatic() {
 		return new DefaultStaticTypeRef(
 				getRef(),
 				getUntachedRef(),
-				getRescoper());
+				getRescoper(),
+				this.valueStructFinder,
+				this.valueStruct);
 	}
 
 	@Override
@@ -83,7 +114,20 @@ public final class DefaultTypeRef extends TypeRef {
 	protected DefaultTypeRef create(
 			Rescoper rescoper,
 			Rescoper additionalRescoper) {
-		return new DefaultTypeRef(getRef(), rescoper);
+
+		final ValueStruct<?, ?> valueStruct;
+
+		if (this.valueStruct == null) {
+			valueStruct = null;
+		} else {
+			valueStruct = this.valueStruct.rescope(additionalRescoper);
+		}
+
+		return new DefaultTypeRef(
+				getRef(),
+				rescoper,
+				this.valueStructFinder,
+				valueStruct);
 	}
 
 	@Override
@@ -95,7 +139,23 @@ public final class DefaultTypeRef extends TypeRef {
 			Rescoper rescoper) {
 		assert ref == untouchedRef :
 			ref + " should be the same as " + untouchedRef;
-		return new DefaultTypeRef(ref, rescoper);
+
+		final ValueStruct<?, ?> valueStruct;
+
+		if (this.valueStruct == null) {
+			valueStruct = null;
+		} else {
+			valueStruct = this.valueStruct.reproduce(reproducer);
+			if (valueStruct == null) {
+				return null;
+			}
+		}
+
+		return new DefaultTypeRef(
+				ref,
+				rescoper,
+				this.valueStructFinder,
+				valueStruct);
 	}
 
 	@Override

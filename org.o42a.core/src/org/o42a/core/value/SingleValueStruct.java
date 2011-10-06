@@ -24,6 +24,7 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.st.Reproducer;
 
 
 public abstract class SingleValueStruct<T>
@@ -51,11 +52,6 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public SingleValueStruct<T> rescope(Rescoper rescoper) {
-		return this;
-	}
-
-	@Override
 	public ValueAdapter defaultAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct) {
@@ -68,6 +64,21 @@ public abstract class SingleValueStruct<T>
 				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
 
 		return adapter.valueAdapter(null);
+	}
+
+	@Override
+	public boolean isScoped() {
+		return false;
+	}
+
+	@Override
+	public SingleValueStruct<T> rescope(Rescoper rescoper) {
+		return this;
+	}
+
+	@Override
+	public SingleValueStruct<T> reproduce(Reproducer reproducer) {
+		return this;
 	}
 
 	@Override

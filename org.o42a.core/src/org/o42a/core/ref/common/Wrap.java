@@ -39,6 +39,8 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.util.Lambda;
 import org.o42a.util.log.Loggable;
 
 
@@ -107,22 +109,6 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final TypeRef toTypeRef() {
-		if (this.wrapped != null) {
-			return this.wrapped.toTypeRef();
-		}
-		return super.toTypeRef();
-	}
-
-	@Override
-	public final StaticTypeRef toStaticTypeRef() {
-		if (this.wrapped != null) {
-			return this.wrapped.toStaticTypeRef();
-		}
-		return super.toStaticTypeRef();
-	}
-
-	@Override
 	public final TargetRef toTargetRef(TypeRef typeRef) {
 		if (this.wrapped != null) {
 			return this.wrapped.toTargetRef(typeRef);
@@ -147,6 +133,32 @@ public abstract class Wrap extends Ref {
 
 	protected final Ref errorRef(LocationInfo location) {
 		return errorRef(location, distribute());
+	}
+
+	@Override
+	protected TypeRef toTypeRef(
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
+			ValueStruct<?, ?> valueStruct) {
+		if (this.wrapped != null) {
+			if (valueStruct != null) {
+				return this.wrapped.toTypeRef(valueStruct);
+			}
+			return this.wrapped.toTypeRef(valueStructFinder);
+		}
+		return super.toTypeRef(valueStructFinder, valueStruct);
+	}
+
+	@Override
+	protected StaticTypeRef toStaticTypeRef(
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
+			ValueStruct<?, ?> valueStruct) {
+		if (this.wrapped != null) {
+			if (valueStruct != null) {
+				return this.wrapped.toStaticTypeRef(valueStruct);
+			}
+			return this.wrapped.toStaticTypeRef(valueStructFinder);
+		}
+		return super.toStaticTypeRef(valueStructFinder, valueStruct);
 	}
 
 	@Override

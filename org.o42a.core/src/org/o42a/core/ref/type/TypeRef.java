@@ -33,6 +33,7 @@ import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Holder;
 import org.o42a.util.use.Usable;
 import org.o42a.util.use.UserInfo;
@@ -105,6 +106,8 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		return type != null ? type.getObject() : null;
 	}
+
+	public abstract ValueStruct<?, ?> getValueStruct();
 
 	public boolean validate() {
 		return type(dummyUser()) != null;

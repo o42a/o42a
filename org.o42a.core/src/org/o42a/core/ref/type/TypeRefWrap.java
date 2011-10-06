@@ -26,6 +26,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.Loggable;
 
 
@@ -62,6 +63,11 @@ public abstract class TypeRefWrap extends TypeRef {
 	@Override
 	public final Ref getUntachedRef() {
 		return wrapped().getUntachedRef();
+	}
+
+	@Override
+	public final ValueStruct<?, ?> getValueStruct() {
+		return wrapped().getValueStruct();
 	}
 
 	@Override
