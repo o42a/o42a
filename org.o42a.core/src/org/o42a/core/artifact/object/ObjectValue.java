@@ -24,8 +24,10 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.FullResolution;
@@ -78,11 +80,21 @@ public final class ObjectValue implements UseInfo {
 		final TypeRef ancestor = object.type().getAncestor();
 
 		if (ancestor == null) {
-			return ValueStruct.VOID;
+			return this.valueStruct = ValueStruct.VOID;
 		}
 
-		setValueStruct(ancestor.typeObject(
-				object.getScope().dummyResolver()).value().getValueStruct());
+		final ValueStruct<?, ?> ancestorValueStruct = ancestor.getValueStruct();
+
+		if (!ancestorValueStruct.isScoped()) {
+			setValueStruct(ancestorValueStruct);
+		} else {
+
+			final Scope scope = object.getScope();
+			final Rescoper rescoper =
+					scope.getEnclosingScopePath().rescoper(scope);
+
+			setValueStruct(ancestorValueStruct.rescope(rescoper));
+		}
 
 		return this.valueStruct;
 	}

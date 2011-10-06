@@ -42,6 +42,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.io.URLSource;
 
 
@@ -82,6 +83,7 @@ public class Root extends Obj {
 		this.compiler = compiler;
 		this.sources = sources;
 		this.voidField = new VoidField(this);
+		setValueStruct(ValueStruct.VOID);
 	}
 
 	public final URLSourceTree getSourceTree() {

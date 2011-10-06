@@ -25,6 +25,7 @@ import org.o42a.core.def.impl.rescoper.RescoperWrap;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class StaticTypeRefWrap extends StaticTypeRef {
@@ -55,6 +56,11 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 	@Override
 	public final Ref getUntachedRef() {
 		return wrapped().getUntachedRef();
+	}
+
+	@Override
+	public final ValueStruct<?, ?> getValueStruct() {
+		return wrapped().getValueStruct();
 	}
 
 	@Override

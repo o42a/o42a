@@ -53,6 +53,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.*;
+import org.o42a.util.Lambda;
 
 
 public abstract class Ref extends Statement {
@@ -226,18 +227,40 @@ public abstract class Ref extends Statement {
 		return new RescopedRef(this, rescoper);
 	}
 
-	public TypeRef toTypeRef() {
+	public final TypeRef toTypeRef() {
 		if (isKnownStatic()) {
-			return toStaticTypeRef();
+			return toStaticTypeRef(null, null);
 		}
-		return new DefaultTypeRef(this, transparentRescoper(getScope()));
+		return toTypeRef(null, null);
 	}
 
-	public StaticTypeRef toStaticTypeRef() {
-		return new DefaultStaticTypeRef(
-				this,
-				this,
-				transparentRescoper(getScope()));
+	public final TypeRef toTypeRef(ValueStruct<?, ?> valueStruct) {
+		if (isKnownStatic()) {
+			return toStaticTypeRef(null, valueStruct);
+		}
+		return toTypeRef(null, valueStruct);
+	}
+
+	public final TypeRef toTypeRef(
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+		if (isKnownStatic()) {
+			toStaticTypeRef(valueStructFinder, null);
+		}
+		return toTypeRef(valueStructFinder, null);
+	}
+
+	public final StaticTypeRef toStaticTypeRef() {
+		return toStaticTypeRef(null, null);
+	}
+
+	public final StaticTypeRef toStaticTypeRef(
+			ValueStruct<?, ?> valueStruct) {
+		return toStaticTypeRef(null, valueStruct);
+	}
+
+	public final StaticTypeRef toStaticTypeRef(
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+		return toStaticTypeRef(valueStructFinder, null);
 	}
 
 	public TargetRef toTargetRef(TypeRef typeRef) {
@@ -274,6 +297,27 @@ public abstract class Ref extends Statement {
 		assert assertFullyResolved();
 
 		return this.op = createOp(host);
+	}
+
+	protected TypeRef toTypeRef(
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
+			ValueStruct<?, ?> valueStruct) {
+		return new DefaultTypeRef(
+				this,
+				transparentRescoper(getScope()),
+				valueStructFinder,
+				null);
+	}
+
+	protected StaticTypeRef toStaticTypeRef(
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
+			ValueStruct<?, ?> valueStruct) {
+		return new DefaultStaticTypeRef(
+				this,
+				this,
+				transparentRescoper(getScope()),
+				valueStructFinder,
+				valueStruct);
 	}
 
 	protected abstract FieldDefinition createFieldDefinition();

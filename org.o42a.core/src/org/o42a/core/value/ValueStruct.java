@@ -29,6 +29,7 @@ import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.impl.*;
 
 
@@ -131,11 +132,15 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 		return (Value<T>) value;
 	}
 
-	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
-
 	public abstract ValueAdapter defaultAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct);
+
+	public abstract boolean isScoped();
+
+	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
+
+	public abstract ValueStruct<S, T> reproduce(Reproducer reproducer);
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :
