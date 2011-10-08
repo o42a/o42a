@@ -49,7 +49,7 @@ final class PhrasePrefixVisitor
 
 		final Distributor distributor = p.distribute();
 		final AncestorTypeRef ancestor =
-				expression.accept(p.ip().ancestorVisitor(), distributor);
+				expression.accept(p.ip().ancestorVisitor(null), distributor);
 
 		if (ancestor == null || ancestor.isImplied()) {
 			return p.setImpliedAncestor(location(p, expression));

@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip;
 
+import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
@@ -137,11 +138,18 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitAscendants(AscendantsNode ascendants, Distributor p) {
-		if (ascendants.getAscendants().length == 1) {
-			return ascendants.getAscendants()[0].getAscendant().accept(
-					refVisitor(),
-					p).toStatic();
+		if (ascendants.getAscendants().length <= 1) {
+
+			final AncestorTypeRef ancestor =
+					parseAncestor(ip(), ascendants, p);
+
+			if (ancestor.isImplied()) {
+				return super.visitAscendants(ascendants, p);
+			}
+
+			return ancestor.getAncestor().getRef();
 		}
+
 		return ascendants(ip(), ascendants, p).toRef();
 	}
 

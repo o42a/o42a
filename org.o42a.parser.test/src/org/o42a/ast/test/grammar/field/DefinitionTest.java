@@ -62,7 +62,7 @@ public class DefinitionTest extends GrammarTestCase {
 		final AscendantNode[] ascendants =
 				to(AscendantsNode.class, result.getDefinition()).getAscendants();
 
-		assertName("bar", ascendants[0].getAscendant());
+		assertName("bar", ascendants[0].getSpec());
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class DefinitionTest extends GrammarTestCase {
 		final AscendantNode[] ascendants =
 				to(AscendantsNode.class, result.getDefinitionType()).getAscendants();
 
-		assertName("bar", ascendants[0].getAscendant());
+		assertName("bar", ascendants[0].getSpec());
 		assertName("baz", result.getDefinition());
 	}
 

@@ -19,18 +19,10 @@
 */
 package org.o42a.compiler.ip;
 
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
 public final class AncestorTypeRef {
-
-	public static AncestorTypeRef ancestorTypeRef(Ref ancestor) {
-		if (ancestor == null) {
-			return null;
-		}
-		return new AncestorTypeRef(ancestor.toTypeRef());
-	}
 
 	public static AncestorTypeRef ancestorTypeRef(TypeRef ancestor) {
 		if (ancestor == null) {

@@ -50,8 +50,8 @@ public class ExpressionTest extends GrammarTestCase {
 		final AscendantsNode left =
 				to(AscendantsNode.class, result.getLeftOperand());
 
-		assertName("foo", left.getAscendants()[0].getAscendant());
-		assertName("bar", left.getAscendants()[1].getAscendant());
+		assertName("foo", left.getAscendants()[0].getSpec());
+		assertName("bar", left.getAscendants()[1].getSpec());
 		assertName("baz", result.getRightOperand());
 	}
 
@@ -63,8 +63,8 @@ public class ExpressionTest extends GrammarTestCase {
 		final AscendantsNode left =
 				to(AscendantsNode.class, result.getLeftOperand());
 
-		assertName("foo", left.getAscendants()[0].getAscendant());
-		assertName("bar", left.getAscendants()[1].getAscendant());
+		assertName("foo", left.getAscendants()[0].getSpec());
+		assertName("bar", left.getAscendants()[1].getSpec());
 		assertName("baz", result.getRightOperand());
 	}
 
@@ -79,8 +79,8 @@ public class ExpressionTest extends GrammarTestCase {
 		final AscendantsNode right =
 				to(AscendantsNode.class, result.getRightOperand());
 
-		assertName("bar", right.getAscendants()[0].getAscendant());
-		assertName("baz", right.getAscendants()[1].getAscendant());
+		assertName("bar", right.getAscendants()[0].getSpec());
+		assertName("baz", right.getAscendants()[1].getSpec());
 	}
 
 	@Test
@@ -92,8 +92,8 @@ public class ExpressionTest extends GrammarTestCase {
 				to(AscendantsNode.class, result.getRightOperand());
 
 		assertName("foo", result.getLeftOperand());
-		assertName("bar", right.getAscendants()[0].getAscendant());
-		assertName("baz", right.getAscendants()[1].getAscendant());
+		assertName("bar", right.getAscendants()[0].getSpec());
+		assertName("baz", right.getAscendants()[1].getSpec());
 	}
 
 	@Test

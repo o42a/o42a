@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.compiler.ip.AncestorVisitor.parseAscendants;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
+import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 
 import org.o42a.ast.expression.*;
 import org.o42a.core.Distributor;

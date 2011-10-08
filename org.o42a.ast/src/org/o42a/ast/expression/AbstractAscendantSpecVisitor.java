@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,15 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.ref;
+package org.o42a.ast.expression;
 
-import org.o42a.ast.expression.AscendantSpecNode;
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.field.TypeNode;
+import org.o42a.ast.field.ArrayTypeNode;
+import org.o42a.ast.ref.AbstractRefVisitor;
+import org.o42a.ast.ref.RefNode;
 
 
-public interface RefNode extends TypeNode, ExpressionNode, AscendantSpecNode {
+public abstract class AbstractAscendantSpecVisitor<R, P>
+		extends AbstractRefVisitor<R, P>
+		implements AscendantSpecNodeVisitor<R, P> {
 
-	<R, P> R accept(RefNodeVisitor<R, P> visitor, P p);
+	@Override
+	protected R visitRef(RefNode ref, P p) {
+		return visitAscendantSpec(ref, p);
+	}
+
+	@Override
+	public R visitArrayType(ArrayTypeNode arrayType, P p) {
+		return visitAscendantSpec(arrayType, p);
+	}
+
+	protected abstract R visitAscendantSpec(AscendantSpecNode spec, P p);
 
 }

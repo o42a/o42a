@@ -22,11 +22,13 @@ package org.o42a.ast.field;
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.BracketsNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.BracketsNode.Bracket;
 
 
-public class ArrayTypeNode extends AbstractNode implements TypeNode {
+public class ArrayTypeNode
+		extends AbstractNode
+		implements TypeNode, AscendantSpecNode {
 
 	private final TypeNode ancestor;
 	private final SignNode<BracketsNode.Bracket> opening;
@@ -38,7 +40,9 @@ public class ArrayTypeNode extends AbstractNode implements TypeNode {
 			SignNode<Bracket> opening,
 			TypeNode itemType,
 			SignNode<Bracket> closing) {
-		super(ancestor.getStart(), end(ancestor, opening, itemType, closing));
+		super(
+				start(ancestor, opening),
+				end(ancestor, opening, itemType, closing));
 		this.ancestor = ancestor;
 		this.opening = opening;
 		this.itemType = itemType;
@@ -67,13 +71,20 @@ public class ArrayTypeNode extends AbstractNode implements TypeNode {
 	}
 
 	@Override
-	public <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
+	public <R, P> R accept(AscendantSpecNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitArrayType(this, p);
 	}
 
 	@Override
+	public final <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
+		return accept((TypeNodeVisitor<R, P>) visitor, p);
+	}
+
+	@Override
 	public void printContent(StringBuilder out) {
-		this.ancestor.printContent(out);
+		if (this.ancestor != null) {
+			this.ancestor.printContent(out);
+		}
 		if (this.itemType != null) {
 			out.append('[');
 			this.itemType.printContent(out);

@@ -24,12 +24,16 @@ import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.util.Lambda;
 
 
 final class StaticAncestorVisitor extends AncestorVisitor {
 
-	StaticAncestorVisitor(Interpreter ip) {
-		super(ip);
+	StaticAncestorVisitor(
+			Interpreter ip,
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+		super(ip, valueStructFinder);
 	}
 
 	@Override
@@ -43,7 +47,7 @@ final class StaticAncestorVisitor extends AncestorVisitor {
 			return null;
 		}
 
-		return ancestorTypeRef(result.toStaticTypeRef());
+		return ancestorTypeRef(result.toStaticTypeRef(getValueStructFinder()));
 	}
 
 }

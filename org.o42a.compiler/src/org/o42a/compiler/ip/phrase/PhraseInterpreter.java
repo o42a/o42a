@@ -19,21 +19,22 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.AncestorVisitor.parseAncestor;
+import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.SampleSpecVisitor;
 import org.o42a.compiler.ip.operator.ComparisonRef;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public final class PhraseInterpreter {
@@ -142,18 +143,24 @@ public final class PhraseInterpreter {
 			result = phrase.setAncestor(ancestor.getAncestor());
 		}
 
+		if (ascendantNodes.length <= 1) {
+			return result;
+		}
+
+		final SampleSpecVisitor sampleSpecVisitor =
+				new SampleSpecVisitor(phrase.ip());
+
 		for (int i = 1; i < ascendantNodes.length; ++i) {
 
-			final RefNode sampleNode = ascendantNodes[i].getAscendant();
+			final AscendantSpecNode specNode = ascendantNodes[i].getSpec();
 
-			if (sampleNode != null) {
+			if (specNode != null) {
 
-				final Ref sampleRef = sampleNode.accept(
-						phrase.ip().refVisitor(),
-						distributor);
+				final StaticTypeRef sample =
+						specNode.accept(sampleSpecVisitor, distributor);
 
-				if (sampleRef != null) {
-					result = result.addSamples(sampleRef.toStaticTypeRef());
+				if (sample != null) {
+					result = result.addSamples(sample);
 				}
 			}
 		}

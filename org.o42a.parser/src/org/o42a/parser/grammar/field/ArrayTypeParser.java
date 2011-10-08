@@ -30,7 +30,9 @@ import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-class ArrayTypeParser implements Parser<ArrayTypeNode> {
+public class ArrayTypeParser implements Parser<ArrayTypeNode> {
+
+	public static final ArrayTypeParser ARRAY_TYPE = new ArrayTypeParser(null);
 
 	private final TypeNode ancestor;
 

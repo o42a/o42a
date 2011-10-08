@@ -88,6 +88,13 @@ public abstract class ParserLogger implements Logger {
 		fatal("io_error", location, "I/O error: %s", message);
 	}
 
+	public void missingAscendantSpec(LogInfo location) {
+		error(
+				"missing_ascendant_spec",
+				location,
+				"Ascendant specifier is missing");
+	}
+
 	public void missingClause(LogInfo location) {
 		error(
 				"missing_clause",
@@ -123,10 +130,6 @@ public abstract class ParserLogger implements Logger {
 				location,
 				"Right operand of operator '%s' is missing",
 				operator);
-	}
-
-	public void missingSample(LogInfo location) {
-		error("missing_sample", location, "Sample reference is missing");
 	}
 
 	public void missingType(LogInfo location) {

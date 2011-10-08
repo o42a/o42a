@@ -82,8 +82,15 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 			return this.valueStruct;
 		}
 
-		final ValueStruct<?, ?> valueStruct =
+		final ValueStruct<?, ?> valueStruct;
+		final ValueStruct<?, ?> foundValueStruct =
 				this.valueStructFinder.get(getRef());
+
+		if (foundValueStruct != null) {
+			valueStruct = foundValueStruct;
+		} else {
+			valueStruct = DEFAULT_VALUE_STRUCT_FINDER.get(getRef());
+		}
 
 		return this.valueStruct = valueStruct.rescope(getRescoper());
 	}
