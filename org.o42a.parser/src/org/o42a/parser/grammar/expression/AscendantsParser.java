@@ -19,15 +19,16 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import static org.o42a.parser.Grammar.ref;
+import static org.o42a.parser.grammar.field.ArrayTypeParser.ARRAY_TYPE;
+
 import java.util.ArrayList;
 
 import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.AscendantNode;
-import org.o42a.ast.expression.AscendantNode.AscendantType;
-import org.o42a.ast.expression.AscendantsNode;
+import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.AscendantNode.Separator;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -65,7 +66,7 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 				ascendants = new ArrayList<AscendantNode>();
 			}
 			ascendants.add(ascendant);
-			if (ascendant.getAscendant() == null) {
+			if (ascendant.getSpec() == null) {
 				break;
 			}
 		}
@@ -96,21 +97,27 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 
 			context.acceptAll();
 
-			final SignNode<AscendantType> separator =
-					new SignNode<AscendantType>(
+			final SignNode<Separator> separator =
+					new SignNode<Separator>(
 							start,
 							context.current(),
-							AscendantType.SAMPLE);
+							Separator.SAMPLE);
 
 			context.acceptComments(false, separator);
 
-			final RefNode sample = context.parse(Grammar.ref());
+			final AscendantSpecNode spec;
 
-			if (sample == null) {
-				context.getLogger().missingSample(context.current());
+			if (context.next() == '[') {
+				spec = context.parse(ARRAY_TYPE);
+			} else {
+				spec = context.parse(ref());
 			}
 
-			return new AscendantNode(separator, sample);
+			if (spec == null) {
+				context.getLogger().missingAscendantSpec(context.current());
+			}
+
+			return new AscendantNode(separator, spec);
 		}
 
 	}

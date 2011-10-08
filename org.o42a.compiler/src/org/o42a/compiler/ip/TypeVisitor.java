@@ -19,26 +19,33 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.AscendantNode;
 import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.field.AbstractTypeVisitor;
+import org.o42a.ast.field.ArrayTypeNode;
+import org.o42a.ast.field.TypeNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.util.Lambda;
 
 
 final class TypeVisitor
 		extends AbstractTypeVisitor<TypeRef, Distributor> {
 
 	private final Interpreter ip;
+	private final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder;
 
-	TypeVisitor(Interpreter ip) {
+	TypeVisitor(
+			Interpreter ip,
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
 		this.ip = ip;
+		this.valueStructFinder = valueStructFinder;
 	}
 
 	public final Interpreter ip() {
@@ -54,20 +61,17 @@ final class TypeVisitor
 			return super.visitAscendants(ascendants, p);
 		}
 
-		final AscendantNode first = ascendantNodes[0];
+		final AncestorTypeRef ancestor = parseAncestor(
+				ip(),
+				p,
+				ascendantNodes[0],
+				this.valueStructFinder);
 
-		if (first.getSeparator() == null) {
+		if (ancestor.isImplied()) {
 			return super.visitAscendants(ascendants, p);
 		}
 
-		final RefNode ancestor = first.getAscendant();
-		final Ref ref = ancestor.accept(ip().refVisitor(), p);
-
-		if (ref != null) {
-			return ref.toStaticTypeRef();
-		}
-
-		return falseRef(location(p, ancestor), p).toTypeRef();
+		return ancestor.getAncestor();
 	}
 
 	@Override
@@ -75,11 +79,28 @@ final class TypeVisitor
 
 		final Ref ref = node.accept(ip().refVisitor(), p);
 
-		if (ref != null) {
-			return ref.toTypeRef();
+		if (ref == null) {
+			return null;
 		}
 
-		return falseRef(location(p, node), p).toTypeRef();
+		return ref.toTypeRef(this.valueStructFinder);
+	}
+
+	@Override
+	public TypeRef visitArrayType(ArrayTypeNode arrayType, Distributor p) {
+
+		final TypeNode ancestorNode = arrayType.getAncestor();
+
+		if (ancestorNode == null) {
+			return null;
+		}
+
+		final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder =
+				ip().arrayValueStruct(arrayType);
+		final TypeVisitor typeVisitor =
+				new TypeVisitor(ip(), valueStructFinder);
+
+		return ancestorNode.accept(typeVisitor, p);
 	}
 
 	@Override

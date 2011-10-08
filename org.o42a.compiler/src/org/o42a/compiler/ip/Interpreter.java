@@ -27,6 +27,8 @@ import org.o42a.ast.Node;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.field.ArrayTypeNode;
+import org.o42a.ast.field.TypeNode;
 import org.o42a.ast.field.TypeNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.sentence.*;
@@ -34,6 +36,7 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
@@ -41,6 +44,9 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
+import org.o42a.util.Lambda;
 
 
 public enum Interpreter {
@@ -90,9 +96,9 @@ public enum Interpreter {
 		refVisitor.init(this);
 		this.expressionVisitor = new ExpressionVisitor(this);
 		this.definitionVisitor = new DefinitionVisitor(this);
-		this.ancestorVisitor = new AncestorVisitor(this);
-		this.staticAncestorVisitor = new StaticAncestorVisitor(this);
-		this.typeVisitor = new TypeVisitor(this);
+		this.ancestorVisitor = new AncestorVisitor(this, null);
+		this.staticAncestorVisitor = new StaticAncestorVisitor(this, null);
+		this.typeVisitor = new TypeVisitor(this, null);
 	}
 
 	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
@@ -103,21 +109,30 @@ public enum Interpreter {
 		return this.expressionVisitor;
 	}
 
-	public final ExpressionNodeVisitor<FieldDefinition, FieldDeclaration>
-	definitionVisitor() {
+	public final ExpressionNodeVisitor<
+			FieldDefinition,
+			FieldDeclaration> definitionVisitor() {
 		return this.definitionVisitor;
 	}
 
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
-			Distributor> ancestorVisitor() {
-		return this.ancestorVisitor;
+			Distributor> ancestorVisitor(
+					Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+		if (valueStructFinder == null) {
+			return this.ancestorVisitor;
+		}
+		return new AncestorVisitor(this, valueStructFinder);
 	}
 
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
-			Distributor> staticAncestorVisitor() {
-		return this.staticAncestorVisitor;
+			Distributor> staticAncestorVisitor(
+					Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+		if (valueStructFinder == null) {
+			return this.staticAncestorVisitor;
+		}
+		return new StaticAncestorVisitor(this, valueStructFinder);
 	}
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor() {
@@ -204,6 +219,26 @@ public enum Interpreter {
 		return conjunction[0].getStatement().accept(UNWRAP_VISITOR, null);
 	}
 
+	public Lambda<ValueStruct<?, ?>, Ref> arrayValueStruct(ArrayTypeNode node) {
+		return new ArrayValueStructFinder(node);
+	}
+
+	public ArrayValueStruct arrayValueStruct(
+			ArrayTypeNode node,
+			Distributor p,
+			boolean constant) {
+
+		final TypeNode itemTypeNode = node.getItemType();
+
+		if (itemTypeNode == null) {
+			return null;
+		}
+
+		final TypeRef itemTypeRef = itemTypeNode.accept(typeVisitor(), p);
+
+		return new ArrayValueStruct(itemTypeRef, constant);
+	}
+
 	private static void fillSentence(
 			final StatementVisitor statementVisitor,
 			final Sentence<?> sentence,
@@ -249,6 +284,50 @@ public enum Interpreter {
 			this.block.printContent(out);
 
 			return out.toString();
+		}
+
+	}
+
+	private final class ArrayValueStructFinder
+			implements Lambda<ValueStruct<?, ?>, Ref> {
+
+		private final ArrayTypeNode node;
+		private boolean error;
+
+		ArrayValueStructFinder(ArrayTypeNode node) {
+			this.node = node;
+		}
+
+		@Override
+		public ArrayValueStruct get(Ref ref) {
+			if (this.error) {
+				return null;
+			}
+
+			final ValueType<?> valueType = ref.getValueType();
+			final boolean constant;
+
+			if (valueType == ValueType.ARRAY) {
+				constant = false;
+			} else if (valueType == ValueType.CONST_ARRAY) {
+				constant = true;
+			} else {
+				ref.getLogger().error(
+						"unexpected_array_type",
+						this.node,
+						"Array type can not be specified here");
+				this.error = true;
+				return null;
+			}
+
+			final ArrayValueStruct arrayValueStruct =
+					arrayValueStruct(this.node, ref.distribute(), constant);
+
+			if (arrayValueStruct == null) {
+				this.error = true;
+			}
+
+			return arrayValueStruct;
 		}
 
 	}

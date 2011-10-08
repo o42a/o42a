@@ -19,10 +19,10 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.AncestorVisitor.parseAscendants;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.ScopeRefNode;

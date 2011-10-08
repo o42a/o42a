@@ -27,6 +27,6 @@ public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitAscendants(AscendantsNode ascendants, P p);
 
-	R visitArrayType(ArrayTypeNode itemType, P p);
+	R visitArrayType(ArrayTypeNode arrayType, P p);
 
 }

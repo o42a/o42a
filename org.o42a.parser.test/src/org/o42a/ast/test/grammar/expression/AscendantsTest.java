@@ -27,6 +27,7 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import org.junit.Test;
 import org.o42a.ast.expression.AscendantNode;
 import org.o42a.ast.expression.AscendantsNode;
+import org.o42a.ast.field.ArrayTypeNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -45,7 +46,7 @@ public class AscendantsTest extends GrammarTestCase {
 
 		assertNotNull(ascendants[0].getSeparator());
 		assertRange(0, 4, ascendants[0]);
-		assertName("foo", ascendants[0].getAscendant());
+		assertName("foo", ascendants[0].getSpec());
 	}
 
 	@Test
@@ -57,13 +58,13 @@ public class AscendantsTest extends GrammarTestCase {
 		assertEquals(3, ascendants.length);
 
 		assertNotNull(ascendants[0].getSeparator());
-		assertName("foo", ascendants[0].getAscendant());
+		assertName("foo", ascendants[0].getSpec());
 
 		assertNotNull(ascendants[1].getSeparator());
-		assertName("bar", ascendants[1].getAscendant());
+		assertName("bar", ascendants[1].getSpec());
 
 		assertNotNull(ascendants[2].getSeparator());
-		assertName("baz", ascendants[2].getAscendant());
+		assertName("baz", ascendants[2].getSpec());
 	}
 
 	@Test
@@ -78,11 +79,11 @@ public class AscendantsTest extends GrammarTestCase {
 		assertEquals(2, ascendants.length);
 		assertRange(0, 3, ascendants[0]);
 		assertNull(ascendants[0].getSeparator());
-		assertName("foo", ascendants[0].getAscendant());
+		assertName("foo", ascendants[0].getSpec());
 
 		assertRange(4, 9, ascendants[1]);
 		assertNotNull(ascendants[1].getSeparator());
-		assertName("bar", ascendants[1].getAscendant());
+		assertName("bar", ascendants[1].getSpec());
 	}
 
 	@Test
@@ -94,16 +95,41 @@ public class AscendantsTest extends GrammarTestCase {
 		assertEquals(4, ascendants.length);
 
 		assertNull(ascendants[0].getSeparator());
-		assertName("foo", ascendants[0].getAscendant());
+		assertName("foo", ascendants[0].getSpec());
 
 		assertNotNull(ascendants[1].getSeparator());
-		assertName("s1", ascendants[1].getAscendant());
+		assertName("s1", ascendants[1].getSpec());
 
 		assertNotNull(ascendants[2].getSeparator());
-		assertName("s2", ascendants[2].getAscendant());
+		assertName("s2", ascendants[2].getSpec());
 
 		assertNotNull(ascendants[3].getSeparator());
-		assertName("s3", ascendants[3].getAscendant());
+		assertName("s3", ascendants[3].getSpec());
+	}
+
+	@Test
+	public void arrayType() {
+
+		final AscendantsNode result = parse("foo & [bar] & baz");
+		final AscendantNode[] ascendants = result.getAscendants();
+
+		assertEquals(3, ascendants.length);
+
+		assertNull(ascendants[0].getSeparator());
+		assertName("foo", ascendants[0].getSpec());
+
+		assertNotNull(ascendants[1].getSeparator());
+
+		final ArrayTypeNode arrayType =
+				to(ArrayTypeNode.class, ascendants[1].getSpec());
+
+		assertNull(arrayType.getAncestor());
+		assertNotNull(arrayType.getOpening());
+		assertName("bar", arrayType.getItemType());
+		assertNotNull(arrayType.getClosing());
+
+		assertNotNull(ascendants[2].getSeparator());
+		assertName("baz", ascendants[2].getSpec());
 	}
 
 	private AscendantsNode parse(String text) {

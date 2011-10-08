@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.AncestorVisitor.parseAscendants;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_DECLARATIONS_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_PREFIX_VISITOR;
 

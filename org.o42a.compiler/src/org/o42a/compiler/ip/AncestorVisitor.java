@@ -21,81 +21,38 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
 import static org.o42a.compiler.ip.AncestorTypeRef.impliedAncestorTypeRef;
-import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 
-import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.expression.AbstractExpressionVisitor;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.util.Lambda;
 
 
 public class AncestorVisitor
 		extends AbstractExpressionVisitor<AncestorTypeRef, Distributor> {
 
-	public static AncestorTypeRef parseAncestor(
-			Interpreter ip,
-			AscendantsNode ascendants,
-			Distributor distributor) {
-
-		final AscendantNode firstAscendant = ascendants.getAscendants()[0];
-
-		if (firstAscendant.getSeparator() == null) {
-			return firstAscendant.getAscendant().accept(
-					ip.ancestorVisitor(),
-					distributor);
-		}
-
-		return firstAscendant.getAscendant().accept(
-				ip.staticAncestorVisitor(),
-				distributor);
-	}
-
-	public static AscendantsDefinition parseAscendants(
-			Interpreter ip,
-			AscendantsNode node,
-			Distributor distributor) {
-
-		AscendantsDefinition ascendants = new AscendantsDefinition(
-				location(distributor, node),
-				distributor);
-		final AscendantNode[] ascendantNodes = node.getAscendants();
-		final AncestorTypeRef ancestor = parseAncestor(ip, node, distributor);
-
-		if (!ancestor.isImplied()) {
-			ascendants = ascendants.setAncestor(ancestor.getAncestor());
-		}
-
-		for (int i = 1; i < ascendantNodes.length; ++i) {
-
-			final RefNode sampleNode = ascendantNodes[i].getAscendant();
-
-			if (sampleNode != null) {
-
-				final Ref sampleRef =
-						sampleNode.accept(ip.refVisitor(), distributor);
-
-				if (sampleRef != null) {
-					ascendants = ascendants.addSample(
-							sampleRef.toStaticTypeRef());
-				}
-			}
-		}
-
-		return ascendants;
-	}
-
 	private final Interpreter ip;
+	private final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder;
 
-	AncestorVisitor(Interpreter ip) {
+	AncestorVisitor(
+			Interpreter ip,
+			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
 		this.ip = ip;
+		this.valueStructFinder = valueStructFinder;
 	}
 
 	public final Interpreter ip() {
 		return this.ip;
+	}
+
+	public final Lambda<ValueStruct<?, ?>, Ref> getValueStructFinder() {
+		return this.valueStructFinder;
 	}
 
 	@Override
@@ -124,7 +81,13 @@ public class AncestorVisitor
 	protected AncestorTypeRef visitExpression(
 			ExpressionNode expression,
 			Distributor p) {
-		return ancestorTypeRef(expression.accept(ip().expressionVisitor(), p));
+		final Ref ref = expression.accept(ip().expressionVisitor(), p);
+
+		if (ref == null) {
+			return null;
+		}
+
+		return ancestorTypeRef(ref.toTypeRef(getValueStructFinder()));
 	}
 
 }

@@ -23,26 +23,27 @@ import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
-import org.o42a.ast.ref.RefNode;
 
 
 public class AscendantNode extends AbstractNode {
 
-	private final SignNode<AscendantType> separator;
-	private final RefNode sample;
+	private final SignNode<Separator> separator;
+	private final AscendantSpecNode spec;
 
-	public AscendantNode(SignNode<AscendantType> separator, RefNode sample) {
-		super(separator, sample);
+	public AscendantNode(
+			SignNode<Separator> separator,
+			AscendantSpecNode spec) {
+		super(separator, spec);
 		this.separator = separator;
-		this.sample = sample;
+		this.spec = spec;
 	}
 
-	public SignNode<AscendantType> getSeparator() {
+	public final SignNode<Separator> getSeparator() {
 		return this.separator;
 	}
 
-	public RefNode getAscendant() {
-		return this.sample;
+	public final AscendantSpecNode getSpec() {
+		return this.spec;
 	}
 
 	@Override
@@ -55,12 +56,12 @@ public class AscendantNode extends AbstractNode {
 		if (this.separator != null) {
 			this.separator.printContent(out);
 		}
-		if (this.sample != null) {
-			this.sample.printContent(out);
+		if (this.spec != null) {
+			this.spec.printContent(out);
 		}
 	}
 
-	public enum AscendantType implements SignType {
+	public enum Separator implements SignType {
 
 		SAMPLE() {
 			@Override
