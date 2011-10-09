@@ -30,19 +30,16 @@ import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public class AncestorVisitor
 		extends AbstractExpressionVisitor<AncestorTypeRef, Distributor> {
 
 	private final Interpreter ip;
-	private final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder;
+	private final ValueStructFinder valueStructFinder;
 
-	AncestorVisitor(
-			Interpreter ip,
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+	AncestorVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
 		this.ip = ip;
 		this.valueStructFinder = valueStructFinder;
 	}
@@ -51,7 +48,7 @@ public class AncestorVisitor
 		return this.ip;
 	}
 
-	public final Lambda<ValueStruct<?, ?>, Ref> getValueStructFinder() {
+	public final ValueStructFinder getValueStructFinder() {
 		return this.valueStructFinder;
 	}
 

@@ -33,7 +33,8 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.impl.*;
 
 
-public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
+public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
+		implements ValueStructFinder {
 
 	public static final SingleValueStruct<Void> VOID =
 			VoidValueStruct.INSTANCE;
@@ -141,6 +142,18 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T> {
 	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
 
 	public abstract ValueStruct<S, T> reproduce(Reproducer reproducer);
+
+	@Override
+	public final ValueStruct<S, T> valueStructBy(
+			Ref ref,
+			ValueStruct<?, ?> defaultStruct) {
+		return this;
+	}
+
+	@Override
+	public final ValueStruct<S, T> toValueStruct() {
+		return this;
+	}
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :

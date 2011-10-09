@@ -21,27 +21,23 @@ package org.o42a.compiler.ip;
 
 import org.o42a.ast.expression.*;
 import org.o42a.ast.field.ArrayTypeNode;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
+import org.o42a.core.value.ValueStructFinder;
 
 
 final class ArraySpecVisitor
-		extends AbstractAscendantSpecVisitor<
-				Lambda<ValueStruct<?, ?>, Ref>,
-				Interpreter> {
+		extends AbstractAscendantSpecVisitor<ValueStructFinder, Interpreter> {
 
 	private static final ArraySpecVisitor ARRAY_SPEC_VISITOR =
 			new ArraySpecVisitor();
 
-	public static Lambda<ValueStruct<?, ?>, Ref> arrayStructFinder(
+	public static ValueStructFinder arrayStructFinder(
 			Interpreter ip,
 			AscendantsNode ascendantsNode,
 			CompilerLogger logger) {
 
 		final AscendantNode[] ascendantNodes = ascendantsNode.getAscendants();
-		Lambda<ValueStruct<?, ?>, Ref> arrayStructFinder = null;
+		ValueStructFinder arrayStructFinder = null;
 
 		for (int i = 1; i < ascendantNodes.length; ++i) {
 
@@ -51,7 +47,7 @@ final class ArraySpecVisitor
 				continue;
 			}
 
-			final Lambda<ValueStruct<?, ?>, Ref> finder =
+			final ValueStructFinder finder =
 					specNode.accept(ARRAY_SPEC_VISITOR, ip);
 
 			if (finder == null) {
@@ -76,14 +72,14 @@ final class ArraySpecVisitor
 	}
 
 	@Override
-	public Lambda<ValueStruct<?, ?>, Ref> visitArrayType(
+	public ValueStructFinder visitArrayType(
 			ArrayTypeNode arrayType,
 			Interpreter p) {
 		return p.arrayValueStruct(arrayType);
 	}
 
 	@Override
-	protected Lambda<ValueStruct<?, ?>, Ref> visitAscendantSpec(
+	protected ValueStructFinder visitAscendantSpec(
 			AscendantSpecNode spec,
 			Interpreter p) {
 		return null;

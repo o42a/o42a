@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.impl.type;
 
-import static org.o42a.core.ref.impl.type.DefaultValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
-
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -29,28 +27,24 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.log.Loggable;
 
 
 public final class DefaultTypeRef extends TypeRef {
 
 	private final Ref ref;
-	private final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder;
+	private final ValueStructFinder valueStructFinder;
 	private ValueStruct<?, ?> valueStruct;
 
 	public DefaultTypeRef(
 			Ref ref,
 			Rescoper rescoper,
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
+			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
 		super(rescoper);
 		this.ref = ref;
-		if (valueStructFinder != null) {
-			this.valueStructFinder = valueStructFinder;
-		} else {
-			this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
-		}
+		this.valueStructFinder = valueStructFinder;
 		this.valueStruct = valueStruct;
 	}
 
@@ -85,18 +79,18 @@ public final class DefaultTypeRef extends TypeRef {
 			return this.valueStruct;
 		}
 
-		final ValueStruct<?, ?> valueStruct;
-		final ValueStruct<?, ?> foundValueStruct =
-				this.valueStructFinder.get(getRef());
+		final ValueStruct<?, ?> defaultValueStruct =
+				getRef()
+				.valueStruct(getRef().getScope())
+				.rescope(getRef().toRescoper());
+		final ValueStruct<?, ?> valueStruct =
+				this.valueStructFinder.valueStructBy(
+						getRef(),
+						defaultValueStruct);
 
-		if (foundValueStruct != null) {
-			valueStruct = foundValueStruct;
-		} else {
-			valueStruct = DEFAULT_VALUE_STRUCT_FINDER.get(getRef());
-		}
+		assert defaultValueStruct.assertAssignableFrom(valueStruct);
 
-		return this.valueStruct =
-				valueStruct.rescope(getRef().toRescoper().and(getRescoper()));
+		return this.valueStruct = valueStruct.rescope(getRescoper());
 	}
 
 	@Override

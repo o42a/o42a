@@ -26,9 +26,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public final class AncestorSpecVisitor
@@ -45,7 +43,7 @@ public final class AncestorSpecVisitor
 			return impliedAncestorTypeRef();
 		}
 
-		final Lambda<ValueStruct<?, ?>, Ref> arrayStructFinder =
+		final ValueStructFinder arrayStructFinder =
 				arrayStructFinder(ip, ascendantsNode, distributor.getLogger());
 
 		return parseAncestor(
@@ -59,7 +57,7 @@ public final class AncestorSpecVisitor
 			Interpreter ip,
 			Distributor distributor,
 			AscendantNode ascendantNode,
-			Lambda<ValueStruct<?, ?>, Ref> arrayStructFinder) {
+			ValueStructFinder arrayStructFinder) {
 
 		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
 

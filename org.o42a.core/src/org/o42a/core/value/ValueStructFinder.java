@@ -17,24 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.type;
+package org.o42a.core.value;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
+import org.o42a.core.value.impl.DefaultValueStructFinder;
 
 
-final class DefaultValueStructFinder implements Lambda<ValueStruct<?, ?>, Ref> {
+public interface ValueStructFinder {
 
-	static final DefaultValueStructFinder DEFAULT_VALUE_STRUCT_FINDER =
-			new DefaultValueStructFinder();
+	ValueStructFinder DEFAULT_VALUE_STRUCT_FINDER =
+			DefaultValueStructFinder.INSTANCE;
 
-	private DefaultValueStructFinder() {
-	}
+	ValueStruct<?, ?> valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct);
 
-	@Override
-	public ValueStruct<?, ?> get(Ref arg) {
-		return arg.valueStruct(arg.getScope());
-	}
+	ValueStruct<?, ?> toValueStruct();
 
 }
