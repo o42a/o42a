@@ -28,6 +28,7 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.impl.*;
@@ -116,7 +117,11 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return Definitions.noValueDefinitions(location, scope, this);
 	}
 
-	public abstract boolean assignableFrom(ValueStruct<?, ?> other);
+	public abstract TypeRelation relationTo(ValueStruct<?, ?> other);
+
+	public boolean assignableFrom(ValueStruct<?, ?> other) {
+		return relationTo(other).isAscendant();
+	}
 
 	public abstract boolean convertibleFrom(ValueStruct<?, ?> other);
 
