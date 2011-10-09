@@ -24,6 +24,7 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
 
 
@@ -42,8 +43,11 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public boolean assignableFrom(ValueStruct<?, ?> other) {
-		return getValueType() == other.getValueType();
+	public TypeRelation relationTo(ValueStruct<?, ?> other) {
+		if (getValueType() == other.getValueType()) {
+			return TypeRelation.SAME;
+		}
+		return TypeRelation.INCOMPATIBLE;
 	}
 
 	@Override

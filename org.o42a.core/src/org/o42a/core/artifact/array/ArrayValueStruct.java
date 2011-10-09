@@ -27,6 +27,7 @@ import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 
@@ -75,6 +76,22 @@ public final class ArrayValueStruct
 		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
 
 		return otherArrayStruct.getItemTypeRef().derivedFrom(getItemTypeRef());
+	}
+
+	@Override
+	public TypeRelation relationTo(ValueStruct<?, ?> other) {
+
+		final ValueType<?> valueType = other.getValueType();
+
+		if (valueType != getValueType()) {
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
+
+		return getItemTypeRef().relationTo(
+				otherArrayStruct.getItemTypeRef(),
+				false);
 	}
 
 	@Override

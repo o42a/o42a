@@ -34,6 +34,7 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.Holder;
 import org.o42a.util.use.Usable;
 import org.o42a.util.use.UserInfo;
@@ -198,10 +199,19 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		if (root1 == root2) {
 			if (type1.getObject().getScope() == type2.getObject().getScope()) {
-				return TypeRelation.SAME;
+
+				final TypeRelation structRelation =
+						getValueStruct().relationTo(other.getValueStruct());
+
+				if (reportIncompatibility
+						&& structRelation == TypeRelation.INCOMPATIBLE) {
+					getLogger().incompatible(other, getValueStruct());
+				}
+
+				return structRelation;
 			}
 			if (type1.derivedFrom(type2)) {
-				return TypeRelation.DERIVATIVE;
+				return checkDerivative(other, reportIncompatibility);
 			}
 			if (checkDerivationOnly) {
 				if (reportIncompatibility) {
@@ -210,7 +220,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 				return TypeRelation.INCOMPATIBLE;
 			}
 			if (type2.derivedFrom(type1)) {
-				return TypeRelation.ASCENDANT;
+				return checkAscendant(other, reportIncompatibility);
 			}
 			if (reportIncompatibility) {
 				getLogger().incompatible(other, this);
@@ -220,7 +230,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		if (root2.contains(root1)) {
 			if (type1.derivedFrom(type2)) {
-				return TypeRelation.DERIVATIVE;
+				return checkDerivative(other, reportIncompatibility);
 			}
 			if (reportIncompatibility) {
 				getLogger().notDerivedFrom(this, other);
@@ -236,7 +246,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		if (root1.contains(root2)) {
 			if (type2.derivedFrom(type1)) {
-				return TypeRelation.ASCENDANT;
+				return checkAscendant(other, reportIncompatibility);
 			}
 			if (reportIncompatibility) {
 				getLogger().notDerivedFrom(other, this);
@@ -249,4 +259,41 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		return TypeRelation.INCOMPATIBLE;
 	}
 
+	private TypeRelation checkAscendant(
+			TypeRef other,
+			boolean reportIncompatibility) {
+		if (!assignable(this, other)) {
+			if (reportIncompatibility) {
+				getLogger().incompatible(other, getValueStruct());
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+		return TypeRelation.ASCENDANT;
+	}
+
+	private TypeRelation checkDerivative(
+			TypeRef other,
+			boolean reportIncompatibility) {
+		if (!assignable(other, this)) {
+			if (reportIncompatibility) {
+				getLogger().incompatible(this, other.getValueStruct());
+			}
+			return TypeRelation.INCOMPATIBLE;
+		}
+		return TypeRelation.DERIVATIVE;
+	}
+
+	private boolean assignable(TypeRef dest, TypeRef value) {
+
+		final ValueStruct<?, ?> destValueStruct = dest.getValueStruct();
+
+		if (destValueStruct.assignableFrom(value.getValueStruct())) {
+			return true;
+		}
+		if (destValueStruct.getValueType() == ValueType.VOID) {
+			return true;
+		}
+
+		return false;
+	}
 }
