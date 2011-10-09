@@ -39,6 +39,7 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.impl.*;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -527,6 +528,26 @@ public abstract class Obj
 	protected abstract void declareMembers(ObjectMembers members);
 
 	protected void updateMembers() {
+	}
+
+	protected ValueStruct<?, ?> determineValueStruct() {
+
+		final TypeRef ancestor = type().getAncestor();
+
+		if (ancestor == null) {
+			return ValueStruct.VOID;
+		}
+
+		final ValueStruct<?, ?> ancestorValueStruct = ancestor.getValueStruct();
+
+		if (!ancestorValueStruct.isScoped()) {
+			return ancestorValueStruct;
+		}
+
+		final Scope scope = getScope();
+		final Rescoper rescoper = scope.getEnclosingScopePath().rescoper(scope);
+
+		return ancestorValueStruct.rescope(rescoper);
 	}
 
 	protected Definitions overrideDefinitions(

@@ -76,7 +76,14 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 
 	public abstract Obj wrapper(Intrinsics intrinsics);
 
-	public StaticTypeRef typeRef(LocationInfo location, Scope scope) {
+	public final StaticTypeRef typeRef(LocationInfo location, Scope scope) {
+		return typeRef(location, scope, null);
+	}
+
+	public StaticTypeRef typeRef(
+			LocationInfo location,
+			Scope scope,
+			ValueStructFinder valueStructFinder) {
 
 		final Distributor distributor = scope.distribute();
 		@SuppressWarnings("unchecked")
@@ -86,7 +93,7 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 
 		return ROOT_PATH.append(wrapperField.getKey())
 				.target(location, distributor)
-				.toStaticTypeRef();
+				.toStaticTypeRef(valueStructFinder);
 	}
 
 	@Override
