@@ -19,11 +19,15 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
+import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
+
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.field.DefinitionKind;
 import org.o42a.ast.field.InterfaceNode;
+import org.o42a.ast.field.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ObjectConstructor;
@@ -32,6 +36,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.ValueType;
 
 
@@ -41,6 +46,8 @@ public class ArrayConstructor extends ObjectConstructor {
 	private final BracketsNode node;
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
+	private ArrayValueStruct arrayValueStruct;
+	private ValueStructFinder valueStructFinder;
 
 	public ArrayConstructor(
 			Interpreter ip,
@@ -91,15 +98,26 @@ public class ArrayConstructor extends ObjectConstructor {
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		if (!isConstant()) {
-			return ValueType.ARRAY.typeRef(location, getScope());
+			return ValueType.ARRAY.typeRef(
+					location,
+					getScope(),
+					valueStructFinder());
 		}
-		return ValueType.CONST_ARRAY.typeRef(location, getScope());
+		return ValueType.CONST_ARRAY.typeRef(
+				location,
+				getScope(),
+				valueStructFinder());
+	}
+
+	@Override
+	public Ref reproduce(Reproducer reproducer) {
+		return new ArrayConstructor(this, reproducer);
 	}
 
 	@Override
 	protected Obj createObject() {
 		if (this.reproducedFrom == null) {
-			return new ArrayObject(this);
+			return new ArrayObject(this, typeByItems());
 		}
 
 		final ArrayObject object = (ArrayObject) getResolution().toObject();
@@ -107,9 +125,54 @@ public class ArrayConstructor extends ObjectConstructor {
 		return new ArrayObject(this, this.reproducer, object);
 	}
 
-	@Override
-	public Ref reproduce(Reproducer reproducer) {
-		return new ArrayConstructor(this, reproducer);
+	private boolean typeByItems() {
+		valueStructFinder();
+		if (this.arrayValueStruct != null) {
+			return false;
+		}
+		return this.node.getArguments().length != 0;
+	}
+
+	private ValueStructFinder valueStructFinder() {
+		if (this.valueStructFinder != null) {
+			return this.valueStructFinder;
+		}
+		if (this.reproducedFrom == null) {
+			if (this.reproducedFrom.arrayValueStruct == null) {
+				return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			}
+			this.arrayValueStruct =
+					this.reproducedFrom.arrayValueStruct.reproduce(
+							this.reproducer);
+			if (this.arrayValueStruct != null) {
+				return this.valueStructFinder = this.arrayValueStruct;
+			}
+			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+		}
+
+		final InterfaceNode iface = this.node.getInterface();
+
+		if (iface == null) {
+			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+		}
+
+		final TypeNode type = iface.getType();
+
+		if (type == null) {
+			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+		}
+
+		final TypeRef itemTypeRef =
+				type.accept(this.ip.typeVisitor(), distribute());
+
+		if (itemTypeRef == null) {
+			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+		}
+
+		return this.valueStructFinder = this.arrayValueStruct =
+				new ArrayValueStruct(
+						itemTypeRef,
+						iface.getKind().getType() == DefinitionKind.LINK);
 	}
 
 }

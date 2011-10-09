@@ -134,7 +134,11 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	public abstract StaticTypeRef toStatic();
 
 	public final TypeRef commonDerivative(TypeRef other) {
-		return relationTo(other).isPreferred() ? this : other;
+		return relationTo(other).isPreferredDerivative() ? this : other;
+	}
+
+	public final TypeRef commonAscendant(TypeRef other) {
+		return relationTo(other).isPreferredAscendant() ? this : other;
 	}
 
 	@Override

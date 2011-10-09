@@ -23,6 +23,7 @@ import static org.o42a.core.ref.Ref.voidRef;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
@@ -49,8 +50,14 @@ public final class VoidValueType extends SingleValueType<Void> {
 	}
 
 	@Override
-	public StaticTypeRef typeRef(LocationInfo location, Scope scope) {
-		return voidRef(location, scope.distribute()).toStaticTypeRef();
+	public StaticTypeRef typeRef(
+			LocationInfo location,
+			Scope scope, ValueStructFinder
+			valueStructFinder) {
+
+		final Ref voidRef = voidRef(location, scope.distribute());
+
+		return voidRef.toStaticTypeRef(valueStructFinder);
 	}
 
 }

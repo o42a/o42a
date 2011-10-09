@@ -29,11 +29,18 @@ public enum TypeRelation {
 	PREFERRED(),
 	INVALID();
 
-	public final boolean isPreferred() {
+	public final boolean isPreferredDerivative() {
 		if (isError()) {
 			return this != INVALID;
 		}
 		return isDerivative();
+	}
+
+	public final boolean isPreferredAscendant() {
+		if (isError()) {
+			return this != INVALID;
+		}
+		return isAscendant();
 	}
 
 	public final boolean isError() {

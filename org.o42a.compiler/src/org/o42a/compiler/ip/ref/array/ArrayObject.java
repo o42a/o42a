@@ -23,8 +23,6 @@ import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.field.InterfaceNode;
-import org.o42a.ast.field.TypeNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
@@ -38,19 +36,22 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
 final class ArrayObject extends Obj {
 
 	private final ArrayConstructor constructor;
+	private final boolean typeByItems;
 	private final Reproducer reproducer;
 	private final ArrayObject reproducedFrom;
 	private Array array;
 
-	ArrayObject(ArrayConstructor constructor) {
+	ArrayObject(ArrayConstructor constructor, boolean typeByItems) {
 		super(constructor, constructor.distribute());
 		this.constructor = constructor;
+		this.typeByItems = typeByItems;
 		this.reproducer = null;
 		this.reproducedFrom = null;
 	}
@@ -61,6 +62,7 @@ final class ArrayObject extends Obj {
 			ArrayObject reproducedFrom) {
 		super(constructor, constructor.distribute());
 		this.constructor = constructor;
+		this.typeByItems = reproducedFrom.typeByItems;
 		this.reproducer = reproducer;
 		this.reproducedFrom = reproducedFrom;
 	}
@@ -90,6 +92,14 @@ final class ArrayObject extends Obj {
 	}
 
 	@Override
+	protected ValueStruct<?, ?> determineValueStruct() {
+		if (!this.typeByItems) {
+			return super.determineValueStruct();
+		}
+		return getArray().getValueStruct();
+	}
+
+	@Override
 	protected Definitions explicitDefinitions() {
 
 		final Definer definer = getArray().toRef().define(definitionEnv());
@@ -99,9 +109,17 @@ final class ArrayObject extends Obj {
 
 	private Array createArray() {
 
-		final ArrayValueStruct valueStruct = new ArrayValueStruct(
-				createItemTypeRef(),
-				this.constructor.isConstant());
+		final ArrayValueStruct valueStruct;
+		TypeRef arrayItemType;
+
+		if (!this.typeByItems) {
+			valueStruct = (ArrayValueStruct) value().getValueStruct();
+			arrayItemType = valueStruct.getItemTypeRef();
+		} else {
+			valueStruct = null;
+			arrayItemType = null;
+		}
+
 		final ArgumentNode[] argNodes =
 				this.constructor.getNode().getArguments();
 		final ArrayItem[] items = new ArrayItem[argNodes.length];
@@ -119,50 +137,41 @@ final class ArrayObject extends Obj {
 						this.constructor.ip().expressionVisitor(),
 						denclosing);
 
-				if (itemRef != null) {
-					items[i] =
-							new ArrayItem(i, itemRef.rescope(getScope()));
+				if (itemRef == null) {
 					continue;
 				}
+
+				final TypeRef itemType = itemRef.ancestor(itemRef);
+
+				if (arrayItemType == null) {
+					arrayItemType = itemType;
+				} else if (!this.typeByItems) {
+					itemType.checkDerivedFrom(arrayItemType);
+				} else {
+					arrayItemType = arrayItemType.commonAscendant(itemType);
+				}
+
+				items[i] = new ArrayItem(i, itemRef.rescope(getScope()));
 			}
 
 			items[i] = new ArrayItem(i, errorRef(location, distribute()));
 		}
 
-		return new Array(this, distribute(), valueStruct, items);
-	}
+		final ArrayValueStruct finalValueStruct;
 
-	private TypeRef createItemTypeRef() {
-
-		final InterfaceNode interfaceNode = this.constructor.getInterfaceNode();
-
-		if (interfaceNode == null) {
-			return ValueType.VOID.typeRef(
-					new Location(
-							getContext(),
-							this.constructor.getNode().getOpening()),
-					getScope());
+		if (!this.typeByItems) {
+			finalValueStruct = valueStruct;
+		} else if (arrayItemType != null) {
+			finalValueStruct = new ArrayValueStruct(
+					arrayItemType,
+					this.constructor.isConstant());
+		} else {
+			finalValueStruct = new ArrayValueStruct(
+					ValueType.VOID.typeRef(this, getScope()),
+					this.constructor.isConstant());
 		}
 
-		final TypeNode typeNode = interfaceNode.getType();
-
-		if (typeNode == null) {
-			return ValueType.VOID.typeRef(
-					new Location(getContext(), interfaceNode),
-					getScope());
-		}
-
-		final TypeRef itemTypeRef = typeNode.accept(
-				this.constructor.ip().typeVisitor(),
-				distributeIn(getEnclosingContainer()));
-
-		if (itemTypeRef != null) {
-			return itemTypeRef.rescope(getScope());
-		}
-
-		return errorRef(
-				new Location(getContext(), typeNode),
-				distribute()).toTypeRef();
+		return new Array(this, distribute(), finalValueStruct, items);
 	}
 
 	private Array reproduceArray() {
