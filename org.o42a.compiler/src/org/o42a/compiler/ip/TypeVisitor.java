@@ -31,19 +31,16 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
+import org.o42a.core.value.ValueStructFinder;
 
 
 final class TypeVisitor
 		extends AbstractTypeVisitor<TypeRef, Distributor> {
 
 	private final Interpreter ip;
-	private final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder;
+	private final ValueStructFinder valueStructFinder;
 
-	TypeVisitor(
-			Interpreter ip,
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+	TypeVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
 		this.ip = ip;
 		this.valueStructFinder = valueStructFinder;
 	}
@@ -95,10 +92,8 @@ final class TypeVisitor
 			return null;
 		}
 
-		final Lambda<ValueStruct<?, ?>, Ref> valueStructFinder =
-				ip().arrayValueStruct(arrayType);
 		final TypeVisitor typeVisitor =
-				new TypeVisitor(ip(), valueStructFinder);
+				new TypeVisitor(ip(), ip().arrayValueStruct(arrayType));
 
 		return ancestorNode.accept(typeVisitor, p);
 	}

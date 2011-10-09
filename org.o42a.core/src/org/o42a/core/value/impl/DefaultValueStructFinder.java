@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,34 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip;
+package org.o42a.core.value.impl;
 
-import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
-
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 
 
-final class StaticAncestorVisitor extends AncestorVisitor {
+public final class DefaultValueStructFinder implements ValueStructFinder {
 
-	StaticAncestorVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
-		super(ip, valueStructFinder);
+	public static final DefaultValueStructFinder INSTANCE =
+			new DefaultValueStructFinder();
+
+	private DefaultValueStructFinder() {
 	}
 
 	@Override
-	protected AncestorTypeRef visitExpression(
-			ExpressionNode expression,
-			Distributor p) {
+	public ValueStruct<?, ?> valueStructBy(
+			Ref ref,
+			ValueStruct<?, ?> defaultStruct) {
+		return defaultStruct;
+	}
 
-		final Ref result = expression.accept(ip().expressionVisitor(), p);
-
-		if (result == null) {
-			return null;
-		}
-
-		return ancestorTypeRef(result.toStaticTypeRef(getValueStructFinder()));
+	@Override
+	public ValueStruct<?, ?> toValueStruct() {
+		return null;
 	}
 
 }

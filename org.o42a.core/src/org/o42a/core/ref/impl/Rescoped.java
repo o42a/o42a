@@ -40,8 +40,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public final class Rescoped extends Ref {
@@ -138,6 +137,23 @@ public final class Rescoped extends Ref {
 	}
 
 	@Override
+	public TypeRef toTypeRef(ValueStructFinder valueStructFinder) {
+
+		final TypeRef typeRef = this.ref.toTypeRef(valueStructFinder);
+
+		return typeRef.rescope(this.rescoper);
+	}
+
+	@Override
+	public StaticTypeRef toStaticTypeRef(ValueStructFinder valueStructFinder) {
+
+		final StaticTypeRef typeRef =
+				this.ref.toStaticTypeRef(valueStructFinder);
+
+		return typeRef.rescope(this.rescoper);
+	}
+
+	@Override
 	public Rescoper toRescoper() {
 		return this.ref.toRescoper().and(this.rescoper);
 	}
@@ -150,38 +166,6 @@ public final class Rescoped extends Ref {
 	@Override
 	public String toString() {
 		return "Rescoped[" + this.rescoper + "](" + this.ref + ')';
-	}
-
-	@Override
-	protected TypeRef toTypeRef(
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-
-		final TypeRef typeRef;
-
-		if (valueStruct != null) {
-			typeRef = this.ref.toTypeRef(valueStruct);
-		} else {
-			typeRef = this.ref.toTypeRef(valueStructFinder);
-		}
-
-		return typeRef.rescope(this.rescoper);
-	}
-
-	@Override
-	protected StaticTypeRef toStaticTypeRef(
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-
-		final StaticTypeRef typeRef;
-
-		if (valueStruct != null) {
-			typeRef = this.ref.toStaticTypeRef(valueStruct);
-		} else {
-			typeRef = this.ref.toStaticTypeRef(valueStructFinder);
-		}
-
-		return typeRef.rescope(this.rescoper);
 	}
 
 	@Override

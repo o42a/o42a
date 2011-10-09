@@ -45,8 +45,8 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.Lambda;
 
 
 public enum Interpreter {
@@ -118,7 +118,7 @@ public enum Interpreter {
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> ancestorVisitor(
-					Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+					ValueStructFinder valueStructFinder) {
 		if (valueStructFinder == null) {
 			return this.ancestorVisitor;
 		}
@@ -128,7 +128,7 @@ public enum Interpreter {
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> staticAncestorVisitor(
-					Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
+					ValueStructFinder valueStructFinder) {
 		if (valueStructFinder == null) {
 			return this.staticAncestorVisitor;
 		}
@@ -219,7 +219,7 @@ public enum Interpreter {
 		return conjunction[0].getStatement().accept(UNWRAP_VISITOR, null);
 	}
 
-	public Lambda<ValueStruct<?, ?>, Ref> arrayValueStruct(ArrayTypeNode node) {
+	public ValueStructFinder arrayValueStruct(ArrayTypeNode node) {
 		return new ArrayValueStructFinder(node);
 	}
 
@@ -288,8 +288,7 @@ public enum Interpreter {
 
 	}
 
-	private final class ArrayValueStructFinder
-			implements Lambda<ValueStruct<?, ?>, Ref> {
+	private final class ArrayValueStructFinder implements ValueStructFinder {
 
 		private final ArrayTypeNode node;
 		private boolean error;
@@ -299,12 +298,14 @@ public enum Interpreter {
 		}
 
 		@Override
-		public ArrayValueStruct get(Ref ref) {
+		public ValueStruct<?, ?> valueStructBy(
+				Ref ref,
+				ValueStruct<?, ?> defaultStruct) {
 			if (this.error) {
-				return null;
+				return defaultStruct;
 			}
 
-			final ValueType<?> valueType = ref.getValueType();
+			final ValueType<?> valueType = defaultStruct.getValueType();
 			final boolean constant;
 
 			if (valueType == ValueType.ARRAY) {
@@ -317,7 +318,7 @@ public enum Interpreter {
 						this.node,
 						"Array type can not be specified here");
 				this.error = true;
-				return null;
+				return defaultStruct;
 			}
 
 			final ArrayValueStruct arrayValueStruct =
@@ -325,9 +326,20 @@ public enum Interpreter {
 
 			if (arrayValueStruct == null) {
 				this.error = true;
+				return defaultStruct;
+			}
+			if (!defaultStruct.assignableFrom(arrayValueStruct)) {
+				ref.getLogger().incompatible(this.node, defaultStruct);
+				this.error = true;
+				return defaultStruct;
 			}
 
 			return arrayValueStruct;
+		}
+
+		@Override
+		public ValueStruct<?, ?> toValueStruct() {
+			return null;
 		}
 
 	}

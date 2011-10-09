@@ -22,6 +22,7 @@ package org.o42a.core.ref;
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
+import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
@@ -53,7 +54,6 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.*;
-import org.o42a.util.Lambda;
 
 
 public abstract class Ref extends Statement {
@@ -229,38 +229,39 @@ public abstract class Ref extends Statement {
 
 	public final TypeRef toTypeRef() {
 		if (isKnownStatic()) {
-			return toStaticTypeRef(null, null);
+			return toStaticTypeRef(null);
 		}
-		return toTypeRef(null, null);
+		return toTypeRef(null);
 	}
 
-	public final TypeRef toTypeRef(ValueStruct<?, ?> valueStruct) {
+	public TypeRef toTypeRef(ValueStructFinder valueStructFinder) {
 		if (isKnownStatic()) {
-			return toStaticTypeRef(null, valueStruct);
+			toStaticTypeRef(valueStructFinder);
 		}
-		return toTypeRef(null, valueStruct);
-	}
 
-	public final TypeRef toTypeRef(
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
-		if (isKnownStatic()) {
-			toStaticTypeRef(valueStructFinder, null);
-		}
-		return toTypeRef(valueStructFinder, null);
+		final ValueStructFinder vsFinder = vsFinder(valueStructFinder);
+
+		return new DefaultTypeRef(
+				this,
+				transparentRescoper(getScope()),
+				vsFinder,
+				vsFinder.toValueStruct());
 	}
 
 	public final StaticTypeRef toStaticTypeRef() {
-		return toStaticTypeRef(null, null);
+		return toStaticTypeRef(null);
 	}
 
-	public final StaticTypeRef toStaticTypeRef(
-			ValueStruct<?, ?> valueStruct) {
-		return toStaticTypeRef(null, valueStruct);
-	}
+	public StaticTypeRef toStaticTypeRef(ValueStructFinder valueStructFinder) {
 
-	public final StaticTypeRef toStaticTypeRef(
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder) {
-		return toStaticTypeRef(valueStructFinder, null);
+		final ValueStructFinder vsFinder = vsFinder(valueStructFinder);
+
+		return new DefaultStaticTypeRef(
+				this,
+				this,
+				transparentRescoper(getScope()),
+				vsFinder,
+				vsFinder.toValueStruct());
 	}
 
 	public TargetRef toTargetRef(TypeRef typeRef) {
@@ -299,27 +300,6 @@ public abstract class Ref extends Statement {
 		return this.op = createOp(host);
 	}
 
-	protected TypeRef toTypeRef(
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-		return new DefaultTypeRef(
-				this,
-				transparentRescoper(getScope()),
-				valueStructFinder,
-				null);
-	}
-
-	protected StaticTypeRef toStaticTypeRef(
-			Lambda<ValueStruct<?, ?>, Ref> valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-		return new DefaultStaticTypeRef(
-				this,
-				this,
-				transparentRescoper(getScope()),
-				valueStructFinder,
-				valueStruct);
-	}
-
 	protected abstract FieldDefinition createFieldDefinition();
 
 	protected final FieldDefinition defaultFieldDefinition() {
@@ -331,6 +311,13 @@ public abstract class Ref extends Statement {
 	@Override
 	protected final StOp createOp(LocalBuilder builder) {
 		return new RefStOp(builder, this, op(builder.host()));
+	}
+
+	private static ValueStructFinder vsFinder(ValueStructFinder finder) {
+		if (finder != null) {
+			return finder;
+		}
+		return DEFAULT_VALUE_STRUCT_FINDER;
 	}
 
 	private static final class RefStOp extends StOp {
