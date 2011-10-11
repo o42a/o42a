@@ -74,6 +74,12 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		out.append('[');
+		if (this.iface != null) {
+			this.iface.printContent(out);
+			if (this.iface.getOpening() != null) {
+				out.append(' ');
+			}
+		}
 		for (ArgumentNode argument : this.arguments) {
 			argument.printContent(out);
 		}

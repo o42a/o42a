@@ -43,7 +43,7 @@ public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 			Distributor enclosing,
 			Ref indexRef) {
 		super(location, enclosing);
-		this.indexRef.assertScopeIs(enclosing.getScope());
+		indexRef.assertScopeIs(enclosing.getScope());
 		this.indexRef = indexRef;
 		this.owner = enclosing.getScope().toObject();
 		assert this.owner != null :

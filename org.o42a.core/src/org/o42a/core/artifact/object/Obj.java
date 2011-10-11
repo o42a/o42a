@@ -545,7 +545,7 @@ public abstract class Obj
 		}
 
 		final Scope scope = getScope();
-		final Rescoper rescoper = scope.getEnclosingScopePath().rescoper(scope);
+		final Rescoper rescoper = scope.getEnclosingScope().rescoperTo(scope);
 
 		return ancestorValueStruct.rescope(rescoper);
 	}

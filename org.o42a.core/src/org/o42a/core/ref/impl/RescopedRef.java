@@ -23,7 +23,9 @@ import org.o42a.core.*;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
@@ -40,6 +42,11 @@ public final class RescopedRef extends Wrap {
 						rescoper.getFinalScope()));
 		this.ref = ref;
 		this.rescoper = rescoper;
+	}
+
+	@Override
+	public final TypeRef ancestor(LocationInfo location) {
+		return this.ref.ancestor(location).rescope(this.rescoper);
 	}
 
 	@Override

@@ -30,7 +30,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayContentReproducer;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -84,10 +83,6 @@ public final class Array extends Placed {
 
 	public final ArrayItem[] items(Scope scope) {
 		return propagateTo(scope).items;
-	}
-
-	public final Ref toRef() {
-		return getValueStruct().constantRef(this, distribute(), this);
 	}
 
 	public Array propagateTo(Scope scope) {

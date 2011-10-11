@@ -137,7 +137,7 @@ public class ArrayConstructor extends ObjectConstructor {
 		if (this.valueStructFinder != null) {
 			return this.valueStructFinder;
 		}
-		if (this.reproducedFrom == null) {
+		if (this.reproducedFrom != null) {
 			if (this.reproducedFrom.arrayValueStruct == null) {
 				return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
 			}

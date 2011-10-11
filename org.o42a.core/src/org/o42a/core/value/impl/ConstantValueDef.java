@@ -35,12 +35,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-final class ConstantValueDef<T> extends ValueDef {
+public final class ConstantValueDef<T> extends ValueDef {
 
 	private final Value<T> value;
 	private ValueStruct<?, T> valueStruct;
 
-	ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
+	public ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
 		super(source, location, transparentRescoper(source.getScope()));
 		this.value = value;
 	}

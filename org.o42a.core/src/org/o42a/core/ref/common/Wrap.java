@@ -71,7 +71,7 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final TypeRef ancestor(LocationInfo location) {
+	public TypeRef ancestor(LocationInfo location) {
 		if (this.wrapped != null) {
 			return this.wrapped.ancestor(location);
 		}
