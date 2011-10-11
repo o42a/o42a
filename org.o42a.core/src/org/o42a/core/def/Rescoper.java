@@ -31,6 +31,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.impl.Rescoped;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Rescoper {
@@ -80,21 +81,24 @@ public abstract class Rescoper {
 		final ValueDefs newClaims = claims.rescope(this);
 		final ValueDefs propositions = definitions.propositions();
 		final ValueDefs newPropositions = propositions.rescope(this);
+		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
+		final ValueStruct<?, ?> newValueStruct =
+				valueStruct != null ? valueStruct.rescope(this) : null;
 
-		if (requirements == newRequirements
+		if (resultScope == definitions.getScope()
+				// This may fail when there is no definitions.
+				&& valueStruct == newValueStruct
+				&& requirements == newRequirements
 				&& conditions == newConditions
 				&& claims == newClaims
 				&& propositions == newPropositions) {
-			if (resultScope == definitions.getScope()) {
-				// This may fail when there is no definitions.
-				return definitions;
-			}
+			return definitions;
 		}
 
 		return new Definitions(
 				definitions,
 				resultScope,
-				definitions.getValueStruct(),
+				newValueStruct,
 				newRequirements,
 				newConditions,
 				newClaims,

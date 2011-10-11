@@ -21,6 +21,7 @@ package org.o42a.core.value.impl;
 
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -54,6 +55,9 @@ public final class ConstantRef<T> extends Ref {
 		super(location, distributor);
 		this.valueStruct = valueStruct;
 		this.constant = constant;
+		if (constant instanceof Array) {
+			System.err.println("(!)");
+		}
 	}
 
 	public final ValueStruct<?, T> getValueStruct() {

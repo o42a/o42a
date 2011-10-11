@@ -23,6 +23,7 @@ import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.common.MaterializableArtifact;
@@ -95,7 +96,13 @@ public abstract class Link extends MaterializableArtifact<Link> {
 			return new RuntimeLinkTarget(this);
 		}
 
-		final Obj target = getTargetRef().artifact(dummyUser()).materialize();
+		final Artifact<?> artifact = getTargetRef().artifact(dummyUser());
+
+		if (artifact == null) {
+			return getContext().getFalse();
+		}
+
+		final Obj target = artifact.materialize();
 
 		if (target.getConstructionMode().isRuntime()) {
 			return new RuntimeLinkTarget(this);

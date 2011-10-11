@@ -151,6 +151,22 @@ public final class ArrayValueStruct
 	}
 
 	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		if (isConstant()) {
+			out.append("Constant array[");
+		} else {
+			out.append("Array[");
+		}
+
+		out.append(this.itemTypeRef).append(']');
+
+		return out.toString();
+	}
+
+	@Override
 	protected void resolveAll(Value<Array> value, Resolver resolver) {
 		getItemTypeRef().resolveAll(resolver);
 		if (value.isDefinite() && !value.isFalse()) {

@@ -77,9 +77,7 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 		}
 
 		final ValueStruct<?, ?> defaultValueStruct =
-				getRef()
-				.valueStruct(getRef().getScope())
-				.rescope(getRef().toRescoper());
+				getRef().valueStruct(getRef().getScope());
 		final ValueStruct<?, ?> valueStruct =
 				this.valueStructFinder.valueStructBy(
 						getRef(),

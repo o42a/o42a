@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.artifact.object.Obj;
@@ -86,10 +87,9 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 			ValueStructFinder valueStructFinder) {
 
 		final Distributor distributor = scope.distribute();
-		@SuppressWarnings("unchecked")
 		final Field<Obj> wrapperField =
-				(Field<Obj>) wrapper(location.getContext().getIntrinsics())
-				.getScope().toField();
+				wrapper(location.getContext().getIntrinsics())
+				.getScope().toField().toKind(ArtifactKind.OBJECT);
 
 		return ROOT_PATH.append(wrapperField.getKey())
 				.target(location, distributor)

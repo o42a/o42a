@@ -25,6 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -102,6 +103,13 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			Distributor distributor,
 			T value) {
 		return new ConstantRef<T>(location, distributor, this, value);
+	}
+
+	public final ValueDef constantDef(
+			Obj source,
+			LocationInfo location,
+			T value) {
+		return new ConstantValueDef<T>(source, location, constantValue(value));
 	}
 
 	public final Obj constantObject(

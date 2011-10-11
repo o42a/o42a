@@ -127,14 +127,12 @@ public class CompilerIntrinsics extends Intrinsics {
 
 	@Override
 	public Obj getArray() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.root.getArray();
 	}
 
 	@Override
 	public Obj getConstantArray() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.root.getConstantArray();
 	}
 
 	@Override

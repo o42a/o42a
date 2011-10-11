@@ -79,12 +79,12 @@ public class InterfaceNode extends AbstractNode {
 			this.kind.printContent(out);
 			return;
 		}
-		this.opening.printContent(out);
+		out.append('(');
 		this.kind.printContent(out);
 		if (this.type != null) {
 			this.type.printContent(out);
 		}
-		this.closing.printContent(out);
+		out.append(')');
 	}
 
 }
