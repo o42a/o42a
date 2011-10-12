@@ -21,11 +21,14 @@ package org.o42a.core.artifact.object.impl.sample;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class MemberOverride extends Sample {
@@ -37,8 +40,7 @@ public final class MemberOverride extends Sample {
 	public MemberOverride(Member overriddenMember, Ascendants ascendants) {
 		super(overriddenMember, ascendants);
 		this.overriddenMember = overriddenMember;
-		this.ancestor =
-				getObject().type().getAncestor().upgradeScope(getScope());
+		this.ancestor = ancestor();
 		this.typeRef =
 				getObject().fixedRef(getScope().distribute()).toStaticTypeRef();
 	}
@@ -83,6 +85,25 @@ public final class MemberOverride extends Sample {
 	@Override
 	protected final Obj getObject() {
 		return this.overriddenMember.substance(dummyUser()).toObject();
+	}
+
+	private TypeRef ancestor() {
+
+		final Obj object = getObject();
+		final TypeRef ancestor = object.type().getAncestor();
+
+		return ancestor.setValueStruct(valueStruct()).upgradeScope(getScope());
+	}
+
+	private ValueStruct<?, ?> valueStruct() {
+
+		final Obj object = getObject();
+		final ValueStruct<?, ?> valueStruct = object.value().getValueStruct();
+		final Scope scope = object.getScope();
+		final Rescoper rescoper = scope.getEnclosingScopePath().rescoper(
+				scope.getEnclosingScope());
+
+		return valueStruct.rescope(rescoper);
 	}
 
 }

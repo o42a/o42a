@@ -46,12 +46,7 @@ public final class ImplicitSample extends Sample {
 		if (this.ancestor != null) {
 			return this.ancestor;
 		}
-
-		final ObjectType type = this.implicitAscendant.type(dummyUser());
-		final TypeRef ancestor = type.getAncestor().rescope(
-				this.implicitAscendant.getRescoper());
-
-		return this.ancestor = ancestor.upgradeScope(getScope());
+		return this.ancestor = this.implicitAscendant.getAncestor();
 	}
 
 	@Override

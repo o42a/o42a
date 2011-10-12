@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl.type;
 
+import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
+
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -89,6 +91,27 @@ public final class DefaultTypeRef extends TypeRef {
 		assert defaultValueStruct.assertAssignableFrom(valueStruct);
 
 		return this.valueStruct = valueStruct.rescope(getRescoper());
+	}
+
+	@Override
+	public TypeRef setValueStruct(ValueStructFinder valueStructFinder) {
+
+		final ValueStructFinder vsFinder;
+		final ValueStruct<?, ?> valueStruct;
+
+		if (valueStructFinder != null) {
+			vsFinder = valueStructFinder;
+			valueStruct = valueStructFinder.toValueStruct();
+		} else {
+			vsFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			valueStruct = null;
+		}
+
+		return new DefaultTypeRef(
+				getRef(),
+				getRescoper(),
+				vsFinder,
+				valueStruct);
 	}
 
 	@Override
