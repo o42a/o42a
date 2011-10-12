@@ -34,8 +34,7 @@ public abstract class AbstractArrayValueTypeObject extends ValueTypeObject {
 			boolean constant) {
 		super(owner, sources);
 		setValueStruct(new ArrayValueStruct(
-				ValueType.VOID.typeRef(this, getScope().getEnclosingScope()),
-				constant));
+				ValueType.VOID.typeRef(this, getScope()), constant));
 	}
 
 }

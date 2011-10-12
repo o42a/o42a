@@ -52,8 +52,8 @@ public final class VoidValueType extends SingleValueType<Void> {
 	@Override
 	public StaticTypeRef typeRef(
 			LocationInfo location,
-			Scope scope, ValueStructFinder
-			valueStructFinder) {
+			Scope scope,
+			ValueStructFinder valueStructFinder) {
 
 		final Ref voidRef = voidRef(location, scope.distribute());
 
