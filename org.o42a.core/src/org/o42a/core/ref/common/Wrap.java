@@ -215,7 +215,7 @@ public abstract class Wrap extends Ref {
 		}
 
 		@Override
-		protected TypeRef create(
+		protected AncestorWrap createWrap(
 				Rescoper rescoper,
 				Rescoper additionalRescoper) {
 			return new AncestorWrap(this.location, rescoper);

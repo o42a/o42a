@@ -30,6 +30,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public abstract class StaticTypeRef extends TypeRef {
@@ -42,6 +43,10 @@ public abstract class StaticTypeRef extends TypeRef {
 	public final boolean isStatic() {
 		return true;
 	}
+
+	@Override
+	public abstract StaticTypeRef setValueStruct(
+			ValueStructFinder valueStructFinder);
 
 	@Override
 	public final StaticTypeRef toStatic() {

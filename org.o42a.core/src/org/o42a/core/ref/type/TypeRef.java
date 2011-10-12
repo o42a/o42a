@@ -34,6 +34,7 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Holder;
 import org.o42a.util.use.Usable;
@@ -58,8 +59,12 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		if (this.ancestor != null) {
 			return this.ancestor;
 		}
+
+		final TypeRef ancestor = getUntachedRef().ancestor(this);
+
 		return this.ancestor =
-				getUntachedRef().ancestor(this).rescope(getRescoper());
+				ancestor.setValueStruct(new TypeValueStruct())
+				.rescope(getRescoper());
 	}
 
 	public ConstructionMode getConstructionMode() {
@@ -109,6 +114,8 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	}
 
 	public abstract ValueStruct<?, ?> getValueStruct();
+
+	public abstract TypeRef setValueStruct(ValueStructFinder valueStructFinder);
 
 	public boolean validate() {
 		return type(dummyUser()) != null;
@@ -296,4 +303,21 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		return false;
 	}
+
+	private final class TypeValueStruct implements ValueStructFinder {
+
+		@Override
+		public ValueStruct<?, ?> valueStructBy(
+				Ref ref,
+				ValueStruct<?, ?> defaultStruct) {
+			return getUntachedRef().valueStruct(getUntachedRef().getScope());
+		}
+
+		@Override
+		public ValueStruct<?, ?> toValueStruct() {
+			return null;
+		}
+
+	}
+
 }

@@ -96,7 +96,8 @@ public abstract class CompilerTestCase {
 		return object;
 	}
 
-	public static Object definiteValue(Artifact<?> artifact) {
+	@SuppressWarnings("unchecked")
+	public static <T> T definiteValue(Artifact<?> artifact) {
 
 		final Value<?> value = valueOf(artifact);
 
@@ -108,7 +109,7 @@ public abstract class CompilerTestCase {
 
 		assertNotNull(artifact + " has not definite value", definiteValue);
 
-		return definiteValue;
+		return (T) definiteValue;
 	}
 
 	public static <T> T definiteValue(
@@ -134,9 +135,8 @@ public abstract class CompilerTestCase {
 		return valueStruct.cast(definiteValue);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T definiteValue(Field<?> field) {
-		return (T) definiteValue(field.getArtifact());
+		return definiteValue(field.getArtifact());
 	}
 
 	public static <T> T definiteValue(

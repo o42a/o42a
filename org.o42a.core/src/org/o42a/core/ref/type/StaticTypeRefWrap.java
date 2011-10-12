@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.type;
 
+import static org.o42a.core.def.Rescoper.transparentRescoper;
+
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.impl.rescoper.RescoperWrap;
@@ -26,10 +28,12 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public abstract class StaticTypeRefWrap extends StaticTypeRef {
 
+	private ValueStructFinder valueStructFinder;
 	private StaticTypeRef wrapped;
 
 	public StaticTypeRefWrap(Scope finalScope) {
@@ -64,6 +68,20 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 	}
 
 	@Override
+	public StaticTypeRef setValueStruct(ValueStructFinder valueStructFinder) {
+		if (this.wrapped != null) {
+			return this.wrapped.setValueStruct(valueStructFinder);
+		}
+
+		final StaticTypeRefWrap clone =
+				createWrap(getRescoper(), transparentRescoper(getScope()));
+
+		clone.valueStructFinder = valueStructFinder;
+
+		return clone;
+	}
+
+	@Override
 	public final StaticTypeRef rescope(Rescoper rescoper) {
 		if (this.wrapped != null) {
 			return this.wrapped.rescope(rescoper);
@@ -88,10 +106,46 @@ public abstract class StaticTypeRefWrap extends StaticTypeRef {
 		if (this.wrapped != null) {
 			return this.wrapped;
 		}
-		return this.wrapped = resolveWrapped();
+
+		final StaticTypeRef wrapped = resolveWrapped();
+
+		if (this.valueStructFinder == null) {
+			return this.wrapped = wrapped;
+		}
+
+		return this.wrapped = wrapped.setValueStruct(this.valueStructFinder);
 	}
 
 	protected abstract StaticTypeRef resolveWrapped();
+
+	@Override
+	protected final StaticTypeRefWrap create(
+			Rescoper rescoper,
+			Rescoper additionalRescoper) {
+
+		final StaticTypeRefWrap rescoped =
+				createWrap(rescoper, additionalRescoper);
+
+		if (this.valueStructFinder == null) {
+			return rescoped;
+		}
+
+		final ValueStruct<?, ?> valueStruct =
+				this.valueStructFinder.toValueStruct();
+
+		if (valueStruct == null) {
+			rescoped.valueStructFinder = this.valueStructFinder;
+		} else {
+			rescoped.valueStructFinder =
+					valueStruct.rescope(additionalRescoper);
+		}
+
+		return rescoped;
+	}
+
+	protected abstract StaticTypeRefWrap createWrap(
+			Rescoper rescoper,
+			Rescoper additionalRescoper);
 
 	@Override
 	protected final StaticTypeRef createReproduction(
