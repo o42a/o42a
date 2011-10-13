@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object.impl.decl;
 
+import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
@@ -28,6 +29,7 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Logical;
@@ -166,6 +168,7 @@ final class ObjectFieldVariant
 	private static final class VariantEnv extends StatementEnv {
 
 		private final ObjectFieldVariant variant;
+		private ValueStruct<?, ?> expectedValueStruct;
 
 		VariantEnv(ObjectFieldVariant variant) {
 			this.variant = variant;
@@ -193,13 +196,27 @@ final class ObjectFieldVariant
 
 		@Override
 		protected ValueStruct<?, ?> expectedValueStruct() {
+			if (this.expectedValueStruct != null) {
+				return this.expectedValueStruct;
+			}
 
 			final ObjectType objectType =
 					this.variant.getField().getArtifact().type();
 			final Obj ancestorObject =
 					objectType.getAncestor().typeObject(dummyUser());
+			final ValueStruct<?, ?> ancestorValueStruct =
+					ancestorObject.value().getValueStruct();
 
-			return ancestorObject.value().getValueStruct();
+			if (!ancestorValueStruct.isScoped()) {
+				return this.expectedValueStruct = ancestorValueStruct;
+			}
+
+			final Rescoper rescoper = upgradeRescoper(
+					ancestorObject.getScope(),
+					this.variant.getField());
+
+			return this.expectedValueStruct =
+					ancestorValueStruct.rescope(rescoper);
 		}
 
 	}

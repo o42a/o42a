@@ -22,18 +22,19 @@ package org.o42a.core.artifact.array.impl;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
+import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
+import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.array.ArrayValueStruct;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 
 
@@ -44,7 +45,15 @@ final class ArrayCopyValueDef extends ValueDef {
 			Resolver resolver,
 			boolean toConstant) {
 
-		final Value<?> value = ref.value(resolver);
+		final Resolution arrayResolution = ref.resolve(resolver);
+
+		if (arrayResolution.isError()) {
+			return falseValue();
+		}
+
+		final Obj arrayObject = arrayResolution.materialize();
+		final Value<?> value =
+				arrayObject.value().explicitUseBy(resolver).getValue();
 		final ArrayValueStruct sourceStruct =
 				(ArrayValueStruct) value.getValueStruct();
 		final ArrayValueStruct resultStruct =
@@ -61,10 +70,27 @@ final class ArrayCopyValueDef extends ValueDef {
 			return resultStruct.runtimeValue();
 		}
 
+		final Rescoper rescoper = ref.toRescoper();
 		final Array array = sourceStruct.cast(value).getDefiniteValue();
+		final ArrayItem[] items = array.items(arrayObject.getScope());
+		final ArrayItem[] defItems = new ArrayItem[items.length];
 
-		return sourceStruct.constantValue(
-				array.propagateTo(resolver.getScope()));
+		for (int i = 0; i < items.length; ++i) {
+
+			final Ref valueRef = items[i].getValueRef();
+			final Ref defValueRef = valueRef.rescope(rescoper);
+
+			defItems[i] = new ArrayItem(i, defValueRef);
+		}
+
+		final Value<Array> result = sourceStruct.constantValue(
+				new Array(
+						array,
+						array.distributeIn(ref.getContainer()),
+						array.getValueStruct().rescope(rescoper),
+						defItems));
+
+		return result;
 	}
 
 	private final Ref ref;

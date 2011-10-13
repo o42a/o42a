@@ -34,11 +34,14 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.value.ValueType;
 
 
-public class ArrayConstructorTest extends CompilerTestCase {
+public class DefByArrayConstructorTest extends CompilerTestCase {
 
 	@Test
-	public void qualifiedConstantArray() {
-		compile("A := [(`integer) 1, 2, 3]");
+	public void buildConstantArray() {
+		compile(
+				"A := constant array & [string](",
+				"  = [`\"a\", \"b\", \"c\"]",
+				")");
 
 		final Obj a = field("a").toObject();
 
@@ -48,55 +51,29 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		assertTrue(arraySruct.isConstant());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
-				is(a.getContext().getIntrinsics().getInteger()));
+				is(a.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(a);
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
 		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
-				is(1L));
+				definiteValue(items[0].getArtifact(), ValueType.STRING),
+				is("a"));
 		assertThat(
-				definiteValue(items[1].getArtifact(), ValueType.INTEGER),
-				is(2L));
+				definiteValue(items[1].getArtifact(), ValueType.STRING),
+				is("b"));
 		assertThat(
-				definiteValue(items[2].getArtifact(), ValueType.INTEGER),
-				is(3L));
+				definiteValue(items[2].getArtifact(), ValueType.STRING),
+				is("c"));
 	}
 
 	@Test
-	public void unqualifiedConstantArray() {
-		compile("A := [`1, 2, 3]");
-
-		final Obj a = field("a").toObject();
-
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value().getValueStruct();
-
-		assertTrue(arraySruct.isConstant());
-		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
-				is(a.getContext().getIntrinsics().getInteger()));
-
-		final Array array = definiteValue(a);
-		final ArrayItem[] items = array.items(a.getScope());
-
-		assertThat(items.length, is(3));
-		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
-				is(1L));
-		assertThat(
-				definiteValue(items[1].getArtifact(), ValueType.INTEGER),
-				is(2L));
-		assertThat(
-				definiteValue(items[2].getArtifact(), ValueType.INTEGER),
-				is(3L));
-	}
-
-	@Test
-	public void qualifiedArray() {
-		compile("A := [(``integer) 1, 2, 3]");
+	public void buildArray() {
+		compile(
+				"A := array & [string](",
+				"  = [`\"a\", \"b\", \"c\"]",
+				")");
 
 		final Obj a = field("a").toObject();
 
@@ -106,30 +83,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		assertFalse(arraySruct.isConstant());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
-				is(a.getContext().getIntrinsics().getInteger()));
-
-		final Array array = definiteValue(a);
-		final ArrayItem[] items = array.items(a.getScope());
-
-		assertThat(items.length, is(3));
-		assertTrue(items[0].getArtifact().toLink().isVariable());
-		assertTrue(items[1].getArtifact().toLink().isVariable());
-		assertTrue(items[2].getArtifact().toLink().isVariable());
-	}
-
-	@Test
-	public void unqualifiedArray() {
-		compile("A := [``1, 2, 3]");
-
-		final Obj a = field("a").toObject();
-
-		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.value().getValueStruct();
-
-		assertFalse(arraySruct.isConstant());
-		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
-				is(a.getContext().getIntrinsics().getInteger()));
+				is(a.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(a);
 		final ArrayItem[] items = array.items(a.getScope());
