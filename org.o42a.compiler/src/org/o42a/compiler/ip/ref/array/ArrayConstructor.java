@@ -36,6 +36,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.ValueType;
 
@@ -139,7 +140,8 @@ public class ArrayConstructor extends ObjectConstructor {
 		}
 		if (this.reproducedFrom != null) {
 			if (this.reproducedFrom.arrayValueStruct == null) {
-				return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+				return this.valueStructFinder =
+						this.reproducedFrom.valueStructFinder;
 			}
 			this.arrayValueStruct =
 					this.reproducedFrom.arrayValueStruct.reproduce(
@@ -147,19 +149,20 @@ public class ArrayConstructor extends ObjectConstructor {
 			if (this.arrayValueStruct != null) {
 				return this.valueStructFinder = this.arrayValueStruct;
 			}
-			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			return this.valueStructFinder =
+					this.reproducedFrom.valueStructFinder;
 		}
 
 		final InterfaceNode iface = this.node.getInterface();
 
 		if (iface == null) {
-			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			return this.valueStructFinder = new ArrayStructByItems();
 		}
 
 		final TypeNode type = iface.getType();
 
 		if (type == null) {
-			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			return this.valueStructFinder = new ArrayStructByItems();
 		}
 
 		final TypeRef itemTypeRef =
@@ -173,6 +176,22 @@ public class ArrayConstructor extends ObjectConstructor {
 				new ArrayValueStruct(
 						itemTypeRef,
 						iface.getKind().getType() == DefinitionKind.LINK);
+	}
+
+	private final class ArrayStructByItems implements ValueStructFinder {
+
+		@Override
+		public ValueStruct<?, ?> valueStructBy(
+				Ref ref,
+				ValueStruct<?, ?> defaultStruct) {
+			return valueStruct(getScope());
+		}
+
+		@Override
+		public ValueStruct<?, ?> toValueStruct() {
+			return null;
+		}
+
 	}
 
 }
