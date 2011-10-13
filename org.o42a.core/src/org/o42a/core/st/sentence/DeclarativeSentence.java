@@ -285,7 +285,8 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 
 		@Override
 		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.sentence.getBlock().getInitialEnv().getExpectedValueStruct();
+			return this.sentence.getBlock().getInitialEnv()
+					.getExpectedValueStruct();
 		}
 
 	}
