@@ -62,9 +62,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		final TypeRef ancestor = getUntachedRef().ancestor(this);
 
-		return this.ancestor =
-				ancestor.setValueStruct(new TypeValueStruct())
-				.rescope(getRescoper());
+		return this.ancestor = ancestor.rescope(getRescoper());
 	}
 
 	public ConstructionMode getConstructionMode() {
@@ -302,22 +300,6 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		}
 
 		return false;
-	}
-
-	private final class TypeValueStruct implements ValueStructFinder {
-
-		@Override
-		public ValueStruct<?, ?> valueStructBy(
-				Ref ref,
-				ValueStruct<?, ?> defaultStruct) {
-			return getUntachedRef().valueStruct(getUntachedRef().getScope());
-		}
-
-		@Override
-		public ValueStruct<?, ?> toValueStruct() {
-			return null;
-		}
-
 	}
 
 }
