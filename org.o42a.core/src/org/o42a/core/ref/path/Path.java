@@ -19,12 +19,9 @@
 */
 package org.o42a.core.ref.path;
 
-import static java.lang.System.arraycopy;
-import static java.util.Arrays.copyOfRange;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
+import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
 import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
@@ -41,11 +38,12 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.source.CompilerContext;
@@ -54,17 +52,16 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
 
 
-public class Path {
+public final class Path {
 
-	public static final AbsolutePath ROOT_PATH = new AbsolutePath();
+	public static final Path ROOT_PATH = ABSOLUTE_PATH.emptyPath();
+	public static final Path SELF_PATH = RELATIVE_PATH.emptyPath();
 
-	public static final Path SELF_PATH = new Path(new Step[0]);
-
-	public static AbsolutePath absolutePath(
+	public static Path absolutePath(
 			CompilerContext context,
 			String... fields) {
 
-		AbsolutePath path = ROOT_PATH;
+		Path path = ROOT_PATH;
 		Obj object = context.getRoot();
 
 		for (String field : fields) {
@@ -81,35 +78,37 @@ public class Path {
 		return path;
 	}
 
-	public static AbsolutePath modulePath(String moduleId) {
-		return new AbsolutePath(new ModuleStep(moduleId));
+	public static Path modulePath(String moduleId) {
+		return new Path(ABSOLUTE_PATH, new ModuleStep(moduleId));
 	}
 
 	public static Path memberPath(MemberKey memberKey) {
-		return new Path(new MemberStep(memberKey));
+		return new Path(RELATIVE_PATH, new MemberStep(memberKey));
 	}
 
 	public static Path materializePath() {
-		return new Path(MATERIALIZE);
+		return new Path(RELATIVE_PATH, MATERIALIZE);
 	}
 
-	private final boolean absolute;
+	private final PathKind kind;
 	private final Step[] steps;
 
-	Path(boolean absolute, Step... steps) {
-		this.absolute = absolute;
+	private CompilerContext context;
+	private Obj startObject;
+	private int startIndex;
+
+	Path(PathKind kind, Step... steps) {
+		this.kind = kind;
 		this.steps = steps;
 		assert assertStepsNotNull(steps);
 	}
 
-	Path(Step... steps) {
-		this.absolute = false;
-		this.steps = steps;
-		assert assertStepsNotNull(steps);
+	public final PathKind getKind() {
+		return this.kind;
 	}
 
 	public final boolean isAbsolute() {
-		return this.absolute;
+		return getKind() == PathKind.ABSOLUTE_PATH;
 	}
 
 	public final boolean isSelf() {
@@ -139,18 +138,16 @@ public class Path {
 	public Path append(Step step) {
 		assert step != null :
 			"Path step not specified";
-		if (step.isAbsolute()) {
-			return new AbsolutePath(step);
+
+		final PathKind pathKind = step.getPathKind();
+
+		if (pathKind.isStatic()) {
+			return new Path(pathKind, step);
 		}
 
-		final Step[] newSteps =
-				ArrayUtil.append(this.steps, step);
+		final Step[] newSteps = ArrayUtil.append(this.steps, step);
 
-		if (!isAbsolute()) {
-			return new Path(newSteps);
-		}
-
-		return new AbsolutePath(newSteps);
+		return new Path(getKind(), newSteps);
 	}
 
 	public Path append(MemberKey memberKey) {
@@ -175,19 +172,12 @@ public class Path {
 			return this;
 		}
 		if (lastIdx == 0) {
-			if (!isAbsolute()) {
-				return SELF_PATH;
-			}
-			return ROOT_PATH;
+			return getKind().emptyPath();
 		}
 
 		final Step[] newSteps = Arrays.copyOf(steps, lastIdx);
 
-		if (!isAbsolute()) {
-			return new Path(newSteps);
-		}
-
-		return new AbsolutePath(newSteps);
+		return new Path(getKind(), newSteps);
 	}
 
 	public Path materialize() {
@@ -223,19 +213,12 @@ public class Path {
 			return this;
 		}
 		if (lastIdx == 0) {
-			if (!isAbsolute()) {
-				return SELF_PATH;
-			}
-			return ROOT_PATH;
+			return getKind().emptyPath();
 		}
 
 		final Step[] newSteps = Arrays.copyOf(this.steps, lastIdx);
 
-		if (!isAbsolute()) {
-			return new Path(newSteps);
-		}
-
-		return new AbsolutePath(newSteps);
+		return new Path(getKind(), newSteps);
 	}
 
 	public Path arrayItem(Ref indexRef) {
@@ -252,11 +235,7 @@ public class Path {
 
 		final Step[] newSteps = ArrayUtil.append(getSteps(), path.getSteps());
 
-		if (isAbsolute()) {
-			return new AbsolutePath(newSteps);
-		}
-
-		return new Path(newSteps);
+		return new Path(getKind(), newSteps);
 	}
 
 	public Rescoper rescoper(Scope finalScope) {
@@ -276,11 +255,7 @@ public class Path {
 
 		start.assertCompatibleScope(distributor);
 
-		if (isSelf()) {
-			return start;
-		}
-
-		return new PathTarget(location, distributor, this, start);
+		return getKind().target(location, distributor, this, start);
 	}
 
 	public Ref target(LocationInfo location, Distributor distributor) {
@@ -294,11 +269,8 @@ public class Path {
 		if (rebuilt == this.steps) {
 			return this;
 		}
-		if (isAbsolute()) {
-			return new AbsolutePath(rebuilt);
-		}
 
-		return new Path(rebuilt);
+		return new Path(getKind(), rebuilt);
 	}
 
 	public Path rebuildWithRef(Ref followingRef) {
@@ -327,81 +299,44 @@ public class Path {
 
 		newSteps[lastIdx] = rebuilt;
 
-		if (isAbsolute()) {
-			return new AbsolutePath(newSteps);
-		}
-
-		return new Path(newSteps);
+		return new Path(getKind(), newSteps);
 	}
 
-	public PathReproduction reproduce(
+	public final PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer) {
-
-		Scope toScope = reproducer.getScope();
-		final int len = this.steps.length;
-
-		if (len == 0) {
-
-			final Clause clause =
-					reproducer.getReproducingScope().getContainer().toClause();
-
-			if (clause == null) {
-				return outOfClausePath(SELF_PATH, SELF_PATH);
-			}
-
-			return unchangedPath(SELF_PATH);
-		}
-
-		Path reproduced = SELF_PATH;
-
-		for (int i = 0; i < len; ++i) {
-
-			final Step step = this.steps[i];
-			final PathReproduction reproduction =
-					step.reproduce(location, reproducer, toScope);
-
-			if (reproduction == null) {
-				return null;
-			}
-			if (reproduction.isUnchanged()) {
-				// Left the rest of the path unchanged too.
-				return partiallyReproducedPath(reproduced, i);
-			}
-
-			final Path reproducedPath = reproduction.getReproducedPath();
-			final PathResolution resolution = reproducedPath.resolve(
-					pathResolver(location, dummyUser()),
-					toScope);
-
-			if (!resolution.isResolved()) {
-				return null;
-			}
-
-			reproduced = reproduced.append(reproducedPath);
-
-			if (reproduction.isOutOfClause()) {
-				return outOfClausePath(
-						reproduced,
-						reproduction.getExternalPath().append(
-								new Path(copyOfRange(
-										this.steps,
-										i + 1,
-										this.steps.length))));
-			}
-
-			toScope = resolution.getResult().getScope();
-		}
-
-		return reproducedPath(reproduced);
+		return getKind().reproduce(location, reproducer, this);
 	}
 
 	public final HostOp write(CodeDirs dirs, HostOp start) {
+		if (isAbsolute()) {
+			return writeAbolute(dirs);
+		}
 
 		HostOp found = start;
 
 		for (int i = 0; i < this.steps.length; ++i) {
 			found = this.steps[i].write(dirs, found);
+			if (found == null) {
+				throw new IllegalStateException(toString(i + 1) + " not found");
+			}
+		}
+
+		return found;
+	}
+
+	public final HostOp writeAbolute(CodeDirs dirs) {
+		assert isAbsolute() :
+			this + " is not absolute path";
+
+		final CodeBuilder builder = dirs.getBuilder();
+		final CompilerContext context = builder.getContext();
+		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
+		HostOp found = start.op(builder, dirs.code());
+		final Step[] steps = getSteps();
+
+		for (int i = startIndex(context); i < steps.length; ++i) {
+			found = steps[i].write(dirs, found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");
 			}
@@ -449,7 +384,7 @@ public class Path {
 			final Step step = this.steps[i];
 
 			if (i == 0) {
-				if (!isAbsolute() || step.isAbsolute()) {
+				if (!isAbsolute() || step.getPathKind().isStatic()) {
 					out.append('<');
 				} else {
 					out.append("</");
@@ -465,14 +400,54 @@ public class Path {
 		return out.toString();
 	}
 
-	PathTracker startWalk(
+	private PathTracker startWalk(
 			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
-		if (!walker.start(this, start)) {
+		if (!isAbsolute()) {
+			if (!walker.start(this, start)) {
+				return null;
+			}
+			return new PathTracker(resolver, walker);
+		}
+		if (!walker.root(this, start)) {
 			return null;
 		}
-		return new PathTracker(resolver, walker);
+		if (resolver.toUser().isDummy()) {
+			return new PathTracker(resolver, walker);
+		}
+		return new AbsolutePathTracker(
+				resolver,
+				walker,
+				startIndex(start.getContext()));
+	}
+
+	private int startIndex(CompilerContext context) {
+		if (this.startObject == null || !this.context.compatible(context)) {
+			findStart(context);
+		}
+		return this.startIndex;
+	}
+
+	private Obj startObject(CompilerContext context) {
+		if (this.startObject == null || !this.context.compatible(context)) {
+			findStart(context);
+		}
+		return this.startObject;
+	}
+
+	private void findStart(CompilerContext context) {
+
+		final AbsolutePathStartFinder walker = new AbsolutePathStartFinder();
+
+		walk(
+				pathResolver(context, dummyUser()),
+				context.getRoot().getScope(),
+				walker);
+
+		this.context = context;
+		this.startIndex = walker.getStartIndex();
+		this.startObject = walker.getStartObject();
 	}
 
 	private static boolean assertStepsNotNull(Step[] steps) {
@@ -557,28 +532,6 @@ public class Path {
 		}
 
 		return rebuild(ArrayUtil.clip(rebuiltSteps, rebuiltLen));
-	}
-
-	private PathReproduction partiallyReproducedPath(
-			Path reproduced,
-			int firstUnchangedIdx) {
-		if (firstUnchangedIdx == 0) {
-			return unchangedPath(this);
-		}
-
-		final int stepsLeft = this.steps.length - firstUnchangedIdx;
-		final Step[] newSteps = Arrays.copyOf(
-				reproduced.steps,
-				reproduced.steps.length + stepsLeft);
-
-		arraycopy(
-				this.steps,
-				firstUnchangedIdx,
-				newSteps,
-				reproduced.steps.length,
-				stepsLeft);
-
-		return reproducedPath(new Path(newSteps));
 	}
 
 }
