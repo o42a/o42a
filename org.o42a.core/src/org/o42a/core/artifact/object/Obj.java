@@ -465,19 +465,19 @@ public abstract class Obj
 	public Path scopePath() {
 
 		final Scope scope = getScope();
-		final Step scopePathFragment;
+		final Step scopePathStep;
 		final Container enclosing = scope.getEnclosingContainer();
 
 		if (enclosing.toObject() != null) {
-			scopePathFragment = new ParentObjectStep(
+			scopePathStep = new ParentObjectStep(
 					SCOPE_FIELD_ID.key(scope));
 		} else {
 			assert enclosing.toLocal() != null :
 				"Unsupported kind of enclosing scope " + enclosing;
-			scopePathFragment = new ParentLocalStep(this);
+			scopePathStep = new ParentLocalStep(this);
 		}
 
-		return scopePathFragment.toPath();
+		return scopePathStep.toPath();
 	}
 
 	@Override

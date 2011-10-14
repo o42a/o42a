@@ -28,8 +28,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.Step;
 
 
 public class CompoundPathWalker implements PathWalker {
@@ -69,105 +69,93 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean module(Step fragment, Obj module) {
+	public boolean module(Step step, Obj module) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.module(fragment, module) & proceed;
+			proceed = walker.module(step, module) & proceed;
 		}
 
 		return proceed;
 	}
 
 	@Override
-	public boolean up(
-			Container enclosed,
-			Step fragment,
-			Container enclosing) {
+	public boolean up(Container enclosed, Step step, Container enclosing) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.up(enclosed, fragment, enclosing) & proceed;
+			proceed = walker.up(enclosed, step, enclosing) & proceed;
 		}
 
 		return proceed;
 	}
 
 	@Override
-	public boolean member(
-			Container container,
-			Step fragment,
-			Member member) {
+	public boolean member(Container container, Step step, Member member) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.member(container, fragment, member) & proceed;
+			proceed = walker.member(container, step, member) & proceed;
 		}
 
 		return proceed;
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
+	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.arrayElement(array, fragment, element) & proceed;
+			proceed = walker.arrayElement(array, step, element) & proceed;
 		}
 
 		return proceed;
 	}
 
 	@Override
-	public boolean fieldDep(
-			Obj object,
-			Step fragment,
-			Field<?> dependency) {
+	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.fieldDep(object, fragment, dependency) & proceed;
+			proceed = walker.fieldDep(object, step, dependency) & proceed;
 		}
 
 		return proceed;
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step fragment, Ref dependency) {
+	public boolean refDep(Obj object, Step step, Ref dependency) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.refDep(object, fragment, dependency) & proceed;
+			proceed = walker.refDep(object, step, dependency) & proceed;
 		}
 
 		return proceed;
 	}
 
 	@Override
-	public boolean materialize(
-			Artifact<?> artifact,
-			Step fragment,
-			Obj result) {
+	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.materialize(artifact, fragment, result) & proceed;
+			proceed = walker.materialize(artifact, step, result) & proceed;
 		}
 
 		return proceed;
 	}
 
 	@Override
-	public void abortedAt(Scope last, Step brokenFragment) {
+	public void abortedAt(Scope last, Step brokenStep) {
 		for (PathWalker walker : getWalkers()) {
-			walker.abortedAt(last, brokenFragment);
+			walker.abortedAt(last, brokenStep);
 		}
 	}
 

@@ -21,12 +21,14 @@ package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.AdapterId.adapterTypeScope;
 import static org.o42a.core.ref.path.Path.absolutePath;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.path.AbsolutePath;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -268,11 +270,13 @@ public enum ClauseId {
 				continue;
 			}
 
-			final AbsolutePath adapterPath =
+			final Path adapterPath =
 					clauseId.adapterPath(adapterType.getContext());
 
 			if (type == adapterPath.resolve(
-					adapterType.getContext()).getArtifact().toObject()) {
+					pathResolver(adapterType, dummyUser()),
+					adapterType.getContext().getRoot().getScope())
+					.getArtifact().toObject()) {
 				return clauseId;
 			}
 		}

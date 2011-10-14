@@ -36,8 +36,8 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.Step;
 
 
 public class IRUtil {
@@ -184,23 +184,17 @@ public class IRUtil {
 		}
 
 		@Override
-		public boolean module(Step fragment, Obj module) {
+		public boolean module(Step step, Obj module) {
 			throw new IllegalStateException();
 		}
 
 		@Override
-		public boolean up(
-				Container enclosed,
-				Step fragment,
-				Container enclosing) {
+		public boolean up(Container enclosed, Step step, Container enclosing) {
 			throw new IllegalStateException();
 		}
 
 		@Override
-		public boolean member(
-				Container container,
-				Step fragment,
-				Member member) {
+		public boolean member(Container container, Step step, Member member) {
 			this.id = addMemberId(this.generator, this.id, member.getId());
 			return true;
 		}
@@ -208,37 +202,31 @@ public class IRUtil {
 		@Override
 		public boolean arrayElement(
 				Obj array,
-				Step fragment,
+				Step step,
 				ArrayElement element) {
 			throw new IllegalStateException();
 		}
 
 		@Override
-		public boolean fieldDep(
-				Obj object,
-				Step fragment,
-				Field<?> dependency) {
+		public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
 			throw new IllegalStateException();
 		}
 
 		@Override
-		public boolean refDep(
-				Obj object,
-				Step fragment,
-				Ref dependency) {
+		public boolean refDep(Obj object, Step step, Ref dependency) {
 			throw new IllegalStateException();
 		}
 
 		@Override
 		public boolean materialize(
 				Artifact<?> artifact,
-				Step fragment,
+				Step step,
 				Obj result) {
 			throw new IllegalStateException();
 		}
 
 		@Override
-		public void abortedAt(Scope last, Step brokenFragment) {
+		public void abortedAt(Scope last, Step brokenStep) {
 		}
 
 		@Override

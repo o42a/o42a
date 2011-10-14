@@ -33,8 +33,8 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -114,24 +114,18 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean module(Step fragment, Obj module) {
+	public boolean module(Step step, Obj module) {
 		throw new IllegalStateException();
 	}
 
 	@Override
-	public boolean up(
-			Container enclosed,
-			Step fragment,
-			Container enclosing) {
+	public boolean up(Container enclosed, Step step, Container enclosing) {
 		this.root = enclosing;
 		return true;
 	}
 
 	@Override
-	public boolean member(
-			Container container,
-			Step fragment,
-			Member member) {
+	public boolean member(Container container, Step step, Member member) {
 
 		final Container substance = member.substance(dummyUser());
 
@@ -149,30 +143,27 @@ public final class ResolutionRootFinder
 
 		if (oldMember.getKey().startsWith(member.getKey())) {
 			// Enclosing member access - go up.
-			return up(container, fragment, substance);
+			return up(container, step, substance);
 		}
 
 		return false;
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
+	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
 		this.root = array;
 		return false;
 	}
 
 	@Override
-	public boolean fieldDep(
-			Obj object,
-			Step fragment,
-			Field<?> dependency) {
+	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
 		// Treat the enclosing local scope as resolution root.
 		this.root = object.getScope().getEnclosingScope().toLocal();
 		return false;
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step fragment, Ref dependency) {
+	public boolean refDep(Obj object, Step step, Ref dependency) {
 
 		final LocalScope local =
 				object.getScope().getEnclosingScope().toLocal();
@@ -186,16 +177,13 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean materialize(
-			Artifact<?> artifact,
-			Step fragment,
-			Obj result) {
+	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
 		// Materialized object is not a root.
 		return false;
 	}
 
 	@Override
-	public void abortedAt(Scope last, Step brokenFragment) {
+	public void abortedAt(Scope last, Step brokenStep) {
 	}
 
 	@Override

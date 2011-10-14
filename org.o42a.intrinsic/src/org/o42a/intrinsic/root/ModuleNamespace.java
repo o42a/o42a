@@ -51,7 +51,7 @@ public class ModuleNamespace extends Namespace {
 
 		@Override
 		protected Ref resolveWrapped() {
-			return ROOT_PATH.target(getScope());
+			return ROOT_PATH.target(this, distribute());
 		}
 
 	}

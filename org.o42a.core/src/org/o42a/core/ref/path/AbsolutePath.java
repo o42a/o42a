@@ -19,21 +19,17 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.*;
@@ -48,53 +44,12 @@ public final class AbsolutePath extends Path {
 	private Obj startObject;
 	private int startIndex;
 
-	AbsolutePath(Step... fragments) {
-		super(true, fragments);
+	AbsolutePath(Step... steps) {
+		super(true, steps);
 	}
 
 	public final CompilerContext getContext() {
 		return this.context;
-	}
-
-	public AbsolutePath append(CompilerContext context, String... fields) {
-
-		AbsolutePath path = this;
-		Obj object = resolve(context).getArtifact().toObject();
-
-		for (String field : fields) {
-
-			final Member member = object.field(field);
-
-			assert member != null :
-				"Field \"" + field + "\" not found in " + object;
-
-			path = path.append(member.getKey());
-			object = member.substance(dummyUser()).toObject();
-		}
-
-		return path;
-	}
-
-	public final Ref target(CompilerContext context) {
-
-		final Artifact<?> target = resolve(context).getArtifact();
-
-		return target(target, declarativeDistributor(target.getContainer()));
-	}
-
-	public final Ref target(Scope scope) {
-
-		final Artifact<?> target = resolve(scope.getContext()).getArtifact();
-
-		return target(target, declarativeDistributor(scope.getContainer()));
-	}
-
-	public final Ref target(Container container) {
-
-		final Artifact<?> target =
-				resolve(container.getContext()).getArtifact();
-
-		return target(target, declarativeDistributor(container));
 	}
 
 	@Override
@@ -110,15 +65,9 @@ public final class AbsolutePath extends Path {
 		return new AbsolutePathTarget(location, distributor, this);
 	}
 
-	public PathResolution resolve(CompilerContext context) {
-		return resolve(
-				pathResolver(context, dummyUser()),
-				context.getRoot().getScope());
-	}
-
 	@Override
-	public AbsolutePath append(Step fragment) {
-		return (AbsolutePath) super.append(fragment);
+	public AbsolutePath append(Step step) {
+		return (AbsolutePath) super.append(step);
 	}
 
 	@Override
@@ -173,10 +122,10 @@ public final class AbsolutePath extends Path {
 		final CompilerContext context = builder.getContext();
 		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
 		HostOp found = start.op(builder, dirs.code());
-		final Step[] fragments = getFragments();
+		final Step[] steps = getSteps();
 
-		for (int i = startIndex(context); i < fragments.length; ++i) {
-			found = fragments[i].write(dirs, found);
+		for (int i = startIndex(context); i < steps.length; ++i) {
+			found = steps[i].write(dirs, found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");
 			}
@@ -202,18 +151,18 @@ public final class AbsolutePath extends Path {
 				startIndex(start.getContext()));
 	}
 
-	Obj startObject(CompilerContext context) {
-		if (this.startObject == null || !this.context.compatible(context)) {
-			findStart(context);
-		}
-		return this.startObject;
-	}
-
-	int startIndex(CompilerContext context) {
+	private int startIndex(CompilerContext context) {
 		if (this.startObject == null || !this.context.compatible(context)) {
 			findStart(context);
 		}
 		return this.startIndex;
+	}
+
+	private Obj startObject(CompilerContext context) {
+		if (this.startObject == null || !this.context.compatible(context)) {
+			findStart(context);
+		}
+		return this.startObject;
 	}
 
 	private void findStart(CompilerContext context) {

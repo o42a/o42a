@@ -85,7 +85,9 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	protected Ref moduleRef(MemberRefNode moduleRef, Distributor p) {
-		return modulePath(moduleRef.getName().getName()).target(p.getContext());
+		return modulePath(moduleRef.getName().getName()).target(
+				location(p, moduleRef),
+				p);
 	}
 
 	private static final class SameModuleRefVisitor extends ModuleRefVisitor {
