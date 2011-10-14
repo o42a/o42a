@@ -166,11 +166,11 @@ public class ArrayElementStep extends Step {
 			return null;
 		}
 
-		final ArrayElementStep fragment = new ArrayElementStep(indexRef);
+		final ArrayElementStep step = new ArrayElementStep(indexRef);
 
-		fragment.error = this.error;
+		step.error = this.error;
 
-		return reproducedPath(fragment.toPath());
+		return reproducedPath(step.toPath());
 	}
 
 	@Override

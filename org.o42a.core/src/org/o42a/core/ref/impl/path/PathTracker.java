@@ -60,55 +60,43 @@ public class PathTracker implements PathWalker {
 	}
 
 	@Override
-	public boolean module(Step fragment, Obj module) {
-		return walk(this.walker.module(fragment, module));
+	public boolean module(Step step, Obj module) {
+		return walk(this.walker.module(step, module));
 	}
 
 	@Override
-	public boolean up(
-			Container enclosed,
-			Step fragment,
-			Container enclosing) {
-		return walk(this.walker.up(enclosed, fragment, enclosing));
+	public boolean up(Container enclosed, Step step, Container enclosing) {
+		return walk(this.walker.up(enclosed, step, enclosing));
 	}
 
 	@Override
-	public boolean member(
-			Container container,
-			Step fragment,
-			Member member) {
-		return walk(this.walker.member(container, fragment, member));
+	public boolean member(Container container, Step step, Member member) {
+		return walk(this.walker.member(container, step, member));
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
-		return walk(this.walker.arrayElement(array, fragment, element));
+	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
+		return walk(this.walker.arrayElement(array, step, element));
 	}
 
 	@Override
-	public boolean fieldDep(
-			Obj object,
-			Step fragment,
-			Field<?> dependency) {
-		return walk(this.walker.fieldDep(object, fragment, dependency));
+	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
+		return walk(this.walker.fieldDep(object, step, dependency));
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step fragment, Ref dependency) {
-		return walk(this.walker.refDep(object, fragment, dependency));
+	public boolean refDep(Obj object, Step step, Ref dependency) {
+		return walk(this.walker.refDep(object, step, dependency));
 	}
 
 	@Override
-	public boolean materialize(
-			Artifact<?> artifact,
-			Step fragment,
-			Obj result) {
-		return walk(this.walker.materialize(artifact, fragment, result));
+	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
+		return walk(this.walker.materialize(artifact, step, result));
 	}
 
 	@Override
-	public void abortedAt(Scope last, Step brokenFragment) {
-		this.walker.abortedAt(last, brokenFragment);
+	public void abortedAt(Scope last, Step brokenStep) {
+		this.walker.abortedAt(last, brokenStep);
 	}
 
 	@Override

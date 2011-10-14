@@ -57,16 +57,16 @@ public final class PathTarget extends Ref {
 		super(location, distributor);
 		this.path = path.rebuild();
 		this.start = start;
+		if (start == null) {
+			this.fullPath = new Holder<Path>(path);
+		}
 	}
 
 	public PathTarget(
 			LocationInfo location,
 			Distributor distributor,
 			Path path) {
-		super(location, distributor);
-		this.path = path.rebuild();
-		this.start = null;
-		this.fullPath = new Holder<Path>(path);
+		this(location, distributor, path, null);
 	}
 
 	@Override

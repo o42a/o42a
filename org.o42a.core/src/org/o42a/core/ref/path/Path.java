@@ -22,7 +22,6 @@ package org.o42a.core.ref.path;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOfRange;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.ref.path.Step.MATERIALIZE;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
@@ -31,6 +30,7 @@ import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.core.ref.path.Step.MATERIALIZE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
@@ -39,9 +39,11 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayElementStep;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
@@ -61,7 +63,22 @@ public class Path {
 	public static AbsolutePath absolutePath(
 			CompilerContext context,
 			String... fields) {
-		return ROOT_PATH.append(context, fields);
+
+		AbsolutePath path = ROOT_PATH;
+		Obj object = context.getRoot();
+
+		for (String field : fields) {
+
+			final Member member = object.field(field);
+
+			assert member != null :
+				"Field \"" + field + "\" not found in " + object;
+
+			path = path.append(member.getKey());
+			object = member.substance(dummyUser()).toObject();
+		}
+
+		return path;
 	}
 
 	public static AbsolutePath modulePath(String moduleId) {
@@ -77,18 +94,18 @@ public class Path {
 	}
 
 	private final boolean absolute;
-	private final Step[] fragments;
+	private final Step[] steps;
 
-	Path(boolean absolute, Step... fragments) {
+	Path(boolean absolute, Step... steps) {
 		this.absolute = absolute;
-		this.fragments = fragments;
-		assert assertFragmentsNotNull(fragments);
+		this.steps = steps;
+		assert assertStepsNotNull(steps);
 	}
 
-	Path(Step... fragments) {
+	Path(Step... steps) {
 		this.absolute = false;
-		this.fragments = fragments;
-		assert assertFragmentsNotNull(fragments);
+		this.steps = steps;
+		assert assertStepsNotNull(steps);
 	}
 
 	public final boolean isAbsolute() {
@@ -96,11 +113,11 @@ public class Path {
 	}
 
 	public final boolean isSelf() {
-		return this.fragments.length == 0 && !isAbsolute();
+		return this.steps.length == 0 && !isAbsolute();
 	}
 
-	public final Step[] getFragments() {
-		return this.fragments;
+	public final Step[] getSteps() {
+		return this.steps;
 	}
 
 	public final PathResolution resolve(
@@ -119,44 +136,42 @@ public class Path {
 				walker);
 	}
 
-	public Path append(Step fragment) {
-		if (fragment == null) {
-			throw new NullPointerException("Path key not specified");
-		}
-		if (fragment.isAbsolute()) {
-			return new AbsolutePath(fragment);
+	public Path append(Step step) {
+		assert step != null :
+			"Path step not specified";
+		if (step.isAbsolute()) {
+			return new AbsolutePath(step);
 		}
 
-		final Step[] newFragments =
-				ArrayUtil.append(this.fragments, fragment);
+		final Step[] newSteps =
+				ArrayUtil.append(this.steps, step);
 
 		if (!isAbsolute()) {
-			return new Path(newFragments);
+			return new Path(newSteps);
 		}
 
-		return new AbsolutePath(newFragments);
+		return new AbsolutePath(newSteps);
 	}
 
 	public Path append(MemberKey memberKey) {
-		if (memberKey == null) {
-			throw new NullPointerException("Field key not specified");
-		}
+		assert memberKey != null :
+			"Member key not specified";
 		return append(new MemberStep(memberKey));
 	}
 
 	public Path cutArtifact() {
 
-		final Step[] fragments = dematerialize().fragments;
-		final int length = fragments.length;
+		final Step[] steps = dematerialize().getSteps();
+		final int length = steps.length;
 
 		if (length == 0) {
 			return this;
 		}
 
 		final int lastIdx = length - 1;
-		final Step lastFragment = fragments[lastIdx];
+		final Step lastStep = steps[lastIdx];
 
-		if (!lastFragment.isArtifact()) {
+		if (!lastStep.isArtifact()) {
 			return this;
 		}
 		if (lastIdx == 0) {
@@ -166,25 +181,25 @@ public class Path {
 			return ROOT_PATH;
 		}
 
-		final Step[] newFragments = Arrays.copyOf(fragments, lastIdx);
+		final Step[] newSteps = Arrays.copyOf(steps, lastIdx);
 
 		if (!isAbsolute()) {
-			return new Path(newFragments);
+			return new Path(newSteps);
 		}
 
-		return new AbsolutePath(newFragments);
+		return new AbsolutePath(newSteps);
 	}
 
 	public Path materialize() {
 
-		final int length = this.fragments.length;
+		final int length = this.steps.length;
 
 		if (length == 0) {
 			return this;
 		}
 
-		final Step lastFragment = this.fragments[length - 1];
-		final Step materializer = lastFragment.materialize();
+		final Step lastStep = this.steps[length - 1];
+		final Step materializer = lastStep.materialize();
 
 		if (materializer == null) {
 			return this;
@@ -195,16 +210,16 @@ public class Path {
 
 	public Path dematerialize() {
 
-		final int length = this.fragments.length;
+		final int length = this.steps.length;
 
 		if (length == 0) {
 			return this;
 		}
 
 		final int lastIdx = length - 1;
-		final Step lastFragment = this.fragments[lastIdx];
+		final Step lastStep = this.steps[lastIdx];
 
-		if (!lastFragment.isMaterializer()) {
+		if (!lastStep.isMaterializer()) {
 			return this;
 		}
 		if (lastIdx == 0) {
@@ -214,14 +229,13 @@ public class Path {
 			return ROOT_PATH;
 		}
 
-		final Step[] newFragments =
-				Arrays.copyOf(this.fragments, lastIdx);
+		final Step[] newSteps = Arrays.copyOf(this.steps, lastIdx);
 
 		if (!isAbsolute()) {
-			return new Path(newFragments);
+			return new Path(newSteps);
 		}
 
-		return new AbsolutePath(newFragments);
+		return new AbsolutePath(newSteps);
 	}
 
 	public Path arrayItem(Ref indexRef) {
@@ -236,18 +250,17 @@ public class Path {
 			return path;
 		}
 
-		final Step[] newFragments =
-				ArrayUtil.append(this.fragments, path.fragments);
+		final Step[] newSteps = ArrayUtil.append(getSteps(), path.getSteps());
 
 		if (isAbsolute()) {
-			return new AbsolutePath(newFragments);
+			return new AbsolutePath(newSteps);
 		}
 
-		return new Path(newFragments);
+		return new Path(newSteps);
 	}
 
 	public Rescoper rescoper(Scope finalScope) {
-		if (!isAbsolute() && getFragments().length == 0) {
+		if (!isAbsolute() && getSteps().length == 0) {
 			return transparentRescoper(finalScope);
 		}
 		return new PathRescoper(this, finalScope);
@@ -276,9 +289,9 @@ public class Path {
 
 	public Path rebuild() {
 
-		final Step[] rebuilt = rebuild(this.fragments);
+		final Step[] rebuilt = rebuild(this.steps);
 
-		if (rebuilt == this.fragments) {
+		if (rebuilt == this.steps) {
 			return this;
 		}
 		if (isAbsolute()) {
@@ -296,29 +309,29 @@ public class Path {
 			return append(path).rebuild();
 		}
 
-		final int length = this.fragments.length;
+		final int length = this.steps.length;
 
 		if (length == 0) {
 			return null;
 		}
 
 		final int lastIdx = length - 1;
-		final Step lastFragment = this.fragments[lastIdx];
-		final Step rebuilt = lastFragment.combineWithRef(followingRef);
+		final Step lastStep = this.steps[lastIdx];
+		final Step rebuilt = lastStep.combineWithRef(followingRef);
 
 		if (rebuilt == null) {
 			return null;
 		}
 
-		final Step[] newFragments = this.fragments.clone();
+		final Step[] newSteps = this.steps.clone();
 
-		newFragments[lastIdx] = rebuilt;
+		newSteps[lastIdx] = rebuilt;
 
 		if (isAbsolute()) {
-			return new AbsolutePath(newFragments);
+			return new AbsolutePath(newSteps);
 		}
 
-		return new Path(newFragments);
+		return new Path(newSteps);
 	}
 
 	public PathReproduction reproduce(
@@ -326,7 +339,7 @@ public class Path {
 			Reproducer reproducer) {
 
 		Scope toScope = reproducer.getScope();
-		final int len = this.fragments.length;
+		final int len = this.steps.length;
 
 		if (len == 0) {
 
@@ -344,9 +357,9 @@ public class Path {
 
 		for (int i = 0; i < len; ++i) {
 
-			final Step fragment = this.fragments[i];
+			final Step step = this.steps[i];
 			final PathReproduction reproduction =
-					fragment.reproduce(location, reproducer, toScope);
+					step.reproduce(location, reproducer, toScope);
 
 			if (reproduction == null) {
 				return null;
@@ -372,9 +385,9 @@ public class Path {
 						reproduced,
 						reproduction.getExternalPath().append(
 								new Path(copyOfRange(
-										this.fragments,
+										this.steps,
 										i + 1,
-										this.fragments.length))));
+										this.steps.length))));
 			}
 
 			toScope = resolution.getResult().getScope();
@@ -387,8 +400,8 @@ public class Path {
 
 		HostOp found = start;
 
-		for (int i = 0; i < this.fragments.length; ++i) {
-			found = this.fragments[i].write(dirs, found);
+		for (int i = 0; i < this.steps.length; ++i) {
+			found = this.steps[i].write(dirs, found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");
 			}
@@ -399,7 +412,7 @@ public class Path {
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(this.fragments);
+		return Arrays.hashCode(this.steps);
 	}
 
 	@Override
@@ -416,12 +429,12 @@ public class Path {
 
 		final Path other = (Path) obj;
 
-		return Arrays.equals(this.fragments, other.fragments);
+		return Arrays.equals(this.steps, other.steps);
 	}
 
 	@Override
 	public String toString() {
-		return toString(this.fragments.length);
+		return toString(this.steps.length);
 	}
 
 	public String toString(int length) {
@@ -433,10 +446,10 @@ public class Path {
 
 		for (int i = 0; i < length; ++i) {
 
-			final Step fragment = this.fragments[i];
+			final Step step = this.steps[i];
 
 			if (i == 0) {
-				if (!isAbsolute() || fragment.isAbsolute()) {
+				if (!isAbsolute() || step.isAbsolute()) {
 					out.append('<');
 				} else {
 					out.append("</");
@@ -445,7 +458,7 @@ public class Path {
 				out.append('/');
 			}
 
-			out.append(fragment);
+			out.append(step);
 		}
 		out.append('>');
 
@@ -462,10 +475,10 @@ public class Path {
 		return new PathTracker(resolver, walker);
 	}
 
-	private static boolean assertFragmentsNotNull(Step[] fragments) {
-		for (Step fragment : fragments) {
-			assert fragment != null :
-				"Path fragment is null";
+	private static boolean assertStepsNotNull(Step[] steps) {
+		for (Step step : steps) {
+			assert step != null :
+				"Path step is null";
 		}
 		return true;
 	}
@@ -484,8 +497,8 @@ public class Path {
 		Container result = start.getContainer();
 		Scope prev = start;
 
-		for (int i = 0; i < this.fragments.length; ++i) {
-			result = this.fragments[i].resolve(
+		for (int i = 0; i < this.steps.length; ++i) {
+			result = this.steps[i].resolve(
 					tracker.nextResolver(),
 					this,
 					i,
@@ -495,7 +508,7 @@ public class Path {
 				return NO_PATH_RESOLUTION;
 			}
 			if (result == null) {
-				tracker.abortedAt(prev, this.fragments[i]);
+				tracker.abortedAt(prev, this.steps[i]);
 				return PATH_RESOLUTION_ERROR;
 			}
 			prev = result.getScope();
@@ -508,43 +521,42 @@ public class Path {
 		return pathResolution(this, result);
 	}
 
-	private Step[] rebuild(Step[] fragments) {
-		if (fragments.length <= 1) {
-			return fragments;
+	private Step[] rebuild(Step[] steps) {
+		if (steps.length <= 1) {
+			return steps;
 		}
 
-		final Step[] rebuiltFragments =
-				new Step[fragments.length];
-		Step prev = rebuiltFragments[0] = fragments[0];
+		final Step[] rebuiltSteps = new Step[steps.length];
+		Step prev = rebuiltSteps[0] = steps[0];
 		int nextIdx = 1;
 		int rebuiltIdx = 0;
 
 		for (;;) {
 
-			final Step next = fragments[nextIdx];
+			final Step next = steps[nextIdx];
 			final Step rebuilt = next.rebuild(prev);
 
 			if (rebuilt != null) {
-				rebuiltFragments[rebuiltIdx] = prev = rebuilt;
-				if (++nextIdx >= fragments.length) {
+				rebuiltSteps[rebuiltIdx] = prev = rebuilt;
+				if (++nextIdx >= steps.length) {
 					break;
 				}
 				continue;
 			}
 
-			rebuiltFragments[++rebuiltIdx] = prev = next;
-			if (++nextIdx >= fragments.length) {
+			rebuiltSteps[++rebuiltIdx] = prev = next;
+			if (++nextIdx >= steps.length) {
 				break;
 			}
 		}
 
 		final int rebuiltLen = rebuiltIdx + 1;
 
-		if (rebuiltLen == fragments.length) {
-			return fragments;
+		if (rebuiltLen == steps.length) {
+			return steps;
 		}
 
-		return rebuild(ArrayUtil.clip(rebuiltFragments, rebuiltLen));
+		return rebuild(ArrayUtil.clip(rebuiltSteps, rebuiltLen));
 	}
 
 	private PathReproduction partiallyReproducedPath(
@@ -554,19 +566,19 @@ public class Path {
 			return unchangedPath(this);
 		}
 
-		final int fragmentsLeft = this.fragments.length - firstUnchangedIdx;
-		final Step[] newFragments = Arrays.copyOf(
-				reproduced.fragments,
-				reproduced.fragments.length + fragmentsLeft);
+		final int stepsLeft = this.steps.length - firstUnchangedIdx;
+		final Step[] newSteps = Arrays.copyOf(
+				reproduced.steps,
+				reproduced.steps.length + stepsLeft);
 
 		arraycopy(
-				this.fragments,
+				this.steps,
 				firstUnchangedIdx,
-				newFragments,
-				reproduced.fragments.length,
-				fragmentsLeft);
+				newSteps,
+				reproduced.steps.length,
+				stepsLeft);
 
-		return reproducedPath(new Path(newFragments));
+		return reproducedPath(new Path(newSteps));
 	}
 
 }
