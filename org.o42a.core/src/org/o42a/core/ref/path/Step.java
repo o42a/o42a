@@ -36,9 +36,7 @@ public abstract class Step {
 	public static final MaterializerStep MATERIALIZE =
 			MaterializerStep.INSTANCE;
 
-	public boolean isAbsolute() {
-		return false;
-	}
+	public abstract PathKind getPathKind();
 
 	public String getName() {
 		return null;
@@ -77,10 +75,7 @@ public abstract class Step {
 	}
 
 	public final Path toPath() {
-		if (isAbsolute()) {
-			return new AbsolutePath(this);
-		}
-		return new Path(this);
+		return new Path(getPathKind(), this);
 	}
 
 	public abstract HostOp write(CodeDirs dirs, HostOp start);

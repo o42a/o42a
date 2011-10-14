@@ -47,6 +47,11 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
+	public PathKind getPathKind() {
+		return PathKind.RELATIVE_PATH;
+	}
+
+	@Override
 	public boolean isArtifact() {
 		return false;
 	}

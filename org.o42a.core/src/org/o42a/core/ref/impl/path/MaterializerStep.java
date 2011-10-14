@@ -42,6 +42,11 @@ public final class MaterializerStep extends Step {
 	}
 
 	@Override
+	public PathKind getPathKind() {
+		return PathKind.RELATIVE_PATH;
+	}
+
+	@Override
 	public boolean isMaterializer() {
 		return true;
 	}

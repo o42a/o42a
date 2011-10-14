@@ -43,8 +43,8 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	public boolean isAbsolute() {
-		return true;
+	public PathKind getPathKind() {
+		return PathKind.ABSOLUTE_PATH;
 	}
 
 	@Override

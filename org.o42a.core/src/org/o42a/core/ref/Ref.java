@@ -45,7 +45,6 @@ import org.o42a.core.ref.impl.*;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
 import org.o42a.core.ref.impl.type.DefaultTypeRef;
-import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -70,7 +69,7 @@ public abstract class Ref extends Statement {
 	public static Ref falseRef(LocationInfo location, Distributor distributor) {
 
 		final Obj falseObject = location.getContext().getFalse();
-		final AbsolutePath falsePath = ROOT_PATH.append(
+		final Path falsePath = ROOT_PATH.append(
 				falseObject.getScope().toMember().getKey());
 
 		return falsePath.target(location, distributor);

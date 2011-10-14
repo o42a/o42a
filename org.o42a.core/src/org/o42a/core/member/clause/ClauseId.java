@@ -27,7 +27,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -39,7 +38,7 @@ public enum ClauseId {
 	NAME(false) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return null;
 		}
 
@@ -56,7 +55,7 @@ public enum ClauseId {
 	ARGUMENT(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "clauses", "argument");
 		}
 
@@ -73,7 +72,7 @@ public enum ClauseId {
 	IMPERATIVE(false) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "clauses", "imperative");
 		}
 
@@ -90,7 +89,7 @@ public enum ClauseId {
 	STRING(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "clauses", "string");
 		}
 
@@ -107,7 +106,7 @@ public enum ClauseId {
 	PLUS(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "plus");
 		}
 
@@ -121,7 +120,7 @@ public enum ClauseId {
 	MINUS(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "minus");
 		}
 
@@ -135,7 +134,7 @@ public enum ClauseId {
 	ADD(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "add");
 		}
 
@@ -149,7 +148,7 @@ public enum ClauseId {
 	SUBTRACT(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "subtract");
 		}
 
@@ -163,7 +162,7 @@ public enum ClauseId {
 	MULTIPLY(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "multiply");
 		}
 
@@ -177,7 +176,7 @@ public enum ClauseId {
 	DIVIDE(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "divide");
 		}
 
@@ -191,7 +190,7 @@ public enum ClauseId {
 	EQUALS(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "equals");
 		}
 
@@ -205,7 +204,7 @@ public enum ClauseId {
 	COMPARE(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "compare");
 		}
 
@@ -219,7 +218,7 @@ public enum ClauseId {
 	OPERAND(true) {
 
 		@Override
-		public AbsolutePath adapterPath(CompilerContext context) {
+		public Path adapterPath(CompilerContext context) {
 			return absolutePath(context, "operators", "operand");
 		}
 
@@ -251,12 +250,12 @@ public enum ClauseId {
 			return null;
 		}
 
-		final AbsolutePath adapterPath = adapterPath(location.getContext());
+		final Path adapterPath = adapterPath(location.getContext());
 
 		return adapterPath.target(location, distributor).toStaticTypeRef();
 	}
 
-	public abstract AbsolutePath adapterPath(CompilerContext context);
+	public abstract Path adapterPath(CompilerContext context);
 
 	public abstract String toString(MemberId memberId, String name);
 

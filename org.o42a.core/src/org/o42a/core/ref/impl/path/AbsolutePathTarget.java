@@ -32,7 +32,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.AbsolutePath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.ref.type.TypeRef;
@@ -42,12 +41,12 @@ import org.o42a.core.st.Reproducer;
 
 public final class AbsolutePathTarget extends Ref {
 
-	private final AbsolutePath path;
+	private final Path path;
 
 	public AbsolutePathTarget(
 			LocationInfo location,
 			Distributor distributor,
-			AbsolutePath path) {
+			Path path) {
 		super(location, distributor);
 		this.path = path;
 	}
@@ -63,7 +62,7 @@ public final class AbsolutePathTarget extends Ref {
 	}
 
 	@Override
-	public final AbsolutePath getPath() {
+	public final Path getPath() {
 		return this.path;
 	}
 
@@ -109,7 +108,7 @@ public final class AbsolutePathTarget extends Ref {
 			return ancestor.rescope(upPath.rescoper(getScope()));
 		}
 
-		final AbsolutePath dematerializedPath = this.path.dematerialize();
+		final Path dematerializedPath = this.path.dematerialize();
 
 		if (this.path == dematerializedPath) {
 			return super.ancestor(location);
@@ -124,7 +123,7 @@ public final class AbsolutePathTarget extends Ref {
 	@Override
 	public Ref materialize() {
 
-		final AbsolutePath materialized = this.path.materialize();
+		final Path materialized = this.path.materialize();
 
 		if (materialized == this.path) {
 			return this;
@@ -188,7 +187,7 @@ public final class AbsolutePathTarget extends Ref {
 
 			final AbsolutePathTarget ref = (AbsolutePathTarget) getRef();
 
-			return ref.path.write(dirs, getBuilder());
+			return ref.path.writeAbolute(dirs);
 		}
 
 	}
