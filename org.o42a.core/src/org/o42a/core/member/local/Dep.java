@@ -31,7 +31,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
 
-public abstract class Dep extends PathFragment {
+public abstract class Dep extends Step {
 
 	private final Obj object;
 	private final DepKind kind;

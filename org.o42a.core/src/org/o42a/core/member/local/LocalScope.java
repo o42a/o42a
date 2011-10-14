@@ -20,7 +20,6 @@
 package org.o42a.core.member.local;
 
 import static org.o42a.core.AbstractContainer.parentContainer;
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import java.util.Set;
 
@@ -31,15 +30,13 @@ import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.SourceInfo;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalIR;
-import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.ExplicitLocalScope;
+import org.o42a.core.member.impl.local.LocalOwnerStep;
 import org.o42a.core.member.impl.local.PropagatedLocalScope;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
@@ -48,7 +45,6 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
@@ -75,7 +71,7 @@ public abstract class LocalScope
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.owner = owner;
-		this.ownerScopePath = new OwnerPathFragment().toPath();
+		this.ownerScopePath = new LocalOwnerStep(this).toPath();
 		this.resolverFactory = new LocalResolver.Factory(this);
 	}
 
@@ -359,67 +355,5 @@ public abstract class LocalScope
 	protected abstract boolean addMember(Member member);
 
 	protected abstract ExplicitLocalScope explicit();
-
-	private final class OwnerPathFragment extends PathFragment {
-
-		@Override
-		public boolean isArtifact() {
-			return false;
-		}
-
-		@Override
-		public PathFragment materialize() {
-			return null;
-		}
-
-		@Override
-		public Container resolve(
-				PathResolver resolver,
-				Path path,
-				int index,
-				Scope start,
-				PathWalker walker) {
-
-			final LocalScope local = start.toLocal();
-
-			local.assertDerivedFrom(LocalScope.this);
-
-			final Obj owner = local.getOwner();
-
-			walker.up(local, this, owner);
-
-			return owner;
-		}
-
-		@Override
-		public PathReproduction reproduce(
-				LocationInfo location,
-				Reproducer reproducer,
-				Scope scope) {
-			return reproducedPath(scope.toLocal().getEnclosingScopePath());
-		}
-
-		@Override
-		public HostOp write(CodeDirs dirs, HostOp start) {
-
-			final LocalOp local = start.toLocal();
-
-			assert local != null :
-				start + " is not local";
-
-			return local.getBuilder().owner();
-		}
-
-		@Override
-		public String toString() {
-			return "Owner[" + LocalScope.this + ']';
-		}
-
-		@Override
-		protected PathFragment rebuild(PathFragment prev) {
-			return prev.combineWithLocalOwner(getOwner());
-		}
-
-	}
 
 }

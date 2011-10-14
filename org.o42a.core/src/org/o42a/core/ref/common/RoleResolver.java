@@ -35,7 +35,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.LocationInfo;
 
@@ -129,7 +129,7 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean module(PathFragment fragment, Obj module) {
+	public boolean module(Step fragment, Obj module) {
 		this.insidePrototype = false;
 		return true;
 	}
@@ -137,7 +137,7 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean up(
 			Container enclosed,
-			PathFragment fragment,
+			Step fragment,
 			Container enclosing) {
 		// It is ok to enter prototype member and exit it right after that.
 		// This way expression phrases work.
@@ -148,7 +148,7 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean member(
 			Container container,
-			PathFragment fragment,
+			Step fragment,
 			Member member) {
 		if (this.insidePrototype || !this.role.atLeast(INSTANCE)) {
 			this.insidePrototype = false;
@@ -166,7 +166,7 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, PathFragment fragment, ArrayElement element) {
+	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
 		if (!mayProceedInsidePrototype()) {
 			return false;
 		}
@@ -176,7 +176,7 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean fieldDep(
 			Obj object,
-			PathFragment fragment,
+			Step fragment,
 			Field<?> dependency) {
 		if (!mayProceedInsidePrototype()) {
 			return false;
@@ -188,7 +188,7 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+	public boolean refDep(Obj object, Step fragment, Ref dependency) {
 		if (!mayProceedInsidePrototype()) {
 			return false;
 		}
@@ -204,13 +204,13 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean materialize(
 			Artifact<?> artifact,
-			PathFragment fragment,
+			Step fragment,
 			Obj result) {
 		return true;
 	}
 
 	@Override
-	public void abortedAt(Scope last, PathFragment brokenFragment) {
+	public void abortedAt(Scope last, Step brokenFragment) {
 		this.insidePrototype = false;
 	}
 

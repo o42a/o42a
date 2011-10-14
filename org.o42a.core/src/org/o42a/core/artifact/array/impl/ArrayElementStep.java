@@ -40,12 +40,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class ArrayElementFragment extends PathFragment {
+public class ArrayElementStep extends Step {
 
 	private final Ref indexRef;
 	private boolean error;
 
-	public ArrayElementFragment(Ref indexRef) {
+	public ArrayElementStep(Ref indexRef) {
 		this.indexRef = indexRef;
 	}
 
@@ -55,7 +55,7 @@ public class ArrayElementFragment extends PathFragment {
 	}
 
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 		return MATERIALIZE;
 	}
 
@@ -166,7 +166,7 @@ public class ArrayElementFragment extends PathFragment {
 			return null;
 		}
 
-		final ArrayElementFragment fragment = new ArrayElementFragment(indexRef);
+		final ArrayElementStep fragment = new ArrayElementStep(indexRef);
 
 		fragment.error = this.error;
 

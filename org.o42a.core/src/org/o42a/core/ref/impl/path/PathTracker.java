@@ -60,14 +60,14 @@ public class PathTracker implements PathWalker {
 	}
 
 	@Override
-	public boolean module(PathFragment fragment, Obj module) {
+	public boolean module(Step fragment, Obj module) {
 		return walk(this.walker.module(fragment, module));
 	}
 
 	@Override
 	public boolean up(
 			Container enclosed,
-			PathFragment fragment,
+			Step fragment,
 			Container enclosing) {
 		return walk(this.walker.up(enclosed, fragment, enclosing));
 	}
@@ -75,39 +75,39 @@ public class PathTracker implements PathWalker {
 	@Override
 	public boolean member(
 			Container container,
-			PathFragment fragment,
+			Step fragment,
 			Member member) {
 		return walk(this.walker.member(container, fragment, member));
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, PathFragment fragment, ArrayElement element) {
+	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
 		return walk(this.walker.arrayElement(array, fragment, element));
 	}
 
 	@Override
 	public boolean fieldDep(
 			Obj object,
-			PathFragment fragment,
+			Step fragment,
 			Field<?> dependency) {
 		return walk(this.walker.fieldDep(object, fragment, dependency));
 	}
 
 	@Override
-	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+	public boolean refDep(Obj object, Step fragment, Ref dependency) {
 		return walk(this.walker.refDep(object, fragment, dependency));
 	}
 
 	@Override
 	public boolean materialize(
 			Artifact<?> artifact,
-			PathFragment fragment,
+			Step fragment,
 			Obj result) {
 		return walk(this.walker.materialize(artifact, fragment, result));
 	}
 
 	@Override
-	public void abortedAt(Scope last, PathFragment brokenFragment) {
+	public void abortedAt(Scope last, Step brokenFragment) {
 		this.walker.abortedAt(last, brokenFragment);
 	}
 

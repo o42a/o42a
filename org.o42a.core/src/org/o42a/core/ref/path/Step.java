@@ -26,15 +26,15 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.MaterializerFragment;
+import org.o42a.core.ref.impl.path.MaterializerStep;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public abstract class PathFragment {
+public abstract class Step {
 
-	public static final MaterializerFragment MATERIALIZE =
-			MaterializerFragment.INSTANCE;
+	public static final MaterializerStep MATERIALIZE =
+			MaterializerStep.INSTANCE;
 
 	public boolean isAbsolute() {
 		return false;
@@ -50,7 +50,7 @@ public abstract class PathFragment {
 
 	public abstract boolean isArtifact();
 
-	public abstract PathFragment materialize();
+	public abstract Step materialize();
 
 	public abstract Container resolve(
 			PathResolver resolver,
@@ -64,15 +64,15 @@ public abstract class PathFragment {
 			Reproducer reproducer,
 			Scope scope);
 
-	public PathFragment combineWithMember(MemberKey memberKey) {
+	public Step combineWithMember(MemberKey memberKey) {
 		return null;
 	}
 
-	public PathFragment combineWithLocalOwner(Obj owner) {
+	public Step combineWithLocalOwner(Obj owner) {
 		return null;
 	}
 
-	public PathFragment combineWithRef(Ref ref) {
+	public Step combineWithRef(Ref ref) {
 		return null;
 	}
 
@@ -90,7 +90,7 @@ public abstract class PathFragment {
 		return getClass().getSimpleName();
 	}
 
-	protected PathFragment rebuild(PathFragment prev) {
+	protected Step rebuild(Step prev) {
 		return null;
 	}
 

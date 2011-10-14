@@ -34,11 +34,11 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public class MemberFragment extends PathFragment {
+public class MemberStep extends Step {
 
 	private final MemberKey memberKey;
 
-	public MemberFragment(MemberKey memberKey) {
+	public MemberStep(MemberKey memberKey) {
 		if (memberKey == null) {
 			throw new NullPointerException("Field key not specified");
 		}
@@ -60,7 +60,7 @@ public class MemberFragment extends PathFragment {
 	}
 
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 
 		final Member member = firstDeclaration();
 		final Field<?> field = member.toField(dummyUser());
@@ -139,7 +139,7 @@ public class MemberFragment extends PathFragment {
 			return false;
 		}
 
-		final MemberFragment other = (MemberFragment) obj;
+		final MemberStep other = (MemberStep) obj;
 
 		return this.memberKey.equals(other.memberKey);
 	}
@@ -150,7 +150,7 @@ public class MemberFragment extends PathFragment {
 	}
 
 	@Override
-	protected PathFragment rebuild(PathFragment prev) {
+	protected Step rebuild(Step prev) {
 		return prev.combineWithMember(this.memberKey);
 	}
 

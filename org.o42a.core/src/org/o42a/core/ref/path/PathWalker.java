@@ -38,30 +38,30 @@ public interface PathWalker {
 
 	boolean start(Path path, Scope start);
 
-	boolean module(PathFragment fragment, Obj module);
+	boolean module(Step fragment, Obj module);
 
-	boolean up(Container enclosed, PathFragment fragment, Container enclosing);
+	boolean up(Container enclosed, Step fragment, Container enclosing);
 
 	boolean member(
 			Container container,
-			PathFragment fragment,
+			Step fragment,
 			Member member);
 
 	boolean arrayElement(
 			Obj array,
-			PathFragment fragment,
+			Step fragment,
 			ArrayElement element);
 
-	boolean fieldDep(Obj object, PathFragment fragment, Field<?> dependency);
+	boolean fieldDep(Obj object, Step fragment, Field<?> dependency);
 
-	boolean refDep(Obj object, PathFragment fragment, Ref dependency);
+	boolean refDep(Obj object, Step fragment, Ref dependency);
 
 	boolean materialize(
 			Artifact<?> artifact,
-			PathFragment fragment,
+			Step fragment,
 			Obj result);
 
-	void abortedAt(Scope last, PathFragment brokenFragment);
+	void abortedAt(Scope last, Step brokenFragment);
 
 	boolean done(Container result);
 

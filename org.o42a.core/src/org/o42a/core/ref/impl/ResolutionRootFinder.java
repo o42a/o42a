@@ -33,7 +33,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -114,14 +114,14 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean module(PathFragment fragment, Obj module) {
+	public boolean module(Step fragment, Obj module) {
 		throw new IllegalStateException();
 	}
 
 	@Override
 	public boolean up(
 			Container enclosed,
-			PathFragment fragment,
+			Step fragment,
 			Container enclosing) {
 		this.root = enclosing;
 		return true;
@@ -130,7 +130,7 @@ public final class ResolutionRootFinder
 	@Override
 	public boolean member(
 			Container container,
-			PathFragment fragment,
+			Step fragment,
 			Member member) {
 
 		final Container substance = member.substance(dummyUser());
@@ -156,7 +156,7 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, PathFragment fragment, ArrayElement element) {
+	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
 		this.root = array;
 		return false;
 	}
@@ -164,7 +164,7 @@ public final class ResolutionRootFinder
 	@Override
 	public boolean fieldDep(
 			Obj object,
-			PathFragment fragment,
+			Step fragment,
 			Field<?> dependency) {
 		// Treat the enclosing local scope as resolution root.
 		this.root = object.getScope().getEnclosingScope().toLocal();
@@ -172,7 +172,7 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+	public boolean refDep(Obj object, Step fragment, Ref dependency) {
 
 		final LocalScope local =
 				object.getScope().getEnclosingScope().toLocal();
@@ -188,14 +188,14 @@ public final class ResolutionRootFinder
 	@Override
 	public boolean materialize(
 			Artifact<?> artifact,
-			PathFragment fragment,
+			Step fragment,
 			Obj result) {
 		// Materialized object is not a root.
 		return false;
 	}
 
 	@Override
-	public void abortedAt(Scope last, PathFragment brokenFragment) {
+	public void abortedAt(Scope last, Step brokenFragment) {
 	}
 
 	@Override

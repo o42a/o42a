@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,33 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.path;
+package org.o42a.core.member.impl.local;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public final class MaterializerFragment extends PathFragment {
+public final class LocalOwnerStep extends Step {
 
-	public static final MaterializerFragment INSTANCE =
-			new MaterializerFragment();
+	private final LocalScope local;
 
-	private MaterializerFragment() {
-	}
-
-	@Override
-	public boolean isMaterializer() {
-		return true;
+	public LocalOwnerStep(LocalScope local) {
+		this.local = local;
 	}
 
 	@Override
@@ -52,7 +47,7 @@ public final class MaterializerFragment extends PathFragment {
 	}
 
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 		return null;
 	}
 
@@ -64,18 +59,15 @@ public final class MaterializerFragment extends PathFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final Artifact<?> artifact = start.getArtifact();
+		final LocalScope local = start.toLocal();
 
-		assert artifact != null :
-			"Can not materialize " + start;
-		assert artifact.getKind() != ArtifactKind.OBJECT :
-			"An attempt to materialize object " + start;
+		local.assertDerivedFrom(this.local);
 
-		final Obj result = artifact.materialize();
+		final Obj owner = local.getOwner();
 
-		walker.materialize(artifact, this, result);
+		walker.up(local, this, owner);
 
-		return result;
+		return owner;
 	}
 
 	@Override
@@ -83,17 +75,28 @@ public final class MaterializerFragment extends PathFragment {
 			LocationInfo location,
 			Reproducer reproducer,
 			Scope scope) {
-		return reproducedPath(toPath());
+		return reproducedPath(scope.toLocal().getEnclosingScopePath());
 	}
 
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
-		return start.materialize(dirs);
+
+		final LocalOp local = start.toLocal();
+
+		assert local != null :
+			start + " is not local";
+
+		return local.getBuilder().owner();
 	}
 
 	@Override
 	public String toString() {
-		return "*";
+		return "Owner[" + this.local + ']';
+	}
+
+	@Override
+	protected Step rebuild(Step prev) {
+		return prev.combineWithLocalOwner(this.local.getOwner());
 	}
 
 }

@@ -79,7 +79,7 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 		return null;
 	}
 

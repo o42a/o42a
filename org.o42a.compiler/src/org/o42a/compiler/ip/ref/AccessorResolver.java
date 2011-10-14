@@ -33,7 +33,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.LocationInfo;
 
@@ -115,7 +115,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean module(PathFragment fragment, Obj module) {
+	public boolean module(Step fragment, Obj module) {
 		this.owner = this.ownerBeforeRoot;
 		this.declaration = this.declarationBeforeRoot;
 		this.enclosed = this.enclosedBeforeRoot;
@@ -126,7 +126,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean up(
 			Container enclosed,
-			PathFragment fragment,
+			Step fragment,
 			Container enclosing) {
 		updateDeclaration(enclosed, enclosing);
 		updateInheritant(enclosed, enclosing);
@@ -136,7 +136,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean member(
 			Container container,
-			PathFragment fragment,
+			Step fragment,
 			Member member) {
 		this.owner = false;
 		updateDeclaration(container, member.substance(dummyUser()));
@@ -146,7 +146,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, PathFragment fragment, ArrayElement element) {
+	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
 		this.owner = false;
 		this.enclosed = false;
 		this.inheritant = false;
@@ -156,7 +156,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean fieldDep(
 			Obj object,
-			PathFragment fragment,
+			Step fragment,
 			Field<?> dependency) {
 		this.owner = false;
 		this.enclosed = false;
@@ -165,7 +165,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+	public boolean refDep(Obj object, Step fragment, Ref dependency) {
 		this.owner = false;
 		this.enclosed = false;
 		this.inheritant = false;
@@ -175,7 +175,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean materialize(
 			Artifact<?> artifact,
-			PathFragment fragment,
+			Step fragment,
 			Obj result) {
 		if (artifact.toObject() == result) {
 			return true;
@@ -187,7 +187,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public void abortedAt(Scope last, PathFragment brokenFragment) {
+	public void abortedAt(Scope last, Step brokenFragment) {
 	}
 
 	@Override

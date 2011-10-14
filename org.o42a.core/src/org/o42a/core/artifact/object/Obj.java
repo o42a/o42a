@@ -52,7 +52,7 @@ import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.StatementEnv;
@@ -465,16 +465,16 @@ public abstract class Obj
 	public Path scopePath() {
 
 		final Scope scope = getScope();
-		final PathFragment scopePathFragment;
+		final Step scopePathFragment;
 		final Container enclosing = scope.getEnclosingContainer();
 
 		if (enclosing.toObject() != null) {
-			scopePathFragment = new ParentObjectFragment(
+			scopePathFragment = new ParentObjectStep(
 					SCOPE_FIELD_ID.key(scope));
 		} else {
 			assert enclosing.toLocal() != null :
 				"Unsupported kind of enclosing scope " + enclosing;
-			scopePathFragment = new ParentLocalFragment(this);
+			scopePathFragment = new ParentLocalStep(this);
 		}
 
 		return scopePathFragment.toPath();

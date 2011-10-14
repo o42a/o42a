@@ -88,7 +88,7 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 		return null;
 	}
 
