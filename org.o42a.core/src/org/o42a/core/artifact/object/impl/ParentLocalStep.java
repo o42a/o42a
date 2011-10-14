@@ -38,11 +38,11 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public final class ParentLocalFragment extends PathFragment {
+public final class ParentLocalStep extends Step {
 
 	private final Obj object;
 
-	public ParentLocalFragment(Obj object) {
+	public ParentLocalStep(Obj object) {
 		this.object = object;
 	}
 
@@ -52,7 +52,7 @@ public final class ParentLocalFragment extends PathFragment {
 	}
 
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 		return null;
 	}
 
@@ -82,17 +82,17 @@ public final class ParentLocalFragment extends PathFragment {
 	}
 
 	@Override
-	public PathFragment combineWithMember(MemberKey memberKey) {
+	public Step combineWithMember(MemberKey memberKey) {
 		return ((ObjectArtifact) this.object).addFieldDep(memberKey);
 	}
 
 	@Override
-	public PathFragment combineWithLocalOwner(Obj owner) {
+	public Step combineWithLocalOwner(Obj owner) {
 		return ((ObjectArtifact) this.object).addEnclosingOwnerDep(owner);
 	}
 
 	@Override
-	public PathFragment combineWithRef(Ref ref) {
+	public Step combineWithRef(Ref ref) {
 		return ((ObjectArtifact) this.object).addRefDep(ref);
 	}
 
@@ -121,7 +121,7 @@ public final class ParentLocalFragment extends PathFragment {
 			return false;
 		}
 
-		final ParentLocalFragment other = (ParentLocalFragment) obj;
+		final ParentLocalStep other = (ParentLocalStep) obj;
 
 		return this.object.getScope().equals(other.object.getScope());
 	}

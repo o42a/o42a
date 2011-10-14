@@ -28,7 +28,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.path.PathWalker;
 
 
@@ -50,14 +50,14 @@ public final class DummyPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean module(PathFragment fragment, Obj module) {
+	public boolean module(Step fragment, Obj module) {
 		return true;
 	}
 
 	@Override
 	public boolean up(
 			Container enclosed,
-			PathFragment fragment,
+			Step fragment,
 			Container enclosing) {
 		return true;
 	}
@@ -65,39 +65,39 @@ public final class DummyPathWalker implements PathWalker {
 	@Override
 	public boolean member(
 			Container container,
-			PathFragment fragment,
+			Step fragment,
 			Member member) {
 		return true;
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, PathFragment fragment, ArrayElement element) {
+	public boolean arrayElement(Obj array, Step fragment, ArrayElement element) {
 		return true;
 	}
 
 	@Override
 	public boolean fieldDep(
 			Obj object,
-			PathFragment fragment,
+			Step fragment,
 			Field<?> dependency) {
 		return true;
 	}
 
 	@Override
-	public boolean refDep(Obj object, PathFragment fragment, Ref dependency) {
+	public boolean refDep(Obj object, Step fragment, Ref dependency) {
 		return true;
 	}
 
 	@Override
 	public boolean materialize(
 			Artifact<?> artifact,
-			PathFragment fragment,
+			Step fragment,
 			Obj result) {
 		return true;
 	}
 
 	@Override
-	public void abortedAt(Scope last, PathFragment brokenFragment) {
+	public void abortedAt(Scope last, Step brokenFragment) {
 	}
 
 	@Override

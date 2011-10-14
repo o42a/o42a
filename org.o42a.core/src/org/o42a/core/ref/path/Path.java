@@ -22,7 +22,7 @@ package org.o42a.core.ref.path;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOfRange;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.ref.path.PathFragment.MATERIALIZE;
+import static org.o42a.core.ref.path.Step.MATERIALIZE;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
@@ -38,7 +38,7 @@ import java.util.Arrays;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.array.impl.ArrayElementFragment;
+import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -56,7 +56,7 @@ public class Path {
 
 	public static final AbsolutePath ROOT_PATH = new AbsolutePath();
 
-	public static final Path SELF_PATH = new Path(new PathFragment[0]);
+	public static final Path SELF_PATH = new Path(new Step[0]);
 
 	public static AbsolutePath absolutePath(
 			CompilerContext context,
@@ -65,11 +65,11 @@ public class Path {
 	}
 
 	public static AbsolutePath modulePath(String moduleId) {
-		return new AbsolutePath(new ModuleFragment(moduleId));
+		return new AbsolutePath(new ModuleStep(moduleId));
 	}
 
 	public static Path memberPath(MemberKey memberKey) {
-		return new Path(new MemberFragment(memberKey));
+		return new Path(new MemberStep(memberKey));
 	}
 
 	public static Path materializePath() {
@@ -77,15 +77,15 @@ public class Path {
 	}
 
 	private final boolean absolute;
-	private final PathFragment[] fragments;
+	private final Step[] fragments;
 
-	Path(boolean absolute, PathFragment... fragments) {
+	Path(boolean absolute, Step... fragments) {
 		this.absolute = absolute;
 		this.fragments = fragments;
 		assert assertFragmentsNotNull(fragments);
 	}
 
-	Path(PathFragment... fragments) {
+	Path(Step... fragments) {
 		this.absolute = false;
 		this.fragments = fragments;
 		assert assertFragmentsNotNull(fragments);
@@ -99,7 +99,7 @@ public class Path {
 		return this.fragments.length == 0 && !isAbsolute();
 	}
 
-	public final PathFragment[] getFragments() {
+	public final Step[] getFragments() {
 		return this.fragments;
 	}
 
@@ -119,7 +119,7 @@ public class Path {
 				walker);
 	}
 
-	public Path append(PathFragment fragment) {
+	public Path append(Step fragment) {
 		if (fragment == null) {
 			throw new NullPointerException("Path key not specified");
 		}
@@ -127,7 +127,7 @@ public class Path {
 			return new AbsolutePath(fragment);
 		}
 
-		final PathFragment[] newFragments =
+		final Step[] newFragments =
 				ArrayUtil.append(this.fragments, fragment);
 
 		if (!isAbsolute()) {
@@ -141,12 +141,12 @@ public class Path {
 		if (memberKey == null) {
 			throw new NullPointerException("Field key not specified");
 		}
-		return append(new MemberFragment(memberKey));
+		return append(new MemberStep(memberKey));
 	}
 
 	public Path cutArtifact() {
 
-		final PathFragment[] fragments = dematerialize().fragments;
+		final Step[] fragments = dematerialize().fragments;
 		final int length = fragments.length;
 
 		if (length == 0) {
@@ -154,7 +154,7 @@ public class Path {
 		}
 
 		final int lastIdx = length - 1;
-		final PathFragment lastFragment = fragments[lastIdx];
+		final Step lastFragment = fragments[lastIdx];
 
 		if (!lastFragment.isArtifact()) {
 			return this;
@@ -166,7 +166,7 @@ public class Path {
 			return ROOT_PATH;
 		}
 
-		final PathFragment[] newFragments = Arrays.copyOf(fragments, lastIdx);
+		final Step[] newFragments = Arrays.copyOf(fragments, lastIdx);
 
 		if (!isAbsolute()) {
 			return new Path(newFragments);
@@ -183,8 +183,8 @@ public class Path {
 			return this;
 		}
 
-		final PathFragment lastFragment = this.fragments[length - 1];
-		final PathFragment materializer = lastFragment.materialize();
+		final Step lastFragment = this.fragments[length - 1];
+		final Step materializer = lastFragment.materialize();
 
 		if (materializer == null) {
 			return this;
@@ -202,7 +202,7 @@ public class Path {
 		}
 
 		final int lastIdx = length - 1;
-		final PathFragment lastFragment = this.fragments[lastIdx];
+		final Step lastFragment = this.fragments[lastIdx];
 
 		if (!lastFragment.isMaterializer()) {
 			return this;
@@ -214,7 +214,7 @@ public class Path {
 			return ROOT_PATH;
 		}
 
-		final PathFragment[] newFragments =
+		final Step[] newFragments =
 				Arrays.copyOf(this.fragments, lastIdx);
 
 		if (!isAbsolute()) {
@@ -225,7 +225,7 @@ public class Path {
 	}
 
 	public Path arrayItem(Ref indexRef) {
-		return append(new ArrayElementFragment(indexRef));
+		return append(new ArrayElementStep(indexRef));
 	}
 
 	public Path append(Path path) {
@@ -236,7 +236,7 @@ public class Path {
 			return path;
 		}
 
-		final PathFragment[] newFragments =
+		final Step[] newFragments =
 				ArrayUtil.append(this.fragments, path.fragments);
 
 		if (isAbsolute()) {
@@ -276,7 +276,7 @@ public class Path {
 
 	public Path rebuild() {
 
-		final PathFragment[] rebuilt = rebuild(this.fragments);
+		final Step[] rebuilt = rebuild(this.fragments);
 
 		if (rebuilt == this.fragments) {
 			return this;
@@ -303,14 +303,14 @@ public class Path {
 		}
 
 		final int lastIdx = length - 1;
-		final PathFragment lastFragment = this.fragments[lastIdx];
-		final PathFragment rebuilt = lastFragment.combineWithRef(followingRef);
+		final Step lastFragment = this.fragments[lastIdx];
+		final Step rebuilt = lastFragment.combineWithRef(followingRef);
 
 		if (rebuilt == null) {
 			return null;
 		}
 
-		final PathFragment[] newFragments = this.fragments.clone();
+		final Step[] newFragments = this.fragments.clone();
 
 		newFragments[lastIdx] = rebuilt;
 
@@ -344,7 +344,7 @@ public class Path {
 
 		for (int i = 0; i < len; ++i) {
 
-			final PathFragment fragment = this.fragments[i];
+			final Step fragment = this.fragments[i];
 			final PathReproduction reproduction =
 					fragment.reproduce(location, reproducer, toScope);
 
@@ -433,7 +433,7 @@ public class Path {
 
 		for (int i = 0; i < length; ++i) {
 
-			final PathFragment fragment = this.fragments[i];
+			final Step fragment = this.fragments[i];
 
 			if (i == 0) {
 				if (!isAbsolute() || fragment.isAbsolute()) {
@@ -462,8 +462,8 @@ public class Path {
 		return new PathTracker(resolver, walker);
 	}
 
-	private static boolean assertFragmentsNotNull(PathFragment[] fragments) {
-		for (PathFragment fragment : fragments) {
+	private static boolean assertFragmentsNotNull(Step[] fragments) {
+		for (Step fragment : fragments) {
 			assert fragment != null :
 				"Path fragment is null";
 		}
@@ -508,21 +508,21 @@ public class Path {
 		return pathResolution(this, result);
 	}
 
-	private PathFragment[] rebuild(PathFragment[] fragments) {
+	private Step[] rebuild(Step[] fragments) {
 		if (fragments.length <= 1) {
 			return fragments;
 		}
 
-		final PathFragment[] rebuiltFragments =
-				new PathFragment[fragments.length];
-		PathFragment prev = rebuiltFragments[0] = fragments[0];
+		final Step[] rebuiltFragments =
+				new Step[fragments.length];
+		Step prev = rebuiltFragments[0] = fragments[0];
 		int nextIdx = 1;
 		int rebuiltIdx = 0;
 
 		for (;;) {
 
-			final PathFragment next = fragments[nextIdx];
-			final PathFragment rebuilt = next.rebuild(prev);
+			final Step next = fragments[nextIdx];
+			final Step rebuilt = next.rebuild(prev);
 
 			if (rebuilt != null) {
 				rebuiltFragments[rebuiltIdx] = prev = rebuilt;
@@ -555,7 +555,7 @@ public class Path {
 		}
 
 		final int fragmentsLeft = this.fragments.length - firstUnchangedIdx;
-		final PathFragment[] newFragments = Arrays.copyOf(
+		final Step[] newFragments = Arrays.copyOf(
 				reproduced.fragments,
 				reproduced.fragments.length + fragmentsLeft);
 

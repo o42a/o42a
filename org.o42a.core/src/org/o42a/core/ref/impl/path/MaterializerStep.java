@@ -19,31 +19,30 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.source.Module;
 import org.o42a.core.st.Reproducer;
 
 
-public final class ModuleFragment extends PathFragment {
+public final class MaterializerStep extends Step {
 
-	private final String moduleId;
+	public static final MaterializerStep INSTANCE =
+			new MaterializerStep();
 
-	public ModuleFragment(String moduleId) {
-		this.moduleId = moduleId;
+	private MaterializerStep() {
 	}
 
 	@Override
-	public boolean isAbsolute() {
+	public boolean isMaterializer() {
 		return true;
 	}
 
@@ -52,12 +51,8 @@ public final class ModuleFragment extends PathFragment {
 		return false;
 	}
 
-	public String getModuleId() {
-		return this.moduleId;
-	}
-
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 		return null;
 	}
 
@@ -69,16 +64,18 @@ public final class ModuleFragment extends PathFragment {
 			Scope start,
 			PathWalker walker) {
 
-		final CompilerContext context = start.getContext();
-		final Module module = context.getIntrinsics().getModule(this.moduleId);
+		final Artifact<?> artifact = start.getArtifact();
 
-		if (module == null) {
-			context.getLogger().unresolvedModule(resolver, this.moduleId);
-			return null;
-		}
-		walker.module(this, module);
+		assert artifact != null :
+			"Can not materialize " + start;
+		assert artifact.getKind() != ArtifactKind.OBJECT :
+			"An attempt to materialize object " + start;
 
-		return module;
+		final Obj result = artifact.materialize();
+
+		walker.materialize(artifact, this, result);
+
+		return result;
 	}
 
 	@Override
@@ -86,44 +83,17 @@ public final class ModuleFragment extends PathFragment {
 			LocationInfo location,
 			Reproducer reproducer,
 			Scope scope) {
-		return unchangedPath(toPath());
+		return reproducedPath(toPath());
 	}
 
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final Obj module =
-				start.getContext().getIntrinsics().getModule(this.moduleId);
-		final ObjectIR moduleIR = module.ir(start.getGenerator());
-
-		return moduleIR.op(start.getBuilder(), dirs.code());
-	}
-
-	@Override
-	public int hashCode() {
-		return this.moduleId.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-
-		final ModuleFragment other = (ModuleFragment) obj;
-
-		return this.moduleId.equals(other.moduleId);
+		return start.materialize(dirs);
 	}
 
 	@Override
 	public String toString() {
-		return "<" + this.moduleId + '>';
+		return "*";
 	}
 
 }

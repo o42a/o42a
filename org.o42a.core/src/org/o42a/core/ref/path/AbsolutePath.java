@@ -48,7 +48,7 @@ public final class AbsolutePath extends Path {
 	private Obj startObject;
 	private int startIndex;
 
-	AbsolutePath(PathFragment... fragments) {
+	AbsolutePath(Step... fragments) {
 		super(true, fragments);
 	}
 
@@ -117,7 +117,7 @@ public final class AbsolutePath extends Path {
 	}
 
 	@Override
-	public AbsolutePath append(PathFragment fragment) {
+	public AbsolutePath append(Step fragment) {
 		return (AbsolutePath) super.append(fragment);
 	}
 
@@ -173,7 +173,7 @@ public final class AbsolutePath extends Path {
 		final CompilerContext context = builder.getContext();
 		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
 		HostOp found = start.op(builder, dirs.code());
-		final PathFragment[] fragments = getFragments();
+		final Step[] fragments = getFragments();
 
 		for (int i = startIndex(context); i < fragments.length; ++i) {
 			found = fragments[i].write(dirs, found);

@@ -88,7 +88,7 @@ public final class FieldDep extends Dep {
 	}
 
 	@Override
-	public PathFragment materialize() {
+	public Step materialize() {
 		if (getDepField().getArtifactKind().isObject()) {
 			return null;
 		}
