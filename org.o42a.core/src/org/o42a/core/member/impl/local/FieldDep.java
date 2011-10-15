@@ -58,16 +58,6 @@ public final class FieldDep extends Dep {
 	}
 
 	@Override
-	public PathKind getPathKind() {
-		return PathKind.RELATIVE_PATH;
-	}
-
-	@Override
-	public boolean isArtifact() {
-		return true;
-	}
-
-	@Override
 	public Object getKey() {
 		return this.depField.getKey();
 	}

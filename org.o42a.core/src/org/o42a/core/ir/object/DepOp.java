@@ -126,7 +126,7 @@ public class DepOp extends IROp implements HostOp {
 
 		final Code code = dirs.code();
 
-		switch (getDep().getKind()) {
+		switch (getDep().getDepKind()) {
 		case FIELD_DEP:
 
 			final Field<?> depField = getDep().getDepField();

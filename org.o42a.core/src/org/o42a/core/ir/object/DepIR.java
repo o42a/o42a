@@ -80,7 +80,7 @@ public class DepIR {
 	}
 
 	private CodeId localId() {
-		switch (getDep().getKind()) {
+		switch (getDep().getDepKind()) {
 		case FIELD_DEP:
 
 			final FieldIR<?> depFieldIR =

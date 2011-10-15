@@ -43,13 +43,13 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	public PathKind getPathKind() {
-		return PathKind.ABSOLUTE_PATH;
+	public StepKind getStepKind() {
+		return StepKind.STATIC_STEP;
 	}
 
 	@Override
-	public boolean isArtifact() {
-		return false;
+	public PathKind getPathKind() {
+		return PathKind.ABSOLUTE_PATH;
 	}
 
 	public String getModuleId() {

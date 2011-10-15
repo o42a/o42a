@@ -50,13 +50,13 @@ public class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public PathKind getPathKind() {
-		return PathKind.RELATIVE_PATH;
+	public StepKind getStepKind() {
+		return StepKind.ARTIFACT_STEP;
 	}
 
 	@Override
-	public boolean isArtifact() {
-		return true;
+	public PathKind getPathKind() {
+		return PathKind.RELATIVE_PATH;
 	}
 
 	@Override

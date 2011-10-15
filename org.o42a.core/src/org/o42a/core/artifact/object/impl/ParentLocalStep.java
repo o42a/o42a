@@ -47,13 +47,13 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public PathKind getPathKind() {
-		return PathKind.RELATIVE_PATH;
+	public StepKind getStepKind() {
+		return StepKind.PARENT_STEP;
 	}
 
 	@Override
-	public boolean isArtifact() {
-		return false;
+	public PathKind getPathKind() {
+		return PathKind.RELATIVE_PATH;
 	}
 
 	@Override

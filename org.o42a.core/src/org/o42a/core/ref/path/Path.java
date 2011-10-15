@@ -168,7 +168,7 @@ public final class Path {
 		final int lastIdx = length - 1;
 		final Step lastStep = steps[lastIdx];
 
-		if (!lastStep.isArtifact()) {
+		if (!lastStep.getStepKind().isArtifact()) {
 			return this;
 		}
 		if (lastIdx == 0) {
@@ -209,7 +209,7 @@ public final class Path {
 		final int lastIdx = length - 1;
 		final Step lastStep = this.steps[lastIdx];
 
-		if (!lastStep.isMaterializer()) {
+		if (!lastStep.getStepKind().isMaterializer()) {
 			return this;
 		}
 		if (lastIdx == 0) {
