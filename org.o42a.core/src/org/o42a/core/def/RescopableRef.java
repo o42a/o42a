@@ -76,11 +76,11 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 	}
 
 	public final Resolution resolve(Resolver resolver) {
-		return getRef().resolve(getRescoper().rescope(this, resolver));
+		return getRef().resolve(getRescoper().rescope(resolver));
 	}
 
 	public final Value<?> value(Resolver resolver) {
-		return getRef().value(getRescoper().rescope(this, resolver));
+		return getRef().value(getRescoper().rescope(resolver));
 	}
 
 	public R rescope(Rescoper rescoper) {
@@ -106,15 +106,15 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		if (getScope() == scope) {
 			return self();
 		}
-		return rescope(getScope().rescoperTo(scope));
+		return rescope(getScope().rescoperTo(this, scope));
 	}
 
 	public void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			getRescoper().resolveAll(this, resolver);
-			fullyResolve(getRescoper().rescope(this, resolver));
+			getRescoper().resolveAll(resolver);
+			fullyResolve(getRescoper().rescope(resolver));
 		} finally {
 			getContext().fullResolution().end();
 		}

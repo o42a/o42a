@@ -99,7 +99,7 @@ public abstract class CondDef extends Def<CondDef> {
 	public final Condition condition(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final Resolver rescoped = getRescoper().rescope(this, resolver);
+		final Resolver rescoped = getRescoper().rescope(resolver);
 
 		if (hasPrerequisite()) {
 

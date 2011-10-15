@@ -47,7 +47,7 @@ public final class RescopedLogical extends Logical {
 	@Override
 	public LogicalValue logicalValue(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return this.logical.logicalValue(this.rescoper.rescope(this, resolver));
+		return this.logical.logicalValue(this.rescoper.rescope(resolver));
 	}
 
 	@Override
@@ -87,8 +87,8 @@ public final class RescopedLogical extends Logical {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		this.rescoper.resolveAll(this, resolver);
-		this.logical.resolveAll(this.rescoper.rescope(this, resolver));
+		this.rescoper.resolveAll(resolver);
+		this.logical.resolveAll(this.rescoper.rescope(resolver));
 	}
 
 }

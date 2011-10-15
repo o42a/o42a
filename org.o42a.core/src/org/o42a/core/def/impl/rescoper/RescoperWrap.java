@@ -20,7 +20,6 @@
 package org.o42a.core.def.impl.rescoper;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -50,8 +49,8 @@ public abstract class RescoperWrap extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(LocationInfo location, Resolver resolver) {
-		return wrapped().rescope(location, resolver);
+	public Resolver rescope(Resolver resolver) {
+		return wrapped().rescope(resolver);
 	}
 
 	@Override
@@ -70,8 +69,8 @@ public abstract class RescoperWrap extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(ScopeInfo location, Resolver resolver) {
-		wrapped().resolveAll(location, resolver);
+	public void resolveAll(Resolver resolver) {
+		wrapped().resolveAll(resolver);
 	}
 
 	@Override

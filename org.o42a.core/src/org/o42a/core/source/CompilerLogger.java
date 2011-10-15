@@ -472,14 +472,6 @@ public class CompilerLogger implements Logger {
 		error("unresolved", location, "'%s' can not be resolved", target);
 	}
 
-	public void unresolvedModule(LogInfo location, String moduleId) {
-		error(
-				"unresolved_module",
-				location,
-				"Module <%s> can not be resolved",
-				moduleId);
-	}
-
 	public void unresolvedScope(LogInfo location, String scope) {
 		error("unresolved_scope", location, "Unresolved scope: %s", scope);
 	}

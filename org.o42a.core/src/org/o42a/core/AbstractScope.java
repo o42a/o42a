@@ -41,6 +41,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UserInfo;
 
 
@@ -125,7 +126,10 @@ public abstract class AbstractScope implements Scope {
 		return pathToMember(scope, targetScope);
 	}
 
-	public static Rescoper rescoperTo(Scope fromScope, Scope toScope) {
+	public static Rescoper rescoperTo(
+			LocationInfo location,
+			Scope fromScope,
+			Scope toScope) {
 		if (fromScope == toScope) {
 			return transparentRescoper(toScope);
 		}
@@ -135,7 +139,7 @@ public abstract class AbstractScope implements Scope {
 		assert path != null :
 				"Can not rescope from " + fromScope + " to " + toScope;
 
-		return path.rescoper(toScope);
+		return path.rescoper(location, toScope);
 	}
 
 	public static boolean contains(Scope scope, Scope other) {
@@ -307,8 +311,8 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final Rescoper rescoperTo(Scope toScope) {
-		return rescoperTo(this, toScope);
+	public final Rescoper rescoperTo(LocationInfo location, Scope toScope) {
+		return rescoperTo(location, this, toScope);
 	}
 
 	@Override

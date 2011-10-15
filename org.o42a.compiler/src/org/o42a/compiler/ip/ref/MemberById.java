@@ -159,8 +159,8 @@ public class MemberById extends Wrap {
 		}
 
 		final PathResolution pathResolution =
-				found.bind(enclosingScope).resolve(
-						pathResolver(enclosing, dummyUser()),
+				found.bind(this, enclosingScope).resolve(
+						pathResolver(dummyUser()),
 						enclosingScope);
 
 		if (!pathResolution.isResolved()) {

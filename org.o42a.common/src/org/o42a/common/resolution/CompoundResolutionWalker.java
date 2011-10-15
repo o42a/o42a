@@ -44,7 +44,7 @@ public class CompoundResolutionWalker implements ResolutionWalker {
 	}
 
 	@Override
-	public PathWalker path(LocationInfo location, BoundPath path) {
+	public PathWalker path(BoundPath path) {
 
 		final ResolutionWalker[] walkers = getWalkers();
 		final PathWalker[] pathWalkers = new PathWalker[walkers.length];
@@ -52,7 +52,7 @@ public class CompoundResolutionWalker implements ResolutionWalker {
 
 		for (ResolutionWalker walker : walkers) {
 
-			final PathWalker pathWalker = walker.path(location, path);
+			final PathWalker pathWalker = walker.path(path);
 
 			if (pathWalker != null && pathWalker != DUMMY_PATH_WALKER) {
 				pathWalkers[idx++] = pathWalker;

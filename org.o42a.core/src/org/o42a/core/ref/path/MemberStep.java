@@ -171,7 +171,7 @@ public class MemberStep extends Step {
 		final Member member = start.getContainer().member(this.memberKey);
 
 		if (member == null) {
-			unresolved(resolver, path, index, start);
+			unresolved(path, index, start);
 			return null;
 		}
 
@@ -207,12 +207,11 @@ public class MemberStep extends Step {
 	}
 
 	private Container unresolved(
-			LocationInfo location,
 			BoundPath path,
 			int index,
 			Scope start) {
 		start.getContext().getLogger().unresolved(
-				location,
+				path,
 				path.toString(index + 1));
 		return null;
 	}

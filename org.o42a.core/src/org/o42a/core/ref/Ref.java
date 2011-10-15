@@ -216,7 +216,7 @@ public abstract class Ref extends Statement {
 		if (getScope() == toScope) {
 			return this;
 		}
-		return rescope(getScope().rescoperTo(toScope));
+		return rescope(getScope().rescoperTo(this, toScope));
 	}
 
 	public Ref rescope(Rescoper rescoper) {
@@ -272,7 +272,7 @@ public abstract class Ref extends Statement {
 		final Path path = getPath();
 
 		if (path != null) {
-			return path.rescoper(getScope());
+			return path.rescoper(this, getScope());
 		}
 
 		return new RefRescoper(this);

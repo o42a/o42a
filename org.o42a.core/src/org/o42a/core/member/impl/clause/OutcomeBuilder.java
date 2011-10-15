@@ -56,7 +56,7 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public PathWalker path(LocationInfo location, BoundPath path) {
+	public PathWalker path(BoundPath path) {
 		return this;
 	}
 

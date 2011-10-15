@@ -180,7 +180,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		public LogicalValue logicalValue(Resolver resolver) {
 			assertCompatible(resolver.getScope());
 			return this.targetRef.getRef().getLogical().logicalValue(
-					this.targetRef.getRescoper().rescope(this, resolver));
+					this.targetRef.getRescoper().rescope(resolver));
 		}
 
 		@Override
@@ -212,7 +212,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		protected void fullyResolve(Resolver resolver) {
 			this.targetRef.resolveAll(resolver);
 			this.targetRef.getRef().resolveValues(
-					this.targetRef.getRescoper().rescope(this, resolver));
+					this.targetRef.getRescoper().rescope(resolver));
 		}
 
 	}

@@ -152,8 +152,8 @@ public final class ValuePartRef extends ObjectConstructor {
 		protected Definitions explicitDefinitions() {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
-			final Obj self = selfPath.bind(getScope()).resolve(
-					pathResolver(this, value().proposition()),
+			final Obj self = selfPath.bind(this, getScope()).resolve(
+					pathResolver(value().proposition()),
 					getScope()).getArtifact().toObject();
 			final Definitions definitions;
 
@@ -165,7 +165,7 @@ public final class ValuePartRef extends ObjectConstructor {
 
 			return ValuePartRef.this.valuePart.valuePart(
 					ValuePartRef.this,
-					selfPath.rescoper(getScope()).update(definitions));
+					selfPath.rescoper(this, getScope()).update(definitions));
 		}
 
 		@Override
