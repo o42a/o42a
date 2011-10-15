@@ -41,12 +41,22 @@ public abstract class Dep extends Step {
 		this.kind = kind;
 	}
 
-	public final Obj getObject() {
-		return this.object;
+	@Override
+	public final StepKind getStepKind() {
+		return getDepKind().getStepKind();
 	}
 
-	public final DepKind getKind() {
+	@Override
+	public final PathKind getPathKind() {
+		return getDepKind().getPathKind();
+	}
+
+	public final DepKind getDepKind() {
 		return this.kind;
+	}
+
+	public final Obj getObject() {
+		return this.object;
 	}
 
 	public abstract Object getKey();

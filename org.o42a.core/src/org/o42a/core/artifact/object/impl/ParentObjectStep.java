@@ -46,8 +46,8 @@ public final class ParentObjectStep extends MemberStep {
 	}
 
 	@Override
-	public boolean isArtifact() {
-		return false;
+	public StepKind getStepKind() {
+		return StepKind.PARENT_STEP;
 	}
 
 	@Override

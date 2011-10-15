@@ -17,32 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
-
-import org.o42a.core.ref.path.PathKind;
-import org.o42a.core.ref.path.StepKind;
+package org.o42a.core.ref.path;
 
 
-public enum DepKind {
+public enum StepKind {
 
-	FIELD_DEP(StepKind.ARTIFACT_STEP, PathKind.RELATIVE_PATH),
-	ENCLOSING_OWNER_DEP(StepKind.PARENT_STEP, PathKind.RELATIVE_PATH),
-	REF_DEP(StepKind.ARTIFACT_STEP, PathKind.RELATIVE_PATH);
+	STATIC_STEP,
+	ARTIFACT_STEP,
+	MATERIALIZER_STEP,
+	MEMBER_STEP,
+	PARENT_STEP;
 
-	private final StepKind stepKind;
-	private final PathKind pathKind;
-
-	DepKind(StepKind stepKind, PathKind pathKind) {
-		this.stepKind = stepKind;
-		this.pathKind = pathKind;
+	public final boolean isArtifact() {
+		return this == ARTIFACT_STEP;
 	}
 
-	public final StepKind getStepKind() {
-		return this.stepKind;
-	}
-
-	public final PathKind getPathKind() {
-		return this.pathKind;
+	public final boolean isMaterializer() {
+		return this == MATERIALIZER_STEP;
 	}
 
 }

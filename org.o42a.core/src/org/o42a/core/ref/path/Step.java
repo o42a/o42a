@@ -36,17 +36,13 @@ public abstract class Step {
 	public static final MaterializerStep MATERIALIZE =
 			MaterializerStep.INSTANCE;
 
+	public abstract StepKind getStepKind();
+
 	public abstract PathKind getPathKind();
 
 	public String getName() {
 		return null;
 	}
-
-	public boolean isMaterializer() {
-		return false;
-	}
-
-	public abstract boolean isArtifact();
 
 	public abstract Step materialize();
 

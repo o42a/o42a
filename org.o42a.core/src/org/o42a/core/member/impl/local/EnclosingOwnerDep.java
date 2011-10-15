@@ -54,16 +54,6 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public PathKind getPathKind() {
-		return PathKind.RELATIVE_PATH;
-	}
-
-	@Override
-	public boolean isArtifact() {
-		return false;
-	}
-
-	@Override
 	public Object getKey() {
 		return null;
 	}
