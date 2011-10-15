@@ -30,7 +30,7 @@ import org.o42a.core.source.LocationInfo;
 public class DummyResolutionWalker implements ResolutionWalker {
 
 	@Override
-	public PathWalker path(LocationInfo location, BoundPath path) {
+	public PathWalker path(BoundPath path) {
 		return PathWalker.DUMMY_PATH_WALKER;
 	}
 

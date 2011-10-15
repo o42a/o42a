@@ -84,7 +84,7 @@ public class AncestorRef extends Wrap {
 				}
 
 				final TypeRef rescopedAncestor =
-						ancestor.rescope(upPath.rescoper(getScope()));
+						ancestor.rescope(upPath.rescoper(this, getScope()));
 
 				return rescopedAncestor.getRescopedRef();
 			}
@@ -103,7 +103,8 @@ public class AncestorRef extends Wrap {
 				object.getScope().getEnclosingScopePath();
 
 		if (path != null) {
-			rescoper = path.append(objectEnclosingPath).rescoper(getScope());
+			rescoper =
+					path.append(objectEnclosingPath).rescoper(this, getScope());
 		} else {
 
 			final Ref ancestorScopeRef =

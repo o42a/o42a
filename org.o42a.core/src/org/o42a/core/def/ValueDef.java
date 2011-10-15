@@ -81,7 +81,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		}
 
 		final Resolver resolver =
-				getRescoper().rescope(this, getScope().dummyResolver());
+				getRescoper().rescope(getScope().dummyResolver());
 
 		return this.constantValue = calculateValue(resolver);
 	}
@@ -118,7 +118,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 	public final Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final Resolver rescoped = getRescoper().rescope(this, resolver);
+		final Resolver rescoped = getRescoper().rescope(resolver);
 
 		if (hasPrerequisite()) {
 

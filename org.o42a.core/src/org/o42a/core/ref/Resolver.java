@@ -113,7 +113,7 @@ public class Resolver implements UserInfo, LocationInfo {
 			BoundPath path,
 			Scope start) {
 
-		final PathWalker pathWalker = this.walker.path(resolver, path);
+		final PathWalker pathWalker = this.walker.path(path);
 
 		if (pathWalker == null) {
 			return null;
@@ -124,12 +124,12 @@ public class Resolver implements UserInfo, LocationInfo {
 
 		if (!pathResolution.isResolved()) {
 			if (pathResolution.isError()) {
-				return noResolution(resolver);
+				return noResolution(path);
 			}
 			return null;
 		}
 
-		return containerResolution(resolver, pathResolution.getResult());
+		return containerResolution(path, pathResolution.getResult());
 	}
 
 	public final Resolution newObject(ScopeInfo location, Obj object) {

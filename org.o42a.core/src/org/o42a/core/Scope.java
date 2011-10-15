@@ -35,6 +35,7 @@ import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UserInfo;
 
 
@@ -110,7 +111,7 @@ public interface Scope extends PlaceInfo {
 
 	Path pathTo(Scope targetScope);
 
-	Rescoper rescoperTo(Scope toScope);
+	Rescoper rescoperTo(LocationInfo location, Scope toScope);
 
 	boolean contains(Scope other);
 

@@ -95,7 +95,7 @@ public class ArrayElementStep extends Step {
 
 		if (indexValue.getValueType() != ValueType.INTEGER) {
 			this.error = true;
-			resolver.getLogger().error(
+			path.getLogger().error(
 					"non_integer_array_index",
 					this.indexRef,
 					"Array index should be integer");
@@ -113,7 +113,7 @@ public class ArrayElementStep extends Step {
 			final long itemIdx = arrayIndexVal.getDefiniteValue();
 
 			if (itemIdx < 0) {
-				resolver.getLogger().error(
+				path.getLogger().error(
 						"negative_array_index",
 						this.indexRef,
 						"Negative array index");
@@ -132,7 +132,7 @@ public class ArrayElementStep extends Step {
 						arrayVal.getDefiniteValue().items(start);
 
 				if (items.length >= itemIdx) {
-					resolver.getLogger().error(
+					path.getLogger().error(
 							"invalid_array_index",
 							this.indexRef,
 							"Array index %d is too big."

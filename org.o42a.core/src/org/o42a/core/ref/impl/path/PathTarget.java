@@ -57,7 +57,7 @@ public final class PathTarget extends Ref {
 		this.path = path;
 		this.start = start;
 		if (start == null) {
-			this.boundPath = path.bind(getScope());
+			this.boundPath = path.bind(this, getScope());
 			this.fullPath = new Holder<Path>(path);
 		}
 	}
@@ -105,7 +105,7 @@ public final class PathTarget extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return resolve(resolver, pathResolver(this, resolver));
+		return resolve(resolver, pathResolver(resolver));
 	}
 
 	@Override
@@ -311,12 +311,12 @@ public final class PathTarget extends Ref {
 		if (this.start != null) {
 			this.start.resolveAll(resolver);
 		}
-		resolve(resolver, fullPathResolver(this, resolver)).resolveAll();
+		resolve(resolver, fullPathResolver(resolver)).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver, valuePathResolver(this, resolver)).resolveValues(
+		resolve(resolver, valuePathResolver(resolver)).resolveValues(
 				resolver);
 	}
 
@@ -333,10 +333,11 @@ public final class PathTarget extends Ref {
 		final Path fullPath = getPath();
 
 		if (fullPath != null) {
-			return this.boundPath = fullPath.bind(getScope());
+			return this.boundPath = fullPath.bind(this, getScope());
 		}
 
 		return this.boundPath = this.path.bind(
+				this,
 				this.start.resolve(getScope().dummyResolver()).getScope());
 	}
 
@@ -400,13 +401,13 @@ public final class PathTarget extends Ref {
 
 	private Rescoper pathRescoper(Ref start, Path path) {
 		if (start == null) {
-			return path.rescoper(getScope());
+			return path.rescoper(this, getScope());
 		}
 
 		final Scope startScope =
 				start.resolve(getScope().dummyResolver()).getScope();
 
-		return path.rescoper(startScope).and(start.toRescoper());
+		return path.rescoper(this, startScope).and(start.toRescoper());
 	}
 
 	private static final class Op extends RefOp {

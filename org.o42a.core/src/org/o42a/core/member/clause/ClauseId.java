@@ -30,6 +30,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -273,11 +274,12 @@ public enum ClauseId {
 
 			final Scope start = adapterType.getContext().getRoot().getScope();
 			final BoundPath adapterPath =
-					clauseId.adapterPath(adapterType.getContext()).bind(start);
+					clauseId.adapterPath(adapterType.getContext())
+					.bind(adapterType, start);
+			final PathResolution adapterResolution =
+					adapterPath.resolve(pathResolver(dummyUser()), start);
 
-			if (type == adapterPath.resolve(
-					pathResolver(adapterType, dummyUser()),
-					start).getArtifact().toObject()) {
+			if (type == adapterResolution.getArtifact().toObject()) {
 				return clauseId;
 			}
 		}

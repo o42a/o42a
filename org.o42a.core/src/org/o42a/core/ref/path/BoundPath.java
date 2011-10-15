@@ -37,10 +37,12 @@ import org.o42a.core.ref.impl.path.AbsolutePathStartFinder;
 import org.o42a.core.ref.impl.path.AbsolutePathTracker;
 import org.o42a.core.ref.impl.path.PathTracker;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
 
 
-public class BoundPath {
+public class BoundPath extends Location {
 
 	private final Scope origin;
 	private final Path rawPath;
@@ -49,7 +51,8 @@ public class BoundPath {
 	private Obj startObject;
 	private int startIndex;
 
-	BoundPath(Scope origin, Path rawPath) {
+	BoundPath(LocationInfo location, Scope origin, Path rawPath) {
+		super(location);
 		this.origin = origin;
 		this.rawPath = rawPath;
 	}
@@ -198,7 +201,7 @@ public class BoundPath {
 		final AbsolutePathStartFinder walker = new AbsolutePathStartFinder();
 
 		walk(
-				pathResolver(context, dummyUser()),
+				pathResolver(dummyUser()),
 				context.getRoot().getScope(),
 				walker);
 

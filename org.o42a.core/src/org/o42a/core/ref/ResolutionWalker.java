@@ -31,7 +31,7 @@ public interface ResolutionWalker {
 
 	ResolutionWalker DUMMY_RESOLUTION_WALKER = new DummyResolutionWalker();
 
-	PathWalker path(LocationInfo location, BoundPath path);
+	PathWalker path(BoundPath path);
 
 	boolean newObject(ScopeInfo location, Obj object);
 

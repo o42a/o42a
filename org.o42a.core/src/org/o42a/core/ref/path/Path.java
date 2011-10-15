@@ -210,11 +210,11 @@ public final class Path {
 		return new Path(getKind(), newSteps);
 	}
 
-	public Rescoper rescoper(Scope finalScope) {
+	public Rescoper rescoper(LocationInfo location, Scope finalScope) {
 		if (!isAbsolute() && getSteps().length == 0) {
 			return transparentRescoper(finalScope);
 		}
-		return new PathRescoper(this, finalScope);
+		return new PathRescoper(location, this, finalScope);
 	}
 
 	public Ref target(
@@ -234,8 +234,8 @@ public final class Path {
 		return new PathTarget(location, distributor, this);
 	}
 
-	public final BoundPath bind(Scope origin) {
-		return new BoundPath(origin, this);
+	public final BoundPath bind(LocationInfo location, Scope origin) {
+		return new BoundPath(location, origin, this);
 	}
 
 	public Path rebuildWithRef(Ref followingRef) {

@@ -105,13 +105,14 @@ public class OverriddenEx extends ObjectConstructor {
 		protected Definitions explicitDefinitions() {
 
 			final Path selfPath = getScope().getEnclosingScopePath();
-			final Obj self = selfPath.bind(getScope()).resolve(
-					pathResolver(this, value().proposition()),
+			final Obj self = selfPath.bind(this, getScope()).resolve(
+					pathResolver(value().proposition()),
 					getScope()).getArtifact().toObject();
 			final Definitions overriddenDefinitions =
 					self.value().getOverriddenDefinitions();
 
-			return selfPath.rescoper(getScope()).update(overriddenDefinitions);
+			return selfPath.rescoper(this, getScope())
+					.update(overriddenDefinitions);
 		}
 
 		@Override

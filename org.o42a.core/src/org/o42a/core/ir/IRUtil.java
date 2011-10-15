@@ -153,8 +153,8 @@ public class IRUtil {
 				enclosingObjectScope);
 		final DeclaredInWriter writer = new DeclaredInWriter(generator, id);
 
-		clause.pathInObject().bind(enclosingObjectScope).walk(
-				pathResolver(scope,dummyUser()),
+		clause.pathInObject().bind(scope, enclosingObjectScope).walk(
+				pathResolver(dummyUser()),
 				enclosingObjectScope,
 				writer);
 

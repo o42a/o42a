@@ -20,7 +20,6 @@
 package org.o42a.core.def.impl.rescoper;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Def;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.Rescoper;
@@ -59,7 +58,7 @@ public final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(LocationInfo location, Resolver resolver) {
+	public Resolver rescope(Resolver resolver) {
 		return resolver;
 	}
 
@@ -90,7 +89,7 @@ public final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(ScopeInfo location, Resolver resolver) {
+	public void resolveAll(Resolver resolver) {
 	}
 
 	@Override

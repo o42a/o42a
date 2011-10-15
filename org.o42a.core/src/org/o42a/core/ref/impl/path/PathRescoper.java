@@ -23,7 +23,6 @@ import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -38,9 +37,9 @@ public final class PathRescoper extends Rescoper {
 
 	private final BoundPath path;
 
-	public PathRescoper(Path path, Scope finalScope) {
+	public PathRescoper(LocationInfo location, Path path, Scope finalScope) {
 		super(finalScope);
-		this.path = path.bind(finalScope);
+		this.path = path.bind(location, finalScope);
 	}
 
 	@Override
@@ -56,24 +55,24 @@ public final class PathRescoper extends Rescoper {
 	public Scope rescope(Scope scope) {
 
 		final PathResolution found = this.path.resolve(
-				pathResolver(scope, scope.dummyResolver()),
+				pathResolver(scope.dummyResolver()),
 				scope);
 
 		return found.isResolved() ? found.getResult().getScope() : null;
 	}
 
 	@Override
-	public Resolver rescope(LocationInfo location, Resolver resolver) {
+	public Resolver rescope(Resolver resolver) {
 
 		final PathWalker pathWalker =
-				resolver.getWalker().path(location, this.path);
+				resolver.getWalker().path(this.path);
 
 		if (pathWalker == null) {
 			return null;
 		}
 
 		final PathResolution found = this.path.walk(
-				pathResolver(location, resolver),
+				pathResolver(resolver),
 				resolver.getScope(),
 				pathWalker);
 
@@ -111,7 +110,7 @@ public final class PathRescoper extends Rescoper {
 			final Path newPath = pathRescoper.getPath().getRawPath().append(
 					getPath().getRawPath());
 
-			return new PathRescoper(newPath, other.getFinalScope());
+			return new PathRescoper(this.path, newPath, other.getFinalScope());
 		}
 
 		return super.and(other);
@@ -130,6 +129,7 @@ public final class PathRescoper extends Rescoper {
 		if (pathReproduction.isUnchanged()) {
 			if (!reproducer.isTopLevel()) {
 				return new PathRescoper(
+						this.path,
 						pathReproduction.getExternalPath(),
 						scope);
 			}
@@ -139,6 +139,7 @@ public final class PathRescoper extends Rescoper {
 		}
 
 		final PathRescoper reproducedPart = new PathRescoper(
+				this.path,
 				pathReproduction.getReproducedPath(),
 				scope);
 
@@ -147,10 +148,8 @@ public final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(ScopeInfo location, Resolver resolver) {
-		this.path.resolve(
-				fullPathResolver(location, resolver),
-				resolver.getScope());
+	public void resolveAll(Resolver resolver) {
+		this.path.resolve(fullPathResolver(resolver), resolver.getScope());
 	}
 
 	@Override
@@ -212,6 +211,7 @@ public final class PathRescoper extends Rescoper {
 		}
 
 		return externalPath.rescoper(
+				this.path,
 				phraseRescoper.rescope(phraseRescoper.getFinalScope()))
 				.and(phraseRescoper);
 	}

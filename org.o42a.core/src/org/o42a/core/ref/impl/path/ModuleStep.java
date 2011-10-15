@@ -73,7 +73,11 @@ public final class ModuleStep extends Step {
 		final Module module = context.getIntrinsics().getModule(this.moduleId);
 
 		if (module == null) {
-			context.getLogger().unresolvedModule(resolver, this.moduleId);
+			context.getLogger().error(
+					"unresolved_module",
+					path,
+					"Module <%s> can not be resolved",
+					this.moduleId);
 			return null;
 		}
 		walker.module(this, module);

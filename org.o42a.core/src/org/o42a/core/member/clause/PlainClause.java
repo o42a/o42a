@@ -40,6 +40,7 @@ import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UserInfo;
 
 
@@ -298,8 +299,8 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final Rescoper rescoperTo(Scope toScope) {
-		return AbstractScope.rescoperTo(this, toScope);
+	public final Rescoper rescoperTo(LocationInfo location, Scope toScope) {
+		return AbstractScope.rescoperTo(location, this, toScope);
 	}
 
 	@Override

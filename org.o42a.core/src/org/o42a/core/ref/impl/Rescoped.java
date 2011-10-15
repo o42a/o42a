@@ -76,12 +76,12 @@ public final class Rescoped extends Ref {
 
 		if (path != null) {
 			return resolver.path(
-					pathResolver(this, resolver),
-					path.bind(getScope()),
+					pathResolver(resolver),
+					path.bind(this, getScope()),
 					getScope());
 		}
 
-		final Resolver rescoped = this.rescoper.rescope(this, resolver);
+		final Resolver rescoped = this.rescoper.rescope(resolver);
 
 		if (rescoped == null) {
 			return null;
@@ -92,7 +92,7 @@ public final class Rescoped extends Ref {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return this.ref.value(this.rescoper.rescope(this, resolver));
+		return this.ref.value(this.rescoper.rescope(resolver));
 	}
 
 	@Override
@@ -175,8 +175,8 @@ public final class Rescoped extends Ref {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		this.ref.resolveAll(this.rescoper.rescope(this, resolver));
-		this.rescoper.resolveAll(this, resolver);
+		this.ref.resolveAll(this.rescoper.rescope(resolver));
+		this.rescoper.resolveAll(resolver);
 		resolve(resolver).resolveAll();
 	}
 

@@ -149,8 +149,8 @@ public enum PathKind {
 
 			final Path reproducedPath = reproduction.getReproducedPath();
 			final PathResolution resolution =
-					reproducedPath.bind(toScope).resolve(
-							pathResolver(location, dummyUser()),
+					reproducedPath.bind(location, toScope).resolve(
+							pathResolver(dummyUser()),
 							toScope);
 
 			if (!resolution.isResolved()) {

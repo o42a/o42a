@@ -62,7 +62,7 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public PathWalker path(LocationInfo location, BoundPath path) {
+	public PathWalker path(BoundPath path) {
 		if (path.isAbsolute()) {
 			this.root = this.root.getContext().getRoot();
 			return null;

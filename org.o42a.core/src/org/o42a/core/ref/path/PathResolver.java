@@ -19,42 +19,27 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.Loggable;
 import org.o42a.util.use.*;
 
 
-public final class PathResolver implements LocationInfo, UserInfo {
+public final class PathResolver implements UserInfo {
 
-	public static PathResolver pathResolver(
-			LocationInfo location,
-			UserInfo user) {
-		return new PathResolver(location, user.toUser(), (byte) -1);
+	public static PathResolver pathResolver(UserInfo user) {
+		return new PathResolver(user.toUser(), (byte) -1);
 	}
 
-	public static PathResolver fullPathResolver(
-			LocationInfo location,
-			UserInfo user) {
-		return new PathResolver(location, user.toUser(), (byte) 0);
+	public static PathResolver fullPathResolver(UserInfo user) {
+		return new PathResolver(user.toUser(), (byte) 0);
 	}
 
-	public static PathResolver valuePathResolver(
-			LocationInfo location,
-			UserInfo user) {
-		return new PathResolver(location, user.toUser(), (byte) 1);
+	public static PathResolver valuePathResolver(UserInfo user) {
+		return new PathResolver(user.toUser(), (byte) 1);
 	}
 
-	private final LocationInfo location;
 	private final User user;
 	private final byte fullResolution;
 
-	private PathResolver(
-			LocationInfo location,
-			User user,
-			byte fullResolution) {
-		this.location = location;
+	private PathResolver(User user, byte fullResolution) {
 		this.user = user;
 		this.fullResolution = fullResolution;
 	}
@@ -65,11 +50,6 @@ public final class PathResolver implements LocationInfo, UserInfo {
 
 	public final boolean isValueResolution() {
 		return this.fullResolution > 0;
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.location.getLoggable();
 	}
 
 	@Override
@@ -87,23 +67,11 @@ public final class PathResolver implements LocationInfo, UserInfo {
 		return this.user;
 	}
 
-	@Override
-	public final CompilerContext getContext() {
-		return this.location.getContext();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
-	}
-
 	public final PathResolver resolveBy(UserInfo user) {
 		if (user.toUser() == this.user) {
 			return this;
 		}
-		return new PathResolver(
-				this.location,
-				user.toUser(),
-				this.fullResolution);
+		return new PathResolver(user.toUser(), this.fullResolution);
 	}
 
 	@Override
@@ -114,11 +82,14 @@ public final class PathResolver implements LocationInfo, UserInfo {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append("PathResolver[").append(this.location);
-		if (!this.user.isDummy()) {
-			out.append(" by ").append(this.user);
+		if (isFullResolution()) {
+			if (isValueResolution()) {
+				out.append("Value");
+			} else {
+				out.append("Full");
+			}
 		}
-		out.append(']');
+		out.append("PathResolver[").append(this.user).append(']');
 
 		return out.toString();
 	}

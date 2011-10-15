@@ -49,7 +49,7 @@ public final class AbsolutePathTarget extends Ref {
 			Distributor distributor,
 			Path path) {
 		super(location, distributor);
-		this.path = path.bind(getScope());
+		this.path = path.bind(this, getScope());
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
-		return resolve(resolver, pathResolver(this, resolver));
+		return resolve(resolver, pathResolver(resolver));
 	}
 
 	@Override
@@ -83,14 +83,14 @@ public final class AbsolutePathTarget extends Ref {
 		final Resolution resolution = getResolution();
 
 		if (resolution.isError()) {
-			return errorRef(this, distribute()).toTypeRef();
+			return errorRef(location, distribute()).toTypeRef();
 		}
 
 		final Artifact<?> artifact = resolution.toArtifact();
 
 		if (artifact == null) {
 			getLogger().notArtifact(resolution);
-			return errorRef(this, distribute()).toTypeRef();
+			return errorRef(location, distribute()).toTypeRef();
 		}
 
 		final Path path = this.path.getRawPath();
@@ -107,7 +107,7 @@ public final class AbsolutePathTarget extends Ref {
 				ancestor = artifact.materialize().type().getAncestor();
 			}
 
-			return ancestor.rescope(upPath.rescoper(getScope()));
+			return ancestor.rescope(upPath.rescoper(location, getScope()));
 		}
 
 		final Path dematerializedPath = path.dematerialize();
@@ -117,7 +117,7 @@ public final class AbsolutePathTarget extends Ref {
 		}
 
 		final Ref dematerialized =
-				dematerializedPath.target(this, distribute());
+				dematerializedPath.target(location, distribute());
 
 		return dematerialized.ancestor(location);
 	}
@@ -158,13 +158,12 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver, fullPathResolver(this, resolver)).resolveAll();
+		resolve(resolver, fullPathResolver(resolver)).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver, valuePathResolver(this, resolver)).resolveValues(
-				resolver);
+		resolve(resolver, valuePathResolver(resolver)).resolveValues(resolver);
 	}
 
 	@Override

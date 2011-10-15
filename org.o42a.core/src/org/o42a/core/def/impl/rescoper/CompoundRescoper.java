@@ -20,7 +20,6 @@
 package org.o42a.core.def.impl.rescoper;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.def.Def;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.Rescoper;
@@ -58,15 +57,15 @@ public final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public Resolver rescope(LocationInfo location, Resolver resolver) {
+	public Resolver rescope(Resolver resolver) {
 
-		final Resolver rescoped = this.second.rescope(location, resolver);
+		final Resolver rescoped = this.second.rescope(resolver);
 
 		if (rescoped == null) {
 			return null;
 		}
 
-		return this.first.rescope(location, rescoped);
+		return this.first.rescope(rescoped);
 	}
 
 	@Override
@@ -119,11 +118,10 @@ public final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public void resolveAll(ScopeInfo location, Resolver resolver) {
-		this.second.resolveAll(location, resolver);
+	public void resolveAll(Resolver resolver) {
+		this.second.resolveAll(resolver);
 		this.first.resolveAll(
-				location,
-				this.second.rescope(location, resolver));
+				this.second.rescope(resolver));
 	}
 
 	@Override
